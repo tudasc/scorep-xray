@@ -7,7 +7,7 @@
 #     Beautify all modified and added source files in your svn working copy.
 #     Without beautification, a svn commit may be rejected. Currently, the 
 #     beautification is performed by "uncrustify" using the configuration
-#     file "tools/beautifier/uncrustify_silc.cfg".
+#     file "tools/beautifier/beautify.cfg".
 #
 # PRECONDITION
 #     Your working copy must contain everything under trunk, branches/FOO or
@@ -29,7 +29,7 @@ SVN=svn
 GREP=grep
 AWK=awk
 BEAUTIFY=uncrustify
-BEAUTIFY_CONFIG=tools/beautifier/uncrustify_silc.cfg
+BEAUTIFY_CONFIG=tools/beautifier/beautify.cfg
 
 ################################################################################
 # General idea:
