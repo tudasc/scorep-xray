@@ -25,14 +25,11 @@
 # AUTHOR
 #     Christian Roessel <c.roessel@fz-juelich.de> 
 
-AWK=/usr/bin/awk
-BEAUTIFY=/usr/local/bin/uncrustify
+AWK=awk
+BEAUTIFY=uncrustify
 BEAUTIFY_CONFIG=tools/beautifier/beautify.cfg
-COMPARE=/usr/bin/cmp
-GREP=/usr/bin/grep
-SVN=/usr/bin/svn
-SVNLOOK=/usr/bin/svnlook
-TAIL=/usr/bin/tail
+GREP=grep
+SVN=svn
 
 ################################################################################
 # General idea:
