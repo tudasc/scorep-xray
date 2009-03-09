@@ -46,7 +46,7 @@ REPOS_ROOT_LEVEL=`$SVN info | $GREP "Repository Root" |                        \
 CURRENT_LEVEL=`$SVN info | $GREP "URL" | $AWK -F "/" '{print NF}'`
 OFFSET=1
 if $SVN info | $GREP "URL" | $GREP -e 'branches\|tags' > /dev/null; then
-    OFFSET=2 
+    OFFSET=2
 fi
 let N_DIRS_UP=$CURRENT_LEVEL-$REPOS_ROOT_LEVEL-$OFFSET
 if [ $N_DIRS_UP -gt 0 ]; then
