@@ -31,6 +31,9 @@ BEAUTIFY_CONFIG=tools/beautifier/beautify.cfg
 GREP=grep
 SVN=svn
 
+export LC_ALL=
+export LANG=C
+
 ################################################################################
 # General idea:
 # - cd to the top-level directory of your svn working copy in order to find 
