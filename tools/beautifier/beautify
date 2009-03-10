@@ -49,6 +49,9 @@ if $SVN info | $GREP "URL" | $GREP -e 'branches\|tags' > /dev/null; then
     OFFSET=2
 fi
 let N_DIRS_UP=$CURRENT_LEVEL-$REPOS_ROOT_LEVEL-$OFFSET
+echo "REPOS_ROOT_LEVEL $REPOS_ROOT_LEVEL"
+echo "CURRENT_LEVEL $CURRENT_LEVEL"
+echo "OFFSET $OFFSET"
 echo `pwd`
 if [ $N_DIRS_UP -gt 0 ]; then
     for i in `seq $N_DIRS_UP`; do
