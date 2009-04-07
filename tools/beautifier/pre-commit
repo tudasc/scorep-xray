@@ -35,10 +35,10 @@ TXN="$2"
 AWK=/usr/bin/awk
 BEAUTIFY=/usr/local/bin/uncrustify
 COMPARE=/usr/bin/cmp
+DIFF=/usr/bin/diff
 GREP=/usr/bin/grep
 SVNLOOK=/usr/bin/svnlook
 TAIL=/usr/bin/tail
-
 
 #### Log message check: begin ##################################################
 # Log message must contain some text
@@ -89,8 +89,10 @@ if [ -n "$COMMIT_CANDIDATES" ]; then
             rm $CANDIDATE
             continue
         fi
-        $BEAUTIFY -q -c $BEAUTIFY_CONFIG -f $CANDIDATE -o $CANDIDATE_BEAUTIFIED 1>&2
+        $BEAUTIFY -c $BEAUTIFY_CONFIG -f $CANDIDATE -o $CANDIDATE_BEAUTIFIED 1>&2
         if ! $COMPARE $CANDIDATE $CANDIDATE_BEAUTIFIED; then
+            $DIFF $CANDIDATE $CANDIDATE_BEAUTIFIED 1>&2
+            $BEAUTIFY --version 1>&2
             echo "Commit rejected: File \"$cand\" does not comply to the coding standard." 1>&2
             DIFFER=true
         fi
