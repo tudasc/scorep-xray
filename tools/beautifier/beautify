@@ -87,7 +87,7 @@ if [ -n "$RELEVANT_FILES" ]; then
             echo "Beautifying skipped for file \"$FILE\"."
             continue
         fi
-        $BEAUTIFY -c $BEAUTIFY_CONFIG --replace --mtime -q $FILE
+        $BEAUTIFY -c $BEAUTIFY_CONFIG --replace -q $FILE
         if [ $? -ne 0 ]; then
             echo "Beautifying aborted: \"`which $BEAUTIFY`\" failed on file \"$FILE\"."
             exit 1
