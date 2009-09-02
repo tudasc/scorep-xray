@@ -1,0 +1,4 @@
+#ifndef SILC_ENVIRONMENT_H
+#define SILC_ENVIRONMENT_H
+
+#endif /* SILC_ENVIRONMENT_H */

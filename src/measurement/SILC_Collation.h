@@ -1,0 +1,4 @@
+#ifndef SILC_COLLATION_H
+#define SILC_COLLATION_H
+
+#endif /* SILC_COLLATION_H */

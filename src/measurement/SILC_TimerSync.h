@@ -1,0 +1,4 @@
+#ifndef SILC_TIMERSYNC_H
+#define SILC_TIMERSYNC_H
+
+#endif /* SILC_TIMERSYNC_H */

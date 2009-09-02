@@ -1,0 +1,4 @@
+#ifndef SILC_DEFINITIONS_H
+#define SILC_DEFINITIONS_H
+
+#endif /* SILC_DEFINITIONS_H */
