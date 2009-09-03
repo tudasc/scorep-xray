@@ -22,12 +22,14 @@ typedef void ( *InitAdapterCallback )();
 
 /**
  * Initialize the measurement system from the adapter layer. This function
- * needs to be called at least once by every adapter in use. For performance
- * reasons the adapter should keep track of it's initialization status and
- * call this function only once. The adapter might provide a callback that is
- * triggered within this function. If this function is called several times
- * from the same adapter, the callback is triggered several times too. Calling
- * this function several times does no harm to the measurement system.
+ * needs to be called at least once by every adapter in use before any other
+ * API function is called. Calling other API functions before is seen as
+ * undefined behaviour. For performance reasons the adapter should keep track
+ * of it's initialization status and call this function only once. The adapter
+ * might provide a callback that is triggered within this function. If this
+ * function is called several times from the same adapter, the callback is
+ * triggered several times too. Calling this function several times does no
+ * harm to the measurement system.
  *
  * @param initAdapterCallback A pointer to a function or NULL.
  *
