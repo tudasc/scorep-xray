@@ -41,13 +41,6 @@ void SILC_User_RegionEnd( const char*    name,
 void SILC_User_ParameterInt64( const char* name,
                                int64_t     value );
 
-/** Generates a parameter event for a parameter of double data type.
-    @param name  The unique name for the paramater.
-    @param value The value for the parameter.
- */
-void SILC_User_ParameterDouble( const char* name,
-                                double      value );
-
 /** Generates a parameter event for a parameter of string type.
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
