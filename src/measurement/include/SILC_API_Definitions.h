@@ -156,8 +156,20 @@ void SILC_API_DefineMPICartesianCoords(
 
 
 /**
+ * Write an arbitrary string into the definition stream of the current location
+ *
+ * @param format a printf(3) style format specifier string
+ * @param ...    additional arguments to format
+ *
+ * @note This function is not thread safe. If you are calling it from multiple
+ * threads simultaneously, you are responsible for sufficient synchronization.
+ *
+ */
+void SILC_API_DefineComment( const char* format,
+                             ... );
+
+/**
  * @todo bert
-   SILC_API_DefineComment
    SILC_API_DefineFileGroup
    SILC_API_DefineFileWithGroup
    SILC_API_DefineCounterGroup
