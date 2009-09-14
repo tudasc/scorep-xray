@@ -14,8 +14,8 @@
 #include <stdint.h>
 
 
-typedef uint32_t SILC_API_FileHandle;
-#define SILC_API_NO_FILE_HANDLE UINT32_MAX
+typedef uint32_t SILC_API_SourceFileHandle;
+#define SILC_API_NO_SOURCE_FILE_HANDLE UINT32_MAX
 
 typedef uint32_t SILC_API_LineNo;
 #define SILC_API_NO_LINE_NO UINT32_MAX

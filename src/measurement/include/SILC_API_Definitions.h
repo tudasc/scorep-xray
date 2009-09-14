@@ -27,7 +27,7 @@
  * SILC_API_DefineRegion().
  *
  */
-SILC_API_FileHandle SILC_API_DefineFile( const char* fileName );
+SILC_API_SourceFileHandle SILC_API_DefineSourceFile( const char* fileName );
 
 
 /**
@@ -48,7 +48,8 @@ SILC_API_FileHandle SILC_API_DefineFile( const char* fileName );
  *
  */
 SILC_API_RegionHandle SILC_API_DefineRegion( const char*           regionName,
-                                             SILC_API_FileHandle   fileHandle,
+                                             SILC_API_SourceFileHandle
+                                                                   fileHandle,
                                              SILC_API_LineNo       beginLine,
                                              SILC_API_LineNo       endLine,
                                              SILC_API_AdapterTypes adapter,
