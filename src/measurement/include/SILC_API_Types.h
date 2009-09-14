@@ -20,6 +20,12 @@ typedef uint32_t SILC_API_SourceFileHandle;
 typedef uint32_t SILC_API_LineNo;
 #define SILC_API_NO_LINE_NO UINT32_MAX
 
+typedef uint32_t SILC_API_CounterGroupHandle;
+#define SILC_API_NO_COUNTER_GROUP UINT32_MAX
+
+typedef uint32_t SILC_API_CounterHandle;
+#define SILC_API_NO_COUNTER UINT32_MAX
+
 typedef enum
 {
     SILC_ADAPTER_USER,

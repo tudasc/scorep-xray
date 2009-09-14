@@ -169,11 +169,40 @@ void SILC_API_DefineComment( const char* format,
                              ... );
 
 /**
+ *
+ * @param name name of the counter group
+ *
+ * @note This function is not thread safe. If you are calling it from multiple
+ * threads simultaneously, you are responsible for sufficient synchronization.
+ *
+ */
+SILC_API_CounterGroupHandle SILC_API_DefineCounterGroup( const char* name );
+
+/**
+ *
+ * @param name          name of the counter
+ * @param properties    properties of the counter, as defined by OTF2
+ * @param counter_group the group in which this counter is
+ * @param unit          a descriptive name of the unit
+ *
+ * @todo: add base parameter (i.e. 1000 or 1024)
+ *
+ * @note This function is not thread safe. If you are calling it from multiple
+ * threads simultaneously, you are responsible for sufficient synchronization.
+ *
+ */
+SILC_API_CounterHandle SILC_API_DefineCounter( const char* name,
+                                               uint32_t    properties,
+                                               SILC_API_CounterGroupHandle
+                                                           counter_group,
+                                               const char* unit );
+
+
+/**
  * @todo bert
    SILC_API_DefineFileGroup
-   SILC_API_DefineFileWithGroup
-   SILC_API_DefineCounterGroup
-   SILC_API_DefineCounterWithGroup
+   SILC_API_DefineFile
+   SILC_API_DefineMarkerGroup
    SILC_API_DefineMarker
  */
 
