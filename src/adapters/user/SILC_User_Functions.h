@@ -106,6 +106,26 @@ void SILC_User_TriggerCounterDouble( const char* name,
 void SILC_User_TriggerCounterFloat( const char* name,
                                     float       value );
 
+/* **************************************************************************************
+ * Markers
+ * *************************************************************************************/
+
+/** Defines a marker.
+    @param name A string containing the name of the marker.
+    @param type Defines the type of the marker. The following types are possible:
+                SILC_USER_MARKER_TYPE_ERROR, SILC_USER_MARKER_TYPE_WARNING,
+                SILC_USER_MARKER_TYPE_HINT.
+ */
+void SILC_User_MarkerDef( const char* name,
+                          int8_t      type );
+
+/** Triggers a marker. The marker must be defined before it is triggered for the first
+    time.
+    @param name A string containing the name of the marker.
+    @param text A string containing a text.
+ */
+void SILC_User_Marker( const char* name,
+                       const char* text );
 
 /* **************************************************************************************
  * Class SILC_User_Tracer

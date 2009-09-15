@@ -81,5 +81,24 @@ typedef uint32_t SILC_User_CounterType;
  */
 #define SILC_USER_COUNTER_CONTEXT_CALLPATH 1
 
+/* **************************************************************************************
+ * Defines marker types
+ * *************************************************************************************/
+
+/** @def SILC_USER_MARKER_TYPE_ERROR
+    Specifies a marker of type error.
+ */
+#define SILC_USER_MARKER_TYPE_ERROR 1
+
+/** @def SILC_USER_MARKER_TYPE_WARNING
+    Specifies a marker of type warning.
+ */
+#define SILC_USER_MARKER_TYPE_WARNING 2
+
+/** @def SILC_USER_MARKER_TYPE_HINT
+    Specifies a marker of type hint.
+ */
+#define SILC_USER_MARKER_TYPE_HINT 3
+
 
 #endif // SILC_USER_TYPES_H

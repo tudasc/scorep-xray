@@ -314,6 +314,28 @@ extern uint8_t SILC_User_IsOn;
 #else // SILC_USER_ENABLE
 
 /* **************************************************************************************
+ * Marker
+ * *************************************************************************************/
+
+/** @def SILC_USER_MARKER_DEF
+    Defines a marker.
+    @param name A string containing the name of the marker.
+    @param type Defines the type of the marker. The following types are possible:
+                SILC_USER_MARKER_TYPE_ERROR, SILC_USER_MARKER_TYPE_WARNING,
+                SILC_USER_MARKER_TYPE_HINT.
+ */
+# define SILC_USER_MARKER_DEF( name, type ) SILC_User_MarkerDef( name, type );
+
+/** @def SILC_USER_MARKER
+    Triggers a marker. The marker must be defined before it is triggered for the first
+    time.
+    @param name A string containing the name of the marker.
+    @param text A string containing a text.
+ */
+# define SILC_USER_MARKER( name, text )     SILC_User_Marker( name, text );
+
+
+/* **************************************************************************************
  * Empty macros, if user instrumentation is disabled
  * *************************************************************************************/
 #define SILC_USER_REGION_BEGIN( name )
@@ -341,6 +363,8 @@ extern uint8_t SILC_User_IsOn;
 #define SILC_USER_ON
 #define SILC_USER_OFF
 #define SILC_USER_IS_ON
+#define SILC_USER_MARKER_DEF( name, type )
+#define SILC_USER_MARKER( name, text )
 
 #endif // SILC_USER_ENABLE
 
