@@ -72,4 +72,45 @@ typedef uint32_t SILC_API_MPIWindowHandle;
 
 typedef uint32_t SILC_API_MPICartTopolHandle;
 
+/* types for the configure system */
+typedef enum
+{
+    /**
+     * A string with variable expension
+     * (path normalization?)
+     */
+    SILC_CONFIG_TYPE_PATH,
+
+    /** A string */
+    SILC_CONFIG_TYPE_STRING,
+
+    /** A bool */
+    SILC_CONFIG_TYPE_BOOL,
+
+    /** A number (uin64_t) */
+    SILC_CONFIG_TYPE_NUMBER,
+
+    /** A number with size suffixes (uin64_t) */
+    SILC_CONFIG_TYPE_SIZE,
+
+    /**
+     * A symbolic set
+     * .variableContext should point to a NULL terminated string
+     * list with valid set members
+     */
+    SILC_CONFIG_TYPE_SET
+} SILC_API_ConfigType;
+
+typedef struct SILC_API_ConfigVariable
+{
+    const char*         nameSpace; /* NULL for 'root'/'global' namespace */
+    const char*         name;
+    SILC_API_ConfigType type;
+    void*               variableReference;
+    void*               variableContext;
+    const char*         defaultValue;
+    const char*         shortHelp;
+    const char*         longHelp;
+} SILC_API_ConfigVariable;
+
 #endif /* SILC_API_TYPES_H */
