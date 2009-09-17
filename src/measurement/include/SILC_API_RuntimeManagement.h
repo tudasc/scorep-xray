@@ -36,6 +36,15 @@ typedef void ( *InitAdapterCallback )();
  */
 void SILC_API_InitMeasurement( InitAdapterCallback initAdapterCallback );
 
+/**
+ * Globaly disable and enable event recording.
+ *
+ * These functions do not guarantee to succeed in it's operation. The
+ * measurement system may still need full control to the event generation.
+ */
+void SILC_API_EnableRecording( void );
+void SILC_API_DisableRecording( void );
+bool SILC_API_RecordingEnabled( void );
 
 /**
  * Supend the measurement in order to obtain data or reconfigure it. Has no
