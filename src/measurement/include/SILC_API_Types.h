@@ -13,6 +13,7 @@
 
 #include <stdint.h>
 
+typedef uint64_t SILC_API_Time;
 
 typedef uint32_t SILC_API_SourceFileHandle;
 #define SILC_API_NO_SOURCE_FILE_HANDLE UINT32_MAX
@@ -64,6 +65,13 @@ typedef enum
     SILC_REGION_OMP_SINGLE_SBLOCK
 } SILC_API_RegionType;
 
+typedef uint64_t SILC_API_LocationHandle;
+/**
+ * decision still open! if we start with 1, we take 0 as invalid
+ */
+#define SILC_API_INVALID_LOCATION UINT64_MAX
+#define SILC_API_MAX_LOCATION ( UINT64_MAX - 1 )
+
 typedef uint32_t SILC_API_RegionHandle;
 
 typedef uint32_t SILC_API_MPICommunicatorHandle;
@@ -71,6 +79,8 @@ typedef uint32_t SILC_API_MPICommunicatorHandle;
 typedef uint32_t SILC_API_MPIWindowHandle;
 
 typedef uint32_t SILC_API_MPICartTopolHandle;
+
+typedef uint32_t SILC_API_CollectiveType;
 
 /* types for the configure system */
 typedef enum
