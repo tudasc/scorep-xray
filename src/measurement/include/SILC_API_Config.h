@@ -39,7 +39,7 @@
  *        * @a SILC_API_ConfigVariable::variableContext
  *          (obvious)
  *        * @a SILC_API_ConfigVariable::defaultValue
- *          (for resetting to
+ *          (for resetting to the default value)
  *        * @a SILC_API_ConfigVariable::shortHelp
  *          (questionable)
  *        * @a SILC_API_ConfigVariable::longHelp
