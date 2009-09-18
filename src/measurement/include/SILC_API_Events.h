@@ -74,4 +74,18 @@ void SILC_API_MpiBeginColl( SILC_API_Time*                 timeStamp,
 void SILC_API_MpiEndColl( SILC_API_Time* timeStamp,
                           uint32_t       matchingId );
 
+/**
+ * parameter based profiling events
+ *
+ */
+void SILC_API_TriggerParameterInt64( SILC_API_ParameterHandle parameterHandle,
+                                     int64_t                  value );
+
+void SILC_API_TriggerParameterDouble( SILC_API_ParameterHandle parameterHandle,
+                                      double                   value );
+
+void SILC_API_TriggerParameterString( SILC_API_ParameterHandle parameterHandle,
+                                      const char*              value );
+
+
 #endif /* SILC_API_EVENTS_H */

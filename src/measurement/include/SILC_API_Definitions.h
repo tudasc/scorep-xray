@@ -199,6 +199,16 @@ SILC_API_CounterHandle SILC_API_DefineCounter( const char* name,
 
 
 /**
+ * define a parameter for parameter based profiling
+ *
+ * @return a location unique id handle to be passed to the parameter trigger
+ * functions
+ *
+ */
+SILC_API_ParameterHandle SILC_API_DefineParameter( const char*            name,
+                                                   SILC_API_ParameterType type );
+
+/**
  * @todo bert
    SILC_API_DefineFileGroup
    SILC_API_DefineFile

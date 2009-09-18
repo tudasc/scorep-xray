@@ -80,6 +80,16 @@ typedef uint32_t SILC_API_MPIWindowHandle;
 
 typedef uint32_t SILC_API_MPICartTopolHandle;
 
+/* Parameter types */
+typedef enum
+{
+    SILC_PARAMETER_INT64,
+    SILC_PARAMETER_DOUBLE,
+    SILC_PARAMETER_STRING
+} SILC_API_ParameterType;
+
+typedef uint32_t SILC_API_ParameterHandle;
+
 /* types for the configure system */
 typedef enum
 {
