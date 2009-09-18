@@ -8,12 +8,6 @@
  *       than adding it.
  *
  * Return the current wall-time.
- *
- * @note in case the measurement system does not need timestamps for events
- *       (Ie. in pure profiling mode) this function returns an arbitrary value
- *       which has no meaning for the adapters. Because the adapters do not
- *       know about the mode of the measurement it should always handle the
- *       timestamp as opaque.
  */
 SILC_API_Time SILC_API_Wtime( void );
 
