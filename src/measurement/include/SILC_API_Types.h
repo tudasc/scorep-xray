@@ -16,16 +16,16 @@
 typedef uint64_t SILC_API_Time;
 
 typedef uint32_t SILC_API_SourceFileHandle;
-#define SILC_API_NO_SOURCE_FILE_HANDLE UINT32_MAX
+#define SILC_API_INVALID_SOURCE_FILE UINT32_MAX
 
 typedef uint32_t SILC_API_LineNo;
-#define SILC_API_NO_LINE_NO UINT32_MAX
+#define SILC_API_INVALID_LINE_NO 0
 
 typedef uint32_t SILC_API_CounterGroupHandle;
-#define SILC_API_NO_COUNTER_GROUP UINT32_MAX
+#define SILC_API_INVALID_COUNTER_GROUP UINT32_MAX
 
 typedef uint32_t SILC_API_CounterHandle;
-#define SILC_API_NO_COUNTER UINT32_MAX
+#define SILC_API_INVALID_COUNTER UINT32_MAX
 
 typedef enum
 {
