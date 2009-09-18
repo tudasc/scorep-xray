@@ -20,7 +20,7 @@ typedef uint32_t SILC_User_CounterType;
 /** @def SILC_USER_REGION_TYPE_REGION
     Region without any specific type.
  */
-#define SILC_USER_REGION_TYPE_REGION 0
+#define SILC_USER_REGION_TYPE_COMMON 0
 
 /** @def SILC_USER_REGION_TYPE_FUNCTION
     Marks the region as being the codeblock of a function.
