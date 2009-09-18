@@ -80,8 +80,6 @@ typedef uint32_t SILC_API_MPIWindowHandle;
 
 typedef uint32_t SILC_API_MPICartTopolHandle;
 
-typedef uint32_t SILC_API_CollectiveType;
-
 /* types for the configure system */
 typedef enum
 {

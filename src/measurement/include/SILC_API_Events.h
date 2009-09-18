@@ -54,11 +54,14 @@ void SILC_API_MpiRecv( SILC_API_Time*                 timeStamp,
  *
  * @param regionHandle
  * @param matchingId a location unique id to match the MpiEndColl
+ * @param rootHandle root rank in collective operation,
+ *                   or SILC_API_INVALID_LOCATION
  */
 void SILC_API_MpiBeginColl( SILC_API_Time*                 timeStamp,
                             uint32_t                       matchingId,
-                            SILC_API_CollectiveType        collOpType,
+                            SILC_API_RegionHandle          regionHandle,
                             SILC_API_MPICommunicatorHandle commHandle,
+                            SILC_API_LocationHandle        rootHandle,
                             uint64_t                       bytesSent,
                             uint64_t                       bytesReceived );
 
