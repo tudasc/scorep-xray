@@ -8,6 +8,16 @@
 typedef struct SILC_API_AdapterOps
 {
     /**
+     * The type od the adapter
+     */
+    SILC_API_AdapterType ao_type;
+
+    /**
+     * Name/Version/...
+     */
+    const char* ao_name;
+
+    /**
      * Register the adapter.
      *
      * The main purpose is to allow the adapter to register config variables
