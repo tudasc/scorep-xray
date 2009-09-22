@@ -3,7 +3,6 @@
 
 /**
  * Register a set of configure variables to the measurement system.
- * All variables are initialized to there default values.
  *
  * @param variables         array of type SILC_API_ConfigVariable which will be
  *                          registered to the measurement system
