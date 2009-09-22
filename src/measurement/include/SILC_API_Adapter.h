@@ -8,7 +8,7 @@
 typedef struct SILC_API_AdapterOps
 {
     /**
-     * The type od the adapter
+     * The type of the adapter
      */
     SILC_API_AdapterType ao_type;
 
@@ -27,9 +27,9 @@ typedef struct SILC_API_AdapterOps
     SILC_ErrorCode ( *ao_register )( void );
 
     /**
-     * Initialize the adapater for measurement.
+     * Initialize the adapter for measurement.
      *
-     * At this point all configure varialbes are set to there current
+     * At this point all configure variables are set to there current
      * environment values.
      *
      */
@@ -37,7 +37,7 @@ typedef struct SILC_API_AdapterOps
 
     /**
      * Initializes a location in the adapter and return a per-location data
-     * pointer in the forst argument. This pointer can be queried with the
+     * pointer in the first argument. This pointer can be queried with the
      * SILC_API_getLocationData.
      *
      */
@@ -51,7 +51,7 @@ typedef struct SILC_API_AdapterOps
     void ( *ao_fini_location )( void* );
 
     /**
-     * Finalizes the adapater for measurement.
+     * Finalizes the adapter for measurement.
      *
      */
     void ( *ao_fini )( void );
