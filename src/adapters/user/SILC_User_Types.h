@@ -1,6 +1,8 @@
 #ifndef SILC_USER_TYPES_H
 #define SILC_USER_TYPES_H
 
+#include "SILC_API_Types.h"
+
 #include <stdint.h>
 
 /* **************************************************************************************
@@ -10,8 +12,8 @@
 /** Type for the region type */
 typedef uint32_t SILC_User_RegionType;
 
-/** Type for the user counter type */
-typedef uint32_t SILC_User_CounterType;
+/** Type for the user metric type */
+typedef uint32_t SILC_User_MetricType;
 
 /* **************************************************************************************
  * Defines for the Region types
@@ -47,58 +49,45 @@ typedef uint32_t SILC_User_CounterType;
  * Defines for the data type of a user counter
  * *************************************************************************************/
 
-/** @def SILC_USER_COUNTER_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is of data type signed 64 bit integer.
  */
-#define SILC_USER_COUNTER_TYPE_INT64 1
+#define SILC_USER_METRIC_TYPE_INT64 1
 
-/** @def SILC_USER_COUNTER_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is of data type unsigned 64 bit integer.
  */
-#define SILC_USER_COUNTER_TYPE_UINT64 2
+#define SILC_USER_METRIC_TYPE_UINT64 2
 
-/** @def SILC_USER_COUNTER_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is of data type double.
  */
-#define SILC_USER_COUNTER_TYPE_DOUBLE 3
-
-/** @def SILC_USER_COUNTER_TYPE_INT64
-    Indicates that a user counter is of data type float.
- */
-#define SILC_USER_COUNTER_TYPE_FLOAT 4
+#define SILC_USER_METRIC_TYPE_DOUBLE 3
 
 /* **************************************************************************************
  * Defines for the context of user counters
  * *************************************************************************************/
 
-/** @def SILC_USER_COUNTER_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is is measured for the global context.
  */
-#define SILC_USER_COUNTER_CONTEXT_GLOBAL 0
+#define SILC_USER_METRIC_CONTEXT_GLOBAL 0
 
-/** @def SILC_USER_COUNTER_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is is measured for every callpath.
  */
-#define SILC_USER_COUNTER_CONTEXT_CALLPATH 1
+#define SILC_USER_METRIC_CONTEXT_CALLPATH 1
 
 /* **************************************************************************************
- * Defines marker types
+ * Default and uninitialized handles
  * *************************************************************************************/
 
-/** @def SILC_USER_MARKER_TYPE_ERROR
-    Specifies a marker of type error.
- */
-#define SILC_USER_MARKER_TYPE_ERROR 1
+/** Value of an uninitialized region handle */
+#define SILC_USER_REGION_UNINITIALIZED 0
 
-/** @def SILC_USER_MARKER_TYPE_WARNING
-    Specifies a marker of type warning.
+/** The metric group handle for the default group. This group is created when the
+    user adapter is initialized.
  */
-#define SILC_USER_MARKER_TYPE_WARNING 2
-
-/** @def SILC_USER_MARKER_TYPE_HINT
-    Specifies a marker of type hint.
- */
-#define SILC_USER_MARKER_TYPE_HINT 3
-
+#define SILC_USER_METRIC_GROUP_DEFAULT silc_user_metric_group_default
 
 #endif // SILC_USER_TYPES_H

@@ -1,12 +1,16 @@
 #ifndef SILC_USER_FUNCTIONS_H
 #define SILC_USER_FUNCTIONS_H
 
+#include "SILC_API_Types.h"
+
 /* **************************************************************************************
  * Region functions
  * *************************************************************************************/
 
 /** Generates an enter event for the specified region. If the region was not registered
-    before, it registers the region.
+    before, it registers the region. On the first enter, the region is registered to
+    the measurement system.
+    @param handle     The handle for this region. It must be defined before.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented
@@ -14,7 +18,8 @@
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-void SILC_User_RegionBegin( const char*                name,
+void SILC_User_RegionBegin( SILC_API_RegionHandle&     handle,
+                            const char*                name,
                             const SILC_User_RegionType regionType,
                             const char*                fileName,
                             const uint32_t             lineNo );
@@ -49,97 +54,77 @@ void SILC_User_ParameterString( const char* name,
                                 char*       value );
 
 /* **************************************************************************************
- * User counter functions
+ * User metric functions
  * *************************************************************************************/
 
-/** Defines a user counter. Every user counter must be registered before it is used the first time.
-    @param name        A unique name to identify the user counter.
-    @param unit        A string for the unit of the user counter.
-    @param counterType Specifies the data type of the user counter. Possible are
-                       SILC_USER_COUNTER_TYPE_INT64 for 64 bit signed integer,
-                       SILC_USER_COUNTER_TYPE_UINT64 for 64 bit unsigned integer,
-                       SILC_USER_COUNTER_TYPE_DOUBLE for doubles, and
-                       SILC_USER_COUNTER_TYPE_FLOAT for floats.
+/** Initilizes a user metric group. Every group must be initialized before it is used
+    for the first time.
+    @param groupHandle A variable where the handle for the new group i stored. It must
+                       be declared with SILC_USER_METRIC_GROUP_DEF.
+ */
+void SILC_User_InitMetricGroup( SILC_API_CounterGroupHandle& groupHandle,
+                                const char*                  name );
+
+/** Initializes a user metric. Every user metric must be registered before it is used
+    the first time.
+    @param name        A unique name to identify the user metric.
+    @param unit        A string for the unit of the user metric.
+    @param metricType Specifies the data type of the user metric. Possible are
+                       SILC_USER_METRIC_TYPE_INT64 for 64 bit signed integer,
+                       SILC_USER_METRIC_TYPE_UINT64 for 64 bit unsigned integer, and
+                       SILC_USER_METRIC_TYPE_DOUBLE for doubles.
     @param context     Specifies for which context the metrices are obtained.
                        They can be obtained either for the global context or
                        for each callpath. For global context enter
-                       SILC_USER_COUNTER_CONTEXT_GLOBAL, else for measuring
-                       per callpath enter SILC_USER_COUNTER_CONTEXT_CALLPATH.
-    @param group       The name of the user couter group to which this counter belongs.
+                       SILC_USER_METRIC_CONTEXT_GLOBAL, else for measuring
+                       per callpath enter SILC_USER_METRIC_CONTEXT_CALLPATH.
+    @param group       The name of the user couter group to which this metric belongs.
                        If the group does not exist already, it will be created.
  */
-void SILC_User_DefineCounter( const char*                 name,
-                              const char*                 unit,
-                              const SILC_User_CounterType counterType,
-                              const int8_t                context,
-                              const char*                 group );
+void SILC_User_InitMetric( SILC_API_CounterHandle&           metricHandle,
+                           const char*                       name,
+                           const char*                       unit,
+                           const SILC_User_MetricType        metricType,
+                           const int8_t                      context,
+                           const SILC_API_CounterGroupHandle group );
 
-/** Triggers a user counter of type 64 bit signed integer. Before a counter can
+/** Triggers a user metric of type 64 bit signed integer. Before a metric can
     be triggered for the first time, it must be registered.
-    @param name The unique name of the user counter.
-    @param value The value for the counter.
+    @param name The unique name of the user metric.
+    @param value The value for the metric.
  */
-void SILC_User_TriggerCounterInt64( const char* name,
-                                    int64_t     value );
+void SILC_User_TriggerMetricInt64( const char* name,
+                                   int64_t     value );
 
-/** Triggers a user counter of type 64 bit unsigned integer. Before a counter can
+/** Triggers a user metric of type 64 bit unsigned integer. Before a metric can
     be triggered for the first time, it must be registered.
-    @param name The unique name of the user counter.
-    @param value The value for the counter.
+    @param name The unique name of the user metric.
+    @param value The value for the metric.
  */
-void SILC_User_TriggerCounterUint64( const char* name,
-                                     uint64_t    value );
+void SILC_User_TriggerMetricUint64( const char* name,
+                                    uint64_t    value );
 
-/** Triggers a user counter of type double. Before a counter can
+/** Triggers a user metric of type double. Before a metric can
     be triggered for the first time, it must be registered.
-    @param name The unique name of the user counter.
-    @param value The value for the counter.
+    @param name The unique name of the user metric.
+    @param value The value for the metric.
  */
-void SILC_User_TriggerCounterDouble( const char* name,
-                                     double      value );
-
-/** Triggers a user counter of type float. Before a counter can
-    be triggered for the first time, it must be registered.
-    @param name The unique name of the user counter.
-    @param value The value for the counter.
- */
-void SILC_User_TriggerCounterFloat( const char* name,
-                                    float       value );
+void SILC_User_TriggerMetricDouble( const char* name,
+                                    double      value );
 
 /* **************************************************************************************
- * Markers
- * *************************************************************************************/
-
-/** Defines a marker.
-    @param name A string containing the name of the marker.
-    @param type Defines the type of the marker. The following types are possible:
-                SILC_USER_MARKER_TYPE_ERROR, SILC_USER_MARKER_TYPE_WARNING,
-                SILC_USER_MARKER_TYPE_HINT.
- */
-void SILC_User_MarkerDef( const char* name,
-                          int8_t      type );
-
-/** Triggers a marker. The marker must be defined before it is triggered for the first
-    time.
-    @param name A string containing the name of the marker.
-    @param text A string containing a text.
- */
-void SILC_User_Marker( const char* name,
-                       const char* text );
-
-/* **************************************************************************************
- * Class SILC_User_Tracer
+ * Class SILC_User_Region
  * *************************************************************************************/
 #ifdef __cplusplus
 
-/** @class SILC_User_Tracer
-    This class implements the SILC_USER_TRACER statement. Its constructor and destructor
+/** @class SILC_User_Region
+    This class implements the SILC_USER_REGION statement. Its constructor and destructor
     generates the enter and respectively the exit event for the instrumented function.
  */
-class SILC_User_Tracer {
+class SILC_User_Region {
 public:
 /** Generates an enter event for the specified region. It should not be inserted by the
-    user directly. The user should use the SILC_USER_TRACER(name) statement instead.
+    user directly. The user should use the SILC_USER_REGION(name) statement instead.
     @param regionName The name of the region.
     @param regionType The type of the region.
     @param file       The filename of the source file which contains the instrumented
@@ -147,26 +132,32 @@ public:
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-    SILC_User_Tracer( const char*                regionName,
+    SILC_User_Region( const char*                regionName,
                       const SILC_User_RegionType regionType,
                       const char*                file,
                       const uint32_t lineNo )
-        : region_name( regionName ), file_name( file ), line_no( lineNo )
+        : file_name( file ), line_no( lineNo )
     {
-        SILC_User_RegionStart( regionName, regionType, file, lineNo );
+        SILC_User_RegionBegin( region_handle, regionName, regionType, file,
+                               lineNo );
     }
 
-/** Generates an exit event for the instrumented region
- */
-    ~SILC_User_Tracer()
+    /** Generates an exit event for the instrumented region
+     */
+    ~SILC_User_Region()
     {
-        SILC_User_RegionEnd( region_name, file_name, line_no );
+        SILC_User_RegionEnd( region_handle, file_name, line_no );
     }
 
 private:
-    const char* region_name;
+    /** Stores the file name of the file which contains the instrumented code block */
     const char* file_name;
-    const int   line_no;
+
+    /** Stores the line number where the instrumentationwas inserted */
+    const int line_no;
+
+    /** Stores the region handle */
+    SILC_API_RegionHandle region_handle;
 };
 #endif
 
