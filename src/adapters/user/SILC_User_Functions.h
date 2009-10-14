@@ -113,6 +113,68 @@ void SILC_User_TriggerMetricDouble( const char* name,
                                     double      value );
 
 /* **************************************************************************************
+ * Virtual Topologies
+ * *************************************************************************************/
+
+/** Defines a two-dimentional cartesian topology.
+    @param name     A string containing the name of the topology.
+    @param numX     Number of processes in the x-dimension.
+    @param numY     Number of processes in the y-dimension.
+    @param periodX  A truth value, if the x-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @param periodY  A truth value, if the y-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @return A handle to the newly created topology.
+ */
+int32_t SILC_User_DefineTopology2D( const char*   name,
+                                    const int32_t numX,
+                                    const int32_t numY,
+                                    const int32_t periodX,
+                                    const int32_t periodY );
+
+/** Defines a three-dimentional cartesian topology.
+    @param name     A string containing the name of the topology.
+    @param numX     Number of processes in the x-dimension.
+    @param numY     Number of processes in the y-dimension.
+    @param numZ     Number of processes in the z-dimension.
+    @param periodX  A truth value, if the x-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @param periodY  A truth value, if the y-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @param periodZ  A truth value, if the z-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @return A handle to the newly created topology.
+ */
+int32_t SILC_User_DefineTopology2D( const char*     name,
+                                    const int32_t   numX,
+                                    const int32_t   numY,
+                                    const int32_t   numZ,
+                                    const int32_t   periodX,
+                                    const int32_t   periodY,
+                                    const - int32_t periodZ );
+
+/** Defines the a coordinate in a two-dimensional cartesian topology.
+    @param topId    Handle of a previously defined two-dimensional cartesian topology.
+    @param coordX   X-coordinate
+    @param coordY   Y-coordinate
+ */
+void SILC_User_DefineCoordinate2D( const int32_t topId,
+                                   const int32_t coordX,
+                                   const int32_t coordY );
+
+/** Defines the a coordinate in a three-dimensional cartesian topology.
+    @param topId    Handle of a previously defined two-dimensional cartesian topology.
+    @param coordX   X-coordinate
+    @param coordY   Y-coordinate
+    @param coordZ   Z-coordinate
+ */
+void SILC_User_DefineCoordinate3D( const int32_t topId,
+                                   const int32_t coordX,
+                                   const int32_t coordY,
+                                   const int32_t coordZ );
+
+
+/* **************************************************************************************
  * Class SILC_User_Region
  * *************************************************************************************/
 #ifdef __cplusplus

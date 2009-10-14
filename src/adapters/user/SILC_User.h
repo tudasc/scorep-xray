@@ -246,6 +246,61 @@
 #else // SILC_USER_ENABLE
 
 /* **************************************************************************************
+ * Virtual Topologies
+ * *************************************************************************************/
+/** @def SILC_DEFINE_CARTESIAN_2D
+    Defines a two-dimentional cartesian topology.
+    @param name     A string containing the name of the topology.
+    @param numX     Number of processes in the x-dimension.
+    @param numY     Number of processes in the y-dimension.
+    @param periodX  A truth value, if the x-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @param periodY  A truth value, if the y-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @return A handle to the newly created topology.
+ */
+#define SILC_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY ) \
+    SILC_User_DefineTopology2D( name, numX, numY, periodX, periodY )
+
+/** @def SILC_DEFINE_CARTESIAN_3D
+    Defines a three-dimentional cartesian topology.
+    @param name     A string containing the name of the topology.
+    @param numX     Number of processes in the x-dimension.
+    @param numY     Number of processes in the y-dimension.
+    @param numZ     Number of processes in the z-dimension.
+    @param periodX  A truth value, if the x-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @param periodY  A truth value, if the y-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @param periodZ  A truth value, if the z-dimension is periodical. A value of zero means
+                    false, other values mean true.
+    @return A handle to the newly created topology.
+ */
+#define SILC_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
+                                  periodZ ) \
+    SILC_User_DefineTopology3D( name, numX, numY, numZ, periodX, periodY, \
+                                periodZ )
+
+/** @def SILC_DEFINE_COORDINATES_2D
+    Defines the a coordinate in a two-dimensional cartesian topology.
+    @param topId    Handle of a previously defined two-dimensional cartesian topology.
+    @param coordX   X-coordinate
+    @param coordY   Y-coordinate
+ */
+#define SILC_DEFINE_COORDINATE_2D( topId, coordX, coordY ) \
+    SILC_User_DefineCoordinates2D( topId, coordX, coordY );
+
+/** @def SILC_DEFINE_COORDINATES_3D
+    Defines the a coordinate in a three-dimensional cartesian topology.
+    @param topId    Handle of a previously defined two-dimensional cartesian topology.
+    @param coordX   X-coordinate
+    @param coordY   Y-coordinate
+    @param coordZ   Z-coordinate
+ */
+#define SILC_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ ) \
+    SILC_User_DefineCoordinates3D( topId, coordX, coordY, coordZ );
+
+/* **************************************************************************************
  * Empty macros, if user instrumentation is disabled
  * *************************************************************************************/
 #define SILC_USER_REGION_DEFINE( handle, name, type )
@@ -265,6 +320,11 @@
 #define SILC_RECORDING_ON
 #define SILC_RECORDING_OFF
 #define SILC_RECORDING_IS_ON
+#define SILC_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY )
+#define SILC_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
+                                  periodZ )
+#define SILC_DEFINE_COORDINATE_2D( topId, coordX, coordY )
+#define SILC_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ )
 
 #endif // SILC_USER_ENABLE
 
