@@ -1,4 +1,4 @@
-#ifndef SILC_METRICS_H
-#define SILC_METRICS_H
+#ifndef SILC_CORE_METRICS_H
+#define SILC_CORE_METRICS_H
 
-#endif /* SILC_METRICS_H */
+#endif /* SILC_CORE_METRICS_H */

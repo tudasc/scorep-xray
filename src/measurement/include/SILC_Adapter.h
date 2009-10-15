@@ -1,21 +1,21 @@
-#ifndef SILC_API_ADAPTER_H
-#define SILC_API_ADAPTER_H
+#ifndef SILC_ADAPTER_H
+#define SILC_ADAPTER_H
 
 /**
  * An adapter needs to provide numerous functions for the measurement system.
  * These are collected in this structure for easy handling.
  */
-typedef struct SILC_API_AdapterOps
+typedef struct SILC_Adapter
 {
     /**
      * The type of the adapter
      */
-    SILC_API_AdapterType ao_type;
+    SILC_AdapterType adapter_type;
 
     /**
      * Name/Version/...
      */
-    const char* ao_name;
+    const char* adapter_name;
 
     /**
      * Register the adapter.
@@ -24,7 +24,7 @@ typedef struct SILC_API_AdapterOps
      * to the system.
      *
      */
-    SILC_ErrorCode ( *ao_register )( void );
+    SILC_ErrorCode ( * adapter_register )( void );
 
     /**
      * Initialize the adapter for measurement.
@@ -33,40 +33,32 @@ typedef struct SILC_API_AdapterOps
      * environment values.
      *
      */
-    SILC_ErrorCode ( *ao_init )( void );
+    SILC_ErrorCode ( * adapter_init )( void );
 
     /**
-     * Initializes a location in the adapter and return a per-location data
-     * pointer in the first argument. This pointer can be queried with the
-     * SILC_API_getLocationData.
+     * Callback to register a location to the adapter.
      *
      */
-    SILC_ErrorCode ( *ao_init_location )( void* /*, location id? */ );
+    SILC_ErrorCode ( * adapter_init_location )( void );
 
 
     /**
      * Finalizes the per-location data from this adapter.
      *
      */
-    void ( *ao_fini_location )( void* );
+    void ( * adapter_finalize_location )( void* );
 
     /**
      * Finalizes the adapter for measurement.
      *
      */
-    void ( *ao_fini )( void );
+    void ( * adapter_finalize )( void );
 
     /**
      * De-register the adapter.
      *
      */
-    void ( *ao_deregister )( void );
-} SILC_API_AdapterOps;
+    void ( * adapter_deregister )( void );
+} SILC_Adapter;
 
-/**
- * get the per-location private data for the adapter type @a type
- *
- */
-void* SILC_API_getLocationData( SILC_API_AdapterType );
-
-#endif /* SILC_API_ADAPTER_H */
+#endif /* SILC_ADAPTER_H */

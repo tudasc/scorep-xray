@@ -1,9 +1,9 @@
-#ifndef SILC_API_RUNTIMEMANAGEMENT_H
-#define SILC_API_RUNTIMEMANAGEMENT_H
+#ifndef SILC_RUNTIMEMANAGEMENT_H
+#define SILC_RUNTIMEMANAGEMENT_H
 
 
 /**
- * @file    SILC_API_RuntimeManagement.h
+ * @file    SILC_RuntimeManagement.h
  * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @date    Started Wed Sep  2 18:44:31 2009
  *
@@ -34,7 +34,7 @@ typedef void ( *InitAdapterCallback )();
  * @param initAdapterCallback A pointer to a function or NULL.
  *
  */
-void SILC_API_InitMeasurement( InitAdapterCallback initAdapterCallback );
+void SILC_InitMeasurement( InitAdapterCallback initAdapterCallback );
 
 /**
  * Globaly disable and enable event recording.
@@ -42,16 +42,16 @@ void SILC_API_InitMeasurement( InitAdapterCallback initAdapterCallback );
  * These functions do not guarantee to succeed in it's operation. The
  * measurement system may still need full control to the event generation.
  */
-void SILC_API_EnableRecording( void );
-void SILC_API_DisableRecording( void );
-bool SILC_API_RecordingEnabled( void );
+void SILC_EnableRecording( void );
+void SILC_DisableRecording( void );
+bool SILC_RecordingEnabled( void );
 
 /**
  * Supend the measurement in order to obtain data or reconfigure it. Has no
  * effect if measurement is supended. Details need to be specified.
  *
  */
-void SILC_API_SuspendMeasurement();
+void SILC_SuspendMeasurement();
 
 
 /**
@@ -59,7 +59,7 @@ void SILC_API_SuspendMeasurement();
  * measurement is active resp. resumed. Details need to be specified.
  *
  */
-void SILC_API_ResumeMeasurement();
+void SILC_ResumeMeasurement();
 
 
-#endif /* SILC_API_RUNTIMEMANAGEMENT_H */
+#endif /* SILC_RUNTIMEMANAGEMENT_H */

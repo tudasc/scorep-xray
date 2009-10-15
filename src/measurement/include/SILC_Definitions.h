@@ -1,9 +1,9 @@
-#ifndef SILC_API_DEFINITIONS_H
-#define SILC_API_DEFINITIONS_H
+#ifndef SILC_DEFINITIONS_H
+#define SILC_DEFINITIONS_H
 
 
 /**
- * @file    SILC_API_Definitions.h
+ * @file    SILC_Definitions.h
  * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @date    Started Thu Sep  3 11:13:44 2009
  *
@@ -12,7 +12,7 @@
  */
 
 
-#include "SILC_API_Types.h"
+#include <SILC_Types.h>
 #include <mpi.h>
 #include <stdint.h>
 
@@ -24,10 +24,10 @@
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  * @return A process unique file handle to be used in calls to
- * SILC_API_DefineRegion().
+ * SILC_DefineRegion().
  *
  */
-SILC_API_SourceFileHandle SILC_API_DefineSourceFile( const char* fileName );
+SILC_SourceFileHandle SILC_DefineSourceFile( const char* fileName );
 
 
 /**
@@ -44,16 +44,15 @@ SILC_API_SourceFileHandle SILC_API_DefineSourceFile( const char* fileName );
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  * @return A process unique region handle to be used in calls to
- * SILC_API_EnterRegion() and SILC_API_ExitRegion().
+ * SILC_EnterRegion() and SILC_ExitRegion().
  *
  */
-SILC_API_RegionHandle SILC_API_DefineRegion( const char*           regionName,
-                                             SILC_API_SourceFileHandle
-                                                                   fileHandle,
-                                             SILC_API_LineNo       beginLine,
-                                             SILC_API_LineNo       endLine,
-                                             SILC_API_AdapterTypes adapter,
-                                             SILC_API_RegionType   regionType );
+SILC_RegionHandle SILC_DefineRegion( const char*           regionName,
+                                     SILC_SourceFileHandle fileHandle,
+                                     SILC_LineNo           beginLine,
+                                     SILC_LineNo           endLine,
+                                     SILC_AdapterTypes     adapter,
+                                     SILC_RegionType       regionType );
 
 
 /**
@@ -74,15 +73,15 @@ SILC_API_RegionHandle SILC_API_DefineRegion( const char*           regionName,
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  * @return A process unique communicator handle to be used in calls to other
- * SILC_API_DefineMPI* functions.
+ * SILC_DefineMPI* functions.
  *
  */
-SILC_API_MPICommunicatorHandle SILC_API_DefineMPICommunicator(
+SILC_MPICommunicatorHandle SILC_DefineMPICommunicator(
     MPI_Comm mpiCommunicatorId,
     unsigned
-             sizeOfBitVectorReprOfCommGroup,
+    sizeOfBitVectorReprOfCommGroup,
     unsigned char
-             bitVectorReprOfCommGroup
+    bitVectorReprOfCommGroup
     [] );
 
 
@@ -97,10 +96,9 @@ SILC_API_MPICommunicatorHandle SILC_API_DefineMPICommunicator(
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  */
-SILC_API_MPIWindowHandle SILC_API_DefineMPIWindow(
-    MPI_Win mpiWindowId,
-    SILC_API_MPICommunicatorHandle
-            communicatorHandle );
+SILC_MPIWindowHandle SILC_DefineMPIWindow( MPI_Win mpiWindowId,
+                                           SILC_MPICommunicatorHandle
+                                           communicatorHandle );
 
 
 /**
@@ -116,20 +114,20 @@ SILC_API_MPIWindowHandle SILC_API_DefineMPIWindow(
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  * @return A process unique topology handle to be used in calls to
- * SILC_API_DefineMPICartesianCoords().
+ * SILC_DefineMPICartesianCoords().
  *
  */
-SILC_API_MPICartTopolHandle SILC_API_DefineMPICartesianTopology(
+SILC_MPICartTopolHandle SILC_DefineMPICartesianTopology(
     char* topologyName,
-    SILC_API_MPICommunicatorHandle
-          communicatorHandle,
+    SILC_MPICommunicatorHandle
+    communicatorHandle,
     uint32_t
-          nDimensions,
+    nDimensions,
     uint32_t
-          processesPerDimension
+    processesPerDimension
     [],
     uint32_t
-          periodicityPerDimension
+    periodicityPerDimension
     [] );
 
 
@@ -145,12 +143,10 @@ SILC_API_MPICartTopolHandle SILC_API_DefineMPICartesianTopology(
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  */
-void SILC_API_DefineMPICartesianCoords(
-    SILC_API_MPICartTopolHandle topologyHandle,
-    uint32_t                    nCoords,
-    uint32_t
-                                coordsOfCurrentRank
-    [] );
+void SILC_DefineMPICartesianCoords( SILC_MPICartTopolHandle topologyHandle,
+                                    uint32_t                nCoords,
+                                    uint32_t                coordsOfCurrentRank
+                                    [] );
 
 /*@}*/
 
@@ -165,8 +161,8 @@ void SILC_API_DefineMPICartesianCoords(
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  */
-void SILC_API_DefineComment( const char* format,
-                             ... );
+void SILC_DefineComment( const char* format,
+                         ... );
 
 /**
  *
@@ -176,7 +172,7 @@ void SILC_API_DefineComment( const char* format,
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  */
-SILC_API_CounterGroupHandle SILC_API_DefineCounterGroup( const char* name );
+SILC_CounterGroupHandle SILC_DefineCounterGroup( const char* name );
 
 /**
  *
@@ -191,11 +187,10 @@ SILC_API_CounterGroupHandle SILC_API_DefineCounterGroup( const char* name );
  * threads simultaneously, you are responsible for sufficient synchronization.
  *
  */
-SILC_API_CounterHandle SILC_API_DefineCounter( const char* name,
-                                               uint32_t    properties,
-                                               SILC_API_CounterGroupHandle
-                                                           counter_group,
-                                               const char* unit );
+SILC_CounterHandle SILC_DefineCounter( const char*             name,
+                                       uint32_t                properties,
+                                       SILC_CounterGroupHandle counter_group,
+                                       const char*             unit );
 
 
 /**
@@ -205,15 +200,15 @@ SILC_API_CounterHandle SILC_API_DefineCounter( const char* name,
  * functions
  *
  */
-SILC_API_ParameterHandle SILC_API_DefineParameter( const char*            name,
-                                                   SILC_API_ParameterType type );
+SILC_ParameterHandle SILC_DefineParameter( const char*        name,
+                                           SILC_ParameterType type );
 
 /**
  * @todo bert
-   SILC_API_DefineFileGroup
-   SILC_API_DefineFile
-   SILC_API_DefineMarkerGroup
-   SILC_API_DefineMarker
+   SILC_DefineFileGroup
+   SILC_DefineFile
+   SILC_DefineMarkerGroup
+   SILC_DefineMarker
  */
 
-#endif /* SILC_API_DEFINITIONS_H */
+#endif /* SILC_DEFINITIONS_H */

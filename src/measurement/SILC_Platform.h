@@ -1,21 +1,21 @@
-#ifndef SILC_PLATFORM_H
-#define SILC_PLATFORM_H
+#ifndef SILC_CORE_PLATFORM_H
+#define SILC_CORE_PLATFORM_H
 
 /**
  * The platform specific wall-clock timestamp function.
  *
  * @scope internal to the measurement system.
- * @exported as SILC_API_Wtime
+ * @exported as SILC_Wtime
  *
- * @note The platform could also directly implement the SILC_API_Wtime()
+ * @note The platform could also directly implement the SILC_Wtime()
  */
-SILC_API_Time SILC_Platform_Wtime( void );
+SILC_Time SILC_Platform_Wtime( void );
 
 /**
  * The platform specific wall time resolution function.
  *
  */
-SILC_API_Time SILC_Platform_ClockResolution( void );
+SILC_Time SILC_Platform_ClockResolution( void );
 
 /**
  * Gives the name of the running executable in a malloc'ed buffer.
@@ -67,4 +67,4 @@ uint64_t SILC_Platform_NumCpus( void );
  */
 uint64_t SILC_Platform_NumNodes( void );
 
-#endif /* SILC_PLATFORM_H */
+#endif /* SILC_CORE_PLATFORM_H */

@@ -1,31 +1,31 @@
-#ifndef SILC_API_TYPES_H
-#define SILC_API_TYPES_H
+#ifndef SILC_TYPES_H
+#define SILC_TYPES_H
 
 /**
- * @file    SILC_API_Types.h
+ * @file    SILC_Types.h
  * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @date    Started Thu Sep  3 13:11:11 2009
  *
- * @brief Types needed by SILC_API_* functions.
+ * @brief Types needed by SILC_* functions.
  *
  */
 
 
 #include <stdint.h>
 
-typedef uint64_t SILC_API_Time;
+typedef uint64_t SILC_Time;
 
-typedef uint32_t SILC_API_SourceFileHandle;
-#define SILC_API_INVALID_SOURCE_FILE UINT32_MAX
+typedef uint32_t SILC_SourceFileHandle;
+#define SILC_INVALID_SOURCE_FILE UINT32_MAX
 
-typedef uint32_t SILC_API_LineNo;
-#define SILC_API_INVALID_LINE_NO 0
+typedef uint32_t SILC_LineNo;
+#define SILC_INVALID_LINE_NO 0
 
-typedef uint32_t SILC_API_CounterGroupHandle;
-#define SILC_API_INVALID_COUNTER_GROUP UINT32_MAX
+typedef uint32_t SILC_CounterGroupHandle;
+#define SILC_INVALID_COUNTER_GROUP UINT32_MAX
 
-typedef uint32_t SILC_API_CounterHandle;
-#define SILC_API_INVALID_COUNTER UINT32_MAX
+typedef uint32_t SILC_CounterHandle;
+#define SILC_INVALID_COUNTER UINT32_MAX
 
 typedef enum
 {
@@ -34,7 +34,7 @@ typedef enum
     SILC_ADAPTER_MPI,
     SILC_ADAPTER_POMP,
     SILC_ADAPTER_PTHREAD
-}  SILC_API_AdapterType;
+}  SILC_AdapterType;
 
 typedef enum
 {
@@ -63,22 +63,22 @@ typedef enum
     SILC_REGION_OMP_FLUSH,
     SILC_REGION_OMP_CRITICAL_SBLOCK, // what is SBLOCK?
     SILC_REGION_OMP_SINGLE_SBLOCK
-} SILC_API_RegionType;
+} SILC_RegionType;
 
-typedef uint64_t SILC_API_LocationHandle;
+typedef uint64_t SILC_LocationHandle;
 /**
  * decision still open! if we start with 1, we take 0 as invalid
  */
-#define SILC_API_INVALID_LOCATION UINT64_MAX
-#define SILC_API_MAX_LOCATION ( UINT64_MAX - 1 )
+#define SILC_INVALID_LOCATION UINT64_MAX
+#define SILC_MAX_LOCATION ( UINT64_MAX - 1 )
 
-typedef uint32_t SILC_API_RegionHandle;
+typedef uint32_t SILC_RegionHandle;
 
-typedef uint32_t SILC_API_MPICommunicatorHandle;
+typedef uint32_t SILC_MPICommunicatorHandle;
 
-typedef uint32_t SILC_API_MPIWindowHandle;
+typedef uint32_t SILC_MPIWindowHandle;
 
-typedef uint32_t SILC_API_MPICartTopolHandle;
+typedef uint32_t SILC_MPICartTopolHandle;
 
 /* Parameter types */
 typedef enum
@@ -86,9 +86,9 @@ typedef enum
     SILC_PARAMETER_INT64,
     SILC_PARAMETER_DOUBLE,
     SILC_PARAMETER_STRING
-} SILC_API_ParameterType;
+} SILC_ParameterType;
 
-typedef uint32_t SILC_API_ParameterHandle;
+typedef uint32_t SILC_ParameterHandle;
 
 /* types for the configure system */
 typedef enum
@@ -117,18 +117,18 @@ typedef enum
      * list with valid set members
      */
     SILC_CONFIG_TYPE_SET
-} SILC_API_ConfigType;
+} SILC_ConfigType;
 
-typedef struct SILC_API_ConfigVariable
+typedef struct SILC_ConfigVariable
 {
-    const char*         nameSpace; /* NULL for 'root'/'global' namespace */
-    const char*         name;
-    SILC_API_ConfigType type;
-    void*               variableReference;
-    void*               variableContext;
-    const char*         defaultValue;
-    const char*         shortHelp;
-    const char*         longHelp;
-} SILC_API_ConfigVariable;
+    const char*     nameSpace;     /* NULL for 'root'/'global' namespace */
+    const char*     name;
+    SILC_ConfigType type;
+    void*           variableReference;
+    void*           variableContext;
+    const char*     defaultValue;
+    const char*     shortHelp;
+    const char*     longHelp;
+} SILC_ConfigVariable;
 
-#endif /* SILC_API_TYPES_H */
+#endif /* SILC_TYPES_H */
