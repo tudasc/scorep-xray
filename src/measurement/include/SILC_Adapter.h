@@ -2,6 +2,17 @@
 #define SILC_ADAPTER_H
 
 /**
+ * @file    SILC_Adapter.h
+ * @author  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ *
+ * @brief Adapter management of the measurement system.
+ *
+ *
+ *
+ */
+
+
+/**
  * An adapter needs to provide numerous functions for the measurement system.
  * These are collected in this structure for easy handling.
  */
@@ -30,7 +41,8 @@ typedef struct SILC_Adapter
      * Initialize the adapter for measurement.
      *
      * At this point all configure variables are set to there current
-     * environment values.
+     * environment values. The adapter can also do calls to the definition
+     * interface from this point on.
      *
      */
     SILC_ErrorCode ( * adapter_init )( void );

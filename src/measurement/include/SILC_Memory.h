@@ -20,7 +20,7 @@
 /**
  * Performs a memory allocation of size \a object_size.
  *
- * Errors are handled by th error handling system, which by default terminates
+ * Errors are handled by the error handling system, which by default terminates
  * the measurement process.
  *
  * @param object_size The size of the object.
@@ -33,7 +33,7 @@ void* SILC_Malloc( size_t object_size );
  * Performs a memory allocation of size \a object_size * \a number_of_objects
  * and initialized the memory block with 0.
  *
- * Errors are handled by th error handling system, which by default terminates
+ * Errors are handled by the error handling system, which by default terminates
  * the measurement process.
  *
  * @param number_of_objects The number of objects to be allocated.
@@ -47,7 +47,7 @@ void* SILC_Calloc( size_t number_of_objects,
 /**
  * Performs a memory re-allocation of size \a new_object_size.
  *
- * Errors are handled by th error handling system, which by default terminates
+ * Errors are handled by the error handling system, which by default terminates
  * the measurement process.
  *
  * @param old_pointer A pointer to a previously allocated memory object or NULL.
@@ -61,7 +61,7 @@ void* SILC_Realloc( void*  old_pointer,
 /**
  * Releases the memory pointed to by \a pointer.
  *
- * Errors are handled by th error handling system, which by default terminates
+ * Errors are handled by the error handling system, which by default terminates
  * the measurement process.
  *
  * @param pointer The pointer.

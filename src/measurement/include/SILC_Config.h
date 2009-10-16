@@ -10,10 +10,10 @@
  * To centralize the reading and parsing of the configuration the adapters
  * need to announce their configuration options to the measurement system.
  *
- * The configurarion will, beside environment variables, also be read from
+ * The configuration will, beside environment variables, also be read from
  * configuration files. All these sources will have a defined priority. With
  * the environment variables as the highest one (this may change, if we can
- * pass paramters from the tool wrapper to the measurement system, but
+ * pass parameters from the tool wrapper to the measurement system, but
  * the tool could also pass the parameters per environment variables to the
  * measurement system).
  *
@@ -62,8 +62,8 @@
  *
  * @return Successful registration or failure
  */
-SILC_ErroCode SILC_ConfigRegister( SILC_ConfigVariable* variables,
-                                   uint32_t             numberOfVariables );
+SILC_ErrorCode SILC_ConfigRegister( SILC_ConfigVariable* variables,
+                                    uint32_t             numberOfVariables );
 
 /**
  * @ToDo how can the online measurement system change configs?
