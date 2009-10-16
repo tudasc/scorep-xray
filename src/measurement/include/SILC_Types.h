@@ -94,25 +94,46 @@ typedef uint32_t SILC_ParameterHandle;
 typedef enum
 {
     /**
-     * A string with variable expension
+     * A string value with variable expension (Ie. ${HOME})
      * (path normalization?)
+     *
+     * .variableReference should point to a variable of type char*.
      */
     SILC_CONFIG_TYPE_PATH,
 
-    /** A string */
+    /**
+     * A string value.
+     *
+     * .variableReference should point to a variable of type char*.
+     */
     SILC_CONFIG_TYPE_STRING,
 
-    /** A bool */
+    /**
+     * A boolean value.
+     *
+     * .variableReference should point to a variable of type bool.
+     */
     SILC_CONFIG_TYPE_BOOL,
 
-    /** A number (uin64_t) */
+    /**
+     * A numerical value
+     *
+     * .variableReference should point to a variable of type uint64_t.
+     */
     SILC_CONFIG_TYPE_NUMBER,
 
-    /** A number with size suffixes (uin64_t) */
+    /**
+     * A numerical value with size suffixes (Ie. Kb, Gb, KiBi, ...)
+     *
+     * .variableReference should point to a variable of type uint64_t.
+     */
     SILC_CONFIG_TYPE_SIZE,
 
     /**
-     * A symbolic set
+     * A symbolic set.
+     *
+     * .variableReference should point to a variable of type char**.
+     *
      * .variableContext should point to a NULL terminated string
      * list with valid set members
      */
