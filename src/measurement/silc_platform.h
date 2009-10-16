@@ -1,5 +1,5 @@
-#ifndef SILC_CORE_PLATFORM_H
-#define SILC_CORE_PLATFORM_H
+#ifndef SILC_INTERNAL_PLATFORM_H
+#define SILC_INTERNAL_PLATFORM_H
 
 /**
  * The platform specific wall-clock timestamp function.
@@ -67,4 +67,4 @@ uint64_t SILC_Platform_NumCpus( void );
  */
 uint64_t SILC_Platform_NumNodes( void );
 
-#endif /* SILC_CORE_PLATFORM_H */
+#endif /* SILC_INTERNAL_PLATFORM_H */
