@@ -6,42 +6,226 @@
  * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @date    Started Thu Sep  3 13:11:11 2009
  *
- * @brief Types needed by SILC_* functions.
+ * @brief Types needed by SILC_* API functions.
  *
  */
 
 
 #include <stdint.h>
 
-typedef uint64_t SILC_Time;
 
+/**
+ * @defgroup SILC_Types SILC Types
+ *
+ * The adapters need to use special types to communicate with the measurement
+ * layer functions. We can categorize them as follows:
+ *
+ * - Opaque handles returned by the @ref SILC_Definitions definition
+     functions. Note that it is not intended for the adapter to do any
+     operations on these handles. Their type may change in future.
+ *
+ * - Constants specifying invalid or unknown definition handles.
+ *
+ * - Enumerations specifying particular types of the defined entities.
+ *
+ * - Types used in configuring the measurement system.
+ *
+ * @todo Move INVALID defines that are intended to be used by the adapter
+ * layer to internal files.
+ */
+/*@{*/
+
+/**
+ * Type of a opaque handle to a source file definition.
+ * @see SILC_DefineSourceFile()
+ */
 typedef uint32_t SILC_SourceFileHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown source file definition.
+ *
+ */
 #define SILC_INVALID_SOURCE_FILE UINT32_MAX
 
+/**
+ * Type used in specifying line numbers.
+ * @see SILC_DefineRegion()
+ */
 typedef uint32_t SILC_LineNo;
+
+/**
+ * Symbolic constant representing an invalid or unknown line number.
+ * @see SILC_DefineRegion()
+ */
 #define SILC_INVALID_LINE_NO 0
 
+/**
+ * Type of a opaque handle to a counter group definition.
+ * @see SILC_DefineCounterGroup()
+ */
 typedef uint32_t SILC_CounterGroupHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown counter group
+ * definition.
+ */
 #define SILC_INVALID_COUNTER_GROUP UINT32_MAX
 
+/**
+ * Type of a opaque handle to a counter definition.
+ * @see SILC_DefineCounter()
+ */
 typedef uint32_t SILC_CounterHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown counter definition.
+ */
 #define SILC_INVALID_COUNTER UINT32_MAX
 
-typedef enum
+/**
+ * Type of a opaque handle to a I/O file group definition.
+ * @see SILC_DefineIOFileGroup()
+ */
+typedef uint32_t SILC_IOFileGroupHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown I/O file group
+ * definition.
+ */
+#define SILC_INVALID_IOFILE_GROUP UINT32_MAX
+
+/**
+ * Type of a opaque handle to a I/O file definition.
+ * @see SILC_DefineIOFile()
+ */
+typedef uint32_t SILC_IOFileHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown I/O file definition.
+ */
+#define SILC_INVALID_IOFILE UINT32_MAX
+
+/**
+ * Type of a opaque handle to a marker group definition.
+ * @see SILC_DefineMarkerGroup()
+ */
+typedef uint32_t SILC_MarkerGroupHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown marker group
+ * definition.
+ */
+#define SILC_INVALID_MARKER_GROUP UINT32_MAX
+
+/**
+ * Type of a opaque handle to a marker definition.
+ * @see SILC_DefineMarker()
+ */
+typedef uint32_t SILC_MarkerHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown marker definition.
+ */
+#define SILC_INVALID_MARKER UINT32_MAX
+
+/**
+ * Type of a opaque handle to a region definition.
+ * @see SILC_DefineRegion()
+ */
+typedef uint32_t SILC_RegionHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown region definition.
+ */
+#define SILC_INVALID_REGION UINT32_MAX
+
+/**
+ * Type of a opaque handle to a MPI communicator definition.
+ * @see SILC_DefineMPICommunicator()
+ */
+typedef uint32_t SILC_MPICommunicatorHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown MPI communicator
+ * definition.
+ */
+#define SILC_INVALID_MPI_COMMUNICATOR UINT32_MAX
+
+/**
+ * Type of a opaque handle to a MPI window definition.
+ * @see SILC_DefineMPIWindow()
+ */
+typedef uint32_t SILC_MPIWindowHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown MPI window definition.
+ */
+#define SILC_INVALID_MPI_WINDOW UINT32_MAX
+
+/**
+ * Type of a opaque handle to a MPI cartesion topology definition.
+ * @see SILC_DefineMPICartesianTopology()
+ */
+typedef uint32_t SILC_MPICartTopolHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown MPI cartesion topology
+ * definition.
+ */
+#define SILC_INVALID_CART_TOPOLOGY UINT32_MAX
+
+/**
+ * Type of a opaque handle to a parameter definition.
+ * @see SILC_DefineParameter()
+ */
+typedef uint32_t SILC_ParameterHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown parameter definition.
+ */
+#define SILC_INVALID_PARAMETER UINT32_MAX
+
+
+/**
+ * Types to be used in defining a region (SILC_DefineRegion()). In order to
+ * track the origin of a region definition, the adapter needs to provide @e
+ * his type.
+ *
+ */
+typedef enum SILC_AdapterType_enum
 {
     SILC_ADAPTER_USER,
     SILC_ADAPTER_COMPILER,
     SILC_ADAPTER_MPI,
     SILC_ADAPTER_POMP,
-    SILC_ADAPTER_PTHREAD
-}  SILC_AdapterType;
+    SILC_ADAPTER_PTHREAD,
 
-typedef enum
+    SILC_INVALID_ADAPTER_TYPE /** For internal use only. */
+} SILC_AdapterType;
+
+
+/**
+ * Types to be used in defining a region (SILC_DefineRegion()). These types
+ * are currently not used inside the measurement system. This @e may change in
+ * future if we are going to implement phases/dynamic regions etc. inside the
+ * measurement system as opposed to inside the adapters or as a postprocessing
+ * step. The names should be self explanatory; most of them are already used
+ * (whith a different prefix) in VampiTrace and Scalasca.
+ *
+ */
+typedef enum SILC_RegionType_enum
 {
     SILC_REGION_UNKNOWN = 0,
     SILC_REGION_FUNCTION,
     SILC_REGION_LOOP,
-    SILC_REGION_USER_REGION,
+    SILC_REGION_USER,
+    SILC_REGION_PHASE,
+    SILC_REGION_DYNAMIC,
+
+    SILC_REGION_DYNAMIC_PHASE,
+    SILC_REGION_DYNAMIC_LOOP,
+    SILC_REGION_DYNAMIC_FUNCTION,
+    SILC_REGION_DYNAMIC_LOOP_PHASE,
 
     SILC_REGION_MPI_COLL_BARRIER,
     SILC_REGION_MPI_COLL_ONE2ALL,
@@ -62,87 +246,111 @@ typedef enum
     SILC_REGION_OMP_IMPLICIT_BARRIER,
     SILC_REGION_OMP_FLUSH,
     SILC_REGION_OMP_CRITICAL_SBLOCK, // what is SBLOCK?
-    SILC_REGION_OMP_SINGLE_SBLOCK
+    SILC_REGION_OMP_SINGLE_SBLOCK,
+
+    SILC_INVALID_REGION_TYPE /** For internal use only. */
 } SILC_RegionType;
 
-typedef uint64_t SILC_LocationHandle;
+
 /**
- * decision still open! if we start with 1, we take 0 as invalid
+ * Types to be used in defining a counter (SILC_DefineCounter()).
+ *
  */
-#define SILC_INVALID_LOCATION UINT64_MAX
-#define SILC_MAX_LOCATION ( UINT64_MAX - 1 )
+typedef enum SILC_CounterType_enum
+{
+    SILC_COUNTER_INT64,
+    SILC_COUNTER_DOUBLE,
 
-typedef uint32_t SILC_RegionHandle;
+    SILC_INVALID_COUNTER_TYPE /** For internal use only. */
+} SILC_CounterType
 
-typedef uint32_t SILC_MPICommunicatorHandle;
 
-typedef uint32_t SILC_MPIWindowHandle;
-
-typedef uint32_t SILC_MPICartTopolHandle;
-
-/* Parameter types */
-typedef enum
+/**
+ * Types to be used in defining a parameter for parameter based profiling
+ * (SILC_DefineParameter()).
+ *
+ */
+typedef enum SILC_ParameterType_enum
 {
     SILC_PARAMETER_INT64,
     SILC_PARAMETER_DOUBLE,
-    SILC_PARAMETER_STRING
+    SILC_PARAMETER_STRING,
+
+    SILC_INVALID_PARAMETER_TYPE /** For internal use only. */
 } SILC_ParameterType;
 
-typedef uint32_t SILC_ParameterHandle;
-
-/* types for the configure system */
-typedef enum
+/**
+ * The type of a SILC_ConfigVariable.
+ *
+ */
+typedef enum SILC_ConfigType_enum
 {
     /**
      * A string value with variable expension (Ie. ${HOME})
      * (path normalization?)
      *
-     * .variableReference should point to a variable of type char*.
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type char*.
      */
     SILC_CONFIG_TYPE_PATH,
 
     /**
      * A string value.
      *
-     * .variableReference should point to a variable of type char*.
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type char*.
      */
     SILC_CONFIG_TYPE_STRING,
 
     /**
      * A boolean value.
      *
-     * .variableReference should point to a variable of type bool.
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type bool.
      */
     SILC_CONFIG_TYPE_BOOL,
 
     /**
      * A numerical value
      *
-     * .variableReference should point to a variable of type uint64_t.
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type uint64_t.
      */
     SILC_CONFIG_TYPE_NUMBER,
 
     /**
      * A numerical value with size suffixes (Ie. Kb, Gb, KiBi, ...)
      *
-     * .variableReference should point to a variable of type uint64_t.
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type uint64_t.
      */
     SILC_CONFIG_TYPE_SIZE,
 
     /**
      * A symbolic set.
      *
-     * .variableReference should point to a variable of type char**.
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type char**.
      *
-     * .variableContext should point to a NULL terminated string
-     * list with valid set members
+     * SILC_ConfigVariable::variableContext should point to a NULL terminated
+     * string list with valid set members
      */
-    SILC_CONFIG_TYPE_SET
+    SILC_CONFIG_TYPE_SET,
+
+    SILC_INVALID_CONFIG_TYPE /** For internal use only. */
 } SILC_ConfigType;
 
-typedef struct SILC_ConfigVariable
+
+/**
+ * Config variable object. Partially initialized objects of this type need to
+ * be provided by the adapters if they need to access config variables.
+ *
+ * @see SILC_ConfigRegister()
+ *
+ */
+typedef struct SILC_ConfigVariable_struct
 {
-    const char*     nameSpace;     /* NULL for 'root'/'global' namespace */
+    const char*     nameSpace;     /** NULL for @e root/global namespace */
     const char*     name;
     SILC_ConfigType type;
     void*           variableReference;
@@ -151,5 +359,7 @@ typedef struct SILC_ConfigVariable
     const char*     shortHelp;
     const char*     longHelp;
 } SILC_ConfigVariable;
+
+/*@}*/
 
 #endif /* SILC_TYPES_H */

@@ -118,7 +118,7 @@ SILC_DefineRegion
     SILC_SourceFileHandle fileHandle,
     SILC_LineNo           beginLine,
     SILC_LineNo           endLine,
-    SILC_AdapterTypes     adapter,
+    SILC_AdapterType      adapter,
     SILC_RegionType       regionType
 );
 
@@ -253,7 +253,7 @@ SILC_DefineCounterGroup
  *
  * @param name A descriptive name for the counter.
  *
- * @param properties Properties of the counter, as defined by OTF2
+ * @param counterType The counters value type.
  *
  * @param counterGroupHandle Handle to the counter group this counter belongs
  * to.
@@ -276,7 +276,7 @@ SILC_CounterHandle
 SILC_DefineCounter
 (
     const char*             name,
-    uint32_t                properties,
+    SILC_CounterType        counterType,
     SILC_CounterGroupHandle counterGroupHandle,
     const char*             unit
 );
