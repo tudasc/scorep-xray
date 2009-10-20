@@ -16,11 +16,13 @@ public:
         ;
     };
 
-    /** @brief
-     * reads the defined input data file
-     */
-    virtual bool silc_readConfigFile();
+/** @brief
+ * reads the defined input data file
+ */
+    bool
+    silc_readConfigFile
+        ();
 
-
-
+private:
+};
 #endif /*SILC_MEASUREMENT_H_*/
