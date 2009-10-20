@@ -19,9 +19,11 @@ public:
 /** @brief
  * reads the defined input data file
  */
-    bool
+    virtual bool
     silc_readConfigFile
-        ();
+    (
+        std::string fileName
+    );
 
 private:
 };
