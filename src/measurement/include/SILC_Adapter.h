@@ -11,6 +11,7 @@
  *
  */
 
+#include "SILC_Types.h"
 
 /**
  * An adapter needs to provide numerous functions for the measurement system.
@@ -35,7 +36,10 @@ typedef struct SILC_Adapter
      * to the system.
      *
      */
-    SILC_ErrorCode ( * adapter_register )( void );
+    SILC_ErrorCode ( * adapter_register )
+    (
+        void
+    );
 
     /**
      * Initialize the adapter for measurement.
@@ -45,32 +49,47 @@ typedef struct SILC_Adapter
      * interface from this point on.
      *
      */
-    SILC_ErrorCode ( * adapter_init )( void );
+    SILC_ErrorCode ( * adapter_init )
+    (
+        void
+    );
 
     /**
      * Callback to register a location to the adapter.
      *
      */
-    SILC_ErrorCode ( * adapter_init_location )( void );
+    SILC_ErrorCode ( * adapter_init_location )
+    (
+        void
+    );
 
 
     /**
      * Finalizes the per-location data from this adapter.
      *
      */
-    void ( * adapter_finalize_location )( void* );
+    void ( *adapter_finalize_location )
+    (
+        void*
+    );
 
     /**
      * Finalizes the adapter for measurement.
      *
      */
-    void ( * adapter_finalize )( void );
+    void ( *adapter_finalize )
+    (
+        void
+    );
 
     /**
      * De-register the adapter.
      *
      */
-    void ( * adapter_deregister )( void );
+    void ( *adapter_deregister )
+    (
+        void
+    );
 } SILC_Adapter;
 
 #endif /* SILC_ADAPTER_H */

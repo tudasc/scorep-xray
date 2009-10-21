@@ -7,59 +7,119 @@
  * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @date    Started Wed Sep  2 18:44:31 2009
  *
- * @brief Declaration of runtime management functions to be used by the
- *        adapter layer.
+ * @brief   Declaration of runtime management functions to be used by the
+ *          adapter layer.
  *
  */
 
-
 /**
- * The adapter might provide a callback of this type to be initialized by the
- * measuremt system.
+ * @defgroup SILC_RuntimeManagement SILC Runtime Management
+ *
+ * Before the adapters can use the @ref SILC_Definitions definitions interface
+ * and the @ref SILC_Events event interface the measurement system needs to be
+ * initialized. Therefore we require that one (arbitrary) adapter calls
+ * SILC_InitMeasurement(). There the initialization of all adapter in use is
+ * triggered. Adapters may also explicitly finalize the measurement system by
+ * calling SILC_FinalizeMeasurement() which is usually implicitly done. During
+ * measurement the recording of events can be dis- or enabled or temporarily
+ * interrupted (see the todos).
+ *
+ * @todo Periscope interface function. Milestone 2
+ *
+ * @todo SILC_EnableRecording() and SILC_DisableRecording(). Specify what will
+ * happen internally. Will the dis/enabling be proccess-wise or will there be
+ * a global synchronization (if possible from inside the measurement). Global
+ * synchronization can be demanded from the user. Process-local dis/enabling
+ * will render the traces useless for Scalasca analysis.
  */
-typedef void ( *InitAdapterCallback )();
+/*@{*/
+
+
+#include <stdbool.h>
 
 
 /**
  * Initialize the measurement system from the adapter layer. This function
- * needs to be called at least once by every adapter in use before any other
- * API function is called. Calling other API functions before is seen as
- * undefined behaviour. For performance reasons the adapter should keep track
- * of it's initialization status and call this function only once. The adapter
- * might provide a callback that is triggered within this function. If this
- * function is called several times from the same adapter, the callback is
- * triggered several times too. Calling this function several times does no
- * harm to the measurement system.
+ * needs to be called at least once by an (arbitrary) adapter before any other
+ * measurement API function is called. Calling other API functions before is
+ * seen as undefined behaviour. The first call to this function triggers the
+ * initialization of all adapters in use.
  *
- * @param initAdapterCallback A pointer to a function or NULL.
+ * For performance reasons the adapter should keep track of it's
+ * initialization status and call this function only once.
  *
+ * Calling this function several times does no harm to the measurement system.
+ *
+ * @note The MPI adapter needs special treatment, see
+ * SILC_InitMeasurementMPI().
+ *
+ * @see SILC_FinalizeMeasurement()
  */
-void SILC_InitMeasurement( InitAdapterCallback initAdapterCallback );
-
-/**
- * Globaly disable and enable event recording.
- *
- * These functions do not guarantee to succeed in it's operation. The
- * measurement system may still need full control to the event generation.
- */
-void SILC_EnableRecording( void );
-void SILC_DisableRecording( void );
-bool SILC_RecordingEnabled( void );
-
-/**
- * Supend the measurement in order to obtain data or reconfigure it. Has no
- * effect if measurement is supended. Details need to be specified.
- *
- */
-void SILC_SuspendMeasurement();
+void
+SILC_InitMeasurement
+(
+);
 
 
 /**
- * Resume measurement after it was suspended. Has no effect if called when
- * measurement is active resp. resumed. Details need to be specified.
+ * Finalize the measurement system. This function @e may be called from the
+ * adapter layer (or implicitly by at_exit). Calling other API functions
+ * afterwards is seen as undefined behaviour.
+ *
+ * Calling this function several times does no harm to the measurement system.
+ *
+ * @see SILC_InitMeasurement()
+ */
+void
+SILC_FinalizeMeasurement
+(
+);
+
+
+/**
+ * Special initialization of the measurement system when using MPI. This
+ * function must be called only after a successful call to PMPI_Init.
  *
  */
-void SILC_ResumeMeasurement();
+void
+SILC_InitMeasurementMPI
+(
+);
 
+
+/**
+ * Enable event recording for this process. This is a noop if
+ * SILC_RecordingEnabled() equals true.
+ *
+ */
+void
+SILC_EnableRecording
+(
+);
+
+
+/**
+ * Disable event recording for this process. This is a noop if
+ * SILC_RecordingEnabled() equals false.
+ *
+ */
+void
+SILC_DisableRecording
+(
+);
+
+
+/**
+ * Predicate indicating if the process is recording events or not.
+ *
+ * @return True if the process is recording, false otherwise.
+ */
+bool
+SILC_RecordingEnabled
+(
+);
+
+
+/*@}*/
 
 #endif /* SILC_RUNTIMEMANAGEMENT_H */

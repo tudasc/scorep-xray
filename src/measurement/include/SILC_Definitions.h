@@ -12,7 +12,7 @@
  */
 
 
-#include <SILC_Types.h>
+#include "SILC_Types.h"
 #include <stdint.h>
 
 
@@ -265,9 +265,6 @@ SILC_DefineCounterGroup
  * SILC_TriggerCounter().
  *
  * @todo add base parameter (i.e. 1000 or 1024)
- *
- * @todo what are the properties and why are they related
- * to OTF2 only?
  *
  * @since To be implemented in milestone 2
  *

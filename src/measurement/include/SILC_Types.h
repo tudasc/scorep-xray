@@ -185,6 +185,11 @@ typedef uint32_t SILC_ParameterHandle;
  */
 #define SILC_INVALID_PARAMETER UINT32_MAX
 
+/**
+ * Symbolic constant representing an invalid or unknown rank.
+ * @see SILC_MpiCollective()
+ */
+#define SILC_INVALID_ROOT_RANK INT32_MAX
 
 /**
  * Types to be used in defining a region (SILC_DefineRegion()). In order to
@@ -262,7 +267,7 @@ typedef enum SILC_CounterType_enum
     SILC_COUNTER_DOUBLE,
 
     SILC_INVALID_COUNTER_TYPE /** For internal use only. */
-} SILC_CounterType
+} SILC_CounterType;
 
 
 /**

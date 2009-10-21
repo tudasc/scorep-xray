@@ -25,6 +25,8 @@
  * the user.
  */
 
+#include "SILC_Types.h"
+
 /**
  * Register a set of configure variables to the measurement system.
  *
@@ -62,8 +64,12 @@
  *
  * @return Successful registration or failure
  */
-SILC_ErrorCode SILC_ConfigRegister( SILC_ConfigVariable* variables,
-                                    uint32_t             numberOfVariables );
+SILC_ErrorCode
+SILC_ConfigRegister
+(
+    SILC_ConfigVariable* variables,
+    uint32_t             numberOfVariables
+);
 
 /**
  * @ToDo how can the online measurement system change configs?

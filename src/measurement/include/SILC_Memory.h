@@ -27,7 +27,11 @@
  *
  * @return never NULL
  */
-void* SILC_Malloc( size_t object_size );
+void*
+SILC_Malloc
+(
+    size_t object_size
+);
 
 /**
  * Performs a memory allocation of size \a object_size * \a number_of_objects
@@ -41,8 +45,12 @@ void* SILC_Malloc( size_t object_size );
  *
  * @return never NULL
  */
-void* SILC_Calloc( size_t number_of_objects,
-                   size_t object_size );
+void*
+SILC_Calloc
+(
+    size_t number_of_objects,
+    size_t object_size
+);
 
 /**
  * Performs a memory re-allocation of size \a new_object_size.
@@ -55,8 +63,12 @@ void* SILC_Calloc( size_t number_of_objects,
  *
  * @return never NULL
  */
-void* SILC_Realloc( void*  old_pointer,
-                    size_t new_object_size )
+void*
+SILC_Realloc
+(
+    void*  old_pointer,
+    size_t new_object_size
+);
 
 /**
  * Releases the memory pointed to by \a pointer.
@@ -68,6 +80,10 @@ void* SILC_Realloc( void*  old_pointer,
  *
  * @return never NULL
  */
-void SILC_Free( void* pointer )
+void
+SILC_Free
+(
+    void* pointer
+);
 
 #endif /* SILC_MEMORY_H */
