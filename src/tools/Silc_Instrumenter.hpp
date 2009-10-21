@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include "Silc_Application.hpp"
+
 /** @def
  * list of supported languages
  */
@@ -61,8 +63,7 @@ class Silc_Instrumenter : public Silc_Application {
 public:
 
     Silc_Instrumenter();
-    ~Silc_instrumenter(){;
-    };
+    virtual ~Silc_Instrumenter();
 
 /** @brief
  * reads the defined input data file

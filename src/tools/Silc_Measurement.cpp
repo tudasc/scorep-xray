@@ -1,4 +1,4 @@
-#include "Silc_Measurement.h"
+#include "Silc_Measurement.hpp"
 
 
 Silc_Measurement::Silc_Measurement()
@@ -8,10 +8,14 @@ Silc_Measurement::Silc_Measurement()
 }
 
 
-virtual bool Silc_Measurement::readConfigFile()
+bool
+Silc_Measurement::silc_readConfigFile
+(
+    std::string fileName
+)
 {
     bool exitStatus = true;
-    printf( "reads the global configuration file: \n " );
+    printf( "reads the global configuration file: %s \n ", fileName.c_str() );
 
     return exitStatus;
 }

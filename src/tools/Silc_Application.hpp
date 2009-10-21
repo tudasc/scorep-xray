@@ -6,18 +6,18 @@
  *
  */
 
+#include <iostream>
+#include <string>
 
 class Silc_Application {
 public:
 
     Silc_Application();
-    virtual ~Silc_Application()
-    {
-        ;
-    };
+    virtual ~Silc_Application();
+
 
     virtual bool
-    readConfigFile
+    silc_readConfigFile
     (
         std::string fileName
     );

@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "Silc_Application.h"
+#include "Silc_Application.hpp"
 
 
 class Silc_ApplicationType
@@ -52,7 +52,7 @@ private:
     );
 
 /** @brief
- *  returns the pointer to a new SILC application (intrumenter, measurement, (vizualizer)? )
+ *  returns the pointer to a new SILC application (intrumenter, measurement, (visualizer)? )
  */
     static Silc_ApplicationType* _appType;
 };

@@ -7,11 +7,16 @@
  *  This class examines system and user settings to run the measurement system
  */
 
+#include <iostream>
+#include <string>
+
+#include "Silc_Application.hpp"
+
 class Silc_Measurement : public Silc_Application {
 public:
 
     Silc_Measurement();
-    ~Silc_Measurement()
+    virtual ~Silc_Measurement()
     {
         ;
     };

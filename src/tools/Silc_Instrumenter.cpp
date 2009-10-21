@@ -1,4 +1,4 @@
-#include <Silc_Instrumenter.h>
+#include "Silc_Instrumenter.hpp"
 
 Silc_Instrumenter::Silc_Instrumenter()
 {
@@ -10,13 +10,14 @@ Silc_Instrumenter::~Silc_Instrumenter()
 {
 }
 
-virtual bool
-Silc_Instrumenter::readConfigFile
+bool
+Silc_Instrumenter::silc_readConfigFile
 (
+    std::string fileName
 )
 {
     bool exitStatus = true;
-    printf( "reads the global configuration file: \n " );
+    std::cout << "reads the global configuration file: " << fileName << " \n " << std::endl;
 
     return exitStatus;
 }
@@ -50,12 +51,12 @@ Silc_Instrumenter::silc_parseCmdLine
 int
 Silc_Instrumenter::silc_run
 (
-);
+)
+{
+    bool exitStatus = true;
+    printf( "compiles the instrumented user code \n " );
 
-bool exitStatus = true;
-printf( "compiles the instrumented user code \n " );
-
-return exitStatus;
+    return exitStatus;
 }
 
 
@@ -78,10 +79,7 @@ Silc_Instrumenter::silc_compilerCmd
     const std::string cmd
 )
 {
-    bool exitStatus = true;
-    printf( "compiler command: %s  \n ", cmd );
-
-    return exitStatus;
+    printf( "compiler command: %s  \n ", cmd.c_str() );
 }
 
 void
@@ -90,10 +88,7 @@ Silc_Instrumenter::silc_compilerArg
     const std::string arg
 )
 {
-    bool exitStatus = true;
-    printf( "compiler arguments: %s  \n ", arg );
-
-    return exitStatus;
+    printf( "compiler arguments: %s  \n ", arg.c_str() );
 }
 
 void
@@ -102,8 +97,5 @@ Silc_Instrumenter::silc_compilerLib
     const std::string lib
 )
 {
-    bool exitStatus = true;
-    printf( "used libraries: %s  \n ", lib );
-
-    return exitStatus;
+    printf( "used libraries: %s  \n ", lib.c_str() );
 }
