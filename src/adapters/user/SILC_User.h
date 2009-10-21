@@ -11,23 +11,22 @@
  * Region enclosing macros
  * *************************************************************************************/
 
-/** @def SILC_USER_REGION_BEGIN(handle)
+/** @def SILC_USER_REGION_DEFINE(handle)
     This macro defines a region. Every region has to be defined before it is first
     entered. The defines have to take place at the beginning of the enclosing block.
-    @param handle  A name for a parameter must be provided. This parameter is declared in
-                   the macro. Thsi handle is used in the SILC_USER_REGION_BEGIN and
-                   SILC_USER_REGION_END statements to specify which region is started,
-                   or ended.
+    @param handle  A variable name for a parameter must be provided. This variable is
+                   declared in this macro. This handle is used in the
+                   SILC_USER_REGION_BEGIN and SILC_USER_REGION_END statements to specify
+                   which region is started, or ended.
  */
 #define SILC_USER_REGION_DEFINE( handle ) \
-    static const SILC_API_RegionHandle handle = SILC_USER_REGION_UNINITIALIZED;
+    static SILC_API_RegionHandle handle = SILC_USER_REGION_UNINITIALIZED;
 
 /** @def SILC_USER_REGION_BEGIN(name)
-    This macro marks the start of a user defined region.
-    @param name  A string which contains the name of the region.
-                 The name should be unique.
-                 It is used to identify the region. Regions
-                 with the same name may not be distinguished correctly.
+    This macro marks the start of a user defined region. The SILC_USER_REGION_BEGIN and
+    SILC_USER_REGION_END calls of all regions must be correctly nested.
+    @param handle  The handle of the region to be started. This handle must be declared
+                   using SILC_USER_REGION_DEFINE or SILC_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be
                    unique.
     @param type    Specifies the type of the region. Possible values are
@@ -39,10 +38,11 @@
 #define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
         handle, name, type, __FILE__, __LINE__ );
 
-/** @def SILC_USER_REGION_END(name)
-    This macro marks the end of a user defined region.
-    @param name  A string which contains the name of the region.
-                 It must be the same name which is used as the start of the region.
+/** @def SILC_USER_REGION_END(handle)
+    This macro marks the end of a user defined region.  The SILC_USER_REGION_BEGIN and
+    SILC_USER_REGION_END calls of all regions must be correctly nested.
+    @param name  The handle of the region which ended here.
+                 It must be the same handle which is used as the start of the region.
  */
 #define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle, __FILE__, \
                                                             __LINE__ );
@@ -64,6 +64,43 @@
  */
 #define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle, __FILE__, \
                                                 __LINE__ );
+
+/** @def SILC_GLOBAL_REGION_DEFINE( handle )
+    This macro declares a region handle in a global scope for usage in more than one code
+    block in more than one source file. Every global region must only declared once using
+    this macro. All other files in which this region handle is accessed must declare the
+    region handle with SILC_GLOBAL_REGION_EXTERNAL( handle ). A global region has no
+    special associated source region with it. Enter and exit events for global regions
+    are created with SILC_USER_REGION_BEGIN and SILC_USER_REGION_END, respectively.
+    Its name and type is determined at the first enter event and is not changed on later
+    events, even if other code blocks conatain a different name or type in their
+    SILC_USER_REGION_BEGIN statement.
+    @param handle  A name for a parameter must be provided. This parameter is declared in
+                   the macro. This handle is used in the SILC_USER_REGION_BEGIN and
+                   SILC_USER_REGION_END statements to specify which region is started,
+                   or ended.
+ */
+#define SILC_GLOBAL_REGION_DEFINE( handle ) \
+    SILC_API_RegionHandle handle = SILC_USER_REGION_GLOBAL;
+
+/** @def SILC_GLOBAL_REGION_EXTERNAL( handle )
+    This macro declares an axternally defined global region.  Every global region must
+    only declared once usingSILC_GLOBAL_REGION_DEFINE( handle ). All other files in
+    which this region handle is accessed must declare the region handle with
+    SILC_GLOBAL_REGION_EXTERNAL( handle ).  A global region has no
+    special associated source region with it. Enter and exit events for global regions
+    are created with SILC_USER_REGION_BEGIN and SILC_USER_REGION_END, respectively.
+    Its name and type is determined at the first enter event and is not changed on later
+    events, even if other code blocks conatain a different name or type in their
+    SILC_USER_REGION_BEGIN statement.
+    @param handle  A name for a variable must be provided. This variable name must be
+                   the same like for the corresponding SILC_GLOBAL_REGION_DEFINE
+                   statement. The handle is used in the SILC_USER_REGION_BEGIN and
+                   SILC_USER_REGION_END statements to specify which region is started,
+                   or ended.
+ */
+#define SILC_GLOBAL_REGION_EXTERNAL( handle ) \
+    extern SILC_API_RegionHandle handle;
 
 /* **************************************************************************************
  * Parameter macros
@@ -105,16 +142,37 @@
  * User Counter macros
  * *************************************************************************************/
 
-/** @def  SILC_USER_METRIC_GROUP_DEF(groupHandle)
+/** @def  SILC_USER_METRIC_GROUP_LOCAL(groupHandle)
     Declares a metric group.
     It defines a variable which must be in scope at all places where
     the metric group is used. If it is used in more than one place it need to be a global
-    definition.
+    definition. Its scopy can never be beyond one source file. If a larger scope is
+    needed use SILC_USER_METRIC_GROUP_GLOBAL.
     @param groupHandle The name of the variable which contains the groupHandle.
  */
-#define SILC_USER_METRIC_GROUP_DEF( groupHandle ) static \
-    SILC_API_CounterGroupHandle \
+#define SILC_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
+    SILC_API_CounterGroupHandle groupHandle  \
         = SILC_API_INVALID_COUNTER_GROUP;
+
+/** @def SILC_USER_METRIC_GROUP_GLOBAL( groupHandle)
+    Declares a group handle for user metrics for usage in more than one file. Every global
+    group handle must only be declared in one file using SILC_USER_METRIC_GROUP_GLOBAL.
+    All other files in which the same group handle is  accessed, must declare the handle
+    using SILC_USER_METRIC_GROUP_EXTERNAL.
+    @param groupHandle The variable name for the variable declared in this statement.
+ */
+#define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_API_CounterGroupHandle \
+    groupHandle = SILC_API_INVALID_COUNTER_GROUP;
+
+/** @def SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle )
+    Declares an external group handle. Every global
+    group handle must only be declared in one file using SILC_USER_METRIC_GROUP_GLOBAL.
+    All other files in which the same group handle is  accessed, must declare the handle
+    using SILC_USER_METRIC_GROUP_EXTERNAL.
+    @param groupHandle The variable name for the variable declared in this statement.
+ */
+#define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
+    extern SILC_API_CounterGroupHandle groupHandle;
 
 /** @def SILC_USER_METRIC_GROUP_INIT( groupHandle, name )
     Initializes a metric group. Each group need to be initialized before it is used for
@@ -127,7 +185,7 @@
                                      name ) SILC_User_MetricGroupInit( \
         groupHandle, name );
 
-/** @def SILC_USER_METRIC_DEF(metricHandle)
+/** @def SILC_USER_METRIC_LOCAL(metricHandle)
     Declares a handle for a user metric.
     It defines a variable which must be in scope at all places where
     the metric is used. If it is used in more than one place it need to be a global
@@ -135,13 +193,36 @@
     @param metricHandle The name of the variable which will be declared for storing
                         the meric handle.
  */
-#define SILC_USER_METRIC_DEF( metricHandle ) static SILC_User_MetricHandle \
-    metricHandle \
+#define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_User_MetricHandle \
+    metricHandle                                                                \
         = SILC_API_INVALID_COUNTER;
+
+/** @def SILC_USER_METRIC_GLOBAL( metricHandle )
+    Declares a handle for a user metric as a global variable. It must be used
+    if a metric handle is accessed in more than one file. Every
+    global metric must be declared only in one file using SILC_USER_METRIC_GLOBAL. All
+    other files in which this handle is accessed must declare it with
+    SILC_USER_METRIC_EXTERNAL.
+    @param metricHandle The variable name for the handle.
+ */
+#define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_User_MetricHandle metricHandle \
+        = SILC_API_INVALID_COUNTER;
+
+/** @def SILC_USER_METRIC_EXTERNAL( metricHandle )
+    Declares an externally defined handle for a user metric. Every
+    global metric must be declared only in one file using SILC_USER_METRIC_GLOBAL. All
+    other files in which this handle is accessed must declare it with
+    SILC_USER_METRIC_EXTERNAL.
+    @param metricHandle The variable name of the handle. it must be the same name as used
+                        in the corresponding SILC_USER_METRIC_GLOBAL statement.
+ */
+#define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
+    extern SILC_User_MetricHandle metricHandle;
 
 /** @def SILC_USER_METRIC_INIT(metricHandle,name, unit, type, context,groupHandle)
     Initializes a new user counter. Each counter must be initialized before it is
-    triggered the first time. The handle must be declared using SILC_USER_METRIC_DEF.
+    triggered the first time. The handle must be declared using SILC_USER_METRIC_LOCAL,
+    SILC_USER_METRIC_GLOBAL, or SILC_USER_METRIC_EXTERNAL.
     @param metricHandle Provides a variable name of the variable to store the metric
                 handle. The variable is declared by the macro.
     @param name A string containing a unique name for the counter.
@@ -243,8 +324,6 @@
  */
 #define SILC_RECORDING_IS_ON SILC_API_RecordingEnabled()
 
-#else // SILC_USER_ENABLE
-
 /* **************************************************************************************
  * Virtual Topologies
  * *************************************************************************************/
@@ -303,16 +382,26 @@
 /* **************************************************************************************
  * Empty macros, if user instrumentation is disabled
  * *************************************************************************************/
+#else // SILC_USER_ENABLE
+
+#define SILC_USER_REGION( name, type )
 #define SILC_USER_REGION_DEFINE( handle, name, type )
 #define SILC_USER_REGION_BEGIN( handle )
 #define SILC_USER_REGION_END( handle )
 #define SILC_USER_FUNC_BEGIN
 #define SILC_USER_FUNC_END
+#define SILC_GLOBAL_REGION_DEFINE( handle )
+#define SILC_GLOBAL_REGION_EXTERNAL ( handle )
 #define SILC_USER_PARAMETER_INT64( name, value )
 #define SILC_USER_PARAMETER_STRING( name, value )
+#define SILC_USER_METRIC_GROUP_LOCAL( groupHandle )
+#define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )
+#define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle )
+#define SILC_USER_METRIC_LOCAL( metricHandle )
+#define SILC_USER_METRIC_GLOBAL( metricHandle )
+#define SILC_USER_METRIC_EXTERNAL( metricHandle )
 #define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
                                groupHandle )
-#define SILC_USER_METRIC_DEF( metricHandle )
 #define SILC_USER_METRIC_INT64( metricHandle, value )
 #define SILC_USER_METRIC_UINT64( metricHandle, value )
 #define SILC_USER_METRIC_DOUBLE( metricHandle, value )
