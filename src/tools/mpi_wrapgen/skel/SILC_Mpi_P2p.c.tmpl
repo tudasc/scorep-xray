@@ -1,0 +1,856 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Mpi_P2p.c
+ *
+ * @brief C interface wrappers for point-to-point communication
+ */
+
+/**
+ * @name Blocking
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end$) skel/SILC_Mpi_PtpSend.w
+
+/** 
+ * Measurement wrapper for MPI_Recv
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Recv( void* buf,
+              int count,
+              MPI_Datatype datatype,
+              int source, int tag,
+              MPI_Comm comm,
+              MPI_Status* status )
+{
+  int return_val;
+
+  if (IS_EVENT_GEN_ON_FOR(P2P))
+  {
+    int        sz;
+    MPI_Status mystatus;
+
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_RECV]);
+
+    if (status == MPI_STATUS_IGNORE) status = &mystatus;
+    return_val = PMPI_Recv(buf, count, datatype, source, tag, comm, status);
+
+    if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+    {
+      PMPI_Type_size(datatype, &sz);
+      PMPI_Get_count(status, datatype, &count);
+      esd_mpi_recv(EPK_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   EPK_COMM_ID(comm), status->MPI_TAG, count * sz);
+    }
+
+    esd_exit(epk_mpi_regid[EPK__MPI_RECV]);
+
+    EVENT_GEN_ON();
+  }
+  else
+  {
+    return_val = PMPI_Recv(buf, count, datatype, source, tag, comm, status);
+  }
+
+  return return_val;
+}
+
+#pragma wrapgen single MPI_Probe skel/SILC_Mpi_Std.w
+
+/** 
+ * Measurement wrapper for MPI_Sendrecv
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Sendrecv(void* sendbuf,
+                 int sendcount,
+                 MPI_Datatype sendtype,
+                 int dest,
+                 int sendtag,
+                 void* recvbuf,
+                 int recvcount,
+                 MPI_Datatype recvtype,
+                 int source,
+                 int recvtag,
+                 MPI_Comm comm,
+                 MPI_Status* status )
+{
+  int return_val;
+
+  if (IS_EVENT_GEN_ON_FOR(P2P))
+  {
+    int        sendsz, recvsz;
+    MPI_Status mystatus;
+
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_SENDRECV]);
+
+    if (dest != MPI_PROC_NULL)
+    {
+      PMPI_Type_size(sendtype, &sendsz);
+      esd_mpi_send(EPK_RANK_TO_PE(dest, comm), EPK_COMM_ID(comm),
+                   sendtag, sendcount * sendsz);
+    }
+
+    if (status == MPI_STATUS_IGNORE)
+    {
+      status = &mystatus;
+    }
+
+    return_val = PMPI_Sendrecv(sendbuf, sendcount, sendtype, dest,   sendtag,
+                           recvbuf, recvcount, recvtype, source, recvtag,
+                           comm, status);
+    if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+      {
+        PMPI_Type_size(recvtype, &recvsz);
+        PMPI_Get_count(status, recvtype, &recvcount);
+        esd_mpi_recv(EPK_RANK_TO_PE(status->MPI_SOURCE, comm),
+                     EPK_COMM_ID(comm), status->MPI_TAG, recvcount * recvsz);
+      }
+
+    esd_exit(epk_mpi_regid[EPK__MPI_SENDRECV]);
+
+    EVENT_GEN_ON();
+  }
+  else
+  {
+    return_val = PMPI_Sendrecv(sendbuf, sendcount, sendtype, dest,   sendtag,
+                           recvbuf, recvcount, recvtype, source, recvtag,
+                           comm, status);
+  }
+
+  return return_val;
+}
+
+/** 
+ * Measurement wrapper for MPI_Sendrecv_replace
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Sendrecv_replace(void* buf,
+                         int count,
+                         MPI_Datatype datatype,
+                         int dest,
+                         int sendtag,
+                         int source,
+                         int recvtag,
+                         MPI_Comm comm,
+                         MPI_Status* status )
+{
+  int return_val;
+
+
+  if (IS_EVENT_GEN_ON_FOR(P2P))
+  {
+    int        sz;
+    MPI_Status mystatus;
+
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_SENDRECV_REPLACE]);
+
+    PMPI_Type_size(datatype, &sz);
+    if (dest != MPI_PROC_NULL)
+    {
+      esd_mpi_send(EPK_RANK_TO_PE(dest, comm),
+                   EPK_COMM_ID(comm),
+                   sendtag,
+                   count * sz);
+    }
+
+    if (status == MPI_STATUS_IGNORE)
+    {
+      status = &mystatus;
+    }
+    
+    return_val = PMPI_Sendrecv_replace(buf, count, datatype, dest,
+                                   sendtag, source, recvtag,
+                                   comm, status);
+    if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+    {
+      esd_mpi_recv(EPK_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   EPK_COMM_ID(comm), status->MPI_TAG, count * sz);
+    }
+
+    esd_exit(epk_mpi_regid[EPK__MPI_SENDRECV_REPLACE]);
+
+    EVENT_GEN_ON();
+  }
+  else
+  {
+    return_val = PMPI_Sendrecv_replace(buf, count, datatype, dest,
+                                   sendtag, source, recvtag,
+                                   comm, status);
+  }
+
+  return return_val;
+}
+
+/**
+ * @}
+ * @name Non-blocking
+ * @{
+ */
+
+#pragma wrapgen multiple regex(MPI_I(s|bs|rs|ss)end$) skel/SILC_Mpi_PtpSend.w
+
+/** 
+ * Measurement wrapper for MPI_Irecv
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Irecv(void* buf,
+              int count,
+              MPI_Datatype datatype,
+              int source,
+              int tag,
+              MPI_Comm comm,
+              MPI_Request* request)
+{
+  const int event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int       return_val;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_IRECV]);
+  }
+
+  return_val = PMPI_Irecv(buf, count, datatype, source, tag, comm, request);
+  if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+  {
+    int sz;
+    PMPI_Type_size(datatype, &sz);
+    epk_request_create(*request, ERF_RECV,
+                       tag, 0, count * sz, datatype, comm);
+  }
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_IRECV]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Wait
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Wait(MPI_Request* request,
+             MPI_Status* status)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val;
+  MPI_Status         mystatus;
+  struct EpkRequest* orig_req;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_WAIT]);
+  }
+
+  if (status == MPI_STATUS_IGNORE)
+  {
+    status = &mystatus;
+  }
+
+  orig_req   = epk_request_get(*request);
+  return_val = PMPI_Wait(request, status);
+  epk_check_request(orig_req, status);
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_WAIT]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Waitall
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Waitall(int count,
+                MPI_Request* requests,
+                MPI_Status* array_of_statuses)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val, i;
+  struct EpkRequest* orig_req;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_WAITALL]);
+  }
+
+  if (array_of_statuses == MPI_STATUSES_IGNORE) 
+  {
+    array_of_statuses = epk_get_status_array(count);
+  }
+  epk_save_request_array(requests, count);
+  return_val = PMPI_Waitall(count, requests, array_of_statuses);
+  for (i = 0; i < count; i++)
+  {
+    orig_req = epk_saved_request_get(i);
+    epk_check_request(orig_req, &(array_of_statuses[i]));
+  }
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_WAITALL]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Waitany
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Waitany(int count,
+                MPI_Request* requests,
+                int* index,
+                MPI_Status* status)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val;
+  struct EpkRequest* orig_req;
+  MPI_Status         mystatus;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_WAITANY]);
+  }
+
+  if (status == MPI_STATUS_IGNORE)
+  {
+    status = &mystatus;
+  }
+
+  epk_save_request_array(requests, count);
+  return_val = PMPI_Waitany(count, requests, index, status);
+  orig_req   = epk_saved_request_get(*index);
+  epk_check_request(orig_req, status);
+  
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_WAITANY]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Waitsome
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Waitsome(int incount,
+                 MPI_Request *array_of_requests,
+                 int *outcount,
+                 int *array_of_indices,
+                 MPI_Status *array_of_statuses)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val, i;
+  struct EpkRequest* orig_req;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_WAITSOME]);
+  }
+
+  if (array_of_statuses == MPI_STATUSES_IGNORE)
+  {
+    array_of_statuses = epk_get_status_array(incount);
+  }
+  epk_save_request_array(array_of_requests, incount);
+  return_val = PMPI_Waitsome(incount, array_of_requests, outcount,
+                         array_of_indices, array_of_statuses );
+  for (i=0; i<*outcount; ++i)
+  {
+    orig_req = epk_saved_request_get(array_of_indices[i]);
+    epk_check_request(orig_req, &(array_of_statuses[i]));
+  }
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_WAITSOME]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Test
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Test(MPI_Request* request,
+             int* flag,
+             MPI_Status* status)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val;
+  struct EpkRequest* orig_req;
+  MPI_Status         mystatus;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_TEST]);
+  }
+
+  if (status == MPI_STATUS_IGNORE)
+  {
+    status = &mystatus;
+  }
+  orig_req   = epk_request_get(*request);
+  return_val = PMPI_Test(request, flag, status);
+  if (*flag) 
+  {
+    epk_check_request(orig_req, status);
+  }
+  
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_TEST]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Testany
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Testany(int count,
+                MPI_Request *array_of_requests,
+                int *index,
+                int *flag,
+                MPI_Status *status)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val;
+  struct EpkRequest* orig_req;
+  MPI_Status         mystatus;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_TESTANY]);
+  }
+
+  if (status == MPI_STATUS_IGNORE)
+  {
+    status = &mystatus;
+  }
+  epk_save_request_array(array_of_requests, count);
+  return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
+  if (*flag && *index != MPI_UNDEFINED)
+  {
+    orig_req = epk_saved_request_get(*index);
+    epk_check_request(orig_req, status);
+  }
+  
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_TESTANY]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Testall
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Testall(int count,
+                MPI_Request *array_of_requests,
+                int *flag,
+                MPI_Status *array_of_statuses)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val, i;
+  struct EpkRequest* orig_req;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_TESTALL]);
+  }
+
+  if (array_of_statuses == MPI_STATUSES_IGNORE)
+  {
+    array_of_statuses = epk_get_status_array(count);
+  }
+  epk_save_request_array(array_of_requests, count);
+  return_val = PMPI_Testall(count, array_of_requests, flag, array_of_statuses);
+  if (*flag)
+  {
+    for (i = 0; i < count; i++)
+    {
+      orig_req = epk_saved_request_get(i);
+      epk_check_request(orig_req, &(array_of_statuses[i]));
+    }
+  }
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_TESTALL]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Testsome
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Testsome(int incount,
+                 MPI_Request *array_of_requests,
+                 int *outcount,
+                 int *array_of_indices,
+                 MPI_Status *array_of_statuses)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val, i;
+  struct EpkRequest* orig_req;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_TESTSOME]);
+  }
+
+  if (array_of_statuses == MPI_STATUSES_IGNORE)
+  {
+    array_of_statuses = epk_get_status_array(incount);
+  }
+  epk_save_request_array(array_of_requests, incount);
+  return_val = PMPI_Testsome( incount, array_of_requests, outcount,
+                          array_of_indices, array_of_statuses );
+  for (i=0; i<*outcount; ++i)
+  {
+    orig_req = epk_saved_request_get(array_of_indices[i]);
+    epk_check_request(orig_req, &(array_of_statuses[i]));
+  }
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_TESTSOME]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * @}
+ * @name Persitent requests
+ * @{
+ */
+
+#pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SILC_Mpi_PtpSendinit.w
+
+/**
+ * Measurement wrapper for MPI_Recv_init
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Recv_init(void* buf,
+                  int count,
+                  MPI_Datatype datatype,
+                  int source,
+                  int tag,
+                  MPI_Comm comm,
+                  MPI_Request* request)
+{
+  const int event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int       return_val;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_RECV_INIT]);
+  }
+
+  return_val = PMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
+  if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
+  {
+    int sz;
+    PMPI_Type_size(datatype, &sz);
+    epk_request_create(*request, (ERF_RECV | ERF_IS_PERSISTENT),
+                       tag, source, count * sz, datatype, comm);
+  }
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_RECV_INIT]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Start
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Start(MPI_Request* request)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val;
+
+  if (event_gen_active)
+  {
+    struct EpkRequest* req;
+
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_START]);
+
+    req = epk_request_get(*request);
+    if (req && (req->flags & ERF_IS_PERSISTENT))
+    {
+      req->flags |= ERF_IS_ACTIVE;
+      if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
+      {
+        esd_mpi_send(EPK_RANK_TO_PE(req->dest, req->comm),
+                     EPK_COMM_ID(req->comm), req->tag,  req->bytes);
+      }
+    }
+  }
+
+  return_val = PMPI_Start(request);
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_START]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Startall
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Startall(int count,
+                 MPI_Request *array_of_requests)
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val, i;
+
+  if (event_gen_active)
+  {
+    MPI_Request*       request;
+    struct EpkRequest* req;
+
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_STARTALL]);
+
+    for (i = 0; i < count; i++)
+    {
+      request = &array_of_requests[i];
+      req     = epk_request_get(*request);
+      
+      if (req && (req->flags & ERF_IS_PERSISTENT))
+      {
+        req->flags |= ERF_IS_ACTIVE;
+        if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
+          esd_mpi_send(EPK_RANK_TO_PE(req->dest, req->comm),
+                       EPK_COMM_ID(req->comm), req->tag,  req->bytes);
+      }
+    }
+  }
+
+  return_val = PMPI_Startall( count, array_of_requests );
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_STARTALL]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Request_free
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Request_free( MPI_Request* request )
+{
+  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int                return_val;
+  struct EpkRequest* req;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_REQUEST_FREE]);
+  }
+
+  req = epk_request_get(*request);
+  if (req && (req->flags & ERF_IS_PERSISTENT))
+  {
+    if (req->flags & ERF_IS_ACTIVE )
+      /* mark active requests for deallocation */
+      req->flags |= ERF_DEALLOCATE;
+    else
+      /* deallocate inactive requests -*/
+      epk_request_free(req);
+  }
+  /* -- else non-persistent requests:
+   *    + we don't track non-persistent sends
+   *    + MPI standard strongly suggests to deallocate non-persistent
+   *      recv's only by wait or test
+   *    ==> nothing to do here
+   */
+  return_val = PMPI_Request_free(request);
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_REQUEST_FREE]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+
+/**
+ * Measurement wrapper for MPI_Cancel
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ */
+int MPI_Cancel( MPI_Request* request )
+{
+  const int event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  int       return_val;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+
+    esd_enter(epk_mpi_regid[EPK__MPI_CANCEL]);
+  }
+
+  /* -- do not really know what to do here ?!?
+   *    would need to find out if canceled communcation completed
+   *    sucessfully or was canceled sucessfully (probably possible
+   *    by using PMPI_Test_cancelled) but whatever we do here,
+   *    we end up by an invalid trace as there we cannot remove the
+   *    send events already put in the trace buffer, and so the
+   *    message matching in the analysis will fail in any case
+   */
+
+  return_val = PMPI_Cancel(request);
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_CANCEL]);
+
+    EVENT_GEN_ON();
+  }
+
+  return return_val;
+}
+

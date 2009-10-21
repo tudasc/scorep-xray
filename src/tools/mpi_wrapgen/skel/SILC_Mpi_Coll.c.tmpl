@@ -1,0 +1,29 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  epk_mpiwrap_coll.c
+ *
+ * @brief C interface wrappers for collective communication
+ */
+
+/**
+ * @name C wrappers
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcoll) skel/SILC_Mpi_Coll.w
+
+/**
+ * @}
+ */

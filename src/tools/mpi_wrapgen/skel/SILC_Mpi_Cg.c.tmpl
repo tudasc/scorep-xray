@@ -1,0 +1,144 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Mpi_Cg.c
+ *
+ * @brief C interface wrappers for communicator and group functions
+ */
+
+/**
+ * @name C wrappers for communicator constructors
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|merge|split)$) skel/SILC_Mpi_CommMgnt.w
+
+
+/**
+ * @}
+ * @name C wrappers for communicator destructors
+ * @{
+ */
+
+/**
+ * Measurement wrapper for MPI_Comm_free
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup cg
+ */
+int MPI_Comm_free(MPI_Comm* comm)
+{
+  const int event_gen_active = IS_EVENT_GEN_ON_FOR(CG);
+  int       return_val;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+    esd_enter (epk_mpi_regid[EPK__MPI_COMM_FREE]);
+  }
+
+  epk_comm_free(*comm);
+  return_val = PMPI_Comm_free (comm);
+
+  if (event_gen_active)
+  {
+    esd_exit(epk_mpi_regid[EPK__MPI_COMM_FREE]);
+    EVENT_GEN_ON ();
+  }
+
+  return return_val;
+}
+
+
+/**
+ * @}
+ * @name C wrappers for group constructors
+ * @{
+ */
+
+#pragma wrapgen multiple regex(Group.*(diff|incl|excl|intersection|union)) skel/SILC_Mpi_GroupMgnt.w
+#pragma wrapgen multiple regex(Comm.*group$)                               skel/SILC_Mpi_Group.w
+
+/**
+ * @}
+ * @name C wrappers for group destructors
+ * @{
+ */
+
+/**
+ * Measurement wrapper for MPI_Group_free
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup cg
+ */
+int MPI_Group_free(MPI_Group* group)
+{
+  const int event_gen_active = IS_EVENT_GEN_ON_FOR(CG);
+  int       return_val;
+
+  if (event_gen_active)
+  {
+    EVENT_GEN_OFF();
+    esd_enter(epk_mpi_regid[EPK__MPI_GROUP_FREE]);
+  }
+
+  epk_group_free(*group);
+  return_val = PMPI_Group_free(group);
+
+  if (event_gen_active)
+  {
+    esd_exit (epk_mpi_regid[EPK__MPI_GROUP_FREE]);
+    EVENT_GEN_ON ();
+  }
+
+  return return_val;
+}
+
+/**
+ * @}
+ * @name C wrappers for miscelaneous functions
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Intercomm|Comm|Group)_(compare|rank|ranks|size|test_inter)$) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for error handling functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_err) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_ext) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ */

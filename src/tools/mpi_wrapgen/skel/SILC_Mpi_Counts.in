@@ -1,0 +1,45 @@
+MPI_Sendrecv
+count*sendsz
+count*recvsz
+MPI_Sendrecv_replace
+count*sendsz
+count*sendsz
+MPI_Allgather
+ms_num*sendcnt
+ms_num*recvcnt
+MPI_Allgatherv
+ms_num*sendcnt
+ms_sum(ms_num, recvcnts)
+MPI_Allreduce
+ms_num*count
+count
+MPI_Alltoall
+ms_num*sendcnt
+ms_num*recvcnt
+MPI_Alltoallv
+ms_sum(ms_num, sendcnts)
+ms_sum(ms_num, recvcnts)
+MPI_Bcast
+(root == ms_me ? ms_num*count : 0 )
+count
+MPI_Gather
+sendcnt
+(root == ms_me ? ms_num*recvcnt : 0 )
+MPI_Gatherv
+sendcnt
+(root == ms_me ? ms_sum(ms_num, recvcnts) : 0 )
+MPI_Reduce
+count
+(root == ms_me ? count : 0 )
+MPI_Reduce_scatter
+ms_sum(ms_num, recvcnts)
+recvcnts[ms_me]
+MPI_Scan
+(ms_num-ms_me)*count
+count
+MPI_Scatter
+(root == ms_me ? ms_num*sendcnt : 0 )
+recvcnt
+MPI_Scatterv
+(root == ms_me ? ms_sum(ms_num, sendcnts) : 0 )
+recvcnt

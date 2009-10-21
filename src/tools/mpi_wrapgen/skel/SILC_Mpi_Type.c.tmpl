@@ -1,0 +1,49 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Mpi_Type.c
+ *
+ * @brief C interface wrappers for datatype functions
+ */
+
+/**
+ * @name C wrappers for general functions
+ * @{
+ */
+
+#ifdef HAS_MPI2_SIZEOF
+#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Mpi_Std.w
+#endif
+
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_ext)          skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ */

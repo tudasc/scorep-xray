@@ -1,0 +1,51 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Mpi_Io.c
+ *
+ * @brief C interface wrappers for parallel I/O
+ */
+
+/**
+ * @name C wrappers for administrative functions
+ * @{
+ */
+
+#pragma wrapgen multiple regex(MPI_File.*(open|close|delete|get_[abgipstv]|set_[abgipstv]|seek|sync).*) skel/SILC_Mpi_Std.w
+#pragma wrapgen single MPI_Register_datarep skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for access functions
+ * @{
+ */
+
+#pragma wrapgen multiple regex(MPI_File.*(read|write).*$)  skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for error handling functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gio_err)  skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name Fortran wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gio_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_Std.w
+

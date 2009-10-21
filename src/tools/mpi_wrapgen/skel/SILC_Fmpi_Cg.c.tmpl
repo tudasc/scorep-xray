@@ -1,0 +1,187 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Fmpi_Cg.c
+ * 
+ * @brief Fortran interface wrappers for communicator and group functions
+ */
+
+/**
+ * @name Uppercase names
+ * @{*/
+#pragma wrapgen multiple restrict(gcg)      skel/SILC_Mpi_DefineU.w
+
+#pragma wrapgen multiple restrict(gcg_err)  skel/SILC_Mpi_DefineU.w
+
+#pragma wrapgen multiple restrict(gcg_ext)  skel/SILC_Mpi_DefineU.w
+
+#pragma wrapgen multiple restrict(gcg_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_DefineU.w
+
+/**
+ * @}
+ * @name Lowercase names
+ * @{
+ */
+#pragma wrapgen multiple restrict(gcg)      skel/SILC_Mpi_DefineL.w
+
+#pragma wrapgen multiple restrict(gcg_err)  skel/SILC_Mpi_DefineL.w
+
+#pragma wrapgen multiple restrict(gcg_ext)  skel/SILC_Mpi_DefineL.w
+
+#pragma wrapgen multiple restrict(gcg_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_DefineL.w
+
+#ifndef NEED_F2C_CONV
+
+/* If MPI_Comm_f2c is defined as a simple macro (which typically does nothing)
+ * as it would require a "real" function if it is really needed
+ * => we can save the f2c and c2s conversions */
+
+/**
+ * @}
+ * @name Fortran wrappers for communicator constructors
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|merge|split)$) skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for communicator destructors
+ * @{
+ */
+
+#pragma wrapgen single MPI_Comm_free skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for group constructors
+ * @{
+ */
+
+#pragma wrapgen multiple regex(Group.*(diff|incl|excl|intersection|union)) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple regex(Comm.*group$)                               skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for group destructors
+ * @{
+ */
+
+#pragma wrapgen single MPI_Group_free skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for miscelaneous functions
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Intercomm|Comm|Group)_(compare|rank|ranks|size|test_inter)$) skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for error handling functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_err) skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_ext) skel/SILC_Mpi_Fstd.w
+
+/**
+ * @}
+ * @name Fortran wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_misc+!n_f2c+!n_c2f) skel/SILC_Mpi_Fstd.w
+
+#else /* !NEED_F2C_CONV */
+
+/**
+ * @}
+ * @name Fortran wrappers for communicator constructors
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Interc|C)omm_(create|dup|merge|split)$) skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for communicator destructors
+ * @{
+ */
+
+#pragma wrapgen single MPI_Comm_free skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for group constructors
+ * @{
+ */
+
+#pragma wrapgen multiple regex(Group.*(diff|incl|excl|intersection|union)) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(Comm.*group$)                               skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for group destructors
+ * @{
+ */
+
+#pragma wrapgen single MPI_Group_free skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for miscelaneous functions
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Intercomm|Comm|Group)_(compare|rank|ranks|size|test_inter)$) skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for error handling functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_err) skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_ext) skel/SILC_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcg_misc+!n_f2c+!n_c2f) skel/SILC_Mpi_F2c_C2f.w
+
+#endif /* !NEED_F2C_CONV */
+
+/**
+ * @}
+ */
+

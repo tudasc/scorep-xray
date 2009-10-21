@@ -1,0 +1,107 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Fmpi_Env.c
+ * 
+ * @brief Fortran interface wrappers for environmental management
+ */
+
+/* uppercase defines */
+#if defined(HAS_MPI2_COLLECTIVES)
+#pragma wrapgen single MPI_Init_thread skel/SILC_Mpi_DefineU.w
+#endif
+
+#pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Mpi_DefineU.w
+
+/* lowercase defines */
+#if defined(HAS_MPI2_COLLECTIVES)
+#pragma wrapgen single MPI_Init_thread skel/SILC_Mpi_DefineL.w
+#endif
+
+#pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Mpi_DefineL.w
+
+/**
+ * @name Fortran wrappers 
+ * @{
+ */
+
+#ifndef NEED_F2C_CONV
+
+/* If MPI_Comm_f2c is defined as a simple macro (which typically does nothing)
+ * as it would require a "real" function if it is really needed
+ * => we can save the f2c and c2s conversions */
+
+#if defined(HAS_MPI2_COLLECTIVES)
+#pragma wrapgen single MPI_Init_thread skel/SILC_Mpi_Fstd.w
+#endif
+
+/**
+ * Measurement wrapper for MPI_Init
+ * @note Manually adapted wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI-1
+ * @ingroup env
+ */
+void FSUB(MPI_Init)(int* ierr)
+{
+  *ierr = MPI_Init(0, (char***)0);
+}
+
+#pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SILC_Mpi_Fstd.w
+
+#else /* !NEED_F2C_CONV */
+
+#if defined(HAS_MPI2_COLLECTIVES)
+/**
+ * Measurement wrapper for MPI_Init_tread
+ * @note Manually adapted wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI-2
+ * @ingroup env
+ */
+void FSUB(MPI_Init_thread)(int* required,
+                           int* provided,
+                           int* ierr)
+{
+  if (sizeof(MPI_Fint) != sizeof(int))
+  {
+    elg_error_msg("Fortran and C integer size mismatch.");
+  }
+  *ierr = MPI_Init_thread(0, (char***)0, *required, provided);
+}
+#endif
+
+/**
+ * Measurement wrapper for MPI_Init
+ * @note Manually adapted wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI-1
+ * @ingroup env
+ */
+void FSUB(MPI_Init)(int* ierr)
+{
+  if (sizeof(MPI_Fint) != sizeof(int))
+  {
+    elg_error_msg("Fortran and C integer size mismatch.");
+  }
+  *ierr = MPI_Init(0, (char***)0);
+}
+
+#pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SILC_Mpi_F2c_C2f.w
+
+#endif
+
+/**
+ * @}
+ */

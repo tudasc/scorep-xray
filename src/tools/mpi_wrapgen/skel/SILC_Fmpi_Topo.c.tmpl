@@ -1,0 +1,47 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Fmpi_Topo.c
+ *
+ * @brief Fortran interface wrappers for topologies
+ */
+
+/* uppercase defines */
+#pragma wrapgen multiple restrict(gtopo) skel/SILC_Mpi_DefineU.w
+
+/* lowercase defines */
+#pragma wrapgen multiple restrict(gtopo) skel/SILC_Mpi_DefineL.w
+
+/**
+ * @name Fortran wrappers 
+ * @{
+ */
+
+#ifndef NEED_F2C_CONV
+
+/* If MPI_Comm_f2c is defined as a simple macro (which typically does nothing)
+ * as it would require a "real" function if it is really needed
+ * => we can save the f2c and c2s conversions */
+
+#pragma wrapgen multiple restrict(gtopo) skel/SILC_Mpi_Fstd.w
+
+#else /* !NEED_F2C_CONV */
+
+#pragma wrapgen multiple restrict(gtopo) skel/SILC_Mpi_F2c_C2f.w
+
+#endif
+
+/**
+ * @}
+ */

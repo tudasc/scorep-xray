@@ -1,0 +1,87 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Fmpi_Coll.c
+ * 
+ * @brief Fortran interface wrappers for collective communication
+ */
+
+/* uppercase defines */
+#pragma wrapgen multiple restrict(gcoll) skel/SILC_Mpi_DefineU.w
+
+/* lowercase defines */
+#pragma wrapgen multiple restrict(gcoll) skel/SILC_Mpi_DefineL.w
+
+/**
+ * @name Fortran wrappers 
+ * @{
+ */
+
+#ifndef NEED_F2C_CONV
+
+/* If MPI_Comm_f2c is defined as a simple macro (which typically does nothing)
+ * as it would require a "real" function if it is really needed
+ * => we can save the f2c and c2s conversions */
+
+#pragma wrapgen multiple restrict(gcoll) skel/SILC_Mpi_Fstd.w
+
+#else /* !NEED_F2C_CONV */
+
+#pragma wrapgen multiple restrict(v1+gcoll) skel/SILC_Mpi_F2c_C2f.w
+
+#if defined(HAS_MPI2_COLLECTIVES)
+void FSUB(MPI_Alltoallw)(void*     sendbuf, 
+                         MPI_Fint* sendcounts,
+                         MPI_Fint* sdispls,
+                         MPI_Fint* sendtypes,
+                         void*     recvbuf,
+                         MPI_Fint* recvcounts,
+                         MPI_Fint* rdispls,
+                         MPI_Fint* recvtypes,
+                         MPI_Fint* comm,
+                         int*      ierr)
+{
+  MPI_Datatype* csendtypes;
+  MPI_Datatype* crecvtypes;
+  MPI_Comm      ccomm;
+  int           size;
+
+  ccomm = MPI_Comm_f2c(*comm);
+  PMPI_Comm_size(ccomm, &size);
+
+  csendtypes = malloc(size * sizeof(MPI_Datatype));
+  crecvtypes = malloc(size * sizeof(MPI_Datatype));
+
+  while (size > 0)
+  {
+    csendtypes[size-1] = MPI_Type_f2c(sendtypes[size-1]);
+    crecvtypes[size-1] = MPI_Type_f2c(recvtypes[size-1]);
+    --size;
+  }
+
+  *ierr = MPI_Alltoallw(sendbuf, sendcounts, sdispls, csendtypes, recvbuf,
+                recvcounts, rdispls, crecvtypes, ccomm);
+
+  free(csendtypes);
+  free(crecvtypes);
+}
+
+#pragma wrapgen multiple restrict(v2+gcoll+!nAlltoallw) skel/SILC_Mpi_F2c_C2f.w
+#endif
+
+#endif
+
+/**
+ * @}
+ */
