@@ -3,7 +3,7 @@
 
 /**
  * @file    SILC_Adapter.h
- * @author  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Adapter management of the measurement system.
  *

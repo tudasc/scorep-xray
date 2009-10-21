@@ -3,9 +3,8 @@
 
 
 /**
- * @file    SILC_Definitions.h
- * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @date    Started Thu Sep  3 11:13:44 2009
+ * @file       SILC_Definitions.h
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief Declaration of definition functions to be used by the adapter layer.
  *
@@ -158,7 +157,7 @@ SILC_DefineMPICommunicator
  * @todo Do we need a return type here, i.e. is the
  * returned handle used somewhere?
  *
- * @since To be implemented in milestone 2 (belongs to RMA)
+ * @planned To be implemented in milestone 2 (belongs to RMA)
  *
  */
 SILC_MPIWindowHandle
@@ -232,12 +231,12 @@ SILC_DefineMPICartesianCoords
  *
  * @param name A meaningfule name of the counter group.
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  *
  * @return A process unique counter group handle to be used in calls to
  * SILC_DefineCounter().
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  *
  */
 SILC_CounterGroupHandle
@@ -266,7 +265,7 @@ SILC_DefineCounterGroup
  *
  * @todo add base parameter (i.e. 1000 or 1024)
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  *
  */
 SILC_CounterHandle
@@ -287,7 +286,7 @@ SILC_DefineCounter
  * @return A process unique file I/O file group handle to be used in calls to
  * SILC_DefineIOFile().
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  */
 SILC_IOFileGroupHandle
 SILC_DefineIOFileGroup
@@ -306,7 +305,7 @@ SILC_DefineIOFileGroup
  * @return A process unique I/O file handle to be used in calls to
  * SILC_TriggerIOFile().
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  */
 SILC_IOFileHandle
 SILC_DefineIOFile
@@ -323,7 +322,7 @@ SILC_DefineIOFile
  * @return A process unique marker group handle to be used in calls to
  * SILC_DefineMarker().
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  */
 SILC_MarkerGroupHandle
 SILC_DefineMarkerGroup
@@ -342,7 +341,7 @@ SILC_DefineMarkerGroup
  * @return A process unique marker handle to be used in calls to
  * SILC_TriggerMarker().
  *
- * @since To be implemented in milestone 2
+ * @planned To be implemented in milestone 2
  */
 SILC_MarkerHandle
 SILC_DefineMarker
@@ -362,7 +361,7 @@ SILC_DefineMarker
  * @return A process unique parameter handle to be used in calls to
  * SILC_TriggerParameter().
  *
- * @since To be implemented in milestone 3
+ * @planned To be implemented in milestone 3
  *
  */
 SILC_ParameterHandle

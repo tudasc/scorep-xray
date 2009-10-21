@@ -2,9 +2,8 @@
 #define SILC_TYPES_H
 
 /**
- * @file    SILC_Types.h
- * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @date    Started Thu Sep  3 13:11:11 2009
+ * @file        SILC_Types.h
+ * @maintainer  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief Types needed by SILC_* API functions.
  *
