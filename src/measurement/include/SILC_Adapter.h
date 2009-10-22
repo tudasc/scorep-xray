@@ -15,6 +15,16 @@
 /**
  * @defgroup SILC_Adapter SILC Adapter Management
  *
+ * Adapter Management will be handled by callback functions, which will be
+ * called at defined places from the measurement system. In the particul
+ * callbacks the adapter is only allowed to make specific actions.
+ *
+ * Each adapter exports these callbacks in a object of type @ref SILC_Adapter
+ * wich is describted in this module.
+ *
+ * All @ref SILC_Adapter objects are referenced by an array inside the
+ * measurement system, so the measurement system does not need to know
+ * explicitly which adapters are included at compile time.
  */
 /*@{*/
 
