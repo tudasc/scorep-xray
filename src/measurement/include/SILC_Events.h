@@ -222,6 +222,8 @@ SILC_ExitRegionOnException
  *
  * @param counterHandle
  * @param value
+ *
+ * @planned To be implemented in milestone 2
  */
 void
 SILC_TriggerCounterInt64
@@ -236,6 +238,8 @@ SILC_TriggerCounterInt64
  *
  * @param counterHandle
  * @param value
+ *
+ * @planned To be implemented in milestone 2
  */
 void
 SILC_TriggerCounterDouble
@@ -249,6 +253,8 @@ SILC_TriggerCounterDouble
  *
  *
  * @param markerHandle
+ *
+ * @planned To be implemented in milestone 2
  */
 void
 SILC_TriggerMarker
@@ -262,6 +268,8 @@ SILC_TriggerMarker
  *
  * @param parameterHandle
  * @param value
+ *
+ * @planned To be implemented in milestone 3
  */
 void
 SILC_TriggerParameterInt64
@@ -276,6 +284,8 @@ SILC_TriggerParameterInt64
  *
  * @param parameterHandle
  * @param value
+ *
+ * @planned To be implemented in milestone 3
  */
 void
 SILC_TriggerParameterDouble
@@ -290,6 +300,8 @@ SILC_TriggerParameterDouble
  *
  * @param parameterHandle
  * @param value
+ *
+ * @planned To be implemented in milestone 3
  */
 void
 SILC_TriggerParameterString
