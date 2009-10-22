@@ -16,32 +16,38 @@
 /**
  * @defgroup SILC_Events SILC Events
  *
- * After defining regions or other entities the adapter may call event functions. Most prominent are the region enter and exit functions which trigger the callpath handling and the metrics calculation.
+ * - After defining regions or other entities the adapter may call event
+     functions. Most prominent are the region enter (SILC_EnterRegion()) and
+     exit (SILC_ExitRegion()) functions which trigger the callpath handling,
+     the metrics calculation and the trace writing. The user is reposible for
+     proper nesting, i.e. that a higher level region can't be exited before
+     all child regions are exited.
 
-   The main difference between VampirTrace and Scalasca regarding the event interface is the timestamping. Where Scalasca takes the timestamp in the measurement system, VampirTrace requires every adapter to do this. The Scalasca way introduces some overhead if additional timings are done on events that are logically at once. Prominent examples are MPI_Send/Recv where the MPI adapter obtain a timestamp on esd_enter and on esd_mpi_send although the are logically at once. It turns out that this extra timestamp isn't really necessary for Scalasca's analysis (maybe it was at some time). But certainly there may be events that are associated with the previous enter or following exit timestamp. FZJ is of the opinion that timestamping is the measurements job. If timestamping is done inside the measurement system only, we may need to add an additional parameter to the events in question to indicate to which timestamp they belong.
+ * - The main difference between VampirTrace and Scalasca regarding the event
+     interface is the timestamping. Where Scalasca takes the timestamp in the
+     measurement system, VampirTrace requires every adapter to do this.
 
+ * - The Scalasca way currently introduces some overhead if additional timings
+     are done on events that are logically at once. Prominent examples are
+     MPI_Send/Recv where the MPI adapter obtain a timestamp on esd_enter and
+     on esd_mpi_send although the are logically at once. It turns out that
+     this extra timestamp isn't really necessary for Scalasca's analysis
+     (maybe it was at some time). So we will improve the implementation and do
+     the timestamping inside the measurement system.
 
-   The POMP adapter of VT and Scalasca have commonalities but also differ and I can't tell why. The *_omp_for/join functions differ a lot. There are special interface functions for OMP locking in Scalasca that can be filtered out and no equivalent in VT. The VT functions vt_omp_parallel_begin and vt_omp_parallel_end are called from the POMP adapter functions POMP_Parallel_begin/end. Scalasca calls esd_enter on POMP_Parallel_begin and esd_omp_collexit on POMP_Parallel_end here. Another commonality is the lack of documentation ...
- *
- * - Timestamping is done in the measurement system. The adapters need not to
-     provide timestamps.
- *
- * - Nesting is user's responsibility
- *
- *
  * @todo MPI non-blocking, Milestone 2
  * @todo MPI RMA, Milestone 2
  * @todo MPI I/O, Milestone 2
  * @todo Interface for additional attributes, Milestone 3
-
+ *
  */
 /*@{*/
 
 
 /**
- * Generate an enter event in the measurement system.
+ * Generate a region enter event in the measurement system.
  *
- * @param regionHandle
+ * @param regionHandle The corresponding region for the enter event.
  */
 void
 SILC_EnterRegion
@@ -51,9 +57,9 @@ SILC_EnterRegion
 
 
 /**
- * Generate an exit event in the measurement system.
+ * Generate a region exit event in the measurement system.
  *
- * @param regionHandle
+ * @param regionHandle The corresponding region for the exit event.
  */
 void
 SILC_ExitRegion
@@ -65,10 +71,23 @@ SILC_ExitRegion
 /**
  * Generate an mpi send event in the measurement system.
  *
- * @param globalDestinationRank
- * @param communicatorHandle
- * @param tag
- * @param bytesSent
+ * @param globalDestinationRank The MPI destination rank in MPI_COMM_WORLD. If
+ * your communicator is not MPI_COMM_WORLD, you need to convert your local
+ * rank to the corresponding rank in MPI_COMM_WORLD.
+ *
+ * @param communicatorHandle The previosly defined handle belonging to the
+ * communicator that is used in this communication.
+ *
+ * @param tag The MPI tag used in the communication.
+ *
+ * @param bytesSent The number of bytes send in the communication.
+ *
+ * @note @a globalDestinationRank and @a communicatorHandle may change in
+ * future versions to @a localRank and @a groupHandle for performance
+ * reasons. Querying the global rank is quite expensive if you are not in
+ * MPI_COMM_WORLD.
+ *
+ * @see SILC_DefineMPICommunicator()
  */
 void
 SILC_MpiSend
@@ -83,10 +102,24 @@ SILC_MpiSend
 /**
  * Generate an mpi send event in the measurement system.
  *
- * @param globalSourceRank
- * @param communicatorHandle
- * @param tag
- * @param bytesReceived
+ * @param globalSourceRank The MPI source rank in MPI_COMM_WORLD. If your
+ * communicator is not MPI_COMM_WORLD, you need to convert your local rank to
+ * the corresponding rank in MPI_COMM_WORLD.
+ *
+ * @param communicatorHandle The previosly defined handle belonging to the
+ * communicator that is used in this communication.
+ *
+ * @param tag The MPI tag used in the communication.
+ *
+ * @param bytesReceived The number of bytes received in the communication.
+ *
+ * @note @a globalSourceRank and @a communicatorHandle may change in future
+ * versions to @a localRank and @a groupHandle for performance
+ * reasons. Querying the global rank is quite expensive if you are not in
+ * MPI_COMM_WORLD.
+ *
+ * @todo Do measurements to compare the global/local rank performance at large
+ * scale.
  */
 void
 SILC_MpiRecv
@@ -101,14 +134,18 @@ SILC_MpiRecv
 /**
  * Generate an mpi collective event in the measurement system.
  *
- * @param regionHandle
- * @param communicatorHandle
+ * @param regionHandle The region handle corresponding to the MPI function
+ * that triggers this event.
  *
- * @param globalRootRank root rank in collective operation, or
- * SILC_INVALID_ROOT_RANK
+ * @param communicatorHandle The previosly defined handle belonging to the
+ * communicator that is used in this communication.
  *
- * @param bytesSent
- * @param bytesReceived
+ * @param globalRootRank Root rank of the collective operation in
+ * MPI_COMM_WORLD, or SILC_INVALID_ROOT_RANK.
+ *
+ * @param bytesSent The number of bytes send in the communication.
+ *
+ * @param bytesReceived The number of bytes received in the communication.
  */
 void
 SILC_MpiCollective

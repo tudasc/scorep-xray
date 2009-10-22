@@ -3,9 +3,8 @@
 
 
 /**
- * @file    SILC_RuntimeManagement.h
- * @author  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @date    Started Wed Sep  2 18:44:31 2009
+ * @file        SILC_RuntimeManagement.h
+ * @maintainer  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief   Declaration of runtime management functions to be used by the
  *          adapter layer.

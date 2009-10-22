@@ -29,7 +29,7 @@
  *
  * - Types used in configuring the measurement system.
  *
- * @todo Move INVALID defines that are intended to be used by the adapter
+ * @todo Move INVALID defines that are not intended to be used by the adapter
  * layer to internal files.
  */
 /*@{*/
