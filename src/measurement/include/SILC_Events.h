@@ -101,7 +101,6 @@ SILC_MpiRecv
 /**
  * Generate an mpi collective event in the measurement system.
  *
- * @param matchingId
  * @param regionHandle
  * @param communicatorHandle
  *
@@ -110,13 +109,10 @@ SILC_MpiRecv
  *
  * @param bytesSent
  * @param bytesReceived
- *
- * @todo what is the matchingId?
  */
 void
 SILC_MpiCollective
 (
-    uint32_t                   matchingId,
     SILC_RegionHandle          regionHandle,
     SILC_MPICommunicatorHandle communicatorHandle,
     int32_t                    globalRootRank,
