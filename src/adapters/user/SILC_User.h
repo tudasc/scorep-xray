@@ -1,3 +1,7 @@
+/** @file SILC_User.h
+    This file conatins the macros for user manual instrumentation
+ */
+
 #ifndef SILC_USER_H
 #define SILC_USER_H
 
@@ -18,6 +22,22 @@
                    declared in this macro. This handle is used in the
                    SILC_USER_REGION_BEGIN and SILC_USER_REGION_END statements to specify
                    which region is started, or ended.
+
+    Example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
  */
 #define SILC_USER_REGION_DEFINE( handle ) \
     static SILC_API_RegionHandle handle = SILC_USER_REGION_UNINITIALIZED;
@@ -34,6 +54,22 @@
                    SILC_USER_REGION_TYPE_FUNCTION, SILC_USER_REGION_TYPE_LOOP,
                    SILC_USER_REGION_TYPE_DYNAMIC, SILC_USER_REGION_TYPE_PHASE, or a
                    combination of them.
+
+    Example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
  */
 #define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
         handle, name, type, __FILE__, __LINE__ );
@@ -43,6 +79,22 @@
     SILC_USER_REGION_END calls of all regions must be correctly nested.
     @param name  The handle of the region which ended here.
                  It must be the same handle which is used as the start of the region.
+
+    Example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
  */
 #define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle, __FILE__, \
                                                             __LINE__ );
@@ -51,6 +103,20 @@
     This macro marks the start of a function. It should be inserted at the beginning
     of the instrumented function. It will generate a region, with the function
     name.
+
+    Example:
+    @code
+    void myfunc()
+    {
+      // declarations
+
+      SILC_USER_FUNC_BEGIN
+
+      // do something
+
+      SILC_USER_FUNC_END
+    }
+    @endcode
  */
 #define SILC_USER_FUNC_BEGIN static const SILC_API_RegionHandle \
     silc_user_func_handle = \
@@ -61,6 +127,20 @@
 /** @def SILC_USER_FUNC_END
     This macro marks the end of a function. It should be inserted at the end
     of the instrumented function.
+
+    Example:
+    @code
+    void myfunc()
+    {
+      // declarations
+
+      SILC_USER_FUNC_BEGIN
+
+      // do something
+
+      SILC_USER_FUNC_END
+    }
+    @endcode
  */
 #define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle, __FILE__, \
                                                 __LINE__ );
@@ -79,6 +159,34 @@
                    the macro. This handle is used in the SILC_USER_REGION_BEGIN and
                    SILC_USER_REGION_END statements to specify which region is started,
                    or ended.
+
+    Example:
+    @code
+    // In File1:
+    SILC_GLOBAL_REGION_DEFINE( my_global_handle )
+
+    void myfunc()
+    {
+      SILC_USER_REGION_BEGIN( my_global_handle, "my_global", SILC_USER_REGION_PHASE )
+
+      // do something
+
+      SILC_USER_REGION_END( my_global_handle )
+    }
+    @endcode
+    @code
+    // In File2:
+    SILC_GLOBAL_EXTERNAL( my_global_handle )
+
+    void foo()
+    {
+      SILC_USER_REGION_BEGIN( my_global_handle, "my_global", SILC_USER_REGION_PHASE )
+
+      // do something
+
+      SILC_USER_REGION_END( my_global_handle )
+    }
+    @endcode
  */
 #define SILC_GLOBAL_REGION_DEFINE( handle ) \
     SILC_API_RegionHandle handle = SILC_USER_REGION_GLOBAL;
@@ -98,6 +206,34 @@
                    statement. The handle is used in the SILC_USER_REGION_BEGIN and
                    SILC_USER_REGION_END statements to specify which region is started,
                    or ended.
+
+    Example:
+    @code
+    // In File 1
+    SILC_GLOBAL_REGION_DEFINE( my_global_handle )
+
+    void myfunc()
+    {
+      SILC_USER_REGION_BEGIN( my_global_handle, "my_global", SILC_USER_REGION_PHASE )
+
+      // do something
+
+      SILC_USER_REGION_END( my_global_handle )
+    }
+    @endcode
+    @code
+    // In File 2
+    SILC_GLOBAL_EXTERNAL( my_global_handle )
+
+    void foo()
+    {
+      SILC_USER_REGION_BEGIN( my_global_handle, "my_global", SILC_USER_REGION_PHASE )
+
+      // do something
+
+      SILC_USER_REGION_END( my_global_handle )
+    }
+    @endcode
  */
 #define SILC_GLOBAL_REGION_EXTERNAL( handle ) \
     extern SILC_API_RegionHandle handle;
@@ -119,11 +255,25 @@
     @param name   A string containing the name of the parameter.
     @param value  The value of the parameter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
+
+    Example:
+    @code
+    void myfunc(int64 myint)
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      SILC_USER_PARAMETER_INT64("A nice int",myint)
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
  */
 #define SILC_USER_PARAMETER_INT64( name, value )  SILC_User_ParameterInt64( \
         name, value );
 
-/** @def SILC_USER_PARAMETER_String(name,value)
+/** @def SILC_USER_PARAMETER_STRING(name,value)
     This statement adds a string type parameter for parameter-based
     profiling to the current region.
     The calltree for the region is split according to the different values of the
@@ -133,6 +283,20 @@
     per region.
     During one visit it is not allowed to use the same name twice
     for two different parameters.
+
+    Example:
+    @code
+    void myfunc(char *mystring)
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      SILC_USER_PARAMETER_STRING("A nice string",mystring)
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
  */
 #define SILC_USER_PARAMETER_STRING( name, value ) SILC_User_ParameterString( \
         name, value );
@@ -149,6 +313,27 @@
     definition. Its scopy can never be beyond one source file. If a larger scope is
     needed use SILC_USER_METRIC_GROUP_GLOBAL.
     @param groupHandle The name of the variable which contains the groupHandle.
+
+    Example:
+    @code
+    SILC_USER_METRIC_GROUP_LOCAL( my_local_group )
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_GROUP_INIT( my_local_group )
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_local_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
     SILC_API_CounterGroupHandle groupHandle  \
@@ -160,6 +345,45 @@
     All other files in which the same group handle is  accessed, must declare the handle
     using SILC_USER_METRIC_GROUP_EXTERNAL.
     @param groupHandle The variable name for the variable declared in this statement.
+
+    Example:
+    @code
+    // In File 1
+    SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_GROUP_INIT( my_global_group )
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
+    @code
+    // In File 2
+    SILC_USER_METRIC_GROUP_EXTERNAL( my_global_group )
+    SILC_USER_METRIC_EXTERNAL( my_global_metric )
+
+    void bar()
+    {
+      double my_double = get_some_double();
+      uint64 my_int = get_some_int();
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "m", \
+                             SILC_USER_METRIC_TYPE_DOUBLE, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+      SILC_USER_METRIC_DOUBLE( my_local_metric, my_double )
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_API_CounterGroupHandle \
     groupHandle = SILC_API_INVALID_COUNTER_GROUP;
@@ -170,6 +394,45 @@
     All other files in which the same group handle is  accessed, must declare the handle
     using SILC_USER_METRIC_GROUP_EXTERNAL.
     @param groupHandle The variable name for the variable declared in this statement.
+
+    Example:
+    @code
+    // In File 1
+    SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_GROUP_INIT( my_global_group )
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
+    @code
+    // In File 2
+    SILC_USER_METRIC_GROUP_EXTERNAL( my_global_group )
+    SILC_USER_METRIC_EXTERNAL( my_global_metric )
+
+    void bar()
+    {
+      double my_double = get_some_double();
+      uint64 my_int = get_some_int();
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "m", \
+                             SILC_USER_METRIC_TYPE_DOUBLE, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+      SILC_USER_METRIC_DOUBLE( my_local_metric, my_double )
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
     extern SILC_API_CounterGroupHandle groupHandle;
@@ -180,6 +443,27 @@
     @param groupHandle The handle for the initilaized group. It must be declared using
                        SILC_USER_METRIC_GROUP_DEF.
     @param name        A string containing a unique name for that metric group.
+
+    Example:
+    @code
+    SILC_USER_METRIC_GROUP_LOCAL( my_local_group )
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_GROUP_INIT( my_local_group )
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_local_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_GROUP_INIT( groupHandle, \
                                      name ) SILC_User_MetricGroupInit( \
@@ -192,6 +476,26 @@
     definition.
     @param metricHandle The name of the variable which will be declared for storing
                         the meric handle.
+
+    Example:
+    @code
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_local_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_User_MetricHandle \
     metricHandle                                                                \
@@ -204,6 +508,37 @@
     other files in which this handle is accessed must declare it with
     SILC_USER_METRIC_EXTERNAL.
     @param metricHandle The variable name for the handle.
+
+    Example:
+    @code
+    // In File 1
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    int main()
+    {
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
+    @code
+    // In File 2
+    SILC_USER_METRIC_EXTERNAL( my_global_metric )
+
+    void bar()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_User_MetricHandle metricHandle \
         = SILC_API_INVALID_COUNTER;
@@ -215,6 +550,37 @@
     SILC_USER_METRIC_EXTERNAL.
     @param metricHandle The variable name of the handle. it must be the same name as used
                         in the corresponding SILC_USER_METRIC_GLOBAL statement.
+
+    Example:
+    @code
+    // In File 1
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    int main()
+    {
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
+    @code
+    // In File 2
+    SILC_USER_METRIC_EXTERNAL( my_global_metric )
+
+    void bar()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
     extern SILC_User_MetricHandle metricHandle;
@@ -228,14 +594,34 @@
     @param name A string containing a unique name for the counter.
     @param unit A string containing a the unit of the data.
     @param type Specifies the data type of the counter. It must be one of the following:
-                SILC_USER_COUNTER_TYPE_INT64, SILC_USER_COUNTER_TYPE_UINT64,
-                SILC_USER_COUNTER_TYPE_DOUBLE, SILC_USER_COUNTER_TYPE_FLOAT.
+                SILC_USER_METRIC_TYPE_INT64, SILC_USER_METRIC_TYPE_UINT64,
+                SILC_USER_METRIC_TYPE_DOUBLE, SILC_USER_METRIC_TYPE_FLOAT.
     @param context Specifies the context for which the counter is measured. IT must be
-                one of the following: SILC_USER_COUNTER_CONTEXT_GLOBAL, or
-                SILC_USER_COUNTER_CONTEXT_CALLPATH.
+                one of the following: SILC_USER_METRIC_CONTEXT_GLOBAL, or
+                SILC_USER_METRIC_CONTEXT_CALLPATH.
     @param groupHandle A handle of the group to which this counter belongs.
                 If this group does not exist, it will be created. If the default group
                 should be used, specify SILC_USER_METRIC_GROUP_DEFAULT as group handle.
+
+    Example:
+    @code
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_local_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
                                groupHandle ) \
@@ -249,6 +635,26 @@
                 that is used during definition of the counter.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
+
+    Example:
+    @code
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_INT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      int64 my_int = get_some_int_value();
+      SILC_USER_METRIC_INT64( my_local_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_INT64( metricHandle, \
                                 value )  SILC_User_TriggerMetricInt64( \
@@ -262,6 +668,26 @@
                 that is used during definition of the counter.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit unsigned integer.
+
+    Example:
+    @code
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_UINT64, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      uint64 my_int = get_some_int_value();
+      SILC_USER_METRIC_UINT64( my_local_metric, my_int )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_UINT64( metricHandle, \
                                  value )  SILC_User_TriggerMetricUint64( \
@@ -275,6 +701,26 @@
                 that is used during definition of the counter.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a double.
+
+    Example:
+    @code
+    SILC_USER_METRIC_LOCAL( my_local_metric )
+
+    int main()
+    {
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
+                             SILC_USER_METRIC_TYPE_DOUBLE, \
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, \
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+      // do something
+    }
+
+    void foo()
+    {
+      double my_double = get_some_double_value();
+      SILC_USER_METRIC_DOUBLE( my_local_metric, my_double )
+    }
+    @endcode
  */
 #define SILC_USER_METRIC_DOUBLE( metricHandle, \
                                  value ) SILC_User_TriggerMetricDouble( \
@@ -298,6 +744,16 @@
                    SILC_USER_REGION_TYPE_FUNCTION, SILC_USER_REGION_TYPE_LOOP,
                    SILC_USER_REGION_TYPE_DYNAMIC, SILC_USER_REGION_TYPE_PHASE, or a
                    combination of them.
+
+    Example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_( "myfunc", SILC_USER_REGION_TYPE_FUNCTION )
+
+      // do something
+    }
+    @endcode
  */
 #define SILC_USER_REGION( name, \
                           type ) static SILC_User_Region silc_user_region_inst( \
@@ -311,16 +767,51 @@
 
 /** @def SILC_RECORDING_ON
     Enables the measurement. If already enabled, this command has no effect.
+
+    Example:
+    @code
+    void foo()
+    {
+      SILC_RECORDING_OFF
+
+      // do something
+
+     SILC_RECORDING_ON
+    }
+    @endcode
  */
 #define SILC_RECORDING_ON SILC_API_EnableRecording();
 
 /** @def SILC_RECORDING_OFF
     Disables the measurement. If already disabled, this command has no effect.
+
+    Example:
+    @code
+    void foo()
+    {
+      SILC_RECORDING_OFF
+
+      // do something
+
+     SILC_RECORDING_ON
+    }
+    @endcode
  */
 #define SILC_RECORDING_OFF SILC_API_DisableRecording();
 
 /** @def SILC_RECORDING_IS_ON
     Returns zero if the measurement is disabled, else it returns a nonzero value.
+
+    Example:
+    @code
+    void foo()
+    {
+      if ( SILC_RECORDING_IS_ON )
+      {
+        // do something
+      }
+    }
+    @endcode
  */
 #define SILC_RECORDING_IS_ON SILC_API_RecordingEnabled()
 
@@ -360,7 +851,7 @@
     SILC_User_DefineTopology3D( name, numX, numY, numZ, periodX, periodY, \
                                 periodZ )
 
-/** @def SILC_DEFINE_COORDINATES_2D
+/** @def SILC_DEFINE_COORDINATE_2D
     Defines the a coordinate in a two-dimensional cartesian topology.
     @param topId    Handle of a previously defined two-dimensional cartesian topology.
     @param coordX   X-coordinate
@@ -369,7 +860,7 @@
 #define SILC_DEFINE_COORDINATE_2D( topId, coordX, coordY ) \
     SILC_User_DefineCoordinates2D( topId, coordX, coordY );
 
-/** @def SILC_DEFINE_COORDINATES_3D
+/** @def SILC_DEFINE_COORDINATE_3D
     Defines the a coordinate in a three-dimensional cartesian topology.
     @param topId    Handle of a previously defined two-dimensional cartesian topology.
     @param coordX   X-coordinate
