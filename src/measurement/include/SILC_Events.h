@@ -19,7 +19,7 @@
  * - After defining regions or other entities the adapter may call event
      functions. Most prominent are the region enter (SILC_EnterRegion()) and
      exit (SILC_ExitRegion()) functions which trigger the callpath handling,
-     the metrics calculation and the trace writing. The user is reposible for
+     the metrics calculation and the trace writing. The user is responsible for
      proper nesting, i.e. that a higher level region can't be exited before
      all child regions are exited.
 
@@ -75,7 +75,7 @@ SILC_ExitRegion
  * your communicator is not MPI_COMM_WORLD, you need to convert your local
  * rank to the corresponding rank in MPI_COMM_WORLD.
  *
- * @param communicatorHandle The previosly defined handle belonging to the
+ * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
  *
  * @param tag The MPI tag used in the communication.
@@ -106,7 +106,7 @@ SILC_MpiSend
  * communicator is not MPI_COMM_WORLD, you need to convert your local rank to
  * the corresponding rank in MPI_COMM_WORLD.
  *
- * @param communicatorHandle The previosly defined handle belonging to the
+ * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
  *
  * @param tag The MPI tag used in the communication.
@@ -137,7 +137,7 @@ SILC_MpiRecv
  * @param regionHandle The region handle corresponding to the MPI function
  * that triggers this event.
  *
- * @param communicatorHandle The previosly defined handle belonging to the
+ * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
  *
  * @param globalRootRank Root rank of the collective operation in
@@ -159,9 +159,12 @@ SILC_MpiCollective
 
 
 /**
+ * Generate an OpenMP fork event in the measurement system.
  *
+ * @param regionHandle The previous defined region handle which identifies the
+ *                     the region into which this event forks.
  *
- * @param regionHandle
+ * @see SILC_DefineRegion()
  */
 void
 SILC_OmpFork
@@ -171,9 +174,12 @@ SILC_OmpFork
 
 
 /**
+ * Generate an OpenMP join event in the measurement system.
  *
+ * @param regionHandle The previous defined region handle which identifies the
+ *                     the region from which this event joins.
  *
- * @param regionHandle
+ * @see SILC_DefineRegion()
  */
 void
 SILC_OmpJoin
@@ -182,9 +188,10 @@ SILC_OmpJoin
 );
 
 /**
+ * Generate an OpenMP acquire lock event in the measurement system.
  *
- *
- * @param lockId
+ * @param lockId A unique ID to identify the lock. Needs to be maintained by
+ *               the caller.
  */
 void
 SILC_OmpAcquireLock
@@ -194,9 +201,10 @@ SILC_OmpAcquireLock
 
 
 /**
+ * Generate an OpenMP release lock event in the measurement system.
  *
- *
- * @param lockId
+ * @param lockId A unique ID to identify the lock. Needs to be maintained by
+ *               the caller.
  */
 void
 SILC_OmpReleaseLock
@@ -209,6 +217,8 @@ SILC_OmpReleaseLock
  *
  *
  * @param regionHandle
+ *
+ * @chistian Wasn't this planned to be removed?
  */
 void
 SILC_ExitRegionOnException
