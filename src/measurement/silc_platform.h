@@ -2,69 +2,129 @@
 #define SILC_INTERNAL_PLATFORM_H
 
 /**
+ * @file        silc_platform.h
+ * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ *
+ * @brief Platform dependent functionality.
+ *
+ */
+
+#include <SILC_Error.h>
+
+/**
+ * Platform dependent initialization.
+ *
+ * Called from @ref SILC_InitMeasurement.
+ *
+ */
+SILC_Error_Code
+SILC_Platform_Init
+(
+    void
+);
+
+/**
  * The platform specific wall-clock timestamp function.
  *
  * @scope internal to the measurement system.
- * @exported as SILC_Wtime
- *
- * @note The platform could also directly implement the SILC_Wtime()
+ * @exported as @ref SILC_GetWallClockTime
  */
-SILC_Time SILC_Platform_Wtime( void );
+SILC_Time
+SILC_Platform_GetWallClockTime
+(
+    void
+);
 
 /**
  * The platform specific wall time resolution function.
  *
  */
-SILC_Time SILC_Platform_ClockResolution( void );
+SILC_Time
+SILC_Platform_GetClockResolution
+(
+    void
+);
 
 /**
  * Gives the name of the running executable in a malloc'ed buffer.
  *
  */
-char* SILC_Platform_ExecName( void );
+char*
+SILC_Platform_ExecName
+(
+    void
+);
 
 /**
  * Gives the name of the running architecture/platform
  * in a malloc'ed buffer.
  *
  */
-char* SILC_Platform_Name( void );
+char*
+SILC_Platform_Name
+(
+    void
+);
 
 /**
  * Gives the directory of the global filesytem in a malloc'ed buffer.
  *
  */
-char* SILC_Platform_GDir( void );
+char*
+SILC_Platform_GDir
+(
+    void
+);
 
 /**
  * Gives the directory of the local filesytem in a malloc'ed buffer.
  *
  */
-char* SILC_Platform_LDir( void );
+char*
+SILC_Platform_LDir
+(
+    void
+);
 
 /**
  * Gives a unique id for the running machine (Ie. IP of the cluster node).
  *
  */
-uint64_t SILC_Platform_NodeId( void );
+uint64_t
+SILC_Platform_NodeId
+(
+    void
+);
 
 /**
  * Gives the name of the running machine (Ie. hostname) in a malloc'ed buffer.
  *
  */
-char* SILC_Platform_NodeName( void );
+char*
+SILC_Platform_NodeName
+(
+    void
+);
 
 /**
  * Gives the number of cpus on the running machine.
  *
  * @question: is this the available/possible/allowed number of cpus?
  */
-uint64_t SILC_Platform_NumCpus( void );
+uint64_t
+SILC_Platform_NumCpus
+(
+    void
+);
 
 /**
  * Gives the number of nodes/machines.
  *
  */
-uint64_t SILC_Platform_NumNodes( void );
+uint64_t
+SILC_Platform_NumNodes
+(
+    void
+);
 
 #endif /* SILC_INTERNAL_PLATFORM_H */
