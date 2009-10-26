@@ -196,7 +196,7 @@ typedef uint32_t SILC_ParameterHandle;
  * his type.
  *
  */
-typedef enum SILC_AdapterType_enum
+typedef enum SILC_AdapterType
 {
     SILC_ADAPTER_USER,
     SILC_ADAPTER_COMPILER,
@@ -217,7 +217,7 @@ typedef enum SILC_AdapterType_enum
  * (whith a different prefix) in VampiTrace and Scalasca.
  *
  */
-typedef enum SILC_RegionType_enum
+typedef enum SILC_RegionType
 {
     SILC_REGION_UNKNOWN = 0,
     SILC_REGION_FUNCTION,
@@ -260,7 +260,7 @@ typedef enum SILC_RegionType_enum
  * Types to be used in defining a counter (SILC_DefineCounter()).
  *
  */
-typedef enum SILC_CounterType_enum
+typedef enum SILC_CounterType
 {
     SILC_COUNTER_INT64,
     SILC_COUNTER_DOUBLE,
@@ -274,7 +274,7 @@ typedef enum SILC_CounterType_enum
  * (SILC_DefineParameter()).
  *
  */
-typedef enum SILC_ParameterType_enum
+typedef enum SILC_ParameterType
 {
     SILC_PARAMETER_INT64,
     SILC_PARAMETER_DOUBLE,
@@ -287,7 +287,7 @@ typedef enum SILC_ParameterType_enum
  * The type of a SILC_ConfigVariable.
  *
  */
-typedef enum SILC_ConfigType_enum
+typedef enum SILC_ConfigType
 {
     /**
      * A string value with variable expension (Ie. ${HOME})
@@ -352,7 +352,7 @@ typedef enum SILC_ConfigType_enum
  * @see SILC_ConfigRegister()
  *
  */
-typedef struct SILC_ConfigVariable_struct
+typedef struct SILC_ConfigVariable
 {
     const char*     nameSpace;     /** NULL for @e root/global namespace */
     const char*     name;
