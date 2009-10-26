@@ -1,3 +1,12 @@
+/** @file SILC_User_Functions.h
+    @author Daniel Lorenz
+    @email d.lorenz@fz-juelich.de
+
+    This File contains the function definitions which are called from the user manual
+    instrumentation. The user should not insert calls to theis functions directly, but
+    use the macros provided in SILC_User.h.
+ */
+
 #ifndef SILC_USER_FUNCTIONS_H
 #define SILC_USER_FUNCTIONS_H
 
@@ -18,11 +27,15 @@
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-void SILC_User_RegionBegin( SILC_API_RegionHandle&     handle,
-                            const char*                name,
-                            const SILC_User_RegionType regionType,
-                            const char*                fileName,
-                            const uint32_t             lineNo );
+extern void
+SILC_User_RegionBegin
+(
+    SILC_API_RegionHandle&     handle,
+    const char*                name,
+    const SILC_User_RegionType regionType,
+    const char*                fileName,
+    const uint32_t             lineNo
+);
 
 /** Generates an exit event for the specified region.
     @param name       The name of the region.
@@ -31,9 +44,13 @@ void SILC_User_RegionBegin( SILC_API_RegionHandle&     handle,
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-void SILC_User_RegionEnd( const char*    name,
-                          const char*    fileName,
-                          const uint32_t lineNo );
+extern void
+SILC_User_RegionEnd
+(
+    const char*    name,
+    const char*    fileName,
+    const uint32_t lineNo
+);
 
 /* **************************************************************************************
  * Parameter functions
@@ -43,15 +60,23 @@ void SILC_User_RegionEnd( const char*    name,
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
  */
-void SILC_User_ParameterInt64( const char* name,
-                               int64_t     value );
+extern void
+SILC_User_ParameterInt64
+(
+    const char* name,
+    int64_t     value
+);
 
 /** Generates a parameter event for a parameter of string type.
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
  */
-void SILC_User_ParameterString( const char* name,
-                                char*       value );
+extern void
+SILC_User_ParameterString
+(
+    const char* name,
+    char*       value
+);
 
 /* **************************************************************************************
  * User metric functions
@@ -62,8 +87,12 @@ void SILC_User_ParameterString( const char* name,
     @param groupHandle A variable where the handle for the new group i stored. It must
                        be declared with SILC_USER_METRIC_GROUP_DEF.
  */
-void SILC_User_InitMetricGroup( SILC_API_CounterGroupHandle& groupHandle,
-                                const char*                  name );
+extern void
+SILC_User_InitMetricGroup
+(
+    SILC_API_CounterGroupHandle& groupHandle,
+    const char*                  name
+);
 
 /** Initializes a user metric. Every user metric must be registered before it is used
     the first time.
@@ -81,36 +110,52 @@ void SILC_User_InitMetricGroup( SILC_API_CounterGroupHandle& groupHandle,
     @param group       The name of the user couter group to which this metric belongs.
                        If the group does not exist already, it will be created.
  */
-void SILC_User_InitMetric( SILC_API_CounterHandle&           metricHandle,
-                           const char*                       name,
-                           const char*                       unit,
-                           const SILC_User_MetricType        metricType,
-                           const int8_t                      context,
-                           const SILC_API_CounterGroupHandle group );
+extern void
+SILC_User_InitMetric
+(
+    SILC_API_CounterHandle&           metricHandle,
+    const char*                       name,
+    const char*                       unit,
+    const SILC_User_MetricType        metricType,
+    const int8_t                      context,
+    const SILC_API_CounterGroupHandle group
+);
 
 /** Triggers a user metric of type 64 bit signed integer. Before a metric can
     be triggered for the first time, it must be registered.
     @param name The unique name of the user metric.
     @param value The value for the metric.
  */
-void SILC_User_TriggerMetricInt64( const char* name,
-                                   int64_t     value );
+extern void
+SILC_User_TriggerMetricInt64
+(
+    const char* name,
+    int64_t     value
+);
 
 /** Triggers a user metric of type 64 bit unsigned integer. Before a metric can
     be triggered for the first time, it must be registered.
     @param name The unique name of the user metric.
     @param value The value for the metric.
  */
-void SILC_User_TriggerMetricUint64( const char* name,
-                                    uint64_t    value );
+extern void
+SILC_User_TriggerMetricUint64
+(
+    const char* name,
+    uint64_t    value
+);
 
 /** Triggers a user metric of type double. Before a metric can
     be triggered for the first time, it must be registered.
     @param name The unique name of the user metric.
     @param value The value for the metric.
  */
-void SILC_User_TriggerMetricDouble( const char* name,
-                                    double      value );
+extern void
+SILC_User_TriggerMetricDouble
+(
+    const char* name,
+    double      value
+);
 
 /* **************************************************************************************
  * Virtual Topologies
@@ -126,11 +171,15 @@ void SILC_User_TriggerMetricDouble( const char* name,
                     false, other values mean true.
     @return A handle to the newly created topology.
  */
-int32_t SILC_User_DefineTopology2D( const char*   name,
-                                    const int32_t numX,
-                                    const int32_t numY,
-                                    const int32_t periodX,
-                                    const int32_t periodY );
+extern int32_t
+SILC_User_DefineTopology2D
+(
+    const char*   name,
+    const int32_t numX,
+    const int32_t numY,
+    const int32_t periodX,
+    const int32_t periodY
+);
 
 /** Defines a three-dimentional cartesian topology.
     @param name     A string containing the name of the topology.
@@ -145,22 +194,30 @@ int32_t SILC_User_DefineTopology2D( const char*   name,
                     false, other values mean true.
     @return A handle to the newly created topology.
  */
-int32_t SILC_User_DefineTopology2D( const char*     name,
-                                    const int32_t   numX,
-                                    const int32_t   numY,
-                                    const int32_t   numZ,
-                                    const int32_t   periodX,
-                                    const int32_t   periodY,
-                                    const - int32_t periodZ );
+extern int32_t
+SILC_User_DefineTopology2D
+(
+    const char*     name,
+    const int32_t   numX,
+    const int32_t   numY,
+    const int32_t   numZ,
+    const int32_t   periodX,
+    const int32_t   periodY,
+    const - int32_t periodZ
+);
 
 /** Defines the a coordinate in a two-dimensional cartesian topology.
     @param topId    Handle of a previously defined two-dimensional cartesian topology.
     @param coordX   X-coordinate
     @param coordY   Y-coordinate
  */
-void SILC_User_DefineCoordinate2D( const int32_t topId,
-                                   const int32_t coordX,
-                                   const int32_t coordY );
+extern void
+SILC_User_DefineCoordinate2D
+(
+    const int32_t topId,
+    const int32_t coordX,
+    const int32_t coordY
+);
 
 /** Defines the a coordinate in a three-dimensional cartesian topology.
     @param topId    Handle of a previously defined two-dimensional cartesian topology.
@@ -168,10 +225,14 @@ void SILC_User_DefineCoordinate2D( const int32_t topId,
     @param coordY   Y-coordinate
     @param coordZ   Z-coordinate
  */
-void SILC_User_DefineCoordinate3D( const int32_t topId,
-                                   const int32_t coordX,
-                                   const int32_t coordY,
-                                   const int32_t coordZ );
+extern void
+SILC_User_DefineCoordinate3D
+(
+    const int32_t topId,
+    const int32_t coordX,
+    const int32_t coordY,
+    const int32_t coordZ
+);
 
 
 /* **************************************************************************************

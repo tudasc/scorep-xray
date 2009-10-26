@@ -1,3 +1,10 @@
+/** @file SILC_User_Types.h
+    @author Daniel Lorenz
+    @email d.lorenz@fz-juelich.de
+
+    This file contains type definitions for manual user instrumentation.
+ */
+
 #ifndef SILC_USER_TYPES_H
 #define SILC_USER_TYPES_H
 
@@ -19,7 +26,7 @@ typedef uint32_t SILC_User_MetricType;
  * Defines for the Region types
  * *************************************************************************************/
 
-/** @def SILC_USER_REGION_TYPE_REGION
+/** @def SILC_USER_REGION_TYPE_COMMON
     Region without any specific type.
  */
 #define SILC_USER_REGION_TYPE_COMMON 0
@@ -54,12 +61,12 @@ typedef uint32_t SILC_User_MetricType;
  */
 #define SILC_USER_METRIC_TYPE_INT64 1
 
-/** @def SILC_USER_METRIC_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_UINT64
     Indicates that a user counter is of data type unsigned 64 bit integer.
  */
 #define SILC_USER_METRIC_TYPE_UINT64 2
 
-/** @def SILC_USER_METRIC_TYPE_INT64
+/** @def SILC_USER_METRIC_TYPE_DOUBLE
     Indicates that a user counter is of data type double.
  */
 #define SILC_USER_METRIC_TYPE_DOUBLE 3
@@ -68,12 +75,12 @@ typedef uint32_t SILC_User_MetricType;
  * Defines for the context of user counters
  * *************************************************************************************/
 
-/** @def SILC_USER_METRIC_TYPE_INT64
+/** @def SILC_USER_METRIC_CONTEXT_GLOBAL
     Indicates that a user counter is is measured for the global context.
  */
 #define SILC_USER_METRIC_CONTEXT_GLOBAL 0
 
-/** @def SILC_USER_METRIC_TYPE_INT64
+/** @def SILC_USER_METRIC_CONTEXT_CALLPATH
     Indicates that a user counter is is measured for every callpath.
  */
 #define SILC_USER_METRIC_CONTEXT_CALLPATH 1

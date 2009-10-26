@@ -1,18 +1,27 @@
 /** @file SILC_User.h
-    This file conatins the macros for user manual instrumentation
+    @author Daniel Lorenz
+    @email d.lorenz@fz-juelich.de
+
+    This file conatins the macros for user manual instrumentation. The user should use
+    the macros defined in this file and avoid calling the adapter functions directly.
+    For every macro two definitions are provided: The first one inserts calls to the
+    adapters, the second definitions resolve to nothing. Which implementation is used,
+    is determined by defining SILC_USER_ENABLE. If SILC_USER_ENABLE is defined, the
+    macros insert calls to the adapter functios. If SILC_USER_ENABLE is undefined,
+    the user instrumentation is removed by the preprocessor. This flag SILC_USER_ENABLE
+    should be set through the instrumentation wrapper tool.
  */
 
 #ifndef SILC_USER_H
 #define SILC_USER_H
 
-#ifdef SILC_USER_ENABLE
 #include "SILC_User_Types.h"
 #include "SILC_API_Types.h"
 #include "SILC_User_Functions.h"
 #include "SILC_API_RuntimeManagement.h"
 
 /* **************************************************************************************
- * Region enclosing macros
+ * Documentation for region enclosing macros
  * *************************************************************************************/
 
 /** @def SILC_USER_REGION_DEFINE(handle)
@@ -39,8 +48,6 @@
     }
     @endcode
  */
-#define SILC_USER_REGION_DEFINE( handle ) \
-    static SILC_API_RegionHandle handle = SILC_USER_REGION_UNINITIALIZED;
 
 /** @def SILC_USER_REGION_BEGIN(name)
     This macro marks the start of a user defined region. The SILC_USER_REGION_BEGIN and
@@ -71,8 +78,6 @@
     }
     @endcode
  */
-#define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
-        handle, name, type, __FILE__, __LINE__ );
 
 /** @def SILC_USER_REGION_END(handle)
     This macro marks the end of a user defined region.  The SILC_USER_REGION_BEGIN and
@@ -96,8 +101,6 @@
     }
     @endcode
  */
-#define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle, __FILE__, \
-                                                            __LINE__ );
 
 /** @def SILC_USER_FUNC_BEGIN
     This macro marks the start of a function. It should be inserted at the beginning
@@ -118,11 +121,6 @@
     }
     @endcode
  */
-#define SILC_USER_FUNC_BEGIN static const SILC_API_RegionHandle \
-    silc_user_func_handle = \
-        SILC_USER_REGION_UNINITIALIZED; \
-    SILC_User_RegionBegin( silc_user_func_handle, __func__, \
-                           SILC_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
 
 /** @def SILC_USER_FUNC_END
     This macro marks the end of a function. It should be inserted at the end
@@ -142,8 +140,6 @@
     }
     @endcode
  */
-#define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle, __FILE__, \
-                                                __LINE__ );
 
 /** @def SILC_GLOBAL_REGION_DEFINE( handle )
     This macro declares a region handle in a global scope for usage in more than one code
@@ -188,8 +184,6 @@
     }
     @endcode
  */
-#define SILC_GLOBAL_REGION_DEFINE( handle ) \
-    SILC_API_RegionHandle handle = SILC_USER_REGION_GLOBAL;
 
 /** @def SILC_GLOBAL_REGION_EXTERNAL( handle )
     This macro declares an axternally defined global region.  Every global region must
@@ -235,13 +229,41 @@
     }
     @endcode
  */
+
+/* **************************************************************************************
+ * Region enclosing macros
+ * *************************************************************************************/
+#ifdef SILC_USER_ENABLE
+
+#define SILC_USER_REGION_DEFINE( handle ) \
+    static SILC_API_RegionHandle handle = SILC_USER_REGION_UNINITIALIZED;
+
+#define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
+        handle, name, type, __FILE__, __LINE__ );
+
+#define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle, __FILE__, \
+                                                            __LINE__ );
+
+#define SILC_USER_FUNC_BEGIN static const SILC_API_RegionHandle \
+    silc_user_func_handle = \
+        SILC_USER_REGION_UNINITIALIZED; \
+    SILC_User_RegionBegin( silc_user_func_handle, __func__, \
+                           SILC_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
+
+#define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle, __FILE__, \
+                                                __LINE__ );
+
+#define SILC_GLOBAL_REGION_DEFINE( handle ) \
+    SILC_API_RegionHandle handle = SILC_USER_REGION_GLOBAL;
+
 #define SILC_GLOBAL_REGION_EXTERNAL( handle ) \
     extern SILC_API_RegionHandle handle;
 
-/* **************************************************************************************
- * Parameter macros
- * *************************************************************************************/
+#endif // SILC_USER_ENABLE
 
+/* **************************************************************************************
+ * Documentation for Parameter macros
+ * *************************************************************************************/
 /** @def SILC_USER_PARAMETER_INT64(name,value)
     This statement adds a 64 bit signed integer type parameter for parameter-based
     profiling to the current region.
@@ -270,8 +292,6 @@
     }
     @endcode
  */
-#define SILC_USER_PARAMETER_INT64( name, value )  SILC_User_ParameterInt64( \
-        name, value );
 
 /** @def SILC_USER_PARAMETER_STRING(name,value)
     This statement adds a string type parameter for parameter-based
@@ -283,6 +303,9 @@
     per region.
     During one visit it is not allowed to use the same name twice
     for two different parameters.
+    @param name   A string containing the name of the parameter.
+    @param value  The value of the parameter. It must be a pointer to a C-string (a
+                  NULL-terminated string).
 
     Example:
     @code
@@ -298,12 +321,22 @@
     }
     @endcode
  */
+
+/* **************************************************************************************
+ * Parameter macros
+ * *************************************************************************************/
+#ifdef SILC_USER_ENABLE
+
+#define SILC_USER_PARAMETER_INT64( name, value )  SILC_User_ParameterInt64( \
+        name, value );
+
 #define SILC_USER_PARAMETER_STRING( name, value ) SILC_User_ParameterString( \
         name, value );
 
+#endif // SILC_USER_ENABLE
 
 /* **************************************************************************************
- * User Counter macros
+ * Documentation for User Counter macros
  * *************************************************************************************/
 
 /** @def  SILC_USER_METRIC_GROUP_LOCAL(groupHandle)
@@ -335,9 +368,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
-    SILC_API_CounterGroupHandle groupHandle  \
-        = SILC_API_INVALID_COUNTER_GROUP;
 
 /** @def SILC_USER_METRIC_GROUP_GLOBAL( groupHandle)
     Declares a group handle for user metrics for usage in more than one file. Every global
@@ -385,8 +415,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_API_CounterGroupHandle \
-    groupHandle = SILC_API_INVALID_COUNTER_GROUP;
 
 /** @def SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle )
     Declares an external group handle. Every global
@@ -434,8 +462,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
-    extern SILC_API_CounterGroupHandle groupHandle;
 
 /** @def SILC_USER_METRIC_GROUP_INIT( groupHandle, name )
     Initializes a metric group. Each group need to be initialized before it is used for
@@ -465,9 +491,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_GROUP_INIT( groupHandle, \
-                                     name ) SILC_User_MetricGroupInit( \
-        groupHandle, name );
 
 /** @def SILC_USER_METRIC_LOCAL(metricHandle)
     Declares a handle for a user metric.
@@ -497,9 +520,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_User_MetricHandle \
-    metricHandle                                                                \
-        = SILC_API_INVALID_COUNTER;
 
 /** @def SILC_USER_METRIC_GLOBAL( metricHandle )
     Declares a handle for a user metric as a global variable. It must be used
@@ -540,8 +560,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_User_MetricHandle metricHandle \
-        = SILC_API_INVALID_COUNTER;
 
 /** @def SILC_USER_METRIC_EXTERNAL( metricHandle )
     Declares an externally defined handle for a user metric. Every
@@ -582,8 +600,6 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
-    extern SILC_User_MetricHandle metricHandle;
 
 /** @def SILC_USER_METRIC_INIT(metricHandle,name, unit, type, context,groupHandle)
     Initializes a new user counter. Each counter must be initialized before it is
@@ -623,16 +639,14 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
-                               groupHandle ) \
-    Silc_UserMetricInit( metricHandle, name, unit, type, context, groupHandle );
 
 /** @def SILC_USER_METRIC_INT64(name,value)
-    Triggers a new event for a user counter of a 64 bit integer data type. Each user
-    counter must be defined with SILC_USER_COUNTER_DEF before it is triggered for the
-    first time.
-    @param name A string containing the name of the counter. It must be the same name
-                that is used during definition of the counter.
+    Triggers a new event for a user counter of a 64 bit integer data type.
+    Each user metric must be declared with SILC_USER_COUNTER_LOCAL,
+    SILC_USER_COUNTER_GLOBAL, or SILC_USER_COUNTER_EXTERNAL and initialized with
+    SILC_USER_COUNTER_INIT before it is triggered for the first time.
+    @param metricHandle The handle of the metric for which avalue is given in this
+                 statement.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
 
@@ -656,16 +670,14 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_INT64( metricHandle, \
-                                value )  SILC_User_TriggerMetricInt64( \
-        metricHandle, value );
 
-/** @def SILC_USER_METRIC_UINT64(name,value)
+/** @def SILC_USER_METRIC_UINT64(metricHandle,value)
     Triggers a new event for a user counter of a 64 bit unsigned  integer data type.
-    Each user counter must be defined with SILC_USER_COUNTER_DEF before it is triggered
-    for the first time.
-    @param name A string containing the name of the counter. It must be the same name
-                that is used during definition of the counter.
+    Each user metric must be declared with SILC_USER_COUNTER_LOCAL,
+    SILC_USER_COUNTER_GLOBAL, or SILC_USER_COUNTER_EXTERNAL and initialized with
+    SILC_USER_COUNTER_INIT before it is triggered for the first time.
+    @param metricHandle The handle of the metric for which avalue is given in this
+                 statement.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit unsigned integer.
 
@@ -689,16 +701,14 @@
     }
     @endcode
  */
-#define SILC_USER_METRIC_UINT64( metricHandle, \
-                                 value )  SILC_User_TriggerMetricUint64( \
-        metricHandle, value );
 
-/** @def SILC_USER_METRIC_DOUBLE(name,value)
-    Triggers a new event for a user counter of a double precision floating point data type.
-    Each user counter must be defined with SILC_USER_COUNTER_DEF before it is triggered
-    for the first time.
-    @param name A string containing the name of the counter. It must be the same name
-                that is used during definition of the counter.
+/** @def SILC_USER_METRIC_DOUBLE(metricHandle,value)
+    Triggers a new event for a user counter of a double precision floating point data
+    type. Each user metric must be declared with SILC_USER_COUNTER_LOCAL,
+    SILC_USER_COUNTER_GLOBAL, or SILC_USER_COUNTER_EXTERNAL and initialized with
+    SILC_USER_COUNTER_INIT before it is triggered for the first time.
+    @param metricHandle The handle of the metric for which avalue is given in this
+                 statement.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a double.
 
@@ -722,15 +732,57 @@
     }
     @endcode
  */
+
+/* **************************************************************************************
+ * User Counter macros
+ * *************************************************************************************/
+#ifdef SILC_USER_ENABLE
+
+#define SILC_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
+    SILC_API_CounterGroupHandle groupHandle  \
+        = SILC_API_INVALID_COUNTER_GROUP;
+
+#define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_API_CounterGroupHandle \
+    groupHandle = SILC_API_INVALID_COUNTER_GROUP;
+
+#define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
+    extern SILC_API_CounterGroupHandle groupHandle;
+
+#define SILC_USER_METRIC_GROUP_INIT( groupHandle, \
+                                     name ) SILC_User_MetricGroupInit( \
+        groupHandle, name );
+
+#define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_User_MetricHandle \
+    metricHandle                                                                \
+        = SILC_API_INVALID_COUNTER;
+
+#define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_User_MetricHandle metricHandle \
+        = SILC_API_INVALID_COUNTER;
+
+#define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
+    extern SILC_User_MetricHandle metricHandle;
+
+#define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
+                               groupHandle ) \
+    Silc_UserMetricInit( metricHandle, name, unit, type, context, groupHandle );
+
+#define SILC_USER_METRIC_INT64( metricHandle, \
+                                value )  SILC_User_TriggerMetricInt64( \
+        metricHandle, value );
+
+#define SILC_USER_METRIC_UINT64( metricHandle, \
+                                 value )  SILC_User_TriggerMetricUint64( \
+        metricHandle, value );
+
 #define SILC_USER_METRIC_DOUBLE( metricHandle, \
                                  value ) SILC_User_TriggerMetricDouble( \
         metricHandle, value );
 
+#endif // SILC_USER_ENABLE
 
 /* **************************************************************************************
- * C++ specific macros
+ * Documentation for C++ specific macros
  * *************************************************************************************/
-#ifdef __cplusplus
 
 /** @def SILC_USER_REGION(name,type)
     Instruments a codeblock as a region with the given name. It inserts a local variable
@@ -755,14 +807,27 @@
     }
     @endcode
  */
+/* **************************************************************************************
+ * C++ specific macros
+ * *************************************************************************************/
+#ifdef SILC_USER_ENABLE
+
+#ifdef __cplusplus
+
 #define SILC_USER_REGION( name, \
                           type ) static SILC_User_Region silc_user_region_inst( \
         name, type, __FILE__, __LINE__ );
 
+#else // __cplusplus
+
+#define SILC_USER_REGION( name, type )
+
 #endif // __cplusplus
 
+#endif // SILC_USER_ENABLE
+
 /* **************************************************************************************
- * Control macros
+ * Documentation for Control macros
  * *************************************************************************************/
 
 /** @def SILC_RECORDING_ON
@@ -780,7 +845,6 @@
     }
     @endcode
  */
-#define SILC_RECORDING_ON SILC_API_EnableRecording();
 
 /** @def SILC_RECORDING_OFF
     Disables the measurement. If already disabled, this command has no effect.
@@ -797,7 +861,6 @@
     }
     @endcode
  */
-#define SILC_RECORDING_OFF SILC_API_DisableRecording();
 
 /** @def SILC_RECORDING_IS_ON
     Returns zero if the measurement is disabled, else it returns a nonzero value.
@@ -813,11 +876,25 @@
     }
     @endcode
  */
-#define SILC_RECORDING_IS_ON SILC_API_RecordingEnabled()
 
 /* **************************************************************************************
- * Virtual Topologies
+ * Control macros
  * *************************************************************************************/
+
+#ifdef SILC_USER_ENABLE
+
+#define SILC_RECORDING_ON SILC_API_EnableRecording();
+
+#define SILC_RECORDING_OFF SILC_API_DisableRecording();
+
+#define SILC_RECORDING_IS_ON SILC_API_RecordingEnabled()
+
+#endif // SILC_USER_ENABLE
+
+/* **************************************************************************************
+ * Documentation for Virtual Topologies
+ * *************************************************************************************/
+
 /** @def SILC_DEFINE_CARTESIAN_2D
     Defines a two-dimentional cartesian topology.
     @param name     A string containing the name of the topology.
@@ -829,8 +906,6 @@
                     false, other values mean true.
     @return A handle to the newly created topology.
  */
-#define SILC_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY ) \
-    SILC_User_DefineTopology2D( name, numX, numY, periodX, periodY )
 
 /** @def SILC_DEFINE_CARTESIAN_3D
     Defines a three-dimentional cartesian topology.
@@ -846,10 +921,6 @@
                     false, other values mean true.
     @return A handle to the newly created topology.
  */
-#define SILC_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
-                                  periodZ ) \
-    SILC_User_DefineTopology3D( name, numX, numY, numZ, periodX, periodY, \
-                                periodZ )
 
 /** @def SILC_DEFINE_COORDINATE_2D
     Defines the a coordinate in a two-dimensional cartesian topology.
@@ -857,8 +928,6 @@
     @param coordX   X-coordinate
     @param coordY   Y-coordinate
  */
-#define SILC_DEFINE_COORDINATE_2D( topId, coordX, coordY ) \
-    SILC_User_DefineCoordinates2D( topId, coordX, coordY );
 
 /** @def SILC_DEFINE_COORDINATE_3D
     Defines the a coordinate in a three-dimensional cartesian topology.
@@ -867,6 +936,23 @@
     @param coordY   Y-coordinate
     @param coordZ   Z-coordinate
  */
+
+/* **************************************************************************************
+ * Virtual Topologies
+ * *************************************************************************************/
+#ifdef SILC_USER_ENABLE
+
+#define SILC_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY ) \
+    SILC_User_DefineTopology2D( name, numX, numY, periodX, periodY )
+
+#define SILC_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
+                                  periodZ ) \
+    SILC_User_DefineTopology3D( name, numX, numY, numZ, periodX, periodY, \
+                                periodZ )
+
+#define SILC_DEFINE_COORDINATE_2D( topId, coordX, coordY ) \
+    SILC_User_DefineCoordinates2D( topId, coordX, coordY );
+
 #define SILC_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ ) \
     SILC_User_DefineCoordinates3D( topId, coordX, coordY, coordZ );
 
@@ -876,8 +962,8 @@
 #else // SILC_USER_ENABLE
 
 #define SILC_USER_REGION( name, type )
-#define SILC_USER_REGION_DEFINE( handle, name, type )
-#define SILC_USER_REGION_BEGIN( handle )
+#define SILC_USER_REGION_DEFINE( handle )
+#define SILC_USER_REGION_BEGIN( handle, name, type )
 #define SILC_USER_REGION_END( handle )
 #define SILC_USER_FUNC_BEGIN
 #define SILC_USER_FUNC_END
@@ -888,15 +974,15 @@
 #define SILC_USER_METRIC_GROUP_LOCAL( groupHandle )
 #define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )
 #define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle )
-#define SILC_USER_METRIC_LOCAL( metricHandle )
+#define SILC_USER_METRIC_GROUP_INIT( groupHandle, name )
 #define SILC_USER_METRIC_GLOBAL( metricHandle )
 #define SILC_USER_METRIC_EXTERNAL( metricHandle )
+#define SILC_USER_METRIC_LOCAL( metricHandle )
 #define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
                                groupHandle )
 #define SILC_USER_METRIC_INT64( metricHandle, value )
 #define SILC_USER_METRIC_UINT64( metricHandle, value )
 #define SILC_USER_METRIC_DOUBLE( metricHandle, value )
-#define SILC_USER_REGION( name, type )
 #define SILC_RECORDING_ON
 #define SILC_RECORDING_OFF
 #define SILC_RECORDING_IS_ON
