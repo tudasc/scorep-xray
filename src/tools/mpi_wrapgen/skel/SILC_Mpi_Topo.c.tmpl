@@ -42,7 +42,7 @@ int MPI_Cart_create(MPI_Comm  comm_old,
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
-    esd_enter(epk_mpi_regid[EPK__MPI_CART_CREATE]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_CART_CREATE]);
   }
 
   return_val = PMPI_Cart_create(comm_old, ndims, dims, periodv, reorder, comm_cart);
@@ -56,13 +56,13 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     elg_ui4* udimv;
     elg_ui4* ucoordv;
 
-    epk_comm_create(*comm_cart);
+    silc_comm_create(*comm_cart);
   
     /* NOTE: 
      * currently topid == cid during measurement */
 
     /* get the topid and cid */
-    topid = cid = epk_comm_id(*comm_cart);
+    topid = cid = silc_comm_id(*comm_cart);
 
     /* find the rank of the calling process */
     PMPI_Comm_rank(*comm_cart, &my_rank); 
@@ -122,7 +122,7 @@ int MPI_Cart_create(MPI_Comm  comm_old,
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_CART_CREATE]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_CART_CREATE]);
     EVENT_GEN_ON();
   }
 

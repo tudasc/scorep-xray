@@ -21,8 +21,8 @@
 
 #include "elg_error.h"
 
-#include "esd_def.h"
-#include "esd_event.h"
+#include "SILC_Definitions.h"
+#include "SILC_Events.h"
 #include "esd_run.h"
 
 #include <stdio.h>
@@ -40,7 +40,7 @@ static int         my_status_array_size = 0;
  * @return pointer to status array
  * @ingroup util
  */
-static MPI_Status* epk_get_status_array(int size) {
+static MPI_Status* silc_get_status_array(int size) {
   if (my_status_array_size == 0)
   {
     /* -- never used: initialize -- */
@@ -59,16 +59,16 @@ static MPI_Status* epk_get_status_array(int size) {
 }
 
 /** flag to indicate whether event generation is turned on or off */
-int epk_mpi_nogen = 0;
+int silc_mpi_nogen = 0;
 
 /** check whether event generation is turned on */
-#define IS_EVENT_GEN_ON            (!epk_mpi_nogen)
+#define IS_EVENT_GEN_ON            (!silc_mpi_nogen)
 /** check whether event generation is turned on for a specific group */
-#define IS_EVENT_GEN_ON_FOR(group) ((!epk_mpi_nogen) && (epk_mpi_enabled & EPK_MPI_ENABLED_##group))
+#define IS_EVENT_GEN_ON_FOR(group) ((!silc_mpi_nogen) && (silc_mpi_enabled & SILC_MPI_ENABLED_##group))
 /** turn off event generation */
-#define EVENT_GEN_OFF()            epk_mpi_nogen = 1
+#define EVENT_GEN_OFF()            silc_mpi_nogen = 1
 /** turn on event generation */
-#define EVENT_GEN_ON()             epk_mpi_nogen = 0
+#define EVENT_GEN_ON()             silc_mpi_nogen = 0
 
 /*
  *-----------------------------------------------------------------------------

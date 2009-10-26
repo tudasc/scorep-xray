@@ -27,135 +27,135 @@
 
 #include "elg_error.h"
 
-#include "esd_def.h"
+#include "SILC_Definitions.h"
 
 /** 
  * MPI operation event type 
  */
 typedef struct
 {
-  char*   name;
-  elg_ui4 type;
-} EpkMPItype;
+  char*    name;
+  uint32_t type;
+} silc_mpi_type;
 
 /** MPI point-to-point function types
  * @note contents must be alphabetically sorted */
-static const EpkMPItype epk_mpi_pt2pt[] = {
-  { "MPI_Bsend",            EPK_MPI_TYPE__SEND },
-  { "MPI_Ibsend",           EPK_MPI_TYPE__SEND },
-  { "MPI_Irsend",           EPK_MPI_TYPE__SEND },
-  { "MPI_Isend",            EPK_MPI_TYPE__SEND },
-  { "MPI_Issend",           EPK_MPI_TYPE__SEND },
-  { "MPI_Recv",                                  EPK_MPI_TYPE__RECV },
-  { "MPI_Rsend",            EPK_MPI_TYPE__SEND },
-  { "MPI_Send",             EPK_MPI_TYPE__SEND },
-  { "MPI_Sendrecv",         EPK_MPI_TYPE__SEND & EPK_MPI_TYPE__RECV },
-  { "MPI_Sendrecv_replace", EPK_MPI_TYPE__SEND & EPK_MPI_TYPE__RECV },
-  { "MPI_Ssend",            EPK_MPI_TYPE__SEND },
-  { "MPI_Start",            EPK_MPI_TYPE__SEND },
-  { "MPI_Startall",         EPK_MPI_TYPE__SEND },
-  { "MPI_Test",                                  EPK_MPI_TYPE__RECV },
-  { "MPI_Testall",                               EPK_MPI_TYPE__RECV },
-  { "MPI_Testany",                               EPK_MPI_TYPE__RECV },
-  { "MPI_Testsome",                              EPK_MPI_TYPE__RECV },
-  { "MPI_Wait",                                  EPK_MPI_TYPE__RECV },
-  { "MPI_Waitall",                               EPK_MPI_TYPE__RECV },
-  { "MPI_Waitany",                               EPK_MPI_TYPE__RECV },
-  { "MPI_Waitsome",                              EPK_MPI_TYPE__RECV },
+static const silc_mpi_type silc_mpi_pt2pt[] = {
+  { "MPI_Bsend",            SILC_MPI_TYPE__SEND },
+  { "MPI_Ibsend",           SILC_MPI_TYPE__SEND },
+  { "MPI_Irsend",           SILC_MPI_TYPE__SEND },
+  { "MPI_Isend",            SILC_MPI_TYPE__SEND },
+  { "MPI_Issend",           SILC_MPI_TYPE__SEND },
+  { "MPI_Recv",                                  SILC_MPI_TYPE__RECV },
+  { "MPI_Rsend",            SILC_MPI_TYPE__SEND },
+  { "MPI_Send",             SILC_MPI_TYPE__SEND },
+  { "MPI_Sendrecv",         SILC_MPI_TYPE__SEND & SILC_MPI_TYPE__RECV },
+  { "MPI_Sendrecv_replace", SILC_MPI_TYPE__SEND & SILC_MPI_TYPE__RECV },
+  { "MPI_Ssend",            SILC_MPI_TYPE__SEND },
+  { "MPI_Start",            SILC_MPI_TYPE__SEND },
+  { "MPI_Startall",         SILC_MPI_TYPE__SEND },
+  { "MPI_Test",                                  SILC_MPI_TYPE__RECV },
+  { "MPI_Testall",                               SILC_MPI_TYPE__RECV },
+  { "MPI_Testany",                               SILC_MPI_TYPE__RECV },
+  { "MPI_Testsome",                              SILC_MPI_TYPE__RECV },
+  { "MPI_Wait",                                  SILC_MPI_TYPE__RECV },
+  { "MPI_Waitall",                               SILC_MPI_TYPE__RECV },
+  { "MPI_Waitany",                               SILC_MPI_TYPE__RECV },
+  { "MPI_Waitsome",                              SILC_MPI_TYPE__RECV },
 };
 
 /** MPI collective function types 
  * @note contents must be alphabetically sorted */
-static const EpkMPItype epk_mpi_colls[] = {
-  { "MPI_Allgather",      EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Allgatherv",     EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Allreduce",      EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Alltoall",       EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Alltoallv",      EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Alltoallw",      EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Barrier",        EPK_COLL_TYPE__BARRIER },
-  { "MPI_Bcast",          EPK_COLL_TYPE__ONE2ALL },
-  { "MPI_Cart_create",    EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Cart_sub",       EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Comm_create",    EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Comm_dup",       EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Comm_free",      EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Comm_split",     EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Exscan",         EPK_COLL_TYPE__PARTIAL },
-  { "MPI_Finalize",       EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Gather",         EPK_COLL_TYPE__ALL2ONE },
-  { "MPI_Gatherv",        EPK_COLL_TYPE__ALL2ONE },
-  { "MPI_Init",           EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Init_thread",    EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Reduce",         EPK_COLL_TYPE__ALL2ONE },
-  { "MPI_Reduce_scatter", EPK_COLL_TYPE__ALL2ALL },
-  { "MPI_Scan",           EPK_COLL_TYPE__PARTIAL },
-  { "MPI_Scatter",        EPK_COLL_TYPE__ONE2ALL },
-  { "MPI_Scatterv",       EPK_COLL_TYPE__ONE2ALL },
-  { "MPI_Win_create",     EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Win_fence",      EPK_COLL_TYPE__IMPLIED },
-  { "MPI_Win_free",       EPK_COLL_TYPE__IMPLIED }
+static const silc_mpi_type epk_mpi_colls[] = {
+  { "MPI_Allgather",      SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Allgatherv",     SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Allreduce",      SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Alltoall",       SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Alltoallv",      SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Alltoallw",      SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Barrier",        SILC_COLL_TYPE__BARRIER },
+  { "MPI_Bcast",          SILC_COLL_TYPE__ONE2ALL },
+  { "MPI_Cart_create",    SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Cart_sub",       SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Comm_create",    SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Comm_dup",       SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Comm_free",      SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Comm_split",     SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Exscan",         SILC_COLL_TYPE__PARTIAL },
+  { "MPI_Finalize",       SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Gather",         SILC_COLL_TYPE__ALL2ONE },
+  { "MPI_Gatherv",        SILC_COLL_TYPE__ALL2ONE },
+  { "MPI_Init",           SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Init_thread",    SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Reduce",         SILC_COLL_TYPE__ALL2ONE },
+  { "MPI_Reduce_scatter", SILC_COLL_TYPE__ALL2ALL },
+  { "MPI_Scan",           SILC_COLL_TYPE__PARTIAL },
+  { "MPI_Scatter",        SILC_COLL_TYPE__ONE2ALL },
+  { "MPI_Scatterv",       SILC_COLL_TYPE__ONE2ALL },
+  { "MPI_Win_create",     SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Win_fence",      SILC_COLL_TYPE__IMPLIED },
+  { "MPI_Win_free",       SILC_COLL_TYPE__IMPLIED }
 };
 
 /** Region IDs of MPI functions */
-int epk_mpi_regid[EPK__MPI_NUMFUNCS+1];
+SILC_RegionHandle silc_mpi_regid[SILC__MPI_NUMFUNCS+1];
 
 /** Mapping of string keys to enabling group IDs 
  * @note The keys need to be alphabetically sorted, to enable binary
  *       search on the data structure.
  */
-static const EpkMPItype epk_mpi_enable_groups[] = {
-  { "ALL",     EPK_MPI_ENABLED_ALL     },
-  { "CG",      EPK_MPI_ENABLED_CG      },
-  { "COLL",    EPK_MPI_ENABLED_COLL    },
-  { "DEFAULT", EPK_MPI_ENABLED_DEFAULT },
-  { "ENV",     EPK_MPI_ENABLED_ENV     },
-  { "ERR",     EPK_MPI_ENABLED_ERR     },
-  { "EXT",     EPK_MPI_ENABLED_EXT     },
-  { "IO",      EPK_MPI_ENABLED_IO      },
-  { "MISC",    EPK_MPI_ENABLED_MISC    },
-  { "P2P",     EPK_MPI_ENABLED_P2P     },
-  { "RMA",     EPK_MPI_ENABLED_RMA     },
-  { "SPAWN",   EPK_MPI_ENABLED_SPAWN   },
-  { "TOPO",    EPK_MPI_ENABLED_TOPO    },
-  { "TYPE",    EPK_MPI_ENABLED_TYPE    }
+static const silc_mpi_type silc_mpi_enable_groups[] = {
+  { "ALL",     SILC_MPI_ENABLED_ALL     },
+  { "CG",      SILC_MPI_ENABLED_CG      },
+  { "COLL",    SILC_MPI_ENABLED_COLL    },
+  { "DEFAULT", SILC_MPI_ENABLED_DEFAULT },
+  { "ENV",     SILC_MPI_ENABLED_ENV     },
+  { "ERR",     SILC_MPI_ENABLED_ERR     },
+  { "EXT",     SILC_MPI_ENABLED_EXT     },
+  { "IO",      SILC_MPI_ENABLED_IO      },
+  { "MISC",    SILC_MPI_ENABLED_MISC    },
+  { "P2P",     SILC_MPI_ENABLED_P2P     },
+  { "RMA",     SILC_MPI_ENABLED_RMA     },
+  { "SPAWN",   SILC_MPI_ENABLED_SPAWN   },
+  { "TOPO",    SILC_MPI_ENABLED_TOPO    },
+  { "TYPE",    SILC_MPI_ENABLED_TYPE    }
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-elg_ui4 epk_mpi_enabled = 0;
+elg_ui4 silc_mpi_enabled = 0;
 
-static int epk_mycmp(const void *v1, const void *v2);
+static int silc_mycmp(const void *v1, const void *v2);
 
 /**
  * Enable measurement for specific subgroups of MPI functions
  */
-void epk_mpi_enable_init()
+void silc_mpi_enable_init()
 {
-  char* token = NULL;
-  int   len   = strlen(epk_get(EPK_MPI_ENABLED)) + 1;
-  char* conf  = malloc(sizeof(char) * len);
+  char*   token = NULL;
+  int32_t len   = strlen(silc_get(SILC_MPI_ENABLED)) + 1;
+  char*   conf  = malloc(sizeof(char) * len);
 
-  strncpy(conf, epk_get(EPK_MPI_ENABLED), len);
+  strncpy(conf, silc_get(SILC_MPI_ENABLED), len);
   token = strtok(conf,":");
   while (token != NULL)
   {
     /* check if token is a valid flag */
-    EpkMPItype* match =
-            bsearch(token, (EpkMPItype*)epk_mpi_enable_groups,
-                    sizeof(epk_mpi_enable_groups)/sizeof(EpkMPItype),
-                    sizeof(EpkMPItype), epk_mycmp);
+    silc_mpi_type* match =
+            bsearch(token, (silc_mpi_type*)silc_mpi_enable_groups,
+                    sizeof(silc_mpi_enable_groups)/sizeof(silc_mpi_type),
+                    sizeof(silc_mpi_type), silc_mycmp);
 
     if (match)
     {
       /* enable event generation for function group */
-      epk_mpi_enabled |= match->type;
-      elg_cntl_msg("Enabled event generation for MPI group: %s",
+      silc_mpi_enabled |= match->type;
+      silc_cntl_msg("Enabled event generation for MPI group: %s",
               token);
     }
     else
     {
         /* token is not a valid MPI function group */
-        elg_warning("Unknown MPI function group ignored: %s", token);
+        silc_warning("Unknown MPI function group ignored: %s", token);
     }
     token = strtok(NULL, ":");
   }
@@ -164,29 +164,30 @@ void epk_mpi_enable_init()
 /**
  * Register MPI functions and initialize data structures
  */
-void epk_mpi_register()
+void silc_mpi_register()
 {
   elg_ui4 fid = esd_def_file("MPI");
  
-  epk_mpi_enable_init();
+  silc_mpi_enable_init();
 
 #pragma wrapgen multiple restrict() skel/SILC_Mpi_RegC.w
 
   /** Artificial root for MPI-only experiments when no user-code
    * instrumenation is available */
-  epk_mpi_regid[EPK_PARALLEL__MPI] =
-      esd_def_region("PARALLEL", ELG_NO_ID, ELG_NO_LNO, ELG_NO_LNO, "EPIK", ELG_UNKNOWN);
+  silc_mpi_regid[SILC_PARALLEL__MPI] =
+      SILC_DefineRegion("PARALLEL", SILC_INVALID_SOURCE_FILE, SILC_INVALID_LINE_NO, 
+                        SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_UNKNOWN);
 }
 
 /**
  * Compare function for binary search
  * @param v1 string to checked
- * @param v2 pointer to \p EpkMPItype structure
+ * @param v2 pointer to \p silc_mpi_type structure
  * @return result is equivalent to \p strcasecmp result of two strings
  */
-static int epk_mycmp(const void *v1, const void *v2)
+static int silc_mycmp(const void *v1, const void *v2)
 {
-   return strcasecmp((char*)v1, ((EpkMPItype*)v2)->name);
+   return strcasecmp((char*)v1, ((silc_mpi_type*)v2)->name);
 }
 
 /**
@@ -194,11 +195,11 @@ static int epk_mycmp(const void *v1, const void *v2)
  * @param str Region name
  * @return type of function if collective, 0 otherwise.
  */
-elg_ui1 epk_is_mpi_collective(const char* str)
+uint8_t silc_is_mpi_collective(const char* str)
 {
-  EpkMPItype * match =
-    bsearch(str, (EpkMPItype*)epk_mpi_colls, sizeof(epk_mpi_colls)/sizeof(EpkMPItype),
-	    sizeof(EpkMPItype), epk_mycmp);
+  silc_mpi_type * match =
+    bsearch(str, (silc_mpi_type*)silc_mpi_colls, sizeof(silc_mpi_colls)/sizeof(silc_mpi_type),
+	    sizeof(silc_mpi_type), silc_mycmp);
 
   return match ? match->type : 0;
 }
@@ -208,13 +209,13 @@ elg_ui1 epk_is_mpi_collective(const char* str)
  * @param str Region name
  * @return type of function if point-to-point, 0 otherwise.
  */
-elg_ui1 epk_is_mpi_point2point(const char* str)
+uint8_t silc_is_mpi_point2point(const char* str)
 {
-  EpkMPItype * match =
-    bsearch(str, (EpkMPItype*)epk_mpi_pt2pt, sizeof(epk_mpi_pt2pt)/sizeof(EpkMPItype),
-	    sizeof(EpkMPItype), epk_mycmp);
+  silc_mpi_type * match =
+    bsearch(str, (silc_mpi_type*)silc_mpi_pt2pt, sizeof(silc_mpi_pt2pt)/sizeof(silc_mpi_type),
+	    sizeof(silc_mpi_type), silc_mycmp);
 
-  return match ? match->type : EPK_MPI_TYPE__NONE;
+  return match ? match->type : SILC_MPI_TYPE__NONE;
 }
 
 /**
@@ -223,22 +224,22 @@ elg_ui1 epk_is_mpi_point2point(const char* str)
  * @return type of function, if point-to-point or collective. 0,
  *         otherwise.
  */
-elg_ui1 epk_mpi_eventtype(const char* str)
+uint8_t silc_mpi_eventtype(const char* str)
 {
-  elg_ui1 type = epk_is_mpi_point2point(str);
-  if (type != EPK_MPI_TYPE__NONE)
+  uint8_t type = silc_is_mpi_point2point(str);
+  if (type != SILC_MPI_TYPE__NONE)
       return type;
 
-  type = (elg_ui1) epk_is_mpi_collective(str);
+  type = (uint8_t) silc_is_mpi_collective(str);
   switch (type) {
-      case EPK_COLL_TYPE__BARRIER:
-      case EPK_COLL_TYPE__ONE2ALL:
-      case EPK_COLL_TYPE__ALL2ONE:
-      case EPK_COLL_TYPE__ALL2ALL:
-      case EPK_COLL_TYPE__PARTIAL:
-          return EPK_MPI_TYPE__COLLECTIVE;
+      case SILC_COLL_TYPE__BARRIER:
+      case SILC_COLL_TYPE__ONE2ALL:
+      case SILC_COLL_TYPE__ALL2ONE:
+      case SILC_COLL_TYPE__ALL2ALL:
+      case SILC_COLL_TYPE__PARTIAL:
+          return SILC_MPI_TYPE__COLLECTIVE;
       default:
           break;
   }
-  return EPK_MPI_TYPE__NONE;
+  return SILC_MPI_TYPE__NONE;
 }

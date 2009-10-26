@@ -1,7 +1,7 @@
 ${guard:start}
-  if (epk_mpi_enabled & EPK_MPI_ENABLED_${group|uppercase})
+  if (silc_mpi_enabled & SILC_MPI_ENABLED_${group|uppercase})
   {
-    epk_mpi_regid[EPK__${name|uppercase}] =
-      esd_def_region("${name}", fid, ELG_NO_LNO, ELG_NO_LNO, "MPI", ELG_FUNCTION${mpi:multiplicity});
+    silc_mpi_regid[SILC__${name|uppercase}] =
+      SILC_DefineRegion("${name}", fileId, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION${mpi:multiplicity});
   }
 ${guard:end}

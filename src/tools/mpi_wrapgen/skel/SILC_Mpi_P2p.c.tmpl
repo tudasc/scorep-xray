@@ -46,7 +46,7 @@ int MPI_Recv( void* buf,
 
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_RECV]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_RECV]);
 
     if (status == MPI_STATUS_IGNORE) status = &mystatus;
     return_val = PMPI_Recv(buf, count, datatype, source, tag, comm, status);
@@ -55,11 +55,11 @@ int MPI_Recv( void* buf,
     {
       PMPI_Type_size(datatype, &sz);
       PMPI_Get_count(status, datatype, &count);
-      esd_mpi_recv(EPK_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   EPK_COMM_ID(comm), status->MPI_TAG, count * sz);
+      SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   SILC_COMM_ID(comm), status->MPI_TAG, count * sz);
     }
 
-    esd_exit(epk_mpi_regid[EPK__MPI_RECV]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_RECV]);
 
     EVENT_GEN_ON();
   }
@@ -102,12 +102,12 @@ int MPI_Sendrecv(void* sendbuf,
 
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_SENDRECV]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_SENDRECV]);
 
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(sendtype, &sendsz);
-      esd_mpi_send(EPK_RANK_TO_PE(dest, comm), EPK_COMM_ID(comm),
+      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm), SILC_COMM_ID(comm),
                    sendtag, sendcount * sendsz);
     }
 
@@ -123,11 +123,11 @@ int MPI_Sendrecv(void* sendbuf,
       {
         PMPI_Type_size(recvtype, &recvsz);
         PMPI_Get_count(status, recvtype, &recvcount);
-        esd_mpi_recv(EPK_RANK_TO_PE(status->MPI_SOURCE, comm),
-                     EPK_COMM_ID(comm), status->MPI_TAG, recvcount * recvsz);
+        SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
+                     SILC_COMM_ID(comm), status->MPI_TAG, recvcount * recvsz);
       }
 
-    esd_exit(epk_mpi_regid[EPK__MPI_SENDRECV]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_SENDRECV]);
 
     EVENT_GEN_ON();
   }
@@ -168,13 +168,13 @@ int MPI_Sendrecv_replace(void* buf,
 
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_SENDRECV_REPLACE]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_SENDRECV_REPLACE]);
 
     PMPI_Type_size(datatype, &sz);
     if (dest != MPI_PROC_NULL)
     {
-      esd_mpi_send(EPK_RANK_TO_PE(dest, comm),
-                   EPK_COMM_ID(comm),
+      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm),
+                   SILC_COMM_ID(comm),
                    sendtag,
                    count * sz);
     }
@@ -189,11 +189,11 @@ int MPI_Sendrecv_replace(void* buf,
                                    comm, status);
     if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
-      esd_mpi_recv(EPK_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   EPK_COMM_ID(comm), status->MPI_TAG, count * sz);
+      SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   SILC_COMM_ID(comm), status->MPI_TAG, count * sz);
     }
 
-    esd_exit(epk_mpi_regid[EPK__MPI_SENDRECV_REPLACE]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_SENDRECV_REPLACE]);
 
     EVENT_GEN_ON();
   }
@@ -237,7 +237,7 @@ int MPI_Irecv(void* buf,
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_IRECV]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_IRECV]);
   }
 
   return_val = PMPI_Irecv(buf, count, datatype, source, tag, comm, request);
@@ -245,13 +245,13 @@ int MPI_Irecv(void* buf,
   {
     int sz;
     PMPI_Type_size(datatype, &sz);
-    epk_request_create(*request, ERF_RECV,
+    silc_request_create(*request, ERF_RECV,
                        tag, 0, count * sz, datatype, comm);
   }
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_IRECV]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_IRECV]);
 
     EVENT_GEN_ON();
   }
@@ -272,13 +272,13 @@ int MPI_Wait(MPI_Request* request,
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
   MPI_Status         mystatus;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_WAIT]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAIT]);
   }
 
   if (status == MPI_STATUS_IGNORE)
@@ -286,13 +286,13 @@ int MPI_Wait(MPI_Request* request,
     status = &mystatus;
   }
 
-  orig_req   = epk_request_get(*request);
+  orig_req   = silc_request_get(*request);
   return_val = PMPI_Wait(request, status);
-  epk_check_request(orig_req, status);
+  silc_check_request(orig_req, status);
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_WAIT]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAIT]);
 
     EVENT_GEN_ON();
   }
@@ -313,30 +313,30 @@ int MPI_Waitall(int count,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_WAITALL]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAITALL]);
   }
 
   if (array_of_statuses == MPI_STATUSES_IGNORE) 
   {
-    array_of_statuses = epk_get_status_array(count);
+    array_of_statuses = silc_get_status_array(count);
   }
-  epk_save_request_array(requests, count);
+  silc_save_request_array(requests, count);
   return_val = PMPI_Waitall(count, requests, array_of_statuses);
   for (i = 0; i < count; i++)
   {
-    orig_req = epk_saved_request_get(i);
-    epk_check_request(orig_req, &(array_of_statuses[i]));
+    orig_req = silc_saved_request_get(i);
+    silc_check_request(orig_req, &(array_of_statuses[i]));
   }
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_WAITALL]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAITALL]);
 
     EVENT_GEN_ON();
   }
@@ -358,14 +358,14 @@ int MPI_Waitany(int count,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
   MPI_Status         mystatus;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_WAITANY]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAITANY]);
   }
 
   if (status == MPI_STATUS_IGNORE)
@@ -373,14 +373,14 @@ int MPI_Waitany(int count,
     status = &mystatus;
   }
 
-  epk_save_request_array(requests, count);
+  silc_save_request_array(requests, count);
   return_val = PMPI_Waitany(count, requests, index, status);
-  orig_req   = epk_saved_request_get(*index);
-  epk_check_request(orig_req, status);
+  orig_req   = silc_saved_request_get(*index);
+  silc_check_request(orig_req, status);
   
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_WAITANY]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAITANY]);
 
     EVENT_GEN_ON();
   }
@@ -403,31 +403,31 @@ int MPI_Waitsome(int incount,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_WAITSOME]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAITSOME]);
   }
 
   if (array_of_statuses == MPI_STATUSES_IGNORE)
   {
-    array_of_statuses = epk_get_status_array(incount);
+    array_of_statuses = silc_get_status_array(incount);
   }
-  epk_save_request_array(array_of_requests, incount);
+  silc_save_request_array(array_of_requests, incount);
   return_val = PMPI_Waitsome(incount, array_of_requests, outcount,
                          array_of_indices, array_of_statuses );
   for (i=0; i<*outcount; ++i)
   {
-    orig_req = epk_saved_request_get(array_of_indices[i]);
-    epk_check_request(orig_req, &(array_of_statuses[i]));
+    orig_req = silc_saved_request_get(array_of_indices[i]);
+    silc_check_request(orig_req, &(array_of_statuses[i]));
   }
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_WAITSOME]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAITSOME]);
 
     EVENT_GEN_ON();
   }
@@ -448,30 +448,30 @@ int MPI_Test(MPI_Request* request,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
   MPI_Status         mystatus;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_TEST]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TEST]);
   }
 
   if (status == MPI_STATUS_IGNORE)
   {
     status = &mystatus;
   }
-  orig_req   = epk_request_get(*request);
+  orig_req   = silc_request_get(*request);
   return_val = PMPI_Test(request, flag, status);
   if (*flag) 
   {
-    epk_check_request(orig_req, status);
+    silc_check_request(orig_req, status);
   }
   
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_TEST]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TEST]);
 
     EVENT_GEN_ON();
   }
@@ -494,31 +494,31 @@ int MPI_Testany(int count,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
   MPI_Status         mystatus;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_TESTANY]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TESTANY]);
   }
 
   if (status == MPI_STATUS_IGNORE)
   {
     status = &mystatus;
   }
-  epk_save_request_array(array_of_requests, count);
+  silc_save_request_array(array_of_requests, count);
   return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
   if (*flag && *index != MPI_UNDEFINED)
   {
-    orig_req = epk_saved_request_get(*index);
-    epk_check_request(orig_req, status);
+    orig_req = silc_saved_request_get(*index);
+    silc_check_request(orig_req, status);
   }
   
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_TESTANY]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TESTANY]);
 
     EVENT_GEN_ON();
   }
@@ -540,33 +540,33 @@ int MPI_Testall(int count,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_TESTALL]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TESTALL]);
   }
 
   if (array_of_statuses == MPI_STATUSES_IGNORE)
   {
-    array_of_statuses = epk_get_status_array(count);
+    array_of_statuses = silc_get_status_array(count);
   }
-  epk_save_request_array(array_of_requests, count);
+  silc_save_request_array(array_of_requests, count);
   return_val = PMPI_Testall(count, array_of_requests, flag, array_of_statuses);
   if (*flag)
   {
     for (i = 0; i < count; i++)
     {
-      orig_req = epk_saved_request_get(i);
-      epk_check_request(orig_req, &(array_of_statuses[i]));
+      orig_req = silc_saved_request_get(i);
+      silc_check_request(orig_req, &(array_of_statuses[i]));
     }
   }
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_TESTALL]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TESTALL]);
 
     EVENT_GEN_ON();
   }
@@ -589,31 +589,31 @@ int MPI_Testsome(int incount,
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
-  struct EpkRequest* orig_req;
+  struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_TESTSOME]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TESTSOME]);
   }
 
   if (array_of_statuses == MPI_STATUSES_IGNORE)
   {
-    array_of_statuses = epk_get_status_array(incount);
+    array_of_statuses = silc_get_status_array(incount);
   }
-  epk_save_request_array(array_of_requests, incount);
+  silc_save_request_array(array_of_requests, incount);
   return_val = PMPI_Testsome( incount, array_of_requests, outcount,
                           array_of_indices, array_of_statuses );
   for (i=0; i<*outcount; ++i)
   {
-    orig_req = epk_saved_request_get(array_of_indices[i]);
-    epk_check_request(orig_req, &(array_of_statuses[i]));
+    orig_req = silc_saved_request_get(array_of_indices[i]);
+    silc_check_request(orig_req, &(array_of_statuses[i]));
   }
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_TESTSOME]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TESTSOME]);
 
     EVENT_GEN_ON();
   }
@@ -651,7 +651,7 @@ int MPI_Recv_init(void* buf,
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_RECV_INIT]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_RECV_INIT]);
   }
 
   return_val = PMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
@@ -659,13 +659,13 @@ int MPI_Recv_init(void* buf,
   {
     int sz;
     PMPI_Type_size(datatype, &sz);
-    epk_request_create(*request, (ERF_RECV | ERF_IS_PERSISTENT),
+    silc_request_create(*request, (ERF_RECV | ERF_IS_PERSISTENT),
                        tag, source, count * sz, datatype, comm);
   }
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_RECV_INIT]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_RECV_INIT]);
 
     EVENT_GEN_ON();
   }
@@ -687,20 +687,20 @@ int MPI_Start(MPI_Request* request)
 
   if (event_gen_active)
   {
-    struct EpkRequest* req;
+    struct SilcRequest* req;
 
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_START]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_START]);
 
-    req = epk_request_get(*request);
+    req = silc_request_get(*request);
     if (req && (req->flags & ERF_IS_PERSISTENT))
     {
       req->flags |= ERF_IS_ACTIVE;
       if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
       {
-        esd_mpi_send(EPK_RANK_TO_PE(req->dest, req->comm),
-                     EPK_COMM_ID(req->comm), req->tag,  req->bytes);
+        SILC_MpiSend(SILC_RANK_TO_PE(req->dest, req->comm),
+                     SILC_COMM_ID(req->comm), req->tag,  req->bytes);
       }
     }
   }
@@ -709,7 +709,7 @@ int MPI_Start(MPI_Request* request)
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_START]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_START]);
 
     EVENT_GEN_ON();
   }
@@ -733,23 +733,23 @@ int MPI_Startall(int count,
   if (event_gen_active)
   {
     MPI_Request*       request;
-    struct EpkRequest* req;
+    struct SilcRequest* req;
 
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_STARTALL]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_STARTALL]);
 
     for (i = 0; i < count; i++)
     {
       request = &array_of_requests[i];
-      req     = epk_request_get(*request);
+      req     = silc_request_get(*request);
       
       if (req && (req->flags & ERF_IS_PERSISTENT))
       {
         req->flags |= ERF_IS_ACTIVE;
         if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
-          esd_mpi_send(EPK_RANK_TO_PE(req->dest, req->comm),
-                       EPK_COMM_ID(req->comm), req->tag,  req->bytes);
+          SILC_MpiSend(SILC_RANK_TO_PE(req->dest, req->comm),
+                       SILC_COMM_ID(req->comm), req->tag,  req->bytes);
       }
     }
   }
@@ -758,7 +758,7 @@ int MPI_Startall(int count,
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_STARTALL]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_STARTALL]);
 
     EVENT_GEN_ON();
   }
@@ -777,16 +777,16 @@ int MPI_Request_free( MPI_Request* request )
 {
   const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
-  struct EpkRequest* req;
+  struct SilcRequest* req;
 
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_REQUEST_FREE]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_REQUEST_FREE]);
   }
 
-  req = epk_request_get(*request);
+  req = silc_request_get(*request);
   if (req && (req->flags & ERF_IS_PERSISTENT))
   {
     if (req->flags & ERF_IS_ACTIVE )
@@ -794,7 +794,7 @@ int MPI_Request_free( MPI_Request* request )
       req->flags |= ERF_DEALLOCATE;
     else
       /* deallocate inactive requests -*/
-      epk_request_free(req);
+      silc_request_free(req);
   }
   /* -- else non-persistent requests:
    *    + we don't track non-persistent sends
@@ -806,7 +806,7 @@ int MPI_Request_free( MPI_Request* request )
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_REQUEST_FREE]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_REQUEST_FREE]);
 
     EVENT_GEN_ON();
   }
@@ -830,7 +830,7 @@ int MPI_Cancel( MPI_Request* request )
   {
     EVENT_GEN_OFF();
 
-    esd_enter(epk_mpi_regid[EPK__MPI_CANCEL]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_CANCEL]);
   }
 
   /* -- do not really know what to do here ?!?
@@ -846,7 +846,7 @@ int MPI_Cancel( MPI_Request* request )
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_CANCEL]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_CANCEL]);
 
     EVENT_GEN_ON();
   }

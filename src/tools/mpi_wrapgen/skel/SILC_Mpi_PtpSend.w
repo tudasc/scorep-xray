@@ -15,17 +15,17 @@ ${proto:c}
     int sz;
 
     EVENT_GEN_OFF();
-    esd_enter(epk_mpi_regid[EPK__${name|uppercase}]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(datatype, &sz);
-      esd_mpi_send(EPK_RANK_TO_PE(dest, comm), EPK_COMM_ID(comm),
+      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm), SILC_COMM_ID(comm),
                    tag, count * sz);
     }
     return_val = ${call:pmpi};
 
-    esd_exit(epk_mpi_regid[EPK__${name|uppercase}]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
     EVENT_GEN_ON();
   }
   else

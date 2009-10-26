@@ -5,6 +5,8 @@ ${guard:start}
  * @note C interface
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
+ * It wraps the mpi call with an enter and exit event. Additionally, a collective
+ * event is generated in between the enter and exit event after the PMPI call.
  */
 ${proto:c} 
 {
@@ -15,15 +17,16 @@ ${proto:c}
       ${decl}
 
       EVENT_GEN_OFF();
-      esd_enter(epk_mpi_regid[EPK__${name|uppercase}]);
+      SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
       return_val = ${call:pmpi};
 
       ${xblock}
-      esd_mpi_collexit(epk_mpi_regid[EPK__${name|uppercase}],
-		       root_loc, EPK_COMM_ID(comm), 
-               ${mpi:sendcount}, 
-               ${mpi:recvcount});
+      SILC_MpiCollective(silc_mpi_regid[SILC__${name|uppercase}],
+		       root_loc, SILC_COMM_ID(comm), 
+                       ${mpi:sendcount}, 
+                       ${mpi:recvcount});
+      SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
       EVENT_GEN_ON();
     }
   else

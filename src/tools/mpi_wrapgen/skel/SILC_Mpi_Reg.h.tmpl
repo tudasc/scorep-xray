@@ -15,6 +15,9 @@
  * @file  SILC_Mpiwrap_Reg.h
  *
  * @brief Registration of MPI functions
+ * For all MPI functions a region is reistered at initialization time of the MPI adapter.
+ * The dynamic region handle obtained from the measurement system is stored in an array
+ * unter a fixed index for every region. 
  */
 
 #ifndef _SILC_MPIWRAP_REG_H
@@ -26,12 +29,10 @@
 #   define EXTERN extern     /**< External definition */
 #endif
 
-#include "elg_defs.h"
+#include "SILC_Definitions.h"
 
 /* 
  *-----------------------------------------------------------------------------
- *
- *  EPIK Library (Event Processing Interface Kit)
  *
  *  - Registration of MPI functions  
  *
@@ -39,110 +40,110 @@
  */
 
 /** function type is not point-to-point */
-#define EPK_MPI_TYPE__NONE                          0
+#define SILC_MPI_TYPE__NONE                          0
 /** function type is receive operation */
-#define EPK_MPI_TYPE__RECV                          1
+#define SILC_MPI_TYPE__RECV                          1
 /** function type is send operation */
-#define EPK_MPI_TYPE__SEND                          2
+#define SILC_MPI_TYPE__SEND                          2
 /** function type is send and receive operation */
-#define EPK_MPI_TYPE__SENDRECV                      3
+#define SILC_MPI_TYPE__SENDRECV                      3
 /** function type is collective */
-#define EPK_MPI_TYPE__COLLECTIVE                    4
+#define SILC_MPI_TYPE__COLLECTIVE                    4
 
 /** function has is unknown communication pattern */
-#define EPK_COLL_TYPE__UNKNOWN                      1
+#define SILC_COLL_TYPE__UNKNOWN                      1
 /** function is barrier-like operation */
-#define EPK_COLL_TYPE__BARRIER                      2
+#define SILC_COLL_TYPE__BARRIER                      2
 /** function has 1:n communication pattern */
-#define EPK_COLL_TYPE__ONE2ALL                      3
+#define SILC_COLL_TYPE__ONE2ALL                      3
 /** function has n:1 communication pattern */
-#define EPK_COLL_TYPE__ALL2ONE                      4
+#define SILC_COLL_TYPE__ALL2ONE                      4
 /** function has n:n communication pattern */
-#define EPK_COLL_TYPE__ALL2ALL                      5
+#define SILC_COLL_TYPE__ALL2ALL                      5
 /** function may be partially synchronizing */
-#define EPK_COLL_TYPE__PARTIAL                      6
+#define SILC_COLL_TYPE__PARTIAL                      6
 /** function is implicitely synchronizing */
-#define EPK_COLL_TYPE__IMPLIED                      7
+#define SILC_COLL_TYPE__IMPLIED                      7
 
 /**
  * Bitpatterns for runtime wrapper enabling
  */
-enum epk_mpi_groups {
+enum silc_mpi_groups {
     /* pure groups, which can be specified in conf */
-    EPK_MPI_ENABLED_CG        =     1,
-    EPK_MPI_ENABLED_COLL      =     2,
-    EPK_MPI_ENABLED_ENV       =     4,
-    EPK_MPI_ENABLED_ERR       =     8,
-    EPK_MPI_ENABLED_EXT       =    16,
-    EPK_MPI_ENABLED_IO        =    32,
-    EPK_MPI_ENABLED_MISC      =    64,
-    EPK_MPI_ENABLED_P2P       =   128,
-    EPK_MPI_ENABLED_RMA       =   256,
-    EPK_MPI_ENABLED_SPAWN     =   512,
-    EPK_MPI_ENABLED_TOPO      =  1024,
-    EPK_MPI_ENABLED_TYPE      =  2048,
+    SILC_MPI_ENABLED_CG        =     1,
+    SILC_MPI_ENABLED_COLL      =     2,
+    SILC_MPI_ENABLED_ENV       =     4,
+    SILC_MPI_ENABLED_ERR       =     8,
+    SILC_MPI_ENABLED_EXT       =    16,
+    SILC_MPI_ENABLED_IO        =    32,
+    SILC_MPI_ENABLED_MISC      =    64,
+    SILC_MPI_ENABLED_P2P       =   128,
+    SILC_MPI_ENABLED_RMA       =   256,
+    SILC_MPI_ENABLED_SPAWN     =   512,
+    SILC_MPI_ENABLED_TOPO      =  1024,
+    SILC_MPI_ENABLED_TYPE      =  2048,
     /* derived groups, which are a combination of existing groups */
-    EPK_MPI_ENABLED_CG_ERR    =  EPK_MPI_ENABLED_CG    | EPK_MPI_ENABLED_ERR,
-    EPK_MPI_ENABLED_CG_EXT    =  EPK_MPI_ENABLED_CG    | EPK_MPI_ENABLED_EXT,
-    EPK_MPI_ENABLED_CG_MISC   =  EPK_MPI_ENABLED_CG    | EPK_MPI_ENABLED_MISC,
-    EPK_MPI_ENABLED_IO_ERR    =  EPK_MPI_ENABLED_IO    | EPK_MPI_ENABLED_ERR,
-    EPK_MPI_ENABLED_IO_MISC   =  EPK_MPI_ENABLED_IO    | EPK_MPI_ENABLED_MISC,
-    EPK_MPI_ENABLED_RMA_ERR   =  EPK_MPI_ENABLED_RMA   | EPK_MPI_ENABLED_ERR,
-    EPK_MPI_ENABLED_RMA_EXT   =  EPK_MPI_ENABLED_RMA   | EPK_MPI_ENABLED_EXT,
-    EPK_MPI_ENABLED_RMA_MISC  =  EPK_MPI_ENABLED_RMA   | EPK_MPI_ENABLED_MISC,
-    EPK_MPI_ENABLED_TYPE_EXT  =  EPK_MPI_ENABLED_TYPE  | EPK_MPI_ENABLED_EXT,
-    EPK_MPI_ENABLED_TYPE_MISC =  EPK_MPI_ENABLED_TYPE  | EPK_MPI_ENABLED_MISC,
+    SILC_MPI_ENABLED_CG_ERR    =  SILC_MPI_ENABLED_CG    | SILC_MPI_ENABLED_ERR,
+    SILC_MPI_ENABLED_CG_EXT    =  SILC_MPI_ENABLED_CG    | SILC_MPI_ENABLED_EXT,
+    SILC_MPI_ENABLED_CG_MISC   =  SILC_MPI_ENABLED_CG    | SILC_MPI_ENABLED_MISC,
+    SILC_MPI_ENABLED_IO_ERR    =  SILC_MPI_ENABLED_IO    | SILC_MPI_ENABLED_ERR,
+    SILC_MPI_ENABLED_IO_MISC   =  SILC_MPI_ENABLED_IO    | SILC_MPI_ENABLED_MISC,
+    SILC_MPI_ENABLED_RMA_ERR   =  SILC_MPI_ENABLED_RMA   | SILC_MPI_ENABLED_ERR,
+    SILC_MPI_ENABLED_RMA_EXT   =  SILC_MPI_ENABLED_RMA   | SILC_MPI_ENABLED_EXT,
+    SILC_MPI_ENABLED_RMA_MISC  =  SILC_MPI_ENABLED_RMA   | SILC_MPI_ENABLED_MISC,
+    SILC_MPI_ENABLED_TYPE_EXT  =  SILC_MPI_ENABLED_TYPE  | SILC_MPI_ENABLED_EXT,
+    SILC_MPI_ENABLED_TYPE_MISC =  SILC_MPI_ENABLED_TYPE  | SILC_MPI_ENABLED_MISC,
     /* NOTE: ALL should comprise all pure groups */
-    EPK_MPI_ENABLED_ALL       =  EPK_MPI_ENABLED_CG    |
-                                 EPK_MPI_ENABLED_COLL  |
-                                 EPK_MPI_ENABLED_ENV   |
-                                 EPK_MPI_ENABLED_ERR   |
-                                 EPK_MPI_ENABLED_EXT   |
-                                 EPK_MPI_ENABLED_IO    |
-                                 EPK_MPI_ENABLED_MISC  |
-                                 EPK_MPI_ENABLED_P2P   |
-                                 EPK_MPI_ENABLED_RMA   |
-                                 EPK_MPI_ENABLED_SPAWN |
-                                 EPK_MPI_ENABLED_TOPO  |
-                                 EPK_MPI_ENABLED_TYPE, 
+    SILC_MPI_ENABLED_ALL       =  SILC_MPI_ENABLED_CG    |
+                                  SILC_MPI_ENABLED_COLL  |
+                                  SILC_MPI_ENABLED_ENV   |
+                                  SILC_MPI_ENABLED_ERR   |
+                                  SILC_MPI_ENABLED_EXT   |
+                                  SILC_MPI_ENABLED_IO    |
+                                  SILC_MPI_ENABLED_MISC  |
+                                  SILC_MPI_ENABLED_P2P   |
+                                  SILC_MPI_ENABLED_RMA   |
+                                  SILC_MPI_ENABLED_SPAWN |
+                                  SILC_MPI_ENABLED_TOPO  |
+                                  SILC_MPI_ENABLED_TYPE, 
     /* NOTE: DEFAULT should reflect the default set in 'epk_conf.c' */
-    EPK_MPI_ENABLED_DEFAULT   =  EPK_MPI_ENABLED_CG    |
-                                 EPK_MPI_ENABLED_COLL  |
-                                 EPK_MPI_ENABLED_ENV   |
-                                 EPK_MPI_ENABLED_IO    |
-                                 EPK_MPI_ENABLED_P2P   |
-                                 EPK_MPI_ENABLED_RMA   |
-                                 EPK_MPI_ENABLED_SPAWN |
-                                 EPK_MPI_ENABLED_TOPO 
+    SILC_MPI_ENABLED_DEFAULT   =  SILC_MPI_ENABLED_CG    |
+                                  SILC_MPI_ENABLED_COLL  |
+                                  SILC_MPI_ENABLED_ENV   |
+                                  SILC_MPI_ENABLED_IO    |
+                                  SILC_MPI_ENABLED_P2P   |
+                                  SILC_MPI_ENABLED_RMA   |
+                                  SILC_MPI_ENABLED_SPAWN |
+                                  SILC_MPI_ENABLED_TOPO 
 };                                                     
                                                        
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-EXTERN elg_ui4 epk_mpi_enabled;
+EXTERN uint32_t silc_mpi_enabled;
 
 #pragma wrapgen multiple restrict() skel/SILC_Mpi_RegH.w
 
 /** Number of MPI functions defined */
-#define EPK__MPI_NUMFUNCS                         303
+#define SILC__MPI_NUMFUNCS                         303
 
 /** Artificial root for MPI-only experiments when no user-code
  * instrumenation is available */
-#define EPK_PARALLEL__MPI           EPK__MPI_NUMFUNCS
+#define SILC_PARALLEL__MPI           SILC__MPI_NUMFUNCS
 
 /** Region IDs of MPI functions */
-EXTERN int     epk_mpi_regid[EPK__MPI_NUMFUNCS+1];
+EXTERN SILC_RegionHandle epk_mpi_regid[SILC__MPI_NUMFUNCS+1];
 
 /**
  * Register MPI functions and initialize data structures
  */
-EXTERN void    epk_mpi_register();
+EXTERN void silc_mpi_register();
 
-EXTERN elg_ui1 epk_is_mpi_collective(const char* str);
-EXTERN elg_ui1 epk_is_mpi_point2point(const char* str);
-EXTERN elg_ui1 epk_mpi_eventtype(const char* str);
+EXTERN uint8_t silc_is_mpi_collective(const char* str);
+EXTERN uint8_t silc_is_mpi_point2point(const char* str);
+EXTERN uint8_t silc_mpi_eventtype(const char* str);
 
 /**
  * Enable measurement for specific subgroups of MPI functions
  */
-EXTERN void    epk_mpi_enable_init();
+EXTERN void    silc_mpi_enable_init();
 
 #endif

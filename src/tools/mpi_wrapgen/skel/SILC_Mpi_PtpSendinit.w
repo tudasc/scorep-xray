@@ -14,19 +14,19 @@ ${proto:c}
   if (event_gen_active)
     {
       EVENT_GEN_OFF();
-      esd_enter(epk_mpi_regid[EPK__${name|uppercase}]);
+      SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
     }
 
   PMPI_Type_size(datatype, &sz);
 
   return_val = ${call:pmpi};
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    epk_request_create(*request, (ERF_SEND | ERF_IS_PERSISTENT),
+    silc_request_create(*request, (ERF_SEND | ERF_IS_PERSISTENT),
                        tag, dest, count*sz, datatype, comm);
 
   if (event_gen_active)
     {
-      esd_exit(epk_mpi_regid[EPK__${name|uppercase}]);
+      SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
       EVENT_GEN_ON();
     }
 

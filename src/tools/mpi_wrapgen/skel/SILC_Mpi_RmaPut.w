@@ -18,19 +18,19 @@ ${proto:c}
     ${decl}
 
     EVENT_GEN_OFF();
-    esd_enter(epk_mpi_regid[EPK__${name|uppercase}]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
-    dpid = epk_win_rank_to_pe( target_rank, win );
-    wid = epk_win_id( win );
+    dpid = silc_win_rank_to_pe( target_rank, win );
+    wid = silc_win_id( win );
     
     PMPI_Type_size(origin_datatype, &sendsz);
-    esd_mpi_put_1ts( dpid, wid, EPK_NEXT_RMA_ID, origin_count * sendsz);
+    esd_mpi_put_1ts( dpid, wid, SILC_NEXT_RMA_ID, origin_count * sendsz);
     
     return_val = ${call:pmpi};
 
-    esd_mpi_put_1te_remote(dpid, wid, EPK_CURR_RMA_ID);
+    esd_mpi_put_1te_remote(dpid, wid, SILC_CURR_RMA_ID);
 
-    esd_exit(epk_mpi_regid[EPK__${name|uppercase}]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
     EVENT_GEN_ON();
   }
   else

@@ -14,19 +14,19 @@ ${proto:c}
     if (event_gen_active)
     {
         EVENT_GEN_OFF ();
-        esd_enter (epk_mpi_regid[EPK__${name|uppercase}]);
+        esd_enter (silc_mpi_regid[SILC__${name|uppercase}]);
 
     }
 
     return_val = ${call:pmpi};
     if (*newcomm != MPI_COMM_NULL)
     {
-        epk_comm_create(*newcomm);
+        silc_comm_create(*newcomm);
     }
 
     if (event_gen_active)
     {
-        esd_exit (epk_mpi_regid[EPK__${name|uppercase}]);
+        esd_exit (silc_mpi_regid[SILC__${name|uppercase}]);
         EVENT_GEN_ON();
     }
 

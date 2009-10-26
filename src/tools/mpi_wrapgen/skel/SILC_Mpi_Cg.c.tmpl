@@ -46,15 +46,15 @@ int MPI_Comm_free(MPI_Comm* comm)
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
-    esd_enter (epk_mpi_regid[EPK__MPI_COMM_FREE]);
+    SILC_EnterRegion (silc_mpi_regid[SILC__MPI_COMM_FREE]);
   }
 
-  epk_comm_free(*comm);
+  silc_comm_free(*comm);
   return_val = PMPI_Comm_free (comm);
 
   if (event_gen_active)
   {
-    esd_exit(epk_mpi_regid[EPK__MPI_COMM_FREE]);
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_COMM_FREE]);
     EVENT_GEN_ON ();
   }
 
@@ -92,15 +92,15 @@ int MPI_Group_free(MPI_Group* group)
   if (event_gen_active)
   {
     EVENT_GEN_OFF();
-    esd_enter(epk_mpi_regid[EPK__MPI_GROUP_FREE]);
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_GROUP_FREE]);
   }
 
-  epk_group_free(*group);
+  silc_group_free(*group);
   return_val = PMPI_Group_free(group);
 
   if (event_gen_active)
   {
-    esd_exit (epk_mpi_regid[EPK__MPI_GROUP_FREE]);
+    SILC_ExitRegion (silc_mpi_regid[SILC__MPI_GROUP_FREE]);
     EVENT_GEN_ON ();
   }
 

@@ -14,16 +14,16 @@ ${proto:c}
   if (event_gen_active)
     {
       EVENT_GEN_OFF();
-      esd_enter(epk_mpi_regid[EPK__${name|uppercase}]);
+      SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
     }
 
   return_val = ${call:pmpi};
   if (*newgroup != MPI_GROUP_NULL)
-    epk_group_create(*newgroup);
+    silc_group_create(*newgroup);
 
   if (event_gen_active)
     {
-      esd_exit(epk_mpi_regid[EPK__${name|uppercase}]);
+      SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
       EVENT_GEN_ON();
     }
 
