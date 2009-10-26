@@ -17,7 +17,7 @@
  * @brief returns a string for the given config variable type
  */
 static inline const char*
-configtype_to_string
+config_type_to_string
 (
     SILC_ConfigType configType
 )
@@ -55,7 +55,7 @@ SILC_ConfigRegister
         fprintf( stderr, "Variable:      %s/%s\n",
                  variables[ i ].nameSapce, variables[ i ].name );
         fprintf( stderr, "  Type:        %s\n",
-                 configtype_to_string( variables[ i ].type ) );
+                 config_type_to_string( variables[ i ].type ) );
         fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );
         fprintf( stderr, "  Description: %s\n", variables[ i ].shortHelp );
     }
