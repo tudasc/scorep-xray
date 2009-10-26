@@ -1,3 +1,13 @@
+/** @file SILC_Metric.h
+
+    This file contains the interface for the hardware counter access. This module can
+    be build with different implementations supporting different hardware counter
+    libraries. All of these libraries are accessed through the same interface.
+
+    In the first step, only PAPI support is implemented. Later on, one could build this
+    module also with NEC or Solaris support.
+ */
+
 #ifndef SILC_METRIC_PAPI_H
 #define SILC_METRIC_PAPI_H
 
@@ -8,7 +18,7 @@
  * ***********************************************************************/
 
 /** @def SILC_METRIC_TYPE_UINT64
-    specifies that the counter data type is an unsigned 64 bit integer.
+    Specifies that the counter data type is an unsigned 64 bit integer.
  */
 #define SILC_METRIC_TYPE_UINT64 0
 
@@ -55,15 +65,14 @@
 
 /** This type encodes the properties of a metric. Different properties are
     encoded in different bits of this type.
-    <ul>
-      <li> The first two bytes encode the data type. Possible values are:
-           SILC_METRIC_TYPE_UINT64, SILC_METRIC_TYPE_INT64, and
-           SILC_METRIC_TYPE_DOUBLE.</li>
-      <li> The third byte encode the inteval type. Possible values are:
-           SILC_METRIC_INTERVALL_START and SILC_METRIC_INTERVALL_LAST. </li>
-      <li> The forth and fifth byte encode the mode. Possible values are:
-           SILC_METRIC_MODE_COUNTER, SILC_METRIC_MODE_RATE, and
-           SILC_METRIC_MODE_SAMPLE.
+    @li The first two bytes encode the data type. Possible values are:
+        SILC_METRIC_TYPE_UINT64, SILC_METRIC_TYPE_INT64, and
+        SILC_METRIC_TYPE_DOUBLE.</li>
+    @li The third byte encode the inteval type. Possible values are:
+        SILC_METRIC_INTERVALL_START and SILC_METRIC_INTERVALL_LAST. </li>
+    @li The forth and fifth byte encode the mode. Possible values are:
+        SILC_METRIC_MODE_COUNTER, SILC_METRIC_MODE_RATE, and
+        SILC_METRIC_MODE_SAMPLE.
  */
 typedef uint32_t SILC_Metric_Properties;
 
@@ -128,69 +137,112 @@ struct SILC_Metric_EventSet;
     before other functions of the library are used by the measurement system.
     @return It returns the number of metrics in the event set.
  */
-extern int32_t         SILC_Metric_Open();
+extern int32_t
+SILC_Metric_Open
+    ();
 
 /** Finalizes the performance counter adapter. Frees memory allocated by
     SILC_Metric_Open.
  */
-extern void            SILC_Metric_Close();
+extern void
+SILC_Metric_Close
+    ();
 
 /** Create per-thread counter sets
  */
-extern struct SILC_Metric_EventSet* SILC_Metric_Create();
+extern struct SILC_Metric_EventSet*
+SILC_Metric_Create
+    ();
 
 /** Free per-thread counter sets
     @param eventSet The event set that defines the measured counters
                     which should be freed
  */
-extern void            SILC_Metric_Free( struct SILC_Metric_EventSet* eventSet );
+extern void
+SILC_Metric_Free
+(
+    struct SILC_Metric_EventSet* eventSet
+);
 
 /** Register thread
     @param getThreadIdFunc supply pthread_self() or omp_get_thread_num()
  */
-extern void SILC_Metric_ThreadInit( int64_t ( *getThreadIdFunc )( void ) );
+extern void
+SILC_Metric_ThreadInit
+(
+    int64_t ( * getThreadIdFunc )
+    (
+        void
+    )
+);
 
 /** Unregister thread
  */
-extern void            SILC_Metric_ThreadFini();
+extern void
+SILC_Metric_ThreadFini
+    ();
 
 /** Reads values of counters relative to the time of SILC_Metric_Open()
     @param eventSet An event set, that contains the definition of the counters
                     that should be measured.
     @param values   An array, to which the counter values are written.
  */
-extern void SILC_Metric_Read( struct SILC_Metric_EventSet* eventSet,
-                              uint64_t                     values[] );
+extern void
+SILC_Metric_Read
+(
+    struct SILC_Metric_EventSet* eventSet,
+    uint64_t                     values[]
+);
 
 /** Returns number of counters
  */
-extern int32_t         SILC_Metric_Num();
+extern int32_t
+SILC_Metric_Num
+    ();
 
 /** Returns name of counter i
     @param i Index of the counter.
  */
-extern const char*     SILC_Metric_Name( int32_t i );
+extern const char*
+SILC_Metric_Name
+(
+    int32_t i
+);
 
 /** Returns description of counter i
     @param i Index of the counter.
  */
-extern const char*     SILC_Metric_Descr( int32_t i );
+extern const char*
+SILC_Metric_Descr
+(
+    int32_t i
+);
 
 /** Returns a string containing a representation of the unit of counter i
     @param i Index of the counter.
  */
-extern const char*     SILC_Metric_Unit( int32_t i );
+extern const char*
+SILC_Metric_Unit
+(
+    int32_t i
+);
 
 /** Returns the properties of counter i. The Property is a combination of e
     USER_METRIC_TYPE_*, USER_METRIC_INTERVALL, and USER_METRIC_MODE_*
     macro.
     @param i Index of the counter.
  */
-extern SILC_Metric_Properties SILC_Metric_Props( int32_t i );
+extern SILC_Metric_Properties
+SILC_Metric_Props
+(
+    int32_t i
+);
 
 /** Returns the clock rate.
  */
-extern uint64_t       SILC_Metric_ClockRate();
+extern uint64_t
+SILC_Metric_ClockRate
+    ();
 
 /** Reads the spec file
     @param match Defines the entries of the spec file which are read in.
@@ -198,12 +250,20 @@ extern uint64_t       SILC_Metric_ClockRate();
                  will be read in.
     @return Returns a pointer to the specification data structure.
  */
-extern SILC_Metric_Map* SILC_Metric_MapInit( SILC_Metric_MatchMapType match );
+extern SILC_Metric_Map*
+SILC_Metric_MapInit
+(
+    SILC_Metric_MatchMapType match
+);
 
 /** Releases memory allocated for a metric map
     @param metricMap The metric specification which should be freed.
  */
-extern void SILC_Metric_MapFree( SILC_Metric_Map* metricMap );
+extern void
+SILC_Metric_MapFree
+(
+    SILC_Metric_Map* metricMap
+);
 
 
 #endif // SILC_METRIC_PAPI_H
