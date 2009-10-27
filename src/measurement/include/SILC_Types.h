@@ -204,7 +204,7 @@ typedef enum SILC_AdapterType
     SILC_ADAPTER_POMP,
     SILC_ADAPTER_PTHREAD,
 
-    SILC_INVALID_ADAPTER_TYPE /** For internal use only. */
+    SILC_INVALID_ADAPTER_TYPE /**< For internal use only. */
 } SILC_AdapterType;
 
 
@@ -216,6 +216,7 @@ typedef enum SILC_AdapterType
  * step. The names should be self explanatory; most of them are already used
  * (whith a different prefix) in VampiTrace and Scalasca.
  *
+ * @todo remove SILC_REGION_UNKNOWN
  */
 typedef enum SILC_RegionType
 {
@@ -249,10 +250,10 @@ typedef enum SILC_RegionType
     SILC_REGION_OMP_BARRIER,
     SILC_REGION_OMP_IMPLICIT_BARRIER,
     SILC_REGION_OMP_FLUSH,
-    SILC_REGION_OMP_CRITICAL_SBLOCK, // what is SBLOCK?
+    SILC_REGION_OMP_CRITICAL_SBLOCK, /**< @todo what is SBLOCK? */
     SILC_REGION_OMP_SINGLE_SBLOCK,
 
-    SILC_INVALID_REGION_TYPE /** For internal use only. */
+    SILC_INVALID_REGION_TYPE /**< For internal use only. */
 } SILC_RegionType;
 
 
@@ -265,7 +266,7 @@ typedef enum SILC_CounterType
     SILC_COUNTER_INT64,
     SILC_COUNTER_DOUBLE,
 
-    SILC_INVALID_COUNTER_TYPE /** For internal use only. */
+    SILC_INVALID_COUNTER_TYPE /**< For internal use only. */
 } SILC_CounterType;
 
 
@@ -280,7 +281,7 @@ typedef enum SILC_ParameterType
     SILC_PARAMETER_DOUBLE,
     SILC_PARAMETER_STRING,
 
-    SILC_INVALID_PARAMETER_TYPE /** For internal use only. */
+    SILC_INVALID_PARAMETER_TYPE /**< For internal use only. */
 } SILC_ParameterType;
 
 /**
@@ -341,7 +342,7 @@ typedef enum SILC_ConfigType
      */
     SILC_CONFIG_TYPE_SET,
 
-    SILC_INVALID_CONFIG_TYPE /** For internal use only. */
+    SILC_INVALID_CONFIG_TYPE /**< For internal use only. */
 } SILC_ConfigType;
 
 
