@@ -61,8 +61,8 @@ COMMIT_CANDIDATES=`$SVNLOOK changed $REPOS --transaction $TXN |                \
 if [ -n "$COMMIT_CANDIDATES" ]; then
 
     # temporary files
-    CANDIDATE=/tmp/unbeautified.$$.out
-    CANDIDATE_BEAUTIFIED=/tmp/beautified.$$.out
+    CANDIDATE=/tmp/unbeautified.$$
+    CANDIDATE_BEAUTIFIED=/tmp/beautified.$$
     BEAUTIFY_CONFIG=/tmp/beautify.$$.cfg
 
     # Retrieve the beautifier config file from the repository and store it
@@ -84,19 +84,20 @@ if [ -n "$COMMIT_CANDIDATES" ]; then
     # the beautified version.
     DIFFER=
     for cand in $COMMIT_CANDIDATES; do
-        $SVNLOOK cat $REPOS $cand --transaction $TXN > $CANDIDATE
-        if [ ! -s $CANDIDATE ]; then # file is zero size
-            rm $CANDIDATE
+        SUFFIX=${cand##*.}
+        $SVNLOOK cat $REPOS $cand --transaction $TXN > $CANDIDATE.$SUFFIX
+        if [ ! -s $CANDIDATE.$SUFFIX ]; then # file is zero size
+            rm $CANDIDATE.$SUFFIX
             continue
         fi
-        $BEAUTIFY -c $BEAUTIFY_CONFIG -f $CANDIDATE -o $CANDIDATE_BEAUTIFIED 1>&2
-        if ! $COMPARE $CANDIDATE $CANDIDATE_BEAUTIFIED; then
-            $DIFF $CANDIDATE $CANDIDATE_BEAUTIFIED 1>&2
+        $BEAUTIFY -c $BEAUTIFY_CONFIG -f $CANDIDATE.$SUFFIX -o $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2
+        if ! $COMPARE $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX; then
+            $DIFF -u $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2
             $BEAUTIFY --version 1>&2
             echo "Commit rejected: File \"$cand\" does not comply to the coding standard." 1>&2
             DIFFER=true
         fi
-        rm $CANDIDATE $CANDIDATE_BEAUTIFIED
+        rm $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX
     done
     rm $BEAUTIFY_CONFIG
 
