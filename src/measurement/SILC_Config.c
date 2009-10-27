@@ -13,33 +13,7 @@
 
 #include <SILC_Config.h>
 
-/**
- * @brief returns a string for the given config variable type
- */
-static inline const char*
-config_type_to_string
-(
-    SILC_ConfigType configType
-)
-{
-    switch ( configType )
-    {
-        case SILC_CONFIG_TYPE_PATH:
-            return "path";
-        case SILC_CONFIG_TYPE_STRING:
-            return "string";
-        case SILC_CONFIG_TYPE_BOOL:
-            return "boolean";
-        case SILC_CONFIG_TYPE_NUMBER:
-            return "number";
-        case SILC_CONFIG_TYPE_SIZE:
-            return "size";
-        case SILC_CONFIG_TYPE_SET:
-            return "set";
-        default:
-            return "unknown";
-    }
-}
+#include "silc_types.h"
 
 SILC_Error_Code
 SILC_ConfigRegister
@@ -55,7 +29,7 @@ SILC_ConfigRegister
         fprintf( stderr, "Variable:      %s/%s\n",
                  variables[ i ].nameSapce, variables[ i ].name );
         fprintf( stderr, "  Type:        %s\n",
-                 config_type_to_string( variables[ i ].type ) );
+                 silc_config_type_to_string( variables[ i ].type ) );
         fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );
         fprintf( stderr, "  Description: %s\n", variables[ i ].shortHelp );
     }
