@@ -62,6 +62,11 @@ typedef enum
 class Silc_Instrumenter : public Silc_Application {
 public:
 
+
+
+/** @brief
+ * default constructor
+ */
     Silc_Instrumenter();
     virtual ~Silc_Instrumenter();
 
@@ -103,7 +108,7 @@ public:
 
 
 /** @brief
- *
+ * list of getter functions
  */
 
 /** @brief
@@ -120,6 +125,15 @@ public:
  */
     void
     silc_compilerCmd
+    (
+        const std::string cmd
+    );
+
+/** @brief
+ * intrumentation type
+ */
+    void
+    silc_instType
     (
         const std::string cmd
     );
@@ -142,9 +156,25 @@ public:
         const std::string lib
     );
 
+/** @brief
+ *  extracts parameter from input file
+ */
+    bool
+    readParameter
+    (
+        std::string &     instring,
+        const std::string parameter,
+        std::string &     value
+    );
+
 
 
 private:
+
+/** @brief
+ *  instrumentation type
+ */
+    std::string instType;
 
 /** @brief
  *  compiler command env. name
