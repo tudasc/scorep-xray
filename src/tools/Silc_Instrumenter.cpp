@@ -25,7 +25,9 @@ Silc_Instrumenter::Silc_Instrumenter
 }
 
 
-Silc_Instrumenter::~Silc_Instrumenter()
+Silc_Instrumenter::~
+Silc_Instrumenter
+    ()
 {
 }
 
@@ -66,16 +68,10 @@ Silc_Instrumenter::silc_readConfigFile
         uint32_t          index = 0;
         while ( inFile.good() && index < length )
         {
-            char line[ 256 ];
+            char        line[ 256 ];
             inFile.getline( line, 256 );
-
-            std::string
-            linStr
-            (
-                line
-            );
-
-            int found = linStr.find( "#" );
+            std::string linStr( line );
+            int         found = linStr.find( "#" );
             if ( !( found != std::string::npos ) )
             {
                 if ( readParameter( linStr, parameters[ index ], value ) )
