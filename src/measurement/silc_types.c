@@ -74,9 +74,70 @@ silc_line_number_to_string
     return generic_uint32_to_string( stringBuffer,
                                      stringBufferSize,
                                      format,
-                                     lienNo,
+                                     lineNo,
                                      SILC_INVALID_LINE_NO );
 }
+
+
+/**
+ * Converts a SILC_RegionHandle into a string.
+ */
+extern const char*
+silc_region_to_string
+(
+    char*             stringBuffer,
+    size_t            stringBufferSize,
+    const char*       format,
+    SILC_RegionHandle regionHandle
+)
+{
+    return generic_uint32_to_string( stringBuffer,
+                                     stringBufferSize,
+                                     format,
+                                     regionHandle,
+                                     SILC_INVALID_REGION );
+}
+
+
+/**
+ * Converts a SILC_MPICommunicatorHandle into a string.
+ */
+extern const char*
+silc_comm_to_string
+(
+    char*                      stringBuffer,
+    size_t                     stringBufferSize,
+    const char*                format,
+    SILC_MPICommunicatorHandle commHandle
+)
+{
+    return generic_uint32_to_string( stringBuffer,
+                                     stringBufferSize,
+                                     format,
+                                     commHandle,
+                                     SILC_INVALID_MPI_COMMUNICATOR );
+}
+
+
+/**
+ * Converts a SILC_MPIWindowHandle into a string.
+ */
+extern const char*
+silc_window_to_string
+(
+    char*                stringBuffer,
+    size_t               stringBufferSize,
+    const char*          format,
+    SILC_MPIWindowHandle windowHandle
+)
+{
+    return generic_uint32_to_string( stringBuffer,
+                                     stringBufferSize,
+                                     format,
+                                     windowHandle,
+                                     SILC_INVALID_MPI_WINDOW );
+}
+
 
 /**
  * Converts a SILC_MPICartTopolHandle into a string.
