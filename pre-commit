@@ -90,8 +90,7 @@ if [ -n "$COMMIT_CANDIDATES" ]; then
             continue
         fi
         $BEAUTIFY -c $BEAUTIFY_CONFIG -f $CANDIDATE.$SUFFIX -o $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2
-        if ! $COMPARE $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX; then
-            $DIFF -u $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2
+        if ! $DIFF -u --label "unbeautified/$cand" --label "beautified/$cand" $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2; then
             $BEAUTIFY --version 1>&2
             echo "Commit rejected: File \"$cand\" does not comply to the coding standard." 1>&2
             DIFFER=true
