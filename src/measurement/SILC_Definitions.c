@@ -52,7 +52,7 @@ SILC_DefineRegion
              __func__, regionName );
     fprintf( stderr, "    Source file: %s\n",
              silc_source_file_to_string( stringBuffer, sizeof( stringBuffer ),
-                                         "%08x", fileHandle ) );
+                                         "%x", fileHandle ) );
     fprintf( stderr, "    Start line:  %s\n",
              silc_line_number_to_string( stringBuffer, sizeof( stringBuffer ),
                                          "%u", beginLine ) );
@@ -170,7 +170,7 @@ SILC_DefineMPICartesianCoords
              __func__,
              silc_mpi_cart_topol_to_string( stringBuffer,
                                             sizeof(  stringBuffer ),
-                                            "%08x",
+                                            "%x",
                                             cartesianTopologyHandle ) );
 
     fprintf( stderr, "    Coordinates:" );
