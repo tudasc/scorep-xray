@@ -12,23 +12,50 @@
 
 
 /**
+ * Generic function to convert a type with an invalid value into a string.
+ *
+ * @note invalid will not be copied into the @a stringBuffer.
+ *
+ * @note For gcc, this function should be annotated with the
+ *       __attribute__ ((format_arg (3))) attribute.
+ */
+static inline const char*
+generic_uint32_to_string
+(
+    char*       stringBuffer,
+    size_t      stringBufferSize,
+    const char* format,
+    uint32_t    value,
+    uint32_t    invalidValue,
+)
+{
+    if ( value == invalidValue )
+    {
+        return "invalid";
+    }
+
+    snprintf( stringBuffer, stringBufferSize, format, value );
+    return stringBuffer;
+}
+
+
+/**
  * Converts a SILC_SourceFileHandle into a string.
  */
 const char*
 silc_source_file_handle_to_string
 (
-    SILC_SourceFileHandle handle,
-    char*                 stringBuffer
-    size_t                stringBufferSize
+    char*                 stringBuffer,
+    size_t                stringBufferSize,
+    const char*           format,
+    SILC_SourceFileHandle handle
 )
 {
-    if ( SILC_INVALID_SOURCE_FILE == handle )
-    {
-        return "invalid";
-    }
-
-    snprintf( stringBuffer, stringBufferSize, "%08x", handle );
-    return stringBuffer;
+    return generic_uint32_to_string( stringBuffer,
+                                     stringBufferSize,
+                                     format,
+                                     handle,
+                                     SILC_INVALID_SOURCE_FILE );
 }
 
 
@@ -38,18 +65,36 @@ silc_source_file_handle_to_string
 const char*
 silc_line_number_to_string
 (
-    SILC_LineNo lineNo,
-    char*       stringBuffer
-    size_t      stringBufferSize
+    char*       stringBuffer,
+    size_t      stringBufferSize,
+    const char* format,
+    SILC_LineNo lineNo
 )
 {
-    if ( SILC_INVALID_LINE_NO == lineNo )
-    {
-        return "invalid";
-    }
+    return generic_uint32_to_string( stringBuffer,
+                                     stringBufferSize,
+                                     format,
+                                     lienNo,
+                                     SILC_INVALID_LINE_NO );
+}
 
-    snprintf( stringBuffer, stringBufferSize, "%u", lineNo );
-    return stringBuffer;
+/**
+ * Converts a SILC_MPICartTopolHandle into a string.
+ */
+const char*
+silc_mpi_cart_topol_to_string
+(
+    char*                   stringBuffer,
+    size_t                  stringBufferSize,
+    const char*             format,
+    SILC_MPICartTopolHandle cartHandle
+)
+{
+    return generic_uint32_to_string( stringBuffer,
+                                     stringBufferSize,
+                                     format,
+                                     cartHandle,
+                                     SILC_INVALID_CART_TOPOLOGY );
 }
 
 

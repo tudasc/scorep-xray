@@ -1,6 +1,8 @@
 #ifndef SILC_INTERNAL_TYPES_H
 #define SILC_INTERNAL_TYPES_H
 
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
  * @file        silc_types.h
@@ -19,25 +21,28 @@
  * Converts a SILC_SourceFileHandle into a string.
  *
  * If @a handle is equal to @ref SILC_INVALID_SOURCE_FILE "invalid" will be
-   returned, else a hexadecimal representation of the value.
-
- * @a stringBuffer and @a stringBufferSize are needed to make this function
-   re-entrant safe.
-
- * @param handle            The source file handle which should be expressed as
- *                          a string.
+ * returned, else a formated representation of the value.
+ *
  * @param stringBuffer      A string buffer that holds at least @a
  *                          stringBufferSize bytes.
  * @param stringBufferSize  The size of @a stringBuffer.
-
+ * @param format            A printf like format string, used to represent
+ *                          @a lineNo.
+ * @param handle            The source file handle which should be expressed as
+ *                          a string.
+ *
  * @return                  A string representation of @a handle.
+ *
+ * @note For gcc, this function should be annotated with the
+ *       __attribute__ ((format_arg (3))) attribute.
  */
-const char*
+extern const char*
 silc_source_file_handle_to_string
 (
-    SILC_SourceFileHandle handle,
-    char*                 stringBuffer
-    size_t                stringBufferSize
+    char*                 stringBuffer,
+    size_t                stringBufferSize,
+    const char*           format,
+    SILC_SourceFileHandle handle
 );
 
 
@@ -45,25 +50,58 @@ silc_source_file_handle_to_string
  * Converts a SILC_LineNo into a string.
  *
  * If @a lineNo is equal to @ref SILC_INVALID_LINE_NO "invalid" will be
-   returned, else a decimal representation of the value.
+ * returned, else a formated representation of the value.
+ *
+ * @param stringBuffer      A string buffer that holds at least @a
+ *                          stringBufferSize bytes.
+ * @param stringBufferSize  The size of @a stringBuffer.
+ * @param format            A printf like format string, used to represent
+ *                          @a lineNo.
+ * @param lineNo            The line number which should be expressed as a
+ *                          string.
+ *
+ * @return                  A string representation of @a lineNo.
+ *
+ * @note For gcc, this function should be annotated with the
+ *       __attribute__ ((format_arg (3))) attribute.
+ */
+extern const char*
+silc_line_number_to_string
+(
+    char*       stringBuffer,
+    size_t      stringBufferSize,
+    const char* format,
+    SILC_LineNo lineNo
+);
+
+
+/**
+ * Converts a SILC_MPICartTopolHandle into a string.
+ *
+ * If @a cartHandle is equal to @ref SILC_INVALID_CART_TOPOLOGY "invalid" will
+   be returned, else a decimal representation of the value.
 
  * @a stringBuffer and @a stringBufferSize are needed to make this function
    re-entrant safe.
 
- * @param lineNo            The line number which should be expressed as a
+ * @param cartHandle        The line number which should be expressed as a
  *                          string.
  * @param stringBuffer      A string buffer that holds at least @a
  *                          stringBufferSize bytes.
  * @param stringBufferSize  The size of @a stringBuffer.
 
  * @return                  A string representation of @a handle.
+ *
+ * @note For gcc, this function should be annotated with the
+ *       __attribute__ ((format_arg (3))) attribute.
  */
-const char*
-silc_line_number_to_string
+extern const char*
+silc_mpi_cart_topol_to_string
 (
-    SILC_LineNo lineNo,
-    char*       stringBuffer
-    size_t      stringBufferSize
+    char*                   stringBuffer,
+    size_t                  stringBufferSize,
+    const char*             format,
+    SILC_MPICartTopolHandle cartHandle
 );
 
 
@@ -74,7 +112,7 @@ silc_line_number_to_string
  *
  * @return              A string representation of @a adapterType.
  */
-const char*
+extern const char*
 silc_adapter_type_to_string
 (
     SILC_AdapterType adapterType
@@ -88,7 +126,7 @@ silc_adapter_type_to_string
  *
  * @return              A string representation of @a regionType.
  */
-const char*
+extern const char*
 silc_region_type_to_string
 (
     SILC_RegionType regionType
@@ -102,7 +140,7 @@ silc_region_type_to_string
  *
  * @return              A string representation of @a counterType.
  */
-const char*
+extern const char*
 silc_counter_type_to_string
 (
     SILC_CounterType counterType
@@ -117,7 +155,7 @@ silc_counter_type_to_string
  *
  * @return              A string representation of @a parameterType.
  */
-const char*
+extern const char*
 silc_parameter_type_to_string
 (
     SILC_ParameterType parameterType
@@ -131,7 +169,7 @@ silc_parameter_type_to_string
  *
  * @return              A string representation of @a configType.
  */
-const char*
+extern const char*
 silc_config_type_to_string
 (
     SILC_ConfigType configType
