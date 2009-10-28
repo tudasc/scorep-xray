@@ -12,6 +12,10 @@
 
 #include <SILC_Definitions.h>
 
+
+#include "silc_types.h"
+
+
 /**
  * Associate a file name with a process unique file handle.
  */
