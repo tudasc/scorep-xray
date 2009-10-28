@@ -5,7 +5,7 @@ repos="silc otf2 opari2 utility"
 
 # take repos from the command line, if any
 if [ $# -gt 0 ]; then
-    reps="$*"
+    repos="$*"
 fi
 
 # use absolute path to svnlook
