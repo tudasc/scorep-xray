@@ -47,9 +47,8 @@ SILC_DefineRegion
     fprintf( stderr, "%s: Define new region \"%s\":\n",
              __func__, regionName );
     fprintf( stderr, "    Source file: %s\n",
-             silc_source_file_handle_to_string( stringBuffer,
-                                                sizeof( stringBuffer ),
-                                                "%08x", fileHandle ) );
+             silc_source_file_to_string( stringBuffer, sizeof( stringBuffer ),
+                                         "%08x", fileHandle ) );
     fprintf( stderr, "    Start line:  %s\n",
              silc_line_number_to_string( stringBuffer, sizeof( stringBuffer ),
                                          "%u", beginLine ) );

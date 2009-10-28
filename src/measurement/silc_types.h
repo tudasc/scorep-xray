@@ -20,7 +20,7 @@
 /**
  * Converts a SILC_SourceFileHandle into a string.
  *
- * If @a handle is equal to @ref SILC_INVALID_SOURCE_FILE "invalid" will be
+ * If @a handle equals to @ref SILC_INVALID_SOURCE_FILE "invalid" will be
  * returned, else a formated representation of the value.
  *
  * @param stringBuffer      A string buffer that holds at least @a
@@ -37,7 +37,7 @@
  *       __attribute__ ((format_arg (3))) attribute.
  */
 extern const char*
-silc_source_file_handle_to_string
+silc_source_file_to_string
 (
     char*                 stringBuffer,
     size_t                stringBufferSize,
@@ -49,7 +49,7 @@ silc_source_file_handle_to_string
 /**
  * Converts a SILC_LineNo into a string.
  *
- * If @a lineNo is equal to @ref SILC_INVALID_LINE_NO "invalid" will be
+ * If @a lineNo equals to @ref SILC_INVALID_LINE_NO "invalid" will be
  * returned, else a formated representation of the value.
  *
  * @param stringBuffer      A string buffer that holds at least @a
@@ -78,7 +78,7 @@ silc_line_number_to_string
 /**
  * Converts a SILC_MPICartTopolHandle into a string.
  *
- * If @a cartHandle is equal to @ref SILC_INVALID_CART_TOPOLOGY "invalid" will
+ * If @a cartHandle equals to @ref SILC_INVALID_CART_TOPOLOGY "invalid" will
    be returned, else a decimal representation of the value.
 
  * @a stringBuffer and @a stringBufferSize are needed to make this function

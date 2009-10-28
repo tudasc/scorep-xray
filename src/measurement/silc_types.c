@@ -43,7 +43,7 @@ generic_uint32_to_string
  * Converts a SILC_SourceFileHandle into a string.
  */
 const char*
-silc_source_file_handle_to_string
+silc_source_file_to_string
 (
     char*                 stringBuffer,
     size_t                stringBufferSize,
