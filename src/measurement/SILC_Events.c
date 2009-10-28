@@ -12,9 +12,12 @@
  *
  */
 
+
 #include <SILC_Events.h>
 
+
 #include "silc_types.h"
+
 
 /**
  * Generate a region enter event in the measurement system.
