@@ -12,22 +12,22 @@ ${proto:c}
 {
   ${rtype} return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
     {
       ${decl}
 
-      EVENT_GEN_OFF();
+      SILC_MPI_EVENT_GEN_OFF();
       SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
       return_val = ${call:pmpi};
 
       ${xblock}
       SILC_MpiCollective(silc_mpi_regid[SILC__${name|uppercase}],
-		       root_loc, SILC_COMM_ID(comm), 
+		       root_loc, SILC_MPI_COMM_ID(comm), 
                        ${mpi:sendcount}, 
                        ${mpi:recvcount});
       SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
-      EVENT_GEN_ON();
+      SILC_MPI_EVENT_GEN_ON();
     }
   else
     {

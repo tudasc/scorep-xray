@@ -11,19 +11,19 @@ ${proto:c}
 {
   ${rtype} return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
   {
     ${decl}
     ${init}
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
     ${xblock}
     return_val = ${call:pmpi};
     
     SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {

@@ -40,16 +40,16 @@
  */
 int MPI_Comm_free(MPI_Comm* comm)
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(CG);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(CG);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion (silc_mpi_regid[SILC__MPI_COMM_FREE]);
   }
 
-  silc_comm_free(*comm);
+  silc_mpi_comm_free(*comm);
   return_val = PMPI_Comm_free (comm);
 
   if (event_gen_active)
@@ -86,16 +86,16 @@ int MPI_Comm_free(MPI_Comm* comm)
  */
 int MPI_Group_free(MPI_Group* group)
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(CG);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(CG);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_GROUP_FREE]);
   }
 
-  silc_group_free(*group);
+  silc_mpi_group_free(*group);
   return_val = PMPI_Group_free(group);
 
   if (event_gen_active)

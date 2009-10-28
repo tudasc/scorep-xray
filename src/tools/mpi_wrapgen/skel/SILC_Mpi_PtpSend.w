@@ -10,23 +10,23 @@ ${proto:c}
 {
   ${rtype} return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
   {
     int sz;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(datatype, &sz);
-      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm), SILC_COMM_ID(comm),
+      SILC_MpiSend(SILC_MPI_RANK_TO_PE(dest, comm), SILC_MPI_COMM_ID(comm),
                    tag, count * sz);
     }
     return_val = ${call:pmpi};
 
     SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {

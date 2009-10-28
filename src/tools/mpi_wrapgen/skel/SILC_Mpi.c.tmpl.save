@@ -45,9 +45,9 @@ static MPI_Status* epk_get_status_array(int size) {
 int epk_mpi_nogen = 0;
 
 #define IS_EVENT_GEN_ON            (!epk_mpi_nogen)
-#define IS_EVENT_GEN_ON_FOR(group) ((!epk_mpi_nogen) && (epk_mpi_enabled & EPK_MPI_ENABLED_##group))
-#define EVENT_GEN_OFF()     epk_mpi_nogen = 1
-#define EVENT_GEN_ON()      epk_mpi_nogen = 0
+#define SILC_MPI_IS_EVENT_GEN_ON_FOR(group) ((!epk_mpi_nogen) && (epk_mpi_enabled & EPK_MPI_ENABLED_##group))
+#define SILC_MPI_EVENT_GEN_OFF()     epk_mpi_nogen = 1
+#define SILC_MPI_EVENT_GEN_ON()      epk_mpi_nogen = 0
 
 /**
  *-----------------------------------------------------------------------------

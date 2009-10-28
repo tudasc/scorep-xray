@@ -35,22 +35,25 @@ int MPI_Init(int* argc, char*** argv )
   int            return_val, numprocs, i;
   unsigned char* grpv;
   int            fflag;
-  int            already_opened;
+  static int     already_opened = 0;
 
-  /* open output files and return whether the files had been opened
-   * elsewhere in the measurement */
-  already_opened = esd_open();
   /* esd_open calls silc_mpi_register(), so we have to defer the setting
    * of this test to now */
-  event_gen_active = IS_EVENT_GEN_ON_FOR(ENV);
+  event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(ENV);
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     if (!already_opened)
     {
+      /* Initialize the measurement system */
+      SILC_InitMeasurement();
+      already_opened = 1;
+
+      /* Enter global MPI region */
       SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
     }
+    /* Enter the init region */
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_INIT]);
   }
 
@@ -74,16 +77,17 @@ int MPI_Init(int* argc, char*** argv )
     free(grpv);
 
     /* initialize communicator management */
-    silc_comm_init();
+    silc_mpi_comm_init();
 
     /* complete initialization of measurement core and MPI event handling */
-    silc_comm_determination = esd_mpi_init();
+    SILC_InitMeasurementMPI();
+    silc_mpi_comm_determination = 1;
   }
 
   if (event_gen_active)
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_INIT]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -111,11 +115,11 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
   already_opened = esd_open();
   /* esd_open calls silc_mpi_register(), so we have to defer the setting
    * of this test to now */
-  event_gen_active = IS_EVENT_GEN_ON_FOR(ENV);
+  event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(ENV);
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     if (!already_opened)
     {
       SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
@@ -150,16 +154,19 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
     free(grpv);
 
     /* initialize communicator management */
-    silc_comm_init();
+    silc_mpi_comm_init();
 
     /* complete initialization of measurement core and MPI event handling */
-    silc_comm_determination = esd_mpi_init();
+    
+    /* silc_mpi_comm_determination = esd_mpi_init();*/
+    SILC_InitMeasurementMPI();
+    silc_mpi_determination = 1;
   }
 
   if (event_gen_active)
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_INIT_THREAD]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -175,17 +182,17 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
  */
 int MPI_Finalize()
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(ENV);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(ENV);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_FINALIZE]);
   }
 
   /* finalize communicator and request management */
-  silc_comm_finalize();
+  silc_mpi_comm_finalize();
   silc_request_finalize();
 
   /* finalize MPI event handling */
@@ -197,7 +204,7 @@ int MPI_Finalize()
   if (event_gen_active)
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_FINALIZE]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;

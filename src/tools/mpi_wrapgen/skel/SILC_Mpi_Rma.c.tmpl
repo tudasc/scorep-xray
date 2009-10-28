@@ -52,18 +52,18 @@ int MPI_Get(void*        origin_addr,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
     int     sendsz;
     elg_ui4 dpid;
     elg_ui4 wid;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_GET]);
 
-    dpid = silc_win_rank_to_pe( target_rank, win );
-    wid = silc_win_id( win );
+    dpid = silc_mpi_win_rank_to_pe( target_rank, win );
+    wid = silc_mpi_win_rank_id( win );
     
     /* in MPI_GET the target buffer is remote */
     PMPI_Type_size(target_datatype, &sendsz);
@@ -78,7 +78,7 @@ int MPI_Get(void*        origin_addr,
 
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_GET]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -112,12 +112,12 @@ int MPI_Win_create(void*    base,
                    MPI_Comm comm,
                    MPI_Win* win) 
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(RMA); 
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA); 
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_CREATE]);
   }
@@ -127,14 +127,14 @@ int MPI_Win_create(void*    base,
 
   if (*win != MPI_WIN_NULL)
   {
-    silc_win_create( *win, comm );
+    silc_mpi_win_rank_create( *win, comm );
   }
 
   if (event_gen_active)
   {
-    esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_CREATE], silc_win_id(*win));
+    esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_CREATE], silc_mpi_win_rank_id(*win));
     
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -149,27 +149,27 @@ int MPI_Win_create(void*    base,
  */
 int MPI_Win_free(MPI_Win* win) 
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(RMA); 
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA); 
   int       return_val;
   elg_ui4   wid;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_FREE]);
 
-    wid = silc_win_id(*win);
+    wid = silc_mpi_win_rank_id(*win);
   }
       
-  silc_win_free(*win);
+  silc_mpi_win_rank_free(*win);
   return_val = PMPI_Win_free( win );
 
   if (event_gen_active)
   {
     esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_FREE], wid);
     
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -192,19 +192,19 @@ int MPI_Win_complete(MPI_Win win)
 { 
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_COMPLETE]);
 
     return_val = PMPI_Win_complete(win);
 
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_COMPLETE],
-                    silc_win_id(win), silc_winacc_get_gid(win, 1), 1);
-    silc_winacc_end(win, 1);
+                    silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 1), 1);
+    silc_mpi_winacc_end(win, 1);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -226,17 +226,17 @@ int MPI_Win_fence(int     assert,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_FENCE]);
 
     return_val = PMPI_Win_fence(assert, win);
 
-    esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_FENCE], silc_win_id(win));
+    esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_FENCE], silc_mpi_win_rank_id(win));
     
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -260,19 +260,19 @@ int MPI_Win_lock(int     lock_type,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_LOCK]);
 
-    esd_mpi_win_lock( rank, silc_win_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
+    esd_mpi_win_lock( rank, silc_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
     return_val = PMPI_Win_lock( lock_type, rank, 
                       assert, win );
 
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WIN_LOCK]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -295,19 +295,19 @@ int MPI_Win_post(MPI_Group group,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_POST]);
 
-    silc_winacc_start(win, group, 0);
+    silc_mpi_winacc_start(win, group, 0);
     return_val = PMPI_Win_post(group, assert, win);
 
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_POST],
-                    silc_win_id(win), silc_winacc_get_gid(win, 0), 0);
+                    silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 0);
     
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -330,19 +330,19 @@ int MPI_Win_start(MPI_Group group,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_START]);
 
-    silc_winacc_start(win, group, 1);
+    silc_mpi_winacc_start(win, group, 1);
     return_val = PMPI_Win_start(group, assert, win);
 
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_START],
-                    silc_win_id(win), silc_winacc_get_gid(win, 1), 0);
+                    silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 1), 0);
     
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -364,9 +364,9 @@ int MPI_Win_test(MPI_Win win,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_TEST]);
 
@@ -375,16 +375,16 @@ int MPI_Win_test(MPI_Win win,
     if (*flag != 0) 
     {
       esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_TEST],
-                      silc_win_id(win), silc_winacc_get_gid(win, 0), 1);
-      silc_winacc_end(win, 0);
+                      silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 1);
+      silc_mpi_winacc_end(win, 0);
     }
     else
     {
       esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_TEST],
-                      silc_win_id(win), silc_winacc_get_gid(win, 0), 0);
+                      silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 0);
 	  }
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -406,18 +406,18 @@ int MPI_Win_unlock(int     rank,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_UNLOCK]);
 
     return_val = PMPI_Win_unlock(rank, win);
-    esd_mpi_win_unlock(rank, silc_win_id(win));
+    esd_mpi_win_unlock(rank, silc_mpi_win_rank_id(win));
     
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WIN_UNLOCK]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -439,19 +439,19 @@ int MPI_Win_wait(MPI_Win win)
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_WAIT]);
 
     return_val = PMPI_Win_wait(win);
 
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_WAIT],
-                    silc_win_id(win), silc_winacc_get_gid(win, 0), 1);
-    silc_winacc_end(win, 0);
+                    silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 1);
+    silc_mpi_winacc_end(win, 0);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {

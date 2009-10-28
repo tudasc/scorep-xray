@@ -8,12 +8,12 @@ ${guard:start}
  */
 ${proto:c}
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(${group|uppercase});
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase});
   int return_val, sz;
 
   if (event_gen_active)
     {
-      EVENT_GEN_OFF();
+      SILC_MPI_EVENT_GEN_OFF();
       SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
     }
 
@@ -27,7 +27,7 @@ ${proto:c}
   if (event_gen_active)
     {
       SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
-      EVENT_GEN_ON();
+      SILC_MPI_EVENT_GEN_ON();
     }
 
   return return_val;

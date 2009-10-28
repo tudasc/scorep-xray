@@ -16,23 +16,23 @@
  * @brief Main file for C interface measurement wrappers
  */
 
-#include "epk_mpicom.h"
-#include "SILC_Mpiwrap_Reg.h"
+#include "SILC_Mpi_Com.h"
+#include "SILC_Mpi_Reg.h"
 
-#include "elg_error.h"
+#include "SILC_Error.h"
 
 #include "SILC_Definitions.h"
 #include "SILC_Events.h"
-#include "esd_run.h"
+#include "SILC_RuntimeManagement.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
 
 /** internal array of statuses */
-static MPI_Status* my_status_array = 0;
+static MPI_Status* silc_my_status_array = 0;
 /** size of internal status array */
-static int         my_status_array_size = 0;
+static int         silc_my_status_array_size = 0;
 
 /**
  * Get a pointer to a status array of at least 'size' statuses
@@ -41,34 +41,44 @@ static int         my_status_array_size = 0;
  * @ingroup util
  */
 static MPI_Status* silc_get_status_array(int size) {
-  if (my_status_array_size == 0)
+  if (silc_my_status_array_size == 0)
   {
     /* -- never used: initialize -- */
-    my_status_array = malloc(size * sizeof(MPI_Status));
-    if (my_status_array == NULL) elg_error();
-    my_status_array_size = size;
+    silc_my_status_array = malloc(size * sizeof(MPI_Status));
+    if (silc_my_status_array == NULL) SILC_ERROR_POSIX();
+    silc_my_status_array_size = size;
   } 
-  else if (size > my_status_array_size)
+  else if (size > silc_my_status_array_size)
   {
     /* -- not enough room: expand -- */
-    my_status_array = realloc(my_status_array, size * sizeof(MPI_Status));
-    if (my_status_array == NULL) elg_error();
-    my_status_array_size = size;
+    silc_my_status_array = realloc(silc_my_status_array, size * sizeof(MPI_Status));
+    if (silc_my_status_array == NULL) SILC_ERROR_POSIX();
+    silc_my_status_array_size = size;
   }
-  return my_status_array;
+  return silc_my_status_array;
 }
 
-/** flag to indicate whether event generation is turned on or off */
+/** Flag to indicate whether event generation is turned on or off. If it is set to 0,
+    events are generated. If it is set to non-zero, no events are generated.
+ */
 int silc_mpi_nogen = 0;
 
-/** check whether event generation is turned on */
-#define IS_EVENT_GEN_ON            (!silc_mpi_nogen)
-/** check whether event generation is turned on for a specific group */
-#define IS_EVENT_GEN_ON_FOR(group) ((!silc_mpi_nogen) && (silc_mpi_enabled & SILC_MPI_ENABLED_##group))
+/** Check whether event generation is turned on. Returns the inverse value of 
+    silc_mpi_nogen
+ */
+#define SILC_MPI_IS_EVENT_GEN_ON            (!silc_mpi_nogen)
+
+/** Check whether event generation is turned on for a specific group.
+ */
+#define SILC_MPI_IS_EVENT_GEN_ON_FOR(group) ((!silc_mpi_nogen) && \
+        (silc_mpi_enabled & SILC_MPI_ENABLED_##group))
+
+
 /** turn off event generation */
-#define EVENT_GEN_OFF()            silc_mpi_nogen = 1
+#define SILC_MPI_EVENT_GEN_OFF()            silc_mpi_nogen = 1
+
 /** turn on event generation */
-#define EVENT_GEN_ON()             silc_mpi_nogen = 0
+#define SILC_MPI_EVENT_GEN_ON()             silc_mpi_nogen = 0
 
 /*
  *-----------------------------------------------------------------------------

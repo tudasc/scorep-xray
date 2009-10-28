@@ -39,12 +39,12 @@ int MPI_Recv( void* buf,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(P2P))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P))
   {
     int        sz;
     MPI_Status mystatus;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_RECV]);
 
@@ -55,13 +55,13 @@ int MPI_Recv( void* buf,
     {
       PMPI_Type_size(datatype, &sz);
       PMPI_Get_count(status, datatype, &count);
-      SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SILC_COMM_ID(comm), status->MPI_TAG, count * sz);
+      SILC_MpiRecv(SILC_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   SILC_MPI_COMM_ID(comm), status->MPI_TAG, count * sz);
     }
 
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_RECV]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -95,19 +95,19 @@ int MPI_Sendrecv(void* sendbuf,
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(P2P))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P))
   {
     int        sendsz, recvsz;
     MPI_Status mystatus;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_SENDRECV]);
 
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(sendtype, &sendsz);
-      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm), SILC_COMM_ID(comm),
+      SILC_MpiSend(SILC_MPI_RANK_TO_PE(dest, comm), SILC_MPI_COMM_ID(comm),
                    sendtag, sendcount * sendsz);
     }
 
@@ -123,13 +123,13 @@ int MPI_Sendrecv(void* sendbuf,
       {
         PMPI_Type_size(recvtype, &recvsz);
         PMPI_Get_count(status, recvtype, &recvcount);
-        SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
-                     SILC_COMM_ID(comm), status->MPI_TAG, recvcount * recvsz);
+        SILC_MpiRecv(SILC_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
+                     SILC_MPI_COMM_ID(comm), status->MPI_TAG, recvcount * recvsz);
       }
 
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_SENDRECV]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -161,20 +161,20 @@ int MPI_Sendrecv_replace(void* buf,
   int return_val;
 
 
-  if (IS_EVENT_GEN_ON_FOR(P2P))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P))
   {
     int        sz;
     MPI_Status mystatus;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_SENDRECV_REPLACE]);
 
     PMPI_Type_size(datatype, &sz);
     if (dest != MPI_PROC_NULL)
     {
-      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm),
-                   SILC_COMM_ID(comm),
+      SILC_MpiSend(SILC_MPI_RANK_TO_PE(dest, comm),
+                   SILC_MPI_COMM_ID(comm),
                    sendtag,
                    count * sz);
     }
@@ -189,13 +189,13 @@ int MPI_Sendrecv_replace(void* buf,
                                    comm, status);
     if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
-      SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SILC_COMM_ID(comm), status->MPI_TAG, count * sz);
+      SILC_MpiRecv(SILC_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   SILC_MPI_COMM_ID(comm), status->MPI_TAG, count * sz);
     }
 
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_SENDRECV_REPLACE]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {
@@ -230,12 +230,12 @@ int MPI_Irecv(void* buf,
               MPI_Comm comm,
               MPI_Request* request)
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_IRECV]);
   }
@@ -253,7 +253,7 @@ int MPI_Irecv(void* buf,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_IRECV]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -269,14 +269,14 @@ int MPI_Irecv(void* buf,
 int MPI_Wait(MPI_Request* request,
              MPI_Status* status)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
   MPI_Status         mystatus;
   struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAIT]);
   }
@@ -294,7 +294,7 @@ int MPI_Wait(MPI_Request* request,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAIT]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -311,13 +311,13 @@ int MPI_Waitall(int count,
                 MPI_Request* requests,
                 MPI_Status* array_of_statuses)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
   struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAITALL]);
   }
@@ -338,7 +338,7 @@ int MPI_Waitall(int count,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAITALL]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -356,14 +356,14 @@ int MPI_Waitany(int count,
                 int* index,
                 MPI_Status* status)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
   struct SilcRequest* orig_req;
   MPI_Status         mystatus;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAITANY]);
   }
@@ -382,7 +382,7 @@ int MPI_Waitany(int count,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAITANY]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -401,13 +401,13 @@ int MPI_Waitsome(int incount,
                  int *array_of_indices,
                  MPI_Status *array_of_statuses)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
   struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WAITSOME]);
   }
@@ -429,7 +429,7 @@ int MPI_Waitsome(int incount,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WAITSOME]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -446,14 +446,14 @@ int MPI_Test(MPI_Request* request,
              int* flag,
              MPI_Status* status)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
   struct SilcRequest* orig_req;
   MPI_Status         mystatus;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TEST]);
   }
@@ -473,7 +473,7 @@ int MPI_Test(MPI_Request* request,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TEST]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -492,14 +492,14 @@ int MPI_Testany(int count,
                 int *flag,
                 MPI_Status *status)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
   struct SilcRequest* orig_req;
   MPI_Status         mystatus;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TESTANY]);
   }
@@ -520,7 +520,7 @@ int MPI_Testany(int count,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TESTANY]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -538,13 +538,13 @@ int MPI_Testall(int count,
                 int *flag,
                 MPI_Status *array_of_statuses)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
   struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TESTALL]);
   }
@@ -568,7 +568,7 @@ int MPI_Testall(int count,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TESTALL]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -587,13 +587,13 @@ int MPI_Testsome(int incount,
                  int *array_of_indices,
                  MPI_Status *array_of_statuses)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
   struct SilcRequest* orig_req;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_TESTSOME]);
   }
@@ -615,7 +615,7 @@ int MPI_Testsome(int incount,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_TESTSOME]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -644,12 +644,12 @@ int MPI_Recv_init(void* buf,
                   MPI_Comm comm,
                   MPI_Request* request)
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_RECV_INIT]);
   }
@@ -667,7 +667,7 @@ int MPI_Recv_init(void* buf,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_RECV_INIT]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -682,14 +682,14 @@ int MPI_Recv_init(void* buf,
  */
 int MPI_Start(MPI_Request* request)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
 
   if (event_gen_active)
   {
     struct SilcRequest* req;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_START]);
 
@@ -699,8 +699,8 @@ int MPI_Start(MPI_Request* request)
       req->flags |= ERF_IS_ACTIVE;
       if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
       {
-        SILC_MpiSend(SILC_RANK_TO_PE(req->dest, req->comm),
-                     SILC_COMM_ID(req->comm), req->tag,  req->bytes);
+        SILC_MpiSend(SILC_MPI_RANK_TO_PE(req->dest, req->comm),
+                     SILC_MPI_COMM_ID(req->comm), req->tag,  req->bytes);
       }
     }
   }
@@ -711,7 +711,7 @@ int MPI_Start(MPI_Request* request)
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_START]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -727,7 +727,7 @@ int MPI_Start(MPI_Request* request)
 int MPI_Startall(int count,
                  MPI_Request *array_of_requests)
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val, i;
 
   if (event_gen_active)
@@ -735,7 +735,7 @@ int MPI_Startall(int count,
     MPI_Request*       request;
     struct SilcRequest* req;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_STARTALL]);
 
@@ -748,8 +748,8 @@ int MPI_Startall(int count,
       {
         req->flags |= ERF_IS_ACTIVE;
         if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
-          SILC_MpiSend(SILC_RANK_TO_PE(req->dest, req->comm),
-                       SILC_COMM_ID(req->comm), req->tag,  req->bytes);
+          SILC_MpiSend(SILC_MPI_RANK_TO_PE(req->dest, req->comm),
+                       SILC_MPI_COMM_ID(req->comm), req->tag,  req->bytes);
       }
     }
   }
@@ -760,7 +760,7 @@ int MPI_Startall(int count,
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_STARTALL]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -775,13 +775,13 @@ int MPI_Startall(int count,
  */
 int MPI_Request_free( MPI_Request* request )
 {
-  const int          event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int          event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int                return_val;
   struct SilcRequest* req;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_REQUEST_FREE]);
   }
@@ -808,7 +808,7 @@ int MPI_Request_free( MPI_Request* request )
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_REQUEST_FREE]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;
@@ -823,12 +823,12 @@ int MPI_Request_free( MPI_Request* request )
  */
 int MPI_Cancel( MPI_Request* request )
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(P2P);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(P2P);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_CANCEL]);
   }
@@ -848,7 +848,7 @@ int MPI_Cancel( MPI_Request* request )
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_CANCEL]);
 
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;

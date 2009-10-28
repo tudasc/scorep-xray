@@ -36,12 +36,12 @@ int MPI_Cart_create(MPI_Comm  comm_old,
                     int       reorder,
                     MPI_Comm* comm_cart)
 {
-  const int event_gen_active = IS_EVENT_GEN_ON_FOR(TOPO);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(TOPO);
   int       return_val;
 
   if (event_gen_active)
   {
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_CART_CREATE]);
   }
 
@@ -56,13 +56,13 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     elg_ui4* udimv;
     elg_ui4* ucoordv;
 
-    silc_comm_create(*comm_cart);
+    silc_mpi_comm_create(*comm_cart);
   
     /* NOTE: 
      * currently topid == cid during measurement */
 
     /* get the topid and cid */
-    topid = cid = silc_comm_id(*comm_cart);
+    topid = cid = silc_mpi_comm_id(*comm_cart);
 
     /* find the rank of the calling process */
     PMPI_Comm_rank(*comm_cart, &my_rank); 
@@ -72,13 +72,13 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     udimv   = calloc(ndims, sizeof(elg_ui4));
     if (udimv == NULL)
     {
-      elg_error();
+      SILC_ERROR_POSIX();
     }
     
     uperiodv = calloc(ndims, sizeof(elg_ui1));
     if (uperiodv == NULL)
     {
-      elg_error();
+      SILC_ERROR_POSIX();
     }
 
     for (i = 0 ; i < ndims ; i++)
@@ -94,13 +94,13 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     coordv = calloc(ndims, sizeof(int));
     if (coordv == NULL)
     {
-      elg_error();
+      SILC_ERROR_POSIX();
     }
 
     ucoordv = calloc(ndims, sizeof(elg_ui4));
     if (ucoordv == NULL)
     {
-      elg_error();
+      SILC_ERROR_POSIX();
     }
                           
     /* get the coordinates of the calling process in coordv */
@@ -123,7 +123,7 @@ int MPI_Cart_create(MPI_Comm  comm_old,
   if (event_gen_active)
   {
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_CART_CREATE]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
 
   return return_val;

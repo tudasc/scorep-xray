@@ -10,18 +10,18 @@ ${proto:c}
 {
   int return_val;
 
-  if (IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
   {
     int sendsz, recvsz;
     MPI_Status mystatus;
 
-    EVENT_GEN_OFF();
+    SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(sendtype, &sendsz);
-      SILC_MpiSend(SILC_RANK_TO_PE(dest, comm), SILC_COMM_ID(comm),
+      SILC_MpiSend(SILC_MPI_RANK_TO_PE(dest, comm), SILC_MPI_COMM_ID(comm),
                    sendtag, ${mpi:sendcount});
     }
     if (status == MPI_STATUS_IGNORE)
@@ -33,12 +33,12 @@ ${proto:c}
     {
       PMPI_Type_size(recvtype, &recvsz);
       PMPI_Get_count(status, recvtype, &recvcount);
-      SILC_MpiRecv(SILC_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SILC_COMM_ID(comm), status->MPI_TAG, ${mpi:recvcount});
+      SILC_MpiRecv(SILC_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
+                   SILC_MPI_COMM_ID(comm), status->MPI_TAG, ${mpi:recvcount});
     }
 
     SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
-    EVENT_GEN_ON();
+    SILC_MPI_EVENT_GEN_ON();
   }
   else
   {

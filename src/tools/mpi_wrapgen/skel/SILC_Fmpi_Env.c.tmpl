@@ -76,7 +76,7 @@ void FSUB(MPI_Init_thread)(int* required,
 {
   if (sizeof(MPI_Fint) != sizeof(int))
   {
-    elg_error_msg("Fortran and C integer size mismatch.");
+    SILC_ERROR(SILC_ERROR_F2C_INT_SIZE_MISMATCH);
   }
   *ierr = MPI_Init_thread(0, (char***)0, *required, provided);
 }
@@ -93,7 +93,7 @@ void FSUB(MPI_Init)(int* ierr)
 {
   if (sizeof(MPI_Fint) != sizeof(int))
   {
-    elg_error_msg("Fortran and C integer size mismatch.");
+    SILC_ERROR(SILC_ERROR_F2C_INT_SIZE_MISMATCH);
   }
   *ierr = MPI_Init(0, (char***)0);
 }
