@@ -72,7 +72,7 @@ if [ -n "$COMMIT_CANDIDATES" ]; then
              $AWK '{print $2}' |                                               \
              $AWK -F "/" '{if ($1=="trunk") {print $1} else {print $1 FS $2}}'`
     BEAUTIFY_DIR="$TOP_DIR"/tools/beautifier
-    $SVNLOOK cat /svn-root/common-root trunk/beautifier/beautify.cfg > $BEAUTIFY_CONFIG
+    $SVNLOOK cat /svn-base/common-root trunk/beautifier/beautify.cfg > $BEAUTIFY_CONFIG
     if [ $? -ne 0 ]; then
         echo "Commit rejected: Can't find file beautify.cfg in common repository." 1>&2
         echo "                 Please check your pre-commit hook script." 1>&2
