@@ -18,7 +18,7 @@ do
         continue
     fi
 
-    $SVNLOOK cat /svn-root/common-root trunk/beautify/pre-commit > \
+    $SVNLOOK cat /svn-root/common-root trunk/beautifier/pre-commit > \
         /svn-root/$repo-root/hooks/pre-commit && \
         chmod 0755 /svn-root/$repo-root/hooks/pre-commit && \
         echo "pre-commit hook installed for repository $repo." || \
