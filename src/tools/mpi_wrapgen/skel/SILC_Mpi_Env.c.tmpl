@@ -17,6 +17,14 @@
  * @brief C interface wrappers for environmental management
  */
 
+/** Flag set if the measurement sysem was already opened by another adapter.
+    If the measurement system is not already initilized, it is assumed that
+    the mpi adapter is the only active adapter. In this case, at first an
+    additional region is entered MPI_Init. Thus, all regions appear as
+    childs of this region.
+*/
+static int silc_mpi_parallel_entered = 0;
+
 /**
  * @name C wrappers
  * @{
@@ -35,24 +43,25 @@ int MPI_Init(int* argc, char*** argv )
   int            return_val, numprocs, i;
   unsigned char* grpv;
   int            fflag;
-  static int     already_opened = 0;
 
-  /* esd_open calls silc_mpi_register(), so we have to defer the setting
-   * of this test to now */
   event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(ENV);
 
   if (event_gen_active)
   {
     SILC_MPI_EVENT_GEN_OFF();
-    if (!already_opened)
+
+    if (! SILC_IsInitialized())
     {
       /* Initialize the measurement system */
       SILC_InitMeasurement();
-      already_opened = 1;
 
       /* Enter global MPI region */
       SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
+
+      /* Remember that SILC_PARALLEL__MPI was entered */
+      silc_mpi_parallel_entered = 1;
     }
+
     /* Enter the init region */
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_INIT]);
   }
@@ -81,7 +90,6 @@ int MPI_Init(int* argc, char*** argv )
 
     /* complete initialization of measurement core and MPI event handling */
     SILC_InitMeasurementMPI();
-    silc_mpi_comm_determination = 1;
   }
 
   if (event_gen_active)
@@ -110,20 +118,24 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
   int            fflag;
   int            already_opened;
 
-  /* open output files and return whether the files had been opened
-   * elsewhere in the measurement */
-  already_opened = esd_open();
-  /* esd_open calls silc_mpi_register(), so we have to defer the setting
-   * of this test to now */
   event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(ENV);
 
   if (event_gen_active)
   {
     SILC_MPI_EVENT_GEN_OFF();
-    if (!already_opened)
+
+    if (! SILC_IsInitialized())
     {
+      /* Initialize the measurement system */
+      SILC_InitMeasurement();
+
+      /* Enter global MPI region */
       SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
+
+      /* Remember that SILC_PARALLEL__MPI was entered */
+      silc_mpi_parallel_entered = 1;
     }
+
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_INIT_THREAD]);
   }
 
@@ -133,7 +145,7 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
 
   if ((return_val == MPI_SUCCESS) && (*provided > MPI_THREAD_FUNNELED))
   {
-    elg_warning(
+    SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI ,
       "MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!");
     /* XXXX continue even though not supported by analysis */
   }
@@ -160,7 +172,6 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
     
     /* silc_mpi_comm_determination = esd_mpi_init();*/
     SILC_InitMeasurementMPI();
-    silc_mpi_determination = 1;
   }
 
   if (event_gen_active)
@@ -203,7 +214,15 @@ int MPI_Finalize()
 
   if (event_gen_active)
   {
+    /* Exit MPI_Finalize region */
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_FINALIZE]);
+
+    /* Exit the extra parallel region in case it was entered in MPI_Init */
+    if (silc_mpi_parallel_entered)
+    {
+      SILC_ExitRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
+    }
+
     SILC_MPI_EVENT_GEN_ON();
   }
 

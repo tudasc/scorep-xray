@@ -25,7 +25,7 @@
 #include "SILC_Mpiwrap_Reg.h"
 #include "epk_conf.h"
 
-#include "elg_error.h"
+#include "SILC_Error.h"
 
 #include "SILC_Definitions.h"
 
@@ -164,9 +164,9 @@ void silc_mpi_enable_init()
 /**
  * Register MPI functions and initialize data structures
  */
-void silc_mpi_register()
+void silc_mpi_register_regions()
 {
-  elg_ui4 fid = esd_def_file("MPI");
+  SILC_FileSourceHandle file_id = SILC_DefineSourceFile("MPI");
  
   silc_mpi_enable_init();
 
