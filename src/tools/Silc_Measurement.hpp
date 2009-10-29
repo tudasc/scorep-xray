@@ -15,8 +15,11 @@
 class Silc_Measurement : public Silc_Application {
 public:
 
-    Silc_Measurement();
-    virtual ~Silc_Measurement()
+    Silc_Measurement
+        ();
+    virtual ~
+    Silc_Measurement
+        ()
     {
         ;
     };
@@ -29,6 +32,15 @@ public:
     (
         std::string fileName
     );
+
+/** @brief
+ *  prints all measurement parameters as read from input file
+ */
+    virtual void
+    silc_printParameter
+    (
+    );
+
 
 private:
 };

@@ -12,14 +12,22 @@
 class Silc_Application {
 public:
 
-    Silc_Application();
-    virtual ~Silc_Application();
+    Silc_Application
+        ();
+    virtual ~
+    Silc_Application
+        ();
 
 
     virtual bool
     silc_readConfigFile
     (
         std::string fileName
+    );
+
+    virtual void
+    silc_printParameter
+    (
     );
 
 

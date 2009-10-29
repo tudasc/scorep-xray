@@ -67,8 +67,11 @@ public:
 /** @brief
  * default constructor
  */
-    Silc_Instrumenter();
-    virtual ~Silc_Instrumenter();
+    Silc_Instrumenter
+        ();
+    virtual ~
+    Silc_Instrumenter
+        ();
 
 /** @brief
  * reads the defined input data file
@@ -160,13 +163,20 @@ public:
  *  extracts parameter from input file
  */
     bool
-    readParameter
+    silc_readParameter
     (
         std::string &     instring,
         const std::string parameter,
         std::string &     value
     );
 
+/** @brief
+ *  prints all instrumentation parameters as read from input file
+ */
+    virtual void
+    silc_printParameter
+    (
+    );
 
 
 private:
@@ -174,47 +184,77 @@ private:
 /** @brief
  *  instrumentation type
  */
-    std::string instType;
+    std::string _language;
 
 /** @brief
- *  compiler command env. name
+ *  instrumentation type
  */
-    std::string compCmdEnv;
-
-/** @brief
- *  compiler flags
- */
-    std::string compFlagsEnv;
+    std::string _instType;
 
 /** @brief
  *  compiler command
  */
-    std::string compCmd;
-
-/** @brief
- *  compiler arguments
- */
-    std::string compArgs;
+    std::string _compiler;
 
 /** @brief
  *  compiler flags
  */
-    std::string compFlags;
+    std::string _compFlags;
+
+/** @brief
+ *  compiler command
+ */
+    std::string _linkerFlags;
+
+/** @brief
+ *  compiler arguments
+ */
+    std::string _libraries;
+
+/** @brief
+ *  compiler flags
+ */
+    std::string _inclDir;
 
 /** @brief
  *  linker flags
  */
-    std::string compLdFlags;
+    std::string _libDir;
 
 /** @brief
  *  compiler instrumentation flag
  */
-    std::string compInstFlags;
+    std::string _instDefault;
 
 /** @brief
- *  libraries to link
+ *  gnu compiler instrumentation flags
  */
-    std::string compLibs;
+    std::string _instGnu;
+
+/** @brief
+ *  pgi compiler instrumentation flags
+ */
+    std::string _instPgi;
+
+/** @brief
+ *  sun compiler instrumentation flags
+ */
+    std::string _instSun;
+
+/** @brief
+ *  xl compiler instrumentation flags
+ */
+    std::string _instXl;
+
+/** @brief
+ *  ftrace compiler instrumentation flags
+ */
+    std::string _instFtrace;
+
+/** @brief
+ *  openUH compiler instrumentation flags
+ */
+    std::string _instOpenuh;
 
 // additional members for additional compiler settings
 };

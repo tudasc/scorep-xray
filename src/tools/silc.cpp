@@ -41,6 +41,8 @@ main
             {
                 ;               // catch
             }
+
+            appType->silc_printParameter();
         }
     }
     else
