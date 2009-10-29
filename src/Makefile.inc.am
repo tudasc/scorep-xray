@@ -1,0 +1,9 @@
+## -*- mode: makefile -*-
+
+#lib_LTLIBRARIES += lib_silc_utilities.la
+#lib_silc_utilities_la_SOURCES = 
+#lib_silc_utilities_la_LDFLAGS =
+#lib_silc_utilities_la_LIBADD =   \
+#  lib_silc_exception.la      \
+#  lib_silc_priority_queue.la \
+#  lib_silc_vector.la

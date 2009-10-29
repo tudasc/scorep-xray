@@ -1,0 +1,11 @@
+CC=xlc_r
+#CFLAGS=
+
+CXX=xlC_r
+#CXXFLAGS=
+
+#F77=xlf_r
+#FFLAGS=
+
+#FC=xlf95_r
+#FCFLAGS=

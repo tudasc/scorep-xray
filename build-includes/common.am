@@ -1,0 +1,53 @@
+## -*- mode: makefile -*-
+
+## AM_CPPFLAGS: The contents of this variable are passed to every compilation 
+## that invokes the C preprocessor; it is a list of arguments to the 
+## preprocessor. For instance, -I and -D options should be listed here.
+##
+## Automake already provides some -I options automatically, in a separate 
+## variable that is also passed to every compilation that invokes the C 
+## preprocessor. In particular it generates -I., -I$(srcdir), and a -I pointing 
+## to the directory holding config.h (if you've used AC_CONFIG_HEADERS or 
+## AM_CONFIG_HEADER). You can disable the default -I options using the 
+## nostdinc option.
+##
+## AM_CPPFLAGS is ignored in preference to a per-executable (or per-library) 
+## _CPPFLAGS variable if it is defined. 
+##
+## -I$(srcdir)/../src: path to config.h
+## -I$(srcdir)/../vendor/include: external includes are found here, if any 
+AM_CPPFLAGS = -I$(srcdir)/../src 
+
+
+## Convenience variable, use for referencing sources, e.g.
+## foo_SOURCES = $(ROOT)src/foo/foo.c
+ROOT = ../
+
+
+## Convenience variable, use for referencing include directories, e.g.
+## foo_CPPFLAGS = $(AM_CPPFLAGS) $(INC_ROOT)src/bar
+INC_ROOT = $(srcdir)/../
+
+
+## Add entities using += to the following primaries in locale Makefile.inc.ams
+bin_PROGRAMS =
+lib_LTLIBRARIES =
+noinst_LTLIBRARIES = 
+include_HEADERS = 
+# TESTS_ENVIRONMENT = 
+TESTS = 
+XFAIL_TESTS = 
+check_PROGRAMS = 
+# check_LIBRARIES =
+# check_LTLIBRARIES =
+BUILT_SOURCES = 
+
+# Automatically update the libtool script if it becomes out-of-date.
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
+
+
+doxygen-dev:
+
+
+clean-doxygen-dev:

@@ -1,0 +1,6 @@
+CC=gcc
+#CFLAGS=
+
+CXX=g++
+#CXXFLAGS=
+
