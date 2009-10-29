@@ -4,7 +4,8 @@
 
 Silc_ApplicationType* Silc_ApplicationType::_appType = 0;
 
-Silc_ApplicationType::Silc_ApplicationType()
+Silc_ApplicationType::Silc_ApplicationType
+    ()
 {
 }
 
@@ -17,8 +18,7 @@ Silc_ApplicationType::getSilcStage
     if ( type == std::string( "Instrumenter" ) )
     {
         printf( "running the instrumentation phase: \n" );
-        return new
-               Silc_Instrumenter
+        return new Silc_Instrumenter
                (
                );
     }

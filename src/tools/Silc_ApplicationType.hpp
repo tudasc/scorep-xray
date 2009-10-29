@@ -17,9 +17,10 @@ class Silc_ApplicationType
 {
 public:
 
-    virtual ~Silc_ApplicationType()
+    virtual ~
+    Silc_ApplicationType
+        ()
     {
-        ;
     }
 
     static Silc_ApplicationType&
@@ -41,7 +42,8 @@ private:
 /** @brief
  *  protect the constructor to ensure only one instance at a time
  */
-    Silc_ApplicationType();
+    Silc_ApplicationType
+        ();
 
 /** @brief
  *  do not allow the copy constructor to be called unwillingly

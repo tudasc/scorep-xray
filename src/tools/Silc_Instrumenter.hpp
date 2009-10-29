@@ -68,7 +68,8 @@ public:
  * default constructor
  */
     Silc_Instrumenter
-        ();
+    (
+    );
     virtual ~
     Silc_Instrumenter
         ();

@@ -3,31 +3,24 @@
 #include <fstream>
 #include <istream>
 
+extern "C" {
 #include "SILC_Utils.h"
 #include "SILC_Error.h"
+}
+
 
 #include "Silc_Instrumenter.hpp"
 
 Silc_Instrumenter::Silc_Instrumenter
 (
 )
-    : _language( "" ),
-      _instType( "comp:gnu" ),
-      _compiler( "" ),
-      _compFlags( "" ),
-      _linkerFlags( "" ),
-      _libraries( "" ),
-      _inclDir( "." ),
-      _libDir( "." ),
-      _instDefault( "" ),
-      _instGnu( "" ),
-      _instPgi( "" ),
-      _instSun( "" ),
-      _instXl( "" ),
-      _instFtrace( "" ),
-      _instOpenuh( "" )
 {
     printf( "calling the instrumentation phase \n" );
+
+    /* call the configuration reader
+     * this is hardcoded, since the file location and name should be fixed
+     */
+    silc_readConfigFile( "silc.conf" );
 }
 
 
@@ -83,10 +76,7 @@ Silc_Instrumenter::silc_readConfigFile
             {
                 if ( silc_readParameter( linStr, parameters[ index ], value ) )
                 {
-                    std::cout << "found value from " << parameters[ index ] << " :\t" << value << std::endl;
-
                     // set member variables
-
                     switch ( index )
                     {
                         case 0:
@@ -277,8 +267,7 @@ Silc_Instrumenter::silc_readParameter
     int  posDelim = instring.find( "=" );
     if ( findLang != std::string::npos && posDelim != std::string::npos )
     {
-        value = instring.substr( posDelim + 1 );
-        //	  std::cout << findLang<<"  "<< instring <<" value: "<< value <<std::endl;
+        value  = instring.substr( posDelim + 1 );
         retVal = true;
         return retVal;
     }

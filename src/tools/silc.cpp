@@ -30,17 +30,11 @@ main
         std::string inst = argv[ 1 ];
         if ( inst == "--instrument" || inst == "-inst" )
         {
+            //parse config file 'silcConf' to application
             // select the application
-            Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
+            // check wheter config stage went well
 
-            if ( appType->silc_readConfigFile( silcConf ) )
-            {
-                //proceed
-            }
-            else
-            {
-                ;               // catch
-            }
+            Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
 
             appType->silc_printParameter();
         }
