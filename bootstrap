@@ -4,12 +4,14 @@
 #package_version=1.0
 
 all: clean 
-	autoreconf --install --force -Wall --verbose --no-recursive && \
+	cd vendor/otf2 && ./bootstrap && cd -                                  && \
+	autoreconf --install --force -Wall --verbose --no-recursive            && \
 	cd build-backend;  autoreconf --install -Wall --verbose --no-recursive && \
 	cd ../build-frontend; autoreconf --install -Wall --verbose --no-recursive
 
 
 clean:
+	cd vendor/otf2 && ./bootstrap clean 
 	find . -name "*~" -exec rm '{}' \;
 	rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in
 	cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing
