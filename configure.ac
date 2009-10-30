@@ -60,11 +60,16 @@ if test ! -n "$ac_silc_platform_data_provided" -o "x${ac_silc_platform_data_prov
     # $ac_silc_cross_compiling, $ac_silc_platform are set here
     AC_SILC_DETECT_PLATFORMS
     AC_SILC_LOAD_PLATFORMS_DEFAULTS
-    #export ac_silc_platform_data_provided="yes"
-    #export ac_silc_cross_compiling
+    # determine arguments for subdir configures
+    args="`$AWK -f $srcdir/build-config/process_arguments.awk \
+           $srcdir/build-config/platforms/$ac_silc_platform   \
+           user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
     AC_MSG_NOTICE([debug: ac_silc_cross_compiling: $ac_silc_cross_compiling])
+    # determine arguments for subdir configures
+    args="`$AWK -f $srcdir/build-config/process_arguments.awk \
+           user_provided_configure_args`"
 fi
    
 
@@ -82,10 +87,8 @@ AC_SILC_DOXYGEN
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 
-# determine arguments for subdir configures
-args="`$AWK -f $srcdir/build-config/process_arguments.awk \
-       $srcdir/build-config/platforms/$ac_silc_platform   \
-       user_provided_configure_args`"
+# handle external package's subdir configures
+AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [$args ac_silc_platform_data_provided=yes ac_silc_cross_compiling=$ac_silc_cross_compiling])
 
 # handle own package's subdir configures
 AC_CONFIG_SUBDIR_CUSTOM([build-backend], [$args ac_silc_cross_compiling=${ac_silc_cross_compiling}])
@@ -93,9 +96,6 @@ AC_CONFIG_SUBDIR_CUSTOM([build-backend], [$args ac_silc_cross_compiling=${ac_sil
 if test "x${ac_silc_cross_compiling}" = "xyes"; then
     AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [$args])
 fi
-
-# handle external package's subdir configures
-#AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [$args ac_silc_platform_data_provided=yes ac_silc_cross_compiling=$ac_silc_cross_compiling])
 
 
 #AC_CONFIG_SUBDIR_CUSTOM([bar], [ CC=gcc ])

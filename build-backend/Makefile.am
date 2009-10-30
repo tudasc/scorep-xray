@@ -18,6 +18,8 @@ include ../build-includes/front-and-backend.am
 include ../build-includes/frontend-only.am
 endif
 
+BUILD_DIR=build-backend
+
 ## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4 is to be
 ## rebuilt by make. This line is also used by autoreconf to run aclocal with
 ## suitable options, or by autopoint and gettextize to locate the place where

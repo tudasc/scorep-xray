@@ -1,9 +1,11 @@
 ## -*- mode: makefile -*-
 
-#lib_LTLIBRARIES += lib_silc_utilities.la
-#lib_silc_utilities_la_SOURCES = 
-#lib_silc_utilities_la_LDFLAGS =
-#lib_silc_utilities_la_LIBADD =   \
-#  lib_silc_exception.la      \
+lib_LTLIBRARIES += libsilc.la
+libsilc_la_SOURCES = 
+#libsilc_la_LDFLAGS =
+libsilc_la_LIBADD =                           \
+  libmeasurement.la                           \
+  ../vendor/otf2/$(BUILD_DIR)/lib_otf2.la
 #  lib_silc_priority_queue.la \
 #  lib_silc_vector.la
+

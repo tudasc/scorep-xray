@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 include ../src/Makefile.inc.am
-#include ../src/exception/Makefile.inc.am
+include ../src/measurement/Makefile.inc.am
 #include ../src/priority_queue/Makefile.inc.am
 #include ../src/vector/Makefile.inc.am
 
