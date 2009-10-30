@@ -125,8 +125,8 @@ SILC_MpiCollective
              silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
                                   "%x", communicatorHandle ),
              globalRootRank,
-             tag,
-             bytesSent );
+             bytesSent,
+             bytesReceived );
 }
 
 
