@@ -5,7 +5,7 @@ libsilc_la_SOURCES =
 #libsilc_la_LDFLAGS =
 libsilc_la_LIBADD =                           \
   libmeasurement.la                           \
-  ../vendor/otf2/$(BUILD_DIR)/lib_otf2.la
+  ../vendor/otf2/$(BUILD_DIR)/libotf2.la
 #  lib_silc_priority_queue.la \
 #  lib_silc_vector.la
 

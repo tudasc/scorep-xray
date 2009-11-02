@@ -2,5 +2,19 @@
 
 noinst_LTLIBRARIES += libmeasurement.la
 libmeasurement_la_SOURCES = $(ROOT)src/measurement/SILC_Events.c
-libmeasurement_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include 
+
+#                         \
+#     $(ROOT)src/measurement/SILC_Config.c            \
+#     $(ROOT)src/measurement/SILC_Definitions.c       \
+#     $(ROOT)src/measurement/SILC_Events.c            \
+#     $(ROOT)src/measurement/SILC_RuntimeManagement.c \
+#     $(ROOT)src/measurement/silc_adapter.c 
+
+
+#    \
+#    $(ROOT)src/measurement/silc_types.c
+
+libmeasurement_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_ROOT_UTILITY)src
+
 #include_HEADERS += $(ROOT)src/vector/SILC_Vector.h
+
