@@ -33,6 +33,7 @@
  */
 
 #include <SILC_Types.h>
+#include <SILC_Error.h>
 
 /**
  * Register a set of configure variables to the measurement system.

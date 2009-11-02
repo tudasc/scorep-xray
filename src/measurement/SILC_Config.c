@@ -13,7 +13,6 @@
 
 #include <SILC_Config.h>
 
-#include "silc_types.h"
 
 SILC_Error_Code
 SILC_ConfigRegister
@@ -27,7 +26,7 @@ SILC_ConfigRegister
     for ( uint32_t i = 0; i < numberOfVariables; ++i )
     {
         fprintf( stderr, "Variable:      %s/%s\n",
-                 variables[ i ].nameSapce, variables[ i ].name );
+                 variables[ i ].nameSpace, variables[ i ].name );
         fprintf( stderr, "  Type:        %s\n",
                  silc_config_type_to_string( variables[ i ].type ) );
         fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );

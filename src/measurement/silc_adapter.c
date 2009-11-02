@@ -10,7 +10,7 @@
  * @brief       Holds the list of adapters linked into the measurement system.
  */
 
-#include <silc_adapter.h>
+#include "silc_adapter.h"
 
 /**
  * List of adapters.

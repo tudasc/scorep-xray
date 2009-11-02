@@ -13,6 +13,6 @@
 #include <SILC_Adapter.h>
 
 /** @brief a NULL terminated list of linked in adapters. */
-extern SILC_Adapter** silc_adapters;
+extern SILC_Adapter* silc_adapters[];
 
 #endif /* SILC_INTERNAL_ADAPTER_H */
