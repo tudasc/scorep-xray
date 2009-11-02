@@ -12,7 +12,7 @@
 
 {
   if (FILENAME == "user_provided_configure_args") {
-    #for (i=1; i<=NF; i++) {
+    gsub("\'", "")
     if ($0 == "") {
       next
     }
@@ -23,7 +23,6 @@
     else {
       args_unary = "'" $0 "' " args_unary
     }
-    #}
   }
 #   else if (FILENAME == "args_exported") {
 #     # HUH, it seems that exported values doesn't make it into configure
