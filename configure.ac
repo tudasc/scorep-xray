@@ -87,8 +87,13 @@ AC_SILC_DOXYGEN
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 
+if test ! -n "$ac_silc_doxygen_distdir"; then
+   ac_silc_doxygen_distdir=""
+fi
+AC_SUBST([ac_silc_doxygen_distdir])
+
 # handle external package's subdir configures
-AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [$args ac_silc_platform_data_provided=yes ac_silc_cross_compiling=$ac_silc_cross_compiling])
+AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [$args ac_silc_platform_data_provided=yes ac_silc_cross_compiling=$ac_silc_cross_compiling ac_silc_doxygen_distdir=$ac_silc_doxygen_distdir/vendor/otf2])
 
 # handle own package's subdir configures
 AC_CONFIG_SUBDIR_CUSTOM([build-backend], [$args ac_silc_cross_compiling=${ac_silc_cross_compiling}])

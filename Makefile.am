@@ -53,7 +53,8 @@ clean-local: clean-doxygen-user
 ## documentation is just copied to a subdirectory of $prefix.
 if SVN_CONTROLLED #-----------------------------------------------------------
 
-USER_DOC_DIR = $(top_distdir)/doc
+#USER_DOC_DIR = $(top_distdir)/doc
+USER_DOC_DIR = $(top_distdir)$(ac_silc_doxygen_distdir)/doc
 
 dist-hook: doxygen-user-pdf
 	if test -d "$(USER_DOC_DIR)/html"; then                               \
