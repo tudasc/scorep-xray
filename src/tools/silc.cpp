@@ -21,13 +21,13 @@ main
     char* argv[]
 )
 {
-    std::string silcConf =  "silc.conf";
-
     if ( argc > 1 )
     {
         std::string inst = argv[ 1 ];
         if ( inst == "--instrument" || inst == "-inst" )
         {
+            // attention:  use a global path to the configuration, which has to be edited
+
             // select the application
             Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
 

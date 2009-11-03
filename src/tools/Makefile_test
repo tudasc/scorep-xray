@@ -1,0 +1,7 @@
+COMP=./silc --instrument
+COMPARG= comp:gnu
+SOURCE=hello_functions.c
+
+
+all:
+		$(COMP) $(COMPARG)  $(SOURCE) -o hello_functions
