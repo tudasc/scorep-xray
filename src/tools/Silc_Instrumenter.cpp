@@ -12,7 +12,9 @@ extern "C" {
 
 
 
-
+/**
+ * @brief constructor: calls the member function to initialize privates via config file
+ */
 Silc_Instrumenter::Silc_Instrumenter
 (
 )
@@ -26,12 +28,24 @@ Silc_Instrumenter::Silc_Instrumenter
 }
 
 
+
+/**
+ *  @brief default destructor
+ */
 Silc_Instrumenter::~
 Silc_Instrumenter
     ()
 {
 }
 
+/**
+ * @brief reads the configuration file for the instrumentation stage
+ * @param  fileName   name of the configuration file
+ *
+ * The configuration file should exist in a fixed location to be found by the
+ * instrumentation tool. Idealy it is installed in a global path and examined
+ * during configure phase.
+ */
 bool
 Silc_Instrumenter::silc_readConfigFile
 (
@@ -190,6 +204,14 @@ Silc_Instrumenter::silc_readEnvVars
     return exitStatus;
 }
 
+
+/**
+ * @brief parses command line to the instrumenter
+ * @param  argc  size of parameter list
+ * @param  argv  array of command line parameters to the instrumenter
+ *
+ *
+ */
 bool
 Silc_Instrumenter::silc_parseCmdLine
 (
@@ -216,6 +238,12 @@ Silc_Instrumenter::silc_parseCmdLine
     return exitStatus;
 }
 
+/**
+ * @brief runs the user specified instrumentation command
+ * @param  argc  size of parameter list
+ * @param  argv  array of command line parameters to the instrumenter
+ *
+ */
 int
 Silc_Instrumenter::silc_run
 (
@@ -227,7 +255,7 @@ Silc_Instrumenter::silc_run
      */
 
     bool exitStatus = false;
-    printf( "compiles the instrumented user code \n " );
+    printf( "instrument the user code \n " );
 
 
     std::string compCommand = _compiler + " ";
@@ -244,6 +272,7 @@ Silc_Instrumenter::silc_run
 }
 
 
+the instrumented
 bool
 Silc_Instrumenter::silc_setLanguage
 (
@@ -257,6 +286,9 @@ Silc_Instrumenter::silc_setLanguage
 }
 
 
+/**
+ * @brief
+ */
 void
 Silc_Instrumenter::silc_compilerCmd
 (

@@ -137,11 +137,6 @@ public:
     (
     );
 
-
-/** @brief
- * list of getter functions
- */
-
 /** @brief
  * used language of user code
  */
