@@ -1,23 +1,24 @@
 ## -*- mode: makefile -*-
 
 noinst_LTLIBRARIES += libmeasurement.la
-libmeasurement_la_SOURCES =                                  \
-     $(ROOT)src/measurement/SILC_Config.c                    \
-     $(ROOT)src/measurement/SILC_Definitions.c               \
-     $(ROOT)src/measurement/SILC_Events.c                    \
-     $(ROOT)src/measurement/SILC_RuntimeManagement.c         \
-     $(ROOT)src/measurement/include/SILC_Adapter.h           \
-     $(ROOT)src/measurement/include/SILC_Config.h            \
-     $(ROOT)src/measurement/include/SILC_Definitions.h       \
-     $(ROOT)src/measurement/include/SILC_Events.h            \
-     $(ROOT)src/measurement/include/SILC_Memory.h            \
-     $(ROOT)src/measurement/include/SILC_RuntimeManagement.h \
-     $(ROOT)src/measurement/include/SILC_Types.h             \
-     $(ROOT)src/measurement/silc_adapter.c                   \
-     $(ROOT)src/measurement/silc_adapter.h                   \
-     $(ROOT)src/measurement/silc_types.h                     
+libmeasurement_la_SOURCES =                                      \
+     $(SRC_ROOT)src/measurement/SILC_Config.c                    \
+     $(SRC_ROOT)src/measurement/SILC_Definitions.c               \
+     $(SRC_ROOT)src/measurement/SILC_Events.c                    \
+     $(SRC_ROOT)src/measurement/SILC_RuntimeManagement.c         \
+     $(SRC_ROOT)src/measurement/include/SILC_Adapter.h           \
+     $(SRC_ROOT)src/measurement/include/SILC_Config.h            \
+     $(SRC_ROOT)src/measurement/include/SILC_Definitions.h       \
+     $(SRC_ROOT)src/measurement/include/SILC_Events.h            \
+     $(SRC_ROOT)src/measurement/include/SILC_Memory.h            \
+     $(SRC_ROOT)src/measurement/include/SILC_RuntimeManagement.h \
+     $(SRC_ROOT)src/measurement/include/SILC_Types.h             \
+     $(SRC_ROOT)src/measurement/silc_adapter.c                   \
+     $(SRC_ROOT)src/measurement/silc_adapter.h                   \
+     $(SRC_ROOT)src/measurement/silc_types.h                     
 
-libmeasurement_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_ROOT_UTILITY)src/include
-
-#include_HEADERS += $(ROOT)src/vector/SILC_Vector.h
+libmeasurement_la_CPPFLAGS =                     \
+     $(AM_CPPFLAGS)                              \
+     -I$(SRC_ROOT_SILC)src/measurement/include   \
+     -I$(SRC_ROOT_UTIL)src/include
 
