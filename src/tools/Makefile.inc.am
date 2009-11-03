@@ -1,0 +1,16 @@
+## -*- mode: makefile -*-
+
+bin_PROGRAMS += silc
+silc_SOURCES = \
+    $(ROOT)src/tools/Silc_Application.cpp            \
+    $(ROOT)src/tools/Silc_ApplicationType.cpp        \
+    $(ROOT)src/tools/silc.cpp                        \
+    $(ROOT)src/tools/Silc_Instrumenter.cpp           \
+    $(ROOT)src/tools/Silc_Measurement.cpp            \
+    $(ROOT)src/tools/Silc_Application.hpp            \
+    $(ROOT)src/tools/Silc_ApplicationType.hpp        \
+    $(ROOT)src/tools/Silc_Instrumenter.hpp           \
+    $(ROOT)src/tools/Silc_Measurement.hpp
+
+silc_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT_UTILITY)src/include
+

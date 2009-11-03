@@ -1,15 +1,17 @@
+#include "Silc_Instrumenter.hpp"
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <istream>
 
 extern "C" {
-#include "SILC_Utils.h"
-#include "SILC_Error.h"
+#include <SILC_Utils.h>
+#include <SILC_Error.h>
 }
 
 
-#include "Silc_Instrumenter.hpp"
+
 
 Silc_Instrumenter::Silc_Instrumenter
 (
