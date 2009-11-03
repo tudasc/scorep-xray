@@ -25,18 +25,25 @@ main
 
     if ( argc > 1 )
     {
-        std::cout << " argument 1: " << argv[ 1 ] << " and total number of arguments: " << argc << std::endl;
-
         std::string inst = argv[ 1 ];
         if ( inst == "--instrument" || inst == "-inst" )
         {
-            //parse config file 'silcConf' to application
             // select the application
-            // check wheter config stage went well
-
             Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
 
             appType->silc_printParameter();
+
+            std::cout << "\nparse the command line \n :" << std::endl;
+            appType->silc_parseCmdLine( argc, argv );
+
+            if ( appType->silc_run() )
+            {
+                std::cout << " instrument user code: " << std::endl;
+            }
+            else
+            {
+                // catch
+            }
         }
     }
     else

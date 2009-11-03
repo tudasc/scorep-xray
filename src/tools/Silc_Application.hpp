@@ -25,6 +25,30 @@ public:
         std::string fileName
     );
 
+/** @brief
+ * get command line attributes
+ */
+    virtual bool
+    silc_parseCmdLine
+    (
+        int    argc,
+        char** argv
+    )
+    {
+    };
+
+
+/** @brief
+ * perform instrumentation stage
+ */
+    virtual int
+    silc_run
+    (
+    )
+    {
+    };
+
+
     virtual void
     silc_printParameter
     (

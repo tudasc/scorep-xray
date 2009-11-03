@@ -88,7 +88,7 @@ Silc_Instrumenter::silc_readConfigFile
                         }
                         case 1:
                         {
-                            _instType = value;
+                            _instString = value;
                             break;
                         }
                         case 2:
@@ -128,40 +128,45 @@ Silc_Instrumenter::silc_readConfigFile
                         }
                         case 9:
                         {
-                            _instGnu = value;
+                            _instAvail = value;
                             break;
                         }
                         case 10:
                         {
-                            _instPgi = value;
+                            _instGnu = value;
                             break;
                         }
                         case 11:
                         {
-                            _instSun = value;
+                            _instPgi = value;
                             break;
                         }
                         case 12:
                         {
-                            _instXl = value;
+                            _instSun = value;
                             break;
                         }
                         case 13:
                         {
-                            _instFtrace = value;
+                            _instXl = value;
                             break;
                         }
                         case 14:
+                        {
+                            _instFtrace = value;
+                            break;
+                        }
+                        case 15:
                         {
                             _instOpenuh = value;
                             break;
                         }
                     }
-
+                    silc_instType( value );
                     index++;
                 }
-            }
-        }                  /* of while loop */
+            }                              /* of while loop */
+        }
     }
     else
     {
@@ -192,8 +197,21 @@ Silc_Instrumenter::silc_parseCmdLine
     char** argv
 )
 {
-    bool exitStatus = true;
-    printf( "examines the command line arguments \n " );
+    bool        exitStatus = true;
+    std::string instStr( argv[ 1 ] );
+    int         pos = instStr.find( "--instrument", 0 );
+    if ( pos != std::string::npos
+         //		 && _instType == INST_TYPE_GNU
+         && argc > 3
+         )
+    {
+        for ( int loop = 3; loop < argc; loop++ )
+        {
+            std::string flag( argv[ loop ] );
+            _compFlags += flag + " ";
+            std::cout << flag << "   " << argv[ loop ] << std::endl;
+        }
+    }
 
     return exitStatus;
 }
@@ -208,8 +226,19 @@ Silc_Instrumenter::silc_run
      *  perform
      */
 
-    bool exitStatus = true;
+    bool exitStatus = false;
     printf( "compiles the instrumented user code \n " );
+
+
+    std::string compCommand = _compiler + " ";
+
+    if ( _instType == INST_TYPE_GNU )
+    {
+        compCommand += _instGnu;
+        exitStatus   = true;
+    }
+    compCommand += " " + _compFlags;
+    system( compCommand.c_str() );
 
     return exitStatus;
 }
@@ -271,6 +300,7 @@ Silc_Instrumenter::silc_readParameter
     {
         value  = instring.substr( posDelim + 1 );
         retVal = true;
+        std::cout << value << std::endl;
         return retVal;
     }
     else
@@ -281,12 +311,144 @@ Silc_Instrumenter::silc_readParameter
 
 
 void
+Silc_Instrumenter::silc_instType
+(
+    std::string itype
+)
+{
+    const uint32_t    length            = 12;
+    const std::string instKey[ length ] = {
+        "comp:gnu",
+        "comp:pgi",
+        "comp:sun",
+        "comp:xl",
+        "comp:ftrace",
+        "comp:openuh",
+        "bin:dyninst",
+        "manual:user",
+        "manual:seq",
+        "manual:mpi",
+        "manual:openmp",
+        "manual:hybrid"
+    };
+
+
+    uint32_t index = 0;
+    for ( index = 0; index < length; index++ )
+    {
+        switch ( index )
+        {
+            case  0:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_GNU;
+                }
+                break;
+            }
+            case  1:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_PGI;
+                }
+                break;
+            }
+            case  2:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_SUN;
+                }
+                break;
+            }
+            case  3:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_XL;
+                }
+                break;
+            }
+            case  4:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_FTRACE;
+                }
+                break;
+            }
+            case  5:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_OPENUH;
+                }
+                break;
+            }
+            case  6:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_DYNINST;
+                }
+                break;
+            }
+            case  7:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_USER;
+                }
+                break;
+            }
+            case  8:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_SEQ;
+                }
+                break;
+            }
+            case  9:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_MPI;
+                }
+                break;
+            }
+            case  10:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_OPENMP;
+                }
+                break;
+            }
+            case  11:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_HYBRID;
+                }
+                break;
+            }
+        }
+    }
+    std::cout << " selected instrumentation type: " << itype << "  enum: " << _instType << std::endl;
+}
+
+
+
+
+void
 Silc_Instrumenter::silc_printParameter
 (
 )
 {
     std::cout << " language:                                  " << _language << "\n"
-              << " instrumentation type:                      " << _instType << "\n"
+              << " instrumentation type:                      " << _instString << "\n"
               << " compiler:                                  " << _compiler  << "\n"
               << " compiler flags                             " << _compFlags << "\n"
               << " linker flags :                             " << _linkerFlags << "\n"
@@ -294,10 +456,10 @@ Silc_Instrumenter::silc_printParameter
               << " include directories :                      " << _inclDir  << "\n"
               << " lib directories                            " << _libDir   << "\n"
               << " default instrumentation:                   " << _instDefault << "\n"
-              << " GNU compiler instrumantation parameter:    " << _instGnu << "\n"
-              << " PGI compiler instrumantation parameter:    " << _instPgi << "\n"
-              << " Sun compiler instrumantation parameter:    " << _instSun << "\n"
-              << " Xl compiler instrumantation parameter:     " << _instXl << "\n"
-              << " FTrace compiler instrumantation parameter: " << _instFtrace << "\n"
-              << " openUH compiler instrumantation parameter: " << _instOpenuh << std::endl;
+              << " GNU compiler instrumentation parameter:    " << _instGnu << "\n"
+              << " PGI compiler instrumentation parameter:    " << _instPgi << "\n"
+              << " Sun compiler instrumentation parameter:    " << _instSun << "\n"
+              << " Xl compiler instrumentation parameter:     " << _instXl << "\n"
+              << " FTrace compiler instrumentation parameter: " << _instFtrace << "\n"
+              << " openUH compiler instrumentation parameter: " << _instOpenuh << std::endl;
 }

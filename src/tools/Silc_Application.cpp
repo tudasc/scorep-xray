@@ -20,6 +20,15 @@ Silc_Application::silc_readConfigFile
 {
 }
 
+//bool
+//Silc_Application::silc_parseCmdLine
+//(
+// int    argc,
+// char** argv
+// )
+//{
+//}
+
 void
 Silc_Application::silc_printParameter
 (

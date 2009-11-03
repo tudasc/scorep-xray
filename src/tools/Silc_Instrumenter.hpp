@@ -41,14 +41,41 @@ typedef enum
      * OpenUH
      */
     INST_TYPE_OPENUH,
-    /**
-     * manual instrumentation
-     */
-    INST_TYPE_MANUAL,
+
     /**
      * binary instrumentation by Dyninst
      */
-    INST_TYPE_DYNINST
+    INST_TYPE_DYNINST,
+
+    /**
+     * manual user instrumentation
+     */
+    INST_TYPE_USER,
+
+    /**
+     * sequential instrumentation
+     */
+    INST_TYPE_SEQ,
+
+    /**
+     * manual MPI instrumentation
+     */
+    INST_TYPE_MPI,
+
+    /**
+     * manual OpenMP instrumentation
+     */
+    INST_TYPE_OPENMP,
+
+    /**
+     * manual hybrid instrumentation
+     */
+    INST_TYPE_HYBRID,
+
+    /**
+     * default instrumentation value
+     */
+    INST_TYPE_DEFAULT
 } SILC_InstType;
 
 
@@ -95,7 +122,7 @@ public:
 /** @brief
  * get command line attributes
  */
-    bool
+    virtual bool
     silc_parseCmdLine
     (
         int    argc,
@@ -105,7 +132,7 @@ public:
 /** @brief
  * perform instrumentation stage
  */
-    int
+    virtual int
     silc_run
     (
     );
@@ -137,7 +164,7 @@ public:
  * intrumentation type
  */
     void
-    silc_instType
+    silc_instString
     (
         const std::string cmd
     );
@@ -172,6 +199,17 @@ public:
     );
 
 /** @brief
+ *  check for given instrumentation type
+ */
+    void
+    silc_instType
+    (
+        std::string insttype
+    );
+
+
+
+/** @brief
  *  prints all instrumentation parameters as read from input file
  */
     virtual void
@@ -185,12 +223,18 @@ private:
 /** @brief
  *  instrumentation type
  */
+    SILC_InstType _instType;
+
+
+/** @brief
+ *  used language
+ */
     std::string _language;
 
 /** @brief
- *  instrumentation type
+ *  instrumentation string
  */
-    std::string _instType;
+    std::string _instString;
 
 /** @brief
  *  compiler command
@@ -226,6 +270,11 @@ private:
  *  compiler instrumentation flag
  */
     std::string _instDefault;
+
+/** @brief
+ *  available compiler instrumentation
+ */
+    std::string _instAvail;
 
 /** @brief
  *  gnu compiler instrumentation flags
