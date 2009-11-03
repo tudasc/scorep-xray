@@ -125,8 +125,6 @@ SILC_DefineRegion
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  *
- * @param mpiCommunicatorId The addapter-assigned MPI communicator id.
- *
  * @param bitVectorReprOfCommGroup A bitvector representation of the MPI group
  * of the new MPI communicator. Will be copied.
  *
@@ -141,15 +139,12 @@ SILC_DefineRegion
 SILC_MPICommunicatorHandle
 SILC_DefineMPICommunicator
 (
-    uint32_t            mpiCommunicatorId,
     const unsigned char bitVectorReprOfCommGroup[],
     uint32_t            sizeOfBitVectorReprOfCommGroup
 );
 
 /**
  * Associate a MPI window with a process unique window handle.
- *
- * @param mpiWindowId The addapter-assigned MPI window id.
  *
  * @param communicatorHandle A handle to the associated communicator,
  * previously defined by DefineMPICommunicator().
@@ -163,7 +158,6 @@ SILC_DefineMPICommunicator
 SILC_MPIWindowHandle
 SILC_DefineMPIWindow
 (
-    uint32_t                   mpiWindowId,
     SILC_MPICommunicatorHandle communicatorHandle
 );
 

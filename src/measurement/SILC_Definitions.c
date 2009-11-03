@@ -74,13 +74,11 @@ SILC_DefineRegion
 SILC_MPICommunicatorHandle
 SILC_DefineMPICommunicator
 (
-    uint32_t            mpiCommunicatorId,
     const unsigned char bitVectorReprOfCommGroup[],
     uint32_t            sizeOfBitVectorReprOfCommGroup
 )
 {
-    fprintf( stderr, "%s: Define new MPI Communicator %x\n",
-             __func__, mpiCommunicatorId );
+    fprintf( stderr, "%s: Define new MPI Communicator\n", __func__ );
     fprintf( stderr, "    World ranks:" );
 
     uint32_t ranks_in_line = 0;
@@ -110,11 +108,10 @@ SILC_DefineMPICommunicator
 SILC_MPIWindowHandle
 SILC_DefineMPIWindow
 (
-    uint32_t                   mpiWindowId,
     SILC_MPICommunicatorHandle communicatorHandle
 )
 {
-    fprintf( stderr, "%s: Define new MPI Window %x\n", __func__, mpiWindowId );
+    fprintf( stderr, "%s: Define new MPI Window\n", __func__ );
 
     return SILC_INVALID_MPI_WINDOW;
 }
