@@ -38,6 +38,18 @@
 
 
 /**
+ * Indicates if the measurement system is initialized, i.e. if
+ * SILC_InitMeasurement() has been executed.
+ *
+ * @return true if measurement system is initialized, false otherwise.
+ */
+bool
+SILC_IsInitialized
+(
+);
+
+
+/**
  * Initialize the measurement system from the adapter layer. This function
  * needs to be called at least once by an (arbitrary) adapter before any other
  * measurement API function is called. Calling other API functions before is

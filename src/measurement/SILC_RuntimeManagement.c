@@ -20,6 +20,19 @@
 
 
 /**
+ * Return true if SILC_InitMeasurement() has been executed.
+ */
+bool
+SILC_IsInitialized
+(
+)
+{
+    fprintf( stderr, "%s\n", __func__ );
+    return false;
+}
+
+
+/**
  * Initialize the measurement system from the adapter layer.
  */
 void
