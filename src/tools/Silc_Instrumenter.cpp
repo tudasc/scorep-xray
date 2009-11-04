@@ -250,11 +250,11 @@ Silc_Instrumenter::silc_run
 )
 {
     /** get the instrumentation type
-     *  examine compiler command including additional input path and linker option
-     *  perform
+     *  set compiler command including additional input path and linker option
+     *
      */
 
-    bool exitStatus = false;
+    int32_t exitStatus = -1;
     printf( "instrument the user code \n " );
 
 
@@ -266,13 +266,13 @@ Silc_Instrumenter::silc_run
         exitStatus   = true;
     }
     compCommand += " " + _compFlags;
-    system( compCommand.c_str() );
+
+    exitStatus = system( compCommand.c_str() );
 
     return exitStatus;
 }
 
 
-the instrumented
 bool
 Silc_Instrumenter::silc_setLanguage
 (
