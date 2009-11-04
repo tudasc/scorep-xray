@@ -10,25 +10,29 @@ ${proto:c}
 {
   ${rtype} return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_${group|uppercase}))
   {
+/* One-sided communication not handled in first version
     int     sendsz;
     elg_ui4 dpid;
     elg_ui4 wid;
     ${decl}
-
+*/
     SILC_MPI_EVENT_GEN_OFF();
     SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
 
+/* One-sided communication not handled in first version
     dpid = silc_mpi_win_rank_to_pe( target_rank, win );
     wid = silc_mpi_win_rank_id( win );
-    
+   
     PMPI_Type_size(origin_datatype, &sendsz);
     esd_mpi_put_1ts( dpid, wid, SILC_NEXT_RMA_ID, origin_count * sendsz);
-    
+*/    
     return_val = ${call:pmpi};
 
+/* One-sided communication not handled in first version
     esd_mpi_put_1te_remote(dpid, wid, SILC_CURR_RMA_ID);
+*/
 
     SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
     SILC_MPI_EVENT_GEN_ON();

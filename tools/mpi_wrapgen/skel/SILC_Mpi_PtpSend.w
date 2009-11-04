@@ -10,7 +10,7 @@ ${proto:c}
 {
   ${rtype} return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_${group|uppercase}))
   {
     int sz;
 

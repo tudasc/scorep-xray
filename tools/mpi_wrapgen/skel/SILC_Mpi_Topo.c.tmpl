@@ -11,6 +11,11 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#include "SILC_Mpi_Reg.h"
+
+#include <mpi.h>
+#include <malloc.h>
+
 /**
  * @file  SILC_Mpi_Topo.c
  *
@@ -36,8 +41,8 @@ int MPI_Cart_create(MPI_Comm  comm_old,
                     int       reorder,
                     MPI_Comm* comm_cart)
 {
-  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(TOPO);
-  int       return_val;
+  const int32_t event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_TOPO);
+  int32_t       return_val;
 
   if (event_gen_active)
   {
@@ -49,56 +54,53 @@ int MPI_Cart_create(MPI_Comm  comm_old,
 
   if (*comm_cart != MPI_COMM_NULL)
   {
-    int      topid, cid, my_rank, i;
-    int*     coordv;
-    elg_ui1  undims;
-    elg_ui1* uperiodv;
-    elg_ui4* udimv;
-    elg_ui4* ucoordv;
+    SILC_MPICartTopolHandle topid = SILC_INVALID_CART_TOPOLOGY;
+    int32_t   cid, my_rank, i;
+    int32_t*  coordv;
+    uint8_t*  uperiodv;
+    uint32_t* udimv;
+    uint32_t* ucoordv;
 
+    /* register the new topology communicator */
     silc_mpi_comm_create(*comm_cart);
   
-    /* NOTE: 
-     * currently topid == cid during measurement */
-
-    /* get the topid and cid */
-    topid = cid = silc_mpi_comm_id(*comm_cart);
+    /* get the internal comminicator id for the communicator of the new topology */
+    cid = silc_mpi_comm_id(*comm_cart);
 
     /* find the rank of the calling process */
     PMPI_Comm_rank(*comm_cart, &my_rank); 
   
     /* assign the cartesian topology dimension parameters */
-    undims  = (elg_ui1) ndims;
-    udimv   = calloc(ndims, sizeof(elg_ui4));
-    if (udimv == NULL)
+    udimv   = calloc(ndims, sizeof(uint32_t));
+    if (!udimv)
     {
       SILC_ERROR_POSIX();
     }
     
-    uperiodv = calloc(ndims, sizeof(elg_ui1));
-    if (uperiodv == NULL)
+    uperiodv = calloc(ndims, sizeof(uint8_t));
+    if (!uperiodv)
     {
       SILC_ERROR_POSIX();
     }
 
     for (i = 0 ; i < ndims ; i++)
     {
-      udimv[i]    =  (elg_ui4) dims[i];
-      uperiodv[i] =  (elg_ui1) periodv[i];
+      udimv[i]    =  (uint32_t) dims[i];
+      uperiodv[i] =  (uint8_t)  periodv[i];
     }
           
     /* create the cartesian topology definition record */
-    esd_def_cart(topid, cid, undims, udimv, uperiodv);
+    topid = SILC_DefineMPICartesianTopology("", cid, ndims, udimv, uperiodv);
 
-    /* allocate space for coordv and ucoordv */
+     /* allocate space for coordv and ucoordv */
     coordv = calloc(ndims, sizeof(int));
-    if (coordv == NULL)
+    if (!coordv)
     {
       SILC_ERROR_POSIX();
     }
 
-    ucoordv = calloc(ndims, sizeof(elg_ui4));
-    if (ucoordv == NULL)
+    ucoordv = calloc(ndims, sizeof(uint32_t));
+    if (!ucoordv)
     {
       SILC_ERROR_POSIX();
     }
@@ -109,11 +111,11 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     /* assign the coordinates */
     for ( i = 0 ; i < ndims ; i++ )
     {
-      ucoordv[i] = (elg_ui4) coordv[i];
+      ucoordv[i] = (uint32_t) coordv[i];
     }
   
     /* create the coordinates definition record */
-    esd_def_coords(topid, undims, ucoordv);               
+    SILC_DefineMPICartesianCoords(topid, ndims, ucoordv);               
 
     free(udimv);
     free(uperiodv);

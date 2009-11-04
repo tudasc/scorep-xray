@@ -35,7 +35,7 @@
    modifications might be lost.
  */
 
-#include "SILC_Mpi_Com.h"
+#include "SILC_Mpi_Communicator.h"
 #include "SILC_Mpi_Reg.h"
 
 #include "SILC_Error.h"
@@ -51,7 +51,7 @@
 /** internal array of statuses */
 static MPI_Status* silc_my_status_array = 0;
 /** size of internal status array */
-static int         silc_my_status_array_size = 0;
+static int32_t silc_my_status_array_size = 0;
 
 /**
  * Get a pointer to a status array of at least 'size' statuses
@@ -90,7 +90,7 @@ int silc_mpi_nogen = 0;
 /** Check whether event generation is turned on for a specific group.
  */
 #define SILC_MPI_IS_EVENT_GEN_ON_FOR(group) ((!silc_mpi_nogen) && \
-        (silc_mpi_enabled & SILC_MPI_ENABLED_##group))
+        (silc_mpi_enabled & group))
 
 
 /** turn off event generation */

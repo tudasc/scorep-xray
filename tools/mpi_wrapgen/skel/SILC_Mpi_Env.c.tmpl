@@ -192,7 +192,9 @@ int MPI_Finalize()
 
   /* finalize communicator and request management */
   silc_mpi_comm_finalize();
-  silc_request_finalize();
+/* Asynchroneous communication not supported
+  silc_mpi_request_finalize();
+*/
 
   /* finalize MPI event handling */
   /* esd_mpi_finalize(); */

@@ -11,14 +11,15 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#include "SILC_Mpi_Reg.h"
+
+#include <mpi.h>
+
 /**
  * @file  SILC_Mpi_Rma.c
  *
  * @brief C interface wrappers for one-sided communication
  */
-
-#include "epk_mpicom.h"
-#include "SILC_Event.h"
 
 /** internal id counter for rma operations */
 static int silc_rma_id = 0;
@@ -52,30 +53,34 @@ int MPI_Get(void*        origin_addr,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
-    int     sendsz;
-    elg_ui4 dpid;
-    elg_ui4 wid;
+/* One-sided communication not handled in first version
+    int32_t              sendsz;
+    SILC_Mpi_Rank        dest_proc_rank;
+    SILC_MPIWindowHandle win_handle;
+*/
 
     SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_GET]);
 
-    dpid = silc_mpi_win_rank_to_pe( target_rank, win );
-    wid = silc_mpi_win_rank_id( win );
+/* One-sided communication not handled in first version
+    dest_proc_rank = silc_mpi_win_rank_to_pe( target_rank, win );
+    win_handle = silc_mpi_win_id( win );
     
-    /* in MPI_GET the target buffer is remote */
+    /* in MPI_GET the target buffer is remote 
     PMPI_Type_size(target_datatype, &sendsz);
-    esd_mpi_get_1ts_remote(dpid, wid, SILC_NEXT_RMA_ID, target_count * sendsz);
-    
+    esd_mpi_get_1ts_remote(dest_proc_rank, win_handle, SILC_NEXT_RMA_ID, target_count * sendsz);
+*/    
     return_val = PMPI_Get( origin_addr, origin_count, 
                   origin_datatype, target_rank, target_disp,
                   target_count, target_datatype, win );
 
     /* in MPI_GET the origin buffer is local */
-    esd_mpi_get_1te( dpid, wid, SILC_CURR_RMA_ID);
-
+/* One-sided communication not handled in first version
+    esd_mpi_get_1te( dest_proc_rank, win_handle, SILC_CURR_RMA_ID);
+*/
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_GET]);
 
     SILC_MPI_EVENT_GEN_ON();
@@ -112,7 +117,7 @@ int MPI_Win_create(void*    base,
                    MPI_Comm comm,
                    MPI_Win* win) 
 {
-  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA); 
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA); 
   int       return_val;
 
   if (event_gen_active)
@@ -125,15 +130,18 @@ int MPI_Win_create(void*    base,
   return_val = PMPI_Win_create(base, size, disp_unit,
                 info, comm, win );
 
+/* One-sided communication not handled in first version
   if (*win != MPI_WIN_NULL)
   {
     silc_mpi_win_rank_create( *win, comm );
   }
+*/
 
   if (event_gen_active)
   {
+/* One-sided communication not handled in first version
     esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_CREATE], silc_mpi_win_rank_id(*win));
-    
+*/    
     SILC_MPI_EVENT_GEN_ON();
   }
 
@@ -149,25 +157,33 @@ int MPI_Win_create(void*    base,
  */
 int MPI_Win_free(MPI_Win* win) 
 {
-  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA); 
-  int       return_val;
-  elg_ui4   wid;
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA); 
+  int                 return_val;
+/* One-sided communication not handled in first version
+  SILC_MPIWindowHanle win_handle;
+*/
 
   if (event_gen_active)
   {
     SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_FREE]);
-
-    wid = silc_mpi_win_rank_id(*win);
+/* One-sided communication not handled in first version
+    win_handle = silc_mpi_win_rank_id(*win);
+*/
   }
       
+/* One-sided communication not handled in first version
   silc_mpi_win_rank_free(*win);
+*/
+
   return_val = PMPI_Win_free( win );
 
   if (event_gen_active)
   {
-    esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_FREE], wid);
+/* One-sided communication not handled in first version
+    esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_FREE], win_handle);
+*/
     
     SILC_MPI_EVENT_GEN_ON();
   }
@@ -192,7 +208,7 @@ int MPI_Win_complete(MPI_Win win)
 { 
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
@@ -200,10 +216,11 @@ int MPI_Win_complete(MPI_Win win)
 
     return_val = PMPI_Win_complete(win);
 
+/* One-sided communication not handled in first version
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_COMPLETE],
                     silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 1), 1);
     silc_mpi_winacc_end(win, 1);
-
+*/
     SILC_MPI_EVENT_GEN_ON();
   }
   else
@@ -226,7 +243,7 @@ int MPI_Win_fence(int     assert,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
@@ -234,8 +251,9 @@ int MPI_Win_fence(int     assert,
 
     return_val = PMPI_Win_fence(assert, win);
 
+/* One-sided communication not handled in first version
     esd_mpi_wincollexit(silc_mpi_regid[SILC__MPI_WIN_FENCE], silc_mpi_win_rank_id(win));
-    
+*/    
     SILC_MPI_EVENT_GEN_ON();
   }
   else
@@ -260,13 +278,15 @@ int MPI_Win_lock(int     lock_type,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_LOCK]);
 
+/* One-sided communication not handled in first version
     esd_mpi_win_lock( rank, silc_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
+*/
     return_val = PMPI_Win_lock( lock_type, rank, 
                       assert, win );
 
@@ -295,18 +315,21 @@ int MPI_Win_post(MPI_Group group,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_POST]);
 
+/* One-sided communication not handled in first version
     silc_mpi_winacc_start(win, group, 0);
+*/
     return_val = PMPI_Win_post(group, assert, win);
 
+/* One-sided communication not handled in first version
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_POST],
                     silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 0);
-    
+*/
     SILC_MPI_EVENT_GEN_ON();
   }
   else
@@ -330,18 +353,21 @@ int MPI_Win_start(MPI_Group group,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_START]);
 
+/* One-sided communication not handled in first version
     silc_mpi_winacc_start(win, group, 1);
+*/
     return_val = PMPI_Win_start(group, assert, win);
 
+/* One-sided communication not handled in first version
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_START],
                     silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 1), 0);
-    
+*/    
     SILC_MPI_EVENT_GEN_ON();
   }
   else
@@ -364,7 +390,7 @@ int MPI_Win_test(MPI_Win win,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
@@ -372,6 +398,7 @@ int MPI_Win_test(MPI_Win win,
 
     return_val = PMPI_Win_test(win, flag);
     
+/* One-sided communication not handled in first version
     if (*flag != 0) 
     {
       esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_TEST],
@@ -382,8 +409,8 @@ int MPI_Win_test(MPI_Win win,
     {
       esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_TEST],
                       silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 0);
-	  }
-
+    }
+*/
     SILC_MPI_EVENT_GEN_ON();
   }
   else
@@ -406,14 +433,16 @@ int MPI_Win_unlock(int     rank,
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_WIN_UNLOCK]);
 
     return_val = PMPI_Win_unlock(rank, win);
+/* One-sided communication not handled in first version
     esd_mpi_win_unlock(rank, silc_mpi_win_rank_id(win));
+*/
     
     SILC_ExitRegion(silc_mpi_regid[SILC__MPI_WIN_UNLOCK]);
 
@@ -439,7 +468,7 @@ int MPI_Win_wait(MPI_Win win)
 {
   int return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(RMA))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_RMA))
   {
     SILC_MPI_EVENT_GEN_OFF();
 
@@ -447,9 +476,11 @@ int MPI_Win_wait(MPI_Win win)
 
     return_val = PMPI_Win_wait(win);
 
+/* One-sided communication not handled in first version
     esd_mpi_winexit(silc_mpi_regid[SILC__MPI_WIN_WAIT],
                     silc_mpi_win_rank_id(win), silc_mpi_winacc_get_gid(win, 0), 1);
     silc_mpi_winacc_end(win, 0);
+*/
 
     SILC_MPI_EVENT_GEN_ON();
   }

@@ -53,8 +53,8 @@
     <version id="1" />
     <countrules send="N * sendcount * sendsz" recv="N * recvcount * recvsz" />
 <decl><![CDATA[
-    int     recvsz, sendsz, N;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t recvsz, sendsz, N;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -74,8 +74,8 @@
     <version id="1" />
     <countrules send="N * sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
-    int     recvcount, recvsz, sendsz, i, N;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t recvcount, recvsz, sendsz, i, N;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -101,8 +101,8 @@
     <version id="1" />
     <countrules send="N * count * sz" recv="N * count * sz" />
 <decl><![CDATA[
-    int     sz, N;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t sz, N;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -120,8 +120,8 @@
     <version id="1" />
     <countrules send="N * sendcount * sendsz" recv="N * recvcount * recvsz" />
 <decl><![CDATA[
-    int     recvsz, sendsz, N;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t recvsz, sendsz, N;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -142,8 +142,8 @@
     <version id="1" />
     <countrules send="sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
-    int     recvcount=0, sendcount=0, recvsz, sendsz, N, i;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t recvcount=0, sendcount=0, recvsz, sendsz, N, i;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -169,8 +169,8 @@
     <version id="2" />
     <countrules send="sendcount" recv="recvcount" />
 <decl><![CDATA[
-    int     recvcount=0, sendcount=0, recvsz, sendsz, N, i;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t recvcount=0, sendcount=0, recvsz, sendsz, N, i;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Comm_size(comm, &N);
@@ -204,7 +204,7 @@
 <prototype name="MPI_Barrier" rtype="int" group="coll" >
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1" />
-    <decl>elg_ui4 root_loc = ELG_NO_ID;</decl>
+    <decl>SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;</decl>
 </prototype>
 <prototype name="MPI_Bcast" rtype="int" group="coll" >
     <param access="b" type="void*" name="buffer" />
@@ -215,8 +215,8 @@
     <version id="1" />
     <countrules send="N*count*sz" recv="count*sz" />
 <decl><![CDATA[
-    int     sz, N, me;
-    elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
+    int32_t sz, N, me;
+    SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -952,8 +952,8 @@
     <version id="1" />
     <countrules send="sendcount*sendsz" recv="N*recvcount*recvsz" />
 <decl><![CDATA[
-    int     sendsz, recvsz, N, me;
-    elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
+    int32_t sendsz, recvsz, N, me;
+    SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(sendtype, &sendsz);
@@ -979,8 +979,8 @@
     <version id="1" />
     <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
 <decl><![CDATA[
-    int     recvsz, sendsz, recvcount, me, N, i; 
-    elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
+    int32_t recvsz, sendsz, recvcount, me, N, i; 
+    SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(sendtype, &sendsz);
@@ -1461,8 +1461,8 @@
     <version id="1" />
     <countrules send="count*sz" recv="(root == me ? N*count*sz : 0 )" />
 <decl><![CDATA[
-    int     sz, me, N;
-    elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
+    int32_t sz, me, N;
+    SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -1480,8 +1480,8 @@
     <version id="1" />
     <countrules send="count * sz" recv="N * recvcounts[me] * sz" />
 <decl><![CDATA[
-    int     i, sz, me, N, count = 0;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t i, sz, me, N, count = 0;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -1545,8 +1545,8 @@
     <version id="1" />
     <countrules send="(N-me) * count * sz" recv="(me+1) * count * sz" />
 <decl><![CDATA[
-    int     sz, me, N;
-    elg_ui4 root_loc = ELG_NO_ID;
+    int32_t sz, me, N;
+    SILC_Mpi_Rank root_loc = SILC_MPI_INVALID_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -1566,8 +1566,8 @@
     <version id="1" />
     <countrules send="N * sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
-    int     sendsz, recvsz, N, me;
-    elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
+    int32_t sendsz, recvsz, N, me;
+    SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -1593,8 +1593,8 @@
     <version id="1" />
     <countrules send="sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
-    int sendcount, sendsz, recvsz, me, N, i;
-    elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
+    int32_t sendcount, sendsz, recvsz, me, N, i;
+    SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       sendcount = sendsz = 0;

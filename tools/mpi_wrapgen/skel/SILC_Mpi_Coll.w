@@ -12,7 +12,7 @@ ${proto:c}
 {
   ${rtype} return_val;
 
-  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase}))
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_${group|uppercase}))
     {
       ${decl}
 
@@ -23,7 +23,8 @@ ${proto:c}
 
       ${xblock}
       SILC_MpiCollective(silc_mpi_regid[SILC__${name|uppercase}],
-		       root_loc, SILC_MPI_COMM_ID(comm), 
+		       SILC_MPI_COMM_ID(comm), 
+                       root_loc,
                        ${mpi:sendcount}, 
                        ${mpi:recvcount});
       SILC_ExitRegion(silc_mpi_regid[SILC__${name|uppercase}]);
