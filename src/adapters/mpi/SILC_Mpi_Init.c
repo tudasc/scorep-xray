@@ -6,6 +6,7 @@
  */
 
 #include "SILC_Mpi_Init.h"
+#include "SILC_Mpi_Reg.h"
 
 #include <stdio.h>
 
@@ -21,6 +22,30 @@ const SILC_Adapter SILC_Mpi_Adapter =
     &SILC_Mpi_Deregister
 };
 
+
+/** Contains the configuration string of enabled mpi function groups. It is filled
+    by the measurement system after registration of configuration variables.
+ */
+static char** silc_mpi_config_groups = NULL;
+
+/** Array of configuration variables.
+    They are registered to the measurement system and are filled during until the
+    initialization function is called.
+ */
+SILC_ConfigVariable silc_mpi_configs[] = {
+    {
+        "mpi",
+        "enable_groups",
+        SILC_CONFIG_TYPE_SET,
+        &silc_mpi_config_groups,
+        NULL,
+        "DEFAULT",
+        "The names of the function groups which are measured.",
+        "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n",
+    }
+};
+
+
 SILC_Error_Code
 SILC_Mpi_Register
     ()
@@ -34,6 +59,7 @@ SILC_Mpi_InitAdapter
     ()
 {
     printf( "In SILC_Mpi_InitAdapter\n" );
+    silc_mpi_register_regions();
     return SILC_SUCCESS;
 }
 

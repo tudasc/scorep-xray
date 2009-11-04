@@ -1,0 +1,783 @@
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
+*****************************************************************************
+**  Copyright (c) 1998-2009                                                **
+**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
+/**
+ * @file  SILC_Mpi_Communicator.c
+ *
+ * @brief Communicator, group and window management
+ */
+
+#include "SILC_Mpi_Communicator.h"
+#include "SILC_Error.h"
+#include "SILC_Debug.h"
+#include "SILC_Definitions.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+/*
+ *-----------------------------------------------------------------------------
+ *
+ * Internal definitions
+ *
+ *-----------------------------------------------------------------------------
+ */
+
+/** @def SILC_MPI_MAX_COMM
+ *  @internal
+ *  Maximum amount of concurrently defined communicators per process.
+ */
+#define SILC_MPI_MAX_COMM    50
+
+/** @def SILC_MPI_MAX_GROUP
+ *  @internal
+ *  Maximum amount of concurrently defines groups per process.
+ */
+#define SILC_MPI_MAX_GROUP   50
+
+/** @def SILC_MPI_MAX_WIN
+ *  @internal
+ *  Maximum amount of concurrently defined windows per process
+ */
+#define SILC_MPI_MAX_WIN     50
+
+/** @def SILC_MPI_MAX_WINACC
+ *  @internal
+ *  Maximum amount of concurrently active access or exposure epochs per
+ *  process.
+ */
+#define SILC_MPI_MAX_WINACC  50
+
+/** @internal
+ *  Structure to hold the \a MPI_COMM_WORLD definition.
+ */
+struct silc_mpi_world_type
+{
+    MPI_Group                  group;     /** Associated MPI group */
+    int                        size;      /** Number of ranks */
+    int                        size_grpv; /** Number of bytes used for the group vector */
+    SILC_Mpi_Rank*             ranks;     /** Array which contains the rank numbers */
+    SILC_MPICommunicatorHandle handle;    /** SILC handle */
+};
+
+/** Contains the data of the MPI_COMM_WORLD definition. */
+struct silc_mpi_world_type silc_mpi_world;
+
+/** A switch if global ranks are calculated or not. If set to zero no global ranks are
+    calculated. If set to non-zero global values are calculated. The current default
+    are global ranks.
+ */
+int8_t silc_mpi_comm_determination = 1;
+
+/** @def SILC_MPI_COMM_WORLD_HANDLE
+    The SILC comminicator handle for MPI_COMM_WORLD.
+ */
+#define SILC_MPI_COMM_WORLD_HANDLE silc_mpi_world.handle
+
+/* ------------------------------------------------ Definitions for MPI Window handling */
+#ifdef HAS_MPI2_1SIDED
+
+/** @internal
+ *  Structure to translate MPI window handles to internal SILC IDs.
+ */
+struct silc_mpi_win_type
+{
+    MPI_Win              win; /** MPI window handle */
+    SILC_MPIWindowHandle wid; /** Internal SILC window handle */
+};
+
+/** @internal
+ *  Index in the silc_mpi_windows array of last valid entry in window tracking data
+    structure.
+ */
+static int32_t silc_mpi_last_window = 0;
+
+/** @internal
+ *  Window tracking array */
+static struct silc_mpi_win_type silc_mpi_windows[ SILC_MPI_MAX_WIN ];
+
+#endif // HAS_MPI2_1SIDED
+
+/* ------------------------------------------- Definitions for communicators and groups */
+
+/** @internal
+ * structure for communicator tracking
+ */
+struct silc_mpi_communicator_type
+{
+    MPI_Comm                   comm; /** MPI Communicator handle */
+    SILC_MPICommunicatorHandle cid;  /** Internal SILC Communicator handle */
+};
+
+/** @internal
+ * structure for group tracking
+ */
+struct silc_mpi_group_type
+{
+    MPI_Group            group;  /** MPI group handle */
+    SILC_Mpi_GroupHandle gid;    /** Internal SILC group handle */
+    int32_t              refcnt; /** Number of references to this group */
+};
+
+/** @internal
+ *  Index into the silc_mpi_comms array to the last entry.
+ */
+static int32_t silc_mpi_last_comm = 0;
+
+/** @internal
+ *  Index into the silc_mpi_groups array to the last entry.
+ */
+static int32_t silc_mpi_last_group = 0;
+
+/** @internal
+ *  Communicator tracking data structure. Array of created communicators' handles.
+ */
+static struct silc_mpi_communicator_type silc_mpi_comms[ SILC_MPI_MAX_COMM ];
+
+/** @internal
+ *  Group tracking data structure. Array of created groups' handles.
+ */
+static struct silc_mpi_group_type silc_mpi_groups[ SILC_MPI_MAX_GROUP ];
+
+/** @internal
+ *  Internal array used for rank translation.
+ */
+static SILC_Mpi_Rank* silc_mpi_ranks;
+
+/** @internal
+ *  Internal bitvector used for bitvector creation of new communicators.
+ */
+static unsigned char* silc_mpi_group_vector;
+
+/** @internal
+ *  Internal flag to indicate communicator initialization. It is set o non-zero if the
+ *  communicator managment is initialzed. This happens when the function
+ *  silc_mpi_comm_init() is called.
+ */
+static int silc_mpi_comm_initialized = 0;
+
+/* ------------------------------------------------ Definition for one sided operations */
+#ifdef HAS_MPI2_1SIDED
+
+/*
+ *  exposure epoch
+ */
+const SILC_MPI_Color silc_mpi_exp_epoch = 0;
+
+/*
+ *  access epoch
+ */
+const SILC_Mpi_Color silc_mpi_acc_epoch = 1;
+
+/** @internal
+ *  Entry data structure to track GATS epochs
+ */
+struct silc_mpi_winacc_type
+{
+    MPI_Win              win;   /* MPI window identifier */
+    SILC_Mpi_GroupHandle gid;   /* SILC MPI group handle */
+    SILC_Mpi_Color       color; /* byte to help distiguish accesses on same window */
+};
+
+/** @internal
+ *  Data structure to track active GATS epochs.
+ */
+static struct silc_mpi_winacc_type silc_mpi_winaccs[ SILC_MPI_MAX_WINACC ];
+
+/** @internal
+ *  Index of last valid entry in the silc_mpi_winaccs array.
+ */
+static int silc_mpi_last_winacc = 0;
+
+#endif // HAS_MPI2_1SIDED
+
+/*
+ *-----------------------------------------------------------------------------
+ *
+ * Communicator management
+ *
+ *-----------------------------------------------------------------------------
+ */
+
+/* -- rank translation -- */
+
+SILC_Mpi_Rank
+silc_mpi_rank_to_pe
+(
+    SILC_Mpi_Rank rank,
+    MPI_Comm      comm
+)
+{
+    MPI_Group     group;
+    SILC_Mpi_Rank global_rank;
+    int32_t       inter;
+
+    /* inter-communicators need different call than intra-communicators */
+    PMPI_Comm_test_inter( comm, &inter );
+    if ( inter )
+    {
+        PMPI_Comm_remote_group( comm, &group );
+    }
+    else
+    {
+        PMPI_Comm_group( comm, &group );
+    }
+
+    /* translate rank with respect to \a MPI_COMM_WORLD */
+    PMPI_Group_translate_ranks( group, 1, &rank, silc_mpi_world.group, &global_rank );
+    /* free internal group of input communicator */
+    PMPI_Group_free( &group );
+
+    return global_rank;
+}
+
+#ifdef HAS_MPI2_1SIDED
+
+SILC_Mpi_Rank
+silc_mpi_win_rank_to_pe
+(
+    SILC_Mpi_Rank rank,
+    MPI_Win       win
+)
+{
+    MPI_Group     group;
+    SILC_Mpi_Rank global_rank;
+
+    /* get group of communicator associated with input window */
+    PMPI_Win_get_group( win, &group );
+    /* translate rank with respect to \a MPI_COMM_WORLD */
+    PMPI_Group_translate_ranks( group, 1, &rank, silc_mpi_world.group, &global_rank );
+    /* free internal group of input window */
+    PMPI_Group_free( &group );
+
+    return global_rank;
+}
+
+/* -------------------------------------------------------------------- window handling */
+
+SILC_MPIWindowHandle
+silc_mpi_win_id
+(
+    MPI_Win win
+)
+{
+    int i = 0;
+
+    while ( i < silc_mpi_last_window && silc_mpi_windows[ i ].win != win )
+    {
+        i++;
+    }
+
+    if ( i <= silc_mpi_last_window )
+    {
+        return silc_mpi_windows[ i ].wid;
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW );
+        return SILC_INVALID_MPI_WINDOW;
+    }
+}
+
+void
+silc_mpi_win_create
+(
+    MPI_Win  win,
+    MPI_Comm comm
+)
+{
+    SILC_MPIWindowHandle handle = SILC_INVALID_MPI_WINDOW;
+
+    if ( silc_mpi_last_window >= SILC_MPI_MAX_WIN )
+    {
+        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINDOWS );
+    }
+
+    /* register mpi window definition */
+    /* NOTE: MPI_COMM_WORLD is _not_ present in the internal structures,
+     * and _must not_ be queried by silc_mpi_comm_id */
+    handle = SILC_DefineMPIWindow(
+        comm == MPI_COMM_WORLD ? SILC_MPI_COMM_WORLD_HANDLE : silc_mpi_comm_id( comm ) );
+
+    /* enter win in silc_mpi_windows[] arrray */
+    silc_mpi_windows[ silc_mpi_last_window ].win = win;
+    silc_mpi_windows[ silc_mpi_last_window ].wid = handle;
+
+    silc_mpi_last_window++;
+}
+
+void
+silc_mpi_win_free
+(
+    MPI_Win win
+)
+{
+    if ( silc_mpi_last_window == 1 && silc_mpi_windows[ 0 ].win == win )
+    {
+        silc_mpi_last_window = 0;
+    }
+    else if ( silc_mpi_last_window > 1 )
+    {
+        int i = 0;
+
+        while ( i < silc_mpi_last_window && silc_mpi_windows[ i ].win != win )
+        {
+            i++;
+        }
+
+        if ( i < silc_mpi_last_window-- )
+        {
+            silc_mpi_windows[ i ] = silc_mpi_windows[ silc_mpi_last_window ];
+        }
+        else
+        {
+            SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW );
+        }
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW );
+    }
+}
+#endif
+
+/* -------------------------------------------------------------- communicator handling */
+
+void
+silc_mpi_comm_init
+    ()
+{
+    int            i;
+    unsigned char* grpv;
+
+    /* check, if we already initialized the data structures */
+    if ( !silc_mpi_comm_initialized )
+    {
+        /* Set the flag the communicator management is initialized */
+        silc_mpi_comm_initialized = 1;
+
+        /* get group of \a MPI_COMM_WORLD */
+        PMPI_Comm_group( MPI_COMM_WORLD, &silc_mpi_world.group );
+
+        /* determine the number of MPI processes */
+        PMPI_Group_size( silc_mpi_world.group, &silc_mpi_world.size );
+
+        /* set byte size of bitvector to store \a MPI_COMM_WORLD */
+        silc_mpi_world.size_grpv = silc_mpi_world.size / 8 + ( silc_mpi_world.size % 8 ? 1 : 0 );
+
+        /* initialize translation data structure for \a MPI_COMM_WORLD */
+        silc_mpi_world.ranks = calloc( silc_mpi_world.size, sizeof( SILC_Mpi_Rank ) );
+        for ( i = 0; i < silc_mpi_world.size; i++ )
+        {
+            silc_mpi_world.ranks[ i ] = i;
+        }
+
+        /* allocate translation buffers */
+        silc_mpi_ranks        = calloc( silc_mpi_world.size, sizeof( SILC_Mpi_Rank ) );
+        silc_mpi_group_vector = calloc( silc_mpi_world.size_grpv, sizeof( unsigned char ) );
+
+        /* define communicator for MPI_COMM_WORLD */
+        grpv =
+            calloc( silc_mpi_world.size / 8 + ( silc_mpi_world.size % 8 ? 1 : 0 ),
+                    sizeof( unsigned char ) );
+
+        for ( i = 0; i < silc_mpi_world.size; i++ )
+        {
+            grpv[ i / 8 ] |= ( 1 << ( i % 8 ) );
+        }
+        silc_mpi_world.handle =
+            SILC_DefineMPICommunicator( grpv, silc_mpi_world.size / 8 +
+                                        ( silc_mpi_world.size % 8 ? 1 : 0 ) );
+
+        free( grpv );
+    }
+    else
+    {
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI, "Duplicate call to communicator initialization ignored!\n" );
+    }
+}
+
+void
+silc_mpi_comm_finalize
+    ()
+{
+    /* free MPI group held internally */
+    PMPI_Group_free( &silc_mpi_world.group );
+
+    /* free local translation buffers */
+    free( silc_mpi_world.ranks );
+    free( silc_mpi_ranks );
+    free( silc_mpi_group_vector );
+}
+
+void
+silc_mpi_group_to_bitvector
+(
+    MPI_Group group
+)
+{
+    int32_t i, size;
+
+    /*
+     * Determine the world rank of each process in group.
+     *
+     * Parameter #3 is world.ranks here, as we need an array of integers
+     * initialized with 0 to n-1, which world.ranks happens to be.
+     */
+    PMPI_Group_size( group, &size );
+    PMPI_Group_translate_ranks( group,
+                                size,
+                                silc_mpi_world.ranks,
+                                silc_mpi_world.group,
+                                silc_mpi_ranks );
+
+    /* initialize silc_mpi_group_vector */
+    memset( silc_mpi_group_vector, 0, silc_mpi_world.size_grpv );
+
+    /* set corresponding bit for each process in group */
+    for ( i = 0; i < size; i++ )
+    {
+        silc_mpi_group_vector[ silc_mpi_ranks[ i ] / 8 ] |= ( 1 << ( silc_mpi_ranks[ i ] % 8 ) );
+    }
+}
+
+void
+silc_mpi_comm_create
+(
+    MPI_Comm comm
+)
+{
+    MPI_Group                  group;
+    SILC_MPICommunicatorHandle handle;
+
+    /* is storage available */
+    if ( silc_mpi_last_comm >= SILC_MPI_MAX_COMM )
+    {
+        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_COMMS, "" );
+    }
+
+    /* get group of this communicator */
+    PMPI_Comm_group( comm, &group );
+
+    /* create group entry in silc_mpi_group_vector */
+    silc_mpi_group_to_bitvector( group );
+
+    /* register mpi communicator definition */
+    handle = SILC_DefineMPICommunicator( silc_mpi_group_vector, silc_mpi_world.size_grpv );
+
+    /* enter comm in silc_mpi_comms[] arrray */
+    silc_mpi_comms[ silc_mpi_last_comm ].comm = comm;
+    silc_mpi_comms[ silc_mpi_last_comm ].cid  = handle;
+    silc_mpi_last_comm++;
+
+    /* clean up */
+    PMPI_Group_free( &group );
+}
+
+void
+silc_mpi_comm_free
+(
+    MPI_Comm comm
+)
+{
+    /* if only one communicator exists, we just need to decrease \a
+     * silc_mpi_last_comm */
+    if ( silc_mpi_last_comm == 1 && silc_mpi_comms[ 0 ].comm == comm )
+    {
+        silc_mpi_last_comm = 0;
+    }
+    /* if more than one communicator exists, we need to search for the
+     * entry */
+    else if ( silc_mpi_last_comm > 1 )
+    {
+        int i = 0;
+
+        while ( i < silc_mpi_last_comm && silc_mpi_comms[ i ].comm != comm )
+        {
+            i++;
+        }
+
+        if ( i < silc_mpi_last_comm-- )
+        {
+            /* swap deletion candidate with last entry in the list */
+            silc_mpi_comms[ i ] = silc_mpi_comms[ silc_mpi_last_comm ];
+        }
+        else
+        {
+            SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
+        }
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
+    }
+}
+
+SILC_MPICommunicatorHandle
+silc_mpi_comm_id
+(
+    MPI_Comm comm
+)
+{
+    int i = 0;
+
+    while ( i < silc_mpi_last_comm && silc_mpi_comms[ i ].comm != comm )
+    {
+        i++;
+    }
+
+    if ( i != silc_mpi_last_comm )
+    {
+        return silc_mpi_comms[ i ].cid;
+    }
+    else
+    {
+        if ( comm == MPI_COMM_WORLD )
+        {
+            SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI, "This function SHOULD NOT be called with MPI_COMM_WORLD" );
+            return SILC_MPI_COMM_WORLD_HANDLE;
+        }
+        else
+        {
+            SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
+            return SILC_INVALID_MPI_COMMUNICATOR;
+        }
+    }
+}
+
+/*
+ *-----------------------------------------------------------------------------
+ *
+ * Group management
+ *
+ *-----------------------------------------------------------------------------
+ */
+
+void
+silc_mpi_group_create
+(
+    MPI_Group group
+)
+{
+    int32_t                    i;
+    SILC_MPICommunicatorHandle handle;
+
+    if ( silc_mpi_last_group >= SILC_MPI_MAX_GROUP )
+    {
+        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_GROUPS, "" );
+    }
+
+    /* check if group already exists */
+    if ( ( i = silc_mpi_group_search( group ) ) == -1 )
+    {
+        /* create group entry in silc_mpi_group_vector */
+        silc_mpi_group_to_bitvector( group );
+
+        /* register mpi group definition (as communicator) */
+        handle = SILC_DefineMPICommunicator( silc_mpi_group_vector,
+                                             silc_mpi_world.size_grpv );
+
+        /* enter group in silc_mpi_groups[] arrray */
+        silc_mpi_groups[ silc_mpi_last_group ].group  = group;
+        silc_mpi_groups[ silc_mpi_last_group ].gid    = handle;
+        silc_mpi_groups[ silc_mpi_last_group ].refcnt = 1;
+        silc_mpi_last_group++;
+    }
+    else
+    {
+        /* count additional reference on group */
+        silc_mpi_groups[ i ].refcnt++;
+    }
+}
+
+void
+silc_mpi_group_free
+(
+    MPI_Group group
+)
+{
+    if ( silc_mpi_last_group == 1 && silc_mpi_groups[ 0 ].group == group )
+    {
+        silc_mpi_groups[ 0 ].refcnt--;
+
+        if ( silc_mpi_groups[ 0 ].refcnt == 0 )
+        {
+            silc_mpi_last_group--;
+        }
+    }
+    else if ( silc_mpi_last_group > 1 )
+    {
+        int32_t i;
+
+        if ( ( i = silc_mpi_group_search( group ) ) != -1 )
+        {
+            /* decrease reference count on entry */
+            silc_mpi_groups[ i ].refcnt--;
+
+            /* check if entry can be deleted */
+            if ( silc_mpi_groups[ i ].refcnt == 0 )
+            {
+                silc_mpi_groups[ i ] = silc_mpi_groups[ --silc_mpi_last_group ];
+            }
+        }
+        else
+        {
+            SILC_ERROR( SILC_ERROR_MPI_NO_GROUP, "" );
+        }
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_MPI_NO_GROUP, "" );
+    }
+}
+
+SILC_Mpi_GroupHandle
+silc_mpi_group_id
+(
+    MPI_Group group
+)
+{
+    int32_t i = 0;
+
+    while ( ( i < silc_mpi_last_group ) && ( silc_mpi_groups[ i ].group != group ) )
+    {
+        i++;
+    }
+
+    if ( i != silc_mpi_last_group )
+    {
+        return silc_mpi_groups[ i ].gid;
+    }
+
+    {
+        SILC_ERROR( SILC_ERROR_MPI_NO_GROUP, "" );
+        SILC_INVALID_MPI_GROUP;
+    }
+}
+
+int32_t
+silc_mpi_group_search
+(
+    MPI_Group group
+)
+{
+    int32_t i = 0;
+
+    while ( ( i < silc_mpi_last_group ) && ( silc_mpi_groups[ i ].group != group ) )
+    {
+        i++;
+    }
+
+    if ( i != silc_mpi_last_group )
+    {
+        return i;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+/*
+ *-----------------------------------------------------------------------------
+ *
+ * Window Access Groups -- which window is accessed by what group
+ *
+ *-----------------------------------------------------------------------------
+ */
+
+#ifdef HAS_MPI2_1SIDED
+
+void
+silc_mpi_winacc_start
+(
+    MPI_Win        win,
+    MPI_Group      group,
+    SILC_Mpi_Color color
+)
+{
+    if ( silc_mpi_last_winacc >= SILC_MPI_MAX_WINACC )
+    {
+        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINACCS );
+    }
+
+    silc_mpi_winaccs[ silc_mpi_last_winacc ].win   = win;
+    silc_mpi_winaccs[ silc_mpi_last_winacc ].gid   = silc_mpi_group_id( group );
+    silc_mpi_winaccs[ silc_mpi_last_winacc ].color = color;
+
+    silc_mpi_last_winacc++;
+}
+
+void
+silc_mpi_winacc_end
+(
+    MPI_Win        win,
+    SILC_Mpi_Color color
+)
+{
+    int i = 0;
+    /* only one window inside wingrp */
+    if ( silc_mpi_last_winacc == 1
+         && silc_mpi_winaccs[ 0 ].win   == win
+         && silc_mpi_winaccs[ 0 ].color == color )
+    {
+        silc_mpi_last_winacc--;
+    }
+    else
+    {
+        while ( ( i <= silc_mpi_last_winacc ) &&
+                ( ( silc_mpi_winaccs[ i ].win != win ) || ( silc_mpi_winaccs[ i ].color != color ) ) )
+        {
+            i++;
+        }
+
+        if ( i != silc_mpi_last_winacc )
+        {
+            silc_mpi_last_winacc--;
+            silc_mpi_winaccs[ i ].win   = silc_mpi_winaccs[ silc_mpi_last_winacc ].win;
+            silc_mpi_winaccs[ i ].gid   = silc_mpi_winaccs[ silc_mpi_last_winacc ].gid;
+            silc_mpi_winaccs[ i ].color = silc_mpi_winaccs[ silc_mpi_last_winacc ].color;
+        }
+        else
+        {
+            SILC_ERROR( SILC_ERROR_MPI_NO_WINACC );
+        }
+    }
+}
+
+SILC_Mpi_GroupHandle
+silc_mpi_winacc_get_gid
+(
+    MPI_Win        win,
+    SILC_Mpi_Color color
+)
+{
+    int i = 0;
+
+    while ( ( i <= silc_mpi_last_winacc ) &&
+            ( ( silc_mpi_winaccs[ i ].win != win ) || ( silc_mpi_winaccs[ i ].color != color ) ) )
+    {
+        i++;
+    }
+
+    if ( i != silc_mpi_last_winacc )
+    {
+        return silc_mpi_winaccs[ i ].gid;
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_MPI_NO_WINACC );
+        return SILC_INVALID_MPI_GROUP;
+    }
+}
+#endif
