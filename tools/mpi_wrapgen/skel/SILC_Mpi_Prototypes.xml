@@ -99,7 +99,7 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1" />
-    <countrules send="N * count * sz" recv="count * sz" />
+    <countrules send="N * count * sz" recv="N * count * sz" />
 <decl><![CDATA[
     int     sz, N;
     elg_ui4 root_loc = ELG_NO_ID;
@@ -543,7 +543,7 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="2" />
-    <countrules send="(N-me-1) * sz * count" recv="sz * count" />
+    <countrules send="(N-me-1) * sz * count" recv="me * sz * count" />
 <decl><![CDATA[
     int     sz, me, N;
     elg_ui4 root_loc = ELG_NO_ID;
@@ -1459,14 +1459,15 @@
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1" />
-    <countrules send="count*sz" recv="(root == me ? count*sz : 0 )" />
+    <countrules send="count*sz" recv="(root == me ? N*count*sz : 0 )" />
 <decl><![CDATA[
-    int     sz, me;
+    int     sz, me, N;
     elg_ui4 root_loc = EPK_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
       PMPI_Comm_rank(comm, &me);
+      PMPI_Comm_size(comm, &N);
 ]]></xblock>
 </prototype>
 <prototype name="MPI_Reduce_scatter" rtype="int" group="coll" >
@@ -1477,13 +1478,14 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1" />
-    <countrules send="count * sz" recv="count * sz" />
+    <countrules send="count * sz" recv="N * recvcounts[me] * sz" />
 <decl><![CDATA[
-    int     i, sz, N, count = 0;
+    int     i, sz, me, N, count = 0;
     elg_ui4 root_loc = ELG_NO_ID;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
+      PMPI_Comm_rank(comm, &me);
       PMPI_Comm_size(comm, &N);
       for (i = 0; i<N; i++) count += recvcounts[i];
 ]]></xblock>
@@ -1541,7 +1543,7 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1" />
-    <countrules send="(N-me) * sz * count" recv="count * sz" />
+    <countrules send="(N-me) * count * sz" recv="(me+1) * count * sz" />
 <decl><![CDATA[
     int     sz, me, N;
     elg_ui4 root_loc = ELG_NO_ID;

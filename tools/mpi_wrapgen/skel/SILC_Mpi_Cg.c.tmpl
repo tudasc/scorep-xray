@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#include "SILC_Mpi_Reg.h"
+
+#include <mpi.h>
+
 /**
  * @file  SILC_Mpi_Cg.c
  *
@@ -40,7 +44,7 @@
  */
 int MPI_Comm_free(MPI_Comm* comm)
 {
-  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(CG);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_CG);
   int       return_val;
 
   if (event_gen_active)
@@ -86,7 +90,7 @@ int MPI_Comm_free(MPI_Comm* comm)
  */
 int MPI_Group_free(MPI_Group* group)
 {
-  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(CG);
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_CG);
   int       return_val;
 
   if (event_gen_active)

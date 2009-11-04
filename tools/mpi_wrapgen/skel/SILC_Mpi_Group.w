@@ -8,7 +8,7 @@ ${guard:start}
  */
 ${proto:c}
 {
-  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(${group|uppercase});
+  const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_${group|uppercase});
   ${rtype} return_val;
 
   if (event_gen_active)

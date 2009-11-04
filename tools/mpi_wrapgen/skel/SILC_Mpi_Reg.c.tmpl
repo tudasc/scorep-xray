@@ -22,12 +22,11 @@
 #include <string.h>
 #include <strings.h>
 
-#include "SILC_Mpiwrap_Reg.h"
-#include "epk_conf.h"
-
+#include "SILC_Mpi_Reg.h"
 #include "SILC_Error.h"
-
 #include "SILC_Definitions.h"
+
+#define SILC_REGION_MPI SILC_REGION_FUNCTION
 
 /** 
  * MPI operation event type 
@@ -46,7 +45,7 @@ static const silc_mpi_type silc_mpi_pt2pt[] = {
   { "MPI_Irsend",           SILC_MPI_TYPE__SEND },
   { "MPI_Isend",            SILC_MPI_TYPE__SEND },
   { "MPI_Issend",           SILC_MPI_TYPE__SEND },
-  { "MPI_Recv",                                  SILC_MPI_TYPE__RECV },
+  { "MPI_Recv",                                   SILC_MPI_TYPE__RECV },
   { "MPI_Rsend",            SILC_MPI_TYPE__SEND },
   { "MPI_Send",             SILC_MPI_TYPE__SEND },
   { "MPI_Sendrecv",         SILC_MPI_TYPE__SEND & SILC_MPI_TYPE__RECV },
@@ -66,7 +65,7 @@ static const silc_mpi_type silc_mpi_pt2pt[] = {
 
 /** MPI collective function types 
  * @note contents must be alphabetically sorted */
-static const silc_mpi_type epk_mpi_colls[] = {
+static const silc_mpi_type silc_mpi_colls[] = {
   { "MPI_Allgather",      SILC_COLL_TYPE__ALL2ALL },
   { "MPI_Allgatherv",     SILC_COLL_TYPE__ALL2ALL },
   { "MPI_Allreduce",      SILC_COLL_TYPE__ALL2ALL },
@@ -122,7 +121,29 @@ static const silc_mpi_type silc_mpi_enable_groups[] = {
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-elg_ui4 silc_mpi_enabled = 0;
+uint32_t silc_mpi_enabled = 0;
+
+/** Contains the configuration string of enabled mpi function groups. It is filled
+    by the measurement system after registration of configuration variables.
+*/
+static char **silc_mpi_config_groups = NULL;
+
+/** Array of configuration variables. 
+    They are registered to the measurement system and are filled during until the 
+    initialization function is called.
+*/
+SILC_ConfigVariable silc_mpi_configs[] = {
+    {
+         "mpi",
+         "enable_groups",
+         SILC_CONFIG_TYPE_SET,
+         &silc_mpi_config_groups,
+         NULL,
+         "DEFAULT",
+         "The names of the function groups which are measured.",
+         "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n",
+    }
+};
 
 static int silc_mycmp(const void *v1, const void *v2);
 
@@ -132,10 +153,13 @@ static int silc_mycmp(const void *v1, const void *v2);
 void silc_mpi_enable_init()
 {
   char*   token = NULL;
+  /* 
   int32_t len   = strlen(silc_get(SILC_MPI_ENABLED)) + 1;
   char*   conf  = malloc(sizeof(char) * len);
-
   strncpy(conf, silc_get(SILC_MPI_ENABLED), len);
+  */
+  char*   conf  = "ALL";
+
   token = strtok(conf,":");
   while (token != NULL)
   {
@@ -149,8 +173,7 @@ void silc_mpi_enable_init()
     {
       /* enable event generation for function group */
       silc_mpi_enabled |= match->type;
-      silc_cntl_msg("Enabled event generation for MPI group: %s",
-              token);
+      SILC_DEBUG_PRINTF("Enabled event generation for MPI group: %s", token);
     }
     else
     {
@@ -166,13 +189,13 @@ void silc_mpi_enable_init()
  */
 void silc_mpi_register_regions()
 {
-  SILC_FileSourceHandle file_id = SILC_DefineSourceFile("MPI");
+  SILC_SourceFileHandle file_id = SILC_DefineSourceFile("MPI");
  
   silc_mpi_enable_init();
 
 #pragma wrapgen multiple restrict() skel/SILC_Mpi_RegC.w
 
-  /** Artificial root for MPI-only experiments when no user-code
+  /* Artificial root for MPI-only experiments when no user-code
    * instrumenation is available */
   silc_mpi_regid[SILC_PARALLEL__MPI] =
       SILC_DefineRegion("PARALLEL", SILC_INVALID_SOURCE_FILE, SILC_INVALID_LINE_NO, 
