@@ -123,27 +123,6 @@ static const silc_mpi_type silc_mpi_enable_groups[] = {
 /** Bit vector for runtime measurement wrapper enabling/disabling */
 uint32_t silc_mpi_enabled = 0;
 
-/** Contains the configuration string of enabled mpi function groups. It is filled
-    by the measurement system after registration of configuration variables.
-*/
-static char **silc_mpi_config_groups = NULL;
-
-/** Array of configuration variables. 
-    They are registered to the measurement system and are filled during until the 
-    initialization function is called.
-*/
-SILC_ConfigVariable silc_mpi_configs[] = {
-    {
-         "mpi",
-         "enable_groups",
-         SILC_CONFIG_TYPE_SET,
-         &silc_mpi_config_groups,
-         NULL,
-         "DEFAULT",
-         "The names of the function groups which are measured.",
-         "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n",
-    }
-};
 
 static int silc_mycmp(const void *v1, const void *v2);
 
