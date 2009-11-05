@@ -1,3 +1,8 @@
+/** @file Silc_Instrumenter.cpp
+ * @brief
+ *
+ */
+
 #include "Silc_Instrumenter.hpp"
 
 #include <iostream>
@@ -22,9 +27,9 @@ Silc_Instrumenter::Silc_Instrumenter
     printf( "calling the instrumentation phase \n" );
 
     /* call the configuration reader
-     * this is hardcoded, since the file location and name should be fixed
+     * this is hardcoded, since the file location and name should be fixed during configure stage
      */
-    silc_readConfigFile( "silc.conf" );
+    silc_readConfigFile( "../src/tools/silc.conf" );
 }
 
 
@@ -46,13 +51,12 @@ Silc_Instrumenter
  * instrumentation tool. Idealy it is installed in a global path and examined
  * during configure phase.
  */
-bool
+SILC_Error_Code
 Silc_Instrumenter::silc_readConfigFile
 (
     std::string fileName
 )
 {
-    bool exitStatus = true;
     std::cout << "reads the global configuration file: " << fileName << " \n " << std::endl;
 
     std::ifstream inFile;
@@ -181,27 +185,24 @@ Silc_Instrumenter::silc_readConfigFile
                 }
             }                              /* of while loop */
         }
+        return SILC_SUCCESS;
     }
     else
     {
-        //		SILC_ERROR( SILC_ERROR_ENOENT, "test input file error");
+        return SILC_ERROR_ENOENT;
     }
-
-
-    return exitStatus;
 }
 
 
 
-bool
+SILC_Error_Code
 Silc_Instrumenter::silc_readEnvVars
 (
 )
 {
-    bool exitStatus = true;
     printf( "reads the enviroment variables  \n " );
 
-    return exitStatus;
+    return SILC_SUCCESS;
 }
 
 
@@ -212,16 +213,16 @@ Silc_Instrumenter::silc_readEnvVars
  *
  *
  */
-bool
+SILC_Error_Code
 Silc_Instrumenter::silc_parseCmdLine
 (
     int    argc,
     char** argv
 )
 {
-    bool        exitStatus = true;
-    std::string instStr( argv[ 1 ] );
-    int         pos = instStr.find( "--instrument", 0 );
+    SILC_Error_Code exitStatus =  SILC_ERROR_ENOTSUP;
+    std::string     instStr( argv[ 1 ] );
+    int             pos = instStr.find( "--instrument", 0 );
     if ( pos != std::string::npos
          //		 && _instType == INST_TYPE_GNU
          && argc > 3
@@ -233,7 +234,9 @@ Silc_Instrumenter::silc_parseCmdLine
             _compFlags += flag + " ";
             std::cout << flag << "   " << argv[ loop ] << std::endl;
         }
+        exitStatus = SILC_SUCCESS;
     }
+
 
     return exitStatus;
 }
@@ -254,7 +257,7 @@ Silc_Instrumenter::silc_run
      *
      */
 
-    int32_t exitStatus = -1;
+    int32_t exitCode = -1;
     printf( "instrument the user code \n " );
 
 
@@ -263,26 +266,23 @@ Silc_Instrumenter::silc_run
     if ( _instType == INST_TYPE_GNU )
     {
         compCommand += _instGnu;
-        exitStatus   = true;
     }
     compCommand += " " + _compFlags;
 
-    exitStatus = system( compCommand.c_str() );
+    exitCode = system( compCommand.c_str() );
 
-    return exitStatus;
+    return exitCode;
 }
 
 
-bool
+SILC_Error_Code
 Silc_Instrumenter::silc_setLanguage
 (
     const int lang
 )
 {
-    bool exitStatus = true;
     printf( "used language:   \n " );
-
-    return exitStatus;
+    return SILC_SUCCESS;
 }
 
 
@@ -317,7 +317,7 @@ Silc_Instrumenter::silc_compilerLib
 }
 
 
-bool
+SILC_Error_Code
 Silc_Instrumenter::silc_readParameter
 (
     std::string &     instring,
@@ -325,19 +325,17 @@ Silc_Instrumenter::silc_readParameter
     std::string &     value
 )
 {
-    bool retVal   = false;
-    int  findLang = instring.find( parameter );
-    int  posDelim = instring.find( "=" );
+    int findLang = instring.find( parameter );
+    int posDelim = instring.find( "=" );
     if ( findLang != std::string::npos && posDelim != std::string::npos )
     {
-        value  = instring.substr( posDelim + 1 );
-        retVal = true;
+        value = instring.substr( posDelim + 1 );
         std::cout << value << std::endl;
-        return retVal;
+        return SILC_SUCCESS;
     }
     else
     {
-        return retVal;
+        return SILC_ERROR_INVALID;
     }
 }
 

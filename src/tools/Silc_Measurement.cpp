@@ -9,7 +9,7 @@ Silc_Measurement::Silc_Measurement
 }
 
 
-bool
+SILC_Error_Code
 Silc_Measurement::silc_readConfigFile
 (
     std::string fileName

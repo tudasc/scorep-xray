@@ -9,6 +9,9 @@
 #include <iostream>
 #include <string>
 
+#include <SILC_Utils.h>
+
+
 class Silc_Application {
 public:
 
@@ -19,16 +22,18 @@ public:
         ();
 
 
-    virtual bool
+    virtual SILC_Error_Code
     silc_readConfigFile
     (
         std::string fileName
-    );
+    )
+    {
+    };
 
 /** @brief
  * get command line attributes
  */
-    virtual bool
+    virtual SILC_Error_Code
     silc_parseCmdLine
     (
         int    argc,
@@ -52,7 +57,9 @@ public:
     virtual void
     silc_printParameter
     (
-    );
+    )
+    {
+    };
 
 
 private:

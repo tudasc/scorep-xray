@@ -9,9 +9,9 @@
 
 /* user includes */
 
+#include "Silc_ApplicationType.hpp"
 #include "Silc_Instrumenter.hpp"
 #include "Silc_Measurement.hpp"
-#include "Silc_ApplicationType.hpp"
 
 
 int
@@ -26,8 +26,6 @@ main
         std::string inst = argv[ 1 ];
         if ( inst == "--instrument" || inst == "-inst" )
         {
-            // attention:  use a global path to the configuration, which has to be edited
-
             // select the application
             Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
 
@@ -36,7 +34,7 @@ main
             std::cout << "\nparse the command line \n :" << std::endl;
             appType->silc_parseCmdLine( argc, argv );
 
-            if ( appType->silc_run() )
+            if ( appType->silc_run() == SILC_SUCCESS )
             {
                 std::cout << " instrument user code: " << std::endl;
             }

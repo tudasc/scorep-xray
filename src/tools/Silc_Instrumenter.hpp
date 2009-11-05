@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+
 #include "Silc_Application.hpp"
 
 /** @def
@@ -104,7 +105,7 @@ public:
 /** @brief
  * reads the defined input data file
  */
-    virtual bool
+    virtual SILC_Error_Code
     silc_readConfigFile
     (
         std::string fileName
@@ -113,7 +114,7 @@ public:
 /** @brief
  * examines environment variables
  */
-    bool
+    SILC_Error_Code
     silc_readEnvVars
     (
     );
@@ -122,7 +123,7 @@ public:
 /** @brief
  * get command line attributes
  */
-    virtual bool
+    virtual SILC_Error_Code
     silc_parseCmdLine
     (
         int    argc,
@@ -140,7 +141,7 @@ public:
 /** @brief
  * used language of user code
  */
-    bool
+    SILC_Error_Code
     silc_setLanguage
     (
         const int lang
@@ -185,7 +186,7 @@ public:
 /** @brief
  *  extracts parameter from input file
  */
-    bool
+    SILC_Error_Code
     silc_readParameter
     (
         std::string &     instring,

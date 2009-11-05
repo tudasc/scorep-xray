@@ -17,6 +17,7 @@ public:
 
     Silc_Measurement
         ();
+
     virtual ~
     Silc_Measurement
         ()
@@ -27,11 +28,37 @@ public:
 /** @brief
  * reads the defined input data file
  */
-    virtual bool
+    virtual SILC_Error_Code
     silc_readConfigFile
     (
         std::string fileName
     );
+
+
+/** @brief
+ * get command line attributes
+ */
+    virtual SILC_Error_Code
+    silc_parseCmdLine
+    (
+        int    argc,
+        char** argv
+    )
+    {
+    };
+
+
+/** @brief
+ * perform instrumentation stage
+ */
+    virtual int
+    silc_run
+    (
+    )
+    {
+    };
+
+
 
 /** @brief
  *  prints all measurement parameters as read from input file
