@@ -1,6 +1,7 @@
 ## -*- mode: makefile -*-
 
 bin_PROGRAMS += silc
+
 silc_SOURCES = \
     $(SRC_ROOT)src/tools/Silc_Application.cpp            \
     $(SRC_ROOT)src/tools/Silc_ApplicationType.cpp        \
@@ -14,3 +15,4 @@ silc_SOURCES = \
 
 silc_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL)
 
+silc_LDADD = $(LIB_DIR_UTIL)libsilc_utilities.la
