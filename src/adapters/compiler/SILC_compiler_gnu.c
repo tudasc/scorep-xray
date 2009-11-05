@@ -5,6 +5,11 @@
  */
 
 
+#include "stdio.h"
+#include <SILC_Utils.h>
+
+
+
 /**
  * Hash table to map function addresses to region identifier
  */
@@ -28,6 +33,7 @@ silc_gnu_finalize
     void
 )
 {
+    printf( "finalize the gnu compiler instrumentation. \n" );
 }
 
 
@@ -44,6 +50,7 @@ __cyg_profile_func_enter
     void* callsite
 )
 {
+    printf( "call at function enter!!!\n" );
 }
 
 /**
@@ -59,4 +66,5 @@ __cyg_profile_func_exit
     void* callsite
 )
 {
+    printf( "call function exit!!!\n" );
 }
