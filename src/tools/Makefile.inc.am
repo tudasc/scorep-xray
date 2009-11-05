@@ -12,5 +12,5 @@ silc_SOURCES = \
     $(SRC_ROOT)src/tools/Silc_Instrumenter.hpp           \
     $(SRC_ROOT)src/tools/Silc_Measurement.hpp
 
-silc_CPPFLAGS = $(AM_CPPFLAGS) -I$(SRC_ROOT_UTIL)src/include
+silc_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL)
 

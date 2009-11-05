@@ -26,16 +26,16 @@ SRC_ROOT = ../
 
 
 ## Convenience variables, use for referencing include directories, e.g.
-## foo_CPPFLAGS = $(AM_CPPFLAGS) $(SRC_ROOT_UTIL)src/bar
+## foo_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/bar -I$(INC_DIR_UTIL)
 ## The otf2 and utility variables may be overriden when configuring using
 ## the --with-otf2/utility options (to be done)
 ## Note: we need different convenience variable because they are evaluated at
-## different times. The SrcRoot variable is evaluated at autoreconf time where
-## it is not recommended to use $(srcdir). On the other hand the ProjRoot*
+## different times. The SRC_ROOT variable is evaluated at autoreconf time where
+## it is not recommended to use $(srcdir). On the other hand the INC_ROOT
 ## variables are evaluated during configure.
-SRC_ROOT_SILC = $(srcdir)/../
-SRC_ROOT_OTF2 = $(srcdir)/../vendor/otf2/
-SRC_ROOT_UTIL = $(srcdir)/../vendor/otf2/vendor/utility/
+INC_ROOT = $(srcdir)/../
+INC_DIR_OTF2 = $(srcdir)/../vendor/otf2/src/include/
+INC_DIR_UTIL = $(srcdir)/../vendor/otf2/vendor/utility/src/include/
 
 ## The otf2 and utility variables may be overriden when configuring using
 ## the --with-otf2/utility options (to be done)

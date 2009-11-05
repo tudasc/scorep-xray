@@ -1,16 +1,16 @@
 noinst_LTLIBRARIES += libsilc_mpi.la
 
-libsilc_mpi_la_CC = mpicc
+#libsilc_mpi_la_CC = mpicc
 
-libsilc_mpi_la_SOURCES =                             \
+libsilc_mpi_la_SOURCES =                              \
   $(SRC_ROOT)src/adapters/mpi/SILC_Mpi.c              \
   $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Init.c         \
   $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Communicator.c 
 
 libsilc_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)             \
-  -I$(SRC_ROOT_UTIL)src/include                      \
-  -I$(SRC_ROOT)src/adapters/mpi                       \
-  -I$(SRC_ROOT)src/adapters/include                   \
-  -I$(SRC_ROOT)src/measurement/include         
+  -I$(INC_DIR_UTIL)                                  \
+  -I$(INC_ROOT)src/adapters/mpi                      \
+  -I$(INC_ROOT)src/adapters/include                  \
+  -I$(INC_ROOT)src/measurement/include         
 
 
