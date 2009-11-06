@@ -1,16 +1,70 @@
-noinst_LTLIBRARIES += libsilc_mpi.la
+# For the mpi adapter the C-wrappers are needed and all possible versions
+# of decorations for the Fortran wrappers. Thus, the Fortran code is compiled 
+# four times setting the FSUB macro to different values to obtain the different
+# decorations.
+#
+# At the end all five sublibraries are linked into the libsilc_mpi_la module.
 
-#libsilc_mpi_la_CC = mpicc
+noinst_LTLIBRARIES += libsilc_cmpi.la
+noinst_LTLIBRARIES += libsilc_fmpi1.la
+noinst_LTLIBRARIES += libsilc_fmpi2.la
+noinst_LTLIBRARIES += libsilc_fmpi3.la
+noinst_LTLIBRARIES += libsilc_fmpi4.la
 
-libsilc_mpi_la_SOURCES =                              \
+# Setting the mpi compiler
+#libsilc_cmpi_la_CC = $(MPICC)
+#libsilc_fmpi1_la_CC = $(MPICC)
+#libsilc_fmpi2_la_CC = $(MPICC)
+#libsilc_fmpi3_la_CC = $(MPICC)
+#libsilc_fmpi4_la_CC = $(MPICC)
+
+# Sources for the C wrappers. They also contain the Initialization and communicatior 
+# management.
+libsilc_cmpi_la_SOURCES =                             \
   $(SRC_ROOT)src/adapters/mpi/SILC_Mpi.c              \
   $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Init.c         \
   $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Communicator.c 
 
-libsilc_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)             \
-  -I$(INC_DIR_UTIL)                                  \
-  -I$(INC_ROOT)src/adapters/mpi                      \
-  -I$(INC_ROOT)src/adapters/include                  \
-  -I$(INC_ROOT)src/measurement/include         
+# All four versions of Fortran wrappers are generated from the same sources
+libsilc_fmpi1_la_SOURCES = $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi.c 
+libsilc_fmpi2_la_SOURCES = $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi.c 
+libsilc_fmpi3_la_SOURCES = $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi.c 
+libsilc_fmpi4_la_SOURCES = $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi.c 
 
+# Flags for the C wrappers
+libsilc_cmpi_la_CPPFLAGS = $(AM_CPPFLAGS)            \
+  -I$(SRC_ROOT_UTIL)src/include                      \
+  -I$(SRC_ROOT)src/adapters/mpi                      \
+  -I$(SRC_ROOT)src/adapters/include                  \
+  -I$(SRC_ROOT)src/measurement/include         
 
+# Flags for the Fortran wrappers. They differ for the value of the define for FSUB.
+libsilc_fmpi2_la_CPPFLAGS = $(AM_CPPFLAGS)           \
+  -DFSUB=SILC_FORTRAN_SUB2                           \
+  -I$(SRC_ROOT_UTIL)src/include                      \
+  -I$(SRC_ROOT)src/adapters/mpi                      \
+  -I$(SRC_ROOT)src/adapters/include                  \
+  -I$(SRC_ROOT)src/measurement/include         
+
+libsilc_fmpi3_la_CPPFLAGS = $(AM_CPPFLAGS)           \
+  -DFSUB=SILC_FORTRAN_SUB3                           \
+  -I$(SRC_ROOT_UTIL)src/include                      \
+  -I$(SRC_ROOT)src/adapters/mpi                      \
+  -I$(SRC_ROOT)src/adapters/include                  \
+  -I$(SRC_ROOT)src/measurement/include         
+
+libsilc_fmpi4_la_CPPFLAGS = $(AM_CPPFLAGS)           \
+  -DFSUB=SILC_FORTRAN_SUB4                           \
+  -I$(SRC_ROOT_UTIL)src/include                      \
+  -I$(SRC_ROOT)src/adapters/mpi                      \
+  -I$(SRC_ROOT)src/adapters/include                  \
+  -I$(SRC_ROOT)src/measurement/include         
+
+# Linking together the submodules of the mpi adapter to a single module.
+lib_LTLIBRARIES += libsilc_mpi.la 
+libsilc_mpi_la_SOURCES =
+libsilc_mpi_la_LIBADD = libsilc_cmpi_la              \ 
+                        libsilc_fmpi1_la             \
+                        libsilc_fmpi2_la             \
+                        libsilc_fmpi3_la             \
+                        libsilc_fmpi4_la
