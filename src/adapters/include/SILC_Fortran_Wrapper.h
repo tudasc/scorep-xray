@@ -5,6 +5,18 @@
     called from Fortran.
  */
 
+/** @def SILC_FORTRAN_XSUFFIX
+    Appends '_' to the name.
+    @param name The name that gets decorated.
+ */
+#define SILC_FORTRAN_XSUFFIX( name ) name ## _
+
+/** @def SILC_FORTRAN_XSUFFIX2
+    Appends '__' to the name.
+    @param name The name that gets decorated.
+ */
+#define SILC_FORTRAN_XSUFFIX2( name ) name ## __
+
 /** @def SILC_FORTRAN_UPCASE
     Appends '_U' to the name. With generator tools definies can be generated to exchange
     the name_U by all upcase letters.
@@ -20,16 +32,18 @@
 #define SILC_FORTRAN_LOWCASE( name ) name ## _L
 
 /** @def SILC_FORTRAN_SUFFIX
-    Appends '_' to the name.
+    Appends '_' to the name. For this SILC_FORTRAN_XSUFFIX is called to ensure the
+    with nested calls, the inner name is substituted first.
     @param name The name that gets decorated.
  */
-#define SILC_FORTRAN_SUFFIX( name ) name ## _
+#define SILC_FORTRAN_SUFFIX( name ) SILC_FORTRAN_XSUFFIX( name )
 
 /** @def SILC_FORTRAN_SUFFIX2
-    Appends '__' to the name.
+    Appends '__' to the name.  For this SILC_FORTRAN_XSUFFIX2 is called to ensure the
+    with nested calls, the inner name is substituted first.
     @param name The name that gets decorated.
  */
-#define SILC_FORTRAN_SUFFIX2( name ) name ## __
+#define SILC_FORTRAN_SUFFIX2( name ) SILC_FORTRAN_XSUFFIX2( name )
 
 /** @def SILC_FORTRAN_SUB1(name)
     Defines the first possibility to decorate C-functions called from Fortran. It puts all
