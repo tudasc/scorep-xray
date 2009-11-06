@@ -18,10 +18,10 @@
  */
 
 /* uppercase defines */
-#pragma wrapgen multiple restrict(gerr) skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(gerr) skel/SILC_Fmpi_DefineU.w
 
 /* lowercase defines */
-#pragma wrapgen multiple restrict(gerr) skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(gerr) skel/SILC_Fmpi_DefineL.w
 
 /**
  * @name Fortran wrappers 
@@ -34,7 +34,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#pragma wrapgen multiple restrict(gerr+tint) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(gerr+tint) skel/SILC_Fmpi_Std.w
 
 #else /* !NEED_F2C_CONV */
 

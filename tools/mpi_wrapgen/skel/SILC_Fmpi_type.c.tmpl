@@ -19,25 +19,25 @@
 
 /* uppercase defines */
 #ifdef HAS_MPI2_SIZEOF
-#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Fmpi_DefineU.w
 #endif
 
-#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_DefineU.w
 
-#pragma wrapgen multiple restrict(gtype_ext)          skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(gtype_ext)          skel/SILC_Fmpi_DefineU.w
                                                      
-#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Fmpi_DefineU.w
 
 /* lowercase defines */
 #ifdef HAS_MPI2_SIZEOF
-#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Fmpi_DefineL.w
 #endif
 
-#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_DefineL.w
 
-#pragma wrapgen multiple restrict(gtype_ext)          skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(gtype_ext)          skel/SILC_Fmpi_DefineL.w
                                                      
-#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Fmpi_DefineL.w
 
 /**
  * @name Fortran wrappers for general functions
@@ -51,10 +51,10 @@
  * => we can save the f2c and c2s conversions */
 
 #ifdef HAS_MPI2_SIZEF
-#pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Fmpi_Std.w
 #endif
 
-#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_Std.w
 
 /**
  * @}
@@ -62,7 +62,7 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gtype_ext) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(gtype_ext) skel/SILC_Fmpi_Std.w
                                                      
 /**
  * @}
@@ -70,7 +70,7 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Fmpi_Std.w
 
 
 #else /* !NEED_F2C_CONV */

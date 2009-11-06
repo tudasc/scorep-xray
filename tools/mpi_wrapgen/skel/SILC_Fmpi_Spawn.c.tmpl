@@ -19,10 +19,10 @@
  */
 
 /* uppercase defines */
-#pragma wrapgen multiple restrict(gspawn) skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(gspawn) skel/SILC_Fmpi_DefineU.w
 
 /* lowercase defines */
-#pragma wrapgen multiple restrict(gspawn) skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(gspawn) skel/SILC_Fmpi_DefineL.w
 
 /**
  * @name Fortran wrappers 
@@ -100,7 +100,7 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
   free(c_array_of_argv);
 }
 
-#pragma wrapgen multiple restrict(gspawn+!nspawn_multiple) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(gspawn+!nspawn_multiple) skel/SILC_Fmpi_Std.w
 
 #else /* !NEED_F2C_CONV */
 

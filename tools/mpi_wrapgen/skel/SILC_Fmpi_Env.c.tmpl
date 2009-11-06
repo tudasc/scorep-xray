@@ -19,17 +19,17 @@
 
 /* uppercase defines */
 #if defined(HAS_MPI2_COLLECTIVES)
-#pragma wrapgen single MPI_Init_thread skel/SILC_Mpi_DefineU.w
+#pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_DefineU.w
 #endif
 
-#pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Mpi_DefineU.w
+#pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Fmpi_DefineU.w
 
 /* lowercase defines */
 #if defined(HAS_MPI2_COLLECTIVES)
-#pragma wrapgen single MPI_Init_thread skel/SILC_Mpi_DefineL.w
+#pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_DefineL.w
 #endif
 
-#pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Mpi_DefineL.w
+#pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Fmpi_DefineL.w
 
 /**
  * @name Fortran wrappers 
@@ -43,7 +43,7 @@
  * => we can save the f2c and c2s conversions */
 
 #if defined(HAS_MPI2_COLLECTIVES)
-#pragma wrapgen single MPI_Init_thread skel/SILC_Mpi_Fstd.w
+#pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_Std.w
 #endif
 
 /**
@@ -58,7 +58,7 @@ void FSUB(MPI_Init)(int* ierr)
   *ierr = MPI_Init(0, (char***)0);
 }
 
-#pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SILC_Mpi_Fstd.w
+#pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SILC_Fmpi_Std.w
 
 #else /* !NEED_F2C_CONV */
 
