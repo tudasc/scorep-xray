@@ -11,14 +11,22 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-/**
- * @file  SILC_Fmpi.c
- *
- * @brief Main file for Fortran interface measurement wrappers
- */
+/** @file  SILC_Fmpi.c
+    @brief Main file for Fortran interface measurement wrappers.
 
-#include "pomp_fwrapper_def.h"
-#include "elg_fmpi_defs.h"
+    Includes all Fortran wrappers for MPI functions. Fortran compilers decorate the
+    C-calls in different ways. Thus, the macro FSUB must be set to SILC_FORTRAN_SUB1,
+    SILC_FORTRAN_SUB2, SILC_FORTRAN_SUB3, or SILC_FORTRAN_SUB4 to obtain correctly
+    decorated functions. The form of the decoration depends on the used compiler. 
+
+    You can compile this wrappers four times with different decorations, to have all 
+    possible names for the Fortran wrappers available.
+
+    The wrapped decorated functions call the C-wrappers for MPI. Thus, the same set of
+    events are generated as with the C functions.
+  */
+
+#include "SILC_Fortran_Wrapper.h"
 #include "SILC_Error.h"
 #include <stdlib.h>
 #include <string.h>
