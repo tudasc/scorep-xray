@@ -1,0 +1,15 @@
+noinst_LTLIBRARIES += libsilc_comp.la
+
+#libsilc_comp_la_CC = mpicc
+
+libsilc_comp_la_SOURCES =                              \
+  $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c \
+  $(SRC_ROOT)src/adapters/compiler/SILC_compiler_pgi.c
+
+libsilc_comp_la_CPPFLAGS = $(AM_CPPFLAGS)             \
+  -I$(INC_DIR_UTIL)                                  \
+  -I$(INC_ROOT)src/adapters/compiler                 \
+  -I$(INC_ROOT)src/adapters/include                  \
+  -I$(INC_ROOT)src/measurement/include         
+
+
