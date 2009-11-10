@@ -1,0 +1,6 @@
+lib_LTLIBRARIES += libadapter.la
+
+libadapter_la_SOURCES = 
+
+libadapter_la_LIBADD =       \
+	libuser.la

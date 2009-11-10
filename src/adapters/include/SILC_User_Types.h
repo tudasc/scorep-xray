@@ -8,7 +8,7 @@
 #ifndef SILC_USER_TYPES_H
 #define SILC_USER_TYPES_H
 
-#include "SILC_API_Types.h"
+#include "SILC_Types.h"
 
 #include <stdint.h>
 
@@ -88,9 +88,6 @@ typedef uint32_t SILC_User_MetricType;
 /* **************************************************************************************
  * Default and uninitialized handles
  * *************************************************************************************/
-
-/** Value of an uninitialized region handle */
-#define SILC_USER_REGION_UNINITIALIZED 0
 
 /** The metric group handle for the default group. This group is created when the
     user adapter is initialized.

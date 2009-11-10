@@ -16,9 +16,9 @@
 #define SILC_USER_H
 
 #include "SILC_User_Types.h"
-#include "SILC_API_Types.h"
+#include "SILC_Types.h"
 #include "SILC_User_Functions.h"
-#include "SILC_API_RuntimeManagement.h"
+#include "SILC_RuntimeManagement.h"
 
 /* **************************************************************************************
  * Documentation for region enclosing macros
@@ -236,28 +236,25 @@
 #ifdef SILC_USER_ENABLE
 
 #define SILC_USER_REGION_DEFINE( handle ) \
-    static SILC_API_RegionHandle handle = SILC_USER_REGION_UNINITIALIZED;
+    static SILC_RegionHandle handle = SILC_INVALID_REGION;
 
 #define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
-        handle, name, type, __FILE__, __LINE__ );
+        &handle, &silc_user_local_file, name, type, __FILE__, __LINE__ );
 
-#define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle, __FILE__, \
-                                                            __LINE__ );
+#define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle );
 
-#define SILC_USER_FUNC_BEGIN static const SILC_API_RegionHandle \
-    silc_user_func_handle = \
-        SILC_USER_REGION_UNINITIALIZED; \
-    SILC_User_RegionBegin( silc_user_func_handle, __func__, \
+#define SILC_USER_FUNC_BEGIN static SILC_RegionHandle \
+    silc_user_func_handle =  SILC_INVALID_REGION; \
+    SILC_User_RegionBegin( &silc_user_func_handle, &silc_user_local_file, __func__, \
                            SILC_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
 
-#define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle, __FILE__, \
-                                                __LINE__ );
+#define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle );
 
 #define SILC_GLOBAL_REGION_DEFINE( handle ) \
-    SILC_API_RegionHandle handle = SILC_USER_REGION_GLOBAL;
+    SILC_RegionHandle handle = SILC_INVALID_REGION;
 
 #define SILC_GLOBAL_REGION_EXTERNAL( handle ) \
-    extern SILC_API_RegionHandle handle;
+    extern SILC_RegionHandle handle;
 
 #endif // SILC_USER_ENABLE
 
@@ -739,14 +736,14 @@
 #ifdef SILC_USER_ENABLE
 
 #define SILC_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
-    SILC_API_CounterGroupHandle groupHandle  \
+    SILC_CounterGroupHandle groupHandle  \
         = SILC_API_INVALID_COUNTER_GROUP;
 
 #define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_API_CounterGroupHandle \
-    groupHandle = SILC_API_INVALID_COUNTER_GROUP;
+    groupHandle = SILC_INVALID_COUNTER_GROUP;
 
 #define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
-    extern SILC_API_CounterGroupHandle groupHandle;
+    extern SILC_CounterGroupHandle groupHandle;
 
 #define SILC_USER_METRIC_GROUP_INIT( groupHandle, \
                                      name ) SILC_User_MetricGroupInit( \
@@ -754,10 +751,10 @@
 
 #define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_User_MetricHandle \
     metricHandle                                                                \
-        = SILC_API_INVALID_COUNTER;
+        = SILC_INVALID_COUNTER;
 
 #define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_User_MetricHandle metricHandle \
-        = SILC_API_INVALID_COUNTER;
+        = SILC_INVALID_COUNTER;
 
 #define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
     extern SILC_User_MetricHandle metricHandle;
@@ -955,6 +952,24 @@
 
 #define SILC_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ ) \
     SILC_User_DefineCoordinates3D( topId, coordX, coordY, coordZ );
+
+#endif // SILC_USER_ENABLE
+
+/* **************************************************************************************
+ * static variables
+ * *************************************************************************************/
+
+/** Stores the handle of the instrumented source file.
+    It is automatically included in every instrumented file and thus declared as a static
+    variable in every file. Thus, its scope is distinguished for each file.
+    When it used, it is checked if it is valid. Else the
+    new source file is registered and the handle stored in this variable.
+ */
+
+#ifdef SILC_USER_ENABLE
+
+static SILC_SourceFileHandle silc_user_local_file = SILC_INVALID_SOURCE_FILE;
+
 
 /* **************************************************************************************
  * Empty macros, if user instrumentation is disabled

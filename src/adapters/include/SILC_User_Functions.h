@@ -10,7 +10,8 @@
 #ifndef SILC_USER_FUNCTIONS_H
 #define SILC_USER_FUNCTIONS_H
 
-#include "SILC_API_Types.h"
+#include "SILC_Types.h"
+#include "SILC_User_Types.h"
 
 /* **************************************************************************************
  * Region functions
@@ -20,6 +21,9 @@
     before, it registers the region. On the first enter, the region is registered to
     the measurement system.
     @param handle     The handle for this region. It must be defined before.
+    @param file       The handle for the source file. If it is invalid, the new source
+                      file gets registered. It is declared as a static variable,
+                      wherever this header file is included.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented
@@ -30,7 +34,8 @@
 extern void
 SILC_User_RegionBegin
 (
-    SILC_API_RegionHandle&     handle,
+    SILC_RegionHandle*         handle,
+    SILC_SourceFileHandle*     file,
     const char*                name,
     const SILC_User_RegionType regionType,
     const char*                fileName,
@@ -38,18 +43,12 @@ SILC_User_RegionBegin
 );
 
 /** Generates an exit event for the specified region.
-    @param name       The name of the region.
-    @param fileName   The filename of the source file which contains the instrumented
-                      region.
-    @param lineNo     The line number of the first source code line of the instrumented
-                      region.
+    @param handle     The handle for this region. It must be defined before.
  */
 extern void
 SILC_User_RegionEnd
 (
-    const char*    name,
-    const char*    fileName,
-    const uint32_t lineNo
+    const SILC_RegionHandle handle
 );
 
 /* **************************************************************************************
@@ -90,8 +89,8 @@ SILC_User_ParameterString
 extern void
 SILC_User_InitMetricGroup
 (
-    SILC_API_CounterGroupHandle& groupHandle,
-    const char*                  name
+    SILC_CounterGroupHandle* groupHandle,
+    const char*              name
 );
 
 /** Initializes a user metric. Every user metric must be registered before it is used
@@ -113,12 +112,12 @@ SILC_User_InitMetricGroup
 extern void
 SILC_User_InitMetric
 (
-    SILC_API_CounterHandle&           metricHandle,
-    const char*                       name,
-    const char*                       unit,
-    const SILC_User_MetricType        metricType,
-    const int8_t                      context,
-    const SILC_API_CounterGroupHandle group
+    SILC_CounterHandle*           metricHandle,
+    const char*                   name,
+    const char*                   unit,
+    const SILC_User_MetricType    metricType,
+    const int8_t                  context,
+    const SILC_CounterGroupHandle group
 );
 
 /** Triggers a user metric of type 64 bit signed integer. Before a metric can
@@ -195,15 +194,15 @@ SILC_User_DefineTopology2D
     @return A handle to the newly created topology.
  */
 extern int32_t
-SILC_User_DefineTopology2D
+SILC_User_DefineTopology3D
 (
-    const char*     name,
-    const int32_t   numX,
-    const int32_t   numY,
-    const int32_t   numZ,
-    const int32_t   periodX,
-    const int32_t   periodY,
-    const - int32_t periodZ
+    const char*   name,
+    const int32_t numX,
+    const int32_t numY,
+    const int32_t numZ,
+    const int32_t periodX,
+    const int32_t periodY,
+    const int32_t periodZ
 );
 
 /** Defines the a coordinate in a two-dimensional cartesian topology.
@@ -244,7 +243,8 @@ SILC_User_DefineCoordinate3D
     This class implements the SILC_USER_REGION statement. Its constructor and destructor
     generates the enter and respectively the exit event for the instrumented function.
  */
-class SILC_User_Region {
+class SILC_User_Region
+{
 public:
 /** Generates an enter event for the specified region. It should not be inserted by the
     user directly. The user should use the SILC_USER_REGION(name) statement instead.
@@ -258,30 +258,23 @@ public:
     SILC_User_Region( const char*                regionName,
                       const SILC_User_RegionType regionType,
                       const char*                file,
-                      const uint32_t lineNo )
-        : file_name( file ), line_no( lineNo )
+                      const uint32_t             lineNo )
     {
-        SILC_User_RegionBegin( region_handle, regionName, regionType, file,
-                               lineNo );
+        SILC_User_RegionBegin( &region_handle, silc_user_local_file, regionName, regionType,
+                               file, lineNo );
     }
 
     /** Generates an exit event for the instrumented region
      */
     ~SILC_User_Region()
     {
-        SILC_User_RegionEnd( region_handle, file_name, line_no );
+        SILC_User_RegionEnd( region_handle );
     }
 
 private:
-    /** Stores the file name of the file which contains the instrumented code block */
-    const char* file_name;
-
-    /** Stores the line number where the instrumentationwas inserted */
-    const int line_no;
-
     /** Stores the region handle */
     SILC_API_RegionHandle region_handle;
 };
-#endif
+#endif /* __cplusplus */
 
-#endif // SILC_USER_FUNCTIONS_H
+#endif /* SILC_USER_FUNCTIONS_H */
