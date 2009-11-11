@@ -1,15 +1,6 @@
 /** @file SILC_User.h
     @author Daniel Lorenz
     @email d.lorenz@fz-juelich.de
-
-    This file conatins the macros for user manual instrumentation. The user should use
-    the macros defined in this file and avoid calling the adapter functions directly.
-    For every macro two definitions are provided: The first one inserts calls to the
-    adapters, the second definitions resolve to nothing. Which implementation is used,
-    is determined by defining SILC_USER_ENABLE. If SILC_USER_ENABLE is defined, the
-    macros insert calls to the adapter functios. If SILC_USER_ENABLE is undefined,
-    the user instrumentation is removed by the preprocessor. This flag SILC_USER_ENABLE
-    should be set through the instrumentation wrapper tool.
  */
 
 #ifndef SILC_USER_H
@@ -19,6 +10,29 @@
 #include "SILC_Types.h"
 #include "SILC_User_Functions.h"
 #include "SILC_RuntimeManagement.h"
+
+/** @defgroup SILC_User SILC User Adapter
+
+    The user adapter provides a set of macros for user manual instrumentation. The macros
+    are inserted in the users source code and call functions of the SILC runtime system.
+    The user should avoid calling the adapter functions directly.
+
+    The user adapter is initialization functions struct is
+    @ref SILC_User_Adapter. It is initialized from the measurement system. If a user
+    instrumentation is called before the adapter is initialized, it will initialized the
+    measurement system which call the initialization functions of the adapters.
+
+    @defgroup SILC_User_Interface Macros for manual user instrumentation
+    @ingroup SILC_User
+    For every macro two definitions are provided: The first one inserts calls to the
+    adapters, the second definitions resolve to nothing. Which implementation is used,
+    depends on the definition of SILC_USER_ENABLE. If SILC_USER_ENABLE is defined, the
+    macros insert calls to the adapter functions. If SILC_USER_ENABLE is undefined,
+    the user instrumentation is removed by the preprocessor. This flag SILC_USER_ENABLE
+    should be set through the instrumentation wrapper tool.
+
+   @{
+ */
 
 /* **************************************************************************************
  * Documentation for region enclosing macros
@@ -1008,5 +1022,7 @@ static SILC_SourceFileHandle silc_user_local_file = SILC_INVALID_SOURCE_FILE;
 #define SILC_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ )
 
 #endif // SILC_USER_ENABLE
+
+/** @} */
 
 #endif // SILC_USER_H

@@ -5,8 +5,15 @@
     adapter.
  */
 
+#ifndef SILC_USER_INIT_H
+#define SILC_USER_INIT_H
+
 #include "SILC_Adapter.h"
 #include "SILC_RuntimeManagement.h"
+
+/** @ingroup SILC_User_External
+    @{
+ */
 
 /** The struct which contains the initialization functions for the user adapter.
  */
@@ -25,3 +32,7 @@ extern int8_t silc_user_is_initialized;
  */
 #define SILC_USER_ASSERT_INITIALIZED \
     if ( !silc_user_is_initialized ) { SILC_InitMeasurement(); }
+
+/** @} */
+
+#endif /* SILC_USER_INIT_H */

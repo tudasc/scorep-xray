@@ -16,15 +16,24 @@
  * Typedefs
  * *************************************************************************************/
 
+/** @ingroup SILC_User_External
+    @{
+ */
 /** Type for the region type */
 typedef uint32_t SILC_User_RegionType;
 
 /** Type for the user metric type */
 typedef uint32_t SILC_User_MetricType;
 
+/** @} */
+
 /* **************************************************************************************
  * Defines for the Region types
  * *************************************************************************************/
+
+/** @ingroup SILC_User_Interface
+    @{
+ */
 
 /** @def SILC_USER_REGION_TYPE_COMMON
     Region without any specific type.
@@ -93,5 +102,7 @@ typedef uint32_t SILC_User_MetricType;
     user adapter is initialized.
  */
 #define SILC_USER_METRIC_GROUP_DEFAULT silc_user_metric_group_default
+
+/** @} */
 
 #endif // SILC_USER_TYPES_H

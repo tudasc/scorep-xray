@@ -13,6 +13,15 @@
 #include "SILC_Types.h"
 #include "SILC_User_Types.h"
 
+/** @defgroup SILC_User_External External visisble functions of the SILC user adapter
+    @ingroup SILC_User
+
+    This module contains all external visible items of the user adapter except the
+    macros for the manual user instrumentation.
+
+    @{
+ */
+
 /* **************************************************************************************
  * Region functions
  * *************************************************************************************/
@@ -276,5 +285,7 @@ private:
     SILC_API_RegionHandle region_handle;
 };
 #endif /* __cplusplus */
+
+/** @} */
 
 #endif /* SILC_USER_FUNCTIONS_H */
