@@ -3,10 +3,12 @@ noinst_LTLIBRARIES += libuser.la
 libuser_la_SOURCES =                                          \
 	$(SRC_ROOT)src/adapters/user/SILC_User_Init.c         \
 	$(SRC_ROOT)src/adapters/user/SILC_User_Region.c       \
-	$(SRC_ROOT)src/adapters/include/SILC_User_Init.h      \    
-	$(SRC_ROOT)src/adapters/include/SILC_User.h           \    
-	$(SRC_ROOT)src/adapters/include/SILC_User_Functions.h \         
-	$(SRC_ROOT)src/adapters/include/SILC_User_Types.h          
+	$(SRC_ROOT)src/adapters/include/SILC_User_Init.h
+
+include_HEADERS +=                                            \
+        $(SRC_ROOT)src/adapters/include/SILC_User.h           \
+	$(SRC_ROOT)src/adapters/include/SILC_User_Functions.h \
+	$(SRC_ROOT)src/adapters/include/SILC_User_Types.h
 
 
 libuser_la_CPPFLAGS =                            \
