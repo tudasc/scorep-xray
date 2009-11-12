@@ -253,13 +253,15 @@
     static SILC_RegionHandle handle = SILC_INVALID_REGION;
 
 #define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
-        &handle, &silc_user_local_file, name, type, __FILE__, __LINE__ );
+        &handle, &silc_user_last_file_name, &silc_user_last_file_handle, name, \
+        type, __FILE__, __LINE__ );
 
 #define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle );
 
 #define SILC_USER_FUNC_BEGIN static SILC_RegionHandle \
     silc_user_func_handle =  SILC_INVALID_REGION; \
-    SILC_User_RegionBegin( &silc_user_func_handle, &silc_user_local_file, __func__, \
+    SILC_User_RegionBegin( &silc_user_func_handle, &silc_user_last_file_name, \
+                           &silc_user_last_file_handle, __func__,      \
                            SILC_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
 
 #define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle );
@@ -976,13 +978,23 @@
 /** Stores the handle of the instrumented source file.
     It is automatically included in every instrumented file and thus declared as a static
     variable in every file. Thus, its scope is distinguished for each file.
-    When it used, it is checked if it is valid. Else the
-    new source file is registered and the handle stored in this variable.
+    In most cases, only one source file name is used inside one compilation
+    entity. Only if code is included several source file names may appear.
+    Thus, in most cases, the string comparison can be avoided when storing the pointer
+    to the last used file name, if the compiler uses always the same pointer.
  */
-
 #ifdef SILC_USER_ENABLE
+static SILC_SourceFileHandle silc_user_last_file_handle = SILC_INVALID_SOURCE_FILE;
 
-static SILC_SourceFileHandle silc_user_local_file = SILC_INVALID_SOURCE_FILE;
+/** Stores the file name of the instrumented source file.
+    It is automatically included in every instrumented file and thus declared as a static
+    variable in every file. Thus, its scope is distinguished for each file.
+    In most cases, only one source file name is used inside one compilation
+    entity. Only if code is included several source file names may appear.
+    Thus, in most cases, the string comparison can be avoided when storing the pointer
+    to the last used file name, if the compiler uses always the same pointer.
+ */
+static const char* silc_user_last_file_name = 0;
 
 
 /* **************************************************************************************

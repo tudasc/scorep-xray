@@ -9,7 +9,13 @@
 #include "SILC_Types.h"
 #include "SILC_Error.h"
 
+extern void
+silc_user_init_regions();
+extern void
+silc_user_final_regions();
+
 int8_t silc_user_is_initialized = 0;
+
 
 /** Registers the required configuration variables of the user adapter
     to the measurement system. Currently, it registers no variables.
@@ -25,6 +31,7 @@ silc_user_register()
 SILC_Error_Code
 silc_user_init()
 {
+    silc_user_init_regions();
     return SILC_SUCCESS;
 }
 
@@ -50,6 +57,7 @@ silc_user_final_location()
 void
 silc_user_finalize()
 {
+    silc_user_final_regions();
 }
 
 /** Deregisters the user adapter.

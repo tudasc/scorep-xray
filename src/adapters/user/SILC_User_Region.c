@@ -11,6 +11,79 @@
 #include "SILC_Error.h"
 #include "SILC_User_Init.h"
 #include "SILC_Types.h"
+#include "SILC_Utils.h"
+
+/** @internal
+    Hash table for mapping source file names to SILC file handles.
+ */
+SILC_Hashtab* silc_user_file_table;
+
+void
+silc_user_delete_file_entry( SILC_Hashtab_Entry* entry )
+{
+    SILC_ASSERT( entry );
+
+    free( ( SILC_SourceFileHandle* )entry->value );
+    free( ( char* )entry->key );
+}
+
+void
+silc_user_init_regions()
+{
+    silc_user_file_table = SILC_Hashtab_CreateSize( 10, &SILC_Hashtab_HashString,
+                                                    &SILC_Hashtab_CompareStrings );
+}
+
+void
+silc_user_final_regions()
+{
+    SILC_Hashtab_Foreach( silc_user_file_table, &silc_user_delete_file_entry );
+}
+
+SILC_SourceFileHandle
+silc_user_get_file( const char*            file,
+                    const char**           lastFileName,
+                    SILC_SourceFileHandle* lastFile )
+{
+    size_t index;
+
+    /* In most cases, it is expected that in most cases no regions are in included
+       files. If the compiler inserts always the same string adress for file names,
+       one static variable in a source file can remember the last used filename from
+       a source file and sting comparisons can be avoided.
+
+       This does not work if we have regions defined e.g. in included header files.
+     */
+    if ( *lastFileName == file )
+    {
+        return *lastFile;
+    }
+
+    /* Else store file name as last searched for and search in the hashtable */
+    *lastFileName = file;
+    SILC_Hashtab_Entry* entry = SILC_Hashtab_Find( silc_user_file_table, file, &index );
+
+    /* If not found register new file */
+    if ( !entry )
+    {
+        /* Register file to measurement system */
+        SILC_SourceFileHandle* handle = malloc( sizeof( SILC_SourceFileHandle ) );
+        *handle = SILC_DefineSourceFile( file );
+
+        /* Store handle in hashtable */
+        SILC_Hashtab_Insert( silc_user_file_table, ( void* )file, handle, &index );
+
+        *lastFile = *handle;
+    }
+
+    else
+    {
+        /* Else store last used handle */
+        *lastFile = *( SILC_SourceFileHandle* )entry->value;
+    }
+    return *lastFile;
+}
+
 
 /** @internal
     Translates the region type of the user adapter to the silc region types.
@@ -66,7 +139,8 @@ void
 SILC_User_RegionBegin
 (
     SILC_RegionHandle*         handle,
-    SILC_SourceFileHandle*     file,
+    const char**               lastFileName,
+    SILC_SourceFileHandle*     lastFile,
     const char*                name,
     const SILC_User_RegionType regionType,
     const char*                fileName,
@@ -74,23 +148,20 @@ SILC_User_RegionBegin
 )
 {
     /* Check for intialization */
-    SILC_USER_ASSERT_INITIALIZED
+    SILC_USER_ASSERT_INITIALIZED;
 
-    /* If the handle is invalid, then register the new region */
+    /* If the handle is invalid, register a new region */
     if ( *handle == SILC_INVALID_REGION )
     {
-        /* Traslate region type from user adapter type to SILC measurement type */
-        SILC_RegionType region_type = silc_user_to_silc_region_type( regionType );
+        /* Get source file handle */
+        SILC_SourceFileHandle file = silc_user_get_file( fileName, lastFileName, lastFile );
 
-        /* register file if invalid */
-        if ( *file == SILC_INVALID_SOURCE_FILE )
-        {
-            *file = SILC_DefineSourceFile( fileName );
-        }
+        /* Translate region type from user adapter type to SILC measurement type */
+        SILC_RegionType region_type = silc_user_to_silc_region_type( regionType );
 
         /* Regiter new region */
         *handle = SILC_DefineRegion( name,
-                                     *file,
+                                     file,
                                      lineNo,
                                      SILC_INVALID_LINE_NO,
                                      SILC_ADAPTER_USER,

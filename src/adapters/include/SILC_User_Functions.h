@@ -30,9 +30,16 @@
     before, it registers the region. On the first enter, the region is registered to
     the measurement system.
     @param handle     The handle for this region. It must be defined before.
-    @param file       The handle for the source file. If it is invalid, the new source
-                      file gets registered. It is declared as a static variable,
-                      wherever this header file is included.
+    @param lastFileName Pointer to the last source file name. In most cases, it is
+                      expected that in most cases no regions are in included
+                      files. If the compiler inserts always the same string adress
+                      for file names, one static variable in a source file
+                      (@ref silc_user_last_file_name) can remember
+                      the last used filename from a source file and string comparisons
+                      can be avoided.
+    @param lastFile   The handle for the last used source file. It is remembered in every
+                      source file in a static variable (@ref silc_user_last_file_handle).
+                      Thus, in most cases string comparisons can be avoided.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented
@@ -44,7 +51,8 @@ extern void
 SILC_User_RegionBegin
 (
     SILC_RegionHandle*         handle,
-    SILC_SourceFileHandle*     file,
+    const char**               lastFileName,
+    SILC_SourceFileHandle*     lastFile,
     const char*                name,
     const SILC_User_RegionType regionType,
     const char*                fileName,
