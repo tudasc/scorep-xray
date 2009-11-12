@@ -15,8 +15,16 @@
 
 #include <mpi.h>
 
+/** 
+ * @defgroup p2p Peer-to-peer communication function of the SILC MPI wrapper
+ * @ingroup MPI_Wrapper
+ * This module contains the peer-to-peer communication functions of the MPI wrapper.
+ * 
+ */
+
 /**
  * @file  SILC_Mpi_P2p.c
+ * @ingroup p2p 
  *
  * @brief C interface wrappers for point-to-point communication
  */
@@ -265,6 +273,8 @@ int MPI_Irecv(void* buf,
 
   return return_val;
 }
+
+#pragma wrapgen single MPI_Iprobe skel/SILC_Mpi_Std.w
 
 /**
  * Measurement wrapper for MPI_Wait
