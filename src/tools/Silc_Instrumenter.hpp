@@ -1,3 +1,19 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_INSTRUMENTER_H_
 #define SILC_INSTRUMENTER_H_
 
@@ -87,7 +103,8 @@ typedef enum
  *  This class examines the available compiler settings and the type of instrumentation
  */
 
-class Silc_Instrumenter : public Silc_Application {
+class Silc_Instrumenter : public Silc_Application
+{
 public:
 
 

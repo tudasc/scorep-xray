@@ -1,3 +1,19 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 /**
  * silc user interaction
  * provides wrapper for instrumentation and binary for steering measurement system
@@ -37,6 +53,18 @@ main
             if ( appType->silc_run() == SILC_SUCCESS )
             {
                 std::cout << " instrument user code: " << std::endl;
+            }
+            else
+            {
+                // catch
+            }
+        }
+        else if ( inst == "--measurement" || inst == "-measure" )
+        {
+            Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Measurement" );
+            if ( appType->silc_run() == SILC_SUCCESS )
+            {
+                std::cout << " running the instrumented code using the silc measurement system: " << std::endl;
             }
             else
             {

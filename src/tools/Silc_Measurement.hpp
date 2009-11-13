@@ -1,3 +1,19 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_MEASUREMENT_H_
 #define SILC_MEASUREMENT_H_
 
@@ -12,7 +28,8 @@
 
 #include "Silc_Application.hpp"
 
-class Silc_Measurement : public Silc_Application {
+class Silc_Measurement : public Silc_Application
+{
 public:
 
     Silc_Measurement
@@ -43,10 +60,7 @@ public:
     (
         int    argc,
         char** argv
-    )
-    {
-    };
-
+    );
 
 /** @brief
  * perform instrumentation stage
@@ -54,9 +68,7 @@ public:
     virtual int
     silc_run
     (
-    )
-    {
-    };
+    );
 
 
 
@@ -70,5 +82,10 @@ public:
 
 
 private:
+
+/** @brief
+ *  used user command
+ */
+    std::string _userCommand;
 };
 #endif /*SILC_MEASUREMENT_H_*/

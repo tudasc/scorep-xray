@@ -1,3 +1,19 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 /** @file Silc_Instrumenter.cpp
  * @brief
  *
@@ -24,12 +40,17 @@ Silc_Instrumenter::Silc_Instrumenter
 (
 )
 {
-    printf( "calling the instrumentation phase \n" );
-
     /* call the configuration reader
      * this is hardcoded, since the file location and name should be fixed during configure stage
      */
-    silc_readConfigFile( "../src/tools/silc.conf" );
+    if (    silc_readConfigFile( "../src/tools/silc.conf" ) == SILC_SUCCESS )
+    {
+        std::cout << "calling the instrumentation phase \n";
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_ENOENT, "" );
+    }
 }
 
 
@@ -86,6 +107,11 @@ Silc_Instrumenter::silc_readConfigFile
         std::string       value = "";
         uint32_t          index = 0;
 
+        if ( !( inFile.good() ) )
+        {
+            return SILC_ERROR_ENOENT;
+        }
+
         while ( inFile.good() && index < length )
         {
             char        line[ 256 ];
@@ -94,7 +120,7 @@ Silc_Instrumenter::silc_readConfigFile
             int         found = linStr.find( "#" );
             if ( !( found != std::string::npos ) )
             {
-                if ( silc_readParameter( linStr, parameters[ index ], value ) )
+                if ( silc_readParameter( linStr, parameters[ index ], value ) == SILC_SUCCESS )
                 {
                     // set member variables
                     switch ( index )
@@ -179,10 +205,10 @@ Silc_Instrumenter::silc_readConfigFile
                             _instOpenuh = value;
                             break;
                         }
+                            silc_instType( value );
                     }
-                    silc_instType( value );
-                    index++;
-                }
+                } /* of silc_readParameter */
+                index++;
             }                              /* of while loop */
         }
         return SILC_SUCCESS;
@@ -208,8 +234,6 @@ Silc_Instrumenter::silc_readEnvVars
 
 /**
  * @brief parses command line to the instrumenter
- * @param  argc  size of parameter list
- * @param  argv  array of command line parameters to the instrumenter
  *
  *
  */
@@ -243,20 +267,16 @@ Silc_Instrumenter::silc_parseCmdLine
 
 /**
  * @brief runs the user specified instrumentation command
- * @param  argc  size of parameter list
- * @param  argv  array of command line parameters to the instrumenter
  *
+ * Depending on the instrumentation type the compiler command gets defined and the user
+ * code gets compiled. The return value of the function delivers the error code of the
+ * system call of the compiler command.
  */
 int
 Silc_Instrumenter::silc_run
 (
 )
 {
-    /** get the instrumentation type
-     *  set compiler command including additional input path and linker option
-     *
-     */
-
     int32_t exitCode = -1;
     printf( "instrument the user code \n " );
 
@@ -267,7 +287,10 @@ Silc_Instrumenter::silc_run
     {
         compCommand += _instGnu;
     }
+
     compCommand += " " + _compFlags;
+
+    std::cout << "  silc_run: " << compCommand << std::endl;
 
     exitCode = system( compCommand.c_str() );
 
@@ -275,6 +298,9 @@ Silc_Instrumenter::silc_run
 }
 
 
+/**
+ * @brief
+ */
 SILC_Error_Code
 Silc_Instrumenter::silc_setLanguage
 (
@@ -325,12 +351,13 @@ Silc_Instrumenter::silc_readParameter
     std::string &     value
 )
 {
+    value = "";
     int findLang = instring.find( parameter );
     int posDelim = instring.find( "=" );
     if ( findLang != std::string::npos && posDelim != std::string::npos )
     {
         value = instring.substr( posDelim + 1 );
-        std::cout << value << std::endl;
+        std::cout << "    found user given value:    " << value << std::endl;
         return SILC_SUCCESS;
     }
     else
