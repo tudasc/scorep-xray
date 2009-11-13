@@ -2,5 +2,9 @@ lib_LTLIBRARIES += libadapter.la
 
 libadapter_la_SOURCES = 
 
-libadapter_la_LIBADD =       \
-	libuser.la
+libadapter_la_LIBADD =                                             \
+    libuser.la                                                     \
+    $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi_fortran_wrapper_sub1.la \
+    $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi_fortran_wrapper_sub2.la \
+    $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi_fortran_wrapper_sub3.la \
+    $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi_fortran_wrapper_sub4.la

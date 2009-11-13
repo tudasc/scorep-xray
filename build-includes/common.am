@@ -41,6 +41,7 @@ INC_DIR_UTIL = $(srcdir)/../vendor/otf2/vendor/utility/src/include/
 ## the --with-otf2/utility options (to be done)
 LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
 LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
+LIB_DIR_SILC_MPI = build-mpi/
 
 ## Add entities using += to the following primaries in locale Makefile.inc.ams
 bin_PROGRAMS =
