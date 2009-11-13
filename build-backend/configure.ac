@@ -45,6 +45,10 @@ AC_SUBST(backend_lib_dir)
 
 AC_SILC_COMMON_CHECKS
 
-AC_CONFIG_FILES([Makefile])
+AC_LANG_PUSH([C])
+AX_MPI
+AC_LANG_POP([C])
+
+AC_CONFIG_FILES([Makefile build-mpi/Makefile])
 
 AC_OUTPUT

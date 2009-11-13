@@ -1,4 +1,8 @@
-# silc-untilities--backend
+# silc--backend
+
+## The SUBDIRS variable holds a list of subdirectories automake (recursivly) 
+## must build. 
+SUBDIRS = build-mpi
 
 include ../build-includes/common.am
 

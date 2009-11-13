@@ -1,4 +1,4 @@
-# silc-untilities--frontend
+# silc--frontend
 
 include ../build-includes/common.am
 
