@@ -1,6 +1,8 @@
 /** @file SILC_User.h
     @author Daniel Lorenz
     @email d.lorenz@fz-juelich.de
+    @ingroup SILC_User_Interface
+    @brief contains the interface definitions for the manual user instrumentation.
  */
 
 #ifndef SILC_USER_H
@@ -10,6 +12,12 @@
 #include "SILC_Types.h"
 #include "SILC_User_Functions.h"
 #include "SILC_RuntimeManagement.h"
+#include "SILC_Events.h"
+
+/* Guarded because it declares variables in every file where it is included. */
+#ifdef SILC_USER_ENABLE
+#include "SILC_User_Variables.h"
+#endif
 
 /** @defgroup SILC_User SILC User Adapter
 
@@ -253,15 +261,15 @@
     static SILC_RegionHandle handle = SILC_INVALID_REGION;
 
 #define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
-        &handle, &silc_user_last_file_name, &silc_user_last_file_handle, name, \
+        &handle, &SILC_User_LastFileName, &SILC_User_LastFileHandle, name, \
         type, __FILE__, __LINE__ );
 
 #define SILC_USER_REGION_END( handle ) SILC_User_RegionEnd( handle );
 
 #define SILC_USER_FUNC_BEGIN static SILC_RegionHandle \
     silc_user_func_handle =  SILC_INVALID_REGION; \
-    SILC_User_RegionBegin( &silc_user_func_handle, &silc_user_last_file_name, \
-                           &silc_user_last_file_handle, __func__,      \
+    SILC_User_RegionBegin( &silc_user_func_handle, &SILC_User_LastFileName, \
+                           &SILC_User_LastFileHandle, __func__,      \
                            SILC_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
 
 #define SILC_USER_FUNC_END SILC_User_RegionEnd( silc_user_func_handle );
@@ -753,42 +761,42 @@
 
 #define SILC_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
     SILC_CounterGroupHandle groupHandle  \
-        = SILC_API_INVALID_COUNTER_GROUP;
+        = SILC_INVALID_COUNTER_GROUP;
 
-#define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_API_CounterGroupHandle \
+#define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle )  SILC_CounterGroupHandle \
     groupHandle = SILC_INVALID_COUNTER_GROUP;
 
 #define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
     extern SILC_CounterGroupHandle groupHandle;
 
 #define SILC_USER_METRIC_GROUP_INIT( groupHandle, \
-                                     name ) SILC_User_MetricGroupInit( \
-        groupHandle, name );
+                                     name ) SILC_User_InitMetricGroup( \
+        &groupHandle, name );
 
-#define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_User_MetricHandle \
+#define SILC_USER_METRIC_LOCAL( metricHandle ) static SILC_CounterHandle \
     metricHandle                                                                \
         = SILC_INVALID_COUNTER;
 
-#define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_User_MetricHandle metricHandle \
+#define SILC_USER_METRIC_GLOBAL( metricHandle ) SILC_CounterHandle metricHandle \
         = SILC_INVALID_COUNTER;
 
 #define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
-    extern SILC_User_MetricHandle metricHandle;
+    extern SILC_CounterHandle metricHandle;
 
 #define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
                                groupHandle ) \
-    Silc_UserMetricInit( metricHandle, name, unit, type, context, groupHandle );
+    SILC_User_InitMetric( &metricHandle, name, unit, type, context, groupHandle );
 
 #define SILC_USER_METRIC_INT64( metricHandle, \
-                                value )  SILC_User_TriggerMetricInt64( \
+                                value )  SILC_TriggerCounterInt64( \
         metricHandle, value );
 
 #define SILC_USER_METRIC_UINT64( metricHandle, \
-                                 value )  SILC_User_TriggerMetricUint64( \
+                                 value )  SILC_TriggerCounterInt64( \
         metricHandle, value );
 
 #define SILC_USER_METRIC_DOUBLE( metricHandle, \
-                                 value ) SILC_User_TriggerMetricDouble( \
+                                 value ) SILC_TriggerCounterDouble( \
         metricHandle, value );
 
 #endif // SILC_USER_ENABLE
@@ -968,34 +976,6 @@
 
 #define SILC_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ ) \
     SILC_User_DefineCoordinates3D( topId, coordX, coordY, coordZ );
-
-#endif // SILC_USER_ENABLE
-
-/* **************************************************************************************
- * static variables
- * *************************************************************************************/
-
-/** Stores the handle of the instrumented source file.
-    It is automatically included in every instrumented file and thus declared as a static
-    variable in every file. Thus, its scope is distinguished for each file.
-    In most cases, only one source file name is used inside one compilation
-    entity. Only if code is included several source file names may appear.
-    Thus, in most cases, the string comparison can be avoided when storing the pointer
-    to the last used file name, if the compiler uses always the same pointer.
- */
-#ifdef SILC_USER_ENABLE
-static SILC_SourceFileHandle silc_user_last_file_handle = SILC_INVALID_SOURCE_FILE;
-
-/** Stores the file name of the instrumented source file.
-    It is automatically included in every instrumented file and thus declared as a static
-    variable in every file. Thus, its scope is distinguished for each file.
-    In most cases, only one source file name is used inside one compilation
-    entity. Only if code is included several source file names may appear.
-    Thus, in most cases, the string comparison can be avoided when storing the pointer
-    to the last used file name, if the compiler uses always the same pointer.
- */
-static const char* silc_user_last_file_name = 0;
-
 
 /* **************************************************************************************
  * Empty macros, if user instrumentation is disabled

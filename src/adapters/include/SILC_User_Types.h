@@ -68,17 +68,17 @@ typedef uint32_t SILC_User_MetricType;
 /** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is of data type signed 64 bit integer.
  */
-#define SILC_USER_METRIC_TYPE_INT64 1
+#define SILC_USER_METRIC_TYPE_INT64 SILC_COUNTER_INT64
 
 /** @def SILC_USER_METRIC_TYPE_UINT64
     Indicates that a user counter is of data type unsigned 64 bit integer.
  */
-#define SILC_USER_METRIC_TYPE_UINT64 2
+#define SILC_USER_METRIC_TYPE_UINT64 SILC_COUNTER_INT64
 
 /** @def SILC_USER_METRIC_TYPE_DOUBLE
     Indicates that a user counter is of data type double.
  */
-#define SILC_USER_METRIC_TYPE_DOUBLE 3
+#define SILC_USER_METRIC_TYPE_DOUBLE SILC_COUNTER_DOUBLE
 
 /* **************************************************************************************
  * Defines for the context of user counters
@@ -101,7 +101,7 @@ typedef uint32_t SILC_User_MetricType;
 /** The metric group handle for the default group. This group is created when the
     user adapter is initialized.
  */
-#define SILC_USER_METRIC_GROUP_DEFAULT silc_user_metric_group_default
+#define SILC_USER_METRIC_GROUP_DEFAULT SILC_User_DefaultMetricGroup
 
 /** @} */
 

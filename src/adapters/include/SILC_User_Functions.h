@@ -37,9 +37,12 @@
                       (@ref silc_user_last_file_name) can remember
                       the last used filename from a source file and string comparisons
                       can be avoided.
+                      Here the adress of @ref SILC_User_LastFileName should be provided.
     @param lastFile   The handle for the last used source file. It is remembered in every
-                      source file in a static variable (@ref silc_user_last_file_handle).
+                      source file in a static variable.
                       Thus, in most cases string comparisons can be avoided.
+                      Here, the adress of @ref SILC_User_LastFileHandle should be
+                      provided.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented
@@ -112,7 +115,7 @@ SILC_User_InitMetricGroup
 
 /** Initializes a user metric. Every user metric must be registered before it is used
     the first time.
-    @param name        A unique name to identify the user metric.
+    @param metricHandle A handle which identify the user metric.
     @param unit        A string for the unit of the user metric.
     @param metricType Specifies the data type of the user metric. Possible are
                        SILC_USER_METRIC_TYPE_INT64 for 64 bit signed integer,
@@ -137,41 +140,9 @@ SILC_User_InitMetric
     const SILC_CounterGroupHandle group
 );
 
-/** Triggers a user metric of type 64 bit signed integer. Before a metric can
-    be triggered for the first time, it must be registered.
-    @param name The unique name of the user metric.
-    @param value The value for the metric.
+/** Declaration of the variable for storing the default metric group handle.
  */
-extern void
-SILC_User_TriggerMetricInt64
-(
-    const char* name,
-    int64_t     value
-);
-
-/** Triggers a user metric of type 64 bit unsigned integer. Before a metric can
-    be triggered for the first time, it must be registered.
-    @param name The unique name of the user metric.
-    @param value The value for the metric.
- */
-extern void
-SILC_User_TriggerMetricUint64
-(
-    const char* name,
-    uint64_t    value
-);
-
-/** Triggers a user metric of type double. Before a metric can
-    be triggered for the first time, it must be registered.
-    @param name The unique name of the user metric.
-    @param value The value for the metric.
- */
-extern void
-SILC_User_TriggerMetricDouble
-(
-    const char* name,
-    double      value
-);
+extern SILC_CounterGroupHandle SILC_User_DefaultMetricGroup;
 
 /* **************************************************************************************
  * Virtual Topologies

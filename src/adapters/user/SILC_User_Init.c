@@ -13,6 +13,8 @@ extern void
 silc_user_init_regions();
 extern void
 silc_user_final_regions();
+extern void
+silc_user_init_metric();
 
 int8_t silc_user_is_initialized = 0;
 
@@ -32,6 +34,7 @@ SILC_Error_Code
 silc_user_init()
 {
     silc_user_init_regions();
+    silc_user_init_metric();
     return SILC_SUCCESS;
 }
 
