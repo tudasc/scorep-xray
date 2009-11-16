@@ -72,6 +72,78 @@ SILC_InitMeasurement
         SILC_ERROR( error, "Can't register core config variables" );
         _exit( 1 );
     }
+
+    /* call register functions for all adapters */
+    for ( size_t i = 0; silc_adapters[ i ]; ++i )
+    {
+        if ( silc_adapters[ i ]->adapter_register )
+        {
+            error = silc_adapters[ i ]->adapter_register();
+        }
+
+        if ( SILC_SUCCESS != error )
+        {
+            SILC_ERROR( error, "Can't register %s adapter",
+                        silc_adapters[ i ]->adapter_name );
+            _exit( 1 );
+        }
+    }
+
+    /* all config variables are registers => parse configure once */
+
+    if ( silc_verbose )
+    {
+        fprintf( stderr, "SILC running in verbose mode\n" );
+    }
+
+    /* call initialization functions for all adapters */
+    for ( size_t i = 0; silc_adapters[ i ]; ++i )
+    {
+        if ( silc_adapters[ i ]->adapter_init )
+        {
+            error = silc_adapters[ i ]->adapter_init();
+        }
+
+        if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC initialize %s adapter: %s\n",
+                     silc_adapters[ i ]->adapter_name,
+                     SILC_Error_GetDescription( error ) );
+        }
+
+        if ( SILC_SUCCESS != error )
+        {
+            SILC_ERROR( error, "Can't initialize %s adapter",
+                        silc_adapters[ i ]->adapter_name );
+            _exit( 1 );
+        }
+    }
+
+
+    /* create location */
+
+    /* call initialization functions for all adapters */
+    for ( size_t i = 0; silc_adapters[ i ]; ++i )
+    {
+        if ( silc_adapters[ i ]->adapter_init_location )
+        {
+            error = silc_adapters[ i ]->adapter_init_location();
+        }
+
+        if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC initialize location %s adapter: %s\n",
+                     silc_adapters[ i ]->adapter_name,
+                     SILC_Error_GetDescription( error ) );
+        }
+
+        if ( SILC_SUCCESS != error )
+        {
+            SILC_ERROR( error, "Can't initialize location for %s adapter",
+                        silc_adapters[ i ]->adapter_name );
+            _exit( 1 );
+        }
+    }
 }
 
 /**
