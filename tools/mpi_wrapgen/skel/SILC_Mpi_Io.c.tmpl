@@ -11,9 +11,9 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-#include "SILC_Mpi_Reg.h"
+#ifdef HAS_MPI2_IO
 
-#include <mpi.h>
+#include"SILC_Mpi.h"
 
 /**
  * @file  SILC_Mpi_Io.c
@@ -53,3 +53,4 @@
 
 #pragma wrapgen multiple restrict(gio_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_Std.w
 
+#endif

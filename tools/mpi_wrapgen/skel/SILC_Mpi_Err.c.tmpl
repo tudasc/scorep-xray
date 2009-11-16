@@ -11,6 +11,8 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#include "SILC_Mpi.h"
+
 /**
  * @file  SILC_Mpi_Err.c
  *

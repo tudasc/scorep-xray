@@ -22,10 +22,7 @@
 #include <string.h>
 #include <strings.h>
 
-#include "SILC_Mpi_Reg.h"
-#include "SILC_Error.h"
-#include "SILC_Debug.h"
-#include "SILC_Definitions.h"
+#include "SILC_Mpi.h"
 
 #define SILC_REGION_MPI SILC_REGION_FUNCTION
 

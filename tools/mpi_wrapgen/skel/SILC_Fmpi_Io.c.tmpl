@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#ifdef HAS_MPI2_IO
+
+#include "SILC_Fmpi.h"
+
 /**
  * @file  SILC_Fmpi_Io.c
  * 
@@ -103,3 +107,5 @@
 /**
  * @}
  */
+
+#endif /* HAS_MPI2_IO */

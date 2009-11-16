@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#ifdef HAS_MPI2_SPAWN
+
+#include "SILC_Fmpi.h"
+
 /**
  * @file  SILC_Fmpi_Spawn.c
  *
@@ -186,3 +190,5 @@ void FSUB(MPI_Comm_spawn_multiple) (MPI_Fint* count,
 /**
  * @}
  */
+
+#endif /* HAS_MPI2_SPAWN */
