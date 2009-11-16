@@ -51,23 +51,23 @@ int MPI_Init(int* argc, char*** argv )
   int            return_val, i;
   int            fflag;
 
+  if (! SILC_IsInitialized())
+  {
+    /* Initialize the measurement system */
+    SILC_InitMeasurement();
+
+    /* Enter global MPI region */
+    SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
+
+    /* Remember that SILC_PARALLEL__MPI was entered */
+    silc_mpi_parallel_entered = 1;
+  }
+
   event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_ENV);
 
   if (event_gen_active)
   {
     SILC_MPI_EVENT_GEN_OFF();
-
-    if (! SILC_IsInitialized())
-    {
-      /* Initialize the measurement system */
-      SILC_InitMeasurement();
-
-      /* Enter global MPI region */
-      SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
-
-      /* Remember that SILC_PARALLEL__MPI was entered */
-      silc_mpi_parallel_entered = 1;
-    }
 
     /* Enter the init region */
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_INIT]);
@@ -114,23 +114,23 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
   int            return_val, i;
   int            fflag;
 
+  if (! SILC_IsInitialized())
+  {
+    /* Initialize the measurement system */
+    SILC_InitMeasurement();
+
+    /* Enter global MPI region */
+    SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
+
+    /* Remember that SILC_PARALLEL__MPI was entered */
+    silc_mpi_parallel_entered = 1;
+  }
+
   event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_ENV);
 
   if (event_gen_active)
   {
     SILC_MPI_EVENT_GEN_OFF();
-
-    if (! SILC_IsInitialized())
-    {
-      /* Initialize the measurement system */
-      SILC_InitMeasurement();
-
-      /* Enter global MPI region */
-      SILC_EnterRegion(silc_mpi_regid[SILC_PARALLEL__MPI]);
-
-      /* Remember that SILC_PARALLEL__MPI was entered */
-      silc_mpi_parallel_entered = 1;
-    }
 
     SILC_EnterRegion(silc_mpi_regid[SILC__MPI_INIT_THREAD]);
   }

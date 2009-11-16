@@ -17,6 +17,8 @@
  * @brief Fortran interface wrappers for point-to-point communication
  */
 
+#define SILC_MPI_STATUS_SIZE MPI_STATUS_SIZE
+
 /* uppercase defines */
 #pragma wrapgen multiple restrict(gp2p) skel/SILC_Fmpi_DefineU.w
 
@@ -215,7 +217,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
  */
 void FSUB(MPI_Waitall)(MPI_Fint* count,
                        MPI_Fint  array_of_requests[],
-                       MPI_Fint  array_of_statuses[][ELG_MPI_STATUS_SIZE],
+                       MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
                        MPI_Fint* ierr)
 {
   int          i;
@@ -299,7 +301,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
                         MPI_Fint  array_of_requests[],
                         MPI_Fint* outcount,
                         MPI_Fint  indices[],
-                        MPI_Fint  array_of_statuses[][ELG_MPI_STATUS_SIZE],
+                        MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
                         MPI_Fint* ierr)
 {
   int          i, j, found;
@@ -435,7 +437,7 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
 void FSUB(MPI_Testall)(MPI_Fint* count,
                        MPI_Fint  array_of_requests[],
                        MPI_Fint* flag,
-                       MPI_Fint  array_of_statuses[][ELG_MPI_STATUS_SIZE],
+                       MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
                        MPI_Fint *ierr)
 {
   int          i;
@@ -476,7 +478,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
                         MPI_Fint  array_of_requests[],
                         MPI_Fint* outcount,
                         MPI_Fint  indices[],
-                        MPI_Fint  array_of_statuses[][ELG_MPI_STATUS_SIZE],
+                        MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
                         MPI_Fint* ierr)
 {
   int          i, j, found;
