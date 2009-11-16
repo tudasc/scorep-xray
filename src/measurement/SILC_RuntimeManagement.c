@@ -21,6 +21,9 @@
 #include "silc_types.h"
 #include "silc_adapter.h"
 
+/** @brief Measurement system initialized? */
+static bool silc_initialized;
+
 /** @brief Run in verbose mode */
 static bool silc_verbose;
 
@@ -47,7 +50,8 @@ SILC_IsInitialized
 )
 {
     fprintf( stderr, "%s\n", __func__ );
-    return false;
+
+    return silc_initialized;
 }
 
 
@@ -144,6 +148,9 @@ SILC_InitMeasurement
             _exit( 1 );
         }
     }
+
+    /* all done, report successful initialization */
+    silc_initialized = true;
 }
 
 /**
