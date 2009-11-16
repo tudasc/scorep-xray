@@ -1,15 +1,15 @@
 ## -*- mode: makefile -*-
 
-noinst_LTLIBRARIES += libsilc_adapter_mpi_common.la
-libsilc_adapter_mpi_common_la_SOURCES =                  \
+noinst_LTLIBRARIES += libsilc_adapter_mpi_c_wrapper.la
+libsilc_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi.c               \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Communicator.c  \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Init.c
-libsilc_adapter_mpi_common_la_CPPFLAGS = \
+libsilc_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_DIR_UTIL)
-libsilc_adapter_mpi_common_la_LIBADD = $(LIB_DIR_UTIL)libsilc_utilities.la
+libsilc_adapter_mpi_c_wrapper_la_LIBADD = $(LIB_DIR_UTIL)libsilc_utilities.la
 
 
 noinst_LTLIBRARIES += libsilc_adapter_mpi_fortran_wrapper_sub1.la
@@ -20,9 +20,6 @@ libsilc_adapter_mpi_fortran_wrapper_sub1_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include                  \
     -I$(INC_DIR_UTIL)                                  \
     -DFSUB=SILC_FORTRAN_SUB1
-libsilc_adapter_mpi_fortran_wrapper_sub1_la_LIBADD = \
-    libsilc_adapter_mpi_common.la
-
 
 noinst_LTLIBRARIES += libsilc_adapter_mpi_fortran_wrapper_sub2.la
 libsilc_adapter_mpi_fortran_wrapper_sub2_la_SOURCES = \
@@ -32,9 +29,6 @@ libsilc_adapter_mpi_fortran_wrapper_sub2_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include                  \
     -I$(INC_DIR_UTIL)                                  \
     -DFSUB=SILC_FORTRAN_SUB2
-libsilc_adapter_mpi_fortran_wrapper_sub2_la_LIBADD = \
-    libsilc_adapter_mpi_common.la
-
 
 noinst_LTLIBRARIES += libsilc_adapter_mpi_fortran_wrapper_sub3.la
 libsilc_adapter_mpi_fortran_wrapper_sub3_la_SOURCES = \
@@ -44,9 +38,6 @@ libsilc_adapter_mpi_fortran_wrapper_sub3_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include                  \
     -I$(INC_DIR_UTIL)                                  \
     -DFSUB=SILC_FORTRAN_SUB3
-libsilc_adapter_mpi_fortran_wrapper_sub3_la_LIBADD = \
-    libsilc_adapter_mpi_common.la
-
 
 noinst_LTLIBRARIES += libsilc_adapter_mpi_fortran_wrapper_sub4.la
 libsilc_adapter_mpi_fortran_wrapper_sub4_la_SOURCES = \
@@ -56,5 +47,13 @@ libsilc_adapter_mpi_fortran_wrapper_sub4_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include                  \
     -I$(INC_DIR_UTIL)                                  \
     -DFSUB=SILC_FORTRAN_SUB4
-libsilc_adapter_mpi_fortran_wrapper_sub4_la_LIBADD = \
-    libsilc_adapter_mpi_common.la
+
+noinst_LTLIBRARIES += libsilc_adapter_mpi.la
+libsilc_adapter_mpi_la_SOURCES =
+libsilc_adapter_mpi_la_LIBADD =                      \
+    libsilc_adapter_mpi_c_wrapper.la                 \
+    libsilc_adapter_mpi_fortran_wrapper_sub1.la      \
+    libsilc_adapter_mpi_fortran_wrapper_sub2.la      \
+    libsilc_adapter_mpi_fortran_wrapper_sub3.la      \
+    libsilc_adapter_mpi_fortran_wrapper_sub4.la
+

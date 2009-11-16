@@ -1,7 +1,7 @@
 #ifndef SILC_USER_VARIABLES_H
 #define SILC_USER_VARIABLES_H
 
-/** @file SILC_User_Variables
+/** @file SILC_User_Variables.h
     @author Daniel Lorenz
     @ingroup SILC_User_External
     @brief Automatically, declares variables needed in the application's source files.
