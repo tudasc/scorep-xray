@@ -33,11 +33,8 @@
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Sizeof
-(
-    MPI_Datatype x,
-    int          size
-)
+MPI_Sizeof( MPI_Datatype x,
+            int          size )
 {
     int return_val;
 
@@ -71,16 +68,13 @@ MPI_Sizeof
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Pack
-(
-    void*        inbuf,
-    int          incount,
-    MPI_Datatype datatype,
-    void*        outbuf,
-    int          outsize,
-    int*         position,
-    MPI_Comm     comm
-)
+MPI_Pack( void*        inbuf,
+          int          incount,
+          MPI_Datatype datatype,
+          void*        outbuf,
+          int          outsize,
+          int*         position,
+          MPI_Comm     comm )
 {
     int return_val;
 
@@ -112,16 +106,13 @@ MPI_Pack
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Pack_external
-(
-    char*        datarep,
-    void*        inbuf,
-    int          incount,
-    MPI_Datatype datatype,
-    void*        outbuf,
-    MPI_Aint     outsize,
-    MPI_Aint*    position
-)
+MPI_Pack_external( char*        datarep,
+                   void*        inbuf,
+                   int          incount,
+                   MPI_Datatype datatype,
+                   void*        outbuf,
+                   MPI_Aint     outsize,
+                   MPI_Aint*    position )
 {
     int return_val;
 
@@ -153,13 +144,10 @@ MPI_Pack_external
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Pack_external_size
-(
-    char*        datarep,
-    int          incount,
-    MPI_Datatype datatype,
-    MPI_Aint*    size
-)
+MPI_Pack_external_size( char*        datarep,
+                        int          incount,
+                        MPI_Datatype datatype,
+                        MPI_Aint*    size )
 {
     int return_val;
 
@@ -191,13 +179,10 @@ MPI_Pack_external_size
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Pack_size
-(
-    int          incount,
-    MPI_Datatype datatype,
-    MPI_Comm     comm,
-    int*         size
-)
+MPI_Pack_size( int          incount,
+               MPI_Datatype datatype,
+               MPI_Comm     comm,
+               int*         size )
 {
     int return_val;
 
@@ -229,10 +214,7 @@ MPI_Pack_size
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_commit
-(
-    MPI_Datatype* datatype
-)
+MPI_Type_commit( MPI_Datatype* datatype )
 {
     int return_val;
 
@@ -264,12 +246,9 @@ MPI_Type_commit
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_contiguous
-(
-    int           count,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_contiguous( int           count,
+                     MPI_Datatype  oldtype,
+                     MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -301,19 +280,16 @@ MPI_Type_contiguous
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_darray
-(
-    int           size,
-    int           rank,
-    int           ndims,
-    int           array_of_gsizes[],
-    int           array_of_distribs[],
-    int           array_of_dargs[],
-    int           array_of_psizes[],
-    int           order,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_darray( int           size,
+                        int           rank,
+                        int           ndims,
+                        int           array_of_gsizes[],
+                        int           array_of_distribs[],
+                        int           array_of_dargs[],
+                        int           array_of_psizes[],
+                        int           order,
+                        MPI_Datatype  oldtype,
+                        MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -345,12 +321,9 @@ MPI_Type_create_darray
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_f90_complex
-(
-    int           p,
-    int           r,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_f90_complex( int           p,
+                             int           r,
+                             MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -382,11 +355,8 @@ MPI_Type_create_f90_complex
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_f90_integer
-(
-    int           r,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_f90_integer( int           r,
+                             MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -418,12 +388,9 @@ MPI_Type_create_f90_integer
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_f90_real
-(
-    int           p,
-    int           r,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_f90_real( int           p,
+                          int           r,
+                          MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -455,14 +422,11 @@ MPI_Type_create_f90_real
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_hindexed
-(
-    int           count,
-    int           array_of_blocklengths[],
-    MPI_Aint      array_of_displacements[],
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_hindexed( int           count,
+                          int           array_of_blocklengths[],
+                          MPI_Aint      array_of_displacements[],
+                          MPI_Datatype  oldtype,
+                          MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -494,14 +458,11 @@ MPI_Type_create_hindexed
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_hvector
-(
-    int           count,
-    int           blocklength,
-    MPI_Aint      stride,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_hvector( int           count,
+                         int           blocklength,
+                         MPI_Aint      stride,
+                         MPI_Datatype  oldtype,
+                         MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -533,14 +494,11 @@ MPI_Type_create_hvector
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_indexed_block
-(
-    int           count,
-    int           blocklength,
-    int           array_of_displacements[],
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_indexed_block( int           count,
+                               int           blocklength,
+                               int           array_of_displacements[],
+                               MPI_Datatype  oldtype,
+                               MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -572,13 +530,10 @@ MPI_Type_create_indexed_block
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_resized
-(
-    MPI_Datatype  oldtype,
-    MPI_Aint      lb,
-    MPI_Aint      extent,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_resized( MPI_Datatype  oldtype,
+                         MPI_Aint      lb,
+                         MPI_Aint      extent,
+                         MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -610,14 +565,11 @@ MPI_Type_create_resized
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_struct
-(
-    int           count,
-    int           array_of_blocklengths[],
-    MPI_Aint      array_of_displacements[],
-    MPI_Datatype  array_of_types[],
-    MPI_Datatype* newtype
-)
+MPI_Type_create_struct( int           count,
+                        int           array_of_blocklengths[],
+                        MPI_Aint      array_of_displacements[],
+                        MPI_Datatype  array_of_types[],
+                        MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -649,16 +601,13 @@ MPI_Type_create_struct
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_subarray
-(
-    int           ndims,
-    int           array_of_sizes[],
-    int           array_of_subsizes[],
-    int           array_of_starts[],
-    int           order,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_create_subarray( int           ndims,
+                          int           array_of_sizes[],
+                          int           array_of_subsizes[],
+                          int           array_of_starts[],
+                          int           order,
+                          MPI_Datatype  oldtype,
+                          MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -690,11 +639,8 @@ MPI_Type_create_subarray
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_dup
-(
-    MPI_Datatype  type,
-    MPI_Datatype* newtype
-)
+MPI_Type_dup( MPI_Datatype  type,
+              MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -726,11 +672,8 @@ MPI_Type_dup
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_extent
-(
-    MPI_Datatype datatype,
-    MPI_Aint*    extent
-)
+MPI_Type_extent( MPI_Datatype datatype,
+                 MPI_Aint*    extent )
 {
     int return_val;
 
@@ -762,10 +705,7 @@ MPI_Type_extent
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_free
-(
-    MPI_Datatype* datatype
-)
+MPI_Type_free( MPI_Datatype* datatype )
 {
     int return_val;
 
@@ -797,16 +737,13 @@ MPI_Type_free
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_get_contents
-(
-    MPI_Datatype datatype,
-    int          max_integers,
-    int          max_addresses,
-    int          max_datatypes,
-    int          array_of_integers[],
-    MPI_Aint     array_of_addresses[],
-    MPI_Datatype array_of_datatypes[]
-)
+MPI_Type_get_contents( MPI_Datatype datatype,
+                       int          max_integers,
+                       int          max_addresses,
+                       int          max_datatypes,
+                       int          array_of_integers[],
+                       MPI_Aint     array_of_addresses[],
+                       MPI_Datatype array_of_datatypes[] )
 {
     int return_val;
 
@@ -838,14 +775,11 @@ MPI_Type_get_contents
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_get_envelope
-(
-    MPI_Datatype datatype,
-    int*         num_integers,
-    int*         num_addresses,
-    int*         num_datatypes,
-    int*         combiner
-)
+MPI_Type_get_envelope( MPI_Datatype datatype,
+                       int*         num_integers,
+                       int*         num_addresses,
+                       int*         num_datatypes,
+                       int*         combiner )
 {
     int return_val;
 
@@ -877,12 +811,9 @@ MPI_Type_get_envelope
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_get_extent
-(
-    MPI_Datatype datatype,
-    MPI_Aint*    lb,
-    MPI_Aint*    extent
-)
+MPI_Type_get_extent( MPI_Datatype datatype,
+                     MPI_Aint*    lb,
+                     MPI_Aint*    extent )
 {
     int return_val;
 
@@ -914,12 +845,9 @@ MPI_Type_get_extent
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_get_true_extent
-(
-    MPI_Datatype datatype,
-    MPI_Aint*    true_lb,
-    MPI_Aint*    true_extent
-)
+MPI_Type_get_true_extent( MPI_Datatype datatype,
+                          MPI_Aint*    true_lb,
+                          MPI_Aint*    true_extent )
 {
     int return_val;
 
@@ -951,14 +879,11 @@ MPI_Type_get_true_extent
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_hindexed
-(
-    int           count,
-    int*          array_of_blocklengths,
-    MPI_Aint*     array_of_displacements,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_hindexed( int           count,
+                   int*          array_of_blocklengths,
+                   MPI_Aint*     array_of_displacements,
+                   MPI_Datatype  oldtype,
+                   MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -990,14 +915,11 @@ MPI_Type_hindexed
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_hvector
-(
-    int           count,
-    int           blocklength,
-    MPI_Aint      stride,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_hvector( int           count,
+                  int           blocklength,
+                  MPI_Aint      stride,
+                  MPI_Datatype  oldtype,
+                  MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -1029,14 +951,11 @@ MPI_Type_hvector
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_indexed
-(
-    int           count,
-    int*          array_of_blocklengths,
-    int*          array_of_displacements,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_indexed( int           count,
+                  int*          array_of_blocklengths,
+                  int*          array_of_displacements,
+                  MPI_Datatype  oldtype,
+                  MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -1068,11 +987,8 @@ MPI_Type_indexed
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_lb
-(
-    MPI_Datatype datatype,
-    MPI_Aint*    displacement
-)
+MPI_Type_lb( MPI_Datatype datatype,
+             MPI_Aint*    displacement )
 {
     int return_val;
 
@@ -1104,12 +1020,9 @@ MPI_Type_lb
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_match_size
-(
-    int           typeclass,
-    int           size,
-    MPI_Datatype* type
-)
+MPI_Type_match_size( int           typeclass,
+                     int           size,
+                     MPI_Datatype* type )
 {
     int return_val;
 
@@ -1141,11 +1054,8 @@ MPI_Type_match_size
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_size
-(
-    MPI_Datatype datatype,
-    int*         size
-)
+MPI_Type_size( MPI_Datatype datatype,
+               int*         size )
 {
     int return_val;
 
@@ -1177,14 +1087,11 @@ MPI_Type_size
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_struct
-(
-    int           count,
-    int*          array_of_blocklengths,
-    MPI_Aint*     array_of_displacements,
-    MPI_Datatype* array_of_types,
-    MPI_Datatype* newtype
-)
+MPI_Type_struct( int           count,
+                 int*          array_of_blocklengths,
+                 MPI_Aint*     array_of_displacements,
+                 MPI_Datatype* array_of_types,
+                 MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -1216,11 +1123,8 @@ MPI_Type_struct
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_ub
-(
-    MPI_Datatype datatype,
-    MPI_Aint*    displacement
-)
+MPI_Type_ub( MPI_Datatype datatype,
+             MPI_Aint*    displacement )
 {
     int return_val;
 
@@ -1252,14 +1156,11 @@ MPI_Type_ub
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_vector
-(
-    int           count,
-    int           blocklength,
-    int           stride,
-    MPI_Datatype  oldtype,
-    MPI_Datatype* newtype
-)
+MPI_Type_vector( int           count,
+                 int           blocklength,
+                 int           stride,
+                 MPI_Datatype  oldtype,
+                 MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -1291,16 +1192,13 @@ MPI_Type_vector
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Unpack
-(
-    void*        inbuf,
-    int          insize,
-    int*         position,
-    void*        outbuf,
-    int          outcount,
-    MPI_Datatype datatype,
-    MPI_Comm     comm
-)
+MPI_Unpack( void*        inbuf,
+            int          insize,
+            int*         position,
+            void*        outbuf,
+            int          outcount,
+            MPI_Datatype datatype,
+            MPI_Comm     comm )
 {
     int return_val;
 
@@ -1332,16 +1230,13 @@ MPI_Unpack
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Unpack_external
-(
-    char*        datarep,
-    void*        inbuf,
-    MPI_Aint     insize,
-    MPI_Aint*    position,
-    void*        outbuf,
-    int          outcount,
-    MPI_Datatype datatype
-)
+MPI_Unpack_external( char*        datarep,
+                     void*        inbuf,
+                     MPI_Aint     insize,
+                     MPI_Aint*    position,
+                     void*        outbuf,
+                     int          outcount,
+                     MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1380,13 +1275,10 @@ MPI_Unpack_external
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_create_keyval
-(
-    MPI_Type_copy_attr_function*   type_copy_attr_fn,
-    MPI_Type_delete_attr_function* type_delete_attr_fn,
-    int*                           type_keyval,
-    void*                          extra_state
-)
+MPI_Type_create_keyval( MPI_Type_copy_attr_function*   type_copy_attr_fn,
+                        MPI_Type_delete_attr_function* type_delete_attr_fn,
+                        int*                           type_keyval,
+                        void*                          extra_state )
 {
     int return_val;
 
@@ -1418,11 +1310,8 @@ MPI_Type_create_keyval
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_delete_attr
-(
-    MPI_Datatype type,
-    int          type_keyval
-)
+MPI_Type_delete_attr( MPI_Datatype type,
+                      int          type_keyval )
 {
     int return_val;
 
@@ -1454,10 +1343,7 @@ MPI_Type_delete_attr
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_free_keyval
-(
-    int* type_keyval
-)
+MPI_Type_free_keyval( int* type_keyval )
 {
     int return_val;
 
@@ -1489,13 +1375,10 @@ MPI_Type_free_keyval
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_get_attr
-(
-    MPI_Datatype type,
-    int          type_keyval,
-    void*        attribute_val,
-    int*         flag
-)
+MPI_Type_get_attr( MPI_Datatype type,
+                   int          type_keyval,
+                   void*        attribute_val,
+                   int*         flag )
 {
     int return_val;
 
@@ -1527,12 +1410,9 @@ MPI_Type_get_attr
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_get_name
-(
-    MPI_Datatype type,
-    char*        type_name,
-    int*         resultlen
-)
+MPI_Type_get_name( MPI_Datatype type,
+                   char*        type_name,
+                   int*         resultlen )
 {
     int return_val;
 
@@ -1564,12 +1444,9 @@ MPI_Type_get_name
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_set_attr
-(
-    MPI_Datatype type,
-    int          type_keyval,
-    void*        attribute_val
-)
+MPI_Type_set_attr( MPI_Datatype type,
+                   int          type_keyval,
+                   void*        attribute_val )
 {
     int return_val;
 
@@ -1601,11 +1478,8 @@ MPI_Type_set_attr
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Type_set_name
-(
-    MPI_Datatype type,
-    char*        type_name
-)
+MPI_Type_set_name( MPI_Datatype type,
+                   char*        type_name )
 {
     int return_val;
 

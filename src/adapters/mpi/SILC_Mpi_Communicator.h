@@ -74,15 +74,13 @@ EXTERN const uint8_t silc_mpi_acc_epoch;
  *  MPI_COMM_WORLD.
  */
 EXTERN void
-silc_mpi_comm_init
-    ();
+silc_mpi_comm_init();
 
 /** @internal
  *  @brief Cleanup communicator management.
  */
 EXTERN void
-silc_mpi_comm_finalize
-    ();
+silc_mpi_comm_finalize();
 
 /** @internal
  *  Create a bitvector resembling the ranks in an MPI group.
@@ -96,10 +94,7 @@ silc_mpi_comm_finalize
  *  @param  group MPI group handle
  */
 EXTERN void
-silc_mpi_group_to_bitvector
-(
-    MPI_Group group
-);
+silc_mpi_group_to_bitvector( MPI_Group group );
 
 /** @internal
  *  Create an internal handle for an MPI group.
@@ -110,10 +105,7 @@ silc_mpi_group_to_bitvector
  *  @param  group MPI group handle
  */
 EXTERN void
-silc_mpi_group_create
-(
-    MPI_Group group
-);
+silc_mpi_group_create( MPI_Group group );
 
 /** @internal
  *  @brief Stop tracking of a given MPI group handle.
@@ -121,10 +113,7 @@ silc_mpi_group_create
  *  @param group MPI group handle
  */
 EXTERN void
-silc_mpi_group_free
-(
-    MPI_Group group
-);
+silc_mpi_group_free( MPI_Group group );
 
 /** @internal
  *  @brief Retrieve the internal SILC handle for a givem MPI group handle.
@@ -132,10 +121,7 @@ silc_mpi_group_free
  *  @return Internal SILC handle for the given MPI group handle.
  */
 EXTERN SILC_Mpi_GroupHandle
-silc_mpi_group_id
-(
-    MPI_Group group
-);
+silc_mpi_group_id( MPI_Group group );
 
 /** @internal
  *  @brief  Search internal data structures for the entry of a given MPI
@@ -144,10 +130,7 @@ silc_mpi_group_id
  *  @return Index of entry or -1 if entry could not be found.
  */
 EXTERN int32_t
-silc_mpi_group_search
-(
-    MPI_Group group
-);
+silc_mpi_group_search( MPI_Group group );
 
 #ifdef HAS_MPI2_1SIDED
 
@@ -160,11 +143,8 @@ silc_mpi_group_search
  *  @return Global rank
  */
 EXTERN SILC_Mpi_Rank
-silc_mpi_win_rank_to_pe
-(
-    SILC_Mpi_Rank rank,
-    MPI_Win       win
-);
+silc_mpi_win_rank_to_pe( SILC_Mpi_Rank rank,
+                         MPI_Win       win );
 
 /** @internal
  *  Return the internal SILC handle for a given MPI window handle.
@@ -172,10 +152,7 @@ silc_mpi_win_rank_to_pe
  *  @return Internal SILC handle for the given window.
  */
 EXTERN SILC_MPIWindowHandle
-silc_mpi_win_id
-(
-    MPI_Win win
-);
+silc_mpi_win_id( MPI_Win win );
 
 /** @internal
  *  Create definition record and internal tracking handle.
@@ -183,21 +160,15 @@ silc_mpi_win_id
  *  @param comm MPI communication handle the window is defined on.
  */
 EXTERN void
-silc_mpi_win_create
-(
-    MPI_Win  win,
-    MPI_Comm comm
-);
+silc_mpi_win_create( MPI_Win  win,
+                     MPI_Comm comm );
 
 /** @internal
  *  Free definition record and internal tracking handle.
  *  @param win MPI window handlte of the window to be freed.
  */
 EXTERN void
-silc_mpi_win_free
-(
-    MPI_Win win
-);
+silc_mpi_win_free( MPI_Win win );
 
 /** @internal
  *  @brief Start tracking of epoch.
@@ -206,12 +177,9 @@ silc_mpi_win_free
  *  @param color Type of epoch (exposure=0, access=1).
  */
 EXTERN void
-silc_mpi_winacc_start
-(
-    MPI_Win        win,
-    MPI_Group      group,
-    SILC_Mpi_Color color
-);
+silc_mpi_winacc_start( MPI_Win        win,
+                       MPI_Group      group,
+                       SILC_Mpi_Color color );
 
 /** @internal
  *  @brief End tracking of epoch.
@@ -219,11 +187,8 @@ silc_mpi_winacc_start
  *  @param color Type of epoch (exposure=0, access=1).
  */
 EXTERN void
-silc_mpi_winacc_end
-(
-    MPI_Win        win,
-    SILC_Mpi_Color color
-);
+silc_mpi_winacc_end( MPI_Win        win,
+                     SILC_Mpi_Color color );
 
 /** @internal
  *  @brief  Get internal group ID of process group related to an epoch.
@@ -232,11 +197,8 @@ silc_mpi_winacc_end
  *  @return Internal process group handle.
  */
 EXTERN SILC_Mpi_GroupHandle
-silc_mpi_winacc_get_gid
-(
-    MPI_Win        win,
-    SILC_Mpi_Color color
-);
+silc_mpi_winacc_get_gid( MPI_Win        win,
+                         SILC_Mpi_Color color );
 
 #endif
 
@@ -246,10 +208,7 @@ silc_mpi_winacc_get_gid
  *  @param comm MPI communicator handle.
  */
 EXTERN void
-silc_mpi_comm_create
-(
-    MPI_Comm comm
-);
+silc_mpi_comm_create( MPI_Comm comm );
 
 /** @internal
  *  @brief  Stop tracking of an MPI communicator handle.
@@ -257,10 +216,7 @@ silc_mpi_comm_create
  *               \a MPI_Comm_free.
  */
 EXTERN void
-silc_mpi_comm_free
-(
-    MPI_Comm comm
-);
+silc_mpi_comm_free( MPI_Comm comm );
 
 /** @internal
  *  @brief  Retrieves the internal SILC handle of a given MPI communicator.
@@ -268,10 +224,7 @@ silc_mpi_comm_free
  *  @return Internal SILC handle of MPI communicator %comm
  */
 EXTERN SILC_MPICommunicatorHandle
-silc_mpi_comm_id
-(
-    MPI_Comm comm
-);
+silc_mpi_comm_id( MPI_Comm comm );
 
 /** @internal
  *  Translate a rank within a given communicator to its global rank in
@@ -281,11 +234,8 @@ silc_mpi_comm_id
  *  @return Global rank.
  */
 EXTERN SILC_Mpi_Rank
-silc_mpi_rank_to_pe
-(
-    SILC_Mpi_Rank rank,
-    MPI_Comm      comm
-);
+silc_mpi_rank_to_pe( SILC_Mpi_Rank rank,
+                     MPI_Comm      comm );
 
 EXTERN int8_t silc_mpi_comm_determination;  /* whether comm/rank determined for events */
 

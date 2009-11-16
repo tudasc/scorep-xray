@@ -149,10 +149,7 @@
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Add_error_class
-) ( int* errorclass, int* ierr )
+FSUB( MPI_Add_error_class ) ( int* errorclass, int* ierr )
 {
     *ierr = MPI_Add_error_class( errorclass );
 }
@@ -166,10 +163,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Add_error_code
-) ( int* errorclass, int* errorcode, int* ierr )
+FSUB( MPI_Add_error_code ) ( int* errorclass, int* errorcode, int* ierr )
 {
     *ierr = MPI_Add_error_code( *errorclass, errorcode );
 }
@@ -183,10 +177,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Add_error_string
-) ( int* errorcode, char* string, int* ierr, int string_len )
+FSUB( MPI_Add_error_string ) ( int* errorcode, char* string, int* ierr, int string_len )
 {
     char* c_string = NULL;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
@@ -212,10 +203,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_create
-) ( MPI_Handler_function * function, MPI_Errhandler * errhandler, int* ierr )
+FSUB( MPI_Errhandler_create ) ( MPI_Handler_function * function, MPI_Errhandler * errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_create( function, errhandler );
 }
@@ -229,10 +217,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_free
-) ( MPI_Errhandler * errhandler, int* ierr )
+FSUB( MPI_Errhandler_free ) ( MPI_Errhandler * errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_free( errhandler );
 }
@@ -246,10 +231,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_get
-) ( MPI_Comm * comm, MPI_Errhandler * errhandler, int* ierr )
+FSUB( MPI_Errhandler_get ) ( MPI_Comm * comm, MPI_Errhandler * errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_get( *comm, errhandler );
 }
@@ -263,10 +245,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_set
-) ( MPI_Comm * comm, MPI_Errhandler * errhandler, int* ierr )
+FSUB( MPI_Errhandler_set ) ( MPI_Comm * comm, MPI_Errhandler * errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_set( *comm, *errhandler );
 }
@@ -280,10 +259,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Error_class
-) ( int* errorcode, int* errorclass, int* ierr )
+FSUB( MPI_Error_class ) ( int* errorcode, int* errorclass, int* ierr )
 {
     *ierr = MPI_Error_class( *errorcode, errorclass );
 }
@@ -297,10 +273,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Error_string
-) ( int* errorcode, char* string, int* resultlen, int* ierr, int string_len )
+FSUB( MPI_Error_string ) ( int* errorcode, char* string, int* resultlen, int* ierr, int string_len )
 {
     char* c_string = NULL;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
@@ -329,10 +302,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Add_error_class
-) ( MPI_Fint * errorclass, int* ierr )
+FSUB( MPI_Add_error_class ) ( MPI_Fint * errorclass, int* ierr )
 {
     *ierr = MPI_Add_error_class( errorclass );
 }
@@ -346,10 +316,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Add_error_code
-) ( MPI_Fint * errorclass, MPI_Fint * errorcode, int* ierr )
+FSUB( MPI_Add_error_code ) ( MPI_Fint * errorclass, MPI_Fint * errorcode, int* ierr )
 {
     *ierr = MPI_Add_error_code( *errorclass, errorcode );
 }
@@ -363,10 +330,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Add_error_string
-) ( MPI_Fint * errorcode, char* string, int* ierr, int string_len )
+FSUB( MPI_Add_error_string ) ( MPI_Fint * errorcode, char* string, int* ierr, int string_len )
 {
     char* c_string = NULL;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
@@ -390,10 +354,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_create
-) ( void* function, void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_create ) ( void* function, void* errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_create( ( MPI_Handler_function* )function, ( MPI_Errhandler* )errhandler );
 }
@@ -407,10 +368,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_free
-) ( void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_free ) ( void* errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_free( ( MPI_Errhandler* )errhandler );
 }
@@ -424,10 +382,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_get
-) ( MPI_Fint * comm, void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_get ) ( MPI_Fint * comm, void* errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_get( PMPI_Comm_f2c( *comm ), ( MPI_Errhandler* )errhandler );
 }
@@ -441,10 +396,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Errhandler_set
-) ( MPI_Fint * comm, void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_set ) ( MPI_Fint * comm, void* errhandler, int* ierr )
 {
     *ierr = MPI_Errhandler_set( PMPI_Comm_f2c( *comm ), *( ( MPI_Errhandler* )errhandler ) );
 }
@@ -458,10 +410,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Error_class
-) ( MPI_Fint * errorcode, MPI_Fint * errorclass, int* ierr )
+FSUB( MPI_Error_class ) ( MPI_Fint * errorcode, MPI_Fint * errorclass, int* ierr )
 {
     *ierr = MPI_Error_class( *errorcode, errorclass );
 }
@@ -475,10 +424,7 @@ FSUB
  * @ingroup err
  */
 void
-FSUB
-(
-    MPI_Error_string
-) ( MPI_Fint * errorcode, char* string, MPI_Fint * resultlen, int* ierr, int string_len )
+FSUB( MPI_Error_string ) ( MPI_Fint * errorcode, char* string, MPI_Fint * resultlen, int* ierr, int string_len )
 {
     char* c_string = NULL;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );

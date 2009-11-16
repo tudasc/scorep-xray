@@ -33,11 +33,8 @@
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Address
-(
-    void*     location,
-    MPI_Aint* address
-)
+MPI_Address( void*     location,
+             MPI_Aint* address )
 {
     int return_val;
 
@@ -69,12 +66,9 @@ MPI_Address
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Alloc_mem
-(
-    MPI_Aint size,
-    MPI_Info info,
-    void*    baseptr
-)
+MPI_Alloc_mem( MPI_Aint size,
+               MPI_Info info,
+               void*    baseptr )
 {
     int return_val;
 
@@ -106,10 +100,7 @@ MPI_Alloc_mem
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Free_mem
-(
-    void* base
-)
+MPI_Free_mem( void* base )
 {
     int return_val;
 
@@ -141,11 +132,8 @@ MPI_Free_mem
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Get_address
-(
-    void*     location,
-    MPI_Aint* address
-)
+MPI_Get_address( void*     location,
+                 MPI_Aint* address )
 {
     int return_val;
 
@@ -177,11 +165,8 @@ MPI_Get_address
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Get_version
-(
-    int* version,
-    int* subversion
-)
+MPI_Get_version( int* version,
+                 int* subversion )
 {
     int return_val;
 
@@ -213,10 +198,7 @@ MPI_Get_version
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_create
-(
-    MPI_Info* info
-)
+MPI_Info_create( MPI_Info* info )
 {
     int return_val;
 
@@ -248,11 +230,8 @@ MPI_Info_create
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_delete
-(
-    MPI_Info info,
-    char*    key
-)
+MPI_Info_delete( MPI_Info info,
+                 char*    key )
 {
     int return_val;
 
@@ -284,11 +263,8 @@ MPI_Info_delete
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_dup
-(
-    MPI_Info  info,
-    MPI_Info* newinfo
-)
+MPI_Info_dup( MPI_Info  info,
+              MPI_Info* newinfo )
 {
     int return_val;
 
@@ -320,10 +296,7 @@ MPI_Info_dup
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_free
-(
-    MPI_Info* info
-)
+MPI_Info_free( MPI_Info* info )
 {
     int return_val;
 
@@ -355,14 +328,11 @@ MPI_Info_free
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_get
-(
-    MPI_Info info,
-    char*    key,
-    int      valuelen,
-    char*    value,
-    int*     flag
-)
+MPI_Info_get( MPI_Info info,
+              char*    key,
+              int      valuelen,
+              char*    value,
+              int*     flag )
 {
     int return_val;
 
@@ -394,11 +364,8 @@ MPI_Info_get
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_get_nkeys
-(
-    MPI_Info info,
-    int*     nkeys
-)
+MPI_Info_get_nkeys( MPI_Info info,
+                    int*     nkeys )
 {
     int return_val;
 
@@ -430,12 +397,9 @@ MPI_Info_get_nkeys
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_get_nthkey
-(
-    MPI_Info info,
-    int      n,
-    char*    key
-)
+MPI_Info_get_nthkey( MPI_Info info,
+                     int      n,
+                     char*    key )
 {
     int return_val;
 
@@ -467,13 +431,10 @@ MPI_Info_get_nthkey
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_get_valuelen
-(
-    MPI_Info info,
-    char*    key,
-    int*     valuelen,
-    int*     flag
-)
+MPI_Info_get_valuelen( MPI_Info info,
+                       char*    key,
+                       int*     valuelen,
+                       int*     flag )
 {
     int return_val;
 
@@ -505,12 +466,9 @@ MPI_Info_get_valuelen
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Info_set
-(
-    MPI_Info info,
-    char*    key,
-    char*    value
-)
+MPI_Info_set( MPI_Info info,
+              char*    key,
+              char*    value )
 {
     int return_val;
 
@@ -542,12 +500,9 @@ MPI_Info_set
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Op_create
-(
-    MPI_User_function* function,
-    int                commute,
-    MPI_Op*            op
-)
+MPI_Op_create( MPI_User_function* function,
+               int                commute,
+               MPI_Op*            op )
 {
     int return_val;
 
@@ -579,10 +534,7 @@ MPI_Op_create
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Op_free
-(
-    MPI_Op* op
-)
+MPI_Op_free( MPI_Op* op )
 {
     int return_val;
 
@@ -614,12 +566,9 @@ MPI_Op_free
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Request_get_status
-(
-    MPI_Request request,
-    int*        flag,
-    MPI_Status* status
-)
+MPI_Request_get_status( MPI_Request request,
+                        int*        flag,
+                        MPI_Status* status )
 {
     int return_val;
 

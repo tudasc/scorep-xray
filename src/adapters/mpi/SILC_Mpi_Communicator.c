@@ -212,11 +212,8 @@ static int silc_mpi_last_winacc = 0;
 /* -- rank translation -- */
 
 SILC_Mpi_Rank
-silc_mpi_rank_to_pe
-(
-    SILC_Mpi_Rank rank,
-    MPI_Comm      comm
-)
+silc_mpi_rank_to_pe( SILC_Mpi_Rank rank,
+                     MPI_Comm      comm )
 {
     MPI_Group     group;
     SILC_Mpi_Rank global_rank;
@@ -244,11 +241,8 @@ silc_mpi_rank_to_pe
 #ifdef HAS_MPI2_1SIDED
 
 SILC_Mpi_Rank
-silc_mpi_win_rank_to_pe
-(
-    SILC_Mpi_Rank rank,
-    MPI_Win       win
-)
+silc_mpi_win_rank_to_pe( SILC_Mpi_Rank rank,
+                         MPI_Win       win )
 {
     MPI_Group     group;
     SILC_Mpi_Rank global_rank;
@@ -266,10 +260,7 @@ silc_mpi_win_rank_to_pe
 /* -------------------------------------------------------------------- window handling */
 
 SILC_MPIWindowHandle
-silc_mpi_win_id
-(
-    MPI_Win win
-)
+silc_mpi_win_id( MPI_Win win )
 {
     int i = 0;
 
@@ -290,11 +281,8 @@ silc_mpi_win_id
 }
 
 void
-silc_mpi_win_create
-(
-    MPI_Win  win,
-    MPI_Comm comm
-)
+silc_mpi_win_create( MPI_Win  win,
+                     MPI_Comm comm )
 {
     SILC_MPIWindowHandle handle = SILC_INVALID_MPI_WINDOW;
 
@@ -317,10 +305,7 @@ silc_mpi_win_create
 }
 
 void
-silc_mpi_win_free
-(
-    MPI_Win win
-)
+silc_mpi_win_free( MPI_Win win )
 {
     if ( silc_mpi_last_window == 1 && silc_mpi_windows[ 0 ].win == win )
     {
@@ -354,8 +339,7 @@ silc_mpi_win_free
 /* -------------------------------------------------------------- communicator handling */
 
 void
-silc_mpi_comm_init
-    ()
+silc_mpi_comm_init()
 {
     int            i;
     unsigned char* grpv;
@@ -408,8 +392,7 @@ silc_mpi_comm_init
 }
 
 void
-silc_mpi_comm_finalize
-    ()
+silc_mpi_comm_finalize()
 {
     /* free MPI group held internally */
     PMPI_Group_free( &silc_mpi_world.group );
@@ -421,10 +404,7 @@ silc_mpi_comm_finalize
 }
 
 void
-silc_mpi_group_to_bitvector
-(
-    MPI_Group group
-)
+silc_mpi_group_to_bitvector( MPI_Group group )
 {
     int32_t i, size;
 
@@ -452,10 +432,7 @@ silc_mpi_group_to_bitvector
 }
 
 void
-silc_mpi_comm_create
-(
-    MPI_Comm comm
-)
+silc_mpi_comm_create( MPI_Comm comm )
 {
     MPI_Group                  group;
     SILC_MPICommunicatorHandle handle;
@@ -485,10 +462,7 @@ silc_mpi_comm_create
 }
 
 void
-silc_mpi_comm_free
-(
-    MPI_Comm comm
-)
+silc_mpi_comm_free( MPI_Comm comm )
 {
     /* if only one communicator exists, we just need to decrease \a
      * silc_mpi_last_comm */
@@ -524,10 +498,7 @@ silc_mpi_comm_free
 }
 
 SILC_MPICommunicatorHandle
-silc_mpi_comm_id
-(
-    MPI_Comm comm
-)
+silc_mpi_comm_id( MPI_Comm comm )
 {
     int i = 0;
 
@@ -564,10 +535,7 @@ silc_mpi_comm_id
  */
 
 void
-silc_mpi_group_create
-(
-    MPI_Group group
-)
+silc_mpi_group_create( MPI_Group group )
 {
     int32_t                    i;
     SILC_MPICommunicatorHandle handle;
@@ -601,10 +569,7 @@ silc_mpi_group_create
 }
 
 void
-silc_mpi_group_free
-(
-    MPI_Group group
-)
+silc_mpi_group_free( MPI_Group group )
 {
     if ( silc_mpi_last_group == 1 && silc_mpi_groups[ 0 ].group == group )
     {
@@ -642,10 +607,7 @@ silc_mpi_group_free
 }
 
 SILC_Mpi_GroupHandle
-silc_mpi_group_id
-(
-    MPI_Group group
-)
+silc_mpi_group_id( MPI_Group group )
 {
     int32_t i = 0;
 
@@ -666,10 +628,7 @@ silc_mpi_group_id
 }
 
 int32_t
-silc_mpi_group_search
-(
-    MPI_Group group
-)
+silc_mpi_group_search( MPI_Group group )
 {
     int32_t i = 0;
 
@@ -699,12 +658,9 @@ silc_mpi_group_search
 #ifdef HAS_MPI2_1SIDED
 
 void
-silc_mpi_winacc_start
-(
-    MPI_Win        win,
-    MPI_Group      group,
-    SILC_Mpi_Color color
-)
+silc_mpi_winacc_start( MPI_Win        win,
+                       MPI_Group      group,
+                       SILC_Mpi_Color color )
 {
     if ( silc_mpi_last_winacc >= SILC_MPI_MAX_WINACC )
     {
@@ -719,11 +675,8 @@ silc_mpi_winacc_start
 }
 
 void
-silc_mpi_winacc_end
-(
-    MPI_Win        win,
-    SILC_Mpi_Color color
-)
+silc_mpi_winacc_end( MPI_Win        win,
+                     SILC_Mpi_Color color )
 {
     int i = 0;
     /* only one window inside wingrp */
@@ -756,11 +709,8 @@ silc_mpi_winacc_end
 }
 
 SILC_Mpi_GroupHandle
-silc_mpi_winacc_get_gid
-(
-    MPI_Win        win,
-    SILC_Mpi_Color color
-)
+silc_mpi_winacc_get_gid( MPI_Win        win,
+                         SILC_Mpi_Color color )
 {
     int i = 0;
 

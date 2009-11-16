@@ -41,6 +41,6 @@ SILC_Mpi_Deregister
     ();
 
 /** The struct which contain the init functions */
-extern const SILC_Adapter SILC_Mpi_InitFunctions;
+extern const SILC_Adapter SILC_Mpi_Adapter;
 
 #endif // SILC_MPI_INIT_H

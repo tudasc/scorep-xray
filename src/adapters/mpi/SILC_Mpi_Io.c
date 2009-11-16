@@ -35,10 +35,7 @@
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_close
-(
-    MPI_File* fh
-)
+MPI_File_close( MPI_File* fh )
 {
     int return_val;
 
@@ -69,11 +66,8 @@ MPI_File_close
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_delete
-(
-    char*    filename,
-    MPI_Info info
-)
+MPI_File_delete( char*    filename,
+                 MPI_Info info )
 {
     int return_val;
 
@@ -105,11 +99,8 @@ MPI_File_delete
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_amode
-(
-    MPI_File fh,
-    int*     amode
-)
+MPI_File_get_amode( MPI_File fh,
+                    int*     amode )
 {
     int return_val;
 
@@ -141,11 +132,8 @@ MPI_File_get_amode
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_atomicity
-(
-    MPI_File fh,
-    int*     flag
-)
+MPI_File_get_atomicity( MPI_File fh,
+                        int*     flag )
 {
     int return_val;
 
@@ -177,12 +165,9 @@ MPI_File_get_atomicity
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_byte_offset
-(
-    MPI_File    fh,
-    MPI_Offset  offset,
-    MPI_Offset* disp
-)
+MPI_File_get_byte_offset( MPI_File    fh,
+                          MPI_Offset  offset,
+                          MPI_Offset* disp )
 {
     int return_val;
 
@@ -214,11 +199,8 @@ MPI_File_get_byte_offset
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_group
-(
-    MPI_File   fh,
-    MPI_Group* group
-)
+MPI_File_get_group( MPI_File   fh,
+                    MPI_Group* group )
 {
     int return_val;
 
@@ -250,11 +232,8 @@ MPI_File_get_group
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_info
-(
-    MPI_File  fh,
-    MPI_Info* info_used
-)
+MPI_File_get_info( MPI_File  fh,
+                   MPI_Info* info_used )
 {
     int return_val;
 
@@ -286,11 +265,8 @@ MPI_File_get_info
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_position
-(
-    MPI_File    fh,
-    MPI_Offset* offset
-)
+MPI_File_get_position( MPI_File    fh,
+                       MPI_Offset* offset )
 {
     int return_val;
 
@@ -322,11 +298,8 @@ MPI_File_get_position
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_position_shared
-(
-    MPI_File    fh,
-    MPI_Offset* offset
-)
+MPI_File_get_position_shared( MPI_File    fh,
+                              MPI_Offset* offset )
 {
     int return_val;
 
@@ -358,11 +331,8 @@ MPI_File_get_position_shared
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_size
-(
-    MPI_File    fh,
-    MPI_Offset* size
-)
+MPI_File_get_size( MPI_File    fh,
+                   MPI_Offset* size )
 {
     int return_val;
 
@@ -394,12 +364,9 @@ MPI_File_get_size
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_type_extent
-(
-    MPI_File     fh,
-    MPI_Datatype datatype,
-    MPI_Aint*    extent
-)
+MPI_File_get_type_extent( MPI_File     fh,
+                          MPI_Datatype datatype,
+                          MPI_Aint*    extent )
 {
     int return_val;
 
@@ -431,14 +398,11 @@ MPI_File_get_type_extent
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_view
-(
-    MPI_File      fh,
-    MPI_Offset*   disp,
-    MPI_Datatype* etype,
-    MPI_Datatype* filetype,
-    char*         datarep
-)
+MPI_File_get_view( MPI_File      fh,
+                   MPI_Offset*   disp,
+                   MPI_Datatype* etype,
+                   MPI_Datatype* filetype,
+                   char*         datarep )
 {
     int return_val;
 
@@ -470,14 +434,11 @@ MPI_File_get_view
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_open
-(
-    MPI_Comm  comm,
-    char*     filename,
-    int       amode,
-    MPI_Info  info,
-    MPI_File* fh
-)
+MPI_File_open( MPI_Comm  comm,
+               char*     filename,
+               int       amode,
+               MPI_Info  info,
+               MPI_File* fh )
 {
     int return_val;
 
@@ -509,12 +470,9 @@ MPI_File_open
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_seek
-(
-    MPI_File   fh,
-    MPI_Offset offset,
-    int        whence
-)
+MPI_File_seek( MPI_File   fh,
+               MPI_Offset offset,
+               int        whence )
 {
     int return_val;
 
@@ -546,12 +504,9 @@ MPI_File_seek
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_seek_shared
-(
-    MPI_File   fh,
-    MPI_Offset offset,
-    int        whence
-)
+MPI_File_seek_shared( MPI_File   fh,
+                      MPI_Offset offset,
+                      int        whence )
 {
     int return_val;
 
@@ -583,11 +538,8 @@ MPI_File_seek_shared
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_set_atomicity
-(
-    MPI_File fh,
-    int      flag
-)
+MPI_File_set_atomicity( MPI_File fh,
+                        int      flag )
 {
     int return_val;
 
@@ -619,11 +571,8 @@ MPI_File_set_atomicity
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_set_info
-(
-    MPI_File fh,
-    MPI_Info info
-)
+MPI_File_set_info( MPI_File fh,
+                   MPI_Info info )
 {
     int return_val;
 
@@ -655,11 +604,8 @@ MPI_File_set_info
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_set_size
-(
-    MPI_File   fh,
-    MPI_Offset size
-)
+MPI_File_set_size( MPI_File   fh,
+                   MPI_Offset size )
 {
     int return_val;
 
@@ -691,15 +637,12 @@ MPI_File_set_size
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_set_view
-(
-    MPI_File     fh,
-    MPI_Offset   disp,
-    MPI_Datatype etype,
-    MPI_Datatype filetype,
-    char*        datarep,
-    MPI_Info     info
-)
+MPI_File_set_view( MPI_File     fh,
+                   MPI_Offset   disp,
+                   MPI_Datatype etype,
+                   MPI_Datatype filetype,
+                   char*        datarep,
+                   MPI_Info     info )
 {
     int return_val;
 
@@ -731,10 +674,7 @@ MPI_File_set_view
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_sync
-(
-    MPI_File fh
-)
+MPI_File_sync( MPI_File fh )
 {
     int return_val;
 
@@ -766,14 +706,11 @@ MPI_File_sync
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Register_datarep
-(
-    char*                            datarep,
-    MPI_Datarep_conversion_function* read_conversion_fn,
-    MPI_Datarep_conversion_function* write_conversion_fn,
-    MPI_Datarep_extent_function*     dtype_file_extent_fn,
-    void*                            extra_state
-)
+MPI_Register_datarep( char*                            datarep,
+                      MPI_Datarep_conversion_function* read_conversion_fn,
+                      MPI_Datarep_conversion_function* write_conversion_fn,
+                      MPI_Datarep_extent_function*     dtype_file_extent_fn,
+                      void*                            extra_state )
 {
     int return_val;
 
@@ -812,14 +749,11 @@ MPI_Register_datarep
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_iread
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Request* request
-)
+MPI_File_iread( MPI_File     fh,
+                void*        buf,
+                int          count,
+                MPI_Datatype datatype,
+                MPI_Request* request )
 {
     int return_val;
 
@@ -851,15 +785,12 @@ MPI_File_iread
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_iread_at
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Request* request
-)
+MPI_File_iread_at( MPI_File     fh,
+                   MPI_Offset   offset,
+                   void*        buf,
+                   int          count,
+                   MPI_Datatype datatype,
+                   MPI_Request* request )
 {
     int return_val;
 
@@ -891,14 +822,11 @@ MPI_File_iread_at
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_iread_shared
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Request* request
-)
+MPI_File_iread_shared( MPI_File     fh,
+                       void*        buf,
+                       int          count,
+                       MPI_Datatype datatype,
+                       MPI_Request* request )
 {
     int return_val;
 
@@ -930,14 +858,11 @@ MPI_File_iread_shared
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_iwrite
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Request* request
-)
+MPI_File_iwrite( MPI_File     fh,
+                 void*        buf,
+                 int          count,
+                 MPI_Datatype datatype,
+                 MPI_Request* request )
 {
     int return_val;
 
@@ -969,15 +894,12 @@ MPI_File_iwrite
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_iwrite_at
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Request* request
-)
+MPI_File_iwrite_at( MPI_File     fh,
+                    MPI_Offset   offset,
+                    void*        buf,
+                    int          count,
+                    MPI_Datatype datatype,
+                    MPI_Request* request )
 {
     int return_val;
 
@@ -1009,14 +931,11 @@ MPI_File_iwrite_at
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_iwrite_shared
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Request* request
-)
+MPI_File_iwrite_shared( MPI_File     fh,
+                        void*        buf,
+                        int          count,
+                        MPI_Datatype datatype,
+                        MPI_Request* request )
 {
     int return_val;
 
@@ -1048,14 +967,11 @@ MPI_File_iwrite_shared
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_read( MPI_File     fh,
+               void*        buf,
+               int          count,
+               MPI_Datatype datatype,
+               MPI_Status*  status )
 {
     int return_val;
 
@@ -1087,14 +1003,11 @@ MPI_File_read
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_all
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_read_all( MPI_File     fh,
+                   void*        buf,
+                   int          count,
+                   MPI_Datatype datatype,
+                   MPI_Status*  status )
 {
     int return_val;
 
@@ -1126,13 +1039,10 @@ MPI_File_read_all
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_all_begin
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype
-)
+MPI_File_read_all_begin( MPI_File     fh,
+                         void*        buf,
+                         int          count,
+                         MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1164,12 +1074,9 @@ MPI_File_read_all_begin
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_all_end
-(
-    MPI_File    fh,
-    void*       buf,
-    MPI_Status* status
-)
+MPI_File_read_all_end( MPI_File    fh,
+                       void*       buf,
+                       MPI_Status* status )
 {
     int return_val;
 
@@ -1201,15 +1108,12 @@ MPI_File_read_all_end
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_at
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_read_at( MPI_File     fh,
+                  MPI_Offset   offset,
+                  void*        buf,
+                  int          count,
+                  MPI_Datatype datatype,
+                  MPI_Status*  status )
 {
     int return_val;
 
@@ -1241,15 +1145,12 @@ MPI_File_read_at
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_at_all
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_read_at_all( MPI_File     fh,
+                      MPI_Offset   offset,
+                      void*        buf,
+                      int          count,
+                      MPI_Datatype datatype,
+                      MPI_Status*  status )
 {
     int return_val;
 
@@ -1281,14 +1182,11 @@ MPI_File_read_at_all
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_at_all_begin
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype
-)
+MPI_File_read_at_all_begin( MPI_File     fh,
+                            MPI_Offset   offset,
+                            void*        buf,
+                            int          count,
+                            MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1320,12 +1218,9 @@ MPI_File_read_at_all_begin
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_at_all_end
-(
-    MPI_File    fh,
-    void*       buf,
-    MPI_Status* status
-)
+MPI_File_read_at_all_end( MPI_File    fh,
+                          void*       buf,
+                          MPI_Status* status )
 {
     int return_val;
 
@@ -1357,14 +1252,11 @@ MPI_File_read_at_all_end
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_ordered
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_read_ordered( MPI_File     fh,
+                       void*        buf,
+                       int          count,
+                       MPI_Datatype datatype,
+                       MPI_Status*  status )
 {
     int return_val;
 
@@ -1396,13 +1288,10 @@ MPI_File_read_ordered
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_ordered_begin
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype
-)
+MPI_File_read_ordered_begin( MPI_File     fh,
+                             void*        buf,
+                             int          count,
+                             MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1434,12 +1323,9 @@ MPI_File_read_ordered_begin
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_ordered_end
-(
-    MPI_File    fh,
-    void*       buf,
-    MPI_Status* status
-)
+MPI_File_read_ordered_end( MPI_File    fh,
+                           void*       buf,
+                           MPI_Status* status )
 {
     int return_val;
 
@@ -1471,14 +1357,11 @@ MPI_File_read_ordered_end
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_read_shared
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_read_shared( MPI_File     fh,
+                      void*        buf,
+                      int          count,
+                      MPI_Datatype datatype,
+                      MPI_Status*  status )
 {
     int return_val;
 
@@ -1510,14 +1393,11 @@ MPI_File_read_shared
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_write( MPI_File     fh,
+                void*        buf,
+                int          count,
+                MPI_Datatype datatype,
+                MPI_Status*  status )
 {
     int return_val;
 
@@ -1549,14 +1429,11 @@ MPI_File_write
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_all
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_write_all( MPI_File     fh,
+                    void*        buf,
+                    int          count,
+                    MPI_Datatype datatype,
+                    MPI_Status*  status )
 {
     int return_val;
 
@@ -1588,13 +1465,10 @@ MPI_File_write_all
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_all_begin
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype
-)
+MPI_File_write_all_begin( MPI_File     fh,
+                          void*        buf,
+                          int          count,
+                          MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1626,12 +1500,9 @@ MPI_File_write_all_begin
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_all_end
-(
-    MPI_File    fh,
-    void*       buf,
-    MPI_Status* status
-)
+MPI_File_write_all_end( MPI_File    fh,
+                        void*       buf,
+                        MPI_Status* status )
 {
     int return_val;
 
@@ -1663,15 +1534,12 @@ MPI_File_write_all_end
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_at
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_write_at( MPI_File     fh,
+                   MPI_Offset   offset,
+                   void*        buf,
+                   int          count,
+                   MPI_Datatype datatype,
+                   MPI_Status*  status )
 {
     int return_val;
 
@@ -1703,15 +1571,12 @@ MPI_File_write_at
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_at_all
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_write_at_all( MPI_File     fh,
+                       MPI_Offset   offset,
+                       void*        buf,
+                       int          count,
+                       MPI_Datatype datatype,
+                       MPI_Status*  status )
 {
     int return_val;
 
@@ -1743,14 +1608,11 @@ MPI_File_write_at_all
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_at_all_begin
-(
-    MPI_File     fh,
-    MPI_Offset   offset,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype
-)
+MPI_File_write_at_all_begin( MPI_File     fh,
+                             MPI_Offset   offset,
+                             void*        buf,
+                             int          count,
+                             MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1782,12 +1644,9 @@ MPI_File_write_at_all_begin
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_at_all_end
-(
-    MPI_File    fh,
-    void*       buf,
-    MPI_Status* status
-)
+MPI_File_write_at_all_end( MPI_File    fh,
+                           void*       buf,
+                           MPI_Status* status )
 {
     int return_val;
 
@@ -1819,14 +1678,11 @@ MPI_File_write_at_all_end
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_ordered
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_write_ordered( MPI_File     fh,
+                        void*        buf,
+                        int          count,
+                        MPI_Datatype datatype,
+                        MPI_Status*  status )
 {
     int return_val;
 
@@ -1858,13 +1714,10 @@ MPI_File_write_ordered
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_ordered_begin
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype
-)
+MPI_File_write_ordered_begin( MPI_File     fh,
+                              void*        buf,
+                              int          count,
+                              MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1896,12 +1749,9 @@ MPI_File_write_ordered_begin
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_ordered_end
-(
-    MPI_File    fh,
-    void*       buf,
-    MPI_Status* status
-)
+MPI_File_write_ordered_end( MPI_File    fh,
+                            void*       buf,
+                            MPI_Status* status )
 {
     int return_val;
 
@@ -1933,14 +1783,11 @@ MPI_File_write_ordered_end
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_write_shared
-(
-    MPI_File     fh,
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Status*  status
-)
+MPI_File_write_shared( MPI_File     fh,
+                       void*        buf,
+                       int          count,
+                       MPI_Datatype datatype,
+                       MPI_Status*  status )
 {
     int return_val;
 
@@ -1979,11 +1826,8 @@ MPI_File_write_shared
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_call_errhandler
-(
-    MPI_File fh,
-    int      errorcode
-)
+MPI_File_call_errhandler( MPI_File fh,
+                          int      errorcode )
 {
     int return_val;
 
@@ -2015,11 +1859,8 @@ MPI_File_call_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_create_errhandler
-(
-    MPI_File_errhandler_fn* function,
-    MPI_Errhandler*         errhandler
-)
+MPI_File_create_errhandler( MPI_File_errhandler_fn* function,
+                            MPI_Errhandler*         errhandler )
 {
     int return_val;
 
@@ -2051,11 +1892,8 @@ MPI_File_create_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_get_errhandler
-(
-    MPI_File        file,
-    MPI_Errhandler* errhandler
-)
+MPI_File_get_errhandler( MPI_File        file,
+                         MPI_Errhandler* errhandler )
 {
     int return_val;
 
@@ -2087,11 +1925,8 @@ MPI_File_get_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_File_set_errhandler
-(
-    MPI_File       file,
-    MPI_Errhandler errhandler
-)
+MPI_File_set_errhandler( MPI_File       file,
+                         MPI_Errhandler errhandler )
 {
     int return_val;
 

@@ -346,10 +346,7 @@
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Accumulate
-) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * op, MPI_Fint * win, int* ierr )
+FSUB( MPI_Accumulate ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * op, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
 }
@@ -363,10 +360,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Get
-) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
+FSUB( MPI_Get ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Get( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
 }
@@ -380,10 +374,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Put
-) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
+FSUB( MPI_Put ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Put( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
 }
@@ -403,10 +394,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_create
-) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_Fint * info, MPI_Fint * comm, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_create ) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_Fint * info, MPI_Fint * comm, MPI_Fint * win, int* ierr )
 {
     MPI_Win c_win;
     *ierr = MPI_Win_create( base, *size, *disp_unit, PMPI_Info_f2c( *info ), PMPI_Comm_f2c( *comm ), &c_win );
@@ -422,10 +410,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_free
-) ( MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_free ) ( MPI_Fint * win, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_free( &c_win );
@@ -447,10 +432,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_complete
-) ( MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_complete ) ( MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_complete( PMPI_Win_f2c( *win ) );
 }
@@ -464,10 +446,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_fence
-) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_fence ) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_fence( *assert, PMPI_Win_f2c( *win ) );
 }
@@ -481,10 +460,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_lock
-) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_lock ) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_lock( *lock_type, *rank, *assert, PMPI_Win_f2c( *win ) );
 }
@@ -498,10 +474,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_post
-) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_post ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_post( PMPI_Group_f2c( *group ), *assert, PMPI_Win_f2c( *win ) );
 }
@@ -515,10 +488,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_start
-) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_start ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_start( PMPI_Group_f2c( *group ), *assert, PMPI_Win_f2c( *win ) );
 }
@@ -532,10 +502,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_test
-) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
+FSUB( MPI_Win_test ) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
 {
     *ierr = MPI_Win_test( PMPI_Win_f2c( *win ), flag );
 }
@@ -549,10 +516,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_unlock
-) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_unlock ) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_unlock( *rank, PMPI_Win_f2c( *win ) );
 }
@@ -566,10 +530,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_wait
-) ( MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_wait ) ( MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_wait( PMPI_Win_f2c( *win ) );
 }
@@ -589,10 +550,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_call_errhandler
-) ( MPI_Fint * win, MPI_Fint * errorcode, int* ierr )
+FSUB( MPI_Win_call_errhandler ) ( MPI_Fint * win, MPI_Fint * errorcode, int* ierr )
 {
     *ierr = MPI_Win_call_errhandler( PMPI_Win_f2c( *win ), *errorcode );
 }
@@ -606,10 +564,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_create_errhandler
-) ( void* function, void* errhandler, int* ierr )
+FSUB( MPI_Win_create_errhandler ) ( void* function, void* errhandler, int* ierr )
 {
     *ierr = MPI_Win_create_errhandler( ( MPI_Win_errhandler_fn* )function, ( MPI_Errhandler* )errhandler );
 }
@@ -623,10 +578,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_get_errhandler
-) ( MPI_Fint * win, void* errhandler, int* ierr )
+FSUB( MPI_Win_get_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
 {
     *ierr = MPI_Win_get_errhandler( PMPI_Win_f2c( *win ), ( MPI_Errhandler* )errhandler );
 }
@@ -640,10 +592,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_set_errhandler
-) ( MPI_Fint * win, void* errhandler, int* ierr )
+FSUB( MPI_Win_set_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_set_errhandler( c_win, *( ( MPI_Errhandler* )errhandler ) );
@@ -665,10 +614,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_create_keyval
-) ( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint * win_keyval, void* extra_state, int* ierr )
+FSUB( MPI_Win_create_keyval ) ( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint * win_keyval, void* extra_state, int* ierr )
 {
     *ierr = MPI_Win_create_keyval( ( MPI_Win_copy_attr_function* )win_copy_attr_fn, ( MPI_Win_delete_attr_function* )win_delete_attr_fn, win_keyval, extra_state );
 }
@@ -682,10 +628,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_delete_attr
-) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
+FSUB( MPI_Win_delete_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_delete_attr( c_win, *win_keyval );
@@ -701,10 +644,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_free_keyval
-) ( MPI_Fint * win_keyval, int* ierr )
+FSUB( MPI_Win_free_keyval ) ( MPI_Fint * win_keyval, int* ierr )
 {
     *ierr = MPI_Win_free_keyval( win_keyval );
 }
@@ -718,10 +658,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_get_attr
-) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
+FSUB( MPI_Win_get_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
 {
     *ierr = MPI_Win_get_attr( PMPI_Win_f2c( *win ), *win_keyval, attribute_val, flag );
 }
@@ -735,10 +672,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_get_name
-) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen, int* ierr, int win_name_len )
+FSUB( MPI_Win_get_name ) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen, int* ierr, int win_name_len )
 {
     char* c_win_name = NULL;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
@@ -762,10 +696,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_set_attr
-) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, int* ierr )
+FSUB( MPI_Win_set_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_set_attr( c_win, *win_keyval, attribute_val );
@@ -781,10 +712,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_set_name
-) ( MPI_Fint * win, char* win_name, int* ierr, int win_name_len )
+FSUB( MPI_Win_set_name ) ( MPI_Fint * win, char* win_name, int* ierr, int win_name_len )
 {
     char*   c_win_name = NULL;
     MPI_Win c_win      = PMPI_Win_f2c( *win );
@@ -818,10 +746,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Accumulate
-) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * op, MPI_Fint * win, int* ierr )
+FSUB( MPI_Accumulate ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * op, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
 }
@@ -835,10 +760,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Get
-) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
+FSUB( MPI_Get ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Get( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
 }
@@ -852,10 +774,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Put
-) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
+FSUB( MPI_Put ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Put( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
 }
@@ -875,10 +794,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_create
-) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_Fint * info, MPI_Fint * comm, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_create ) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_Fint * info, MPI_Fint * comm, MPI_Fint * win, int* ierr )
 {
     MPI_Win c_win;
     *ierr = MPI_Win_create( base, *size, *disp_unit, PMPI_Info_f2c( *info ), PMPI_Comm_f2c( *comm ), &c_win );
@@ -894,10 +810,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_free
-) ( MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_free ) ( MPI_Fint * win, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_free( &c_win );
@@ -919,10 +832,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_complete
-) ( MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_complete ) ( MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_complete( PMPI_Win_f2c( *win ) );
 }
@@ -936,10 +846,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_fence
-) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_fence ) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_fence( *assert, PMPI_Win_f2c( *win ) );
 }
@@ -953,10 +860,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_lock
-) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_lock ) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_lock( *lock_type, *rank, *assert, PMPI_Win_f2c( *win ) );
 }
@@ -970,10 +874,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_post
-) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_post ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_post( PMPI_Group_f2c( *group ), *assert, PMPI_Win_f2c( *win ) );
 }
@@ -987,10 +888,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_start
-) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_start ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_start( PMPI_Group_f2c( *group ), *assert, PMPI_Win_f2c( *win ) );
 }
@@ -1004,10 +902,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_test
-) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
+FSUB( MPI_Win_test ) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
 {
     *ierr = MPI_Win_test( PMPI_Win_f2c( *win ), flag );
 }
@@ -1021,10 +916,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_unlock
-) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_unlock ) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_unlock( *rank, PMPI_Win_f2c( *win ) );
 }
@@ -1038,10 +930,7 @@ FSUB
  * @ingroup rma
  */
 void
-FSUB
-(
-    MPI_Win_wait
-) ( MPI_Fint * win, int* ierr )
+FSUB( MPI_Win_wait ) ( MPI_Fint * win, int* ierr )
 {
     *ierr = MPI_Win_wait( PMPI_Win_f2c( *win ) );
 }
@@ -1061,10 +950,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_call_errhandler
-) ( MPI_Fint * win, MPI_Fint * errorcode, int* ierr )
+FSUB( MPI_Win_call_errhandler ) ( MPI_Fint * win, MPI_Fint * errorcode, int* ierr )
 {
     *ierr = MPI_Win_call_errhandler( PMPI_Win_f2c( *win ), *errorcode );
 }
@@ -1078,10 +964,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_create_errhandler
-) ( void* function, void* errhandler, int* ierr )
+FSUB( MPI_Win_create_errhandler ) ( void* function, void* errhandler, int* ierr )
 {
     *ierr = MPI_Win_create_errhandler( ( MPI_Win_errhandler_fn* )function, ( MPI_Errhandler* )errhandler );
 }
@@ -1095,10 +978,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_get_errhandler
-) ( MPI_Fint * win, void* errhandler, int* ierr )
+FSUB( MPI_Win_get_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
 {
     *ierr = MPI_Win_get_errhandler( PMPI_Win_f2c( *win ), ( MPI_Errhandler* )errhandler );
 }
@@ -1112,10 +992,7 @@ FSUB
  * @ingroup rma_err
  */
 void
-FSUB
-(
-    MPI_Win_set_errhandler
-) ( MPI_Fint * win, void* errhandler, int* ierr )
+FSUB( MPI_Win_set_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_set_errhandler( c_win, *( ( MPI_Errhandler* )errhandler ) );
@@ -1137,10 +1014,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_create_keyval
-) ( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint * win_keyval, void* extra_state, int* ierr )
+FSUB( MPI_Win_create_keyval ) ( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint * win_keyval, void* extra_state, int* ierr )
 {
     *ierr = MPI_Win_create_keyval( ( MPI_Win_copy_attr_function* )win_copy_attr_fn, ( MPI_Win_delete_attr_function* )win_delete_attr_fn, win_keyval, extra_state );
 }
@@ -1154,10 +1028,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_delete_attr
-) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
+FSUB( MPI_Win_delete_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_delete_attr( c_win, *win_keyval );
@@ -1173,10 +1044,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_free_keyval
-) ( MPI_Fint * win_keyval, int* ierr )
+FSUB( MPI_Win_free_keyval ) ( MPI_Fint * win_keyval, int* ierr )
 {
     *ierr = MPI_Win_free_keyval( win_keyval );
 }
@@ -1190,10 +1058,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_get_attr
-) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
+FSUB( MPI_Win_get_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
 {
     *ierr = MPI_Win_get_attr( PMPI_Win_f2c( *win ), *win_keyval, attribute_val, flag );
 }
@@ -1207,10 +1072,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_get_name
-) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen, int* ierr, int win_name_len )
+FSUB( MPI_Win_get_name ) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen, int* ierr, int win_name_len )
 {
     char* c_win_name = NULL;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
@@ -1234,10 +1096,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_set_attr
-) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, int* ierr )
+FSUB( MPI_Win_set_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, int* ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
     *ierr = MPI_Win_set_attr( c_win, *win_keyval, attribute_val );
@@ -1253,10 +1112,7 @@ FSUB
  * @ingroup rma_ext
  */
 void
-FSUB
-(
-    MPI_Win_set_name
-) ( MPI_Fint * win, char* win_name, int* ierr, int win_name_len )
+FSUB( MPI_Win_set_name ) ( MPI_Fint * win, char* win_name, int* ierr, int win_name_len )
 {
     char*   c_win_name = NULL;
     MPI_Win c_win      = PMPI_Win_f2c( *win );

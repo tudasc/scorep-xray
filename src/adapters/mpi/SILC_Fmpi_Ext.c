@@ -161,10 +161,7 @@
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Abort
-) ( MPI_Comm * comm, int* errorcode, int* ierr )
+FSUB( MPI_Abort ) ( MPI_Comm * comm, int* errorcode, int* ierr )
 {
     *ierr = MPI_Abort( *comm, *errorcode );
 }
@@ -178,10 +175,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Get_count
-) ( MPI_Status * status, MPI_Datatype * datatype, int* count, int* ierr )
+FSUB( MPI_Get_count ) ( MPI_Status * status, MPI_Datatype * datatype, int* count, int* ierr )
 {
     *ierr = MPI_Get_count( status, *datatype, count );
 }
@@ -195,10 +189,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Get_elements
-) ( MPI_Status * status, MPI_Datatype * datatype, int* count, int* ierr )
+FSUB( MPI_Get_elements ) ( MPI_Status * status, MPI_Datatype * datatype, int* count, int* ierr )
 {
     *ierr = MPI_Get_elements( status, *datatype, count );
 }
@@ -212,10 +203,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Get_processor_name
-) ( char* name, int* resultlen, int* ierr, int name_len )
+FSUB( MPI_Get_processor_name ) ( char* name, int* resultlen, int* ierr, int name_len )
 {
     char* c_name = NULL;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
@@ -241,10 +229,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Grequest_complete
-) ( MPI_Request * request, int* ierr )
+FSUB( MPI_Grequest_complete ) ( MPI_Request * request, int* ierr )
 {
     *ierr = MPI_Grequest_complete( *request );
 }
@@ -258,10 +243,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Grequest_start
-) ( MPI_Grequest_query_function * query_fn, MPI_Grequest_free_function * free_fn, MPI_Grequest_cancel_function * cancel_fn, void* extra_state, MPI_Request * request, int* ierr )
+FSUB( MPI_Grequest_start ) ( MPI_Grequest_query_function * query_fn, MPI_Grequest_free_function * free_fn, MPI_Grequest_cancel_function * cancel_fn, void* extra_state, MPI_Request * request, int* ierr )
 {
     *ierr = MPI_Grequest_start( query_fn, free_fn, cancel_fn, extra_state, request );
 }
@@ -275,10 +257,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Status_set_cancelled
-) ( MPI_Status * status, int* flag, int* ierr )
+FSUB( MPI_Status_set_cancelled ) ( MPI_Status * status, int* flag, int* ierr )
 {
     *ierr = MPI_Status_set_cancelled( status, *flag );
 }
@@ -292,10 +271,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Status_set_elements
-) ( MPI_Status * status, MPI_Datatype * datatype, int* count, int* ierr )
+FSUB( MPI_Status_set_elements ) ( MPI_Status * status, MPI_Datatype * datatype, int* count, int* ierr )
 {
     *ierr = MPI_Status_set_elements( status, *datatype, *count );
 }
@@ -312,10 +288,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Abort
-) ( MPI_Fint * comm, MPI_Fint * errorcode, int* ierr )
+FSUB( MPI_Abort ) ( MPI_Fint * comm, MPI_Fint * errorcode, int* ierr )
 {
     *ierr = MPI_Abort( PMPI_Comm_f2c( *comm ), *errorcode );
 }
@@ -329,10 +302,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Get_count
-) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
+FSUB( MPI_Get_count ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
 {
     MPI_Status c_status;
     PMPI_Status_f2c( status, &c_status );
@@ -348,10 +318,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Get_elements
-) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
+FSUB( MPI_Get_elements ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
 {
     MPI_Status c_status;
     PMPI_Status_f2c( status, &c_status );
@@ -367,10 +334,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Get_processor_name
-) ( char* name, MPI_Fint * resultlen, int* ierr, int name_len )
+FSUB( MPI_Get_processor_name ) ( char* name, MPI_Fint * resultlen, int* ierr, int name_len )
 {
     char* c_name = NULL;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
@@ -394,10 +358,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Grequest_complete
-) ( MPI_Fint * request, int* ierr )
+FSUB( MPI_Grequest_complete ) ( MPI_Fint * request, int* ierr )
 {
     MPI_Request c_request = PMPI_Request_f2c( *request );
     *ierr    = MPI_Grequest_complete( c_request );
@@ -413,10 +374,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Grequest_start
-) ( void* query_fn, void* free_fn, void* cancel_fn, void* extra_state, MPI_Fint * request, int* ierr )
+FSUB( MPI_Grequest_start ) ( void* query_fn, void* free_fn, void* cancel_fn, void* extra_state, MPI_Fint * request, int* ierr )
 {
     MPI_Request c_request;
     *ierr    = MPI_Grequest_start( ( MPI_Grequest_query_function* )query_fn, ( MPI_Grequest_free_function* )free_fn, ( MPI_Grequest_cancel_function* )cancel_fn, extra_state, &c_request );
@@ -432,10 +390,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Status_set_cancelled
-) ( MPI_Fint * status, MPI_Fint * flag, int* ierr )
+FSUB( MPI_Status_set_cancelled ) ( MPI_Fint * status, MPI_Fint * flag, int* ierr )
 {
     MPI_Status c_status;
     PMPI_Status_f2c( status, &c_status );
@@ -452,10 +407,7 @@ FSUB
  * @ingroup ext
  */
 void
-FSUB
-(
-    MPI_Status_set_elements
-) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
+FSUB( MPI_Status_set_elements ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
 {
     MPI_Status c_status;
     PMPI_Status_f2c( status, &c_status );

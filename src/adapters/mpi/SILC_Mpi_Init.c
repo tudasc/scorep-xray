@@ -7,6 +7,8 @@
 
 #include "SILC_Mpi_Init.h"
 #include "SILC_Mpi_Reg.h"
+#include "SILC_Config.h"
+
 
 #include <stdio.h>
 
@@ -26,7 +28,7 @@ const SILC_Adapter SILC_Mpi_Adapter =
 /** Contains the configuration string of enabled mpi function groups. It is filled
     by the measurement system after registration of configuration variables.
  */
-static char** silc_mpi_config_groups = NULL;
+char** silc_mpi_config_groups = NULL;
 
 /** Array of configuration variables.
     They are registered to the measurement system and are filled during until the
@@ -37,7 +39,7 @@ SILC_ConfigVariable silc_mpi_configs[] = {
         "mpi",
         "enable_groups",
         SILC_CONFIG_TYPE_SET,
-        &silc_mpi_config_groups,
+        ( void* )&silc_mpi_config_groups,
         NULL,
         "DEFAULT",
         "The names of the function groups which are measured.",
@@ -51,6 +53,7 @@ SILC_Mpi_Register
     ()
 {
     printf( "In SILC_Mpi_Register\n" );
+    SILC_ConfigRegister( &silc_mpi_configs, 1 );
     return SILC_SUCCESS;
 }
 
@@ -67,7 +70,7 @@ SILC_Error_Code
 SILC_Mpi_InitLocation
     ()
 {
-    printf( "In SILC_Mpi_InitAdapter\n" );
+    printf( "In SILC_Mpi_InitLocation\n" );
     return SILC_SUCCESS;
 }
 

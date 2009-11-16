@@ -131,10 +131,7 @@
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Init_thread
-) ( int* argc, char*** argv, int* required, int* provided, int* ierr )
+FSUB( MPI_Init_thread ) ( int* argc, char*** argv, int* required, int* provided, int* ierr )
 {
     *ierr = MPI_Init_thread( argc, argv, *required, provided );
 }
@@ -148,10 +145,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Init
-) ( int* ierr )
+FSUB( MPI_Init ) ( int* ierr )
 {
     *ierr = MPI_Init( 0, ( char*** )0 );
 }
@@ -164,10 +158,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Finalize
-) ( int* ierr )
+FSUB( MPI_Finalize ) ( int* ierr )
 {
     *ierr = MPI_Finalize();
 }
@@ -180,10 +171,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Finalized
-) ( int* flag, int* ierr )
+FSUB( MPI_Finalized ) ( int* flag, int* ierr )
 {
     *ierr = MPI_Finalized( flag );
 }
@@ -197,10 +185,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Is_thread_main
-) ( int* flag, int* ierr )
+FSUB( MPI_Is_thread_main ) ( int* flag, int* ierr )
 {
     *ierr = MPI_Is_thread_main( flag );
 }
@@ -214,10 +199,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Query_thread
-) ( int* provided, int* ierr )
+FSUB( MPI_Query_thread ) ( int* provided, int* ierr )
 {
     *ierr = MPI_Query_thread( provided );
 }
@@ -234,12 +216,9 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Init_thread
-) ( int* required,
-    int* provided,
-    int* ierr )
+FSUB( MPI_Init_thread ) ( int* required,
+                          int* provided,
+                          int* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
@@ -257,10 +236,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Init
-) ( int* ierr )
+FSUB( MPI_Init ) ( int* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
@@ -277,10 +253,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Finalize
-) ( int* ierr )
+FSUB( MPI_Finalize ) ( int* ierr )
 {
     *ierr = MPI_Finalize();
 }
@@ -293,10 +266,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Finalized
-) ( MPI_Fint * flag, int* ierr )
+FSUB( MPI_Finalized ) ( MPI_Fint * flag, int* ierr )
 {
     *ierr = MPI_Finalized( flag );
 }
@@ -310,10 +280,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Is_thread_main
-) ( MPI_Fint * flag, int* ierr )
+FSUB( MPI_Is_thread_main ) ( MPI_Fint * flag, int* ierr )
 {
     *ierr = MPI_Is_thread_main( flag );
 }
@@ -327,10 +294,7 @@ FSUB
  * @ingroup env
  */
 void
-FSUB
-(
-    MPI_Query_thread
-) ( MPI_Fint * provided, int* ierr )
+FSUB( MPI_Query_thread ) ( MPI_Fint * provided, int* ierr )
 {
     *ierr = MPI_Query_thread( provided );
 }

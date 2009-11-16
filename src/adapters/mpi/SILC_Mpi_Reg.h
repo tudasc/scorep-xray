@@ -742,30 +742,19 @@ EXTERN SILC_RegionHandle silc_mpi_regid[ SILC__MPI_NUMFUNCS + 1 ];
  * Register MPI functions and initialize data structures
  */
 EXTERN void
-silc_mpi_register_regions
-    ();
+silc_mpi_register_regions();
 
 EXTERN uint8_t
-silc_is_mpi_collective
-(
-    const char* str
-);
+silc_is_mpi_collective( const char* str );
 EXTERN uint8_t
-silc_is_mpi_point2point
-(
-    const char* str
-);
+silc_is_mpi_point2point( const char* str );
 EXTERN uint8_t
-silc_mpi_eventtype
-(
-    const char* str
-);
+silc_mpi_eventtype( const char* str );
 
 /**
  * Enable measurement for specific subgroups of MPI functions
  */
 EXTERN void
-silc_mpi_enable_init
-    ();
+silc_mpi_enable_init();
 
 #endif

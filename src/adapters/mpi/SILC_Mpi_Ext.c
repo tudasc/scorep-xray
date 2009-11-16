@@ -32,11 +32,8 @@
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Abort
-(
-    MPI_Comm comm,
-    int      errorcode
-)
+MPI_Abort( MPI_Comm comm,
+           int      errorcode )
 {
     int return_val;
 
@@ -68,12 +65,9 @@ MPI_Abort
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Get_count
-(
-    MPI_Status*  status,
-    MPI_Datatype datatype,
-    int*         count
-)
+MPI_Get_count( MPI_Status*  status,
+               MPI_Datatype datatype,
+               int*         count )
 {
     int return_val;
 
@@ -105,12 +99,9 @@ MPI_Get_count
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Get_elements
-(
-    MPI_Status*  status,
-    MPI_Datatype datatype,
-    int*         count
-)
+MPI_Get_elements( MPI_Status*  status,
+                  MPI_Datatype datatype,
+                  int*         count )
 {
     int return_val;
 
@@ -142,11 +133,8 @@ MPI_Get_elements
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Get_processor_name
-(
-    char* name,
-    int*  resultlen
-)
+MPI_Get_processor_name( char* name,
+                        int*  resultlen )
 {
     int return_val;
 
@@ -178,10 +166,7 @@ MPI_Get_processor_name
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Grequest_complete
-(
-    MPI_Request request
-)
+MPI_Grequest_complete( MPI_Request request )
 {
     int return_val;
 
@@ -213,14 +198,11 @@ MPI_Grequest_complete
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Grequest_start
-(
-    MPI_Grequest_query_function*  query_fn,
-    MPI_Grequest_free_function*   free_fn,
-    MPI_Grequest_cancel_function* cancel_fn,
-    void*                         extra_state,
-    MPI_Request*                  request
-)
+MPI_Grequest_start( MPI_Grequest_query_function*  query_fn,
+                    MPI_Grequest_free_function*   free_fn,
+                    MPI_Grequest_cancel_function* cancel_fn,
+                    void*                         extra_state,
+                    MPI_Request*                  request )
 {
     int return_val;
 
@@ -252,11 +234,8 @@ MPI_Grequest_start
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Status_set_cancelled
-(
-    MPI_Status* status,
-    int         flag
-)
+MPI_Status_set_cancelled( MPI_Status* status,
+                          int         flag )
 {
     int return_val;
 
@@ -288,12 +267,9 @@ MPI_Status_set_cancelled
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Status_set_elements
-(
-    MPI_Status*  status,
-    MPI_Datatype datatype,
-    int          count
-)
+MPI_Status_set_elements( MPI_Status*  status,
+                         MPI_Datatype datatype,
+                         int          count )
 {
     int return_val;
 

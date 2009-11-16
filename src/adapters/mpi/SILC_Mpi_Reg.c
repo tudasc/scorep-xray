@@ -24,6 +24,7 @@
 
 #include "SILC_Mpi_Reg.h"
 #include "SILC_Error.h"
+#include "SILC_Debug.h"
 #include "SILC_Definitions.h"
 
 #define SILC_REGION_MPI SILC_REGION_FUNCTION
@@ -121,52 +122,49 @@ static const silc_mpi_type silc_mpi_enable_groups[] = {
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-uint32_t silc_mpi_enabled = 0;
+uint32_t      silc_mpi_enabled = 0;
 
+extern char** silc_mpi_config_groups;
 
 static int
-silc_mycmp
-(
-    const void* v1,
-    const void* v2
-);
+silc_mpi_mycmp( const void* v1,
+                const void* v2 );
 
-/**
- * Enable measurement for specific subgroups of MPI functions
- */
 void
-silc_mpi_enable_init
-    ()
+silc_mpi_evaluate_config()
 {
-    char* token = NULL;
-    /*
-       int32_t len   = strlen(silc_get(SILC_MPI_ENABLED)) + 1;
-       char*   conf  = malloc(sizeof(char) * len);
-       strncpy(conf, silc_get(SILC_MPI_ENABLED), len);
-     */
-    char* conf = "ALL";
+    char** groups = silc_mpi_config_groups;
 
-    token = strtok( conf, ":" );
-    while ( token != NULL )
+    /* If config not set, enable default configuration */
+    if ( *groups == NULL )
+    {
+        silc_mpi_enabled = SILC_MPI_ENABLED_DEFAULT;
+        return;
+    }
+
+    /* Add every entry */
+    while ( *groups != NULL )
     {
         /* check if token is a valid flag */
         silc_mpi_type* match =
-            bsearch( token, ( silc_mpi_type* )silc_mpi_enable_groups,
+            bsearch( *groups, ( silc_mpi_type* )silc_mpi_enable_groups,
                      sizeof( silc_mpi_enable_groups ) / sizeof( silc_mpi_type ),
-                     sizeof( silc_mpi_type ), silc_mycmp );
+                     sizeof( silc_mpi_type ), silc_mpi_mycmp );
 
         if ( match )
         {
             /* enable event generation for function group */
             silc_mpi_enabled |= match->type;
-            SILC_DEBUG_PRINTF( "Enabled event generation for MPI group: %s", token );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_MPI,
+                               "Enabled event generation for MPI group: %s", *groups );
         }
         else
         {
             /* token is not a valid MPI function group */
-            silc_warning( "Unknown MPI function group ignored: %s", token );
+            SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI,
+                               "Unknown MPI function group ignored: %s", *groups );
         }
-        token = strtok( NULL, ":" );
+        groups++;
     }
 }
 
@@ -174,12 +172,11 @@ silc_mpi_enable_init
  * Register MPI functions and initialize data structures
  */
 void
-silc_mpi_register_regions
-    ()
+silc_mpi_register_regions()
 {
     SILC_SourceFileHandle file_id = SILC_DefineSourceFile( "MPI" );
 
-    silc_mpi_enable_init();
+    silc_mpi_evaluate_config();
 
 #if defined( HAS_MPI_EXTRA )
     if ( silc_mpi_enabled & SILC_MPI_ENABLED_EXT )
@@ -2185,11 +2182,8 @@ silc_mpi_register_regions
  * @return result is equivalent to \p strcasecmp result of two strings
  */
 static int
-silc_mycmp
-(
-    const void* v1,
-    const void* v2
-)
+silc_mpi_mycmp( const void* v1,
+                const void* v2 )
 {
     return strcasecmp( ( char* )v1, ( ( silc_mpi_type* )v2 )->name );
 }
@@ -2200,14 +2194,11 @@ silc_mycmp
  * @return type of function if collective, 0 otherwise.
  */
 uint8_t
-silc_is_mpi_collective
-(
-    const char* str
-)
+silc_is_mpi_collective( const char* str )
 {
     silc_mpi_type* match =
         bsearch( str, ( silc_mpi_type* )silc_mpi_colls, sizeof( silc_mpi_colls ) / sizeof( silc_mpi_type ),
-                 sizeof( silc_mpi_type ), silc_mycmp );
+                 sizeof( silc_mpi_type ), silc_mpi_mycmp );
 
     return match ? match->type : 0;
 }
@@ -2218,14 +2209,11 @@ silc_is_mpi_collective
  * @return type of function if point-to-point, 0 otherwise.
  */
 uint8_t
-silc_is_mpi_point2point
-(
-    const char* str
-)
+silc_is_mpi_point2point( const char* str )
 {
     silc_mpi_type* match =
         bsearch( str, ( silc_mpi_type* )silc_mpi_pt2pt, sizeof( silc_mpi_pt2pt ) / sizeof( silc_mpi_type ),
-                 sizeof( silc_mpi_type ), silc_mycmp );
+                 sizeof( silc_mpi_type ), silc_mpi_mycmp );
 
     return match ? match->type : SILC_MPI_TYPE__NONE;
 }
@@ -2237,10 +2225,7 @@ silc_is_mpi_point2point
  *         otherwise.
  */
 uint8_t
-silc_mpi_eventtype
-(
-    const char* str
-)
+silc_mpi_eventtype( const char* str )
 {
     uint8_t type = silc_is_mpi_point2point( str );
     if ( type != SILC_MPI_TYPE__NONE )

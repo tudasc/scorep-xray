@@ -16,7 +16,15 @@
 #include <mpi.h>
 
 /**
+ * @defgroup p2p Peer-to-peer communication function of the SILC MPI wrapper
+ * @ingroup MPI_Wrapper
+ * This module contains the peer-to-peer communication functions of the MPI wrapper.
+ *
+ */
+
+/**
  * @file  SILC_Mpi_P2p.c
+ * @ingroup p2p
  *
  * @brief C interface wrappers for point-to-point communication
  */
@@ -33,15 +41,12 @@
  * @ingroup p2p
  */
 int
-MPI_Bsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm
-)
+MPI_Bsend( void*        buf,
+           int          count,
+           MPI_Datatype datatype,
+           int          dest,
+           int          tag,
+           MPI_Comm     comm )
 {
     int return_val;
 
@@ -78,15 +83,12 @@ MPI_Bsend
  * @ingroup p2p
  */
 int
-MPI_Rsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm
-)
+MPI_Rsend( void*        buf,
+           int          count,
+           MPI_Datatype datatype,
+           int          dest,
+           int          tag,
+           MPI_Comm     comm )
 {
     int return_val;
 
@@ -123,15 +125,12 @@ MPI_Rsend
  * @ingroup p2p
  */
 int
-MPI_Send
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm
-)
+MPI_Send( void*        buf,
+          int          count,
+          MPI_Datatype datatype,
+          int          dest,
+          int          tag,
+          MPI_Comm     comm )
 {
     int return_val;
 
@@ -168,15 +167,12 @@ MPI_Send
  * @ingroup p2p
  */
 int
-MPI_Ssend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm
-)
+MPI_Ssend( void*        buf,
+           int          count,
+           MPI_Datatype datatype,
+           int          dest,
+           int          tag,
+           MPI_Comm     comm )
 {
     int return_val;
 
@@ -214,16 +210,13 @@ MPI_Ssend
  * @ingroup p2p
  */
 int
-MPI_Recv
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Status*  status
-)
+MPI_Recv( void*        buf,
+          int          count,
+          MPI_Datatype datatype,
+          int          source,
+          int          tag,
+          MPI_Comm     comm,
+          MPI_Status*  status )
 {
     int return_val;
 
@@ -271,13 +264,10 @@ MPI_Recv
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Probe
-(
-    int         source,
-    int         tag,
-    MPI_Comm    comm,
-    MPI_Status* status
-)
+MPI_Probe( int         source,
+           int         tag,
+           MPI_Comm    comm,
+           MPI_Status* status )
 {
     int return_val;
 
@@ -307,21 +297,18 @@ MPI_Probe
  * @ingroup p2p
  */
 int
-MPI_Sendrecv
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    int          dest,
-    int          sendtag,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype recvtype,
-    int          source,
-    int          recvtag,
-    MPI_Comm     comm,
-    MPI_Status*  status
-)
+MPI_Sendrecv( void*        sendbuf,
+              int          sendcount,
+              MPI_Datatype sendtype,
+              int          dest,
+              int          sendtag,
+              void*        recvbuf,
+              int          recvcount,
+              MPI_Datatype recvtype,
+              int          source,
+              int          recvtag,
+              MPI_Comm     comm,
+              MPI_Status*  status )
 {
     int return_val;
 
@@ -379,18 +366,15 @@ MPI_Sendrecv
  * @ingroup p2p
  */
 int
-MPI_Sendrecv_replace
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          sendtag,
-    int          source,
-    int          recvtag,
-    MPI_Comm     comm,
-    MPI_Status*  status
-)
+MPI_Sendrecv_replace( void*        buf,
+                      int          count,
+                      MPI_Datatype datatype,
+                      int          dest,
+                      int          sendtag,
+                      int          source,
+                      int          recvtag,
+                      MPI_Comm     comm,
+                      MPI_Status*  status )
 {
     int return_val;
 
@@ -455,16 +439,13 @@ MPI_Sendrecv_replace
  * @ingroup p2p
  */
 int
-MPI_Ibsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Ibsend( void*        buf,
+            int          count,
+            MPI_Datatype datatype,
+            int          dest,
+            int          tag,
+            MPI_Comm     comm,
+            MPI_Request* request )
 {
     int return_val;
 
@@ -501,16 +482,13 @@ MPI_Ibsend
  * @ingroup p2p
  */
 int
-MPI_Irsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Irsend( void*        buf,
+            int          count,
+            MPI_Datatype datatype,
+            int          dest,
+            int          tag,
+            MPI_Comm     comm,
+            MPI_Request* request )
 {
     int return_val;
 
@@ -547,16 +525,13 @@ MPI_Irsend
  * @ingroup p2p
  */
 int
-MPI_Isend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Isend( void*        buf,
+           int          count,
+           MPI_Datatype datatype,
+           int          dest,
+           int          tag,
+           MPI_Comm     comm,
+           MPI_Request* request )
 {
     int return_val;
 
@@ -593,16 +568,13 @@ MPI_Isend
  * @ingroup p2p
  */
 int
-MPI_Issend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Issend( void*        buf,
+            int          count,
+            MPI_Datatype datatype,
+            int          dest,
+            int          tag,
+            MPI_Comm     comm,
+            MPI_Request* request )
 {
     int return_val;
 
@@ -640,16 +612,13 @@ MPI_Issend
  * @ingroup p2p
  */
 int
-MPI_Irecv
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Irecv( void*        buf,
+           int          count,
+           MPI_Datatype datatype,
+           int          source,
+           int          tag,
+           MPI_Comm     comm,
+           MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int       return_val;
@@ -683,6 +652,43 @@ MPI_Irecv
     return return_val;
 }
 
+#if defined( HAS_MPI_EXTRA )
+/**
+ * Measurement wrapper for MPI_Iprobe
+ * @note Auto-generated by wrapgen from template: SILC_Mpi_Std.w
+ * @note C interface
+ * @note Introduced with MPI-1
+ * @ingroup p2p
+ * It wraps the me) call with enter and exit events.
+ */
+int
+MPI_Iprobe( int         source,
+            int         tag,
+            MPI_Comm    comm,
+            int*        flag,
+            MPI_Status* status )
+{
+    int return_val;
+
+    if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
+    {
+        SILC_MPI_EVENT_GEN_OFF();
+        SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_IPROBE ] );
+
+        return_val = PMPI_Iprobe( source, tag, comm, flag, status );
+
+        SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_IPROBE ] );
+        SILC_MPI_EVENT_GEN_ON();
+    }
+    else
+    {
+        return_val = PMPI_Iprobe( source, tag, comm, flag, status );
+    }
+
+    return return_val;
+}
+#endif
+
 /**
  * Measurement wrapper for MPI_Wait
  * @note Manually adapted wrapper
@@ -691,11 +697,8 @@ MPI_Irecv
  * @ingroup p2p
  */
 int
-MPI_Wait
-(
-    MPI_Request* request,
-    MPI_Status*  status
-)
+MPI_Wait( MPI_Request* request,
+          MPI_Status*  status )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val;
@@ -741,12 +744,9 @@ MPI_Wait
  * @ingroup p2p
  */
 int
-MPI_Waitall
-(
-    int          count,
-    MPI_Request* requests,
-    MPI_Status*  array_of_statuses
-)
+MPI_Waitall( int          count,
+             MPI_Request* requests,
+             MPI_Status*  array_of_statuses )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val, i;
@@ -792,13 +792,10 @@ MPI_Waitall
  * @ingroup p2p
  */
 int
-MPI_Waitany
-(
-    int          count,
-    MPI_Request* requests,
-    int*         index,
-    MPI_Status*  status
-)
+MPI_Waitany( int          count,
+             MPI_Request* requests,
+             int*         index,
+             MPI_Status*  status )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val;
@@ -843,14 +840,11 @@ MPI_Waitany
  * @ingroup p2p
  */
 int
-MPI_Waitsome
-(
-    int          incount,
-    MPI_Request* array_of_requests,
-    int*         outcount,
-    int*         array_of_indices,
-    MPI_Status*  array_of_statuses
-)
+MPI_Waitsome( int          incount,
+              MPI_Request* array_of_requests,
+              int*         outcount,
+              int*         array_of_indices,
+              MPI_Status*  array_of_statuses )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val, i;
@@ -898,12 +892,9 @@ MPI_Waitsome
  * @ingroup p2p
  */
 int
-MPI_Test
-(
-    MPI_Request* request,
-    int*         flag,
-    MPI_Status*  status
-)
+MPI_Test( MPI_Request* request,
+          int*         flag,
+          MPI_Status*  status )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val;
@@ -950,14 +941,11 @@ MPI_Test
  * @ingroup p2p
  */
 int
-MPI_Testany
-(
-    int          count,
-    MPI_Request* array_of_requests,
-    int*         index,
-    int*         flag,
-    MPI_Status*  status
-)
+MPI_Testany( int          count,
+             MPI_Request* array_of_requests,
+             int*         index,
+             int*         flag,
+             MPI_Status*  status )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val;
@@ -1004,13 +992,10 @@ MPI_Testany
  * @ingroup p2p
  */
 int
-MPI_Testall
-(
-    int          count,
-    MPI_Request* array_of_requests,
-    int*         flag,
-    MPI_Status*  array_of_statuses
-)
+MPI_Testall( int          count,
+             MPI_Request* array_of_requests,
+             int*         flag,
+             MPI_Status*  array_of_statuses )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val, i;
@@ -1058,14 +1043,11 @@ MPI_Testall
  * @ingroup p2p
  */
 int
-MPI_Testsome
-(
-    int          incount,
-    MPI_Request* array_of_requests,
-    int*         outcount,
-    int*         array_of_indices,
-    MPI_Status*  array_of_statuses
-)
+MPI_Testsome( int          incount,
+              MPI_Request* array_of_requests,
+              int*         outcount,
+              int*         array_of_indices,
+              MPI_Status*  array_of_statuses )
 {
     const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int                 return_val, i;
@@ -1122,16 +1104,13 @@ MPI_Testsome
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Bsend_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Bsend_init( void*        buf,
+                int          count,
+                MPI_Datatype datatype,
+                int          dest,
+                int          tag,
+                MPI_Comm     comm,
+                MPI_Request* request )
 {
     int return_val;
 
@@ -1161,16 +1140,13 @@ MPI_Bsend_init
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Rsend_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Rsend_init( void*        buf,
+                int          count,
+                MPI_Datatype datatype,
+                int          dest,
+                int          tag,
+                MPI_Comm     comm,
+                MPI_Request* request )
 {
     int return_val;
 
@@ -1200,16 +1176,13 @@ MPI_Rsend_init
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Send_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Send_init( void*        buf,
+               int          count,
+               MPI_Datatype datatype,
+               int          dest,
+               int          tag,
+               MPI_Comm     comm,
+               MPI_Request* request )
 {
     int return_val;
 
@@ -1239,16 +1212,13 @@ MPI_Send_init
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Ssend_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Ssend_init( void*        buf,
+                int          count,
+                MPI_Datatype datatype,
+                int          dest,
+                int          tag,
+                MPI_Comm     comm,
+                MPI_Request* request )
 {
     int return_val;
 
@@ -1278,16 +1248,13 @@ MPI_Ssend_init
  * @ingroup p2p
  */
 int
-MPI_Recv_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request
-)
+MPI_Recv_init( void*        buf,
+               int          count,
+               MPI_Datatype datatype,
+               int          source,
+               int          tag,
+               MPI_Comm     comm,
+               MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int       return_val;
@@ -1328,10 +1295,7 @@ MPI_Recv_init
  * @ingroup p2p
  */
 int
-MPI_Start
-(
-    MPI_Request* request
-)
+MPI_Start( MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int       return_val;
@@ -1378,11 +1342,8 @@ MPI_Start
  * @ingroup p2p
  */
 int
-MPI_Startall
-(
-    int          count,
-    MPI_Request* array_of_requests
-)
+MPI_Startall( int          count,
+              MPI_Request* array_of_requests )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int       return_val, i;
@@ -1436,10 +1397,7 @@ MPI_Startall
  * @ingroup p2p
  */
 int
-MPI_Request_free
-(
-    MPI_Request* request
-)
+MPI_Request_free( MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int       return_val;
@@ -1492,10 +1450,7 @@ MPI_Request_free
  * @ingroup p2p
  */
 int
-MPI_Cancel
-(
-    MPI_Request* request
-)
+MPI_Cancel( MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
     int       return_val;

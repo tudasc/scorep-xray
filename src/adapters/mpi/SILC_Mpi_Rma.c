@@ -42,18 +42,15 @@ static int silc_rma_id = 0;
  * @ingroup rma
  */
 int
-MPI_Accumulate
-(
-    void*        origin_addr,
-    int          origin_count,
-    MPI_Datatype origin_datatype,
-    int          target_rank,
-    MPI_Aint     target_disp,
-    int          target_count,
-    MPI_Datatype target_datatype,
-    MPI_Op       op,
-    MPI_Win      win
-)
+MPI_Accumulate( void*        origin_addr,
+                int          origin_count,
+                MPI_Datatype origin_datatype,
+                int          target_rank,
+                MPI_Aint     target_disp,
+                int          target_count,
+                MPI_Datatype target_datatype,
+                MPI_Op       op,
+                MPI_Win      win )
 {
     int return_val;
 
@@ -100,17 +97,14 @@ MPI_Accumulate
  * @ingroup rma
  */
 int
-MPI_Get
-(
-    void*        origin_addr,
-    int          origin_count,
-    MPI_Datatype origin_datatype,
-    int          target_rank,
-    MPI_Aint     target_disp,
-    int          target_count,
-    MPI_Datatype target_datatype,
-    MPI_Win      win
-)
+MPI_Get( void*        origin_addr,
+         int          origin_count,
+         MPI_Datatype origin_datatype,
+         int          target_rank,
+         MPI_Aint     target_disp,
+         int          target_count,
+         MPI_Datatype target_datatype,
+         MPI_Win      win )
 {
     int return_val;
 
@@ -165,17 +159,14 @@ MPI_Get
  * @ingroup rma
  */
 int
-MPI_Put
-(
-    void*        origin_addr,
-    int          origin_count,
-    MPI_Datatype origin_datatype,
-    int          target_rank,
-    MPI_Aint     target_disp,
-    int          target_count,
-    MPI_Datatype target_datatype,
-    MPI_Win      win
-)
+MPI_Put( void*        origin_addr,
+         int          origin_count,
+         MPI_Datatype origin_datatype,
+         int          target_rank,
+         MPI_Aint     target_disp,
+         int          target_count,
+         MPI_Datatype target_datatype,
+         MPI_Win      win )
 {
     int return_val;
 
@@ -228,15 +219,12 @@ MPI_Put
  * @ingroup rma
  */
 int
-MPI_Win_create
-(
-    void*    base,
-    MPI_Aint size,
-    int      disp_unit,
-    MPI_Info info,
-    MPI_Comm comm,
-    MPI_Win* win
-)
+MPI_Win_create( void*    base,
+                MPI_Aint size,
+                int      disp_unit,
+                MPI_Info info,
+                MPI_Comm comm,
+                MPI_Win* win )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_RMA );
     int       return_val;
@@ -277,10 +265,7 @@ MPI_Win_create
  * @ingroup rma
  */
 int
-MPI_Win_free
-(
-    MPI_Win* win
-)
+MPI_Win_free( MPI_Win* win )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_RMA );
     int       return_val;
@@ -330,10 +315,7 @@ MPI_Win_free
  * @ingroup rma
  */
 int
-MPI_Win_complete
-(
-    MPI_Win win
-)
+MPI_Win_complete( MPI_Win win )
 {
     int return_val;
 
@@ -368,11 +350,8 @@ MPI_Win_complete
  * @ingroup rma
  */
 int
-MPI_Win_fence
-(
-    int     assert,
-    MPI_Win win
-)
+MPI_Win_fence( int     assert,
+               MPI_Win win )
 {
     int return_val;
 
@@ -405,13 +384,10 @@ MPI_Win_fence
  * @ingroup rma
  */
 int
-MPI_Win_lock
-(
-    int     lock_type,
-    int     rank,
-    int     assert,
-    MPI_Win win
-)
+MPI_Win_lock( int     lock_type,
+              int     rank,
+              int     assert,
+              MPI_Win win )
 {
     int return_val;
 
@@ -447,12 +423,9 @@ MPI_Win_lock
  * @ingroup rma
  */
 int
-MPI_Win_post
-(
-    MPI_Group group,
-    int       assert,
-    MPI_Win   win
-)
+MPI_Win_post( MPI_Group group,
+              int       assert,
+              MPI_Win   win )
 {
     int return_val;
 
@@ -489,12 +462,9 @@ MPI_Win_post
  * @ingroup rma
  */
 int
-MPI_Win_start
-(
-    MPI_Group group,
-    int       assert,
-    MPI_Win   win
-)
+MPI_Win_start( MPI_Group group,
+               int       assert,
+               MPI_Win   win )
 {
     int return_val;
 
@@ -531,11 +501,8 @@ MPI_Win_start
  * @ingroup rma
  */
 int
-MPI_Win_test
-(
-    MPI_Win win,
-    int*    flag
-)
+MPI_Win_test( MPI_Win win,
+              int*    flag )
 {
     int return_val;
 
@@ -578,11 +545,8 @@ MPI_Win_test
  * @ingroup rma
  */
 int
-MPI_Win_unlock
-(
-    int     rank,
-    MPI_Win win
-)
+MPI_Win_unlock( int     rank,
+                MPI_Win win )
 {
     int return_val;
 
@@ -618,10 +582,7 @@ MPI_Win_unlock
  * @ingroup rma
  */
 int
-MPI_Win_wait
-(
-    MPI_Win win
-)
+MPI_Win_wait( MPI_Win win )
 {
     int return_val;
 
@@ -664,11 +625,8 @@ MPI_Win_wait
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_call_errhandler
-(
-    MPI_Win win,
-    int     errorcode
-)
+MPI_Win_call_errhandler( MPI_Win win,
+                         int     errorcode )
 {
     int return_val;
 
@@ -700,11 +658,8 @@ MPI_Win_call_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_create_errhandler
-(
-    MPI_Win_errhandler_fn* function,
-    MPI_Errhandler*        errhandler
-)
+MPI_Win_create_errhandler( MPI_Win_errhandler_fn* function,
+                           MPI_Errhandler*        errhandler )
 {
     int return_val;
 
@@ -736,11 +691,8 @@ MPI_Win_create_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_get_errhandler
-(
-    MPI_Win         win,
-    MPI_Errhandler* errhandler
-)
+MPI_Win_get_errhandler( MPI_Win         win,
+                        MPI_Errhandler* errhandler )
 {
     int return_val;
 
@@ -772,11 +724,8 @@ MPI_Win_get_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_set_errhandler
-(
-    MPI_Win        win,
-    MPI_Errhandler errhandler
-)
+MPI_Win_set_errhandler( MPI_Win        win,
+                        MPI_Errhandler errhandler )
 {
     int return_val;
 
@@ -814,13 +763,10 @@ MPI_Win_set_errhandler
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_create_keyval
-(
-    MPI_Win_copy_attr_function*   win_copy_attr_fn,
-    MPI_Win_delete_attr_function* win_delete_attr_fn,
-    int*                          win_keyval,
-    void*                         extra_state
-)
+MPI_Win_create_keyval( MPI_Win_copy_attr_function*   win_copy_attr_fn,
+                       MPI_Win_delete_attr_function* win_delete_attr_fn,
+                       int*                          win_keyval,
+                       void*                         extra_state )
 {
     int return_val;
 
@@ -852,11 +798,8 @@ MPI_Win_create_keyval
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_delete_attr
-(
-    MPI_Win win,
-    int     win_keyval
-)
+MPI_Win_delete_attr( MPI_Win win,
+                     int     win_keyval )
 {
     int return_val;
 
@@ -888,10 +831,7 @@ MPI_Win_delete_attr
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_free_keyval
-(
-    int* win_keyval
-)
+MPI_Win_free_keyval( int* win_keyval )
 {
     int return_val;
 
@@ -923,13 +863,10 @@ MPI_Win_free_keyval
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_get_attr
-(
-    MPI_Win win,
-    int     win_keyval,
-    void*   attribute_val,
-    int*    flag
-)
+MPI_Win_get_attr( MPI_Win win,
+                  int     win_keyval,
+                  void*   attribute_val,
+                  int*    flag )
 {
     int return_val;
 
@@ -961,12 +898,9 @@ MPI_Win_get_attr
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_get_name
-(
-    MPI_Win win,
-    char*   win_name,
-    int*    resultlen
-)
+MPI_Win_get_name( MPI_Win win,
+                  char*   win_name,
+                  int*    resultlen )
 {
     int return_val;
 
@@ -998,12 +932,9 @@ MPI_Win_get_name
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_set_attr
-(
-    MPI_Win win,
-    int     win_keyval,
-    void*   attribute_val
-)
+MPI_Win_set_attr( MPI_Win win,
+                  int     win_keyval,
+                  void*   attribute_val )
 {
     int return_val;
 
@@ -1035,11 +966,8 @@ MPI_Win_set_attr
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Win_set_name
-(
-    MPI_Win win,
-    char*   win_name
-)
+MPI_Win_set_name( MPI_Win win,
+                  char*   win_name )
 {
     int return_val;
 

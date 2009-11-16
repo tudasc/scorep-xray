@@ -233,10 +233,7 @@
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_coords
-) ( MPI_Comm * comm, int* rank, int* maxdims, int* coords, int* ierr )
+FSUB( MPI_Cart_coords ) ( MPI_Comm * comm, int* rank, int* maxdims, int* coords, int* ierr )
 {
     *ierr = MPI_Cart_coords( *comm, *rank, *maxdims, coords );
 }
@@ -249,10 +246,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_create
-) ( MPI_Comm * comm_old, int* ndims, int* dims, int* periods, int* reorder, MPI_Comm * comm_cart, int* ierr )
+FSUB( MPI_Cart_create ) ( MPI_Comm * comm_old, int* ndims, int* dims, int* periods, int* reorder, MPI_Comm * comm_cart, int* ierr )
 {
     *ierr = MPI_Cart_create( *comm_old, *ndims, dims, periods, *reorder, comm_cart );
 }
@@ -265,10 +259,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_get
-) ( MPI_Comm * comm, int* maxdims, int* dims, int* periods, int* coords, int* ierr )
+FSUB( MPI_Cart_get ) ( MPI_Comm * comm, int* maxdims, int* dims, int* periods, int* coords, int* ierr )
 {
     *ierr = MPI_Cart_get( *comm, *maxdims, dims, periods, coords );
 }
@@ -282,10 +273,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_map
-) ( MPI_Comm * comm, int* ndims, int* dims, int* periods, int* newrank, int* ierr )
+FSUB( MPI_Cart_map ) ( MPI_Comm * comm, int* ndims, int* dims, int* periods, int* newrank, int* ierr )
 {
     *ierr = MPI_Cart_map( *comm, *ndims, dims, periods, newrank );
 }
@@ -299,10 +287,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_rank
-) ( MPI_Comm * comm, int* coords, int* rank, int* ierr )
+FSUB( MPI_Cart_rank ) ( MPI_Comm * comm, int* coords, int* rank, int* ierr )
 {
     *ierr = MPI_Cart_rank( *comm, coords, rank );
 }
@@ -316,10 +301,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_shift
-) ( MPI_Comm * comm, int* direction, int* disp, int* rank_source, int* rank_dest, int* ierr )
+FSUB( MPI_Cart_shift ) ( MPI_Comm * comm, int* direction, int* disp, int* rank_source, int* rank_dest, int* ierr )
 {
     *ierr = MPI_Cart_shift( *comm, *direction, *disp, rank_source, rank_dest );
 }
@@ -333,10 +315,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_sub
-) ( MPI_Comm * comm, int* remain_dims, MPI_Comm * newcomm, int* ierr )
+FSUB( MPI_Cart_sub ) ( MPI_Comm * comm, int* remain_dims, MPI_Comm * newcomm, int* ierr )
 {
     *ierr = MPI_Cart_sub( *comm, remain_dims, newcomm );
 }
@@ -350,10 +329,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cartdim_get
-) ( MPI_Comm * comm, int* ndims, int* ierr )
+FSUB( MPI_Cartdim_get ) ( MPI_Comm * comm, int* ndims, int* ierr )
 {
     *ierr = MPI_Cartdim_get( *comm, ndims );
 }
@@ -367,10 +343,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Dims_create
-) ( int* nnodes, int* ndims, int* dims, int* ierr )
+FSUB( MPI_Dims_create ) ( int* nnodes, int* ndims, int* dims, int* ierr )
 {
     *ierr = MPI_Dims_create( *nnodes, *ndims, dims );
 }
@@ -383,10 +356,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_create
-) ( MPI_Comm * comm_old, int* nnodes, int* index, int* edges, int* reorder, MPI_Comm * newcomm, int* ierr )
+FSUB( MPI_Graph_create ) ( MPI_Comm * comm_old, int* nnodes, int* index, int* edges, int* reorder, MPI_Comm * newcomm, int* ierr )
 {
     *ierr = MPI_Graph_create( *comm_old, *nnodes, index, edges, *reorder, newcomm );
 }
@@ -399,10 +369,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_get
-) ( MPI_Comm * comm, int* maxindex, int* maxedges, int* index, int* edges, int* ierr )
+FSUB( MPI_Graph_get ) ( MPI_Comm * comm, int* maxindex, int* maxedges, int* index, int* edges, int* ierr )
 {
     *ierr = MPI_Graph_get( *comm, *maxindex, *maxedges, index, edges );
 }
@@ -416,10 +383,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_map
-) ( MPI_Comm * comm, int* nnodes, int* index, int* edges, int* newrank, int* ierr )
+FSUB( MPI_Graph_map ) ( MPI_Comm * comm, int* nnodes, int* index, int* edges, int* newrank, int* ierr )
 {
     *ierr = MPI_Graph_map( *comm, *nnodes, index, edges, newrank );
 }
@@ -433,10 +397,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_neighbors
-) ( MPI_Comm * comm, int* rank, int* maxneighbors, int* neighbors, int* ierr )
+FSUB( MPI_Graph_neighbors ) ( MPI_Comm * comm, int* rank, int* maxneighbors, int* neighbors, int* ierr )
 {
     *ierr = MPI_Graph_neighbors( *comm, *rank, *maxneighbors, neighbors );
 }
@@ -450,10 +411,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_neighbors_count
-) ( MPI_Comm * comm, int* rank, int* nneighbors, int* ierr )
+FSUB( MPI_Graph_neighbors_count ) ( MPI_Comm * comm, int* rank, int* nneighbors, int* ierr )
 {
     *ierr = MPI_Graph_neighbors_count( *comm, *rank, nneighbors );
 }
@@ -467,10 +425,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graphdims_get
-) ( MPI_Comm * comm, int* nnodes, int* nedges, int* ierr )
+FSUB( MPI_Graphdims_get ) ( MPI_Comm * comm, int* nnodes, int* nedges, int* ierr )
 {
     *ierr = MPI_Graphdims_get( *comm, nnodes, nedges );
 }
@@ -484,10 +439,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Topo_test
-) ( MPI_Comm * comm, int* status, int* ierr )
+FSUB( MPI_Topo_test ) ( MPI_Comm * comm, int* status, int* ierr )
 {
     *ierr = MPI_Topo_test( *comm, status );
 }
@@ -504,10 +456,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_coords
-) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxdims, MPI_Fint * coords, int* ierr )
+FSUB( MPI_Cart_coords ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxdims, MPI_Fint * coords, int* ierr )
 {
     *ierr = MPI_Cart_coords( PMPI_Comm_f2c( *comm ), *rank, *maxdims, coords );
 }
@@ -520,10 +469,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_create
-) ( MPI_Fint * comm_old, MPI_Fint * ndims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * reorder, MPI_Fint * comm_cart, int* ierr )
+FSUB( MPI_Cart_create ) ( MPI_Fint * comm_old, MPI_Fint * ndims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * reorder, MPI_Fint * comm_cart, int* ierr )
 {
     MPI_Comm c_comm_cart;
     *ierr      = MPI_Cart_create( PMPI_Comm_f2c( *comm_old ), *ndims, dims, periods, *reorder, &c_comm_cart );
@@ -538,10 +484,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_get
-) ( MPI_Fint * comm, MPI_Fint * maxdims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * coords, int* ierr )
+FSUB( MPI_Cart_get ) ( MPI_Fint * comm, MPI_Fint * maxdims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * coords, int* ierr )
 {
     *ierr = MPI_Cart_get( PMPI_Comm_f2c( *comm ), *maxdims, dims, periods, coords );
 }
@@ -555,10 +498,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_map
-) ( MPI_Fint * comm, MPI_Fint * ndims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * newrank, int* ierr )
+FSUB( MPI_Cart_map ) ( MPI_Fint * comm, MPI_Fint * ndims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * newrank, int* ierr )
 {
     *ierr = MPI_Cart_map( PMPI_Comm_f2c( *comm ), *ndims, dims, periods, newrank );
 }
@@ -572,10 +512,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_rank
-) ( MPI_Fint * comm, MPI_Fint * coords, MPI_Fint * rank, int* ierr )
+FSUB( MPI_Cart_rank ) ( MPI_Fint * comm, MPI_Fint * coords, MPI_Fint * rank, int* ierr )
 {
     *ierr = MPI_Cart_rank( PMPI_Comm_f2c( *comm ), coords, rank );
 }
@@ -589,10 +526,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_shift
-) ( MPI_Fint * comm, MPI_Fint * direction, MPI_Fint * disp, MPI_Fint * rank_source, MPI_Fint * rank_dest, int* ierr )
+FSUB( MPI_Cart_shift ) ( MPI_Fint * comm, MPI_Fint * direction, MPI_Fint * disp, MPI_Fint * rank_source, MPI_Fint * rank_dest, int* ierr )
 {
     *ierr = MPI_Cart_shift( PMPI_Comm_f2c( *comm ), *direction, *disp, rank_source, rank_dest );
 }
@@ -606,10 +540,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cart_sub
-) ( MPI_Fint * comm, MPI_Fint * remain_dims, MPI_Fint * newcomm, int* ierr )
+FSUB( MPI_Cart_sub ) ( MPI_Fint * comm, MPI_Fint * remain_dims, MPI_Fint * newcomm, int* ierr )
 {
     MPI_Comm c_newcomm;
     *ierr    = MPI_Cart_sub( PMPI_Comm_f2c( *comm ), remain_dims, &c_newcomm );
@@ -625,10 +556,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Cartdim_get
-) ( MPI_Fint * comm, MPI_Fint * ndims, int* ierr )
+FSUB( MPI_Cartdim_get ) ( MPI_Fint * comm, MPI_Fint * ndims, int* ierr )
 {
     *ierr = MPI_Cartdim_get( PMPI_Comm_f2c( *comm ), ndims );
 }
@@ -642,10 +570,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Dims_create
-) ( MPI_Fint * nnodes, MPI_Fint * ndims, MPI_Fint * dims, int* ierr )
+FSUB( MPI_Dims_create ) ( MPI_Fint * nnodes, MPI_Fint * ndims, MPI_Fint * dims, int* ierr )
 {
     *ierr = MPI_Dims_create( *nnodes, *ndims, dims );
 }
@@ -658,10 +583,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_create
-) ( MPI_Fint * comm_old, MPI_Fint * nnodes, MPI_Fint * index, MPI_Fint * edges, MPI_Fint * reorder, MPI_Fint * newcomm, int* ierr )
+FSUB( MPI_Graph_create ) ( MPI_Fint * comm_old, MPI_Fint * nnodes, MPI_Fint * index, MPI_Fint * edges, MPI_Fint * reorder, MPI_Fint * newcomm, int* ierr )
 {
     MPI_Comm c_newcomm;
     *ierr    = MPI_Graph_create( PMPI_Comm_f2c( *comm_old ), *nnodes, index, edges, *reorder, &c_newcomm );
@@ -676,10 +598,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_get
-) ( MPI_Fint * comm, MPI_Fint * maxindex, MPI_Fint * maxedges, MPI_Fint * index, MPI_Fint * edges, int* ierr )
+FSUB( MPI_Graph_get ) ( MPI_Fint * comm, MPI_Fint * maxindex, MPI_Fint * maxedges, MPI_Fint * index, MPI_Fint * edges, int* ierr )
 {
     *ierr = MPI_Graph_get( PMPI_Comm_f2c( *comm ), *maxindex, *maxedges, index, edges );
 }
@@ -693,10 +612,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_map
-) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * index, MPI_Fint * edges, MPI_Fint * newrank, int* ierr )
+FSUB( MPI_Graph_map ) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * index, MPI_Fint * edges, MPI_Fint * newrank, int* ierr )
 {
     *ierr = MPI_Graph_map( PMPI_Comm_f2c( *comm ), *nnodes, index, edges, newrank );
 }
@@ -710,10 +626,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_neighbors
-) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxneighbors, MPI_Fint * neighbors, int* ierr )
+FSUB( MPI_Graph_neighbors ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxneighbors, MPI_Fint * neighbors, int* ierr )
 {
     *ierr = MPI_Graph_neighbors( PMPI_Comm_f2c( *comm ), *rank, *maxneighbors, neighbors );
 }
@@ -727,10 +640,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graph_neighbors_count
-) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * nneighbors, int* ierr )
+FSUB( MPI_Graph_neighbors_count ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * nneighbors, int* ierr )
 {
     *ierr = MPI_Graph_neighbors_count( PMPI_Comm_f2c( *comm ), *rank, nneighbors );
 }
@@ -744,10 +654,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Graphdims_get
-) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * nedges, int* ierr )
+FSUB( MPI_Graphdims_get ) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * nedges, int* ierr )
 {
     *ierr = MPI_Graphdims_get( PMPI_Comm_f2c( *comm ), nnodes, nedges );
 }
@@ -761,10 +668,7 @@ FSUB
  * @ingroup topo
  */
 void
-FSUB
-(
-    MPI_Topo_test
-) ( MPI_Fint * comm, MPI_Fint * status, int* ierr )
+FSUB( MPI_Topo_test ) ( MPI_Fint * comm, MPI_Fint * status, int* ierr )
 {
     *ierr = MPI_Topo_test( PMPI_Comm_f2c( *comm ), status );
 }
