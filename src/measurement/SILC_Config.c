@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 
 /**
  * @file        SILC_Config.c
@@ -14,6 +16,15 @@
 #include <SILC_Config.h>
 
 #include "silc_types.h"
+
+static inline bool
+parse_value
+(
+    const char*     value,
+    SILC_ConfigType type,
+    void*           variableReference,
+    void*           variableContext
+);
 
 SILC_Error_Code
 SILC_ConfigRegister
@@ -36,6 +47,13 @@ SILC_ConfigRegister
         fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );
         fprintf( stderr, "  Description: %s\n", variables[ i ].shortHelp );
 
+        /* set the variable to its default value,
+           ignoring any errors for now */
+        parse_value( variables[ i ].defaultValue,
+                     variables[ i ].type,
+                     variables[ i ].variableReference,
+                     variables[ i ].variableContext );
+
         sprintf( environment_variable_name, "SILC%s%.32s_%.32s",
                  variables[ i ].nameSpace ? "_" : "",
                  variables[ i ].nameSpace ? variables[ i ].nameSpace : "",
@@ -49,6 +67,12 @@ SILC_ConfigRegister
         if ( environment_variable_value )
         {
             fprintf( stderr, "    Value: %s\n", environment_variable_value );
+
+            /* set the variable to the value of the environment variable */
+            parse_value( environment_variable_value,
+                         variables[ i ].type,
+                         variables[ i ].variableReference,
+                         variables[ i ].variableContext );
         }
         else
         {
@@ -57,4 +81,71 @@ SILC_ConfigRegister
     }
 
     return SILC_SUCCESS;
+}
+
+static inline bool
+parse_bool
+(
+    const char* value,
+    bool*       boolReference
+);
+
+static inline bool
+parse_value
+(
+    const char*     value,
+    SILC_ConfigType type,
+    void*           variableReference,
+    void*           variableContext
+)
+{
+    switch ( type )
+    {
+        case SILC_CONFIG_TYPE_BOOL:
+            return parse_bool( value, variableReference );
+
+        case SILC_CONFIG_TYPE_PATH:
+        case SILC_CONFIG_TYPE_STRING:
+        case SILC_CONFIG_TYPE_NUMBER:
+        case SILC_CONFIG_TYPE_SIZE:
+        case SILC_CONFIG_TYPE_SET:
+
+        case SILC_INVALID_CONFIG_TYPE:
+        default:
+            return false;
+    }
+}
+
+static inline bool
+parse_bool
+(
+    const char* value,
+    bool*       boolReference
+)
+{
+    /* try symbolic constants */
+    if ( 0 == strcmp( value, "true" ) ||
+         0 == strcmp( value, "yes" ) ||
+         0 == strcmp( value, "on" ) )
+    {
+        *boolReference = true;
+        return true;
+    }
+
+    /* try to parse a number */
+    char* ptr;
+    long  number = strtol( value, &ptr, 10 );
+
+    /* its only a valid number if we have consumed the whole string and
+       the string was not empty */
+    if ( ptr != value && *ptr == '\0' )
+    {
+        /* any non-zero value is true */
+        *boolReference = !!number;
+        return true;
+    }
+
+    /* any remaining value is false */
+    *boolReference = false;
+    return true;
 }
