@@ -73,7 +73,7 @@ silc_user_deregister()
 SILC_Adapter SILC_User_Adapter =
 {
     SILC_ADAPTER_USER,
-    "user adapter",
+    "user",
     &silc_user_register,
     &silc_user_init,
     &silc_user_init_location,
