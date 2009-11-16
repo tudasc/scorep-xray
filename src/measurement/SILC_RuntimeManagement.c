@@ -1,6 +1,7 @@
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <stdbool.h>
 
 /**
  * @file        SILC_RuntimeManagement.c
@@ -12,12 +13,30 @@
  *
  */
 
-
+#include <SILC_Error.h>
 #include <SILC_RuntimeManagement.h>
-
+#include <SILC_Adapter.h>
+#include <SILC_Config.h>
 
 #include "silc_types.h"
+#include "silc_adapter.h"
 
+/** @brief Run in verbose mode */
+static bool silc_verbose;
+
+/** @brief Measurement system configure variables */
+static SILC_ConfigVariable silc_configs[] = {
+    {
+        NULL, // is in global namespace
+        "verbose",
+        SILC_CONFIG_TYPE_BOOL,
+        &silc_verbose,
+        NULL,
+        "false",
+        "Be verbose",
+        "Long help"
+    },
+};
 
 /**
  * Return true if SILC_InitMeasurement() has been executed.
@@ -28,7 +47,6 @@ SILC_IsInitialized
 )
 {
     fprintf( stderr, "%s\n", __func__ );
-    return false;
 }
 
 
@@ -41,7 +59,18 @@ SILC_InitMeasurement
     void
 )
 {
+    SILC_Error_Code error;
+
     fprintf( stderr, "%s\n", __func__ );
+
+    error = SILC_ConfigRegister( silc_configs,
+                                 sizeof( silc_configs ) / sizeof( silc_configs[ 0 ] ) );
+
+    if ( SILC_SUCCESS != error )
+    {
+        SILC_ERROR( error, "Can't register core config variables" );
+        _exit( 1 );
+    }
 }
 
 /**
