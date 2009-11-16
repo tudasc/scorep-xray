@@ -47,6 +47,7 @@ SILC_IsInitialized
 )
 {
     fprintf( stderr, "%s\n", __func__ );
+    return false;
 }
 
 
