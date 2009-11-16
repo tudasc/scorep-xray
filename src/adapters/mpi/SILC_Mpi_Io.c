@@ -11,9 +11,9 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-#include "SILC_Mpi_Reg.h"
+#ifdef HAS_MPI2_IO
 
-#include <mpi.h>
+#include "SILC_Mpi.h"
 
 /**
  * @file  SILC_Mpi_Io.c
@@ -1954,3 +1954,6 @@ MPI_File_set_errhandler( MPI_File       file,
  * @name Fortran wrappers for handle conversion functions
  * @{
  */
+
+
+#endif

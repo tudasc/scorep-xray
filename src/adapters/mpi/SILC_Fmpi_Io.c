@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#ifdef HAS_MPI2_IO
+
+#include "SILC_Fmpi.h"
+
 /**
  * @file  SILC_Fmpi_Io.c
  *
@@ -2484,3 +2488,5 @@ FSUB( MPI_File_set_errhandler ) ( MPI_Fint * file, void* errhandler, int* ierr )
 /**
  * @}
  */
+
+#endif /* HAS_MPI2_IO */

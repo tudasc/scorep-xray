@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#ifdef HAS_MPI2_SPAWN
+
+#include "SILC_Fmpi.h"
+
 /**
  * @file  SILC_Fmpi_Spawn.c
  *
@@ -931,3 +935,5 @@ FSUB( MPI_Unpublish_name ) ( char* service_name, MPI_Fint * info, char* port_nam
 /**
  * @}
  */
+
+#endif /* HAS_MPI2_SPAWN */

@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#ifdef HAS_MPI2_1SIDED
+
+#include "SILC_Fmpi.h"
+
 /**
  * @file  SILC_Fmpi_Rma.c
  *
@@ -1141,3 +1145,4 @@ FSUB( MPI_Win_set_name ) ( MPI_Fint * win, char* win_name, int* ierr, int win_na
 /**
  * @}
  */
+#endif /* HAS_MPI2_1SIDED */

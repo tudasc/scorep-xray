@@ -11,9 +11,7 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-#include "SILC_Mpi_Reg.h"
-
-#include <mpi.h>
+#include "SILC_Mpi.h"
 
 /**
  * @file  SILC_Mpi_Cg.c

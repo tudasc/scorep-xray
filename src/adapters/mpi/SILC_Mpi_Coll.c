@@ -11,10 +11,7 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-#include "SILC_Mpi_Reg.h"
-#include "SILC_Mpi_Communicator.h"
-
-#include <mpi.h>
+#include "SILC_Mpi.h"
 
 #define SILC_MPI_INVALID_RANK -1
 

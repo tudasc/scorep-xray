@@ -11,6 +11,10 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
+#ifdef HAS_MPI2_SPAWN
+
+#include "SILC_Mpi.h"
+
 /**
  * @file  SILC_Mpi_Spawn.c
  *
@@ -466,3 +470,5 @@ MPI_Open_port( MPI_Info info,
 /**
  * @}
  */
+
+#endif
