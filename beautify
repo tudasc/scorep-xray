@@ -81,7 +81,7 @@ RELEVANT_FILES=`$SVN status | $GREP -e '^M\|^A' |                              \
                 $AWK '{print substr($0, 8)}' |                                 \
                 $GREP -e '\.c$\|\.h$\|\.cpp$\|\.hpp$'`
 if [ -n "$RELEVANT_FILES" ]; then
-    echo "Beautifying modified source files: $RELEVANT_FILES"
+    echo "Beautifying modified source files using `$BEAUTIFY --version`: $RELEVANT_FILES"
     for FILE in $RELEVANT_FILES; do
         if [ ! -s $FILE ]; then # file is zero size
             echo "Beautifying skipped for file \"$FILE\"."
@@ -89,7 +89,7 @@ if [ -n "$RELEVANT_FILES" ]; then
         fi
         $BEAUTIFY -c $BEAUTIFY_CONFIG --replace -q $FILE
         if [ $? -ne 0 ]; then
-            echo "Beautifying aborted: \"`which $BEAUTIFY`\" failed on file \"$FILE\"."
+            echo "Beautifying aborted: `$BEAUTIFY --version` (`which $BEAUTIFY`) failed on file \"$FILE\"."
             exit 1
         fi
         echo "Beautifying $FILE"
