@@ -1,22 +1,21 @@
-noinst_LTLIBRARIES += libuser.la
+noinst_LTLIBRARIES += libsilc_adapter_user.la
 
-libuser_la_SOURCES =                                          \
-	$(SRC_ROOT)src/adapters/user/SILC_User_Init.c         \
-	$(SRC_ROOT)src/adapters/user/SILC_User_Region.c       \
-	$(SRC_ROOT)src/adapters/user/SILC_User_Metric.c       \
-	$(SRC_ROOT)src/adapters/include/SILC_User_Init.h
+libsilc_adapter_user_la_SOURCES =                           \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Init.c           \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Region.c         \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Metric.c         \
+    $(SRC_ROOT)src/adapters/include/SILC_User_Init.h
 
-include_HEADERS +=                                            \
-        $(SRC_ROOT)src/adapters/include/SILC_User.h           \
-	$(SRC_ROOT)src/adapters/include/SILC_User_Functions.h \
-	$(SRC_ROOT)src/adapters/include/SILC_User_Variables.h \
-	$(SRC_ROOT)src/adapters/include/SILC_User_Types.h
+include_HEADERS +=                                          \
+    $(SRC_ROOT)src/adapters/include/SILC_User.h             \
+    $(SRC_ROOT)src/adapters/include/SILC_User_Functions.h   \
+    $(SRC_ROOT)src/adapters/include/SILC_User_Variables.h   \
+    $(SRC_ROOT)src/adapters/include/SILC_User_Types.h
 
-
-libuser_la_CPPFLAGS =                            \
-     $(AM_CPPFLAGS)                              \
-     -I$(INC_ROOT)src/adapters/include           \
-     -I$(INC_ROOT)src/adapters/user              \
-     -I$(INC_ROOT)src/measurement/include        \
-     -I$(INC_DIR_UTIL)
+libsilc_adapter_user_la_CPPFLAGS =              \
+    $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/adapters/include           \
+    -I$(INC_ROOT)src/adapters/user              \
+    -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_DIR_UTIL)
 

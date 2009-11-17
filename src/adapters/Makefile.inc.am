@@ -1,7 +1,8 @@
-lib_LTLIBRARIES += libadapter.la
+noinst_LTLIBRARIES += libsilc_adapter.la
 
-libadapter_la_SOURCES = 
+libsilc_adapter_la_SOURCES =
 
-libadapter_la_LIBADD =                                             \
-    libuser.la                                                     \
+libsilc_adapter_la_LIBADD =                                        \
+    libsilc_adapter_user.la                                        \
+    libsilc_adapter_comp.la                                        \
     $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi.la
