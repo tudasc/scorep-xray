@@ -1,7 +1,24 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+
 
 /**
  * @file        SILC_Config.c
@@ -13,9 +30,12 @@
  *
  */
 
+
 #include <SILC_Config.h>
 
+
 #include "silc_types.h"
+
 
 static inline bool
 parse_value
@@ -25,6 +45,7 @@ parse_value
     void*           variableReference,
     void*           variableContext
 );
+
 
 SILC_Error_Code
 SILC_ConfigRegister
@@ -83,6 +104,7 @@ SILC_ConfigRegister
     return SILC_SUCCESS;
 }
 
+
 static inline bool
 parse_bool
 (
@@ -115,6 +137,7 @@ parse_value
             return false;
     }
 }
+
 
 static inline bool
 parse_bool

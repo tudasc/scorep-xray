@@ -1,5 +1,22 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_EVENTS_H
 #define SILC_EVENTS_H
+
 
 /**
  * @file        SILC_Events.h
@@ -11,7 +28,9 @@
  *
  */
 
+
 #include "SILC_Types.h"
+
 
 /**
  * @defgroup SILC_Events SILC Events
@@ -187,6 +206,7 @@ SILC_OmpJoin
     SILC_RegionHandle regionHandle
 );
 
+
 /**
  * Generate an OpenMP acquire lock event in the measurement system.
  *
@@ -320,6 +340,8 @@ SILC_TriggerParameterString
     const char*          value
 );
 
+
 /*@}*/
+
 
 #endif /* SILC_EVENTS_H */

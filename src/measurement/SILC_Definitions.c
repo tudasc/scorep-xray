@@ -1,5 +1,22 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #include <stdlib.h>
 #include <stdio.h>
+
 
 /**
  * @file       SILC_Definitions.c
@@ -102,6 +119,7 @@ SILC_DefineMPICommunicator
     return SILC_INVALID_MPI_COMMUNICATOR;
 }
 
+
 /**
  * Associate a MPI window with a process unique window handle.
  */
@@ -147,7 +165,6 @@ SILC_DefineMPICartesianTopology
 }
 
 
-
 /**
  * Define the coordinates of the current rank in the cartesian topology
  * referenced by @a cartesianTopologyHandle.
@@ -178,7 +195,6 @@ SILC_DefineMPICartesianCoords
 
     return;
 }
-
 
 
 /**
@@ -235,6 +251,7 @@ SILC_DefineIOFile
 {
     return SILC_INVALID_IOFILE;
 }
+
 
 /**
  * Associate a name with a process unique marker group handle.

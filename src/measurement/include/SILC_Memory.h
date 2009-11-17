@@ -1,7 +1,25 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_MEMORY_H
 #define SILC_MEMORY_H
 
+
 #include <stdlib.h>
+
 
 /**
  * @file        SILC_Memory.h
@@ -11,6 +29,7 @@
  *        system.
  *
  */
+
 
 /**
  * @defgroup SILC_Memory SILC Memory Management
@@ -25,6 +44,7 @@
  *          management system.
  */
 /*@{*/
+
 
 /**
  * Performs a memory allocation of size @a objectSize.
@@ -41,6 +61,7 @@ SILC_Malloc
 (
     size_t objectSize
 );
+
 
 /**
  * Performs a memory allocation of size @a objectSize * @a numberOfObjects
@@ -61,6 +82,7 @@ SILC_Calloc
     size_t objectSize
 );
 
+
 /**
  * Performs a memory re-allocation of size @a newObjectSize.
  *
@@ -80,6 +102,7 @@ SILC_Realloc
     size_t newObjectSize
 );
 
+
 /**
  * Releases the memory pointed to by @a pointer.
  *
@@ -96,6 +119,8 @@ SILC_Free
     void* pointer
 );
 
+
 /*@}*/
+
 
 #endif /* SILC_MEMORY_H */

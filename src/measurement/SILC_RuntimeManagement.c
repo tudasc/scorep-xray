@@ -1,7 +1,24 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+
 
 /**
  * @file        SILC_RuntimeManagement.c
@@ -13,19 +30,24 @@
  *
  */
 
+
 #include <SILC_Error.h>
 #include <SILC_RuntimeManagement.h>
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
 
+
 #include "silc_types.h"
 #include "silc_adapter.h"
+
 
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
 
+
 /** @brief Run in verbose mode */
 static bool silc_verbose;
+
 
 /** @brief Measurement system configure variables */
 static SILC_ConfigVariable silc_configs[] = {
@@ -40,6 +62,7 @@ static SILC_ConfigVariable silc_configs[] = {
         "Long help"
     },
 };
+
 
 /**
  * Return true if SILC_InitMeasurement() has been executed.
@@ -152,6 +175,7 @@ SILC_InitMeasurement
     /* all done, report successful initialization */
     silc_initialized = true;
 }
+
 
 /**
  * Finalize the measurement system.

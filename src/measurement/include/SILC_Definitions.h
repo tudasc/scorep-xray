@@ -1,3 +1,19 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_DEFINITIONS_H
 #define SILC_DEFINITIONS_H
 
@@ -143,6 +159,7 @@ SILC_DefineMPICommunicator
     uint32_t            sizeOfBitVectorReprOfCommGroup
 );
 
+
 /**
  * Associate a MPI window with a process unique window handle.
  *
@@ -197,7 +214,6 @@ SILC_DefineMPICartesianTopology
 );
 
 
-
 /**
  * Define the coordinates of the current rank in the cartesian topology
  * referenced by @a cartesianTopologyHandle.
@@ -217,7 +233,6 @@ SILC_DefineMPICartesianCoords
     uint32_t                nCoords,
     const uint32_t          coordsOfCurrentRank[]
 );
-
 
 
 /**
@@ -308,6 +323,7 @@ SILC_DefineIOFile
     SILC_IOFileGroupHandle ioFileGroup
 );
 
+
 /**
  * Associate a name with a process unique marker group handle.
  *
@@ -367,5 +383,6 @@ SILC_DefineParameter
 
 
 /*@}*/
+
 
 #endif /* SILC_DEFINITIONS_H */

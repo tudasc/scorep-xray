@@ -1,5 +1,22 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_INTERNAL_PLATFORM_H
 #define SILC_INTERNAL_PLATFORM_H
+
 
 /**
  * @file        silc_platform.h
@@ -9,7 +26,9 @@
  *
  */
 
+
 #include <SILC_Error.h>
+
 
 /**
  * Platform dependent initialization.
@@ -23,6 +42,7 @@ SILC_Platform_Init
     void
 );
 
+
 /**
  * The platform specific wall-clock timestamp function.
  *
@@ -35,6 +55,7 @@ SILC_Platform_GetWallClockTime
     void
 );
 
+
 /**
  * The platform specific wall time resolution function.
  *
@@ -45,6 +66,7 @@ SILC_Platform_GetClockResolution
     void
 );
 
+
 /**
  * Gives the name of the running executable in a malloc'ed buffer.
  *
@@ -54,6 +76,7 @@ SILC_Platform_ExecName
 (
     void
 );
+
 
 /**
  * Gives the name of the running architecture/platform
@@ -66,6 +89,7 @@ SILC_Platform_Name
     void
 );
 
+
 /**
  * Gives the directory of the global filesytem in a malloc'ed buffer.
  *
@@ -75,6 +99,7 @@ SILC_Platform_GDir
 (
     void
 );
+
 
 /**
  * Gives the directory of the local filesytem in a malloc'ed buffer.
@@ -86,6 +111,7 @@ SILC_Platform_LDir
     void
 );
 
+
 /**
  * Gives a unique id for the running machine (Ie. IP of the cluster node).
  *
@@ -96,6 +122,7 @@ SILC_Platform_NodeId
     void
 );
 
+
 /**
  * Gives the name of the running machine (Ie. hostname) in a malloc'ed buffer.
  *
@@ -105,6 +132,7 @@ SILC_Platform_NodeName
 (
     void
 );
+
 
 /**
  * Gives the number of cpus on the running machine.
@@ -117,6 +145,7 @@ SILC_Platform_NumCpus
     void
 );
 
+
 /**
  * Gives the number of nodes/machines.
  *
@@ -126,5 +155,6 @@ SILC_Platform_NumNodes
 (
     void
 );
+
 
 #endif /* SILC_INTERNAL_PLATFORM_H */

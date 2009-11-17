@@ -1,5 +1,22 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_TYPES_H
 #define SILC_TYPES_H
+
 
 /**
  * @file        SILC_Types.h
@@ -34,11 +51,13 @@
  */
 /*@{*/
 
+
 /**
  * Type of a opaque handle to a source file definition.
  * @see SILC_DefineSourceFile()
  */
 typedef uint32_t SILC_SourceFileHandle;
+
 
 /**
  * Symbolic constant representing an invalid or unknown source file definition.
@@ -46,11 +65,13 @@ typedef uint32_t SILC_SourceFileHandle;
  */
 #define SILC_INVALID_SOURCE_FILE UINT32_MAX
 
+
 /**
  * Type used in specifying line numbers.
  * @see SILC_DefineRegion()
  */
 typedef uint32_t SILC_LineNo;
+
 
 /**
  * Symbolic constant representing an invalid or unknown line number.
@@ -58,11 +79,13 @@ typedef uint32_t SILC_LineNo;
  */
 #define SILC_INVALID_LINE_NO 0
 
+
 /**
  * Type of a opaque handle to a counter group definition.
  * @see SILC_DefineCounterGroup()
  */
 typedef uint32_t SILC_CounterGroupHandle;
+
 
 /**
  * Symbolic constant representing an invalid or unknown counter group
@@ -70,16 +93,19 @@ typedef uint32_t SILC_CounterGroupHandle;
  */
 #define SILC_INVALID_COUNTER_GROUP UINT32_MAX
 
+
 /**
  * Type of a opaque handle to a counter definition.
  * @see SILC_DefineCounter()
  */
 typedef uint32_t SILC_CounterHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown counter definition.
  */
 #define SILC_INVALID_COUNTER UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a I/O file group definition.
@@ -87,11 +113,13 @@ typedef uint32_t SILC_CounterHandle;
  */
 typedef uint32_t SILC_IOFileGroupHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown I/O file group
  * definition.
  */
 #define SILC_INVALID_IOFILE_GROUP UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a I/O file definition.
@@ -99,10 +127,12 @@ typedef uint32_t SILC_IOFileGroupHandle;
  */
 typedef uint32_t SILC_IOFileHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown I/O file definition.
  */
 #define SILC_INVALID_IOFILE UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a marker group definition.
@@ -110,11 +140,13 @@ typedef uint32_t SILC_IOFileHandle;
  */
 typedef uint32_t SILC_MarkerGroupHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown marker group
  * definition.
  */
 #define SILC_INVALID_MARKER_GROUP UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a marker definition.
@@ -122,10 +154,12 @@ typedef uint32_t SILC_MarkerGroupHandle;
  */
 typedef uint32_t SILC_MarkerHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown marker definition.
  */
 #define SILC_INVALID_MARKER UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a region definition.
@@ -133,10 +167,12 @@ typedef uint32_t SILC_MarkerHandle;
  */
 typedef uint32_t SILC_RegionHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown region definition.
  */
 #define SILC_INVALID_REGION UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a MPI communicator definition.
@@ -144,11 +180,13 @@ typedef uint32_t SILC_RegionHandle;
  */
 typedef uint32_t SILC_MPICommunicatorHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown MPI communicator
  * definition.
  */
 #define SILC_INVALID_MPI_COMMUNICATOR UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a MPI window definition.
@@ -156,10 +194,12 @@ typedef uint32_t SILC_MPICommunicatorHandle;
  */
 typedef uint32_t SILC_MPIWindowHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown MPI window definition.
  */
 #define SILC_INVALID_MPI_WINDOW UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a MPI cartesion topology definition.
@@ -167,11 +207,13 @@ typedef uint32_t SILC_MPIWindowHandle;
  */
 typedef uint32_t SILC_MPICartTopolHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown MPI cartesion topology
  * definition.
  */
 #define SILC_INVALID_CART_TOPOLOGY UINT32_MAX
+
 
 /**
  * Type of a opaque handle to a parameter definition.
@@ -179,16 +221,19 @@ typedef uint32_t SILC_MPICartTopolHandle;
  */
 typedef uint32_t SILC_ParameterHandle;
 
+
 /**
  * Symbolic constant representing an invalid or unknown parameter definition.
  */
 #define SILC_INVALID_PARAMETER UINT32_MAX
+
 
 /**
  * Symbolic constant representing an invalid or unknown rank.
  * @see SILC_MpiCollective()
  */
 #define SILC_INVALID_ROOT_RANK INT32_MAX
+
 
 /**
  * Types to be used in defining a region (SILC_DefineRegion()). In order to
@@ -284,6 +329,7 @@ typedef enum SILC_ParameterType
     SILC_INVALID_PARAMETER_TYPE /**< For internal use only. */
 } SILC_ParameterType;
 
+
 /**
  * The type of a SILC_ConfigVariable.
  *
@@ -365,6 +411,8 @@ typedef struct SILC_ConfigVariable
     const char*     longHelp;
 } SILC_ConfigVariable;
 
+
 /*@}*/
+
 
 #endif /* SILC_TYPES_H */

@@ -1,5 +1,22 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 #ifndef SILC_CONFIG_H
 #define SILC_CONFIG_H
+
 
 /**
  * @file        SILC_Config.h
@@ -8,6 +25,7 @@
  * @brief Runtime configuration subsystem.
  *
  */
+
 
 /**
  * @defgroup SILC_Config SILC Configuration
@@ -32,8 +50,10 @@
  * @{
  */
 
+
 #include <SILC_Types.h>
 #include <SILC_Error.h>
+
 
 /**
  * Register a set of configure variables to the measurement system.
@@ -81,13 +101,16 @@ SILC_ConfigRegister
     uint32_t             numberOfVariables
 );
 
+
 /**
  * @ToDo how can the online measurement system change configs?
  * This interface will be private to the measurement system.
  */
 
+
 /*
  * @}
  */
+
 
 #endif /* SILC_CONFIG_H */
