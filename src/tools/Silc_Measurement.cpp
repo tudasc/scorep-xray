@@ -62,12 +62,12 @@ Silc_Measurement::silc_parseCmdLine
         {
             std::string flag( argv[ loop ] );
             _userCommand += flag + " ";
-            std::cout << flag << "   " << argv[ loop ] << std::endl;
+            std::cout << " flag " << flag << "   " << argv[ loop ] << std::endl;
         }
         exitStatus = SILC_SUCCESS;
     }
 
-    std::cout << " user command: " << _userCommand << std::endl;
+    std::cout << " number of args: " << argc << "  user command: " << _userCommand << std::endl;
 
     return exitStatus;
 }
@@ -78,11 +78,16 @@ Silc_Measurement::silc_run
 (
 )
 {
-    /*
-     * by now simply the instrumented code runs after a mpirun command
-     */
+    int32_t exitCode = -1;
+    printf( "run the user code \n " );
 
-    printf( "intended to run the measruement system. \n" );
+    std::string compCommand = _userCommand + " ";
+
+
+    std::cout << "  silc_run: " << _userCommand << std::endl;
+    exitCode = system( compCommand.c_str() );
+
+    return exitCode;
 
     return 0;
 }

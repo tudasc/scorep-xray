@@ -62,6 +62,7 @@ main
         else if ( inst == "--measurement" || inst == "-measure" )
         {
             Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Measurement" );
+            appType->silc_parseCmdLine( argc, argv );
             if ( appType->silc_run() == SILC_SUCCESS )
             {
                 std::cout << " running the instrumented code using the silc measurement system: " << std::endl;
