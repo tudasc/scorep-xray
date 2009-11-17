@@ -56,7 +56,7 @@ AC_SILC_COMMON_CHECKS
 ## didn't like the default order, then you could invoke AC_PROG_F77 like this:
 ##          AC_PROG_F77([fl32 f77 fort77 xlf g77 f90 xlf90])
 ## If using g77 (the GNU Fortran 77 compiler), then set the shell variable G77
-## to ‘yes’. If the output variable FFLAGS was not already set in the
+## to 'yes'. If the output variable FFLAGS was not already set in the
 ## environment, then set it to -g -02 for g77 (or -O2 where g77 does not
 ## accept -g). Otherwise, set FFLAGS to -g for all other Fortran 77 compilers.
 AC_PROG_F77
@@ -85,6 +85,13 @@ AC_PROG_F77
 AC_PROG_FC
 
 
+## Test whether the Fortran compiler accepts the options -c and -o
+## simultaneously, and define F77_NO_MINUS_C_MINUS_O or FC_NO_MINUS_C_MINUS_O,
+## respectively, if it does not.
+AC_PROG_F77_C_O
+AC_PROG_FC_C_O
+
+
 ## Determine the linker flags (e.g., -L and -l) for the Fortran intrinsic and
 ## runtime libraries that are required to successfully link a Fortran program
 ## or shared library. The output variable FLIBS or FCLIBS is set to these
@@ -110,10 +117,17 @@ AC_PROG_FC
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
+#AC_CHECK_DECLS([malloc, realloc, calloc, free])
+#AC_CHECK_DECLS([strlen])
+
 
 AC_LANG_PUSH([C])
 AX_MPI
 AC_LANG_POP([C])
+
+#if test x = x"$MPICC"; then
+#  AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
+#fi
 
 AC_CONFIG_FILES([Makefile build-mpi/Makefile])
 
