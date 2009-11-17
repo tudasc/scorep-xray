@@ -19,6 +19,9 @@
  * @brief Fortran interface wrappers for point-to-point communication
  */
 
+/* dirty hack */
+#define MPI_STATUS_SIZE 5
+
 #define SILC_MPI_STATUS_SIZE MPI_STATUS_SIZE
 
 /* uppercase defines */

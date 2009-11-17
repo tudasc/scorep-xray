@@ -1,3 +1,19 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
 /**
  * @ file SILC_compiler_gnu.c
  *
@@ -7,26 +23,32 @@
  */
 
 #include "stdio.h"
+
 #include <SILC_Utils.h>
 
+/*
+ #include <SILC_Events.h>
+ */
 
 
 /**
  * @brief Hash table to map function addresses to region identifier
  */
-typedef struct HN
+typedef struct HashNode
 {
     long        id;    /* hash code (address of function) */
     const char* name;  /* associated function name        */
     const char* fname; /*            file name            */
     int         lno;   /*            line number          */
-    uint32_t    regid; /* associated region identifier    */
-    struct HN*  next;
+    /*
+       SILC_RegionHandle regid; * region identifier    *
+     */
+    struct HN* next;
 } HashNode;
 
 
-/** @brief terminate GNU interface
- *
+/**
+ * @brief terminate GNU interface
  */
 void
 silc_gnu_finalize
@@ -52,6 +74,11 @@ __cyg_profile_func_enter
 )
 {
     printf( "call at function enter!!!\n" );
+
+    /*
+       SILC_RegionHandle dummy = 1;
+       SILC_EnterRegion( dummy );
+     */
 }
 
 /**
@@ -68,4 +95,9 @@ __cyg_profile_func_exit
 )
 {
     printf( "call function exit!!!\n" );
+
+    /*
+       SILC_RegionHandle dummy = 1;
+       SILC_ExitRegion( dummy );
+     */
 }
