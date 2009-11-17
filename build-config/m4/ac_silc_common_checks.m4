@@ -53,7 +53,7 @@ AM_PROG_CC_C_O
 ## finally, the default for action-if-universal is to ensure that
 ## `WORDS_BIGENDIAN' is defined if and only if a universal build is detected
 ## and the current code is big-endian
-AC_C_BIGENDIAN
+#AC_C_BIGENDIAN
 
 ## Search for a library defining function if it's not already available. This
 ## equates to calling ‘AC_LINK_IFELSE([AC_LANG_CALL([], [function])])’ first
@@ -67,7 +67,7 @@ AC_C_BIGENDIAN
 ## other-libraries argument, separated by spaces: e.g., -lXt -lX11. Otherwise,
 ## this macro fails to detect that function is present, because linking the
 ## test program always fails with unresolved symbols.
-AC_SEARCH_LIBS([trunc], [m])
+#AC_SEARCH_LIBS([trunc], [m])
 
 #AC_CXX_NAMESPACES
 #AC_CXX_HAVE_SSTREAM
