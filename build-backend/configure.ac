@@ -117,17 +117,7 @@ AC_PROG_FC_C_O
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
-#AC_CHECK_DECLS([malloc, realloc, calloc, free])
-#AC_CHECK_DECLS([strlen])
-
-
-AC_LANG_PUSH([C])
-AX_MPI
-AC_LANG_POP([C])
-
-#if test x = x"$MPICC"; then
-#  AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
-#fi
+AC_SILC_MPI
 
 AC_CONFIG_FILES([Makefile build-mpi/Makefile])
 
