@@ -42,7 +42,7 @@ generic_uint32_to_string
     size_t      stringBufferSize,
     const char* format,
     uint32_t    value,
-    uint32_t    invalidValue,
+    uint32_t    invalidValue
 )
 {
     if ( value == invalidValue )

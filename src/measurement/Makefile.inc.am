@@ -28,6 +28,7 @@ libmeasurement_la_SOURCES =                                      \
      $(SRC_ROOT)src/measurement/include/SILC_Types.h             \
      $(SRC_ROOT)src/measurement/silc_adapter.c                   \
      $(SRC_ROOT)src/measurement/silc_adapter.h                   \
+     $(SRC_ROOT)src/measurement/silc_types.c                     \
      $(SRC_ROOT)src/measurement/silc_types.h                     
 
 libmeasurement_la_CPPFLAGS =                     \
