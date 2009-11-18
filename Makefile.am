@@ -181,3 +181,16 @@ endif # SVN_CONTROLLED -------------------------------------------------------
 # else # SVN_CONTROLLED
 
 # endif # SVN_CONTROLLED
+
+
+if SVN_CONTROLLED #-----------------------------------------------------------
+if HAVE_UNCRUSTIFY
+
+beautify:
+	for dir in $(SUBDIRS); do                        \
+            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
+        done
+	cd $(srcdir); ./tools/beautifier/beautify
+
+endif # HAVE_UNCRUSTIFY
+endif # SVN_CONTROLLED -------------------------------------------------------

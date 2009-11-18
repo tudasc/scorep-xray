@@ -31,16 +31,6 @@ LT_PREREQ([2.2.6])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
-
-
-
-
-
-
-
-
-
-
 AC_SILC_COMMON_CHECKS
 
 AC_CONFIG_FILES([Makefile])

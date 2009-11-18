@@ -26,6 +26,13 @@ AM_CONDITIONAL(HAVE_DOXYGEN_LATEX, test "x${have_doxygen_latex}" = xyes)
 if test "x${ac_silc_svn_controlled}" = "xyes"; then
    AC_CONFIG_FILES([doc/doxygen-user.cfg:doc/doxygen/config/doxygen-user.cfg.in doc/doxygen-dev.cfg:doc/doxygen/config/doxygen-dev.cfg.in])
 fi
+
+# ac_silc_doxygen_distdir may be passed in from upper level configure
+if test ! -n "$ac_silc_doxygen_distdir"; then
+   ac_silc_doxygen_distdir=""
+fi
+AC_SUBST([ac_silc_doxygen_distdir])
+
 ])
 
 ## -*- mode: autoconf -*- 

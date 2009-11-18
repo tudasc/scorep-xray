@@ -65,5 +65,6 @@ libtool: $(LIBTOOL_DEPS)
 
 doxygen-dev:
 
-
 clean-doxygen-dev:
+
+beautify:

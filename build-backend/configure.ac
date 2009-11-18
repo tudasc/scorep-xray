@@ -13,7 +13,7 @@ fi
 
 
 AC_SILC_CHECK_COMPILER_VAR_SET([CC])
-AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
+#AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
 
 AC_CONFIG_HEADERS([../src/config-backend.h])
 # As the config.h.in is generated from this configure.ac by autoheader, there 
