@@ -15,12 +15,9 @@ fi
 AC_SILC_CHECK_COMPILER_VAR_SET([CC])
 #AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
 
+AH_SILC_CONFIG_HEADER_CUSTOM
 AC_CONFIG_HEADERS([../src/config-backend.h])
-# As the config.h.in is generated from this configure.ac by autoheader, there 
-# is no need for a separate config-frontend.h
-#if test "x${ac_silc_cross_compiling}" = "xno"; then
-#    AC_CONFIG_HEADERS([../src/config-frontend.h])
-#fi
+
 
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../build-config/m4])
