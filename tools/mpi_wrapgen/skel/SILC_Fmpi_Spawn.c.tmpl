@@ -11,8 +11,6 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-#ifdef HAS_MPI2_SPAWN
-
 #include "SILC_Fmpi.h"
 
 /**
@@ -60,8 +58,8 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
                                    MPI_Fint array_of_argv_len[])
 {
   MPI_Fint  i;
-  char*     c_array_of_commands[] = NULL;
-  char*     c_array_of_argv[]     = NULL;
+  char**    c_array_of_commands = NULL;
+  char**    c_array_of_argv     = NULL;
 
   /* allocate and fill local array_of_commands */
   c_array_of_commands = (char**)malloc(*count * sizeof (char*));
@@ -108,7 +106,7 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
                                   array_of_info, *root, *comm, 
                                   intercomm, array_of_errcodes);
 
-  for (i = 0; i < count; ++i)
+  for (i = 0; i < *count; ++i)
   {
     free(c_array_of_commands[i]);
     free(c_array_of_argv[i]);
@@ -203,5 +201,3 @@ void FSUB(MPI_Comm_spawn_multiple) (MPI_Fint* count,
 /**
  * @}
  */
-
-#endif /* HAS_MPI2_SPAWN */
