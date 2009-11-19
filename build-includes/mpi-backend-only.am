@@ -5,5 +5,5 @@ include ../../src/adapters/mpi/Makefile.mpi.inc.am
 ## include tests only when building on the frontend. They can't be run easily 
 ## on the backend.
 #if BUILD_TESTS
-#include ../test/bar/Makefile.am.inc
+include ../../test/mpi/Makefile.mpi.inc.am
 #endif
