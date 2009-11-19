@@ -1,0 +1,9 @@
+bin_PROGRAMS += mpitest
+
+mpitest_SOURCES =  $(SRC_ROOT)/test/mpi/mpitest.c $(SRC_ROOT)/test/mpi/dummy_ms.c
+mpitest_CPPFLAGS = $(AM_CPPFLAGS)           \
+    -I$(INC_ROOT)src/adapters/include       \
+    -I$(INC_ROOT)src/measurement/include    \
+    -I$(INC_DIR_UTIL)
+
+mpitest_LDADD = libsilc_adapter_mpi.la
