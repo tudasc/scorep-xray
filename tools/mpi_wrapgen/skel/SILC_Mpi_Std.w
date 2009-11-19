@@ -33,3 +33,4 @@ ${proto:c}
     return return_val;
 }
 ${guard:end}
+
