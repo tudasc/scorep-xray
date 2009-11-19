@@ -845,12 +845,5 @@ SILC::Wrapgen::handler::mpi::guard_end
     const Func& func
 )
 {
-    if ( func.get_guard().length() > 0 )
-    {
-        return "#endif";
-    }
-    else
-    {
-        return "";
-    }
+    return "#endif";
 }

@@ -1184,7 +1184,7 @@
     <param access="o" type="MPI_Info" name="info" />
     <version id="2" />
 </prototype>
-<prototype name="MPI_Info_create" rtype="int" group="misc" guard="extra.misc" >
+<prototype name="MPI_Info_create" rtype="int" group="misc" guard="extra,misc" >
     <param access="o" type="MPI_Info*" name="info" />
     <version id="2" />
 </prototype>
@@ -1202,11 +1202,11 @@
     <param access="o" type="MPI_Fint" name="info" />
     <version id="2" />
 </prototype>
-<prototype name="MPI_Info_free" rtype="int" group="misc" guard="extra.misc" >
+<prototype name="MPI_Info_free" rtype="int" group="misc" guard="extra,misc" >
     <param access="b" type="MPI_Info*" name="info" />
     <version id="2" />
 </prototype>
-<prototype name="MPI_Info_get" rtype="int" group="misc" guard="extra.misc" >
+<prototype name="MPI_Info_get" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="char*" name="key" />
     <param access="i" type="int" name="valuelen" />
