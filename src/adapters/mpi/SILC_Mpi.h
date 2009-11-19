@@ -56,12 +56,14 @@ extern int32_t silc_my_status_array_size;
  * @return pointer to status array
  */
 extern MPI_Status*
-silc_get_status_array( int size );
+silc_get_status_array( int32_t size );
 
 /** Flag to indicate whether event generation is turned on or off. If it is set to 0,
     events are generated. If it is set to non-zero, no events are generated.
  */
-extern int silc_mpi_nogen;
+extern int32_t silc_mpi_nogen;
+
+extern int     silc_mpi_status_size;
 
 /** Check whether event generation is turned on. Returns the inverse value of
     silc_mpi_nogen

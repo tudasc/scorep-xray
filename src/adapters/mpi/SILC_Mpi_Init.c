@@ -9,6 +9,17 @@
 #include "SILC_Mpi_Reg.h"
 #include "SILC_Config.h"
 
+/** Stores the value of the Fortran MPI constant MPI_STATUS_SIZE. It is used for
+    Fortran-C conversions.
+ */
+int silc_mpi_status_size;
+
+/** External fortran function to retrieve the constant value MPI_STATUS_SIZE defined
+    in Fortran MPI. It is used for Fortran-C conversions.
+    @param mpi_status_size Address of a variable where the value is to be stored.
+ */
+extern void
+silc_mpi_get_status_size( int* status_size );
 
 #include <stdio.h>
 
@@ -62,6 +73,7 @@ SILC_Mpi_InitAdapter
     ()
 {
     printf( "In SILC_Mpi_InitAdapter\n" );
+    silc_mpi_get_status_size___( &silc_mpi_status_size );
     silc_mpi_register_regions();
     return SILC_SUCCESS;
 }

@@ -24,7 +24,7 @@ MPI_Status* silc_my_status_array = 0;
 int32_t     silc_my_status_array_size = 0;
 
 MPI_Status*
-silc_get_status_array( int size )
+silc_get_status_array( int32_t size )
 {
     if ( silc_my_status_array_size == 0 )
     {
@@ -52,4 +52,4 @@ silc_get_status_array( int size )
 /** Flag to indicate whether event generation is turned on or off. If it is set to 0,
     events are generated. If it is set to non-zero, no events are generated.
  */
-int silc_mpi_nogen = 0;
+int32_t silc_mpi_nogen = 0;
