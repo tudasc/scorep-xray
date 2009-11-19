@@ -16,7 +16,7 @@ include ../build-includes/front-and-backend.am
 
 
 
-
+## Convenience variable, used in common.am
 BUILD_DIR=build-frontend
 
 ## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4 is to be

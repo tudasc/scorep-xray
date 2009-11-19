@@ -74,6 +74,11 @@ FC   = $(MPIFC)
 LIBS += $(MPILIBS)
 
 AM_CPPFLAGS += -DBACKEND_BUILD
+if CROSS_BUILD
+AM_CPPFLAGS += -DCROSS_BUILD
+else
+AM_CPPFLAGS += -DNOCROSS_BUILD
+endif
 
 bindir=${exec_prefix}@backend_bin_dir@
 libdir=${exec_prefix}@backend_lib_dir@
