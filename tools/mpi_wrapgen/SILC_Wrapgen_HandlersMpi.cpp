@@ -807,50 +807,36 @@ SILC::Wrapgen::handler::mpi::guard_start
     const Func& func
 )
 {
+    string guard = "#if ";
+    // write individual guard
+    string tmp = func.get_name();
+    toupper( tmp );
+
+    // individual guard check by generated header
+    guard += "defined(SILC_HAS_" + tmp + ")";
+
+    // individual guard for manual deactivation
+    // guard += " && !defined (SILC_MPI_NO_" + tmp + ")";
+
     if ( func.get_guard().length() > 0 )
     {
-        string         guard = "#if ";
         vector<string> token;
-        bool           firsttoken = true;
 
         tokenize( func.get_guard(), ",", token );
         vector<string>::const_iterator it = token.begin();
 
+        // write group guards
         while ( it != token.end() )
         {
             string guard_token = trim( *it );
-
             toupper( guard_token );
 
-            if ( !firsttoken )
-            {
-                guard += " && ";
-            }
-            else
-            {
-                firsttoken = false;
-            }
-
-            if ( ( guard_token == "IO" )          ||
-                 ( guard_token == "1SIDED" )      ||
-                 ( guard_token == "SPAWN" )       ||
-                 ( guard_token == "COLLECTIVES" )
-                 )
-            {
-                guard += "defined(HAS_MPI2_" + guard_token + ")";
-            }
-            else
-            {
-                guard += "defined(HAS_MPI_" + guard_token + ")";
-            }
+            guard += " && ! defined(SILC_MPI_NO_" + guard_token + ")";
             ++it;
         }
-        return guard;
     }
-    else
-    {
-        return "";
-    }
+
+    return guard;
 }
 
 string
