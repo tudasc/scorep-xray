@@ -19,6 +19,7 @@ ACLOCAL_AMFLAGS = -I build-config/m4
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
 EXTRA_DIST = $(srcdir)/src/config.h                        \
+             $(srcdir)/src/config-custom.h                 \
              $(srcdir)/build-config/VERSION                \
              $(srcdir)/build-config/platforms              \
              $(srcdir)/build-config/process_arguments.awk
