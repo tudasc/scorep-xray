@@ -5,7 +5,19 @@ AX_MPI
 AC_LANG_POP([C])
 
 if test x = x"$MPICC"; then
-  AC_MSG_ERROR([can not build SILC libraries without MPI compiler.], [1])
+  AC_MSG_ERROR([can not build SILC libraries without MPI C compiler.], [1])
+fi
+
+AC_LANG_PUSH([Fortran 77])
+AX_MPI
+AC_LANG_POP([Fortran 77])
+
+AC_LANG_PUSH([Fortran])
+AX_MPI
+AC_LANG_POP([Fortran])
+
+if test x = x"$MPIF77" -a x = x"$MPIFC"; then
+  AC_MSG_ERROR([can not build SILC libraries without MPI Fortran compiler.], [1])
 fi
 
 ac_silc_mpi_save_CC="$CC"
