@@ -52,7 +52,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#ifdef HAS_MPI2_SIZEF
+#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Fmpi_Std.w
 #endif
 
@@ -77,7 +77,7 @@
 
 #else /* !NEED_F2C_CONV */
 
-#ifdef HAS_MPI2_SIZEF
+#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Mpi_F2c_C2f.w
 #endif
 

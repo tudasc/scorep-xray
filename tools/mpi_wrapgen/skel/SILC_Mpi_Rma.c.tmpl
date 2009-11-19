@@ -11,8 +11,6 @@
 **  See the file COPYRIGHT in the package base directory for details       **
 ****************************************************************************/
 
-#ifdef HAS_MPI2_1SIDED
-
 #include "SILC_Mpi.h"
 
 /**
@@ -35,6 +33,7 @@ static int silc_rma_id = 0;
  */
 #pragma wrapgen single MPI_Accumulate skel/SILC_Mpi_RmaPut.w
 
+#if defined(SILC_HAS_MPI_GET) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Get
  * @note Manually adapted wrapper
@@ -94,6 +93,7 @@ int MPI_Get(void*        origin_addr,
 
   return return_val;
 }
+#endif
 
 #pragma wrapgen single MPI_Put skel/SILC_Mpi_RmaPut.w
 
@@ -103,6 +103,7 @@ int MPI_Get(void*        origin_addr,
  * @{
  */
 
+#if defined(SILC_HAS_MPI_WIN_CREATE) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_create
  * @note Manually adapted wrapper
@@ -147,7 +148,9 @@ int MPI_Win_create(void*    base,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_FREE) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_free
  * @note Manually adapted wrapper
@@ -190,6 +193,7 @@ int MPI_Win_free(MPI_Win* win)
 
   return return_val;
 }
+#endif
 
 /**
  * @}
@@ -197,6 +201,7 @@ int MPI_Win_free(MPI_Win* win)
  * @{
  */
 
+#if defined(SILC_HAS_MPI_WIN_COMPLETE) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_complete
  * @note Manually adapted wrapper
@@ -230,7 +235,9 @@ int MPI_Win_complete(MPI_Win win)
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_FENCE) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_fence
  * @note Manually adapted wrapper
@@ -263,7 +270,9 @@ int MPI_Win_fence(int     assert,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_LOCK) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_lock
  * @note Manually adapted wrapper
@@ -301,7 +310,9 @@ int MPI_Win_lock(int     lock_type,
   }
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_POST) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_post
  * @note Manually adapted wrapper
@@ -339,7 +350,9 @@ int MPI_Win_post(MPI_Group group,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_START) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_start
  * @note Manually adapted wrapper
@@ -377,7 +390,9 @@ int MPI_Win_start(MPI_Group group,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_TEST) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_test
  * @note Manually adapted wrapper
@@ -420,7 +435,9 @@ int MPI_Win_test(MPI_Win win,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WIN_UNLOCK) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_unlock
  * @note Manually adapted wrapper
@@ -455,8 +472,9 @@ int MPI_Win_unlock(int     rank,
 
   return return_val;
 }
+#endif
 
-
+#if defined(SILC_HAS_MPI_WIN_WAIT) && !defined(NO_MPI_RMA)
 /**
  * Measurement wrapper for MPI_Win_wait
  * @note Manually adapted wrapper
@@ -491,6 +509,9 @@ int MPI_Win_wait(MPI_Win win)
 
   return return_val;
 }
+#endif
+
+#pragma wrapgen single MPI_Win_get_group skel/SILC_Mpi_Std.w
 
 /**
  * @}
@@ -511,7 +532,7 @@ int MPI_Win_wait(MPI_Win win)
  * @name C wrappers for handle conversion functions
  * @{
  */
-#pragma wrapgen multiple restrict(grma_misc+!n_c2f+!n_f2c) skel/SILC_Mpi_Std.w
+#pragma wrapgen multiple restrict(grma_misc) skel/SILC_Mpi_Std.w
 
 /**
  * @}

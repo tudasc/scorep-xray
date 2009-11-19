@@ -56,20 +56,27 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
                                    MPI_Fint* intercomm,
                                    MPI_Fint* array_of_errcodes,
                                    MPI_Fint* ierr,
-                                   MPI_Fint array_of_commands_len[])
+                                   MPI_Fint array_of_commands_len[],
+                                   MPI_Fint array_of_argv_len[])
 {
   MPI_Fint  i;
   char*     c_array_of_commands[] = NULL;
   char*     c_array_of_argv[]     = NULL;
 
   /* allocate and fill local array_of_commands */
-  c_array_of_commands = (char**)malloc(count * sizeof (char*));
-  if (!c_array_of_commands) { exit(EXIT_FAILURE); }
-  for (i = 0; i < count; ++i)
+  c_array_of_commands = (char**)malloc(*count * sizeof (char*));
+  if (!c_array_of_commands) 
+  { 
+    exit(EXIT_FAILURE); 
+  }
+  for (i = 0; i < *count; ++i)
   {
     c_array_of_commands[i] =
         (char*)malloc((array_of_commands_len[i] + 1) * sizeof (char));
-    if (!(c_array_of_commands[i])) { exit(EXIT_FAILURE); }
+    if (!(c_array_of_commands[i])) 
+    { 
+      exit(EXIT_FAILURE); 
+    }
     strncpy(c_array_of_commands[i], array_of_commands[i],
             array_of_commands_len[i]);
     /* null terminate character array */
@@ -77,13 +84,19 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
   }
 
   /* allocate and fill local array_of_argv */
-  c_array_of_argv = (char**)malloc(count * sizeof (char*));
-  if (!c_array_of_argv) { exit(EXIT_FAILURE); }
-  for (i = 0; i < count; ++i)
+  c_array_of_argv = (char**)malloc(*count * sizeof (char*));
+  if (!c_array_of_argv) 
+  { 
+    exit(EXIT_FAILURE); 
+  }
+  for (i = 0; i < *count; ++i)
   {
     c_array_of_argv[i] =
         (char*)malloc((array_of_argv_len[i] + 1) * sizeof (char));
-    if (!(c_array_of_argv[i])) { exit(EXIT_FAILURE); }
+    if (!(c_array_of_argv[i])) 
+    { 
+      exit(EXIT_FAILURE); 
+    }
     strncpy(c_array_of_argv[i], array_of_argv[i],
             array_of_argv_len[i]);
     /* null terminate character array */
@@ -128,8 +141,8 @@ void FSUB(MPI_Comm_spawn_multiple) (MPI_Fint* count,
                                     MPI_Fint array_of_commands_len[])
 {
   MPI_Fint  i;
-  char*     c_array_of_commands[] = NULL;
-  char*     c_array_of_argv[]     = NULL;
+  char**    c_array_of_commands   = NULL;
+  char**    c_array_of_argv       = NULL;
   MPI_Info* c_array_of_info       = NULL;
 
   /* allocate and fill local array_of_commands */

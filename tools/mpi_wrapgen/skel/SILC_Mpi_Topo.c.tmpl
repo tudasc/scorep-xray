@@ -24,6 +24,7 @@
  * @{
  */
 
+#if defined(SILC_HAS_MPI_CART_CREATE)
 /** 
  * Measurement wrapper for MPI_Cart_create
  * @note Manually adapted wrapper
@@ -127,11 +128,13 @@ int MPI_Cart_create(MPI_Comm  comm_old,
 
   return return_val;
 }
+#endif
 
 #pragma wrapgen single MPI_Cart_sub skel/SILC_Mpi_CommMgnt.w
 #pragma wrapgen single MPI_Graph_create skel/SILC_Mpi_CommMgnt.w
 
 #pragma wrapgen multiple restrict(gtopo+!ncreate+!nsub) skel/SILC_Mpi_Std.w
+#pragma wrapgen single MPI_Dims_create skel/SILC_Mpi_Std.w
 
 /**
  * @}

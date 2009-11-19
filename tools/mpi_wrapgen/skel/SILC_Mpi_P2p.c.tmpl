@@ -33,6 +33,7 @@
  */
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end$) skel/SILC_Mpi_PtpSend.w
 
+#if defined(SILC_HAS_MPI_RECV) && !defined(SILC_MPI_NO_P2P)
 /** 
  * Measurement wrapper for MPI_Recv
  * @note Manually adapted wrapper
@@ -80,9 +81,11 @@ int MPI_Recv( void* buf,
 
   return return_val;
 }
+#endif
 
 #pragma wrapgen single MPI_Probe skel/SILC_Mpi_Std.w
 
+#if defined(SILC_HAS_MPI_SENDRECV) && !defined(SILC_MPI_NO_P2P)
 /** 
  * Measurement wrapper for MPI_Sendrecv
  * @note Manually adapted wrapper
@@ -150,7 +153,9 @@ int MPI_Sendrecv(void* sendbuf,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_SENDRECV_REPLACE) && !defined(SILC_MPI_NO_P2P)
 /** 
  * Measurement wrapper for MPI_Sendrecv_replace
  * @note Manually adapted wrapper
@@ -216,6 +221,7 @@ int MPI_Sendrecv_replace(void* buf,
 
   return return_val;
 }
+#endif
 
 /**
  * @}
@@ -225,6 +231,7 @@ int MPI_Sendrecv_replace(void* buf,
 
 #pragma wrapgen multiple regex(MPI_I(s|bs|rs|ss)end$) skel/SILC_Mpi_PtpSend.w
 
+#if defined(SILC_HAS_MPI_IRECV) && !defined(SILC_MPI_NO_P2P)
 /** 
  * Measurement wrapper for MPI_Irecv
  * @note Manually adapted wrapper
@@ -271,9 +278,11 @@ int MPI_Irecv(void* buf,
 
   return return_val;
 }
+#endif
 
 #pragma wrapgen single MPI_Iprobe skel/SILC_Mpi_Std.w
 
+#if defined(SILC_HAS_MPI_WAIT) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Wait
  * @note Manually adapted wrapper
@@ -319,7 +328,9 @@ int MPI_Wait(MPI_Request* request,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WAITALL) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Waitall
  * @note Manually adapted wrapper
@@ -366,7 +377,9 @@ int MPI_Waitall(int count,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WAITANY) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Waitany
  * @note Manually adapted wrapper
@@ -413,7 +426,9 @@ int MPI_Waitany(int count,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_WAITSOME) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Waitsome
  * @note Manually adapted wrapper
@@ -464,7 +479,9 @@ int MPI_Waitsome(int incount,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_TEST) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Test
  * @note Manually adapted wrapper
@@ -512,7 +529,9 @@ int MPI_Test(MPI_Request* request,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_TESTANY) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Testany
  * @note Manually adapted wrapper
@@ -562,7 +581,9 @@ int MPI_Testany(int count,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_TESTALL) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Testall
  * @note Manually adapted wrapper
@@ -612,7 +633,9 @@ int MPI_Testall(int count,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_TESTSOME) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Testsome
  * @note Manually adapted wrapper
@@ -662,6 +685,7 @@ int MPI_Testsome(int incount,
 
   return return_val;
 }
+#endif
 
 /**
  * @}
@@ -674,6 +698,7 @@ pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SILC_Mpi_PtpSendini
 */
 #pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SILC_Mpi_Std.w
 
+#if defined(SILC_HAS_MPI_RECV_INIT) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Recv_init
  * @note Manually adapted wrapper
@@ -719,7 +744,9 @@ int MPI_Recv_init(void* buf,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_START) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Start
  * @note Manually adapted wrapper
@@ -765,7 +792,9 @@ int MPI_Start(MPI_Request* request)
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_STARTALL) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Startall
  * @note Manually adapted wrapper
@@ -819,7 +848,9 @@ int MPI_Startall(int count,
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_REQUEST_FREE) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Request_free
  * @note Manually adapted wrapper
@@ -871,7 +902,9 @@ int MPI_Request_free( MPI_Request* request )
 
   return return_val;
 }
+#endif
 
+#if defined(SILC_HAS_MPI_CANCEL) && !defined(SILC_MPI_NO_P2P)
 /**
  * Measurement wrapper for MPI_Cancel
  * @note Manually adapted wrapper
@@ -911,4 +944,19 @@ int MPI_Cancel( MPI_Request* request )
 
   return return_val;
 }
+#endif
+
+#pragma wrapgen single MPI_Test_cancelled skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ * @name Auxiluary functions
+ * @{
+ */
+
+#pragma wrapgen multiple regex((Buffer_attach|Buffer_detach)) skel/SILC_Mpi_Std.w
+
+/**
+ * @}
+ */
 

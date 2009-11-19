@@ -19,8 +19,6 @@
  * @brief Fortran interface wrappers for point-to-point communication
  */
 
-#define SILC_MPI_STATUS_SIZE MPI_STATUS_SIZE
-
 /* uppercase defines */
 #pragma wrapgen multiple restrict(gp2p) skel/SILC_Fmpi_DefineU.w
 
@@ -219,7 +217,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
  */
 void FSUB(MPI_Waitall)(MPI_Fint* count,
                        MPI_Fint  array_of_requests[],
-                       MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
+                       MPI_Fint  array_of_statuses[],
                        MPI_Fint* ierr)
 {
   int          i;
@@ -245,7 +243,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
   {
     for (i=0; i<*count; i++)
     {
-      MPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i][0]));
+      MPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i*silc_mpi_status_size]));
     }
   }
 }
@@ -303,7 +301,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
                         MPI_Fint  array_of_requests[],
                         MPI_Fint* outcount,
                         MPI_Fint  indices[],
-                        MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
+                        MPI_Fint  array_of_statuses[],
                         MPI_Fint* ierr)
 {
   int          i, j, found;
@@ -352,7 +350,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
     }
     for (i=0; i<*outcount; i++)
     {
-      MPI_Status_c2f(&c_status[i], &(array_of_statuses[i][0]));
+      MPI_Status_c2f(&c_status[i], &(array_of_statuses[i*silc_mpi_status_size]));
       /* See the description of waitsome in the standard;
          the Fortran index ranges are from 1, not zero */
       if (indices[i] >= 0)
@@ -439,7 +437,7 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
 void FSUB(MPI_Testall)(MPI_Fint* count,
                        MPI_Fint  array_of_requests[],
                        MPI_Fint* flag,
-                       MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
+                       MPI_Fint  array_of_statuses[],
                        MPI_Fint *ierr)
 {
   int          i;
@@ -464,7 +462,7 @@ void FSUB(MPI_Testall)(MPI_Fint* count,
   {
     for (i=0; i<*count; i++)
     {
-      MPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i][0]));
+      MPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i*silc_mpi_status_size]));
     }
   }
 }
@@ -480,7 +478,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
                         MPI_Fint  array_of_requests[],
                         MPI_Fint* outcount,
                         MPI_Fint  indices[],
-                        MPI_Fint  array_of_statuses[][SILC_MPI_STATUS_SIZE],
+                        MPI_Fint  array_of_statuses[],
                         MPI_Fint* ierr)
 {
   int          i, j, found;
@@ -522,7 +520,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
     }
     for (i=0; i<*outcount; i++)
     {
-      MPI_Status_c2f(&c_status[i], &(array_of_statuses[i][0]));
+      MPI_Status_c2f(&c_status[i], &(array_of_statuses[i*silc_mpi_status_size]));
       /* See the description of testsome in the standard;
          the Fortran index ranges are from 1, not zero */
       if (indices[i] >= 0)

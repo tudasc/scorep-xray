@@ -93,7 +93,7 @@ int MPI_Init(int* argc, char*** argv )
   return return_val;
 }
 
-#if defined(HAS_MPI2_COLLECTIVES)
+#if defined(SILC_HAS_MPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_thread, the thread-capable
  * alternative to MPI_Init.
@@ -218,6 +218,8 @@ int MPI_Finalize()
 }
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init+!nMPI_Init_thread+!nMPI_Finalize) skel/SILC_Mpi_Std.w
+
+#pragma wrapgen multiple regex((MPI_Initialized|MPI_Finalized)) skel/SILC_Mpi_Std.w 
 
 /**
  * @}
