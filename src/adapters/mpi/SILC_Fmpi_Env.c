@@ -21,14 +21,12 @@
  */
 
 /* uppercase defines */
-#if defined( HAS_MPI2_COLLECTIVES )
 /** @def MPI_Init_thread_U
     Exchange MPI_Init_thread_U by MPI_INIT_THREAD.
     It is used for the Fortran wrappers of me).
  */
 #define MPI_Init_thread_U MPI_INIT_THREAD
 
-#endif
 
 /** @def MPI_Finalize_U
     Exchange MPI_Finalize_U by MPI_FINALIZE.
@@ -68,14 +66,12 @@
 
 
 /* lowercase defines */
-#if defined( HAS_MPI2_COLLECTIVES )
 /** @def MPI_Init_thread_L
     Exchanges MPI_Init_thread_L by mpi_init_thread.
     It is used for the Forran wrappers of me).
  */
 #define MPI_Init_thread_L mpi_init_thread
 
-#endif
 
 /** @def MPI_Finalize_L
     Exchanges MPI_Finalize_L by mpi_finalize.
@@ -125,7 +121,6 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#if defined( HAS_MPI2_COLLECTIVES )
 #if defined( HAVE_DECL_MPI_INIT_THREAD )
 /**
  * Measurement wrapper for MPI_Init_thread
@@ -139,7 +134,6 @@ FSUB( MPI_Init_thread ) ( int* argc, char*** argv, int* required, int* provided,
 {
     *ierr = MPI_Init_thread( argc, argv, *required, provided );
 }
-#endif
 #endif
 
 /**
@@ -214,7 +208,7 @@ FSUB( MPI_Query_thread ) ( int* provided, int* ierr )
 
 #else /* !NEED_F2C_CONV */
 
-#if defined( HAS_MPI2_COLLECTIVES )
+#if defined( HAVE_DECL_MPI_INIT_THREAD )
 /**
  * Measurement wrapper for MPI_Init_tread
  * @note Manually adapted wrapper

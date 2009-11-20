@@ -438,6 +438,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
+#if defined( HAVE_DECL_MPI_WAITANY ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitany
  * @note C indices have to be converted to Fortran indices, when the
@@ -458,7 +459,9 @@ FSUB( MPI_Waitany ) ( int*         count,
         ( *index )++;
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_WAITSOME ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitsome
  * @note C indices have to be converted to Fortran indices, when the
@@ -488,7 +491,9 @@ FSUB( MPI_Waitsome ) ( int*         incount,
         }
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TESTANY ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testany
  * @note C indices have to be converted to Fortran indices, when the
@@ -514,7 +519,9 @@ FSUB( MPI_Testany ) ( int*         count,
         ( *index )++;
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TESTSOME ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testsome
  * @note C indices have to be converted to Fortran indices, when the
@@ -546,6 +553,7 @@ FSUB( MPI_Testsome ) ( int*         incount,
         }
     }
 }
+#endif
 
 #if defined( HAVE_DECL_MPI_BSEND ) && !defined( SILC_MPI_NO_P2P )
 /**
@@ -1022,6 +1030,7 @@ alloc_status_array( int count )
     return local_stat_arr;
 }
 
+#if defined( HAVE_DECL_MPI_WAIT ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Wait,
  * when handle conversion is needed.
@@ -1044,7 +1053,9 @@ FSUB( MPI_Wait ) ( MPI_Fint * request,
         MPI_Status_c2f( &c_status, status );
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_WAITALL ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitall,
  * when handle conversion is needed.
@@ -1084,7 +1095,9 @@ FSUB( MPI_Waitall ) ( MPI_Fint * count,
         }
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_WAITANY ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitany,
  * when handle conversion is needed.
@@ -1127,7 +1140,9 @@ FSUB( MPI_Waitany ) ( MPI_Fint * count,
         MPI_Status_c2f( &c_status, status );
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_WAITSOME ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Waitsome,
  * when handle conversion is needed.
@@ -1202,7 +1217,9 @@ FSUB( MPI_Waitsome ) ( MPI_Fint * incount,
         }
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TEST ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Test,
  * when handle conversion is needed.
@@ -1228,7 +1245,9 @@ FSUB( MPI_Test ) ( MPI_Fint * request,
         MPI_Status_c2f( &c_status, status );
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TESTANY ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testany,
  * when handle conversion is needed.
@@ -1271,7 +1290,9 @@ FSUB( MPI_Testany ) ( MPI_Fint * count,
         MPI_Status_c2f( &c_status, status );
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TESTALL ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testall,
  * when handle conversion is needed.
@@ -1311,7 +1332,9 @@ FSUB( MPI_Testall ) ( MPI_Fint * count,
         }
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TESTSOME ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testsome,
  * when handle conversion is needed.
@@ -1379,7 +1402,9 @@ FSUB( MPI_Testsome ) ( MPI_Fint * incount,
         }
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_STARTALL ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Startall,
  * when handle conversion is needed.
@@ -1412,7 +1437,9 @@ FSUB( MPI_Startall ) ( MPI_Fint * count,
         }
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_REQUEST_FREE ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testall,
  * when handle conversion is needed.
@@ -1431,7 +1458,9 @@ FSUB( MPI_Request_free ) ( MPI_Fint * request,
         *request = MPI_Request_c2f( lrequest );
     }
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_CANCEL ) && !defined( SILC_MPI_NO_P2P )
 /**
  * Manual measurement wrapper for the Fortran interface of MPI_Testall,
  * when handle conversion is needed.
@@ -1448,6 +1477,7 @@ FSUB( MPI_Cancel ) ( MPI_Fint * request,
     lrequest = MPI_Request_f2c( *request );
     *ierr    = MPI_Cancel( &lrequest );
 }
+#endif
 
 #if defined( HAVE_DECL_MPI_BSEND ) && !defined( SILC_MPI_NO_P2P )
 /**

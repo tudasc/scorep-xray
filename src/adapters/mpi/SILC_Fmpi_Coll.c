@@ -651,7 +651,7 @@ FSUB( MPI_Scatterv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * displs, 
 }
 #endif
 
-#if defined( HAS_MPI2_COLLECTIVES )
+#if defined( HAVE_DECL_MPI_ALLTOALLW ) && !defined( SILC_MPI_NO_COLL )
 void
 FSUB( MPI_Alltoallw ) ( void*     sendbuf,
                         MPI_Fint * sendcounts,
@@ -688,6 +688,7 @@ FSUB( MPI_Alltoallw ) ( void*     sendbuf,
     free( csendtypes );
     free( crecvtypes );
 }
+#endif
 
 #if defined( HAVE_DECL_MPI_EXSCAN ) && !defined( SILC_MPI_NO_COLL )
 /**
@@ -703,8 +704,6 @@ FSUB( MPI_Exscan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * 
     *ierr = MPI_Exscan( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
 }
 #endif
-#endif
-
 #endif
 
 /**

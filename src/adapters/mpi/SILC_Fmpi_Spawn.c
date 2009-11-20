@@ -180,6 +180,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
+#if defined( HAVE_DECL_MPI_COMM_SPAWN_MULTIPLE ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper
@@ -258,6 +259,7 @@ FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
     free( c_array_of_commands );
     free( c_array_of_argv );
 }
+#endif
 
 #if defined( HAVE_DECL_MPI_CLOSE_PORT ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
 /**
@@ -374,9 +376,9 @@ FSUB( MPI_Comm_get_parent ) ( MPI_Comm * parent, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_join ) ( int* fd, MPI_Comm * intercomm, int* ierr )
+FSUB( MPI_Comm_join ) ( int* fd, MPI_Comm * newcomm, int* ierr )
 {
-    *ierr = MPI_Comm_join( *fd, intercomm );
+    *ierr = MPI_Comm_join( *fd, newcomm );
 }
 #endif
 #if defined( HAVE_DECL_MPI_COMM_SPAWN ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
@@ -388,7 +390,7 @@ FSUB( MPI_Comm_join ) ( int* fd, MPI_Comm * intercomm, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_spawn ) ( char* command, char* argv[], int* maxprocs, MPI_Info * info, int* root, MPI_Comm * comm, MPI_Comm * intercomm, int array_of_errcodes[], int* ierr, int command_len, int argv_len )
+FSUB( MPI_Comm_spawn ) ( char* command, char* argv[], int* maxprocs, MPI_Info * info, int* root, MPI_Comm * comm, MPI_Comm * newcomm, int array_of_errcodes[], int* ierr, int command_len, int argv_len )
 {
     char* c_command = NULL;
     char* c_argv    = NULL;
@@ -409,7 +411,7 @@ FSUB( MPI_Comm_spawn ) ( char* command, char* argv[], int* maxprocs, MPI_Info * 
     c_argv[ argv_len ] = '\0';
 
 
-    *ierr = MPI_Comm_spawn( c_command, c_argv, *maxprocs, *info, *root, *comm, intercomm, array_of_errcodes );
+    *ierr = MPI_Comm_spawn( c_command, c_argv, *maxprocs, *info, *root, *comm, newcomm, array_of_errcodes );
 
     free( c_command );
     free( c_argv );
@@ -552,6 +554,7 @@ FSUB( MPI_Unpublish_name ) ( char* service_name, MPI_Info * info, char* port_nam
 
 #else /* !NEED_F2C_CONV */
 
+#if defined( HAVE_DECL_MPI_COMM_SPAWN_MULTIPLE ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper
@@ -642,6 +645,7 @@ FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
     free( c_array_of_argv );
     free( c_array_of_info );
 }
+#endif
 
 #if defined( HAVE_DECL_MPI_CLOSE_PORT ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
 /**
@@ -760,11 +764,11 @@ FSUB( MPI_Comm_get_parent ) ( MPI_Fint * parent, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * intercomm, int* ierr )
+FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * newcomm, int* ierr )
 {
-    MPI_Comm c_intercomm;
-    *ierr      = MPI_Comm_join( *fd, &c_intercomm );
-    *intercomm = PMPI_Comm_c2f( c_intercomm );
+    MPI_Comm c_newcomm;
+    *ierr    = MPI_Comm_join( *fd, &c_newcomm );
+    *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
 #if defined( HAVE_DECL_MPI_COMM_SPAWN ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
@@ -776,7 +780,7 @@ FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * intercomm, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_spawn ) ( char* command, char* argv, MPI_Fint * maxprocs, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * intercomm, MPI_Fint * array_of_errcodes, int* ierr, int command_len, int argv_len )
+FSUB( MPI_Comm_spawn ) ( char* command, char* argv, MPI_Fint * maxprocs, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * newcomm, MPI_Fint * array_of_errcodes, int* ierr, int command_len, int argv_len )
 {
     char* c_command = NULL;
     char* c_argv    = NULL;
@@ -796,11 +800,11 @@ FSUB( MPI_Comm_spawn ) ( char* command, char* argv, MPI_Fint * maxprocs, MPI_Fin
     strncpy( c_argv, argv, argv_len );
     c_argv[ argv_len ] = '\0';
 
-    MPI_Comm c_intercomm;
-    *ierr = MPI_Comm_spawn( command, argv, *maxprocs, PMPI_Info_f2c( *info ), *root, PMPI_Comm_f2c( *comm ), &c_intercomm, array_of_errcodes );
+    MPI_Comm c_newcomm;
+    *ierr = MPI_Comm_spawn( command, argv, *maxprocs, PMPI_Info_f2c( *info ), *root, PMPI_Comm_f2c( *comm ), &c_newcomm, array_of_errcodes );
     free( c_command );
     free( c_argv );
-    *intercomm = PMPI_Comm_c2f( c_intercomm );
+    *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
 #if defined( HAVE_DECL_MPI_LOOKUP_NAME ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )

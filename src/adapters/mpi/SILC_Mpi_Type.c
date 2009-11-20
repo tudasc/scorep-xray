@@ -25,7 +25,6 @@
  * @{
  */
 
-#ifdef HAS_MPI2_SIZEOF
 #if defined( HAVE_DECL_MPI_SIZEOF ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TYPE )
 /**
  * Measurement wrapper for MPI_Sizeof
@@ -60,7 +59,6 @@ MPI_Sizeof( MPI_Datatype x,
 }
 #endif
 
-#endif
 
 #if defined( HAVE_DECL_MPI_PACK ) && !defined( SILC_MPI_NO_EXTRA )
 /**

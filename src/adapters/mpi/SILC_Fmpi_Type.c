@@ -21,14 +21,12 @@
  */
 
 /* uppercase defines */
-#ifdef HAS_MPI2_SIZEOF
 /** @def MPI_Sizeof_U
     Exchange MPI_Sizeof_U by MPI_SIZEOF.
     It is used for the Fortran wrappers of me).
  */
 #define MPI_Sizeof_U MPI_SIZEOF
 
-#endif
 
 /** @def MPI_Pack_U
     Exchange MPI_Pack_U by MPI_PACK.
@@ -280,14 +278,12 @@
 
 
 /* lowercase defines */
-#ifdef HAS_MPI2_SIZEOF
 /** @def MPI_Sizeof_L
     Exchanges MPI_Sizeof_L by mpi_sizeof.
     It is used for the Forran wrappers of me).
  */
 #define MPI_Sizeof_L mpi_sizeof
 
-#endif
 
 /** @def MPI_Pack_L
     Exchanges MPI_Pack_L by mpi_pack.
@@ -549,7 +545,6 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#ifdef HAS_MPI2_SIZEOF
 #if defined( HAVE_DECL_MPI_SIZEOF ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TYPE )
 /**
  * Measurement wrapper for MPI_Sizeof
@@ -563,7 +558,6 @@ FSUB( MPI_Sizeof ) ( MPI_Datatype * x, int* size, int* ierr )
 {
     *ierr = MPI_Sizeof( *x, *size );
 }
-#endif
 #endif
 
 #if defined( HAVE_DECL_MPI_PACK ) && !defined( SILC_MPI_NO_EXTRA )
@@ -1218,7 +1212,6 @@ FSUB( MPI_Type_set_name ) ( MPI_Datatype * type, char* type_name, int* ierr, int
 
 #else /* !NEED_F2C_CONV */
 
-#ifdef HAS_MPI2_SIZEOF
 #if defined( HAVE_DECL_MPI_SIZEOF ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TYPE )
 /**
  * Measurement wrapper for MPI_Sizeof
@@ -1233,8 +1226,8 @@ FSUB( MPI_Sizeof ) ( MPI_Fint * x, MPI_Fint * size, int* ierr )
     *ierr = MPI_Sizeof( PMPI_Type_f2c( *x ), *size );
 }
 #endif
-#endif
 
+#if defined( HAVE_DECL_MPI_TYPE_STRUCT ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TYPE )
 /**
  * Manual measurement wrapper for MPI_Type_struct
  * @ingroup manual_wrapper
@@ -1268,7 +1261,9 @@ FSUB( MPI_Type_struct ) ( MPI_Fint * count,
                              c_array_of_types, &c_newtype );
     *newtype = PMPI_Type_c2f( c_newtype );
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TYPE_CREATE_STRUCT ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TYPE )
 /**
  * Manual measurement wrapper for MPI_Type_create_struct
  * @ingroup manual_wrapper
@@ -1302,7 +1297,9 @@ FSUB( MPI_Type_create_struct ) ( MPI_Fint * count,
                              c_array_of_types, &c_newtype );
     *newtype = PMPI_Type_c2f( c_newtype );
 }
+#endif
 
+#if defined( HAVE_DECL_MPI_TYPE_GET_CONTENTS ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TYPE )
 /**
  * Manual measurement wrapper for MPI_Type_get_contents
  * @ingroup manual_wrapper
@@ -1344,6 +1341,7 @@ FSUB( MPI_Type_get_contents ) ( MPI_Fint * datatype,
     /* free local buffer */
     free( c_array_of_datatypes );
 }
+#endif
 
 
 /**
