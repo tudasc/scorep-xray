@@ -1863,7 +1863,7 @@
     <param access="o" type="MPI_Aint*" name="extent" />
     <version id="1" />
 </prototype>
-<prototype name="MPI_Type_f2c" rtype="MPI_Datatype" group="type_misc" guard="extra,type,mic" >
+<prototype name="MPI_Type_f2c" rtype="MPI_Datatype" group="type_misc" guard="extra,type,misc" >
     <param access="o" type="MPI_Fint" name="datatype" />
     <version id="2" />
 </prototype>
