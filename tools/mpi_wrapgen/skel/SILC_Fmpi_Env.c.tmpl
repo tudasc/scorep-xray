@@ -37,7 +37,7 @@
 
 #ifndef NEED_F2C_CONV
 
-/* If MPI_Comm_f2c is defined as a simple macro (which typically does nothing)
+/* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
@@ -59,7 +59,7 @@ void FSUB(MPI_Init)(int* ierr)
 
 #else /* !NEED_F2C_CONV */
 
-#if defined(HAVE_DECL_MPI_INIT_THREAD)
+#if HAVE(DECL_MPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_tread
  * @note Manually adapted wrapper

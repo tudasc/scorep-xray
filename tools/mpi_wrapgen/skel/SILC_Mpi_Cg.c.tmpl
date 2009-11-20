@@ -43,7 +43,7 @@
  * @{
  */
 
-#if defined(HAVE_DECL_MPI_COMM_FREE)
+#if HAVE(DECL_MPI_COMM_FREE)
 /**
  * Measurement wrapper for MPI_Comm_free
  * @note Manually adapted wrapper
@@ -91,7 +91,7 @@ int MPI_Comm_free(MPI_Comm* comm)
  * @{
  */
 
-#if defined(HAVE_DECL_MPI_GROUP_FREE)
+#if HAVE(DECL_MPI_GROUP_FREE)
 /**
  * Measurement wrapper for MPI_Group_free
  * @note Manually adapted wrapper

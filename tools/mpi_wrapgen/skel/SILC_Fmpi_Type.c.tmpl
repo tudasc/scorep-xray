@@ -45,7 +45,7 @@
 
 #ifndef NEED_F2C_CONV
 
-/* If MPI_Comm_f2c is defined as a simple macro (which typically does nothing)
+/* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
@@ -74,7 +74,7 @@
 
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Mpi_F2c_C2f.w
 
-#if defined(HAVE_DECL_MPI_TYPE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
+#if HAVE(DECL_MPI_TYPE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_struct
  * @ingroup manual_wrapper
@@ -106,7 +106,7 @@ void FSUB(MPI_Type_struct)(MPI_Fint* count,
 }
 #endif
 
-#if defined(HAVE_DECL_MPI_TYPE_CREATE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
+#if HAVE(DECL_MPI_TYPE_CREATE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_create_struct
  * @ingroup manual_wrapper
@@ -138,7 +138,7 @@ void FSUB(MPI_Type_create_struct)(MPI_Fint* count,
 }
 #endif
 
-#if defined(HAVE_DECL_MPI_TYPE_GET_CONTENTS) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
+#if HAVE(DECL_MPI_TYPE_GET_CONTENTS) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_get_contents
  * @ingroup manual_wrapper

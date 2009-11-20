@@ -813,7 +813,7 @@ SILC::Wrapgen::handler::mpi::guard_start
     toupper( tmp );
 
     // individual guard check by generated header
-    guard += "defined(HAVE_DECL_" + tmp + ")";
+    guard += "HAVE(DECL_" + tmp + ")";
 
     // individual guard for manual deactivation
     // guard += " && !defined (SILC_MPI_NO_" + tmp + ")";

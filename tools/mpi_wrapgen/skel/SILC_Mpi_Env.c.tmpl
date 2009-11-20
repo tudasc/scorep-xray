@@ -94,7 +94,7 @@ int MPI_Init(int* argc, char*** argv )
   return return_val;
 }
 
-#if defined(HAVE_DECL_MPI_INIT_THREAD)
+#if HAVE(DECL_MPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_thread, the thread-capable
  * alternative to MPI_Init.
