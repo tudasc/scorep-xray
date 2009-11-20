@@ -15,7 +15,7 @@ help
     string name
 )
 {
-    cout << "'" << name << "' generates EPILOG measurement wrappers for MPI function\n" << endl;
+    cout << "'" << name << "' generates SILC wrappers for MPI functions\n" << endl;
 
     cout << "USAGE :" << name << " -p <prototypes.xml> [OPTIONS] <templatefile> [<template2> ... ]\n" << endl;
     cout << "If more than one template file are specified, the output of all templates" << endl;

@@ -8,7 +8,7 @@ CXXFLAGS        = -g `xml2-config --cflags`
 LIBS            = `xml2-config --libs`
 
 WRAPGEN         = ./wrapgen
-WFLAGS          = -b -p skel/SILC_Mpi_Prototypes.xml 
+WFLAGS          = -b -p skel/SILC_Mpi_Prototypes.xml skel/SILC_Mpi_Header.txt 
 INSTALL         = /usr/bin/install
 
 DOXYGEN         = doxygen
