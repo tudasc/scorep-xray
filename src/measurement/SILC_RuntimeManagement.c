@@ -36,13 +36,21 @@
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
 
+#include <OTF2_Buffer.h>
 
 #include "silc_types.h"
 #include "silc_adapter.h"
 
 
+OTF2_Buffer*   local_event_buffer;
+OTF2_TimeStamp local_timestamp_counter;
+
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
+
+
+/** @brief Measurement system finalized? */
+static bool silc_finalized;
 
 
 /** @brief Run in verbose mode */
@@ -63,6 +71,9 @@ static SILC_ConfigVariable silc_configs[] = {
     },
 };
 
+/** atexit handler for finalization */
+static void
+silc_finalize( void );
 
 /**
  * Return true if SILC_InitMeasurement() has been executed.
@@ -91,13 +102,23 @@ SILC_InitMeasurement
 
     fprintf( stderr, "%s\n", __func__ );
 
+    if ( silc_initialized )
+    {
+        return;
+    }
+
+    if ( silc_finalized )
+    {
+        _exit( EXIT_FAILURE );
+    }
+
     error = SILC_ConfigRegister( silc_configs,
                                  sizeof( silc_configs ) / sizeof( silc_configs[ 0 ] ) );
 
     if ( SILC_SUCCESS != error )
     {
         SILC_ERROR( error, "Can't register core config variables" );
-        _exit( 1 );
+        _exit( EXIT_FAILURE );
     }
 
     /* call register functions for all adapters */
@@ -112,7 +133,7 @@ SILC_InitMeasurement
         {
             SILC_ERROR( error, "Can't register %s adapter",
                         silc_adapters[ i ]->adapter_name );
-            _exit( 1 );
+            _exit( EXIT_FAILURE );
         }
     }
 
@@ -142,12 +163,28 @@ SILC_InitMeasurement
         {
             SILC_ERROR( error, "Can't initialize %s adapter",
                         silc_adapters[ i ]->adapter_name );
-            _exit( 1 );
+            _exit( EXIT_FAILURE );
         }
     }
 
 
     /* create location */
+
+    local_timestamp_counter = 0;
+    local_event_buffer      = OTF2_Buffer_New( 1 << 24,
+                                               ( size_t )( 1048576 ),
+                                               NULL,
+                                               OTF2_BUFFER_WRITE,
+                                               OTF2_BUFFER_CHUNKED,
+                                               OTF2_SUBSTRATE_NON,
+                                               "silc.0.buf",
+                                               NULL );
+
+    if ( !local_event_buffer )
+    {
+        SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
+        _exit( EXIT_FAILURE );
+    }
 
     /* call initialization functions for all adapters */
     for ( size_t i = 0; silc_adapters[ i ]; ++i )
@@ -168,12 +205,15 @@ SILC_InitMeasurement
         {
             SILC_ERROR( error, "Can't initialize location for %s adapter",
                         silc_adapters[ i ]->adapter_name );
-            _exit( 1 );
+            _exit( EXIT_FAILURE );
         }
     }
 
     /* all done, report successful initialization */
     silc_initialized = true;
+
+    /* register finalization handler */
+    atexit( silc_finalize );
 }
 
 
@@ -241,4 +281,64 @@ SILC_RecordingEnabled
     fprintf( stderr, "%s\n", __func__ );
 
     return false;
+}
+
+static void
+silc_finalize( void )
+{
+    OTF2_TimeStamp timestamp;
+
+    fprintf( stderr, "%s\n", __func__ );
+
+    if ( !silc_initialized || silc_finalized )
+    {
+        return;
+    }
+
+    if ( !local_event_buffer )
+    {
+        return;
+    }
+
+    OTF2_Buffer_SwitchMode( local_event_buffer, OTF2_BUFFER_READ );
+
+    while ( SILC_SUCCESS == OTF2_Buffer_ReadTimeStamp( local_event_buffer,
+                                                       &timestamp ) )
+    {
+        uint8_t recordType;
+
+        OTF2_Buffer_ReadUint8( local_event_buffer, &recordType );
+
+        switch ( recordType )
+        {
+            case OTF2_EVENT_ENTER:
+            {
+                uint32_t regionHandle;
+                OTF2_Buffer_ReadUint32( local_event_buffer, &regionHandle );
+                fprintf( stderr, "buffer: at %lu we entered %u\n",
+                         timestamp,
+                         regionHandle );
+                break;
+            }
+
+            case OTF2_EVENT_LEAVE:
+            {
+                uint32_t regionHandle;
+                OTF2_Buffer_ReadUint32( local_event_buffer, &regionHandle );
+                fprintf( stderr, "buffer: at %lu we leaved %u\n",
+                         timestamp,
+                         regionHandle );
+                break;
+            }
+
+            default:
+                goto cleanup;
+        }
+    }
+
+cleanup:
+
+    OTF2_Buffer_Delete( local_event_buffer );
+
+    silc_finalized = true;
 }

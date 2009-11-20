@@ -30,8 +30,10 @@
 
 
 #include <SILC_Events.h>
+#include <OTF2_Buffer.h>
 
 
+#include "silc_runtime_management.h"
 #include "silc_types.h"
 
 
@@ -50,6 +52,11 @@ SILC_EnterRegion
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
+
+    OTF2_Buffer_WriteTimeStamp( local_event_buffer, ++local_timestamp_counter );
+    OTF2_Buffer_WriteUint8( local_event_buffer, OTF2_EVENT_ENTER );
+    OTF2_Buffer_WriteUint32( local_event_buffer, regionHandle );
+    OTF2_Buffer_WriteChunkControl( local_event_buffer );
 }
 
 
@@ -68,6 +75,11 @@ SILC_ExitRegion
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
+
+    OTF2_Buffer_WriteTimeStamp( local_event_buffer, ++local_timestamp_counter );
+    OTF2_Buffer_WriteUint8( local_event_buffer, OTF2_EVENT_LEAVE );
+    OTF2_Buffer_WriteUint32( local_event_buffer, regionHandle );
+    OTF2_Buffer_WriteChunkControl( local_event_buffer );
 }
 
 

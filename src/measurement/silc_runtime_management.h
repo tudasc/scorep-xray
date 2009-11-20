@@ -17,7 +17,12 @@
 #ifndef SILC_INTERNAL_RUNTIME_MANAGEMENT_H
 #define SILC_INTERNAL_RUNTIME_MANAGEMENT_H
 
+#include <OTF2_Buffer.h>
 
+extern OTF2_Buffer*   local_event_buffer;
+extern OTF2_TimeStamp local_timestamp_counter;
+
+#if 0
 /**
  * Get the location handle of the caller
  *
@@ -26,5 +31,6 @@
 SILC_LocationHandle
 silc_get_location( void );
 
+#endif
 
 #endif /* SILC_INTERNAL_RUNTIME_MANAGEMENT_H */
