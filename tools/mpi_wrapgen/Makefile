@@ -18,7 +18,7 @@ DOXYGEN_OPTS    =
 MODS            = SILC_Wrapgen_Funcparam.o SILC_Wrapgen_Func.o SILC_Wrapgen_MpiFunc.o SILC_Wrapgen_Util.o SILC_Wrapgen_Handlers.o SILC_Wrapgen_HandlersMpi.o 
 
 OUTPUTDIR       = generated
-INSTALLDIR      = ../../../epik/adapter/MPI
+INSTALLDIR      = ../../../src/adapters/mpi/
 
 GENCORE         = skel/SILC_Mpi_Prototypes.xml
 
