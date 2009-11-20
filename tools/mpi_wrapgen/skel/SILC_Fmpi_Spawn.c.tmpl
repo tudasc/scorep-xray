@@ -38,6 +38,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
+#if defined(HAVE_DECL_MPI_COMM_SPAWN_MULTIPLE) && ! defined(SILC_MPI_NO_SPAWN) && ! defined(SILC_MPI_NO_EXTRA)
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper
@@ -115,11 +116,13 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
   free(c_array_of_commands);
   free(c_array_of_argv);
 }
+#endif
 
 #pragma wrapgen multiple restrict(gspawn+!nspawn_multiple) skel/SILC_Fmpi_Std.w
 
 #else /* !NEED_F2C_CONV */
 
+#if defined(HAVE_DECL_MPI_COMM_SPAWN_MULTIPLE) && ! defined(SILC_MPI_NO_SPAWN) && ! defined(SILC_MPI_NO_EXTRA)
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper
@@ -194,6 +197,7 @@ void FSUB(MPI_Comm_spawn_multiple) (MPI_Fint* count,
   free(c_array_of_argv);
   free(c_array_of_info);
 }
+#endif
 
 #pragma wrapgen multiple restrict(gspawn+!nspawn_multiple) skel/SILC_Mpi_F2c_C2f.w
 

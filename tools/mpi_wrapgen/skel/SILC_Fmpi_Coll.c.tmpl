@@ -43,7 +43,7 @@
 
 #pragma wrapgen multiple restrict(v1+gcoll) skel/SILC_Mpi_F2c_C2f.w
 
-#if defined(HAS_MPI2_COLLECTIVES)
+#if defined(HAVE_DECL_MPI_ALLTOALLW) && ! defined(SILC_MPI_NO_COLL)
 void FSUB(MPI_Alltoallw)(void*     sendbuf, 
                          MPI_Fint* sendcounts,
                          MPI_Fint* sdispls,
@@ -79,10 +79,9 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
   free(csendtypes);
   free(crecvtypes);
 }
-
-#pragma wrapgen multiple restrict(v2+gcoll+!nAlltoallw) skel/SILC_Mpi_F2c_C2f.w
 #endif
 
+#pragma wrapgen multiple restrict(v2+gcoll+!nAlltoallw) skel/SILC_Mpi_F2c_C2f.w
 #endif
 
 /**

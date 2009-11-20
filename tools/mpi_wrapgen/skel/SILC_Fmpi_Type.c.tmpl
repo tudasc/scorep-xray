@@ -21,9 +21,7 @@
  */
 
 /* uppercase defines */
-#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Fmpi_DefineU.w
-#endif
 
 #pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_DefineU.w
 
@@ -32,9 +30,7 @@
 #pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SILC_Fmpi_DefineU.w
 
 /* lowercase defines */
-#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Fmpi_DefineL.w
-#endif
 
 #pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_DefineL.w
 
@@ -53,9 +49,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Fmpi_Std.w
-#endif
 
 #pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_Std.w
 
@@ -78,10 +72,9 @@
 
 #else /* !NEED_F2C_CONV */
 
-#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Mpi_F2c_C2f.w
-#endif
 
+#if defined(HAVE_DECL_MPI_TYPE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_struct
  * @ingroup manual_wrapper
@@ -111,7 +104,9 @@ void FSUB(MPI_Type_struct)(MPI_Fint* count,
                              c_array_of_types, &c_newtype);
   *newtype = PMPI_Type_c2f(c_newtype);
 }
+#endif
 
+#if defined(HAVE_DECL_MPI_TYPE_CREATE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_create_struct
  * @ingroup manual_wrapper
@@ -141,7 +136,9 @@ void FSUB(MPI_Type_create_struct)(MPI_Fint* count,
                              c_array_of_types, &c_newtype);
   *newtype = PMPI_Type_c2f(c_newtype);
 }
+#endif
 
+#if defined(HAVE_DECL_MPI_TYPE_GET_CONTENTS) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_get_contents
  * @ingroup manual_wrapper
@@ -182,6 +179,7 @@ void FSUB(MPI_Type_get_contents)(MPI_Fint* datatype,
   /* free local buffer */
   free(c_array_of_datatypes);
 }
+#endif
 
 #pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+n!_get_contents) skel/SILC_Mpi_F2c_C2f.w
 

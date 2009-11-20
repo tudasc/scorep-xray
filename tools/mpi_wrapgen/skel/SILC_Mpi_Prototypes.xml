@@ -425,7 +425,7 @@
 </prototype>
 <prototype name="MPI_Comm_join" rtype="int" group="spawn" guard="spawn,extra" >
     <param access="i" type="int" name="fd" />
-    <param access="o" type="MPI_Comm*" name="intercomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" />
     <version id="2" />
 </prototype>
 <prototype name="MPI_Comm_rank" rtype="int" group="cg" guard="extra,mini,cg" >
@@ -471,7 +471,7 @@
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="intercomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" />
     <param access="o" type="int" name="array_of_errcodes" suffix="[]" />
     <version id="2" />
 </prototype>
@@ -483,7 +483,7 @@
     <param access="i" type="MPI_Info" name="array_of_info" suffix="[]" />
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="intercomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" />
     <param access="o" type="int" name="array_of_errcodes" suffix="[]" />
     <version id="2" />
 </prototype>

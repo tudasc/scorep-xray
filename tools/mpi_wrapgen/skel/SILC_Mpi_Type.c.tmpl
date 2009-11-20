@@ -25,9 +25,7 @@
  * @{
  */
 
-#ifdef HAS_MPI2_SIZEOF
 #pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Mpi_Std.w
-#endif
 
 #pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Mpi_Std.w
 

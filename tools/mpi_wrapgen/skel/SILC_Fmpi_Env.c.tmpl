@@ -21,16 +21,12 @@
  */
 
 /* uppercase defines */
-#if defined(HAS_MPI2_COLLECTIVES)
 #pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_DefineU.w
-#endif
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Fmpi_DefineU.w
 
 /* lowercase defines */
-#if defined(HAS_MPI2_COLLECTIVES)
 #pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_DefineL.w
-#endif
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Fmpi_DefineL.w
 
@@ -45,9 +41,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#if defined(HAS_MPI2_COLLECTIVES)
 #pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_Std.w
-#endif
 
 /**
  * Measurement wrapper for MPI_Init
@@ -65,7 +59,7 @@ void FSUB(MPI_Init)(int* ierr)
 
 #else /* !NEED_F2C_CONV */
 
-#if defined(HAS_MPI2_COLLECTIVES)
+#if defined(HAVE_DECL_MPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_tread
  * @note Manually adapted wrapper
