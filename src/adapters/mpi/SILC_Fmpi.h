@@ -39,4 +39,6 @@
 #  define NEED_F2C_CONV
 #endif
 
+extern int silc_mpi_status_size;
+
 #endif /* SILC_FMPI_H */
