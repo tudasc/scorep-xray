@@ -22,11 +22,11 @@ help
     cout << "is appended.\n" << endl;
     cout << "TEMPLATE FILE TYPES:" << endl;
     cout << ".txt   are interpreted as text files and the content is copied." << endl;
-    cout << ".w     are interpreted as wrapper templates. All selected functions" << endl;
+    cout << ".w     are interpreted as function template. All selected functions" << endl;
     cout << "       from the prototypes are processed using the given wrapper template." << endl;
-    cout << ".tmpl  A template file which contains basic code and template configurations" << endl;
-    cout << "       via #pragma wrapgen directives. When using this format, the -r" << endl;
-    cout << "       option takes no effect for this file.\n" << endl;
+    cout << ".tmpl  A file template which contains basic code and function template" << endl;
+    cout << "       configurations via #pragma wrapgen directives. When using this format," << endl;
+    cout << "       the -r option takes no effect for this file.\n" << endl;
     cout << "OPTIONS:" << endl;
     cout << "-b   disables the banner output before generating new code\n" << endl;
     cout << "-r   (restrict option) can specify the output depending on the specifier" << endl;
@@ -42,7 +42,7 @@ help
     cout << "     Process all functions in proto.xml which contain the string 'type'," << endl;
     cout << "     and belong to MPI Version 1, and belong to group" << endl;
     cout << "     'peer-to peer communication'.\n" << endl;
-    cout << "-h   Prints this help.\n"  << endl;
+    cout << "-h   Prints this help and exit.\n"  << endl;
     exit( 0 );
 }
 }   // namespace Wrapgen

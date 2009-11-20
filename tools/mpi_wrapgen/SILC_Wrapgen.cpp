@@ -92,63 +92,12 @@ static xmlChar* _prop = NULL;
 
 namespace
 {
+/** Command line options */
 SILC::Wrapgen::option opts;
-
-/** Partial predifinitions of function wrappers */
-map<string, string> partial_predef;
-
-/** Complete predifinitions of function wrappers */
-map<string, string> complete_predef;
 
 /** All MPI function prototypes */
 map<string, MPIFunc> mpiFuncs;
 } // End of anonymous namespace
-
-/**
- * Read predefined wrapper core parts from a stream
- */
-void
-SILC::Wrapgen::read_predefined
-(
-    const char* filename,
-    map<string, string>& predef
-)
-{
-    string predefline;
-    string predefbody;
-    string predefname;
-
-    cout << filename << endl;
-
-    ifstream pdstream;
-    OPEN_STREAM( pdstream, filename );
-
-    predefline = "";
-    while ( getline( pdstream, predefline ) &&
-            ( predefline.find( "#END" ) != string::npos ) )
-    {
-        cout << predefline << "  " << predefbody << "  " << predefname << endl;
-
-        if ( predefbody == "" )
-        {
-            predefname = predefline;
-        }
-        else
-        {
-            if ( predefline.find( "#NEXT" ) != string::npos )
-            {
-                /* store predefined wrapper and reinitialize */
-                predef[ predefname ] = predefbody;
-                predefbody           = "";
-            }
-            else
-            {
-                /* append line to predefined wrapper body */
-                predefbody += predefline + "\n";
-            }
-        }
-    }
-}
 
 /**
  * Process commandline options and set variables accordingly
@@ -163,15 +112,11 @@ SILC::Wrapgen::process_cmd_line
 )
 {
     int copt;
-    opts.suppressbanner  = false;
-    opts.restriction     = "";
-    opts.partial_predef  = "";
-    opts.complete_predef = "";
-    opts.prototypes      = "";
-    opts.counts          = "";
-    opts.guard           = "";
+    opts.suppressbanner = false;
+    opts.restriction    = "";
+    opts.prototypes     = "";
 
-    while ( ( copt = getopt( argc, argv, "bc:C:D:hp:P:r:" ) ) != EOF )
+    while ( ( copt = getopt( argc, argv, "bhp:r:" ) ) != EOF )
     {
         switch ( copt )
         {
@@ -179,21 +124,6 @@ SILC::Wrapgen::process_cmd_line
             {
                 // if bannerflag is activated, there is no banner ouput on the console
                 opts.suppressbanner = true;
-                break;
-            }
-            case 'c':
-            {
-                opts.counts = optarg;
-                break;
-            }
-            case 'C':
-            {
-                opts.complete_predef = optarg;
-                break;
-            }
-            case 'D':
-            {
-                opts.guard = optarg;
                 break;
             }
             case 'r':
@@ -204,11 +134,6 @@ SILC::Wrapgen::process_cmd_line
             case 'p':
             {
                 opts.prototypes = optarg;
-                break;
-            }
-            case 'P':
-            {
-                opts.partial_predef = optarg;
                 break;
             }
             case 'h':
@@ -449,45 +374,6 @@ SILC::Wrapgen::write_xml_prototypes
     pconf.close();
 }
 
-void
-SILC::Wrapgen::read_count_spec
-(
-    const char* filename,
-    map<string, MPIFunc>& funcs
-)
-{
-    string line;
-
-    // read MPI function transferred counts description file
-    ifstream cnt;
-    OPEN_STREAM( cnt, opts.counts.c_str() );
-
-    // Format: sequence of
-    //   MPIFunc
-    //   SendAmountExpression
-    //   RecvAmountExpression
-    while ( getline( cnt, line ) )
-    {
-        map<string, MPIFunc>::iterator it = mpiFuncs.find( line );
-        if ( it == mpiFuncs.end() )
-        {
-            cerr << "ERROR: unknown function '" << line
-                 << "' in '" << opts.counts << "'\n";
-            ignoreRestOfLine( cnt );
-            ignoreRestOfLine( cnt );
-        }
-        else
-        {
-            MPIFunc& func = it->second;
-            string   rule;
-            getline( cnt, rule );
-            func.set_sendcount_rule( rule );
-            getline( cnt, rule );
-            func.set_recvcount_rule( rule );
-        }
-    }
-}
-
 /**
  * Process a textfile by passing it directly to stdout
  * @param filename Filename of the textfile
@@ -634,65 +520,9 @@ SILC::Wrapgen::handle_file_template
 }
 
 /**
- * Process a specification file, which contains a list of
- * functionname/templatename pairs
- * @param filename Filename of the specification file
- */
-
-int
-SILC::Wrapgen::handle_spec_file
-(
-    const char* filename
-)
-{
-    // Format: sequence of "MPIFunc WrapperToUse.w"
-    ifstream spec;
-    OPEN_STREAM( spec, filename );
-
-    string name;
-    string wrappertype;
-    string newline;
-    while ( getline( spec, newline ) )
-    {
-        if ( newline[ 0 ] == '#' )
-        {
-            // print_banner(newline.substr(1));
-        }
-        else
-        {
-            string wrapperfile;
-            istringstream
-                   oss
-            (
-                newline
-            );
-
-            oss >> name >> wrappertype;
-            wrapperfile.append( wrappertype );
-            map<string, MPIFunc>::iterator it = mpiFuncs.find( name );
-            if ( it == mpiFuncs.end() )
-            {
-                cerr << "ERROR: unknown function '" << name << "' in '"
-                     << filename << "'\n";
-            }
-            else
-            {
-                if ( generateOutput( it->second, wrapperfile.c_str(),
-                                     opts.restriction ) )
-                {
-                    return 1;
-                }
-            }
-        }
-    }
-
-    return 1;
-}
-
-/**
  * Search for next template variable. If a template variable is found,
  * the parameter 'key' is overwritten with the variable name found. If
- * no template variable is found, 'keý' is left unchanged.
+ * no template variable is found, 'key' is left unchanged.
  * @param str string searched for
  * @param key key of template variable found
  * @return position of template variable in string
@@ -901,18 +731,6 @@ main
     // set global options
     process_cmd_line( argc, argv );
 
-    //read predefined from predef.in
-    if ( !opts.partial_predef.empty() )
-    {
-        read_predefined( opts.partial_predef.c_str(), partial_predef );
-    }
-
-    //read predefined from predeff2c.in
-    if ( !opts.complete_predef.empty() )
-    {
-        read_predefined( opts.complete_predef.c_str(), complete_predef );
-    }
-
     // read MPI function prototype description file
     if ( opts.prototypes.rfind( ".xml" ) == opts.prototypes.length() - 4 )
     {
@@ -923,14 +741,8 @@ main
         read_prototypes( opts.prototypes.c_str(), mpiFuncs );
     }
 
-    // read Count specification and update function information
-    if ( !opts.counts.empty() )
-    {
-        read_count_spec( opts.counts.c_str(), mpiFuncs );
-    }
-
     // read MPI wrapper generation specification files
-    if ( ( argc > 1 ) && !opts.suppressbanner )
+    if ( !opts.suppressbanner )
     {
         cout << "/*-----------------------------------------------------------------------*/\n";
         cout << "/*-- Automatically generated by wrapgen. Do not change. -----------------*/\n";
@@ -962,19 +774,6 @@ main
         else if ( aname.rfind( ".tmpl" ) == ( aname.size() - 5 ) )
         {
             handle_file_template( argv[ n ] );
-        }
-        else
-        {
-            if ( opts.guard != "" )
-            {
-                cout << "\n#ifdef " << opts.guard << "\n\n";
-            }
-            // argument considered to be specification file
-            handle_spec_file( argv[ n ] );
-            if ( opts.guard != "" )
-            {
-                cout << "\n#endif" "\n\n";
-            }
         }
     }
 

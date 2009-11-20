@@ -38,11 +38,7 @@ typedef struct
 {
     bool        suppressbanner;  ///< suppress auto-generation banner
     std::string restriction;     ///< restriction rule for wrapper generation
-    std::string partial_predef;  ///< filename of partial predefined wrappers
-    std::string complete_predef; ///< filename of complete predefined wrappers
     std::string prototypes;      ///< filename of prototype definitions
-    std::string counts;          ///< filename of count specifications
-    std::string guard;           ///< preprocessor guards for the spec block
 } option;
 
 
@@ -54,12 +50,6 @@ process_cmd_line
 (
     int&    argc,
     char**& argv
-);
-void
-read_predefined
-(
-    const char* filename,
-    std::map<std::string, std::string>& predef
 );
 void
 read_prototypes
@@ -80,12 +70,6 @@ write_xml_prototypes
     std::map<std::string, MPIFunc>& funcs
 );
 void
-read_count_spec
-(
-    const char* filename,
-    std::map<std::string, MPIFunc>& funcs
-);
-void
 handle_textfile
 (
     const char* filename
@@ -97,11 +81,6 @@ handle_file_template
 );
 int
 handle_wrapper_template
-(
-    const char* filename
-);
-int
-handle_spec_file
 (
     const char* filename
 );
