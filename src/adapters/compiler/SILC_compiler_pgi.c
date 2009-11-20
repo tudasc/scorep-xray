@@ -15,7 +15,7 @@
 
 
 /**
- * @ file SILC_compiler_PGI.c
+ * @ file SILC_compiler_pgi.c
  *
  * @brief provided support for PGI-profiling
  */

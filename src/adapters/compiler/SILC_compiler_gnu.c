@@ -31,15 +31,24 @@
 
 /**
  * @brief Hash table to map function addresses to region identifier
+ * identifier is called region handle
+ *
+ * @param id          hash key (address of function)
+ * @param name        associated function name
+ * @param fname       file name
+ * @param lnobegin    line number of begin of function
+ * @param lnoend      line number of end of function
+ * @param reghandle   region identifier
+ * @param HN          pointer to next element
  */
 typedef struct HashNode
 {
-    long              id;           /* hash code (address of function) */
-    const char*       name;         /* associated function name        */
-    const char*       fname;        /*            file name            */
-    SILC_LineNo       lnobegin;     /*            line number  of begin        */
-    SILC_LineNo       lnoend;       /*            line number  of end        */
-    SILC_RegionHandle reghandle;    /* region identifier    */
+    long              id;
+    const char*       name;
+    const char*       fname;
+    SILC_LineNo       lnobegin;
+    SILC_LineNo       lnoend;
+    SILC_RegionHandle reghandle;
     struct HN*        next;
 } HashNode;
 
@@ -48,6 +57,13 @@ typedef struct HashNode
 static HashNode* htab[ HASH_MAX ];
 
 
+/**
+ * @brief Get hash table entry for given ID.
+ *
+ * @param h   Hash node key ID
+ *
+ * @return Returns pointer to hash table entry according to key
+ */
 static HashNode*
 hash_get( long h )
 {
