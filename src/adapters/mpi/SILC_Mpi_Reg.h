@@ -728,7 +728,7 @@ EXTERN uint32_t silc_mpi_enabled;
 /** SILC region ID for MPI_Wtime */
 #define SILC__MPI_WTIME                            302
 
-/** Number of MPI functions defined */
+/** Number of MPI functions HAVE */
 #define SILC__MPI_NUMFUNCS                         303
 
 /** Artificial root for MPI-only experiments when no user-code
