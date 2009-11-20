@@ -26,8 +26,10 @@
 #include "SILC_Wrapgen_MpiFunc.h"
 using namespace SILC::Wrapgen;
 
-namespace SILC {
-namespace Wrapgen {
+namespace SILC
+{
+namespace Wrapgen
+{
 /**
  * @struct option
  * @brief Holds all global options of the wrapper generator
@@ -41,7 +43,6 @@ typedef struct
     std::string prototypes;      ///< filename of prototype definitions
     std::string counts;          ///< filename of count specifications
     std::string guard;           ///< preprocessor guards for the spec block
-    std::string banner;          ///< banner to print prior to spec block
 } option;
 
 
@@ -83,11 +84,6 @@ read_count_spec
 (
     const char* filename,
     std::map<std::string, MPIFunc>& funcs
-);
-void
-print_banner
-(
-    const std::string& str
 );
 void
 handle_textfile

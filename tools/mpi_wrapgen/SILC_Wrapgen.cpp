@@ -90,7 +90,8 @@ static xmlChar* _prop = NULL;
  * Helper Functions
  */
 
-namespace {
+namespace
+{
 SILC::Wrapgen::option opts;
 
 /** Partial predifinitions of function wrappers */
@@ -113,9 +114,11 @@ SILC::Wrapgen::read_predefined
     map<string, string>& predef
 )
 {
-    string   predefline;
-    string   predefbody;
-    string   predefname;
+    string predefline;
+    string predefbody;
+    string predefname;
+
+    cout << filename << endl;
 
     ifstream pdstream;
     OPEN_STREAM( pdstream, filename );
@@ -124,6 +127,8 @@ SILC::Wrapgen::read_predefined
     while ( getline( pdstream, predefline ) &&
             ( predefline.find( "#END" ) != string::npos ) )
     {
+        cout << predefline << "  " << predefbody << "  " << predefname << endl;
+
         if ( predefbody == "" )
         {
             predefname = predefline;
@@ -165,9 +170,8 @@ SILC::Wrapgen::process_cmd_line
     opts.prototypes      = "";
     opts.counts          = "";
     opts.guard           = "";
-    opts.banner          = "";
 
-    while ( ( copt = getopt( argc, argv, "bB:c:C:D:hp:P:r:" ) ) != EOF )
+    while ( ( copt = getopt( argc, argv, "bc:C:D:hp:P:r:" ) ) != EOF )
     {
         switch ( copt )
         {
@@ -175,11 +179,6 @@ SILC::Wrapgen::process_cmd_line
             {
                 // if bannerflag is activated, there is no banner ouput on the console
                 opts.suppressbanner = true;
-                break;
-            }
-            case 'B':
-            {
-                opts.banner = optarg;
                 break;
             }
             case 'c':
@@ -435,7 +434,7 @@ SILC::Wrapgen::write_xml_prototypes
 {
     map<string, MPIFunc>::iterator it;
     ofstream
-    pconf
+                                   pconf
     (
         filename
     );
@@ -487,19 +486,6 @@ SILC::Wrapgen::read_count_spec
             func.set_recvcount_rule( rule );
         }
     }
-}
-
-void
-SILC::Wrapgen::print_banner
-(
-    const string& str
-)
-{
-    cout << "/*\n"
-         << " *-----------------------------------------------------------------------------\n"
-         << " * \n * " << str << "\n *\n"
-         << " *-----------------------------------------------------------------------------\n"
-         << " */\n" << endl;
 }
 
 /**
@@ -567,7 +553,7 @@ SILC::Wrapgen::handle_file_template
         {
             string scope, cmd, wrapper_tmpl;
             istringstream
-            line_stream
+                   line_stream
             (
                 src_line.substr( pos + 15 )
             );
@@ -676,7 +662,7 @@ SILC::Wrapgen::handle_spec_file
         {
             string wrapperfile;
             istringstream
-            oss
+                   oss
             (
                 newline
             );
@@ -979,14 +965,6 @@ main
         }
         else
         {
-            if ( opts.banner != "" )
-            {
-                cout << "\n/* " << opts.banner << " */\n";
-                if ( opts.guard == "" )
-                {
-                    cout << "\n";
-                }
-            }
             if ( opts.guard != "" )
             {
                 cout << "\n#ifdef " << opts.guard << "\n\n";
@@ -999,21 +977,6 @@ main
             }
         }
     }
-
-    //write_xml_prototypes("skel/prototypes", mpiFuncs);
-    /*
-       set<string> wrap_groups;
-       for (map<string,MPIFunc>::const_iterator it=mpiFuncs.begin();
-            it != mpiFuncs.end(); ++it)
-       {
-        wrap_groups.insert(it->second.get_group());
-       }
-       for (set<string>::const_iterator it=wrap_groups.begin();
-            it != wrap_groups.end(); ++it)
-       {
-        cerr << *it << endl;
-       }
-     */
 
     return EXIT_SUCCESS;
 }
