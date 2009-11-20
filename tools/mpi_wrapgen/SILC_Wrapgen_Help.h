@@ -5,8 +5,10 @@
 using std::cout;
 using std::endl;
 
-namespace SILC {
-namespace Wrapgen {
+namespace SILC
+{
+namespace Wrapgen
+{
 void
 help
 (
@@ -15,24 +17,23 @@ help
 {
     cout << "'" << name << "' generates EPILOG measurement wrappers for MPI function\n" << endl;
 
-    cout << "USAGE :\nThere are 2 possibilities to use " << name << ":\n" << endl;
-    cout << "(1) " << name << " <file1.txt> specfile <-r...> <file2.txt>" << endl;
-    cout << " a specfile contains the functions combined with the used wrapper\n" << endl;
-    cout << "(2) " << name << " <file1.txt> wrapper.w <-r...> <file2.txt>" << endl;
-    cout << " you can specify a wrapper which is used for all functions instead of a specfile\n" << endl;
-    cout << "-expressions in < > are optional" << endl;
-    cout << "-textfiles can be included" << endl;
-    cout << "-the b options disables the banner output before generating new code" << endl;
-    cout << "-the r (restrict option) can specify the output depending on the specifier" << endl;
-    cout << "  -g specifies the group : '" << name << " -rgp2p' (for Peer to Peer)" << endl;
-    cout << "  -i specifies the ID of a function: '" << name << " -ri92' (Function with ID 92)" << endl;
-    cout << "  -n specifies a string in the functionname: '" << name << " -rncast'" << endl;
-    cout << "     (all function including the string 'cast')" << endl;
-    cout << "  -t specifies the returntype of the MPI function: '" << name << " -rtint'" << endl;
-    cout << "  -v specifies the version: '" << name << " -rv1' (for MPI Version 1)" << endl;
-    cout << " A combination of -r options is possible using a '+' between the options\n" << endl;
-    cout << " Example: " << name << " header.txt name.w -rntype+v1+gp2p footer.txt" << endl << endl;
-    cout << " Please use a - for each option or add the r option at last position!" << endl;
+    cout << "USAGE :" << name << " -p <prototypes.xml> [OPTIONS] <templatefile>\n" << endl;
+    cout << "Options:" << endl;
+    cout << "-b   disables the banner output before generating new code" << endl;
+    cout << "-r   (restrict option) can specify the output depending on the specifier" << endl;
+    cout << "     g   specifies the group : '" << name << " -rgp2p' (for Peer to Peer)" << endl;
+    cout << "     i   specifies the ID of a function: '" << name << " -ri92' (Function with ID 92)" << endl;
+    cout << "     n   specifies a string in the functionname: '" << name << " -rncast'" << endl;
+    cout << "         (all function including the string 'cast')" << endl;
+    cout << "     t   specifies the returntype of the MPI function: '" << name << " -rtint'" << endl;
+    cout << "         (all functions return an int)" << endl;
+    cout << "     v   specifies the version: '" << name << " -rv1' (for MPI Version 1)\n" << endl;
+    cout << "     A combination of -r options is possible using a '+' between the options." << endl;
+    cout << "     Example: " << name << "-p proto.xml -rntype+v1+gp2p test.c.tmpl" << endl;
+    cout << "     Process all functions in proto.xml which contain the string 'type'," << endl;
+    cout << "     and belong to MPI Version 1, and belong to group" << endl;
+    cout << "     'peer-to peer communication'.\n" << endl;
+    exit( 0 );
 }
 }   // namespace Wrapgen
 }   // namespace SILC
