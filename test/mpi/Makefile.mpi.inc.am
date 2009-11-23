@@ -7,3 +7,17 @@ mpitest_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_DIR_UTIL)
 
 mpitest_LDADD = libsilc_adapter_mpi.la
+
+check_PROGRAMS += test_link
+
+test_link_SOURCES =  $(SRC_ROOT)/test/mpi/test_link.c 
+test_link_CFLAGS = $(AM_CFLAGS) -g -finstrument-functions
+test_link_CPPFLAGS = $(AM_CPPFLAGS)           \
+    -I$(INC_ROOT)src/adapters/include       \
+    -I$(INC_ROOT)src/measurement/include    \
+    -I$(INC_DIR_UTIL)
+test_link_LDADD = \
+    $(LIB_ROOT)libsilc.la \
+    $(LIB_DIR_OTF2)libotf2.la \
+    $(LIB_DIR_UTIL)libsilc_utilities.la \
+    -lm
