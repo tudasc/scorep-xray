@@ -91,6 +91,15 @@ hash_get( long h )
 }
 
 
+
+/**
+ * @brief Get symbol table either by using BFD or by parsing nm-file
+ */
+static void
+get_symTab( void )
+{
+}
+
 /**
  * @brief Register a new region to the measuremnt system
  *
@@ -178,13 +187,12 @@ __cyg_profile_func_enter
         get_symTab();
     }
 
-    SILC_RegionHandle silc_no_region = 0;
 
     printf( " function pointer: %i \n", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
-        if ( hn->reghandle == silc_no_region )
+        if ( hn->reghandle == SILC_INVALID_REGION )
         {
             /* -- region entered the first time, register region -- */
             register_region( hn );
