@@ -764,7 +764,7 @@ MPI_Register_datarep( char*                            datarep,
  * @{
  */
 
-#if !defined( MPICH ) || defined( MPIO_USES_MPI_REQUEST )
+#if !defined( MPICH2 ) || defined( MPIO_USES_MPI_REQUEST )
 
 #if HAVE( DECL_MPI_FILE_IREAD ) && !defined( SILC_MPI_NO_IO )
 /**
