@@ -75,6 +75,10 @@ static SILC_ConfigVariable silc_configs[] = {
 static void
 silc_finalize( void );
 
+static OTF2_FlushType
+pre_no_flush( void );
+
+
 /**
  * Return true if SILC_InitMeasurement() has been executed.
  */
@@ -177,8 +181,9 @@ SILC_InitMeasurement
                                                OTF2_BUFFER_WRITE,
                                                OTF2_BUFFER_CHUNKED,
                                                OTF2_SUBSTRATE_NON,
-                                               strdup( "silc.0.buf" ),
+                                               NULL,
                                                NULL );
+    OTF2_Buffer_RegisterPreFlushCallback( local_event_buffer, pre_no_flush );
 
     if ( !local_event_buffer )
     {
@@ -341,4 +346,10 @@ cleanup:
     OTF2_Buffer_Delete( local_event_buffer );
 
     silc_finalized = true;
+}
+
+static OTF2_FlushType
+pre_no_flush( void )
+{
+    return OTF2_NO_FLUSH;
 }
