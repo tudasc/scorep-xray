@@ -20,8 +20,14 @@
  * @name C wrappers for access functions
  * @{
  */
+ 
+#if !defined(MPICH) || defined(MPIO_USES_MPI_REQUEST)
 
-#pragma wrapgen multiple regex(MPI_File.*(read|write).*$)  skel/SILC_Mpi_Std.w
+#pragma wrapgen multiple regex(MPI_File.*(iread|iwrite).*$)  skel/SILC_Mpi_Std.w
+
+#endif /* !defined(MPICH) || defined(MPIO_USES_MPI_REQUEST) */
+
+#pragma wrapgen multiple regex(MPI_File.*(_read|_write).*$)  skel/SILC_Mpi_Std.w
 
 /**
  * @}
