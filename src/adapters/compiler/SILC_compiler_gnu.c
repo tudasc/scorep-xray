@@ -49,7 +49,7 @@ typedef struct HashNode
     SILC_LineNo       lnobegin;
     SILC_LineNo       lnoend;
     SILC_RegionHandle reghandle;
-    struct HN*        next;
+    struct HashNode*  next;
 } HashNode;
 
 #define HASH_MAX 1021
