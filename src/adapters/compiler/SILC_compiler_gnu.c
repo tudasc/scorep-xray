@@ -29,6 +29,13 @@
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>
 
+
+/**
+ * static variable to control initialize status of GNU
+ */
+static int gnu_init = 1;
+
+
 /**
  * @brief Hash table to map function addresses to region identifier
  * identifier is called region handle
@@ -95,12 +102,13 @@ register_region
     HashNode* hn
 )
 {
-    SILC_SourceFileHandle handle;
-    SILC_LineNo           begin, end;
-    SILC_AdapterType      adapter = SILC_ADAPTER_COMPILER;
-    SILC_RegionType       region  = SILC_REGION_FUNCTION;
-
-    hn->reghandle = SILC_DefineRegion( hn->name, handle, begin, end, adapter, region );
+    hn->reghandle = SILC_DefineRegion( hn->name,
+                                       SILC_INVALID_SOURCE_FILE,
+                                       SILC_INVALID_LINE_NO,
+                                       SILC_INVALID_LINE_NO,
+                                       SILC_ADAPTER_COMPILER,
+                                       SILC_REGION_FUNCTION
+                                       );
 
     printf( " register a region: \n" );
 }
@@ -126,6 +134,8 @@ silc_gnu_finalize
             htab[ i ] = NULL;
         }
     }
+    /* set gnu init status to one - means not initialized */
+    gnu_init = 1;
 }
 
 
@@ -153,15 +163,28 @@ __cyg_profile_func_enter
      * to calculate function addresses
      */
 
-    SILC_InitMeasurement();
+    if ( gnu_init )
+    {
+        /* not initialized so far */
+        SILC_InitMeasurement();
 
-    SILC_RegionHandle SILC_NO_REGION = 0;
+        /**
+         * the finalize is not supported, probably not needed
+         */
+        /*	  silc_finalize = gnu_finalize; */
+        gnu_init = 0;   /* is initialized */
+
+        /* call function to calculate symbol table */
+        get_symTab();
+    }
+
+    SILC_RegionHandle silc_no_region = 0;
 
     printf( " function pointer: %i \n", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
-        if ( hn->reghandle == SILC_NO_REGION )
+        if ( hn->reghandle == silc_no_region )
         {
             /* -- region entered the first time, register region -- */
             register_region( hn );
