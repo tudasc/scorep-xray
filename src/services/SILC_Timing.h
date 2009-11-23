@@ -7,10 +7,22 @@
  *
  * @brief       Provide platform independant timing functionality.
  *
- * @todo DD: please check the units and the docs in general. is a init
- * function needed?
+ * @todo DD: please check the units and the docs in general.
  */
 
+#include <stdint.h>
+
+/**
+ * Initialize Timer before usage of SILC_GetWallClockTime() and
+ * SILC_GetClockResolution(). Multiple calls do no harm.
+ *
+ * @note For performance reasons we don't check if the timer is initialized in
+ * SILC_GetWallClockTime() and SILC_GetClockResolution().
+ *
+ * @note The init function is not thread safe.
+ */
+void
+SILC_InitTimer();
 
 
 /**

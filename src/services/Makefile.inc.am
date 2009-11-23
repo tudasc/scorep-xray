@@ -1,0 +1,81 @@
+## -*- mode: makefile-automake -*-
+
+# This file is part of the SILC project (http://www.silc.de)
+#
+# Copyright (c) 2009-2011,
+#    RWTH Aachen, Germany
+#    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+#    Technische Universitaet Dresden, Germany
+#    University of Oregon, Eugene USA
+#    Forschungszentrum Juelich GmbH, Germany
+#    Technische Universitaet Muenchen, Germany
+#
+# See the COPYING file in the package base directory for details.
+
+
+noinst_LTLIBRARIES += libsilc_timer.la
+libsilc_timer_la_SOURCES = $(SRC_ROOT)src/services/SILC_Timing.h
+
+
+# compile just one of the following silc_timer_*.c. The conditionals are set in 
+# build-config/m4/ac-silc-timers.m4
+if SILC_TIMER_BGP_GET_TIMEBASE 
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_bgp_get_timebase.c
+endif
+
+if SILC_TIMER_CLOCK_GETTIME    
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_clock_gettime.c
+endif
+
+if SILC_TIMER_CRAY_RTCLOCK     
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cray_rtclock.c
+endif
+
+if SILC_TIMER_CYCLE_COUNTER    
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cycle_counter.c
+endif
+
+if SILC_TIMER_CRAY_DCLOCK      
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cray_dclock.c
+endif
+
+if SILC_TIMER_SUN_GETHRTIME    
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_sun_gethrtime.c
+endif
+
+if SILC_TIMER_GETTIMEOFDAY     
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_gettimeofday.c
+endif
+
+if SILC_TIMER_INTEL_MMTIMER    
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_intel_mmtimer.c
+endif
+
+if SILC_TIMER_PAPI_REAL_CYC    
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_papi_real_cyc.c
+endif
+
+if SILC_TIMER_PAPI_REAL_USEC   
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_papi_real_usec.c
+endif
+
+if SILC_TIMER_POWER_REALTIME   
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_power_realtime.c
+endif
+
+if SILC_TIMER_CRAY_RTC         
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cray_rtc.c
+endif
+
+if SILC_TIMER_RTS_GET_TIMEBASE 
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_rts_get_timebase.c
+endif
+
+if SILC_TIMER_IBM_SWITCH_CLOCK 
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_ibm_switch_clock.c
+endif
+
+if SILC_TIMER_NEC_SYSSX_HGTIME 
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_nec_syssx_hgtime.c
+endif
+
