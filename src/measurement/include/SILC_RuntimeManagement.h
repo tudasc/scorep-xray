@@ -78,6 +78,8 @@ SILC_IsInitialized
  *
  * Calling this function several times does no harm to the measurement system.
  *
+ * Each arising error leads to a fatal abortion of the program.
+ *
  * @note The MPI adapter needs special treatment, see
  * SILC_InitMeasurementMPI().
  *
