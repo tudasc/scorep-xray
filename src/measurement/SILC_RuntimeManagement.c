@@ -177,7 +177,7 @@ SILC_InitMeasurement
                                                OTF2_BUFFER_WRITE,
                                                OTF2_BUFFER_CHUNKED,
                                                OTF2_SUBSTRATE_NON,
-                                               "silc.0.buf",
+                                               strdup( "silc.0.buf" ),
                                                NULL );
 
     if ( !local_event_buffer )
