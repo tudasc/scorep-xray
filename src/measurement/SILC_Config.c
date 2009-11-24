@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 
 /**
@@ -113,6 +114,11 @@ parse_bool
 );
 
 static inline bool
+parse_set( const char* value,
+           char***     stringListReference,
+           char**      acceptedValues );
+
+static inline bool
 parse_value
 (
     const char*     value,
@@ -126,11 +132,13 @@ parse_value
         case SILC_CONFIG_TYPE_BOOL:
             return parse_bool( value, variableReference );
 
+        case SILC_CONFIG_TYPE_SET:
+            return parse_set( value, variableReference, variableContext );
+
         case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
-        case SILC_CONFIG_TYPE_SET:
 
         case SILC_INVALID_CONFIG_TYPE:
         default:
@@ -171,4 +179,129 @@ parse_bool
     /* any remaining value is false */
     *boolReference = false;
     return true;
+}
+
+/**
+ * @brief remove leading and trailing whitespaces
+ *
+ * @note alters the input string
+ *
+ * @internal
+ */
+static char*
+trim_string( char* str )
+{
+    if ( !str )
+    {
+        return str;
+    }
+
+    /* remove leading spaces */
+    while ( isspace( *str ) )
+    {
+        str++;
+    }
+
+    /* remove trailing spaces only if strlen(str) > 0 */
+    if ( *str )
+    {
+        char* end = str + strlen( str ) - 1;
+        while ( isspace( *end ) )
+        {
+            *end-- = '\0';
+        }
+    }
+
+    return str;
+}
+
+static inline bool
+parse_set( const char* value,
+           char***     stringListReference,
+           char**      acceptedValues )
+{
+    /* count number of separator charachters and use it as an upper bound
+       for the number of entries in the string list */
+    size_t      string_list_alloc = 1;
+    const char* value_position    = value;
+    while ( *value_position )
+    {
+        if ( strchr( " ,:;", *value_position ) )
+        {
+            string_list_alloc++;
+        }
+        value_position++;
+    }
+
+    /* allocate memory for array and string, including terminating NULL */
+    void* alloc_result = realloc( *stringListReference,
+                                  ( string_list_alloc + 1 ) * sizeof( char* ) +
+                                  ( strlen( value ) + 1 ) * sizeof( char ) );
+    if ( !alloc_result )
+    {
+        SILC_ERROR_POSIX();
+        return false;
+    }
+    *stringListReference = NULL;
+    char** string_list = alloc_result;
+    char*  value_copy  = alloc_result + ( string_list_alloc + 1 ) * sizeof( char* );
+    strcpy( value_copy, value );
+
+    size_t string_list_len = 0;
+    char*  saveptr;
+    bool   success = true;
+    for ( char* entry = strtok_r( value_copy, " ,:;", &saveptr );
+          trim_string( entry );
+          entry = strtok_r( NULL, " ,:;", &saveptr ) )
+    {
+        if ( string_list_len >= string_list_alloc )
+        {
+            /* something strange has happened, we have more entries as in the
+               first run */
+            success = false;
+            goto out;
+        }
+
+        /* check for duplicates */
+        size_t i;
+        for ( i = 0; i < string_list_len; i++ )
+        {
+            if ( 0 == strcmp( entry, string_list[ i ] ) )
+            {
+                break;
+            }
+        }
+        if ( i < string_list_len )
+        {
+            continue;
+        }
+
+        /* check if entry is in acceptedValues */
+        char** acceptedValue = acceptedValues;
+        while ( acceptedValues && *acceptedValue )
+        {
+            if ( 0 == strcmp( entry, string_list[ i ] ) )
+            {
+                /* found entry in accepted values list */
+                break;
+            }
+            acceptedValue++;
+        }
+        if ( acceptedValues && !*acceptedValue )
+        {
+            fprintf( stderr, " value '%s' not in accepted set\n", entry );
+            continue;
+        }
+
+        /* not an duplicate and also an accepted value => add it to the list */
+        string_list[ string_list_len++ ] = entry;
+    }
+
+out:
+    /* NULL terminate list */
+    string_list[ string_list_len ] = NULL;
+
+    *stringListReference = string_list;
+
+    return success;
 }
