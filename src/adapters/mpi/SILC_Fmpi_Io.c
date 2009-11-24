@@ -1028,7 +1028,7 @@ FSUB( MPI_Register_datarep ) ( char* datarep, MPI_Datarep_conversion_function * 
  * @{
  */
 
-#if !defined( MPICH2 ) || defined( MPIO_USES_MPI_REQUEST )
+#if !defined( ROMIO_VERSION ) || defined( MPIO_USES_MPI_REQUEST )
 
 #if HAVE( DECL_MPI_FILE_IREAD ) && !defined( SILC_MPI_NO_IO )
 /**
@@ -1115,7 +1115,7 @@ FSUB( MPI_File_iwrite_shared ) ( MPI_File * fh, void* buf, int* count, MPI_Datat
 }
 #endif
 
-#endif /* !defined(MPICH) || defined(MPIO_USES_MPI_REQUEST) */
+#endif /* !defined(ROMIO_VERSION) || defined(MPIO_USES_MPI_REQUEST) */
 
 #if HAVE( DECL_MPI_FILE_READ ) && !defined( SILC_MPI_NO_IO )
 /**
