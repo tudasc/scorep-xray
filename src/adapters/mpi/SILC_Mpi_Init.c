@@ -23,19 +23,6 @@ silc_mpi_get_status_size( int* status_size );
 
 #include <stdio.h>
 
-const SILC_Adapter SILC_Mpi_Adapter =
-{
-    SILC_ADAPTER_MPI,
-    "MPI",
-    &SILC_Mpi_Register,
-    &SILC_Mpi_InitAdapter,
-    &SILC_Mpi_InitLocation,
-    &SILC_Mpi_FinalLocation,
-    &SILC_Mpi_Finalize,
-    &SILC_Mpi_Deregister
-};
-
-
 /** Contains the configuration string of enabled mpi function groups. It is filled
     by the measurement system after registration of configuration variables.
  */
@@ -112,3 +99,15 @@ SILC_Mpi_Deregister
 {
     printf( "In SILC_Mpi_Deregister\n" );
 }
+
+const SILC_Adapter SILC_Mpi_Adapter =
+{
+    SILC_ADAPTER_MPI,
+    "MPI",
+    &SILC_Mpi_Register,
+    &SILC_Mpi_InitAdapter,
+    &SILC_Mpi_InitLocation,
+    &SILC_Mpi_FinalLocation,
+    &SILC_Mpi_Finalize,
+    &SILC_Mpi_Deregister
+};
