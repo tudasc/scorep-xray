@@ -47,12 +47,36 @@ silc_user_get_file( const char*            file,
 {
     size_t index;
 
+    /* If file local variables are NULL they cannot be used */
+    if ( lastFile == NULL || lastFileName == NULL )
+    {
+        SILC_Hashtab_Entry* entry = SILC_Hashtab_Find( silc_user_file_table, file, &index );
+
+        /* If not found register new file */
+        if ( !entry )
+        {
+            /* Register file to measurement system */
+            SILC_SourceFileHandle* handle = malloc( sizeof( SILC_SourceFileHandle ) );
+            *handle = SILC_DefineSourceFile( file );
+
+            /* Store handle in hashtable */
+            SILC_Hashtab_Insert( silc_user_file_table, ( void* )file, handle, &index );
+
+            return *handle;
+        }
+        else
+        {
+            return *( SILC_SourceFileHandle* )entry->value;
+        }
+    }
+
     /* In most cases, it is expected that in most cases no regions are in included
        files. If the compiler inserts always the same string adress for file names,
        one static variable in a source file can remember the last used filename from
        a source file and sting comparisons can be avoided.
 
-       This does not work if we have regions defined e.g. in included header files.
+       However, if regions are defined in included header files, one must lookup
+       file handles.
      */
     if ( *lastFileName == file )
     {
