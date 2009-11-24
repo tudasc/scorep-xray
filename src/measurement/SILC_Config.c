@@ -280,7 +280,7 @@ parse_set( const char* value,
         char** acceptedValue = acceptedValues;
         while ( acceptedValues && *acceptedValue )
         {
-            if ( 0 == strcmp( entry, string_list[ i ] ) )
+            if ( 0 == strcmp( entry, *acceptedValue ) )
             {
                 /* found entry in accepted values list */
                 break;
