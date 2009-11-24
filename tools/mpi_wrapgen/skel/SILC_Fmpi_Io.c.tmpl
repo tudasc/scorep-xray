@@ -42,11 +42,17 @@
  * @{
  */
 
-#if !defined(MPICH) || defined(MPIO_USES_MPI_REQUEST)
+/* MPI Implementation which use ROMIO can have no general support for MPI_Requests
+   in asynchronous file IO operations. This leads to a different signature and
+   thus to compiler errors. To avoid compilation errors, the asynchronous file
+   IO functions are not wrapped if ROMIO is used and they support no general
+   MPI_Requests.
+*/
+#if !defined(ROMIO_VERSION) || defined(MPIO_USES_MPI_REQUEST)
 
 #pragma wrapgen multiple regex(MPI_File.*(iread|iwrite).*$)  skel/SILC_Fmpi_Std.w
 
-#endif /* !defined(MPICH) || defined(MPIO_USES_MPI_REQUEST) */
+#endif /* !defined(ROMIO_VERSION) || defined(MPIO_USES_MPI_REQUEST) */
 
 #pragma wrapgen multiple regex(MPI_File.*(_read|_write).*$)  skel/SILC_Fmpi_Std.w
 
