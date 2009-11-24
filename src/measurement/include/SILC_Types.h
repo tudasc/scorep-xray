@@ -388,6 +388,20 @@ typedef enum SILC_ConfigType
      */
     SILC_CONFIG_TYPE_SET,
 
+    /**
+     * A symbolic set, represented as a bitmask.
+     *
+     * @note At most 64 set members are supported.
+     *
+     * SILC_ConfigVariable::variableReference should point to a variable of
+     * type uint64_t.
+     *
+     * SILC_ConfigVariable::variableContext should point to a NULL terminated
+     * list of type SILC_ConfigType_SetEntry with valid set members and there
+     * values.
+     */
+    SILC_CONFIG_TYPE_BITSET,
+
     SILC_INVALID_CONFIG_TYPE /**< For internal use only. */
 } SILC_ConfigType;
 
@@ -410,6 +424,17 @@ typedef struct SILC_ConfigVariable
     const char*     shortHelp;
     const char*     longHelp;
 } SILC_ConfigVariable;
+
+
+/**
+ * The type for SILC_CONFIG_TYPE_BITSET entries.
+ *
+ */
+typedef struct SILC_ConfigType_SetEntry
+{
+    const char* name;
+    uint64_t    value;
+} SILC_ConfigType_SetEntry;
 
 
 /*@}*/
