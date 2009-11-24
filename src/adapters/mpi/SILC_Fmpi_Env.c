@@ -226,7 +226,7 @@ FSUB( MPI_Init_thread ) ( int* required,
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
-        SILC_ERROR( SILC_ERROR_F2C_INT_SIZE_MISMATCH );
+        SILC_ERROR( SILC_ERROR_F2C_INT_SIZE_MISMATCH, "" );
     }
     *ierr = MPI_Init_thread( 0, ( char*** )0, *required, provided );
 }
@@ -244,7 +244,7 @@ FSUB( MPI_Init ) ( int* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
-        SILC_ERROR( SILC_ERROR_F2C_INT_SIZE_MISMATCH );
+        SILC_ERROR( SILC_ERROR_F2C_INT_SIZE_MISMATCH, "" );
     }
     *ierr = MPI_Init( 0, ( char*** )0 );
 }
