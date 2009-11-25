@@ -159,6 +159,7 @@ parse_value
         case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
+        case SILC_CONFIG_TYPE_BITSET:
 
         case SILC_INVALID_CONFIG_TYPE:
         default:
@@ -360,6 +361,7 @@ dump_value( const char*     prefix,
         case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
+        case SILC_CONFIG_TYPE_BITSET:
             fprintf( stderr, "%stype not implemented\n", prefix );
             break;
 
