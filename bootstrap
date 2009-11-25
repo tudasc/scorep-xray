@@ -3,54 +3,22 @@
 
 #package_version=1.0
 
+AUTORECONF      ?= autoreconf
+AUTORECONFFLAGS  = --install -Wall --verbose --no-recursive
+
 all: clean 
-	cd vendor/otf2 && ./bootstrap && cd -                                  && \
-	autoreconf --install --force -Wall --verbose --no-recursive            && \
-	cd build-backend;  autoreconf --install -Wall --verbose --no-recursive && \
-	cd ../build-frontend; autoreconf --install -Wall --verbose --no-recursive
+	cd vendor/otf2 && ./bootstrap AUTORECONF=$(AUTORECONF)
+	$(AUTORECONF) $(AUTORECONFFLAGS)
+	cd build-backend;  $(AUTORECONF) $(AUTORECONFFLAGS)
+	cd build-frontend; $(AUTORECONF) $(AUTORECONFFLAGS)
 
 
 clean:
-	cd vendor/otf2 && ./bootstrap clean 
-	find . -name "*~" -exec rm '{}' \;
+	cd vendor/otf2 && ./bootstrap clean
 	rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in
 	cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing
 	cd build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
-	cd build-backend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
+	cd build-backend;  rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	cd build-frontend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	rm -f build-config/VERSION build-config/REVISION
 	rm -f src/config-backend.h.in src/config-frontend.h.in
-
-#dirs: cross-dirs nocross-dirs
-
-#nocross-dirs:
-#	-chmod -R u+w vpath-nocross/
-#	rm -rf vpath-nocross/
-#	rm -rf install-nocross/
-#	mkdir vpath-nocross install-nocross
-
-#nocross: nocross-dirs 
-#	cd vpath-nocross; ../configure --prefix=`pwd`/../install-nocross && make && make install
-
-#nocross-check: nocross-dirs nocross
-#	cd vpath-nocross; make distcheck
-
-#cross-dirs:
-#	-chmod -R u+w vpath-cross/
-#	rm -rf vpath-cross/
-#	rm -rf install-cross/
-#	mkdir vpath-cross install-cross
-
-#cross: cross-dirs
-
-#cross-check: cross-dirs cross
-#	cd vpath-cross; ../configure --prefix=`pwd`/../install-cross --build=x86_64-unknown-linux-gnu --host=i686-pc-linux-gnu CC_FOR_BUILD=icc && make && make install
-#	cd vpath-cross; make distcheck
-
-#checks: cross-check nocross-check
-
-# During make dist the distributed REVISION file 
-# $(distdir)/build-config/REVISION is updated to current status
-#initial-version-encoding:
-#	echo "$(package_version)" > build-config/VERSION
-#	echo `svnversion`         > build-config/REVISION
