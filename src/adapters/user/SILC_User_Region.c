@@ -47,29 +47,6 @@ silc_user_get_file( const char*            file,
 {
     size_t index;
 
-    /* If file local variables are NULL they cannot be used */
-    if ( lastFile == NULL || lastFileName == NULL )
-    {
-        SILC_Hashtab_Entry* entry = SILC_Hashtab_Find( silc_user_file_table, file, &index );
-
-        /* If not found register new file */
-        if ( !entry )
-        {
-            /* Register file to measurement system */
-            SILC_SourceFileHandle* handle = malloc( sizeof( SILC_SourceFileHandle ) );
-            *handle = SILC_DefineSourceFile( file );
-
-            /* Store handle in hashtable */
-            SILC_Hashtab_Insert( silc_user_file_table, ( void* )file, handle, &index );
-
-            return *handle;
-        }
-        else
-        {
-            return *( SILC_SourceFileHandle* )entry->value;
-        }
-    }
-
     /* In most cases, it is expected that in most cases no regions are in included
        files. If the compiler inserts always the same string adress for file names,
        one static variable in a source file can remember the last used filename from
@@ -90,12 +67,16 @@ silc_user_get_file( const char*            file,
     /* If not found register new file */
     if ( !entry )
     {
+        /* Reserve own storage for file name */
+        char* fileName = ( char* )malloc( ( strlen( file ) + 1 ) * sizeof( char ) );
+        strcpy( fileName, file );
+
         /* Register file to measurement system */
         SILC_SourceFileHandle* handle = malloc( sizeof( SILC_SourceFileHandle ) );
-        *handle = SILC_DefineSourceFile( file );
+        *handle = SILC_DefineSourceFile( fileName );
 
         /* Store handle in hashtable */
-        SILC_Hashtab_Insert( silc_user_file_table, ( void* )file, handle, &index );
+        SILC_Hashtab_Insert( silc_user_file_table, ( void* )fileName, handle, &index );
 
         *lastFile = *handle;
     }
@@ -183,7 +164,7 @@ SILC_User_RegionBegin
         /* Translate region type from user adapter type to SILC measurement type */
         SILC_RegionType region_type = silc_user_to_silc_region_type( regionType );
 
-        /* Regiter new region */
+        /* Register new region */
         *handle = SILC_DefineRegion( name,
                                      file,
                                      lineNo,
