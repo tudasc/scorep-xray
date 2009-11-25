@@ -2,7 +2,7 @@
     @author Daniel Lorenz
 
     This file provides macros to generate decoration for function names for C-functions
-    called from Fortran.
+    called from Fortran. Furthermore, conversion types and constantsa are defined.
  */
 
 /** @def SILC_FORTRAN_XSUFFIX
@@ -72,3 +72,35 @@
     @param name The name that gets decorated.
  */
 #define SILC_FORTRAN_SUB4( name )  SILC_FORTRAN_SUFFIX2( SILC_FORTRAN_LOWCASE( name ) )
+
+/** Defines the type obtained from Fortran calls for region handles.
+ */
+typedef int SILC_Fortran_RegionHandle;
+
+/** Defines the type obtained from Fortran calls for metric handles.
+ */
+typedef int SILC_Fortran_MetricHandle;
+
+/** Defines the type obtained from Fortran calls for metric group handles.
+ */
+typedef int SILC_Fortran_MetricGroup;
+
+/** @def SILC_FORTRAN_INVALID_REGION
+    Value of an invalid region handle from fortran calls.
+ */
+#define SILC_FORTRAN_INVALID_REGION -1
+
+/** @def SILC_FORTRAN_INVALID_METRIC
+    Value of an invalid metric handle from fortran calls.
+ */
+#define SILC_FORTRAN_INVALID_METRIC -1
+
+/** @def SILC_FORTRAN_INVALID_GROUP
+    Value of an invalid metric group handle from fortran calls.
+ */
+#define SILC_FORTRAN_INVALID_GROUP  -1
+
+/** @def SILC_FORTRAN_INVALID_GROUP
+    Value of the metric group handle for the default group from fortran calls.
+ */
+#define SILC_FORTRAN_DEFAULT_GROUP  -2

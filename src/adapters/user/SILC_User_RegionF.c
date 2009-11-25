@@ -28,7 +28,7 @@ extern SILC_RegionType
 silc_user_to_silc_region_type( const SILC_User_RegionType user_type );
 
 void
-FSUB( SILC_User_RegionBeginF ) ( int32_t * handle,
+FSUB( SILC_User_RegionBeginF ) ( SILC_Fortran_RegionHandle * handle,
                                  char*    name_f,
                                  int32_t * type,
                                  char*    fileName_f,
@@ -36,17 +36,17 @@ FSUB( SILC_User_RegionBeginF ) ( int32_t * handle,
                                  int nameLen,
                                  int fileNameLen )
 {
+    /* Check for intialization */
+    SILC_USER_ASSERT_INITIALIZED;
+
     /* Test if the region is visited for the first time */
-    if ( *handle == SILC_INVALID_REGION )
+    if ( *handle == SILC_FORTRAN_INVALID_REGION )
     {
         char*                  name;
         char*                  fileName;
         SILC_Hashtab_Entry*    entry;
         size_t                 index;
         SILC_SourceFileHandle* fileHandle;
-
-        /* Check for intialization */
-        SILC_USER_ASSERT_INITIALIZED;
 
         /* Copy strings */
         name = ( char* )malloc( ( nameLen + 1 ) * sizeof( char ) );
@@ -68,7 +68,10 @@ FSUB( SILC_User_RegionBeginF ) ( int32_t * handle,
             *fileHandle = SILC_DefineSourceFile( fileName );
 
             /* Store handle in hashtable */
-            SILC_Hashtab_Insert( silc_user_file_table, ( void* )fileName, fileHandle, &index );
+            SILC_Hashtab_Insert( silc_user_file_table,
+                                 ( void* )fileName,
+                                 fileHandle,
+                                 &index );
         }
         else
         {
@@ -98,7 +101,7 @@ FSUB( SILC_User_RegionBeginF ) ( int32_t * handle,
 }
 
 void
-FSUB( SILC_User_RegionEndF ) ( int32_t * handle )
+FSUB( SILC_User_RegionEndF ) ( SILC_Fortran_RegionHandle * handle )
 {
     SILC_User_RegionEnd( *handle );
 }

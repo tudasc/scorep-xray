@@ -4,7 +4,8 @@ noinst_LTLIBRARIES += libsilc_adapter_user.la  \
     libsilc_adapter_user_fortran_sub3.la       \
     libsilc_adapter_user_fortran_sub4.la
 
-libsilc_adapter_user_fortran_sub1_la_SOURCES =  \
+libsilc_adapter_user_fortran_sub1_la_SOURCES =       \
+    $(SRC_ROOT)src/adapters/user/SILC_User_MetricF.c \
     $(SRC_ROOT)src/adapters/user/SILC_User_RegionF.c
 
 libsilc_adapter_user_fortran_sub1_la_CPPFLAGS = \
@@ -16,6 +17,7 @@ libsilc_adapter_user_fortran_sub1_la_CPPFLAGS = \
     -I$(INC_DIR_UTIL)
 
 libsilc_adapter_user_fortran_sub2_la_SOURCES =  \
+    $(SRC_ROOT)src/adapters/user/SILC_User_MetricF.c \
     $(SRC_ROOT)src/adapters/user/SILC_User_RegionF.c
 
 libsilc_adapter_user_fortran_sub2_la_CPPFLAGS = \
@@ -27,6 +29,7 @@ libsilc_adapter_user_fortran_sub2_la_CPPFLAGS = \
     -I$(INC_DIR_UTIL)
 
 libsilc_adapter_user_fortran_sub3_la_SOURCES =  \
+    $(SRC_ROOT)src/adapters/user/SILC_User_MetricF.c \
     $(SRC_ROOT)src/adapters/user/SILC_User_RegionF.c
 
 libsilc_adapter_user_fortran_sub3_la_CPPFLAGS = \
@@ -38,6 +41,7 @@ libsilc_adapter_user_fortran_sub3_la_CPPFLAGS = \
     -I$(INC_DIR_UTIL)
 
 libsilc_adapter_user_fortran_sub4_la_SOURCES =  \
+    $(SRC_ROOT)src/adapters/user/SILC_User_MetricF.c \
     $(SRC_ROOT)src/adapters/user/SILC_User_RegionF.c
 
 libsilc_adapter_user_fortran_sub4_la_CPPFLAGS = \

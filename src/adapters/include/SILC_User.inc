@@ -60,8 +60,13 @@
 #define SILC_USER_REGION_TYPE_DYNAMIC   4
 #define SILC_USER_REGION_TYPE_PHASE     8
 
-#define SILC_METRIC_INT64  0
-#define SILC_METRIC_REAL64 1
+#define SILC_USER_METRIC_TYPE_INT64  0
+#define SILC_USER_METRIC_TYPE_REAL64 1
+
+#define SILC_USER_METRIC_CONTEXT_GLOBAL   0
+#define SILC_USER_METRIC_CONTEXT_CALLPATH 1
+
+#define SILC_USER_METRIC_GROUP_DEFAULT -2
 
 !************************************************************* Regions
 
@@ -104,7 +109,7 @@
         call SILC_User_InitMetricGroupF( groupHandle, name );
 
 #define SILC_USER_METRIC_LOCAL( metricHandle ) \
-        SILC_METRIC_HANDLE :: metricHandle = SILC_INVALID_COUNTER
+        SILC_METRIC_HANDLE :: metricHandle = SILC_INVALID_METRIC
 
 #define SILC_USER_METRIC_GLOBAL( metricHandle ) \
         module metricHandle##mod; SILC_METRIC_HANDLE::metricHandle=SILC_INVALID_METRIC;\
@@ -114,7 +119,7 @@
         use metricHandle##mod
 
 #define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, groupHandle ) \
-        call SILC_User_InitMetricF( metricHandle, name, unit, type, context, grouphandle )
+        call SILC_User_InitMetricF( metricHandle, name, unit, type, context, groupHandle )
 
 #define SILC_USER_METRIC_INT64( metricHandle, value ) \
         call SILC_User_MetricInt64F( metricHandle, value )
