@@ -23,6 +23,7 @@
  */
 
 #include "stdio.h"
+#include "bfd.h"
 
 #include <SILC_Utils.h>
 #include <SILC_Events.h>
@@ -91,6 +92,35 @@ hash_get( long h )
 }
 
 
+/**
+ * Stores function name under hash code
+ *
+ * @param h    Hash node key
+ * @param n    file name
+ * @param fn   function name
+ * @param lno  line number
+ */
+static void
+hash_put
+(
+    long        h,
+    const char* n,
+    const char* fn,
+    int         lno
+)
+{
+    long      id  = h % HASH_MAX;
+    HashNode* add = ( HashNode* )malloc( sizeof( HashNode ) );
+    add->id        = h;
+    add->name      = n;
+    add->fname     = fn ? ( const char* )strdup( fn ) : fn;
+    add->lnobegin  = lno;
+    add->lnoend    = SILC_INVALID_LINE_NO;
+    add->reghandle = SILC_INVALID_REGION;
+    add->next      = htab[ id ];
+    htab[ id ]     = add;
+}
+
 
 /**
  * @brief Get symbol table either by using BFD or by parsing nm-file
@@ -98,6 +128,119 @@ hash_get( long h )
 static void
 get_symTab( void )
 {
+    bfd*      BfdImage = 0;
+    int       nr_all_syms;
+    int       i;
+    size_t    size;
+    char*     exe_env;
+    asymbol** canonicSymbols;
+
+
+    /* get gnu src from environment variable "VT_GNU_GETSRC" */
+    /*  int do_getsrc = vt_env_gnu_getsrc(); */
+
+    /* initialize BFD */
+    bfd_init();
+    /* get executable path from environment var. VT_APPPATH */
+
+    /* get the path from the environment */
+    char* temp = getenv( "SILC_APPPATH" );
+
+    printf( " apppath set to: %s \n", temp );
+
+    if ( !temp )
+    {
+        printf( "Could not determine path of executable.\n" );
+        /* we should abort here */
+    }
+    else
+    {
+        BfdImage = bfd_openr( temp, 0 );
+        if ( !BfdImage )
+        {
+            printf( "BFD: bfd_openr(): failed\n" );
+        }
+    }
+
+
+    /* check image format   */
+    if ( !bfd_check_format( BfdImage, bfd_object ) )
+    {
+        printf( "BFD: bfd_check_format(): failed\n" );
+    }
+
+
+    /* return if file has no symbols at all */
+    if ( !( bfd_get_file_flags( BfdImage ) & HAS_SYMS ) )
+    {
+        printf( "BFD: bfd_get_file_flags(): failed\n" );
+    }
+
+    /* get the upper bound number of symbols */
+    size = bfd_get_symtab_upper_bound( BfdImage );
+
+    printf( " size of symtab: %i \n", size );
+
+
+    /* HAS_SYMS can be set even with no symbols in the file! */
+    if ( size < 1 )
+    {
+        printf( "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
+    }
+
+    /* read canonicalized symbols  */
+    canonicSymbols = ( asymbol** )malloc( size );
+
+    nr_all_syms = bfd_canonicalize_symtab( BfdImage, canonicSymbols );
+    if ( nr_all_syms < 1 )
+    {
+        printf( "BFD: bfd_canonicalize_symtab(): < 1\n" );
+    }
+    for ( i = 0; i < nr_all_syms; ++i )
+    {
+        char*        dem_name = 0;
+        long         addr;
+        const char*  filename;
+        const char*  funcname;
+        unsigned int lno;
+
+        /* ignore system functions */
+        if ( strncmp( canonicSymbols[ i ]->name, "__", 2 ) == 0 ||
+             strncmp( canonicSymbols[ i ]->name, "bfd_", 4 ) == 0 ||
+             strstr( canonicSymbols[ i ]->name, "@@" ) != NULL )
+        {
+            continue;
+        }
+
+        /* get filename and linenumber from debug info */
+        /* needs -g */
+        filename = NULL;
+        lno      = SILC_INVALID_LINE_NO;
+
+
+
+        /* get the source info for every funciont in case of gnu by default */
+        /* calls BFD_SEND */
+        bfd_find_nearest_line( BfdImage,
+                               bfd_get_section( canonicSymbols[ i ] ),
+                               canonicSymbols,
+                               canonicSymbols[ i ]->value,
+                               &filename,
+                               &funcname,
+                               &lno
+                               );
+
+
+
+        /* calculate function address */
+        addr = canonicSymbols[ i ]->section->vma + canonicSymbols[ i ]->value;
+        /* printf(" address: %i, name %s, filename %s, line number %i \n", addr, canonicSymbols[i]->name, filename, lno); */
+
+        hash_put( addr, canonicSymbols[ i ]->name, filename, lno );
+    }
+
+    bfd_close( BfdImage );
+    return;
 }
 
 /**
@@ -134,7 +277,6 @@ silc_gnu_finalize
     printf( "finalize the gnu compiler instrumentation. \n" );
 
     int i;
-
     for ( i = 0; i < HASH_MAX; i++ )
     {
         if ( htab[ i ] )
