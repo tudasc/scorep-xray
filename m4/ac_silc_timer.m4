@@ -21,7 +21,7 @@ ac_silc_timer_bgp_get_timebase_available="no"
 AC_MSG_CHECKING([for bgp get timebase timer])
 ac_silc_timer_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS -I/bgsys/drivers/ppcfloor/arch/include"
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <common/bgp_personality.h>
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <common/bgp_personality.h>
 #include <common/bgp_personality_inlines.h>
 #include <spi/kernel_interface.h>]],
                                 [[_bgp_GetTimeBase();]])],
