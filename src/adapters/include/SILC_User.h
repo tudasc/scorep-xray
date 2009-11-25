@@ -84,7 +84,7 @@
                    SILC_USER_REGION_TYPE_DYNAMIC, SILC_USER_REGION_TYPE_PHASE, or a
                    combination of them.
 
-    Example:
+    C/C++ example:
     @code
     void myfunc()
     {
@@ -98,6 +98,19 @@
 
       SILC_USER_REGION_END( my_region_handle )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      ! do something
+      SILC_USER_REGION_END( my_region_handle )
+
+    end program myProg
     @endcode
  */
 
@@ -107,7 +120,7 @@
     @param name  The handle of the region which ended here.
                  It must be the same handle which is used as the start of the region.
 
-    Example:
+    C/C++ example:
     @code
     void myfunc()
     {
@@ -122,6 +135,40 @@
       SILC_USER_REGION_END( my_region_handle )
     }
     @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      ! do something
+      SILC_USER_REGION_END( my_region_handle )
+
+    end program myProg
+    @endcode
+ */
+
+/** @def SILC_USER_FUNC_DEFINE
+    This macro is for Fortran only. It declares the handle for a function. Every function
+    handle must be declared in the declaration part of the subroutine or function if
+    the SILC_USER_FUNC_BEGIN and SILC_USER_FUNC_END macros are used.
+
+   Example:
+    @code
+    subroutine myfunc
+      SILC_USER_FUNC_DEFINE
+      ! more declarations
+
+      SILC_USER_FUNC_BEGIN( "myfunc" )
+      ! do something
+      SILC_USER_FUNC_END
+
+    end subroutine myfunc
+    @endcode
+    Note that in Fortran the function need to be declared using SILC_USER_FUNC_DEFINE
+    before.
  */
 
 /** @def SILC_USER_FUNC_BEGIN
@@ -129,7 +176,13 @@
     of the instrumented function. It will generate a region, with the function
     name.
 
-    Example:
+    The C/C++ version of this command takes no arguments. In Fortran one argument is
+    required for the name of the function. Furthermore, the handle must be declared
+    explicitly in Fortran.
+
+    @param name Fortan only: A string containing the name of the function.
+
+    C/C++ example:
     @code
     void myfunc()
     {
@@ -142,13 +195,28 @@
       SILC_USER_FUNC_END
     }
     @endcode
+
+    Fortran example:
+    @code
+    subroutine myfunc
+      SILC_USER_FUNC_DEFINE
+      ! more declarations
+
+      SILC_USER_FUNC_BEGIN( "myfunc" )
+      ! do something
+      SILC_USER_FUNC_END
+
+    end subroutine myfunc
+    @endcode
+    Note that in Fortran the function need to be declared using SILC_USER_FUNC_DEFINE
+    before.
  */
 
 /** @def SILC_USER_FUNC_END
     This macro marks the end of a function. It should be inserted at the end
     of the instrumented function.
 
-    Example:
+    C/C++ example:
     @code
     void myfunc()
     {
@@ -161,6 +229,21 @@
       SILC_USER_FUNC_END
     }
     @endcode
+
+    Fortran example:
+    @code
+    subroutine myfunc
+      SILC_USER_FUNC_DEFINE
+      ! more declarations
+
+      SILC_USER_FUNC_BEGIN( "myfunc" )
+      ! do something
+      SILC_USER_FUNC_END
+
+    end subroutine myfunc
+    @endcode
+    Note that in Fortran the function need to be declared using SILC_USER_FUNC_DEFINE
+    before.
  */
 
 /** @def SILC_GLOBAL_REGION_DEFINE( handle )
@@ -173,12 +256,18 @@
     Its name and type is determined at the first enter event and is not changed on later
     events, even if other code blocks conatain a different name or type in their
     SILC_USER_REGION_BEGIN statement.
+
+    In Fortran, this marco can only be used if using Fortran 90 or a later standard. It
+    is not supported in earlier standards like Fortran 77. In Fortran it creates a new
+    module which contains the handle. Thus, it must be declared ouside any other
+    program, subroutine, module, or function.
+
     @param handle  A name for a parameter must be provided. This parameter is declared in
                    the macro. This handle is used in the SILC_USER_REGION_BEGIN and
                    SILC_USER_REGION_END statements to specify which region is started,
                    or ended.
 
-    Example:
+    C/C++ example:
     @code
     // In File1:
     SILC_GLOBAL_REGION_DEFINE( my_global_handle )
@@ -205,6 +294,21 @@
       SILC_USER_REGION_END( my_global_handle )
     }
     @endcode
+
+    Fortran example:
+    @code
+    SILC_GLOBAL_REGION_DEFINE( my_global_handle )
+
+    program myProg
+      SILC_USER_REGION_EXTERNAL( my_global_handle )
+      ! declarations
+
+      SILC_USER_REGION_BEGIN( my_global_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      ! do something
+      SILC_USER_REGION_END( my_global_handle )
+
+    end program myProg
+    @endcode
  */
 
 /** @def SILC_GLOBAL_REGION_EXTERNAL( handle )
@@ -217,13 +321,20 @@
     Its name and type is determined at the first enter event and is not changed on later
     events, even if other code blocks conatain a different name or type in their
     SILC_USER_REGION_BEGIN statement.
+
+    In Fortran, this marco can only be used if using Fortran 90 or a later standard. It
+    is not supported in earlier standards like Fortran 77. It uses the module
+    created by SILC_GLOBAL_REGION_DEFINE which contains the handle.
+    Thus, it must be declared at the top of any module or program which uses this
+    handle.
+
     @param handle  A name for a variable must be provided. This variable name must be
                    the same like for the corresponding SILC_GLOBAL_REGION_DEFINE
                    statement. The handle is used in the SILC_USER_REGION_BEGIN and
                    SILC_USER_REGION_END statements to specify which region is started,
                    or ended.
 
-    Example:
+    C/C++ example:
     @code
     // In File 1
     SILC_GLOBAL_REGION_DEFINE( my_global_handle )
@@ -250,11 +361,30 @@
       SILC_USER_REGION_END( my_global_handle )
     }
     @endcode
+
+    Fortran example:
+    @code
+    SILC_GLOBAL_REGION_DEFINE( my_global_handle )
+
+    program myProg
+      SILC_USER_REGION_EXTERNAL( my_global_handle )
+      ! declarations
+
+      SILC_USER_REGION_BEGIN( my_global_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      ! do something
+      SILC_USER_REGION_END( my_global_handle )
+
+    end program myProg
+    @endcode
  */
 
 /* **************************************************************************************
  * Region enclosing macros
  * *************************************************************************************/
+/* Empty define for SILC_USER_FUNC_DEFINE to allow documentation of the macro and
+   let it disappear in C/C++ codes */
+#define SILC_USER_FUNC_DEFINE
+
 #ifdef SILC_USER_ENABLE
 
 #define SILC_USER_REGION_DEFINE( handle ) \
@@ -299,7 +429,7 @@
     @param value  The value of the parameter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
 
-    Example:
+    C/C++ example:
     @code
     void myfunc(int64 myint)
     {
@@ -368,7 +498,7 @@
     needed use SILC_USER_METRIC_GROUP_GLOBAL.
     @param groupHandle The name of the variable which contains the groupHandle.
 
-    Example:
+    C/C++ example:
     @code
     SILC_USER_METRIC_GROUP_LOCAL( my_local_group )
     SILC_USER_METRIC_LOCAL( my_local_metric )
@@ -388,6 +518,26 @@
       SILC_USER_METRIC_UINT64( my_local_metric, my_int )
     }
     @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_METRIC_GROUP_LOCAL( my_local_group )
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+
+      SILC_USER_METRIC_GROUP_INIT( my_local_group )
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
+
+    ! do something
+
+      SILC_USER_METRIC_INT64( my_local_metric, my_int )
+    end program myProg
+    @endcode
  */
 
 /** @def SILC_USER_METRIC_GROUP_GLOBAL( groupHandle)
@@ -395,9 +545,13 @@
     group handle must only be declared in one file using SILC_USER_METRIC_GROUP_GLOBAL.
     All other files in which the same group handle is  accessed, must declare the handle
     using SILC_USER_METRIC_GROUP_EXTERNAL.
+
+    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
+    be used for earlier Fortran versions. It creates a module which contains the handle.
+
     @param groupHandle The variable name for the variable declared in this statement.
 
-    Example:
+    C/C++ example:
     @code
     // In File 1
     SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
@@ -434,6 +588,27 @@
       SILC_USER_METRIC_DOUBLE( my_local_metric, my_double )
       SILC_USER_METRIC_UINT64( my_global_metric, my_int )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    program myProg
+      SILC_USER_METRIC_GROUP_EXTERNAL( my_global_group )
+      SILC_USER_METRIC_EXTERNAL( my_global_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+      SILC_USER_METRIC_GROUP_INIT( my_global_group )
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+    ! do something
+
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    end program myProg
     @endcode
  */
 
@@ -442,9 +617,14 @@
     group handle must only be declared in one file using SILC_USER_METRIC_GROUP_GLOBAL.
     All other files in which the same group handle is  accessed, must declare the handle
     using SILC_USER_METRIC_GROUP_EXTERNAL.
+
+    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
+    be used for earlier Fortran versions. It uses the module created by
+    SILC_USER_METRIC_GROUP_GLOBAL.
+
     @param groupHandle The variable name for the variable declared in this statement.
 
-    Example:
+    C/C++ example:
     @code
     // In File 1
     SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
@@ -481,6 +661,27 @@
       SILC_USER_METRIC_DOUBLE( my_local_metric, my_double )
       SILC_USER_METRIC_UINT64( my_global_metric, my_int )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    program myProg
+      SILC_USER_METRIC_GROUP_EXTERNAL( my_global_group )
+      SILC_USER_METRIC_EXTERNAL( my_global_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+      SILC_USER_METRIC_GROUP_INIT( my_global_group )
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+    ! do something
+
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    end program myProg
     @endcode
  */
 
@@ -491,7 +692,7 @@
                        SILC_USER_METRIC_GROUP_DEF.
     @param name        A string containing a unique name for that metric group.
 
-    Example:
+    C/C++ example:
     @code
     SILC_USER_METRIC_GROUP_LOCAL( my_local_group )
     SILC_USER_METRIC_LOCAL( my_local_metric )
@@ -510,6 +711,26 @@
       uint64 my_int = get_some_int_value();
       SILC_USER_METRIC_UINT64( my_local_metric, my_int )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_METRIC_GROUP_LOCAL( my_local_group )
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+
+      SILC_USER_METRIC_GROUP_INIT( my_local_group )
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "s", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
+
+    ! do something
+
+      SILC_USER_METRIC_INT64( my_local_metric, my_int )
+    end program myProg
     @endcode
  */
 
@@ -521,7 +742,7 @@
     @param metricHandle The name of the variable which will be declared for storing
                         the meric handle.
 
-    Example:
+    C/C++ example:
     @code
     SILC_USER_METRIC_LOCAL( my_local_metric )
 
@@ -540,6 +761,25 @@
       SILC_USER_METRIC_UINT64( my_local_metric, my_int )
     }
     @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, &
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+
+    ! do something
+
+      SILC_USER_METRIC_INT64( my_local_metric, my_int )
+    end program myProg
+    @endcode
  */
 
 /** @def SILC_USER_METRIC_GLOBAL( metricHandle )
@@ -548,9 +788,13 @@
     global metric must be declared only in one file using SILC_USER_METRIC_GLOBAL. All
     other files in which this handle is accessed must declare it with
     SILC_USER_METRIC_EXTERNAL.
+
+    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
+    be used for earlier Fortran versions. It creates a module which contains the handle.
+
     @param metricHandle The variable name for the handle.
 
-    Example:
+    C/C++ example:
     @code
     // In File 1
     SILC_USER_METRIC_GLOBAL( my_global_metric )
@@ -579,6 +823,27 @@
       uint64 my_int = get_some_int_value();
       SILC_USER_METRIC_UINT64( my_global_metric, my_int )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    program myProg
+      SILC_USER_METRIC_GROUP_EXTERNAL( my_global_group )
+      SILC_USER_METRIC_EXTERNAL( my_global_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+      SILC_USER_METRIC_GROUP_INIT( my_global_group )
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+    ! do something
+
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    end program myProg
     @endcode
  */
 
@@ -587,17 +852,22 @@
     global metric must be declared only in one file using SILC_USER_METRIC_GLOBAL. All
     other files in which this handle is accessed must declare it with
     SILC_USER_METRIC_EXTERNAL.
+
+    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
+    be used for earlier Fortran versions. It uses the module create by
+    SILC_USER_METRIC_GLOBAL.
+
     @param metricHandle The variable name of the handle. it must be the same name as used
                         in the corresponding SILC_USER_METRIC_GLOBAL statement.
 
-    Example:
+    C/C++ example:
     @code
     // In File 1
     SILC_USER_METRIC_GLOBAL( my_global_metric )
 
     int main()
     {
-      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
+      SILC_USER_METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
                              SILC_USER_METRIC_TYPE_UINT64, \
                              SILC_USER_METRIC_CONTEXT_GLOBAL, \
                              SILC_USER_METRIC_GROUP_DEFAULT )
@@ -619,6 +889,27 @@
       uint64 my_int = get_some_int_value();
       SILC_USER_METRIC_UINT64( my_global_metric, my_int )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    SILC_USER_METRIC_GROUP_GLOBAL( my_global_group )
+    SILC_USER_METRIC_GLOBAL( my_global_metric )
+
+    program myProg
+      SILC_USER_METRIC_GROUP_EXTERNAL( my_global_group )
+      SILC_USER_METRIC_EXTERNAL( my_global_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+      SILC_USER_METRIC_GROUP_INIT( my_global_group )
+      SILC_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
+    ! do something
+
+      SILC_USER_METRIC_UINT64( my_global_metric, my_int )
+    end program myProg
     @endcode
  */
 
@@ -632,7 +923,8 @@
     @param unit A string containing a the unit of the data.
     @param type Specifies the data type of the counter. It must be one of the following:
                 SILC_USER_METRIC_TYPE_INT64, SILC_USER_METRIC_TYPE_UINT64,
-                SILC_USER_METRIC_TYPE_DOUBLE, SILC_USER_METRIC_TYPE_FLOAT.
+                SILC_USER_METRIC_TYPE_DOUBLE. In Fortran is SILC_USER_METRIC_TYPE_UINT64
+                not available.
     @param context Specifies the context for which the counter is measured. IT must be
                 one of the following: SILC_USER_METRIC_CONTEXT_GLOBAL, or
                 SILC_USER_METRIC_CONTEXT_CALLPATH.
@@ -640,7 +932,7 @@
                 If this group does not exist, it will be created. If the default group
                 should be used, specify SILC_USER_METRIC_GROUP_DEFAULT as group handle.
 
-    Example:
+    C/C++ example:
     @code
     SILC_USER_METRIC_LOCAL( my_local_metric )
 
@@ -659,6 +951,25 @@
       SILC_USER_METRIC_UINT64( my_local_metric, my_int )
     }
     @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, &
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+
+    ! do something
+
+      SILC_USER_METRIC_INT64( my_local_metric, my_int )
+    end program myProg
+    @endcode
  */
 
 /** @def SILC_USER_METRIC_INT64(name,value)
@@ -671,7 +982,7 @@
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
 
-    Example:
+    C/C++ example:
     @code
     SILC_USER_METRIC_LOCAL( my_local_metric )
 
@@ -690,6 +1001,25 @@
       SILC_USER_METRIC_INT64( my_local_metric, my_int )
     }
     @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      integer (kind=selected_int_kind(8)):: my_int = 19
+    ! more declarations
+
+
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_INT64, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, &
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+
+    ! do something
+
+      SILC_USER_METRIC_INT64( my_local_metric, my_int )
+    end program myProg
+    @endcode
  */
 
 /** @def SILC_USER_METRIC_UINT64(metricHandle,value)
@@ -697,6 +1027,9 @@
     Each user metric must be declared with SILC_USER_COUNTER_LOCAL,
     SILC_USER_COUNTER_GLOBAL, or SILC_USER_COUNTER_EXTERNAL and initialized with
     SILC_USER_COUNTER_INIT before it is triggered for the first time.
+
+    In Fortran is the unsigned integer type metric not available.
+
     @param metricHandle The handle of the metric for which avalue is given in this
                  statement.
     @param value The value of the counter. It must be possible for implicit casts to
@@ -751,6 +1084,25 @@
       double my_double = get_some_double_value();
       SILC_USER_METRIC_DOUBLE( my_local_metric, my_double )
     }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_METRIC_LOCAL( my_local_metric )
+      real (kind=selected_int_kind(14,200)):: my_real = 24.5
+    ! more declarations
+
+
+      SILC_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
+                             SILC_USER_METRIC_TYPE_DOUBLE, &
+                             SILC_USER_METRIC_CONTEXT_GLOBAL, &
+                             SILC_USER_METRIC_GROUP_DEFAULT )
+
+    ! do something
+
+      SILC_USER_METRIC_DOUBLE( my_local_metric, my_real )
+    end program myProg
     @endcode
  */
 
