@@ -48,6 +48,12 @@ parse_value
 );
 
 
+static inline void
+dump_value( const char*     prefix,
+            SILC_ConfigType type,
+            void*           variableReference );
+
+
 SILC_Error_Code
 SILC_ConfigRegister
 (
@@ -61,6 +67,7 @@ SILC_ConfigRegister
     {
         /* "SILC" (+ "_" + namespace)? + "_" + name + 1 */
         char environment_variable_name[ 7 + 2 * 32 ];
+        bool successfully_parsed;
 
         fprintf( stderr, "Variable:      %s/%s\n",
                  variables[ i ].nameSpace, variables[ i ].name );
@@ -69,12 +76,16 @@ SILC_ConfigRegister
         fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );
         fprintf( stderr, "  Description: %s\n", variables[ i ].shortHelp );
 
-        /* set the variable to its default value,
-           ignoring any errors for now */
-        parse_value( variables[ i ].defaultValue,
-                     variables[ i ].type,
-                     variables[ i ].variableReference,
-                     variables[ i ].variableContext );
+        /* set the variable to its default value */
+        successfully_parsed = parse_value( variables[ i ].defaultValue,
+                                           variables[ i ].type,
+                                           variables[ i ].variableReference,
+                                           variables[ i ].variableContext );
+
+        if ( !successfully_parsed )
+        {
+            fprintf( stderr, "  Can't set variable to default value." );
+        }
 
         sprintf( environment_variable_name, "SILC%s%.32s_%.32s",
                  variables[ i ].nameSpace ? "_" : "",
@@ -91,15 +102,24 @@ SILC_ConfigRegister
             fprintf( stderr, "    Value: %s\n", environment_variable_value );
 
             /* set the variable to the value of the environment variable */
-            parse_value( environment_variable_value,
-                         variables[ i ].type,
-                         variables[ i ].variableReference,
-                         variables[ i ].variableContext );
+            successfully_parsed = parse_value( environment_variable_value,
+                                               variables[ i ].type,
+                                               variables[ i ].variableReference,
+                                               variables[ i ].variableContext );
+
+            if ( !successfully_parsed )
+            {
+                fprintf( stderr, "  Can't set variable to value of environment variable." );
+            }
         }
         else
         {
             fprintf( stderr, "    Variable is unset\n" );
         }
+
+        dump_value( "  Final value: ",
+                    variables[ i ].type,
+                    variables[ i ].variableReference );
     }
 
     return SILC_SUCCESS;
@@ -304,4 +324,48 @@ out:
     *stringListReference = string_list;
 
     return success;
+}
+
+
+static inline bool
+dump_set( const char* prefix,
+          char**      stringList )
+{
+    while ( *stringList )
+    {
+        fprintf( stderr, "%s%s", prefix, *stringList );
+        stringList++;
+        prefix = ", ";
+    }
+    fprintf( stderr, "\n" );
+}
+
+static inline void
+dump_value( const char*     prefix,
+            SILC_ConfigType type,
+            void*           variableReference )
+{
+    switch ( type )
+    {
+        case SILC_CONFIG_TYPE_BOOL:
+            fprintf( stderr, "%s%s\n", prefix,
+                     *( bool* )variableReference ? "true" : "false" );
+            break;
+
+        case SILC_CONFIG_TYPE_SET:
+            dump_set( prefix, *( char*** )variableReference );
+            break;
+
+        case SILC_CONFIG_TYPE_PATH:
+        case SILC_CONFIG_TYPE_STRING:
+        case SILC_CONFIG_TYPE_NUMBER:
+        case SILC_CONFIG_TYPE_SIZE:
+            fprintf( stderr, "%stype not implemented\n", prefix );
+            break;
+
+        case SILC_INVALID_CONFIG_TYPE:
+        default:
+            fprintf( stderr, "%sinvalid type\n", prefix );
+            break;
+    }
 }
