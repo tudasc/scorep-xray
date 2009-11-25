@@ -9,7 +9,7 @@ OBJ=-Wl,--whole-archive \
     $(OBJ_DIR)/vendor/otf2/build-backend/.libs/libotf2.a \
     $(OBJ_DIR)/vendor/otf2/vendor/utility/build-backend/.libs/libsilc_utilities.a \
     -Wl,--no-whole-archive \
-    -lm
+    -lm -lbfd
 
 hello: 
 	$(COMP) $(INST) $(INCLUDE) $(COMPFLAGS) hello_functions.c  
