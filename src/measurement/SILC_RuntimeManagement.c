@@ -232,6 +232,8 @@ SILC_FinalizeMeasurement
 )
 {
     fprintf( stderr, "%s\n", __func__ );
+
+    silc_finalize();
 }
 
 
