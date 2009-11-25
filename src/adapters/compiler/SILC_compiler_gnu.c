@@ -147,10 +147,16 @@ get_symTab( void )
     char* temp = getenv( "SILC_APPPATH" );
 
     printf( " apppath set to: %s \n", temp );
-
     if ( !temp )
     {
+        printf( " \n***********************************************************************\n" );
         printf( "Could not determine path of executable.\n" );
+        printf( "Meanwhile, you have to set 'SILC_APPPATH' to your local executable.\n" );
+        printf( " \n***********************************************************************\n" );
+
+        SILC_ERROR( SILC_ERROR_ENOENT, "" );
+
+        return;
         /* we should abort here */
     }
     else
