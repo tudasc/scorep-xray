@@ -332,13 +332,18 @@ static inline bool
 dump_set( const char* prefix,
           char**      stringList )
 {
+    const char* prefix_printed = prefix;
     while ( *stringList )
     {
         fprintf( stderr, "%s%s", prefix, *stringList );
         stringList++;
-        prefix = ", ";
+        prefix         = ", ";
+        prefix_printed = "";
     }
-    fprintf( stderr, "\n" );
+
+    fprintf( stderr, "%s%s\n",
+             prefix_printed,
+             prefix_printed == prefix ? "<empty set>" : "" );
 }
 
 static inline void
