@@ -62,7 +62,11 @@ AC_DEFUN([AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE],[
 ac_silc_timer_cycle_counter_itc_available="no"
 AC_MSG_CHECKING([for cycle counter itc timer])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <asm/intrinsics.h>]],
-                                [[volatile long long r = (long long) __getReg(_IA64_REG_AR_ITC);]])],
+                                [[#ifdef __ia64__
+volatile long long r = (long long) __getReg(_IA64_REG_AR_ITC);
+#else
+#error "This test makes sense only on __ia64__"
+#endif]])],
                [ac_silc_timer_cycle_counter_itc_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_cycle_counter_itc_available])
 ])
@@ -72,7 +76,7 @@ AC_DEFUN([AC_SILC_TIMER_CYCLE_COUNTER_TSC_AVAILABLE],[
 # According to http://en.wikipedia.org/wiki/Time_Stamp_Counter the TSC timer
 # is no longer recommended, at least for x86 processors.
 # We can't really check for TSC without running a program on the
-# backend :-(
+# backend. A pragmatic solution is to check the cpu type.
 # See also the itc timer: AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE
 ac_silc_timer_cycle_counter_tsc_available="no"
 AC_MSG_CHECKING([for cycle counter tsc timer])
