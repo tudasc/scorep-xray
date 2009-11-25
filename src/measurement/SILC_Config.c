@@ -51,7 +51,8 @@ parse_value
 static inline void
 dump_value( const char*     prefix,
             SILC_ConfigType type,
-            void*           variableReference );
+            void*           variableReference,
+            void*           variableContext );
 
 
 SILC_Error_Code
@@ -119,7 +120,8 @@ SILC_ConfigRegister
 
         dump_value( "  Final value: ",
                     variables[ i ].type,
-                    variables[ i ].variableReference );
+                    variables[ i ].variableReference,
+                    variables[ i ].variableContext );
     }
 
     return SILC_SUCCESS;
@@ -349,7 +351,8 @@ dump_set( const char* prefix,
 static inline void
 dump_value( const char*     prefix,
             SILC_ConfigType type,
-            void*           variableReference )
+            void*           variableReference,
+            void*           variableContext )
 {
     switch ( type )
     {
