@@ -141,6 +141,11 @@ parse_set( const char* value,
            char**      acceptedValues );
 
 static inline bool
+parse_bitset( const char*               value,
+              uint64_t*                 bitsetReference,
+              SILC_ConfigType_SetEntry* acceptedValues );
+
+static inline bool
 parse_value
 (
     const char*     value,
@@ -157,11 +162,13 @@ parse_value
         case SILC_CONFIG_TYPE_SET:
             return parse_set( value, variableReference, variableContext );
 
+        case SILC_CONFIG_TYPE_BITSET:
+            return parse_bitset( value, variableReference, variableContext );
+
         case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
-        case SILC_CONFIG_TYPE_BITSET:
 
         case SILC_INVALID_CONFIG_TYPE:
         default:
@@ -331,6 +338,52 @@ out:
 
 
 static inline bool
+parse_bitset( const char*               value,
+              uint64_t*                 bitsetReference,
+              SILC_ConfigType_SetEntry* acceptedValues )
+{
+    char* value_copy = strdup( value );
+    if ( !value_copy )
+    {
+        SILC_ERROR_POSIX();
+        return false;
+    }
+
+    *bitsetReference = 0;
+
+    char* saveptr;
+    bool  success = true;
+    for ( char* entry = strtok_r( value_copy, " ,:;", &saveptr );
+          trim_string( entry );
+          entry = strtok_r( NULL, " ,:;", &saveptr ) )
+    {
+        /* check if entry is in acceptedValues */
+        SILC_ConfigType_SetEntry* acceptedValue = acceptedValues;
+        while ( acceptedValue )
+        {
+            if ( 0 == strcmp( entry, acceptedValue->name ) )
+            {
+                /* found entry in accepted values list
+                   add its value to the set */
+                *bitsetReference |= acceptedValue->value;
+                break;
+            }
+            acceptedValue++;
+        }
+        if ( !acceptedValue )
+        {
+            fprintf( stderr, " value '%s' not in accepted set\n", entry );
+            continue;
+        }
+    }
+
+    free( value_copy );
+
+    return success;
+}
+
+
+static inline bool
 dump_set( const char* prefix,
           char**      stringList )
 {
@@ -339,6 +392,28 @@ dump_set( const char* prefix,
     {
         fprintf( stderr, "%s%s", prefix, *stringList );
         stringList++;
+        prefix         = ", ";
+        prefix_printed = "";
+    }
+
+    fprintf( stderr, "%s%s\n",
+             prefix_printed,
+             prefix_printed == prefix ? "<empty set>" : "" );
+}
+
+static inline bool
+dump_bitset( const char*               prefix,
+             uint64_t                  bitmask,
+             SILC_ConfigType_SetEntry* acceptedValues )
+{
+    const char* prefix_printed = prefix;
+    while ( acceptedValues )
+    {
+        if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
+        {
+            fprintf( stderr, "%s%s", prefix, acceptedValues->name );
+        }
+        acceptedValues++;
         prefix         = ", ";
         prefix_printed = "";
     }
@@ -365,11 +440,16 @@ dump_value( const char*     prefix,
             dump_set( prefix, *( char*** )variableReference );
             break;
 
+        case SILC_CONFIG_TYPE_BITSET:
+            dump_bitset( prefix,
+                         *( uint64_t* )variableReference,
+                         variableContext );
+            break;
+
         case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
-        case SILC_CONFIG_TYPE_BITSET:
             fprintf( stderr, "%stype not implemented\n", prefix );
             break;
 
