@@ -23,8 +23,10 @@ libsilc_adapter_comp_la_SOURCES += \
 endif
 
 if SILC_COMPILER_GNU
+if HAVE_LIBBFD
 libsilc_adapter_comp_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
+endif
 endif
 
 #if SILC_COMPILER_HP

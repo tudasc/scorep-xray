@@ -116,6 +116,19 @@ AC_FC_LIBRARY_LDFLAGS
 
 AC_SILC_TIMER
 AC_SILC_COMPILER_CHECKS
+
+# bfd lib, what shall we do if there is a frontend and a backend libbfd?
+if test "x${ac_silc_compiler_gnu}" = "xyes"; then
+    AC_LANG_PUSH([C])
+    AC_CHECK_HEADER([bfd.h])
+    AC_SEARCH_LIBS([bfd_init], [bfd])
+    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${ac_cv_search_bfd_init}" = "xyes"])
+    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${ac_cv_search_bfd_init}" = "xno"; then
+        AC_MSG_WARN([libbfd not available. Compiler instrumentation will not work.])
+    fi
+    AC_LANG_POP([C])
+fi
+
 AC_SILC_MPI
 
 AC_CONFIG_FILES([Makefile build-mpi/Makefile])
