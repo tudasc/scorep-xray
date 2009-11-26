@@ -1204,7 +1204,9 @@
  * *************************************************************************************/
 
 /** @def SILC_RECORDING_ON
-    Enables the measurement. If already enabled, this command has no effect.
+    Enables recording of events. If already enabled, this command has no effect.
+    The control is not restricted to events from the user adapter, but enables the
+    recording of all events.
 
     Example:
     @code
@@ -1220,7 +1222,9 @@
  */
 
 /** @def SILC_RECORDING_OFF
-    Disables the measurement. If already disabled, this command has no effect.
+    Disables recording of events. If already disabled, this command has no effect.
+    The control is not restricted to events from the user adapter, but disables the
+    recording of all events.
 
     Example:
     @code
@@ -1236,7 +1240,7 @@
  */
 
 /** @def SILC_RECORDING_IS_ON
-    Returns zero if the measurement is disabled, else it returns a nonzero value.
+    Returns false if the recording of events is disabled, else it returns true.
 
     Example:
     @code
@@ -1256,11 +1260,11 @@
 
 #ifdef SILC_USER_ENABLE
 
-#define SILC_RECORDING_ON SILC_API_EnableRecording();
+#define SILC_RECORDING_ON SILC_User_EnableRecording();
 
-#define SILC_RECORDING_OFF SILC_API_DisableRecording();
+#define SILC_RECORDING_OFF SILC_User_DisableRecording();
 
-#define SILC_RECORDING_IS_ON SILC_API_RecordingEnabled()
+#define SILC_RECORDING_IS_ON SILC_User_RecordingEnabled()
 
 #endif // SILC_USER_ENABLE
 

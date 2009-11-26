@@ -94,6 +94,13 @@
 #define SILC_USER_METRIC_DOUBLE( metricHandle, value ) \
         call SILC_User_MetricDoubleF( metricHandle, value )
 
+!************************************************************* User control
+
+#define SILC_RECORDING_ON call SILC_User_EnableRecordingF()
+
+#define SILC_RECORDING_OFF call SILC_User_DisableRecordingF()
+
+#define SILC_RECORDING_IS_ON( isOn ) call SILC_User_RecordingEnabledF( isOn )
 
 !************************************************************* Empty defines
 
@@ -118,5 +125,8 @@
 #define SILC_USER_METRIC_INT64( metricHandle, value )
 #define SILC_USER_METRIC_UINT64( metricHandle, value )
 #define SILC_USER_METRIC_DOUBLE( metricHandle, value )
+#define SILC_RECORDING_ON
+#define SILC_RECORDING_OFF
+#define SILC_RECORDING_IS_ON( isOn )
 
 #endif

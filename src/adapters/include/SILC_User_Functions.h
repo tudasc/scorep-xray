@@ -12,6 +12,7 @@
 
 #include "SILC_Types.h"
 #include "SILC_User_Types.h"
+#include <stdbool.h>
 
 /** @defgroup SILC_User_External External visisble functions of the SILC user adapter
     @ingroup SILC_User
@@ -221,6 +222,29 @@ SILC_User_DefineCoordinate3D
     const int32_t coordZ
 );
 
+/* **************************************************************************************
+ * Control functions
+ * *************************************************************************************/
+
+/** Enables recording of events. If already enabled, this command has no effect.
+    The control is not restricted to events from the user adapter, but enables the
+    recording of all events.
+ */
+void
+SILC_User_EnableRecording();
+
+/** Disables recording of events. If already disabled, this command has no effect.
+    The control is not restricted to events from the user adapter, but disables the
+    recording of all events.
+ */
+void
+SILC_User_DisableRecording();
+
+/** Checks if the recording is enabled.
+    @returns false if the recording of events is disabled, else it returns true.
+ */
+bool
+SILC_User_RecordingEnabled();
 
 /* **************************************************************************************
  * Class SILC_User_Region
