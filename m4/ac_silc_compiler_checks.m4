@@ -121,12 +121,14 @@ ac_silc_compiler_hp="no"
 
 # I (croessel) don't think that more than one test can possibly succeed,
 # so I skip extra testing here.
+AC_LANG_PUSH([C])
 AC_SILC_COMPILER_INTEL
 AC_SILC_COMPILER_SUN
 AC_SILC_COMPILER_IBM
 AC_SILC_COMPILER_PGI
 AC_SILC_COMPILER_GNU
 AC_SILC_COMPILER_HP
+AC_LANG_POP([C])
 
 if test "x${ac_silc_compiler_unknown}" = "xyes"; then
     AC_MSG_WARN([Could not determine compiler vendor. Compiler instrumentation may not work.])
