@@ -22,8 +22,8 @@
  * compiler.
  */
 
-#include "stdio.h"
-#include "bfd.h"
+#include <stdio.h>
+#include <bfd.h>
 
 #include <SILC_Utils.h>
 #include <SILC_Events.h>
