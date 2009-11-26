@@ -1,6 +1,0 @@
-CC=icc
-#CFLAGS=
-
-CXX=icpc
-#CXXFLAGS=
-
