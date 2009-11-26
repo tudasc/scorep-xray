@@ -121,9 +121,9 @@ AC_SILC_COMPILER_CHECKS
 if test "x${ac_silc_compiler_gnu}" = "xyes"; then
     AC_LANG_PUSH([C])
     AC_CHECK_HEADER([bfd.h])
-    AC_SEARCH_LIBS([bfd_init], [bfd])
-    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${ac_cv_search_bfd_init}" = "xyes"])
-    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${ac_cv_search_bfd_init}" = "xno"; then
+    AC_SEARCH_LIBS([bfd_init], [bfd], [ac_silc_libbfd="yes"], [ac_silc_libbfd="no"])
+    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${ac_silc_libbfd}" = "xyes"])
+    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${ac_silc_libbfd}" = "xno"; then
         AC_MSG_WARN([libbfd not available. Compiler instrumentation will not work.])
     fi
     AC_LANG_POP([C])
