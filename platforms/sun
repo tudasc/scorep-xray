@@ -1,0 +1,6 @@
+CC=cc
+#CFLAGS=
+
+CXX=CC
+#CXXFLAGS=
+
