@@ -39,6 +39,13 @@
     the user instrumentation is removed by the preprocessor. This flag SILC_USER_ENABLE
     should be set through the instrumentation wrapper tool.
 
+    Every source file which is instrumented must include a header file with the
+    SILC User instrumentation header. For C/C++ programs this is the header file
+    'SILC_User.h', for Fortran files, 'SILC_User.inc' must be included. Because the
+    Fortran compilers can not expand the macros, the Fortran source code must be
+    preprocessed by a C or C++ preprocessor, to include the headers and expand the
+    macros.
+
    @{
  */
 
@@ -1208,7 +1215,7 @@
     The control is not restricted to events from the user adapter, but enables the
     recording of all events.
 
-    Example:
+    C/C++ example:
     @code
     void foo()
     {
@@ -1218,6 +1225,17 @@
 
      SILC_RECORDING_ON
     }
+    @endcode
+
+    Fortran example:
+    @code
+    subroutine foo
+
+      SILC_RECORDING_OFF
+    ! do something
+      SILC_RECORDING_ON
+
+    end subroutine foo
     @endcode
  */
 
@@ -1226,7 +1244,7 @@
     The control is not restricted to events from the user adapter, but disables the
     recording of all events.
 
-    Example:
+    C/C++ example:
     @code
     void foo()
     {
@@ -1237,12 +1255,25 @@
      SILC_RECORDING_ON
     }
     @endcode
+
+    Fortran example:
+    @code
+    subroutine foo
+
+      SILC_RECORDING_OFF
+    ! do something
+      SILC_RECORDING_ON
+
+    end subroutine foo
+    @endcode
  */
 
 /** @def SILC_RECORDING_IS_ON
-    Returns false if the recording of events is disabled, else it returns true.
+    In C/C++ it behaves like a function call which returns wether recording is
+    enabled or not. It returns false if the recording of events is disabled, else
+    it returns true.
 
-    Example:
+    C/C++ example:
     @code
     void foo()
     {
@@ -1251,6 +1282,23 @@
         // do something
       }
     }
+    @endcode
+
+    In Fortran, this macro has a different syntax. A logical variable must be
+    specified as parameter, which is set to true if recording is enabled, else the
+    value is set to false.
+
+    Fortran example:
+    @code
+    subroutine foo
+      logical :: l
+
+      SILC_RECORDING_IS_ON( l )
+      if (l) then
+        ! do something
+      end if
+
+    end subroutine foo
     @endcode
  */
 
