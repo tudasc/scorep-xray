@@ -1,22 +1,29 @@
-/****************************************************************************
-**  SCALASCA    http://www.scalasca.org/                                   **
-**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
-*****************************************************************************
-**  Copyright (c) 1998-2009                                                **
-**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
-**                                                                         **
-**  Copyright (c) 2003-2008                                                **
-**  University of Tennessee, Innovative Computing Laboratory               **
-**                                                                         **
-**  See the file COPYRIGHT in the package base directory for details       **
-****************************************************************************/
-/**
- * @file SILC_Wrapgen_MpiFunc.h
+/*
+ * This file is part of the SILC project (http://www.silc.de)
  *
- * Class representing MPI function prototypes
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
  */
+
 #ifndef SILC_MPIFUNC_H_
 #define SILC_MPIFUNC_H_
+
+/**
+ * @file       SILC_Wrapgen_MpiFunc.h
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    Wrapgen_module
+ *
+ * @brief Class representing MPI function prototypes.
+ */
 
 #include <string>
 using std::string;
@@ -31,9 +38,12 @@ using namespace SILC::Wrapgen;
 /**
  * Class for representing MPI function prototype
  */
-namespace SILC {
-namespace Wrapgen {
-class MPIFunc : public Func {
+namespace SILC
+{
+namespace Wrapgen
+{
+class MPIFunc : public Func
+{
 public:
     MPIFunc( const string &rtype, const string &name, const string &group,
              const string &guard, const string &version, const paramlist_t &params );

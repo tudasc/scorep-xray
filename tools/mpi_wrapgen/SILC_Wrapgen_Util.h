@@ -1,17 +1,29 @@
-/****************************************************************************
-**  SCALASCA    http://www.scalasca.org/                                   **
-**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
-*****************************************************************************
-**  Copyright (c) 1998-2009                                                **
-**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
-**                                                                         **
-**  Copyright (c) 2003-2008                                                **
-**  University of Tennessee, Innovative Computing Laboratory               **
-**                                                                         **
-**  See the file COPYRIGHT in the package base directory for details       **
-****************************************************************************/
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
 #ifndef SILC_WRAPGEN_UTIL_H_
 #define SILC_WRAPGEN_UTIL_H_
+
+/**
+ * @file       SILC_Wrapgen_Util.h
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    Wrapgen_module
+ *
+ * @brief String processing functions.
+ */
 
 #include <vector>
 using std::vector;
@@ -26,8 +38,10 @@ using std::tolower;
 using std::ostringstream;
 using std::istringstream;
 
-namespace SILC {
-namespace Wrapgen {
+namespace SILC
+{
+namespace Wrapgen
+{
 /**
  * Ignore the rest of the line in the input file stream, and move to the
  * next line.

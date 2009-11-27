@@ -1,22 +1,29 @@
-/****************************************************************************
-**  SCALASCA    http://www.scalasca.org/                                   **
-**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
-*****************************************************************************
-**  Copyright (c) 1998-2009                                                **
-**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
-**                                                                         **
-**  Copyright (c) 2003-2008                                                **
-**  University of Tennessee, Innovative Computing Laboratory               **
-**                                                                         **
-**  See the file COPYRIGHT in the package base directory for details       **
-****************************************************************************/
-/**
- * @file SILC_Wrapgen_Func.h
+/*
+ * This file is part of the SILC project (http://www.silc.de)
  *
- * Class representing function prototypes
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
  */
+
 #ifndef SILC_FUNC_H
 #define SILC_FUNC_H
+
+/**
+ * @file       SILC_Wrapgen_Func.h
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    Wrapgen_module
+ *
+ * @brief Class representing a function prototype.
+ */
 
 #include <string>
 using std::          string;
@@ -25,15 +32,18 @@ using std::          vector;
 #include "SILC_Wrapgen_Funcparam.h"
 using SILC::Wrapgen::Funcparam;
 
-namespace SILC {
-namespace Wrapgen {
+namespace SILC
+{
+namespace Wrapgen
+{
 /** List of function parameters */
 typedef vector<Funcparam> paramlist_t;
 
 /**
  * General function class
  */
-class Func {
+class Func
+{
 public:
     Func( const string &rtype, const string &name, const string &group,
           const string &guard );

@@ -1,19 +1,25 @@
-/****************************************************************************
-**  SCALASCA    http://www.scalasca.org/                                   **
-**  KOJAK       http://www.fz-juelich.de/jsc/kojak/                        **
-*****************************************************************************
-**  Copyright (c) 1998-2009                                                **
-**  Forschungszentrum Juelich, Juelich Supercomputing Centre               **
-**                                                                         **
-**  Copyright (c) 2003-2008                                                **
-**  University of Tennessee, Innovative Computing Laboratory               **
-**                                                                         **
-**  See the file COPYRIGHT in the package base directory for details       **
-****************************************************************************/
-/**
- * @file MPIFunc.cpp
+/*
+ * This file is part of the SILC project (http://www.silc.de)
  *
- * Class representing MPI function prototypes
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+/**
+ * @file       MPIFunc.cpp
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    Wrapgen_module
+ *
+ * @brief Class representing MPI function prototypes.
  */
 
 #include <string>
