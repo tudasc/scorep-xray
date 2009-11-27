@@ -412,6 +412,7 @@ dump_bitset( const char*               prefix,
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
             fprintf( stderr, "%s%s", prefix, acceptedValues->name );
+            bitmask &= ~acceptedValues->value;
         }
         acceptedValues++;
         prefix         = ", ";

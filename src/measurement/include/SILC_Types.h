@@ -398,6 +398,8 @@ typedef enum SILC_ConfigType
      *
      * SILC_ConfigVariable::variableContext should point to an array of type
      * SILC_ConfigType_SetEntry with valid set members and there values.
+     * For better debugging, they should be in decreasing order of the value
+     * field.
      * Terminate the array with an entry { NULL, 0 }.
      */
     SILC_CONFIG_TYPE_BITSET,
