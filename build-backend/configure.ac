@@ -1,6 +1,6 @@
 AC_INIT([silc-backend], [0])
 
-## require $ac_silc_cross_compiling to be set to 'yes' on 'no'
+## require $ac_silc_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
 fi
@@ -116,19 +116,7 @@ AC_FC_LIBRARY_LDFLAGS
 
 AC_SILC_TIMER
 AC_SILC_COMPILER_CHECKS
-
-# bfd lib, what shall we do if there is a frontend and a backend libbfd?
-if test "x${ac_silc_compiler_gnu}" = "xyes"; then
-    AC_LANG_PUSH([C])
-    AC_CHECK_HEADER([bfd.h])
-    AC_SEARCH_LIBS([bfd_init], [bfd], [ac_silc_libbfd="yes"], [ac_silc_libbfd="no"])
-    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${ac_silc_libbfd}" = "xyes"])
-    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${ac_silc_libbfd}" = "xno"; then
-        AC_MSG_WARN([libbfd not available. Compiler instrumentation will not work.])
-    fi
-    AC_LANG_POP([C])
-fi
-
+AC_SILC_LIBBFD
 AC_SILC_MPI
 
 AC_CONFIG_FILES([Makefile build-mpi/Makefile])
