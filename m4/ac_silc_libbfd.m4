@@ -47,6 +47,7 @@ if test "x${ac_silc_compiler_gnu}" = "xyes"; then
     fi
     AC_LANG_POP([C])
 else
+    AM_CONDITIONAL([HAVE_LIBBFD], [test 1 -ne 1])
     AC_SUBST([LIBBFD], [""])
 fi
 ])
