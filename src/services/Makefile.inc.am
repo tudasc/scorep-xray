@@ -31,8 +31,12 @@ if SILC_TIMER_CRAY_RTCLOCK
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cray_rtclock.c
 endif
 
-if SILC_TIMER_CYCLE_COUNTER    
-libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cycle_counter.c
+if SILC_TIMER_CYCLE_COUNTER_TSC    
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cycle_counter_tsc.c
+endif
+
+if SILC_TIMER_CYCLE_COUNTER_ITC
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cycle_counter_itc.c
 endif
 
 if SILC_TIMER_CRAY_DCLOCK      
