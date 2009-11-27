@@ -52,7 +52,11 @@ libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_gettimeofday.c
 endif
 
 if SILC_TIMER_INTEL_MMTIMER    
-libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_intel_mmtimer.c
+# we generate the file silc_timer_intel_mmtimer.c during configure
+# in order to insert the configure-determined prefix to the include 
+# of mmtimer.h
+libsilc_timer_la_SOURCES += ../src/services/silc_timer_intel_mmtimer.c
+libsilc_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/services
 endif
 
 if SILC_TIMER_PAPI_REAL_CYC    

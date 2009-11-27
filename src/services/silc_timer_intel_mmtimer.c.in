@@ -27,7 +27,10 @@
 
 #include "SILC_Timing.h"
 
+#include <@INCLUDE_PREFIX_MMTIMER@mmtimer.h>
 #include <assert.h>
+#include <stdbool.h>
+
 
 void
 SILC_InitTimer()
