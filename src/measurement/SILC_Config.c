@@ -388,17 +388,17 @@ dump_set( const char* prefix,
           char**      stringList )
 {
     const char* prefix_printed = prefix;
+    const char* empty_set      = "<empty set>";
     while ( *stringList )
     {
         fprintf( stderr, "%s%s", prefix, *stringList );
         stringList++;
         prefix         = ", ";
         prefix_printed = "";
+        empty_set      = "";
     }
 
-    fprintf( stderr, "%s%s\n",
-             prefix_printed,
-             prefix_printed == prefix ? "<empty set>" : "" );
+    fprintf( stderr, "%s%s\n", prefix_printed, empty_set );
 }
 
 static inline bool
@@ -407,21 +407,21 @@ dump_bitset( const char*               prefix,
              SILC_ConfigType_SetEntry* acceptedValues )
 {
     const char* prefix_printed = prefix;
+    const char* empty_set      = "<empty set>";
     while ( acceptedValues->name )
     {
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
             fprintf( stderr, "%s%s", prefix, acceptedValues->name );
-            bitmask &= ~acceptedValues->value;
+            bitmask       &= ~acceptedValues->value;
+            prefix         = ", ";
+            prefix_printed = "";
+            empty_set      = "";
         }
         acceptedValues++;
-        prefix         = ", ";
-        prefix_printed = "";
     }
 
-    fprintf( stderr, "%s%s\n",
-             prefix_printed,
-             prefix_printed == prefix ? "<empty set>" : "" );
+    fprintf( stderr, "%s%s\n", prefix_printed, empty_set );
 }
 
 static inline void
