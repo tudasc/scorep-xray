@@ -30,6 +30,7 @@ CPPFLAGS="$ac_silc_timer_save_CPPFLAGS"
 AC_MSG_RESULT([$ac_silc_timer_bgp_get_timebase_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_CLOCK_GETTIME_AVAILABLE],[
 ac_silc_timer_clock_gettime_available="no"
@@ -45,6 +46,7 @@ LIBS="$ac_silc_timer_save_LIBS"
 AC_MSG_RESULT([$ac_silc_timer_clock_gettime_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_CRAY_RTCLOCK_AVAILABLE],[
 ac_silc_timer_cray_rtclock_available="no"
@@ -55,6 +57,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_silc_timer_cray_rtclock_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE],[
 # Check for the itc cycle conter on __ia64__ platforms. See also the tsc
@@ -71,6 +74,7 @@ volatile long long r = (long long) __getReg(_IA64_REG_AR_ITC);
 AC_MSG_RESULT([$ac_silc_timer_cycle_counter_itc_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_CYCLE_COUNTER_TSC_AVAILABLE],[
 # According to http://en.wikipedia.org/wiki/Time_Stamp_Counter the TSC timer
@@ -88,6 +92,7 @@ esac
 AC_MSG_RESULT([$ac_silc_timer_cycle_counter_tsc_available])
 ])
 
+## 
 
 AC_DEFUN([AC_SILC_TIMER_CRAY_DCLOCK_AVAILABLE],[
 ac_silc_timer_cray_dclock_available="no"
@@ -98,6 +103,8 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_silc_timer_cray_dclock_available])
 ])
 
+## 
+
 AC_DEFUN([AC_SILC_TIMER_SUN_GETHRTIME_AVAILABLE],[
 ac_silc_timer_sun_gethrtime_available="no"
 AC_MSG_CHECKING([for sun gethrtime timer])
@@ -106,6 +113,8 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
                [ac_silc_timer_sun_gethrtime_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_sun_gethrtime_available])
 ])
+
+##
 
 AC_DEFUN([AC_SILC_TIMER_GETTIMEOFDAY_AVAILABLE],[
 ac_silc_timer_gettimeofday_available="no"
@@ -116,16 +125,27 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/time.h>]],
 AC_MSG_RESULT([$ac_silc_timer_gettimeofday_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_INTEL_MMTIMER_AVAILABLE],[
 ac_silc_timer_intel_mmtimer_available="no"
+mmtimer_header_available="no"
+mmtimer_include_prefix=""
+AC_CHECK_HEADERS([mmtimer.h], [mmtimer_header_available="yes"],
+    [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes";mmtimer_include_prefix="linux/"],
+        [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes";mmtimer_include_prefix="sn/"])])])
+if test "x${mmtimer_header_available}" = "xyes"; then
+    AC_CHECK_FILE([/dev/mmtimer], [ac_silc_timer_intel_mmtimer_available="yes"])
+fi
+# we generate the file silc_timer_intel_mmtimer.c during configure
+# in order to insert the configure-determined prefix to the include 
+# of mmtimer.h
+AC_SUBST([INCLUDE_PREFIX_MMTIMER], [$mmtimer_include_prefix])
 AC_MSG_CHECKING([for intel mmtimer timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
-               [ac_silc_timer_intel_mmtimer_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_intel_mmtimer_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_PAPI_REAL_CYC_AVAILABLE],[
 ac_silc_timer_papi_real_cyc_available="no"
@@ -136,6 +156,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_silc_timer_papi_real_cyc_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_PAPI_REAL_USEC_AVAILABLE],[
 ac_silc_timer_papi_real_usec_available="no"
@@ -146,6 +167,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_silc_timer_papi_real_usec_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_POWER_REALTIME_AVAILABLE],[
 ## The read_real_time() subroutine and the time_base_to_time() conversion
@@ -164,6 +186,7 @@ time_base_to_time( &t, TIMEBASE_SZ );]])],
 AC_MSG_RESULT([$ac_silc_timer_power_realtime_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_CRAY_RTC_AVAILABLE],[
 ac_silc_timer_cray_rtc_available="no"
@@ -174,6 +197,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_silc_timer_cray_rtc_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_RTS_GET_TIMEBASE_AVAILABLE],[
 ac_silc_timer_rts_get_timebase_available="no"
@@ -184,6 +208,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_silc_timer_rts_get_timebase_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_IBM_SWITCH_CLOCK_AVAILABLE],[
 ac_silc_timer_ibm_switch_clock_available="no"
@@ -198,6 +223,7 @@ LIBS="$ac_silc_timer_save_LIBS"
 AC_MSG_RESULT([$ac_silc_timer_ibm_switch_clock_available])
 ])
 
+##
 
 AC_DEFUN([AC_SILC_TIMER_NEC_SYSSX_HGTIME_AVAILABLE],[
 ac_silc_timer_nec_syssx_hgtime_available="no"
@@ -216,7 +242,8 @@ AC_DEFUN([AC_SILC_TIMER], [
 ac_silc_timer_bgp_get_timebase="no"
 ac_silc_timer_clock_gettime="no"
 ac_silc_timer_cray_rtclock="no"
-ac_silc_timer_cycle_counter="no"
+ac_silc_timer_cycle_counter_tsc="no"
+ac_silc_timer_cycle_counter_itc="no"
 ac_silc_timer_cray_dclock="no"
 ac_silc_timer_sun_gethrtime="no"
 ac_silc_timer_gettimeofday="no"
@@ -237,21 +264,24 @@ AC_SILC_TIMER_IBM_SWITCH_CLOCK_AVAILABLE
 AC_SILC_TIMER_CLOCK_GETTIME_AVAILABLE
 AC_SILC_TIMER_CYCLE_COUNTER_TSC_AVAILABLE
 AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE
+AC_SILC_TIMER_INTEL_MMTIMER_AVAILABLE
 AC_LANG_POP([C])
+# now all *_available variables are set
 
-AM_CONDITIONAL([SILC_TIMER_BGP_GET_TIMEBASE], [test "x${ac_silc_timer_bgp_get_timebase}" = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_CLOCK_GETTIME],    [test "x${ac_silc_timer_clock_gettime}"    = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_CRAY_RTCLOCK],     [test "x${ac_silc_timer_cray_rtclock}"     = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_CYCLE_COUNTER],    [test "x${ac_silc_timer_cycle_counter}"    = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_CRAY_DCLOCK],      [test "x${ac_silc_timer_cray_dclock}"      = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_SUN_GETHRTIME],    [test "x${ac_silc_timer_sun_gethrtime}"    = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_GETTIMEOFDAY],     [test "x${ac_silc_timer_gettimeofday}"     = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_INTEL_MMTIMER],    [test "x${ac_silc_timer_intel_mmtimer}"    = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_PAPI_REAL_CYC],    [test "x${ac_silc_timer_papi_real_cyc}"    = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_PAPI_REAL_USEC],   [test "x${ac_silc_timer_papi_real_usec}"   = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_POWER_REALTIME],   [test "x${ac_silc_timer_power_realtime}"   = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_CRAY_RTC],         [test "x${ac_silc_timer_cray_rtc}"         = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_RTS_GET_TIMEBASE], [test "x${ac_silc_timer_rts_get_timebase}" = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_IBM_SWITCH_CLOCK], [test "x${ac_silc_timer_ibm_switch_clock}" = "xyes"])
-AM_CONDITIONAL([SILC_TIMER_NEC_SYSSX_HGTIME], [test "x${ac_silc_timer_nec_syssx_hgtime}" = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_BGP_GET_TIMEBASE],  [test "x${ac_silc_timer_bgp_get_timebase}"  = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_CLOCK_GETTIME],     [test "x${ac_silc_timer_clock_gettime}"     = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_CRAY_RTCLOCK],      [test "x${ac_silc_timer_cray_rtclock}"      = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_CYCLE_COUNTER_TSC], [test "x${ac_silc_timer_cycle_counter_tsc}" = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_CYCLE_COUNTER_ITC], [test "x${ac_silc_timer_cycle_counter_itc}" = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_CRAY_DCLOCK],       [test "x${ac_silc_timer_cray_dclock}"       = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_SUN_GETHRTIME],     [test "x${ac_silc_timer_sun_gethrtime}"     = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_GETTIMEOFDAY],      [test "x${ac_silc_timer_gettimeofday}"      = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_INTEL_MMTIMER],     [test "x${ac_silc_timer_intel_mmtimer}"     = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_PAPI_REAL_CYC],     [test "x${ac_silc_timer_papi_real_cyc}"     = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_PAPI_REAL_USEC],    [test "x${ac_silc_timer_papi_real_usec}"    = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_POWER_REALTIME],    [test "x${ac_silc_timer_power_realtime}"    = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_CRAY_RTC],          [test "x${ac_silc_timer_cray_rtc}"          = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_RTS_GET_TIMEBASE],  [test "x${ac_silc_timer_rts_get_timebase}"  = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_IBM_SWITCH_CLOCK],  [test "x${ac_silc_timer_ibm_switch_clock}"  = "xyes"])
+AM_CONDITIONAL([SILC_TIMER_NEC_SYSSX_HGTIME],  [test "x${ac_silc_timer_nec_syssx_hgtime}"  = "xyes"])
 ])
