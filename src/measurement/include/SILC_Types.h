@@ -396,9 +396,9 @@ typedef enum SILC_ConfigType
      * SILC_ConfigVariable::variableReference should point to a variable of
      * type uint64_t.
      *
-     * SILC_ConfigVariable::variableContext should point to a NULL terminated
-     * list of type SILC_ConfigType_SetEntry with valid set members and there
-     * values.
+     * SILC_ConfigVariable::variableContext should point to an array of type
+     * SILC_ConfigType_SetEntry with valid set members and there values.
+     * Terminate the array with an entry { NULL, 0 }.
      */
     SILC_CONFIG_TYPE_BITSET,
 

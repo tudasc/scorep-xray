@@ -359,7 +359,7 @@ parse_bitset( const char*               value,
     {
         /* check if entry is in acceptedValues */
         SILC_ConfigType_SetEntry* acceptedValue = acceptedValues;
-        while ( acceptedValue )
+        while ( acceptedValue->name )
         {
             if ( 0 == strcmp( entry, acceptedValue->name ) )
             {
@@ -407,7 +407,7 @@ dump_bitset( const char*               prefix,
              SILC_ConfigType_SetEntry* acceptedValues )
 {
     const char* prefix_printed = prefix;
-    while ( acceptedValues )
+    while ( acceptedValues->name )
     {
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
