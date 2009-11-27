@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Fmpi_Topo.c
+ * @file       SILC_Fmpi_Topo.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for topologies
  */
@@ -464,6 +467,7 @@ FSUB( MPI_Topo_test ) ( MPI_Comm * comm, int* status, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_coords
  */
 void
 FSUB( MPI_Cart_coords ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxdims, MPI_Fint * coords, int* ierr )
@@ -478,6 +482,7 @@ FSUB( MPI_Cart_coords ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxdims, 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_create
  */
 void
 FSUB( MPI_Cart_create ) ( MPI_Fint * comm_old, MPI_Fint * ndims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * reorder, MPI_Fint * comm_cart, int* ierr )
@@ -494,6 +499,7 @@ FSUB( MPI_Cart_create ) ( MPI_Fint * comm_old, MPI_Fint * ndims, MPI_Fint * dims
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_get
  */
 void
 FSUB( MPI_Cart_get ) ( MPI_Fint * comm, MPI_Fint * maxdims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * coords, int* ierr )
@@ -508,6 +514,7 @@ FSUB( MPI_Cart_get ) ( MPI_Fint * comm, MPI_Fint * maxdims, MPI_Fint * dims, MPI
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_map
  */
 void
 FSUB( MPI_Cart_map ) ( MPI_Fint * comm, MPI_Fint * ndims, MPI_Fint * dims, MPI_Fint * periods, MPI_Fint * newrank, int* ierr )
@@ -522,6 +529,7 @@ FSUB( MPI_Cart_map ) ( MPI_Fint * comm, MPI_Fint * ndims, MPI_Fint * dims, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_rank
  */
 void
 FSUB( MPI_Cart_rank ) ( MPI_Fint * comm, MPI_Fint * coords, MPI_Fint * rank, int* ierr )
@@ -536,6 +544,7 @@ FSUB( MPI_Cart_rank ) ( MPI_Fint * comm, MPI_Fint * coords, MPI_Fint * rank, int
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_shift
  */
 void
 FSUB( MPI_Cart_shift ) ( MPI_Fint * comm, MPI_Fint * direction, MPI_Fint * disp, MPI_Fint * rank_source, MPI_Fint * rank_dest, int* ierr )
@@ -550,6 +559,7 @@ FSUB( MPI_Cart_shift ) ( MPI_Fint * comm, MPI_Fint * direction, MPI_Fint * disp,
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cart_sub
  */
 void
 FSUB( MPI_Cart_sub ) ( MPI_Fint * comm, MPI_Fint * remain_dims, MPI_Fint * newcomm, int* ierr )
@@ -566,6 +576,7 @@ FSUB( MPI_Cart_sub ) ( MPI_Fint * comm, MPI_Fint * remain_dims, MPI_Fint * newco
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Cartdim_get
  */
 void
 FSUB( MPI_Cartdim_get ) ( MPI_Fint * comm, MPI_Fint * ndims, int* ierr )
@@ -580,6 +591,7 @@ FSUB( MPI_Cartdim_get ) ( MPI_Fint * comm, MPI_Fint * ndims, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Dims_create
  */
 void
 FSUB( MPI_Dims_create ) ( MPI_Fint * nnodes, MPI_Fint * ndims, MPI_Fint * dims, int* ierr )
@@ -594,6 +606,7 @@ FSUB( MPI_Dims_create ) ( MPI_Fint * nnodes, MPI_Fint * ndims, MPI_Fint * dims, 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Graph_create
  */
 void
 FSUB( MPI_Graph_create ) ( MPI_Fint * comm_old, MPI_Fint * nnodes, MPI_Fint * index, MPI_Fint * edges, MPI_Fint * reorder, MPI_Fint * newcomm, int* ierr )
@@ -610,6 +623,7 @@ FSUB( MPI_Graph_create ) ( MPI_Fint * comm_old, MPI_Fint * nnodes, MPI_Fint * in
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Graph_get
  */
 void
 FSUB( MPI_Graph_get ) ( MPI_Fint * comm, MPI_Fint * maxindex, MPI_Fint * maxedges, MPI_Fint * index, MPI_Fint * edges, int* ierr )
@@ -624,6 +638,7 @@ FSUB( MPI_Graph_get ) ( MPI_Fint * comm, MPI_Fint * maxindex, MPI_Fint * maxedge
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Graph_map
  */
 void
 FSUB( MPI_Graph_map ) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * index, MPI_Fint * edges, MPI_Fint * newrank, int* ierr )
@@ -638,6 +653,7 @@ FSUB( MPI_Graph_map ) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * index, MP
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Graph_neighbors
  */
 void
 FSUB( MPI_Graph_neighbors ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxneighbors, MPI_Fint * neighbors, int* ierr )
@@ -652,6 +668,7 @@ FSUB( MPI_Graph_neighbors ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * maxne
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Graph_neighbors_count
  */
 void
 FSUB( MPI_Graph_neighbors_count ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint * nneighbors, int* ierr )
@@ -666,6 +683,7 @@ FSUB( MPI_Graph_neighbors_count ) ( MPI_Fint * comm, MPI_Fint * rank, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Graphdims_get
  */
 void
 FSUB( MPI_Graphdims_get ) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * nedges, int* ierr )
@@ -680,6 +698,7 @@ FSUB( MPI_Graphdims_get ) ( MPI_Fint * comm, MPI_Fint * nnodes, MPI_Fint * nedge
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * For the order of events see @ref MPI_Topo_test
  */
 void
 FSUB( MPI_Topo_test ) ( MPI_Fint * comm, MPI_Fint * status, int* ierr )

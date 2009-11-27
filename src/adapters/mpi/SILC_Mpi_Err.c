@@ -19,6 +19,9 @@
 
 /**
  * @file  SILC_Mpi_Err.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for error handling
  */
@@ -35,6 +38,7 @@
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -68,6 +72,7 @@ MPI_Add_error_class( int* errorclass )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -102,6 +107,7 @@ MPI_Add_error_code( int  errorclass,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -136,6 +142,7 @@ MPI_Add_error_string( int   errorcode,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -170,6 +177,7 @@ MPI_Errhandler_create( MPI_Handler_function* function,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -203,6 +211,7 @@ MPI_Errhandler_free( MPI_Errhandler* errhandler )
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -237,6 +246,7 @@ MPI_Errhandler_get( MPI_Comm        comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -271,6 +281,7 @@ MPI_Errhandler_set( MPI_Comm       comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -305,6 +316,7 @@ MPI_Error_class( int  errorcode,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int

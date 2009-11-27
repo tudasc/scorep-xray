@@ -2,7 +2,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Spawn.c
+ * @file       SILC_Mpi_Spawn.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for process creation and management
  *        functions (spawning interface)
@@ -22,6 +25,7 @@
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  */
 int MPI_Comm_disconnect(MPI_Comm* comm)
 {

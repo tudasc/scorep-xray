@@ -16,6 +16,9 @@
 
 /**
  * @file SILC_Mpi_Reg.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Registration of MPI regions
  */

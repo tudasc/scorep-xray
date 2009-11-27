@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Ext.c
+ * @file       SILC_Mpi_Ext.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for external interface functions
  */
@@ -35,6 +38,7 @@
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -69,6 +73,7 @@ MPI_Abort( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -104,6 +109,7 @@ MPI_Get_count( MPI_Status*  status,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -139,6 +145,7 @@ MPI_Get_elements( MPI_Status*  status,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -173,6 +180,7 @@ MPI_Get_processor_name( char* name,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -206,6 +214,7 @@ MPI_Grequest_complete( MPI_Request request )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -243,6 +252,7 @@ MPI_Grequest_start( MPI_Grequest_query_function*  query_fn,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -277,6 +287,7 @@ MPI_Status_set_cancelled( MPI_Status* status,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int

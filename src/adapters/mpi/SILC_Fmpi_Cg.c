@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Fmpi_Cg.c
+ * @file       SILC_Fmpi_Cg.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for communicator and group functions
  */
@@ -1178,6 +1181,7 @@ FSUB( MPI_Keyval_free ) ( int* keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_create
  */
 void
 FSUB( MPI_Comm_create ) ( MPI_Fint * comm, MPI_Fint * group, MPI_Fint * newcomm, int* ierr )
@@ -1194,6 +1198,7 @@ FSUB( MPI_Comm_create ) ( MPI_Fint * comm, MPI_Fint * group, MPI_Fint * newcomm,
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_dup
  */
 void
 FSUB( MPI_Comm_dup ) ( MPI_Fint * comm, MPI_Fint * newcomm, int* ierr )
@@ -1210,6 +1215,7 @@ FSUB( MPI_Comm_dup ) ( MPI_Fint * comm, MPI_Fint * newcomm, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_split
  */
 void
 FSUB( MPI_Comm_split ) ( MPI_Fint * comm, MPI_Fint * color, MPI_Fint * key, MPI_Fint * newcomm, int* ierr )
@@ -1226,6 +1232,7 @@ FSUB( MPI_Comm_split ) ( MPI_Fint * comm, MPI_Fint * color, MPI_Fint * key, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Intercomm_create
  */
 void
 FSUB( MPI_Intercomm_create ) ( MPI_Fint * local_comm, MPI_Fint * local_leader, MPI_Fint * peer_comm, MPI_Fint * remote_leader, MPI_Fint * tag, MPI_Fint * newcomm, int* ierr )
@@ -1242,6 +1249,7 @@ FSUB( MPI_Intercomm_create ) ( MPI_Fint * local_comm, MPI_Fint * local_leader, M
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Intercomm_merge
  */
 void
 FSUB( MPI_Intercomm_merge ) ( MPI_Fint * intercomm, MPI_Fint * high, MPI_Fint * newcomm, int* ierr )
@@ -1265,6 +1273,7 @@ FSUB( MPI_Intercomm_merge ) ( MPI_Fint * intercomm, MPI_Fint * high, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_free
  */
 void
 FSUB( MPI_Comm_free ) ( MPI_Fint * comm, int* ierr )
@@ -1288,6 +1297,7 @@ FSUB( MPI_Comm_free ) ( MPI_Fint * comm, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_difference
  */
 void
 FSUB( MPI_Group_difference ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * newgroup, int* ierr )
@@ -1304,6 +1314,7 @@ FSUB( MPI_Group_difference ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_excl
  */
 void
 FSUB( MPI_Group_excl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint * ranks, MPI_Fint * newgroup, int* ierr )
@@ -1320,6 +1331,7 @@ FSUB( MPI_Group_excl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint * ranks, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_incl
  */
 void
 FSUB( MPI_Group_incl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint * ranks, MPI_Fint * newgroup, int* ierr )
@@ -1336,6 +1348,7 @@ FSUB( MPI_Group_incl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint * ranks, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_intersection
  */
 void
 FSUB( MPI_Group_intersection ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * newgroup, int* ierr )
@@ -1352,6 +1365,7 @@ FSUB( MPI_Group_intersection ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_range_excl
  */
 void
 FSUB( MPI_Group_range_excl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint ranges[][ 3 ], MPI_Fint * newgroup, int* ierr )
@@ -1368,6 +1382,7 @@ FSUB( MPI_Group_range_excl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint ranges[]
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_range_incl
  */
 void
 FSUB( MPI_Group_range_incl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint ranges[][ 3 ], MPI_Fint * newgroup, int* ierr )
@@ -1384,6 +1399,7 @@ FSUB( MPI_Group_range_incl ) ( MPI_Fint * group, MPI_Fint * n, MPI_Fint ranges[]
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_union
  */
 void
 FSUB( MPI_Group_union ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * newgroup, int* ierr )
@@ -1400,6 +1416,7 @@ FSUB( MPI_Group_union ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * newgr
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_group
  */
 void
 FSUB( MPI_Comm_group ) ( MPI_Fint * comm, MPI_Fint * group, int* ierr )
@@ -1416,6 +1433,7 @@ FSUB( MPI_Comm_group ) ( MPI_Fint * comm, MPI_Fint * group, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_remote_group
  */
 void
 FSUB( MPI_Comm_remote_group ) ( MPI_Fint * comm, MPI_Fint * group, int* ierr )
@@ -1439,6 +1457,7 @@ FSUB( MPI_Comm_remote_group ) ( MPI_Fint * comm, MPI_Fint * group, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_free
  */
 void
 FSUB( MPI_Group_free ) ( MPI_Fint * group, int* ierr )
@@ -1462,6 +1481,7 @@ FSUB( MPI_Group_free ) ( MPI_Fint * group, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_compare
  */
 void
 FSUB( MPI_Comm_compare ) ( MPI_Fint * comm1, MPI_Fint * comm2, MPI_Fint * result, int* ierr )
@@ -1476,6 +1496,7 @@ FSUB( MPI_Comm_compare ) ( MPI_Fint * comm1, MPI_Fint * comm2, MPI_Fint * result
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_rank
  */
 void
 FSUB( MPI_Comm_rank ) ( MPI_Fint * comm, MPI_Fint * rank, int* ierr )
@@ -1490,6 +1511,7 @@ FSUB( MPI_Comm_rank ) ( MPI_Fint * comm, MPI_Fint * rank, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_size
  */
 void
 FSUB( MPI_Comm_size ) ( MPI_Fint * comm, MPI_Fint * size, int* ierr )
@@ -1504,6 +1526,7 @@ FSUB( MPI_Comm_size ) ( MPI_Fint * comm, MPI_Fint * size, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Comm_test_inter
  */
 void
 FSUB( MPI_Comm_test_inter ) ( MPI_Fint * comm, MPI_Fint * flag, int* ierr )
@@ -1518,6 +1541,7 @@ FSUB( MPI_Comm_test_inter ) ( MPI_Fint * comm, MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_compare
  */
 void
 FSUB( MPI_Group_compare ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * result, int* ierr )
@@ -1532,6 +1556,7 @@ FSUB( MPI_Group_compare ) ( MPI_Fint * group1, MPI_Fint * group2, MPI_Fint * res
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_rank
  */
 void
 FSUB( MPI_Group_rank ) ( MPI_Fint * group, MPI_Fint * rank, int* ierr )
@@ -1546,6 +1571,7 @@ FSUB( MPI_Group_rank ) ( MPI_Fint * group, MPI_Fint * rank, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg
+ * For the order of events see @ref MPI_Group_size
  */
 void
 FSUB( MPI_Group_size ) ( MPI_Fint * group, MPI_Fint * size, int* ierr )
@@ -1567,6 +1593,7 @@ FSUB( MPI_Group_size ) ( MPI_Fint * group, MPI_Fint * size, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_err
+ * For the order of events see @ref MPI_Comm_call_errhandler
  */
 void
 FSUB( MPI_Comm_call_errhandler ) ( MPI_Fint * comm, MPI_Fint * errorcode, int* ierr )
@@ -1581,6 +1608,7 @@ FSUB( MPI_Comm_call_errhandler ) ( MPI_Fint * comm, MPI_Fint * errorcode, int* i
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_err
+ * For the order of events see @ref MPI_Comm_create_errhandler
  */
 void
 FSUB( MPI_Comm_create_errhandler ) ( void* function, void* errhandler, int* ierr )
@@ -1595,6 +1623,7 @@ FSUB( MPI_Comm_create_errhandler ) ( void* function, void* errhandler, int* ierr
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_err
+ * For the order of events see @ref MPI_Comm_get_errhandler
  */
 void
 FSUB( MPI_Comm_get_errhandler ) ( MPI_Fint * comm, void* errhandler, int* ierr )
@@ -1609,6 +1638,7 @@ FSUB( MPI_Comm_get_errhandler ) ( MPI_Fint * comm, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_err
+ * For the order of events see @ref MPI_Comm_set_errhandler
  */
 void
 FSUB( MPI_Comm_set_errhandler ) ( MPI_Fint * comm, void* errhandler, int* ierr )
@@ -1632,6 +1662,7 @@ FSUB( MPI_Comm_set_errhandler ) ( MPI_Fint * comm, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Attr_delete
  */
 void
 FSUB( MPI_Attr_delete ) ( MPI_Fint * comm, MPI_Fint * keyval, int* ierr )
@@ -1646,6 +1677,7 @@ FSUB( MPI_Attr_delete ) ( MPI_Fint * comm, MPI_Fint * keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Attr_get
  */
 void
 FSUB( MPI_Attr_get ) ( MPI_Fint * comm, MPI_Fint * keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
@@ -1660,6 +1692,7 @@ FSUB( MPI_Attr_get ) ( MPI_Fint * comm, MPI_Fint * keyval, void* attribute_val, 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Attr_put
  */
 void
 FSUB( MPI_Attr_put ) ( MPI_Fint * comm, MPI_Fint * keyval, void* attribute_val, int* ierr )
@@ -1674,6 +1707,7 @@ FSUB( MPI_Attr_put ) ( MPI_Fint * comm, MPI_Fint * keyval, void* attribute_val, 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_create_keyval
  */
 void
 FSUB( MPI_Comm_create_keyval ) ( void* comm_copy_attr_fn, void* comm_delete_attr_fn, MPI_Fint * comm_keyval, void* extra_state, int* ierr )
@@ -1688,6 +1722,7 @@ FSUB( MPI_Comm_create_keyval ) ( void* comm_copy_attr_fn, void* comm_delete_attr
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_delete_attr
  */
 void
 FSUB( MPI_Comm_delete_attr ) ( MPI_Fint * comm, MPI_Fint * comm_keyval, int* ierr )
@@ -1704,6 +1739,7 @@ FSUB( MPI_Comm_delete_attr ) ( MPI_Fint * comm, MPI_Fint * comm_keyval, int* ier
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_free_keyval
  */
 void
 FSUB( MPI_Comm_free_keyval ) ( MPI_Fint * comm_keyval, int* ierr )
@@ -1718,6 +1754,7 @@ FSUB( MPI_Comm_free_keyval ) ( MPI_Fint * comm_keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_get_attr
  */
 void
 FSUB( MPI_Comm_get_attr ) ( MPI_Fint * comm, MPI_Fint * comm_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
@@ -1732,6 +1769,7 @@ FSUB( MPI_Comm_get_attr ) ( MPI_Fint * comm, MPI_Fint * comm_keyval, void* attri
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_get_name
  */
 void
 FSUB( MPI_Comm_get_name ) ( MPI_Fint * comm, char* comm_name, MPI_Fint * resultlen, int* ierr, int comm_name_len )
@@ -1756,6 +1794,7 @@ FSUB( MPI_Comm_get_name ) ( MPI_Fint * comm, char* comm_name, MPI_Fint * resultl
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_set_attr
  */
 void
 FSUB( MPI_Comm_set_attr ) ( MPI_Fint * comm, MPI_Fint * comm_keyval, void* attribute_val, int* ierr )
@@ -1772,6 +1811,7 @@ FSUB( MPI_Comm_set_attr ) ( MPI_Fint * comm, MPI_Fint * comm_keyval, void* attri
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_set_name
  */
 void
 FSUB( MPI_Comm_set_name ) ( MPI_Fint * comm, char* comm_name, int* ierr, int comm_name_len )
@@ -1798,6 +1838,7 @@ FSUB( MPI_Comm_set_name ) ( MPI_Fint * comm, char* comm_name, int* ierr, int com
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Keyval_create
  */
 void
 FSUB( MPI_Keyval_create ) ( void* copy_fn, void* delete_fn, MPI_Fint * keyval, void* extra_state, int* ierr )
@@ -1812,6 +1853,7 @@ FSUB( MPI_Keyval_create ) ( void* copy_fn, void* delete_fn, MPI_Fint * keyval, v
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup cg_ext
+ * For the order of events see @ref MPI_Keyval_free
  */
 void
 FSUB( MPI_Keyval_free ) ( MPI_Fint * keyval, int* ierr )

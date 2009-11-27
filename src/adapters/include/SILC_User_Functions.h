@@ -1,14 +1,30 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+#ifndef SILC_USER_FUNCTIONS_H
+#define SILC_USER_FUNCTIONS_H
+
 /** @file SILC_User_Functions.h
-    @author Daniel Lorenz
-    @email d.lorenz@fz-juelich.de
+    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+    @status     ALPHA
+    @ingroup    SILC_User_External
 
     This File contains the function definitions which are called from the user manual
     instrumentation. The user should not insert calls to theis functions directly, but
     use the macros provided in SILC_User.h.
  */
-
-#ifndef SILC_USER_FUNCTIONS_H
-#define SILC_USER_FUNCTIONS_H
 
 #include "SILC_Types.h"
 #include "SILC_User_Types.h"

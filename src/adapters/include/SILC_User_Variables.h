@@ -1,9 +1,26 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
 #ifndef SILC_USER_VARIABLES_H
 #define SILC_USER_VARIABLES_H
 
-/** @file SILC_User_Variables.h
-    @author Daniel Lorenz
-    @ingroup SILC_User_External
+/** @file       SILC_User_Variables.h
+    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+    @status     ALPHA
+    @ingroup    SILC_User_External
+
     @brief Automatically, declares variables needed in the application's source files.
 
     This file contains variable declarations. This declarations are automatically

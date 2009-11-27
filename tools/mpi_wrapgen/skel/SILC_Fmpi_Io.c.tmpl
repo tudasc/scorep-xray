@@ -1,11 +1,15 @@
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Io.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  * 
  * @brief Fortran interface wrappers for parallel I/O
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* lowercase defines */
 #pragma wrapgen multiple restrict(gio)      skel/SILC_Fmpi_DefineL.w

@@ -14,14 +14,18 @@
  */
 
 
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Rma.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for one-sided communication
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Accumulate_U
@@ -350,6 +354,7 @@
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Accumulate
  */
 void
 FSUB( MPI_Accumulate ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * op, MPI_Fint * win, int* ierr )
@@ -364,6 +369,7 @@ FSUB( MPI_Accumulate ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Get
  */
 void
 FSUB( MPI_Get ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
@@ -378,6 +384,7 @@ FSUB( MPI_Get ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Put
  */
 void
 FSUB( MPI_Put ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
@@ -398,6 +405,7 @@ FSUB( MPI_Put ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_create
  */
 void
 FSUB( MPI_Win_create ) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_Fint * info, MPI_Fint * comm, MPI_Fint * win, int* ierr )
@@ -414,6 +422,7 @@ FSUB( MPI_Win_create ) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_free
  */
 void
 FSUB( MPI_Win_free ) ( MPI_Fint * win, int* ierr )
@@ -436,6 +445,7 @@ FSUB( MPI_Win_free ) ( MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_complete
  */
 void
 FSUB( MPI_Win_complete ) ( MPI_Fint * win, int* ierr )
@@ -450,6 +460,7 @@ FSUB( MPI_Win_complete ) ( MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_fence
  */
 void
 FSUB( MPI_Win_fence ) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -464,6 +475,7 @@ FSUB( MPI_Win_fence ) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_lock
  */
 void
 FSUB( MPI_Win_lock ) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -478,6 +490,7 @@ FSUB( MPI_Win_lock ) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_post
  */
 void
 FSUB( MPI_Win_post ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -492,6 +505,7 @@ FSUB( MPI_Win_post ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int*
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_start
  */
 void
 FSUB( MPI_Win_start ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -506,6 +520,7 @@ FSUB( MPI_Win_start ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_test
  */
 void
 FSUB( MPI_Win_test ) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
@@ -520,6 +535,7 @@ FSUB( MPI_Win_test ) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_unlock
  */
 void
 FSUB( MPI_Win_unlock ) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
@@ -534,6 +550,7 @@ FSUB( MPI_Win_unlock ) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_wait
  */
 void
 FSUB( MPI_Win_wait ) ( MPI_Fint * win, int* ierr )
@@ -554,6 +571,7 @@ FSUB( MPI_Win_wait ) ( MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_call_errhandler
  */
 void
 FSUB( MPI_Win_call_errhandler ) ( MPI_Fint * win, MPI_Fint * errorcode, int* ierr )
@@ -568,6 +586,7 @@ FSUB( MPI_Win_call_errhandler ) ( MPI_Fint * win, MPI_Fint * errorcode, int* ier
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_create_errhandler
  */
 void
 FSUB( MPI_Win_create_errhandler ) ( void* function, void* errhandler, int* ierr )
@@ -582,6 +601,7 @@ FSUB( MPI_Win_create_errhandler ) ( void* function, void* errhandler, int* ierr 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_get_errhandler
  */
 void
 FSUB( MPI_Win_get_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
@@ -596,6 +616,7 @@ FSUB( MPI_Win_get_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_set_errhandler
  */
 void
 FSUB( MPI_Win_set_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
@@ -618,6 +639,7 @@ FSUB( MPI_Win_set_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_create_keyval
  */
 void
 FSUB( MPI_Win_create_keyval ) ( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint * win_keyval, void* extra_state, int* ierr )
@@ -632,6 +654,7 @@ FSUB( MPI_Win_create_keyval ) ( void* win_copy_attr_fn, void* win_delete_attr_fn
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_delete_attr
  */
 void
 FSUB( MPI_Win_delete_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
@@ -648,6 +671,7 @@ FSUB( MPI_Win_delete_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_free_keyval
  */
 void
 FSUB( MPI_Win_free_keyval ) ( MPI_Fint * win_keyval, int* ierr )
@@ -662,6 +686,7 @@ FSUB( MPI_Win_free_keyval ) ( MPI_Fint * win_keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_get_attr
  */
 void
 FSUB( MPI_Win_get_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
@@ -676,6 +701,7 @@ FSUB( MPI_Win_get_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribut
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_get_name
  */
 void
 FSUB( MPI_Win_get_name ) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen, int* ierr, int win_name_len )
@@ -700,6 +726,7 @@ FSUB( MPI_Win_get_name ) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_set_attr
  */
 void
 FSUB( MPI_Win_set_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, int* ierr )
@@ -716,6 +743,7 @@ FSUB( MPI_Win_set_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribut
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_set_name
  */
 void
 FSUB( MPI_Win_set_name ) ( MPI_Fint * win, char* win_name, int* ierr, int win_name_len )
@@ -750,6 +778,7 @@ FSUB( MPI_Win_set_name ) ( MPI_Fint * win, char* win_name, int* ierr, int win_na
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Accumulate
  */
 void
 FSUB( MPI_Accumulate ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * op, MPI_Fint * win, int* ierr )
@@ -764,6 +793,7 @@ FSUB( MPI_Accumulate ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Get
  */
 void
 FSUB( MPI_Get ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
@@ -778,6 +808,7 @@ FSUB( MPI_Get ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Put
  */
 void
 FSUB( MPI_Put ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_datatype, MPI_Fint * target_rank, MPI_Aint * target_disp, MPI_Fint * target_count, MPI_Fint * target_datatype, MPI_Fint * win, int* ierr )
@@ -798,6 +829,7 @@ FSUB( MPI_Put ) ( void* origin_addr, MPI_Fint * origin_count, MPI_Fint * origin_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_create
  */
 void
 FSUB( MPI_Win_create ) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_Fint * info, MPI_Fint * comm, MPI_Fint * win, int* ierr )
@@ -814,6 +846,7 @@ FSUB( MPI_Win_create ) ( void* base, MPI_Aint * size, MPI_Fint * disp_unit, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_free
  */
 void
 FSUB( MPI_Win_free ) ( MPI_Fint * win, int* ierr )
@@ -836,6 +869,7 @@ FSUB( MPI_Win_free ) ( MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_complete
  */
 void
 FSUB( MPI_Win_complete ) ( MPI_Fint * win, int* ierr )
@@ -850,6 +884,7 @@ FSUB( MPI_Win_complete ) ( MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_fence
  */
 void
 FSUB( MPI_Win_fence ) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -864,6 +899,7 @@ FSUB( MPI_Win_fence ) ( MPI_Fint * assert, MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_lock
  */
 void
 FSUB( MPI_Win_lock ) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -878,6 +914,7 @@ FSUB( MPI_Win_lock ) ( MPI_Fint * lock_type, MPI_Fint * rank, MPI_Fint * assert,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_post
  */
 void
 FSUB( MPI_Win_post ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -892,6 +929,7 @@ FSUB( MPI_Win_post ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int*
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_start
  */
 void
 FSUB( MPI_Win_start ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int* ierr )
@@ -906,6 +944,7 @@ FSUB( MPI_Win_start ) ( MPI_Fint * group, MPI_Fint * assert, MPI_Fint * win, int
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_test
  */
 void
 FSUB( MPI_Win_test ) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
@@ -920,6 +959,7 @@ FSUB( MPI_Win_test ) ( MPI_Fint * win, MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_unlock
  */
 void
 FSUB( MPI_Win_unlock ) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
@@ -934,6 +974,7 @@ FSUB( MPI_Win_unlock ) ( MPI_Fint * rank, MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * For the order of events see @ref MPI_Win_wait
  */
 void
 FSUB( MPI_Win_wait ) ( MPI_Fint * win, int* ierr )
@@ -954,6 +995,7 @@ FSUB( MPI_Win_wait ) ( MPI_Fint * win, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_call_errhandler
  */
 void
 FSUB( MPI_Win_call_errhandler ) ( MPI_Fint * win, MPI_Fint * errorcode, int* ierr )
@@ -968,6 +1010,7 @@ FSUB( MPI_Win_call_errhandler ) ( MPI_Fint * win, MPI_Fint * errorcode, int* ier
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_create_errhandler
  */
 void
 FSUB( MPI_Win_create_errhandler ) ( void* function, void* errhandler, int* ierr )
@@ -982,6 +1025,7 @@ FSUB( MPI_Win_create_errhandler ) ( void* function, void* errhandler, int* ierr 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_get_errhandler
  */
 void
 FSUB( MPI_Win_get_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
@@ -996,6 +1040,7 @@ FSUB( MPI_Win_get_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_err
+ * For the order of events see @ref MPI_Win_set_errhandler
  */
 void
 FSUB( MPI_Win_set_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
@@ -1018,6 +1063,7 @@ FSUB( MPI_Win_set_errhandler ) ( MPI_Fint * win, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_create_keyval
  */
 void
 FSUB( MPI_Win_create_keyval ) ( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint * win_keyval, void* extra_state, int* ierr )
@@ -1032,6 +1078,7 @@ FSUB( MPI_Win_create_keyval ) ( void* win_copy_attr_fn, void* win_delete_attr_fn
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_delete_attr
  */
 void
 FSUB( MPI_Win_delete_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
@@ -1048,6 +1095,7 @@ FSUB( MPI_Win_delete_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_free_keyval
  */
 void
 FSUB( MPI_Win_free_keyval ) ( MPI_Fint * win_keyval, int* ierr )
@@ -1062,6 +1110,7 @@ FSUB( MPI_Win_free_keyval ) ( MPI_Fint * win_keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_get_attr
  */
 void
 FSUB( MPI_Win_get_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
@@ -1076,6 +1125,7 @@ FSUB( MPI_Win_get_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribut
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_get_name
  */
 void
 FSUB( MPI_Win_get_name ) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen, int* ierr, int win_name_len )
@@ -1100,6 +1150,7 @@ FSUB( MPI_Win_get_name ) ( MPI_Fint * win, char* win_name, MPI_Fint * resultlen,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_set_attr
  */
 void
 FSUB( MPI_Win_set_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribute_val, int* ierr )
@@ -1116,6 +1167,7 @@ FSUB( MPI_Win_set_attr ) ( MPI_Fint * win, MPI_Fint * win_keyval, void* attribut
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_set_name
  */
 void
 FSUB( MPI_Win_set_name ) ( MPI_Fint * win, char* win_name, int* ierr, int win_name_len )

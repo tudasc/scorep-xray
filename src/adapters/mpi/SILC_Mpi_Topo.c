@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Topo.c
+ * @file       SILC_Mpi_Topo.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for topologies
  */
@@ -35,6 +38,12 @@
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Sequence of events:
+ * @li enter region 'MPI_Cart_create'
+ * @li define communicator
+ * @li define topology
+ * @li define coordinates
+ * @li exit region 'MPI_Cart_create'
  */
 int
 MPI_Cart_create( MPI_Comm  comm_old,
@@ -142,6 +151,8 @@ MPI_Cart_create( MPI_Comm  comm_old,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Cart_sub( MPI_Comm  comm,
@@ -179,6 +190,8 @@ MPI_Cart_sub( MPI_Comm  comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Graph_create( MPI_Comm  comm_old,
@@ -220,6 +233,7 @@ MPI_Graph_create( MPI_Comm  comm_old,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -256,6 +270,7 @@ MPI_Cart_coords( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -293,6 +308,7 @@ MPI_Cart_get( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -330,6 +346,7 @@ MPI_Cart_map( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -365,6 +382,7 @@ MPI_Cart_rank( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -402,6 +420,7 @@ MPI_Cart_shift( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -436,6 +455,7 @@ MPI_Cartdim_get( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -473,6 +493,7 @@ MPI_Graph_get( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -510,6 +531,7 @@ MPI_Graph_map( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -546,6 +568,7 @@ MPI_Graph_neighbors( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -581,6 +604,7 @@ MPI_Graph_neighbors_count( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -616,6 +640,7 @@ MPI_Graphdims_get( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -650,6 +675,7 @@ MPI_Topo_test( MPI_Comm comm,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int

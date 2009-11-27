@@ -19,6 +19,9 @@
 
 /**
  * @file  SILC_Fmpi_Env.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for environmental management
  */
@@ -256,6 +259,7 @@ FSUB( MPI_Init ) ( int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup env
+ * For the order of events see @ref MPI_Finalize
  */
 void
 FSUB( MPI_Finalize ) ( int* ierr )
@@ -270,6 +274,7 @@ FSUB( MPI_Finalize ) ( int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup env
+ * For the order of events see @ref MPI_Finalized
  */
 void
 FSUB( MPI_Finalized ) ( MPI_Fint * flag, int* ierr )
@@ -284,6 +289,7 @@ FSUB( MPI_Finalized ) ( MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup env
+ * For the order of events see @ref MPI_Is_thread_main
  */
 void
 FSUB( MPI_Is_thread_main ) ( MPI_Fint * flag, int* ierr )
@@ -298,6 +304,7 @@ FSUB( MPI_Is_thread_main ) ( MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup env
+ * For the order of events see @ref MPI_Query_thread
  */
 void
 FSUB( MPI_Query_thread ) ( MPI_Fint * provided, int* ierr )

@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Type.c
+ * @file       SILC_Mpi_Type.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for datatype functions
  */
@@ -35,6 +38,7 @@
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -70,6 +74,7 @@ MPI_Sizeof( MPI_Datatype x,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -109,6 +114,7 @@ MPI_Pack( void*        inbuf,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -148,6 +154,7 @@ MPI_Pack_external( char*        datarep,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -184,6 +191,7 @@ MPI_Pack_external_size( char*        datarep,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -220,6 +228,7 @@ MPI_Pack_size( int          incount,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -253,6 +262,7 @@ MPI_Type_commit( MPI_Datatype* datatype )
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -288,6 +298,7 @@ MPI_Type_contiguous( int           count,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -330,6 +341,7 @@ MPI_Type_create_darray( int           size,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -365,6 +377,7 @@ MPI_Type_create_f90_complex( int           p,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -399,6 +412,7 @@ MPI_Type_create_f90_integer( int           r,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -434,6 +448,7 @@ MPI_Type_create_f90_real( int           p,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -471,6 +486,7 @@ MPI_Type_create_hindexed( int           count,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -508,6 +524,7 @@ MPI_Type_create_hvector( int           count,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -545,6 +562,7 @@ MPI_Type_create_indexed_block( int           count,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -581,6 +599,7 @@ MPI_Type_create_resized( MPI_Datatype  oldtype,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -618,6 +637,7 @@ MPI_Type_create_struct( int           count,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -657,6 +677,7 @@ MPI_Type_create_subarray( int           ndims,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -691,6 +712,7 @@ MPI_Type_dup( MPI_Datatype  type,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -725,6 +747,7 @@ MPI_Type_extent( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -758,6 +781,7 @@ MPI_Type_free( MPI_Datatype* datatype )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -797,6 +821,7 @@ MPI_Type_get_contents( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -834,6 +859,7 @@ MPI_Type_get_envelope( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -869,6 +895,7 @@ MPI_Type_get_extent( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -904,6 +931,7 @@ MPI_Type_get_true_extent( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -941,6 +969,7 @@ MPI_Type_hindexed( int           count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -978,6 +1007,7 @@ MPI_Type_hvector( int           count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1015,6 +1045,7 @@ MPI_Type_indexed( int           count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1049,6 +1080,7 @@ MPI_Type_lb( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1084,6 +1116,7 @@ MPI_Type_match_size( int           typeclass,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1118,6 +1151,7 @@ MPI_Type_size( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1155,6 +1189,7 @@ MPI_Type_struct( int           count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1189,6 +1224,7 @@ MPI_Type_ub( MPI_Datatype datatype,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1226,6 +1262,7 @@ MPI_Type_vector( int           count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1265,6 +1302,7 @@ MPI_Unpack( void*        inbuf,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1311,6 +1349,7 @@ MPI_Unpack_external( char*        datarep,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1347,6 +1386,7 @@ MPI_Type_create_keyval( MPI_Type_copy_attr_function*   type_copy_attr_fn,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1381,6 +1421,7 @@ MPI_Type_delete_attr( MPI_Datatype type,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1414,6 +1455,7 @@ MPI_Type_free_keyval( int* type_keyval )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1450,6 +1492,7 @@ MPI_Type_get_attr( MPI_Datatype type,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1485,6 +1528,7 @@ MPI_Type_get_name( MPI_Datatype type,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -1520,6 +1564,7 @@ MPI_Type_set_attr( MPI_Datatype type,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int

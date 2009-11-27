@@ -1,12 +1,29 @@
-/** @file SILC_User_Types.h
-    @author Daniel Lorenz
-    @email d.lorenz@fz-juelich.de
-
-    This file contains type definitions for manual user instrumentation.
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
  */
 
 #ifndef SILC_USER_TYPES_H
 #define SILC_USER_TYPES_H
+
+/**
+   @file       SILC_User_Types.h
+   @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+   @status     ALPHA
+   @ingroup    SILC_User_Interface
+
+   @brief This file contains type definitions for manual user instrumentation.
+ */
 
 #include "SILC_Types.h"
 

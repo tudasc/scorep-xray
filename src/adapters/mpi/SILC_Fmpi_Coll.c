@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Fmpi_Coll.c
+ * @file       SILC_Fmpi_Coll.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for collective communication
  */
@@ -464,6 +467,7 @@ FSUB( MPI_Scatterv ) ( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Allgather
  */
 void
 FSUB( MPI_Allgather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
@@ -478,6 +482,7 @@ FSUB( MPI_Allgather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Allgatherv
  */
 void
 FSUB( MPI_Allgatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * displs, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
@@ -492,6 +497,7 @@ FSUB( MPI_Allgatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtyp
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Allreduce
  */
 void
 FSUB( MPI_Allreduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
@@ -506,6 +512,7 @@ FSUB( MPI_Allreduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Alltoall
  */
 void
 FSUB( MPI_Alltoall ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
@@ -520,6 +527,7 @@ FSUB( MPI_Alltoall ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype,
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Alltoallv
  */
 void
 FSUB( MPI_Alltoallv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * sdispls, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * rdispls, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
@@ -534,6 +542,7 @@ FSUB( MPI_Alltoallv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * sdispls
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Barrier
  */
 void
 FSUB( MPI_Barrier ) ( MPI_Fint * comm, int* ierr )
@@ -548,6 +557,7 @@ FSUB( MPI_Barrier ) ( MPI_Fint * comm, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Bcast
  */
 void
 FSUB( MPI_Bcast ) ( void* buffer, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
@@ -562,6 +572,7 @@ FSUB( MPI_Bcast ) ( void* buffer, MPI_Fint * count, MPI_Fint * datatype, MPI_Fin
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Gather
  */
 void
 FSUB( MPI_Gather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
@@ -576,6 +587,7 @@ FSUB( MPI_Gather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, v
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Gatherv
  */
 void
 FSUB( MPI_Gatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * displs, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
@@ -590,6 +602,7 @@ FSUB( MPI_Gatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Reduce
  */
 void
 FSUB( MPI_Reduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * root, MPI_Fint * comm, int* ierr )
@@ -604,6 +617,7 @@ FSUB( MPI_Reduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Reduce_scatter
  */
 void
 FSUB( MPI_Reduce_scatter ) ( void* sendbuf, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
@@ -618,6 +632,7 @@ FSUB( MPI_Reduce_scatter ) ( void* sendbuf, void* recvbuf, MPI_Fint * recvcounts
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Scan
  */
 void
 FSUB( MPI_Scan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
@@ -632,6 +647,7 @@ FSUB( MPI_Scan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * da
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Scatter
  */
 void
 FSUB( MPI_Scatter ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
@@ -646,6 +662,7 @@ FSUB( MPI_Scatter ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup coll
+ * For the order of events see @ref MPI_Scatterv
  */
 void
 FSUB( MPI_Scatterv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * displs, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
@@ -700,6 +717,7 @@ FSUB( MPI_Alltoallw ) ( void*     sendbuf,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup coll
+ * For the order of events see @ref MPI_Exscan
  */
 void
 FSUB( MPI_Exscan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )

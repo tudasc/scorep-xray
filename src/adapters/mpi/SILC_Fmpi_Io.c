@@ -14,14 +14,18 @@
  */
 
 
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Io.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for parallel I/O
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* lowercase defines */
 /** @def MPI_File_close_L
@@ -1028,6 +1032,12 @@ FSUB( MPI_Register_datarep ) ( char* datarep, MPI_Datarep_conversion_function * 
  * @{
  */
 
+/* MPI Implementation which use ROMIO can have no general support for MPI_Requests
+   in asynchronous file IO operations. This leads to a different signature and
+   thus to compiler errors. To avoid compilation errors, the asynchronous file
+   IO functions are not wrapped if ROMIO is used and they support no general
+   MPI_Requests.
+ */
 #if !defined( ROMIO_VERSION ) || defined( MPIO_USES_MPI_REQUEST )
 
 #if HAVE( DECL_MPI_FILE_IREAD ) && !defined( SILC_MPI_NO_IO )
@@ -1532,6 +1542,7 @@ FSUB( MPI_File_set_errhandler ) ( MPI_File * file, MPI_Errhandler * errhandler, 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_close
  */
 void
 FSUB( MPI_File_close ) ( MPI_Fint * fh, int* ierr )
@@ -1548,6 +1559,7 @@ FSUB( MPI_File_close ) ( MPI_Fint * fh, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_delete
  */
 void
 FSUB( MPI_File_delete ) ( char* filename, MPI_Fint * info, int* ierr, int filename_len )
@@ -1572,6 +1584,7 @@ FSUB( MPI_File_delete ) ( char* filename, MPI_Fint * info, int* ierr, int filena
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_amode
  */
 void
 FSUB( MPI_File_get_amode ) ( MPI_Fint * fh, MPI_Fint * amode, int* ierr )
@@ -1586,6 +1599,7 @@ FSUB( MPI_File_get_amode ) ( MPI_Fint * fh, MPI_Fint * amode, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_atomicity
  */
 void
 FSUB( MPI_File_get_atomicity ) ( MPI_Fint * fh, MPI_Fint * flag, int* ierr )
@@ -1600,6 +1614,7 @@ FSUB( MPI_File_get_atomicity ) ( MPI_Fint * fh, MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_byte_offset
  */
 void
 FSUB( MPI_File_get_byte_offset ) ( MPI_Fint * fh, MPI_Offset * offset, MPI_Offset * disp, int* ierr )
@@ -1614,6 +1629,7 @@ FSUB( MPI_File_get_byte_offset ) ( MPI_Fint * fh, MPI_Offset * offset, MPI_Offse
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_group
  */
 void
 FSUB( MPI_File_get_group ) ( MPI_Fint * fh, MPI_Fint * group, int* ierr )
@@ -1630,6 +1646,7 @@ FSUB( MPI_File_get_group ) ( MPI_Fint * fh, MPI_Fint * group, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_info
  */
 void
 FSUB( MPI_File_get_info ) ( MPI_Fint * fh, MPI_Fint * info_used, int* ierr )
@@ -1646,6 +1663,7 @@ FSUB( MPI_File_get_info ) ( MPI_Fint * fh, MPI_Fint * info_used, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_position
  */
 void
 FSUB( MPI_File_get_position ) ( MPI_Fint * fh, MPI_Offset * offset, int* ierr )
@@ -1660,6 +1678,7 @@ FSUB( MPI_File_get_position ) ( MPI_Fint * fh, MPI_Offset * offset, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_position_shared
  */
 void
 FSUB( MPI_File_get_position_shared ) ( MPI_Fint * fh, MPI_Offset * offset, int* ierr )
@@ -1674,6 +1693,7 @@ FSUB( MPI_File_get_position_shared ) ( MPI_Fint * fh, MPI_Offset * offset, int* 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_size
  */
 void
 FSUB( MPI_File_get_size ) ( MPI_Fint * fh, MPI_Offset * size, int* ierr )
@@ -1688,6 +1708,7 @@ FSUB( MPI_File_get_size ) ( MPI_Fint * fh, MPI_Offset * size, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_type_extent
  */
 void
 FSUB( MPI_File_get_type_extent ) ( MPI_Fint * fh, MPI_Fint * datatype, MPI_Aint * extent, int* ierr )
@@ -1702,6 +1723,7 @@ FSUB( MPI_File_get_type_extent ) ( MPI_Fint * fh, MPI_Fint * datatype, MPI_Aint 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_get_view
  */
 void
 FSUB( MPI_File_get_view ) ( MPI_Fint * fh, MPI_Offset * disp, MPI_Fint * etype, MPI_Fint * filetype, char* datarep, int* ierr, int datarep_len )
@@ -1730,6 +1752,7 @@ FSUB( MPI_File_get_view ) ( MPI_Fint * fh, MPI_Offset * disp, MPI_Fint * etype, 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_open
  */
 void
 FSUB( MPI_File_open ) ( MPI_Fint * comm, char* filename, MPI_Fint * amode, MPI_Fint * info, MPI_Fint * fh, int* ierr, int filename_len )
@@ -1756,6 +1779,7 @@ FSUB( MPI_File_open ) ( MPI_Fint * comm, char* filename, MPI_Fint * amode, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_seek
  */
 void
 FSUB( MPI_File_seek ) ( MPI_Fint * fh, MPI_Offset * offset, MPI_Fint * whence, int* ierr )
@@ -1772,6 +1796,7 @@ FSUB( MPI_File_seek ) ( MPI_Fint * fh, MPI_Offset * offset, MPI_Fint * whence, i
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_seek_shared
  */
 void
 FSUB( MPI_File_seek_shared ) ( MPI_Fint * fh, MPI_Offset * offset, MPI_Fint * whence, int* ierr )
@@ -1788,6 +1813,7 @@ FSUB( MPI_File_seek_shared ) ( MPI_Fint * fh, MPI_Offset * offset, MPI_Fint * wh
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_set_atomicity
  */
 void
 FSUB( MPI_File_set_atomicity ) ( MPI_Fint * fh, MPI_Fint * flag, int* ierr )
@@ -1804,6 +1830,7 @@ FSUB( MPI_File_set_atomicity ) ( MPI_Fint * fh, MPI_Fint * flag, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_set_info
  */
 void
 FSUB( MPI_File_set_info ) ( MPI_Fint * fh, MPI_Fint * info, int* ierr )
@@ -1820,6 +1847,7 @@ FSUB( MPI_File_set_info ) ( MPI_Fint * fh, MPI_Fint * info, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_set_size
  */
 void
 FSUB( MPI_File_set_size ) ( MPI_Fint * fh, MPI_Offset * size, int* ierr )
@@ -1836,6 +1864,7 @@ FSUB( MPI_File_set_size ) ( MPI_Fint * fh, MPI_Offset * size, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_set_view
  */
 void
 FSUB( MPI_File_set_view ) ( MPI_Fint * fh, MPI_Offset * disp, MPI_Fint * etype, MPI_Fint * filetype, char* datarep, MPI_Fint * info, int* ierr, int datarep_len )
@@ -1862,6 +1891,7 @@ FSUB( MPI_File_set_view ) ( MPI_Fint * fh, MPI_Offset * disp, MPI_Fint * etype, 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_sync
  */
 void
 FSUB( MPI_File_sync ) ( MPI_Fint * fh, int* ierr )
@@ -1878,6 +1908,7 @@ FSUB( MPI_File_sync ) ( MPI_Fint * fh, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_Register_datarep
  */
 void
 FSUB( MPI_Register_datarep ) ( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, int* ierr, int datarep_len )
@@ -1910,6 +1941,7 @@ FSUB( MPI_Register_datarep ) ( char* datarep, void* read_conversion_fn, void* wr
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_iread
  */
 void
 FSUB( MPI_File_iread ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * request, int* ierr )
@@ -1928,6 +1960,7 @@ FSUB( MPI_File_iread ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_iread_at
  */
 void
 FSUB( MPI_File_iread_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * request, int* ierr )
@@ -1944,6 +1977,7 @@ FSUB( MPI_File_iread_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_iread_shared
  */
 void
 FSUB( MPI_File_iread_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * request, int* ierr )
@@ -1962,6 +1996,7 @@ FSUB( MPI_File_iread_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_iwrite
  */
 void
 FSUB( MPI_File_iwrite ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * request, int* ierr )
@@ -1980,6 +2015,7 @@ FSUB( MPI_File_iwrite ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_iwrite_at
  */
 void
 FSUB( MPI_File_iwrite_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * request, int* ierr )
@@ -1998,6 +2034,7 @@ FSUB( MPI_File_iwrite_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_iwrite_shared
  */
 void
 FSUB( MPI_File_iwrite_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * request, int* ierr )
@@ -2016,6 +2053,7 @@ FSUB( MPI_File_iwrite_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read
  */
 void
 FSUB( MPI_File_read ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2034,6 +2072,7 @@ FSUB( MPI_File_read ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * d
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_all
  */
 void
 FSUB( MPI_File_read_all ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2052,6 +2091,7 @@ FSUB( MPI_File_read_all ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_all_begin
  */
 void
 FSUB( MPI_File_read_all_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, int* ierr )
@@ -2068,6 +2108,7 @@ FSUB( MPI_File_read_all_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MP
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_all_end
  */
 void
 FSUB( MPI_File_read_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int* ierr )
@@ -2086,6 +2127,7 @@ FSUB( MPI_File_read_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_at
  */
 void
 FSUB( MPI_File_read_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2102,6 +2144,7 @@ FSUB( MPI_File_read_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fi
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_at_all
  */
 void
 FSUB( MPI_File_read_at_all ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2118,6 +2161,7 @@ FSUB( MPI_File_read_at_all ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MP
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_at_all_begin
  */
 void
 FSUB( MPI_File_read_at_all_begin ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, int* ierr )
@@ -2132,6 +2176,7 @@ FSUB( MPI_File_read_at_all_begin ) ( MPI_Fint * fh, MPI_Offset * offset, void* b
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_at_all_end
  */
 void
 FSUB( MPI_File_read_at_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int* ierr )
@@ -2148,6 +2193,7 @@ FSUB( MPI_File_read_at_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_ordered
  */
 void
 FSUB( MPI_File_read_ordered ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2166,6 +2212,7 @@ FSUB( MPI_File_read_ordered ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_ordered_begin
  */
 void
 FSUB( MPI_File_read_ordered_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, int* ierr )
@@ -2182,6 +2229,7 @@ FSUB( MPI_File_read_ordered_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_ordered_end
  */
 void
 FSUB( MPI_File_read_ordered_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int* ierr )
@@ -2200,6 +2248,7 @@ FSUB( MPI_File_read_ordered_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_read_shared
  */
 void
 FSUB( MPI_File_read_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2218,6 +2267,7 @@ FSUB( MPI_File_read_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write
  */
 void
 FSUB( MPI_File_write ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2236,6 +2286,7 @@ FSUB( MPI_File_write ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_all
  */
 void
 FSUB( MPI_File_write_all ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2254,6 +2305,7 @@ FSUB( MPI_File_write_all ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fin
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_all_begin
  */
 void
 FSUB( MPI_File_write_all_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, int* ierr )
@@ -2270,6 +2322,7 @@ FSUB( MPI_File_write_all_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, M
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_all_end
  */
 void
 FSUB( MPI_File_write_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int* ierr )
@@ -2288,6 +2341,7 @@ FSUB( MPI_File_write_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, in
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_at
  */
 void
 FSUB( MPI_File_write_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2306,6 +2360,7 @@ FSUB( MPI_File_write_at ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_at_all
  */
 void
 FSUB( MPI_File_write_at_all ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2324,6 +2379,7 @@ FSUB( MPI_File_write_at_all ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, M
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_at_all_begin
  */
 void
 FSUB( MPI_File_write_at_all_begin ) ( MPI_Fint * fh, MPI_Offset * offset, void* buf, MPI_Fint * count, MPI_Fint * datatype, int* ierr )
@@ -2340,6 +2396,7 @@ FSUB( MPI_File_write_at_all_begin ) ( MPI_Fint * fh, MPI_Offset * offset, void* 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_at_all_end
  */
 void
 FSUB( MPI_File_write_at_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int* ierr )
@@ -2358,6 +2415,7 @@ FSUB( MPI_File_write_at_all_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_ordered
  */
 void
 FSUB( MPI_File_write_ordered ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2376,6 +2434,7 @@ FSUB( MPI_File_write_ordered ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_ordered_begin
  */
 void
 FSUB( MPI_File_write_ordered_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, int* ierr )
@@ -2392,6 +2451,7 @@ FSUB( MPI_File_write_ordered_begin ) ( MPI_Fint * fh, void* buf, MPI_Fint * coun
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_ordered_end
  */
 void
 FSUB( MPI_File_write_ordered_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status, int* ierr )
@@ -2410,6 +2470,7 @@ FSUB( MPI_File_write_ordered_end ) ( MPI_Fint * fh, void* buf, MPI_Fint * status
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io
+ * For the order of events see @ref MPI_File_write_shared
  */
 void
 FSUB( MPI_File_write_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * status, int* ierr )
@@ -2435,6 +2496,7 @@ FSUB( MPI_File_write_shared ) ( MPI_Fint * fh, void* buf, MPI_Fint * count, MPI_
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io_err
+ * For the order of events see @ref MPI_File_call_errhandler
  */
 void
 FSUB( MPI_File_call_errhandler ) ( MPI_Fint * fh, MPI_Fint * errorcode, int* ierr )
@@ -2449,6 +2511,7 @@ FSUB( MPI_File_call_errhandler ) ( MPI_Fint * fh, MPI_Fint * errorcode, int* ier
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io_err
+ * For the order of events see @ref MPI_File_create_errhandler
  */
 void
 FSUB( MPI_File_create_errhandler ) ( void* function, void* errhandler, int* ierr )
@@ -2463,6 +2526,7 @@ FSUB( MPI_File_create_errhandler ) ( void* function, void* errhandler, int* ierr
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io_err
+ * For the order of events see @ref MPI_File_get_errhandler
  */
 void
 FSUB( MPI_File_get_errhandler ) ( MPI_Fint * file, void* errhandler, int* ierr )
@@ -2477,6 +2541,7 @@ FSUB( MPI_File_get_errhandler ) ( MPI_Fint * file, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup io_err
+ * For the order of events see @ref MPI_File_set_errhandler
  */
 void
 FSUB( MPI_File_set_errhandler ) ( MPI_Fint * file, void* errhandler, int* ierr )

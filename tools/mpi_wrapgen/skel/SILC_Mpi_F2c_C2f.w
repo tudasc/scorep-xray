@@ -5,6 +5,7 @@ ${guard:start}
  * @note Fortran interface
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
+ * For the order of events see @ref ${name}
  */
 ${proto:f2c_c2f} 
 {

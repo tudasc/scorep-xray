@@ -14,15 +14,19 @@
  */
 
 
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Spawn.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for process creation and management
  *        functions (spawning interface)
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Close_port_U
@@ -657,6 +661,7 @@ FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Close_port
  */
 void
 FSUB( MPI_Close_port ) ( char* port_name, int* ierr, int port_name_len )
@@ -681,6 +686,7 @@ FSUB( MPI_Close_port ) ( char* port_name, int* ierr, int port_name_len )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Comm_accept
  */
 void
 FSUB( MPI_Comm_accept ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * newcomm, int* ierr, int port_name_len )
@@ -707,6 +713,7 @@ FSUB( MPI_Comm_accept ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MPI
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Comm_connect
  */
 void
 FSUB( MPI_Comm_connect ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * newcomm, int* ierr, int port_name_len )
@@ -733,6 +740,7 @@ FSUB( MPI_Comm_connect ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MP
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Comm_disconnect
  */
 void
 FSUB( MPI_Comm_disconnect ) ( MPI_Fint * comm, int* ierr )
@@ -749,6 +757,7 @@ FSUB( MPI_Comm_disconnect ) ( MPI_Fint * comm, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Comm_get_parent
  */
 void
 FSUB( MPI_Comm_get_parent ) ( MPI_Fint * parent, int* ierr )
@@ -765,6 +774,7 @@ FSUB( MPI_Comm_get_parent ) ( MPI_Fint * parent, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Comm_join
  */
 void
 FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * newcomm, int* ierr )
@@ -781,6 +791,7 @@ FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * newcomm, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Comm_spawn
  */
 void
 FSUB( MPI_Comm_spawn ) ( char* command, char* argv, MPI_Fint * maxprocs, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * newcomm, MPI_Fint * array_of_errcodes, int* ierr, int command_len, int argv_len )
@@ -817,6 +828,7 @@ FSUB( MPI_Comm_spawn ) ( char* command, char* argv, MPI_Fint * maxprocs, MPI_Fin
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Lookup_name
  */
 void
 FSUB( MPI_Lookup_name ) ( char* service_name, MPI_Fint * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
@@ -851,6 +863,7 @@ FSUB( MPI_Lookup_name ) ( char* service_name, MPI_Fint * info, char* port_name, 
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Open_port
  */
 void
 FSUB( MPI_Open_port ) ( MPI_Fint * info, char* port_name, int* ierr, int port_name_len )
@@ -875,6 +888,7 @@ FSUB( MPI_Open_port ) ( MPI_Fint * info, char* port_name, int* ierr, int port_na
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Publish_name
  */
 void
 FSUB( MPI_Publish_name ) ( char* service_name, MPI_Fint * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
@@ -909,6 +923,7 @@ FSUB( MPI_Publish_name ) ( char* service_name, MPI_Fint * info, char* port_name,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * For the order of events see @ref MPI_Unpublish_name
  */
 void
 FSUB( MPI_Unpublish_name ) ( char* service_name, MPI_Fint * info, char* port_name, int* ierr, int service_name_len, int port_name_len )

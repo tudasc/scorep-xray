@@ -1,11 +1,15 @@
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Rma.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for one-sided communication
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* uppercase defines */
 #pragma wrapgen multiple restrict(grma)      skel/SILC_Fmpi_DefineU.w

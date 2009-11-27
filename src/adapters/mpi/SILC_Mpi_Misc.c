@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Misc.c
+ * @file       SILC_Mpi_Misc.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for miscelaneous and handler conversion
  *        functions
@@ -36,6 +39,7 @@
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -70,6 +74,7 @@ MPI_Address( void*     location,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -105,6 +110,7 @@ MPI_Alloc_mem( MPI_Aint size,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -138,6 +144,7 @@ MPI_Free_mem( void* base )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -172,6 +179,7 @@ MPI_Get_address( void*     location,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -206,6 +214,7 @@ MPI_Get_version( int* version,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -239,6 +248,7 @@ MPI_Info_create( MPI_Info* info )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -273,6 +283,7 @@ MPI_Info_delete( MPI_Info info,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -307,6 +318,7 @@ MPI_Info_dup( MPI_Info  info,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -340,6 +352,7 @@ MPI_Info_free( MPI_Info* info )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -377,6 +390,7 @@ MPI_Info_get( MPI_Info info,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -411,6 +425,7 @@ MPI_Info_get_nkeys( MPI_Info info,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -446,6 +461,7 @@ MPI_Info_get_nthkey( MPI_Info info,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -482,6 +498,7 @@ MPI_Info_get_valuelen( MPI_Info info,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -517,6 +534,7 @@ MPI_Info_set( MPI_Info info,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -552,6 +570,7 @@ MPI_Op_create( MPI_User_function* function,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -585,6 +604,7 @@ MPI_Op_free( MPI_Op* op )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int

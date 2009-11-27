@@ -2,7 +2,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Topo.c
+ * @file       SILC_Mpi_Topo.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for topologies
  */
@@ -19,6 +22,12 @@
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup topo
+ * Sequence of events:
+ * @li enter region 'MPI_Cart_create'
+ * @li define communicator
+ * @li define topology
+ * @li define coordinates
+ * @li exit region 'MPI_Cart_create'
  */
 int MPI_Cart_create(MPI_Comm  comm_old,
                     int       ndims,

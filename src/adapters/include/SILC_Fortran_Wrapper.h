@@ -1,5 +1,24 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+#ifndef SILC_FORTRAN_WRAPPER_H
+#define SILC_FORTRAN_WRAPPER_H
+
 /** @file SILC_Fortran_Wrapper.h
-    @author Daniel Lorenz
+    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+    @status     ALPHA
 
     This file provides macros to generate decoration for function names for C-functions
     called from Fortran. Furthermore, conversion types and constantsa are defined.
@@ -104,3 +123,6 @@ typedef int SILC_Fortran_MetricGroup;
     Value of the metric group handle for the default group from fortran calls.
  */
 #define SILC_FORTRAN_DEFAULT_GROUP  -2
+
+
+#endif /* SILC_FORTRAN_WRAPPER_H */

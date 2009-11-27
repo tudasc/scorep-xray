@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file  SILC_Mpi_Spawn.c
+ * @file       SILC_Mpi_Spawn.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for process creation and management
  *        functions (spawning interface)
@@ -36,6 +39,8 @@
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Comm_accept( char*     port_name,
@@ -75,6 +80,8 @@ MPI_Comm_accept( char*     port_name,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Comm_connect( char*     port_name,
@@ -114,6 +121,8 @@ MPI_Comm_connect( char*     port_name,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Comm_join( int       fd,
@@ -150,6 +159,8 @@ MPI_Comm_join( int       fd,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Comm_spawn( char*     command,
@@ -192,6 +203,8 @@ MPI_Comm_spawn( char*     command,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 int
 MPI_Comm_spawn_multiple( int       count,
@@ -236,6 +249,7 @@ MPI_Comm_spawn_multiple( int       count,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  */
 int
 MPI_Comm_disconnect( MPI_Comm* comm )
@@ -269,6 +283,7 @@ MPI_Comm_disconnect( MPI_Comm* comm )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -303,6 +318,7 @@ MPI_Comm_get_parent( MPI_Comm* parent )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -338,6 +354,7 @@ MPI_Lookup_name( char*    service_name,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -373,6 +390,7 @@ MPI_Publish_name( char*    service_name,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -409,6 +427,7 @@ MPI_Unpublish_name( char*    service_name,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int
@@ -442,6 +461,7 @@ MPI_Close_port( char* port_name )
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup spawn
+ * Triggers an enter and exit event.
  * It wraps the me) call with enter and exit events.
  */
 int

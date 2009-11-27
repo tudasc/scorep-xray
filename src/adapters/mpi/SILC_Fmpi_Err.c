@@ -19,6 +19,9 @@
 
 /**
  * @file  SILC_Fmpi_Err.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for error handling
  */
@@ -306,6 +309,7 @@ FSUB( MPI_Error_string ) ( int* errorcode, char* string, int* resultlen, int* ie
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup err
+ * For the order of events see @ref MPI_Add_error_class
  */
 void
 FSUB( MPI_Add_error_class ) ( MPI_Fint * errorclass, int* ierr )
@@ -320,6 +324,7 @@ FSUB( MPI_Add_error_class ) ( MPI_Fint * errorclass, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup err
+ * For the order of events see @ref MPI_Add_error_code
  */
 void
 FSUB( MPI_Add_error_code ) ( MPI_Fint * errorclass, MPI_Fint * errorcode, int* ierr )
@@ -334,6 +339,7 @@ FSUB( MPI_Add_error_code ) ( MPI_Fint * errorclass, MPI_Fint * errorcode, int* i
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup err
+ * For the order of events see @ref MPI_Add_error_string
  */
 void
 FSUB( MPI_Add_error_string ) ( MPI_Fint * errorcode, char* string, int* ierr, int string_len )
@@ -358,6 +364,7 @@ FSUB( MPI_Add_error_string ) ( MPI_Fint * errorcode, char* string, int* ierr, in
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * For the order of events see @ref MPI_Errhandler_create
  */
 void
 FSUB( MPI_Errhandler_create ) ( void* function, void* errhandler, int* ierr )
@@ -372,6 +379,7 @@ FSUB( MPI_Errhandler_create ) ( void* function, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * For the order of events see @ref MPI_Errhandler_free
  */
 void
 FSUB( MPI_Errhandler_free ) ( void* errhandler, int* ierr )
@@ -386,6 +394,7 @@ FSUB( MPI_Errhandler_free ) ( void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * For the order of events see @ref MPI_Errhandler_get
  */
 void
 FSUB( MPI_Errhandler_get ) ( MPI_Fint * comm, void* errhandler, int* ierr )
@@ -400,6 +409,7 @@ FSUB( MPI_Errhandler_get ) ( MPI_Fint * comm, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * For the order of events see @ref MPI_Errhandler_set
  */
 void
 FSUB( MPI_Errhandler_set ) ( MPI_Fint * comm, void* errhandler, int* ierr )
@@ -414,6 +424,7 @@ FSUB( MPI_Errhandler_set ) ( MPI_Fint * comm, void* errhandler, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * For the order of events see @ref MPI_Error_class
  */
 void
 FSUB( MPI_Error_class ) ( MPI_Fint * errorcode, MPI_Fint * errorclass, int* ierr )
@@ -428,6 +439,7 @@ FSUB( MPI_Error_class ) ( MPI_Fint * errorcode, MPI_Fint * errorclass, int* ierr
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup err
+ * For the order of events see @ref MPI_Error_string
  */
 void
 FSUB( MPI_Error_string ) ( MPI_Fint * errorcode, char* string, MPI_Fint * resultlen, int* ierr, int string_len )

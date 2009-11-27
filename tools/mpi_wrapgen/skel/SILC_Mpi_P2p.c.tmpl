@@ -1,16 +1,11 @@
 #include "SILC_Mpi.h"
 #include "config.h"
 
-/** 
- * @defgroup p2p Peer-to-peer communication function of the SILC MPI wrapper
- * @ingroup MPI_Wrapper
- * This module contains the peer-to-peer communication functions of the MPI wrapper.
- * 
- */
-
 /**
  * @file  SILC_Mpi_P2p.c
- * @ingroup p2p 
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for point-to-point communication
  */
@@ -28,6 +23,10 @@
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Sequence of events:
+ * @li enter region 'MPI_Recv'
+ * @li MPI recv event
+ * @li exit region 'MPI_Recv'
  */
 int MPI_Recv( void* buf,
               int count,
@@ -80,6 +79,11 @@ int MPI_Recv( void* buf,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Sequence of events:
+ * @li enter region 'MPI_Recv'
+ * @li MPI send event
+ * @li MPI recv event
+ * @li exit region 'MPI_Recv'
  */
 int MPI_Sendrecv(void* sendbuf,
                  int sendcount,
@@ -150,6 +154,11 @@ int MPI_Sendrecv(void* sendbuf,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Sequence of events:
+ * @li enter region 'MPI_Recv'
+ * @li MPI send event
+ * @li MPI recv event
+ * @li exit region 'MPI_Recv'
  */
 int MPI_Sendrecv_replace(void* buf,
                          int count,
@@ -226,6 +235,7 @@ int MPI_Sendrecv_replace(void* buf,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Irecv(void* buf,
               int count,
@@ -277,6 +287,7 @@ int MPI_Irecv(void* buf,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Wait(MPI_Request* request,
              MPI_Status* status)
@@ -325,6 +336,7 @@ int MPI_Wait(MPI_Request* request,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Waitall(int count,
                 MPI_Request* requests,
@@ -374,6 +386,7 @@ int MPI_Waitall(int count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Waitany(int count,
                 MPI_Request* requests,
@@ -423,6 +436,7 @@ int MPI_Waitany(int count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Waitsome(int incount,
                  MPI_Request *array_of_requests,
@@ -476,6 +490,7 @@ int MPI_Waitsome(int incount,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Test(MPI_Request* request,
              int* flag,
@@ -526,6 +541,7 @@ int MPI_Test(MPI_Request* request,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Testany(int count,
                 MPI_Request *array_of_requests,
@@ -578,6 +594,7 @@ int MPI_Testany(int count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Testall(int count,
                 MPI_Request *array_of_requests,
@@ -630,6 +647,7 @@ int MPI_Testall(int count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Testsome(int incount,
                  MPI_Request *array_of_requests,
@@ -693,6 +711,7 @@ pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SILC_Mpi_PtpSendini
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Recv_init(void* buf,
                   int count,
@@ -713,15 +732,15 @@ int MPI_Recv_init(void* buf,
   }
 
   return_val = PMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
+/* no asynchroneous communication handling at the beginning included 
   if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
   {
     int sz;
     PMPI_Type_size(datatype, &sz);
-/* no asynchroneous communication handling at the beginning included 
     silc_request_create(*request, (ERF_RECV | ERF_IS_PERSISTENT),
                        tag, source, count * sz, datatype, comm);
-*/
   }
+*/
 
   if (event_gen_active)
   {
@@ -741,6 +760,7 @@ int MPI_Recv_init(void* buf,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Start(MPI_Request* request)
 {
@@ -789,6 +809,7 @@ int MPI_Start(MPI_Request* request)
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Startall(int count,
                  MPI_Request *array_of_requests)
@@ -845,6 +866,7 @@ int MPI_Startall(int count,
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Request_free( MPI_Request* request )
 {
@@ -899,6 +921,7 @@ int MPI_Request_free( MPI_Request* request )
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * Triggers an enter and exit event.
  */
 int MPI_Cancel( MPI_Request* request )
 {

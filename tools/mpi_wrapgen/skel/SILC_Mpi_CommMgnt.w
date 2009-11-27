@@ -5,6 +5,8 @@ ${guard:start}
  * @note C interface
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
+ * It triggers an enter and an exit event. Additionally, between enter event and exit
+ * event, @ref SILC_DefineMPICommunicator is called.
  */
 ${proto:c}
 {

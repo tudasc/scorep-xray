@@ -18,7 +18,10 @@
 #include "config.h"
 
 /**
- * @file SILC_Fmpi_Type.c
+ * @file       SILC_Fmpi_Type.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for datatype functions
  */
@@ -1222,6 +1225,7 @@ FSUB( MPI_Type_set_name ) ( MPI_Datatype * type, char* type_name, int* ierr, int
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type
+ * For the order of events see @ref MPI_Sizeof
  */
 void
 FSUB( MPI_Sizeof ) ( MPI_Fint * x, MPI_Fint * size, int* ierr )
@@ -1360,6 +1364,7 @@ FSUB( MPI_Type_get_contents ) ( MPI_Fint * datatype,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_create_keyval
  */
 void
 FSUB( MPI_Type_create_keyval ) ( void* type_copy_attr_fn, void* type_delete_attr_fn, MPI_Fint * type_keyval, void* extra_state, int* ierr )
@@ -1374,6 +1379,7 @@ FSUB( MPI_Type_create_keyval ) ( void* type_copy_attr_fn, void* type_delete_attr
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_delete_attr
  */
 void
 FSUB( MPI_Type_delete_attr ) ( MPI_Fint * type, MPI_Fint * type_keyval, int* ierr )
@@ -1390,6 +1396,7 @@ FSUB( MPI_Type_delete_attr ) ( MPI_Fint * type, MPI_Fint * type_keyval, int* ier
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_free_keyval
  */
 void
 FSUB( MPI_Type_free_keyval ) ( MPI_Fint * type_keyval, int* ierr )
@@ -1404,6 +1411,7 @@ FSUB( MPI_Type_free_keyval ) ( MPI_Fint * type_keyval, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_get_attr
  */
 void
 FSUB( MPI_Type_get_attr ) ( MPI_Fint * type, MPI_Fint * type_keyval, void* attribute_val, MPI_Fint * flag, int* ierr )
@@ -1418,6 +1426,7 @@ FSUB( MPI_Type_get_attr ) ( MPI_Fint * type, MPI_Fint * type_keyval, void* attri
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_get_name
  */
 void
 FSUB( MPI_Type_get_name ) ( MPI_Fint * type, char* type_name, MPI_Fint * resultlen, int* ierr, int type_name_len )
@@ -1442,6 +1451,7 @@ FSUB( MPI_Type_get_name ) ( MPI_Fint * type, char* type_name, MPI_Fint * resultl
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_set_attr
  */
 void
 FSUB( MPI_Type_set_attr ) ( MPI_Fint * type, MPI_Fint * type_keyval, void* attribute_val, int* ierr )
@@ -1458,6 +1468,7 @@ FSUB( MPI_Type_set_attr ) ( MPI_Fint * type, MPI_Fint * type_keyval, void* attri
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup type_ext
+ * For the order of events see @ref MPI_Type_set_name
  */
 void
 FSUB( MPI_Type_set_name ) ( MPI_Fint * type, char* type_name, int* ierr, int type_name_len )

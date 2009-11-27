@@ -14,15 +14,19 @@
  */
 
 
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Misc.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for miscelaneous and handler conversion
  *        functions
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Address_U
@@ -571,6 +575,7 @@ FSUB( MPI_Request_get_status ) ( MPI_Request * request, int* flag, MPI_Status * 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * For the order of events see @ref MPI_Address
  */
 void
 FSUB( MPI_Address ) ( void* location, MPI_Aint * address, int* ierr )
@@ -585,6 +590,7 @@ FSUB( MPI_Address ) ( void* location, MPI_Aint * address, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Alloc_mem
  */
 void
 FSUB( MPI_Alloc_mem ) ( MPI_Aint * size, MPI_Fint * info, void* baseptr, int* ierr )
@@ -599,6 +605,7 @@ FSUB( MPI_Alloc_mem ) ( MPI_Aint * size, MPI_Fint * info, void* baseptr, int* ie
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Free_mem
  */
 void
 FSUB( MPI_Free_mem ) ( void* base, int* ierr )
@@ -613,6 +620,7 @@ FSUB( MPI_Free_mem ) ( void* base, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Get_address
  */
 void
 FSUB( MPI_Get_address ) ( void* location, MPI_Aint * address, int* ierr )
@@ -627,6 +635,7 @@ FSUB( MPI_Get_address ) ( void* location, MPI_Aint * address, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * For the order of events see @ref MPI_Get_version
  */
 void
 FSUB( MPI_Get_version ) ( MPI_Fint * version, MPI_Fint * subversion, int* ierr )
@@ -641,6 +650,7 @@ FSUB( MPI_Get_version ) ( MPI_Fint * version, MPI_Fint * subversion, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_create
  */
 void
 FSUB( MPI_Info_create ) ( MPI_Fint * info, int* ierr )
@@ -657,6 +667,7 @@ FSUB( MPI_Info_create ) ( MPI_Fint * info, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_delete
  */
 void
 FSUB( MPI_Info_delete ) ( MPI_Fint * info, char* key, int* ierr, int key_len )
@@ -683,6 +694,7 @@ FSUB( MPI_Info_delete ) ( MPI_Fint * info, char* key, int* ierr, int key_len )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_dup
  */
 void
 FSUB( MPI_Info_dup ) ( MPI_Fint * info, MPI_Fint * newinfo, int* ierr )
@@ -699,6 +711,7 @@ FSUB( MPI_Info_dup ) ( MPI_Fint * info, MPI_Fint * newinfo, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_free
  */
 void
 FSUB( MPI_Info_free ) ( MPI_Fint * info, int* ierr )
@@ -715,6 +728,7 @@ FSUB( MPI_Info_free ) ( MPI_Fint * info, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_get
  */
 void
 FSUB( MPI_Info_get ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen, char* value, MPI_Fint * flag, int* ierr, int key_len, int value_len )
@@ -749,6 +763,7 @@ FSUB( MPI_Info_get ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen, char* va
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_get_nkeys
  */
 void
 FSUB( MPI_Info_get_nkeys ) ( MPI_Fint * info, MPI_Fint * nkeys, int* ierr )
@@ -763,6 +778,7 @@ FSUB( MPI_Info_get_nkeys ) ( MPI_Fint * info, MPI_Fint * nkeys, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_get_nthkey
  */
 void
 FSUB( MPI_Info_get_nthkey ) ( MPI_Fint * info, MPI_Fint * n, char* key, int* ierr, int key_len )
@@ -787,6 +803,7 @@ FSUB( MPI_Info_get_nthkey ) ( MPI_Fint * info, MPI_Fint * n, char* key, int* ier
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_get_valuelen
  */
 void
 FSUB( MPI_Info_get_valuelen ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen, MPI_Fint * flag, int* ierr, int key_len )
@@ -811,6 +828,7 @@ FSUB( MPI_Info_get_valuelen ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen,
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Info_set
  */
 void
 FSUB( MPI_Info_set ) ( MPI_Fint * info, char* key, char* value, int* ierr, int key_len, int value_len )
@@ -847,6 +865,7 @@ FSUB( MPI_Info_set ) ( MPI_Fint * info, char* key, char* value, int* ierr, int k
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * For the order of events see @ref MPI_Op_create
  */
 void
 FSUB( MPI_Op_create ) ( void* function, MPI_Fint * commute, MPI_Fint * op, int* ierr )
@@ -863,6 +882,7 @@ FSUB( MPI_Op_create ) ( void* function, MPI_Fint * commute, MPI_Fint * op, int* 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup misc
+ * For the order of events see @ref MPI_Op_free
  */
 void
 FSUB( MPI_Op_free ) ( MPI_Fint * op, int* ierr )
@@ -879,6 +899,7 @@ FSUB( MPI_Op_free ) ( MPI_Fint * op, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup misc
+ * For the order of events see @ref MPI_Request_get_status
  */
 void
 FSUB( MPI_Request_get_status ) ( MPI_Fint * request, MPI_Fint * flag, MPI_Fint * status, int* ierr )

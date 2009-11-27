@@ -14,14 +14,18 @@
  */
 
 
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_Ext.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for external interface functions
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Abort_U
@@ -292,6 +296,7 @@ FSUB( MPI_Status_set_elements ) ( MPI_Status * status, MPI_Datatype * datatype, 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * For the order of events see @ref MPI_Abort
  */
 void
 FSUB( MPI_Abort ) ( MPI_Fint * comm, MPI_Fint * errorcode, int* ierr )
@@ -306,6 +311,7 @@ FSUB( MPI_Abort ) ( MPI_Fint * comm, MPI_Fint * errorcode, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * For the order of events see @ref MPI_Get_count
  */
 void
 FSUB( MPI_Get_count ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
@@ -322,6 +328,7 @@ FSUB( MPI_Get_count ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * For the order of events see @ref MPI_Get_elements
  */
 void
 FSUB( MPI_Get_elements ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )
@@ -338,6 +345,7 @@ FSUB( MPI_Get_elements ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * co
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup ext
+ * For the order of events see @ref MPI_Get_processor_name
  */
 void
 FSUB( MPI_Get_processor_name ) ( char* name, MPI_Fint * resultlen, int* ierr, int name_len )
@@ -362,6 +370,7 @@ FSUB( MPI_Get_processor_name ) ( char* name, MPI_Fint * resultlen, int* ierr, in
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * For the order of events see @ref MPI_Grequest_complete
  */
 void
 FSUB( MPI_Grequest_complete ) ( MPI_Fint * request, int* ierr )
@@ -378,6 +387,7 @@ FSUB( MPI_Grequest_complete ) ( MPI_Fint * request, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * For the order of events see @ref MPI_Grequest_start
  */
 void
 FSUB( MPI_Grequest_start ) ( void* query_fn, void* free_fn, void* cancel_fn, void* extra_state, MPI_Fint * request, int* ierr )
@@ -394,6 +404,7 @@ FSUB( MPI_Grequest_start ) ( void* query_fn, void* free_fn, void* cancel_fn, voi
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * For the order of events see @ref MPI_Status_set_cancelled
  */
 void
 FSUB( MPI_Status_set_cancelled ) ( MPI_Fint * status, MPI_Fint * flag, int* ierr )
@@ -411,6 +422,7 @@ FSUB( MPI_Status_set_cancelled ) ( MPI_Fint * status, MPI_Fint * flag, int* ierr
  * @note Fortran interface
  * @note Introduced with MPI-2
  * @ingroup ext
+ * For the order of events see @ref MPI_Status_set_elements
  */
 void
 FSUB( MPI_Status_set_elements ) ( MPI_Fint * status, MPI_Fint * datatype, MPI_Fint * count, int* ierr )

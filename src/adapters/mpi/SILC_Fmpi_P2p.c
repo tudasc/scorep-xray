@@ -14,14 +14,18 @@
  */
 
 
-#include "SILC_Fmpi.h"
-#include "config.h"
 
 /**
  * @file  SILC_Fmpi_P2p.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for point-to-point communication
  */
+
+#include "SILC_Fmpi.h"
+#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Bsend_U
@@ -1489,6 +1493,7 @@ FSUB( MPI_Cancel ) ( MPI_Fint * request,
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Bsend
  */
 void
 FSUB( MPI_Bsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, int* ierr )
@@ -1503,6 +1508,7 @@ FSUB( MPI_Bsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Bsend_init
  */
 void
 FSUB( MPI_Bsend_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1519,6 +1525,7 @@ FSUB( MPI_Bsend_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Buffer_attach
  */
 void
 FSUB( MPI_Buffer_attach ) ( void* buffer, MPI_Fint * size, int* ierr )
@@ -1533,6 +1540,7 @@ FSUB( MPI_Buffer_attach ) ( void* buffer, MPI_Fint * size, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Buffer_detach
  */
 void
 FSUB( MPI_Buffer_detach ) ( void* buffer, MPI_Fint * size, int* ierr )
@@ -1547,6 +1555,7 @@ FSUB( MPI_Buffer_detach ) ( void* buffer, MPI_Fint * size, int* ierr )
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Ibsend
  */
 void
 FSUB( MPI_Ibsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1563,6 +1572,7 @@ FSUB( MPI_Ibsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Iprobe
  */
 void
 FSUB( MPI_Iprobe ) ( MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * flag, MPI_Fint * status, int* ierr )
@@ -1579,6 +1589,7 @@ FSUB( MPI_Iprobe ) ( MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fin
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Irecv
  */
 void
 FSUB( MPI_Irecv ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1595,6 +1606,7 @@ FSUB( MPI_Irecv ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Irsend
  */
 void
 FSUB( MPI_Irsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1611,6 +1623,7 @@ FSUB( MPI_Irsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Isend
  */
 void
 FSUB( MPI_Isend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1627,6 +1640,7 @@ FSUB( MPI_Isend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Issend
  */
 void
 FSUB( MPI_Issend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1643,6 +1657,7 @@ FSUB( MPI_Issend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Probe
  */
 void
 FSUB( MPI_Probe ) ( MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * status, int* ierr )
@@ -1659,6 +1674,7 @@ FSUB( MPI_Probe ) ( MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Recv
  */
 void
 FSUB( MPI_Recv ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * status, int* ierr )
@@ -1675,6 +1691,7 @@ FSUB( MPI_Recv ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Recv_init
  */
 void
 FSUB( MPI_Recv_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * source, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1691,6 +1708,7 @@ FSUB( MPI_Recv_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fi
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Rsend
  */
 void
 FSUB( MPI_Rsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, int* ierr )
@@ -1705,6 +1723,7 @@ FSUB( MPI_Rsend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Rsend_init
  */
 void
 FSUB( MPI_Rsend_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1721,6 +1740,7 @@ FSUB( MPI_Rsend_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Send
  */
 void
 FSUB( MPI_Send ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, int* ierr )
@@ -1735,6 +1755,7 @@ FSUB( MPI_Send ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * 
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Send_init
  */
 void
 FSUB( MPI_Send_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1751,6 +1772,7 @@ FSUB( MPI_Send_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fi
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Sendrecv
  */
 void
 FSUB( MPI_Sendrecv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, MPI_Fint * dest, MPI_Fint * sendtag, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * source, MPI_Fint * recvtag, MPI_Fint * comm, MPI_Fint * status, int* ierr )
@@ -1767,6 +1789,7 @@ FSUB( MPI_Sendrecv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype,
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Sendrecv_replace
  */
 void
 FSUB( MPI_Sendrecv_replace ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * sendtag, MPI_Fint * source, MPI_Fint * recvtag, MPI_Fint * comm, MPI_Fint * status, int* ierr )
@@ -1783,6 +1806,7 @@ FSUB( MPI_Sendrecv_replace ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype,
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Ssend
  */
 void
 FSUB( MPI_Ssend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, int* ierr )
@@ -1797,6 +1821,7 @@ FSUB( MPI_Ssend ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint *
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Ssend_init
  */
 void
 FSUB( MPI_Ssend_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * dest, MPI_Fint * tag, MPI_Fint * comm, MPI_Fint * request, int* ierr )
@@ -1813,6 +1838,7 @@ FSUB( MPI_Ssend_init ) ( void* buf, MPI_Fint * count, MPI_Fint * datatype, MPI_F
  * @note Fortran interface
  * @note Introduced with MPI-1
  * @ingroup p2p
+ * For the order of events see @ref MPI_Start
  */
 void
 FSUB( MPI_Start ) ( MPI_Fint * request, int* ierr )

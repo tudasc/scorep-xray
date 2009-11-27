@@ -3,6 +3,9 @@
 
 /**
  * @file  SILC_Mpi_Rma.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for one-sided communication
  */
@@ -28,6 +31,7 @@ static int silc_rma_id = 0;
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Get(void*        origin_addr,
             int          origin_count,
@@ -98,6 +102,7 @@ int MPI_Get(void*        origin_addr,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_create(void*    base,
                    MPI_Aint size,
@@ -145,6 +150,7 @@ int MPI_Win_create(void*    base,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_free(MPI_Win* win) 
 {
@@ -196,6 +202,7 @@ int MPI_Win_free(MPI_Win* win)
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_complete(MPI_Win win) 
 { 
@@ -232,6 +239,7 @@ int MPI_Win_complete(MPI_Win win)
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_fence(int     assert,
                   MPI_Win win) 
@@ -267,6 +275,7 @@ int MPI_Win_fence(int     assert,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_lock(int     lock_type,
                  int     rank,
@@ -307,6 +316,7 @@ int MPI_Win_lock(int     lock_type,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_post(MPI_Group group,
                  int       assert,
@@ -347,6 +357,7 @@ int MPI_Win_post(MPI_Group group,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_start(MPI_Group group,
                   int       assert,
@@ -387,6 +398,7 @@ int MPI_Win_start(MPI_Group group,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_test(MPI_Win win,
                  int*    flag) 
@@ -432,6 +444,7 @@ int MPI_Win_test(MPI_Win win,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_unlock(int     rank,
                    MPI_Win win) 
@@ -469,6 +482,7 @@ int MPI_Win_unlock(int     rank,
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup rma
+ * Triggers an enter and exit event.
  */
 int MPI_Win_wait(MPI_Win win) 
 {

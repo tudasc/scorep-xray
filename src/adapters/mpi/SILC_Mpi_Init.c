@@ -1,13 +1,33 @@
-/** @file SILC_Mpi_Init.h
-    @author Daniel Lorenz
-    @email d.lorenz@fz-juelich.de
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
 
-    Contains the initialization function implementations for the measurement system.
+/**
+ * @file       SILC_Mpi_Init.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
+ *
+ * Contains the initialization function implementations for the measurement system.
  */
 
 #include "SILC_Mpi_Init.h"
 #include "SILC_Mpi_Reg.h"
 #include "SILC_Config.h"
+#include "SILC_Mpi.h"
+
+#include <stdio.h>
 
 /** Stores the value of the Fortran MPI constant MPI_STATUS_SIZE. It is used for
     Fortran-C conversions.
@@ -21,14 +41,15 @@ int silc_mpi_status_size;
 extern void
 silc_mpi_get_status_size( int* status_size );
 
-#include <stdio.h>
-
 /** Contains the configuration string of enabled mpi function groups. It is filled
     by the measurement system after registration of configuration variables.
  */
 char** silc_mpi_config_groups = NULL;
 
-char*  silc_mpi_config_groups_acceptable[] = {
+/** List of acceptable values for teh enable_group config variable. It contains all
+    possible groups plus ALL and DEFAULT.
+ */
+char* silc_mpi_config_groups_acceptable[] = {
     "ALL",  "CG",  "COLL",  "DEFAULT",  "ERR",     "EXT",     "ENV",     "IO",
     "MISC", "P2P", "RMA",   "SPAWN",    "TOPO",    "TYPE",    NULL
 };
@@ -51,9 +72,11 @@ SILC_ConfigVariable silc_mpi_configs[] = {
     }
 };
 
-
+/** Implementation of the adapter_register function of the @ref SILC_Adapter struct
+    for the initialization process of the MPI adapter.
+ */
 SILC_Error_Code
-SILC_Mpi_Register
+silc_mpi_register
     ()
 {
     printf( "In SILC_Mpi_Register\n" );
@@ -61,8 +84,11 @@ SILC_Mpi_Register
     return SILC_SUCCESS;
 }
 
+/** Implementation of the adapter_init function of the @ref SILC_Adapter struct
+    for the initialization process of the MPI adapter.
+ */
 SILC_Error_Code
-SILC_Mpi_InitAdapter
+silc_mpi_init_adapter
     ()
 {
     printf( "In SILC_Mpi_InitAdapter\n" );
@@ -71,43 +97,101 @@ SILC_Mpi_InitAdapter
     return SILC_SUCCESS;
 }
 
+/** Implementation of the adapter_init_location function of the @ref SILC_Adapter struct
+    for the initialization process of the MPI adapter.
+ */
 SILC_Error_Code
-SILC_Mpi_InitLocation
+silc_mpi_init_location
     ()
 {
     printf( "In SILC_Mpi_InitLocation\n" );
     return SILC_SUCCESS;
 }
 
+/** Implementation of the adapter_finalize_location function of the @ref SILC_Adapter
+    struct for the initialization process of the MPI adapter.
+ */
 void
-SILC_Mpi_FinalLocation
+silc_mpi_final_location
     ()
 {
     printf( "In SILC_Mpi_FinalAdapter\n" );
 }
 
+/** Implementation of the adapter_finalize function of the @ref SILC_Adapter struct
+    for the initialization process of the MPI adapter.
+ */
 void
-SILC_Mpi_Finalize
+silc_mpi_finalize
     ()
 {
     printf( "In SILC_Mpi_Finalize\n" );
 }
 
+/** Implementation of the adapter_deregister function of the @ref SILC_Adapter struct
+    for the initialization process of the MPI adapter.
+ */
 void
-SILC_Mpi_Deregister
+silc_mpi_deregister
     ()
 {
     printf( "In SILC_Mpi_Deregister\n" );
 }
 
+/* The initialization struct for the MPI adapter */
 const SILC_Adapter SILC_Mpi_Adapter =
 {
     SILC_ADAPTER_MPI,
     "MPI",
-    &SILC_Mpi_Register,
-    &SILC_Mpi_InitAdapter,
-    &SILC_Mpi_InitLocation,
-    &SILC_Mpi_FinalLocation,
-    &SILC_Mpi_Finalize,
-    &SILC_Mpi_Deregister
+    &silc_mpi_register,
+    &silc_mpi_init_adapter,
+    &silc_mpi_init_location,
+    &silc_mpi_final_location,
+    &silc_mpi_finalize,
+    &silc_mpi_deregister
 };
+
+/** Flag to indicate whether event generation is turned on or off. If it is set to 0,
+    events are generated. If it is set to non-zero, no events are generated.
+ */
+int32_t silc_mpi_nogen = 0;
+
+/** Array of MPI status. It it used to track
+    the open requests between MPI calls.
+ */
+MPI_Status* silc_my_status_array = 0;
+
+/** Size of the status array */
+int32_t silc_my_status_array_size = 0;
+
+/** Allocates or reallocates the status array of a size @a size. It it used to track
+    the open requests between MPI calls.
+    @param size Size of the status Array.
+    @returns the status array
+ */
+MPI_Status*
+silc_get_status_array( int32_t size )
+{
+    if ( silc_my_status_array_size == 0 )
+    {
+        /* -- never used: initialize -- */
+        silc_my_status_array = malloc( size * sizeof( MPI_Status ) );
+        if ( silc_my_status_array == NULL )
+        {
+            SILC_ERROR_POSIX();
+        }
+        silc_my_status_array_size = size;
+    }
+    else if ( size > silc_my_status_array_size )
+    {
+        /* -- not enough room: expand -- */
+        silc_my_status_array = realloc( silc_my_status_array,
+                                        size * sizeof( MPI_Status ) );
+        if ( silc_my_status_array == NULL )
+        {
+            SILC_ERROR_POSIX();
+        }
+        silc_my_status_array_size = size;
+    }
+    return silc_my_status_array;
+}
