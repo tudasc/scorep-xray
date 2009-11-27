@@ -6,7 +6,7 @@ AC_DEFUN([_AC_SILC_DETECT_LINUX_PLATFORMS],
         case ${build_os} in
             linux*)
                 AS_IF([test "x${build_cpu}" = "xia64"      -a -f /etc/sgi-release], 
-                          [ac_silc_platform="altix";    ac_silc_cross_compiling="yes"],
+                          [ac_silc_platform="altix";    ac_silc_cross_compiling="no"],
                       [test "x${build_cpu}" = "xpowerpc64" -a -d /bgl/BlueLight],   
                           [ac_silc_platform="bgl";      ac_silc_cross_compiling="yes"],
                       [test "x${build_cpu}" = "xpowerpc64" -a -d /bgsys],           
