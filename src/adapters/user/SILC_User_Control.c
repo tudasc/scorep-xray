@@ -1,6 +1,22 @@
-/** @file SILC_User_Control.c
-    @author Daniel Lorenz
-    @email d.lorenz@fz-juelich.de
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+/** @file       SILC_User_Control.c
+    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+    @status     ALPHA
+
     @brief Contain the implementation of the control functions for C.
  */
 
