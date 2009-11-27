@@ -18,8 +18,8 @@
 
 /**
  * @file       config-custom.h
- * @autor      Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @autor      Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ * @author     Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
