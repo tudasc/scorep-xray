@@ -71,7 +71,6 @@ __rouexit
 /**
  * called at the beginning of each profiled routine
  */
-
 void
 ___rouent2
 (
@@ -82,9 +81,32 @@ ___rouent2
 }
 
 /**
+ * called at the beginning of each profiled routine
+ */
+void
+___rouent64
+(
+    struct s1* p
+)
+{
+    printf( " begin of a profiled routine for 64bit systems \n " );
+}
+
+/**
  * called at the end of each profiled routine
  */
+void
+___rouret
+(
+    void
+)
+{
+    printf( " end of a profiled routine \n " );
+}
 
+/**
+ * called at the end of each profiled routine
+ */
 void
 ___rouret2
 (
