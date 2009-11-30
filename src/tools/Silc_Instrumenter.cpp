@@ -205,11 +205,11 @@ Silc_Instrumenter::silc_readConfigFile
                             _instOpenuh = value;
                             break;
                         }
-                            silc_instType( value );
                     }
                 } /* of silc_readParameter */
                 index++;
             }                              /* of while loop */
+            silc_instType( _instString );
         }
         return SILC_SUCCESS;
     }
@@ -287,6 +287,15 @@ Silc_Instrumenter::silc_run
     {
         compCommand += _instGnu;
     }
+    else if ( _instType == INST_TYPE_GNU )
+    {
+        compCommand += _instPgi;
+    }
+    else
+    {
+        compCommand += _instDefault;
+    }
+
 
     compCommand += " " + _compFlags;
 
