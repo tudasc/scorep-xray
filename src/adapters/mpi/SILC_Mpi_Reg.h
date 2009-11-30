@@ -125,7 +125,7 @@ enum silc_mpi_groups
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-EXTERN uint32_t silc_mpi_enabled;
+EXTERN uint64_t silc_mpi_enabled;
 
 /** SILC region ID for MPI_Abort */
 #define SILC__MPI_ABORT                              0

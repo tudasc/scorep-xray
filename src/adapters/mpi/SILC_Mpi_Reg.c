@@ -104,72 +104,12 @@ static const silc_mpi_type silc_mpi_colls[] = {
 /** Region IDs of MPI functions */
 SILC_RegionHandle silc_mpi_regid[ SILC__MPI_NUMFUNCS + 1 ];
 
-/** Mapping of string keys to enabling group IDs
- * @note The keys need to be alphabetically sorted, to enable binary
- *       search on the data structure.
- */
-static const silc_mpi_type silc_mpi_enable_groups[] = {
-    { "ALL",     SILC_MPI_ENABLED_ALL     },
-    { "CG",      SILC_MPI_ENABLED_CG      },
-    { "COLL",    SILC_MPI_ENABLED_COLL    },
-    { "DEFAULT", SILC_MPI_ENABLED_DEFAULT },
-    { "ENV",     SILC_MPI_ENABLED_ENV     },
-    { "ERR",     SILC_MPI_ENABLED_ERR     },
-    { "EXT",     SILC_MPI_ENABLED_EXT     },
-    { "IO",      SILC_MPI_ENABLED_IO      },
-    { "MISC",    SILC_MPI_ENABLED_MISC    },
-    { "P2P",     SILC_MPI_ENABLED_P2P     },
-    { "RMA",     SILC_MPI_ENABLED_RMA     },
-    { "SPAWN",   SILC_MPI_ENABLED_SPAWN   },
-    { "TOPO",    SILC_MPI_ENABLED_TOPO    },
-    { "TYPE",    SILC_MPI_ENABLED_TYPE    }
-};
-
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-uint32_t      silc_mpi_enabled = 0;
-
-extern char** silc_mpi_config_groups;
-
-static int
-silc_mpi_mycmp( const void* v1,
-                const void* v2 );
+uint64_t silc_mpi_enabled = 0;
 
 void
 silc_mpi_evaluate_config()
 {
-    char** groups = silc_mpi_config_groups;
-
-    /* If config not set, enable default configuration */
-    if ( *groups == NULL )
-    {
-        silc_mpi_enabled = SILC_MPI_ENABLED_DEFAULT;
-        return;
-    }
-
-    /* Add every entry */
-    while ( *groups != NULL )
-    {
-        /* check if token is a valid flag */
-        silc_mpi_type* match =
-            bsearch( *groups, ( silc_mpi_type* )silc_mpi_enable_groups,
-                     sizeof( silc_mpi_enable_groups ) / sizeof( silc_mpi_type ),
-                     sizeof( silc_mpi_type ), silc_mpi_mycmp );
-
-        if ( match )
-        {
-            /* enable event generation for function group */
-            silc_mpi_enabled |= match->type;
-            SILC_DEBUG_PRINTF( SILC_DEBUG_MPI,
-                               "Enabled event generation for MPI group: %s", *groups );
-        }
-        else
-        {
-            /* token is not a valid MPI function group */
-            SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI,
-                               "Unknown MPI function group ignored: %s", *groups );
-        }
-        groups++;
-    }
 }
 
 /**

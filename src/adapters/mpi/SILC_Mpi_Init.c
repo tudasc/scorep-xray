@@ -41,17 +41,26 @@ int silc_mpi_status_size;
 extern void
 silc_mpi_get_status_size( int* status_size );
 
-/** Contains the configuration string of enabled mpi function groups. It is filled
-    by the measurement system after registration of configuration variables.
+/* Mapping of string keys to enabling group IDs
+ * @note The values are sorted in decreasing order, to beautify the debug
+ * output. Ie.: if all groups are enabled we get "ALL", because it matches first.
  */
-char** silc_mpi_config_groups = NULL;
-
-/** List of acceptable values for teh enable_group config variable. It contains all
-    possible groups plus ALL and DEFAULT.
- */
-char* silc_mpi_config_groups_acceptable[] = {
-    "ALL",  "CG",  "COLL",  "DEFAULT",  "ERR",     "EXT",     "ENV",     "IO",
-    "MISC", "P2P", "RMA",   "SPAWN",    "TOPO",    "TYPE",    NULL
+static const SILC_ConfigType_SetEntry silc_mpi_enable_groups[] = {
+    { "ALL",     SILC_MPI_ENABLED_ALL     },
+    { "DEFAULT", SILC_MPI_ENABLED_DEFAULT },
+    { "TYPE",    SILC_MPI_ENABLED_TYPE    },
+    { "TOPO",    SILC_MPI_ENABLED_TOPO    },
+    { "SPAWN",   SILC_MPI_ENABLED_SPAWN   },
+    { "RMA",     SILC_MPI_ENABLED_RMA     },
+    { "P2P",     SILC_MPI_ENABLED_P2P     },
+    { "MISC",    SILC_MPI_ENABLED_MISC    },
+    { "IO",      SILC_MPI_ENABLED_IO      },
+    { "EXT",     SILC_MPI_ENABLED_EXT     },
+    { "ERR",     SILC_MPI_ENABLED_ERR     },
+    { "ENV",     SILC_MPI_ENABLED_ENV     },
+    { "COLL",    SILC_MPI_ENABLED_COLL    },
+    { "CG",      SILC_MPI_ENABLED_CG      },
+    { NULL,      0                        }
 };
 
 
@@ -63,9 +72,9 @@ SILC_ConfigVariable silc_mpi_configs[] = {
     {
         "mpi",
         "enable_groups",
-        SILC_CONFIG_TYPE_SET,
-        ( void* )&silc_mpi_config_groups,
-        silc_mpi_config_groups_acceptable,
+        SILC_CONFIG_TYPE_BITSET,
+        &silc_mpi_enabled,
+        silc_mpi_enable_groups,
         "DEFAULT",
         "The names of the function groups which are measured.",
         "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n",
