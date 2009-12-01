@@ -262,12 +262,15 @@ syssx(HGTIME, &val);]])],
 AC_MSG_RESULT([$ac_silc_timer_nec_syssx_hgtime_available])
 ])
 
-##
 
+###############################################################################
 
 AC_DEFUN([AC_SILC_TIMER], [
 # set e.g. to ac_silc_librt if appropriate 
 ac_silc_timer_lib=""
+
+ac_silc_user_timer_given="no"
+ac_silc_timer=""
 
 # init all timers to "no". then evaluate user arguments and availability 
 # and set one of them to "yes"
@@ -290,21 +293,28 @@ ac_silc_timer_nec_syssx_hgtime="no"
 
 AC_LANG_PUSH([C])
 AC_SILC_TIMER_BGP_GET_TIMEBASE_AVAILABLE
-AC_SILC_TIMER_GETTIMEOFDAY_AVAILABLE
-AC_SILC_TIMER_POWER_REALTIME_AVAILABLE
-AC_SILC_TIMER_IBM_SWITCH_CLOCK_AVAILABLE
 AC_SILC_TIMER_CLOCK_GETTIME_AVAILABLE
-AC_SILC_TIMER_CYCLE_COUNTER_TSC_AVAILABLE
-AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE
-AC_SILC_TIMER_INTEL_MMTIMER_AVAILABLE
-AC_SILC_TIMER_CRAY_RTCLOCK_AVAILABLE
 AC_SILC_TIMER_CRAY_DCLOCK_AVAILABLE
-AC_SILC_TIMER_SUN_GETHRTIME_AVAILABLE
+AC_SILC_TIMER_CRAY_RTCLOCK_AVAILABLE
 AC_SILC_TIMER_CRAY_RTC_AVAILABLE
-AC_SILC_TIMER_RTS_GET_TIMEBASE_AVAILABLE
+AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE
+AC_SILC_TIMER_CYCLE_COUNTER_TSC_AVAILABLE
+AC_SILC_TIMER_GETTIMEOFDAY_AVAILABLE
+AC_SILC_TIMER_IBM_SWITCH_CLOCK_AVAILABLE
+AC_SILC_TIMER_INTEL_MMTIMER_AVAILABLE
 AC_SILC_TIMER_NEC_SYSSX_HGTIME_AVAILABLE
+AC_SILC_TIMER_PAPI_REAL_CYC_AVAILABLE
+AC_SILC_TIMER_PAPI_REAL_USEC_AVAILABLE
+AC_SILC_TIMER_POWER_REALTIME_AVAILABLE
+AC_SILC_TIMER_RTS_GET_TIMEBASE_AVAILABLE
+AC_SILC_TIMER_SUN_GETHRTIME_AVAILABLE
 AC_LANG_POP([C])
 # now all *_available variables are set
+
+AC_SILC_TIMER_ENABLE_SPECIFIC
+AC_MSG_NOTICE([Using timer $ac_silc_timer])
+
+AC_SILC_TIMER_PLATFORM_DEFAULTS
 
 AM_CONDITIONAL([SILC_TIMER_BGP_GET_TIMEBASE],  [test "x${ac_silc_timer_bgp_get_timebase}"  = "xyes"])
 AM_CONDITIONAL([SILC_TIMER_CLOCK_GETTIME],     [test "x${ac_silc_timer_clock_gettime}"     = "xyes"])
@@ -325,3 +335,285 @@ AM_CONDITIONAL([SILC_TIMER_NEC_SYSSX_HGTIME],  [test "x${ac_silc_timer_nec_syssx
 
 AC_SUBST([TIMER_LIB], ["$ac_silc_timer_lib"])
 ])
+
+###############################################################################
+
+AC_DEFUN([AC_SILC_TIMER_PLATFORM_DEFAULTS], [
+
+])
+
+###############################################################################
+
+AC_DEFUN([AC_SILC_TIMER_ENABLE_SPECIFIC], [
+AC_ARG_ENABLE([timer-bgp-get-timebase],
+              [AS_HELP_STRING([--enable-timer-bgp-get-timebase],
+                              [enable bgp-get-timebase timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_bgp_get_timebase_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-bgp-get-timebase not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="bgp-get-timebase"
+                       ac_silc_timer_bgp_get_timebase="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-clock-gettime],
+              [AS_HELP_STRING([--enable-timer-clock-gettime],
+                              [enable clock-gettime timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_clock_gettime_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-clock-gettime not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="clock-gettime"
+                       ac_silc_timer_clock_gettime="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-cray-rtclock],
+              [AS_HELP_STRING([--enable-timer-cray-rtclock],
+                              [enable cray-rtclock timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_cray_rtclock_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-cray-rtclock not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="cray-rtclock"
+                       ac_silc_timer_cray_rtclock="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-cycle-counter-itc],
+              [AS_HELP_STRING([--enable-timer-cycle-counter-itc],
+                              [enable cycle-counter-itc timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_cycle_counter_itc_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-cycle-counter-itc not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="cycle-counter-itc"
+                       ac_silc_timer_cycle_counter_itc="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-cycle-counter-tsc],
+              [AS_HELP_STRING([--enable-timer-cycle-counter-tsc],
+                              [enable cycle-counter-tsc timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_cycle_counter_tsc_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-cycle-counter-tsc not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="cycle-counter-tsc"
+                       ac_silc_timer_cycle_tsc_counter="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-cray-dclock],
+              [AS_HELP_STRING([--enable-timer-cray-dclock],
+                              [enable cray-dclock timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_cray_dclock_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-cray-dclock not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="cray-dclock"
+                       ac_silc_timer_cray_dclock="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-sun-gethrtime],
+              [AS_HELP_STRING([--enable-timer-sun-gethrtime],
+                              [enable sun-gethrtime timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_sun_gethrtime_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-sun-gethrtime not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="sun-gethrtime"
+                       ac_silc_timer_sun_gethrtime="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-gettimeofday],
+              [AS_HELP_STRING([--enable-timer-gettimeofday],
+                              [enable gettimeofday timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_gettimeofday_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-gettimeofday not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="gettimeofday"
+                       ac_silc_timer_gettimeofday="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-intel-mmtimer],
+              [AS_HELP_STRING([--enable-timer-intel-mmtimer],
+                              [enable intel-mmtimer timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_intel_mmtimer_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-intel-mmtimer not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="intel-mmtimer"
+                       ac_silc_timer_intel_mmtimer="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-papi-real-cyc],
+              [AS_HELP_STRING([--enable-timer-papi-real-cyc],
+                              [enable papi-real-cyc timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_papi_real_cyc_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-papi-real-cyc not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="papi-real-cyc"
+                       ac_silc_timer_papi_real_cyc="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-papi-real-usec],
+              [AS_HELP_STRING([--enable-timer-papi-real-usec],
+                              [enable papi-real-usec timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_papi_real_usec_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-papi-real-usec not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="papi-real-usec"
+                       ac_silc_timer_papi_real_usec="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-power-realtime],
+              [AS_HELP_STRING([--enable-timer-power-realtime],
+                              [enable power-realtime timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_power_realtime_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-power-realtime not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="power-realtime"
+                       ac_silc_timer_power_realtime="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-cray-rtc],
+              [AS_HELP_STRING([--enable-timer-cray-rtc],
+                              [enable cray-rtc timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_cray_rtc_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-cray-rtc not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="cray-rtc"
+                       ac_silc_timer_cray_rtc="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-rts-get-timebase],
+              [AS_HELP_STRING([--enable-timer-rts-get-timebase],
+                              [enable rts-get-timebase timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_rts_get_timebase_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-rts-get-timebase not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="rts-get-timebase"
+                       ac_silc_timer_rts_get_timebase="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-ibm-switch-clock],
+              [AS_HELP_STRING([--enable-timer-ibm-switch-clock],
+                              [enable ibm-switch-clock timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_ibm_switch_clock_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-ibm-switch-clock not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="ibm-switch-clock"
+                       ac_silc_timer_ibm_switch_clock="yes"
+                   fi
+               fi
+              ])
+
+
+AC_ARG_ENABLE([timer-nec-syssx-hgtime],
+              [AS_HELP_STRING([--enable-timer-nec-syssx-hgtime],
+                              [enable nec-syssx-hgtime timer if available instead of platform default])],
+              [if test "x${ac_silc_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN(["Several timers provided, using $ac_silc_timer"])
+               else
+                   if test "x${ac_silc_timer_nec_syssx_hgtime_available}" = "xno"; then
+                       AC_MSG_WARN(["timer-nec-syssx-hgtime not available"])
+                   else
+                       ac_silc_user_timer_given="yes"
+                       ac_silc_timer="nec-syssx-hgtime"
+                       ac_silc_timer_nec_syssx_hgtime="yes"
+                   fi
+               fi
+              ])
+])
+
