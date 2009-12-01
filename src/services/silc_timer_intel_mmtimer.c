@@ -26,8 +26,20 @@
 
 
 #include "SILC_Timing.h"
+#include <config.h>
 
-#include <@INCLUDE_PREFIX_MMTIMER@mmtimer.h>
+
+#if HAVE( HAVE_MMTIMER_H )
+#include <mmtimer.h>
+#elif HAVE( HAVE_LINUX_MMTIMER_H )
+#include <linux/mmtimer.h>
+#elif HAVE( HAVE_SN_MMTIMER_H )
+#include <sn/mmtimer.h>
+#else
+#error "You need to include mmtimer.h"
+#endif
+
+
 #include <assert.h>
 #include <stdbool.h>
 

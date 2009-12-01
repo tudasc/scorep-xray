@@ -15,12 +15,14 @@
 
 noinst_LTLIBRARIES += libsilc_timer.la
 libsilc_timer_la_SOURCES = $(SRC_ROOT)src/services/SILC_Timing.h
+libsilc_timer_la_LIBADD = @TIMER_LIB@
 
 
 # compile just one of the following silc_timer_*.c. The conditionals are set in 
 # build-config/m4/ac-silc-timers.m4
 if SILC_TIMER_BGP_GET_TIMEBASE 
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_bgp_get_timebase.c
+libsilc_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I/bgsys/drivers/ppcfloor/arch/include
 endif
 
 if SILC_TIMER_CLOCK_GETTIME    
@@ -52,11 +54,7 @@ libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_gettimeofday.c
 endif
 
 if SILC_TIMER_INTEL_MMTIMER    
-# we generate the file silc_timer_intel_mmtimer.c during configure
-# in order to insert the configure-determined prefix to the include 
-# of mmtimer.h
-libsilc_timer_la_SOURCES += ../src/services/silc_timer_intel_mmtimer.c
-libsilc_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/services
+libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_intel_mmtimer.c
 endif
 
 if SILC_TIMER_PAPI_REAL_CYC    
@@ -77,6 +75,7 @@ endif
 
 if SILC_TIMER_RTS_GET_TIMEBASE 
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_rts_get_timebase.c
+libsilc_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I/bgl/BlueLight/ppcfloor/bglsys/include
 endif
 
 if SILC_TIMER_IBM_SWITCH_CLOCK 

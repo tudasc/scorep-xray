@@ -119,6 +119,6 @@ AC_SILC_COMPILER_CHECKS
 AC_SILC_LIBBFD
 AC_SILC_MPI
 
-AC_CONFIG_FILES([Makefile build-mpi/Makefile ../src/services/silc_timer_intel_mmtimer.c])
+AC_CONFIG_FILES([Makefile build-mpi/Makefile])
 
 AC_OUTPUT
