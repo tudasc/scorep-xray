@@ -34,25 +34,34 @@ AC_MSG_RESULT([$ac_silc_timer_bgp_get_timebase_available])
 
 AC_DEFUN([AC_SILC_TIMER_CLOCK_GETTIME_AVAILABLE],[
 ac_silc_timer_clock_gettime_available="no"
-AC_MSG_CHECKING([for clock gettime timer])
+
 ac_silc_timer_save_LIBS="$LIBS"
-LIBS="$LIBS -lrt"
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
-                                [[struct timespec tp;
+AC_SEARCH_LIBS([clock_gettime], [rt], [ac_silc_timer_have_librt="yes"])
+LIBS="$ac_silc_timer_save_LIBS"
+
+if test "x${ac_silc_timer_have_librt}" = "xyes"; then
+    ac_silc_librt="$ac_cv_search_clock_gettime"
+
+    AC_MSG_CHECKING([for clock gettime timer])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
+                                       [[struct timespec tp;
 clock_getres(  CLOCK_REALTIME, &tp );
 clock_gettime( CLOCK_REALTIME, &tp );]])],
-               [ac_silc_timer_clock_gettime_available="yes"], [])
-LIBS="$ac_silc_timer_save_LIBS"
-AC_MSG_RESULT([$ac_silc_timer_clock_gettime_available])
+                      [ac_silc_timer_clock_gettime_available="yes"], [])
+    AC_MSG_RESULT([$ac_silc_timer_clock_gettime_available])
+fi
 ])
 
 ##
 
 AC_DEFUN([AC_SILC_TIMER_CRAY_RTCLOCK_AVAILABLE],[
+# not thouroghly tested yet. Do we need to link a particular library?
 ac_silc_timer_cray_rtclock_available="no"
 AC_MSG_CHECKING([for cray rtclock timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <time.h>
+#include <unistd.h>]],
+                                [[double clockspeed = 1.0 / sysconf( _SC_CLK_TCK );
+double wtime = rtclock() * clockspeed;]])],
                [ac_silc_timer_cray_rtclock_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_cray_rtclock_available])
 ])
@@ -95,10 +104,15 @@ AC_MSG_RESULT([$ac_silc_timer_cycle_counter_tsc_available])
 ## 
 
 AC_DEFUN([AC_SILC_TIMER_CRAY_DCLOCK_AVAILABLE],[
+# not tested yet as I don't have access to a cray xt
 ac_silc_timer_cray_dclock_available="no"
 AC_MSG_CHECKING([for cray dclock timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#ifndef __LIBCATAMOUNT__
+#error "__LIBCATAMOUNT__ not defined."
+#endif
+#include <catamount/dclock.h>
+]],
+                                [[double wtime = dclock();]])],
                [ac_silc_timer_cray_dclock_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_cray_dclock_available])
 ])
@@ -106,10 +120,16 @@ AC_MSG_RESULT([$ac_silc_timer_cray_dclock_available])
 ## 
 
 AC_DEFUN([AC_SILC_TIMER_SUN_GETHRTIME_AVAILABLE],[
+## The gethrtime() function returns the current high-resolution real
+## time. Time is expressed as nanoseconds since some arbitrary time in the
+## past; it is not correlated in any way to the time of day, and thus is not
+## subject to resetting or drifting by way of adjtime(2) or
+## settimeofday(3C). The hi-res timer is ideally suited to performance
+## measurement tasks, where cheap, accurate interval timing is required.
 ac_silc_timer_sun_gethrtime_available="no"
 AC_MSG_CHECKING([for sun gethrtime timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/time.h>]],
+                                [[hrtime_t wtime = gethrtime();]])],
                [ac_silc_timer_sun_gethrtime_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_sun_gethrtime_available])
 ])
@@ -130,17 +150,12 @@ AC_MSG_RESULT([$ac_silc_timer_gettimeofday_available])
 AC_DEFUN([AC_SILC_TIMER_INTEL_MMTIMER_AVAILABLE],[
 ac_silc_timer_intel_mmtimer_available="no"
 mmtimer_header_available="no"
-mmtimer_include_prefix=""
 AC_CHECK_HEADERS([mmtimer.h], [mmtimer_header_available="yes"],
-    [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes";mmtimer_include_prefix="linux/"],
-        [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes";mmtimer_include_prefix="sn/"])])])
+    [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes"],
+        [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes"])])])
 if test "x${mmtimer_header_available}" = "xyes"; then
     AC_CHECK_FILE([/dev/mmtimer], [ac_silc_timer_intel_mmtimer_available="yes"])
 fi
-# we generate the file silc_timer_intel_mmtimer.c during configure
-# in order to insert the configure-determined prefix to the include 
-# of mmtimer.h
-AC_SUBST([INCLUDE_PREFIX_MMTIMER], [$mmtimer_include_prefix])
 AC_MSG_CHECKING([for intel mmtimer timer])
 AC_MSG_RESULT([$ac_silc_timer_intel_mmtimer_available])
 ])
@@ -150,7 +165,7 @@ AC_MSG_RESULT([$ac_silc_timer_intel_mmtimer_available])
 AC_DEFUN([AC_SILC_TIMER_PAPI_REAL_CYC_AVAILABLE],[
 ac_silc_timer_papi_real_cyc_available="no"
 AC_MSG_CHECKING([for papi real cyc timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#error "not yet implemented, define AC_SILC_PAPI first"]],
                                 [[]])],
                [ac_silc_timer_papi_real_cyc_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_papi_real_cyc_available])
@@ -161,7 +176,7 @@ AC_MSG_RESULT([$ac_silc_timer_papi_real_cyc_available])
 AC_DEFUN([AC_SILC_TIMER_PAPI_REAL_USEC_AVAILABLE],[
 ac_silc_timer_papi_real_usec_available="no"
 AC_MSG_CHECKING([for papi real usec timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#error "not yet implemented, define AC_SILC_PAPI first"]],
                                 [[]])],
                [ac_silc_timer_papi_real_usec_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_papi_real_usec_available])
@@ -189,10 +204,12 @@ AC_MSG_RESULT([$ac_silc_timer_power_realtime_available])
 ##
 
 AC_DEFUN([AC_SILC_TIMER_CRAY_RTC_AVAILABLE],[
+# not tested yet as I don't have access to a cray x1
 ac_silc_timer_cray_rtc_available="no"
 AC_MSG_CHECKING([for cray rtc timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <intrinsics.h>]],
+                                [[double clockspeed = 1.0 / sysconf( _SC_SV2_USER_TIME_RATE );
+unsigned long long wtime = _rtc();]])],
                [ac_silc_timer_cray_rtc_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_cray_rtc_available])
 ])
@@ -200,11 +217,19 @@ AC_MSG_RESULT([$ac_silc_timer_cray_rtc_available])
 ##
 
 AC_DEFUN([AC_SILC_TIMER_RTS_GET_TIMEBASE_AVAILABLE],[
+# not tested yet as I don't have access to a bgl
 ac_silc_timer_rts_get_timebase_available="no"
+ac_silc_timer_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS -I/bgl/BlueLight/ppcfloor/bglsys/include"
 AC_MSG_CHECKING([for rts get timebase timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <bglpersonality.h>
+#include <rts.h>]],
+                                [[BGLPersonality mybgl;
+rts_get_personality(&mybgl, sizeof(BGLPersonality));
+double clockspeed = 1.0/(double)BGLPersonality_clockHz(&mybgl);
+double wtime = rts_get_timebase() * clockspeed;]])],
                [ac_silc_timer_rts_get_timebase_available="yes"], [])
+CPPFLAGS="$ac_silc_timer_save_CPPFLAGS"
 AC_MSG_RESULT([$ac_silc_timer_rts_get_timebase_available])
 ])
 
@@ -226,17 +251,24 @@ AC_MSG_RESULT([$ac_silc_timer_ibm_switch_clock_available])
 ##
 
 AC_DEFUN([AC_SILC_TIMER_NEC_SYSSX_HGTIME_AVAILABLE],[
+# not tested yet as I don't have access to a nec sx
 ac_silc_timer_nec_syssx_hgtime_available="no"
 AC_MSG_CHECKING([for nec syssx hgtime timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
-                                [[]])],
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
+#include <sys/syssx.h>]],
+                                [[unsigned long long val;
+syssx(HGTIME, &val);]])],
                [ac_silc_timer_nec_syssx_hgtime_available="yes"], [])
 AC_MSG_RESULT([$ac_silc_timer_nec_syssx_hgtime_available])
 ])
 
+##
 
 
 AC_DEFUN([AC_SILC_TIMER], [
+# set e.g. to ac_silc_librt if appropriate 
+ac_silc_timer_lib=""
+
 # init all timers to "no". then evaluate user arguments and availability 
 # and set one of them to "yes"
 ac_silc_timer_bgp_get_timebase="no"
@@ -265,6 +297,12 @@ AC_SILC_TIMER_CLOCK_GETTIME_AVAILABLE
 AC_SILC_TIMER_CYCLE_COUNTER_TSC_AVAILABLE
 AC_SILC_TIMER_CYCLE_COUNTER_ITC_AVAILABLE
 AC_SILC_TIMER_INTEL_MMTIMER_AVAILABLE
+AC_SILC_TIMER_CRAY_RTCLOCK_AVAILABLE
+AC_SILC_TIMER_CRAY_DCLOCK_AVAILABLE
+AC_SILC_TIMER_SUN_GETHRTIME_AVAILABLE
+AC_SILC_TIMER_CRAY_RTC_AVAILABLE
+AC_SILC_TIMER_RTS_GET_TIMEBASE_AVAILABLE
+AC_SILC_TIMER_NEC_SYSSX_HGTIME_AVAILABLE
 AC_LANG_POP([C])
 # now all *_available variables are set
 
@@ -284,4 +322,6 @@ AM_CONDITIONAL([SILC_TIMER_CRAY_RTC],          [test "x${ac_silc_timer_cray_rtc}
 AM_CONDITIONAL([SILC_TIMER_RTS_GET_TIMEBASE],  [test "x${ac_silc_timer_rts_get_timebase}"  = "xyes"])
 AM_CONDITIONAL([SILC_TIMER_IBM_SWITCH_CLOCK],  [test "x${ac_silc_timer_ibm_switch_clock}"  = "xyes"])
 AM_CONDITIONAL([SILC_TIMER_NEC_SYSSX_HGTIME],  [test "x${ac_silc_timer_nec_syssx_hgtime}"  = "xyes"])
+
+AC_SUBST([TIMER_LIB], ["$ac_silc_timer_lib"])
 ])
