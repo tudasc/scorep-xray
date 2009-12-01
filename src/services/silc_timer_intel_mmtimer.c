@@ -29,11 +29,11 @@
 #include <config.h>
 
 
-#if HAVE( HAVE_MMTIMER_H )
+#if HAVE( MMTIMER_H )
 #include <mmtimer.h>
-#elif HAVE( HAVE_LINUX_MMTIMER_H )
+#elif HAVE( LINUX_MMTIMER_H )
 #include <linux/mmtimer.h>
-#elif HAVE( HAVE_SN_MMTIMER_H )
+#elif HAVE( SN_MMTIMER_H )
 #include <sn/mmtimer.h>
 #else
 #error "You need to include mmtimer.h"
