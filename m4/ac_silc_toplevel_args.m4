@@ -3,7 +3,7 @@ AC_DEFUN([AC_SILC_TOPLEVEL_ARGS],
 [
 # Quote arguments with shell meta charatcers.
 TOPLEVEL_CONFIGURE_ARGUMENTS=
-set -- "$progname" "$@"
+set -- "$progname" "$[@]"
 for ac_arg
 do
   case "$ac_arg" in
