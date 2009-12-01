@@ -162,6 +162,7 @@ SILC_InitMeasurementMPI
     printf( "SILC_InitMeasurementMPI\n" );
 }
 
+
 char* groups[] = { "CG",  "COLL",  "ERR",     "EXT",     "IO",      "MISC",
                    "P2P", "RMA",   "SPAWN",   "TOPO",    "TYPE",    NULL };
 
@@ -172,5 +173,5 @@ SILC_ConfigRegister
     uint32_t             numberOfVariables
 )
 {
-    *( char*** )variables->variableReference = &groups;
+    *( uint64_t* )variables->variableReference = -1;
 }
