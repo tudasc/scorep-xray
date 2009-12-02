@@ -287,7 +287,7 @@ Silc_Instrumenter::silc_run
     {
         compCommand += _instGnu;
     }
-    else if ( _instType == INST_TYPE_GNU )
+    else if ( _instType == INST_TYPE_PGI )
     {
         compCommand += _instPgi;
     }
