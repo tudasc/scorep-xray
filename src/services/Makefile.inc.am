@@ -65,7 +65,7 @@ if SILC_TIMER_PAPI_REAL_USEC
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_papi_real_usec.c
 endif
 
-if SILC_TIMER_POWER_REALTIME   
+if SILC_TIMER_IBM_REALTIME   
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_power_realtime.c
 endif
 
@@ -73,7 +73,7 @@ if SILC_TIMER_CRAY_RTC
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_cray_rtc.c
 endif
 
-if SILC_TIMER_RTS_GET_TIMEBASE 
+if SILC_TIMER_BGL_RTS_GET_TIMEBASE 
 libsilc_timer_la_SOURCES += $(SRC_ROOT)src/services/silc_timer_rts_get_timebase.c
 libsilc_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I/bgl/BlueLight/ppcfloor/bglsys/include
 endif
