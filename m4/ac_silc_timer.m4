@@ -270,26 +270,27 @@ AC_DEFUN([AC_SILC_TIMER], [
 ac_silc_timer_lib=""
 
 ac_silc_user_timer_given="no"
+ac_silc_timer_given="no"
 ac_silc_timer=""
 
 # init all timers to "no". then evaluate user arguments and availability 
 # and set one of them to "yes"
 ac_silc_timer_bgp_get_timebase="no"
 ac_silc_timer_clock_gettime="no"
-ac_silc_timer_cray_rtclock="no"
-ac_silc_timer_cycle_counter_tsc="no"
-ac_silc_timer_cycle_counter_itc="no"
 ac_silc_timer_cray_dclock="no"
-ac_silc_timer_sun_gethrtime="no"
+ac_silc_timer_cray_rtc="no"
+ac_silc_timer_cray_rtclock="no"
+ac_silc_timer_cycle_counter_itc="no"
+ac_silc_timer_cycle_counter_tsc="no"
 ac_silc_timer_gettimeofday="no"
+ac_silc_timer_ibm_switch_clock="no"
 ac_silc_timer_intel_mmtimer="no"
+ac_silc_timer_nec_syssx_hgtime="no"
 ac_silc_timer_papi_real_cyc="no"
 ac_silc_timer_papi_real_usec="no"
 ac_silc_timer_power_realtime="no"
-ac_silc_timer_cray_rtc="no"
 ac_silc_timer_rts_get_timebase="no"
-ac_silc_timer_ibm_switch_clock="no"
-ac_silc_timer_nec_syssx_hgtime="no"
+ac_silc_timer_sun_gethrtime="no"
 
 AC_LANG_PUSH([C])
 AC_SILC_TIMER_BGP_GET_TIMEBASE_AVAILABLE
@@ -312,9 +313,12 @@ AC_LANG_POP([C])
 # now all *_available variables are set
 
 AC_SILC_TIMER_ENABLE_SPECIFIC
-AC_MSG_NOTICE([Using timer $ac_silc_timer])
 
 AC_SILC_TIMER_PLATFORM_DEFAULTS
+
+AS_IF([test "x${ac_silc_user_timer_given}" = "xno" && test "x${ac_silc_timer_given}" = "xno"],
+      [AC_MSG_ERROR([No suitable timer found. You may specify one with the --enable-timer options])],
+      [AC_MSG_NOTICE([Using timer ${ac_silc_timer}])])
 
 AM_CONDITIONAL([SILC_TIMER_BGP_GET_TIMEBASE],  [test "x${ac_silc_timer_bgp_get_timebase}"  = "xyes"])
 AM_CONDITIONAL([SILC_TIMER_CLOCK_GETTIME],     [test "x${ac_silc_timer_clock_gettime}"     = "xyes"])
@@ -339,7 +343,102 @@ AC_SUBST([TIMER_LIB], ["$ac_silc_timer_lib"])
 ###############################################################################
 
 AC_DEFUN([AC_SILC_TIMER_PLATFORM_DEFAULTS], [
-
+AS_IF([test "x${ac_silc_user_timer_given}" = "xno"], [
+    AS_CASE([${ac_silc_platform}], 
+            ["altix"],    [AS_IF([test "x$ac_silc_timer_intel_mmtimer_available" = "xyes"], 
+                                 [ac_silc_timer_intel_mmtimer="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="intel-mmtimer"],
+                                 [test "x$ac_silc_timer_clock_gettime_available" = "xyes"], 
+                                 [ac_silc_timer_clock_gettime="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="clock-gettime"])],
+            ["bgl"],      [AS_IF([test "x$ac_silc_timer_rts_get_timebase_available" = "xyes"],
+                                 [ac_silc_timer_rts_get_timebase="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="rts-get-timebase"])],
+            ["bgp"],      [AS_IF([test "x$ac_silc_timer_bgp_get_timebase_available" = "xyes"],
+                                 [ac_silc_timer_bgp_get_timebase="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="bgp-get-timebase"])],
+            ["crayxt"],   [AS_IF([test "x$ac_silc_timer_cray_dclock_available" = "xyes"],
+                                 [ac_silc_timer_cray_dclock="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cray-dclock"],
+                                 [test "x$ac_silc_timer_cycle_counter_itc_available" = "xyes"],
+                                 [ac_silc_timer_cycle_counter_itc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cycle-counter-itc"],
+                                 [test "x$ac_silc_timer_cycle_counter_tsc_available" = "xyes"],
+                                 [ac_silc_timer_cycle_counter_tsc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cycle-counter-tsc"],
+                                 [test "x$ac_silc_timer_clock_gettime_available" = "xyes"],
+                                 [ac_silc_timer_clock_gettime="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="clock-gettime"],
+                                 [test "x$ac_silc_timer_gettimeofday_available" = "xyes"],
+                                 [ac_silc_timer_gettimeofday="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="gettimeofday"])],
+            ["sicortex"], [AS_IF([test "x$ac_silc_timer_gettimeofday_available" = "xyes"],
+                                 [ac_silc_timer_gettimeofday="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="gettimeofday"])],
+            ["sun"],      [AS_IF([test "x$ac_silc_timer_sun_gethrtime_available" = "xyes"],
+                                 [ac_silc_timer_sun_gethrtime="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="sun-gethrtime"])],
+            ["mac"],      [AS_IF([test "x$ac_silc_timer_cycle_counter_tsc_available" = "xyes"],
+                                 [ac_silc_timer_cycle_counter_tsc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cycle-counter-tsc"],
+                                 [test "x$ac_silc_timer_cycle_counter_itc_available" = "xyes"],
+                                 [ac_silc_timer_cycle_counter_itc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cycle-counter-itc"],
+                                 [test "x$ac_silc_timer_gettimeofday_available" = "xyes"],
+                                 [ac_silc_timer_gettimeofday="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="gettimeofday"])],
+            ["ibm"],      [AS_IF([test "x$ac_silc_timer_power_realtime_available" = "xyes"],
+                                 [ac_silc_timer_power_realtime="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="power-realtime"],
+                                 [test "x$ac_silc_timer_ibm_switch_clock_available" = "xyes"],
+                                 [ac_silc_timer_ibm_switch_clock="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="ibm-switch-clock"])],
+            ["crayx1"],   [AS_IF([test "x$ac_silc_timer_cray_rtc_available" = "xyes"],
+                                 [ac_silc_timer_cray_rtc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cray-rtc"],
+                                 [test "x$ac_silc_timer_gettimeofday_available" = "xyes"],
+                                 [ac_silc_timer_gettimeofday="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="gettimeofday"])],
+            ["necsx"],    [AS_IF([test "x$ac_silc_timer_nec_syssx_hgtime_available" = "xyes"],
+                                 [ac_silc_timer_nec_syssx_hgtime="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="nec-syssx-hgtime"])],
+            ["linux"],    [AS_IF([test "x$ac_silc_timer_cycle_counter_itc_available" = "xyes"],
+                                 [ac_silc_timer_cycle_counter_itc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cycle-counter-itc"],
+                                 [test "x$ac_silc_timer_cycle_counter_tsc_available" = "xyes"],
+                                 [ac_silc_timer_cycle_counter_tsc="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="cycle-counter-tsc"],
+                                 [test "x$ac_silc_timer_clock_gettime_available" = "xyes"],
+                                 [ac_silc_timer_clock_gettime="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="clock-gettime"],
+                                 [test "x$ac_silc_timer_gettimeofday_available" = "xyes"],
+                                 [ac_silc_timer_gettimeofday="yes"; 
+                                  ac_silc_timer_given="yes";
+                                  ac_silc_timer="gettimeofday"])],
+            [AC_MSG_ERROR([Encountered unsupported platform \"$ac_silc_platform\" during timer checks.])])
+])
 ])
 
 ###############################################################################
