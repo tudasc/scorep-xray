@@ -28,6 +28,7 @@
 #include "SILC_Timing.h"
 
 #include <assert.h>
+#include <stdbool.h>
 
 void
 SILC_InitTimer()
