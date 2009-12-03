@@ -100,6 +100,12 @@ case $host_cpu in
      ;;
 esac
 AC_MSG_RESULT([$silc_timer_cycle_counter_tsc_available])
+
+AH_TEMPLATE([HAVE_USLEEP],
+            [Define to 1 if the usleep function is available.])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>]],
+                                   [[usleep(100);]])],
+                  [AC_DEFINE([HAVE_USLEEP])], [])
 ])
 
 ############################################################################### 
@@ -139,10 +145,12 @@ AC_MSG_RESULT([$silc_timer_sun_gethrtime_available])
 
 AC_DEFUN([SILC_TIMER_GETTIMEOFDAY_AVAILABLE],[
 silc_timer_gettimeofday_available="no"
+AH_TEMPLATE([HAVE_GETTIMEOFDAY],
+            [Define to 1 if the gettimeofday function is available.])
 AC_MSG_CHECKING([for gettimeofday timer])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/time.h>]],
                                 [[struct timeval tp; gettimeofday( &tp, 0 );]])], 
-               [silc_timer_gettimeofday_available="yes"], [])
+               [silc_timer_gettimeofday_available="yes"; AC_DEFINE([HAVE_GETTIMEOFDAY])], [])
 AC_MSG_RESULT([$silc_timer_gettimeofday_available])
 ])
 
