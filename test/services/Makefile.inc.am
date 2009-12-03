@@ -15,6 +15,6 @@
 check_PROGRAMS += timer_test
 timer_test_SOURCES = $(SRC_ROOT)test/services/silc_timer_test.c
 timer_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/services
-timer_test_LDADD = libsilc_timer.la
+timer_test_LDADD = libsilc_timer.la $(LIB_DIR_UTIL)libsilc_utilities.la
 TESTS += timer_test
 
