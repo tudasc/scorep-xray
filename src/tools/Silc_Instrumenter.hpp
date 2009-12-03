@@ -42,6 +42,12 @@ typedef enum
      * PGI
      */
     INST_TYPE_PGI,
+
+    /**
+     * PGI9
+     */
+    INST_TYPE_PGI9,
+
     /**
      * SUM
      */
@@ -298,6 +304,11 @@ private:
  *  pgi compiler instrumentation flags
  */
     std::string _instPgi;
+
+/** @brief
+ *  pgi9 compiler instrumentation flags
+ */
+    std::string _instPgi9;
 
 /** @brief
  *  sun compiler instrumentation flags

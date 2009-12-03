@@ -86,7 +86,7 @@ Silc_Instrumenter::silc_readConfigFile
     if ( inFile.is_open() )
     {
         /* look for string cut after '=' into string variable */
-        const uint32_t    length               = 15;
+        const uint32_t    length               = 16;
         const std::string parameters[ length ] = {
             "language",
             "inst_type",
@@ -100,6 +100,7 @@ Silc_Instrumenter::silc_readConfigFile
             "inst_avail",
             "inst_gnu_compiler_flags",
             "inst_pgi_compiler_flags",
+            "inst_pgi9_compiler_flags",
             "inst_sun_compiler_flags",
             "inst_xl_compiler_flags",
             "inst_ftrace_compiler_flags"
@@ -187,20 +188,25 @@ Silc_Instrumenter::silc_readConfigFile
                         }
                         case 12:
                         {
-                            _instSun = value;
+                            _instPgi9 = value;
                             break;
                         }
                         case 13:
                         {
-                            _instXl = value;
+                            _instSun = value;
                             break;
                         }
                         case 14:
                         {
-                            _instFtrace = value;
+                            _instXl = value;
                             break;
                         }
                         case 15:
+                        {
+                            _instFtrace = value;
+                            break;
+                        }
+                        case 16:
                         {
                             _instOpenuh = value;
                             break;
@@ -290,6 +296,10 @@ Silc_Instrumenter::silc_run
     else if ( _instType == INST_TYPE_PGI )
     {
         compCommand += _instPgi;
+    }
+    else if ( _instType == INST_TYPE_PGI9 )
+    {
+        compCommand += _instPgi9;
     }
     else
     {
@@ -382,10 +392,11 @@ Silc_Instrumenter::silc_instType
     std::string itype
 )
 {
-    const uint32_t    length            = 12;
+    const uint32_t    length            = 13;
     const std::string instKey[ length ] = {
         "comp:gnu",
         "comp:pgi",
+        "comp:pgi9",
         "comp:sun",
         "comp:xl",
         "comp:ftrace",
@@ -424,7 +435,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_SUN;
+                    _instType = INST_TYPE_PGI9;
                 }
                 break;
             }
@@ -432,7 +443,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_XL;
+                    _instType = INST_TYPE_SUN;
                 }
                 break;
             }
@@ -440,7 +451,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_FTRACE;
+                    _instType = INST_TYPE_XL;
                 }
                 break;
             }
@@ -448,7 +459,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_OPENUH;
+                    _instType = INST_TYPE_FTRACE;
                 }
                 break;
             }
@@ -456,7 +467,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_DYNINST;
+                    _instType = INST_TYPE_OPENUH;
                 }
                 break;
             }
@@ -464,7 +475,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_USER;
+                    _instType = INST_TYPE_DYNINST;
                 }
                 break;
             }
@@ -472,7 +483,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_SEQ;
+                    _instType = INST_TYPE_USER;
                 }
                 break;
             }
@@ -480,7 +491,7 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_MPI;
+                    _instType = INST_TYPE_SEQ;
                 }
                 break;
             }
@@ -488,11 +499,19 @@ Silc_Instrumenter::silc_instType
             {
                 if ( itype == instKey[ index ] )
                 {
-                    _instType = INST_TYPE_OPENMP;
+                    _instType = INST_TYPE_MPI;
                 }
                 break;
             }
             case  11:
+            {
+                if ( itype == instKey[ index ] )
+                {
+                    _instType = INST_TYPE_OPENMP;
+                }
+                break;
+            }
+            case  12:
             {
                 if ( itype == instKey[ index ] )
                 {
@@ -524,6 +543,7 @@ Silc_Instrumenter::silc_printParameter
               << " default instrumentation:                   " << _instDefault << "\n"
               << " GNU compiler instrumentation parameter:    " << _instGnu << "\n"
               << " PGI compiler instrumentation parameter:    " << _instPgi << "\n"
+              << " PGI9 compiler instrumentation parameter:   " << _instPgi9 << "\n"
               << " Sun compiler instrumentation parameter:    " << _instSun << "\n"
               << " Xl compiler instrumentation parameter:     " << _instXl << "\n"
               << " FTrace compiler instrumentation parameter: " << _instFtrace << "\n"
