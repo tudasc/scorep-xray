@@ -824,10 +824,7 @@ SILC::Wrapgen::handler::mpi::guard_start
     toupper( tmp );
 
     // individual guard check by generated header
-    guard += "HAVE(DECL_" + tmp + ")";
-
-    // individual guard for manual deactivation
-    // guard += " && !defined (SILC_MPI_NO_" + tmp + ")";
+    guard += "HAVE(DECL_P" + tmp + ")";
 
     if ( func.get_guard().length() > 0 )
     {
@@ -845,6 +842,9 @@ SILC::Wrapgen::handler::mpi::guard_start
             guard += " && ! defined(SILC_MPI_NO_" + guard_token + ")";
             ++it;
         }
+
+        // write guard to prevent wrapping if the function name is a define
+        guard += " && ! defined( " + func.get_name() + " )";
     }
 
     return guard;

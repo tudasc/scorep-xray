@@ -49,7 +49,7 @@ void FSUB(MPI_Init)(int* ierr)
 
 #else /* !NEED_F2C_CONV */
 
-#if HAVE(DECL_MPI_INIT_THREAD)
+#if HAVE(DECL_PMPI_INIT_THREAD)
 /**
  * Measurement wrapper for MPI_Init_tread
  * @note Manually adapted wrapper

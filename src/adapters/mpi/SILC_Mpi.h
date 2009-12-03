@@ -105,21 +105,28 @@ extern int32_t silc_mpi_nogen;
 
 extern int     silc_mpi_status_size;
 
-/** Check whether event generation is turned on. Returns the inverse value of
+/** @def SILC_MPI_IS_EVENT_GEN_ON
+    Check whether event generation is turned on. Returns the inverse value of
     silc_mpi_nogen
  */
 #define SILC_MPI_IS_EVENT_GEN_ON            ( !silc_mpi_nogen )
 
-/** Check whether event generation is turned on for a specific group.
+/** @def SILC_MPI_IS_EVENT_GEN_ON_FOR
+    Check whether event generation is turned on for a specific group.
  */
 #define SILC_MPI_IS_EVENT_GEN_ON_FOR( group ) ( ( !silc_mpi_nogen ) && \
                                                 ( silc_mpi_enabled & group ) )
 
 
-/** turn off event generation */
+/** @def SILC_MPI_EVENT_GEN_OFF
+    Turn off event generation for MPI adapter. It is used inside the wrappers, to avoid
+    events from function calls, called by other MPI functions.
+ */
 #define SILC_MPI_EVENT_GEN_OFF()            silc_mpi_nogen = 1
 
-/** turn on event generation */
+/** SILC_MPI_EVENT_GEN_ON
+    Turn on event generation for MPI wrappers.
+ */
 #define SILC_MPI_EVENT_GEN_ON()             silc_mpi_nogen = 0
 
 /** @} */

@@ -21,7 +21,7 @@
     @status     ALPHA
     @ingroup    MPI_Wrapper
 
-    Contains the initialization function definitions for the measurement system.
+    @brief Contains the initialization function definitions for the measurement system.
  */
 
 #include "SILC_Adapter.h"

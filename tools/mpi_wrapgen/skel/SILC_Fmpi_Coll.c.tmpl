@@ -33,7 +33,7 @@
 
 #pragma wrapgen multiple restrict(v1+gcoll) skel/SILC_Mpi_F2c_C2f.w
 
-#if HAVE(DECL_MPI_ALLTOALLW) && ! defined(SILC_MPI_NO_COLL)
+#if HAVE(DECL_PMPI_ALLTOALLW) && ! defined(SILC_MPI_NO_COLL)
 void FSUB(MPI_Alltoallw)(void*     sendbuf, 
                          MPI_Fint* sendcounts,
                          MPI_Fint* sdispls,

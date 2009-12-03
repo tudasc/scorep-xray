@@ -29,7 +29,7 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#if HAVE(DECL_MPI_COMM_SPAWN_MULTIPLE) && ! defined(SILC_MPI_NO_SPAWN) && ! defined(SILC_MPI_NO_EXTRA)
+#if HAVE(DECL_PMPI_COMM_SPAWN_MULTIPLE) && ! defined(SILC_MPI_NO_SPAWN) && ! defined(SILC_MPI_NO_EXTRA)
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper
@@ -113,7 +113,7 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
 
 #else /* !NEED_F2C_CONV */
 
-#if HAVE(DECL_MPI_COMM_SPAWN_MULTIPLE) && ! defined(SILC_MPI_NO_SPAWN) && ! defined(SILC_MPI_NO_EXTRA)
+#if HAVE(DECL_PMPI_COMM_SPAWN_MULTIPLE) && ! defined(SILC_MPI_NO_SPAWN) && ! defined(SILC_MPI_NO_EXTRA)
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
  * @ingroup manual_wrapper

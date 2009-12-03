@@ -19,7 +19,7 @@
  * @status     ALPHA
  * @ingroup    MPI_Wrapper
  *
- * Contains the initialization function implementations for the measurement system.
+ * @brief Contains the initialization function implementations for the measurement system.
  */
 
 #include "SILC_Mpi_Init.h"

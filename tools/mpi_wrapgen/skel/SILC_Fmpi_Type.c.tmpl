@@ -64,7 +64,7 @@
 
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Mpi_F2c_C2f.w
 
-#if HAVE(DECL_MPI_TYPE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
+#if HAVE(DECL_PMPI_TYPE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_struct
  * @ingroup manual_wrapper
@@ -96,7 +96,7 @@ void FSUB(MPI_Type_struct)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_MPI_TYPE_CREATE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
+#if HAVE(DECL_PMPI_TYPE_CREATE_STRUCT) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_create_struct
  * @ingroup manual_wrapper
@@ -128,7 +128,7 @@ void FSUB(MPI_Type_create_struct)(MPI_Fint* count,
 }
 #endif
 
-#if HAVE(DECL_MPI_TYPE_GET_CONTENTS) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
+#if HAVE(DECL_PMPI_TYPE_GET_CONTENTS) && ! defined(SILC_MPI_NO_EXTRA) && ! defined(SILC_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_get_contents
  * @ingroup manual_wrapper

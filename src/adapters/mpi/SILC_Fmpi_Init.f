@@ -14,12 +14,12 @@
 
 !>
 !! @file       SILC_Fmpi_Init.f
+!! @brief      Fortran functions, called during the initialization of the mpi adapter to
+!!             obtain the value of MPI_STATUS_SIZE.
+!!
 !! @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 !! @status     BETA
 !! @ingroup    MPI_Wrapper
-!!
-!! @brief Fortran functions, called during the initialization of the mpi adapter to
-!!        obtain the value of MPI_STATUS_SIZE.
 !<
 
       SUBROUTINE silc_mpi_get_status_size___ (status_size)

@@ -24,7 +24,7 @@ static int silc_rma_id = 0;
  */
 #pragma wrapgen single MPI_Accumulate skel/SILC_Mpi_RmaPut.w
 
-#if HAVE(DECL_MPI_GET) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_GET) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Get
  * @note Manually adapted wrapper
@@ -95,7 +95,7 @@ int MPI_Get(void*        origin_addr,
  * @{
  */
 
-#if HAVE(DECL_MPI_WIN_CREATE) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_CREATE) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_create
  * @note Manually adapted wrapper
@@ -143,7 +143,7 @@ int MPI_Win_create(void*    base,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_FREE) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_FREE) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_free
  * @note Manually adapted wrapper
@@ -195,7 +195,7 @@ int MPI_Win_free(MPI_Win* win)
  * @{
  */
 
-#if HAVE(DECL_MPI_WIN_COMPLETE) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_COMPLETE) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_complete
  * @note Manually adapted wrapper
@@ -232,7 +232,7 @@ int MPI_Win_complete(MPI_Win win)
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_FENCE) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_FENCE) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_fence
  * @note Manually adapted wrapper
@@ -268,7 +268,7 @@ int MPI_Win_fence(int     assert,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_LOCK) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_LOCK) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_lock
  * @note Manually adapted wrapper
@@ -309,7 +309,7 @@ int MPI_Win_lock(int     lock_type,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_POST) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_POST) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_post
  * @note Manually adapted wrapper
@@ -350,7 +350,7 @@ int MPI_Win_post(MPI_Group group,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_START) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_START) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_start
  * @note Manually adapted wrapper
@@ -391,7 +391,7 @@ int MPI_Win_start(MPI_Group group,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_TEST) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_TEST) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_test
  * @note Manually adapted wrapper
@@ -437,7 +437,7 @@ int MPI_Win_test(MPI_Win win,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_UNLOCK) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_UNLOCK) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_unlock
  * @note Manually adapted wrapper
@@ -475,7 +475,7 @@ int MPI_Win_unlock(int     rank,
 }
 #endif
 
-#if HAVE(DECL_MPI_WIN_WAIT) && !defined(SILC_MPI_NO_RMA)
+#if HAVE(DECL_PMPI_WIN_WAIT) && !defined(SILC_MPI_NO_RMA)
 /**
  * Measurement wrapper for MPI_Win_wait
  * @note Manually adapted wrapper
