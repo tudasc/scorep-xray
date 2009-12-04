@@ -47,6 +47,8 @@ typedef long useconds_t;
 #define SILC_PROCDIR "/proc/"
 #endif
 
+/** @todo investigate if we need silc_ticks_per_sec on a per core basis if we
+ * do frequency measurement instead of reading /proc/cpuinfo */
 static uint64_t silc_ticks_per_sec = 0;
 
 static uint64_t
