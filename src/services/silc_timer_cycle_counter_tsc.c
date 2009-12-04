@@ -51,6 +51,8 @@ typedef long useconds_t;
  * do frequency measurement instead of reading /proc/cpuinfo */
 static uint64_t silc_ticks_per_sec = 0;
 
+static bool     isInitialized = false;
+
 static uint64_t
 silc_get_cylce_counter_frequency( useconds_t usleep_time );
 
@@ -64,9 +66,16 @@ silc_get_improved_frequency_from_timing_measurement();
 void
 SILC_InitTimer()
 {
+    if ( isInitialized )
+    {
+        return;
+    }
+
     silc_ticks_per_sec = silc_get_frequency_from_proc_cpuinfo();
     silc_ticks_per_sec = silc_get_improved_frequency_from_timing_measurement();
     assert( silc_ticks_per_sec != 0 );
+
+    isInitialized = true;
 }
 
 

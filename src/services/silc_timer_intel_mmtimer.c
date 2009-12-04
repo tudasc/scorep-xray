@@ -43,11 +43,17 @@
 #include <assert.h>
 #include <stdbool.h>
 
+static bool isInitialized = false;
 
 void
 SILC_InitTimer()
 {
     assert( false ); // implement me
+    if ( isInitialized )
+    {
+        return;
+    }
+    isInitialized = true;
 }
 
 
