@@ -29,6 +29,7 @@
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>
+#include <SILC_Compiler_Init.h>
 
 
 /**
@@ -49,19 +50,8 @@ static int gnu_init = 1;
  * @param reghandle   region identifier
  * @param HN          pointer to next element
  */
-typedef struct HashNode
-{
-    long              id;
-    const char*       name;
-    const char*       fname;
-    SILC_LineNo       lnobegin;
-    SILC_LineNo       lnoend;
-    SILC_RegionHandle reghandle;
-    struct HashNode*  next;
-} HashNode;
 
 #define HASH_MAX 1021
-
 static HashNode* htab[ HASH_MAX ];
 
 
@@ -254,12 +244,13 @@ get_symTab( void )
  *
  * @param hn   Hash node which stores the registered regions
  */
-static void
-register_region
+void
+silc_compiler_register_region
 (
     HashNode* hn
 )
 {
+    printf( " register a region: \n" );
     hn->reghandle = SILC_DefineRegion( hn->name,
                                        SILC_INVALID_SOURCE_FILE,
                                        SILC_INVALID_LINE_NO,
@@ -267,8 +258,6 @@ register_region
                                        SILC_ADAPTER_COMPILER,
                                        SILC_REGION_FUNCTION
                                        );
-
-    printf( " register a region: \n" );
 }
 
 /**
@@ -343,7 +332,7 @@ __cyg_profile_func_enter
         if ( hn->reghandle == SILC_INVALID_REGION )
         {
             /* -- region entered the first time, register region -- */
-            register_region( hn );
+            silc_compiler_register_region( hn );
             printf( " register region with handle %i \n", hn->reghandle );
         }
         printf( "enter the region with handle %i \n", hn->reghandle );
