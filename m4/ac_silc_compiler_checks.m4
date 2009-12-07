@@ -15,7 +15,7 @@
 ##
 
 
-AC_DEFUN([AC_SILC_COMPILER_INTEL],[
+AC_DEFUN([SILC_COMPILER_INTEL],[
 AC_MSG_CHECKING([for intel compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__INTEL_COMPILER) || defined(__ICC)
@@ -23,14 +23,16 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 # error "Not an Intel compiler."
 #endif
 ]])],
-                  [ac_silc_compiler_intel="yes"; ac_silc_compiler_unknown="no"], 
-                  [ac_silc_compiler_intel="no"])
-AC_MSG_RESULT([$ac_silc_compiler_intel])
+                  [silc_compiler_intel="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_intel="no"])
+AC_MSG_RESULT([$silc_compiler_intel])
+AS_IF([test "x${silc_compiler_intel}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags="-tcollect"])
 ])
 
 ##
 
-AC_DEFUN([AC_SILC_COMPILER_SUN],[
+AC_DEFUN([SILC_COMPILER_SUN],[
 AC_MSG_CHECKING([for sun compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__SUNPRO_C)
@@ -38,14 +40,16 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 # error "Not a Sun compiler."
 #endif
 ]])],
-                  [ac_silc_compiler_sun="yes"; ac_silc_compiler_unknown="no"], 
-                  [ac_silc_compiler_sun="no"])
-AC_MSG_RESULT([$ac_silc_compiler_sun])
+                  [silc_compiler_sun="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_sun="no"])
+AC_MSG_RESULT([$silc_compiler_sun])
+AS_IF([test "x${silc_compiler_sun}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"])
 ])
 
 ##
 
-AC_DEFUN([AC_SILC_COMPILER_IBM],[
+AC_DEFUN([SILC_COMPILER_IBM],[
 AC_MSG_CHECKING([for ibm compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__IBMC__)
@@ -57,14 +61,16 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 # error "Not an IBM compiler."
 #endif
 ]])],
-                  [ac_silc_compiler_ibm="yes"; ac_silc_compiler_unknown="no"], 
-                  [ac_silc_compiler_ibm="no"])
-AC_MSG_RESULT([$ac_silc_compiler_ibm])
+                  [silc_compiler_ibm="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_ibm="no"])
+AC_MSG_RESULT([$silc_compiler_ibm])
+AS_IF([test "x${silc_compiler_ibm}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags="-qdebug=function_trace"])
 ])
 
 ##
 
-AC_DEFUN([AC_SILC_COMPILER_PGI],[
+AC_DEFUN([SILC_COMPILER_PGI],[
 AC_MSG_CHECKING([for pgi compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__PGI)
@@ -72,14 +78,16 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 # error "Not a PGI compiler."
 #endif
 ]])],
-                  [ac_silc_compiler_pgi="yes"; ac_silc_compiler_unknown="no"], 
-                  [ac_silc_compiler_pgi="no"])
-AC_MSG_RESULT([$ac_silc_compiler_pgi])
+                  [silc_compiler_pgi="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_pgi="no"])
+AC_MSG_RESULT([$silc_compiler_pgi])
+AS_IF([test "x${silc_compiler_pgi}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags="-Mprof=func"])
 ])
 
 ##
 
-AC_DEFUN([AC_SILC_COMPILER_GNU],[
+AC_DEFUN([SILC_COMPILER_GNU],[
 AC_MSG_CHECKING([for gnu compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__GNUC__)
@@ -87,14 +95,16 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 # error "Not a GNU compiler."
 #endif
 ]])],
-                  [ac_silc_compiler_gnu="yes"; ac_silc_compiler_unknown="no"], 
-                  [ac_silc_compiler_gnu="no"])
-AC_MSG_RESULT([$ac_silc_compiler_gnu])
+                  [silc_compiler_gnu="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_gnu="no"])
+AC_MSG_RESULT([$silc_compiler_gnu])
+AS_IF([test "x${silc_compiler_gnu}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags="-finstrument-functions"])
 ])
 
 ##
 
-AC_DEFUN([AC_SILC_COMPILER_HP],[
+AC_DEFUN([SILC_COMPILER_HP],[
 AC_MSG_CHECKING([for hp compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__HP_cc) || defined(__hpux) || defined(__hpua)
@@ -102,42 +112,48 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 # error "Not a HP compiler."
 #endif
 ]])],
-                  [ac_silc_compiler_hp="yes"; ac_silc_compiler_unknown="no"], 
-                  [ac_silc_compiler_hp="no"])
-AC_MSG_RESULT([$ac_silc_compiler_hp])
+                  [silc_compiler_hp="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_hp="no"])
+AC_MSG_RESULT([$silc_compiler_hp])
+AS_IF([test "x${silc_compiler_hp}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags=""])
 ])
 
 ## 
 
 AC_DEFUN([AC_SILC_COMPILER_CHECKS],[
-ac_silc_compiler_unknown="yes"
+silc_compiler_unknown="yes"
 
-ac_silc_compiler_intel="no"
-ac_silc_compiler_sun="no"
-ac_silc_compiler_ibm="no"
-ac_silc_compiler_pgi="no"
-ac_silc_compiler_gnu="no"
-ac_silc_compiler_hp="no"
+silc_compiler_intel="no"
+silc_compiler_sun="no"
+silc_compiler_ibm="no"
+silc_compiler_pgi="no"
+silc_compiler_gnu="no"
+silc_compiler_hp="no"
+
+silc_compiler_instrumentation_cppflags=""
 
 # I (croessel) don't think that more than one test can possibly succeed,
 # so I skip extra testing here.
 AC_LANG_PUSH([C])
-AC_SILC_COMPILER_INTEL
-AC_SILC_COMPILER_SUN
-AC_SILC_COMPILER_IBM
-AC_SILC_COMPILER_PGI
-AC_SILC_COMPILER_GNU
-AC_SILC_COMPILER_HP
+SILC_COMPILER_INTEL
+SILC_COMPILER_SUN
+SILC_COMPILER_IBM
+SILC_COMPILER_PGI
+SILC_COMPILER_GNU
+SILC_COMPILER_HP
 AC_LANG_POP([C])
 
-if test "x${ac_silc_compiler_unknown}" = "xyes"; then
+if test "x${silc_compiler_unknown}" = "xyes"; then
     AC_MSG_WARN([Could not determine compiler vendor. Compiler instrumentation may not work.])
 fi
 
-AM_CONDITIONAL([SILC_COMPILER_INTEL], [test "x${ac_silc_compiler_intel}" = "xyes"])
-AM_CONDITIONAL([SILC_COMPILER_SUN],   [test "x${ac_silc_compiler_sun}"   = "xyes"])
-AM_CONDITIONAL([SILC_COMPILER_IBM],   [test "x${ac_silc_compiler_ibm}"   = "xyes"])
-AM_CONDITIONAL([SILC_COMPILER_PGI],   [test "x${ac_silc_compiler_pgi}"   = "xyes"])
-AM_CONDITIONAL([SILC_COMPILER_GNU],   [test "x${ac_silc_compiler_gnu}"   = "xyes"])
-AM_CONDITIONAL([SILC_COMPILER_HP],    [test "x${ac_silc_compiler_hp}"    = "xyes"])
+AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS], [${silc_compiler_instrumentation_cppflags}])
+
+AM_CONDITIONAL([SILC_COMPILER_INTEL], [test "x${silc_compiler_intel}" = "xyes"])
+AM_CONDITIONAL([SILC_COMPILER_SUN],   [test "x${silc_compiler_sun}"   = "xyes"])
+AM_CONDITIONAL([SILC_COMPILER_IBM],   [test "x${silc_compiler_ibm}"   = "xyes"])
+AM_CONDITIONAL([SILC_COMPILER_PGI],   [test "x${silc_compiler_pgi}"   = "xyes"])
+AM_CONDITIONAL([SILC_COMPILER_GNU],   [test "x${silc_compiler_gnu}"   = "xyes"])
+AM_CONDITIONAL([SILC_COMPILER_HP],    [test "x${silc_compiler_hp}"    = "xyes"])
 ])
