@@ -111,15 +111,15 @@ SILC_ExitRegion
 void
 SILC_MpiSend
 (
-    int32_t                    globalDestinationRank,
+    uint32_t                   globalDestinationRank,
     SILC_MPICommunicatorHandle communicatorHandle,
-    int32_t                    tag,
-    int32_t                    bytesSent
+    uint32_t                   tag,
+    uint64_t                   bytesSent
 );
 
 
 /**
- * Generate an mpi send event in the measurement system.
+ * Generate an mpi recv event in the measurement system.
  *
  * @param globalSourceRank The MPI source rank in MPI_COMM_WORLD. If your
  * communicator is not MPI_COMM_WORLD, you need to convert your local rank to
@@ -143,10 +143,10 @@ SILC_MpiSend
 void
 SILC_MpiRecv
 (
-    int32_t                    globalSourceRank,
+    uint32_t                   globalSourceRank,
     SILC_MPICommunicatorHandle communicatorHandle,
-    int32_t                    tag,
-    int32_t                    bytesReceived
+    uint32_t                   tag,
+    uint64_t                   bytesReceived
 );
 
 
@@ -171,9 +171,9 @@ SILC_MpiCollective
 (
     SILC_RegionHandle          regionHandle,
     SILC_MPICommunicatorHandle communicatorHandle,
-    int32_t                    globalRootRank,
-    int32_t                    bytesSent,
-    int32_t                    bytesReceived
+    uint32_t                   globalRootRank,
+    uint64_t                   bytesSent,
+    uint64_t                   bytesReceived
 );
 
 

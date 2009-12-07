@@ -87,45 +87,45 @@ SILC_ExitRegion
 void
 SILC_MpiSend
 (
-    int32_t                    globalDestinationRank,
+    uint32_t                   globalDestinationRank,
     SILC_MPICommunicatorHandle communicatorHandle,
-    int32_t                    tag,
-    int32_t                    bytesSent
+    uint32_t                   tag,
+    uint64_t                   bytesSent
 )
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %u %s %u %u\n",
+    fprintf( stderr, "%s: %u %s %u %llu\n",
              __func__,
              globalDestinationRank,
              silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
                                   "%x", communicatorHandle ),
              tag,
-             bytesSent );
+             ( unsigned long long )bytesSent );
 }
 
 
 /**
- * Generate an mpi send event in the measurement system.
+ * Generate an mpi recv event in the measurement system.
  */
 void
 SILC_MpiRecv
 (
-    int32_t                    globalSourceRank,
+    uint32_t                   globalSourceRank,
     SILC_MPICommunicatorHandle communicatorHandle,
-    int32_t                    tag,
-    int32_t                    bytesReceived
+    uint32_t                   tag,
+    uint64_t                   bytesReceived
 )
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %u %s %u %u\n",
+    fprintf( stderr, "%s: %u %s %u %llu\n",
              __func__,
              globalSourceRank,
              silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
                                   "%x", communicatorHandle ),
              tag,
-             bytesReceived );
+             ( unsigned long long )bytesReceived );
 }
 
 
@@ -137,22 +137,22 @@ SILC_MpiCollective
 (
     SILC_RegionHandle          regionHandle,
     SILC_MPICommunicatorHandle communicatorHandle,
-    int32_t                    globalRootRank,
-    int32_t                    bytesSent,
-    int32_t                    bytesReceived
+    uint32_t                   globalRootRank,
+    uint64_t                   bytesSent,
+    uint64_t                   bytesReceived
 )
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %s %s %u %u %u\n",
+    fprintf( stderr, "%s: %s %s %u %llu %llu\n",
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ),
              silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
                                   "%x", communicatorHandle ),
              globalRootRank,
-             bytesSent,
-             bytesReceived );
+             ( unsigned long long )bytesSent,
+             ( unsigned long long )bytesReceived );
 }
 
 
