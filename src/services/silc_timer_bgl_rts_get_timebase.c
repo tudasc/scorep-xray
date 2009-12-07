@@ -28,18 +28,26 @@
 #include "SILC_Timing.h"
 
 #include <assert.h>
+#include <bglpersonality.h>
+#include <rts.h>
 #include <stdbool.h>
 
-static bool isInitialized = false;
+static uint64_t silc_ticks_per_sec = 0;
+
+static bool     isInitialized = false;
 
 void
 SILC_InitTimer()
 {
-    assert( false ); // implement me
     if ( isInitialized )
     {
         return;
     }
+
+    BGLPersonality mybgl;
+    rts_get_personality( &mybgl, sizeof( BGLPersonality ) );
+    silc_ticks_per_sec = ( uint64_t )BGLPersonality_clockHz( &mybgl );
+
     isInitialized = true;
 }
 
@@ -47,14 +55,12 @@ SILC_InitTimer()
 uint64_t
 SILC_GetWallClockTime()
 {
-    assert( false ); // implement me
-    return 0;
+    return ( uint64_t )rts_get_timebase();
 }
 
 
 uint64_t
 SILC_GetClockResolution()
 {
-    assert( false ); // implement me
-    return 0;
+    return silc_ticks_per_sec;
 }

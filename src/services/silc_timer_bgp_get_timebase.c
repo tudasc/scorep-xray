@@ -28,18 +28,27 @@
 #include "SILC_Timing.h"
 
 #include <assert.h>
+#include <common/bgp_personality.h>
+#include <common/bgp_personality_inlines.h>
+#include <spi/kernel_interface.h>
 #include <stdbool.h>
 
-static bool isInitialized = false;
+static uint64_t silc_ticks_per_sec = 0;
+
+static bool     isInitialized = false;
 
 void
 SILC_InitTimer()
 {
-    assert( false ); // implement me
     if ( isInitialized )
     {
         return;
     }
+
+    _BGP_Personality_t mybgp;
+    Kernel_GetPersonality( &mybgp, sizeof( _BGP_Personality_t ) );
+    silc_ticks_per_sec = ( uint64_t )BGP_Personality_clockMHz( &mybgp ) * 1e6;
+
     isInitialized = true;
 }
 
@@ -47,14 +56,12 @@ SILC_InitTimer()
 uint64_t
 SILC_GetWallClockTime()
 {
-    assert( false ); // implement me
-    return 0;
+    return ( uint64_t )_bgp_GetTimeBase();
 }
 
 
 uint64_t
 SILC_GetClockResolution()
 {
-    assert( false ); // implement me
-    return 0;
+    return silc_ticks_per_sec;
 }
