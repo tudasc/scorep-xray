@@ -25,7 +25,10 @@ CPPFLAGS="$CPPFLAGS -I/bgsys/drivers/ppcfloor/arch/include"
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <common/bgp_personality.h>
 #include <common/bgp_personality_inlines.h>
 #include <spi/kernel_interface.h>]],
-                                [[_bgp_GetTimeBase();]])],
+                                [[_BGP_Personality_t mybgp;
+    Kernel_GetPersonality( &mybgp, sizeof( _BGP_Personality_t ) );
+    long ticks_per_sec = ( long )BGP_Personality_clockMHz( &mybgp ) * 1e6;
+    _bgp_GetTimeBase();]])],
                [silc_timer_bgp_get_timebase_available="yes"], [])
 CPPFLAGS="$silc_timer_save_CPPFLAGS"
 AC_MSG_RESULT([$silc_timer_bgp_get_timebase_available])
@@ -104,7 +107,7 @@ AC_MSG_RESULT([$silc_timer_cycle_counter_tsc_available])
 AH_TEMPLATE([HAVE_USLEEP],
             [Define to 1 if the usleep function is available.])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>]],
-                                   [[usleep(100);]])],
+                                   [[useconds_t secs = 100; usleep(secs);]])],
                   [AC_DEFINE([HAVE_USLEEP])], [])
 ])
 
