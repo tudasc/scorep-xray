@@ -17,10 +17,10 @@
 #ifndef SILC_INTERNAL_RUNTIME_MANAGEMENT_H
 #define SILC_INTERNAL_RUNTIME_MANAGEMENT_H
 
-#include <OTF2_Buffer.h>
+#include <OTF2_EvtWriter.h>
 
-extern OTF2_Buffer*   local_event_buffer;
-extern OTF2_TimeStamp local_timestamp_counter;
+extern OTF2_EvtWriter* local_event_writer;
+extern OTF2_TimeStamp  local_timestamp_counter;
 
 #if 0
 /**

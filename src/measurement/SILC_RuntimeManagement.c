@@ -36,14 +36,14 @@
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
 
-#include <OTF2_Buffer.h>
+#include <OTF2_EvtWriter.h>
 
 #include "silc_types.h"
 #include "silc_adapter.h"
 
 
-OTF2_Buffer*   local_event_buffer;
-OTF2_TimeStamp local_timestamp_counter;
+OTF2_EvtWriter* local_event_writer;
+OTF2_TimeStamp  local_timestamp_counter;
 
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
@@ -175,17 +175,12 @@ SILC_InitMeasurement
     /* create location */
 
     local_timestamp_counter = 0;
-    local_event_buffer      = OTF2_Buffer_New( 1 << 24,
-                                               ( size_t )( 1048576 ),
-                                               NULL,
-                                               OTF2_BUFFER_WRITE,
-                                               OTF2_BUFFER_CHUNKED,
-                                               OTF2_SUBSTRATE_NON,
-                                               NULL,
-                                               NULL );
-    OTF2_Buffer_RegisterPreFlushCallback( local_event_buffer, pre_no_flush );
+    local_event_writer      = OTF2_EvtWriter_New( 1 << 24,
+                                                  NULL,
+                                                  0,
+                                                  "silc" );
 
-    if ( !local_event_buffer )
+    if ( !local_event_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
         _exit( EXIT_FAILURE );
@@ -293,8 +288,6 @@ SILC_RecordingEnabled
 static void
 silc_finalize( void )
 {
-    OTF2_TimeStamp timestamp;
-
     fprintf( stderr, "%s\n", __func__ );
 
     if ( !silc_initialized || silc_finalized )
@@ -302,50 +295,11 @@ silc_finalize( void )
         return;
     }
 
-    if ( !local_event_buffer )
+    if ( local_event_writer )
     {
-        return;
+        OTF2_EvtWriter_Delete( local_event_writer );
     }
-
-    OTF2_Buffer_SwitchMode( local_event_buffer, OTF2_BUFFER_READ );
-
-    while ( SILC_SUCCESS == OTF2_Buffer_ReadTimeStamp( local_event_buffer,
-                                                       &timestamp ) )
-    {
-        uint8_t recordType;
-
-        OTF2_Buffer_ReadUint8( local_event_buffer, &recordType );
-
-        switch ( recordType )
-        {
-            case OTF2_EVENT_ENTER:
-            {
-                uint32_t regionHandle;
-                OTF2_Buffer_ReadUint32( local_event_buffer, &regionHandle );
-                fprintf( stderr, "buffer: at %lu we entered %u\n",
-                         timestamp,
-                         regionHandle );
-                break;
-            }
-
-            case OTF2_EVENT_LEAVE:
-            {
-                uint32_t regionHandle;
-                OTF2_Buffer_ReadUint32( local_event_buffer, &regionHandle );
-                fprintf( stderr, "buffer: at %lu we leaved %u\n",
-                         timestamp,
-                         regionHandle );
-                break;
-            }
-
-            default:
-                goto cleanup;
-        }
-    }
-
-cleanup:
-
-    OTF2_Buffer_Delete( local_event_buffer );
+    local_event_writer = NULL;
 
     silc_finalized = true;
 }
