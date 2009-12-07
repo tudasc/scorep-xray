@@ -28,6 +28,7 @@
  */
 
 
+#include <SILC_Compiler_Init.h>
 #include <SILC_User_Init.h>
 #include <SILC_Mpi_Init.h>
 
@@ -39,6 +40,7 @@
  * List of adapters.
  */
 SILC_Adapter* silc_adapters[] = {
+    &SILC_Compiler_Adapter,
     &SILC_Mpi_Adapter,
     &SILC_User_Adapter,
     NULL /**< Needs to be NULL-terminated */
