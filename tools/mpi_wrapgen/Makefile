@@ -25,7 +25,7 @@ GENCORE         = skel/SILC_Mpi_Prototypes.xml
 FILES           = $(patsubst skel/%.tmpl,%,$(wildcard skel/*.tmpl))
 
 
-all: wrapgen all-files
+all: protogen wrapgen all-files
 
 install: all install-files
 
@@ -78,3 +78,8 @@ $(OUTPUTDIR)/SILC_%: $(GENCORE) skel/SILC_%.tmpl skel/*.w
 	if [ ! -d $(OUTPUTDIR) ]; then mkdir -p $(OUTPUTDIR); fi
 	$(WRAPGEN) $(WFLAGS) skel/$(notdir $@).tmpl > $@
 
+SILC_Wrapgen_HeaderParser.o: SILC_Wrapgen_HeaderParser.cpp
+	$(CXX) $(CXXFLAGS) SILC_Wrapgen_HeaderParser.cpp  -c -o SILC_Wrapgen_HeaderParser.o
+
+protogen: SILC_Wrapgen_HeaderParser.o $(MODS)
+	$(CXX) $(CXXFLAGS) $(LIBS) $(MODS) SILC_Wrapgen_HeaderParser.o -o protogen

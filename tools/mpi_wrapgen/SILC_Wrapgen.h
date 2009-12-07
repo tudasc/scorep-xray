@@ -65,6 +65,12 @@ using namespace SILC::Wrapgen;
        functions and excludes the function specified by the expression. The expression
        has the same syntax like the -r option of the command line.
 
+   Function templates may contain so called variables which get substituted by a function
+   specific value, e.g., the name, or the prototype of the function. The variables have
+   the form ${variable_name}. For every variable a handler functions exists which
+   contain the implementation how to substitute the variable. These handlers are
+   functions with a signature of @ref SILC::Wrapgen::handler::func_handlers_t.
+
    @{
  */
 

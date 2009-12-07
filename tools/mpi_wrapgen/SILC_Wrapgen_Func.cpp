@@ -59,7 +59,7 @@ SILC::Wrapgen::Func::write_conf
     ostringstream conf;
 
     conf << "<prototype name=\"" << m_name << "\" rtype=\"" <<
-    m_rtype << "\" group=\"" << m_group << "\" >\n";
+    m_rtype << "\" group=\"" << m_group << "\" guard=\"" << m_guard << "\" >\n";
     for ( size_t i = 0; i < get_param_count(); ++i )
     {
         Funcparam param = get_param( i );
@@ -88,3 +88,14 @@ SILC::Wrapgen::Func::~Func()
 }
 
 int SILC::Wrapgen::Func::num_func = 0;
+
+void
+SILC::Wrapgen::Func::add_param
+(
+    const string& type,
+    const string& name,
+    const string& suffix
+)
+{
+    m_params.push_back( Funcparam( type, name, suffix, 'i' ) );
+}
