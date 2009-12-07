@@ -52,8 +52,12 @@ static int gnu_init = 1;
  */
 
 #define HASH_MAX 1021
-static HashNode* htab[ HASH_MAX ];
 
+
+typedef struct HashNode HN;
+
+
+static HN* htab[ HASH_MAX ];
 
 /**
  * @brief Get hash table entry for given ID.
@@ -62,14 +66,14 @@ static HashNode* htab[ HASH_MAX ];
  *
  * @return Returns pointer to hash table entry according to key
  */
-static HashNode*
+static HN*
 hash_get( long h )
 {
     long id = h % HASH_MAX;
 
     printf( " hash id %i: ", id );
 
-    HashNode* curr = htab[ id ];
+    HN* curr = htab[ id ];
     while ( curr )
     {
         if ( curr->id == h )
@@ -99,8 +103,8 @@ hash_put
     int         lno
 )
 {
-    long      id  = h % HASH_MAX;
-    HashNode* add = ( HashNode* )malloc( sizeof( HashNode ) );
+    long id  = h % HASH_MAX;
+    HN*  add = ( HN* )malloc( sizeof( HN ) );
     add->id        = h;
     add->name      = n;
     add->fname     = fn ? ( const char* )strdup( fn ) : fn;
@@ -247,7 +251,7 @@ get_symTab( void )
 void
 silc_compiler_register_region
 (
-    HashNode* hn
+    struct  HashNode* hn
 )
 {
     printf( " register a region: \n" );
@@ -298,7 +302,7 @@ __cyg_profile_func_enter
     void* callsite
 )
 {
-    HashNode* hn;
+    HN* hn;
     printf( "call at function enter!!!\n" );
 
 
@@ -358,7 +362,7 @@ __cyg_profile_func_exit
     void* callsite
 )
 {
-    HashNode* hn;
+    HN* hn;
     printf( "call function exit!!!\n" );
     if ( hn = hash_get( ( long )func ) )
     {

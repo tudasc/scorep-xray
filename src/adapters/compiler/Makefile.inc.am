@@ -1,6 +1,8 @@
 noinst_LTLIBRARIES += libsilc_adapter_comp.la
 
-libsilc_adapter_comp_la_SOURCES =
+libsilc_adapter_comp_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
+	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h
 libsilc_adapter_comp_la_LIBADD = @LIBBFD@
 
 #if SILC_COMPILER_INTEL
@@ -45,3 +47,4 @@ libsilc_adapter_comp_la_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/compiler                  \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/measurement/include
+
