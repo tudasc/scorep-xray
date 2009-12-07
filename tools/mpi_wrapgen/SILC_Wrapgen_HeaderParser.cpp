@@ -199,7 +199,8 @@ printUsage( string name )
          << "#pragma proto group <groupname>   It sets the group and guard of the" << endl
          << "                                  following functions to <groupname>" << endl
          << "                                  until it is overwritten by the next" << endl
-         << "                                  group directive." << endl;
+         << "                                  group directive." << endl
+         << "NOTE: All #pragma directives must be terminated with a semi-colon!" << endl;
     abort();
 }
 
