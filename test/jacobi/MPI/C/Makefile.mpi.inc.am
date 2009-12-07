@@ -1,0 +1,29 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+check_PROGRAMS += jacobi_mpi_c
+
+jacobi_mpi_c_SOURCES = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
+                       $(SRC_ROOT)test/jacobi/MPI/C/jacobi.h  \
+                       $(SRC_ROOT)test/jacobi/MPI/C/main.c
+
+jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+
+jacobi_mpi_c_LDADD = $(LIB_ROOT)libsilc.la
