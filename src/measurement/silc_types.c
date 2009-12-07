@@ -214,7 +214,7 @@ silc_region_type_to_string
     switch ( regionType )
     {
         case SILC_REGION_FUNCTION:
-            return "fnction";
+            return "function";
         case SILC_REGION_LOOP:
             return "loop";
         case SILC_REGION_USER:
