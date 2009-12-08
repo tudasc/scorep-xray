@@ -114,6 +114,23 @@ AC_PROG_FC_C_O
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
+AC_LANG_PUSH([C])
+AC_OPENMP
+AC_LANG_POP([C])
+
+AC_LANG_PUSH([C++])
+AC_OPENMP
+AC_LANG_POP([C++])
+
+# to get these working, update autoconf to 2.65 (and adapt status.m4)
+# see also http://lists.gnu.org/archive/html/bug-autoconf/2009-10/msg00020.html
+#AC_LANG_PUSH([Fortran 77])
+#AC_OPENMP
+#AC_LANG_POP([Fortran 77])
+#AC_LANG_PUSH([Fortran])
+#AC_OPENMP
+#AC_LANG_POP([Fortran])
+
 SILC_TIMER
 AC_SILC_COMPILER_CHECKS
 AC_SILC_LIBBFD
