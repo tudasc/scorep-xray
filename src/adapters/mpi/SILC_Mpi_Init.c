@@ -135,7 +135,7 @@ silc_mpi_finalize
     ()
 {
     printf( "In SILC_Mpi_Finalize\n" );
-    MPI_Finalize();
+    PMPI_Finalize();
 }
 
 /** Implementation of the adapter_deregister function of the @ref SILC_Adapter struct
