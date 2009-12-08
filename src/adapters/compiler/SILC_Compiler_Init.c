@@ -25,20 +25,6 @@
 #include "SILC_Error.h"
 
 
-/**
- * @brief Hash table to map function addresses to region identifier
- * identifier is called region handle
- *
- * @param id          hash key (address of function)
- * @param name        associated function name
- * @param fname       file name
- * @param lnobegin    line number of begin of function
- * @param lnoend      line number of end of function
- * @param reghandle   region identifier
- * @param HN          pointer to next element
- */
-
-
 
 extern void
 silc_compiler_register_region

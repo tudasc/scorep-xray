@@ -23,6 +23,7 @@
  */
 
 #include <stdio.h>
+#include <limits.h>
 #include <bfd.h>
 
 #include <SILC_Utils.h>
@@ -35,27 +36,13 @@
 /**
  * static variable to control initialize status of GNU
  */
+
+
+#define HASH_MAX 1021
 static int gnu_init = 1;
 
 
-/**
- * @brief Hash table to map function addresses to region identifier
- * identifier is called region handle
- *
- * @param id          hash key (address of function)
- * @param name        associated function name
- * @param fname       file name
- * @param lnobegin    line number of begin of function
- * @param lnoend      line number of end of function
- * @param reghandle   region identifier
- * @param HN          pointer to next element
- */
-
-#define HASH_MAX 1021
-
-
 typedef struct HashNode HN;
-
 
 static HN* htab[ HASH_MAX ];
 
@@ -126,39 +113,54 @@ get_symTab( void )
     int       nr_all_syms;
     int       i;
     size_t    size;
-    char*     exe_env;
     asymbol** canonicSymbols;
+    char*     exepath;
+    char      path[ PATH_MAX ] = { 0 };
 
 
-    /* get gnu src from environment variable "VT_GNU_GETSRC" */
-    /*  int do_getsrc = vt_env_gnu_getsrc(); */
 
     /* initialize BFD */
     bfd_init();
-    /* get executable path from environment var. VT_APPPATH */
 
-    /* get the path from the environment */
-    char* temp = getenv( "SILC_APPPATH" );
+    /**
+     * by default, use /proc mechanism to obtain path to executable
+     * in other cases, do it by examining SILC_APPPATH variable
+     */
 
-    printf( " apppath set to: %s \n", temp );
-    if ( !temp )
+    /* get the path from system */
+    if ( readlink( "/proc/self/exe", path, sizeof( path ) ) == -1 )
     {
-        printf( " \n***********************************************************************\n" );
-        printf( "Could not determine path of executable.\n" );
-        printf( "Meanwhile, you have to set 'SILC_APPPATH' to your local executable.\n" );
-        printf( " \n***********************************************************************\n" );
+        /* try to get the path via environment variable */
+        exepath = getenv( "SILC_APPPATH" );
 
-        SILC_ERROR( SILC_ERROR_ENOENT, "" );
+        if ( exepath == NULL )
+        {
+            printf( " \n***********************************************************************\n" );
+            printf( "Could not determine path of executable.\n" );
+            printf( "Meanwhile, you have to set 'SILC_APPPATH' to your local executable.\n" );
+            printf( "***********************************************************************\n" );
 
-        return;
-        /* we should abort here */
+            SILC_ERROR( SILC_ERROR_ENOENT, "" );
+            return;
+            /* we should abort here */
+        }
+        else
+        {
+            printf( "  exepath = %s \n", exepath );
+            BfdImage = bfd_openr( exepath, 0 );
+            if ( !BfdImage )
+            {
+                SILC_ERROR( ENOENT, "" );
+            }
+        }
     }
     else
     {
-        BfdImage = bfd_openr( temp, 0 );
+        printf( "  path = %s \n", path );
+        BfdImage = bfd_openr( &path, 0 );
         if ( !BfdImage )
         {
-            printf( "BFD: bfd_openr(): failed\n" );
+            SILC_ERROR( ENOENT, "" );
         }
     }
 
@@ -166,26 +168,23 @@ get_symTab( void )
     /* check image format   */
     if ( !bfd_check_format( BfdImage, bfd_object ) )
     {
-        printf( "BFD: bfd_check_format(): failed\n" );
+        SILC_ERROR( EIO, "BFD: bfd_check_format(): failed\n" );
     }
 
 
     /* return if file has no symbols at all */
     if ( !( bfd_get_file_flags( BfdImage ) & HAS_SYMS ) )
     {
-        printf( "BFD: bfd_get_file_flags(): failed\n" );
+        SILC_ERROR( SILC_ERROR_FILE_INTERACTION, "BFD: bfd_get_file_flags(): failed" );
     }
 
     /* get the upper bound number of symbols */
     size = bfd_get_symtab_upper_bound( BfdImage );
 
-    printf( " size of symtab: %i \n", size );
-
-
     /* HAS_SYMS can be set even with no symbols in the file! */
     if ( size < 1 )
     {
-        printf( "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
+        SILC_ERROR( SILC_ERROR_INVALID_SIZE_GIVEN, "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
     }
 
     /* read canonicalized symbols  */
@@ -194,7 +193,7 @@ get_symTab( void )
     nr_all_syms = bfd_canonicalize_symtab( BfdImage, canonicSymbols );
     if ( nr_all_syms < 1 )
     {
-        printf( "BFD: bfd_canonicalize_symtab(): < 1\n" );
+        SILC_ERROR( SILC_ERROR_INVALID_SIZE_GIVEN, "BFD: bfd_canonicalize_symtab(): < 1\n" );
     }
     for ( i = 0; i < nr_all_syms; ++i )
     {
@@ -229,7 +228,6 @@ get_symTab( void )
                                &funcname,
                                &lno
                                );
-
 
 
         /* calculate function address */
@@ -304,7 +302,6 @@ __cyg_profile_func_enter
 {
     HN* hn;
     printf( "call at function enter!!!\n" );
-
 
     /*
      * init measurement just for dummy purpose
