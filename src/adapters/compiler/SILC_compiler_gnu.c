@@ -58,7 +58,7 @@ hash_get( long h )
 {
     long id = h % HASH_MAX;
 
-    printf( " hash id %i: \n", id );
+    printf( " hash id %ld: \n", id );
 
     HN* curr = htab[ id ];
     while ( curr )
@@ -157,7 +157,7 @@ get_symTab( void )
     else
     {
         printf( "  path = %s \n", path );
-        BfdImage = bfd_openr( &path, 0 );
+        BfdImage = bfd_openr( ( const char* )&path, 0 );
         if ( !BfdImage )
         {
             SILC_ERROR( ENOENT, "" );
@@ -326,7 +326,7 @@ __cyg_profile_func_enter
     }
 
 
-    printf( " function pointer: %i \n", ( long )func );
+    printf( " function pointer: %ld \n", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
