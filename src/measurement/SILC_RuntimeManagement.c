@@ -60,7 +60,6 @@ static bool silc_verbose;
 /** @brief Measurement system configure variables */
 static SILC_ConfigVariable silc_configs[] = {
     {
-        NULL, // is in global namespace
         "verbose",
         SILC_CONFIG_TYPE_BOOL,
         &silc_verbose,
@@ -115,8 +114,9 @@ SILC_InitMeasurement
         _exit( EXIT_FAILURE );
     }
 
-    error = SILC_ConfigRegister( silc_configs,
-                                 sizeof( silc_configs ) / sizeof( silc_configs[ 0 ] ) );
+    error = SILC_ConfigRegister( NULL, silc_configs,
+                                 sizeof( silc_configs ) /
+                                 sizeof( silc_configs[ 0 ] ) );
 
     if ( SILC_SUCCESS != error )
     {

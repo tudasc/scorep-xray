@@ -417,7 +417,6 @@ typedef enum SILC_ConfigType
  */
 typedef struct SILC_ConfigVariable
 {
-    const char*     nameSpace;     /** NULL for @e root/global namespace */
     const char*     name;
     SILC_ConfigType type;
     void*           variableReference;

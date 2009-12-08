@@ -70,7 +70,6 @@ static const SILC_ConfigType_SetEntry silc_mpi_enable_groups[] = {
  */
 SILC_ConfigVariable silc_mpi_configs[] = {
     {
-        "mpi",
         "enable_groups",
         SILC_CONFIG_TYPE_BITSET,
         &silc_mpi_enabled,
@@ -89,7 +88,7 @@ silc_mpi_register
     ()
 {
     printf( "In SILC_Mpi_Register\n" );
-    SILC_ConfigRegister( silc_mpi_configs, 1 );
+    SILC_ConfigRegister( "mpi", silc_mpi_configs, 1 );
     return SILC_SUCCESS;
 }
 

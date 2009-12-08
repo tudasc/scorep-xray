@@ -58,6 +58,8 @@
 /**
  * Register a set of configure variables to the measurement system.
  *
+ * @param nameSpace         the namespace in which these variables reside
+ *                          can be @a NULL for global namespace
  * @param variables         array of type SILC_ConfigVariable which will be
  *                          registered to the measurement system
  * @param numberOfVariables number of variables in the @a variables array
@@ -67,7 +69,6 @@
  *      SILC_Bool unify;
  *      SILC_ConfigVariable unify_vars[] = {
  *          {
- *              NULL, // is in global namespace
  *              "unify",
  *              SILC_CONFIG_TYPE_BOOL,
  *              &unify,
@@ -78,7 +79,7 @@
  *          }
  *      };
  *      :
- *      SILC_ConfigRegister( unify_vars, 1 );
+ *      SILC_ConfigRegister( NULL, unify_vars, 1 ); // in global namespace
  * @endcode
 
  * @note the @a variables array will not be referenced from the measurement
@@ -97,6 +98,7 @@
 SILC_Error_Code
 SILC_ConfigRegister
 (
+    const char*          nameSpace,
     SILC_ConfigVariable* variables,
     uint32_t             numberOfVariables
 );

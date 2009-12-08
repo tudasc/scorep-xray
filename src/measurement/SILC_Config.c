@@ -58,20 +58,24 @@ dump_value( const char*     prefix,
 SILC_Error_Code
 SILC_ConfigRegister
 (
+    const char*          nameSpace,
     SILC_ConfigVariable* variables,
     uint32_t             numberOfVariables
 )
 {
     fprintf( stderr, "%s: Register %u new variables:\n",
              __func__, numberOfVariables );
+
     for ( uint32_t i = 0; i < numberOfVariables; ++i )
     {
         /* "SILC" (+ "_" + namespace)? + "_" + name + 1 */
         char environment_variable_name[ 7 + 2 * 32 ];
         bool successfully_parsed;
 
-        fprintf( stderr, "Variable:      %s/%s\n",
-                 variables[ i ].nameSpace, variables[ i ].name );
+        fprintf( stderr, "Variable:      %s%s%s\n",
+                 nameSpace ? nameSpace : "",
+                 nameSpace ? "/" : "",
+                 variables[ i ].name );
         fprintf( stderr, "  Type:        %s\n",
                  silc_config_type_to_string( variables[ i ].type ) );
         fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );
@@ -89,8 +93,8 @@ SILC_ConfigRegister
         }
 
         sprintf( environment_variable_name, "SILC%s%.32s_%.32s",
-                 variables[ i ].nameSpace ? "_" : "",
-                 variables[ i ].nameSpace ? variables[ i ].nameSpace : "",
+                 nameSpace ? "_" : "",
+                 nameSpace ? nameSpace : "",
                  variables[ i ].name );
 
         fprintf( stderr, "  Environmental Name: %s\n",
