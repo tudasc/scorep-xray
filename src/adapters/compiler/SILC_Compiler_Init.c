@@ -18,6 +18,8 @@
  * @brief Compiler adapter interface support to the measurement system
  */
 
+#include <stdio.h>
+
 #include "SILC_Compiler_Init.h"
 #include "SILC_Types.h"
 #include "SILC_Error.h"
