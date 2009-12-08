@@ -59,14 +59,13 @@ SILC_Error_Code
 SILC_ConfigRegister
 (
     const char*          nameSpace,
-    SILC_ConfigVariable* variables,
-    uint32_t             numberOfVariables
+    SILC_ConfigVariable* variables
 )
 {
-    fprintf( stderr, "%s: Register %u new variables:\n",
-             __func__, numberOfVariables );
+    fprintf( stderr, "%s: Register new variables in name space %s\n",
+             __func__, nameSpace ? nameSpace : "" );
 
-    for ( uint32_t i = 0; i < numberOfVariables; ++i )
+    while ( variables->name )
     {
         /* "SILC" (+ "_" + namespace)? + "_" + name + 1 */
         char environment_variable_name[ 7 + 2 * 32 ];
@@ -75,17 +74,17 @@ SILC_ConfigRegister
         fprintf( stderr, "Variable:      %s%s%s\n",
                  nameSpace ? nameSpace : "",
                  nameSpace ? "/" : "",
-                 variables[ i ].name );
+                 variables->name );
         fprintf( stderr, "  Type:        %s\n",
-                 silc_config_type_to_string( variables[ i ].type ) );
-        fprintf( stderr, "  Default:     %s\n", variables[ i ].defaultValue );
-        fprintf( stderr, "  Description: %s\n", variables[ i ].shortHelp );
+                 silc_config_type_to_string( variables->type ) );
+        fprintf( stderr, "  Default:     %s\n", variables->defaultValue );
+        fprintf( stderr, "  Description: %s\n", variables->shortHelp );
 
         /* set the variable to its default value */
-        successfully_parsed = parse_value( variables[ i ].defaultValue,
-                                           variables[ i ].type,
-                                           variables[ i ].variableReference,
-                                           variables[ i ].variableContext );
+        successfully_parsed = parse_value( variables->defaultValue,
+                                           variables->type,
+                                           variables->variableReference,
+                                           variables->variableContext );
 
         if ( !successfully_parsed )
         {
@@ -95,7 +94,7 @@ SILC_ConfigRegister
         sprintf( environment_variable_name, "SILC%s%.32s_%.32s",
                  nameSpace ? "_" : "",
                  nameSpace ? nameSpace : "",
-                 variables[ i ].name );
+                 variables->name );
 
         fprintf( stderr, "  Environmental Name: %s\n",
                  environment_variable_name );
@@ -108,9 +107,9 @@ SILC_ConfigRegister
 
             /* set the variable to the value of the environment variable */
             successfully_parsed = parse_value( environment_variable_value,
-                                               variables[ i ].type,
-                                               variables[ i ].variableReference,
-                                               variables[ i ].variableContext );
+                                               variables->type,
+                                               variables->variableReference,
+                                               variables->variableContext );
 
             if ( !successfully_parsed )
             {
@@ -123,9 +122,11 @@ SILC_ConfigRegister
         }
 
         dump_value( "  Final value: ",
-                    variables[ i ].type,
-                    variables[ i ].variableReference,
-                    variables[ i ].variableContext );
+                    variables->type,
+                    variables->variableReference,
+                    variables->variableContext );
+
+        variables++;
     }
 
     return SILC_SUCCESS;

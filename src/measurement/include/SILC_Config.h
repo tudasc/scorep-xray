@@ -58,11 +58,11 @@
 /**
  * Register a set of configure variables to the measurement system.
  *
- * @param nameSpace         the namespace in which these variables reside
- *                          can be @a NULL for global namespace
- * @param variables         array of type SILC_ConfigVariable which will be
- *                          registered to the measurement system
- * @param numberOfVariables number of variables in the @a variables array
+ * @param nameSpace the namespace in which these variables reside can be
+ *                  @a NULL for global namespace
+ * @param variables array of type SILC_ConfigVariable which will be registered
+ *                  to the measurement system. Terminated by
+ *                  @a SILC_CONFIG_TERMINATOR.
 
  * Example:
  * @code
@@ -76,10 +76,11 @@
  *              "true", // default value as string
  *              "Unify trace files after the measurement",
  *              "long help\nwith line breaks\n\nwill be nicely aligned."
- *          }
+ *          },
+ *          SILC_CONFIG_TERMINATOR
  *      };
  *      :
- *      SILC_ConfigRegister( NULL, unify_vars, 1 ); // in global namespace
+ *      SILC_ConfigRegister( NULL, unify_vars ); // in global namespace
  * @endcode
 
  * @note the @a variables array will not be referenced from the measurement
@@ -99,10 +100,22 @@ SILC_Error_Code
 SILC_ConfigRegister
 (
     const char*          nameSpace,
-    SILC_ConfigVariable* variables,
-    uint32_t             numberOfVariables
+    SILC_ConfigVariable* variables
 );
 
+
+/**
+ * @brief Terminates an array of SILC_ConfigVariable.
+ */
+#define SILC_CONFIG_TERMINATOR { \
+        NULL, \
+        SILC_INVALID_CONFIG_TYPE, \
+        NULL, \
+        NULL, \
+        NULL, \
+        NULL, \
+        NULL  \
+}
 
 /**
  * @ToDo how can the online measurement system change configs?

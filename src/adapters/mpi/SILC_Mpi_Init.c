@@ -77,7 +77,8 @@ SILC_ConfigVariable silc_mpi_configs[] = {
         "DEFAULT",
         "The names of the function groups which are measured.",
         "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n",
-    }
+    },
+    SILC_CONFIG_TERMINATOR
 };
 
 /** Implementation of the adapter_register function of the @ref SILC_Adapter struct
@@ -88,7 +89,7 @@ silc_mpi_register
     ()
 {
     printf( "In SILC_Mpi_Register\n" );
-    SILC_ConfigRegister( "mpi", silc_mpi_configs, 1 );
+    SILC_ConfigRegister( "mpi", silc_mpi_configs );
     return SILC_SUCCESS;
 }
 

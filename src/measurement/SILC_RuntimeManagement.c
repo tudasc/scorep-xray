@@ -68,6 +68,7 @@ static SILC_ConfigVariable silc_configs[] = {
         "Be verbose",
         "Long help"
     },
+    SILC_CONFIG_TERMINATOR
 };
 
 /** atexit handler for finalization */
@@ -114,9 +115,7 @@ SILC_InitMeasurement
         _exit( EXIT_FAILURE );
     }
 
-    error = SILC_ConfigRegister( NULL, silc_configs,
-                                 sizeof( silc_configs ) /
-                                 sizeof( silc_configs[ 0 ] ) );
+    error = SILC_ConfigRegister( NULL, silc_configs );
 
     if ( SILC_SUCCESS != error )
     {
