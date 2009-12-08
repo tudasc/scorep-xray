@@ -58,7 +58,7 @@ hash_get( long h )
 {
     long id = h % HASH_MAX;
 
-    printf( " hash id %i: ", id );
+    printf( " hash id %i: \n", id );
 
     HN* curr = htab[ id ];
     while ( curr )
