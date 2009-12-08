@@ -342,6 +342,8 @@ silc_config_type_to_string
             return "size";
         case SILC_CONFIG_TYPE_SET:
             return "set";
+        case SILC_CONFIG_TYPE_BITSET:
+            return "bitset";
         default:
             return "unknown";
     }
