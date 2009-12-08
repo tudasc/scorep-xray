@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 /**
@@ -42,10 +43,12 @@ SILC_DefineSourceFile
     const char* fileName
 )
 {
+    static SILC_SourceFileHandle next_source_file_handle;
+
     fprintf( stderr, "%s: Define new source file \"%s\"\n",
              __func__, fileName );
 
-    return SILC_INVALID_SOURCE_FILE;
+    return next_source_file_handle++;
 }
 
 
@@ -63,7 +66,9 @@ SILC_DefineRegion
     SILC_RegionType       regionType
 )
 {
-    char stringBuffer[ 16 ];
+    static SILC_RegionHandle next_region_handle;
+
+    char                     stringBuffer[ 16 ];
 
     fprintf( stderr, "%s: Define new region \"%s\":\n",
              __func__, regionName );
@@ -81,7 +86,7 @@ SILC_DefineRegion
     fprintf( stderr, "    Region type: %s\n",
              silc_region_type_to_string( regionType ) );
 
-    return SILC_INVALID_REGION;
+    return next_region_handle++;
 }
 
 
@@ -95,6 +100,8 @@ SILC_DefineMPICommunicator
     uint32_t            sizeOfBitVectorReprOfCommGroup
 )
 {
+    static SILC_MPICommunicatorHandle next_mpi_communicator_handle;
+
     fprintf( stderr, "%s: Define new MPI Communicator\n", __func__ );
     fprintf( stderr, "    World ranks:" );
 
@@ -115,8 +122,9 @@ SILC_DefineMPICommunicator
             ranks_in_line++;
         }
     }
+    fprintf( stderr, "\n" );
 
-    return SILC_INVALID_MPI_COMMUNICATOR;
+    return next_mpi_communicator_handle++;
 }
 
 
@@ -129,9 +137,11 @@ SILC_DefineMPIWindow
     SILC_MPICommunicatorHandle communicatorHandle
 )
 {
+    static SILC_MPIWindowHandle next_mpi_window_handle;
+
     fprintf( stderr, "%s: Define new MPI Window\n", __func__ );
 
-    return SILC_INVALID_MPI_WINDOW;
+    return next_mpi_window_handle++;
 }
 
 
@@ -148,6 +158,8 @@ SILC_DefineMPICartesianTopology
     const uint8_t              periodicityPerDimension[]
 )
 {
+    static SILC_MPICartTopolHandle next_mpi_cart_topol_handle;
+
     fprintf( stderr, "%s: Define new MPI cartesian topology \"%s\"\n",
              __func__, topologyName );
     fprintf( stderr, "    Dimensions: %u\n", nDimensions );
@@ -161,7 +173,7 @@ SILC_DefineMPICartesianTopology
                  periodicityPerDimension[ i ] );
     }
 
-    return SILC_INVALID_CART_TOPOLOGY;
+    return next_mpi_cart_topol_handle++;
 }
 
 
