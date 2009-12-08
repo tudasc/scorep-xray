@@ -60,7 +60,7 @@ MPI_Init( int*    argc,
 {
     int event_gen_active = 0;          /* init is deferred to later */
     int return_val, i;
-    int fflag;
+    int fflag, rank;
 
     if ( !SILC_IsInitialized() )
     {
@@ -93,8 +93,11 @@ MPI_Init( int*    argc,
         /* initialize communicator management and register MPI_COMM_WORLD*/
         silc_mpi_comm_init();
 
+        /* Obtain rank */
+        PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
+
         /* complete initialization of measurement core and MPI event handling */
-        SILC_InitMeasurementMPI();
+        SILC_InitMeasurementMPI( rank );
     }
 
     if ( event_gen_active )
@@ -131,7 +134,7 @@ MPI_Init_thread( int*    argc,
 {
     int event_gen_active = 0;
     int return_val, i;
-    int fflag;
+    int fflag, rank;
 
     if ( !SILC_IsInitialized() )
     {
@@ -170,10 +173,11 @@ MPI_Init_thread( int*    argc,
         /* initialize communicator management and register MPI_COMM_WORLD */
         silc_mpi_comm_init();
 
-        /* complete initialization of measurement core and MPI event handling */
+        /* Obtain rank */
+        PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
 
-        /* silc_mpi_comm_determination = esd_mpi_init();*/
-        SILC_InitMeasurementMPI();
+        /* complete initialization of measurement core and MPI event handling */
+        SILC_InitMeasurementMPI( rank );
     }
 
     if ( event_gen_active )

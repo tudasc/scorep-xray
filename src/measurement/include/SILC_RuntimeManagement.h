@@ -114,6 +114,7 @@ SILC_FinalizeMeasurement
 void
 SILC_InitMeasurementMPI
 (
+    int rank
 );
 
 

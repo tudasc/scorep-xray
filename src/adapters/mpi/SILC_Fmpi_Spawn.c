@@ -636,13 +636,13 @@ FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
     }
     for ( i = 0; i < *count; ++i )
     {
-        c_array_of_info = PMPI_Info_f2c( array_of_info[ i ] );
+        c_array_of_info[ i ] = PMPI_Info_f2c( array_of_info[ i ] );
     }
 
     *ierr = MPI_Comm_spawn_multiple( *count, c_array_of_commands,
                                      c_array_of_argv, array_of_maxprocs,
-                                     c_array_of_info, *root, *comm,
-                                     intercomm, array_of_errcodes );
+                                     c_array_of_info, *root, PMPI_Comm_f2c( *comm ),
+                                     PMPI_Comm_f2c( *intercomm ), array_of_errcodes );
 
     for ( i = 0; i < *count; ++i )
     {

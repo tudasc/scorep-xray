@@ -238,7 +238,7 @@ SILC_FinalizeMeasurement
 void
 SILC_InitMeasurementMPI
 (
-    void
+    int rank
 )
 {
     fprintf( stderr, "%s\n", __func__ );
