@@ -75,10 +75,6 @@ static SILC_ConfigVariable silc_configs[] = {
 static void
 silc_finalize( void );
 
-static OTF2_FlushType
-pre_no_flush( void );
-
-
 /**
  * Return true if SILC_InitMeasurement() has been executed.
  */
@@ -92,6 +88,9 @@ SILC_IsInitialized
     return silc_initialized;
 }
 
+
+static uint64_t
+post_flush( void* unUsed );
 
 /**
  * Initialize the measurement system from the adapter layer.
@@ -178,7 +177,8 @@ SILC_InitMeasurement
     local_event_writer      = OTF2_EvtWriter_New( 1 << 24,
                                                   NULL,
                                                   0,
-                                                  "silc" );
+                                                  "silc",
+                                                  post_flush );
 
     if ( !local_event_writer )
     {
@@ -304,8 +304,9 @@ silc_finalize( void )
     silc_finalized = true;
 }
 
-static OTF2_FlushType
-pre_no_flush( void )
+/** @todo use real timestamp */
+static uint64_t
+post_flush( void* unUsed )
 {
-    return OTF2_NO_FLUSH;
+    return 0;
 }
