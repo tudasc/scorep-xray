@@ -232,7 +232,7 @@ Silc_Instrumenter::silc_readEnvVars
 (
 )
 {
-    printf( "reads the enviroment variables  \n " );
+    std::cout << "reads the enviroment variables" << std::endl;
 
     return SILC_SUCCESS;
 }
@@ -262,12 +262,10 @@ Silc_Instrumenter::silc_parseCmdLine
         {
             std::string flag( argv[ loop ] );
             _compFlags += flag + " ";
-            std::cout << flag << "   " << argv[ loop ] << std::endl;
+            std::cout << flag << std::endl;
         }
         exitStatus = SILC_SUCCESS;
     }
-
-
     return exitStatus;
 }
 
@@ -283,9 +281,7 @@ Silc_Instrumenter::silc_run
 (
 )
 {
-    int32_t exitCode = -1;
-    printf( "instrument the user code \n " );
-
+    int32_t     exitCode = -1;
 
     std::string compCommand = _compiler + " ";
 
@@ -308,8 +304,8 @@ Silc_Instrumenter::silc_run
 
 
     compCommand += " " + _compFlags;
+    std::cout << "instrument the user code: " << compCommand.c_str() << std::endl;
 
-    std::cout << "  silc_run: " << compCommand << std::endl;
 
     exitCode = system( compCommand.c_str() );
 
@@ -326,7 +322,7 @@ Silc_Instrumenter::silc_setLanguage
     const int lang
 )
 {
-    printf( "used language:   \n " );
+    std::cout << "used language:   \n " << std::endl;
     return SILC_SUCCESS;
 }
 
@@ -340,7 +336,7 @@ Silc_Instrumenter::silc_compilerCmd
     const std::string cmd
 )
 {
-    printf( "compiler command: %s  \n ", cmd.c_str() );
+    std::cout << "compiler command: " << cmd.c_str() << std::endl;
 }
 
 void
@@ -349,7 +345,7 @@ Silc_Instrumenter::silc_compilerArg
     const std::string arg
 )
 {
-    printf( "compiler arguments: %s  \n ", arg.c_str() );
+    std::cout << "compiler arguments: " <<  arg.c_str() << std::endl;
 }
 
 void
@@ -358,7 +354,7 @@ Silc_Instrumenter::silc_compilerLib
     const std::string lib
 )
 {
-    printf( "used libraries: %s  \n ", lib.c_str() );
+    std::cout << "used libraries :" <<  lib.c_str() << std::endl;
 }
 
 
@@ -376,7 +372,6 @@ Silc_Instrumenter::silc_readParameter
     if ( findLang != std::string::npos && posDelim != std::string::npos )
     {
         value = instring.substr( posDelim + 1 );
-        std::cout << "    found user given value:    " << value << std::endl;
         return SILC_SUCCESS;
     }
     else
@@ -521,7 +516,6 @@ Silc_Instrumenter::silc_instType
             }
         }
     }
-    std::cout << " selected instrumentation type: " << itype << "  enum: " << _instType << std::endl;
 }
 
 

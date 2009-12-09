@@ -49,7 +49,7 @@ typedef enum
     INST_TYPE_PGI9,
 
     /**
-     * SUM
+     * SUN
      */
     INST_TYPE_SUN,
     /**
@@ -76,22 +76,22 @@ typedef enum
     INST_TYPE_USER,
 
     /**
-     * sequential instrumentation
+     * sequential run - no parallel support
      */
     INST_TYPE_SEQ,
 
     /**
-     * manual MPI instrumentation
+     *  MPI instrumentation
      */
     INST_TYPE_MPI,
 
     /**
-     * manual OpenMP instrumentation
+     *  OpenMP instrumentation
      */
     INST_TYPE_OPENMP,
 
     /**
-     * manual hybrid instrumentation
+     *  hybrid instrumentation
      */
     INST_TYPE_HYBRID,
 
@@ -112,8 +112,6 @@ typedef enum
 class Silc_Instrumenter : public Silc_Application
 {
 public:
-
-
 
 /** @brief
  * default constructor

@@ -47,7 +47,6 @@ main
 
             appType->silc_printParameter();
 
-            std::cout << "\nparse the command line \n :" << std::endl;
             appType->silc_parseCmdLine( argc, argv );
 
             if ( appType->silc_run() == SILC_SUCCESS )
@@ -71,6 +70,10 @@ main
             {
                 // catch
             }
+        }
+        else
+        {
+            std::cout << " Invalid instrumentation type!!!: " << std::endl;
         }
     }
     else
