@@ -24,17 +24,6 @@
 
 #include "SILC_Adapter.h"
 
-struct HashNode
-{
-    long              id;
-    const char*       name;
-    const char*       fname;
-    SILC_LineNo       lnobegin;
-    SILC_LineNo       lnoend;
-    SILC_RegionHandle reghandle;
-    struct HashNode*  next;
-} HashNode;
-
 
 extern const SILC_Adapter SILC_Compiler_Adapter;
 
