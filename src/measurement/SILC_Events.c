@@ -103,6 +103,15 @@ SILC_MpiSend
                                   "%x", communicatorHandle ),
              tag,
              ( unsigned long long )bytesSent );
+
+    OTF2_EvtWriter_MpiSend( silc_local_event_writer, NULL,
+                            SILC_GetWallClockTime(),
+                            OTF2_MPI_BLOCK,
+                            silc_local_id,
+                            globalDestinationRank,
+                            communicatorHandle,
+                            tag,
+                            bytesSent );
 }
 
 
@@ -127,6 +136,15 @@ SILC_MpiRecv
                                   "%x", communicatorHandle ),
              tag,
              ( unsigned long long )bytesReceived );
+
+    OTF2_EvtWriter_MpiRecv( silc_local_event_writer, NULL,
+                            SILC_GetWallClockTime(),
+                            OTF2_MPI_BLOCK,
+                            globalSourceRank,
+                            silc_local_id,
+                            communicatorHandle,
+                            tag,
+                            bytesReceived );
 }
 
 
@@ -155,6 +173,14 @@ SILC_MpiCollective
                                     "%x", globalRootRank, SILC_INVALID_ROOT_RANK ),
              ( unsigned long long )bytesSent,
              ( unsigned long long )bytesReceived );
+
+    OTF2_EvtWriter_MpiCollective( silc_local_event_writer, NULL,
+                                  SILC_GetWallClockTime(),
+                                  OTF2_MPI_BARRIER,
+                                  communicatorHandle,
+                                  globalRootRank,
+                                  bytesSent,
+                                  bytesReceived );
 }
 
 
