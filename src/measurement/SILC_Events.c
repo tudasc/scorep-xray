@@ -54,7 +54,7 @@ SILC_EnterRegion
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
 
-    OTF2_EvtWriter_Enter( local_event_writer, NULL,
+    OTF2_EvtWriter_Enter( silc_local_event_writer, NULL,
                           SILC_GetWallClockTime(),
                           regionHandle );
 }
@@ -76,7 +76,7 @@ SILC_ExitRegion
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
 
-    OTF2_EvtWriter_Leave( local_event_writer, NULL,
+    OTF2_EvtWriter_Leave( silc_local_event_writer, NULL,
                           SILC_GetWallClockTime(),
                           regionHandle );
 }

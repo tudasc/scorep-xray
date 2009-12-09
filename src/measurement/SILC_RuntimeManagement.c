@@ -43,7 +43,8 @@
 #include "silc_adapter.h"
 
 
-OTF2_EvtWriter* local_event_writer;
+OTF2_EvtWriter* silc_local_event_writer;
+uint64_t        silc_local_id;
 
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
@@ -180,7 +181,7 @@ SILC_InitMeasurement
                                              "silc",
                                              post_flush );
 
-    if ( !local_event_writer )
+    if ( !silc_local_event_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
         _exit( EXIT_FAILURE );
@@ -242,6 +243,9 @@ SILC_InitMeasurementMPI
 )
 {
     fprintf( stderr, "%s\n", __func__ );
+
+    silc_local_id = rank;
+    OTF2_EvtWriter_SetLocationID( silc_local_event_writer, silc_local_id );
 }
 
 
@@ -295,11 +299,11 @@ silc_finalize( void )
         return;
     }
 
-    if ( local_event_writer )
+    if ( silc_local_event_writer )
     {
-        OTF2_EvtWriter_Delete( local_event_writer );
+        OTF2_EvtWriter_Delete( silc_local_event_writer );
     }
-    local_event_writer = NULL;
+    silc_local_event_writer = NULL;
 
     silc_finalized = true;
 }

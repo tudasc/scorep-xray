@@ -19,7 +19,8 @@
 
 #include <OTF2_EvtWriter.h>
 
-extern OTF2_EvtWriter* local_event_writer;
+extern OTF2_EvtWriter* silc_local_event_writer;
+extern uint64_t        silc_local_id;
 
 #if 0
 /**
