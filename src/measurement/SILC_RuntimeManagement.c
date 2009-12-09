@@ -175,11 +175,11 @@ SILC_InitMeasurement
 
     /* create location */
 
-    local_event_writer = OTF2_EvtWriter_New( 1 << 24,
-                                             NULL,
-                                             0,
-                                             "silc",
-                                             post_flush );
+    silc_local_event_writer = OTF2_EvtWriter_New( 1 << 24,
+                                                  NULL,
+                                                  0,
+                                                  "silc",
+                                                  post_flush );
 
     if ( !silc_local_event_writer )
     {
