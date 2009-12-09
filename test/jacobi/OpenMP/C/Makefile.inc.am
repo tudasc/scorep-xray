@@ -29,7 +29,7 @@
 
 # jacobi_openmp_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 
-# jacobi_openmp_c_LDADD = $(LIB_ROOT)libsilc.la
+# jacobi_openmp_c_LDADD = $(LIB_ROOT)libsilc_openmp.la
 
 # #############
 
@@ -41,4 +41,4 @@ jacobi_serial_c_SOURCES = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c  \
 
 jacobi_serial_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 
-jacobi_serial_c_LDADD = $(LIB_ROOT)libsilc.la
+jacobi_serial_c_LDADD = $(LIB_ROOT)libsilc_serial.la

@@ -1,10 +1,49 @@
 ## -*- mode: makefile -*-
 
-lib_LTLIBRARIES += libsilc.la
-libsilc_la_SOURCES = 
-#libsilc_la_LDFLAGS =
-libsilc_la_LIBADD =                             \
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+
+lib_LTLIBRARIES += libsilc_mpi.la
+libsilc_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
+                          -I$(INC_ROOT)src/measurement/include \
+                          -I$(INC_ROOT)src/adapters/include    \
+                          -I$(INC_DIR_UTIL)
+libsilc_mpi_la_SOURCES = $(SRC_ROOT)src/measurement/silc_adapter_libsilc_mpi.c
+libsilc_mpi_la_LIBADD =                         \
     libsilc_measurement.la                      \
-    libsilc_adapter.la                          \
+    $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi.la   \
+    libsilc_adapter_compiler.la                 \
+    libsilc_adapter_user.la                     \
     $(LIB_DIR_OTF2)libotf2.la                   \
     $(LIB_DIR_UTIL)libsilc_utilities.la
+
+
+lib_LTLIBRARIES += libsilc_serial.la
+libsilc_serial_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
+                             -I$(INC_ROOT)src/measurement/include \
+                             -I$(INC_ROOT)src/adapters/include    \
+                             -I$(INC_DIR_UTIL)
+libsilc_serial_la_SOURCES = $(SRC_ROOT)src/measurement/silc_adapter_libsilc_serial.c
+libsilc_serial_la_LIBADD =                      \
+    libsilc_measurement.la                      \
+    libsilc_adapter_compiler.la                 \
+    libsilc_adapter_user.la                     \
+    $(LIB_DIR_OTF2)libotf2.la                   \
+    $(LIB_DIR_UTIL)libsilc_utilities.la
+

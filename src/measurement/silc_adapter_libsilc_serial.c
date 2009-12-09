@@ -19,7 +19,7 @@
 
 
 /**
- * @file        silc_adatper.c
+ * @file        silc_adatper_libsilc_serial.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @status      ALPHA
@@ -30,7 +30,6 @@
 
 #include <SILC_Compiler_Init.h>
 #include <SILC_User_Init.h>
-#include <SILC_Mpi_Init.h>
 
 
 #include "silc_adapter.h"
@@ -41,7 +40,6 @@
  */
 SILC_Adapter* silc_adapters[] = {
     &SILC_Compiler_Adapter,
-    &SILC_Mpi_Adapter,
     &SILC_User_Adapter,
     NULL /**< Needs to be NULL-terminated */
 };
