@@ -2,7 +2,7 @@ noinst_LTLIBRARIES += libsilc_adapter_comp.la
 
 libsilc_adapter_comp_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
-	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h
+	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h
 libsilc_adapter_comp_la_LIBADD = @LIBBFD@
 
