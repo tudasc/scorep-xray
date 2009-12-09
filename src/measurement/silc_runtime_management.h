@@ -20,7 +20,6 @@
 #include <OTF2_EvtWriter.h>
 
 extern OTF2_EvtWriter* local_event_writer;
-extern OTF2_TimeStamp  local_timestamp_counter;
 
 #if 0
 /**

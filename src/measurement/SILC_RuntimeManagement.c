@@ -35,6 +35,7 @@
 #include <SILC_RuntimeManagement.h>
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
+#include <SILC_Timing.h>
 
 #include <OTF2_EvtWriter.h>
 
@@ -43,7 +44,6 @@
 
 
 OTF2_EvtWriter* local_event_writer;
-OTF2_TimeStamp  local_timestamp_counter;
 
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
@@ -117,6 +117,8 @@ SILC_InitMeasurement
 
     error = SILC_ConfigRegister( NULL, silc_configs );
 
+    SILC_InitTimer();
+
     if ( SILC_SUCCESS != error )
     {
         SILC_ERROR( error, "Can't register core config variables" );
@@ -172,12 +174,11 @@ SILC_InitMeasurement
 
     /* create location */
 
-    local_timestamp_counter = 0;
-    local_event_writer      = OTF2_EvtWriter_New( 1 << 24,
-                                                  NULL,
-                                                  0,
-                                                  "silc",
-                                                  post_flush );
+    local_event_writer = OTF2_EvtWriter_New( 1 << 24,
+                                             NULL,
+                                             0,
+                                             "silc",
+                                             post_flush );
 
     if ( !local_event_writer )
     {
@@ -303,9 +304,8 @@ silc_finalize( void )
     silc_finalized = true;
 }
 
-/** @todo use real timestamp */
 static uint64_t
 post_flush( void* unUsed )
 {
-    return 0;
+    return SILC_GetWallClockTime();
 }

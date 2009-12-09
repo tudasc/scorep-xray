@@ -30,6 +30,7 @@
 
 
 #include <SILC_Events.h>
+#include <SILC_Timing.h>
 #include <OTF2_EvtWriter.h>
 
 
@@ -54,7 +55,7 @@ SILC_EnterRegion
                                     "%x", regionHandle ) );
 
     OTF2_EvtWriter_Enter( local_event_writer, NULL,
-                          ++local_timestamp_counter,
+                          SILC_GetWallClockTime(),
                           regionHandle );
 }
 
@@ -76,7 +77,7 @@ SILC_ExitRegion
                                     "%x", regionHandle ) );
 
     OTF2_EvtWriter_Leave( local_event_writer, NULL,
-                          ++local_timestamp_counter,
+                          SILC_GetWallClockTime(),
                           regionHandle );
 }
 
