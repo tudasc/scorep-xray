@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <sys/stat.h>
 
 
 /**
@@ -172,6 +173,13 @@ SILC_InitMeasurement
 
     /* create location */
 
+    /* create the experiment directory */
+    int ret = mkdir( "silc", 0755 );
+    if ( ret != 0 )
+    {
+        SILC_ERROR_POSIX();
+        _exit( EXIT_FAILURE );
+    }
     silc_local_event_writer = OTF2_EvtWriter_New( 1 << 24,
                                                   NULL,
                                                   0,
