@@ -24,7 +24,7 @@
 #include "SILC_Types.h"
 #include "SILC_Error.h"
 
-
+struct HashNode;
 
 extern void
 silc_compiler_register_region

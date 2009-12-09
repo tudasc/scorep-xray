@@ -30,21 +30,27 @@
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>
-#include <SILC_Compiler_Init.h>
 
+#include <SILC_Compiler_Init.h>
+#include <SILC_Compiler_Data.h>
+
+
+
+
+#define HASH_MAX 1021
 
 /**
  * static variable to control initialize status of GNU
  */
-
-
-#define HASH_MAX 1021
 static int gnu_init = 1;
 
 
+/**
+ * data structure to map function name and region identifier
+ */
 typedef struct HashNode HN;
-
 static HN* htab[ HASH_MAX ];
+
 
 /**
  * @brief Get hash table entry for given ID.
@@ -101,7 +107,6 @@ hash_put
     add->next      = htab[ id ];
     htab[ id ]     = add;
 }
-
 
 /**
  * @brief Get symbol table either by using BFD or by parsing nm-file
@@ -315,10 +320,7 @@ __cyg_profile_func_enter
         /* not initialized so far */
         SILC_InitMeasurement();
 
-        /**
-         * the finalize is not supported, probably not needed
-         */
-        /*	  silc_finalize = gnu_finalize; */
+        silc_gnu_finalize;
         gnu_init = 0;   /* is initialized */
 
         /* call function to calculate symbol table */
