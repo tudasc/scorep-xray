@@ -35,8 +35,8 @@
  * @note For gcc, this function should be annotated with the
  *       __attribute__ ((format_arg (3))) attribute.
  */
-static inline const char*
-generic_uint32_to_string
+const char*
+silc_uint32_to_string
 (
     char*       stringBuffer,
     size_t      stringBufferSize,
@@ -67,11 +67,11 @@ silc_source_file_to_string
     SILC_SourceFileHandle handle
 )
 {
-    return generic_uint32_to_string( stringBuffer,
-                                     stringBufferSize,
-                                     format,
-                                     handle,
-                                     SILC_INVALID_SOURCE_FILE );
+    return silc_uint32_to_string( stringBuffer,
+                                  stringBufferSize,
+                                  format,
+                                  handle,
+                                  SILC_INVALID_SOURCE_FILE );
 }
 
 
@@ -87,11 +87,11 @@ silc_line_number_to_string
     SILC_LineNo lineNo
 )
 {
-    return generic_uint32_to_string( stringBuffer,
-                                     stringBufferSize,
-                                     format,
-                                     lineNo,
-                                     SILC_INVALID_LINE_NO );
+    return silc_uint32_to_string( stringBuffer,
+                                  stringBufferSize,
+                                  format,
+                                  lineNo,
+                                  SILC_INVALID_LINE_NO );
 }
 
 
@@ -107,11 +107,11 @@ silc_region_to_string
     SILC_RegionHandle regionHandle
 )
 {
-    return generic_uint32_to_string( stringBuffer,
-                                     stringBufferSize,
-                                     format,
-                                     regionHandle,
-                                     SILC_INVALID_REGION );
+    return silc_uint32_to_string( stringBuffer,
+                                  stringBufferSize,
+                                  format,
+                                  regionHandle,
+                                  SILC_INVALID_REGION );
 }
 
 
@@ -127,11 +127,11 @@ silc_comm_to_string
     SILC_MPICommunicatorHandle commHandle
 )
 {
-    return generic_uint32_to_string( stringBuffer,
-                                     stringBufferSize,
-                                     format,
-                                     commHandle,
-                                     SILC_INVALID_MPI_COMMUNICATOR );
+    return silc_uint32_to_string( stringBuffer,
+                                  stringBufferSize,
+                                  format,
+                                  commHandle,
+                                  SILC_INVALID_MPI_COMMUNICATOR );
 }
 
 
@@ -147,11 +147,11 @@ silc_window_to_string
     SILC_MPIWindowHandle windowHandle
 )
 {
-    return generic_uint32_to_string( stringBuffer,
-                                     stringBufferSize,
-                                     format,
-                                     windowHandle,
-                                     SILC_INVALID_MPI_WINDOW );
+    return silc_uint32_to_string( stringBuffer,
+                                  stringBufferSize,
+                                  format,
+                                  windowHandle,
+                                  SILC_INVALID_MPI_WINDOW );
 }
 
 
@@ -167,11 +167,11 @@ silc_mpi_cart_topol_to_string
     SILC_MPICartTopolHandle cartHandle
 )
 {
-    return generic_uint32_to_string( stringBuffer,
-                                     stringBufferSize,
-                                     format,
-                                     cartHandle,
-                                     SILC_INVALID_CART_TOPOLOGY );
+    return silc_uint32_to_string( stringBuffer,
+                                  stringBufferSize,
+                                  format,
+                                  cartHandle,
+                                  SILC_INVALID_CART_TOPOLOGY );
 }
 
 

@@ -48,7 +48,7 @@ SILC_EnterRegion
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %s\n",
+    fprintf( stderr, "%s: Reg:%s\n",
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
@@ -70,7 +70,7 @@ SILC_ExitRegion
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %s\n",
+    fprintf( stderr, "%s: Reg:%s\n",
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
@@ -95,7 +95,7 @@ SILC_MpiSend
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %u %s %u %llu\n",
+    fprintf( stderr, "%s: Dst:%u Comm:%s Tag:%u Bytes:%llu\n",
              __func__,
              globalDestinationRank,
              silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
@@ -119,7 +119,7 @@ SILC_MpiRecv
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %u %s %u %llu\n",
+    fprintf( stderr, "%s: Src:%u Comm:%s Tag:%u Bytes:%llu\n",
              __func__,
              globalSourceRank,
              silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
@@ -142,15 +142,16 @@ SILC_MpiCollective
     uint64_t                   bytesReceived
 )
 {
-    char stringBuffer[ 16 ];
+    char stringBuffer[ 3 ][ 16 ];
 
-    fprintf( stderr, "%s: %s %s %u %llu %llu\n",
+    fprintf( stderr, "%s: Reg:%s Comm:%s Root:%s Sent:%llu Recv:%llu\n",
              __func__,
-             silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
+             silc_region_to_string( stringBuffer[ 0 ], sizeof( stringBuffer[ 0 ] ),
                                     "%x", regionHandle ),
-             silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
+             silc_comm_to_string( stringBuffer[ 1 ], sizeof( stringBuffer[ 1 ] ),
                                   "%x", communicatorHandle ),
-             globalRootRank,
+             silc_uint32_to_string( stringBuffer[ 2 ], sizeof( stringBuffer[ 2 ] ),
+                                    "%x", globalRootRank, SILC_INVALID_ROOT_RANK ),
              ( unsigned long long )bytesSent,
              ( unsigned long long )bytesReceived );
 }
@@ -167,7 +168,7 @@ SILC_OmpFork
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %s\n",
+    fprintf( stderr, "%s: Reg:%s\n",
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
@@ -185,7 +186,7 @@ SILC_OmpJoin
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: %s\n",
+    fprintf( stderr, "%s: Reg:%s\n",
              __func__,
              silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
                                     "%x", regionHandle ) );
@@ -201,7 +202,7 @@ SILC_OmpAcquireLock
     uint32_t lockId
 )
 {
-    fprintf( stderr, "%s: %x\n", __func__, lockId );
+    fprintf( stderr, "%s: Lock:%x\n", __func__, lockId );
 }
 
 
@@ -214,7 +215,7 @@ SILC_OmpReleaseLock
     uint32_t lockId
 )
 {
-    fprintf( stderr, "%s: %x\n", __func__, lockId );
+    fprintf( stderr, "%s: Lock:%x\n", __func__, lockId );
 }
 
 

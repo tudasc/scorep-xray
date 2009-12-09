@@ -36,6 +36,34 @@
 
 
 /**
+ * Converts a uint32_t into a string.
+ *
+ * @param stringBuffer      A string buffer that holds at least @a
+ *                          stringBufferSize bytes.
+ * @param stringBufferSize  The size of @a stringBuffer.
+ * @param format            A printf like format string, used to represent
+ *                          @a lineNo.
+ * @param value             The value which should be expressed as a string.
+ * @param invalidValue      The invalid value.
+
+ * @return                  A string representation of @a handle.
+ *
+ * @note For gcc, this function should be annotated with the
+ *       __attribute__ ((format_arg (3))) attribute.
+ */
+
+extern const char*
+silc_uint32_to_string
+(
+    char*       stringBuffer,
+    size_t      stringBufferSize,
+    const char* format,
+    uint32_t    value,
+    uint32_t    invalidValue
+);
+
+
+/**
  * Converts a SILC_SourceFileHandle into a string.
  *
  * If @a handle equals to @ref SILC_INVALID_SOURCE_FILE "invalid" will be
