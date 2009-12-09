@@ -43,5 +43,8 @@ SILC_Adapter* silc_adapters[] = {
     &SILC_Compiler_Adapter,
     &SILC_Mpi_Adapter,
     &SILC_User_Adapter,
-    NULL /**< Needs to be NULL-terminated */
 };
+
+
+size_t silc_number_of_adapters = sizeof( silc_adapters ) /
+                                 sizeof( silc_adapters[ 0 ] );

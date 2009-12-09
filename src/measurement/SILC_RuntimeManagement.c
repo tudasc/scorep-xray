@@ -127,7 +127,7 @@ SILC_InitMeasurement
     }
 
     /* call register functions for all adapters */
-    for ( size_t i = 0; silc_adapters[ i ]; ++i )
+    for ( size_t i = 0; i < silc_number_of_adapters; i++ )
     {
         if ( silc_adapters[ i ]->adapter_register )
         {
@@ -150,18 +150,11 @@ SILC_InitMeasurement
     }
 
     /* call initialization functions for all adapters */
-    for ( size_t i = 0; silc_adapters[ i ]; ++i )
+    for ( size_t i = 0; i < silc_number_of_adapters; i++ )
     {
         if ( silc_adapters[ i ]->adapter_init )
         {
             error = silc_adapters[ i ]->adapter_init();
-        }
-
-        if ( silc_verbose )
-        {
-            fprintf( stderr, "SILC initialize %s adapter: %s\n",
-                     silc_adapters[ i ]->adapter_name,
-                     SILC_Error_GetDescription( error ) );
         }
 
         if ( SILC_SUCCESS != error )
@@ -170,8 +163,12 @@ SILC_InitMeasurement
                         silc_adapters[ i ]->adapter_name );
             _exit( EXIT_FAILURE );
         }
+        else if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC successfully initialized %s adapter\n",
+                     silc_adapters[ i ]->adapter_name );
+        }
     }
-
 
     /* create location */
 
@@ -188,18 +185,11 @@ SILC_InitMeasurement
     }
 
     /* call initialization functions for all adapters */
-    for ( size_t i = 0; silc_adapters[ i ]; ++i )
+    for ( size_t i = 0; i < silc_number_of_adapters; i++ )
     {
         if ( silc_adapters[ i ]->adapter_init_location )
         {
             error = silc_adapters[ i ]->adapter_init_location();
-        }
-
-        if ( silc_verbose )
-        {
-            fprintf( stderr, "SILC initialize location %s adapter: %s\n",
-                     silc_adapters[ i ]->adapter_name,
-                     SILC_Error_GetDescription( error ) );
         }
 
         if ( SILC_SUCCESS != error )
@@ -207,6 +197,11 @@ SILC_InitMeasurement
             SILC_ERROR( error, "Can't initialize location for %s adapter",
                         silc_adapters[ i ]->adapter_name );
             _exit( EXIT_FAILURE );
+        }
+        else if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC successfully initialized location for %s adapter\n",
+                     silc_adapters[ i ]->adapter_name );
         }
     }
 
@@ -304,6 +299,38 @@ silc_finalize( void )
         OTF2_EvtWriter_Delete( silc_local_event_writer );
     }
     silc_local_event_writer = NULL;
+
+    /* we call the finalize and de-register function in reverse order */
+
+    /* call finalization functions for all adapters */
+    for ( size_t i = silc_number_of_adapters; i-- > 0; )
+    {
+        if ( silc_adapters[ i ]->adapter_finalize )
+        {
+            silc_adapters[ i ]->adapter_finalize();
+        }
+
+        if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC finalized %s adapter\n",
+                     silc_adapters[ i ]->adapter_name );
+        }
+    }
+
+    /* call de-register functions for all adapters */
+    for ( size_t i = silc_number_of_adapters; i-- > 0; )
+    {
+        if ( silc_adapters[ i ]->adapter_deregister )
+        {
+            silc_adapters[ i ]->adapter_deregister();
+        }
+
+        if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC de-registered %s adapter\n",
+                     silc_adapters[ i ]->adapter_name );
+        }
+    }
 
     silc_finalized = true;
 }
