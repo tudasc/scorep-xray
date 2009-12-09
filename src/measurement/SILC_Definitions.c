@@ -45,8 +45,9 @@ SILC_DefineSourceFile
 {
     static SILC_SourceFileHandle next_source_file_handle;
 
-    fprintf( stderr, "%s: Define new source file \"%s\"\n",
+    fprintf( stderr, "%s: Define new source file \"%s\":\n",
              __func__, fileName );
+    fprintf( stderr, "    Handle ID: %x\n", next_source_file_handle );
 
     return next_source_file_handle++;
 }
@@ -72,6 +73,7 @@ SILC_DefineRegion
 
     fprintf( stderr, "%s: Define new region \"%s\":\n",
              __func__, regionName );
+    fprintf( stderr, "    Handle ID:   %x\n", next_region_handle );
     fprintf( stderr, "    Source file: %s\n",
              silc_source_file_to_string( stringBuffer, sizeof( stringBuffer ),
                                          "%x", fileHandle ) );
@@ -102,7 +104,8 @@ SILC_DefineMPICommunicator
 {
     static SILC_MPICommunicatorHandle next_mpi_communicator_handle;
 
-    fprintf( stderr, "%s: Define new MPI Communicator\n", __func__ );
+    fprintf( stderr, "%s: Define new MPI Communicator:\n", __func__ );
+    fprintf( stderr, "    Handle ID:   %x\n", next_mpi_communicator_handle );
     fprintf( stderr, "    World ranks:" );
 
     uint32_t ranks_in_line = 0;
@@ -139,7 +142,8 @@ SILC_DefineMPIWindow
 {
     static SILC_MPIWindowHandle next_mpi_window_handle;
 
-    fprintf( stderr, "%s: Define new MPI Window\n", __func__ );
+    fprintf( stderr, "%s: Define new MPI Window:\n", __func__ );
+    fprintf( stderr, "    Handle ID: %x\n", next_mpi_window_handle );
 
     return next_mpi_window_handle++;
 }
@@ -160,8 +164,9 @@ SILC_DefineMPICartesianTopology
 {
     static SILC_MPICartTopolHandle next_mpi_cart_topol_handle;
 
-    fprintf( stderr, "%s: Define new MPI cartesian topology \"%s\"\n",
+    fprintf( stderr, "%s: Define new MPI cartesian topology \"%s\":\n",
              __func__, topologyName );
+    fprintf( stderr, "    Handle ID:  %x\n", next_mpi_cart_topol_handle );
     fprintf( stderr, "    Dimensions: %u\n", nDimensions );
 
     for ( uint32_t i = 0; i < nDimensions; ++i )
