@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 
 /**
@@ -119,13 +120,13 @@ SILC_InitMeasurement
 
     error = SILC_ConfigRegister( NULL, silc_configs );
 
-    SILC_InitTimer();
-
     if ( SILC_SUCCESS != error )
     {
         SILC_ERROR( error, "Can't register core config variables" );
         _exit( EXIT_FAILURE );
     }
+
+    SILC_InitTimer();
 
     /* call register functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
@@ -175,7 +176,7 @@ SILC_InitMeasurement
 
     /* create the experiment directory */
     int ret = mkdir( "silc", 0755 );
-    if ( ret != 0 )
+    if ( ret != 0 && errno != EEXIST )
     {
         SILC_ERROR_POSIX();
         _exit( EXIT_FAILURE );
