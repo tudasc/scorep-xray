@@ -137,7 +137,7 @@ silc_mpi_group_id( MPI_Group group );
 EXTERN int32_t
 silc_mpi_group_search( MPI_Group group );
 
-#ifdef HAS_MPI2_1SIDED
+#ifndef SILC_MPI_NO_RMA
 
 /** @internal
  *  Translate a rank to its global rank in reference to a window (and its
