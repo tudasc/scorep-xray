@@ -59,6 +59,11 @@ typedef uint8_t SILC_Mpi_Color;
 /** Type of Ranks */
 typedef int32_t SILC_Mpi_Rank;
 
+/* Check MPI version. Disable RMA if MPI version 1 */
+#if defined( MPI_VERSION ) && ( MPI_VERSION == 1 ) && !defined( SILC_MPI_NO_RMA )
+  #define SILC_MPI_NO_RMA
+#endif
+
 /** @def SILC_MPI_INVALID_RANK
     Defines an invalid mpi rank.
  */
