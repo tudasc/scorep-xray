@@ -111,7 +111,7 @@ static int32_t silc_mpi_last_window = 0;
  *  Window tracking array */
 static struct silc_mpi_win_type silc_mpi_windows[ SILC_MPI_MAX_WIN ];
 
-#endif // HAS_MPI2_1SIDED
+#endif // SILC_MPI_NO_RMA
 
 /* ------------------------------------------- Definitions for communicators and groups */
 
@@ -204,7 +204,7 @@ static struct silc_mpi_winacc_type silc_mpi_winaccs[ SILC_MPI_MAX_WINACC ];
  */
 static int silc_mpi_last_winacc = 0;
 
-#endif // HAS_MPI2_1SIDED
+#endif // SILC_MPI_NO_RMA
 
 /*
  *-----------------------------------------------------------------------------
@@ -243,7 +243,7 @@ silc_mpi_rank_to_pe( SILC_Mpi_Rank rank,
     return global_rank;
 }
 
-#ifdef HAS_MPI2_1SIDED
+#ifndef SILC_MPI_NO_RMA
 
 SILC_Mpi_Rank
 silc_mpi_win_rank_to_pe( SILC_Mpi_Rank rank,
@@ -280,7 +280,7 @@ silc_mpi_win_id( MPI_Win win )
     }
     else
     {
-        SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW );
+        SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW, "" );
         return SILC_INVALID_MPI_WINDOW;
     }
 }
@@ -293,7 +293,7 @@ silc_mpi_win_create( MPI_Win  win,
 
     if ( silc_mpi_last_window >= SILC_MPI_MAX_WIN )
     {
-        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINDOWS );
+        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINDOWS, "" );
     }
 
     /* register mpi window definition */
@@ -331,12 +331,12 @@ silc_mpi_win_free( MPI_Win win )
         }
         else
         {
-            SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW );
+            SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW, "" );
         }
     }
     else
     {
-        SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW );
+        SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW, "" );
     }
 }
 #endif
