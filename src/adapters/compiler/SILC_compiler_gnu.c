@@ -241,7 +241,8 @@ get_symTab( void )
 
         hash_put( addr, canonicSymbols[ i ]->name, filename, lno );
     }
-
+    free( canonicSymbols )
+    ;
     bfd_close( BfdImage );
     return;
 }
@@ -257,7 +258,7 @@ silc_compiler_register_region
     struct  HashNode* hn
 )
 {
-    printf( " register a region: \n" );
+    fprintf( stderr, " register a region: \n" );
     hn->reghandle = SILC_DefineRegion( hn->name,
                                        SILC_INVALID_SOURCE_FILE,
                                        SILC_INVALID_LINE_NO,
@@ -309,10 +310,8 @@ __cyg_profile_func_enter
     printf( "call at function enter!!!\n" );
 
     /*
-     * init measurement just for dummy purpose
-     *
      * put hash table entries via mechanism for bfd symbol table
-     * to calculate function addresses
+     * to calculate function addresses if measurement was not initialized
      */
 
     if ( gnu_init )
@@ -328,7 +327,7 @@ __cyg_profile_func_enter
     }
 
 
-    printf( " function pointer: %ld \n", ( long )func );
+    frintf( stderr, " function pointer: %ld \n", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
@@ -336,15 +335,10 @@ __cyg_profile_func_enter
         {
             /* -- region entered the first time, register region -- */
             silc_compiler_register_region( hn );
-            printf( " register region with handle %i \n", hn->reghandle );
+            frintf( stderr, " register region with handle %i \n", hn->reghandle );
         }
-        printf( "enter the region with handle %i \n", hn->reghandle );
+        fprintf( stderr, "enter the region with handle %i \n", hn->reghandle );
         SILC_EnterRegion( hn->reghandle );
-    }
-    else
-    {
-        SILC_RegionHandle dummy = 1;
-        SILC_EnterRegion( dummy );
     }
 }
 
@@ -366,10 +360,5 @@ __cyg_profile_func_exit
     if ( hn = hash_get( ( long )func ) )
     {
         SILC_ExitRegion( hn->reghandle );
-    }
-    else
-    {
-        SILC_RegionHandle dummy = 1;
-        SILC_ExitRegion( dummy );
     }
 }
