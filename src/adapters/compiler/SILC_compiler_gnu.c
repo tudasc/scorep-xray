@@ -335,7 +335,7 @@ __cyg_profile_func_enter
         {
             /* -- region entered the first time, register region -- */
             silc_compiler_register_region( hn );
-            frintf( stderr, " register region with handle %i \n", hn->reghandle );
+            fprintf( stderr, " register region with handle %i \n", hn->reghandle );
         }
         fprintf( stderr, "enter the region with handle %i \n", hn->reghandle );
         SILC_EnterRegion( hn->reghandle );
