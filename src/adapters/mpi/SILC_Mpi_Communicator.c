@@ -90,7 +90,7 @@ int8_t silc_mpi_comm_determination = 1;
 #define SILC_MPI_COMM_WORLD_HANDLE silc_mpi_world.handle
 
 /* ------------------------------------------------ Definitions for MPI Window handling */
-#ifdef HAS_MPI2_1SIDED
+#ifndef SILC_MPI_NO_RMA
 
 /** @internal
  *  Structure to translate MPI window handles to internal SILC IDs.
@@ -172,12 +172,12 @@ static unsigned char* silc_mpi_group_vector;
 static int silc_mpi_comm_initialized = 0;
 
 /* ------------------------------------------------ Definition for one sided operations */
-#ifdef HAS_MPI2_1SIDED
+#ifndef SILC_MPI_NO_RMA
 
 /*
  *  exposure epoch
  */
-const SILC_MPI_Color silc_mpi_exp_epoch = 0;
+const SILC_Mpi_Color silc_mpi_exp_epoch = 0;
 
 /*
  *  access epoch
@@ -628,7 +628,7 @@ silc_mpi_group_id( MPI_Group group )
 
     {
         SILC_ERROR( SILC_ERROR_MPI_NO_GROUP, "" );
-        SILC_INVALID_MPI_GROUP;
+        return SILC_INVALID_MPI_GROUP;
     }
 }
 
@@ -660,7 +660,7 @@ silc_mpi_group_search( MPI_Group group )
  *-----------------------------------------------------------------------------
  */
 
-#ifdef HAS_MPI2_1SIDED
+#ifndef SILC_MPI_NO_RMA
 
 void
 silc_mpi_winacc_start( MPI_Win        win,
@@ -669,7 +669,7 @@ silc_mpi_winacc_start( MPI_Win        win,
 {
     if ( silc_mpi_last_winacc >= SILC_MPI_MAX_WINACC )
     {
-        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINACCS );
+        SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINACCS, "" );
     }
 
     silc_mpi_winaccs[ silc_mpi_last_winacc ].win   = win;
@@ -708,7 +708,7 @@ silc_mpi_winacc_end( MPI_Win        win,
         }
         else
         {
-            SILC_ERROR( SILC_ERROR_MPI_NO_WINACC );
+            SILC_ERROR( SILC_ERROR_MPI_NO_WINACC, "" );
         }
     }
 }
@@ -731,7 +731,7 @@ silc_mpi_winacc_get_gid( MPI_Win        win,
     }
     else
     {
-        SILC_ERROR( SILC_ERROR_MPI_NO_WINACC );
+        SILC_ERROR( SILC_ERROR_MPI_NO_WINACC, "" );
         return SILC_INVALID_MPI_GROUP;
     }
 }
