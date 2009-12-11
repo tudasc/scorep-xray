@@ -94,7 +94,7 @@
     @endcode
  */
 
-/** @def SILC_USER_REGION_BEGIN(name)
+/** @def SILC_USER_REGION_BEGIN(handle, name, type)
     This macro marks the start of a user defined region. The SILC_USER_REGION_BEGIN and
     SILC_USER_REGION_END calls of all regions must be correctly nested.
     @param handle  The handle of the region to be started. This handle must be declared
@@ -137,6 +137,51 @@
     @endcode
  */
 
+/** @def SILC_USER_REGION_INIT(handle, name, type)
+    This macro initializes a user defined region. If the region handle is already
+    inititialized, no operation is executed.
+    @param handle  The handle of the region to be started. This handle must be declared
+                   using SILC_USER_REGION_DEFINE or SILC_GLOBAL_REGION_DEFINE before.
+    @param name    A string containing the name of the new region. The name should be
+                   unique.
+    @param type    Specifies the type of the region. Possible values are
+                   SILC_USER_REGION_TYPE_COMMON,
+                   SILC_USER_REGION_TYPE_FUNCTION, SILC_USER_REGION_TYPE_LOOP,
+                   SILC_USER_REGION_TYPE_DYNAMIC, SILC_USER_REGION_TYPE_PHASE, or a
+                   combination of them.
+
+    C/C++ example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_INIT( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      SILC_USER_REGION_ENTER( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SILC_USER_REGION_INIT( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      SILC_USER_REGION_ENTER( my_region_handle )
+      ! do something
+      SILC_USER_REGION_END( my_region_handle )
+
+    end program myProg
+    @endcode
+ */
+
 /** @def SILC_USER_REGION_END(handle)
     This macro marks the end of a user defined region.  The SILC_USER_REGION_BEGIN and
     SILC_USER_REGION_END calls of all regions must be correctly nested.
@@ -166,6 +211,47 @@
       ! more declarations
 
       SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      ! do something
+      SILC_USER_REGION_END( my_region_handle )
+
+    end program myProg
+    @endcode
+ */
+
+/** @def SILC_USER_REGION_ENTER(handle)
+    This macro marks the beginning of a user defined and already initialized region.
+    The SILC_USER_REGION_BEGIN/SILC_USER_REGION_ENTER and
+    SILC_USER_REGION_END calls of all regions must be correctly nested. To initialize
+    the region handle, @ref SILC_USER_REGION_INIT or @ref SILC_USER_REGION_BEGIN must
+    be called before.
+    @param name  The handle of the region which ended here.
+                 It must be the same handle which is used as the start of the region.
+
+    C/C++ example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_INIT( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      SILC_USER_REGION_ENTER( my_region_handle )
+
+      // do something
+
+      SILC_USER_REGION_END( my_region_handle )
+    }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SILC_USER_REGION_INIT( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      SILC_USER_REGION_ENTER( my_region_handle )
       ! do something
       SILC_USER_REGION_END( my_region_handle )
 
@@ -413,7 +499,13 @@
 #define SILC_USER_REGION_DEFINE( handle ) \
     static SILC_RegionHandle handle = SILC_INVALID_REGION;
 
+#define SILC_USER_REGION_ENTER( handle ) SILC_User_RegionEnter( &handle );
+
 #define SILC_USER_REGION_BEGIN( handle, name, type ) SILC_User_RegionBegin( \
+        &handle, &SILC_User_LastFileName, &SILC_User_LastFileHandle, name, \
+        type, __FILE__, __LINE__ );
+
+#define SILC_USER_REGION_INIT( handle, name, type ) SILC_User_RegionInit( \
         &handle, &SILC_User_LastFileName, &SILC_User_LastFileHandle, name, \
         type, __FILE__, __LINE__ );
 
@@ -1405,7 +1497,9 @@
 #define SILC_USER_REGION( name, type )
 #define SILC_USER_REGION_DEFINE( handle )
 #define SILC_USER_REGION_BEGIN( handle, name, type )
+#define SILC_USER_REGION_INIT( handle, name, type )
 #define SILC_USER_REGION_END( handle )
+#define SILC_USER_REGION_ENTER( handle )
 #define SILC_USER_FUNC_BEGIN
 #define SILC_USER_FUNC_END
 #define SILC_GLOBAL_REGION_DEFINE( handle )

@@ -57,7 +57,12 @@
 #define SILC_USER_REGION_BEGIN( handle, name, type ) call SILC_User_RegionBeginF(\
         handle, name, type, __FILE__, __LINE__)
 
+#define SILC_USER_REGION_INIT( handle, name, type ) call SILC_User_RegionInitF(\
+        handle, name, type, __FILE__, __LINE__)
+
 #define SILC_USER_REGION_END( handle ) call SILC_User_RegionEndF(handle)
+
+#define SILC_USER_REGION_ENTER( handle ) call SILC_User_RegionEnterF(handle)
 
 #define SILC_GLOBAL_REGION_DEFINE( handle ) \
         module handle##mod; \
@@ -122,8 +127,10 @@
 
 #define SILC_USER_REGION_DEFINE( handle )
 #define SILC_GLOBAL_REGION_DEFINE( handle )
-#define SILC_USER_REGION_BEGIN( handle )
+#define SILC_USER_REGION_BEGIN( handle, name, type )
+#define SILC_USER_REGION_INIT( handle, name, type )
 #define SILC_USER_REGION_END( handle )
+#define SILC_USER_REGION_ENTER( handle )
 #define SILC_GLOBAL_REGION_EXTERNAL( handle )
 #define SILC_USER_FUNC_DEFINE
 #define SILC_USER_FUNC_BEGIN( name )

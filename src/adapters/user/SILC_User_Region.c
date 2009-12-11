@@ -168,6 +168,37 @@ SILC_User_RegionBegin
     const uint32_t             lineNo
 )
 {
+    /* Make sure that the region is initialized */
+    SILC_User_RegionInit( handle, lastFileName, lastFile,
+                          name, regionType, fileName, lineNo );
+
+    /* Generate region event */
+    SILC_EnterRegion( *handle );
+}
+
+
+void
+SILC_User_RegionEnd
+(
+    const SILC_RegionHandle handle
+)
+{
+    /* Generate exit event */
+    SILC_ExitRegion( handle );
+}
+
+void
+SILC_User_RegionInit
+(
+    SILC_RegionHandle*         handle,
+    const char**               lastFileName,
+    SILC_SourceFileHandle*     lastFile,
+    const char*                name,
+    const SILC_User_RegionType regionType,
+    const char*                fileName,
+    const uint32_t             lineNo
+)
+{
     /* Check for intialization */
     SILC_USER_ASSERT_INITIALIZED;
 
@@ -188,18 +219,17 @@ SILC_User_RegionBegin
                                      SILC_ADAPTER_USER,
                                      region_type );
     }
-
-    /* Generate region event */
-    SILC_EnterRegion( *handle );
 }
 
-
 void
-SILC_User_RegionEnd
+SILC_User_RegionEnter
 (
     const SILC_RegionHandle handle
 )
 {
+    /* Check for intialization */
+    SILC_USER_ASSERT_INITIALIZED;
+
     /* Generate exit event */
-    SILC_ExitRegion( handle );
+    SILC_EnterRegion( handle );
 }

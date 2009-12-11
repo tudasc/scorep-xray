@@ -88,6 +88,51 @@ SILC_User_RegionEnd
     const SILC_RegionHandle handle
 );
 
+/** Registers a region. The region handle must be defined before. If the handle
+    was already initialized, no operation is performed.
+    @param handle     The handle for this region. It must be defined before.
+    @param lastFileName Pointer to the last source file name. In most cases, it is
+                      expected that in most cases no regions are in included
+                      files. If the compiler inserts always the same string adress
+                      for file names, one static variable in a source file
+                      (@ref silc_user_last_file_name) can remember
+                      the last used filename from a source file and string comparisons
+                      can be avoided.
+                      Here the adress of @ref SILC_User_LastFileName should be provided.
+    @param lastFile   The handle for the last used source file. It is remembered in every
+                      source file in a static variable.
+                      Thus, in most cases string comparisons can be avoided.
+                      Here, the adress of @ref SILC_User_LastFileHandle should be
+                      provided.
+    @param name       The name of the region.
+    @param regionType The type of the region.
+    @param fileName   The filename of the source file which contains the instrumented
+                      region.
+    @param lineNo     The line number of the first source code line of the instrumented
+                      region.
+ */
+extern void
+SILC_User_RegionInit
+(
+    SILC_RegionHandle*         handle,
+    const char**               lastFileName,
+    SILC_SourceFileHandle*     lastFile,
+    const char*                name,
+    const SILC_User_RegionType regionType,
+    const char*                fileName,
+    const uint32_t             lineNo
+);
+
+/** Generates an enter event for the specified region. The region must be declared and
+    initialized before.
+    @param handle     The handle for this region. It must be defined before.
+ */
+extern void
+SILC_User_RegionEnter
+(
+    const SILC_RegionHandle handle
+);
+
 /* **************************************************************************************
  * Parameter functions
  * *************************************************************************************/
