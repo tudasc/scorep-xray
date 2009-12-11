@@ -327,7 +327,7 @@ __cyg_profile_func_enter
     }
 
 
-    frintf( stderr, " function pointer: %ld \n", ( long )func );
+    fprintf( stderr, " function pointer: %ld \n", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
