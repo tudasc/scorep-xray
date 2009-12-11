@@ -60,6 +60,12 @@ static bool silc_finalized;
 static bool silc_verbose;
 
 
+/** @brief Did the first buffer flush happened, of so we can't switch to MPI
+ *  anymore.
+ */
+static bool flush_done;
+
+
 /** @brief Measurement system configure variables */
 static SILC_ConfigVariable silc_configs[] = {
     {
@@ -181,9 +187,14 @@ SILC_InitMeasurement
         SILC_ERROR_POSIX();
         _exit( EXIT_FAILURE );
     }
+
+    /* we don't know our location currently, pass undefined,
+     * OTF2 will handle it, when we are never set the location id to 0 in
+     * !MPI case
+     */
     silc_local_event_writer = OTF2_EvtWriter_New( 1 << 24,
                                                   NULL,
-                                                  0,
+                                                  OTF2_UNDEFINED_UINT64,
                                                   "silc",
                                                   post_flush );
 
@@ -248,8 +259,25 @@ SILC_InitMeasurementMPI
 {
     fprintf( stderr, "%s\n", __func__ );
 
+    if ( flush_done )
+    {
+        fprintf( stderr, "ERROR: Switching to MPI mode after the first flush.\n" );
+        fprintf( stderr, "       Consider to increase buffer size to prevent this.\n" );
+        _exit( EXIT_FAILURE );
+    }
+
     silc_local_id = rank;
-    OTF2_EvtWriter_SetLocationID( silc_local_event_writer, silc_local_id );
+
+
+    /* now we have our location ID, tell it OTF2 */
+    SILC_Error_Code error;
+    error = OTF2_EvtWriter_SetLocationID( silc_local_event_writer,
+                                          silc_local_id );
+    if ( SILC_SUCCESS != error )
+    {
+        /* OTF2 prints an error message */
+        _exit( EXIT_FAILURE );
+    }
 }
 
 
@@ -347,5 +375,10 @@ silc_finalize( void )
 static uint64_t
 post_flush( void* unUsed )
 {
+    /* remember that we have flushed the first time
+     * after this point, we can't switch into MPI mode anymore
+     */
+    flush_done = true;
+
     return SILC_GetWallClockTime();
 }
