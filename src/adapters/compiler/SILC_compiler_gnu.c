@@ -37,8 +37,6 @@
 
 
 
-#define HASH_MAX 1021
-
 /**
  * static variable to control initialize status of GNU
  */
@@ -49,7 +47,7 @@ static int gnu_init = 1;
  * data structure to map function name and region identifier
  */
 typedef struct HashNode HN;
-static HN* htab[ HASH_MAX ];
+
 
 
 /**
@@ -59,9 +57,10 @@ static HN* htab[ HASH_MAX ];
  *
  * @return Returns pointer to hash table entry according to key
  */
-static HN*
-hash_get( long h )
-{
+/*
+   static HN*
+   hash_get( long h )
+   {
     long id = h % HASH_MAX;
 
     printf( " hash id %ld: \n", id );
@@ -76,7 +75,8 @@ hash_get( long h )
         curr = curr->next;
     }
     return NULL;
-}
+   }
+ */
 
 
 /**
@@ -87,28 +87,29 @@ hash_get( long h )
  * @param fn   function name
  * @param lno  line number
  */
-static void
-hash_put
-(
-    long        h,
-    const char* n,
-    const char* fn,
-    int         lno
-)
-{
-    long id  = h % HASH_MAX;
-    HN*  add = ( HN* )malloc( sizeof( HN ) );
-    add->id        = h;
-    add->name      = n;
-    add->fname     = fn ? ( const char* )strdup( fn ) : fn;
-    add->lnobegin  = lno;
-    add->lnoend    = SILC_INVALID_LINE_NO;
-    add->reghandle = SILC_INVALID_REGION;
-    add->next      = htab[ id ];
-    htab[ id ]     = add;
-}
+/*
+   static void
+   hash_put
+   (
+   long        h,
+   const char* n,
+   const char* fn,
+   int         lno
+   )
+   {
+   long id  = h % HASH_MAX;
+   HN*  add = ( HN* )malloc( sizeof( HN ) );
+   add->id        = h;
+   add->name      = n;
+   add->fname     = fn ? ( const char* )strdup( fn ) : fn;
+   add->lnobegin  = lno;
+   add->lnoend    = SILC_INVALID_LINE_NO;
+   add->reghandle = SILC_INVALID_REGION;
+   add->next      = htab[ id ];
+   htab[ id ]     = add;
+   }
 
-/**
+   /**
  * @brief Get symbol table either by using BFD or by parsing nm-file
  */
 static void
@@ -279,15 +280,8 @@ silc_gnu_finalize
 {
     printf( "finalize the gnu compiler instrumentation. \n" );
 
-    int i;
-    for ( i = 0; i < HASH_MAX; i++ )
-    {
-        if ( htab[ i ] )
-        {
-            free( htab[ i ] );
-            htab[ i ] = NULL;
-        }
-    }
+    hash_free();
+
     /* set gnu init status to one - means not initialized */
     gnu_init = 1;
 }

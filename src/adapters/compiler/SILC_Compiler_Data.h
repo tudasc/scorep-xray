@@ -17,8 +17,14 @@
 #ifndef SILC_COMPILER_DATA_H_
 #define SILC_COMPILER_DATA_H_
 
+#include <stdio.h>
+
 #include "SILC_Types.h"
 #include "SILC_Error.h"
+
+
+#define HASH_MAX 1021
+
 
 
 /**
@@ -33,7 +39,7 @@
  * @param reghandle   region identifier
  * @param HN          pointer to next element
  */
-struct HashNode
+typedef struct HashNode
 {
     long              id;
     const char*       name;
@@ -43,6 +49,25 @@ struct HashNode
     SILC_RegionHandle reghandle;
     struct HashNode*  next;
 } HashNode;
+
+
+
+
+extern HashNode*
+hash_get( long h );
+
+extern void
+hash_put( long        h,
+          const char* n,
+          const char* fn,
+          int         lno );
+
+extern void
+hash_free();
+
+
+
+
 
 
 #endif /* SILC_COMPILER_DATA_H_ */

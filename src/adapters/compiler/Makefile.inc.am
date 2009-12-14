@@ -3,6 +3,7 @@ noinst_LTLIBRARIES += libsilc_adapter_compiler.la
 libsilc_adapter_compiler_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
 	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h \
+	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.c \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h
 libsilc_adapter_compiler_la_LIBADD = @LIBBFD@
 
@@ -16,10 +17,10 @@ libsilc_adapter_compiler_la_LIBADD = @LIBBFD@
 #    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_sun.c
 #endif
 
-#if SILC_COMPILER_IBM
-#libsilc_adapter_compiler_la_SOURCES += \
-#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ibm.c
-#endif
+if SILC_COMPILER_IBM
+libsilc_adapter_compiler_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ibm.c
+endif
 
 if SILC_COMPILER_PGI
 libsilc_adapter_compiler_la_SOURCES += \
