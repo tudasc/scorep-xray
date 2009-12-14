@@ -27,3 +27,10 @@ jacobi_mpi_c_SOURCES = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
 jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 
 jacobi_mpi_c_LDADD = $(LIB_ROOT)libsilc_mpi.la
+
+
+# check_PROGRAMS += jacobi_mpi_c_not_instrumented
+# jacobi_mpi_c_not_instrumented_SOURCES = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
+#                                         $(SRC_ROOT)test/jacobi/MPI/C/jacobi.h  \
+#                                         $(SRC_ROOT)test/jacobi/MPI/C/main.c
+# jacobi_mpi_c_not_instrumented_LDADD = -lm
