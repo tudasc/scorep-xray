@@ -15,6 +15,19 @@
 ##
 
 
+AC_DEFUN([SILC_LIBBFD_LINK_TEST], [
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[char bfd_init ();
+char bfd_openr ();
+char bfd_check_format ();
+char bfd_close ();]],
+                                [[bfd_init ();
+bfd_openr ();
+bfd_check_format ();
+bfd_close ();]])],
+               [silc_have_libbfd="yes"], 
+               [silc_have_libbfd="no"])
+])
+
 
 AC_DEFUN([AC_SILC_LIBBFD], [
 AC_REQUIRE([AC_SILC_COMPILER_CHECKS])
@@ -34,24 +47,28 @@ if test "x${silc_compiler_gnu}" = "xyes"; then
     AC_LANG_PUSH([C])
     AC_CHECK_HEADER([bfd.h])
     
-    ac_silc_libbfd_save_LIBS="$LIBS"
-    LIBS=""
-    AC_SEARCH_LIBS([bfd_init], [bfd], 
-                   [ac_silc_have_libbfd="yes";
-                    AC_SEARCH_LIBS([bfd_openr], [bfd], 
-                   [ac_silc_have_libbfd="yes";
-                    AC_SEARCH_LIBS([bfd_check_format], [bfd],  
-                   [ac_silc_have_libbfd="yes";
-                    AC_SEARCH_LIBS([bfd_close], [bfd], 
-                   [ac_silc_have_libbfd="yes"], [ac_silc_have_libbfd="no"], [-liberty])], 
-                                                [ac_silc_have_libbfd="no"], [-liberty])], 
-                                                [ac_silc_have_libbfd="no"], [-liberty])], 
-                                                [ac_silc_have_libbfd="no"], [-liberty])
-    silc_bfd_libs="$LIBS"
-    LIBS="$ac_silc_libbfd_save_LIBS"
+    AC_MSG_CHECKING([for libbfd])    
+    silc_libbfd_save_LIBS="$LIBS"
 
-    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${ac_silc_have_libbfd}" = "xyes"])
-    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${ac_silc_have_libbfd}" = "xno"; then
+    LIBS="-lbfd"
+    SILC_LIBBFD_LINK_TEST
+    AS_IF([test "x${silc_have_libbfd}" = "xno"],
+          [LIBS="-lbfd -liberty"; 
+           SILC_LIBBFD_LINK_TEST
+           AS_IF([test "x${silc_have_libbfd}" = "xno"],
+                 [LIBS="-lbfd -liberty -lz";
+                  SILC_LIBBFD_LINK_TEST
+                  AS_IF([test "x${silc_have_libbfd}" = "xno"],
+                        [AC_MSG_RESULT([no])],
+                        [AC_MSG_RESULT([$LIBS])])],
+                 [AC_MSG_RESULT([$LIBS])])],
+          [AC_MSG_RESULT([$LIBS])])
+    
+    silc_bfd_libs="$LIBS"
+    LIBS="$silc_libbfd_save_LIBS"
+
+    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${silc_have_libbfd}" = "xyes"])
+    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${silc_have_libbfd}" = "xno"; then
         AC_MSG_WARN([libbfd not available. Compiler instrumentation will not work.])
         AC_SUBST([LIBBFD], [""])
     else
