@@ -13,6 +13,14 @@
  *
  */
 
+/**
+ * @file       SILC_Compiler_Data.h
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
+ * @status     ALPHA
+ */
+
+
 
 #ifndef SILC_COMPILER_DATA_H_
 #define SILC_COMPILER_DATA_H_
@@ -24,8 +32,6 @@
 
 
 #define HASH_MAX 1021
-
-
 
 /**
  * @brief Hash table to map function addresses to region identifier
@@ -55,6 +61,7 @@ typedef struct HashNode
 
 extern HashNode*
 hash_get( long h );
+
 
 extern void
 hash_put( long        h,

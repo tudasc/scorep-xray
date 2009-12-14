@@ -13,24 +13,21 @@
  *
  */
 
-
 /**
- * @ file      SILC_compiler_gnu.c
+ * @file       SILC_Compiler_Data.c
  * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
  *
  * @status     ALPHA
  *
- * @brief Support for GNU-Compiler
- * Will be triggered by the '-finstrument-functions' flag of the GNU
- * compiler.
+ * @brief General functions for Compiler Instrumentation
  */
+
 
 
 #include <SILC_Compiler_Data.h>
 
 
 HashNode* htab[ HASH_MAX ];
-
 
 /**
  * @brief Get hash table entry for given ID.
@@ -58,7 +55,14 @@ hash_get( long h )
     return NULL;
 }
 
-
+/**
+ * Stores function name under hash code
+ *
+ * @param h    Hash node key
+ * @param n    file name
+ * @param fn   function name
+ * @param lno  line number
+ */
 void
 hash_put
 (
@@ -80,6 +84,10 @@ hash_put
     htab[ id ]     = add;
 }
 
+
+/**
+ * Free elements of compiler hash table.
+ */
 void
 hash_free()
 {

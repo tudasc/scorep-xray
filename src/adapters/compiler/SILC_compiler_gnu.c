@@ -48,68 +48,7 @@ static int gnu_init = 1;
  */
 typedef struct HashNode HN;
 
-
-
 /**
- * @brief Get hash table entry for given ID.
- *
- * @param h   Hash node key ID
- *
- * @return Returns pointer to hash table entry according to key
- */
-/*
-   static HN*
-   hash_get( long h )
-   {
-    long id = h % HASH_MAX;
-
-    printf( " hash id %ld: \n", id );
-
-    HN* curr = htab[ id ];
-    while ( curr )
-    {
-        if ( curr->id == h )
-        {
-            return curr;
-        }
-        curr = curr->next;
-    }
-    return NULL;
-   }
- */
-
-
-/**
- * Stores function name under hash code
- *
- * @param h    Hash node key
- * @param n    file name
- * @param fn   function name
- * @param lno  line number
- */
-/*
-   static void
-   hash_put
-   (
-   long        h,
-   const char* n,
-   const char* fn,
-   int         lno
-   )
-   {
-   long id  = h % HASH_MAX;
-   HN*  add = ( HN* )malloc( sizeof( HN ) );
-   add->id        = h;
-   add->name      = n;
-   add->fname     = fn ? ( const char* )strdup( fn ) : fn;
-   add->lnobegin  = lno;
-   add->lnoend    = SILC_INVALID_LINE_NO;
-   add->reghandle = SILC_INVALID_REGION;
-   add->next      = htab[ id ];
-   htab[ id ]     = add;
-   }
-
-   /**
  * @brief Get symbol table either by using BFD or by parsing nm-file
  */
 static void
@@ -122,7 +61,6 @@ get_symTab( void )
     asymbol** canonicSymbols;
     char*     exepath;
     char      path[ PATH_MAX ] = { 0 };
-
 
 
     /* initialize BFD */
