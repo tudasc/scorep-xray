@@ -35,7 +35,19 @@ if test "x${silc_compiler_gnu}" = "xyes"; then
     AC_CHECK_HEADER([bfd.h])
     
     ac_silc_libbfd_save_LIBS="$LIBS"
-    AC_SEARCH_LIBS([bfd_init], [bfd], [ac_silc_have_libbfd="yes"], [ac_silc_have_libbfd="no"])
+    LIBS=""
+    AC_SEARCH_LIBS([bfd_init], [bfd], 
+                   [ac_silc_have_libbfd="yes";
+                    AC_SEARCH_LIBS([bfd_openr], [bfd], 
+                   [ac_silc_have_libbfd="yes";
+                    AC_SEARCH_LIBS([bfd_check_format], [bfd],  
+                   [ac_silc_have_libbfd="yes";
+                    AC_SEARCH_LIBS([bfd_close], [bfd], 
+                   [ac_silc_have_libbfd="yes"], [ac_silc_have_libbfd="no"], [-liberty])], 
+                                                [ac_silc_have_libbfd="no"], [-liberty])], 
+                                                [ac_silc_have_libbfd="no"], [-liberty])], 
+                                                [ac_silc_have_libbfd="no"], [-liberty])
+    silc_bfd_libs="$LIBS"
     LIBS="$ac_silc_libbfd_save_LIBS"
 
     AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${ac_silc_have_libbfd}" = "xyes"])
@@ -43,7 +55,7 @@ if test "x${silc_compiler_gnu}" = "xyes"; then
         AC_MSG_WARN([libbfd not available. Compiler instrumentation will not work.])
         AC_SUBST([LIBBFD], [""])
     else
-        AC_SUBST([LIBBFD], ["$ac_cv_search_bfd_init"])
+        AC_SUBST([LIBBFD], ["$silc_bfd_libs"])
     fi
     AC_LANG_POP([C])
 else
