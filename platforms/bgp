@@ -4,8 +4,20 @@ CC=bgxlc_r
 CXX=bgxlC_r
 #CXXFLAGS=
 
+F77=bgxlf_r
+FFLAGS=-qsuppress=cmpmsg
+
+FC=bgxlf_r
+FCFLAGS=-qfree=f90 -qsuppress=cmpmsg
+
 CC_FOR_BUILD=xlc_r
 #CFLAGS_FOR_BUILD=
 
 CXX_FOR_BUILD=xlC_r
 #CXXFLAGS_FOR_BUILD=
+
+#F77_FOR_BUILD=
+#FFLAGS_FOR_BUILD=
+
+#FC_FOR_BUILD= 
+#FCFLAGS_FOR_BUILD=

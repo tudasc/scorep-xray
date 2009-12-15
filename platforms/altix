@@ -4,3 +4,8 @@ CC=icc
 CXX=icpc
 #CXXFLAGS=
 
+F77=ifort
+#FFLAGS=
+
+FC=ifort
+#FCFLAGS=

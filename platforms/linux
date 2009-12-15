@@ -4,3 +4,8 @@ CC=gcc
 CXX=g++
 #CXXFLAGS=
 
+F77=gfortran
+#FFLAGS=
+
+FC=gfortran
+#FCFLAGS=

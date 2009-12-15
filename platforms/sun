@@ -4,3 +4,8 @@ CC=cc
 CXX=CC
 #CXXFLAGS=
 
+F77=f77
+#FFLAGS=    
+
+FC=f95
+#FCFLAGS=
