@@ -15,7 +15,8 @@
 
 
 /**
- * @ file SILC_compiler_gnu.c
+ * @ file      SILC_compiler_gnu.c
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
  *
  * @brief Support for GNU-Compiler
  * Will be triggered by the '-finstrument-functions' flag of the GNU
@@ -194,7 +195,7 @@ get_symTab( void )
 void
 silc_compiler_register_region
 (
-    struct  HashNode* hn
+    HashNode* hn
 )
 {
     fprintf( stderr, " register a region: \n" );

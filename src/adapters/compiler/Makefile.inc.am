@@ -4,7 +4,7 @@ libsilc_adapter_compiler_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
 	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.c \
-	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h
+	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h 
 libsilc_adapter_compiler_la_LIBADD = @LIBBFD@
 
 #if SILC_COMPILER_INTEL

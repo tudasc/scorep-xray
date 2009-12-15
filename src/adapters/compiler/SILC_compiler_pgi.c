@@ -56,7 +56,7 @@ struct s1
     char*             rout; /* routine name */
 };
 
-unsigned int count = 0;
+uint64_t count = 0;
 
 /**
  * static variable to control initialize status of GNU
