@@ -18,11 +18,18 @@ ACLOCAL_AMFLAGS = -I build-config/m4
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
-EXTRA_DIST = $(srcdir)/src/config.h                        \
-             $(srcdir)/src/config-custom.h                 \
-             $(srcdir)/build-config/VERSION                \
-             $(srcdir)/build-config/platforms              \
-             $(srcdir)/build-config/process_arguments.awk
+EXTRA_DIST = $(srcdir)/src/config.h                         \
+             $(srcdir)/src/config-custom.h                  \
+             $(srcdir)/build-config/VERSION                 \
+             $(srcdir)/build-config/process_arguments.awk   \
+             $(srcdir)/build-config/platforms/altix         \
+             $(srcdir)/build-config/platforms/bgl           \
+             $(srcdir)/build-config/platforms/bgp           \
+             $(srcdir)/build-config/platforms/crayxt        \
+             $(srcdir)/build-config/platforms/ibm           \
+             $(srcdir)/build-config/platforms/linux         \
+             $(srcdir)/build-config/platforms/sun           \
+             $(srcdir)/build-config/platforms/user_provided
 
 if ! CROSS_BUILD
 EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
