@@ -15,6 +15,9 @@
 
 
 /**
+ * @ file      SILC_Compiler_Init.c
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
  * @brief Compiler adapter interface support to the measurement system
  */
 
@@ -25,13 +28,6 @@
 #include "SILC_Error.h"
 
 struct HashNode;
-
-extern void
-silc_compiler_register_region
-(
-    struct HashNode* hn
-);
-
 
 SILC_Error_Code
 silc_compiler_register

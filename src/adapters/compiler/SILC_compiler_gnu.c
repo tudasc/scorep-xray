@@ -49,6 +49,7 @@ static int gnu_init = 1;
  */
 typedef struct HashNode HN;
 
+
 /**
  * @brief Get symbol table either by using BFD or by parsing nm-file
  */
@@ -187,26 +188,6 @@ get_symTab( void )
     return;
 }
 
-/**
- * @brief Register a new region to the measuremnt system
- *
- * @param hn   Hash node which stores the registered regions
- */
-void
-silc_compiler_register_region
-(
-    HashNode* hn
-)
-{
-    fprintf( stderr, " register a region: \n" );
-    hn->reghandle = SILC_DefineRegion( hn->name,
-                                       SILC_INVALID_SOURCE_FILE,
-                                       SILC_INVALID_LINE_NO,
-                                       SILC_INVALID_LINE_NO,
-                                       SILC_ADAPTER_COMPILER,
-                                       SILC_REGION_FUNCTION
-                                       );
-}
 
 /**
  * @brief finalize GNU interface
@@ -252,7 +233,7 @@ __cyg_profile_func_enter
         /* not initialized so far */
         SILC_InitMeasurement();
 
-        silc_gnu_finalize;
+        silc_gnu_finalize();
         gnu_init = 0;   /* is initialized */
 
         /* call function to calculate symbol table */
@@ -268,7 +249,6 @@ __cyg_profile_func_enter
         {
             /* -- region entered the first time, register region -- */
             silc_compiler_register_region( hn );
-            fprintf( stderr, " register region with handle %i \n", hn->reghandle );
         }
         fprintf( stderr, "enter the region with handle %i \n", hn->reghandle );
         SILC_EnterRegion( hn->reghandle );

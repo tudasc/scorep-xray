@@ -55,6 +55,7 @@ hash_get( long h )
     return NULL;
 }
 
+
 /**
  * Stores function name under hash code
  *
@@ -100,4 +101,25 @@ hash_free()
             htab[ i ] = NULL;
         }
     }
+}
+
+/**
+ * @brief Register a new region to the measuremnt system
+ *
+ * @param hn   Hash node which stores the registered regions
+ */
+void
+silc_compiler_register_region
+(
+    struct HashNode* hn
+)
+{
+    fprintf( stderr, " register a region: \n" );
+    hn->reghandle = SILC_DefineRegion( hn->name,
+                                       SILC_INVALID_SOURCE_FILE,
+                                       SILC_INVALID_LINE_NO,
+                                       SILC_INVALID_LINE_NO,
+                                       SILC_ADAPTER_COMPILER,
+                                       SILC_REGION_FUNCTION
+                                       );
 }

@@ -26,6 +26,8 @@
 #define SILC_COMPILER_DATA_H_
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "SILC_Types.h"
 #include "SILC_Error.h"
@@ -41,6 +43,7 @@
  * @param name        associated function name
  * @param fname       file name
  * @param lnobegin    line number of begin of function
+
  * @param lnoend      line number of end of function
  * @param reghandle   region identifier
  * @param HN          pointer to next element
@@ -73,8 +76,8 @@ extern void
 hash_free();
 
 
-
-
+extern void
+silc_compiler_register_region( HashNode* hn );
 
 
 #endif /* SILC_COMPILER_DATA_H_ */
