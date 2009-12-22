@@ -55,11 +55,11 @@ endif
 #    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_hp.c
 #endif
 
-if SILC_COMPILER_SX
-libsilc_adapter_compiler_la_SOURCES =                        \
-    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  \
-    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
-endif
+#if SILC_COMPILER_SX
+#libsilc_adapter_compiler_la_SOURCES =                        \
+#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  \
+#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
+#endif
 
 libsilc_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)   \
     -I$(INC_DIR_UTIL)                                   \
