@@ -89,7 +89,7 @@ silc_mpi_register
     ()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In SILC_Mpi_Register\n" );
+                       "In silc_mpi_register\n" );
     SILC_ConfigRegister( "mpi", silc_mpi_configs );
     return SILC_SUCCESS;
 }
@@ -102,7 +102,7 @@ silc_mpi_init_adapter
     ()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In SILC_Mpi_InitAdapter\n" );
+                       "In silc_mpi_init_adapter\n" );
     silc_mpi_get_status_size___( &silc_mpi_status_size );
     silc_mpi_register_regions();
     return SILC_SUCCESS;
@@ -116,7 +116,7 @@ silc_mpi_init_location
     ()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In SILC_Mpi_InitLocation\n" );
+                       "In silc_mpi_init_location\n" );
     return SILC_SUCCESS;
 }
 
@@ -128,7 +128,7 @@ silc_mpi_final_location
     ()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In SILC_Mpi_FinalAdapter\n" );
+                       "In silc_mpi_final_location\n" );
 }
 
 /** Implementation of the adapter_finalize function of the @ref SILC_Adapter struct
@@ -139,7 +139,7 @@ silc_mpi_finalize
     ()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In SILC_Mpi_Finalize\n" );
+                       "In silc_mpi_finalize\n" );
     PMPI_Finalize();
 }
 
@@ -151,7 +151,7 @@ silc_mpi_deregister
     ()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In SILC_Mpi_Deregister\n" );
+                       "In silc_mpi_deregister\n" );
 }
 
 /* The initialization struct for the MPI adapter */
