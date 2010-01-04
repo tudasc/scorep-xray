@@ -297,6 +297,22 @@ Silc_Instrumenter::silc_run
     {
         compCommand += _instPgi9;
     }
+    else if ( _instType == INST_TYPE_XL )
+    {
+        compCommand += _instXl;
+    }
+    else if ( _instType == INST_TYPE_FTRACE )
+    {
+        compCommand += _instFtrace;
+    }
+    else if ( _instType == INST_TYPE_SUN )
+    {
+        compCommand += _instSun;
+    }
+    else if ( _instType == INST_TYPE_OPENUH )
+    {
+        compCommand += _instOpenuh;
+    }
     else
     {
         compCommand += _instDefault;

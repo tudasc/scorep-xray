@@ -45,6 +45,7 @@ public:
         std::string fileName
     )
     {
+        return SILC_SUCCESS;
     };
 
 /** @brief
@@ -57,6 +58,7 @@ public:
         char** argv
     )
     {
+        return SILC_SUCCESS;
     };
 
 
@@ -68,6 +70,7 @@ public:
     (
     )
     {
+        return 0;
     };
 
 
