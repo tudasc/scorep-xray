@@ -23,8 +23,9 @@ libsilc_adapter_compiler_la_SOURCES =                         \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h 
 libsilc_adapter_compiler_la_LIBADD = @LIBBFD@
 
-if SILC_COMPILER_INTEL 
-libsilc_adapter_compiler_la_SOURCES += \ 
+
+if SILC_COMPILER_INTEL
+libsilc_adapter_compiler_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c 
 endif 
 
@@ -48,18 +49,19 @@ if HAVE_LIBBFD
 libsilc_adapter_compiler_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
 endif
-endif
 
 #if SILC_COMPILER_HP
 #libsilc_adapter_compiler_la_SOURCES += \
 #    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_hp.c
 #endif
 
-#if SILC_COMPILER_SX
-#libsilc_adapter_compiler_la_SOURCES =                        \
-#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  \
-#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
-#endif
+if SILC_COMPILER_SX
+libsilc_adapter_compiler_la_SOURCES +=                        \
+#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  
+    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
+endif
+
+endif
 
 libsilc_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)   \
     -I$(INC_DIR_UTIL)                                   \
