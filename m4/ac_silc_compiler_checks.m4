@@ -121,6 +121,23 @@ AS_IF([test "x${silc_compiler_hp}" = "xyes"],
 
 ## 
 
+AC_DEFUN([SILC_COMPILER_SX],[
+AC_MSG_CHECKING([for sx compiler])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
+[[#if defined(__SX_cc) || defined(__hpux) || defined(__hpua)
+#else
+# error "Not a SX compiler."
+#endif
+]])],
+                  [silc_compiler_sx="yes"; silc_compiler_unknown="no"], 
+                  [silc_compiler_sx="no"])
+AC_MSG_RESULT([$silc_compiler_sx])
+AS_IF([test "x${silc_compiler_sx}" = "xyes"], 
+      [silc_compiler_instrumentation_cppflags=""])
+])
+
+## 
+
 AC_DEFUN([AC_SILC_COMPILER_CHECKS],[
 silc_compiler_unknown="yes"
 
@@ -130,6 +147,7 @@ silc_compiler_ibm="no"
 silc_compiler_pgi="no"
 silc_compiler_gnu="no"
 silc_compiler_hp="no"
+silc_compiler_sx="no"
 
 silc_compiler_instrumentation_cppflags=""
 
@@ -142,6 +160,7 @@ SILC_COMPILER_IBM
 SILC_COMPILER_PGI
 SILC_COMPILER_GNU
 SILC_COMPILER_HP
+SILC_COMPILER_SX
 AC_LANG_POP([C])
 
 if test "x${silc_compiler_unknown}" = "xyes"; then
@@ -156,4 +175,5 @@ AM_CONDITIONAL([SILC_COMPILER_IBM],   [test "x${silc_compiler_ibm}"   = "xyes"])
 AM_CONDITIONAL([SILC_COMPILER_PGI],   [test "x${silc_compiler_pgi}"   = "xyes"])
 AM_CONDITIONAL([SILC_COMPILER_GNU],   [test "x${silc_compiler_gnu}"   = "xyes"])
 AM_CONDITIONAL([SILC_COMPILER_HP],    [test "x${silc_compiler_hp}"    = "xyes"])
+AM_CONDITIONAL([SILC_COMPILER_SX],    [test "x${silc_compiler_sx}"    = "xyes"])
 ])
