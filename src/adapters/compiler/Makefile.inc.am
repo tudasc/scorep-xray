@@ -57,8 +57,8 @@ endif
 
 if SILC_COMPILER_SX
 libsilc_adapter_compiler_la_SOURCES +=                        \
-#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  
-    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
+    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  
+#    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
 endif
 
 endif
