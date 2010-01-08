@@ -6,9 +6,7 @@ if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}"
 fi
 
 
-
-
-
+AM_PROG_AS
 
 
 
