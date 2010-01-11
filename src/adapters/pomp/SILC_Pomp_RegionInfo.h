@@ -31,6 +31,8 @@
 
 /**
  * SILC_Pomp_RegionType
+ * @ingroup POMP
+ * @{
  *
  */
 typedef enum /* SILC_Pomp_RegionType */
@@ -59,20 +61,20 @@ typedef enum /* SILC_Pomp_RegionType */
 /** Struct which contains all data for a pomp region. */
 typedef struct
 {
-    SILC_Pomp_RegionType regionType;  /* region type of construct                */
-    char*                name;        /* critical or user region name            */
-    int32_t              numSections; /* sections only: number of sections       */
-    SILC_RegionHandle    outerBlock;  /* SILC handle for the enclosing region    */
-    SILC_RegionHandle    innerBlock;  /* SILC handle for the enclosed region     */
+    SILC_Pomp_RegionType regionType;    /* region type of construct                */
+    char*                name;          /* critical or user region name            */
+    int32_t              numSections;   /* sections only: number of sections       */
+    SILC_RegionHandle    outerBlock;    /* SILC handle for the enclosing region    */
+    SILC_RegionHandle    innerBlock;    /* SILC handle for the enclosed region     */
 
-    char*                startFileName;
-    int32_t              startLine1;
-    int32_t              startLine2;
+    char*                startFileName; /* File containing opening statement     */
+    int32_t              startLine1;    /* First line of the opening statement     */
+    int32_t              startLine2;    /* Last line of the opening statement      */
 
-    char*                endFileName;
-    int32_t              endLine1;
-    int32_t              endLine2;
-    char*                regionName; /* For user regions and criticals          */
+    char*                endFileName;   /* File containing the closing statement   */
+    int32_t              endLine1;      /* First line of the closing statement     */
+    int32_t              endLine2;      /* Last line of the closing statement      */
+    char*                regionName;    /* For user regions and criticals          */
 } SILC_Pomp_Region;
 
 
@@ -114,5 +116,6 @@ void
 SILC_Pomp_ParseInitString( const char        initString[],
                            SILC_Pomp_Region* region );
 
+/** @} */
 
 #endif /* SILC_POMP_REGION_INFO_H */
