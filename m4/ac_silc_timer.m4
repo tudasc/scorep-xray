@@ -326,7 +326,7 @@ AS_IF([test "x${silc_user_timer_given}" = "xno"], [
                                  SILC_TIMER_USE_IF_AVAILABLE([cycle_counter_tsc]),
                                  SILC_TIMER_USE_IF_AVAILABLE([clock_gettime]),
                                  SILC_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
-            [AC_MSG_ERROR([Encountered unsupported platform \"$ac_silc_platform\" during timer checks.])])
+            [AC_MSG_ERROR([Encountered unsupported platform "$ac_silc_platform" during timer checks.])])
 ])
 ])
 
