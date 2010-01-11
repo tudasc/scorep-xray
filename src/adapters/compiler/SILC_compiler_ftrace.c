@@ -62,7 +62,7 @@ _ftrace_stop2_( void );
 void
 ftrace_finalize()
 {
-    printf( " ftrace finalize \n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "ftrace finalize \n" );
 
     hash_free();
 
@@ -89,10 +89,8 @@ _ftrace_enter2_()
         initSX = 0;     /* is initialized */
     }
 
-
-
-    printf( " function name: %s \n", func );
-    printf( " function length: %i \n", len );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function name: %s \n", func );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function length: %i \n", len );
 
     if ( !hn )
     {
@@ -106,7 +104,7 @@ _ftrace_enter2_()
             /* -- region entered the first time, register region -- */
             silc_compiler_register_region( hn );
         }
-        fprintf( stderr, "enter the region with handle %i \n", hn->reghandle );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "enter the region with handle %i \n", hn->reghandle );
         SILC_EnterRegion( hn->reghandle );
     }
 }
@@ -119,8 +117,8 @@ _ftrace_exit2_()
     long  id   = ( long )func;
     HNsx* hn;
 
-    frintf( stderr, "call function exit!!!\n" );
-    frintf( stderr, " ftrace exit 2 \t %i \n", ( long )func );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!\n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " ftrace exit 2 \t %i \n", ( long )func );
     if ( hn = hash_get( ( long )func ) )
     {
         SILC_ExitRegion( hn->reghandle );
@@ -130,5 +128,5 @@ _ftrace_exit2_()
 void
 _ftrace_stop2_()
 {
-    printf( " ftrace stop 2 \n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " ftrace stop 2 \n" );
 }

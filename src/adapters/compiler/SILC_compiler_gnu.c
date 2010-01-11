@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <bfd.h>
 
+#include <SILC_Types.h>
 #include <SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
@@ -41,8 +42,8 @@
 /**
  * static variable to control initialize status of GNU
  */
-static int gnu_init = 1;
-
+static int     gnu_init = 1;
+const uint32_t pathMax  = 512;
 
 /**
  * data structure to map function name and region identifier
@@ -62,7 +63,7 @@ get_symTab( void )
     size_t    size;
     asymbol** canonicSymbols;
     char*     exepath;
-    char      path[ PATH_MAX ] = { 0 };
+    char      path[ pathMax ];
 
 
     /* initialize BFD */
@@ -81,10 +82,10 @@ get_symTab( void )
 
         if ( exepath == NULL )
         {
-            printf( " \n***********************************************************************\n" );
-            printf( "Could not determine path of executable.\n" );
-            printf( "Meanwhile, you have to set 'SILC_APPPATH' to your local executable.\n" );
-            printf( "***********************************************************************\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " \n***********************************************************************\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Could not determine path of executable.\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Meanwhile, you have to set 'SILC_APPPATH' to your local executable.\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "***********************************************************************\n" );
 
             SILC_ERROR( SILC_ERROR_ENOENT, "" );
             return;
@@ -92,7 +93,7 @@ get_symTab( void )
         }
         else
         {
-            printf( "  exepath = %s \n", exepath );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "  exepath = %s \n", exepath );
             BfdImage = bfd_openr( exepath, 0 );
             if ( !BfdImage )
             {
@@ -102,11 +103,11 @@ get_symTab( void )
     }
     else
     {
-        printf( "  path = %s \n", path );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "  path = %s \n", path );
         BfdImage = bfd_openr( ( const char* )&path, 0 );
         if ( !BfdImage )
         {
-            SILC_ERROR( ENOENT, "" );
+            SILC_ERROR( ENOENT, "BFD image not present to given path" );
         }
     }
 
@@ -178,12 +179,10 @@ get_symTab( void )
 
         /* calculate function address */
         addr = canonicSymbols[ i ]->section->vma + canonicSymbols[ i ]->value;
-        /* printf(" address: %i, name %s, filename %s, line number %i \n", addr, canonicSymbols[i]->name, filename, lno); */
 
         hash_put( addr, canonicSymbols[ i ]->name, filename, lno );
     }
-    free( canonicSymbols )
-    ;
+    free( canonicSymbols );
     bfd_close( BfdImage );
     return;
 }
@@ -198,7 +197,7 @@ silc_gnu_finalize
     void
 )
 {
-    printf( "finalize the gnu compiler instrumentation. \n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "finalize the gnu compiler instrumentation." );
 
     hash_free();
 
@@ -221,7 +220,8 @@ __cyg_profile_func_enter
 )
 {
     HN* hn;
-    printf( "call at function enter!!!\n" );
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter!!!" );
 
     /*
      * put hash table entries via mechanism for bfd symbol table
@@ -241,7 +241,7 @@ __cyg_profile_func_enter
     }
 
 
-    fprintf( stderr, " function pointer: %ld \n", ( long )func );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function pointer: %ld \n", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
@@ -250,7 +250,7 @@ __cyg_profile_func_enter
             /* -- region entered the first time, register region -- */
             silc_compiler_register_region( hn );
         }
-        fprintf( stderr, "enter the region with handle %i \n", hn->reghandle );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "enter the region with handle %i \n", hn->reghandle );
         SILC_EnterRegion( hn->reghandle );
     }
 }
@@ -269,7 +269,7 @@ __cyg_profile_func_exit
 )
 {
     HN* hn;
-    printf( "call function exit!!!\n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" );
     if ( hn = hash_get( ( long )func ) )
     {
         SILC_ExitRegion( hn->reghandle );

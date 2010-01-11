@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <SILC_Utils.h>
 #include "SILC_Types.h"
 #include "SILC_Error.h"
 

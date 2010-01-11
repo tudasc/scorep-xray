@@ -41,7 +41,7 @@ hash_get( long h )
 {
     long id = h % HASH_MAX;
 
-    printf( " hash id %ld: \n", id );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " hash id %ld: \n", id );
 
     HashNode* curr = htab[ id ];
     while ( curr )

@@ -50,7 +50,7 @@ silc_xl_register_region
 (
 )
 {
-    fprintf( stderr, " register a region: \n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " register a region: \n" );
 }
 
 
@@ -82,7 +82,7 @@ __func_trace_enter( char* name,
                     char* fname,
                     int   lno )
 {
-    fprintf( stderr, " function name: %s %s \n", name, fname );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function name: %s %s \n", name, fname );
 }
 
 /*
@@ -94,5 +94,5 @@ __func_trace_exit( char* name,
                    char* fname,
                    int   lno )
 {
-    frintf( stderr,  "call function %s at exit!!!\n", fname );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function %s at exit!!!\n", fname );
 }
