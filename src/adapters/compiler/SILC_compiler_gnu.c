@@ -42,8 +42,7 @@
 /**
  * static variable to control initialize status of GNU
  */
-static int     gnu_init = 1;
-const uint32_t pathMax  = 512;
+static int gnu_init = 1;
 
 /**
  * data structure to map function name and region identifier
@@ -63,8 +62,7 @@ get_symTab( void )
     size_t    size;
     asymbol** canonicSymbols;
     char*     exepath;
-    char      path[ pathMax ];
-
+    char      path[ 512 ] = { 0 };
 
     /* initialize BFD */
     bfd_init();
@@ -82,9 +80,9 @@ get_symTab( void )
 
         if ( exepath == NULL )
         {
-            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " \n***********************************************************************\n" );
-            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Could not determine path of executable.\n" );
-            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Meanwhile, you have to set 'SILC_APPPATH' to your local executable.\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "***********************************************************************" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Could not determine path of executable." );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Meanwhile, you have to set 'SILC_APPPATH' to your local executable." );
             SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "***********************************************************************\n" );
 
             SILC_ERROR( SILC_ERROR_ENOENT, "" );
@@ -93,21 +91,21 @@ get_symTab( void )
         }
         else
         {
-            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "  exepath = %s \n", exepath );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "  exepath = %s ", exepath );
             BfdImage = bfd_openr( exepath, 0 );
             if ( !BfdImage )
             {
-                SILC_ERROR( ENOENT, "" );
+                SILC_ERROR( SILC_ERROR_ENOENT, "" );
             }
         }
     }
     else
     {
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "  path = %s \n", path );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " got the  path to binary = %sn", path );
         BfdImage = bfd_openr( ( const char* )&path, 0 );
         if ( !BfdImage )
         {
-            SILC_ERROR( ENOENT, "BFD image not present to given path" );
+            SILC_ERROR( SILC_ERROR_ENOENT, "BFD image not present to given path: %s \n", path );
         }
     }
 
@@ -115,14 +113,14 @@ get_symTab( void )
     /* check image format   */
     if ( !bfd_check_format( BfdImage, bfd_object ) )
     {
-        SILC_ERROR( EIO, "BFD: bfd_check_format(): failed\n" );
+        SILC_ERROR( SILC_ERROR_EIO, "BFD: bfd_check_format(): failed\n" );
     }
 
 
     /* return if file has no symbols at all */
     if ( !( bfd_get_file_flags( BfdImage ) & HAS_SYMS ) )
     {
-        SILC_ERROR( SILC_ERROR_FILE_INTERACTION, "BFD: bfd_get_file_flags(): failed" );
+        SILC_ERROR( SILC_ERROR_FILE_INTERACTION, "BFD: bfd_get_file_flags(): failed \n" );
     }
 
     /* get the upper bound number of symbols */
@@ -241,7 +239,7 @@ __cyg_profile_func_enter
     }
 
 
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function pointer: %ld \n", ( long )func );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function pointer: %ld ", ( long )func );
 
     if ( ( hn = hash_get( ( long )func ) ) )
     {
@@ -250,7 +248,7 @@ __cyg_profile_func_enter
             /* -- region entered the first time, register region -- */
             silc_compiler_register_region( hn );
         }
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "enter the region with handle %i \n", hn->reghandle );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "enter the region with handle %i ", hn->reghandle );
         SILC_EnterRegion( hn->reghandle );
     }
 }
