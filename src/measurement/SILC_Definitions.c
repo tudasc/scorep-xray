@@ -28,6 +28,7 @@
  */
 
 
+#include <SILC_Debug.h>
 #include <SILC_Definitions.h>
 
 
@@ -45,9 +46,11 @@ SILC_DefineSourceFile
 {
     static SILC_SourceFileHandle next_source_file_handle;
 
-    fprintf( stderr, "%s: Define new source file \"%s\":\n",
-             __func__, fileName );
-    fprintf( stderr, "    Handle ID: %x\n", next_source_file_handle );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "Define new source file \"%s\":",
+                       fileName );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Handle ID: %x", next_source_file_handle );
 
     return next_source_file_handle++;
 }
@@ -69,24 +72,35 @@ SILC_DefineRegion
 {
     static SILC_RegionHandle next_region_handle;
 
-    char                     stringBuffer[ 16 ];
 
-    fprintf( stderr, "%s: Define new region \"%s\":\n",
-             __func__, regionName );
-    fprintf( stderr, "    Handle ID:   %x\n", next_region_handle );
-    fprintf( stderr, "    Source file: %s\n",
-             silc_source_file_to_string( stringBuffer, sizeof( stringBuffer ),
-                                         "%x", fileHandle ) );
-    fprintf( stderr, "    Start line:  %s\n",
-             silc_line_number_to_string( stringBuffer, sizeof( stringBuffer ),
-                                         "%u", beginLine ) );
-    fprintf( stderr, "    End line:    %s\n",
-             silc_line_number_to_string( stringBuffer, sizeof( stringBuffer ),
-                                         "%u", endLine ) );
-    fprintf( stderr, "    Adpater:     %s\n",
-             silc_adapter_type_to_string( adapter ) );
-    fprintf( stderr, "    Region type: %s\n",
-             silc_region_type_to_string( regionType ) );
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "Define new region \"%s\":", regionName );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Handle ID:   %x", next_region_handle );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Source file: %s",
+                       silc_source_file_to_string( stringBuffer,
+                                                   sizeof( stringBuffer ),
+                                                   "%x", fileHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Start line:  %s",
+                       silc_line_number_to_string( stringBuffer,
+                                                   sizeof( stringBuffer ),
+                                                   "%u", beginLine ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    End line:    %s",
+                       silc_line_number_to_string( stringBuffer,
+                                                   sizeof( stringBuffer ),
+                                                   "%u", endLine ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Adpater:     %s",
+                       silc_adapter_type_to_string( adapter ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Region type: %s",
+                       silc_region_type_to_string( regionType ) );
 
     return next_region_handle++;
 }
@@ -104,9 +118,13 @@ SILC_DefineMPICommunicator
 {
     static SILC_MPICommunicatorHandle next_mpi_communicator_handle;
 
-    fprintf( stderr, "%s: Define new MPI Communicator:\n", __func__ );
-    fprintf( stderr, "    Handle ID:   %x\n", next_mpi_communicator_handle );
-    fprintf( stderr, "    World ranks:" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "Define new MPI Communicator:" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Handle ID:   %x", next_mpi_communicator_handle );
+    SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
+    SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS,
+                           "    World ranks:" );
 
     uint32_t ranks_in_line = 0;
     for ( uint32_t i = 0; i < sizeOfBitVectorReprOfCommGroup; ++i )
@@ -116,16 +134,19 @@ SILC_DefineMPICommunicator
         {
             if ( ranks_in_line && ranks_in_line % 16 == 0 )
             {
-                fprintf( stderr, "\n%*s",
-                         ( int )strlen( "    World ranks:" ), "" );
+                SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
+                SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
+                SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "%*s",
+                                       ( int )strlen( "    World ranks:" ),
+                                       "" );
             }
 
-            fprintf( stderr, " %u", i );
+            SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, " %u", i );
 
             ranks_in_line++;
         }
     }
-    fprintf( stderr, "\n" );
+    SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
     return next_mpi_communicator_handle++;
 }
@@ -142,8 +163,9 @@ SILC_DefineMPIWindow
 {
     static SILC_MPIWindowHandle next_mpi_window_handle;
 
-    fprintf( stderr, "%s: Define new MPI Window:\n", __func__ );
-    fprintf( stderr, "    Handle ID: %x\n", next_mpi_window_handle );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "Define new MPI Window:" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Handle ID: %x", next_mpi_window_handle );
 
     return next_mpi_window_handle++;
 }
@@ -164,18 +186,24 @@ SILC_DefineMPICartesianTopology
 {
     static SILC_MPICartTopolHandle next_mpi_cart_topol_handle;
 
-    fprintf( stderr, "%s: Define new MPI cartesian topology \"%s\":\n",
-             __func__, topologyName );
-    fprintf( stderr, "    Handle ID:  %x\n", next_mpi_cart_topol_handle );
-    fprintf( stderr, "    Dimensions: %u\n", nDimensions );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "Define new MPI cartesian topology \"%s\":",
+                       topologyName );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Handle ID:  %x", next_mpi_cart_topol_handle );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "    Dimensions: %u", nDimensions );
 
     for ( uint32_t i = 0; i < nDimensions; ++i )
     {
-        fprintf( stderr, "    Dimension %u:\n", i );
-        fprintf( stderr, "        #processes  %u:\n",
-                 nProcessesPerDimension[ i ] );
-        fprintf( stderr, "        periodicity %hhu:\n",
-                 periodicityPerDimension[ i ] );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                           "    Dimension %u:\n", i );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                           "        #processes  %u:\n",
+                           nProcessesPerDimension[ i ] );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                           "        periodicity %hhu:\n",
+                           periodicityPerDimension[ i ] );
     }
 
     return next_mpi_cart_topol_handle++;
@@ -196,19 +224,21 @@ SILC_DefineMPICartesianCoords
 {
     char stringBuffer[ 16 ];
 
-    fprintf( stderr,
-             "%s: Define new MPI cartesian coordinates in topology %s\n",
-             __func__,
-             silc_mpi_cart_topol_to_string( stringBuffer,
-                                            sizeof(  stringBuffer ),
-                                            "%x",
-                                            cartesianTopologyHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "Define new MPI cartesian coordinates in topology %s",
+                       silc_mpi_cart_topol_to_string( stringBuffer,
+                                                      sizeof(  stringBuffer ),
+                                                      "%x",
+                                                      cartesianTopologyHandle ) );
 
-    fprintf( stderr, "    Coordinates:" );
+    SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
+    SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "    Coordinates:" );
     for ( uint32_t i; i < nCoords; ++i )
     {
-        fprintf( stderr, " %u", coordsOfCurrentRank[ i ] );
+        SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS,
+                               " %u", coordsOfCurrentRank[ i ] );
     }
+    SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
     return;
 }
@@ -223,6 +253,8 @@ SILC_DefineCounterGroup
     const char* name
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_COUNTER_GROUP;
 }
 
@@ -239,6 +271,8 @@ SILC_DefineCounter
     const char*             unit
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_COUNTER;
 }
 
@@ -252,6 +286,8 @@ SILC_DefineIOFileGroup
     const char* name
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_IOFILE_GROUP;
 }
 
@@ -266,6 +302,8 @@ SILC_DefineIOFile
     SILC_IOFileGroupHandle ioFileGroup
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_IOFILE;
 }
 
@@ -279,6 +317,8 @@ SILC_DefineMarkerGroup
     const char* name
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_MARKER_GROUP;
 }
 
@@ -293,6 +333,8 @@ SILC_DefineMarker
     SILC_MarkerGroupHandle markerGroup
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_MARKER;
 }
 
@@ -307,5 +349,7 @@ SILC_DefineParameter
     SILC_ParameterType type
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
+
     return SILC_INVALID_PARAMETER;
 }

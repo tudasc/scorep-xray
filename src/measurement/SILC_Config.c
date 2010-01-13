@@ -32,6 +32,7 @@
  */
 
 
+#include <SILC_Debug.h>
 #include <SILC_Config.h>
 
 
@@ -62,8 +63,9 @@ SILC_ConfigRegister
     SILC_ConfigVariable* variables
 )
 {
-    fprintf( stderr, "%s: Register new variables in name space %s\n",
-             __func__, nameSpace ? nameSpace : "" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                       "Register new variables in name space %s",
+                       nameSpace ? nameSpace : "" );
 
     while ( variables->name )
     {
@@ -71,14 +73,18 @@ SILC_ConfigRegister
         char environment_variable_name[ 7 + 2 * 32 ];
         bool successfully_parsed;
 
-        fprintf( stderr, "Variable:      %s%s%s\n",
-                 nameSpace ? nameSpace : "",
-                 nameSpace ? "/" : "",
-                 variables->name );
-        fprintf( stderr, "  Type:        %s\n",
-                 silc_config_type_to_string( variables->type ) );
-        fprintf( stderr, "  Default:     %s\n", variables->defaultValue );
-        fprintf( stderr, "  Description: %s\n", variables->shortHelp );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                           "Variable:      %s%s%s",
+                           nameSpace ? nameSpace : "",
+                           nameSpace ? "/" : "",
+                           variables->name );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                           "  Type:        %s",
+                           silc_config_type_to_string( variables->type ) );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                           "  Default:     %s", variables->defaultValue );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                           "  Description: %s", variables->shortHelp );
 
         /* set the variable to its default value */
         successfully_parsed = parse_value( variables->defaultValue,
@@ -88,7 +94,8 @@ SILC_ConfigRegister
 
         if ( !successfully_parsed )
         {
-            fprintf( stderr, "  Can't set variable to default value." );
+            fprintf( stderr, "Can't set variable to default value\n" );
+            /* should this be an error? */
         }
 
         sprintf( environment_variable_name, "SILC%s%.32s_%.32s",
@@ -96,14 +103,16 @@ SILC_ConfigRegister
                  nameSpace ? nameSpace : "",
                  variables->name );
 
-        fprintf( stderr, "  Environmental Name: %s\n",
-                 environment_variable_name );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                           "  Environment variable name: %s",
+                           environment_variable_name );
 
         const char* environment_variable_value =
             getenv( environment_variable_name );
         if ( environment_variable_value )
         {
-            fprintf( stderr, "    Value: %s\n", environment_variable_value );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                               "    Value: %s", environment_variable_value );
 
             /* set the variable to the value of the environment variable */
             successfully_parsed = parse_value( environment_variable_value,
@@ -113,18 +122,22 @@ SILC_ConfigRegister
 
             if ( !successfully_parsed )
             {
-                fprintf( stderr, "  Can't set variable to value of environment variable." );
+                fprintf( stderr, "Can't set variable to default value\n" );
+                /* should this be an error? */
             }
         }
         else
         {
-            fprintf( stderr, "    Variable is unset\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                               "    Variable is unset" );
         }
 
-        dump_value( "  Final value: ",
-                    variables->type,
-                    variables->variableReference,
-                    variables->variableContext );
+        SILC_DEBUG_ONLY(
+            dump_value( "  Final value: ",
+                        variables->type,
+                        variables->variableReference,
+                        variables->variableContext );
+            )
 
         variables++;
     }
@@ -394,16 +407,21 @@ dump_set( const char* prefix,
 {
     const char* prefix_printed = prefix;
     const char* empty_set      = "<empty set>";
+
+    SILC_DEBUG_PREFIX( SILC_DEBUG_CONFIG );
+
     while ( *stringList )
     {
-        fprintf( stderr, "%s%s", prefix, *stringList );
+        SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_CONFIG,
+                               "%s%s", prefix, *stringList );
         stringList++;
         prefix         = ", ";
         prefix_printed = "";
         empty_set      = "";
     }
 
-    fprintf( stderr, "%s%s\n", prefix_printed, empty_set );
+    SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_CONFIG,
+                           "%s%s\n", prefix_printed, empty_set );
 }
 
 static inline bool
@@ -413,11 +431,15 @@ dump_bitset( const char*               prefix,
 {
     const char* prefix_printed = prefix;
     const char* empty_set      = "<empty set>";
+
+    SILC_DEBUG_PREFIX( SILC_DEBUG_CONFIG );
+
     while ( acceptedValues->name )
     {
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
-            fprintf( stderr, "%s%s", prefix, acceptedValues->name );
+            SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_CONFIG,
+                                   "%s%s", prefix, acceptedValues->name );
             bitmask       &= ~acceptedValues->value;
             prefix         = ", ";
             prefix_printed = "";
@@ -426,7 +448,8 @@ dump_bitset( const char*               prefix,
         acceptedValues++;
     }
 
-    fprintf( stderr, "%s%s\n", prefix_printed, empty_set );
+    SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_CONFIG,
+                           "%s%s\n", prefix_printed, empty_set );
 }
 
 static inline void
@@ -438,8 +461,9 @@ dump_value( const char*     prefix,
     switch ( type )
     {
         case SILC_CONFIG_TYPE_BOOL:
-            fprintf( stderr, "%s%s\n", prefix,
-                     *( bool* )variableReference ? "true" : "false" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                               "%s%s", prefix,
+                               *( bool* )variableReference ? "true" : "false" );
             break;
 
         case SILC_CONFIG_TYPE_SET:
@@ -456,12 +480,14 @@ dump_value( const char*     prefix,
         case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
-            fprintf( stderr, "%stype not implemented\n", prefix );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                               "%stype not implemented", prefix );
             break;
 
         case SILC_INVALID_CONFIG_TYPE:
         default:
-            fprintf( stderr, "%sinvalid type\n", prefix );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
+                               "%sinvalid type", prefix );
             break;
     }
 }

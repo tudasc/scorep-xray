@@ -34,6 +34,7 @@
 
 
 #include <SILC_Error.h>
+#include <SILC_Debug.h>
 #include <SILC_RuntimeManagement.h>
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
@@ -90,7 +91,7 @@ silc_finalize( void );
 bool
 SILC_IsInitialized()
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     return silc_initialized && !silc_finalized;
 }
@@ -110,7 +111,7 @@ SILC_InitMeasurement
 {
     SILC_Error_Code error;
 
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     if ( silc_initialized )
     {
@@ -240,7 +241,7 @@ SILC_FinalizeMeasurement
     void
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     silc_finalize();
 }
@@ -255,7 +256,7 @@ SILC_InitMeasurementMPI
     int rank
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     if ( flush_done )
     {
@@ -288,7 +289,7 @@ SILC_EnableRecording
     void
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 }
 
 
@@ -301,7 +302,7 @@ SILC_DisableRecording
     void
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 }
 
 
@@ -314,7 +315,7 @@ SILC_RecordingEnabled
     void
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     return false;
 }
@@ -322,7 +323,7 @@ SILC_RecordingEnabled
 static void
 silc_finalize( void )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     if ( !silc_initialized || silc_finalized )
     {

@@ -29,6 +29,7 @@
  */
 
 
+#include <SILC_Debug.h>
 #include <SILC_Events.h>
 #include <SILC_Timing.h>
 #include <OTF2_EvtWriter.h>
@@ -47,12 +48,13 @@ SILC_EnterRegion
     SILC_RegionHandle regionHandle
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Reg:%s\n",
-             __func__,
-             silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
-                                    "%x", regionHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Reg:%s",
+                       silc_region_to_string( stringBuffer,
+                                              sizeof( stringBuffer ),
+                                              "%x", regionHandle ) );
 
     OTF2_EvtWriter_Enter( silc_local_event_writer, NULL,
                           SILC_GetWallClockTime(),
@@ -69,12 +71,13 @@ SILC_ExitRegion
     SILC_RegionHandle regionHandle
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Reg:%s\n",
-             __func__,
-             silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
-                                    "%x", regionHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Reg:%s",
+                       silc_region_to_string( stringBuffer,
+                                              sizeof( stringBuffer ),
+                                              "%x", regionHandle ) );
 
     OTF2_EvtWriter_Leave( silc_local_event_writer, NULL,
                           SILC_GetWallClockTime(),
@@ -94,15 +97,16 @@ SILC_MpiSend
     uint64_t                   bytesSent
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Dst:%u Comm:%s Tag:%u Bytes:%llu\n",
-             __func__,
-             globalDestinationRank,
-             silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
-                                  "%x", communicatorHandle ),
-             tag,
-             ( unsigned long long )bytesSent );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Dst:%u Comm:%s Tag:%u Bytes:%llu",
+                       globalDestinationRank,
+                       silc_comm_to_string( stringBuffer,
+                                            sizeof( stringBuffer ),
+                                            "%x", communicatorHandle ),
+                       tag,
+                       ( unsigned long long )bytesSent );
 
     OTF2_EvtWriter_MpiSend( silc_local_event_writer, NULL,
                             SILC_GetWallClockTime(),
@@ -127,15 +131,16 @@ SILC_MpiRecv
     uint64_t                   bytesReceived
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Src:%u Comm:%s Tag:%u Bytes:%llu\n",
-             __func__,
-             globalSourceRank,
-             silc_comm_to_string( stringBuffer, sizeof( stringBuffer ),
-                                  "%x", communicatorHandle ),
-             tag,
-             ( unsigned long long )bytesReceived );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Src:%u Comm:%s Tag:%u Bytes:%llu",
+                       globalSourceRank,
+                       silc_comm_to_string( stringBuffer,
+                                            sizeof( stringBuffer ),
+                                            "%x", communicatorHandle ),
+                       tag,
+                       ( unsigned long long )bytesReceived );
 
     OTF2_EvtWriter_MpiRecv( silc_local_event_writer, NULL,
                             SILC_GetWallClockTime(),
@@ -161,18 +166,22 @@ SILC_MpiCollective
     uint64_t                   bytesReceived
 )
 {
-    char stringBuffer[ 3 ][ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Reg:%s Comm:%s Root:%s Sent:%llu Recv:%llu\n",
-             __func__,
-             silc_region_to_string( stringBuffer[ 0 ], sizeof( stringBuffer[ 0 ] ),
-                                    "%x", regionHandle ),
-             silc_comm_to_string( stringBuffer[ 1 ], sizeof( stringBuffer[ 1 ] ),
-                                  "%x", communicatorHandle ),
-             silc_uint32_to_string( stringBuffer[ 2 ], sizeof( stringBuffer[ 2 ] ),
-                                    "%x", globalRootRank, SILC_INVALID_ROOT_RANK ),
-             ( unsigned long long )bytesSent,
-             ( unsigned long long )bytesReceived );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Reg:%s Comm:%s Root:%s Sent:%llu Recv:%llu",
+                       silc_region_to_string( stringBuffer[ 0 ],
+                                              sizeof( stringBuffer[ 0 ] ),
+                                              "%x", regionHandle ),
+                       silc_comm_to_string( stringBuffer[ 1 ],
+                                            sizeof( stringBuffer[ 1 ] ),
+                                            "%x", communicatorHandle ),
+                       silc_uint32_to_string( stringBuffer[ 2 ],
+                                              sizeof( stringBuffer[ 2 ] ),
+                                              "%x", globalRootRank,
+                                              SILC_INVALID_ROOT_RANK ),
+                       ( unsigned long long )bytesSent,
+                       ( unsigned long long )bytesReceived );
 
     OTF2_EvtWriter_MpiCollective( silc_local_event_writer, NULL,
                                   SILC_GetWallClockTime(),
@@ -193,12 +202,13 @@ SILC_OmpFork
     SILC_RegionHandle regionHandle
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Reg:%s\n",
-             __func__,
-             silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
-                                    "%x", regionHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Reg:%s",
+                       silc_region_to_string( stringBuffer,
+                                              sizeof( stringBuffer ),
+                                              "%x", regionHandle ) );
 }
 
 
@@ -211,12 +221,13 @@ SILC_OmpJoin
     SILC_RegionHandle regionHandle
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: Reg:%s\n",
-             __func__,
-             silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
-                                    "%x", regionHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Reg:%s",
+                       silc_region_to_string( stringBuffer,
+                                              sizeof( stringBuffer ),
+                                              "%x", regionHandle ) );
 }
 
 
@@ -229,7 +240,7 @@ SILC_OmpAcquireLock
     uint32_t lockId
 )
 {
-    fprintf( stderr, "%s: Lock:%x\n", __func__, lockId );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Lock:%x", lockId );
 }
 
 
@@ -242,7 +253,7 @@ SILC_OmpReleaseLock
     uint32_t lockId
 )
 {
-    fprintf( stderr, "%s: Lock:%x\n", __func__, lockId );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Lock:%x", lockId );
 }
 
 
@@ -255,12 +266,13 @@ SILC_ExitRegionOnException
     SILC_RegionHandle regionHandle
 )
 {
-    char stringBuffer[ 16 ];
+    SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
+                     )
 
-    fprintf( stderr, "%s: %s\n",
-             __func__,
-             silc_region_to_string( stringBuffer, sizeof( stringBuffer ),
-                                    "%x", regionHandle ) );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Reg:%s",
+                       silc_region_to_string( stringBuffer,
+                                              sizeof( stringBuffer ),
+                                              "%x", regionHandle ) );
 }
 
 
@@ -274,7 +286,7 @@ SILC_TriggerCounterInt64
     int64_t            value
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
 
@@ -288,7 +300,7 @@ SILC_TriggerCounterDouble
     double             value
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
 
@@ -301,7 +313,7 @@ SILC_TriggerMarker
     SILC_MarkerHandle markerHandle
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
 
@@ -315,7 +327,7 @@ SILC_TriggerParameterInt64
     int64_t              value
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
 
@@ -329,7 +341,7 @@ SILC_TriggerParameterDouble
     double               value
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
 
@@ -343,5 +355,5 @@ SILC_TriggerParameterString
     const char*          value
 )
 {
-    fprintf( stderr, "%s\n", __func__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
