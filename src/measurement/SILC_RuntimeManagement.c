@@ -88,13 +88,11 @@ silc_finalize( void );
  * Return true if SILC_InitMeasurement() has been executed.
  */
 bool
-SILC_IsInitialized
-(
-)
+SILC_IsInitialized()
 {
     fprintf( stderr, "%s\n", __func__ );
 
-    return silc_initialized;
+    return silc_initialized && !silc_finalized;
 }
 
 
