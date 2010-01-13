@@ -47,86 +47,6 @@ SILC_RegionHandle silc_pomp_implicit_barrier_region = SILC_INVALID_REGION;
 bool silc_pomp_is_tracing_on = true;
 
 /* **************************************************************************************
-                                                                           Initialization
-****************************************************************************************/
-/** Flag to indicate wether the adapter is initialized */
-bool silc_pomp_is_initialized = false;
-
-/** Adapter initialization function to allow registering configuration variables. No
-    variables are regstered.
- */
-SILC_Error_Code
-silc_pomp_register()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In silc_pomp_register\n" );
-    return SILC_SUCCESS;
-}
-
-/** Adapter initialization function.
- */
-SILC_Error_Code
-silc_pomp_init()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In silc_pomp_init\n" );
-    POMP_Init();
-    return SILC_SUCCESS;
-}
-
-/** Allows initialization of location specific data. Nothing done inside this funcion. */
-SILC_Error_Code
-silc_pomp_init_location()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In silc_pomp_init_location\n" );
-    return SILC_SUCCESS;
-}
-
-/** Allows finaltialization of location specific data. Nothing done inside this funcion.
- */
-void
-silc_pomp_final_location()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In silc_pomp_final_location\n" );
-}
-
-/** Adapter finalialization function.
- */
-void
-silc_pomp_final()
-{
-    POMP_Finalize();
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In silc_pomp_final\n" );
-}
-
-/** Called when the adapter is derigistered. Nothing done inside the function
- */
-void
-silc_pomp_deregister()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "In silc_pomp_deregister\n" );
-}
-
-/** Struct which contains the adapter iniitialization and finalization functions for the
-    POMP adapter.
- */
-struct SILC_Adapter SILC_Pomp_Adapter =
-{
-    SILC_ADAPTER_POMP,
-    "POMP Adapter / Version 1.0",
-    &silc_pomp_register,
-    &silc_pomp_init,
-    &silc_pomp_init_location,
-    &silc_pomp_final_location,
-    &silc_pomp_final,
-    &silc_pomp_deregister
-};
-
-/* **************************************************************************************
                                                                        Internal functions
 ****************************************************************************************/
 
@@ -176,13 +96,84 @@ silc_pomp_assign_string( char**      destination,
 }
 
 /* **************************************************************************************
- *                                                                C pomp function library
- ***************************************************************************************/
+                                                                           Initialization
+****************************************************************************************/
+/** Flag to indicate wether the adapter is initialized */
+bool silc_pomp_is_initialized = false;
 
+/** Adapter initialization function to allow registering configuration variables. No
+    variables are regstered.
+ */
+SILC_Error_Code
+silc_pomp_register()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "In silc_pomp_register\n" );
+    return SILC_SUCCESS;
+}
 
+/** Adapter initialization function.
+ */
+SILC_Error_Code
+silc_pomp_init()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "In silc_pomp_init\n" );
 
+    /* Initialize the adapter */
+    if ( !silc_pomp_is_initialized )
+    {
+        /* Set flag */
+        silc_pomp_is_initialized = true;
+
+        /* If initialized from user instrumentation initialize measurement before. */
+        SILC_InitMeasurement();
+
+        /* Initialize file handle for implicit barrier */
+        SILC_SourceFileHandle file_handle = SILC_DefineSourceFile( "POMP" );
+
+        /* Allocate memory for your POMP_Get_num_regions() regions */
+        silc_pomp_regions = calloc( POMP_Get_num_regions(),
+                                    sizeof( SILC_Pomp_Region ) );
+
+        /* Register regions */
+        POMP_Init_regions();
+
+        /* Initialize implicit barrier region */
+        silc_pomp_implicit_barrier_region =
+            SILC_DefineRegion( "implicit barrier",
+                               file_handle,
+                               SILC_INVALID_LINE_NO,
+                               SILC_INVALID_LINE_NO,
+                               SILC_ADAPTER_POMP,
+                               SILC_REGION_OMP_IMPLICIT_BARRIER );
+    }
+
+    return SILC_SUCCESS;
+}
+
+/** Allows initialization of location specific data. Nothing done inside this funcion. */
+SILC_Error_Code
+silc_pomp_init_location()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "In silc_pomp_init_location\n" );
+    return SILC_SUCCESS;
+}
+
+/** Allows finaltialization of location specific data. Nothing done inside this funcion.
+ */
 void
-POMP_Finalize()
+silc_pomp_final_location()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "In silc_pomp_final_location\n" );
+}
+
+/** Adapter finalialization function.
+ */
+void
+silc_pomp_final()
 {
     static int   pomp_finalize_called = 0;
     size_t       i;
@@ -202,39 +193,52 @@ POMP_Finalize()
     {
         pomp_finalize_called = 1;
     }
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "In silc_pomp_final\n" );
+}
+
+/** Called when the adapter is derigistered. Nothing done inside the function
+ */
+void
+silc_pomp_deregister()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "In silc_pomp_deregister\n" );
+}
+
+/** Struct which contains the adapter iniitialization and finalization functions for the
+    POMP adapter.
+ */
+struct SILC_Adapter SILC_Pomp_Adapter =
+{
+    SILC_ADAPTER_POMP,
+    "POMP Adapter / Version 1.0",
+    &silc_pomp_register,
+    &silc_pomp_init,
+    &silc_pomp_init_location,
+    &silc_pomp_final_location,
+    &silc_pomp_final,
+    &silc_pomp_deregister
+};
+
+/* **************************************************************************************
+ *                                                                C pomp function library
+ ***************************************************************************************/
+
+
+
+void
+POMP_Finalize()
+{
 }
 
 void
 POMP_Init()
 {
-    /* If initialized from user instrumentation initialize measurement before. */
+    /* If adapter is not initialized, it means that the measurement system is not
+       initialized. */
     SILC_InitMeasurement();
-
-    /* Initialize the adapter */
-    if ( !silc_pomp_is_initialized )
-    {
-        /* Initialize file handle for implicit barrier */
-        SILC_SourceFileHandle file_handle = SILC_DefineSourceFile( "POMP" );
-
-        /* Set flag */
-        silc_pomp_is_initialized = true;
-
-        /* Allocate memory for your POMP_Get_num_regions() regions */
-        silc_pomp_regions = calloc( POMP_Get_num_regions(),
-                                    sizeof( SILC_Pomp_Region ) );
-
-        /* Register regions */
-        POMP_Init_regions();
-
-        /* Initialize implicit barrier region */
-        silc_pomp_implicit_barrier_region =
-            SILC_DefineRegion( "implicit barrier",
-                               file_handle,
-                               SILC_INVALID_LINE_NO,
-                               SILC_INVALID_LINE_NO,
-                               SILC_ADAPTER_POMP,
-                               SILC_REGION_OMP_IMPLICIT_BARRIER );
-    }
 }
 
 void
