@@ -1,0 +1,51 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+
+check_PROGRAMS += self_contained_silc_adapter_c            \
+                  self_contained_silc_config_c             \
+                  self_contained_silc_definitions_c        \
+                  self_contained_silc_events_c             \
+                  self_contained_silc_memory_c             \
+                  self_contained_silc_runtime_management_c \
+                  self_contained_silc_types_c
+
+self_contained_cppflags = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_DIR_UTIL)
+
+self_contained_silc_adapter_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_adapter.c
+self_contained_silc_adapter_c_CPPFLAGS = $(self_contained_cppflags)
+
+self_contained_silc_config_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_config.c
+self_contained_silc_config_c_CPPFLAGS = $(self_contained_cppflags)
+
+self_contained_silc_definitions_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_definitions.c
+self_contained_silc_definitions_c_CPPFLAGS = $(self_contained_cppflags)
+
+self_contained_silc_events_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_events.c
+self_contained_silc_events_c_CPPFLAGS = $(self_contained_cppflags)
+
+self_contained_silc_memory_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_memory.c
+self_contained_silc_memory_c_CPPFLAGS = $(self_contained_cppflags)
+
+self_contained_silc_runtime_management_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_runtime_management.c
+self_contained_silc_runtime_management_c_CPPFLAGS = $(self_contained_cppflags)
+
+self_contained_silc_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_types.c
+self_contained_silc_types_c_CPPFLAGS = $(self_contained_cppflags)

@@ -13,5 +13,6 @@ include ../src/services/Makefile.inc.am
 ## on the backend.
 if BUILD_TESTS
 include ../test/services/Makefile.inc.am
+include ../test/measurement/Makefile.inc.am
 include ../test/jacobi/OpenMP/C/Makefile.inc.am
 endif
