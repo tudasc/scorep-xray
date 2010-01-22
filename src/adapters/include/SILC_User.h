@@ -366,15 +366,20 @@
     events, even if other code blocks conatain a different name or type in their
     SILC_USER_REGION_BEGIN statement.
 
-    In Fortran, this marco can only be used if using Fortran 90 or a later standard. It
-    is not supported in earlier standards like Fortran 77. In Fortran it creates a new
-    module which contains the handle. Thus, it must be declared ouside any other
-    program, subroutine, module, or function.
+    In Fortran, it creates a named common block. For the name, a 'id' is appended to the
+    handle name. Furthermore, a blockdata construct for initialization is defined with the
+    name of the handle and a 'g' appended. If
+    you are using a Fortran version which has a limited length of code lines, the length
+    of the @a handle parameter must be at most 4 characters, else the declaration line
+    exceeds the allowed length.
 
     @param handle  A name for a parameter must be provided. This parameter is declared in
                    the macro. This handle is used in the SILC_USER_REGION_BEGIN and
                    SILC_USER_REGION_END statements to specify which region is started,
                    or ended.
+                   If you are using a Fortran version which has a limited length of code
+                   lines, the length of the @a handle parameter must be at most 4
+                   characters, else the declaration line exceeds the allowed length.
 
     C/C++ example:
     @code
@@ -431,9 +436,8 @@
     events, even if other code blocks conatain a different name or type in their
     SILC_USER_REGION_BEGIN statement.
 
-    In Fortran, this marco can only be used if using Fortran 90 or a later standard. It
-    is not supported in earlier standards like Fortran 77. It uses the module
-    created by SILC_GLOBAL_REGION_DEFINE which contains the handle.
+    It uses a common block, which is initialized by SILC_GLOBAL_REGION_DEFINE
+    which contains the handle.
     Thus, it must be declared at the top of any module or program which uses this
     handle.
 
@@ -661,10 +665,17 @@
     All other files in which the same group handle is  accessed, must declare the handle
     using SILC_USER_METRIC_GROUP_EXTERNAL.
 
-    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
-    be used for earlier Fortran versions. It creates a module which contains the handle.
+    In Fortran, it creates a named common block. For the name, a 'id' is appended to the
+    handle name. Furthermore, a blockdata construct for initialization is defined with the
+    name of the handle and a 'g' appended.
+    If you are using a Fortran version which has a limited length of code lines, the
+    length of the @a handle parameter must be at most 4 characters, else the declaration
+    line exceeds the allowed length.
 
     @param groupHandle The variable name for the variable declared in this statement.
+                       If you are using a Fortran version which has a limited length of
+                       code lines, the length of the @a handle parameter must be at most
+                       4 characters, else the declaration line exceeds the allowed length.
 
     C/C++ example:
     @code
@@ -733,9 +744,7 @@
     All other files in which the same group handle is  accessed, must declare the handle
     using SILC_USER_METRIC_GROUP_EXTERNAL.
 
-    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
-    be used for earlier Fortran versions. It uses the module created by
-    SILC_USER_METRIC_GROUP_GLOBAL.
+    In Fortran, tt uses the common block created by SILC_USER_METRIC_GROUP_GLOBAL.
 
     @param groupHandle The variable name for the variable declared in this statement.
 
@@ -904,10 +913,19 @@
     other files in which this handle is accessed must declare it with
     SILC_USER_METRIC_EXTERNAL.
 
-    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
-    be used for earlier Fortran versions. It creates a module which contains the handle.
+    In Fortran, it creates a named common block. For the name, a 'id' is appended to the
+    handle name. Furthermore, a blockdata construct for initialization is defined with the
+    name of the handle and a 'g' appended.
+    If you are using a Fortran version which has a limited length of code lines, the
+    length of the @a handle parameter must be at most 4 characters, else the declaration
+    line exceeds the allowed length.
 
     @param metricHandle The variable name for the handle.
+                        If you are using a Fortran version which has a limited length of
+                        code lines, the
+                        length of the @a handle parameter must be at most 4 characters,
+                        else the declaration line exceeds the allowed length.
+
 
     C/C++ example:
     @code
@@ -968,8 +986,7 @@
     other files in which this handle is accessed must declare it with
     SILC_USER_METRIC_EXTERNAL.
 
-    In Fortran, this macro is only supported for Fortran 90 and late standards. It can not
-    be used for earlier Fortran versions. It uses the module create by
+    In Fortran, this statement uses the common block created by
     SILC_USER_METRIC_GLOBAL.
 
     @param metricHandle The variable name of the handle. it must be the same name as used

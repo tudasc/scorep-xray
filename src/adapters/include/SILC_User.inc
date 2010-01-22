@@ -65,12 +65,12 @@
 #define SILC_USER_REGION_ENTER( handle ) call SILC_User_RegionEnterF(handle)
 
 #define SILC_GLOBAL_REGION_DEFINE( handle ) \
-        module handle##mod; \
-        SILC_REGION_HANDLE::handle=SILC_INVALID_REGION; \
-        end module handle##mod
+        blockdata handle##g;SILC_REGION_HANDLE::handle;common/handle##id/handle;data handle/SILC_INVALID_REGION/;end
+      
 
 #define SILC_GLOBAL_REGION_EXTERNAL( handle ) \
-        use handle##mod
+        SILC_REGION_HANDLE::handle; \
+        common /handle##id/handle
 
 #define SILC_USER_FUNC_DEFINE SILC_USER_REGION_DEFINE( silcufh )
 
@@ -86,23 +86,24 @@
         SILC_METRIC_GROUP :: groupHandle = SILC_INVALID_METRIC_GROUP
 
 #define SILC_USER_METRIC_GROUP_GLOBAL( groupHandle ) \
-        module groupHandle##mod; SILC_METRIC_GROUP::groupHandle=\
-        SILC_INVALID_METRIC_GROUP; end module groupHandle##mod
+        blockdata groupHandle##g;SILC_METRIC_GROUP::groupHandle;common/groupHandle##id/groupHandle;data groupHandle/SILC_INVALID_METRIC_GROUP/;end
 
-#define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) use groupHandle##mod
+#define SILC_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
+        SILC_METRIC_GROUP::groupHandle; \
+        common /groupHandle##id/ groupHandle
 
 #define SILC_USER_METRIC_GROUP_INIT( groupHandle, name ) \
-        call SILC_User_InitMetricGroupF( groupHandle, name );
+        call SILC_User_InitMetricGroupF( groupHandle, name )
 
 #define SILC_USER_METRIC_LOCAL( metricHandle ) \
         SILC_METRIC_HANDLE :: metricHandle = SILC_INVALID_METRIC
 
 #define SILC_USER_METRIC_GLOBAL( metricHandle ) \
-        module metricHandle##mod; SILC_METRIC_HANDLE::metricHandle=SILC_INVALID_METRIC;\
-        end module metricHandle##mod
+        blockdata metricHandle##g;SILC_METRIC_HANDLE::metricHandle;common/metricHandle##id/metricHandle;data metricHandle/SILC_INVALID_METRIC/;end
 
 #define SILC_USER_METRIC_EXTERNAL( metricHandle ) \
-        use metricHandle##mod
+        SILC_METRIC_HANDLE::metricHandle;\
+        common /metricHandle##id/ metricHandle
 
 #define SILC_USER_METRIC_INIT( metricHandle, name, unit, type, context, groupHandle ) \
         call SILC_User_InitMetricF( metricHandle, name, unit, type, context, groupHandle )
