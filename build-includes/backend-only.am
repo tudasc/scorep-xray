@@ -7,6 +7,7 @@ include ../src/measurement/Makefile.inc.am
 include ../src/adapters/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
+include ../src/adapters/pomp/Makefile.inc.am
 include ../src/services/Makefile.inc.am
 
 ## include tests only when building on the frontend. They can't be run easily 

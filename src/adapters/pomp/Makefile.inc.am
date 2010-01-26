@@ -1,0 +1,17 @@
+noinst_LTLIBRARIES += libsilc_adapter_pomp.la
+
+libsilc_adapter_pomp_la_SOURCES =                       \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lib.c        \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.c \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.h
+
+libsilc_adapter_pomp_la_CPPFLAGS =                      \
+    $(AM_CPPFLAGS)                                      \
+    -I$(INC_ROOT)src/adapters/include                   \
+    -I$(INC_ROOT)src/adapters/pomp                      \
+    -I$(INC_ROOT)src/measurement/include                \
+    -I$(INC_DIR_UTIL)
+
+include_HEADERS +=                                      \
+    $(SRC_ROOT)src/adapters/include/pomp_lib.h
+

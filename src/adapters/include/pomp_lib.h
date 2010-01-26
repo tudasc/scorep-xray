@@ -108,7 +108,7 @@ POMP_End( POMP_Region_handle pomp_handle );
  */
 extern void
 POMP_Assign_handle( POMP_Region_handle* pomp_handle,
-                    const char          ctc_string[] );
+                    const char          init_string[] );
 
 #ifdef _OPENMP
 /** Called before an atomic statement.
