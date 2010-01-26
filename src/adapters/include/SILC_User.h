@@ -1537,7 +1537,7 @@
 #define SILC_USER_METRIC_DOUBLE( metricHandle, value )
 #define SILC_RECORDING_ON
 #define SILC_RECORDING_OFF
-#define SILC_RECORDING_IS_ON
+#define SILC_RECORDING_IS_ON 0
 #define SILC_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY )
 #define SILC_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
                                   periodZ )
