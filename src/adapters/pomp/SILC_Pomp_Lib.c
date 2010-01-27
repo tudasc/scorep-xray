@@ -22,6 +22,7 @@
  * @brief Implementation of the POMP adapter functions.
  */
 
+#include "SILC_Pomp_Init.h"
 #include "pomp_lib.h"
 #include "SILC_Pomp_RegionInfo.h"
 #include "SILC_Utils.h"
