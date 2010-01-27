@@ -7,13 +7,9 @@ pomp_test_SOURCES =                                      \
 
 pomp_test_CPPFLAGS = $(AM_CPPFLAGS)         \
     -I$(INC_ROOT)src/adapters/include       \
-    -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_DIR_UTIL)
 
 pomp_test_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
 pomp_test_LDADD =                       \
-    $(LIB_ROOT)libsilc_serial.la        \
-    $(LIB_ROOT)libsilc_adapter_pomp.la  \
-    $(LIB_DIR_OTF2)libotf2.la           \
-    $(LIB_DIR_UTIL)libsilc_utilities.la
+    $(LIB_ROOT)libsilc_serial.la
