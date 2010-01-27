@@ -13,6 +13,12 @@
  *
  */
 
+/**
+ * @ file      SILC_ApplicationType.cpp
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
+ */
+
 
 #include "Silc_ApplicationType.hpp"
 #include "Silc_Instrumenter.hpp"
@@ -20,10 +26,20 @@
 
 Silc_ApplicationType* Silc_ApplicationType::_appType = 0;
 
+
 Silc_ApplicationType::Silc_ApplicationType
     ()
 {
 }
+
+
+/** @brief
+ *  defines the right stage of SILC defined by the user,
+ *
+ * @param  type    string which defines the type of application
+ *
+ * @return (..)    returns an instance of the Silc_Application type
+ */
 
 Silc_Application*
 Silc_ApplicationType::getSilcStage
@@ -54,8 +70,10 @@ Silc_ApplicationType::getSilcStage
     return 0;
 }
 
-/** @brief
- * get the instance
+/**
+ * @brief get the application instance, ensures, that only one application is running
+ *
+ * @return _appType    returns the type of the SILC application
  */
 Silc_ApplicationType
 &

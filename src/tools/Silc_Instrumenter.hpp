@@ -13,6 +13,12 @@
  *
  */
 
+/**
+ * @ file       SILC_Instrumenter.hpp
+ * @ maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
+ * @ brief      Class to steer the instrumentation of the user code.
+ */
 
 #ifndef SILC_INSTRUMENTER_H_
 #define SILC_INSTRUMENTER_H_
@@ -123,27 +129,18 @@ public:
     Silc_Instrumenter
         ();
 
-/** @brief
- * reads the defined input data file
- */
     virtual SILC_Error_Code
     silc_readConfigFile
     (
         std::string fileName
     );
 
-/** @brief
- * examines environment variables
- */
     SILC_Error_Code
     silc_readEnvVars
     (
     );
 
 
-/** @brief
- * get command line attributes
- */
     virtual SILC_Error_Code
     silc_parseCmdLine
     (
@@ -151,16 +148,18 @@ public:
         char** argv
     );
 
-/** @brief
- * perform instrumentation stage
+/** @ brief   perform instrumentation stage
  */
     virtual int
     silc_run
     (
     );
 
-/** @brief
- * used language of user code
+/** @ brief    used language of user code
+ *
+ * @ param  lang
+ *
+ * @ return
  */
     SILC_Error_Code
     silc_setLanguage
@@ -168,8 +167,9 @@ public:
         const int lang
     );
 
-/** @brief
- * compiler commands
+/** @ brief   compiler commands
+ *
+ * @ param  cmd
  */
     void
     silc_compilerCmd
@@ -177,17 +177,19 @@ public:
         const std::string cmd
     );
 
-/** @brief
- * intrumentation type
+/** @ brief   intrumentation type
+ *
+ * @ param cmd
  */
     void
     silc_instString
     (
-        const std::string cmd
+        const std::string instStrg
     );
 
-/** @brief
- *  list of compiler flags
+/** @ brief   list of compiler flags
+ *
+ * @ param   arg
  */
     void
     silc_compilerArg
@@ -195,8 +197,9 @@ public:
         const std::string arg
     );
 
-/** @brief
- *  list of libraries
+/** @ brief   list of libraries
+ *
+ * @param lib
  */
     void
     silc_compilerLib
@@ -204,8 +207,11 @@ public:
         const std::string lib
     );
 
-/** @brief
- *  extracts parameter from input file
+/** @ brief   extracts parameter from input file
+ *
+ * @ param instring    input string from the config file
+ * @ param parameter   key eintry from the configuration
+ * @ param value       specified value from config file
  */
     SILC_Error_Code
     silc_readParameter
@@ -215,8 +221,9 @@ public:
         std::string &     value
     );
 
-/** @brief
- *  check for given instrumentation type
+/** @ brief   check for given instrumentation type
+ *
+ * @ param   insttype
  */
     void
     silc_instType
@@ -226,8 +233,7 @@ public:
 
 
 
-/** @brief
- *  prints all instrumentation parameters as read from input file
+/** @ brief   prints all instrumentation parameters as read from input file
  */
     virtual void
     silc_printParameter
@@ -328,7 +334,10 @@ private:
  */
     std::string _instOpenuh;
 
-// additional members for additional compiler settings
+/** @brief
+ *  DynInst instrumentation flags
+ */
+    std::string _instDyninst;
 };
 
 #endif /*SILC_INSTRUMENTER_H_*/

@@ -13,6 +13,12 @@
  *
  */
 
+/**
+ * @ file      SILC_Application.cpp
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
+ */
+
 
 #include "Silc_Application.hpp"
 

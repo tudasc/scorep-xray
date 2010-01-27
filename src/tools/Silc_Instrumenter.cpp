@@ -14,8 +14,9 @@
  */
 
 
-/** @file Silc_Instrumenter.cpp
- * @brief
+/**
+ * @ file       SILC_Instrumenter.cpp
+ * @ maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
  *
  */
 
@@ -66,7 +67,11 @@ Silc_Instrumenter
 
 /**
  * @brief reads the configuration file for the instrumentation stage
+ *
  * @param  fileName   name of the configuration file
+ *
+ * @ return SILC_Error_Code  returns an error code indicating the success to read the
+ *                           input config file
  *
  * The configuration file should exist in a fixed location to be found by the
  * instrumentation tool. Idealy it is installed in a global path and examined
@@ -115,7 +120,7 @@ Silc_Instrumenter::silc_readConfigFile
 
         while ( inFile.good() && index < length )
         {
-            char        line[ 256 ];
+            char        line[ 512 ] = { "" };
             inFile.getline( line, 256 );
             std::string linStr( line );
             int         found = linStr.find( "#" );
@@ -227,6 +232,11 @@ Silc_Instrumenter::silc_readConfigFile
 
 
 
+/**
+ * @ brief    examines environment variables
+ *
+ * @ return SILC_Error_Code
+ */
 SILC_Error_Code
 Silc_Instrumenter::silc_readEnvVars
 (
@@ -238,10 +248,12 @@ Silc_Instrumenter::silc_readEnvVars
 }
 
 
-/**
- * @brief parses command line to the instrumenter
+/** @ brief   get command line attributes
  *
+ * @ param    argc
+ * @ param    argv
  *
+ * @ return   exitStatus    SILC_Error_Code
  */
 SILC_Error_Code
 Silc_Instrumenter::silc_parseCmdLine
@@ -254,7 +266,6 @@ Silc_Instrumenter::silc_parseCmdLine
     std::string     instStr( argv[ 1 ] );
     int             pos = instStr.find( "--instrument", 0 );
     if ( pos != std::string::npos
-         //		 && _instType == INST_TYPE_GNU
          && argc > 3
          )
     {
@@ -262,10 +273,16 @@ Silc_Instrumenter::silc_parseCmdLine
         {
             std::string flag( argv[ loop ] );
             _compFlags += flag + " ";
-            std::cout << flag << std::endl;
+            SILC_DEBUG_PRINTF( SILC_DEBUG_USER, " get list of compiler attributes: %s ", flag.c_str() );
         }
         exitStatus = SILC_SUCCESS;
     }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_ENOTSUP, " you have not specified a command to run " );
+        exitStatus = SILC_ERROR_ENOTSUP;
+    }
+
     return exitStatus;
 }
 

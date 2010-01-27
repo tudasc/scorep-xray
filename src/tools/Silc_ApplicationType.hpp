@@ -14,10 +14,14 @@
  */
 
 
-/*! @brief Class Silc_ApplicationType.
+/*
+ * @ file      SILC_Application.hpp
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
+ *  @brief Class Silc_ApplicationType
  *         Selector class of the user instrumentation stage
  *
- *  This class provides an mechanism to switch between the different stages of SILC
+ *  This class provides a mechanism to switch between the different stages of SILC tools.
  */
 
 #ifndef SILC_APPLICATIONTYPE_H_
@@ -33,7 +37,7 @@ class Silc_ApplicationType
 {
 public:
 
-    virtual ~
+    ~
     Silc_ApplicationType
         ()
     {
@@ -44,9 +48,6 @@ public:
     (
     );
 
-/** @brief
- *  provide the right stage of silc
- */
     Silc_Application*
     getSilcStage
     (
@@ -70,7 +71,7 @@ private:
     );
 
 /** @brief
- *  returns the pointer to a new SILC application (intrumenter, measurement, (visualizer)? )
+ *  returns the pointer to a new SILC application (instrumenter, measurement, (visualizer)? )
  */
     static Silc_ApplicationType* _appType;
 };

@@ -13,14 +13,18 @@
  *
  */
 
+/**
+ * @ file      SILC_Application.hpp
+ * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *
+ * @brief Class Silc_Application
+ *         base class for SILC user interaction tools
+ */
+
 
 #ifndef SILC_APPLICATION_H_
 #define SILC_APPLICATION_H_
 
-/*! @brief Class Silc_Application
- *         base class for SILC user interaction tools
- *
- */
 
 #include <iostream>
 #include <string>
@@ -43,44 +47,41 @@ public:
     silc_readConfigFile
     (
         std::string fileName
-    )
-    {
-        return SILC_SUCCESS;
-    };
+    ) = 0;
 
-/** @brief
- * get command line attributes
+
+/**
+ * @brief virtual base class functin to parse command line attributes
+ *
+ * @param argc
+ * @param argv
+ *
+ * @return SILC_ERROR_CODE
  */
     virtual SILC_Error_Code
     silc_parseCmdLine
     (
         int    argc,
         char** argv
-    )
-    {
-        return SILC_SUCCESS;
-    };
+    ) = 0;
 
 
-/** @brief
- * perform instrumentation stage
+/**
+ * @brief virtual base class to perform instrumentation stage
  */
     virtual int
     silc_run
     (
-    )
-    {
-        return 0;
-    };
+    ) = 0;
 
 
+/**
+ * @brief virtual base class to print out parameters
+ */
     virtual void
     silc_printParameter
     (
-    )
-    {
-    };
-
+    ) = 0;
 
 private:
 };

@@ -23,7 +23,7 @@
 #include <iostream>
 #include <string>
 
-/* user includes */
+#include <SILC_Utils.h>
 
 #include "Silc_ApplicationType.hpp"
 #include "Silc_Instrumenter.hpp"
@@ -51,11 +51,11 @@ main
 
             if ( appType->silc_run() == SILC_SUCCESS )
             {
-                std::cout << " instrument user code: " << std::endl;
+                SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Instrument the user code!" );
             }
             else
             {
-                // catch
+                // catch - give an error here
             }
         }
         else if ( inst == "--measurement" || inst == "-measure" )
@@ -64,16 +64,34 @@ main
             appType->silc_parseCmdLine( argc, argv );
             if ( appType->silc_run() == SILC_SUCCESS )
             {
-                std::cout << " running the instrumented code using the silc measurement system: " << std::endl;
+                SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Running the instrumented code using the silc measurement system!" );
             }
             else
             {
-                // catch
+                // catch -give an error here
             }
+        }
+        else if ( inst == "--help" || inst == "-h" )
+        {
+            std::cout << " This is the SILC user tool, for which you have the option to instrument your code \n"
+                      << " (instrumenter) or analyse your instrumented application (measurement system).\n"
+                      << "\n The following program options are supported:\n "
+                      << " --instrument  <instOption>                  calls the instrumentation wrapper\n"
+                      << "                                             which have to be steered by the <instOptions>\n"
+                      << "                                             argument. Values are:\n\n"
+                      << "      comp:type      (with type={gnu, ibm, pgi, ftrace,\n"
+                      << "                      (pathscale), (openUH)} )\n"
+                      << "      user:type      (with type={mpi, openmp, hybrid} )\n"
+                      << "      bin:type       (with type={dyninst})\n\n"
+                      << " --measurement  <measureOption>              Starts your previously instrumented application \n"
+                      << "                                             with additioal options . Values are:\n\n"
+                      << "      ...             (define use cases for that feature...)\n\n"
+                      << " --help                                      Show help output. \n"
+                      << std::endl;
         }
         else
         {
-            std::cout << " Invalid instrumentation type!!!: " << std::endl;
+            SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Invalid instrumentation type!!! " );
         }
     }
     else
