@@ -347,7 +347,9 @@ Silc_Instrumenter::silc_run
 
 
 /**
- * @brief
+ * @ brief set used language
+ *
+ * @ return SILC_Error_Code
  */
 SILC_Error_Code
 Silc_Instrumenter::silc_setLanguage
@@ -355,13 +357,16 @@ Silc_Instrumenter::silc_setLanguage
     const int lang
 )
 {
-    std::cout << "used language:   \n " << std::endl;
+    SILC_DEBUG_PRINTF( SILC_DEBUG_USER, " used language: %i ", lang );
+
     return SILC_SUCCESS;
 }
 
 
 /**
- * @brief
+ * @ brief sets the compiler
+ *
+ * @ param  cmd  used compiler command
  */
 void
 Silc_Instrumenter::silc_compilerCmd
@@ -369,28 +374,45 @@ Silc_Instrumenter::silc_compilerCmd
     const std::string cmd
 )
 {
-    std::cout << "compiler command: " << cmd.c_str() << std::endl;
+    SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "compiler command: %s ", cmd.c_str() );
 }
 
+/**
+ * @ brief sets arguments for the compiler
+ *
+ * @ param  arg  used compiler arguments
+ */
 void
 Silc_Instrumenter::silc_compilerArg
 (
     const std::string arg
 )
 {
-    std::cout << "compiler arguments: " <<  arg.c_str() << std::endl;
+    SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "compiler arguments: %s ", arg.c_str() );
 }
 
+/**
+ * @ brief sets list of additional libraries
+ *
+ * @ param  lib  list of additional libraries
+ */
 void
 Silc_Instrumenter::silc_compilerLib
 (
     const std::string lib
 )
 {
-    std::cout << "used libraries :" <<  lib.c_str() << std::endl;
+    SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "libraries: %s ", lib.c_str() );
 }
 
 
+/**
+ * @ brief reads parameters from config file
+ *
+ * @ param  instring     input line from config file
+ * @ param  paremeter    parameter to be be searched for
+ * @ param  value        extracted value
+ */
 SILC_Error_Code
 Silc_Instrumenter::silc_readParameter
 (
@@ -414,6 +436,11 @@ Silc_Instrumenter::silc_readParameter
 }
 
 
+/**
+ * @ brief Set the instrumentation type
+ *
+ * @param  itype   instrumentation type
+ */
 void
 Silc_Instrumenter::silc_instType
 (
@@ -437,8 +464,7 @@ Silc_Instrumenter::silc_instType
         "manual:hybrid"
     };
 
-
-    uint32_t index = 0;
+    uint32_t          index = 0;
     for ( index = 0; index < length; index++ )
     {
         switch ( index )
@@ -551,9 +577,9 @@ Silc_Instrumenter::silc_instType
     }
 }
 
-
-
-
+/**
+ * @ brief  Print all input parameter from config file
+ */
 void
 Silc_Instrumenter::silc_printParameter
 (
