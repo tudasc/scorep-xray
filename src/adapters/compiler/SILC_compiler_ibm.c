@@ -73,7 +73,7 @@ __func_trace_enter( char* name,
 {
     HashNode* hn;
 
-    printf( " function name: %s %s \n", name, fname );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function name: %s %s", name, fname );
 
     if ( xl_init )
     {
@@ -85,7 +85,7 @@ __func_trace_enter( char* name,
     if ( ( hn = hash_get( ( long )name ) ) == 0 )
     {
         hash_put( ( long )name, name, fname, lno );
-        printf( " number %ld and put name -- %s -- to list \n", ( long )name, name );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " number %ld and put name -- %s -- to list", ( long )name, name );
     }
     else
     {
