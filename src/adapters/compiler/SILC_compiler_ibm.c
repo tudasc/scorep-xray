@@ -39,104 +39,6 @@
 static int xl_init = 1;
 
 
-/**
- * data structure to map function name and region identifier
- */
-/*
-   typedef struct HashNode {
-   long id;
-   const char* name;
-   const char* fname;
-   int lnobegin;
-   int lnoend;
-   SILC_LineNo       lnobegin;
-   SILC_LineNo       lnoend;
-   int reghandle;
-   SILC_RegionHandle reghandle;
-   struct HashNode* next;
-   } HashNode;
- */
-
-/*
- #define HASH_MAX 1021
- */
-
-/*
-   static HashNode* htab[HASH_MAX];
- */
-
-/*
- * Stores region identifier `e' under hash code `h'
- */
-
-/*
-   void hash_put(
-   long        h,
-   const char* n,
-   const char* fn,
-    int         lno
-   )
-   {
-   long      id  = h % HASH_MAX;
-   HashNode* add = ( HashNode* )malloc( sizeof( HashNode ) );
-   add->id        = h;
-   add->name      = n;
-   add->fname     = fn ? ( const char* )strdup( fn ) : fn;
-   add->lnobegin  = lno;
-
-   add->lnoend    = lno;
-
-   add->reghandle = 1;
-   add->next      = htab[ id ];
-   htab[ id ]     = add;
-   }
- */
-
-/*
- * Lookup hash code `h'
- * Returns pointer to function data if already stored, otherwise 0
- */
-
-/*
-   static HashNode *hash_get(long h) {
-   long id = h % HASH_MAX;
-   HashNode *curr = htab[id];
-   while ( curr ) {
-   if ( curr->id == h ) {
-     return curr;
-   }
-   curr = curr->next;
-   }
-   return 0;
-   }
- */
-
-
-/*
- * register new region
- */
-/*
-   HashNode*
-   silc_xl_register_region
-   (
-   HashNode* hn
-   )
-   {
-   printf( " register a region: %i \n", hn->reghandle );
-
-
-    hn->reghandle =  SILC_DefineRegion( hn->name,
-                                        SILC_INVALID_SOURCE_FILE,
-                                        SILC_INVALID_LINE_NO,
-                                        SILC_INVALID_LINE_NO,
-                                        SILC_ADAPTER_COMPILER,
-                                       SILC_REGION_FUNCTION
-                                        );
-
-
-   }
- */
-
 void
 xl_finalize( void );
 void
@@ -152,8 +54,12 @@ __func_trace_exit( char* name,
  * finalize instrumentation interface
  */
 void
-xl_finalize()
+silc_xl_free()
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "finalize the gnu compiler instrumentation." );
+    hash_free();
+    /* set ibm compiler init status to one - means not initialized */
+    xl_init = 1;
 }
 
 /*
@@ -171,8 +77,8 @@ __func_trace_enter( char* name,
 
     if ( xl_init )
     {
-        /*      SILC_InitMeasurement();   */
-        xl_finalize();
+        SILC_InitMeasurement();
+        silc_xl_free();
     }
 
     /* put function to list */
@@ -183,8 +89,7 @@ __func_trace_enter( char* name,
     }
     else
     {
-        /*      if ( (hn->reghandle == SILC_INVALID_REGION ) ) */
-        if ( ( hn->reghandle == 1 ) )
+        if ( ( hn->reghandle == SILC_INVALID_REGION ) )
         {
             silc_compiler_register_region( hn );
         }
@@ -202,9 +107,9 @@ __func_trace_exit( char* name,
 {
     printf( "call function -- %s -- at exit!!!\n", name );
     HashNode* hn;
-    /*    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" ); */
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" );
     if ( hn = hash_get( ( long )name ) )
     {
-        /*    SILC_ExitRegion( hn->reghandle ); */
+        SILC_ExitRegion( hn->reghandle );
     }
 }

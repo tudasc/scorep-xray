@@ -190,7 +190,7 @@ get_symTab( void )
  * @brief finalize GNU interface
  */
 void
-silc_gnu_finalize
+silc_gnu_free
 (
     void
 )
@@ -231,7 +231,7 @@ __cyg_profile_func_enter
         /* not initialized so far */
         SILC_InitMeasurement();
 
-        silc_gnu_finalize();
+        silc_gnu_free();
         gnu_init = 0;   /* is initialized */
 
         /* call function to calculate symbol table */
