@@ -604,7 +604,7 @@ MPI_Gatherv( void*        sendbuf,
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
-        int32_t       recvsz, sendsz, recvcount, me, N, i;
+        int32_t       recvsz, sendsz, recvcount = 0, me, N, i;
         SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE( root, comm );
 
 
