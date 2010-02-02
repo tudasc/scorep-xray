@@ -979,7 +979,7 @@
     <version id="1" />
     <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
 <decl><![CDATA[
-    int32_t recvsz, sendsz, recvcount, me, N, i; 
+    int32_t recvsz, sendsz, recvcount = 0, me, N, i; 
     SILC_Mpi_Rank root_loc = SILC_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
