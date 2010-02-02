@@ -114,7 +114,8 @@ silc_compiler_register_region
     struct HashNode* hn
 )
 {
-    fprintf( stderr, " register a region: \n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "register a region! " );
+
     hn->reghandle = SILC_DefineRegion( hn->name,
                                        SILC_INVALID_SOURCE_FILE,
                                        SILC_INVALID_LINE_NO,
