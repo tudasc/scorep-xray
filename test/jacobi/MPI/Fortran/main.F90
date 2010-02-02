@@ -71,7 +71,7 @@ subroutine Init (myData)
     include 'mpif.h'
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
-    integer :: ITERATIONS = 1000
+    integer :: ITERATIONS = 100
     integer :: version, subversion
     integer :: iErr, i
 !dir$ omp sharable(myData)

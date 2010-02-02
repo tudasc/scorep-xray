@@ -21,7 +21,7 @@ Init( JacobiData &data,
       int &       argc,
       char**      argv )
 {
-    int   ITERATIONS = 1000;
+    int   ITERATIONS = 100;
     char* env        = getenv( "ITERATIONS" );
     if ( env )
     {
