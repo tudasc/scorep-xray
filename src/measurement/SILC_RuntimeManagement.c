@@ -379,5 +379,5 @@ post_flush( void* unUsed )
      */
     flush_done = true;
 
-    return SILC_GetWallClockTime();
+    return SILC_GetClockTicks();
 }

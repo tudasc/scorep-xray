@@ -38,3 +38,7 @@ libsilc_measurement_la_CPPFLAGS =               \
     -I$(INC_ROOT)src/services                   \
     -I$(INC_DIR_OTF2)                           \
     -I$(INC_DIR_UTIL)
+
+#protected_includesdir = $(includedir)/protected
+##protected_includesdir = $(pkgdatadir)/protected
+#dist_protected_includes_DATA = $(SRC_ROOT)src/measurement/include/SILC_Definitions.h

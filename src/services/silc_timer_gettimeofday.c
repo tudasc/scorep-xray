@@ -50,7 +50,7 @@ SILC_InitTimer()
 
 
 uint64_t
-SILC_GetWallClockTime()
+SILC_GetClockTicks()
 {
     struct timeval tp;
     gettimeofday( &tp, 0 );

@@ -45,7 +45,7 @@ SILC_InitTimer()
 
 
 uint64_t
-SILC_GetWallClockTime()
+SILC_GetClockTicks()
 {
     assert( false ); // implement me
     return 0;

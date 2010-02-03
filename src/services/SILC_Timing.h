@@ -35,7 +35,7 @@ SILC_InitTimer();
  * @return Wall clock time in ticks.
  */
 uint64_t
-SILC_GetWallClockTime
+SILC_GetClockTicks
 (
 );
 

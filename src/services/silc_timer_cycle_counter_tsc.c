@@ -189,7 +189,7 @@ silc_get_cylce_counter_frequency( useconds_t usleep_time )
 
 
 uint64_t
-SILC_GetWallClockTime()
+SILC_GetClockTicks()
 {
     uint64_t clock_value;
 

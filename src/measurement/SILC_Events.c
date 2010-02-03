@@ -57,7 +57,7 @@ SILC_EnterRegion
                                               "%x", regionHandle ) );
 
     OTF2_EvtWriter_Enter( silc_local_event_writer, NULL,
-                          SILC_GetWallClockTime(),
+                          SILC_GetClockTicks(),
                           regionHandle );
 }
 
@@ -80,7 +80,7 @@ SILC_ExitRegion
                                               "%x", regionHandle ) );
 
     OTF2_EvtWriter_Leave( silc_local_event_writer, NULL,
-                          SILC_GetWallClockTime(),
+                          SILC_GetClockTicks(),
                           regionHandle );
 }
 
@@ -109,7 +109,7 @@ SILC_MpiSend
                        ( unsigned long long )bytesSent );
 
     OTF2_EvtWriter_MpiSend( silc_local_event_writer, NULL,
-                            SILC_GetWallClockTime(),
+                            SILC_GetClockTicks(),
                             OTF2_MPI_BLOCK,
                             silc_local_id,
                             globalDestinationRank,
@@ -143,7 +143,7 @@ SILC_MpiRecv
                        ( unsigned long long )bytesReceived );
 
     OTF2_EvtWriter_MpiRecv( silc_local_event_writer, NULL,
-                            SILC_GetWallClockTime(),
+                            SILC_GetClockTicks(),
                             OTF2_MPI_BLOCK,
                             globalSourceRank,
                             silc_local_id,
@@ -184,7 +184,7 @@ SILC_MpiCollective
                        ( unsigned long long )bytesReceived );
 
     OTF2_EvtWriter_MpiCollective( silc_local_event_writer, NULL,
-                                  SILC_GetWallClockTime(),
+                                  SILC_GetClockTicks(),
                                   OTF2_MPI_BARRIER,
                                   communicatorHandle,
                                   globalRootRank,

@@ -53,7 +53,7 @@ SILC_InitTimer()
 
 
 uint64_t
-SILC_GetWallClockTime()
+SILC_GetClockTicks()
 {
     return ( uint64_t )rts_get_timebase();
 }
