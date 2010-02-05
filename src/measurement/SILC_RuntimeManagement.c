@@ -98,7 +98,7 @@ SILC_IsInitialized()
 
 
 static uint64_t
-post_flush( void* unUsed );
+post_flush( void );
 
 /**
  * Initialize the measurement system from the adapter layer.
@@ -372,7 +372,7 @@ silc_finalize( void )
 }
 
 static uint64_t
-post_flush( void* unUsed )
+post_flush( void )
 {
     /* remember that we have flushed the first time
      * after this point, we can't switch into MPI mode anymore
