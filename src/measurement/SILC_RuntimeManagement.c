@@ -195,6 +195,7 @@ SILC_InitMeasurement
                                                   NULL,
                                                   OTF2_UNDEFINED_UINT64,
                                                   "silc",
+                                                  /* what a hack */ "",
                                                   post_flush );
 
     if ( !silc_local_event_writer )
