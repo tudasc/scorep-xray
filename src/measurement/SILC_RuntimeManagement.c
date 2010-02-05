@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 
@@ -181,10 +182,30 @@ SILC_InitMeasurement
 
     /* create the experiment directory */
     int ret = mkdir( "silc", 0755 );
-    if ( ret != 0 && errno != EEXIST )
+    if ( ret != 0 )
     {
-        SILC_ERROR_POSIX();
-        _exit( EXIT_FAILURE );
+        if ( errno == EEXIST )
+        {
+            struct stat sb;
+            if ( 0 != stat( "silc", &sb ) )
+            {
+                /* Huu, I got an EEXISTS but can't stat? */
+                SILC_ERROR_POSIX( "Archive directory exists, but can't determine what it is." );
+                _exit( EXIT_FAILURE );
+            }
+            if ( !S_ISDIR( sb.st_mode ) )
+            {
+                SILC_ERROR( SILC_ERROR_ENOTDIR,
+                            "Can't create archive directory. "
+                            "An entry with this name already exists." );
+                _exit( EXIT_FAILURE );
+            }
+        }
+        else
+        {
+            SILC_ERROR_POSIX( "Can't create archive directory \"silc\"." );
+            _exit( EXIT_FAILURE );
+        }
     }
 
     /* we don't know our location currently, pass undefined,
