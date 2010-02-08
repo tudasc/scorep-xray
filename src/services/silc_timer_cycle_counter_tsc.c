@@ -157,18 +157,18 @@ silc_get_cylce_counter_frequency( useconds_t usleep_time )
     struct timeval timestamp;
 
     /* start timestamp */
-    uint64_t start1_cylce_counter = SILC_GetWallClockTime();
+    uint64_t start1_cylce_counter = SILC_GetClockTicks();
     gettimeofday( &timestamp, NULL );
-    uint64_t start2_cylce_counter = SILC_GetWallClockTime();
+    uint64_t start2_cylce_counter = SILC_GetClockTicks();
 
     uint64_t start_time = timestamp.tv_sec * 1000000 + timestamp.tv_usec;
 
     usleep( usleep_time );
 
     /* end timestamp */
-    uint64_t end1_cylce_counter = SILC_GetWallClockTime();
+    uint64_t end1_cylce_counter = SILC_GetClockTicks();
     gettimeofday( &timestamp, NULL );
-    uint64_t end2_cylce_counter = SILC_GetWallClockTime();
+    uint64_t end2_cylce_counter = SILC_GetClockTicks();
 
     uint64_t end_time = timestamp.tv_sec * 1000000 + timestamp.tv_usec;
 

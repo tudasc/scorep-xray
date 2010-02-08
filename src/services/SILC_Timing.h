@@ -13,11 +13,11 @@
 #include <stdint.h>
 
 /**
- * Initialize Timer before usage of SILC_GetWallClockTime() and
+ * Initialize Timer before usage of SILC_GetClockTicks() and
  * SILC_GetClockResolution(). Multiple calls do no harm.
  *
  * @note For performance reasons we don't check if the timer is initialized in
- * SILC_GetWallClockTime() and SILC_GetClockResolution().
+ * SILC_GetClockTicks() and SILC_GetClockResolution().
  *
  * @note The init function is not thread safe.
  */

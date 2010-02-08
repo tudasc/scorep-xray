@@ -32,8 +32,8 @@ int
 main()
 {
     SILC_InitTimer();
-    uint64_t startTime = SILC_GetWallClockTime();
-    uint64_t stopTime  = SILC_GetWallClockTime();
+    uint64_t startTime = SILC_GetClockTicks();
+    uint64_t stopTime  = SILC_GetClockTicks();
     assert( stopTime > startTime );
     return 0;
 }
