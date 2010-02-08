@@ -27,8 +27,6 @@
 #include "SILC_User_Types.h"
 #include "SILC_Types.h"
 #include "SILC_User_Functions.h"
-#include "SILC_RuntimeManagement.h"
-#include "SILC_Events.h"
 
 /* Guarded because it declares variables in every file where it is included. */
 #ifdef SILC_USER_ENABLE
@@ -1272,15 +1270,15 @@
     SILC_User_InitMetric( &metricHandle, name, unit, type, context, groupHandle );
 
 #define SILC_USER_METRIC_INT64( metricHandle, \
-                                value )  SILC_TriggerCounterInt64( \
+                                value )  SILC_User_TriggerMetricInt64( \
         metricHandle, value );
 
 #define SILC_USER_METRIC_UINT64( metricHandle, \
-                                 value )  SILC_TriggerCounterInt64( \
+                                 value )  SILC_User_TriggerMetricInt64( \
         metricHandle, value );
 
 #define SILC_USER_METRIC_DOUBLE( metricHandle, \
-                                 value ) SILC_TriggerCounterDouble( \
+                                 value ) SILC_User_TriggerMetricDouble( \
         metricHandle, value );
 
 #endif // SILC_USER_ENABLE

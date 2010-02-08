@@ -202,6 +202,30 @@ SILC_User_InitMetric
     const SILC_CounterGroupHandle group
 );
 
+/** Triggers an user metric of type integer. Every user metric must be registered
+    and initialized before it is used for the first time.
+    @param metricHandle A handle which identify the user metric.
+    @param value        The value for the metric.
+ */
+extern void
+SILC_User_TriggerMetricInt64
+(
+    SILC_CounterHandle* metricHandle,
+    int64_t             value
+);
+
+/** Triggers an user metric of type integer. Every user metric must be registered
+    and initialized before it is used for the first time.
+    @param metricHandle A handle which identify the user metric.
+    @param value        The value for the metric.
+ */
+extern void
+SILC_User_TriggerMetricDouble
+(
+    SILC_CounterHandle* metricHandle,
+    double              value
+);
+
 /** Declaration of the variable for storing the default metric group handle.
  */
 extern SILC_CounterGroupHandle SILC_User_DefaultMetricGroup;

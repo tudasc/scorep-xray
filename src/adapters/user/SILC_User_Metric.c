@@ -91,3 +91,23 @@ SILC_User_InitMetric
     /* Define user metric */
     *metricHandle = SILC_DefineCounter( name, metricType, group, unit );
 }
+
+void
+SILC_User_TriggerMetricInt64
+(
+    SILC_CounterHandle* metricHandle,
+    int64_t             value
+)
+{
+    SILC_TriggerCounterInt64( metricHandle, value );
+}
+
+void
+SILC_User_TriggerMetricDouble
+(
+    SILC_CounterHandle* metricHandle,
+    double              value
+)
+{
+    SILC_TriggerCounterDouble( metricHandle, value );
+}
