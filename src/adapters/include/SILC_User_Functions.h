@@ -26,7 +26,6 @@
     use the macros provided in SILC_User.h.
  */
 
-#include "SILC_Types.h"
 #include "SILC_User_Types.h"
 #include <stdbool.h>
 
@@ -210,8 +209,8 @@ SILC_User_InitMetric
 extern void
 SILC_User_TriggerMetricInt64
 (
-    SILC_CounterHandle* metricHandle,
-    int64_t             value
+    SILC_CounterHandle metricHandle,
+    int64_t            value
 );
 
 /** Triggers an user metric of type integer. Every user metric must be registered
@@ -222,8 +221,8 @@ SILC_User_TriggerMetricInt64
 extern void
 SILC_User_TriggerMetricDouble
 (
-    SILC_CounterHandle* metricHandle,
-    double              value
+    SILC_CounterHandle metricHandle,
+    double             value
 );
 
 /** Declaration of the variable for storing the default metric group handle.

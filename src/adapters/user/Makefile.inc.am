@@ -52,7 +52,7 @@ libsilc_adapter_user_la_SOURCES =                           \
     $(SRC_ROOT)src/adapters/include/SILC_User_Init.h
 
 include_HEADERS +=                                          \
-    $(SRC_ROOT)src/measurement/include/SILC_Types.h         \
+    $(SRC_ROOT)src/measurement/include/SILC_PublicTypes.h   \
     $(SRC_ROOT)src/adapters/include/SILC_User.h             \
     $(SRC_ROOT)src/adapters/include/SILC_User_Functions.h   \
     $(SRC_ROOT)src/adapters/include/SILC_User_Variables.h   \

@@ -37,6 +37,7 @@ silc_user_init_metric()
     SILC_User_DefaultMetricGroup = SILC_DefineCounterGroup( "default" );
 }
 
+
 void
 SILC_User_InitMetricGroup
 (
@@ -95,8 +96,8 @@ SILC_User_InitMetric
 void
 SILC_User_TriggerMetricInt64
 (
-    SILC_CounterHandle* metricHandle,
-    int64_t             value
+    SILC_CounterHandle metricHandle,
+    int64_t            value
 )
 {
     SILC_TriggerCounterInt64( metricHandle, value );
@@ -105,8 +106,8 @@ SILC_User_TriggerMetricInt64
 void
 SILC_User_TriggerMetricDouble
 (
-    SILC_CounterHandle* metricHandle,
-    double              value
+    SILC_CounterHandle metricHandle,
+    double             value
 )
 {
     SILC_TriggerCounterDouble( metricHandle, value );

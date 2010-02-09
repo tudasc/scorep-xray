@@ -25,9 +25,7 @@
    @brief This file contains type definitions for manual user instrumentation.
  */
 
-#include "SILC_Types.h"
-
-#include <stdint.h>
+#include "SILC_PublicTypes.h"
 
 /* **************************************************************************************
  * Typedefs
@@ -85,17 +83,17 @@ typedef uint32_t SILC_User_MetricType;
 /** @def SILC_USER_METRIC_TYPE_INT64
     Indicates that a user counter is of data type signed 64 bit integer.
  */
-#define SILC_USER_METRIC_TYPE_INT64 SILC_COUNTER_INT64
+#define SILC_USER_METRIC_TYPE_INT64 0
 
 /** @def SILC_USER_METRIC_TYPE_UINT64
     Indicates that a user counter is of data type unsigned 64 bit integer.
  */
-#define SILC_USER_METRIC_TYPE_UINT64 SILC_COUNTER_INT64
+#define SILC_USER_METRIC_TYPE_UINT64 0
 
 /** @def SILC_USER_METRIC_TYPE_DOUBLE
     Indicates that a user counter is of data type double.
  */
-#define SILC_USER_METRIC_TYPE_DOUBLE SILC_COUNTER_DOUBLE
+#define SILC_USER_METRIC_TYPE_DOUBLE 1
 
 /* **************************************************************************************
  * Defines for the context of user counters
