@@ -29,7 +29,7 @@
 
 
 #include <SILC_Adapter.h>
-
+#include <stddef.h>
 
 /** @brief a NULL terminated list of linked in adapters. */
 extern SILC_Adapter* silc_adapters[];

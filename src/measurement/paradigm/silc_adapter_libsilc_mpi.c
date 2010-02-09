@@ -28,12 +28,11 @@
  */
 
 
+#include <silc_adapter.h>
+
 #include <SILC_Compiler_Init.h>
 #include <SILC_User_Init.h>
 #include <SILC_Mpi_Init.h>
-
-
-#include "silc_adapter.h"
 
 
 /**

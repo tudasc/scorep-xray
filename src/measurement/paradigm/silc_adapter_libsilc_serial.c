@@ -14,10 +14,6 @@
  */
 
 
-#include <stdlib.h>
-#include <stdio.h>
-
-
 /**
  * @file        silc_adatper_libsilc_serial.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
@@ -28,11 +24,10 @@
  */
 
 
+#include <silc_adapter.h>
+
 #include <SILC_Compiler_Init.h>
 #include <SILC_User_Init.h>
-
-
-#include "silc_adapter.h"
 
 
 /**

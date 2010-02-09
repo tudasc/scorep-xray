@@ -22,6 +22,7 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SILC_Adapter.h           \
     $(SRC_ROOT)src/measurement/include/SILC_Config.h            \
     $(SRC_ROOT)src/measurement/include/SILC_Definitions.h       \
+    $(SRC_ROOT)src/measurement/include/SILC_DefinitionLocking.h \
     $(SRC_ROOT)src/measurement/include/SILC_Events.h            \
     $(SRC_ROOT)src/measurement/include/SILC_Memory.h            \
     $(SRC_ROOT)src/measurement/include/SILC_RuntimeManagement.h \
