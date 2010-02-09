@@ -50,9 +50,8 @@
      measurement system. This renders storing of redundant information
      unnecessary and reduces unification expense.
  *
- * - Note that calls to the definition functions are thread
-     safe. Synchronization is done internally if appropriate. Changes to this
-     approach will be possible if scalability issues arise.
+ * - Note that calls to the definition functions need to be synchronized. See
+     SILC_DefinitionLocking.h for the synchronization interface.
  *
  * - Note that the MPI definition functions also return handles now if
      appropriate (they previously returned void what caused some troubles
