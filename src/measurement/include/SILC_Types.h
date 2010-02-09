@@ -28,7 +28,7 @@
 
 
 #include <stdint.h>
-
+#include <SILC_PublicTypes.h>
 
 /**
  * @defgroup SILC_Types SILC Types
@@ -51,21 +51,6 @@
  */
 /*@{*/
 
-
-/**
- * Type of a opaque handle to a source file definition.
- * @see SILC_DefineSourceFile()
- */
-typedef uint32_t SILC_SourceFileHandle;
-
-
-/**
- * Symbolic constant representing an invalid or unknown source file definition.
- *
- */
-#define SILC_INVALID_SOURCE_FILE UINT32_MAX
-
-
 /**
  * Type used in specifying line numbers.
  * @see SILC_DefineRegion()
@@ -78,33 +63,6 @@ typedef uint32_t SILC_LineNo;
  * @see SILC_DefineRegion()
  */
 #define SILC_INVALID_LINE_NO 0
-
-
-/**
- * Type of a opaque handle to a counter group definition.
- * @see SILC_DefineCounterGroup()
- */
-typedef uint32_t SILC_CounterGroupHandle;
-
-
-/**
- * Symbolic constant representing an invalid or unknown counter group
- * definition.
- */
-#define SILC_INVALID_COUNTER_GROUP UINT32_MAX
-
-
-/**
- * Type of a opaque handle to a counter definition.
- * @see SILC_DefineCounter()
- */
-typedef uint32_t SILC_CounterHandle;
-
-
-/**
- * Symbolic constant representing an invalid or unknown counter definition.
- */
-#define SILC_INVALID_COUNTER UINT32_MAX
 
 
 /**
@@ -159,19 +117,6 @@ typedef uint32_t SILC_MarkerHandle;
  * Symbolic constant representing an invalid or unknown marker definition.
  */
 #define SILC_INVALID_MARKER UINT32_MAX
-
-
-/**
- * Type of a opaque handle to a region definition.
- * @see SILC_DefineRegion()
- */
-typedef uint32_t SILC_RegionHandle;
-
-
-/**
- * Symbolic constant representing an invalid or unknown region definition.
- */
-#define SILC_INVALID_REGION UINT32_MAX
 
 
 /**
@@ -254,6 +199,19 @@ typedef enum SILC_AdapterType
 
 
 /**
+ * Types to be used in defining a counter (SILC_DefineCounter()).
+ *
+ */
+typedef enum SILC_CounterType
+{
+    SILC_COUNTER_INT64,
+    SILC_COUNTER_DOUBLE,
+
+    SILC_INVALID_COUNTER_TYPE /**< For internal use only. */
+} SILC_CounterType;
+
+
+/**
  * Types to be used in defining a region (SILC_DefineRegion()). These types
  * are currently not used inside the measurement system. This @e may change in
  * future if we are going to implement phases/dynamic regions etc. inside the
@@ -300,19 +258,6 @@ typedef enum SILC_RegionType
 
     SILC_INVALID_REGION_TYPE /**< For internal use only. */
 } SILC_RegionType;
-
-
-/**
- * Types to be used in defining a counter (SILC_DefineCounter()).
- *
- */
-typedef enum SILC_CounterType
-{
-    SILC_COUNTER_INT64,
-    SILC_COUNTER_DOUBLE,
-
-    SILC_INVALID_COUNTER_TYPE /**< For internal use only. */
-} SILC_CounterType;
 
 
 /**
