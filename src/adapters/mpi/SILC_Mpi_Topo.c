@@ -15,6 +15,7 @@
 
 
 #include "SILC_Mpi.h"
+#include "SILC_DefinitionLocking.h"
 #include "config.h"
 
 /**
@@ -102,7 +103,9 @@ MPI_Cart_create( MPI_Comm  comm_old,
         }
 
         /* create the cartesian topology definition record */
+        SILC_LockMPICartesianTopologyDefinition();
         topid = SILC_DefineMPICartesianTopology( "", cid, ndims, udimv, uperiodv );
+        SILC_UnlockMPICartesianTopologyDefinition();
 
         /* allocate space for coordv and ucoordv */
         coordv = calloc( ndims, sizeof( int ) );
@@ -127,7 +130,9 @@ MPI_Cart_create( MPI_Comm  comm_old,
         }
 
         /* create the coordinates definition record */
+        SILC_LockMPICartesianCoordsDefinition();
         SILC_DefineMPICartesianCoords( topid, ndims, ucoordv );
+        SILC_UnlockMPICartesianCoordsDefinition();
 
         free( udimv );
         free( uperiodv );

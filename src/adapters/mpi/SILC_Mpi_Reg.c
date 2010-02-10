@@ -113,6 +113,7 @@ uint64_t silc_mpi_enabled = 0;
 void
 silc_mpi_register_regions()
 {
+    /* Define source file handle for MPI functions */
     SILC_SourceFileHandle file_id = SILC_DefineSourceFile( "MPI" );
 
 #if HAVE( DECL_PMPI_ABORT ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_EXT ) && !defined( MPI_Abort )

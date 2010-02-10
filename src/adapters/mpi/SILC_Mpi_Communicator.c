@@ -26,6 +26,7 @@
 #include "SILC_Error.h"
 #include "SILC_Debug.h"
 #include "SILC_Definitions.h"
+#include "SILC_DefinitionLocking.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -269,6 +270,7 @@ silc_mpi_win_id( MPI_Win win )
 {
     int i = 0;
 
+    SILC_LockMPIWindowDefinition();
     while ( i < silc_mpi_last_window && silc_mpi_windows[ i ].win != win )
     {
         i++;
@@ -276,10 +278,12 @@ silc_mpi_win_id( MPI_Win win )
 
     if ( i <= silc_mpi_last_window )
     {
+        SILC_UnlockMPIWindowDefinition();
         return silc_mpi_windows[ i ].wid;
     }
     else
     {
+        SILC_UnlockMPIWindowDefinition();
         SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW, "" );
         return SILC_INVALID_MPI_WINDOW;
     }
@@ -291,6 +295,7 @@ silc_mpi_win_create( MPI_Win  win,
 {
     SILC_MPIWindowHandle handle = SILC_INVALID_MPI_WINDOW;
 
+    SILC_LockMPIWindowDefinition();
     if ( silc_mpi_last_window >= SILC_MPI_MAX_WIN )
     {
         SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_WINDOWS, "" );
@@ -307,11 +312,13 @@ silc_mpi_win_create( MPI_Win  win,
     silc_mpi_windows[ silc_mpi_last_window ].wid = handle;
 
     silc_mpi_last_window++;
+    SILC_UnlockMPIWindowDefinition();
 }
 
 void
 silc_mpi_win_free( MPI_Win win )
 {
+    SILC_LockMPIWindowDefinition();
     if ( silc_mpi_last_window == 1 && silc_mpi_windows[ 0 ].win == win )
     {
         silc_mpi_last_window = 0;
@@ -338,6 +345,7 @@ silc_mpi_win_free( MPI_Win win )
     {
         SILC_ERROR( SILC_ERROR_MPI_NO_WINDOW, "" );
     }
+    SILC_UnlockMPIWindowDefinition();
 }
 #endif
 
@@ -442,6 +450,10 @@ silc_mpi_comm_create( MPI_Comm comm )
     MPI_Group                  group;
     SILC_MPICommunicatorHandle handle;
 
+    /* Lock communicator definition */
+    SILC_LockMPICommunicatorDefinition();
+
+
     /* is storage available */
     if ( silc_mpi_last_comm >= SILC_MPI_MAX_COMM )
     {
@@ -464,11 +476,15 @@ silc_mpi_comm_create( MPI_Comm comm )
 
     /* clean up */
     PMPI_Group_free( &group );
+    SILC_UnlockMPICommunicatorDefinition();
 }
 
 void
 silc_mpi_comm_free( MPI_Comm comm )
 {
+    /* Lock communicator definition */
+    SILC_LockMPICommunicatorDefinition();
+
     /* if only one communicator exists, we just need to decrease \a
      * silc_mpi_last_comm */
     if ( silc_mpi_last_comm == 1 && silc_mpi_comms[ 0 ].comm == comm )
@@ -500,12 +516,18 @@ silc_mpi_comm_free( MPI_Comm comm )
     {
         SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
     }
+
+    /* Unlock communicator definition */
+    SILC_UnlockMPICommunicatorDefinition();
 }
 
 SILC_MPICommunicatorHandle
 silc_mpi_comm_id( MPI_Comm comm )
 {
     int i = 0;
+
+    /* Lock communicator definition */
+    SILC_LockMPICommunicatorDefinition();
 
     while ( i < silc_mpi_last_comm && silc_mpi_comms[ i ].comm != comm )
     {
@@ -514,10 +536,16 @@ silc_mpi_comm_id( MPI_Comm comm )
 
     if ( i != silc_mpi_last_comm )
     {
+        /* Unlock communicator definition */
+        SILC_UnlockMPICommunicatorDefinition();
+
         return silc_mpi_comms[ i ].cid;
     }
     else
     {
+        /* Unlock communicator definition */
+        SILC_UnlockMPICommunicatorDefinition();
+
         if ( comm == MPI_COMM_WORLD )
         {
             SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI, "This function SHOULD NOT be called with MPI_COMM_WORLD" );
@@ -545,6 +573,9 @@ silc_mpi_group_create( MPI_Group group )
     int32_t                    i;
     SILC_MPICommunicatorHandle handle;
 
+    /* Lock communicator definition */
+    SILC_LockMPICommunicatorDefinition();
+
     if ( silc_mpi_last_group >= SILC_MPI_MAX_GROUP )
     {
         SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_GROUPS, "" );
@@ -571,11 +602,16 @@ silc_mpi_group_create( MPI_Group group )
         /* count additional reference on group */
         silc_mpi_groups[ i ].refcnt++;
     }
+
+    /* Unlock communicator definition */
+    SILC_UnlockMPICommunicatorDefinition();
 }
 
 void
 silc_mpi_group_free( MPI_Group group )
 {
+    SILC_LockMPICommunicatorDefinition();
+
     if ( silc_mpi_last_group == 1 && silc_mpi_groups[ 0 ].group == group )
     {
         silc_mpi_groups[ 0 ].refcnt--;
@@ -609,6 +645,8 @@ silc_mpi_group_free( MPI_Group group )
     {
         SILC_ERROR( SILC_ERROR_MPI_NO_GROUP, "" );
     }
+
+    SILC_UnlockMPICommunicatorDefinition();
 }
 
 SILC_Mpi_GroupHandle
@@ -616,6 +654,7 @@ silc_mpi_group_id( MPI_Group group )
 {
     int32_t i = 0;
 
+    SILC_LockMPICommunicatorDefinition();
     while ( ( i < silc_mpi_last_group ) && ( silc_mpi_groups[ i ].group != group ) )
     {
         i++;
@@ -623,10 +662,12 @@ silc_mpi_group_id( MPI_Group group )
 
     if ( i != silc_mpi_last_group )
     {
+        SILC_UnlockMPICommunicatorDefinition();
         return silc_mpi_groups[ i ].gid;
     }
-
+    else
     {
+        SILC_UnlockMPICommunicatorDefinition();
         SILC_ERROR( SILC_ERROR_MPI_NO_GROUP, "" );
         return SILC_INVALID_MPI_GROUP;
     }
@@ -637,6 +678,7 @@ silc_mpi_group_search( MPI_Group group )
 {
     int32_t i = 0;
 
+    SILC_LockMPICommunicatorDefinition();
     while ( ( i < silc_mpi_last_group ) && ( silc_mpi_groups[ i ].group != group ) )
     {
         i++;
@@ -644,10 +686,12 @@ silc_mpi_group_search( MPI_Group group )
 
     if ( i != silc_mpi_last_group )
     {
+        SILC_UnlockMPICommunicatorDefinition();
         return i;
     }
     else
     {
+        SILC_UnlockMPICommunicatorDefinition();
         return -1;
     }
 }
