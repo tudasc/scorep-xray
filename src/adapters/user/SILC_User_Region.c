@@ -23,6 +23,7 @@
 
 #include "SILC_User_Functions.h"
 #include "SILC_Definitions.h"
+#include "SILC_DefinitionLocking.h"
 #include "SILC_Events.h"
 #include "SILC_Error.h"
 #include "SILC_User_Init.h"
@@ -54,6 +55,8 @@ void
 silc_user_final_regions()
 {
     SILC_Hashtab_Foreach( silc_user_file_table, &silc_user_delete_file_entry );
+    SILC_Hashtab_Free( silc_user_file_table );
+    silc_user_file_table = NULL;
 }
 
 SILC_SourceFileHandle
@@ -169,8 +172,11 @@ SILC_User_RegionBegin
 )
 {
     /* Make sure that the region is initialized */
-    SILC_User_RegionInit( handle, lastFileName, lastFile,
-                          name, regionType, fileName, lineNo );
+    if ( *handle == SILC_INVALID_REGION )
+    {
+        SILC_User_RegionInit( handle, lastFileName, lastFile,
+                              name, regionType, fileName, lineNo );
+    }
 
     /* Generate region event */
     SILC_EnterRegion( *handle );
@@ -202,11 +208,17 @@ SILC_User_RegionInit
     /* Check for intialization */
     SILC_USER_ASSERT_INITIALIZED;
 
-    /* If the handle is invalid, register a new region */
+    /* Lock region definition */
+    SILC_LockRegionDefinition();
+
+    /* Test wether the handle is still invalid, or if it was initialized in the mean time.
+       If the handle is invalid, register a new region */
     if ( *handle == SILC_INVALID_REGION )
     {
         /* Get source file handle */
+        SILC_LockSourceFileDefinition();
         SILC_SourceFileHandle file = silc_user_get_file( fileName, lastFileName, lastFile );
+        SILC_UnlockSourceFileDefinition();
 
         /* Translate region type from user adapter type to SILC measurement type */
         SILC_RegionType region_type = silc_user_to_silc_region_type( regionType );
@@ -219,6 +231,8 @@ SILC_User_RegionInit
                                      SILC_ADAPTER_USER,
                                      region_type );
     }
+    /* Release lock */
+    SILC_UnlockRegionDefinition();
 }
 
 void

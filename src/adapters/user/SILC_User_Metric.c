@@ -48,16 +48,23 @@ SILC_User_InitMetricGroup
     /* Check for intialization */
     SILC_USER_ASSERT_INITIALIZED;
 
+    /* Lock metric group definition */
+    SILC_LockCounterGroupDefinition();
+
     /* Test if handle is already initialized */
     if ( *groupHandle != SILC_INVALID_COUNTER_GROUP )
     {
         SILC_DEBUG_PRINTF( SILC_DEBUG_USER | SILC_WARNING,
                            "Reinitializtaion of user metric group not possible\n" );
-        return;
+    }
+    else
+    {
+        /* Define metric group handle */
+        *groupHandle = SILC_DefineCounterGroup( name );
     }
 
-    /* Define metric group handle */
-    *groupHandle = SILC_DefineCounterGroup( name );
+    /* Unlock metric group definition */
+    SILC_UnlockCounterGroupDefinition();
 }
 
 void
@@ -81,16 +88,23 @@ SILC_User_InitMetric
         return;
     }
 
+    /* Lock metric definition */
+    SILC_LockCounterDefinition();
+
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SILC_INVALID_COUNTER )
     {
         SILC_DEBUG_PRINTF( SILC_DEBUG_USER | SILC_WARNING,
                            "Reinitializtaion of user metric not possible\n" );
-        return;
+    }
+    else
+    {
+        /* Define user metric */
+        *metricHandle = SILC_DefineCounter( name, metricType, group, unit );
     }
 
-    /* Define user metric */
-    *metricHandle = SILC_DefineCounter( name, metricType, group, unit );
+    /* Unlock metric definition */
+    SILC_UnlockCounterDefinition();
 }
 
 void

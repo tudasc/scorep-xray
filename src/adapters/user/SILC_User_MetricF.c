@@ -54,18 +54,22 @@ FSUB( SILC_User_InitMetricGroupF ) ( SILC_Fortran_MetricGroup * groupHandle,
     strncpy( name, nameF, nameLen );
     name[ nameLen ] = '\0';
 
+    /* Lock metric group definition */
+    SILC_LockCounterGroupDefinition();
+
     /* Test if handle is already initialized */
     if ( *groupHandle != SILC_FORTRAN_INVALID_GROUP )
     {
+        *groupHandle = SILC_DefineCounterGroup( name );
+    }
+    else
+    {
         SILC_DEBUG_PRINTF( SILC_DEBUG_USER | SILC_WARNING,
                            "Reinitializtaion of user metric group not possible\n" );
-        return;
     }
 
-    /* Define metric group handle */
-    *groupHandle = SILC_DefineCounterGroup( name );
-
     /* Clean up */
+    SILC_UnlockCounterGroupDefinition();
     free( name );
 }
 
@@ -107,19 +111,26 @@ FSUB( SILC_User_InitMetricF )
     if ( group == SILC_FORTRAN_INVALID_GROUP )
     {
         SILC_ERROR( SILC_ERROR_USER_INVALID_MGROUP, "" );
-        return;
     }
-
-    /* Check if metric handle is already initialized */
-    if ( *metricHandle != SILC_FORTRAN_INVALID_METRIC )
+    else
     {
-        SILC_DEBUG_PRINTF( SILC_DEBUG_USER | SILC_WARNING,
-                           "Reinitializtaion of user metric not possible\n" );
-        return;
-    }
+        /* Lock metric definition */
+        SILC_LockCounterDefinition();
 
-    /* Define user metric */
-    *metricHandle = SILC_DefineCounter( name, *metricType, group, unit );
+        /* Check if metric handle is already initialized */
+        if ( *metricHandle != SILC_FORTRAN_INVALID_METRIC )
+        {
+            SILC_DEBUG_PRINTF( SILC_DEBUG_USER | SILC_WARNING,
+                               "Reinitializtaion of user metric not possible\n" );
+        }
+        else
+        {
+            /* Define user metric */
+            *metricHandle = SILC_DefineCounter( name, *metricType, group, unit );
+        }
+        /* Unlock metric definition */
+        SILC_UnlockCounterDefinition();
+    }
 
     /* Clean up */
     free( name );

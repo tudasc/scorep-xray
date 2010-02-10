@@ -49,8 +49,14 @@ silc_user_register()
 SILC_Error_Code
 silc_user_init()
 {
-    silc_user_init_regions();
-    silc_user_init_metric();
+    if ( silc_user_is_initialized == 0 )
+    {
+        /* Set the intialization flag to indicate that the adapter is initialized */
+        silc_user_is_initialized = 1;
+
+        silc_user_init_regions();
+        silc_user_init_metric();
+    }
     return SILC_SUCCESS;
 }
 
@@ -58,9 +64,6 @@ silc_user_init()
 SILC_Error_Code
 silc_user_init_location()
 {
-    /* Set the intialization flag to indicate that the adapter is initialized */
-    silc_user_is_initialized = 1;
-
     return SILC_SUCCESS;
 }
 
@@ -76,7 +79,12 @@ silc_user_final_location()
 void
 silc_user_finalize()
 {
-    silc_user_final_regions();
+    if ( silc_user_is_initialized == 1 )
+    {
+        /*  Set the intialization flag to indicate that the adapter is not initialized */
+        silc_user_is_initialized = 0;
+        silc_user_final_regions();
+    }
 }
 
 /** Deregisters the user adapter.
