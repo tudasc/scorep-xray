@@ -31,7 +31,21 @@
  * as it would require a "real" function if it is really needed
  * => we can save the f2c and c2s conversions */
 
-#pragma wrapgen single MPI_Init_thread skel/SILC_Fmpi_Std.w
+#if HAVE(DECL_PMPI_INIT_THREAD)
+/**
+ * Measurement wrapper for MPI_Init_tread
+ * @note Manually adapted wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI-2
+ * @ingroup env
+ */
+void FSUB(MPI_Init_thread)(int* required,
+                           int* provided,
+                           int* ierr)
+{
+  *ierr = MPI_Init_thread(0, (char***)0, *required, provided);
+}
+#endif
 
 /**
  * Measurement wrapper for MPI_Init
