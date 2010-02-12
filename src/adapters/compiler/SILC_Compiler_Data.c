@@ -24,6 +24,7 @@
 
 
 
+#include "SILC_DefinitionLocking.h"
 #include <SILC_Compiler_Data.h>
 
 
@@ -116,6 +117,9 @@ silc_compiler_register_region
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "register a region! " );
 
+
+    SILC_LockSourceFileDefinition();
+
     hn->reghandle = SILC_DefineRegion( hn->name,
                                        SILC_INVALID_SOURCE_FILE,
                                        SILC_INVALID_LINE_NO,
@@ -123,4 +127,5 @@ silc_compiler_register_region
                                        SILC_ADAPTER_COMPILER,
                                        SILC_REGION_FUNCTION
                                        );
+    SILC_UnlockSourceFileDefinition();
 }
