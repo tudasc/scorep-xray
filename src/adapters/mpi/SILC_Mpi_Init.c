@@ -152,7 +152,7 @@ silc_mpi_finalize
     if ( res )
     {
         PMPI_Finalized( &res );
-        if ( res )
+        if ( !res )
         {
             PMPI_Finalize();
         }

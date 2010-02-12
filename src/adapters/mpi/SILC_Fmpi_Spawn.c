@@ -190,24 +190,24 @@
 #if HAVE( DECL_PMPI_COMM_SPAWN_MULTIPLE ) && !defined( SILC_MPI_NO_SPAWN ) && !defined( SILC_MPI_NO_EXTRA )
 /**
  * Manual measurement wrapper for MPI_Comm_spawn_multiple
- * @ingroup manual_wrapper
- * @ingroup interface_fortran
- * @ingroup mpi_version_2
- * @ingroup mpi_enabled_proc
+ * @note Manually adapted wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI 2.0
+ * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
+FSUB( MPI_Comm_spawn_multiple ) ( int* count,
                                   char* array_of_commands,
                                   char* array_of_argv,
-                                  MPI_Fint * array_of_maxprocs,
-                                  MPI_Fint * array_of_info,
-                                  MPI_Fint * root,
-                                  MPI_Fint * comm,
-                                  MPI_Fint * intercomm,
-                                  MPI_Fint * array_of_errcodes,
-                                  MPI_Fint * ierr,
-                                  MPI_Fint array_of_commands_len,
-                                  MPI_Fint array_of_argv_len )
+                                  int* array_of_maxprocs,
+                                  MPI_Info * array_of_info,
+                                  int* root,
+                                  MPI_Comm * comm,
+                                  MPI_Comm * intercomm,
+                                  int* array_of_errcodes,
+                                  int* ierr,
+                                  int array_of_commands_len,
+                                  int array_of_argv_len )
 {
     MPI_Fint cur_cmd, cur_arg;
     char**   c_array_of_commands = NULL;
@@ -373,12 +373,12 @@ FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
 void
 FSUB( MPI_Comm_spawn ) ( char*     command,
                          char*     argv,
-                         MPI_Fint * maxprocs,
-                         MPI_Fint * info,
-                         MPI_Fint * root,
-                         MPI_Fint * comm,
-                         MPI_Fint * newcomm,
-                         MPI_Fint * array_of_errcodes,
+                         int* maxprocs,
+                         MPI_Info * info,
+                         int* root,
+                         MPI_Comm * comm,
+                         MPI_Comm * newcomm,
+                         int* array_of_errcodes,
                          int*      ierr,
                          int command_len,
                          int argv_len )
