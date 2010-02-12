@@ -118,7 +118,7 @@ silc_compiler_register_region
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "register a region! " );
 
 
-    SILC_LockSourceFileDefinition();
+    SILC_LockRegionDefinition();
 
     hn->reghandle = SILC_DefineRegion( hn->name,
                                        SILC_INVALID_SOURCE_FILE,
@@ -127,5 +127,5 @@ silc_compiler_register_region
                                        SILC_ADAPTER_COMPILER,
                                        SILC_REGION_FUNCTION
                                        );
-    SILC_UnlockSourceFileDefinition();
+    SILC_UnlockRegionDefinition();
 }
