@@ -26,6 +26,7 @@
 #include "SILC_Compiler_Init.h"
 #include "SILC_Types.h"
 #include "SILC_Error.h"
+#include <SILC_Utils.h>
 
 int32_t silc_compiler_initialize = 1;
 
