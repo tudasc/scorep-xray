@@ -138,9 +138,28 @@ void
 silc_mpi_finalize
     ()
 {
+    int res;
+
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
                        "In silc_mpi_finalize\n" );
-    PMPI_Finalize();
+    SILC_MPI_EVENT_GEN_OFF();
+
+    /* MPICH somehow creates some extra processes/threads. If PMPI_Finalize is called
+       from the exit handler of SILC, these processes also try to execute MPI_Finalize.
+       This causes errors, thus, we test if the call to PMPI_Finalize is save.
+     */
+    PMPI_Initialized( &res );
+    if ( res )
+    {
+        PMPI_Finalized( &res );
+        if ( res )
+        {
+            PMPI_Finalize();
+        }
+    }
+    SILC_MPI_EVENT_GEN_ON();
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
+                       "End of silc_mpi_finalize\n" );
 }
 
 /** Implementation of the adapter_deregister function of the @ref SILC_Adapter struct
