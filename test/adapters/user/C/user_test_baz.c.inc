@@ -1,0 +1,5 @@
+void baz()
+{
+  SILC_USER_FUNC_BEGIN
+  SILC_USER_FUNC_END
+}
