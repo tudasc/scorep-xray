@@ -61,20 +61,25 @@ typedef enum /* SILC_Pomp_RegionType */
 /** Struct which contains all data for a pomp region. */
 typedef struct
 {
-    SILC_Pomp_RegionType regionType;    /* region type of construct                */
-    char*                name;          /* critical or user region name            */
-    int32_t              numSections;   /* sections only: number of sections       */
-    SILC_RegionHandle    outerBlock;    /* SILC handle for the enclosing region    */
-    SILC_RegionHandle    innerBlock;    /* SILC handle for the enclosed region     */
+    SILC_Pomp_RegionType regionType;    /* region type of construct                  */
+    char*                name;          /* critical or user region name              */
+    int32_t              numSections;   /* sections only: number of sections         */
+    /* For combined statements (parallel sections, parallel for) we need up to
+       four SILC regions. So we use a pair of SILC regions for the parallel
+       statements and a pair of regions for other statements.                        */
+    SILC_RegionHandle outerParallel;    /* SILC handle for the outer parallel region */
+    SILC_RegionHandle innerParallel;    /* SILC handle for the inner parallel region */
+    SILC_RegionHandle outerBlock;       /* SILC handle for the enclosing region      */
+    SILC_RegionHandle innerBlock;       /* SILC handle for the enclosed region       */
 
-    char*                startFileName; /* File containing opening statement     */
-    int32_t              startLine1;    /* First line of the opening statement     */
-    int32_t              startLine2;    /* Last line of the opening statement      */
+    char*             startFileName;    /* File containing opening statement         */
+    int32_t           startLine1;       /* First line of the opening statement       */
+    int32_t           startLine2;       /* Last line of the opening statement        */
 
-    char*                endFileName;   /* File containing the closing statement   */
-    int32_t              endLine1;      /* First line of the closing statement     */
-    int32_t              endLine2;      /* Last line of the closing statement      */
-    char*                regionName;    /* For user regions and criticals          */
+    char*             endFileName;      /* File containing the closing statement     */
+    int32_t           endLine1;         /* First line of the closing statement       */
+    int32_t           endLine2;         /* Last line of the closing statement        */
+    char*             regionName;       /* For user regions and criticals            */
 } SILC_Pomp_Region;
 
 

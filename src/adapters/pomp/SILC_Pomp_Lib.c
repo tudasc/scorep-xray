@@ -255,26 +255,6 @@ POMP_On()
 }
 
 void
-POMP_Begin( POMP_Region_handle pomp_handle )
-{
-    if ( silc_pomp_is_tracing_on )
-    {
-        SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_EnterRegion( region->innerBlock );
-    }
-}
-
-void
-POMP_End( POMP_Region_handle pomp_handle )
-{
-    if ( silc_pomp_is_tracing_on )
-    {
-        SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_ExitRegion( region->innerBlock );
-    }
-}
-
-void
 POMP_Assign_handle( POMP_Region_handle* pomp_handle,
                     const char          init_string[] )
 {
@@ -293,8 +273,28 @@ POMP_Assign_handle( POMP_Region_handle* pomp_handle,
 }
 
 /* **************************************************************************************
- *                                                                POMP contruct functions
+ *                                                                   POMP event functions
  ***************************************************************************************/
+
+void
+POMP_Begin( POMP_Region_handle pomp_handle )
+{
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
+        SILC_EnterRegion( region->innerBlock );
+    }
+}
+
+void
+POMP_End( POMP_Region_handle pomp_handle )
+{
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
+        SILC_ExitRegion( region->innerBlock );
+    }
+}
 
 void
 POMP_Atomic_enter( POMP_Region_handle pomp_handle )
@@ -456,7 +456,7 @@ POMP_Parallel_begin( POMP_Region_handle pomp_handle )
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_EnterRegion( region->innerBlock );
+        SILC_EnterRegion( region->innerParallel );
     }
 }
 
@@ -466,7 +466,7 @@ POMP_Parallel_end( POMP_Region_handle pomp_handle )
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_ExitRegion( region->innerBlock );
+        SILC_ExitRegion( region->innerParallel );
     }
 }
 
@@ -483,7 +483,7 @@ POMP_Parallel_fork( POMP_Region_handle pomp_handle )
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_OmpFork( region->outerBlock );
+        SILC_OmpFork( region->outerParallel );
     }
 }
 
@@ -493,7 +493,7 @@ POMP_Parallel_join( POMP_Region_handle pomp_handle )
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_OmpJoin( region->outerBlock );
+        SILC_OmpJoin( region->outerParallel );
     }
 }
 

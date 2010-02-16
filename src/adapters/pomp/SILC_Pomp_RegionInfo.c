@@ -107,21 +107,21 @@ static const silc_pomp_region_type_map_entry silc_pomp_region_type_map[] =
     /* If you add/remove items, silc_pomp_region_type_map_size. */
     /* Entries must be in same order like SILC_Pomp_RegionType to allow lookup. */
   { "atomic",            SILC_Pomp_Atomic              , SILC_REGION_OMP_ATOMIC,    SILC_REGION_UNKNOWN              },
-  { "barrier",           SILC_Pomp_Barrier             , SILC_REGION_OMP_BARRIER,   SILC_REGION_UNKNOWN              },
-  { "critical",          SILC_Pomp_Critical            , SILC_REGION_OMP_CRITICAL,  SILC_REGION_OMP_CRITICAL_SBLOCK  },
+  { "barrier",           SILC_Pomp_Barrier             , SILC_REGION_OMP_BARRIER,   SILC_REGION_OMP_BARRIER          },
+  { "critical",          SILC_Pomp_Critical            , SILC_REGION_OMP_CRITICAL,  SILC_REGION_OMP_CRITICAL         },
   { "do",                SILC_Pomp_Do                  , SILC_REGION_OMP_LOOP,      SILC_REGION_UNKNOWN              },
-  { "flush",             SILC_Pomp_Flush               , SILC_REGION_OMP_FLUSH,     SILC_REGION_UNKNOWN              },
+  { "flush",             SILC_Pomp_Flush               , SILC_REGION_OMP_FLUSH,     SILC_REGION_OMP_FLUSH            },
   { "for",               SILC_Pomp_For                 , SILC_REGION_OMP_LOOP,      SILC_REGION_UNKNOWN              },
-  { "master",            SILC_Pomp_Master              , SILC_REGION_OMP_MASTER,    SILC_REGION_UNKNOWN              },
-  { "parallel",          SILC_Pomp_Parallel            , SILC_REGION_OMP_PARALLEL,  SILC_REGION_UNKNOWN              },
-  { "paralleldo",        SILC_Pomp_ParallelDo          , SILC_REGION_OMP_PARALLEL,  SILC_REGION_OMP_LOOP             },
-  { "parallelfor",       SILC_Pomp_ParallelFor         , SILC_REGION_OMP_PARALLEL,  SILC_REGION_OMP_LOOP             },
-  { "parallelsections",  SILC_Pomp_ParallelSections    , SILC_REGION_OMP_PARALLEL,  SILC_REGION_OMP_SECTIONS         },
-  { "parallelworkshare", SILC_Pomp_ParallelWorkshare   , SILC_REGION_OMP_PARALLEL,  SILC_REGION_OMP_WORKSHARE        },
-  { "region",            SILC_Pomp_UserRegion          , SILC_REGION_USER,          SILC_REGION_UNKNOWN              },
-  { "sections",          SILC_Pomp_Sections            , SILC_REGION_OMP_SECTIONS,  SILC_REGION_UNKNOWN              },
-  { "single",            SILC_Pomp_Single              , SILC_REGION_OMP_SINGLE,    SILC_REGION_UNKNOWN              },
-  { "workshare",         SILC_Pomp_Workshare           , SILC_REGION_OMP_WORKSHARE, SILC_REGION_UNKNOWN              }
+  { "master",            SILC_Pomp_Master              , SILC_REGION_OMP_MASTER,    SILC_REGION_OMP_MASTER           },
+  { "parallel",          SILC_Pomp_Parallel            , SILC_REGION_UNKNOWN,       SILC_REGION_UNKNOWN              },
+  { "paralleldo",        SILC_Pomp_ParallelDo          , SILC_REGION_OMP_LOOP,      SILC_REGION_UNKNOWN              },
+  { "parallelfor",       SILC_Pomp_ParallelFor         , SILC_REGION_OMP_LOOP,      SILC_REGION_UNKNOWN              },
+  { "parallelsections",  SILC_Pomp_ParallelSections    , SILC_REGION_OMP_SECTIONS,  SILC_REGION_OMP_SECTION          },
+  { "parallelworkshare", SILC_Pomp_ParallelWorkshare   , SILC_REGION_OMP_WORKSHARE, SILC_REGION_OMP_WORKSHARE        },
+  { "region",            SILC_Pomp_UserRegion          , SILC_REGION_USER,          SILC_REGION_USER,                },
+  { "sections",          SILC_Pomp_Sections            , SILC_REGION_OMP_SECTIONS,  SILC_REGION_OMP_SECTION          },
+  { "single",            SILC_Pomp_Single              , SILC_REGION_OMP_SINGLE,    SILC_REGION_OMP_SINGLE,          },
+  { "workshare",         SILC_Pomp_Workshare           , SILC_REGION_OMP_WORKSHARE, SILC_REGION_OMP_WORKSHARE        }
 };
 /* *INDENT-ON* */
 
@@ -239,6 +239,8 @@ silc_pomp_init_region( SILC_Pomp_Region* region )
     region->regionType    = SILC_Pomp_NoType;
     region->name          = 0;
     region->numSections   = 0;
+    region->outerParallel = SILC_INVALID_REGION;
+    region->innerParallel = SILC_INVALID_REGION;
     region->outerBlock    = SILC_INVALID_REGION;
     region->innerBlock    = SILC_INVALID_REGION;
     region->startFileName = 0;
@@ -570,6 +572,7 @@ silc_pomp_register_region( SILC_Pomp_Region* region )
     char*           name       = 0;
     SILC_RegionType type_outer = SILC_REGION_UNKNOWN;
     SILC_RegionType type_inner = SILC_REGION_UNKNOWN;
+    int32_t         start, end;
 
     /* Assume that all regions from one file are registered in a row.
        Thus, remember the last file handle and reuse it if the next region stems
@@ -585,7 +588,7 @@ silc_pomp_register_region( SILC_Pomp_Region* region )
         last_file      = SILC_DefineSourceFile( last_file_name );
     }
 
-    /* Determine name.*/
+    /* Determine name */
     if ( region->regionName == 0 )
     {
         name = silc_pomp_region_type_map[ region->regionType ].regionTypeString;
@@ -595,17 +598,61 @@ silc_pomp_register_region( SILC_Pomp_Region* region )
         name = region->regionName;
     }
 
+    /* Register parallel regions */
+    if ( ( region->regionType >= SILC_Pomp_Parallel ) &&
+         ( region->regionType <= SILC_Pomp_ParallelWorkshare ) )
+    {
+        region->outerParallel = SILC_DefineRegion( name,
+                                                   last_file,
+                                                   region->startLine1,
+                                                   region->endLine2,
+                                                   SILC_ADAPTER_POMP,
+                                                   SILC_REGION_OMP_PARALLEL );
+
+        if ( region->regionType == SILC_Pomp_Parallel )
+        {
+            start = region->startLine1;
+            end   = region->endLine2;
+        }
+        else
+        {
+            start = region->startLine2;
+            end   = region->endLine1;
+        }
+        region->innerParallel = SILC_DefineRegion( name,
+                                                   last_file,
+                                                   start,
+                                                   end,
+                                                   SILC_ADAPTER_POMP,
+                                                   SILC_REGION_OMP_PARALLEL );
+    }
+
     /* Determine type of inner and outer regions */
     type_outer = silc_pomp_region_type_map[ region->regionType ].outerRegionType;
     type_inner = silc_pomp_region_type_map[ region->regionType ].innerRegionType;
 
-    /* Register regions */
-    region->outerBlock = SILC_DefineRegion( name,
-                                            last_file,
-                                            region->startLine1,
-                                            region->endLine2,
-                                            SILC_ADAPTER_POMP,
-                                            type_outer );
+    /* Register other regions */
+    if ( type_outer != SILC_REGION_UNKNOWN )
+    {
+        if ( ( region->regionType >= SILC_Pomp_ParallelDo ) &&
+             ( region->regionType <= SILC_Pomp_ParallelWorkshare ) )
+        {
+            start = region->startLine2;
+            end   = region->endLine1;
+        }
+        else
+        {
+            start = region->startLine1;
+            end   = region->endLine2;
+        }
+
+        region->outerBlock = SILC_DefineRegion( name,
+                                                last_file,
+                                                start,
+                                                end,
+                                                SILC_ADAPTER_POMP,
+                                                type_outer );
+    }
 
     if ( type_inner != SILC_REGION_UNKNOWN )
     {
@@ -615,10 +662,6 @@ silc_pomp_register_region( SILC_Pomp_Region* region )
                                                 region->endLine1,
                                                 SILC_ADAPTER_POMP,
                                                 type_inner );
-    }
-    else
-    {
-        region->innerBlock = region->outerBlock;
     }
 }
 
