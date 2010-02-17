@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "SILC_Pomp_Lock.h"
 
 /** @ingroup POMP
     @{
@@ -46,6 +47,9 @@ SILC_RegionHandle silc_pomp_implicit_barrier_region = SILC_INVALID_REGION;
 
 /** Flag to indicate, wether POMP traceing is enable/disabled */
 bool silc_pomp_is_tracing_on = true;
+
+/** Source file handle for pomp wrapper functions and implicit barrier region. */
+SILC_SourceFileHandle silc_pomp_file_handle = SILC_INVALID_SOURCE_FILE;
 
 /* **************************************************************************************
                                                                        Internal functions
@@ -131,19 +135,20 @@ silc_pomp_init()
         SILC_InitMeasurement();
 
         /* Initialize file handle for implicit barrier */
-        SILC_SourceFileHandle file_handle = SILC_DefineSourceFile( "POMP" );
+        silc_pomp_file_handle = SILC_DefineSourceFile( "POMP" );
 
         /* Allocate memory for your POMP_Get_num_regions() regions */
         silc_pomp_regions = calloc( POMP_Get_num_regions(),
                                     sizeof( SILC_Pomp_Region ) );
 
         /* Register regions */
+        silc_pomp_register_lock_regions();
         POMP_Init_regions();
 
         /* Initialize implicit barrier region */
         silc_pomp_implicit_barrier_region =
             SILC_DefineRegion( "implicit barrier",
-                               file_handle,
+                               silc_pomp_file_handle,
                                SILC_INVALID_LINE_NO,
                                SILC_INVALID_LINE_NO,
                                SILC_ADAPTER_POMP,
@@ -604,61 +609,178 @@ POMP_Workshare_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Init_lock( omp_lock_t* s )
 {
-    omp_init_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_INIT_LOCK ] );
+        omp_init_lock( s );
+        silc_pomp_lock_init( s );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_INIT_LOCK ] );
+    }
+    else
+    {
+        omp_init_lock( s );
+        silc_pomp_lock_init( s );
+    }
 }
 
 void
 POMP_Destroy_lock( omp_lock_t* s )
 {
-    omp_destroy_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_DESTROY_LOCK ] );
+        omp_destroy_lock( s );
+        silc_pomp_lock_destroy( s );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_DESTROY_LOCK ] );
+    }
+    else
+    {
+        omp_destroy_lock( s );
+        silc_pomp_lock_destroy( s );
+    }
 }
 
 void
 POMP_Set_lock( omp_lock_t* s )
 {
-    omp_set_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_SET_LOCK ] );
+        omp_set_lock( s );
+        SILC_OmpAcquireLock( silc_pomp_get_lock_handle( s ) );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_SET_LOCK ] );
+    }
+    else
+    {
+        omp_set_lock( s );
+    }
 }
 
 void
 POMP_Unset_lock( omp_lock_t* s )
 {
-    omp_unset_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_UNSET_LOCK ] );
+        omp_unset_lock( s );
+        SILC_OmpReleaseLock( silc_pomp_get_lock_handle( s ) );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_UNSET_LOCK ] );
+    }
+    else
+    {
+        omp_unset_lock( s );
+    }
 }
 
 int
 POMP_Test_lock( omp_lock_t* s )
 {
-    return omp_test_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        int result;
+
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_TEST_LOCK ] );
+        result = omp_test_lock( s );
+        if ( result )
+        {
+            SILC_OmpAcquireLock( silc_pomp_get_lock_handle( s ) );
+        }
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_TEST_LOCK ] );
+        return result;
+    }
+    else
+    {
+        return omp_test_lock( s );
+    }
 }
 
 void
 POMP_Init_nest_lock( omp_nest_lock_t* s )
 {
-    omp_init_nest_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_INIT_NEST_LOCK ] );
+        omp_init_nest_lock( s );
+        silc_pomp_lock_init( s );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_INIT_NEST_LOCK ] );
+    }
+    else
+    {
+        omp_init_nest_lock( s );
+        silc_pomp_lock_init( s );
+    }
 }
 
 void
 POMP_Destroy_nest_lock( omp_nest_lock_t* s )
 {
-    omp_destroy_nest_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_DESTROY_NEST_LOCK ] );
+        omp_destroy_nest_lock( s );
+        silc_pomp_lock_destroy( s );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_DESTROY_NEST_LOCK ] );
+    }
+    else
+    {
+        omp_destroy_nest_lock( s );
+        silc_pomp_lock_destroy( s );
+    }
 }
 
 void
 POMP_Set_nest_lock( omp_nest_lock_t* s )
 {
-    omp_set_nest_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_SET_NEST_LOCK ] );
+        omp_set_nest_lock( s );
+        SILC_OmpAcquireLock( silc_pomp_get_lock_handle( s ) );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_SET_NEST_LOCK ] );
+    }
+    else
+    {
+        omp_set_nest_lock( s );
+    }
 }
 
 void
 POMP_Unset_nest_lock( omp_nest_lock_t* s )
 {
-    omp_unset_nest_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_UNSET_NEST_LOCK ] );
+        omp_unset_nest_lock( s );
+        SILC_OmpReleaseLock( silc_pomp_get_lock_handle( s ) );
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_UNSET_NEST_LOCK ] );
+    }
+    else
+    {
+        omp_unset_nest_lock( s );
+    }
 }
 
 int
 POMP_Test_nest_lock( omp_nest_lock_t* s )
 {
-    return omp_test_nest_lock( s );
+    if ( silc_pomp_is_tracing_on )
+    {
+        int result;
+
+        SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_TEST_NEST_LOCK ] );
+        result = omp_test_nest_lock( s );
+        if ( result )
+        {
+            SILC_OmpAcquireLock( silc_pomp_get_lock_handle( s ) );
+        }
+
+        SILC_ExitRegion( silc_pomp_regid[ SILC_POMP_TEST_NEST_LOCK ] );
+        return result;
+    }
+    else
+    {
+        return omp_test_nest_lock( s );
+    }
 }
 
 /** @} */

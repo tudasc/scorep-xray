@@ -255,6 +255,7 @@ typedef enum SILC_RegionType
     SILC_REGION_OMP_FLUSH,
     SILC_REGION_OMP_CRITICAL_SBLOCK, /**< @todo what is SBLOCK? */
     SILC_REGION_OMP_SINGLE_SBLOCK,
+    SILC_REGION_OMP_WRAPPER,
 
     SILC_INVALID_REGION_TYPE /**< For internal use only. */
 } SILC_RegionType;
