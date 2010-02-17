@@ -52,8 +52,52 @@ FSUB( SILC_User_RegionInitF ) ( SILC_Fortran_RegionHandle * handle,
                                 int nameLen,
                                 int fileNameLen )
 {
+    char*                  name;
+    char*                  fileName;
+    SILC_Hashtab_Entry*    entry;
+    size_t                 index;
+    SILC_SourceFileHandle* fileHandle;
+
     /* Check for intialization */
     SILC_USER_ASSERT_INITIALIZED;
+
+    /* Copy strings */
+    name = ( char* )malloc( ( nameLen + 1 ) * sizeof( char ) );
+    strncpy( name, name_f, nameLen );
+    name[ nameLen ] = '\0';
+
+    fileName = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
+    strncpy( fileName, fileName_f, fileNameLen );
+    name[ nameLen ] = '\0';
+
+    /* Lock file definition */
+    SILC_LockSourceFileDefinition();
+
+    /* Search for source file handle */
+    entry = SILC_Hashtab_Find( silc_user_file_table, fileName, &index );
+
+    /*  If not found register new file */
+    if ( !entry )
+    {
+        /* Register file to measurement system */
+        fileHandle  = malloc( sizeof( SILC_SourceFileHandle ) );
+        *fileHandle = SILC_DefineSourceFile( fileName );
+
+        /* Store handle in hashtable */
+        SILC_Hashtab_Insert( silc_user_file_table,
+                             ( void* )fileName,
+                             fileHandle,
+                             &index );
+    }
+    else
+    {
+        /* If found the reserved space for the file name should be freed */
+        free( fileName );
+
+        fileHandle = ( SILC_SourceFileHandle* )entry->value;
+    }
+    /* Unlock file defintion */
+    SILC_UnlockSourceFileDefinition();
 
     /* Lock region definition */
     SILC_LockRegionDefinition();
@@ -63,51 +107,6 @@ FSUB( SILC_User_RegionInitF ) ( SILC_Fortran_RegionHandle * handle,
        time. If the handle is invalid, register a new region */
     if ( *handle == SILC_FORTRAN_INVALID_REGION )
     {
-        char*                  name;
-        char*                  fileName;
-        SILC_Hashtab_Entry*    entry;
-        size_t                 index;
-        SILC_SourceFileHandle* fileHandle;
-
-        /* Copy strings */
-        name = ( char* )malloc( ( nameLen + 1 ) * sizeof( char ) );
-        strncpy( name, name_f, nameLen );
-        name[ nameLen ] = '\0';
-
-        fileName = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
-        strncpy( fileName, fileName_f, fileNameLen );
-        name[ nameLen ] = '\0';
-
-        /* Lock file definition */
-        SILC_LockSourceFileDefinition();
-
-        /* Search for source file handle */
-        entry = SILC_Hashtab_Find( silc_user_file_table, fileName, &index );
-
-        /*  If not found register new file */
-        if ( !entry )
-        {
-            /* Register file to measurement system */
-            fileHandle  = malloc( sizeof( SILC_SourceFileHandle ) );
-            *fileHandle = SILC_DefineSourceFile( fileName );
-
-            /* Store handle in hashtable */
-            SILC_Hashtab_Insert( silc_user_file_table,
-                                 ( void* )fileName,
-                                 fileHandle,
-                                 &index );
-        }
-        else
-        {
-            /* If found the reserved space for the file name should be freed */
-            free( fileName );
-
-            fileHandle = ( SILC_SourceFileHandle* )entry->value;
-        }
-        /* Unlock file defintion */
-        SILC_UnlockSourceFileDefinition();
-
-
         /* Translate region type from user adapter type to SILC measurement type */
         SILC_RegionType region_type = silc_user_to_silc_region_type( *type );
 

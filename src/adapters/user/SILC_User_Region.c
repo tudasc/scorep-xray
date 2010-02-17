@@ -208,6 +208,11 @@ SILC_User_RegionInit
     /* Check for intialization */
     SILC_USER_ASSERT_INITIALIZED;
 
+    /* Get source file handle */
+    SILC_LockSourceFileDefinition();
+    SILC_SourceFileHandle file = silc_user_get_file( fileName, lastFileName, lastFile );
+    SILC_UnlockSourceFileDefinition();
+
     /* Lock region definition */
     SILC_LockRegionDefinition();
 
@@ -215,11 +220,6 @@ SILC_User_RegionInit
        If the handle is invalid, register a new region */
     if ( *handle == SILC_INVALID_REGION )
     {
-        /* Get source file handle */
-        SILC_LockSourceFileDefinition();
-        SILC_SourceFileHandle file = silc_user_get_file( fileName, lastFileName, lastFile );
-        SILC_UnlockSourceFileDefinition();
-
         /* Translate region type from user adapter type to SILC measurement type */
         SILC_RegionType region_type = silc_user_to_silc_region_type( regionType );
 
