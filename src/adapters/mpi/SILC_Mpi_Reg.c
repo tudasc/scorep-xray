@@ -564,6 +564,34 @@ silc_mpi_register_regions()
             SILC_DefineRegion( "MPI_Dims_create", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
     }
 #endif
+#if HAVE( DECL_PMPI_DIST_GRAPH_CREATE ) && !defined( SILC_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_TOPO )
+    {
+        silc_mpi_regid[ SILC__MPI_DIST_GRAPH_CREATE ] =
+            SILC_DefineRegion( "MPI_Dist_graph_create", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
+#if HAVE( DECL_PMPI_DIST_GRAPH_CREATE_ADJACENT ) && !defined( SILC_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create_adjacent )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_TOPO )
+    {
+        silc_mpi_regid[ SILC__MPI_DIST_GRAPH_CREATE_ADJACENT ] =
+            SILC_DefineRegion( "MPI_Dist_graph_create_adjacent", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
+#if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_TOPO )
+    {
+        silc_mpi_regid[ SILC__MPI_DIST_GRAPH_NEIGHBORS ] =
+            SILC_DefineRegion( "MPI_Dist_graph_neighbors", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
+#if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_TOPO )
+    {
+        silc_mpi_regid[ SILC__MPI_DIST_GRAPH_NEIGHBORS_COUNT ] =
+            SILC_DefineRegion( "MPI_Dist_graph_neighbors_count", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
 #if HAVE( DECL_PMPI_ERRHANDLER_CREATE ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_ERR ) && !defined( MPI_Errhandler_create )
     if ( silc_mpi_enabled & SILC_MPI_ENABLED_ERR )
     {
@@ -1432,6 +1460,13 @@ silc_mpi_register_regions()
             SILC_DefineRegion( "MPI_Op_c2f", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
     }
 #endif
+#if HAVE( DECL_PMPI_OP_COMMUTATIVE ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_MISC ) && !defined( MPI_Op_commutative )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_MISC )
+    {
+        silc_mpi_regid[ SILC__MPI_OP_COMMUTATIVE ] =
+            SILC_DefineRegion( "MPI_Op_commutative", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
 #if HAVE( DECL_PMPI_OP_CREATE ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_MISC ) && !defined( MPI_Op_create )
     if ( silc_mpi_enabled & SILC_MPI_ENABLED_MISC )
     {
@@ -1488,6 +1523,13 @@ silc_mpi_register_regions()
             SILC_DefineRegion( "MPI_Pack_size", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
     }
 #endif
+#if HAVE( DECL_PMPI_PCONTROL ) && !defined( SILC_MPI_NO_PERF ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( MPI_Pcontrol )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_PERF )
+    {
+        silc_mpi_regid[ SILC__MPI_PCONTROL ] =
+            SILC_DefineRegion( "MPI_Pcontrol", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
 #if HAVE( DECL_PMPI_PROBE ) && !defined( SILC_MPI_NO_P2P ) && !defined( MPI_Probe )
     if ( silc_mpi_enabled & SILC_MPI_ENABLED_P2P )
     {
@@ -1537,11 +1579,25 @@ silc_mpi_register_regions()
             SILC_DefineRegion( "MPI_Reduce", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI_COLL_ALL2ONE );
     }
 #endif
+#if HAVE( DECL_PMPI_REDUCE_LOCAL ) && !defined( SILC_MPI_NO_COLL ) && !defined( MPI_Reduce_local )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_COLL )
+    {
+        silc_mpi_regid[ SILC__MPI_REDUCE_LOCAL ] =
+            SILC_DefineRegion( "MPI_Reduce_local", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
+    }
+#endif
 #if HAVE( DECL_PMPI_REDUCE_SCATTER ) && !defined( SILC_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter )
     if ( silc_mpi_enabled & SILC_MPI_ENABLED_COLL )
     {
         silc_mpi_regid[ SILC__MPI_REDUCE_SCATTER ] =
             SILC_DefineRegion( "MPI_Reduce_scatter", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI_COLL_ALL2ALL );
+    }
+#endif
+#if HAVE( DECL_PMPI_REDUCE_SCATTER_BLOCK ) && !defined( SILC_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block )
+    if ( silc_mpi_enabled & SILC_MPI_ENABLED_COLL )
+    {
+        silc_mpi_regid[ SILC__MPI_REDUCE_SCATTER_BLOCK ] =
+            SILC_DefineRegion( "MPI_Reduce_scatter_block", file_id, SILC_INVALID_LINE_NO, SILC_INVALID_LINE_NO, SILC_ADAPTER_MPI, SILC_REGION_MPI );
     }
 #endif
 #if HAVE( DECL_PMPI_REGISTER_DATAREP ) && !defined( SILC_MPI_NO_IO ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( MPI_Register_datarep )

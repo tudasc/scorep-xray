@@ -135,6 +135,9 @@ int MPI_Cart_create(MPI_Comm  comm_old,
 #pragma wrapgen single MPI_Cart_sub skel/SILC_Mpi_CommMgnt.w
 #pragma wrapgen single MPI_Graph_create skel/SILC_Mpi_CommMgnt.w
 
+#pragma wrapgen single MPI_Dist_graph_create skel/SILC_Mpi_CommMgnt.w
+#pragma wrapgen single MPI_Dist_graph_create_adjacent skel/SILC_Mpi_CommMgnt.w
+
 #pragma wrapgen multiple restrict(gtopo+!ncreate+!nsub) skel/SILC_Mpi_Std.w
 #pragma wrapgen single MPI_Dims_create skel/SILC_Mpi_Std.w
 
