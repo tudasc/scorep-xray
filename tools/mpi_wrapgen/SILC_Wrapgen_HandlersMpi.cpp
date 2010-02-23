@@ -262,7 +262,7 @@ SILC::Wrapgen::handler::mpi::call_fortran
         {
             // character arrays from Fortran are not null-terminated
             // thus we have to use our own internal character array,
-            // initialized in a preceeding declaration and init block
+            // initialized in a preceding declaration and init block
             str += "c_" + arg_name;
         }
         else
