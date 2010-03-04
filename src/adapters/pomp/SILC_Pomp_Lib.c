@@ -22,6 +22,8 @@
  * @brief Implementation of the POMP adapter functions.
  */
 
+#if 0
+
 #include "SILC_Pomp_Init.h"
 #include "pomp_lib.h"
 #include "SILC_Pomp_RegionInfo.h"
@@ -784,3 +786,5 @@ POMP_Test_nest_lock( omp_nest_lock_t* s )
 }
 
 /** @} */
+
+#endif // if 0

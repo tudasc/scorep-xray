@@ -1,11 +1,15 @@
 noinst_LTLIBRARIES += libsilc_adapter_pomp.la
 
+# This crap does brake make distcheck, please fix!
 libsilc_adapter_pomp_la_SOURCES =                       \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lib.c        \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.c       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.h       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.c \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.h
+    $(SRC_ROOT)src/adapters/include/pomp_lib.h
+
+#    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.c       \
+#    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.h       \
+#    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.c \
+#    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.h \
+#
 
 libsilc_adapter_pomp_la_CPPFLAGS =                      \
     $(AM_CPPFLAGS)                                      \

@@ -40,6 +40,12 @@
 extern "C" {
 #endif
 
+/** Thread private variable that is passed to child threads via copyin */
+extern void* pomp_tpd;
+#ifdef _OPENMP
+#pragma omp threadprivate(pomp_tpd)
+#endif
+
 /** Defines opaque pomp region handle type */
 typedef void* POMP_Region_handle;
 
