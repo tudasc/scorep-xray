@@ -18,6 +18,7 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/SILC_Config.c                    \
     $(SRC_ROOT)src/measurement/SILC_Definitions.c               \
     $(SRC_ROOT)src/measurement/SILC_Events.c                    \
+    $(SRC_ROOT)src/measurement/SILC_Memory.c                    \
     $(SRC_ROOT)src/measurement/SILC_RuntimeManagement.c         \
     $(SRC_ROOT)src/measurement/include/SILC_Adapter.h           \
     $(SRC_ROOT)src/measurement/include/SILC_Config.h            \
@@ -26,15 +27,21 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SILC_Events.h            \
     $(SRC_ROOT)src/measurement/include/SILC_Memory.h            \
     $(SRC_ROOT)src/measurement/include/SILC_RuntimeManagement.h \
+    $(SRC_ROOT)src/measurement/include/SILC_Thread_Types.h      \
     $(SRC_ROOT)src/measurement/include/SILC_Types.h             \
     $(SRC_ROOT)src/measurement/silc_adapter.h                   \
     $(SRC_ROOT)src/measurement/silc_types.c                     \
     $(SRC_ROOT)src/measurement/silc_types.h                     \
-    $(SRC_ROOT)src/measurement/silc_runtime_management.h
+    $(SRC_ROOT)src/measurement/silc_runtime_management.h        \
+    $(SRC_ROOT)src/measurement/silc_thread.h                    \
+    $(SRC_ROOT)src/measurement/silc_thread.c                    \
+    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.h
+
 
 libsilc_measurement_la_CPPFLAGS =               \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_ROOT)src/measurement/profile        \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/services                   \
     -I$(INC_DIR_OTF2)                           \

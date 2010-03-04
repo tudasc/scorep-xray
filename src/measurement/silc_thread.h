@@ -1,3 +1,6 @@
+#ifndef SILC_THREAD_H
+#define SILC_THREAD_H
+
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -14,7 +17,82 @@
  */
 
 
-#ifndef SILC_INTERNAL_THREAD_H
-#define SILC_INTERNAL_THREAD_H
+/**
+ * @file       silc_thread.h
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status ALPHA
+ *
+ *
+ */
 
-#endif /* SILC_INTERNAL_THREAD_H */
+
+#include <SILC_Allocator.h>
+#include <silc_profile_thread_interaction.h>
+#include <SILC_Thread_Types.h>
+#include "silc_trace_thread_interaction.h"
+#include <stddef.h>
+
+
+/**
+ * Call from master thread, e.g. for SILC_InitMeasurement(). Prepare
+ * datastructures for thread-local access.
+ *
+ */
+void
+SILC_Thread_Initilize();
+
+
+/**
+ * Call from master thread, e.g. SILC_FinalizeMeasurement(). Cleans up thread
+ * local data structures. Who clears memory and when?
+ *
+ */
+void
+SILC_Thread_Finalize();
+
+
+/**
+ * Call from SILC_OmpFork(). Update thread local data structures at the start of
+ * a parallel region.
+ *
+ */
+void
+SILC_Thread_OnThreadFork( size_t nRequestedThreads );
+
+
+/**
+ * Call from SILC_OmpJoin(). Update thread local data structures at the end of
+ * a parallel region.
+ *
+ */
+void
+SILC_Thread_OnThreadJoin();
+
+
+/**
+ *
+ *
+ * @return
+ */
+SILC_Thread_LocationData*
+SILC_Thread_GetLocationData();
+
+
+SILC_Memory_PageManager**
+SILC_Thread_GetLocationLocalMemoryPageManagers();
+
+
+SILC_Memory_PageManager**
+SILC_Thread_GetGlobalMemoryPageManagers();
+
+
+SILC_Profile_LocationData*
+SILC_Thread_GetProfileLocationData( SILC_Thread_LocationData* locationData );
+
+
+SILC_Trace_LocationData*
+SILC_Thread_GetTraceLocationData( SILC_Thread_LocationData* locationData );
+
+
+#endif /* SILC_THREAD_H */

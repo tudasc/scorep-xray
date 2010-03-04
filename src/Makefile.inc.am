@@ -33,6 +33,7 @@ libsilc_mpi_la_LIBADD =                         \
     libsilc_adapter_compiler.la                 \
     libsilc_adapter_user.la                     \
     libsilc_timer.la                            \
+    libsilc_profile.la                          \
     $(LIB_DIR_OTF2)libotf2.la                   \
     $(LIB_DIR_UTIL)libsilc_utilities.la
 
@@ -50,5 +51,6 @@ libsilc_serial_la_LIBADD =                      \
     libsilc_adapter_compiler.la                 \
     libsilc_adapter_user.la                     \
     libsilc_timer.la                            \
+    libsilc_profile.la                          \
     $(LIB_DIR_OTF2)libotf2.la                   \
     $(LIB_DIR_UTIL)libsilc_utilities.la

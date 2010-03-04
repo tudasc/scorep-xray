@@ -1,0 +1,98 @@
+#ifndef SILC_PROFILE_THREADINTERACTION_H
+#define SILC_PROFILE_THREADINTERACTION_H
+
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+/**
+ * @file       silc_profile_thread_interaction.h
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *
+ * @status ALPHA
+ *
+ *
+ */
+
+
+#include <SILC_Thread_Types.h>
+
+
+// Opaque datatype that holds location/thread specific entities for profiling.
+typedef struct SILC_Profile_LocationData SILC_Profile_LocationData;
+
+
+/**
+ * Allocate and initialize a valid SILC_Profile_LocationData object.
+ *
+ */
+SILC_Profile_LocationData*
+SILC_Profile_CreateLocationData();
+
+
+/**
+ * Clean up @a profileLocationData at the end of a phase or at the end of the
+ * measurement.
+ *
+ * @param profileLocationData The object to be deleted
+ */
+void
+SILC_Profile_DeleteLocationData( SILC_Profile_LocationData* profileLocationData );
+
+
+/**
+ * Triggered on thread creation, i.e. when a thread is encountered the first
+ * time. Note that several thread can share teh same location data.
+ *
+ * @param locationData Location data of the current thread.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+void
+SILC_Profile_OnThreadCreation( SILC_Thread_LocationData* locationData,
+                               SILC_Thread_LocationData* parentLocationData );
+
+/**
+ * Triggered at the start of every thread/parallel region. Always triggered,
+ * even after thread creation. In contrast to creation this function may be
+ * triggered multiple times, e.g. if we reenter a parallel region again or if
+ * we reuse the location/thread in a different parallel region.
+ *
+ * @param locationData Location data of the current thread inside the paralell
+ * region.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+void
+SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
+                                 SILC_Thread_LocationData* parentLocationData );
+
+
+/**
+ * Triggered after the end of every thread/parallel region, i.e. in the join
+ * event.
+ *
+ * @param locationData Location data of the deactivated thread inside the
+ * parallel region.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+void
+SILC_Profile_OnThreadDectivation( SILC_Thread_LocationData* locationData,
+                                  SILC_Thread_LocationData* parentLocationData );
+
+
+
+#endif /* SILC_PROFILE_THREADINTERACTION_H */

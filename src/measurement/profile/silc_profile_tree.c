@@ -15,14 +15,14 @@ static bool                    silc_profile_is_initialized = false;
 static silc_profile_node* silc_profile_current_node = NULL;
 
 inline silc_profile_node*
-silc_profile_get_current_node( SILC_Thread_Data* thread )
+silc_profile_get_current_node( SILC_Thread_LocationData* thread )
 {
     return silc_profile_current_node;
 }
 
 inline void
-silc_profile_set_current_node( SILC_Thread_Data*  thread,
-                               silc_profile_node* node )
+silc_profile_set_current_node( SILC_Thread_LocationData* thread,
+                               silc_profile_node*        node )
 {
     silc_profile_current_node = node;
 }
@@ -157,11 +157,11 @@ SILC_Profile_Finalize()
 }
 
 void
-SILC_Profile_Enter( SILC_Thread_Data* thread,
-                    SILC_RegionHandle region,
-                    SILC_RegionType   type,
-                    uint64_t          timestamp,
-                    uint64_t*         metrics )
+SILC_Profile_Enter( SILC_Thread_LocationData* thread,
+                    SILC_RegionHandle         region,
+                    SILC_RegionType           type,
+                    uint64_t                  timestamp,
+                    uint64_t*                 metrics )
 {
     silc_profile_node* node  = silc_profile_get_current_node( thread );
     silc_profile_node* child = NULL;
@@ -235,10 +235,10 @@ SILC_Profile_Enter( SILC_Thread_Data* thread,
 
 /** Exit a region */
 void
-SILC_Profile_Exit( SILC_Thread_Data* thread,
-                   SILC_RegionHandle region,
-                   uint64_t          timestamp,
-                   uint64_t*         metrics )
+SILC_Profile_Exit( SILC_Thread_LocationData* thread,
+                   SILC_RegionHandle         region,
+                   uint64_t                  timestamp,
+                   uint64_t*                 metrics )
 {
     int                i;
     silc_profile_node* node   = silc_profile_get_current_node( thread );

@@ -24,7 +24,8 @@
  *
  */
 
-#include "SILC_Types.h"
+#include "silc_profile_thread_interaction.h"
+#include <SILC_Types.h>
 #include <stdint.h>
 typedef void* SILC_CallpathHandle;
 
@@ -92,11 +93,11 @@ typedef struct silc_profile_node_struct
 } silc_profile_node;
 
 /** Thread local data for the profiling system */
-typedef struct
+struct SILC_Profile_LocationData
 {
     silc_profile_node* current_node;
     silc_profile_node* creation_node;
-} SILC_Profile_ThreadData;
+};
 
 /** Global profile definition data */
 typedef struct
