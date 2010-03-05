@@ -14,25 +14,21 @@
  */
 
 
-#ifndef SILC_INTERNAL_RUNTIME_MANAGEMENT_H
-#define SILC_INTERNAL_RUNTIME_MANAGEMENT_H
-
-#include <OTF2_EvtWriter.h>
-
-
-extern uint64_t
-post_flush( void );
-
-
-#if 0
 /**
- * Get the location handle of the caller
+ * @file       silc_mpi_serial.c
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @note could be a function pointer?
+ * @status ALPHA
+ *
+ *
  */
-SILC_LocationHandle
-silc_get_location( void );
 
-#endif
 
-#endif /* SILC_INTERNAL_RUNTIME_MANAGEMENT_H */
+#include "silc_mpi.h"
+
+
+uint64_t
+SILC_Mpi_GetRank()
+{
+    return 0;
+}

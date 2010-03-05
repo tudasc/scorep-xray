@@ -27,11 +27,9 @@
  */
 
 
+#include "silc_profile_types.h"
 #include <SILC_Thread_Types.h>
 
-
-// Opaque datatype that holds location/thread specific entities for profiling.
-typedef struct SILC_Profile_LocationData SILC_Profile_LocationData;
 
 
 /**
@@ -93,6 +91,18 @@ void
 SILC_Profile_OnThreadDectivation( SILC_Thread_LocationData* locationData,
                                   SILC_Thread_LocationData* parentLocationData );
 
+
+/**
+ * Triggered on location creation, i.e. when a location is encountered the first
+ * time. Note that several threads can share teh same location data.
+ *
+ * @param locationData Location data of the current thread.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+void
+SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
+                                 SILC_Thread_LocationData* parentLocationData );
 
 
 #endif /* SILC_PROFILE_THREADINTERACTION_H */

@@ -27,15 +27,14 @@
  */
 
 
+#include "silc_trace_types.h"
 #include <SILC_Thread_Types.h>
 
 
-// Opaque datatype that holds location/thread specific entities for profiling.
-typedef struct SILC_Trace_LocationData SILC_Trace_LocationData;
-
 
 /**
- * Allocate and initialize a valid SILC_Trace_LocationData object.
+ * Allocate a valid SILC_Trace_LocationData object, initialize it in
+ * SILC_Trace_OnLocationCreation().
  *
  */
 SILC_Trace_LocationData*
@@ -93,6 +92,18 @@ void
 SILC_Trace_OnThreadDectivation( SILC_Thread_LocationData* locationData,
                                 SILC_Thread_LocationData* parentLocationData );
 
+
+/**
+ * Triggered on location creation, i.e. when a location is encountered the first
+ * time. Note that several threads can share teh same location data.
+ *
+ * @param locationData Location data of the current thread.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+void
+SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
+                               SILC_Thread_LocationData* parentLocationData );
 
 
 #endif /* SILC_TRACE_THREADINTERACTION_H */

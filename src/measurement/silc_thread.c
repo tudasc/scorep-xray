@@ -48,6 +48,7 @@ typedef struct SILC_Thread_ThreadPrivateData SILC_Thread_ThreadPrivateData;
 static SILC_Thread_LocationData* silc_thread_create_location_data();
 static SILC_Thread_ThreadPrivateData* silc_thread_create_thread_private_data();
 static size_t silc_thread_get_new_location_id();
+static void silc_thread_call_externals_on_new_location(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_new_thread(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_thread_activation(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_thread_deactivation(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
@@ -79,7 +80,7 @@ struct SILC_Thread_ThreadPrivateData
 // multiple ones.
 struct SILC_Thread_LocationData
 {
-    size_t                     unique_thread_id;
+    size_t                     location_id;
     SILC_Memory_PageManager**  memory_managers;
     SILC_Profile_LocationData* profile_data;
     SILC_Trace_LocationData*   trace_data;
@@ -96,13 +97,14 @@ SILC_Thread_Initialize()
     assert( pomp_tpd == 0 );
 
     initial_location = silc_thread_create_location_data( silc_location_counter );
-    assert( initial_location->unique_thread_id == 0 );
+    assert( initial_location->location_id == 0 );
     initial_thread                = silc_thread_create_thread_private_data();
     initial_thread->parent        = 0;
     initial_thread->location_data = initial_location;
 
     silc_thread_update_tpd( initial_thread );
     silc_thread_call_externals_on_new_thread( TPD->location_data, 0 );
+    silc_thread_call_externals_on_new_location( TPD->location_data, 0 );
     silc_thread_call_externals_on_thread_activation( TPD->location_data, 0 );
 }
 
@@ -124,6 +126,15 @@ silc_thread_call_externals_on_new_thread( SILC_Thread_LocationData* locationData
 
 
 void
+silc_thread_call_externals_on_new_location( SILC_Thread_LocationData* locationData,
+                                            SILC_Thread_LocationData* parent )
+{
+    SILC_Profile_OnLocationCreation( locationData, parent );
+    SILC_Trace_OnLocationCreation( locationData, parent );
+}
+
+
+void
 silc_thread_call_externals_on_thread_activation( SILC_Thread_LocationData* locationData,
                                                  SILC_Thread_LocationData* parent )
 {
@@ -137,11 +148,11 @@ silc_thread_create_location_data()
 {
     // need synchronized malloc here
     SILC_Thread_LocationData* new_location;
-    new_location                   = malloc( sizeof( SILC_Thread_LocationData ) );
-    new_location->unique_thread_id = silc_thread_get_new_location_id();
-    new_location->memory_managers  = SILC_Memory_CreatePageManagers();
-    new_location->profile_data     = SILC_Profile_CreateLocationData();
-    new_location->trace_data       = SILC_Trace_CreateLocationData();
+    new_location                  = malloc( sizeof( SILC_Thread_LocationData ) );
+    new_location->location_id     = silc_thread_get_new_location_id();
+    new_location->memory_managers = SILC_Memory_CreatePageManagers();
+    new_location->profile_data    = SILC_Profile_CreateLocationData();
+    new_location->trace_data      = SILC_Trace_CreateLocationData();
 
     return new_location;
 }
@@ -192,6 +203,7 @@ SILC_Thread_Finalize()
 void
 SILC_Thread_OnThreadFork( size_t nRequestedThreads )
 {
+    assert( TPD->is_active );
     TPD->is_active = false;
 
     /// @todo replace malloc/realloc with SILCs memory management to get rid of
@@ -299,6 +311,8 @@ SILC_Thread_GetLocationData()
             else
             {
                 ( *my_tpd )->location_data = silc_thread_create_location_data();
+                silc_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
+                                                            TPD->location_data );
             }
             silc_thread_call_externals_on_new_thread( ( *my_tpd )->location_data,
                                                       TPD->location_data );
@@ -336,4 +350,11 @@ SILC_Trace_LocationData*
 SILC_Thread_GetTraceLocationData( SILC_Thread_LocationData* locationData )
 {
     return locationData->trace_data;
+}
+
+
+uint64_t
+SILC_Thread_GetLocationId( SILC_Thread_LocationData* locationData )
+{
+    return locationData->location_id;
 }

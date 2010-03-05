@@ -20,6 +20,7 @@
 noinst_LTLIBRARIES += libsilc_profile.la
 libsilc_profile_la_SOURCES =                                             \
     $(SRC_ROOT)src/measurement/profile/silc_profile_thread_interaction.h \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_thread_interaction.c \
     $(SRC_ROOT)src/measurement/profile/silc_profile_tree.c               \
     $(SRC_ROOT)src/measurement/profile/silc_profile_tree.h               \
     $(SRC_ROOT)src/measurement/profile/silc_profile_types.h

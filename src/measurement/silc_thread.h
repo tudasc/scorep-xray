@@ -32,6 +32,7 @@
 #include <SILC_Thread_Types.h>
 #include "silc_trace_thread_interaction.h"
 #include <stddef.h>
+#include <stdint.h>
 
 
 /**
@@ -40,7 +41,7 @@
  *
  */
 void
-SILC_Thread_Initilize();
+SILC_Thread_Initialize();
 
 
 /**
@@ -93,6 +94,10 @@ SILC_Thread_GetProfileLocationData( SILC_Thread_LocationData* locationData );
 
 SILC_Trace_LocationData*
 SILC_Thread_GetTraceLocationData( SILC_Thread_LocationData* locationData );
+
+
+uint64_t
+SILC_Thread_GetLocationId( SILC_Thread_LocationData* locationData );
 
 
 #endif /* SILC_THREAD_H */

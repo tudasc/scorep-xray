@@ -35,7 +35,8 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_runtime_management.h        \
     $(SRC_ROOT)src/measurement/silc_thread.h                    \
     $(SRC_ROOT)src/measurement/silc_thread.c                    \
-    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.h
+    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.h  \
+    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.c
 
 
 libsilc_measurement_la_CPPFLAGS =               \

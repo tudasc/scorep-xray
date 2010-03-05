@@ -28,15 +28,18 @@
  *
  */
 
+#include <SILC_Events.h>
 
 #include <SILC_Debug.h>
-#include <SILC_Events.h>
 #include <SILC_Timing.h>
+#include <SILC_Omp.h>
 #include <OTF2_EvtWriter.h>
-
 
 #include "silc_runtime_management.h"
 #include "silc_types.h"
+#include "silc_trace_types.h"
+#include "silc_thread.h"
+
 
 
 /**
@@ -48,6 +51,7 @@ SILC_EnterRegion
     SILC_RegionHandle regionHandle
 )
 {
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -56,7 +60,8 @@ SILC_EnterRegion
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
 
-    OTF2_EvtWriter_Enter( silc_local_event_writer, NULL,
+    OTF2_EvtWriter_Enter( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                          NULL,
                           SILC_GetClockTicks(),
                           regionHandle );
 }
@@ -71,6 +76,7 @@ SILC_ExitRegion
     SILC_RegionHandle regionHandle
 )
 {
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -79,7 +85,8 @@ SILC_ExitRegion
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
 
-    OTF2_EvtWriter_Leave( silc_local_event_writer, NULL,
+    OTF2_EvtWriter_Leave( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                          NULL,
                           SILC_GetClockTicks(),
                           regionHandle );
 }
@@ -97,6 +104,7 @@ SILC_MpiSend
     uint64_t                   bytesSent
 )
 {
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -108,10 +116,11 @@ SILC_MpiSend
                        tag,
                        ( unsigned long long )bytesSent );
 
-    OTF2_EvtWriter_MpiSend( silc_local_event_writer, NULL,
+    OTF2_EvtWriter_MpiSend( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                            NULL,
                             SILC_GetClockTicks(),
                             OTF2_MPI_BLOCK,
-                            silc_local_id,
+                            SILC_Thread_GetTraceLocationData( location )->otf_location,
                             globalDestinationRank,
                             communicatorHandle,
                             tag,
@@ -131,6 +140,7 @@ SILC_MpiRecv
     uint64_t                   bytesReceived
 )
 {
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -142,11 +152,12 @@ SILC_MpiRecv
                        tag,
                        ( unsigned long long )bytesReceived );
 
-    OTF2_EvtWriter_MpiRecv( silc_local_event_writer, NULL,
+    OTF2_EvtWriter_MpiRecv( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                            NULL,
                             SILC_GetClockTicks(),
                             OTF2_MPI_BLOCK,
                             globalSourceRank,
-                            silc_local_id,
+                            SILC_Thread_GetTraceLocationData( location )->otf_location,
                             communicatorHandle,
                             tag,
                             bytesReceived );
@@ -166,6 +177,7 @@ SILC_MpiCollective
     uint64_t                   bytesReceived
 )
 {
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
                      )
 
@@ -183,7 +195,8 @@ SILC_MpiCollective
                        ( unsigned long long )bytesSent,
                        ( unsigned long long )bytesReceived );
 
-    OTF2_EvtWriter_MpiCollective( silc_local_event_writer, NULL,
+    OTF2_EvtWriter_MpiCollective( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                  NULL,
                                   SILC_GetClockTicks(),
                                   OTF2_MPI_BARRIER,
                                   communicatorHandle,
@@ -200,8 +213,11 @@ void
 SILC_OmpFork
 (
     SILC_RegionHandle regionHandle
+    //, size_t nRequestedThreads, will be passed by opari in future
+
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -209,6 +225,8 @@ SILC_OmpFork
                        silc_region_to_string( stringBuffer,
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
+
+    SILC_Thread_OnThreadFork( /* nRequestedThreads */ omp_get_max_threads() );
 }
 
 
@@ -221,6 +239,7 @@ SILC_OmpJoin
     SILC_RegionHandle regionHandle
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -228,6 +247,8 @@ SILC_OmpJoin
                        silc_region_to_string( stringBuffer,
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
+
+    SILC_Thread_OnThreadJoin();
 }
 
 
@@ -240,6 +261,7 @@ SILC_OmpAcquireLock
     uint32_t lockId
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Lock:%x", lockId );
 }
 
@@ -253,6 +275,7 @@ SILC_OmpReleaseLock
     uint32_t lockId
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Lock:%x", lockId );
 }
 
@@ -266,6 +289,7 @@ SILC_ExitRegionOnException
     SILC_RegionHandle regionHandle
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -286,6 +310,7 @@ SILC_TriggerCounterInt64
     int64_t            value
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
@@ -300,6 +325,7 @@ SILC_TriggerCounterDouble
     double             value
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
@@ -313,6 +339,7 @@ SILC_TriggerMarker
     SILC_MarkerHandle markerHandle
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
@@ -327,6 +354,7 @@ SILC_TriggerParameterInt64
     int64_t              value
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
@@ -341,6 +369,7 @@ SILC_TriggerParameterDouble
     double               value
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }
 
@@ -355,5 +384,6 @@ SILC_TriggerParameterString
     const char*          value
 )
 {
+    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 }

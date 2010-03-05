@@ -1,3 +1,6 @@
+#ifndef SILC_TRACE_TYPES_H
+#define SILC_TRACE_TYPES_H
+
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -14,25 +17,26 @@
  */
 
 
-#ifndef SILC_INTERNAL_RUNTIME_MANAGEMENT_H
-#define SILC_INTERNAL_RUNTIME_MANAGEMENT_H
+/**
+ * @file       silc_trace_types.h
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status ALPHA
+ *
+ *
+ */
+
 
 #include <OTF2_EvtWriter.h>
 
 
-extern uint64_t
-post_flush( void );
+typedef struct SILC_Trace_LocationData SILC_Trace_LocationData;
 
 
-#if 0
-/**
- * Get the location handle of the caller
- *
- * @note could be a function pointer?
- */
-SILC_LocationHandle
-silc_get_location( void );
+struct SILC_Trace_LocationData
+{
+    OTF2_EvtWriter* otf_writer;
+    uint64_t        otf_location;
+};
 
-#endif
-
-#endif /* SILC_INTERNAL_RUNTIME_MANAGEMENT_H */
+#endif /* SILC_TRACE_TYPES_H */

@@ -13,16 +13,6 @@
  *
  */
 
-
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-
-
 /**
  * @file        SILC_RuntimeManagement.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
@@ -34,21 +24,28 @@
  */
 
 
+#include <SILC_RuntimeManagement.h>
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+
 #include <SILC_Error.h>
 #include <SILC_Debug.h>
-#include <SILC_RuntimeManagement.h>
+#include <SILC_Memory.h>
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
 #include <SILC_Timing.h>
-
-#include <OTF2_EvtWriter.h>
+#include <SILC_Omp.h>
 
 #include "silc_types.h"
 #include "silc_adapter.h"
+#include "silc_thread.h"
 
-
-OTF2_EvtWriter* silc_local_event_writer;
-uint64_t        silc_local_id;
 
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
@@ -98,9 +95,6 @@ SILC_IsInitialized()
 }
 
 
-static uint64_t
-post_flush( void );
-
 /**
  * Initialize the measurement system from the adapter layer.
  */
@@ -124,6 +118,12 @@ SILC_InitMeasurement
         _exit( EXIT_FAILURE );
     }
 
+    if ( omp_in_parallel() )
+    {
+        SILC_ERROR( SILC_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
+        _exit( EXIT_FAILURE );
+    }
+
     error = SILC_ConfigRegister( NULL, silc_configs );
 
     if ( SILC_SUCCESS != error )
@@ -131,6 +131,14 @@ SILC_InitMeasurement
         SILC_ERROR( error, "Can't register core config variables" );
         _exit( EXIT_FAILURE );
     }
+
+    // we may read total memory and pagesize from config file and pass it to
+    // SILC_Memory_Initialize.
+    // Need to be called before the first use of any SILC_Alloc function, in
+    // particular before SILC_Thread_Initialize
+    SILC_Memory_Initialize();
+
+    SILC_Thread_Initialize();
 
     SILC_InitTimer();
 
@@ -208,23 +216,6 @@ SILC_InitMeasurement
         }
     }
 
-    /* we don't know our location currently, pass undefined,
-     * OTF2 will handle it, when we are never set the location id to 0 in
-     * !MPI case
-     */
-    silc_local_event_writer = OTF2_EvtWriter_New( 1 << 24,
-                                                  NULL,
-                                                  OTF2_UNDEFINED_UINT64,
-                                                  "silc",
-                                                  /* what a hack */ "",
-                                                  post_flush );
-
-    if ( !silc_local_event_writer )
-    {
-        SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
-        _exit( EXIT_FAILURE );
-    }
-
     /* call initialization functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
     {
@@ -280,6 +271,12 @@ SILC_InitMeasurementMPI
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
+    if ( omp_in_parallel() )
+    {
+        SILC_ERROR( SILC_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
+        _exit( EXIT_FAILURE );
+    }
+
     if ( flush_done )
     {
         fprintf( stderr, "ERROR: Switching to MPI mode after the first flush.\n" );
@@ -287,13 +284,20 @@ SILC_InitMeasurementMPI
         _exit( EXIT_FAILURE );
     }
 
-    silc_local_id = rank;
-
+    SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
+    SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
+    uint64_t                  location     = SILC_Thread_GetLocationId( locationData );
+    uint64_t                  otf_location = ( rank << 32 ) | location;
+    assert( location == 0 );
+    assert( rank     >> 32 == 0 );
+    assert( location >> 32 == 0 );
+    assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
+    trace_data->otf_location = otf_location;
 
     /* now we have our location ID, tell it OTF2 */
     SILC_Error_Code error;
-    error = OTF2_EvtWriter_SetLocationID( silc_local_event_writer,
-                                          silc_local_id );
+    error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
+                                          trace_data->otf_location );
     if ( SILC_SUCCESS != error )
     {
         /* OTF2 prints an error message */
@@ -352,12 +356,6 @@ silc_finalize( void )
         return;
     }
 
-    if ( silc_local_event_writer )
-    {
-        OTF2_EvtWriter_Delete( silc_local_event_writer );
-    }
-    silc_local_event_writer = NULL;
-
     /* we call the finalize and de-register function in reverse order */
 
     /* call finalization functions for all adapters */
@@ -390,10 +388,15 @@ silc_finalize( void )
         }
     }
 
+    // keep this order as thread handling uses memory management
+    SILC_Thread_Finalize();
+    SILC_Memory_Finalize();
+
     silc_finalized = true;
 }
 
-static uint64_t
+
+uint64_t
 post_flush( void )
 {
     /* remember that we have flushed the first time
