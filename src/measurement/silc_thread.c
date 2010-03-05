@@ -33,6 +33,14 @@
 #include <stdlib.h>
 
 
+/// @todo move this definition to the pomp adapter, in pomp_base.c e.g., like
+/// in Scalasca. Will there be two pomp adapters, one base and one for openmp?
+void* pomp_tpd;
+#ifdef _OPENMP
+#pragma omp threadprivate(pomp_tpd)
+#endif
+
+
 typedef struct SILC_Thread_ThreadPrivateData SILC_Thread_ThreadPrivateData;
 
 
