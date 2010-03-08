@@ -15,7 +15,7 @@
 
 
 /**
- * @file       SILC_Thread.c
+ * @file       silc_thread.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status ALPHA
@@ -47,19 +47,15 @@ typedef struct SILC_Thread_ThreadPrivateData SILC_Thread_ThreadPrivateData;
 /* *INDENT-OFF* */
 static SILC_Thread_LocationData* silc_thread_create_location_data();
 static SILC_Thread_ThreadPrivateData* silc_thread_create_thread_private_data();
-static size_t silc_thread_get_new_location_id();
 static void silc_thread_call_externals_on_new_location(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_new_thread(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_thread_activation(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_thread_deactivation(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
+static void silc_thread_delete_location_data();
+static void silc_thread_delete_thread_private_data_recursively( SILC_Thread_ThreadPrivateData* tpd );
 static void silc_thread_init_childs_to_null(SILC_Thread_ThreadPrivateData** childs, size_t startIndex, size_t endIndex);
 static void silc_thread_update_tpd(SILC_Thread_ThreadPrivateData* newTPD);
 /* *INDENT-ON* */
-
-
-struct SILC_Thread_ThreadPrivateData* initial_thread        = 0;
-struct SILC_Thread_LocationData*      initial_location      = 0;
-size_t                                silc_location_counter = 0;
 
 
 // easy access to thread private variable. TPD == ThreadPrivateData
@@ -81,10 +77,17 @@ struct SILC_Thread_ThreadPrivateData
 struct SILC_Thread_LocationData
 {
     size_t                     location_id;
-    SILC_Memory_PageManager**  memory_managers;
+    SILC_Memory_PageManager**  page_managers;
     SILC_Profile_LocationData* profile_data;
     SILC_Trace_LocationData*   trace_data;
+    SILC_Thread_LocationData*  next; // store location objects in list for easy cleanup
 };
+
+
+struct SILC_Thread_LocationData       location_list_head_dummy = { 0, 0, 0, 0, 0 };
+struct SILC_Thread_ThreadPrivateData* initial_thread   = 0;
+struct SILC_Thread_LocationData*      initial_location = 0;
+size_t                                location_counter = 0;
 
 
 void
@@ -93,10 +96,10 @@ SILC_Thread_Initialize()
     assert( !omp_in_parallel() );
     assert( initial_thread == 0 );
     assert( initial_location == 0 );
-    assert( silc_location_counter == 0 );
+    assert( location_counter == 0 );
     assert( pomp_tpd == 0 );
 
-    initial_location = silc_thread_create_location_data( silc_location_counter );
+    initial_location = silc_thread_create_location_data();
     assert( initial_location->location_id == 0 );
     initial_thread                = silc_thread_create_thread_private_data();
     initial_thread->parent        = 0;
@@ -148,26 +151,19 @@ silc_thread_create_location_data()
 {
     // need synchronized malloc here
     SILC_Thread_LocationData* new_location;
-    new_location                  = malloc( sizeof( SILC_Thread_LocationData ) );
-    new_location->location_id     = silc_thread_get_new_location_id();
-    new_location->memory_managers = SILC_Memory_CreatePageManagers();
-    new_location->profile_data    = SILC_Profile_CreateLocationData();
-    new_location->trace_data      = SILC_Trace_CreateLocationData();
+    new_location                = malloc( sizeof( SILC_Thread_LocationData ) );
+    new_location->page_managers = SILC_Memory_CreatePageManagers();
+    new_location->profile_data  = SILC_Profile_CreateLocationData();
+    new_location->trace_data    = SILC_Trace_CreateLocationData();
+
+    #pragma omp critical (new_location)
+    {
+        new_location->location_id     = location_counter++;
+        new_location->next            = location_list_head_dummy.next;
+        location_list_head_dummy.next = new_location;
+    }
 
     return new_location;
-}
-
-
-size_t
-silc_thread_get_new_location_id()
-{
-    size_t new_id;
-    #pragma omp critical (silc_location_counter)
-    {
-        new_id = silc_location_counter;
-        silc_location_counter++;
-    }
-    return new_id;
 }
 
 
@@ -192,11 +188,64 @@ SILC_Thread_Finalize()
     assert( !omp_in_parallel() );
     assert( initial_thread != 0 );
     assert( initial_location != 0 );
-    assert( silc_location_counter > 0 );
+    assert( location_counter > 0 );
     assert( pomp_tpd != 0 );
 
-    /// @todo walk from initial_thread through SILC_Thread_ThreadPrivateData objects
-    /// from there, free referenced SILC_Thread_LocationData objects, but only once!
+    silc_thread_delete_thread_private_data_recursively( initial_thread );
+    silc_thread_delete_location_data();
+
+    location_list_head_dummy.next = 0;
+    initial_thread                = 0;
+    initial_location              = 0;
+    location_counter              = 0;
+}
+
+
+void
+silc_thread_delete_thread_private_data_recursively( SILC_Thread_ThreadPrivateData* tpd )
+{
+    assert( tpd );
+    bool have_unused_child = false;
+    for ( int i = 0; i < tpd->n_childs; ++i )
+    {
+        if ( tpd->childs[ i ] )
+        {
+            assert( have_unused_child == false ); // no used child after first unused allowed
+            assert( !tpd->childs[ i ]->is_active );
+            silc_thread_delete_thread_private_data_recursively( tpd->childs[ i ] );
+        }
+        else
+        {
+            if ( have_unused_child == false )
+            {
+                have_unused_child = true;
+                continue;
+            }
+        }
+    }
+    free( tpd->childs ); /// @todo remove if SILC_Memory is used for child allocation
+    free( tpd );
+}
+
+
+void
+silc_thread_delete_location_data( SILC_Thread_LocationData* locationData )
+{
+    size_t                    count         = 0;
+    SILC_Thread_LocationData* location_data = location_list_head_dummy.next;
+    while ( location_data )
+    {
+        SILC_Thread_LocationData* tmp = location_data->next;
+
+        SILC_Trace_DeleteLocationData( location_data->trace_data );
+        SILC_Profile_DeleteLocationData( location_data->profile_data );
+        SILC_Memory_DeletePageManagers( location_data->page_managers ); // too early?
+        free( locationData );
+
+        location_data = tmp;
+        count++;
+    }
+    assert( count == location_counter );
 }
 
 
@@ -207,7 +256,7 @@ SILC_Thread_OnThreadFork( size_t nRequestedThreads )
     TPD->is_active = false;
 
     /// @todo replace malloc/realloc with SILCs memory management to get rid of
-    ///  locking. we have access to TPD->location_data->memory_managers.
+    ///  locking. we have access to TPD->location_data->page_managers.
     if ( !TPD->childs || TPD->n_childs < nRequestedThreads )
     {
         TPD->childs = realloc( TPD->childs, nRequestedThreads *
@@ -328,14 +377,14 @@ SILC_Thread_GetLocationData()
 SILC_Memory_PageManager**
 SILC_Thread_GetLocationLocalMemoryPageManagers()
 {
-    return SILC_Thread_GetLocationData()->memory_managers;
+    return SILC_Thread_GetLocationData()->page_managers;
 }
 
 
 SILC_Memory_PageManager**
 SILC_Thread_GetGlobalMemoryPageManagers()
 {
-    return initial_location->memory_managers;
+    return initial_location->page_managers;
 }
 
 

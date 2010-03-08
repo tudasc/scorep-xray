@@ -16,7 +16,6 @@
 
 /**
  * @file       silc_trace_thread_interaction.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status ALPHA
@@ -31,7 +30,7 @@
 #include "silc_runtime_management.h"
 #include "silc_thread.h"
 #include "silc_mpi.h"
-
+#include <stdlib.h>
 
 
 SILC_Trace_LocationData*
@@ -108,6 +107,6 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     if ( !trace_data->otf_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
 }
