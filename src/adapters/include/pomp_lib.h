@@ -26,7 +26,9 @@
  */
 
 #include <stddef.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 /**
  * @defgroup POMP POMP Adapter implementation
