@@ -14,10 +14,6 @@
  */
 
 
-#include <stdlib.h>
-#include <stdio.h>
-
-
 /**
  * @file        SILC_Events.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
@@ -30,12 +26,16 @@
 
 #include <SILC_Events.h>
 
+
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <SILC_Debug.h>
 #include <SILC_Timing.h>
 #include <SILC_Omp.h>
 #include <OTF2_EvtWriter.h>
 
-#include "silc_runtime_management.h"
+#include "silc_runtime_management_internal.h"
 #include "silc_types.h"
 #include "silc_trace_types.h"
 #include "silc_thread.h"

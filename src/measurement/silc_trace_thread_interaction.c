@@ -27,7 +27,7 @@
 #include "silc_trace_thread_interaction.h"
 
 #include <SILC_Memory.h>
-#include "silc_runtime_management.h"
+#include "silc_runtime_management_internal.h"
 #include "silc_thread.h"
 #include "silc_mpi.h"
 #include <stdlib.h>
@@ -36,6 +36,10 @@
 SILC_Trace_LocationData*
 SILC_Trace_CreateLocationData()
 {
+    if ( !silc_tracing_enabled )
+    {
+        return 0;
+    }
     SILC_Trace_LocationData* new_data = SILC_Memory_AllocForMultithreadedMisc( sizeof( SILC_Trace_LocationData ) );
     // create plain object, initialize in SILC_Trace_OnLocationCreation
     new_data->otf_writer = 0;
@@ -48,8 +52,8 @@ SILC_Trace_DeleteLocationData( SILC_Trace_LocationData* traceLocationData )
 {
     if ( traceLocationData && traceLocationData->otf_writer )
     {
-        OTF2_EvtWriter_Delete( traceLocationData->otf_writer );
         traceLocationData->otf_writer = 0;
+        // writer will be deleted by otf in call to OTF2_Archive_Delete()
     }
 }
 
@@ -58,6 +62,10 @@ void
 SILC_Trace_OnThreadCreation( SILC_Thread_LocationData* locationData,
                              SILC_Thread_LocationData* parentLocationData )
 {
+    if ( !silc_tracing_enabled )
+    {
+        return;
+    }
 }
 
 
@@ -65,6 +73,10 @@ void
 SILC_Trace_OnThreadActivation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData )
 {
+    if ( !silc_tracing_enabled )
+    {
+        return;
+    }
 }
 
 
@@ -72,6 +84,10 @@ void
 SILC_Trace_OnThreadDectivation( SILC_Thread_LocationData* locationData,
                                 SILC_Thread_LocationData* parentLocationData )
 {
+    if ( !silc_tracing_enabled )
+    {
+        return;
+    }
 }
 
 
@@ -79,6 +95,11 @@ void
 SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData )
 {
+    if ( !silc_tracing_enabled )
+    {
+        return;
+    }
+
     // SILC_Mpi_GetRank() may return 0 instead of the correct rank if MPI_Init
     // hasn't been called yet. This should happen only for the initial
     // location and will be checked during SILC_InitMeasurementMPI().
@@ -97,12 +118,8 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     }
 
     trace_data->otf_location = otf_location;
-    trace_data->otf_writer   = OTF2_EvtWriter_New( 1 << 24,
-                                                   NULL,
-                                                   otf_location,
-                                                   "silc",
-                                                   /* what a hack */ "",
-                                                   post_flush );
+    trace_data->otf_writer   = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
+                                                          otf_location );
 
     if ( !trace_data->otf_writer )
     {

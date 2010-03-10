@@ -45,6 +45,9 @@
 #include "silc_types.h"
 #include "silc_adapter.h"
 #include "silc_thread.h"
+#include "silc_runtime_management_internal.h"
+
+#include <OTF2_File.h>
 
 
 /** @brief Measurement system initialized? */
@@ -57,12 +60,6 @@ static bool silc_finalized;
 
 /** @brief Run in verbose mode */
 static bool silc_verbose;
-
-
-/** @brief Did the first buffer flush happened, of so we can't switch to MPI
- *  anymore.
- */
-static bool flush_done;
 
 
 /** @brief Measurement system configure variables */
@@ -79,9 +76,15 @@ static SILC_ConfigVariable silc_configs[] = {
     SILC_CONFIG_TERMINATOR
 };
 
+
+/* *INDENT-OFF* */
 /** atexit handler for finalization */
-static void
-silc_finalize( void );
+static void silc_finalize( void );
+
+static void silc_otf2_initialize();
+
+static void silc_otf2_finalize();
+/* *INDENT-ON* */
 
 /**
  * Return true if SILC_InitMeasurement() has been executed.
@@ -137,6 +140,10 @@ SILC_InitMeasurement
     // Need to be called before the first use of any SILC_Alloc function, in
     // particular before SILC_Thread_Initialize
     SILC_Memory_Initialize();
+
+    // initialize before SILC_Thread_Initialize() because latter may create a
+    // writer that need the archive.
+    silc_otf2_initialize();
 
     SILC_Thread_Initialize();
 
@@ -242,6 +249,24 @@ SILC_InitMeasurement
 
     /* register finalization handler */
     atexit( silc_finalize );
+}
+
+
+void
+silc_otf2_initialize()
+{
+    if ( !silc_tracing_enabled )
+    {
+        return;
+    }
+
+    silc_otf2_archive = OTF2_Archive_New( silc_experiment_dir,
+                                          "traces",
+                                          OTF2_FILEMODE_MODIFY,
+                                          1024 * 1024, // 1MB
+                                          OTF2_SUBSTRATE_RAW,
+                                          OTF2_MASTER );
+    assert( silc_otf2_archive );
 }
 
 
@@ -390,19 +415,17 @@ silc_finalize( void )
 
     // keep this order as thread handling uses memory management
     SILC_Thread_Finalize();
+    silc_otf2_finalize();
     SILC_Memory_Finalize();
 
     silc_finalized = true;
 }
 
-
-uint64_t
-post_flush( void )
+void
+silc_otf2_finalize()
 {
-    /* remember that we have flushed the first time
-     * after this point, we can't switch into MPI mode anymore
-     */
-    flush_done = true;
-
-    return SILC_GetClockTicks();
+    if ( silc_tracing_enabled )
+    {
+        OTF2_Archive_Delete( silc_otf2_archive );
+    }
 }
