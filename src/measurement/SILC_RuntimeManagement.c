@@ -142,7 +142,7 @@ SILC_InitMeasurement
     SILC_Memory_Initialize();
 
     // initialize before SILC_Thread_Initialize() because latter may create a
-    // writer that need the archive.
+    // writer that needs the archive.
     silc_otf2_initialize();
 
     SILC_Thread_Initialize();
