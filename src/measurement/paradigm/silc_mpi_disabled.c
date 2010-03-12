@@ -32,3 +32,12 @@ SILC_Mpi_GetRank()
 {
     return 0;
 }
+
+
+void
+silc_create_experiment_dir( char* dirName,
+                            int   dirNameSize,
+                            void  ( * createDir )( const char* ) )
+{
+    createDir( dirName );
+}

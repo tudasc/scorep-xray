@@ -118,13 +118,13 @@ SILC_InitMeasurement
 
     if ( silc_finalized )
     {
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
 
     if ( omp_in_parallel() )
     {
         SILC_ERROR( SILC_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
 
     error = SILC_ConfigRegister( NULL, silc_configs );
@@ -132,8 +132,10 @@ SILC_InitMeasurement
     if ( SILC_SUCCESS != error )
     {
         SILC_ERROR( error, "Can't register core config variables" );
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
+
+    SILC_CreateExperimentDir();
 
     // we may read total memory and pagesize from config file and pass it to
     // SILC_Memory_Initialize.
@@ -161,7 +163,7 @@ SILC_InitMeasurement
         {
             SILC_ERROR( error, "Can't register %s adapter",
                         silc_adapters[ i ]->adapter_name );
-            _exit( EXIT_FAILURE );
+            _Exit( EXIT_FAILURE );
         }
     }
 
@@ -184,7 +186,7 @@ SILC_InitMeasurement
         {
             SILC_ERROR( error, "Can't initialize %s adapter",
                         silc_adapters[ i ]->adapter_name );
-            _exit( EXIT_FAILURE );
+            _Exit( EXIT_FAILURE );
         }
         else if ( silc_verbose )
         {
@@ -194,34 +196,6 @@ SILC_InitMeasurement
     }
 
     /* create location */
-
-    /* create the experiment directory */
-    int ret = mkdir( "silc", 0755 );
-    if ( ret != 0 )
-    {
-        if ( errno == EEXIST )
-        {
-            struct stat sb;
-            if ( 0 != stat( "silc", &sb ) )
-            {
-                /* Huu, I got an EEXISTS but can't stat? */
-                SILC_ERROR_POSIX( "Archive directory exists, but can't determine what it is." );
-                _exit( EXIT_FAILURE );
-            }
-            if ( !S_ISDIR( sb.st_mode ) )
-            {
-                SILC_ERROR( SILC_ERROR_ENOTDIR,
-                            "Can't create archive directory. "
-                            "An entry with this name already exists." );
-                _exit( EXIT_FAILURE );
-            }
-        }
-        else
-        {
-            SILC_ERROR_POSIX( "Can't create archive directory \"silc\"." );
-            _exit( EXIT_FAILURE );
-        }
-    }
 
     /* call initialization functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
@@ -235,7 +209,7 @@ SILC_InitMeasurement
         {
             SILC_ERROR( error, "Can't initialize location for %s adapter",
                         silc_adapters[ i ]->adapter_name );
-            _exit( EXIT_FAILURE );
+            _Exit( EXIT_FAILURE );
         }
         else if ( silc_verbose )
         {
@@ -260,13 +234,22 @@ silc_otf2_initialize()
         return;
     }
 
-    silc_otf2_archive = OTF2_Archive_New( silc_experiment_dir,
+    silc_otf2_archive = OTF2_Archive_New( "todo interface will change",
                                           "traces",
                                           OTF2_FILEMODE_MODIFY,
                                           1024 * 1024, // 1MB
                                           OTF2_SUBSTRATE_RAW,
                                           OTF2_MASTER );
     assert( silc_otf2_archive );
+
+    if ( SILC_ExperimentDirIsCreated() )
+    {
+        /// @todo provide experiment dir to archive, SILC_GetExperimentDirName()
+    }
+    else
+    {
+        /// @todo provide experiment dir in SILC_InitMeasurementMPI
+    }
 }
 
 
@@ -299,15 +282,17 @@ SILC_InitMeasurementMPI
     if ( omp_in_parallel() )
     {
         SILC_ERROR( SILC_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
 
     if ( flush_done )
     {
         fprintf( stderr, "ERROR: Switching to MPI mode after the first flush.\n" );
         fprintf( stderr, "       Consider to increase buffer size to prevent this.\n" );
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
+
+    SILC_CreateExperimentDir();
 
     SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
     SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
@@ -326,7 +311,7 @@ SILC_InitMeasurementMPI
     if ( SILC_SUCCESS != error )
     {
         /* OTF2 prints an error message */
-        _exit( EXIT_FAILURE );
+        _Exit( EXIT_FAILURE );
     }
 }
 

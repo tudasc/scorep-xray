@@ -41,3 +41,25 @@ SILC_Mpi_GetRank()
     }
     return rank;
 }
+
+
+void
+silc_create_experiment_dir( char* dirName,
+                            int   dirNameSize,
+                            void  ( * createDir )( const char* ) )
+{
+    int is_initialized;
+    MPI_Initialized( &is_initialized );
+    if ( !is_initialized )
+    {
+        return;
+    }
+
+    int rank = 0;
+    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    if ( rank == 0 )
+    {
+        createDir( dirName );
+    }
+    MPI_Bcast( dirName, dirNameSize, MPI_CHAR, 0, MPI_COMM_WORLD );
+}

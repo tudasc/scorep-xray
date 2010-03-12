@@ -120,8 +120,8 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     trace_data->otf_location = otf_location;
     trace_data->otf_writer   = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
                                                           otf_location,
-                                                          0,
-                                                          post_flush );
+                                                          silc_on_trace_pre_flush,
+                                                          silc_on_trace_post_flush );
 
     if ( !trace_data->otf_writer )
     {
