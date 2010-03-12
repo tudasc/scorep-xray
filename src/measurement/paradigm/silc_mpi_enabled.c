@@ -15,7 +15,7 @@
 
 
 /**
- * @file       silc_mpi_mpi.c
+ * @file       silc_mpi_enabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status ALPHA

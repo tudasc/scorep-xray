@@ -27,4 +27,4 @@ libsilc_paradigm_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                                    -I$(INC_ROOT)src/measurement/include \
                                    -I$(INC_ROOT)src/adapters/include    \
                                    -I$(INC_DIR_UTIL)
-libsilc_paradigm_mpi_la_SOURCES = $(SRC_ROOT)src/measurement/paradigm/silc_mpi_mpi.c
+libsilc_paradigm_mpi_la_SOURCES = $(SRC_ROOT)src/measurement/paradigm/silc_mpi_enabled.c

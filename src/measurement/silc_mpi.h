@@ -20,7 +20,7 @@
 /**
  * @file silc_mpi.h Declarations of wrappers around MPI functions that may be
  * used in non-MPI cases also. There will be two implementations,
- * silc_mpi_mpi.c and silc_mpi_serial.c
+ * silc_mpi_enabled.c and silc_mpi_disabled.c
  *
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
