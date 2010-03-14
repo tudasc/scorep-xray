@@ -41,7 +41,7 @@ static void silc_create_experiment_dir_name();
 
 #define dir_name_size  6 + L_tmpnam
 
-extern char silc_experiment_dir_name[ dir_name_size ];
+char silc_experiment_dir_name[ dir_name_size ];
 
 static bool       silc_is_experiment_dir_created = false;
 
