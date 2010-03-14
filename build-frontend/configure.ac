@@ -1,3 +1,4 @@
+AC_PREREQ([2.65])
 AC_INIT([silc-frontend], [0])
 
 ## Declare variable as precious variable and include its description in the
@@ -24,7 +25,7 @@ AC_CONFIG_HEADERS([../src/config-frontend.h])
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../build-config/m4])
 
-AM_INIT_AUTOMAKE([foreign -Wall])
+AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
 
 

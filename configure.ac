@@ -1,5 +1,5 @@
+AC_PREREQ([2.65])
 AC_INIT([silc],[0.1],[zih-silc@groups.tu-dresden.de])
-AC_PREREQ(2.63)
 
 #echo "cross_compiling = $cross_compiling"
 
@@ -23,7 +23,7 @@ AC_CONFIG_MACRO_DIR([build-config/m4])
 AC_PREFIX_DEFAULT([/opt/silc])
 
 ## Call not before AC_CONFIG_MACRO_DIR
-AM_INIT_AUTOMAKE([foreign -Wall 1.10.1])
+AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 
 
 # don't detect and load defaults in nested configures (e.g. otf2)

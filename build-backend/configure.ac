@@ -1,3 +1,4 @@
+AC_PREREQ([2.65])
 AC_INIT([silc-backend], [0])
 
 ## require $ac_silc_cross_compiling to be set to 'yes' or 'no'
@@ -20,7 +21,7 @@ AC_CONFIG_HEADERS([../src/config-backend.h])
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../build-config/m4])
 
-AM_INIT_AUTOMAKE([foreign -Wall])
+AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 
@@ -120,14 +121,13 @@ AC_LANG_PUSH([C++])
 AC_OPENMP
 AC_LANG_POP([C++])
 
-# to get these working, update autoconf to 2.65 (and adapt status.m4)
-# see also http://lists.gnu.org/archive/html/bug-autoconf/2009-10/msg00020.html
-#AC_LANG_PUSH([Fortran 77])
-#AC_OPENMP
-#AC_LANG_POP([Fortran 77])
-#AC_LANG_PUSH([Fortran])
-#AC_OPENMP
-#AC_LANG_POP([Fortran])
+AC_LANG_PUSH([Fortran 77])
+AC_OPENMP
+AC_LANG_POP([Fortran 77])
+
+AC_LANG_PUSH([Fortran])
+AC_OPENMP
+AC_LANG_POP([Fortran])
 
 SILC_TIMER
 AC_SILC_COMPILER_CHECKS
