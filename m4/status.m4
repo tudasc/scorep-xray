@@ -1,50 +1,30 @@
 # This file is part of Autoconf.                       -*- Autoconf -*-
 # Parameterizing and creating config.status.
 # Copyright (C) 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2000, 2001,
-# 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
+# 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software
+# Foundation, Inc.
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# This file is part of Autoconf.  This program is free
+# software; you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
+# Under Section 7 of GPL version 3, you are granted additional
+# permissions described in the Autoconf Configure Script Exception,
+# version 3.0, as published by the Free Software Foundation.
+#
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
+# and a copy of the Autoconf Configure Script Exception along with
+# this program; see the files COPYINGv3 and COPYING.EXCEPTION
+# respectively.  If not, see <http://www.gnu.org/licenses/>.
 
-# As a special exception, the Free Software Foundation gives unlimited
-# permission to copy, distribute and modify the configure scripts that
-# are the output of Autoconf.  You need not follow the terms of the GNU
-# General Public License when using or distributing such scripts, even
-# though portions of the text of Autoconf appear in them.  The GNU
-# General Public License (GPL) does govern all other use of the material
-# that constitutes the Autoconf program.
-#
-# Certain portions of the Autoconf source text are designed to be copied
-# (in certain cases, depending on the input) into the output of
-# Autoconf.  We call these the "data" portions.  The rest of the Autoconf
-# source text consists of comments plus executable code that decides which
-# of the data portions to output in any given case.  We call these
-# comments and executable code the "non-data" portions.  Autoconf never
-# copies any of the non-data portions into its output.
-#
-# This special exception to the GPL applies to versions of Autoconf
-# released by the Free Software Foundation.  When you make and
-# distribute a modified version of Autoconf, you may extend this special
-# exception to the GPL to apply to your modified version as well, *unless*
-# your modified version has the potential to copy into its output some
-# of the text that was the non-data portion of the version that you started
-# with.  (In other words, unless your change moves or copies text from
-# the non-data portions to the data portions.)  If your modification has
-# such potential, you must delete any notice of this special exception
-# to the GPL from your modified version.
-#
+
 # Written by David MacKenzie, with help from
 # Franc,ois Pinard, Karl Berry, Richard Pixley, Ian Lance Taylor,
 # Roland McGrath, Noah Friedman, david d zuhn, and many others.
@@ -176,8 +156,7 @@ m4_define([AC_FILE_DEPENDENCY_TRACE], [])
 # Declare that DEST depends upon SOURCE1 etc.
 #
 m4_define([_AC_FILE_DEPENDENCY_TRACE_COLON],
-[AC_FILE_DEPENDENCY_TRACE(m4_bpatsubst([$1], [:], [,]))dnl
-])
+[AC_FILE_DEPENDENCY_TRACE(m4_translit([$1], [:], [,]))])
 
 
 # _AC_CONFIG_DEPENDENCY(MODE, DEST[:SOURCE1...])
@@ -205,22 +184,23 @@ m4_define([_AC_CONFIG_DEPENDENCY],
 #    (We get to this case from the obsolete AC_LINK_FILES, for example.)
 #
 m4_define([_AC_CONFIG_DEPENDENCY_DEFAULT],
-[m4_bmatch([$2], [:], [],
+[m4_if(m4_index([$2], [:]), [-1],
 	   [m4_if([$1], [LINKS],
-		  [AS_LITERAL_IF([$2], [AC_FATAL([Invalid AC_CONFIG_LINKS tag: `$2'])])],
-		  [:$2.in])])dnl
-])
+		  [AS_LITERAL_IF([$2],
+		    [m4_fatal([Invalid AC_CONFIG_LINKS tag: `$2'])])],
+		  [:$2.in])])])
 
 
 # _AC_CONFIG_UNIQUE(MODE, DEST)
 # -----------------------------
-# MODE is `FILES', `HEADERS', `LINKS', `COMMANDS', `SUBDIRS or CONFIG_SUBDIR_CUSTOM'.
+# MODE is `FILES', `HEADERS', `LINKS', `COMMANDS', `SUBDIRS' or CONFIG_SUBDIR_CUSTOM.
 #
 # Verify that there is no double definition of an output file.
 #
 m4_define([_AC_CONFIG_UNIQUE],
 [m4_ifdef([_AC_SEEN_TAG($2)],
-   [AC_FATAL([`$2' is already registered with AC_CONFIG_]m4_defn([_AC_SEEN_TAG($2)]).)],
+   [m4_fatal([`$2' is already registered with AC_CONFIG_]m4_defn(
+     [_AC_SEEN_TAG($2)]).)],
    [m4_define([_AC_SEEN_TAG($2)], [$1])])dnl
 ])
 
@@ -236,15 +216,21 @@ m4_define([_AC_CONFIG_UNIQUE],
 # This historical difference allows macro calls in TAGS.
 #
 m4_define([_AC_CONFIG_FOOS],
-[m4_foreach_w([AC_File], [$2],
-	      [_AC_CONFIG_REGISTER([$1], m4_defn([AC_File]), [$3])])dnl
-m4_define([_AC_SEEN_CONFIG(ANY)])dnl
-m4_define([_AC_SEEN_CONFIG($1)])dnl
-_AC_CONFIG_COMMANDS_INIT([$4])dnl
-ac_config_[]m4_tolower([$1])="$ac_config_[]m4_tolower([$1]) dnl
-m4_if([$1], [COMMANDS], [$2], [m4_normalize([$2])])"
+[m4_map_args_w([$2], [_AC_CONFIG_REGISTER([$1],], [, [$3])])]dnl
+[m4_define([_AC_SEEN_CONFIG(ANY)])]dnl
+[m4_define([_AC_SEEN_CONFIG($1)])]dnl
+[_AC_CONFIG_COMMANDS_INIT([$4])]dnl
+[ac_config_[]m4_tolower([$1])="$ac_config_[]m4_tolower([$1]) ]dnl
+[m4_if([$1], [COMMANDS], [$2], [m4_normalize([$2])])"
 ])
 
+# _AC_CONFIG_COMPUTE_DEST(STRING)
+# -------------------------------
+# Compute the DEST from STRING by stripping any : and following
+# characters.  Guarantee a match in m4_index, so as to avoid a bug
+# with precision -1 in m4_format in older m4.
+m4_define([_AC_CONFIG_COMPUTE_DEST],
+[m4_format([[%.*s]], m4_index([$1:], [:]), [$1])])
 
 # _AC_CONFIG_REGISTER(MODE, TAG, [COMMANDS])
 # ------------------------------------------
@@ -253,9 +239,9 @@ m4_if([$1], [COMMANDS], [$2], [m4_normalize([$2])])"
 m4_define([_AC_CONFIG_REGISTER],
 [m4_if([$1], [COMMANDS],
        [],
-       [_AC_CONFIG_DEPENDENCY([$1], [$2])])dnl
-_AC_CONFIG_REGISTER_DEST([$1], [$2], m4_bpatsubst([[$2]], [:.*\(.\)$], [\1]), [$3])dnl
-])
+       [_AC_CONFIG_DEPENDENCY([$1], [$2])])]dnl
+[_AC_CONFIG_REGISTER_DEST([$1], [$2],
+  _AC_CONFIG_COMPUTE_DEST([$2]), [$3])])
 
 
 # _AC_CONFIG_REGISTER_DEST(MODE, TAG, DEST, [COMMANDS])
@@ -270,25 +256,24 @@ _AC_CONFIG_REGISTER_DEST([$1], [$2], m4_bpatsubst([[$2]], [:.*\(.\)$], [\1]), [$
 # Save the name of the first config header to AH_HEADER.
 #
 m4_define([_AC_CONFIG_REGISTER_DEST],
-[_AC_CONFIG_UNIQUE([$1], [$3])dnl
-m4_if([$1 $3], [LINKS .],
-      [AC_FATAL([invalid destination of a config link: `.'])])dnl
-m4_if([$1], [HEADERS],
-      [m4_define_default([AH_HEADER], [$3])])dnl
+[_AC_CONFIG_UNIQUE([$1], [$3])]dnl
+[m4_if([$1 $3], [LINKS .],
+       [m4_fatal([invalid destination of a config link: `.'])],
+       [$1], [HEADERS],
+       [m4_define_default([AH_HEADER], [$3])])]dnl
 dnl
 dnl Recognize TAG as an argument to config.status:
 dnl
-m4_append([_AC_LIST_TAGS],
+[m4_append([_AC_LIST_TAGS],
 [    "$3") CONFIG_$1="$CONFIG_$1 $2" ;;
-])dnl
+])]dnl
 dnl
 dnl Register the associated commands, if any:
 dnl
-m4_ifval([$4],
+[m4_ifval([$4],
 [m4_append([_AC_LIST_TAG_COMMANDS],
-[    "$3":]m4_bpatsubst([$1], [^\(.\).*$], [\1])[) $4 ;;
-])])dnl
-])# _AC_CONFIG_REGISTER_DEST
+[    "$3":]m4_format([[%.1s]], [$1])[) $4 ;;
+])])])# _AC_CONFIG_REGISTER_DEST
 
 
 
@@ -370,10 +355,16 @@ else
   # The final `:' finishes the AND list.
   ac_cs_awk_pipe_fini='END { print "|#_!!_#|"; print ":" }'
 fi]])
-ac_cr=''
+ac_cr=`echo X | tr X '\015'`
+# On cygwin, bash can eat \r inside `` if the user requested igncr.
+# But we know of no other shell where ac_cr would be empty at this
+# point, so we can use a bashism as a fallback.
+if test "x$ac_cr" = x; then
+  eval ac_cr=\$\'\\r\'
+fi
 ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
 if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
-  ac_cs_awk_cr='\\r'
+  ac_cs_awk_cr='\r'
 else
   ac_cs_awk_cr=$ac_cr
 fi
@@ -471,7 +462,7 @@ s/'"$ac_delim"'$//
 t delim
 :nl
 h
-s/\(.\{]_AC_AWK_LITERAL_LIMIT[\}\).*/\1/
+s/\(.\{]_AC_AWK_LITERAL_LIMIT[\}\)..*/\1/
 t more1
 s/["\\]/\\&/g; s/^/"/; s/$/\\n"\\/
 p
@@ -485,7 +476,7 @@ s/.\{]_AC_AWK_LITERAL_LIMIT[\}//
 t nl
 :delim
 h
-s/\(.\{]_AC_AWK_LITERAL_LIMIT[\}\).*/\1/
+s/\(.\{]_AC_AWK_LITERAL_LIMIT[\}\)..*/\1/
 t more2
 s/["\\]/\\&/g; s/^/"/; s/$/"/
 p
@@ -581,6 +572,13 @@ fi # test -n "$CONFIG_FILES"
 
 ])# _AC_OUTPUT_FILES_PREPARE
 
+# _AC_OUTPUT_FILE_ADJUST_DIR(VAR)
+# -------------------------------
+# Generate the sed snippet needed to output VAR relative to the
+# top-level directory.
+m4_define([_AC_OUTPUT_FILE_ADJUST_DIR],
+[s&@$1@&$ac_$1&;t t[]AC_SUBST_TRACE([$1])])
+
 
 # _AC_OUTPUT_FILE
 # ---------------
@@ -617,15 +615,15 @@ m4_ifndef([AC_DATAROOTDIR_CHECKED],
 # FIXME: This hack should be removed a few years after 2.60.
 ac_datarootdir_hack=; ac_datarootdir_seen=
 m4_define([_AC_datarootdir_vars],
-	  [datadir, docdir, infodir, localedir, mandir])
-ac_sed_dataroot='
+	  [datadir, docdir, infodir, localedir, mandir])]dnl
+[m4_define([_AC_datarootdir_subst], [  s&@$][1@&$$][1&g])]dnl
+[ac_sed_dataroot='
 /datarootdir/ {
   p
   q
 }
-m4_foreach([_AC_Var], m4_defn([_AC_datarootdir_vars]),
-	   [/@_AC_Var@/p
-])'
+m4_map_args_sep([/@], [@/p], [
+], _AC_datarootdir_vars)'
 case `eval "sed -n \"\$ac_sed_dataroot\" $ac_file_inputs"` in
 *datarootdir*) ac_datarootdir_seen=yes;;
 *@[]m4_join([@*|*@], _AC_datarootdir_vars)@*)
@@ -633,9 +631,8 @@ case `eval "sed -n \"\$ac_sed_dataroot\" $ac_file_inputs"` in
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
   ac_datarootdir_hack='
-  m4_foreach([_AC_Var], m4_defn([_AC_datarootdir_vars]),
-	       [s&@_AC_Var@&$_AC_Var&g
-  ])dnl
+m4_map_args_sep([_AC_datarootdir_subst(], [)], [
+], _AC_datarootdir_vars)
   s&\\\${datarootdir}&$datarootdir&g' ;;
 esac
 _ACEOF
@@ -660,11 +657,11 @@ dnl During the transition period, this is a special case:
 s&@top_builddir@&$ac_top_builddir_sub&;t t[]AC_SUBST_TRACE([top_builddir])
 dnl For this substitution see the witness macro _AC_HAVE_TOP_BUILD_PREFIX above.
 s&@top_build_prefix@&$ac_top_build_prefix&;t t[]AC_SUBST_TRACE([top_build_prefix])
-m4_foreach([_AC_Var], [srcdir, abs_srcdir, top_srcdir, abs_top_srcdir,
-			builddir, abs_builddir,
-			abs_top_builddir]AC_PROVIDE_IFELSE([AC_PROG_INSTALL], [[, INSTALL]])AC_PROVIDE_IFELSE([AC_PROG_MKDIR_P], [[, MKDIR_P]]),
-	   [s&@_AC_Var@&$ac_[]_AC_Var&;t t[]AC_SUBST_TRACE(_AC_Var)
-])dnl
+m4_map_args_sep([$0_ADJUST_DIR(], [)], [
+], [srcdir], [abs_srcdir], [top_srcdir], [abs_top_srcdir],
+   [builddir], [abs_builddir],
+   [abs_top_builddir]AC_PROVIDE_IFELSE([AC_PROG_INSTALL],
+     [, [INSTALL]])AC_PROVIDE_IFELSE([AC_PROG_MKDIR_P], [, [MKDIR_P]]))
 m4_ifndef([AC_DATAROOTDIR_CHECKED], [$ac_datarootdir_hack
 ])dnl
 "
@@ -1091,17 +1088,15 @@ m4_define([AC_OUTPUT_COMMANDS_POST])
 #   included, if for instance the user refused a part of the tree.
 #   This is used in _AC_OUTPUT_SUBDIRS.
 AC_DEFUN([AC_CONFIG_SUBDIRS],
-[AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])dnl
-AC_REQUIRE([AC_DISABLE_OPTION_CHECKING])dnl
-m4_foreach_w([_AC_Sub], [$1],
-	     [_AC_CONFIG_UNIQUE([SUBDIRS or CONFIG_SUBDIR_CUSTOM],
-				m4_bpatsubst(m4_defn([_AC_Sub]), [:.*]))])dnl
-m4_append([_AC_LIST_SUBDIRS], [$1], [
-])dnl
-AS_LITERAL_IF([$1], [],
-	      [AC_DIAGNOSE([syntax], [$0: you should use literals])])dnl
-AC_SUBST([subdirs], ["$subdirs m4_normalize([$1])"])dnl
-])
+[AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])]dnl
+[AC_REQUIRE([AC_DISABLE_OPTION_CHECKING])]dnl
+[m4_map_args_w([$1], [_AC_CONFIG_UNIQUE([SUBDIRS or CONFIG_SUBDIR_CUSTOM],
+  _AC_CONFIG_COMPUTE_DEST(], [))])]dnl
+[m4_append([_AC_LIST_SUBDIRS], [$1], [
+])]dnl
+[AS_LITERAL_IF([$1], [],
+	       [AC_DIAGNOSE([syntax], [$0: you should use literals])])]dnl
+[AC_SUBST([subdirs], ["$subdirs m4_normalize([$1])"])])
 
 
 # AC_CONFIG_SUBDIR_CUSTOM(DIR, ARGUMENTS [, DISABLE_HELP_RECURSIVE])
@@ -1188,7 +1183,8 @@ fi
 m4_define([_AC_SUB_CONFIGURE_ARGS],
 [
   # Remove --cache-file, --srcdir, and --disable-option-checking arguments
-  # so they do not pile up
+  # so they do not pile up.
+  ac_sub_configure_args=
   ac_prev=
   eval "set x $1"
   shift
@@ -1222,7 +1218,9 @@ m4_define([_AC_SUB_CONFIGURE_ARGS],
       case $ac_arg in
       *\'*) ac_arg=`AS_ECHO(["$ac_arg"]) | sed "s/'/'\\\\\\\\''/g"` ;;
       esac
-      $2="$$2 '$ac_arg'" ;;
+      #AS_VAR_APPEND([ac_sub_configure_args], [" '$ac_arg'"]) ;;
+      #AS_VAR_APPEND([$$2], [" '$ac_arg'"]) ;;
+      AS_VAR_APPEND([$2], [" '$ac_arg'"]) ;;
     esac
   done
 
@@ -1294,6 +1292,7 @@ m4_define([_AC_SUB_CONFIGURE],
       AC_MSG_ERROR([$ac_sub_configure failed for $sub_configure_dir])
   fi
 ])# _AC_SUB_CONFIGURE
+
 
 
 ## -------------------------- ##
@@ -1371,10 +1370,9 @@ if test "$no_create" != yes; then
   exec AS_MESSAGE_LOG_FD>>config.log
   # Use ||, not &&, to avoid exiting from the if with $? = 1, which
   # would make configure fail if this is the last instruction.
-  $ac_cs_success || AS_EXIT([1])
+  $ac_cs_success || AS_EXIT
 fi
 dnl config.status should not do recursion.
-#AC_PROVIDE_IFELSE([AC_CONFIG_SUBDIRS], [_AC_OUTPUT_SUBDIRS()])dnl
 AC_PROVIDE_IFELSE([AC_CONFIG_SUBDIRS], 
                   [_AC_OUTPUT_SUBDIRS()],
                   [AC_PROVIDE_IFELSE([AC_CONFIG_SUBDIR_CUSTOM],
@@ -1393,29 +1391,19 @@ fi
 m4_define([_AC_OUTPUT_CONFIG_STATUS],
 [AC_MSG_NOTICE([creating $CONFIG_STATUS])
 dnl AS_MESSAGE_LOG_FD is not available yet:
-m4_rename([AS_MESSAGE_LOG_FD], [_AC_save_AS_MESSAGE_LOG_FD])dnl
-cat >$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
-#! $SHELL
-# Generated by $as_me.
-# Run this file to recreate the current configuration.
+m4_pushdef([AS_MESSAGE_LOG_FD])]dnl
+[AS_INIT_GENERATED([$CONFIG_STATUS],
+[# Run this file to recreate the current configuration.
 # Compiler output produced by configure, useful for debugging
 # configure, is in config.log if it exists.
 
 debug=false
 ac_cs_recheck=false
 ac_cs_silent=false
-SHELL=\${CONFIG_SHELL-$SHELL}
-_ACEOF
+]) || ac_write_fail=1
 
 cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
-AS_SHELL_SANITIZE
-dnl Watch out, this is directly the initializations, do not use
-dnl AS_PREPARE, otherwise you'd get it output in the initialization
-dnl of configure, not config.status.
-_AS_PREPARE
-exec AS_MESSAGE_FD>&1
-
-# Save the log message, to keep $[0] and so on meaningful, and to
+[#] Save the log message, to keep $[0] and so on meaningful, and to
 # report actual input values of CONFIG_FILES etc. instead of their
 # values after options handling.
 ac_log="
@@ -1465,13 +1453,15 @@ _ACEOF
 
 cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 ac_cs_usage="\
-\`$as_me' instantiates files from templates according to the
-current configuration.
+\`$as_me' instantiates files and other configuration actions
+from templates according to the current configuration.  Unless the files
+and actions are specified as TAGs, all are instantiated by default.
 
-Usage: $[0] [[OPTION]]... [[FILE]]...
+Usage: $[0] [[OPTION]]... [[TAG]]...
 
   -h, --help       print this help, then exit
   -V, --version    print version number and configuration settings, then exit
+      --config     print configuration, then exit
   -q, --quiet, --silent
 []                   do not print progress messages
   -d, --debug      don't remove temporary files
@@ -1505,17 +1495,23 @@ m4_ifdef([_AC_SEEN_CONFIG(COMMANDS)],
 $config_commands
 
 ])dnl
-Report bugs to <bug-autoconf@gnu.org>."
+Report bugs to m4_ifset([AC_PACKAGE_BUGREPORT], [<AC_PACKAGE_BUGREPORT>],
+  [the package provider]).dnl
+m4_ifdef([AC_PACKAGE_NAME], [m4_ifset([AC_PACKAGE_URL], [
+AC_PACKAGE_NAME home page: <AC_PACKAGE_URL>.])dnl
+m4_if(m4_index(m4_defn([AC_PACKAGE_NAME]), [GNU ]), [0], [
+General help using GNU software: <http://www.gnu.org/gethelp/>.])])"
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
+ac_cs_config="`AS_ECHO(["$ac_configure_args"]) | sed 's/^ //; s/[[\\""\`\$]]/\\\\&/g'`"
 ac_cs_version="\\
 m4_ifset([AC_PACKAGE_NAME], [AC_PACKAGE_NAME ])config.status[]dnl
 m4_ifset([AC_PACKAGE_VERSION], [ AC_PACKAGE_VERSION])
 configured by $[0], generated by m4_PACKAGE_STRING,
-  with options \\"`AS_ECHO(["$ac_configure_args"]) | sed 's/^ //; s/[[\\""\`\$]]/\\\\&/g'`\\"
+  with options \\"\$ac_cs_config\\"
 
-Copyright (C) 2008 Free Software Foundation, Inc.
+Copyright (C) m4_PACKAGE_YEAR Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
@@ -1557,6 +1553,8 @@ do
     ac_cs_recheck=: ;;
   --version | --versio | --versi | --vers | --ver | --ve | --v | -V )
     AS_ECHO(["$ac_cs_version"]); exit ;;
+  --config | --confi | --conf | --con | --co | --c )
+    AS_ECHO(["$ac_cs_config"]); exit ;;
   --debug | --debu | --deb | --de | --d | -d )
     debug=: ;;
 m4_ifdef([_AC_SEEN_CONFIG(FILES)], [dnl
@@ -1565,7 +1563,7 @@ m4_ifdef([_AC_SEEN_CONFIG(FILES)], [dnl
     case $ac_optarg in
     *\'*) ac_optarg=`AS_ECHO(["$ac_optarg"]) | sed "s/'/'\\\\\\\\''/g"` ;;
     esac
-    CONFIG_FILES="$CONFIG_FILES '$ac_optarg'"
+    AS_VAR_APPEND([CONFIG_FILES], [" '$ac_optarg'"])
     ac_need_defaults=false;;
 ])dnl
 m4_ifdef([_AC_SEEN_CONFIG(HEADERS)], [dnl
@@ -1574,11 +1572,11 @@ m4_ifdef([_AC_SEEN_CONFIG(HEADERS)], [dnl
     case $ac_optarg in
     *\'*) ac_optarg=`AS_ECHO(["$ac_optarg"]) | sed "s/'/'\\\\\\\\''/g"` ;;
     esac
-    CONFIG_HEADERS="$CONFIG_HEADERS '$ac_optarg'"
+    AS_VAR_APPEND([CONFIG_HEADERS], [" '$ac_optarg'"])
     ac_need_defaults=false;;
   --he | --h)
     # Conflict between --help and --header
-    AC_MSG_ERROR([ambiguous option: $[1]
+    AC_MSG_ERROR([ambiguous option: `$[1]'
 Try `$[0] --help' for more information.]);;
 ], [  --he | --h |])dnl
   --help | --hel | -h )
@@ -1588,10 +1586,10 @@ Try `$[0] --help' for more information.]);;
     ac_cs_silent=: ;;
 
   # This is an error.
-  -*) AC_MSG_ERROR([unrecognized option: $[1]
+  -*) AC_MSG_ERROR([unrecognized option: `$[1]'
 Try `$[0] --help' for more information.]) ;;
 
-  *) ac_config_targets="$ac_config_targets $[1]"
+  *) AS_VAR_APPEND([ac_config_targets], [" $[1]"])
      ac_need_defaults=false ;;
 
   esac
@@ -1621,7 +1619,7 @@ fi
 _ACEOF
 cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 dnl Open the log:
-m4_rename([_AC_save_AS_MESSAGE_LOG_FD], [AS_MESSAGE_LOG_FD])dnl
+m4_popdef([AS_MESSAGE_LOG_FD])dnl
 exec AS_MESSAGE_LOG_FD>>config.log
 {
   echo
@@ -1646,7 +1644,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
 m4_ifdef([_AC_LIST_TAGS], [_AC_LIST_TAGS])
-  *) AC_MSG_ERROR([invalid argument: $ac_config_target]);;
+  *) AC_MSG_ERROR([invalid argument: `$ac_config_target']);;
   esac
 done
 
@@ -1654,7 +1652,6 @@ m4_ifdef([_AC_SEEN_CONFIG(ANY)], [_AC_OUTPUT_MAIN_LOOP])[]dnl
 
 AS_EXIT(0)
 _ACEOF
-chmod +x $CONFIG_STATUS
 ])# _AC_OUTPUT_CONFIG_STATUS
 
 # _AC_OUTPUT_MAIN_LOOP
@@ -1720,7 +1717,7 @@ do
   esac
   case $ac_mode$ac_tag in
   :[[FHL]]*:*);;
-  :L* | :C*:*) AC_MSG_ERROR([invalid tag $ac_tag]);;
+  :L* | :C*:*) AC_MSG_ERROR([invalid tag `$ac_tag']);;
   :[[FH]]-) ac_tag=-:-;;
   :[[FH]]*) ac_tag=$ac_tag:$ac_tag.in;;
   esac
@@ -1748,10 +1745,10 @@ do
 	   [[\\/$]]*) false;;
 	   *) test -f "$srcdir/$ac_f" && ac_f="$srcdir/$ac_f";;
 	   esac ||
-	   AC_MSG_ERROR([cannot find input file: $ac_f]);;
+	   AC_MSG_ERROR([cannot find input file: `$ac_f']);;
       esac
       case $ac_f in *\'*) ac_f=`AS_ECHO(["$ac_f"]) | sed "s/'/'\\\\\\\\''/g"`;; esac
-      ac_file_inputs="$ac_file_inputs '$ac_f'"
+      AS_VAR_APPEND([ac_file_inputs], [" '$ac_f'"])
     done
 
     # Let's still pretend it is `configure' which instantiates (i.e., don't
