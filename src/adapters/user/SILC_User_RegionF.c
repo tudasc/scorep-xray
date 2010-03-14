@@ -44,13 +44,13 @@ extern SILC_RegionType
 silc_user_to_silc_region_type( const SILC_User_RegionType user_type );
 
 void
-FSUB( SILC_User_RegionInitF ) ( SILC_Fortran_RegionHandle * handle,
-                                char*    name_f,
-                                int32_t * type,
-                                char*    fileName_f,
-                                int32_t * lineNo,
-                                int nameLen,
-                                int fileNameLen )
+FSUB( SILC_User_RegionInitF )( SILC_Fortran_RegionHandle* handle,
+                               char*                      name_f,
+                               int32_t*                   type,
+                               char*                      fileName_f,
+                               int32_t*                   lineNo,
+                               int                        nameLen,
+                               int                        fileNameLen )
 {
     char*                  name;
     char*                  fileName;
@@ -126,20 +126,20 @@ FSUB( SILC_User_RegionInitF ) ( SILC_Fortran_RegionHandle * handle,
 }
 
 void
-FSUB( SILC_User_RegionBeginF ) ( SILC_Fortran_RegionHandle * handle,
-                                 char*    name_f,
-                                 int32_t * type,
-                                 char*    fileName_f,
-                                 int32_t * lineNo,
-                                 int nameLen,
-                                 int fileNameLen )
+FSUB( SILC_User_RegionBeginF )( SILC_Fortran_RegionHandle* handle,
+                                char*                      name_f,
+                                int32_t*                   type,
+                                char*                      fileName_f,
+                                int32_t*                   lineNo,
+                                int                        nameLen,
+                                int                        fileNameLen )
 {
     /* Make sure the region handle is already defined */
     if ( *handle == SILC_FORTRAN_INVALID_REGION )
     {
         /* Make sure the handle is initialized */
-        FSUB( SILC_User_RegionInitF ) ( handle, name_f, type, fileName_f,
-                                        lineNo, nameLen, fileNameLen );
+        FSUB( SILC_User_RegionInitF )( handle, name_f, type, fileName_f,
+                                       lineNo, nameLen, fileNameLen );
     }
 
     /* Generate region event */
@@ -147,13 +147,13 @@ FSUB( SILC_User_RegionBeginF ) ( SILC_Fortran_RegionHandle * handle,
 }
 
 void
-FSUB( SILC_User_RegionEndF ) ( SILC_Fortran_RegionHandle * handle )
+FSUB( SILC_User_RegionEndF )( SILC_Fortran_RegionHandle* handle )
 {
     SILC_User_RegionEnd( *handle );
 }
 
 void
-FSUB( SILC_User_RegionEnterF ) ( SILC_Fortran_RegionHandle * handle )
+FSUB( SILC_User_RegionEnterF )( SILC_Fortran_RegionHandle* handle )
 {
     SILC_User_RegionEnter( *handle );
 }

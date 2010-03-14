@@ -42,9 +42,9 @@
 extern SILC_CounterGroupHandle SILC_User_DefaultMetricGroup;
 
 void
-FSUB( SILC_User_InitMetricGroupF ) ( SILC_Fortran_MetricGroup * groupHandle,
-                                     char* nameF,
-                                     int nameLen )
+FSUB( SILC_User_InitMetricGroupF )( SILC_Fortran_MetricGroup* groupHandle,
+                                    char*                     nameF,
+                                    int                       nameLen )
 {
     /* Check for intialization */
     SILC_USER_ASSERT_INITIALIZED;
@@ -76,14 +76,14 @@ FSUB( SILC_User_InitMetricGroupF ) ( SILC_Fortran_MetricGroup * groupHandle,
 void
 FSUB( SILC_User_InitMetricF )
 (
-    SILC_Fortran_MetricHandle *   metricHandle,
-    char*  nameF,
-    char*  unitF,
-    int*   metricType,
-    int*   context,
-    SILC_Fortran_MetricGroup *   groupF,
-    int nameLen,
-    int unitLen
+    SILC_Fortran_MetricHandle* metricHandle,
+    char*                      nameF,
+    char*                      unitF,
+    int*                       metricType,
+    int*                       context,
+    SILC_Fortran_MetricGroup*  groupF,
+    int                        nameLen,
+    int                        unitLen
 )
 {
     char*                   name;
@@ -138,13 +138,15 @@ FSUB( SILC_User_InitMetricF )
 }
 
 void
-FSUB( SILC_User_MetricInt64F ) ( SILC_Fortran_MetricHandle * metric, int64_t * value )
+FSUB( SILC_User_MetricInt64F )( SILC_Fortran_MetricHandle* metric,
+                                int64_t*                   value )
 {
     SILC_TriggerCounterInt64( *metric, *value );
 }
 
 void
-FSUB( SILC_User_MetricDoubleF ) ( SILC_Fortran_MetricHandle * metric, double* value )
+FSUB( SILC_User_MetricDoubleF )( SILC_Fortran_MetricHandle* metric,
+                                 double*                    value )
 {
     SILC_TriggerCounterDouble( *metric, *value );
 }

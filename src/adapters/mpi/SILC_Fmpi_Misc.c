@@ -268,7 +268,9 @@
  * @ingroup misc
  */
 void
-FSUB( MPI_Address ) ( void* location, MPI_Aint * address, int* ierr )
+FSUB( MPI_Address )( void*     location,
+                     MPI_Aint* address,
+                     int*      ierr )
 {
     *ierr = MPI_Address( location, address );
 }
@@ -282,7 +284,10 @@ FSUB( MPI_Address ) ( void* location, MPI_Aint * address, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Alloc_mem ) ( MPI_Aint * size, MPI_Info * info, void* baseptr, int* ierr )
+FSUB( MPI_Alloc_mem )( MPI_Aint* size,
+                       MPI_Info* info,
+                       void*     baseptr,
+                       int*      ierr )
 {
     *ierr = MPI_Alloc_mem( *size, *info, baseptr );
 }
@@ -296,7 +301,8 @@ FSUB( MPI_Alloc_mem ) ( MPI_Aint * size, MPI_Info * info, void* baseptr, int* ie
  * @ingroup misc
  */
 void
-FSUB( MPI_Free_mem ) ( void* base, int* ierr )
+FSUB( MPI_Free_mem )( void* base,
+                      int*  ierr )
 {
     *ierr = MPI_Free_mem( base );
 }
@@ -310,7 +316,9 @@ FSUB( MPI_Free_mem ) ( void* base, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Get_address ) ( void* location, MPI_Aint * address, int* ierr )
+FSUB( MPI_Get_address )( void*     location,
+                         MPI_Aint* address,
+                         int*      ierr )
 {
     *ierr = MPI_Get_address( location, address );
 }
@@ -324,7 +332,9 @@ FSUB( MPI_Get_address ) ( void* location, MPI_Aint * address, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Get_version ) ( int* version, int* subversion, int* ierr )
+FSUB( MPI_Get_version )( int* version,
+                         int* subversion,
+                         int* ierr )
 {
     *ierr = MPI_Get_version( version, subversion );
 }
@@ -338,7 +348,8 @@ FSUB( MPI_Get_version ) ( int* version, int* subversion, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_create ) ( MPI_Info * info, int* ierr )
+FSUB( MPI_Info_create )( MPI_Info* info,
+                         int*      ierr )
 {
     *ierr = MPI_Info_create( info );
 }
@@ -352,7 +363,10 @@ FSUB( MPI_Info_create ) ( MPI_Info * info, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_delete ) ( MPI_Info * info, char* key, int* ierr, int key_len )
+FSUB( MPI_Info_delete )( MPI_Info* info,
+                         char*     key,
+                         int*      ierr,
+                         int       key_len )
 {
     char* c_key = NULL;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -378,7 +392,9 @@ FSUB( MPI_Info_delete ) ( MPI_Info * info, char* key, int* ierr, int key_len )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_dup ) ( MPI_Info * info, MPI_Info * newinfo, int* ierr )
+FSUB( MPI_Info_dup )( MPI_Info* info,
+                      MPI_Info* newinfo,
+                      int*      ierr )
 {
     *ierr = MPI_Info_dup( *info, newinfo );
 }
@@ -392,7 +408,8 @@ FSUB( MPI_Info_dup ) ( MPI_Info * info, MPI_Info * newinfo, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_free ) ( MPI_Info * info, int* ierr )
+FSUB( MPI_Info_free )( MPI_Info* info,
+                       int*      ierr )
 {
     *ierr = MPI_Info_free( info );
 }
@@ -406,7 +423,14 @@ FSUB( MPI_Info_free ) ( MPI_Info * info, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get ) ( MPI_Info * info, char* key, int* valuelen, char* value, int* flag, int* ierr, int key_len, int value_len )
+FSUB( MPI_Info_get )( MPI_Info* info,
+                      char*     key,
+                      int*      valuelen,
+                      char*     value,
+                      int*      flag,
+                      int*      ierr,
+                      int       key_len,
+                      int       value_len )
 {
     char* c_key   = NULL;
     char* c_value = NULL;
@@ -442,7 +466,9 @@ FSUB( MPI_Info_get ) ( MPI_Info * info, char* key, int* valuelen, char* value, i
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get_nkeys ) ( MPI_Info * info, int* nkeys, int* ierr )
+FSUB( MPI_Info_get_nkeys )( MPI_Info* info,
+                            int*      nkeys,
+                            int*      ierr )
 {
     *ierr = MPI_Info_get_nkeys( *info, nkeys );
 }
@@ -456,7 +482,11 @@ FSUB( MPI_Info_get_nkeys ) ( MPI_Info * info, int* nkeys, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get_nthkey ) ( MPI_Info * info, int* n, char* key, int* ierr, int key_len )
+FSUB( MPI_Info_get_nthkey )( MPI_Info* info,
+                             int*      n,
+                             char*     key,
+                             int*      ierr,
+                             int       key_len )
 {
     char* c_key = NULL;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -482,7 +512,12 @@ FSUB( MPI_Info_get_nthkey ) ( MPI_Info * info, int* n, char* key, int* ierr, int
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_get_valuelen ) ( MPI_Info * info, char* key, int* valuelen, int* flag, int* ierr, int key_len )
+FSUB( MPI_Info_get_valuelen )( MPI_Info* info,
+                               char*     key,
+                               int*      valuelen,
+                               int*      flag,
+                               int*      ierr,
+                               int       key_len )
 {
     char* c_key = NULL;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -508,7 +543,12 @@ FSUB( MPI_Info_get_valuelen ) ( MPI_Info * info, char* key, int* valuelen, int* 
  * @ingroup misc
  */
 void
-FSUB( MPI_Info_set ) ( MPI_Info * info, char* key, char* value, int* ierr, int key_len, int value_len )
+FSUB( MPI_Info_set )( MPI_Info* info,
+                      char*     key,
+                      char*     value,
+                      int*      ierr,
+                      int       key_len,
+                      int       value_len )
 {
     char* c_key   = NULL;
     char* c_value = NULL;
@@ -544,7 +584,9 @@ FSUB( MPI_Info_set ) ( MPI_Info * info, char* key, char* value, int* ierr, int k
  * @ingroup misc
  */
 void
-FSUB( MPI_Op_commutative ) ( MPI_Op * op, int* commute, int* ierr )
+FSUB( MPI_Op_commutative )( MPI_Op* op,
+                            int*    commute,
+                            int*    ierr )
 {
     *ierr = MPI_Op_commutative( *op, commute );
 }
@@ -558,7 +600,10 @@ FSUB( MPI_Op_commutative ) ( MPI_Op * op, int* commute, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Op_create ) ( MPI_User_function * function, int* commute, MPI_Op * op, int* ierr )
+FSUB( MPI_Op_create )( MPI_User_function* function,
+                       int*               commute,
+                       MPI_Op*            op,
+                       int*               ierr )
 {
     *ierr = MPI_Op_create( function, *commute, op );
 }
@@ -572,7 +617,8 @@ FSUB( MPI_Op_create ) ( MPI_User_function * function, int* commute, MPI_Op * op,
  * @ingroup misc
  */
 void
-FSUB( MPI_Op_free ) ( MPI_Op * op, int* ierr )
+FSUB( MPI_Op_free )( MPI_Op* op,
+                     int*    ierr )
 {
     *ierr = MPI_Op_free( op );
 }
@@ -586,7 +632,10 @@ FSUB( MPI_Op_free ) ( MPI_Op * op, int* ierr )
  * @ingroup misc
  */
 void
-FSUB( MPI_Request_get_status ) ( MPI_Request * request, int* flag, MPI_Status * status, int* ierr )
+FSUB( MPI_Request_get_status )( MPI_Request* request,
+                                int*         flag,
+                                MPI_Status*  status,
+                                int*         ierr )
 {
     *ierr = MPI_Request_get_status( *request, flag, status );
 }
@@ -604,7 +653,9 @@ FSUB( MPI_Request_get_status ) ( MPI_Request * request, int* flag, MPI_Status * 
  * For the order of events see @ref MPI_Address
  */
 void
-FSUB( MPI_Address ) ( void* location, MPI_Aint * address, int* ierr )
+FSUB( MPI_Address )( void*     location,
+                     MPI_Aint* address,
+                     int*      ierr )
 {
     *ierr = MPI_Address( location, address );
 }
@@ -619,7 +670,10 @@ FSUB( MPI_Address ) ( void* location, MPI_Aint * address, int* ierr )
  * For the order of events see @ref MPI_Alloc_mem
  */
 void
-FSUB( MPI_Alloc_mem ) ( MPI_Aint * size, MPI_Fint * info, void* baseptr, int* ierr )
+FSUB( MPI_Alloc_mem )( MPI_Aint* size,
+                       MPI_Fint* info,
+                       void*     baseptr,
+                       int*      ierr )
 {
     *ierr = MPI_Alloc_mem( *size, PMPI_Info_f2c( *info ), baseptr );
 }
@@ -634,7 +688,8 @@ FSUB( MPI_Alloc_mem ) ( MPI_Aint * size, MPI_Fint * info, void* baseptr, int* ie
  * For the order of events see @ref MPI_Free_mem
  */
 void
-FSUB( MPI_Free_mem ) ( void* base, int* ierr )
+FSUB( MPI_Free_mem )( void* base,
+                      int*  ierr )
 {
     *ierr = MPI_Free_mem( base );
 }
@@ -649,7 +704,9 @@ FSUB( MPI_Free_mem ) ( void* base, int* ierr )
  * For the order of events see @ref MPI_Get_address
  */
 void
-FSUB( MPI_Get_address ) ( void* location, MPI_Aint * address, int* ierr )
+FSUB( MPI_Get_address )( void*     location,
+                         MPI_Aint* address,
+                         int*      ierr )
 {
     *ierr = MPI_Get_address( location, address );
 }
@@ -664,7 +721,9 @@ FSUB( MPI_Get_address ) ( void* location, MPI_Aint * address, int* ierr )
  * For the order of events see @ref MPI_Get_version
  */
 void
-FSUB( MPI_Get_version ) ( MPI_Fint * version, MPI_Fint * subversion, int* ierr )
+FSUB( MPI_Get_version )( MPI_Fint* version,
+                         MPI_Fint* subversion,
+                         int*      ierr )
 {
     *ierr = MPI_Get_version( version, subversion );
 }
@@ -679,7 +738,8 @@ FSUB( MPI_Get_version ) ( MPI_Fint * version, MPI_Fint * subversion, int* ierr )
  * For the order of events see @ref MPI_Info_create
  */
 void
-FSUB( MPI_Info_create ) ( MPI_Fint * info, int* ierr )
+FSUB( MPI_Info_create )( MPI_Fint* info,
+                         int*      ierr )
 {
     MPI_Info c_info;
     *ierr = MPI_Info_create( &c_info );
@@ -696,7 +756,10 @@ FSUB( MPI_Info_create ) ( MPI_Fint * info, int* ierr )
  * For the order of events see @ref MPI_Info_delete
  */
 void
-FSUB( MPI_Info_delete ) ( MPI_Fint * info, char* key, int* ierr, int key_len )
+FSUB( MPI_Info_delete )( MPI_Fint* info,
+                         char*     key,
+                         int*      ierr,
+                         int       key_len )
 {
     char*    c_key  = NULL;
     MPI_Info c_info = PMPI_Info_f2c( *info );
@@ -723,7 +786,9 @@ FSUB( MPI_Info_delete ) ( MPI_Fint * info, char* key, int* ierr, int key_len )
  * For the order of events see @ref MPI_Info_dup
  */
 void
-FSUB( MPI_Info_dup ) ( MPI_Fint * info, MPI_Fint * newinfo, int* ierr )
+FSUB( MPI_Info_dup )( MPI_Fint* info,
+                      MPI_Fint* newinfo,
+                      int*      ierr )
 {
     MPI_Info c_newinfo;
     *ierr    = MPI_Info_dup( PMPI_Info_f2c( *info ), &c_newinfo );
@@ -740,7 +805,8 @@ FSUB( MPI_Info_dup ) ( MPI_Fint * info, MPI_Fint * newinfo, int* ierr )
  * For the order of events see @ref MPI_Info_free
  */
 void
-FSUB( MPI_Info_free ) ( MPI_Fint * info, int* ierr )
+FSUB( MPI_Info_free )( MPI_Fint* info,
+                       int*      ierr )
 {
     MPI_Info c_info = PMPI_Info_f2c( *info );
     *ierr = MPI_Info_free( &c_info );
@@ -757,7 +823,14 @@ FSUB( MPI_Info_free ) ( MPI_Fint * info, int* ierr )
  * For the order of events see @ref MPI_Info_get
  */
 void
-FSUB( MPI_Info_get ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen, char* value, MPI_Fint * flag, int* ierr, int key_len, int value_len )
+FSUB( MPI_Info_get )( MPI_Fint* info,
+                      char*     key,
+                      MPI_Fint* valuelen,
+                      char*     value,
+                      MPI_Fint* flag,
+                      int*      ierr,
+                      int       key_len,
+                      int       value_len )
 {
     char* c_key   = NULL;
     char* c_value = NULL;
@@ -792,7 +865,9 @@ FSUB( MPI_Info_get ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen, char* va
  * For the order of events see @ref MPI_Info_get_nkeys
  */
 void
-FSUB( MPI_Info_get_nkeys ) ( MPI_Fint * info, MPI_Fint * nkeys, int* ierr )
+FSUB( MPI_Info_get_nkeys )( MPI_Fint* info,
+                            MPI_Fint* nkeys,
+                            int*      ierr )
 {
     *ierr = MPI_Info_get_nkeys( PMPI_Info_f2c( *info ), nkeys );
 }
@@ -807,7 +882,11 @@ FSUB( MPI_Info_get_nkeys ) ( MPI_Fint * info, MPI_Fint * nkeys, int* ierr )
  * For the order of events see @ref MPI_Info_get_nthkey
  */
 void
-FSUB( MPI_Info_get_nthkey ) ( MPI_Fint * info, MPI_Fint * n, char* key, int* ierr, int key_len )
+FSUB( MPI_Info_get_nthkey )( MPI_Fint* info,
+                             MPI_Fint* n,
+                             char*     key,
+                             int*      ierr,
+                             int       key_len )
 {
     char* c_key = NULL;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -832,7 +911,12 @@ FSUB( MPI_Info_get_nthkey ) ( MPI_Fint * info, MPI_Fint * n, char* key, int* ier
  * For the order of events see @ref MPI_Info_get_valuelen
  */
 void
-FSUB( MPI_Info_get_valuelen ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen, MPI_Fint * flag, int* ierr, int key_len )
+FSUB( MPI_Info_get_valuelen )( MPI_Fint* info,
+                               char*     key,
+                               MPI_Fint* valuelen,
+                               MPI_Fint* flag,
+                               int*      ierr,
+                               int       key_len )
 {
     char* c_key = NULL;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -857,7 +941,12 @@ FSUB( MPI_Info_get_valuelen ) ( MPI_Fint * info, char* key, MPI_Fint * valuelen,
  * For the order of events see @ref MPI_Info_set
  */
 void
-FSUB( MPI_Info_set ) ( MPI_Fint * info, char* key, char* value, int* ierr, int key_len, int value_len )
+FSUB( MPI_Info_set )( MPI_Fint* info,
+                      char*     key,
+                      char*     value,
+                      int*      ierr,
+                      int       key_len,
+                      int       value_len )
 {
     char*    c_key   = NULL;
     char*    c_value = NULL;
@@ -894,7 +983,9 @@ FSUB( MPI_Info_set ) ( MPI_Fint * info, char* key, char* value, int* ierr, int k
  * For the order of events see @ref MPI_Op_commutative
  */
 void
-FSUB( MPI_Op_commutative ) ( MPI_Fint * op, MPI_Fint * commute, int* ierr )
+FSUB( MPI_Op_commutative )( MPI_Fint* op,
+                            MPI_Fint* commute,
+                            int*      ierr )
 {
     *ierr = MPI_Op_commutative( PMPI_Op_f2c( *op ), commute );
 }
@@ -909,7 +1000,10 @@ FSUB( MPI_Op_commutative ) ( MPI_Fint * op, MPI_Fint * commute, int* ierr )
  * For the order of events see @ref MPI_Op_create
  */
 void
-FSUB( MPI_Op_create ) ( void* function, MPI_Fint * commute, MPI_Fint * op, int* ierr )
+FSUB( MPI_Op_create )( void*     function,
+                       MPI_Fint* commute,
+                       MPI_Fint* op,
+                       int*      ierr )
 {
     MPI_Op c_op;
     *ierr = MPI_Op_create( ( MPI_User_function* )function, *commute, &c_op );
@@ -926,7 +1020,8 @@ FSUB( MPI_Op_create ) ( void* function, MPI_Fint * commute, MPI_Fint * op, int* 
  * For the order of events see @ref MPI_Op_free
  */
 void
-FSUB( MPI_Op_free ) ( MPI_Fint * op, int* ierr )
+FSUB( MPI_Op_free )( MPI_Fint* op,
+                     int*      ierr )
 {
     MPI_Op c_op = PMPI_Op_f2c( *op );
     *ierr = MPI_Op_free( &c_op );
@@ -943,7 +1038,10 @@ FSUB( MPI_Op_free ) ( MPI_Fint * op, int* ierr )
  * For the order of events see @ref MPI_Request_get_status
  */
 void
-FSUB( MPI_Request_get_status ) ( MPI_Fint * request, MPI_Fint * flag, MPI_Fint * status, int* ierr )
+FSUB( MPI_Request_get_status )( MPI_Fint* request,
+                                MPI_Fint* flag,
+                                MPI_Fint* status,
+                                int*      ierr )
 {
     MPI_Status c_status;
     *ierr = MPI_Request_get_status( PMPI_Request_f2c( *request ), flag, &c_status );

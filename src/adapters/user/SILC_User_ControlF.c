@@ -33,7 +33,7 @@
 #define SILC_User_RecordingEnabledF_L silc_user_recordingenabledf
 
 void
-FSUB( SILC_User_EnableRecordingF ) ()
+FSUB( SILC_User_EnableRecordingF )()
 {
     /* Assert that the adapter and management system are initialized */
     SILC_USER_ASSERT_INITIALIZED;
@@ -43,7 +43,7 @@ FSUB( SILC_User_EnableRecordingF ) ()
 }
 
 void
-FSUB( SILC_User_DisableRecordingF ) ()
+FSUB( SILC_User_DisableRecordingF )()
 {
     /* Assert that the adapter and management system are initialized */
     SILC_USER_ASSERT_INITIALIZED;
@@ -53,7 +53,7 @@ FSUB( SILC_User_DisableRecordingF ) ()
 }
 
 void
-FSUB( SILC_User_RecordingEnabledF ) ( int* enabled )
+FSUB( SILC_User_RecordingEnabledF )( int* enabled )
 {
     /* Assert that the adapter and management system are initialized */
     SILC_USER_ASSERT_INITIALIZED;

@@ -266,7 +266,14 @@
  * @ingroup coll
  */
 void
-FSUB( MPI_Allgather ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, void* recvbuf, int* recvcount, MPI_Datatype * recvtype, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Allgather )( void*         sendbuf,
+                       int*          sendcount,
+                       MPI_Datatype* sendtype,
+                       void*         recvbuf,
+                       int*          recvcount,
+                       MPI_Datatype* recvtype,
+                       MPI_Comm*     comm,
+                       int*          ierr )
 {
     *ierr = MPI_Allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
 }
@@ -280,7 +287,15 @@ FSUB( MPI_Allgather ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, 
  * @ingroup coll
  */
 void
-FSUB( MPI_Allgatherv ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype * recvtype, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Allgatherv )( void*         sendbuf,
+                        int*          sendcount,
+                        MPI_Datatype* sendtype,
+                        void*         recvbuf,
+                        int*          recvcounts,
+                        int*          displs,
+                        MPI_Datatype* recvtype,
+                        MPI_Comm*     comm,
+                        int*          ierr )
 {
     *ierr = MPI_Allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
 }
@@ -294,7 +309,13 @@ FSUB( MPI_Allgatherv ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype,
  * @ingroup coll
  */
 void
-FSUB( MPI_Allreduce ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * datatype, MPI_Op * op, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Allreduce )( void*         sendbuf,
+                       void*         recvbuf,
+                       int*          count,
+                       MPI_Datatype* datatype,
+                       MPI_Op*       op,
+                       MPI_Comm*     comm,
+                       int*          ierr )
 {
     *ierr = MPI_Allreduce( sendbuf, recvbuf, *count, *datatype, *op, *comm );
 }
@@ -308,7 +329,14 @@ FSUB( MPI_Allreduce ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype *
  * @ingroup coll
  */
 void
-FSUB( MPI_Alltoall ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, void* recvbuf, int* recvcount, MPI_Datatype * recvtype, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Alltoall )( void*         sendbuf,
+                      int*          sendcount,
+                      MPI_Datatype* sendtype,
+                      void*         recvbuf,
+                      int*          recvcount,
+                      MPI_Datatype* recvtype,
+                      MPI_Comm*     comm,
+                      int*          ierr )
 {
     *ierr = MPI_Alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
 }
@@ -322,7 +350,16 @@ FSUB( MPI_Alltoall ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, v
  * @ingroup coll
  */
 void
-FSUB( MPI_Alltoallv ) ( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype * sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype * recvtype, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Alltoallv )( void*         sendbuf,
+                       int*          sendcounts,
+                       int*          sdispls,
+                       MPI_Datatype* sendtype,
+                       void*         recvbuf,
+                       int*          recvcounts,
+                       int*          rdispls,
+                       MPI_Datatype* recvtype,
+                       MPI_Comm*     comm,
+                       int*          ierr )
 {
     *ierr = MPI_Alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm );
 }
@@ -336,7 +373,16 @@ FSUB( MPI_Alltoallv ) ( void* sendbuf, int* sendcounts, int* sdispls, MPI_Dataty
  * @ingroup coll
  */
 void
-FSUB( MPI_Alltoallw ) ( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm * comm, int* ierr )
+FSUB( MPI_Alltoallw )( void*        sendbuf,
+                       int          sendcounts[],
+                       int          sdispls[],
+                       MPI_Datatype sendtypes[],
+                       void*        recvbuf,
+                       int          recvcounts[],
+                       int          rdispls[],
+                       MPI_Datatype recvtypes[],
+                       MPI_Comm*    comm,
+                       int*         ierr )
 {
     *ierr = MPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm );
 }
@@ -350,7 +396,8 @@ FSUB( MPI_Alltoallw ) ( void* sendbuf, int sendcounts[], int sdispls[], MPI_Data
  * @ingroup coll
  */
 void
-FSUB( MPI_Barrier ) ( MPI_Comm * comm, int* ierr )
+FSUB( MPI_Barrier )( MPI_Comm* comm,
+                     int*      ierr )
 {
     *ierr = MPI_Barrier( *comm );
 }
@@ -364,7 +411,12 @@ FSUB( MPI_Barrier ) ( MPI_Comm * comm, int* ierr )
  * @ingroup coll
  */
 void
-FSUB( MPI_Bcast ) ( void* buffer, int* count, MPI_Datatype * datatype, int* root, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Bcast )( void*         buffer,
+                   int*          count,
+                   MPI_Datatype* datatype,
+                   int*          root,
+                   MPI_Comm*     comm,
+                   int*          ierr )
 {
     *ierr = MPI_Bcast( buffer, *count, *datatype, *root, *comm );
 }
@@ -378,7 +430,13 @@ FSUB( MPI_Bcast ) ( void* buffer, int* count, MPI_Datatype * datatype, int* root
  * @ingroup coll
  */
 void
-FSUB( MPI_Exscan ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * datatype, MPI_Op * op, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Exscan )( void*         sendbuf,
+                    void*         recvbuf,
+                    int*          count,
+                    MPI_Datatype* datatype,
+                    MPI_Op*       op,
+                    MPI_Comm*     comm,
+                    int*          ierr )
 {
     *ierr = MPI_Exscan( sendbuf, recvbuf, *count, *datatype, *op, *comm );
 }
@@ -392,7 +450,15 @@ FSUB( MPI_Exscan ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * da
  * @ingroup coll
  */
 void
-FSUB( MPI_Gather ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, void* recvbuf, int* recvcount, MPI_Datatype * recvtype, int* root, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Gather )( void*         sendbuf,
+                    int*          sendcount,
+                    MPI_Datatype* sendtype,
+                    void*         recvbuf,
+                    int*          recvcount,
+                    MPI_Datatype* recvtype,
+                    int*          root,
+                    MPI_Comm*     comm,
+                    int*          ierr )
 {
     *ierr = MPI_Gather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
 }
@@ -406,7 +472,16 @@ FSUB( MPI_Gather ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, voi
  * @ingroup coll
  */
 void
-FSUB( MPI_Gatherv ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype * recvtype, int* root, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Gatherv )( void*         sendbuf,
+                     int*          sendcount,
+                     MPI_Datatype* sendtype,
+                     void*         recvbuf,
+                     int*          recvcounts,
+                     int*          displs,
+                     MPI_Datatype* recvtype,
+                     int*          root,
+                     MPI_Comm*     comm,
+                     int*          ierr )
 {
     *ierr = MPI_Gatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *root, *comm );
 }
@@ -420,7 +495,14 @@ FSUB( MPI_Gatherv ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, vo
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * datatype, MPI_Op * op, int* root, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Reduce )( void*         sendbuf,
+                    void*         recvbuf,
+                    int*          count,
+                    MPI_Datatype* datatype,
+                    MPI_Op*       op,
+                    int*          root,
+                    MPI_Comm*     comm,
+                    int*          ierr )
 {
     *ierr = MPI_Reduce( sendbuf, recvbuf, *count, *datatype, *op, *root, *comm );
 }
@@ -434,7 +516,12 @@ FSUB( MPI_Reduce ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * da
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce_local ) ( void* inbuf, void* inoutbuf, int* count, MPI_Datatype * datatype, MPI_Op * op, int* ierr )
+FSUB( MPI_Reduce_local )( void*         inbuf,
+                          void*         inoutbuf,
+                          int*          count,
+                          MPI_Datatype* datatype,
+                          MPI_Op*       op,
+                          int*          ierr )
 {
     *ierr = MPI_Reduce_local( inbuf, inoutbuf, *count, *datatype, *op );
 }
@@ -448,7 +535,13 @@ FSUB( MPI_Reduce_local ) ( void* inbuf, void* inoutbuf, int* count, MPI_Datatype
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce_scatter ) ( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype * datatype, MPI_Op * op, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Reduce_scatter )( void*         sendbuf,
+                            void*         recvbuf,
+                            int*          recvcounts,
+                            MPI_Datatype* datatype,
+                            MPI_Op*       op,
+                            MPI_Comm*     comm,
+                            int*          ierr )
 {
     *ierr = MPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, *datatype, *op, *comm );
 }
@@ -462,7 +555,13 @@ FSUB( MPI_Reduce_scatter ) ( void* sendbuf, void* recvbuf, int* recvcounts, MPI_
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce_scatter_block ) ( void* sendbuf, void* recvbuf, int* recvcount, MPI_Datatype * datatype, MPI_Op * op, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Reduce_scatter_block )( void*         sendbuf,
+                                  void*         recvbuf,
+                                  int*          recvcount,
+                                  MPI_Datatype* datatype,
+                                  MPI_Op*       op,
+                                  MPI_Comm*     comm,
+                                  int*          ierr )
 {
     *ierr = MPI_Reduce_scatter_block( sendbuf, recvbuf, *recvcount, *datatype, *op, *comm );
 }
@@ -476,7 +575,13 @@ FSUB( MPI_Reduce_scatter_block ) ( void* sendbuf, void* recvbuf, int* recvcount,
  * @ingroup coll
  */
 void
-FSUB( MPI_Scan ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * datatype, MPI_Op * op, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Scan )( void*         sendbuf,
+                  void*         recvbuf,
+                  int*          count,
+                  MPI_Datatype* datatype,
+                  MPI_Op*       op,
+                  MPI_Comm*     comm,
+                  int*          ierr )
 {
     *ierr = MPI_Scan( sendbuf, recvbuf, *count, *datatype, *op, *comm );
 }
@@ -490,7 +595,15 @@ FSUB( MPI_Scan ) ( void* sendbuf, void* recvbuf, int* count, MPI_Datatype * data
  * @ingroup coll
  */
 void
-FSUB( MPI_Scatter ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, void* recvbuf, int* recvcount, MPI_Datatype * recvtype, int* root, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Scatter )( void*         sendbuf,
+                     int*          sendcount,
+                     MPI_Datatype* sendtype,
+                     void*         recvbuf,
+                     int*          recvcount,
+                     MPI_Datatype* recvtype,
+                     int*          root,
+                     MPI_Comm*     comm,
+                     int*          ierr )
 {
     *ierr = MPI_Scatter( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
 }
@@ -504,7 +617,16 @@ FSUB( MPI_Scatter ) ( void* sendbuf, int* sendcount, MPI_Datatype * sendtype, vo
  * @ingroup coll
  */
 void
-FSUB( MPI_Scatterv ) ( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype * sendtype, void* recvbuf, int* recvcount, MPI_Datatype * recvtype, int* root, MPI_Comm * comm, int* ierr )
+FSUB( MPI_Scatterv )( void*         sendbuf,
+                      int*          sendcounts,
+                      int*          displs,
+                      MPI_Datatype* sendtype,
+                      void*         recvbuf,
+                      int*          recvcount,
+                      MPI_Datatype* recvtype,
+                      int*          root,
+                      MPI_Comm*     comm,
+                      int*          ierr )
 {
     *ierr = MPI_Scatterv( sendbuf, sendcounts, displs, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
 }
@@ -522,7 +644,14 @@ FSUB( MPI_Scatterv ) ( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype
  * For the order of events see @ref MPI_Allgather
  */
 void
-FSUB( MPI_Allgather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Allgather )( void*     sendbuf,
+                       MPI_Fint* sendcount,
+                       MPI_Fint* sendtype,
+                       void*     recvbuf,
+                       MPI_Fint* recvcount,
+                       MPI_Fint* recvtype,
+                       MPI_Fint* comm,
+                       int*      ierr )
 {
     *ierr = MPI_Allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
 }
@@ -537,7 +666,15 @@ FSUB( MPI_Allgather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype
  * For the order of events see @ref MPI_Allgatherv
  */
 void
-FSUB( MPI_Allgatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * displs, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Allgatherv )( void*     sendbuf,
+                        MPI_Fint* sendcount,
+                        MPI_Fint* sendtype,
+                        void*     recvbuf,
+                        MPI_Fint* recvcounts,
+                        MPI_Fint* displs,
+                        MPI_Fint* recvtype,
+                        MPI_Fint* comm,
+                        int*      ierr )
 {
     *ierr = MPI_Allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
 }
@@ -552,7 +689,13 @@ FSUB( MPI_Allgatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtyp
  * For the order of events see @ref MPI_Allreduce
  */
 void
-FSUB( MPI_Allreduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Allreduce )( void*     sendbuf,
+                       void*     recvbuf,
+                       MPI_Fint* count,
+                       MPI_Fint* datatype,
+                       MPI_Fint* op,
+                       MPI_Fint* comm,
+                       int*      ierr )
 {
     *ierr = MPI_Allreduce( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
 }
@@ -567,7 +710,14 @@ FSUB( MPI_Allreduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint
  * For the order of events see @ref MPI_Alltoall
  */
 void
-FSUB( MPI_Alltoall ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Alltoall )( void*     sendbuf,
+                      MPI_Fint* sendcount,
+                      MPI_Fint* sendtype,
+                      void*     recvbuf,
+                      MPI_Fint* recvcount,
+                      MPI_Fint* recvtype,
+                      MPI_Fint* comm,
+                      int*      ierr )
 {
     *ierr = MPI_Alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
 }
@@ -582,7 +732,16 @@ FSUB( MPI_Alltoall ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype,
  * For the order of events see @ref MPI_Alltoallv
  */
 void
-FSUB( MPI_Alltoallv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * sdispls, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * rdispls, MPI_Fint * recvtype, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Alltoallv )( void*     sendbuf,
+                       MPI_Fint* sendcounts,
+                       MPI_Fint* sdispls,
+                       MPI_Fint* sendtype,
+                       void*     recvbuf,
+                       MPI_Fint* recvcounts,
+                       MPI_Fint* rdispls,
+                       MPI_Fint* recvtype,
+                       MPI_Fint* comm,
+                       int*      ierr )
 {
     *ierr = MPI_Alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
 }
@@ -597,7 +756,8 @@ FSUB( MPI_Alltoallv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * sdispls
  * For the order of events see @ref MPI_Barrier
  */
 void
-FSUB( MPI_Barrier ) ( MPI_Fint * comm, int* ierr )
+FSUB( MPI_Barrier )( MPI_Fint* comm,
+                     int*      ierr )
 {
     *ierr = MPI_Barrier( PMPI_Comm_f2c( *comm ) );
 }
@@ -612,7 +772,12 @@ FSUB( MPI_Barrier ) ( MPI_Fint * comm, int* ierr )
  * For the order of events see @ref MPI_Bcast
  */
 void
-FSUB( MPI_Bcast ) ( void* buffer, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Bcast )( void*     buffer,
+                   MPI_Fint* count,
+                   MPI_Fint* datatype,
+                   MPI_Fint* root,
+                   MPI_Fint* comm,
+                   int*      ierr )
 {
     *ierr = MPI_Bcast( buffer, *count, PMPI_Type_f2c( *datatype ), *root, PMPI_Comm_f2c( *comm ) );
 }
@@ -627,7 +792,15 @@ FSUB( MPI_Bcast ) ( void* buffer, MPI_Fint * count, MPI_Fint * datatype, MPI_Fin
  * For the order of events see @ref MPI_Gather
  */
 void
-FSUB( MPI_Gather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Gather )( void*     sendbuf,
+                    MPI_Fint* sendcount,
+                    MPI_Fint* sendtype,
+                    void*     recvbuf,
+                    MPI_Fint* recvcount,
+                    MPI_Fint* recvtype,
+                    MPI_Fint* root,
+                    MPI_Fint* comm,
+                    int*      ierr )
 {
     *ierr = MPI_Gather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
 }
@@ -642,7 +815,16 @@ FSUB( MPI_Gather ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, v
  * For the order of events see @ref MPI_Gatherv
  */
 void
-FSUB( MPI_Gatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * displs, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Gatherv )( void*     sendbuf,
+                     MPI_Fint* sendcount,
+                     MPI_Fint* sendtype,
+                     void*     recvbuf,
+                     MPI_Fint* recvcounts,
+                     MPI_Fint* displs,
+                     MPI_Fint* recvtype,
+                     MPI_Fint* root,
+                     MPI_Fint* comm,
+                     int*      ierr )
 {
     *ierr = MPI_Gatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
 }
@@ -657,7 +839,14 @@ FSUB( MPI_Gatherv ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, 
  * For the order of events see @ref MPI_Reduce
  */
 void
-FSUB( MPI_Reduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * root, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Reduce )( void*     sendbuf,
+                    void*     recvbuf,
+                    MPI_Fint* count,
+                    MPI_Fint* datatype,
+                    MPI_Fint* op,
+                    MPI_Fint* root,
+                    MPI_Fint* comm,
+                    int*      ierr )
 {
     *ierr = MPI_Reduce( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), *root, PMPI_Comm_f2c( *comm ) );
 }
@@ -672,7 +861,13 @@ FSUB( MPI_Reduce ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * 
  * For the order of events see @ref MPI_Reduce_scatter
  */
 void
-FSUB( MPI_Reduce_scatter ) ( void* sendbuf, void* recvbuf, MPI_Fint * recvcounts, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Reduce_scatter )( void*     sendbuf,
+                            void*     recvbuf,
+                            MPI_Fint* recvcounts,
+                            MPI_Fint* datatype,
+                            MPI_Fint* op,
+                            MPI_Fint* comm,
+                            int*      ierr )
 {
     *ierr = MPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
 }
@@ -687,7 +882,13 @@ FSUB( MPI_Reduce_scatter ) ( void* sendbuf, void* recvbuf, MPI_Fint * recvcounts
  * For the order of events see @ref MPI_Scan
  */
 void
-FSUB( MPI_Scan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Scan )( void*     sendbuf,
+                  void*     recvbuf,
+                  MPI_Fint* count,
+                  MPI_Fint* datatype,
+                  MPI_Fint* op,
+                  MPI_Fint* comm,
+                  int*      ierr )
 {
     *ierr = MPI_Scan( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
 }
@@ -702,7 +903,15 @@ FSUB( MPI_Scan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * da
  * For the order of events see @ref MPI_Scatter
  */
 void
-FSUB( MPI_Scatter ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Scatter )( void*     sendbuf,
+                     MPI_Fint* sendcount,
+                     MPI_Fint* sendtype,
+                     void*     recvbuf,
+                     MPI_Fint* recvcount,
+                     MPI_Fint* recvtype,
+                     MPI_Fint* root,
+                     MPI_Fint* comm,
+                     int*      ierr )
 {
     *ierr = MPI_Scatter( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
 }
@@ -717,7 +926,16 @@ FSUB( MPI_Scatter ) ( void* sendbuf, MPI_Fint * sendcount, MPI_Fint * sendtype, 
  * For the order of events see @ref MPI_Scatterv
  */
 void
-FSUB( MPI_Scatterv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * displs, MPI_Fint * sendtype, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * recvtype, MPI_Fint * root, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Scatterv )( void*     sendbuf,
+                      MPI_Fint* sendcounts,
+                      MPI_Fint* displs,
+                      MPI_Fint* sendtype,
+                      void*     recvbuf,
+                      MPI_Fint* recvcount,
+                      MPI_Fint* recvtype,
+                      MPI_Fint* root,
+                      MPI_Fint* comm,
+                      int*      ierr )
 {
     *ierr = MPI_Scatterv( sendbuf, sendcounts, displs, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
 }
@@ -725,16 +943,16 @@ FSUB( MPI_Scatterv ) ( void* sendbuf, MPI_Fint * sendcounts, MPI_Fint * displs, 
 
 #if HAVE( DECL_PMPI_ALLTOALLW ) && !defined( SILC_MPI_NO_COLL )
 void
-FSUB( MPI_Alltoallw ) ( void*     sendbuf,
-                        MPI_Fint * sendcounts,
-                        MPI_Fint * sdispls,
-                        MPI_Fint * sendtypes,
-                        void*     recvbuf,
-                        MPI_Fint * recvcounts,
-                        MPI_Fint * rdispls,
-                        MPI_Fint * recvtypes,
-                        MPI_Fint * comm,
-                        int*      ierr )
+FSUB( MPI_Alltoallw )( void*     sendbuf,
+                       MPI_Fint* sendcounts,
+                       MPI_Fint* sdispls,
+                       MPI_Fint* sendtypes,
+                       void*     recvbuf,
+                       MPI_Fint* recvcounts,
+                       MPI_Fint* rdispls,
+                       MPI_Fint* recvtypes,
+                       MPI_Fint* comm,
+                       int*      ierr )
 {
     MPI_Datatype* csendtypes;
     MPI_Datatype* crecvtypes;
@@ -772,7 +990,13 @@ FSUB( MPI_Alltoallw ) ( void*     sendbuf,
  * For the order of events see @ref MPI_Exscan
  */
 void
-FSUB( MPI_Exscan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Exscan )( void*     sendbuf,
+                    void*     recvbuf,
+                    MPI_Fint* count,
+                    MPI_Fint* datatype,
+                    MPI_Fint* op,
+                    MPI_Fint* comm,
+                    int*      ierr )
 {
     *ierr = MPI_Exscan( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
 }
@@ -787,7 +1011,12 @@ FSUB( MPI_Exscan ) ( void* sendbuf, void* recvbuf, MPI_Fint * count, MPI_Fint * 
  * For the order of events see @ref MPI_Reduce_local
  */
 void
-FSUB( MPI_Reduce_local ) ( void* inbuf, void* inoutbuf, MPI_Fint * count, MPI_Fint * datatype, MPI_Fint * op, int* ierr )
+FSUB( MPI_Reduce_local )( void*     inbuf,
+                          void*     inoutbuf,
+                          MPI_Fint* count,
+                          MPI_Fint* datatype,
+                          MPI_Fint* op,
+                          int*      ierr )
 {
     *ierr = MPI_Reduce_local( inbuf, inoutbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ) );
 }
@@ -802,7 +1031,13 @@ FSUB( MPI_Reduce_local ) ( void* inbuf, void* inoutbuf, MPI_Fint * count, MPI_Fi
  * For the order of events see @ref MPI_Reduce_scatter_block
  */
 void
-FSUB( MPI_Reduce_scatter_block ) ( void* sendbuf, void* recvbuf, MPI_Fint * recvcount, MPI_Fint * datatype, MPI_Fint * op, MPI_Fint * comm, int* ierr )
+FSUB( MPI_Reduce_scatter_block )( void*     sendbuf,
+                                  void*     recvbuf,
+                                  MPI_Fint* recvcount,
+                                  MPI_Fint* datatype,
+                                  MPI_Fint* op,
+                                  MPI_Fint* comm,
+                                  int*      ierr )
 {
     *ierr = MPI_Reduce_scatter_block( sendbuf, recvbuf, *recvcount, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
 }

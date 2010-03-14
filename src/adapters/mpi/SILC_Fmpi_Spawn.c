@@ -196,18 +196,18 @@
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_spawn_multiple ) ( int* count,
-                                  char* array_of_commands,
-                                  char* array_of_argv,
-                                  int* array_of_maxprocs,
-                                  MPI_Info * array_of_info,
-                                  int* root,
-                                  MPI_Comm * comm,
-                                  MPI_Comm * intercomm,
-                                  int* array_of_errcodes,
-                                  int* ierr,
-                                  int array_of_commands_len,
-                                  int array_of_argv_len )
+FSUB( MPI_Comm_spawn_multiple )( int*      count,
+                                 char*     array_of_commands,
+                                 char*     array_of_argv,
+                                 int*      array_of_maxprocs,
+                                 MPI_Info* array_of_info,
+                                 int*      root,
+                                 MPI_Comm* comm,
+                                 MPI_Comm* intercomm,
+                                 int*      array_of_errcodes,
+                                 int*      ierr,
+                                 int       array_of_commands_len,
+                                 int       array_of_argv_len )
 {
     MPI_Fint cur_cmd, cur_arg;
     char**   c_array_of_commands = NULL;
@@ -371,17 +371,17 @@ FSUB( MPI_Comm_spawn_multiple ) ( int* count,
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_spawn ) ( char*     command,
-                         char*     argv,
-                         int* maxprocs,
-                         MPI_Info * info,
-                         int* root,
-                         MPI_Comm * comm,
-                         MPI_Comm * newcomm,
-                         int* array_of_errcodes,
-                         int*      ierr,
-                         int command_len,
-                         int argv_len )
+FSUB( MPI_Comm_spawn )( char*     command,
+                        char*     argv,
+                        int*      maxprocs,
+                        MPI_Info* info,
+                        int*      root,
+                        MPI_Comm* comm,
+                        MPI_Comm* newcomm,
+                        int*      array_of_errcodes,
+                        int*      ierr,
+                        int       command_len,
+                        int       argv_len )
 {
     char*  c_command = NULL;
     char** c_argv    = NULL;
@@ -480,7 +480,9 @@ FSUB( MPI_Comm_spawn ) ( char*     command,
  * @ingroup spawn
  */
 void
-FSUB( MPI_Close_port ) ( char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Close_port )( char* port_name,
+                        int*  ierr,
+                        int   port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -506,7 +508,13 @@ FSUB( MPI_Close_port ) ( char* port_name, int* ierr, int port_name_len )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_accept ) ( char* port_name, MPI_Info * info, int* root, MPI_Comm * comm, MPI_Comm * newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_accept )( char*     port_name,
+                         MPI_Info* info,
+                         int*      root,
+                         MPI_Comm* comm,
+                         MPI_Comm* newcomm,
+                         int*      ierr,
+                         int       port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -532,7 +540,13 @@ FSUB( MPI_Comm_accept ) ( char* port_name, MPI_Info * info, int* root, MPI_Comm 
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_connect ) ( char* port_name, MPI_Info * info, int* root, MPI_Comm * comm, MPI_Comm * newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_connect )( char*     port_name,
+                          MPI_Info* info,
+                          int*      root,
+                          MPI_Comm* comm,
+                          MPI_Comm* newcomm,
+                          int*      ierr,
+                          int       port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -558,7 +572,8 @@ FSUB( MPI_Comm_connect ) ( char* port_name, MPI_Info * info, int* root, MPI_Comm
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_disconnect ) ( MPI_Comm * comm, int* ierr )
+FSUB( MPI_Comm_disconnect )( MPI_Comm* comm,
+                             int*      ierr )
 {
     *ierr = MPI_Comm_disconnect( comm );
 }
@@ -572,7 +587,8 @@ FSUB( MPI_Comm_disconnect ) ( MPI_Comm * comm, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_get_parent ) ( MPI_Comm * parent, int* ierr )
+FSUB( MPI_Comm_get_parent )( MPI_Comm* parent,
+                             int*      ierr )
 {
     *ierr = MPI_Comm_get_parent( parent );
 }
@@ -586,7 +602,9 @@ FSUB( MPI_Comm_get_parent ) ( MPI_Comm * parent, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_join ) ( int* fd, MPI_Comm * newcomm, int* ierr )
+FSUB( MPI_Comm_join )( int*      fd,
+                       MPI_Comm* newcomm,
+                       int*      ierr )
 {
     *ierr = MPI_Comm_join( *fd, newcomm );
 }
@@ -600,7 +618,12 @@ FSUB( MPI_Comm_join ) ( int* fd, MPI_Comm * newcomm, int* ierr )
  * @ingroup spawn
  */
 void
-FSUB( MPI_Lookup_name ) ( char* service_name, MPI_Info * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Lookup_name )( char*     service_name,
+                         MPI_Info* info,
+                         char*     port_name,
+                         int*      ierr,
+                         int       service_name_len,
+                         int       port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
@@ -636,7 +659,10 @@ FSUB( MPI_Lookup_name ) ( char* service_name, MPI_Info * info, char* port_name, 
  * @ingroup spawn
  */
 void
-FSUB( MPI_Open_port ) ( MPI_Info * info, char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Open_port )( MPI_Info* info,
+                       char*     port_name,
+                       int*      ierr,
+                       int       port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -662,7 +688,12 @@ FSUB( MPI_Open_port ) ( MPI_Info * info, char* port_name, int* ierr, int port_na
  * @ingroup spawn
  */
 void
-FSUB( MPI_Publish_name ) ( char* service_name, MPI_Info * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Publish_name )( char*     service_name,
+                          MPI_Info* info,
+                          char*     port_name,
+                          int*      ierr,
+                          int       service_name_len,
+                          int       port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
@@ -698,7 +729,12 @@ FSUB( MPI_Publish_name ) ( char* service_name, MPI_Info * info, char* port_name,
  * @ingroup spawn
  */
 void
-FSUB( MPI_Unpublish_name ) ( char* service_name, MPI_Info * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Unpublish_name )( char*     service_name,
+                            MPI_Info* info,
+                            char*     port_name,
+                            int*      ierr,
+                            int       service_name_len,
+                            int       port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
@@ -737,18 +773,18 @@ FSUB( MPI_Unpublish_name ) ( char* service_name, MPI_Info * info, char* port_nam
  * @ingroup mpi_enabled_proc
  */
 void
-FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
-                                  char*     array_of_commands,
-                                  char*     array_of_argv,
-                                  MPI_Fint * array_of_maxprocs,
-                                  MPI_Fint * array_of_info,
-                                  MPI_Fint * root,
-                                  MPI_Fint * comm,
-                                  MPI_Fint * intercomm,
-                                  MPI_Fint * array_of_errcodes,
-                                  MPI_Fint * ierr,
-                                  MPI_Fint array_of_commands_len,
-                                  MPI_Fint array_of_argv_len )
+FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
+                                 char*     array_of_commands,
+                                 char*     array_of_argv,
+                                 MPI_Fint* array_of_maxprocs,
+                                 MPI_Fint* array_of_info,
+                                 MPI_Fint* root,
+                                 MPI_Fint* comm,
+                                 MPI_Fint* intercomm,
+                                 MPI_Fint* array_of_errcodes,
+                                 MPI_Fint* ierr,
+                                 MPI_Fint  array_of_commands_len,
+                                 MPI_Fint  array_of_argv_len )
 {
     MPI_Fint  cur_cmd, cur_arg;
     char**    c_array_of_commands = NULL;
@@ -931,17 +967,17 @@ FSUB( MPI_Comm_spawn_multiple ) ( MPI_Fint * count,
  * @ingroup spawn
  */
 void
-FSUB( MPI_Comm_spawn ) ( char*     command,
-                         char*     argv,
-                         MPI_Fint * maxprocs,
-                         MPI_Fint * info,
-                         MPI_Fint * root,
-                         MPI_Fint * comm,
-                         MPI_Fint * newcomm,
-                         MPI_Fint * array_of_errcodes,
-                         int*      ierr,
-                         int command_len,
-                         int argv_len )
+FSUB( MPI_Comm_spawn )( char*     command,
+                        char*     argv,
+                        MPI_Fint* maxprocs,
+                        MPI_Fint* info,
+                        MPI_Fint* root,
+                        MPI_Fint* comm,
+                        MPI_Fint* newcomm,
+                        MPI_Fint* array_of_errcodes,
+                        int*      ierr,
+                        int       command_len,
+                        int       argv_len )
 {
     char*    c_command = NULL;
     char**   c_argv    = NULL;
@@ -1047,7 +1083,9 @@ FSUB( MPI_Comm_spawn ) ( char*     command,
  * For the order of events see @ref MPI_Close_port
  */
 void
-FSUB( MPI_Close_port ) ( char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Close_port )( char* port_name,
+                        int*  ierr,
+                        int   port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1072,7 +1110,13 @@ FSUB( MPI_Close_port ) ( char* port_name, int* ierr, int port_name_len )
  * For the order of events see @ref MPI_Comm_accept
  */
 void
-FSUB( MPI_Comm_accept ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_accept )( char*     port_name,
+                         MPI_Fint* info,
+                         MPI_Fint* root,
+                         MPI_Fint* comm,
+                         MPI_Fint* newcomm,
+                         int*      ierr,
+                         int       port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1099,7 +1143,13 @@ FSUB( MPI_Comm_accept ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MPI
  * For the order of events see @ref MPI_Comm_connect
  */
 void
-FSUB( MPI_Comm_connect ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MPI_Fint * comm, MPI_Fint * newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_connect )( char*     port_name,
+                          MPI_Fint* info,
+                          MPI_Fint* root,
+                          MPI_Fint* comm,
+                          MPI_Fint* newcomm,
+                          int*      ierr,
+                          int       port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1126,7 +1176,8 @@ FSUB( MPI_Comm_connect ) ( char* port_name, MPI_Fint * info, MPI_Fint * root, MP
  * For the order of events see @ref MPI_Comm_disconnect
  */
 void
-FSUB( MPI_Comm_disconnect ) ( MPI_Fint * comm, int* ierr )
+FSUB( MPI_Comm_disconnect )( MPI_Fint* comm,
+                             int*      ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
     *ierr = MPI_Comm_disconnect( &c_comm );
@@ -1143,7 +1194,8 @@ FSUB( MPI_Comm_disconnect ) ( MPI_Fint * comm, int* ierr )
  * For the order of events see @ref MPI_Comm_get_parent
  */
 void
-FSUB( MPI_Comm_get_parent ) ( MPI_Fint * parent, int* ierr )
+FSUB( MPI_Comm_get_parent )( MPI_Fint* parent,
+                             int*      ierr )
 {
     MPI_Comm c_parent;
     *ierr   = MPI_Comm_get_parent( &c_parent );
@@ -1160,7 +1212,9 @@ FSUB( MPI_Comm_get_parent ) ( MPI_Fint * parent, int* ierr )
  * For the order of events see @ref MPI_Comm_join
  */
 void
-FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * newcomm, int* ierr )
+FSUB( MPI_Comm_join )( MPI_Fint* fd,
+                       MPI_Fint* newcomm,
+                       int*      ierr )
 {
     MPI_Comm c_newcomm;
     *ierr    = MPI_Comm_join( *fd, &c_newcomm );
@@ -1177,7 +1231,12 @@ FSUB( MPI_Comm_join ) ( MPI_Fint * fd, MPI_Fint * newcomm, int* ierr )
  * For the order of events see @ref MPI_Lookup_name
  */
 void
-FSUB( MPI_Lookup_name ) ( char* service_name, MPI_Fint * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Lookup_name )( char*     service_name,
+                         MPI_Fint* info,
+                         char*     port_name,
+                         int*      ierr,
+                         int       service_name_len,
+                         int       port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
@@ -1212,7 +1271,10 @@ FSUB( MPI_Lookup_name ) ( char* service_name, MPI_Fint * info, char* port_name, 
  * For the order of events see @ref MPI_Open_port
  */
 void
-FSUB( MPI_Open_port ) ( MPI_Fint * info, char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Open_port )( MPI_Fint* info,
+                       char*     port_name,
+                       int*      ierr,
+                       int       port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1237,7 +1299,12 @@ FSUB( MPI_Open_port ) ( MPI_Fint * info, char* port_name, int* ierr, int port_na
  * For the order of events see @ref MPI_Publish_name
  */
 void
-FSUB( MPI_Publish_name ) ( char* service_name, MPI_Fint * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Publish_name )( char*     service_name,
+                          MPI_Fint* info,
+                          char*     port_name,
+                          int*      ierr,
+                          int       service_name_len,
+                          int       port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
@@ -1272,7 +1339,12 @@ FSUB( MPI_Publish_name ) ( char* service_name, MPI_Fint * info, char* port_name,
  * For the order of events see @ref MPI_Unpublish_name
  */
 void
-FSUB( MPI_Unpublish_name ) ( char* service_name, MPI_Fint * info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Unpublish_name )( char*     service_name,
+                            MPI_Fint* info,
+                            char*     port_name,
+                            int*      ierr,
+                            int       service_name_len,
+                            int       port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
