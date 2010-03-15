@@ -297,9 +297,9 @@ SILC_InitMeasurementMPI
     SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
     SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
     uint64_t                  location     = SILC_Thread_GetLocationId( locationData );
-    uint64_t                  otf_location = ( rank << 32 ) | location;
+    uint64_t                  otf_location = ( ( uint64_t )rank << 32 ) | location;
     assert( location == 0 );
-    assert( rank     >> 32 == 0 );
+    assert( ( uint64_t )rank >> 32 == 0 );
     assert( location >> 32 == 0 );
     assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
     trace_data->otf_location = otf_location;
