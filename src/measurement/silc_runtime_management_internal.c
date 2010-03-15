@@ -27,9 +27,11 @@
 
 #include <SILC_Timing.h>
 #include <SILC_Error.h>
+#include <SILC_Omp.h>
 
 #include <stdio.h>
 #include <sys/stat.h>
+#include <time.h>
 
 
 /* *INDENT-OFF* */
@@ -39,7 +41,7 @@ static void silc_create_experiment_dir_name();
 /* *INDENT-ON* */
 
 
-#define dir_name_size  6 + L_tmpnam
+#define dir_name_size  30
 
 char silc_experiment_dir_name[ dir_name_size ];
 
@@ -66,8 +68,12 @@ SILC_CreateExperimentDir()
 void
 silc_create_experiment_dir_name()
 {
-    strncpy( silc_experiment_dir_name, "silc_", 5 );
-    char* not_used = tmpnam( &( silc_experiment_dir_name[ 5 ] ) );
+    assert( !omp_in_parallel() ); // localtime() not reentrant
+    time_t now;
+    time( &now );
+    strftime( silc_experiment_dir_name, 20, "silc_%Y%m%d_%H%M_", localtime( &now ) );
+    snprintf( &( silc_experiment_dir_name[ 19 ] ), 11, "%u",
+              ( uint32_t )SILC_GetClockTicks() );
 }
 
 

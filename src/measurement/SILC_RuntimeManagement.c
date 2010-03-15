@@ -135,6 +135,7 @@ SILC_InitMeasurement
         _Exit( EXIT_FAILURE );
     }
 
+    SILC_InitTimer(); // init timer before call to SILC_CreateExperimentDir
     SILC_CreateExperimentDir();
 
     // we may read total memory and pagesize from config file and pass it to
@@ -148,8 +149,6 @@ SILC_InitMeasurement
     silc_otf2_initialize();
 
     SILC_Thread_Initialize();
-
-    SILC_InitTimer();
 
     /* call register functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
