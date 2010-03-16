@@ -60,6 +60,13 @@ bool              silc_tracing_enabled = true;
 
 bool              flush_done = false;
 
+char*
+SILC_GetExperimentDirName()
+{
+    return silc_experiment_dir_name;
+}
+
+
 void
 SILC_CreateExperimentDir()
 {
