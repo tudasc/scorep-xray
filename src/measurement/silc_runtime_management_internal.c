@@ -28,6 +28,9 @@
 #include <SILC_Timing.h>
 #include <SILC_Error.h>
 #include <SILC_Omp.h>
+#include "silc_mpi.h"
+#include "silc_thread.h"
+
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -38,6 +41,8 @@
 extern void silc_create_experiment_dir(char* dirName, int dirNameSize, void (*createDir) (const char*) );
 static void silc_create_directory(const char* dirname);
 static void silc_create_experiment_dir_name();
+static void silc_set_archive_master_slave();
+static void silc_set_event_writer_location_id(OTF2_EvtWriter* writer);
 /* *INDENT-ON* */
 
 
@@ -84,6 +89,23 @@ SILC_ExperimentDirIsCreated()
 }
 
 
+uint64_t
+SILC_GetOTF2LocationId( SILC_Thread_LocationData* locationData )
+{
+    SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
+    assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 || // first call
+            trace_data->otf_location == 0 );                     // first call was with rank == 0 and location == 0
+                                                                 // re-call from SILC_InitMeasurementMPI()
+
+    uint64_t rank         = SILC_Mpi_GetRank();
+    uint64_t location     = SILC_Thread_GetLocationId( locationData );
+    uint64_t otf_location = ( rank << 32 ) | location;
+    assert( rank     >> 32 == 0 );
+    assert( location >> 32 == 0 );
+    return otf_location;
+}
+
+
 void
 silc_create_directory( const char* dirname )
 {
@@ -109,8 +131,52 @@ silc_on_trace_post_flush( void )
     return SILC_GetClockTicks();
 }
 
-/* char* */
-/* silc_on_trace_pre_flush( const char* filePath ) */
-/* { */
-/*     return 0; */
-/* } */
+
+const char*
+silc_on_trace_pre_flush( void* evtWriter,
+                         void* evtReader )
+{
+    silc_set_archive_master_slave();
+    silc_set_event_writer_location_id( ( OTF2_EvtWriter* )evtWriter );
+    return 0;
+}
+
+
+void
+silc_set_archive_master_slave()
+{
+    assert( SILC_ExperimentDirIsCreated() );
+    SILC_Error_Code error;
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        error = OTF2_Archive_SetMasterSlaveMode(
+            silc_otf2_archive, OTF2_MASTER, SILC_GetExperimentDirName() );
+    }
+    else
+    {
+        error = OTF2_Archive_SetMasterSlaveMode(
+            silc_otf2_archive, OTF2_SLAVE, SILC_GetExperimentDirName() );
+    }
+    if ( SILC_SUCCESS != error )
+    {
+        _Exit( EXIT_FAILURE );
+    }
+}
+
+
+void
+silc_set_event_writer_location_id( OTF2_EvtWriter* writer )
+{
+    SILC_Trace_LocationData* trace_data =
+        SILC_Thread_GetTraceLocationData( SILC_Thread_GetLocationData() );
+
+    assert( trace_data->otf_location != OTF2_UNDEFINED_UINT64 );
+    assert( trace_data->otf_writer == writer );
+
+    SILC_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
+                                                          trace_data->otf_location );
+    if ( SILC_SUCCESS != error )
+    {
+        _Exit( EXIT_FAILURE );
+    }
+}

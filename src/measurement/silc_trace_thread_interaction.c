@@ -40,9 +40,11 @@ SILC_Trace_CreateLocationData()
     {
         return 0;
     }
-    SILC_Trace_LocationData* new_data = SILC_Memory_AllocForMultithreadedMisc( sizeof( SILC_Trace_LocationData ) );
-    // create plain object, initialize in SILC_Trace_OnLocationCreation
-    new_data->otf_writer = 0;
+    SILC_Trace_LocationData* new_data = SILC_Memory_AllocForMultithreadedMisc(
+        sizeof( SILC_Trace_LocationData ) );
+    // initialize in SILC_Trace_OnLocationCreation
+    new_data->otf_writer   = 0;
+    new_data->otf_location = OTF2_UNDEFINED_UINT64;
     return new_data;
 }
 
@@ -100,29 +102,12 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
         return;
     }
 
-    // SILC_Mpi_GetRank() may return 0 instead of the correct rank if MPI_Init
-    // hasn't been called yet. This should happen only for the initial
-    // location and will be checked during SILC_InitMeasurementMPI().
-
-    SILC_Trace_LocationData* trace_data   = SILC_Thread_GetTraceLocationData( locationData );
-    uint64_t                 rank         = SILC_Mpi_GetRank();
-    uint64_t                 location     = SILC_Thread_GetLocationId( locationData );
-    uint64_t                 otf_location = ( rank << 32 ) | location;
-    assert( rank     >> 32 == 0 );
-    assert( location >> 32 == 0 );
-    if ( location == 0 )
-    {
-        // first location, MPI_Init may not have been called yet, so rank may
-        // be wrong
-        otf_location = OTF2_UNDEFINED_UINT64;
-    }
-
-    trace_data->otf_location = otf_location;
+    SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
+    trace_data->otf_location = SILC_GetOTF2LocationId( locationData );
     trace_data->otf_writer   = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
-                                                          otf_location,
+                                                          OTF2_UNDEFINED_UINT64,
                                                           silc_on_trace_pre_flush,
                                                           silc_on_trace_post_flush );
-
     if ( !trace_data->otf_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );

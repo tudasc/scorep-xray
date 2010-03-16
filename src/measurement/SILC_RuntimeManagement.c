@@ -44,6 +44,7 @@
 
 #include "silc_types.h"
 #include "silc_adapter.h"
+#include "silc_mpi.h"
 #include "silc_thread.h"
 #include "silc_runtime_management_internal.h"
 
@@ -233,22 +234,11 @@ silc_otf2_initialize()
         return;
     }
 
-    silc_otf2_archive = OTF2_Archive_New( "todo interface will change",
-                                          "traces",
+    silc_otf2_archive = OTF2_Archive_New( "traces",
                                           OTF2_FILEMODE_MODIFY,
                                           1024 * 1024, // 1MB
-                                          OTF2_SUBSTRATE_RAW,
-                                          OTF2_MASTER );
+                                          OTF2_SUBSTRATE_POSIX );
     assert( silc_otf2_archive );
-
-    if ( SILC_ExperimentDirIsCreated() )
-    {
-        /// @todo provide experiment dir to archive, SILC_GetExperimentDirName()
-    }
-    else
-    {
-        /// @todo provide experiment dir in SILC_InitMeasurementMPI
-    }
 }
 
 
@@ -271,10 +261,7 @@ SILC_FinalizeMeasurement
  * Special initialization of the measurement system when using MPI.
  */
 void
-SILC_InitMeasurementMPI
-(
-    int rank
-)
+SILC_InitMeasurementMPI( int rank )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
@@ -291,27 +278,13 @@ SILC_InitMeasurementMPI
         _Exit( EXIT_FAILURE );
     }
 
+    assert( rank == SILC_Mpi_GetRank() );
+
     SILC_CreateExperimentDir();
 
     SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
     SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
-    uint64_t                  location     = SILC_Thread_GetLocationId( locationData );
-    uint64_t                  otf_location = ( ( uint64_t )rank << 32 ) | location;
-    assert( location == 0 );
-    assert( ( uint64_t )rank >> 32 == 0 );
-    assert( location >> 32 == 0 );
-    assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
-    trace_data->otf_location = otf_location;
-
-    /* now we have our location ID, tell it OTF2 */
-    SILC_Error_Code error;
-    error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
-                                          trace_data->otf_location );
-    if ( SILC_SUCCESS != error )
-    {
-        /* OTF2 prints an error message */
-        _Exit( EXIT_FAILURE );
-    }
+    trace_data->otf_location = SILC_GetOTF2LocationId( locationData );
 }
 
 

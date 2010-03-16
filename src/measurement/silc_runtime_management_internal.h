@@ -26,6 +26,7 @@
  */
 
 #include <OTF2_Archive.h>
+#include <SILC_Thread_Types.h>
 
 /**
  * Toplevel relative experiment directory. In the non MPI case a valid name is
@@ -57,6 +58,9 @@ SILC_CreateExperimentDir();
 bool
 SILC_ExperimentDirIsCreated();
 
+
+uint64_t
+SILC_GetOTF2LocationId( SILC_Thread_LocationData* locationData );
 
 /**
  * Archive for trace data. One per process, can contain multiple "location"
@@ -90,8 +94,9 @@ silc_on_trace_post_flush( void );
  *
  * @return The path to the experiment archive.
  */
-//char*
-//silc_on_trace_pre_flush( const char* filePath );
+const char*
+silc_on_trace_pre_flush( void* evtWriter,
+                         void* evtReader );
 
 
 #endif /* SILC_RUNTIME_MANAGEMENT_INTERNAL_H */
