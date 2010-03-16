@@ -67,6 +67,7 @@ typedef struct
     /* For combined statements (parallel sections, parallel for) we need up to
        four SILC regions. So we use a pair of SILC regions for the parallel
        statements and a pair of regions for other statements.                        */
+    /// @todo Why four and not three? (croessel)
     SILC_RegionHandle outerParallel;    /* SILC handle for the outer parallel region */
     SILC_RegionHandle innerParallel;    /* SILC handle for the inner parallel region */
     SILC_RegionHandle outerBlock;       /* SILC handle for the enclosing region      */
