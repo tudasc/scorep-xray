@@ -139,13 +139,13 @@ silc_on_trace_post_flush( void )
 }
 
 
-const char*
+OTF2_FlushType
 silc_on_trace_pre_flush( void* evtWriter,
                          void* evtReader )
 {
     silc_set_archive_master_slave();
     silc_set_event_writer_location_id( ( OTF2_EvtWriter* )evtWriter );
-    return 0;
+    return OTF2_FLUSH;
 }
 
 

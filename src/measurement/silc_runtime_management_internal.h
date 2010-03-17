@@ -90,11 +90,8 @@ silc_on_trace_post_flush( void );
 /**
  * Called per location by OTF2 before the location buffer will be flushed.
  *
- * @param filePath huh, I don't know
- *
- * @return The path to the experiment archive.
  */
-const char*
+OTF2_FlushType
 silc_on_trace_pre_flush( void* evtWriter,
                          void* evtReader );
 
