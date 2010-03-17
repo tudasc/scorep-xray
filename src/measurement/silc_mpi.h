@@ -1,5 +1,5 @@
-#ifndef SILC_MPI_H
-#define SILC_MPI_H
+#ifndef SILC_INTERNAL_MPI_H
+#define SILC_INTERNAL_MPI_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -42,4 +42,4 @@ uint64_t
 SILC_Mpi_GetRank();
 
 
-#endif /* SILC_MPI_H */
+#endif /* SILC_INTERNAL_MPI_H */

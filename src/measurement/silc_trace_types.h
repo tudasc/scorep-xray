@@ -1,5 +1,5 @@
-#ifndef SILC_TRACE_TYPES_H
-#define SILC_TRACE_TYPES_H
+#ifndef SILC_INTERNAL_TRACE_TYPES_H
+#define SILC_INTERNAL_TRACE_TYPES_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -39,4 +39,4 @@ struct SILC_Trace_LocationData
     uint64_t        otf_location;
 };
 
-#endif /* SILC_TRACE_TYPES_H */
+#endif /* SILC_INTERNAL_TRACE_TYPES_H */

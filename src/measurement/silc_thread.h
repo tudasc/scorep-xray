@@ -1,5 +1,5 @@
-#ifndef SILC_THREAD_H
-#define SILC_THREAD_H
+#ifndef SILC_INTERNAL_THREAD_H
+#define SILC_INTERNAL_THREAD_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -100,4 +100,4 @@ uint64_t
 SILC_Thread_GetLocationId( SILC_Thread_LocationData* locationData );
 
 
-#endif /* SILC_THREAD_H */
+#endif /* SILC_INTERNAL_THREAD_H */
