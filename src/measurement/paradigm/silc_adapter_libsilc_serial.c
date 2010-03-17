@@ -33,11 +33,11 @@
 /**
  * List of adapters.
  */
-SILC_Adapter* silc_adapters[] = {
+const SILC_Adapter* silc_adapters[] = {
     &SILC_Compiler_Adapter,
     &SILC_User_Adapter,
 };
 
 
-size_t silc_number_of_adapters = sizeof( silc_adapters ) /
-                                 sizeof( silc_adapters[ 0 ] );
+const size_t silc_number_of_adapters = sizeof( silc_adapters ) /
+                                       sizeof( silc_adapters[ 0 ] );

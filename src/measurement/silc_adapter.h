@@ -32,8 +32,8 @@
 #include <stddef.h>
 
 /** @brief a NULL terminated list of linked in adapters. */
-extern SILC_Adapter* silc_adapters[];
-extern size_t        silc_number_of_adapters;
+extern const SILC_Adapter* silc_adapters[];
+extern const size_t        silc_number_of_adapters;
 
 
 #endif /* SILC_INTERNAL_ADAPTER_H */
