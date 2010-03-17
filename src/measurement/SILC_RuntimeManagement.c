@@ -46,7 +46,7 @@
 #include "silc_adapter.h"
 #include "silc_mpi.h"
 #include "silc_thread.h"
-#include "silc_runtime_management_internal.h"
+#include "silc_runtime_management.h"
 
 #include <OTF2_File.h>
 

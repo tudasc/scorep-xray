@@ -1,5 +1,5 @@
-#ifndef SILC_RUNTIME_MANAGEMENT_INTERNAL_H
-#define SILC_RUNTIME_MANAGEMENT_INTERNAL_H
+#ifndef SILC_INTERNAL_RUNTIME_MANAGEMENT_H
+#define SILC_INTERNAL_RUNTIME_MANAGEMENT_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -18,7 +18,7 @@
 
 
 /**
- * @file       silc_runtime_management_internal.h
+ * @file       silc_runtime_management.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status ALPHA
@@ -96,4 +96,4 @@ silc_on_trace_pre_flush( void* evtWriter,
                          void* evtReader );
 
 
-#endif /* SILC_RUNTIME_MANAGEMENT_INTERNAL_H */
+#endif /* SILC_INTERNAL_RUNTIME_MANAGEMENT_H */

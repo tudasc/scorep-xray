@@ -27,7 +27,7 @@
 #include "silc_trace_thread_interaction.h"
 
 #include <SILC_Memory.h>
-#include "silc_runtime_management_internal.h"
+#include "silc_runtime_management.h"
 #include "silc_thread.h"
 #include "silc_mpi.h"
 #include <stdlib.h>

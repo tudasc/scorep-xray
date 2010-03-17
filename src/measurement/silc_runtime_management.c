@@ -15,7 +15,7 @@
 
 
 /**
- * @file       silc_runtime_management_internal.c
+ * @file       silc_runtime_management.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status ALPHA
@@ -23,7 +23,7 @@
  */
 
 
-#include "silc_runtime_management_internal.h"
+#include "silc_runtime_management.h"
 
 #include <SILC_Timing.h>
 #include <SILC_Error.h>
