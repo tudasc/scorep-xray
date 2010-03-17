@@ -1,5 +1,5 @@
-#ifndef SILC_TRACE_THREADINTERACTION_H
-#define SILC_TRACE_THREADINTERACTION_H
+#ifndef SILC_INTERNAL_TRACE_THREADINTERACTION_H
+#define SILC_INTERNAL_TRACE_THREADINTERACTION_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -106,4 +106,4 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData );
 
 
-#endif /* SILC_TRACE_THREADINTERACTION_H */
+#endif /* SILC_INTERNAL_TRACE_THREADINTERACTION_H */
