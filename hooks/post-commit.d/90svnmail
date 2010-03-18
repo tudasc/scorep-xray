@@ -1,0 +1,92 @@
+#!/bin/sh
+# svnmail - Send email describing a commit to a Subversion repository.
+#
+# This script is typically invoked by the Subversion's 'post-commit' hook.
+#
+# usage: svnmail <repos> <rev> <email> [email]...
+#
+# version: 0.10 (14-10-08)
+# author: Matthias Jurenz (matthias.jurenz@tu-dresden.de)
+
+REPOS="$1"
+REV="$2"
+
+MAILER="/usr/lib/sendmail"
+
+# these come from the env
+if [ -z "$REPOS_NAME" ]; then
+    exit 0;
+fi
+
+AUTHOR="$(cat author)"
+DATE="$(cat date)"
+#CHANGES=`svnlook changed $REPOS -r $REV | grep "trunk\|VTRACE_BRANCH_.*_RELEASE\|otf-1-.*-release"`
+LOG=`svnlook log $REPOS -r $REV`
+SUBJECTLOG=`echo "$LOG" | head -n 1`
+
+# exit if nothing changed in trunk
+if [ ! -s changed ]; then
+        exit 0
+fi
+
+if test ! -s "$EMAIL_FILE" ; then
+        exit 0
+fi
+
+# Format of message
+#    From: <commit author>
+#    To:
+#    Subject: [$REPOS_NAME-svn] r$REV: <first line of log>
+#
+#    Author: <commit author>
+#    Date: <commit date>
+#    New Revision: $REV
+#    <url, if repo has a trac, else new-line>
+#    Changes:
+#    <list of changed files>
+#
+#    Log Message:
+#    <log message>
+
+(
+    printf "From: "
+    cat author
+
+    old_IFS="$IFS"
+    IFS=
+    SEP="To: "
+    while read mail; do
+        printf "%s%s" "$SEP" "$mail"
+        SEP=",
+    "
+    done < "$EMAIL_FILE"
+    IFS="$old_IFS"
+
+    # subject line
+    printf "Subject: [%s-svn] r%d: " "$REPOS_NAME" "$REV"
+    head -n 1 log
+
+    echo
+
+    printf "Author: "
+    cat author
+
+    printf "Date: "
+    cat date
+
+    printf "New Revision: %s\n" "$REV"
+
+    if [ -n "$TRAC_URL" ]; then
+            printf "URL: %s/changeset/%d\n" "$TRAC_URL" "$REV"
+    fi
+
+    echo
+
+    echo "Changes:"
+    cat changed
+
+    echo
+
+    echo "Log Message:"
+    cat log
+) | $MAILER -t

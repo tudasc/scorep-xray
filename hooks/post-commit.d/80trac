@@ -1,0 +1,12 @@
+#!/bin/sh
+
+REPOS="$1"
+REV="$2"
+
+PYTHON=/usr/local/bin/python2.5
+TRAC_HOOK=$REPOS/hooks/trac-post-commit-hook
+
+if [ -d "$TRAC_ENV" ]; then
+    $PYTHON "$TRAC_HOOK" -p "$TRAC_ENV" -r "$REV" ||
+        exit 1
+fi

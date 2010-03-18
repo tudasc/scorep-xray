@@ -1,0 +1,101 @@
+#!/bin/sh
+
+# HOOK NAME
+#     pre-commit
+#
+# HOOK DESCRIPTION
+#     Subversion runs this script prior to a commit. If this script exits
+#     with 0, the commit is performed, otherwise rejected.
+#     Currently this script checks if
+#     - a non-empty log message is provided
+#     - source files comply to our coding standard, i.e. if they have
+#       been beautified before the commit.
+#
+# HOOK ARGUMENTS
+#     Subversion passes the following arguments to this script:
+#       $1 REPOS-PATH   (the path to this repository)
+#       $2 TXN-NAME     (the name of the transcation about to be committed)
+#      ***  NOTE: THE HOOK PROGRAM MUST NOT MODIFY THE TXN, EXCEPT  ***
+#      ***  FOR REVISION PROPERTIES (like svn:log or svn:author).   ***
+#
+# HOOK CONFIGURATION
+#     As subversion runs with an empty environment, you need to specify
+#     absolute paths to applications awk, ..., tail. See below.
+#
+# DESCRIPTION
+#     This hook is just a multiplexer which calls numerous hooks from an
+#     directory.
+#     The hooks are executed in an temporary directory, with pre populated
+#     files which hold information of the transaction.
+#
+# AUTHORS
+#     Bert Wesarg
+
+REPOS="$1"
+TXN="$2"
+
+SVNLOOK=/usr/bin/svnlook
+MKTEMP=/bin/mktemp
+
+# Create temporary sandbox
+SANDBOX="$($MKTEMP -d)"
+cleanup_sandbox()
+{
+    cd "$(dirname "$SANDBOX")" &&
+    rm -rf $SANDBOX
+}
+trap cleanup_sandbox EXIT
+
+# check if local repos config exists and is not empty
+if test ! -s "$REPOS/conf/local"; then
+        exit 0
+fi
+
+# source the repos config file and export to sub shells
+set -a
+source "$REPOS/conf/local"
+set +a
+
+# generate the url to the trac web site
+TRAC_URL=
+if [ -n "$TRAC_ENV" ]; then
+    TRAC_URL="$TRAC_BASE_URL$TRAC_ENV"
+fi
+export TRAC_URL
+
+# Pre-populate sandbox with common outputs from svnlook
+$SVNLOOK log     $REPOS --transaction $TXN > "$SANDBOX/log"
+$SVNLOOK author  $REPOS --transaction $TXN > "$SANDBOX/author"
+$SVNLOOK date    $REPOS --transaction $TXN > "$SANDBOX/date"
+$SVNLOOK changed $REPOS --transaction $TXN > "$SANDBOX/changed"
+
+HOOKS="$SANDBOX/hooks"
+$SVNLOOK tree /svn-base/common-root --full-paths trunk/hooks/pre-commit.d |
+    LC_ALL=C sort > "$HOOKS"
+
+while read HOOK_PATH; do
+    HOOK_NAME="$(basename "$HOOK_PATH")"
+    HOOK="$SANDBOX/$HOOK_NAME"
+
+    # extract hook from common repo
+    $SVNLOOK cat /svn-base/common-root "$HOOK_PATH" > "$HOOK"
+    if [ $? -ne 0 ]; then
+        echo "Can't read $HOOK_NAME pre-commit hook." >&2
+        echo "Please report this to the administrator." >&2
+        exit 1
+    fi
+
+    (
+        cd "$SANDBOX"
+        $SHELL "$HOOK" "$REPOS" "$TXN"
+
+    )
+    if [ $? -ne 0 ]; then
+        echo "Commit rejected by $HOOK_NAME hook." >&2
+        exit 1
+    fi
+    
+done < "$HOOKS"
+
+# All checks passed, so allow the commit.
+exit 0
