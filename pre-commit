@@ -92,6 +92,8 @@ if [ -s $COMMIT_CANDIDATES ]; then
         exit 1
     fi
 
+    old_IFS="$IFS"
+    IFS=
     while read CANDIDATE_LINE; do
 
         # The path begins with the 5th character, therefore remove the first 4
@@ -125,6 +127,7 @@ if [ -s $COMMIT_CANDIDATES ]; then
             echo "$cand" >> $CANDIDATES_DIFFER
         fi
     done < $COMMIT_CANDIDATES
+    IFS="$old_IFS"
 
     if [ -s $CANDIDATES_DIFFER ]; then
         echo "Commit rejected: Please run \"beautify\" and try again!" 1>&2
