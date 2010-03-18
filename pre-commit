@@ -40,6 +40,19 @@ GREP=/usr/bin/grep
 SVNLOOK=/usr/bin/svnlook
 TAIL=/usr/bin/tail
 
+#### Clean-up handler: begin ###################################################
+# Start all temporary filenames with '/tmp/$$.', so that they get removed 
+# at exit.
+
+cleanup()
+{
+    rm -f /tmp/$$.* 2>/dev/null
+}
+
+trap 'cleanup' EXIT
+#### Clean-up handler: end #####################################################
+
+
 #### Log message check: begin ##################################################
 # Log message must contain some text
 $SVNLOOK log -t "$TXN" "$REPOS" | grep "[a-zA-Z0-9]" > /dev/null
@@ -56,51 +69,65 @@ fi
 #     Compare the commit-candidate with a beautified version of the
 #     commit-candidate. If they differ, reject the commit.
 
-COMMIT_CANDIDATES=`$SVNLOOK changed $REPOS --transaction $TXN |                \
-                  $AWK '{print $2}' | $GREP -e '\.c$\|\.h$\|\.cpp$\|\.hpp$'`
-if [ -n "$COMMIT_CANDIDATES" ]; then
+COMMIT_CANDIDATES=/tmp/$$.commit-canditades
+
+# Retrieve each commit-candidate from the repository and compare it against
+# the beautified version.
+$SVNLOOK changed $REPOS --transaction $TXN > $COMMIT_CANDIDATES
+
+if [ -s $COMMIT_CANDIDATES ]; then
 
     # temporary files
-    CANDIDATE=/tmp/unbeautified.$$
-    CANDIDATE_BEAUTIFIED=/tmp/beautified.$$
-    BEAUTIFY_CONFIG=/tmp/beautify.$$.cfg
+    CANDIDATE=/tmp/$$.unbeautified
+    CANDIDATE_BEAUTIFIED=/tmp/$$.beautified
+    BEAUTIFY_CONFIG=/tmp/$$.beautify.cfg
+    CANDIDATES_DIFFER=/tmp/$$.canditades_differ
 
-    # Retrieve the beautifier config file from the repository and store it
-    # in a temporary file. The location in the repository is relative to
-    # $TOP_DIR, which we assume is out of (trunk|branches/FOO|tags/BAR).
-    TOP_DIR=`$SVNLOOK changed $REPOS --transaction $TXN | $TAIL -n 1 |         \
-             $AWK '{print $2}' |                                               \
-             $AWK -F "/" '{if ($1=="trunk") {print $1} else {print $1 FS $2}}'`
-    BEAUTIFY_DIR="$TOP_DIR"/tools/beautifier
+    # Retrieve the beautifier config file from the common repository and store it
+    # in a temporary file.
     $SVNLOOK cat /svn-base/common-root trunk/beautifier/beautify.cfg > $BEAUTIFY_CONFIG
     if [ $? -ne 0 ]; then
         echo "Commit rejected: Can't find file beautify.cfg in common repository." 1>&2
-        echo "                 Please check your pre-commit hook script." 1>&2
+        echo "                 Please report this to the administrator." 1>&2
         exit 1
     fi
 
-    # Retrieve each commit-candidate from the repository and compare it against
-    # the beautified version.
-    DIFFER=
-    for cand in $COMMIT_CANDIDATES; do
+    while read CANDIDATE_LINE; do
+
+        # The path begins with the 5th character, therefore remove the first 4
+        cand="${CANDIDATE_LINE#????}"
+
+        # Only check common source code files
+        case "$cand" in
+        (*.c | *.h | *.cpp | *.hpp) : accept ;;
+        (*) continue ;;
+        esac
+
         SUFFIX=${cand##*.}
         $SVNLOOK cat $REPOS $cand --transaction $TXN > $CANDIDATE.$SUFFIX
         if [ ! -s $CANDIDATE.$SUFFIX ]; then # file is zero size
             rm $CANDIDATE.$SUFFIX
             continue
         fi
+
+        # Generate expected result
         $BEAUTIFY -c $BEAUTIFY_CONFIG -f $CANDIDATE.$SUFFIX -o $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2
+        if [ $? -ne 0 ]; then
+            echo "Commit rejected: Can't run \"beautify\"." 1>&2
+            echo "                 Please report this to the administrator." 1>&2
+            exit 1
+        fi
+
+        # Compare expected result with commit canditate
         if ! $DIFF -u --label "unbeautified/$cand" --label "beautified/$cand" $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX 1>&2; then
             $BEAUTIFY --version 1>&2
             echo "Commit rejected: File \"$cand\" does not comply to the coding standard." 1>&2
-            DIFFER=true
+            echo "$cand" >> $CANDIDATES_DIFFER
         fi
-        rm $CANDIDATE.$SUFFIX $CANDIDATE_BEAUTIFIED.$SUFFIX
-    done
-    rm $BEAUTIFY_CONFIG
+    done < $COMMIT_CANDIDATES
 
-    if [ -n "$DIFFER" ]; then
-        echo "Commit rejected: Please run \"$BEAUTIFY_DIR/beautify\" and try again!" 1>&2
+    if [ -s $CANDIDATES_DIFFER ]; then
+        echo "Commit rejected: Please run \"beautify\" and try again!" 1>&2
         exit 1
     fi
 fi
