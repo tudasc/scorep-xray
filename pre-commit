@@ -130,7 +130,7 @@ if [ -s $COMMIT_CANDIDATES ]; then
     IFS="$old_IFS"
 
     if [ -s $CANDIDATES_DIFFER ]; then
-        echo "Commit rejected: Please run \"beautify\" and try again!" 1>&2
+        echo "Commit rejected: Please run \"make beautify\" and try again!" 1>&2
         exit 1
     fi
 fi
