@@ -14,7 +14,8 @@ SVNLOOK=/usr/bin/svnlook
 PRE_COMMIT="$(mktemp)"
 
 $SVNLOOK cat /svn-base/common-root trunk/beautifier/pre-commit > "$PRE_COMMIT" &&
-    chmod 0755 "$PRE_COMMIT"
+    chmod 0755 "$PRE_COMMIT" &&
+    chown apache:svnsilc "$PRE_COMMIT"
 if [ $? -ne 0 ]; then
     echo "Can't generate pre-commit hook." >&2
     exit 1
