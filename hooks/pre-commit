@@ -36,6 +36,8 @@ TXN="$2"
 
 SVNLOOK=/usr/bin/svnlook
 MKTEMP=/bin/mktemp
+SORT=/usr/bin/sort
+FIND=/usr/bin/find
 
 # Create temporary sandbox
 SANDBOX="$($MKTEMP -d)"
@@ -70,25 +72,19 @@ $SVNLOOK date    $REPOS --transaction $TXN > "$SANDBOX/date"
 $SVNLOOK changed $REPOS --transaction $TXN > "$SANDBOX/changed"
 
 HOOKS="$SANDBOX/hooks"
-$SVNLOOK tree /svn-base/common-root --full-paths trunk/hooks/pre-commit.d |
-    LC_ALL=C sort > "$HOOKS"
+$FIND "$REPOS/hooks/pre-commit.d" -maxdepth 1 \
+        -name '[0-9][0-9]*' \
+        -type f \
+        -perm -100 -\
+        user apache |
+    LC_ALL=C $SORT > "$HOOKS"
 
-while read HOOK_PATH; do
-    HOOK_NAME="$(basename "$HOOK_PATH")"
-    HOOK="$SANDBOX/$HOOK_NAME"
-
-    # extract hook from common repo
-    $SVNLOOK cat /svn-base/common-root "$HOOK_PATH" > "$HOOK"
-    if [ $? -ne 0 ]; then
-        echo "Can't read $HOOK_NAME pre-commit hook." >&2
-        echo "Please report this to the administrator." >&2
-        exit 1
-    fi
+while read HOOK; do
+    HOOK_NAME="$(basename "$HOOK")"
 
     (
         cd "$SANDBOX"
         $SHELL "$HOOK" "$REPOS" "$TXN"
-
     )
     if [ $? -ne 0 ]; then
         echo "Commit rejected by $HOOK_NAME hook." >&2
