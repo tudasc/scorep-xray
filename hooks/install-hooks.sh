@@ -74,6 +74,7 @@ do
         # fix owner of hooks.d
         # don't fix permission, hooks are only active if they have the
         # executable bit set in the repository
+        $CHOWN apache:svnsilc /svn-base/$repo-root/hooks/$hook.d
         $CHOWN apache:svnsilc /svn-base/$repo-root/hooks/$hook.d/[0-9][0-9]*
     done
 done
