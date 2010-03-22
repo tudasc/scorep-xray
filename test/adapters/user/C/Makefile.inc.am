@@ -8,6 +8,7 @@ user_c_test_SOURCES =                                       \
 user_c_test_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
+    -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_DIR_UTIL)                       \
     -DSILC_USER_ENABLE
 

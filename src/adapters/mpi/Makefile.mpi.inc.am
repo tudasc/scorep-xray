@@ -21,6 +21,7 @@ libsilc_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                          \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
+    -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_DIR_UTIL)
 
 libsilc_adapter_mpi_c_wrapper_la_LIBADD =   \
@@ -48,6 +49,7 @@ libsilc_adapter_mpi_fortran_wrapper_sub1_la_SOURCES =   \
 libsilc_adapter_mpi_fortran_wrapper_sub1_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
+    -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SILC_FORTRAN_SUB1
 
@@ -58,6 +60,7 @@ libsilc_adapter_mpi_fortran_wrapper_sub2_la_SOURCES =   \
 libsilc_adapter_mpi_fortran_wrapper_sub2_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
+    -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SILC_FORTRAN_SUB2
 
@@ -68,6 +71,7 @@ libsilc_adapter_mpi_fortran_wrapper_sub3_la_SOURCES =   \
 libsilc_adapter_mpi_fortran_wrapper_sub3_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
+    -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SILC_FORTRAN_SUB3
 
@@ -78,6 +82,7 @@ libsilc_adapter_mpi_fortran_wrapper_sub4_la_SOURCES =   \
 libsilc_adapter_mpi_fortran_wrapper_sub4_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
+    -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SILC_FORTRAN_SUB4
 
@@ -95,11 +100,3 @@ libsilc_adapter_mpi_la_LIBADD =                         \
     libsilc_adapter_mpi_fortran_wrapper_sub3.la         \
     libsilc_adapter_mpi_fortran_wrapper_sub4.la         \
     libsilc_adapter_mpi_fortran_conv.la
-
-include_HEADERS += \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi.h \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Communicator.h \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Reg.h \
-    $(SRC_ROOT)src/adapters/include/SILC_Mpi_Init.h \
-    $(SRC_ROOT)src/adapters/include/SILC_Fortran_Wrapper.h \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi.h

@@ -28,4 +28,5 @@ libsilc_profile_la_SOURCES =                                             \
 libsilc_profile_la_CPPFLAGS =                   \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/include        \
+    -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)

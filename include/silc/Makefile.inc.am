@@ -1,0 +1,34 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+nobase_include_HEADERS +=                    \
+    $(PUBLIC_INC_SRC)SILC_Fmpi.h             \
+    $(PUBLIC_INC_SRC)SILC_Fortran_Wrapper.h  \
+    $(PUBLIC_INC_SRC)SILC_Mpi.h              \
+    $(PUBLIC_INC_SRC)SILC_Mpi_Communicator.h \
+    $(PUBLIC_INC_SRC)SILC_Mpi_Init.h         \
+    $(PUBLIC_INC_SRC)SILC_Mpi_Reg.h          \
+    $(PUBLIC_INC_SRC)SILC_PublicTypes.h      \
+    $(PUBLIC_INC_SRC)SILC_User.h             \
+    $(PUBLIC_INC_SRC)SILC_User.inc           \
+    $(PUBLIC_INC_SRC)SILC_User_Functions.h   \
+    $(PUBLIC_INC_SRC)SILC_User_Types.h       \
+    $(PUBLIC_INC_SRC)SILC_User_Variables.h   \
+    $(PUBLIC_INC_SRC)pomp_lib.h

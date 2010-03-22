@@ -23,6 +23,7 @@ AM_CPPFLAGS = -I$(srcdir)/../../src
 ## foo_SOURCES = $(SRC_ROOT)src/foo/foo.c. For CPPFLAGS use SRC_ROOT_*
 ## See the note below
 SRC_ROOT = ../../
+PUBLIC_INC_SRC = $(SRC_ROOT)include/silc/
 
 
 ## Convenience variables, use for referencing include directories, e.g.
@@ -34,9 +35,10 @@ SRC_ROOT = ../../
 ## it is not recommended to use $(srcdir). On the other hand the INC_ROOT
 ## variables are evaluated during configure.
 INC_ROOT = $(srcdir)/../../
+PUBLIC_INC_DIR = $(INC_ROOT)include/silc/
 # temporary: wait until otf2 has a dedicated public header directory
 INC_DIR_OTF2 = $(srcdir)/../../vendor/otf2/src/
-INC_DIR_UTIL = $(srcdir)/../../vendor/otf2/vendor/utility/src/include/
+INC_DIR_UTIL = $(srcdir)/../../vendor/otf2/vendor/utility/include/silc_utility
 
 ## The otf2 and utility variables may be overriden when configuring using
 ## the --with-otf2/utility options (to be done)

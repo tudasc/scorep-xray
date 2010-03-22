@@ -362,7 +362,8 @@ public:
 
     /** Generates an exit event for the instrumented region
      */
-    ~SILC_User_Region()
+    ~
+    SILC_User_Region()
     {
         SILC_User_RegionEnd( region_handle );
     }

@@ -28,6 +28,7 @@ libsilc_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                           -I$(INC_ROOT)src/measurement         \
                           -I$(INC_ROOT)src/measurement/include \
                           -I$(INC_ROOT)src/adapters/include    \
+                          -I$(PUBLIC_INC_DIR)                  \
                           -I$(INC_DIR_UTIL)
 libsilc_mpi_la_LIBADD =                         \
     libsilc_measurement.la                      \
@@ -48,6 +49,7 @@ libsilc_serial_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                              -I$(INC_ROOT)src/measurement         \
                              -I$(INC_ROOT)src/measurement/include \
                              -I$(INC_ROOT)src/adapters/include    \
+                             -I$(PUBLIC_INC_DIR)                  \
                              -I$(INC_DIR_UTIL)
 libsilc_serial_la_LIBADD =                      \
     libsilc_measurement.la                      \

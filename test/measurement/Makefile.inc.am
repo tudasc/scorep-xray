@@ -30,7 +30,7 @@ check_PROGRAMS += self_contained_silc_adapter_c            \
                   self_contained_silc_thread_types_c       \
                   self_contained_silc_types_c
 
-self_contained_cppflags = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_DIR_UTIL)
+self_contained_cppflags = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_DIR_UTIL) -I$(PUBLIC_INC_DIR)
 
 self_contained_silc_adapter_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_adapter.c
 self_contained_silc_adapter_c_CPPFLAGS = $(self_contained_cppflags)

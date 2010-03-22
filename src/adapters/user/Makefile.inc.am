@@ -8,6 +8,7 @@ SILC_USER_FORTRAN_FLAGS =                       \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
     -I$(INC_ROOT)src/measurement/include        \
+    -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
 noinst_LTLIBRARIES += libsilc_adapter_user.la   \
@@ -51,19 +52,12 @@ libsilc_adapter_user_la_SOURCES =                           \
     $(SRC_ROOT)src/adapters/user/SILC_User_Metric.c         \
     $(SRC_ROOT)src/adapters/include/SILC_User_Init.h
 
-include_HEADERS +=                                          \
-    $(SRC_ROOT)src/measurement/include/SILC_PublicTypes.h   \
-    $(SRC_ROOT)src/adapters/include/SILC_User.h             \
-    $(SRC_ROOT)src/adapters/include/SILC_User_Functions.h   \
-    $(SRC_ROOT)src/adapters/include/SILC_User_Variables.h   \
-    $(SRC_ROOT)src/adapters/include/SILC_User_Types.h       \
-    $(SRC_ROOT)src/adapters/include/SILC_User.inc
-
 libsilc_adapter_user_la_CPPFLAGS =              \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
     -I$(INC_ROOT)src/measurement/include        \
+    -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
 libsilc_adapter_user_la_LIBADD =                \
