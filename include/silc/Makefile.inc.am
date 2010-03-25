@@ -19,12 +19,6 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 nobase_include_HEADERS +=                    \
-    $(PUBLIC_INC_SRC)SILC_Fmpi.h             \
-    $(PUBLIC_INC_SRC)SILC_Fortran_Wrapper.h  \
-    $(PUBLIC_INC_SRC)SILC_Mpi.h              \
-    $(PUBLIC_INC_SRC)SILC_Mpi_Communicator.h \
-    $(PUBLIC_INC_SRC)SILC_Mpi_Init.h         \
-    $(PUBLIC_INC_SRC)SILC_Mpi_Reg.h          \
     $(PUBLIC_INC_SRC)SILC_PublicTypes.h      \
     $(PUBLIC_INC_SRC)SILC_User.h             \
     $(PUBLIC_INC_SRC)SILC_User.inc           \

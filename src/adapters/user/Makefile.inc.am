@@ -1,7 +1,8 @@
 SILC_USER_FORTRAN_SOURCES =                           \
     $(SRC_ROOT)src/adapters/user/SILC_User_MetricF.c  \
     $(SRC_ROOT)src/adapters/user/SILC_User_ControlF.c \
-    $(SRC_ROOT)src/adapters/user/SILC_User_RegionF.c
+    $(SRC_ROOT)src/adapters/user/SILC_User_RegionF.c  \
+    $(SRC_ROOT)src/adapters/include/SILC_Fortran_Wrapper.h
 
 SILC_USER_FORTRAN_FLAGS =                       \
     $(AM_CPPFLAGS)                              \

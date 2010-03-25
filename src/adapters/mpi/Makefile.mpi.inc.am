@@ -16,7 +16,12 @@ libsilc_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Rma.c              \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Spawn.c            \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Topo.c             \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Type.c
+    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Type.c             \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Communicator.h     \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi.h                  \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Reg.h              \
+    $(SRC_ROOT)src/adapters/include/SILC_Mpi_Init.h
+
 libsilc_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                          \
     -I$(INC_ROOT)src/adapters/include       \
@@ -28,20 +33,21 @@ libsilc_adapter_mpi_c_wrapper_la_LIBADD =   \
     $(LIB_DIR_UTIL)libsilc_utilities.la
 
 
-SILC_MPI_FORTRAN_SOURCES =                          \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Cg.c      \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Coll.c    \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Env.c     \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Err.c     \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Ext.c     \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Io.c      \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Misc.c    \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_P2p.c     \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Rma.c     \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Spawn.c   \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Topo.c    \
-    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Type.c
-
+SILC_MPI_FORTRAN_SOURCES =                                 \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Cg.c             \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Coll.c           \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Env.c            \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Err.c            \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Ext.c            \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Io.c             \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Misc.c           \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_P2p.c            \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Rma.c            \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Spawn.c          \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Topo.c           \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi_Type.c           \
+    $(SRC_ROOT)src/adapters/mpi/SILC_Fmpi.h                \
+    $(SRC_ROOT)src/adapters/include/SILC_Fortran_Wrapper.h
 
 noinst_LTLIBRARIES += libsilc_adapter_mpi_fortran_wrapper_sub1.la
 libsilc_adapter_mpi_fortran_wrapper_sub1_la_SOURCES =   \
