@@ -15,9 +15,9 @@
 
 
 /**
- * @file       SILC_DefinitionLockingOMP.c
- *             Implementation of SILC_DefinitionLocking.h in the OpenMP and
- *             OpenMP+MPI case.
+ * @file       SILC_DefinitionLockingOmp.c
+ *             Implementation of SILC_DefinitionLocking.h in the OpenMP
+ *             case.
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status ALPHA

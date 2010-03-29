@@ -15,9 +15,9 @@
 
 
 /**
- * @file       SILC_DefinitionLockingSerial.c
- *             Implementation of SILC_DefinitionLocking.h in the serial and
- *             MPI case.
+ * @file       SILC_DefinitionLockingNonOmp.c
+ *             Implementation of SILC_DefinitionLocking.h in the non OpenMP
+ *             case.
  * @todo       When using threaded MPI this implementation may not be sufficient.
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *

@@ -14,10 +14,6 @@
  */
 
 
-#include <stdlib.h>
-#include <stdio.h>
-
-
 /**
  * @file        silc_adatper_libsilc_mpi.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>

@@ -15,12 +15,11 @@
 
 
 /**
- * @file        silc_adatper_libsilc_serial.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ * @file       silc_adapter_libsilc_omp.c
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status      ALPHA
+ * @status alpha
  *
- * @brief       Holds the list of adapters linked into the measurement system.
  */
 
 

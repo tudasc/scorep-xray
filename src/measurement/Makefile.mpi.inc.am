@@ -21,7 +21,7 @@
 ## see also Makefile.inc.am in the same directory
 
 
-lib_LTLIBRARIES += libsilc_paradigm_mpi.la
+noinst_LTLIBRARIES += libsilc_paradigm_mpi.la
 libsilc_paradigm_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                                    -I$(INC_ROOT)src/measurement         \
                                    -I$(INC_ROOT)src/measurement/include \

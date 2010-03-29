@@ -15,12 +15,11 @@
 
 
 /**
- * @file        silc_adatper_libsilc_serial.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ * @file       silc_adapter_libsilc_mpi_omp.c
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status      ALPHA
+ * @status alpha
  *
- * @brief       Holds the list of adapters linked into the measurement system.
  */
 
 
@@ -28,13 +27,16 @@
 
 #include <SILC_Compiler_Init.h>
 #include <SILC_User_Init.h>
+#include <SILC_Mpi_Init.h>
 #include <SILC_Pomp_Init.h>
+
 
 /**
  * List of adapters.
  */
 const SILC_Adapter* silc_adapters[] = {
     &SILC_Compiler_Adapter,
+    &SILC_Mpi_Adapter,
     &SILC_User_Adapter,
     &SILC_Pomp_Adapter
 };
