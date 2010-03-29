@@ -1,0 +1,52 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+
+## MPI
+
+check_PROGRAMS       += jacobi_mpi_c
+jacobi_mpi_c_sources  = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
+                        $(SRC_ROOT)test/jacobi/MPI/C/jacobi.h  \
+                        $(SRC_ROOT)test/jacobi/MPI/C/main.c
+jacobi_mpi_c_SOURCES  = $(jacobi_mpi_c_sources)
+jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_c_LDADD    = $(LIB_ROOT)libsilc_mpi.la
+
+check_PROGRAMS                     += jacobi_mpi_c_uninstrumented
+jacobi_mpi_c_uninstrumented_SOURCES = $(jacobi_mpi_c_sources)
+jacobi_mpi_c_uninstrumented_LDADD   = -lm
+
+## MPI + OpenMP
+
+check_PROGRAMS           += jacobi_mpi_omp_c
+jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c \
+                            $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.h     \
+                            $(SRC_ROOT)test/jacobi/hybrid/C/main.mod.c   \
+                            $(SRC_ROOT)test/jacobi/hybrid/C/pomp.c
+jacobi_mpi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_omp_c_LDADD    = $(LIB_ROOT)libsilc_mpi_omp.la 
+
+check_PROGRAMS                      += jacobi_mpi_omp_unistrumented
+jacobi_mpi_omp_unistrumented_SOURCES = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c \
+                                       $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.h \
+                                       $(SRC_ROOT)test/jacobi/hybrid/C/main.c
+jacobi_mpi_omp_unistrumented_CFLAGS  = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+jacobi_mpi_omp_unistrumented_LDADD   = -lm
