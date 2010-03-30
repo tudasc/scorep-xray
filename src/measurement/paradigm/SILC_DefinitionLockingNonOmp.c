@@ -29,6 +29,17 @@
 
 #include <SILC_DefinitionLocking.h>
 
+void
+SILC_DefinitionLocks_Initialize()
+{
+    /* Nothing to do when running serial. */
+}
+
+void
+SILC_DefinitionLocks_Finalize()
+{
+    /* Nothing to do when running serial. */
+}
 
 void
 SILC_LockSourceFileDefinition()

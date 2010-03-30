@@ -27,174 +27,226 @@
 
 
 #include <SILC_DefinitionLocking.h>
+#include <silc_definition_locking.h>
 
-#include <assert.h>
-#include <stdbool.h>
+#include <omp.h>
+
+
+static omp_lock_t silc_source_file_definition_lock;
+static omp_lock_t silc_region_definition_lock;
+static omp_lock_t silc_mpi_communicator_definition_lock;
+static omp_lock_t silc_mpi_window_definition_lock;
+static omp_lock_t silc_mpi_cartesian_topology_definition_lock;
+static omp_lock_t silc_mpi_cartesian_coords_definition_lock;
+static omp_lock_t silc_counter_group_definition_lock;
+static omp_lock_t silc_counter_definition_lock;
+static omp_lock_t silc_io_file_group_definition_lock;
+static omp_lock_t silc_io_file_definition_lock;
+static omp_lock_t silc_marker_group_definition_lock;
+static omp_lock_t silc_marker_definition_lock;
+static omp_lock_t silc_parameter_definition_lock;
+
+
+void
+SILC_DefinitionLocks_Initialize()
+{
+    omp_init_lock( &silc_source_file_definition_lock );
+    omp_init_lock( &silc_region_definition_lock );
+    omp_init_lock( &silc_mpi_communicator_definition_lock );
+    omp_init_lock( &silc_mpi_window_definition_lock );
+    omp_init_lock( &silc_mpi_cartesian_topology_definition_lock );
+    omp_init_lock( &silc_mpi_cartesian_coords_definition_lock );
+    omp_init_lock( &silc_counter_group_definition_lock );
+    omp_init_lock( &silc_counter_definition_lock );
+    omp_init_lock( &silc_io_file_group_definition_lock );
+    omp_init_lock( &silc_io_file_definition_lock );
+    omp_init_lock( &silc_marker_group_definition_lock );
+    omp_init_lock( &silc_marker_definition_lock );
+    omp_init_lock( &silc_parameter_definition_lock );
+}
+
+void
+SILC_DefinitionLocks_Finalize()
+{
+    omp_destroy_lock( &silc_source_file_definition_lock );
+    omp_destroy_lock( &silc_region_definition_lock );
+    omp_destroy_lock( &silc_mpi_communicator_definition_lock );
+    omp_destroy_lock( &silc_mpi_window_definition_lock );
+    omp_destroy_lock( &silc_mpi_cartesian_topology_definition_lock );
+    omp_destroy_lock( &silc_mpi_cartesian_coords_definition_lock );
+    omp_destroy_lock( &silc_counter_group_definition_lock );
+    omp_destroy_lock( &silc_counter_definition_lock );
+    omp_destroy_lock( &silc_io_file_group_definition_lock );
+    omp_destroy_lock( &silc_io_file_definition_lock );
+    omp_destroy_lock( &silc_marker_group_definition_lock );
+    omp_destroy_lock( &silc_marker_definition_lock );
+    omp_destroy_lock( &silc_parameter_definition_lock );
+}
 
 void
 SILC_LockSourceFileDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_source_file_definition_lock );
+}
 
 void
 SILC_UnlockSourceFileDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_source_file_definition_lock );
+}
 
 
 void
 SILC_LockRegionDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_region_definition_lock );
+}
 
 void
 SILC_UnlockRegionDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_region_definition_lock );
+}
 
 
 void
 SILC_LockMPICommunicatorDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_mpi_communicator_definition_lock );
+}
 
 void
 SILC_UnlockMPICommunicatorDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_mpi_communicator_definition_lock );
+}
 
 
 void
 SILC_LockMPIWindowDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_mpi_window_definition_lock );
+}
 
 void
 SILC_UnlockMPIWindowDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_mpi_window_definition_lock );
+}
 
 
 void
 SILC_LockMPICartesianTopologyDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_mpi_cartesian_topology_definition_lock );
+}
 
 void
 SILC_UnlockMPICartesianTopologyDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_mpi_cartesian_topology_definition_lock );
+}
 
 
 void
 SILC_LockMPICartesianCoordsDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_mpi_cartesian_coords_definition_lock );
+}
 
 void
 SILC_UnlockMPICartesianCoordsDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_mpi_cartesian_coords_definition_lock );
+}
 
 
 void
 SILC_LockCounterGroupDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_counter_group_definition_lock );
+}
 
 void
 SILC_UnlockCounterGroupDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_counter_group_definition_lock );
+}
 
 
 void
 SILC_LockCounterDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_counter_definition_lock );
+}
 
 void
 SILC_UnlockCounterDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_counter_definition_lock );
+}
 
 
 void
 SILC_LockIOFileGroupDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_io_file_group_definition_lock );
+}
 
 void
 SILC_UnlockIOFileGroupDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_io_file_group_definition_lock );
+}
 
 
 void
 SILC_LockIOFileDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_io_file_definition_lock );
+}
 
 void
 SILC_UnlockIOFileDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_io_file_definition_lock );
+}
 
 
 void
 SILC_LockMarkerGroupDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_marker_group_definition_lock );
+}
 
 void
 SILC_UnlockMarkerGroupDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_marker_group_definition_lock );
+}
 
 
 void
 SILC_LockMarkerDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_marker_definition_lock );
+}
 
 void
 SILC_UnlockMarkerDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_marker_definition_lock );
+}
 
 
 void
 SILC_LockParameterDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_set_lock( &silc_parameter_definition_lock );
+}
 
 void
 SILC_UnlockParameterDefinition()
 {
-    assert( false ); /* implement me */
-};
+    omp_unset_lock( &silc_parameter_definition_lock );
+}
