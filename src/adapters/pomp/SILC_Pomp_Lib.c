@@ -606,6 +606,8 @@ POMP_Workshare_exit( POMP_Region_handle pomp_handle )
  *                                                                  C wrapper for OMP API
  ***************************************************************************************/
 
+#ifdef _OPENMP
+
 void
 POMP_Init_lock( omp_lock_t* s )
 {
@@ -782,5 +784,7 @@ POMP_Test_nest_lock( omp_nest_lock_t* s )
         return omp_test_nest_lock( s );
     }
 }
+
+#endif // _OPENMP
 
 /** @} */
