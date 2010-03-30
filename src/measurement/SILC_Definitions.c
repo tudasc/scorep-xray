@@ -233,7 +233,7 @@ SILC_DefineMPICartesianCoords
 
     SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "    Coordinates:" );
-    for ( uint32_t i; i < nCoords; ++i )
+    for ( uint32_t i = 0; i < nCoords; ++i )
     {
         SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS,
                                " %u", coordsOfCurrentRank[ i ] );

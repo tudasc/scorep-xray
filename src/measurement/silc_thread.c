@@ -25,7 +25,7 @@
 
 
 #include "silc_thread.h"
-#include <pomp_lib.h>
+//#include <pomp_lib.h>
 #include <SILC_Memory.h>
 #include <SILC_Omp.h>
 #include <assert.h>
@@ -35,7 +35,7 @@
 
 /// @todo move this definition to the pomp adapter, in pomp_base.c e.g., like
 /// in Scalasca. Will there be two pomp adapters, one base and one for openmp?
-void* pomp_tpd;
+void* pomp_tpd = 0;
 #ifdef _OPENMP
 #pragma omp threadprivate(pomp_tpd)
 #endif
