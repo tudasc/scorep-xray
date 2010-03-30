@@ -51,6 +51,7 @@ libsilc_measurement_la_CPPFLAGS =               \
 
 ## paradigm omp
 
+if OPENMP_SUPPORTED
 noinst_LTLIBRARIES              += libsilc_paradigm_omp.la
 libsilc_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # Sources include SILC_Omp.h that conditionally compiles on _OPENMP
@@ -60,7 +61,6 @@ libsilc_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/silc_runtime_management.c \
     $(SRC_ROOT)src/measurement/silc_thread.c             \
     $(SRC_ROOT)src/measurement/paradigm/SILC_DefinitionLockingOmp.c
-
 libsilc_paradigm_omp_la_CPPFLAGS =       \
     $(AM_CPPFLAGS)                       \
     -I$(INC_DIR_OTF2)                    \
@@ -70,7 +70,7 @@ libsilc_paradigm_omp_la_CPPFLAGS =       \
     -I$(INC_ROOT)src/measurement/profile \
     -I$(INC_ROOT)src/services            \
     -I$(PUBLIC_INC_DIR)
-
+endif
 
 ##paradigm non omp
 

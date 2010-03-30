@@ -22,6 +22,7 @@ noinst_LTLIBRARIES                   += libsilc_adapter_pomp_user.la
 libsilc_adapter_pomp_user_la_SOURCES  =
 libsilc_adapter_pomp_user_la_CPPFLAGS = $(AM_CPPFLAGS)
 
+if OPENMP_SUPPORTED
 noinst_LTLIBRARIES             += libsilc_adapter_pomp_omp.la
 libsilc_adapter_pomp_omp_la_SOURCES =                   \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lib.c        \
@@ -38,3 +39,4 @@ libsilc_adapter_pomp_omp_la_CPPFLAGS =                  \
     -I$(INC_ROOT)src/measurement/include                \
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)
+endif
