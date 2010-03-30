@@ -30,9 +30,6 @@
 #include <SILC_Thread_Types.h>
 #include <SILC_Types.h>
 
-
-typedef void* SILC_StringHandle;
-
 /* ----------------------------------------------------- Initialization / Finalization */
 
 /** Initializes the Profiling system */

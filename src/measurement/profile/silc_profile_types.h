@@ -27,10 +27,14 @@
 
 #include <SILC_Types.h>
 #include <stdint.h>
+#include <stdbool.h>
 
+/* -------------------------------------------- Preliminary definition of missing types */
 
 typedef void* SILC_CallpathHandle;
+#define SILC_INVALID_CALLPATH NULL
 
+typedef void* SILC_StringHandle;
 
 /** Contains the data for one dens metric */
 typedef struct
@@ -72,7 +76,8 @@ typedef enum
     silc_profile_node_regular_region,
     silc_profile_node_parameter_string,
     silc_profile_node_parameter_integer,
-    silc_profile_node_thread_create,
+    silc_profile_node_thread_fork,
+    silc_profile_node_thread_root,
     silc_profile_node_thread_start
 } silc_profile_node_type;
 
@@ -95,12 +100,13 @@ typedef struct silc_profile_node_struct
 } silc_profile_node;
 
 /** Thread local data for the profiling system */
-typedef struct SILC_Profile_LocationData SILC_Profile_LocationData;
-struct SILC_Profile_LocationData
+typedef struct SILC_Profile_LocationData
 {
-    silc_profile_node* current_node;
-    silc_profile_node* creation_node;
-};
+    silc_profile_node* current_node;  // Current callpath of this thread
+    silc_profile_node* root_node;     // Root node of this thread
+    silc_profile_node* fork_node;     // Last Fork node created by this thread
+    silc_profile_node* creation_node; // Node where the thread was created
+} SILC_Profile_LocationData;
 
 /** Global profile definition data */
 typedef struct
@@ -117,5 +123,35 @@ typedef struct
        representation. All enter/exit events expect the metrics in this order. */
     SILC_CounterHandle* dense_metrics;
 } silc_profile_definition;
+
+typedef struct
+{
+    SILC_ParameterHandle handle;
+    int64_t              value;
+} silc_profile_integer_node_data;
+
+typedef struct
+{
+    SILC_ParameterHandle handle;
+    SILC_StringHandle    value;
+} silc_profile_string_node_data;
+
+
+/** Global profile definition instance */
+extern silc_profile_definition silc_profile;
+
+/** Flag wether the profile is initialized */
+extern bool silc_profile_is_initialized;
+
+/** @def  SILC_PROFILE_ASSURE_INITIALIZED
+          Check wether the profiling system is initialized.
+ */
+#define SILC_PROFILE_ASSURE_INITIALIZED if ( !silc_profile_is_initialized ) { return; }
+
+/** @def SILC_PROFILE_STOP
+    Disables further construction of the profile.
+ */
+#define SILC_PROFILE_STOP silc_profile_is_initialized = false;
+
 
 #endif // SILC_PROFILE_TYPES_H

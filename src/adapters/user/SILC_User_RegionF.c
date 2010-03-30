@@ -26,6 +26,7 @@
 #include "SILC_Types.h"
 #include "SILC_Events.h"
 #include "SILC_Definitions.h"
+#include "SILC_DefinitionLocking.h"
 #include "SILC_Utils.h"
 #include "SILC_Error.h"
 #include "SILC_Fortran_Wrapper.h"

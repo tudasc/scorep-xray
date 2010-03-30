@@ -52,7 +52,7 @@ SILC_Profile_DeleteLocationData( SILC_Profile_LocationData* profileLocationData 
 
 /**
  * Triggered on thread creation, i.e. when a thread is encountered the first
- * time. Note that several thread can share teh same location data.
+ * time. Note that several thread can share the same location data.
  *
  * @param locationData Location data of the current thread.
  * @param parentLocationData Location data of the parent thread, may equal @a
@@ -94,7 +94,7 @@ SILC_Profile_OnThreadDectivation( SILC_Thread_LocationData* locationData,
 
 /**
  * Triggered on location creation, i.e. when a location is encountered the first
- * time. Note that several threads can share teh same location data.
+ * time. Note that several threads can share the same location data.
  *
  * @param locationData Location data of the current thread.
  * @param parentLocationData Location data of the parent thread, may equal @a
