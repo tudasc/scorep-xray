@@ -28,6 +28,8 @@
 
 
 #include <SILC_DefinitionLocking.h>
+#include <silc_definition_locking.h>
+
 
 void
 SILC_DefinitionLocks_Initialize()
@@ -45,166 +47,166 @@ void
 SILC_LockSourceFileDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockSourceFileDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockRegionDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockRegionDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockMPICommunicatorDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockMPICommunicatorDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockMPIWindowDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockMPIWindowDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockMPICartesianTopologyDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockMPICartesianTopologyDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockMPICartesianCoordsDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockMPICartesianCoordsDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockCounterGroupDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockCounterGroupDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockCounterDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockCounterDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockIOFileGroupDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockIOFileGroupDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockIOFileDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockIOFileDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockMarkerGroupDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockMarkerGroupDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockMarkerDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockMarkerDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 
 void
 SILC_LockParameterDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
 
 void
 SILC_UnlockParameterDefinition()
 {
     /* Nothing to do when running serial. */
-};
+}
