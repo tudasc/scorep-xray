@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-## Serial
+## Serial C
 
 check_PROGRAMS          += jacobi_serial_c
 jacobi_serial_c_sources  = $(SRC_ROOT)test/jacobi/serial/C/jacobi.c  \
@@ -29,17 +29,20 @@ jacobi_serial_c_SOURCES  = $(jacobi_serial_c_sources)
 jacobi_serial_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_serial_c_LDADD    = $(LIB_ROOT)libsilc_serial.la
 
-check_PROGRAMS                       += jacobi_serial_c_unistrumented
-jacobi_serial_c_unistrumented_SOURCES = $(jacobi_serial_c_sources)
-jacobi_serial_c_unistrumented_LDADD   = -lm
+check_PROGRAMS                        += jacobi_serial_c_unistrumented
+jacobi_serial_c_unistrumented_SOURCES  = $(jacobi_serial_c_sources)
+jacobi_serial_c_unistrumented_CPPFLAGS = $(AM_CPPFLAGS)
+jacobi_serial_c_unistrumented_LDADD    = -lm
 
 
-## OpenMP
+## OpenMP C
 
 check_PROGRAMS       += jacobi_omp_c
-jacobi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.mod.c \
-                        $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.h     \
-                        $(SRC_ROOT)test/jacobi/OpenMP/C/main.mod.c   \
+jacobi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.mod.c       \
+                        $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c.opari.inc \
+                        $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.h           \
+                        $(SRC_ROOT)test/jacobi/OpenMP/C/main.mod.c         \
+                        $(SRC_ROOT)test/jacobi/OpenMP/C/main.c.opari.inc   \
                         $(SRC_ROOT)test/jacobi/OpenMP/C/pomp.c
 jacobi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
@@ -51,3 +54,78 @@ jacobi_omp_c_unistrumented_SOURCES = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c \
                                      $(SRC_ROOT)test/jacobi/OpenMP/C/main.c
 jacobi_omp_c_unistrumented_CFLAGS  = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_unistrumented_LDADD   = -lm
+
+
+## Serial C++
+
+check_PROGRAMS            += jacobi_serial_cxx
+jacobi_serial_cxx_sources  = $(SRC_ROOT)test/jacobi/serial/C++/jacobi.cpp  \
+                             $(SRC_ROOT)test/jacobi/serial/C++/jacobi.h    \
+                             $(SRC_ROOT)test/jacobi/serial/C++/main.cpp
+jacobi_serial_cxx_SOURCES  = $(jacobi_serial_cxx_sources)                          
+jacobi_serial_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_serial_cxx_LDADD    = $(LIB_ROOT)libsilc_serial.la
+
+check_PROGRAMS                          += jacobi_serial_cxx_unistrumented
+jacobi_serial_cxx_unistrumented_SOURCES  = $(jacobi_serial_cxx_sources)
+jacobi_serial_cxx_unistrumented_CPPFLAGS = $(AM_CPPFLAGS)
+jacobi_serial_cxx_unistrumented_LDADD    = -lm
+
+
+## OpenMP C++
+
+check_PROGRAMS         += jacobi_omp_cxx
+jacobi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.mod.cpp       \
+                          $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.cpp.opari.inc \
+                          $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.h             \
+                          $(SRC_ROOT)test/jacobi/OpenMP/C++/main.mod.cpp         \
+                          $(SRC_ROOT)test/jacobi/OpenMP/C++/main.cpp.opari.inc   \
+                          $(SRC_ROOT)test/jacobi/OpenMP/C++/pomp.c
+jacobi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
+jacobi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
+jacobi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_omp_cxx_LDADD    = $(LIB_ROOT)libsilc_omp.la
+
+check_PROGRAMS                       += jacobi_omp_cxx_unistrumented
+jacobi_omp_cxx_unistrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.cpp \
+                                        $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.h   \
+                                        $(SRC_ROOT)test/jacobi/OpenMP/C++/main.cpp
+jacobi_omp_cxx_unistrumented_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
+jacobi_omp_cxx_unistrumented_LDADD    = -lm
+
+
+## Serial Fortran
+
+check_PROGRAMS            += jacobi_serial_f90
+jacobi_serial_f90_sources  = $(SRC_ROOT)test/jacobi/serial/C++/jacobi.cpp  \
+                             $(SRC_ROOT)test/jacobi/serial/C++/jacobi.h    \
+                             $(SRC_ROOT)test/jacobi/serial/C++/main.cpp
+jacobi_serial_f90_SOURCES  = $(jacobi_serial_f90_sources)                          
+jacobi_serial_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la
+
+check_PROGRAMS                          += jacobi_serial_f90_unistrumented
+jacobi_serial_f90_unistrumented_SOURCES  = $(jacobi_serial_f90_sources)
+jacobi_serial_f90_unistrumented_CPPFLAGS = $(AM_CPPFLAGS)
+jacobi_serial_f90_unistrumented_LDADD    = -lm
+
+
+## OpenMP Fortran
+
+check_PROGRAMS         += jacobi_omp_f90
+jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.mod.F90       \
+                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.F90.opari.inc \
+                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.mod.F90         \
+                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90.opari.inc   \
+                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/pomp.c
+jacobi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+jacobi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
+jacobi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_omp_f90_LDADD    = $(LIB_ROOT)libsilc_omp.la
+
+check_PROGRAMS                       += jacobi_omp_f90_unistrumented
+jacobi_omp_f90_unistrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.F90      \
+                                        $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 \
+                                        $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90
+jacobi_omp_f90_unistrumented_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+jacobi_omp_f90_unistrumented_LDADD    = -lm
