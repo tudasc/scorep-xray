@@ -101,7 +101,7 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=1
+jacobi_mpi_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@
 jacobi_mpi_f90_LDADD    = $(LIB_ROOT)libsilc_mpi.la
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
@@ -121,7 +121,7 @@ jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/pomp.c
 jacobi_mpi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_mpi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
-jacobi_mpi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=1
+jacobi_mpi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@
 jacobi_mpi_omp_f90_LDADD    = $(LIB_ROOT)libsilc_mpi_omp.la 
 
 check_PROGRAMS                            += jacobi_mpi_omp_f90_unistrumented
