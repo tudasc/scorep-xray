@@ -112,7 +112,7 @@ jacobi_serial_f90_uninstrumented_LDADD    = -lm
 
 ## OpenMP Fortran
 
-#check_PROGRAMS         += jacobi_omp_f90
+check_PROGRAMS         += jacobi_omp_f90
 jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90      \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.mod.F90       \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.F90.opari.inc \
