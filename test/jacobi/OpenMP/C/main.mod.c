@@ -126,36 +126,39 @@ InitializeMatrix( struct JacobiData* data )
 {
     int i, j, xx, yy, xx2, yy2;
     /* Initialize initial condition and RHS */
-    POMP_Parallel_fork( pomp_region_1 );
+    {
+        int pomp_num_threads = omp_get_max_threads();
+        POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 123 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001
-    { POMP_Parallel_begin( pomp_region_1 );
-      POMP_For_enter( pomp_region_1 );
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd)
+        { POMP_Parallel_begin( pomp_region_1 );
+          POMP_For_enter( pomp_region_1 );
 #line 123 "main.c"
 #pragma omp          for                                 nowait
-      for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
-      {
-          for ( i = 0; i < data->iCols; i++ )
+          for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
           {
-              /* TODO: check if this values have to be ints or doubles */
-              xx = ( int )( -1.0 + data->fDx * i );
-              yy = ( int )( -1.0 + data->fDy * j );
+              for ( i = 0; i < data->iCols; i++ )
+              {
+                  /* TODO: check if this values have to be ints or doubles */
+                  xx = ( int )( -1.0 + data->fDx * i );
+                  yy = ( int )( -1.0 + data->fDy * j );
 
-              xx2 = xx * xx;
-              yy2 = yy * yy;
+                  xx2 = xx * xx;
+                  yy2 = yy * yy;
 
-              U( j, i ) = 0.0;
-              F( j, i ) = -data->fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
-                          + 2.0 * ( -2.0 + xx2 + yy2 );
+                  U( j, i ) = 0.0;
+                  F( j, i ) = -data->fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
+                              + 2.0 * ( -2.0 + xx2 + yy2 );
+              }
           }
-      }
-      POMP_Barrier_enter( pomp_region_1 );
+          POMP_Barrier_enter( pomp_region_1 );
 #pragma omp barrier
-      POMP_Barrier_exit( pomp_region_1 );
-      POMP_For_exit( pomp_region_1 );
-      POMP_Parallel_end( pomp_region_1 );
+          POMP_Barrier_exit( pomp_region_1 );
+          POMP_For_exit( pomp_region_1 );
+          POMP_Parallel_end( pomp_region_1 );
+        }
+        POMP_Parallel_join( pomp_region_1 );
     }
-    POMP_Parallel_join( pomp_region_1 );
 #line 140 "main.c"
 }
 

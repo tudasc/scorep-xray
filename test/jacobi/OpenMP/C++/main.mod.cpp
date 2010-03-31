@@ -114,36 +114,39 @@ void
 InitializeMatrix( JacobiData &data )
 {
     /* Initilize initial condition and RHS */
-    POMP_Parallel_fork( pomp_region_1 );
+    {
+        int pomp_num_threads = omp_get_max_threads();
+        POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 111 "main.cpp"
-#pragma omp parallel     POMP_DLIST_00001
-    { POMP_Parallel_begin( pomp_region_1 );
-      POMP_For_enter( pomp_region_1 );
+#pragma omp parallel     POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd)
+        { POMP_Parallel_begin( pomp_region_1 );
+          POMP_For_enter( pomp_region_1 );
 #line 111 "main.cpp"
 #pragma omp          for nowait
-      for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
-      {
-          for ( int i = 0; i < data.iCols; i++ )
+          for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
           {
-              // TODO: check if this values have to be ints or doubles
-              int xx = ( int )( -1.0 + data.fDx * i );
-              int yy = ( int )( -1.0 + data.fDy * j );
+              for ( int i = 0; i < data.iCols; i++ )
+              {
+                  // TODO: check if this values have to be ints or doubles
+                  int xx = ( int )( -1.0 + data.fDx * i );
+                  int yy = ( int )( -1.0 + data.fDy * j );
 
-              int xx2 = xx * xx;
-              int yy2 = yy * yy;
+                  int xx2 = xx * xx;
+                  int yy2 = yy * yy;
 
-              U( j, i ) = 0.0;
-              F( j, i ) = -data.fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
-                          + 2.0 * ( -2.0 + xx2 + yy2 );
+                  U( j, i ) = 0.0;
+                  F( j, i ) = -data.fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
+                              + 2.0 * ( -2.0 + xx2 + yy2 );
+              }
           }
-      }
-      POMP_Barrier_enter( pomp_region_1 );
+          POMP_Barrier_enter( pomp_region_1 );
 #pragma omp barrier
-      POMP_Barrier_exit( pomp_region_1 );
-      POMP_For_exit( pomp_region_1 );
-      POMP_Parallel_end( pomp_region_1 );
+          POMP_Barrier_exit( pomp_region_1 );
+          POMP_For_exit( pomp_region_1 );
+          POMP_Parallel_end( pomp_region_1 );
+        }
+        POMP_Parallel_join( pomp_region_1 );
     }
-    POMP_Parallel_join( pomp_region_1 );
 #line 128 "main.cpp"
 }
 

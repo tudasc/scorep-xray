@@ -180,9 +180,11 @@ InitializeMatrix( struct JacobiData* data )
 {
     int i, j, xx, yy, xx2, yy2;
     /* Initialize initial condition and RHS */
-POMP_Parallel_fork(pomp_region_1);
+{
+int pomp_num_threads = omp_get_max_threads();
+POMP_Parallel_fork(pomp_region_1,pomp_num_threads);
 #line 177 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd)
 { POMP_Parallel_begin(pomp_region_1);
 POMP_For_enter(pomp_region_1);
 #line 177 "main.c"
@@ -209,6 +211,7 @@ POMP_Barrier_exit(pomp_region_1);
 POMP_For_exit(pomp_region_1);
 POMP_Parallel_end(pomp_region_1); }
 POMP_Parallel_join(pomp_region_1);
+ }
 #line 194 "main.c"
 }
 
