@@ -8,6 +8,10 @@ if test x = x"$MPICC"; then
   AC_MSG_ERROR([can not build SILC libraries without MPI C compiler.], [1])
 fi
 
+AC_LANG_PUSH([C++])
+AX_MPI
+AC_LANG_POP([C++])
+
 AC_LANG_PUSH([Fortran 77])
 AX_MPI
 AC_LANG_POP([Fortran 77])
