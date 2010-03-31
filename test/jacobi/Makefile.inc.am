@@ -130,3 +130,8 @@ jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/V
                                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90
 jacobi_omp_f90_uninstrumented_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_omp_f90_uninstrumented_LDADD    = -lm
+
+
+##
+
+CLEANFILES += variabledef.mod jacobimod.mod

@@ -58,6 +58,7 @@ check_PROGRAMS =
 # check_LIBRARIES =
 # check_LTLIBRARIES =
 BUILT_SOURCES = 
+CLEANFILES =
 EXTRA_DIST = 
 
 # Automatically update the libtool script if it becomes out-of-date.

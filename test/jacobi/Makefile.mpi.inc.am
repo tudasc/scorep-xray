@@ -39,10 +39,10 @@ jacobi_mpi_c_uninstrumented_LDADD    = -lm
 
 check_PROGRAMS           += jacobi_mpi_omp_c
 jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c       \
-                            $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c.opari.inc \
+                            $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c.opari.inc \
                             $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.h           \
                             $(SRC_ROOT)test/jacobi/hybrid/C/main.mod.c         \
-                            $(SRC_ROOT)test/jacobi/OpenMP/C/main.c.opari.inc   \
+                            $(SRC_ROOT)test/jacobi/hybrid/C/main.c.opari.inc   \
                             $(SRC_ROOT)test/jacobi/hybrid/C/pomp.c
 jacobi_mpi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
@@ -131,3 +131,8 @@ jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortr
 jacobi_mpi_omp_f90_unistrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(AM_CPPFLAGS) -DMPI_VERSION=1
 jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
+
+
+##
+
+CLEANFILES += variabledef.mod jacobimod.mod
