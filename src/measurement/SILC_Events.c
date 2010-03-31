@@ -212,9 +212,8 @@ SILC_MpiCollective
 void
 SILC_OmpFork
 (
-    SILC_RegionHandle regionHandle
-    //, size_t nRequestedThreads, will be passed by opari in future
-
+    SILC_RegionHandle regionHandle,
+    uint32_t          nRequestedThreads
 )
 {
     //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();

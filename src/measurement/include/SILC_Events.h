@@ -182,13 +182,16 @@ SILC_MpiCollective
  *
  * @param regionHandle The previous defined region handle which identifies the
  *                     the region into which this event forks.
+ * @param nRequestedThreads An upper bound for the number of threads created by
+                            this event.
  *
  * @see SILC_DefineRegion()
  */
 void
 SILC_OmpFork
 (
-    SILC_RegionHandle regionHandle
+    SILC_RegionHandle regionHandle,
+    uint32_t          nRequestedThreads
 );
 
 

@@ -216,7 +216,8 @@ POMP_Parallel_end( POMP_Region_handle pomp_handle )
 }
 
 void
-POMP_Parallel_fork( POMP_Region_handle pomp_handle )
+POMP_Parallel_fork( POMP_Region_handle pomp_handle,
+                    uint32_t           num_threads )
 {
     /* If adapter is not initialized, initialize measurement */
     if ( !silc_pomp_is_initialized )
@@ -228,7 +229,7 @@ POMP_Parallel_fork( POMP_Region_handle pomp_handle )
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
-        SILC_OmpFork( region->outerParallel );
+        SILC_OmpFork( region->outerParallel, num_threads );
     }
 }
 

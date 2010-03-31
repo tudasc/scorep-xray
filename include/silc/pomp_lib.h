@@ -16,6 +16,8 @@
 #ifndef POMP_LIB_H
 #define POMP_LIB_H
 
+#include <stdint.h>
+
 /**
  * @file       pomp_lib.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
@@ -214,7 +216,8 @@ POMP_Parallel_end( POMP_Region_handle pomp_handle );
     @param pomp_handle  The handle of the region.
  */
 extern void
-POMP_Parallel_fork( POMP_Region_handle pomp_handle );
+POMP_Parallel_fork( POMP_Region_handle pomp_handle,
+                    uint32_t           num_threads );
 
 /** Called after a parallel region.
     @param pomp_handle  The handle of the region.

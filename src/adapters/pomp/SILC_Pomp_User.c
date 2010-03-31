@@ -14,7 +14,7 @@
  */
 
 /**
- * @file       SILC_Pomp_Lib.c
+ * @file       SILC_Pomp_User.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     ALPHA
  * @ingroup    POMP
