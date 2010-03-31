@@ -35,15 +35,17 @@
  */
 /* *INDENT-OFF*  */
 
-void FSUB(POMP_Assign_handle)(POMP_Region_handle* regionHandle,
+void FSUB(POMP_Assign_handle)(POMP_Region_handle_fortran* regionHandle,
                               char* ctc_string,
                               int ctc_string_len)
 {
     char *str;
+    POMP_Region_handle c_handle;
     str = (char*) malloc((ctc_string_len+1)*sizeof(char));
     strncpy(str,ctc_string,ctc_string_len);
     str[ctc_string_len] = '\0';
-    POMP_Assign_handle(regionHandle,str);
+    POMP_Assign_handle(&c_handle,str);
+    *regionHandle = SILC_POMP_C2F_REGION( c_handle );
     free(str);
 }
 
@@ -67,12 +69,12 @@ void FSUB(POMP_On)()
   silc_pomp_is_tracing_on = 1;
 }
 
-void FSUB(POMP_Begin)(int* regionHandle)
+void FSUB(POMP_Begin)(POMP_Region_handle_fortran* regionHandle)
 {
-  if ( silc_pomp_is_tracing_on ) POMP_Begin(regionHandle);
+  if ( silc_pomp_is_tracing_on ) POMP_Begin(SILC_POMP_F2C_REGION(regionHandle));
 }
 
-void FSUB(POMP_End)(int* regionHandle)
+void FSUB(POMP_End)(POMP_Region_handle_fortran* regionHandle)
 {
-  if ( silc_pomp_is_tracing_on ) POMP_End(regionHandle);
+  if ( silc_pomp_is_tracing_on ) POMP_End(SILC_POMP_F2C_REGION(regionHandle));
 }

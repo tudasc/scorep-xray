@@ -34,142 +34,170 @@
  * Fortran wrappers calling the C versions
  */
 /* *INDENT-OFF*  */
-void FSUB(POMP_Atomic_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Atomic_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Atomic_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Atomic_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Atomic_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Atomic_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Atomic_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Atomic_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Barrier_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Barrier_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Barrier_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Barrier_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Barrier_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Barrier_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Barrier_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Barrier_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Flush_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Flush_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Flush_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+      POMP_Flush_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Flush_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Flush_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Flush_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+      POMP_Flush_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Critical_begin)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Critical_begin)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Critical_begin(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+      POMP_Critical_begin(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Critical_end)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Critical_end)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Critical_end(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+      POMP_Critical_end(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Critical_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Critical_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Critical_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Critical_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Critical_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Critical_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Critical_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Critical_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Do_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Do_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_For_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_For_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Do_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Do_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_For_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_For_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Master_begin)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Master_begin)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Master_begin(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Master_begin(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Master_end)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Master_end)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Master_end(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Master_end(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Parallel_begin)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Parallel_begin)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Parallel_begin(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Parallel_begin(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Parallel_end)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Parallel_end)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Parallel_end(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Parallel_end(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Parallel_fork)(POMP_Region_handle* regionHandle, int *num_threads)
+void FSUB(POMP_Parallel_fork)(POMP_Region_handle_fortran* regionHandle, int *num_threads)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Parallel_fork(*regionHandle, *num_threads);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Parallel_fork(SILC_POMP_F2C_REGION(*regionHandle), *num_threads);
 }
 
-void FSUB(POMP_Parallel_join)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Parallel_join)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Parallel_join(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Parallel_join(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Section_begin)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Section_begin)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Section_begin(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Section_begin(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Section_end)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Section_end)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Section_end(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Section_end(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Sections_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Sections_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Sections_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Sections_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Sections_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Sections_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Sections_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Sections_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Single_begin)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Single_begin)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Single_begin(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Single_begin(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Single_end)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Single_end)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Single_end(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Single_end(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Single_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Single_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Single_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Single_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Single_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Single_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Single_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Single_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Workshare_enter)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Workshare_enter)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Workshare_enter(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Workshare_enter(SILC_POMP_F2C_REGION(*regionHandle));
 }
 
-void FSUB(POMP_Workshare_exit)(POMP_Region_handle* regionHandle)
+void FSUB(POMP_Workshare_exit)(POMP_Region_handle_fortran* regionHandle)
 {
-    if ( silc_pomp_is_tracing_on ) POMP_Workshare_exit(*regionHandle);
+    if ( silc_pomp_is_tracing_on )
+        POMP_Workshare_exit(SILC_POMP_F2C_REGION(*regionHandle));
 }

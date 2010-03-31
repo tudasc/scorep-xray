@@ -25,6 +25,14 @@
  * @brief Provides defines for function name decoration for POMP Fortran wrappers.
  */
 
+#include <pomp_lib.h>
+
+/* Fortran types */
+typedef uint64_t POMP_Region_handle_fortran;
+
+#define SILC_POMP_F2C_REGION( handle )  ( ( POMP_Region_handle* )( unsigned int )handle )
+#define SILC_POMP_C2F_REGION( handle )  ( ( unsigned int )handle )
+
 /*
  * Fortan subroutine external name setup
  */
