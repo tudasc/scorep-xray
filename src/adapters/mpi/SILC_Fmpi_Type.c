@@ -1318,18 +1318,21 @@ FSUB( MPI_Type_get_name )( MPI_Datatype* type,
                            int*          ierr,
                            int           type_name_len )
 {
-    char* c_type_name = NULL;
+    char* c_type_name     = NULL;
+    int   c_type_name_len = 0;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
     if ( !c_type_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_type_name, type_name, type_name_len );
-    c_type_name[ type_name_len ] = '\0';
 
 
     *ierr = MPI_Type_get_name( *type, c_type_name, resultlen );
 
+
+    c_type_name_len = strlen( c_type_name );
+    strncpy( type_name, c_type_name, c_type_name_len );
+    memset( type_name + c_type_name_len, ' ', type_name_len - c_type_name_len );
     free( c_type_name );
 }
 #endif
@@ -1620,16 +1623,19 @@ FSUB( MPI_Type_get_name )( MPI_Fint* type,
                            int*      ierr,
                            int       type_name_len )
 {
-    char* c_type_name = NULL;
+    char* c_type_name     = NULL;
+    int   c_type_name_len = 0;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
     if ( !c_type_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_type_name, type_name, type_name_len );
-    c_type_name[ type_name_len ] = '\0';
 
-    *ierr = MPI_Type_get_name( PMPI_Type_f2c( *type ), type_name, resultlen );
+    *ierr = MPI_Type_get_name( PMPI_Type_f2c( *type ), c_type_name, resultlen );
+
+    c_type_name_len = strlen( c_type_name );
+    strncpy( type_name, c_type_name, c_type_name_len );
+    memset( type_name + c_type_name_len, ' ', type_name_len - c_type_name_len );
     free( c_type_name );
 }
 #endif
@@ -1678,7 +1684,7 @@ FSUB( MPI_Type_set_name )( MPI_Fint* type,
     strncpy( c_type_name, type_name, type_name_len );
     c_type_name[ type_name_len ] = '\0';
 
-    *ierr = MPI_Type_set_name( c_type, type_name );
+    *ierr = MPI_Type_set_name( c_type, c_type_name );
     free( c_type_name );
     *type = PMPI_Type_c2f( c_type );
 }

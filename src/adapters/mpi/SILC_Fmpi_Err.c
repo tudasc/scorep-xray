@@ -303,18 +303,21 @@ FSUB( MPI_Error_string )( int*  errorcode,
                           int*  ierr,
                           int   string_len )
 {
-    char* c_string = NULL;
+    char* c_string     = NULL;
+    int   c_string_len = 0;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
     if ( !c_string )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_string, string, string_len );
-    c_string[ string_len ] = '\0';
 
 
     *ierr = MPI_Error_string( *errorcode, c_string, resultlen );
 
+
+    c_string_len = strlen( c_string );
+    strncpy( string, c_string, c_string_len );
+    memset( string + c_string_len, ' ', string_len - c_string_len );
     free( c_string );
 }
 #endif
@@ -378,7 +381,7 @@ FSUB( MPI_Add_error_string )( MPI_Fint* errorcode,
     strncpy( c_string, string, string_len );
     c_string[ string_len ] = '\0';
 
-    *ierr = MPI_Add_error_string( *errorcode, string );
+    *ierr = MPI_Add_error_string( *errorcode, c_string );
     free( c_string );
 }
 #endif
@@ -482,16 +485,19 @@ FSUB( MPI_Error_string )( MPI_Fint* errorcode,
                           int*      ierr,
                           int       string_len )
 {
-    char* c_string = NULL;
+    char* c_string     = NULL;
+    int   c_string_len = 0;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
     if ( !c_string )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_string, string, string_len );
-    c_string[ string_len ] = '\0';
 
-    *ierr = MPI_Error_string( *errorcode, string, resultlen );
+    *ierr = MPI_Error_string( *errorcode, c_string, resultlen );
+
+    c_string_len = strlen( c_string );
+    strncpy( string, c_string, c_string_len );
+    memset( string + c_string_len, ' ', string_len - c_string_len );
     free( c_string );
 }
 #endif

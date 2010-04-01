@@ -460,7 +460,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
         }
     }
 
-    *ierr = MPI_Comm_spawn( command, c_argv, *maxprocs,
+    *ierr = MPI_Comm_spawn( c_command, c_argv, *maxprocs,
                             *info, *root, *comm, newcomm,
                             array_of_errcodes );
 
@@ -623,8 +623,9 @@ FSUB( MPI_Lookup_name )( char*     service_name,
                          int       service_name_len,
                          int       port_name_len )
 {
-    char* c_service_name = NULL;
-    char* c_port_name    = NULL;
+    char* c_service_name  = NULL;
+    char* c_port_name     = NULL;
+    int   c_port_name_len = 0;
     c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
     if ( !c_service_name )
     {
@@ -638,13 +639,15 @@ FSUB( MPI_Lookup_name )( char*     service_name,
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
 
 
     *ierr = MPI_Lookup_name( c_service_name, *info, c_port_name );
 
     free( c_service_name );
+
+    c_port_name_len = strlen( c_port_name );
+    strncpy( port_name, c_port_name, c_port_name_len );
+    memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
 }
 #endif
@@ -662,18 +665,21 @@ FSUB( MPI_Open_port )( MPI_Info* info,
                        int*      ierr,
                        int       port_name_len )
 {
-    char* c_port_name = NULL;
+    char* c_port_name     = NULL;
+    int   c_port_name_len = 0;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
 
 
     *ierr = MPI_Open_port( *info, c_port_name );
 
+
+    c_port_name_len = strlen( c_port_name );
+    strncpy( port_name, c_port_name, c_port_name_len );
+    memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
 }
 #endif
@@ -1056,7 +1062,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
         }
     }
 
-    *ierr = MPI_Comm_spawn( command, c_argv, *maxprocs,
+    *ierr = MPI_Comm_spawn( c_command, c_argv, *maxprocs,
                             PMPI_Info_f2c( *info ), *root,
                             PMPI_Comm_f2c( *comm ), &c_newcomm,
                             array_of_errcodes );
@@ -1092,7 +1098,7 @@ FSUB( MPI_Close_port )( char* port_name,
     strncpy( c_port_name, port_name, port_name_len );
     c_port_name[ port_name_len ] = '\0';
 
-    *ierr = MPI_Close_port( port_name );
+    *ierr = MPI_Close_port( c_port_name );
     free( c_port_name );
 }
 #endif
@@ -1124,7 +1130,7 @@ FSUB( MPI_Comm_accept )( char*     port_name,
     c_port_name[ port_name_len ] = '\0';
 
     MPI_Comm c_newcomm;
-    *ierr = MPI_Comm_accept( port_name, PMPI_Info_f2c( *info ), *root, PMPI_Comm_f2c( *comm ), &c_newcomm );
+    *ierr = MPI_Comm_accept( c_port_name, PMPI_Info_f2c( *info ), *root, PMPI_Comm_f2c( *comm ), &c_newcomm );
     free( c_port_name );
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
@@ -1157,7 +1163,7 @@ FSUB( MPI_Comm_connect )( char*     port_name,
     c_port_name[ port_name_len ] = '\0';
 
     MPI_Comm c_newcomm;
-    *ierr = MPI_Comm_connect( port_name, PMPI_Info_f2c( *info ), *root, PMPI_Comm_f2c( *comm ), &c_newcomm );
+    *ierr = MPI_Comm_connect( c_port_name, PMPI_Info_f2c( *info ), *root, PMPI_Comm_f2c( *comm ), &c_newcomm );
     free( c_port_name );
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
@@ -1234,8 +1240,9 @@ FSUB( MPI_Lookup_name )( char*     service_name,
                          int       service_name_len,
                          int       port_name_len )
 {
-    char* c_service_name = NULL;
-    char* c_port_name    = NULL;
+    char* c_service_name  = NULL;
+    char* c_port_name     = NULL;
+    int   c_port_name_len = 0;
     c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
     if ( !c_service_name )
     {
@@ -1249,11 +1256,13 @@ FSUB( MPI_Lookup_name )( char*     service_name,
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
 
-    *ierr = MPI_Lookup_name( service_name, PMPI_Info_f2c( *info ), port_name );
+    *ierr = MPI_Lookup_name( c_service_name, PMPI_Info_f2c( *info ), c_port_name );
     free( c_service_name );
+
+    c_port_name_len = strlen( c_port_name );
+    strncpy( port_name, c_port_name, c_port_name_len );
+    memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
 }
 #endif
@@ -1272,16 +1281,19 @@ FSUB( MPI_Open_port )( MPI_Fint* info,
                        int*      ierr,
                        int       port_name_len )
 {
-    char* c_port_name = NULL;
+    char* c_port_name     = NULL;
+    int   c_port_name_len = 0;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
 
-    *ierr = MPI_Open_port( PMPI_Info_f2c( *info ), port_name );
+    *ierr = MPI_Open_port( PMPI_Info_f2c( *info ), c_port_name );
+
+    c_port_name_len = strlen( c_port_name );
+    strncpy( port_name, c_port_name, c_port_name_len );
+    memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
 }
 #endif
@@ -1320,7 +1332,7 @@ FSUB( MPI_Publish_name )( char*     service_name,
     strncpy( c_port_name, port_name, port_name_len );
     c_port_name[ port_name_len ] = '\0';
 
-    *ierr = MPI_Publish_name( service_name, PMPI_Info_f2c( *info ), port_name );
+    *ierr = MPI_Publish_name( c_service_name, PMPI_Info_f2c( *info ), c_port_name );
     free( c_service_name );
     free( c_port_name );
 }
@@ -1360,7 +1372,7 @@ FSUB( MPI_Unpublish_name )( char*     service_name,
     strncpy( c_port_name, port_name, port_name_len );
     c_port_name[ port_name_len ] = '\0';
 
-    *ierr = MPI_Unpublish_name( service_name, PMPI_Info_f2c( *info ), port_name );
+    *ierr = MPI_Unpublish_name( c_service_name, PMPI_Info_f2c( *info ), c_port_name );
     free( c_service_name );
     free( c_port_name );
 }

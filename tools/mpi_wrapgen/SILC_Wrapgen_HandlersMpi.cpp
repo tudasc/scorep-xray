@@ -218,6 +218,13 @@ SILC::Wrapgen::handler::mpi::call_f2c_c2f
             {
                 str += "*";
             }
+            else if ( datatype::is_char_pointer( arg ) )
+            {
+                // character arrays from Fortran are not null-terminated
+                // thus we have to use our own internal character array,
+                // initialized in a preceding declaration and init block
+                str += "c_";
+            }
 
             if ( !( datatype::needs_cast( arg ) &&
                     datatype::is_handler_function( arg ) &&
@@ -326,11 +333,20 @@ SILC::Wrapgen::handler::mpi::cleanup_fortran
 
         if ( datatype::is_char_pointer( arg ) )
         {
+            string arg_name = arg.get_name();
+
             if ( str.length() > 0 )
             {
                 str += "\n    ";
             }
-            str += "free(c_" + arg.get_name() + ");";
+            // Output parameters need to be copied and padded with spaces
+            if ( datatype::is_output_param( arg ) )
+            {
+                str += "\n  c_" + arg_name + "_len = strlen(c_" + arg_name + ");\n  " +
+                       "strncpy(" + arg_name + ", c_" + arg_name + ", c_" + arg_name + "_len);\n  " +
+                       "memset(" + arg_name + " + c_" + arg_name + "_len, ' ', " + arg_name + "_len - c_" + arg_name + "_len);\n";
+            }
+            str += "free(c_" + arg_name + ");";
         }
     }
 
@@ -417,6 +433,10 @@ SILC::Wrapgen::handler::mpi::decl_fortran
                 str += "\n    ";
             }
             str += "char* c_" + arg_name + " = NULL;";
+            if ( datatype::is_output_param( arg ) )
+            {
+                str += "\nint c_" + arg_name + "_len = 0;";
+            }
         }
     }
 
@@ -513,9 +533,13 @@ SILC::Wrapgen::handler::mpi::init_f2c_c2f
             }
             // char* need allocation and strncpy
             str += "c_" + arg_name + " = (char*) malloc((" + arg_name + "_len + 1) * sizeof(char));\n  " +
-                   "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  " +
-                   "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
-                   "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+                   "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  ";
+            // Input parameters need to be copied and null-terminated
+            if ( datatype::is_input_param( arg ) )
+            {
+                str += "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
+                       "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+            }
         }
     }
 
@@ -547,9 +571,13 @@ SILC::Wrapgen::handler::mpi::init_fortran
             }
             // char* need allocation and strncpy
             str += "c_" + arg_name + " = (char*) malloc((" + arg_name + "_len + 1) * sizeof(char));\n  " +
-                   "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  " +
-                   "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
-                   "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+                   "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  ";
+            // Input parameters need to be copied and null-terminated
+            if ( datatype::is_input_param( arg ) )
+            {
+                str += "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
+                       "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+            }
         }
     }
 
@@ -573,7 +601,7 @@ SILC::Wrapgen::handler::mpi::proto_c
 {
     string str = func.get_rtype() + " " + func.get_name() + "(";
 
-    for ( size_t i = 0; i < func.get_param_count();  ++i )
+    for ( size_t i = 0; i < func.get_param_count(); ++i )
     {
         // add comma, if it is not the first parameter
         if ( i )

@@ -432,8 +432,9 @@ FSUB( MPI_Info_get )( MPI_Info* info,
                       int       key_len,
                       int       value_len )
 {
-    char* c_key   = NULL;
-    char* c_value = NULL;
+    char* c_key       = NULL;
+    char* c_value     = NULL;
+    int   c_value_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
@@ -447,13 +448,15 @@ FSUB( MPI_Info_get )( MPI_Info* info,
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_value, value, value_len );
-    c_value[ value_len ] = '\0';
 
 
     *ierr = MPI_Info_get( *info, c_key, *valuelen, c_value, flag );
 
     free( c_key );
+
+    c_value_len = strlen( c_value );
+    strncpy( value, c_value, c_value_len );
+    memset( value + c_value_len, ' ', value_len - c_value_len );
     free( c_value );
 }
 #endif
@@ -488,18 +491,21 @@ FSUB( MPI_Info_get_nthkey )( MPI_Info* info,
                              int*      ierr,
                              int       key_len )
 {
-    char* c_key = NULL;
+    char* c_key     = NULL;
+    int   c_key_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
 
 
     *ierr = MPI_Info_get_nthkey( *info, *n, c_key );
 
+
+    c_key_len = strlen( c_key );
+    strncpy( key, c_key, c_key_len );
+    memset( key + c_key_len, ' ', key_len - c_key_len );
     free( c_key );
 }
 #endif
@@ -771,7 +777,7 @@ FSUB( MPI_Info_delete )( MPI_Fint* info,
     strncpy( c_key, key, key_len );
     c_key[ key_len ] = '\0';
 
-    *ierr = MPI_Info_delete( c_info, key );
+    *ierr = MPI_Info_delete( c_info, c_key );
     free( c_key );
     *info = PMPI_Info_c2f( c_info );
 }
@@ -832,8 +838,9 @@ FSUB( MPI_Info_get )( MPI_Fint* info,
                       int       key_len,
                       int       value_len )
 {
-    char* c_key   = NULL;
-    char* c_value = NULL;
+    char* c_key       = NULL;
+    char* c_value     = NULL;
+    int   c_value_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
@@ -847,11 +854,13 @@ FSUB( MPI_Info_get )( MPI_Fint* info,
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_value, value, value_len );
-    c_value[ value_len ] = '\0';
 
-    *ierr = MPI_Info_get( PMPI_Info_f2c( *info ), key, *valuelen, value, flag );
+    *ierr = MPI_Info_get( PMPI_Info_f2c( *info ), c_key, *valuelen, c_value, flag );
     free( c_key );
+
+    c_value_len = strlen( c_value );
+    strncpy( value, c_value, c_value_len );
+    memset( value + c_value_len, ' ', value_len - c_value_len );
     free( c_value );
 }
 #endif
@@ -888,16 +897,19 @@ FSUB( MPI_Info_get_nthkey )( MPI_Fint* info,
                              int*      ierr,
                              int       key_len )
 {
-    char* c_key = NULL;
+    char* c_key     = NULL;
+    int   c_key_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
 
-    *ierr = MPI_Info_get_nthkey( PMPI_Info_f2c( *info ), *n, key );
+    *ierr = MPI_Info_get_nthkey( PMPI_Info_f2c( *info ), *n, c_key );
+
+    c_key_len = strlen( c_key );
+    strncpy( key, c_key, c_key_len );
+    memset( key + c_key_len, ' ', key_len - c_key_len );
     free( c_key );
 }
 #endif
@@ -927,7 +939,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Fint* info,
     strncpy( c_key, key, key_len );
     c_key[ key_len ] = '\0';
 
-    *ierr = MPI_Info_get_valuelen( PMPI_Info_f2c( *info ), key, valuelen, flag );
+    *ierr = MPI_Info_get_valuelen( PMPI_Info_f2c( *info ), c_key, valuelen, flag );
     free( c_key );
 }
 #endif
@@ -967,7 +979,7 @@ FSUB( MPI_Info_set )( MPI_Fint* info,
     strncpy( c_value, value, value_len );
     c_value[ value_len ] = '\0';
 
-    *ierr = MPI_Info_set( c_info, key, value );
+    *ierr = MPI_Info_set( c_info, c_key, c_value );
     free( c_key );
     free( c_value );
     *info = PMPI_Info_c2f( c_info );

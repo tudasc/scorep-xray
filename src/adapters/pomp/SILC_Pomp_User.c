@@ -245,11 +245,16 @@ struct SILC_Adapter SILC_Pomp_Adapter =
 void
 POMP_Finalize()
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "Enter POMP_Finalize\n" );
 }
 
 void
 POMP_Init()
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
+                       "Enter POMP_Init\n" );
+
     /* If adapter is not initialized, it means that the measurement system is not
        initialized. */
     SILC_InitMeasurement();

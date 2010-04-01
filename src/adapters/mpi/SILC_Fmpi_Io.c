@@ -878,18 +878,21 @@ FSUB( MPI_File_get_view )( MPI_File*     fh,
                            int*          ierr,
                            int           datarep_len )
 {
-    char* c_datarep = NULL;
+    char* c_datarep     = NULL;
+    int   c_datarep_len = 0;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
     if ( !c_datarep )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
 
 
     *ierr = MPI_File_get_view( *fh, disp, etype, filetype, c_datarep );
 
+
+    c_datarep_len = strlen( c_datarep );
+    strncpy( datarep, c_datarep, c_datarep_len );
+    memset( datarep + c_datarep_len, ' ', datarep_len - c_datarep_len );
     free( c_datarep );
 }
 #endif
@@ -1787,7 +1790,7 @@ FSUB( MPI_File_delete )( char*     filename,
     strncpy( c_filename, filename, filename_len );
     c_filename[ filename_len ] = '\0';
 
-    *ierr = MPI_File_delete( filename, PMPI_Info_f2c( *info ) );
+    *ierr = MPI_File_delete( c_filename, PMPI_Info_f2c( *info ) );
     free( c_filename );
 }
 #endif
@@ -1968,7 +1971,8 @@ FSUB( MPI_File_get_view )( MPI_Fint*   fh,
                            int*        ierr,
                            int         datarep_len )
 {
-    char*        c_datarep = NULL;
+    char*        c_datarep     = NULL;
+    int          c_datarep_len = 0;
     MPI_Datatype c_etype;
     MPI_Datatype c_filetype;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -1976,10 +1980,12 @@ FSUB( MPI_File_get_view )( MPI_Fint*   fh,
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
 
-    *ierr = MPI_File_get_view( PMPI_File_f2c( *fh ), disp, &c_etype, &c_filetype, datarep );
+    *ierr = MPI_File_get_view( PMPI_File_f2c( *fh ), disp, &c_etype, &c_filetype, c_datarep );
+
+    c_datarep_len = strlen( c_datarep );
+    strncpy( datarep, c_datarep, c_datarep_len );
+    memset( datarep + c_datarep_len, ' ', datarep_len - c_datarep_len );
     free( c_datarep );
     *etype    = PMPI_Type_c2f( c_etype );
     *filetype = PMPI_Type_c2f( c_filetype );
@@ -2013,7 +2019,7 @@ FSUB( MPI_File_open )( MPI_Fint* comm,
     c_filename[ filename_len ] = '\0';
 
     MPI_File c_fh;
-    *ierr = MPI_File_open( PMPI_Comm_f2c( *comm ), filename, *amode, PMPI_Info_f2c( *info ), &c_fh );
+    *ierr = MPI_File_open( PMPI_Comm_f2c( *comm ), c_filename, *amode, PMPI_Info_f2c( *info ), &c_fh );
     free( c_filename );
     *fh = PMPI_File_c2f( c_fh );
 }
@@ -2144,7 +2150,7 @@ FSUB( MPI_File_set_view )( MPI_Fint*   fh,
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
 
-    *ierr = MPI_File_set_view( c_fh, *disp, PMPI_Type_f2c( *etype ), PMPI_Type_f2c( *filetype ), datarep, PMPI_Info_f2c( *info ) );
+    *ierr = MPI_File_set_view( c_fh, *disp, PMPI_Type_f2c( *etype ), PMPI_Type_f2c( *filetype ), c_datarep, PMPI_Info_f2c( *info ) );
     free( c_datarep );
     *fh = PMPI_File_c2f( c_fh );
 }
@@ -2194,7 +2200,7 @@ FSUB( MPI_Register_datarep )( char* datarep,
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
 
-    *ierr = MPI_Register_datarep( datarep, ( MPI_Datarep_conversion_function* )read_conversion_fn, ( MPI_Datarep_conversion_function* )write_conversion_fn, ( MPI_Datarep_extent_function* )dtype_file_extent_fn, extra_state );
+    *ierr = MPI_Register_datarep( c_datarep, ( MPI_Datarep_conversion_function* )read_conversion_fn, ( MPI_Datarep_conversion_function* )write_conversion_fn, ( MPI_Datarep_extent_function* )dtype_file_extent_fn, extra_state );
     free( c_datarep );
 }
 #endif

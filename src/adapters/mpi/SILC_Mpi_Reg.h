@@ -120,7 +120,6 @@ enum silc_mpi_groups
                                SILC_MPI_ENABLED_IO    |
                                SILC_MPI_ENABLED_P2P   |
                                SILC_MPI_ENABLED_RMA   |
-                               SILC_MPI_ENABLED_SPAWN |
                                SILC_MPI_ENABLED_TOPO
 };
 

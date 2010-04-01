@@ -1172,18 +1172,21 @@ FSUB( MPI_Comm_get_name )( MPI_Comm* comm,
                            int*      ierr,
                            int       comm_name_len )
 {
-    char* c_comm_name = NULL;
+    char* c_comm_name     = NULL;
+    int   c_comm_name_len = 0;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
     if ( !c_comm_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_comm_name, comm_name, comm_name_len );
-    c_comm_name[ comm_name_len ] = '\0';
 
 
     *ierr = MPI_Comm_get_name( *comm, c_comm_name, resultlen );
 
+
+    c_comm_name_len = strlen( c_comm_name );
+    strncpy( comm_name, c_comm_name, c_comm_name_len );
+    memset( comm_name + c_comm_name_len, ' ', comm_name_len - c_comm_name_len );
     free( c_comm_name );
 }
 #endif
@@ -1979,16 +1982,19 @@ FSUB( MPI_Comm_get_name )( MPI_Fint* comm,
                            int*      ierr,
                            int       comm_name_len )
 {
-    char* c_comm_name = NULL;
+    char* c_comm_name     = NULL;
+    int   c_comm_name_len = 0;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
     if ( !c_comm_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_comm_name, comm_name, comm_name_len );
-    c_comm_name[ comm_name_len ] = '\0';
 
-    *ierr = MPI_Comm_get_name( PMPI_Comm_f2c( *comm ), comm_name, resultlen );
+    *ierr = MPI_Comm_get_name( PMPI_Comm_f2c( *comm ), c_comm_name, resultlen );
+
+    c_comm_name_len = strlen( c_comm_name );
+    strncpy( comm_name, c_comm_name, c_comm_name_len );
+    memset( comm_name + c_comm_name_len, ' ', comm_name_len - c_comm_name_len );
     free( c_comm_name );
 }
 #endif
@@ -2037,7 +2043,7 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm,
     strncpy( c_comm_name, comm_name, comm_name_len );
     c_comm_name[ comm_name_len ] = '\0';
 
-    *ierr = MPI_Comm_set_name( c_comm, comm_name );
+    *ierr = MPI_Comm_set_name( c_comm, c_comm_name );
     free( c_comm_name );
     *comm = PMPI_Comm_c2f( c_comm );
 }

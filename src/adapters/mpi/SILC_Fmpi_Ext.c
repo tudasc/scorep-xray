@@ -226,18 +226,21 @@ FSUB( MPI_Get_processor_name )( char* name,
                                 int*  ierr,
                                 int   name_len )
 {
-    char* c_name = NULL;
+    char* c_name     = NULL;
+    int   c_name_len = 0;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
     if ( !c_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_name, name, name_len );
-    c_name[ name_len ] = '\0';
 
 
     *ierr = MPI_Get_processor_name( c_name, resultlen );
 
+
+    c_name_len = strlen( c_name );
+    strncpy( name, c_name, c_name_len );
+    memset( name + c_name_len, ' ', name_len - c_name_len );
     free( c_name );
 }
 #endif
@@ -383,16 +386,19 @@ FSUB( MPI_Get_processor_name )( char*     name,
                                 int*      ierr,
                                 int       name_len )
 {
-    char* c_name = NULL;
+    char* c_name     = NULL;
+    int   c_name_len = 0;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
     if ( !c_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_name, name, name_len );
-    c_name[ name_len ] = '\0';
 
-    *ierr = MPI_Get_processor_name( name, resultlen );
+    *ierr = MPI_Get_processor_name( c_name, resultlen );
+
+    c_name_len = strlen( c_name );
+    strncpy( name, c_name, c_name_len );
+    memset( name + c_name_len, ' ', name_len - c_name_len );
     free( c_name );
 }
 #endif

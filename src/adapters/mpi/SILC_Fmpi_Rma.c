@@ -779,16 +779,19 @@ FSUB( MPI_Win_get_name )( MPI_Fint* win,
                           int*      ierr,
                           int       win_name_len )
 {
-    char* c_win_name = NULL;
+    char* c_win_name     = NULL;
+    int   c_win_name_len = 0;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
     if ( !c_win_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_win_name, win_name, win_name_len );
-    c_win_name[ win_name_len ] = '\0';
 
-    *ierr = MPI_Win_get_name( PMPI_Win_f2c( *win ), win_name, resultlen );
+    *ierr = MPI_Win_get_name( PMPI_Win_f2c( *win ), c_win_name, resultlen );
+
+    c_win_name_len = strlen( c_win_name );
+    strncpy( win_name, c_win_name, c_win_name_len );
+    memset( win_name + c_win_name_len, ' ', win_name_len - c_win_name_len );
     free( c_win_name );
 }
 #endif
@@ -837,7 +840,7 @@ FSUB( MPI_Win_set_name )( MPI_Fint* win,
     strncpy( c_win_name, win_name, win_name_len );
     c_win_name[ win_name_len ] = '\0';
 
-    *ierr = MPI_Win_set_name( c_win, win_name );
+    *ierr = MPI_Win_set_name( c_win, c_win_name );
     free( c_win_name );
     *win = PMPI_Win_c2f( c_win );
 }
@@ -1282,16 +1285,19 @@ FSUB( MPI_Win_get_name )( MPI_Fint* win,
                           int*      ierr,
                           int       win_name_len )
 {
-    char* c_win_name = NULL;
+    char* c_win_name     = NULL;
+    int   c_win_name_len = 0;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
     if ( !c_win_name )
     {
         exit( EXIT_FAILURE );
     }
-    strncpy( c_win_name, win_name, win_name_len );
-    c_win_name[ win_name_len ] = '\0';
 
-    *ierr = MPI_Win_get_name( PMPI_Win_f2c( *win ), win_name, resultlen );
+    *ierr = MPI_Win_get_name( PMPI_Win_f2c( *win ), c_win_name, resultlen );
+
+    c_win_name_len = strlen( c_win_name );
+    strncpy( win_name, c_win_name, c_win_name_len );
+    memset( win_name + c_win_name_len, ' ', win_name_len - c_win_name_len );
     free( c_win_name );
 }
 #endif
@@ -1340,7 +1346,7 @@ FSUB( MPI_Win_set_name )( MPI_Fint* win,
     strncpy( c_win_name, win_name, win_name_len );
     c_win_name[ win_name_len ] = '\0';
 
-    *ierr = MPI_Win_set_name( c_win, win_name );
+    *ierr = MPI_Win_set_name( c_win, c_win_name );
     free( c_win_name );
     *win = PMPI_Win_c2f( c_win );
 }
