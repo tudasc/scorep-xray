@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <bfd.h>
+#include <unistd.h>
 
 #include <SILC_Types.h>
 #include <SILC_Utils.h>

@@ -24,6 +24,7 @@
 
 
 
+#include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
 #include <SILC_Compiler_Data.h>
 

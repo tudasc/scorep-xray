@@ -145,11 +145,8 @@ silc_pomp_init()
         silc_pomp_regions = calloc( POMP_Get_num_regions(),
                                     sizeof( SILC_Pomp_Region ) );
 
-        /* Register regions */
-        silc_pomp_register_lock_regions();
-        POMP_Init_regions();
-
         /* Initialize implicit barrier region */
+#ifdef _OPENMP
         silc_pomp_implicit_barrier_region =
             SILC_DefineRegion( "implicit barrier",
                                silc_pomp_file_handle,
@@ -157,6 +154,13 @@ silc_pomp_init()
                                SILC_INVALID_LINE_NO,
                                SILC_ADAPTER_POMP,
                                SILC_REGION_OMP_IMPLICIT_BARRIER );
+
+        /* Register regions for locking functions */
+        silc_pomp_register_lock_regions();
+#endif  // _OPENMP
+
+        /* Register regions inserted by Opari */
+        POMP_Init_regions();
     }
 
     return SILC_SUCCESS;
