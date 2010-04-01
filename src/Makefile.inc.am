@@ -85,3 +85,9 @@ libsilc_mpi_omp_la_LIBADD   = $(common_libadd)                           \
                               libsilc_paradigm_omp.la
 endif
 
+## POMP dummy
+lib_LTLIBRARIES               += libsilc_pomp_dummy.la
+libsilc_pomp_dummy_la_SOURCES  = $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Dummy.c
+libsilc_pomp_dummy_la_CFLAGS   = $(AM_CFLAGS)
+libsilc_pomp_dummy_la_CPPFLAGS = $(common_cppflags)
+libsilc_pomp_dummy_la_LIBADD   =
