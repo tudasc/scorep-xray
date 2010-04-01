@@ -21,7 +21,7 @@
 
 ## MPI C
 
-check_PROGRAMS       += jacobi_mpi_c
+#check_PROGRAMS       += jacobi_mpi_c
 jacobi_mpi_c_sources  = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
                         $(SRC_ROOT)test/jacobi/MPI/C/jacobi.h  \
                         $(SRC_ROOT)test/jacobi/MPI/C/main.c
@@ -58,7 +58,7 @@ jacobi_mpi_omp_c_unistrumented_LDADD   = -lm
 
 ## MPI C++
 
-check_PROGRAMS         += jacobi_mpi_cxx
+#check_PROGRAMS         += jacobi_mpi_cxx
 jacobi_mpi_cxx_sources  = $(SRC_ROOT)test/jacobi/MPI/C++/jacobi.cpp  \
                           $(SRC_ROOT)test/jacobi/MPI/C++/jacobi.h    \
                           $(SRC_ROOT)test/jacobi/MPI/C++/main.cpp
@@ -96,7 +96,7 @@ jacobi_mpi_omp_cxx_unistrumented_LDADD     = -lm
 
 ## MPI Fortran
 
-check_PROGRAMS         += jacobi_mpi_f90
+#check_PROGRAMS         += jacobi_mpi_f90
 jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
