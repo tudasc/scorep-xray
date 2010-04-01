@@ -21,13 +21,13 @@
 
 ## Serial C
 
-#check_PROGRAMS          += jacobi_serial_c
+check_PROGRAMS          += jacobi_serial_c
 jacobi_serial_c_sources  = $(SRC_ROOT)test/jacobi/serial/C/jacobi.c  \
                            $(SRC_ROOT)test/jacobi/serial/C/jacobi.h  \
                            $(SRC_ROOT)test/jacobi/serial/C/main.c
 jacobi_serial_c_SOURCES  = $(jacobi_serial_c_sources)                          
 jacobi_serial_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_serial_c_LDADD    = $(LIB_ROOT)libsilc_serial.la
+jacobi_serial_c_LDADD    = $(LIB_ROOT)libsilc_serial.la $(LIB_ROOT)libsilc_pomp_dummy.la
 
 check_PROGRAMS                         += jacobi_serial_c_uninstrumented
 jacobi_serial_c_uninstrumented_SOURCES  = $(jacobi_serial_c_sources)
@@ -58,13 +58,13 @@ jacobi_omp_c_uninstrumented_LDADD   = -lm
 
 ## Serial C++
 
-#check_PROGRAMS            += jacobi_serial_cxx
+check_PROGRAMS            += jacobi_serial_cxx
 jacobi_serial_cxx_sources  = $(SRC_ROOT)test/jacobi/serial/C++/jacobi.cpp  \
                              $(SRC_ROOT)test/jacobi/serial/C++/jacobi.h    \
                              $(SRC_ROOT)test/jacobi/serial/C++/main.cpp
 jacobi_serial_cxx_SOURCES  = $(jacobi_serial_cxx_sources)                          
 jacobi_serial_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_serial_cxx_LDADD    = $(LIB_ROOT)libsilc_serial.la
+jacobi_serial_cxx_LDADD    = $(LIB_ROOT)libsilc_serial.la $(LIB_ROOT)libsilc_pomp_dummy.la
 
 check_PROGRAMS                           += jacobi_serial_cxx_uninstrumented
 jacobi_serial_cxx_uninstrumented_SOURCES  = $(jacobi_serial_cxx_sources)
@@ -96,13 +96,13 @@ jacobi_omp_cxx_uninstrumented_LDADD    = -lm
 
 ## Serial Fortran
 
-#check_PROGRAMS            += jacobi_serial_f90
+check_PROGRAMS            += jacobi_serial_f90
 jacobi_serial_f90_sources  = $(SRC_ROOT)test/jacobi/serial/Fortran/VariableDef.f90 \
                              $(SRC_ROOT)test/jacobi/serial/Fortran/jacobi.F90      \
                              $(SRC_ROOT)test/jacobi/serial/Fortran/main.F90
 jacobi_serial_f90_SOURCES  = $(jacobi_serial_f90_sources)                          
 jacobi_serial_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la
+jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la $(LIB_ROOT)libsilc_pomp_dummy.la
 
 check_PROGRAMS                           += jacobi_serial_f90_uninstrumented
 jacobi_serial_f90_uninstrumented_SOURCES  = $(jacobi_serial_f90_sources)

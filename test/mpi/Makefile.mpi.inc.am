@@ -8,6 +8,7 @@ mpitest_CPPFLAGS = $(AM_CPPFLAGS)           \
 
 mpitest_LDADD = \
     $(LIB_ROOT)libsilc_mpi.la \
+    $(LIB_ROOT)libsilc_pomp_dummy.la \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libsilc_utilities.la
 
@@ -20,6 +21,7 @@ test_link_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_DIR_UTIL)
 test_link_LDADD = \
     $(LIB_ROOT)libsilc_mpi.la \
+    $(LIB_ROOT)libsilc_pomp_dummy.la \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libsilc_utilities.la \
     -lm
