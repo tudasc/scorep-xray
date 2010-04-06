@@ -32,14 +32,14 @@
 
 /*----------------------------------------------------------------------------------------
    gobal variables
-   ----------------------------------------------------------------------------------------*/
+   -------------------------------------------------------------------------------------*/
 silc_profile_definition silc_profile;
 
 bool                    silc_profile_is_initialized = false;
 
 /*----------------------------------------------------------------------------------------
    helper for thread handling
-   ----------------------------------------------------------------------------------------*/
+   -------------------------------------------------------------------------------------*/
 /** Returns the current node for a thread */
 silc_profile_node*
 silc_profile_get_current_node( SILC_Thread_LocationData* thread )
@@ -57,7 +57,7 @@ silc_profile_set_current_node( SILC_Thread_LocationData* thread,
 
 /*----------------------------------------------------------------------------------------
    Constructors / destriuctors
-   ----------------------------------------------------------------------------------------*/
+   -------------------------------------------------------------------------------------*/
 
 /** Initializes the profile definition struct
  */
@@ -224,7 +224,7 @@ silc_profile_create_sparse_double(
 
 /*----------------------------------------------------------------------------------------
    Helper functions
-   ----------------------------------------------------------------------------------------*/
+   -------------------------------------------------------------------------------------*/
 
 /** Updates a sparse metric struct instance for integer values */
 void
@@ -667,12 +667,16 @@ SILC_Profile_ParameterString( SILC_Thread_LocationData* thread,
     /* Now node points to the newly entered region */
 
     /* Store start values for dense metrics */
-    parent = node->parent;
     node->count++;
-    node->implicit_time.start_value = parent->implicit_time.start_value;
-    for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
+    parent = node->parent;
+    if ( parent != NULL )
     {
-        node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
+        /* If no enclosing region is present, no dense metric valuies can be associated */
+        node->implicit_time.start_value = parent->implicit_time.start_value;
+        for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
+        {
+            node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
+        }
     }
 
     /* Update current node pointer */
@@ -734,12 +738,16 @@ SILC_Profile_ParameterInteger( SILC_Thread_LocationData* thread,
     /* Now node points to the newly entered region */
 
     /* Store start values for dense metrics */
-    parent = node->parent;
     node->count++;
-    node->implicit_time.start_value = parent->implicit_time.start_value;
-    for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
+    parent = node->parent;
+    if ( parent != NULL )
     {
-        node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
+        /* If no enclosing region is present, no dense metric valuies can be associated */
+        node->implicit_time.start_value = parent->implicit_time.start_value;
+        for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
+        {
+            node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
+        }
     }
 
     /* Update current node pointer */
