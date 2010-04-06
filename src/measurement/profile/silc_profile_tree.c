@@ -311,10 +311,52 @@ silc_profile_compare_parameter_int( silc_profile_node*   node,
     return ( data->handle == handle ) && ( data->value == value );
 }
 
+/*----------------------------------------------------------------------------------------
+   Debug
+   -------------------------------------------------------------------------------------*/
+void
+silc_profile_dump_node( silc_profile_node* node )
+{
+    printf( "\nNode: %p\n", node );
+    if ( node == NULL )
+    {
+        return;
+    }
+    printf( "node type: %d\n", node->node_type );
+    printf( "Parent: %p\n", node->parent );
+    printf( "first child: %p\n", node->first_child );
+    printf( "next_sibling: %p\n", node->next_sibling );
+    printf( "visit count: %d\n", node->count );
+    printf( "implicit time: %d\n\n", ( int )node->implicit_time.sum );
+}
+
+void
+silc_profile_dump_subtree( silc_profile_node* node )
+{
+    silc_profile_dump_node( node );
+    if ( node == NULL )
+    {
+        return;
+    }
+    if ( node->first_child != NULL )
+    {
+        silc_profile_dump_subtree( node->first_child );
+    }
+    if ( node->next_sibling != NULL )
+    {
+        silc_profile_dump_subtree( node->next_sibling );
+    }
+}
+
+void
+silc_profile_dump()
+{
+    silc_profile_dump_subtree( silc_profile.first_root_node );
+}
 
 /*----------------------------------------------------------------------------------------
    Interface implementation
-   ----------------------------------------------------------------------------------------*/
+   -------------------------------------------------------------------------------------*/
 
 void
 SILC_Profile_Initialize( int32_t             numDenseMetrics,
@@ -434,9 +476,7 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
-    node   = silc_profile_get_current_node( thread );
-    parent = node;
-
+    node = silc_profile_get_current_node( thread );
     if ( node == NULL )
     {
         SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
@@ -465,8 +505,8 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
     }
     while ( ( node->node_type != silc_profile_node_regular_region ) &&
             ( parent != NULL ) );
-
     /* If this was a parameter node also exit next level node */
+
     if ( ( node->node_type != silc_profile_node_regular_region ) &&
          ( node->type_specific_data != region ) )
     {
@@ -477,7 +517,7 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
     }
 
     /* Update current node */
-    silc_profile_set_current_node( thread, node );
+    silc_profile_set_current_node( thread, parent );
 }
 
 void
