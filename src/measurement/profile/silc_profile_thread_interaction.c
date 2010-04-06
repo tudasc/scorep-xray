@@ -151,9 +151,9 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
 
     /* Check wether such a activation node already exists */
     node = root->first_child;
-    while ( ( node != NULL ) ||
-            ( ( node->node_type == silc_profile_node_thread_start ) &&
-              ( creation_point == ( silc_profile_node* )( int )node->type_specific_data ) ) )
+    while ( ( node != NULL ) &&
+            ( node->node_type == silc_profile_node_thread_start ) &&
+            ( creation_point == ( silc_profile_node* )( int )node->type_specific_data ) )
     {
         node = node->next_sibling;
     }
@@ -256,8 +256,8 @@ SILC_Profile_OnFork( SILC_Thread_LocationData* threadData,
     /* At least one child exists: Search if the region was entered before */
     else
     {
-        while ( ( child->next_sibling != NULL ) ||
-                ( ( child->node_type != silc_profile_node_thread_fork ) ) )
+        while ( ( child->next_sibling != NULL ) &&
+                ( child->node_type != silc_profile_node_thread_fork ) )
         {
             child = child->next_sibling;
         }

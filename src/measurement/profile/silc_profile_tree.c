@@ -320,6 +320,10 @@ void
 SILC_Profile_Initialize( int32_t             numDenseMetrics,
                          SILC_CounterHandle* metrics )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY,
+                       "Initialize profile with %d dense metrics\n",
+                       numDenseMetrics );
+
     if ( silc_profile_is_initialized )
     {
         return;
@@ -333,6 +337,9 @@ SILC_Profile_Initialize( int32_t             numDenseMetrics,
 void
 SILC_Profile_Finalize()
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY,
+                       "Delete profile definition." );
+
     /* Set the flag to uninitialized */
     silc_profile_is_initialized = false;
 
@@ -381,9 +388,9 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
         /* At least one child exists: Search if the region was entered before */
         else
         {
-            while ( ( child->next_sibling != NULL ) ||
-                    ( child->node_type != silc_profile_node_regular_region ) ||
-                    ( child->type_specific_data != region ) )
+            while ( ( child->next_sibling != NULL ) &&
+                    ( ( child->node_type != silc_profile_node_regular_region ) ||
+                      ( child->type_specific_data != region ) ) )
             {
                 child = child->next_sibling;
             }
@@ -599,8 +606,8 @@ SILC_Profile_ParameterString( SILC_Thread_LocationData* thread,
     /* At least one child exists: Search if the region was entered before */
     else
     {
-        while ( ( child->next_sibling != NULL ) ||
-                ( !silc_profile_compare_parameter_string( child, param, string ) ) )
+        while ( ( child->next_sibling != NULL ) &&
+                !silc_profile_compare_parameter_string( child, param, string ) )
         {
             child = child->next_sibling;
         }
@@ -666,7 +673,7 @@ SILC_Profile_ParameterInteger( SILC_Thread_LocationData* thread,
     /* At least one child exists: Search if the region was entered before */
     else
     {
-        while ( ( child->next_sibling != NULL ) ||
+        while ( ( child->next_sibling != NULL ) &&
                 ( !silc_profile_compare_parameter_int( child, param, value ) ) )
         {
             child = child->next_sibling;
