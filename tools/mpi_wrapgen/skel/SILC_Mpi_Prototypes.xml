@@ -1,5 +1,5 @@
 <prototypes count="311" family="mpi" >
-<prototype name="MPI_Abort" rtype="int" group="ext" guard="extra,ext" >
+<prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type="MPI_Comm" name="comm" />
     <param access="i" type="int" name="errorcode" />
     <version id="1.0" />

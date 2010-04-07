@@ -116,7 +116,7 @@ silc_mpi_register_regions()
     /* Define source file handle for MPI functions */
     SILC_SourceFileHandle file_id = SILC_DefineSourceFile( "MPI" );
 
-#if HAVE( DECL_PMPI_ABORT ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_EXT ) && !defined( MPI_Abort )
+#if HAVE( DECL_PMPI_ABORT )
     if ( silc_mpi_enabled & SILC_MPI_ENABLED_EXT )
     {
         silc_mpi_regid[ SILC__MPI_ABORT ] =

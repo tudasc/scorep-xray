@@ -15,7 +15,42 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gext+tint) skel/SILC_Mpi_Std.w
+#if HAVE(DECL_PMPI_ABORT)
+/**
+ * Measurement wrapper for MPI_Abort
+ * @note Manually adapted wrapper
+ * @note C interface
+ * @note Introduced with MPI 1.0
+ * @ingroup ext
+ */
+int MPI_Abort(MPI_Comm comm,
+              int      errorcode)
+{
+  int return_val;
+
+  SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_MPI,
+                     "Explicit MPI_Abort call abandoning the SILC measurement.");
+
+  if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_EXT))
+  {
+    SILC_MPI_EVENT_GEN_OFF();
+    SILC_EnterRegion(silc_mpi_regid[SILC__MPI_ABORT]);
+
+    return_val = PMPI_Abort(comm, errorcode);
+
+    SILC_ExitRegion(silc_mpi_regid[SILC__MPI_ABORT]);
+    SILC_MPI_EVENT_GEN_ON();
+  }
+  else
+  {
+    return_val = PMPI_Abort(comm, errorcode);
+  }
+
+  return return_val;
+}
+#endif
+
+#pragma wrapgen multiple restrict(gext+tint+!nMPI_Abort) skel/SILC_Mpi_Std.w
 
 /**
  * @}
