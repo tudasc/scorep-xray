@@ -70,6 +70,10 @@ SILC_GetExperimentDirName()
 void
 SILC_CreateExperimentDir()
 {
+    if ( silc_is_experiment_dir_created )
+    {
+        return;
+    }
     silc_create_experiment_dir_name();
     silc_create_experiment_dir( silc_experiment_dir_name,
                                 dir_name_size,

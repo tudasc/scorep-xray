@@ -45,7 +45,7 @@ typedef struct SILC_Thread_ThreadPrivateData SILC_Thread_ThreadPrivateData;
 
 
 /* *INDENT-OFF* */
-static SILC_Thread_LocationData* silc_thread_create_location_data();
+static void silc_thread_create_location_data_for(SILC_Thread_ThreadPrivateData* tpd);
 static SILC_Thread_ThreadPrivateData* silc_thread_create_thread_private_data();
 static void silc_thread_call_externals_on_new_location(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
 static void silc_thread_call_externals_on_new_thread(SILC_Thread_LocationData* locationData, SILC_Thread_LocationData* parent);
@@ -99,13 +99,16 @@ SILC_Thread_Initialize()
     assert( location_counter == 0 );
     assert( pomp_tpd == 0 );
 
-    initial_location = silc_thread_create_location_data();
-    assert( initial_location->location_id == 0 );
-    initial_thread                = silc_thread_create_thread_private_data();
-    initial_thread->parent        = 0;
-    initial_thread->location_data = initial_location;
+    initial_thread         = silc_thread_create_thread_private_data();
+    initial_thread->parent = 0;
 
-    silc_thread_update_tpd( initial_thread );
+    silc_thread_create_location_data_for( initial_thread );
+
+    assert( pomp_tpd );
+    assert( TPD );
+    assert( TPD->is_active );
+    assert( TPD->location_data->location_id == 0 );
+
     silc_thread_call_externals_on_new_thread( TPD->location_data, 0 );
     silc_thread_call_externals_on_new_location( TPD->location_data, 0 );
     silc_thread_call_externals_on_thread_activation( TPD->location_data, 0 );
@@ -146,15 +149,22 @@ silc_thread_call_externals_on_thread_activation( SILC_Thread_LocationData* locat
 }
 
 
-SILC_Thread_LocationData*
-silc_thread_create_location_data()
+void
+silc_thread_create_location_data_for( SILC_Thread_ThreadPrivateData* tpd )
 {
     // need synchronized malloc here
     SILC_Thread_LocationData* new_location;
-    new_location                = malloc( sizeof( SILC_Thread_LocationData ) );
+    new_location = malloc( sizeof( SILC_Thread_LocationData ) );
+    assert( new_location );
+    assert( tpd->location_data == 0 );
+    tpd->location_data = new_location;
+
+    silc_thread_update_tpd( 0 );   // don't access TPD during page manager creation
     new_location->page_managers = SILC_Memory_CreatePageManagers();
-    new_location->profile_data  = SILC_Profile_CreateLocationData();
-    new_location->trace_data    = SILC_Trace_CreateLocationData();
+    silc_thread_update_tpd( tpd ); // from here on clients can use SILC_Thread_GetLocationData, i.e. TPD
+
+    new_location->profile_data = SILC_Profile_CreateLocationData();
+    new_location->trace_data   = SILC_Trace_CreateLocationData();
 
     #pragma omp critical (new_location)
     {
@@ -347,6 +357,7 @@ SILC_Thread_GetLocationData()
             // already been in this thread
             assert( !( *my_tpd )->is_active );
             ( *my_tpd )->is_active = true;
+            silc_thread_update_tpd( *my_tpd );
         }
         else
         {
@@ -356,17 +367,17 @@ SILC_Thread_GetLocationData()
             {
                 // reuse parents location data
                 ( *my_tpd )->location_data = TPD->location_data;
+                silc_thread_update_tpd( *my_tpd );
             }
             else
             {
-                ( *my_tpd )->location_data = silc_thread_create_location_data();
+                silc_thread_create_location_data_for( my_tpd );
                 silc_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
                                                             TPD->location_data );
             }
             silc_thread_call_externals_on_new_thread( ( *my_tpd )->location_data,
                                                       TPD->location_data );
         }
-        silc_thread_update_tpd( *my_tpd );
     }
     silc_thread_call_externals_on_thread_activation( TPD->location_data,
                                                      TPD->parent->location_data );
