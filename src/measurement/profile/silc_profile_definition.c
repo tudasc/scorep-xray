@@ -1,0 +1,113 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+/**
+ * @file silc_profile_definition.c
+ * Implementation of the profile definition.
+ *
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *
+ * @status ALPHA
+ *
+ */
+
+#include <stddef.h>
+#include <stdio.h>
+
+#include "SILC_Memory.h"
+
+#include "silc_profile_definition.h"
+
+silc_profile_definition silc_profile;
+
+bool                    silc_profile_is_initialized = false;
+
+/*----------------------------------------------------------------------------------------
+   Constructors / destriuctors
+   -------------------------------------------------------------------------------------*/
+
+/** Initializes the profile definition struct
+ */
+void
+silc_profile_init_definition( int32_t             numDenseMetrics,
+                              SILC_CounterHandle* metrics )
+{
+    int i;
+    silc_profile.first_root_node      = NULL;
+    silc_profile.num_of_dense_metrics = numDenseMetrics;
+    silc_profile.dense_metrics        = ( SILC_CounterHandle* )
+                                        SILC_Memory_AllocForProfile( numDenseMetrics * sizeof( SILC_CounterHandle ) );
+
+    for ( i = 0; i < numDenseMetrics; i++ )
+    {
+        silc_profile.dense_metrics[ i ] = metrics[ i ];
+    }
+}
+
+/** Resets the profile definition struct
+ */
+void
+silc_profile_delete_definition()
+{
+    silc_profile.first_root_node      = NULL;
+    silc_profile.num_of_dense_metrics = 0;
+    if ( silc_profile.dense_metrics )
+    {
+        silc_profile.dense_metrics = NULL;
+    }
+}
+
+/*----------------------------------------------------------------------------------------
+   Debug
+   -------------------------------------------------------------------------------------*/
+void
+silc_profile_dump_node( silc_profile_node* node )
+{
+    printf( "\nNode: %p\n", node );
+    if ( node == NULL )
+    {
+        return;
+    }
+    printf( "node type: %d\n", node->node_type );
+    printf( "parent: %p\n", node->parent );
+    printf( "first child: %p\n", node->first_child );
+    printf( "next_sibling: %p\n", node->next_sibling );
+    printf( "visit count: %d\n", node->count );
+    printf( "implicit time: %d\n\n", ( int )node->implicit_time.sum );
+}
+
+void
+silc_profile_dump_subtree( silc_profile_node* node )
+{
+    silc_profile_dump_node( node );
+    if ( node == NULL )
+    {
+        return;
+    }
+    if ( node->first_child != NULL )
+    {
+        silc_profile_dump_subtree( node->first_child );
+    }
+    if ( node->next_sibling != NULL )
+    {
+        silc_profile_dump_subtree( node->next_sibling );
+    }
+}
+
+void
+silc_profile_dump()
+{
+    silc_profile_dump_subtree( silc_profile.first_root_node );
+}

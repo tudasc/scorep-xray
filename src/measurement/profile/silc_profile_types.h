@@ -36,40 +36,6 @@ typedef void* SILC_CallpathHandle;
 
 typedef void* SILC_StringHandle;
 
-/** Contains the data for one dens metric */
-typedef struct
-{
-    uint64_t sum;
-    uint64_t min;
-    uint64_t max;
-    uint64_t squares;
-    uint64_t start_value;
-} silc_profile_dense_metric;
-
-/** Contains the data for a sparse metric of integer values */
-typedef struct silc_profile_sparse_metric_int_struct
-{
-    SILC_CounterHandle                            metric;
-    uint64_t                                      count;
-    uint64_t                                      sum;
-    uint64_t                                      min;
-    uint64_t                                      max;
-    uint64_t                                      squares;
-    struct silc_profile_sparse_metric_int_struct* next_metric;
-} silc_profile_sparse_metric_int;
-
-/** Contains the data for a sparse metric of double values */
-typedef struct silc_profile_sparse_metric_double_struct
-{
-    SILC_CounterHandle                               metric;
-    uint64_t                                         count;
-    uint64_t                                         sum;
-    uint64_t                                         min;
-    uint64_t                                         max;
-    uint64_t                                         squares;
-    struct silc_profile_sparse_metric_double_struct* next_metric;
-} silc_profile_sparse_metric_double;
-
 /** List of profile node types */
 typedef enum
 {
