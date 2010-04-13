@@ -233,7 +233,8 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
     SILC_PROFILE_ASSURE_INITIALIZED;
 
     node = silc_profile_find_or_create_child( thread, silc_profile_node_regular_region,
-                                              region, timestamp );
+                                              SILC_PROFILE_REGION2DATA( region ),
+                                              timestamp );
 
     /* Store start values for dense metrics */
     node->count++;
@@ -295,7 +296,7 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
     /* If this was a parameter node also exit next level node */
 
     if ( ( node->node_type != silc_profile_node_regular_region ) &&
-         ( node->type_specific_data != region ) )
+         ( SILC_PROFILE_DATA2REGION( node->type_specific_data ) != region ) )
     {
         SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
                     "Exit event for other than current region occured" );

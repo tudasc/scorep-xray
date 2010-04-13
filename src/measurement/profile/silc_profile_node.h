@@ -111,6 +111,24 @@ typedef struct
 } silc_profile_string_node_data;
 
 /* ***************************************************************************************
+   Defines
+*****************************************************************************************/
+
+/**
+   @def SILC_PROFILE_REGION2DATA( handle )
+   Casts a region handle to node specific data type.
+   @param handle The region handle which is casted to node specific data.
+ */
+#define SILC_PROFILE_REGION2DATA( handle ) ( ( int )handle )
+
+/**
+   @def SILC_PROFILE_DATA2REGION( data )
+   Casts a node specific data item to a region handle.
+   @param data The node specific data that is casted to a region handle.
+ */
+#define SILC_PROFILE_DATA2REGION( data )   ( ( SILC_RegionHandle )( int )data )
+
+/* ***************************************************************************************
    Functions
 *****************************************************************************************/
 
