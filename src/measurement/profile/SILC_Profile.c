@@ -42,6 +42,7 @@ struct SILC_Profile_LocationData
     silc_profile_node* root_node;     // Root node of this thread
     silc_profile_node* fork_node;     // Last Fork node created by this thread
     silc_profile_node* creation_node; // Node where the thread was created
+    uint32_t           current_depth; // Stores the current length of the callpath
 };
 
 /* ***************************************************************************************
@@ -154,7 +155,9 @@ silc_profile_setup_start_from_parent( silc_profile_node* node )
 *****************************************************************************************/
 
 void
-SILC_Profile_Initialize( int32_t             numDenseMetrics,
+SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
+                         uint32_t            maxCallpathNum,
+                         int32_t             numDenseMetrics,
                          SILC_CounterHandle* metrics )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY,
@@ -168,7 +171,8 @@ SILC_Profile_Initialize( int32_t             numDenseMetrics,
 
     silc_profile_is_initialized = true;
 
-    silc_profile_init_definition( numDenseMetrics, metrics );
+    silc_profile_init_definition( maxCallpathDepth, maxCallpathNum,
+                                  numDenseMetrics, metrics );
 }
 
 void
@@ -197,6 +201,7 @@ SILC_Profile_CreateLocationData()
     data->root_node     = NULL;
     data->fork_node     = NULL;
     data->creation_node = NULL;
+    data->current_depth = 0;
 
     return data;
 }
@@ -248,11 +253,16 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
                    uint64_t                  timestamp,
                    uint64_t*                 metrics )
 {
-    int                i;
-    silc_profile_node* node   = NULL;
-    silc_profile_node* parent = NULL;
+    int                        i;
+    silc_profile_node*         node   = NULL;
+    silc_profile_node*         parent = NULL;
+    SILC_Profile_LocationData* location;
 
     SILC_PROFILE_ASSURE_INITIALIZED;
+
+    /* Get current node */
+    location = SILC_Thread_GetProfileLocationData( thread );
+    SILC_ASSERT( location != NULL );
 
     node = silc_profile_get_current_node( thread );
     if ( node == NULL )

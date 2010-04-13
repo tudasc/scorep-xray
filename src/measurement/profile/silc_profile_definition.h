@@ -24,6 +24,8 @@
  *
  */
 
+#include <stdint.h>
+
 #include "silc_profile_node.h"
 
 /** @def  SILC_PROFILE_ASSURE_INITIALIZED
@@ -50,6 +52,12 @@ typedef struct
     /** Array containing the Metric defintion handle for the metrics in dense
         representation. All enter/exit events expect the metrics in this order. */
     SILC_CounterHandle* dense_metrics;
+
+    /** Maximum possible depth of the calltree */
+    uint32_t max_callpath_depth;
+
+    /** Maximum number of callpathes */
+    uint32_t max_callpath_num;
 } silc_profile_definition;
 
 /** Global profile definition instance */
@@ -61,7 +69,9 @@ extern bool silc_profile_is_initialized;
 /** Initializes the profile definition struct
  */
 void
-silc_profile_init_definition( int32_t             numDenseMetrics,
+silc_profile_init_definition( uint32_t            max_callpath_depth,
+                              uint32_t            max_Callpath_num,
+                              uint32_t            num_dense_metrics,
                               SILC_CounterHandle* metrics );
 
 /** Resets the profile definition struct

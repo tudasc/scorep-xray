@@ -45,6 +45,17 @@ typedef struct SILC_Profile_LocationData SILC_Profile_LocationData;
 /**
    Initializes the Profiling system. Needed to be called before any other
    profile function is called.
+   @param maxCallpathDepth Allows to limit the depth of the calltree. If the current
+                           callpath becomes longer than specified by this parameter,
+                           no further child nodes for this callpath are created.
+                           This limit allows a reduction of the number of callpathes,
+                           especially, if the application contains recursive function
+                           calls.
+   @param maxCallpathNum Allows to limit the number of nodes in the calltree. If the
+                         number of nodes in the calltree reaches its limit, no further
+                         callpathes are created. All new callpathes are collapsed into
+                         a single node. This parameter allows to limit the memory
+                         usage of the profile.
    @param numDenseMetrics The number of dense metrics which are recorded for each
                           callpath. It is assumed that a metric value is provided on
                           every enter and exit event. The difference of the metric value
@@ -55,7 +66,9 @@ typedef struct SILC_Profile_LocationData SILC_Profile_LocationData;
                   the definitions in this array.
  */
 void
-SILC_Profile_Initialize( int32_t             numDenseMetrics,
+SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
+                         uint32_t            maxCallpathNum,
+                         int32_t             numDenseMetrics,
                          SILC_CounterHandle* metrics );
 
 /**

@@ -53,6 +53,9 @@ silc_profile_copy_thread_root_data( silc_profile_type_data_t data );
 static silc_profile_type_data_t
 silc_profile_copy_thread_start_data( silc_profile_type_data_t data );
 
+static silc_profile_type_data_t
+silc_profile_copy_collapse_data( silc_profile_type_data_t data );
+
 static bool
 silc_profile_compare_regular_region_data( silc_profile_type_data_t data1,
                                           silc_profile_type_data_t data2 );
@@ -76,6 +79,10 @@ silc_profile_compare_thread_root_data( silc_profile_type_data_t data1,
 static bool
 silc_profile_compare_thread_start_data( silc_profile_type_data_t data1,
                                         silc_profile_type_data_t data2 );
+
+static bool
+silc_profile_compare_collapse_data( silc_profile_type_data_t data1,
+                                    silc_profile_type_data_t data2 );
 
 /* ***************************************************************************************
    Type dependent data handling types and variables
@@ -105,7 +112,8 @@ silc_profile_type_data_func_t silc_profile_type_data_funcs[] = {
   { &silc_profile_compare_parameter_integer_data, &silc_profile_copy_parameter_integer_data },
   { &silc_profile_compare_thread_fork_data,       &silc_profile_copy_thread_fork_data       },
   { &silc_profile_compare_thread_root_data,       &silc_profile_copy_thread_root_data       },
-  { &silc_profile_compare_thread_start_data,      &silc_profile_copy_thread_start_data      }
+  { &silc_profile_compare_thread_start_data,      &silc_profile_copy_thread_start_data      },
+  { &silc_profile_compare_collapse_data,          &silc_profile_copy_collapse_data          }
 };
 
 /* *INDENT-ON* */
@@ -160,6 +168,12 @@ silc_profile_copy_thread_start_data( silc_profile_type_data_t data )
     return data;
 }
 
+static silc_profile_type_data_t
+silc_profile_copy_collapse_data( silc_profile_type_data_t data )
+{
+    return data;
+}
+
 static bool
 silc_profile_compare_regular_region_data( silc_profile_type_data_t data1,
                                           silc_profile_type_data_t data2 )
@@ -206,6 +220,13 @@ silc_profile_compare_thread_start_data( silc_profile_type_data_t data1,
                                         silc_profile_type_data_t data2 )
 {
     return data1 == data2;
+}
+
+static bool
+silc_profile_compare_collapse_data( silc_profile_type_data_t data1,
+                                    silc_profile_type_data_t data2 )
+{
+    return true;
 }
 
 /* ***************************************************************************************

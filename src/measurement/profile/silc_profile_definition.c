@@ -30,6 +30,10 @@
 
 #include "silc_profile_definition.h"
 
+/*----------------------------------------------------------------------------------------
+   Global variables
+   -------------------------------------------------------------------------------------*/
+
 silc_profile_definition silc_profile;
 
 bool                    silc_profile_is_initialized = false;
@@ -41,16 +45,20 @@ bool                    silc_profile_is_initialized = false;
 /** Initializes the profile definition struct
  */
 void
-silc_profile_init_definition( int32_t             numDenseMetrics,
+silc_profile_init_definition( uint32_t            max_callpath_depth,
+                              uint32_t            max_callpath_num,
+                              uint32_t            num_dense_metrics,
                               SILC_CounterHandle* metrics )
 {
     int i;
     silc_profile.first_root_node      = NULL;
-    silc_profile.num_of_dense_metrics = numDenseMetrics;
+    silc_profile.max_callpath_depth   = max_callpath_depth;
+    silc_profile.max_callpath_num     = max_callpath_num;
+    silc_profile.num_of_dense_metrics = num_dense_metrics;
     silc_profile.dense_metrics        = ( SILC_CounterHandle* )
-                                        SILC_Memory_AllocForProfile( numDenseMetrics * sizeof( SILC_CounterHandle ) );
+                                        SILC_Memory_AllocForProfile( num_dense_metrics * sizeof( SILC_CounterHandle ) );
 
-    for ( i = 0; i < numDenseMetrics; i++ )
+    for ( i = 0; i < num_dense_metrics; i++ )
     {
         silc_profile.dense_metrics[ i ] = metrics[ i ];
     }

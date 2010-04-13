@@ -56,7 +56,8 @@ typedef enum
     silc_profile_node_parameter_integer,
     silc_profile_node_thread_fork,
     silc_profile_node_thread_root,
-    silc_profile_node_thread_start
+    silc_profile_node_thread_start,
+    silc_profile_node_collapse
 } silc_profile_node_type;
 
 /**
