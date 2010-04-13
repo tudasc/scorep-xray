@@ -159,9 +159,11 @@ silc_thread_create_location_data_for( SILC_Thread_ThreadPrivateData* tpd )
     assert( tpd->location_data == 0 );
     tpd->location_data = new_location;
 
-    silc_thread_update_tpd( 0 );   // don't access TPD during page manager creation
+    silc_thread_update_tpd( 0 );   // don't access TPD during page
+                                   // manager creation
     new_location->page_managers = SILC_Memory_CreatePageManagers();
-    silc_thread_update_tpd( tpd ); // from here on clients can use SILC_Thread_GetLocationData, i.e. TPD
+    silc_thread_update_tpd( tpd ); // from here on clients can use
+                                   // SILC_Thread_GetLocationData, i.e. TPD
 
     new_location->profile_data = SILC_Profile_CreateLocationData();
     new_location->trace_data   = SILC_Trace_CreateLocationData();
@@ -172,8 +174,6 @@ silc_thread_create_location_data_for( SILC_Thread_ThreadPrivateData* tpd )
         new_location->next            = location_list_head_dummy.next;
         location_list_head_dummy.next = new_location;
     }
-
-    return new_location;
 }
 
 
