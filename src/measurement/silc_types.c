@@ -26,16 +26,7 @@
 
 #include "silc_types.h"
 #include "silc_definition_structs.h"
-
-typedef struct silc_any_definition silc_any_definition;
-typedef silc_any_definition*       silc_any_handle;
-
-struct silc_any_definition
-{
-    void*    next;
-    uint64_t id;
-};
-
+#include "silc_definition_handles.h"
 
 /**
  * Generic function to convert a type with an invalid value into a string.

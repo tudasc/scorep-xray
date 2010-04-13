@@ -39,7 +39,7 @@
 #include "silc_types.h"
 #include "silc_trace_types.h"
 #include "silc_thread.h"
-
+#include "silc_definition_handles.h"
 
 
 /**
@@ -63,7 +63,7 @@ SILC_EnterRegion
     OTF2_EvtWriter_Enter( SILC_Thread_GetTraceLocationData( location )->otf_writer,
                           NULL,
                           SILC_GetClockTicks(),
-                          regionHandle );
+                          ( ( silc_any_definition* )regionHandle )->id );
 }
 
 
@@ -88,7 +88,7 @@ SILC_ExitRegion
     OTF2_EvtWriter_Leave( SILC_Thread_GetTraceLocationData( location )->otf_writer,
                           NULL,
                           SILC_GetClockTicks(),
-                          regionHandle );
+                          ( ( silc_any_definition* )regionHandle )->id );
 }
 
 
@@ -122,7 +122,7 @@ SILC_MpiSend
                             OTF2_MPI_BLOCK,
                             SILC_Thread_GetTraceLocationData( location )->otf_location,
                             globalDestinationRank,
-                            communicatorHandle,
+                            ( ( silc_any_definition* )communicatorHandle )->id,
                             tag,
                             bytesSent );
 }
@@ -158,7 +158,7 @@ SILC_MpiRecv
                             OTF2_MPI_BLOCK,
                             globalSourceRank,
                             SILC_Thread_GetTraceLocationData( location )->otf_location,
-                            communicatorHandle,
+                            ( ( silc_any_definition* )communicatorHandle )->id,
                             tag,
                             bytesReceived );
 }
@@ -199,7 +199,7 @@ SILC_MpiCollective
                                   NULL,
                                   SILC_GetClockTicks(),
                                   OTF2_MPI_BARRIER,
-                                  communicatorHandle,
+                                  ( ( silc_any_definition* )communicatorHandle )->id,
                                   globalRootRank,
                                   bytesSent,
                                   bytesReceived );
