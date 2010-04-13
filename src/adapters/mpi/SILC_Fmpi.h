@@ -35,10 +35,23 @@
 #include <string.h>
 #include <mpi.h>
 
-#if defined( __sun ) || defined( _SX ) || defined( OPEN_MPI ) || defined( HP_MPI )
+#if defined( __sun ) || defined( _SX ) || defined( OPEN_MPI ) || defined( HP_MPI ) || \
+    defined( SGI_MPT )
 #  define NEED_F2C_CONV
 #endif
 
 extern int silc_mpi_status_size;
 
-#endif /* SILC_FMPI_H */
+#if defined( SGI_MPT )
+
+  #if !( HAVE( DECL_PMPI_STATUS_F2C ) )
+  #define PMPI_Status_f2c( f, c ) memcpy( ( c ), ( f ), silc_mpi_status_size )
+  #endif /* !HAVE( DECL_PMPI_STATUS_F2C ) */
+
+  #if !( HAVE( DECL_PMPI_STATUS_C2F ) )
+  #define PMPI_Status_c2f( c, f ) memcpy( ( f ), ( c ), silc_mpi_status_size )
+  #endif /* !HAVE( DECL_PMPI_STATUS_C2F ) */
+
+#endif   /* SGI_MPT */
+
+#endif   /* SILC_FMPI_H */

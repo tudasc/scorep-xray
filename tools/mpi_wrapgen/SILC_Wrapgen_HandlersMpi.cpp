@@ -379,7 +379,7 @@ SILC::Wrapgen::handler::mpi::cleanup_f2c_c2f
             }
             if ( striped_type == "MPI_Status" )
             {
-                str += "MPI_Status_c2f(&c_" + arg.get_name() + ", " + arg.get_name() + ");";
+                str += "PMPI_Status_c2f(&c_" + arg.get_name() + ", " + arg.get_name() + ");";
             }
             else
             {

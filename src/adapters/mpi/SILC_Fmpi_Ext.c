@@ -459,7 +459,7 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status,
     MPI_Status c_status;
     PMPI_Status_f2c( status, &c_status );
     *ierr = MPI_Status_set_cancelled( &c_status, *flag );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
@@ -480,7 +480,7 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status,
     MPI_Status c_status;
     PMPI_Status_f2c( status, &c_status );
     *ierr = MPI_Status_set_elements( &c_status, PMPI_Type_f2c( *datatype ), *count );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 

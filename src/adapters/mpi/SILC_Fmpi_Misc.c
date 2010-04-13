@@ -1057,7 +1057,7 @@ FSUB( MPI_Request_get_status )( MPI_Fint* request,
 {
     MPI_Status c_status;
     *ierr = MPI_Request_get_status( PMPI_Request_f2c( *request ), flag, &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 

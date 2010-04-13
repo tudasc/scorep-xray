@@ -1205,13 +1205,13 @@ FSUB( MPI_Wait )( MPI_Fint* request,
     MPI_Request lrequest;
     MPI_Status  c_status;
 
-    lrequest = MPI_Request_f2c( *request );
+    lrequest = PMPI_Request_f2c( *request );
     *ierr    = MPI_Wait( &lrequest, &c_status );
-    *request = MPI_Request_c2f( lrequest );
+    *request = PMPI_Request_c2f( lrequest );
 
     if ( *ierr == MPI_SUCCESS )
     {
-        MPI_Status_c2f( &c_status, status );
+        PMPI_Status_c2f( &c_status, status );
     }
 }
 #endif
@@ -1238,7 +1238,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
         c_status = alloc_status_array( *count );
         for ( i = 0; i < *count; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
 
@@ -1252,7 +1252,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
     {
         for ( i = 0; i < *count; i++ )
         {
-            MPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i * silc_mpi_status_size ] ) );
+            PMPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i * silc_mpi_status_size ] ) );
         }
     }
 }
@@ -1282,7 +1282,7 @@ FSUB( MPI_Waitany )( MPI_Fint* count,
         lrequest = alloc_request_array( *count );
         for ( i = 0; i < *count; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
 
@@ -1292,13 +1292,13 @@ FSUB( MPI_Waitany )( MPI_Fint* count,
     {
         if ( *index >= 0 )
         {
-            array_of_requests[ *index ] = MPI_Request_c2f( lrequest[ *index ] );
+            array_of_requests[ *index ] = PMPI_Request_c2f( lrequest[ *index ] );
 
             /* See the description of waitany in the standard;
                the Fortran index ranges are from 1, not zero */
             ( *index )++;
         }
-        MPI_Status_c2f( &c_status, status );
+        PMPI_Status_c2f( &c_status, status );
     }
 }
 #endif
@@ -1330,7 +1330,7 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
         c_status = alloc_status_array( *incount );
         for ( i = 0; i < *incount; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
 
@@ -1346,7 +1346,7 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
             {
                 if ( indices[ i ] >= 0 )
                 {
-                    array_of_requests[ indices[ i ] ] = MPI_Request_c2f( lrequest[ indices[ i ] ] );
+                    array_of_requests[ indices[ i ] ] = PMPI_Request_c2f( lrequest[ indices[ i ] ] );
                 }
             }
             else
@@ -1362,13 +1362,13 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
 
                 if ( !found )
                 {
-                    array_of_requests[ i ] = MPI_Request_c2f( lrequest[ i ] );
+                    array_of_requests[ i ] = PMPI_Request_c2f( lrequest[ i ] );
                 }
             }
         }
         for ( i = 0; i < *outcount; i++ )
         {
-            MPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i * silc_mpi_status_size ] ) );
+            PMPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i * silc_mpi_status_size ] ) );
             /* See the description of waitsome in the standard;
                the Fortran index ranges are from 1, not zero */
             if ( indices[ i ] >= 0 )
@@ -1393,17 +1393,17 @@ FSUB( MPI_Test )( MPI_Fint* request,
                   MPI_Fint* ierr )
 {
     MPI_Status  c_status;
-    MPI_Request lrequest = MPI_Request_f2c( *request );
+    MPI_Request lrequest = PMPI_Request_f2c( *request );
 
     *ierr = MPI_Test( &lrequest, flag, &c_status );
     if ( *ierr != MPI_SUCCESS )
     {
         return;
     }
-    *request = MPI_Request_c2f( lrequest );
+    *request = PMPI_Request_c2f( lrequest );
     if ( flag )
     {
-        MPI_Status_c2f( &c_status, status );
+        PMPI_Status_c2f( &c_status, status );
     }
 }
 #endif
@@ -1433,7 +1433,7 @@ FSUB( MPI_Testany )( MPI_Fint* count,
         lrequest = alloc_request_array( *count );
         for ( i = 0; i < *count; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
     *ierr = MPI_Testany( *count, lrequest, index, flag, &c_status );
@@ -1442,13 +1442,13 @@ FSUB( MPI_Testany )( MPI_Fint* count,
         if ( *flag && *index >= 0 )
         {
             /* index may be MPI_UNDEFINED if all are null */
-            array_of_requests[ *index ] = MPI_Request_c2f( lrequest[ *index ] );
+            array_of_requests[ *index ] = PMPI_Request_c2f( lrequest[ *index ] );
 
             /* See the description of waitany in the standard;
                the Fortran index ranges are from 1, not zero */
             ( *index )++;
         }
-        MPI_Status_c2f( &c_status, status );
+        PMPI_Status_c2f( &c_status, status );
     }
 }
 #endif
@@ -1477,19 +1477,19 @@ FSUB( MPI_Testall )( MPI_Fint* count,
         c_status = alloc_status_array( *count );
         for ( i = 0; i < *count; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
     *ierr = MPI_Testall( *count, lrequest, flag, c_status );
     for ( i = 0; i < *count; i++ )
     {
-        array_of_requests[ i ] = MPI_Request_c2f( lrequest[ i ] );
+        array_of_requests[ i ] = PMPI_Request_c2f( lrequest[ i ] );
     }
     if ( *ierr == MPI_SUCCESS && *flag )
     {
         for ( i = 0; i < *count; i++ )
         {
-            MPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i * silc_mpi_status_size ] ) );
+            PMPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i * silc_mpi_status_size ] ) );
         }
     }
 }
@@ -1521,7 +1521,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
         c_status = alloc_status_array( *incount );
         for ( i = 0; i < *incount; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
 
@@ -1533,7 +1533,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
         {
             if ( i < *outcount )
             {
-                array_of_requests[ indices[ i ] ] = MPI_Request_c2f( lrequest[ indices[ i ] ] );
+                array_of_requests[ indices[ i ] ] = PMPI_Request_c2f( lrequest[ indices[ i ] ] );
             }
             else
             {
@@ -1547,13 +1547,13 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
                 }
                 if ( !found )
                 {
-                    array_of_requests[ i ] = MPI_Request_c2f( lrequest[ i ] );
+                    array_of_requests[ i ] = PMPI_Request_c2f( lrequest[ i ] );
                 }
             }
         }
         for ( i = 0; i < *outcount; i++ )
         {
-            MPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i * silc_mpi_status_size ] ) );
+            PMPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i * silc_mpi_status_size ] ) );
             /* See the description of testsome in the standard;
                the Fortran index ranges are from 1, not zero */
             if ( indices[ i ] >= 0 )
@@ -1584,7 +1584,7 @@ FSUB( MPI_Startall )( MPI_Fint* count,
         lrequest = alloc_request_array( *count );
         for ( i = 0; i < *count; i++ )
         {
-            lrequest[ i ] = MPI_Request_f2c( array_of_requests[ i ] );
+            lrequest[ i ] = PMPI_Request_f2c( array_of_requests[ i ] );
         }
     }
 
@@ -1594,7 +1594,7 @@ FSUB( MPI_Startall )( MPI_Fint* count,
     {
         for ( i = 0; i < *count; i++ )
         {
-            array_of_requests[ i ] = MPI_Request_c2f( lrequest[ i ] );
+            array_of_requests[ i ] = PMPI_Request_c2f( lrequest[ i ] );
         }
     }
 }
@@ -1610,13 +1610,13 @@ void
 FSUB( MPI_Request_free )( MPI_Fint* request,
                           MPI_Fint* ierr )
 {
-    MPI_Request lrequest = MPI_Request_f2c( *request );
+    MPI_Request lrequest = PMPI_Request_f2c( *request );
 
     *ierr = MPI_Request_free( &lrequest );
 
     if ( *ierr == MPI_SUCCESS )
     {
-        *request = MPI_Request_c2f( lrequest );
+        *request = PMPI_Request_c2f( lrequest );
     }
 }
 #endif
@@ -1635,7 +1635,7 @@ FSUB( MPI_Cancel )( MPI_Fint* request,
 {
     MPI_Request lrequest;
 
-    lrequest = MPI_Request_f2c( *request );
+    lrequest = PMPI_Request_f2c( *request );
     *ierr    = MPI_Cancel( &lrequest );
 }
 #endif
@@ -1762,7 +1762,7 @@ FSUB( MPI_Iprobe )( MPI_Fint* source,
 {
     MPI_Status c_status;
     *ierr = MPI_Iprobe( *source, *tag, PMPI_Comm_f2c( *comm ), flag, &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_IRECV ) && !defined( SILC_MPI_NO_P2P ) && !defined( MPI_Irecv )
@@ -1879,7 +1879,7 @@ FSUB( MPI_Probe )( MPI_Fint* source,
 {
     MPI_Status c_status;
     *ierr = MPI_Probe( *source, *tag, PMPI_Comm_f2c( *comm ), &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_RECV ) && !defined( SILC_MPI_NO_P2P ) && !defined( MPI_Recv )
@@ -1903,7 +1903,7 @@ FSUB( MPI_Recv )( void*     buf,
 {
     MPI_Status c_status;
     *ierr = MPI_Recv( buf, *count, PMPI_Type_f2c( *datatype ), *source, *tag, PMPI_Comm_f2c( *comm ), &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_RECV_INIT ) && !defined( SILC_MPI_NO_P2P ) && !defined( MPI_Recv_init )
@@ -2046,7 +2046,7 @@ FSUB( MPI_Sendrecv )( void*     sendbuf,
 {
     MPI_Status c_status;
     *ierr = MPI_Sendrecv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), *dest, *sendtag, recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *source, *recvtag, PMPI_Comm_f2c( *comm ), &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_SENDRECV_REPLACE ) && !defined( SILC_MPI_NO_P2P ) && !defined( MPI_Sendrecv_replace )
@@ -2072,7 +2072,7 @@ FSUB( MPI_Sendrecv_replace )( void*     buf,
 {
     MPI_Status c_status;
     *ierr = MPI_Sendrecv_replace( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *sendtag, *source, *recvtag, PMPI_Comm_f2c( *comm ), &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_SSEND ) && !defined( SILC_MPI_NO_P2P ) && !defined( MPI_Ssend )

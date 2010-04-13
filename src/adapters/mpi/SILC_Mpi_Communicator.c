@@ -465,6 +465,9 @@ silc_mpi_comm_create( MPI_Comm comm )
 void
 silc_mpi_comm_free( MPI_Comm comm )
 {
+    const char* message = "You are trying to free a communicator that was "
+                          "not tracked. Maybe you used a non-standard "
+                          "MPI function call to create it.";
     /* Lock communicator definition */
     SILC_LockMPICommunicatorDefinition();
 
@@ -492,12 +495,12 @@ silc_mpi_comm_free( MPI_Comm comm )
         }
         else
         {
-            SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
+            SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "silc_mpi_comm_free1 %s", message );
         }
     }
     else
     {
-        SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
+        SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "silc_mpi_comm_free2 %s", message );
     }
 
     /* Unlock communicator definition */
@@ -536,7 +539,10 @@ silc_mpi_comm_id( MPI_Comm comm )
         }
         else
         {
-            SILC_ERROR( SILC_ERROR_MPI_NO_COMM, "" );
+            SILC_ERROR( SILC_ERROR_MPI_NO_COMM,
+                        "epk_comm_id: You are using a communicator that was "
+                        "not tracked. Maybe you used a non-standard "
+                        "MPI function call to create it." );
             return SILC_INVALID_MPI_COMMUNICATOR;
         }
     }

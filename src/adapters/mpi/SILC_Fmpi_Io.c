@@ -2377,7 +2377,7 @@ FSUB( MPI_File_read )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_read( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ALL ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_all )
@@ -2401,7 +2401,7 @@ FSUB( MPI_File_read_all )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_read_all( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ALL_BEGIN ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_all_begin )
@@ -2444,7 +2444,7 @@ FSUB( MPI_File_read_all_end )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_read_all_end( c_fh, buf, &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_at )
@@ -2467,7 +2467,7 @@ FSUB( MPI_File_read_at )( MPI_Fint*   fh,
 {
     MPI_Status c_status;
     *ierr = MPI_File_read_at( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT_ALL ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_at_all )
@@ -2490,7 +2490,7 @@ FSUB( MPI_File_read_at_all )( MPI_Fint*   fh,
 {
     MPI_Status c_status;
     *ierr = MPI_File_read_at_all( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT_ALL_BEGIN ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_at_all_begin )
@@ -2530,7 +2530,7 @@ FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh,
 {
     MPI_Status c_status;
     *ierr = MPI_File_read_at_all_end( PMPI_File_f2c( *fh ), buf, &c_status );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ORDERED ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_ordered )
@@ -2554,7 +2554,7 @@ FSUB( MPI_File_read_ordered )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_read_ordered( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ORDERED_BEGIN ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_ordered_begin )
@@ -2597,7 +2597,7 @@ FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_read_ordered_end( c_fh, buf, &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_SHARED ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_read_shared )
@@ -2621,7 +2621,7 @@ FSUB( MPI_File_read_shared )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_read_shared( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write )
@@ -2645,7 +2645,7 @@ FSUB( MPI_File_write )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ALL ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_all )
@@ -2669,7 +2669,7 @@ FSUB( MPI_File_write_all )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_all( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ALL_BEGIN ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_all_begin )
@@ -2712,7 +2712,7 @@ FSUB( MPI_File_write_all_end )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_all_end( c_fh, buf, &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_at )
@@ -2737,7 +2737,7 @@ FSUB( MPI_File_write_at )( MPI_Fint*   fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_at( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_at_all )
@@ -2762,7 +2762,7 @@ FSUB( MPI_File_write_at_all )( MPI_Fint*   fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_at_all( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL_BEGIN ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_at_all_begin )
@@ -2806,7 +2806,7 @@ FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_at_all_end( c_fh, buf, &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ORDERED ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_ordered )
@@ -2830,7 +2830,7 @@ FSUB( MPI_File_write_ordered )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_ordered( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ORDERED_BEGIN ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_ordered_begin )
@@ -2873,7 +2873,7 @@ FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_ordered_end( c_fh, buf, &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_SHARED ) && !defined( SILC_MPI_NO_IO ) && !defined( MPI_File_write_shared )
@@ -2897,7 +2897,7 @@ FSUB( MPI_File_write_shared )( MPI_Fint* fh,
     MPI_Status c_status;
     *ierr = MPI_File_write_shared( c_fh, buf, *count, PMPI_Type_f2c( *datatype ), &c_status );
     *fh   = PMPI_File_c2f( c_fh );
-    MPI_Status_c2f( &c_status, status );
+    PMPI_Status_c2f( &c_status, status );
 }
 #endif
 

@@ -959,7 +959,7 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
     MPI_Comm      ccomm;
     int           size;
 
-    ccomm = MPI_Comm_f2c( *comm );
+    ccomm = PMPI_Comm_f2c( *comm );
     PMPI_Comm_size( ccomm, &size );
 
     csendtypes = malloc( size * sizeof( MPI_Datatype ) );
@@ -967,8 +967,8 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
 
     while ( size > 0 )
     {
-        csendtypes[ size - 1 ] = MPI_Type_f2c( sendtypes[ size - 1 ] );
-        crecvtypes[ size - 1 ] = MPI_Type_f2c( recvtypes[ size - 1 ] );
+        csendtypes[ size - 1 ] = PMPI_Type_f2c( sendtypes[ size - 1 ] );
+        crecvtypes[ size - 1 ] = PMPI_Type_f2c( recvtypes[ size - 1 ] );
         --size;
     }
 
