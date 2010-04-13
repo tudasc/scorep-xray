@@ -44,6 +44,7 @@
 
 #include "silc_types.h"
 #include "silc_adapter.h"
+#include "silc_definitions.h"
 #include "silc_mpi.h"
 #include "silc_thread.h"
 #include "silc_runtime_management.h"
@@ -150,6 +151,7 @@ SILC_InitMeasurement( void )
     SILC_Thread_Initialize();
 
     SILC_DefinitionLocks_Initialize();
+    SILC_Definitions_Initialize();
 
     /* call register functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
@@ -370,6 +372,7 @@ silc_finalize( void )
         }
     }
 
+    SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();
     // keep this order as thread handling uses memory management
     SILC_Thread_Finalize();

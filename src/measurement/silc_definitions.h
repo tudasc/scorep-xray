@@ -1,3 +1,6 @@
+#ifndef SILC_INTERNAL_DEFINITIONS_H
+#define SILC_INTERNAL_DEFINITIONS_H
+
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -13,8 +16,56 @@
  *
  */
 
+/**
+ * @file       silc_definitions.h
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status alpha
+ *
+ */
 
-#ifndef SILC_INTERNAL_DEFINITIONS_H
-#define SILC_INTERNAL_DEFINITIONS_H
+#include <SILC_DefinitionHandles.h>
+#include <SILC_PublicTypes.h>
+
+#include <SILC_Memory.h>
+
+
+#define SILC_ALLOC_NEW_DEFINITION( DefinitionType )                  \
+    SILC_Memory_Allocator * allocator = 0;                            \
+    new_definition                    = SILC_MEMORY_CAST_DEFINITION_MEMORY_TO_TYPE(     \
+        SILC_Memory_AllocForDefinitions( sizeof( DefinitionType ),   \
+                                         &allocator ),                \
+        DefinitionType *,                                             \
+        allocator );
+
+
+#define SILC_DEFINITIONS_LIST_PUSH_FRONT( ListHeadDummy ) \
+    new_definition->next = ListHeadDummy.next;            \
+    ListHeadDummy.next   = new_definition;                \
+    new_definition->id   = counter;
+
+
+void
+SILC_Definitions_Initialize();
+
+void
+SILC_Definitions_Finalize();
+
+
+SILC_CallpathHandle
+SILC_DefineCallpath( SILC_CallpathHandle parent,
+                     SILC_RegionHandle   region );
+
+SILC_CallpathParameterIntegerHandle
+SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parent,
+                                     SILC_ParameterHandle param,
+                                     int64_t              value );
+
+SILC_CallpathParameterStringHandle
+SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
+                                    SILC_ParameterHandle param,
+                                    SILC_StringHandle    value );
+
+
 
 #endif /* SILC_INTERNAL_DEFINITIONS_H */

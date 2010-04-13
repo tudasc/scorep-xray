@@ -200,7 +200,8 @@ typedef SILC_Memory_MoveableMemory SILC_Memory_DefinitionMemory;
  * @see SILC_Memory_FreeDefinitionMem()
  */
 SILC_Memory_DefinitionMemory*
-SILC_Memory_AllocForDefinitions( size_t size );
+SILC_Memory_AllocForDefinitions( size_t                  size,
+                                 SILC_Memory_Allocator** allocato );
 
 
 /**

@@ -27,7 +27,9 @@
  */
 
 
+#include "SILC_DefinitionHandles.h"
 #include "SILC_Types.h"
+#include <SILC_PublicTypes.h>
 #include <stdint.h>
 
 
@@ -202,7 +204,7 @@ SILC_DefineMPIWindow
  * SILC_DefineMPICartesianCoords().
  *
  */
-SILC_MPICartTopolHandle
+SILC_MPICartesianTopologyHandle
 SILC_DefineMPICartesianTopology
 (
     const char*                topologyName,
@@ -228,9 +230,9 @@ SILC_DefineMPICartesianTopology
 void
 SILC_DefineMPICartesianCoords
 (
-    SILC_MPICartTopolHandle cartesianTopologyHandle,
-    uint32_t                nCoords,
-    const uint32_t          coordsOfCurrentRank[]
+    SILC_MPICartesianTopologyHandle cartesianTopologyHandle,
+    uint32_t                        nCoords,
+    const uint32_t                  coordsOfCurrentRank[]
 );
 
 
@@ -379,6 +381,9 @@ SILC_DefineParameter
     const char*        name,
     SILC_ParameterType type
 );
+
+
+
 
 
 /*@}*/

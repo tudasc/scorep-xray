@@ -69,109 +69,119 @@ typedef uint32_t SILC_LineNo;
  * Type of a opaque handle to a I/O file group definition.
  * @see SILC_DefineIOFileGroup()
  */
-typedef uint32_t SILC_IOFileGroupHandle;
+//typedef uint32_t SILC_IOFileGroupHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown I/O file group
  * definition.
  */
-#define SILC_INVALID_IOFILE_GROUP UINT32_MAX
+#define SILC_INVALID_IOFILE_GROUP NULL
 
 
 /**
  * Type of a opaque handle to a I/O file definition.
  * @see SILC_DefineIOFile()
  */
-typedef uint32_t SILC_IOFileHandle;
+//typedef uint32_t SILC_IOFileHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown I/O file definition.
  */
-#define SILC_INVALID_IOFILE UINT32_MAX
+#define SILC_INVALID_IOFILE NULL
 
 
 /**
  * Type of a opaque handle to a marker group definition.
  * @see SILC_DefineMarkerGroup()
  */
-typedef uint32_t SILC_MarkerGroupHandle;
+//typedef uint32_t SILC_MarkerGroupHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown marker group
  * definition.
  */
-#define SILC_INVALID_MARKER_GROUP UINT32_MAX
+#define SILC_INVALID_MARKER_GROUP NULL
 
 
 /**
  * Type of a opaque handle to a marker definition.
  * @see SILC_DefineMarker()
  */
-typedef uint32_t SILC_MarkerHandle;
+//typedef uint32_t SILC_MarkerHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown marker definition.
  */
-#define SILC_INVALID_MARKER UINT32_MAX
+#define SILC_INVALID_MARKER NULL
 
 
 /**
  * Type of a opaque handle to a MPI communicator definition.
  * @see SILC_DefineMPICommunicator()
  */
-typedef uint32_t SILC_MPICommunicatorHandle;
+//typedef uint32_t SILC_MPICommunicatorHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI communicator
  * definition.
  */
-#define SILC_INVALID_MPI_COMMUNICATOR UINT32_MAX
+#define SILC_INVALID_MPI_COMMUNICATOR NULL
 
 
 /**
  * Type of a opaque handle to a MPI window definition.
  * @see SILC_DefineMPIWindow()
  */
-typedef uint32_t SILC_MPIWindowHandle;
+//typedef uint32_t SILC_MPIWindowHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI window definition.
  */
-#define SILC_INVALID_MPI_WINDOW UINT32_MAX
+#define SILC_INVALID_MPI_WINDOW NULL
 
 
 /**
  * Type of a opaque handle to a MPI cartesion topology definition.
  * @see SILC_DefineMPICartesianTopology()
  */
-typedef uint32_t SILC_MPICartTopolHandle;
+//typedef uint32_t SILC_MPICartTopolHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI cartesion topology
  * definition.
  */
-#define SILC_INVALID_CART_TOPOLOGY UINT32_MAX
+#define SILC_INVALID_CART_TOPOLOGY NULL
 
 
 /**
  * Type of a opaque handle to a parameter definition.
  * @see SILC_DefineParameter()
  */
-typedef uint32_t SILC_ParameterHandle;
+//typedef uint32_t SILC_ParameterHandle;
 
 
 /**
  * Symbolic constant representing an invalid or unknown parameter definition.
  */
-#define SILC_INVALID_PARAMETER UINT32_MAX
+#define SILC_INVALID_PARAMETER NULL
 
+
+/**
+ * Type of a opaque handle to a callpath definition.
+ * @see SILC_DefineCallpath()
+ * @see SILC_DefineCallpathParameterInteger()
+ * @see SILC_DefineCallpathParameterString()
+ */
+//typedef void* SILC_CallpathHandle;
+
+//typedef uint32_t SILC_StringHandle;
 
 /**
  * Symbolic constant representing an invalid or unknown rank.

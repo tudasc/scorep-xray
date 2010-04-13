@@ -25,6 +25,7 @@
 
 
 #include "silc_types.h"
+#include "silc_definition_structs.h"
 
 
 /**
@@ -161,10 +162,10 @@ silc_window_to_string
 const char*
 silc_mpi_cart_topol_to_string
 (
-    char*                   stringBuffer,
-    size_t                  stringBufferSize,
-    const char*             format,
-    SILC_MPICartTopolHandle cartHandle
+    char*                           stringBuffer,
+    size_t                          stringBufferSize,
+    const char*                     format,
+    SILC_MPICartesianTopologyHandle cartHandle
 )
 {
     return silc_uint32_to_string( stringBuffer,

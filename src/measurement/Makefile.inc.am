@@ -27,6 +27,7 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SILC_RuntimeManagement.h \
     $(SRC_ROOT)src/measurement/include/SILC_Thread_Types.h      \
     $(SRC_ROOT)src/measurement/include/SILC_Types.h             \
+    $(SRC_ROOT)src/measurement/include/SILC_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/silc_adapter.h                   \
     $(SRC_ROOT)src/measurement/silc_types.c                     \
     $(SRC_ROOT)src/measurement/silc_types.h                     \
@@ -36,7 +37,11 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_mpi.h                       \
     $(SRC_ROOT)src/measurement/silc_trace_types.h               \
     $(SRC_ROOT)src/measurement/silc_runtime_management.h        \
-    $(SRC_ROOT)src/measurement/silc_definition_locking.h
+    $(SRC_ROOT)src/measurement/silc_definition_locking.h        \
+    $(SRC_ROOT)src/measurement/silc_definitions.h               \
+    $(SRC_ROOT)src/measurement/silc_definitions.c               \
+    $(SRC_ROOT)src/measurement/silc_definition_structs.h
+
 
 
 libsilc_measurement_la_CPPFLAGS =               \

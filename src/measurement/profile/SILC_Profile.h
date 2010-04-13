@@ -29,8 +29,9 @@
 
 #include <SILC_Thread_Types.h>
 #include <SILC_Types.h>
+#include <SILC_DefinitionHandles.h>
 
-typedef void* SILC_StringHandle;
+//typedef void* SILC_StringHandle;
 
 /* ------------------------------------------------------------------ Type definitions */
 

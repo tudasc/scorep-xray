@@ -26,15 +26,16 @@
 
 
 #include <SILC_Types.h>
+#include <SILC_DefinitionHandles.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 /* -------------------------------------------- Preliminary definition of missing types */
 
-typedef void* SILC_CallpathHandle;
+//typedef void* SILC_CallpathHandle; // see SILC_Types.h, all handle types will change
 #define SILC_INVALID_CALLPATH NULL
 
-typedef void* SILC_StringHandle;
+//typedef void* SILC_StringHandle;
 
 /** List of profile node types */
 typedef enum

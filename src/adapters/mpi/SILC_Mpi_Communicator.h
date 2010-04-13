@@ -41,9 +41,9 @@
 #   define EXTERN extern
 #endif
 
-#include "SILC_Types.h"
-
-#include "mpi.h"
+#include <SILC_Types.h>
+#include <SILC_DefinitionHandles.h>
+#include <mpi.h>
 
 /** Type of internal SILC group handles. Currently, Communicators and groups use
     the same realm and thus the handles are of the same type. Maybe tis changes later on.

@@ -30,6 +30,7 @@
 
 
 #include "SILC_Types.h"
+#include "SILC_DefinitionHandles.h"
 
 
 /**

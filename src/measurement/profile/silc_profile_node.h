@@ -28,7 +28,7 @@
 
 #include "silc_profile_metric.h"
 
-typedef void* SILC_CallpathHandle;
+//typedef void* SILC_CallpathHandle;
 #include "SILC_Profile.h"
 #define SILC_INVALID_CALLPATH NULL
 

@@ -17,7 +17,7 @@
 #ifndef SILC_INTERNAL_TYPES_H
 #define SILC_INTERNAL_TYPES_H
 
-
+#include <SILC_DefinitionHandles.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -236,10 +236,10 @@ silc_window_to_string
 extern const char*
 silc_mpi_cart_topol_to_string
 (
-    char*                   stringBuffer,
-    size_t                  stringBufferSize,
-    const char*             format,
-    SILC_MPICartTopolHandle cartHandle
+    char*                           stringBuffer,
+    size_t                          stringBufferSize,
+    const char*                     format,
+    SILC_MPICartesianTopologyHandle cartHandle
 );
 
 

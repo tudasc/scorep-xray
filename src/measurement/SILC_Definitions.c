@@ -27,11 +27,12 @@
  *
  */
 
-
-#include <SILC_Debug.h>
 #include <SILC_Definitions.h>
 
-
+#include <SILC_Debug.h>
+#include <SILC_DefinitionHandles.h>
+#include "silc_definition_structs.h"
+#include "silc_definitions.h"
 #include "silc_types.h"
 
 
@@ -44,15 +45,19 @@ SILC_DefineSourceFile
     const char* fileName
 )
 {
-    static SILC_SourceFileHandle next_source_file_handle;
-
+    static uint64_t counter = 0;
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new source file \"%s\":",
                        fileName );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID: %x", next_source_file_handle );
+                       "    Handle ID: %x", counter );
 
-    return next_source_file_handle++;
+    SILC_SourceFile_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_SourceFile_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_source_file_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -70,8 +75,7 @@ SILC_DefineRegion
     SILC_RegionType       regionType
 )
 {
-    static SILC_RegionHandle next_region_handle;
-
+    static uint64_t counter = 0;
 
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
@@ -79,7 +83,7 @@ SILC_DefineRegion
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new region \"%s\":", regionName );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID:   %x", next_region_handle );
+                       "    Handle ID:   %x", counter );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Source file: %s",
                        silc_source_file_to_string( stringBuffer,
@@ -102,7 +106,13 @@ SILC_DefineRegion
                        "    Region type: %s",
                        silc_region_type_to_string( regionType ) );
 
-    return next_region_handle++;
+
+    SILC_Region_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Region_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_region_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -116,12 +126,12 @@ SILC_DefineMPICommunicator
     uint32_t            sizeOfBitVectorReprOfCommGroup
 )
 {
-    static SILC_MPICommunicatorHandle next_mpi_communicator_handle;
+    static uint64_t counter = 0;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI Communicator:" );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID:   %x", next_mpi_communicator_handle );
+                       "    Handle ID:   %x", counter );
     SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS,
                            "    World ranks:" );
@@ -148,7 +158,12 @@ SILC_DefineMPICommunicator
     }
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
-    return next_mpi_communicator_handle++;
+    SILC_MPICommunicator_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPICommunicator_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_communicator_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -161,20 +176,25 @@ SILC_DefineMPIWindow
     SILC_MPICommunicatorHandle communicatorHandle
 )
 {
-    static SILC_MPIWindowHandle next_mpi_window_handle;
+    static uint64_t counter = 0;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "Define new MPI Window:" );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID: %x", next_mpi_window_handle );
+                       "    Handle ID: %x", counter );
 
-    return next_mpi_window_handle++;
+    SILC_MPIWindow_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPIWindow_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_window_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
 /**
  * Associate a MPI cartesian topology with a process unique topology handle.
  */
-SILC_MPICartTopolHandle
+SILC_MPICartesianTopologyHandle
 SILC_DefineMPICartesianTopology
 (
     const char*                topologyName,
@@ -184,13 +204,13 @@ SILC_DefineMPICartesianTopology
     const uint8_t              periodicityPerDimension[]
 )
 {
-    static SILC_MPICartTopolHandle next_mpi_cart_topol_handle;
+    static uint64_t counter = 0;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI cartesian topology \"%s\":",
                        topologyName );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID:  %x", next_mpi_cart_topol_handle );
+                       "    Handle ID:  %x", counter );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Dimensions: %u", nDimensions );
 
@@ -206,7 +226,12 @@ SILC_DefineMPICartesianTopology
                            periodicityPerDimension[ i ] );
     }
 
-    return next_mpi_cart_topol_handle++;
+    SILC_MPICartesianTopology_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPICartesianTopology_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_cartesian_topology_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -217,9 +242,9 @@ SILC_DefineMPICartesianTopology
 void
 SILC_DefineMPICartesianCoords
 (
-    SILC_MPICartTopolHandle cartesianTopologyHandle,
-    uint32_t                nCoords,
-    const uint32_t          coordsOfCurrentRank[]
+    SILC_MPICartesianTopologyHandle cartesianTopologyHandle,
+    uint32_t                        nCoords,
+    const uint32_t                  coordsOfCurrentRank[]
 )
 {
     char stringBuffer[ 16 ];
@@ -240,7 +265,13 @@ SILC_DefineMPICartesianCoords
     }
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
-    return;
+    static uint64_t                     counter        = 0;
+    SILC_MPICartesianCoords_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPICartesianCoords_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_cartesian_coords_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return /* new_definition */;
 }
 
 
@@ -255,7 +286,13 @@ SILC_DefineCounterGroup
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_COUNTER_GROUP;
+    static uint64_t               counter        = 0;
+    SILC_CounterGroup_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_CounterGroup_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_counter_group_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -273,7 +310,13 @@ SILC_DefineCounter
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_COUNTER;
+    static uint64_t          counter        = 0;
+    SILC_Counter_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Counter_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_counter_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -288,7 +331,13 @@ SILC_DefineIOFileGroup
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_IOFILE_GROUP;
+    static uint64_t              counter        = 0;
+    SILC_IOFileGroup_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_IOFileGroup_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_io_file_group_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -304,7 +353,13 @@ SILC_DefineIOFile
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_IOFILE;
+    static uint64_t         counter        = 0;
+    SILC_IOFile_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_IOFile_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_io_file_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -319,7 +374,13 @@ SILC_DefineMarkerGroup
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_MARKER_GROUP;
+    static uint64_t              counter        = 0;
+    SILC_MarkerGroup_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MarkerGroup_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_marker_group_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -335,7 +396,13 @@ SILC_DefineMarker
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_MARKER;
+    static uint64_t         counter        = 0;
+    SILC_Marker_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Marker_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_marker_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }
 
 
@@ -351,5 +418,11 @@ SILC_DefineParameter
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    return SILC_INVALID_PARAMETER;
+    static uint64_t            counter        = 0;
+    SILC_Parameter_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Parameter_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_parameter_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
 }

@@ -1,0 +1,81 @@
+#ifndef SILC_DEFINITIONHANDLES_H
+#define SILC_DEFINITIONHANDLES_H
+
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+/**
+ * @file       SILC_DefinitionHandles.h
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status alpha
+ *
+ */
+
+
+typedef struct SILC_String_Definition  SILC_String_Definition;
+typedef struct SILC_String_Definition* SILC_StringHandle;
+
+
+typedef struct SILC_MPICommunicator_Definition  SILC_MPICommunicator_Definition;
+typedef struct SILC_MPICommunicator_Definition* SILC_MPICommunicatorHandle;
+
+
+typedef struct SILC_MPIWindow_Definition  SILC_MPIWindow_Definition;
+typedef struct SILC_MPIWindow_Definition* SILC_MPIWindowHandle;
+
+
+typedef struct SILC_MPICartesianTopology_Definition  SILC_MPICartesianTopology_Definition;
+typedef struct SILC_MPICartesianTopology_Definition* SILC_MPICartesianTopologyHandle;
+
+
+typedef struct SILC_MPICartesianCoords_Definition  SILC_MPICartesianCoords_Definition;
+typedef struct SILC_MPICartesianCoords_Definition* SILC_MPICartesianCoordsHandle;
+
+
+typedef struct SILC_IOFileGroup_Definition  SILC_IOFileGroup_Definition;
+typedef struct SILC_IOFileGroup_Definition* SILC_IOFileGroupHandle;
+
+
+typedef struct SILC_IOFile_Definition  SILC_IOFile_Definition;
+typedef struct SILC_IOFile_Definition* SILC_IOFileHandle;
+
+
+typedef struct SILC_MarkerGroup_Definition  SILC_MarkerGroup_Definition;
+typedef struct SILC_MarkerGroup_Definition* SILC_MarkerGroupHandle;
+
+
+typedef struct SILC_Marker_Definition  SILC_Marker_Definition;
+typedef struct SILC_Marker_Definition* SILC_MarkerHandle;
+
+
+typedef struct SILC_Parameter_Definition  SILC_Parameter_Definition;
+typedef struct SILC_Parameter_Definition* SILC_ParameterHandle;
+
+
+typedef struct SILC_Callpath_Definition  SILC_Callpath_Definition;
+typedef struct SILC_Callpath_Definition* SILC_CallpathHandle;
+
+
+typedef struct SILC_CallpathParameterInteger_Definition  SILC_CallpathParameterInteger_Definition;
+typedef struct SILC_CallpathParameterInteger_Definition* SILC_CallpathParameterIntegerHandle;
+
+
+typedef struct SILC_CallpathParameterString_Definition  SILC_CallpathParameterString_Definition;
+typedef struct SILC_CallpathParameterString_Definition* SILC_CallpathParameterStringHandle;
+
+
+#endif /* SILC_DEFINITIONHANDLES_H */
