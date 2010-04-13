@@ -371,7 +371,7 @@ SILC_Thread_GetLocationData()
             }
             else
             {
-                silc_thread_create_location_data_for( my_tpd );
+                silc_thread_create_location_data_for( *my_tpd );
                 silc_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
                                                             TPD->location_data );
             }
