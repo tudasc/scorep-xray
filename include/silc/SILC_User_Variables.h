@@ -32,6 +32,8 @@
     system and access them efficiently.
  */
 
+#include <stddef.h>
+
 #include "SILC_PublicTypes.h"
 
 /** @ingroup SILC_User_External
