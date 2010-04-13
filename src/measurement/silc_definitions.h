@@ -51,6 +51,8 @@ SILC_Definitions_Initialize();
 void
 SILC_Definitions_Finalize();
 
+SILC_StringHandle
+SILC_DefineString( const char* str );
 
 SILC_CallpathHandle
 SILC_DefineCallpath( SILC_CallpathHandle parent,

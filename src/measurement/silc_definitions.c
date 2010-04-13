@@ -154,6 +154,19 @@ silc_delete_definition_writer( OTF2_DefWriter* definitionWriter )
 }
 
 
+SILC_StringHandle
+SILC_DefineString( const char* str )
+{
+    static uint64_t         counter        = 0;
+    SILC_String_Definition* new_definition = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_String_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_string_definitions_head_dummy )
+    // init new_definition
+    ++ counter;
+    return new_definition;
+}
+
+
 SILC_CallpathHandle
 SILC_DefineCallpath( SILC_CallpathHandle parent,
                      SILC_RegionHandle   region )
