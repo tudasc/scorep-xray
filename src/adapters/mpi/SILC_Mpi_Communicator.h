@@ -247,10 +247,30 @@ EXTERN SILC_Mpi_Rank
 silc_mpi_rank_to_pe( SILC_Mpi_Rank rank,
                      MPI_Comm      comm );
 
-EXTERN int8_t silc_mpi_comm_determination;  /* whether comm/rank determined for events */
+/** @internal
+ *  Structure to hold the \a MPI_COMM_WORLD definition.
+ */
+struct silc_mpi_world_type
+{
+    MPI_Group                  group;     /** Associated MPI group */
+    int                        size;      /** Number of ranks */
+    int                        size_grpv; /** Number of bytes used for the group vector */
+    SILC_Mpi_Rank*             ranks;     /** Array which contains the rank numbers */
+    SILC_MPICommunicatorHandle handle;    /** SILC handle */
+};
 
-/* MPI communicator |-> EPIK communicator id */
-#define SILC_MPI_COMM_ID( c ) ( !silc_mpi_comm_determination ? SILC_MPI_INVALID_RANK : ( ( ( c ) == MPI_COMM_WORLD ) ? 0 : silc_mpi_comm_id( c ) ) )
+/** Contains the data of the MPI_COMM_WORLD definition. */
+extern struct silc_mpi_world_type silc_mpi_world;
+
+EXTERN int8_t                     silc_mpi_comm_determination; /* whether comm/rank determined for events */
+
+/** @def SILC_MPI_COMM_WORLD_HANDLE
+    The SILC comminicator handle for MPI_COMM_WORLD.
+ */
+#define SILC_MPI_COMM_WORLD_HANDLE silc_mpi_world.handle
+
+/* MPI communicator |-> SILC communicator id */
+#define SILC_MPI_COMM_ID( c ) ( !silc_mpi_comm_determination ? SILC_INVALID_MPI_COMMUNICATOR : ( ( ( c ) == MPI_COMM_WORLD ) ? SILC_MPI_COMM_WORLD_HANDLE : silc_mpi_comm_id( c ) ) )
 
 /* Rank with respect to arbitrary communicator |-> global rank */
 #define SILC_MPI_RANK_TO_PE( r, c ) ( !silc_mpi_comm_determination ? SILC_MPI_INVALID_RANK : ( ( ( c ) == MPI_COMM_WORLD ) ? r : silc_mpi_rank_to_pe( r, c ) ) )

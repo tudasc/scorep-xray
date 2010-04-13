@@ -64,18 +64,6 @@
  */
 #define SILC_MPI_MAX_WINACC  50
 
-/** @internal
- *  Structure to hold the \a MPI_COMM_WORLD definition.
- */
-struct silc_mpi_world_type
-{
-    MPI_Group                  group;     /** Associated MPI group */
-    int                        size;      /** Number of ranks */
-    int                        size_grpv; /** Number of bytes used for the group vector */
-    SILC_Mpi_Rank*             ranks;     /** Array which contains the rank numbers */
-    SILC_MPICommunicatorHandle handle;    /** SILC handle */
-};
-
 /** Contains the data of the MPI_COMM_WORLD definition. */
 struct silc_mpi_world_type silc_mpi_world;
 
@@ -84,11 +72,6 @@ struct silc_mpi_world_type silc_mpi_world;
     are global ranks.
  */
 int8_t silc_mpi_comm_determination = 1;
-
-/** @def SILC_MPI_COMM_WORLD_HANDLE
-    The SILC comminicator handle for MPI_COMM_WORLD.
- */
-#define SILC_MPI_COMM_WORLD_HANDLE silc_mpi_world.handle
 
 /* ------------------------------------------------ Definitions for MPI Window handling */
 #ifndef SILC_MPI_NO_RMA

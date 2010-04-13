@@ -68,7 +68,8 @@ MPI_Cart_create( MPI_Comm  comm_old,
     if ( *comm_cart != MPI_COMM_NULL )
     {
         SILC_MPICartesianTopologyHandle topid = SILC_INVALID_CART_TOPOLOGY;
-        int32_t                         cid, my_rank, i;
+        SILC_MPICommunicatorHandle      cid;
+        int32_t                         my_rank, i;
         int32_t*                        coordv;
         uint8_t*                        uperiodv;
         uint32_t*                       udimv;
