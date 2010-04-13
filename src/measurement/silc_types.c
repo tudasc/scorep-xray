@@ -27,6 +27,15 @@
 #include "silc_types.h"
 #include "silc_definition_structs.h"
 
+typedef struct silc_any_definition silc_any_definition;
+typedef silc_any_definition*       silc_any_handle;
+
+struct silc_any_definition
+{
+    void*    next;
+    uint64_t id;
+};
+
 
 /**
  * Generic function to convert a type with an invalid value into a string.
@@ -57,6 +66,35 @@ silc_uint32_to_string
 
 
 /**
+ * Generic function to convert a type with an invalid value into a string.
+ *
+ * @note invalid will not be copied into the @a stringBuffer.
+ *
+ * @note For gcc, this function should be annotated with the
+ *       __attribute__ ((format_arg (3))) attribute.
+ */
+const char*
+silc_any_handle_to_string
+(
+    char*           stringBuffer,
+    size_t          stringBufferSize,
+    const char*     format,
+    silc_any_handle handle,
+    silc_any_handle invalidValue
+)
+{
+    if ( handle == invalidValue )
+    {
+        return "invalid";
+    }
+
+    snprintf( stringBuffer, stringBufferSize, format,
+              ( ( silc_any_definition* )handle )->id );
+    return stringBuffer;
+}
+
+
+/**
  * Converts a SILC_SourceFileHandle into a string.
  */
 const char*
@@ -68,11 +106,11 @@ silc_source_file_to_string
     SILC_SourceFileHandle handle
 )
 {
-    return silc_uint32_to_string( stringBuffer,
-                                  stringBufferSize,
-                                  format,
-                                  handle,
-                                  SILC_INVALID_SOURCE_FILE );
+    return silc_any_handle_to_string( stringBuffer,
+                                      stringBufferSize,
+                                      format,
+                                      ( silc_any_handle )handle,
+                                      SILC_INVALID_SOURCE_FILE );
 }
 
 
@@ -88,11 +126,13 @@ silc_line_number_to_string
     SILC_LineNo lineNo
 )
 {
-    return silc_uint32_to_string( stringBuffer,
-                                  stringBufferSize,
-                                  format,
-                                  lineNo,
-                                  SILC_INVALID_LINE_NO );
+    if ( lineNo == SILC_INVALID_LINE_NO )
+    {
+        return "invalid";
+    }
+
+    snprintf( stringBuffer, stringBufferSize, format, lineNo );
+    return stringBuffer;
 }
 
 
@@ -108,11 +148,11 @@ silc_region_to_string
     SILC_RegionHandle regionHandle
 )
 {
-    return silc_uint32_to_string( stringBuffer,
-                                  stringBufferSize,
-                                  format,
-                                  regionHandle,
-                                  SILC_INVALID_REGION );
+    return silc_any_handle_to_string( stringBuffer,
+                                      stringBufferSize,
+                                      format,
+                                      ( silc_any_handle )regionHandle,
+                                      SILC_INVALID_REGION );
 }
 
 
@@ -128,11 +168,11 @@ silc_comm_to_string
     SILC_MPICommunicatorHandle commHandle
 )
 {
-    return silc_uint32_to_string( stringBuffer,
-                                  stringBufferSize,
-                                  format,
-                                  commHandle,
-                                  SILC_INVALID_MPI_COMMUNICATOR );
+    return silc_any_handle_to_string( stringBuffer,
+                                      stringBufferSize,
+                                      format,
+                                      ( silc_any_handle )commHandle,
+                                      SILC_INVALID_MPI_COMMUNICATOR );
 }
 
 
@@ -148,11 +188,11 @@ silc_window_to_string
     SILC_MPIWindowHandle windowHandle
 )
 {
-    return silc_uint32_to_string( stringBuffer,
-                                  stringBufferSize,
-                                  format,
-                                  windowHandle,
-                                  SILC_INVALID_MPI_WINDOW );
+    return silc_any_handle_to_string( stringBuffer,
+                                      stringBufferSize,
+                                      format,
+                                      ( silc_any_handle )windowHandle,
+                                      SILC_INVALID_MPI_WINDOW );
 }
 
 
@@ -168,11 +208,11 @@ silc_mpi_cart_topol_to_string
     SILC_MPICartesianTopologyHandle cartHandle
 )
 {
-    return silc_uint32_to_string( stringBuffer,
-                                  stringBufferSize,
-                                  format,
-                                  cartHandle,
-                                  SILC_INVALID_CART_TOPOLOGY );
+    return silc_any_handle_to_string( stringBuffer,
+                                      stringBufferSize,
+                                      format,
+                                      ( silc_any_handle )cartHandle,
+                                      SILC_INVALID_CART_TOPOLOGY );
 }
 
 
