@@ -28,6 +28,7 @@
 #include "silc_definition_structs.h"
 #include "silc_runtime_management.h"
 #include "silc_thread.h"
+#include <SILC_Omp.h>
 #include <SILC_PublicTypes.h>
 #include <SILC_Timing.h>
 #include <OTF2_DefWriter_inc.h>
@@ -157,13 +158,16 @@ silc_delete_definition_writer( OTF2_DefWriter* definitionWriter )
 SILC_StringHandle
 SILC_DefineString( const char* str )
 {
-    static uint64_t         counter        = 0;
-    SILC_String_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_String_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_string_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    #pragma omp critical (define_string)
+    {
+        static uint64_t         counter        = 0;
+        SILC_String_Definition* new_definition = 0;
+        SILC_ALLOC_NEW_DEFINITION( SILC_String_Definition )
+        SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_string_definitions_head_dummy )
+        // init new_definition
+        ++ counter;
+        return new_definition;
+    }
 }
 
 
