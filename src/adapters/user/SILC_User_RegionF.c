@@ -144,7 +144,7 @@ FSUB( SILC_User_RegionBeginF )( SILC_Fortran_RegionHandle* handle,
     }
 
     /* Generate region event */
-    SILC_EnterRegion( ( SILC_RegionHandle ) * handle );
+    SILC_EnterRegion( SILC_F2C_REGION( *handle ) );
 }
 
 void
