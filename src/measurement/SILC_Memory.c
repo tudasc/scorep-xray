@@ -129,12 +129,10 @@ SILC_Memory_FreeSinglethreadedMiscMem()
 }
 
 
-SILC_Memory_DefinitionMemory*
-SILC_Memory_AllocForDefinitions( size_t                  size,
-                                 SILC_Memory_Allocator** allocator )
+SILC_Memory_MoveableMemory*
+SILC_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    *allocator = silc_memory_allocator;
     return SILC_Memory_AllocMoveable( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
 }
 

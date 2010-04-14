@@ -30,13 +30,10 @@
 #include <SILC_Memory.h>
 
 
-#define SILC_ALLOC_NEW_DEFINITION( DefinitionType )                  \
-    SILC_Memory_Allocator * allocator = 0;                            \
-    new_definition                    = SILC_MEMORY_CAST_DEFINITION_MEMORY_TO_TYPE(     \
-        SILC_Memory_AllocForDefinitions( sizeof( DefinitionType ),   \
-                                         &allocator ),                \
-        DefinitionType *,                                             \
-        allocator );
+#define SILC_ALLOC_NEW_DEFINITION( DefinitionType )                                 \
+    new_definition = SILC_MEMORY_DEREF_MOVABLE(                                     \
+        SILC_Memory_AllocForDefinitions( sizeof( DefinitionType ) ),                \
+        DefinitionType* );
 
 
 #define SILC_DEFINITIONS_LIST_PUSH_FRONT( ListHeadDummy ) \

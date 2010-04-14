@@ -37,7 +37,38 @@
 #include <stdint.h>
 
 
-static bool silc_definitions_initialized = false;
+typedef struct SILC_DefinitionManager SILC_DefinitionManager;
+struct SILC_DefinitionManager
+{
+    SILC_String_Definition string_definitions_head_dummy; //= { {0, 0}, 0, 0 };
+/*
+
+   SILC_SourceFile_Definition               silc_source_file_definitions_head_dummy = { 0, 0 };
+   SILC_Region_Definition                   silc_region_definitions_head_dummy = { 0, 0 };
+   SILC_MPICommunicator_Definition          silc_mpi_communicator_definitions_head_dummy = { 0, 0 };
+   SILC_MPIWindow_Definition                silc_mpi_window_definitions_head_dummy = { 0, 0 };
+   SILC_MPICartesianTopology_Definition     silc_mpi_cartesian_topology_definitions_head_dummy = { 0, 0 };
+   SILC_MPICartesianCoords_Definition       silc_mpi_cartesian_coords_definitions_head_dummy = { 0, 0 };
+   SILC_CounterGroup_Definition             silc_counter_group_definitions_head_dummy = { 0, 0 };
+   SILC_Counter_Definition                  silc_counter_definitions_head_dummy = { 0, 0 };
+   SILC_IOFileGroup_Definition              silc_io_file_group_definitions_head_dummy = { 0, 0 };
+   SILC_IOFile_Definition                   silc_io_file_definitions_head_dummy = { 0, 0 };
+   SILC_MarkerGroup_Definition              silc_marker_group_definitions_head_dummy = { 0, 0 };
+   SILC_Marker_Definition                   silc_marker_definitions_head_dummy = { 0, 0 };
+   SILC_Parameter_Definition                silc_parameter_definitions_head_dummy = { 0, 0 };
+   SILC_Callpath_Definition                 silc_callpath_definitions_head_dummy = { 0, 0 };
+   SILC_CallpathParameterInteger_Definition silc_callpath_parameter_integer_definitions_head_dummy = { 0, 0 };
+   SILC_CallpathParameterString_Definition  silc_callpath_parameter_string_definitions_head_dummy = { 0, 0 };
+ */
+};
+
+
+static SILC_DefinitionManager silc_definition_manager =
+{
+    { { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }
+    //,{{SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET}}
+};
+static bool                   silc_definitions_initialized = false;
 
 
 /* *INDENT-OFF* */
@@ -163,10 +194,22 @@ SILC_DefineString( const char* str )
 
     #pragma omp critical (define_string)
     {
-        SILC_ALLOC_NEW_DEFINITION( SILC_String_Definition )
-        SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_string_definitions_head_dummy )
+        // alloc
+        SILC_String_Definition_MovePtr* new_move_ptr = ( SILC_String_Definition_MovePtr* )
+                                                       SILC_Memory_AllocForDefinitions( sizeof( SILC_String_Definition ) );
+        new_definition = SILC_MEMORY_DEREF_MOVABLE( new_move_ptr, SILC_String_Definition* );
+
+        // push_front
+        new_definition->next                                       =  silc_definition_manager.string_definitions_head_dummy.next;
+        silc_definition_manager.string_definitions_head_dummy.next = *new_move_ptr;
+        new_definition->id                                         = counter;
+
         // init new_definition
-        ++ counter;
+        SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
+                                            ( SILC_Memory_MoveableMemory* )&( new_definition->str ) );
+        strcpy( SILC_MEMORY_DEREF_MOVABLE( &( new_definition->str ), char* ), str );
+
+        ++counter;
     }
 
     return new_definition;
@@ -220,7 +263,6 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
 // definition type dependent part starts here
 
 // dummy elements for singly linked lists
-SILC_String_Definition                   silc_string_definitions_head_dummy = { 0, 0 };
 SILC_SourceFile_Definition               silc_source_file_definitions_head_dummy = { 0, 0 };
 SILC_Region_Definition                   silc_region_definitions_head_dummy = { 0, 0 };
 SILC_MPICommunicator_Definition          silc_mpi_communicator_definitions_head_dummy = { 0, 0 };
@@ -242,10 +284,11 @@ SILC_CallpathParameterString_Definition  silc_callpath_parameter_string_definiti
 static void
 silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 {
-    SILC_String_Definition* definition = &silc_string_definitions_head_dummy;
-    while ( definition->next )
+    SILC_String_Definition* definition = &( silc_definition_manager.string_definitions_head_dummy );
+    while ( !SILC_MEMORY_MOVABLE_IS_NULL( definition->next ) )
     {
-        definition = definition->next;
+        SILC_Memory_Allocator* allocator = 0;
+        definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ), SILC_String_Definition* );
         //OTF2_DefWriter(definitionWriter, ...);
         assert( false ); // implement me
     }

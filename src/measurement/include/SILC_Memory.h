@@ -174,14 +174,6 @@ SILC_Memory_FreeSinglethreadedMiscMem();
 
 
 /**
- * Here we use moveable memory for definitions
- * only. SILC_Memory_DefinitionMemory may then be the appropriate name.
- *
- */
-typedef SILC_Memory_MoveableMemory SILC_Memory_DefinitionMemory;
-
-
-/**
  * The malloc function for definition data. It reserves a contiguous memory
  * block whose size in bytes it at least @a size. The contents of the memory
  * block is undetermined.
@@ -199,10 +191,13 @@ typedef SILC_Memory_MoveableMemory SILC_Memory_DefinitionMemory;
  *
  * @see SILC_Memory_FreeDefinitionMem()
  */
-SILC_Memory_DefinitionMemory*
-SILC_Memory_AllocForDefinitions( size_t                  size,
-                                 SILC_Memory_Allocator** allocato );
+SILC_Memory_MoveableMemory*
+SILC_Memory_AllocForDefinitions( size_t size );
 
+// don't allocate move ptr but alter it's contents
+void*
+SILC_Memory_AllocForDefinitionsRaw( size_t                      size,
+                                    SILC_Memory_MoveableMemory* moveableMemory );
 
 /**
  * Release the entire allocated definition memory.
@@ -227,6 +222,15 @@ SILC_Memory_FreeDefinitionMem();
  */
 #define SILC_MEMORY_CAST_DEFINITION_MEMORY_TO_TYPE( definition_memory_ptr, target_type, allocator ) \
     ( SILC_MEMORY_CAST_MOVEABLE_MEMORY_TO_TYPE( definition_memory_ptr, target_type, allocator ) )
+
+
+
+void*
+SILC_Memory_GetAddressFromMoveableMemory( SILC_Memory_MoveableMemory* moveableMemory );
+
+#define SILC_MEMORY_DEREF_MOVABLE( moveable_memory_ptr, target_type ) \
+    ( ( target_type )SILC_Memory_GetAddressFromMoveableMemory( ( SILC_Memory_MoveableMemory* )moveable_memory_ptr ) )
+
 
 
 /*@}*/
