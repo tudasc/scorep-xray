@@ -131,23 +131,23 @@ silc_profile_copy_regular_region_data( silc_profile_type_data_t data )
 static silc_profile_type_data_t
 silc_profile_copy_parameter_string_data( silc_profile_type_data_t data )
 {
-    silc_profile_string_node_data* old_data = ( silc_profile_string_node_data* )( int )data;
+    silc_profile_string_node_data* old_data = SILC_PROFILE_DATA2PARAMSTR( data );
     silc_profile_string_node_data* new_data =
         SILC_Memory_AllocForProfile( sizeof( silc_profile_string_node_data ) );
     new_data->handle = old_data->handle;
     new_data->value  = old_data->value;
-    return ( silc_profile_type_data_t )data;
+    return SILC_PROFILE_PARAMSTR2DATA( new_data );
 }
 
 static silc_profile_type_data_t
 silc_profile_copy_parameter_integer_data( silc_profile_type_data_t data )
 {
-    silc_profile_integer_node_data* old_data = ( silc_profile_integer_node_data* )( int )data;
+    silc_profile_integer_node_data* old_data = SILC_PROFILE_DATA2PARAMINT( data );
     silc_profile_integer_node_data* new_data =
         SILC_Memory_AllocForProfile( sizeof( silc_profile_integer_node_data ) );
     new_data->handle = old_data->handle;
     new_data->value  = old_data->value;
-    return ( silc_profile_type_data_t )data;
+    return SILC_PROFILE_PARAMINT2DATA( new_data );
 }
 
 static silc_profile_type_data_t
@@ -185,8 +185,8 @@ static bool
 silc_profile_compare_parameter_string_data( silc_profile_type_data_t data1,
                                             silc_profile_type_data_t data2 )
 {
-    silc_profile_string_node_data* string_data1 = ( silc_profile_string_node_data* )( int )data1;
-    silc_profile_string_node_data* string_data2 = ( silc_profile_string_node_data* )( int )data2;
+    silc_profile_string_node_data* string_data1 = SILC_PROFILE_DATA2PARAMSTR( data1 );
+    silc_profile_string_node_data* string_data2 = SILC_PROFILE_DATA2PARAMSTR( data2 );
     return ( string_data1->handle == string_data2->handle ) &&
            ( string_data1->value  == string_data2->value );
 }
@@ -195,8 +195,8 @@ static bool
 silc_profile_compare_parameter_integer_data( silc_profile_type_data_t data1,
                                              silc_profile_type_data_t data2 )
 {
-    silc_profile_integer_node_data* string_data1 = ( silc_profile_integer_node_data* )( int )data1;
-    silc_profile_integer_node_data* string_data2 = ( silc_profile_integer_node_data* )( int )data2;
+    silc_profile_integer_node_data* string_data1 = SILC_PROFILE_DATA2PARAMINT( data1 );
+    silc_profile_integer_node_data* string_data2 = SILC_PROFILE_DATA2PARAMINT( data2 );
     return ( string_data1->handle == string_data2->handle ) &&
            ( string_data1->value  == string_data2->value );
 }

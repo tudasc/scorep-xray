@@ -112,13 +112,12 @@ FSUB( SILC_User_RegionInitF )( SILC_Fortran_RegionHandle* handle,
         SILC_RegionType region_type = silc_user_to_silc_region_type( *type );
 
         /* Register new region */
-        *handle = ( SILC_Fortran_RegionHandle )
-                  SILC_DefineRegion( name,
-                                     *fileHandle,
-                                     *lineNo,
-                                     SILC_INVALID_LINE_NO,
-                                     SILC_ADAPTER_USER,
-                                     region_type );
+        *handle = SILC_C2F_REGION( SILC_DefineRegion( name,
+                                                      *fileHandle,
+                                                      *lineNo,
+                                                      SILC_INVALID_LINE_NO,
+                                                      SILC_ADAPTER_USER,
+                                                      region_type ) );
 
         /* Cleanup */
         free( name );
@@ -151,11 +150,11 @@ FSUB( SILC_User_RegionBeginF )( SILC_Fortran_RegionHandle* handle,
 void
 FSUB( SILC_User_RegionEndF )( SILC_Fortran_RegionHandle* handle )
 {
-    SILC_User_RegionEnd( ( SILC_RegionHandle ) * handle );
+    SILC_User_RegionEnd( SILC_F2C_REGION( *handle ) );
 }
 
 void
 FSUB( SILC_User_RegionEnterF )( SILC_Fortran_RegionHandle* handle )
 {
-    SILC_User_RegionEnter( ( SILC_RegionHandle ) * handle );
+    SILC_User_RegionEnter( SILC_F2C_REGION( *handle ) );
 }

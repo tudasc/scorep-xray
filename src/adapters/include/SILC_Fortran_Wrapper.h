@@ -16,6 +16,8 @@
 #ifndef SILC_FORTRAN_WRAPPER_H
 #define SILC_FORTRAN_WRAPPER_H
 
+#include <stdint.h>
+
 /** @file SILC_Fortran_Wrapper.h
     @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
     @status     ALPHA
@@ -123,6 +125,24 @@ typedef int SILC_Fortran_MetricGroup;
     Value of the metric group handle for the default group from fortran calls.
  */
 #define SILC_FORTRAN_DEFAULT_GROUP  -2
+
+# if __WORDSIZE == 64
+#define SILC_F2C_POINTER( handle )  ( ( void* )( uint64_t )handle )
+#define SILC_C2F_POINTER( handle )  ( ( uint64_t )handle )
+#else
+#define SILC_F2C_POINTER( handle )  ( ( void* )( uint32_t )handle )
+#define SILC_C2F_POINTER( handle )  ( ( uint32_t )handle )
+#endif
+
+#define SILC_F2C_REGION( handle ) ( ( SILC_RegionHandle )SILC_F2C_POINTER( handle ) )
+#define SILC_C2F_REGION( handle ) SILC_C2F_POINTER( handle )
+
+#define SILC_F2C_COUNTER( handle ) ( ( SILC_CounterHandle )SILC_F2C_POINTER( handle ) )
+#define SILC_C2F_COUNTER( handle ) SILC_C2F_POINTER( handle )
+
+#define SILC_F2C_COUNTER_GROUP( handle ) ( ( SILC_CounterGroupHandle )SILC_F2C_POINTER( handle ) )
+#define SILC_C2F_COUNTER_GROUP( handle ) SILC_C2F_POINTER( handle )
+
 
 
 #endif /* SILC_FORTRAN_WRAPPER_H */

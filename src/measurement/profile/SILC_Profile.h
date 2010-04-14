@@ -31,8 +31,6 @@
 #include <SILC_Types.h>
 #include <SILC_DefinitionHandles.h>
 
-//typedef void* SILC_StringHandle;
-
 /* ------------------------------------------------------------------ Type definitions */
 
 /**

@@ -61,7 +61,7 @@ FSUB( SILC_User_InitMetricGroupF )( SILC_Fortran_MetricGroup* groupHandle,
     /* Test if handle is already initialized */
     if ( *groupHandle != SILC_FORTRAN_INVALID_GROUP )
     {
-        *groupHandle = ( SILC_Fortran_MetricGroup )SILC_DefineCounterGroup( name );
+        *groupHandle = SILC_C2F_COUNTER_GROUP( SILC_DefineCounterGroup( name ) );
     }
     else
     {
@@ -106,7 +106,7 @@ FSUB( SILC_User_InitMetricF )
 
     /* Check for default group */
     group = ( *groupF == SILC_FORTRAN_DEFAULT_GROUP ?
-              SILC_User_DefaultMetricGroup : ( SILC_CounterGroupHandle ) * groupF );
+              SILC_User_DefaultMetricGroup : SILC_F2C_COUNTER_GROUP( *groupF ) );
 
     /* Check if group handle is valid */
     if ( *groupF == SILC_FORTRAN_INVALID_GROUP )
@@ -127,8 +127,7 @@ FSUB( SILC_User_InitMetricF )
         else
         {
             /* Define user metric */
-            *metricHandle = ( SILC_Fortran_MetricHandle )
-                            SILC_DefineCounter( name, *metricType, group, unit );
+            *metricHandle = SILC_C2F_COUNTER( SILC_DefineCounter( name, *metricType, group, unit ) );
         }
         /* Unlock metric definition */
         SILC_UnlockCounterDefinition();
@@ -143,12 +142,12 @@ void
 FSUB( SILC_User_MetricInt64F )( SILC_Fortran_MetricHandle* metric,
                                 int64_t*                   value )
 {
-    SILC_TriggerCounterInt64( ( SILC_CounterHandle ) * metric, *value );
+    SILC_TriggerCounterInt64( SILC_F2C_COUNTER( *metric ), *value );
 }
 
 void
 FSUB( SILC_User_MetricDoubleF )( SILC_Fortran_MetricHandle* metric,
                                  double*                    value )
 {
-    SILC_TriggerCounterDouble( ( SILC_CounterHandle ) * metric, *value );
+    SILC_TriggerCounterDouble( SILC_F2C_COUNTER( *metric ), *value );
 }

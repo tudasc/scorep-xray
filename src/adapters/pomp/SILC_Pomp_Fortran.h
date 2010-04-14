@@ -27,11 +27,13 @@
 
 #include <pomp_lib.h>
 
+#include "SILC_Fortran_Wrapper.h"
+
 /* Fortran types */
 typedef uint64_t POMP_Region_handle_fortran;
 
-#define SILC_POMP_F2C_REGION( handle )  ( ( POMP_Region_handle* )( unsigned int )handle )
-#define SILC_POMP_C2F_REGION( handle )  ( ( unsigned int )handle )
+#define SILC_POMP_F2C_REGION( handle ) ( ( POMP_Region_handle* )SILC_F2C_POINTER( handle ) )
+#define SILC_POMP_C2F_REGION( handle ) SILC_C2F_POINTER( handle )
 
 /*
  * Fortan subroutine external name setup

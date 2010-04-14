@@ -417,7 +417,7 @@ SILC_Profile_ParameterString( SILC_Thread_LocationData* thread,
 
     /* Get new callpath node */
     node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_string,
-                                              ( int )&data, -1 );
+                                              SILC_PROFILE_PARAMSTR2DATA( &data ), -1 );
 
     /* Store start values for dense metrics */
     silc_profile_setup_start_from_parent( node );
@@ -442,8 +442,8 @@ SILC_Profile_ParameterInteger( SILC_Thread_LocationData* thread,
     data.value  = value;
 
     /* Get new callpath node */
-    node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_string,
-                                              ( int )&data, -1 );
+    node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_integer,
+                                              SILC_PROFILE_PARAMINT2DATA( &data ), -1 );
 
     /* Store start values for dense metrics */
     silc_profile_setup_start_from_parent( node );
@@ -501,7 +501,8 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
     node = root->first_child;
     while ( ( node != NULL ) &&
             ( node->node_type == silc_profile_node_thread_start ) &&
-            ( creation_point == ( silc_profile_node* )( int )node->type_specific_data ) )
+            ( creation_point == ( silc_profile_node* )
+              SILC_PROFILE_DATA2POINTER( node->type_specific_data ) ) )
     {
         node = node->next_sibling;
     }
@@ -510,7 +511,7 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
     if ( node == NULL )
     {
         node = silc_profile_create_node( root, silc_profile_node_thread_start,
-                                         ( int )creation_point, 0 );
+                                         SILC_PROFILE_POINTER2DATA( creation_point ), 0 );
         node->next_sibling = root->first_child;
         root->first_child  = node;
     }

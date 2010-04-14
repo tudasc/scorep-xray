@@ -26,10 +26,10 @@
 
 #include <stdbool.h>
 
+#include "SILC_DefinitionHandles.h"
+
 #include "silc_profile_metric.h"
 
-//typedef void* SILC_CallpathHandle;
-#include "SILC_Profile.h"
 #define SILC_INVALID_CALLPATH NULL
 
 /* ***************************************************************************************
@@ -115,18 +115,80 @@ typedef struct
 *****************************************************************************************/
 
 /**
+   @def SILC_PROFILE_POINTER2DATA( handle )
+   Casts a pointer to node specific data type.
+   @param handle The pointer which is casted to node specific data.
+ */
+# if __WORDSIZE == 64
+#define SILC_PROFILE_POINTER2DATA( ptr ) ( ( uint64_t )ptr )
+#else
+#define SILC_PROFILE_POINTER2DATA( ptr ) ( ( uint32_t )ptr )
+#endif
+
+/**
+   @def SILC_PROFILE_DATA2POINTER( data )
+   Casts a node specific data item to a region handle.
+   @param data The node specific data that is casted to a pointer.
+ */
+# if __WORDSIZE == 64
+#define SILC_PROFILE_DATA2POINTER( data )   ( ( void* )( uint64_t )data )
+#else
+#define SILC_PROFILE_DATA2POINTER( data )   ( ( void* )( uint32_t )data )
+#endif
+
+/**
    @def SILC_PROFILE_REGION2DATA( handle )
    Casts a region handle to node specific data type.
    @param handle The region handle which is casted to node specific data.
  */
-#define SILC_PROFILE_REGION2DATA( handle ) ( ( int )handle )
+#define SILC_PROFILE_REGION2DATA( handle ) SILC_PROFILE_POINTER2DATA( handle )
 
 /**
    @def SILC_PROFILE_DATA2REGION( data )
    Casts a node specific data item to a region handle.
    @param data The node specific data that is casted to a region handle.
  */
-#define SILC_PROFILE_DATA2REGION( data )   ( ( SILC_RegionHandle )( int )data )
+#define SILC_PROFILE_DATA2REGION( data ) ( ( SILC_RegionHandle ) \
+                                           SILC_PROFILE_DATA2POINTER( data ) )
+
+/**
+   @def SILC_PROFILE_PARAMSTR2DATA( handle )
+   Casts a pointer to a @ref silc_profile_string_node_data instance to node specific
+   data type.
+   @param handle The pointer to a @ref silc_profile_string_node_data instance which is
+                 casted to node specific data.
+ */
+#define SILC_PROFILE_PARAMSTR2DATA( handle ) SILC_PROFILE_POINTER2DATA( handle )
+
+/**
+   @def SILC_PROFILE_DATA2PARAMSTR( data )
+   Casts a node specific data item to a pointer to a @ref silc_profile_string_node_data
+   instance.
+   @param data The node specific data that is casted to a  pointer to a
+               @ref silc_profile_string_node_data instance.
+ */
+#define SILC_PROFILE_DATA2PARAMSTR( data ) ( ( silc_profile_string_node_data* ) \
+                                             SILC_PROFILE_DATA2POINTER( data ) )
+
+/**
+   @def SILC_PROFILE_PARAMINT2DATA( handle )
+   Casts a pointer to a @ref silc_profile_integer_node_data instance to node specific data
+   type.
+   @param handle The pointer to a @ref silc_profile_integer_node_data instance which is
+                 casted to node specific data.
+ */
+#define SILC_PROFILE_PARAMINT2DATA( handle ) SILC_PROFILE_POINTER2DATA( handle )
+
+/**
+   @def SILC_PROFILE_DATA2PARAMINT( data )
+   Casts a node specific data item to a pointer to a @ref silc_profile_integer_node_data
+   instance.
+   @param data The node specific data that is casted to a  pointer to a
+               @ref silc_profile_integer_node_data instance.
+ */
+#define SILC_PROFILE_DATA2PARAMINT( data ) ( ( silc_profile_integer_node_data* ) \
+                                             SILC_PROFILE_DATA2POINTER( data ) )
+
 
 /* ***************************************************************************************
    Functions
