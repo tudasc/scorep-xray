@@ -558,15 +558,21 @@ SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
     /* Add it to the profile node list */
     if ( parent_data == NULL )
     {
-        /* It is the initial thread. Insert as first new root node */
-        node->next_sibling           = silc_profile.first_root_node;
-        silc_profile.first_root_node = node;
+        /* It is the initial thread. Insert as first new root node. */
+        #pragma omp critical (silc_profile_add_location)
+        {
+            node->next_sibling           = silc_profile.first_root_node;
+            silc_profile.first_root_node = node;
+        }
     }
     else
     {
         /* Append after parent root node */
-        node->next_sibling                   = parent_data->root_node->next_sibling;
-        parent_data->root_node->next_sibling = node;
+        #pragma omp critical (silc_profile_add_location)
+        {
+            node->next_sibling                   = parent_data->root_node->next_sibling;
+            parent_data->root_node->next_sibling = node;
+        }
     }
 }
 

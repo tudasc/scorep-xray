@@ -17,18 +17,10 @@
 ## file       Makefile.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-noinst_LTLIBRARIES += libsilc_profile.la
-libsilc_profile_la_SOURCES =                                       \
-    $(SRC_ROOT)src/measurement/profile/SILC_Profile.h              \
-    $(SRC_ROOT)src/measurement/profile/SILC_Profile.c              \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_metric.h       \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_metric.c       \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_node.h         \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_node.c         \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_definition.h   \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_definition.c
 
-libsilc_profile_la_CPPFLAGS =                   \
+## base
+
+PROFILE_FLAGS =                                 \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/profile        \
     -I$(INC_ROOT)src/measurement/include        \
@@ -36,3 +28,35 @@ libsilc_profile_la_CPPFLAGS =                   \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_OTF2)                           \
     -I$(INC_DIR_UTIL)
+
+noinst_LTLIBRARIES += libsilc_profile_base.la
+libsilc_profile_base_la_SOURCES =                                  \
+    $(SRC_ROOT)src/measurement/profile/SILC_Profile.h              \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_metric.h       \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_metric.c       \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_node.h         \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_node.c         \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_definition.h   \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_definition.c
+
+libsilc_profile_base_la_CPPFLAGS = $(PROFILE_FLAGS)
+
+## non omp
+
+noinst_LTLIBRARIES += libsilc_profile_non_omp.la
+libsilc_profile_non_omp_la_SOURCES =                               \
+    $(SRC_ROOT)src/measurement/profile/SILC_Profile.c
+
+libsilc_profile_non_omp_la_CPPFLAGS = $(PROFILE_FLAGS)
+libsilc_profile_non_omp_la_LIBADD = libsilc_profile_base.la
+
+## omp 
+
+if OPENMP_SUPPORTED
+noinst_LTLIBRARIES += libsilc_profile_omp.la
+libsilc_profile_omp_la_SOURCES =                                   \
+    $(SRC_ROOT)src/measurement/profile/SILC_Profile.c 
+libsilc_profile_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libsilc_profile_omp_la_CPPFLAGS =  $(PROFILE_FLAGS)
+libsilc_profile_omp_la_LIBADD = libsilc_profile_base.la
+endif
