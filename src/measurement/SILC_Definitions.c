@@ -45,7 +45,9 @@ extern SILC_DefinitionManager silc_definition_manager;
 SILC_SourceFileHandle
 SILC_DefineSourceFile( const char* fileName )
 {
-    static uint32_t counter = 0;
+    SILC_SourceFile_Definition_Movable* new_movable =
+        ( SILC_SourceFile_Definition_Movable* )SILC_DefineString( fileName );
+    uint32_t                            counter = ( SILC_MEMORY_DEREF_MOVABLE( new_movable, silc_any_definition* ) )->id;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new source file \"%s\":",
@@ -53,13 +55,15 @@ SILC_DefineSourceFile( const char* fileName )
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", counter );
 
-    SILC_SourceFile_Definition*         new_definition = 0;
-    SILC_SourceFile_Definition_Movable* new_movable    = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_SourceFile_Definition );
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( source_file_definitions_head_dummy );
-    // Init new_definition
-    new_definition->id = counter++;
     return new_movable;
+/*     SILC_SourceFile_Definition*         new_definition = 0; */
+/*     SILC_SourceFile_Definition_Movable* new_movable    = 0; */
+/*     SILC_ALLOC_NEW_DEFINITION( SILC_SourceFile_Definition ); */
+/*     SILC_DEFINITIONS_LIST_PUSH_FRONT( source_file_definitions_head_dummy ); */
+/*     // Init new_definition */
+/*     new_definition->id = counter++; */
+/*     new_definition->stringHandle = *SILC_DefineString( fileName ); */
+/*     return new_movable; */
 }
 
 
