@@ -53,8 +53,8 @@ SILC_DefineSourceFile
                        "    Handle ID: %x", counter );
 
     SILC_SourceFile_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_SourceFile_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_source_file_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_SourceFile_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_source_file_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -108,8 +108,8 @@ SILC_DefineRegion
 
 
     SILC_Region_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_Region_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_region_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Region_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_region_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -159,8 +159,8 @@ SILC_DefineMPICommunicator
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
     SILC_MPICommunicator_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_MPICommunicator_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_communicator_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPICommunicator_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_communicator_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -183,8 +183,8 @@ SILC_DefineMPIWindow
                        "    Handle ID: %x", counter );
 
     SILC_MPIWindow_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_MPIWindow_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_window_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPIWindow_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_window_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -227,8 +227,8 @@ SILC_DefineMPICartesianTopology
     }
 
     SILC_MPICartesianTopology_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_MPICartesianTopology_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_cartesian_topology_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPICartesianTopology_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_cartesian_topology_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -267,8 +267,8 @@ SILC_DefineMPICartesianCoords
 
     static uint64_t                     counter        = 0;
     SILC_MPICartesianCoords_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_MPICartesianCoords_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_mpi_cartesian_coords_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPICartesianCoords_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_cartesian_coords_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return /* new_definition */;
@@ -288,8 +288,8 @@ SILC_DefineCounterGroup
 
     static uint64_t               counter        = 0;
     SILC_CounterGroup_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_CounterGroup_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_counter_group_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_CounterGroup_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_counter_group_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -312,8 +312,8 @@ SILC_DefineCounter
 
     static uint64_t          counter        = 0;
     SILC_Counter_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_Counter_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_counter_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Counter_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_counter_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -333,8 +333,8 @@ SILC_DefineIOFileGroup
 
     static uint64_t              counter        = 0;
     SILC_IOFileGroup_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_IOFileGroup_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_io_file_group_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_IOFileGroup_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_io_file_group_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -355,8 +355,8 @@ SILC_DefineIOFile
 
     static uint64_t         counter        = 0;
     SILC_IOFile_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_IOFile_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_io_file_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_IOFile_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_io_file_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -376,8 +376,8 @@ SILC_DefineMarkerGroup
 
     static uint64_t              counter        = 0;
     SILC_MarkerGroup_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_MarkerGroup_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_marker_group_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MarkerGroup_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_marker_group_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -398,8 +398,8 @@ SILC_DefineMarker
 
     static uint64_t         counter        = 0;
     SILC_Marker_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_Marker_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_marker_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Marker_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_marker_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -420,8 +420,8 @@ SILC_DefineParameter
 
     static uint64_t            counter        = 0;
     SILC_Parameter_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_Parameter_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_parameter_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Parameter_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_parameter_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;

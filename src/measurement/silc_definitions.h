@@ -30,13 +30,13 @@
 #include <SILC_Memory.h>
 
 
-#define SILC_ALLOC_NEW_DEFINITION( DefinitionType )                                 \
+#define SILC_ALLOC_NEW_DEFINITION_OLD( DefinitionType )                                 \
     new_definition = SILC_MEMORY_DEREF_MOVABLE(                                     \
         SILC_Memory_AllocForDefinitions( sizeof( DefinitionType ) ),                \
         DefinitionType* );
 
 
-#define SILC_DEFINITIONS_LIST_PUSH_FRONT( ListHeadDummy ) \
+#define SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( ListHeadDummy ) \
     new_definition->next = ListHeadDummy.next;            \
     ListHeadDummy.next   = new_definition;                \
     new_definition->id   = counter;

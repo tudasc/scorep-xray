@@ -186,6 +186,17 @@ silc_delete_definition_writer( OTF2_DefWriter* definitionWriter )
 }
 
 
+#define SILC_ALLOC_NEW_DEFINITION( DefinitionType )                                 \
+    new_definition = SILC_MEMORY_DEREF_MOVABLE(                                     \
+        SILC_Memory_AllocForDefinitions( sizeof( DefinitionType ) ),                \
+        DefinitionType* );
+
+
+#define SILC_DEFINITIONS_LIST_PUSH_FRONT( ListHeadDummy ) \
+    new_definition->next = ListHeadDummy.next;            \
+    ListHeadDummy.next   = new_definition;                \
+    new_definition->id   = counter;
+
 
 
 SILC_StringHandle
@@ -193,18 +204,18 @@ SILC_DefineString( const char* str )
 {
     static uint64_t                 counter        = 0;
     SILC_String_Definition*         new_definition = 0;
-    SILC_String_Definition_Movable* new_move_ptr   = 0;
+    SILC_String_Definition_Movable* new_movable    = 0;
 
     #pragma omp critical (define_string)
     {
         // alloc
-        new_move_ptr = ( SILC_String_Definition_Movable* )
-                       SILC_Memory_AllocForDefinitions( sizeof( SILC_String_Definition ) );
-        new_definition = SILC_MEMORY_DEREF_MOVABLE( new_move_ptr, SILC_String_Definition* );
+        new_movable = ( SILC_String_Definition_Movable* )
+                      SILC_Memory_AllocForDefinitions( sizeof( SILC_String_Definition ) );
+        new_definition = SILC_MEMORY_DEREF_MOVABLE( new_movable, SILC_String_Definition* );
 
         // push_front
         new_definition->next                                       =  silc_definition_manager.string_definitions_head_dummy.next;
-        silc_definition_manager.string_definitions_head_dummy.next = *new_move_ptr;
+        silc_definition_manager.string_definitions_head_dummy.next = *new_movable;
         new_definition->id                                         = counter;
 
         // init new_definition
@@ -215,7 +226,7 @@ SILC_DefineString( const char* str )
         ++counter;
     }
 
-    return new_move_ptr;
+    return new_movable;
 }
 
 
@@ -225,8 +236,8 @@ SILC_DefineCallpath( SILC_CallpathHandle parent,
 {
     static uint64_t           counter        = 0;
     SILC_Callpath_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_Callpath_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_callpath_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Callpath_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_callpath_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -240,8 +251,8 @@ SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parent,
 {
     static uint64_t                           counter        = 0;
     SILC_CallpathParameterInteger_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_CallpathParameterInteger_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_callpath_parameter_integer_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_CallpathParameterInteger_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_callpath_parameter_integer_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -255,8 +266,8 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
 {
     static uint64_t                          counter        = 0;
     SILC_CallpathParameterString_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_CallpathParameterString_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( silc_callpath_parameter_string_definitions_head_dummy )
+    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_CallpathParameterString_Definition )
+    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_callpath_parameter_string_definitions_head_dummy )
     // init new_definition
     ++ counter;
     return new_definition;
@@ -283,6 +294,13 @@ SILC_Callpath_Definition                 silc_callpath_definitions_head_dummy = 
 SILC_CallpathParameterInteger_Definition silc_callpath_parameter_integer_definitions_head_dummy = { 0, 0 };
 SILC_CallpathParameterString_Definition  silc_callpath_parameter_string_definitions_head_dummy = { 0, 0 };
 
+SILC_Error_Code
+OTF2_DefWriter_DefString
+(
+    OTF2_DefWriter* writerHandle,
+    uint32_t        string_identifier,
+    char*           string
+);
 
 static void
 silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
@@ -290,10 +308,10 @@ silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     SILC_String_Definition* definition = &( silc_definition_manager.string_definitions_head_dummy );
     while ( !SILC_MEMORY_MOVABLE_IS_NULL( definition->next ) )
     {
-        SILC_Memory_Allocator* allocator = 0;
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ), SILC_String_Definition* );
-        //OTF2_DefWriter(definitionWriter, ...);
-        assert( false ); // implement me
+        OTF2_DefWriter_DefString( definitionWriter,
+                                  definition->id,
+                                  SILC_MEMORY_DEREF_MOVABLE( &( definition->str ), char* ) );
     }
 }
 
@@ -305,7 +323,7 @@ silc_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     while ( definition->next )
     {
         definition = definition->next;
-        //OTF2_DefWriter(definitionWriter, ...);
+        //OTF2_DefWriter_Def...(definitionWriter, ...);
         assert( false ); // implement me
     }
 }

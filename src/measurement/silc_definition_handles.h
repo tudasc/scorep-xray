@@ -25,13 +25,16 @@
  *
  */
 
-typedef struct silc_any_definition silc_any_definition;
-typedef silc_any_definition*       silc_any_handle;
+typedef struct silc_any_definition         silc_any_definition;
+typedef struct silc_any_definition_movable silc_any_definition_movable;
+typedef silc_any_definition_movable*       silc_any_handle;
 
 struct silc_any_definition
 {
     void*    next;
     uint64_t id;
 };
+
+
 
 #endif /* SILC_DEFINITION_HANDLES_H */
