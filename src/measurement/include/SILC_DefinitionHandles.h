@@ -31,52 +31,64 @@ typedef struct SILC_String_Definition_Movable SILC_String_Definition_Movable;
 typedef SILC_String_Definition_Movable*       SILC_StringHandle;
 
 
-typedef struct SILC_MPICommunicator_Definition  SILC_MPICommunicator_Definition;
-typedef struct SILC_MPICommunicator_Definition* SILC_MPICommunicatorHandle;
+typedef struct SILC_MPICommunicator_Definition         SILC_MPICommunicator_Definition;
+typedef struct SILC_MPICommunicator_Definition_Movable SILC_MPICommunicator_Definition_Movable;
+typedef SILC_MPICommunicator_Definition_Movable*       SILC_MPICommunicatorHandle;
 
 
-typedef struct SILC_MPIWindow_Definition  SILC_MPIWindow_Definition;
-typedef struct SILC_MPIWindow_Definition* SILC_MPIWindowHandle;
+typedef struct SILC_MPIWindow_Definition         SILC_MPIWindow_Definition;
+typedef struct SILC_MPIWindow_Definition_Movable SILC_MPIWindow_Definition_Movable;
+typedef SILC_MPIWindow_Definition_Movable*       SILC_MPIWindowHandle;
 
 
-typedef struct SILC_MPICartesianTopology_Definition  SILC_MPICartesianTopology_Definition;
-typedef struct SILC_MPICartesianTopology_Definition* SILC_MPICartesianTopologyHandle;
+typedef struct SILC_MPICartesianTopology_Definition         SILC_MPICartesianTopology_Definition;
+typedef struct SILC_MPICartesianTopology_Definition_Movable SILC_MPICartesianTopology_Definition_Movable;
+typedef SILC_MPICartesianTopology_Definition_Movable*       SILC_MPICartesianTopologyHandle;
 
 
-typedef struct SILC_MPICartesianCoords_Definition  SILC_MPICartesianCoords_Definition;
-typedef struct SILC_MPICartesianCoords_Definition* SILC_MPICartesianCoordsHandle;
+typedef struct SILC_MPICartesianCoords_Definition         SILC_MPICartesianCoords_Definition;
+typedef struct SILC_MPICartesianCoords_Definition_Movable SILC_MPICartesianCoords_Definition_Movable;
+typedef SILC_MPICartesianCoords_Definition_Movable*       SILC_MPICartesianCoordsHandle;
 
 
-typedef struct SILC_IOFileGroup_Definition  SILC_IOFileGroup_Definition;
-typedef struct SILC_IOFileGroup_Definition* SILC_IOFileGroupHandle;
+typedef struct SILC_IOFileGroup_Definition         SILC_IOFileGroup_Definition;
+typedef struct SILC_IOFileGroup_Definition_Movable SILC_IOFileGroup_Definition_Movable;
+typedef SILC_IOFileGroup_Definition_Movable*       SILC_IOFileGroupHandle;
 
 
-typedef struct SILC_IOFile_Definition  SILC_IOFile_Definition;
-typedef struct SILC_IOFile_Definition* SILC_IOFileHandle;
+typedef struct SILC_IOFile_Definition         SILC_IOFile_Definition;
+typedef struct SILC_IOFile_Definition_Movable SILC_IOFile_Definition_Movable;
+typedef SILC_IOFile_Definition_Movable*       SILC_IOFileHandle;
 
 
-typedef struct SILC_MarkerGroup_Definition  SILC_MarkerGroup_Definition;
-typedef struct SILC_MarkerGroup_Definition* SILC_MarkerGroupHandle;
+typedef struct SILC_MarkerGroup_Definition         SILC_MarkerGroup_Definition;
+typedef struct SILC_MarkerGroup_Definition_Movable SILC_MarkerGroup_Definition_Movable;
+typedef SILC_MarkerGroup_Definition_Movable*       SILC_MarkerGroupHandle;
 
 
-typedef struct SILC_Marker_Definition  SILC_Marker_Definition;
-typedef struct SILC_Marker_Definition* SILC_MarkerHandle;
+typedef struct SILC_Marker_Definition         SILC_Marker_Definition;
+typedef struct SILC_Marker_Definition_Movable SILC_Marker_Definition_Movable;
+typedef SILC_Marker_Definition_Movable*       SILC_MarkerHandle;
 
 
-typedef struct SILC_Parameter_Definition  SILC_Parameter_Definition;
-typedef struct SILC_Parameter_Definition* SILC_ParameterHandle;
+typedef struct SILC_Parameter_Definition         SILC_Parameter_Definition;
+typedef struct SILC_Parameter_Definition_Movable SILC_Parameter_Definition_Movable;
+typedef SILC_Parameter_Definition_Movable*       SILC_ParameterHandle;
 
 
-typedef struct SILC_Callpath_Definition  SILC_Callpath_Definition;
-typedef struct SILC_Callpath_Definition* SILC_CallpathHandle;
+typedef struct SILC_Callpath_Definition         SILC_Callpath_Definition;
+typedef struct SILC_Callpath_Definition_Movable SILC_Callpath_Definition_Movable;
+typedef SILC_Callpath_Definition_Movable*       SILC_CallpathHandle;
 
 
-typedef struct SILC_CallpathParameterInteger_Definition  SILC_CallpathParameterInteger_Definition;
-typedef struct SILC_CallpathParameterInteger_Definition* SILC_CallpathParameterIntegerHandle;
+typedef struct SILC_CallpathParameterInteger_Definition         SILC_CallpathParameterInteger_Definition;
+typedef struct SILC_CallpathParameterInteger_Definition_Movable SILC_CallpathParameterInteger_Definition_Movable;
+typedef SILC_CallpathParameterInteger_Definition_Movable*       SILC_CallpathParameterIntegerHandle;
 
 
-typedef struct SILC_CallpathParameterString_Definition  SILC_CallpathParameterString_Definition;
-typedef struct SILC_CallpathParameterString_Definition* SILC_CallpathParameterStringHandle;
+typedef struct SILC_CallpathParameterString_Definition         SILC_CallpathParameterString_Definition;
+typedef struct SILC_CallpathParameterString_Definition_Movable SILC_CallpathParameterString_Definition_Movable;
+typedef SILC_CallpathParameterString_Definition_Movable*       SILC_CallpathParameterStringHandle;
 
 
 #endif /* SILC_DEFINITIONHANDLES_H */

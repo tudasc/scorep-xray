@@ -36,28 +36,30 @@
 #include "silc_types.h"
 
 
+extern SILC_DefinitionManager silc_definition_manager;
+
+
 /**
  * Associate a file name with a process unique file handle.
  */
 SILC_SourceFileHandle
-SILC_DefineSourceFile
-(
-    const char* fileName
-)
+SILC_DefineSourceFile( const char* fileName )
 {
-    static uint64_t counter = 0;
+    static uint32_t counter = 0;
+
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new source file \"%s\":",
                        fileName );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", counter );
 
-    SILC_SourceFile_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_SourceFile_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_source_file_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    SILC_SourceFile_Definition*         new_definition = 0;
+    SILC_SourceFile_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_SourceFile_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( source_file_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -65,17 +67,14 @@ SILC_DefineSourceFile
  * Associate a code region with a process unique file handle.
  */
 SILC_RegionHandle
-SILC_DefineRegion
-(
-    const char*           regionName,
-    SILC_SourceFileHandle fileHandle,
-    SILC_LineNo           beginLine,
-    SILC_LineNo           endLine,
-    SILC_AdapterType      adapter,
-    SILC_RegionType       regionType
-)
+SILC_DefineRegion( const char*           regionName,
+                   SILC_SourceFileHandle fileHandle,
+                   SILC_LineNo           beginLine,
+                   SILC_LineNo           endLine,
+                   SILC_AdapterType      adapter,
+                   SILC_RegionType       regionType )
 {
-    static uint64_t counter = 0;
+    static uint32_t counter = 0;
 
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
@@ -106,13 +105,13 @@ SILC_DefineRegion
                        "    Region type: %s",
                        silc_region_type_to_string( regionType ) );
 
-
-    SILC_Region_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Region_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_region_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    SILC_Region_Definition*         new_definition = 0;
+    SILC_Region_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Region_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( region_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -120,13 +119,10 @@ SILC_DefineRegion
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SILC_MPICommunicatorHandle
-SILC_DefineMPICommunicator
-(
-    const unsigned char bitVectorReprOfCommGroup[],
-    uint32_t            sizeOfBitVectorReprOfCommGroup
-)
+SILC_DefineMPICommunicator( const unsigned char bitVectorReprOfCommGroup[],
+                            uint32_t            sizeOfBitVectorReprOfCommGroup )
 {
-    static uint64_t counter = 0;
+    static uint32_t counter = 0;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI Communicator:" );
@@ -158,12 +154,13 @@ SILC_DefineMPICommunicator
     }
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
-    SILC_MPICommunicator_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPICommunicator_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_communicator_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    SILC_MPICommunicator_Definition*         new_definition = 0;
+    SILC_MPICommunicator_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPICommunicator_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( mpi_communicator_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -171,23 +168,21 @@ SILC_DefineMPICommunicator
  * Associate a MPI window with a process unique window handle.
  */
 SILC_MPIWindowHandle
-SILC_DefineMPIWindow
-(
-    SILC_MPICommunicatorHandle communicatorHandle
-)
+SILC_DefineMPIWindow( SILC_MPICommunicatorHandle communicatorHandle )
 {
-    static uint64_t counter = 0;
+    static uint32_t counter = 0;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "Define new MPI Window:" );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", counter );
 
-    SILC_MPIWindow_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPIWindow_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_window_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    SILC_MPIWindow_Definition*         new_definition = 0;
+    SILC_MPIWindow_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPIWindow_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( mpi_window_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -195,16 +190,13 @@ SILC_DefineMPIWindow
  * Associate a MPI cartesian topology with a process unique topology handle.
  */
 SILC_MPICartesianTopologyHandle
-SILC_DefineMPICartesianTopology
-(
-    const char*                topologyName,
-    SILC_MPICommunicatorHandle communicatorHandle,
-    uint32_t                   nDimensions,
-    const uint32_t             nProcessesPerDimension[],
-    const uint8_t              periodicityPerDimension[]
-)
+SILC_DefineMPICartesianTopology( const char*                topologyName,
+                                 SILC_MPICommunicatorHandle communicatorHandle,
+                                 uint32_t                   nDimensions,
+                                 const uint32_t             nProcessesPerDimension[],
+                                 const uint8_t              periodicityPerDimension[] )
 {
-    static uint64_t counter = 0;
+    static uint32_t counter = 0;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI cartesian topology \"%s\":",
@@ -226,12 +218,13 @@ SILC_DefineMPICartesianTopology
                            periodicityPerDimension[ i ] );
     }
 
-    SILC_MPICartesianTopology_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPICartesianTopology_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_cartesian_topology_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    SILC_MPICartesianTopology_Definition*         new_definition = 0;
+    SILC_MPICartesianTopology_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPICartesianTopology_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( mpi_cartesian_topology_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -240,14 +233,13 @@ SILC_DefineMPICartesianTopology
  * referenced by @a cartesianTopologyHandle.
  */
 void
-SILC_DefineMPICartesianCoords
-(
+SILC_DefineMPICartesianCoords(
     SILC_MPICartesianTopologyHandle cartesianTopologyHandle,
     uint32_t                        nCoords,
-    const uint32_t                  coordsOfCurrentRank[]
-)
+    const uint32_t                  coordsOfCurrentRank[] )
 {
-    char stringBuffer[ 16 ];
+    static uint32_t counter = 0;
+    char            stringBuffer[ 16 ];
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI cartesian coordinates in topology %s",
@@ -265,13 +257,13 @@ SILC_DefineMPICartesianCoords
     }
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 
-    static uint64_t                     counter        = 0;
-    SILC_MPICartesianCoords_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MPICartesianCoords_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_mpi_cartesian_coords_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return /* new_definition */;
+    SILC_MPICartesianCoords_Definition*         new_definition = 0;
+    SILC_MPICartesianCoords_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MPICartesianCoords_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( mpi_cartesian_coords_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    //return new_movable;
 }
 
 
@@ -279,20 +271,18 @@ SILC_DefineMPICartesianCoords
  * Associate a name with a process unique counter group handle.
  */
 SILC_CounterGroupHandle
-SILC_DefineCounterGroup
-(
-    const char* name
-)
+SILC_DefineCounterGroup( const char* name )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t               counter        = 0;
-    SILC_CounterGroup_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_CounterGroup_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_counter_group_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                       counter        = 0;
+    SILC_CounterGroup_Definition*         new_definition = 0;
+    SILC_CounterGroup_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_CounterGroup_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( counter_group_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -300,23 +290,21 @@ SILC_DefineCounterGroup
  * Associate the parammeter tuple with a process unique counter handle.
  */
 SILC_CounterHandle
-SILC_DefineCounter
-(
-    const char*             name,
-    SILC_CounterType        counterType,
-    SILC_CounterGroupHandle counterGroupHandle,
-    const char*             unit
-)
+SILC_DefineCounter( const char*             name,
+                    SILC_CounterType        counterType,
+                    SILC_CounterGroupHandle counterGroupHandle,
+                    const char*             unit )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t          counter        = 0;
-    SILC_Counter_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Counter_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_counter_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                  counter        = 0;
+    SILC_Counter_Definition*         new_definition = 0;
+    SILC_Counter_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Counter_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( counter_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -324,20 +312,18 @@ SILC_DefineCounter
  * Associate a name with a process unique I/O file group handle.
  */
 SILC_IOFileGroupHandle
-SILC_DefineIOFileGroup
-(
-    const char* name
-)
+SILC_DefineIOFileGroup( const char* name )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t              counter        = 0;
-    SILC_IOFileGroup_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_IOFileGroup_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_io_file_group_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                      counter        = 0;
+    SILC_IOFileGroup_Definition*         new_definition = 0;
+    SILC_IOFileGroup_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_IOFileGroup_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( io_file_group_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -345,21 +331,19 @@ SILC_DefineIOFileGroup
  * Associate a name and a group handle with a process unique I/O file handle.
  */
 SILC_IOFileHandle
-SILC_DefineIOFile
-(
-    const char*            name,
-    SILC_IOFileGroupHandle ioFileGroup
-)
+SILC_DefineIOFile( const char*            name,
+                   SILC_IOFileGroupHandle ioFileGroup )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t         counter        = 0;
-    SILC_IOFile_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_IOFile_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_io_file_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                 counter        = 0;
+    SILC_IOFile_Definition*         new_definition = 0;
+    SILC_IOFile_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_IOFile_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( io_file_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -367,20 +351,18 @@ SILC_DefineIOFile
  * Associate a name with a process unique marker group handle.
  */
 SILC_MarkerGroupHandle
-SILC_DefineMarkerGroup
-(
-    const char* name
-)
+SILC_DefineMarkerGroup( const char* name )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t              counter        = 0;
-    SILC_MarkerGroup_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_MarkerGroup_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_marker_group_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                      counter        = 0;
+    SILC_MarkerGroup_Definition*         new_definition = 0;
+    SILC_MarkerGroup_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_MarkerGroup_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( marker_group_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -396,13 +378,14 @@ SILC_DefineMarker
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t         counter        = 0;
-    SILC_Marker_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Marker_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_marker_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                 counter        = 0;
+    SILC_Marker_Definition*         new_definition = 0;
+    SILC_Marker_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Marker_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( marker_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }
 
 
@@ -418,11 +401,12 @@ SILC_DefineParameter
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    static uint64_t            counter        = 0;
-    SILC_Parameter_Definition* new_definition = 0;
-    SILC_ALLOC_NEW_DEFINITION_OLD( SILC_Parameter_Definition )
-    SILC_DEFINITIONS_LIST_PUSH_FRONT_OLD( silc_parameter_definitions_head_dummy )
-    // init new_definition
-    ++ counter;
-    return new_definition;
+    static uint32_t                    counter        = 0;
+    SILC_Parameter_Definition*         new_definition = 0;
+    SILC_Parameter_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Parameter_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( parameter_definitions_head_dummy );
+    // Init new_definition
+    new_definition->id = counter++;
+    return new_movable;
 }

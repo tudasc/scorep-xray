@@ -27,6 +27,7 @@
 #include "silc_types.h"
 #include "silc_definition_structs.h"
 #include "silc_definition_handles.h"
+#include <SILC_Memory.h>
 
 /**
  * Generic function to convert a type with an invalid value into a string.
@@ -80,7 +81,7 @@ silc_any_handle_to_string
     }
 
     snprintf( stringBuffer, stringBufferSize, format,
-              ( ( silc_any_definition* )handle )->id );
+              ( SILC_MEMORY_DEREF_MOVABLE( handle, silc_any_definition* ) )->id );
     return stringBuffer;
 }
 

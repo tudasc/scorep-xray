@@ -1,5 +1,5 @@
-#ifndef SILC_DEFINITION_HANDLES_H
-#define SILC_DEFINITION_HANDLES_H
+#ifndef SILC_INTERNAL_DEFINITION_HANDLES_H
+#define SILC_INTERNAL_DEFINITION_HANDLES_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -25,16 +25,26 @@
  *
  */
 
-typedef struct silc_any_definition         silc_any_definition;
-typedef struct silc_any_definition_movable silc_any_definition_movable;
-typedef silc_any_definition_movable*       silc_any_handle;
 
+#define SILC_MOVABLE_TYPE( type )                      \
+    struct type ## _Movable                            \
+    {                                                  \
+        uint32_t page_id;                              \
+        uint32_t offset;                               \
+    };
+
+
+typedef struct silc_any_definition         silc_any_definition;
+typedef struct silc_any_definition_Movable silc_any_definition_Movable;
+typedef silc_any_definition_Movable*       silc_any_handle;
+
+
+SILC_MOVABLE_TYPE( silc_any_definition );
 struct silc_any_definition
 {
-    void*    next;
-    uint64_t id;
+    silc_any_definition_Movable next;
+    uint32_t                    id;
 };
 
 
-
-#endif /* SILC_DEFINITION_HANDLES_H */
+#endif /* SILC_INTERNAL_DEFINITION_HANDLES_H */
