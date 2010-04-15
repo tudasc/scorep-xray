@@ -186,17 +186,20 @@ silc_delete_definition_writer( OTF2_DefWriter* definitionWriter )
 }
 
 
+
+
 SILC_StringHandle
 SILC_DefineString( const char* str )
 {
-    static uint64_t         counter        = 0;
-    SILC_String_Definition* new_definition = 0;
+    static uint64_t                 counter        = 0;
+    SILC_String_Definition*         new_definition = 0;
+    SILC_String_Definition_Movable* new_move_ptr   = 0;
 
     #pragma omp critical (define_string)
     {
         // alloc
-        SILC_String_Definition_MovePtr* new_move_ptr = ( SILC_String_Definition_MovePtr* )
-                                                       SILC_Memory_AllocForDefinitions( sizeof( SILC_String_Definition ) );
+        new_move_ptr = ( SILC_String_Definition_Movable* )
+                       SILC_Memory_AllocForDefinitions( sizeof( SILC_String_Definition ) );
         new_definition = SILC_MEMORY_DEREF_MOVABLE( new_move_ptr, SILC_String_Definition* );
 
         // push_front
@@ -206,13 +209,13 @@ SILC_DefineString( const char* str )
 
         // init new_definition
         SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
-                                            ( SILC_Memory_MoveableMemory* )&( new_definition->str ) );
+                                            ( SILC_Allocator_MoveableMemory* )&( new_definition->str ) );
         strcpy( SILC_MEMORY_DEREF_MOVABLE( &( new_definition->str ), char* ), str );
 
         ++counter;
     }
 
-    return new_definition;
+    return new_move_ptr;
 }
 
 

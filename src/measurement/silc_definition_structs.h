@@ -28,24 +28,24 @@
 
 #include <SILC_DefinitionHandles.h>
 
-#define SILC_MOVE_PTR( type ) type ## _MovePtr
+//#define SILC_MOVABLE( type ) type ## _Movable
 
-#define SILC_MOVE_PTR_TYPE( type )                     \
-    typedef struct type ## _MovePtr type ## _MovePtr;  \
-    struct type ## _MovePtr                            \
+#define SILC_MOVABLE_TYPE( type )                      \
+    struct type ## _Movable                            \
     {                                                  \
         uint32_t page_id;                              \
         uint32_t offset;                               \
     };
 
+typedef struct char_Movable char_Movable;
+SILC_MOVABLE_TYPE( char );
 
-SILC_MOVE_PTR_TYPE( char );
-SILC_MOVE_PTR_TYPE( SILC_String_Definition );
+SILC_MOVABLE_TYPE( SILC_String_Definition );
 struct SILC_String_Definition
 {
-             SILC_MOVE_PTR( SILC_String_Definition ) next;
-    uint64_t id;
-             SILC_MOVE_PTR( char )                   str;
+    SILC_String_Definition_Movable next;
+    uint64_t                       id;
+    char_Movable                   str;
 };
 
 

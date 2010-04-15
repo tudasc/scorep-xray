@@ -191,13 +191,13 @@ SILC_Memory_FreeSinglethreadedMiscMem();
  *
  * @see SILC_Memory_FreeDefinitionMem()
  */
-SILC_Memory_MoveableMemory*
+SILC_Allocator_MoveableMemory*
 SILC_Memory_AllocForDefinitions( size_t size );
 
 // don't allocate move ptr but alter it's contents
 void*
-SILC_Memory_AllocForDefinitionsRaw( size_t                      size,
-                                    SILC_Memory_MoveableMemory* moveableMemory );
+SILC_Memory_AllocForDefinitionsRaw( size_t                         size,
+                                    SILC_Allocator_MoveableMemory* moveableMemory );
 
 /**
  * Release the entire allocated definition memory.
@@ -226,10 +226,10 @@ SILC_Memory_FreeDefinitionMem();
 
 
 void*
-SILC_Memory_GetAddressFromMoveableMemory( SILC_Memory_MoveableMemory* moveableMemory );
+SILC_Memory_GetAddressFromMoveableMemory( SILC_Allocator_MoveableMemory* moveableMemory );
 
 #define SILC_MEMORY_DEREF_MOVABLE( moveable_memory_ptr, target_type ) \
-    ( ( target_type )SILC_Memory_GetAddressFromMoveableMemory( ( SILC_Memory_MoveableMemory* )moveable_memory_ptr ) )
+    ( ( target_type )SILC_Memory_GetAddressFromMoveableMemory( ( SILC_Allocator_MoveableMemory* )moveable_memory_ptr ) )
 
 
 

@@ -26,8 +26,9 @@
  */
 
 
-typedef struct SILC_String_Definition  SILC_String_Definition;
-typedef struct SILC_String_Definition* SILC_StringHandle;
+typedef struct SILC_String_Definition         SILC_String_Definition;
+typedef struct SILC_String_Definition_Movable SILC_String_Definition_Movable;
+typedef SILC_String_Definition_Movable*       SILC_StringHandle;
 
 
 typedef struct SILC_MPICommunicator_Definition  SILC_MPICommunicator_Definition;
