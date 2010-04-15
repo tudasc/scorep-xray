@@ -1,12 +1,12 @@
 #include <stddef.h>
 
 extern void
-POMP_Init_regions_1263287966599960_7();
+POMP_Init_regions_1271318765876893_7();
 
 void
 POMP_Init_regions()
 {
-    POMP_Init_regions_1263287966599960_7();
+    POMP_Init_regions_1271318765876893_7();
 }
 
 size_t
