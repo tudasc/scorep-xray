@@ -43,6 +43,7 @@ AC_SUBST(backend_bin_dir)
 AC_SUBST(backend_lib_dir)
 
 AC_SILC_COMMON_CHECKS
+AC_CHECK_SIZEOF([void *])
 
 ## Determine a Fortran 77 compiler to use. If F77 is not already set in the
 ## environment, then check for g77 and f77, and then some other names. Set the
