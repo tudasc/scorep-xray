@@ -1,0 +1,17 @@
+silc_define_string    			SILC_String			string
+SILC_DefineSourceFile 			SILC_SourceFile			source_file
+SILC_DefineRegion     			SILC_Region			region
+SILC_DefineMPICommunicator 		SILC_MPICommunicator		mpi_communicator
+SILC_DefineMPIWindow       		SILC_MPIWindow			mpi_window
+SILC_DefineMPICartesianTopology		SILC_MPICartesianTopology	mpi_cartesian_topology
+SILC_DefineMPICartesianCoords		SILC_MPICartesianCoords		mpi_cartesian_coords
+SILC_DefineCounterGroup         	SILC_CounterGroup		counter_group
+SILC_DefineCounter              	SILC_Counter			counter
+SILC_DefineIOFileGroup          	SILC_IOFileGroup		io_file_group
+SILC_DefineIOFile               	SILC_IOFile			io_file
+SILC_DefineMarkerGroup          	SILC_MarkerGroup		marker_group
+SILC_DefineMarker               	SILC_Marker			marker
+SILC_DefineParameter            	SILC_Parameter			parameter
+SILC_DefineCallpath             	SILC_Callpath			callpath
+SILC_DefineCallpathParameterInteger 	SILC_CallpathParameterInteger	callpath_parameter_integer
+SILC_DefineCallpathParameterString	SILC_CallpathParameterString	callpath_parameter_string
