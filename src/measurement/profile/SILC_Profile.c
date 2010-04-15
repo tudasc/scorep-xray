@@ -407,7 +407,6 @@ SILC_Profile_ParameterString( SILC_Thread_LocationData* thread,
 {
     silc_profile_node*            node = NULL;
     silc_profile_string_node_data data;
-    int                           i;
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
@@ -433,7 +432,6 @@ SILC_Profile_ParameterInteger( SILC_Thread_LocationData* thread,
 {
     silc_profile_node*             node = NULL;
     silc_profile_integer_node_data data;
-    int                            i;
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
@@ -581,15 +579,18 @@ void
 SILC_Profile_OnFork( SILC_Thread_LocationData* threadData,
                      size_t                    maxChildThreads )
 {
-    silc_profile_node* node  = NULL;
-    silc_profile_node* child = NULL;
-    int                i;
+    silc_profile_node* fork_node = NULL;
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
-    node = silc_profile_find_or_create_child( threadData, silc_profile_node_thread_fork,
-                                              0, -1 );
+    fork_node = silc_profile_get_current_node( threadData );
+    if ( fork_node->node_type == silc_profile_node_thread_start )
+    {
+        fork_node = ( silc_profile_node* )
+                    SILC_PROFILE_DATA2POINTER( fork_node->type_specific_data );
+    }
 
     /* Store current fork node */
-    SILC_Thread_GetProfileLocationData( threadData )->fork_node = node;
+    SILC_Thread_GetProfileLocationData( threadData )->fork_node =
+        silc_profile_get_current_node( threadData );
 }

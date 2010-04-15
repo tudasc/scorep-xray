@@ -25,6 +25,7 @@
  */
 
 #include <stdbool.h>
+#include <config.h>
 
 #include "SILC_DefinitionHandles.h"
 
@@ -54,10 +55,8 @@ typedef enum
     silc_profile_node_regular_region,
     silc_profile_node_parameter_string,
     silc_profile_node_parameter_integer,
-    silc_profile_node_thread_fork,
     silc_profile_node_thread_root,
     silc_profile_node_thread_start,
-    silc_profile_node_collapse
 } silc_profile_node_type;
 
 /**
@@ -119,10 +118,12 @@ typedef struct
    Casts a pointer to node specific data type.
    @param handle The pointer which is casted to node specific data.
  */
-# if __WORDSIZE == 64
+#if SIZEOF_VOID_P == 8
 #define SILC_PROFILE_POINTER2DATA( ptr ) ( ( uint64_t )ptr )
-#else
+#elif SIZEOF_VOID_P == 4
 #define SILC_PROFILE_POINTER2DATA( ptr ) ( ( uint32_t )ptr )
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
 #endif
 
 /**
@@ -130,10 +131,12 @@ typedef struct
    Casts a node specific data item to a region handle.
    @param data The node specific data that is casted to a pointer.
  */
-# if __WORDSIZE == 64
+#if SIZEOF_VOID_P == 8
 #define SILC_PROFILE_DATA2POINTER( data )   ( ( void* )( uint64_t )data )
-#else
+#elif SIZEOF_VOID_P == 4
 #define SILC_PROFILE_DATA2POINTER( data )   ( ( void* )( uint32_t )data )
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
 #endif
 
 /**
@@ -253,5 +256,14 @@ silc_profile_compare_type_data( silc_profile_type_data_t data1,
 extern silc_profile_type_data_t
 silc_profile_copy_type_data( silc_profile_type_data_t data,
                              silc_profile_node_type   type );
+
+/**
+    Copies all dense metrics and time statistics from @a source to @a destination.
+    @param destination Pointer to a node to which the metric values are written.
+    @param source      Pointer to a node from which the metric values are read.
+ */
+void
+silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
+                                     silc_profile_node* source );
 
 #endif // SILC_PROFILE_NODE_H

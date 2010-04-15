@@ -45,16 +45,10 @@ static silc_profile_type_data_t
 silc_profile_copy_parameter_integer_data( silc_profile_type_data_t data );
 
 static silc_profile_type_data_t
-silc_profile_copy_thread_fork_data( silc_profile_type_data_t data );
-
-static silc_profile_type_data_t
 silc_profile_copy_thread_root_data( silc_profile_type_data_t data );
 
 static silc_profile_type_data_t
 silc_profile_copy_thread_start_data( silc_profile_type_data_t data );
-
-static silc_profile_type_data_t
-silc_profile_copy_collapse_data( silc_profile_type_data_t data );
 
 static bool
 silc_profile_compare_regular_region_data( silc_profile_type_data_t data1,
@@ -69,20 +63,12 @@ silc_profile_compare_parameter_integer_data( silc_profile_type_data_t data1,
                                              silc_profile_type_data_t data2 );
 
 static bool
-silc_profile_compare_thread_fork_data( silc_profile_type_data_t data1,
-                                       silc_profile_type_data_t data2 );
-
-static bool
 silc_profile_compare_thread_root_data( silc_profile_type_data_t data1,
                                        silc_profile_type_data_t data2 );
 
 static bool
 silc_profile_compare_thread_start_data( silc_profile_type_data_t data1,
                                         silc_profile_type_data_t data2 );
-
-static bool
-silc_profile_compare_collapse_data( silc_profile_type_data_t data1,
-                                    silc_profile_type_data_t data2 );
 
 /* ***************************************************************************************
    Type dependent data handling types and variables
@@ -110,10 +96,8 @@ silc_profile_type_data_func_t silc_profile_type_data_funcs[] = {
   { &silc_profile_compare_regular_region_data,    &silc_profile_copy_regular_region_data    },
   { &silc_profile_compare_parameter_string_data,  &silc_profile_copy_parameter_string_data  },
   { &silc_profile_compare_parameter_integer_data, &silc_profile_copy_parameter_integer_data },
-  { &silc_profile_compare_thread_fork_data,       &silc_profile_copy_thread_fork_data       },
   { &silc_profile_compare_thread_root_data,       &silc_profile_copy_thread_root_data       },
-  { &silc_profile_compare_thread_start_data,      &silc_profile_copy_thread_start_data      },
-  { &silc_profile_compare_collapse_data,          &silc_profile_copy_collapse_data          }
+  { &silc_profile_compare_thread_start_data,      &silc_profile_copy_thread_start_data      }
 };
 
 /* *INDENT-ON* */
@@ -308,7 +292,6 @@ silc_profile_create_node( silc_profile_node*       parent,
 silc_profile_node*
 silc_profile_copy_node( silc_profile_node* source )
 {
-    int                                i;
     silc_profile_sparse_metric_int*    dest_sparse_int      = NULL;
     silc_profile_sparse_metric_int*    source_sparse_int    = source->first_int_sparse;
     silc_profile_sparse_metric_double* dest_sparse_double   = NULL;
@@ -337,20 +320,10 @@ silc_profile_copy_node( silc_profile_node* source )
     node->next_sibling        = NULL;
     node->first_double_sparse = NULL;
     node->first_int_sparse    = NULL;
-    node->count               = source->count;
-    node->first_enter_time    = source->first_enter_time;
-    node->last_exit_time      = source->last_exit_time;
     node->node_type           = source->node_type;
-    node->type_specific_data  = silc_profile_copy_type_data( source->type_specific_data,
-                                                             source->node_type );
 
     /* Copy dense metric values */
-    silc_profile_copy_dense_metric( &node->implicit_time, &source->implicit_time );
-    for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
-    {
-        silc_profile_copy_dense_metric( &node->dense_metrics[ i ],
-                                        &source->dense_metrics[ i ] );
-    }
+    silc_profile_copy_all_dense_metrics( node, source );
 
     /* Copy sparse integer metrics */
     while ( source_sparse_int != NULL )
@@ -376,7 +349,7 @@ silc_profile_copy_node( silc_profile_node* source )
 }
 
 /* ***************************************************************************************
-   Node comparison
+   Node operation
 *****************************************************************************************/
 
 bool
@@ -390,4 +363,26 @@ silc_profile_compare_nodes( silc_profile_node* node1,
     return silc_profile_compare_type_data( node1->type_specific_data,
                                            node2->type_specific_data,
                                            node1->node_type );
+}
+
+/* Copies all dense metrics from source to destination */
+void
+silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
+                                     silc_profile_node* source )
+{
+    int i;
+
+    destination->count              = source->count;
+    destination->first_enter_time   = source->first_enter_time;
+    destination->last_exit_time     = source->last_exit_time;
+    destination->type_specific_data =
+        silc_profile_copy_type_data( source->type_specific_data, source->node_type );
+
+    /* Copy dense metric values */
+    silc_profile_copy_dense_metric( &destination->implicit_time, &source->implicit_time );
+    for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
+    {
+        silc_profile_copy_dense_metric( &destination->dense_metrics[ i ],
+                                        &source->dense_metrics[ i ] );
+    }
 }
