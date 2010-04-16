@@ -290,28 +290,40 @@ silc_region_type_to_otf_region_type( SILC_RegionType silcType )
        SILC_INVALID_REGION_TYPE
      */
 
-    /* see Records/OTF2_LocalDefinitions.h
-       OTF2_GLOBAL_DEF_STRING                    =  1,
-
-       OTF2_GLOBAL_DEF_LOCATION                  =  2,
-       OTF2_GLOBAL_DEF_LOCATION_GROUP            =  3,
-
-       OTF2_GLOBAL_DEF_REGION                    =  3,
-       OTF2_GLOBAL_DEF_CALLSITE                  =  4,
-       OTF2_GLOBAL_DEF_CALLPATH                  =  5,
-       OTF2_GLOBAL_DEF_GROUP                     =  6,
-
-       OTF2_GLOBAL_DEF_TOPOLOGY_CARTESIAN        =  7,
-       OTF2_GLOBAL_DEF_TOPOLOGY_CARTESIAN_COORDS =  8,
-       OTF2_GLOBAL_DEF_TOPOLOGY_GRAPH            =  9,
-       OTF2_GLOBAL_DEF_TOPOLOGY_GRAPH_EDGE       = 10,
-
-       OTF2_GLOBAL_DEF_METRIC                    = 11,
-       OTF2_GLOBAL_DEF_MPI_WIN                   = 12,
-     */
+    /* see Records/OTF2_LocalDefinitions.c
+       missing region types are marked. */
 
     static OTF2_RegionType type_map[ SILC_INVALID_REGION_TYPE ] = {
-        // todo
+        OTF2_REGION_TYPE_UNKNOWN,
+        OTF2_REGION_TYPE_FUNCTION,
+        OTF2_REGION_TYPE_LOOP,
+        OTF2_REGION_TYPE_USER_REGION,
+        /* PHASE */ OTF2_REGION_TYPE_UNKNOWN,
+        /* DYNAMIC */ OTF2_REGION_TYPE_UNKNOWN,
+        /* DYNAMIC_PHASE */ OTF2_REGION_TYPE_UNKNOWN,
+        /* DYNAMIC_LOOP */ OTF2_REGION_TYPE_UNKNOWN,
+        /* DYNAMIC_FUNCTION */ OTF2_REGION_TYPE_UNKNOWN,
+        /* DYNAMIC_LOOP_PHASE */ OTF2_REGION_TYPE_UNKNOWN,
+        /* MPI_COLL_BARRIER */ OTF2_REGION_TYPE_UNKNOWN,
+        /* MPI_COLL_ONE2ALL */ OTF2_REGION_TYPE_UNKNOWN,
+        /* MPI_COLL_ALL2ONE */ OTF2_REGION_TYPE_UNKNOWN,
+        /* MPI_COLL_ALL2ALL */ OTF2_REGION_TYPE_UNKNOWN,
+        /* MPI_COLL_OTHER */ OTF2_REGION_TYPE_UNKNOWN,
+        OTF2_REGION_TYPE_OMP_PARALLEL,
+        OTF2_REGION_TYPE_OMP_LOOP,
+        OTF2_REGION_TYPE_OMP_SECTIONS,
+        OTF2_REGION_TYPE_OMP_SECTION,
+        OTF2_REGION_TYPE_OMP_WORKSHARE,
+        OTF2_REGION_TYPE_OMP_SINGLE,
+        OTF2_REGION_TYPE_OMP_MASTER,
+        OTF2_REGION_TYPE_OMP_CRITICAL,
+        OTF2_REGION_TYPE_OMP_ATOMIC,
+        OTF2_REGION_TYPE_OMP_BARRIER,
+        OTF2_REGION_TYPE_OMP_IBARRIER,
+        OTF2_REGION_TYPE_OMP_FLUSH,
+        OTF2_REGION_TYPE_OMP_CRITICAL_SBLOCK,
+        OTF2_REGION_TYPE_OMP_SINGLE_SBLOCK,
+        /* OMP_WRAPPER */ OTF2_REGION_TYPE_UNKNOWN,
     };
 
     return type_map[ silcType ];
