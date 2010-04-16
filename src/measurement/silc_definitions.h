@@ -44,23 +44,21 @@
 typedef struct SILC_DefinitionManager SILC_DefinitionManager;
 struct SILC_DefinitionManager
 {
-    SILC_String_Definition                   string_definitions_head_dummy;
-    SILC_SourceFile_Definition               source_file_definitions_head_dummy;
-    SILC_Region_Definition                   region_definitions_head_dummy;
-    SILC_MPICommunicator_Definition          mpi_communicator_definitions_head_dummy;
-    SILC_MPIWindow_Definition                mpi_window_definitions_head_dummy;
-    SILC_MPICartesianTopology_Definition     mpi_cartesian_topology_definitions_head_dummy;
-    SILC_MPICartesianCoords_Definition       mpi_cartesian_coords_definitions_head_dummy;
-    SILC_CounterGroup_Definition             counter_group_definitions_head_dummy;
-    SILC_Counter_Definition                  counter_definitions_head_dummy;
-    SILC_IOFileGroup_Definition              io_file_group_definitions_head_dummy;
-    SILC_IOFile_Definition                   io_file_definitions_head_dummy;
-    SILC_MarkerGroup_Definition              marker_group_definitions_head_dummy;
-    SILC_Marker_Definition                   marker_definitions_head_dummy;
-    SILC_Parameter_Definition                parameter_definitions_head_dummy;
-    SILC_Callpath_Definition                 callpath_definitions_head_dummy;
-    SILC_CallpathParameterInteger_Definition callpath_parameter_integer_definitions_head_dummy;
-    SILC_CallpathParameterString_Definition  callpath_parameter_string_definitions_head_dummy;
+    SILC_String_Definition               string_definitions_head_dummy;
+    SILC_SourceFile_Definition           source_file_definitions_head_dummy;
+    SILC_Region_Definition               region_definitions_head_dummy;
+    SILC_MPICommunicator_Definition      mpi_communicator_definitions_head_dummy;
+    SILC_MPIWindow_Definition            mpi_window_definitions_head_dummy;
+    SILC_MPICartesianTopology_Definition mpi_cartesian_topology_definitions_head_dummy;
+    SILC_MPICartesianCoords_Definition   mpi_cartesian_coords_definitions_head_dummy;
+    SILC_CounterGroup_Definition         counter_group_definitions_head_dummy;
+    SILC_Counter_Definition              counter_definitions_head_dummy;
+    SILC_IOFileGroup_Definition          io_file_group_definitions_head_dummy;
+    SILC_IOFile_Definition               io_file_definitions_head_dummy;
+    SILC_MarkerGroup_Definition          marker_group_definitions_head_dummy;
+    SILC_Marker_Definition               marker_definitions_head_dummy;
+    SILC_Parameter_Definition            parameter_definitions_head_dummy;
+    SILC_Callpath_Definition             callpath_definitions_head_dummy;
 };
 
 
@@ -81,13 +79,13 @@ SILC_DefineCallpath( SILC_CallpathHandle parent,
                      SILC_RegionHandle   region );
 
 
-SILC_CallpathParameterIntegerHandle
+SILC_CallpathHandle
 SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parent,
                                      SILC_ParameterHandle param,
                                      int64_t              value );
 
 
-SILC_CallpathParameterStringHandle
+SILC_CallpathHandle
 SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
                                     SILC_ParameterHandle param,
                                     SILC_StringHandle    value );

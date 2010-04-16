@@ -54,8 +54,6 @@ SILC_DefinitionManager silc_definition_manager =
     ,{ { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }
     ,{ { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }
     ,{ { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }
-    ,{ { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }
-    ,{ { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }
 };
 
 static bool silc_definitions_initialized = false;
@@ -66,8 +64,6 @@ static OTF2_DefWriter* silc_create_definition_writer();
 static uint64_t silc_on_definitions_post_flush();
 static void silc_delete_definition_writer(OTF2_DefWriter* definitionWriter);
 static void silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void silc_write_callpath_parameter_integer_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void silc_write_callpath_parameter_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_definitions(OTF2_DefWriter* definitionWriter);
@@ -162,8 +158,6 @@ silc_write_definitions( OTF2_DefWriter* definitionWriter )
     silc_write_marker_definitions_to_otf2( definitionWriter );
     silc_write_parameter_definitions_to_otf2( definitionWriter );
     silc_write_callpath_definitions_to_otf2( definitionWriter );
-    silc_write_callpath_parameter_integer_definitions_to_otf2( definitionWriter );
-    silc_write_callpath_parameter_string_definitions_to_otf2( definitionWriter );
 }
 
 
@@ -200,49 +194,49 @@ SILC_DefineString( const char* str )
 }
 
 
+static uint32_t callpath_handle_counter = 0;
+
+
 SILC_CallpathHandle
 SILC_DefineCallpath( SILC_CallpathHandle parent,
                      SILC_RegionHandle   region )
 {
-    static uint32_t                   counter        = 0;
     SILC_Callpath_Definition*         new_definition = 0;
     SILC_Callpath_Definition_Movable* new_movable    = 0;
     SILC_ALLOC_NEW_DEFINITION( SILC_Callpath_Definition );
     SILC_DEFINITIONS_LIST_PUSH_FRONT( callpath_definitions_head_dummy );
     // Init new_definition
-    new_definition->id = counter++;
+    new_definition->id = callpath_handle_counter++;
     return new_movable;
 }
 
 
-SILC_CallpathParameterIntegerHandle
+SILC_CallpathHandle
 SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parent,
                                      SILC_ParameterHandle param,
                                      int64_t              value )
 {
-    static uint32_t                                   counter        = 0;
-    SILC_CallpathParameterInteger_Definition*         new_definition = 0;
-    SILC_CallpathParameterInteger_Definition_Movable* new_movable    = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_CallpathParameterInteger_Definition );
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( callpath_parameter_integer_definitions_head_dummy );
+    SILC_Callpath_Definition*         new_definition = 0;
+    SILC_Callpath_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Callpath_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( callpath_definitions_head_dummy );
     // Init new_definition
-    new_definition->id = counter++;
+    new_definition->id = callpath_handle_counter++;
     return new_movable;
 }
 
 
-SILC_CallpathParameterStringHandle
+SILC_CallpathHandle
 SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
                                     SILC_ParameterHandle param,
                                     SILC_StringHandle    value )
 {
-    static uint32_t                                  counter        = 0;
-    SILC_CallpathParameterString_Definition*         new_definition = 0;
-    SILC_CallpathParameterString_Definition_Movable* new_movable    = 0;
-    SILC_ALLOC_NEW_DEFINITION( SILC_CallpathParameterString_Definition );
-    SILC_DEFINITIONS_LIST_PUSH_FRONT( callpath_parameter_string_definitions_head_dummy );
+    SILC_Callpath_Definition*         new_definition = 0;
+    SILC_Callpath_Definition_Movable* new_movable    = 0;
+    SILC_ALLOC_NEW_DEFINITION( SILC_Callpath_Definition );
+    SILC_DEFINITIONS_LIST_PUSH_FRONT( callpath_definitions_head_dummy );
     // Init new_definition
-    new_definition->id = counter++;
+    new_definition->id = callpath_handle_counter++;
     return new_movable;
 }
 
@@ -615,44 +609,6 @@ silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //if ( status != SILC_SUCCESS )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_Callpath_Definition" );
-        //}
-        assert( false ); // implement me
-    }
-}
-
-
-static void
-silc_write_callpath_parameter_integer_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
-{
-    SILC_CallpathParameterInteger_Definition* definition =
-        &( silc_definition_manager.callpath_parameter_integer_definitions_head_dummy );
-    while ( !SILC_MEMORY_MOVABLE_IS_NULL( definition->next ) )
-    {
-        definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
-                                                SILC_CallpathParameterInteger_Definition* );
-        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
-        //if ( status != SILC_SUCCESS )
-        //{
-        //    silc_handle_definition_writing_error( status, "SILC_CallpathParameterInteger_Definition" );
-        //}
-        assert( false ); // implement me
-    }
-}
-
-
-static void
-silc_write_callpath_parameter_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
-{
-    SILC_CallpathParameterString_Definition* definition =
-        &( silc_definition_manager.callpath_parameter_string_definitions_head_dummy );
-    while ( !SILC_MEMORY_MOVABLE_IS_NULL( definition->next ) )
-    {
-        definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
-                                                SILC_CallpathParameterString_Definition* );
-        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
-        //if ( status != SILC_SUCCESS )
-        //{
-        //    silc_handle_definition_writing_error( status, "SILC_CallpathParameterString_Definition" );
         //}
         assert( false ); // implement me
     }

@@ -192,24 +192,4 @@ struct SILC_Callpath_Definition
 };
 
 
-SILC_MOVABLE_TYPE( SILC_CallpathParameterInteger_Definition );
-struct SILC_CallpathParameterInteger_Definition
-{
-    SILC_CallpathParameterInteger_Definition_Movable next;
-    uint32_t                                         id;
-    // Keep above order to be able to cast between definition types.
-    // Add SILC_CallpathParameterInteger stuff from here on.
-};
-
-
-SILC_MOVABLE_TYPE( SILC_CallpathParameterString_Definition );
-struct SILC_CallpathParameterString_Definition
-{
-    SILC_CallpathParameterString_Definition_Movable next;
-    uint32_t                                        id;
-    // Keep above order to be able to cast between definition types.
-    // Add SILC_CallpathParameterString stuff from here on.
-};
-
-
 #endif /* SILC_DEFINITION_STRUCTS_H */
