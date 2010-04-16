@@ -83,6 +83,8 @@ static void silc_write_parameter_definitions_to_otf2( OTF2_DefWriter* definition
 static void silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
+static void silc_handle_definition_writing_error( SILC_Error_Code status, const char* definitionType );
+static OTF2_RegionType silc_region_type_to_otf_region_type( SILC_RegionType silcType );
 /* *INDENT-ON* */
 
 
@@ -246,6 +248,83 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
 
 
 static void
+silc_handle_definition_writing_error( SILC_Error_Code status,
+                                      const char*     definitionType )
+{
+    assert( false ); // implement me
+}
+
+
+static OTF2_RegionType
+silc_region_type_to_otf_region_type( SILC_RegionType silcType )
+{
+    /* see SILC_Types.h
+       SILC_REGION_UNKNOWN = 0,
+       SILC_REGION_FUNCTION,
+       SILC_REGION_LOOP,
+       SILC_REGION_USER,
+       SILC_REGION_PHASE,
+       SILC_REGION_DYNAMIC,
+
+       SILC_REGION_DYNAMIC_PHASE,
+       SILC_REGION_DYNAMIC_LOOP,
+       SILC_REGION_DYNAMIC_FUNCTION,
+       SILC_REGION_DYNAMIC_LOOP_PHASE,
+
+       SILC_REGION_MPI_COLL_BARRIER,
+       SILC_REGION_MPI_COLL_ONE2ALL,
+       SILC_REGION_MPI_COLL_ALL2ONE,
+       SILC_REGION_MPI_COLL_ALL2ALL,
+       SILC_REGION_MPI_COLL_OTHER,
+
+       SILC_REGION_OMP_PARALLEL,
+       SILC_REGION_OMP_LOOP,
+       SILC_REGION_OMP_SECTIONS,
+       SILC_REGION_OMP_SECTION,
+       SILC_REGION_OMP_WORKSHARE,
+       SILC_REGION_OMP_SINGLE,
+       SILC_REGION_OMP_MASTER,
+       SILC_REGION_OMP_CRITICAL,
+       SILC_REGION_OMP_ATOMIC,
+       SILC_REGION_OMP_BARRIER,
+       SILC_REGION_OMP_IMPLICIT_BARRIER,
+       SILC_REGION_OMP_FLUSH,
+       SILC_REGION_OMP_CRITICAL_SBLOCK, /// @todo what is SBLOCK?
+       SILC_REGION_OMP_SINGLE_SBLOCK,
+       SILC_REGION_OMP_WRAPPER,
+
+       SILC_INVALID_REGION_TYPE
+     */
+
+    /* see Records/OTF2_LocalDefinitions.h
+       OTF2_GLOBAL_DEF_STRING                    =  1,
+
+       OTF2_GLOBAL_DEF_LOCATION                  =  2,
+       OTF2_GLOBAL_DEF_LOCATION_GROUP            =  3,
+
+       OTF2_GLOBAL_DEF_REGION                    =  3,
+       OTF2_GLOBAL_DEF_CALLSITE                  =  4,
+       OTF2_GLOBAL_DEF_CALLPATH                  =  5,
+       OTF2_GLOBAL_DEF_GROUP                     =  6,
+
+       OTF2_GLOBAL_DEF_TOPOLOGY_CARTESIAN        =  7,
+       OTF2_GLOBAL_DEF_TOPOLOGY_CARTESIAN_COORDS =  8,
+       OTF2_GLOBAL_DEF_TOPOLOGY_GRAPH            =  9,
+       OTF2_GLOBAL_DEF_TOPOLOGY_GRAPH_EDGE       = 10,
+
+       OTF2_GLOBAL_DEF_METRIC                    = 11,
+       OTF2_GLOBAL_DEF_MPI_WIN                   = 12,
+     */
+
+    static OTF2_RegionType type_map[ SILC_INVALID_REGION_TYPE ] = {
+        // todo
+    };
+
+    return type_map[ silcType ];
+}
+
+
+static void
 silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 {
     SILC_String_Definition* definition =
@@ -254,9 +333,14 @@ silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_String_Definition* );
-        OTF2_DefWriter_DefString( definitionWriter,
-                                  definition->id,
-                                  SILC_MEMORY_DEREF_MOVABLE( &( definition->str ), char* ) );
+        SILC_Error_Code status = OTF2_DefWriter_DefString(
+            definitionWriter,
+            definition->id,
+            SILC_MEMORY_DEREF_MOVABLE( &( definition->str ), char* ) );
+        if ( status != SILC_SUCCESS )
+        {
+            silc_handle_definition_writing_error( status, "SILC_String_Definition" );
+        }
     }
 }
 
@@ -264,13 +348,18 @@ silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 static void
 silc_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 {
+    // will not be used because we transform source file definitions to string definitions.
     SILC_SourceFile_Definition* definition =
         &( silc_definition_manager.source_file_definitions_head_dummy );
     while ( !SILC_MEMORY_MOVABLE_IS_NULL( definition->next ) )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_SourceFile_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_SourceFile_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -285,8 +374,21 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_Region_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
-        assert( false ); // implement me
+        SILC_Error_Code status = OTF2_DefWriter_DefRegion(
+            definitionWriter,
+            definition->id,
+            ( SILC_MEMORY_DEREF_MOVABLE( &( definition->name_handle ),
+                                         SILC_String_Definition* ) )->id,
+            definition->region_description_identifier,
+            silc_region_type_to_otf_region_type( definition->region_type ),
+            ( SILC_MEMORY_DEREF_MOVABLE( &( definition->file_handle ),
+                                         SILC_String_Definition* ) )->id,
+            definition->begin_line,
+            definition->end_line );
+        if ( status != SILC_SUCCESS )
+        {
+            silc_handle_definition_writing_error( status, "SILC_Region_Definition" );
+        }
     }
 }
 
@@ -300,7 +402,11 @@ silc_write_mpi_communicator_definitions_to_otf2( OTF2_DefWriter* definitionWrite
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_MPICommunicator_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_MPICommunicator_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -315,7 +421,11 @@ silc_write_mpi_window_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_MPIWindow_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_MPIWindow_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -330,7 +440,11 @@ silc_write_mpi_cartesian_topology_definitions_to_otf2( OTF2_DefWriter* definitio
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_MPICartesianTopology_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_MPICartesianTopology_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -345,7 +459,11 @@ silc_write_mpi_cartesian_coords_definitions_to_otf2( OTF2_DefWriter* definitionW
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_MPICartesianCoords_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_MPICartesianCoords_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -360,7 +478,11 @@ silc_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_CounterGroup_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_CounterGroup_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -375,7 +497,11 @@ silc_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_Counter_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_Counter_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -390,7 +516,11 @@ silc_write_io_file_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_IOFileGroup_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_IOFileGroup_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -405,7 +535,11 @@ silc_write_io_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_IOFile_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_IOFile_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -420,7 +554,11 @@ silc_write_marker_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_MarkerGroup_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_MarkerGroup_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -435,7 +573,11 @@ silc_write_marker_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_Marker_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_Marker_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -450,7 +592,11 @@ silc_write_parameter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_Parameter_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_Parameter_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -465,7 +611,11 @@ silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_Callpath_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_Callpath_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -480,7 +630,11 @@ silc_write_callpath_parameter_integer_definitions_to_otf2( OTF2_DefWriter* defin
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_CallpathParameterInteger_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_CallpathParameterInteger_Definition" );
+        //}
         assert( false ); // implement me
     }
 }
@@ -495,7 +649,11 @@ silc_write_callpath_parameter_string_definitions_to_otf2( OTF2_DefWriter* defini
     {
         definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),
                                                 SILC_CallpathParameterString_Definition* );
-        //OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //if ( status != SILC_SUCCESS )
+        //{
+        //    silc_handle_definition_writing_error( status, "SILC_CallpathParameterString_Definition" );
+        //}
         assert( false ); // implement me
     }
 }

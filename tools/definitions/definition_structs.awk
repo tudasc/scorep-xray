@@ -23,7 +23,7 @@
     print "{"
     print "    " $2 "_Definition_Movable next;"
     print "    uint32_t id;"
-    print "    // Keep order above! See struct silc_any_definition."
+    print "    // Keep above order to be able to cast between definition types.
     print "    // Add " $2 " stuff from here on."
     print "};\n\n"
 }

@@ -114,7 +114,14 @@ SILC_DefineRegion( const char*           regionName,
     SILC_ALLOC_NEW_DEFINITION( SILC_Region_Definition );
     SILC_DEFINITIONS_LIST_PUSH_FRONT( region_definitions_head_dummy );
     // Init new_definition
-    new_definition->id = counter++;
+    new_definition->id                            = counter++;
+    new_definition->name_handle                   = *SILC_DefineString( regionName );
+    new_definition->file_handle                   = *fileHandle; // is actually a string handle
+    new_definition->region_description_identifier = 0;           // currently not used
+    new_definition->region_type                   = regionType;  // maps to OTF2_RegionType
+    new_definition->begin_line                    = beginLine;
+    new_definition->end_line                      = endLine;
+    new_definition->adapter_type                  = adapter; // currently not used
     return new_movable;
 }
 
