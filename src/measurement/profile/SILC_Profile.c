@@ -498,9 +498,9 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
     /* Check wether such an activation node already exists */
     node = root->first_child;
     while ( ( node != NULL ) &&
-            ( node->node_type == silc_profile_node_thread_start ) &&
-            ( creation_point == ( silc_profile_node* )
-              SILC_PROFILE_DATA2POINTER( node->type_specific_data ) ) )
+            ( ( node->node_type != silc_profile_node_thread_start ) ||
+              ( creation_point != ( silc_profile_node* )
+                SILC_PROFILE_DATA2POINTER( node->type_specific_data ) ) ) )
     {
         node = node->next_sibling;
     }
@@ -591,6 +591,5 @@ SILC_Profile_OnFork( SILC_Thread_LocationData* threadData,
     }
 
     /* Store current fork node */
-    SILC_Thread_GetProfileLocationData( threadData )->fork_node =
-        silc_profile_get_current_node( threadData );
+    SILC_Thread_GetProfileLocationData( threadData )->fork_node = fork_node;
 }

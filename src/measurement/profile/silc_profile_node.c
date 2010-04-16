@@ -386,3 +386,121 @@ silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
                                         &source->dense_metrics[ i ] );
     }
 }
+
+/* Moves the children of a node to another node */
+void
+silc_profile_move_children(  silc_profile_node* destination,
+                             silc_profile_node* source )
+{
+    silc_profile_node* child = NULL;
+
+    SILC_ASSERT( source != NULL );
+
+    /* If source has no child -> nothing to do */
+    child = source->first_child;
+    if ( child == NULL )
+    {
+        return;
+    }
+
+    /* Set new parent of all children of source. */
+    while ( child != NULL )
+    {
+        child->parent = destination;
+        child         = child->next_sibling;
+    }
+
+    /* If destination is NULL -> append all children as root nodes */
+    if ( destination == NULL )
+    {
+        child = silc_profile.first_root_node;
+
+        /* If profile is empty */
+        if ( child == NULL )
+        {
+            silc_profile.first_root_node = source->first_child;
+            source->first_child          = NULL;
+            return;
+        }
+
+        /* Append at end of root nodes, see below */
+    }
+    else
+    {
+        /* If destination has no childs */
+        child = destination->first_child;
+        if ( child == NULL )
+        {
+            destination->first_child = source->first_child;
+            source->first_child      = NULL;
+            return;
+        }
+        /* Else append list of source to end of children list of destination, see below */
+    }
+
+    /* Search end of sibling list and append children */
+    while ( child->next_sibling != NULL )
+    {
+        child = child->next_sibling;
+    }
+    child->next_sibling = source->first_child;
+    source->first_child = NULL;
+}
+
+/* Removes a node with it subtree from its parents children */
+void
+silc_profile_remove_node( silc_profile_node* node )
+{
+    SILC_ASSERT( node != NULL );
+
+    silc_profile_node* parent = node->parent;
+    silc_profile_node* before = NULL;
+
+    /* Obtain start of the siblings list of node */
+    if ( parent == NULL )
+    {
+        before = silc_profile.first_root_node;
+    }
+    else
+    {
+        before = parent->first_child;
+    }
+
+    /* If node is the first entry */
+    if ( before == node )
+    {
+        if ( parent == NULL )
+        {
+            silc_profile.first_root_node = node->next_sibling;
+        }
+        else
+        {
+            parent->first_child = node->next_sibling;
+        }
+        node->parent       = NULL;
+        node->next_sibling = NULL;
+        return;
+    }
+
+    /* Else search for the sibling before node. */
+    while ( ( before != NULL ) && ( before->next_sibling != node ) )
+    {
+        before = before->next_sibling;
+    }
+
+    /* Node is already removed */
+    if ( before == NULL )
+    {
+        SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE,
+                           "Trying to remove a node which is not contained in the siblings "
+                           "list.\nMaybe an inconsistent profile." );
+        node->parent       = NULL;
+        node->next_sibling = NULL;
+        return;
+    }
+
+    /* Remove node from list */
+    before->next_sibling = node->next_sibling;
+    node->parent         = NULL;
+    node->next_sibling   = NULL;
+}

@@ -212,31 +212,19 @@ silc_profile_expand_thread_start( silc_profile_node* thread_start )
     creation_point = ( silc_profile_node* )
                      SILC_PROFILE_DATA2POINTER( thread_start->type_specific_data );
 
+    /* Separate the thread_start node from the profile */
+    silc_profile_remove_node( thread_start );
+
+    /* If it has no children -> nothing to do */
     if ( thread_start->first_child == NULL )
     {
-        /* Simply remove this node. */
         return;
     }
 
-    /* If no creation point is available, simply append the child list to the thread_root */
+    /* If no creation point is available, append the child list to the thread_root */
     if ( creation_point == NULL )
     {
-        creation_point = thread_root;
-
-        /* To avoid later confusion, remove thread_start from its siblings */
-        if ( thread_root->first_child == thread_start )
-        {
-            thread_root->first_child =  thread_start->next_sibling;
-        }
-        else
-        {
-            last_child = thread_root->first_child;
-            while ( last_child->next_sibling != thread_start )
-            {
-                last_child = last_child->next_sibling;
-            }
-            last_child->next_sibling = thread_start->next_sibling;
-        }
+        silc_profile_move_children( thread_root, thread_start );
     }
     /* Else insert callpath */
     else
@@ -245,29 +233,12 @@ silc_profile_expand_thread_start( silc_profile_node* thread_start )
         silc_profile_sum_children( thread_start );
 
         /* Add callpath */
-        creation_point = silc_profile_add_callpath( thread_root, creation_point, thread_start );
+        creation_point = silc_profile_add_callpath( thread_root, creation_point,
+                                                    thread_start );
+
+        /* Move the subforest to the inserted callpath: */
+        silc_profile_move_children( creation_point, thread_start );
     }
-
-    /* Move the subforest to the inserted callpath: */
-    /*   Reset all parent pointers */
-    last_child         = thread_start->first_child;
-    last_child->parent = creation_point;
-    while ( last_child->next_sibling != NULL )
-    {
-        last_child         = last_child->next_sibling;
-        last_child->parent = creation_point;
-    }
-
-    /*   Append children of creation point to the last_child */
-    last_child->next_sibling = creation_point->first_child;
-
-    /*   Set the creations_point to the head of combined list */
-    creation_point->first_child = thread_start->first_child;
-
-    /*   Remove children from thread_start */
-    thread_start->first_child = NULL;
-
-    /* Remove thread_start_node */
 }
 
 /* Expand all thread_start nodes of a thread_root */
@@ -276,37 +247,21 @@ silc_profile_expand_thread_root( silc_profile_node* thread_root )
 {
     /* Expand the start nodes */
     silc_profile_node* thread_start = thread_root->first_child;
+    silc_profile_node* next_node    = NULL;
     while ( thread_start != NULL )
     {
+        /* Need to store the next sibling, because the current is removed
+           -> next_sibling is set to NULL */
+        next_node = thread_start->next_sibling;
+
+        /* Expand thread_start node */
         if ( thread_start->node_type == silc_profile_node_thread_start )
         {
             silc_profile_expand_thread_start( thread_start );
         }
-        thread_start = thread_start->next_sibling;
-    }
 
-    /* Remove empty start nodes */
-    /* First: find first non start node */
-    thread_start = thread_root->first_child;
-    while ( ( thread_start != NULL ) &&
-            ( thread_start->node_type == silc_profile_node_thread_start ) )
-    {
-        thread_start = thread_start->next_sibling;
-    }
-    thread_root->first_child = thread_start;
-
-    /* Second: sweep start nodes from list */
-    while ( ( thread_start != NULL ) &&
-            ( thread_start->next_sibling != NULL ) )
-    {
-        if ( thread_start->next_sibling->node_type == silc_profile_node_thread_start )
-        {
-            thread_start->next_sibling = thread_start->next_sibling->next_sibling;
-        }
-        else
-        {
-            thread_start = thread_start->next_sibling;
-        }
+        /* Go to next node */
+        thread_start = next_node;
     }
 
     /* Calculate thread statistics */

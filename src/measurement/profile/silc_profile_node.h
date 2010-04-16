@@ -258,12 +258,34 @@ silc_profile_copy_type_data( silc_profile_type_data_t data,
                              silc_profile_node_type   type );
 
 /**
-    Copies all dense metrics and time statistics from @a source to @a destination.
-    @param destination Pointer to a node to which the metric values are written.
-    @param source      Pointer to a node from which the metric values are read.
+   Copies all dense metrics and time statistics from @a source to @a destination.
+   @param destination Pointer to a node to which the metric values are written.
+   @param source      Pointer to a node from which the metric values are read.
  */
 void
 silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
                                      silc_profile_node* source );
+
+/**
+   Removes the children from @a source and appens them to the children list of
+   @a destination.
+   @param destination Pointer to a node to which the children are added. If this
+                      is a NULL pointer, the children are added as root nodes
+                      to the profile forest.
+   @param source      Pointer to a node from which the children are removed. This
+                      must not be NULL.
+ */
+void
+silc_profile_move_children(  silc_profile_node* destination,
+                             silc_profile_node* source );
+
+/**
+   Removes the node from the profile sructure. The whole subtree rooted in
+   @a node is removed.
+   @param node A pointer to a node which is to be removed from the profile. It
+               must not be NULL.
+ */
+void
+silc_profile_remove_node( silc_profile_node* node );
 
 #endif // SILC_PROFILE_NODE_H
