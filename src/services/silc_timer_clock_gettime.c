@@ -21,25 +21,27 @@
  * @status ALPHA
  *
  * This is the implementation of the SILC_Timing.h interface that uses the
- * clock_gettime timer.
+ * clock_gettime timer. Needs librt.
  */
-
 
 #include "SILC_Timing.h"
 
 #include <assert.h>
 #include <stdbool.h>
+#include <time.h>
 
-static bool isInitialized = false;
+static bool            isInitialized = false;
+
+static struct timespec silc_timer_start;
 
 void
 SILC_InitTimer()
 {
-    assert( false ); // implement me
     if ( isInitialized )
     {
         return;
     }
+    clock_gettime( CLOCK_REALTIME, &silc_timer_start );
     isInitialized = true;
 }
 
@@ -47,14 +49,15 @@ SILC_InitTimer()
 uint64_t
 SILC_GetClockTicks()
 {
-    assert( false ); // implement me
-    return 0;
+    struct timespec time;
+    clock_gettime( CLOCK_REALTIME, &time );
+    return ( time.tv_sec - silc_timer_start.tv_sec ) * 1000000000
+           + time.tv_nsec - silc_timer_start.tv_nsec;
 }
 
 
 uint64_t
 SILC_GetClockResolution()
 {
-    assert( false ); // implement me
-    return 0;
+    return 1000000000;
 }
