@@ -81,14 +81,4 @@ typedef struct SILC_Callpath_Definition_Movable SILC_Callpath_Definition_Movable
 typedef SILC_Callpath_Definition_Movable*       SILC_CallpathHandle;
 
 
-typedef struct SILC_CallpathParameterInteger_Definition         SILC_CallpathParameterInteger_Definition;
-typedef struct SILC_CallpathParameterInteger_Definition_Movable SILC_CallpathParameterInteger_Definition_Movable;
-typedef SILC_CallpathParameterInteger_Definition_Movable*       SILC_CallpathParameterIntegerHandle;
-
-
-typedef struct SILC_CallpathParameterString_Definition         SILC_CallpathParameterString_Definition;
-typedef struct SILC_CallpathParameterString_Definition_Movable SILC_CallpathParameterString_Definition_Movable;
-typedef SILC_CallpathParameterString_Definition_Movable*       SILC_CallpathParameterStringHandle;
-
-
 #endif /* SILC_DEFINITIONHANDLES_H */
