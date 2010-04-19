@@ -32,7 +32,7 @@
 
 
 /// The one and only allocator for the measurement and the adapters
-static SILC_Memory_Allocator* silc_memory_allocator = 0;
+SILC_Allocator_Allocator* silc_memory_allocator = 0;
 
 
 enum silc_memory_page_type
@@ -53,7 +53,7 @@ SILC_Memory_Initialize()
     size_t total_memory = 0; // read from configuration or pass in
     size_t page_size    = 0; // dito, or have suitable default
 
-    silc_memory_allocator = SILC_Memory_CreateAllocator( system_alloc, total_memory, page_size );
+    silc_memory_allocator = SILC_Allocator_CreateAllocator( system_alloc, total_memory, page_size );
     if ( !silc_memory_allocator )
     {
         assert( false );
@@ -64,21 +64,29 @@ SILC_Memory_Initialize()
 void
 SILC_Memory_Finalize()
 {
-    SILC_Memory_DeleteAllocator( silc_memory_allocator );
+    SILC_Allocator_DeleteAllocator( silc_memory_allocator );
 }
 
 
-SILC_Memory_PageManager**
+SILC_Allocator_PageManager**
 SILC_Memory_CreatePageManagers()
 {
-    return SILC_Memory_CreatePageManagerArray( silc_memory_allocator, number_of_page_types );
+    SILC_Allocator_PageManager** array = malloc( number_of_page_types * sizeof( SILC_Allocator_PageManager* ) );
+    assert( array );
+    for ( int i = 0; i < number_of_page_types; ++i )
+    {
+        array[ i ] = SILC_Allocator_CreatePageManager( silc_memory_allocator );
+        assert( array[ i ] );
+    }
+    return array;
 }
 
 
 void
-SILC_Memory_DeletePageManagers( SILC_Memory_PageManager** pageManagers )
+SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers )
 {
-    SILC_Memory_DeletePageManagerArray( pageManagers );
+    /// @todo implement me
+    //SILC_Allocator_DeletePageManagerArray( pageManagers );
 }
 
 
@@ -86,7 +94,7 @@ void*
 SILC_Memory_AllocForProfile( size_t size  )
 {
     // collect statistics
-    return SILC_Memory_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ], size );
+    return SILC_Allocator_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ], size );
 }
 
 
@@ -94,7 +102,7 @@ void
 SILC_Memory_FreeProfileMem()
 {
     // print mem usage statistics
-    SILC_Memory_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ] );
+    SILC_Allocator_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ] );
 }
 
 
@@ -103,7 +111,7 @@ void*
 SILC_Memory_AllocForMultithreadedMisc( size_t size  )
 {
     // collect statistics
-    return SILC_Memory_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
+    return SILC_Allocator_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
 }
 
 
@@ -111,21 +119,21 @@ void
 SILC_Memory_FreeMultithreadedMiscMem()
 {
     // print mem usage statistics
-    SILC_Memory_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ] );
+    SILC_Allocator_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ] );
 }
 
 void*
 SILC_Memory_AllocForSinglethreadedMisc( size_t size  )
 {
     // collect statistics
-    return SILC_Memory_Alloc( SILC_Thread_GetGlobalMemoryPageManagers()[ misc_pages ], size );
+    return SILC_Allocator_Alloc( SILC_Thread_GetGlobalMemoryPageManagers()[ misc_pages ], size );
 }
 
 void
 SILC_Memory_FreeSinglethreadedMiscMem()
 {
     // print mem usage statistics
-    SILC_Memory_Free( SILC_Thread_GetGlobalMemoryPageManagers()[ misc_pages ] );
+    SILC_Allocator_Free( SILC_Thread_GetGlobalMemoryPageManagers()[ misc_pages ] );
 }
 
 
@@ -133,7 +141,7 @@ SILC_Allocator_MoveableMemory*
 SILC_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    return SILC_Memory_AllocMoveable( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
+    return SILC_Allocator_AllocMoveable( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
 }
 
 void*
@@ -150,5 +158,5 @@ void
 SILC_Memory_FreeDefinitionMem()
 {
     // print mem usage statistics
-    SILC_Memory_Free( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
+    SILC_Allocator_Free( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
 }

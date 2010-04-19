@@ -58,12 +58,12 @@ SILC_Memory_Finalize();
  *
  * @return
  */
-SILC_Memory_PageManager**
+SILC_Allocator_PageManager**
 SILC_Memory_CreatePageManagers();
 
 
 void
-SILC_Memory_DeletePageManagers( SILC_Memory_PageManager** pageManagers );
+SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers );
 
 
 /**
@@ -210,27 +210,25 @@ void
 SILC_Memory_FreeDefinitionMem();
 
 
+// global variable silc_memory_allocator is used in following macro, so we
+// need to make it visible here.
+extern SILC_Allocator_Allocator* silc_memory_allocator;
+
+
 /**
- * Just a better-named wrapper around SILC_MEMORY_CAST_MOVEABLE_MEMORY_TO_TYPE
+ * Just a convenience macro to access the @e real memory a
+ * SILC_Allocator_MoveableMemory object is referring to.
  *
- * @param definition_memory_ptr Pointer to some SILC_Memory_DefinitionMemory object.
+ * @param definition_memory_ptr Pointer to some SILC_Memory_DefinitionMemory
+ * object.
  * @param target_type The type @a definition_memory_ptr should be converted to.
- * @param allocator The allocator that was used to allocate the
- * SILC_Memory_DefinitionMemory object referenced by @a definition_memory_ptr.
  *
  * @return A pointer to an object of type @a target_type.
  */
-#define SILC_MEMORY_CAST_DEFINITION_MEMORY_TO_TYPE( definition_memory_ptr, target_type, allocator ) \
-    ( SILC_MEMORY_CAST_MOVEABLE_MEMORY_TO_TYPE( definition_memory_ptr, target_type, allocator ) )
-
-
-
-void*
-SILC_Memory_GetAddressFromMoveableMemory( SILC_Allocator_MoveableMemory* moveableMemory );
-
-#define SILC_MEMORY_DEREF_MOVABLE( moveable_memory_ptr, target_type ) \
-    ( ( target_type )SILC_Memory_GetAddressFromMoveableMemory( ( SILC_Allocator_MoveableMemory* )moveable_memory_ptr ) )
-
+#define SILC_MEMORY_DEREF_MOVABLE( moveable_memory_ptr, target_type )   \
+    ( ( target_type )SILC_Allocator_GetAddressFromMoveableMemory(       \
+          ( SILC_Allocator_MoveableMemory* )moveable_memory_ptr,          \
+          silc_memory_allocator ) )
 
 
 /*@}*/

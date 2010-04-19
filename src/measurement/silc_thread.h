@@ -80,11 +80,11 @@ SILC_Thread_LocationData*
 SILC_Thread_GetLocationData();
 
 
-SILC_Memory_PageManager**
+SILC_Allocator_PageManager**
 SILC_Thread_GetLocationLocalMemoryPageManagers();
 
 
-SILC_Memory_PageManager**
+SILC_Allocator_PageManager**
 SILC_Thread_GetGlobalMemoryPageManagers();
 
 

@@ -76,11 +76,11 @@ struct SILC_Thread_ThreadPrivateData
 // multiple ones.
 struct SILC_Thread_LocationData
 {
-    size_t                     location_id;
-    SILC_Memory_PageManager**  page_managers;
-    SILC_Profile_LocationData* profile_data;
-    SILC_Trace_LocationData*   trace_data;
-    SILC_Thread_LocationData*  next; // store location objects in list for easy cleanup
+    size_t                       location_id;
+    SILC_Allocator_PageManager** page_managers;
+    SILC_Profile_LocationData*   profile_data;
+    SILC_Trace_LocationData*     trace_data;
+    SILC_Thread_LocationData*    next; // store location objects in list for easy cleanup
 };
 
 
@@ -385,14 +385,14 @@ SILC_Thread_GetLocationData()
 }
 
 
-SILC_Memory_PageManager**
+SILC_Allocator_PageManager**
 SILC_Thread_GetLocationLocalMemoryPageManagers()
 {
     return SILC_Thread_GetLocationData()->page_managers;
 }
 
 
-SILC_Memory_PageManager**
+SILC_Allocator_PageManager**
 SILC_Thread_GetGlobalMemoryPageManagers()
 {
     return initial_location->page_managers;
