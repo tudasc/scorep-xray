@@ -38,7 +38,7 @@ static uint64_t clock_rate    = 0;
 
 
 void
-SILC_InitTimer()
+SILC_Timer_Initialize()
 {
     int                   retval;
     const PAPI_hw_info_t* hwinfo = NULL;

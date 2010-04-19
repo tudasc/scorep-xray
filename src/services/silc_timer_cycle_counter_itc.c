@@ -33,7 +33,7 @@
 static bool isInitialized = false;
 
 void
-SILC_InitTimer()
+SILC_Timer_Initialize()
 {
     assert( false ); // implement me
     if ( isInitialized )

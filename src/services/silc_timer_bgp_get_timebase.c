@@ -38,7 +38,7 @@ static uint64_t silc_ticks_per_sec = 0;
 static bool     isInitialized = false;
 
 void
-SILC_InitTimer()
+SILC_Timer_Initialize()
 {
     if ( isInitialized )
     {

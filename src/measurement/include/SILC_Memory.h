@@ -37,9 +37,14 @@
 /**
  * Initialize the memory system for the measurement core, the adapters and the
  * online interface, i.e. everything except otf2.
+ *
+ * @param totalMemory total amount of memory in bytes the measurement system
+ * should use.
+ * @param pageSize size of a single page in bytes, needs to be <= @a totalMemory
  */
 void
-SILC_Memory_Initialize();
+SILC_Memory_Initialize( size_t totalMemory,
+                        size_t pageSize );
 
 
 /**
@@ -93,7 +98,6 @@ SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers );
  *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
- * @param allocator The allocator object that should handle the request.
  *
  * @return The address of the first byte in the memory block allocated, or a
  * null pointer if the memory requested is not available.
@@ -107,8 +111,6 @@ SILC_Memory_AllocForProfile( size_t size  );
 /**
  * Release the entire allocated runtime summarization data memory.
  *
- * @param allocator The allocator object that was used for allocation.
- *
  * @see SILC_Memory_AllocForSummary()
  */
 void
@@ -116,61 +118,29 @@ SILC_Memory_FreeProfileMem();
 
 
 /**
- * The malloc function for miscellaneous multithreaded data. It reserves a
+ * The malloc function for miscellaneous data. It reserves a
  * contiguous memory block whose size in bytes it at least @a size. The
  * contents of the memory block is undetermined.
  *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
- * @param allocator The allocator object that should handle the request.
  *
  * @return The address of the first byte in the memory block allocated, or a
  * null pointer if the memory requested is not available.
  *
- * @see SILC_Memory_FreeMultithreadedMiscMem()
+ * @see SILC_Memory_FreeMiscMem()
  */
 void*
-SILC_Memory_AllocForMultithreadedMisc( size_t size  );
+SILC_Memory_AllocForMisc( size_t size  );
 
 
 /**
- * Release the entire allocated memory for miscellaneous multithreaded stuff.
+ * Release the entire allocated memory for miscellaneous stuff.
  *
- * @param allocator The allocator object that was used for allocation.
- *
- * @see SILC_Memory_AllocForMultithreadedMisc()
+ * @see SILC_Memory_AllocForMisc()
  */
 void
-SILC_Memory_FreeMultithreadedMiscMem();
-
-
-/**
- * The malloc function for miscellaneous singlehreaded data. It reserves a
- * contiguous memory block whose size in bytes it at least @a size. The
- * contents of the memory block is undetermined.
- *
- * @param size The size of the requested memory block in bytes. @a size == 0
- * leads to undefined behaviour.
- * @param allocator The allocator object that should handle the request.
- *
- * @return The address of the first byte in the memory block allocated, or a
- * null pointer if the memory requested is not available.
- *
- * @see SILC_Memory_FreeSinglethreadedMiscMem()
- */
-void*
-SILC_Memory_AllocForSinglethreadedMisc( size_t size  );
-
-
-/**
- * Release the entire allocated memory for miscellaneous singlethreaded stuff.
- *
- * @param allocator The allocator object that was used for allocation.
- *
- * @see SILC_Memory_AllocForSinglethreadedMisc()
- */
-void
-SILC_Memory_FreeSinglethreadedMiscMem();
+SILC_Memory_FreeMiscMem();
 
 
 /**
@@ -180,29 +150,29 @@ SILC_Memory_FreeSinglethreadedMiscMem();
  *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
- * @param allocator The allocator object that should handle the request.
  *
  * @return A pointer to a valid SILC_Memory_DefinitionMemory object or a null
  * pointer if the memory requested is not available.
  *
  * @note You can obtain the real address of the memory and cast it to the
- * desired type with the help of the macro
- * SILC_MEMORY_CAST_DEFINITION_MEMORY_TO_TYPE.
+ * desired type with the help of the macro SILC_MEMORY_DEREF_MOVABLE.
  *
  * @see SILC_Memory_FreeDefinitionMem()
  */
 SILC_Allocator_MoveableMemory*
 SILC_Memory_AllocForDefinitions( size_t size );
 
-// don't allocate move ptr but alter it's contents
-void*
+/**
+ * @see SILC_Memory_AllocForDefinitions(), the only difference is that no
+ * SILC_Allocator_MoveableMemory is created and returned, but the already
+ * existing @a moveableMemory is modified accordingly.
+ */
+void
 SILC_Memory_AllocForDefinitionsRaw( size_t                         size,
                                     SILC_Allocator_MoveableMemory* moveableMemory );
 
 /**
  * Release the entire allocated definition memory.
- *
- * @param allocator The allocator object that was used for allocation.
  *
  * @see SILC_Memory_AllocForDefinitions()
  */

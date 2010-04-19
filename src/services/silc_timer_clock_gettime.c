@@ -35,7 +35,7 @@ static bool            isInitialized = false;
 static struct timespec silc_timer_start;
 
 void
-SILC_InitTimer()
+SILC_Timer_Initialize()
 {
     if ( isInitialized )
     {

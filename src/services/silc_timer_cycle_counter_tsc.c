@@ -64,7 +64,7 @@ silc_get_improved_frequency_from_timing_measurement();
 
 
 void
-SILC_InitTimer()
+SILC_Timer_Initialize()
 {
     if ( isInitialized )
     {

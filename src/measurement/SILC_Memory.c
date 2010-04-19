@@ -37,7 +37,7 @@ SILC_Allocator_Allocator* silc_memory_allocator = 0;
 
 enum silc_memory_page_type
 {
-    profile_pages = 0,
+    profile_pages = 0,  // separate because we might clear them for periscope from time to time
     //adapter_pages, // do we need extra pages for adapters or shall they use the subsequent two?
     //multithreaded_misc_pages,
     //singlethreaded_misc_pages,
@@ -48,12 +48,11 @@ enum silc_memory_page_type
 
 
 void
-SILC_Memory_Initialize()
+SILC_Memory_Initialize( size_t totalMemory,
+                        size_t pageSize )
 {
-    size_t total_memory = 0; // read from configuration or pass in
-    size_t page_size    = 0; // dito, or have suitable default
-
-    silc_memory_allocator = SILC_Allocator_CreateAllocator( system_alloc, total_memory, page_size );
+    assert( totalMemory >= pageSize );
+    silc_memory_allocator = SILC_Allocator_CreateAllocator( system_alloc, totalMemory, pageSize );
     if ( !silc_memory_allocator )
     {
         assert( false );
@@ -108,7 +107,7 @@ SILC_Memory_FreeProfileMem()
 
 
 void*
-SILC_Memory_AllocForMultithreadedMisc( size_t size  )
+SILC_Memory_AllocForMisc( size_t size  )
 {
     // collect statistics
     return SILC_Allocator_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
@@ -116,24 +115,10 @@ SILC_Memory_AllocForMultithreadedMisc( size_t size  )
 
 
 void
-SILC_Memory_FreeMultithreadedMiscMem()
+SILC_Memory_FreeMiscMem()
 {
     // print mem usage statistics
     SILC_Allocator_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ] );
-}
-
-void*
-SILC_Memory_AllocForSinglethreadedMisc( size_t size  )
-{
-    // collect statistics
-    return SILC_Allocator_Alloc( SILC_Thread_GetGlobalMemoryPageManagers()[ misc_pages ], size );
-}
-
-void
-SILC_Memory_FreeSinglethreadedMiscMem()
-{
-    // print mem usage statistics
-    SILC_Allocator_Free( SILC_Thread_GetGlobalMemoryPageManagers()[ misc_pages ] );
 }
 
 
@@ -144,14 +129,14 @@ SILC_Memory_AllocForDefinitions( size_t size )
     return SILC_Allocator_AllocMoveable( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
 }
 
-void*
+void
 SILC_Memory_AllocForDefinitionsRaw( size_t                         size,
                                     SILC_Allocator_MoveableMemory* moveableMemory )
 {
     // collect statistics
     // alloc only size
     // let moveableMemory point to newly allocated mem
-    return 0;
+    assert( false );
 }
 
 void

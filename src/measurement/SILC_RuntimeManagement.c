@@ -83,10 +83,17 @@ static SILC_ConfigVariable silc_configs[] = {
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void silc_finalize( void );
-
 static void silc_otf2_initialize();
-
 static void silc_otf2_finalize();
+static void silc_adapters_register();
+static void silc_adapters_deregister();
+static void silc_adapters_initialize();
+static void silc_adapters_finalize();
+static void silc_adapters_initialize_location(); // needed?
+static void silc_adapters_finalize_location(); // needed?
+static void silc_initialization_sanity_checks();
+static void silc_register_config_variables( SILC_ConfigVariable configVars[] );
+//static void silc_deregister_config_variables( SILC_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
 /**
@@ -107,8 +114,6 @@ SILC_IsInitialized()
 void
 SILC_InitMeasurement( void )
 {
-    SILC_Error_Code error;
-
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
 
     if ( silc_initialized )
@@ -116,6 +121,40 @@ SILC_InitMeasurement( void )
         return;
     }
 
+    silc_initialization_sanity_checks();
+    silc_register_config_variables( silc_configs );
+    SILC_Timer_Initialize(); // init timer before call to SILC_CreateExperimentDir
+    SILC_CreateExperimentDir();
+
+    // we may read total memory and pagesize from config file and pass it to
+    // SILC_Memory_Initialize.
+    // Need to be called before the first use of any SILC_Alloc function, in
+    // particular before SILC_Thread_Initialize
+    SILC_Memory_Initialize( 10 * 1024 * 1024 /* 10 MB */, 1024 * 1024 /* 1 MB */ );
+
+    // initialize before SILC_Thread_Initialize() because latter may create a
+    // writer that needs the archive.
+    silc_otf2_initialize();
+
+    SILC_Thread_Initialize();
+    SILC_DefinitionLocks_Initialize();
+    SILC_Definitions_Initialize();
+
+    silc_adapters_register();
+    silc_adapters_initialize();
+    silc_adapters_initialize_location(); // not sure if this should be triggered by thread management
+
+    /* all done, report successful initialization */
+    silc_initialized = true;
+
+    /* register finalization handler */
+    atexit( silc_finalize );
+}
+
+
+void
+silc_initialization_sanity_checks()
+{
     if ( silc_finalized )
     {
         _Exit( EXIT_FAILURE );
@@ -127,32 +166,47 @@ SILC_InitMeasurement( void )
         _Exit( EXIT_FAILURE );
     }
 
-    error = SILC_ConfigRegister( NULL, silc_configs );
+    if ( silc_verbose )
+    {
+        fprintf( stderr, "SILC running in verbose mode\n" );
+    }
+}
+
+
+static void
+silc_register_config_variables( SILC_ConfigVariable configVars[] )
+{
+    /* all config variables are registers => parse configure once */
+    SILC_Error_Code error = SILC_ConfigRegister( NULL, silc_configs );
 
     if ( SILC_SUCCESS != error )
     {
         SILC_ERROR( error, "Can't register core config variables" );
         _Exit( EXIT_FAILURE );
     }
+}
 
-    SILC_InitTimer(); // init timer before call to SILC_CreateExperimentDir
-    SILC_CreateExperimentDir();
 
-    // we may read total memory and pagesize from config file and pass it to
-    // SILC_Memory_Initialize.
-    // Need to be called before the first use of any SILC_Alloc function, in
-    // particular before SILC_Thread_Initialize
-    SILC_Memory_Initialize();
+void
+silc_otf2_initialize()
+{
+    if ( !silc_tracing_enabled )
+    {
+        return;
+    }
 
-    // initialize before SILC_Thread_Initialize() because latter may create a
-    // writer that needs the archive.
-    silc_otf2_initialize();
+    silc_otf2_archive = OTF2_Archive_New( "traces",
+                                          OTF2_FILEMODE_WRITE,
+                                          1024 * 1024, // 1MB
+                                          OTF2_SUBSTRATE_POSIX );
+    assert( silc_otf2_archive );
+}
 
-    SILC_Thread_Initialize();
 
-    SILC_DefinitionLocks_Initialize();
-    SILC_Definitions_Initialize();
-
+void
+silc_adapters_register()
+{
+    SILC_Error_Code error;
     /* call register functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
     {
@@ -168,14 +222,13 @@ SILC_InitMeasurement( void )
             _Exit( EXIT_FAILURE );
         }
     }
+}
 
-    /* all config variables are registers => parse configure once */
 
-    if ( silc_verbose )
-    {
-        fprintf( stderr, "SILC running in verbose mode\n" );
-    }
-
+void
+silc_adapters_initialize()
+{
+    SILC_Error_Code error;
     /* call initialization functions for all adapters */
     for ( size_t i = 0; i < silc_number_of_adapters; i++ )
     {
@@ -196,7 +249,13 @@ SILC_InitMeasurement( void )
                      silc_adapters[ i ]->adapter_name );
         }
     }
+}
 
+
+static void
+silc_adapters_initialize_location()
+{
+    SILC_Error_Code error;
     /* create location */
 
     /* call initialization functions for all adapters */
@@ -219,28 +278,6 @@ SILC_InitMeasurement( void )
                      silc_adapters[ i ]->adapter_name );
         }
     }
-
-    /* all done, report successful initialization */
-    silc_initialized = true;
-
-    /* register finalization handler */
-    atexit( silc_finalize );
-}
-
-
-void
-silc_otf2_initialize()
-{
-    if ( !silc_tracing_enabled )
-    {
-        return;
-    }
-
-    silc_otf2_archive = OTF2_Archive_New( "traces",
-                                          OTF2_FILEMODE_WRITE,
-                                          1024 * 1024, // 1MB
-                                          OTF2_SUBSTRATE_POSIX );
-    assert( silc_otf2_archive );
 }
 
 
@@ -340,8 +377,43 @@ silc_finalize( void )
         return;
     }
 
-    /* we call the finalize and de-register function in reverse order */
+    silc_adapters_finalize_location();
+    silc_adapters_finalize();
+    silc_adapters_deregister();
 
+    SILC_Definitions_Finalize();
+    SILC_DefinitionLocks_Finalize();
+    // keep this order as thread handling uses memory management
+    SILC_Thread_Finalize();
+    silc_otf2_finalize();
+    SILC_Memory_Finalize();
+
+    silc_finalized = true;
+}
+
+
+static void
+silc_adapters_finalize_location()
+{
+    for ( size_t i = silc_number_of_adapters; i-- > 0; )
+    {
+        if ( silc_adapters[ i ]->adapter_finalize_location )
+        {
+            //silc_adapters[ i ]->adapter_finalize_location(location_ptr???);
+        }
+
+        if ( silc_verbose )
+        {
+            fprintf( stderr, "SILC finalized %s adapter location\n",
+                     silc_adapters[ i ]->adapter_name );
+        }
+    }
+}
+
+
+static void
+silc_adapters_finalize()
+{
     /* call finalization functions for all adapters */
     for ( size_t i = silc_number_of_adapters; i-- > 0; )
     {
@@ -356,7 +428,12 @@ silc_finalize( void )
                      silc_adapters[ i ]->adapter_name );
         }
     }
+}
 
+
+static void
+silc_adapters_deregister()
+{
     /* call de-register functions for all adapters */
     for ( size_t i = silc_number_of_adapters; i-- > 0; )
     {
@@ -371,16 +448,8 @@ silc_finalize( void )
                      silc_adapters[ i ]->adapter_name );
         }
     }
-
-    SILC_Definitions_Finalize();
-    SILC_DefinitionLocks_Finalize();
-    // keep this order as thread handling uses memory management
-    SILC_Thread_Finalize();
-    silc_otf2_finalize();
-    SILC_Memory_Finalize();
-
-    silc_finalized = true;
 }
+
 
 void
 silc_otf2_finalize()

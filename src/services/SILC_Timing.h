@@ -22,7 +22,7 @@
  * @note The init function is not thread safe.
  */
 void
-SILC_InitTimer();
+SILC_Timer_Initialize();
 
 
 /**

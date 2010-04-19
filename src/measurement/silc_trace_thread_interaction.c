@@ -40,7 +40,7 @@ SILC_Trace_CreateLocationData()
     {
         return 0;
     }
-    SILC_Trace_LocationData* new_data = SILC_Memory_AllocForMultithreadedMisc(
+    SILC_Trace_LocationData* new_data = SILC_Memory_AllocForMisc(
         sizeof( SILC_Trace_LocationData ) );
     // initialize in SILC_Trace_OnLocationCreation
     new_data->otf_writer   = 0;
