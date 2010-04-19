@@ -26,20 +26,36 @@
 
 
 #include "SILC_Timing.h"
+#include "SILC_Utils.h"
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <papi.h>
 
 static bool isInitialized = false;
 
 void
 SILC_InitTimer()
 {
-    assert( false ); // implement me
+    int retval;
+
     if ( isInitialized )
     {
         return;
     }
+
+    retval = PAPI_is_initialized();
+    if ( retval != PAPI_LOW_LEVEL_INITED )
+    {
+        retval = PAPI_library_init( PAPI_VER_CURRENT );
+        if ( retval != PAPI_VER_CURRENT && retval > 0 )
+        {
+            SILC_ERROR( SILC_ERROR_PAPI_INIT, "" );
+            return;
+        }
+    }
+
     isInitialized = true;
 }
 
@@ -47,14 +63,12 @@ SILC_InitTimer()
 uint64_t
 SILC_GetClockTicks()
 {
-    assert( false ); // implement me
-    return 0;
+    return PAPI_get_real_usec();
 }
 
 
 uint64_t
 SILC_GetClockResolution()
 {
-    assert( false ); // implement me
-    return 0;
+    return 1000000;
 }

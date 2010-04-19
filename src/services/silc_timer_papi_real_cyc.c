@@ -26,20 +26,46 @@
 
 
 #include "SILC_Timing.h"
+#include "SILC_Utils.h"
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <papi.h>
 
-static bool isInitialized = false;
+static bool     isInitialized = false;
+static uint64_t clock_rate    = 0;
+
 
 void
 SILC_InitTimer()
 {
-    assert( false ); // implement me
+    int                   retval;
+    const PAPI_hw_info_t* hwinfo = NULL;
+
     if ( isInitialized )
     {
         return;
     }
+
+    retval = PAPI_is_initialized();
+    if ( retval != PAPI_LOW_LEVEL_INITED )
+    {
+        retval = PAPI_library_init( PAPI_VER_CURRENT );
+        if ( retval != PAPI_VER_CURRENT && retval > 0 )
+        {
+            SILC_ERROR( SILC_ERROR_PAPI_INIT, "" );
+            return;
+        }
+    }
+
+    hwinfo = PAPI_get_hardware_info();
+    if ( hwinfo == NULL )
+    {
+        SILC_ERROR( SILC_ERROR_PAPI_INIT, "Failed to access PAPI hardware info" );
+    }
+    clock_rate = hwinfo->mhz * 1000000;
+
     isInitialized = true;
 }
 
@@ -47,14 +73,12 @@ SILC_InitTimer()
 uint64_t
 SILC_GetClockTicks()
 {
-    assert( false ); // implement me
-    return 0;
+    return PAPI_get_real_cyc();
 }
 
 
 uint64_t
 SILC_GetClockResolution()
 {
-    assert( false ); // implement me
-    return 0;
+    return clock_rate;
 }
