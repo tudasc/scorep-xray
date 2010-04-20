@@ -218,7 +218,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
     c_array_of_commands = ( char** )malloc( *count * sizeof( char* ) );
     if ( !c_array_of_commands )
     {
-        SILC_POSIX_ERROR();
+        SILC_ERROR_POSIX();
     }
 
     for ( cur_cmd = 0; cur_cmd < *count; ++cur_cmd )
@@ -236,7 +236,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
         c_array_of_commands[ cur_cmd ] = ( char* )malloc( ( len + 1 ) * sizeof( char ) );
         if ( !( c_array_of_commands[ cur_cmd ] ) )
         {
-            SILC_POSIX_ERROR();
+            SILC_ERROR_POSIX();
         }
         /* copy contents */
         strncpy( c_array_of_commands[ cur_cmd ], start_ptr, len );
