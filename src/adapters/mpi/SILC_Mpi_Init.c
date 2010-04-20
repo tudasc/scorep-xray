@@ -39,7 +39,7 @@ int silc_mpi_status_size;
     @param mpi_status_size Address of a variable where the value is to be stored.
  */
 extern void
-silc_mpi_get_status_size( int* status_size );
+silc_mpi_get_status_size___( int* status_size );
 
 /* Mapping of string keys to enabling group IDs
  * @note The values are sorted in decreasing order, to beautify the debug

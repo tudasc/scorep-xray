@@ -750,7 +750,7 @@ EXTERN uint64_t silc_mpi_enabled;
 #define SILC__MPI_WTIME                            310
 
 /** Number of MPI functions HAVE */
-#define SILC__MPI_NUMFUNCS                         303
+#define SILC__MPI_NUMFUNCS                         311
 
 /** Artificial root for MPI-only experiments when no user-code
  * instrumenation is available */
