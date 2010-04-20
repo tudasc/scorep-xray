@@ -176,3 +176,12 @@ SILC_Memory_FreeDefinitionMem()
     SILC_Allocator_Free(
         SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
 }
+
+
+void*
+SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMemory )
+{
+    return SILC_Allocator_GetAddressFromMovableMemory(
+               movableMemory,
+               SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
+}

@@ -180,9 +180,13 @@ void
 SILC_Memory_FreeDefinitionMem();
 
 
-// global variable silc_memory_allocator is used in following macro, so we
-// need to make it visible here.
-extern SILC_Allocator_Allocator* silc_memory_allocator;
+void*
+SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMemory );
+
+
+//void*
+//SILC_Memory_GetAddressFromMovedMemory( SILC_Allocator_MovableMemory*    movedMemory,
+//                                       SILC_Allocator_MovedPageManager* movedPageManager );
 
 
 /**
@@ -195,10 +199,14 @@ extern SILC_Allocator_Allocator* silc_memory_allocator;
  *
  * @return A pointer to an object of type @a target_type.
  */
-#define SILC_MEMORY_DEREF_MOVABLE( movable_memory_ptr, target_type )   \
-    ( ( target_type )SILC_Allocator_GetAddressFromMovableMemory(       \
-          ( SILC_Allocator_MovableMemory* )movable_memory_ptr,          \
-          silc_memory_allocator ) )
+#define SILC_MEMORY_DEREF_MOVABLE( movable_memory_ptr, target_type ) \
+    ( ( target_type )SILC_Memory_GetAddressFromMovableMemory(        \
+          ( SILC_Allocator_MovableMemory* )movable_memory_ptr ) )
+
+
+#define SILC_MEMORY_DEREF_MOVED( moved_memory_ptr, moved_page_manager, target_type )  \
+    ( ( target_type )SILC_Allocator_GetAddressFromMovedMemory(                        \
+          ( SILC_Allocator_MovableMemory* )movable_memory_ptr, moved_page_manager ) )
 
 
 /*@}*/
