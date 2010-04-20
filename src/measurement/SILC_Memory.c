@@ -30,10 +30,12 @@
 #include <assert.h>
 #include <stdbool.h>
 
+/// @todo implement memory statistics
 
 /// The one and only allocator for the measurement and the adapters
 SILC_Allocator_Allocator* silc_memory_allocator = 0;
 
+static bool               silc_memory_is_initialized = false;
 
 enum silc_memory_page_type
 {
@@ -52,7 +54,16 @@ SILC_Memory_Initialize( size_t totalMemory,
                         size_t pageSize )
 {
     assert( totalMemory >= pageSize );
-    silc_memory_allocator = SILC_Allocator_CreateAllocator( system_alloc, totalMemory, pageSize );
+
+    if ( silc_memory_is_initialized )
+    {
+        return;
+    }
+    silc_memory_is_initialized = true;
+
+    silc_memory_allocator = SILC_Allocator_CreateAllocator( system_alloc,
+                                                            totalMemory,
+                                                            pageSize );
     if ( !silc_memory_allocator )
     {
         assert( false );
@@ -63,14 +74,22 @@ SILC_Memory_Initialize( size_t totalMemory,
 void
 SILC_Memory_Finalize()
 {
+    if ( !silc_memory_is_initialized )
+    {
+        return;
+    }
+    silc_memory_is_initialized = false;
+
     SILC_Allocator_DeleteAllocator( silc_memory_allocator );
+    silc_memory_allocator = 0;
 }
 
 
 SILC_Allocator_PageManager**
 SILC_Memory_CreatePageManagers()
 {
-    SILC_Allocator_PageManager** array = malloc( number_of_page_types * sizeof( SILC_Allocator_PageManager* ) );
+    SILC_Allocator_PageManager** array =
+        malloc( number_of_page_types * sizeof( SILC_Allocator_PageManager* ) );
     assert( array );
     for ( int i = 0; i < number_of_page_types; ++i )
     {
@@ -84,8 +103,11 @@ SILC_Memory_CreatePageManagers()
 void
 SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers )
 {
-    /// @todo implement me
-    //SILC_Allocator_DeletePageManagerArray( pageManagers );
+    // is there a need to free pages before deleting them?
+    for ( int i = 0; i < number_of_page_types; ++i )
+    {
+        SILC_Allocator_DeletePageManager( pageManagers[ i ] );
+    }
 }
 
 
@@ -93,7 +115,8 @@ void*
 SILC_Memory_AllocForProfile( size_t size  )
 {
     // collect statistics
-    return SILC_Allocator_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ], size );
+    return SILC_Allocator_Alloc(
+               SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ], size );
 }
 
 
@@ -101,7 +124,8 @@ void
 SILC_Memory_FreeProfileMem()
 {
     // print mem usage statistics
-    SILC_Allocator_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ] );
+    SILC_Allocator_Free(
+        SILC_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ] );
 }
 
 
@@ -110,7 +134,8 @@ void*
 SILC_Memory_AllocForMisc( size_t size  )
 {
     // collect statistics
-    return SILC_Allocator_Alloc( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
+    return SILC_Allocator_Alloc(
+               SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
 }
 
 
@@ -118,7 +143,8 @@ void
 SILC_Memory_FreeMiscMem()
 {
     // print mem usage statistics
-    SILC_Allocator_Free( SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ] );
+    SILC_Allocator_Free(
+        SILC_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ] );
 }
 
 
@@ -126,22 +152,27 @@ SILC_Allocator_MoveableMemory*
 SILC_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    return SILC_Allocator_AllocMoveable( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
+    return SILC_Allocator_AllocMoveable(
+               SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
 }
+
 
 void
 SILC_Memory_AllocForDefinitionsRaw( size_t                         size,
                                     SILC_Allocator_MoveableMemory* moveableMemory )
 {
     // collect statistics
-    // alloc only size
-    // let moveableMemory point to newly allocated mem
-    assert( false );
+    SILC_Allocator_AllocMoveableRaw(
+        SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ],
+        size,
+        moveableMemory );
 }
+
 
 void
 SILC_Memory_FreeDefinitionMem()
 {
     // print mem usage statistics
-    SILC_Allocator_Free( SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
+    SILC_Allocator_Free(
+        SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
 }
