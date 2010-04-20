@@ -59,7 +59,7 @@ MPI_Init( int*    argc,
           char*** argv )
 {
     int event_gen_active = 0;          /* init is deferred to later */
-    int return_val, i;
+    int return_val;
     int fflag, rank;
 
     if ( !SILC_IsInitialized() )
@@ -133,7 +133,7 @@ MPI_Init_thread( int*    argc,
                  int*    provided )
 {
     int event_gen_active = 0;
-    int return_val, i;
+    int return_val;
     int fflag, rank;
 
     if ( !SILC_IsInitialized() )
