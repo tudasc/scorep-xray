@@ -186,7 +186,7 @@ SILC_DefineString( const char* str )
         // init new_definition
         new_definition->id = counter++;
         SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
-                                            ( SILC_Allocator_MoveableMemory* )&( new_definition->str ) );
+                                            ( SILC_Allocator_MovableMemory* )&( new_definition->str ) );
         strcpy( SILC_MEMORY_DEREF_MOVABLE( &( new_definition->str ), char* ), str );
     }
 

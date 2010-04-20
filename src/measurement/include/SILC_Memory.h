@@ -159,17 +159,17 @@ SILC_Memory_FreeMiscMem();
  *
  * @see SILC_Memory_FreeDefinitionMem()
  */
-SILC_Allocator_MoveableMemory*
+SILC_Allocator_MovableMemory*
 SILC_Memory_AllocForDefinitions( size_t size );
 
 /**
  * @see SILC_Memory_AllocForDefinitions(), the only difference is that no
- * SILC_Allocator_MoveableMemory is created and returned, but the already
- * existing @a moveableMemory is modified accordingly.
+ * SILC_Allocator_MovableMemory is created and returned, but the already
+ * existing @a movableMemory is modified accordingly.
  */
 void
-SILC_Memory_AllocForDefinitionsRaw( size_t                         size,
-                                    SILC_Allocator_MoveableMemory* moveableMemory );
+SILC_Memory_AllocForDefinitionsRaw( size_t                        size,
+                                    SILC_Allocator_MovableMemory* movableMemory );
 
 /**
  * Release the entire allocated definition memory.
@@ -187,7 +187,7 @@ extern SILC_Allocator_Allocator* silc_memory_allocator;
 
 /**
  * Just a convenience macro to access the @e real memory a
- * SILC_Allocator_MoveableMemory object is referring to.
+ * SILC_Allocator_MovableMemory object is referring to.
  *
  * @param definition_memory_ptr Pointer to some SILC_Memory_DefinitionMemory
  * object.
@@ -195,9 +195,9 @@ extern SILC_Allocator_Allocator* silc_memory_allocator;
  *
  * @return A pointer to an object of type @a target_type.
  */
-#define SILC_MEMORY_DEREF_MOVABLE( moveable_memory_ptr, target_type )   \
-    ( ( target_type )SILC_Allocator_GetAddressFromMoveableMemory(       \
-          ( SILC_Allocator_MoveableMemory* )moveable_memory_ptr,          \
+#define SILC_MEMORY_DEREF_MOVABLE( movable_memory_ptr, target_type )   \
+    ( ( target_type )SILC_Allocator_GetAddressFromMovableMemory(       \
+          ( SILC_Allocator_MovableMemory* )movable_memory_ptr,          \
           silc_memory_allocator ) )
 
 

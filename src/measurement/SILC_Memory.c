@@ -148,24 +148,24 @@ SILC_Memory_FreeMiscMem()
 }
 
 
-SILC_Allocator_MoveableMemory*
+SILC_Allocator_MovableMemory*
 SILC_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    return SILC_Allocator_AllocMoveable(
+    return SILC_Allocator_AllocMovable(
                SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
 }
 
 
 void
-SILC_Memory_AllocForDefinitionsRaw( size_t                         size,
-                                    SILC_Allocator_MoveableMemory* moveableMemory )
+SILC_Memory_AllocForDefinitionsRaw( size_t                        size,
+                                    SILC_Allocator_MovableMemory* movableMemory )
 {
     // collect statistics
-    SILC_Allocator_AllocMoveableRaw(
+    SILC_Allocator_AllocMovableRaw(
         SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ],
         size,
-        moveableMemory );
+        movableMemory );
 }
 
 
