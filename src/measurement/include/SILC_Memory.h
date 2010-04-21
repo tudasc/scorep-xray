@@ -189,6 +189,10 @@ SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMe
 //                                       SILC_Allocator_MovedPageManager* movedPageManager );
 
 
+void
+SILC_Memory_FreeMovedPages( SILC_Allocator_MovedPageManager* movedPageManager );
+
+
 /**
  * Just a convenience macro to access the @e real memory a
  * SILC_Allocator_MovableMemory object is referring to.

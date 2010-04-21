@@ -185,3 +185,10 @@ SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMe
                movableMemory,
                SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
 }
+
+
+void
+SILC_Memory_FreeMovedPages( SILC_Allocator_MovedPageManager* movedPageManager )
+{
+    assert( false ); // implement me
+}
