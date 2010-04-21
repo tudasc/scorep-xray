@@ -59,14 +59,14 @@ struct s1
 uint64_t count = 0;
 
 /**
- * static variable to control initialize status of GNU
+ * static variable to control initialize status of adapter
  */
-static init routineInit = 1;
+static int silc_compiler_initialize = 1;
 
 /**
  * data structure to map function name and region identifier
  */
-typedef struct HashNode HN;
+typedef struct HashNode HashNode;
 
 
 /**
@@ -80,13 +80,9 @@ __rouinit
     printf( " PGI routine init \n " );
 
 
-    if ( rou_init )
+    if ( silc_compiler_initialize )
     {
         SILC_InitMeasurement();
-
-        routineInit = 0;
-
-        silc_comp_finalize = &__rouexit;
     }
 }
 
@@ -116,12 +112,13 @@ ___rouent2
     struct s1* p
 )
 {
+    HashNode hn;
+
     printf( " begin of a profiled routine 2 \n " );
 
-    if ( routineInit )
+    if ( silc_compiler_initialize )
     {
-        __rouinit();
-        routineInit = 0;
+        SILC_InitMeasurement();
     }
 
     if ( !p->isseen )
@@ -130,10 +127,6 @@ ___rouent2
 
         /* get file id beloning to file name */
 
-        if ( ( HN = hash_get( ( long )func ) ) )
-        {
-            p->fid = 1;
-        }
         p->rid = SILC_DefineRegion( p->rout,
                                     SILC_INVALID_SOURCE_FILE,
                                     SILC_INVALID_LINE_NO,
@@ -188,4 +181,29 @@ ___linent2
     void
 )
 {
+}
+
+SILC_Error_Code
+silc_compiler_init_adapter()
+{
+    if ( silc_compiler_initialize )
+    {
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
+
+        /* Sez flag */
+        silc_compiler_initialize = 0;
+    }
+
+    return SILC_SUCCESS;
+}
+
+void
+silc_compiler_finalize()
+{
+    /* call only, if previously initialized */
+    if ( !silc_compiler_initialize )
+    {
+        silc_compiler_initialize = 1;
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
+    }
 }

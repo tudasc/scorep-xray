@@ -28,15 +28,4 @@
 extern const SILC_Adapter SILC_Compiler_Adapter;
 
 
-/**
- * Compiler adapter finalizer
- */
-extern void
-( *silc_comp_finalize )
-
-(
-    void
-);
-
-
 #endif /* SILC_COMPILER_INIT_H_ */

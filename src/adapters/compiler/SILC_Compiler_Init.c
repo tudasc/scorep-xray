@@ -28,69 +28,37 @@
 #include "SILC_Error.h"
 #include <SILC_Utils.h>
 
-int32_t silc_compiler_initialize = 1;
+extern SILC_Error_Code
+silc_compiler_init_adapter();
 
-
-struct HashNode;
+extern void
+silc_compiler_finalize();
 
 SILC_Error_Code
-silc_compiler_register
-(
-)
+silc_compiler_register()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " register compiler adapter!" );
     return SILC_SUCCESS;
 }
 
 SILC_Error_Code
-silc_compiler_init_adapter
-    ()
-{
-    if ( silc_compiler_initialize )
-    {
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize compiler adapter!" );
-
-        silc_compiler_initialize = 0;
-    }
-
-    return SILC_SUCCESS;
-}
-
-SILC_Error_Code
-silc_compiler_init_location
-(
-)
+silc_compiler_init_location()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " compiler adapter init loacation!" );
     return SILC_SUCCESS;
 }
 
 void
-silc_compiler_final_location
-    ()
+silc_compiler_final_location()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " compiler adapter final loacation!" );
 }
 
 void
-silc_compiler_finalize
-    ()
-{
-    /* call only, if previously initialized */
-    if ( !silc_compiler_initialize )
-    {
-        silc_compiler_initialize = 1;
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize compiler adapter!" );
-    }
-}
-
-void
-silc_compiler_deregister
-    ()
+silc_compiler_deregister()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " compiler adapter deregister!n" );
 }
-
 
 
 /**

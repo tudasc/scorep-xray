@@ -32,6 +32,19 @@
 HashNode* htab[ HASH_MAX ];
 
 /**
+ * Initialize slots of compiler hash table.
+ */
+void
+hash_init()
+{
+    int i;
+    for ( i = 0; i < HASH_MAX; i++ )
+    {
+        htab[ i ] = NULL;
+    }
+}
+
+/**
  * @brief Get hash table entry for given ID.
  *
  * @param h   Hash node key ID
@@ -94,12 +107,20 @@ hash_put
 void
 hash_free()
 {
-    int i;
+    HashNode* next;
+    HashNode* cur;
+    int       i;
     for ( i = 0; i < HASH_MAX; i++ )
     {
         if ( htab[ i ] )
         {
-            free( htab[ i ] );
+            cur = htab[ i ];
+            while ( cur != NULL )
+            {
+                next = cur->next;
+                free( cur );
+                cur = next;
+            }
             htab[ i ] = NULL;
         }
     }

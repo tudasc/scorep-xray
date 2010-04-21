@@ -36,7 +36,7 @@
 
 
 
-static int xl_init = 1;
+static int silc_compiler_initialize = 1;
 
 
 void
@@ -49,18 +49,6 @@ void
 __func_trace_exit( char* name,
                    char* fname,
                    int   lno );
-
-/*
- * @ brief free resources for function identifier table
- */
-void
-silc_xl_free()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "finalize the gnu compiler instrumentation." );
-    hash_free();
-    /* set ibm compiler init status to one - means not initialized */
-    xl_init = 1;
-}
 
 /*
  * @ brief This function is called at the entry of each function.
@@ -79,10 +67,9 @@ __func_trace_enter( char* name,
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function name: %s %s", name, fname );
 
-    if ( xl_init )
+    if ( silc_compiler_initialize )
     {
         SILC_InitMeasurement();
-        silc_xl_free();
     }
 
     /* put function to list */
@@ -119,5 +106,37 @@ __func_trace_exit( char* name,
     if ( hn = hash_get( ( long )name ) )
     {
         SILC_ExitRegion( hn->reghandle );
+    }
+}
+
+SILC_Error_Code
+silc_compiler_init_adapter()
+{
+    if ( silc_compiler_initialize )
+    {
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                           " inititialize IBM xl compiler adapter!" );
+
+        /* Initialize hash table */
+        hash_init();
+
+        /* Sez flag */
+        silc_compiler_initialize = 0;
+    }
+
+    return SILC_SUCCESS;
+}
+
+void
+silc_compiler_finalize()
+{
+    /* call only, if previously initialized */
+    if ( !silc_compiler_initialize )
+    {
+        /* Delete hash table */
+        hash_free();
+
+        silc_compiler_initialize = 1;
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize IBM xl compiler adapter!" );
     }
 }

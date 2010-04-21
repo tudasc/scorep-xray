@@ -41,12 +41,7 @@ extern int
 silc_ftrace_getname_len( void );
 
 
-static uint32_t initSX = 1;
-
-/**
- * data structure to map function name and region identifier
- */
-typedef struct HashNode HNsx;
+static uint32_t silc_compiler_initialize = 1;
 
 
 void
@@ -60,33 +55,17 @@ _ftrace_stop2_( void );
 
 
 void
-ftrace_finalize()
-{
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "ftrace finalize \n" );
-
-    hash_free();
-
-    initSX = 1;
-}
-
-
-
-
-void
 _ftrace_enter2_()
 {
-    char* func = silc_ftrace_getname();
-    int   len  = silc_ftrace_getname_len();
+    char*     func = silc_ftrace_getname();
+    int       len  = silc_ftrace_getname_len();
 
-    HNsx* hn = hash_get( ( long )func );
+    HashNode* hn = hash_get( ( long )func );
 
-    if ( initSX )
+    if ( silc_compiler_initialize )
     {
         /* not initialized so far */
         SILC_InitMeasurement();
-
-        ftrace_finalize();
-        initSX = 0;     /* is initialized */
     }
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function name: %s \n", func );
@@ -113,9 +92,9 @@ _ftrace_enter2_()
 void
 _ftrace_exit2_()
 {
-    char* func = silc_ftrace_getname();
-    long  id   = ( long )func;
-    HNsx* hn;
+    char*     func = silc_ftrace_getname();
+    long      id   = ( long )func;
+    HashNode* hn;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!\n" );
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " ftrace exit 2 \t %i \n", ( long )func );
@@ -129,4 +108,36 @@ void
 _ftrace_stop2_()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " ftrace stop 2 \n" );
+}
+
+SILC_Error_Code
+silc_compiler_init_adapter()
+{
+    if ( silc_compiler_initialize )
+    {
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                           " inititialize ftrace compiler adapter!" );
+
+        /* Initialize hash table */
+        hash_init();
+
+        /* Sez flag */
+        silc_compiler_initialize = 0;
+    }
+
+    return SILC_SUCCESS;
+}
+
+void
+silc_compiler_finalize()
+{
+    /* call only, if previously initialized */
+    if ( !silc_compiler_initialize )
+    {
+        /* Delete hash table */
+        hash_free();
+
+        silc_compiler_initialize = 1;
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
+    }
 }
