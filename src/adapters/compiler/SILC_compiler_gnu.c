@@ -167,8 +167,7 @@ get_symTab( void )
                                canonicSymbols[ i ]->value,
                                &filename,
                                &funcname,
-                               &lno
-                               );
+                               &lno );
 
 
         /* calculate function address */

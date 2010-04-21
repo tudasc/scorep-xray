@@ -40,8 +40,6 @@ static int silc_compiler_initialize = 1;
 
 
 void
-xl_finalize( void );
-void
 __func_trace_enter( char* name,
                     char* fname,
                     int   lno );
@@ -75,16 +73,15 @@ __func_trace_enter( char* name,
     /* put function to list */
     if ( ( hn = hash_get( ( long )name ) ) == 0 )
     {
-        hash_put( ( long )name, name, fname, lno );
+        hn = hash_put( ( long )name, name, fname, lno );
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " number %ld and put name -- %s -- to list", ( long )name, name );
     }
-    else
+
+    if ( ( hn->reghandle == SILC_INVALID_REGION ) )
     {
-        if ( ( hn->reghandle == SILC_INVALID_REGION ) )
-        {
-            silc_compiler_register_region( hn );
-        }
+        silc_compiler_register_region( hn );
     }
+    SILC_EnterRegion( hn->reghandle );
 }
 
 /*
@@ -100,7 +97,6 @@ __func_trace_exit( char* name,
                    char* fname,
                    int   lno )
 {
-    printf( "call function -- %s -- at exit!!!\n", name );
     HashNode* hn;
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" );
     if ( hn = hash_get( ( long )name ) )

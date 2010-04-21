@@ -67,7 +67,7 @@ extern HashNode*
 hash_get( long h );
 
 
-extern void
+extern HashNode*
 hash_put( long        h,
           const char* n,
           const char* fn,
@@ -76,6 +76,8 @@ hash_put( long        h,
 extern void
 hash_free();
 
+extern void
+hash_init();
 
 extern void
 silc_compiler_register_region( HashNode* hn );

@@ -79,7 +79,7 @@ hash_get( long h )
  * @param fn   function name
  * @param lno  line number
  */
-void
+HashNode*
 hash_put
 (
     long        h,
@@ -98,6 +98,7 @@ hash_put
     add->reghandle = SILC_INVALID_REGION;
     add->next      = htab[ id ];
     htab[ id ]     = add;
+    return add;
 }
 
 
@@ -144,8 +145,8 @@ silc_compiler_register_region
 
     hn->reghandle = SILC_DefineRegion( hn->name,
                                        SILC_INVALID_SOURCE_FILE,
-                                       SILC_INVALID_LINE_NO,
-                                       SILC_INVALID_LINE_NO,
+                                       hn->lnobegin,
+                                       hn->lnoend,
                                        SILC_ADAPTER_COMPILER,
                                        SILC_REGION_FUNCTION
                                        );

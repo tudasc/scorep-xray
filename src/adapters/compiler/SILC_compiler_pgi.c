@@ -104,7 +104,7 @@ __rouexit
 
 
 /**
- * called at the beginning of each profiled routine
+ * called at the beginning of each instrumented routine
  */
 void
 ___rouent2
@@ -139,7 +139,7 @@ ___rouent2
 }
 
 /**
- * called at the beginning of each profiled routine
+ * called at the beginning of each instrumented routine
  */
 void
 ___rouent64
@@ -151,7 +151,7 @@ ___rouent64
 }
 
 /**
- * called at the end of each profiled routine
+ * called at the end of each instrumented routine
  */
 void
 ___rouret
@@ -163,7 +163,7 @@ ___rouret
 }
 
 /**
- * called at the end of each profiled routine
+ * called at the end of each instrumneted routine
  */
 void
 ___rouret2
@@ -171,7 +171,7 @@ ___rouret2
     void
 )
 {
-    printf( " end of a profiled routine 2 \n " );
+    printf( " end of a instrumneted routine 2 \n " );
 }
 
 
