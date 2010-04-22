@@ -38,7 +38,12 @@
 /**
    @def SILC_COMPILER_HASH_MAX The number of slots in the region hash table.
  */
-#define SILC_COMPILER_HASH_MAX 1021
+#define SILC_COMPILER_REGION_SLOTS 1021
+
+/**
+   @def SILC_COMPILER_FILE_SLOTS The number of slots in the file hash table.
+ */
+#define SILC_COMPILER_FILE_SLOTS 15
 
 /**
  * @brief Hash table to map function addresses to region identifier
@@ -56,8 +61,8 @@
 typedef struct silc_compiler_hash_node
 {
     long                            key;
-    const char*                     region_name;
-    const char*                     file_name;
+    char*                           region_name;
+    char*                           file_name;
     SILC_LineNo                     line_no_begin;
     SILC_LineNo                     line_no_end;
     SILC_RegionHandle               region_handle;
@@ -76,7 +81,7 @@ silc_compiler_hash_get( long key );
    Creates a new entry for the region hashtable with the given values.
    @param key           The key under which the new entry is stored.
    @param region_name   The name of the region.
-   @param file_name     The name of the source file.
+   @param file_name     The name of the source file of the registered region.
    @param line_no_begin The source code line number where the region starts.
    @returns a pointer to the newly created hash node.
  */
@@ -105,6 +110,30 @@ silc_compiler_hash_init();
  */
 extern void
 silc_compiler_register_region( silc_compiler_hash_node* node );
+
+/**
+   Initialize the file table.
+ */
+void
+silc_compiler_init_file_table();
+
+/**
+   Finalize the file table
+ */
+void
+silc_compiler_final_file_table();
+
+/**
+   Returns the file handle for a given file name. It searches in the hash table if the
+   requested name is already there and returns the stored value. If the file name is not
+   found in the hash table, it creates a bew entry and registers the file to the SILC
+   measurement system.
+   @param file The file name fr which the handle is returned.
+   @returns the handle for the @a file.
+ */
+SILC_SourceFileHandle
+silc_compiler_get_file( const char* file );
+
 
 
 #endif /* SILC_COMPILER_DATA_H_ */

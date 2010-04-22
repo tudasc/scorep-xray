@@ -23,11 +23,12 @@
  * function enter and exit events.
  */
 
-#include "stdio.h"
+#include <stdio.h>
 #include <SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>
+#include <SILC_Compiler_Data.h>
 
 /**
  * @brief Container structure to map profiling informations, like function names
@@ -128,8 +129,8 @@ ___rouent2
         /* get file id beloning to file name */
 
         p->rid = SILC_DefineRegion( p->rout,
-                                    SILC_INVALID_SOURCE_FILE,
-                                    SILC_INVALID_LINE_NO,
+                                    silc_compiler_get_file( p->file ),
+                                    p->lineno,
                                     SILC_INVALID_LINE_NO,
                                     SILC_ADAPTER_COMPILER,
                                     SILC_REGION_FUNCTION
@@ -190,7 +191,10 @@ silc_compiler_init_adapter()
     {
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
 
-        /* Sez flag */
+        /* Initialize file table only */
+        silc_compiler_init_file_table();
+
+        /* Set flag */
         silc_compiler_initialize = 0;
     }
 
@@ -203,6 +207,9 @@ silc_compiler_finalize()
     /* call only, if previously initialized */
     if ( !silc_compiler_initialize )
     {
+        /* Finalize file table */
+        silc_compiler_final_file_table();
+
         silc_compiler_initialize = 1;
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
     }

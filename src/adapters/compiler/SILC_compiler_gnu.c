@@ -259,7 +259,7 @@ silc_compiler_init_adapter()
     {
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize GNU compiler adapter!" );
 
-        /* Initialize hash table */
+        /* Initialize hash tables */
         silc_compiler_hash_init();
 
         /* call function to calculate symbol table */
@@ -282,6 +282,7 @@ silc_compiler_finalize()
         /* Delete hash table */
         silc_compiler_hash_free();
 
+        /* Set initilaization flag */
         silc_compiler_initialize = 1;
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize GNU compiler adapter!" );
     }

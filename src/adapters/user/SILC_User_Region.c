@@ -33,7 +33,7 @@
 /** @internal
     Hash table for mapping source file names to SILC file handles.
  */
-SILC_Hashtab* silc_user_file_table;
+SILC_Hashtab* silc_user_file_table = NULL;
 
 void
 silc_user_delete_file_entry( SILC_Hashtab_Entry* entry )
