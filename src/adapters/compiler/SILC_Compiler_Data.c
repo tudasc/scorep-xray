@@ -15,53 +15,45 @@
 
 /**
  * @file       SILC_Compiler_Data.c
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status     ALPHA
  *
- * @brief General functions for Compiler Instrumentation
+ * @brief Implementation of helper functions which are common for all compiler
+ *        adapters.
  */
-
 
 
 #include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
-#include <SILC_Compiler_Data.h>
+#include "SILC_Compiler_Data.h"
 
 
-HashNode* htab[ HASH_MAX ];
+silc_compiler_hash_node* region_hash_table[ SILC_COMPILER_HASH_MAX ];
 
-/**
- * Initialize slots of compiler hash table.
- */
+/* Initialize slots of compiler hash table. */
 void
-hash_init()
+silc_compiler_hash_init()
 {
     int i;
-    for ( i = 0; i < HASH_MAX; i++ )
+    for ( i = 0; i < SILC_COMPILER_HASH_MAX; i++ )
     {
-        htab[ i ] = NULL;
+        region_hash_table[ i ] = NULL;
     }
 }
 
-/**
- * @brief Get hash table entry for given ID.
- *
- * @param h   Hash node key ID
- *
- * @return Returns pointer to hash table entry according to key
- */
-HashNode*
-hash_get( long h )
+/* Get hash table entry for given ID. */
+silc_compiler_hash_node*
+silc_compiler_hash_get( long key )
 {
-    long id = h % HASH_MAX;
+    long hash_code = key % SILC_COMPILER_HASH_MAX;
 
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " hash id %ld: \n", id );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " hash code %ld: \n", hash_code );
 
-    HashNode* curr = htab[ id ];
+    silc_compiler_hash_node* curr = region_hash_table[ hash_code ];
     while ( curr )
     {
-        if ( curr->id == h )
+        if ( curr->key == key )
         {
             return curr;
         }
@@ -71,71 +63,59 @@ hash_get( long h )
 }
 
 
-/**
- * Stores function name under hash code
- *
- * @param h    Hash node key
- * @param n    file name
- * @param fn   function name
- * @param lno  line number
- */
-HashNode*
-hash_put
+/* Stores function name under hash code */
+silc_compiler_hash_node*
+silc_compiler_hash_put
 (
-    long        h,
-    const char* n,
-    const char* fn,
-    int         lno
+    long        key,
+    const char* region_name,
+    const char* file_name,
+    int         line_no_begin
 )
 {
-    long      id  = h % HASH_MAX;
-    HashNode* add = ( HashNode* )malloc( sizeof( HashNode ) );
-    add->id        = h;
-    add->name      = n;
-    add->fname     = fn ? ( const char* )strdup( fn ) : fn;
-    add->lnobegin  = lno;
-    add->lnoend    = SILC_INVALID_LINE_NO;
-    add->reghandle = SILC_INVALID_REGION;
-    add->next      = htab[ id ];
-    htab[ id ]     = add;
+    long                     hash_code = key % SILC_COMPILER_HASH_MAX;
+    silc_compiler_hash_node* add       = ( silc_compiler_hash_node* )
+                                         malloc( sizeof( silc_compiler_hash_node ) );
+    add->key                       = key;
+    add->region_name               = region_name ? ( const char* )strdup( region_name ) : region_name;
+    add->file_name                 = file_name ? ( const char* )strdup( file_name ) : file_name;
+    add->line_no_begin             = line_no_begin;
+    add->line_no_end               = SILC_INVALID_LINE_NO;
+    add->region_handle             = SILC_INVALID_REGION;
+    add->next                      = region_hash_table[ hash_code ];
+    region_hash_table[ hash_code ] = add;
     return add;
 }
 
 
-/**
- * Free elements of compiler hash table.
- */
+/* Free elements of compiler hash table. */
 void
-hash_free()
+silc_compiler_hash_free()
 {
-    HashNode* next;
-    HashNode* cur;
-    int       i;
-    for ( i = 0; i < HASH_MAX; i++ )
+    silc_compiler_hash_node* next;
+    silc_compiler_hash_node* cur;
+    int                      i;
+    for ( i = 0; i < SILC_COMPILER_HASH_MAX; i++ )
     {
-        if ( htab[ i ] )
+        if ( region_hash_table[ i ] )
         {
-            cur = htab[ i ];
+            cur = region_hash_table[ i ];
             while ( cur != NULL )
             {
                 next = cur->next;
                 free( cur );
                 cur = next;
             }
-            htab[ i ] = NULL;
+            region_hash_table[ i ] = NULL;
         }
     }
 }
 
-/**
- * @brief Register a new region to the measuremnt system
- *
- * @param hn   Hash node which stores the registered regions
- */
+/* Register a new region to the measuremnt system */
 void
 silc_compiler_register_region
 (
-    struct HashNode* hn
+    silc_compiler_hash_node* node
 )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "register a region! " );
@@ -143,12 +123,12 @@ silc_compiler_register_region
 
     SILC_LockRegionDefinition();
 
-    hn->reghandle = SILC_DefineRegion( hn->name,
-                                       SILC_INVALID_SOURCE_FILE,
-                                       hn->lnobegin,
-                                       hn->lnoend,
-                                       SILC_ADAPTER_COMPILER,
-                                       SILC_REGION_FUNCTION
-                                       );
+    node->region_handle = SILC_DefineRegion( node->region_name,
+                                             SILC_INVALID_SOURCE_FILE,
+                                             node->line_no_begin,
+                                             node->line_no_end,
+                                             SILC_ADAPTER_COMPILER,
+                                             SILC_REGION_FUNCTION
+                                             );
     SILC_UnlockRegionDefinition();
 }

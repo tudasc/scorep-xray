@@ -20,8 +20,24 @@
  * @file        SILC_Profile.h
  * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @brief Interface called by the measurement core.
+ * @brief Interface called by the measurement core to construct the profile.
  *
+ * The profile is created with the following structure:
+ * For each location a node of type @ref silc_profile_node_thread_root is created which
+ * are linked together as siblings. The children of the @ref silc_profile_node_thread_root
+ * nodes are of type @ref silc_profile_node_thread_start and represent each an activation
+ * (start of a parallel region in OpenMP). In the initial thread one
+ * @ref silc_profile_node_thread_start node is created, too. They contain informatation
+ * from which callpath they are created. Their children are the region or parameter
+ * nodes called from within the parallel region.
+ *
+ * Whenever a region is entered, a child of the node representing the current callpath
+ * is created, if it does not already exist. If a parameter is triggered a new node
+ * for this parameter value is created if it does not already exists.
+ *
+ * During post-processing the structure of the profile altered. First the nodes of
+ * type @silc_profile_node_thread_start are expanded, so that for each thread the full
+ * calltree appears below its root node.
  */
 
 #include <stddef.h>

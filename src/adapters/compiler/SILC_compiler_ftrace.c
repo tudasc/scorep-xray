@@ -16,7 +16,7 @@
 
 /**
  * @ file      SILC_compiler_ftrace.c
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter version for NEC SX compiler
  */
@@ -59,10 +59,10 @@ _ftrace_stop2_( void );
 void
 _ftrace_enter2_()
 {
-    char*     func = silc_ftrace_getname();
-    int       len  = silc_ftrace_getname_len();
+    char*                    region_name = silc_ftrace_getname();
+    int                      name_len    = silc_ftrace_getname_len();
 
-    HashNode* hn = hash_get( ( long )func );
+    silc_compiler_hash_node* hash_node = silc_compiler_hash_get( ( long )region_name );
 
     if ( silc_compiler_initialize )
     {
@@ -70,23 +70,25 @@ _ftrace_enter2_()
         SILC_InitMeasurement();
     }
 
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function name: %s \n", func );
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function length: %i \n", len );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function name: %s \n", region_name );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "function length: %i \n", name_len );
 
-    if ( !hn )
+    if ( !hash_node )
     {
-        hash_put( ( long )func, func, "", len );
+        silc_compiler_hash_put( ( long )region_name, region_name, "", name_len );
     }
 
-    if ( ( hn = hash_get( ( long )func ) ) )
+    if ( ( hash_node = silc_compiler_hash_get( ( long )region_name ) ) )
     {
-        if ( hn->reghandle == SILC_INVALID_REGION )
+        if ( hash_node->reghandle == SILC_INVALID_REGION )
         {
             /* -- region entered the first time, register region -- */
-            silc_compiler_register_region( hn );
+            silc_compiler_register_region( hash_node );
         }
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "enter the region with handle %i \n", hn->reghandle );
-        SILC_EnterRegion( hn->reghandle );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                           "enter the region with handle %i \n",
+                           hash_node->region_handle );
+        SILC_EnterRegion( hash_node->region_handle );
     }
 }
 
@@ -99,15 +101,15 @@ _ftrace_enter2_()
 void
 _ftrace_exit2_()
 {
-    char*     func = silc_ftrace_getname();
-    long      id   = ( long )func;
-    HashNode* hn;
+    char*                    region_name = silc_ftrace_getname();
+    long                     key         = ( long )region_name;
+    silc_compiler_hash_node* hash_node;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!\n" );
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " ftrace exit 2 \t %i \n", ( long )func );
-    if ( hn = hash_get( ( long )func ) )
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " ftrace exit 2 \t %i \n", key );
+    if ( hash_node = silc_compiler_hash_get( key ) )
     {
-        SILC_ExitRegion( hn->reghandle );
+        SILC_ExitRegion( hash_node->region_handle );
     }
 }
 
@@ -130,7 +132,7 @@ silc_compiler_init_adapter()
                            " inititialize ftrace compiler adapter!" );
 
         /* Initialize hash table */
-        hash_init();
+        silc_compiler_hash_init();
 
         /* Sez flag */
         silc_compiler_initialize = 0;
@@ -146,7 +148,7 @@ silc_compiler_finalize()
     if ( !silc_compiler_initialize )
     {
         /* Delete hash table */
-        hash_free();
+        silc_compiler_hash_free();
 
         silc_compiler_initialize = 1;
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );

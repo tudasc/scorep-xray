@@ -29,7 +29,11 @@
 
 #include "silc_profile_definition.h"
 
-/* Add dense metrics from source to destination */
+/**
+   Add dense metrics from source to destination.
+   @param destination A pointer to a node to which the metrics are added.
+   @param source      A pointer to a node which metrics are added to @a destination.
+ */
 void
 silc_profile_merge_node_dense( silc_profile_node* destination,
                                silc_profile_node* source )
@@ -56,7 +60,11 @@ silc_profile_merge_node_dense( silc_profile_node* destination,
     }
 }
 
-/* Add sparse metric from source to destination */
+/**
+   Add sparse metric from source to destination.
+   @param destination A pointer to a node to which the metrics are added.
+   @param source      A pointer to a node which metrics are added to @a destination.
+ */
 void
 silc_profile_merge_node_sparse( silc_profile_node* destination,
                                 silc_profile_node* source )
@@ -113,8 +121,15 @@ silc_profile_merge_node_sparse( silc_profile_node* destination,
     }
 }
 
-/* Finds or creates a child of parent which matches type and adds statistics from
-   source */
+/**
+   Finds or creates a child of parent which matches type and adds dense metrics from
+   source.
+   @param parent Pointer to a node whose children are are searched for a node that
+                 matches @a type.
+   @param type   Pointer to a node which serves as pattern of the node to find.
+   @param source Pointer to a node from which the dense metrics are added to the
+                 found or created node.
+ */
 silc_profile_node*
 silc_profile_merge_child( silc_profile_node* parent,
                           silc_profile_node* type,
@@ -142,8 +157,15 @@ silc_profile_merge_child( silc_profile_node* parent,
     return child;
 }
 
-/* Adds a callpath to callpath_leaf to destination_root with the metrics from
+/**
+   Adds the callpath to callpath_leaf to destination_root with the metrics from
    data_source.
+   @param destination_root Pointer to a node to which the callpath is added.
+   @param callpath_leaf Pointer to a node which represents the callpath which is added
+          to @ref destination_root. The path from this node to its thread root or thread
+          start is added.
+   @param data_source Pointer to a node from which the dense metrics are added to the
+          nodes on the newly created callpath.
  */
 silc_profile_node*
 silc_profile_add_callpath( silc_profile_node* destination_root,
@@ -168,7 +190,10 @@ silc_profile_add_callpath( silc_profile_node* destination_root,
     return silc_profile_merge_child( parent, callpath_leaf, data_source );
 }
 
-/* Calculates the implicit metrics of parent from all its childs */
+/**
+   Calculates the implicit metrics of parent from all its childs.
+   @param parent Pointer to a node which implcit (dense) metrics are calculated.
+ */
 void
 silc_profile_sum_children( silc_profile_node* parent )
 {
@@ -192,8 +217,12 @@ silc_profile_sum_children( silc_profile_node* parent )
     }
 }
 
-/* Replaces a node of type @ref silc_profile_node_thread_start with the callpath
-   from the creation point.
+/**
+    Replaces a node of type @ref silc_profile_node_thread_start with the callpath
+    from the creation point.
+    @param thread_start Pointer to the node which is replaced by the callpath of its
+           creation point. The creation point should be stored in its type dependent
+           data.
  */
 void
 silc_profile_expand_thread_start( silc_profile_node* thread_start )
@@ -241,7 +270,11 @@ silc_profile_expand_thread_start( silc_profile_node* thread_start )
     }
 }
 
-/* Expand all thread_start nodes of a thread_root */
+/**
+   Expand all thread start nodes of a thread_root.
+   @param thread_root Pointer to a thread node whose children of type
+          @ref silc_profile_node_thread_start are expanded.
+ */
 void
 silc_profile_expand_thread_root( silc_profile_node* thread_root )
 {
@@ -268,7 +301,12 @@ silc_profile_expand_thread_root( silc_profile_node* thread_root )
     silc_profile_sum_children( thread_root );
 }
 
-/* Expands all threads */
+/**
+   Expands all threads. All nodes of type @ref silc_profile_node_thread_start
+   in the profile are substituted by the callpath to the node where the thread was
+   activated. In OpenMP this is the callpath which contained the parallel region
+   statement.
+ */
 void
 silc_profile_expand_threads()
 {

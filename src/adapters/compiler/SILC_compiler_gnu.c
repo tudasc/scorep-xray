@@ -16,7 +16,7 @@
 
 /**
  * @ file      SILC_compiler_gnu.c
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for GNU-Compiler
  * Will be triggered by the '-finstrument-functions' flag of the GNU
@@ -50,7 +50,7 @@ static int silc_compiler_initialize = 1;
  * @brief Get symbol table either by using BFD or by parsing nm-file
  */
 static void
-get_symTab( void )
+silc_compiler_get_sym_tab( void )
 {
     bfd*      BfdImage = 0;
     int       nr_all_syms;
@@ -101,7 +101,8 @@ get_symTab( void )
         BfdImage = bfd_openr( ( const char* )&path, 0 );
         if ( !BfdImage )
         {
-            SILC_ERROR( SILC_ERROR_ENOENT, "BFD image not present to given path: %s \n", path );
+            SILC_ERROR( SILC_ERROR_ENOENT,
+                        "BFD image not present to given path: %s \n", path );
         }
     }
 
@@ -116,7 +117,8 @@ get_symTab( void )
     /* return if file has no symbols at all */
     if ( !( bfd_get_file_flags( BfdImage ) & HAS_SYMS ) )
     {
-        SILC_ERROR( SILC_ERROR_FILE_INTERACTION, "BFD: bfd_get_file_flags(): failed \n" );
+        SILC_ERROR( SILC_ERROR_FILE_INTERACTION,
+                    "BFD: bfd_get_file_flags(): failed \n" );
     }
 
     /* get the upper bound number of symbols */
@@ -125,7 +127,8 @@ get_symTab( void )
     /* HAS_SYMS can be set even with no symbols in the file! */
     if ( size < 1 )
     {
-        SILC_ERROR( SILC_ERROR_INVALID_SIZE_GIVEN, "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
+        SILC_ERROR( SILC_ERROR_INVALID_SIZE_GIVEN,
+                    "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
     }
 
     /* read canonicalized symbols  */
@@ -134,7 +137,8 @@ get_symTab( void )
     nr_all_syms = bfd_canonicalize_symtab( BfdImage, canonicSymbols );
     if ( nr_all_syms < 1 )
     {
-        SILC_ERROR( SILC_ERROR_INVALID_SIZE_GIVEN, "BFD: bfd_canonicalize_symtab(): < 1\n" );
+        SILC_ERROR( SILC_ERROR_INVALID_SIZE_GIVEN,
+                    "BFD: bfd_canonicalize_symtab(): < 1\n" );
     }
     for ( i = 0; i < nr_all_syms; ++i )
     {
@@ -173,7 +177,7 @@ get_symTab( void )
         /* calculate function address */
         addr = canonicSymbols[ i ]->section->vma + canonicSymbols[ i ]->value;
 
-        hash_put( addr, canonicSymbols[ i ]->name, filename, lno );
+        silc_compiler_hash_put( addr, canonicSymbols[ i ]->name, filename, lno );
     }
     free( canonicSymbols );
     bfd_close( BfdImage );
@@ -194,7 +198,7 @@ __cyg_profile_func_enter
     void* callsite
 )
 {
-    HashNode* hn;
+    silc_compiler_hash_node* hash_node;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter!!!" );
 
@@ -212,15 +216,17 @@ __cyg_profile_func_enter
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function pointer: %ld ", ( long )func );
 
-    if ( ( hn = hash_get( ( long )func ) ) )
+    if ( ( hash_node = silc_compiler_hash_get( ( long )func ) ) )
     {
-        if ( hn->reghandle == SILC_INVALID_REGION )
+        if ( hash_node->region_handle == SILC_INVALID_REGION )
         {
             /* -- region entered the first time, register region -- */
-            silc_compiler_register_region( hn );
+            silc_compiler_register_region( hash_node );
         }
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "enter the region with handle %i ", hn->reghandle );
-        SILC_EnterRegion( hn->reghandle );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                           "enter the region with handle %i ",
+                           hash_node->region_handle );
+        SILC_EnterRegion( hash_node->region_handle );
     }
 }
 
@@ -237,14 +243,15 @@ __cyg_profile_func_exit
     void* callsite
 )
 {
-    HashNode* hn;
+    silc_compiler_hash_node* hash_node;
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" );
-    if ( hn = hash_get( ( long )func ) )
+    if ( hash_node = silc_compiler_hash_get( ( long )func ) )
     {
-        SILC_ExitRegion( hn->reghandle );
+        SILC_ExitRegion( hash_node->region_handle );
     }
 }
 
+/* Adapter initialization */
 SILC_Error_Code
 silc_compiler_init_adapter()
 {
@@ -253,10 +260,10 @@ silc_compiler_init_adapter()
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize GNU compiler adapter!" );
 
         /* Initialize hash table */
-        hash_init();
+        silc_compiler_hash_init();
 
         /* call function to calculate symbol table */
-        get_symTab();
+        silc_compiler_get_sym_tab();
 
         /* Sez flag */
         silc_compiler_initialize = 0;
@@ -265,6 +272,7 @@ silc_compiler_init_adapter()
     return SILC_SUCCESS;
 }
 
+/* Adapter finalization */
 void
 silc_compiler_finalize()
 {
@@ -272,7 +280,7 @@ silc_compiler_finalize()
     if ( !silc_compiler_initialize )
     {
         /* Delete hash table */
-        hash_free();
+        silc_compiler_hash_free();
 
         silc_compiler_initialize = 1;
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize GNU compiler adapter!" );

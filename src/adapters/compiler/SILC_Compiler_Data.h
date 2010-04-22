@@ -15,9 +15,11 @@
 
 /**
  * @file       SILC_Compiler_Data.h
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status     ALPHA
+ *
+ * Contains helper functions which are common for all compiler adapters.
  */
 
 
@@ -33,54 +35,76 @@
 #include "SILC_Types.h"
 #include "SILC_Error.h"
 
-
-#define HASH_MAX 1021
+/**
+   @def SILC_COMPILER_HASH_MAX The number of slots in the region hash table.
+ */
+#define SILC_COMPILER_HASH_MAX 1021
 
 /**
  * @brief Hash table to map function addresses to region identifier
  * identifier is called region handle
  *
- * @param id          hash key (address of function)
- * @param name        associated function name
- * @param fname       file name
- * @param lnobegin    line number of begin of function
+ * @param key           hash key (address of function)
+ * @param region_name   associated function name
+ * @param file_name     file name
+ * @param line_no_begin line number of begin of function
 
- * @param lnoend      line number of end of function
- * @param reghandle   region identifier
- * @param HN          pointer to next element
+ * @param line_no_end   line number of end of function
+ * @param region_handle region identifier
+ * @param next          pointer to next element with the same hash value.
  */
-typedef struct HashNode
+typedef struct silc_compiler_hash_node
 {
-    long              id;
-    const char*       name;
-    const char*       fname;
-    SILC_LineNo       lnobegin;
-    SILC_LineNo       lnoend;
-    SILC_RegionHandle reghandle;
-    struct HashNode*  next;
-} HashNode;
+    long                            key;
+    const char*                     region_name;
+    const char*                     file_name;
+    SILC_LineNo                     line_no_begin;
+    SILC_LineNo                     line_no_end;
+    SILC_RegionHandle               region_handle;
+    struct silc_compiler_hash_node* next;
+} silc_compiler_hash_node;
 
+/**
+   Returns a the hash_node for a given key. If no node with the requested key exists,
+   it returns NULL.
+   @param key The key value.
+ */
+extern silc_compiler_hash_node*
+silc_compiler_hash_get( long key );
 
+/**
+   Creates a new entry for the region hashtable with the given values.
+   @param key           The key under which the new entry is stored.
+   @param region_name   The name of the region.
+   @param file_name     The name of the source file.
+   @param line_no_begin The source code line number where the region starts.
+   @returns a pointer to the newly created hash node.
+ */
+extern silc_compiler_hash_node*
+silc_compiler_hash_put( long        key,
+                        const char* region_name,
+                        const char* file_name,
+                        int         line_no_begin );
 
-
-extern HashNode*
-hash_get( long h );
-
-
-extern HashNode*
-hash_put( long        h,
-          const char* n,
-          const char* fn,
-          int         lno );
-
+/**
+   Frees the memory allocated for the hash table.
+ */
 extern void
-hash_free();
+silc_compiler_hash_free();
 
+/**
+   Initializes the hash table.
+ */
 extern void
-hash_init();
+silc_compiler_hash_init();
 
+/**
+   Registers a region to the SILC measurement system from data of a hash node.
+   @param node A pointer to a hash node which contains the region data for the
+               region to be registered ot the SILC measurement system.
+ */
 extern void
-silc_compiler_register_region( HashNode* hn );
+silc_compiler_register_region( silc_compiler_hash_node* node );
 
 
 #endif /* SILC_COMPILER_DATA_H_ */

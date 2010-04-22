@@ -19,12 +19,19 @@
 
 
 /**
- * @brief Compiler adapter interface support to the measurement system
+ * @ file      SILC_Compiler_Init.h
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *
+ * @brief Compiler adapter initialization and finalization function definition
+ *        object.
  */
 
 #include "SILC_Adapter.h"
 
-
+/**
+   The adapter initialization and finalization function structure for the
+   compiler adapter.
+ */
 extern const SILC_Adapter SILC_Compiler_Adapter;
 
 

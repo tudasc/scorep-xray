@@ -20,7 +20,7 @@
  * @file        silc_profile_node.h
  * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @brief Node handlinf for the profile tree
+ * @brief Node handling for the profile tree
  *
  */
 
@@ -71,6 +71,21 @@ typedef enum
    Nodes can be of different type, which receive different treatment. The type of the node
    is stored in @a node_type, depending on the type it is possible to store differnt data
    with this node in @a type_specific_data.
+
+   Here is a list which data this field contains:
+   <dl>
+    <dt>silc_profile_node_regular_region</dt>
+    <dd>The region handle</dd>
+    <dt>silc_profile_node_parameter_string</dt>
+    <dd>A pointer to a @ref silc_profile_string_node_data instance</dd>
+    <dt>silc_profile_node_parameter_integer</dt>
+    <dd>A pointer to a @ref silc_profile_integer_node_data instance</dd>
+    <dt>silc_profile_node_thread_root</dt>
+    <dd>A location definition handle</dd>
+    <dt>silc_profile_node_thread_start</dt>
+    <dd>A pointer to the @ref silc_profile_node instance from which the new thread
+        was created</dd>
+   </dl>
  */
 typedef struct silc_profile_node_struct
 {
