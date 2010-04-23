@@ -258,7 +258,7 @@ SILC_DefineCounterGroup
 
 /**
  *
- * Associate the parammeter tuple with a process unique counter handle.
+ * Associate the parameter tuple with a process unique counter handle.
  *
  * @param name A descriptive name for the counter.
  *

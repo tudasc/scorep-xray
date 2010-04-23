@@ -301,7 +301,7 @@ SILC_DefineCounterGroup( const char* name )
 
 
 /**
- * Associate the parammeter tuple with a process unique counter handle.
+ * Associate the parameter tuple with a process unique counter handle.
  */
 SILC_CounterHandle
 SILC_DefineCounter( const char*             name,
