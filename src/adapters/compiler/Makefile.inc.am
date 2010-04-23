@@ -14,59 +14,83 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-noinst_LTLIBRARIES += libsilc_adapter_compiler.la
+## base
 
-libsilc_adapter_compiler_la_SOURCES =                         \
-    $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c     \
+COMPILER_FLAGS = $(AM_CPPFLAGS)                              \
+    -I$(INC_DIR_UTIL)                                        \
+    -I$(PUBLIC_INC_DIR)                                      \
+    -I$(INC_ROOT)src/adapters/compiler                       \
+    -I$(INC_ROOT)src/adapters/include                        \
+    -I$(INC_ROOT)src/measurement/include
+
+noinst_LTLIBRARIES += libsilc_adapter_compiler_base.la
+libsilc_adapter_compiler_base_la_LIBADD = @LIBBFD@
+
+libsilc_adapter_compiler_base_la_SOURCES =                   \
+        $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
 	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h  \
-	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.c \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h 
-libsilc_adapter_compiler_la_LIBADD = @LIBBFD@
-
 
 if SILC_COMPILER_INTEL
-libsilc_adapter_compiler_la_SOURCES += \
+ libsilc_adapter_compiler_base_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c 
 endif 
 
 #if SILC_COMPILER_SUN
-#libsilc_adapter_compiler_la_SOURCES += \
+# libsilc_adapter_compiler_base_la_SOURCES += \
 #    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_sun.c
 #endif
 
 if SILC_COMPILER_IBM
-libsilc_adapter_compiler_la_SOURCES += \
+ libsilc_adapter_compiler_base_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ibm.c
 endif
 
 if SILC_COMPILER_PGI
-libsilc_adapter_compiler_la_SOURCES += \
+ libsilc_adapter_compiler_base_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_pgi.c
 endif
 
 if SILC_COMPILER_GNU
 if HAVE_LIBBFD
-libsilc_adapter_compiler_la_SOURCES += \
+ libsilc_adapter_compiler_base_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
 endif
 
 #if SILC_COMPILER_HP
-#libsilc_adapter_compiler_la_SOURCES += \
+# libsilc_adapter_compiler_base_la_SOURCES += \
 #    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_hp.c
 #endif
 
 if SILC_COMPILER_SX
-libsilc_adapter_compiler_la_SOURCES +=                        \
+ libsilc_adapter_compiler_base_la_SOURCES +=                 \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
 endif
 
 endif
 
-libsilc_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)   \
-    -I$(INC_DIR_UTIL)                                   \
-    -I$(PUBLIC_INC_DIR)                                 \
-    -I$(INC_ROOT)src/adapters/compiler                  \
-    -I$(INC_ROOT)src/adapters/include                   \
-    -I$(INC_ROOT)src/measurement/include
+libsilc_adapter_compiler_base_la_CPPFLAGS = $(COMPILER_FLAGS)
+
+
+## non omp
+
+noinst_LTLIBRARIES += libsilc_adapter_compiler_non_omp.la
+libsilc_adapter_compiler_non_omp_la_SOURCES = \
+	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.c
+libsilc_adapter_compiler_non_omp_la_LIBADD = \
+	libsilc_adapter_compiler_base.la
+libsilc_adapter_compiler_non_omp_la_CPPFLAGS = $(COMPILER_FLAGS)
+
+## omp
+ 
+if OPENMP_SUPPORTED
+noinst_LTLIBRARIES += libsilc_adapter_compiler_omp.la
+libsilc_adapter_compiler_omp_la_SOURCES = \
+	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.c
+libsilc_adapter_compiler_omp_la_LIBADD = \
+	libsilc_adapter_compiler_base.la
+libsilc_adapter_compiler_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libsilc_adapter_compiler_omp_la_CPPFLAGS = $(COMPILER_FLAGS)
+endif
 

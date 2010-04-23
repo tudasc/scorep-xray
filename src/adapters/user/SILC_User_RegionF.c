@@ -72,7 +72,7 @@ FSUB( SILC_User_RegionInitF )( SILC_Fortran_RegionHandle* handle,
     name[ nameLen ] = '\0';
 
     /* Lock file definition */
-    SILC_LockSourceFileDefinition();
+    SILC_LOCK( SourceFile );
 
     /* Search for source file handle */
     entry = SILC_Hashtab_Find( silc_user_file_table, fileName, &index );
@@ -98,10 +98,10 @@ FSUB( SILC_User_RegionInitF )( SILC_Fortran_RegionHandle* handle,
         fileHandle = ( SILC_SourceFileHandle* )entry->value;
     }
     /* Unlock file defintion */
-    SILC_UnlockSourceFileDefinition();
+    SILC_UNLOCK( SourceFile );
 
     /* Lock region definition */
-    SILC_LockRegionDefinition();
+    SILC_LOCK( Region );
 
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean
@@ -123,7 +123,7 @@ FSUB( SILC_User_RegionInitF )( SILC_Fortran_RegionHandle* handle,
         free( name );
     }
     /* Unlock region definition */
-    SILC_UnlockRegionDefinition();
+    SILC_UNLOCK( Region );
 }
 
 void

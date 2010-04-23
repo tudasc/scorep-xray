@@ -1,3 +1,5 @@
+## general
+
 SILC_USER_FORTRAN_SOURCES =                           \
     $(SRC_ROOT)src/adapters/user/SILC_User_MetricF.c  \
     $(SRC_ROOT)src/adapters/user/SILC_User_ControlF.c \
@@ -12,48 +14,14 @@ SILC_USER_FORTRAN_FLAGS =                       \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
-noinst_LTLIBRARIES += libsilc_adapter_user.la   \
-    libsilc_adapter_user_fortran_sub1.la        \
-    libsilc_adapter_user_fortran_sub2.la        \
-    libsilc_adapter_user_fortran_sub3.la        \
-    libsilc_adapter_user_fortran_sub4.la
-
-libsilc_adapter_user_fortran_sub1_la_SOURCES =  \
-    $(SILC_USER_FORTRAN_SOURCES)
-
-libsilc_adapter_user_fortran_sub1_la_CPPFLAGS = \
-    -DFSUB=SILC_FORTRAN_SUB1                    \
-    $(SILC_USER_FORTRAN_FLAGS)
-
-libsilc_adapter_user_fortran_sub2_la_SOURCES =  \
-    $(SILC_USER_FORTRAN_SOURCES)
-
-libsilc_adapter_user_fortran_sub2_la_CPPFLAGS = \
-    -DFSUB=SILC_FORTRAN_SUB2                    \
-    $(SILC_USER_FORTRAN_FLAGS)
-
-libsilc_adapter_user_fortran_sub3_la_SOURCES =  \
-    $(SILC_USER_FORTRAN_SOURCES)
-
-libsilc_adapter_user_fortran_sub3_la_CPPFLAGS = \
-    -DFSUB=SILC_FORTRAN_SUB3                    \
-    $(SILC_USER_FORTRAN_FLAGS)
-
-libsilc_adapter_user_fortran_sub4_la_SOURCES =  \
-    $(SILC_USER_FORTRAN_SOURCES)
-
-libsilc_adapter_user_fortran_sub4_la_CPPFLAGS = \
-    -DFSUB=SILC_FORTRAN_SUB4                    \
-    $(SILC_USER_FORTRAN_FLAGS)
-
-libsilc_adapter_user_la_SOURCES =                           \
-    $(SRC_ROOT)src/adapters/user/SILC_User_Init.c           \
-    $(SRC_ROOT)src/adapters/user/SILC_User_Control.c        \
-    $(SRC_ROOT)src/adapters/user/SILC_User_Region.c         \
-    $(SRC_ROOT)src/adapters/user/SILC_User_Metric.c         \
+SILC_USER_C_SOURCES =                                 \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Init.c     \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Control.c  \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Region.c   \
+    $(SRC_ROOT)src/adapters/user/SILC_User_Metric.c   \
     $(SRC_ROOT)src/adapters/include/SILC_User_Init.h
 
-libsilc_adapter_user_la_CPPFLAGS =              \
+SILC_USER_C_FLAGS =                             \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
@@ -61,8 +29,103 @@ libsilc_adapter_user_la_CPPFLAGS =              \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
-libsilc_adapter_user_la_LIBADD =                \
-    libsilc_adapter_user_fortran_sub1.la        \
-    libsilc_adapter_user_fortran_sub2.la        \
-    libsilc_adapter_user_fortran_sub3.la        \
-    libsilc_adapter_user_fortran_sub4.la
+
+noinst_LTLIBRARIES +=                            \
+    libsilc_adapter_user_non_omp.la              \
+    libsilc_adapter_user_fortran_non_omp_sub1.la \
+    libsilc_adapter_user_fortran_non_omp_sub2.la \
+    libsilc_adapter_user_fortran_non_omp_sub3.la \
+    libsilc_adapter_user_fortran_non_omp_sub4.la \
+    libsilc_adapter_user_omp.la                  \
+    libsilc_adapter_user_fortran_omp_sub1.la     \
+    libsilc_adapter_user_fortran_omp_sub2.la     \
+    libsilc_adapter_user_fortran_omp_sub3.la     \
+    libsilc_adapter_user_fortran_omp_sub4.la
+
+## non omp
+
+libsilc_adapter_user_fortran_non_omp_sub1_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_non_omp_sub1_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB1                            \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_fortran_non_omp_sub2_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_non_omp_sub2_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB2                            \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_fortran_non_omp_sub3_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_non_omp_sub3_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB3                            \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_fortran_non_omp_sub4_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_non_omp_sub4_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB4                            \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_non_omp_la_SOURCES =              \
+    $(SILC_USER_C_SOURCES)
+
+libsilc_adapter_user_non_omp_la_CPPFLAGS =              \
+    $(SILC_USER_C_FLAGS)
+
+libsilc_adapter_user_non_omp_la_LIBADD =                \
+    libsilc_adapter_user_fortran_non_omp_sub1.la        \
+    libsilc_adapter_user_fortran_non_omp_sub2.la        \
+    libsilc_adapter_user_fortran_non_omp_sub3.la        \
+    libsilc_adapter_user_fortran_non_omp_sub4.la
+
+## omp
+
+if OPENMP_SUPPORTED
+
+libsilc_adapter_user_fortran_omp_sub1_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_omp_sub1_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB1                        \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_fortran_omp_sub2_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_omp_sub2_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB2                        \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_fortran_omp_sub3_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_omp_sub3_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB3                        \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_fortran_omp_sub4_la_SOURCES =  \
+    $(SILC_USER_FORTRAN_SOURCES)
+
+libsilc_adapter_user_fortran_omp_sub4_la_CPPFLAGS = \
+    -DFSUB=SILC_FORTRAN_SUB4                        \
+    $(SILC_USER_FORTRAN_FLAGS)
+
+libsilc_adapter_user_omp_la_SOURCES =               \
+    $(SILC_USER_C_SOURCES)
+
+libsilc_adapter_user_omp_la_CPPFLAGS =              \
+    $(SILC_USER_C_FLAGS)
+
+libsilc_adapter_user_omp_la_LIBADD =                \
+    libsilc_adapter_user_fortran_omp_sub1.la        \
+    libsilc_adapter_user_fortran_omp_sub2.la        \
+    libsilc_adapter_user_fortran_omp_sub3.la        \
+    libsilc_adapter_user_fortran_omp_sub4.la
+
+endif

@@ -50,7 +50,7 @@ SILC_User_InitMetricGroup
     SILC_USER_ASSERT_INITIALIZED;
 
     /* Lock metric group definition */
-    SILC_LockCounterGroupDefinition();
+    SILC_LOCK( CounterGroup );
 
     /* Test if handle is already initialized */
     if ( *groupHandle != SILC_INVALID_COUNTER_GROUP )
@@ -65,7 +65,7 @@ SILC_User_InitMetricGroup
     }
 
     /* Unlock metric group definition */
-    SILC_UnlockCounterGroupDefinition();
+    SILC_UNLOCK( CounterGroup );
 }
 
 void
@@ -90,7 +90,7 @@ SILC_User_InitMetric
     }
 
     /* Lock metric definition */
-    SILC_LockCounterDefinition();
+    SILC_LOCK( Counter );
 
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SILC_INVALID_COUNTER )
@@ -105,7 +105,7 @@ SILC_User_InitMetric
     }
 
     /* Unlock metric definition */
-    SILC_UnlockCounterDefinition();
+    SILC_UNLOCK( Counter );
 }
 
 void
