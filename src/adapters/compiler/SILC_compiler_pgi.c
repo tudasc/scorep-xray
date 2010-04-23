@@ -27,58 +27,133 @@
 #include <SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
+#include <SILC_DefinitionLocking.h>
 #include <SILC_RuntimeManagement.h>
 #include <SILC_Compiler_Data.h>
 
-/**
- * @brief Container structure to map profiling informations, like function names
- * and region handles
- */
-
+/* **************************************************************************************
+ * Typedefs and global variables
+ ***************************************************************************************/
 
 /**
- * @brief Data structure to be used by the PGI compiler
+ * @brief Data structure to be used by the PGI compiler.
+ * Container structure to map profiling informations, like function names
+ * and region handles.
  */
 struct s1
 {
-    uint64_t          l1;
-    uint64_t          l2;
-    double            d1;
-    double            d2;
-    uint32_t          isseen;
-    char*             c;
-    void*             p1;
-    SILC_LineNo       lineno;
-    void*             p2;
-    struct s1*        p3;
-    uint32_t          fid;  /* function id */
-    SILC_RegionHandle rid;  /* routine id */
-    char*             file; /* file name */
-    char*             rout; /* routine name */
+    uint64_t              l1;
+    uint64_t              l2;
+    double                d1;
+    double                d2;
+    uint32_t              isseen;
+    char*                 c;
+    void*                 p1;
+    SILC_LineNo           lineno;
+    void*                 p2;
+    struct s1*            p3;
+    SILC_SourceFileHandle file_handle;    /* file handle   */
+    SILC_RegionHandle     region_handle;  /* region handle */
+    char*                 file_name;      /* file name     */
+    char*                 region_name;    /* routine name  */
 };
 
-uint64_t count = 0;
+/**
+    Pointer to the current callstack position. Because it is needed for each thread,
+    it is made thread private.
+ */
+SILC_RegionHandle* silc_compiler_callstack_top = NULL;
+#pragma omp threadprivate(silc_compiler_callstack_top)
+
+/**
+    Pointer to the callstack starting position. Because it is needed for each thread,
+    it is made thread private.
+ */
+SILC_RegionHandle* silc_compiler_callstack_base = NULL;
+#pragma omp threadprivate(silc_compiler_callstack_base)
+
+/**
+    Counts the current level of nesting. Because it is needed for each thread,
+    it is made thread private.
+ */
+uint32_t silc_compiler_callstack_count = 0;
+#pragma omp threadprivate(silc_compiler_callstack_size)
+
+/**
+    Defines the maximum size of a callstack.
+ */
+static const uint32_t silc_compiler_callstack_max = 30;
 
 /**
  * static variable to control initialize status of adapter
  */
 static int silc_compiler_initialize = 1;
 
+/* **************************************************************************************
+ * Initialization / Finalization
+ ***************************************************************************************/
 /**
- * data structure to map function name and region identifier
+   Creates the callstack array for a new thread.
  */
-typedef struct HashNode HashNode;
+void
+silc_compiler_init_thread()
+{
+    /* Allocate memory for region handle stack */
+    silc_compiler_callstack_base = ( SILC_RegionHandle* )
+                                   malloc( silc_compiler_callstack_max * sizeof( SILC_RegionHandle ) );
+    silc_compiler_callstack_top = silc_compiler_callstack_base;
+}
 
+/* Adapter initialization */
+SILC_Error_Code
+silc_compiler_init_adapter()
+{
+    if ( silc_compiler_initialize )
+    {
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
+
+        /* Initialize default thread */
+        silc_compiler_init_thread();
+
+        /* Initialize file table only */
+        silc_compiler_init_file_table();
+
+        /* Set flag */
+        silc_compiler_initialize = 0;
+    }
+
+    return SILC_SUCCESS;
+}
+
+/* Adapter finalization */
+void
+silc_compiler_finalize()
+{
+    /* call only, if previously initialized */
+    if ( !silc_compiler_initialize )
+    {
+        /* Finalize file table */
+        silc_compiler_final_file_table();
+
+        silc_compiler_initialize = 1;
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
+    }
+}
+
+/* **************************************************************************************
+ * Implementation of complier inserted functions
+ ***************************************************************************************/
 
 /**
  * called during program initialization
  */
+#pragma save_all_regs
 void
 __rouinit
 (
 )
 {
-    printf( " PGI routine init \n " );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "PGI init routine" );
 
 
     if ( silc_compiler_initialize )
@@ -92,125 +167,102 @@ __rouinit
  * called during program termination
  */
 
+#pragma save_all_regs
 void
 __rouexit
 (
 )
 {
-    printf( " PGI routine init exit event \n " );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                       "Termination routine from PGI compiler instrumentation called" );
 }
-
-
-
 
 
 /**
  * called at the beginning of each instrumented routine
  */
+#pragma save_all_regs
 void
 ___rouent2
 (
     struct s1* p
 )
 {
-    HashNode hn;
-
-    printf( " begin of a profiled routine 2 \n " );
-
+    /* Ensure the compiler adapter is initialized */
     if ( silc_compiler_initialize )
     {
         SILC_InitMeasurement();
     }
 
+    /* Ensure thread is initialized */
+    if ( silc_compiler_callstack_top == NULL )
+    {
+        silc_compiler_init_thread();
+    }
+
+    /* Register new regions */
     if ( !p->isseen )
     {
         /* get the file name from instrumentation */
 
         /* get file id beloning to file name */
-
-        p->rid = SILC_DefineRegion( p->rout,
-                                    silc_compiler_get_file( p->file ),
-                                    p->lineno,
-                                    SILC_INVALID_LINE_NO,
-                                    SILC_ADAPTER_COMPILER,
-                                    SILC_REGION_FUNCTION
-                                    );
+        SILC_LOCK( Region );
+        if ( !p->isseen )
+        {
+            p->file_handle   = silc_compiler_get_file( p->file_name );
+            p->region_handle = SILC_DefineRegion( p->region_name,
+                                                  p->file_handle,
+                                                  p->lineno,
+                                                  SILC_INVALID_LINE_NO,
+                                                  SILC_ADAPTER_COMPILER,
+                                                  SILC_REGION_FUNCTION
+                                                  );
+        }
         p->isseen = 1;
+        SILC_UNLOCK( Region );
     }
-}
 
-/**
- * called at the beginning of each instrumented routine
- */
-void
-___rouent64
-(
-    struct s1* p
-)
-{
-    printf( " begin of a profiled routine for 64bit systems \n " );
+    /* Check callstack */
+    silc_compiler_callstack_count++;
+    if ( silc_compiler_callstack_count < silc_compiler_callstack_max )
+    {
+        /* Update callstack */
+        *silc_compiler_callstack_top = p->region_handle;
+        silc_compiler_callstack_top++;
+
+        /* Enter event */
+        if ( p->region_handle != SILC_INVALID_REGION )
+        {
+            SILC_EnterRegion( p->region_handle );
+        }
+    }
 }
 
 /**
  * called at the end of each instrumented routine
  */
-void
-___rouret
-(
-    void
-)
-{
-    printf( " end of a profiled routine \n " );
-}
-
-/**
- * called at the end of each instrumneted routine
- */
+#pragma save_all_regs
 void
 ___rouret2
 (
     void
 )
 {
-    printf( " end of a instrumneted routine 2 \n " );
+    if ( silc_compiler_callstack_count < silc_compiler_callstack_max )
+    {
+        /* Exit event */
+        SILC_ExitRegion( *silc_compiler_callstack_top );
+        silc_compiler_callstack_top--;
+    }
+
+    silc_compiler_callstack_count--;
 }
 
-
+#pragma save_all_regs
 void
 ___linent2
 (
     void
 )
 {
-}
-
-SILC_Error_Code
-silc_compiler_init_adapter()
-{
-    if ( silc_compiler_initialize )
-    {
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
-
-        /* Initialize file table only */
-        silc_compiler_init_file_table();
-
-        /* Set flag */
-        silc_compiler_initialize = 0;
-    }
-
-    return SILC_SUCCESS;
-}
-
-void
-silc_compiler_finalize()
-{
-    /* call only, if previously initialized */
-    if ( !silc_compiler_initialize )
-    {
-        /* Finalize file table */
-        silc_compiler_final_file_table();
-
-        silc_compiler_initialize = 1;
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
-    }
 }
