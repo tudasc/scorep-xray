@@ -82,7 +82,16 @@ SILC_DefineRegion( const char*           regionName,
 
     // Init new_definition
     new_definition->name_handle = *SILC_DefineString( regionName );
-    new_definition->file_handle = *fileHandle;
+
+    if ( file_handle == SILC_INVALID_SOURCE_FILE )
+    {
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->file_handle );
+    }
+    else
+    {
+        new_definition->file_handle = *fileHandle;
+    }
+
     SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->description_handle ); // currently not used
     new_definition->region_type  = regionType;                              // maps to OTF2_RegionType
     new_definition->begin_line   = beginLine;
