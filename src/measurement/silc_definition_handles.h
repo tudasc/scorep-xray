@@ -33,9 +33,9 @@
         uint32_t offset;                               \
     }
 
-#define SILC_DEFINE_DEFINITION_TYPE( type )        \
-    SILC_MOVABLE_TYPE( SILC_ ## type ## _Definition ); \
-    struct SILC_ ## type ## _Definition
+#define SILC_DEFINE_DEFINITION_TYPE( Type )            \
+    SILC_MOVABLE_TYPE( SILC_ ## Type ## _Definition ); \
+    struct SILC_ ## Type ## _Definition
 
 typedef struct silc_any_definition         silc_any_definition;
 typedef struct silc_any_definition_Movable silc_any_definition_Movable;

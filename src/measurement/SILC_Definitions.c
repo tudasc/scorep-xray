@@ -51,7 +51,7 @@ SILC_DefineSourceFile( const char* fileName )
 
     SILC_SourceFile_Definition*         new_definition = NULL;
     SILC_SourceFile_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( SourceFile );
+    SILC_ALLOC_NEW_DEFINITION( SourceFile, source_file );
 
     new_definition->name_handle = *SILC_DefineString( fileName );
 
@@ -78,7 +78,7 @@ SILC_DefineRegion( const char*           regionName,
 
     SILC_Region_Definition*         new_definition = NULL;
     SILC_Region_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( Region );
+    SILC_ALLOC_NEW_DEFINITION( Region, region );
 
     // Init new_definition
     new_definition->name_handle = *SILC_DefineString( regionName );
@@ -143,7 +143,7 @@ SILC_DefineMPICommunicator( const unsigned char bitVectorReprOfCommGroup[],
 
     SILC_MPICommunicator_Definition*         new_definition = NULL;
     SILC_MPICommunicator_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( MPICommunicator );
+    SILC_ALLOC_NEW_DEFINITION( MPICommunicator, mpi_communicator );
 
     // Init new_definition
 
@@ -192,7 +192,7 @@ SILC_DefineMPIWindow( SILC_MPICommunicatorHandle communicatorHandle )
 
     SILC_MPIWindow_Definition*         new_definition = NULL;
     SILC_MPIWindow_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( MPIWindow );
+    SILC_ALLOC_NEW_DEFINITION( MPIWindow, mpi_window );
 
     // Init new_definition
 
@@ -219,7 +219,7 @@ SILC_DefineMPICartesianTopology( const char*                topologyName,
 
     SILC_MPICartesianTopology_Definition*         new_definition = NULL;
     SILC_MPICartesianTopology_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( MPICartesianTopology );
+    SILC_ALLOC_NEW_DEFINITION( MPICartesianTopology, mpi_cartesian_topology );
 
     // Init new_definition
 
@@ -262,7 +262,7 @@ SILC_DefineMPICartesianCoords(
 
     SILC_MPICartesianCoords_Definition*         new_definition = NULL;
     SILC_MPICartesianCoords_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( MPICartesianCoords );
+    SILC_ALLOC_NEW_DEFINITION( MPICartesianCoords, mpi_cartesian_coords );
 
     // Init new_definition
 
@@ -290,7 +290,7 @@ SILC_DefineCounterGroup( const char* name )
 {
     SILC_CounterGroup_Definition*         new_definition = NULL;
     SILC_CounterGroup_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( CounterGroup );
+    SILC_ALLOC_NEW_DEFINITION( CounterGroup, counter_group );
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
@@ -313,7 +313,7 @@ SILC_DefineCounter( const char*             name,
 
     SILC_Counter_Definition*         new_definition = NULL;
     SILC_Counter_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( Counter );
+    SILC_ALLOC_NEW_DEFINITION( Counter, counter );
 
     // Init new_definition
 
@@ -331,7 +331,7 @@ SILC_DefineIOFileGroup( const char* name )
 
     SILC_IOFileGroup_Definition*         new_definition = NULL;
     SILC_IOFileGroup_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( IOFileGroup );
+    SILC_ALLOC_NEW_DEFINITION( IOFileGroup, io_file_group );
 
     // Init new_definition
 
@@ -350,7 +350,7 @@ SILC_DefineIOFile( const char*            name,
 
     SILC_IOFile_Definition*         new_definition = NULL;
     SILC_IOFile_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( IOFile );
+    SILC_ALLOC_NEW_DEFINITION( IOFile, io_file );
 
     // Init new_definition
 
@@ -368,7 +368,7 @@ SILC_DefineMarkerGroup( const char* name )
 
     SILC_MarkerGroup_Definition*         new_definition = NULL;
     SILC_MarkerGroup_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( MarkerGroup );
+    SILC_ALLOC_NEW_DEFINITION( MarkerGroup, marker_group );
 
     // Init new_definition
 
@@ -390,7 +390,7 @@ SILC_DefineMarker
 
     SILC_Marker_Definition*         new_definition = NULL;
     SILC_Marker_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( Marker );
+    SILC_ALLOC_NEW_DEFINITION( Marker, marker );
 
     // Init new_definition
 
@@ -412,7 +412,7 @@ SILC_DefineParameter
 
     SILC_Parameter_Definition*         new_definition = NULL;
     SILC_Parameter_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( Parameter );
+    SILC_ALLOC_NEW_DEFINITION( Parameter, parameter );
 
     // Init new_definition
 
