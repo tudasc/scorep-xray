@@ -61,7 +61,7 @@ SILC_Memory_Initialize( size_t totalMemory,
     }
     silc_memory_is_initialized = true;
 
-    silc_memory_allocator = SILC_Allocator_CreateAllocator( system_alloc,
+    silc_memory_allocator = SILC_Allocator_CreateAllocator( paged_alloc,
                                                             totalMemory,
                                                             pageSize );
     if ( !silc_memory_allocator )
