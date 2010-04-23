@@ -31,8 +31,11 @@
     {                                                  \
         uint32_t page_id;                              \
         uint32_t offset;                               \
-    };
+    }
 
+#define SILC_DEFINE_DEFINITION_TYPE( type )        \
+    SILC_MOVABLE_TYPE( SILC_ ## type ## _Definition ); \
+    struct SILC_ ## type ## _Definition
 
 typedef struct silc_any_definition         silc_any_definition;
 typedef struct silc_any_definition_Movable silc_any_definition_Movable;
