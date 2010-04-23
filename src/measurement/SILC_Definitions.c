@@ -83,7 +83,7 @@ SILC_DefineRegion( const char*           regionName,
     // Init new_definition
     new_definition->name_handle = *SILC_DefineString( regionName );
 
-    if ( file_handle == SILC_INVALID_SOURCE_FILE )
+    if ( fileHandle == SILC_INVALID_SOURCE_FILE )
     {
         SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->file_handle );
     }
