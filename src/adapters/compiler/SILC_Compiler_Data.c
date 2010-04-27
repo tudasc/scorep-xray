@@ -79,7 +79,7 @@ SILC_SourceFileHandle
 silc_compiler_get_file( const char* file )
 {
     size_t              index;
-    SILC_LOCK( SourceFile );
+    SILC_LockSourceFileDefinition();
     SILC_Hashtab_Entry* entry = NULL;
 
     if ( file == NULL )
@@ -105,11 +105,11 @@ silc_compiler_get_file( const char* file )
         SILC_Hashtab_Insert( silc_compiler_file_table, ( void* )file_name,
                              handle, &index );
 
-        SILC_UNLOCK( SourceFile );
+        SILC_UnlockSourceFileDefinition;
         return *handle;
     }
 
-    SILC_UNLOCK( SourceFile );
+    SILC_UnlockSourceFileDefinition();
     return *( SILC_SourceFileHandle* )entry->value;
 }
 
@@ -222,7 +222,7 @@ silc_compiler_register_region
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "register a region! " );
 
 
-    SILC_LOCK( Region );
+    SILC_LockRegionDefinition();
 
     node->region_handle = SILC_DefineRegion( node->region_name,
                                              silc_compiler_get_file( node->file_name ),
@@ -231,5 +231,5 @@ silc_compiler_register_region
                                              SILC_ADAPTER_COMPILER,
                                              SILC_REGION_FUNCTION
                                              );
-    SILC_UNLOCK( Region );
+    SILC_UnlockRegionDefinition();
 }

@@ -31,41 +31,6 @@
  *
  */
 
-/**
-   @def SILC_LOCK( x ) A macro which inserts a lock if OpenMP is enabled, else it
-   disappears. It can be used to avoid ifdef cluttering in code which uses locks.
-   Nevertheless, the code needs to be compiled twice, one with version with locks and
-   one version without locks.
-   Usage example:
-   @code
-   SILC_LOCK(Region);
-   // do critical stuff here
-   SILC_UNLOCK(Region);
-   @endcode
- */
-#ifdef _OPENMP
-#define SILC_LOCK( lockname ) SILC_Lock##lockname##Definition()
-#else
-#define SILC_LOCK( lockname )
-#endif /* _OPENMP */
-
-/**
-   @def SILC_UNLOCK( x ) A macro which inserts a unlock if OpenMP is enabled, else it
-   disappears. It can be used to avoid ifdef cluttering in code which uses locks.
-   Nevertheless, the code needs to be compiled twice, one with version with locks and
-   one version without locks.
-   Usage example:
-   @code
-   SILC_LOCK(Region);
-   // do critical stuff here
-   SILC_UNLOCK(Region);
-   @endcode
- */
-#ifdef _OPENMP
-#define SILC_UNLOCK( lockname )  SILC_Unlock##lockname##Definition()
-#else
-#define SILC_UNLOCK( lockname )
-#endif /* _OPENMP */
 
 /**
  * Lock the SILC_DefineSourceFile() and related operations (in the adapters).

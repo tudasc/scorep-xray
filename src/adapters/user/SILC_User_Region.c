@@ -209,12 +209,12 @@ SILC_User_RegionInit
     SILC_USER_ASSERT_INITIALIZED;
 
     /* Get source file handle */
-    SILC_LOCK( SourceFile );
+    SILC_LockSourceFileDefinition();
     SILC_SourceFileHandle file = silc_user_get_file( fileName, lastFileName, lastFile );
-    SILC_UNLOCK( SourceFile );
+    SILC_UnlockSourceFileDefinition();
 
     /* Lock region definition */
-    SILC_LOCK( Region );
+    SILC_LockRegionDefinition();
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean time.
        If the handle is invalid, register a new region */
@@ -232,7 +232,7 @@ SILC_User_RegionInit
                                      region_type );
     }
     /* Release lock */
-    SILC_UNLOCK( Region );
+    SILC_UnlockRegionDefinition();
 }
 
 void

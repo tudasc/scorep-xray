@@ -56,7 +56,7 @@ FSUB( SILC_User_InitMetricGroupF )( SILC_Fortran_MetricGroup* groupHandle,
     name[ nameLen ] = '\0';
 
     /* Lock metric group definition */
-    SILC_LOCK( CounterGroup );
+    SILC_LockCounterGroupDefinition();
 
     /* Test if handle is already initialized */
     if ( *groupHandle != SILC_FORTRAN_INVALID_GROUP )
@@ -70,7 +70,7 @@ FSUB( SILC_User_InitMetricGroupF )( SILC_Fortran_MetricGroup* groupHandle,
     }
 
     /* Clean up */
-    SILC_UNLOCK( CounterGroup );
+    SILC_UnlockCounterGroupDefinition();
     free( name );
 }
 
@@ -116,7 +116,7 @@ FSUB( SILC_User_InitMetricF )
     else
     {
         /* Lock metric definition */
-        SILC_LOCK( Counter );
+        SILC_LockCounterDefinition();
 
         /* Check if metric handle is already initialized */
         if ( *metricHandle != SILC_FORTRAN_INVALID_METRIC )
@@ -130,7 +130,7 @@ FSUB( SILC_User_InitMetricF )
             *metricHandle = SILC_C2F_COUNTER( SILC_DefineCounter( name, *metricType, group, unit ) );
         }
         /* Unlock metric definition */
-        SILC_UNLOCK( Counter );
+        SILC_UnlockCounterDefinition();
     }
 
     /* Clean up */
