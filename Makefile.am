@@ -200,5 +200,8 @@ beautify:
         done
 	cd $(srcdir); ./tools/beautifier/beautify
 
+beautify-clean:
+	find $(srcdir) -name "*.unc-backup*" -exec rm '{}' \;
+
 endif # HAVE_UNCRUSTIFY
 endif # SVN_CONTROLLED -------------------------------------------------------
