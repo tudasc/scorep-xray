@@ -31,6 +31,7 @@
 
 #include "silc_profile_node.h"
 #include "silc_profile_definition.h"
+#include "silc_profile_process.h"
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -215,6 +216,25 @@ SILC_Profile_DeleteLocationData( SILC_Profile_LocationData* profileLocationData 
         free( profileLocationData );
     }
 }
+
+void
+SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
+                      SILC_Profile_OutputFormat   outputFormat )
+{
+    /* Thread start node expansion */
+    if ( processFlags & SILC_Profile_ProcessThreads )
+    {
+        silc_profile_expand_threads();
+    }
+
+    /* Register callpath and assign callpath handles to every node */
+    if ( processFlags & SILC_Profile_ProcessCallpath )
+    {
+        silc_profile_assign_callpath_to_master();
+        silc_profile_assign_callpath_to_workers();
+    }
+}
+
 
 /* ***************************************************************************************
    Callpath events

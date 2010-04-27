@@ -504,3 +504,78 @@ silc_profile_remove_node( silc_profile_node* node )
     node->parent         = NULL;
     node->next_sibling   = NULL;
 }
+
+/* Traverse a subtree (depth search) and execute a given function on each node */
+void
+silc_profile_for_all( silc_profile_node*           root_node,
+                      silc_profile_process_func_t* func,
+                      void*                        param )
+{
+    silc_profile_node* current = root_node;
+
+    /* Process root node */
+    if ( current == NULL )
+    {
+        return;
+    }
+    ( *func )( current, param );
+
+    /* Process children */
+    current = current->first_child;
+    if ( current == NULL )
+    {
+        return;
+    }
+
+    while ( current != root_node )
+    {
+        ( *func )( current, param );
+
+        /* Find next node */
+        if ( current->first_child != NULL )
+        {
+            current = current->first_child;
+        }
+        else
+        {
+            do
+            {
+                if ( current->next_sibling != NULL )
+                {
+                    current = current->next_sibling;
+                    break;
+                }
+                current = current->parent;
+            }
+            while ( current != root_node );
+        }
+    }
+}
+
+/* Find or create a child node of a specified type */
+silc_profile_node*
+silc_profile_find_create_child( silc_profile_node* parent,
+                                silc_profile_node* type,
+                                uint64_t           timestamp )
+{
+    /* Search matching node */
+    SILC_ASSERT( parent != NULL );
+    silc_profile_node* child = parent->first_child;
+    while ( ( child != NULL ) &&
+            !silc_profile_compare_nodes( child, type ) )
+    {
+        child = child->next_sibling;
+    }
+
+    /* If not found -> create new node */
+    if ( child == NULL )
+    {
+        child = silc_profile_create_node( parent, type->node_type,
+                                          type->type_specific_data,
+                                          timestamp );
+        child->next_sibling = parent->first_child;
+        parent->first_child = child;
+    }
+
+    return child;
+}

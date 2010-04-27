@@ -14,13 +14,16 @@
  */
 
 /**
- * @file silc_profile_algorithm.c
+ * @file silc_profile_expand.c
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status ALPHA
  *
- * Contains logic for post measurment profile modifications.
+ * Contains implmentation for post-processing operations to expand thread start nodes.
+ * In this first prost-processing step the nodes of type
+ * @ref silc_profile_node_thread_start are replaced by the callpath to their creation
+ * point.
  *
  */
 
@@ -137,21 +140,8 @@ silc_profile_merge_child( silc_profile_node* parent,
 {
     /* Search matching node */
     SILC_ASSERT( parent != NULL );
-    silc_profile_node* child = parent->first_child;
-    while ( ( child != NULL ) &&
-            !silc_profile_compare_nodes( child, type ) )
-    {
-        child = child->next_sibling;
-    }
-
-    /* If not found -> create new node */
-    if ( child == NULL )
-    {
-        child = silc_profile_create_node( parent, type->node_type,
-                                          type->type_specific_data, source->first_enter_time );
-        child->next_sibling = parent->first_child;
-        parent->first_child = child;
-    }
+    silc_profile_node* child = silc_profile_find_create_child( parent, type,
+                                                               source->first_enter_time );
     /* Add statistics */
     silc_profile_merge_node_dense( child, source );
     return child;
@@ -180,7 +170,6 @@ silc_profile_add_callpath( silc_profile_node* destination_root,
            ( parent->node_type == silc_profile_node_thread_start ) ) )
     {
         return silc_profile_merge_child( destination_root, callpath_leaf, data_source );
-        //return destination_root;
     }
 
     /* Else reconstruct the new callpath */

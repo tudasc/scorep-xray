@@ -37,7 +37,10 @@ libsilc_profile_base_la_SOURCES =                                  \
     $(SRC_ROOT)src/measurement/profile/silc_profile_node.h         \
     $(SRC_ROOT)src/measurement/profile/silc_profile_node.c         \
     $(SRC_ROOT)src/measurement/profile/silc_profile_definition.h   \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_definition.c
+    $(SRC_ROOT)src/measurement/profile/silc_profile_definition.c   \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_process.h      \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_expand.c       \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_callpath.c
 
 libsilc_profile_base_la_CPPFLAGS = $(PROFILE_FLAGS)
 

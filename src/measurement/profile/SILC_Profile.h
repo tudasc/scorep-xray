@@ -54,6 +54,32 @@
  */
 typedef struct SILC_Profile_LocationData SILC_Profile_LocationData;
 
+/**
+   The enumeration type for the post processing flag. The postprecessing flag
+   is a bitvector which allows to specify which steps the post-processing
+   in function @ref SILC_Profile_Process are perfomed.
+   Each bit corresponds to one possible step. Nevertheless, some steps have others
+   as prerequiste, and enable them if they are chosen.
+   Thus, combine steps with the bitwise or opeator '|' and not with '+'.
+ */
+typedef enum
+{
+    SILC_Profile_ProcessNone     = 0,
+    SILC_Profile_ProcessThreads  = 1,
+    SILC_Profile_ProcessCallpath = 3, /* Threadprocessing is a prerequisiste */
+
+    SILC_Profile_ProcessDefault  = 3
+} SILC_Profile_ProcessingFlag;
+
+/**
+   The type for specifing the output format of the profile.
+ */
+typedef enum
+{
+    SILC_Profile_OutputNone    = 0,
+
+    SILC_Profile_OutputDefault = 0
+} SILC_Profile_OutputFormat;
 
 /* ----------------------------------------------------- Initialization / Finalization */
 
@@ -94,6 +120,16 @@ SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
 void
 SILC_Profile_Finalize();
 
+
+/**
+   Post processes a profile. This function performs transfomations on the calltree
+   like expansion of thread start nodes and assignment of callpath handles to every node
+   and output in some file format.
+   Which steps are included can be specified via parameters.
+ */
+void
+SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
+                      SILC_Profile_OutputFormat   outputFormat );
 
 /* -------------------------------------------------------------------- Callpath Events */
 

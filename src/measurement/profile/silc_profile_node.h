@@ -124,6 +124,15 @@ typedef struct
     SILC_StringHandle    value;
 } silc_profile_string_node_data;
 
+/**
+   Type of function pointer that must be passed to @ref silc_profile_for_all().
+   to be processed for each node.
+   @param node  Pointer to the node in the profile which is currently processed.
+   @param param Pointer to a parameter that can be given to
+                @ref silc_profile_for_all()
+ */
+typedef void ( silc_profile_process_func_t )( silc_profile_node* node, void* param );
+
 /* ***************************************************************************************
    Defines
 *****************************************************************************************/
@@ -238,6 +247,21 @@ extern silc_profile_node*
 silc_profile_copy_node( silc_profile_node* source );
 
 /**
+   Find or create a child node of @a parent of a specified type. If parent has a child
+   which matches @a type this node is returned. Else a copy of @a type without metrics
+   is created and added to the children of @a parent.
+   @param parent    Pointer to a node which children are searched.
+   @param type      Pointer to a node for which a matching node is searched.
+   @param timestamp Timestamp for the first enter time in case a new node is created.
+   @returns The mathcing node from the children of @a parent. this might be a newly
+            created node.
+ */
+extern silc_profile_node*
+silc_profile_find_create_child( silc_profile_node* parent,
+                                silc_profile_node* type,
+                                uint64_t           timestamp );
+
+/**
    Checks wether two nodes represent the same object (region, parameter, thread, ...).
    It does only compare node type and type dependent data. The statistics are not
    compared.
@@ -277,7 +301,7 @@ silc_profile_copy_type_data( silc_profile_type_data_t data,
    @param destination Pointer to a node to which the metric values are written.
    @param source      Pointer to a node from which the metric values are read.
  */
-void
+extern void
 silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
                                      silc_profile_node* source );
 
@@ -290,7 +314,7 @@ silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
    @param source      Pointer to a node from which the children are removed. This
                       must not be NULL.
  */
-void
+extern void
 silc_profile_move_children(  silc_profile_node* destination,
                              silc_profile_node* source );
 
@@ -300,7 +324,21 @@ silc_profile_move_children(  silc_profile_node* destination,
    @param node A pointer to a node which is to be removed from the profile. It
                must not be NULL.
  */
-void
+extern void
 silc_profile_remove_node( silc_profile_node* node );
+
+/**
+   Traverse the (sub)tree rooted in @a root_node via depth search and execute the
+   function @a func for each node.
+   @param root_node Pointer to the root node of the subtree which is processed. Its
+                    siblings are nor processed.
+   @param func      Function pointer to the function which is called for each node in
+                    the (sub)tree.
+   @param param     Pointer to a parameter that is passed to @a func.
+ */
+extern void
+silc_profile_for_all( silc_profile_node*           root_node,
+                      silc_profile_process_func_t* func,
+                      void*                        param );
 
 #endif // SILC_PROFILE_NODE_H
