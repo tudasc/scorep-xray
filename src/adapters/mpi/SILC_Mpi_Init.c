@@ -78,7 +78,25 @@ SILC_ConfigVariable silc_mpi_configs[] = {
         ( void* )silc_mpi_enable_groups,
         "DEFAULT",
         "The names of the function groups which are measured.",
-        "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n PERF: \n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n XNONBLOCK: Extended non-blocking comminication.\n",
+        "The names of the function groups which are measured.\n"
+        "Other functions are not measured.\n"
+        "Possible groups are:\n"
+        " All: All MPI functions\n"
+        " CG: Communicator and group management\n"
+        " COLL: Collective functions\n"
+        " DEFAULT: Default configuration\n"
+        " ENV: Environmental management\n"
+        " ERR: MPI Error handling\n"
+        " EXT: External interface functions\n"
+        " IO: MPI file I/O\n"
+        " MISC: Miscellaneous\n"
+        " PERF: PControl\n"
+        " P2P: Peer-to-peer communication\n"
+        " RMA: One sided communication\n"
+        " SPAWN: Process management\n"
+        " TOPO: Topology\n"
+        " TYPE: MPI datatype functions\n"
+        " XNONBLOCK: Extended non-blocking events.\n",
     },
     SILC_CONFIG_TERMINATOR
 };
