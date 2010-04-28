@@ -26,7 +26,8 @@ ${proto:c}
 /*
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     silc_request_create(*request, (ERF_SEND | ERF_IS_PERSISTENT),
-                       tag, dest, count*sz, datatype, comm);
+                       tag, dest, count*sz, datatype, comm,
+                       silc_get_request_id());
 */
   if (event_gen_active)
     {

@@ -89,6 +89,8 @@ enum silc_mpi_groups
     SILC_MPI_ENABLED_SPAWN     =   512,
     SILC_MPI_ENABLED_TOPO      =  1024,
     SILC_MPI_ENABLED_TYPE      =  2048,
+    SILC_MPI_ENABLED_PERF      =  4096,
+    SILC_MPI_ENABLED_XNONBLOCK =  8192,
     /* derived groups, which are a combination of existing groups */
     SILC_MPI_ENABLED_CG_ERR    =  SILC_MPI_ENABLED_CG    | SILC_MPI_ENABLED_ERR,
     SILC_MPI_ENABLED_CG_EXT    =  SILC_MPI_ENABLED_CG    | SILC_MPI_ENABLED_EXT,
@@ -112,7 +114,9 @@ enum silc_mpi_groups
                                  SILC_MPI_ENABLED_RMA   |
                                  SILC_MPI_ENABLED_SPAWN |
                                  SILC_MPI_ENABLED_TOPO  |
-                                 SILC_MPI_ENABLED_TYPE,
+                                 SILC_MPI_ENABLED_TYPE  |
+                                 SILC_MPI_ENABLED_PERF  |
+                                 SILC_MPI_ENABLED_XNONBLOCK,
     /* NOTE: DEFAULT should reflect the default set in 'epk_conf.c' */
     SILC_MPI_ENABLED_DEFAULT =  SILC_MPI_ENABLED_CG    |
                                SILC_MPI_ENABLED_COLL  |

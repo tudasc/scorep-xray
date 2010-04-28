@@ -46,21 +46,23 @@ silc_mpi_get_status_size___( int* status_size );
  * output. Ie.: if all groups are enabled we get "ALL", because it matches first.
  */
 static const SILC_ConfigType_SetEntry silc_mpi_enable_groups[] = {
-    { "ALL",     SILC_MPI_ENABLED_ALL     },
-    { "DEFAULT", SILC_MPI_ENABLED_DEFAULT },
-    { "TYPE",    SILC_MPI_ENABLED_TYPE    },
-    { "TOPO",    SILC_MPI_ENABLED_TOPO    },
-    { "SPAWN",   SILC_MPI_ENABLED_SPAWN   },
-    { "RMA",     SILC_MPI_ENABLED_RMA     },
-    { "P2P",     SILC_MPI_ENABLED_P2P     },
-    { "MISC",    SILC_MPI_ENABLED_MISC    },
-    { "IO",      SILC_MPI_ENABLED_IO      },
-    { "EXT",     SILC_MPI_ENABLED_EXT     },
-    { "ERR",     SILC_MPI_ENABLED_ERR     },
-    { "ENV",     SILC_MPI_ENABLED_ENV     },
-    { "COLL",    SILC_MPI_ENABLED_COLL    },
-    { "CG",      SILC_MPI_ENABLED_CG      },
-    { NULL,      0                        }
+    { "ALL",       SILC_MPI_ENABLED_ALL       },
+    { "CG",        SILC_MPI_ENABLED_CG        },
+    { "COLL",      SILC_MPI_ENABLED_COLL      },
+    { "DEFAULT",   SILC_MPI_ENABLED_DEFAULT   },
+    { "ENV",       SILC_MPI_ENABLED_ENV       },
+    { "ERR",       SILC_MPI_ENABLED_ERR       },
+    { "EXT",       SILC_MPI_ENABLED_EXT       },
+    { "IO",        SILC_MPI_ENABLED_IO        },
+    { "P2P",       SILC_MPI_ENABLED_P2P       },
+    { "MISC",      SILC_MPI_ENABLED_MISC      },
+    { "PERF",      SILC_MPI_ENABLED_PERF      },
+    { "RMA",       SILC_MPI_ENABLED_RMA       },
+    { "SPAWN",     SILC_MPI_ENABLED_SPAWN     },
+    { "TOPO",      SILC_MPI_ENABLED_TOPO      },
+    { "TYPE",      SILC_MPI_ENABLED_TYPE      },
+    { "XNONBLOCK", SILC_MPI_ENABLED_XNONBLOCK },
+    { NULL,        0                          }
 };
 
 
@@ -76,7 +78,7 @@ SILC_ConfigVariable silc_mpi_configs[] = {
         ( void* )silc_mpi_enable_groups,
         "DEFAULT",
         "The names of the function groups which are measured.",
-        "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n",
+        "The names of the function groups which are measured.\nOther functions are not measured.\nPossible groups are:\n All: All MPI functions\n CG: Communicator and group management\n COLL: Collective functions\n DEFAULT: Default configuration\n ENV: Environmental management\n ERR: MPI Error handling\n EXT: External interface functions\n IO: MPI file I/O\n MISC: Miscellaneous\n PERF: \n P2P: Peer-to-peer communication\n RMA: One sided communication\n SPAWN: Process management\n TOPO: Topology\n TYPE: MPI datatype functions\n XNONBLOCK: Extended non-blocking comminication.\n",
     },
     SILC_CONFIG_TERMINATOR
 };
