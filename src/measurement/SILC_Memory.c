@@ -30,12 +30,26 @@
 #include <assert.h>
 #include <stdbool.h>
 
+/* *INDENT-OFF* */
+/* *INDENT-ON* */
+
 /// @todo implement memory statistics
 
 /// The one and only allocator for the measurement and the adapters
 SILC_Allocator_Allocator* silc_memory_allocator = 0;
 
 static bool               silc_memory_is_initialized = false;
+
+
+void
+silc_memory_guard_initialze();
+void
+silc_memory_guard_finalize();
+
+extern SILC_Allocator_Guard       silc_memory_lock;
+extern SILC_Allocator_Guard       silc_memory_unlock;
+extern SILC_Allocator_GuardObject silc_memory_guard_object_ptr;
+
 
 enum silc_memory_page_type
 {
@@ -61,11 +75,17 @@ SILC_Memory_Initialize( size_t totalMemory,
     }
     silc_memory_is_initialized = true;
 
+    silc_memory_guard_initialze();
     silc_memory_allocator = SILC_Allocator_CreateAllocator( paged_alloc,
                                                             totalMemory,
-                                                            pageSize );
+                                                            pageSize,
+                                                            silc_memory_lock,
+                                                            silc_memory_unlock,
+                                                            silc_memory_guard_object_ptr );
     if ( !silc_memory_allocator )
     {
+        silc_memory_guard_finalize();
+        silc_memory_is_initialized = false;
         assert( false );
     }
 }
@@ -82,6 +102,7 @@ SILC_Memory_Finalize()
 
     SILC_Allocator_DeleteAllocator( silc_memory_allocator );
     silc_memory_allocator = 0;
+    silc_memory_guard_finalize();
 }
 
 
