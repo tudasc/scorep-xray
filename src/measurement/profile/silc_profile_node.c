@@ -247,21 +247,36 @@ silc_profile_create_node( silc_profile_node*       parent,
                           silc_profile_type_data_t data,
                           uint64_t                 timestamp )
 {
-    int i;
+    int                i;
+    silc_profile_node* node = NULL;
 
-    /* Reserve space for the node record and dense metrics */
-    silc_profile_node* node
-        = ( silc_profile_node* )
-          SILC_Memory_AllocForProfile( sizeof( silc_profile_node )
-                                       + silc_profile.num_of_dense_metrics
-                                       * sizeof( silc_profile_dense_metric ) );
+    /* Size of the allocated memory. It consists of the size of the node struct and
+     * the array for the dense metric structs.
+     */
+    int size = sizeof( silc_profile_node ) +
+               silc_profile.num_of_dense_metrics * sizeof( silc_profile_dense_metric );
+
+    /* Reserve space for the node record and dense metrics.
+     *  Thread root nodes must not be deleted in Persicope phases, while all other
+     *  nodes are. The profile memory pages are deleted in Persicope phases.
+     *  Thus, space for thread root nodes must not be allocated
+     *  from profile memory.
+     */
+    if ( type == silc_profile_node_thread_root )
+    {
+        node = ( silc_profile_node* )SILC_Memory_AllocForMisc( size );
+    }
+    else
+    {
+        node = ( silc_profile_node* )SILC_Memory_AllocForProfile( size );
+    }
     if ( !node )
     {
         SILC_ERROR_POSIX();
         return NULL;
     }
 
-    /* Space for dense metrics are reserved after the node struct */
+    /* Space for dense metrics was reserved after the node struct */
     node->dense_metrics =
         ( silc_profile_dense_metric* )( ( void* )node + sizeof( silc_profile_node ) );
 
@@ -276,7 +291,7 @@ silc_profile_create_node( silc_profile_node*       parent,
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
     node->node_type           = type;
-    node->type_specific_data  = data;
+    node->type_specific_data  = silc_profile_copy_type_data( data, type );
 
     /* Initialize dense metric values */
     silc_profile_init_dense_metric( &node->implicit_time );
@@ -297,30 +312,9 @@ silc_profile_copy_node( silc_profile_node* source )
     silc_profile_sparse_metric_double* dest_sparse_double   = NULL;
     silc_profile_sparse_metric_double* source_sparse_double = source->first_double_sparse;
 
-    /* Reserve space for the node record and dense metrics */
-    silc_profile_node* node =
-        ( silc_profile_node* )
-        SILC_Memory_AllocForProfile( sizeof( silc_profile_node )
-                                     + silc_profile.num_of_dense_metrics
-                                     * sizeof( silc_profile_dense_metric ) );
-    if ( !node )
-    {
-        SILC_ERROR_POSIX();
-        return NULL;
-    }
-
-    /* Space for dense metrics are reserved after the node struct */
-    node->dense_metrics =
-        ( silc_profile_dense_metric* )( ( void* )node + sizeof( silc_profile_node ) );
-
-    /* Initialize values */
-    node->callpath_handle     = SILC_INVALID_CALLPATH;
-    node->parent              = NULL;
-    node->first_child         = NULL;
-    node->next_sibling        = NULL;
-    node->first_double_sparse = NULL;
-    node->first_int_sparse    = NULL;
-    node->node_type           = source->node_type;
+    /* Create node */
+    silc_profile_node* node = silc_profile_create_node( NULL, source->node_type,
+                                                        source->type_specific_data, 0 );
 
     /* Copy dense metric values */
     silc_profile_copy_all_dense_metrics( node, source );

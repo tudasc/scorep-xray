@@ -196,8 +196,15 @@ SILC_Profile_Finalize()
 SILC_Profile_LocationData*
 SILC_Profile_CreateLocationData()
 {
-    /* Create location data structure */
-    SILC_Profile_LocationData* data = malloc( sizeof( SILC_Profile_LocationData ) );
+    /* Create location data structure.
+     * The location data structure must not be deleted when the profile is reset
+     * in a persicope phase. Thus the memory is not allocated from the profile
+     * memory pages.
+     */
+    SILC_Profile_LocationData* data
+        = SILC_Memory_AllocForMisc( sizeof( SILC_Profile_LocationData ) );
+
+    /* Set default values. */
     data->current_node  = NULL;
     data->root_node     = NULL;
     data->fork_node     = NULL;
@@ -211,10 +218,7 @@ SILC_Profile_CreateLocationData()
 void
 SILC_Profile_DeleteLocationData( SILC_Profile_LocationData* profileLocationData )
 {
-    if ( profileLocationData )
-    {
-        free( profileLocationData );
-    }
+    /* Space is freed if the misc memory pages are freed. */
 }
 
 void
@@ -234,7 +238,6 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
         silc_profile_assign_callpath_to_workers();
     }
 }
-
 
 /* ***************************************************************************************
    Callpath events

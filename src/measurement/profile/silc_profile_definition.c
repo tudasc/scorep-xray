@@ -51,12 +51,21 @@ silc_profile_init_definition( uint32_t            max_callpath_depth,
                               SILC_CounterHandle* metrics )
 {
     int i;
-    silc_profile.first_root_node      = NULL;
+    /* On reinitialization of the profile during a phase, do not overwrite the pointer to
+     * exiting root nodes.
+     */
+    if ( !silc_profile_is_initialized )
+    {
+        silc_profile.first_root_node = NULL;
+    }
+
+    /* Store configuration */
     silc_profile.max_callpath_depth   = max_callpath_depth;
     silc_profile.max_callpath_num     = max_callpath_num;
     silc_profile.num_of_dense_metrics = num_dense_metrics;
-    silc_profile.dense_metrics        = ( SILC_CounterHandle* )
-                                        SILC_Memory_AllocForProfile( num_dense_metrics * sizeof( SILC_CounterHandle ) );
+    silc_profile.dense_metrics
+        = ( SILC_CounterHandle* )
+          SILC_Memory_AllocForProfile( num_dense_metrics * sizeof( SILC_CounterHandle ) );
 
     for ( i = 0; i < num_dense_metrics; i++ )
     {
