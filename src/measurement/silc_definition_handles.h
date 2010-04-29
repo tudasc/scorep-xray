@@ -37,6 +37,15 @@
     SILC_MOVABLE_TYPE( SILC_ ## Type ## _Definition ); \
     struct SILC_ ## Type ## _Definition
 
+/**
+ *  Extracts the ID out of an handle pointer.
+ *
+ * The handle pointer needs to be a non-zero pointer.
+ */
+#define SILC_HANDLE_TO_ID( handle, Type ) \
+    ( ( SILC_MEMORY_DEREF_MOVABLE( ( handle ), \
+                                   SILC_ ## Type ## _Definition* ) )->id )
+
 typedef struct silc_any_definition         silc_any_definition;
 typedef struct silc_any_definition_Movable silc_any_definition_Movable;
 typedef silc_any_definition_Movable*       silc_any_handle;

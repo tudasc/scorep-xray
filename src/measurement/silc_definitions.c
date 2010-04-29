@@ -372,26 +372,31 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 {
     SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Region, region )
     {
-        uint32_t descriptionId = 0;
-        if ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( definition->description_handle ) )
+        uint32_t source_file_id = OTF2_UNDEFINED_UINT32;
+        /*
+         * OTF2's source_file_identifier argument is only a string.
+         * Therefore extract the string id from the source file definition.
+         */
+        if ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( definition->file_handle ) )
         {
-            descriptionId = ( SILC_MEMORY_DEREF_MOVABLE(
-                                  &( definition->description_handle ),
-                                  SILC_String_Definition* )
-                              )->id;
+            SILC_SourceFile_Definition* source_file_definition =
+                SILC_MEMORY_DEREF_MOVABLE( &definition->file_handle,
+                                           SILC_SourceFile_Definition* );
+            source_file_id =
+                SILC_HANDLE_TO_ID( &source_file_definition->name_handle,
+                                   String );
         }
 
         SILC_Error_Code status = OTF2_DefWriter_DefRegion(
             definitionWriter,
             definition->id,
-            ( SILC_MEMORY_DEREF_MOVABLE( &( definition->name_handle ),
-                                         SILC_String_Definition* ) )->id,
-            descriptionId,
+            SILC_HANDLE_TO_ID( &definition->name_handle, String ),
+            SILC_HANDLE_TO_ID( &definition->description_handle, String ),
             silc_region_type_to_otf_region_type( definition->region_type ),
-            ( SILC_MEMORY_DEREF_MOVABLE( &( definition->file_handle ),
-                                         SILC_String_Definition* ) )->id,
+            source_file_id,
             definition->begin_line,
             definition->end_line );
+
         if ( status != SILC_SUCCESS )
         {
             silc_handle_definition_writing_error( status, "SILC_Region_Definition" );

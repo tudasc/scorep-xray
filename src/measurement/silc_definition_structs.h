@@ -39,8 +39,7 @@ SILC_DEFINE_DEFINITION_TYPE( String )
     SILC_String_Definition_Movable next;
     uint32_t                       id;
     // Keep above order to be able to cast between definition types.
-    // Add SILC_SourceFile stuff from here on.
-    char_Movable str;
+    char_Movable                   str;
 };
 
 
@@ -48,9 +47,8 @@ SILC_DEFINE_DEFINITION_TYPE( SourceFile )
 {
     SILC_SourceFile_Definition_Movable next;
     uint32_t                           id;
-    SILC_String_Definition_Movable     name_handle;
     // Keep above order to be able to cast between definition types.
-    // Add SILC_SourceFile stuff from here on.
+    SILC_String_Definition_Movable     name_handle;
 };
 
 

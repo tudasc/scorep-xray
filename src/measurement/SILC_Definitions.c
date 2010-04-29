@@ -92,11 +92,11 @@ SILC_DefineRegion( const char*           regionName,
         new_definition->file_handle = *fileHandle;
     }
 
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->description_handle ); // currently not used
-    new_definition->region_type  = regionType;                              // maps to OTF2_RegionType
-    new_definition->begin_line   = beginLine;
-    new_definition->end_line     = endLine;
-    new_definition->adapter_type = adapter;       // currently not used
+    new_definition->description_handle = *SILC_DefineString( "" ); // currently not used
+    new_definition->region_type        = regionType;               // maps to OTF2_RegionType
+    new_definition->begin_line         = beginLine;
+    new_definition->end_line           = endLine;
+    new_definition->adapter_type       = adapter; // currently not used
 
 // TODO: make this to a silc_debug_dump_*_definition
 #ifdef SILC_DEBUG
