@@ -43,6 +43,16 @@ SILC_DEFINE_DEFINITION_TYPE( String )
 };
 
 
+SILC_DEFINE_DEFINITION_TYPE( Location )
+{
+    SILC_Location_Definition_Movable next;
+    /** locations do have an uin64_t as id. */
+    uint64_t                         id;
+    SILC_String_Definition_Movable   name_handle;
+    SILC_LocationType                location_type;
+};
+
+
 SILC_DEFINE_DEFINITION_TYPE( SourceFile )
 {
     SILC_SourceFile_Definition_Movable next;

@@ -31,6 +31,11 @@ typedef struct SILC_String_Definition_Movable SILC_String_Definition_Movable;
 typedef SILC_String_Definition_Movable*       SILC_StringHandle;
 
 
+typedef struct SILC_Location_Definition         SILC_Location_Definition;
+typedef struct SILC_Location_Definition_Movable SILC_Location_Definition_Movable;
+typedef SILC_Location_Definition_Movable*       SILC_LocationHandle;
+
+
 typedef struct SILC_MPICommunicator_Definition         SILC_MPICommunicator_Definition;
 typedef struct SILC_MPICommunicator_Definition_Movable SILC_MPICommunicator_Definition_Movable;
 typedef SILC_MPICommunicator_Definition_Movable*       SILC_MPICommunicatorHandle;

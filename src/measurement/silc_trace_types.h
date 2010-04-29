@@ -26,6 +26,7 @@
  *
  */
 
+#include <SILC_DefinitionHandles.h>
 
 #include <OTF2_EvtWriter.h>
 
@@ -35,8 +36,9 @@ typedef struct SILC_Trace_LocationData SILC_Trace_LocationData;
 
 struct SILC_Trace_LocationData
 {
-    OTF2_EvtWriter* otf_writer;
-    uint64_t        otf_location;
+    OTF2_EvtWriter*     otf_writer;
+    uint64_t            otf_location;
+    SILC_LocationHandle otf_location_handle;
 };
 
 #endif /* SILC_INTERNAL_TRACE_TYPES_H */

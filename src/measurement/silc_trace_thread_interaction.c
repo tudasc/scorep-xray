@@ -28,6 +28,7 @@
 
 #include <SILC_Memory.h>
 #include "silc_runtime_management.h"
+#include "silc_definitions.h"
 #include "silc_thread.h"
 #include "silc_mpi.h"
 #include <stdlib.h>
@@ -108,6 +109,8 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                                           OTF2_UNDEFINED_UINT64,
                                                           silc_on_trace_pre_flush,
                                                           silc_on_trace_post_flush );
+    trace_data->otf_location_handle =
+        SILC_DefineLocation( trace_data->otf_location, "" );
     if ( !trace_data->otf_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );

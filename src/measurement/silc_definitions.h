@@ -85,6 +85,14 @@ struct SILC_DefinitionManager
     SILC_DEFINE_DEFINITION_LIST( Callpath, callpath )
 
     #undef SILC_DEFINE_DEFINITION_LIST
+
+    /* Open-coded SILC_DEFINE_DEFINITION_LIST, because of uint64_t counter.
+     * The counter will not be used to assign ids to locations, only
+     * to count the number of locations.
+     */
+    SILC_Location_Definition_Movable location_definition_head;
+    SILC_Location_Definition_Movable * location_definition_tail_pointer;
+    uint64_t location_definition_counter;
 };
 /* *INDENT-ON* */
 
@@ -134,6 +142,11 @@ SILC_Definitions_Finalize();
 
 SILC_StringHandle
 SILC_DefineString( const char* str );
+
+
+SILC_LocationHandle
+SILC_DefineLocation( uint64_t    locationId,
+                     const char* name );
 
 
 SILC_CallpathHandle

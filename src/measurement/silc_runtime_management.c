@@ -28,9 +28,10 @@
 #include <SILC_Timing.h>
 #include <SILC_Error.h>
 #include <SILC_Omp.h>
+#include <SILC_Memory.h>
 #include "silc_mpi.h"
 #include "silc_thread.h"
-
+#include "silc_definition_structs.h"
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -190,4 +191,10 @@ silc_set_event_writer_location_id( OTF2_EvtWriter* writer )
     {
         _Exit( EXIT_FAILURE );
     }
+
+    /** set new location id in location definition */
+    SILC_Location_Definition* definition =
+        SILC_MEMORY_DEREF_MOVABLE( trace_data->otf_location_handle,
+                                   SILC_Location_Definition* );
+    definition->id = trace_data->otf_location;
 }

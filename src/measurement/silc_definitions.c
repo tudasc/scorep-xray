@@ -61,6 +61,7 @@ static void silc_write_parameter_definitions_to_otf2( OTF2_DefWriter* definition
 static void silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
+static void silc_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_handle_definition_writing_error( SILC_Error_Code status, const char* definitionType );
 static OTF2_RegionType silc_region_type_to_otf_region_type( SILC_RegionType silcType );
 /* *INDENT-ON* */
@@ -155,9 +156,7 @@ static void
 silc_write_definitions( OTF2_DefWriter* definitionWriter )
 {
     silc_write_string_definitions_to_otf2( definitionWriter );
-
-    /** @todo add location definitions */
-
+    silc_write_location_definitions_to_otf2( definitionWriter );
     silc_write_source_file_definitions_to_otf2( definitionWriter );
     silc_write_region_definitions_to_otf2( definitionWriter );
     silc_write_mpi_communicator_definitions_to_otf2( definitionWriter );
@@ -199,6 +198,36 @@ SILC_DefineString( const char* str )
         SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
                                             ( SILC_Allocator_MovableMemory* )&new_definition->str );
         strcpy( SILC_MEMORY_DEREF_MOVABLE( &new_definition->str, char* ), str );
+    }
+
+    return new_movable;
+}
+
+
+/**
+ * Registers a new local location into the definitions.
+ *
+ * @in internal
+ */
+SILC_LocationHandle
+SILC_DefineLocation( uint64_t    locationId,
+                     const char* name )
+{
+    SILC_Location_Definition*         new_definition = NULL;
+    SILC_Location_Definition_Movable* new_movable    = NULL;
+
+    #pragma omp critical (define_location)
+    {
+        SILC_ALLOC_NEW_DEFINITION( Location, location );
+
+        /* important: overwrite id with the actual location id */
+        /** @todo: convert to global locationId */
+        new_definition->id          = locationId;
+        new_definition->name_handle = *SILC_DefineString( name );
+
+        /** @todo: this needs clarification after the location hierarchy
+                   has settled */
+        new_definition->location_type = SILC_LOCATION_OMP_THREAD;
     }
 
     return new_movable;
@@ -259,6 +288,29 @@ silc_handle_definition_writing_error( SILC_Error_Code status,
     assert( false ); // implement me
 }
 
+
+static OTF2_LocationType
+silc_location_type_to_otf_location_type( SILC_LocationType silcType )
+{
+    /* see SILC_Types.h
+       SILC_LOCATION_UNKNOWN = 0,
+       SILC_LOCATION_OMP_THREAD,
+     */
+
+    static OTF2_LocationType type_map[ SILC_INVALID_LOCATION_TYPE ] = {
+        OTF2_LOCATION_TYPE_UNKNOWN,
+        OTF2_LOCATION_TYPE_THREAD,
+
+        /* unused */
+        /*
+           OTF2_LOCATION_TYPE_MACHINE,
+           OTF2_LOCATION_TYPE_NODE,
+           OTF2_LOCATION_TYPE_PROCESS,
+         */
+    };
+
+    return type_map[ silcType ];
+}
 
 static OTF2_RegionType
 silc_region_type_to_otf_region_type( SILC_RegionType silcType )
@@ -347,7 +399,28 @@ silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         SILC_Error_Code status = OTF2_DefWriter_DefString(
             definitionWriter,
             definition->id,
-            SILC_MEMORY_DEREF_MOVABLE( &( definition->str ), char* ) );
+            SILC_MEMORY_DEREF_MOVABLE( &definition->str, char* ) );
+        if ( status != SILC_SUCCESS )
+        {
+            silc_handle_definition_writing_error( status, "SILC_String_Definition" );
+        }
+    }
+    SILC_DEFINITION_FOREACH_WHILE();
+}
+
+
+static void
+silc_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+{
+    SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Location, location )
+    {
+        /** @todo add definition count */
+        SILC_Error_Code status = OTF2_DefWriter_DefLocation(
+            definitionWriter,
+            definition->id,
+            SILC_MEMORY_DEREF_MOVABLE( &definition->name_handle, char* ),
+            silc_location_type_to_otf_location_type( definition->location_type ),
+            0 );
         if ( status != SILC_SUCCESS )
         {
             silc_handle_definition_writing_error( status, "SILC_String_Definition" );

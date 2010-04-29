@@ -222,6 +222,19 @@ typedef enum SILC_CounterType
 
 
 /**
+ * Types to be used in defining a location (SILC_DefineLocation()).
+ *
+ */
+typedef enum SILC_LocationType
+{
+    SILC_LOCATION_UNKNOWN = 0,
+    SILC_LOCATION_OMP_THREAD,
+
+    SILC_INVALID_LOCATION_TYPE /**< For internal use only. */
+} SILC_LocationType;
+
+
+/**
  * Types to be used in defining a region (SILC_DefineRegion()). These types
  * are currently not used inside the measurement system. This @e may change in
  * future if we are going to implement phases/dynamic regions etc. inside the
