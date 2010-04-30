@@ -135,17 +135,27 @@ SILC_DefineRegion( const char*           regionName,
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SILC_MPICommunicatorHandle
-SILC_DefineMPICommunicator( const unsigned char bitVectorReprOfCommGroup[],
-                            uint32_t            sizeOfBitVectorReprOfCommGroup )
+SILC_DefineMPICommunicator( int32_t  numberOfRanks,
+                            int32_t* ranks )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI Communicator:" );
 
-    SILC_MPICommunicator_Definition*         new_definition = NULL;
-    SILC_MPICommunicator_Definition_Movable* new_movable    = NULL;
-    SILC_ALLOC_NEW_DEFINITION( MPICommunicator, mpi_communicator );
+    SILC_Group_Definition*         new_definition = NULL;
+    SILC_Group_Definition_Movable* new_movable    = NULL;
+    SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( Group,
+                                              group,
+                                              uint64_t,
+                                              numberOfRanks );
 
     // Init new_definition
+    new_definition->group_type        = SILC_GROUP_COMMUNICATOR;
+    new_definition->number_of_members = numberOfRanks;
+    for ( int32_t i = 0; i < numberOfRanks; i++ )
+    {
+        /* convert ranks to global location ids */
+        new_definition->members[ i ] = ( uint64_t )( ranks[ i ] ) << 32;
+    }
 
 // TODO: make this into a silc_debug_dump_*_definition function
 #ifdef SILC_DEBUG
@@ -156,24 +166,20 @@ SILC_DefineMPICommunicator( const unsigned char bitVectorReprOfCommGroup[],
                            "    World ranks:" );
 
     uint32_t ranks_in_line = 0;
-    for ( uint32_t i = 0; i < sizeOfBitVectorReprOfCommGroup; ++i )
+    for ( int32_t i = 0; i < numberOfRanks; ++i )
     {
-        /* test bit i in bit vector */
-        if ( bitVectorReprOfCommGroup[ i / 8 ] & ( 1u << ( i % 8 ) ) )
+        if ( ranks_in_line && ranks_in_line % 16 == 0 )
         {
-            if ( ranks_in_line && ranks_in_line % 16 == 0 )
-            {
-                SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
-                SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
-                SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "%*s",
-                                       ( int )strlen( "    World ranks:" ),
-                                       "" );
-            }
-
-            SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, " %u", i );
-
-            ranks_in_line++;
+            SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
+            SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
+            SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "%*s",
+                                   ( int )strlen( "    World ranks:" ),
+                                   "" );
         }
+
+        SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, " %u", ranks[ i ] );
+
+        ranks_in_line++;
     }
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 #endif

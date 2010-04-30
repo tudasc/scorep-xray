@@ -53,6 +53,33 @@
 /* *INDENT-ON* */
 
 /**
+ * Allocate, assign id, and store in manager list a new definition of type
+ * @type with a variable array member of type @array_type and total a total
+ * number of members of @number_of_members
+ */
+/* *INDENT-OFF* */
+#define SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( Type, \
+                                                  type, \
+                                                  array_type, \
+                                                  number_of_members ) \
+    do { \
+        new_movable = ( SILC_ ## Type ## _Definition_Movable* ) \
+            SILC_Memory_AllocForDefinitions( \
+                sizeof( SILC_ ## Type ## _Definition ) + \
+                ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
+        new_definition = \
+            SILC_MEMORY_DEREF_MOVABLE( new_movable, \
+                                       SILC_ ## Type ## _Definition* ); \
+        *silc_definition_manager.type ## _definition_tail_pointer = \
+            *new_movable; \
+        silc_definition_manager.type ## _definition_tail_pointer = \
+            &( new_definition )->next; \
+        ( new_definition )->id = \
+            silc_definition_manager.type ## _definition_counter++; \
+    } while ( 0 )
+/* *INDENT-ON* */
+
+/**
  * Holds all definitions.
  *
  * Not all members of this struct needs to be valid, if it will be moved
@@ -76,7 +103,7 @@ struct SILC_DefinitionManager
     SILC_DEFINE_DEFINITION_LIST( uint64_t, Location, location )
     SILC_DEFINE_DEFINITION_LIST( uint32_t, SourceFile, source_file )
     SILC_DEFINE_DEFINITION_LIST( uint32_t, Region, region )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICommunicator, mpi_communicator )
+    SILC_DEFINE_DEFINITION_LIST( uint64_t, Group, group )
     SILC_DEFINE_DEFINITION_LIST( uint32_t, MPIWindow, mpi_window )
     SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICartesianTopology, mpi_cartesian_topology )
     SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICartesianCoords, mpi_cartesian_coords )

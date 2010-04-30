@@ -78,12 +78,16 @@ SILC_DEFINE_DEFINITION_TYPE( Region )
 };
 
 
-SILC_DEFINE_DEFINITION_TYPE( MPICommunicator )
+SILC_DEFINE_DEFINITION_TYPE( Group )
 {
-    SILC_MPICommunicator_Definition_Movable next;
-    uint32_t                                id;
+    SILC_Group_Definition_Movable next;
+    uint64_t                      id;
     // Keep above order to be able to cast between definition types.
-    // Add SILC_MPICommunicator stuff from here on.
+    // Add SILC_Group stuff from here on.
+    SILC_GroupType group_type;
+    uint64_t       number_of_members;
+    // variable array member
+    uint64_t       members[ 1 ];
 };
 
 

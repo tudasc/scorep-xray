@@ -142,10 +142,9 @@ SILC_DefineRegion
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  *
- * @param bitVectorReprOfCommGroup A bitvector representation of the MPI group
- * of the new MPI communicator. Will be copied.
+ * @param numberOfRanks The number of entries on the @ranks vector.
  *
- * @param sizeOfBitVectorReprOfCommGroup The size of the bitvector (in bits).
+ * @param ranks A vector of ranks which are in the communicator.
  *
  * @note See the Scalasca MPI wrapper for the format of the bit vector.
  *
@@ -156,8 +155,8 @@ SILC_DefineRegion
 SILC_MPICommunicatorHandle
 SILC_DefineMPICommunicator
 (
-    const unsigned char bitVectorReprOfCommGroup[],
-    uint32_t            sizeOfBitVectorReprOfCommGroup
+    int32_t  numberOfRanks,
+    int32_t* ranks
 );
 
 

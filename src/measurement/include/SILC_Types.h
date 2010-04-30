@@ -235,6 +235,22 @@ typedef enum SILC_LocationType
 
 
 /**
+ * Types to be used in defining a group (SILC_DefineGroup()).
+ *
+ */
+typedef enum SILC_GroupType
+{
+    SILC_GROUP_UNKNOWN      = 0,
+    SILC_GROUP_LOCATIONS    = 1,
+    SILC_GROUP_REGIONS      = 2,
+    SILC_GROUP_COMMUNICATOR = 3,
+    SILC_GROUP_METRIC       = 4,
+
+    SILC_INVALID_GROUP_TYPE /**< For internal use only. */
+} SILC_GroupType;
+
+
+/**
  * Types to be used in defining a region (SILC_DefineRegion()). These types
  * are currently not used inside the measurement system. This @e may change in
  * future if we are going to implement phases/dynamic regions etc. inside the

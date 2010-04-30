@@ -55,7 +55,7 @@ static void silc_write_marker_definitions_to_otf2( OTF2_DefWriter* definitionWri
 static void silc_write_marker_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_mpi_cartesian_coords_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_mpi_cartesian_topology_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void silc_write_mpi_communicator_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
+static void silc_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_mpi_window_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_parameter_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
@@ -91,7 +91,7 @@ SILC_Definitions_Initialize()
     SILC_INIT_DEFINITION_LIST( location );
     SILC_INIT_DEFINITION_LIST( source_file );
     SILC_INIT_DEFINITION_LIST( region );
-    SILC_INIT_DEFINITION_LIST( mpi_communicator );
+    SILC_INIT_DEFINITION_LIST( group );
     SILC_INIT_DEFINITION_LIST( mpi_window );
     SILC_INIT_DEFINITION_LIST( mpi_cartesian_topology );
     SILC_INIT_DEFINITION_LIST( mpi_cartesian_coords );
@@ -160,7 +160,7 @@ silc_write_definitions( OTF2_DefWriter* definitionWriter )
     silc_write_location_definitions_to_otf2( definitionWriter );
     silc_write_source_file_definitions_to_otf2( definitionWriter );
     silc_write_region_definitions_to_otf2( definitionWriter );
-    silc_write_mpi_communicator_definitions_to_otf2( definitionWriter );
+    silc_write_group_definitions_to_otf2( definitionWriter );
     silc_write_mpi_window_definitions_to_otf2( definitionWriter );
     silc_write_mpi_cartesian_topology_definitions_to_otf2( definitionWriter );
     silc_write_mpi_cartesian_coords_definitions_to_otf2( definitionWriter );
@@ -392,6 +392,28 @@ silc_region_type_to_otf_region_type( SILC_RegionType silcType )
     return type_map[ silcType ];
 }
 
+static OTF2_GroupType
+silc_group_type_to_otf_group_type( SILC_GroupType silcType )
+{
+    /* see SILC_Types.h
+       SILC_GROUP_UNKNOWN      = 0,
+       SILC_GROUP_LOCATIONS    = 1,
+       SILC_GROUP_REGIONS      = 2,
+       SILC_GROUP_COMMUNICATOR = 3,
+       SILC_GROUP_METRIC       = 4,
+     */
+
+    static OTF2_GroupType type_map[ SILC_INVALID_GROUP_TYPE ] = {
+        OTF2_GROUPTYPE_NON,
+        OTF2_GROUPTYPE_LOCATIONS,
+        OTF2_GROUPTYPE_REGIONS,
+        OTF2_GROUPTYPE_COMMUNICATOR,
+        OTF2_GROUPTYPE_METRIC,
+    };
+
+    return type_map[ silcType ];
+}
+
 static void
 silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 {
@@ -481,17 +503,20 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-silc_write_mpi_communicator_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+silc_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 {
-    SILC_DEFINITION_FOREACH_DO( &silc_definition_manager,
-                                MPICommunicator,
-                                mpi_communicator )
+    SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Group, group )
     {
-        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
-        //if ( status != SILC_SUCCESS )
-        //{
-        //    silc_handle_definition_writing_error( status, "SILC_MPICommunicator_Definition" );
-        //}
+        SILC_Error_Code status = OTF2_DefWriter_DefGroup(
+            definitionWriter,
+            definition->id,
+            silc_group_type_to_otf_group_type( definition->group_type ),
+            definition->number_of_members,
+            definition->members );
+        if ( status != SILC_SUCCESS )
+        {
+            silc_handle_definition_writing_error( status, "SILC_Group_Definition" );
+        }
         assert( false ); // implement me
     }
     SILC_DEFINITION_FOREACH_WHILE();

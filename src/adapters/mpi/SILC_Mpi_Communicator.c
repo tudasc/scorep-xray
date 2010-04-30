@@ -144,11 +144,6 @@ static struct silc_mpi_group_type silc_mpi_groups[ SILC_MPI_MAX_GROUP ];
 static SILC_Mpi_Rank* silc_mpi_ranks;
 
 /** @internal
- *  Internal bitvector used for bitvector creation of new communicators.
- */
-static unsigned char* silc_mpi_group_vector;
-
-/** @internal
  *  Internal flag to indicate communicator initialization. It is set o non-zero if the
  *  communicator managment is initialzed. This happens when the function
  *  silc_mpi_comm_init() is called.
@@ -352,9 +347,6 @@ silc_mpi_comm_init()
         /* determine the number of MPI processes */
         PMPI_Group_size( silc_mpi_world.group, &silc_mpi_world.size );
 
-        /* set byte size of bitvector to store \a MPI_COMM_WORLD */
-        silc_mpi_world.size_grpv = silc_mpi_world.size / 8 + ( silc_mpi_world.size % 8 ? 1 : 0 );
-
         /* initialize translation data structure for \a MPI_COMM_WORLD */
         silc_mpi_world.ranks = calloc( silc_mpi_world.size, sizeof( SILC_Mpi_Rank ) );
         for ( i = 0; i < silc_mpi_world.size; i++ )
@@ -363,21 +355,11 @@ silc_mpi_comm_init()
         }
 
         /* allocate translation buffers */
-        silc_mpi_ranks        = calloc( silc_mpi_world.size, sizeof( SILC_Mpi_Rank ) );
-        silc_mpi_group_vector = calloc( silc_mpi_world.size_grpv, sizeof( unsigned char ) );
+        silc_mpi_ranks = calloc( silc_mpi_world.size, sizeof( SILC_Mpi_Rank ) );
 
-        /* define communicator for MPI_COMM_WORLD */
-        grpv =
-            calloc( silc_mpi_world.size / 8 + ( silc_mpi_world.size % 8 ? 1 : 0 ),
-                    sizeof( unsigned char ) );
-
-        for ( i = 0; i < silc_mpi_world.size; i++ )
-        {
-            grpv[ i / 8 ] |= ( 1 << ( i % 8 ) );
-        }
         silc_mpi_world.handle =
-            SILC_DefineMPICommunicator( grpv, silc_mpi_world.size / 8 +
-                                        ( silc_mpi_world.size % 8 ? 1 : 0 ) );
+            SILC_DefineMPICommunicator( silc_mpi_world.size,
+                                        silc_mpi_world.ranks );
 
         free( grpv );
     }
@@ -396,11 +378,10 @@ silc_mpi_comm_finalize()
     /* free local translation buffers */
     free( silc_mpi_world.ranks );
     free( silc_mpi_ranks );
-    free( silc_mpi_group_vector );
 }
 
-void
-silc_mpi_group_to_bitvector( MPI_Group group )
+int32_t
+silc_mpi_group_translate_ranks( MPI_Group group )
 {
     int32_t i, size;
 
@@ -417,14 +398,7 @@ silc_mpi_group_to_bitvector( MPI_Group group )
                                 silc_mpi_world.group,
                                 silc_mpi_ranks );
 
-    /* initialize silc_mpi_group_vector */
-    memset( silc_mpi_group_vector, 0, silc_mpi_world.size_grpv );
-
-    /* set corresponding bit for each process in group */
-    for ( i = 0; i < size; i++ )
-    {
-        silc_mpi_group_vector[ silc_mpi_ranks[ i ] / 8 ] |= ( 1 << ( silc_mpi_ranks[ i ] % 8 ) );
-    }
+    return size;
 }
 
 void
@@ -446,11 +420,11 @@ silc_mpi_comm_create( MPI_Comm comm )
     /* get group of this communicator */
     PMPI_Comm_group( comm, &group );
 
-    /* create group entry in silc_mpi_group_vector */
-    silc_mpi_group_to_bitvector( group );
+    /* create group entry in silc_mpi_ranks */
+    int32_t size = silc_mpi_group_translate_ranks( group );
 
     /* register mpi communicator definition */
-    handle = SILC_DefineMPICommunicator( silc_mpi_group_vector, silc_mpi_world.size_grpv );
+    handle = SILC_DefineMPICommunicator( size, silc_mpi_ranks );
 
     /* enter comm in silc_mpi_comms[] arrray */
     silc_mpi_comms[ silc_mpi_last_comm ].comm = comm;
@@ -573,12 +547,11 @@ silc_mpi_group_create( MPI_Group group )
     /* check if group already exists */
     if ( ( i = silc_mpi_group_search( group ) ) == -1 )
     {
-        /* create group entry in silc_mpi_group_vector */
-        silc_mpi_group_to_bitvector( group );
+        /* create group entry in silc_mpi_ranks */
+        int32_t size = silc_mpi_group_translate_ranks( group );
 
         /* register mpi group definition (as communicator) */
-        handle = SILC_DefineMPICommunicator( silc_mpi_group_vector,
-                                             silc_mpi_world.size_grpv );
+        handle = SILC_DefineMPICommunicator( size, silc_mpi_ranks );
 
         /* enter group in silc_mpi_groups[] arrray */
         silc_mpi_groups[ silc_mpi_last_group ].group  = group;

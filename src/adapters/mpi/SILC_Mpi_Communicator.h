@@ -93,18 +93,14 @@ EXTERN void
 silc_mpi_comm_finalize();
 
 /** @internal
- *  Create a bitvector resembling the ranks in an MPI group.
- *
- *  Creates a bitvector where nth bit is set, if rank n is part
- *  of the group. The bitvector is stored in a static internal
- *  variable. The output is written into the global variable
- *  silc_mpi_group_vector. This avoids reserving long arrays on
- *  each function call.
+ *  Translates ranks in the MPI Group @group into MPI_COMM_WORLD ranks.
  *
  *  @param  group MPI group handle
+ *
+ *  @return the size of group @group
  */
-EXTERN void
-silc_mpi_group_to_bitvector( MPI_Group group );
+EXTERN int32_t
+silc_mpi_group_translate_ranks( MPI_Group group );
 
 /** @internal
  *  Create an internal handle for an MPI group.
@@ -254,7 +250,6 @@ struct silc_mpi_world_type
 {
     MPI_Group                  group;     /** Associated MPI group */
     int                        size;      /** Number of ranks */
-    int                        size_grpv; /** Number of bytes used for the group vector */
     SILC_Mpi_Rank*             ranks;     /** Array which contains the rank numbers */
     SILC_MPICommunicatorHandle handle;    /** SILC handle */
 };

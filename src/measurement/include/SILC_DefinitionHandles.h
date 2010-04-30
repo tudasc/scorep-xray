@@ -36,9 +36,11 @@ typedef struct SILC_Location_Definition_Movable SILC_Location_Definition_Movable
 typedef SILC_Location_Definition_Movable*       SILC_LocationHandle;
 
 
-typedef struct SILC_MPICommunicator_Definition         SILC_MPICommunicator_Definition;
-typedef struct SILC_MPICommunicator_Definition_Movable SILC_MPICommunicator_Definition_Movable;
-typedef SILC_MPICommunicator_Definition_Movable*       SILC_MPICommunicatorHandle;
+/* MPI Communicators are represented as an OTF2 group */
+typedef struct SILC_Group_Definition         SILC_Group_Definition;
+typedef struct SILC_Group_Definition_Movable SILC_Group_Definition_Movable;
+typedef SILC_Group_Definition_Movable*       SILC_GroupHandle;
+typedef SILC_GroupHandle                     SILC_MPICommunicatorHandle;
 
 
 typedef struct SILC_MPIWindow_Definition         SILC_MPIWindow_Definition;
