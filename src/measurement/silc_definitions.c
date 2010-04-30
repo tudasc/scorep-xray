@@ -88,6 +88,7 @@ SILC_Definitions_Initialize()
     } while ( 0 )
 
     SILC_INIT_DEFINITION_LIST( string );
+    SILC_INIT_DEFINITION_LIST( location );
     SILC_INIT_DEFINITION_LIST( source_file );
     SILC_INIT_DEFINITION_LIST( region );
     SILC_INIT_DEFINITION_LIST( mpi_communicator );
