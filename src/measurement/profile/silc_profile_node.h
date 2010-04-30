@@ -125,6 +125,16 @@ typedef struct
 } silc_profile_string_node_data;
 
 /**
+   Contains the type specific data for a node of type
+   @a silc_profile_node_thread_root
+ */
+typedef struct
+{
+    struct SILC_Profile_LocationData* thread_data;
+    uint64_t                          thread_id;
+} silc_profile_root_node_data;
+
+/**
    Type of function pointer that must be passed to @ref silc_profile_for_all().
    to be processed for each node.
    @param node  Pointer to the node in the profile which is currently processed.
@@ -215,6 +225,26 @@ typedef void ( silc_profile_process_func_t )( silc_profile_node* node, void* par
  */
 #define SILC_PROFILE_DATA2PARAMINT( data ) ( ( silc_profile_integer_node_data* ) \
                                              SILC_PROFILE_DATA2POINTER( data ) )
+
+/**
+   @def SILC_PROFILE_THREADROOT2DATA( handle )
+   Casts a pointer to a @ref silc_profile_root_node_data instance to node specific data
+   type.
+   @param handle The pointer to a @ref silc_profile_root_node_data instance which is
+                 casted to node specific data.
+ */
+#define SILC_PROFILE_THREADROOT2DATA( handle ) SILC_PROFILE_POINTER2DATA( handle )
+
+/**
+   @def SILC_PROFILE_DATA2THREADROOT( data )
+   Casts a node specific data item to a pointer to a @ref silc_profile_root_node_data
+   instance.
+   @param data The node specific data that is casted to a  pointer to a
+               @ref silc_profile_root_node_data instance.
+ */
+#define SILC_PROFILE_DATA2THREADROOT( data ) ( ( silc_profile_root_node_data* ) \
+                                               SILC_PROFILE_DATA2POINTER( data ) )
+
 
 
 /* ***************************************************************************************

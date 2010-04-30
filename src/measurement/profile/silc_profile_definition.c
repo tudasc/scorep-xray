@@ -38,6 +38,9 @@ silc_profile_definition silc_profile;
 
 bool                    silc_profile_is_initialized = false;
 
+/** Flag wether an initialize is a reinitialize */
+bool silc_profile_reinitialize = false;
+
 /*----------------------------------------------------------------------------------------
    Constructors / destriuctors
    -------------------------------------------------------------------------------------*/
@@ -54,10 +57,11 @@ silc_profile_init_definition( uint32_t            max_callpath_depth,
     /* On reinitialization of the profile during a phase, do not overwrite the pointer to
      * exiting root nodes.
      */
-    if ( !silc_profile_is_initialized )
+    if ( !silc_profile_reinitialize )
     {
         silc_profile.first_root_node = NULL;
     }
+    silc_profile_reinitialize = true;
 
     /* Store configuration */
     silc_profile.max_callpath_depth   = max_callpath_depth;
@@ -78,7 +82,10 @@ silc_profile_init_definition( uint32_t            max_callpath_depth,
 void
 silc_profile_delete_definition()
 {
-    silc_profile.first_root_node      = NULL;
+    /* Do not reset first_root_node, because in Periscope phases the list of root nodes
+       stay alive.
+     */
+
     silc_profile.num_of_dense_metrics = 0;
     if ( silc_profile.dense_metrics )
     {

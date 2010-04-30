@@ -143,7 +143,12 @@ silc_profile_copy_thread_fork_data( silc_profile_type_data_t data )
 static silc_profile_type_data_t
 silc_profile_copy_thread_root_data( silc_profile_type_data_t data )
 {
-    return data;
+    silc_profile_root_node_data* old_data = SILC_PROFILE_DATA2THREADROOT( data );
+    silc_profile_root_node_data* new_data =
+        SILC_Memory_AllocForMisc( sizeof( silc_profile_root_node_data ) );
+    new_data->thread_data = old_data->thread_data;
+    new_data->thread_id   = old_data->thread_id;
+    return SILC_PROFILE_THREADROOT2DATA( new_data );
 }
 
 static silc_profile_type_data_t
@@ -196,7 +201,9 @@ static bool
 silc_profile_compare_thread_root_data( silc_profile_type_data_t data1,
                                        silc_profile_type_data_t data2 )
 {
-    return data1 == data2;
+    silc_profile_root_node_data* root1 = SILC_PROFILE_DATA2THREADROOT( data1 );
+    silc_profile_root_node_data* root2 = SILC_PROFILE_DATA2THREADROOT( data2 );
+    return root1->thread_id == root2->thread_id;
 }
 
 static bool
@@ -366,11 +373,9 @@ silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
 {
     int i;
 
-    destination->count              = source->count;
-    destination->first_enter_time   = source->first_enter_time;
-    destination->last_exit_time     = source->last_exit_time;
-    destination->type_specific_data =
-        silc_profile_copy_type_data( source->type_specific_data, source->node_type );
+    destination->count            = source->count;
+    destination->first_enter_time = source->first_enter_time;
+    destination->last_exit_time   = source->last_exit_time;
 
     /* Copy dense metric values */
     silc_profile_copy_dense_metric( &destination->implicit_time, &source->implicit_time );

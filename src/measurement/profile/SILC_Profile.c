@@ -179,11 +179,41 @@ SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
 void
 SILC_Profile_Finalize()
 {
+    silc_profile_node*         current     = silc_profile.first_root_node;
+    SILC_Profile_LocationData* thread_data = NULL;
+
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY,
                        "Delete profile definition." );
 
-    /* Set the flag to uninitialized */
-    silc_profile_is_initialized = false;
+    /* Update all root nodes which survive a finalize, because locations are not
+       reinitialized. Assume that the siblings of silc_profile.first_root_node
+       ar all of type silc_profile_node_thread_root. */
+    while ( current != NULL )
+    {
+        if ( current->node_type == silc_profile_node_thread_root )
+        {
+            /* Cut off children */
+            current->first_child = NULL;
+
+            /* Reset thread local storage */
+            thread_data = SILC_PROFILE_DATA2THREADROOT( current->type_specific_data )
+                          ->thread_data;
+            thread_data->current_node  = current;
+            thread_data->current_depth = 0;
+            thread_data->fork_node     = NULL;
+        }
+        else
+        {
+            SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT, "Root node of wrong type %d",
+                        current->node_type );
+        }
+
+        /* Process next */
+        current = current->next_sibling;
+    }
+
+    /* Set the flag to initialized */
+    silc_profile_is_initialized = true;
 
     /* Reset profile definition struct */
     silc_profile_delete_definition();
@@ -556,18 +586,22 @@ void
 SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                  SILC_Thread_LocationData* parentLocationData )
 {
-    SILC_Profile_LocationData* parent_data = NULL;
-    SILC_Profile_LocationData* thread_data = NULL;
-    silc_profile_node*         node        = NULL;
+    SILC_Profile_LocationData*  parent_data = NULL;
+    SILC_Profile_LocationData*  thread_data = NULL;
+    silc_profile_node*          node        = NULL;
+    silc_profile_root_node_data data;
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
+    /* Initialize type specific data structure */
+    data.thread_data = SILC_Thread_GetProfileLocationData( locationData );
+    data.thread_id   = SILC_Thread_GetLocationId( locationData );
+
     /* Create thread root node */
-    node = silc_profile_create_node( NULL, silc_profile_node_thread_root,
-                                     SILC_Thread_GetLocationId( locationData ), 0 );
+    node = silc_profile_create_node( NULL, silc_profile_node_thread_root, &data, 0 );
 
     /* Update thread location data */
-    thread_data = SILC_Thread_GetProfileLocationData( locationData );
+    thread_data = data.thread_data;
     SILC_ASSERT( thread_data != NULL );
     thread_data->root_node = node;
 
@@ -583,6 +617,7 @@ SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
         /* It is the initial thread. Insert as first new root node. */
         #pragma omp critical (silc_profile_add_location)
         {
+            SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Initial location created" );
             node->next_sibling           = silc_profile.first_root_node;
             silc_profile.first_root_node = node;
         }
