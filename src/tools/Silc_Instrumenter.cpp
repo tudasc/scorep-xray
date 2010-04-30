@@ -27,6 +27,8 @@
 #include <fstream>
 #include <istream>
 
+#include <unistd.h>
+
 extern "C" {
 #include <SILC_Utils.h>
 #include <SILC_Error.h>
@@ -42,9 +44,54 @@ Silc_Instrumenter::Silc_Instrumenter
 )
 {
     /* call the configuration reader
-     * this is hardcoded, since the file location and name should be fixed during configure stage
+     * this is hardcoded, since the file location and name should be defined during configure stage
      */
-    if (    silc_readConfigFile( "../src/tools/silc.conf" ) == SILC_SUCCESS )
+
+    // get the application path
+    char cCurrentPath[ 200 ] = { 0 };
+    char pCurrentPath[ 200 ] = { 0 };
+
+    sprintf( cCurrentPath, "/proc/%d/exe", getpid() );
+
+    if ( readlink( cCurrentPath, pCurrentPath, sizeof( pCurrentPath ) ) == -1 )
+    {
+        SILC_ERROR( SILC_ERROR_ENOENT, "" );
+    }
+
+    std::cout << "The REAL path to the executable is " << pCurrentPath << std::endl;
+
+
+    // cut of the last 'silc' exe name to demangle path to binary
+
+    std::string cut   = "silc";
+    std::string fname =  "/silc.conf";
+    std::string
+                pathStr
+    (
+        pCurrentPath
+    );
+
+    // find last silc in path
+    size_t found = pathStr.rfind( cut );
+    if ( found != std::string::npos )
+    {
+        pathStr.replace( found, cut.length(), "" );
+    }
+
+    std::cout << pathStr << std::endl;
+    pathStr = pathStr + "/../share" + fname;
+
+    if (    silc_readConfigFile( pathStr ) == SILC_SUCCESS )
+    {
+        std::cout << "calling the instrumentation phase \n";
+    }
+    // temp: in the svn source tree relative to silc binary
+    else if (    silc_readConfigFile( "../src/tools/silc.conf" ) == SILC_SUCCESS )
+    {
+        std::cout << "calling the instrumentation phase \n";
+    }
+    // local
+    else if (    silc_readConfigFile( "silc.conf" ) == SILC_SUCCESS )
     {
         std::cout << "calling the instrumentation phase \n";
     }
@@ -120,10 +167,13 @@ Silc_Instrumenter::silc_readConfigFile
 
         while ( inFile.good() && index < length )
         {
-            char        line[ 512 ] = { "" };
+            char line[ 512 ] = { "" };
             inFile.getline( line, 256 );
-            std::string linStr( line );
-            int         found = linStr.find( "#" );
+
+            std::string
+                linStr
+                ( line );
+            int found = linStr.find( "#" );
             if ( !( found != std::string::npos ) )
             {
                 if ( silc_readParameter( linStr, parameters[ index ], value ) == SILC_SUCCESS )
@@ -263,7 +313,9 @@ Silc_Instrumenter::silc_parseCmdLine
 )
 {
     SILC_Error_Code exitStatus =  SILC_ERROR_ENOTSUP;
-    std::string     instStr( argv[ 1 ] );
+    std::string
+                    instStr
+        ( argv[ 1 ] );
     int             pos = instStr.find( "--instrument", 0 );
     if ( pos != std::string::npos
          && argc > 3
@@ -271,7 +323,9 @@ Silc_Instrumenter::silc_parseCmdLine
     {
         for ( int loop = 3; loop < argc; loop++ )
         {
-            std::string flag( argv[ loop ] );
+            std::string
+            flag
+                ( argv[ loop ] );
             _compFlags += flag + " ";
             SILC_DEBUG_PRINTF( SILC_DEBUG_USER, " get list of compiler attributes: %s ", flag.c_str() );
         }
