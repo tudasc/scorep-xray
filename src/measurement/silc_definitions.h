@@ -63,36 +63,33 @@ typedef struct SILC_DefinitionManager SILC_DefinitionManager;
 struct SILC_DefinitionManager
 {
     // note: no ';'
-    #define SILC_DEFINE_DEFINITION_LIST( Type, type ) \
+    #define SILC_DEFINE_DEFINITION_LIST( counter_type, Type, type ) \
         SILC_ ## Type ## _Definition_Movable type ## _definition_head; \
-        SILC_ ## Type ## _Definition_Movable * type ## _definition_tail_pointer; \
-        uint32_t type ## _definition_counter;
+        SILC_ ## Type ## _Definition_Movable* type ## _definition_tail_pointer; \
+        counter_type type ## _definition_counter;
 
-    SILC_DEFINE_DEFINITION_LIST( String, string )
-    SILC_DEFINE_DEFINITION_LIST( SourceFile, source_file )
-    SILC_DEFINE_DEFINITION_LIST( Region, region )
-    SILC_DEFINE_DEFINITION_LIST( MPICommunicator, mpi_communicator )
-    SILC_DEFINE_DEFINITION_LIST( MPIWindow, mpi_window )
-    SILC_DEFINE_DEFINITION_LIST( MPICartesianTopology, mpi_cartesian_topology )
-    SILC_DEFINE_DEFINITION_LIST( MPICartesianCoords, mpi_cartesian_coords )
-    SILC_DEFINE_DEFINITION_LIST( CounterGroup, counter_group )
-    SILC_DEFINE_DEFINITION_LIST( Counter, counter )
-    SILC_DEFINE_DEFINITION_LIST( IOFileGroup, io_file_group )
-    SILC_DEFINE_DEFINITION_LIST( IOFile, io_file )
-    SILC_DEFINE_DEFINITION_LIST( MarkerGroup, marker_group )
-    SILC_DEFINE_DEFINITION_LIST( Marker, marker )
-    SILC_DEFINE_DEFINITION_LIST( Parameter, parameter )
-    SILC_DEFINE_DEFINITION_LIST( Callpath, callpath )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, String, string )
 
-    #undef SILC_DEFINE_DEFINITION_LIST
-
-    /* Open-coded SILC_DEFINE_DEFINITION_LIST, because of uint64_t counter.
-     * The counter will not be used to assign ids to locations, only
+    /* The counter will not be used to assign ids to locations, only
      * to count the number of locations.
      */
-    SILC_Location_Definition_Movable location_definition_head;
-    SILC_Location_Definition_Movable * location_definition_tail_pointer;
-    uint64_t location_definition_counter;
+    SILC_DEFINE_DEFINITION_LIST( uint64_t, Location, location )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, SourceFile, source_file )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, Region, region )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICommunicator, mpi_communicator )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPIWindow, mpi_window )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICartesianTopology, mpi_cartesian_topology )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICartesianCoords, mpi_cartesian_coords )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, CounterGroup, counter_group )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, Counter, counter )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, IOFileGroup, io_file_group )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, IOFile, io_file )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, MarkerGroup, marker_group )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, Marker, marker )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, Parameter, parameter )
+    SILC_DEFINE_DEFINITION_LIST( uint32_t, Callpath, callpath )
+
+    #undef SILC_DEFINE_DEFINITION_LIST
 };
 /* *INDENT-ON* */
 
