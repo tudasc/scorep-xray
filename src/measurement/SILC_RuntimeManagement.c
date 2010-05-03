@@ -196,6 +196,7 @@ silc_otf2_initialize()
     }
 
     silc_otf2_archive = OTF2_Archive_New( "traces",
+                                          NULL,
                                           OTF2_FILEMODE_WRITE,
                                           1024 * 1024, // 1MB
                                           OTF2_SUBSTRATE_POSIX );
