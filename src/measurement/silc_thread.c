@@ -398,8 +398,6 @@ SILC_Thread_GetLocationLocalMemoryPageManagers()
 SILC_Allocator_PageManager**
 SILC_Thread_GetGlobalMemoryPageManagers()
 {
-    assert( initial_location );
-    assert( initial_location->page_managers );
     return initial_location->page_managers;
 }
 
