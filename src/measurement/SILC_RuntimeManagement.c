@@ -136,9 +136,12 @@ SILC_InitMeasurement( void )
     // writer that needs the archive.
     silc_otf2_initialize();
 
-    SILC_Thread_Initialize();
     SILC_DefinitionLocks_Initialize();
+    // initialize before SILC_Thread_Initialize() because latter creates at least a
+    // location definition.
     SILC_Definitions_Initialize();
+
+    SILC_Thread_Initialize();
 
     silc_adapters_register();
     silc_adapters_initialize();
@@ -455,7 +458,7 @@ silc_adapters_deregister()
 void
 silc_otf2_finalize()
 {
-    if ( silc_tracing_enabled )
+    if ( silc_tracing_enabled ) // silc_tracing_enabled may change during runtime
     {
         OTF2_Archive_Delete( silc_otf2_archive );
     }

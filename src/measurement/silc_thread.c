@@ -107,7 +107,10 @@ SILC_Thread_Initialize()
     assert( pomp_tpd );
     assert( TPD );
     assert( TPD->is_active );
+    assert( TPD->location_data );
     assert( TPD->location_data->location_id == 0 );
+
+    initial_location = TPD->location_data;
 
     silc_thread_call_externals_on_new_thread( TPD->location_data, 0 );
     silc_thread_call_externals_on_new_location( TPD->location_data, 0 );
@@ -395,6 +398,8 @@ SILC_Thread_GetLocationLocalMemoryPageManagers()
 SILC_Allocator_PageManager**
 SILC_Thread_GetGlobalMemoryPageManagers()
 {
+    assert( initial_location );
+    assert( initial_location->page_managers );
     return initial_location->page_managers;
 }
 
