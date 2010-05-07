@@ -158,16 +158,21 @@ void
 silc_set_archive_master_slave()
 {
     assert( SILC_ExperimentDirIsCreated() );
+
+    char otf2_dir_name[ dir_name_size + 5 ];
+    strcpy( otf2_dir_name, SILC_GetExperimentDirName() );
+    strcat( otf2_dir_name, "/otf2" );
+
     SILC_Error_Code error;
     if ( SILC_Mpi_GetRank() == 0 )
     {
         error = OTF2_Archive_SetMasterSlaveMode(
-            silc_otf2_archive, OTF2_MASTER, SILC_GetExperimentDirName() );
+            silc_otf2_archive, OTF2_MASTER, otf2_dir_name );
     }
     else
     {
         error = OTF2_Archive_SetMasterSlaveMode(
-            silc_otf2_archive, OTF2_SLAVE, SILC_GetExperimentDirName() );
+            silc_otf2_archive, OTF2_SLAVE, otf2_dir_name );
     }
     if ( SILC_SUCCESS != error )
     {
