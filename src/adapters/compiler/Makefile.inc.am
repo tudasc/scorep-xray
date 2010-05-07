@@ -31,6 +31,8 @@ libsilc_adapter_compiler_la_SOURCES =                    \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.h \
 	$(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Data.c
 
+libsilc_adapter_compiler_la_CPPFLAGS = $(COMPILER_FLAGS)
+
 if SILC_COMPILER_INTEL
  libsilc_adapter_compiler_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c 
@@ -53,8 +55,16 @@ endif
 
 if SILC_COMPILER_GNU
 if HAVE_LIBBFD
- libsilc_adapter_compiler_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
+libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
+else
+libsilc_adapter_compiler_la_CPPFLAGS += \
+	-I$(INC_ROOT)src/services
+libsilc_adapter_compiler_la_SOURCES  += \
+	-I$(INC_ROOT)src/services/SILC_Timing.h
+endif
+libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+libsilc_adapter_compiler_la_SOURCES += \
+	$(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
 endif
 
 #if SILC_COMPILER_HP
@@ -67,9 +77,5 @@ if SILC_COMPILER_SX
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace.c  \
     $(SRC_ROOT)src/adapters/compiler/SILC_compiler_ftrace_1.s
 endif
-
-endif
-
-libsilc_adapter_compiler_la_CPPFLAGS = $(COMPILER_FLAGS)
 
 

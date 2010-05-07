@@ -219,10 +219,9 @@ silc_compiler_register_region
     silc_compiler_hash_node* node
 )
 {
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "register a region! " );
-
-
     SILC_LockRegionDefinition();
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Define region %s", node->region_name );
 
     node->region_handle = SILC_DefineRegion( node->region_name,
                                              silc_compiler_get_file( node->file_name ),
