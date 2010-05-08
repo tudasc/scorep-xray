@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstddef>
 #include <cstdlib>
+#include <cstdio>
 #ifdef _OPENMP
 #else
 #include <sys/time.h>

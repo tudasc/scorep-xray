@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstddef>
 #include <cstdlib>
+#include <cstdio>
 #ifdef _OPENMP
 #include <omp.h>
 #else
