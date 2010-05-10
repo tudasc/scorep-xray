@@ -42,6 +42,7 @@ if test "x${silc_compiler_gnu}" = "xyes"; then
 
     if test "x${ac_silc_cross_compiling}" = "xyes"; then
         AC_MSG_ERROR([Can't reliably determine backend libbfd in cross compiling mode.])
+        AC_MSG_ERROR([Can't reliably determine backend nm in cross compiling mode.])
     fi
 
     AC_LANG_PUSH([C])
@@ -69,14 +70,23 @@ if test "x${silc_compiler_gnu}" = "xyes"; then
 
     AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${silc_have_libbfd}" = "xyes"])
     if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${silc_have_libbfd}" = "xno"; then
-        AC_MSG_WARN([libbfd not available. Compiler instrumentation will not work.])
+        AC_MSG_WARN([libbfd not available. Trying compiler instrumentation via nm.])
         AC_SUBST([LIBBFD], [""])
+
+        # ok, bfd not available, search for nm
+        AC_CHECK_PROG([silc_have_nm], [nm], ["yes"], ["no"])
+        AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test "x${silc_have_nm}" = "xyes"])
+        if test "x${silc_have_nm}" = "xno"; then
+            AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
+        fi
     else
         AC_SUBST([LIBBFD], ["$silc_bfd_libs"])
+        AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -ne 1])
     fi
     AC_LANG_POP([C])
 else
     AM_CONDITIONAL([HAVE_LIBBFD], [test 1 -ne 1])
     AC_SUBST([LIBBFD], [""])
+    AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -ne 1])
 fi
 ])
