@@ -28,8 +28,36 @@
 
 #include "SILC_Compiler_Init.h"
 #include "SILC_Types.h"
+#include "SILC_Config.h"
 #include "SILC_Error.h"
 #include <SILC_Utils.h>
+
+/**
+   Contains the name of the executable.
+ */
+char* silc_compiler_executable = NULL;
+
+/**
+   Configuration variables for the compiler adapter.
+   Current configuration variables are:
+   @li executable: Executable of the application. Preferrably, with full path. It is used
+                   by some compiler adapters (GNU) to evaluate the symbol table.
+ */
+SILC_ConfigVariable silc_compiler_configs[] = {
+    {
+        "executable",
+        SILC_CONFIG_TYPE_STRING,
+        &silc_compiler_executable,
+        NULL,
+        NULL,
+        "Executable of the application.",
+        "File name, preferrrably with full path, of the application's executable.\n"
+        "It is used for evaluating the symbol table of the application, which is\n"
+        "required by some compiler adapters."
+    },
+    SILC_CONFIG_TERMINATOR
+};
+
 
 /**
    The adapter initialize function is compiler specific. Thus it is contained in each
@@ -53,7 +81,8 @@ SILC_Error_Code
 silc_compiler_register()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " register compiler adapter!" );
-    return SILC_SUCCESS;
+
+    return SILC_ConfigRegister( NULL, silc_compiler_configs );
 }
 
 /**

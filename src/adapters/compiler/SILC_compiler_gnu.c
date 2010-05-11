@@ -13,7 +13,6 @@
  *
  */
 
-
 /**
  * @ file      SILC_compiler_gnu.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
@@ -44,6 +43,8 @@
 
 
 #define SILC_COMPILER_BUFFER_LEN 512
+
+extern char* silc_compiler_executable;
 
 #if defined( GNU_DEMANGLE ) && defined( HAVE_LIBBFD )
 /* Declaration of external demangeling function */
@@ -89,8 +90,6 @@ static bool
 silc_compiler_get_exe( char   path[],
                        size_t length )
 {
-    char* exepath;
-
     /**
      * by default, use /proc mechanism to obtain path to executable
      * in other cases, do it by examining SILC_APPPATH variable
@@ -100,25 +99,24 @@ silc_compiler_get_exe( char   path[],
     if ( readlink( "/proc/self/exe", path, length ) == -1 )
     {
         /* try to get the path via environment variable */
-        exepath = getenv( "SILC_APPPATH" );
-
-        if ( exepath == NULL )
+        if ( silc_compiler_executable == NULL )
         {
             SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
-                               "Meanwhile, you have to set 'SILC_APPPATH' to your local "
-                               "executable." );
+                               "Meanwhile, you have to set the configuration variable"
+                               "'executable' to your local executable." );
             SILC_ERROR( SILC_ERROR_ENOENT, "Could not determine path of executable." );
             return false;
             /* we should abort here */
         }
         else
         {
+            char*  exepath   = silc_compiler_executable;
             size_t exelength = strlen( exepath );
             if ( exelength > length )
             {
                 /* If path is too long for buffer, truncate the head.
                    add one charakter for the terminating 0.           */
-                exepath   = exepath + exelength - length + 1;
+                exepath   = silc_compiler_executable + exelength - length + 1;
                 exelength = length;
             }
             SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "  exepath = %s ", exepath );
