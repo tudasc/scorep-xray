@@ -598,7 +598,8 @@ SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
     data.thread_id   = SILC_Thread_GetLocationId( locationData );
 
     /* Create thread root node */
-    node = silc_profile_create_node( NULL, silc_profile_node_thread_root, &data, 0 );
+    node = silc_profile_create_node( NULL, silc_profile_node_thread_root,
+                                     SILC_PROFILE_THREADROOT2DATA( &data ), 0 );
 
     /* Update thread location data */
     thread_data = data.thread_data;
