@@ -28,9 +28,9 @@
 
 #ifdef HAVE_LIBBFD
 #include <bfd.h>
-#else /* HAVE_LIBBFD */
+#elif defined HAVE_NM
 #include <SILC_Timing.h>
-#endif /* HAVE_LIBBFD */
+#endif
 
 #include <SILC_Types.h>
 #include <SILC_Utils.h>
@@ -134,144 +134,9 @@ silc_compiler_get_exe( char   path[],
 }
 
 /* ***************************************************************************************
-   nm based symbol table analysis
-*****************************************************************************************/
-
-#ifndef HAVE_LIBBFD
-
-/**
- * Write output from nm for @a exefile to @a nmfile.
- * @param exefile Filename of the executable which is analysed.
- * @param nmfile  Filename of the file to which the output is written.
- */
-static void
-silc_compiler_create_nm_file( char* nmfile,
-                              char* exefile )
-{
-    char command[ 1024 ];
-#ifdef GNU_DEMANGLE
-    sprintf( command, "nm -Aol %s > %s", exefile, nmfile );
-#else /* GNU_DEMANGLE */
-    sprintf( command, "nm -ol %s > %s", exefile, nmfile );
-#endif /* GNU_DEMANGLE */
-    system( command );
-}
-
-
-/**
- * Get symbol table by parsing the oputput from nm. Stores all functions obtained
- * from the symbol table
- * in a hashtable. The key of the hashtable is the function pointer. This must be done
- * during initialization of the GNU compiler adapter, becuase enter and exit events
- * provide only a file pointer.
- * It also collects information about source file and line number.
-
- */
-static void
-silc_compiler_get_sym_tab( void )
-{
-    FILE* nmfile;
-    char  line[ 1024 ];
-    char  path[ SILC_COMPILER_BUFFER_LEN ] = { 0 };
-    char  nmfilename[ 64 ];
-
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Read symbol table using nm" );
-
-    /* get the path from system */
-    if ( !silc_compiler_get_exe( path, SILC_COMPILER_BUFFER_LEN ) )
-    {
-        return;
-    }
-
-    /* open nm-file */
-    sprintf( nmfilename, "silc_nm_file.%ld", SILC_GetClockTicks() );
-    silc_compiler_create_nm_file( nmfilename, path );
-    if ( !( nmfile = fopen( nmfilename, "r" ) ) )
-    {
-        SILC_ERROR_POSIX();
-    }
-
-    /* read lines */
-    while ( fgets( line, sizeof( line ) - 1, nmfile ) )
-    {
-        char*        col;
-        char         delim[ 2 ] = " ";
-        int          nc         = 0;
-        int          length     = 0;
-
-        long         addr     = -1;
-        char*        filename = NULL;
-        char*        funcname = NULL;
-        unsigned int lno      = SILC_INVALID_LINE_NO;
-
-        if ( strlen( line ) == 0 || line[ 0 ] == ' ' )
-        {
-            continue;
-        }
-
-        if ( line[ strlen( line ) - 1 ] == '\n' )
-        {
-            line[ strlen( line ) - 1 ] = '\0';
-        }
-
-        /* split line to columns */
-        col = strtok( line, delim );
-        do
-        {
-            if ( nc == 0 ) /* column 1 (address) */
-            {
-                length = strlen( col );
-                addr   = strtol( col + length - sizeof( void* ) * 2, NULL, 16 );
-                if ( addr == 0 )
-                {
-                    break;
-                }
-            }
-            else if ( nc == 1 ) /* column 2 (type) */
-            {
-                strcpy( delim, "\t" );
-            }
-            else if ( nc == 2 ) /* column 3 (symbol) */
-            {
-                funcname = col;
-                strcpy( delim, ":" );
-            }
-            else if ( nc == 3 ) /* column 4 (filename) */
-            {
-                filename = col;
-            }
-            else /* column 5 (line) */
-            {
-                lno = atoi( col );
-                if ( lno == 0 )
-                {
-                    lno = SILC_INVALID_LINE_NO;
-                }
-                break;
-            }
-
-            nc++;
-        }
-        while ( ( col = strtok( 0, delim ) ) );
-
-        /* add symbol to hash table */
-        if ( nc >= 3 )
-        {
-            char* n = strdup( funcname );
-            silc_compiler_hash_put( addr, n, filename, lno );
-        }
-    }
-
-    /* close nm-file */
-    fclose( nmfile );
-    remove( nmfilename );
-}
-
-#else /* HAVE_LIBBFD */
-
-/* ***************************************************************************************
    BFD based symbol table analysis
 *****************************************************************************************/
+#ifdef HAVE_LIBBFD
 /**
  * Get symbol table using BFD. Stores all functions obtained from the symbol table
  * in a hashtable. The key of the hashtable is the function pointer. This must be done
@@ -399,7 +264,162 @@ silc_compiler_get_sym_tab( void )
     bfd_close( bfd_image );
     return;
 }
-#endif /* HAVE_LIBBFD */
+
+#elif HAVE_NM
+
+/* ***************************************************************************************
+   nm based symbol table analysis
+*****************************************************************************************/
+
+/**
+ * Write output from nm for @a exefile to @a nmfile.
+ * @param exefile Filename of the executable which is analysed.
+ * @param nmfile  Filename of the file to which the output is written.
+ */
+static void
+silc_compiler_create_nm_file( char* nmfile,
+                              char* exefile )
+{
+    char command[ 1024 ];
+#ifdef GNU_DEMANGLE
+    sprintf( command, "nm -Aol %s > %s", exefile, nmfile );
+#else /* GNU_DEMANGLE */
+    sprintf( command, "nm -ol %s > %s", exefile, nmfile );
+#endif /* GNU_DEMANGLE */
+    system( command );
+}
+
+
+/**
+ * Get symbol table by parsing the oputput from nm. Stores all functions obtained
+ * from the symbol table
+ * in a hashtable. The key of the hashtable is the function pointer. This must be done
+ * during initialization of the GNU compiler adapter, becuase enter and exit events
+ * provide only a file pointer.
+ * It also collects information about source file and line number.
+
+ */
+static void
+silc_compiler_get_sym_tab( void )
+{
+    FILE* nmfile;
+    char  line[ 1024 ];
+    char  path[ SILC_COMPILER_BUFFER_LEN ] = { 0 };
+    char  nmfilename[ 64 ];
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Read symbol table using nm" );
+
+    /* get the path from system */
+    if ( !silc_compiler_get_exe( path, SILC_COMPILER_BUFFER_LEN ) )
+    {
+        return;
+    }
+
+    /* open nm-file */
+    sprintf( nmfilename, "silc_nm_file.%ld", SILC_GetClockTicks() );
+    silc_compiler_create_nm_file( nmfilename, path );
+    if ( !( nmfile = fopen( nmfilename, "r" ) ) )
+    {
+        SILC_ERROR_POSIX();
+    }
+
+    /* read lines */
+    while ( fgets( line, sizeof( line ) - 1, nmfile ) )
+    {
+        char*        col;
+        char         delim[ 2 ] = " ";
+        int          col_num    = 0;
+        int          length     = 0;
+
+        long         addr     = -1;
+        char*        filename = NULL;
+        char*        funcname = NULL;
+        unsigned int line_no  = SILC_INVALID_LINE_NO;
+
+        if ( strlen( line ) == 0 || line[ 0 ] == ' ' )
+        {
+            continue;
+        }
+
+        if ( line[ strlen( line ) - 1 ] == '\n' )
+        {
+            line[ strlen( line ) - 1 ] = '\0';
+        }
+
+        /* split line to columns */
+        col = strtok( line, delim );
+        do
+        {
+            if ( col_num == 0 ) /* column 1 (address) */
+            {
+                length = strlen( col );
+                addr   = strtol( col + length - sizeof( void* ) * 2, NULL, 16 );
+                if ( addr == 0 )
+                {
+                    break;
+                }
+            }
+            else if ( col_num == 1 ) /* column 2 (type) */
+            {
+                strcpy( delim, "\t" );
+            }
+            else if ( col_num == 2 ) /* column 3 (symbol) */
+            {
+                funcname = col;
+                strcpy( delim, ":" );
+            }
+            else if ( col_num == 3 ) /* column 4 (filename) */
+            {
+                filename = col;
+            }
+            else /* column 5 (line number) */
+            {
+                line_no = atoi( col );
+                if ( line_no == 0 )
+                {
+                    line_no = SILC_INVALID_LINE_NO;
+                }
+                break;
+            }
+
+            col_num++;
+        }
+        while ( ( col = strtok( 0, delim ) ) );
+
+        /* add symbol to hash table */
+        if ( col_num >= 3 )
+        {
+            char* region_name = strdup( funcname );
+            silc_compiler_hash_put( addr, region_name, filename, line_no );
+        }
+    }
+
+    /* close nm-file */
+    fclose( nmfile );
+    remove( nmfilename );
+}
+
+#else /* HAVE_LIBBFD / HAVE_NM */
+
+/* ***************************************************************************************
+   dummy implememtation of symbol table analysis
+*****************************************************************************************/
+
+#warning Neither BFD nor nm are available. Thus, the symbol table can not be analyzed.
+#warning The GNU compiler adapter will be disabled.
+
+/**
+   Dummy implementation of symbol table analysis for the case that neither BFD
+   nor nm are available. It allows to compile without error, but the compiler adapter
+   is will not generate events, though the compiler instrumented the code, because
+   it can not map the function pointers to names.
+ */
+static void
+silc_compiler_get_sym_tab( void )
+{
+}
+
+#endif /* HAVE_LIBBFD / HAVE_NM */
 
 
 /* ***************************************************************************************

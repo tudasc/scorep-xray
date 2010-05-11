@@ -56,9 +56,11 @@ endif
 if SILC_COMPILER_GNU
 if HAVE_LIBBFD
 libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
-else
+endif
+if HAVE_NM_AS_BFD_REPLACEMENT
 libsilc_adapter_compiler_la_CPPFLAGS += \
-	-I$(INC_ROOT)src/services
+	-I$(INC_ROOT)src/services       \
+        -DHAVE_NM
 libsilc_adapter_compiler_la_SOURCES  += \
 	$(INC_ROOT)src/services/SILC_Timing.h
 endif
