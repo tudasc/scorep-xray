@@ -31,8 +31,7 @@
 #include <SILC_Omp.h>
 #include <SILC_PublicTypes.h>
 #include <SILC_Timing.h>
-#include <OTF2_DefWriter_inc.h>
-#include <OTF2_DefWriter.h>
+#include <OTF2_Archive.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -43,7 +42,7 @@ static bool            silc_definitions_initialized = false;
 
 /* *INDENT-OFF* */
 static OTF2_DefWriter* silc_create_definition_writer();
-static uint64_t silc_on_definitions_post_flush();
+static OTF2_FlushType silc_on_definitions_pre_flush();
 static void silc_delete_definition_writer(OTF2_DefWriter* definitionWriter);
 static void silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
@@ -130,26 +129,25 @@ static OTF2_DefWriter*
 silc_create_definition_writer()
 {
     SILC_CreateExperimentDir();
-    uint64_t              otf2_location = SILC_Thread_GetTraceLocationData(
+    uint64_t otf2_location = SILC_Thread_GetTraceLocationData(
         SILC_Thread_GetLocationData() )->otf_location;
-    OTF2_PreFlushCallback pre_flush = 0;
 
-    OTF2_DefWriter*       definition_writer =
-        OTF2_DefWriter_New( SILC_GetExperimentDirName(),
-                            "definitions",
-                            otf2_location,
-                            OTF2_SUBSTRATE_POSIX,
-                            pre_flush,
-                            silc_on_definitions_post_flush );
+    OTF2_DefWriter* definition_writer =
+        OTF2_Archive_GetDefWriter( silc_otf2_archive,
+                                   otf2_location,
+                                   silc_on_definitions_pre_flush,
+                                   SILC_OnTraceAndDefinitionPostFlush );
+
     assert( definition_writer );
     return definition_writer;
 }
 
 
-static uint64_t
-silc_on_definitions_post_flush()
+OTF2_FlushType
+silc_on_definitions_pre_flush()
 {
-    return SILC_GetClockTicks();
+    SILC_SetArchiveMasterSlave();
+    return OTF2_FLUSH;
 }
 
 

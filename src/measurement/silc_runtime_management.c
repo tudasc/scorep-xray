@@ -42,7 +42,6 @@
 extern void silc_create_experiment_dir(char* dirName, int dirNameSize, void (*createDir) (const char*) );
 static void silc_create_directory(const char* dirname);
 static void silc_create_experiment_dir_name();
-static void silc_set_archive_master_slave();
 static void silc_set_event_writer_location_id(OTF2_EvtWriter* writer);
 /* *INDENT-ON* */
 
@@ -133,7 +132,7 @@ silc_create_directory( const char* dirname )
 
 
 uint64_t
-silc_on_trace_post_flush( void )
+SILC_OnTraceAndDefinitionPostFlush( void )
 {
     /* remember that we have flushed the first time
      * after this point, we can't switch into MPI mode anymore
@@ -145,17 +144,17 @@ silc_on_trace_post_flush( void )
 
 
 OTF2_FlushType
-silc_on_trace_pre_flush( void* evtWriter,
-                         void* evtReader )
+SILC_OnTracePreFlush( void* evtWriter,
+                      void* evtReader )
 {
-    silc_set_archive_master_slave();
+    SILC_SetArchiveMasterSlave();
     silc_set_event_writer_location_id( ( OTF2_EvtWriter* )evtWriter );
     return OTF2_FLUSH;
 }
 
 
 void
-silc_set_archive_master_slave()
+SILC_SetArchiveMasterSlave()
 {
     assert( SILC_ExperimentDirIsCreated() );
 

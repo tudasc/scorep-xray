@@ -62,6 +62,11 @@ SILC_ExperimentDirIsCreated();
 uint64_t
 SILC_GetOTF2LocationId( SILC_Thread_LocationData* locationData );
 
+
+void
+SILC_SetArchiveMasterSlave();
+
+
 /**
  * Archive for trace data. One per process, can contain multiple "location"
  * writers.
@@ -84,7 +89,7 @@ extern bool flush_done;
  * @return The clock ticks of this event.
  */
 uint64_t
-silc_on_trace_post_flush( void );
+SILC_OnTraceAndDefinitionPostFlush( void );
 
 
 /**
@@ -92,8 +97,8 @@ silc_on_trace_post_flush( void );
  *
  */
 OTF2_FlushType
-silc_on_trace_pre_flush( void* evtWriter,
-                         void* evtReader );
+SILC_OnTracePreFlush( void* evtWriter,
+                      void* evtReader );
 
 
 #endif /* SILC_INTERNAL_RUNTIME_MANAGEMENT_H */

@@ -107,8 +107,8 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     trace_data->otf_location = SILC_GetOTF2LocationId( locationData );
     trace_data->otf_writer   = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
                                                           OTF2_UNDEFINED_UINT64,
-                                                          silc_on_trace_pre_flush,
-                                                          silc_on_trace_post_flush );
+                                                          SILC_OnTracePreFlush,
+                                                          SILC_OnTraceAndDefinitionPostFlush );
     trace_data->otf_location_handle =
         SILC_DefineLocation( trace_data->otf_location, "" );
     if ( !trace_data->otf_writer )
