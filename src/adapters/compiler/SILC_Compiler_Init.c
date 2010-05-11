@@ -74,8 +74,7 @@ extern void
 silc_compiler_finalize();
 
 /**
-   Registers configuration variables for the compiler adapters. Currently no
-   configuration variables exist for compiler adapters.
+   Registers configuration variables for the compiler adapters.
  */
 SILC_Error_Code
 silc_compiler_register()

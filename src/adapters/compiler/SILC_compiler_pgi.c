@@ -30,6 +30,7 @@
 #include <SILC_DefinitionLocking.h>
 #include <SILC_RuntimeManagement.h>
 #include <SILC_Compiler_Data.h>
+#include <SILC_Thread_Types.h>
 
 /* **************************************************************************************
  * Typedefs and global variables
@@ -42,42 +43,50 @@
  */
 struct s1
 {
-    uint64_t              l1;
-    uint64_t              l2;
-    double                d1;
-    double                d2;
-    uint32_t              isseen;
-    char*                 c;
-    void*                 p1;
-    SILC_LineNo           lineno;
-    void*                 p2;
-    struct s1*            p3;
-    SILC_SourceFileHandle file_handle;    /* file handle   */
-    SILC_RegionHandle     region_handle;  /* region handle */
-    char*                 file_name;      /* file name     */
-    char*                 region_name;    /* routine name  */
+    long       l1;
+    long       l2;
+    double     d1;
+    double     d2;
+    long       isseen;
+    char*      c;
+    void*      file_handle;
+    long       lineno;
+    void*      region_handle;
+    struct s1* p3;
+    int        i1;
+    int        i2;
+    char*      file_name;
+    char*      region_name;
 };
 
 /**
-    Pointer to the current callstack position. Because it is needed for each thread,
-    it is made thread private.
+   Contains the callstack data for each location.
  */
-SILC_RegionHandle* silc_compiler_callstack_top = NULL;
-#pragma omp threadprivate(silc_compiler_callstack_top)
+typedef struct
+{
+    /**
+        Pointer to the current callstack position. Because it is needed for each thread,
+        it is made thread private.
+     */
+    SILC_RegionHandle* callstack_top;
 
-/**
-    Pointer to the callstack starting position. Because it is needed for each thread,
-    it is made thread private.
- */
-SILC_RegionHandle* silc_compiler_callstack_base = NULL;
-#pragma omp threadprivate(silc_compiler_callstack_base)
+    /**
+        Pointer to the callstack starting position. Because it is needed for each thread,
+        it is made thread private.
+     */
+    SILC_RegionHandle* callstack_base;
 
-/**
-    Counts the current level of nesting. Because it is needed for each thread,
-    it is made thread private.
- */
-uint32_t silc_compiler_callstack_count = 0;
-#pragma omp threadprivate(silc_compiler_callstack_size)
+    /**
+        Counts the current level of nesting. Because it is needed for each thread,
+        it is made thread private.
+     */
+    uint32_t callstack_count;
+
+    /**
+       Location ID
+     */
+    uint64_t location_id;
+} silc_compiler_location_data;
 
 /**
     Defines the maximum size of a callstack.
@@ -89,19 +98,126 @@ static const uint32_t silc_compiler_callstack_max = 30;
  */
 static int silc_compiler_initialize = 1;
 
+/**
+    Hash table for mapping location id to the location's callstack.
+ */
+SILC_Hashtab* silc_compiler_location_table = NULL;
+
+/* **************************************************************************************
+ * declarations from silc_thread.h
+ ***************************************************************************************/
+
+extern SILC_Thread_LocationData*
+SILC_Thread_GetLocationData();
+
+extern uint64_t
+SILC_Thread_GetLocationId( SILC_Thread_LocationData* locationData );
+
+/* **************************************************************************************
+ * location table access
+ ***************************************************************************************/
+
+inline uint64_t
+silc_compiler_get_location_id()
+{
+    SILC_Thread_LocationData* data = SILC_Thread_GetLocationData();
+    SILC_ASSERT( data != NULL );
+    return SILC_Thread_GetLocationId( data );
+}
+
+inline silc_compiler_location_data*
+silc_compiler_get_location_data()
+{
+    uint64_t            location_id = silc_compiler_get_location_id();
+    SILC_Hashtab_Entry* entry       = SILC_Hashtab_Find( silc_compiler_location_table,
+                                                         &location_id,
+                                                         NULL );
+    if ( !entry )
+    {
+        return NULL;
+    }
+    else
+    {
+        return ( silc_compiler_location_data* )entry->value;
+    }
+}
+
 /* **************************************************************************************
  * Initialization / Finalization
  ***************************************************************************************/
+
+/* Creates the callstack array for a new thread. */
+silc_compiler_location_data*
+silc_compiler_create_location_data( uint64_t id )
+{
+    /* Create location struct */
+    silc_compiler_location_data* data = NULL;
+    data = ( silc_compiler_location_data* )malloc( sizeof( silc_compiler_location_data ) );
+
+    /* Allocate memory for region handle stack */
+    data->callstack_base = ( SILC_RegionHandle* )
+                           malloc( silc_compiler_callstack_max *
+                                   sizeof( SILC_RegionHandle ) );
+    data->callstack_top   = data->callstack_base;
+    data->callstack_count = 0;
+    data->location_id     = id;
+
+    return data;
+}
+
 /**
-   Creates the callstack array for a new thread.
+   Deletes one file table entry.#
+   @param entry Pointer to the entry to be deleted.
  */
 void
-silc_compiler_init_thread()
+silc_compiler_delete_location_entry( SILC_Hashtab_Entry* entry )
 {
-    /* Allocate memory for region handle stack */
-    silc_compiler_callstack_base = ( SILC_RegionHandle* )
-                                   malloc( silc_compiler_callstack_max * sizeof( SILC_RegionHandle ) );
-    silc_compiler_callstack_top = silc_compiler_callstack_base;
+    SILC_ASSERT( entry );
+    silc_compiler_location_data* data =  ( silc_compiler_location_data* )entry->value;
+    free( data->callstack_base );
+    free( data );
+}
+
+/* Initialize the location table */
+void
+silc_compiler_init_location_table()
+{
+    silc_compiler_location_table = SILC_Hashtab_CreateSize( 10, &SILC_Hashtab_HashInt64,
+                                                            &SILC_Hashtab_CompareInt64 );
+}
+
+/* Finalize the location table */
+void
+silc_compiler_final_location_table()
+{
+    SILC_Hashtab_Foreach( silc_compiler_location_table,
+                          &silc_compiler_delete_location_entry );
+    SILC_Hashtab_Free( silc_compiler_location_table );
+    silc_compiler_location_table = NULL;
+}
+
+/* Location initialization */
+SILC_Error_Code
+silc_compiler_init_location()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " PGI compiler adapter init loacation!" );
+
+    uint64_t                     location_id = silc_compiler_get_location_id();
+    silc_compiler_location_data* data        = silc_compiler_create_location_data( location_id );
+
+    SILC_LockRegionDefinition();
+    SILC_Hashtab_Insert( silc_compiler_location_table, &data->location_id,
+                         data, NULL );
+    SILC_UnlockRegionDefinition();
+
+    return SILC_SUCCESS;
+}
+
+/* Location finalization */
+void
+silc_compiler_final_location()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " compiler adapter final loacation!" );
 }
 
 /* Adapter initialization */
@@ -112,10 +228,10 @@ silc_compiler_init_adapter()
     {
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
 
-        /* Initialize default thread */
-        silc_compiler_init_thread();
+        /* Initialize location table */
+        silc_compiler_init_location_table();
 
-        /* Initialize file table only */
+        /* Initialize file table */
         silc_compiler_init_file_table();
 
         /* Set flag */
@@ -135,10 +251,36 @@ silc_compiler_finalize()
         /* Finalize file table */
         silc_compiler_final_file_table();
 
+        /* Finalize location table */
+        silc_compiler_final_location_table();
+
         silc_compiler_initialize = 1;
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
     }
 }
+
+/**
+   Registers configuration variables for the compiler adapters. Currently no
+   configuration variables exist for PGI compiler adapters.
+ */
+SILC_Error_Code
+silc_compiler_register()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " register PGI compiler adapter!" );
+
+    return SILC_SUCCESS;
+}
+
+/**
+   Called on dereigstration of the compiler adapter. Currently, no action is performed
+   on deregistration.
+ */
+void
+silc_compiler_deregister()
+{
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " PGI compiler adapter deregister!n" );
+}
+
 
 /* **************************************************************************************
  * Implementation of complier inserted functions
@@ -188,6 +330,8 @@ ___rouent2
     struct s1* p
 )
 {
+    silc_compiler_location_data* location_data = silc_compiler_get_location_data();
+
     /* Ensure the compiler adapter is initialized */
     if ( silc_compiler_initialize )
     {
@@ -195,18 +339,16 @@ ___rouent2
     }
 
     /* Ensure thread is initialized */
-    if ( silc_compiler_callstack_top == NULL )
+    if ( location_data == NULL )
     {
-        silc_compiler_init_thread();
+        return;
     }
 
     /* Register new regions */
     if ( !p->isseen )
     {
-        /* get the file name from instrumentation */
-
         /* get file id beloning to file name */
-        SILC_LOCK( Region );
+        SILC_LockRegionDefinition();
         if ( !p->isseen )
         {
             p->file_handle   = silc_compiler_get_file( p->file_name );
@@ -219,16 +361,16 @@ ___rouent2
                                                   );
         }
         p->isseen = 1;
-        SILC_UNLOCK( Region );
+        SILC_UnlockRegionDefinition();
     }
 
     /* Check callstack */
-    silc_compiler_callstack_count++;
-    if ( silc_compiler_callstack_count < silc_compiler_callstack_max )
+    location_data->callstack_count++;
+    if ( location_data->callstack_count < silc_compiler_callstack_max )
     {
         /* Update callstack */
-        *silc_compiler_callstack_top = p->region_handle;
-        silc_compiler_callstack_top++;
+        *location_data->callstack_top = p->region_handle;
+        location_data->callstack_top++;
 
         /* Enter event */
         if ( p->region_handle != SILC_INVALID_REGION )
@@ -248,14 +390,16 @@ ___rouret2
     void
 )
 {
-    if ( silc_compiler_callstack_count < silc_compiler_callstack_max )
+    silc_compiler_location_data* location_data = silc_compiler_get_location_data();
+
+    if ( location_data->callstack_count < silc_compiler_callstack_max )
     {
         /* Exit event */
-        SILC_ExitRegion( *silc_compiler_callstack_top );
-        silc_compiler_callstack_top--;
+        SILC_ExitRegion( *location_data->callstack_top );
+        location_data->callstack_top--;
     }
 
-    silc_compiler_callstack_count--;
+    location_data->callstack_count--;
 }
 
 #pragma save_all_regs
