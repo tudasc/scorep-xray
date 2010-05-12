@@ -77,15 +77,14 @@ extern SILC_DefinitionManager silc_definition_manager;
 
 #define DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
-        SILC_ ## Type ## _Definition *definition; \
-        SILC_ ## Type ## _Definition_Movable moveable; \
-        for ( moveable = ( manager_pointer )->type ## _definition_head; \
-              !SILC_ALLOCATOR_MOVABLE_IS_NULL( moveable ); \
-              moveable = definition->next ) \
+        SILC_ ## Type ## _Definition* definition; \
+        SILC_ ## Type ## _Definition_Movable* moveable; \
+        for ( moveable = &( manager_pointer )->type ## _definition_head; \
+              !SILC_ALLOCATOR_MOVABLE_IS_NULL( *moveable ); \
+              moveable = &definition->next ) \
         { \
-                assert(&moveable); \
             definition = \
-                MEMORY_DEREF_MOVABLE( &moveable, \
+                MEMORY_DEREF_MOVABLE( moveable, \
                                       SILC_ ## Type ## _Definition* ); \
             {
 

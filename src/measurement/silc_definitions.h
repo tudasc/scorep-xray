@@ -140,14 +140,14 @@ struct SILC_DefinitionManager
 /* *INDENT-OFF* */
 #define SILC_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
-        SILC_ ## Type ## _Definition *definition; \
-        SILC_ ## Type ## _Definition_Movable moveable; \
-        for ( moveable = ( manager_pointer )->type ## _definition_head; \
-              !SILC_ALLOCATOR_MOVABLE_IS_NULL( moveable ); \
-              moveable = definition->next ) \
+        SILC_ ## Type ## _Definition* definition; \
+        SILC_ ## Type ## _Definition_Movable* moveable; \
+        for ( moveable = &( manager_pointer )->type ## _definition_head; \
+              !SILC_ALLOCATOR_MOVABLE_IS_NULL( *moveable ); \
+              moveable = &definition->next ) \
         { \
             definition = \
-                SILC_MEMORY_DEREF_MOVABLE( &moveable, \
+                SILC_MEMORY_DEREF_MOVABLE( moveable, \
                                            SILC_ ## Type ## _Definition* ); \
             {
 
