@@ -43,6 +43,7 @@
         new_definition = \
             SILC_MEMORY_DEREF_MOVABLE( new_movable, \
                                        SILC_ ## Type ## _Definition* ); \
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
         *silc_definition_manager.type ## _definition_tail_pointer = \
             *new_movable; \
         silc_definition_manager.type ## _definition_tail_pointer = \
@@ -54,7 +55,7 @@
 
 /**
  * Allocate, assign id, and store in manager list a new definition of type
- * @type with a variable array member of type @array_type and total a total
+ * @type with a variable array member of type @array_type and a total
  * number of members of @number_of_members
  */
 /* *INDENT-OFF* */
@@ -70,6 +71,7 @@
         new_definition = \
             SILC_MEMORY_DEREF_MOVABLE( new_movable, \
                                        SILC_ ## Type ## _Definition* ); \
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
         *silc_definition_manager.type ## _definition_tail_pointer = \
             *new_movable; \
         silc_definition_manager.type ## _definition_tail_pointer = \

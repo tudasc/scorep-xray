@@ -65,6 +65,7 @@ extern SILC_DefinitionManager silc_definition_manager;
         new_definition = \
             MEMORY_DEREF_MOVABLE( new_movable, \
                                        SILC_ ## Type ## _Definition* ); \
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
         *silc_definition_manager.type ## _definition_tail_pointer = \
             *new_movable; \
         silc_definition_manager.type ## _definition_tail_pointer = \
@@ -190,12 +191,12 @@ test_1( CuTest* tc )
     allocator_initialize( tc );
 
     Definitions_Initialize();
-    loop_over_string_definitions();     // ok so far
+    loop_over_string_definitions();
 
     SILC_StringHandle bar = DefineString( tc, "foo" );
     CuAssert( tc, "page_id == 0", bar->page_id == 0 );
 
-    //loop_over_string_definitions();     // endless loop
+    loop_over_string_definitions();
 
     Definitions_Finalize();
 }
