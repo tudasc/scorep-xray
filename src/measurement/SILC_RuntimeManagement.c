@@ -120,6 +120,9 @@ SILC_InitMeasurement( void )
     {
         return;
     }
+    // even if we are not ready with the initialization we must prevent recursive
+    // calls e.g. during the adapter initialization.
+    silc_initialized = true;
 
     silc_initialization_sanity_checks();
     silc_register_config_variables( silc_configs );
@@ -146,9 +149,6 @@ SILC_InitMeasurement( void )
     silc_adapters_register();
     silc_adapters_initialize();
     silc_adapters_initialize_location(); // not sure if this should be triggered by thread management
-
-    /* all done, report successful initialization */
-    silc_initialized = true;
 
     /* register finalization handler */
     atexit( silc_finalize );
