@@ -32,6 +32,7 @@
 #include <SILC_PublicTypes.h>
 #include <SILC_Timing.h>
 #include <OTF2_Archive.h>
+#include <OTF2_DefWriter_inc.h>
 #include <stdbool.h>
 #include <stdint.h>
 
