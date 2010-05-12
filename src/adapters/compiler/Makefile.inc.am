@@ -53,7 +53,7 @@ endif
 if SILC_COMPILER_PGI
 libsilc_adapter_compiler_la_SOURCES +=                        \
         $(SRC_ROOT)src/adapters/compiler/SILC_compiler_pgi.c  \
-        $(INC_ROOT)src/measurement/include/SILC_Thread_Types.h
+        $(SRC_ROOT)src/measurement/include/SILC_Thread_Types.h
 endif
 
 # gnu specific settings
@@ -68,7 +68,7 @@ libsilc_adapter_compiler_la_CPPFLAGS += \
         -DHAVE_NM
 
 libsilc_adapter_compiler_la_SOURCES  += \
-	$(INC_ROOT)src/services/SILC_Timing.h
+	$(SRC_ROOT)src/services/SILC_Timing.h
 endif
 libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
 
