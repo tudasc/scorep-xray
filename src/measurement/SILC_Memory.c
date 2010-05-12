@@ -203,8 +203,8 @@ void*
 SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMemory )
 {
     return SILC_Allocator_GetAddressFromMovableMemory(
-               movableMemory,
-               SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
+               SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ],
+               movableMemory );
 }
 
 
