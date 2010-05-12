@@ -45,37 +45,52 @@
 // void CuAssertPtrNotNull(CuTest* tc, void* pointer);
 
 
-SILC_Allocator_Allocator*     allocator;
-SILC_Allocator_PageManager*   page_manager;
-extern SILC_DefinitionManager silc_definition_manager;
-
+SILC_Allocator_Allocator*   allocator;
+SILC_Allocator_PageManager* page_manager;
 
 /* *INDENT-OFF* */
-#define MEMORY_DEREF_MOVABLE( movable_memory_ptr, target_type ) \
+typedef struct test_definition_manager test_definition_manager;
+struct test_definition_manager
+{
+    // note: no ';'
+    #define TEST_DEFINE_DEFINITION_LIST( counter_type, Type, type ) \
+        SILC_ ## Type ## _Definition_Movable type ## _definition_head; \
+        SILC_ ## Type ## _Definition_Movable* type ## _definition_tail_pointer; \
+        counter_type type ## _definition_counter;
+
+    TEST_DEFINE_DEFINITION_LIST( uint32_t, String, string )
+
+    #undef TEST_DEFINE_DEFINITION_LIST
+};
+static test_definition_manager definition_manager;
+/* *INDENT-ON* */
+
+/* *INDENT-OFF* */
+#define TEST_MEMORY_DEREF_MOVABLE( movable_memory_ptr, target_type ) \
     ( ( target_type )SILC_Allocator_GetAddressFromMovableMemory( page_manager, \
           ( SILC_Allocator_MovableMemory* )movable_memory_ptr ) )
 
 
-#define ALLOC_NEW_DEFINITION( Type, type ) \
+#define TEST_ALLOC_NEW_DEFINITION( Type, type ) \
     do { \
         new_movable = ( SILC_ ## Type ## _Definition_Movable* ) \
             SILC_Allocator_AllocMovable( page_manager, \
                 sizeof( SILC_ ## Type ## _Definition ) ); \
         assert(new_movable->page_id < 10); \
         new_definition = \
-            MEMORY_DEREF_MOVABLE( new_movable, \
+            TEST_MEMORY_DEREF_MOVABLE( new_movable, \
                                        SILC_ ## Type ## _Definition* ); \
         SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
-        *silc_definition_manager.type ## _definition_tail_pointer = \
+        *definition_manager.type ## _definition_tail_pointer = \
             *new_movable; \
-        silc_definition_manager.type ## _definition_tail_pointer = \
+        definition_manager.type ## _definition_tail_pointer = \
             &( new_definition )->next; \
         ( new_definition )->id = \
-            silc_definition_manager.type ## _definition_counter++; \
+            definition_manager.type ## _definition_counter++; \
     } while ( 0 )
 
 
-#define DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
+#define TEST_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
         SILC_ ## Type ## _Definition* definition; \
         SILC_ ## Type ## _Definition_Movable* moveable; \
@@ -84,99 +99,99 @@ extern SILC_DefinitionManager silc_definition_manager;
               moveable = &definition->next ) \
         { \
             definition = \
-                MEMORY_DEREF_MOVABLE( moveable, \
-                                      SILC_ ## Type ## _Definition* ); \
+                TEST_MEMORY_DEREF_MOVABLE( moveable, \
+                                           SILC_ ## Type ## _Definition* ); \
             {
 
 
-#define DEFINITION_FOREACH_WHILE() \
+#define TEST_DEFINITION_FOREACH_WHILE() \
             } \
         } \
     } while ( 0 )
 /* *INDENT-ON* */
 
 
-void
-Definitions_Initialize()
+static void
+test_definitions_initialize()
 {
-    memset( &silc_definition_manager, 0, sizeof( silc_definition_manager ) );
+    memset( &definition_manager, 0, sizeof( definition_manager ) );
 
     // note, only lower-case type needed
-    #define INIT_DEFINITION_LIST( type ) \
+    #define TEST_INIT_DEFINITION_LIST( type ) \
     do { \
         SILC_ALLOCATOR_MOVABLE_INIT_NULL( \
-            silc_definition_manager.type ## _definition_head ); \
-        silc_definition_manager.type ## _definition_tail_pointer = \
-            &silc_definition_manager.type ## _definition_head; \
+            definition_manager.type ## _definition_head ); \
+        definition_manager.type ## _definition_tail_pointer = \
+            &definition_manager.type ## _definition_head; \
     } while ( 0 )
 
-    INIT_DEFINITION_LIST( string );
+    TEST_INIT_DEFINITION_LIST( string );
 
-    #undef INIT_DEFINITION_LIST
+    #undef TEST_INIT_DEFINITION_LIST
 
     // No need the create the definition writer, its only needed in the
     // finalization phase and will be created there.
 }
 
 
-void
-Definitions_Finalize()
+static void
+test_definitions_finalize()
 {
 //    OTF2_DefWriter* definition_writer = silc_create_definition_writer();
 //    silc_write_definitions( definition_writer );
 //    silc_delete_definition_writer( definition_writer );
 }
 
+static const char const* test_stings[] = {
+    "foo",
+    "bar",
+    "baz"
+};
 
-void
-loop_over_string_definitions()
+
+static void
+loop_over_string_definitions( CuTest* tc )
 {
     int i = 0;
-    DEFINITION_FOREACH_DO( &silc_definition_manager, String, string )
+    TEST_DEFINITION_FOREACH_DO( &definition_manager, String, string )
     {
-        printf( "loop index = %d\n", i++ );
-//        SILC_Error_Code status = OTF2_DefWriter_DefString(
-//            definitionWriter,
-//            definition->id,
-//            SILC_MEMORY_DEREF_MOVABLE( &(definition->str), char* ) );
-//        if ( status != SILC_SUCCESS )
-//        {
-//            silc_handle_definition_writing_error( status, "SILC_String_Definition" );
-//        }
+        CuAssertStrEquals(
+            tc,
+            test_stings[ i ],
+            TEST_MEMORY_DEREF_MOVABLE( &( definition->str ), char* ) );
+        i++;
     }
-    DEFINITION_FOREACH_WHILE();
+    TEST_DEFINITION_FOREACH_WHILE();
 }
 
 
-SILC_StringHandle
-DefineString( CuTest*     tc,
-              const char* str )
+static SILC_StringHandle
+test_define_string( CuTest*     tc,
+                    const char* str )
 {
     SILC_String_Definition*         new_definition = NULL;
     SILC_String_Definition_Movable* new_movable    = NULL;
 
-    ALLOC_NEW_DEFINITION( String, string );
+    TEST_ALLOC_NEW_DEFINITION( String, string );
     CuAssertPtrNotNull( tc, new_definition );
     CuAssertPtrNotNull( tc, new_movable );
-    CuAssert( tc, "page_id == 0", new_movable->page_id == 0 );
 
 //    SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
 //              ( SILC_Allocator_MovableMemory* )&new_definition->str );
     SILC_Allocator_AllocMovableRaw( page_manager,
                                     strlen( str ) + 1,
                                     ( SILC_Allocator_MovableMemory* )&new_definition->str );
-    CuAssert( tc, "page_id == 0", new_definition->str.page_id == 0 );
-    strcpy( MEMORY_DEREF_MOVABLE( &new_definition->str, char* ), str );
+    strcpy( TEST_MEMORY_DEREF_MOVABLE( &new_definition->str, char* ), str );
 
     return new_movable;
 }
 
 
-void
+static void
 allocator_initialize( CuTest* tc )
 {
     int total_mem = 1024;
-    int page_size = 512; // two pages
+    int page_size = 64; // that makes two strings of length 3 per page
     allocator = SILC_Allocator_CreateAllocator( paged_alloc, total_mem, page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
     page_manager = SILC_Allocator_CreatePageManager( allocator );
@@ -184,20 +199,26 @@ allocator_initialize( CuTest* tc )
 }
 
 
-void
+static void
 test_1( CuTest* tc )
 {
     allocator_initialize( tc );
 
-    Definitions_Initialize();
-    loop_over_string_definitions();
+    test_definitions_initialize();
 
-    SILC_StringHandle bar = DefineString( tc, "foo" );
-    CuAssert( tc, "page_id == 0", bar->page_id == 0 );
+    loop_over_string_definitions( tc );
 
-    loop_over_string_definitions();
+    for ( size_t i = 0;
+          i < sizeof( test_stings ) / sizeof( test_stings[ 0 ] );
+          i++ )
+    {
+        SILC_StringHandle str = test_define_string( tc, test_stings[ i ] );
+        CuAssertIntEquals( tc, i / 2, str->page_id );
+    }
 
-    Definitions_Finalize();
+    loop_over_string_definitions( tc );
+
+    test_definitions_finalize();
 }
 
 
