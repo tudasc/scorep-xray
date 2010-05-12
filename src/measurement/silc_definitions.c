@@ -35,6 +35,7 @@
 #include <OTF2_DefWriter_inc.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <SILC_Debug.h>
 
 
 SILC_DefinitionManager silc_definition_manager;
@@ -516,7 +517,6 @@ silc_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         {
             silc_handle_definition_writing_error( status, "SILC_Group_Definition" );
         }
-        assert( false ); // implement me
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -534,7 +534,7 @@ silc_write_mpi_window_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_MPIWindow_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -552,7 +552,7 @@ silc_write_mpi_cartesian_topology_definitions_to_otf2( OTF2_DefWriter* definitio
         //{
         //    silc_handle_definition_writing_error( status, "SILC_MPICartesianTopology_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -570,7 +570,7 @@ silc_write_mpi_cartesian_coords_definitions_to_otf2( OTF2_DefWriter* definitionW
         //{
         //    silc_handle_definition_writing_error( status, "SILC_MPICartesianCoords_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -588,7 +588,7 @@ silc_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_CounterGroup_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -606,7 +606,7 @@ silc_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_Counter_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -624,7 +624,7 @@ silc_write_io_file_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_IOFileGroup_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -642,7 +642,7 @@ silc_write_io_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_IOFile_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -660,7 +660,7 @@ silc_write_marker_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_MarkerGroup_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -678,7 +678,7 @@ silc_write_marker_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_Marker_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -696,7 +696,7 @@ silc_write_parameter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_Parameter_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -714,7 +714,7 @@ silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         //{
         //    silc_handle_definition_writing_error( status, "SILC_Callpath_Definition" );
         //}
-        assert( false ); // implement me
+        SILC_DEBUG_PRINTF( SILC_WARNING | SILC_DEBUG_DEFINITIONS, "Not yet implemented." );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
