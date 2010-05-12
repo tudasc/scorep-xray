@@ -26,6 +26,7 @@
 #include <CuTest.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include <silc_definitions.h>
 #include <silc_definition_structs.h>
