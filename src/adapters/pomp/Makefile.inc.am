@@ -78,6 +78,7 @@ libsilc_adapter_pomp_user_fortran_sub4_la_CPPFLAGS =    \
 
 if OPENMP_SUPPORTED
 SILC_POMP_OMP_FORTRAN_SOURCES =                         \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_UserF.c      \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_LibF.c       \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Variables.h  \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Fortran.h    \
@@ -98,10 +99,15 @@ noinst_LTLIBRARIES             +=                       \
     libsilc_adapter_pomp_omp_fortran_sub4.la
 
 libsilc_adapter_pomp_omp_la_SOURCES =                   \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_User.c       \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.c \
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.h \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lib.c        \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.c       \
     $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.h       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Variables.h
+    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Variables.h  \
+    $(SRC_ROOT)src/adapters/include/SILC_Pomp_Init.h
+
 libsilc_adapter_pomp_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libsilc_adapter_pomp_omp_la_CPPFLAGS =                  \
     $(AM_CPPFLAGS)                                      \

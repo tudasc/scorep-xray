@@ -438,7 +438,7 @@ __cyg_profile_func_enter( void* func,
 {
     silc_compiler_hash_node* hash_node;
 
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter!!!" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter." );
 
     /*
      * put hash table entries via mechanism for bfd symbol table
@@ -479,7 +479,7 @@ __cyg_profile_func_exit( void* func,
                          void* callsite )
 {
     silc_compiler_hash_node* hash_node;
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit." );
     if ( hash_node = silc_compiler_hash_get( ( long )func ) )
     {
         SILC_ExitRegion( hash_node->region_handle );
@@ -495,7 +495,7 @@ silc_compiler_init_adapter()
 {
     if ( silc_compiler_initialize )
     {
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize GNU compiler adapter!" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize GNU compiler adapter." );
 
         /* Initialize hash tables */
         silc_compiler_hash_init();
@@ -505,6 +505,9 @@ silc_compiler_init_adapter()
 
         /* Sez flag */
         silc_compiler_initialize = 0;
+
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                           " inititialization of GNU compiler adapter done." );
     }
 
     return SILC_SUCCESS;
@@ -522,6 +525,6 @@ silc_compiler_finalize()
 
         /* Set initilaization flag */
         silc_compiler_initialize = 1;
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize GNU compiler adapter!" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize GNU compiler adapter." );
     }
 }

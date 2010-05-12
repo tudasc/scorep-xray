@@ -21,7 +21,6 @@
 
 common_libadd = libsilc_measurement.la              \
                 libsilc_timer.la                    \
-                libsilc_adapter_pomp_user.la        \
 	        libsilc_adapter_compiler.la         \
                 libsilc_adapter_user.la             \
                 $(LIB_DIR_OTF2)libotf2.la           \
@@ -44,6 +43,7 @@ libsilc_mpi_la_CPPFLAGS = $(common_cppflags)
 libsilc_mpi_la_LIBADD   = $(common_libadd)                           \
                           $(LIB_DIR_SILC_MPI)libsilc_adapter_mpi.la  \
                           $(LIB_DIR_SILC_MPI)libsilc_paradigm_mpi.la \
+                          libsilc_adapter_pomp_user.la               \
                           libsilc_paradigm_non_omp.la                \
                           libsilc_profile_non_omp.la                 \
                           libsilc_pomp_dummy.la
@@ -55,6 +55,7 @@ lib_LTLIBRARIES           += libsilc_serial.la
 libsilc_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/silc_adapter_libsilc_serial.c
 libsilc_serial_la_CPPFLAGS = $(common_cppflags)
 libsilc_serial_la_LIBADD   = $(common_libadd)                    \
+                             libsilc_adapter_pomp_user.la        \
                              libsilc_paradigm_non_mpi.la         \
                              libsilc_paradigm_non_omp.la         \
                              libsilc_profile_non_omp.la          \

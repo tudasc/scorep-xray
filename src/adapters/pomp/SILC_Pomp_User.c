@@ -163,6 +163,9 @@ silc_pomp_init()
         POMP_Init_regions();
     }
 
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_EXIT,
+                       "silc_pomp_init done.\n" );
+
     return SILC_SUCCESS;
 }
 
