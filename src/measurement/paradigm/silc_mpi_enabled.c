@@ -63,3 +63,10 @@ silc_create_experiment_dir( char* dirName,
     }
     MPI_Bcast( dirName, dirNameSize, MPI_CHAR, 0, MPI_COMM_WORLD );
 }
+
+
+bool
+SILC_Mpi_HasMpi()
+{
+    return true;
+}

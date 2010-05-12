@@ -41,3 +41,10 @@ silc_create_experiment_dir( char* dirName,
 {
     createDir( dirName );
 }
+
+
+bool
+SILC_Mpi_HasMpi()
+{
+    return false;
+}

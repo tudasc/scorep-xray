@@ -29,7 +29,7 @@
  */
 
 #include <stdint.h>
-
+#include <stdbool.h>
 
 /**
  * Get the rank of the process.
@@ -40,6 +40,16 @@
  */
 uint64_t
 SILC_Mpi_GetRank();
+
+
+/**
+ * Indicates whether we are a MPI application or not. This eases the
+ * initialization process.
+ *
+ * @return In MPI mode return true, false otherwise.
+ */
+bool
+SILC_Mpi_HasMpi();
 
 
 #endif /* SILC_INTERNAL_MPI_H */

@@ -101,7 +101,7 @@ SILC_ExperimentDirIsCreated()
 
 
 uint64_t
-SILC_GetOTF2LocationId( SILC_Thread_LocationData* locationData )
+SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData )
 {
     SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
     assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 || // first call

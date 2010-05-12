@@ -327,7 +327,7 @@ SILC_InitMeasurementMPI( int rank )
 
     SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
     SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
-    trace_data->otf_location = SILC_GetOTF2LocationId( locationData );
+    trace_data->otf_location = SILC_CalculateOTF2LocationId( locationData );
 }
 
 

@@ -60,7 +60,7 @@ SILC_ExperimentDirIsCreated();
 
 
 uint64_t
-SILC_GetOTF2LocationId( SILC_Thread_LocationData* locationData );
+SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData );
 
 
 void
