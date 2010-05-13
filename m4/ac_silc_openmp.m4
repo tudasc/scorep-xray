@@ -25,6 +25,10 @@ AC_LANG_POP([C])
 AM_CONDITIONAL([OPENMP_SUPPORTED], 
                [test "x${ac_cv_prog_c_openmp}" != "xunsupported"])
 
+if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
+  AC_MSG_WARN([Non suitbale OpenMP compilers found. SILC OpenMP and hybrid libraries will not be build.])
+fi
+
 AC_LANG_PUSH([C++])
 AC_OPENMP
 AC_LANG_POP([C++])
