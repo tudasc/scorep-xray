@@ -21,6 +21,9 @@
 ## see also Makefile.inc.am in the same directory
 
 
+## paradigm mpi
+
+if MPI_SUPPORTED
 noinst_LTLIBRARIES += libsilc_paradigm_mpi.la
 libsilc_paradigm_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                                    -I$(INC_ROOT)src/measurement         \
@@ -29,3 +32,4 @@ libsilc_paradigm_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                                    -I$(PUBLIC_INC_DIR)                  \
                                    -I$(INC_DIR_UTIL)
 libsilc_paradigm_mpi_la_SOURCES = $(SRC_ROOT)src/measurement/paradigm/silc_mpi_enabled.c
+endif

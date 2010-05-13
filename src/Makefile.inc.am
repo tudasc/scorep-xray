@@ -37,6 +37,7 @@ common_cppflags = $(AM_CPPFLAGS)                       \
 
 ## MPI
 
+if MPI_SUPPORTED
 lib_LTLIBRARIES        += libsilc_mpi.la
 libsilc_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/silc_adapter_libsilc_mpi.c
 libsilc_mpi_la_CPPFLAGS = $(common_cppflags)
@@ -47,7 +48,7 @@ libsilc_mpi_la_LIBADD   = $(common_libadd)                           \
                           libsilc_paradigm_non_omp.la                \
                           libsilc_profile_non_omp.la                 \
                           libsilc_pomp_dummy.la
-
+endif
 
 ## Serial
 
@@ -79,6 +80,7 @@ endif
 
 ## Hybrid
 
+if MPI_SUPPORTED
 if OPENMP_SUPPORTED
 lib_LTLIBRARIES            += libsilc_mpi_omp.la
 libsilc_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/silc_adapter_libsilc_mpi_omp.c
@@ -90,6 +92,7 @@ libsilc_mpi_omp_la_LIBADD   = $(common_libadd)                           \
                               libsilc_adapter_pomp_omp.la                \
                               libsilc_paradigm_omp.la                    \
                               libsilc_profile_omp.la
+endif
 endif
 
 ## POMP dummy
