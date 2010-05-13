@@ -50,7 +50,7 @@ if test "x${silc_mpi_supported}" = "xno"; then
   AC_MSG_WARN([Non suitbale MPI compilers found. SILC MPI and hybrid libraries will not be build.])
 fi
 AM_CONDITIONAL([MPI_SUPPORTED], [test "x${silc_mpi_supported}" = "xyes"])
-
+AM_CONDITIONAL([HAVE_MPIFC], [test "x${silc_mpi_f90_supported}" = "xyes"])
 
 if test "x${silc_mpi_supported}" = "xyes"; then
 
