@@ -52,4 +52,14 @@ bool
 SILC_Mpi_HasMpi();
 
 
+/**
+ * Indicates whether MPI_Init was already called or not. In non-MPI always true
+ *
+ * @return In MPI mode true if MPI_Init has been called before, false otherwise.
+ *         In non-MPI mode always true.
+ */
+bool
+SILC_Mpi_IsInitialized();
+
+
 #endif /* SILC_INTERNAL_MPI_H */

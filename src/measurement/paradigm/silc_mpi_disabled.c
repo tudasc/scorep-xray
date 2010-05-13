@@ -34,12 +34,13 @@ SILC_Mpi_GetRank()
 }
 
 
-void
+bool
 silc_create_experiment_dir( char* dirName,
                             int   dirNameSize,
                             void  ( * createDir )( const char* ) )
 {
     createDir( dirName );
+    return true;
 }
 
 
@@ -47,4 +48,11 @@ bool
 SILC_Mpi_HasMpi()
 {
     return false;
+}
+
+
+bool
+SILC_Mpi_IsInitialized()
+{
+    return true;
 }

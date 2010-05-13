@@ -39,10 +39,11 @@
 
 
 /* *INDENT-OFF* */
-extern void silc_create_experiment_dir(char* dirName, int dirNameSize, void (*createDir) (const char*) );
+extern bool silc_create_experiment_dir(char* dirName, int dirNameSize, void (*createDir) (const char*) );
 static void silc_create_directory(const char* dirname);
 static void silc_create_experiment_dir_name();
 static void silc_set_event_writer_location_id(OTF2_EvtWriter* writer);
+static bool silc_dir_name_is_created();
 /* *INDENT-ON* */
 
 
@@ -75,21 +76,33 @@ SILC_CreateExperimentDir()
         return;
     }
     silc_create_experiment_dir_name();
-    silc_create_experiment_dir( silc_experiment_dir_name,
-                                dir_name_size,
-                                silc_create_directory );
+    silc_is_experiment_dir_created =
+        silc_create_experiment_dir( silc_experiment_dir_name,
+                                    dir_name_size,
+                                    silc_create_directory );
 }
 
 
 void
 silc_create_experiment_dir_name()
 {
+    if ( silc_dir_name_is_created() )
+    {
+        return;
+    }
     assert( !omp_in_parallel() ); // localtime() not reentrant
     time_t now;
     time( &now );
     strftime( silc_experiment_dir_name, 20, "silc_%Y%m%d_%H%M_", localtime( &now ) );
     snprintf( &( silc_experiment_dir_name[ 19 ] ), 11, "%u",
               ( uint32_t )SILC_GetClockTicks() );
+}
+
+
+bool
+silc_dir_name_is_created()
+{
+    return strlen( silc_experiment_dir_name );
 }
 
 
@@ -127,7 +140,6 @@ silc_create_directory( const char* dirname )
                           silc_experiment_dir_name );
         _Exit( EXIT_FAILURE );
     }
-    silc_is_experiment_dir_created = true;
 }
 
 
@@ -147,54 +159,11 @@ OTF2_FlushType
 SILC_OnTracePreFlush( void* evtWriter,
                       void* evtReader )
 {
-    SILC_SetArchiveMasterSlave();
-    silc_set_event_writer_location_id( ( OTF2_EvtWriter* )evtWriter );
+    if ( !SILC_Mpi_IsInitialized )
+    {
+        // flush before MPI_Init, we are lost.
+        assert( false );
+    }
+    // master/slave and writer id already set during initialization
     return OTF2_FLUSH;
-}
-
-
-void
-SILC_SetArchiveMasterSlave()
-{
-    assert( SILC_ExperimentDirIsCreated() );
-
-    SILC_Error_Code error;
-    if ( SILC_Mpi_GetRank() == 0 )
-    {
-        error = OTF2_Archive_SetMasterSlaveMode(
-            silc_otf2_archive, OTF2_MASTER );
-    }
-    else
-    {
-        error = OTF2_Archive_SetMasterSlaveMode(
-            silc_otf2_archive, OTF2_SLAVE );
-    }
-    if ( SILC_SUCCESS != error )
-    {
-        _Exit( EXIT_FAILURE );
-    }
-}
-
-
-void
-silc_set_event_writer_location_id( OTF2_EvtWriter* writer )
-{
-    SILC_Trace_LocationData* trace_data =
-        SILC_Thread_GetTraceLocationData( SILC_Thread_GetLocationData() );
-
-    assert( trace_data->otf_location != OTF2_UNDEFINED_UINT64 );
-    assert( trace_data->otf_writer == writer );
-
-    SILC_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
-                                                          trace_data->otf_location );
-    if ( SILC_SUCCESS != error )
-    {
-        _Exit( EXIT_FAILURE );
-    }
-
-    /** set new location id in location definition */
-    SILC_Location_Definition* definition =
-        SILC_MEMORY_DEREF_MOVABLE( trace_data->otf_location_handle,
-                                   SILC_Location_Definition* );
-    definition->id = trace_data->otf_location;
 }

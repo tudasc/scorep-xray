@@ -36,6 +36,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <SILC_Debug.h>
+#include "silc_mpi.h"
 
 
 SILC_DefinitionManager silc_definition_manager;
@@ -148,7 +149,12 @@ silc_create_definition_writer()
 OTF2_FlushType
 silc_on_definitions_pre_flush()
 {
-    SILC_SetArchiveMasterSlave();
+    if ( !SILC_Mpi_IsInitialized )
+    {
+        // flush before MPI_Init, we are lost.
+        assert( false );
+    }
+    // master/slave already set during initialization
     return OTF2_FLUSH;
 }
 

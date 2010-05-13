@@ -85,6 +85,9 @@ static SILC_ConfigVariable silc_configs[] = {
 static void silc_finalize( void );
 static void silc_otf2_initialize();
 static void silc_otf2_finalize();
+static void silc_set_otf2_master_slave_and_location_id();
+static void silc_set_otf2_archive_master_slave();
+static void silc_set_otf2_event_writer_location_id();
 static void silc_adapters_register();
 static void silc_adapters_deregister();
 static void silc_adapters_initialize();
@@ -146,6 +149,11 @@ SILC_InitMeasurement( void )
 
     SILC_Thread_Initialize();
 
+    if ( !SILC_Mpi_HasMpi() )
+    {
+        silc_set_otf2_master_slave_and_location_id();
+    }
+
     silc_adapters_register();
     silc_adapters_initialize();
     silc_adapters_initialize_location(); // not sure if this should be triggered by thread management
@@ -204,6 +212,59 @@ silc_otf2_initialize()
                                           1024 * 1024, // 1MB
                                           OTF2_SUBSTRATE_POSIX );
     assert( silc_otf2_archive );
+}
+
+
+void
+silc_set_otf2_master_slave_and_location_id()
+{
+    assert( SILC_ExperimentDirIsCreated() );
+    silc_set_otf2_archive_master_slave();
+    silc_set_otf2_event_writer_location_id();
+}
+
+
+void
+silc_set_otf2_archive_master_slave()
+{
+    SILC_Error_Code error;
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        error = OTF2_Archive_SetMasterSlaveMode(
+            silc_otf2_archive, OTF2_MASTER );
+    }
+    else
+    {
+        error = OTF2_Archive_SetMasterSlaveMode(
+            silc_otf2_archive, OTF2_SLAVE );
+    }
+    if ( SILC_SUCCESS != error )
+    {
+        _Exit( EXIT_FAILURE );
+    }
+}
+
+
+void
+silc_set_otf2_event_writer_location_id()
+{
+    SILC_Trace_LocationData* trace_data =
+        SILC_Thread_GetTraceLocationData( SILC_Thread_GetLocationData() );
+
+    assert( trace_data->otf_location != OTF2_UNDEFINED_UINT64 );
+
+    SILC_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
+                                                          trace_data->otf_location );
+    if ( SILC_SUCCESS != error )
+    {
+        _Exit( EXIT_FAILURE );
+    }
+
+    /** set new location id in location definition */
+    SILC_Location_Definition* definition =
+        SILC_MEMORY_DEREF_MOVABLE( trace_data->otf_location_handle,
+                                   SILC_Location_Definition* );
+    definition->id = trace_data->otf_location;
 }
 
 
@@ -328,6 +389,8 @@ SILC_InitMeasurementMPI( int rank )
     SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
     SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
     trace_data->otf_location = SILC_CalculateOTF2LocationId( locationData );
+
+    silc_set_otf2_master_slave_and_location_id();
 }
 
 

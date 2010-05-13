@@ -63,10 +63,6 @@ uint64_t
 SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData );
 
 
-void
-SILC_SetArchiveMasterSlave();
-
-
 /**
  * Archive for trace data. One per process, can contain multiple "location"
  * writers.
