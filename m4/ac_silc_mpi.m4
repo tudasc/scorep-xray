@@ -37,7 +37,7 @@ AX_MPI([silc_mpi_f90_supported="yes"],[silc_mpi_f90_supported="no"])
 AC_LANG_POP([Fortran])
 
 if test "x${silc_mpi_c_supported}" = "xyes"; then
-  if "x${silc_mpi_f77_supported}" = "xyes" -o "x${silc_mpi_f90_supported}" = "xyes"; then
+  if test "x${silc_mpi_f77_supported}" = "xyes" -o "x${silc_mpi_f90_supported}" = "xyes"; then
     silc_mpi_supported="yes"
   else
     silc_mpi_supported="no"
