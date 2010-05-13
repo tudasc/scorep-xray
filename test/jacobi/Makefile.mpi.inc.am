@@ -19,6 +19,8 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
+if MPI_SUPPORTED
+
 ## MPI C
 
 check_PROGRAMS       += jacobi_mpi_c
@@ -37,6 +39,7 @@ jacobi_mpi_c_uninstrumented_LDADD    = -lm
 
 ## MPI + OpenMP C
 
+if OPENMP_SUPPORTED
 check_PROGRAMS           += jacobi_mpi_omp_c
 jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c       \
                             $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c.opari.inc \
@@ -54,7 +57,7 @@ jacobi_mpi_omp_c_unistrumented_SOURCES = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.
                                          $(SRC_ROOT)test/jacobi/hybrid/C/main.c
 jacobi_mpi_omp_c_unistrumented_CFLAGS  = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_mpi_omp_c_unistrumented_LDADD   = -lm
-
+endif
 
 ## MPI C++
 
@@ -74,6 +77,7 @@ jacobi_mpi_cxx_uninstrumented_LDADD    = -lm
 
 ## MPI + OpenMP C++
 
+if OPENMP_SUPPORTED
 check_PROGRAMS             += jacobi_mpi_omp_cxx
 jacobi_mpi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.mod.cpp       \
                               $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp.opari.inc \
@@ -92,10 +96,11 @@ jacobi_mpi_omp_cxx_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/C++/j
                                              $(SRC_ROOT)test/jacobi/hybrid/C++/main.cpp
 jacobi_mpi_omp_cxx_unistrumented_CXXFLAGS  = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_cxx_unistrumented_LDADD     = -lm
-
+endif
 
 ## MPI Fortran
 
+if HAVE_MPIFC
 check_PROGRAMS         += jacobi_mpi_f90
 jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
@@ -108,10 +113,12 @@ check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
 jacobi_mpi_f90_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS) -DMPI_VERSION=1
 jacobi_mpi_f90_uninstrumented_LDADD    = -lm
-
+endif
 
 ## MPI + OpenMP Fortran
 
+if HAVE_MPIFC
+if OPENMP_SUPPORTED
 check_PROGRAMS             += jacobi_mpi_omp_f90
 jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90      \
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.mod.F90       \
@@ -131,8 +138,12 @@ jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortr
 jacobi_mpi_omp_f90_unistrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(AM_CPPFLAGS) -DMPI_VERSION=1
 jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
-
+endif
+endif
 
 ##
+
+endif
+# if MPI_SUPPOERTED
 
 CLEANFILES += variabledef.mod jacobimod.mod
