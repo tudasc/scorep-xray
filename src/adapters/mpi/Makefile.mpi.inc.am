@@ -1,5 +1,6 @@
 ## -*- mode: makefile -*-
 
+if MPI_SUPPORTED
 noinst_LTLIBRARIES += libsilc_adapter_mpi_c_wrapper.la
 libsilc_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SILC_Mpi_Communicator.c     \
@@ -106,3 +107,4 @@ libsilc_adapter_mpi_la_LIBADD =                         \
     libsilc_adapter_mpi_fortran_wrapper_sub3.la         \
     libsilc_adapter_mpi_fortran_wrapper_sub4.la         \
     libsilc_adapter_mpi_fortran_conv.la
+endif

@@ -1,3 +1,5 @@
+if OPENMP_SUPPORTED
+
 check_PROGRAMS += pomp_test
 
 pomp_test_SOURCES =                                      \
@@ -13,3 +15,5 @@ pomp_test_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
 pomp_test_LDADD =                       \
     $(LIB_ROOT)libsilc_serial.la
+
+endif
