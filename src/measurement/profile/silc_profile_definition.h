@@ -79,4 +79,10 @@ silc_profile_init_definition( uint32_t            max_callpath_depth,
 void
 silc_profile_delete_definition();
 
+/**
+   Dumps the tree structure to the screen.
+ */
+void
+silc_profile_dump();
+
 #endif // SILC_PROFILE_DEFINITION_H

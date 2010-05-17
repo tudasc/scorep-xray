@@ -97,41 +97,42 @@ silc_profile_delete_definition()
    Debug
    -------------------------------------------------------------------------------------*/
 void
-silc_profile_dump_node( silc_profile_node* node )
+silc_profile_dump_subtree( silc_profile_node* node,
+                           uint32_t           level )
 {
-    printf( "\nNode: %p\n", node );
-    if ( node == NULL )
-    {
-        return;
-    }
-    printf( "node type: %d\n", node->node_type );
-    printf( "parent: %p\n", node->parent );
-    printf( "first child: %p\n", node->first_child );
-    printf( "next_sibling: %p\n", node->next_sibling );
-    printf( "visit count: %d\n", node->count );
-    printf( "implicit time: %d\n\n", ( int )node->implicit_time.sum );
-}
+    static char* type_name_map[] = {
+        "regular region",
+        "paramater string",
+        "parameter integer",
+        "thread root",
+        "thread start"
+    };
 
-void
-silc_profile_dump_subtree( silc_profile_node* node )
-{
-    silc_profile_dump_node( node );
+    int          i;
+    for ( i = 0; i < level; i++ )
+    {
+        printf( "| " );
+    }
+    printf( "+ type: %s\n", type_name_map[ node->node_type ] );
+
     if ( node == NULL )
     {
         return;
     }
     if ( node->first_child != NULL )
     {
-        silc_profile_dump_subtree( node->first_child );
+        silc_profile_dump_subtree( node->first_child, level + 1 );
     }
     if ( node->next_sibling != NULL )
     {
-        silc_profile_dump_subtree( node->next_sibling );
+        silc_profile_dump_subtree( node->next_sibling, level );
     }
 }
 
 void
 silc_profile_dump()
 {
-    silc_profile_dump_subtree( silc_profile.first_root_node );
+    printf( "\n" );
+    silc_profile_dump_subtree( silc_profile.first_root_node, 0 );
+    printf( "\n" );
 }

@@ -55,7 +55,7 @@ static bool       silc_is_experiment_dir_created = false;
 
 OTF2_ArchiveData* silc_otf2_archive = 0;
 
-bool              silc_profiling_enabled = false;
+bool              silc_profiling_enabled = true;
 
 bool              silc_tracing_enabled = true;
 

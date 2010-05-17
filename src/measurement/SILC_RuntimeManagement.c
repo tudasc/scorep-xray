@@ -41,6 +41,7 @@
 #include <SILC_Config.h>
 #include <SILC_Timing.h>
 #include <SILC_Omp.h>
+#include <SILC_Profile.h>
 
 #include "silc_types.h"
 #include "silc_adapter.h"
@@ -148,6 +149,12 @@ SILC_InitMeasurement( void )
     SILC_Definitions_Initialize();
 
     SILC_Thread_Initialize();
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_Initialize( 30, -1, 0, NULL );
+        SILC_Profile_OnLocationCreation( SILC_Thread_GetLocationData(), NULL );
+        SILC_Profile_OnThreadActivation( SILC_Thread_GetLocationData(), NULL );
+    }
 
     if ( !SILC_Mpi_HasMpi() )
     {
@@ -447,6 +454,12 @@ silc_finalize( void )
     silc_adapters_finalize_location();
     silc_adapters_finalize();
     silc_adapters_deregister();
+
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputNone );
+        SILC_Profile_Finalize();
+    }
 
     SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();

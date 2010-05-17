@@ -62,7 +62,6 @@ libsilc_serial_la_LIBADD   = $(common_libadd)                    \
                              libsilc_profile_non_omp.la          \
                              libsilc_pomp_dummy.la
 
-
 ## OpenMP
 
 if OPENMP_SUPPORTED

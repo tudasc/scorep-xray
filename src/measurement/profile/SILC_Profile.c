@@ -267,6 +267,8 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
         silc_profile_assign_callpath_to_master();
         silc_profile_assign_callpath_to_workers();
     }
+
+    SILC_DEBUG_ONLY( silc_profile_dump() );
 }
 
 /* ***************************************************************************************

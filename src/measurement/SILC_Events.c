@@ -34,6 +34,7 @@
 #include <SILC_Timing.h>
 #include <SILC_Omp.h>
 #include <OTF2_EvtWriter.h>
+#include <SILC_Profile.h>
 
 #include "silc_runtime_management.h"
 #include "silc_types.h"
@@ -51,7 +52,8 @@ SILC_EnterRegion
     SILC_RegionHandle regionHandle
 )
 {
-    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    uint64_t                  timestamp = SILC_GetClockTicks();
+    SILC_Thread_LocationData* location  = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -62,8 +64,15 @@ SILC_EnterRegion
 
     OTF2_EvtWriter_Enter( SILC_Thread_GetTraceLocationData( location )->otf_writer,
                           NULL,
-                          SILC_GetClockTicks(),
+                          timestamp,
                           ( ( silc_any_definition* )regionHandle )->id );
+
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_Enter( location, regionHandle,
+                            SILC_REGION_UNKNOWN,
+                            timestamp, NULL );
+    }
 }
 
 
@@ -76,7 +85,8 @@ SILC_ExitRegion
     SILC_RegionHandle regionHandle
 )
 {
-    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    uint64_t                  timestamp = SILC_GetClockTicks();
+    SILC_Thread_LocationData* location  = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -87,8 +97,16 @@ SILC_ExitRegion
 
     OTF2_EvtWriter_Leave( SILC_Thread_GetTraceLocationData( location )->otf_writer,
                           NULL,
-                          SILC_GetClockTicks(),
+                          timestamp,
                           ( ( silc_any_definition* )regionHandle )->id );
+
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_Exit( location,
+                           regionHandle,
+                           timestamp,
+                           NULL );
+    }
 }
 
 
@@ -216,7 +234,7 @@ SILC_OmpFork
     uint32_t          nRequestedThreads
 )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -309,8 +327,13 @@ SILC_TriggerCounterInt64
     int64_t            value
 )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_TriggerInteger( location, counterHandle, value );
+    }
 }
 
 
@@ -324,8 +347,13 @@ SILC_TriggerCounterDouble
     double             value
 )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_TriggerDouble( location, counterHandle, value );
+    }
 }
 
 
@@ -353,8 +381,15 @@ SILC_TriggerParameterInt64
     int64_t              value
 )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    if ( silc_profiling_enabled )
+    {
+        SILC_Profile_ParameterInteger( location,
+                                       parameterHandle,
+                                       value );
+    }
 }
 
 
