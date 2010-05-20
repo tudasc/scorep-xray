@@ -115,7 +115,12 @@ SILC_Memory_CreatePageManagers()
     for ( int i = 0; i < number_of_page_types; ++i )
     {
         array[ i ] = SILC_Allocator_CreatePageManager( silc_memory_allocator );
-        assert( array[ i ] );
+        if ( !array[ i ] )
+        {
+            SILC_ERROR( SILC_ERROR_MEMORY_OUT_OF_PAGES,
+                        "Can't create new page manager due to lack of free pages." );
+            assert( 0 );
+        }
     }
     return array;
 }
