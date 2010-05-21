@@ -300,17 +300,19 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 *-------------------------------------------------------------------------*/
 
 void
-CuSuiteInit( CuSuite* testSuite )
+CuSuiteInit( const char* name,
+             CuSuite*    testSuite )
 {
+    testSuite->name      = CuStrCopy( name );
     testSuite->count     = 0;
     testSuite->failCount = 0;
 }
 
 CuSuite*
-CuSuiteNew( void )
+CuSuiteNew( const char* name )
 {
     CuSuite* testSuite = CU_ALLOC( CuSuite );
-    CuSuiteInit( testSuite );
+    CuSuiteInit( name, testSuite );
     return testSuite;
 }
 
@@ -339,36 +341,34 @@ void
 CuSuiteRun( CuSuite* testSuite )
 {
     int i;
+
+    printf( "%s:\n", testSuite->name );
+
     for ( i = 0; i < testSuite->count; ++i )
     {
         CuTest* testCase = testSuite->list[ i ];
         CuTestRun( testCase );
         if ( testCase->failed )
         {
-            testSuite->failCount += 1;
+            testSuite->failCount++;
+            printf( " FAIL %d: %s: %s\n", i + 1, testCase->name,
+                    testCase->message );
+            break;
+        }
+        else
+        {
+            printf( "   ok %d: %s\n", i + 1, testCase->name );
         }
     }
 }
 
 void
 CuSuiteSummary( CuSuite*  testSuite,
-                CuString* summary )
-{
-    int i;
-    for ( i = 0; i < testSuite->count; ++i )
-    {
-        CuTest* testCase = testSuite->list[ i ];
-        CuStringAppend( summary, testCase->failed ? "F" : "." );
-    }
-    CuStringAppend( summary, "\n\n" );
-}
-
-void
-CuSuiteDetails( CuSuite*  testSuite,
                 CuString* details )
 {
     int i;
     int failCount = 0;
+    int runCount  = 0;
 
     if ( testSuite->failCount == 0 )
     {
@@ -378,29 +378,22 @@ CuSuiteDetails( CuSuite*  testSuite,
     }
     else
     {
-        if ( testSuite->failCount == 1 )
-        {
-            CuStringAppend( details, "There was 1 failure:\n" );
-        }
-        else
-        {
-            CuStringAppendFormat( details, "There were %d failures:\n", testSuite->failCount );
-        }
-
         for ( i = 0; i < testSuite->count; ++i )
         {
             CuTest* testCase = testSuite->list[ i ];
+            if ( !testCase->ran )
+            {
+                continue;
+            }
+            runCount++;
             if ( testCase->failed )
             {
                 failCount++;
-                CuStringAppendFormat( details, "%d) %s: %s\n",
-                                      failCount, testCase->name, testCase->message );
             }
         }
-        CuStringAppend( details, "\n!!!FAILURES!!!\n" );
-
-        CuStringAppendFormat( details, "Runs: %d ",   testSuite->count );
-        CuStringAppendFormat( details, "Passes: %d ", testSuite->count - testSuite->failCount );
+        CuStringAppendFormat( details, "Total: %d ",   testSuite->count );
+        CuStringAppendFormat( details, "Run: %d ",   runCount );
+        CuStringAppendFormat( details, "Passes: %d ", runCount - testSuite->failCount );
         CuStringAppendFormat( details, "Fails: %d\n",  testSuite->failCount );
     }
 }

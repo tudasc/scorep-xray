@@ -121,7 +121,7 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 /* public assert functions */
 
 #define CuFail( tc, ms )                        CuFail_Line(  ( tc ), __FILE__, __LINE__, NULL, ( ms ) )
-#define CuAssert( tc, ms, cond )                CuAssert_Line( ( tc ), __FILE__, __LINE__, ( ms ), ( cond ) )
+#define CuAssert( tc, ms, cond )                CuAssert_Line( ( tc ), __FILE__, __LINE__, ms ": " #cond, ( cond ) )
 #define CuAssertTrue( tc, cond )                CuAssert_Line( ( tc ), __FILE__, __LINE__, "assert failed", ( cond ) )
 
 #define CuAssertStrEquals( tc, ex, ac )           CuAssertStrEquals_LineMsg( ( tc ), __FILE__, __LINE__, NULL, ( ex ), ( ac ) )
@@ -140,20 +140,23 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 
 #define MAX_TEST_CASES  1024
 
-#define SUITE_ADD_TEST( SUITE, TEST )      CuSuiteAdd( SUITE, CuTestNew( #TEST, TEST ) )
+#define SUITE_ADD_TEST( SUITE, TEST )            CuSuiteAdd( SUITE, CuTestNew( #TEST, TEST ) )
+#define SUITE_ADD_TEST_NAME( SUITE, NAME, TEST ) CuSuiteAdd( SUITE, CuTestNew( NAME, TEST ) )
 
 typedef struct
 {
-    int     count;
-    CuTest* list[ MAX_TEST_CASES ];
-    int     failCount;
+    const char* name;
+    int         count;
+    CuTest*     list[ MAX_TEST_CASES ];
+    int         failCount;
 } CuSuite;
 
 
 void
-CuSuiteInit( CuSuite* testSuite );
+CuSuiteInit( const char* name,
+             CuSuite*    testSuite );
 CuSuite*
-CuSuiteNew( void );
+CuSuiteNew( const char* name );
 void
 CuSuiteAdd( CuSuite* testSuite,
             CuTest*  testCase );
@@ -165,8 +168,5 @@ CuSuiteRun( CuSuite* testSuite );
 void
 CuSuiteSummary( CuSuite*  testSuite,
                 CuString* summary );
-void
-CuSuiteDetails( CuSuite*  testSuite,
-                CuString* details );
 
 #endif /* CU_TEST_H */

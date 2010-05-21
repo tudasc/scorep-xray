@@ -226,14 +226,13 @@ int
 main()
 {
     CuString* output = CuStringNew();
-    CuSuite*  suite  = CuSuiteNew();
+    CuSuite*  suite  = CuSuiteNew( "definition manager" );
 
     SUITE_ADD_TEST( suite, test_1 );
 
     CuSuiteRun( suite );
     CuSuiteSummary( suite, output );
-    CuSuiteDetails( suite, output );
-    printf( "%s\n", output->buffer );
+    printf( "%s", output->buffer );
 
     return suite->failCount;
 }
