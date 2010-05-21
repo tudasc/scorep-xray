@@ -66,7 +66,7 @@
 
  * Example:
  * @code
- *      SILC_Bool unify;
+ *      bool unify;
  *      SILC_ConfigVariable unify_vars[] = {
  *          {
  *              "unify",
