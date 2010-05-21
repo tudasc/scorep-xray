@@ -296,12 +296,15 @@ parse_set( const char* value,
     strcpy( value_copy, value );
 
     size_t string_list_len = 0;
+    char*  entry;
     char*  saveptr;
-    bool   success = true;
-    for ( char* entry = strtok_r( value_copy, " ,:;", &saveptr );
-          trim_string( entry );
-          entry = strtok_r( NULL, " ,:;", &saveptr ) )
+    bool   success          = true;
+    char*  value_for_strtok = value_copy;
+    while ( ( entry = trim_string( strtok_r( value_for_strtok, " ,:;", &saveptr ) ) ) )
     {
+        /* all but the first call to strtok should be NULL */
+        value_for_strtok = NULL;
+
         if ( string_list_len >= string_list_alloc )
         {
             /* something strange has happened, we have more entries as in the
@@ -325,15 +328,16 @@ parse_set( const char* value,
         }
 
         /* check if entry is in acceptedValues */
-        char** acceptedValue = acceptedValues;
-        while ( acceptedValues && *acceptedValue )
+        char** acceptedValue;
+        for ( acceptedValue = acceptedValues;
+              acceptedValues && *acceptedValue;
+              acceptedValue++ )
         {
             if ( 0 == strcmp( entry, *acceptedValue ) )
             {
                 /* found entry in accepted values list */
                 break;
             }
-            acceptedValue++;
         }
         if ( acceptedValues && !*acceptedValue )
         {
@@ -341,7 +345,7 @@ parse_set( const char* value,
             continue;
         }
 
-        /* not an duplicate and also an accepted value => add it to the list */
+        /* not a duplicate and its also an accepted value => add it to the list */
         string_list[ string_list_len++ ] = entry;
     }
 
@@ -369,15 +373,20 @@ parse_bitset( const char*               value,
 
     *bitsetReference = 0;
 
+    char* entry;
     char* saveptr;
-    bool  success = true;
-    for ( char* entry = strtok_r( value_copy, " ,:;", &saveptr );
-          trim_string( entry );
-          entry = strtok_r( NULL, " ,:;", &saveptr ) )
+    bool  success          = true;
+    char* value_for_strtok = value_copy;
+    while ( ( entry = trim_string( strtok_r( value_for_strtok, " ,:;", &saveptr ) ) ) )
     {
+        /* all but the first call to strtok should be NULL */
+        value_for_strtok = NULL;
+
         /* check if entry is in acceptedValues */
-        SILC_ConfigType_SetEntry* acceptedValue = acceptedValues;
-        while ( acceptedValue->name )
+        SILC_ConfigType_SetEntry* acceptedValue;
+        for ( acceptedValue = acceptedValues;
+              acceptedValue->name;
+              acceptedValue++ )
         {
             if ( 0 == strcmp( entry, acceptedValue->name ) )
             {
@@ -386,7 +395,6 @@ parse_bitset( const char*               value,
                 *bitsetReference |= acceptedValue->value;
                 break;
             }
-            acceptedValue++;
         }
         if ( !acceptedValue )
         {
