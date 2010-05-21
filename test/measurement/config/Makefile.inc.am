@@ -1,0 +1,33 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/measurement/config/Makefile.inc.am
+## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+
+
+check_PROGRAMS += config_bool
+
+config_bool_SOURCES = $(SRC_ROOT)test/measurement/config/bool.c \
+                      $(SRC_ROOT)vendor/cutest/CuTest.c
+config_bool_CPPFLAGS = -I$(INC_ROOT)vendor/cutest \
+                       -I$(INC_ROOT)src/measurement \
+                       -I$(INC_ROOT)src/measurement/include \
+                       -I$(INC_ROOT)include/silc \
+                       -I$(INC_DIR_UTIL)
+config_bool_LDADD = $(LIB_ROOT)libsilc_serial.la $(LIB_DIR_UTIL)libsilc_utilities.la
+
+TESTS += config_bool
+ 

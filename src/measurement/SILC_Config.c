@@ -98,6 +98,7 @@ SILC_ConfigRegister
             /* should this be an error? */
         }
 
+        /* generate environment variable name */
         sprintf( environment_variable_name, "SILC%s%.32s_%.32s",
                  nameSpace ? "_" : "",
                  nameSpace ? nameSpace : "",
@@ -147,11 +148,9 @@ SILC_ConfigRegister
 
 
 static inline bool
-parse_bool
-(
-    const char* value,
-    bool*       boolReference
-);
+parse_bool( const char* value,
+            bool*       boolReference );
+
 
 static inline bool
 parse_set( const char* value,
@@ -164,13 +163,10 @@ parse_bitset( const char*               value,
               SILC_ConfigType_SetEntry* acceptedValues );
 
 static inline bool
-parse_value
-(
-    const char*     value,
-    SILC_ConfigType type,
-    void*           variableReference,
-    void*           variableContext
-)
+parse_value( const char*     value,
+             SILC_ConfigType type,
+             void*           variableReference,
+             void*           variableContext )
 {
     switch ( type )
     {
@@ -196,11 +192,8 @@ parse_value
 
 
 static inline bool
-parse_bool
-(
-    const char* value,
-    bool*       boolReference
-)
+parse_bool( const char* value,
+            bool*       boolReference )
 {
     /* try symbolic constants */
     if ( 0 == strcmp( value, "true" ) ||
