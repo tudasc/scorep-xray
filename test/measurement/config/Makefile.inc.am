@@ -18,7 +18,8 @@
 ## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 
-check_PROGRAMS += config_bool
+check_PROGRAMS += config_bool \
+                  config_number
 
 config_bool_SOURCES = $(SRC_ROOT)test/measurement/config/bool.c \
                       $(SRC_ROOT)vendor/cutest/CuTest.c
@@ -29,5 +30,15 @@ config_bool_CPPFLAGS = -I$(INC_ROOT)vendor/cutest \
                        -I$(INC_DIR_UTIL)
 config_bool_LDADD = $(LIB_ROOT)libsilc_serial.la $(LIB_DIR_UTIL)libsilc_utilities.la
 
-TESTS += config_bool
+config_number_SOURCES = $(SRC_ROOT)test/measurement/config/number.c \
+                        $(SRC_ROOT)vendor/cutest/CuTest.c
+config_number_CPPFLAGS = -I$(INC_ROOT)vendor/cutest \
+                         -I$(INC_ROOT)src/measurement \
+                         -I$(INC_ROOT)src/measurement/include \
+                         -I$(INC_ROOT)include/silc \
+                         -I$(INC_DIR_UTIL)
+config_number_LDADD = $(LIB_ROOT)libsilc_serial.la $(LIB_DIR_UTIL)libsilc_utilities.la
+
+TESTS += config_bool \
+         config_number
  

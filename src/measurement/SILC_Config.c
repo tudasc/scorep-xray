@@ -19,6 +19,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <inttypes.h>
 
 
 /**
@@ -151,6 +152,9 @@ static inline bool
 parse_bool( const char* value,
             bool*       boolReference );
 
+static inline bool
+parse_number( const char* value,
+              uint64_t*   numberReference );
 
 static inline bool
 parse_set( const char* value,
@@ -173,6 +177,9 @@ parse_value( const char*     value,
         case SILC_CONFIG_TYPE_BOOL:
             return parse_bool( value, variableReference );
 
+        case SILC_CONFIG_TYPE_NUMBER:
+            return parse_number( value, variableReference );
+
         case SILC_CONFIG_TYPE_SET:
             return parse_set( value, variableReference, variableContext );
 
@@ -181,7 +188,6 @@ parse_value( const char*     value,
 
         case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_STRING:
-        case SILC_CONFIG_TYPE_NUMBER:
         case SILC_CONFIG_TYPE_SIZE:
 
         case SILC_INVALID_CONFIG_TYPE:
@@ -221,6 +227,44 @@ parse_bool( const char* value,
     *boolReference = false;
     return true;
 }
+
+
+static inline bool
+parse_number( const char* value,
+              uint64_t*   numberReference )
+{
+    char* ptr;
+    int   number_of_consumed_characters;
+    int   number_of_recognized_itmes = sscanf( value,
+                                               "%" SCNu64 "%n",
+                                               numberReference,
+                                               &number_of_consumed_characters );
+
+    /* does sscanf has recognized a number? */
+    if ( 1 != number_of_recognized_itmes )
+    {
+        SILC_ERROR( SILC_ERROR_PARSE_INVALID_VALUE,
+                    "Can't parse number in config variable: %s",
+                    value );
+        return false;
+    }
+
+    /* does sscanf has consumed at least one digit and also
+       the complete string
+       Q: what about whitespace after the number? */
+    if ( number_of_consumed_characters == 0 ||
+         value[ number_of_consumed_characters ] != '\0' )
+    {
+        SILC_ERROR( SILC_ERROR_PARSE_INVALID_VALUE,
+                    "Can't parse number in config variable: %s",
+                    value );
+        return false;
+    }
+
+    /* pass */
+    return true;
+}
+
 
 /**
  * @brief remove leading and trailing whitespaces
