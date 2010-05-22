@@ -58,7 +58,7 @@ silc_create_experiment_dir( char* dirName,
     {
         createDir( dirName );
     }
-    MPI_Bcast( dirName, dirNameSize, MPI_CHAR, 0, MPI_COMM_WORLD );
+    //MPI_Bcast( dirName, dirNameSize, MPI_CHAR, 0, MPI_COMM_WORLD );
 
     return true;
 }

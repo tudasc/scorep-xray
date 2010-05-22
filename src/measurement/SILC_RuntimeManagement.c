@@ -255,8 +255,9 @@ silc_set_otf2_archive_master_slave()
 void
 silc_set_otf2_event_writer_location_id()
 {
-    SILC_Trace_LocationData* trace_data =
-        SILC_Thread_GetTraceLocationData( SILC_Thread_GetLocationData() );
+    SILC_Thread_LocationData* location   = SILC_Thread_GetLocationData();
+    SILC_Trace_LocationData*  trace_data =
+        SILC_Thread_GetTraceLocationData( location );
 
     assert( trace_data->otf_location != OTF2_UNDEFINED_UINT64 );
 
@@ -267,11 +268,11 @@ silc_set_otf2_event_writer_location_id()
         _Exit( EXIT_FAILURE );
     }
 
-    /** set new location id in location definition */
-    SILC_Location_Definition* definition =
-        SILC_MEMORY_DEREF_MOVABLE( trace_data->otf_location_handle,
+    /** set upper 32 bit of the id in the location definition */
+    SILC_Location_Definition* location_definition =
+        SILC_MEMORY_DEREF_MOVABLE( SILC_Thread_GetLocationHandle( location ),
                                    SILC_Location_Definition* );
-    definition->id = trace_data->otf_location;
+    location_definition->id = trace_data->otf_location;
 }
 
 
@@ -441,6 +442,7 @@ SILC_RecordingEnabled
     return false;
 }
 
+
 static void
 silc_finalize( void )
 {
@@ -450,6 +452,7 @@ silc_finalize( void )
     {
         return;
     }
+    silc_finalized = true;
 
     silc_adapters_finalize_location();
     silc_adapters_finalize();
@@ -465,10 +468,17 @@ silc_finalize( void )
     SILC_DefinitionLocks_Finalize();
     // keep this order as thread handling uses memory management
     SILC_Thread_Finalize();
-    silc_otf2_finalize();
-    SILC_Memory_Finalize();
 
-    silc_finalized = true;
+    // If we omit the first call to SILC_RenameExperimentDir() then we will
+    // get a strange glibc error that seems to originate from a call to
+    // localtime() inside SILC_RenameExperimentDir() and we miss the segfault
+    // in silc_otf2_finalize(). If the segfault is fixed we should remove the
+    // first call an activate the actual renaming.
+    SILC_RenameExperimentDir();
+    silc_otf2_finalize();
+    SILC_RenameExperimentDir();
+
+    SILC_Memory_Finalize();
 }
 
 
@@ -536,6 +546,7 @@ silc_otf2_finalize()
 {
     if ( silc_tracing_enabled ) // silc_tracing_enabled may change during runtime
     {
+        assert( silc_otf2_archive );
         OTF2_Archive_Delete( silc_otf2_archive );
     }
 }

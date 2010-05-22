@@ -90,12 +90,13 @@ silc_create_experiment_dir_name()
     {
         return;
     }
-    assert( !omp_in_parallel() ); // localtime() not reentrant
-    time_t now;
-    time( &now );
-    strftime( silc_experiment_dir_name, 20, "silc_%Y%m%d_%H%M_", localtime( &now ) );
-    snprintf( &( silc_experiment_dir_name[ 19 ] ), 11, "%u",
-              ( uint32_t )SILC_GetClockTicks() );
+    //assert( !omp_in_parallel() ); // localtime() not reentrant
+    //time_t now;
+    //time( &now );
+    //strftime( silc_experiment_dir_name, 20, "silc_%Y%m%d_%H%M_", localtime( &now ) );
+    //snprintf( &( silc_experiment_dir_name[ 19 ] ), 11, "%u",
+    //          ( uint32_t )SILC_GetClockTicks() );
+    snprintf( silc_experiment_dir_name, 21, "%s", "silc-measurement-tmp" );
 }
 
 
@@ -136,10 +137,54 @@ silc_create_directory( const char* dirname )
     mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
     if ( mkdir( silc_experiment_dir_name, mode ) == -1 )
     {
+        /// @todo We may check for EEXIST to provide a better error message.
+        ///       But if the measurement succeeds, this case should not happen
+        ///       because the directory will be renamed.
         SILC_ERROR_POSIX( "Can't create experiment directory \"%s\".",
                           silc_experiment_dir_name );
         _Exit( EXIT_FAILURE );
     }
+}
+
+
+void
+SILC_RenameExperimentDir()
+{
+    if ( SILC_Mpi_GetRank() > 0 )
+    {
+        return;
+    }
+
+    if ( !SILC_ExperimentDirIsCreated() )
+    {
+        return;
+    }
+
+    assert( !omp_in_parallel() ); // localtime() not reentrant
+    time_t     now;
+    time( &now );
+    struct tm* local_time;
+    local_time = localtime( &now );
+    if ( local_time == NULL )
+    {
+        perror( "localtime should not fail." );
+        exit( EXIT_FAILURE );
+    }
+
+    char new_experiment_dir_name[ dir_name_size ];
+    strftime( new_experiment_dir_name, 20, "silc-%Y%m%d_%H%M_", local_time );
+    snprintf( &( new_experiment_dir_name[ 19 ] ), 11,
+              "%u", ( uint32_t )SILC_GetClockTicks() );
+
+    char mv_dir[ 25 + dir_name_size ] = "mv silc-measurement-tmp ";
+    strcat( mv_dir, new_experiment_dir_name );
+
+//    if ( system( mv_dir ) == -1 )
+//    {
+//        SILC_ERROR_POSIX( "Can't rename experiment directory form silc-measurement-tmp to \"%s\".",
+//                          new_experiment_dir_name );
+//        _Exit( EXIT_FAILURE );
+//    }
 }
 
 

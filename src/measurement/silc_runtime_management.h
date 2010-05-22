@@ -59,6 +59,10 @@ bool
 SILC_ExperimentDirIsCreated();
 
 
+void
+SILC_RenameExperimentDir();
+
+
 uint64_t
 SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData );
 

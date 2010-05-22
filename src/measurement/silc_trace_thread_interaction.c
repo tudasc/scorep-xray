@@ -109,8 +109,6 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                                           OTF2_UNDEFINED_UINT64,
                                                           SILC_OnTracePreFlush,
                                                           SILC_OnTraceAndDefinitionPostFlush );
-    trace_data->otf_location_handle =
-        SILC_DefineLocation( trace_data->otf_location, "" );
     if ( !trace_data->otf_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );

@@ -26,6 +26,7 @@
 
 #include "silc_thread.h"
 //#include <pomp_lib.h>
+#include <silc_definitions.h>
 #include <SILC_Memory.h>
 #include <SILC_Omp.h>
 #include <assert.h>
@@ -78,6 +79,7 @@ struct SILC_Thread_LocationData
 {
     size_t                       location_id;
     SILC_Allocator_PageManager** page_managers;
+    SILC_LocationHandle          location_handle;
     SILC_Profile_LocationData*   profile_data;
     SILC_Trace_LocationData*     trace_data;
     SILC_Thread_LocationData*    next; // store location objects in list for easy cleanup
@@ -138,6 +140,9 @@ void
 silc_thread_call_externals_on_new_location( SILC_Thread_LocationData* locationData,
                                             SILC_Thread_LocationData* parent )
 {
+    // the upper 32 bit of the location_id will be updated
+    // in silc_set_otf2_event_writer_location_id()
+    locationData->location_handle = SILC_DefineLocation( locationData->location_id, "" );
     SILC_Profile_OnLocationCreation( locationData, parent );
     SILC_Trace_OnLocationCreation( locationData, parent );
 }
@@ -420,4 +425,11 @@ uint64_t
 SILC_Thread_GetLocationId( SILC_Thread_LocationData* locationData )
 {
     return locationData->location_id;
+}
+
+
+SILC_LocationHandle
+SILC_Thread_GetLocationHandle( SILC_Thread_LocationData* locationData )
+{
+    return locationData->location_handle;
 }

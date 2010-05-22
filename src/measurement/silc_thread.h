@@ -99,5 +99,8 @@ SILC_Thread_GetTraceLocationData( SILC_Thread_LocationData* locationData );
 uint64_t
 SILC_Thread_GetLocationId( SILC_Thread_LocationData* locationData );
 
+SILC_LocationHandle
+SILC_Thread_GetLocationHandle( SILC_Thread_LocationData* locationData );
+
 
 #endif /* SILC_INTERNAL_THREAD_H */
