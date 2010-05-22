@@ -468,13 +468,6 @@ silc_finalize( void )
     SILC_DefinitionLocks_Finalize();
     // keep this order as thread handling uses memory management
     SILC_Thread_Finalize();
-
-    // If we omit the first call to SILC_RenameExperimentDir() then we will
-    // get a strange glibc error that seems to originate from a call to
-    // localtime() inside SILC_RenameExperimentDir() and we miss the segfault
-    // in silc_otf2_finalize(). If the segfault is fixed we should remove the
-    // first call an activate the actual renaming.
-    SILC_RenameExperimentDir();
     silc_otf2_finalize();
     SILC_RenameExperimentDir();
 

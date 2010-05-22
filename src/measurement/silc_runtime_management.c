@@ -179,12 +179,12 @@ SILC_RenameExperimentDir()
     char mv_dir[ 25 + dir_name_size ] = "mv silc-measurement-tmp ";
     strcat( mv_dir, new_experiment_dir_name );
 
-//    if ( system( mv_dir ) == -1 )
-//    {
-//        SILC_ERROR_POSIX( "Can't rename experiment directory form silc-measurement-tmp to \"%s\".",
-//                          new_experiment_dir_name );
-//        _Exit( EXIT_FAILURE );
-//    }
+    if ( system( mv_dir ) == -1 )
+    {
+        SILC_ERROR_POSIX( "Can't rename experiment directory form silc-measurement-tmp to \"%s\".",
+                          new_experiment_dir_name );
+        _Exit( EXIT_FAILURE );
+    }
 }
 
 

@@ -46,7 +46,6 @@ static bool            silc_definitions_initialized = false;
 /* *INDENT-OFF* */
 static OTF2_DefWriter* silc_create_definition_writer();
 static OTF2_FlushType silc_on_definitions_pre_flush();
-static void silc_delete_definition_writer(OTF2_DefWriter* definitionWriter);
 static void silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
 static void silc_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
@@ -124,7 +123,6 @@ SILC_Definitions_Finalize()
 
     OTF2_DefWriter* definition_writer = silc_create_definition_writer();
     silc_write_definitions( definition_writer );
-    silc_delete_definition_writer( definition_writer );
 }
 
 
@@ -178,17 +176,6 @@ silc_write_definitions( OTF2_DefWriter* definitionWriter )
     silc_write_marker_definitions_to_otf2( definitionWriter );
     silc_write_parameter_definitions_to_otf2( definitionWriter );
     silc_write_callpath_definitions_to_otf2( definitionWriter );
-}
-
-
-static void
-silc_delete_definition_writer( OTF2_DefWriter* definitionWriter )
-{
-    SILC_Error_Code status = OTF2_DefWriter_Delete( definitionWriter );
-    if ( status != SILC_SUCCESS )
-    {
-        assert( 0 );
-    }
 }
 
 
