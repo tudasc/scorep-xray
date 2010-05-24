@@ -30,14 +30,14 @@
 #include "silc_runtime_management.h"
 #include "silc_definitions.h"
 #include "silc_thread.h"
-#include "silc_mpi.h"
+#include "silc_status.h"
 #include <stdlib.h>
 
 
 SILC_Trace_LocationData*
 SILC_Trace_CreateLocationData()
 {
-    if ( !silc_tracing_enabled )
+    if ( !SILC_IsTracingEnabled() )
     {
         return 0;
     }
@@ -65,7 +65,7 @@ void
 SILC_Trace_OnThreadCreation( SILC_Thread_LocationData* locationData,
                              SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !silc_tracing_enabled )
+    if ( !SILC_IsTracingEnabled() )
     {
         return;
     }
@@ -76,7 +76,7 @@ void
 SILC_Trace_OnThreadActivation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !silc_tracing_enabled )
+    if ( !SILC_IsTracingEnabled() )
     {
         return;
     }
@@ -87,7 +87,7 @@ void
 SILC_Trace_OnThreadDectivation( SILC_Thread_LocationData* locationData,
                                 SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !silc_tracing_enabled )
+    if ( !SILC_IsTracingEnabled() )
     {
         return;
     }
@@ -98,7 +98,7 @@ void
 SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !silc_tracing_enabled )
+    if ( !SILC_IsTracingEnabled() )
     {
         return;
     }

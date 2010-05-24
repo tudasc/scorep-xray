@@ -55,10 +55,6 @@ void
 SILC_CreateExperimentDir();
 
 
-bool
-SILC_ExperimentDirIsCreated();
-
-
 void
 SILC_RenameExperimentDir();
 
@@ -73,9 +69,6 @@ SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData );
  */
 extern OTF2_ArchiveData* silc_otf2_archive;
 
-extern bool              silc_profiling_enabled;
-
-extern bool              silc_tracing_enabled;
 
 /** @brief Did the first buffer flush happened, of so we can't switch to MPI
  *  anymore.

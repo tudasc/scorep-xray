@@ -46,7 +46,7 @@
 #include "silc_types.h"
 #include "silc_adapter.h"
 #include "silc_definitions.h"
-#include "silc_mpi.h"
+#include "silc_status.h"
 #include "silc_thread.h"
 #include "silc_runtime_management.h"
 #include "silc_definition_locking.h"
@@ -127,6 +127,7 @@ SILC_InitMeasurement( void )
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the adapter initialization.
     silc_initialized = true;
+    SILC_Status_Initialize();
 
     silc_initialization_sanity_checks();
     silc_register_config_variables( silc_configs );
@@ -149,7 +150,7 @@ SILC_InitMeasurement( void )
     SILC_Definitions_Initialize();
 
     SILC_Thread_Initialize();
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Initialize( 30, -1, 0, NULL );
         SILC_Profile_OnLocationCreation( SILC_Thread_GetLocationData(), NULL );
@@ -208,7 +209,7 @@ silc_register_config_variables( SILC_ConfigVariable configVars[] )
 void
 silc_otf2_initialize()
 {
-    if ( !silc_tracing_enabled )
+    if ( !SILC_IsTracingEnabled() )
     {
         return;
     }
@@ -225,7 +226,7 @@ silc_otf2_initialize()
 void
 silc_set_otf2_master_slave_and_location_id()
 {
-    assert( SILC_ExperimentDirIsCreated() );
+    assert( SILC_IsExperimentDirCreated() );
     silc_set_otf2_archive_master_slave();
     silc_set_otf2_event_writer_location_id();
 }
@@ -383,15 +384,15 @@ SILC_InitMeasurementMPI( int rank )
         _Exit( EXIT_FAILURE );
     }
 
-    if ( flush_done )
+    if ( SILC_Otf2_HasFlushed() )
     {
         fprintf( stderr, "ERROR: Switching to MPI mode after the first flush.\n" );
         fprintf( stderr, "       Consider to increase buffer size to prevent this.\n" );
         _Exit( EXIT_FAILURE );
     }
 
-    assert( rank == SILC_Mpi_GetRank() );
-
+    SILC_Mpi_SetIsInitialized();
+    SILC_Mpi_SetRankTo( rank );
     SILC_CreateExperimentDir();
 
     SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
@@ -399,6 +400,23 @@ SILC_InitMeasurementMPI( int rank )
     trace_data->otf_location = SILC_CalculateOTF2LocationId( locationData );
 
     silc_set_otf2_master_slave_and_location_id();
+}
+
+
+void
+SILC_FinalizeMeasurementMPI()
+{
+    SILC_Mpi_SetIsFinalized();
+    /*
+        // What Scalasca does here:
+        // mark start of finalization
+        // 2. clock synchronization if necessary
+            // measure offset
+            // write OFFSET record
+        // mark end of finalization
+        // emergency exit for cases where atexit not handled
+            // close on finalize
+     */
 }
 
 
@@ -458,7 +476,7 @@ silc_finalize( void )
     silc_adapters_finalize();
     silc_adapters_deregister();
 
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputNone );
         SILC_Profile_Finalize();
@@ -537,7 +555,7 @@ silc_adapters_deregister()
 void
 silc_otf2_finalize()
 {
-    if ( silc_tracing_enabled ) // silc_tracing_enabled may change during runtime
+    if ( SILC_IsTracingEnabled() )     // silc_tracing_enabled may change during runtime
     {
         assert( silc_otf2_archive );
         OTF2_Archive_Delete( silc_otf2_archive );

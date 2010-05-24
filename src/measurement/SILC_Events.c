@@ -41,6 +41,7 @@
 #include "silc_trace_types.h"
 #include "silc_thread.h"
 #include "silc_definition_handles.h"
+#include "silc_status.h"
 
 
 /**
@@ -67,7 +68,7 @@ SILC_EnterRegion
                           timestamp,
                           ( ( silc_any_definition* )regionHandle )->id );
 
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Enter( location, regionHandle,
                             SILC_REGION_UNKNOWN,
@@ -100,7 +101,7 @@ SILC_ExitRegion
                           timestamp,
                           ( ( silc_any_definition* )regionHandle )->id );
 
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Exit( location,
                            regionHandle,
@@ -330,7 +331,7 @@ SILC_TriggerCounterInt64
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_TriggerInteger( location, counterHandle, value );
     }
@@ -350,7 +351,7 @@ SILC_TriggerCounterDouble
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_TriggerDouble( location, counterHandle, value );
     }
@@ -384,7 +385,7 @@ SILC_TriggerParameterInt64
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 
-    if ( silc_profiling_enabled )
+    if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_ParameterInteger( location,
                                        parameterHandle,

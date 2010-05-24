@@ -221,7 +221,7 @@ MPI_Finalize()
  */
 
     /* finalize MPI event handling */
-    /* esd_mpi_finalize(); */
+    SILC_FinalizeMeasurementMPI();
 
     /* fake finalization, so that MPI can be used during EPIK finalization */
     return_val = PMPI_Barrier( MPI_COMM_WORLD );

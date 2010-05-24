@@ -29,7 +29,7 @@
 #include <SILC_Error.h>
 #include <SILC_Omp.h>
 #include <SILC_Memory.h>
-#include "silc_mpi.h"
+#include "silc_status.h"
 #include "silc_thread.h"
 #include "silc_definition_structs.h"
 
@@ -51,15 +51,8 @@ static bool silc_dir_name_is_created();
 
 char silc_experiment_dir_name[ dir_name_size ];
 
-static bool       silc_is_experiment_dir_created = false;
-
 OTF2_ArchiveData* silc_otf2_archive = 0;
 
-bool              silc_profiling_enabled = true;
-
-bool              silc_tracing_enabled = true;
-
-bool              flush_done = false;
 
 char*
 SILC_GetExperimentDirName()
@@ -71,15 +64,18 @@ SILC_GetExperimentDirName()
 void
 SILC_CreateExperimentDir()
 {
-    if ( silc_is_experiment_dir_created )
+    if ( SILC_IsExperimentDirCreated() )
     {
         return;
     }
     silc_create_experiment_dir_name();
-    silc_is_experiment_dir_created =
-        silc_create_experiment_dir( silc_experiment_dir_name,
-                                    dir_name_size,
-                                    silc_create_directory );
+
+    if ( silc_create_experiment_dir( silc_experiment_dir_name,
+                                     dir_name_size,
+                                     silc_create_directory ) )
+    {
+        SILC_SetExperimentDirIsCreated();
+    }
 }
 
 
@@ -90,12 +86,6 @@ silc_create_experiment_dir_name()
     {
         return;
     }
-    //assert( !omp_in_parallel() ); // localtime() not reentrant
-    //time_t now;
-    //time( &now );
-    //strftime( silc_experiment_dir_name, 20, "silc_%Y%m%d_%H%M_", localtime( &now ) );
-    //snprintf( &( silc_experiment_dir_name[ 19 ] ), 11, "%u",
-    //          ( uint32_t )SILC_GetClockTicks() );
     snprintf( silc_experiment_dir_name, 21, "%s", "silc-measurement-tmp" );
 }
 
@@ -107,22 +97,21 @@ silc_dir_name_is_created()
 }
 
 
-bool
-SILC_ExperimentDirIsCreated()
-{
-    return silc_is_experiment_dir_created;
-}
-
-
 uint64_t
 SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData )
 {
+    // When in MPI mode this function is called twice. During the first call, the
+    // MPI rank is not known, but set to 0.
     SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
     assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 || // first call
             trace_data->otf_location == 0 );                     // first call was with rank == 0 and location == 0
                                                                  // re-call from SILC_InitMeasurementMPI()
 
-    uint64_t rank         = SILC_Mpi_GetRank();
+    uint64_t rank = 0;
+    if ( SILC_Mpi_IsInitialized() )
+    {
+        rank = SILC_Mpi_GetRank();
+    }
     uint64_t location     = SILC_Thread_GetLocationId( locationData );
     uint64_t otf_location = ( rank << 32 ) | location;
     assert( rank     >> 32 == 0 );
@@ -155,15 +144,15 @@ SILC_RenameExperimentDir()
         return;
     }
 
-    if ( !SILC_ExperimentDirIsCreated() )
+    if ( !SILC_IsExperimentDirCreated() )
     {
         return;
     }
 
     assert( !omp_in_parallel() ); // localtime() not reentrant
     time_t     now;
-    time( &now );
     struct tm* local_time;
+    time( &now );
     local_time = localtime( &now );
     if ( local_time == NULL )
     {
@@ -176,10 +165,7 @@ SILC_RenameExperimentDir()
     snprintf( &( new_experiment_dir_name[ 19 ] ), 11,
               "%u", ( uint32_t )SILC_GetClockTicks() );
 
-    char mv_dir[ 25 + dir_name_size ] = "mv silc-measurement-tmp ";
-    strcat( mv_dir, new_experiment_dir_name );
-
-    if ( system( mv_dir ) == -1 )
+    if ( rename( "silc-measurement-tmp", new_experiment_dir_name ) != 0 )
     {
         SILC_ERROR_POSIX( "Can't rename experiment directory form silc-measurement-tmp to \"%s\".",
                           new_experiment_dir_name );
@@ -194,7 +180,7 @@ SILC_OnTraceAndDefinitionPostFlush( void )
     /* remember that we have flushed the first time
      * after this point, we can't switch into MPI mode anymore
      */
-    flush_done = true;
+    SILC_Otf2_SetHasFlushed();
 
     return SILC_GetClockTicks();
 }

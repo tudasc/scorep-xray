@@ -24,22 +24,19 @@
  */
 
 
-#include "silc_mpi.h"
+#include "silc_status.h"
 
-#include <mpi.h>
 #include <SILC_Debug.h>
 
-uint64_t
-SILC_Mpi_GetRank()
+
+extern void
+silc_status_initialize_mpi();
+
+
+void
+SILC_Status_Initialize()
 {
-    int rank = 0;
-    int is_initialized;
-    MPI_Initialized( &is_initialized );
-    if ( is_initialized )
-    {
-        MPI_Comm_rank( MPI_COMM_WORLD, &rank );
-    }
-    return rank;
+    silc_status_initialize_mpi();
 }
 
 
@@ -68,13 +65,4 @@ bool
 SILC_Mpi_HasMpi()
 {
     return true;
-}
-
-
-bool
-SILC_Mpi_IsInitialized()
-{
-    int is_initialized;
-    MPI_Initialized( &is_initialized );
-    return is_initialized;
 }

@@ -36,7 +36,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <SILC_Debug.h>
-#include "silc_mpi.h"
+#include "silc_status.h"
 
 
 SILC_DefinitionManager silc_definition_manager;

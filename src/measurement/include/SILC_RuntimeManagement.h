@@ -108,7 +108,7 @@ SILC_FinalizeMeasurement
 
 /**
  * Special initialization of the measurement system when using MPI. This
- * function must be called only after a successful call to PMPI_Init.
+ * function must be called only after a successful call to PMPI_Init().
  *
  */
 void
@@ -116,6 +116,15 @@ SILC_InitMeasurementMPI
 (
     int rank
 );
+
+
+/**
+ * Special finalization of the measurement system when using MPI. This
+ * function must be called before the actual PMPI_Finalize().
+ *
+ */
+void
+SILC_FinalizeMeasurementMPI();
 
 
 /**
