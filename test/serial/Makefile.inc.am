@@ -1,0 +1,28 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+
+check_PROGRAMS += serial_test
+
+serial_test_SOURCES = $(SRC_ROOT)test/serial/serial_test.c
+serial_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+serial_test_LDADD = $(LIB_ROOT)libsilc_serial.la
+
+TESTS += serial_test

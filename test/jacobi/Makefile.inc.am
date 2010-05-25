@@ -34,7 +34,7 @@ jacobi_serial_c_uninstrumented_SOURCES  = $(jacobi_serial_c_sources)
 jacobi_serial_c_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_c_uninstrumented_LDADD    = -lm
 
-TESTS += jacobi_serial_c
+#TESTS += jacobi_serial_c
 
 ## OpenMP C
 
