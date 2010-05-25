@@ -48,8 +48,8 @@ bool silc_profile_reinitialize = false;
 /** Initializes the profile definition struct
  */
 void
-silc_profile_init_definition( uint32_t            max_callpath_depth,
-                              uint32_t            max_callpath_num,
+silc_profile_init_definition( uint64_t            max_callpath_depth,
+                              uint64_t            max_callpath_num,
                               uint32_t            num_dense_metrics,
                               SILC_CounterHandle* metrics )
 {

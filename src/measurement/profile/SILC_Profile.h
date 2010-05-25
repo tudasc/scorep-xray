@@ -84,19 +84,15 @@ typedef enum
 /* ----------------------------------------------------- Initialization / Finalization */
 
 /**
+   Registers configuration variables to the SILC measurement system. Enables the
+   configuration and program start from SILC configuration mechanisms.
+ */
+void
+SILC_Profile_Register();
+
+/**
    Initializes the Profiling system. Needed to be called before any other
    profile function is called.
-   @param maxCallpathDepth Allows to limit the depth of the calltree. If the current
-                           callpath becomes longer than specified by this parameter,
-                           no further child nodes for this callpath are created.
-                           This limit allows a reduction of the number of callpathes,
-                           especially, if the application contains recursive function
-                           calls.
-   @param maxCallpathNum Allows to limit the number of nodes in the calltree. If the
-                         number of nodes in the calltree reaches its limit, no further
-                         callpathes are created. All new callpathes are collapsed into
-                         a single node. This parameter allows to limit the memory
-                         usage of the profile.
    @param numDenseMetrics The number of dense metrics which are recorded for each
                           callpath. It is assumed that a metric value is provided on
                           every enter and exit event. The difference of the metric value
@@ -107,9 +103,7 @@ typedef enum
                   the definitions in this array.
  */
 void
-SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
-                         uint32_t            maxCallpathNum,
-                         int32_t             numDenseMetrics,
+SILC_Profile_Initialize( int32_t             numDenseMetrics,
                          SILC_CounterHandle* metrics );
 
 /**
@@ -130,6 +124,26 @@ SILC_Profile_Finalize();
 void
 SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
                       SILC_Profile_OutputFormat   outputFormat );
+
+/**
+   Configures the callpath size for the next profile. The configuration is stored and
+   applied on the next (re)initialization of the profile. It has no effect on the current
+   profile.
+   @param maxCallpathDepth Allows to limit the depth of the calltree. If the current
+                           callpath becomes longer than specified by this parameter,
+                           no further child nodes for this callpath are created.
+                           This limit allows a reduction of the number of callpathes,
+                           especially, if the application contains recursive function
+                           calls.
+   @param maxCallpathNum Allows to limit the number of nodes in the calltree. If the
+                         number of nodes in the calltree reaches its limit, no further
+                         callpathes are created. All new callpathes are collapsed into
+                         a single node. This parameter allows to limit the memory
+                         usage of the profile.
+ */
+void
+SILC_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
+                                       uint32_t maxCallpathNum );
 
 /* -------------------------------------------------------------------- Callpath Events */
 

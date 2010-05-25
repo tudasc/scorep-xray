@@ -153,7 +153,8 @@ SILC_InitMeasurement( void )
     SILC_Thread_Initialize();
     if ( SILC_IsProfilingEnabled() )
     {
-        SILC_Profile_Initialize( 30, -1, 0, NULL );
+        SILC_Profile_Register();
+        SILC_Profile_Initialize( 0, NULL );
         SILC_Profile_OnLocationCreation( SILC_Thread_GetLocationData(), NULL );
         SILC_Profile_OnThreadActivation( SILC_Thread_GetLocationData(), NULL );
     }

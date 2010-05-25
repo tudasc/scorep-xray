@@ -54,10 +54,10 @@ typedef struct
     SILC_CounterHandle* dense_metrics;
 
     /** Maximum possible depth of the calltree */
-    uint32_t max_callpath_depth;
+    uint64_t max_callpath_depth;
 
     /** Maximum number of callpathes */
-    uint32_t max_callpath_num;
+    uint64_t max_callpath_num;
 } silc_profile_definition;
 
 /** Global profile definition instance */
@@ -69,8 +69,8 @@ extern bool silc_profile_is_initialized;
 /** Initializes the profile definition struct
  */
 void
-silc_profile_init_definition( uint32_t            max_callpath_depth,
-                              uint32_t            max_Callpath_num,
+silc_profile_init_definition( uint64_t            max_callpath_depth,
+                              uint64_t            max_Callpath_num,
                               uint32_t            num_dense_metrics,
                               SILC_CounterHandle* metrics );
 

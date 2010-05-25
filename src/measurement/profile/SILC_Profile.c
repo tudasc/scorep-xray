@@ -26,6 +26,7 @@
 #include "SILC_Memory.h"
 #include "SILC_Utils.h"
 #include "SILC_Profile.h"
+#include "SILC_Config.h"
 
 #include "silc_thread.h"
 
@@ -45,6 +46,46 @@ struct SILC_Profile_LocationData
     silc_profile_node* creation_node; // Node where the thread was created
     uint32_t           current_depth; // Stores the current length of the callpath
 };
+
+/**
+   Allows to limit the depth of the calltree. If the current
+   callpath becomes longer than specified by this parameter,
+   no further child nodes for this callpath are created.
+   This limit allows a reduction of the number of callpathes,
+   especially, if the application contains recursive function
+   calls.
+ */
+static uint64_t silc_profile_max_callpath_depth = 30;
+
+/**
+   Allows to limit the number of nodes in the calltree. If the
+   number of nodes in the calltree reaches its limit, no further
+   callpathes are created. All new callpathes are collapsed into
+   a single node. This parameter allows to limit the memory
+   usage of the profile.
+ */
+static uint64_t silc_profile_max_callpath_num = -1;
+
+/**
+   Configuration variable registration structures for the profiling system.
+ */
+static SILC_ConfigVariable silc_profile_configs[] = {
+    { "MaxCallpathDepth",
+      SILC_CONFIG_TYPE_NUMBER,
+      &silc_profile_max_callpath_depth,
+      NULL,
+      "30",
+      "Maximum depth of the calltree",
+      "Maximum depth of the calltree" },
+    { "MaxCallpathNum",
+      SILC_CONFIG_TYPE_NUMBER,
+      &silc_profile_max_callpath_num,
+      NULL,
+      "1000000000",
+      "Maximum number of nodes in the calltree",
+      "Maximum number of nodes in the calltree" }
+};
+
 
 /* ***************************************************************************************
    internal helper functions
@@ -156,9 +197,14 @@ silc_profile_setup_start_from_parent( silc_profile_node* node )
 *****************************************************************************************/
 
 void
-SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
-                         uint32_t            maxCallpathNum,
-                         int32_t             numDenseMetrics,
+SILC_Profile_Register()
+{
+    SILC_ConfigRegister( NULL, silc_profile_configs );
+}
+
+
+void
+SILC_Profile_Initialize( int32_t             numDenseMetrics,
                          SILC_CounterHandle* metrics )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY,
@@ -172,7 +218,8 @@ SILC_Profile_Initialize( uint32_t            maxCallpathDepth,
 
     silc_profile_is_initialized = true;
 
-    silc_profile_init_definition( maxCallpathDepth, maxCallpathNum,
+    silc_profile_init_definition( silc_profile_max_callpath_depth,
+                                  silc_profile_max_callpath_num,
                                   numDenseMetrics, metrics );
 }
 
@@ -271,6 +318,13 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
     SILC_DEBUG_ONLY( silc_profile_dump() );
 }
 
+void
+SILC_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
+                                       uint32_t maxCallpathNum )
+{
+    silc_profile_max_callpath_depth = maxCallpathDepth;
+    silc_profile_max_callpath_num   = maxCallpathNum;
+}
 /* ***************************************************************************************
    Callpath events
 *****************************************************************************************/

@@ -77,7 +77,7 @@ libsilc_adapter_compiler_la_SOURCES +=                        \
 	$(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
 endif
 
-# sx specific setings
+# sx specific settings
 
 if SILC_COMPILER_SX
 libsilc_adapter_compiler_la_SOURCES +=                          \
