@@ -26,4 +26,17 @@ test_link_LDADD = \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libsilc_utilities.la \
     -lm
+
+
+check_PROGRAMS += mpi_hello_world
+mpi_hello_world_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
+mpi_hello_world_LDADD =                 \
+    $(LIB_ROOT)libsilc_mpi.la           \
+    $(LIB_DIR_OTF2)libotf2.la           \
+    $(LIB_DIR_UTIL)libsilc_utilities.la \
+    -lm
+
+check_PROGRAMS += mpi_hello_world_uninstrumented
+mpi_hello_world_uninstrumented_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
+
 endif
