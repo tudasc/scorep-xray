@@ -83,7 +83,8 @@ static SILC_ConfigVariable silc_profile_configs[] = {
       NULL,
       "1000000000",
       "Maximum number of nodes in the calltree",
-      "Maximum number of nodes in the calltree" }
+      "Maximum number of nodes in the calltree" },
+    SILC_CONFIG_TERMINATOR
 };
 
 
