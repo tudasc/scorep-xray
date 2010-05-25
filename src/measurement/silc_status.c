@@ -24,6 +24,7 @@
 
 
 #include "silc_status.h"
+#include "silc_mpi.h"
 
 #include <limits.h>
 #include <assert.h>

@@ -24,7 +24,7 @@
  */
 
 
-#include "silc_status.h"
+#include "silc_mpi.h"
 
 
 extern void
@@ -52,4 +52,11 @@ bool
 SILC_Mpi_HasMpi()
 {
     return false;
+}
+
+
+void
+SILC_Mpi_GlobalBarrier()
+{
+    // nothing to to here
 }

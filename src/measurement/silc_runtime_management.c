@@ -30,6 +30,7 @@
 #include <SILC_Omp.h>
 #include <SILC_Memory.h>
 #include "silc_status.h"
+#include "silc_mpi.h"
 #include "silc_thread.h"
 #include "silc_definition_structs.h"
 
@@ -139,6 +140,7 @@ silc_create_directory( const char* dirname )
 void
 SILC_RenameExperimentDir()
 {
+    SILC_Mpi_GlobalBarrier();
     if ( SILC_Mpi_GetRank() > 0 )
     {
         return;

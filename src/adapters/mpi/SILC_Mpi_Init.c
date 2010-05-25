@@ -175,6 +175,7 @@ silc_mpi_finalize
         if ( !res )
         {
             PMPI_Finalize();
+            SILC_Mpi_SetIsFinalized();
         }
     }
     SILC_MPI_EVENT_GEN_ON();

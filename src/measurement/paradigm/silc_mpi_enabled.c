@@ -24,9 +24,11 @@
  */
 
 
-#include "silc_status.h"
+#include "silc_mpi.h"
 
 #include <SILC_Debug.h>
+#include <mpi.h>
+#include <assert.h>
 
 
 extern void
@@ -65,4 +67,14 @@ bool
 SILC_Mpi_HasMpi()
 {
     return true;
+}
+
+
+void
+SILC_Mpi_GlobalBarrier()
+{
+    assert( SILC_Mpi_IsInitialized() );
+    assert( !SILC_Mpi_IsFinalized() );
+    int status = PMPI_Barrier( MPI_COMM_WORLD );
+    assert( status == MPI_SUCCESS );
 }

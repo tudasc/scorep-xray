@@ -27,13 +27,14 @@ jacobi_serial_c_sources  = $(SRC_ROOT)test/jacobi/serial/C/jacobi.c  \
                            $(SRC_ROOT)test/jacobi/serial/C/main.c
 jacobi_serial_c_SOURCES  = $(jacobi_serial_c_sources)                          
 jacobi_serial_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_serial_c_LDADD    = $(LIB_ROOT)libsilc_serial.la $(LIB_ROOT)libsilc_pomp_dummy.la
+jacobi_serial_c_LDADD    = $(LIB_ROOT)libsilc_serial.la
 
 check_PROGRAMS                         += jacobi_serial_c_uninstrumented
 jacobi_serial_c_uninstrumented_SOURCES  = $(jacobi_serial_c_sources)
 jacobi_serial_c_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_c_uninstrumented_LDADD    = -lm
 
+TESTS += jacobi_serial_c
 
 ## OpenMP C
 
@@ -65,7 +66,7 @@ jacobi_serial_cxx_sources  = $(SRC_ROOT)test/jacobi/serial/C++/jacobi.cpp  \
                              $(SRC_ROOT)test/jacobi/serial/C++/main.cpp
 jacobi_serial_cxx_SOURCES  = $(jacobi_serial_cxx_sources)                          
 jacobi_serial_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_serial_cxx_LDADD    = $(LIB_ROOT)libsilc_serial.la $(LIB_ROOT)libsilc_pomp_dummy.la
+jacobi_serial_cxx_LDADD    = $(LIB_ROOT)libsilc_serial.la
 
 check_PROGRAMS                           += jacobi_serial_cxx_uninstrumented
 jacobi_serial_cxx_uninstrumented_SOURCES  = $(jacobi_serial_cxx_sources)
@@ -104,7 +105,7 @@ jacobi_serial_f90_sources  = $(SRC_ROOT)test/jacobi/serial/Fortran/VariableDef.f
                              $(SRC_ROOT)test/jacobi/serial/Fortran/main.F90
 jacobi_serial_f90_SOURCES  = $(jacobi_serial_f90_sources)                          
 jacobi_serial_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la $(LIB_ROOT)libsilc_pomp_dummy.la
+jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la
 
 check_PROGRAMS                           += jacobi_serial_f90_uninstrumented
 jacobi_serial_f90_uninstrumented_SOURCES  = $(jacobi_serial_f90_sources)

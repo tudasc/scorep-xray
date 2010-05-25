@@ -47,6 +47,7 @@
 #include "silc_adapter.h"
 #include "silc_definitions.h"
 #include "silc_status.h"
+#include "silc_mpi.h"
 #include "silc_thread.h"
 #include "silc_runtime_management.h"
 #include "silc_definition_locking.h"
@@ -365,7 +366,7 @@ SILC_FinalizeMeasurement
 )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
-
+    SILC_FinalizeMeasurementMPI();
     silc_finalize();
 }
 
@@ -406,7 +407,6 @@ SILC_InitMeasurementMPI( int rank )
 void
 SILC_FinalizeMeasurementMPI()
 {
-    SILC_Mpi_SetIsFinalized();
     /*
         // What Scalasca does here:
         // mark start of finalization
@@ -472,23 +472,23 @@ silc_finalize( void )
     }
     silc_finalized = true;
 
-    silc_adapters_finalize_location();
-    silc_adapters_finalize();
-    silc_adapters_deregister();
-
     if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputNone );
         SILC_Profile_Finalize();
     }
 
+    // order is important
     SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();
-    // keep this order as thread handling uses memory management
-    SILC_Thread_Finalize();
     silc_otf2_finalize();
-    SILC_RenameExperimentDir();
+    SILC_RenameExperimentDir();  // needs MPI
 
+    silc_adapters_finalize_location();
+    silc_adapters_finalize(); // here PMPI_Finalize is called
+    silc_adapters_deregister();
+
+    SILC_Thread_Finalize();
     SILC_Memory_Finalize();
 }
 

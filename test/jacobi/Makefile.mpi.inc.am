@@ -29,7 +29,7 @@ jacobi_mpi_c_sources  = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
                         $(SRC_ROOT)test/jacobi/MPI/C/main.c
 jacobi_mpi_c_SOURCES  = $(jacobi_mpi_c_sources)
 jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_mpi_c_LDADD    = $(LIB_ROOT)libsilc_mpi.la $(LIB_ROOT)libsilc_pomp_dummy.la
+jacobi_mpi_c_LDADD    = $(LIB_ROOT)libsilc_mpi.la
 
 check_PROGRAMS                      += jacobi_mpi_c_uninstrumented
 jacobi_mpi_c_uninstrumented_SOURCES  = $(jacobi_mpi_c_sources)
@@ -67,7 +67,7 @@ jacobi_mpi_cxx_sources  = $(SRC_ROOT)test/jacobi/MPI/C++/jacobi.cpp  \
                           $(SRC_ROOT)test/jacobi/MPI/C++/main.cpp
 jacobi_mpi_cxx_SOURCES  = $(jacobi_mpi_cxx_sources)
 jacobi_mpi_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_mpi_cxx_LDADD    = $(LIB_ROOT)libsilc_mpi.la $(LIB_ROOT)libsilc_pomp_dummy.la
+jacobi_mpi_cxx_LDADD    = $(LIB_ROOT)libsilc_mpi.la
 
 check_PROGRAMS                        += jacobi_mpi_cxx_uninstrumented
 jacobi_mpi_cxx_uninstrumented_SOURCES  = $(jacobi_mpi_cxx_sources)
@@ -107,7 +107,7 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
 jacobi_mpi_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@
-jacobi_mpi_f90_LDADD    = $(LIB_ROOT)libsilc_mpi.la $(LIB_ROOT)libsilc_pomp_dummy.la
+jacobi_mpi_f90_LDADD    = $(LIB_ROOT)libsilc_mpi.la
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)

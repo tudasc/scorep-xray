@@ -34,59 +34,6 @@ void
 SILC_Status_Initialize();
 
 
-void
-SILC_Mpi_SetIsInitialized();
-
-
-void
-SILC_Mpi_SetIsFinalized();
-
-
-void
-SILC_Mpi_SetRankTo( int rank );
-
-
-/**
- * Get the rank of the process.
- *
- * @return In MPI mode we will get the rank of the process in MPI_COMM_WORLD's
- * group, i.e. MPI_Comm_rank(MPI_COMM_WORLD, &rank). In any other mode we will
- * get 0. Calls to this function before MPI_Init() will fail.
- */
-int
-SILC_Mpi_GetRank();
-
-
-/**
- * Indicates whether we are a MPI application or not. This eases the
- * initialization process.
- *
- * @return In MPI mode return true, false otherwise.
- */
-bool
-SILC_Mpi_HasMpi();
-
-
-/**
- * Indicates whether MPI_Init() was already called or not. In non-MPI mode always true
- *
- * @return In MPI mode true if MPI_Init() has been called earlier, false otherwise.
- *         In non-MPI mode always true.
- */
-bool
-SILC_Mpi_IsInitialized();
-
-
-/**
- * Indicates whether MPI_Finalize() was already called or not. In non-MPI mode always true
- *
- * @return In MPI mode true if MPI_Finalize() has been called before, false otherwise.
- *         In non-MPI mode always true.
- */
-bool
-SILC_Mpi_IsFinalized();
-
-
 bool
 SILC_IsTracingEnabled();
 
