@@ -445,7 +445,7 @@ parse_bitset( const char*               value,
 }
 
 
-static inline bool
+static inline void
 dump_set( const char* prefix,
           char**      stringList )
 {
@@ -468,7 +468,7 @@ dump_set( const char* prefix,
                            "%s%s\n", prefix_printed, empty_set );
 }
 
-static inline bool
+static inline void
 dump_bitset( const char*               prefix,
              uint64_t                  bitmask,
              SILC_ConfigType_SetEntry* acceptedValues )
