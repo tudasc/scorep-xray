@@ -218,7 +218,7 @@ SILC_GetClockTicks()
     uint32_t low  = 0;
     uint32_t high = 0;
 
-    asm volatile ( "rdtsc" : "=a" ( low ), "=d" ( high ) );
+    __asm__ volatile ( "rdtsc" : "=a" ( low ), "=d" ( high ) );
 
     clock_value = ( ( uint64_t )high << 32 ) | ( uint64_t )low;
 
