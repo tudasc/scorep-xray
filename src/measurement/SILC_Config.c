@@ -329,7 +329,7 @@ parse_set( const char* value,
     }
     *stringListReference = NULL;
     char** string_list = alloc_result;
-    char*  value_copy  = alloc_result + ( string_list_alloc + 1 ) * sizeof( char* );
+    char*  value_copy  = ( char* )alloc_result + ( string_list_alloc + 1 ) * sizeof( char* );
     strcpy( value_copy, value );
 
     size_t string_list_len = 0;
