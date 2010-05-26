@@ -41,7 +41,8 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_definition_structs.h        \
     $(SRC_ROOT)src/measurement/silc_definition_handles.h        \
     $(SRC_ROOT)src/measurement/silc_status.c                    \
-    $(SRC_ROOT)src/measurement/silc_status.h
+    $(SRC_ROOT)src/measurement/silc_status.h                    \
+    $(SRC_ROOT)src/measurement/silc_mpi.h
 
 
 libsilc_measurement_la_CPPFLAGS =               \

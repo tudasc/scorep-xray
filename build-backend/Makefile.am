@@ -32,3 +32,8 @@ BUILD_DIR=build-backend
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../build-config/m4
+
+clean-local: clean-local-silc-experiment-dirs
+.PHONY: clean-local-silc-experiment-dirs
+clean-local-silc-experiment-dirs:
+	rm -rf silc-2*
