@@ -418,8 +418,8 @@ silc_pomp_assign_region_type( silc_pomp_parsing_data* obj,
 static void
 silc_pomp_assign_source_code_location( silc_pomp_parsing_data* obj,
                                        char**                  filename,
-                                       unsigned*               line1,
-                                       unsigned*               line2,
+                                       int32_t*                line1,
+                                       int32_t*                line2,
                                        char*                   value )
 {
     char* token    = value;

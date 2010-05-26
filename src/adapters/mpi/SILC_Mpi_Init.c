@@ -145,7 +145,7 @@ silc_mpi_init_location
  */
 void
 silc_mpi_final_location
-    ()
+    ( void* location )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_MPI | SILC_DEBUG_FUNCTION_ENTRY,
                        "In silc_mpi_final_location\n" );

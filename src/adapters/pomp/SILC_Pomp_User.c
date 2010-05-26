@@ -181,7 +181,7 @@ silc_pomp_init_location()
 /** Allows finaltialization of location specific data. Nothing done inside this funcion.
  */
 void
-silc_pomp_final_location()
+silc_pomp_final_location( void* location )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
                        "In silc_pomp_final_location\n" );

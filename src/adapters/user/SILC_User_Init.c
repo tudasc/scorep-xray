@@ -70,7 +70,7 @@ silc_user_init_location()
 /** Finalizes the location specific data of the user adapter.
  */
 void
-silc_user_final_location()
+silc_user_final_location( void* location )
 {
 }
 

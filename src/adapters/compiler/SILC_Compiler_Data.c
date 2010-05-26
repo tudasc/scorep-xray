@@ -23,6 +23,8 @@
  *        adapters.
  */
 
+#include <string.h>
+#include <unistd.h>
 
 #include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
@@ -168,8 +170,8 @@ silc_compiler_hash_put
     silc_compiler_hash_node* add       = ( silc_compiler_hash_node* )
                                          malloc( sizeof( silc_compiler_hash_node ) );
     add->key                       = key;
-    add->region_name               = region_name ? strdup( region_name ) : NULL;
-    add->file_name                 = file_name ? strdup( file_name ) : NULL;
+    add->region_name               = ( region_name ? strdup( region_name ) : NULL );
+    add->file_name                 = ( file_name ? strdup( file_name ) : NULL );
     add->line_no_begin             = line_no_begin;
     add->line_no_end               = SILC_INVALID_LINE_NO;
     add->region_handle             = SILC_INVALID_REGION;
