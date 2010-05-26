@@ -334,10 +334,9 @@ parse_set( const char* value,
 
     size_t string_list_len = 0;
     char*  entry;
-    char*  saveptr;
     bool   success          = true;
     char*  value_for_strtok = value_copy;
-    while ( ( entry = trim_string( strtok_r( value_for_strtok, " ,:;", &saveptr ) ) ) )
+    while ( ( entry = trim_string( strtok( value_for_strtok, " ,:;" ) ) ) )
     {
         /* all but the first call to strtok should be NULL */
         value_for_strtok = NULL;
@@ -412,10 +411,9 @@ parse_bitset( const char*               value,
     *bitsetReference = 0;
 
     char* entry;
-    char* saveptr;
     bool  success          = true;
     char* value_for_strtok = value_copy;
-    while ( ( entry = trim_string( strtok_r( value_for_strtok, " ,:;", &saveptr ) ) ) )
+    while ( ( entry = trim_string( strtok( value_for_strtok, " ,:;" ) ) ) )
     {
         /* all but the first call to strtok should be NULL */
         value_for_strtok = NULL;
