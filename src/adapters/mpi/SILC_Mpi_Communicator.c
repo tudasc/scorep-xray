@@ -332,8 +332,7 @@ silc_mpi_win_free( MPI_Win win )
 void
 silc_mpi_comm_init()
 {
-    int            i;
-    unsigned char* grpv;
+    int i;
 
     /* check, if we already initialized the data structures */
     if ( !silc_mpi_comm_initialized )
@@ -360,8 +359,6 @@ silc_mpi_comm_init()
         silc_mpi_world.handle =
             SILC_DefineMPICommunicator( silc_mpi_world.size,
                                         silc_mpi_world.ranks );
-
-        free( grpv );
     }
     else
     {
