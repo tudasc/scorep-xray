@@ -40,6 +40,9 @@ EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
               $(srcdir)/src/config-frontend.h.in
 endif
 
+
+.PHONY: doxygen-project-number update-revision clean-doxygen-user doxygen-user doxygen-user-pdf beautify beautify-clean
+
 clean-local: clean-doxygen-user
 	rm -rf user_provided_configure_args
 
@@ -75,15 +78,12 @@ dist-hook: doxygen-user-pdf
 	fi
 #	rm -rf "$(USER_DOC_DIR)/doxygen"
 
-.PHONY: doxygen-project-number
 doxygen-project-number: update-revision
 	echo "PROJECT_NUMBER = `cat $(srcdir)/build-config/VERSION` (revision `cat $(srcdir)/build-config/REVISION`)" > doc/doxygen-project-number.cfg
 
-.PHONY: update-revision
 update-revision:
 	echo `svnversion $(srcdir)` > "$(srcdir)/build-config/REVISION"
 
-.PHONY: clean-doxygen-user
 clean-doxygen-user:
 	rm -f doc/doxygen-project-number.cfg
 	rm -f doc/doxygen-at-make-time.cfg
@@ -91,7 +91,6 @@ clean-doxygen-user:
 
 if HAVE_DOXYGEN #-----------------------------------------------------
 
-.PHONY: doxygen-user
 doxygen-user: doxygen-project-number
 	$(MKDIR_P) "$(USER_DOC_DIR)/tags"
 	echo "OUTPUT_DIRECTORY = $(USER_DOC_DIR)" > doc/doxygen-at-make-time.cfg
@@ -100,7 +99,6 @@ doxygen-user: doxygen-project-number
 
 else # i.e. ! HAVE_DOXYGEN -------------------------------------------
 
-.PHONY: doxygen-user
 doxygen-user: doxygen-project-number
 	echo "WARNING: can not generate doxygen html documentation." >&2
 
@@ -108,7 +106,6 @@ endif # HAVE_DOXYGEN -------------------------------------------------
 
 if HAVE_DOXYGEN_LATEX #-----------------------------------------------
 
-.PHONY: doxygen-user-pdf
 doxygen-user-pdf: doxygen-user
 	cd "$(USER_DOC_DIR)/pdf"; \
 	make;                     \
@@ -118,7 +115,6 @@ doxygen-user-pdf: doxygen-user
 
 else # i.e. ! HAVE_DOXYGEN_LATEX -------------------------------------
 
-.PHONY: doxygen-user-pdf
 doxygen-user-pdf: doxygen-user
 	echo "WARNING: can not generate doxygen pdf documentation." >&2
 	if test -d "$(USER_DOC_DIR)/pdf"; then rm -rf "$(USER_DOC_DIR)/pdf"; fi
@@ -127,7 +123,6 @@ endif # HAVE_DOXYGEN_LATEX -------------------------------------------
 
 else # i.e. ! SVN_CONTROLLED -------------------------------------------------
 
-.PHONY: clean-doxygen-user
 clean-doxygen-user:
 
 DOC_SRC_DIR = $(srcdir)/doc
@@ -202,14 +197,12 @@ endif # SVN_CONTROLLED -------------------------------------------------------
 if SVN_CONTROLLED #-----------------------------------------------------------
 if HAVE_UNCRUSTIFY
 
-.PHONY: beautify
 beautify:
 	for dir in $(SUBDIRS); do                        \
             (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
         done
 	cd $(srcdir); ./tools/beautifier/beautify
 
-.PHONY: beautify-clean
 beautify-clean:
 	find $(srcdir) -name "*.unc-backup*" -exec rm '{}' \;
 
