@@ -401,12 +401,13 @@ parse_bitset( const char*               value,
               uint64_t*                 bitsetReference,
               SILC_ConfigType_SetEntry* acceptedValues )
 {
-    char* value_copy = strdup( value );
+    char* value_copy = malloc( strlen( value ) + 1 );
     if ( !value_copy )
     {
         SILC_ERROR_POSIX();
         return false;
     }
+    strcpy( value_copy, value );
 
     *bitsetReference = 0;
 
