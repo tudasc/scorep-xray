@@ -23,4 +23,5 @@ include ../test/jacobi/Makefile.inc.am
 include ../test/adapters/user/C/Makefile.inc.am
 include ../test/adapters/user/Fortran/Makefile.inc.am
 include ../test/serial/Makefile.inc.am
+include ../test/open_mp/Makefile.inc.am
 endif

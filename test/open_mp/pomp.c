@@ -15,7 +15,7 @@
 
 
 /**
- * @file       serial_test.c
+ * @file       pomp.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -23,23 +23,19 @@
  */
 
 
-#include <stdio.h>
+#include <stddef.h>
 
-
-/* *INDENT-OFF* */
-/* *INDENT-ON*  */
-
+extern void
+POMP_Init_regions_1274996139600418_1();
 
 void
-foo()
+POMP_Init_regions()
 {
-    printf( "in foo\n" );
+    POMP_Init_regions_1274996139600418_1();
 }
 
-int
-main()
+size_t
+POMP_Get_num_regions()
 {
-    printf( "in main\n" );
-    foo();
-    return 0;
+    return 1;
 }

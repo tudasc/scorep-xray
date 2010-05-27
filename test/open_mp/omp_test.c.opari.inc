@@ -1,7 +1,7 @@
-/*
+/* 
  * This file is part of the SILC project (http://www.silc.de)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -15,31 +15,20 @@
 
 
 /**
- * @file       serial_test.c
+ * @file       omp_test.c.opari.inc    
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
- *
+ *    
  */
 
 
-#include <stdio.h>
+#include "pomp_lib.h"
 
+#define POMP_DLIST_00001 shared( pomp_region_1 )
+static POMP_Region_handle pomp_region_1;
 
-/* *INDENT-OFF* */
-/* *INDENT-ON*  */
-
-
-void
-foo()
+void POMP_Init_regions_1274996139600418_1()
 {
-    printf( "in foo\n" );
-}
-
-int
-main()
-{
-    printf( "in main\n" );
-    foo();
-    return 0;
+    POMP_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**" );
 }

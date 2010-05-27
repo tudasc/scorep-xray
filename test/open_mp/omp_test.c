@@ -15,7 +15,7 @@
 
 
 /**
- * @file       serial_test.c
+ * @file       omp_test.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -24,6 +24,7 @@
 
 
 #include <stdio.h>
+#include <omp.h>
 
 
 /* *INDENT-OFF* */
@@ -33,13 +34,18 @@
 void
 foo()
 {
-    printf( "in foo\n" );
+    printf( "thread %d in foo\n", omp_get_thread_num() );
 }
+
 
 int
 main()
 {
     printf( "in main\n" );
-    foo();
+#pragma omp parallel
+    {
+        foo();
+    }
+
     return 0;
 }

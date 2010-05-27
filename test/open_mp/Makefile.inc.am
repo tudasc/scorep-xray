@@ -1,0 +1,43 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Christian Roessel <c.roessel@fz-juelich.de>
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+if OPENMP_SUPPORTED
+
+check_PROGRAMS += omp_test_unistrumented
+
+omp_test_unistrumented_SOURCES  = $(SRC_ROOT)test/open_mp/omp_test.c
+omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+#omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+#omp_test_unistrumented_LDADD    = $(LIB_ROOT)libsilc_omp.la
+
+#TESTS += omp_test_unistrumented
+
+check_PROGRAMS += omp_test
+
+omp_test_SOURCES  = $(SRC_ROOT)test/open_mp/omp_test.mod.c       \
+                    $(SRC_ROOT)test/open_mp/omp_test.c.opari.inc \
+                    $(SRC_ROOT)test/open_mp/pomp.c
+omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+omp_test_LDADD    = $(LIB_ROOT)libsilc_omp.la
+
+#TESTS += omp_test
+
+endif
