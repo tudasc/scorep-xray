@@ -30,14 +30,6 @@
 
 
 void
-SILC_Mpi_SetIsInitialized();
-
-
-void
-SILC_Mpi_SetIsFinalized();
-
-
-void
 SILC_Mpi_SetRankTo( int rank );
 
 
@@ -84,6 +76,10 @@ SILC_Mpi_IsFinalized();
 
 void
 SILC_Mpi_GlobalBarrier();
+
+
+void
+SILC_Mpi_DuplicateCommWorld();
 
 
 #endif /* SILC_MPI_H */

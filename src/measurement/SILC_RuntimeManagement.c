@@ -393,7 +393,6 @@ SILC_InitMeasurementMPI( int rank )
         _Exit( EXIT_FAILURE );
     }
 
-    SILC_Mpi_SetIsInitialized();
     SILC_Mpi_SetRankTo( rank );
     SILC_CreateExperimentDir();
 

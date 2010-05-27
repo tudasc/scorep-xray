@@ -38,6 +38,7 @@ typedef struct silc_status silc_status;
 struct silc_status
 {
     int  mpi_rank;
+    bool mpi_rank_is_set;
     bool mpi_is_initialized;
     bool mpi_is_finalized;
     bool is_experiment_dir_created;
@@ -49,6 +50,7 @@ struct silc_status
 
 static silc_status status = {
     INT_MAX,             // mpi_rank
+    false,               // mpi_rank_is_set
     false,               // mpi_is_initialized
     false,               // mpi_is_finalized
     false,               // is_experiment_dir_created
@@ -68,22 +70,25 @@ silc_status_initialize_mpi()
 void
 silc_status_initialize_non_mpi()
 {
+    status.mpi_rank           = 0;
+    status.mpi_rank_is_set    = true;
     status.mpi_is_initialized = true;
     status.mpi_is_finalized   = true;
-    status.mpi_rank           = 0;
 }
 
 
 void
-SILC_Mpi_SetIsInitialized()
+SILC_OnPMPI_Init()
 {
     assert( !status.mpi_is_initialized );
     assert( !status.mpi_is_finalized );
     status.mpi_is_initialized = true;
+    SILC_Mpi_DuplicateCommWorld();
 }
 
+
 void
-SILC_Mpi_SetIsFinalized()
+SILC_OnPMPI_Finalize()
 {
     assert( status.mpi_is_initialized );
     assert( !status.mpi_is_finalized );
@@ -94,17 +99,19 @@ SILC_Mpi_SetIsFinalized()
 void
 SILC_Mpi_SetRankTo( int rank )
 {
+    assert( !status.mpi_rank_is_set );
     assert( status.mpi_is_initialized );
     assert( !status.mpi_is_finalized );
     assert( rank >= 0 );
-    status.mpi_rank = rank;
+    status.mpi_rank        = rank;
+    status.mpi_rank_is_set = true;
 }
 
 
 int
 SILC_Mpi_GetRank()
 {
-    assert( status.mpi_is_initialized );
+    assert( status.mpi_rank_is_set );
     return status.mpi_rank;
 }
 
@@ -138,7 +145,7 @@ SILC_IsProfilingEnabled()
 
 
 void
-SILC_Otf2_SetHasFlushed()
+SILC_Otf2_OnFlush()
 {
     status.otf2_has_flushed = true;
 }
@@ -159,7 +166,7 @@ SILC_IsExperimentDirCreated()
 
 
 void
-SILC_SetExperimentDirIsCreated()
+SILC_OnExperimentDirCreation()
 {
     assert( !status.is_experiment_dir_created );
     status.is_experiment_dir_created = true;

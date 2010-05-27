@@ -31,6 +31,9 @@
 #include <assert.h>
 
 
+static MPI_Comm silc_mpi_comm_world;
+
+
 extern void
 silc_status_initialize_mpi();
 
@@ -39,6 +42,7 @@ void
 SILC_Status_Initialize()
 {
     silc_status_initialize_mpi();
+    // it is too early to call PMPI from here.
 }
 
 
@@ -75,6 +79,16 @@ SILC_Mpi_GlobalBarrier()
 {
     assert( SILC_Mpi_IsInitialized() );
     assert( !SILC_Mpi_IsFinalized() );
-    int status = PMPI_Barrier( MPI_COMM_WORLD );
+    int status = PMPI_Barrier( silc_mpi_comm_world );
+    assert( status == MPI_SUCCESS );
+}
+
+
+void
+SILC_Mpi_DuplicateCommWorld()
+{
+    assert( SILC_Mpi_IsInitialized() );
+    assert( !SILC_Mpi_IsFinalized() );
+    int status = PMPI_Comm_dup( MPI_COMM_WORLD, &silc_mpi_comm_world );
     assert( status == MPI_SUCCESS );
 }

@@ -26,6 +26,7 @@
 #include "SILC_Mpi_Reg.h"
 #include "SILC_Config.h"
 #include "SILC_Mpi.h"
+#include <SILC_RuntimeManagement.h>
 
 #include <stdio.h>
 
@@ -175,7 +176,7 @@ silc_mpi_finalize
         if ( !res )
         {
             PMPI_Finalize();
-            SILC_Mpi_SetIsFinalized();
+            SILC_OnPMPI_Finalize();
         }
     }
     SILC_MPI_EVENT_GEN_ON();

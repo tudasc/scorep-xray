@@ -60,3 +60,10 @@ SILC_Mpi_GlobalBarrier()
 {
     // nothing to to here
 }
+
+
+void
+SILC_Mpi_DuplicateCommWorld()
+{
+    // nothing to do here
+}

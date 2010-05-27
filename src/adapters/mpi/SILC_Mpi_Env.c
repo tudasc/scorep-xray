@@ -90,6 +90,8 @@ MPI_Init( int*    argc,
 
     if ( ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
     {
+        SILC_OnPMPI_Init();
+
         /* initialize communicator management and register MPI_COMM_WORLD*/
         silc_mpi_comm_init();
 

@@ -43,7 +43,7 @@ SILC_IsProfilingEnabled();
 
 
 void
-SILC_Otf2_SetHasFlushed();
+SILC_Otf2_OnFlush();
 
 
 bool
@@ -55,6 +55,6 @@ SILC_IsExperimentDirCreated();
 
 
 void
-SILC_SetExperimentDirIsCreated();
+SILC_OnExperimentDirCreation();
 
 #endif /* SILC_STATUS_H */

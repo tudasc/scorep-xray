@@ -75,7 +75,7 @@ SILC_CreateExperimentDir()
                                      dir_name_size,
                                      silc_create_directory ) )
     {
-        SILC_SetExperimentDirIsCreated();
+        SILC_OnExperimentDirCreation();
     }
 }
 
@@ -182,7 +182,7 @@ SILC_OnTraceAndDefinitionPostFlush( void )
     /* remember that we have flushed the first time
      * after this point, we can't switch into MPI mode anymore
      */
-    SILC_Otf2_SetHasFlushed();
+    SILC_Otf2_OnFlush();
 
     return SILC_GetClockTicks();
 }
