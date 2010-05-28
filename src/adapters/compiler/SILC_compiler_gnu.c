@@ -96,7 +96,8 @@ silc_compiler_get_exe( char   path[],
      */
 
     /* get the path from system */
-    if ( readlink( "/proc/self/exe", path, length ) == -1 )
+    int len = readlink( "/proc/self/exe", path, length );
+    if ( len == -1 )
     {
         /* try to get the path via environment variable */
         if ( silc_compiler_executable == NULL )
@@ -127,6 +128,13 @@ silc_compiler_get_exe( char   path[],
     }
     else
     {
+        /* readlink does not terminate the string with 0. */
+        if ( len >= length )
+        {
+            len = length - 1;
+        }
+        path[ len ] = '\0';
+
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " got the  path to binary = %sn", path );
 
         return true;

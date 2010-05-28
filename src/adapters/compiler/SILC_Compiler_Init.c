@@ -100,7 +100,7 @@ silc_compiler_init_location()
    location specific finalization is performed.
  */
 void
-silc_compiler_final_location()
+silc_compiler_final_location( void* location )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " compiler adapter final loacation!" );
 }
