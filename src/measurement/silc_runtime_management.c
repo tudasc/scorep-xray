@@ -45,6 +45,8 @@ static void silc_create_directory(const char* dirname);
 static void silc_create_experiment_dir_name();
 static void silc_set_event_writer_location_id(OTF2_EvtWriter* writer);
 static bool silc_dir_name_is_created();
+static void silc_set_otf2_event_writer_location_id();
+static void silc_update_location_definition_id( SILC_Thread_LocationData* location );
 /* *INDENT-ON* */
 
 
@@ -53,6 +55,16 @@ static bool silc_dir_name_is_created();
 char silc_experiment_dir_name[ dir_name_size ];
 
 OTF2_ArchiveData* silc_otf2_archive = 0;
+
+
+typedef struct silc_deferred_location silc_deferred_location;
+struct silc_deferred_location
+{
+    SILC_Thread_LocationData* location;
+    silc_deferred_location*   next;
+};
+
+static silc_deferred_location silc_deferred_locations_head_dummy = { 0, 0 };
 
 
 char*
@@ -99,25 +111,65 @@ silc_dir_name_is_created()
 
 
 uint64_t
-SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData )
+SILC_CalculateGlobalLocationId( SILC_Thread_LocationData* locationData )
 {
-    // When in MPI mode this function is called twice. During the first call, the
-    // MPI rank is not known, but set to 0.
-    SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
-    assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 || // first call
-            trace_data->otf_location == 0 );                     // first call was with rank == 0 and location == 0
-                                                                 // re-call from SILC_InitMeasurementMPI()
+    assert( SILC_Mpi_IsInitialized() );
+    uint64_t local_location_id = SILC_Thread_GetLocationId( locationData );
+    uint64_t rank              = SILC_Mpi_GetRank();
 
-    uint64_t rank = 0;
-    if ( SILC_Mpi_IsInitialized() )
+    assert( rank >> 32 == 0 );
+    assert( local_location_id >> 32 == 0 );
+
+    uint64_t global_location_id = ( rank << 32 ) | local_location_id;
+    return global_location_id;
+}
+
+
+void
+SILC_DeferLocationInitialization( SILC_Thread_LocationData* locationData )
+{
+    silc_deferred_location* deferred_location = SILC_Memory_AllocForMisc( sizeof( silc_deferred_location ) );
+    assert( deferred_location );
+
+    deferred_location->location             = locationData;
+    deferred_location->next                 = silc_deferred_locations_head_dummy.next;
+    silc_deferred_locations_head_dummy.next = deferred_location;
+}
+
+
+void
+SILC_ProcessDeferredLocations()
+{
+    SILC_Thread_LocationData* current_location                       = SILC_Thread_GetLocationData();
+    silc_deferred_location*   deferred_location                      = silc_deferred_locations_head_dummy.next;
+    bool                      current_location_in_deferred_locations = false;
+
+    while ( deferred_location )
     {
-        rank = SILC_Mpi_GetRank();
+        if ( deferred_location->location == current_location )
+        {
+            current_location_in_deferred_locations = true;
+        }
+
+        SILC_SetOtf2WriterLocationId( deferred_location->location );
+        silc_update_location_definition_id( deferred_location->location );
+
+        deferred_location = deferred_location->next;
     }
-    uint64_t location     = SILC_Thread_GetLocationId( locationData );
-    uint64_t otf_location = ( rank << 32 ) | location;
-    assert( rank     >> 32 == 0 );
-    assert( location >> 32 == 0 );
-    return otf_location;
+
+    assert( current_location_in_deferred_locations );
+}
+
+
+static void
+silc_update_location_definition_id( SILC_Thread_LocationData* location )
+{
+    SILC_Trace_LocationData*  trace_data          = SILC_Thread_GetTraceLocationData( location );
+    SILC_Location_Definition* location_definition =
+        SILC_MEMORY_DEREF_MOVABLE( SILC_Thread_GetLocationHandle( location ),
+                                   SILC_Location_Definition* );
+
+    location_definition->id = trace_data->otf_location;
 }
 
 

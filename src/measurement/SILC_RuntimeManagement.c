@@ -87,9 +87,7 @@ static SILC_ConfigVariable silc_configs[] = {
 static void silc_finalize( void );
 static void silc_otf2_initialize();
 static void silc_otf2_finalize();
-static void silc_set_otf2_master_slave_and_location_id();
 static void silc_set_otf2_archive_master_slave();
-static void silc_set_otf2_event_writer_location_id();
 static void silc_adapters_register();
 static void silc_adapters_deregister();
 static void silc_adapters_initialize();
@@ -161,7 +159,7 @@ SILC_InitMeasurement( void )
 
     if ( !SILC_Mpi_HasMpi() )
     {
-        silc_set_otf2_master_slave_and_location_id();
+        silc_set_otf2_archive_master_slave();
     }
 
     silc_adapters_register();
@@ -226,17 +224,13 @@ silc_otf2_initialize()
 
 
 void
-silc_set_otf2_master_slave_and_location_id()
-{
-    assert( SILC_IsExperimentDirCreated() );
-    silc_set_otf2_archive_master_slave();
-    silc_set_otf2_event_writer_location_id();
-}
-
-
-void
 silc_set_otf2_archive_master_slave()
 {
+    // call this function only once
+    static bool archive_master_slave_already_set = false;
+    assert( !archive_master_slave_already_set );
+    archive_master_slave_already_set = true;
+
     SILC_Error_Code error;
     if ( SILC_Mpi_GetRank() == 0 )
     {
@@ -252,30 +246,6 @@ silc_set_otf2_archive_master_slave()
     {
         _Exit( EXIT_FAILURE );
     }
-}
-
-
-void
-silc_set_otf2_event_writer_location_id()
-{
-    SILC_Thread_LocationData* location   = SILC_Thread_GetLocationData();
-    SILC_Trace_LocationData*  trace_data =
-        SILC_Thread_GetTraceLocationData( location );
-
-    assert( trace_data->otf_location != OTF2_UNDEFINED_UINT64 );
-
-    SILC_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
-                                                          trace_data->otf_location );
-    if ( SILC_SUCCESS != error )
-    {
-        _Exit( EXIT_FAILURE );
-    }
-
-    /** set upper 32 bit of the id in the location definition */
-    SILC_Location_Definition* location_definition =
-        SILC_MEMORY_DEREF_MOVABLE( SILC_Thread_GetLocationHandle( location ),
-                                   SILC_Location_Definition* );
-    location_definition->id = trace_data->otf_location;
 }
 
 
@@ -395,12 +365,8 @@ SILC_InitMeasurementMPI( int rank )
 
     SILC_Mpi_SetRankTo( rank );
     SILC_CreateExperimentDir();
-
-    SILC_Thread_LocationData* locationData = SILC_Thread_GetLocationData();
-    SILC_Trace_LocationData*  trace_data   = SILC_Thread_GetTraceLocationData( locationData );
-    trace_data->otf_location = SILC_CalculateOTF2LocationId( locationData );
-
-    silc_set_otf2_master_slave_and_location_id();
+    SILC_ProcessDeferredLocations();
+    silc_set_otf2_archive_master_slave();
 }
 
 

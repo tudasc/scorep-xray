@@ -106,4 +106,8 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData );
 
 
+void
+SILC_SetOtf2WriterLocationId( SILC_Thread_LocationData* threadLocationData );
+
+
 #endif /* SILC_INTERNAL_TRACE_THREADINTERACTION_H */

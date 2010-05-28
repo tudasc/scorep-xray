@@ -31,6 +31,7 @@
 #include "silc_definitions.h"
 #include "silc_thread.h"
 #include "silc_status.h"
+#include "silc_mpi.h"
 #include <stdlib.h>
 
 
@@ -104,14 +105,40 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     }
 
     SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
-    trace_data->otf_location = SILC_CalculateOTF2LocationId( locationData );
-    trace_data->otf_writer   = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
-                                                          OTF2_UNDEFINED_UINT64,
-                                                          SILC_OnTracePreFlush,
-                                                          SILC_OnTraceAndDefinitionPostFlush );
+    // needs to be locked
+    trace_data->otf_writer = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
+                                                        OTF2_UNDEFINED_UINT64,
+                                                        SILC_OnTracePreFlush,
+                                                        SILC_OnTraceAndDefinitionPostFlush );
     if ( !trace_data->otf_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
+        _Exit( EXIT_FAILURE );
+    }
+
+    if ( !SILC_Mpi_IsInitialized() )
+    {
+        // global location id unknown because rank not accessible.
+        // Deferred processing will take place in SILC_InitMeasurementMPI()
+    }
+    else
+    {
+        SILC_SetOtf2WriterLocationId( locationData );
+    }
+}
+
+
+void
+SILC_SetOtf2WriterLocationId( SILC_Thread_LocationData* threadLocationData )
+{
+    SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( threadLocationData );
+    assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
+    trace_data->otf_location = SILC_CalculateGlobalLocationId( threadLocationData );
+
+    SILC_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
+                                                          trace_data->otf_location );
+    if ( SILC_SUCCESS != error )
+    {
         _Exit( EXIT_FAILURE );
     }
 }

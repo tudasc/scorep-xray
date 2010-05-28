@@ -60,7 +60,15 @@ SILC_RenameExperimentDir();
 
 
 uint64_t
-SILC_CalculateOTF2LocationId( SILC_Thread_LocationData* locationData );
+SILC_CalculateGlobalLocationId( SILC_Thread_LocationData* locationData );
+
+
+void
+SILC_DeferLocationInitialization( SILC_Thread_LocationData* locationData );
+
+
+void
+SILC_ProcessDeferredLocations();
 
 
 /**

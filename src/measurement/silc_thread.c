@@ -29,9 +29,11 @@
 #include <silc_definitions.h>
 #include <SILC_Memory.h>
 #include <SILC_Omp.h>
+#include <silc_mpi.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "silc_runtime_management.h"
 
 
 /// @todo move this definition to the pomp adapter, in pomp_base.c e.g., like
@@ -67,17 +69,20 @@ struct SILC_Thread_ThreadPrivateData
 {
     SILC_Thread_ThreadPrivateData*  parent;
     SILC_Thread_ThreadPrivateData** childs;
-    size_t                          n_childs;
+    uint32_t                        n_childs;
     bool                            is_active;
     SILC_Thread_LocationData*       location_data;
 };
+
+
+#define INVALID_LOCATION_DEFINITION_ID UINT64_MAX
 
 
 // locations live inside SILC_Thread_ThreadPrivateData, may be referenced by
 // multiple ones.
 struct SILC_Thread_LocationData
 {
-    size_t                       location_id;
+    uint32_t                     location_id; // local id
     SILC_Allocator_PageManager** page_managers;
     SILC_LocationHandle          location_handle;
     SILC_Profile_LocationData*   profile_data;
@@ -89,7 +94,7 @@ struct SILC_Thread_LocationData
 struct SILC_Thread_LocationData       location_list_head_dummy = { 0, 0, 0, 0, 0 };
 struct SILC_Thread_ThreadPrivateData* initial_thread   = 0;
 struct SILC_Thread_LocationData*      initial_location = 0;
-size_t                                location_counter = 0;
+uint32_t                              location_counter = 0;
 
 
 void
@@ -140,11 +145,20 @@ void
 silc_thread_call_externals_on_new_location( SILC_Thread_LocationData* locationData,
                                             SILC_Thread_LocationData* parent )
 {
-    // the upper 32 bit of the location_id will be updated
-    // in silc_set_otf2_event_writer_location_id()
-    locationData->location_handle = SILC_DefineLocation( locationData->location_id, "" );
+    // where to do the locking?
     SILC_Profile_OnLocationCreation( locationData, parent );
     SILC_Trace_OnLocationCreation( locationData, parent );
+
+    if ( !SILC_Mpi_IsInitialized() )
+    {
+        locationData->location_handle = SILC_DefineLocation( INVALID_LOCATION_DEFINITION_ID, "" );
+        SILC_DeferLocationInitialization( locationData );
+    }
+    else
+    {
+        uint64_t global_location_id = SILC_CalculateGlobalLocationId( locationData );
+        locationData->location_handle = SILC_DefineLocation( global_location_id, "" );
+    }
 }
 
 
@@ -168,12 +182,12 @@ silc_thread_create_location_data_for( SILC_Thread_ThreadPrivateData* tpd )
     assert( tpd->location_data == 0 );
     tpd->location_data = new_location;
 
-    silc_thread_update_tpd( 0 );   // to make sure that we don't access
-                                   // TPD during page manager creation
-    new_location->page_managers = SILC_Memory_CreatePageManagers();
+    silc_thread_update_tpd( 0 );                                    // to make sure that we don't access
+                                                                    // TPD during page manager creation
+    new_location->page_managers = SILC_Memory_CreatePageManagers(); // locking here?
     assert( new_location->page_managers );
-    silc_thread_update_tpd( tpd ); // from here on clients can use
-                                   // SILC_Thread_GetLocationData, i.e. TPD
+    silc_thread_update_tpd( tpd );                                  // from here on clients can use
+                                                                    // SILC_Thread_GetLocationData, i.e. TPD
 
     new_location->profile_data = SILC_Profile_CreateLocationData();
     assert( new_location->profile_data );
