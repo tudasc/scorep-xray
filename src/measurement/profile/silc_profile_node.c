@@ -257,11 +257,8 @@ silc_profile_create_node( silc_profile_node*       parent,
     int                i;
     silc_profile_node* node = NULL;
 
-    /* Size of the allocated memory. It consists of the size of the node struct and
-     * the array for the dense metric structs.
-     */
-    int size = sizeof( silc_profile_node ) +
-               silc_profile.num_of_dense_metrics * sizeof( silc_profile_dense_metric );
+    /* Size of the allocated memory for dense metrics */
+    int size = silc_profile.num_of_dense_metrics * sizeof( silc_profile_dense_metric );
 
     /* Reserve space for the node record and dense metrics.
      *  Thread root nodes must not be deleted in Persicope phases, while all other
@@ -271,11 +268,13 @@ silc_profile_create_node( silc_profile_node*       parent,
      */
     if ( type == silc_profile_node_thread_root )
     {
-        node = ( silc_profile_node* )SILC_Memory_AllocForMisc( size );
+        node = ( silc_profile_node* )
+               SILC_Memory_AllocForMisc( sizeof( silc_profile_node ) );
     }
     else
     {
-        node = ( silc_profile_node* )SILC_Memory_AllocForProfile( size );
+        node = ( silc_profile_node* )
+               SILC_Memory_AllocForProfile( sizeof( silc_profile_node ) );
     }
     if ( !node )
     {
@@ -284,8 +283,21 @@ silc_profile_create_node( silc_profile_node*       parent,
     }
 
     /* Space for dense metrics was reserved after the node struct */
-    node->dense_metrics =
-        ( silc_profile_dense_metric* )( ( void* )node + sizeof( silc_profile_node ) );
+    if ( type == silc_profile_node_thread_root )
+    {
+        node->dense_metrics = ( silc_profile_dense_metric* )
+                              SILC_Memory_AllocForMisc( size );
+    }
+    else
+    {
+        node->dense_metrics = ( silc_profile_dense_metric* )
+                              SILC_Memory_AllocForProfile( size );
+    }
+    if ( !node->dense_metrics )
+    {
+        SILC_ERROR_POSIX();
+        return NULL;
+    }
 
     /* Initialize values */
     node->callpath_handle     = SILC_INVALID_CALLPATH;
