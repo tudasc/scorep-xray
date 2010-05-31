@@ -91,6 +91,10 @@ static bool
 silc_compiler_get_exe( char   path[],
                        size_t length )
 {
+    int         pid;
+    int         err;
+    struct stat status;
+
     /**
      * by default, use /proc mechanism to obtain path to executable
      * in other cases, do it by examining SILC_APPPATH variable
@@ -111,11 +115,7 @@ silc_compiler_get_exe( char   path[],
 
         return true;
     }
-
-#else /* HAVE_READLINK */
-    int         pid;
-    int         err;
-    struct stat status;
+#endif /* HAVE_READLINK */
 
     /* First trial */
     pid = getpid();
@@ -133,8 +133,6 @@ silc_compiler_get_exe( char   path[],
     {
         return true;
     }
-
-#endif  /* HAVE_READLINK */
     else
     {
         /* try to get the path via environment variable */
