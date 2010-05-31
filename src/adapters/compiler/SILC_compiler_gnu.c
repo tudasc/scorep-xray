@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #ifdef HAVE_LIBBFD
 #include <bfd.h>
@@ -94,10 +95,47 @@ silc_compiler_get_exe( char   path[],
      * by default, use /proc mechanism to obtain path to executable
      * in other cases, do it by examining SILC_APPPATH variable
      */
-
+#ifdef HAVE_READLINK
     /* get the path from system */
     int len = readlink( "/proc/self/exe", path, length );
-    if ( len == -1 )
+    if ( len != -1 )
+    {
+        /* readlink does not terminate the string with 0. */
+        if ( len >= length )
+        {
+            len = length - 1;
+        }
+        path[ len ] = '\0';
+
+        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " got the  path to binary = %sn", path );
+
+        return true;
+    }
+
+#else /* HAVE_READLINK */
+    int         pid;
+    int         err;
+    struct stat status;
+
+    /* First trial */
+    pid = getpid();
+    sprintf( path, "/proc/%d/exe", pid );
+    err = stat( path, &status );
+    if ( err == 0 )
+    {
+        return true;
+    }
+
+    /* Second trial */
+    sprintf( path, "/proc/%d/object/a.out", pid );
+    err = stat( path, &status );
+    if ( err == 0 )
+    {
+        return true;
+    }
+
+#endif  /* HAVE_READLINK */
+    else
     {
         /* try to get the path via environment variable */
         if ( silc_compiler_executable == NULL )
@@ -125,19 +163,6 @@ silc_compiler_get_exe( char   path[],
             strncpy( path, exepath, exelength );
             return true;
         }
-    }
-    else
-    {
-        /* readlink does not terminate the string with 0. */
-        if ( len >= length )
-        {
-            len = length - 1;
-        }
-        path[ len ] = '\0';
-
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " got the  path to binary = %sn", path );
-
-        return true;
     }
 }
 
