@@ -63,7 +63,7 @@ typedef struct
 {
     SILC_Pomp_RegionType regionType;    /* region type of construct                  */
     char*                name;          /* critical or user region name              */
-    int32_t              numSections;   /* sections only: number of sections         */
+    uint32_t             numSections;   /* sections only: number of sections         */
     /* For combined statements (parallel sections, parallel for) we need up to
        four SILC regions. So we use a pair of SILC regions for the parallel
        statements and a pair of regions for other statements.                        */

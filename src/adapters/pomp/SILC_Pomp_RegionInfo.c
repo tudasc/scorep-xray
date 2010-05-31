@@ -471,7 +471,7 @@ silc_pomp_assign_source_code_location( silc_pomp_parsing_data* obj,
  */
 static void
 silc_pomp_assign_unsigned( silc_pomp_parsing_data* obj,
-                           unsigned*               anUnsigned,
+                           uint32_t*               anUnsigned,
                            const char*             value )
 {
     int tmp = atoi( value );
@@ -538,16 +538,6 @@ silc_pomp_check_consistency( silc_pomp_parsing_data* obj )
     {
         SILC_ERROR( SILC_ERROR_POMP_SCL_BROKEN,
                     "Parsed String: %s", obj->stringForErrorMsg );
-        return;
-    }
-
-
-    if ( obj->region->regionType == SILC_Pomp_Sections
-         && obj->region->numSections <= 0 )
-    {
-        SILC_ERROR( SILC_ERROR_POMP_INVALID_SECNUM,
-                    "Parsed String: %s\nNumber of sections: %d",
-                    obj->stringForErrorMsg, obj->region->numSections );
         return;
     }
 
