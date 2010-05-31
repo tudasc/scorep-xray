@@ -42,6 +42,8 @@
 #include "silc_thread.h"
 #include "silc_definition_handles.h"
 #include "silc_status.h"
+#include "silc_parameter_registration.h"
+
 
 
 /**
@@ -419,6 +421,15 @@ SILC_TriggerParameterString
     const char*          value
 )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    SILC_StringHandle string_handle = silc_get_parameter_string_handle( value );
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+        SILC_Profile_ParameterString( location,
+                                      parameterHandle,
+                                      string_handle );
+    }
 }

@@ -81,7 +81,6 @@ SILC_SourceFileHandle
 silc_compiler_get_file( const char* file )
 {
     size_t              index;
-    SILC_LockSourceFileDefinition();
     SILC_Hashtab_Entry* entry = NULL;
 
     if ( file == NULL )
@@ -89,10 +88,12 @@ silc_compiler_get_file( const char* file )
         return SILC_INVALID_SOURCE_FILE;
     }
 
+    SILC_LockSourceFileDefinition();
+
     entry = SILC_Hashtab_Find( silc_compiler_file_table, file,
                                &index );
 
-    /* If not found register new file */
+    /* If not found, register new file */
     if ( !entry )
     {
         /* Reserve own storage for file name */

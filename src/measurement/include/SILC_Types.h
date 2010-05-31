@@ -183,6 +183,8 @@ typedef uint32_t SILC_LineNo;
 
 //typedef uint32_t SILC_StringHandle;
 
+#define SILC_INVALID_STRING NULL
+
 /**
  * Symbolic constant representing an invalid or unknown rank.
  * @see SILC_MpiCollective()

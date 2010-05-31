@@ -51,6 +51,7 @@
 #include "silc_thread.h"
 #include "silc_runtime_management.h"
 #include "silc_definition_locking.h"
+#include "silc_parameter_registration.h"
 
 #include <OTF2_File.h>
 
@@ -149,6 +150,8 @@ SILC_InitMeasurement( void )
     SILC_Definitions_Initialize();
 
     SILC_Thread_Initialize();
+    silc_init_parameter_table();
+
     if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Register();
@@ -445,6 +448,7 @@ silc_finalize( void )
     }
 
     // order is important
+    silc_final_parameter_table();
     SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();
     silc_otf2_finalize();
