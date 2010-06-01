@@ -75,6 +75,6 @@ AM_PROG_CC_C_O
 
 AC_PROG_RANLIB
 
-AC_CHECK_DECLS([readlink], [], [], [[#include <unistd.h>]])
+AC_CHECK_FUNCS_ONCE([readlink])
 
 ])
