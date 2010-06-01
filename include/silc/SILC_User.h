@@ -24,11 +24,10 @@
     @brief contains the interface definitions for the manual user instrumentation.
  */
 
-#include "SILC_User_Functions.h"
-
 /* Guarded because it declares variables in every file where it is included. */
 #ifdef SILC_USER_ENABLE
 #include "SILC_User_Variables.h"
+#include "SILC_User_Functions.h"
 #endif
 
 /** @defgroup SILC_User SILC User Adapter

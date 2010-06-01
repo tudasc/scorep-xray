@@ -356,7 +356,8 @@ public:
                       const char*                file,
                       const uint32_t             lineNo )
     {
-        SILC_User_RegionBegin( &region_handle, silc_user_local_file, regionName, regionType,
+        SILC_User_RegionBegin( &region_handle, &SILC_User_LastFileName,
+                               &SILC_User_LastFileHandle, regionName, regionType,
                                file, lineNo );
     }
 
@@ -370,7 +371,7 @@ public:
 
 private:
     /** Stores the region handle */
-    SILC_API_RegionHandle region_handle;
+    SILC_RegionHandle region_handle;
 };
 #endif /* __cplusplus */
 
