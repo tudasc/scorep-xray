@@ -150,7 +150,7 @@ SILC_InitMeasurement( void )
     SILC_Definitions_Initialize();
 
     SILC_Thread_Initialize();
-    silc_init_parameter_table();
+    silc_parameter_table_initialize();
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -448,7 +448,7 @@ silc_finalize( void )
     }
 
     // order is important
-    silc_final_parameter_table();
+    silc_parameter_table_finalize();
     SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();
     silc_otf2_finalize();

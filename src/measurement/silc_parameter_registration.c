@@ -37,7 +37,7 @@ static SILC_Hashtab* parameter_table = NULL;
 
 /* Initialize parameter table */
 void
-silc_init_parameter_table()
+silc_parameter_table_initialize()
 {
     parameter_table = SILC_Hashtab_CreateSize( 256, &SILC_Hashtab_HashString,
                                                &SILC_Hashtab_CompareStrings );
@@ -55,7 +55,7 @@ silc_delete_parameter_table_entry( SILC_Hashtab_Entry* entry )
 
 /* Delete parameter table */
 void
-silc_final_parameter_table()
+silc_parameter_table_finalize()
 {
     SILC_Hashtab_Foreach( parameter_table, &silc_delete_parameter_table_entry );
     SILC_Hashtab_Free( parameter_table );

@@ -36,13 +36,13 @@
    Initilaizes the hashtable, which contains the string values from parameter events.
  */
 void
-silc_init_parameter_table();
+silc_parameter_table_initialize();
 
 /**
    Deletes the hashtable for string values from parameter events. Frees all used memory
  */
 void
-silc_final_parameter_table();
+silc_parameter_table_finalize();
 
 /**
    Finds a string in the hashtable. If it does not already exist in the hashtable a new
