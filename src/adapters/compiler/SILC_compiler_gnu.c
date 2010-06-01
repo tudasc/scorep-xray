@@ -26,6 +26,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <config.h>
 
 #ifdef HAVE_LIBBFD
 #include <bfd.h>
@@ -99,7 +100,7 @@ silc_compiler_get_exe( char   path[],
      * by default, use /proc mechanism to obtain path to executable
      * in other cases, do it by examining SILC_APPPATH variable
      */
-#ifdef HAVE_READLINK
+#if HAVE( DECL_READLINK )
     /* get the path from system */
     int len = readlink( "/proc/self/exe", path, length );
     if ( len != -1 )
@@ -115,7 +116,7 @@ silc_compiler_get_exe( char   path[],
 
         return true;
     }
-#endif /* HAVE_READLINK */
+#endif /* HAVE( DECL_READLINK )  */
 
     /* First trial */
     pid = getpid();
