@@ -16,7 +16,8 @@
 #ifndef SILC_USER_FUNCTIONS_H
 #define SILC_USER_FUNCTIONS_H
 
-/** @file SILC_User_Functions.h
+/**
+    @file SILC_User_Functions.h
     @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
     @status     ALPHA
     @ingroup    SILC_User_External
@@ -29,7 +30,12 @@
 #include "SILC_User_Types.h"
 #include <stdbool.h>
 
-/** @defgroup SILC_User_External External visisble functions of the SILC user adapter
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/**
+    @defgroup SILC_User_External External visisble functions of the SILC user adapter
     @ingroup SILC_User
 
     This module contains all external visible items of the user adapter except the
@@ -42,7 +48,8 @@
  * Region functions
  * *************************************************************************************/
 
-/** Generates an enter event for the specified region. If the region was not registered
+/**
+    Generates an enter event for the specified region. If the region was not registered
     before, it registers the region. On the first enter, the region is registered to
     the measurement system.
     @param handle     The handle for this region. It must be defined before.
@@ -66,7 +73,7 @@
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-extern void
+void
 SILC_User_RegionBegin
 (
     SILC_RegionHandle*         handle,
@@ -78,16 +85,18 @@ SILC_User_RegionBegin
     const uint32_t             lineNo
 );
 
-/** Generates an exit event for the specified region.
+/**
+    Generates an exit event for the specified region.
     @param handle     The handle for this region. It must be defined before.
  */
-extern void
+void
 SILC_User_RegionEnd
 (
     const SILC_RegionHandle handle
 );
 
-/** Registers a region. The region handle must be defined before. If the handle
+/**
+    Registers a region. The region handle must be defined before. If the handle
     was already initialized, no operation is performed.
     @param handle     The handle for this region. It must be defined before.
     @param lastFileName Pointer to the last source file name. In most cases, it is
@@ -110,7 +119,7 @@ SILC_User_RegionEnd
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-extern void
+void
 SILC_User_RegionInit
 (
     SILC_RegionHandle*         handle,
@@ -122,11 +131,12 @@ SILC_User_RegionInit
     const uint32_t             lineNo
 );
 
-/** Generates an enter event for the specified region. The region must be declared and
+/**
+    Generates an enter event for the specified region. The region must be declared and
     initialized before.
     @param handle     The handle for this region. It must be defined before.
  */
-extern void
+void
 SILC_User_RegionEnter
 (
     const SILC_RegionHandle handle
@@ -136,22 +146,24 @@ SILC_User_RegionEnter
  * Parameter functions
  * *************************************************************************************/
 
-/** Generates a parameter event for a parameter of 64 bit integer data type.
+/**
+    Generates a parameter event for a parameter of 64 bit integer data type.
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
  */
-extern void
+void
 SILC_User_ParameterInt64
 (
     const char* name,
     int64_t     value
 );
 
-/** Generates a parameter event for a parameter of string type.
+/**
+    Generates a parameter event for a parameter of string type.
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
  */
-extern void
+void
 SILC_User_ParameterString
 (
     const char* name,
@@ -162,19 +174,21 @@ SILC_User_ParameterString
  * User metric functions
  * *************************************************************************************/
 
-/** Initilizes a user metric group. Every group must be initialized before it is used
+/**
+    Initilizes a user metric group. Every group must be initialized before it is used
     for the first time.
     @param groupHandle A variable where the handle for the new group i stored. It must
                        be declared with SILC_USER_METRIC_GROUP_DEF.
  */
-extern void
+void
 SILC_User_InitMetricGroup
 (
     SILC_CounterGroupHandle* groupHandle,
     const char*              name
 );
 
-/** Initializes a user metric. Every user metric must be registered before it is used
+/**
+    Initializes a user metric. Every user metric must be registered before it is used
     the first time.
     @param metricHandle A handle which identify the user metric.
     @param unit        A string for the unit of the user metric.
@@ -190,7 +204,7 @@ SILC_User_InitMetricGroup
     @param group       The name of the user couter group to which this metric belongs.
                        If the group does not exist already, it will be created.
  */
-extern void
+void
 SILC_User_InitMetric
 (
     SILC_CounterHandle*           metricHandle,
@@ -201,31 +215,34 @@ SILC_User_InitMetric
     const SILC_CounterGroupHandle group
 );
 
-/** Triggers an user metric of type integer. Every user metric must be registered
+/**
+    Triggers an user metric of type integer. Every user metric must be registered
     and initialized before it is used for the first time.
     @param metricHandle A handle which identify the user metric.
     @param value        The value for the metric.
  */
-extern void
+void
 SILC_User_TriggerMetricInt64
 (
     SILC_CounterHandle metricHandle,
     int64_t            value
 );
 
-/** Triggers an user metric of type integer. Every user metric must be registered
+/**
+    Triggers an user metric of type integer. Every user metric must be registered
     and initialized before it is used for the first time.
     @param metricHandle A handle which identify the user metric.
     @param value        The value for the metric.
  */
-extern void
+void
 SILC_User_TriggerMetricDouble
 (
     SILC_CounterHandle metricHandle,
     double             value
 );
 
-/** Declaration of the variable for storing the default metric group handle.
+/**
+    Declaration of the variable for storing the default metric group handle.
  */
 extern SILC_CounterGroupHandle SILC_User_DefaultMetricGroup;
 
@@ -233,7 +250,8 @@ extern SILC_CounterGroupHandle SILC_User_DefaultMetricGroup;
  * Virtual Topologies
  * *************************************************************************************/
 
-/** Defines a two-dimentional cartesian topology.
+/**
+    Defines a two-dimentional cartesian topology.
     @param name     A string containing the name of the topology.
     @param numX     Number of processes in the x-dimension.
     @param numY     Number of processes in the y-dimension.
@@ -243,7 +261,7 @@ extern SILC_CounterGroupHandle SILC_User_DefaultMetricGroup;
                     false, other values mean true.
     @return A handle to the newly created topology.
  */
-extern int32_t
+int32_t
 SILC_User_DefineTopology2D
 (
     const char*   name,
@@ -253,7 +271,8 @@ SILC_User_DefineTopology2D
     const int32_t periodY
 );
 
-/** Defines a three-dimentional cartesian topology.
+/**
+    Defines a three-dimentional cartesian topology.
     @param name     A string containing the name of the topology.
     @param numX     Number of processes in the x-dimension.
     @param numY     Number of processes in the y-dimension.
@@ -266,7 +285,7 @@ SILC_User_DefineTopology2D
                     false, other values mean true.
     @return A handle to the newly created topology.
  */
-extern int32_t
+int32_t
 SILC_User_DefineTopology3D
 (
     const char*   name,
@@ -278,12 +297,13 @@ SILC_User_DefineTopology3D
     const int32_t periodZ
 );
 
-/** Defines the a coordinate in a two-dimensional cartesian topology.
+/**
+    Defines the a coordinate in a two-dimensional cartesian topology.
     @param topId    Handle of a previously defined two-dimensional cartesian topology.
     @param coordX   X-coordinate
     @param coordY   Y-coordinate
  */
-extern void
+void
 SILC_User_DefineCoordinate2D
 (
     const int32_t topId,
@@ -291,13 +311,14 @@ SILC_User_DefineCoordinate2D
     const int32_t coordY
 );
 
-/** Defines the a coordinate in a three-dimensional cartesian topology.
+/**
+    Defines the a coordinate in a three-dimensional cartesian topology.
     @param topId    Handle of a previously defined two-dimensional cartesian topology.
     @param coordX   X-coordinate
     @param coordY   Y-coordinate
     @param coordZ   Z-coordinate
  */
-extern void
+void
 SILC_User_DefineCoordinate3D
 (
     const int32_t topId,
@@ -310,39 +331,46 @@ SILC_User_DefineCoordinate3D
  * Control functions
  * *************************************************************************************/
 
-/** Enables recording of events. If already enabled, this command has no effect.
+/**
+    Enables recording of events. If already enabled, this command has no effect.
     The control is not restricted to events from the user adapter, but enables the
     recording of all events.
  */
 void
 SILC_User_EnableRecording();
 
-/** Disables recording of events. If already disabled, this command has no effect.
+/**
+    Disables recording of events. If already disabled, this command has no effect.
     The control is not restricted to events from the user adapter, but disables the
     recording of all events.
  */
 void
 SILC_User_DisableRecording();
 
-/** Checks if the recording is enabled.
+/**
+    Checks if the recording is enabled.
     @returns false if the recording of events is disabled, else it returns true.
  */
 bool
 SILC_User_RecordingEnabled();
 
+#ifdef __cplusplus
+} /* extern "C" */
+
 /* **************************************************************************************
  * Class SILC_User_Region
  * *************************************************************************************/
-#ifdef __cplusplus
 
-/** @class SILC_User_Region
+/**
+    @class SILC_User_Region
     This class implements the SILC_USER_REGION statement. Its constructor and destructor
     generates the enter and respectively the exit event for the instrumented function.
  */
 class SILC_User_Region
 {
 public:
-/** Generates an enter event for the specified region. It should not be inserted by the
+/**
+    Generates an enter event for the specified region. It should not be inserted by the
     user directly. The user should use the SILC_USER_REGION(name) statement instead.
     @param regionName The name of the region.
     @param regionType The type of the region.
@@ -361,7 +389,8 @@ public:
                                file, lineNo );
     }
 
-    /** Generates an exit event for the instrumented region
+    /**
+        Generates an exit event for the instrumented region
      */
     ~
     SILC_User_Region()
@@ -370,7 +399,9 @@ public:
     }
 
 private:
-    /** Stores the region handle */
+    /**
+        Stores the region handle
+     */
     SILC_RegionHandle region_handle;
 };
 #endif /* __cplusplus */
