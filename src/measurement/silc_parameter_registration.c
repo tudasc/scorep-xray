@@ -97,5 +97,5 @@ silc_get_parameter_string_handle( const char* value )
     }
 
     SILC_UnlockParameterDefinition();
-    return *( SILC_SourceFileHandle* )entry->value;
+    return *( SILC_StringHandle* )entry->value;
 }
