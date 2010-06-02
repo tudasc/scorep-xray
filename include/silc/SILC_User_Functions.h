@@ -28,6 +28,7 @@
  */
 
 #include "SILC_User_Types.h"
+#include "SILC_User_Variables.h"
 #include <stdbool.h>
 
 #ifdef __cplusplus
