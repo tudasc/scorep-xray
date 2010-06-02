@@ -100,7 +100,7 @@ silc_compiler_get_exe( char   path[],
      * by default, use /proc mechanism to obtain path to executable
      * in other cases, do it by examining SILC_APPPATH variable
      */
-#if HAVE( DECL_READLINK )
+#if HAVE( READLINK )
     /* get the path from system */
     int len = readlink( "/proc/self/exe", path, length );
     if ( len != -1 )
@@ -116,7 +116,7 @@ silc_compiler_get_exe( char   path[],
 
         return true;
     }
-#endif /* HAVE( DECL_READLINK )  */
+#endif /* HAVE( READLINK )  */
 
     /* First trial */
     pid = getpid();
