@@ -136,7 +136,10 @@ void
 silc_thread_call_externals_on_new_thread( SILC_Thread_LocationData* locationData,
                                           SILC_Thread_LocationData* parent )
 {
-    SILC_Profile_OnThreadCreation( locationData, parent );
+    if ( SILC_IsProfilingEnabled() )
+    {
+        SILC_Profile_OnThreadCreation( locationData, parent );
+    }
     SILC_Trace_OnThreadCreation( locationData, parent );
 }
 
@@ -166,7 +169,10 @@ void
 silc_thread_call_externals_on_thread_activation( SILC_Thread_LocationData* locationData,
                                                  SILC_Thread_LocationData* parent )
 {
-    SILC_Profile_OnThreadActivation( locationData, parent );
+    if ( SILC_IsProfilingEnabled() )
+    {
+        SILC_Profile_OnThreadActivation( locationData, parent );
+    }
     SILC_Trace_OnThreadActivation( locationData, parent );
 }
 
@@ -349,7 +355,10 @@ void
 silc_thread_call_externals_on_thread_deactivation( SILC_Thread_LocationData* locationData,
                                                    SILC_Thread_LocationData* parent )
 {
-    SILC_Profile_OnThreadDectivation( locationData, parent );
+    if ( SILC_IsProfilingEnabled() )
+    {
+        SILC_Profile_OnThreadDectivation( locationData, parent );
+    }
     SILC_Trace_OnThreadDectivation( locationData, parent );
 }
 
