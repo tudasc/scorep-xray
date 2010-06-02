@@ -26,6 +26,9 @@
  */
 
 
+#include <SILC_Memory.h>
+
+
 #define SILC_MOVABLE_TYPE( type )                      \
     struct type ## _Movable                            \
     {                                                  \

@@ -43,6 +43,7 @@
 #include "silc_definition_handles.h"
 #include "silc_status.h"
 #include "silc_parameter_registration.h"
+#include "silc_definition_structs.h"
 
 
 
@@ -68,7 +69,7 @@ SILC_EnterRegion
     OTF2_EvtWriter_Enter( SILC_Thread_GetTraceLocationData( location )->otf_writer,
                           NULL,
                           timestamp,
-                          ( ( silc_any_definition* )regionHandle )->id );
+                          SILC_HANDLE_TO_ID( regionHandle, Region ) );
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -101,7 +102,7 @@ SILC_ExitRegion
     OTF2_EvtWriter_Leave( SILC_Thread_GetTraceLocationData( location )->otf_writer,
                           NULL,
                           timestamp,
-                          ( ( silc_any_definition* )regionHandle )->id );
+                          SILC_HANDLE_TO_ID( regionHandle, Region ) );
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -143,7 +144,7 @@ SILC_MpiSend
                             OTF2_MPI_BLOCK,
                             SILC_Thread_GetTraceLocationData( location )->otf_location,
                             globalDestinationRank,
-                            ( ( silc_any_definition* )communicatorHandle )->id,
+                            SILC_HANDLE_TO_ID( communicatorHandle, Group ), /// @todo @Bert: do we use group for communicators?
                             tag,
                             bytesSent );
 }
@@ -179,7 +180,7 @@ SILC_MpiRecv
                             OTF2_MPI_BLOCK,
                             globalSourceRank,
                             SILC_Thread_GetTraceLocationData( location )->otf_location,
-                            ( ( silc_any_definition* )communicatorHandle )->id,
+                            SILC_HANDLE_TO_ID( communicatorHandle, Group ),
                             tag,
                             bytesReceived );
 }
@@ -220,7 +221,7 @@ SILC_MpiCollective
                                   NULL,
                                   SILC_GetClockTicks(),
                                   OTF2_MPI_BARRIER,
-                                  ( ( silc_any_definition* )communicatorHandle )->id,
+                                  SILC_HANDLE_TO_ID( communicatorHandle, Group ),
                                   globalRootRank,
                                   bytesSent,
                                   bytesReceived );

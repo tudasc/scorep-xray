@@ -34,6 +34,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "silc_runtime_management.h"
+#include "silc_status.h"
 
 
 /// @todo move this definition to the pomp adapter, in pomp_base.c e.g., like
