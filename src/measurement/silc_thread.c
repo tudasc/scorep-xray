@@ -27,6 +27,7 @@
 #include "silc_thread.h"
 //#include <pomp_lib.h>
 #include <silc_definitions.h>
+#include <silc_definition_locking.h>
 #include <SILC_Memory.h>
 #include <SILC_Omp.h>
 #include <silc_mpi.h>
