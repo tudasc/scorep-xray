@@ -101,6 +101,12 @@ endif
 ## MPI Fortran
 
 if HAVE_MPIFC
+
+# Specify fortran dependencies manually
+variabledef.mod: VariableDef.$(OBJEXT)
+jacobi_mpi_f90-jacobi.$(OBJEXT): variabledef.mod
+jacobi_mpi_f90-main.$(OBJEXT): variabledef.mod
+
 check_PROGRAMS         += jacobi_mpi_f90
 jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
@@ -119,6 +125,12 @@ endif
 
 if HAVE_MPIFC
 if OPENMP_SUPPORTED
+
+# Specify fortran dependencies manually
+variabledef.mod: VariableDef.$(OBJEXT)
+jacobi_mpi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
+jacobi_mpi_omp_f90-main.$(OBJEXT): variabledef.mod
+
 check_PROGRAMS             += jacobi_mpi_omp_f90
 jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90      \
                               $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.mod.F90       \

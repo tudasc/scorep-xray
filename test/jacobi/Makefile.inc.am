@@ -99,10 +99,16 @@ endif
 
 ## Serial Fortran
 
+# Specify fortran dependencies manually
+variabledef.mod: VariableDef.$(OBJEXT)
+jacobi_serial_f90-jacobi.$(OBJEXT): variabledef.mod
+jacobi_serial_f90-main.$(OBJEXT): variabledef.mod
+
 check_PROGRAMS            += jacobi_serial_f90
-jacobi_serial_f90_sources  = $(SRC_ROOT)test/jacobi/serial/Fortran/VariableDef.f90 \
-                             $(SRC_ROOT)test/jacobi/serial/Fortran/jacobi.F90      \
-                             $(SRC_ROOT)test/jacobi/serial/Fortran/main.F90
+jacobi_serial_f90_sources  = $(SRC_ROOT)test/jacobi/serial/Fortran/jacobi.F90      \
+                             $(SRC_ROOT)test/jacobi/serial/Fortran/main.F90        \
+                             $(SRC_ROOT)test/jacobi/serial/Fortran/VariableDef.f90
+
 jacobi_serial_f90_SOURCES  = $(jacobi_serial_f90_sources)                          
 jacobi_serial_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la
@@ -116,6 +122,12 @@ jacobi_serial_f90_uninstrumented_LDADD    = -lm
 ## OpenMP Fortran
 
 if OPENMP_SUPPORTED
+
+# Specify fortran dependencies manually
+variabledef.mod: VariableDef.$(OBJEXT)
+jacobi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
+jacobi_omp_f90-main.$(OBJEXT): variabledef.mod
+
 check_PROGRAMS         += jacobi_omp_f90
 jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90      \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.mod.F90       \

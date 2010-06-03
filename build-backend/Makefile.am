@@ -37,3 +37,4 @@ clean-local: clean-local-silc-experiment-dirs
 .PHONY: clean-local-silc-experiment-dirs
 clean-local-silc-experiment-dirs:
 	rm -rf silc-2*
+	rm -rf silc-measurement-tmp
