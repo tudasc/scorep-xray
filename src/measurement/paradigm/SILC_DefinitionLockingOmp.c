@@ -45,6 +45,7 @@ static omp_lock_t silc_io_file_definition_lock;
 static omp_lock_t silc_marker_group_definition_lock;
 static omp_lock_t silc_marker_definition_lock;
 static omp_lock_t silc_parameter_definition_lock;
+static omp_lock_t silc_location_definition_lock;
 
 
 void
@@ -63,6 +64,7 @@ SILC_DefinitionLocks_Initialize()
     omp_init_lock( &silc_marker_group_definition_lock );
     omp_init_lock( &silc_marker_definition_lock );
     omp_init_lock( &silc_parameter_definition_lock );
+    omp_init_lock( &silc_location_definition_lock );
 }
 
 void
@@ -81,6 +83,7 @@ SILC_DefinitionLocks_Finalize()
     omp_destroy_lock( &silc_marker_group_definition_lock );
     omp_destroy_lock( &silc_marker_definition_lock );
     omp_destroy_lock( &silc_parameter_definition_lock );
+    omp_destroy_lock( &silc_location_definition_lock );
 }
 
 void
@@ -249,4 +252,17 @@ void
 SILC_UnlockParameterDefinition()
 {
     omp_unset_lock( &silc_parameter_definition_lock );
+}
+
+
+void
+SILC_LockLocationDefinition()
+{
+    omp_set_lock( &silc_location_definition_lock );
+}
+
+void
+SILC_UnlockLocationDefinition()
+{
+    omp_unset_lock( &silc_location_definition_lock );
 }

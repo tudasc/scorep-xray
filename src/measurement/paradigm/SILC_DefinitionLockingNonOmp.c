@@ -210,3 +210,16 @@ SILC_UnlockParameterDefinition()
 {
     /* Nothing to do when running serial. */
 }
+
+
+void
+SILC_LockLocationDefinition()
+{
+    /* Nothing to do when running serial. */
+}
+
+void
+SILC_UnlockLocationDefinition()
+{
+    /* Nothing to do when running serial. */
+}

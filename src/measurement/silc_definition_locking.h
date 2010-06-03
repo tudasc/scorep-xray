@@ -1,5 +1,5 @@
-#ifndef SILC_DEFINITION_LOCKING_H
-#define SILC_DEFINITION_LOCKING_H
+#ifndef SILC_INTERNAL_DEFINITION_LOCKING_H
+#define SILC_INTERNAL_DEFINITION_LOCKING_H
 
 /*
  * This file is part of the SILC project (http://www.silc.de)
@@ -25,10 +25,27 @@
  *
  */
 
+
 void
 SILC_DefinitionLocks_Initialize();
+
 
 void
 SILC_DefinitionLocks_Finalize();
 
-#endif /* SILC_DEFINITION_LOCKING_H */
+
+/**
+ * Lock the SILC_DefineLocation() and related operations (in the measurement core).
+ */
+void
+SILC_LockLocationDefinition();
+
+
+/**
+ * Unlock the SILC_DefineLocation() and related operations (in the measurement core).
+ */
+void
+SILC_UnlockLocationDefinition();
+
+
+#endif /* SILC_INTERNAL_DEFINITION_LOCKING_H */

@@ -90,8 +90,6 @@ struct SILC_Thread_LocationData
     SILC_Trace_LocationData*     trace_data;
     SILC_Thread_LocationData*    next; // store location objects in list for easy cleanup
 };
-
-
 struct SILC_Thread_LocationData       location_list_head_dummy = { 0, 0, 0, 0, 0 };
 struct SILC_Thread_ThreadPrivateData* initial_thread   = 0;
 struct SILC_Thread_LocationData*      initial_location = 0;
@@ -155,13 +153,17 @@ silc_thread_call_externals_on_new_location( SILC_Thread_LocationData* locationDa
 
     if ( !SILC_Mpi_IsInitialized() )
     {
+        SILC_LockLocationDefinition();
         locationData->location_handle = SILC_DefineLocation( INVALID_LOCATION_DEFINITION_ID, "" );
         SILC_DeferLocationInitialization( locationData );
+        SILC_UnlockLocationDefinition();
     }
     else
     {
         uint64_t global_location_id = SILC_CalculateGlobalLocationId( locationData );
+        SILC_LockLocationDefinition();
         locationData->location_handle = SILC_DefineLocation( global_location_id, "" );
+        SILC_UnlockLocationDefinition();
     }
 }
 

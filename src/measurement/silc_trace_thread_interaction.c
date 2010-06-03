@@ -66,10 +66,12 @@ void
 SILC_Trace_OnThreadCreation( SILC_Thread_LocationData* locationData,
                              SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !SILC_IsTracingEnabled() )
-    {
-        return;
-    }
+    return;
+
+//     if ( !SILC_IsTracingEnabled() )
+//     {
+//
+//     }
 }
 
 
@@ -77,10 +79,12 @@ void
 SILC_Trace_OnThreadActivation( SILC_Thread_LocationData* locationData,
                                SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !SILC_IsTracingEnabled() )
-    {
-        return;
-    }
+    return;
+
+//     if ( !SILC_IsTracingEnabled() )
+//     {
+//
+//     }
 }
 
 
@@ -88,10 +92,12 @@ void
 SILC_Trace_OnThreadDectivation( SILC_Thread_LocationData* locationData,
                                 SILC_Thread_LocationData* parentLocationData )
 {
-    if ( !SILC_IsTracingEnabled() )
-    {
-        return;
-    }
+    return;
+
+//     if ( !SILC_IsTracingEnabled() )
+//     {
+//
+//     }
 }
 
 
@@ -118,7 +124,7 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
 
     if ( !SILC_Mpi_IsInitialized() )
     {
-        // global location id unknown because rank not accessible.
+        // Global location id unknown because rank not accessible.
         // Deferred processing will take place in SILC_InitMeasurementMPI()
     }
     else
