@@ -210,19 +210,21 @@ SILC_DefineLocation( uint64_t    locationId,
     SILC_Location_Definition*         new_definition = NULL;
     SILC_Location_Definition_Movable* new_movable    = NULL;
 
-    #pragma omp critical (define_location)
-    {
-        SILC_ALLOC_NEW_DEFINITION( Location, location );
+    SILC_ALLOC_NEW_DEFINITION( Location, location );
 
-        /* important: overwrite id with the actual location id */
-        /** @todo: convert to global locationId */
-        new_definition->id          = locationId;
-        new_definition->name_handle = *SILC_DefineString( name );
+    /* important: overwrite id with the actual location id */
+    /** @todo: convert to global locationId.
+     * Well, I (CR) don't have a good feeling using the member id for
+     * the global location id. In my understanding the member id is a
+     * process-unique consecutive number that can be used e.g. for
+     * indexing. I propose to have an additional member
+     * global_location_id  */
+    new_definition->id          = locationId;
+    new_definition->name_handle = *SILC_DefineString( name );
 
-        /** @todo: this needs clarification after the location hierarchy
-                   has settled */
-        new_definition->location_type = SILC_LOCATION_OMP_THREAD;
-    }
+    /** @todo: this needs clarification after the location hierarchy
+               has settled */
+    new_definition->location_type = SILC_LOCATION_OMP_THREAD;
 
     return new_movable;
 }
