@@ -114,6 +114,11 @@ SILC_Memory_CreatePageManagers()
     assert( array );
     for ( int i = 0; i < number_of_page_types; ++i )
     {
+        if ( i == profile_pages && !SILC_IsProfilingEnabled() )
+        {
+            array[ i ] = 0;
+            continue;
+        }
         array[ i ] = SILC_Allocator_CreatePageManager( silc_memory_allocator );
         if ( !array[ i ] )
         {
@@ -132,7 +137,10 @@ SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers )
     // is there a need to free pages before deleting them?
     for ( int i = 0; i < number_of_page_types; ++i )
     {
-        SILC_Allocator_DeletePageManager( pageManagers[ i ] );
+        if ( pageManagers[ i ] )
+        {
+            SILC_Allocator_DeletePageManager( pageManagers[ i ] );
+        }
     }
 }
 

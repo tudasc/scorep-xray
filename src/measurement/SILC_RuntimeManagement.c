@@ -97,6 +97,8 @@ static void silc_adapters_initialize_location(); // needed?
 static void silc_adapters_finalize_location(); // needed?
 static void silc_initialization_sanity_checks();
 static void silc_register_config_variables( SILC_ConfigVariable configVars[] );
+static void silc_profile_initialize();
+static void silc_profile_finalize();
 //static void silc_deregister_config_variables( SILC_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
@@ -118,12 +120,13 @@ SILC_IsInitialized()
 void
 SILC_InitMeasurement( void )
 {
-    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
-
     if ( silc_initialized )
     {
         return;
     }
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_FUNCTION_ENTRY, "" );
+
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the adapter initialization.
     silc_initialized = true;
@@ -131,7 +134,7 @@ SILC_InitMeasurement( void )
 
     silc_initialization_sanity_checks();
     silc_register_config_variables( silc_configs );
-    SILC_Timer_Initialize(); // init timer before call to SILC_CreateExperimentDir
+    SILC_Timer_Initialize();
     SILC_CreateExperimentDir();
 
     // we may read total memory and pagesize from config file and pass it to
@@ -152,13 +155,7 @@ SILC_InitMeasurement( void )
     SILC_Thread_Initialize();
     silc_parameter_table_initialize();
 
-    if ( SILC_IsProfilingEnabled() )
-    {
-        SILC_Profile_Register();
-        SILC_Profile_Initialize( 0, NULL );
-        SILC_Profile_OnLocationCreation( SILC_Thread_GetLocationData(), NULL );
-        SILC_Profile_OnThreadActivation( SILC_Thread_GetLocationData(), NULL );
-    }
+    silc_profile_initialize();
 
     if ( !SILC_Mpi_HasMpi() )
     {
@@ -227,8 +224,28 @@ silc_otf2_initialize()
 
 
 void
+silc_profile_initialize()
+{
+    if ( !SILC_IsProfilingEnabled() )
+    {
+        return;
+    }
+
+    SILC_Profile_Register();
+    SILC_Profile_Initialize( 0, NULL );
+    SILC_Profile_OnLocationCreation( SILC_Thread_GetLocationData(), NULL ); // called also from silc_thread_call_externals_on_new_location
+    SILC_Profile_OnThreadActivation( SILC_Thread_GetLocationData(), NULL ); // called also from silc_thread_call_externals_on_thread_activation
+}
+
+
+void
 silc_set_otf2_archive_master_slave()
 {
+    if ( !SILC_IsTracingEnabled() )
+    {
+        return;
+    }
+
     // call this function only once
     static bool archive_master_slave_already_set = false;
     assert( !archive_master_slave_already_set );
@@ -441,13 +458,11 @@ silc_finalize( void )
     }
     silc_finalized = true;
 
-    if ( SILC_IsProfilingEnabled() )
-    {
-        SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputNone );
-        SILC_Profile_Finalize();
-    }
+    // Calling SILC_Event.h functions after this point is considered
+    // an instrumentation error.
 
     // order is important
+    silc_profile_finalize();
     silc_parameter_table_finalize();
     SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();
@@ -462,6 +477,16 @@ silc_finalize( void )
     SILC_Memory_Finalize();
 }
 
+
+static void
+silc_profile_finalize()
+{
+    if ( SILC_IsProfilingEnabled() )
+    {
+        SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputNone );
+        SILC_Profile_Finalize();
+    }
+}
 
 static void
 silc_adapters_finalize_location()
@@ -525,7 +550,7 @@ silc_adapters_deregister()
 void
 silc_otf2_finalize()
 {
-    if ( SILC_IsTracingEnabled() )     // silc_tracing_enabled may change during runtime
+    if ( SILC_IsTracingEnabled() )
     {
         assert( silc_otf2_archive );
         OTF2_Archive_Delete( silc_otf2_archive );

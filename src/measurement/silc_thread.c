@@ -148,7 +148,10 @@ void
 silc_thread_call_externals_on_new_location( SILC_Thread_LocationData* locationData,
                                             SILC_Thread_LocationData* parent )
 {
-    // where to do the locking?
+    // Where to do the locking? Well, at the moment we do the locking
+    // in SILC_Profile_OnLocationCreation, SILC_Trace_OnLocationCreation
+    // and below for the location definition. The alternative is to lock
+    // this entire function.
     SILC_Profile_OnLocationCreation( locationData, parent );
     SILC_Trace_OnLocationCreation( locationData, parent );
 
@@ -332,9 +335,20 @@ silc_thread_init_childs_to_null( SILC_Thread_ThreadPrivateData** childs,
 void
 SILC_Thread_OnThreadJoin()
 {
+    if ( TPD->parent )
+    {
+        silc_thread_update_tpd( TPD->parent );
+    }
+    else
+    {
+        // There was no parallelism in the previous parallel region and
+        // we are are the initial thread. Then, there is no parent and
+        // we don't need to update TPD.
+    }
+
     if ( !TPD->is_active )
     {
-        // last parallel region used more than one thread
+        // last parallel region used by more than one thread
         for ( size_t i = 0; i < TPD->n_childs; ++i )
         {
             if ( TPD->childs[ i ]->is_active )
@@ -388,6 +402,8 @@ SILC_Thread_GetLocationData()
             silc_thread_call_externals_on_new_thread( TPD->location_data,
                                                       TPD->location_data );
         }
+        silc_thread_call_externals_on_thread_activation( TPD->location_data,
+                                                         TPD->location_data );
     }
     else
     {
@@ -420,9 +436,10 @@ SILC_Thread_GetLocationData()
             silc_thread_call_externals_on_new_thread( ( *my_tpd )->location_data,
                                                       TPD->location_data );
         }
+        silc_thread_call_externals_on_thread_activation( TPD->location_data,
+                                                         TPD->parent->location_data );
     }
-    silc_thread_call_externals_on_thread_activation( TPD->location_data,
-                                                     TPD->parent->location_data );
+
     return TPD->location_data;
 }
 

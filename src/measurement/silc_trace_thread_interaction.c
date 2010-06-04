@@ -111,11 +111,15 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     }
 
     SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( locationData );
-    // needs to be locked
-    trace_data->otf_writer = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
-                                                        OTF2_UNDEFINED_UINT64,
-                                                        SILC_OnTracePreFlush,
-                                                        SILC_OnTraceAndDefinitionPostFlush );
+
+    #pragma omp critical (trace_on_location_creation)
+    {
+        trace_data->otf_writer = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
+                                                            OTF2_UNDEFINED_UINT64,
+                                                            SILC_OnTracePreFlush,
+                                                            SILC_OnTraceAndDefinitionPostFlush );
+    }
+
     if ( !trace_data->otf_writer )
     {
         SILC_ERROR( SILC_ERROR_ENOMEM, "Can't create event buffer" );
@@ -129,6 +133,7 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     }
     else
     {
+        // needs locking?
         SILC_SetOtf2WriterLocationId( locationData );
     }
 }
@@ -137,6 +142,11 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
 void
 SILC_SetOtf2WriterLocationId( SILC_Thread_LocationData* threadLocationData )
 {
+    if ( !SILC_IsTracingEnabled() )
+    {
+        return;
+    }
+
     SILC_Trace_LocationData* trace_data = SILC_Thread_GetTraceLocationData( threadLocationData );
     assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
     trace_data->otf_location = SILC_CalculateGlobalLocationId( threadLocationData );

@@ -33,7 +33,6 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_types.h                     \
     $(SRC_ROOT)src/measurement/silc_thread.h                    \
     $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.h  \
-    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.c  \
     $(SRC_ROOT)src/measurement/silc_trace_types.h               \
     $(SRC_ROOT)src/measurement/silc_runtime_management.h        \
     $(SRC_ROOT)src/measurement/silc_definition_locking.h        \
@@ -70,7 +69,8 @@ libsilc_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/silc_runtime_management.c \
     $(SRC_ROOT)src/measurement/silc_thread.c             \
     $(SRC_ROOT)src/measurement/silc_definitions.c        \
-    $(SRC_ROOT)src/measurement/paradigm/silc_memory_locking_omp.c \
+    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.c      \
+    $(SRC_ROOT)src/measurement/paradigm/silc_memory_locking_omp.c   \
     $(SRC_ROOT)src/measurement/paradigm/SILC_DefinitionLockingOmp.c
 libsilc_paradigm_omp_la_CPPFLAGS =       \
     $(AM_CPPFLAGS)                       \
@@ -92,6 +92,7 @@ libsilc_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/silc_runtime_management.c \
     $(SRC_ROOT)src/measurement/silc_thread.c             \
     $(SRC_ROOT)src/measurement/silc_definitions.c        \
+    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.c        \
     $(SRC_ROOT)src/measurement/paradigm/silc_memory_locking_non_omp.c \
     $(SRC_ROOT)src/measurement/paradigm/SILC_DefinitionLockingNonOmp.c
 
