@@ -27,28 +27,29 @@
 #include <SILC_Memory.h>
 #include <SILC_AllocatorImpl.h>
 #include "silc_thread.h"
+#include "silc_status.h"
 #include <assert.h>
 #include <stdbool.h>
 
+
+/// The memory guard stuff is implemented in paradigm/silc_memory_locking_*
 /* *INDENT-OFF* */
+void silc_memory_guard_initialze();
+void silc_memory_guard_finalize();
 /* *INDENT-ON* */
 
+extern SILC_Allocator_Guard silc_memory_lock;
+extern SILC_Allocator_Guard       silc_memory_unlock;
+extern SILC_Allocator_GuardObject silc_memory_guard_object_ptr;
+
+
 /// @todo implement memory statistics
+
 
 /// The one and only allocator for the measurement and the adapters
 SILC_Allocator_Allocator* silc_memory_allocator = 0;
 
 static bool               silc_memory_is_initialized = false;
-
-
-void
-silc_memory_guard_initialze();
-void
-silc_memory_guard_finalize();
-
-extern SILC_Allocator_Guard       silc_memory_lock;
-extern SILC_Allocator_Guard       silc_memory_unlock;
-extern SILC_Allocator_GuardObject silc_memory_guard_object_ptr;
 
 
 enum silc_memory_page_type
@@ -142,6 +143,7 @@ SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers )
             SILC_Allocator_DeletePageManager( pageManagers[ i ] );
         }
     }
+    free( pageManagers );
 }
 
 
