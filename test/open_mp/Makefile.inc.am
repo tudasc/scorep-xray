@@ -43,6 +43,6 @@ omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
-#TESTS += omp_test
+TESTS += omp_test
 
 endif
