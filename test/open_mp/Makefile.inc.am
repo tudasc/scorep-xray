@@ -33,9 +33,9 @@ omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 check_PROGRAMS += omp_test
 
 # do not instrument the OPARI2 generated POMP code
-noinst_LTLIBRARIES += libomp_test_pomp.la
-libomp_test_pomp_la_SOURCES = $(SRC_ROOT)test/open_mp/pomp.c
-
+noinst_LTLIBRARIES          += libomp_test_pomp.la
+libomp_test_pomp_la_SOURCES  = $(SRC_ROOT)test/open_mp/pomp.c
+libomp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 
 omp_test_SOURCES  = $(SRC_ROOT)test/open_mp/omp_test.mod.c       \
                     $(SRC_ROOT)test/open_mp/omp_test.c.opari.inc
