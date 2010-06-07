@@ -130,6 +130,55 @@ SILC_DefineRegion( const char*           regionName,
     return new_movable;
 }
 
+/**
+ * Region accessor functions for user adapters.
+ * @{
+ */
+
+/**
+ * Gets read-only access to the name of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region name.
+ */
+const char*
+SILC_Region_GetName( SILC_RegionHandle handle )
+{
+    SILC_Region_Definition* region =
+        SILC_MEMORY_DEREF_MOVABLE( handle,
+                                   SILC_Region_Definition* );
+
+    SILC_String_Definition* region_name =
+        SILC_MEMORY_DEREF_MOVABLE( &region->name_handle,
+                                   SILC_String_Definition* );
+
+    return SILC_MEMORY_DEREF_MOVABLE( &region_name->str, char* );
+}
+
+
+/**
+ * Gets the type of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region type.
+ */
+SILC_RegionType
+SILC_Region_GetType( SILC_RegionHandle handle )
+{
+    SILC_Region_Definition* region =
+        SILC_MEMORY_DEREF_MOVABLE( handle,
+                                   SILC_Region_Definition* );
+
+    return region->region_type;
+}
+
+
+/**
+ * @}
+ */
+
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.

@@ -139,6 +139,13 @@ SILC_DefineRegion
 );
 
 
+const char*
+SILC_Region_GetName( SILC_RegionHandle handle );
+
+
+SILC_RegionType
+SILC_Region_GetType( SILC_RegionHandle handle );
+
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  *
