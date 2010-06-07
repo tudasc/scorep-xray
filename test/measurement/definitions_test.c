@@ -90,6 +90,27 @@ static test_definition_manager definition_manager;
     } while ( 0 )
 
 
+#define TEST_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( Type, \
+                                                  type, \
+                                                  array_type, \
+                                                  number_of_members ) \
+    do { \
+        new_movable = ( SILC_ ## Type ## _Definition_Movable* ) \
+            SILC_Allocator_AllocMovable( page_manager, \
+                sizeof( SILC_ ## Type ## _Definition ) + \
+                ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
+        new_definition = \
+            TEST_MEMORY_DEREF_MOVABLE( new_movable, \
+                                       SILC_ ## Type ## _Definition* ); \
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
+        *definition_manager.type ## _definition_tail_pointer = \
+            *new_movable; \
+        definition_manager.type ## _definition_tail_pointer = \
+            &( new_definition )->next; \
+        ( new_definition )->id = \
+            definition_manager.type ## _definition_counter++; \
+    } while ( 0 )
+
 #define TEST_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
         SILC_ ## Type ## _Definition* definition; \
@@ -158,7 +179,7 @@ loop_over_string_definitions( CuTest* tc )
         CuAssertStrEquals(
             tc,
             test_stings[ i ],
-            TEST_MEMORY_DEREF_MOVABLE( &( definition->str ), char* ) );
+            definition->string_data );
         i++;
     }
     TEST_DEFINITION_FOREACH_WHILE();
@@ -172,16 +193,17 @@ test_define_string( CuTest*     tc,
     SILC_String_Definition*         new_definition = NULL;
     SILC_String_Definition_Movable* new_movable    = NULL;
 
-    TEST_ALLOC_NEW_DEFINITION( String, string );
+    uint32_t                        string_length = strlen( str ) + 1;
+    TEST_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
+                                              string,
+                                              char,
+                                              string_length );
+
     CuAssertPtrNotNull( tc, new_definition );
     CuAssertPtrNotNull( tc, new_movable );
 
-//    SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
-//              ( SILC_Allocator_MovableMemory* )&new_definition->str );
-    SILC_Allocator_AllocMovableRaw( page_manager,
-                                    strlen( str ) + 1,
-                                    ( SILC_Allocator_MovableMemory* )&new_definition->str );
-    strcpy( TEST_MEMORY_DEREF_MOVABLE( &new_definition->str, char* ), str );
+    new_definition->string_length = string_length;
+    strcpy( new_definition->string_data, str );
 
     return new_movable;
 }

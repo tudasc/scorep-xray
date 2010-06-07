@@ -30,16 +30,14 @@
 #include "silc_definition_handles.h"
 #include <SILC_Types.h>
 
-typedef struct char_Movable char_Movable;
-SILC_MOVABLE_TYPE( char );
-
-
 SILC_DEFINE_DEFINITION_TYPE( String )
 {
     SILC_String_Definition_Movable next;
     uint32_t                       id;
     // Keep above order to be able to cast between definition types.
-    char_Movable                   str;
+    uint32_t                       string_length;
+    // variable array member
+    char                           string_data[ 1 ];
 };
 
 

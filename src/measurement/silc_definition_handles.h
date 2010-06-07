@@ -36,9 +36,30 @@
         uint32_t offset;                               \
     }
 
+/**
+ * Use this macro to define a definition struct.
+ *
+ * Usage:
+ * @code
+ *     SILC_DEFINE_DEFINITION_TYPE_BEGIN( Type ) {
+ *         SILC_DEFINITION_HEADER( Type ); // must be first
+ *         // definition specfic members
+ *         :
+ *     };
+ * @endcode
+ *
+ * @see SILC_DEFINITION_HEADER
+ */
 #define SILC_DEFINE_DEFINITION_TYPE( Type )            \
     SILC_MOVABLE_TYPE( SILC_ ## Type ## _Definition ); \
     struct SILC_ ## Type ## _Definition
+
+/**
+ * @see SILC_DEFINE_DEFINITION_TYPE
+ */
+#define SILC_DEFINITION_HEADER( Type )        \
+    SILC_ ## Type ## Definition_Movable next; \
+    uint32_t id
 
 /**
  *  Extracts the ID out of an handle pointer.

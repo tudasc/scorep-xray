@@ -187,11 +187,14 @@ SILC_DefineString( const char* str )
 
     #pragma omp critical (define_string)
     {
-        SILC_ALLOC_NEW_DEFINITION( String, string );
+        uint32_t string_length = strlen( str ) + 1;
+        SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
+                                                  string,
+                                                  char,
+                                                  string_length );
 
-        SILC_Memory_AllocForDefinitionsRaw( strlen( str ) + 1,
-                                            ( SILC_Allocator_MovableMemory* )&new_definition->str );
-        strcpy( SILC_MEMORY_DEREF_MOVABLE( &new_definition->str, char* ), str );
+        new_definition->string_length = string_length;
+        strcpy( new_definition->string_data, str );
     }
 
     return new_movable;
@@ -417,7 +420,7 @@ silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         SILC_Error_Code status = OTF2_DefWriter_DefString(
             definitionWriter,
             definition->id,
-            SILC_MEMORY_DEREF_MOVABLE( &definition->str, char* ) );
+            definition->string_data );
         if ( status != SILC_SUCCESS )
         {
             silc_handle_definition_writing_error( status, "SILC_String_Definition" );

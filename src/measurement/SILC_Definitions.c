@@ -153,7 +153,7 @@ SILC_Region_GetName( SILC_RegionHandle handle )
         SILC_MEMORY_DEREF_MOVABLE( &region->name_handle,
                                    SILC_String_Definition* );
 
-    return SILC_MEMORY_DEREF_MOVABLE( &region_name->str, char* );
+    return region_name->string_data;
 }
 
 
