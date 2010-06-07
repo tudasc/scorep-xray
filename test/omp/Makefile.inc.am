@@ -22,7 +22,7 @@ if OPENMP_SUPPORTED
 
 check_PROGRAMS += omp_test_unistrumented
 
-omp_test_unistrumented_SOURCES  = $(SRC_ROOT)test/open_mp/omp_test.c
+omp_test_unistrumented_SOURCES  = $(SRC_ROOT)test/omp/omp_test.c
 omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 #omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 #omp_test_unistrumented_LDADD    = $(LIB_ROOT)libsilc_omp.la
@@ -34,11 +34,11 @@ check_PROGRAMS += omp_test
 
 # do not instrument the OPARI2 generated POMP code
 noinst_LTLIBRARIES          += libomp_test_pomp.la
-libomp_test_pomp_la_SOURCES  = $(SRC_ROOT)test/open_mp/pomp.c
+libomp_test_pomp_la_SOURCES  = $(SRC_ROOT)test/omp/pomp.c
 libomp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 
-omp_test_SOURCES  = $(SRC_ROOT)test/open_mp/omp_test.mod.c       \
-                    $(SRC_ROOT)test/open_mp/omp_test.c.opari.inc
+omp_test_SOURCES  = $(SRC_ROOT)test/omp/omp_test.mod.c       \
+                    $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_test_pomp.la

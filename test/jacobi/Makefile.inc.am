@@ -39,9 +39,9 @@ jacobi_serial_c_uninstrumented_LDADD    = -lm
 ## OpenMP C
 
 if OPENMP_SUPPORTED
-noinst_LTLIBRARIES         += libjacobi_omp_c.la
-libjacobi_omp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/pomp.c
-libjacobi_omp_c_la_CPPFLAGS = $(AM_CPPFLAGS)
+noinst_LTLIBRARIES         += libjacobi_pomp_c.la
+libjacobi_pomp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/pomp.c
+libjacobi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS)
 
 check_PROGRAMS       += jacobi_omp_c
 jacobi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.mod.c       \
@@ -51,7 +51,7 @@ jacobi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.mod.c       \
                         $(SRC_ROOT)test/jacobi/OpenMP/C/main.c.opari.inc
 jacobi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_omp_c_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_omp_c.la
+jacobi_omp_c_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_pomp_c.la
 
 check_PROGRAMS                     += jacobi_omp_c_uninstrumented
 jacobi_omp_c_uninstrumented_SOURCES = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c \
@@ -80,9 +80,9 @@ jacobi_serial_cxx_uninstrumented_LDADD    = -lm
 ## OpenMP C++
 
 if OPENMP_SUPPORTED
-noinst_LTLIBRARIES           += libjacobi_omp_cxx.la
-libjacobi_omp_cxx_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/pomp.c
-libjacobi_omp_cxx_la_CPPFLAGS = $(AM_CPPFLAGS)
+noinst_LTLIBRARIES           += libjacobi_pomp_cxx.la
+libjacobi_pomp_cxx_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/pomp.c
+libjacobi_pomp_cxx_la_CPPFLAGS = $(AM_CPPFLAGS)
 
 check_PROGRAMS         += jacobi_omp_cxx
 jacobi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.mod.cpp       \
@@ -93,7 +93,7 @@ jacobi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.mod.cpp      
 jacobi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_omp_cxx_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_omp_cxx.la
+jacobi_omp_cxx_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_pomp_cxx.la
 
 check_PROGRAMS                        += jacobi_omp_cxx_uninstrumented
 jacobi_omp_cxx_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.cpp \
@@ -133,9 +133,9 @@ variabledef.mod: VariableDef.$(OBJEXT)
 jacobi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_omp_f90-main.$(OBJEXT): variabledef.mod
 
-noinst_LTLIBRARIES           += libjacobi_omp_f90.la
-libjacobi_omp_f90_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/pomp.c
-libjacobi_omp_f90_la_CPPFLAGS = $(AM_CPPFLAGS)
+noinst_LTLIBRARIES           += libjacobi_pomp_f90.la
+libjacobi_pomp_f90_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/pomp.c
+libjacobi_pomp_f90_la_CPPFLAGS = $(AM_CPPFLAGS)
 
 check_PROGRAMS         += jacobi_omp_f90
 jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90      \
@@ -146,7 +146,7 @@ jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 
 jacobi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
 jacobi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_omp_f90_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_omp_f90.la
+jacobi_omp_f90_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_pomp_f90.la
 
 check_PROGRAMS                        += jacobi_omp_f90_uninstrumented
 jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 \

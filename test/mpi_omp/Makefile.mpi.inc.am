@@ -1,0 +1,43 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+if MPI_SUPPORTED
+if OPENMP_SUPPORTED
+
+check_PROGRAMS += mpi_omp_test_uninstrumented
+
+mpi_omp_test_uninstrumented_SOURCES  = $(SRC_ROOT)/test/mpi_omp/mpi_omp_test.c
+mpi_omp_test_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+mpi_omp_test_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
+
+
+noinst_LTLIBRARIES              += libmpi_omp_test_pomp.la
+libmpi_omp_test_pomp_la_SOURCES  = $(SRC_ROOT)/test/mpi_omp/pomp.c
+libmpi_omp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
+
+check_PROGRAMS += mpi_omp_test
+
+mpi_omp_test_SOURCES  = $(SRC_ROOT)/test/mpi_omp/mpi_omp_test.mod.c      \
+                        $(SRC_ROOT)/test/mpi_omp/mpi_omp_test.c.opari.inc
+mpi_omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+mpi_omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+mpi_omp_test_LDADD    = $(LIB_ROOT)libsilc_mpi_omp.la libmpi_omp_test_pomp.la
+
+endif
+endif
