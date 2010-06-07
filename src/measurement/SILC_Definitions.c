@@ -56,7 +56,7 @@ SILC_DefineSourceFile( const char* fileName )
     new_definition->name_handle = *SILC_DefineString( fileName );
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID: %x", new_definition->id );
+                       "    Handle ID: %x", new_definition->sequence_number );
 
     return new_movable;
 }
@@ -103,7 +103,7 @@ SILC_DefineRegion( const char*           regionName,
     char stringBuffer[ 16 ];
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID:   %x", new_definition->id );
+                       "    Handle ID:   %x", new_definition->sequence_number );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Source file: %s",
                        silc_source_file_to_string( stringBuffer,
@@ -209,7 +209,7 @@ SILC_DefineMPICommunicator( int32_t  numberOfRanks,
 // TODO: make this into a silc_debug_dump_*_definition function
 #ifdef SILC_DEBUG
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID:   %x", new_definition->id );
+                       "    Handle ID:   %x", new_definition->sequence_number );
     SILC_DEBUG_PREFIX( SILC_DEBUG_DEFINITIONS );
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS,
                            "    World ranks:" );
@@ -252,7 +252,7 @@ SILC_DefineMPIWindow( SILC_MPICommunicatorHandle communicatorHandle )
     // Init new_definition
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID: %x", new_definition->id );
+                       "    Handle ID: %x", new_definition->sequence_number );
 
     return new_movable;
 }
@@ -281,7 +281,7 @@ SILC_DefineMPICartesianTopology( const char*                topologyName,
 // TODO: make this to a silc_debug_dump_*_definition
 #ifdef SILC_DEBUG
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
-                       "    Handle ID:  %x", new_definition->id );
+                       "    Handle ID:  %x", new_definition->sequence_number );
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Dimensions: %u", nDimensions );
 

@@ -207,7 +207,7 @@ SILC_DefineString( const char* str )
  * @in internal
  */
 SILC_LocationHandle
-SILC_DefineLocation( uint64_t    locationId,
+SILC_DefineLocation( uint64_t    globalLocationId,
                      const char* name )
 {
     SILC_Location_Definition*         new_definition = NULL;
@@ -215,15 +215,8 @@ SILC_DefineLocation( uint64_t    locationId,
 
     SILC_ALLOC_NEW_DEFINITION( Location, location );
 
-    /* important: overwrite id with the actual location id */
-    /** @todo: convert to global locationId.
-     * Well, I (CR) don't have a good feeling using the member id for
-     * the global location id. In my understanding the member id is a
-     * process-unique consecutive number that can be used e.g. for
-     * indexing. I propose to have an additional member
-     * global_location_id  */
-    new_definition->id          = locationId;
-    new_definition->name_handle = *SILC_DefineString( name );
+    new_definition->global_location_id = globalLocationId;
+    new_definition->name_handle        = *SILC_DefineString( name );
 
     /** @todo: this needs clarification after the location hierarchy
                has settled */
@@ -419,7 +412,7 @@ silc_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         SILC_Error_Code status = OTF2_DefWriter_DefString(
             definitionWriter,
-            definition->id,
+            definition->sequence_number,
             definition->string_data );
         if ( status != SILC_SUCCESS )
         {
@@ -438,7 +431,7 @@ silc_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         /** @todo add definition count */
         SILC_Error_Code status = OTF2_DefWriter_DefLocation(
             definitionWriter,
-            definition->id,
+            definition->global_location_id,
             SILC_MEMORY_DEREF_MOVABLE( &definition->name_handle, char* ),
             silc_location_type_to_otf_location_type( definition->location_type ),
             0 );
@@ -483,7 +476,7 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
         SILC_Error_Code status = OTF2_DefWriter_DefRegion(
             definitionWriter,
-            definition->id,
+            definition->sequence_number,
             SILC_HANDLE_TO_ID( &definition->name_handle, String ),
             SILC_HANDLE_TO_ID( &definition->description_handle, String ),
             silc_region_type_to_otf_region_type( definition->region_type ),
@@ -507,7 +500,7 @@ silc_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     {
         SILC_Error_Code status = OTF2_DefWriter_DefGroup(
             definitionWriter,
-            definition->id,
+            definition->sequence_number,
             silc_group_type_to_otf_group_type( definition->group_type ),
             definition->number_of_members,
             definition->members );

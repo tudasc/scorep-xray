@@ -32,7 +32,7 @@
 
 SILC_DEFINE_DEFINITION_TYPE( String )
 {
-    SILC_DEFINITION_HEADER( String, uint32_t );
+    SILC_DEFINITION_HEADER( String );
 
     uint32_t string_length;
     // variable array member
@@ -42,9 +42,10 @@ SILC_DEFINE_DEFINITION_TYPE( String )
 
 SILC_DEFINE_DEFINITION_TYPE( Location )
 {
-    /* locations do have an uin64_t as id. */
-    SILC_DEFINITION_HEADER( Location, uint64_t );
+    SILC_DEFINITION_HEADER( Location );
 
+    /* don't use the sequence number for the id, this is generated */
+    uint64_t                       global_location_id;
     SILC_String_Definition_Movable name_handle;
     SILC_LocationType              location_type;
 };
@@ -52,7 +53,7 @@ SILC_DEFINE_DEFINITION_TYPE( Location )
 
 SILC_DEFINE_DEFINITION_TYPE( SourceFile )
 {
-    SILC_DEFINITION_HEADER( SourceFile, uint32_t );
+    SILC_DEFINITION_HEADER( SourceFile );
 
     SILC_String_Definition_Movable name_handle;
 };
@@ -60,7 +61,7 @@ SILC_DEFINE_DEFINITION_TYPE( SourceFile )
 
 SILC_DEFINE_DEFINITION_TYPE( Region )
 {
-    SILC_DEFINITION_HEADER( Region, uint32_t );
+    SILC_DEFINITION_HEADER( Region );
 
     // Add SILC_Region stuff from here on.
     SILC_String_Definition_Movable     name_handle;
@@ -75,8 +76,11 @@ SILC_DEFINE_DEFINITION_TYPE( Region )
 
 SILC_DEFINE_DEFINITION_TYPE( Group )
 {
-    /* groups do have an uin64_t as id. */
-    SILC_DEFINITION_HEADER( Group, uint64_t );
+    SILC_DEFINITION_HEADER( Group );
+
+    /* OTF2 groups have a uint64_t as id, we use the sequences number,
+     * until we know, that this may clash with location ids
+     */
 
     // Add SILC_Group stuff from here on.
     SILC_GroupType group_type;
@@ -88,7 +92,7 @@ SILC_DEFINE_DEFINITION_TYPE( Group )
 
 SILC_DEFINE_DEFINITION_TYPE( MPIWindow )
 {
-    SILC_DEFINITION_HEADER( MPIWindow, uint32_t );
+    SILC_DEFINITION_HEADER( MPIWindow );
 
     // Add SILC_MPIWindow stuff from here on.
 };
@@ -96,7 +100,7 @@ SILC_DEFINE_DEFINITION_TYPE( MPIWindow )
 
 SILC_DEFINE_DEFINITION_TYPE( MPICartesianTopology )
 {
-    SILC_DEFINITION_HEADER( MPICartesianTopology, uint32_t );
+    SILC_DEFINITION_HEADER( MPICartesianTopology );
 
     // Add SILC_MPICartesianTopology stuff from here on.
 };
@@ -104,7 +108,7 @@ SILC_DEFINE_DEFINITION_TYPE( MPICartesianTopology )
 
 SILC_DEFINE_DEFINITION_TYPE( MPICartesianCoords )
 {
-    SILC_DEFINITION_HEADER( MPICartesianCoords, uint32_t );
+    SILC_DEFINITION_HEADER( MPICartesianCoords );
 
     // Add SILC_MPICartesianCoords stuff from here on.
 };
@@ -112,7 +116,7 @@ SILC_DEFINE_DEFINITION_TYPE( MPICartesianCoords )
 
 SILC_DEFINE_DEFINITION_TYPE( CounterGroup )
 {
-    SILC_DEFINITION_HEADER( CounterGroup, uint32_t );
+    SILC_DEFINITION_HEADER( CounterGroup );
 
     // Add SILC_CounterGroup stuff from here on.
 };
@@ -120,7 +124,7 @@ SILC_DEFINE_DEFINITION_TYPE( CounterGroup )
 
 SILC_DEFINE_DEFINITION_TYPE( Counter )
 {
-    SILC_DEFINITION_HEADER( Counter, uint32_t );
+    SILC_DEFINITION_HEADER( Counter );
 
     // Add SILC_Counter stuff from here on.
 };
@@ -128,7 +132,7 @@ SILC_DEFINE_DEFINITION_TYPE( Counter )
 
 SILC_DEFINE_DEFINITION_TYPE( IOFileGroup )
 {
-    SILC_DEFINITION_HEADER( IOFileGroup, uint32_t );
+    SILC_DEFINITION_HEADER( IOFileGroup );
 
     // Add SILC_IOFileGroup stuff from here on.
 };
@@ -136,7 +140,7 @@ SILC_DEFINE_DEFINITION_TYPE( IOFileGroup )
 
 SILC_DEFINE_DEFINITION_TYPE( IOFile )
 {
-    SILC_DEFINITION_HEADER( IOFile, uint32_t );
+    SILC_DEFINITION_HEADER( IOFile );
 
     // Add SILC_IOFile stuff from here on.
 };
@@ -144,7 +148,7 @@ SILC_DEFINE_DEFINITION_TYPE( IOFile )
 
 SILC_DEFINE_DEFINITION_TYPE( MarkerGroup )
 {
-    SILC_DEFINITION_HEADER( MarkerGroup, uint32_t );
+    SILC_DEFINITION_HEADER( MarkerGroup );
 
     // Add SILC_MarkerGroup stuff from here on.
 };
@@ -152,7 +156,7 @@ SILC_DEFINE_DEFINITION_TYPE( MarkerGroup )
 
 SILC_DEFINE_DEFINITION_TYPE( Marker )
 {
-    SILC_DEFINITION_HEADER( Marker, uint32_t );
+    SILC_DEFINITION_HEADER( Marker );
 
     // Add SILC_Marker stuff from here on.
 };
@@ -160,7 +164,7 @@ SILC_DEFINE_DEFINITION_TYPE( Marker )
 
 SILC_DEFINE_DEFINITION_TYPE( Parameter )
 {
-    SILC_DEFINITION_HEADER( Parameter, uint32_t );
+    SILC_DEFINITION_HEADER( Parameter );
 
     // Add SILC_Parameter stuff from here on.
 };
@@ -168,7 +172,7 @@ SILC_DEFINE_DEFINITION_TYPE( Parameter )
 
 SILC_DEFINE_DEFINITION_TYPE( Callpath )
 {
-    SILC_DEFINITION_HEADER( Callpath, uint32_t );
+    SILC_DEFINITION_HEADER( Callpath );
 
     // Add SILC_Callpath stuff from here on.
 };

@@ -85,7 +85,7 @@ static test_definition_manager definition_manager;
             *new_movable; \
         definition_manager.type ## _definition_tail_pointer = \
             &( new_definition )->next; \
-        ( new_definition )->id = \
+        ( new_definition )->sequence_number = \
             definition_manager.type ## _definition_counter++; \
     } while ( 0 )
 
@@ -107,7 +107,7 @@ static test_definition_manager definition_manager;
             *new_movable; \
         definition_manager.type ## _definition_tail_pointer = \
             &( new_definition )->next; \
-        ( new_definition )->id = \
+        ( new_definition )->sequence_number = \
             definition_manager.type ## _definition_counter++; \
     } while ( 0 )
 

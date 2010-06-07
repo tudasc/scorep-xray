@@ -81,7 +81,7 @@ silc_any_handle_to_string
     }
 
     snprintf( stringBuffer, stringBufferSize, format,
-              ( SILC_MEMORY_DEREF_MOVABLE( handle, silc_any_definition* ) )->id );
+              ( SILC_MEMORY_DEREF_MOVABLE( handle, silc_any_definition* ) )->sequence_number );
     return stringBuffer;
 }
 

@@ -55,20 +55,26 @@
     struct SILC_ ## Type ## _Definition
 
 /**
+ * Provides a stub for the location struct header.
+ * the sequence_number member is mostly use as the id for the local definitions
+ *
  * @see SILC_DEFINE_DEFINITION_TYPE
+ *
+ * @note: This should be insync with the definition of @a silc_any_definition
  */
-#define SILC_DEFINITION_HEADER( Type, id_type ) \
+#define SILC_DEFINITION_HEADER( Type ) \
     SILC_ ## Type ## _Definition_Movable next;   \
-    id_type id
+    uint32_t sequence_number
 
 /**
  *  Extracts the ID out of an handle pointer.
  *
- * The handle pointer needs to be a non-zero pointer.
+ *  @note: This is only the process local sequence number, which
+ *         may happen to be the OTF2 definition id.
  */
 #define SILC_HANDLE_TO_ID( handle, Type ) \
     ( ( SILC_MEMORY_DEREF_MOVABLE( ( handle ), \
-                                   SILC_ ## Type ## _Definition* ) )->id )
+                                   SILC_ ## Type ## _Definition* ) )->sequence_number )
 
 typedef struct silc_any_definition         silc_any_definition;
 typedef struct silc_any_definition_Movable silc_any_definition_Movable;
@@ -79,7 +85,7 @@ SILC_MOVABLE_TYPE( silc_any_definition );
 struct silc_any_definition
 {
     silc_any_definition_Movable next;
-    uint32_t                    id;
+    uint32_t                    sequence_number;
 };
 
 

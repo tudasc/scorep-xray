@@ -31,8 +31,8 @@
 
 
 /**
- * Allocate, assign id, and store in manager list a new definition of type
- * @type
+ * Allocate, assign the sequence number, and store in manager list a new
+ * definition of type @type
  */
 /* *INDENT-OFF* */
 #define SILC_ALLOC_NEW_DEFINITION( Type, type ) \
@@ -48,15 +48,15 @@
             *new_movable; \
         silc_definition_manager.type ## _definition_tail_pointer = \
             &( new_definition )->next; \
-        ( new_definition )->id = \
+        ( new_definition )->sequence_number = \
             silc_definition_manager.type ## _definition_counter++; \
     } while ( 0 )
 /* *INDENT-ON* */
 
 /**
- * Allocate, assign id, and store in manager list a new definition of type
- * @type with a variable array member of type @array_type and a total
- * number of members of @number_of_members
+ * Allocate, assign the sequence number, and store in manager list a new
+ * definition of type @type with a variable array member of type @array_type
+ * and a total number of members of @number_of_members
  */
 /* *INDENT-OFF* */
 #define SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( Type, \
@@ -76,7 +76,7 @@
             *new_movable; \
         silc_definition_manager.type ## _definition_tail_pointer = \
             &( new_definition )->next; \
-        ( new_definition )->id = \
+        ( new_definition )->sequence_number = \
             silc_definition_manager.type ## _definition_counter++; \
     } while ( 0 )
 /* *INDENT-ON* */
@@ -91,32 +91,28 @@
 typedef struct SILC_DefinitionManager SILC_DefinitionManager;
 struct SILC_DefinitionManager
 {
-    // note: no ';'
-    #define SILC_DEFINE_DEFINITION_LIST( counter_type, Type, type ) \
-        SILC_ ## Type ## _Definition_Movable type ## _definition_head; \
+    /* note: no ';' */
+    #define SILC_DEFINE_DEFINITION_LIST( Type, type ) \
+        SILC_ ## Type ## _Definition_Movable  type ## _definition_head; \
         SILC_ ## Type ## _Definition_Movable* type ## _definition_tail_pointer; \
-        counter_type type ## _definition_counter;
+        uint32_t                              type ## _definition_counter;
 
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, String, string )
-
-    /* The counter will not be used to assign ids to locations, only
-     * to count the number of locations.
-     */
-    SILC_DEFINE_DEFINITION_LIST( uint64_t, Location, location )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, SourceFile, source_file )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, Region, region )
-    SILC_DEFINE_DEFINITION_LIST( uint64_t, Group, group )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPIWindow, mpi_window )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICartesianTopology, mpi_cartesian_topology )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, MPICartesianCoords, mpi_cartesian_coords )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, CounterGroup, counter_group )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, Counter, counter )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, IOFileGroup, io_file_group )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, IOFile, io_file )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, MarkerGroup, marker_group )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, Marker, marker )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, Parameter, parameter )
-    SILC_DEFINE_DEFINITION_LIST( uint32_t, Callpath, callpath )
+    SILC_DEFINE_DEFINITION_LIST( String, string )
+    SILC_DEFINE_DEFINITION_LIST( Location, location )
+    SILC_DEFINE_DEFINITION_LIST( SourceFile, source_file )
+    SILC_DEFINE_DEFINITION_LIST( Region, region )
+    SILC_DEFINE_DEFINITION_LIST( Group, group )
+    SILC_DEFINE_DEFINITION_LIST( MPIWindow, mpi_window )
+    SILC_DEFINE_DEFINITION_LIST( MPICartesianTopology, mpi_cartesian_topology )
+    SILC_DEFINE_DEFINITION_LIST( MPICartesianCoords, mpi_cartesian_coords )
+    SILC_DEFINE_DEFINITION_LIST( CounterGroup, counter_group )
+    SILC_DEFINE_DEFINITION_LIST( Counter, counter )
+    SILC_DEFINE_DEFINITION_LIST( IOFileGroup, io_file_group )
+    SILC_DEFINE_DEFINITION_LIST( IOFile, io_file )
+    SILC_DEFINE_DEFINITION_LIST( MarkerGroup, marker_group )
+    SILC_DEFINE_DEFINITION_LIST( Marker, marker )
+    SILC_DEFINE_DEFINITION_LIST( Parameter, parameter )
+    SILC_DEFINE_DEFINITION_LIST( Callpath, callpath )
 
     #undef SILC_DEFINE_DEFINITION_LIST
 };
@@ -171,7 +167,7 @@ SILC_DefineString( const char* str );
 
 
 SILC_LocationHandle
-SILC_DefineLocation( uint64_t    locationId,
+SILC_DefineLocation( uint64_t    globalLocationId,
                      const char* name );
 
 

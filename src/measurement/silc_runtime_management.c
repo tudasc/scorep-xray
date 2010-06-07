@@ -169,7 +169,7 @@ silc_update_location_definition_id( SILC_Thread_LocationData* location )
         SILC_MEMORY_DEREF_MOVABLE( SILC_Thread_GetLocationHandle( location ),
                                    SILC_Location_Definition* );
 
-    location_definition->id = trace_data->otf_location;
+    location_definition->global_location_id = trace_data->otf_location;
 }
 
 
