@@ -42,7 +42,7 @@
  * Usage:
  * @code
  *     SILC_DEFINE_DEFINITION_TYPE_BEGIN( Type ) {
- *         SILC_DEFINITION_HEADER( Type ); // must be first
+ *         SILC_DEFINITION_HEADER( Type, uint32_t ); // must be first
  *         // definition specfic members
  *         :
  *     };
@@ -57,9 +57,9 @@
 /**
  * @see SILC_DEFINE_DEFINITION_TYPE
  */
-#define SILC_DEFINITION_HEADER( Type )        \
-    SILC_ ## Type ## Definition_Movable next; \
-    uint32_t id
+#define SILC_DEFINITION_HEADER( Type, id_type ) \
+    SILC_ ## Type ## _Definition_Movable next;   \
+    id_type id
 
 /**
  *  Extracts the ID out of an handle pointer.

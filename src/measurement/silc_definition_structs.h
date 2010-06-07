@@ -32,39 +32,36 @@
 
 SILC_DEFINE_DEFINITION_TYPE( String )
 {
-    SILC_String_Definition_Movable next;
-    uint32_t                       id;
-    // Keep above order to be able to cast between definition types.
-    uint32_t                       string_length;
+    SILC_DEFINITION_HEADER( String, uint32_t );
+
+    uint32_t string_length;
     // variable array member
-    char                           string_data[ 1 ];
+    char     string_data[ 1 ];
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( Location )
 {
-    SILC_Location_Definition_Movable next;
-    /** locations do have an uin64_t as id. */
-    uint64_t                         id;
-    SILC_String_Definition_Movable   name_handle;
-    SILC_LocationType                location_type;
+    /* locations do have an uin64_t as id. */
+    SILC_DEFINITION_HEADER( Location, uint64_t );
+
+    SILC_String_Definition_Movable name_handle;
+    SILC_LocationType              location_type;
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( SourceFile )
 {
-    SILC_SourceFile_Definition_Movable next;
-    uint32_t                           id;
-    // Keep above order to be able to cast between definition types.
-    SILC_String_Definition_Movable     name_handle;
+    SILC_DEFINITION_HEADER( SourceFile, uint32_t );
+
+    SILC_String_Definition_Movable name_handle;
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( Region )
 {
-    SILC_Region_Definition_Movable next;
-    uint32_t                       id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( Region, uint32_t );
+
     // Add SILC_Region stuff from here on.
     SILC_String_Definition_Movable     name_handle;
     SILC_String_Definition_Movable     description_handle; // currently not used
@@ -78,9 +75,9 @@ SILC_DEFINE_DEFINITION_TYPE( Region )
 
 SILC_DEFINE_DEFINITION_TYPE( Group )
 {
-    SILC_Group_Definition_Movable next;
-    uint64_t                      id;
-    // Keep above order to be able to cast between definition types.
+    /* groups do have an uin64_t as id. */
+    SILC_DEFINITION_HEADER( Group, uint64_t );
+
     // Add SILC_Group stuff from here on.
     SILC_GroupType group_type;
     uint64_t       number_of_members;
@@ -91,99 +88,88 @@ SILC_DEFINE_DEFINITION_TYPE( Group )
 
 SILC_DEFINE_DEFINITION_TYPE( MPIWindow )
 {
-    SILC_MPIWindow_Definition_Movable next;
-    uint32_t                          id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( MPIWindow, uint32_t );
+
     // Add SILC_MPIWindow stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( MPICartesianTopology )
 {
-    SILC_MPICartesianTopology_Definition_Movable next;
-    uint32_t                                     id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( MPICartesianTopology, uint32_t );
+
     // Add SILC_MPICartesianTopology stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( MPICartesianCoords )
 {
-    SILC_MPICartesianCoords_Definition_Movable next;
-    uint32_t                                   id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( MPICartesianCoords, uint32_t );
+
     // Add SILC_MPICartesianCoords stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( CounterGroup )
 {
-    SILC_CounterGroup_Definition_Movable next;
-    uint32_t                             id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( CounterGroup, uint32_t );
+
     // Add SILC_CounterGroup stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( Counter )
 {
-    SILC_Counter_Definition_Movable next;
-    uint32_t                        id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( Counter, uint32_t );
+
     // Add SILC_Counter stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( IOFileGroup )
 {
-    SILC_IOFileGroup_Definition_Movable next;
-    uint32_t                            id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( IOFileGroup, uint32_t );
+
     // Add SILC_IOFileGroup stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( IOFile )
 {
-    SILC_IOFile_Definition_Movable next;
-    uint32_t                       id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( IOFile, uint32_t );
+
     // Add SILC_IOFile stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( MarkerGroup )
 {
-    SILC_MarkerGroup_Definition_Movable next;
-    uint32_t                            id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( MarkerGroup, uint32_t );
+
     // Add SILC_MarkerGroup stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( Marker )
 {
-    SILC_Marker_Definition_Movable next;
-    uint32_t                       id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( Marker, uint32_t );
+
     // Add SILC_Marker stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( Parameter )
 {
-    SILC_Parameter_Definition_Movable next;
-    uint32_t                          id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( Parameter, uint32_t );
+
     // Add SILC_Parameter stuff from here on.
 };
 
 
 SILC_DEFINE_DEFINITION_TYPE( Callpath )
 {
-    SILC_Callpath_Definition_Movable next;
-    uint32_t                         id;
-    // Keep above order to be able to cast between definition types.
+    SILC_DEFINITION_HEADER( Callpath, uint32_t );
+
     // Add SILC_Callpath stuff from here on.
 };
 
