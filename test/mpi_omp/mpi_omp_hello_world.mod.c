@@ -3,8 +3,8 @@
 #endif
 #define _POMP 200110
 
-#include "mpi_omp_test.c.opari.inc"
-#line 1 "mpi_omp_test.c"
+#include "mpi_omp_hello_world.c.opari.inc"
+#line 1 "mpi_omp_hello_world.c"
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
