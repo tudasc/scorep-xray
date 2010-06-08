@@ -203,7 +203,7 @@ SILC_DefineMPICommunicator( int32_t  numberOfRanks,
     for ( int32_t i = 0; i < numberOfRanks; i++ )
     {
         /* convert ranks to global location ids */
-        new_definition->members[ i ] = ( uint64_t )( ranks[ i ] ) << 32;
+        new_definition->members[ i ] = ( uint64_t )ranks[ i ];
     }
 
 // TODO: make this into a silc_debug_dump_*_definition function

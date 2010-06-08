@@ -120,7 +120,7 @@ SILC_CalculateGlobalLocationId( SILC_Thread_LocationData* locationData )
     assert( rank >> 32 == 0 );
     assert( local_location_id >> 32 == 0 );
 
-    uint64_t global_location_id = ( rank << 32 ) | local_location_id;
+    uint64_t global_location_id = ( local_location_id << 32 ) | rank;
     return global_location_id;
 }
 
