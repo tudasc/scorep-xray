@@ -255,9 +255,10 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-      call POMP_Parallel_fork(pomp_region_1)
+pomp_num_threads = omp_get_max_threads();
+      call POMP_Parallel_fork(pomp_region_1,pomp_num_threads)
 #line 249 "main.F90"
-!$omp parallel    private (j, i, xx, yy)
+!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP_Parallel_begin(pomp_region_1)
       call POMP_Do_enter(pomp_region_1)
 #line 249 "main.F90"
@@ -353,7 +354,7 @@ subroutine CheckError(myData)
    
 end subroutine CheckError
 
-      subroutine POMP_Init_regions_1269964997323764_1()
+      subroutine POMP_Init_regions_1276000461487383_1()
          include 'main.F90.opari.inc'
          call POMP_Assign_handle( pomp_region_1, "68*regionType=paralleldo*sscl=main.F90:249:249*escl=main.F90:260:260**" );
       end subroutine

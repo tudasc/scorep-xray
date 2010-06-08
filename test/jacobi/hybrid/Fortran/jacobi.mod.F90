@@ -62,9 +62,10 @@ module JacobiMod
         
             ! Copy new solution into old
                 call ExchangeJacobiMpiData(myData, uold)
-      call POMP_Parallel_fork(pomp_region_1)
+pomp_num_threads = omp_get_max_threads();
+      call POMP_Parallel_fork(pomp_region_1,pomp_num_threads)
 #line 58 "jacobi.F90"
-!$omp parallel private(flres, tmpresd, i)
+!$omp parallel private(flres, tmpresd, i) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP_Parallel_begin(pomp_region_1)
 #line 59 "jacobi.F90"
       call POMP_Do_enter(pomp_region_2)
@@ -162,9 +163,10 @@ module JacobiMod
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1,           &
                            iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
-      call POMP_Parallel_fork(pomp_region_3)
+pomp_num_threads = omp_get_max_threads();
+      call POMP_Parallel_fork(pomp_region_3,pomp_num_threads)
 #line 138 "jacobi.F90"
-!$omp parallel   
+!$omp parallel    num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP_Parallel_begin(pomp_region_3)
       call POMP_Do_enter(pomp_region_3)
 #line 138 "jacobi.F90"
@@ -188,7 +190,7 @@ module JacobiMod
     end subroutine ExchangeJacobiMpiData
 end module JacobiMod
 
-      subroutine POMP_Init_regions_1269965002523137_3()
+      subroutine POMP_Init_regions_1276000468650595_3()
          include 'jacobi.F90.opari.inc'
          call POMP_Assign_handle( pomp_region_1, "66*regionType=parallel*sscl=jacobi.F90:58:58*escl=jacobi.F90:76:76**" );
          call POMP_Assign_handle( pomp_region_2, "60*regionType=do*sscl=jacobi.F90:59:59*escl=jacobi.F90:75:75**" );

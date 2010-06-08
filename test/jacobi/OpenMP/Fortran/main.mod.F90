@@ -35,7 +35,6 @@ program MAIN
 #ifdef _OPENMP
     use omp_lib
 #endif
-
     implicit none
       include 'main.F90.opari.inc'
     double precision get_wtime
@@ -153,9 +152,10 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-      call POMP_Parallel_fork(pomp_region_1)
+pomp_num_threads = omp_get_max_threads();
+      call POMP_Parallel_fork(pomp_region_1,pomp_num_threads)
 #line 146 "main.F90"
-!$omp parallel    private (j, i, xx, yy)
+!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP_Parallel_begin(pomp_region_1)
       call POMP_Do_enter(pomp_region_1)
 #line 146 "main.F90"
@@ -257,7 +257,7 @@ double precision function get_wtime()
     return
 end function get_wtime
 
-      subroutine POMP_Init_regions_1269952512405418_1()
+      subroutine POMP_Init_regions_1276000359657996_1()
          include 'main.F90.opari.inc'
          call POMP_Assign_handle( pomp_region_1, "68*regionType=paralleldo*sscl=main.F90:146:146*escl=main.F90:157:157**" );
       end subroutine
