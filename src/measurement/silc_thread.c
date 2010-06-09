@@ -53,7 +53,8 @@ uint64_t POMP_TPD_MANGLED = 0;
 // We want to write #pragma omp threadprivate(POMP_TPD_MANGLED) but as
 // POMP_TPD_MANGLED is a macro itself, we need to do some preprocessor
 // magic to be on the safe side.
-#define STR( s ) #s
+#define STR_( s ) #s
+#define STR( s ) STR_( s )
 #define PRAGMA_OMP_THREADPRIVATE( tpd ) _Pragma( STR( omp threadprivate( tpd ) ) )
 #ifdef _OPENMP
 PRAGMA_OMP_THREADPRIVATE( POMP_TPD_MANGLED )
