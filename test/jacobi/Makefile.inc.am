@@ -129,7 +129,6 @@ jacobi_serial_f90_uninstrumented_LDADD    = -lm
 
 if OPENMP_SUPPORTED
 # Specify fortran dependencies manually
-variabledef.mod: VariableDef.$(OBJEXT)
 jacobi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_omp_f90-main.$(OBJEXT): variabledef.mod
 
@@ -155,6 +154,7 @@ jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/V
 jacobi_omp_f90_uninstrumented_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_omp_f90_uninstrumented_LDADD    = -lm
 endif
+# if OPENMP_SUPPORTED
 
 ##
 
