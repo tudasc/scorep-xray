@@ -12,7 +12,7 @@ AC_DEFUN([AC_OTF2_COMMON_CHECKS],
 ## for. This just gives the user an opportunity to specify an alternative
 ## search list for the C compiler. For example, if you didn't like the default
 ## order, then you could invoke AC_PROG_CC like this: AC_PROG_CC([gcc cl cc])
-AC_PROG_CC
+AC_REQUIRE([AC_PROG_CC])
 
 ## If the C compiler is not in C99 mode by default, try to add an option to
 ## output variable CC to make it so. This macro tries various options that
@@ -23,7 +23,7 @@ AC_PROG_CC
 ## declarations in for loops, and variable length arrays.  After calling this
 ## macro you can check whether the C compiler has been set to accept C99; if
 ## not, the shell variable ac_cv_prog_cc_c99 is set to `no'.
-AC_PROG_CC_C99
+AC_REQUIRE([AC_PROG_CC_C99])
 
 ## Determine a C++ compiler to use. Check whether the environment variable CXX 
 ## or CCC (in that order) is set; if so, then set output variable CXX to its 
@@ -40,10 +40,10 @@ AC_PROG_CC_C99
 ## search list for the C++ compiler. For example, if you didn't like the
 ## default order, then you could invoke AC_PROG_CXX like this:
 ## AC_PROG_CXX([gcc cl KCC CC cxx cc++ xlC aCC c++ g++])
-AC_PROG_CXX
+AC_REQUIRE([AC_PROG_CXX])
 
 ## Enable using per-target flags or subdir-objects with C sources
-AM_PROG_CC_C_O
+AC_REQUIRE([AM_PROG_CC_C_O])
 
 ## Macro: AC_C_BIGENDIAN ([action-if-true], [action-if-false],
 ## [action-if-unknown], [action-if-universal])
@@ -53,7 +53,7 @@ AM_PROG_CC_C_O
 ## finally, the default for action-if-universal is to ensure that
 ## `WORDS_BIGENDIAN' is defined if and only if a universal build is detected
 ## and the current code is big-endian
-AC_C_BIGENDIAN
+AC_REQUIRE([AC_C_BIGENDIAN])
 
 ## Search for a library defining function if it's not already available. This
 ## equates to calling ‘AC_LINK_IFELSE([AC_LANG_CALL([], [function])])’ first
@@ -73,6 +73,6 @@ AC_C_BIGENDIAN
 #AC_CXX_HAVE_SSTREAM
 #AC_CXX_HAVE_STRSTREAM
 
-AC_PROG_RANLIB
+AC_REQUIRE([AC_PROG_RANLIB])
 
 ])
