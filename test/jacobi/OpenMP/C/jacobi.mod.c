@@ -35,6 +35,10 @@
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
+#define PRAGMA_OMP_PARALLEL_1( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_2( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_3( tpd ) _Pragma( STR( omp parallel private ( i, j, xx, yy, xx2, yy2 ) POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_4( tpd ) _Pragma( STR( omp parallel private ( j, i ) POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
 
 void
 Jacobi( struct JacobiData* data )
@@ -66,56 +70,57 @@ Jacobi( struct JacobiData* data )
                 int pomp_num_threads = omp_get_max_threads();
                 POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 58 "jacobi.c"
-#pragma omp parallel POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(POMP_TPD_MANGLED)
-                { POMP_Parallel_begin( pomp_region_1 );
+                PRAGMA_OMP_PARALLEL_1( POMP_TPD_MANGLED )
+                {
+                    POMP_Parallel_begin( pomp_region_1 );
 #line 59 "jacobi.c"
-                  {
-                      POMP_For_enter( pomp_region_2 );
+                    {
+                        POMP_For_enter( pomp_region_2 );
 #line 60 "jacobi.c"
 #pragma omp for private(j, i) nowait
-                      for ( j = 1; j < data->iRows - 1; j++ )
-                      {
-                          for ( i = 1; i < data->iCols - 1; i++ )
-                          {
-                              UOLD( j, i ) = U( j, i );
-                          }
-                      }
-                      POMP_Barrier_enter( pomp_region_2 );
+                        for ( j = 1; j < data->iRows - 1; j++ )
+                        {
+                            for ( i = 1; i < data->iCols - 1; i++ )
+                            {
+                                UOLD( j, i ) = U( j, i );
+                            }
+                        }
+                        POMP_Barrier_enter( pomp_region_2 );
 #pragma omp barrier
-                      POMP_Barrier_exit( pomp_region_2 );
-                      POMP_For_exit( pomp_region_2 );
+                        POMP_Barrier_exit( pomp_region_2 );
+                        POMP_For_exit( pomp_region_2 );
 #line 68 "jacobi.c"
 
 
-                      /* compute stencil, residual and update */
-                      POMP_For_enter( pomp_region_3 );
+                        /* compute stencil, residual and update */
+                        POMP_For_enter( pomp_region_3 );
 #line 71 "jacobi.c"
 #pragma omp for private(j, i, fLRes) reduction(+:residual) nowait
-                      for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
-                      {
-                          for ( i = 1; i <= data->iCols - 2; i++ )
-                          {
-                              fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
-                                        + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
-                                        +  b * UOLD( j, i ) - F( j, i ) ) / b;
+                        for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
+                        {
+                            for ( i = 1; i <= data->iCols - 2; i++ )
+                            {
+                                fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
+                                          + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
+                                          +  b * UOLD( j, i ) - F( j, i ) ) / b;
 
-                              /* update solution */
-                              U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
+                                /* update solution */
+                                U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
 
-                              /* accumulate residual error */
-                              residual += fLRes * fLRes;
-                          }
-                      }
-                      POMP_Barrier_enter( pomp_region_3 );
+                                /* accumulate residual error */
+                                residual += fLRes * fLRes;
+                            }
+                        }
+                        POMP_Barrier_enter( pomp_region_3 );
 #pragma omp barrier
-                      POMP_Barrier_exit( pomp_region_3 );
-                      POMP_For_exit( pomp_region_3 );
+                        POMP_Barrier_exit( pomp_region_3 );
+                        POMP_For_exit( pomp_region_3 );
 #line 87 "jacobi.c"
-                  }
-                  POMP_Barrier_enter( pomp_region_1 );
+                    }
+                    POMP_Barrier_enter( pomp_region_1 );
 #pragma omp barrier
-                  POMP_Barrier_exit( pomp_region_1 );
-                  POMP_Parallel_end( pomp_region_1 );
+                    POMP_Barrier_exit( pomp_region_1 );
+                    POMP_Parallel_end( pomp_region_1 );
                 }
                 POMP_Parallel_join( pomp_region_1 );
             }

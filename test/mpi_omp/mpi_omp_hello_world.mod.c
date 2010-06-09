@@ -38,6 +38,12 @@
 /* *INDENT-ON*  */
 
 
+#define PRAGMA_OMP_PARALLEL_1( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_2( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_3( tpd ) _Pragma( STR( omp parallel private ( i, j, xx, yy, xx2, yy2 ) POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_4( tpd ) _Pragma( STR( omp parallel private ( j, i ) POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+
+
 int
 main( int    argc,
       char** argv )
@@ -52,17 +58,18 @@ main( int    argc,
         int pomp_num_threads = omp_get_max_threads();
         POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 45 "mpi_omp_test.c"
-    #pragma omp parallel POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(POMP_TPD_MANGLED)
-        { POMP_Parallel_begin( pomp_region_1 );
+        PRAGMA_OMP_PARALLEL_1( POMP_TPD_MANGLED )
+        {
+            POMP_Parallel_begin( pomp_region_1 );
 #line 46 "mpi_omp_test.c"
-          {
-              printf( "Hello world from process %d, thread %d of %d, %d\n",
-                      rank, omp_get_thread_num(), size, omp_get_num_threads() );
-          }
-          POMP_Barrier_enter( pomp_region_1 );
+            {
+                printf( "Hello world from process %d, thread %d of %d, %d\n",
+                        rank, omp_get_thread_num(), size, omp_get_num_threads() );
+            }
+            POMP_Barrier_enter( pomp_region_1 );
 #pragma omp barrier
-          POMP_Barrier_exit( pomp_region_1 );
-          POMP_Parallel_end( pomp_region_1 );
+            POMP_Barrier_exit( pomp_region_1 );
+            POMP_Parallel_end( pomp_region_1 );
         }
         POMP_Parallel_join( pomp_region_1 );
     }

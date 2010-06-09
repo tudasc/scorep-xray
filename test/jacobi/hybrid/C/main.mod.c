@@ -18,6 +18,11 @@
 #define U( j, i ) data->afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) data->afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
+#define PRAGMA_OMP_PARALLEL_1( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00001 num_threads(pomp_num_threads) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_2( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00003 num_threads(pomp_num_threads) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_3( tpd ) _Pragma( STR( omp parallel private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001 num_threads(pomp_num_threads) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_4( tpd ) _Pragma( STR( omp parallel private(j, i) POMP_DLIST_00003 num_threads(pomp_num_threads) copyin( tpd ) ) )
+
 /*
  * setting values, init mpi, omp etc
  */
@@ -184,7 +189,7 @@ InitializeMatrix( struct JacobiData* data )
 int pomp_num_threads = omp_get_max_threads();
 POMP_Parallel_fork(pomp_region_1,pomp_num_threads);
 #line 177 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(POMP_TPD_MANGLED)
+PRAGMA_OMP_PARALLEL_3(POMP_TPD_MANGLED)
 { POMP_Parallel_begin(pomp_region_1);
 POMP_For_enter(pomp_region_1);
 #line 177 "main.c"
