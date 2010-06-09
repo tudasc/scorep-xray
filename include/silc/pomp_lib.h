@@ -44,11 +44,14 @@
 extern "C" {
 #endif
 
-/** Thread private variable that is passed to child threads via copyin */
-extern void* pomp_tpd;
-#ifdef _OPENMP
-#pragma omp threadprivate(pomp_tpd)
-#endif
+/* Thread private variable that is passed to child threads via copyin.
+ * Can't be easily declared here because of Fortran name mangling issues.
+ * Needs to be declared in OPARIs inc files as OPARI can generate all
+ * possible mangled names via command line option. */
+//extern uint64_t pomp_tpd;
+//#ifdef _OPENMP
+//#pragma omp threadprivate(pomp_tpd)
+//#endif
 
 /** Defines opaque pomp region handle type */
 typedef void* POMP_Region_handle;

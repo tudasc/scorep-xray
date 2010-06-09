@@ -5,7 +5,7 @@
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene USA
+ *    University of Oregon, Eugene, USA
  *    Forschungszentrum Juelich GmbH, Germany
  *    Technische Universitaet Muenchen, Germany
  *
@@ -23,9 +23,8 @@
  *
  */
 
-
+#include <config.h>
 #include "silc_thread.h"
-//#include <pomp_lib.h>
 #include <silc_definitions.h>
 #include <silc_definition_locking.h>
 #include <SILC_Memory.h>
@@ -38,11 +37,26 @@
 #include "silc_status.h"
 
 
-/// @todo move this definition to the pomp adapter, in pomp_base.c e.g., like
-/// in Scalasca. Will there be two pomp adapters, one base and one for openmp?
-void* pomp_tpd = 0;
+// The thread private variable that points to a
+// SILC_Thread_ThreadPrivateData object. It needs to be a 64bit integer
+// to smoothly work with OPARI2 instrumented Fortran code. It will be
+// casted to SILC_Thread_ThreadPrivateData* before usage, see the macro
+// TPD. Dependent on the compiler it will be pomp_tdp or pomp_tpd_, see
+// config.h.
+uint64_t POMP_TPD_MANGLED = 0;
+
+
+// Easy access to the thread private variable. TPD stands for ThreadPrivateData
+#define TPD ( ( SILC_Thread_ThreadPrivateData* )POMP_TPD_MANGLED )
+
+
+// We want to write #pragma omp threadprivate(POMP_TPD_MANGLED) but as
+// POMP_TPD_MANGLED is a macro itself, we need to do some preprocessor
+// magic to be on the safe side.
+#define STR( s ) #s
+#define PRAGMA_OMP_THREADPRIVATE( tpd ) _Pragma( STR( omp threadprivate( tpd ) ) )
 #ifdef _OPENMP
-#pragma omp threadprivate(pomp_tpd)
+PRAGMA_OMP_THREADPRIVATE( POMP_TPD_MANGLED )
 #endif
 
 
@@ -61,10 +75,6 @@ static void silc_thread_delete_thread_private_data_recursively( SILC_Thread_Thre
 static void silc_thread_init_childs_to_null(SILC_Thread_ThreadPrivateData** childs, size_t startIndex, size_t endIndex);
 static void silc_thread_update_tpd(SILC_Thread_ThreadPrivateData* newTPD);
 /* *INDENT-ON* */
-
-
-// easy access to thread private variable. TPD == ThreadPrivateData
-#define TPD ( ( SILC_Thread_ThreadPrivateData* )pomp_tpd )
 
 
 struct SILC_Thread_ThreadPrivateData
@@ -104,14 +114,14 @@ SILC_Thread_Initialize()
     assert( initial_thread == 0 );
     assert( initial_location == 0 );
     assert( location_counter == 0 );
-    assert( pomp_tpd == 0 );
+    assert( POMP_TPD_MANGLED == 0 );
 
     initial_thread         = silc_thread_create_thread_private_data();
     initial_thread->parent = 0;
 
     silc_thread_create_location_data_for( initial_thread );
 
-    assert( pomp_tpd );
+    assert( POMP_TPD_MANGLED );
     assert( TPD );
     assert( TPD->is_active );
     assert( TPD->location_data );
@@ -128,7 +138,7 @@ SILC_Thread_Initialize()
 void
 silc_thread_update_tpd( SILC_Thread_ThreadPrivateData* newTPD )
 {
-    pomp_tpd = ( void* )newTPD;
+    POMP_TPD_MANGLED = ( uint64_t )newTPD;
 }
 
 
@@ -239,7 +249,7 @@ SILC_Thread_Finalize()
     assert( initial_thread != 0 );
     assert( initial_location != 0 );
     assert( location_counter > 0 );
-    assert( pomp_tpd != 0 );
+    assert( POMP_TPD_MANGLED != 0 );
 
     // order important, otherwise we will have invalid frees
     silc_thread_delete_location_data();

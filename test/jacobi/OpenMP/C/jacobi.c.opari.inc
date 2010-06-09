@@ -1,4 +1,12 @@
+#include <config.h>
 #include "pomp_lib.h"
+
+extern uint64_t POMP_TPD_MANGLED;
+#define STR(s) #s
+#define PRAGMA_OMP_THREADPRIVATE(tpd) _Pragma( STR(omp threadprivate(tpd)) )
+#ifdef _OPENMP
+PRAGMA_OMP_THREADPRIVATE(POMP_TPD_MANGLED)
+#endif
 
 #define POMP_DLIST_00001 shared(pomp_region_1,pomp_region_2,pomp_region_3)
 static POMP_Region_handle pomp_region_1;

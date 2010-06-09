@@ -130,7 +130,7 @@ InitializeMatrix( struct JacobiData* data )
         int pomp_num_threads = omp_get_max_threads();
         POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 123 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd)
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(POMP_TPD_MANGLED)
         { POMP_Parallel_begin( pomp_region_1 );
           POMP_For_enter( pomp_region_1 );
 #line 123 "main.c"

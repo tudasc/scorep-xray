@@ -1,29 +1,12 @@
-/* 
- * This file is part of the SILC project (http://www.silc.de)
- *
- * Copyright (c) 2009-2011, 
- *    RWTH Aachen, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    Technische Universitaet Muenchen, Germany
- *
- * See the COPYING file in the package base directory for details.
- *
- */
-
-
-/**
- * @file       omp_test.c.opari.inc    
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- *
- * @status alpha
- *    
- */
-
-
+#include <config.h>
 #include "pomp_lib.h"
+
+extern uint64_t POMP_TPD_MANGLED;
+#define STR(s) #s
+#define PRAGMA_OMP_THREADPRIVATE(tpd) _Pragma( STR(omp threadprivate(tpd)) )
+#ifdef _OPENMP
+PRAGMA_OMP_THREADPRIVATE(POMP_TPD_MANGLED)
+#endif
 
 #define POMP_DLIST_00001 shared( pomp_region_1 )
 static POMP_Region_handle pomp_region_1;

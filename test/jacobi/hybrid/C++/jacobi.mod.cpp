@@ -73,7 +73,7 @@ Jacobi( JacobiData &data )
                 int pomp_num_threads = omp_get_max_threads();
                 POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 65 "jacobi.cpp"
-#pragma omp parallel POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd)
+#pragma omp parallel POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(POMP_TPD_MANGLED)
                 { POMP_Parallel_begin( pomp_region_1 );
 #line 66 "jacobi.cpp"
                   {
@@ -182,7 +182,7 @@ ExchangeJacobiMpiData( JacobiData & data,
         int pomp_num_threads = omp_get_max_threads();
         POMP_Parallel_fork( pomp_region_3, pomp_num_threads );
 #line 152 "jacobi.cpp"
-#pragma omp parallel     POMP_DLIST_00003 num_threads(pomp_num_threads) copyin(pomp_tpd)
+#pragma omp parallel     POMP_DLIST_00003 num_threads(pomp_num_threads) copyin(POMP_TPD_MANGLED)
         { POMP_Parallel_begin( pomp_region_3 );
           POMP_For_enter( pomp_region_3 );
 #line 152 "jacobi.cpp"
