@@ -7,7 +7,7 @@ if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}"
 fi
 
 
-AM_PROG_AS
+
 
 
 
@@ -29,6 +29,7 @@ AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 
 AC_SILC_COMMON_CHECKS
+AM_PROG_AS
 
 LT_PREREQ([2.2.6])
 LT_INIT([disable-shared])
