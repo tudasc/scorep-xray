@@ -28,6 +28,8 @@ AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 
+AC_SILC_COMMON_CHECKS
+
 LT_PREREQ([2.2.6])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
@@ -41,8 +43,6 @@ if test "x${ac_silc_cross_compiling}" = "xyes"; then
 fi
 AC_SUBST(backend_bin_dir)
 AC_SUBST(backend_lib_dir)
-
-AC_SILC_COMMON_CHECKS
 
 AC_CHECK_SIZEOF([void *])
 AC_CHECK_SIZEOF([uint64_t])

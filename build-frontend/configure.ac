@@ -29,12 +29,11 @@ AC_CONFIG_MACRO_DIR([../build-config/m4])
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
 
+AC_SILC_COMMON_CHECKS
 
 LT_PREREQ([2.2.6])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
-
-AC_SILC_COMMON_CHECKS
 
 AC_CONFIG_FILES([Makefile])
 
