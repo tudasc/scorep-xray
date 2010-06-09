@@ -27,7 +27,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_intel="no"])
 AC_MSG_RESULT([$silc_compiler_intel])
 AS_IF([test "x${silc_compiler_intel}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags="-tcollect"])
+      [silc_compiler_instrumentation_cppflags="-tcollect"]
+       AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
 ])
 
 ##
@@ -44,7 +46,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_sun="no"])
 AC_MSG_RESULT([$silc_compiler_sun])
 AS_IF([test "x${silc_compiler_sun}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"])
+      [silc_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"]
+       AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
 ])
 
 ##
@@ -65,7 +69,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_ibm="no"])
 AC_MSG_RESULT([$silc_compiler_ibm])
 AS_IF([test "x${silc_compiler_ibm}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags="-qdebug=function_trace"])
+      [silc_compiler_instrumentation_cppflags="-qdebug=function_trace"]
+       AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
 ])
 
 ##
@@ -82,7 +88,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_pgi="no"])
 AC_MSG_RESULT([$silc_compiler_pgi])
 AS_IF([test "x${silc_compiler_pgi}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags="-Mprof=func"])
+      [silc_compiler_instrumentation_cppflags="-Mprof=func"]
+       AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
 ])
 
 ##
@@ -99,7 +107,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_gnu="no"])
 AC_MSG_RESULT([$silc_compiler_gnu])
 AS_IF([test "x${silc_compiler_gnu}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags="-finstrument-functions"])
+      [silc_compiler_instrumentation_cppflags="-finstrument-functions"
+       AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.])])
 ])
 
 ##
@@ -116,7 +126,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_hp="no"])
 AC_MSG_RESULT([$silc_compiler_hp])
 AS_IF([test "x${silc_compiler_hp}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags=""])
+      [silc_compiler_instrumentation_cppflags=""]
+       AC_DEFINE([POMP_TPD_MANGLED], [hp compiler's pomp_tpd mangling not implemented yet, see ac_silc_compiler_checks.m4], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
 ])
 
 ## 
@@ -133,7 +145,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_sx="no"])
 AC_MSG_RESULT([$silc_compiler_sx])
 AS_IF([test "x${silc_compiler_sx}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags=""])
+      [silc_compiler_instrumentation_cppflags=""]
+       AC_DEFINE([POMP_TPD_MANGLED], [sx compiler's pomp_tpd mangling not implemented yet, see ac_silc_compiler_checks.m4], 
+                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
 ])
 
 ## 
