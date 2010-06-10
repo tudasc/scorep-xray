@@ -24,4 +24,5 @@ include ../test/adapters/user/C/Makefile.inc.am
 include ../test/adapters/user/Fortran/Makefile.inc.am
 include ../test/serial/Makefile.inc.am
 include ../test/omp/Makefile.inc.am
+include ../test/alignment/Makefile.inc.am
 endif

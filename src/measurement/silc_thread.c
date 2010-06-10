@@ -43,7 +43,7 @@
 // casted to SILC_Thread_ThreadPrivateData* before usage, see the macro
 // TPD. Dependent on the compiler it will be pomp_tdp or pomp_tpd_, see
 // config.h.
-uint64_t POMP_TPD_MANGLED = 0;
+int64_t POMP_TPD_MANGLED = 0;
 
 
 // Easy access to the thread private variable. TPD stands for ThreadPrivateData
