@@ -29,7 +29,11 @@ AC_MSG_RESULT([$silc_compiler_intel])
 AS_IF([test "x${silc_compiler_intel}" = "xyes"], 
       [silc_compiler_instrumentation_cppflags="-tcollect"]
        AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
-                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
+                 [Name of pomp_tpd after mangled by the Fortran compiler.])
+       AC_DEFINE([FOO_MANGLED],    [foo_],    [[]])
+       AC_DEFINE([BAR_MANGLED],    [bar_],    [[]])
+       AC_DEFINE([FOOBAR_MANGLED], [foobar_], [[]])
+       AC_DEFINE([BAZ_MANGLED],    [baz_],    [[]]))
 ])
 
 ##
@@ -48,7 +52,11 @@ AC_MSG_RESULT([$silc_compiler_sun])
 AS_IF([test "x${silc_compiler_sun}" = "xyes"], 
       [silc_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"]
        AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
-                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
+                 [Name of pomp_tpd after mangled by the Fortran compiler.])
+       AC_DEFINE([FOO_MANGLED],    [foo_],    [[]])
+       AC_DEFINE([BAR_MANGLED],    [bar_],    [[]])
+       AC_DEFINE([FOOBAR_MANGLED], [foobar_], [[]])
+       AC_DEFINE([BAZ_MANGLED],    [baz_],    [[]]))
 ])
 
 ##
@@ -71,7 +79,11 @@ AC_MSG_RESULT([$silc_compiler_ibm])
 AS_IF([test "x${silc_compiler_ibm}" = "xyes"], 
       [silc_compiler_instrumentation_cppflags="-qdebug=function_trace"]
        AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd], 
-                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
+                 [Name of pomp_tpd after mangled by the Fortran compiler.])
+       AC_DEFINE([FOO_MANGLED],    [foo],    [[]])
+       AC_DEFINE([BAR_MANGLED],    [bar],    [[]])
+       AC_DEFINE([FOOBAR_MANGLED], [foobar], [[]])
+       AC_DEFINE([BAZ_MANGLED],    [baz],    [[]]))
 ])
 
 ##
@@ -90,7 +102,11 @@ AC_MSG_RESULT([$silc_compiler_pgi])
 AS_IF([test "x${silc_compiler_pgi}" = "xyes"], 
       [silc_compiler_instrumentation_cppflags="-Mprof=func"]
        AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
-                 [Name of pomp_tpd after mangled by the Fortran compiler.]))
+                 [Name of pomp_tpd after mangled by the Fortran compiler.])
+       AC_DEFINE([FOO_MANGLED],    [foo_],    [[]])
+       AC_DEFINE([BAR_MANGLED],    [bar_],    [[]])
+       AC_DEFINE([FOOBAR_MANGLED], [foobar_], [[]])
+       AC_DEFINE([BAZ_MANGLED],    [baz_],    [[]]))
 ])
 
 ##
@@ -109,7 +125,11 @@ AC_MSG_RESULT([$silc_compiler_gnu])
 AS_IF([test "x${silc_compiler_gnu}" = "xyes"], 
       [silc_compiler_instrumentation_cppflags="-finstrument-functions"
        AC_DEFINE([POMP_TPD_MANGLED], [pomp_tpd_], 
-                 [Name of pomp_tpd after mangled by the Fortran compiler.])])
+                 [Name of pomp_tpd after mangled by the Fortran compiler.])
+       AC_DEFINE([FOO_MANGLED],    [foo_],    [[]])
+       AC_DEFINE([BAR_MANGLED],    [bar_],    [[]])
+       AC_DEFINE([FOOBAR_MANGLED], [foobar_], [[]])
+       AC_DEFINE([BAZ_MANGLED],    [baz_],    [[]])])
 ])
 
 ##
