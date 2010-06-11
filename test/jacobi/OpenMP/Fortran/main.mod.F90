@@ -33,7 +33,7 @@ program MAIN
     use VariableDef
     use JacobiMod
 #ifdef _OPENMP
-    use omp_lib
+!    use omp_lib
 #endif
     implicit none
       include 'main.F90.opari.inc'
@@ -77,7 +77,7 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
-    use omp_lib
+!    use omp_lib
     implicit none
       include 'main.F90.opari.inc'
     type(JacobiData), intent(inout) :: myData
@@ -248,7 +248,7 @@ end subroutine CheckError
 
 double precision function get_wtime()
 #ifdef _OPENMP
-    use omp_lib
+!    use omp_lib
     get_wtime = omp_get_wtime()
 #else
     real, dimension(2) :: tarray
