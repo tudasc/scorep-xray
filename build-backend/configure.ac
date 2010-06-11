@@ -46,9 +46,9 @@ AC_SUBST(backend_bin_dir)
 AC_SUBST(backend_lib_dir)
 
 AC_CHECK_SIZEOF([void *])
-AC_CHECK_SIZEOF([uint64_t])
-if (( ac_cv_sizeof_void_p > ac_cv_sizeof_uint64_t )); then
-    AC_MSG_ERROR([sizeof(void*) > sizeof(uint64_t): internal thread handling will not work.])
+AC_CHECK_SIZEOF([int64_t])
+if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
+    AC_MSG_ERROR([sizeof(void*) > sizeof(int64_t): internal thread handling will not work.])
 fi
 
 ## Determine a Fortran 77 compiler to use. If F77 is not already set in the
