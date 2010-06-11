@@ -83,7 +83,7 @@ subroutine Init (myData)
     integer :: provided
     integer :: version, subversion
     integer :: iErr, i
-    integer :: omp_get_max_threads
+!    integer :: omp_get_max_threads
     integer :: block_lengths(8), typelist(8), MPI_JacobiData
 #if !defined(MPI_VERSION) || (MPI_VERSION>=2)
     integer (kind=MPI_ADDRESS_KIND) :: displacements(8), iStructDisp
