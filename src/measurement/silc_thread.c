@@ -37,6 +37,9 @@
 #include "silc_status.h"
 
 
+#define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
+
+
 // The thread private variable that points to a
 // SILC_Thread_ThreadPrivateData object. It needs to be a 64bit integer
 // to smoothly work with OPARI2 instrumented Fortran code. It will be

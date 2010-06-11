@@ -124,7 +124,7 @@ InitializeMatrix( JacobiData &data )
         int pomp_num_threads = omp_get_max_threads();
         POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
 #line 111 "main.cpp"
-        PRAGMA_OMP_PARALLEL_1( POMP_TPD_MANGLED )
+        PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
         {
             POMP_Parallel_begin( pomp_region_1 );
             POMP_For_enter( pomp_region_1 );
