@@ -32,9 +32,9 @@
 
 
 static omp_lock_t          silc_memory_guard_object;
-SILC_Allocator_Guard       silc_memory_guard_object_ptr = ( SILC_Allocator_Guard )( &silc_memory_guard_object );
+SILC_Allocator_GuardObject silc_memory_guard_object_ptr = ( SILC_Allocator_Guard )( &silc_memory_guard_object );
 SILC_Allocator_Guard       silc_memory_lock             = ( SILC_Allocator_Guard )omp_set_lock;
-SILC_Allocator_GuardObject silc_memory_unlock           = ( SILC_Allocator_Guard )omp_unset_lock;
+SILC_Allocator_Guard       silc_memory_unlock           = ( SILC_Allocator_Guard )omp_unset_lock;
 
 
 void
