@@ -47,5 +47,13 @@ silc_memory_guard_initialze()
 void
 silc_memory_guard_finalize()
 {
+#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
+    // function, so omp_destroy_lock, which is called after the end
+    // of main from the atexit handler, causes segmentation fault. The
+    // problem will be fixed in  Intel Compiler 11.1 update 6.
+    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
+#else
     omp_destroy_lock( ( omp_lock_t* )silc_memory_guard_object_ptr );
+#endif
 }
