@@ -140,7 +140,15 @@ SILC_Memory_DeletePageManagers( SILC_Allocator_PageManager** pageManagers )
     {
         if ( pageManagers[ i ] )
         {
+#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+            // Do nothing here. Intel OpenMP RTL shuts down at the end of main
+            // function, so omp_set/unset_lock, which is called after the end
+            // of main from the atexit handler, causes segmentation fault. The
+            // problem will be fixed in  Intel Compiler 11.1 update 6.
+            // See http://software.intel.com/en-us/forums/showpost.php?p=110592
+#else
             SILC_Allocator_DeletePageManager( pageManagers[ i ] );
+#endif
         }
     }
     free( pageManagers );

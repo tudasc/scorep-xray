@@ -277,15 +277,7 @@ silc_thread_delete_location_data( SILC_Thread_LocationData* locationData )
 
         SILC_Trace_DeleteLocationData( location_data->trace_data );
         SILC_Profile_DeleteLocationData( location_data->profile_data );
-#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
-        // Do nothing here. Intel OpenMP RTL shuts down at the end of main
-        // function, so omp_destroy_lock, which is called after the end
-        // of main from the atexit handler, causes segmentation fault. The
-        // problem will be fixed in  Intel Compiler 11.1 update 6.
-        // See http://software.intel.com/en-us/forums/showpost.php?p=110592
-#else
-        SILC_Memory_DeletePageManagers( location_data->page_managers ); // too early?
-#endif
+        SILC_Memory_DeletePageManagers( location_data->page_managers );
         free( location_data );
 
         location_data = tmp;
