@@ -67,9 +67,17 @@ SILC_DefinitionLocks_Initialize()
     omp_init_lock( &silc_location_definition_lock );
 }
 
+
 void
 SILC_DefinitionLocks_Finalize()
 {
+#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
+    // function, so omp_destroy_lock, which is called after the end
+    // of main from the atexit handler, causes segmentation fault. The
+    // problem will be fixed in  Intel Compiler 11.1 update 6.
+    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
+#else
     omp_destroy_lock( &silc_source_file_definition_lock );
     omp_destroy_lock( &silc_region_definition_lock );
     omp_destroy_lock( &silc_mpi_communicator_definition_lock );
@@ -84,7 +92,9 @@ SILC_DefinitionLocks_Finalize()
     omp_destroy_lock( &silc_marker_definition_lock );
     omp_destroy_lock( &silc_parameter_definition_lock );
     omp_destroy_lock( &silc_location_definition_lock );
+#endif
 }
+
 
 void
 SILC_LockSourceFileDefinition()
