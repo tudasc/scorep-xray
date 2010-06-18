@@ -103,4 +103,8 @@ SILC_LocationHandle
 SILC_Thread_GetLocationHandle( SILC_Thread_LocationData* locationData );
 
 
+uint32_t
+SILC_Thread_GetNumberOfLocations();
+
+
 #endif /* SILC_INTERNAL_THREAD_H */

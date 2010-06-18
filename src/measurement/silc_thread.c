@@ -108,7 +108,7 @@ struct SILC_Thread_LocationData
 struct SILC_Thread_LocationData       location_list_head_dummy = { 0, 0, 0, 0, 0 };
 struct SILC_Thread_ThreadPrivateData* initial_thread   = 0;
 struct SILC_Thread_LocationData*      initial_location = 0;
-uint32_t                              location_counter = 0;
+static uint32_t                       location_counter = 0;
 
 
 void
@@ -497,4 +497,17 @@ SILC_LocationHandle
 SILC_Thread_GetLocationHandle( SILC_Thread_LocationData* locationData )
 {
     return locationData->location_handle;
+}
+
+
+uint32_t
+SILC_Thread_GetNumberOfLocations()
+{
+    assert( location_counter > 0 );
+    uint32_t n_locations = 0;
+    #pragma omp critical (new_location)
+    {
+        n_locations = location_counter;
+    }
+    return n_locations;
 }

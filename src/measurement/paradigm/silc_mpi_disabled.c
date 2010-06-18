@@ -26,6 +26,8 @@
 
 #include "silc_mpi.h"
 
+#include <silc_thread.h>
+
 
 extern void
 silc_status_initialize_non_mpi();
@@ -66,4 +68,11 @@ void
 SILC_Mpi_DuplicateCommWorld()
 {
     // nothing to do here
+}
+
+
+uint32_t
+SILC_Mpi_GetGlobalNumberOfLocations()
+{
+    return SILC_Thread_GetNumberOfLocations();
 }

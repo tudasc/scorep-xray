@@ -27,6 +27,7 @@
 
 
 #include <stdbool.h>
+#include <stdint.h>
 
 
 void
@@ -80,6 +81,10 @@ SILC_Mpi_GlobalBarrier();
 
 void
 SILC_Mpi_DuplicateCommWorld();
+
+
+uint32_t
+SILC_Mpi_GetGlobalNumberOfLocations();
 
 
 #endif /* SILC_MPI_H */

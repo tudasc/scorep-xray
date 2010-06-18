@@ -550,9 +550,17 @@ silc_adapters_deregister()
 void
 silc_otf2_finalize()
 {
-    if ( SILC_IsTracingEnabled() )
+    if ( !SILC_IsTracingEnabled() )
     {
-        assert( silc_otf2_archive );
-        OTF2_Archive_Delete( silc_otf2_archive );
+        return;
     }
+
+    assert( silc_otf2_archive );
+    uint32_t n_locations = SILC_Mpi_GetGlobalNumberOfLocations();
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_locations );
+        /// @todo set number of definition files
+    }
+    OTF2_Archive_Delete( silc_otf2_archive );
 }

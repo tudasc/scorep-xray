@@ -27,6 +27,7 @@
 #include "silc_mpi.h"
 
 #include <SILC_Debug.h>
+#include <silc_thread.h>
 #include <mpi.h>
 #include <assert.h>
 
@@ -91,4 +92,28 @@ SILC_Mpi_DuplicateCommWorld()
     assert( !SILC_Mpi_IsFinalized() );
     int status = PMPI_Comm_dup( MPI_COMM_WORLD, &silc_mpi_comm_world );
     assert( status == MPI_SUCCESS );
+}
+
+
+uint32_t
+SILC_Mpi_GetGlobalNumberOfLocations()
+{
+    assert( SILC_Mpi_IsInitialized() );
+    assert( !SILC_Mpi_IsFinalized() );
+    int n_local_locations = SILC_Thread_GetNumberOfLocations();
+    int sum_of_locations  = 0;
+    int root_rank         = 0;
+    int n_elements        = 1;
+    PMPI_Reduce( &n_local_locations,
+                 &sum_of_locations,
+                 n_elements,
+                 MPI_INT,
+                 MPI_SUM,
+                 root_rank,
+                 silc_mpi_comm_world );
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        assert( sum_of_locations > 0 );
+    }
+    return sum_of_locations;
 }
