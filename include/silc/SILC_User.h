@@ -317,8 +317,8 @@
  */
 
 /** @def SILC_USER_FUNC_END
-    This macro marks the end of a function. It should be inserted at the end
-    of the instrumented function.
+    This macro marks the end of a function. It should be inserted at
+    every return point of the instrumented function.
 
     C/C++ example:
     @code
@@ -329,6 +329,11 @@
       SILC_USER_FUNC_BEGIN
 
       // do something
+      if ( some_expression )
+      {
+        SILC_USER_FUNC_END
+        return;
+      }
 
       SILC_USER_FUNC_END
     }
