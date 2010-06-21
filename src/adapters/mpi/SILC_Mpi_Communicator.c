@@ -375,6 +375,10 @@ silc_mpi_comm_finalize()
     /* free local translation buffers */
     free( silc_mpi_world.ranks );
     free( silc_mpi_ranks );
+
+    /* reset initialization flag
+     * (needed to prevent crashes with broken MPI implementations) */
+    silc_mpi_comm_initialized = 0;
 }
 
 int32_t
@@ -404,14 +408,29 @@ silc_mpi_comm_create( MPI_Comm comm )
     MPI_Group                  group;
     SILC_MPICommunicatorHandle handle;
 
+    /* Check if communicator handling has been initialized.
+     * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
+     * that use MPI_ calls instead of PMPI_ calls to create some
+     * internal communicators.
+     * Also applies to silc_mpi_comm_free and silc_mpi_group_(create|free).
+     */
+    if ( !silc_mpi_comm_initialized )
+    {
+        SILC_DEBUG_PRINTF( SILC_WARNING,
+                           "Skipping attempt to create communicator "
+                           "outside init->finalize scope" );
+        return;
+    }
+
     /* Lock communicator definition */
     SILC_LockMPICommunicatorDefinition();
-
 
     /* is storage available */
     if ( silc_mpi_last_comm >= SILC_MPI_MAX_COMM )
     {
+        SILC_UnlockMPICommunicatorDefinition();
         SILC_ERROR( SILC_ERROR_MPI_TOO_MANY_COMMS, "" );
+        return;
     }
 
     /* get group of this communicator */
@@ -439,6 +458,16 @@ silc_mpi_comm_free( MPI_Comm comm )
     const char* message = "You are trying to free a communicator that was "
                           "not tracked. Maybe you used a non-standard "
                           "MPI function call to create it.";
+
+    /* check if comm handling is initialized (see silc_mpi_comm_create comment) */
+    if ( !silc_mpi_comm_initialized )
+    {
+        SILC_DEBUG_PRINTF( SILC_WARNING,
+                           "Skipping attempt to create communicator "
+                           "outside init->finalize scope" );
+        return;
+    }
+
     /* Lock communicator definition */
     SILC_LockMPICommunicatorDefinition();
 
@@ -533,6 +562,19 @@ silc_mpi_group_create( MPI_Group group )
     int32_t                    i;
     SILC_MPICommunicatorHandle handle;
 
+    /* Check if communicator handling has been initialized.
+     * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
+     * that use MPI_ calls instead of PMPI_ calls to create some
+     * internal communicators.
+     */
+    if ( !silc_mpi_comm_initialized )
+    {
+        SILC_DEBUG_PRINTF( SILC_WARNING,
+                           "Skipping attempt to create communicator "
+                           "outside init->finalize scope" );
+        return;
+    }
+
     /* Lock communicator definition */
     SILC_LockMPICommunicatorDefinition();
 
@@ -569,6 +611,19 @@ silc_mpi_group_create( MPI_Group group )
 void
 silc_mpi_group_free( MPI_Group group )
 {
+    /* Check if communicator handling has been initialized.
+     * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
+     * that use MPI_ calls instead of PMPI_ calls to create some
+     * internal communicators.
+     */
+    if ( !silc_mpi_comm_initialized )
+    {
+        SILC_DEBUG_PRINTF( SILC_WARNING,
+                           "Skipping attempt to create communicator "
+                           "outside init->finalize scope" );
+        return;
+    }
+
     SILC_LockMPICommunicatorDefinition();
 
     if ( silc_mpi_last_group == 1 && silc_mpi_groups[ 0 ].group == group )

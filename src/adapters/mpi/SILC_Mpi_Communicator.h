@@ -209,7 +209,7 @@ silc_mpi_winacc_get_gid( MPI_Win        win,
 #endif
 
 /** @internal
- *  @brief Start tracking of a given MPI communcator.
+ *  @brief Start tracking of a given MPI communicator.
  *  makes the definition of the given communicator to the measurement system.
  *  @param comm MPI communicator handle.
  */
