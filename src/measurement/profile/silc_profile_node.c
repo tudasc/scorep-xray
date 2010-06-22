@@ -269,16 +269,18 @@ silc_profile_create_node( silc_profile_node*       parent,
     if ( type == silc_profile_node_thread_root )
     {
         node = ( silc_profile_node* )
+               // malloc (sizeof( silc_profile_node));
                SILC_Memory_AllocForMisc( sizeof( silc_profile_node ) );
     }
     else
     {
         node = ( silc_profile_node* )
+               // malloc (sizeof( silc_profile_node));
                SILC_Memory_AllocForProfile( sizeof( silc_profile_node ) );
     }
     if ( !node )
     {
-        SILC_ERROR_POSIX();
+        SILC_ERROR( SILC_ERROR_MEM_FAULT, "Unable to allocate memory for new node" );
         return NULL;
     }
 
@@ -286,16 +288,18 @@ silc_profile_create_node( silc_profile_node*       parent,
     if ( type == silc_profile_node_thread_root )
     {
         node->dense_metrics = ( silc_profile_dense_metric* )
+                              //malloc (size);
                               SILC_Memory_AllocForMisc( size );
     }
     else
     {
         node->dense_metrics = ( silc_profile_dense_metric* )
+                              //malloc (size);
                               SILC_Memory_AllocForProfile( size );
     }
     if ( !node->dense_metrics )
     {
-        SILC_ERROR_POSIX();
+        SILC_ERROR( SILC_ERROR_MEM_FAULT, "Unable to allocate memory for dense metrics" );
         return NULL;
     }
 
