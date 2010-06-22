@@ -40,7 +40,7 @@ AC_PROG_CC_C99
 ## search list for the C++ compiler. For example, if you didn't like the
 ## default order, then you could invoke AC_PROG_CXX like this:
 ## AC_PROG_CXX([gcc cl KCC CC cxx cc++ xlC aCC c++ g++])
-#AC_PROG_CXX
+AC_PROG_CXX
 
 ## Enable using per-target flags or subdir-objects with C sources
 AM_PROG_CC_C_O
