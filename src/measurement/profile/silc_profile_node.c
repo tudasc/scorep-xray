@@ -269,13 +269,11 @@ silc_profile_create_node( silc_profile_node*       parent,
     if ( type == silc_profile_node_thread_root )
     {
         node = ( silc_profile_node* )
-               // malloc (sizeof( silc_profile_node));
                SILC_Memory_AllocForMisc( sizeof( silc_profile_node ) );
     }
     else
     {
         node = ( silc_profile_node* )
-               // malloc (sizeof( silc_profile_node));
                SILC_Memory_AllocForProfile( sizeof( silc_profile_node ) );
     }
     if ( !node )
@@ -284,23 +282,29 @@ silc_profile_create_node( silc_profile_node*       parent,
         return NULL;
     }
 
-    /* Space for dense metrics was reserved after the node struct */
-    if ( type == silc_profile_node_thread_root )
+    /* Reserve space for dense metrics */
+    if ( silc_profile.num_of_dense_metrics > 0 )
     {
-        node->dense_metrics = ( silc_profile_dense_metric* )
-                              //malloc (size);
-                              SILC_Memory_AllocForMisc( size );
+        if ( type == silc_profile_node_thread_root )
+        {
+            node->dense_metrics = ( silc_profile_dense_metric* )
+                                  SILC_Memory_AllocForMisc( size );
+        }
+        else
+        {
+            node->dense_metrics = ( silc_profile_dense_metric* )
+                                  SILC_Memory_AllocForProfile( size );
+        }
+        if ( !node->dense_metrics )
+        {
+            SILC_ERROR( SILC_ERROR_MEM_FAULT,
+                        "Unable to allocate memory for dense metrics" );
+            return NULL;
+        }
     }
     else
     {
-        node->dense_metrics = ( silc_profile_dense_metric* )
-                              //malloc (size);
-                              SILC_Memory_AllocForProfile( size );
-    }
-    if ( !node->dense_metrics )
-    {
-        SILC_ERROR( SILC_ERROR_MEM_FAULT, "Unable to allocate memory for dense metrics" );
-        return NULL;
+        node->dense_metrics = NULL;
     }
 
     /* Initialize values */
