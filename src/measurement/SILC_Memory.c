@@ -38,6 +38,7 @@ void silc_memory_guard_initialze();
 void silc_memory_guard_finalize();
 /* *INDENT-ON* */
 
+
 extern SILC_Allocator_Guard silc_memory_lock;
 extern SILC_Allocator_Guard       silc_memory_unlock;
 extern SILC_Allocator_GuardObject silc_memory_guard_object_ptr;
@@ -47,9 +48,11 @@ extern SILC_Allocator_GuardObject silc_memory_guard_object_ptr;
 
 
 /// The one and only allocator for the measurement and the adapters
-SILC_Allocator_Allocator* silc_memory_allocator = 0;
+static SILC_Allocator_Allocator*   silc_memory_allocator = 0;
 
-static bool               silc_memory_is_initialized = false;
+static bool                        silc_memory_is_initialized = false;
+
+static SILC_Allocator_PageManager* silc_memory_definition_pagemanager = 0;
 
 
 enum silc_memory_page_type
@@ -59,7 +62,7 @@ enum silc_memory_page_type
     //multithreaded_misc_pages,
     //singlethreaded_misc_pages,
     misc_pages,
-    definitions_pages,
+    //definitions_pages, we need only one page manager for definition as they are collected by process
     number_of_page_types
 };
 
@@ -77,6 +80,8 @@ SILC_Memory_Initialize( size_t totalMemory,
     silc_memory_is_initialized = true;
 
     silc_memory_guard_initialze();
+
+    assert( silc_memory_allocator == 0 );
     silc_memory_allocator = SILC_Allocator_CreateAllocator( paged_alloc,
                                                             totalMemory,
                                                             pageSize,
@@ -87,6 +92,17 @@ SILC_Memory_Initialize( size_t totalMemory,
     {
         silc_memory_guard_finalize();
         silc_memory_is_initialized = false;
+        assert( false );
+    }
+
+    assert( silc_memory_definition_pagemanager == 0 );
+    silc_memory_definition_pagemanager = SILC_Allocator_CreatePageManager( silc_memory_allocator );
+    if ( !silc_memory_definition_pagemanager )
+    {
+        silc_memory_guard_finalize();
+        silc_memory_is_initialized = false;
+        SILC_ERROR( SILC_ERROR_MEMORY_OUT_OF_PAGES,
+                    "Can't create new page manager due to lack of free pages." );
         assert( false );
     }
 }
@@ -101,8 +117,14 @@ SILC_Memory_Finalize()
     }
     silc_memory_is_initialized = false;
 
+    assert( silc_memory_definition_pagemanager );
+    SILC_Allocator_DeletePageManager( silc_memory_definition_pagemanager );
+    silc_memory_definition_pagemanager = 0;
+
+    assert( silc_memory_allocator );
     SILC_Allocator_DeleteAllocator( silc_memory_allocator );
     silc_memory_allocator = 0;
+
     silc_memory_guard_finalize();
 }
 
@@ -196,8 +218,7 @@ SILC_Allocator_MovableMemory*
 SILC_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    return SILC_Allocator_AllocMovable(
-               SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ], size );
+    return SILC_Allocator_AllocMovable( silc_memory_definition_pagemanager, size );
 }
 
 
@@ -207,7 +228,7 @@ SILC_Memory_AllocForDefinitionsRaw( size_t                        size,
 {
     // collect statistics
     SILC_Allocator_AllocMovableRaw(
-        SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ],
+        silc_memory_definition_pagemanager,
         size,
         movableMemory );
 }
@@ -217,8 +238,7 @@ void
 SILC_Memory_FreeDefinitionMem()
 {
     // print mem usage statistics
-    SILC_Allocator_Free(
-        SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ] );
+    SILC_Allocator_Free( silc_memory_definition_pagemanager );
 }
 
 
@@ -226,7 +246,7 @@ void*
 SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMemory )
 {
     return SILC_Allocator_GetAddressFromMovableMemory(
-               SILC_Thread_GetGlobalMemoryPageManagers()[ definitions_pages ],
+               silc_memory_definition_pagemanager,
                movableMemory );
 }
 

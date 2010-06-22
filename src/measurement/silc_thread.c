@@ -465,13 +465,6 @@ SILC_Thread_GetLocationLocalMemoryPageManagers()
 }
 
 
-SILC_Allocator_PageManager**
-SILC_Thread_GetGlobalMemoryPageManagers()
-{
-    return initial_location->page_managers;
-}
-
-
 SILC_Profile_LocationData*
 SILC_Thread_GetProfileLocationData( SILC_Thread_LocationData* locationData )
 {
