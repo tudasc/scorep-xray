@@ -107,6 +107,9 @@ AC_DEFUN([SILC_COMPILER_GNU],[
 AC_MSG_CHECKING([for gnu compiler])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[#if defined(__GNUC__)
+#if defined(__INTEL_COMPILER) || defined(__ICC)
+# error "Not a GNU compiler."
+#endif
 #else
 # error "Not a GNU compiler."
 #endif
