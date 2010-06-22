@@ -303,6 +303,8 @@ void
 SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
                       SILC_Profile_OutputFormat   outputFormat )
 {
+    SILC_PROFILE_ASSURE_INITIALIZED;
+
     /* Thread start node expansion */
     if ( processFlags & SILC_Profile_ProcessThreads )
     {
@@ -345,6 +347,15 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
     node = silc_profile_find_or_create_child( thread, silc_profile_node_regular_region,
                                               SILC_PROFILE_REGION2DATA( region ),
                                               timestamp );
+
+    /* Disable profiling if node creation failed */
+    if ( node == NULL )
+    {
+        SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
+                    "Failed to create location. Disable profiling" );
+        SILC_PROFILE_STOP;
+        return;
+    }
 
     /* Store start values for dense metrics */
     node->count++;
@@ -528,6 +539,15 @@ SILC_Profile_ParameterString( SILC_Thread_LocationData* thread,
     node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_string,
                                               SILC_PROFILE_PARAMSTR2DATA( &data ), -1 );
 
+    /* Disable profiling if node creation failed */
+    if ( node == NULL )
+    {
+        SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
+                    "Failed to create location" );
+        SILC_PROFILE_STOP;
+        return;
+    }
+
     /* Store start values for dense metrics */
     silc_profile_setup_start_from_parent( node );
 
@@ -552,6 +572,15 @@ SILC_Profile_ParameterInteger( SILC_Thread_LocationData* thread,
     /* Get new callpath node */
     node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_integer,
                                               SILC_PROFILE_PARAMINT2DATA( &data ), -1 );
+
+    /* Disable profiling if node creation failed */
+    if ( node == NULL )
+    {
+        SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
+                    "Failed to create location" );
+        SILC_PROFILE_STOP;
+        return;
+    }
 
     /* Store start values for dense metrics */
     silc_profile_setup_start_from_parent( node );
@@ -620,6 +649,16 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
     {
         node = silc_profile_create_node( root, silc_profile_node_thread_start,
                                          SILC_PROFILE_POINTER2DATA( creation_point ), 0 );
+
+        /* Disable profiling if node creation failed */
+        if ( node == NULL )
+        {
+            SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
+                        "Failed to create location" );
+            SILC_PROFILE_STOP;
+            return;
+        }
+
         node->next_sibling = root->first_child;
         root->first_child  = node;
     }
@@ -657,6 +696,15 @@ SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
     /* Create thread root node */
     node = silc_profile_create_node( NULL, silc_profile_node_thread_root,
                                      SILC_PROFILE_THREADROOT2DATA( &data ), 0 );
+
+    /* Disable profiling if node creation failed */
+    if ( node == NULL )
+    {
+        SILC_ERROR( SILC_ERROR_PROFILE_INCONSISTENT,
+                    "Failed to create location" );
+        SILC_PROFILE_STOP;
+        return;
+    }
 
     /* Update thread location data */
     thread_data = data.thread_data;
