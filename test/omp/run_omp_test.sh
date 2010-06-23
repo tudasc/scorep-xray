@@ -1,4 +1,4 @@
-## -*- mode: makefile -*-
+#!/bin/bash
 
 ## 
 ## This file is part of the SILC project (http://www.silc.de)
@@ -14,15 +14,13 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       Makefile.inc.am
-## author     Christian Roessel <c.roessel@fz-juelich.de>
+## file       run_omp_test.sh
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-check_PROGRAMS += serial_test
-
-serial_test_SOURCES = $(SRC_ROOT)test/serial/serial_test.c
-serial_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-serial_test_LDADD = $(LIB_ROOT)libsilc_serial.la
-
-TESTS += $(SRC_ROOT)test/serial/run_serial_test.sh
+./omp_test
+if [ $? -ne 0 ]; then
+    rm -rf silc-measurement-tmp
+    exit 1
+fi
+exit 0
