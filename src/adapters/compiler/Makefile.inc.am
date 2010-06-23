@@ -35,9 +35,22 @@ libsilc_adapter_compiler_la_SOURCES =                         \
 # intel specific settings
 
 if SILC_COMPILER_INTEL
+if HAVE_LIBBFD
+libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
+endif
+if HAVE_NM_AS_BFD_REPLACEMENT
+libsilc_adapter_compiler_la_CPPFLAGS += \
+	-I$(INC_ROOT)src/services       \
+        -DHAVE_NM
+
+libsilc_adapter_compiler_la_SOURCES  += \
+	$(SRC_ROOT)src/services/SILC_Timing.h
+endif
+libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE -D__GNUC__=1
+
 libsilc_adapter_compiler_la_SOURCES +=                        \
         $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
-        $(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c 
+	$(SRC_ROOT)src/adapters/compiler/SILC_compiler_gnu.c
 endif 
 
 #ibm specific settings
