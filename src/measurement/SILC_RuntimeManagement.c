@@ -141,7 +141,7 @@ SILC_InitMeasurement( void )
     // SILC_Memory_Initialize.
     // Need to be called before the first use of any SILC_Alloc function, in
     // particular before SILC_Thread_Initialize
-    SILC_Memory_Initialize( 10 * 1024 * 1024 /* 10 MB */, 1024 * 1024 /* 1 MB */ );
+    SILC_Memory_Initialize( 1200 * 1024 /* 1200 kB */, 8192 /* 8 kB */ ); // 150 pages
 
     // initialize before SILC_Thread_Initialize() because latter may create a
     // writer that needs the archive.
