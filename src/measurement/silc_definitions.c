@@ -119,8 +119,6 @@ SILC_Definitions_Finalize()
         return;
     }
     silc_definitions_initialized = false;
-
-    /// @todo Bert, do we need to clean up the lists?
 }
 
 
