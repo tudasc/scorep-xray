@@ -27,7 +27,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
                   [silc_compiler_intel="no"])
 AC_MSG_RESULT([$silc_compiler_intel])
 AS_IF([test "x${silc_compiler_intel}" = "xyes"], 
-      [silc_compiler_instrumentation_cppflags="-tcollect"]
+      [silc_compiler_instrumentation_cppflags="-finstrument-functions"]
        AC_DEFINE([FORTRAN_MANGLED(var)], [var ## _], 
                  [Name of var after mangled by the Fortran compiler.])
        AC_DEFINE([FOO_MANGLED],    [foo_],    [[]])
