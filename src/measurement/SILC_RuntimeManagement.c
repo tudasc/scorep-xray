@@ -464,6 +464,7 @@ silc_finalize( void )
     // order is important
     silc_profile_finalize();
     silc_parameter_table_finalize();
+    SILC_Definitions_Write();
     SILC_Definitions_Finalize();
     SILC_DefinitionLocks_Finalize();
     silc_otf2_finalize();

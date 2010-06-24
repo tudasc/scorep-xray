@@ -120,6 +120,18 @@ SILC_Definitions_Finalize()
     }
     silc_definitions_initialized = false;
 
+    /// @todo Bert, do we need to clean up the lists?
+}
+
+
+void
+SILC_Definitions_Write()
+{
+    if ( !silc_definitions_initialized )
+    {
+        return;
+    }
+
     OTF2_DefWriter* definition_writer = silc_create_definition_writer();
     silc_write_definitions( definition_writer );
 }

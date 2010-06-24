@@ -162,6 +162,10 @@ void
 SILC_Definitions_Finalize();
 
 
+void
+SILC_Definitions_Write();
+
+
 SILC_StringHandle
 SILC_DefineString( const char* str );
 
