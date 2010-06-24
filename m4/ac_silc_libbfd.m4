@@ -38,7 +38,7 @@ AC_REQUIRE([AC_SILC_COMPILER_CHECKS])
 # approach is to require user input on dual-architecture machines. But for now
 # we will just abort (until this problem shows up in reality).
 
-if test "x${silc_compiler_gnu}" = "xyes"; then
+if test "x${silc_compiler_gnu}" = "xyes" -o "x${silc_compiler_intel}" = "xyes"; then
 
     if test "x${ac_silc_cross_compiling}" = "xyes"; then
         AC_MSG_ERROR([Can't reliably determine backend libbfd in cross compiling mode.])
