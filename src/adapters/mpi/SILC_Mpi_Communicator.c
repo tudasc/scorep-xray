@@ -14,12 +14,12 @@
  */
 
 /**
-   @file       SILC_Mpi_Communicator.c
-   @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-   @status     ALPHA
-   @ingroup    MPI_Wrapper
-
-   @brief Internal funcions for communicator, group and window management.
+ * @file       SILC_Mpi_Communicator.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief Internal funcions for communicator, group and window management.
  */
 
 #include "SILC_Mpi_Communicator.h"
@@ -39,44 +39,52 @@
  *-----------------------------------------------------------------------------
  */
 
-/** @def SILC_MPI_MAX_COMM
+/**
+ *  @def SILC_MPI_MAX_COMM
  *  @internal
  *  Maximum amount of concurrently defined communicators per process.
  */
 #define SILC_MPI_MAX_COMM    50
 
-/** @def SILC_MPI_MAX_GROUP
+/**
+ *  @def SILC_MPI_MAX_GROUP
  *  @internal
  *  Maximum amount of concurrently defines groups per process.
  */
 #define SILC_MPI_MAX_GROUP   50
 
-/** @def SILC_MPI_MAX_WIN
+/**
+ *  @def SILC_MPI_MAX_WIN
  *  @internal
  *  Maximum amount of concurrently defined windows per process
  */
 #define SILC_MPI_MAX_WIN     50
 
-/** @def SILC_MPI_MAX_WINACC
+/**
+ *  @def SILC_MPI_MAX_WINACC
  *  @internal
  *  Maximum amount of concurrently active access or exposure epochs per
  *  process.
  */
 #define SILC_MPI_MAX_WINACC  50
 
-/** Contains the data of the MPI_COMM_WORLD definition. */
+/**
+ *  Contains the data of the MPI_COMM_WORLD definition.
+ */
 struct silc_mpi_world_type silc_mpi_world;
 
-/** A switch if global ranks are calculated or not. If set to zero no global ranks are
-    calculated. If set to non-zero global values are calculated. The current default
-    are global ranks.
+/**
+ *  A switch if global ranks are calculated or not. If set to zero no global ranks are
+ *  calculated. If set to non-zero global values are calculated. The current default
+ *  are global ranks.
  */
 int8_t silc_mpi_comm_determination = 1;
 
 /* ------------------------------------------------ Definitions for MPI Window handling */
 #ifndef SILC_MPI_NO_RMA
 
-/** @internal
+/**
+ *  @internal
  *  Structure to translate MPI window handles to internal SILC IDs.
  */
 struct silc_mpi_win_type
@@ -85,13 +93,15 @@ struct silc_mpi_win_type
     SILC_MPIWindowHandle wid; /** Internal SILC window handle */
 };
 
-/** @internal
+/**
+ *  @internal
  *  Index in the silc_mpi_windows array of last valid entry in window tracking data
-    structure.
+ *  structure.
  */
 static int32_t silc_mpi_last_window = 0;
 
-/** @internal
+/**
+ *  @internal
  *  Window tracking array */
 static struct silc_mpi_win_type silc_mpi_windows[ SILC_MPI_MAX_WIN ];
 
@@ -99,7 +109,8 @@ static struct silc_mpi_win_type silc_mpi_windows[ SILC_MPI_MAX_WIN ];
 
 /* ------------------------------------------- Definitions for communicators and groups */
 
-/** @internal
+/**
+ *  @internal
  * structure for communicator tracking
  */
 struct silc_mpi_communicator_type
@@ -108,7 +119,8 @@ struct silc_mpi_communicator_type
     SILC_MPICommunicatorHandle cid;  /** Internal SILC Communicator handle */
 };
 
-/** @internal
+/**
+ * @internal
  * structure for group tracking
  */
 struct silc_mpi_group_type
@@ -118,32 +130,38 @@ struct silc_mpi_group_type
     int32_t              refcnt; /** Number of references to this group */
 };
 
-/** @internal
+/**
+ *  @internal
  *  Index into the silc_mpi_comms array to the last entry.
  */
 static int32_t silc_mpi_last_comm = 0;
 
-/** @internal
+/**
+ *  @internal
  *  Index into the silc_mpi_groups array to the last entry.
  */
 static int32_t silc_mpi_last_group = 0;
 
-/** @internal
+/**
+ *  @internal
  *  Communicator tracking data structure. Array of created communicators' handles.
  */
 static struct silc_mpi_communicator_type silc_mpi_comms[ SILC_MPI_MAX_COMM ];
 
-/** @internal
+/**
+ *  @internal
  *  Group tracking data structure. Array of created groups' handles.
  */
 static struct silc_mpi_group_type silc_mpi_groups[ SILC_MPI_MAX_GROUP ];
 
-/** @internal
+/**
+ *  @internal
  *  Internal array used for rank translation.
  */
 static SILC_Mpi_Rank* silc_mpi_ranks;
 
-/** @internal
+/**
+ *  @internal
  *  Internal flag to indicate communicator initialization. It is set o non-zero if the
  *  communicator managment is initialzed. This happens when the function
  *  silc_mpi_comm_init() is called.
@@ -153,17 +171,18 @@ static int silc_mpi_comm_initialized = 0;
 /* ------------------------------------------------ Definition for one sided operations */
 #ifndef SILC_MPI_NO_RMA
 
-/*
- *  exposure epoch
+/**
+ *  @internal exposure epoch
  */
 const SILC_Mpi_Color silc_mpi_exp_epoch = 0;
 
-/*
- *  access epoch
+/**
+ *  @internal access epoch
  */
 const SILC_Mpi_Color silc_mpi_acc_epoch = 1;
 
-/** @internal
+/**
+ * @internal
  *  Entry data structure to track GATS epochs
  */
 struct silc_mpi_winacc_type
@@ -173,12 +192,14 @@ struct silc_mpi_winacc_type
     SILC_Mpi_Color       color; /* byte to help distiguish accesses on same window */
 };
 
-/** @internal
+/**
+ *  @internal
  *  Data structure to track active GATS epochs.
  */
 static struct silc_mpi_winacc_type silc_mpi_winaccs[ SILC_MPI_MAX_WINACC ];
 
-/** @internal
+/**
+ *  @internal
  *  Index of last valid entry in the silc_mpi_winaccs array.
  */
 static int silc_mpi_last_winacc = 0;
