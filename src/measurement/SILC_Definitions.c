@@ -14,6 +14,9 @@
  */
 
 
+#include <config.h>
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,13 +34,31 @@
 
 #include <SILC_Debug.h>
 #include <SILC_DefinitionHandles.h>
+#include <jenkins_hash.h>
+
 #include "silc_definition_structs.h"
 #include "silc_definitions.h"
 #include "silc_types.h"
 
-
 extern SILC_DefinitionManager silc_definition_manager;
 
+/* Some convenient macros to add members or sub-hashes to the hash value */
+#define HASH_ADD_POD( pod_member ) \
+    new_definition->hash_value = hash( &new_definition->pod_member, \
+                                       sizeof( new_definition->pod_member ), \
+                                       new_definition->hash_value )
+
+#define HASH_ADD_HANDLE( handle_member, Type ) \
+    new_definition->hash_value = hashword( \
+        &SILC_HANDLE_GET_HASH( &new_definition->handle_member, Type ), \
+        1, new_definition->hash_value )
+
+#define HASH_ADD_ARRAY( array_member, number_member ) \
+    new_definition->hash_value = hash( \
+        new_definition->array_member, \
+        sizeof( new_definition->array_member[ 0 ] ) \
+        * new_definition->number_member, \
+        new_definition->hash_value )
 
 /**
  * Associate a file name with a process unique file handle.
@@ -54,6 +75,9 @@ SILC_DefineSourceFile( const char* fileName )
     SILC_ALLOC_NEW_DEFINITION( SourceFile, source_file );
 
     new_definition->name_handle = *SILC_DefineString( fileName );
+    /* just take the hash value from the string */
+    new_definition->hash_value =
+        SILC_HANDLE_GET_HASH( &new_definition->name_handle, String );
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", new_definition->sequence_number );
@@ -82,21 +106,31 @@ SILC_DefineRegion( const char*           regionName,
 
     // Init new_definition
     new_definition->name_handle = *SILC_DefineString( regionName );
+    HASH_ADD_HANDLE( name_handle, String );
+    /* currently not used */
+    new_definition->description_handle = *SILC_DefineString( "" );
+    HASH_ADD_HANDLE( description_handle, String );
+
+    new_definition->region_type = regionType;                      // maps to OTF2_RegionType
+    HASH_ADD_POD( region_type );
 
     if ( fileHandle == SILC_INVALID_SOURCE_FILE )
     {
         SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->file_handle );
+        /* should we add a 0 value to the hash? */
     }
     else
     {
         new_definition->file_handle = *fileHandle;
+        HASH_ADD_HANDLE( file_handle, SourceFile );
     }
 
-    new_definition->description_handle = *SILC_DefineString( "" ); // currently not used
-    new_definition->region_type        = regionType;               // maps to OTF2_RegionType
-    new_definition->begin_line         = beginLine;
-    new_definition->end_line           = endLine;
-    new_definition->adapter_type       = adapter; // currently not used
+    new_definition->begin_line = beginLine;
+    HASH_ADD_POD( begin_line );
+    new_definition->end_line = endLine;
+    HASH_ADD_POD( end_line );
+    new_definition->adapter_type = adapter;       // currently not used
+    HASH_ADD_POD( adapter_type );
 
 // TODO: make this to a silc_debug_dump_*_definition
 #ifdef SILC_DEBUG
@@ -145,15 +179,9 @@ SILC_DefineRegion( const char*           regionName,
 const char*
 SILC_Region_GetName( SILC_RegionHandle handle )
 {
-    SILC_Region_Definition* region =
-        SILC_MEMORY_DEREF_MOVABLE( handle,
-                                   SILC_Region_Definition* );
+    SILC_Region_Definition* region = SILC_HANDLE_DEREF( handle, Region );
 
-    SILC_String_Definition* region_name =
-        SILC_MEMORY_DEREF_MOVABLE( &region->name_handle,
-                                   SILC_String_Definition* );
-
-    return region_name->string_data;
+    return SILC_HANDLE_DEREF( &region->name_handle, String )->string_data;
 }
 
 
@@ -167,11 +195,7 @@ SILC_Region_GetName( SILC_RegionHandle handle )
 SILC_RegionType
 SILC_Region_GetType( SILC_RegionHandle handle )
 {
-    SILC_Region_Definition* region =
-        SILC_MEMORY_DEREF_MOVABLE( handle,
-                                   SILC_Region_Definition* );
-
-    return region->region_type;
+    return SILC_HANDLE_DEREF( handle, Region )->region_type;
 }
 
 
@@ -198,13 +222,16 @@ SILC_DefineMPICommunicator( int32_t  numberOfRanks,
                                               numberOfRanks );
 
     // Init new_definition
-    new_definition->group_type        = SILC_GROUP_COMMUNICATOR;
+    new_definition->group_type = SILC_GROUP_COMMUNICATOR;
+    HASH_ADD_POD( group_type );
     new_definition->number_of_members = numberOfRanks;
+    HASH_ADD_POD( number_of_members );
     for ( int32_t i = 0; i < numberOfRanks; i++ )
     {
         /* convert ranks to global location ids */
         new_definition->members[ i ] = ( uint64_t )ranks[ i ];
     }
+    HASH_ADD_ARRAY( members, number_of_members );
 
 // TODO: make this into a silc_debug_dump_*_definition function
 #ifdef SILC_DEBUG

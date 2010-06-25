@@ -193,11 +193,11 @@ test_define_string( CuTest*     tc,
     SILC_String_Definition*         new_definition = NULL;
     SILC_String_Definition_Movable* new_movable    = NULL;
 
-    uint32_t                        string_length = strlen( str ) + 1;
+    uint32_t                        string_length = strlen( str );
     TEST_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
                                               string,
                                               char,
-                                              string_length );
+                                              string_length + 1 );
 
     CuAssertPtrNotNull( tc, new_definition );
     CuAssertPtrNotNull( tc, new_movable );
@@ -235,7 +235,6 @@ test_1( CuTest* tc )
           i++ )
     {
         SILC_StringHandle str = test_define_string( tc, test_stings[ i ] );
-        CuAssertIntEquals( tc, i / 2, str->page_id );
     }
 
     loop_over_string_definitions( tc );

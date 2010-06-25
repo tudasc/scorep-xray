@@ -23,7 +23,11 @@
  */
 
 
+#include <config.h>
+
+
 #include "silc_definitions.h"
+
 
 #include "silc_definition_structs.h"
 #include "silc_runtime_management.h"
@@ -36,6 +40,7 @@
 #include <stdint.h>
 #include <SILC_Debug.h>
 #include "silc_mpi.h"
+#include <jenkins_hash.h>
 
 
 SILC_DefinitionManager silc_definition_manager;
@@ -196,14 +201,21 @@ SILC_DefineString( const char* str )
 
     #pragma omp critical (define_string)
     {
-        uint32_t string_length = strlen( str ) + 1;
+        uint32_t string_length = strlen( str );
         SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
                                                   string,
                                                   char,
-                                                  string_length );
+                                                  string_length + 1 );
 
+        /* string_length is a derived member, no need to add this to the
+         * hash value
+         */
         new_definition->string_length = string_length;
+
         strcpy( new_definition->string_data, str );
+        new_definition->hash_value = hash( new_definition->string_data,
+                                           new_definition->string_length,
+                                           new_definition->hash_value );
     }
 
     return new_movable;
@@ -226,6 +238,8 @@ SILC_DefineLocation( uint64_t    globalLocationId,
 
     new_definition->global_location_id = globalLocationId;
     new_definition->name_handle        = *SILC_DefineString( name );
+
+    /* locations wont be unfied, therfore no hash value needed, yet? */
 
     /** @todo: this needs clarification after the location hierarchy
                has settled */
@@ -476,8 +490,7 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         if ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( definition->file_handle ) )
         {
             SILC_SourceFile_Definition* source_file_definition =
-                SILC_MEMORY_DEREF_MOVABLE( &definition->file_handle,
-                                           SILC_SourceFile_Definition* );
+                SILC_HANDLE_DEREF( &definition->file_handle, SourceFile );
             source_file_id =
                 SILC_HANDLE_TO_ID( &source_file_definition->name_handle,
                                    String );

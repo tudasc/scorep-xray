@@ -62,9 +62,11 @@
  *
  * @note: This should be insync with the definition of @a silc_any_definition
  */
-#define SILC_DEFINITION_HEADER( Type ) \
-    SILC_ ## Type ## _Definition_Movable next;   \
-    uint32_t sequence_number
+#define SILC_DEFINITION_HEADER( Type )          \
+    SILC_ ## Type ## _Definition_Movable next;  \
+    uint32_t sequence_number;                   \
+    uint32_t hash_value
+
 /**
  *  Dereferences a moveable memory pointer to the definition struct.
  *
@@ -84,6 +86,13 @@
 #define SILC_HANDLE_TO_ID( handle, Type ) \
     ( SILC_HANDLE_DEREF( handle, Type )->sequence_number )
 
+/**
+ *  Extracts the hash value out of an handle pointer.
+ *
+ *  @note You can take also the address of this member with this macro
+ */
+#define SILC_HANDLE_GET_HASH( handle, Type ) \
+    ( SILC_HANDLE_DEREF( handle, Type )->hash_value )
 
 typedef struct silc_any_definition         silc_any_definition;
 typedef struct silc_any_definition_Movable silc_any_definition_Movable;
@@ -95,6 +104,7 @@ struct silc_any_definition
 {
     silc_any_definition_Movable next;
     uint32_t                    sequence_number;
+    uint32_t                    hash_value;
 };
 
 

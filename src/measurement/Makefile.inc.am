@@ -54,7 +54,8 @@ libsilc_measurement_la_CPPFLAGS =               \
     -I$(INC_ROOT)src/services                   \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_OTF2)                           \
-    -I$(INC_DIR_UTIL)
+    -I$(INC_DIR_UTIL)                           \
+    -I$(INC_DIR_VENDOR_HASH)
 
 
 ## paradigm omp
@@ -80,7 +81,8 @@ libsilc_paradigm_omp_la_CPPFLAGS =       \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement/profile \
     -I$(INC_ROOT)src/services            \
-    -I$(PUBLIC_INC_DIR)
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_DIR_VENDOR_HASH)
 endif
 
 ##paradigm non omp
@@ -104,7 +106,8 @@ libsilc_paradigm_non_omp_la_CPPFLAGS =   \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement/profile \
     -I$(INC_ROOT)src/services            \
-    -I$(PUBLIC_INC_DIR)
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_DIR_VENDOR_HASH)
 
 
 ## paradigm non mpi

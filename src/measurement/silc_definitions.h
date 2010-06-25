@@ -50,6 +50,7 @@
             &( new_definition )->next; \
         ( new_definition )->sequence_number = \
             silc_definition_manager.type ## _definition_counter++; \
+        ( new_definition )->hash_value = 0; \
     } while ( 0 )
 /* *INDENT-ON* */
 
@@ -78,6 +79,7 @@
             &( new_definition )->next; \
         ( new_definition )->sequence_number = \
             silc_definition_manager.type ## _definition_counter++; \
+        ( new_definition )->hash_value = 0; \
     } while ( 0 )
 /* *INDENT-ON* */
 

@@ -14,17 +14,18 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       Makefile.mpi.inc.am
+## file       Makefile.inc.am
 ## author     Christian Roessel <c.roessel@fz-juelich.de>
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 common_libadd = libsilc_measurement.la              \
                 libsilc_timer.la                    \
-	        libsilc_adapter_compiler.la         \
+                libsilc_adapter_compiler.la         \
                 libsilc_adapter_user.la             \
                 $(LIB_DIR_OTF2)libotf2.la           \
-                $(LIB_DIR_UTIL)libsilc_utilities.la
+                $(LIB_DIR_UTIL)libsilc_utilities.la \
+                libjenkins_hash.la
 
 
 common_cppflags = $(AM_CPPFLAGS)                       \
@@ -32,7 +33,7 @@ common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(INC_ROOT)src/measurement/include \
                   -I$(INC_ROOT)src/measurement         \
                   -I$(PUBLIC_INC_DIR)                  \
-                  -I$(INC_DIR_UTIL)  
+                  -I$(INC_DIR_UTIL)
 
 
 ## MPI
