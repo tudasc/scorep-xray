@@ -65,16 +65,25 @@
 #define SILC_DEFINITION_HEADER( Type ) \
     SILC_ ## Type ## _Definition_Movable next;   \
     uint32_t sequence_number
+/**
+ *  Dereferences a moveable memory pointer to the definition struct.
+ *
+ */
+#define SILC_HANDLE_DEREF( handle, Type ) \
+    ( SILC_MEMORY_DEREF_MOVABLE( handle, \
+                                 SILC_ ## Type ## _Definition* ) )
 
 /**
  *  Extracts the ID out of an handle pointer.
  *
  *  @note: This is only the process local sequence number, which
  *         may happen to be the OTF2 definition id.
+ *
+ *  @note You can take also the address of this member with this macro
  */
 #define SILC_HANDLE_TO_ID( handle, Type ) \
-    ( ( SILC_MEMORY_DEREF_MOVABLE( ( handle ), \
-                                   SILC_ ## Type ## _Definition* ) )->sequence_number )
+    ( SILC_HANDLE_DEREF( handle, Type )->sequence_number )
+
 
 typedef struct silc_any_definition         silc_any_definition;
 typedef struct silc_any_definition_Movable silc_any_definition_Movable;
