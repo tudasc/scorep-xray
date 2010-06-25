@@ -14,7 +14,7 @@
  */
 
 /**
- * @file       SILC_Compiler_Data.h
+ * @file       silc_compiler_data.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status     ALPHA

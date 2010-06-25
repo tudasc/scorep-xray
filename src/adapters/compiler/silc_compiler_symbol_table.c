@@ -14,12 +14,26 @@
  */
 
 /**
- * @ file      SILC_compiler_gnu.c
+ * @file       silc_compiler_symbol_table.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @brief Support for GNU-Compiler
- * Will be triggered by the '-finstrument-functions' flag of the GNU
- * compiler.
+ * @brief Symbol table analysis functions.
+ * Contains functions that read the symbol table of a executable and add all functions
+ * found to a hashtable. For this it offers 2 possibilities:
+ * @li A bfd based implementation is the best choice.
+ * @li If no bfd is available, nm can be used instead. However, it involves system calls
+ *     and scales worse.
+ * @li If none of both is enabled, a dummy is compiled, which disables the adapter.
+ *
+ * It may be compiled with different defines:
+ * @li If HAVE( READLINK ) is true, it tries to resolve the symbolic link in
+ *     /proc/self/exe to find the executable. Else other methods are used.
+ * @li If HAVE_LIBBFD is defined, it uses the bfd library to read the symbols.
+ * @li If HAVE_NM is defined, it uses a system call to nm to read the symbols. This
+ *     option is only compiler if HAVE_LIBBFD is undefined, because of worse scaling.
+ * @li If GNU_DEMANGLE is defined it uses cplus_demangle() to demangle function names.
+ * @li If INTEL_COMPILER is defined, regions do not use the address as key, but get a
+ *     32 bit integer id as key.
  */
 
 #include <stdio.h>
@@ -41,12 +55,15 @@
 #include <SILC_RuntimeManagement.h>
 
 #include <SILC_Compiler_Init.h>
-#include <SILC_Compiler_Data.h>
-
+#include <silc_compiler_data.h>
 
 #define SILC_COMPILER_BUFFER_LEN 512
 
 extern char* silc_compiler_executable;
+
+/* ***************************************************************************************
+   Demangling declarations
+*****************************************************************************************/
 
 #if defined( GNU_DEMANGLE ) && defined( HAVE_LIBBFD )
 /* Declaration of external demangeling function */
@@ -68,11 +85,6 @@ static int silc_compiler_demangle_style = SILC_COMPILER_DEMANGLE_PARAMS  |
                                           SILC_COMPILER_DEMANGLE_VERBOSE |
                                           SILC_COMPILER_DEMANGLE_TYPES;
 #endif /* GNU_DEMANGLE && HAVE_LIBBFD */
-
-/**
- * static variable to control initialize status of GNU
- */
-static int silc_compiler_initialize = 1;
 
 /* ***************************************************************************************
    helper functions for symbaol table analysis
@@ -100,25 +112,16 @@ silc_compiler_get_exe( char   path[],
      * by default, use /proc mechanism to obtain path to executable
      * in other cases, do it by examining SILC_APPPATH variable
      */
-#if HAVE( READLINK )
-    /* get the path from system */
-    int len = readlink( "/proc/self/exe", path, length );
-    if ( len != -1 )
-    {
-        /* readlink does not terminate the string with 0. */
-        if ( len >= length )
-        {
-            len = length - 1;
-        }
-        path[ len ] = '\0';
-
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " got the  path to binary = %sn", path );
-
-        return true;
-    }
-#endif /* HAVE( READLINK )  */
 
     /* First trial */
+    sprintf( path, "/proc/self/exe" );
+    err = stat( path, &status );
+    if ( err == 0 )
+    {
+        return true;
+    }
+
+    /* Second trial */
     pid = getpid();
     sprintf( path, "/proc/%d/exe", pid );
     err = stat( path, &status );
@@ -127,7 +130,7 @@ silc_compiler_get_exe( char   path[],
         return true;
     }
 
-    /* Second trial */
+    /* Third trial */
     sprintf( path, "/proc/%d/object/a.out", pid );
     err = stat( path, &status );
     if ( err == 0 )
@@ -176,9 +179,16 @@ silc_compiler_get_exe( char   path[],
  * provide only a file pointer.
  * It also collects information about source file and line number.
  */
-static void
+void
 silc_compiler_get_sym_tab( void )
 {
+#ifdef INTEL_COMPILER
+    /* Counter for the last assigned region id.
+       When using the Intel VT_ instrumentation, the functions provide a 32 bit storage.
+       Thus, addresses may not fit, thus, we provide an other id as key.
+     */
+    int32_t   region_counter = 1;
+#endif /* INTEL_COMPILER */
     bfd*      bfd_image = 0;
     int       nr_all_syms;
     int       i;
@@ -290,7 +300,12 @@ silc_compiler_get_sym_tab( void )
         }
 #endif  /* GNU_DEMANGLE */
 
+#ifdef INTEL_COMPILER
+        silc_compiler_hash_put( region_counter, funcname, filename, lno );
+        region_counter++;
+#else
         silc_compiler_hash_put( addr, funcname, filename, lno );
+#endif  /* INTEL_COMPILER */
     }
     free( canonic_symbols );
     bfd_close( bfd_image );
@@ -334,10 +349,17 @@ silc_compiler_create_nm_file( char* nmfile,
 static void
 silc_compiler_get_sym_tab( void )
 {
-    FILE* nmfile;
-    char  line[ 1024 ];
-    char  path[ SILC_COMPILER_BUFFER_LEN ] = { 0 };
-    char  nmfilename[ 64 ];
+#ifdef INTEL_COMPILER
+    /* Counter for the last assigned region id.
+       When using the Intel VT_ instrumentation, the functions provide a 32 bit storage.
+       Thus, addresses may not fit, thus, we provide an other id as key.
+     */
+    int32_t region_counter = 1;
+#endif /* INTEL_COMPILER */
+    FILE*   nmfile;
+    char    line[ 1024 ];
+    char    path[ SILC_COMPILER_BUFFER_LEN ] = { 0 };
+    char    nmfilename[ 64 ];
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Read symbol table using nm" );
 
@@ -422,7 +444,12 @@ silc_compiler_get_sym_tab( void )
         if ( col_num >= 3 )
         {
             char* region_name = strdup( funcname );
+#ifdef INTEL_COMPILER
+            silc_compiler_hash_put( region_counter, region_name, filename, line_no );
+            region_counter++;
+#else
             silc_compiler_hash_put( addr, region_name, filename, line_no );
+#endif      /* INTEL_COMPILER */
         }
     }
 
@@ -438,7 +465,7 @@ silc_compiler_get_sym_tab( void )
 *****************************************************************************************/
 
 #warning Neither BFD nor nm are available. Thus, the symbol table can not be analyzed.
-#warning The GNU compiler adapter will be disabled.
+#warning The compiler adapter will be disabled.
 
 /**
    Dummy implementation of symbol table analysis for the case that neither BFD
@@ -452,111 +479,3 @@ silc_compiler_get_sym_tab( void )
 }
 
 #endif /* HAVE_LIBBFD / HAVE_NM */
-
-
-/* ***************************************************************************************
-   Implementation of functions called by compiler instrumentation
-*****************************************************************************************/
-
-/**
- * @brief This function is called just after the entry of a function
- * generated by the GNU compiler.
- * @param func      The address of the start of the current function.
- * @param callsice  The call site of the current function.
- */
-void
-__cyg_profile_func_enter( void* func,
-                          void* callsite )
-{
-    silc_compiler_hash_node* hash_node;
-
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter." );
-
-    /*
-     * put hash table entries via mechanism for bfd symbol table
-     * to calculate function addresses if measurement was not initialized
-     */
-
-    if ( silc_compiler_initialize )
-    {
-        /* not initialized so far */
-        SILC_InitMeasurement();
-    }
-
-
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function pointer: %ld ", ( long )func );
-
-    if ( ( hash_node = silc_compiler_hash_get( ( long )func ) ) )
-    {
-        if ( hash_node->region_handle == SILC_INVALID_REGION )
-        {
-            /* -- region entered the first time, register region -- */
-            silc_compiler_register_region( hash_node );
-        }
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
-                           "enter the region with handle %i ",
-                           hash_node->region_handle );
-        SILC_EnterRegion( hash_node->region_handle );
-    }
-}
-
-/**
- * @brief This function is called just before the exit of a function
- * generated by the GNU compiler.
- * @param func      The address of the end of the current function.
- * @param callsice  The call site of the current function.
- */
-void
-__cyg_profile_func_exit( void* func,
-                         void* callsite )
-{
-    silc_compiler_hash_node* hash_node;
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit." );
-    if ( hash_node = silc_compiler_hash_get( ( long )func ) )
-    {
-        SILC_ExitRegion( hash_node->region_handle );
-    }
-}
-
-/* ***************************************************************************************
-   Adapter management
-*****************************************************************************************/
-
-SILC_Error_Code
-silc_compiler_init_adapter()
-{
-    if ( silc_compiler_initialize )
-    {
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " inititialize GNU compiler adapter." );
-
-        /* Initialize hash tables */
-        silc_compiler_hash_init();
-
-        /* call function to calculate symbol table */
-        silc_compiler_get_sym_tab();
-
-        /* Sez flag */
-        silc_compiler_initialize = 0;
-
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
-                           " inititialization of GNU compiler adapter done." );
-    }
-
-    return SILC_SUCCESS;
-}
-
-/* Adapter finalization */
-void
-silc_compiler_finalize()
-{
-    /* call only, if previously initialized */
-    if ( !silc_compiler_initialize )
-    {
-        /* Delete hash table */
-        silc_compiler_hash_free();
-
-        /* Set initilaization flag */
-        silc_compiler_initialize = 1;
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " finalize GNU compiler adapter." );
-    }
-}

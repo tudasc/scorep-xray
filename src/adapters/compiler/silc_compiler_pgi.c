@@ -29,8 +29,8 @@
 #include <SILC_Definitions.h>
 #include <SILC_DefinitionLocking.h>
 #include <SILC_RuntimeManagement.h>
-#include <SILC_Compiler_Data.h>
 #include <SILC_Thread_Types.h>
+#include <silc_compiler_data.h>
 
 /* **************************************************************************************
  * Typedefs and global variables

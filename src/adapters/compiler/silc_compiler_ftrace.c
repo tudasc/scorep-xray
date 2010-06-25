@@ -15,7 +15,7 @@
 
 
 /**
- * @ file      SILC_compiler_ftrace.c
+ * @file       silc_compiler_ftrace.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter version for NEC SX compiler
@@ -32,7 +32,7 @@
 #include <SILC_RuntimeManagement.h>
 
 #include <SILC_Compiler_Init.h>
-#include <SILC_Compiler_Data.h>
+#include <silc_compiler_data.h>
 
 
 extern void*

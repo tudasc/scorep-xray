@@ -14,7 +14,7 @@
  */
 
 /**
- * @file       SILC_Compiler_Data.c
+ * @file       silc_compiler_data.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status     ALPHA
@@ -28,8 +28,9 @@
 
 #include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
-#include "SILC_Compiler_Data.h"
 #include "SILC_Hashtab.h"
+
+#include "silc_compiler_data.h"
 
 /**
    A hash table which stores information about regions under their name as

@@ -15,7 +15,7 @@
 
 
 /**
- * @ file      SILC_compiler_ibm.c
+ * @file       silc_compiler_ibm.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for XL IBM-Compiler
@@ -32,7 +32,7 @@
 #include <SILC_RuntimeManagement.h>
 
 #include <SILC_Compiler_Init.h>
-#include <SILC_Compiler_Data.h>
+#include <silc_compiler_data.h>
 
 
 /**
