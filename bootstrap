@@ -4,19 +4,16 @@
 AUTORECONF      = autoreconf
 AUTORECONFFLAGS = --install -Wall --verbose --no-recursive
 
-all: clean 
-	cd vendor/otf2 && ./bootstrap AUTORECONF=$(AUTORECONF)
-	$(AUTORECONF) $(AUTORECONFFLAGS)
-	cd build-backend;  $(AUTORECONF) $(AUTORECONFFLAGS)
-	cd build-frontend; $(AUTORECONF) $(AUTORECONFFLAGS)
-
+all: clean
+	@cd vendor/otf2 && ./bootstrap AUTORECONF=$(AUTORECONF)
+	$(AUTORECONF) $(AUTORECONFFLAGS) . build-backend build-frontend
 
 clean:
-	cd vendor/otf2 && ./bootstrap clean
-	rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in
-	cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing
-	cd build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
-	cd build-backend;  rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
-	cd build-frontend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
-	rm -f build-config/VERSION build-config/REVISION
-	rm -f src/config-backend.h.in src/config-frontend.h.in
+	@cd vendor/otf2 && ./bootstrap clean
+	@rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in
+	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing
+	@cd build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
+	@cd build-backend;  rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
+	@cd build-frontend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
+	@rm -f build-config/VERSION build-config/REVISION
+	@rm -f src/config-backend.h.in src/config-frontend.h.in
