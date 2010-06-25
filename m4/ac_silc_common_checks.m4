@@ -53,7 +53,7 @@ AC_REQUIRE([AM_PROG_CC_C_O])
 ## finally, the default for action-if-universal is to ensure that
 ## `WORDS_BIGENDIAN' is defined if and only if a universal build is detected
 ## and the current code is big-endian
-#AC_C_BIGENDIAN
+AC_REQUIRE([AC_C_BIGENDIAN])
 
 ## Search for a library defining function if it's not already available. This
 ## equates to calling ‘AC_LINK_IFELSE([AC_LANG_CALL([], [function])])’ first
