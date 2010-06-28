@@ -29,6 +29,8 @@
 #include "silc_definition_structs.h"
 #include <SILC_Memory.h>
 
+#include <jenkins_hash.h>
+
 
 /**
  * Allocate, assign the sequence number, and store in manager list a new
@@ -83,6 +85,10 @@
     } while ( 0 )
 /* *INDENT-ON* */
 
+/* this size is temporary */
+#define SILC_DEFINITION_HASH_TABLE_SIZE hashsize( 8 )
+#define SILC_DEFINITION_HASH_TABLE_MASK hashmask( 8 )
+
 /**
  * Holds all definitions.
  *
@@ -100,6 +106,8 @@ struct SILC_DefinitionManager
         uint32_t                              type ## _definition_counter;
 
     SILC_DEFINE_DEFINITION_LIST( String, string )
+    SILC_String_Definition_Movable* string_definition_hash_table;
+
     SILC_DEFINE_DEFINITION_LIST( Location, location )
     SILC_DEFINE_DEFINITION_LIST( SourceFile, source_file )
     SILC_DEFINE_DEFINITION_LIST( Region, region )

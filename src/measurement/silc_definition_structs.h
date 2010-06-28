@@ -33,6 +33,8 @@
 SILC_DEFINE_DEFINITION_TYPE( String )
 {
     SILC_DEFINITION_HEADER( String );
+    SILC_String_Definition_Movable hash_next;
+
 
     uint32_t string_length;
     // variable array member

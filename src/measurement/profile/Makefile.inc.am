@@ -27,7 +27,8 @@ PROFILE_FLAGS =                                 \
     -I$(INC_ROOT)src/measurement/               \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_OTF2)                           \
-    -I$(INC_DIR_UTIL)
+    -I$(INC_DIR_UTIL)                           \
+    -I$(INC_DIR_VENDOR_HASH)
 
 noinst_LTLIBRARIES += libsilc_profile_base.la
 libsilc_profile_base_la_SOURCES =                                  \

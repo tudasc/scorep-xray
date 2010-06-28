@@ -29,7 +29,8 @@ check_PROGRAMS += self_contained_silc_adapter_c            \
                   self_contained_silc_runtime_management_c \
                   self_contained_silc_thread_types_c       \
                   self_contained_silc_types_c              \
-                  definitions_test_c
+                  definitions_test_c                       \
+                  string_duplicates_c
 
 self_contained_cppflags = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_DIR_UTIL) -I$(PUBLIC_INC_DIR)
 
@@ -69,8 +70,21 @@ definitions_test_c_CPPFLAGS = -I$(INC_ROOT)vendor/cutest \
                               -I$(INC_ROOT)src/measurement \
                               -I$(INC_ROOT)src/measurement/include \
                               -I$(INC_ROOT)include/silc \
-                              -I$(INC_DIR_UTIL)
+                              -I$(INC_DIR_UTIL) \
+                              -I$(INC_DIR_VENDOR_HASH)
 definitions_test_c_LDADD = $(LIB_ROOT)libsilc_serial.la $(LIB_DIR_UTIL)libsilc_utilities.la
 
 TESTS += definitions_test_c
  
+string_duplicates_c_SOURCES  = $(SRC_ROOT)test/measurement/string_duplicates.c \
+                               $(SRC_ROOT)vendor/cutest/CuTest.c
+string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
+                               -I$(INC_ROOT)vendor/cutest \
+                               -I$(INC_ROOT)src/measurement \
+                               -I$(INC_ROOT)src/measurement/include \
+                               -I$(INC_ROOT)include/silc \
+                               -I$(INC_DIR_UTIL) \
+                               -I$(INC_DIR_VENDOR_HASH)
+string_duplicates_c_LDADD    = $(LIB_ROOT)libsilc_serial.la
+
+TESTS += string_duplicates_c

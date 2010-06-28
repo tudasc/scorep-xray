@@ -93,6 +93,16 @@ SILC_Definitions_Initialize()
     } while ( 0 )
 
     SILC_INIT_DEFINITION_LIST( string );
+    silc_definition_manager.string_definition_hash_table =
+        calloc( SILC_DEFINITION_HASH_TABLE_SIZE,
+                sizeof( *silc_definition_manager.string_definition_hash_table ) );
+    assert( silc_definition_manager.string_definition_hash_table );
+    for ( uint32_t i = 0; i < SILC_DEFINITION_HASH_TABLE_SIZE; i++ )
+    {
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL(
+            silc_definition_manager.string_definition_hash_table[ i ] );
+    }
+
     SILC_INIT_DEFINITION_LIST( location );
     SILC_INIT_DEFINITION_LIST( source_file );
     SILC_INIT_DEFINITION_LIST( region );
@@ -124,6 +134,8 @@ SILC_Definitions_Finalize()
         return;
     }
     silc_definitions_initialized = false;
+
+    free( silc_definition_manager.string_definition_hash_table );
 }
 
 
@@ -196,26 +208,82 @@ silc_write_definitions( OTF2_DefWriter* definitionWriter )
 SILC_StringHandle
 SILC_DefineString( const char* str )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                       "Define new string \"%s\":", str );
+
     SILC_String_Definition*         new_definition = NULL;
     SILC_String_Definition_Movable* new_movable    = NULL;
 
     #pragma omp critical (define_string)
     {
         uint32_t string_length = strlen( str );
-        SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
-                                                  string,
-                                                  char,
-                                                  string_length + 1 );
+        uint32_t string_hash   = hash( str, string_length, 0 );
 
-        /* string_length is a derived member, no need to add this to the
-         * hash value
-         */
-        new_definition->string_length = string_length;
+        SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                           "  Hash value for string %x", string_hash );
 
-        strcpy( new_definition->string_data, str );
-        new_definition->hash_value = hash( new_definition->string_data,
-                                           new_definition->string_length,
-                                           new_definition->hash_value );
+        /* get reference to table bucket for new string */
+        SILC_String_Definition_Movable* hash_table_bucket =
+            &silc_definition_manager.string_definition_hash_table[
+                string_hash & SILC_DEFINITION_HASH_TABLE_MASK ];
+
+        SILC_String_Definition_Movable* hash_list_iterator = hash_table_bucket;
+        while ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( *hash_list_iterator ) )
+        {
+            SILC_String_Definition* string_definition = SILC_HANDLE_DEREF(
+                hash_list_iterator, String );
+
+            SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                               "  Comparing against: \"%s\" (#%x)",
+                               string_definition->string_data,
+                               string_definition->hash_value );
+
+            if ( string_definition->hash_value == string_hash
+                 && string_definition->string_length == string_length
+                 && 0 == strcmp( string_definition->string_data, str ) )
+            {
+                break;
+            }
+
+            hash_list_iterator = &string_definition->hash_next;
+        }
+
+        /* need to define new string  */
+        if ( SILC_ALLOCATOR_MOVABLE_IS_NULL( *hash_list_iterator ) )
+        {
+            SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
+                                                      string,
+                                                      char,
+                                                      string_length + 1 );
+
+            SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                               "  Allocate new string" );
+
+            /*
+             * string_length is a derived member, no need to add this to the
+             * hash value
+             */
+            new_definition->string_length = string_length;
+
+            /*
+             * we know the length of the string already, therefore we can use
+             * the faster memcpy
+             */
+            memcpy( new_definition->string_data, str, string_length + 1 );
+            new_definition->hash_value = string_hash;
+
+            /* link into hash chain */
+            new_definition->hash_next = *hash_table_bucket;
+            *hash_table_bucket        = *new_movable;
+        }
+        else
+        {
+            SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
+                               "  Re-using string" );
+
+            /* return found existing string */
+            new_movable = hash_list_iterator;
+        }
     }
 
     return new_movable;
