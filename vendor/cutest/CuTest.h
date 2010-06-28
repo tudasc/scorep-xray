@@ -11,7 +11,7 @@ CuStrAlloc( int size );
 char*
 CuStrCopy( const char* old );
 
-#define CU_ALLOC( TYPE )          ( ( TYPE* )malloc( sizeof( TYPE ) ) )
+#define CU_ALLOC( TYPE )          ( ( TYPE* )calloc( 1, sizeof( TYPE ) ) )
 
 #define HUGE_STRING_LEN 8192
 #define STRING_MAX              256
@@ -29,8 +29,9 @@ CuStringInit( CuString* str );
 CuString*
 CuStringNew( void );
 void
-CuStringRead( CuString*   str,
-              const char* path );
+CuStringClear( CuString* str );
+void
+CuStringFree( CuString* str );
 void
 CuStringAppend( CuString*   str,
                 const char* text );
@@ -72,6 +73,10 @@ CuTestInit( CuTest*      t,
 CuTest*
 CuTestNew( const char*  name,
            TestFunction function );
+void
+CuTestClear( CuTest* t );
+void
+CuTestFree( CuTest* t );
 void
 CuTestRun( CuTest* tc );
 
@@ -157,6 +162,10 @@ CuSuiteInit( const char* name,
              CuSuite*    testSuite );
 CuSuite*
 CuSuiteNew( const char* name );
+void
+CuSuiteClear( CuSuite* testSuite );
+void
+CuSuiteFree( CuSuite* testSuite );
 void
 CuSuiteAdd( CuSuite* testSuite,
             CuTest*  testCase );

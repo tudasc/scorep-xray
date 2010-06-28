@@ -44,11 +44,25 @@ CuString*
 CuStringNew( void )
 {
     CuString* str = ( CuString* )malloc( sizeof( CuString ) );
-    str->length      = 0;
-    str->size        = STRING_MAX;
-    str->buffer      = ( char* )malloc( sizeof( char ) * str->size );
-    str->buffer[ 0 ] = '\0';
+    CuStringInit( str );
     return str;
+}
+
+void
+CuStringClear( CuString* str )
+{
+    if ( str )
+    {
+        free( str->buffer );
+        str->buffer = NULL;
+    }
+}
+
+void
+CuStringFree( CuString* str )
+{
+    CuStringClear( str );
+    free( str );
 }
 
 void
@@ -148,6 +162,23 @@ CuTestNew( const char*  name,
 }
 
 void
+CuTestClear( CuTest* t )
+{
+    if ( t )
+    {
+        free( ( char* )t->name );
+        t->name = NULL;
+    }
+}
+
+void
+CuTestFree( CuTest* t )
+{
+    CuTestClear( t );
+    free( t );
+}
+
+void
 CuTestRun( CuTest* tc )
 {
     jmp_buf buf;
@@ -196,6 +227,7 @@ CuFail_Line( CuTest*     tc,
     }
     CuStringAppend( &string, message );
     CuFailInternal( tc, file, line, &string );
+    CuStringClear( &string );
 }
 
 void
@@ -240,6 +272,7 @@ CuAssertStrEquals_LineMsg( CuTest*     tc,
     CuStringAppend( &string, actual );
     CuStringAppend( &string, ">" );
     CuFailInternal( tc, file, line, &string );
+    CuStringClear( &string );
 }
 
 void
@@ -314,6 +347,30 @@ CuSuiteNew( const char* name )
     CuSuite* testSuite = CU_ALLOC( CuSuite );
     CuSuiteInit( name, testSuite );
     return testSuite;
+}
+
+void
+CuSuiteClear( CuSuite* testSuite )
+{
+    int i;
+
+    if ( testSuite )
+    {
+        free( ( char* )testSuite->name );
+        testSuite->name = NULL;
+
+        for ( i = 0; i < testSuite->count; ++i )
+        {
+            CuTestFree( testSuite->list[ i ] );
+        }
+    }
+}
+
+void
+CuSuiteFree( CuSuite* testSuite )
+{
+    CuSuiteClear( testSuite );
+    free( testSuite );
 }
 
 void
