@@ -49,7 +49,7 @@ SILC_ConfigVariable silc_compiler_configs[] = {
         SILC_CONFIG_TYPE_STRING,
         &silc_compiler_executable,
         NULL,
-        NULL,
+        "",
         "Executable of the application.",
         "File name, preferrrably with full path, of the application's executable.\n"
         "It is used for evaluating the symbol table of the application, which is\n"

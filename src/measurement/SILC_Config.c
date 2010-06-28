@@ -36,6 +36,7 @@
 #include <SILC_Debug.h>
 #include <SILC_Config.h>
 
+#include <SILC_Utils.h>
 
 #include "silc_types.h"
 
@@ -95,7 +96,12 @@ SILC_ConfigRegister
 
         if ( !successfully_parsed )
         {
-            fprintf( stderr, "Can't set variable to default value\n" );
+            fprintf( stderr,
+                     "Can't set variable \"%s%s%s\" to default value \"%s\"\n",
+                     variables->defaultValue,
+                     nameSpace ? nameSpace : "",
+                     nameSpace ? "/" : "",
+                     variables->name );
             /* should this be an error? */
         }
 
@@ -124,7 +130,13 @@ SILC_ConfigRegister
 
             if ( !successfully_parsed )
             {
-                fprintf( stderr, "Can't set variable to default value\n" );
+                fprintf( stderr,
+                         "Can't set variable \"%s%s%s\" to value \"%s\" from "
+                         "environment variable\n",
+                         environment_variable_value,
+                         nameSpace ? "_" : "",
+                         nameSpace ? nameSpace : "",
+                         variables->name );
                 /* should this be an error? */
             }
         }
@@ -157,6 +169,10 @@ parse_number( const char* value,
               uint64_t*   numberReference );
 
 static inline bool
+parse_string( const char* value,
+              char**      stringReference );
+
+static inline bool
 parse_set( const char* value,
            char***     stringListReference,
            char**      acceptedValues );
@@ -186,8 +202,10 @@ parse_value( const char*     value,
         case SILC_CONFIG_TYPE_BITSET:
             return parse_bitset( value, variableReference, variableContext );
 
-        case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_STRING:
+            return parse_string( value, variableReference );
+
+        case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_SIZE:
 
         case SILC_INVALID_CONFIG_TYPE:
@@ -262,6 +280,21 @@ parse_number( const char* value,
     }
 
     /* pass */
+    return true;
+}
+
+
+static inline bool
+parse_string( const char* value,
+              char**      stringReference )
+{
+    *stringReference = SILC_CStr_dup( value );
+    if ( !*stringReference )
+    {
+        SILC_ERROR( SILC_ERROR_MEM_FAULT, "Can't duplicate string" );
+        return false;
+    }
+
     return true;
 }
 
@@ -520,9 +553,19 @@ dump_value( const char*     prefix,
                          variableContext );
             break;
 
-        case SILC_CONFIG_TYPE_PATH:
-        case SILC_CONFIG_TYPE_STRING:
         case SILC_CONFIG_TYPE_NUMBER:
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG, "%s%" PRIu64,
+                               prefix, *( uint64_t* )variableReference );
+
+            break;
+
+        case SILC_CONFIG_TYPE_STRING:
+            SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG, "%s\"%s\"",
+                               prefix, *( const char** )variableReference );
+
+            break;
+
+        case SILC_CONFIG_TYPE_PATH:
         case SILC_CONFIG_TYPE_SIZE:
             SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
                                "%stype not implemented", prefix );
