@@ -150,8 +150,7 @@ SILC_ConfigRegister
             dump_value( "  Final value: ",
                         variables->type,
                         variables->variableReference,
-                        variables->variableContext );
-            )
+                        variables->variableContext ) );
 
         variables++;
     }
