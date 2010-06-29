@@ -15,7 +15,7 @@
 
 
 /**
- * @file       test/measurement/config/bool.c
+ * @file       test/measurement/config/number.c
  * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @status alpha
@@ -23,28 +23,19 @@
  */
 
 
-#include <CuTest.h>
+#include <config.h>
+
+
+#include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <inttypes.h>
 #include <limits.h>
-#include <string.h>
-#include <assert.h>
+
+
+#include <CuTest.h>
+
 
 #include <SILC_Config.h>
 
-/* *INDENT-OFF* */
-/* *INDENT-ON*  */
-
-
-// CuTest's assert functions:
-// void CuAssert(CuTest* tc, char* message, int condition);
-// void CuAssertTrue(CuTest* tc, int condition);
-// void CuAssertStrEquals(CuTest* tc, char* expected, char* actual);
-// void CuAssertIntEquals(CuTest* tc, int expected, int actual);
-// void CuAssertPtrEquals(CuTest* tc, void* expected, void* actual);
-// void CuAssertPtrNotNull(CuTest* tc, void* pointer);
 
 static void
 test_number_default_0( CuTest* tc )
@@ -156,5 +147,9 @@ main()
     CuSuiteSummary( suite, output );
     printf( "%s", output->buffer );
 
-    return suite->failCount;
+    int failCount = suite->failCount;
+    CuSuiteFree( suite );
+    CuStringFree( output );
+
+    return failCount;
 }
