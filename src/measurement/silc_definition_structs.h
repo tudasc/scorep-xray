@@ -66,13 +66,13 @@ SILC_DEFINE_DEFINITION_TYPE( Region )
     SILC_DEFINITION_HEADER( Region );
 
     // Add SILC_Region stuff from here on.
-    SILC_String_Definition_Movable     name_handle;
-    SILC_String_Definition_Movable     description_handle; // currently not used
-    SILC_RegionType                    region_type;        // maps to OTF2_RegionType
-    SILC_SourceFile_Definition_Movable file_handle;
-    SILC_LineNo                        begin_line;
-    SILC_LineNo                        end_line;
-    SILC_AdapterType                   adapter_type;       // currently not used
+    SILC_String_Definition_Movable name_handle;
+    SILC_String_Definition_Movable description_handle;     // currently not used
+    SILC_RegionType                region_type;            // maps to OTF2_RegionType
+    SILC_String_Definition_Movable file_handle;
+    SILC_LineNo                    begin_line;
+    SILC_LineNo                    end_line;
+    SILC_AdapterType               adapter_type;           // currently not used
 };
 
 

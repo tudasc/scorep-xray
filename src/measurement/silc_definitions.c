@@ -43,8 +43,9 @@
 #include <jenkins_hash.h>
 
 
-SILC_DefinitionManager silc_definition_manager;
-static bool            silc_definitions_initialized = false;
+SILC_DefinitionManager  silc_definition_manager;
+SILC_DefinitionManager* silc_remote_definition_manager = 0;
+static bool             silc_definitions_initialized   = false;
 
 
 /* *INDENT-OFF* */
@@ -551,17 +552,9 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Region, region )
     {
         uint32_t source_file_id = OTF2_UNDEFINED_UINT32;
-        /*
-         * OTF2's source_file_identifier argument is only a string.
-         * Therefore extract the string id from the source file definition.
-         */
         if ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( definition->file_handle ) )
         {
-            SILC_SourceFile_Definition* source_file_definition =
-                SILC_HANDLE_DEREF( &definition->file_handle, SourceFile );
-            source_file_id =
-                SILC_HANDLE_TO_ID( &source_file_definition->name_handle,
-                                   String );
+            source_file_id = SILC_HANDLE_TO_ID( &definition->file_handle, String );
         }
 
         SILC_Error_Code status = OTF2_DefWriter_DefRegion(

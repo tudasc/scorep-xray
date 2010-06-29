@@ -121,7 +121,8 @@ SILC_DefineRegion( const char*           regionName,
     }
     else
     {
-        new_definition->file_handle = *fileHandle;
+        new_definition->file_handle =
+            SILC_MEMORY_DEREF_MOVABLE( fileHandle, SILC_SourceFile_Definition* )->name_handle;
         HASH_ADD_HANDLE( file_handle, SourceFile );
     }
 
