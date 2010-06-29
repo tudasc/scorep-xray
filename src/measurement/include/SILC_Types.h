@@ -336,7 +336,8 @@ typedef enum SILC_ConfigType
      * A string value.
      *
      * SILC_ConfigVariable::variableReference should point to a variable of
-     * type char*.
+     * type char*. The value of the variable should always be a valid pointer
+     * returned from the @a malloc family of functions or @a NULL.
      */
     SILC_CONFIG_TYPE_STRING,
 

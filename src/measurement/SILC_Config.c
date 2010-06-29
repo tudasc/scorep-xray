@@ -288,6 +288,7 @@ static inline bool
 parse_string( const char* value,
               char**      stringReference )
 {
+    free( *stringReference );
     *stringReference = SILC_CStr_dup( value );
     if ( !*stringReference )
     {
