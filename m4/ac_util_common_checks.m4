@@ -75,4 +75,18 @@ AC_SEARCH_LIBS([trunc], [m])
 
 AC_REQUIRE([AC_PROG_RANLIB])
 
+AC_CHECK_SIZEOF([void *])
+AC_CHECK_SIZEOF([double])
+if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
+    AC_DEFINE_UNQUOTED(
+        [SILC_ALLOCATOR_ALIGNMENT], 
+        [$ac_cv_sizeof_void_p], 
+        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SILC_Allocator.])
+else
+    AC_DEFINE_UNQUOTED(
+        [SILC_ALLOCATOR_ALIGNMENT], 
+        [$ac_cv_sizeof_double], 
+        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SILC_Allocator.])
+fi
+
 ])
