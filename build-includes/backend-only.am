@@ -16,6 +16,7 @@ include ../include/silc/Makefile.inc.am
 ## include tests only when building on the frontend. They can't be run easily 
 ## on the backend.
 if BUILD_TESTS
+include ../test/Makefile.inc.am
 include ../test/services/Makefile.inc.am
 include ../test/measurement/Makefile.inc.am
 include ../test/measurement/config/Makefile.inc.am

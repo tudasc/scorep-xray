@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-bin_PROGRAMS += hello_functions
+check_PROGRAMS += hello_functions
 
 hello_functions_SOURCES =  $(SRC_ROOT)/test/hello_functions.c 
 hello_functions_CPPFLAGS = $(AM_CPPFLAGS)           \
@@ -8,3 +8,7 @@ hello_functions_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_DIR_UTIL)
 
+check_PROGRAMS += test_jenkins_hash
+test_jenkins_hash_SOURCES = $(SRC_ROOT)/vendor/hash/jenkins_hash.c
+test_jenkins_hash_CPPFLAGS = $(AM_CPPFLAGS) \
+                             -DSELF_TEST
