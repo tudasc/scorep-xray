@@ -58,12 +58,13 @@ typedef void ( *TestFunction )( CuTest* );
 
 struct CuTest
 {
-    const char*  name;
-    TestFunction function;
-    int          failed;
-    int          ran;
-    const char*  message;
-    jmp_buf*     jumpBuf;
+    const char*    name;
+    TestFunction   function;
+    int            failed;
+    int            ran;
+    const char*    message;
+    jmp_buf*       jumpBuf;
+    struct CuTest* next;
 };
 
 void
@@ -143,8 +144,6 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 
 /* CuSuite */
 
-#define MAX_TEST_CASES  1024
-
 #define SUITE_ADD_TEST( SUITE, TEST )            CuSuiteAdd( SUITE, CuTestNew( #TEST, TEST ) )
 #define SUITE_ADD_TEST_NAME( SUITE, NAME, TEST ) CuSuiteAdd( SUITE, CuTestNew( NAME, TEST ) )
 
@@ -152,7 +151,8 @@ typedef struct
 {
     const char* name;
     int         count;
-    CuTest*     list[ MAX_TEST_CASES ];
+    CuTest*     head;
+    CuTest**    tail;
     int         failCount;
 } CuSuite;
 

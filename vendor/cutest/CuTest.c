@@ -150,6 +150,7 @@ CuTestInit( CuTest*      t,
     t->message  = NULL;
     t->function = function;
     t->jumpBuf  = NULL;
+    t->next     = NULL;
 }
 
 CuTest*
@@ -339,6 +340,8 @@ CuSuiteInit( const char* name,
     testSuite->name      = CuStrCopy( name );
     testSuite->count     = 0;
     testSuite->failCount = 0;
+    testSuite->head      = NULL;
+    testSuite->tail      = &testSuite->head;
 }
 
 CuSuite*
@@ -356,13 +359,16 @@ CuSuiteClear( CuSuite* testSuite )
 
     if ( testSuite )
     {
+        CuTest* test = testSuite->head;
+        while ( test )
+        {
+            CuTest* next = test->next;
+            CuTestFree( test );
+            test = next;
+        }
+
         free( ( char* )testSuite->name );
         testSuite->name = NULL;
-
-        for ( i = 0; i < testSuite->count; ++i )
-        {
-            CuTestFree( testSuite->list[ i ] );
-        }
     }
 }
 
@@ -377,8 +383,8 @@ void
 CuSuiteAdd( CuSuite* testSuite,
             CuTest*  testCase )
 {
-    assert( testSuite->count < MAX_TEST_CASES );
-    testSuite->list[ testSuite->count ] = testCase;
+    *testSuite->tail = testCase;
+    testSuite->tail  = &testCase->next;
     testSuite->count++;
 }
 
@@ -386,36 +392,39 @@ void
 CuSuiteAddSuite( CuSuite* testSuite,
                  CuSuite* testSuite2 )
 {
-    int i;
-    for ( i = 0; i < testSuite2->count; ++i )
+    if ( testSuite2->count )
     {
-        CuTest* testCase = testSuite2->list[ i ];
-        CuSuiteAdd( testSuite, testCase );
+        CuSuiteAdd( testSuite, testSuite2->head );
+        /* need to adjust count in testSuite */
+        testSuite->count += testSuite2->count - 1;
     }
+    CuSuiteClear( testSuite2 );
 }
 
 void
 CuSuiteRun( CuSuite* testSuite )
 {
-    int i;
+    int     i        = 1;
+    CuTest* testCase = testSuite->head;
 
     printf( "%s:\n", testSuite->name );
 
-    for ( i = 0; i < testSuite->count; ++i )
+    while ( testCase )
     {
-        CuTest* testCase = testSuite->list[ i ];
         CuTestRun( testCase );
         if ( testCase->failed )
         {
             testSuite->failCount++;
-            printf( " FAIL %d: %s: %s\n", i + 1, testCase->name,
+            printf( " FAIL %d: %s: %s\n", i, testCase->name,
                     testCase->message );
             break;
         }
         else
         {
-            printf( "   ok %d: %s\n", i + 1, testCase->name );
+            printf( "   ok %d: %s\n", i, testCase->name );
         }
+        testCase = testCase->next;
+        i++;
     }
 }
 
@@ -429,15 +438,14 @@ CuSuiteSummary( CuSuite*  testSuite,
 
     if ( testSuite->failCount == 0 )
     {
-        int         passCount = testSuite->count - testSuite->failCount;
-        const char* testWord  = passCount == 1 ? "test" : "tests";
-        CuStringAppendFormat( details, "OK (%d %s)\n", passCount, testWord );
+        const char* testWord = testSuite->count == 1 ? "test" : "tests";
+        CuStringAppendFormat( details, "OK (%d %s)\n", testSuite->count, testWord );
     }
     else
     {
-        for ( i = 0; i < testSuite->count; ++i )
+        CuTest* testCase = testSuite->head;
+        while ( testCase )
         {
-            CuTest* testCase = testSuite->list[ i ];
             if ( !testCase->ran )
             {
                 continue;
@@ -447,6 +455,8 @@ CuSuiteSummary( CuSuite*  testSuite,
             {
                 failCount++;
             }
+
+            testCase = testCase->next;
         }
         CuStringAppendFormat( details, "Total: %d ",   testSuite->count );
         CuStringAppendFormat( details, "Run: %d ",   runCount );
