@@ -67,7 +67,7 @@ static bool silc_finalized;
 /** @brief Run in verbose mode */
 static bool silc_verbose;
 
-static bool silc_omit_unification;
+static bool silc_unify;
 
 /** @brief Measurement system configure variables */
 static SILC_ConfigVariable silc_configs[] = {
@@ -81,12 +81,12 @@ static SILC_ConfigVariable silc_configs[] = {
         "Long help"
     },
     {
-        "omit unification",
+        "unify",
         SILC_CONFIG_TYPE_BOOL,
-        &silc_omit_unification,
+        &silc_unify,
         NULL,
-        "true",
-        "omit unification step",
+        "false",
+        "do unification step",
         ""
     },
     SILC_CONFIG_TERMINATOR
@@ -574,7 +574,7 @@ silc_otf2_finalize()
     {
         OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_locations );
 
-        if ( silc_omit_unification )
+        if ( !silc_unify )
         {
             OTF2_GlobDefWriter* global_definition_writer =
                 OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,
