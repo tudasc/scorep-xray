@@ -87,4 +87,12 @@ uint32_t
 SILC_Mpi_GetGlobalNumberOfLocations();
 
 
+int
+SILC_Mpi_CalculateCommWorldSize();
+
+
+int
+SILC_Mpi_GetCommWorldSize();
+
+
 #endif /* SILC_MPI_H */

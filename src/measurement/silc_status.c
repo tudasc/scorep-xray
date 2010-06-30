@@ -41,6 +41,7 @@ struct silc_status
     bool mpi_rank_is_set;
     bool mpi_is_initialized;
     bool mpi_is_finalized;
+    int  mpi_comm_world_size;
     bool is_experiment_dir_created;
     bool is_profiling_enabled;
     bool is_tracing_enabled;
@@ -53,6 +54,7 @@ static silc_status status = {
     false,               // mpi_rank_is_set
     false,               // mpi_is_initialized
     false,               // mpi_is_finalized
+    0,                   // mpi_comm_world_size
     false,               // is_experiment_dir_created
     false,               // is_profiling_enabled
     true,                // is_tracing_enabled
@@ -70,10 +72,11 @@ silc_status_initialize_mpi()
 void
 silc_status_initialize_non_mpi()
 {
-    status.mpi_rank           = 0;
-    status.mpi_rank_is_set    = true;
-    status.mpi_is_initialized = true;
-    status.mpi_is_finalized   = true;
+    status.mpi_rank            = 0;
+    status.mpi_rank_is_set     = true;
+    status.mpi_is_initialized  = true;
+    status.mpi_is_finalized    = true;
+    status.mpi_comm_world_size = 1;
 }
 
 
@@ -83,7 +86,12 @@ SILC_OnPMPI_Init()
     assert( !status.mpi_is_initialized );
     assert( !status.mpi_is_finalized );
     status.mpi_is_initialized = true;
-    SILC_Mpi_DuplicateCommWorld();
+
+    SILC_Mpi_DuplicateCommWorld(); // call before SILC_Mpi_CalculateCommWorldSize()
+
+    assert( status.mpi_comm_world_size == 0 );
+    status.mpi_comm_world_size = SILC_Mpi_CalculateCommWorldSize();
+    assert( status.mpi_comm_world_size > 0 );
 }
 
 
@@ -127,6 +135,14 @@ bool
 SILC_Mpi_IsFinalized()
 {
     return status.mpi_is_finalized;
+}
+
+
+int
+SILC_Mpi_GetCommWorldSize()
+{
+    assert( status.mpi_is_initialized );
+    return status.mpi_comm_world_size;
 }
 
 

@@ -76,3 +76,10 @@ SILC_Mpi_GetGlobalNumberOfLocations()
 {
     return SILC_Thread_GetNumberOfLocations();
 }
+
+
+int
+SILC_Mpi_CalculateCommWorldSize()
+{
+    return 1;
+}

@@ -117,3 +117,12 @@ SILC_Mpi_GetGlobalNumberOfLocations()
     }
     return sum_of_locations;
 }
+
+
+int
+SILC_Mpi_CalculateCommWorldSize()
+{
+    int size;
+    PMPI_Comm_size( silc_mpi_comm_world, &size );
+    return size;
+}

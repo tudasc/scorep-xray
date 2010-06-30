@@ -67,6 +67,7 @@ static bool silc_finalized;
 /** @brief Run in verbose mode */
 static bool silc_verbose;
 
+static bool silc_omit_unification;
 
 /** @brief Measurement system configure variables */
 static SILC_ConfigVariable silc_configs[] = {
@@ -78,6 +79,15 @@ static SILC_ConfigVariable silc_configs[] = {
         "false",
         "Be verbose",
         "Long help"
+    },
+    {
+        "omit unification",
+        SILC_CONFIG_TYPE_BOOL,
+        &silc_omit_unification,
+        NULL,
+        "true",
+        "omit unification step",
+        ""
     },
     SILC_CONFIG_TERMINATOR
 };
@@ -557,11 +567,35 @@ silc_otf2_finalize()
     }
 
     assert( silc_otf2_archive );
+
     uint32_t n_locations = SILC_Mpi_GetGlobalNumberOfLocations();
+
     if ( SILC_Mpi_GetRank() == 0 )
     {
         OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_locations );
-        /// @todo set number of definition files
+
+        if ( silc_omit_unification )
+        {
+            OTF2_GlobDefWriter* global_definition_writer =
+                OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,
+                                               SILC_OnTracePreFlush,
+                                               SILC_OnTraceAndDefinitionPostFlush );
+            assert( global_definition_writer );
+
+            for ( int rank = 0; rank < SILC_Mpi_GetCommWorldSize(); ++rank )
+            {
+                uint32_t        n_definitions_dummy = 1;
+                SILC_Error_Code status              = OTF2_GlobDefWriter_GlobDefLocation(
+                    global_definition_writer,
+                    rank,
+                    "",
+                    OTF2_GLOB_LOCATION_TYPE_PROCESS,
+                    n_definitions_dummy );
+                assert( status == SILC_SUCCESS );
+            }
+            // set archive not unified
+        }
     }
+
     OTF2_Archive_Delete( silc_otf2_archive );
 }
