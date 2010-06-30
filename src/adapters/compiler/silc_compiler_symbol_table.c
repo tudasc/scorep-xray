@@ -46,7 +46,7 @@
 #include <bfd.h>
 #elif defined HAVE_NM
 #include <SILC_Timing.h>
-#endif
+#endif /* HAVE_LIBBFD / HAVE_NM */
 
 #include <SILC_Types.h>
 #include <SILC_Utils.h>
@@ -346,7 +346,7 @@ silc_compiler_create_nm_file( char* nmfile,
  * It also collects information about source file and line number.
 
  */
-static void
+void
 silc_compiler_get_sym_tab( void )
 {
 #ifdef INTEL_COMPILER
@@ -473,7 +473,7 @@ silc_compiler_get_sym_tab( void )
    is will not generate events, though the compiler instrumented the code, because
    it can not map the function pointers to names.
  */
-static void
+void
 silc_compiler_get_sym_tab( void )
 {
 }
