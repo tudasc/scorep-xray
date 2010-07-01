@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include <math.h>
 
 #include "CuTest.h"
@@ -111,8 +112,17 @@ CuStringAppendFormat( CuString*   str,
     va_list argp;
     char    buf[ HUGE_STRING_LEN ];
     va_start( argp, format );
-    vsprintf( buf, format, argp );
+    CuStringAppendVFormat( str, format, argp );
     va_end( argp );
+}
+
+void
+CuStringAppendVFormat( CuString*   str,
+                       const char* format,
+                       va_list     argp )
+{
+    char buf[ HUGE_STRING_LEN ];
+    vsprintf( buf, format, argp );
     CuStringAppend( str, buf );
 }
 

@@ -43,6 +43,10 @@ CuStringAppendFormat( CuString*   str,
                       const char* format,
                       ... );
 void
+CuStringAppendVFormat( CuString*   str,
+                       const char* format,
+                       va_list     argp );
+void
 CuStringInsert( CuString*   str,
                 const char* text,
                 int         pos );
