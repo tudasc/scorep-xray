@@ -34,22 +34,7 @@
 /* *INDENT-ON*  */
 
 
-typedef struct silc_status silc_status;
-struct silc_status
-{
-    int  mpi_rank;
-    bool mpi_rank_is_set;
-    bool mpi_is_initialized;
-    bool mpi_is_finalized;
-    int  mpi_comm_world_size;
-    bool is_experiment_dir_created;
-    bool is_profiling_enabled;
-    bool is_tracing_enabled;
-    bool otf2_has_flushed;
-};
-
-
-static silc_status status = {
+silc_status status = {
     INT_MAX,             // mpi_rank
     false,               // mpi_rank_is_set
     false,               // mpi_is_initialized

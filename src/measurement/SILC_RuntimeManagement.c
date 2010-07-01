@@ -72,6 +72,15 @@ static bool silc_unify;
 /** @brief Measurement system configure variables */
 static SILC_ConfigVariable silc_configs[] = {
     {
+        "enable_profiling",
+        SILC_CONFIG_TYPE_BOOL,
+        &status.is_profiling_enabled,
+        NULL,
+        "false",
+        "enable profiling",
+        "enable profiling"
+    },
+    {
         "verbose",
         SILC_CONFIG_TYPE_BOOL,
         &silc_verbose,
