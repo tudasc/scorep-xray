@@ -443,8 +443,9 @@ CuSuiteSummary( CuSuite*  testSuite,
     }
     else
     {
-        CuTest* testCase = testSuite->head;
-        while ( testCase )
+        for ( CuTest* testCase = testSuite->head;
+              testCase;
+              testCase = testCase->next )
         {
             if ( !testCase->ran )
             {
@@ -455,8 +456,6 @@ CuSuiteSummary( CuSuite*  testSuite,
             {
                 failCount++;
             }
-
-            testCase = testCase->next;
         }
         CuStringAppendFormat( details, "Total: %d ",   testSuite->count );
         CuStringAppendFormat( details, "Run: %d ",   runCount );
