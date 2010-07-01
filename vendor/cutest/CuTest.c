@@ -207,7 +207,7 @@ CuFailInternal( CuTest*     tc,
     tc->message = string->buffer;
     if ( tc->jumpBuf != 0 )
     {
-        longjmp( *( tc->jumpBuf ), 0 );
+        longjmp( *( tc->jumpBuf ), 1 );
     }
 }
 
