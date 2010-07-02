@@ -103,7 +103,7 @@ AC_DEFUN([AC_SILC_DETECT_PLATFORMS],
             AC_MSG_RESULT([$ac_silc_platform])  
         fi
         AC_MSG_CHECKING([for cross compilation])
-        AC_MSG_RESULT([$ac_silc_cross_compiling]) 
+        AC_MSG_RESULT([$ac_silc_cross_compiling])
     elif test "x${ac_silc_platform_detection}" = "xno"; then
         AC_MSG_NOTICE([platform detection disabled.])
         AC_MSG_CHECKING([for cross compilation])
@@ -112,4 +112,6 @@ AC_DEFUN([AC_SILC_DETECT_PLATFORMS],
     else
         AC_MSG_ERROR([unknown value for ac_silc_platform_detection: $ac_silc_platform_detection])
     fi
+
+    AM_CONDITIONAL([PLATFORM_ALTIX], [test "x${ac_silc_platform}" = "xaltix"])
 ])
