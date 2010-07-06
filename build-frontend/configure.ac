@@ -28,6 +28,7 @@ AC_CONFIG_MACRO_DIR([../build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
+AC_SILC_PLATFORM_SETTINGS   
 
 AC_SILC_COMMON_CHECKS
 
