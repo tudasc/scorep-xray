@@ -27,6 +27,7 @@ AC_CONFIG_MACRO_DIR([../build-config/m4])
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
+AC_SILC_PLATFORM_SETTINGS   
 
 AC_SILC_COMMON_CHECKS
 AM_PROG_AS
