@@ -112,6 +112,10 @@ AC_DEFUN([AC_SILC_DETECT_PLATFORMS],
     else
         AC_MSG_ERROR([unknown value for ac_silc_platform_detection: $ac_silc_platform_detection])
     fi
+])
 
-    #AM_CONDITIONAL([PLATFORM_ALTIX], [test "x${ac_silc_platform}" = "xaltix"])
+
+AC_DEFUN([AC_SILC_PLATFORM_SETTINGS],
+[
+    AM_CONDITIONAL([PLATFORM_ALTIX], [test "x${ac_silc_platform}" = "xaltix"])
 ])
