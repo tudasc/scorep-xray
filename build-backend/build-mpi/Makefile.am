@@ -46,6 +46,9 @@ LIB_ROOT     = ../
 LIB_DIR_OTF2 = ../../vendor/otf2/build-backend/
 LIB_DIR_UTIL = ../../vendor/otf2/vendor/utility/build-backend/
 
+## Vendor convenience variables.
+INC_DIR_VENDOR_HASH = $(srcdir)/../../vendor/hash
+
 ## Add entities using += to the following primaries in locale Makefile.inc.ams
 bin_PROGRAMS =
 lib_LTLIBRARIES =

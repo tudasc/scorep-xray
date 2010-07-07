@@ -83,16 +83,21 @@ void
 SILC_Mpi_DuplicateCommWorld();
 
 
-uint32_t
-SILC_Mpi_GetGlobalNumberOfLocations();
-
-
 int
 SILC_Mpi_CalculateCommWorldSize();
 
 
 int
 SILC_Mpi_GetCommWorldSize();
+
+
+int*
+SILC_Mpi_GatherNumberOfLocationsPerRank();
+
+
+int*
+SILC_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
+                                               int  nGlobalLocations );
 
 
 #endif /* SILC_MPI_H */

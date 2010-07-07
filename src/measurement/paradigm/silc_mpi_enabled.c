@@ -28,6 +28,7 @@
 
 #include <SILC_Debug.h>
 #include <silc_thread.h>
+#include <silc_definitions.h>
 #include <mpi.h>
 #include <assert.h>
 
@@ -95,34 +96,84 @@ SILC_Mpi_DuplicateCommWorld()
 }
 
 
-uint32_t
-SILC_Mpi_GetGlobalNumberOfLocations()
-{
-    assert( SILC_Mpi_IsInitialized() );
-    assert( !SILC_Mpi_IsFinalized() );
-    int n_local_locations = SILC_Thread_GetNumberOfLocations();
-    int sum_of_locations  = 0;
-    int root_rank         = 0;
-    int n_elements        = 1;
-    PMPI_Reduce( &n_local_locations,
-                 &sum_of_locations,
-                 n_elements,
-                 MPI_INT,
-                 MPI_SUM,
-                 root_rank,
-                 silc_mpi_comm_world );
-    if ( SILC_Mpi_GetRank() == 0 )
-    {
-        assert( sum_of_locations > 0 );
-    }
-    return sum_of_locations;
-}
-
-
 int
 SILC_Mpi_CalculateCommWorldSize()
 {
     int size;
     PMPI_Comm_size( silc_mpi_comm_world, &size );
     return size;
+}
+
+
+int*
+SILC_Mpi_GatherNumberOfLocationsPerRank()
+{
+    int* n_locations_per_rank = 0;
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        n_locations_per_rank = calloc( SILC_Mpi_GetCommWorldSize(), sizeof( int ) );
+        assert( n_locations_per_rank );
+    }
+    int n_local_locations = SILC_Thread_GetNumberOfLocations();
+    PMPI_Gather( &n_local_locations,
+                 1,
+                 MPI_INT,
+                 n_locations_per_rank,
+                 1,
+                 MPI_INT,
+                 0,
+                 silc_mpi_comm_world );
+    return n_locations_per_rank;
+}
+
+
+int*
+SILC_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
+                                               int  nGlobalLocations )
+{
+    /// @todo refactor
+    int* n_definitions_per_location = 0;
+    int* diplacements               = 0;
+    int  rank                       = 0;
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        // recv buf
+        n_definitions_per_location = calloc( nGlobalLocations, sizeof( int ) );
+        assert( n_definitions_per_location );
+
+        // displacements
+        diplacements = calloc( SILC_Mpi_GetCommWorldSize(), sizeof( int ) );
+        assert( diplacements );
+        int displacement = 0;
+        for ( rank = 0; rank < SILC_Mpi_GetCommWorldSize(); ++rank )
+        {
+            diplacements[ rank ] = displacement;
+            displacement        += nLocationsPerRank[ rank ];
+        }
+    }
+
+    // send buf
+    int* n_local_definitions = calloc( SILC_Thread_GetNumberOfLocations(), sizeof( int ) );
+    assert( n_local_definitions );
+    n_local_definitions[ 0 ] = SILC_GetNumberOfDefinitions();
+
+    PMPI_Gatherv( n_local_definitions,
+                  SILC_Thread_GetNumberOfLocations(),
+                  MPI_INT,
+                  n_definitions_per_location,
+                  nLocationsPerRank,
+                  diplacements,
+                  MPI_INT,
+                  0,
+                  silc_mpi_comm_world );
+
+    if ( n_local_definitions )
+    {
+        free( n_local_definitions );
+    }
+    if ( diplacements )
+    {
+        free( diplacements );
+    }
+    return n_definitions_per_location;
 }

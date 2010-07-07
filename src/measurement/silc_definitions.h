@@ -202,5 +202,8 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
                                     SILC_StringHandle    value );
 
 
+int
+SILC_GetNumberOfDefinitions();
+
 
 #endif /* SILC_INTERNAL_DEFINITIONS_H */

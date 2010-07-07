@@ -570,6 +570,7 @@ silc_adapters_deregister()
 void
 silc_otf2_finalize()
 {
+    /// @todo refactor
     if ( !SILC_IsTracingEnabled() )
     {
         return;
@@ -577,11 +578,25 @@ silc_otf2_finalize()
 
     assert( silc_otf2_archive );
 
-    uint32_t n_locations = SILC_Mpi_GetGlobalNumberOfLocations();
+    int* n_locations_per_rank = SILC_Mpi_GatherNumberOfLocationsPerRank();
+    int  n_global_locations   = 0;
+    if ( SILC_Mpi_GetRank() == 0 )
+    {
+        for ( int rank = 0; rank < SILC_Mpi_GetCommWorldSize(); ++rank )
+        {
+            n_global_locations += n_locations_per_rank[ rank ];
+        }
+    }
+
+    int* n_definitions_per_location = 0;
+    if ( !silc_unify )
+    {
+        n_definitions_per_location = SILC_Mpi_GatherNumberOfDefinitionsPerLocation( n_locations_per_rank, n_global_locations );
+    }
 
     if ( SILC_Mpi_GetRank() == 0 )
     {
-        OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_locations );
+        OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_global_locations );
 
         if ( !silc_unify )
         {
@@ -591,20 +606,35 @@ silc_otf2_finalize()
                                                SILC_OnTraceAndDefinitionPostFlush );
             assert( global_definition_writer );
 
+            int index = 0;
             for ( int rank = 0; rank < SILC_Mpi_GetCommWorldSize(); ++rank )
             {
-                uint32_t        n_definitions_dummy = 1;
-                SILC_Error_Code status              = OTF2_GlobDefWriter_GlobDefLocation(
-                    global_definition_writer,
-                    rank,
-                    "",
-                    OTF2_GLOB_LOCATION_TYPE_PROCESS,
-                    n_definitions_dummy );
-                assert( status == SILC_SUCCESS );
+                for ( int location_id = 0; location_id < n_locations_per_rank[ rank ]; ++location_id )
+                {
+                    uint64_t        global_location_id = ( ( ( uint64_t )location_id ) << 32 ) | ( uint64_t )rank;
+                    SILC_Error_Code status             = OTF2_GlobDefWriter_GlobDefLocation(
+                        global_definition_writer,
+                        global_location_id,
+                        "",
+                        OTF2_GLOB_LOCATION_TYPE_THREAD,
+                        n_definitions_per_location[ index ] );
+                    assert( status == SILC_SUCCESS );
+                    //printf( "rank %d,   location %d,   global_location %" PRIu64 ",   defs %d\n", rank, location_id,  global_location_id, n_definitions_per_location[ index ]);
+                    ++index;
+                }
             }
-            // set archive not unified
+            /// @todo set archive not unified
         }
     }
 
+
+    if ( n_definitions_per_location )
+    {
+        free( n_definitions_per_location );
+    }
+    if ( n_locations_per_rank )
+    {
+        free( n_locations_per_rank );
+    }
     OTF2_Archive_Delete( silc_otf2_archive );
 }

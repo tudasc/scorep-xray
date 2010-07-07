@@ -123,4 +123,5 @@ libsilc_paradigm_non_mpi_la_CPPFLAGS =   \
     -I$(INC_ROOT)src/adapters/include    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_OTF2)                    \
-    -I$(INC_DIR_UTIL)
+    -I$(INC_DIR_UTIL)                    \
+    -I$(INC_DIR_VENDOR_HASH)

@@ -27,6 +27,7 @@
 #include "silc_mpi.h"
 
 #include <silc_thread.h>
+#include <silc_definitions.h>
 
 
 extern void
@@ -71,15 +72,29 @@ SILC_Mpi_DuplicateCommWorld()
 }
 
 
-uint32_t
-SILC_Mpi_GetGlobalNumberOfLocations()
-{
-    return SILC_Thread_GetNumberOfLocations();
-}
-
-
 int
 SILC_Mpi_CalculateCommWorldSize()
 {
     return 1;
+}
+
+
+int*
+SILC_Mpi_GatherNumberOfLocationsPerRank()
+{
+    int* n_locations_per_rank = malloc( SILC_Mpi_GetCommWorldSize() * sizeof( int ) );
+    assert( n_locations_per_rank );
+    *n_locations_per_rank = SILC_Thread_GetNumberOfLocations();
+    return n_locations_per_rank;
+}
+
+
+int*
+SILC_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
+                                               int  nGlobalLocations )
+{
+    int* n_definitions_per_location = calloc( nGlobalLocations, sizeof( int ) );
+    assert( n_definitions_per_location );
+    n_definitions_per_location[ 0 ] = SILC_GetNumberOfDefinitions();
+    return n_definitions_per_location;
 }

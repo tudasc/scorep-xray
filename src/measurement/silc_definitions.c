@@ -792,3 +792,30 @@ silc_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
+
+
+int
+SILC_GetNumberOfDefinitions()
+{
+    assert( !omp_in_parallel() );
+
+    int n_definitions = 0;
+    n_definitions += silc_definition_manager.string_definition_counter;
+    n_definitions += silc_definition_manager.location_definition_counter;
+    n_definitions += silc_definition_manager.source_file_definition_counter;
+    n_definitions += silc_definition_manager.region_definition_counter;
+    n_definitions += silc_definition_manager.group_definition_counter;
+    n_definitions += silc_definition_manager.mpi_window_definition_counter;
+    n_definitions += silc_definition_manager.mpi_cartesian_topology_definition_counter;
+    n_definitions += silc_definition_manager.mpi_cartesian_coords_definition_counter;
+    n_definitions += silc_definition_manager.counter_group_definition_counter;
+    n_definitions += silc_definition_manager.counter_definition_counter;
+    n_definitions += silc_definition_manager.io_file_group_definition_counter;
+    n_definitions += silc_definition_manager.io_file_definition_counter;
+    n_definitions += silc_definition_manager.marker_group_definition_counter;
+    n_definitions += silc_definition_manager.marker_definition_counter;
+    n_definitions += silc_definition_manager.parameter_definition_counter;
+    n_definitions += silc_definition_manager.callpath_definition_counter;
+
+    return n_definitions;
+}
