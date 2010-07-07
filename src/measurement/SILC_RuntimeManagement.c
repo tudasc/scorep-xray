@@ -503,7 +503,7 @@ silc_profile_finalize()
 {
     if ( SILC_IsProfilingEnabled() )
     {
-        SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputNone );
+        SILC_Profile_Process( SILC_Profile_ProcessDefault, SILC_Profile_OutputDefault );
         SILC_Profile_Finalize();
     }
 }

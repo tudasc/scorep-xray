@@ -598,3 +598,63 @@ silc_profile_find_create_child( silc_profile_node* parent,
 
     return child;
 }
+
+uint32_t
+silc_profile_get_number_of_children( silc_profile_node* node )
+{
+    uint32_t           count = 0;
+    silc_profile_node* child = NULL;
+
+    if ( node == NULL )
+    {
+        return 0;
+    }
+
+    child = node->first_child;
+    while ( child != NULL )
+    {
+        count++;
+        child = child->next_sibling;
+    }
+    return count;
+}
+
+uint32_t
+silc_profile_get_number_of_child_calls( silc_profile_node* node )
+{
+    uint32_t           count = 0;
+    silc_profile_node* child = NULL;
+
+    if ( node == NULL )
+    {
+        return 0;
+    }
+
+    child = node->first_child;
+    while ( child != NULL )
+    {
+        count += child->count;
+        child  = child->next_sibling;
+    }
+    return count;
+}
+
+uint64_t
+silc_profile_get_exclusive_time( silc_profile_node* node )
+{
+    uint64_t           exclusive_time = node->implicit_time.sum;
+    silc_profile_node* child          = NULL;
+
+    if ( node == NULL )
+    {
+        return 0;
+    }
+
+    child = node->first_child;
+    while ( child != NULL )
+    {
+        exclusive_time -= child->implicit_time.sum;
+        child           = child->next_sibling;
+    }
+    return exclusive_time;
+}

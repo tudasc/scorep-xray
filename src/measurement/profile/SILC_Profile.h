@@ -76,9 +76,10 @@ typedef enum
  */
 typedef enum
 {
-    SILC_Profile_OutputNone    = 0,
+    SILC_Profile_OutputNone        = 0,
+    SILC_Profile_OutputTauSnapshot = 1,
 
-    SILC_Profile_OutputDefault = 0
+    SILC_Profile_OutputDefault     = 1
 } SILC_Profile_OutputFormat;
 
 /* ----------------------------------------------------- Initialization / Finalization */

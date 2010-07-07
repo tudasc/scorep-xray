@@ -371,4 +371,31 @@ silc_profile_for_all( silc_profile_node*           root_node,
                       silc_profile_process_func_t* func,
                       void*                        param );
 
+/**
+   Returns the number of children of @a node.
+   @param node Pointer to a node, for which the number of child nodes is returned.
+   @return the number of child nodes for @a node. If a NULL pointer is given, 0 is
+           returned.
+ */
+extern uint32_t
+silc_profile_get_number_of_children( silc_profile_node* node );
+
+/**
+   Returns the number of calls to a child node of @a node.
+   @param node Pointer to a node, for which the number of child calls is returned.
+   @return the number of child calls for @a node. If a NULL pointer is given, 0 is
+           returned.
+ */
+extern uint32_t
+silc_profile_get_number_of_child_calls( silc_profile_node* node );
+
+/**
+   Returns the exclusive runtime of the callpath represented by @a node.
+   @param node Pointer to a node, for which the exclusive runtime is returned.
+   @return the exclusive runtime for @a node. If a NULL pointer is given, 0 is
+           returned.
+ */
+extern uint64_t
+silc_profile_get_exclusive_time( silc_profile_node* node );
+
 #endif // SILC_PROFILE_NODE_H

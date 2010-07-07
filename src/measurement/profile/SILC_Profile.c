@@ -33,6 +33,7 @@
 #include "silc_profile_node.h"
 #include "silc_profile_definition.h"
 #include "silc_profile_process.h"
+#include "silc_profile_writer.h"
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -318,7 +319,18 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
         silc_profile_assign_callpath_to_workers();
     }
 
-    SILC_DEBUG_ONLY( silc_profile_dump() );
+    /* Write profile */
+    switch ( outputFormat )
+    {
+        case SILC_Profile_OutputNone:
+            break;
+        case SILC_Profile_OutputTauSnapshot:
+            silc_profile_write_tau_snapshot();
+            break;
+        default:
+            SILC_ERROR( SILC_ERROR_INVALID_ARGUMENT,
+                        "File format identifier %d is out of range", outputFormat );
+    }
 }
 
 void
