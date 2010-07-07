@@ -1,5 +1,7 @@
-#!/usr/bin/make -f
-## -*- mode: makefile -*-
+#!/bin/sh
+## Make ignores the next lines, but shell not -*- mode: makefile -*- \
+ argv0=$0; \
+ exec make -f "$argv0" "$@"
 
 AUTORECONF      = autoreconf
 AUTORECONFFLAGS = --install -Wall --verbose --no-recursive
