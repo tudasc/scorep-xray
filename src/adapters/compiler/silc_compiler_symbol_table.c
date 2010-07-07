@@ -114,12 +114,15 @@ silc_compiler_get_exe( char   path[],
      */
 
     /* First trial */
-    sprintf( path, "/proc/self/exe" );
-    err = stat( path, &status );
-    if ( err == 0 )
-    {
+    /* Does not work this way. Must either use readlink (creates lots of
+       problems with intel compilers) or leave it out.
+       sprintf( path, "/proc/self/exe" );
+       err = stat( path, &status );
+       if ( err == 0 )
+       {
         return true;
-    }
+       }
+     */
 
     /* Second trial */
     pid = getpid();
