@@ -177,7 +177,7 @@ silc_profile_setup_start_from_parent( silc_profile_node* node )
     /* Correct first start time, on first enter */
     if ( node->first_enter_time == -1 )
     {
-        node->first_enter_time = parent->implicit_time.start_value;
+        node->first_enter_time = parent->inclusive_time.start_value;
     }
 
     /* Store start values for dense metrics */
@@ -185,7 +185,7 @@ silc_profile_setup_start_from_parent( silc_profile_node* node )
     if ( parent != NULL )
     {
         /* If no enclosing region is present, no dense metric valuies can be associated */
-        node->implicit_time.start_value = parent->implicit_time.start_value;
+        node->inclusive_time.start_value = parent->inclusive_time.start_value;
         for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
         {
             node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
@@ -354,6 +354,9 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
     silc_profile_node* node = NULL;
     int                i;
 
+    SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE,
+                       "Enter event of profiling system called" );
+
     SILC_PROFILE_ASSURE_INITIALIZED;
 
     node = silc_profile_find_or_create_child( thread, silc_profile_node_regular_region,
@@ -371,7 +374,7 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
 
     /* Store start values for dense metrics */
     node->count++;
-    node->implicit_time.start_value = timestamp;
+    node->inclusive_time.start_value = timestamp;
     for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
     {
         node->dense_metrics[ i ].start_value = metrics[ i ];
@@ -391,6 +394,9 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
     silc_profile_node*         node   = NULL;
     silc_profile_node*         parent = NULL;
     SILC_Profile_LocationData* location;
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE,
+                       "Exit event of profiling system called" );
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
@@ -417,7 +423,7 @@ SILC_Profile_Exit( SILC_Thread_LocationData* thread,
 
         /* Update metrics */
         node->last_exit_time = timestamp;
-        silc_profile_update_dense_metric( &node->implicit_time, timestamp );
+        silc_profile_update_dense_metric( &node->inclusive_time, timestamp );
         for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
         {
             silc_profile_update_dense_metric( &node->dense_metrics[ i ], metrics[ i ] );

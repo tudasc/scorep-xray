@@ -27,6 +27,7 @@
 #include "SILC_Memory.h"
 #include "SILC_Utils.h"
 #include "SILC_Definitions.h"
+#include "SILC_Timing.h"
 
 #include "silc_profile_definition.h"
 #include "silc_definitions.h"
@@ -67,7 +68,7 @@ silc_profile_write_region_tau( silc_profile_node* node,
         length += strlen( parentpath );
     }
     char* path = SILC_Memory_AllocForProfile( length );
-    if ( parentpath = NULL )
+    if ( parentpath == NULL )
     {
         strcpy( path, name );
     }
@@ -137,9 +138,12 @@ static void
 silc_profile_write_data_tau( silc_profile_node* node,
                              FILE*              file )
 {
-    fprintf( file, "%d %d %d %d %d\n", callpath_counter, node->count,
+    uint64_t tps = SILC_GetClockResolution();
+
+    fprintf( file, "%d %d %d %llu %llu\n", callpath_counter, node->count,
              silc_profile_get_number_of_child_calls( node ),
-             silc_profile_get_exclusive_time( node ) );
+             ( silc_profile_get_exclusive_time( node ) * 1000000llu / tps ),
+             ( node->inclusive_time.sum * 1000000llu / tps ) );
     callpath_counter++;
 
     /* invoke children */
@@ -164,8 +168,8 @@ silc_profile_write_thread_tau( silc_profile_node* node,
              threadnum, threadnum );
     fprintf( file, "</thread>\n\n" );
     fprintf( file, "<definitions thread=\"0.0.%d.0\">\n", threadnum );
-    fprintf( file, "<metric id=\"0\"><name>TIME,</name>\n" );
-    fprintf( file, "<units>unknown</units>\n" );
+    fprintf( file, "<metric id=\"0\"><name>TIME</name>\n" );
+    fprintf( file, "<units>ms</units>\n" );
     fprintf( file, "</metric>\n" );
     fprintf( file, "</definitions>\n\n" );
 

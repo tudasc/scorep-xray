@@ -321,7 +321,7 @@ silc_profile_create_node( silc_profile_node*       parent,
     node->type_specific_data  = silc_profile_copy_type_data( data, type );
 
     /* Initialize dense metric values */
-    silc_profile_init_dense_metric( &node->implicit_time );
+    silc_profile_init_dense_metric( &node->inclusive_time );
     for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
     {
         silc_profile_init_dense_metric( &node->dense_metrics[ i ] );
@@ -398,7 +398,7 @@ silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
     destination->last_exit_time   = source->last_exit_time;
 
     /* Copy dense metric values */
-    silc_profile_copy_dense_metric( &destination->implicit_time, &source->implicit_time );
+    silc_profile_copy_dense_metric( &destination->inclusive_time, &source->inclusive_time );
     for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
     {
         silc_profile_copy_dense_metric( &destination->dense_metrics[ i ],
@@ -642,7 +642,7 @@ silc_profile_get_number_of_child_calls( silc_profile_node* node )
 uint64_t
 silc_profile_get_exclusive_time( silc_profile_node* node )
 {
-    uint64_t           exclusive_time = node->implicit_time.sum;
+    uint64_t           exclusive_time = node->inclusive_time.sum;
     silc_profile_node* child          = NULL;
 
     if ( node == NULL )
@@ -653,7 +653,7 @@ silc_profile_get_exclusive_time( silc_profile_node* node )
     child = node->first_child;
     while ( child != NULL )
     {
-        exclusive_time -= child->implicit_time.sum;
+        exclusive_time -= child->inclusive_time.sum;
         child           = child->next_sibling;
     }
     return exclusive_time;

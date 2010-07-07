@@ -96,7 +96,7 @@ typedef struct silc_profile_node_struct
     silc_profile_dense_metric*         dense_metrics;
     silc_profile_sparse_metric_double* first_double_sparse;
     silc_profile_sparse_metric_int*    first_int_sparse;
-    silc_profile_dense_metric          implicit_time;
+    silc_profile_dense_metric          inclusive_time;
     uint64_t                           count;              // For dense metrics
     uint64_t                           first_enter_time;   // Required by Scalasca
     uint64_t                           last_exit_time;     // Required by Scalasca

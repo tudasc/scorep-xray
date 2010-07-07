@@ -55,7 +55,7 @@ silc_profile_merge_node_dense( silc_profile_node* destination,
     }
 
     /* Merge dense metrics */
-    silc_profile_merge_dense_metric( &destination->implicit_time, &source->implicit_time );
+    silc_profile_merge_dense_metric( &destination->inclusive_time, &source->inclusive_time );
     for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
     {
         silc_profile_merge_dense_metric( &destination->dense_metrics[ i ],
