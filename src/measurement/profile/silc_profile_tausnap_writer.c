@@ -31,6 +31,7 @@
 
 #include "silc_profile_definition.h"
 #include "silc_definitions.h"
+#include "silc_mpi.h"
 
 static uint64_t callpath_counter = 0;
 
@@ -164,17 +165,19 @@ silc_profile_write_thread_tau( silc_profile_node* node,
 
     /* Write thread definition */
     fprintf( file,
-             "<thread id=\"0.0.%d.0\" node=\"0\" context=\"0\" thread=\"%d\">\n",
-             threadnum, threadnum );
+             "<thread id=\"%d.0.%d.0\" node=\"%d\" context=\"0\" thread=\"%d\">\n",
+             SILC_Mpi_GetRank(), threadnum, SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "</thread>\n\n" );
-    fprintf( file, "<definitions thread=\"0.0.%d.0\">\n", threadnum );
+    fprintf( file, "<definitions thread=\"%d.0.%d.0\">\n", SILC_Mpi_GetRank(),
+             threadnum );
     fprintf( file, "<metric id=\"0\"><name>TIME</name>\n" );
     fprintf( file, "<units>ms</units>\n" );
     fprintf( file, "</metric>\n" );
     fprintf( file, "</definitions>\n\n" );
 
     /* Write callpath definition */
-    fprintf( file, "<definitions thread=\"0.0.%d.0\">\n", threadnum );
+    fprintf( file, "<definitions thread=\"%d.0.%d.0\">\n", SILC_Mpi_GetRank(),
+             threadnum );
     silc_profile_node* child = node->first_child;
     callpath_counter = 0;
     while ( child != NULL )
@@ -185,7 +188,8 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     fprintf( file, "</definitions>\n\n" );
 
     /* Write metrics data */
-    fprintf( file, "<profile thread=\"0.0.%d.0\">\n", threadnum );
+    fprintf( file, "<profile thread=\"%d.0.%d.0\">\n", SILC_Mpi_GetRank(),
+             threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0\">\n" );
     child            = node->first_child;
@@ -208,7 +212,9 @@ silc_profile_write_tau_snapshot()
     SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Write profile in TAU snapshot format" );
     /* Open file */
     FILE* file;
-    file = fopen( "snapshot.0.0.0.0", "w" );
+    char  filename[ 500 ];
+    sprintf( filename, "%s.%d.0.0.0", silc_profile_basename, SILC_Mpi_GetRank() );
+    file = fopen( filename, "w" );
     if ( !file )
     {
         SILC_ERROR_POSIX( "Failed to write profile. Unable to open file" );

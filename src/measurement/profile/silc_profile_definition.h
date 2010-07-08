@@ -66,6 +66,11 @@ extern silc_profile_definition silc_profile;
 /** Flag wether the profile is initialized */
 extern bool silc_profile_is_initialized;
 
+/**
+   Contains the basename for profile files.
+ */
+extern char* silc_profile_basename;
+
 /** Initializes the profile definition struct
  */
 void

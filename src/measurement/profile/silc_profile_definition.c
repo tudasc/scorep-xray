@@ -39,7 +39,9 @@ silc_profile_definition silc_profile;
 bool                    silc_profile_is_initialized = false;
 
 /** Flag wether an initialize is a reinitialize */
-bool silc_profile_reinitialize = false;
+bool  silc_profile_reinitialize = false;
+
+char* silc_profile_basename = NULL;
 
 /*----------------------------------------------------------------------------------------
    Constructors / destriuctors
