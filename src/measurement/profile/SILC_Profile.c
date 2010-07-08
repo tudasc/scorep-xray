@@ -33,7 +33,7 @@
 #include "silc_profile_node.h"
 #include "silc_profile_definition.h"
 #include "silc_profile_process.h"
-#include "silc_profile_writer.h"
+/*#include "silc_profile_writer.h"*/
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -305,6 +305,8 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
                       SILC_Profile_OutputFormat   outputFormat )
 {
     SILC_PROFILE_ASSURE_INITIALIZED;
+    extern void
+    silc_profile_write_tau_snapshot( void );
 
     /* Thread start node expansion */
     if ( processFlags & SILC_Profile_ProcessThreads )
