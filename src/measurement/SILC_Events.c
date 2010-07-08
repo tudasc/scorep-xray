@@ -142,9 +142,8 @@ SILC_MpiSend
                             NULL,
                             SILC_GetClockTicks(),
                             OTF2_MPI_BLOCK,
-                            SILC_Thread_GetTraceLocationData( location )->otf_location,
                             globalDestinationRank,
-                            SILC_HANDLE_TO_ID( communicatorHandle, Group ), /// @todo @Bert: do we use group for communicators?
+                            SILC_HANDLE_TO_ID( communicatorHandle, Group ),
                             tag,
                             bytesSent );
 }
@@ -179,7 +178,6 @@ SILC_MpiRecv
                             SILC_GetClockTicks(),
                             OTF2_MPI_BLOCK,
                             globalSourceRank,
-                            SILC_Thread_GetTraceLocationData( location )->otf_location,
                             SILC_HANDLE_TO_ID( communicatorHandle, Group ),
                             tag,
                             bytesReceived );
