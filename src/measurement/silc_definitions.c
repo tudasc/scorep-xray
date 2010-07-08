@@ -188,22 +188,22 @@ silc_write_definitions_to_otf2( void )
 {
     OTF2_DefWriter* definition_writer = silc_create_definition_writer();
 
-    silc_write_string_definitions_to_otf2( definitionWriter );
-    silc_write_location_definitions_to_otf2( definitionWriter );
-    silc_write_source_file_definitions_to_otf2( definitionWriter );
-    silc_write_region_definitions_to_otf2( definitionWriter );
-    silc_write_group_definitions_to_otf2( definitionWriter );
-    silc_write_mpi_window_definitions_to_otf2( definitionWriter );
-    silc_write_mpi_cartesian_topology_definitions_to_otf2( definitionWriter );
-    silc_write_mpi_cartesian_coords_definitions_to_otf2( definitionWriter );
-    silc_write_counter_group_definitions_to_otf2( definitionWriter );
-    silc_write_counter_definitions_to_otf2( definitionWriter );
-    silc_write_io_file_group_definitions_to_otf2( definitionWriter );
-    silc_write_io_file_definitions_to_otf2( definitionWriter );
-    silc_write_marker_group_definitions_to_otf2( definitionWriter );
-    silc_write_marker_definitions_to_otf2( definitionWriter );
-    silc_write_parameter_definitions_to_otf2( definitionWriter );
-    silc_write_callpath_definitions_to_otf2( definitionWriter );
+    silc_write_string_definitions_to_otf2( definition_writer );
+    silc_write_location_definitions_to_otf2( definition_writer );
+    silc_write_source_file_definitions_to_otf2( definition_writer );
+    silc_write_region_definitions_to_otf2( definition_writer );
+    silc_write_group_definitions_to_otf2( definition_writer );
+    silc_write_mpi_window_definitions_to_otf2( definition_writer );
+    silc_write_mpi_cartesian_topology_definitions_to_otf2( definition_writer );
+    silc_write_mpi_cartesian_coords_definitions_to_otf2( definition_writer );
+    silc_write_counter_group_definitions_to_otf2( definition_writer );
+    silc_write_counter_definitions_to_otf2( definition_writer );
+    silc_write_io_file_group_definitions_to_otf2( definition_writer );
+    silc_write_io_file_definitions_to_otf2( definition_writer );
+    silc_write_marker_group_definitions_to_otf2( definition_writer );
+    silc_write_marker_definitions_to_otf2( definition_writer );
+    silc_write_parameter_definitions_to_otf2( definition_writer );
+    silc_write_callpath_definitions_to_otf2( definition_writer );
 }
 
 
