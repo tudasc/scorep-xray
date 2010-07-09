@@ -66,13 +66,6 @@ typedef uint32_t SILC_LineNo;
 
 
 /**
- * Type of a opaque handle to a I/O file group definition.
- * @see SILC_DefineIOFileGroup()
- */
-//typedef uint32_t SILC_IOFileGroupHandle;
-
-
-/**
  * Symbolic constant representing an invalid or unknown I/O file group
  * definition.
  */
@@ -80,23 +73,9 @@ typedef uint32_t SILC_LineNo;
 
 
 /**
- * Type of a opaque handle to a I/O file definition.
- * @see SILC_DefineIOFile()
- */
-//typedef uint32_t SILC_IOFileHandle;
-
-
-/**
  * Symbolic constant representing an invalid or unknown I/O file definition.
  */
 #define SILC_INVALID_IOFILE NULL
-
-
-/**
- * Type of a opaque handle to a marker group definition.
- * @see SILC_DefineMarkerGroup()
- */
-//typedef uint32_t SILC_MarkerGroupHandle;
 
 
 /**
@@ -107,23 +86,9 @@ typedef uint32_t SILC_LineNo;
 
 
 /**
- * Type of a opaque handle to a marker definition.
- * @see SILC_DefineMarker()
- */
-//typedef uint32_t SILC_MarkerHandle;
-
-
-/**
  * Symbolic constant representing an invalid or unknown marker definition.
  */
 #define SILC_INVALID_MARKER NULL
-
-
-/**
- * Type of a opaque handle to a MPI communicator definition.
- * @see SILC_DefineMPICommunicator()
- */
-//typedef uint32_t SILC_MPICommunicatorHandle;
 
 
 /**
@@ -134,23 +99,9 @@ typedef uint32_t SILC_LineNo;
 
 
 /**
- * Type of a opaque handle to a MPI window definition.
- * @see SILC_DefineMPIWindow()
- */
-//typedef uint32_t SILC_MPIWindowHandle;
-
-
-/**
  * Symbolic constant representing an invalid or unknown MPI window definition.
  */
 #define SILC_INVALID_MPI_WINDOW NULL
-
-
-/**
- * Type of a opaque handle to a MPI cartesion topology definition.
- * @see SILC_DefineMPICartesianTopology()
- */
-//typedef uint32_t SILC_MPICartTopolHandle;
 
 
 /**
@@ -161,10 +112,9 @@ typedef uint32_t SILC_LineNo;
 
 
 /**
- * Type of a opaque handle to a parameter definition.
- * @see SILC_DefineParameter()
+ * Symbolic constant representing an invalid or unknown callpath definition.
  */
-//typedef uint32_t SILC_ParameterHandle;
+#define SILC_INVALID_CALLPATH NULL
 
 
 /**
@@ -174,15 +124,8 @@ typedef uint32_t SILC_LineNo;
 
 
 /**
- * Type of a opaque handle to a callpath definition.
- * @see SILC_DefineCallpath()
- * @see SILC_DefineCallpathParameterInteger()
- * @see SILC_DefineCallpathParameterString()
+ * Symbolic constant representing an invalid or unknown string definition.
  */
-//typedef void* SILC_CallpathHandle;
-
-//typedef uint32_t SILC_StringHandle;
-
 #define SILC_INVALID_STRING NULL
 
 /**

@@ -42,24 +42,6 @@
 
 extern SILC_DefinitionManager silc_definition_manager;
 
-/* Some convenient macros to add members or sub-hashes to the hash value */
-#define HASH_ADD_POD( pod_member ) \
-    new_definition->hash_value = hash( &new_definition->pod_member, \
-                                       sizeof( new_definition->pod_member ), \
-                                       new_definition->hash_value )
-
-#define HASH_ADD_HANDLE( handle_member, Type ) \
-    new_definition->hash_value = hashword( \
-        &SILC_HANDLE_GET_HASH( &new_definition->handle_member, Type ), \
-        1, new_definition->hash_value )
-
-#define HASH_ADD_ARRAY( array_member, number_member ) \
-    new_definition->hash_value = hash( \
-        new_definition->array_member, \
-        sizeof( new_definition->array_member[ 0 ] ) \
-        * new_definition->number_member, \
-        new_definition->hash_value )
-
 /**
  * Associate a file name with a process unique file handle.
  */
@@ -498,6 +480,8 @@ SILC_DefineParameter
     SILC_ALLOC_NEW_DEFINITION( Parameter, parameter );
 
     // Init new_definition
+    new_definition->parameter_type = type;
+    HASH_ADD_POD( parameter_type );
 
     return new_movable;
 }

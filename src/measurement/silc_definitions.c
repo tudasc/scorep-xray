@@ -320,7 +320,7 @@ SILC_DefineLocation( uint64_t    globalLocationId,
 
 
 SILC_CallpathHandle
-SILC_DefineCallpath( SILC_CallpathHandle parent,
+SILC_DefineCallpath( SILC_CallpathHandle parentCallpath,
                      SILC_RegionHandle   region )
 {
     SILC_Callpath_Definition*         new_definition = NULL;
@@ -329,15 +329,32 @@ SILC_DefineCallpath( SILC_CallpathHandle parent,
     SILC_ALLOC_NEW_DEFINITION( Callpath, callpath );
 
     // Init new_definition
+    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->parent_callpath_handle );
+    if ( parentCallpath != SILC_INVALID_CALLPATH )
+    {
+        new_definition->parent_callpath_handle = *parentCallpath;
+        HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
+    }
+
+    new_definition->with_parameter = false;
+    HASH_ADD_POD( with_parameter );
+
+    SILC_ALLOCATOR_MOVABLE_INIT_NULL(
+        new_definition->callpath_argument.region_handle );
+    if ( region != SILC_INVALID_CALLPATH )
+    {
+        new_definition->callpath_argument.region_handle = *region;
+        HASH_ADD_HANDLE( callpath_argument.region_handle, Region );
+    }
 
     return new_movable;
 }
 
 
 SILC_CallpathHandle
-SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parent,
-                                     SILC_ParameterHandle param,
-                                     int64_t              value )
+SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parentCallpath,
+                                     SILC_ParameterHandle callpathParameter,
+                                     int64_t              integerValue )
 {
     SILC_Callpath_Definition*         new_definition = NULL;
     SILC_Callpath_Definition_Movable* new_movable    = NULL;
@@ -345,15 +362,39 @@ SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parent,
     SILC_ALLOC_NEW_DEFINITION( Callpath, callpath );
 
     // Init new_definition
+    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->parent_callpath_handle );
+    if ( parentCallpath != SILC_INVALID_CALLPATH )
+    {
+        new_definition->parent_callpath_handle = *parentCallpath;
+        HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
+    }
+
+    new_definition->with_parameter = true;
+    HASH_ADD_POD( with_parameter );
+
+    SILC_ALLOCATOR_MOVABLE_INIT_NULL(
+        new_definition->callpath_argument.parameter_handle );
+    if ( callpathParameter != SILC_INVALID_PARAMETER )
+    {
+        SILC_ParameterType type =
+            SILC_HANDLE_DEREF( callpathParameter, Parameter )->parameter_type;
+        assert( type == SILC_PARAMETER_INT64 );
+
+        new_definition->callpath_argument.parameter_handle = *callpathParameter;
+        HASH_ADD_HANDLE( callpath_argument.parameter_handle, Parameter );
+
+        new_definition->parameter_value.integer_value = integerValue;
+        HASH_ADD_POD( parameter_value.integer_value );
+    }
 
     return new_movable;
 }
 
 
 SILC_CallpathHandle
-SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
-                                    SILC_ParameterHandle param,
-                                    SILC_StringHandle    value )
+SILC_DefineCallpathParameterString( SILC_CallpathHandle  parentCallpath,
+                                    SILC_ParameterHandle callpathParameter,
+                                    SILC_StringHandle    stringValue )
 {
     SILC_Callpath_Definition*         new_definition = NULL;
     SILC_Callpath_Definition_Movable* new_movable    = NULL;
@@ -361,6 +402,35 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
     SILC_ALLOC_NEW_DEFINITION( Callpath, callpath );
 
     // Init new_definition
+    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->parent_callpath_handle );
+    if ( parentCallpath != SILC_INVALID_CALLPATH )
+    {
+        new_definition->parent_callpath_handle = *parentCallpath;
+        HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
+    }
+
+    new_definition->with_parameter = true;
+    HASH_ADD_POD( with_parameter );
+
+    SILC_ALLOCATOR_MOVABLE_INIT_NULL(
+        new_definition->callpath_argument.parameter_handle );
+    if ( callpathParameter != SILC_INVALID_PARAMETER )
+    {
+        SILC_ParameterType type =
+            SILC_HANDLE_DEREF( callpathParameter, Parameter )->parameter_type;
+        assert( type == SILC_PARAMETER_STRING );
+
+        new_definition->callpath_argument.parameter_handle = *callpathParameter;
+        HASH_ADD_HANDLE( callpath_argument.parameter_handle, Parameter );
+
+        SILC_ALLOCATOR_MOVABLE_INIT_NULL(
+            new_definition->parameter_value.string_handle );
+        if ( stringValue != SILC_INVALID_STRING )
+        {
+            new_definition->parameter_value.string_handle = *stringValue;
+            HASH_ADD_HANDLE( parameter_value.string_handle, String );
+        }
+    }
 
     return new_movable;
 }

@@ -169,14 +169,32 @@ SILC_DEFINE_DEFINITION_TYPE( Parameter )
     SILC_DEFINITION_HEADER( Parameter );
 
     // Add SILC_Parameter stuff from here on.
+    SILC_ParameterType parameter_type;
 };
-
 
 SILC_DEFINE_DEFINITION_TYPE( Callpath )
 {
     SILC_DEFINITION_HEADER( Callpath );
 
     // Add SILC_Callpath stuff from here on.
+    SILC_Callpath_Definition_Movable parent_callpath_handle;
+
+    /* This controlls the callpath_argument union */
+    bool with_parameter;
+    union
+    {
+        SILC_Region_Definition_Movable    region_handle;
+        SILC_Parameter_Definition_Movable parameter_handle;
+    } callpath_argument;
+
+    /* This is controlled by the type of the parameter when
+     * with_parameter is true
+     */
+    union
+    {
+        SILC_String_Definition_Movable string_handle;
+        int64_t                        integer_value;
+    } parameter_value;
 };
 
 
