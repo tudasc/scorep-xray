@@ -23,6 +23,7 @@
  */
 
 #include <stdint.h>
+#include <sys/stat.h>
 
 #include "SILC_Memory.h"
 #include "SILC_Utils.h"
@@ -210,10 +211,24 @@ silc_profile_write_tau_snapshot()
     silc_profile_node* thread    = silc_profile.first_root_node;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Write profile in TAU snapshot format" );
-    /* Open file */
     FILE* file;
-    char  filename[ 500 ];
-    sprintf( filename, "%s.%d.0.0.0", silc_profile_basename, SILC_Mpi_GetRank() );
+    char  filename[ 600 ];
+    char  dirname[ 500 ];
+
+    /* Create sub directory 'tau' */
+    sprintf( dirname, "%s/tau", SILC_GetExperimentDirName() );
+    if ( mkdir( dirname, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) != 0 )
+    {
+        if ( errno != EEXIST )
+        {
+            SILC_ERROR_POSIX( "Unable to create directory for snapshot profile" );
+            return;
+        }
+    }
+
+    /* Open file */
+    sprintf( filename, "%s/%s.%d.0.0.0", dirname, silc_profile_basename,
+             SILC_Mpi_GetRank() );
     file = fopen( filename, "w" );
     if ( !file )
     {
