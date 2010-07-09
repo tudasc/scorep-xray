@@ -341,7 +341,7 @@ SILC_DefineCallpath( SILC_CallpathHandle parentCallpath,
 
     SILC_ALLOCATOR_MOVABLE_INIT_NULL(
         new_definition->callpath_argument.region_handle );
-    if ( region != SILC_INVALID_CALLPATH )
+    if ( region != SILC_INVALID_REGION )
     {
         new_definition->callpath_argument.region_handle = *region;
         HASH_ADD_HANDLE( callpath_argument.region_handle, Region );
