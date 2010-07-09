@@ -33,12 +33,15 @@ BUILD_DIR=build-backend
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../build-config/m4
 
-clean-local: clean-local-silc-experiment-dirs
-.PHONY: clean-local-silc-experiment-dirs install-scorep-meets-tau
+clean-local: clean-local-silc-experiment-dirs clean-local-silc-config-tests
+.PHONY: clean-local-silc-experiment-dirs install-scorep-meets-tau clean-local-silc-config-tests
+
 clean-local-silc-experiment-dirs:
 	rm -rf silc-2*
 	rm -rf silc-measurement-tmp
 
+clean-local-silc-config-tests:
+	rm -f test_silc_config_*
 
 #uninstall-hook:
 
