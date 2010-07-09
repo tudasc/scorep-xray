@@ -633,8 +633,16 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
     silc_profile_node*         node           = NULL;
     silc_profile_node*         creation_point = NULL;
 
+    SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Profile: Activated thread\n" );
+
     SILC_PROFILE_ASSURE_INITIALIZED;
     SILC_ASSERT( locationData != NULL );
+
+    /* If it is the same location as the parent, do not do anything */
+    if ( locationData == parentLocationData )
+    {
+        return;
+    }
 
     /* Get root node of the thread */
     thread_data = SILC_Thread_GetProfileLocationData( locationData );
@@ -689,7 +697,8 @@ SILC_Profile_OnThreadActivation( SILC_Thread_LocationData* locationData,
 
     /* Now node points to the starting point of the thread.
        Make it the current node of the thread. */
-    thread_data->current_node = node;
+    silc_profile_set_current_node( locationData, node );
+    //thread_data->current_node = node;
 }
 
 
@@ -697,8 +706,16 @@ void
 SILC_Profile_OnThreadDectivation( SILC_Thread_LocationData* locationData,
                                   SILC_Thread_LocationData* parentLocationData )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Profile: Deactivated thread\n" );
+
+    /* If it is the same location as the parent, do not do anything */
+    if ( locationData == parentLocationData )
+    {
+        return;
+    }
+
     /* Remove the current node. */
-    SILC_Thread_GetProfileLocationData( locationData )->current_node = NULL;
+    silc_profile_set_current_node( locationData, NULL );
 }
 
 
@@ -712,6 +729,8 @@ SILC_Profile_OnLocationCreation( SILC_Thread_LocationData* locationData,
     silc_profile_root_node_data data;
 
     SILC_PROFILE_ASSURE_INITIALIZED;
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Profile: Create Location\n" );
 
     /* Initialize type specific data structure */
     data.thread_data = SILC_Thread_GetProfileLocationData( locationData );
@@ -768,6 +787,8 @@ SILC_Profile_OnFork( SILC_Thread_LocationData* threadData,
                      size_t                    maxChildThreads )
 {
     silc_profile_node* fork_node = NULL;
+
+    SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Profile: On Fork\n" );
 
     SILC_PROFILE_ASSURE_INITIALIZED;
 
