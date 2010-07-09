@@ -70,6 +70,7 @@ static silc_deferred_location silc_deferred_locations_head_dummy = { 0, 0 };
 char*
 SILC_GetExperimentDirName()
 {
+    silc_create_experiment_dir_name();
     return silc_experiment_dir_name;
 }
 
