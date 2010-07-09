@@ -77,5 +77,7 @@ AC_REQUIRE([AC_PROG_RANLIB])
 
 AC_CONFIG_FILES([run_otf2_reader_test.sh:../test/OTF2_Reader_test/run_otf2_reader_test.sh.in], 
                 [chmod u+x run_otf2_reader_test.sh])
+AC_CONFIG_FILES([run_otf2_reader_read_global_locations_test.sh:../test/OTF2_Reader_test/run_otf2_reader_read_global_locations_test.sh.in], 
+                [chmod u+x run_otf2_reader_read_global_locations_test.sh])
 
 ])
