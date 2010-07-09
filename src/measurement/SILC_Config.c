@@ -75,6 +75,11 @@ SILC_ConfigRegister
         char environment_variable_name[ 7 + 2 * 32 ];
         bool successfully_parsed;
 
+        /* fail, if the programmer does not use the config system right */
+        assert( variables->variableReference );
+        assert( variables->defaultValue );
+        /* the variableContext is checked in the parse_value function */
+
         SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
                            "Variable:      %s%s%s",
                            nameSpace ? nameSpace : "",
@@ -96,13 +101,16 @@ SILC_ConfigRegister
 
         if ( !successfully_parsed )
         {
-            fprintf( stderr,
-                     "Can't set variable \"%s%s%s\" to default value \"%s\"\n",
-                     variables->defaultValue,
-                     nameSpace ? nameSpace : "",
-                     nameSpace ? "/" : "",
-                     variables->name );
-            /* should this be an error? */
+            SILC_ERROR( SILC_ERROR_EINVAL,
+                        "Can't set variable '%s%s%s' to "
+                        "default value `%s'",
+                        nameSpace ? "_" : "",
+                        nameSpace ? nameSpace : "",
+                        variables->name,
+                        variables->defaultValue );
+            /* This is actually not user input, but a programming error */
+            /* therefore we can assert here */
+            assert( successfully_parsed );
         }
 
         /* generate environment variable name */
@@ -130,14 +138,13 @@ SILC_ConfigRegister
 
             if ( !successfully_parsed )
             {
-                fprintf( stderr,
-                         "Can't set variable \"%s%s%s\" to value \"%s\" from "
-                         "environment variable\n",
-                         environment_variable_value,
-                         nameSpace ? "_" : "",
-                         nameSpace ? nameSpace : "",
-                         variables->name );
-                /* should this be an error? */
+                return SILC_ERROR( SILC_ERROR_EINVAL,
+                                   "Can't set variable '%s%s%s' to "
+                                   "value `%s' from environment variable",
+                                   nameSpace ? "_" : "",
+                                   nameSpace ? nameSpace : "",
+                                   variables->name,
+                                   environment_variable_value );
             }
         }
         else
@@ -168,6 +175,10 @@ parse_number( const char* value,
               uint64_t*   numberReference );
 
 static inline bool
+parse_size( const char* value,
+            uint64_t*   sizeNumberReference );
+
+static inline bool
 parse_string( const char* value,
               char**      stringReference );
 
@@ -190,22 +201,30 @@ parse_value( const char*     value,
     switch ( type )
     {
         case SILC_CONFIG_TYPE_BOOL:
+            /* assert( !variableContext ); */
             return parse_bool( value, variableReference );
 
         case SILC_CONFIG_TYPE_NUMBER:
+            /* assert( !variableContext ); */
             return parse_number( value, variableReference );
 
+        case SILC_CONFIG_TYPE_SIZE:
+            /* assert( !variableContext ); */
+            return parse_size( value, variableReference );
+
         case SILC_CONFIG_TYPE_SET:
+            assert( variableContext );
             return parse_set( value, variableReference, variableContext );
 
         case SILC_CONFIG_TYPE_BITSET:
+            assert( variableContext );
             return parse_bitset( value, variableReference, variableContext );
 
         case SILC_CONFIG_TYPE_STRING:
+            /* assert( !variableContext ); */
             return parse_string( value, variableReference );
 
         case SILC_CONFIG_TYPE_PATH:
-        case SILC_CONFIG_TYPE_SIZE:
 
         case SILC_INVALID_CONFIG_TYPE:
         default:
@@ -245,38 +264,187 @@ parse_bool( const char* value,
     return true;
 }
 
+static int
+parse_uint64( const char*        numberString,
+              uint64_t* const    numberReference,
+              const char** const endPtr )
+{
+    uint64_t number = 0;
+
+    assert( numberString );
+    assert( numberReference );
+    assert( endPtr );
+
+    /*
+     * Ignore leading whitespace, but also ignore this whether we have consumed
+     * real number charachters. That is an whitespace only string is not
+     * a valid number
+     */
+    while ( isspace( *numberString ) )
+    {
+        numberString++;
+    }
+
+    const char* value_iterator = numberString;
+    while ( *value_iterator && isdigit( *value_iterator ) )
+    {
+        uint64_t new_number = 10 * number + ( *value_iterator - '0' );
+
+        /* Check for overflow */
+        if ( new_number < number )
+        {
+            return ERANGE;
+        }
+
+        number = new_number;
+        value_iterator++;
+    }
+
+    /* Have we consumed at least one digit? */
+    if ( value_iterator == numberString )
+    {
+        return EINVAL;
+    }
+
+    *endPtr          = value_iterator;
+    *numberReference = number;
+
+    return 0;
+}
 
 static inline bool
 parse_number( const char* value,
               uint64_t*   numberReference )
 {
-    char* ptr;
-    int   number_of_consumed_characters;
-    int   number_of_recognized_itmes = sscanf( value,
-                                               "%" SCNu64 "%n",
-                                               numberReference,
-                                               &number_of_consumed_characters );
+    const char* orig_value = value;
+    int         parse_success;
 
-    /* does sscanf has recognized a number? */
-    if ( 1 != number_of_recognized_itmes )
+    parse_success = parse_uint64( value, numberReference, &value );
+    if ( 0 != parse_success )
     {
-        SILC_ERROR( SILC_ERROR_PARSE_INVALID_VALUE,
-                    "Can't parse number in config variable: %s",
+        SILC_ERROR( parse_success == ERANGE
+                    ? SILC_ERROR_ERANGE
+                    : SILC_ERROR_EINVAL,
+                    "Can't parse number in config value: `%s'",
+                    orig_value );
+        return false;
+    }
+
+    /* skip whitespace after the number */
+    while ( isspace( *value ) )
+    {
+        value++;
+    }
+
+    /* Have we consumed the complete string */
+    if ( *value != '\0' )
+    {
+        SILC_ERROR( SILC_ERROR_EINVAL,
+                    "Unrecognized characters after number `%s'",
+                    orig_value );
+        return false;
+    }
+
+    /* pass */
+    return true;
+}
+
+
+static inline bool
+parse_size( const char* value,
+            uint64_t*   sizeNumberReference )
+{
+    const char* orig_value = value;
+    int         parse_success;
+
+    parse_success = parse_uint64( value, sizeNumberReference, &value );
+    if ( 0 != parse_success )
+    {
+        SILC_ERROR( parse_success == ERANGE
+                    ? SILC_ERROR_ERANGE
+                    : SILC_ERROR_EINVAL,
+                    "Can't parse size in config value: `%s'",
                     value );
         return false;
     }
 
-    /* does sscanf has consumed at least one digit and also
-       the complete string
-       Q: what about whitespace after the number? */
-    if ( number_of_consumed_characters == 0 ||
-         value[ number_of_consumed_characters ] != '\0' )
+    /* skip whitespace after the number */
+    while ( isspace( *value ) )
     {
-        SILC_ERROR( SILC_ERROR_PARSE_INVALID_VALUE,
-                    "Can't parse number in config variable: %s",
+        value++;
+    }
+
+    /* Check for any known suffixe */
+    uint64_t scale_factor    = 1;
+    bool     has_byte_suffix = false;
+    switch ( toupper( *value ) )
+    {
+        /* Zetta is 2^70, which is of course too big for uint64_t */
+        case 'E':
+            scale_factor *= 1024;
+        /* fall through */
+        case 'P':
+            scale_factor *= 1024;
+        /* fall through */
+        case 'T':
+            scale_factor *= 1024;
+        /* fall through */
+        case 'G':
+            scale_factor *= 1024;
+        /* fall through */
+        case 'M':
+            scale_factor *= 1024;
+        /* fall through */
+        case 'K':
+            scale_factor *= 1024;
+            value++;
+            break;
+
+        case 'B':
+            /* We allow the 'b' suffix only once */
+            has_byte_suffix = true;
+            value++;
+        /* fall through */
+        case '\0':
+            break;
+
+        default:
+            SILC_ERROR( SILC_ERROR_EINVAL,
+                        "Invalid scale factor '%s' in config value `%s'",
+                        value, orig_value );
+            return false;
+    }
+
+    /* Skip the optional 'b' suffix, but only once */
+    if ( !has_byte_suffix && toupper( *value ) == 'B' )
+    {
+        value++;
+    }
+
+    /* skip whitespace after the suffix */
+    while ( isspace( *value ) )
+    {
+        value++;
+    }
+
+    /* Have we consumed the complete string */
+    if ( *value != '\0' )
+    {
+        SILC_ERROR( SILC_ERROR_EINVAL,
+                    "Unrecognized characters `%s' after size in config value `%s'",
+                    value, orig_value );
+        return false;
+    }
+
+    /* check for overflow */
+    if ( ( *sizeNumberReference * scale_factor ) < *sizeNumberReference )
+    {
+        SILC_ERROR( SILC_ERROR_EOVERFLOW,
+                    "Resulting value does not fit into variable: `%s'",
                     value );
         return false;
     }
+    *sizeNumberReference *= scale_factor;
 
     /* pass */
     return true;
@@ -554,6 +722,7 @@ dump_value( const char*     prefix,
             break;
 
         case SILC_CONFIG_TYPE_NUMBER:
+        case SILC_CONFIG_TYPE_SIZE:
             SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG, "%s%" PRIu64,
                                prefix, *( uint64_t* )variableReference );
 
@@ -566,7 +735,6 @@ dump_value( const char*     prefix,
             break;
 
         case SILC_CONFIG_TYPE_PATH:
-        case SILC_CONFIG_TYPE_SIZE:
             SILC_DEBUG_PRINTF( SILC_DEBUG_CONFIG,
                                "%stype not implemented", prefix );
             break;

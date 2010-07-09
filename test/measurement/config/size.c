@@ -15,7 +15,7 @@
 
 
 /**
- * @file       test/measurement/config/number.c
+ * @file       test/measurement/config/size.c
  * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @status alpha
@@ -42,16 +42,16 @@
 
 
 static void
-test_number( CuTest* tc )
+test_size( CuTest* tc )
 {
-    uint64_t            number_variable;
+    uint64_t            size_variable;
     SILC_ConfigVariable config_variables[] = {
         {
-            "number",
-            SILC_CONFIG_TYPE_NUMBER,
-            &number_variable,
+            "size",
+            SILC_CONFIG_TYPE_SIZE,
+            &size_variable,
             NULL,
-            "0",
+            "1",
             "",
             ""
         },
@@ -62,7 +62,7 @@ test_number( CuTest* tc )
     ret = SILC_ConfigRegister( NULL, config_variables );
     CuAssert( tc, "SILC_ConfigRegister", ret == SILC_SUCCESS );
 
-    printf( "%" PRIu64 "\n", number_variable );
+    printf( "%" PRIu64 "\n", size_variable );
 }
 
 
@@ -72,7 +72,7 @@ main()
     SILC_Error_CallbackPointer old_error_callback =
         SILC_Error_RegisterCallback( cutest_silc_error_callback );
 
-    the_test = CuTestNew( "test", test_number );
+    the_test = CuTestNew( "test", test_size );
     CuTestRun( the_test );
     if ( the_test->message )
     {

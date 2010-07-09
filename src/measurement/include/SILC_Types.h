@@ -358,8 +358,8 @@ typedef enum SILC_ConfigType
     SILC_CONFIG_TYPE_NUMBER,
 
     /**
-     * A numerical value with size suffixes (Ie. Kb, Gb, KiBi, ...)
-     *
+     * A numerical value with datasize suffixes
+     * (Ie. Kb, Gb, ..., 'b' may be omitted, case insensitive)
      * SILC_ConfigVariable::variableReference should point to a variable of
      * type uint64_t.
      */
