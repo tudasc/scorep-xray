@@ -72,6 +72,6 @@ if test "x${ac_silc_cross_compiling}" = "xyes"; then
 fi
 
 AC_CONFIG_FILES([
-	Makefile
+	Makefile include/silc/scorep_meets_tau_tmp.h 
 ])
 AC_OUTPUT

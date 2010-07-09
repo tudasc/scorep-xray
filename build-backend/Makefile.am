@@ -34,7 +34,22 @@ BUILD_DIR=build-backend
 ACLOCAL_AMFLAGS = -I ../build-config/m4
 
 clean-local: clean-local-silc-experiment-dirs
-.PHONY: clean-local-silc-experiment-dirs
+.PHONY: clean-local-silc-experiment-dirs install-scorep-meets-tau
 clean-local-silc-experiment-dirs:
 	rm -rf silc-2*
 	rm -rf silc-measurement-tmp
+
+
+#uninstall-hook:
+
+#install-data-hook: install-scorep-meets-tau
+
+install-scorep-meets-tau:
+	cp -p ../include/silc/scorep_meets_tau_tmp.h ../include/silc/scorep_meets_tau.h
+	headers=`find $(INC_ROOT)src/measurement/include -name "*h"`;              \
+	for i in $$headers; do                                                     \
+	    awk -f $(INC_ROOT)tools/tau/scorep_meets_tau.awk $$i >>                \
+                   ../include/silc/scorep_meets_tau.h;                             \
+	done
+	echo "#endif /* SCOREP_MEETS_TAU_H */" >> ../include/silc/scorep_meets_tau.h;
+

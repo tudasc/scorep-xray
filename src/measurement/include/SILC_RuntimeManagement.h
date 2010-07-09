@@ -65,7 +65,7 @@ SILC_IsInitialized
 (
 );
 
-
+// scorep_meets_tau_begin
 /**
  * Initialize the measurement system from the adapter layer. This function
  * needs to be called at least once by an (arbitrary) adapter before any other
@@ -90,6 +90,7 @@ SILC_InitMeasurement
 (
 );
 
+// scorep_meets_tau_end
 
 /**
  * Finalize the measurement system. This function @e may be called from the

@@ -29,7 +29,8 @@ EXTRA_DIST = $(srcdir)/src/config.h                         \
              $(srcdir)/build-config/platforms/ibm           \
              $(srcdir)/build-config/platforms/linux         \
              $(srcdir)/build-config/platforms/sun           \
-             $(srcdir)/build-config/platforms/user_provided
+             $(srcdir)/build-config/platforms/user_provided \
+             $(srcdir)/tools/tau/scorep_meets_tau.awk
 
 if ! CROSS_BUILD
 EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
