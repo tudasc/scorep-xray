@@ -46,4 +46,16 @@ omp_test_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_test_pomp.la
 TESTS      += $(SRC_ROOT)test/omp/run_omp_test.sh
 EXTRA_DIST += $(SRC_ROOT)test/omp/run_omp_test.sh
 
+
+check_PROGRAMS += internal_thread_handling
+
+internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling.c       \
+                                    $(SRC_ROOT)test/omp/omp_test.c.opari.inc
+internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+internal_thread_handling_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_test_pomp.la
+
+TESTS      += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
+EXTRA_DIST += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
+
 endif
