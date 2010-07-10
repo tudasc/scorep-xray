@@ -373,6 +373,7 @@ SILC_Thread_OnThreadJoin()
             }
         }
         TPD->is_active = true;
+        // need activation here?
     }
     else
     {
@@ -445,10 +446,10 @@ SILC_Thread_GetLocationData()
             {
                 silc_thread_create_location_data_for( *my_tpd );
                 silc_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
-                                                            TPD->location_data );
+                                                            TPD->parent->location_data );
             }
             silc_thread_call_externals_on_new_thread( ( *my_tpd )->location_data,
-                                                      TPD->location_data );
+                                                      TPD->parent->location_data );
         }
         silc_thread_call_externals_on_thread_activation( TPD->location_data,
                                                          TPD->parent->location_data );
