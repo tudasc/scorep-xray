@@ -43,7 +43,9 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_status.h                    \
     $(SRC_ROOT)src/measurement/silc_parameter_registration.h    \
     $(SRC_ROOT)src/measurement/silc_parameter_registration.c    \
-    $(SRC_ROOT)src/measurement/silc_mpi.h
+    $(SRC_ROOT)src/measurement/silc_mpi.h                       \
+    $(SRC_ROOT)src/measurement/silc_unify.c                     \
+    $(SRC_ROOT)src/measurement/silc_unify.h
 
 
 libsilc_measurement_la_CPPFLAGS =               \
@@ -113,8 +115,9 @@ libsilc_paradigm_non_omp_la_CPPFLAGS =   \
 ## paradigm non mpi
 
 noinst_LTLIBRARIES                  += libsilc_paradigm_non_mpi.la
-libsilc_paradigm_non_mpi_la_SOURCES  =   \
-    $(SRC_ROOT)src/measurement/paradigm/silc_mpi_disabled.c
+libsilc_paradigm_non_mpi_la_SOURCES  =                            \
+    $(SRC_ROOT)src/measurement/paradigm/silc_mpi_disabled.c       \
+    $(SRC_ROOT)src/measurement/paradigm/silc_unify_mpi_disabled.c
 libsilc_paradigm_non_mpi_la_CPPFLAGS =   \
     $(AM_CPPFLAGS)                       \
     -I$(INC_ROOT)src/measurement         \

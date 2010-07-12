@@ -15,7 +15,7 @@
 
 
 /**
- * @file       SILC_Unify.c
+ * @file       silc_unify_mpi_disabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -24,14 +24,8 @@
 
 
 #include <config.h>
-#include "SILC_Unify.h"
+#include <silc_unify.h>
 
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
-
-
-void
-SILC_Unify()
-{
-}

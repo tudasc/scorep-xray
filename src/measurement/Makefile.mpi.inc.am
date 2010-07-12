@@ -34,5 +34,7 @@ libsilc_paradigm_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
                                    -I$(INC_DIR_OTF2)                    \
                                    -I$(INC_DIR_UTIL)                    \
                                    -I$(INC_DIR_VENDOR_HASH)
-libsilc_paradigm_mpi_la_SOURCES = $(SRC_ROOT)src/measurement/paradigm/silc_mpi_enabled.c
+libsilc_paradigm_mpi_la_SOURCES =                                 \
+    $(SRC_ROOT)src/measurement/paradigm/silc_mpi_enabled.c        \
+    $(SRC_ROOT)src/measurement/paradigm/silc_unify_mpi_enabled.c
 endif

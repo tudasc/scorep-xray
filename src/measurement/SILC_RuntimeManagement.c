@@ -42,7 +42,7 @@
 #include <SILC_Timing.h>
 #include <SILC_Omp.h>
 #include <SILC_Profile.h>
-#include <SILC_Unify.h>
+#include <silc_unify.h>
 
 
 #include "silc_types.h"
