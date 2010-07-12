@@ -1,6 +1,3 @@
-#ifndef SILC_STATUS_H
-#define SILC_STATUS_H
-
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -18,7 +15,7 @@
 
 
 /**
- * @file       silc_status.h
+ * @file       SILC_Unify.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -26,35 +23,15 @@
  */
 
 
-#include <stdbool.h>
+#include <config.h>
+#include "SILC_Unify.h"
 
 
-// different impl for MPI and non-MPI
-void
-SILC_Status_Initialize();
-
-
-bool
-SILC_IsTracingEnabled();
-
-
-bool
-SILC_IsProfilingEnabled();
+/* *INDENT-OFF* */
+/* *INDENT-ON*  */
 
 
 void
-SILC_Otf2_OnFlush();
-
-
-bool
-SILC_Otf2_HasFlushed();
-
-
-bool
-SILC_IsExperimentDirCreated();
-
-
-void
-SILC_OnExperimentDirCreation();
-
-#endif /* SILC_STATUS_H */
+SILC_Unify()
+{
+}

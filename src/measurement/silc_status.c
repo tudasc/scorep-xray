@@ -25,6 +25,7 @@
 
 #include "silc_status.h"
 #include "silc_mpi.h"
+#include <SILC_Config.h>
 
 #include <limits.h>
 #include <assert.h>
@@ -34,17 +35,43 @@
 /* *INDENT-ON*  */
 
 
-silc_status status = {
-    INT_MAX,             // mpi_rank
-    false,               // mpi_rank_is_set
-    false,               // mpi_is_initialized
-    false,               // mpi_is_finalized
-    0,                   // mpi_comm_world_size
-    false,               // is_experiment_dir_created
-    false,               // is_profiling_enabled
-    true,                // is_tracing_enabled
-    false                // otf2_has_flushed
+typedef struct silc_status silc_status;
+struct silc_status
+{
+    int  mpi_rank;
+    bool mpi_rank_is_set;
+    bool mpi_is_initialized;
+    bool mpi_is_finalized;
+    int  mpi_comm_world_size;
+    bool is_experiment_dir_created;
+    bool is_profiling_enabled;
+    bool is_tracing_enabled;
+    bool otf2_has_flushed;
 };
+
+
+silc_status status = {
+    INT_MAX,              // mpi_rank
+    false,                // mpi_rank_is_set
+    false,                // mpi_is_initialized
+    false,                // mpi_is_finalized
+    0,                    // mpi_comm_world_size
+    false,                // is_experiment_dir_created
+    false,                // is_profiling_enabled
+    false,                // is_tracing_enabled
+    false                 // otf2_has_flushed
+};
+
+
+void
+silc_status_initialize_common()
+{
+    // environment variables already processed. can we check this somehow?
+
+    // These two variables may become public in future due to performance reasons.
+    status.is_profiling_enabled = silc_env_profiling;
+    status.is_tracing_enabled   = silc_env_tracing;
+}
 
 
 void

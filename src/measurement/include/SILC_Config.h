@@ -1,3 +1,6 @@
+#ifndef SILC_CONFIG_H
+#define SILC_CONFIG_H
+
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -12,10 +15,6 @@
  * See the COPYING file in the package base directory for details.
  *
  */
-
-
-#ifndef SILC_CONFIG_H
-#define SILC_CONFIG_H
 
 
 /**
@@ -53,7 +52,8 @@
 
 #include <SILC_Types.h>
 #include <SILC_Error.h>
-
+#include <stddef.h>
+#include <stdbool.h>
 
 /**
  * Register a set of configure variables to the measurement system.
@@ -126,6 +126,17 @@ SILC_ConfigRegister
 /*
  * @}
  */
+
+
+extern SILC_ConfigVariable silc_env_configs[];
+
+extern bool                silc_env_verbose;
+
+extern bool                silc_env_unify;
+
+extern bool                silc_env_tracing;
+
+extern bool                silc_env_profiling;
 
 
 #endif /* SILC_CONFIG_H */

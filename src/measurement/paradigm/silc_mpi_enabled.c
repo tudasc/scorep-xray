@@ -40,9 +40,14 @@ extern void
 silc_status_initialize_mpi();
 
 
+extern void
+silc_status_initialize_common();
+
+
 void
 SILC_Status_Initialize()
 {
+    silc_status_initialize_common();
     silc_status_initialize_mpi();
     // it is too early to call PMPI from here.
 }

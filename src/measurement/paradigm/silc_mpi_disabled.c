@@ -34,9 +34,14 @@ extern void
 silc_status_initialize_non_mpi();
 
 
+extern void
+silc_status_initialize_common();
+
+
 void
 SILC_Status_Initialize()
 {
+    silc_status_initialize_common();
     silc_status_initialize_non_mpi();
 }
 

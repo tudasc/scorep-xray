@@ -41,6 +41,55 @@
 #include "silc_types.h"
 
 
+// some config variables. might end up in a different location.
+bool silc_env_verbose;
+bool silc_env_unify;
+bool silc_env_tracing;
+bool silc_env_profiling;
+
+
+/** @brief Measurement system configure variables */
+SILC_ConfigVariable silc_env_configs[] = {
+    {
+        "ENABLE_PROFILING",
+        SILC_CONFIG_TYPE_BOOL,
+        &silc_env_profiling,
+        NULL,
+        "false",
+        "enable profiling",
+        "enable profiling"
+    },
+    {
+        "ENABLE_TRACING",
+        SILC_CONFIG_TYPE_BOOL,
+        &silc_env_tracing,
+        NULL,
+        "true",
+        "enable tracing",
+        "enable tracing"
+    },
+    {
+        "VERBOSE",
+        SILC_CONFIG_TYPE_BOOL,
+        &silc_env_verbose,
+        NULL,
+        "false",
+        "Be verbose",
+        "Long help"
+    },
+    {
+        "UNIFY",
+        SILC_CONFIG_TYPE_BOOL,
+        &silc_env_unify,
+        NULL,
+        "false",
+        "do unification step",
+        ""
+    },
+    SILC_CONFIG_TERMINATOR
+};
+
+
 static inline bool
 parse_value
 (

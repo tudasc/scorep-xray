@@ -42,6 +42,8 @@
 #include <SILC_Timing.h>
 #include <SILC_Omp.h>
 #include <SILC_Profile.h>
+#include <SILC_Unify.h>
+
 
 #include "silc_types.h"
 #include "silc_adapter.h"
@@ -62,44 +64,6 @@ static bool silc_initialized;
 
 /** @brief Measurement system finalized? */
 static bool silc_finalized;
-
-
-/** @brief Run in verbose mode */
-static bool silc_verbose;
-
-static bool silc_unify;
-
-/** @brief Measurement system configure variables */
-static SILC_ConfigVariable silc_configs[] = {
-    {
-        "enable_profiling",
-        SILC_CONFIG_TYPE_BOOL,
-        &status.is_profiling_enabled,
-        NULL,
-        "false",
-        "enable profiling",
-        "enable profiling"
-    },
-    {
-        "verbose",
-        SILC_CONFIG_TYPE_BOOL,
-        &silc_verbose,
-        NULL,
-        "false",
-        "Be verbose",
-        "Long help"
-    },
-    {
-        "unify",
-        SILC_CONFIG_TYPE_BOOL,
-        &silc_unify,
-        NULL,
-        "false",
-        "do unification step",
-        ""
-    },
-    SILC_CONFIG_TERMINATOR
-};
 
 
 /* *INDENT-OFF* */
@@ -149,10 +113,10 @@ SILC_InitMeasurement( void )
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the adapter initialization.
     silc_initialized = true;
+    silc_register_config_variables( silc_env_configs );
     SILC_Status_Initialize();
 
     silc_initialization_sanity_checks();
-    silc_register_config_variables( silc_configs );
     SILC_Timer_Initialize();
     SILC_CreateExperimentDir();
 
@@ -204,7 +168,7 @@ silc_initialization_sanity_checks()
         _Exit( EXIT_FAILURE );
     }
 
-    if ( silc_verbose )
+    if ( silc_env_verbose )
     {
         fprintf( stderr, "SILC running in verbose mode\n" );
     }
@@ -215,7 +179,7 @@ static void
 silc_register_config_variables( SILC_ConfigVariable configVars[] )
 {
     /* all config variables are registers => parse configure once */
-    SILC_Error_Code error = SILC_ConfigRegister( NULL, silc_configs );
+    SILC_Error_Code error = SILC_ConfigRegister( NULL, silc_env_configs );
 
     if ( SILC_SUCCESS != error )
     {
@@ -328,7 +292,7 @@ silc_adapters_initialize()
                         silc_adapters[ i ]->adapter_name );
             _Exit( EXIT_FAILURE );
         }
-        else if ( silc_verbose )
+        else if ( silc_env_verbose )
         {
             fprintf( stderr, "SILC successfully initialized %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -357,7 +321,7 @@ silc_adapters_initialize_location()
                         silc_adapters[ i ]->adapter_name );
             _Exit( EXIT_FAILURE );
         }
-        else if ( silc_verbose )
+        else if ( silc_env_verbose )
         {
             fprintf( stderr, "SILC successfully initialized location for %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -481,6 +445,7 @@ silc_finalize( void )
     // an instrumentation error.
 
     // order is important
+    SILC_Unify();
     silc_profile_finalize();
     silc_parameter_table_finalize();
     SILC_Definitions_Write();
@@ -518,7 +483,7 @@ silc_adapters_finalize_location()
             //silc_adapters[ i ]->adapter_finalize_location(location_ptr???);
         }
 
-        if ( silc_verbose )
+        if ( silc_env_verbose )
         {
             fprintf( stderr, "SILC finalized %s adapter location\n",
                      silc_adapters[ i ]->adapter_name );
@@ -538,7 +503,7 @@ silc_adapters_finalize()
             silc_adapters[ i ]->adapter_finalize();
         }
 
-        if ( silc_verbose )
+        if ( silc_env_verbose )
         {
             fprintf( stderr, "SILC finalized %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -558,7 +523,7 @@ silc_adapters_deregister()
             silc_adapters[ i ]->adapter_deregister();
         }
 
-        if ( silc_verbose )
+        if ( silc_env_verbose )
         {
             fprintf( stderr, "SILC de-registered %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -589,7 +554,7 @@ silc_otf2_finalize()
     }
 
     int* n_definitions_per_location = 0;
-    if ( !silc_unify )
+    if ( !silc_env_unify )
     {
         n_definitions_per_location = SILC_Mpi_GatherNumberOfDefinitionsPerLocation( n_locations_per_rank, n_global_locations );
     }
@@ -598,7 +563,7 @@ silc_otf2_finalize()
     {
         OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_global_locations );
 
-        if ( !silc_unify )
+        if ( !silc_env_unify )
         {
             OTF2_GlobDefWriter* global_definition_writer =
                 OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,
@@ -616,7 +581,7 @@ silc_otf2_finalize()
                         global_definition_writer,
                         global_location_id,
                         "",
-                        OTF2_GLOB_LOCATION_TYPE_THREAD,
+                        OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
                         n_definitions_per_location[ index ] );
                     assert( status == SILC_SUCCESS );
                     //printf( "rank %d,   location %d,   global_location %" PRIu64 ",   defs %d\n", rank, location_id,  global_location_id, n_definitions_per_location[ index ]);
