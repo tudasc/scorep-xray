@@ -34,7 +34,7 @@ jacobi_serial_c_uninstrumented_SOURCES  = $(jacobi_serial_c_sources)
 jacobi_serial_c_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_c_uninstrumented_LDADD    = -lm
 
-#TESTS += jacobi_serial_c
+TESTS += jacobi_serial_c
 
 ## OpenMP C
 
@@ -110,7 +110,7 @@ variabledef.mod: VariableDef.$(OBJEXT)
 jacobi_serial_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_serial_f90-main.$(OBJEXT): variabledef.mod
 
-#check_PROGRAMS            += jacobi_serial_f90
+check_PROGRAMS            += jacobi_serial_f90
 jacobi_serial_f90_sources  = $(SRC_ROOT)test/jacobi/serial/Fortran/jacobi.F90      \
                              $(SRC_ROOT)test/jacobi/serial/Fortran/main.F90        \
                              $(SRC_ROOT)test/jacobi/serial/Fortran/VariableDef.f90
@@ -119,7 +119,7 @@ jacobi_serial_f90_SOURCES  = $(jacobi_serial_f90_sources)
 jacobi_serial_f90_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_serial_f90_LDADD    = $(LIB_ROOT)libsilc_serial.la
 
-#check_PROGRAMS                           += jacobi_serial_f90_uninstrumented
+check_PROGRAMS                           += jacobi_serial_f90_uninstrumented
 jacobi_serial_f90_uninstrumented_SOURCES  = $(jacobi_serial_f90_sources)
 jacobi_serial_f90_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_f90_uninstrumented_LDADD    = -lm
@@ -136,7 +136,7 @@ noinst_LTLIBRARIES           += libjacobi_pomp_f90.la
 libjacobi_pomp_f90_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/pomp.c
 libjacobi_pomp_f90_la_CPPFLAGS = $(AM_CPPFLAGS)
 
-#check_PROGRAMS         += jacobi_omp_f90
+check_PROGRAMS         += jacobi_omp_f90
 jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90      \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.mod.F90       \
                           $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.F90.opari.inc \
@@ -147,7 +147,7 @@ jacobi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
 jacobi_omp_f90_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_omp_f90_LDADD    = $(LIB_ROOT)libsilc_omp.la libjacobi_pomp_f90.la
 
-#check_PROGRAMS                        += jacobi_omp_f90_uninstrumented
+check_PROGRAMS                        += jacobi_omp_f90_uninstrumented
 jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 \
                                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/jacobi.F90      \
                                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90
