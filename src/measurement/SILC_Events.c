@@ -246,6 +246,12 @@ SILC_OmpFork
                                               "%x", regionHandle ) );
 
     SILC_Thread_OnThreadFork( /* nRequestedThreads */ omp_get_max_threads() );
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+        SILC_Profile_OnFork( location,
+                             /* nRequestedThreads */ omp_get_max_threads() );
+    }
 }
 
 

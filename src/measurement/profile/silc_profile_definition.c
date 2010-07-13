@@ -115,6 +115,7 @@ silc_profile_dump_subtree( silc_profile_node* node,
         return;
     }
 
+    printf( "%p ", node );
     for ( int i = 0; i < level; i++ )
     {
         printf( "| " );
