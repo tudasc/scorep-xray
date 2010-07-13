@@ -110,17 +110,21 @@ silc_profile_dump_subtree( silc_profile_node* node,
         "thread start"
     };
 
-    int          i;
-    for ( i = 0; i < level; i++ )
-    {
-        printf( "| " );
-    }
-    printf( "+ type: %s\n", type_name_map[ node->node_type ] );
-
     if ( node == NULL )
     {
         return;
     }
+
+    for ( int i = 0; i < level; i++ )
+    {
+        printf( "| " );
+    }
+    printf( "+ type: %s", type_name_map[ node->node_type ] );
+    if ( node->node_type == silc_profile_node_regular_region )
+    {
+        printf( "  name: %s", SILC_Region_GetName( SILC_PROFILE_DATA2REGION( node->type_specific_data ) ) );
+    }
+    printf( "\n" );
     if ( node->first_child != NULL )
     {
         silc_profile_dump_subtree( node->first_child, level + 1 );

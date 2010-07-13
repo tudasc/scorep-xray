@@ -23,6 +23,7 @@
  */
 
 #include <stdint.h>
+#include <inttypes.h>
 #include <sys/stat.h>
 
 #include "SILC_Memory.h"
@@ -33,6 +34,7 @@
 #include "silc_profile_definition.h"
 #include "silc_definitions.h"
 #include "silc_mpi.h"
+#include "silc_runtime_management.h"
 
 static uint64_t callpath_counter = 0;
 
@@ -46,7 +48,7 @@ silc_profile_write_tausnap_def( char* path,
                                 FILE* file )
 {
     fprintf( file,
-             "<event id=\"%d\"><name>%s</name></event>\n",
+             "<event id=\"%" PRIu64 "\"><name>%s</name></event>\n",
              callpath_counter,
              path );
     callpath_counter++;
@@ -142,7 +144,9 @@ silc_profile_write_data_tau( silc_profile_node* node,
 {
     uint64_t tps = SILC_GetClockResolution();
 
-    fprintf( file, "%d %d %d %llu %llu\n", callpath_counter, node->count,
+    fprintf( file,
+             "%" PRIu64 " %" PRIu64 " %" PRIu32 " %" PRIu64 " %" PRIu64 "\n",
+             callpath_counter, node->count,
              silc_profile_get_number_of_child_calls( node ),
              ( silc_profile_get_exclusive_time( node ) * 1000000llu / tps ),
              ( node->inclusive_time.sum * 1000000llu / tps ) );
@@ -166,19 +170,20 @@ silc_profile_write_thread_tau( silc_profile_node* node,
 
     /* Write thread definition */
     fprintf( file,
-             "<thread id=\"%d.0.%d.0\" node=\"%d\" context=\"0\" thread=\"%d\">\n",
+             "<thread id=\"%" PRIu64 ".0.%" PRIi32 ".0\" node=\"%" PRIu64
+             "\" context=\"0\" thread=\"%" PRIi32 "\">\n",
              SILC_Mpi_GetRank(), threadnum, SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "</thread>\n\n" );
-    fprintf( file, "<definitions thread=\"%d.0.%d.0\">\n", SILC_Mpi_GetRank(),
-             threadnum );
+    fprintf( file, "<definitions thread=\"%" PRIu64 ".0.%" PRIi32 ".0\">\n",
+             SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "<metric id=\"0\"><name>TIME</name>\n" );
     fprintf( file, "<units>ms</units>\n" );
     fprintf( file, "</metric>\n" );
     fprintf( file, "</definitions>\n\n" );
 
     /* Write callpath definition */
-    fprintf( file, "<definitions thread=\"%d.0.%d.0\">\n", SILC_Mpi_GetRank(),
-             threadnum );
+    fprintf( file, "<definitions thread=\"%" PRIu64 ".0.%" PRIi32 ".0\">\n",
+             SILC_Mpi_GetRank(), threadnum );
     silc_profile_node* child = node->first_child;
     callpath_counter = 0;
     while ( child != NULL )
@@ -189,8 +194,8 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     fprintf( file, "</definitions>\n\n" );
 
     /* Write metrics data */
-    fprintf( file, "<profile thread=\"%d.0.%d.0\">\n", SILC_Mpi_GetRank(),
-             threadnum );
+    fprintf( file, "<profile thread=\"%" PRIu64 ".0.%" PRIi32 ".0\">\n",
+             SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0\">\n" );
     child            = node->first_child;
@@ -227,8 +232,8 @@ silc_profile_write_tau_snapshot()
     }
 
     /* Open file */
-    sprintf( filename, "%s/%s.%d.0.0.0", dirname, silc_profile_basename,
-             SILC_Mpi_GetRank() );
+    sprintf( filename, "%s/%s.%" PRIu64 ".0.0.0", dirname,
+             silc_profile_basename, SILC_Mpi_GetRank() );
     file = fopen( filename, "w" );
     if ( !file )
     {
