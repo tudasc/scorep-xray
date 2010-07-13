@@ -311,7 +311,6 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
                       SILC_Profile_OutputFormat   outputFormat )
 {
     SILC_PROFILE_ASSURE_INITIALIZED;
-    silc_profile_dump();
 
     /* Thread start node expansion */
     if ( processFlags & SILC_Profile_ProcessThreads )
@@ -325,8 +324,6 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
         silc_profile_assign_callpath_to_master();
         silc_profile_assign_callpath_to_workers();
     }
-
-    silc_profile_dump();
 
     /* Write profile */
     switch ( outputFormat )

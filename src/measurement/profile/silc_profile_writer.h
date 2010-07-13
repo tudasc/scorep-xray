@@ -22,12 +22,14 @@
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status ALPHA
- * Declares profile writer functions.
+ * Declares profile writer functions. This header provides a list of top level
+ * profile writers. Thus, we avoid to include a special file per format. Only
+ * those formats are declared, which are available on the platform.
  */
 
 /**
    Writes the profile in TAU snapshot format to disk. For each rank a separate
-   file is created. The files are named <basename>.<rank>.0.0.0
+   file is created. The files are named <basename>.<rank>.0.0
  */
 extern void
 silc_profile_write_tau_snapshot();

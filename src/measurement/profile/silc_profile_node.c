@@ -599,10 +599,10 @@ silc_profile_find_create_child( silc_profile_node* parent,
     return child;
 }
 
-uint32_t
+uint64_t
 silc_profile_get_number_of_children( silc_profile_node* node )
 {
-    uint32_t           count = 0;
+    uint64_t           count = 0;
     silc_profile_node* child = NULL;
 
     if ( node == NULL )
@@ -619,10 +619,10 @@ silc_profile_get_number_of_children( silc_profile_node* node )
     return count;
 }
 
-uint32_t
+uint64_t
 silc_profile_get_number_of_child_calls( silc_profile_node* node )
 {
-    uint32_t           count = 0;
+    uint64_t           count = 0;
     silc_profile_node* child = NULL;
 
     if ( node == NULL )

@@ -377,7 +377,7 @@ silc_profile_for_all( silc_profile_node*           root_node,
    @return the number of child nodes for @a node. If a NULL pointer is given, 0 is
            returned.
  */
-extern uint32_t
+extern uint64_t
 silc_profile_get_number_of_children( silc_profile_node* node );
 
 /**
@@ -386,7 +386,7 @@ silc_profile_get_number_of_children( silc_profile_node* node );
    @return the number of child calls for @a node. If a NULL pointer is given, 0 is
            returned.
  */
-extern uint32_t
+extern uint64_t
 silc_profile_get_number_of_child_calls( silc_profile_node* node );
 
 /**

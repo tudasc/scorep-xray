@@ -36,13 +36,24 @@
 #include "silc_mpi.h"
 #include "silc_runtime_management.h"
 
+/** Variable used to enumate callpathes during writing. The enumeration gives
+    the position of the callpath in depthsearch and serves as identifer for
+    a callpath.
+ */
 static uint64_t callpath_counter = 0;
 
+/* Forward declaration */
 static void
 silc_profile_write_node_tau( silc_profile_node* node,
                              char*              parentpath,
                              FILE*              file );
 
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   Writes callpath definition to a file.
+   @param path String, containing the callpath.
+   @param file Pointer to the file to which the data is written.
+ */
 static void
 silc_profile_write_tausnap_def( char* path,
                                 FILE* file )
@@ -55,9 +66,12 @@ silc_profile_write_tausnap_def( char* path,
 }
 
 /**
-   Writes a callpath definition for a region in TAU snapshot format.
-   node cannot be NULL because the calling function would not be able to
-   determine the type.
+   Helper function for the profile writer in TAU snapshot format.
+   Writes callpath definition for a regular region.
+   @param node       Pointer to the current node. Can not be NULL because the
+                     calling function would not be able to determine the type.
+   @param parentpath String which contains the callpath for its parent node.
+   @param file       Pointer to the file to which the data is written.
  */
 static void
 silc_profile_write_region_tau( silc_profile_node* node,
@@ -93,20 +107,44 @@ silc_profile_write_region_tau( silc_profile_node* node,
     }
 }
 
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   Writes callpath definition for a parameter string node.
+   @param node       Pointer to the current node.
+   @param parentpath String which contains the callpath for its parent node.
+   @param file       Pointer to the file to which the data is written.
+ */
 static void
 silc_profile_write_paramstring_tau( silc_profile_node* node,
                                     char*              parentpath,
                                     FILE*              file )
 {
+    /** TODO: implement paramter string definition writing */
 }
 
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   Writes callpath definition for a parameter integer node.
+   @param node       Pointer to the current node.
+   @param parentpath String which contains the callpath for its parent node.
+   @param file       Pointer to the file to which the data is written.
+ */
 static void
 silc_profile_write_paramint_tau( silc_profile_node* node,
                                  char*              parentpath,
                                  FILE*              file )
 {
+    /** TODO: implement paramter integer definition writing */
 }
 
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   Dependent on the node type, switches to the particular function
+   for writing callpath definitions.
+   @param node       Pointer to the current node.
+   @param parentpath String which contains the callpath for its parent node.
+   @param file       Pointer to the file to which the data is written.
+ */
 static void
 silc_profile_write_node_tau( silc_profile_node* node,
                              char*              parentpath,
@@ -138,14 +176,24 @@ silc_profile_write_node_tau( silc_profile_node* node,
     }
 }
 
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   Writes the metric data for the runtime of a node and process its children
+   recursively.
+   @param node Pointer to the node which time data is processed.
+   @param file A pointer to an open file to which the data is written.
+ */
 static void
 silc_profile_write_data_tau( silc_profile_node* node,
                              FILE*              file )
 {
     uint64_t tps = SILC_GetClockResolution();
 
+    /* Write data in format:
+       <callpath id> <number of calls> <child calls> <exclusive time> <inclusive time>
+     */
     fprintf( file,
-             "%" PRIu64 " %" PRIu64 " %" PRIu32 " %" PRIu64 " %" PRIu64 "\n",
+             "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
              callpath_counter, node->count,
              silc_profile_get_number_of_child_calls( node ),
              ( silc_profile_get_exclusive_time( node ) * 1000000llu / tps ),
@@ -161,20 +209,29 @@ silc_profile_write_data_tau( silc_profile_node* node,
     }
 }
 
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   It writes the metadata for a thread to a given file and process the regions
+   recursively.
+   @param node      Pointer to the root node of the thread.
+   @param threadnum Number of the thread on this node. The number must be
+                    unique on each node.
+   @param file      A pointer to an open file to which the data is written.
+ */
 static void
 silc_profile_write_thread_tau( silc_profile_node* node,
-                               int32_t            threadnum,
+                               uint64_t           threadnum,
                                FILE*              file )
 {
     SILC_ASSERT( node != NULL );
 
     /* Write thread definition */
     fprintf( file,
-             "<thread id=\"%" PRIu64 ".0.%" PRIi32 ".0\" node=\"%" PRIu64
-             "\" context=\"0\" thread=\"%" PRIi32 "\">\n",
+             "<thread id=\"%" PRIu64 ".0.%" PRIu64 ".0\" node=\"%" PRIu64
+             "\" context=\"0\" thread=\"%" PRIu64 "\">\n",
              SILC_Mpi_GetRank(), threadnum, SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "</thread>\n\n" );
-    fprintf( file, "<definitions thread=\"%" PRIu64 ".0.%" PRIi32 ".0\">\n",
+    fprintf( file, "<definitions thread=\"%" PRIu64 ".0.%" PRIu64 ".0\">\n",
              SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "<metric id=\"0\"><name>TIME</name>\n" );
     fprintf( file, "<units>ms</units>\n" );
@@ -182,7 +239,7 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     fprintf( file, "</definitions>\n\n" );
 
     /* Write callpath definition */
-    fprintf( file, "<definitions thread=\"%" PRIu64 ".0.%" PRIi32 ".0\">\n",
+    fprintf( file, "<definitions thread=\"%" PRIu64 ".0.%" PRIu64 ".0\">\n",
              SILC_Mpi_GetRank(), threadnum );
     silc_profile_node* child = node->first_child;
     callpath_counter = 0;
@@ -194,7 +251,7 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     fprintf( file, "</definitions>\n\n" );
 
     /* Write metrics data */
-    fprintf( file, "<profile thread=\"%" PRIu64 ".0.%" PRIi32 ".0\">\n",
+    fprintf( file, "<profile thread=\"%" PRIu64 ".0.%" PRIu64 ".0\">\n",
              SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0\">\n" );
@@ -209,10 +266,12 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     fprintf( file, "</profile>\n\n" );
 }
 
+/* Implemetation of the top function for writing a TAU snapshot profile.
+ */
 void
 silc_profile_write_tau_snapshot()
 {
-    int32_t            threadnum = 0;
+    uint64_t           threadnum = 0;
     silc_profile_node* thread    = silc_profile.first_root_node;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_PROFILE, "Write profile in TAU snapshot format" );
@@ -232,7 +291,7 @@ silc_profile_write_tau_snapshot()
     }
 
     /* Open file */
-    sprintf( filename, "%s/%s.%" PRIu64 ".0.0.0", dirname,
+    sprintf( filename, "%s/%s.%" PRIu64 ".0.0", dirname,
              silc_profile_basename, SILC_Mpi_GetRank() );
     file = fopen( filename, "w" );
     if ( !file )

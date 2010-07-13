@@ -27,6 +27,7 @@
 #include <stdio.h>
 
 #include "SILC_Memory.h"
+#include "SILC_Definitions.h"
 
 #include "silc_profile_definition.h"
 
