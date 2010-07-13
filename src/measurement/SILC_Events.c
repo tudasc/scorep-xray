@@ -245,12 +245,11 @@ SILC_OmpFork
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
 
-    SILC_Thread_OnThreadFork( /* nRequestedThreads */ omp_get_max_threads() );
+    SILC_Thread_OnThreadFork( nRequestedThreads );
 
     if ( SILC_IsProfilingEnabled() )
     {
-        SILC_Profile_OnFork( location,
-                             /* nRequestedThreads */ omp_get_max_threads() );
+        SILC_Profile_OnFork( location, nRequestedThreads );
     }
 }
 
