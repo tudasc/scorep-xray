@@ -36,33 +36,35 @@
 #include "silc_mpi.h"
 #include "silc_runtime_management.h"
 
-/** Variable used to enumate callpathes during writing. The enumeration gives
-    the position of the callpath in depthsearch and serves as identifer for
-    a callpath.
- */
-static uint64_t callpath_counter = 0;
-
 /* Forward declaration */
 static void
 silc_profile_write_node_tau( silc_profile_node* node,
                              char*              parentpath,
-                             FILE*              file );
+                             FILE*              file,
+                             uint64_t*          callpath_counter );
 
 /**
    Helper function for the profile writer in TAU snapshot format.
    Writes callpath definition to a file.
-   @param path String, containing the callpath.
-   @param file Pointer to the file to which the data is written.
+   @param path String,     containing the callpath.
+   @param file Pointer     to the file to which the data is written.
+   @param callpath_counter counter of the encountered callpathes. The
+                           counter is used to enumerate the callpathes and
+                           serves as an unique id to map callpath definitions
+                           to callpath values. The value of this variable gets
+                           updated inside this function according to the
+                           number of processed callpathes.
  */
 static void
-silc_profile_write_tausnap_def( char* path,
-                                FILE* file )
+silc_profile_write_tausnap_def( char*     path,
+                                FILE*     file,
+                                uint64_t* callpath_counter )
 {
     fprintf( file,
              "<event id=\"%" PRIu64 "\"><name>%s</name></event>\n",
-             callpath_counter,
+             *callpath_counter,
              path );
-    callpath_counter++;
+    ( *callpath_counter )++;
 }
 
 /**
@@ -72,11 +74,18 @@ silc_profile_write_tausnap_def( char* path,
                      calling function would not be able to determine the type.
    @param parentpath String which contains the callpath for its parent node.
    @param file       Pointer to the file to which the data is written.
+   @param callpath_counter counter of the encountered callpathes. The
+                           counter is used to enumerate the callpathes and
+                           serves as an unique id to map callpath definitions
+                           to callpath values. The value of this variable gets
+                           updated inside this function according to the
+                           number of processed callpathes.
  */
 static void
 silc_profile_write_region_tau( silc_profile_node* node,
                                char*              parentpath,
-                               FILE*              file )
+                               FILE*              file,
+                               uint64_t*          callpath_counter )
 {
     /* Construct callpath name */
     const char* name   = SILC_Region_GetName( SILC_PROFILE_DATA2REGION( node->type_specific_data ) );
@@ -96,13 +105,13 @@ silc_profile_write_region_tau( silc_profile_node* node,
     }
 
     /* write definition */
-    silc_profile_write_tausnap_def( path, file );
+    silc_profile_write_tausnap_def( path, file, callpath_counter );
 
     /* invoke children */
     silc_profile_node* child = node->first_child;
     while ( child != NULL )
     {
-        silc_profile_write_node_tau( child, path, file );
+        silc_profile_write_node_tau( child, path, file, callpath_counter );
         child = child->next_sibling;
     }
 }
@@ -113,11 +122,18 @@ silc_profile_write_region_tau( silc_profile_node* node,
    @param node       Pointer to the current node.
    @param parentpath String which contains the callpath for its parent node.
    @param file       Pointer to the file to which the data is written.
+   @param callpath_counter counter of the encountered callpathes. The
+                           counter is used to enumerate the callpathes and
+                           serves as an unique id to map callpath definitions
+                           to callpath values. The value of this variable gets
+                           updated inside this function according to the
+                           number of processed callpathes.
  */
 static void
 silc_profile_write_paramstring_tau( silc_profile_node* node,
                                     char*              parentpath,
-                                    FILE*              file )
+                                    FILE*              file,
+                                    uint64_t*          callpath_counter )
 {
     /** TODO: implement paramter string definition writing */
 }
@@ -128,11 +144,18 @@ silc_profile_write_paramstring_tau( silc_profile_node* node,
    @param node       Pointer to the current node.
    @param parentpath String which contains the callpath for its parent node.
    @param file       Pointer to the file to which the data is written.
+   @param callpath_counter counter of the encountered callpathes. The
+                           counter is used to enumerate the callpathes and
+                           serves as an unique id to map callpath definitions
+                           to callpath values. The value of this variable gets
+                           updated inside this function according to the
+                           number of processed callpathes.
  */
 static void
 silc_profile_write_paramint_tau( silc_profile_node* node,
                                  char*              parentpath,
-                                 FILE*              file )
+                                 FILE*              file,
+                                 uint64_t*          callpath_counter )
 {
     /** TODO: implement paramter integer definition writing */
 }
@@ -144,11 +167,18 @@ silc_profile_write_paramint_tau( silc_profile_node* node,
    @param node       Pointer to the current node.
    @param parentpath String which contains the callpath for its parent node.
    @param file       Pointer to the file to which the data is written.
+   @param callpath_counter counter of the encountered callpathes. The
+                           counter is used to enumerate the callpathes and
+                           serves as an unique id to map callpath definitions
+                           to callpath values. The value of this variable gets
+                           updated inside this function according to the
+                           number of processed callpathes.
  */
 static void
 silc_profile_write_node_tau( silc_profile_node* node,
                              char*              parentpath,
-                             FILE*              file )
+                             FILE*              file,
+                             uint64_t*          callpath_counter )
 {
     if ( node == NULL )
     {
@@ -158,15 +188,15 @@ silc_profile_write_node_tau( silc_profile_node* node,
     switch ( node->node_type )
     {
         case silc_profile_node_regular_region:
-            silc_profile_write_region_tau( node, parentpath, file );
+            silc_profile_write_region_tau( node, parentpath, file, callpath_counter );
             break;
 
         case silc_profile_node_parameter_string:
-            silc_profile_write_paramstring_tau( node, parentpath, file );
+            silc_profile_write_paramstring_tau( node, parentpath, file, callpath_counter );
             break;
 
         case silc_profile_node_parameter_integer:
-            silc_profile_write_paramint_tau( node, parentpath, file );
+            silc_profile_write_paramint_tau( node, parentpath, file, callpath_counter );
             break;
 
         default:
@@ -182,10 +212,17 @@ silc_profile_write_node_tau( silc_profile_node* node,
    recursively.
    @param node Pointer to the node which time data is processed.
    @param file A pointer to an open file to which the data is written.
+   @param callpath_counter counter of the encountered callpathes. The
+                           counter is used to enumerate the callpathes and
+                           serves as an unique id to map callpath definitions
+                           to callpath values. The value of this variable gets
+                           updated inside this function according to the
+                           number of processed callpathes.
  */
 static void
 silc_profile_write_data_tau( silc_profile_node* node,
-                             FILE*              file )
+                             FILE*              file,
+                             uint64_t*          callpath_counter )
 {
     uint64_t tps = SILC_GetClockResolution();
 
@@ -194,17 +231,17 @@ silc_profile_write_data_tau( silc_profile_node* node,
      */
     fprintf( file,
              "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
-             callpath_counter, node->count,
+             *callpath_counter, node->count,
              silc_profile_get_number_of_child_calls( node ),
              ( silc_profile_get_exclusive_time( node ) * 1000000llu / tps ),
              ( node->inclusive_time.sum * 1000000llu / tps ) );
-    callpath_counter++;
+    ( *callpath_counter )++;
 
     /* invoke children */
     silc_profile_node* child = node->first_child;
     while ( child != NULL )
     {
-        silc_profile_write_data_tau( child, file );
+        silc_profile_write_data_tau( child, file, callpath_counter );
         child = child->next_sibling;
     }
 }
@@ -223,6 +260,11 @@ silc_profile_write_thread_tau( silc_profile_node* node,
                                uint64_t           threadnum,
                                FILE*              file )
 {
+    /* The counter is used to enumerate the callpathes and
+       serves as an unique id to map callpath definitions
+       to callpath values.*/
+    uint64_t callpath_counter = 0;
+
     SILC_ASSERT( node != NULL );
 
     /* Write thread definition */
@@ -245,7 +287,7 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     callpath_counter = 0;
     while ( child != NULL )
     {
-        silc_profile_write_node_tau( child, NULL, file );
+        silc_profile_write_node_tau( child, NULL, file, &callpath_counter );
         child = child->next_sibling;
     }
     fprintf( file, "</definitions>\n\n" );
@@ -259,7 +301,7 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     callpath_counter = 0;
     while ( child != NULL )
     {
-        silc_profile_write_data_tau( child, file );
+        silc_profile_write_data_tau( child, file, &callpath_counter );
         child = child->next_sibling;
     }
     fprintf( file, "</interval_data>\n" );
