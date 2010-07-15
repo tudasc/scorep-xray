@@ -40,6 +40,43 @@ extern SILC_DefinitionManager silc_definition_manager;
  * Initialization / Finalization
  *****************************************************************************/
 
+/* *INDENT-OFF* */
+#define SILC_CUBE4_INIT_MAP(Type, type, tablesize)                            \
+    if ( sizeof( SILC_ ## Type ## Handle ) == 8 )                             \
+    {                                                                         \
+        map-> type ## _table_cube                                             \
+            = SILC_Hashtab_CreateSize( tablesize,                             \
+                                       &SILC_Hashtab_HashInt64,               \
+                                       &SILC_Hashtab_CompareInt64 );          \
+    }                                                                         \
+    else if ( sizeof( SILC_ ## Type ## Handle ) == 4 )                        \
+    {                                                                         \
+        map-> type ## _table_cube                                             \
+             = SILC_Hashtab_CreateSize( tablesize,                            \
+                                        &SILC_Hashtab_HashInt32,              \
+                                        &SILC_Hashtab_CompareInt32 );         \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
+        SILC_ASSERT( false );                                                 \
+        goto cleanup;                                                         \
+    }                                                                         \
+    if ( map-> type ## _table_cube == NULL )                                  \
+    {                                                                         \
+        SILC_ERROR_POSIX( "Unable to create " #type " mapping table" );       \
+        goto cleanup;                                                         \
+    }                                                                         \
+    map-> type ## _table_silc                                                 \
+        = SILC_Hashtab_CreateSize( tablesize,                                 \
+                                   &SILC_Hashtab_HashPointer,                 \
+                                   &SILC_Hashtab_ComparePointer );            \
+    if ( map-> type ## _table_silc == NULL )                                  \
+    {                                                                         \
+        SILC_ERROR_POSIX( "Unable to create " #type " mapping table" );       \
+        goto cleanup;                                                         \
+    }
+/* *INDENT-ON* */
+
 silc_cube4_definitions_map*
 silc_cube4_create_definitions_map()
 {
@@ -62,106 +99,13 @@ silc_cube4_create_definitions_map()
     map->callpath_table_silc = NULL;
 
     /* Initialize region table */
-    if ( sizeof( SILC_RegionHandle ) == 8 )
-    {
-        map->region_table_cube = SILC_Hashtab_CreateSize( 128,
-                                                          &SILC_Hashtab_HashInt64,
-                                                          &SILC_Hashtab_CompareInt64 );
-    }
-    else if ( sizeof( SILC_RegionHandle ) == 4 )
-    {
-        map->region_table_cube = SILC_Hashtab_CreateSize( 128,
-                                                          &SILC_Hashtab_HashInt32,
-                                                          &SILC_Hashtab_CompareInt32 );
-    }
-    else
-    {
-        SILC_ASSERT( false );
-        goto cleanup;
-    }
-
-    if ( map->region_table_cube == NULL )
-    {
-        SILC_ERROR_POSIX( "Unable to create region mapping table" );
-        goto cleanup;
-    }
-
-    map->region_table_silc = SILC_Hashtab_CreateSize( 128,
-                                                      &SILC_Hashtab_HashPointer,
-                                                      &SILC_Hashtab_ComparePointer );
-    if ( map->region_table_silc == NULL )
-    {
-        SILC_ERROR_POSIX( "Unable to create region mapping table" );
-        goto cleanup;
-    }
+    SILC_CUBE4_INIT_MAP( Region, region, 128 )
 
     /* Initialize metric table */
-    if ( sizeof( SILC_CounterHandle ) == 8 )
-    {
-        map->metric_table_cube = SILC_Hashtab_CreateSize( 8,
-                                                          &SILC_Hashtab_HashInt64,
-                                                          &SILC_Hashtab_CompareInt64 );
-    }
-    else if ( sizeof( SILC_CounterHandle ) == 4 )
-    {
-        map->metric_table_cube = SILC_Hashtab_CreateSize( 8,
-                                                          &SILC_Hashtab_HashInt32,
-                                                          &SILC_Hashtab_CompareInt32 );
-    }
-    else
-    {
-        SILC_ASSERT( 0 );
-        goto cleanup;
-    }
-
-    if ( map->metric_table_cube == NULL )
-    {
-        SILC_ERROR_POSIX( "Unable to create metric mapping table" );
-        goto cleanup;
-    }
-
-    map->metric_table_silc = SILC_Hashtab_CreateSize( 8,
-                                                      &SILC_Hashtab_HashPointer,
-                                                      &SILC_Hashtab_ComparePointer );
-    if ( map->metric_table_silc == NULL )
-    {
-        SILC_ERROR_POSIX( "Unable to create metric mapping table" );
-        goto cleanup;
-    }
+    SILC_CUBE4_INIT_MAP( Counter, metric, 8 )
 
     /* Initialize callpath table */
-    if ( sizeof( SILC_CounterHandle ) == 8 )
-    {
-        map->callpath_table_cube = SILC_Hashtab_CreateSize( 256,
-                                                            &SILC_Hashtab_HashInt64,
-                                                            &SILC_Hashtab_CompareInt64 );
-    }
-    else if ( sizeof( SILC_RegionHandle ) == 4 )
-    {
-        map->callpath_table_cube = SILC_Hashtab_CreateSize( 256,
-                                                            &SILC_Hashtab_HashInt32,
-                                                            &SILC_Hashtab_CompareInt32 );
-    }
-    else
-    {
-        SILC_ASSERT( 0 );
-        goto cleanup;
-    }
-
-    if ( map->callpath_table_cube == NULL )
-    {
-        SILC_ERROR_POSIX( "Unable to create callpath mapping table" );
-        goto cleanup;
-    }
-
-    map->callpath_table_silc = SILC_Hashtab_CreateSize( 256,
-                                                        &SILC_Hashtab_HashPointer,
-                                                        &SILC_Hashtab_ComparePointer );
-    if ( map->callpath_table_silc == NULL )
-    {
-        SILC_ERROR_POSIX( "Unable to create callpath mapping table" );
-        goto cleanup;
-    }
+    SILC_CUBE4_INIT_MAP( Callpath, callpath, 256 )
 
     return map;
 
@@ -251,54 +195,44 @@ silc_cube4_add_metric_mapping( silc_cube4_definitions_map* map,
 /* ****************************************************************************
  * Get mappings
  *****************************************************************************/
-#define SILC_CUBE4_GET_MAPPINGS( target_format, target_cast, def_type )         \
-    SILC_Hashtab_Entry* entry = NULL;                                        \
-    entry                     = SILC_Hashtab_Find( map->def_type ## _table_ ## target_format,    \
-                                                   handle, NULL );                                \
-    if ( entry == NULL ) { return NULL; }                                                                               \
-    return target_cast entry->value;                                          \
 
-cube_metric*
-silc_get_cube4_metric( silc_cube4_definitions_map* map,
-                       SILC_CounterHandle*         handle )
-{
-    SILC_CUBE4_GET_MAPPINGS( cube, ( cube_metric* ), metric );
+/* *INDENT-OFF* */
+#define SILC_GET_CUBE_MAPPING( ret_type, type, Type )                         \
+ret_type *                                                                    \
+silc_get_cube4_ ## type (silc_cube4_definitions_map* map,                     \
+                         SILC_ ## Type ## Handle     handle )                 \
+{                                                                             \
+    SILC_Hashtab_Entry* entry = NULL;                                         \
+    entry = SILC_Hashtab_Find( map->type ## _table_cube,                      \
+                               &handle, NULL );                               \
+    if ( entry == NULL ) { return NULL; }                                     \
+    return ( ret_type *) entry->value;                                        \
 }
 
-cube_region*
-silc_get_cube4_region( silc_cube4_definitions_map* map,
-                       SILC_RegionHandle*          handle )
-{
-    SILC_CUBE4_GET_MAPPINGS( cube, ( cube_region* ), region );
+#define SILC_GET_SILC_MAPPING( in_type, type, Type )                         \
+SILC_ ## Type ## Handle                                                       \
+silc_get_ ## type ## _from_cube4 (silc_cube4_definitions_map* map,            \
+                                  in_type *                   handle)         \
+{                                                                             \
+    SILC_Hashtab_Entry* entry = NULL;                                         \
+    entry = SILC_Hashtab_Find( map->type ## _table_silc,                      \
+                               handle, NULL );                                \
+    if ( entry == NULL ) { return NULL; }                                     \
+    return *( SILC_ ## Type ## Handle *) entry->value;                        \
 }
+/* *INDENT-ON* */
 
-cube_cnode*
-silc_get_cube4_callpath( silc_cube4_definitions_map* map,
-                         SILC_CallpathHandle*        handle )
-{
-    SILC_CUBE4_GET_MAPPINGS( cube, ( cube_cnode* ), callpath );
-}
+SILC_GET_CUBE_MAPPING( cube_metric, metric, Counter );
 
-SILC_RegionHandle
-silc_get_region_from_cube4( silc_cube4_definitions_map* map,
-                            cube_region*                handle )
-{
-    SILC_CUBE4_GET_MAPPINGS( silc, *( SILC_RegionHandle* ), region );
-}
+SILC_GET_CUBE_MAPPING( cube_region, region, Region );
 
-SILC_CounterHandle
-silc_get_metric_from_cube4( silc_cube4_definitions_map* map,
-                            cube_metric*                handle )
-{
-    SILC_CUBE4_GET_MAPPINGS( silc, *( SILC_CounterHandle* ), metric );
-}
+SILC_GET_CUBE_MAPPING( cube_cnode, callpath, Callpath );
 
-SILC_CallpathHandle
-silc_get_callpath_from_cube4( silc_cube4_definitions_map* map,
-                              cube_cnode*                 handle )
-{
-    SILC_CUBE4_GET_MAPPINGS( silc, *( SILC_CallpathHandle* ), callpath );
-}
+SILC_GET_SILC_MAPPING( cube_metric, metric, Counter );
+
+SILC_GET_SILC_MAPPING( cube_region, region, Region );
+
+SILC_GET_SILC_MAPPING( cube_cnode, callpath, Callpath );
 
 /* ****************************************************************************
  * Internal definition writer functions
@@ -367,9 +301,9 @@ silc_write_callpath_definitions_to_cube4( cube_t*                     my_cube,
     {
         /* Collect necessary data */
         silc_region   = &definition->callpath_argument.region_handle;
-        region        = silc_get_cube4_region( map, &silc_region );
+        region        = silc_get_cube4_region( map, silc_region );
         silc_callpath = &definition->parent_callpath_handle;
-        parent        = silc_get_cube4_callpath( map, &silc_callpath );
+        parent        = silc_get_cube4_callpath( map, silc_callpath );
 
         /* Register region to cube */
         cnode = cube_def_cnode( my_cube, region, parent, index );
@@ -410,6 +344,6 @@ silc_write_definitions_to_cube4( cube_t*                     my_cube,
 {
     silc_write_counter_definitions_to_cube4( my_cube, map );
     silc_write_region_definitions_to_cube4( my_cube, map );
-    silc_write_callpath_definition_to_cube4( my_cube, map );
-    silc_write_location_definition_to_cube4( my_cube, map );
+    silc_write_callpath_definitions_to_cube4( my_cube, map );
+    silc_write_location_definitions_to_cube4( my_cube, map );
 }
