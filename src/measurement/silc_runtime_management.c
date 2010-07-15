@@ -54,7 +54,7 @@ static void silc_update_location_definition_id( SILC_Thread_LocationData* locati
 
 char silc_experiment_dir_name[ dir_name_size ];
 
-OTF2_ArchiveData* silc_otf2_archive = 0;
+OTF2_Archive* silc_otf2_archive = 0;
 
 
 typedef struct silc_deferred_location silc_deferred_location;

@@ -75,7 +75,7 @@ SILC_ProcessDeferredLocations();
  * Archive for trace data. One per process, can contain multiple "location"
  * writers.
  */
-extern OTF2_ArchiveData* silc_otf2_archive;
+extern OTF2_Archive* silc_otf2_archive;
 
 
 /** @brief Did the first buffer flush happened, of so we can't switch to MPI
