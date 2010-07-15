@@ -34,6 +34,7 @@
 #include "silc_mpi.h"
 #include <stdlib.h>
 
+#include <inttypes.h>
 
 SILC_Trace_LocationData*
 SILC_Trace_CreateLocationData()
@@ -114,6 +115,7 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
 
     #pragma omp critical (trace_on_location_creation)
     {
+        printf( "OTF2_Archive_GetEvtWriter with OTF2_UNDEFINED_UINT64\n" );
         trace_data->otf_writer = OTF2_Archive_GetEvtWriter( silc_otf2_archive,
                                                             OTF2_UNDEFINED_UINT64,
                                                             SILC_OnTracePreFlush,
@@ -151,6 +153,7 @@ SILC_SetOtf2WriterLocationId( SILC_Thread_LocationData* threadLocationData )
     assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
     trace_data->otf_location = SILC_CalculateGlobalLocationId( threadLocationData );
 
+    printf( "OTF2_EvtWriter_SetLocationID with loaction = %" PRIu64 "\n", trace_data->otf_location );
     SILC_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
                                                           trace_data->otf_location );
     if ( SILC_SUCCESS != error )

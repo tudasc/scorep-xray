@@ -57,6 +57,8 @@
 
 #include <OTF2_File.h>
 
+#include <inttypes.h>
+
 
 /** @brief Measurement system initialized? */
 static bool silc_initialized;
@@ -196,7 +198,7 @@ silc_otf2_initialize()
     {
         return;
     }
-
+    printf( "OTF2_Archive_New archiveName = traces, archivePath = %s\n", SILC_GetExperimentDirName() );
     silc_otf2_archive = OTF2_Archive_New( "traces",
                                           SILC_GetExperimentDirName(),
                                           OTF2_FILEMODE_WRITE,
@@ -237,11 +239,13 @@ silc_set_otf2_archive_master_slave()
     SILC_Error_Code error;
     if ( SILC_Mpi_GetRank() == 0 )
     {
+        printf( "OTF2_Archive_SetMasterSlaveMode from rank %d with OTF2_MASTER\n", SILC_Mpi_GetRank() );
         error = OTF2_Archive_SetMasterSlaveMode(
             silc_otf2_archive, OTF2_MASTER );
     }
     else
     {
+        printf( "OTF2_Archive_SetMasterSlaveMode from rank %d with OTF2_SLAVE\n", SILC_Mpi_GetRank() );
         error = OTF2_Archive_SetMasterSlaveMode(
             silc_otf2_archive, OTF2_SLAVE );
     }
@@ -561,10 +565,12 @@ silc_otf2_finalize()
 
     if ( SILC_Mpi_GetRank() == 0 )
     {
+        printf( "OTF2_Archive_SetNumberOfLocations from rank %d with %d locations\n", SILC_Mpi_GetRank(), n_global_locations );
         OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_global_locations );
 
         if ( !silc_env_unify )
         {
+            printf( "OTF2_Archive_GetGlobDefWriter\n" );
             OTF2_GlobDefWriter* global_definition_writer =
                 OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,
                                                SILC_OnTracePreFlush,
@@ -584,7 +590,7 @@ silc_otf2_finalize()
                         OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
                         n_definitions_per_location[ index ] );
                     assert( status == SILC_SUCCESS );
-                    //printf( "rank %d,   location %d,   global_location %" PRIu64 ",   defs %d\n", rank, location_id,  global_location_id, n_definitions_per_location[ index ]);
+                    printf( "OTF2_GlobDefWriter_GlobDefLocation from rank %d, location %d, global_location %" PRIu64 ", definitions %d\n", rank, location_id,  global_location_id, n_definitions_per_location[ index ] );
                     ++index;
                 }
             }
@@ -601,5 +607,6 @@ silc_otf2_finalize()
     {
         free( n_locations_per_rank );
     }
+    printf( "OTF2_Archive_Delete\n" );
     OTF2_Archive_Delete( silc_otf2_archive );
 }
