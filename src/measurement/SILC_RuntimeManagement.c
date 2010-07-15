@@ -199,8 +199,8 @@ silc_otf2_initialize()
         return;
     }
     printf( "OTF2_Archive_New archiveName = traces, archivePath = %s\n", SILC_GetExperimentDirName() );
-    silc_otf2_archive = OTF2_Archive_New( "traces",
-                                          SILC_GetExperimentDirName(),
+    silc_otf2_archive = OTF2_Archive_New( SILC_GetExperimentDirName(),
+                                          "traces",
                                           OTF2_FILEMODE_WRITE,
                                           1024 * 1024, // 1MB
                                           OTF2_SUBSTRATE_POSIX );
