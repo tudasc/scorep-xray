@@ -607,6 +607,6 @@ silc_otf2_finalize()
     {
         free( n_locations_per_rank );
     }
-    printf( "OTF2_Archive_Delete\n" );
+    printf( "OTF2_Archive_Delete on rank %d\n", SILC_Mpi_GetRank() );
     OTF2_Archive_Delete( silc_otf2_archive );
 }
