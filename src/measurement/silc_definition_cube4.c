@@ -40,6 +40,16 @@ extern SILC_DefinitionManager silc_definition_manager;
  * Initialization / Finalization
  *****************************************************************************/
 
+/**
+   @def SILC_CUBE4_INIT_MAP(Type, type, tablesize)
+   Defines a macro for the initialization of the mapping tables for one type
+   of handles. This macro is used in silc_cube4_create_definitions_map.
+   @param Type      The definitions type with first letter capitalized. Values
+                    be 'Region', 'Counter', 'Callpath'.
+   @param type      The definition type in small letters. Values can be
+                    'region', 'metric', 'callpath'.
+   @param tablesize Defines the number of slots for the mapping table.
+ */
 /* *INDENT-OFF* */
 #define SILC_CUBE4_INIT_MAP(Type, type, tablesize)                            \
     if ( sizeof( SILC_ ## Type ## Handle ) == 8 )                             \
@@ -77,6 +87,7 @@ extern SILC_DefinitionManager silc_definition_manager;
     }
 /* *INDENT-ON* */
 
+/* Creates a new silc_cube4_definitions_map. */
 silc_cube4_definitions_map*
 silc_cube4_create_definitions_map()
 {
@@ -136,6 +147,77 @@ cleanup:
     }
     free( map );
     return NULL;
+}
+
+/**
+   @def SILC_CUBE4_DELETE_TABLE_ENTRY
+   Constructs a function for deleting a table entry for a mapping table.
+   The name of the generated function will be
+   silc_delete_map_entry_<type><element>. Where entries of the *_cube tables
+   need 'key' as element and *_silc tables need 'value' as element.
+   The functions are called from @ref silc_cube4_delete_definitions_map.
+   @param type    The definition type in small letters. Values can be
+                  'region', 'metric', 'callpath'.
+   @param Type    The definitions type with first letter capitalized. Values
+                  be 'Region', 'Counter', 'Callpath'.
+   @param element Defines whether the key or the value is a silc handle which
+                  was copied and need a free. Values are either 'key', or
+                  'value'.
+ */
+
+/* *INDENT-OFF* */
+#define SILC_CUBE4_DELETE_TABLE_ENTRY(type, Type, element)                    \
+static void                                                                   \
+silc_delete_map_entry_ ## type ## element ( SILC_Hashtab_Entry* entry )       \
+{                                                                             \
+    SILC_ASSERT( entry );                                                     \
+    free( ( SILC_ ## Type ## Handle*)entry->element );                        \
+}
+/* *INDENT-ON* */
+
+/* Construct silc_delete_map_entry_regionkey( SILC_Hashtab_Entry* entry ) */
+SILC_CUBE4_DELETE_TABLE_ENTRY( region, Region, key )
+
+/* Construct silc_delete_map_entry_regionvalue( SILC_Hashtab_Entry* entry ) */
+SILC_CUBE4_DELETE_TABLE_ENTRY( region, Region, value )
+
+/* Construct silc_delete_map_entry_metrickey( SILC_Hashtab_Entry* entry ) */
+SILC_CUBE4_DELETE_TABLE_ENTRY( metric, Counter, key )
+
+/* Construct silc_delete_map_entry_metricvalue( SILC_Hashtab_Entry* entry ) */
+SILC_CUBE4_DELETE_TABLE_ENTRY( metric, Counter, value )
+
+/* Construct silc_delete_map_entry_callpathkey( SILC_Hashtab_Entry* entry ) */
+SILC_CUBE4_DELETE_TABLE_ENTRY( callpath, Callpath, key )
+
+/* Construct silc_delete_map_entry_callpathvalue( SILC_Hashtab_Entry* entry ) */
+SILC_CUBE4_DELETE_TABLE_ENTRY( callpath, Callpath, value )
+
+/* Deletes the silc_cube4_definitions_map */
+void
+silc_cube4_delete_definitions_map( silc_cube4_definitions_map* map )
+{
+    SILC_Hashtab_Foreach( map->region_table_cube,
+                          &silc_delete_map_entry_regionkey );
+    SILC_Hashtab_Foreach( map->region_table_cube,
+                          &silc_delete_map_entry_regionvalue );
+    SILC_Hashtab_Foreach( map->metric_table_cube,
+                          &silc_delete_map_entry_metrickey );
+    SILC_Hashtab_Foreach( map->metric_table_cube,
+                          &silc_delete_map_entry_metricvalue );
+    SILC_Hashtab_Foreach( map->callpath_table_cube,
+                          &silc_delete_map_entry_callpathkey );
+    SILC_Hashtab_Foreach( map->callpath_table_cube,
+                          &silc_delete_map_entry_callpathvalue );
+
+    SILC_Hashtab_Free( map->region_table_cube );
+    SILC_Hashtab_Free( map->metric_table_cube );
+    SILC_Hashtab_Free( map->callpath_table_cube );
+    SILC_Hashtab_Free( map->region_table_silc );
+    SILC_Hashtab_Free( map->metric_table_silc );
+    SILC_Hashtab_Free( map->callpath_table_silc );
+
+    free( map );
 }
 
 /* ****************************************************************************
@@ -209,7 +291,7 @@ silc_get_cube4_ ## type (silc_cube4_definitions_map* map,                     \
     return ( ret_type *) entry->value;                                        \
 }
 
-#define SILC_GET_SILC_MAPPING( in_type, type, Type )                         \
+#define SILC_GET_SILC_MAPPING( in_type, type, Type, TYPE )                    \
 SILC_ ## Type ## Handle                                                       \
 silc_get_ ## type ## _from_cube4 (silc_cube4_definitions_map* map,            \
                                   in_type *                   handle)         \
@@ -217,7 +299,7 @@ silc_get_ ## type ## _from_cube4 (silc_cube4_definitions_map* map,            \
     SILC_Hashtab_Entry* entry = NULL;                                         \
     entry = SILC_Hashtab_Find( map->type ## _table_silc,                      \
                                handle, NULL );                                \
-    if ( entry == NULL ) { return NULL; }                                     \
+    if ( entry == NULL ) { return SILC_INVALID_ ## TYPE; }                    \
     return *( SILC_ ## Type ## Handle *) entry->value;                        \
 }
 /* *INDENT-ON* */
@@ -228,11 +310,11 @@ SILC_GET_CUBE_MAPPING( cube_region, region, Region );
 
 SILC_GET_CUBE_MAPPING( cube_cnode, callpath, Callpath );
 
-SILC_GET_SILC_MAPPING( cube_metric, metric, Counter );
+SILC_GET_SILC_MAPPING( cube_metric, metric, Counter, COUNTER );
 
-SILC_GET_SILC_MAPPING( cube_region, region, Region );
+SILC_GET_SILC_MAPPING( cube_region, region, Region, REGION );
 
-SILC_GET_SILC_MAPPING( cube_cnode, callpath, Callpath );
+SILC_GET_SILC_MAPPING( cube_cnode, callpath, Callpath, CALLPATH );
 
 /* ****************************************************************************
  * Internal definition writer functions
