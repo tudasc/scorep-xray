@@ -72,7 +72,7 @@ SILC_DEFINE_DEFINITION_TYPE( Region )
     SILC_String_Definition_Movable file_handle;
     SILC_LineNo                    begin_line;
     SILC_LineNo                    end_line;
-    SILC_AdapterType               adapter_type;           // currently not used
+    SILC_AdapterType               adapter_type;           // Used by Cube 4
 };
 
 
