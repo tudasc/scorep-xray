@@ -9,8 +9,9 @@ ${guard:start}
 ${proto:c}
 {
   ${rtype} return_val;
+/*
   const int xnb_active = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
-
+*/
   if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_${group|uppercase}))
   {
     int sz;
