@@ -27,3 +27,6 @@ serial_test_LDADD    = $(LIB_ROOT)libsilc_serial.la
 
 TESTS      += $(SRC_ROOT)test/serial/run_serial_test.sh
 EXTRA_DIST += $(SRC_ROOT)test/serial/run_serial_test.sh
+
+TESTS      += $(SRC_ROOT)test/serial/run_serial_test_profile.sh
+EXTRA_DIST += $(SRC_ROOT)test/serial/run_serial_test_profile.sh
