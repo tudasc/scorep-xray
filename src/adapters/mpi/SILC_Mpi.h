@@ -22,7 +22,8 @@
    @status     ALPHA
    @ingroup    MPI_Wrapper
 
-   @brief It includes all source files for the MPI wrappers.
+   @brief It includes all source files for the MPI wrappers. Macros and
+          Declarations common to all MPI wrappers.
  */
 
 #include "SILC_Mpi_Communicator.h"

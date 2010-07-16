@@ -48,10 +48,10 @@ SILC_Hashtab* silc_compiler_file_table = NULL;
 *****************************************************************************************/
 
 /**
-   Deletes one file table entry.#
+   Deletes one file table entry.
    @param entry Pointer to the entry to be deleted.
  */
-void
+static void
 silc_compiler_delete_file_entry( SILC_Hashtab_Entry* entry )
 {
     SILC_ASSERT( entry );

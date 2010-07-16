@@ -493,9 +493,10 @@ MPI_Ibsend( void*        buf,
             MPI_Comm     comm,
             MPI_Request* request )
 {
-    int       return_val;
-    const int xnb_active = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-
+    int return_val;
+/*
+   const int xnb_active = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
         int sz;
@@ -552,9 +553,10 @@ MPI_Irsend( void*        buf,
             MPI_Comm     comm,
             MPI_Request* request )
 {
-    int       return_val;
-    const int xnb_active = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-
+    int return_val;
+/*
+   const int xnb_active = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
         int sz;
@@ -611,9 +613,10 @@ MPI_Isend( void*        buf,
            MPI_Comm     comm,
            MPI_Request* request )
 {
-    int       return_val;
-    const int xnb_active = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-
+    int return_val;
+/*
+   const int xnb_active = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
         int sz;
@@ -670,9 +673,10 @@ MPI_Issend( void*        buf,
             MPI_Comm     comm,
             MPI_Request* request )
 {
-    int       return_val;
-    const int xnb_active = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-
+    int return_val;
+/*
+   const int xnb_active = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
         int sz;
@@ -732,8 +736,10 @@ MPI_Irecv( void*        buf,
            MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int       return_val;
+/* no asynchroneous communication handling at first
+   const int xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
+    int return_val;
 
     if ( event_gen_active )
     {
@@ -822,10 +828,12 @@ int
 MPI_Wait( MPI_Request* request,
           MPI_Status*  status )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    int                 return_val;
-    MPI_Status          mystatus;
-    struct SilcRequest* orig_req;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   MPI_Status         mystatus;
+   struct SilcRequest* orig_req;
+ */
 
     if ( event_gen_active )
     {
@@ -834,12 +842,12 @@ MPI_Wait( MPI_Request* request,
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_WAIT ] );
     }
 
-    if ( status == MPI_STATUS_IGNORE )
-    {
-        status = &mystatus;
-    }
-
 /* no asynchroneous communication handling at the beginning included
+   if (status == MPI_STATUS_IGNORE)
+   {
+    status = &mystatus;
+   }
+
    orig_req   = silc_request_get(*request);
  */
     return_val = PMPI_Wait( request, status );
@@ -873,9 +881,12 @@ MPI_Waitall( int          count,
              MPI_Request* requests,
              MPI_Status*  array_of_statuses )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    int                 return_val, i;
-    struct SilcRequest* orig_req;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+/* no asynchroneous communication handling at the beginning included
+   struct SilcRequest* orig_req;
+   int                 i;
+ */
+    int return_val;
 
     if ( event_gen_active )
     {
@@ -925,11 +936,13 @@ MPI_Waitany( int          count,
              int*         index,
              MPI_Status*  status )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int           xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int                 return_val;
-    struct SilcRequest* orig_req;
-    MPI_Status          mystatus;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+   struct SilcRequest* orig_req;
+   MPI_Status         mystatus;
+ */
 
     if ( event_gen_active )
     {
@@ -996,10 +1009,13 @@ MPI_Waitsome( int          incount,
               int*         array_of_indices,
               MPI_Status*  array_of_statuses )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int           xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int                 return_val, i;
-    struct SilcRequest* orig_req;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+   int                i;
+   struct SilcRequest* orig_req;
+ */
 
     if ( event_gen_active )
     {
@@ -1089,11 +1105,13 @@ MPI_Test( MPI_Request* request,
           int*         flag,
           MPI_Status*  status )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int           xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int                 return_val;
-    struct SilcRequest* orig_req;
-    MPI_Status          mystatus;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+   struct SilcRequest* orig_req;
+   MPI_Status         mystatus;
+ */
 
     if ( event_gen_active )
     {
@@ -1148,11 +1166,13 @@ MPI_Testany( int          count,
              int*         flag,
              MPI_Status*  status )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int           xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int                 return_val;
-    struct SilcRequest* orig_req;
-    MPI_Status          mystatus;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+   struct SilcRequest* orig_req;
+   MPI_Status         mystatus;
+ */
 
     if ( event_gen_active )
     {
@@ -1216,10 +1236,13 @@ MPI_Testall( int          count,
              int*         flag,
              MPI_Status*  array_of_statuses )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int           xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int                 return_val, i;
-    struct SilcRequest* orig_req;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+   int                i;
+   struct SilcRequest* orig_req;
+ */
 
     if ( event_gen_active )
     {
@@ -1283,10 +1306,13 @@ MPI_Testsome( int          incount,
               int*         array_of_indices,
               MPI_Status*  array_of_statuses )
 {
-    const int           event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int           xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int                 return_val, i;
-    struct SilcRequest* orig_req;
+    const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
+    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+   int                i;
+   struct SilcRequest* orig_req;
+ */
 
     if ( event_gen_active )
     {
@@ -1596,8 +1622,10 @@ int
 MPI_Start( MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
+    int return_val;
 
     if ( event_gen_active )
     {
@@ -1655,8 +1683,10 @@ MPI_Startall( int          count,
               MPI_Request* array_of_requests )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int       return_val, i;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
+    int return_val, i;
 
     if ( event_gen_active )
     {
@@ -1723,9 +1753,11 @@ int
 MPI_Request_free( MPI_Request* request )
 {
     const int event_gen_active = SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P );
-    const int xnb_active       = ( silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK );
-    int       orig_req_null    = ( *request == MPI_REQUEST_NULL );
-    int       return_val;
+/* no asynchroneous communication handling at the beginning included
+   const int          xnb_active       = (silc_mpi_enabled & SILC_MPI_ENABLED_XNONBLOCK);
+ */
+    int orig_req_null = ( *request == MPI_REQUEST_NULL );
+    int return_val;
 /* no asynchroneous communication handling at the beginning included
    struct SilcRequest* req;
  */

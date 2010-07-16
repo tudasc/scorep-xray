@@ -57,8 +57,6 @@ __cyg_profile_func_enter( void* func,
 {
     silc_compiler_hash_node* hash_node;
 
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter." );
-
     /*
      * put hash table entries via mechanism for bfd symbol table
      * to calculate function addresses if measurement was not initialized
@@ -69,9 +67,6 @@ __cyg_profile_func_enter( void* func,
         /* not initialized so far */
         SILC_InitMeasurement();
     }
-
-
-    SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " function pointer: %ld ", ( long )func );
 
     if ( ( hash_node = silc_compiler_hash_get( ( long )func ) ) )
     {
