@@ -45,7 +45,8 @@ endif
 .PHONY: doxygen-project-number update-revision clean-doxygen-user doxygen-user doxygen-user-pdf beautify beautify-clean
 
 clean-local: clean-doxygen-user
-	rm -rf user_provided_configure_args
+	rm -rf $(builddir)/user_provided_configure_args
+	rm -f  $(builddir)/include/silc/scorep_meets_tau.h
 
 ## In the following conditional we must distinguish if we are in "developer
 ## mode", i.e. if we are working on a svn working copy, or if we are in "user
