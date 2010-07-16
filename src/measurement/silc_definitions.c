@@ -42,7 +42,6 @@
 #include "silc_mpi.h"
 #include <jenkins_hash.h>
 
-#include <inttypes.h>
 
 SILC_DefinitionManager  silc_definition_manager;
 SILC_DefinitionManager* silc_remote_definition_manager = 0;
@@ -160,7 +159,6 @@ silc_create_definition_writer()
     uint64_t otf2_location = SILC_Thread_GetTraceLocationData(
         SILC_Thread_GetLocationData() )->otf_location;
 
-    printf( "OTF2_Archive_GetDefWriter with location = %" PRIu64 "\n", otf2_location );
     OTF2_DefWriter* definition_writer =
         OTF2_Archive_GetDefWriter( silc_otf2_archive,
                                    otf2_location,
