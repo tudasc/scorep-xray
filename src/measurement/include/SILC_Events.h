@@ -64,6 +64,7 @@
 /*@{*/
 
 
+// scorep_meets_tau_begin
 /**
  * Generate a region enter event in the measurement system.
  *
@@ -75,7 +76,10 @@ SILC_EnterRegion
     SILC_RegionHandle regionHandle
 );
 
+// scorep_meets_tau_end
 
+
+// scorep_meets_tau_begin
 /**
  * Generate a region exit event in the measurement system.
  *
@@ -86,6 +90,8 @@ SILC_ExitRegion
 (
     SILC_RegionHandle regionHandle
 );
+
+// scorep_meets_tau_end
 
 
 /**

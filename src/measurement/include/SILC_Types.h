@@ -51,18 +51,22 @@
  */
 /*@{*/
 
+
+// scorep_meets_tau_begin
 /**
  * Type used in specifying line numbers.
  * @see SILC_DefineRegion()
  */
 typedef uint32_t SILC_LineNo;
+// scorep_meets_tau_end
 
-
+// scorep_meets_tau_begin
 /**
  * Symbolic constant representing an invalid or unknown line number.
  * @see SILC_DefineRegion()
  */
 #define SILC_INVALID_LINE_NO 0
+// scorep_meets_tau_end
 
 
 /**
@@ -135,6 +139,7 @@ typedef uint32_t SILC_LineNo;
 #define SILC_INVALID_ROOT_RANK INT32_MAX
 
 
+// scorep_meets_tau_begin
 /**
  * Types to be used in defining a region (SILC_DefineRegion()). In order to
  * track the origin of a region definition, the adapter needs to provide @e
@@ -151,6 +156,7 @@ typedef enum SILC_AdapterType
 
     SILC_INVALID_ADAPTER_TYPE /**< For internal use only. */
 } SILC_AdapterType;
+// scorep_meets_tau_end
 
 
 /**
@@ -195,6 +201,7 @@ typedef enum SILC_GroupType
 } SILC_GroupType;
 
 
+// scorep_meets_tau_begin
 /**
  * Types to be used in defining a region (SILC_DefineRegion()). These types
  * are currently not used inside the measurement system. This @e may change in
@@ -243,6 +250,7 @@ typedef enum SILC_RegionType
 
     SILC_INVALID_REGION_TYPE /**< For internal use only. */
 } SILC_RegionType;
+// scorep_meets_tau_end
 
 
 /**

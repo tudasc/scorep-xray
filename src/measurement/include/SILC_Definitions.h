@@ -84,6 +84,7 @@ SILC_DefineSourceFile
 );
 
 
+// scorep_meets_tau_begin
 /**
  * Associate a code region with a process unique file handle.
  *
@@ -137,6 +138,8 @@ SILC_DefineRegion
     SILC_AdapterType      adapter,
     SILC_RegionType       regionType
 );
+
+// scorep_meets_tau_end
 
 
 const char*

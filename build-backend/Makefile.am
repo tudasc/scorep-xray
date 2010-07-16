@@ -47,17 +47,3 @@ clean-local-silc-experiment-dirs:
 clean-local-silc-config-tests:
 	$(RM) test_silc_config_number.*.out
 	$(RM) test_silc_config_size.*.out
-
-#uninstall-hook:
-
-#install-data-hook: install-scorep-meets-tau
-
-install-scorep-meets-tau:
-	cp -p ../include/silc/scorep_meets_tau_tmp.h ../include/silc/scorep_meets_tau.h
-	headers=`find $(INC_ROOT)src/measurement/include -name "*h"`;              \
-	for i in $$headers; do                                                     \
-	    awk -f $(INC_ROOT)tools/tau/scorep_meets_tau.awk $$i >>                \
-                   ../include/silc/scorep_meets_tau.h;                             \
-	done
-	echo "#endif /* SCOREP_MEETS_TAU_H */" >> ../include/silc/scorep_meets_tau.h;
-

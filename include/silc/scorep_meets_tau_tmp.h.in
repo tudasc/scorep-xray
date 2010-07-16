@@ -18,7 +18,13 @@
 
 
 /**
- * @file       scorep_meets_tau.h
+ * @file scorep_meets_tau.h This file defined a limited private interface to
+ * the SILC measurement system particularly tailored to the needs of the TAU
+ * Performance System (http://www.cs.uoregon.edu/research/tau/home.php). There
+ * will be no support for other users than the TAU developers. SILC major
+ * releases may brake this interface where minor releases may only add
+ * functionality.
+ * 
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -26,4 +32,10 @@
  */
 
 #define SCOREP_VERSION @PACKAGE_VERSION@
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <SILC_PublicTypes.h>
 

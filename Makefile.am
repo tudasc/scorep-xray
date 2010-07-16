@@ -68,6 +68,8 @@ if SVN_CONTROLLED #-----------------------------------------------------------
 #USER_DOC_DIR = $(top_distdir)/doc
 USER_DOC_DIR = $(top_distdir)$(ac_silc_doxygen_distdir)/doc
 
+install-data-local: install-scorep-meets-tau
+
 dist-hook: doxygen-user-pdf
 	if test -d "$(USER_DOC_DIR)/html"; then                               \
 	    cd "$(USER_DOC_DIR)"; tar czvf html.tar.gz html; rm -rf html/;    \
@@ -128,7 +130,7 @@ clean-doxygen-user:
 
 DOC_SRC_DIR = $(srcdir)/doc
 
-install-data-local: 
+install-data-local: install-scorep-meets-tau
 	if test -f "$(DOC_SRC_DIR)/html.tar.gz"; then                            \
             $(MKDIR_P) $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc;                  \
             $(INSTALL_DATA) $(DOC_SRC_DIR)/html.tar.gz                           \
@@ -153,8 +155,6 @@ install-data-local:
             rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/doxygen;                             \
         fi
 
-uninstall-local:
-	rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@
 
 endif # SVN_CONTROLLED -------------------------------------------------------
 
@@ -209,3 +209,24 @@ beautify-clean:
 
 endif # HAVE_UNCRUSTIFY
 endif # SVN_CONTROLLED -------------------------------------------------------
+
+
+install-scorep-meets-tau:
+	cp -p $(builddir)/include/silc/scorep_meets_tau_tmp.h $(builddir)/include/silc/scorep_meets_tau.h
+	ordered_headers="SILC_DefinitionHandles.h SILC_DefinitionLocking.h SILC_Memory.h SILC_RuntimeManagement.h SILC_Thread_Types.h SILC_Types.h SILC_Adapter.h SILC_Config.h SILC_Definitions.h SILC_Events.h"; \
+	for i in $$ordered_headers; do                                                                \
+	    awk -f $(srcdir)/tools/tau/scorep_meets_tau.awk $(srcdir)/src/measurement/include/$$i >>  \
+                   $(builddir)/include/silc/scorep_meets_tau.h;                   \
+	done
+	echo "#ifdef __cplusplus"              >> ./include/silc/scorep_meets_tau.h;
+	echo "} /* extern C */"                >> ./include/silc/scorep_meets_tau.h;
+	echo "#endif"                          >> ./include/silc/scorep_meets_tau.h;
+	echo ""                                >> ./include/silc/scorep_meets_tau.h;
+	echo "#endif /* SCOREP_MEETS_TAU_H */" >> ./include/silc/scorep_meets_tau.h;
+	$(MKDIR_P) $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel
+	$(INSTALL_DATA) $(builddir)/include/silc/scorep_meets_tau.h $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel/scorep_meets_tau.h
+
+
+uninstall-local:
+	rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@
+
