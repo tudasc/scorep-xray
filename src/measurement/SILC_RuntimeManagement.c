@@ -445,6 +445,14 @@ silc_finalize( void )
     }
     silc_finalized = true;
 
+    // MPICH1 creates some extra processes that are not properely SILC
+    // initialized and don't execute normal user code. We need to prevent SILC
+    // finalization of these processes. See otf2:ticket:154.
+    if ( SILC_Mpi_HasMpi() && !SILC_Mpi_IsInitialized() )
+    {
+        return;
+    }
+
     // Calling SILC_Event.h functions after this point is considered
     // an instrumentation error.
 
