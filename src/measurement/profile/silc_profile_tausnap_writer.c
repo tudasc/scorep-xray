@@ -293,7 +293,7 @@ silc_profile_write_thread_tau( silc_profile_node* node,
     fprintf( file, "</definitions>\n\n" );
 
     /* Write metrics data */
-    fprintf( file, "<profile thread=\"%" PRIu64 ".0.%" PRIu64 ".0\">\n",
+    fprintf( file, "<profile thread=\"%d.0.%" PRIu64 ".0\">\n",
              SILC_Mpi_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0\">\n" );
