@@ -63,8 +63,8 @@ extern char* silc_compiler_executable;
 
 #ifdef INTEL_COMPILER
 extern void
-silc_compiler_name_add( char*   name,
-                        int32_t id );
+silc_compiler_name_add( const char* name,
+                        int32_t     id );
 
 #endif /* INTEL_COMPILER */
 
@@ -311,7 +311,6 @@ silc_compiler_get_sym_tab( void )
 #endif  /* GNU_DEMANGLE */
 
 #ifdef INTEL_COMPILER
-        printf( "found function %s\n", funcname );
         silc_compiler_hash_put( region_counter, funcname, filename, lno );
         silc_compiler_name_add( funcname, region_counter );
         region_counter++;

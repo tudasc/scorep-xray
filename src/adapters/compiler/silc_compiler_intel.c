@@ -80,7 +80,7 @@ silc_compiler_delete_name_entry( SILC_Hashtab_Entry* entry )
 
 /* Finalize the name table */
 void
-silc_compiler_final_file_table()
+silc_compiler_final_name_table()
 {
     SILC_Hashtab_Foreach( silc_compiler_name_table, &silc_compiler_delete_name_entry );
     SILC_Hashtab_Free( silc_compiler_name_table );
@@ -334,7 +334,7 @@ silc_compiler_finalize()
     {
         /* Delete hash table */
         silc_compiler_hash_free();
-        silc_compiler_final_file_table();
+        silc_compiler_final_name_table();
 
         /* Set initilaization flag */
         silc_compiler_initialize = 1;
