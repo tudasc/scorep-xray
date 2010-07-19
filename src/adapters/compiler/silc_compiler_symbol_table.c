@@ -61,6 +61,13 @@
 
 extern char* silc_compiler_executable;
 
+#ifdef INTEL_COMPILER
+extern void
+silc_compiler_name_add( char*   name,
+                        int32_t id );
+
+#endif /* INTEL_COMPILER */
+
 /* ***************************************************************************************
    Demangling declarations
 *****************************************************************************************/
@@ -305,6 +312,7 @@ silc_compiler_get_sym_tab( void )
 
 #ifdef INTEL_COMPILER
         silc_compiler_hash_put( region_counter, funcname, filename, lno );
+        silc_compiler_name_add( funcname, region_counter );
         region_counter++;
 #else
         silc_compiler_hash_put( addr, funcname, filename, lno );
@@ -449,6 +457,7 @@ silc_compiler_get_sym_tab( void )
             char* region_name = strdup( funcname );
 #ifdef INTEL_COMPILER
             silc_compiler_hash_put( region_counter, region_name, filename, line_no );
+            silc_compiler_name_add( funcname, region_counter );
             region_counter++;
 #else
             silc_compiler_hash_put( addr, region_name, filename, line_no );

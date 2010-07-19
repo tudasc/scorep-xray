@@ -46,6 +46,105 @@
  */
 static int silc_compiler_initialize = 1;
 
+/**
+ * Hashtable to map region name to region id.
+ */
+static SILC_Hashtab* silc_compiler_name_table = NULL;
+
+/* ***************************************************************************************
+   Hashtable functions to map names to id.
+*****************************************************************************************/
+
+/**
+ * Initialize name table
+ */
+static void
+silc_compiler_init_name_table()
+{
+    silc_compiler_name_table = SILC_Hashtab_CreateSize( 1024, &SILC_Hashtab_HashString,
+                                                        &SILC_Hashtab_CompareStrings );
+}
+
+/**
+   Deletes one name table entry.
+   @param entry Pointer to the entry to be deleted.
+ */
+static void
+silc_compiler_delete_name_entry( SILC_Hashtab_Entry* entry )
+{
+    SILC_ASSERT( entry );
+
+    free( ( int32_t* )entry->value );
+    free( ( char* )entry->key );
+}
+
+/* Finalize the name table */
+void
+silc_compiler_final_file_table()
+{
+    SILC_Hashtab_Foreach( silc_compiler_name_table, &silc_compiler_delete_name_entry );
+    SILC_Hashtab_Free( silc_compiler_name_table );
+    silc_compiler_name_table = NULL;
+}
+
+/* Returns the id for a given region name. */
+int32_t
+silc_compiler_get_id_from_name( const char* name )
+{
+    SILC_Hashtab_Entry* entry = NULL;
+    char*               region_name;
+
+    /* Check input */
+    if ( name == NULL )
+    {
+        return 0;
+    }
+
+    /* Tne intel compiler prepends the filename to the function name.
+       -> Need to remove the file name. */
+    region_name = name;
+    while ( +name != '\0' )
+    {
+        if ( *name == ':' )
+        {
+            region_name = name + 1;
+            break;
+        }
+        name++;
+    }
+
+    /* Look up in hash table */
+    entry = SILC_Hashtab_Find( silc_compiler_name_table, region_name, NULL );
+
+    /* If not found, unknown region */
+    if ( !entry )
+    {
+        return 0;
+    }
+
+    return *( int32_t* )entry->value;
+}
+
+/**
+ * Adds an entry to the name table
+ */
+void
+silc_compiler_name_add( char*   name,
+                        int32_t id )
+{
+    /* Reserve own storage for region name */
+    char* region_name = ( char* )malloc( ( strlen( name ) + 1 ) * sizeof( char ) );
+    strcpy( region_name, file );
+
+    /* Reserve storage for id */
+    int_32_t* id_copy = malloc( sizeof( int32_t ) );
+    *id_copy = id;
+
+    /* Store handle in hashtable */
+    SILC_Hashtab_Insert( silc_compiler_name_table, ( void* )region_name,
+                         id, NULL );
+}
+
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
 *****************************************************************************************/
@@ -78,6 +177,8 @@ __VT_IntelEntry( char*     str,
     /* Register new region if unknown */
     if ( *id == 0 )
     {
+        *id = silc_compiler_get_id_from_name( str );
+
         if ( hash_node = silc_compiler_hash_get( *id ) )
         {
             /* -- region entered the first time, register region -- */
@@ -209,6 +310,7 @@ silc_compiler_init_adapter()
 
         /* Initialize hash tables */
         silc_compiler_hash_init();
+        silc_compiler_init_name_table();
 
         /* call function to calculate symbol table */
         silc_compiler_get_sym_tab();
@@ -232,6 +334,7 @@ silc_compiler_finalize()
     {
         /* Delete hash table */
         silc_compiler_hash_free();
+        silc_compiler_final_file_table();
 
         /* Set initilaization flag */
         silc_compiler_initialize = 1;
