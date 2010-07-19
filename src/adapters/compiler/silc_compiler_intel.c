@@ -92,7 +92,7 @@ int32_t
 silc_compiler_get_id_from_name( const char* name )
 {
     SILC_Hashtab_Entry* entry = NULL;
-    char*               region_name;
+    const char*         region_name;
 
     /* Check input */
     if ( name == NULL )
@@ -103,7 +103,7 @@ silc_compiler_get_id_from_name( const char* name )
     /* Tne intel compiler prepends the filename to the function name.
        -> Need to remove the file name. */
     region_name = name;
-    while ( +name != '\0' )
+    while ( *name != '\0' )
     {
         if ( *name == ':' )
         {
@@ -129,20 +129,20 @@ silc_compiler_get_id_from_name( const char* name )
  * Adds an entry to the name table
  */
 void
-silc_compiler_name_add( char*   name,
-                        int32_t id )
+silc_compiler_name_add( const char* name,
+                        int32_t     id )
 {
     /* Reserve own storage for region name */
     char* region_name = ( char* )malloc( ( strlen( name ) + 1 ) * sizeof( char ) );
-    strcpy( region_name, file );
+    strcpy( region_name, name );
 
     /* Reserve storage for id */
-    int_32_t* id_copy = malloc( sizeof( int32_t ) );
+    int32_t* id_copy = malloc( sizeof( int32_t ) );
     *id_copy = id;
 
     /* Store handle in hashtable */
     SILC_Hashtab_Insert( silc_compiler_name_table, ( void* )region_name,
-                         id, NULL );
+                         id_copy, NULL );
 }
 
 /* ***************************************************************************************

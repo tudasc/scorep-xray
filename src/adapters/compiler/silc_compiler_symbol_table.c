@@ -311,6 +311,7 @@ silc_compiler_get_sym_tab( void )
 #endif  /* GNU_DEMANGLE */
 
 #ifdef INTEL_COMPILER
+        printf( "found function %s\n", funcname );
         silc_compiler_hash_put( region_counter, funcname, filename, lno );
         silc_compiler_name_add( funcname, region_counter );
         region_counter++;
