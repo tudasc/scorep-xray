@@ -1,0 +1,52 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Daniel Lorenz <d.lorenz@fz-juelich.de>
+## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+## Checks whether the compiler adapter creates events. Its done by calling 
+## other implementation of SILC_EnterRegion and SILC_ExitRegion. Terminate 
+## successfully if both are called. Else return with error.
+
+noinst_LTLIBRARIES += libcompiler_test_dummy_ms.la
+
+libcompiler_test_dummy_ms_la_SOURCES = $(SRC_ROOT)test/adapters/compiler/dummy_ms.c
+
+libcompiler_test_dummy_ms_la_CPPFLAGS = $(AM_CPPFLAGS)   \
+    -I$(INC_DIR_UTIL)                                 \
+    -I$(PUBLIC_INC_DIR)                               \
+    -I$(INC_ROOT)src/measurement/include              \
+    -I$(INC_ROOT)src/adapters/include
+
+check_PROGRAMS += compiler_adapter_test 
+
+compiler_adapter_test_SOURCES  = $(SRC_ROOT)test/adapters/compiler/compiler_test.c
+
+compiler_adapter_test_CPPFLAGS = $(AM_CPPFLAGS)       \
+    @COMPILER_INSTRUMENTATION_CPPFLAGS@               \
+    -I$(INC_DIR_UTIL)                                 \
+    -I$(PUBLIC_INC_DIR)                               \
+    -I$(INC_ROOT)src/measurement/include              \
+    -I$(INC_ROOT)src/adapters/include
+
+compiler_adapter_test_LDADD =                          \
+    $(LIB_ROOT)libsilc_adapter_compiler.la             \
+    $(LIB_DIR_UTIL)libsilc_utilities.la                \
+    $(LIB_ROOT)libsilc_timer.la                        \
+    $(LIB_ROOT)libcompiler_test_dummy_ms.la
+
+TESTS += compiler_adapter_test
