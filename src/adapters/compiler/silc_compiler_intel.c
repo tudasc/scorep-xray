@@ -193,9 +193,13 @@ __VT_IntelEntry( char*     str,
             *id2 = SILC_COMPILER_FILTER_ID;
         }
     }
+    else if ( *id != SILC_COMPILER_FILTER_ID )
+    {
+        hash_node = silc_compiler_hash_get( *id );
+    }
 
     /* Enter event */
-    if ( *id != SILC_COMPILER_FILTER_ID )
+    if ( hash_node != NULL )
     {
         SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
                            "enter the region with handle %i ",
