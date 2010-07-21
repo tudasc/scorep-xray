@@ -351,6 +351,15 @@ SILC_TriggerParameterString
 );
 
 
+/**
+ * Returns the time stamp of the last triggered event
+ *
+ */
+uint64_t
+SILC_GetLastTimeStamp
+(
+);
+
 /*@}*/
 
 

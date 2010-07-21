@@ -50,7 +50,8 @@ MPI_Bsend( void*        buf,
            int          tag,
            MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
@@ -59,6 +60,13 @@ MPI_Bsend( void*        buf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_BSEND ] );
 
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+    #endif
+
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
@@ -66,6 +74,13 @@ MPI_Bsend( void*        buf,
                           tag, count * sz );
         }
         return_val = PMPI_Bsend( buf, count, datatype, dest, tag, comm );
+
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Bsend( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
+        }
+    #endif
 
         SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_BSEND ] );
         SILC_MPI_EVENT_GEN_ON();
@@ -98,7 +113,8 @@ MPI_Rsend( void*        buf,
            int          tag,
            MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
@@ -107,6 +123,13 @@ MPI_Rsend( void*        buf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_RSEND ] );
 
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+    #endif
+
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
@@ -114,6 +137,13 @@ MPI_Rsend( void*        buf,
                           tag, count * sz );
         }
         return_val = PMPI_Rsend( buf, count, datatype, dest, tag, comm );
+
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Rsend( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
+        }
+    #endif
 
         SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_RSEND ] );
         SILC_MPI_EVENT_GEN_ON();
@@ -146,7 +176,8 @@ MPI_Send( void*        buf,
           int          tag,
           MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
@@ -155,6 +186,13 @@ MPI_Send( void*        buf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_SEND ] );
 
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+    #endif
+
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
@@ -162,6 +200,13 @@ MPI_Send( void*        buf,
                           tag, count * sz );
         }
         return_val = PMPI_Send( buf, count, datatype, dest, tag, comm );
+
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Send( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
+        }
+    #endif
 
         SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_SEND ] );
         SILC_MPI_EVENT_GEN_ON();
@@ -194,7 +239,8 @@ MPI_Ssend( void*        buf,
            int          tag,
            MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
@@ -203,6 +249,13 @@ MPI_Ssend( void*        buf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_SSEND ] );
 
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+    #endif
+
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
@@ -210,6 +263,13 @@ MPI_Ssend( void*        buf,
                           tag, count * sz );
         }
         return_val = PMPI_Ssend( buf, count, datatype, dest, tag, comm );
+
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Ssend( buf, count, datatype, dest, tag, comm, start_time_stamp, return_val );
+        }
+    #endif
 
         SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_SSEND ] );
         SILC_MPI_EVENT_GEN_ON();
@@ -249,17 +309,32 @@ MPI_Recv( void*        buf,
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_P2P ) )
     {
         int        sz;
+        uint64_t   start_time_stamp;
         MPI_Status mystatus;
 
         SILC_MPI_EVENT_GEN_OFF();
 
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_RECV ] );
 
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+    #endif
+
         if ( status == MPI_STATUS_IGNORE )
         {
             status = &mystatus;
         }
         return_val = PMPI_Recv( buf, count, datatype, source, tag, comm, status );
+
+    #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Recv( buf, count, datatype, source, tag, comm, status, start_time_stamp, return_val );
+        }
+    #endif
 
         if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
@@ -268,6 +343,8 @@ MPI_Recv( void*        buf,
             SILC_MpiRecv( SILC_MPI_RANK_TO_PE( status->MPI_SOURCE, comm ),
                           SILC_MPI_COMM_ID( comm ), status->MPI_TAG, count * sz );
         }
+
+
 
         SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_RECV ] );
 

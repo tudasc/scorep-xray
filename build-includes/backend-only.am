@@ -13,6 +13,12 @@ include ../vendor/cutest/Makefile.inc.am
 include ../vendor/hash/Makefile.inc.am
 include ../include/silc/Makefile.inc.am
 
+
+## include Online Access only when building on ALTIX
+if PLATFORM_ALTIX
+include ../src/measurement/OA/Makefile.inc.am
+endif
+
 ## include tests only when building on the frontend. They can't be run easily 
 ## on the backend.
 if BUILD_TESTS

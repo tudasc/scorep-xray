@@ -25,4 +25,8 @@ nobase_include_HEADERS +=                    \
     $(PUBLIC_INC_SRC)SILC_User_Functions.h   \
     $(PUBLIC_INC_SRC)SILC_User_Types.h       \
     $(PUBLIC_INC_SRC)SILC_User_Variables.h   \
-    $(PUBLIC_INC_SRC)pomp_lib.h
+    $(PUBLIC_INC_SRC)pomp_lib.h				 
+    
+if PLATFORM_ALTIX
+	nobase_include_HEADERS += $(PUBLIC_INC_SRC)SILC_OA_Functions.h
+endif

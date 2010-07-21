@@ -34,6 +34,7 @@
 #include "SILC_Definitions.h"
 #include "SILC_Events.h"
 #include "SILC_RuntimeManagement.h"
+#include "SILC_DefinitionHandles.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,6 +105,11 @@ silc_get_status_array( int32_t size );
  */
 extern int32_t silc_mpi_nogen;
 
+/** Flag to indicate whether MPI Profiling hooks are turned on or off. If it is set to 1,
+    hooks are executed. If it is set to zero, no hooks are executed.
+ */
+extern int32_t silc_hooks_on;
+
 extern int     silc_mpi_status_size;
 
 /** @def SILC_MPI_IS_EVENT_GEN_ON
@@ -129,6 +135,23 @@ extern int     silc_mpi_status_size;
     Turn on event generation for MPI wrappers.
  */
 #define SILC_MPI_EVENT_GEN_ON()             silc_mpi_nogen = 0
+
+/** @def SILC_IS_MPI_HOOKS_ON
+    Check whether MPI profiling hooks are enabled globally.
+ */
+#define SILC_IS_MPI_HOOKS_ON                            silc_hooks_on
+
+/** @def SILC_MPI_HOOKS_ON
+    Turn on MPI Profiling hooks inside MPI adapter.
+ */
+#define SILC_MPI_HOOKS_ON()                     silc_hooks_on = 1
+
+/** @def SILC_MPI_HOOKS_OFF
+    Turn off MPI Profiling hooks inside MPI adapter.
+ */
+#define SILC_MPI_HOOKS_OFF()                    silc_hooks_on = 0
+
+#define SILC_MPI_HOOKS_SET( value )                     silc_hooks_on = value
 
 /** @} */
 

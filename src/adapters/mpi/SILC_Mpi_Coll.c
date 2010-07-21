@@ -50,7 +50,8 @@ MPI_Allgather( void*        sendbuf,
                MPI_Datatype recvtype,
                MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -61,7 +62,21 @@ MPI_Allgather( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_ALLGATHER ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( recvtype, &recvsz );
@@ -104,7 +119,8 @@ MPI_Allgatherv( void*        sendbuf,
                 MPI_Datatype recvtype,
                 MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -115,7 +131,21 @@ MPI_Allgatherv( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_ALLGATHERV ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( recvtype, &recvsz );
@@ -161,7 +191,8 @@ MPI_Allreduce( void*        sendbuf,
                MPI_Op       op,
                MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -172,7 +203,21 @@ MPI_Allreduce( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_ALLREDUCE ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Allreduce( sendbuf, recvbuf, count, datatype, op, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Allreduce( sendbuf, recvbuf, count, datatype, op, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -213,7 +258,8 @@ MPI_Alltoall( void*        sendbuf,
               MPI_Datatype recvtype,
               MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -224,7 +270,21 @@ MPI_Alltoall( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_ALLTOALL ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( recvtype, &recvsz );
@@ -268,7 +328,8 @@ MPI_Alltoallv( void*        sendbuf,
                MPI_Datatype recvtype,
                MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -279,7 +340,21 @@ MPI_Alltoallv( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_ALLTOALLV ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( recvtype, &recvsz );
@@ -328,7 +403,8 @@ MPI_Alltoallw( void*        sendbuf,
                MPI_Datatype recvtypes[],
                MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -339,7 +415,21 @@ MPI_Alltoallw( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_ALLTOALLW ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Comm_size( comm, &N );
@@ -380,7 +470,8 @@ MPI_Alltoallw( void*        sendbuf,
 int
 MPI_Barrier( MPI_Comm comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -389,7 +480,21 @@ MPI_Barrier( MPI_Comm comm )
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_BARRIER ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Barrier( comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Barrier( comm, start_time_stamp, return_val );
+        }
+      #endif
 
         SILC_MpiCollective( silc_mpi_regid[ SILC__MPI_BARRIER ],
                             SILC_MPI_COMM_ID( comm ),
@@ -424,7 +529,8 @@ MPI_Bcast( void*        buffer,
            int          root,
            MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -435,7 +541,21 @@ MPI_Bcast( void*        buffer,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_BCAST ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Bcast( buffer, count, datatype, root, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Bcast( buffer, count, datatype, root, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -483,7 +603,8 @@ MPI_Exscan( void*        sendbuf,
             MPI_Op       op,
             MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -494,7 +615,21 @@ MPI_Exscan( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_EXSCAN ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Exscan( sendbuf, recvbuf, count, datatype, op, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Exscan( sendbuf, recvbuf, count, datatype, op, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -537,7 +672,8 @@ MPI_Gather( void*        sendbuf,
             int          root,
             MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -548,7 +684,21 @@ MPI_Gather( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_GATHER ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Gather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Gather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( sendtype, &sendsz );
@@ -600,7 +750,8 @@ MPI_Gatherv( void*        sendbuf,
              int          root,
              MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -611,7 +762,21 @@ MPI_Gatherv( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_GATHERV ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Gatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Gatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( sendtype, &sendsz );
@@ -665,7 +830,8 @@ MPI_Reduce( void*        sendbuf,
             int          root,
             MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -676,7 +842,21 @@ MPI_Reduce( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_REDUCE ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Reduce( sendbuf, recvbuf, count, datatype, op, root, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Reduce( sendbuf, recvbuf, count, datatype, op, root, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -717,7 +897,8 @@ MPI_Reduce_scatter( void*        sendbuf,
                     MPI_Op       op,
                     MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -728,7 +909,21 @@ MPI_Reduce_scatter( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_REDUCE_SCATTER ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, datatype, op, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, datatype, op, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -773,7 +968,8 @@ MPI_Reduce_scatter_block( void*        sendbuf,
                           MPI_Op       op,
                           MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -784,7 +980,21 @@ MPI_Reduce_scatter_block( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_REDUCE_SCATTER_BLOCK ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Reduce_scatter_block( sendbuf, recvbuf, recvcount, datatype, op, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Reduce_scatter_block( sendbuf, recvbuf, recvcount, datatype, op, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -824,7 +1034,8 @@ MPI_Scan( void*        sendbuf,
           MPI_Op       op,
           MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -835,7 +1046,21 @@ MPI_Scan( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_SCAN ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Scan( sendbuf, recvbuf, count, datatype, op, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Scan( sendbuf, recvbuf, count, datatype, op, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( datatype, &sz );
@@ -878,7 +1103,8 @@ MPI_Scatter( void*        sendbuf,
              int          root,
              MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -889,7 +1115,21 @@ MPI_Scatter( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_SCATTER ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Scatter( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Scatter( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         PMPI_Type_size( recvtype, &recvsz );
@@ -941,7 +1181,8 @@ MPI_Scatterv( void*        sendbuf,
               int          root,
               MPI_Comm     comm )
 {
-    int return_val;
+    int      return_val;
+    uint64_t start_time_stamp;
 
     if ( SILC_MPI_IS_EVENT_GEN_ON_FOR( SILC_MPI_ENABLED_COLL ) )
     {
@@ -952,7 +1193,21 @@ MPI_Scatterv( void*        sendbuf,
         SILC_MPI_EVENT_GEN_OFF();
         SILC_EnterRegion( silc_mpi_regid[ SILC__MPI_SCATTERV ] );
 
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            start_time_stamp = SILC_GetLastTimeStamp();
+        }
+      #endif
+
         return_val = PMPI_Scatterv( sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm );
+
+      #if !defined( SILC_MPI_NO_HOOKS )
+        if ( SILC_IS_MPI_HOOKS_ON )
+        {
+            SILC_Hooks_Post_MPI_Scatterv( sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, start_time_stamp, return_val );
+        }
+      #endif
 
 
         sendcount = sendsz = 0;

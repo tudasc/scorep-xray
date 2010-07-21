@@ -59,6 +59,31 @@ call_pmpi
     const SILC::Wrapgen::Func& func
 );
 
+/** Function handler to create a post communication hook call.
+ */
+std::string
+call_posthook
+(
+    const SILC::Wrapgen::Func& func
+);
+
+/** Function handler to create a pre communication hook call.
+ */
+std::string
+call_prehook
+(
+    const SILC::Wrapgen::Func& func
+);
+
+/** Function handler to declare variables needed by hooks.
+ */
+std::string
+declare_hooks
+(
+    const SILC::Wrapgen::Func& func
+);
+
+
 std::string
 call_f2c_c2f
 (
@@ -232,6 +257,25 @@ guard_start
  */
 std::string
 guard_end
+(
+    const SILC::Wrapgen::Func& func
+);
+
+/** Returns the opening statement of the hooks guard.
+    The guard prevents the building of MPI Porfiling Hooks.
+    It inserts #if ! defined(SILC_MPI_NO_HOOKS).
+ */
+std::string
+guard_hooks
+(
+    const SILC::Wrapgen::Func& func
+);
+
+/** Returns the if statement to check whether hooks are enabled.
+    It inserts if(SILC_IS_MPI_HOOKS_ON).
+ */
+std::string
+check_hooks
 (
     const SILC::Wrapgen::Func& func
 );

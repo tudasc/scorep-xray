@@ -46,20 +46,22 @@ struct silc_status
     bool is_experiment_dir_created;
     bool is_profiling_enabled;
     bool is_tracing_enabled;
+    bool is_oa_enabled;
     bool otf2_has_flushed;
 };
 
 
 silc_status status = {
-    INT_MAX,              // mpi_rank
-    false,                // mpi_rank_is_set
-    false,                // mpi_is_initialized
-    false,                // mpi_is_finalized
-    0,                    // mpi_comm_world_size
-    false,                // is_experiment_dir_created
-    false,                // is_profiling_enabled
-    false,                // is_tracing_enabled
-    false                 // otf2_has_flushed
+    INT_MAX,                              // mpi_rank
+    false,                                // mpi_rank_is_set
+    false,                                // mpi_is_initialized
+    false,                                // mpi_is_finalized
+    0,                                    // mpi_comm_world_size
+    false,                                // is_experiment_dir_created
+    true,                                 // is_profiling_enabled
+    false,                                // is_tracing_enabled
+    true,                                 // is_oa_enabled
+    false                                 // otf2_has_flushed
 };
 
 
@@ -171,6 +173,11 @@ SILC_IsProfilingEnabled()
     return status.is_profiling_enabled;
 }
 
+bool
+SILC_IsOAEnabled()
+{
+    return status.is_oa_enabled;
+}
 
 void
 SILC_Otf2_OnFlush()

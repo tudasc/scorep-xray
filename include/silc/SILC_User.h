@@ -28,6 +28,7 @@
 #ifdef SILC_USER_ENABLE
 #include "SILC_User_Variables.h"
 #include "SILC_User_Functions.h"
+#include "SILC_OA_Functions.h"
 #endif
 
 /** @defgroup SILC_User SILC User Adapter
@@ -64,7 +65,7 @@
  * Documentation for region enclosing macros
  * *************************************************************************************/
 
-/** @def SILC_USER_REGION_DEFINE(handle)
+/** @def SILC_OA_REGION_DEFINE(handle)
     This macro defines a region. Every region has to be defined before it is first
     entered. The defines have to take place at the beginning of the enclosing block.
     @param handle  A variable name for a parameter must be provided. This variable is
@@ -86,6 +87,56 @@
 
       SILC_USER_REGION_END( my_region_handle )
     }
+    @endcode
+ */
+
+/** @def SILC_USER_OA_PHASE_BEGIN(handle, name, type)
+    This macro marks the start of a user defined Online Access phase region. The SILC_USER_OA_PHASE_BEGIN and
+    SILC_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
+    recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
+    iterations for iterative online analisys.
+    @param handle  The handle of the associated user region, which will become a root of the call-tree.
+                                   This handle must be declared using SILC_USER_REGION_DEFINE or SILC_GLOBAL_REGION_DEFINE before.
+    @param name    A string containing the name of the new region. The name should be
+                   unique.
+    @param type    Specifies the type of the region. Possible values are
+                   SILC_USER_REGION_TYPE_COMMON,
+                   SILC_USER_REGION_TYPE_FUNCTION, SILC_USER_REGION_TYPE_LOOP,
+                   SILC_USER_REGION_TYPE_DYNAMIC, SILC_USER_REGION_TYPE_PHASE, or a
+                   combination of them.
+
+    C/C++ example:
+    @code
+    void myfunc()
+    {
+      SILC_USER_REGION_DEFINE( my_region_handle )
+
+      // application initialization
+
+      for ( ) // main loop of the application
+          {
+                  SILC_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SILC_USER_REGION_TYPE_COMMON )
+
+                  // do something
+
+                  SILC_USER_OA_PHASE_END( my_region_handle )
+          }
+
+          // application finalization
+    }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SILC_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SILC_USER_REGION_BEGIN( my_region_handle, "my_region",SILC_USER_REGION_TYPE_COMMON )
+      ! do something
+      SILC_USER_REGION_END( my_region_handle )
+
+    end program myProg
     @endcode
  */
 
@@ -499,6 +550,10 @@
 #define SILC_USER_FUNC_DEFINE
 
 #ifdef SILC_USER_ENABLE
+
+#define SILC_USER_OA_PHASE_BEGIN( handle ) SILC_OA_PhaseBegin( &handle );
+
+#define SILC_USER_OA_PHASE_END( handle ) SILC_OA_PhaseEnd( &handle );
 
 #define SILC_USER_REGION_DEFINE( handle ) \
     static SILC_RegionHandle handle = SILC_INVALID_REGION;

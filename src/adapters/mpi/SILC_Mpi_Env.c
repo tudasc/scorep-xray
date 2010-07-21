@@ -16,6 +16,7 @@
 
 #include "SILC_Mpi.h"
 #include "config.h"
+#include <SILC_OA_Init.h>
 
 /**
  * @file       SILC_Mpi_Env.c
@@ -62,6 +63,8 @@ MPI_Init( int*    argc,
     int return_val;
     int fflag, rank;
 
+
+
     if ( !SILC_IsInitialized() )
     {
         /* Initialize the measurement system */
@@ -107,6 +110,10 @@ MPI_Init( int*    argc,
         SILC_ExitRegion( silc_mpi_regid[ SILC__MPI_INIT ] );
         SILC_MPI_EVENT_GEN_ON();
     }
+
+#if defined( SILC_WITH_OA )
+    SILC_OA_Init();
+#endif
 
     return return_val;
 }

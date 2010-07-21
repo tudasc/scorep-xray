@@ -11,6 +11,7 @@ ${guard:start}
 ${proto:c} 
 {
   ${rtype} return_val;
+  ${declarehooks};
 
   if (SILC_MPI_IS_EVENT_GEN_ON_FOR(SILC_MPI_ENABLED_${group|uppercase}))
     {
@@ -18,8 +19,18 @@ ${proto:c}
 
       SILC_MPI_EVENT_GEN_OFF();
       SILC_EnterRegion(silc_mpi_regid[SILC__${name|uppercase}]);
+      
+      ${guard:hooks}
+        ${check:hooks}
+          ${call:prehook};
+      ${guard:end}
 
       return_val = ${call:pmpi};
+      
+      ${guard:hooks}
+        ${check:hooks}
+          ${call:posthook};
+      ${guard:end}
 
       ${xblock}
       SILC_MpiCollective(silc_mpi_regid[SILC__${name|uppercase}],

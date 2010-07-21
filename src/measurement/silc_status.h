@@ -41,6 +41,8 @@ SILC_IsTracingEnabled();
 bool
 SILC_IsProfilingEnabled();
 
+bool
+SILC_IsOAEnabled();
 
 void
 SILC_Otf2_OnFlush();

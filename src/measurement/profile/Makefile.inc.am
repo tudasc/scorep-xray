@@ -67,3 +67,11 @@ libsilc_profile_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libsilc_profile_omp_la_CPPFLAGS =  $(PROFILE_FLAGS)
 libsilc_profile_omp_la_LIBADD = libsilc_profile_base.la
 endif
+
+
+## include Online Access only when building on ALTIX
+
+if PLATFORM_ALTIX
+libsilc_profile_base_la_SOURCES += 	$(SRC_ROOT)src/measurement/profile/SILC_Profile_OAConsumer.h	\
+										$(SRC_ROOT)src/measurement/profile/SILC_Profile_OAConsumer.c
+endif 
