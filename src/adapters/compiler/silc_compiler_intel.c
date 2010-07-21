@@ -157,7 +157,7 @@ __VT_IntelEntry( char*     str,
                  uint32_t* id,
                  uint32_t* id2 )
 {
-    silc_compiler_hash_node* hash_node;
+    silc_compiler_hash_node* hash_node = NULL;
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call at function enter." );
 
