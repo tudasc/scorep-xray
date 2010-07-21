@@ -101,7 +101,7 @@ silc_profile_write_region_tau( silc_profile_node* node,
     }
     else
     {
-        sprintf( path, "%s/%s", parentpath, name );
+        sprintf( path, "%s =&gt; %s", parentpath, name );
     }
 
     /* write definition */
@@ -333,8 +333,7 @@ silc_profile_write_tau_snapshot()
     }
 
     /* Open file */
-    sprintf( filename, "%s/%s.%d.0.0", dirname,
-             silc_profile_basename, SILC_Mpi_GetRank() );
+    sprintf( filename, "%s/snapshot.%d.0.0", dirname, SILC_Mpi_GetRank() );
     file = fopen( filename, "w" );
     if ( !file )
     {
