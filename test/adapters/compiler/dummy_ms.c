@@ -98,6 +98,7 @@ SILC_ConfigRegister
     SILC_ConfigVariable* variables
 )
 {
+    return SILC_SUCCESS;
 }
 
 void
