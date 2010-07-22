@@ -38,6 +38,8 @@ libsilc_adapter_mpi_c_wrapper_la_CPPFLAGS = \
 ## include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
 libsilc_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSILC_WITH_OA
+else
+libsilc_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSILC_MPI_NO_HOOKS
 endif
 
 
