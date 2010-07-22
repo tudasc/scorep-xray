@@ -570,6 +570,7 @@ silc_otf2_finalize()
 
         if ( !silc_env_unify )
         {
+            SILC_StringHandle   location_name            = SILC_DefineString( "" );
             OTF2_GlobDefWriter* global_definition_writer =
                 OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,
                                                SILC_OnTracePreFlush,
@@ -585,7 +586,7 @@ silc_otf2_finalize()
                     SILC_Error_Code status             = OTF2_GlobDefWriter_GlobDefLocation(
                         global_definition_writer,
                         global_location_id,
-                        "",
+                        SILC_HANDLE_TO_ID( location_name, String ),
                         OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
                         n_definitions_per_location[ index ] );
                     assert( status == SILC_SUCCESS );

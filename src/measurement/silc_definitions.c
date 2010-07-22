@@ -595,7 +595,7 @@ silc_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         SILC_Error_Code status = OTF2_DefWriter_DefLocation(
             definitionWriter,
             definition->global_location_id,
-            SILC_HANDLE_DEREF( &definition->name_handle, String )->string_data,
+            SILC_HANDLE_TO_ID( &definition->name_handle, String ),
             silc_location_type_to_otf_location_type( definition->location_type ),
             0 );
         if ( status != SILC_SUCCESS )
