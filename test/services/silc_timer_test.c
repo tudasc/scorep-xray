@@ -27,6 +27,8 @@
 #include <SILC_Timing.h>
 
 #include <assert.h>
+#include <unistd.h>
+#include <stdio.h>
 
 int
 main()
@@ -35,5 +37,12 @@ main()
     uint64_t startTime = SILC_GetClockTicks();
     uint64_t stopTime  = SILC_GetClockTicks();
     assert( stopTime > startTime );
+    startTime = SILC_GetClockTicks();
+    usleep( 100000 );
+    stopTime = SILC_GetClockTicks();
+    double diff = ( ( double )( stopTime - startTime ) ) / ( ( double )SILC_GetClockResolution() );
+    printf( "Check clock accuracy. Expected difference 0.1.\n" );
+    printf( "Measured difference: %f\n", diff );
+    assert( ( diff > 0.08 ) && ( diff < 0.15 ) );
     return 0;
 }
