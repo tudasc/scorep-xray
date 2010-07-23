@@ -2191,7 +2191,7 @@
 </prototype>
 <prototype name="MPI_Win_get_group" rtype="int" group="rma" guard="rma,extra" >
     <param access="i" type="MPI_Win" name="win" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="o" type="MPI_Group*" name="group" />
     <version id="2.0" />
 </prototype>
 <prototype name="MPI_Win_get_name" rtype="int" group="rma_ext" guard="rma,extra" >
