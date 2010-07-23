@@ -16,7 +16,10 @@
 
 #include "SILC_Mpi.h"
 #include "config.h"
+
+#if defined( SILC_WITH_OA )
 #include <SILC_OA_Init.h>
+#endif
 
 /**
  * @file       SILC_Mpi_Env.c
@@ -62,8 +65,6 @@ MPI_Init( int*    argc,
     int event_gen_active = 0;          /* init is deferred to later */
     int return_val;
     int fflag, rank;
-
-
 
     if ( !SILC_IsInitialized() )
     {
