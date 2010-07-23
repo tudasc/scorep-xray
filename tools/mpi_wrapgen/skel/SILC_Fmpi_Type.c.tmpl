@@ -171,7 +171,7 @@ void FSUB(MPI_Type_get_contents)(MPI_Fint* datatype,
 }
 #endif
 
-#pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+n!_get_contents) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+!n_get_contents) skel/SILC_Mpi_F2c_C2f.w
 
 /**
  * @}
