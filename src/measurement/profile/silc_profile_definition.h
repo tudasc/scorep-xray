@@ -60,7 +60,9 @@ typedef struct
     uint64_t max_callpath_num;
 } silc_profile_definition;
 
-/** Global profile definition instance */
+/**
+   Global profile definition instance
+ */
 extern silc_profile_definition silc_profile;
 
 /** Flag wether the profile is initialized */
@@ -71,7 +73,8 @@ extern bool silc_profile_is_initialized;
  */
 extern char* silc_profile_basename;
 
-/** Initializes the profile definition struct
+/**
+   Initializes the profile definition struct
  */
 void
 silc_profile_init_definition( uint64_t            max_callpath_depth,
@@ -79,10 +82,18 @@ silc_profile_init_definition( uint64_t            max_callpath_depth,
                               uint32_t            num_dense_metrics,
                               SILC_CounterHandle* metrics );
 
-/** Resets the profile definition struct
+/**
+   Resets the profile definition struct
  */
 void
 silc_profile_delete_definition();
+
+/**
+   Returns the number of locations stored in the profile.
+   @return number of locations stored in the profile.
+ */
+uint64_t
+silc_profile_get_number_of_threads();
 
 /**
    Dumps the tree structure to the screen.

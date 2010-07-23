@@ -48,6 +48,12 @@ struct SILC_Profile_LocationData
     uint32_t           current_depth; // Stores the current length of the callpath
 };
 
+#ifdef HAVE_CUBE4
+int SILC_Profile_OutputDefault = SILC_Profile_OutputCube4;
+#else
+int SILC_Profile_OutputDefault = SILC_Profile_OutputTauSnapshot;
+#endif
+
 /**
    Allows to limit the depth of the calltree. If the current
    callpath becomes longer than specified by this parameter,
@@ -333,9 +339,14 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
         case SILC_Profile_OutputTauSnapshot:
             silc_profile_write_tau_snapshot();
             break;
+#ifdef HAVE_CUBE4
+        case SILC_Profile_OutputCube4:
+            silc_profile_write_cube4();
+            break;
+#endif  /* HAVE_CUBE4 */
         default:
             SILC_ERROR( SILC_ERROR_INVALID_ARGUMENT,
-                        "File format identifier %d is out of range", outputFormat );
+                        "Unsupported profile format" );
     }
 }
 

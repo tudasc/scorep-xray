@@ -97,6 +97,28 @@ silc_profile_delete_definition()
 }
 
 /*----------------------------------------------------------------------------------------
+   Other functions
+   -------------------------------------------------------------------------------------*/
+
+uint64_t
+silc_profile_get_number_of_threads()
+{
+    uint64_t           no_of_threads = 0;
+    silc_profile_node* current       = silc_profile.first_root_node;
+
+    while ( current != NULL )
+    {
+        if ( current->node_type == silc_profile_node_thread_root )
+        {
+            no_of_threads++;
+        }
+        current = current->next_sibling;
+    }
+
+    return no_of_threads;
+}
+
+/*----------------------------------------------------------------------------------------
    Debug
    -------------------------------------------------------------------------------------*/
 void

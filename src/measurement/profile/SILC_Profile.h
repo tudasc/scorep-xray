@@ -78,9 +78,10 @@ typedef enum
 {
     SILC_Profile_OutputNone        = 0,
     SILC_Profile_OutputTauSnapshot = 1,
-
-    SILC_Profile_OutputDefault     = 1
+    SILC_Profile_OutputCube4       = 2,
 } SILC_Profile_OutputFormat;
+
+extern int SILC_Profile_OutputDefault;
 
 /* ----------------------------------------------------- Initialization / Finalization */
 
