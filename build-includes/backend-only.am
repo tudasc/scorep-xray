@@ -8,6 +8,7 @@ include ../src/measurement/profile/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/pomp/Makefile.inc.am
+include ../src/adapters/tau/Makefile.inc.am
 include ../src/services/Makefile.inc.am
 include ../vendor/cutest/Makefile.inc.am
 include ../vendor/hash/Makefile.inc.am
