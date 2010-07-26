@@ -621,4 +621,6 @@ void FSUB(MPI_Cancel)(MPI_Fint *request,
 
 #pragma wrapgen multiple restrict(gp2p+!nWait+!nTest+!nStartall+!nRequest_free+!nCancel) skel/SILC_Mpi_F2c_C2f.w
 
+#pragma wrapgen single MPI_Test_cancelled skel/SILC_Mpi_F2c_C2f.w
+
 #endif

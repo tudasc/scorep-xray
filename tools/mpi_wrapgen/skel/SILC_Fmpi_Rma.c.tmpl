@@ -39,35 +39,37 @@
  * @name Fortran wrappers for access functions
  * @{
  */
-#pragma wrapgen multiple regex(MPI_(Accumulate|Get|Put)$) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(MPI_(Accumulate|Get|Put)$) skel/SILC_Fmpi_Std.w
 
 /**
  * @}
  * @name Fortran wrappers for window management functions
  * @{
  */
-#pragma wrapgen multiple regex(MPI_Win_(create|free)$) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(MPI_Win_(create|free)$) skel/SILC_Fmpi_Std.w
+
+#pragma wrapgen single MPI_Win_get_group skel/SILC_Fmpi_Std.w
 
 /**
  * @}
  * @name Fortran wrappers for synchonization functions
  * @{
  */
-#pragma wrapgen multiple regex(MPI_Win_(fence|post|test|wait|start|complete|lock|unlock)$) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(MPI_Win_(fence|post|test|wait|start|complete|lock|unlock)$) skel/SILC_Fmpi_Std.w
 
 /**
  * @}
  * @name Fortran wrappers for error handling functions
  * @{
  */
-#pragma wrapgen multiple restrict(grma_err)  skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(grma_err)  skel/SILC_Fmpi_Std.w
 
 /**
  * @}
  * @name Fortran wrappers for external interface functions
  * @{
  */
-#pragma wrapgen multiple restrict(grma_ext)  skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(grma_ext)  skel/SILC_Fmpi_Std.w
 
 
 #else /* !NEED_F2C_CONV */
@@ -84,6 +86,8 @@
  * @{
  */
 #pragma wrapgen multiple regex(MPI_Win_(create|free)$) skel/SILC_Mpi_F2c_C2f.w
+
+#pragma wrapgen single MPI_Win_get_group skel/SILC_Mpi_F2c_C2f.w
 
 /**
  * @}

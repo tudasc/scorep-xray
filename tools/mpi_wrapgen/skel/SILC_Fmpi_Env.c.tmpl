@@ -20,6 +20,8 @@
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Fmpi_DefineL.w
 
+#pragma wrapgen single MPI_Initialized skel/SILC_Fmpi_Std.w
+
 /**
  * @name Fortran wrappers 
  * @{
@@ -100,6 +102,8 @@ void FSUB(MPI_Init)(int* ierr)
 }
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SILC_Mpi_F2c_C2f.w
+
+#pragma wrapgen single MPI_Initialized skel/SILC_Fmpi_Std.w
 
 #endif
 

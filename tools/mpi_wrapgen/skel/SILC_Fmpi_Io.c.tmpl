@@ -37,7 +37,7 @@
  * @{
  */
 
-#pragma wrapgen multiple regex(MPI_File.*(open|close|delete|get_[abgipstv]|set_[abgipstv]|seek|sync).*) skel/SILC_Fmpi_Std.w
+#pragma wrapgen multiple regex(MPI_File.*(open|close|delete|preallocate|get_[abgipstv]|set_[abgipstv]|seek|sync).*) skel/SILC_Fmpi_Std.w
 #pragma wrapgen single MPI_Register_datarep skel/SILC_Fmpi_Std.w
 
 /**
@@ -76,7 +76,7 @@
  * @{
  */
 
-#pragma wrapgen multiple regex(MPI_File.*(open|close|delete|get_[abgipstv]|set_[abgipstv]|seek|sync).*) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple regex(MPI_File.*(open|close|delete|preallocate|get_[abgipstv]|set_[abgipstv]|seek|sync).*) skel/SILC_Mpi_F2c_C2f.w
 #pragma wrapgen single MPI_Register_datarep skel/SILC_Mpi_F2c_C2f.w
 
 
