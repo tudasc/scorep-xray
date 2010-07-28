@@ -116,6 +116,13 @@
 #define MPI_Query_thread_L mpi_query_thread
 
 
+/**
+ * @name Fortran wrappers
+ * @{
+ */
+
+#ifndef NEED_F2C_CONV
+
 #if HAVE( DECL_PMPI_INITIALIZED ) && !defined( SILC_MPI_NO_EXTRA ) && !defined( SILC_MPI_NO_ENV ) && !defined( MPI_Initialized )
 /**
  * Measurement wrapper for MPI_Initialized
@@ -131,13 +138,6 @@ FSUB( MPI_Initialized )( int* flag,
     *ierr = MPI_Initialized( flag );
 }
 #endif
-
-/**
- * @name Fortran wrappers
- * @{
- */
-
-#ifndef NEED_F2C_CONV
 
 /* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
  * as it would require a "real" function if it is really needed
