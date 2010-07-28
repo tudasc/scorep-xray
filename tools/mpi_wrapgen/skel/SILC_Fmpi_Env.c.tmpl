@@ -20,14 +20,14 @@
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init_thread) skel/SILC_Fmpi_DefineL.w
 
-#pragma wrapgen single MPI_Initialized skel/SILC_Fmpi_Std.w
-
 /**
  * @name Fortran wrappers 
  * @{
  */
 
 #ifndef NEED_F2C_CONV
+
+#pragma wrapgen single MPI_Initialized skel/SILC_Fmpi_Std.w
 
 /* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
  * as it would require a "real" function if it is really needed
