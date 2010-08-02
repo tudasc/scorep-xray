@@ -117,6 +117,7 @@ silc_oa_mri_receive_and_process_requests
 
     PMPI_Barrier( MPI_COMM_WORLD );
     printf( "Leaving %s\n", __FUNCTION__ );
+    return SILC_SUCCESS;
 }
 
 void

@@ -27,9 +27,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#include <SILC_Debug.h>
 #include <mpi.h>
+
+#include "SILC_Debug.h"
+#include "SILC_User.h"
 
 #include "silc_mpiprofile.h"
 
@@ -41,6 +42,9 @@ static int64_t lateThreshold;
 int            myrank;
 static int     numprocs;
 static int     mpiprofiling_initialized = 0;
+
+SILC_USER_METRIC_LOCAL( lateSend )
+SILC_USER_METRIC_LOCAL( lateRecv )
 
 /**
  * Initializes MPI profiling module
@@ -62,6 +66,11 @@ silc_mpiprofile_init
     lateThreshold = 0.001;
 
     /// @TODO synchronize clocks here
+
+    SILC_USER_METRIC_INIT( lateSend, "lateSend", "s", SILC_USER_METRIC_TYPE_INT64,
+                           SILC_USER_METRIC_CONTEXT_CALLPATH, SILC_USER_METRIC_GROUP_DEFAULT );
+    SILC_USER_METRIC_INIT( lateRecv, "lateRecv", "s", SILC_USER_METRIC_TYPE_INT64,
+                           SILC_USER_METRIC_CONTEXT_CALLPATH, SILC_USER_METRIC_GROUP_DEFAULT );
 
     mpiprofiling_initialized = 1;
 }
@@ -110,7 +119,7 @@ silc_mpiprofile_eval_1x1_time_packs
     void* dstTimePack
 )
 {
-    //printf("mpiprofile : myrank = %d,%s \n",myrank,__FUNCTION__);
+    //printf( "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     int      src;
     int      dst;
     uint64_t sendTime;
@@ -219,7 +228,7 @@ silc_mpiprofile_eval_multi_time_packs
     int   size
 )
 {
-    //printf("mpiprofile : myrank = %d,%s \n",myrank,__FUNCTION__);
+    //printf( "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     int      src;
     int      dst;
     uint64_t sendTime;
@@ -273,7 +282,7 @@ silc_mpiprofile_eval_time_stamps
     uint64_t recvTime
 )
 {
-    //printf("mpiprofile : myrank = %d,%s \n",myrank,__FUNCTION__);
+    //printf( "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     if ( src == dst )
     {
         return;
@@ -284,12 +293,14 @@ silc_mpiprofile_eval_time_stamps
     if ( delta > mpiprofiling_get_late_threshold() )
     {
         //printf( "LATE RECEIVE: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
+        SILC_USER_METRIC_INT64( lateRecv, delta );
         ///receive process is late: store EARLY_SEND/LATE_RECEIVE=delta value for the remote side, currently not supported
         ///trigger user metric here
     }
     else if ( delta < -mpiprofiling_get_late_threshold() )
     {
         //printf( "LATE SENDER: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
+        SILC_USER_METRIC_INT64( lateSend, delta );
         ///sending process is late: store LATE_SEND/EARLY_RECEIVE=-delta value on the current process
         ///trigger user metric here
     }
