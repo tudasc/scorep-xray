@@ -398,6 +398,19 @@ SILC_Hooks_Post_MPI_Reduce_scatter
 );
 
 void
+SILC_Hooks_Post_MPI_Reduce_scatter_block
+(
+    void*        sendbuf,
+    void*        recvbuf,
+    int          recvcount,
+    MPI_Datatype datatype,
+    MPI_Op       op,
+    MPI_Comm     comm,
+    uint64_t     start_time_stamp,
+    int          return_val
+);
+
+void
 SILC_Hooks_Post_MPI_Scan
 (
     void*        sendbuf,
