@@ -1,0 +1,47 @@
+/* *INDENT-OFF* */
+#include <mpi.h>
+#include <stdio.h>
+
+#include "SILC_User.h"
+
+int
+main( int    argc,
+      char** argv )
+{
+    int	retVal = 0; /* return value */
+    double a[10000], s;
+    int i,k, myrank=0, np=1;
+
+    MPI_Init(&argc,&argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+    MPI_Comm_size(MPI_COMM_WORLD, &np);
+
+    if (myrank==0)
+        printf("add example started with %d processes\n", np);
+
+    SILC_USER_REGION_DEFINE( mainRegion );
+    SILC_USER_OA_PHASE_BEGIN( mainRegion );
+    SILC_USER_REGION_BEGIN( mainRegion, "mainRegion", SILC_USER_REGION_TYPE_COMMON );
+
+    for(k=0;k<30;k++)
+    {
+
+        for(i=0;i<10000;i++)
+                a[i] = 500*i;
+
+        for(i=0;i<10000;i++)
+                s += a[i];
+
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    SILC_USER_REGION_END( mainRegion );
+    SILC_USER_OA_PHASE_END( mainRegion );
+
+    if (myrank==0)
+        printf("hello %g\n", a[100]);
+
+        MPI_Finalize();
+
+    return retVal;
+}

@@ -1,0 +1,38 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## author     Yury Oleynik <oleynik@in.tum.de>
+## maintainer Yury Oleynik <oleynik@in.tum.de>
+
+
+if MPI_SUPPORTED
+
+## MPI C
+
+check_PROGRAMS       += oa_mpi_c
+oa_mpi_c_sources  = $(SRC_ROOT)test/OA/C/main.c
+               
+oa_mpi_c_SOURCES  = $(oa_mpi_c_sources)
+oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	\
+					-I$(PUBLIC_INC_DIR)                     			\
+    				-DSILC_USER_ENABLE
+    				
+oa_mpi_c_LDADD    = $(LIB_ROOT)libsilc_mpi.la
+
+endif
+# if MPI_SUPPOERTED
+
