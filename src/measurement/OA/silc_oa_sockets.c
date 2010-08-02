@@ -23,6 +23,7 @@
 
 #include "SILC_Error.h"
 #include "silc_oa_sockets.h"
+#include "SILC_Utils.h"
 
 #include <netdb.h>
 #include <sys/types.h>
@@ -139,7 +140,7 @@ silc_oa_sockets_open_registry
     char      buf[ BUFSIZE ];
 
 
-    reg->hostname_ = strdup( hostname );
+    reg->hostname_ = SILC_CStr_dup( hostname );
     reg->port_     = port;
 
     reg->sock_ = silc_oa_sockets_client_connect_retry( reg->hostname_, reg->port_, 10 );
