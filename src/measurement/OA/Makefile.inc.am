@@ -37,7 +37,7 @@ libsilc_oa_base_la_SOURCES =                                  		\
     $(SRC_ROOT)src/measurement/OA/SILC_OA_Functions.c            	\
     $(SRC_ROOT)src/measurement/OA/SILC_OA_Init.h       				\
     $(SRC_ROOT)src/measurement/OA/SILC_OA_Init.c       				\
-    $(SRC_ROOT)src/measurement/OA/silc_oa_sockets.h         		\	
+    $(SRC_ROOT)src/measurement/OA/silc_oa_sockets.h         		\
     $(SRC_ROOT)src/measurement/OA/silc_oa_sockets.c					\
     $(SRC_ROOT)src/measurement/OA/silc_oa_connection.h				\
     $(SRC_ROOT)src/measurement/OA/silc_oa_connection.c				\
