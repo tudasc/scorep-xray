@@ -89,4 +89,22 @@ else
     AC_SUBST([LIBBFD], [""])
     AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -ne 1])
 fi
+
+
+AC_LANG_PUSH([C])
+AC_CHECK_HEADER([demangle.h])
+    
+AC_MSG_CHECKING([for cplus_demangle])    
+silc_libbfd_save_LIBS="$LIBS"
+
+LIBS="$silc_bfd_libs"
+
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[char* cplus_demangle( const char* mangled, int options );]],
+                                [[cplus_demangle("test", 27)]])],
+               [silc_have_demangle="yes"], 
+               [silc_have_demangle="no"])
+])
+AM_CONDITIONAL([HAVE_DEMANGLE], [test "x${silc_have_demangle}" = "xyes"])
+
+LIBS="${silc_libbfd_save_LIBS}"
 ])
