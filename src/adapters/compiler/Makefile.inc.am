@@ -38,6 +38,11 @@ if SILC_COMPILER_INTEL
 if HAVE_LIBBFD
 libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
 endif
+if HAVE_DEMANGLE
+libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+endif
+libsilc_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
+
 if HAVE_NM_AS_BFD_REPLACEMENT
 libsilc_adapter_compiler_la_CPPFLAGS += \
 	-I$(INC_ROOT)src/services       \
@@ -46,7 +51,6 @@ libsilc_adapter_compiler_la_CPPFLAGS += \
 libsilc_adapter_compiler_la_SOURCES  += \
 	$(SRC_ROOT)src/services/SILC_Timing.h
 endif
-libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE -DINTEL_COMPILER
 
 libsilc_adapter_compiler_la_SOURCES +=                                \
         $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c         \
@@ -77,6 +81,10 @@ if SILC_COMPILER_GNU
 if HAVE_LIBBFD
 libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
 endif
+if HAVE_DEMANGLE
+libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+endif 
+
 if HAVE_NM_AS_BFD_REPLACEMENT
 libsilc_adapter_compiler_la_CPPFLAGS += \
 	-I$(INC_ROOT)src/services       \
@@ -85,7 +93,6 @@ libsilc_adapter_compiler_la_CPPFLAGS += \
 libsilc_adapter_compiler_la_SOURCES  += \
 	$(SRC_ROOT)src/services/SILC_Timing.h
 endif
-libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
 
 libsilc_adapter_compiler_la_SOURCES +=                                \
         $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c         \
