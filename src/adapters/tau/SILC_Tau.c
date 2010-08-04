@@ -25,6 +25,9 @@
 
 #include <config.h>
 #include <SILC_Tau.h>
+#include <SILC_Types.h>
+#include <SILC_Events.h>
+#include <SILC_Definitions.h>
 
 
 /* *INDENT-OFF* */
