@@ -17,7 +17,11 @@
 
 #pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SILC_Mpi_Std.w
 
-#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Mpi_Std.w
+/* Excluded the creation of the wrappers for PMPI_Type_create_f90_complex,
+   PMPI_Type_create_f90_real, and PMPI_Type_create_f90_integer. If we have a 
+   link test they may be included again. This is done by removing the !nf90.
+ */
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof+!nf90) skel/SILC_Mpi_Std.w
 
 /**
  * @}
