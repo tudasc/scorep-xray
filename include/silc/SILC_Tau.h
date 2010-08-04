@@ -19,7 +19,7 @@
 
 /**
  * @file       /silc/include/silc/SILC_Tau.h
- * @maintainer TAU group (please put in a name and an email address)
+ * @maintainer Sameer Shende, TAU group, sameer@cs.uoregon.edu
  *
  * @status alpha
  *
