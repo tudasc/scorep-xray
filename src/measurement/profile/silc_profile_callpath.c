@@ -154,7 +154,7 @@ silc_profile_match_callpath( silc_profile_node* master,
                                                                current->first_enter_time );
 
     /* Make sure the mathcing node has a callpath assigned */
-    if ( match->callpath_handle == NULL )
+    if ( match->callpath_handle == SILC_INVALID_CALLPATH )
     {
         silc_profile_assign_callpath( match, NULL );
     }

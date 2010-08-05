@@ -29,19 +29,12 @@
 #include <SILC_Memory.h>
 
 
-#define SILC_MOVABLE_TYPE( type )                      \
-    struct type ## _Movable                            \
-    {                                                  \
-        uint32_t page_id;                              \
-        uint32_t offset;                               \
-    }
-
 /**
  * Use this macro to define a definition struct.
  *
  * Usage:
  * @code
- *     SILC_DEFINE_DEFINITION_TYPE_BEGIN( Type ) {
+ *     SILC_DEFINE_DEFINITION_TYPE( Type ) {
  *         SILC_DEFINITION_HEADER( Type, uint32_t ); // must be first
  *         // definition specfic members
  *         :
@@ -50,8 +43,8 @@
  *
  * @see SILC_DEFINITION_HEADER
  */
-#define SILC_DEFINE_DEFINITION_TYPE( Type )            \
-    SILC_MOVABLE_TYPE( SILC_ ## Type ## _Definition ); \
+#define SILC_DEFINE_DEFINITION_TYPE( Type ) \
+    typedef struct SILC_ ## Type ## _Definition SILC_ ## Type ## _Definition; \
     struct SILC_ ## Type ## _Definition
 
 /**
@@ -63,7 +56,7 @@
  * @note: This should be insync with the definition of @a silc_any_definition
  */
 #define SILC_DEFINITION_HEADER( Type )          \
-    SILC_ ## Type ## _Definition_Movable next;  \
+    SILC_ ## Type ## Handle next;  \
     uint32_t sequence_number;                   \
     uint32_t hash_value
 
@@ -72,8 +65,7 @@
  *
  */
 #define SILC_HANDLE_DEREF( handle, Type ) \
-    ( SILC_MEMORY_DEREF_MOVABLE( handle, \
-                                 SILC_ ## Type ## _Definition* ) )
+    ( SILC_MEMORY_DEREF_MOVABLE( handle, SILC_ ## Type ## _Definition* ) )
 
 /**
  *  Extracts the ID out of an handle pointer.
@@ -94,17 +86,15 @@
 #define SILC_HANDLE_GET_HASH( handle, Type ) \
     ( SILC_HANDLE_DEREF( handle, Type )->hash_value )
 
-typedef struct silc_any_definition         silc_any_definition;
-typedef struct silc_any_definition_Movable silc_any_definition_Movable;
-typedef silc_any_definition_Movable*       silc_any_handle;
+typedef struct silc_any_definition silc_any_definition;
+typedef uint64_t                   silc_any_handle;
 
 
-SILC_MOVABLE_TYPE( silc_any_definition );
 struct silc_any_definition
 {
-    silc_any_definition_Movable next;
-    uint32_t                    sequence_number;
-    uint32_t                    hash_value;
+    silc_any_handle next;
+    uint32_t        sequence_number;
+    uint32_t        hash_value;
 };
 
 

@@ -39,20 +39,19 @@
 /* *INDENT-OFF* */
 #define SILC_ALLOC_NEW_DEFINITION( Type, type ) \
     do { \
-        new_movable = ( SILC_ ## Type ## _Definition_Movable* ) \
-            SILC_Memory_AllocForDefinitions( \
-                sizeof( SILC_ ## Type ## _Definition ) ); \
+        new_handle = SILC_Memory_AllocForDefinitions( \
+            sizeof( SILC_ ## Type ## _Definition ) ); \
         new_definition = \
-            SILC_MEMORY_DEREF_MOVABLE( new_movable, \
+            SILC_MEMORY_DEREF_MOVABLE( new_handle, \
                                        SILC_ ## Type ## _Definition* ); \
-        SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
+        new_definition->next = SILC_MOVABLE_NULL; \
+        new_definition->hash_value = 0; \
         *silc_definition_manager.type ## _definition_tail_pointer = \
-            *new_movable; \
+            new_handle; \
         silc_definition_manager.type ## _definition_tail_pointer = \
-            &( new_definition )->next; \
-        ( new_definition )->sequence_number = \
+            &new_definition->next; \
+        new_definition->sequence_number = \
             silc_definition_manager.type ## _definition_counter++; \
-        ( new_definition )->hash_value = 0; \
     } while ( 0 )
 /* *INDENT-ON* */
 
@@ -67,21 +66,20 @@
                                                   array_type, \
                                                   number_of_members ) \
     do { \
-        new_movable = ( SILC_ ## Type ## _Definition_Movable* ) \
-            SILC_Memory_AllocForDefinitions( \
-                sizeof( SILC_ ## Type ## _Definition ) + \
-                ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
+        new_handle = SILC_Memory_AllocForDefinitions( \
+            sizeof( SILC_ ## Type ## _Definition ) + \
+            ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
         new_definition = \
-            SILC_MEMORY_DEREF_MOVABLE( new_movable, \
+            SILC_MEMORY_DEREF_MOVABLE( new_handle, \
                                        SILC_ ## Type ## _Definition* ); \
-        SILC_ALLOCATOR_MOVABLE_INIT_NULL( ( new_definition )->next ); \
+        new_definition->next = SILC_MOVABLE_NULL; \
+        new_definition->hash_value = 0; \
         *silc_definition_manager.type ## _definition_tail_pointer = \
-            *new_movable; \
+            new_handle; \
         silc_definition_manager.type ## _definition_tail_pointer = \
-            &( new_definition )->next; \
-        ( new_definition )->sequence_number = \
+            &new_definition->next; \
+        new_definition->sequence_number = \
             silc_definition_manager.type ## _definition_counter++; \
-        ( new_definition )->hash_value = 0; \
     } while ( 0 )
 /* *INDENT-ON* */
 
@@ -101,12 +99,12 @@ struct SILC_DefinitionManager
 {
     /* note: no ';' */
     #define SILC_DEFINE_DEFINITION_LIST( Type, type ) \
-        SILC_ ## Type ## _Definition_Movable  type ## _definition_head; \
-        SILC_ ## Type ## _Definition_Movable* type ## _definition_tail_pointer; \
+        SILC_ ## Type ## Handle  type ## _definition_head; \
+        SILC_ ## Type ## Handle* type ## _definition_tail_pointer; \
         uint32_t                              type ## _definition_counter;
 
     SILC_DEFINE_DEFINITION_LIST( String, string )
-    SILC_String_Definition_Movable* string_definition_hash_table;
+    SILC_StringHandle* string_definition_hash_table;
 
     SILC_DEFINE_DEFINITION_LIST( Location, location )
     SILC_DEFINE_DEFINITION_LIST( SourceFile, source_file )
@@ -147,14 +145,13 @@ struct SILC_DefinitionManager
 #define SILC_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
         SILC_ ## Type ## _Definition* definition; \
-        SILC_ ## Type ## _Definition_Movable* moveable; \
-        for ( moveable = &( manager_pointer )->type ## _definition_head; \
-              !SILC_ALLOCATOR_MOVABLE_IS_NULL( *moveable ); \
-              moveable = &definition->next ) \
+        SILC_ ## Type ## Handle handle; \
+        for ( handle = ( manager_pointer )->type ## _definition_head; \
+              handle != SILC_MOVABLE_NULL; \
+              handle = definition->next ) \
         { \
-            definition = \
-                SILC_MEMORY_DEREF_MOVABLE( moveable, \
-                                           SILC_ ## Type ## _Definition* ); \
+            definition = SILC_MEMORY_DEREF_MOVABLE( \
+                handle, SILC_ ## Type ## _Definition* ); \
             {
 
 #define SILC_DEFINITION_FOREACH_WHILE() \
@@ -172,7 +169,7 @@ struct SILC_DefinitionManager
 
 #define HASH_ADD_HANDLE( handle_member, Type ) \
     new_definition->hash_value = hashword( \
-        &SILC_HANDLE_GET_HASH( &new_definition->handle_member, Type ), \
+        &SILC_HANDLE_GET_HASH( new_definition->handle_member, Type ), \
         1, new_definition->hash_value )
 
 #define HASH_ADD_ARRAY( array_member, number_member ) \

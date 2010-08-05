@@ -25,7 +25,7 @@
 
 
 #include <SILC_Memory.h>
-#include <SILC_AllocatorImpl.h>
+#include <SILC_Allocator.h>
 #include "silc_thread.h"
 #include "silc_status.h"
 #include <assert.h>
@@ -82,8 +82,7 @@ SILC_Memory_Initialize( size_t totalMemory,
     silc_memory_guard_initialze();
 
     assert( silc_memory_allocator == 0 );
-    silc_memory_allocator = SILC_Allocator_CreateAllocator( paged_alloc,
-                                                            totalMemory,
+    silc_memory_allocator = SILC_Allocator_CreateAllocator( totalMemory,
                                                             pageSize,
                                                             silc_memory_lock,
                                                             silc_memory_unlock,
@@ -222,23 +221,11 @@ SILC_Memory_FreeMiscMem()
 }
 
 
-SILC_Allocator_MovableMemory*
+SILC_Allocator_MovableMemory
 SILC_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
     return SILC_Allocator_AllocMovable( silc_memory_definition_pagemanager, size );
-}
-
-
-void
-SILC_Memory_AllocForDefinitionsRaw( size_t                        size,
-                                    SILC_Allocator_MovableMemory* movableMemory )
-{
-    // collect statistics
-    SILC_Allocator_AllocMovableRaw(
-        silc_memory_definition_pagemanager,
-        size,
-        movableMemory );
 }
 
 
@@ -251,16 +238,9 @@ SILC_Memory_FreeDefinitionMem()
 
 
 void*
-SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMemory )
+SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory movableMemory )
 {
     return SILC_Allocator_GetAddressFromMovableMemory(
                silc_memory_definition_pagemanager,
                movableMemory );
-}
-
-
-void
-SILC_Memory_FreeMovedPages( SILC_Allocator_MovedPageManager* movedPageManager )
-{
-    assert( false ); // implement me
 }

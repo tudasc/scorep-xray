@@ -151,7 +151,7 @@ SILC_Memory_FreeMiscMem();
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
  *
- * @return A pointer to a valid SILC_Memory_DefinitionMemory object or a null
+ * @return A pseudo pointer of type SILC_Memory_DefinitionMemory object or a null
  * pointer if the memory requested is not available.
  *
  * @note You can obtain the real address of the memory and cast it to the
@@ -159,17 +159,8 @@ SILC_Memory_FreeMiscMem();
  *
  * @see SILC_Memory_FreeDefinitionMem()
  */
-SILC_Allocator_MovableMemory*
+SILC_Allocator_MovableMemory
 SILC_Memory_AllocForDefinitions( size_t size );
-
-/**
- * @see SILC_Memory_AllocForDefinitions(), the only difference is that no
- * SILC_Allocator_MovableMemory is created and returned, but the already
- * existing @a movableMemory is modified accordingly.
- */
-void
-SILC_Memory_AllocForDefinitionsRaw( size_t                        size,
-                                    SILC_Allocator_MovableMemory* movableMemory );
 
 /**
  * Release the entire allocated definition memory.
@@ -181,16 +172,16 @@ SILC_Memory_FreeDefinitionMem();
 
 
 void*
-SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory* movableMemory );
+SILC_Memory_GetAddressFromMovableMemory( SILC_Allocator_MovableMemory movableMemory );
 
 
 //void*
-//SILC_Memory_GetAddressFromMovedMemory( SILC_Allocator_MovableMemory*    movedMemory,
+//SILC_Memory_GetAddressFromMovedMemory( SILC_Allocator_MovableMemory     movedMemory,
 //                                       SILC_Allocator_MovedPageManager* movedPageManager );
 
 
-void
-SILC_Memory_FreeMovedPages( SILC_Allocator_MovedPageManager* movedPageManager );
+//void
+//SILC_Memory_FreeMovedPages( SILC_Allocator_PageManager* movedPageManager );
 
 
 /**
@@ -203,14 +194,13 @@ SILC_Memory_FreeMovedPages( SILC_Allocator_MovedPageManager* movedPageManager );
  *
  * @return A pointer to an object of type @a target_type.
  */
-#define SILC_MEMORY_DEREF_MOVABLE( movable_memory_ptr, target_type ) \
-    ( ( target_type )SILC_Memory_GetAddressFromMovableMemory(        \
-          ( SILC_Allocator_MovableMemory* )movable_memory_ptr ) )
+#define SILC_MEMORY_DEREF_MOVABLE( movable_memory, target_type ) \
+    ( ( target_type )SILC_Memory_GetAddressFromMovableMemory( movable_memory ) )
 
 
-#define SILC_MEMORY_DEREF_MOVED( moved_memory_ptr, moved_page_manager, target_type )  \
+#define SILC_MEMORY_DEREF_MOVED( moved_memory, moved_page_manager, target_type )  \
     ( ( target_type )SILC_Allocator_GetAddressFromMovedMemory(                        \
-          ( SILC_Allocator_MovableMemory* )movable_memory_ptr, moved_page_manager ) )
+          movable_memory, moved_page_manager ) )
 
 
 /*@}*/

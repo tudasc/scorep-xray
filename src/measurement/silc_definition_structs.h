@@ -33,7 +33,7 @@
 SILC_DEFINE_DEFINITION_TYPE( String )
 {
     SILC_DEFINITION_HEADER( String );
-    SILC_String_Definition_Movable hash_next;
+    SILC_StringHandle hash_next;
 
 
     uint32_t string_length;
@@ -47,9 +47,9 @@ SILC_DEFINE_DEFINITION_TYPE( Location )
     SILC_DEFINITION_HEADER( Location );
 
     /* don't use the sequence number for the id, this is generated */
-    uint64_t                       global_location_id;
-    SILC_String_Definition_Movable name_handle;
-    SILC_LocationType              location_type;
+    uint64_t          global_location_id;
+    SILC_StringHandle name_handle;
+    SILC_LocationType location_type;
 };
 
 
@@ -57,7 +57,7 @@ SILC_DEFINE_DEFINITION_TYPE( SourceFile )
 {
     SILC_DEFINITION_HEADER( SourceFile );
 
-    SILC_String_Definition_Movable name_handle;
+    SILC_StringHandle name_handle;
 };
 
 
@@ -66,13 +66,13 @@ SILC_DEFINE_DEFINITION_TYPE( Region )
     SILC_DEFINITION_HEADER( Region );
 
     // Add SILC_Region stuff from here on.
-    SILC_String_Definition_Movable name_handle;
-    SILC_String_Definition_Movable description_handle;     // currently not used
-    SILC_RegionType                region_type;            // maps to OTF2_RegionType
-    SILC_String_Definition_Movable file_handle;
-    SILC_LineNo                    begin_line;
-    SILC_LineNo                    end_line;
-    SILC_AdapterType               adapter_type;           // Used by Cube 4
+    SILC_StringHandle name_handle;
+    SILC_StringHandle description_handle;                  // currently not used
+    SILC_RegionType   region_type;                         // maps to OTF2_RegionType
+    SILC_StringHandle file_handle;
+    SILC_LineNo       begin_line;
+    SILC_LineNo       end_line;
+    SILC_AdapterType  adapter_type;                        // Used by Cube 4
 };
 
 
@@ -177,14 +177,14 @@ SILC_DEFINE_DEFINITION_TYPE( Callpath )
     SILC_DEFINITION_HEADER( Callpath );
 
     // Add SILC_Callpath stuff from here on.
-    SILC_Callpath_Definition_Movable parent_callpath_handle;
+    SILC_CallpathHandle parent_callpath_handle;
 
     /* This controlls the callpath_argument union */
     bool with_parameter;
     union
     {
-        SILC_Region_Definition_Movable    region_handle;
-        SILC_Parameter_Definition_Movable parameter_handle;
+        SILC_RegionHandle    region_handle;
+        SILC_ParameterHandle parameter_handle;
     } callpath_argument;
 
     /* This is controlled by the type of the parameter when
@@ -192,8 +192,8 @@ SILC_DEFINE_DEFINITION_TYPE( Callpath )
      */
     union
     {
-        SILC_String_Definition_Movable string_handle;
-        int64_t                        integer_value;
+        SILC_StringHandle string_handle;
+        int64_t           integer_value;
     } parameter_value;
 };
 

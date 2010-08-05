@@ -87,8 +87,6 @@ SILC_Definitions_Initialize()
     // note, only lower-case type needed
     #define SILC_INIT_DEFINITION_LIST( type ) \
     do { \
-        SILC_ALLOCATOR_MOVABLE_INIT_NULL( \
-            silc_definition_manager.type ## _definition_head ); \
         silc_definition_manager.type ## _definition_tail_pointer = \
             &silc_definition_manager.type ## _definition_head; \
     } while ( 0 )
@@ -98,11 +96,6 @@ SILC_Definitions_Initialize()
         calloc( SILC_DEFINITION_HASH_TABLE_SIZE,
                 sizeof( *silc_definition_manager.string_definition_hash_table ) );
     assert( silc_definition_manager.string_definition_hash_table );
-    for ( uint32_t i = 0; i < SILC_DEFINITION_HASH_TABLE_SIZE; i++ )
-    {
-        SILC_ALLOCATOR_MOVABLE_INIT_NULL(
-            silc_definition_manager.string_definition_hash_table[ i ] );
-    }
 
     SILC_INIT_DEFINITION_LIST( location );
     SILC_INIT_DEFINITION_LIST( source_file );
@@ -213,8 +206,8 @@ SILC_DefineString( const char* str )
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new string \"%s\":", str );
 
-    SILC_String_Definition*         new_definition = NULL;
-    SILC_String_Definition_Movable* new_movable    = NULL;
+    SILC_String_Definition* new_definition = NULL;
+    SILC_StringHandle       new_handle     = SILC_INVALID_STRING;
 
     #pragma omp critical (define_string)
     {
@@ -225,12 +218,12 @@ SILC_DefineString( const char* str )
                            "  Hash value for string %x", string_hash );
 
         /* get reference to table bucket for new string */
-        SILC_String_Definition_Movable* hash_table_bucket =
+        SILC_StringHandle* hash_table_bucket =
             &silc_definition_manager.string_definition_hash_table[
                 string_hash & SILC_DEFINITION_HASH_TABLE_MASK ];
 
-        SILC_String_Definition_Movable* hash_list_iterator = hash_table_bucket;
-        while ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( *hash_list_iterator ) )
+        SILC_StringHandle hash_list_iterator = *hash_table_bucket;
+        while ( hash_list_iterator != SILC_MOVABLE_NULL )
         {
             SILC_String_Definition* string_definition = SILC_HANDLE_DEREF(
                 hash_list_iterator, String );
@@ -247,11 +240,11 @@ SILC_DefineString( const char* str )
                 break;
             }
 
-            hash_list_iterator = &string_definition->hash_next;
+            hash_list_iterator = string_definition->hash_next;
         }
 
         /* need to define new string  */
-        if ( SILC_ALLOCATOR_MOVABLE_IS_NULL( *hash_list_iterator ) )
+        if ( hash_list_iterator == SILC_MOVABLE_NULL )
         {
             SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
                                                       string,
@@ -276,7 +269,7 @@ SILC_DefineString( const char* str )
 
             /* link into hash chain */
             new_definition->hash_next = *hash_table_bucket;
-            *hash_table_bucket        = *new_movable;
+            *hash_table_bucket        = new_handle;
         }
         else
         {
@@ -284,11 +277,11 @@ SILC_DefineString( const char* str )
                                "  Re-using string" );
 
             /* return found existing string */
-            new_movable = hash_list_iterator;
+            new_handle = hash_list_iterator;
         }
     }
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -301,13 +294,13 @@ SILC_LocationHandle
 SILC_DefineLocation( uint64_t    globalLocationId,
                      const char* name )
 {
-    SILC_Location_Definition*         new_definition = NULL;
-    SILC_Location_Definition_Movable* new_movable    = NULL;
+    SILC_Location_Definition* new_definition = NULL;
+    SILC_LocationHandle       new_handle     = SILC_INVALID_LOCATION;
 
     SILC_ALLOC_NEW_DEFINITION( Location, location );
 
     new_definition->global_location_id = globalLocationId;
-    new_definition->name_handle        = *SILC_DefineString( name );
+    new_definition->name_handle        = SILC_DefineString( name );
 
     /* locations wont be unfied, therfore no hash value needed, yet? */
 
@@ -315,7 +308,7 @@ SILC_DefineLocation( uint64_t    globalLocationId,
                has settled */
     new_definition->location_type = SILC_LOCATION_OMP_THREAD;
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -323,31 +316,29 @@ SILC_CallpathHandle
 SILC_DefineCallpath( SILC_CallpathHandle parentCallpath,
                      SILC_RegionHandle   region )
 {
-    SILC_Callpath_Definition*         new_definition = NULL;
-    SILC_Callpath_Definition_Movable* new_movable    = NULL;
+    SILC_Callpath_Definition* new_definition = NULL;
+    SILC_CallpathHandle       new_handle     = SILC_INVALID_CALLPATH;
 
     SILC_ALLOC_NEW_DEFINITION( Callpath, callpath );
 
     // Init new_definition
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->parent_callpath_handle );
-    if ( parentCallpath != SILC_INVALID_CALLPATH )
+    new_definition->parent_callpath_handle = parentCallpath;
+    if ( new_definition->parent_callpath_handle != SILC_INVALID_CALLPATH )
     {
-        new_definition->parent_callpath_handle = *parentCallpath;
         HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
     }
 
     new_definition->with_parameter = false;
     HASH_ADD_POD( with_parameter );
 
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL(
-        new_definition->callpath_argument.region_handle );
-    if ( region != SILC_INVALID_REGION )
+    new_definition->callpath_argument.region_handle = region;
+    if ( new_definition->callpath_argument.region_handle
+         != SILC_INVALID_REGION )
     {
-        new_definition->callpath_argument.region_handle = *region;
         HASH_ADD_HANDLE( callpath_argument.region_handle, Region );
     }
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -356,38 +347,37 @@ SILC_DefineCallpathParameterInteger( SILC_CallpathHandle  parentCallpath,
                                      SILC_ParameterHandle callpathParameter,
                                      int64_t              integerValue )
 {
-    SILC_Callpath_Definition*         new_definition = NULL;
-    SILC_Callpath_Definition_Movable* new_movable    = NULL;
+    SILC_Callpath_Definition* new_definition = NULL;
+    SILC_CallpathHandle       new_handle     = SILC_INVALID_CALLPATH;
 
     SILC_ALLOC_NEW_DEFINITION( Callpath, callpath );
 
     // Init new_definition
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->parent_callpath_handle );
-    if ( parentCallpath != SILC_INVALID_CALLPATH )
+    new_definition->parent_callpath_handle = parentCallpath;
+    if ( new_definition->parent_callpath_handle != SILC_INVALID_CALLPATH )
     {
-        new_definition->parent_callpath_handle = *parentCallpath;
         HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
     }
 
     new_definition->with_parameter = true;
     HASH_ADD_POD( with_parameter );
 
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL(
-        new_definition->callpath_argument.parameter_handle );
-    if ( callpathParameter != SILC_INVALID_PARAMETER )
+    new_definition->callpath_argument.parameter_handle = callpathParameter;
+    if ( new_definition->callpath_argument.parameter_handle
+         != SILC_INVALID_PARAMETER )
     {
-        SILC_ParameterType type =
-            SILC_HANDLE_DEREF( callpathParameter, Parameter )->parameter_type;
-        assert( type == SILC_PARAMETER_INT64 );
+        SILC_ParameterType parameter_type = SILC_HANDLE_DEREF(
+            new_definition->callpath_argument.parameter_handle,
+            Parameter )->parameter_type;
+        assert( parameter_type == SILC_PARAMETER_INT64 );
 
-        new_definition->callpath_argument.parameter_handle = *callpathParameter;
         HASH_ADD_HANDLE( callpath_argument.parameter_handle, Parameter );
 
         new_definition->parameter_value.integer_value = integerValue;
         HASH_ADD_POD( parameter_value.integer_value );
     }
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -396,43 +386,41 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parentCallpath,
                                     SILC_ParameterHandle callpathParameter,
                                     SILC_StringHandle    stringValue )
 {
-    SILC_Callpath_Definition*         new_definition = NULL;
-    SILC_Callpath_Definition_Movable* new_movable    = NULL;
+    SILC_Callpath_Definition* new_definition = NULL;
+    SILC_CallpathHandle       new_handle     = SILC_INVALID_CALLPATH;
 
     SILC_ALLOC_NEW_DEFINITION( Callpath, callpath );
 
     // Init new_definition
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->parent_callpath_handle );
-    if ( parentCallpath != SILC_INVALID_CALLPATH )
+    new_definition->parent_callpath_handle = parentCallpath;
+    if ( new_definition->parent_callpath_handle != SILC_INVALID_CALLPATH )
     {
-        new_definition->parent_callpath_handle = *parentCallpath;
         HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
     }
 
     new_definition->with_parameter = true;
     HASH_ADD_POD( with_parameter );
 
-    SILC_ALLOCATOR_MOVABLE_INIT_NULL(
-        new_definition->callpath_argument.parameter_handle );
-    if ( callpathParameter != SILC_INVALID_PARAMETER )
+    new_definition->callpath_argument.parameter_handle = callpathParameter;
+    if ( new_definition->callpath_argument.parameter_handle
+         != SILC_INVALID_PARAMETER )
     {
-        SILC_ParameterType type =
-            SILC_HANDLE_DEREF( callpathParameter, Parameter )->parameter_type;
+        SILC_ParameterType type = SILC_HANDLE_DEREF(
+            new_definition->callpath_argument.parameter_handle,
+            Parameter )->parameter_type;
         assert( type == SILC_PARAMETER_STRING );
 
-        new_definition->callpath_argument.parameter_handle = *callpathParameter;
         HASH_ADD_HANDLE( callpath_argument.parameter_handle, Parameter );
 
-        SILC_ALLOCATOR_MOVABLE_INIT_NULL(
-            new_definition->parameter_value.string_handle );
-        if ( stringValue != SILC_INVALID_STRING )
+        new_definition->parameter_value.string_handle = stringValue;
+        if ( new_definition->parameter_value.string_handle
+             != SILC_INVALID_STRING )
         {
-            new_definition->parameter_value.string_handle = *stringValue;
             HASH_ADD_HANDLE( parameter_value.string_handle, String );
         }
     }
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -595,7 +583,7 @@ silc_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
         SILC_Error_Code status = OTF2_DefWriter_DefLocation(
             definitionWriter,
             definition->global_location_id,
-            SILC_HANDLE_TO_ID( &definition->name_handle, String ),
+            SILC_HANDLE_TO_ID( definition->name_handle, String ),
             silc_location_type_to_otf_location_type( definition->location_type ),
             0 );
         if ( status != SILC_SUCCESS )
@@ -623,16 +611,16 @@ silc_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
     SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Region, region )
     {
         uint32_t source_file_id = OTF2_UNDEFINED_UINT32;
-        if ( !SILC_ALLOCATOR_MOVABLE_IS_NULL( definition->file_handle ) )
+        if ( definition->file_handle != SILC_INVALID_STRING )
         {
-            source_file_id = SILC_HANDLE_TO_ID( &definition->file_handle, String );
+            source_file_id = SILC_HANDLE_TO_ID( definition->file_handle, String );
         }
 
         SILC_Error_Code status = OTF2_DefWriter_DefRegion(
             definitionWriter,
             definition->sequence_number,
-            SILC_HANDLE_TO_ID( &definition->name_handle, String ),
-            SILC_HANDLE_TO_ID( &definition->description_handle, String ),
+            SILC_HANDLE_TO_ID( definition->name_handle, String ),
+            SILC_HANDLE_TO_ID( definition->description_handle, String ),
             silc_region_type_to_otf_region_type( definition->region_type ),
             source_file_id,
             definition->begin_line,

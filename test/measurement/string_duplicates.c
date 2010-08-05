@@ -42,7 +42,7 @@ test_1( CuTest* tc )
     SILC_StringHandle handle2 = SILC_DefineString( "foo" );
     SILC_StringHandle handle3 = SILC_DefineString( "foo" );
 
-    /* currently we can only check for uniqueness for the 2nd and 3rd call */
+    CuAssert( tc, "1st and 2nd call should return the same handle", handle1 == handle2 );
     CuAssert( tc, "2nd and 3rd call should return the same handle", handle2 == handle3 );
 
     SILC_Definitions_Finalize();
@@ -62,10 +62,10 @@ test_2( CuTest* tc )
     SILC_StringHandle foo_handle3 = SILC_DefineString( "foo" );
     SILC_StringHandle bar_handle3 = SILC_DefineString( "bar" );
 
-    /* currently we can only check for uniqueness for the 2nd and 3rd call */
+    CuAssert( tc, "1st and 2nd call should return the same handle", foo_handle1 == foo_handle2 );
     CuAssert( tc, "2nd and 3rd call should return the same handle", foo_handle2 == foo_handle3 );
 
-    /* currently we can only check for uniqueness for the 2nd and 3rd call */
+    CuAssert( tc, "1st and 2nd call should return the same handle", bar_handle1 == bar_handle2 );
     CuAssert( tc, "2nd and 3rd call should return the same handle", bar_handle2 == bar_handle3 );
 
     SILC_Definitions_Finalize();

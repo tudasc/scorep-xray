@@ -23,7 +23,7 @@
  */
 
 
-#include <SILC_AllocatorImpl.h>
+#include <SILC_Allocator.h>
 #include <omp.h>
 
 

@@ -28,7 +28,13 @@
 
 
 #include <stdint.h>
+
+
+#include <SILC_Allocator.h>
+
+
 #include <SILC_PublicTypes.h>
+
 
 /**
  * @defgroup SILC_Types SILC Types
@@ -73,64 +79,76 @@ typedef uint32_t SILC_LineNo;
  * Symbolic constant representing an invalid or unknown I/O file group
  * definition.
  */
-#define SILC_INVALID_IOFILE_GROUP NULL
+#define SILC_INVALID_IOFILE_GROUP SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown I/O file definition.
  */
-#define SILC_INVALID_IOFILE NULL
+#define SILC_INVALID_IOFILE SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown marker group
  * definition.
  */
-#define SILC_INVALID_MARKER_GROUP NULL
+#define SILC_INVALID_MARKER_GROUP SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown marker definition.
  */
-#define SILC_INVALID_MARKER NULL
+#define SILC_INVALID_MARKER SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI communicator
  * definition.
  */
-#define SILC_INVALID_MPI_COMMUNICATOR NULL
+#define SILC_INVALID_MPI_COMMUNICATOR SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI window definition.
  */
-#define SILC_INVALID_MPI_WINDOW NULL
+#define SILC_INVALID_MPI_WINDOW SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI cartesion topology
  * definition.
  */
-#define SILC_INVALID_CART_TOPOLOGY NULL
+#define SILC_INVALID_CART_TOPOLOGY SILC_MOVABLE_NULL
+
+
+/**
+ * Symbolic constant representing an invalid or unknown MPI cartesion coordinates
+ * definition.
+ */
+#define SILC_INVALID_CART_COORDS SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown callpath definition.
  */
-#define SILC_INVALID_CALLPATH NULL
+#define SILC_INVALID_CALLPATH SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown parameter definition.
  */
-#define SILC_INVALID_PARAMETER NULL
+#define SILC_INVALID_PARAMETER SILC_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown string definition.
  */
-#define SILC_INVALID_STRING NULL
+#define SILC_INVALID_STRING SILC_MOVABLE_NULL
+
+/**
+ * Symbolic constant representing an invalid or unknown location definition.
+ */
+#define SILC_INVALID_LOCATION SILC_MOVABLE_NULL
 
 /**
  * Symbolic constant representing an invalid or unknown rank.

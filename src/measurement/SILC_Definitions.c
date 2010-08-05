@@ -52,19 +52,19 @@ SILC_DefineSourceFile( const char* fileName )
                        "Define new source file \"%s\":",
                        fileName );
 
-    SILC_SourceFile_Definition*         new_definition = NULL;
-    SILC_SourceFile_Definition_Movable* new_movable    = NULL;
+    SILC_SourceFile_Definition* new_definition = NULL;
+    SILC_SourceFileHandle       new_handle     = SILC_INVALID_SOURCE_FILE;
     SILC_ALLOC_NEW_DEFINITION( SourceFile, source_file );
 
-    new_definition->name_handle = *SILC_DefineString( fileName );
+    new_definition->name_handle = SILC_DefineString( fileName );
     /* just take the hash value from the string */
     new_definition->hash_value =
-        SILC_HANDLE_GET_HASH( &new_definition->name_handle, String );
+        SILC_HANDLE_GET_HASH( new_definition->name_handle, String );
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", new_definition->sequence_number );
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -82,15 +82,15 @@ SILC_DefineRegion( const char*           regionName,
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new region \"%s\":", regionName );
 
-    SILC_Region_Definition*         new_definition = NULL;
-    SILC_Region_Definition_Movable* new_movable    = NULL;
+    SILC_Region_Definition* new_definition = NULL;
+    SILC_RegionHandle       new_handle     = SILC_INVALID_REGION;
     SILC_ALLOC_NEW_DEFINITION( Region, region );
 
     // Init new_definition
-    new_definition->name_handle = *SILC_DefineString( regionName );
+    new_definition->name_handle = SILC_DefineString( regionName );
     HASH_ADD_HANDLE( name_handle, String );
     /* currently not used */
-    new_definition->description_handle = *SILC_DefineString( "" );
+    new_definition->description_handle = SILC_DefineString( "" );
     HASH_ADD_HANDLE( description_handle, String );
 
     new_definition->region_type = regionType;                      // maps to OTF2_RegionType
@@ -98,7 +98,7 @@ SILC_DefineRegion( const char*           regionName,
 
     if ( fileHandle == SILC_INVALID_SOURCE_FILE )
     {
-        SILC_ALLOCATOR_MOVABLE_INIT_NULL( new_definition->file_handle );
+        new_definition->file_handle = SILC_MOVABLE_NULL;
         /* should we add a 0 value to the hash? */
     }
     else
@@ -144,7 +144,7 @@ SILC_DefineRegion( const char*           regionName,
                        silc_region_type_to_string( regionType ) );
 #endif
 
-    return new_movable;
+    return new_handle;
 }
 
 /**
@@ -164,7 +164,7 @@ SILC_Region_GetName( SILC_RegionHandle handle )
 {
     SILC_Region_Definition* region = SILC_HANDLE_DEREF( handle, Region );
 
-    return SILC_HANDLE_DEREF( &region->name_handle, String )->string_data;
+    return SILC_HANDLE_DEREF( region->name_handle, String )->string_data;
 }
 
 
@@ -197,8 +197,8 @@ SILC_DefineMPICommunicator( int32_t  numberOfRanks,
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI Communicator:" );
 
-    SILC_Group_Definition*         new_definition = NULL;
-    SILC_Group_Definition_Movable* new_movable    = NULL;
+    SILC_Group_Definition* new_definition = NULL;
+    SILC_GroupHandle       new_handle     = SILC_INVALID_MPI_COMMUNICATOR;
     SILC_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( Group,
                                               group,
                                               uint64_t,
@@ -243,7 +243,7 @@ SILC_DefineMPICommunicator( int32_t  numberOfRanks,
     SILC_DEBUG_RAW_PRINTF( SILC_DEBUG_DEFINITIONS, "\n" );
 #endif
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -255,8 +255,8 @@ SILC_DefineMPIWindow( SILC_MPICommunicatorHandle communicatorHandle )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "Define new MPI Window:" );
 
-    SILC_MPIWindow_Definition*         new_definition = NULL;
-    SILC_MPIWindow_Definition_Movable* new_movable    = NULL;
+    SILC_MPIWindow_Definition* new_definition = NULL;
+    SILC_MPIWindowHandle       new_handle     = SILC_INVALID_MPI_WINDOW;
     SILC_ALLOC_NEW_DEFINITION( MPIWindow, mpi_window );
 
     // Init new_definition
@@ -264,7 +264,7 @@ SILC_DefineMPIWindow( SILC_MPICommunicatorHandle communicatorHandle )
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", new_definition->sequence_number );
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -282,8 +282,8 @@ SILC_DefineMPICartesianTopology( const char*                topologyName,
                        "Define new MPI cartesian topology \"%s\":",
                        topologyName );
 
-    SILC_MPICartesianTopology_Definition*         new_definition = NULL;
-    SILC_MPICartesianTopology_Definition_Movable* new_movable    = NULL;
+    SILC_MPICartesianTopology_Definition* new_definition = NULL;
+    SILC_MPICartesianTopologyHandle       new_handle     = SILC_INVALID_CART_TOPOLOGY;
     SILC_ALLOC_NEW_DEFINITION( MPICartesianTopology, mpi_cartesian_topology );
 
     // Init new_definition
@@ -308,7 +308,7 @@ SILC_DefineMPICartesianTopology( const char*                topologyName,
     }
 #endif
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -325,8 +325,8 @@ SILC_DefineMPICartesianCoords(
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "Define new MPI cartesian coordinates:" );
 
-    SILC_MPICartesianCoords_Definition*         new_definition = NULL;
-    SILC_MPICartesianCoords_Definition_Movable* new_movable    = NULL;
+    SILC_MPICartesianCoords_Definition* new_definition = NULL;
+    SILC_MPICartesianCoordsHandle       new_handle     = SILC_INVALID_CART_COORDS;
     SILC_ALLOC_NEW_DEFINITION( MPICartesianCoords, mpi_cartesian_coords );
 
     // Init new_definition
@@ -353,15 +353,15 @@ SILC_DefineMPICartesianCoords(
 SILC_CounterGroupHandle
 SILC_DefineCounterGroup( const char* name )
 {
-    SILC_CounterGroup_Definition*         new_definition = NULL;
-    SILC_CounterGroup_Definition_Movable* new_movable    = NULL;
+    SILC_CounterGroup_Definition* new_definition = NULL;
+    SILC_CounterGroupHandle       new_handle     = SILC_INVALID_COUNTER_GROUP;
     SILC_ALLOC_NEW_DEFINITION( CounterGroup, counter_group );
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
     // Init new_definition
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -376,13 +376,13 @@ SILC_DefineCounter( const char*             name,
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    SILC_Counter_Definition*         new_definition = NULL;
-    SILC_Counter_Definition_Movable* new_movable    = NULL;
+    SILC_Counter_Definition* new_definition = NULL;
+    SILC_CounterHandle       new_handle     = SILC_INVALID_COUNTER;
     SILC_ALLOC_NEW_DEFINITION( Counter, counter );
 
     // Init new_definition
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -394,13 +394,13 @@ SILC_DefineIOFileGroup( const char* name )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    SILC_IOFileGroup_Definition*         new_definition = NULL;
-    SILC_IOFileGroup_Definition_Movable* new_movable    = NULL;
+    SILC_IOFileGroup_Definition* new_definition = NULL;
+    SILC_IOFileGroupHandle       new_handle     = SILC_INVALID_IOFILE_GROUP;
     SILC_ALLOC_NEW_DEFINITION( IOFileGroup, io_file_group );
 
     // Init new_definition
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -413,13 +413,13 @@ SILC_DefineIOFile( const char*            name,
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    SILC_IOFile_Definition*         new_definition = NULL;
-    SILC_IOFile_Definition_Movable* new_movable    = NULL;
+    SILC_IOFile_Definition* new_definition = NULL;
+    SILC_IOFileHandle       new_handle     = SILC_INVALID_IOFILE;
     SILC_ALLOC_NEW_DEFINITION( IOFile, io_file );
 
     // Init new_definition
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -431,13 +431,13 @@ SILC_DefineMarkerGroup( const char* name )
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    SILC_MarkerGroup_Definition*         new_definition = NULL;
-    SILC_MarkerGroup_Definition_Movable* new_movable    = NULL;
+    SILC_MarkerGroup_Definition* new_definition = NULL;
+    SILC_MarkerGroupHandle       new_handle     = SILC_INVALID_MARKER_GROUP;
     SILC_ALLOC_NEW_DEFINITION( MarkerGroup, marker_group );
 
     // Init new_definition
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -453,13 +453,13 @@ SILC_DefineMarker
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    SILC_Marker_Definition*         new_definition = NULL;
-    SILC_Marker_Definition_Movable* new_movable    = NULL;
+    SILC_Marker_Definition* new_definition = NULL;
+    SILC_MarkerHandle       new_handle     = SILC_INVALID_MARKER;
     SILC_ALLOC_NEW_DEFINITION( Marker, marker );
 
     // Init new_definition
 
-    return new_movable;
+    return new_handle;
 }
 
 
@@ -475,13 +475,13 @@ SILC_DefineParameter
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
-    SILC_Parameter_Definition*         new_definition = NULL;
-    SILC_Parameter_Definition_Movable* new_movable    = NULL;
+    SILC_Parameter_Definition* new_definition = NULL;
+    SILC_ParameterHandle       new_handle     = SILC_INVALID_PARAMETER;
     SILC_ALLOC_NEW_DEFINITION( Parameter, parameter );
 
     // Init new_definition
     new_definition->parameter_type = type;
     HASH_ADD_POD( parameter_type );
 
-    return new_movable;
+    return new_handle;
 }
