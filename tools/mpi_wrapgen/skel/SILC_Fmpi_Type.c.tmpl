@@ -41,7 +41,7 @@
 
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SILC_Fmpi_Std.w
 
-#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SILC_Fmpi_Std.w
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof+!nf90) skel/SILC_Fmpi_Std.w
 
 /**
  * @}
@@ -171,7 +171,7 @@ void FSUB(MPI_Type_get_contents)(MPI_Fint* datatype,
 }
 #endif
 
-#pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+!n_get_contents) skel/SILC_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+!n_get_contents+!nf90) skel/SILC_Mpi_F2c_C2f.w
 
 /**
  * @}
