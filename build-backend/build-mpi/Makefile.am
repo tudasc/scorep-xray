@@ -51,6 +51,7 @@ INC_DIR_VENDOR_HASH = $(srcdir)/../../vendor/hash
 
 ## Add entities using += to the following primaries in locale Makefile.inc.ams
 bin_PROGRAMS =
+noinst_PROGRAMS =
 lib_LTLIBRARIES =
 noinst_LTLIBRARIES = 
 include_HEADERS = 
