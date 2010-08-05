@@ -234,7 +234,7 @@ typedef enum SILC_RegionType
  *
  */
 
-#define SILC_Tau_RegionHandle           long
+#define SILC_Tau_RegionHandle           uint64_t
 #define SILC_Tau_SourceFileHandle       SILC_SourceFileHandle
 #define SILC_Tau_AdapterType            SILC_AdapterType
 
