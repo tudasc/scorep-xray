@@ -55,7 +55,7 @@
 #include "silc_definition_locking.h"
 #include "silc_parameter_registration.h"
 
-#include <OTF2_File.h>
+#include <otf2.h>
 
 
 /** @brief Measurement system initialized? */
@@ -570,23 +570,27 @@ silc_otf2_finalize()
 
         if ( !silc_env_unify )
         {
-            SILC_StringHandle   location_name            = SILC_DefineString( "" );
             OTF2_GlobDefWriter* global_definition_writer =
                 OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,
                                                SILC_OnTracePreFlush,
                                                SILC_OnTraceAndDefinitionPostFlush );
             assert( global_definition_writer );
 
+            /* write def for empty string */
+            SILC_Error_Code status = OTF2_GlobDefWriter_GlobDefString(
+                global_definition_writer, 0, "" );
+            assert( status == SILC_SUCCESS );
+
             int index = 0;
             for ( int rank = 0; rank < SILC_Mpi_GetCommWorldSize(); ++rank )
             {
                 for ( int location_id = 0; location_id < n_locations_per_rank[ rank ]; ++location_id )
                 {
-                    uint64_t        global_location_id = ( ( ( uint64_t )location_id ) << 32 ) | ( uint64_t )rank;
-                    SILC_Error_Code status             = OTF2_GlobDefWriter_GlobDefLocation(
+                    uint64_t global_location_id = ( ( ( uint64_t )location_id ) << 32 ) | ( uint64_t )rank;
+                    status = OTF2_GlobDefWriter_GlobDefLocation(
                         global_definition_writer,
                         global_location_id,
-                        SILC_HANDLE_TO_ID( location_name, String ),
+                        0,
                         OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
                         n_definitions_per_location[ index ] );
                     assert( status == SILC_SUCCESS );
