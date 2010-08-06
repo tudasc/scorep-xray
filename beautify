@@ -29,6 +29,7 @@ AWK=awk
 BEAUTIFY=uncrustify
 BEAUTIFY_CONFIG=tools/beautifier/beautify.cfg
 GREP=grep
+SED=sed
 SVN=svn
 
 export LC_ALL=
@@ -44,13 +45,21 @@ export LANG=C
 
 # cd to top-level directory, i.e. something svn controlled at a equivalent level
 # to (trunk|branches/<FOO>|tags/<BAR>). Count "/"s in path therefore.
-REPOS_ROOT_LEVEL=`$SVN info | $GREP "Repository Root" |                        \
-                  $AWK -F "/" '{print NF}'`
-REPOS_ROOT_LEVEL=`svn info | grep URL | sed -e 's@trunk.*@@g' | awk -F "/" '{print NF}' ` 
-let REPOS_ROOT_LEVEL=$REPOS_ROOT_LEVEL-1
-CURRENT_LEVEL=`$SVN info | $GREP "URL" | $AWK -F "/" '{print NF}'`
+
+if $SVN info | $GREP -q "^Repository Root: "; then
+    REPOS_ROOT_LEVEL=`$SVN info |
+                      $AWK -F "/" '/^Repository Root: / {print NF}'`
+else
+    # pre subversion 1.2 has no Repository Root line, use the URL line
+    # because all repositories roots end with '-root', we use that for the
+    # matching, to strip of paths inside the repository
+    REPOS_ROOT_LEVEL=`$SVN info |
+                      $SED -e 's@-root/.*@-root@g' |
+                      $AWK -F "/" '/^URL: / {print NF}'`
+fi
+CURRENT_LEVEL=`$SVN info | $AWK -F "/" '/^URL: / {print NF}'`
 OFFSET=1
-if $SVN info | $GREP "URL" | $GREP -e 'branches\|tags' > /dev/null; then
+if $SVN info | $GREP "^URL: " | $GREP -q -e '/\(branches\|tags\)/'; then
     OFFSET=2
 fi
 let N_DIRS_UP=$CURRENT_LEVEL-$REPOS_ROOT_LEVEL-$OFFSET
