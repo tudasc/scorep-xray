@@ -30,8 +30,9 @@ self_contained_public_header_SILC_User_cpp           \
 self_contained_public_header_SILC_User_Types_c       \
 self_contained_public_header_SILC_User_Types_cpp     \
 self_contained_public_header_SILC_User_Variables_c   \
-self_contained_public_header_SILC_User_Variables_cpp
-
+self_contained_public_header_SILC_User_Variables_cpp \
+self_contained_public_header_SILC_Tau_c              \
+self_contained_public_header_SILC_Tau_cpp
 
 self_contained_public_headers_cppflags = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) -I$(INC_DIR_UTIL)
 
@@ -68,3 +69,9 @@ self_contained_public_header_SILC_User_Variables_c_CPPFLAGS = $(self_contained_p
 
 self_contained_public_header_SILC_User_Variables_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SILC_User_Variables.cpp
 self_contained_public_header_SILC_User_Variables_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SILC_Tau_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SILC_Tau.c
+self_contained_public_header_SILC_Tau_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SILC_Tau_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SILC_Tau.cpp
+self_contained_public_header_SILC_Tau_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
