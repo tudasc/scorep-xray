@@ -149,70 +149,27 @@ cleanup:
     return NULL;
 }
 
-/**
-   @def SILC_CUBE4_DELETE_TABLE_ENTRY
-   Constructs a function for deleting a table entry for a mapping table.
-   The name of the generated function will be
-   silc_delete_map_entry_<type><element>. Where entries of the *_cube tables
-   need 'key' as element and *_silc tables need 'value' as element.
-   The functions are called from @ref silc_cube4_delete_definitions_map.
-   @param type    The definition type in small letters. Values can be
-                  'region', 'metric', 'callpath'.
-   @param Type    The definitions type with first letter capitalized. Values
-                  be 'Region', 'Counter', 'Callpath'.
-   @param element Defines whether the key or the value is a silc handle which
-                  was copied and need a free. Values are either 'key', or
-                  'value'.
- */
-
-/* *INDENT-OFF* */
-#define SILC_CUBE4_DELETE_TABLE_ENTRY(type, Type, element)                    \
-static void                                                                   \
-silc_delete_map_entry_ ## type ## element ( SILC_Hashtab_Entry* entry )       \
-{                                                                             \
-    SILC_ASSERT( entry );                                                     \
-    free( ( SILC_ ## Type ## Handle*)entry->element );                        \
-}
-/* *INDENT-ON* */
-
-/* Construct silc_delete_map_entry_regionkey( SILC_Hashtab_Entry* entry ) */
-SILC_CUBE4_DELETE_TABLE_ENTRY( region, Region, key )
-
-/* Construct silc_delete_map_entry_regionvalue( SILC_Hashtab_Entry* entry ) */
-SILC_CUBE4_DELETE_TABLE_ENTRY( region, Region, value )
-
-/* Construct silc_delete_map_entry_metrickey( SILC_Hashtab_Entry* entry ) */
-SILC_CUBE4_DELETE_TABLE_ENTRY( metric, Counter, key )
-
-/* Construct silc_delete_map_entry_metricvalue( SILC_Hashtab_Entry* entry ) */
-SILC_CUBE4_DELETE_TABLE_ENTRY( metric, Counter, value )
-
-/* Construct silc_delete_map_entry_callpathkey( SILC_Hashtab_Entry* entry ) */
-SILC_CUBE4_DELETE_TABLE_ENTRY( callpath, Callpath, key )
-
-/* Construct silc_delete_map_entry_callpathvalue( SILC_Hashtab_Entry* entry ) */
-SILC_CUBE4_DELETE_TABLE_ENTRY( callpath, Callpath, value )
+#define SILC_Hashtab_DeleteRegionHandle SILC_Hashtab_DeleteInt64
+#define SILC_Hashtab_DeleteMetricHandle SILC_Hashtab_DeleteInt64
+#define SILC_Hashtab_DeleteCallpathHandle SILC_Hashtab_DeleteInt64
 
 /* Deletes the silc_cube4_definitions_map */
 void
 silc_cube4_delete_definitions_map( silc_cube4_definitions_map* map )
 {
-    SILC_Hashtab_Foreach( map->region_table_cube,
-                          &silc_delete_map_entry_regionkey );
-    SILC_Hashtab_Foreach( map->region_table_cube,
-                          &silc_delete_map_entry_regionvalue );
-    SILC_Hashtab_Foreach( map->metric_table_cube,
-                          &silc_delete_map_entry_metrickey );
-    SILC_Hashtab_Foreach( map->metric_table_cube,
-                          &silc_delete_map_entry_metricvalue );
-    SILC_Hashtab_Foreach( map->callpath_table_cube,
-                          &silc_delete_map_entry_callpathkey );
-    SILC_Hashtab_Foreach( map->callpath_table_cube,
-                          &silc_delete_map_entry_callpathvalue );
+    /* Because the silc handle is only duplicated once for both mappings, it
+       must only be deleted once.
+     */
+    SILC_Hashtab_FreeAll( map->region_table_cube,
+                          SILC_Hashtab_DeleteRegionHandle,
+                          SILC_Hashtab_DeleteNone );
+    SILC_Hashtab_FreeAll( map->metric_table_cube,
+                          SILC_Hashtab_DeleteMetricHandle,
+                          SILC_Hashtab_DeleteNone );
+    SILC_Hashtab_FreeAll( map->callpath_table_cube,
+                          SILC_Hashtab_DeleteCallpathHandle,
+                          SILC_Hashtab_DeleteNone );
 
-    SILC_Hashtab_Free( map->region_table_cube );
-    SILC_Hashtab_Free( map->metric_table_cube );
-    SILC_Hashtab_Free( map->callpath_table_cube );
     SILC_Hashtab_Free( map->region_table_silc );
     SILC_Hashtab_Free( map->metric_table_silc );
     SILC_Hashtab_Free( map->callpath_table_silc );
@@ -235,7 +192,6 @@ silc_cube4_add_region_mapping( silc_cube4_definitions_map* map,
     /* Store handle in hashtable */
     SILC_Hashtab_Insert( map->region_table_cube, silc_copy,
                          ( void* )cube_handle, NULL );
-
     SILC_Hashtab_Insert( map->region_table_silc, ( void* )cube_handle,
                          silc_copy, NULL );
 }
@@ -252,7 +208,6 @@ silc_cube4_add_callpath_mapping( silc_cube4_definitions_map* map,
     /* Store handle in hashtable */
     SILC_Hashtab_Insert( map->callpath_table_cube, silc_copy,
                          ( void* )cube_handle, NULL );
-
     SILC_Hashtab_Insert( map->callpath_table_silc, ( void* )cube_handle,
                          silc_copy, NULL );
 }
@@ -267,9 +222,8 @@ silc_cube4_add_metric_mapping( silc_cube4_definitions_map* map,
     *silc_copy = silc_handle;
 
     /* Store handle in hashtable */
-    SILC_Hashtab_Insert( map->callpath_table_cube, silc_copy,
+    SILC_Hashtab_Insert( map->metric_table_cube, silc_copy,
                          ( void* )cube_handle, NULL );
-
     SILC_Hashtab_Insert( map->metric_table_silc, ( void* )cube_handle,
                          silc_copy, NULL );
 }
@@ -287,7 +241,10 @@ silc_get_cube4_ ## type (silc_cube4_definitions_map* map,                     \
     SILC_Hashtab_Entry* entry = NULL;                                         \
     entry = SILC_Hashtab_Find( map->type ## _table_cube,                      \
                                &handle, NULL );                               \
-    if ( entry == NULL ) { return NULL; }                                     \
+    if ( entry == NULL )                                                      \
+    {                                                                         \
+        return NULL;                                                          \
+    }                                                                         \
     return ( ret_type *) entry->value;                                        \
 }
 
@@ -299,7 +256,10 @@ silc_get_ ## type ## _from_cube4 (silc_cube4_definitions_map* map,            \
     SILC_Hashtab_Entry* entry = NULL;                                         \
     entry = SILC_Hashtab_Find( map->type ## _table_silc,                      \
                                handle, NULL );                                \
-    if ( entry == NULL ) { return SILC_INVALID_ ## TYPE; }                    \
+    if ( entry == NULL )                                                      \
+    {                                                                         \
+        return SILC_INVALID_ ## TYPE;                                         \
+    }                                                                         \
     return *( SILC_ ## Type ## Handle *) entry->value;                        \
 }
 /* *INDENT-ON* */
@@ -315,6 +275,12 @@ SILC_GET_SILC_MAPPING( cube_metric, metric, Counter, COUNTER );
 SILC_GET_SILC_MAPPING( cube_region, region, Region, REGION );
 
 SILC_GET_SILC_MAPPING( cube_cnode, callpath, Callpath, CALLPATH );
+
+uint64_t
+silc_cube4_get_number_of_callpathes( silc_cube4_definitions_map* map )
+{
+    return SILC_Hashtab_Size( map->callpath_table_cube );
+}
 
 /* ****************************************************************************
  * Internal definition writer functions
@@ -347,9 +313,9 @@ silc_write_region_definitions_to_cube4( cube_t*                     my_cube,
     SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Region, region )
     {
         /* Collect necessary data */
-        const char* region_name = SILC_HANDLE_DEREF( &definition->name_handle,
+        const char* region_name = SILC_HANDLE_DEREF( definition->name_handle,
                                                      String )->string_data;
-        const char* file_name = SILC_HANDLE_DEREF( &definition->file_handle,
+        const char* file_name = SILC_HANDLE_DEREF( definition->file_handle,
                                                    String )->string_data;
         const char* adapter = silc_adapter_type_to_string( definition->adapter_type );
 
@@ -363,7 +329,7 @@ silc_write_region_definitions_to_cube4( cube_t*                     my_cube,
                                                     file_name );
 
         /* Create entry in mapping table */
-        silc_cube4_add_region_mapping( map, cube_handle, moveable );
+        silc_cube4_add_region_mapping( map, cube_handle, handle );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }
@@ -382,9 +348,9 @@ silc_write_callpath_definitions_to_cube4( cube_t*                     my_cube,
     SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Callpath, callpath )
     {
         /* Collect necessary data */
-        silc_region   = &definition->callpath_argument.region_handle;
+        silc_region   = definition->callpath_argument.region_handle;
         region        = silc_get_cube4_region( map, silc_region );
-        silc_callpath = &definition->parent_callpath_handle;
+        silc_callpath = definition->parent_callpath_handle;
         parent        = silc_get_cube4_callpath( map, silc_callpath );
 
         /* Register region to cube */
@@ -392,7 +358,7 @@ silc_write_callpath_definitions_to_cube4( cube_t*                     my_cube,
         index++;
 
         /* Create entry in mapping table */
-        silc_cube4_add_callpath_mapping( map, cnode, moveable );
+        silc_cube4_add_callpath_mapping( map, cnode, handle );
     }
     SILC_DEFINITION_FOREACH_WHILE();
 }

@@ -182,4 +182,11 @@ SILC_CallpathHandle
 silc_get_callpath_from_cube4( silc_cube4_definitions_map* map,
                               cube_cnode*                 handle );
 
+
+/**
+   Returns the number of callpathes.
+ */
+uint64_t
+silc_cube4_get_number_of_callpathes( silc_cube4_definitions_map* map );
+
 #endif /* SILC_DEFINITION_CUBE4_H */
