@@ -454,13 +454,12 @@ silc_compiler_get_sym_tab( void )
         /* add symbol to hash table */
         if ( col_num >= 3 )
         {
-            char* region_name = strdup( funcname );
 #ifdef INTEL_COMPILER
-            silc_compiler_hash_put( region_counter, region_name, filename, line_no );
+            silc_compiler_hash_put( region_counter, funcname, filename, line_no );
             silc_compiler_name_add( funcname, region_counter );
             region_counter++;
 #else
-            silc_compiler_hash_put( addr, region_name, filename, line_no );
+            silc_compiler_hash_put( addr, funcname, filename, line_no );
 #endif      /* INTEL_COMPILER */
         }
     }
