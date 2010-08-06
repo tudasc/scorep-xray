@@ -46,6 +46,8 @@ export LANG=C
 # to (trunk|branches/<FOO>|tags/<BAR>). Count "/"s in path therefore.
 REPOS_ROOT_LEVEL=`$SVN info | $GREP "Repository Root" |                        \
                   $AWK -F "/" '{print NF}'`
+REPOS_ROOT_LEVEL=`svn info | grep URL | sed -e 's@trunk.*@@g' | awk -F "/" '{print NF}' ` 
+let REPOS_ROOT_LEVEL=$REPOS_ROOT_LEVEL-1
 CURRENT_LEVEL=`$SVN info | $GREP "URL" | $AWK -F "/" '{print NF}'`
 OFFSET=1
 if $SVN info | $GREP "URL" | $GREP -e 'branches\|tags' > /dev/null; then
@@ -59,7 +61,7 @@ let N_DIRS_UP=$CURRENT_LEVEL-$REPOS_ROOT_LEVEL-$OFFSET
 if [ $N_DIRS_UP -gt 0 ]; then
     for i in `seq $N_DIRS_UP`; do
         cd ..
-#        echo `pwd`
+        echo `pwd`
         if [ ! -d ".svn" ]; then
             # Can happen if you checked out just a subdir of (trunk|
             # branch/<FOO>|tag/<BAR>). $BEAUTIFY will not find it's cfg file.
