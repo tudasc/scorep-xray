@@ -172,42 +172,42 @@ typedef int SILC_Fortran_MetricGroup;
    Converts a Fortran region handle to a C region handle.
    @param handle A Fortran region handle.
  */
-#define SILC_F2C_REGION( handle ) ( ( SILC_RegionHandle )SILC_F2C_POINTER( handle ) )
+#define SILC_F2C_REGION( handle ) ( handle )
 
 /**
    @def SILC_C2F_REGION( handle )
    Converts a C region handle to a Fortran region handle.
    @param handle A C region handle.
  */
-#define SILC_C2F_REGION( handle ) SILC_C2F_POINTER( handle )
+#define SILC_C2F_REGION( handle ) ( handle )
 
 /**
    @def SILC_F2C_COUNTER( handle )
    Converts a Fortran counter handle to a C counter handle.
    @param handle A Fortran counter handle.
  */
-#define SILC_F2C_COUNTER( handle ) ( ( SILC_CounterHandle )SILC_F2C_POINTER( handle ) )
+#define SILC_F2C_COUNTER( handle ) ( handle )
 
 /**
    @def SILC_C2F_COUNTER( handle )
    Converts a C counter handle to a Fortran counter handle.
    @param handle A C counter handle.
  */
-#define SILC_C2F_COUNTER( handle ) SILC_C2F_POINTER( handle )
+#define SILC_C2F_COUNTER( handle ) ( handle )
 
 /**
    @def SILC_F2C_COUNTER_GROUP( handle )
    Converts a Fortran counter group handle to a C counter group handle.
    @param handle A Fortran counter group handle.
  */
-#define SILC_F2C_COUNTER_GROUP( handle ) ( ( SILC_CounterGroupHandle )SILC_F2C_POINTER( handle ) )
+#define SILC_F2C_COUNTER_GROUP( handle ) ( handle )
 
 /**
    @def SILC_C2F_COUNTER_GROUP( handle )
    Converts a C counter group handle to a Fortran counter group handle.
    @param handle A C counter group handle.
  */
-#define SILC_C2F_COUNTER_GROUP( handle ) SILC_C2F_POINTER( handle )
+#define SILC_C2F_COUNTER_GROUP( handle ) ( handle )
 
 
 
