@@ -176,15 +176,14 @@ typedef void ( silc_profile_process_func_t )( silc_profile_node* node, void* par
    Casts a region handle to node specific data type.
    @param handle The region handle which is casted to node specific data.
  */
-#define SILC_PROFILE_REGION2DATA( handle ) SILC_PROFILE_POINTER2DATA( handle )
+#define SILC_PROFILE_REGION2DATA( handle ) ( handle )
 
 /**
    @def SILC_PROFILE_DATA2REGION( data )
    Casts a node specific data item to a region handle.
    @param data The node specific data that is casted to a region handle.
  */
-#define SILC_PROFILE_DATA2REGION( data ) ( ( SILC_RegionHandle ) \
-                                           SILC_PROFILE_DATA2POINTER( data ) )
+#define SILC_PROFILE_DATA2REGION( data ) ( data )
 
 /**
    @def SILC_PROFILE_PARAMSTR2DATA( handle )
