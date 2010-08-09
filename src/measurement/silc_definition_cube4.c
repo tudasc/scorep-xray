@@ -367,16 +367,20 @@ static void
 silc_write_location_definitions_to_cube4( cube_t*                     my_cube,
                                           silc_cube4_definitions_map* map )
 {
-    cube_machine* machine = cube_def_mach( my_cube, "no name", "no description" );
-    cube_node*    node    = cube_def_node( my_cube, "no name", machine );
-    cube_process* process = cube_def_proc( my_cube, "no name",
+    char          name[ 32 ];
+    cube_machine* machine = cube_def_mach( my_cube, "machine name", "no description" );
+    cube_node*    node    = cube_def_node( my_cube, "node name", machine );
+
+    sprintf( name, "rank %d", SILC_Mpi_GetRank() );
+    cube_process* process = cube_def_proc( my_cube, name,
                                            SILC_Mpi_GetRank(), node );
     cube_thread*  thread = NULL;
     int           index  = 0;
 
     SILC_DEFINITION_FOREACH_DO( &silc_definition_manager, Location, location )
     {
-        thread = cube_def_thrd( my_cube, "no name",
+        sprintf( name, "thread %d", index ),
+        thread = cube_def_thrd( my_cube, name,
                                 definition->global_location_id, process );
         index++;
     }

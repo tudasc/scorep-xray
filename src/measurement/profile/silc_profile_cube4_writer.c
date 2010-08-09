@@ -138,11 +138,12 @@ silc_profile_write_cube_metric( cube_t*                     my_cube,
 
     /* Array of all values for one metric for one callpath for all locations */
     uint64_t* values     = ( uint64_t* )malloc( location_number * sizeof( uint64_t ) );
-    char*     bit_vector = ( char* )malloc( ( location_number + 7 ) / 8 );
-    memset( bit_vector, 0xFF, ( location_number + 7 ) / 8 );
+    char*     bit_vector = ( char* )malloc( ( callpath_number + 7 ) / 8 );
+    memset( bit_vector, 0xFF, ( callpath_number + 7 ) / 8 );
 
-    /* Initialize writiing of a new metric */
+    /* Initialize writing of a new metric */
     cubew_reset( cube_writer );
+    cubew_set_array( cube_writer, callpath_number );
     cube_metric_set_known_cnodes( metric, bit_vector );
 
     /* Iterate over all cube cnodes */
@@ -175,7 +176,11 @@ silc_profile_write_cube_metric( cube_t*                     my_cube,
 
     /* Clean up */
     free( values );
-    free( bit_vector );
+
+    /* bit_vector is currently freed by the cube object.
+       However, I think good practice would be that the component which
+       allocate memory frees it. */
+    //free( bit_vector );
 }
 
 /**
