@@ -315,9 +315,12 @@ silc_write_region_definitions_to_cube4( cube_t*                     my_cube,
         /* Collect necessary data */
         const char* region_name = SILC_HANDLE_DEREF( definition->name_handle,
                                                      String )->string_data;
-        const char* file_name = SILC_HANDLE_DEREF( definition->file_handle,
-                                                   String )->string_data;
-        const char* adapter = silc_adapter_type_to_string( definition->adapter_type );
+        const char* adapter   = silc_adapter_type_to_string( definition->adapter_type );
+        const char* file_name = "";
+        if ( definition->file_handle != SILC_INVALID_SOURCE_FILE )
+        {
+            SILC_HANDLE_DEREF( definition->file_handle, String )->string_data;
+        }
 
         /* Register region to cube */
         cube_region* cube_handle = cube_def_region( my_cube,

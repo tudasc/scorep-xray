@@ -262,7 +262,7 @@ silc_profile_write_cube4()
 
     /* Allocate memory for full filename */
     filename = ( char* )malloc( strlen( dirname ) +             /* Directory     */
-                                6 +                             /* adding /cube/ */
+                                1 +                             /* separator '/' */
                                 strlen( silc_profile_basename ) /* basename      */
                                 + 1 );                          /* trailing '\0' */
     if ( filename == NULL )
@@ -272,20 +272,8 @@ silc_profile_write_cube4()
         goto cleanup;
     }
 
-    /* Create sub directory 'cube' */
-    sprintf( filename, "%s/cube", dirname );
-    if ( mkdir( filename, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ) != 0 )
-    {
-        if ( errno != EEXIST )
-        {
-            SILC_ERROR_POSIX( "Unable to create directory for snapshot profile\n"
-                              "Failed to write Cube 4 profile" );
-            goto cleanup;
-        }
-    }
-
     /* Create full filename */
-    sprintf( filename, "%s/%s", filename, silc_profile_basename );
+    sprintf( filename, "%s/%s", dirname, silc_profile_basename );
 
     /* Create writer object. FALSE -> no zlib compression */
     cube_writer
