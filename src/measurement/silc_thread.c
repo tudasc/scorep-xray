@@ -50,8 +50,13 @@ int64_t POMP_TPD_MANGLED = 0;
 
 
 // Easy access to the thread private variable. TPD stands for ThreadPrivateData
+#if SIZEOF_VOID_P == 8
 #define TPD ( ( SILC_Thread_ThreadPrivateData* )POMP_TPD_MANGLED )
-
+#elif SIZEOF_VOID_P == 4
+#define TPD ( ( SILC_Thread_ThreadPrivateData* )( uint32_t )POMP_TPD_MANGLED )
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
+#endif
 
 // We want to write #pragma omp threadprivate(POMP_TPD_MANGLED) but as
 // POMP_TPD_MANGLED is a macro itself, we need to do some preprocessor
@@ -142,7 +147,13 @@ SILC_Thread_Initialize()
 void
 silc_thread_update_tpd( SILC_Thread_ThreadPrivateData* newTPD )
 {
+#if SIZEOF_VOID_P == 8
     POMP_TPD_MANGLED = ( uint64_t )newTPD;
+#elif SIZEOF_VOID_P == 4
+    POMP_TPD_MANGLED = ( uint32_t )newTPD;
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
+#endif
 }
 
 
