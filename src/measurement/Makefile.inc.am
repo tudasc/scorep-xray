@@ -52,7 +52,7 @@ libsilc_measurement_la_CPPFLAGS =               \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/profile        \
-    -I$(INC_ROOT)src/measurement/OA       		\
+    -I$(INC_ROOT)src/measurement/OA             \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/services                   \
     -I$(PUBLIC_INC_DIR)                         \
@@ -60,6 +60,12 @@ libsilc_measurement_la_CPPFLAGS =               \
     -I$(INC_DIR_UTIL)                           \
     -I$(INC_DIR_VENDOR_HASH)
 
+## addtions of cube 4
+if HAVE_CUBE4
+libsilc_measurement_la_SOURCES +=                               \
+    $(SRC_ROOT)src/measurement/silc_definition_cube4.h          \
+    $(SRC_ROOT)src/measurement/silc_definition_cube4.c
+endif
 
 ## paradigm omp
 

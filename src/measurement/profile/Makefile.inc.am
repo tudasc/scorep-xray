@@ -48,6 +48,14 @@ libsilc_profile_base_la_SOURCES =                                    \
 
 libsilc_profile_base_la_CPPFLAGS = $(PROFILE_FLAGS)
 
+## Cube 4 additions
+if HAVE_CUBE4
+PROFILE_FLAGS += -DHAVE_CUBE4=1
+
+libsilc_profile_base_la_SOURCES +=                                   \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_cube4_writer.c
+endif
+
 ## non omp
 
 noinst_LTLIBRARIES += libsilc_profile_non_omp.la
