@@ -49,9 +49,9 @@ struct SILC_Profile_LocationData
 };
 
 #ifdef HAVE_CUBE4
-int SILC_Profile_OutputDefault = SILC_Profile_OutputCube4;
+#define SILC_Profile_OutputDefault SILC_Profile_OutputCube4
 #else
-int SILC_Profile_OutputDefault = SILC_Profile_OutputTauSnapshot;
+#define SILC_Profile_OutputDefault SILC_Profile_OutputTauSnapshot
 #endif
 
 /**
@@ -72,6 +72,21 @@ static uint64_t silc_profile_max_callpath_depth = 30;
    usage of the profile.
  */
 static uint64_t silc_profile_max_callpath_num = -1;
+
+/**
+   Stores the configuration setting for output format.
+ */
+static uint64_t silc_profile_output_format = SILC_Profile_OutputDefault;
+
+/**
+   Bitset table for output format string configuration.
+ */
+static const SILC_ConfigType_SetEntry silc_profile_format_table[] = {
+    { "None",        SILC_Profile_OutputNone        },
+    { "TauSnapshot", SILC_Profile_OutputTauSnapshot },
+    { "Cube4",       SILC_Profile_OutputCube4       },
+    { "Default",     SILC_Profile_OutputDefault     }
+};
 
 /**
    Configuration variable registration structures for the profiling system.
@@ -98,6 +113,21 @@ static SILC_ConfigVariable silc_profile_configs[] = {
       "profile",
       "Base for construction of the profile filename",
       "String which is used as based to create the filenames for the profile files" },
+    { "ProfileFormat",
+      SILC_CONFIG_TYPE_BITSET,
+      &silc_profile_output_format,
+      ( void* )silc_profile_format_table,
+      "Default",
+      "Profile output format",
+      "Sets the output format for the profile.\n"
+      "The following formats are supported:\n"
+      " None: No profile output. This does not disable profile recording.\n"
+      " TauSnapshot: Tau snapshot format.\n"
+#ifdef HAVE_CUBE4
+      " Cube4: Cube4 format.\n"
+#endif
+      " Default: Default format. If Cube4 is supported, Cube4 is the default\n"
+      "          else the Tau snapshot format is default.\n", },
     SILC_CONFIG_TERMINATOR
 };
 
@@ -313,8 +343,7 @@ SILC_Profile_DeleteLocationData( SILC_Profile_LocationData* profileLocationData 
 }
 
 void
-SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
-                      SILC_Profile_OutputFormat   outputFormat )
+SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags )
 {
     SILC_PROFILE_ASSURE_INITIALIZED;
 
@@ -332,21 +361,23 @@ SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
     }
 
     /* Write profile */
-    switch ( outputFormat )
+    if ( silc_profile_output_format == SILC_Profile_OutputNone )
     {
-        case SILC_Profile_OutputNone:
-            break;
-        case SILC_Profile_OutputTauSnapshot:
-            silc_profile_write_tau_snapshot();
-            break;
+        return;
+    }
 #ifdef HAVE_CUBE4
-        case SILC_Profile_OutputCube4:
-            silc_profile_write_cube4();
-            break;
+    else if ( silc_profile_output_format & SILC_Profile_OutputCube4 )
+    {
+        silc_profile_write_cube4();
+    }
 #endif  /* HAVE_CUBE4 */
-        default:
-            SILC_ERROR( SILC_ERROR_INVALID_ARGUMENT,
-                        "Unsupported profile format" );
+    else if ( silc_profile_output_format & SILC_Profile_OutputTauSnapshot )
+    {
+        silc_profile_write_tau_snapshot();
+    }
+    else
+    {
+        SILC_ERROR( SILC_ERROR_INVALID_ARGUMENT, "Unsupported profile format" );
     }
 }
 

@@ -81,7 +81,7 @@ typedef enum
     SILC_Profile_OutputCube4       = 2,
 } SILC_Profile_OutputFormat;
 
-extern int SILC_Profile_OutputDefault;
+//extern const int SILC_Profile_OutputDefault;
 
 /* ----------------------------------------------------- Initialization / Finalization */
 
@@ -124,8 +124,7 @@ SILC_Profile_Finalize();
    Which steps are included can be specified via parameters.
  */
 void
-SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags,
-                      SILC_Profile_OutputFormat   outputFormat );
+SILC_Profile_Process( SILC_Profile_ProcessingFlag processFlags );
 
 /**
    Configures the callpath size for the next profile. The configuration is stored and
