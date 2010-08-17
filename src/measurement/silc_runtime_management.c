@@ -177,15 +177,17 @@ silc_update_location_definition_id( SILC_Thread_LocationData* location )
 void
 silc_create_directory( const char* dirname )
 {
-    mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
-    if ( mkdir( silc_experiment_dir_name, mode ) == -1 )
+    //first check to see if directory already exists.
+    struct stat* buf;
+    if ( stat( silc_experiment_dir_name, buf ) == ENOENT )
     {
-        /// @todo We may check for EEXIST to provide a better error message.
-        ///       But if the measurement succeeds, this case should not happen
-        ///       because the directory will be renamed.
-        SILC_ERROR_POSIX( "Can't create experiment directory \"%s\".",
-                          silc_experiment_dir_name );
-        _Exit( EXIT_FAILURE );
+        mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+        if ( mkdir( silc_experiment_dir_name, mode ) == -1 )
+        {
+            SILC_ERROR_POSIX( "Can't create experiment directory \"%s\".",
+                              silc_experiment_dir_name );
+            _Exit( EXIT_FAILURE );
+        }
     }
 }
 
