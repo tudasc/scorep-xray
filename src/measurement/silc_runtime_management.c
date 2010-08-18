@@ -173,13 +173,32 @@ silc_update_location_definition_id( SILC_Thread_LocationData* location )
     location_definition->global_location_id = trace_data->otf_location;
 }
 
+void
+silc_format_local_time( char* name )
+{
+    assert( !omp_in_parallel() );                             // localtime() not reentrant
+    time_t     now;
+    struct tm* local_time;
+    time( &now );
+    local_time = localtime( &now );
+    if ( local_time == NULL )
+    {
+        perror( "localtime should not fail." );
+        exit( EXIT_FAILURE );
+    }
+
+    // Directory exists, move it to a silc failed directory name.
+    strftime( name, 15, "%Y%m%d_%H%M_", local_time );
+    snprintf( &( name[ 14 ] ), 6,
+              "%u", ( uint32_t )SILC_GetClockTicks() );
+}
 
 void
 silc_create_directory( const char* dirname )
 {
     //first check to see if directory already exists.
-    struct stat* buf;
-    if ( stat( silc_experiment_dir_name, buf ) == ENOENT )
+    struct stat buf;
+    if ( stat( silc_experiment_dir_name, &buf ) == -1 )
     {
         mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
         if ( mkdir( silc_experiment_dir_name, mode ) == -1 )
@@ -189,8 +208,22 @@ silc_create_directory( const char* dirname )
             _Exit( EXIT_FAILURE );
         }
     }
+    else
+    {
+        char local_time[ dir_name_size ];
+        char new_experiment_dir_name[ dir_name_size ];
+        silc_format_local_time( local_time );
+        strcat( new_experiment_dir_name, "silc-failed-" );
+        strcat( new_experiment_dir_name, local_time );
+        if ( rename( silc_experiment_dir_name, new_experiment_dir_name ) != 0 )
+        {
+            perror( "perror for rename." );
+            SILC_ERROR_POSIX( "Can't rename experiment directory \"%s\" to \"%s\".",
+                              silc_experiment_dir_name, new_experiment_dir_name );
+            _Exit( EXIT_FAILURE );
+        }
+    }
 }
-
 
 void
 SILC_RenameExperimentDir()
@@ -206,21 +239,11 @@ SILC_RenameExperimentDir()
         return;
     }
 
-    assert( !omp_in_parallel() ); // localtime() not reentrant
-    time_t     now;
-    struct tm* local_time;
-    time( &now );
-    local_time = localtime( &now );
-    if ( local_time == NULL )
-    {
-        perror( "localtime should not fail." );
-        exit( EXIT_FAILURE );
-    }
-
     char new_experiment_dir_name[ dir_name_size ];
-    strftime( new_experiment_dir_name, 20, "silc-%Y%m%d_%H%M_", local_time );
-    snprintf( &( new_experiment_dir_name[ 19 ] ), 11,
-              "%u", ( uint32_t )SILC_GetClockTicks() );
+    char local_time[ dir_name_size ];
+    silc_format_local_time( local_time );
+    strcat( new_experiment_dir_name, "silc-" );
+    strcat( new_experiment_dir_name, local_time );
 
     if ( rename( "silc-measurement-tmp", new_experiment_dir_name ) != 0 )
     {
