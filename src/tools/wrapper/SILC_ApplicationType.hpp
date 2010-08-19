@@ -30,7 +30,7 @@
 #include <iostream>
 #include <string>
 
-#include "Silc_Application.hpp"
+#include "SILC_Application.hpp"
 
 
 class Silc_ApplicationType

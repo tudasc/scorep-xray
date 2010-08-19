@@ -20,7 +20,7 @@
  *
  */
 
-#include "Silc_Instrumenter.hpp"
+#include "SILC_Instrumenter.hpp"
 
 #include <iostream>
 #include <string>

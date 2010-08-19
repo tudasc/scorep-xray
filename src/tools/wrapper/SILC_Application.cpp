@@ -20,7 +20,7 @@
  */
 
 
-#include "Silc_Application.hpp"
+#include "SILC_Application.hpp"
 
 
 Silc_Application::Silc_Application

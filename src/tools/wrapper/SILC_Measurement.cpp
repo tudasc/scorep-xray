@@ -14,7 +14,7 @@
  */
 
 
-#include "Silc_Measurement.hpp"
+#include "SILC_Measurement.hpp"
 
 /**
  * @file Silc_Measurement.cpp
@@ -52,7 +52,8 @@ Silc_Measurement::silc_parseCmdLine
 )
 {
     SILC_Error_Code exitStatus =  SILC_ERROR_ENOTSUP;
-    std::string     instStr( argv[ 1 ] );
+    std::string
+                    instStr( argv[ 1 ] );
     int             pos = instStr.find( "--measurement", 0 );
     if ( pos != std::string::npos
          && argc > 2
@@ -60,7 +61,8 @@ Silc_Measurement::silc_parseCmdLine
     {
         for ( int loop = 2; loop < argc; loop++ )
         {
-            std::string flag( argv[ loop ] );
+            std::string
+            flag( argv[ loop ] );
             _userCommand += flag + " ";
             std::cout << " flag " << flag << "   " << argv[ loop ] << std::endl;
         }

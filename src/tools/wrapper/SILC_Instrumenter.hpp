@@ -27,7 +27,7 @@
 #include <string>
 
 
-#include "Silc_Application.hpp"
+#include "SILC_Application.hpp"
 
 /** @def
  * list of supported languages

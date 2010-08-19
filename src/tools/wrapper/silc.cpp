@@ -25,9 +25,9 @@
 
 #include <SILC_Utils.h>
 
-#include "Silc_ApplicationType.hpp"
-#include "Silc_Instrumenter.hpp"
-#include "Silc_Measurement.hpp"
+#include "SILC_ApplicationType.hpp"
+#include "SILC_Instrumenter.hpp"
+#include "SILC_Measurement.hpp"
 
 
 int
