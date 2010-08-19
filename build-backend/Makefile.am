@@ -34,7 +34,8 @@ BUILD_DIR=build-backend
 ACLOCAL_AMFLAGS = -I ../build-config/m4
 
 EXTRA_LOCAL_CLEAN_TARGETS = clean-local-silc-experiment-dirs \
-                            clean-local-silc-config-tests
+                            clean-local-silc-config-tests    \
+                            clean-local-silc-config-tool
 
 clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
 .PHONY: $(EXTRA_LOCAL_CLEAN_TARGETS) \
@@ -47,3 +48,16 @@ clean-local-silc-experiment-dirs:
 clean-local-silc-config-tests:
 	$(RM) test_silc_config_number.*.out
 	$(RM) test_silc_config_size.*.out
+
+install-data-local: silc-config-tool
+
+silc-config-tool:
+	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
+	echo PREFIX=\"$(prefix)\"                                                       >> $(builddir)/silc_config.dat
+	echo DATADIR=\"$(datadir)\"                                                     >> $(builddir)/silc_config.dat
+	echo LIBDIR=\"$(libdir)\"                                                       >> $(builddir)/silc_config.dat
+	$(INSTALL_DATA) $(builddir)/silc_config.dat $(DESTDIR)$(bindir)/silc_config.dat
+# add compiler-suite, name of libs, static/shared, ...
+
+clean-local-silc-config-tool:
+	rm -f $(builddir)/silc_config.dat
