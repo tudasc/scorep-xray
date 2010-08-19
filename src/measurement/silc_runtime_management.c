@@ -50,7 +50,7 @@ static void silc_update_location_definition_id( SILC_Thread_LocationData* locati
 /* *INDENT-ON* */
 
 
-#define dir_name_size  30
+#define dir_name_size  32
 
 char silc_experiment_dir_name[ dir_name_size ];
 
@@ -173,10 +173,11 @@ silc_update_location_definition_id( SILC_Thread_LocationData* location )
     location_definition->global_location_id = trace_data->otf_location;
 }
 
+
 void
 silc_format_local_time( char* name )
 {
-    assert( !omp_in_parallel() );                             // localtime() not reentrant
+    assert( !omp_in_parallel() ); // localtime() not reentrant
     time_t     now;
     struct tm* local_time;
     time( &now );
@@ -186,12 +187,11 @@ silc_format_local_time( char* name )
         perror( "localtime should not fail." );
         exit( EXIT_FAILURE );
     }
-
-    // Directory exists, move it to a silc failed directory name.
     strftime( name, 15, "%Y%m%d_%H%M_", local_time );
     snprintf( &( name[ 14 ] ), 6,
               "%u", ( uint32_t )SILC_GetClockTicks() );
 }
+
 
 void
 silc_create_directory( const char* dirname )
@@ -211,9 +211,8 @@ silc_create_directory( const char* dirname )
     else
     {
         char local_time[ dir_name_size ];
-        char new_experiment_dir_name[ dir_name_size ];
         silc_format_local_time( local_time );
-        strcat( new_experiment_dir_name, "silc-failed-" );
+        char new_experiment_dir_name[ dir_name_size ] = "silc-failed-";
         strcat( new_experiment_dir_name, local_time );
         if ( rename( silc_experiment_dir_name, new_experiment_dir_name ) != 0 )
         {
@@ -224,6 +223,7 @@ silc_create_directory( const char* dirname )
         }
     }
 }
+
 
 void
 SILC_RenameExperimentDir()
@@ -238,13 +238,10 @@ SILC_RenameExperimentDir()
     {
         return;
     }
-
-    char new_experiment_dir_name[ dir_name_size ];
     char local_time[ dir_name_size ];
     silc_format_local_time( local_time );
-    strcat( new_experiment_dir_name, "silc-" );
+    char new_experiment_dir_name[ dir_name_size ] = "silc-";
     strcat( new_experiment_dir_name, local_time );
-
     if ( rename( "silc-measurement-tmp", new_experiment_dir_name ) != 0 )
     {
         SILC_ERROR_POSIX( "Can't rename experiment directory form silc-measurement-tmp to \"%s\".",
