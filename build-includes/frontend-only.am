@@ -1,5 +1,5 @@
 ## -*- mode: makefile -*-
 
-include ../src/tools/Makefile.inc.am
+include ../src/tools/wrapper/Makefile.inc.am
 
 #include ../test/...
