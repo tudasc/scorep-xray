@@ -18,7 +18,7 @@
  * @file       SILC_Memory.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
+ * @status  alpha
  *
  *
  */
