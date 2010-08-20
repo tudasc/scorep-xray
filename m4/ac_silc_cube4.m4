@@ -20,6 +20,12 @@ AC_DEFUN([AC_SILC_CUBE4], [
 AC_ARG_WITH(cube4-lib, [AS_HELP_STRING([--with-cube4-lib=path_to_library], [Specifies the path where the Cube 4 library is located])],[LDFLAGS="$LDFLAGS -L$withval"],[])
 AC_ARG_WITH(cube4-header, [AS_HELP_STRING([--with-cube4-header=path_to_header], [Specifies the path where the Cube 4 header files are located])],[CPPFLAGS="$CPPFLAGS -I$withval"],[])
 
+## preliminary error message due to problems with cross-compiling
+if test "x${ac_silc_cross_compiling}" = "xyes"; then
+        AC_MSG_ERROR([Can't reliably determine backend libcubew in cross
+compiling mode.])
+fi
+
 ## Check presence of cube writer library
 AC_LANG_PUSH([C])
 AC_MSG_CHECKING([for libcubew])    
@@ -35,4 +41,5 @@ AC_CHECK_HEADER([cubew.h], [has_cube4_header=yes], [], [])
 ## Set makefile conditional
 AM_CONDITIONAL(HAVE_CUBE4,[test x$has_cube4_lib$has_cube4_header = xyesyes])
 
+AC_LANG_POP([C])
 ])
