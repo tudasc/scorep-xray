@@ -52,6 +52,7 @@ print_help( std::string toolname )
               << "  --measure       Performs a measurement run of the instrumented application.\n"
               << "  --help, -h      Show help output.\n\n"
               << "For instrumentation the following options are supported:\n"
+              << "  -config <file>  Specifies file for the instrumentation configuration.\n"
               << "  -compiler       Enables compiler instrumentation Is enabled by default.\n"
               << "  -nocompiler     Disables compiler istrumentation.\n"
               << "  -mpi            Enables mpi wrapper. Is enabled by default if it is a\n"
@@ -85,8 +86,6 @@ main
         {
             // select the application
             SILC_Application* appType = SILC_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
-
-            appType->ReadConfigFile( "silc_config.dat" );
             appType->ParseCmdLine( argc, argv );
 
             if ( appType->Run() == SILC_SUCCESS )

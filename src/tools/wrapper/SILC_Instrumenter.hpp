@@ -53,7 +53,8 @@ private:
     {
         silc_parse_mode_param,
         silc_parse_mode_command,
-        silc_parse_mode_output
+        silc_parse_mode_output,
+        silc_parse_mode_config
     } silc_parse_mode_t;
 
     /* ******************************************************** Public methods */
@@ -79,9 +80,6 @@ public:
     virtual SILC_Error_Code
     ParseCmdLine( int    argc,
                   char** argv );
-
-    virtual SILC_Error_Code
-    ReadConfigFile( std::string fileName );
 
     virtual void
     PrintParameter();
@@ -109,12 +107,19 @@ private:
     parse_command( std::string arg );
     silc_parse_mode_t
     parse_parameter( std::string arg );
+    silc_parse_mode_t
+    parse_config( std::string arg );
     void
     prepare_compiler();
     void
     prepare_user();
     void
     prepare_opari();
+
+    SILC_Error_Code
+    open_config_file( std::ifstream* inFile );
+    SILC_Error_Code
+    read_config_file();
 
     /* ******************************************************* Private members */
 private:
@@ -196,6 +201,12 @@ private:
     /* --------------------------------------------
        Config file data
        ------------------------------------------*/
+    /**
+       Config file name. Can be set with the -config parameter.
+       If it is empty, a config file is searched at standard locations.
+     */
+    std::string config_file;
+
     /**
        Stores compiler instruemntation flags
      */

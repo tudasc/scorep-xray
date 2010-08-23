@@ -31,6 +31,8 @@
 
 #include "SILC_Instrumenter.hpp"
 
+#define SILC_CONFIG_FILE_NAME "silc_config.dat"
+
 /* ****************************************************************************
    Main interface
 ******************************************************************************/
@@ -50,6 +52,7 @@ SILC_Instrumenter::SILC_Instrumenter()
 
     silc_include_path = "";
     silc_library_path = "";
+    config_file       = "";
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -59,6 +62,7 @@ SILC_Instrumenter::~SILC_Instrumenter ()
 int
 SILC_Instrumenter::Run()
 {
+    read_config_file();
     if ( compiler_instrumentation == enabled )
     {
         prepare_compiler();
@@ -92,6 +96,9 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
                 break;
             case silc_parse_mode_output:
                 mode = parse_output( argv[ i ] );
+                break;
+            case silc_parse_mode_config:
+                mode = parse_config( argv[ i ] );
                 break;
         }
     }
@@ -153,33 +160,6 @@ SILC_Instrumenter::PrintParameter()
               << compiler_instrumentation_flags << std::endl;
     std::cout << "SILC include path: " << silc_include_path << std::endl;
     std::cout << "SILC library path: " << silc_library_path << std::endl;
-}
-
-SILC_Error_Code
-SILC_Instrumenter::ReadConfigFile( std::string fileName )
-{
-    std::ifstream inFile;
-    inFile.open( fileName.c_str(), std::ios_base::in );
-
-    if ( inFile.is_open() )
-    {
-        if ( !( inFile.good() ) )
-        {
-            return SILC_ERROR_ENOENT;
-        }
-
-        while ( inFile.good() )
-        {
-            char line[ 512 ] = { "" };
-            inFile.getline( line, 512 );
-            read_parameter( line );
-        }
-        return SILC_SUCCESS;
-    }
-    else
-    {
-        return SILC_ERROR_ENOENT;
-    }
 }
 
 /* ****************************************************************************
@@ -251,6 +231,13 @@ SILC_Instrumenter::parse_parameter( std::string arg )
         is_openmp_application = disabled;
         return silc_parse_mode_param;
     }
+    /* Configuration file */
+    else if ( arg == "-config" )
+    {
+        is_openmp_application = disabled;
+        return silc_parse_mode_config;
+    }
+
     else
     {
         std::cout << "ERROR: Unknown parameter: " << arg << std::endl;
@@ -350,9 +337,69 @@ SILC_Instrumenter::check_parameter()
     }
 }
 
+SILC_Instrumenter::silc_parse_mode_t
+SILC_Instrumenter::parse_config( std::string arg )
+{
+    config_file = arg;
+    return silc_parse_mode_param;
+}
+
 /* ****************************************************************************
    Config file parsing
 ******************************************************************************/
+
+SILC_Error_Code
+SILC_Instrumenter::open_config_file( std::ifstream* inFile )
+{
+    // If configure file was specified via -config. Use this file.
+    if ( config_file != "" )
+    {
+        inFile->open( config_file.c_str(), std::ios_base::in );
+        if ( !( inFile->good() ) )
+        {
+            SILC_ERROR( SILC_ERROR_FILE_CAN_NOT_OPEN,
+                        "Specified file: %s", config_file.c_str() );
+            return SILC_ERROR_FILE_CAN_NOT_OPEN;
+        }
+        return SILC_SUCCESS;
+    }
+
+    // Else try standard locations
+    // 1. Current path.
+    inFile->open( SILC_CONFIG_FILE_NAME, std::ios_base::in );
+    if ( inFile->good() )
+    {
+        return SILC_SUCCESS;
+    }
+
+    SILC_ERROR( SILC_ERROR_FILE_CAN_NOT_OPEN,
+                "No config file found at " SILC_CONFIG_FILE_NAME
+                ".\nPlease specify the location of your config file with the "
+                "-config <filename> option." );
+    return SILC_ERROR_FILE_CAN_NOT_OPEN;
+}
+
+SILC_Error_Code
+SILC_Instrumenter::read_config_file()
+{
+    std::ifstream inFile;
+
+
+    if ( open_config_file( &inFile ) == SILC_SUCCESS )
+    {
+        while ( inFile.good() )
+        {
+            char line[ 512 ] = { "" };
+            inFile.getline( line, 512 );
+            read_parameter( line );
+        }
+        return SILC_SUCCESS;
+    }
+    else
+    {
+        return SILC_ERROR_FILE_CAN_NOT_OPEN;
+    }
+}
 
 SILC_Error_Code
 SILC_Instrumenter::read_parameter( std::string line )
@@ -439,17 +486,20 @@ int
 SILC_Instrumenter::execute_command()
 {
     std::string silc_lib;
-    if ( is_mpi_application == enabled )
+    if ( is_linking )
     {
-        silc_lib = ( is_openmp_application == enabled ?
-                     " -lsilc_mpi_omp" : " -lsilc_mpi" );
+        if ( is_mpi_application == enabled )
+        {
+            silc_lib = ( is_openmp_application == enabled ?
+                         " -lsilc_mpi_omp" : " -lsilc_mpi" );
+        }
+        else
+        {
+            silc_lib = ( is_openmp_application == enabled ?
+                         " -lsilc_omp" : " -lsilc_serial" );
+        }
+        silc_lib += " -lotf2 -lsilc_utilities";
     }
-    else
-    {
-        silc_lib = ( is_openmp_application == enabled ?
-                     " -lsilc_omp" : " -lsilc_serial" );
-    }
-    silc_lib += " -lotf2 -lsilc_utilities";
     std::string command = compiler_name
                           + silc_library_path
                           + silc_include_path

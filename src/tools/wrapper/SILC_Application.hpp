@@ -41,11 +41,6 @@ public:
     virtual ~
     SILC_Application();
 
-
-    virtual SILC_Error_Code
-    ReadConfigFile( std::string fileName ) = 0;
-
-
 /**
  * @brief virtual base class functin to parse command line attributes
  *
