@@ -64,8 +64,9 @@ clean-local-silc-config-tool:
 
 silc-config-tool-local:
 	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
-	echo LIBDIR_SILC=\".libs\"                                                      >> $(builddir)/silc_config.dat
-	echo LIBDIR_OTF2=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/silc_config.dat
-	echo INCDIR_SILC=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/silc_config.dat
-	echo INCDIR_OTF2=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/silc_config.dat
-
+	echo LIBDIR=\".libs\"                                                      >> $(builddir)/silc_config.dat
+	echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/silc_config.dat
+	echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/silc_config.dat
+	echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/silc_config.dat
+	echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/silc_config.dat
+        echo CC=\"$(CC)\"                                                          >> $(builddir)/silc_config.dat
