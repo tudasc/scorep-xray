@@ -15,20 +15,65 @@
 
 
 /**
+ * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
+ * @status alpha
  * silc user interaction
  * provides wrapper for instrumentation and binary for steering measurement system
  */
-
-
+#include <config.h>
 #include <iostream>
 #include <string>
 
 #include <SILC_Utils.h>
-
 #include "SILC_ApplicationType.hpp"
 #include "SILC_Instrumenter.hpp"
 #include "SILC_Measurement.hpp"
 
+
+void
+print_short_usage( std::string toolname )
+{
+    std::cout << "\nThis is the SILC user tool. The usage is:\n"
+              << toolname << " <action> <options> <orginal command>\n\n"
+              << "The action can be one of the following:\n"
+              << "  --instrument    Instruments the application.\n"
+              << "  --measure       Performs a measurement run of the instrumented application.\n"
+              << "  --help, -h      Show help output.\n\n"
+              << std::endl;
+}
+
+void
+print_help( std::string toolname )
+{
+    std::cout << "\nThis is the SILC user tool. The usage is:\n"
+              << toolname << " <action> <options> <orginal command>\n\n"
+              << "The action can be one of the following:\n"
+              << "  --instrument    Instruments the application.\n"
+              << "  --measure       Performs a measurement run of the instrumented application.\n"
+              << "  --help, -h      Show help output.\n\n"
+              << "For instrumentation the following options are supported:\n"
+              << "  -compiler       Enables compiler instrumentation Is enabled by default.\n"
+              << "  -nocompiler     Disables compiler istrumentation.\n"
+              << "  -mpi            Enables mpi wrapper. Is enabled by default if it is a\n"
+              << "                  mpi program.\n"
+              << "  -nompi          Disables mpi wrappers. They are disabled by default if\n"
+              << "                  it is no mpi program.\n"
+              << "  -opari          Enables Opari instrumentation. Is enabled by default\n"
+              << "                  if it is an OpenMP program.\n"
+              << "  -noopari        Disables Opari instrumentation. Is disabled by default\n"
+              << "                  if it is no OpenMP program.\n"
+              << "  -user           Enables manual user instrumentation.\n"
+              << "  -nouser         Disables manual user instrumentation. Is disabled by default.\n"
+              << "  -mpi_support    Enables mpi support. Needed if the instrumentation\n"
+              << "                  does not coorectly identify your application as mpi\n"
+              << "                  program.\n"
+              << "  -nompi_support  Disables mpi support.\n"
+              << "  -openmp_support Enables OpenMP support. Needed if the instrumentation\n"
+              << "                  does not coorectly identify your application as OpenMP\n"
+              << "                  program.\n"
+              << "  -noopenmp_support Disables OpenMP support.\n"
+              << std::endl;
+}
 
 int
 main
@@ -40,16 +85,15 @@ main
     if ( argc > 1 )
     {
         std::string inst = argv[ 1 ];
-        if ( inst == "--instrument" || inst == "-inst" )
+        if ( inst == "--instrument" )
         {
             // select the application
-            Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
+            SILC_Application* appType = SILC_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
 
-            appType->silc_printParameter();
+            appType->ReadConfigFile( "silc.conf" );
+            appType->ParseCmdLine( argc, argv );
 
-            appType->silc_parseCmdLine( argc, argv );
-
-            if ( appType->silc_run() == SILC_SUCCESS )
+            if ( appType->Run() == SILC_SUCCESS )
             {
                 SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Instrument the user code!" );
             }
@@ -58,11 +102,11 @@ main
                 // catch - give an error here
             }
         }
-        else if ( inst == "--measurement" || inst == "-measure" )
+        else if ( inst == "--measure" )
         {
-            Silc_Application* appType = Silc_ApplicationType::getInstance().getSilcStage( "Measurement" );
-            appType->silc_parseCmdLine( argc, argv );
-            if ( appType->silc_run() == SILC_SUCCESS )
+            SILC_Application* appType = SILC_ApplicationType::getInstance().getSilcStage( "Measurement" );
+            appType->ParseCmdLine( argc, argv );
+            if ( appType->Run() == SILC_SUCCESS )
             {
                 SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Running the instrumented code using the silc measurement system!" );
             }
@@ -73,30 +117,18 @@ main
         }
         else if ( inst == "--help" || inst == "-h" )
         {
-            std::cout << " This is the SILC user tool, for which you have the option to instrument your code \n"
-                      << " (instrumenter) or analyse your instrumented application (measurement system).\n"
-                      << "\n The following program options are supported:\n "
-                      << " --instrument  <instOption>                  calls the instrumentation wrapper\n"
-                      << "                                             which have to be steered by the <instOptions>\n"
-                      << "                                             argument. Values are:\n\n"
-                      << "      comp:type      (with type={gnu, ibm, pgi, ftrace,\n"
-                      << "                      (pathscale), (openUH)} )\n"
-                      << "      user:type      (with type={mpi, openmp, hybrid} )\n"
-                      << "      bin:type       (with type={dyninst})\n\n"
-                      << " --measurement  <measureOption>              Starts your previously instrumented application \n"
-                      << "                                             with additioal options . Values are:\n\n"
-                      << "      ...             (define use cases for that feature...)\n\n"
-                      << " --help                                      Show help output. \n"
-                      << std::endl;
+            print_help( argv[ 0 ] );
         }
         else
         {
-            SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Invalid instrumentation type!!! " );
+            std::cerr << "Invalid action specified" << std::endl;
+            print_short_usage( argv[ 0 ] );
         }
     }
     else
     {
-        std::cerr << "no silc argument given, try '-h' or '--help' instead (to be implemented) \n" << std::endl;
+        std::cerr << "No action specified" << std::endl;
+        print_short_usage( argv[ 0 ] );
     }
 
     return 0;

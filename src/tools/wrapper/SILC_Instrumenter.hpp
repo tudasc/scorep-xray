@@ -14,10 +14,10 @@
  */
 
 /**
- * @ file       SILC_Instrumenter.hpp
- * @ maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @file       SILC_Instrumenter.hpp
+ * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
- * @ brief      Class to steer the instrumentation of the user code.
+ * @brief      Class to steer the instrumentation of the user code.
  */
 
 #ifndef SILC_INSTRUMENTER_H_
@@ -29,315 +29,181 @@
 
 #include "SILC_Application.hpp"
 
-/** @def
- * list of supported languages
- */
-typedef enum { LANG_CC, LANG_CXX, LANG_F77, LANG_F90 } SILC_LangType;
-
-/** @def
- * list of supported intrumentation types
- */
-typedef enum
-{
-    /**
-     * auto. instr. by GNU compiler
-     */
-    INST_TYPE_GNU,
-
-    /**
-     * PGI
-     */
-    INST_TYPE_PGI,
-
-    /**
-     * PGI9
-     */
-    INST_TYPE_PGI9,
-
-    /**
-     * SUN
-     */
-    INST_TYPE_SUN,
-    /**
-     * IBM
-     */
-    INST_TYPE_XL,
-    /**
-     * NEC SX
-     */
-    INST_TYPE_FTRACE,
-    /**
-     * OpenUH
-     */
-    INST_TYPE_OPENUH,
-
-    /**
-     * binary instrumentation by Dyninst
-     */
-    INST_TYPE_DYNINST,
-
-    /**
-     * manual user instrumentation
-     */
-    INST_TYPE_USER,
-
-    /**
-     * sequential run - no parallel support
-     */
-    INST_TYPE_SEQ,
-
-    /**
-     *  MPI instrumentation
-     */
-    INST_TYPE_MPI,
-
-    /**
-     *  OpenMP instrumentation
-     */
-    INST_TYPE_OPENMP,
-
-    /**
-     *  hybrid instrumentation
-     */
-    INST_TYPE_HYBRID,
-
-    /**
-     * default instrumentation value
-     */
-    INST_TYPE_DEFAULT
-} SILC_InstType;
-
-
-
-/*! @brief Class Silc_Instrumenter.
- *         performes instrumentation stage
+/* ****************************************************************************
+   Class SILC_Instrumenter
+******************************************************************************/
+/**
+ *  @brief performes instrumentation stage
  *
- *  This class examines the available compiler settings and the type of instrumentation
+ *  This class examines the available compiler settings and the type of
+ *  instrumentation
  */
-
-class Silc_Instrumenter : public Silc_Application
+class SILC_Instrumenter : public SILC_Application
 {
+    /* ********************************************************* Private Types */
+private:
+    typedef enum
+    {
+        enabled,
+        detect,
+        disabled
+    } instrumentation_usage_t;
+
+    typedef enum
+    {
+        silc_parse_mode_param,
+        silc_parse_mode_command,
+        silc_parse_mode_output
+    } silc_parse_mode_t;
+
+    /* ******************************************************** Public methods */
 public:
 
-/** @brief
- * default constructor
- */
-    Silc_Instrumenter
-    (
-    );
+    /**
+       Creates a new SILC_Instrumenter object.
+     */
+    SILC_Instrumenter();
+
+    /**
+       Destroys a SILC_Instrumenter object
+     */
     virtual ~
-    Silc_Instrumenter
-        ();
+    SILC_Instrumenter();
 
-    virtual SILC_Error_Code
-    silc_readConfigFile
-    (
-        std::string fileName
-    );
-
-    SILC_Error_Code
-    silc_readEnvVars
-    (
-    );
-
-
-    virtual SILC_Error_Code
-    silc_parseCmdLine
-    (
-        int    argc,
-        char** argv
-    );
-
-/** @ brief   perform instrumentation stage
- */
+    /**
+       Performs the instrumentation of an application
+     */
     virtual int
-    silc_run
-    (
-    );
+    Run();
 
-/** @ brief    used language of user code
- *
- * @ param  lang
- *
- * @ return
- */
-    SILC_Error_Code
-    silc_setLanguage
-    (
-        const int lang
-    );
+    virtual SILC_Error_Code
+    ParseCmdLine( int    argc,
+                  char** argv );
 
-/** @ brief   compiler commands
- *
- * @ param  cmd
- */
-    void
-    silc_compilerCmd
-    (
-        const std::string cmd
-    );
+    virtual SILC_Error_Code
+    ReadConfigFile( std::string fileName );
 
-/** @ brief   intrumentation type
- *
- * @ param cmd
- */
-    void
-    silc_instString
-    (
-        const std::string instStrg
-    );
-
-/** @ brief   list of compiler flags
- *
- * @ param   arg
- */
-    void
-    silc_compilerArg
-    (
-        const std::string arg
-    );
-
-/** @ brief   list of libraries
- *
- * @param lib
- */
-    void
-    silc_compilerLib
-    (
-        const std::string lib
-    );
-
-/** @ brief   extracts parameter from input file
- *
- * @ param instring    input string from the config file
- * @ param parameter   key eintry from the configuration
- * @ param value       specified value from config file
- */
-    SILC_Error_Code
-    silc_readParameter
-    (
-        std::string &     instring,
-        const std::string parameter,
-        std::string &     value
-    );
-
-/** @ brief   check for given instrumentation type
- *
- * @ param   insttype
- */
-    void
-    silc_instType
-    (
-        std::string insttype
-    );
-
-
-
-/** @ brief   prints all instrumentation parameters as read from input file
- */
     virtual void
-    silc_printParameter
-    (
-    );
+    PrintParameter();
 
-
+    /* ******************************************************** Private methods */
 private:
 
-/** @brief
- *  instrumentation type
+/**
+ * @brief   extracts parameter from input file
+ * It expects lines of the format key=value. Furthermore it truncates line
+ * at the scrpit comment character '#'.
+ *
+ * @param line    input line from the config file
  */
-    SILC_InstType _instType;
+    SILC_Error_Code
+    read_parameter( std::string line );
 
+    int
+    execute_command();
+    void
+    check_parameter();
+    silc_parse_mode_t
+    parse_output( std::string arg );
+    silc_parse_mode_t
+    parse_command( std::string arg );
+    silc_parse_mode_t
+    parse_parameter( std::string arg );
 
-/** @brief
- *  used language
- */
-    std::string _language;
+    /* ******************************************************* Private members */
+private:
+    /* --------------------------------------------
+       Flags for used adapters
+       ------------------------------------------*/
+    /**
+       Specifies if compiler instrumentation is enabled. Default is enabled
+     */
+    instrumentation_usage_t compiler_instrumentation;
 
-/** @brief
- *  instrumentation string
- */
-    std::string _instString;
+    /**
+       Specifies if OPARI instrumentation is enabled. Default detect.
+     */
+    instrumentation_usage_t opari_instrumentation;
 
-/** @brief
- *  compiler command
- */
-    std::string _compiler;
+    /**
+       Specifies if user instrumentation is enabled. Default is disabled.
+     */
+    instrumentation_usage_t user_instrumentation;
 
-/** @brief
- *  compiler flags
- */
-    std::string _compFlags;
+    /**
+       Specifies if mpi wrappers are enabled. Default detect.
+     */
+    instrumentation_usage_t mpi_instrumentation;
 
-/** @brief
- *  compiler command
- */
-    std::string _linkerFlags;
+    /* --------------------------------------------
+       Flags for application type
+       ------------------------------------------*/
+    /**
+       Specifies whether it is a MPI application.
+     */
+    instrumentation_usage_t is_mpi_application;
 
-/** @brief
- *  compiler arguments
- */
-    std::string _libraries;
+    /**
+       Specifies whether it is an OpenMP application.
+     */
+    instrumentation_usage_t is_openmp_application;
 
-/** @brief
- *  compiler flags
- */
-    std::string _inclDir;
+    /* --------------------------------------------
+       Work mode information
+       ------------------------------------------*/
+    /**
+       True if compiling
+     */
+    bool is_compiling;
 
-/** @brief
- *  linker flags
- */
-    std::string _libDir;
+    /**
+       True if linking
+     */
+    bool is_linking;
 
-/** @brief
- *  compiler instrumentation flag
- */
-    std::string _instDefault;
+    /* --------------------------------------------
+       Input command elements
+       ------------------------------------------*/
+    /**
+        compiler/linker name
+     */
+    std::string compiler_name;
 
-/** @brief
- *  available compiler instrumentation
- */
-    std::string _instAvail;
+    /**
+       compiler/linker flags
+     */
+    std::string compiler_flags;
 
-/** @brief
- *  gnu compiler instrumentation flags
- */
-    std::string _instGnu;
+    /**
+       file name of the compiler/linker output
+     */
+    std::string output_name;
 
-/** @brief
- *  pgi compiler instrumentation flags
- */
-    std::string _instPgi;
+    /**
+       input file names. Need to be separated because OPARI may
+       perform source code modifications which take these as input and
+       the original command needs the result from the OPRI output. Thus,
+       they are then substituted by the OPRI output.
+     */
+    std::string input_files;
 
-/** @brief
- *  pgi9 compiler instrumentation flags
- */
-    std::string _instPgi9;
+    /* --------------------------------------------
+       Config file data
+       ------------------------------------------*/
+    /**
+       Stores compiler instruemntation flags
+     */
+    std::string compiler_instrumentation_flags;
 
-/** @brief
- *  sun compiler instrumentation flags
- */
-    std::string _instSun;
+    /**
+       Stores include path of SILC header files
+     */
+    std::string silc_include_path;
 
-/** @brief
- *  xl compiler instrumentation flags
- */
-    std::string _instXl;
-
-/** @brief
- *  ftrace compiler instrumentation flags
- */
-    std::string _instFtrace;
-
-/** @brief
- *  openUH compiler instrumentation flags
- */
-    std::string _instOpenuh;
-
-/** @brief
- *  DynInst instrumentation flags
- */
-    std::string _instDyninst;
+    /**
+       Stores library path of SILC libraries
+     */
+    std::string silc_library_path;
 };
 
 #endif /*SILC_INSTRUMENTER_H_*/

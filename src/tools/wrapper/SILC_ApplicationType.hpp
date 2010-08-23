@@ -15,10 +15,10 @@
 
 
 /*
- * @ file      SILC_Application.hpp
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ *  @file      SILC_Application.hpp
+ *  @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
- *  @brief Class Silc_ApplicationType
+ *  @brief Class SILC_ApplicationType
  *         Selector class of the user instrumentation stage
  *
  *  This class provides a mechanism to switch between the different stages of SILC tools.
@@ -33,22 +33,22 @@
 #include "SILC_Application.hpp"
 
 
-class Silc_ApplicationType
+class SILC_ApplicationType
 {
 public:
 
     ~
-    Silc_ApplicationType
+    SILC_ApplicationType
         ()
     {
     }
 
-    static Silc_ApplicationType&
+    static SILC_ApplicationType&
     getInstance
     (
     );
 
-    Silc_Application*
+    SILC_Application*
     getSilcStage
     (
         std::string type
@@ -59,21 +59,21 @@ private:
 /** @brief
  *  protect the constructor to ensure only one instance at a time
  */
-    Silc_ApplicationType
+    SILC_ApplicationType
         ();
 
 /** @brief
  *  do not allow the copy constructor to be called unwillingly
  */
-    Silc_ApplicationType
+    SILC_ApplicationType
     (
-        const Silc_ApplicationType &type
+        const SILC_ApplicationType &type
     );
 
 /** @brief
  *  returns the pointer to a new SILC application (instrumenter, measurement, (visualizer)? )
  */
-    static Silc_ApplicationType* _appType;
+    static SILC_ApplicationType* _appType;
 };
 
 

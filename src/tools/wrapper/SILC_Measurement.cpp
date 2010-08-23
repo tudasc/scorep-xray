@@ -17,13 +17,15 @@
 #include "SILC_Measurement.hpp"
 
 /**
- * @file Silc_Measurement.cpp
+ * @status alpha
+ * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
+ * @file SILC_Measurement.cpp
  *
  * class to steer the run of the instrumented application
  */
 
 
-Silc_Measurement::Silc_Measurement
+SILC_Measurement::SILC_Measurement
     ()
     : _userCommand( "" )
 {
@@ -33,7 +35,7 @@ Silc_Measurement::Silc_Measurement
 
 
 SILC_Error_Code
-Silc_Measurement::silc_readConfigFile
+SILC_Measurement::ReadConfigFile
 (
     std::string fileName
 )
@@ -45,7 +47,7 @@ Silc_Measurement::silc_readConfigFile
 
 
 SILC_Error_Code
-Silc_Measurement::silc_parseCmdLine
+SILC_Measurement::ParseCmdLine
 (
     int    argc,
     char** argv
@@ -76,7 +78,7 @@ Silc_Measurement::silc_parseCmdLine
 
 
 int
-Silc_Measurement::silc_run
+SILC_Measurement::Run
 (
 )
 {
@@ -99,7 +101,7 @@ Silc_Measurement::silc_run
  * @brief display the parameters needed for the measurement system
  */
 void
-Silc_Measurement::silc_printParameter
+SILC_Measurement::PrintParameter
 (
 )
 {

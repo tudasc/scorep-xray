@@ -14,8 +14,9 @@
  */
 
 /**
- * @ file      SILC_Application.cpp
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @status     alpha
+ * @file       SILC_Application.cpp
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  */
 
@@ -23,13 +24,13 @@
 #include "SILC_Application.hpp"
 
 
-Silc_Application::Silc_Application
+SILC_Application::SILC_Application
     ()
 {
 }
 
-Silc_Application::~
-Silc_Application
+SILC_Application::~
+SILC_Application
     ()
 {
 }

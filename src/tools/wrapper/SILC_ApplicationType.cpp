@@ -14,8 +14,9 @@
  */
 
 /**
- * @ file      SILC_ApplicationType.cpp
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @status     alpha
+ * @file       SILC_ApplicationType.cpp
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  */
 
@@ -24,10 +25,10 @@
 #include "SILC_Instrumenter.hpp"
 #include "SILC_Measurement.hpp"
 
-Silc_ApplicationType* Silc_ApplicationType::_appType = 0;
+SILC_ApplicationType* SILC_ApplicationType::_appType = 0;
 
 
-Silc_ApplicationType::Silc_ApplicationType
+SILC_ApplicationType::SILC_ApplicationType
     ()
 {
 }
@@ -38,11 +39,11 @@ Silc_ApplicationType::Silc_ApplicationType
  *
  * @param  type    string which defines the type of application
  *
- * @return (..)    returns an instance of the Silc_Application type
+ * @return (..)    returns an instance of the SILC_Application type
  */
 
-Silc_Application*
-Silc_ApplicationType::getSilcStage
+SILC_Application*
+SILC_ApplicationType::getSilcStage
 (
     std::string type
 )
@@ -50,7 +51,7 @@ Silc_ApplicationType::getSilcStage
     if ( type == std::string( "Instrumenter" ) )
     {
         printf( "running the instrumentation phase: \n" );
-        return new Silc_Instrumenter
+        return new SILC_Instrumenter
                (
                );
     }
@@ -58,7 +59,7 @@ Silc_ApplicationType::getSilcStage
     {
         printf( "running the measurement phase: \n" );
         return new
-               Silc_Measurement
+               SILC_Measurement
                (
                );
     }
@@ -75,16 +76,16 @@ Silc_ApplicationType::getSilcStage
  *
  * @return _appType    returns the type of the SILC application
  */
-Silc_ApplicationType
+SILC_ApplicationType
 &
-Silc_ApplicationType::getInstance
+SILC_ApplicationType::getInstance
 (
 )
 {
     if ( 0 == _appType )
     {
         _appType = new
-                   Silc_ApplicationType
+                   SILC_ApplicationType
                    (
                    );
     }

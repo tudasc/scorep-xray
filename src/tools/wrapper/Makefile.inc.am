@@ -13,6 +13,8 @@ silc_SOURCES = \
     $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.hpp    \
     $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.hpp
 
-silc_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL)
+silc_CPPFLAGS = $(AM_CPPFLAGS)      \
+    -I$(SRC_ROOT)src/tools/wrapper  \
+    -I$(INC_DIR_UTIL)
 
 silc_LDADD = $(LIB_DIR_UTIL)libsilc_utilities.la
