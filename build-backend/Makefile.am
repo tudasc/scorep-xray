@@ -49,9 +49,9 @@ clean-local-silc-config-tests:
 	$(RM) test_silc_config_number.*.out
 	$(RM) test_silc_config_size.*.out
 
-install-data-local: silc-config-tool
+install-data-local: silc-config-tool-install
 
-silc-config-tool:
+silc-config-tool-install:
 	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
 	echo PREFIX=\"$(prefix)\"                                                       >> $(builddir)/silc_config.dat
 	echo DATADIR=\"$(datadir)\"                                                     >> $(builddir)/silc_config.dat
@@ -61,3 +61,11 @@ silc-config-tool:
 
 clean-local-silc-config-tool:
 	rm -f $(builddir)/silc_config.dat
+
+silc-config-tool-local:
+	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
+	echo LIBDIR_SILC=\".libs\"                                                      >> $(builddir)/silc_config.dat
+	echo LIBDIR_OTF2=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/silc_config.dat
+	echo INCDIR_SILC=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/silc_config.dat
+	echo INCDIR_OTF2=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/silc_config.dat
+
