@@ -64,10 +64,6 @@ print_help( std::string toolname )
               << "                  if it is no OpenMP program.\n"
               << "  -user           Enables manual user instrumentation.\n"
               << "  -nouser         Disables manual user instrumentation. Is disabled by default.\n"
-              << "  -mpi_support    Enables mpi support. Needed if the instrumentation\n"
-              << "                  does not coorectly identify your application as mpi\n"
-              << "                  program.\n"
-              << "  -nompi_support  Disables mpi support.\n"
               << "  -openmp_support Enables OpenMP support. Needed if the instrumentation\n"
               << "                  does not coorectly identify your application as OpenMP\n"
               << "                  program.\n"
@@ -90,7 +86,7 @@ main
             // select the application
             SILC_Application* appType = SILC_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
 
-            appType->ReadConfigFile( "silc.conf" );
+            appType->ReadConfigFile( "silc_config.dat" );
             appType->ParseCmdLine( argc, argv );
 
             if ( appType->Run() == SILC_SUCCESS )

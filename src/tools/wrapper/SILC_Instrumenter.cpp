@@ -47,6 +47,9 @@ SILC_Instrumenter::SILC_Instrumenter()
 
     is_compiling = true; // Opposite recognized if no source files in input
     is_linking   = true; // Opposite recognized on existence of -c flag
+
+    silc_include_path = "";
+    silc_library_path = "";
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -56,12 +59,18 @@ SILC_Instrumenter::~SILC_Instrumenter ()
 int
 SILC_Instrumenter::Run()
 {
-    /*
-       if (compiler_instrumentation == enabled) prepare_compiler();
-       if (opari_instrumentation == enabled) prepare_opari();
-       if (user_instrumentation == enabled) prepare_user();
-       if (mpi_instrumentation == enabled) prepare_mpi();
-     */
+    if ( compiler_instrumentation == enabled )
+    {
+        prepare_compiler();
+    }
+    if ( opari_instrumentation == enabled )
+    {
+        prepare_opari();
+    }
+    if ( user_instrumentation == enabled )
+    {
+        prepare_user();
+    }
     return execute_command();
 }
 
@@ -221,10 +230,12 @@ SILC_Instrumenter::parse_parameter( std::string arg )
     else if ( arg == "-mpi" )
     {
         mpi_instrumentation = enabled;
+        is_mpi_application  = enabled;
         return silc_parse_mode_param;
     }
     else if ( arg == "-nompi" )
     {
+        is_mpi_application  = disabled;
         mpi_instrumentation = disabled;
         return silc_parse_mode_param;
     }
@@ -238,16 +249,6 @@ SILC_Instrumenter::parse_parameter( std::string arg )
     else if ( arg == "-noopenmp_support" )
     {
         is_openmp_application = disabled;
-        return silc_parse_mode_param;
-    }
-    else if ( arg == "-mpi_support" )
-    {
-        is_mpi_application = enabled;
-        return silc_parse_mode_param;
-    }
-    else if ( arg == "-nompi_support" )
-    {
-        is_mpi_application = disabled;
         return silc_parse_mode_param;
     }
     else
@@ -395,14 +396,33 @@ SILC_Instrumenter::read_parameter( std::string line )
     }
     else if ( key == "INCDIR" )
     {
-        silc_library_path += " -I" + value;
+        silc_include_path += " -I" + value;
     }
     return SILC_SUCCESS;
 }
 
 /* ****************************************************************************
-   Preperation
+   Preparation
 ******************************************************************************/
+void
+SILC_Instrumenter::prepare_compiler()
+{
+    compiler_flags += " " + compiler_instrumentation_flags;
+}
+
+void
+SILC_Instrumenter::prepare_user()
+{
+    compiler_flags = " -DSILC_USER_ENABLE=1" + compiler_flags;
+}
+
+void
+SILC_Instrumenter::prepare_opari()
+{
+    // Perform source code transformation on all source files
+
+    // if linking: Generate POMP_Region_init() and add it
+}
 
 /* ****************************************************************************
    Command execution
@@ -418,9 +438,28 @@ SILC_Instrumenter::read_parameter( std::string line )
 int
 SILC_Instrumenter::execute_command()
 {
-    int exitCode = system( "" );
+    std::string silc_lib;
+    if ( is_mpi_application == enabled )
+    {
+        silc_lib = ( is_openmp_application == enabled ?
+                     " -lsilc_mpi_omp" : " -lsilc_mpi" );
+    }
+    else
+    {
+        silc_lib = ( is_openmp_application == enabled ?
+                     " -lsilc_omp" : " -lsilc_serial" );
+    }
+    silc_lib += " -lotf2 -lsilc_utilities";
+    std::string command = compiler_name
+                          + silc_library_path
+                          + silc_include_path
+                          + input_files
+                          + silc_lib
+                          + compiler_flags
+                          + " -o " + output_name;
 
-    return exitCode;
+    std::cout << command << std::endl;
+    return system( command.c_str() );
 }
 
 

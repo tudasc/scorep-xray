@@ -109,6 +109,12 @@ private:
     parse_command( std::string arg );
     silc_parse_mode_t
     parse_parameter( std::string arg );
+    void
+    prepare_compiler();
+    void
+    prepare_user();
+    void
+    prepare_opari();
 
     /* ******************************************************* Private members */
 private:
