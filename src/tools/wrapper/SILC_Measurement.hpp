@@ -21,9 +21,8 @@
  * @status alpha
  * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  * @brief Class SILC_Measurement
- *         runs the instrumented user program and steers the measurements system
  *
- *  This class examines system and user settings to run the measurement system
+ *  This class examines system and user settings to run the measurement system.
  */
 
 #include <iostream>
@@ -31,52 +30,60 @@
 
 #include "SILC_Application.hpp"
 
+/* ****************************************************************************
+   Class SILC_Measurement
+******************************************************************************/
+/**
+ *  @brief performes measurement stage
+ *
+ *  This class performs a measurement run. Currently, it only invokes the
+ *  user command.
+ */
 class SILC_Measurement : public SILC_Application
 {
+    /* ****************************************************** Public methods */
 public:
 
+    /**
+       Creates a new SILC_Measurement object.
+     */
     SILC_Measurement ();
 
+    /**
+       Destroys a SILC_Measurement object.
+     */
     virtual ~
-    SILC_Measurement ()
-    {
-        ;
-    };
+    SILC_Measurement ();
 
-/** @brief
- * reads the defined input data file
- */
-    virtual SILC_Error_Code
-    ReadConfigFile( std::string fileName );
-
-
-/** @brief
- * get command line attributes
- */
+    /**
+       Parses the command line.
+       @param argc The number of arguments.
+       @param argv List of arguments. It assumes, that the first argument is
+                   the tool name and the second argument is the action.
+       @return SILC_SUCCESS if the parsing was successful. Else an error
+               code is returned.
+     */
     virtual SILC_Error_Code
     ParseCmdLine( int    argc,
                   char** argv );
 
-/** @brief
- * perform instrumentation stage
- */
+    /**
+     * Perform measurement run.
+     */
     virtual int
     Run();
 
-
-
-/** @brief
- *  prints all measurement parameters as read from input file
- */
+    /**
+     *  Prints all measurement parameters as read from input file
+     */
     virtual void
     PrintParameter();
 
-
+    /* ***************************************************** Private members */
 private:
-
-/** @brief
- *  used user command
- */
-    std::string _userCommand;
+    /**
+     *  The user command.
+     */
+    std::string user_command;
 };
 #endif /*SILC_MEASUREMENT_H_*/

@@ -4,12 +4,10 @@ bin_PROGRAMS += silc
 
 silc_SOURCES = \
     $(SRC_ROOT)src/tools/wrapper/SILC_Application.cpp     \
-    $(SRC_ROOT)src/tools/wrapper/SILC_ApplicationType.cpp \
     $(SRC_ROOT)src/tools/wrapper/silc.cpp                 \
     $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.cpp    \
     $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.cpp     \
     $(SRC_ROOT)src/tools/wrapper/SILC_Application.hpp     \
-    $(SRC_ROOT)src/tools/wrapper/SILC_ApplicationType.hpp \
     $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.hpp    \
     $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.hpp
 

@@ -25,11 +25,13 @@
 #include <string>
 
 #include <SILC_Utils.h>
-#include "SILC_ApplicationType.hpp"
 #include "SILC_Instrumenter.hpp"
 #include "SILC_Measurement.hpp"
 
-
+/**
+    Prints a short usage message.
+    @param toolname Name of the tool on this platform (argv[0]).
+ */
 void
 print_short_usage( std::string toolname )
 {
@@ -42,6 +44,10 @@ print_short_usage( std::string toolname )
               << std::endl;
 }
 
+/**
+   Prints the long help text.
+   @param toolname Name of the tool on this platform (argv[0]).
+ */
 void
 print_help( std::string toolname )
 {
@@ -53,6 +59,11 @@ print_help( std::string toolname )
               << "  --help, -h      Show help output.\n\n"
               << "For instrumentation the following options are supported:\n"
               << "  -config <file>  Specifies file for the instrumentation configuration.\n"
+              << "  -verbosity=<value> Specifies the verbosity level. The following\n"
+              << "                  levels are available:\n"
+              << "                  0 = No output (default)\n"
+              << "                  1 = Executed commands are displayed\n"
+              << "                  2 = Detailed information is displayed\n"
               << "  -compiler       Enables compiler instrumentation Is enabled by default.\n"
               << "  -nocompiler     Disables compiler istrumentation.\n"
               << "  -mpi            Enables mpi wrapper. Is enabled by default if it is a\n"
@@ -72,59 +83,56 @@ print_help( std::string toolname )
               << std::endl;
 }
 
+/**
+   Main routine of the silc wrapper tool. It decides which action to take, and
+   invokes appropriate subclasses.
+   @param argc Number of arguments.
+   @param argv List of arguments
+   @returns If an error occurs, -1 is returned, if help was called, 0 is
+            returned. Else it returns the return value from the user command.
+ */
 int
-main
-(
-    int   argc,
-    char* argv[]
-)
+main( int   argc,
+      char* argv[] )
 {
+    SILC_Application* app = NULL;
+
     if ( argc > 1 )
     {
-        std::string inst = argv[ 1 ];
-        if ( inst == "--instrument" )
+        // Select action
+        std::string action = argv[ 1 ];
+        if ( action == "--instrument" )
         {
-            // select the application
-            SILC_Application* appType = SILC_ApplicationType::getInstance().getSilcStage( "Instrumenter" );
-            appType->ParseCmdLine( argc, argv );
-
-            if ( appType->Run() == SILC_SUCCESS )
-            {
-                SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Instrument the user code!" );
-            }
-            else
-            {
-                // catch - give an error here
-            }
+            app = new SILC_Instrumenter();
         }
-        else if ( inst == "--measure" )
+        else if ( action == "--measure" )
         {
-            SILC_Application* appType = SILC_ApplicationType::getInstance().getSilcStage( "Measurement" );
-            appType->ParseCmdLine( argc, argv );
-            if ( appType->Run() == SILC_SUCCESS )
-            {
-                SILC_DEBUG_PRINTF( SILC_DEBUG_USER, "Running the instrumented code using the silc measurement system!" );
-            }
-            else
-            {
-                // catch -give an error here
-            }
+            app = new SILC_Measurement();
         }
-        else if ( inst == "--help" || inst == "-h" )
+        else if ( action == "--help" || action == "-h" )
         {
             print_help( argv[ 0 ] );
+            return 0;
         }
         else
         {
             std::cerr << "Invalid action specified" << std::endl;
             print_short_usage( argv[ 0 ] );
+            return -1;
         }
+
+        // Analyze options
+        app->ParseCmdLine( argc, argv );
+
+        // Perform action
+        int retval = app->Run();
+        delete ( app );
+        return retval;
     }
     else
     {
         std::cerr << "No action specified" << std::endl;
         print_short_usage( argv[ 0 ] );
+        return -1;
     }
-
-    return 0;
 }

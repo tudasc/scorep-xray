@@ -36,12 +36,18 @@
  *  @brief performes instrumentation stage
  *
  *  This class examines the available compiler settings and the type of
- *  instrumentation
+ *  instrumentation. Makes the necessary modifications to the user command
+ *  for instrumentation and executed the user command.
  */
 class SILC_Instrumenter : public SILC_Application
 {
-    /* ********************************************************* Private Types */
+    /* ******************************************************* Private Types */
 private:
+    /**
+       Type for the three values a adapter or paradigm configuration can have.
+       Before a command can be executed, a decision must be made for all
+       adapter and paradigms which are in detect state.
+     */
     typedef enum
     {
         enabled,
@@ -49,6 +55,22 @@ private:
         disabled
     } instrumentation_usage_t;
 
+    /**
+       Type of the state of the command line parser. The parser starts in
+       state silc_parse_mode_param which means that arguments are interpreted
+       as options of the wrapper tool. When the first argument is reached
+       which has no leading dash it assumes that this is the compiler or
+       linker command and changed to silc_parse_mode_command. All further
+       arguments are interpreted as arguments for the compiler/linker.
+       The states silc_parse_mode_output, and silc_parse_mode_config are used
+       to deal with arguments which reguire a value in a successive argument.
+       Thus, if A user specifies a config file the state switches to
+       silc_parse_mode_config. The next argument is interpreted as the
+       config file name. Then the state switches back to silc_parse_mode_param.
+       If the user command contains a '-o' the following argument is
+       interpreted as the output file name and the state switches to
+       silc_parse_mode_output.
+     */
     typedef enum
     {
         silc_parse_mode_param,
@@ -56,8 +78,7 @@ private:
         silc_parse_mode_output,
         silc_parse_mode_config
     } silc_parse_mode_t;
-
-    /* ******************************************************** Public methods */
+    /* ****************************************************** Public methods */
 public:
 
     /**
@@ -66,7 +87,7 @@ public:
     SILC_Instrumenter();
 
     /**
-       Destroys a SILC_Instrumenter object
+       Destroys a SILC_Instrumenter object.
      */
     virtual ~
     SILC_Instrumenter();
@@ -77,51 +98,122 @@ public:
     virtual int
     Run();
 
+    /**
+       Parses the command line.
+       @param argc The number of arguments.
+       @param argv List of arguments. It assumes, that the first argument is
+                   the tool name and the second argument is the action.
+       @return SILC_SUCCESS if the parsing was successful. Else an error
+               code is returned.
+     */
     virtual SILC_Error_Code
     ParseCmdLine( int    argc,
                   char** argv );
 
+    /**
+       Prints the results from parsing the command line and parsing the
+       configuration file to screen.
+     */
     virtual void
     PrintParameter();
 
-    /* ******************************************************** Private methods */
+    /* ***************************************************** Private methods */
 private:
 
-/**
- * @brief   extracts parameter from input file
- * It expects lines of the format key=value. Furthermore it truncates line
- * at the scrpit comment character '#'.
- *
- * @param line    input line from the config file
- */
+    /**
+       Extracts parameter from configuration file
+       It expects lines of the format key=value. Furthermore it truncates line
+       at the scrpit comment character '#'.
+       @param line    input line from the config file
+       @returns SILC_SUCCESS if the line was successfully parsed. Else it
+                returns an error code.
+     */
     SILC_Error_Code
     read_parameter( std::string line );
 
+    /**
+       Executes the modified user command.
+       @returns the return value from the executed command.
+     */
     int
     execute_command();
+
+    /**
+       Checks whether command line parameter parsing provided meaningful
+       information, applies remaining detection decisions.
+     */
     void
     check_parameter();
+
+    /**
+       Evaluates one parameter when in output mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
     silc_parse_mode_t
     parse_output( std::string arg );
+
+    /**
+       Evaluates one parameter when in command mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
     silc_parse_mode_t
     parse_command( std::string arg );
+
+    /**
+       Evaluates one parameter when in parameter mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
     silc_parse_mode_t
     parse_parameter( std::string arg );
+
+    /**
+       Evaluates one parameter when in config mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
     silc_parse_mode_t
     parse_config( std::string arg );
+
+    /**
+       Performs necessary modifications to the command for enabling
+       compiler instrumentation.
+     */
     void
     prepare_compiler();
+
+    /**
+       Performs necessary modifications to the command for enabling
+       manual user instrumentation.
+     */
     void
     prepare_user();
+
+    /**
+       Performs necessary modifications to the command for enabling
+       Opari instrumentation.
+     */
     void
     prepare_opari();
 
+    /**
+       Tries to open a configuration file for instrumentation.
+       @inFile Pointer to a stream which returns the open file.
+       @returns SILC_SUCCESS if the file was successfully opened.
+     */
     SILC_Error_Code
     open_config_file( std::ifstream* inFile );
+
+    /**
+       Reads the configuration data from a file.
+       @returns SILC_SUCCESS if the file was successfully parsed.
+     */
     SILC_Error_Code
     read_config_file();
 
-    /* ******************************************************* Private members */
+    /* ***************************************************** Private members */
 private:
     /* --------------------------------------------
        Flags for used adapters
@@ -221,6 +313,17 @@ private:
        Stores library path of SILC libraries
      */
     std::string silc_library_path;
+
+    /* --------------------------------------------
+       Other configs
+       ------------------------------------------*/
+    /**
+       Verbosity level. The following levels are currently possible:
+       0 = No output.
+       1 = Executed commands are printed
+       2 = All analysis results are printed.
+     */
+    int verbosity;
 };
 
 #endif /*SILC_INSTRUMENTER_H_*/

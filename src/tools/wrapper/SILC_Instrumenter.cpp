@@ -25,6 +25,8 @@
 #include <fstream>
 #include <istream>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <SILC_Utils.h>
 #include <SILC_Error.h>
@@ -53,6 +55,7 @@ SILC_Instrumenter::SILC_Instrumenter()
     silc_include_path = "";
     silc_library_path = "";
     config_file       = "";
+    verbosity         = 0;
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -63,6 +66,11 @@ int
 SILC_Instrumenter::Run()
 {
     read_config_file();
+    if ( verbosity >= 2 )
+    {
+        PrintParameter();
+    }
+
     if ( compiler_instrumentation == enabled )
     {
         prepare_compiler();
@@ -103,7 +111,6 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
         }
     }
     check_parameter();
-    PrintParameter();
 }
 
 void
@@ -237,10 +244,22 @@ SILC_Instrumenter::parse_parameter( std::string arg )
         is_openmp_application = disabled;
         return silc_parse_mode_config;
     }
-
+    /* Verbosity */
+    else if ( arg.substr( 0, 10 ) == "-verbosity" )
+    {
+        if ( arg.length() > 11 )
+        {
+            verbosity = atol( arg.substr( 11, arg.length() - 11 ).c_str() );
+        }
+        else
+        {
+            std::cerr << "ERROR: No verbosity value specified." << std::endl;
+            abort();
+        }
+    }
     else
     {
-        std::cout << "ERROR: Unknown parameter: " << arg << std::endl;
+        std::cerr << "ERROR: Unknown parameter: " << arg << std::endl;
         abort();
     }
 }
@@ -426,8 +445,6 @@ SILC_Instrumenter::read_parameter( std::string line )
     std::string value = line.substr( pos + 2, line.length() - pos - 3 );
 
     /* indentify key */
-    std::cout << "Key: " << key << std::endl;
-    std::cout << "Value: " << value << std::endl;
     if ( key == "COMPILER_INSTRUMENTATION_CPPFLAGS" )
     {
         compiler_instrumentation_flags = value;
@@ -474,14 +491,6 @@ SILC_Instrumenter::prepare_opari()
 /* ****************************************************************************
    Command execution
 ******************************************************************************/
-/**
- * @brief runs the user specified instrumentation command
- *
-
- * Depending on the instrumentation type the compiler command gets defined
- * and the user code gets compiled. The return value of the function delivers
- * the error code of the system call of the compiler command.
- */
 int
 SILC_Instrumenter::execute_command()
 {
@@ -508,72 +517,9 @@ SILC_Instrumenter::execute_command()
                           + compiler_flags
                           + " -o " + output_name;
 
-    std::cout << command << std::endl;
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
     return system( command.c_str() );
-}
-
-
-/* ****************************************************************************
-   old stuff
-******************************************************************************/
-void
-ka()
-{
-    /* call the configuration reader
-     * this is hardcoded, since the file location and name should be defined during configure stage
-     */
-    /*
-       // get the application path
-       char cCurrentPath[ 200 ] = { 0 };
-       char pCurrentPath[ 200 ] = { 0 };
-
-       sprintf( cCurrentPath, "/proc/%d/exe", getpid() );
-
-       if ( readlink( cCurrentPath, pCurrentPath, sizeof( pCurrentPath ) ) == -1 )
-       {
-          SILC_ERROR( SILC_ERROR_ENOENT, "" );
-       }
-
-       std::cout << "The REAL path to the executable is " << pCurrentPath << std::endl;
-
-
-       // cut of the last 'silc' exe name to demangle path to binary
-
-       std::string cut   = "silc";
-       std::string fname =  "/silc.conf";
-       std::string
-                  pathStr
-       (
-          pCurrentPath
-       );
-
-       // find last silc in path
-       size_t found = pathStr.rfind( cut );
-       if ( found != std::string::npos )
-       {
-          pathStr.replace( found, cut.length(), "" );
-       }
-
-       std::cout << pathStr << std::endl;
-       pathStr = pathStr + "/../share" + fname;
-
-       if (    silc_readConfigFile( pathStr ) == SILC_SUCCESS )
-       {
-          std::cout << "calling the instrumentation phase \n";
-       }
-       // temp: in the svn source tree relative to silc binary
-       else if (    silc_readConfigFile( "../src/tools/silc.conf" ) == SILC_SUCCESS )
-       {
-          std::cout << "calling the instrumentation phase \n";
-       }
-       // local
-       else if (    silc_readConfigFile( "silc.conf" ) == SILC_SUCCESS )
-       {
-          std::cout << "calling the instrumentation phase \n";
-       }
-       else
-       {
-          SILC_ERROR( SILC_ERROR_ENOENT, "" );
-       }
-     */
 }
