@@ -36,7 +36,7 @@ PUBLIC_INC_SRC = $(SRC_ROOT)include/silc/
 INC_ROOT = $(srcdir)/../
 PUBLIC_INC_DIR = $(INC_ROOT)include/silc/
 # temporary: wait until otf2 has a dedicated public header directory
-INC_DIR_OTF2 = $(srcdir)/../vendor/otf2/src/
+INC_DIR_OTF2 = $(srcdir)/../vendor/otf2/include/otf2
 INC_DIR_UTIL = $(srcdir)/../vendor/otf2/vendor/utility/include/silc_utility
 
 ## The otf2 and utility variables may be overriden when configuring using
