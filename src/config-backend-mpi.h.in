@@ -1,0 +1,1358 @@
+/* ../../src/config-backend-mpi.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
+/* [] */
+#undef BAR_MANGLED
+
+/* [] */
+#undef BAZ_MANGLED
+
+/* Define to 1 if your Fortran compiler doesn't accept -c and -o together. */
+#undef F77_NO_MINUS_C_MINUS_O
+
+/* Define to 1 if your Fortran compiler doesn't accept -c and -o together. */
+#undef FC_NO_MINUS_C_MINUS_O
+
+/* [] */
+#undef FOOBAR_MANGLED
+
+/* [] */
+#undef FOO_MANGLED
+
+/* Name of var after mangled by the Fortran compiler. */
+#undef FORTRAN_MANGLED
+
+/* Define to 1 if you have the declaration of `PMPI_Abort', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ABORT
+
+/* Define to 1 if you have the declaration of `PMPI_Accumulate', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ACCUMULATE
+
+/* Define to 1 if you have the declaration of `PMPI_Address', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ADDRESS
+
+/* Define to 1 if you have the declaration of `PMPI_Add_error_class', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_ADD_ERROR_CLASS
+
+/* Define to 1 if you have the declaration of `PMPI_Add_error_code', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_ADD_ERROR_CODE
+
+/* Define to 1 if you have the declaration of `PMPI_Add_error_string', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_ADD_ERROR_STRING
+
+/* Define to 1 if you have the declaration of `PMPI_Allgather', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ALLGATHER
+
+/* Define to 1 if you have the declaration of `PMPI_Allgatherv', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ALLGATHERV
+
+/* Define to 1 if you have the declaration of `PMPI_Alloc_mem', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ALLOC_MEM
+
+/* Define to 1 if you have the declaration of `PMPI_Allreduce', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ALLREDUCE
+
+/* Define to 1 if you have the declaration of `PMPI_Alltoall', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ALLTOALL
+
+/* Define to 1 if you have the declaration of `PMPI_Alltoallv', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ALLTOALLV
+
+/* Define to 1 if you have the declaration of `PMPI_Alltoallw', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ALLTOALLW
+
+/* Define to 1 if you have the declaration of `PMPI_Attr_delete', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ATTR_DELETE
+
+/* Define to 1 if you have the declaration of `PMPI_Attr_get', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ATTR_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Attr_put', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ATTR_PUT
+
+/* Define to 1 if you have the declaration of `PMPI_Barrier', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_BARRIER
+
+/* Define to 1 if you have the declaration of `PMPI_Bcast', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_BCAST
+
+/* Define to 1 if you have the declaration of `PMPI_Bsend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_BSEND
+
+/* Define to 1 if you have the declaration of `PMPI_Bsend_init', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_BSEND_INIT
+
+/* Define to 1 if you have the declaration of `PMPI_Buffer_attach', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_BUFFER_ATTACH
+
+/* Define to 1 if you have the declaration of `PMPI_Buffer_detach', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_BUFFER_DETACH
+
+/* Define to 1 if you have the declaration of `PMPI_Cancel', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_CANCEL
+
+/* Define to 1 if you have the declaration of `PMPI_Cartdim_get', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_CARTDIM_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_coords', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_CART_COORDS
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_CART_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_get', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_CART_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_map', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_CART_MAP
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_rank', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_CART_RANK
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_shift', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_CART_SHIFT
+
+/* Define to 1 if you have the declaration of `PMPI_Cart_sub', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_CART_SUB
+
+/* Define to 1 if you have the declaration of `PMPI_Close_port', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_CLOSE_PORT
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_accept', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_ACCEPT
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_c2f', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_COMM_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_call_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_CALL_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_compare', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_COMPARE
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_connect', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_CONNECT
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_create_errhandler',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_CREATE_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_create_keyval', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_CREATE_KEYVAL
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_delete_attr', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_DELETE_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_disconnect', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_DISCONNECT
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_dup', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_COMM_DUP
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_f2c', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_COMM_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_free', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_free_keyval', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_FREE_KEYVAL
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_get_attr', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_GET_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_get_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_GET_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_get_name', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_GET_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_get_parent', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_GET_PARENT
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_group', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_GROUP
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_join', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_JOIN
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_rank', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_RANK
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_remote_group', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_REMOTE_GROUP
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_remote_size', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_REMOTE_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_set_attr', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_SET_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_set_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_SET_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_set_name', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_SET_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_size', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_spawn', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_SPAWN
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_spawn_multiple', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_COMM_SPAWN_MULTIPLE
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_split', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_COMM_SPLIT
+
+/* Define to 1 if you have the declaration of `PMPI_Comm_test_inter', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_COMM_TEST_INTER
+
+/* Define to 1 if you have the declaration of `PMPI_Dims_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_DIMS_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Dist_graph_create', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_DIST_GRAPH_CREATE
+
+/* Define to 1 if you have the declaration of
+   `PMPI_Dist_graph_create_adjacent', and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_DIST_GRAPH_CREATE_ADJACENT
+
+/* Define to 1 if you have the declaration of `PMPI_Dist_graph_neighbors', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_DIST_GRAPH_NEIGHBORS
+
+/* Define to 1 if you have the declaration of
+   `PMPI_Dist_graph_neighbors_count', and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT
+
+/* Define to 1 if you have the declaration of `PMPI_Errhandler_create', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_ERRHANDLER_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Errhandler_free', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_ERRHANDLER_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Errhandler_get', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_ERRHANDLER_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Errhandler_set', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_ERRHANDLER_SET
+
+/* Define to 1 if you have the declaration of `PMPI_Error_class', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ERROR_CLASS
+
+/* Define to 1 if you have the declaration of `PMPI_Error_string', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_ERROR_STRING
+
+/* Define to 1 if you have the declaration of `PMPI_Exscan', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_EXSCAN
+
+/* Define to 1 if you have the declaration of `PMPI_File_c2f', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_FILE_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_File_call_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_CALL_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_File_close', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_CLOSE
+
+/* Define to 1 if you have the declaration of `PMPI_File_create_errhandler',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_CREATE_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_File_delete', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_DELETE
+
+/* Define to 1 if you have the declaration of `PMPI_File_f2c', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_FILE_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_amode', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_AMODE
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_atomicity', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_ATOMICITY
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_byte_offset', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_BYTE_OFFSET
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_group', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_GROUP
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_info', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_INFO
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_position', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_POSITION
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_position_shared',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_POSITION_SHARED
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_size', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_type_extent', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_TYPE_EXTENT
+
+/* Define to 1 if you have the declaration of `PMPI_File_get_view', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_GET_VIEW
+
+/* Define to 1 if you have the declaration of `PMPI_File_iread', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_IREAD
+
+/* Define to 1 if you have the declaration of `PMPI_File_iread_at', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_IREAD_AT
+
+/* Define to 1 if you have the declaration of `PMPI_File_iread_shared', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_IREAD_SHARED
+
+/* Define to 1 if you have the declaration of `PMPI_File_iwrite', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_IWRITE
+
+/* Define to 1 if you have the declaration of `PMPI_File_iwrite_at', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_IWRITE_AT
+
+/* Define to 1 if you have the declaration of `PMPI_File_iwrite_shared', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_IWRITE_SHARED
+
+/* Define to 1 if you have the declaration of `PMPI_File_open', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_OPEN
+
+/* Define to 1 if you have the declaration of `PMPI_File_preallocate', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_PREALLOCATE
+
+/* Define to 1 if you have the declaration of `PMPI_File_read', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_all', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_ALL
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_all_begin', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_ALL_BEGIN
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_all_end', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_ALL_END
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_at', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_AT
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_at_all', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_AT_ALL
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_at_all_begin',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_AT_ALL_BEGIN
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_at_all_end', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_AT_ALL_END
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_ordered', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_ORDERED
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_ordered_begin',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_ORDERED_BEGIN
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_ordered_end',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_ORDERED_END
+
+/* Define to 1 if you have the declaration of `PMPI_File_read_shared', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_READ_SHARED
+
+/* Define to 1 if you have the declaration of `PMPI_File_seek', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_SEEK
+
+/* Define to 1 if you have the declaration of `PMPI_File_seek_shared', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_SEEK_SHARED
+
+/* Define to 1 if you have the declaration of `PMPI_File_set_atomicity', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_SET_ATOMICITY
+
+/* Define to 1 if you have the declaration of `PMPI_File_set_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_SET_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_File_set_info', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_SET_INFO
+
+/* Define to 1 if you have the declaration of `PMPI_File_set_size', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_SET_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_File_set_view', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_SET_VIEW
+
+/* Define to 1 if you have the declaration of `PMPI_File_sync', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_SYNC
+
+/* Define to 1 if you have the declaration of `PMPI_File_write', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_all', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_ALL
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_all_begin', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_ALL_BEGIN
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_all_end', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_ALL_END
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_at', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_AT
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_at_all', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_AT_ALL
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_at_all_begin',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_AT_ALL_BEGIN
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_at_all_end',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_AT_ALL_END
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_ordered', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_ORDERED
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_ordered_begin',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_ORDERED_BEGIN
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_ordered_end',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_ORDERED_END
+
+/* Define to 1 if you have the declaration of `PMPI_File_write_shared', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_FILE_WRITE_SHARED
+
+/* Define to 1 if you have the declaration of `PMPI_Finalize', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_FINALIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Finalized', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_FINALIZED
+
+/* Define to 1 if you have the declaration of `PMPI_Free_mem', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_FREE_MEM
+
+/* Define to 1 if you have the declaration of `PMPI_Gather', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_GATHER
+
+/* Define to 1 if you have the declaration of `PMPI_Gatherv', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_GATHERV
+
+/* Define to 1 if you have the declaration of `PMPI_Get', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Get_address', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GET_ADDRESS
+
+/* Define to 1 if you have the declaration of `PMPI_Get_count', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GET_COUNT
+
+/* Define to 1 if you have the declaration of `PMPI_Get_elements', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GET_ELEMENTS
+
+/* Define to 1 if you have the declaration of `PMPI_Get_processor_name', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_GET_PROCESSOR_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Get_version', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GET_VERSION
+
+/* Define to 1 if you have the declaration of `PMPI_Graphdims_get', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_GRAPHDIMS_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Graph_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GRAPH_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Graph_get', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GRAPH_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Graph_map', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GRAPH_MAP
+
+/* Define to 1 if you have the declaration of `PMPI_Graph_neighbors', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_GRAPH_NEIGHBORS
+
+/* Define to 1 if you have the declaration of `PMPI_Graph_neighbors_count',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_GRAPH_NEIGHBORS_COUNT
+
+/* Define to 1 if you have the declaration of `PMPI_Grequest_complete', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_GREQUEST_COMPLETE
+
+/* Define to 1 if you have the declaration of `PMPI_Grequest_start', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_GREQUEST_START
+
+/* Define to 1 if you have the declaration of `PMPI_Group_c2f', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Group_compare', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_GROUP_COMPARE
+
+/* Define to 1 if you have the declaration of `PMPI_Group_difference', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_GROUP_DIFFERENCE
+
+/* Define to 1 if you have the declaration of `PMPI_Group_excl', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_EXCL
+
+/* Define to 1 if you have the declaration of `PMPI_Group_f2c', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Group_free', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Group_incl', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_INCL
+
+/* Define to 1 if you have the declaration of `PMPI_Group_intersection', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_GROUP_INTERSECTION
+
+/* Define to 1 if you have the declaration of `PMPI_Group_range_excl', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_GROUP_RANGE_EXCL
+
+/* Define to 1 if you have the declaration of `PMPI_Group_range_incl', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_GROUP_RANGE_INCL
+
+/* Define to 1 if you have the declaration of `PMPI_Group_rank', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_RANK
+
+/* Define to 1 if you have the declaration of `PMPI_Group_size', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Group_translate_ranks',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_GROUP_TRANSLATE_RANKS
+
+/* Define to 1 if you have the declaration of `PMPI_Group_union', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_GROUP_UNION
+
+/* Define to 1 if you have the declaration of `PMPI_Ibsend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_IBSEND
+
+/* Define to 1 if you have the declaration of `PMPI_Info_c2f', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_INFO_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Info_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_INFO_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Info_delete', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_INFO_DELETE
+
+/* Define to 1 if you have the declaration of `PMPI_Info_dup', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_INFO_DUP
+
+/* Define to 1 if you have the declaration of `PMPI_Info_f2c', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_INFO_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Info_free', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_INFO_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Info_get', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_INFO_GET
+
+/* Define to 1 if you have the declaration of `PMPI_Info_get_nkeys', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_INFO_GET_NKEYS
+
+/* Define to 1 if you have the declaration of `PMPI_Info_get_nthkey', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_INFO_GET_NTHKEY
+
+/* Define to 1 if you have the declaration of `PMPI_Info_get_valuelen', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_INFO_GET_VALUELEN
+
+/* Define to 1 if you have the declaration of `PMPI_Info_set', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_INFO_SET
+
+/* Define to 1 if you have the declaration of `PMPI_Init', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_INIT
+
+/* Define to 1 if you have the declaration of `PMPI_Initialized', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_INITIALIZED
+
+/* Define to 1 if you have the declaration of `PMPI_Init_thread', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_INIT_THREAD
+
+/* Define to 1 if you have the declaration of `PMPI_Intercomm_create', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_INTERCOMM_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Intercomm_merge', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_INTERCOMM_MERGE
+
+/* Define to 1 if you have the declaration of `PMPI_Iprobe', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_IPROBE
+
+/* Define to 1 if you have the declaration of `PMPI_Irecv', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_IRECV
+
+/* Define to 1 if you have the declaration of `PMPI_Irsend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_IRSEND
+
+/* Define to 1 if you have the declaration of `PMPI_Isend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ISEND
+
+/* Define to 1 if you have the declaration of `PMPI_Issend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_ISSEND
+
+/* Define to 1 if you have the declaration of `PMPI_Is_thread_main', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_IS_THREAD_MAIN
+
+/* Define to 1 if you have the declaration of `PMPI_Keyval_create', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_KEYVAL_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Keyval_free', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_KEYVAL_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Lookup_name', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_LOOKUP_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Open_port', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_OPEN_PORT
+
+/* Define to 1 if you have the declaration of `PMPI_Op_c2f', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_OP_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Op_commutative', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_OP_COMMUTATIVE
+
+/* Define to 1 if you have the declaration of `PMPI_Op_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_OP_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Op_f2c', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_OP_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Op_free', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_OP_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Pack', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_PACK
+
+/* Define to 1 if you have the declaration of `PMPI_Pack_external', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_PACK_EXTERNAL
+
+/* Define to 1 if you have the declaration of `PMPI_Pack_external_size', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_PACK_EXTERNAL_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Pack_size', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_PACK_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Probe', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_PROBE
+
+/* Define to 1 if you have the declaration of `PMPI_Publish_name', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_PUBLISH_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Put', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_PUT
+
+/* Define to 1 if you have the declaration of `PMPI_Query_thread', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_QUERY_THREAD
+
+/* Define to 1 if you have the declaration of `PMPI_Recv', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_RECV
+
+/* Define to 1 if you have the declaration of `PMPI_Recv_init', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_RECV_INIT
+
+/* Define to 1 if you have the declaration of `PMPI_Reduce', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_REDUCE
+
+/* Define to 1 if you have the declaration of `PMPI_Reduce_local', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_REDUCE_LOCAL
+
+/* Define to 1 if you have the declaration of `PMPI_Reduce_scatter', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_REDUCE_SCATTER
+
+/* Define to 1 if you have the declaration of `PMPI_Reduce_scatter_block', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_REDUCE_SCATTER_BLOCK
+
+/* Define to 1 if you have the declaration of `PMPI_Register_datarep', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_REGISTER_DATAREP
+
+/* Define to 1 if you have the declaration of `PMPI_Request_c2f', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_REQUEST_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Request_f2c', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_REQUEST_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Request_free', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_REQUEST_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Request_get_status', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_REQUEST_GET_STATUS
+
+/* Define to 1 if you have the declaration of `PMPI_Rsend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_RSEND
+
+/* Define to 1 if you have the declaration of `PMPI_Rsend_init', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_RSEND_INIT
+
+/* Define to 1 if you have the declaration of `PMPI_Scan', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SCAN
+
+/* Define to 1 if you have the declaration of `PMPI_Scatter', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SCATTER
+
+/* Define to 1 if you have the declaration of `PMPI_Scatterv', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SCATTERV
+
+/* Define to 1 if you have the declaration of `PMPI_Send', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SEND
+
+/* Define to 1 if you have the declaration of `PMPI_Sendrecv', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SENDRECV
+
+/* Define to 1 if you have the declaration of `PMPI_Sendrecv_replace', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_SENDRECV_REPLACE
+
+/* Define to 1 if you have the declaration of `PMPI_Send_init', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_SEND_INIT
+
+/* Define to 1 if you have the declaration of `PMPI_Sizeof', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SIZEOF
+
+/* Define to 1 if you have the declaration of `PMPI_Ssend', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_SSEND
+
+/* Define to 1 if you have the declaration of `PMPI_Ssend_init', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_SSEND_INIT
+
+/* Define to 1 if you have the declaration of `PMPI_Start', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_START
+
+/* Define to 1 if you have the declaration of `PMPI_Startall', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_STARTALL
+
+/* Define to 1 if you have the declaration of `PMPI_Status_c2f', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_STATUS_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Status_f2c', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_STATUS_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Status_set_cancelled', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_STATUS_SET_CANCELLED
+
+/* Define to 1 if you have the declaration of `PMPI_Status_set_elements', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_STATUS_SET_ELEMENTS
+
+/* Define to 1 if you have the declaration of `PMPI_Test', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TEST
+
+/* Define to 1 if you have the declaration of `PMPI_Testall', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TESTALL
+
+/* Define to 1 if you have the declaration of `PMPI_Testany', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TESTANY
+
+/* Define to 1 if you have the declaration of `PMPI_Testsome', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TESTSOME
+
+/* Define to 1 if you have the declaration of `PMPI_Test_cancelled', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TEST_CANCELLED
+
+/* Define to 1 if you have the declaration of `PMPI_Topo_test', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TOPO_TEST
+
+/* Define to 1 if you have the declaration of `PMPI_Type_c2f', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TYPE_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Type_commit', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_COMMIT
+
+/* Define to 1 if you have the declaration of `PMPI_Type_contiguous', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CONTIGUOUS
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_darray', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_DARRAY
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_f90_complex',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_F90_COMPLEX
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_f90_integer',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_F90_INTEGER
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_f90_real', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_F90_REAL
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_hindexed', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_HINDEXED
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_hvector', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_HVECTOR
+
+/* Define to 1 if you have the declaration of
+   `PMPI_Type_create_indexed_block', and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_INDEXED_BLOCK
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_keyval', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_KEYVAL
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_resized', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_RESIZED
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_struct', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_STRUCT
+
+/* Define to 1 if you have the declaration of `PMPI_Type_create_subarray', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_CREATE_SUBARRAY
+
+/* Define to 1 if you have the declaration of `PMPI_Type_delete_attr', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_DELETE_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Type_dup', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TYPE_DUP
+
+/* Define to 1 if you have the declaration of `PMPI_Type_extent', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_EXTENT
+
+/* Define to 1 if you have the declaration of `PMPI_Type_f2c', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TYPE_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Type_free', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Type_free_keyval', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_FREE_KEYVAL
+
+/* Define to 1 if you have the declaration of `PMPI_Type_get_attr', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_GET_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Type_get_contents', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_GET_CONTENTS
+
+/* Define to 1 if you have the declaration of `PMPI_Type_get_envelope', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_GET_ENVELOPE
+
+/* Define to 1 if you have the declaration of `PMPI_Type_get_extent', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_GET_EXTENT
+
+/* Define to 1 if you have the declaration of `PMPI_Type_get_name', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_GET_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Type_get_true_extent', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_GET_TRUE_EXTENT
+
+/* Define to 1 if you have the declaration of `PMPI_Type_hindexed', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_HINDEXED
+
+/* Define to 1 if you have the declaration of `PMPI_Type_hvector', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_HVECTOR
+
+/* Define to 1 if you have the declaration of `PMPI_Type_indexed', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_INDEXED
+
+/* Define to 1 if you have the declaration of `PMPI_Type_lb', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TYPE_LB
+
+/* Define to 1 if you have the declaration of `PMPI_Type_match_size', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_MATCH_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Type_set_attr', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_SET_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Type_set_name', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_TYPE_SET_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Type_size', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_SIZE
+
+/* Define to 1 if you have the declaration of `PMPI_Type_struct', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_STRUCT
+
+/* Define to 1 if you have the declaration of `PMPI_Type_ub', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_TYPE_UB
+
+/* Define to 1 if you have the declaration of `PMPI_Type_vector', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_TYPE_VECTOR
+
+/* Define to 1 if you have the declaration of `PMPI_Unpack', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_UNPACK
+
+/* Define to 1 if you have the declaration of `PMPI_Unpack_external', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_UNPACK_EXTERNAL
+
+/* Define to 1 if you have the declaration of `PMPI_Unpublish_name', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_UNPUBLISH_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Wait', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WAIT
+
+/* Define to 1 if you have the declaration of `PMPI_Waitall', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WAITALL
+
+/* Define to 1 if you have the declaration of `PMPI_Waitany', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WAITANY
+
+/* Define to 1 if you have the declaration of `PMPI_Waitsome', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WAITSOME
+
+/* Define to 1 if you have the declaration of `PMPI_Win_c2f', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_C2F
+
+/* Define to 1 if you have the declaration of `PMPI_Win_call_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_WIN_CALL_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Win_complete', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_COMPLETE
+
+/* Define to 1 if you have the declaration of `PMPI_Win_create', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_CREATE
+
+/* Define to 1 if you have the declaration of `PMPI_Win_create_errhandler',
+   and to 0 if you don't. */
+#undef HAVE_DECL_PMPI_WIN_CREATE_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Win_create_keyval', and to
+   0 if you don't. */
+#undef HAVE_DECL_PMPI_WIN_CREATE_KEYVAL
+
+/* Define to 1 if you have the declaration of `PMPI_Win_delete_attr', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_WIN_DELETE_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Win_f2c', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_F2C
+
+/* Define to 1 if you have the declaration of `PMPI_Win_fence', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_FENCE
+
+/* Define to 1 if you have the declaration of `PMPI_Win_free', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_FREE
+
+/* Define to 1 if you have the declaration of `PMPI_Win_free_keyval', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_WIN_FREE_KEYVAL
+
+/* Define to 1 if you have the declaration of `PMPI_Win_get_attr', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_GET_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Win_get_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_WIN_GET_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Win_get_group', and to 0
+   if you don't. */
+#undef HAVE_DECL_PMPI_WIN_GET_GROUP
+
+/* Define to 1 if you have the declaration of `PMPI_Win_get_name', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_GET_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Win_lock', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_LOCK
+
+/* Define to 1 if you have the declaration of `PMPI_Win_post', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_POST
+
+/* Define to 1 if you have the declaration of `PMPI_Win_set_attr', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_SET_ATTR
+
+/* Define to 1 if you have the declaration of `PMPI_Win_set_errhandler', and
+   to 0 if you don't. */
+#undef HAVE_DECL_PMPI_WIN_SET_ERRHANDLER
+
+/* Define to 1 if you have the declaration of `PMPI_Win_set_name', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_SET_NAME
+
+/* Define to 1 if you have the declaration of `PMPI_Win_start', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_START
+
+/* Define to 1 if you have the declaration of `PMPI_Win_test', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_TEST
+
+/* Define to 1 if you have the declaration of `PMPI_Win_unlock', and to 0 if
+   you don't. */
+#undef HAVE_DECL_PMPI_WIN_UNLOCK
+
+/* Define to 1 if you have the declaration of `PMPI_Win_wait', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WIN_WAIT
+
+/* Define to 1 if you have the declaration of `PMPI_Wtick', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WTICK
+
+/* Define to 1 if you have the declaration of `PMPI_Wtime', and to 0 if you
+   don't. */
+#undef HAVE_DECL_PMPI_WTIME
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* [] */
+#undef HAVE_MPI_SUBVERSION
+
+/* [] */
+#undef HAVE_MPI_VERSION
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+#undef NO_MINUS_C_MINUS_O
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Defined if we are working from svn. */
+#undef SILC_IN_DEVELOPEMENT
+
+/* Defined if we are working from a make dist generated tarball. */
+#undef SILC_IN_PRODUCTION
+
+/* The size of `void *', as computed by sizeof. */
+#undef SIZEOF_VOID_P
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
+
+#include <config-custom.h>

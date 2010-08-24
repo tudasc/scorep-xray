@@ -80,7 +80,7 @@ FC   = $(MPIFC)
 # target _LDADD = $(MPILIBS)
 LIBS += $(MPILIBS)
 
-AM_CPPFLAGS += -DBACKEND_BUILD
+AM_CPPFLAGS += -DBACKEND_BUILD_MPI
 if CROSS_BUILD
 AM_CPPFLAGS += -DCROSS_BUILD
 else
@@ -99,3 +99,6 @@ include ../../build-includes/mpi-backend-only.am
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../../build-config/m4
+
+clean-local:
+	rm -f mpi_supported

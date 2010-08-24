@@ -2,11 +2,11 @@
 
 ## The SUBDIRS variable holds a list of subdirectories automake (recursivly) 
 ## must build. 
-SUBDIRS = build-mpi
+#SUBDIRS = 
 
 include ../build-includes/common.am
 
-AM_CPPFLAGS += -DBACKEND_BUILD
+AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
 
 bindir=${exec_prefix}@backend_bin_dir@
 libdir=${exec_prefix}@backend_lib_dir@

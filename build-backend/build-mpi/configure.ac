@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([silc-backend], [0])
+AC_INIT([silc-backend-mpi], [0])
 
 ## require $ac_silc_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}" != "xno"; then
@@ -18,11 +18,11 @@ AC_SILC_CHECK_COMPILER_VAR_SET([FC])
 
 AC_SILC_SVN_CONTROLLED
 AH_SILC_CONFIG_HEADER_CUSTOM
-AC_CONFIG_HEADERS([../src/config-backend.h])
+AC_CONFIG_HEADERS([../../src/config-backend-mpi.h])
 
 
-AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../build-config/m4])
+AC_CONFIG_AUX_DIR([../../build-config])
+AC_CONFIG_MACRO_DIR([../../build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
@@ -30,10 +30,6 @@ AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 AC_SILC_PLATFORM_SETTINGS   
 
 AC_SILC_COMMON_CHECKS
-
-# does this work on cross-compile machines?
-AC_CHECK_FUNCS_ONCE([readlink])
-
 AM_PROG_AS
 
 LT_PREREQ([2.2.6])
@@ -51,10 +47,6 @@ AC_SUBST(backend_bin_dir)
 AC_SUBST(backend_lib_dir)
 
 AC_CHECK_SIZEOF([void *])
-AC_CHECK_SIZEOF([int64_t])
-if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
-    AC_MSG_ERROR([sizeof(void*) > sizeof(int64_t): internal thread handling will not work.])
-fi
 
 ## Determine a Fortran 77 compiler to use. If F77 is not already set in the
 ## environment, then check for g77 and f77, and then some other names. Set the
@@ -129,15 +121,8 @@ AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
 SILC_OPENMP
-
-SILC_TIMER
 AC_SILC_COMPILER_CHECKS
-AC_SILC_LIBBFD
-AC_SILC_CUBE4
-
-# assuming that mpi configure already ran
-AM_CONDITIONAL([MPI_SUPPORTED], [test -f build-mpi/mpi_supported])
-rm  build-mpi/mpi_supported
+AC_SILC_MPI
 
 AC_CONFIG_FILES([Makefile])
 
