@@ -22,24 +22,25 @@ AC_ARG_WITH(cube4-header, [AS_HELP_STRING([--with-cube4-header=path_to_header], 
 
 ## preliminary error message due to problems with cross-compiling
 if test "x${ac_silc_cross_compiling}" = "xyes"; then
-        AC_MSG_ERROR([Can't reliably determine backend libcubew in cross
-compiling mode.])
-fi
-
-## Check presence of cube writer library
-AC_LANG_PUSH([C])
-AC_MSG_CHECKING([for libcubew])    
-silc_save_libs=$LIBS
-LIBS="$LIBS -lcubew -lz -lm"
-AC_LINK_IFELSE([AC_LANG_PROGRAM([void* cubew_create(unsigned myrank, unsigned Nthreads, unsigned Nwriters, const char * cubename, int compression);],
+        AC_MSG_NOTICE([Can't reliably determine backend libcubew in cross
+compiling mode. Disable Cube 4 support])
+        AM_CONDITIONAL(HAVE_CUBE4,[test no = yes])
+else
+    ## Check presence of cube writer library
+    AC_LANG_PUSH([C])
+    AC_MSG_CHECKING([for libcubew])    
+    silc_save_libs=$LIBS
+    LIBS="$LIBS -lcubew -lz -lm"
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([void* cubew_create(unsigned myrank, unsigned Nthreads, unsigned Nwriters, const char * cubename, int compression);],
                                     [[cubew_create(1,1,1,"test",0);]])],[has_cube4_lib=yes],[LIBS=$silc_savelibs])
-AC_MSG_RESULT([$LIBS])
+    AC_MSG_RESULT([$LIBS])
 
-## Check presence of cube writer header
-AC_CHECK_HEADER([cubew.h], [has_cube4_header=yes], [], [])
+    ## Check presence of cube writer header
+    AC_CHECK_HEADER([cubew.h], [has_cube4_header=yes], [], [])
 
-## Set makefile conditional
-AM_CONDITIONAL(HAVE_CUBE4,[test x$has_cube4_lib$has_cube4_header = xyesyes])
+    ## Set makefile conditional
+    AM_CONDITIONAL(HAVE_CUBE4,[test x$has_cube4_lib$has_cube4_header = xyesyes])
 
-AC_LANG_POP([C])
+    AC_LANG_POP([C])
+fi
 ])
