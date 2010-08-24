@@ -71,3 +71,6 @@ silc-config-tool-local:
 	echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/silc_config.dat
 	echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/silc_config.dat
 	echo CC=\"$(CC)\"                                                          >> $(builddir)/silc_config.dat
+	echo LIBS=\"$(LIB)\"                                                       >> $(builddir)/silc_config.dat
+	echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/silc_config.dat
+
