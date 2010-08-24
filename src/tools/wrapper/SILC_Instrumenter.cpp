@@ -457,6 +457,11 @@ SILC_Instrumenter::read_parameter( std::string line )
     }
     else if ( key == "LIBDIR" )
     {
+        while ( pos = line.find( ":" ) != std::string::npos )
+        {
+            silc_library_path += " -L" + value.substr( 0, pos );
+            value              = value.substr( pos + 1, line.length() - pos - 1 );
+        }
         silc_library_path += " -L" + value;
     }
     else if ( key == "INCDIR" )
