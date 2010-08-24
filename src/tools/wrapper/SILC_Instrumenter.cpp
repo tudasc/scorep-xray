@@ -450,7 +450,7 @@ SILC_Instrumenter::read_parameter( std::string line )
     {
         compiler_instrumentation_flags = value;
     }
-    else if ( key == "PREFIX" )
+    else if ( key == "PREFIX" && value != "" )
     {
         silc_include_path += " -I" + value + "/include/silc";
         silc_library_path += " -L" + value + "/lib";
@@ -459,16 +459,22 @@ SILC_Instrumenter::read_parameter( std::string line )
     {
         while ( pos = line.find( ":" ) != std::string::npos )
         {
-            silc_library_path += " -L" + value.substr( 0, pos );
-            value              = value.substr( pos + 1, line.length() - pos - 1 );
+            if ( pos != 0 )
+            {
+                silc_library_path += " -L" + value.substr( 0, pos );
+            }
+            value = value.substr( pos + 1, line.length() - pos - 1 );
         }
-        silc_library_path += " -L" + value;
+        if ( value != "" )
+        {
+            silc_library_path += " -L" + value;
+        }
     }
-    else if ( key == "INCDIR" )
+    else if ( key == "INCDIR" && value != "" )
     {
         silc_include_path += " -I" + value;
     }
-    else if ( key == "LIBS" )
+    else if ( key == "LIBS" && value != "" )
     {
         external_libs += " " + value;
     }

@@ -54,6 +54,8 @@ PROFILE_FLAGS += -DHAVE_CUBE4=1
 
 libsilc_profile_base_la_SOURCES +=                                   \
     $(SRC_ROOT)src/measurement/profile/silc_profile_cube4_writer.c
+
+libsilc_profile_base_la_LIBADD = $(CUBE_LIBS)
 endif
 
 ## non omp

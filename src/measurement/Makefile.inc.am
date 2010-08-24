@@ -65,6 +65,8 @@ if HAVE_CUBE4
 libsilc_measurement_la_SOURCES +=                               \
     $(SRC_ROOT)src/measurement/silc_definition_cube4.h          \
     $(SRC_ROOT)src/measurement/silc_definition_cube4.c
+
+libsilc_measurement_la_LIBADD = $(CUBE_LIBS)
 endif
 
 ## paradigm omp
