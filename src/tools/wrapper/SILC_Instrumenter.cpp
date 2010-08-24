@@ -54,6 +54,7 @@ SILC_Instrumenter::SILC_Instrumenter()
 
     silc_include_path = "";
     silc_library_path = "";
+    external_libs     = "";
     config_file       = "";
     verbosity         = 0;
 }
@@ -462,6 +463,10 @@ SILC_Instrumenter::read_parameter( std::string line )
     {
         silc_include_path += " -I" + value;
     }
+    else if ( key == "LIBS" )
+    {
+        external_libs += " " + value;
+    }
     return SILC_SUCCESS;
 }
 
@@ -515,6 +520,7 @@ SILC_Instrumenter::execute_command()
                           + input_files
                           + silc_lib
                           + compiler_flags
+                          + external_libs
                           + " -o " + output_name;
 
     if ( verbosity >= 1 )

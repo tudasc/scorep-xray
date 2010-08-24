@@ -314,6 +314,11 @@ private:
      */
     std::string silc_library_path;
 
+    /**
+       Stores external dependency libraries of the SILC library
+     */
+    std::string external_libs;
+
     /* --------------------------------------------
        Other configs
        ------------------------------------------*/
