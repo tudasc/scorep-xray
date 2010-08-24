@@ -57,7 +57,9 @@ silc-config-tool-install:
 	echo DATADIR=\"$(datadir)\"                                                     >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"$(libdir)\"                                                       >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"$(LIBS)\"                                                         >> $(builddir)/silc_config.dat
+	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                                >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(LIBBFD)\"                                                         >> $(builddir)/silc_config.dat
+	echo LIBS=\"$(CUBE_LIBS)\"                                                       >> $(builddir)/silc_config.dat
 	$(INSTALL_DATA) $(builddir)/silc_config.dat $(DESTDIR)$(bindir)/silc_config.dat
 # add compiler-suite, name of libs, static/shared, ...
 
@@ -70,9 +72,11 @@ silc-config-tool-local:
 	echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"$(LIBS)\"                                                    >> $(builddir)/silc_config.dat
+	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/silc_config.dat
 	echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/silc_config.dat
 	echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/silc_config.dat
 	echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/silc_config.dat
 	echo CC=\"$(CC)\"                                                          >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/silc_config.dat
+	echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/silc_config.dat
 
