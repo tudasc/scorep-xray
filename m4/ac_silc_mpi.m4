@@ -54,6 +54,7 @@ AM_CONDITIONAL([HAVE_MPIFC], [test "x${silc_mpi_f90_supported}" = "xyes"])
 
 if test "x${silc_mpi_supported}" = "xyes"; then
 
+  touch mpi_supported
   ac_silc_mpi_save_CC="$CC"
   CC="$MPICC"
 
