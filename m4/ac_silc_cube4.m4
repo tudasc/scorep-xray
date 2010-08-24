@@ -17,7 +17,10 @@
 AC_DEFUN([AC_SILC_CUBE4], [
 
 ## Evalute parameters
-AC_ARG_WITH(cube4-lib, [AS_HELP_STRING([--with-cube4-lib=path_to_library], [Specifies the path where the Cube 4 library is located])],[LDFLAGS="$LDFLAGS -L$withval"],[])
+AC_ARG_WITH(cube4-lib, [AS_HELP_STRING([--with-cube4-lib=path_to_library], [Specifies the path where the Cube 4 library is located])],[
+    AC_SUBST(CUBE_LIB_PATH,"$withval")
+    LDFLAGS="$LDFLAGS -L$withval"
+],[])
 AC_ARG_WITH(cube4-header, [AS_HELP_STRING([--with-cube4-header=path_to_header], [Specifies the path where the Cube 4 header files are located])],[CPPFLAGS="$CPPFLAGS -I$withval"],[])
 
 ## preliminary error message due to problems with cross-compiling
@@ -30,17 +33,21 @@ else
     AC_LANG_PUSH([C])
     AC_MSG_CHECKING([for libcubew])    
     silc_save_libs=$LIBS
-    LIBS="$LIBS -lcubew -lz -lm"
+    CUBE_LIBS="-lcubew -lz -lm"
+    LIBS="$LIBS $CUBE_LIBS"
     AC_LINK_IFELSE([AC_LANG_PROGRAM([void* cubew_create(unsigned myrank, unsigned Nthreads, unsigned Nwriters, const char * cubename, int compression);],
-                                    [[cubew_create(1,1,1,"test",0);]])],[has_cube4_lib=yes],[LIBS=$silc_savelibs])
-    AC_MSG_RESULT([$LIBS])
+                                    [[cubew_create(1,1,1,"test",0);]])],[has_cube4_lib=yes],[CUBE_LIBS=""])
+    AC_MSG_RESULT([$CUBE_LIBS])
 
     ## Check presence of cube writer header
     AC_CHECK_HEADER([cubew.h], [has_cube4_header=yes], [], [])
 
     ## Set makefile conditional
     AM_CONDITIONAL(HAVE_CUBE4,[test x$has_cube4_lib$has_cube4_header = xyesyes])
+    AC_SUBST(CUBE_LIBS, "$CUBE_LIBS")
 
+    ## Clean up
+    LIBS=$silc_savelibs
     AC_LANG_POP([C])
 fi
 ])
