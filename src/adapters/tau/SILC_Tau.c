@@ -26,11 +26,43 @@
 
 #include <config.h>
 #include <SILC_Tau.h>
+
 /*
  #include <SILC_Types.h>
  #include <SILC_Events.h>
  #include <SILC_Definitions.h>
  */
+
+typedef uint32_t SILC_LineNo;
+
+extern void
+SILC_InitMeasurement
+(
+);
+
+extern SILC_RegionHandle
+SILC_DefineRegion(
+    const char*           regionName,
+    SILC_SourceFileHandle fileHandle,
+    SILC_LineNo           beginLine,
+    SILC_LineNo           endLine,
+    SILC_AdapterType      adapter,
+    SILC_RegionType       regionType
+    );
+
+extern void
+SILC_EnterRegion(
+    SILC_RegionHandle regionHandle
+    );
+
+extern void
+SILC_ExitRegion(
+    SILC_Tau_RegionHandle regionHandle
+    );
+
+
+
+
 
 /** @ingroup TAU
     @{

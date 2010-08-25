@@ -32,12 +32,6 @@ extern "C" {
 #endif
 
 #include <SILC_PublicTypes.h>
-/*
- #include <SILC_Types.h>
- #include <SILC_Events.h>
- #include <SILC_Definitions.h>
- */
-
 
 
 /**
@@ -64,11 +58,6 @@ SILC_Tau_InitMeasurement
 (
 );
 
-void
-SILC_InitMeasurement
-(
-);
-
 
 /**
  * Type used in specifying line numbers.
@@ -79,7 +68,6 @@ SILC_InitMeasurement
 /* #define SILC_Tau_LineNo SILC_LineNo */
 
 typedef uint32_t SILC_Tau_LineNo;
-typedef uint32_t SILC_LineNo;
 
 /**
  * Symbolic constant representing an invalid or unknown line number.
@@ -248,16 +236,6 @@ SILC_Tau_DefineRegion(
     SILC_Tau_RegionType       regionType
     );
 
-SILC_RegionHandle
-SILC_DefineRegion(
-    const char*           regionName,
-    SILC_SourceFileHandle fileHandle,
-    SILC_LineNo           beginLine,
-    SILC_LineNo           endLine,
-    SILC_AdapterType      adapter,
-    SILC_RegionType       regionType
-    );
-
 /**
  * Generate a region enter event in the measurement system.
  *
@@ -268,11 +246,6 @@ SILC_Tau_EnterRegion(
     SILC_Tau_RegionHandle regionHandle
     );
 
-void
-SILC_EnterRegion(
-    SILC_RegionHandle regionHandle
-    );
-
 /**
  * Generate a region exit event in the measurement system.
  *
@@ -281,11 +254,6 @@ SILC_EnterRegion(
 void
 SILC_Tau_ExitRegion(
     SILC_Tau_RegionHandle regionHandle
-    );
-
-void
-SILC_ExitRegion(
-    SILC_RegionHandle regionHandle
     );
 
 
