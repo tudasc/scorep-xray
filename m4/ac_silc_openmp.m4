@@ -17,7 +17,7 @@
 ## file       ac_silc_openmp.m4
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-AC_DEFUN([SILC_OPENMP],
+AC_DEFUN([AC_SILC_OPENMP],
 [
 AC_LANG_PUSH([C])
 AC_OPENMP
