@@ -21,3 +21,11 @@ CXX_FOR_BUILD=xlC_r
 
 #FC_FOR_BUILD= 
 #FCFLAGS_FOR_BUILD=
+
+MPICC=mpixlc_r
+
+MPICXX=mpixlcxx_r
+
+MPIF77=mpixlf77_r
+
+MPIFC=mpixlf95_r

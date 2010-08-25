@@ -9,3 +9,11 @@ F77=xlf_r
 
 FC=xlf95_r
 #FCFLAGS=
+
+MPICC=mpcc_r
+
+MPICXX=mpCC_r
+
+MPIF77=mpixlf_r
+
+MPIFC=mpixlf95_r
