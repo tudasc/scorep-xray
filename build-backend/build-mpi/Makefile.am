@@ -71,10 +71,10 @@ libtool: $(LIBTOOL_DEPS)
 doxygen-dev:
 clean-doxygen-dev:
 
-CC   = $(MPICC)
-CXX  = $(MPICXX)
-F77  = $(MPIF77)
-FC   = $(MPIFC)
+#CC   = $(MPICC)
+#CXX  = $(MPICXX)
+#F77  = $(MPIF77)
+#FC   = $(MPIFC)
 
 # I'm not sure if this is the way to go or if we need per 
 # target _LDADD = $(MPILIBS)

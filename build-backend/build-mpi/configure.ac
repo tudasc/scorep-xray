@@ -6,15 +6,37 @@ if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}"
     AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
 fi
 
-
-
-
-
-
 AC_SILC_CHECK_COMPILER_VAR_SET([CC])
 AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
 AC_SILC_CHECK_COMPILER_VAR_SET([F77])
 AC_SILC_CHECK_COMPILER_VAR_SET([FC])
+
+AC_LANG_PUSH([C])
+AC_SILC_MPI_WORKING([silc_mpi_c_supported="yes"],[silc_mpi_c_supported="no"])
+AC_LANG_POP([C])
+#echo "silc_mpi_c_supported=$silc_mpi_c_supported"
+
+# C++ MPI is needed for the jacobi C++ tests only.
+AC_LANG_PUSH([C++])
+AC_SILC_MPI_WORKING([silc_mpi_cxx_supported="yes"],[silc_mpi_cxx_supported="no"])
+AC_LANG_POP([C++])
+#echo "silc_mpi_cxx_supported=$silc_mpi_cxx_supported"
+
+AC_LANG_PUSH([Fortran 77])
+AC_SILC_MPI_WORKING([silc_mpi_f77_supported="yes"],[silc_mpi_f77_supported="no"])
+AC_LANG_POP([Fortran 77])
+#echo "silc_mpi_f77_supported=$silc_mpi_f77_supported"
+
+AC_LANG_PUSH([Fortran])
+AC_SILC_MPI_WORKING([silc_mpi_f90_supported="yes"],[silc_mpi_f90_supported="no"])
+AC_LANG_POP([Fortran])
+#echo "silc_mpi_f90_supported=$silc_mpi_f90_supported"
+
+#echo "CC =$CC"
+#echo "CXX=$CXX"
+#echo "F77=$F77"
+#echo "FC =$FC"
+#echo "MPILIBS=$MPILIBS"
 
 AC_SILC_SVN_CONTROLLED
 AH_SILC_CONFIG_HEADER_CUSTOM
@@ -120,7 +142,7 @@ AC_PROG_FC_C_O
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
-SILC_OPENMP
+AC_SILC_OPENMP
 AC_SILC_COMPILER_CHECKS
 AC_SILC_MPI
 
