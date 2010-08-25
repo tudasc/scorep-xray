@@ -28,7 +28,7 @@ rm -rf serial_inst_test
 make silc-config-tool-local
 . silc_config.dat
 ./silc --instrument -verbosity=1 $CC -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
-./serial_inst_test
+./silc --measure -verbosity=1 ./serial_inst_test
 if [ $? -ne 0 ]; then
     rm -rf silc-measurement-tmp
     exit 1
