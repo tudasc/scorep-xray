@@ -51,6 +51,9 @@ clean-local-silc-config-tests:
 
 install-data-local: silc-config-tool-install
 
+uninstall-local:
+	rm -f $(DESTDIR)$(exec_prefix)/bin/silc_config.dat
+
 silc-config-tool-install:
 	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
 	echo PREFIX=\"$(prefix)\"                                                       >> $(builddir)/silc_config.dat
@@ -59,8 +62,8 @@ silc-config-tool-install:
 	echo LIBDIR=\"$(LIBS)\"                                                         >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                                >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(LIBBFD)\"                                                         >> $(builddir)/silc_config.dat
-	echo LIBS=\"$(CUBE_LIBS)\"                                                       >> $(builddir)/silc_config.dat
-	$(INSTALL_DATA) $(builddir)/silc_config.dat $(DESTDIR)$(bindir)/silc_config.dat
+	echo LIBS=\"$(CUBE_LIBS)\"                                                      >> $(builddir)/silc_config.dat
+	$(INSTALL_DATA) $(builddir)/silc_config.dat $(DESTDIR)$(exec_prefix)/bin/silc_config.dat
 # add compiler-suite, name of libs, static/shared, ...
 
 clean-local-silc-config-tool:
