@@ -117,19 +117,42 @@ public:
     virtual void
     PrintParameter();
 
-    /* ***************************************************** Private methods */
-private:
+    /* *************************************************** Protected methods */
+protected:
+    /**
+       This function is called from ReadConfigFile. It should set the
+       compiler instrumentation flags.
+       @param flags A string containing the instrumentation flags.
+     */
+    virtual void
+    SetCompilerFlags( std::string flags );
 
     /**
-       Extracts parameter from configuration file
-       It expects lines of the format key=value. Furthermore it truncates line
-       at the scrpit comment character '#'.
-       @param line    input line from the config file
-       @returns SILC_SUCCESS if the line was successfully parsed. Else it
-                returns an error code.
+       This function is called from ReadConfigFile. It should add one include
+       directory.
+       @param dir One directory name.
      */
-    SILC_Error_Code
-    read_parameter( std::string line );
+    virtual void
+    AddIncDir( std::string dir );
+
+    /**
+       This function is called from ReadConfigFile. It should add one library
+       directory.
+       @param dir One directory name.
+     */
+    virtual void
+    AddLibDir( std::string dir );
+
+    /**
+       This function is called from ReadConfigFile. It should add libraries.
+       The string is of format -l<name>.
+       @param dir One or more libraries.
+     */
+    virtual void
+    AddLib( std::string lib );
+
+    /* ***************************************************** Private methods */
+private:
 
     /**
        Executes the modified user command.
@@ -294,12 +317,6 @@ private:
        Config file data
        ------------------------------------------*/
     /**
-       Config file name. Can be set with the -config parameter.
-       If it is empty, a config file is searched at standard locations.
-     */
-    std::string config_file;
-
-    /**
        Stores compiler instruemntation flags
      */
     std::string compiler_instrumentation_flags;
@@ -318,17 +335,6 @@ private:
        Stores external dependency libraries of the SILC library
      */
     std::string external_libs;
-
-    /* --------------------------------------------
-       Other configs
-       ------------------------------------------*/
-    /**
-       Verbosity level. The following levels are currently possible:
-       0 = No output.
-       1 = Executed commands are printed
-       2 = All analysis results are printed.
-     */
-    int verbosity;
 };
 
 #endif /*SILC_INSTRUMENTER_H_*/

@@ -79,11 +79,46 @@ public:
     virtual void
     PrintParameter();
 
+    /* *************************************************** Protected methods */
+protected:
+    /**
+       This function is called from ReadConfigFile. It should set the
+       compiler instrumentation flags.
+       @param flags A string containing the instrumentation flags.
+     */
+    virtual void
+    SetCompilerFlags( std::string flags );
+
+    /**
+       This function is called from ReadConfigFile. It should add one include
+       directory.
+       @param dir One directory name.
+     */
+    virtual void
+    AddIncDir( std::string dir );
+
+    /**
+       This function is called from ReadConfigFile. It should add one library
+       directory.
+       @param dir One directory name.
+     */
+    virtual void
+    AddLibDir( std::string dir );
+
+    /**
+       This function is called from ReadConfigFile. It should add libraries.
+       The string is of format -l<name>.
+       @param dir One or more libraries.
+     */
+    virtual void
+    AddLib( std::string lib );
+
     /* ***************************************************** Private members */
 private:
     /**
      *  The user command.
      */
     std::string user_command;
+    std::string silc_library_path;
 };
 #endif /*SILC_MEASUREMENT_H_*/

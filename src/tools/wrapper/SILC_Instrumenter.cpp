@@ -33,8 +33,6 @@
 
 #include "SILC_Instrumenter.hpp"
 
-#define SILC_CONFIG_FILE_NAME "silc_config.dat"
-
 /* ****************************************************************************
    Main interface
 ******************************************************************************/
@@ -55,8 +53,6 @@ SILC_Instrumenter::SILC_Instrumenter()
     silc_include_path = "";
     silc_library_path = "";
     external_libs     = "";
-    config_file       = "";
-    verbosity         = 0;
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -66,7 +62,6 @@ SILC_Instrumenter::~SILC_Instrumenter ()
 int
 SILC_Instrumenter::Run()
 {
-    read_config_file();
     if ( verbosity >= 2 )
     {
         PrintParameter();
@@ -112,6 +107,7 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
         }
     }
     check_parameter();
+    ReadConfigFile( argv[ 0 ] );
 }
 
 void
@@ -240,23 +236,9 @@ SILC_Instrumenter::parse_parameter( std::string arg )
         return silc_parse_mode_param;
     }
     /* Configuration file */
-    else if ( arg == "-config" )
+    else if ( CheckForCommonArg( arg ) )
     {
-        is_openmp_application = disabled;
-        return silc_parse_mode_config;
-    }
-    /* Verbosity */
-    else if ( arg.substr( 0, 10 ) == "-verbosity" )
-    {
-        if ( arg.length() > 11 )
-        {
-            verbosity = atol( arg.substr( 11, arg.length() - 11 ).c_str() );
-        }
-        else
-        {
-            std::cerr << "ERROR: No verbosity value specified." << std::endl;
-            abort();
-        }
+        return silc_parse_mode_param;
     }
     else
     {
@@ -311,7 +293,8 @@ SILC_Instrumenter::check_parameter()
 {
     if ( compiler_name == "" )
     {
-        std::cout << "WARNING: Could not identify compiler name." << std::endl;
+        std::cout << "ERROR: Could not identify compiler name." << std::endl;
+        abort();
     }
 
     if ( output_name == "" )
@@ -368,117 +351,28 @@ SILC_Instrumenter::parse_config( std::string arg )
    Config file parsing
 ******************************************************************************/
 
-SILC_Error_Code
-SILC_Instrumenter::open_config_file( std::ifstream* inFile )
+void
+SILC_Instrumenter::SetCompilerFlags( std::string flags )
 {
-    // If configure file was specified via -config. Use this file.
-    if ( config_file != "" )
-    {
-        inFile->open( config_file.c_str(), std::ios_base::in );
-        if ( !( inFile->good() ) )
-        {
-            SILC_ERROR( SILC_ERROR_FILE_CAN_NOT_OPEN,
-                        "Specified file: %s", config_file.c_str() );
-            return SILC_ERROR_FILE_CAN_NOT_OPEN;
-        }
-        return SILC_SUCCESS;
-    }
-
-    // Else try standard locations
-    // 1. Current path.
-    inFile->open( SILC_CONFIG_FILE_NAME, std::ios_base::in );
-    if ( inFile->good() )
-    {
-        return SILC_SUCCESS;
-    }
-
-    SILC_ERROR( SILC_ERROR_FILE_CAN_NOT_OPEN,
-                "No config file found at " SILC_CONFIG_FILE_NAME
-                ".\nPlease specify the location of your config file with the "
-                "-config <filename> option." );
-    return SILC_ERROR_FILE_CAN_NOT_OPEN;
+    compiler_instrumentation_flags = flags;
 }
 
-SILC_Error_Code
-SILC_Instrumenter::read_config_file()
+void
+SILC_Instrumenter::AddIncDir( std::string dir )
 {
-    std::ifstream inFile;
-
-
-    if ( open_config_file( &inFile ) == SILC_SUCCESS )
-    {
-        while ( inFile.good() )
-        {
-            char line[ 512 ] = { "" };
-            inFile.getline( line, 512 );
-            read_parameter( line );
-        }
-        return SILC_SUCCESS;
-    }
-    else
-    {
-        return SILC_ERROR_FILE_CAN_NOT_OPEN;
-    }
+    silc_include_path += " -I" + dir;
 }
 
-SILC_Error_Code
-SILC_Instrumenter::read_parameter( std::string line )
+void
+SILC_Instrumenter::AddLibDir( std::string dir )
 {
-    /* check for comments */
-    int pos = line.find( "#" );
-    if ( pos == 0 )
-    {
-        return SILC_SUCCESS;                      // Whole line cemmented out
-    }
-    if ( pos != std::string::npos )
-    {
-        // Truncate line at comment
-        line = line.substr( pos, line.length() - pos - 1 );
-    }
+    silc_library_path += " -L" + dir;
+}
 
-    /* separate value and key */
-    pos = line.find( "=" );
-    if ( pos == std::string::npos )
-    {
-        return SILC_ERROR_PARSE_NO_SEPARATOR;
-    }
-    std::string key   = line.substr( 0, pos );
-    std::string value = line.substr( pos + 2, line.length() - pos - 3 );
-
-    /* indentify key */
-    if ( key == "COMPILER_INSTRUMENTATION_CPPFLAGS" )
-    {
-        compiler_instrumentation_flags = value;
-    }
-    else if ( key == "PREFIX" && value != "" )
-    {
-        silc_include_path += " -I" + value + "/include/silc";
-        silc_library_path += " -L" + value + "/lib";
-    }
-    else if ( key == "LIBDIR" )
-    {
-        while ( pos = line.find( ":" ) != std::string::npos )
-        {
-            if ( pos != 0 )
-            {
-                silc_library_path += " -L" + value.substr( 0, pos );
-            }
-            value = value.substr( pos + 1, line.length() - pos - 1 );
-        }
-        if ( value != "" )
-        {
-            silc_library_path += " -L" + value;
-        }
-    }
-    else if ( key == "INCDIR" && value != "" )
-    {
-        silc_include_path += " -I" + value;
-    }
-    else if ( key == "LIBS" && value != "" )
-    {
-        external_libs += " " + value;
-    }
-    return SILC_SUCCESS;
+void
+SILC_Instrumenter::AddLib( std::string lib )
+{
+    external_libs += " " + lib;
 }
 
 /* ****************************************************************************
