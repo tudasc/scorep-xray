@@ -44,6 +44,7 @@ clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
 clean-local-silc-experiment-dirs:
 	rm -rf silc-2*
 	rm -rf silc-measurement-tmp
+	rm -f serial_inst_test
 
 clean-local-silc-config-tests:
 	$(RM) test_silc_config_number.*.out
