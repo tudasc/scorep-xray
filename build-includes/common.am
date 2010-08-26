@@ -73,3 +73,13 @@ doxygen-dev:
 clean-doxygen-dev:
 
 beautify:
+
+check-build: $(BUILT_SOURCES) all $(check_PROGRAMS)
+	for dir in $(SUBDIRS); do                        \
+            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
+        done
+
+check-run: check-build check-TESTS
+	for dir in $(SUBDIRS); do                        \
+            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
+        done

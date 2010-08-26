@@ -102,3 +102,14 @@ ACLOCAL_AMFLAGS = -I ../../build-config/m4
 
 clean-local:
 	rm -f mpi_supported
+
+
+check-build: $(BUILT_SOURCES) all $(check_PROGRAMS)
+	for dir in $(SUBDIRS); do                        \
+            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
+        done
+
+check-run: check-build check-TESTS
+	for dir in $(SUBDIRS); do                        \
+            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
+        done
