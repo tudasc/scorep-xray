@@ -107,7 +107,7 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
         }
     }
     check_parameter();
-    ReadConfigFile( argv[ 0 ] );
+    return ReadConfigFile( argv[ 0 ] );
 }
 
 void
