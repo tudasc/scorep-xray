@@ -23,6 +23,7 @@
  * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Adapter management of the measurement system.
+ * @status alpha
  *
  */
 
