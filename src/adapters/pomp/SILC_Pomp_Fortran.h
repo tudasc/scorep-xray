@@ -19,7 +19,7 @@
 /**
  * @file       SILC_Pomp_Fortran.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Provides defines for function name decoration for POMP Fortran wrappers.

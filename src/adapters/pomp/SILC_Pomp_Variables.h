@@ -19,7 +19,7 @@
 /**
  * @file       SILC_Pomp_Variables.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Declaration of global variables, used in several source files of the

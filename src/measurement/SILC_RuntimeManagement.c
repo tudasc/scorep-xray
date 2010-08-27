@@ -14,6 +14,7 @@
  */
 
 /**
+ * @status      alpha
  * @file        SILC_RuntimeManagement.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
@@ -23,7 +24,7 @@
  *
  */
 
-
+#include <config.h>
 #include <SILC_RuntimeManagement.h>
 
 #include <unistd.h>
@@ -34,13 +35,13 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include <SILC_Error.h>
-#include <SILC_Debug.h>
+#include <silc_utility/SILC_Error.h>
+#include <silc_utility/SILC_Debug.h>
 #include <SILC_Memory.h>
 #include <SILC_Adapter.h>
 #include <SILC_Config.h>
 #include <SILC_Timing.h>
-#include <SILC_Omp.h>
+#include <silc_utility/SILC_Omp.h>
 #include <SILC_Profile.h>
 #include <silc_unify.h>
 
@@ -55,7 +56,7 @@
 #include "silc_definition_locking.h"
 #include "silc_parameter_registration.h"
 
-#include <otf2.h>
+#include <otf2/otf2.h>
 
 
 /** @brief Measurement system initialized? */

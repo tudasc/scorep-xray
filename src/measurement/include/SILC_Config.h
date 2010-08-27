@@ -51,7 +51,7 @@
 
 
 #include <SILC_Types.h>
-#include <SILC_Error.h>
+#include <silc_utility/SILC_Error.h>
 #include <stddef.h>
 #include <stdbool.h>
 

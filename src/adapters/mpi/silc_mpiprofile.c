@@ -15,6 +15,7 @@
 
 
 /**
+ * @status      alpha
  * @file        silc_mpiprofile.c
  * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
@@ -24,12 +25,12 @@
  *
  */
 
-
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
 
-#include "SILC_Debug.h"
+#include "silc_utility/SILC_Debug.h"
 #include "SILC_User.h"
 
 #include "silc_mpiprofile.h"

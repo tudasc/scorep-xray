@@ -14,7 +14,8 @@
  */
 
 /**
- * @ file      SILC_compiler_intel.c
+ * @status     alpha
+ * @file       SILC_compiler_intel.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for GNU-Compiler
@@ -22,11 +23,12 @@
  * compiler.
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include <SILC_Types.h>
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>

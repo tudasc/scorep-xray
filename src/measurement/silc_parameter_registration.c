@@ -14,6 +14,7 @@
  */
 
 /**
+ * @status      alpha
  * @file        silc_parameter_registration.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
@@ -22,7 +23,8 @@
  *
  */
 
-#include <SILC_Utils.h>
+#include <config.h>
+#include <silc_utility/SILC_Utils.h>
 #include <SILC_Types.h>
 #include <SILC_DefinitionLocking.h>
 

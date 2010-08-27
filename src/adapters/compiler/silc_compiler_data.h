@@ -31,9 +31,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include "SILC_Types.h"
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Error.h"
 
 /**
    @def SILC_COMPILER_HASH_MAX The number of slots in the region hash table.

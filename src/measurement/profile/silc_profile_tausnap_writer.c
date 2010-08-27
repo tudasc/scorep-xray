@@ -18,16 +18,17 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  * Implements a profile writer in TAU snapshot format.
  */
 
+#include <config.h>
 #include <stdint.h>
 #include <inttypes.h>
 #include <sys/stat.h>
 
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Definitions.h"
 #include "SILC_Timing.h"
 

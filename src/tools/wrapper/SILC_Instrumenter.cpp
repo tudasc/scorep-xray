@@ -28,8 +28,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <SILC_Utils.h>
-#include <SILC_Error.h>
+#include <silc_utility/SILC_Utils.h>
+#include <silc_utility/SILC_Error.h>
 
 #include "SILC_Instrumenter.hpp"
 

@@ -18,7 +18,7 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * Contains algorithms to assign callpathes to each node during post-processing.
  * Therefore we assume that the first root node of the forest is the master thread.
@@ -35,8 +35,9 @@
  *
  */
 
+#include <config.h>
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 
 #include "silc_profile_definition.h"
 #include "silc_definitions.h"

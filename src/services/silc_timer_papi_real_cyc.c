@@ -18,15 +18,16 @@
  * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * This is the implementation of the SILC_Timing.h interface that uses the
  * silc_timer_papi_real_cyc timer.
  */
 
 
+#include <config.h>
 #include "SILC_Timing.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 
 #include <assert.h>
 #include <stdbool.h>

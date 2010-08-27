@@ -18,13 +18,14 @@
  * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * This is the implementation of the SILC_Timing.h interface that uses the
  * sun_gethrtime timer.
  */
 
 
+#include <config.h>
 #include "SILC_Timing.h"
 
 #include <assert.h>

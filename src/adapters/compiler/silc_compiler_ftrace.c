@@ -15,18 +15,19 @@
 
 
 /**
+ * @status     alpha
  * @file       silc_compiler_ftrace.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter version for NEC SX compiler
  */
 
-
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>

@@ -18,14 +18,15 @@
  *
  * @maintainer Yury Oleynik <oleynik@in.tum.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  */
 
+#include <config.h>
 #include "SILC_Profile_OAConsumer.h"
 
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Config.h"
 
 #include "silc_profile_definition.h"

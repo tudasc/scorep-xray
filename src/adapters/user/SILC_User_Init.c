@@ -13,17 +13,19 @@
  *
  */
 
-/** @file SILC_User_Init.c
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
-
-    This file contains the implmentation of the initialization functions of the user
-    adapter.
+/**
+ *  @status     alpha
+ *  @file       SILC_User_Init.c
+ *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *
+ *  This file contains the implmentation of the initialization functions of the user
+ *  adapter.
  */
 
+#include <config.h>
 #include "SILC_User_Init.h"
 #include "SILC_Types.h"
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Error.h"
 
 extern void
 silc_user_init_regions();

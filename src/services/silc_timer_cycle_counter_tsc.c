@@ -18,18 +18,17 @@
  * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * This is the implementation of the SILC_Timing.h interface that uses the
  * cycle_counter_tsc timer.
  */
 
 
+#include <config.h>
 #include "SILC_Timing.h"
 
-#include <config.h>
-
-#include <SILC_Error.h>
+#include <silc_utility/SILC_Error.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>

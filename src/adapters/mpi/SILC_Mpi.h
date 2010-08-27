@@ -28,8 +28,8 @@
 
 #include "SILC_Mpi_Communicator.h"
 #include "SILC_Mpi_Reg.h"
-#include "SILC_Error.h"
-#include "SILC_Debug.h"
+#include "silc_utility/SILC_Error.h"
+#include "silc_utility/SILC_Debug.h"
 
 #include "SILC_Definitions.h"
 #include "SILC_Events.h"

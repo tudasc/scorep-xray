@@ -16,12 +16,16 @@
 /**
  * @file       SILC_Pomp_User.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Implementation of the POMP user adapter functions and initialization.
  */
 
+#include <config.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "SILC_RuntimeManagement.h"
 #include "SILC_Definitions.h"
 #include "SILC_Events.h"
@@ -29,10 +33,7 @@
 #include "pomp_lib.h"
 #include "SILC_Pomp_RegionInfo.h"
 #include "SILC_Pomp_Lock.h"
-#include "SILC_Utils.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "silc_utility/SILC_Utils.h"
 
 /** @ingroup POMP
     @{

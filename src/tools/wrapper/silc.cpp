@@ -24,7 +24,7 @@
 #include <iostream>
 #include <string>
 
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include "SILC_Instrumenter.hpp"
 #include "SILC_Measurement.hpp"
 

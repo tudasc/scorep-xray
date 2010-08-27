@@ -19,12 +19,13 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  */
 
+#include <config.h>
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Profile.h"
 #include "SILC_Config.h"
 

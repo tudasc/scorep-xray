@@ -28,7 +28,7 @@
 
 #include <SILC_DefinitionHandles.h>
 
-#include <OTF2_EvtWriter.h>
+#include <otf2/OTF2_EvtWriter.h>
 
 
 typedef struct SILC_Trace_LocationData SILC_Trace_LocationData;

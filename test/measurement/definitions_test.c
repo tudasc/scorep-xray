@@ -22,7 +22,7 @@
  *
  */
 
-
+#include <config.h>
 #include <CuTest.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,7 +30,7 @@
 
 #include <silc_definitions.h>
 #include <silc_definition_structs.h>
-#include <SILC_Allocator.h>
+#include <silc_utility/SILC_Allocator.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */

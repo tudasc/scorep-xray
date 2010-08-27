@@ -19,14 +19,14 @@
  * @author     Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * This is the implementation of the SILC_Timing.h interface that uses the
  * intel_mmtimer timer.
  */
 
-#include "SILC_Timing.h"
 #include <config.h>
+#include "SILC_Timing.h"
 
 #if HAVE( MMTIMER_H )
 #include <mmtimer.h>
@@ -47,7 +47,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 
 #define MMTIMER_FULLNAME "/dev/mmtimer"
 

@@ -15,7 +15,8 @@
 
 
 /**
- * @ file      SILC_Compiler_Init.c
+ * @status     alpha
+ * @file       SILC_Compiler_Init.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter interface support to the measurement system.
@@ -24,13 +25,14 @@
  * which are common for all compiler adapters.
  */
 
+#include <config.h>
 #include <stdio.h>
 
 #include "SILC_Compiler_Init.h"
 #include "SILC_Types.h"
 #include "SILC_Config.h"
-#include "SILC_Error.h"
-#include <SILC_Utils.h>
+#include "silc_utility/SILC_Error.h"
+#include <silc_utility/SILC_Utils.h>
 
 /**
    Contains the name of the executable.

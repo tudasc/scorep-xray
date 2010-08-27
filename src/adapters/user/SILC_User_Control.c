@@ -13,13 +13,15 @@
  *
  */
 
-/** @file       SILC_User_Control.c
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
-
-    @brief Contain the implementation of the control functions for C.
+/**
+ *  @file       SILC_User_Control.c
+ *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *  @status     alpha
+ *
+ *  @brief Contain the implementation of the control functions for C.
  */
 
+#include <config.h>
 #include "SILC_User_Functions.h"
 #include "SILC_User_Init.h"
 #include "SILC_RuntimeManagement.h"

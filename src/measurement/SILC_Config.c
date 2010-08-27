@@ -13,7 +13,7 @@
  *
  */
 
-
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -26,17 +26,17 @@
  * @file        SILC_Config.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      ALPHA
+ * @status      alpha
  *
  * @brief Runtime configuration subsystem.
  *
  */
 
 
-#include <SILC_Debug.h>
+#include <silc_utility/SILC_Debug.h>
 #include <SILC_Config.h>
 
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 
 #include "silc_types.h"
 

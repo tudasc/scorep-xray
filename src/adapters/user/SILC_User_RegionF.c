@@ -13,22 +13,24 @@
  *
  */
 
-/** @file SILC_User_Region.c
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
-
-    This file containes the implementation of user adapter functions concerning
-    regions.
+/**
+ *  @file       SILC_User_Region.c
+ *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *  @status     alpha
+ *
+ *  This file containes the implementation of user adapter functions concerning
+ *  regions.
  */
 
+#include <config.h>
 #include "SILC_User_Functions.h"
 #include "SILC_User_Init.h"
 #include "SILC_Types.h"
 #include "SILC_Events.h"
 #include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
-#include "SILC_Utils.h"
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Utils.h"
+#include "silc_utility/SILC_Error.h"
 #include "SILC_Fortran_Wrapper.h"
 
 #include <string.h>

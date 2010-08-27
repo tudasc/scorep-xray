@@ -13,22 +13,24 @@
  *
  */
 
-/** @file SILC_User_Metric.c
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
-
-    This file containes the implementation of user adapter functions concerning
-    user metrics.
+/**
+ *  @file       SILC_User_Metric.c
+ *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *  @status     alpha
+ *
+ *  This file containes the implementation of user adapter functions concerning
+ *  user metrics.
  */
 
+#include <config.h>
 #include "SILC_User_Functions.h"
 #include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
 #include "SILC_Events.h"
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Error.h"
 #include "SILC_User_Init.h"
 #include "SILC_Types.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 
 SILC_CounterGroupHandle SILC_User_DefaultMetricGroup = SILC_INVALID_COUNTER_GROUP;
 

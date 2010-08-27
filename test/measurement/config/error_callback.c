@@ -22,22 +22,13 @@
  *
  */
 
-
 #include <config.h>
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
 #include <inttypes.h>
-
-
 #include <CuTest.h>
-
-
-#include <SILC_Error.h>
-
-
+#include <silc_utility/SILC_Error.h>
 #include "error_callback.h"
 
 

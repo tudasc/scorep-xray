@@ -17,24 +17,25 @@
  * @file       SILC_Pomp_RegionInfo.c
  * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Implements functionality for interpretation of pomp region strings.
  *
  */
 
-#include "SILC_Pomp_RegionInfo.h"
-#include "SILC_Utils.h"
-#include "SILC_Definitions.h"
-#include "SILC_Types.h"
-
+#include <config.h>
 #include <assert.h>
 #include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "SILC_Pomp_RegionInfo.h"
+#include "silc_utility/SILC_Utils.h"
+#include "SILC_Definitions.h"
+#include "SILC_Types.h"
 
 /** @ingroup POMP
     @{

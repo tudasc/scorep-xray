@@ -13,14 +13,16 @@
  *
  */
 
-/** @file SILC_User_Control.c
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
-    @ingroup    SILC_User_External
-
-    @brief Contain the implementation of the control functions for Fortran.
+/**
+ *  @file SILC_User_Control.c
+ *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *  @status     alpha
+ *  @ingroup    SILC_User_External
+ *
+ *  @brief Contain the implementation of the control functions for Fortran.
  */
 
+#include <config.h>
 #include "SILC_User_Init.h"
 #include "SILC_RuntimeManagement.h"
 #include "SILC_Fortran_Wrapper.h"

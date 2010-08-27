@@ -23,9 +23,9 @@
  *
  */
 
-
+#include <config.h>
 #include <SILC_Memory.h>
-#include <SILC_Allocator.h>
+#include <silc_utility/SILC_Allocator.h>
 #include "silc_thread.h"
 #include "silc_status.h"
 #include <assert.h>

@@ -14,21 +14,21 @@
  */
 
 /**
+ * @status     alpha
  * @file       silc_compiler_data.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *
- * @status     ALPHA
  *
  * @brief Implementation of helper functions which are common for all compiler
  *        adapters.
  */
 
+#include <config.h>
 #include <string.h>
 #include <unistd.h>
 
 #include "SILC_Definitions.h"
 #include "SILC_DefinitionLocking.h"
-#include "SILC_Hashtab.h"
+#include "silc_utility/SILC_Utils.h"
 
 #include "silc_compiler_data.h"
 

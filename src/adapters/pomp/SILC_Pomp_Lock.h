@@ -19,7 +19,7 @@
 /**
  * @file       SILC_Pomp_Lock.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Declaration of internal functins for lock management.

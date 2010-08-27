@@ -22,8 +22,8 @@
  *
  */
 
-
-#include <SILC_Allocator.h>
+#include <config.h>
+#include <silc_utility/SILC_Allocator.h>
 #include <omp.h>
 
 

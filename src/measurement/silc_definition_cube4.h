@@ -25,7 +25,7 @@
  * format.
  */
 
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 
 #include <cubew.h>
 #include <cube.h>

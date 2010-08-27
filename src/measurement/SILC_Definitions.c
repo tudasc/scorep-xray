@@ -15,14 +15,13 @@
 
 
 #include <config.h>
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 
 /**
+ * @status     alpha
  * @file       SILC_Definitions.c
  * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
@@ -32,7 +31,7 @@
 
 #include <SILC_Definitions.h>
 
-#include <SILC_Debug.h>
+#include <silc_utility/SILC_Debug.h>
 #include <SILC_DefinitionHandles.h>
 #include <jenkins_hash.h>
 

@@ -14,6 +14,7 @@
  */
 
 /**
+ * @status     alpha
  * @file       silc_compiler_symbol_table.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
@@ -36,6 +37,7 @@
  *     32 bit integer id as key.
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <limits.h>
 #include <unistd.h>
@@ -49,7 +51,7 @@
 #endif /* HAVE_LIBBFD / HAVE_NM */
 
 #include <SILC_Types.h>
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_RuntimeManagement.h>

@@ -18,16 +18,16 @@
  * @file       silc_runtime_management.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  */
 
-
+#include <config.h>
 #include "silc_runtime_management.h"
 
 #include <SILC_Timing.h>
-#include <SILC_Error.h>
-#include <SILC_Omp.h>
+#include <silc_utility/SILC_Error.h>
+#include <silc_utility/SILC_Omp.h>
 #include <SILC_Memory.h>
 #include "silc_status.h"
 #include "silc_mpi.h"

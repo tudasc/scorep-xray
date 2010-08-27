@@ -25,7 +25,7 @@
  *
  */
 
-#include <OTF2_Archive.h>
+#include <otf2/OTF2_Archive.h>
 #include <SILC_Thread_Types.h>
 
 /**

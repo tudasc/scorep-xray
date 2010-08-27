@@ -16,12 +16,13 @@
 /**
  * @file       SILC_Pomp_UserF.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Implementation of the POMP fortran user adapter functions and initialization.
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

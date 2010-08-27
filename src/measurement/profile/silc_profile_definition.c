@@ -19,10 +19,11 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  */
 
+#include <config.h>
 #include <stddef.h>
 #include <stdio.h>
 

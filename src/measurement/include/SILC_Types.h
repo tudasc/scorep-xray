@@ -30,7 +30,7 @@
 #include <stdint.h>
 
 
-#include <SILC_Allocator.h>
+#include <silc_utility/SILC_Allocator.h>
 
 
 #include <SILC_PublicTypes.h>

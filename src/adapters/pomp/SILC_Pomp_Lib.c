@@ -16,17 +16,18 @@
 /**
  * @file       SILC_Pomp_Lib.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Implementation of the POMP OpenMP adapter functions.
  */
 
+#include <config.h>
 #include "SILC_Events.h"
 #include "SILC_RuntimeManagement.h"
 #include "pomp_lib.h"
 #include "SILC_Pomp_RegionInfo.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Pomp_Variables.h"
 #include <stdio.h>
 #include <stdlib.h>

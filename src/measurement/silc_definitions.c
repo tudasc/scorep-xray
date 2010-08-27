@@ -32,13 +32,13 @@
 #include "silc_definition_structs.h"
 #include "silc_runtime_management.h"
 #include "silc_thread.h"
-#include <SILC_Omp.h>
+#include <silc_utility/SILC_Omp.h>
 #include <SILC_PublicTypes.h>
 #include <SILC_Timing.h>
-#include <otf2.h>
+#include <otf2/otf2.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <SILC_Debug.h>
+#include <silc_utility/SILC_Debug.h>
 #include "silc_mpi.h"
 #include <jenkins_hash.h>
 

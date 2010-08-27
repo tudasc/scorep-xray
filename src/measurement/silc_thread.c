@@ -18,7 +18,7 @@
  * @file       silc_thread.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */
@@ -28,7 +28,7 @@
 #include <silc_definitions.h>
 #include <silc_definition_locking.h>
 #include <SILC_Memory.h>
-#include <SILC_Omp.h>
+#include <silc_utility/SILC_Omp.h>
 #include <silc_mpi.h>
 #include <assert.h>
 #include <stdbool.h>

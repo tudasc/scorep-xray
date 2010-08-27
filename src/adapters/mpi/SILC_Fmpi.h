@@ -30,7 +30,7 @@
  */
 
 #include "SILC_Fortran_Wrapper.h"
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Error.h"
 #include <stdlib.h>
 #include <string.h>
 #include <mpi.h>

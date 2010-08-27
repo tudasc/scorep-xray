@@ -16,12 +16,13 @@
 /**
  * @file       SILC_Pomp_Lock.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    POMP
  *
  * @brief Implementation of internal functins for lock management.
  */
 
+#include <config.h>
 #include <stdlib.h>
 
 #include "SILC_Pomp_Lock.h"

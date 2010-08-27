@@ -31,11 +31,12 @@
  * fail otherwise.
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <SILC_Events.h>
 #include <SILC_Adapter.h>
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include <SILC_Compiler_Init.h>
 
 int test = 0;

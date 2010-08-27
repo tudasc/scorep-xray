@@ -16,20 +16,21 @@
 /**
  * @file       SILC_Mpi_Communicator.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Internal funcions for communicator, group and window management.
  */
 
-#include "SILC_Mpi_Communicator.h"
-#include "SILC_Error.h"
-#include "SILC_Debug.h"
-#include "SILC_Definitions.h"
-#include "SILC_DefinitionLocking.h"
-
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "SILC_Mpi_Communicator.h"
+#include "silc_utility/SILC_Error.h"
+#include "silc_utility/SILC_Debug.h"
+#include "SILC_Definitions.h"
+#include "SILC_DefinitionLocking.h"
 
 /*
  *-----------------------------------------------------------------------------

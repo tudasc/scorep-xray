@@ -18,15 +18,15 @@
  * @file       silc_mpi_enabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */
 
-
+#include <config.h>
 #include "silc_mpi.h"
 
-#include <SILC_Debug.h>
+#include <silc_utility/SILC_Debug.h>
 #include <silc_thread.h>
 #include <silc_definitions.h>
 #include <mpi.h>

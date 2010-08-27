@@ -27,7 +27,7 @@
  */
 
 
-#include <SILC_Allocator.h>
+#include <silc_utility/SILC_Allocator.h>
 #include <SILC_Profile.h>
 #include <SILC_Thread_Types.h>
 #include "silc_trace_thread_interaction.h"

@@ -18,7 +18,7 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * Contains a post-processing algorithm to substitute parameter nodes by
  * regular region nodes which have a regions name like '<parameter name>=<value>'
@@ -26,8 +26,9 @@
  * parameter based profiles.
  */
 
+#include <config.h>
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Definitions.h"
 #include "SILC_Types.h"
 

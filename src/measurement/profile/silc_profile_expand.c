@@ -18,7 +18,7 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * Contains implmentation for post-processing operations to expand thread start nodes.
  * In this first prost-processing step the nodes of type
@@ -27,8 +27,9 @@
  *
  */
 
+#include <config.h>
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 
 #include "silc_profile_definition.h"
 

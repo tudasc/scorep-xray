@@ -15,16 +15,18 @@
 
 
 /**
- * @ file SILC_compiler_pgi.c
- * @maintainer Rene Jaekel <rene.jaekel@tu-dresden.de>
+ * @status     alpha
+ * @file       SILC_compiler_pgi.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief provided support for PGI-compiler profiling for 7.x and 8.x compilers.
  * Note: The PGI9.x compiler version uses GNU instrument function methods to provide
  * function enter and exit events.
  */
 
+#include <config.h>
 #include <stdio.h>
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include <SILC_Events.h>
 #include <SILC_Definitions.h>
 #include <SILC_DefinitionLocking.h>

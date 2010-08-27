@@ -18,14 +18,15 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  * Implements a profile writer in Cube 4 format.
  */
 
+#include <config.h>
 #include <sys/stat.h>
 
 #include "SILC_Memory.h"
-#include "SILC_Utils.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Definitions.h"
 
 #include "silc_profile_definition.h"

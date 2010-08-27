@@ -22,7 +22,7 @@
 
 #include <config.h>
 #include <fstream>
-#include <SILC_Utils.h>
+#include <silc_utility/SILC_Utils.h>
 #include "SILC_Application.hpp"
 
 #define SILC_CONFIG_FILE_NAME "silc_config.dat"
