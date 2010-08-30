@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <malloc.h>
@@ -19,108 +20,152 @@
 
 /* forward declarations */
 
-int32_t test_ascii_write( char*    buffer,
-                          uint32_t wlen,
-                          uint32_t num );
-int32_t test_ascii_read( char*    buffer,
-                         uint32_t num );
-inline char* ascii_write_uint32( char*    p,
-                                 uint32_t value );
-inline char* ascii_write_uint64( char*    p,
-                                 uint64_t value );
-inline char* ascii_write_keyword( char* p,
-                                  char  keyword );
-inline char* ascii_write_newline( char* p );
-inline char* ascii_read_uint32( char*     p,
-                                uint32_t* value );
-inline char* ascii_read_uint64( char*     p,
-                                uint64_t* value );
-inline char* ascii_read_keyword( char* p,
-                                 char* value );
-inline char* ascii_read_newline( char* p );
+int32_t
+test_ascii_write( char*    buffer,
+                  uint32_t wlen,
+                  uint32_t num );
+int32_t
+test_ascii_read( char*    buffer,
+                 uint32_t num );
+inline char*
+ascii_write_uint32( char*    p,
+                    uint32_t value );
+inline char*
+ascii_write_uint64( char*    p,
+                    uint64_t value );
+inline char*
+ascii_write_keyword( char* p,
+                     char  keyword );
+inline char*
+ascii_write_newline( char* p );
+inline char*
+ascii_read_uint32( char*     p,
+                   uint32_t* value );
+inline char*
+ascii_read_uint64( char*     p,
+                   uint64_t* value );
+inline char*
+ascii_read_keyword( char* p,
+                    char* value );
+inline char*
+ascii_read_newline( char* p );
 
-int32_t test_binA_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num );
-int32_t test_binA_read( char*    buffer,
-                        uint32_t num );
-inline char* binA_write_uint8( char*   pos,
-                               uint8_t value );
-inline char* binA_write_uint32( char*    pos,
-                                uint32_t value );
-inline char* binA_write_uint64( char*    pos,
-                                uint64_t value );
-inline char* binA_read_uint8( char*    pos,
-                              uint8_t* value );
-inline char* binA_read_uint32( char*     pos,
-                               uint32_t* value );
-inline char* binA_read_uint64( char*     pos,
-                               uint64_t* value );
+int32_t
+test_binA_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num );
+int32_t
+test_binA_read( char*    buffer,
+                uint32_t num );
+inline char*
+binA_write_uint8( char*   pos,
+                  uint8_t value );
+inline char*
+binA_write_uint32( char*    pos,
+                   uint32_t value );
+inline char*
+binA_write_uint64( char*    pos,
+                   uint64_t value );
+inline char*
+binA_read_uint8( char*    pos,
+                 uint8_t* value );
+inline char*
+binA_read_uint32( char*     pos,
+                  uint32_t* value );
+inline char*
+binA_read_uint64( char*     pos,
+                  uint64_t* value );
 
-int32_t test_binB_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num );
-int32_t test_binB_read( char*    buffer,
-                        uint32_t num );
-inline char* binB_write_uint8( char*   pos,
-                               uint8_t value );
-inline char* binB_write_uint32( char*    pos,
-                                uint32_t value );
-inline char* binB_write_uint64( char*    pos,
-                                uint64_t value );
-inline char* binB_read_uint8( char*    pos,
-                              uint8_t* value );
-inline char* binB_read_uint32( char*     pos,
-                               uint32_t* value );
-inline char* binB_read_uint64( char*     pos,
-                               uint64_t* value );
+int32_t
+test_binB_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num );
+int32_t
+test_binB_read( char*    buffer,
+                uint32_t num );
+inline char*
+binB_write_uint8( char*   pos,
+                  uint8_t value );
+inline char*
+binB_write_uint32( char*    pos,
+                   uint32_t value );
+inline char*
+binB_write_uint64( char*    pos,
+                   uint64_t value );
+inline char*
+binB_read_uint8( char*    pos,
+                 uint8_t* value );
+inline char*
+binB_read_uint32( char*     pos,
+                  uint32_t* value );
+inline char*
+binB_read_uint64( char*     pos,
+                  uint64_t* value );
 
-int32_t test_binC_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num );
-int32_t test_binC_read( char*    buffer,
-                        uint32_t num );
-inline char* binC_write_uint8( char*   pos,
-                               uint8_t value );
-inline char* binC_write_uint32( char*    pos,
-                                uint32_t value );
-inline char* binC_write_uint64( char*    pos,
-                                uint64_t value );
-inline char* binC_read_uint8( char*    pos,
-                              uint8_t* value );
-inline char* binC_read_uint32( char*     pos,
-                               uint32_t* value );
-inline char* binC_read_uint64( char*     pos,
-                               uint64_t* value );
+int32_t
+test_binC_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num );
+int32_t
+test_binC_read( char*    buffer,
+                uint32_t num );
+inline char*
+binC_write_uint8( char*   pos,
+                  uint8_t value );
+inline char*
+binC_write_uint32( char*    pos,
+                   uint32_t value );
+inline char*
+binC_write_uint64( char*    pos,
+                   uint64_t value );
+inline char*
+binC_read_uint8( char*    pos,
+                 uint8_t* value );
+inline char*
+binC_read_uint32( char*     pos,
+                  uint32_t* value );
+inline char*
+binC_read_uint64( char*     pos,
+                  uint64_t* value );
 
-int32_t test_binD_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num );
-int32_t test_binD_read( char*    buffer,
-                        uint32_t num );
-inline char* binD_write_uint8( char*   pos,
-                               uint8_t value );
-inline char* binD_write_uint32( char*    pos,
-                                uint32_t value );
-inline char* binD_write_uint64( char*    pos,
-                                uint64_t value );
-inline char* binD_read_uint8( char*    pos,
-                              uint8_t* value );
-inline char* binD_read_uint32( char*     pos,
-                               uint32_t* value );
-inline char* binD_read_uint64( char*     pos,
-                               uint64_t* value );
+int32_t
+test_binD_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num );
+int32_t
+test_binD_read( char*    buffer,
+                uint32_t num );
+inline char*
+binD_write_uint8( char*   pos,
+                  uint8_t value );
+inline char*
+binD_write_uint32( char*    pos,
+                   uint32_t value );
+inline char*
+binD_write_uint64( char*    pos,
+                   uint64_t value );
+inline char*
+binD_read_uint8( char*    pos,
+                 uint8_t* value );
+inline char*
+binD_read_uint32( char*     pos,
+                  uint32_t* value );
+inline char*
+binD_read_uint64( char*     pos,
+                  uint64_t* value );
 
-int call_record( char     keyword,
-                 uint64_t timestamp,
-                 uint32_t region_id );
+int
+call_record( char     keyword,
+             uint64_t timestamp,
+             uint32_t region_id );
 
 uint64_t timestamp_check = 0;
 
 /* main */
 
-int main( int          argc,
-          const char** args )
+int
+main( int          argc,
+      const char** args )
 {
     printf( "test encoding\n" );
 
@@ -492,9 +537,10 @@ int main( int          argc,
 /* ASCII encoding with one record per line,
    with hex numbers and without leading zeros. */
 
-int32_t test_ascii_write( char*    buffer,
-                          uint32_t wlen,
-                          uint32_t num )
+int32_t
+test_ascii_write( char*    buffer,
+                  uint32_t wlen,
+                  uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -523,11 +569,12 @@ int32_t test_ascii_write( char*    buffer,
 
 
 /* write uint32_t as ascii hexadecimal */
-inline char* ascii_write_uint32( char*    p,
-                                 uint32_t value )
+inline char*
+ascii_write_uint32( char*    p,
+                    uint32_t value )
 {
-    static char dig[ 16 ] = {    '0', '1', '2', '3', '4', '5', '6', '7',
-                                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+    static char dig[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                              '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
     int         s = 28;
     uint32_t    v = 0;
@@ -557,8 +604,9 @@ inline char* ascii_write_uint32( char*    p,
 
 
 /* write uint64_t as ascii hexadecimal */
-inline char* ascii_write_uint64( char*    p,
-                                 uint64_t value )
+inline char*
+ascii_write_uint64( char*    p,
+                    uint64_t value )
 {
     static char dig[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
                               '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -591,8 +639,9 @@ inline char* ascii_write_uint64( char*    p,
 
 
 /* write keyword as ascii char */
-inline char* ascii_write_keyword( char* p,
-                                  char  keyword )
+inline char*
+ascii_write_keyword( char* p,
+                     char  keyword )
 {
     *p = keyword;
     return p + 1;
@@ -600,7 +649,8 @@ inline char* ascii_write_keyword( char* p,
 
 
 /* write newline as ascii char */
-inline char* ascii_write_newline( char* p )
+inline char*
+ascii_write_newline( char* p )
 {
     *p = '\n';
     return p + 1;
@@ -611,8 +661,9 @@ inline char* ascii_write_newline( char* p )
 /* ASCII decoding from one record per line,
    with hex numbers and without leading zeros. */
 
-int32_t test_ascii_read( char*    buffer,
-                         uint32_t num )
+int32_t
+test_ascii_read( char*    buffer,
+                 uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -639,8 +690,9 @@ int32_t test_ascii_read( char*    buffer,
 
 
 /* rebuild uint32_t from hexadecimal values */
-inline char* ascii_read_uint32( char*     p,
-                                uint32_t* value )
+inline char*
+ascii_read_uint32( char*     p,
+                   uint32_t* value )
 {
     uint32_t v = 0;
 
@@ -666,8 +718,9 @@ inline char* ascii_read_uint32( char*     p,
 
 
 /* rebuild uint64_t from hexadecimal values */
-inline char* ascii_read_uint64( char*     p,
-                                uint64_t* value )
+inline char*
+ascii_read_uint64( char*     p,
+                   uint64_t* value )
 {
     uint64_t v = 0;
 
@@ -693,8 +746,9 @@ inline char* ascii_read_uint64( char*     p,
 
 
 /* read keyword */
-inline char* ascii_read_keyword( char* p,
-                                 char* value )
+inline char*
+ascii_read_keyword( char* p,
+                    char* value )
 {
     *value = *p;
     return p + 1;
@@ -702,7 +756,8 @@ inline char* ascii_read_keyword( char* p,
 
 
 /* skip newline */
-inline char* ascii_read_newline( char* p )
+inline char*
+ascii_read_newline( char* p )
 {
     return p + 1;
 }
@@ -714,9 +769,10 @@ inline char* ascii_read_newline( char* p )
    Note that writing  in little endian order (on little endian platform)
    improves zlib compression notably! */
 
-int32_t test_binA_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num )
+int32_t
+test_binA_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -746,8 +802,9 @@ int32_t test_binA_write( char*    buffer,
 
 
 /* write uint8_t */
-inline char* binA_write_uint8( char*   pos,
-                               uint8_t value )
+inline char*
+binA_write_uint8( char*   pos,
+                  uint8_t value )
 {
     *pos = value;
     return pos + 1;
@@ -755,8 +812,9 @@ inline char* binA_write_uint8( char*   pos,
 
 
 /* write uint32_t */
-inline char* binA_write_uint32( char*    pos,
-                                uint32_t value )
+inline char*
+binA_write_uint32( char*    pos,
+                   uint32_t value )
 {
     /* little endian ordering */
     /* endian-safe and alignment independent */
@@ -773,8 +831,9 @@ inline char* binA_write_uint32( char*    pos,
 
 
 /* write uint64_t */
-inline char* binA_write_uint64( char*    pos,
-                                uint64_t value )
+inline char*
+binA_write_uint64( char*    pos,
+                   uint64_t value )
 {
     /* little endian ordering */
     /* endian-safe and alignment independent */
@@ -799,8 +858,9 @@ inline char* binA_write_uint64( char*    pos,
    Note that writing  in little endian order (on little endian platform)
    improves zlib compression notably! */
 
-int32_t test_binA_read( char*    buffer,
-                        uint32_t num )
+int32_t
+test_binA_read( char*    buffer,
+                uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -827,8 +887,9 @@ int32_t test_binA_read( char*    buffer,
 
 
 /* read uint8_t */
-inline char* binA_read_uint8( char*    pos,
-                              uint8_t* value )
+inline char*
+binA_read_uint8( char*    pos,
+                 uint8_t* value )
 {
     *value = *pos;
     return pos + 1;
@@ -837,8 +898,9 @@ inline char* binA_read_uint8( char*    pos,
 
 /* read uint32_t */
 /* little endian ordering */
-inline char* binA_read_uint32( char*     pos,
-                               uint32_t* value )
+inline char*
+binA_read_uint32( char*     pos,
+                  uint32_t* value )
 {
     uint8_t  i;
     uint32_t v = 0;
@@ -858,8 +920,9 @@ inline char* binA_read_uint32( char*     pos,
 
 /* read uint64_t */
 /* little endian ordering */
-inline char* binA_read_uint64( char*     pos,
-                               uint64_t* value )
+inline char*
+binA_read_uint64( char*     pos,
+                  uint64_t* value )
 {
     uint8_t  i;
     uint64_t v = 0;
@@ -890,9 +953,10 @@ inline char* binA_read_uint64( char*     pos,
    This result is exactly the same result as the previous variant,
    but is restricted to platform endianess. */
 
-int32_t test_binB_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num )
+int32_t
+test_binB_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -922,8 +986,9 @@ int32_t test_binB_write( char*    buffer,
 
 
 /* write uint8_t */
-inline char* binB_write_uint8( char*   pos,
-                               uint8_t value )
+inline char*
+binB_write_uint8( char*   pos,
+                  uint8_t value )
 {
     memcpy( pos, &value, 1 );
     return pos + 1;
@@ -931,8 +996,9 @@ inline char* binB_write_uint8( char*   pos,
 
 
 /* write uint32_t */
-inline char* binB_write_uint32( char*    pos,
-                                uint32_t value )
+inline char*
+binB_write_uint32( char*    pos,
+                   uint32_t value )
 {
     memcpy( pos, &value, 4 );
     return pos + 4;
@@ -940,8 +1006,9 @@ inline char* binB_write_uint32( char*    pos,
 
 
 /* write uint64_t */
-inline char* binB_write_uint64( char*    pos,
-                                uint64_t value )
+inline char*
+binB_write_uint64( char*    pos,
+                   uint64_t value )
 {
     memcpy( pos, &value, 8 );
     return pos + 8;
@@ -953,8 +1020,9 @@ inline char* binB_write_uint64( char*    pos,
    This result is exactly the same result as the previous variant,
    but is restricted to platform endianess. */
 
-int32_t test_binB_read( char*    buffer,
-                        uint32_t num )
+int32_t
+test_binB_read( char*    buffer,
+                uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -981,8 +1049,9 @@ int32_t test_binB_read( char*    buffer,
 
 
 /* read uint8_t */
-inline char* binB_read_uint8( char*    pos,
-                              uint8_t* value )
+inline char*
+binB_read_uint8( char*    pos,
+                 uint8_t* value )
 {
     memcpy( &value, pos, 1 );
     return pos + 1;
@@ -990,8 +1059,9 @@ inline char* binB_read_uint8( char*    pos,
 
 
 /* read uint32_t */
-inline char* binB_read_uint32( char*     pos,
-                               uint32_t* value )
+inline char*
+binB_read_uint32( char*     pos,
+                  uint32_t* value )
 {
     memcpy( &value, pos, 4 );
     return pos + 4;
@@ -999,8 +1069,9 @@ inline char* binB_read_uint32( char*     pos,
 
 
 /* read uint64_t */
-inline char* binB_read_uint64( char*     pos,
-                               uint64_t* value )
+inline char*
+binB_read_uint64( char*     pos,
+                  uint64_t* value )
 {
     memcpy( &value, pos, 8 );
     return pos + 8;
@@ -1013,9 +1084,10 @@ inline char* binB_read_uint64( char*     pos,
    is written as one byte, then the lower bytes are  written leaving all higher zero bytes.
    It uses the byte­wise writing and the same little  endian byte order as variant bin A. */
 
-int32_t test_binC_write( char*    buffer,
-                         uint32_t wlen,
-                         uint32_t num )
+int32_t
+test_binC_write( char*    buffer,
+                 uint32_t wlen,
+                 uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -1045,8 +1117,9 @@ int32_t test_binC_write( char*    buffer,
 }
 
 /* write uint8_t */
-inline char* binC_write_uint8( char*   pos,
-                               uint8_t value )
+inline char*
+binC_write_uint8( char*   pos,
+                  uint8_t value )
 {
     *pos = value;
     return pos + 1;
@@ -1054,8 +1127,9 @@ inline char* binC_write_uint8( char*   pos,
 
 
 /* write uint32_t with size byte and without leading zeros */
-inline char* binC_write_uint32( char*    pos,
-                                uint32_t value )
+inline char*
+binC_write_uint32( char*    pos,
+                   uint32_t value )
 {
     if ( 0x100 > value )
     {
@@ -1103,8 +1177,9 @@ inline char* binC_write_uint32( char*    pos,
 
 
 /* write uint64_t with size byte and without leading zeros */
-inline char* binC_write_uint64( char*    pos,
-                                uint64_t value )
+inline char*
+binC_write_uint64( char*    pos,
+                   uint64_t value )
 {
     if ( 0x100 > value )
     {
@@ -1215,8 +1290,9 @@ inline char* binC_write_uint64( char*    pos,
    is written as one byte, then the lower bytes are  written leaving all higher zero bytes.
    It uses the byte­wise writing and the same little  endian byte order as variant bin A. */
 
-int32_t test_binC_read( char*    buffer,
-                        uint32_t num )
+int32_t
+test_binC_read( char*    buffer,
+                uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -1242,8 +1318,9 @@ int32_t test_binC_read( char*    buffer,
 }
 
 /* read uint8_t */
-inline char* binC_read_uint8( char*    pos,
-                              uint8_t* value )
+inline char*
+binC_read_uint8( char*    pos,
+                 uint8_t* value )
 {
     *value = *pos;
     return pos + 1;
@@ -1251,8 +1328,9 @@ inline char* binC_read_uint8( char*    pos,
 
 
 /* read uint32_t using size byte */
-inline char* binC_read_uint32( char*     pos,
-                               uint32_t* value )
+inline char*
+binC_read_uint32( char*     pos,
+                  uint32_t* value )
 {
     uint32_t v;
     uint8_t  i, len = *pos;
@@ -1293,8 +1371,9 @@ inline char* binC_read_uint32( char*     pos,
 
 
 /* read uint64_t using size byte */
-inline char* binC_read_uint64( char*     pos,
-                               uint64_t* value )
+inline char*
+binC_read_uint64( char*     pos,
+                  uint64_t* value )
 {
     uint64_t v;
     uint8_t  i, len = *pos;
@@ -1398,9 +1477,10 @@ inline char* binC_read_uint64( char*     pos,
 /* use 7 bits per byte for the value. if the most significant bit is set,
    then another byte needs to be added, otherwise the end of the number is reached */
 
-int32_t test_binD_write( char*    buffer,
-                         uint32_t len,
-                         uint32_t num )
+int32_t
+test_binD_write( char*    buffer,
+                 uint32_t len,
+                 uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -1430,16 +1510,18 @@ int32_t test_binD_write( char*    buffer,
 }
 
 
-inline char* binD_write_uint8( char*   pos,
-                               uint8_t value )
+inline char*
+binD_write_uint8( char*   pos,
+                  uint8_t value )
 {
     *pos = value;
     return pos + 1;
 }
 
 
-inline char* binD_write_uint32( char*    pos,
-                                uint32_t value )
+inline char*
+binD_write_uint32( char*    pos,
+                   uint32_t value )
 {
     /* use 7 bits per byte for the value. if the most significant bit is set,
        then another byte needs to be added, otherwise the end of the number is reached */
@@ -1463,8 +1545,9 @@ inline char* binD_write_uint32( char*    pos,
 }
 
 
-inline char* binD_write_uint64( char*    pos,
-                                uint64_t value )
+inline char*
+binD_write_uint64( char*    pos,
+                   uint64_t value )
 {
     /* use 7 bits per byte for the value. if the most significant bit is set,
        then another byte needs to be added, otherwise the end of the number is reached */
@@ -1492,8 +1575,9 @@ inline char* binD_write_uint64( char*    pos,
 /* use 7 bits per byte for the value. if the most significant bit is set,
    then another byte needs to be added, otherwise the end of the number is reached */
 
-int32_t test_binD_read( char*    buffer,
-                        uint32_t num )
+int32_t
+test_binD_read( char*    buffer,
+                uint32_t num )
 {
     uint32_t i;
     char*    pos = buffer;
@@ -1520,8 +1604,9 @@ int32_t test_binD_read( char*    buffer,
 
 
 /* read uint8_t like above versions */
-inline char* binD_read_uint8( char*    pos,
-                              uint8_t* value )
+inline char*
+binD_read_uint8( char*    pos,
+                 uint8_t* value )
 {
     *value = *pos;
     return pos + 1;
@@ -1529,8 +1614,9 @@ inline char* binD_read_uint8( char*    pos,
 
 
 /* rebuilt uint32_t from 7bit values using most significant bit */
-inline char* binD_read_uint32( char*     pos,
-                               uint32_t* value )
+inline char*
+binD_read_uint32( char*     pos,
+                  uint32_t* value )
 {
     uint32_t v = 0, w = 0;
     uint8_t  goon, i = 0;
@@ -1552,8 +1638,9 @@ inline char* binD_read_uint32( char*     pos,
 
 
 /* rebuilt uint64_t from 7bit values using most significant bit */
-inline char* binD_read_uint64( char*     pos,
-                               uint64_t* value )
+inline char*
+binD_read_uint64( char*     pos,
+                  uint64_t* value )
 {
     uint64_t v = 0, w = 0;
     uint8_t  goon, i = 0;
@@ -1575,9 +1662,10 @@ inline char* binD_read_uint64( char*     pos,
 
 
 /* record read call */
-int call_record( char     keyword,
-                 uint64_t timestamp,
-                 uint32_t region_id )
+int
+call_record( char     keyword,
+             uint64_t timestamp,
+             uint32_t region_id )
 {
     if ( timestamp_check != timestamp )
     {
