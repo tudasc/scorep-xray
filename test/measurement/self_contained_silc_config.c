@@ -25,6 +25,8 @@
  */
 
 
+#include <config.h>
+
 #include <SILC_Config.h>
 
 int

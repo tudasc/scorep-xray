@@ -22,6 +22,8 @@
  * @brief Output handlers for template variables in MPI wrappers.
  */
 
+#include <config.h>
+
 #include <string>
 using std::string;
 #include "SILC_Wrapgen_Func.h"

@@ -24,6 +24,8 @@
  */
 
 
+#include <config.h>
+
 #include "silc_trace_thread_interaction.h"
 
 #include <SILC_Memory.h>

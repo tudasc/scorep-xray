@@ -26,6 +26,8 @@
  */
 
 
+#include <config.h>
+
 #include <SILC_DefinitionLocking.h>
 #include <silc_definition_locking.h>
 

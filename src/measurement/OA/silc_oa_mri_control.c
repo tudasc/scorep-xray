@@ -21,6 +21,8 @@
  */
 
 
+#include <config.h>
+
 #include "silc_oa_mri_control.h"
 #include "silc_oa_connection.h"
 #include "scanner.h"

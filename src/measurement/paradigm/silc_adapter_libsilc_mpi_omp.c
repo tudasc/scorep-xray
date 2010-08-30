@@ -23,6 +23,8 @@
  */
 
 
+#include <config.h>
+
 #include <silc_adapter.h>
 
 #include <SILC_Compiler_Init.h>

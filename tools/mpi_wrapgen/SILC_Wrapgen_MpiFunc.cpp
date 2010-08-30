@@ -22,14 +22,18 @@
  * @brief Class representing MPI function prototypes.
  */
 
+#include <config.h>
+
 #include <string>
 #include "SILC_Wrapgen_Util.h"
 #include "SILC_Wrapgen_MpiFunc.h"
 using namespace SILC::Wrapgen;
 
-SILC::Wrapgen::MPIFunc::MPIFunc( const string& rtype, const string& name,
-                                 const string& group, const string& guard,
-                                 const string& version,
+SILC::Wrapgen::MPIFunc::MPIFunc( const string&      rtype,
+                                 const string&      name,
+                                 const string&      group,
+                                 const string&      guard,
+                                 const string&      version,
                                  const paramlist_t& params ) :
     Func( rtype, name, group, guard, params ), m_scnt( "0" ), m_rcnt( "0" ),
     m_version( string2int( version ) )

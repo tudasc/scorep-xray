@@ -19,6 +19,8 @@
  * Output : u(n,m) - Solution
  *****************************************************************
  */
+#include <config.h>
+
 #include <cmath>
 #include <cstdlib>
 #include <iostream>

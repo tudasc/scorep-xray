@@ -24,6 +24,8 @@
 
 #define __STDC_LIMIT_MACROS
 
+#include <config.h>
+
 #include <vector>
 #include <map>
 #include <string>

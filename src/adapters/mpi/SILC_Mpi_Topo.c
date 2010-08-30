@@ -14,6 +14,8 @@
  */
 
 
+#include <config.h>
+
 #include "SILC_Mpi.h"
 #include "SILC_DefinitionLocking.h"
 #include "config.h"

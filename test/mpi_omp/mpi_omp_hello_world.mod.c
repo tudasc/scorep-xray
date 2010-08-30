@@ -3,6 +3,8 @@
 #endif
 #define _POMP 200110
 
+#include <config.h>
+
 #include "mpi_omp_hello_world.c.opari.inc"
 #line 1 "mpi_omp_hello_world.c"
 /*

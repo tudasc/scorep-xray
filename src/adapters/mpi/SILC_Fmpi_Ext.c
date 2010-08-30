@@ -24,6 +24,8 @@
  * @brief Fortran interface wrappers for external interface functions
  */
 
+#include <config.h>
+
 #include "SILC_Fmpi.h"
 #include "config.h"
 

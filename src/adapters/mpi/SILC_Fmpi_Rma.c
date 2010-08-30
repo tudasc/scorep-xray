@@ -24,6 +24,8 @@
  * @brief Fortran interface wrappers for one-sided communication
  */
 
+#include <config.h>
+
 #include "SILC_Fmpi.h"
 #include "config.h"
 

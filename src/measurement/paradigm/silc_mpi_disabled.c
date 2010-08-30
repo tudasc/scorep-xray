@@ -24,6 +24,8 @@
  */
 
 
+#include <config.h>
+
 #include "silc_mpi.h"
 
 #include <silc_thread.h>

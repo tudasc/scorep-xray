@@ -27,6 +27,8 @@
 /* *INDENT-ON*  */
 
 
+#include <config.h>
+
 #include <stddef.h>
 
 extern void

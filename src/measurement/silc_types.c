@@ -24,6 +24,8 @@
  */
 
 
+#include <config.h>
+
 #include "silc_types.h"
 #include "silc_definition_structs.h"
 #include "silc_definition_handles.h"

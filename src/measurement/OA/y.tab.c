@@ -115,6 +115,8 @@ enum yytokentype
 #line 6 "yacc.l"
 
 
+#include <config.h>
+
 #include "silc_oa_mri_control.h"
 #include "silc_oa_connection.h"
 #include "SILC_OA_Init.h"

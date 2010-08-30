@@ -21,6 +21,8 @@
  *
  * @brief Wrapper generator for automatic creation of MPI wrappers
  */
+#include <config.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>

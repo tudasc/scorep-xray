@@ -22,6 +22,8 @@
  * Writes the definitions to Cube 4.
  */
 
+#include <config.h>
+
 #include "SILC_Memory.h"
 #include "SILC_Definitions.h"
 

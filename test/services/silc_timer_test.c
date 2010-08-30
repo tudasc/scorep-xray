@@ -24,6 +24,8 @@
  * gettimeofday timer.
  */
 
+#include <config.h>
+
 #include <SILC_Timing.h>
 
 #include <assert.h>

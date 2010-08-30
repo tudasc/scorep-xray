@@ -23,6 +23,8 @@
  *
  */
 
+#include <config.h>
+
 #include <SILC_PublicTypes.h>
 
 int

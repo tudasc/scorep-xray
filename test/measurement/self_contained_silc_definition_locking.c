@@ -24,6 +24,8 @@
  */
 
 
+#include <config.h>
+
 #include <SILC_DefinitionLocking.h>
 
 int

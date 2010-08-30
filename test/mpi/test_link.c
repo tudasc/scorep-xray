@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <SILC_RuntimeManagement.h>
 
 int

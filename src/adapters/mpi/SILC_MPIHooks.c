@@ -24,6 +24,8 @@
  *
  */
 
+#include <config.h>
+
 #include "SILC_MPIHooks.h"
 
 #include "silc_mpiprofile.h"

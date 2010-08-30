@@ -23,6 +23,8 @@
  */
 
 
+#include <config.h>
+
 #include <vector>
 using std::vector;
 #include <string>

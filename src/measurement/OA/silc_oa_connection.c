@@ -21,6 +21,8 @@
  */
 
 
+#include <config.h>
+
 #include "SILC_Error.h"
 #include "silc_oa_connection.h"
 #include "silc_oa_sockets.h"

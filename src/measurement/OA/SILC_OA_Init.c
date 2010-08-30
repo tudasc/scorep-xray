@@ -21,6 +21,8 @@
  */
 
 
+#include <config.h>
+
 #include "SILC_Error.h"
 #include "SILC_Types.h"
 #include "SILC_OA_Init.h"

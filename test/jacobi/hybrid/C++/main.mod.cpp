@@ -3,6 +3,8 @@
 #endif
 #define _POMP 200110
 
+#include <config.h>
+
 #include "main.cpp.opari.inc"
 #line 1 "main.cpp"
 /* *INDENT-OFF* */

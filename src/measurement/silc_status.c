@@ -23,6 +23,8 @@
  */
 
 
+#include <config.h>
+
 #include "silc_status.h"
 #include "silc_mpi.h"
 #include <SILC_Config.h>

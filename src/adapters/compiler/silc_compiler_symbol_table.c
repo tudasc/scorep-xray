@@ -42,7 +42,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <config.h>
+
 
 #ifdef HAVE_LIBBFD
 #include <bfd.h>

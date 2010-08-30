@@ -24,6 +24,8 @@
  */
 
 
+#include <config.h>
+
 #include <SILC_Thread_Types.h>
 
 int

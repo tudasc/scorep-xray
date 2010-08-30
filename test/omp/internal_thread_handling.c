@@ -23,6 +23,8 @@
  */
 
 
+#include <config.h>
+
 #include <stdio.h>
 #include <inttypes.h>
 #include "omp_test.c.opari.inc"

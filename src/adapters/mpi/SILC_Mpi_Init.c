@@ -22,6 +22,8 @@
  * @brief Contains the initialization function implementations for the measurement system.
  */
 
+#include <config.h>
+
 #include "SILC_Mpi_Init.h"
 #include "SILC_Mpi_Reg.h"
 #include "SILC_Config.h"

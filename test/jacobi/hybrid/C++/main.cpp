@@ -1,4 +1,6 @@
 /* *INDENT-OFF* */
+#include <config.h>
+
 #include <mpi.h>
 #include <cmath>
 #include <iostream>

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include "SILC_User.h"
 
 SILC_USER_METRIC_GROUP_EXTERNAL( globalGroup )

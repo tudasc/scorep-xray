@@ -22,6 +22,8 @@
  * @brief Generates a prototype xml file from a header file.
  */
 
+#include <config.h>
+
 #include "SILC_Wrapgen_Func.h"
 
 #include <string>
@@ -240,7 +242,8 @@ main( int   argc,
     }
 
     // Open file
-    ifstream file( argv[ 1 ] );
+    ifstream
+    file( argv[ 1 ] );
     if ( !file.is_open() )
     {
         cout << "Could not open " << argv[ 1 ] << endl;

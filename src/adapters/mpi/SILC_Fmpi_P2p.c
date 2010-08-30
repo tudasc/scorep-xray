@@ -24,6 +24,8 @@
  * @brief Fortran interface wrappers for point-to-point communication
  */
 
+#include <config.h>
+
 #include "SILC_Fmpi.h"
 #include "config.h"
 

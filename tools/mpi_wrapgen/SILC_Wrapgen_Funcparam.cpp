@@ -22,13 +22,17 @@
  * @brief Class representing MPI function parameters
  */
 
+#include <config.h>
+
 #include <string>
 using std::string;
 #include "SILC_Wrapgen_Funcparam.h"
 using namespace SILC::Wrapgen;
 
-SILC::Wrapgen::Funcparam::Funcparam( const string& type, const string& name,
-                                     const string& suffix, char atype ) :
+SILC::Wrapgen::Funcparam::Funcparam( const string& type,
+                                     const string& name,
+                                     const string& suffix,
+                                     char          atype ) :
     m_type( type ), m_name( name ), m_suffix( suffix )
 {
     switch ( atype )

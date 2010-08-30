@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include "SILC_User.h"
 
 #include "user_test_baz.c.inc"

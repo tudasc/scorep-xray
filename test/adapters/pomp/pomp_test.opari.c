@@ -3,6 +3,8 @@
 #endif
 #define _POMP 200110
 
+#include <config.h>
+
 #include "pomp_test.c.opari.inc"
 #line 1 "pomp_test.c"
 

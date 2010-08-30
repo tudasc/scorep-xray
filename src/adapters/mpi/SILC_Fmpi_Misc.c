@@ -25,6 +25,8 @@
  *        functions
  */
 
+#include <config.h>
+
 #include "SILC_Fmpi.h"
 #include "config.h"
 

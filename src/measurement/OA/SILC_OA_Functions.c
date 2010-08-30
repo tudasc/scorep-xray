@@ -20,6 +20,8 @@
     This file contains the implementation of Online Access Phase functions
  */
 
+#include <config.h>
+
 #include "SILC_OA_Functions.h"
 #include "SILC_OA_Init.h"
 #include "SILC_Error.h"

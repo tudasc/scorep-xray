@@ -3,6 +3,8 @@
 #endif
 #define _POMP 200110
 
+#include <config.h>
+
 #include "jacobi.c.opari.inc"
 #line 1 "jacobi.c"
 /*

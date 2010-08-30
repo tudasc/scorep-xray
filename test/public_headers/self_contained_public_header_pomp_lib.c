@@ -25,6 +25,8 @@
  */
 
 
+#include <config.h>
+
 #include <pomp_lib.h>
 
 
