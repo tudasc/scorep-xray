@@ -66,7 +66,8 @@ self_contained_silc_types_c_CPPFLAGS = $(self_contained_cppflags)
 
 definitions_test_c_SOURCES = $(SRC_ROOT)test/measurement/definitions_test.c \
                              $(SRC_ROOT)vendor/cutest/CuTest.c
-definitions_test_c_CPPFLAGS = -I$(INC_ROOT)vendor/cutest \
+definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
+                              -I$(INC_ROOT)vendor/cutest \
                               -I$(INC_ROOT)src/measurement \
                               -I$(INC_ROOT)src/measurement/include \
                               -I$(INC_ROOT)include/silc \
