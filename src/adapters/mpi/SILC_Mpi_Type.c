@@ -14,19 +14,17 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Mpi.h"
-#include "config.h"
-
 /**
  * @file       SILC_Mpi_Type.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for datatype functions
  */
+
+#include <config.h>
+#include "SILC_Mpi.h"
 
 /**
  * @name C wrappers for general functions

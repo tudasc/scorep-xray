@@ -18,16 +18,14 @@
 /**
  * @file  SILC_Fmpi_Io.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for parallel I/O
  */
 
 #include <config.h>
-
 #include "SILC_Fmpi.h"
-#include "config.h"
 
 /* lowercase defines */
 /** @def MPI_File_close_L

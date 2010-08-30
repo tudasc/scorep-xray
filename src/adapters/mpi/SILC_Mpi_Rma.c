@@ -14,19 +14,17 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Mpi.h"
-#include "config.h"
-
 /**
  * @file  SILC_Mpi_Rma.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for one-sided communication
  */
+
+#include <config.h>
+#include "SILC_Mpi.h"
 
 /** internal id counter for rma operations */
 static int silc_rma_id = 0;

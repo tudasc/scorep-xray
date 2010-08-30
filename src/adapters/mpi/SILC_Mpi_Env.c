@@ -14,23 +14,21 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Mpi.h"
-#include "config.h"
-
-#if defined( SILC_WITH_OA )
-#include <SILC_OA_Init.h>
-#endif
-
 /**
  * @file       SILC_Mpi_Env.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for environmental management.
  */
+
+#include <config.h>
+#include "SILC_Mpi.h"
+
+#if defined( SILC_WITH_OA )
+#include <SILC_OA_Init.h>
+#endif
 
 /** Flag set if the measurement sysem was already opened by another adapter.
     If the measurement system is not already initilized, it is assumed that

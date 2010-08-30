@@ -18,16 +18,14 @@
 /**
  * @file  SILC_Fmpi_P2p.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for point-to-point communication
  */
 
 #include <config.h>
-
 #include "SILC_Fmpi.h"
-#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Bsend_U

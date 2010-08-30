@@ -17,7 +17,7 @@
 /**
  * @file  SILC_Mpiwrap_Reg.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Registration of MPI functions

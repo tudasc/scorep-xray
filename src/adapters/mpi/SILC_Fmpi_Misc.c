@@ -18,7 +18,7 @@
 /**
  * @file  SILC_Fmpi_Misc.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for miscelaneous and handler conversion
@@ -26,9 +26,7 @@
  */
 
 #include <config.h>
-
 #include "SILC_Fmpi.h"
-#include "config.h"
 
 /* uppercase defines */
 /** @def MPI_Address_U

@@ -14,19 +14,17 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Fmpi.h"
-#include "config.h"
-
 /**
  * @file       SILC_Fmpi_Type.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for datatype functions
  */
+
+#include <config.h>
+#include "SILC_Fmpi.h"
 
 /* uppercase defines */
 /** @def MPI_Sizeof_U

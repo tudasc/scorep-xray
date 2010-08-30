@@ -14,19 +14,17 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Fmpi.h"
-#include "config.h"
-
 /**
  * @file       SILC_Fmpi_Topo.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for topologies
  */
+
+#include <config.h>
+#include "SILC_Fmpi.h"
 
 /* uppercase defines */
 /** @def MPI_Cart_coords_U

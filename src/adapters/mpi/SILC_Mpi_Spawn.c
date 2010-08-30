@@ -14,20 +14,18 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Mpi.h"
-#include "config.h"
-
 /**
  * @file       SILC_Mpi_Spawn.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for process creation and management
  *        functions (spawning interface)
  */
+
+#include <config.h>
+#include "SILC_Mpi.h"
 
 /**
  * @name C wrappers

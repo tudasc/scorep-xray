@@ -17,21 +17,19 @@
 /**
  * @file SILC_Mpi_Reg.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Registration of MPI regions
  */
 
 #include <config.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
 #include "SILC_Mpi.h"
-#include "config.h"
 
 #define SILC_REGION_MPI SILC_REGION_FUNCTION
 

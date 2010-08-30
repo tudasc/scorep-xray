@@ -14,19 +14,17 @@
  */
 
 
-#include <config.h>
-
-#include "SILC_Fmpi.h"
-#include "config.h"
-
 /**
  * @file       SILC_Fmpi_Cg.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for communicator and group functions
  */
+
+#include <config.h>
+#include "SILC_Fmpi.h"
 
 /**
  * @name Uppercase names
