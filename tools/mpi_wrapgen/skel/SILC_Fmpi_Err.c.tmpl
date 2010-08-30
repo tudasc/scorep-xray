@@ -1,14 +1,14 @@
-#include "SILC_Fmpi.h"
-#include "config.h"
-
 /**
  * @file  SILC_Fmpi_Err.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
+ * @status     alpha
  * @ingroup    MPI_Wrapper
  * 
  * @brief Fortran interface wrappers for error handling
  */
+
+#include <config.h>
+#include "SILC_Fmpi.h"
 
 /* uppercase defines */
 #pragma wrapgen multiple restrict(gerr) skel/SILC_Fmpi_DefineU.w

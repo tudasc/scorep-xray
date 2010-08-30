@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------------
 
 CXX             = g++
-CFLAGS          = -g `xml2-config --cflags`
-CXXFLAGS        = -g `xml2-config --cflags`
+CFLAGS          = -g `xml2-config --cflags` -I.
+CXXFLAGS        = -g `xml2-config --cflags` -I.
 LIBS            = `xml2-config --libs`
 
 WRAPGEN         = ./wrapgen

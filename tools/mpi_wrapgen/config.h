@@ -1,0 +1,2 @@
+/* Do nothing here. Exists just as workaround for the post commit hook of
+   the svn */
