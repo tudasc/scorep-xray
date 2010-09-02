@@ -11,8 +11,8 @@
  *
  * See the COPYING file in the package base directory for details.
  *
-
  */
+
 /**
  * @file       SILC_Wrapgen_HeaderParser.cpp
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>

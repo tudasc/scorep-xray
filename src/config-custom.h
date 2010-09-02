@@ -1,6 +1,3 @@
-#ifndef CONFIG_CUSTOM_H
-#define CONFIG_CUSTOM_H
-
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -15,6 +12,10 @@
  * See the COPYING file in the package base directory for details.
  *
  */
+
+#ifndef CONFIG_CUSTOM_H
+#define CONFIG_CUSTOM_H
+
 
 /**
  * @file       config-custom.h

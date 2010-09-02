@@ -1,6 +1,3 @@
-#ifndef SILC_INTERNAL_DEFINITIONS_H
-#define SILC_INTERNAL_DEFINITIONS_H
-
 /*
  * This file is part of the SILC project (http://www.silc.de)
  *
@@ -15,6 +12,10 @@
  * See the COPYING file in the package base directory for details.
  *
  */
+
+#ifndef SILC_INTERNAL_DEFINITIONS_H
+#define SILC_INTERNAL_DEFINITIONS_H
+
 
 /**
  * @file       silc_definitions.h

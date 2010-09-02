@@ -12,6 +12,7 @@
  * See the COPYING file in the package base directory for details.
  *
  */
+
 #ifndef SILC_DEFINITION_CUBE4_H
 #define SILC_DEFINITION_CUBE4_H
 

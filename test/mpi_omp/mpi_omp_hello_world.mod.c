@@ -1,3 +1,18 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
 #ifdef _POMP
 #  undef _POMP
 #endif
@@ -7,20 +22,6 @@
 
 #include "mpi_omp_hello_world.c.opari.inc"
 #line 1 "mpi_omp_hello_world.c"
-/*
- * This file is part of the SILC project (http://www.silc.de)
- *
- * Copyright (c) 2009-2011,
- *    RWTH Aachen, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    Technische Universitaet Muenchen, Germany
- *
- * See the COPYING file in the package base directory for details.
- *
- */
 
 
 /**
