@@ -224,8 +224,14 @@ double precision function get_wtime()
     use omp_lib
     get_wtime = omp_get_wtime()
 #else
-    real, dimension(2) :: tarray
-    get_wtime = dtime(tarray)
+    integer :: count, cycle
+    real :: fcount, fcycle
+    call system_clock(count, cycle)
+    fcount = count
+    fcycle = cycle
+    get_wtime = fcount / fcycle
+!    real, dimension(2) :: tarray
+!    get_wtime = dtime(tarray)
 #endif    
     return
 end function get_wtime
