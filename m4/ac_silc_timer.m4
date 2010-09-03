@@ -29,7 +29,8 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <common/bgp_personality.h>
     Kernel_GetPersonality( &mybgp, sizeof( _BGP_Personality_t ) );
     long ticks_per_sec = ( long )BGP_Personality_clockMHz( &mybgp ) * 1e6;
     _bgp_GetTimeBase();]])],
-               [silc_timer_bgp_get_timebase_available="yes"], [])
+               [silc_timer_bgp_get_timebase_available="yes"
+                AC_SUBST([TIMER_LIBDIR], ["/bgsys/drivers/ppcfloor/runtime/SPI"])], [])
 CPPFLAGS="$silc_timer_save_CPPFLAGS"
 AC_MSG_RESULT([$silc_timer_bgp_get_timebase_available])
 ])
@@ -446,6 +447,7 @@ AM_CONDITIONAL([SILC_TIMER_SUN_GETHRTIME],        [test "x${silc_timer_sun_gethr
 # specific libs are defined during the checks in the SILC_TIMER_*_AVAILABLE macros
 silc_timer_lib=""
 AS_IF([test "x${silc_timer_clock_gettime}"    = "xyes"], [silc_timer_lib=${silc_timer_librt}],
-      [test "x${silc_timer_ibm_switch_clock}" = "xyes"], [silc_timer_lib=${silc_timer_libswclock}])
+      [test "x${silc_timer_ibm_switch_clock}" = "xyes"], [silc_timer_lib=${silc_timer_libswclock}],
+      [test "x${silc_timer_bgp_get_timebase}" = "xyes"], [silc_timer_lib="-lSPI.cna -lrt"])
 AC_SUBST([TIMER_LIB], ["$silc_timer_lib"])
 ])
