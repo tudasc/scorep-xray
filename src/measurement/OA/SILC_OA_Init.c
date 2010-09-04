@@ -13,17 +13,18 @@
  *
  */
 
-/** @file SILC_OA_Init.c
-    @maintainer Yury Oleynik <oleynik@in.tum.de>
-    @status     ALPHA
-
-    This file contains the implementation of Online Access initialization and finalization functions
+/**
+ * @file SILC_OA_Init.c
+ * @maintainer Yury Oleynik <oleynik@in.tum.de>
+ * @status alpha
+ *
+ * This file contains the implementation of Online Access initialization and finalization functions
  */
 
 
 #include <config.h>
 
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Utils.h"
 #include "SILC_Types.h"
 #include "SILC_OA_Init.h"
 
@@ -40,8 +41,8 @@ SILC_OA_Init
 (
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
-
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    printf( "%d \n", 1 << 14 );
     if ( !SILC_IsOAEnabled() )
     {
         return SILC_SUCCESS;
@@ -71,7 +72,7 @@ SILC_OA_Finalize
 (
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     if ( !SILC_IsOAEnabled() )
     {
         return SILC_SUCCESS;

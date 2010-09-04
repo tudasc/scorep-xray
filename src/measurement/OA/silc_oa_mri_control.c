@@ -13,29 +13,31 @@
  *
  */
 
-/** @file silc_oa_mri_control.c
-    @maintainer Yury Oleynik <oleynik@in.tum.de>
-    @status     ALPHA
-
-    This file contains implementation of OA measurement configuration and application execution control functions
+/**
+ * @file silc_oa_mri_control.c
+ * @maintainer Yury Oleynik <oleynik@in.tum.de>
+ * @status alpha
+ *
+ * This file contains implementation of OA measurement configuration and application execution control functions
  */
-
 
 #include <config.h>
 
 #include "silc_oa_mri_control.h"
+
+#include <stdio.h>
+#include <strings.h>
+#include <mpi.h>
+
+#include <SILC_Profile.h>
+#include <SILC_Mpi.h>
+#include <SILC_Profile_OAConsumer.h>
+
 #include "silc_oa_connection.h"
 #include "scanner.h"
 #include "silc_profile_node.h"
 #include "silc_profile_definition.h"
 
-#include "SILC_Profile.h"
-#include "SILC_Mpi.h"
-#include "SILC_Profile_OAConsumer.h"
-
-#include <stdio.h>
-#include <strings.h>
-#include <mpi.h>
 
 static silc_oa_mri_app_control_type appl_control = SILC_OA_MRI_STATUS_UNDEFINED;
 
@@ -82,7 +84,7 @@ silc_oa_mri_receive_and_process_requests
 {
     int  length, i;
     char buffer[ 2000 ];
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     buffer[ 0 ] = 0;
     bzero( buffer, 2000 );
 
@@ -100,17 +102,17 @@ silc_oa_mri_receive_and_process_requests
         {
             buffer[ i ] = toupper( buffer[ i ] );
         }
-        printf( "Received from socket: %s\n", buffer );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Received from socket: %s\n", buffer );
 
 
         if ( silc_oa_mri_parse( buffer ) != SILC_SUCCESS )
         {
-            printf( "ERROR in parsing MRI command\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "ERROR in parsing MRI command\n" );
         }
 
         if ( silc_oa_mri_get_appl_control() == SILC_OA_MRI_EXEC_REQUEST_TERMINATE )
         {
-            printf( "Application Terminating!\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Application Terminating!\n" );
             //cleanup_registry();
             //PMPI_Finalize();
             //exit(0);
@@ -118,7 +120,7 @@ silc_oa_mri_receive_and_process_requests
     }
 
     PMPI_Barrier( MPI_COMM_WORLD );
-    printf( "Leaving %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Leaving %s\n", __FUNCTION__ );
     return SILC_SUCCESS;
 }
 
@@ -130,7 +132,7 @@ silc_oa_mri_set_appl_control
     uint8_t                      region_line
 )
 {
-    //printf("Entering %s\n",__FUNCTION__);
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     appl_control = command;
     // appl_control_file=file_id;
     //appl_control_region=region_line;
@@ -141,7 +143,7 @@ silc_oa_mri_get_appl_control
 (
 )
 {
-    //printf("Entering %s\n",__FUNCTION__);
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     return appl_control;
 }
 
@@ -151,7 +153,7 @@ silc_oa_mri_return_summary_data
     int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
     //silc_profile_dump();void
 
@@ -210,24 +212,24 @@ silc_profile_print_func
     };
     if ( node->node_type == silc_profile_node_regular_region )
     {
-        printf( "+ type: %s, time=%ld, count=%ld;", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "+ type: %s, time=%ld, count=%ld;", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
 
 
         int i;
         for ( i = 0; i < silc_profile.num_of_dense_metrics; i++ )
         {
-            printf( " dense_%i=%ld", i, node->dense_metrics[ i ].sum );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, " dense_%i=%ld", i, node->dense_metrics[ i ].sum );
         }
-        printf( ";" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, ";" );
         int                             number     = 0;
         silc_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
         while ( sparse_int != NULL )
         {
-            printf( " sparse_int_%d=%ld", number, sparse_int->sum );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, " sparse_int_%d=%ld", number, sparse_int->sum );
             number++;
             sparse_int = sparse_int->next_metric;
         }
-        printf( ";\n" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, ";\n" );
     }
 }
 
@@ -245,34 +247,34 @@ silc_oa_mri_parse_subtree( silc_profile_node* node,
 
     if ( node == NULL )
     {
-        printf( "<end of the subtree>\n" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "<end of the subtree>\n" );
         return;
     }
 
     int i;
     for ( i = 0; i < level; i++ )
     {
-        printf( "| " );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "| " );
     }
-    printf( "+ type: %s, time=%ld, count=%ld, sparse double:", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "+ type: %s, time=%ld, count=%ld, sparse double:", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
     silc_profile_sparse_metric_double* sparse_double = node->first_double_sparse;
     int                                number        = 0;
     while ( sparse_double != NULL )
     {
-        printf( " metric_%d=%f", number, sparse_double->sum );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, " metric_%d=%f", number, sparse_double->sum );
         number++;
         sparse_double = sparse_double->next_metric;
     }
-    printf( "; sparse int:" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "; sparse int:" );
     silc_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
     number = 0;
     while ( sparse_int != NULL )
     {
-        printf( " metric_%d=%ld", number, sparse_int->sum );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, " metric_%d=%ld", number, sparse_int->sum );
         number++;
         sparse_int = sparse_int->next_metric;
     }
-    printf( ";\n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, ";\n" );
 
     if ( node->first_child != NULL )
     {
@@ -287,11 +289,11 @@ silc_oa_mri_parse_subtree( silc_profile_node* node,
 void
 silc_oa_mri_dump_profile()
 {
-    printf( "Number of dense metrics is %d \n", silc_profile.num_of_dense_metrics );
-    printf( "<Root>:\n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Number of dense metrics is %d \n", silc_profile.num_of_dense_metrics );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "<Root>:\n" );
     //silc_oa_mri_parse_subtree( silc_profile.first_root_node, 0 );
     silc_profile_for_all( silc_profile.first_root_node, &silc_profile_print_func, NULL );
-    printf( "<End of the tree.>\n" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "<End of the tree.>\n" );
 }
 
 
@@ -300,7 +302,7 @@ silc_oa_mri_noop
 (
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 }
 
 
@@ -310,12 +312,12 @@ silc_oa_mri_parse
     char* buffer
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     SILC_Error_Code return_status = SILC_SUCCESS;
 
     YY_BUFFER_STATE my_string_buffer;
 
-    printf( "parse_mri_cmd: %s\n", buffer );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "parse_mri_cmd: %s\n", buffer );
     my_string_buffer = yy_scan_string( buffer );
     if ( yyparse() == 0 )
     {
@@ -336,7 +338,7 @@ silc_oa_mri_set_mpiprofiling
     int value
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     SILC_MPI_HOOKS_SET( value );
 }
 
@@ -346,7 +348,7 @@ silc_oa_mri_set_profiling
     int value
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     //SILC_MPI_HOOKS_SET(value);
 }
 

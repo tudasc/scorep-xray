@@ -13,19 +13,20 @@
  *
  */
 
-/** @file silc_oa_sockets.c
-    @maintainer Yury Oleynik <oleynik@in.tum.de>
-    @status     ALPHA
-
-    This file contains implementation of sockets communication between SILC OA and EA
+/**
+ * @file silc_oa_sockets.c
+ * @maintainer Yury Oleynik <oleynik@in.tum.de>
+ * @status alpha
+ *
+ * This file contains implementation of sockets communication between SILC OA and EA
  */
 
 
 #include <config.h>
 
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Utils.h"
 #include "silc_oa_sockets.h"
-#include "SILC_Utils.h"
+
 
 #include <netdb.h>
 #include <sys/types.h>
@@ -57,7 +58,7 @@ silc_oa_sockets_server_startup_retry
     int                stat = -1;
     int                port;
     struct sockaddr_in my_addr;                 /* my address information */
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
     /**
      * create a new socket socket() returns positive interger on success
@@ -71,7 +72,7 @@ silc_oa_sockets_server_startup_retry
         {
             if ( port + step > *init_port + retries * step )
             {
-                printf( "socket_server_startup::socket()\n" );
+                SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "socket_server_startup::socket()\n" );
             }
             stat = -1;
         }
@@ -81,7 +82,7 @@ silc_oa_sockets_server_startup_retry
             {
                 if ( port + step > *init_port + retries * step )
                 {
-                    printf( "socket_server_startup::setsockopt()\n" );
+                    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "socket_server_startup::setsockopt()\n" );
                 }
                 stat = -1;
             }
@@ -96,7 +97,7 @@ silc_oa_sockets_server_startup_retry
                 {
                     if ( port + step > *init_port + retries * step )
                     {
-                        printf( "socket_server_startup::bind()\n" );
+                        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "socket_server_startup::bind()\n" );
                     }
                     stat = -1;
                 }
@@ -106,7 +107,7 @@ silc_oa_sockets_server_startup_retry
                     {
                         if ( port + step > *init_port + retries * step )
                         {
-                            printf( "socket_server_startup::listen()\n" );
+                            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "socket_server_startup::listen()\n" );
                         }
                         stat = -1;
                     }
@@ -125,7 +126,7 @@ silc_oa_sockets_server_startup_retry
     }
     else
     {
-        printf( "Exiting %s with successs, port = %d\n", __FUNCTION__, port );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Exiting %s with successs, port = %d\n", __FUNCTION__, port );
         *init_port = port;
         return sock;
     }
@@ -448,6 +449,7 @@ silc_oa_sockets_register_with_registry
     int port
 )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     registry* reg;
     int       i;
     int       nprocs, rank, initialized;
@@ -466,15 +468,15 @@ silc_oa_sockets_register_with_registry
     char   psc_reghost[ 200 ];
     int    psc_regport;
 
-    sprintf( appl_name, "appl" );       /// need to get appl name from config variable
-    sprintf( psc_reghost, "hlrb2" );    /// need to get appl name from config variable
+    sprintf( appl_name, "appl" );        /// need to get appl name from config variable
+    sprintf( psc_reghost, "hlrb2" );     /// need to get appl name from config variable
     psc_regport = 50001;
 
 
     PMPI_Initialized( &initialized );
     if ( !initialized )
     {
-        printf( "ERROR: MPI not initialized\n" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "ERROR: MPI not initialized\n" );
         exit( 1 );
     }
     PMPI_Comm_size( MPI_COMM_WORLD, &nprocs );
@@ -503,7 +505,7 @@ silc_oa_sockets_register_with_registry
         int* ids = ( int* )calloc( nprocs, sizeof( int ) );                             ///@TODO: switch to silc memory allocator
         for ( i = 0; i < nprocs; i++ )
         {
-            printf( "Registering process %d with port %d and host %s\n", allinfo[ i ].rank, allinfo[ i ].port, allinfo[ i ].hostname );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Registering process %d with port %d and host %s\n", allinfo[ i ].rank, allinfo[ i ].port, allinfo[ i ].hostname );
             entry_id = silc_oa_sockets_registry_create_entry( reg, appl_name, "LRZ",
                                                               "ALTIX4700", allinfo[ i ].hostname, allinfo[ i ].port, allinfo[ i ].rank + 1, "MRIMONITOR", "none" );
             ids[ allinfo[ i ].rank ] = entry_id;
@@ -513,17 +515,18 @@ silc_oa_sockets_register_with_registry
             }
             else
             {
-                printf( "Entry_id= %d\n", entry_id );
+                SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entry_id= %d\n", entry_id );
             }
 
-//			sprintf(str,"PERISCOPE processrank [%i:%i:%i]", nprocs, allinfo[i].rank, allinfo[i].cpu);
+//			sprintf( str,"PERISCOPE processrank [%i:%i:%i]", nprocs, allinfo[i].rank, allinfo[i].cpu);
 //			registry_store_string(reg, entry_id, str);
         }
 
         if ( !silc_oa_sockets_close_registry( reg ) )
         {
-            fprintf( stderr, "Something went wrong when closing registry\n" );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Something went wrong when closing registry\n" );
         }
+
         PMPI_Scatter( ids, 1, MPI_INTEGER, &entry_id, 1, MPI_INTEGER, 0, MPI_COMM_WORLD );
     }
     else
@@ -531,8 +534,10 @@ silc_oa_sockets_register_with_registry
         //client determines local info and provides it to master
         //hostname, port, rank, cpu
         //MPI_GATHER(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+
         int help_int;
         PMPI_Gather( &myinfo, sizeof( P_info ), MPI_BYTE, allinfo, sizeof( P_info ), MPI_BYTE, 0, MPI_COMM_WORLD );
+
         PMPI_Scatter( &help_int, 1, MPI_INTEGER, &entry_id, 1, MPI_INTEGER, 0, MPI_COMM_WORLD );
     }
 }
@@ -551,10 +556,10 @@ silc_oa_sockets_server_accept_client
     unsigned int sin_size;
 
     sin_size = sizeof( struct sockaddr_in );
-    printf( "Waiting for client to connect...\n" );
+    printf( "Waiting for client to connect... %d\n", 1 << 15 );
     if ( ( newsock = accept( sock, ( struct sockaddr* )&client_addr, &sin_size ) ) < 0 )
     {
-        printf( "socket_server_accept_client::accept() error" );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "socket_server_accept_client::accept() error" );
         return -1;
     }
 

@@ -24,13 +24,13 @@
  *
  * @brief   Declaration of OA communication infrastructure functions and data types
  *
- * @status ALPHA
+ * @status alpha
  */
 
 
-#include "SILC_Types.h"
-#include "SILC_Error.h"
-#include "silc_oa_registry_protocol.h"
+#include "silc_utility/SILC_Utils.h"
+
+#include <silc_oa_registry_protocol.h>
 
 #define BUFSIZE 512
 

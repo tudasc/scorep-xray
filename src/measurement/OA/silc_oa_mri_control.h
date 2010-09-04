@@ -24,13 +24,11 @@
  *
  * @brief   Declaration of OA measurement configuration and application control functionality
  *
- * @status ALPHA
+ * @status alpha
  */
 
 
-#include "SILC_Types.h"
-#include "SILC_Error.h"
-
+#include "silc_utility/SILC_Utils.h"
 
 
 typedef enum

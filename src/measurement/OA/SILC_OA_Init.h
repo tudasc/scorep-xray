@@ -24,11 +24,10 @@
  *
  * @brief   Declaration of OA initialization and finalization functions
  *
- * @status ALPHA
+ * @status alpha
  */
 
-#include "SILC_Error.h"
-
+#include "silc_utility/SILC_Utils.h"
 //extern int connection;					///@TODO move to SILC_OA_Status.h
 
 SILC_Error_Code

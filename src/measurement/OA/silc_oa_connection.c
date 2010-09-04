@@ -14,16 +14,16 @@
  */
 
 /** @file silc_oa_connection.c
-    @maintainer Yury Oleynik <oleynik@in.tum.de>
-    @status     ALPHA
-
-    This file contains the implementation of communication layer functions
+ *  @maintainer Yury Oleynik <oleynik@in.tum.de>
+ *  @status alpha
+ *
+ *  This file contains the implementation of communication layer functions
  */
 
 
 #include <config.h>
 
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Utils.h"
 #include "silc_oa_connection.h"
 #include "silc_oa_sockets.h"
 
@@ -42,7 +42,7 @@ silc_oa_connection_connect
 (
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
     if ( silc_oa_is_connected )
     {
         return SILC_SUCCESS;
@@ -77,7 +77,7 @@ silc_oa_connection_send_string
     const char* message_string
 )
 {
-    printf( "%s sending: %s\n", __FUNCTION__, message_string );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OA, "%s sending: %s\n", __FUNCTION__, message_string );
     silc_oa_sockets_write_line( connection, message_string );
     return SILC_SUCCESS;
 }

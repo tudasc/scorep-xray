@@ -13,18 +13,21 @@
  *
  */
 
-/** @file SILC_OA_Functions.c
-    @maintainer Yury Oleynik <oleynik@in.tum.de>
-    @status     ALPHA
-
-    This file contains the implementation of Online Access Phase functions
+/**
+ * @file SILC_OA_Functions.c
+ * @maintainer Yury Oleynik <oleynik@in.tum.de>
+ * @status alpha
+ *
+ * This file contains the implementation of Online Access Phase functions
  */
 
 #include <config.h>
 
 #include "SILC_OA_Functions.h"
 #include "SILC_OA_Init.h"
-#include "SILC_Error.h"
+
+#include "silc_utility/SILC_Utils.h"
+
 #include "SILC_Types.h"
 #include "silc_oa_mri_control.h"
 #include "silc_oa_connection.h"

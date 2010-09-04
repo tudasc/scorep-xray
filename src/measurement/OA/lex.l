@@ -1,3 +1,28 @@
+/*
+ * This file is part of the SILC project (http://www.silc.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+ 
+ /**
+  * @file        lex.l
+  * @maintainer  Yury Olenyik <oleynik@in.tum.de>
+  *
+  * @brief   automatically generated file for the MRI string parser
+  *
+  * @status alpha
+  *
+  */
+ 
 /* *INDENT-OFF* */
 
 /******************************************************************************/

@@ -27,9 +27,12 @@ check_PROGRAMS       += oa_mpi_c
 oa_mpi_c_sources  = $(SRC_ROOT)test/OA/C/main.c
                
 oa_mpi_c_SOURCES  = $(oa_mpi_c_sources)
-oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	\
-					-I$(PUBLIC_INC_DIR)                     			\
-    				-DSILC_USER_ENABLE
+oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	 \
+					-I$(INC_ROOT)src/adapters/include       \
+					-I$(INC_ROOT)src/measurement/include    \
+					-I$(PUBLIC_INC_DIR)                     \
+					-I$(INC_DIR_UTIL)                       \
+					-DSILC_USER_ENABLE
     				
 oa_mpi_c_LDADD    = $(LIB_ROOT)libsilc_mpi.la
 

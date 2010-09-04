@@ -24,12 +24,10 @@
  *
  * @brief   Declaration of OA communication infrastructure functions and data types
  *
- * @status ALPHA
+ * @status alpha
  */
 
-
-#include "SILC_Types.h"
-#include "SILC_Error.h"
+#include "silc_utility/SILC_Utils.h"
 
 extern int connection;
 
