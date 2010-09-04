@@ -115,6 +115,12 @@ MPI_Init( int*    argc,
 #if defined( SILC_WITH_OA )
     SILC_OA_Init();
 #endif
+#if !defined( SILC_MPI_NO_HOOKS )
+    if ( SILC_IS_MPI_HOOKS_ON )
+    {
+        silc_mpiprofile_init();
+    }
+#endif
 
     return return_val;
 }

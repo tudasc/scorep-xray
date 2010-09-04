@@ -28,11 +28,16 @@
  */
 
 
-#include "SILC_Types.h"
+#include <SILC_Types.h>
 
 #define MPIPROFILER_TIMEPACK_BUFSIZE ( sizeof( long ) + 1 * sizeof( int ) )
 
 extern int myrank;
+
+void
+silc_mpiprofile_init
+(
+);
 
 /**
  * Creates time pack buffer containing rank and time stamp

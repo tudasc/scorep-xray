@@ -20,14 +20,14 @@
  *
  * @brief   Declaration of mpi hooks functions to be used by MPI profiling
  *
- *
+ * @status alpha
  *
  */
 
 #include <config.h>
 
 #include "SILC_MPIHooks.h"
-
+#include "silc_utility/SILC_Debug.h"
 #include "silc_mpiprofile.h"
 
 #include <stdlib.h>
@@ -73,7 +73,7 @@ SILC_Hooks_Post_MPI_Send
     int          return_value
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -97,7 +97,7 @@ SILC_Hooks_Post_MPI_Bsend
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -121,7 +121,7 @@ SILC_Hooks_Post_MPI_Ssend
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -145,7 +145,7 @@ SILC_Hooks_Post_MPI_Rsend
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -191,7 +191,7 @@ SILC_Hooks_Post_MPI_Recv
     int          return_val
 )
 {
-    // printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     source = status->MPI_SOURCE;
     tag    = status->MPI_TAG;
@@ -389,7 +389,7 @@ SILC_Hooks_Post_MPI_Alltoall
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -426,7 +426,7 @@ SILC_Hooks_Post_MPI_Alltoallv
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -455,7 +455,7 @@ SILC_Hooks_Post_MPI_Barrier
     int      return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -497,7 +497,7 @@ SILC_Hooks_Post_MPI_Gather
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -540,7 +540,7 @@ SILC_Hooks_Post_MPI_Gatherv
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -581,7 +581,7 @@ SILC_Hooks_Post_MPI_Reduce
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -619,7 +619,7 @@ SILC_Hooks_Post_MPI_Allreduce
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -657,7 +657,7 @@ SILC_Hooks_Post_MPI_Allgather
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -696,7 +696,7 @@ SILC_Hooks_Post_MPI_Allgatherv
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -735,7 +735,7 @@ SILC_Hooks_Post_MPI_Bcast
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     silc_mpiprofile_init();
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
@@ -772,7 +772,7 @@ SILC_Hooks_Post_MPI_Scatter
     int          return_val
 )
 {
-    //printf( "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* localTimePack = silc_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
     remoteTimePack = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );

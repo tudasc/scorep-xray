@@ -153,6 +153,12 @@ extern int     silc_mpi_status_size;
 
 #define SILC_MPI_HOOKS_SET( value )                     silc_hooks_on = value
 
+#if !defined( SILC_MPI_NO_HOOKS )
+extern void
+silc_mpiprofile_init();
+
+#endif
+
 /** @} */
 
 #endif /* SILC_MPI_H */

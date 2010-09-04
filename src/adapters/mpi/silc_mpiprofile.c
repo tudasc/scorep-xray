@@ -62,7 +62,7 @@ silc_mpiprofile_init
 
     PMPI_Comm_size( MPI_COMM_WORLD, &numprocs );
     PMPI_Comm_rank( MPI_COMM_WORLD, &myrank );
-    //printf("INIT: myrank = %d, numprocs = %d\n",myrank,numprocs);
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "INIT: myrank = %d, numprocs = %d\n", myrank, numprocs );
 
     lateThreshold = 0.001;
 
@@ -86,7 +86,7 @@ silc_mpiprofile_get_time_pack
     uint64_t time
 )
 {
-    //printf("mpiprofile : myrank = %d,%s \n",myrank,__FUNCTION__);
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     void* buf = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
     int   pos = 0;
     PMPI_Pack(      &time,
@@ -120,7 +120,7 @@ silc_mpiprofile_eval_1x1_time_packs
     void* dstTimePack
 )
 {
-    //printf( "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     int      src;
     int      dst;
     uint64_t sendTime;
@@ -174,7 +174,7 @@ silc_mpiprofile_eval_nx1_time_packs
     int   size
 )
 {
-    //printf("mpiprofile : myrank = %d,%s \n",myrank,__FUNCTION__);
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     int      src;
     int      dst;
     uint64_t sendTime;
@@ -229,7 +229,7 @@ silc_mpiprofile_eval_multi_time_packs
     int   size
 )
 {
-    //printf( "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     int      src;
     int      dst;
     uint64_t sendTime;
@@ -283,7 +283,7 @@ silc_mpiprofile_eval_time_stamps
     uint64_t recvTime
 )
 {
-    //printf( "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s \n", myrank, __FUNCTION__ );
     if ( src == dst )
     {
         return;
@@ -293,21 +293,21 @@ silc_mpiprofile_eval_time_stamps
 
     if ( delta > mpiprofiling_get_late_threshold() )
     {
-        //printf( "LATE RECEIVE: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "LATE RECEIVE: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
         SILC_USER_METRIC_INT64( lateRecv, delta );
         ///receive process is late: store EARLY_SEND/LATE_RECEIVE=delta value for the remote side, currently not supported
         ///trigger user metric here
     }
     else if ( delta < -mpiprofiling_get_late_threshold() )
     {
-        //printf( "LATE SENDER: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "LATE SENDER: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
         SILC_USER_METRIC_INT64( lateSend, delta );
         ///sending process is late: store LATE_SEND/EARLY_RECEIVE=-delta value on the current process
         ///trigger user metric here
     }
     else
     {
-        //printf( "IN TIME: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
+        SILC_DEBUG_PRINTF( SILC_DEBUG_MPIPROFILING, "IN TIME: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
         ///no late state
         ///trigger user metric here
     }
