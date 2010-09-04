@@ -32,9 +32,9 @@
 
 typedef struct SILC_OA_PeriscopeContext_struct
 {
-    uint64_t region_id;
-    uint64_t context_id;
-    uint64_t parent_context_id;
+    uint32_t region_id;
+    uint32_t context_id;
+    uint32_t parent_context_id;
     uint32_t thread_id;
     uint32_t rank;
     uint64_t call_count;
@@ -42,15 +42,15 @@ typedef struct SILC_OA_PeriscopeContext_struct
 
 typedef struct SILC_OA_PeriscopeMeasurement_struct
 {
-    uint64_t context_id;
-    uint64_t counter_id;
+    uint32_t context_id;
+    uint32_t counter_id;
     uint64_t sum;
     uint64_t count;
 }SILC_OA_PeriscopeMeasurement;
 
 typedef struct SILC_OA_PeriscopeCounterDef_struct
 {
-    uint64_t counter_id;
+    uint32_t counter_id;
     char     name[ MAX_COUNTER_NAME_LENGTH ];
     char     unit[ MAX_COUNTER_UNIT_LENGTH ];
     uint32_t status;
@@ -58,7 +58,7 @@ typedef struct SILC_OA_PeriscopeCounterDef_struct
 
 typedef struct SILC_OA_PeriscopeRegionDef_struct
 {
-    uint64_t region_id;
+    uint32_t region_id;
     char     name[ MAX_REGION_NAME_LENGTH ];
     char     file[ MAX_FILE_NAME_LENGTH ];
     uint32_t rfl;
