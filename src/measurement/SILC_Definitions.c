@@ -166,6 +166,21 @@ SILC_Region_GetName( SILC_RegionHandle handle )
     return SILC_HANDLE_DEREF( region->name_handle, String )->string_data;
 }
 
+/**
+ * Gets read-only access to the file name of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region file name.
+ */
+const char*
+SILC_Region_GetFileName( SILC_RegionHandle handle )
+{
+    SILC_Region_Definition* region = SILC_HANDLE_DEREF( handle, Region );
+
+    return SILC_HANDLE_DEREF( region->file_handle, String )->string_data;
+}
+
 
 /**
  * Gets the type of the region.

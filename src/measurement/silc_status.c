@@ -62,8 +62,8 @@ silc_status status = {
     0,                                    // mpi_comm_world_size
     false,                                // is_experiment_dir_created
     true,                                 // is_profiling_enabled
-    false,                                // is_tracing_enabled
-    false,                                // is_oa_enabled
+    true,                                 // is_tracing_enabled
+    true,                                 // is_oa_enabled
     false                                 // otf2_has_flushed
 };
 

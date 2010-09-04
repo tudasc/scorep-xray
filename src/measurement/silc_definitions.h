@@ -222,5 +222,16 @@ SILC_DefineCallpathParameterString( SILC_CallpathHandle  parent,
 int
 SILC_GetNumberOfDefinitions();
 
+int
+SILC_GetNumberOfRegionDefinitions();
+
+int
+SILC_GetNumberOfCounterDefinitions();
+
+int
+SILC_CallPathHandleToRegionID( SILC_CallpathHandle handle );
+
+int
+SILC_GetHandleToID( SILC_RegionHandle handle );
 
 #endif /* SILC_INTERNAL_DEFINITIONS_H */

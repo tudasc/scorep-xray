@@ -878,3 +878,32 @@ SILC_GetNumberOfDefinitions()
 
     return n_definitions;
 }
+
+int
+SILC_GetNumberOfRegionDefinitions()
+{
+    assert( !omp_in_parallel() );
+    return silc_definition_manager.region_definition_counter;
+}
+
+int
+SILC_GetNumberOfCounterDefinitions()
+{
+    assert( !omp_in_parallel() );
+    return silc_definition_manager.counter_definition_counter;
+}
+
+int
+SILC_GetRegionHandleToID( SILC_RegionHandle handle )
+{
+    assert( !omp_in_parallel() );
+    return SILC_HANDLE_TO_ID( handle, Region );
+}
+
+int
+SILC_CallPathHandleToRegionID( SILC_CallpathHandle handle )
+{
+    SILC_Callpath_Definition* callpath = SILC_HANDLE_DEREF( handle, Callpath );
+
+    return SILC_GetRegionHandleToID( callpath->callpath_argument.region_handle );
+}
