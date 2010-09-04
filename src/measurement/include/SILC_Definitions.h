@@ -145,6 +145,8 @@ SILC_DefineRegion
 const char*
 SILC_Region_GetName( SILC_RegionHandle handle );
 
+const char*
+SILC_Region_GetFileName( SILC_RegionHandle handle );
 
 SILC_RegionType
 SILC_Region_GetType( SILC_RegionHandle handle );
