@@ -17,7 +17,6 @@
 #define SILC_FORTRAN_WRAPPER_H
 
 #include <stdint.h>
-#include <config.h>
 
 /**
      @file SILC_Fortran_Wrapper.h

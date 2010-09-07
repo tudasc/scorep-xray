@@ -25,11 +25,8 @@
  */
 
 #include <stdbool.h>
-#include <config.h>
-
-#include "SILC_DefinitionHandles.h"
-
-#include "silc_profile_metric.h"
+#include <SILC_DefinitionHandles.h>
+#include <silc_profile_metric.h>
 
 /* ***************************************************************************************
    Type definitions
@@ -333,7 +330,7 @@ silc_profile_copy_all_dense_metrics( silc_profile_node* destination,
                                      silc_profile_node* source );
 
 /**
-   Removes the children from @a source and appens them to the children list of
+   Removes the children from @a source and appends them to the children list of
    @a destination.
    @param destination Pointer to a node to which the children are added. If this
                       is a NULL pointer, the children are added as root nodes
