@@ -18,7 +18,7 @@
 !!             obtain the value of MPI_STATUS_SIZE.
 !!
 !! @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-!! @status     BETA
+!! @status     alpha
 !! @ingroup    MPI_Wrapper
 !<
 

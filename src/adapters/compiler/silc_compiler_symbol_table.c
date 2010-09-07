@@ -27,11 +27,9 @@
  * @li If none of both is enabled, a dummy is compiled, which disables the adapter.
  *
  * It may be compiled with different defines:
- * @li If HAVE( READLINK ) is true, it tries to resolve the symbolic link in
- *     /proc/self/exe to find the executable. Else other methods are used.
  * @li If HAVE_LIBBFD is defined, it uses the bfd library to read the symbols.
  * @li If HAVE_NM is defined, it uses a system call to nm to read the symbols. This
- *     option is only compiler if HAVE_LIBBFD is undefined, because of worse scaling.
+ *     option is only available if HAVE_LIBBFD is undefined, because of worse scaling.
  * @li If GNU_DEMANGLE is defined it uses cplus_demangle() to demangle function names.
  * @li If INTEL_COMPILER is defined, regions do not use the address as key, but get a
  *     32 bit integer id as key.
