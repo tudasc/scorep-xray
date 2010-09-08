@@ -65,8 +65,10 @@ silc-config-tool-install:
 	echo LIBDIR=\"$(TIMER_LIBDIR)\"                                                 >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(LIBBFD)\"                                                         >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(CUBE_LIBS)\"                                                      >> $(builddir)/silc_config.dat
-	echo LIBS=\"$(TIMER_LIB)\"                                                     >> $(builddir)/silc_config.dat
-
+	echo LIBS=\"$(TIMER_LIB)\"                                                      >> $(builddir)/silc_config.dat
+	echo CC=\"$(CC)\"                                                               >> $(builddir)/silc_config.dat
+	echo NM=\"$(NM)\"                                                               >> $(builddir)/silc_config.dat
+	echo AWK=\"$(AWK)\"                                                             >> $(builddir)/silc_config.dat
 	$(INSTALL_DATA) $(builddir)/silc_config.dat $(DESTDIR)$(exec_prefix)/bin/silc_config.dat
 # add compiler-suite, name of libs, static/shared, ...
 
@@ -88,4 +90,5 @@ silc-config-tool-local:
 	echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/silc_config.dat
 	echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/silc_config.dat
-
+	echo NM=\"$(NM)\"                                                          >> $(builddir)/silc_config.dat
+	echo AWK=\"$(AWK)\"                                                        >> $(builddir)/silc_config.dat
