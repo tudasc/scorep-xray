@@ -48,16 +48,16 @@ struct s1
 {
     long       l1;
     long       l2;
-    double     d1;
-    double     d2;
+    double     file_handle;
+    double     region_handle;
     long       isseen;
     char*      c;
     void*      p1;
     long       lineno;
     void*      p2;
     struct s1* p3;
-    int        file_handle;
-    int        region_handle;
+    int        i1;
+    int        i2;
     char*      file_name;
     char*      region_name;
 };
@@ -68,20 +68,20 @@ struct s1
 typedef struct
 {
     /**
-        Pointer to the current callstack position. Because it is needed for each thread,
-        it is made thread private.
+        Pointer to the current callstack position. Because it is needed for
+        each thread, it is made thread private.
      */
     SILC_RegionHandle* callstack_top;
 
     /**
-        Pointer to the callstack starting position. Because it is needed for each thread,
-        it is made thread private.
+        Pointer to the callstack starting position. Because it is needed for
+        each thread, it is made thread private.
      */
     SILC_RegionHandle* callstack_base;
 
     /**
-        Counts the current level of nesting. Because it is needed for each thread,
-        it is made thread private.
+        Counts the current level of nesting. Because it is needed for each
+        thread, it is made thread private.
      */
     uint32_t callstack_count;
 
@@ -312,7 +312,6 @@ __rouinit()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "PGI init routine" );
 
-
     if ( silc_compiler_initialize )
     {
         SILC_InitMeasurement();
@@ -339,6 +338,10 @@ __rouexit()
 void
 ___rouent2( struct s1* p )
 {
+    if ( silc_compiler_initialize )
+    {
+        __rouinit();
+    }
     silc_compiler_location_data* location_data = silc_compiler_get_location_data();
 
     /* Ensure the compiler adapter is initialized */
@@ -357,11 +360,12 @@ ___rouent2( struct s1* p )
     if ( !p->isseen )
     {
         /* get file id beloning to file name */
+        p->file_handle = ( double )silc_compiler_get_file( p->file_name ) + ( double )0.1;
         SILC_LockRegionDefinition();
         if ( !p->isseen )
         {
-            p->file_handle   = silc_compiler_get_file( p->file_name );
-            p->region_handle = SILC_DefineRegion( p->region_name,
+            p->region_handle = ( double )0.1 + ( double )
+                               SILC_DefineRegion( p->region_name,
                                                   p->file_handle,
                                                   p->lineno,
                                                   SILC_INVALID_LINE_NO,
@@ -393,7 +397,7 @@ ___rouent2( struct s1* p )
 void
 ___rouent( struct s1* p )
 {
-    //___rouent2( p );
+    ___rouent2( p );
 }
 
 /**
@@ -407,9 +411,9 @@ ___rouret2( void )
 
     if ( location_data->callstack_count < silc_compiler_callstack_max )
     {
+        location_data->callstack_top--;
         /* Exit event */
         SILC_ExitRegion( *location_data->callstack_top );
-        location_data->callstack_top--;
     }
 
     location_data->callstack_count--;
@@ -419,7 +423,7 @@ ___rouret2( void )
 void
 ___rouret( void )
 {
-    //___rouret2();
+    ___rouret2();
 }
 
 #pragma save_all_regs
