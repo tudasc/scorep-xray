@@ -33,6 +33,7 @@
 #include <SILC_RuntimeManagement.h>
 #include <SILC_Thread_Types.h>
 #include <silc_compiler_data.h>
+#include <SILC_Compiler_Init.h>
 
 /* **************************************************************************************
  * Typedefs and global variables
@@ -51,12 +52,12 @@ struct s1
     double     d2;
     long       isseen;
     char*      c;
-    void*      file_handle;
+    void*      p1;
     long       lineno;
-    void*      region_handle;
+    void*      p2;
     struct s1* p3;
-    int        i1;
-    int        i2;
+    int        file_handle;
+    int        region_handle;
     char*      file_name;
     char*      region_name;
 };
@@ -104,6 +105,8 @@ static int silc_compiler_initialize = 1;
     Hash table for mapping location id to the location's callstack.
  */
 SILC_Hashtab* silc_compiler_location_table = NULL;
+
+
 
 /* **************************************************************************************
  * declarations from silc_thread.h
@@ -283,6 +286,18 @@ silc_compiler_deregister()
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, " PGI compiler adapter deregister!n" );
 }
 
+/* Implementation of the compiler adapter initialization/finalization struct */
+const SILC_Adapter SILC_Compiler_Adapter =
+{
+    SILC_ADAPTER_COMPILER,
+    "COMPILER",
+    &silc_compiler_register,
+    &silc_compiler_init_adapter,
+    &silc_compiler_init_location,
+    &silc_compiler_final_location,
+    &silc_compiler_finalize,
+    &silc_compiler_deregister
+};
 
 /* **************************************************************************************
  * Implementation of complier inserted functions
@@ -293,9 +308,7 @@ silc_compiler_deregister()
  */
 #pragma save_all_regs
 void
-__rouinit
-(
-)
+__rouinit()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "PGI init routine" );
 
@@ -313,24 +326,18 @@ __rouinit
 
 #pragma save_all_regs
 void
-__rouexit
-(
-)
+__rouexit()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
                        "Termination routine from PGI compiler instrumentation called" );
 }
-
 
 /**
  * called at the beginning of each instrumented routine
  */
 #pragma save_all_regs
 void
-___rouent2
-(
-    struct s1* p
-)
+___rouent2( struct s1* p )
 {
     silc_compiler_location_data* location_data = silc_compiler_get_location_data();
 
@@ -382,15 +389,19 @@ ___rouent2
     }
 }
 
+#pragma save_all_regs
+void
+___rouent( struct s1* p )
+{
+    //___rouent2( p );
+}
+
 /**
  * called at the end of each instrumented routine
  */
 #pragma save_all_regs
 void
-___rouret2
-(
-    void
-)
+___rouret2( void )
 {
     silc_compiler_location_data* location_data = silc_compiler_get_location_data();
 
@@ -406,9 +417,13 @@ ___rouret2
 
 #pragma save_all_regs
 void
-___linent2
-(
-    void
-)
+___rouret( void )
+{
+    //___rouret2();
+}
+
+#pragma save_all_regs
+void
+___linent2( void )
 {
 }
