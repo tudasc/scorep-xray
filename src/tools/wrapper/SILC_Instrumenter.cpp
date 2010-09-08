@@ -53,6 +53,11 @@ SILC_Instrumenter::SILC_Instrumenter()
     silc_include_path = "";
     silc_library_path = "";
     external_libs     = "";
+
+    c_compiler = "";
+    nm         = "nm";
+    awk        = "awk";
+    opari      = "opari";
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -264,7 +269,7 @@ SILC_Instrumenter::parse_command( std::string arg )
     {
         return silc_parse_mode_output;
     }
-    else if ( arg == "-openmp" || arg == "-fopenmp" )
+    else if ( arg == "-openmp" || arg == "-fopenmp" || arg == "-qsmp=omp" )
     {
         if ( is_openmp_application == detect )
         {
@@ -375,6 +380,30 @@ SILC_Instrumenter::AddLib( std::string lib )
     external_libs += " " + lib;
 }
 
+void
+SILC_Instrumenter::SetCompiler( std::string value )
+{
+    c_compiler = value;
+}
+
+void
+SILC_Instrumenter::SetNm( std::string value )
+{
+    nm = value;
+}
+
+void
+SILC_Instrumenter::SetAwk( std::string value )
+{
+    awk = value;
+}
+
+void
+SILC_Instrumenter::SetOpari( std::string value )
+{
+    opari = value;
+}
+
 /* ****************************************************************************
    Preparation
 ******************************************************************************/
@@ -391,11 +420,268 @@ SILC_Instrumenter::prepare_user()
 }
 
 void
+SILC_Instrumenter::invoke_opari( std::string input_file,
+                                 std::string output_file )
+{
+    std::string command = opari + " " + input_file + " " + output_file;
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
+    if ( system( command.c_str() ) != 0 )
+    {
+        if ( verbosity < 1 )
+        {
+            std::cout << "Error executing: " << command << std::endl;
+        }
+        abort();
+    }
+}
+
+void
+SILC_Instrumenter::invoke_awk_script( std::string object_files,
+                                      std::string output_file )
+{
+    std::string path    = SILC_GetExecutablePath( opari.c_str() );
+    std::string command = nm + " " +  object_files
+                          + " | grep -i \"  pomp_init_regions\" | "
+                          + awk + " -f "
+                          + path + "/parse_pomp_init_regions.awk > "
+                          + output_file;
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
+    if ( system( command.c_str() ) != 0 )
+    {
+        if ( verbosity < 1 )
+        {
+            std::cout << "Error executing: " << command << std::endl;
+        }
+        abort();
+    }
+}
+
+void
+SILC_Instrumenter::compile_init_file( std::string input_file,
+                                      std::string output_file )
+{
+    std::string command = c_compiler
+                          + " -c " + input_file
+                          + " -o " + output_file;
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
+    if ( system( command.c_str() ) != 0 )
+    {
+        if ( verbosity < 1 )
+        {
+            std::cout << "Error executing: " << command << std::endl;
+        }
+        abort();
+    }
+}
+
+void
+SILC_Instrumenter::compile_source_file( std::string input_file,
+                                        std::string output_file )
+{
+    std::string command = compiler_name
+                          + silc_include_path
+                          + " -c " + input_file
+                          + compiler_flags
+                          + " -o " + output_file;
+
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
+    if ( system( command.c_str() ) != 0 )
+    {
+        if ( verbosity < 1 )
+        {
+            std::cout << "Error executing: " << command << std::endl;
+        }
+        abort();
+    }
+}
+
+std::string
+SILC_Instrumenter::get_extension( std::string filename )
+{
+    int pos = filename.rfind( "." );
+    if ( pos == std::string::npos )
+    {
+        return "";
+    }
+    return filename.substr( pos );
+}
+
+std::string
+SILC_Instrumenter::get_basename( std::string filename )
+{
+    int pos = filename.rfind( "." );
+    if ( pos == std::string::npos )
+    {
+        return filename;
+    }
+    return filename.substr( 0, pos );
+}
+
+bool
+SILC_Instrumenter::is_source_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    if ( extension == ".c" )
+    {
+        return true;
+    }
+    if ( extension == ".C" )
+    {
+        return true;
+    }
+    if ( extension == ".cpp" )
+    {
+        return true;
+    }
+    if ( extension == ".CPP" )
+    {
+        return true;
+    }
+    if ( extension == ".cxx" )
+    {
+        return true;
+    }
+    if ( extension == ".CXX" )
+    {
+        return true;
+    }
+    if ( extension == ".f" )
+    {
+        return true;
+    }
+    if ( extension == ".F" )
+    {
+        return true;
+    }
+    if ( extension == ".f90" )
+    {
+        return true;
+    }
+    if ( extension == ".F90" )
+    {
+        return true;
+    }
+    return false;
+}
+
+bool
+SILC_Instrumenter::is_object_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    if ( extension == ".o" )
+    {
+        return true;
+    }
+    return false;
+}
+
+void
 SILC_Instrumenter::prepare_opari()
 {
+    std::string new_input_files = "";
+    std::string current_file    = "";
+
     // Perform source code transformation on all source files
+    if ( is_compiling )
+    {
+        std::string modified_file = "";
+        std::string object_file   = "";
+        size_t      old_pos       = 0;
+        size_t      cur_pos       = 0;
+        while ( cur_pos != std::string::npos )
+        {
+            cur_pos = input_files.find( " ", old_pos );
+            if ( old_pos < cur_pos ) // Discard a blank
+            {
+                current_file = input_files.substr( old_pos, cur_pos - old_pos );
+                if ( is_source_file( current_file ) )
+                {
+                    modified_file = get_basename( current_file )
+                                    + ".opari"
+                                    + get_extension( current_file );
+                    invoke_opari( current_file, modified_file );
+
+                    /* If the original command compile and link in one step,
+                       we need to split compilation and linking, because
+                       we need to run the script on the object files.
+                       Thus, we do already compile the source and add the
+                       object files
+                     */
+                    if ( is_linking )
+                    {
+                        object_file = get_basename( current_file ) + ".o";
+                        compile_source_file( modified_file, object_file );
+                        new_input_files += " " + object_file;
+                    }
+                    /* Else the compiling is done in the final execution step.
+                       Thus, we replace the original source file by the
+                       instrumented one.
+                     */
+                    else
+                    {
+                        new_input_files += " " + modified_file;
+                    }
+                }
+                // If it is no source file, leave the file in the input list
+                else
+                {
+                    new_input_files += " " + current_file;
+                }
+            }
+            // Setup for next file
+            old_pos = cur_pos + 1;
+        }
+
+        // Replace sources by modified sources in compile command
+        input_files = new_input_files;
+    }
 
     // if linking: Generate POMP_Region_init() and add it
+    if ( is_linking )
+    {
+        std::string object_files = "";
+        std::string init_source  = output_name + ".pomp_init.c";
+        std::string init_object  = output_name + ".pomp_init.o";
+        size_t      old_pos      = 0;
+        size_t      cur_pos      = 0;
+        while ( cur_pos != std::string::npos )
+        {
+            cur_pos = input_files.find( " ", old_pos );
+            if ( old_pos < cur_pos ) // Discard a blank
+            {
+                current_file = input_files.substr( old_pos, cur_pos - old_pos );
+                if ( is_object_file( current_file ) )
+                {
+                    object_files += " " + current_file;
+                }
+            }
+            // Setup for next file
+            old_pos = cur_pos + 1;
+        }
+        invoke_awk_script( object_files, init_source );
+        compile_init_file( init_source, init_object );
+        input_files += " " + init_object;
+    }
 }
 
 /* ****************************************************************************

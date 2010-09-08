@@ -204,5 +204,42 @@ SILC_Application::read_parameter( std::string line )
     {
         AddLib( value );
     }
+    else if ( key == "CC" && value != "" )
+    {
+        SetCompiler( value );
+    }
+    else if ( key == "NM" && value != "" )
+    {
+        SetNm( value );
+    }
+    else if ( key == "AWK" && value != "" )
+    {
+        SetAwk( value );
+    }
+    else if ( key == "OPARI" && value != "" )
+    {
+        SetOpari( value );
+    }
+
     return SILC_SUCCESS;
+}
+
+void
+SILC_Application::SetCompiler( std::string value )
+{
+}
+
+void
+SILC_Application::SetNm( std::string value )
+{
+}
+
+void
+SILC_Application::SetAwk( std::string value )
+{
+}
+
+void
+SILC_Application::SetOpari( std::string value )
+{
 }

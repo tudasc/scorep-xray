@@ -151,6 +151,35 @@ protected:
     virtual void
     AddLib( std::string lib );
 
+    /**
+       This function is called from ReadConfigFile. It should set the C
+       compiler.
+       @param value Name of the C compiler.
+     */
+    virtual void
+    SetCompiler( std::string value );
+
+    /**
+       This function is called from ReadConfigFile. It should set the nm.
+       @param value nm
+     */
+    virtual void
+    SetNm( std::string value );
+
+    /**
+       This function is called from ReadConfigFile. It should set the awk.
+       @param value awk
+     */
+    virtual void
+    SetAwk( std::string value );
+
+    /**
+       This function is called from ReadConfigFile. It should set Opari.
+       @param value opari
+     */
+    virtual void
+    SetOpari( std::string value );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -235,6 +264,83 @@ private:
      */
     SILC_Error_Code
     read_config_file();
+
+    /**
+       Invokes the opari tool to instrument a source file.
+       @param input_file  Source file which is instrumented.
+       @param output_file Filename for the instrumented source file
+     */
+    void
+    invoke_opari( std::string input_file,
+                  std::string output_file );
+
+    /**
+       Runs a script on a list of object files to generate the Pomp_Init
+       function.
+       @param object_files A list of space separated object file names.
+       @param output_file  Filename for the generated source file.
+     */
+    void
+    invoke_awk_script( std::string object_files,
+                       std::string output_file );
+
+    /**
+       Compiles the generated source file.
+       @param input_file  Source file which is compiled.
+       @param output_file Filename for the obejct file.
+     */
+    void
+    compile_init_file( std::string input_file,
+                       std::string
+                       output_file );
+
+    /**
+       Compiles a users source file. If the original command compile and
+       link in one step, we need to split compilation and linking, because
+       we need to run the script on the object files. Thus, we do already
+       compile the source. It uses the compiler used by the user command,
+       appends compiler flags given by the user.
+       @param input_file  Source file which is compiled.
+       @param output_file Filename for the obejct file.
+     */
+    void
+    compile_source_file( std::string input_file,
+                         std::string
+                         output_file );
+
+    /**
+        Retrieves the extension from a filename.
+        @param filename  A filename
+        @retuns the extension including the dot. If no extension is given
+                (no dot appears in the filename) an empty string is returned.
+     */
+    std::string
+    get_extension( std::string filename );
+
+    /**
+       Retrieves the basename from a filename. It removes the extension
+       including the last dot from a filename.
+       @param filename  A filename
+       @retuns the basename. If no extension is given
+               (no dot appears in the filename) the whole filename is returned.
+     */
+    std::string
+    get_basename( std::string filename );
+
+    /** Checks whether a file is a source file.
+        @param filename A file name.
+        @returns true if the file extension indicates a C/C++ or Fortran source
+                 file.
+     */
+    bool
+    is_source_file( std::string filename );
+
+    /** Checks whether a file is an object file.
+        @param filename A file name.
+        @returns true if the file extension indicates an object file.
+     */
+    bool
+    is_object_file( std::string filename );
 
     /* ***************************************************** Private members */
 private:
@@ -335,6 +441,26 @@ private:
        Stores external dependency libraries of the SILC library
      */
     std::string external_libs;
+
+    /**
+       C compiler
+     */
+    std::string c_compiler;
+
+    /**
+       nm
+     */
+    std::string nm;
+
+    /**
+       awk
+     */
+    std::string awk;
+
+    /**
+       Opari
+     */
+    std::string opari;
 };
 
 #endif /*SILC_INSTRUMENTER_H_*/

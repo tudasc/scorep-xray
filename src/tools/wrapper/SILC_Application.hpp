@@ -113,6 +113,35 @@ protected:
     virtual void
     AddLib( std::string lib ) = 0;
 
+    /**
+       This function is called from ReadConfigFile. It should set the C
+       compiler.
+       @param value Name of the C compiler.
+     */
+    virtual void
+    SetCompiler( std::string value );
+
+    /**
+       This function is called from ReadConfigFile. It should set the nm.
+       @param value nm
+     */
+    virtual void
+    SetNm( std::string value );
+
+    /**
+       This function is called from ReadConfigFile. It should set the awk.
+       @param value awk
+     */
+    virtual void
+    SetAwk( std::string value );
+
+    /**
+       This function is called from ReadConfigFile. It should set Opari.
+       @param value opari
+     */
+    virtual void
+    SetOpari( std::string value );
+
     /* **************************************** Protected implmented methods */
 protected:
     /**
