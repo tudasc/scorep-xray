@@ -24,14 +24,19 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-rm -rf serial_inst_test
+rm -rf config.h serial_inst_test
 make silc-config-tool-local
 . silc_config.dat
-./silc --instrument -verbosity=1 $CC -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
+echo "/* Dummy */" > config.h
+./silc --instrument -verbosity=1 $CC -I. -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
+if [ ! -e serial_inst_test ]; then
+    exit 1
+fi
 ./silc --measure -verbosity=1 ./serial_inst_test
 if [ $? -ne 0 ]; then
     rm -rf silc-measurement-tmp
     exit 1
 fi
+rm -rf config.h serial_inst_test
 
 exit 0
