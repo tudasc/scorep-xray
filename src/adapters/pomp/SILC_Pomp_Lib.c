@@ -45,6 +45,7 @@
 void
 POMP_Atomic_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Atomic_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -55,6 +56,7 @@ POMP_Atomic_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Atomic_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Atomic_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -65,6 +67,7 @@ POMP_Atomic_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Barrier_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Barrier_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -82,6 +85,7 @@ POMP_Barrier_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Barrier_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Barrier_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -99,6 +103,7 @@ POMP_Barrier_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Flush_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Flush_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -109,6 +114,7 @@ POMP_Flush_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Flush_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Flush_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -119,6 +125,7 @@ POMP_Flush_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Critical_begin( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Critical_begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -129,6 +136,7 @@ POMP_Critical_begin( POMP_Region_handle pomp_handle )
 void
 POMP_Critical_end( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Critical_end" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -139,6 +147,7 @@ POMP_Critical_end( POMP_Region_handle pomp_handle )
 void
 POMP_Critical_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Critical_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -149,6 +158,7 @@ POMP_Critical_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Critical_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Critical_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -159,6 +169,7 @@ POMP_Critical_exit( POMP_Region_handle pomp_handle )
 void
 POMP_For_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_For_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -169,6 +180,7 @@ POMP_For_enter( POMP_Region_handle pomp_handle )
 void
 POMP_For_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_For_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -179,6 +191,7 @@ POMP_For_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Master_begin( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Master_begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -189,6 +202,7 @@ POMP_Master_begin( POMP_Region_handle pomp_handle )
 void
 POMP_Master_end( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Master_end" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -199,6 +213,7 @@ POMP_Master_end( POMP_Region_handle pomp_handle )
 void
 POMP_Parallel_begin( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Parallel_begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -209,6 +224,7 @@ POMP_Parallel_begin( POMP_Region_handle pomp_handle )
 void
 POMP_Parallel_end( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Parallel_end" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -220,6 +236,7 @@ void
 POMP_Parallel_fork( POMP_Region_handle pomp_handle,
                     uint32_t           num_threads )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Parallel_fork" );
     /* If adapter is not initialized, initialize measurement */
     if ( !silc_pomp_is_initialized )
     {
@@ -230,6 +247,7 @@ POMP_Parallel_fork( POMP_Region_handle pomp_handle,
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
+        SILC_ASSERT( region != NULL );
         SILC_OmpFork( region->outerParallel, num_threads );
     }
 }
@@ -237,6 +255,7 @@ POMP_Parallel_fork( POMP_Region_handle pomp_handle,
 void
 POMP_Parallel_join( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Parallel_join" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -247,6 +266,7 @@ POMP_Parallel_join( POMP_Region_handle pomp_handle )
 void
 POMP_Section_begin( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Section_begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -257,6 +277,7 @@ POMP_Section_begin( POMP_Region_handle pomp_handle )
 void
 POMP_Section_end( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Section_end" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -267,6 +288,7 @@ POMP_Section_end( POMP_Region_handle pomp_handle )
 void
 POMP_Sections_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Sections_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -277,6 +299,7 @@ POMP_Sections_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Sections_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Sections_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -287,6 +310,7 @@ POMP_Sections_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Single_begin( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Single_begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -297,6 +321,7 @@ POMP_Single_begin( POMP_Region_handle pomp_handle )
 void
 POMP_Single_end( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Single_end" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -307,6 +332,7 @@ POMP_Single_end( POMP_Region_handle pomp_handle )
 void
 POMP_Single_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Single_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -317,6 +343,7 @@ POMP_Single_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Single_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Single_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -327,6 +354,7 @@ POMP_Single_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Workshare_enter( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Workshare_enter" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -337,6 +365,7 @@ POMP_Workshare_enter( POMP_Region_handle pomp_handle )
 void
 POMP_Workshare_exit( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Workshare_exit" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -353,6 +382,7 @@ POMP_Workshare_exit( POMP_Region_handle pomp_handle )
 void
 POMP_Init_lock( omp_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Init_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_INIT_LOCK ] );
@@ -370,6 +400,7 @@ POMP_Init_lock( omp_lock_t* s )
 void
 POMP_Destroy_lock( omp_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Destroy_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_DESTROY_LOCK ] );
@@ -387,6 +418,7 @@ POMP_Destroy_lock( omp_lock_t* s )
 void
 POMP_Set_lock( omp_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Set_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_SET_LOCK ] );
@@ -403,6 +435,7 @@ POMP_Set_lock( omp_lock_t* s )
 void
 POMP_Unset_lock( omp_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Unset_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_UNSET_LOCK ] );
@@ -419,6 +452,7 @@ POMP_Unset_lock( omp_lock_t* s )
 int
 POMP_Test_lock( omp_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Test_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         int result;
@@ -441,6 +475,7 @@ POMP_Test_lock( omp_lock_t* s )
 void
 POMP_Init_nest_lock( omp_nest_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Init_nest_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_INIT_NEST_LOCK ] );
@@ -458,6 +493,7 @@ POMP_Init_nest_lock( omp_nest_lock_t* s )
 void
 POMP_Destroy_nest_lock( omp_nest_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Destroy_nest_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_DESTROY_NEST_LOCK ] );
@@ -475,6 +511,7 @@ POMP_Destroy_nest_lock( omp_nest_lock_t* s )
 void
 POMP_Set_nest_lock( omp_nest_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Set_nest_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_SET_NEST_LOCK ] );
@@ -491,6 +528,7 @@ POMP_Set_nest_lock( omp_nest_lock_t* s )
 void
 POMP_Unset_nest_lock( omp_nest_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Unset_nest_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_EnterRegion( silc_pomp_regid[ SILC_POMP_UNSET_NEST_LOCK ] );
@@ -507,6 +545,7 @@ POMP_Unset_nest_lock( omp_nest_lock_t* s )
 int
 POMP_Test_nest_lock( omp_nest_lock_t* s )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Test_nest_lock" );
     if ( silc_pomp_is_tracing_on )
     {
         int result;

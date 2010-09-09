@@ -280,6 +280,7 @@ void
 POMP_Assign_handle( POMP_Region_handle* pomp_handle,
                     const char          init_string[] )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Assign_handle" );
     /* Index counter */
     static size_t count = 0;
 
@@ -301,6 +302,7 @@ POMP_Assign_handle( POMP_Region_handle* pomp_handle,
 void
 POMP_Begin( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -311,6 +313,7 @@ POMP_Begin( POMP_Region_handle pomp_handle )
 void
 POMP_End( POMP_Region_handle pomp_handle )
 {
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_End" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
