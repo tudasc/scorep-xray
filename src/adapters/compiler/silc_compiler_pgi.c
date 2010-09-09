@@ -338,22 +338,16 @@ __rouexit()
 void
 ___rouent2( struct s1* p )
 {
-    if ( silc_compiler_initialize )
-    {
-        __rouinit();
-    }
-    silc_compiler_location_data* location_data = silc_compiler_get_location_data();
-
     /* Ensure the compiler adapter is initialized */
     if ( silc_compiler_initialize )
     {
         SILC_InitMeasurement();
     }
-
-    /* Ensure thread is initialized */
+    silc_compiler_location_data* location_data = silc_compiler_get_location_data();
     if ( location_data == NULL )
     {
-        return;
+        silc_compiler_init_location();
+        location_data = silc_compiler_get_location_data();
     }
 
     /* Register new regions */
@@ -408,7 +402,10 @@ void
 ___rouret2( void )
 {
     silc_compiler_location_data* location_data = silc_compiler_get_location_data();
-
+    if ( location_data == NULL )
+    {
+        return;
+    }
     if ( location_data->callstack_count < silc_compiler_callstack_max )
     {
         location_data->callstack_top--;
