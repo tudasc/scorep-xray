@@ -1,0 +1,35 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## maintainer Johannes Spazier <johannes.spazier@tu-dresden.de>
+
+bin_PROGRAMS += silc_config
+
+silc_config_SOURCES = $(SRC_ROOT)src/tools/config/silc_config.c
+
+silc_config_CFLAGS = -DINCDIR=\""$(includedir)"\"    \
+                     -DLIBDIR=\""$(libdir)"\"        \
+                     -DCFLAGS=\""$(AM_CFLAGS)"\"     \
+                     -DCPPFLAGS=\""$(AM_CPPFLAGS)"\" \
+                     -DINST_CPPFLAGS=\""@COMPILER_INSTRUMENTATION_CPPFLAGS@"\" \
+                     -DCC=\""$(CC)"\"                \
+                     -DCXX=\""$(CXX)"\"              \
+                     -DFC=\""$(FC)"\"                \
+                     -DF77=\""$(F77)"\"              \
+                     -DPREFIX=\""$(prefix)"\"        \
+                     -DLIBBFD=\""$(LIBBFD)"\"
+
