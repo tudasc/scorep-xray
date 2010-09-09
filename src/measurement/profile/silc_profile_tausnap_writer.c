@@ -90,10 +90,10 @@ silc_profile_write_region_tau( silc_profile_node* node,
 {
     /* Construct callpath name */
     const char* name   = SILC_Region_GetName( SILC_PROFILE_DATA2REGION( node->type_specific_data ) );
-    int         length = strlen( name ) + 2;
+    int         length = strlen( name ) + 1;
     if ( parentpath )
     {
-        length += strlen( parentpath );
+        length += strlen( parentpath ) + 7;
     }
     char* path = SILC_Memory_AllocForProfile( length );
     if ( parentpath == NULL )
