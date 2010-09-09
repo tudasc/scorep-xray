@@ -450,7 +450,7 @@ SILC_Instrumenter::invoke_awk_script( std::string object_files,
 {
     std::string path    = SILC_GetExecutablePath( opari.c_str() );
     std::string command = nm + " " +  object_files
-                          + " | grep -i \"  pomp_init_regions\" | "
+                          + " | grep -i \" pomp_init_regions\" | "
                           + awk + " -f "
                           + path + "/parse_pomp_init_regions.awk > "
                           + output_file;
