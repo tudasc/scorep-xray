@@ -201,6 +201,11 @@ SILC_Instrumenter::parse_parameter( std::string arg )
         opari_instrumentation = enabled;
         return silc_parse_mode_param;
     }
+    else if ( arg == "-noopari" )
+    {
+        opari_instrumentation = disabled;
+        return silc_parse_mode_param;
+    }
     else if ( arg == "-nouser" )
     {
         opari_instrumentation = disabled;
@@ -423,7 +428,8 @@ void
 SILC_Instrumenter::invoke_opari( std::string input_file,
                                  std::string output_file )
 {
-    std::string command = opari + " " + input_file + " " + output_file;
+    std::string command = opari + " -nthreads " + input_file
+                          + " " + output_file;
     if ( verbosity >= 1 )
     {
         std::cout << command << std::endl;
@@ -704,6 +710,11 @@ SILC_Instrumenter::execute_command()
                          " -lsilc_omp" : " -lsilc_serial" );
         }
         silc_lib += " -lotf2 -lsilc_utilities";
+        if ( is_openmp_application == enabled &&
+             opari_instrumentation == disabled )
+        {
+            silc_lib += " -lsilc_pomp_dummy";
+        }
     }
     std::string command = compiler_name
                           + silc_library_path
