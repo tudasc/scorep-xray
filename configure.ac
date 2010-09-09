@@ -62,7 +62,7 @@ AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
 
 
 # handle external package's subdir configures
-AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [${args} ac_scorep_platform=${ac_silc_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_silc_cross_compiling} ac_scorep_doxygen_distdir=${ac_silc_doxygen_distdir}/vendor/otf2])
+AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [${args} ac_silc_platform=${ac_silc_platform} ac_silc_platform_data_provided=yes ac_silc_cross_compiling=${ac_silc_cross_compiling} ac_silc_doxygen_distdir=${ac_silc_doxygen_distdir}/vendor/otf2])
 
 # handle own package's subdir configures
 AC_SILC_MPI_COMPILER
