@@ -1,0 +1,13 @@
+check_PROGRAMS += tau_test
+
+tau_test_SOURCES = \
+	$(SRC_ROOT)/test/adapters/tau/tau_test.c 
+
+tau_test_CPPFLAGS = $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_UTIL)
+
+tau_test_LDADD = \
+    $(LIB_ROOT)libsilc_serial.la \
+    $(LIB_DIR_UTIL)libsilc_utilities.la
+
