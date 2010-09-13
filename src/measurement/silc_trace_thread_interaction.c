@@ -147,6 +147,7 @@ SILC_SetOtf2WriterLocationId( SILC_Thread_LocationData* threadLocationData )
     // Does this function needs locking? I don't think so, it operates just on local data.
     if ( !SILC_IsTracingEnabled() )
     {
+        int i = 1;
         return;
     }
 
