@@ -40,10 +40,11 @@
 SILC_Trace_LocationData*
 SILC_Trace_CreateLocationData()
 {
-    if ( !SILC_IsTracingEnabled() )
-    {
-        return 0;
-    }
+    // already checked at call-site
+//    if ( !SILC_IsTracingEnabled() )
+//    {
+//        return 0;
+//    }
     SILC_Trace_LocationData* new_data = SILC_Memory_AllocForMisc(
         sizeof( SILC_Trace_LocationData ) );
     // initialize in SILC_Trace_OnLocationCreation

@@ -229,11 +229,19 @@ silc_thread_create_location_data_for( SILC_Thread_ThreadPrivateData* tpd )
     silc_thread_update_tpd( tpd );                                  // from here on clients can use
                                                                     // SILC_Thread_GetLocationData, i.e. TPD
 
-    new_location->profile_data = SILC_Profile_CreateLocationData();
-    assert( new_location->profile_data );
+    new_location->profile_data = 0;
+    if ( SILC_IsProfilingEnabled() )
+    {
+        new_location->profile_data = SILC_Profile_CreateLocationData();
+        assert( new_location->profile_data );
+    }
 
-    new_location->trace_data = SILC_Trace_CreateLocationData();
-    assert( new_location->trace_data );
+    new_location->trace_data = 0;
+    if ( SILC_IsTracingEnabled() )
+    {
+        new_location->trace_data = SILC_Trace_CreateLocationData();
+        assert( new_location->trace_data );
+    }
 
     #pragma omp critical (new_location)
     {

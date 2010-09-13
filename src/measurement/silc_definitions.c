@@ -200,7 +200,7 @@ silc_write_definitions_to_otf2( void )
     silc_write_marker_group_definitions_to_otf2( definition_writer );
     silc_write_marker_definitions_to_otf2( definition_writer );
     silc_write_parameter_definitions_to_otf2( definition_writer );
-    silc_write_callpath_definitions_to_otf2( definition_writer );
+    //silc_write_callpath_definitions_to_otf2( definition_writer );
 }
 
 
