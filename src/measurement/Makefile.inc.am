@@ -44,6 +44,8 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_parameter_registration.h    \
     $(SRC_ROOT)src/measurement/silc_parameter_registration.c    \
     $(SRC_ROOT)src/measurement/silc_mpi.h                       \
+    $(SRC_ROOT)src/measurement/silc_environment.c               \
+    $(SRC_ROOT)src/measurement/silc_environment.h               \   
     $(SRC_ROOT)src/measurement/silc_unify.c                     \
     $(SRC_ROOT)src/measurement/silc_unify.h
 

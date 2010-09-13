@@ -49,6 +49,7 @@
 #include "silc_types.h"
 #include "silc_adapter.h"
 #include "silc_definitions.h"
+#include "silc_environment.h"
 #include "silc_status.h"
 #include "silc_mpi.h"
 #include "silc_thread.h"
@@ -114,18 +115,16 @@ SILC_InitMeasurement( void )
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the adapter initialization.
     silc_initialized = true;
-    silc_register_config_variables( silc_env_configs );
+    SILC_Env_InitializeCoreEnvironmentVariables();
     SILC_Status_Initialize();
 
     silc_initialization_sanity_checks();
     SILC_Timer_Initialize();
     SILC_CreateExperimentDir();
 
-    // we may read total memory and pagesize from config file and pass it to
-    // SILC_Memory_Initialize.
     // Need to be called before the first use of any SILC_Alloc function, in
     // particular before SILC_Thread_Initialize
-    SILC_Memory_Initialize( 1200 * 1024 /* 1200 kB */, 8192 /* 8 kB */ ); // 150 pages
+    SILC_Memory_Initialize( SILC_Env_GetTotalMemory(), SILC_Env_GetPageSize() );
 
     // initialize before SILC_Thread_Initialize() because latter may create a
     // writer that needs the archive.
@@ -169,23 +168,9 @@ silc_initialization_sanity_checks()
         _Exit( EXIT_FAILURE );
     }
 
-    if ( silc_env_verbose )
+    if ( SILC_Env_RunVerbose() )
     {
         fprintf( stderr, "SILC running in verbose mode\n" );
-    }
-}
-
-
-static void
-silc_register_config_variables( SILC_ConfigVariable configVars[] )
-{
-    /* all config variables are registers => parse configure once */
-    SILC_Error_Code error = SILC_ConfigRegister( NULL, silc_env_configs );
-
-    if ( SILC_SUCCESS != error )
-    {
-        SILC_ERROR( error, "Can't register core config variables" );
-        _Exit( EXIT_FAILURE );
     }
 }
 
@@ -290,7 +275,7 @@ silc_adapters_initialize()
                         silc_adapters[ i ]->adapter_name );
             _Exit( EXIT_FAILURE );
         }
-        else if ( silc_env_verbose )
+        else if ( SILC_Env_RunVerbose() )
         {
             fprintf( stderr, "SILC successfully initialized %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -319,7 +304,7 @@ silc_adapters_initialize_location()
                         silc_adapters[ i ]->adapter_name );
             _Exit( EXIT_FAILURE );
         }
-        else if ( silc_env_verbose )
+        else if ( SILC_Env_RunVerbose() )
         {
             fprintf( stderr, "SILC successfully initialized location for %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -489,7 +474,7 @@ silc_adapters_finalize_location()
             //silc_adapters[ i ]->adapter_finalize_location(location_ptr???);
         }
 
-        if ( silc_env_verbose )
+        if ( SILC_Env_RunVerbose() )
         {
             fprintf( stderr, "SILC finalized %s adapter location\n",
                      silc_adapters[ i ]->adapter_name );
@@ -509,7 +494,7 @@ silc_adapters_finalize()
             silc_adapters[ i ]->adapter_finalize();
         }
 
-        if ( silc_env_verbose )
+        if ( SILC_Env_RunVerbose() )
         {
             fprintf( stderr, "SILC finalized %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -529,7 +514,7 @@ silc_adapters_deregister()
             silc_adapters[ i ]->adapter_deregister();
         }
 
-        if ( silc_env_verbose )
+        if ( SILC_Env_RunVerbose() )
         {
             fprintf( stderr, "SILC de-registered %s adapter\n",
                      silc_adapters[ i ]->adapter_name );
@@ -560,7 +545,7 @@ silc_otf2_finalize()
     }
 
     int* n_definitions_per_location = 0;
-    if ( !silc_env_unify )
+    if ( !SILC_Env_DoUnification() )
     {
         n_definitions_per_location = SILC_Mpi_GatherNumberOfDefinitionsPerLocation( n_locations_per_rank, n_global_locations );
     }
@@ -569,7 +554,7 @@ silc_otf2_finalize()
     {
         OTF2_Archive_SetNumberOfLocations( silc_otf2_archive, n_global_locations );
 
-        if ( !silc_env_unify )
+        if ( !SILC_Env_DoUnification() )
         {
             OTF2_GlobDefWriter* global_definition_writer =
                 OTF2_Archive_GetGlobDefWriter( silc_otf2_archive,

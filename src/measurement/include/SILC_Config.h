@@ -129,15 +129,4 @@ SILC_ConfigRegister
  */
 
 
-extern SILC_ConfigVariable silc_env_configs[];
-
-extern bool                silc_env_verbose;
-
-extern bool                silc_env_unify;
-
-extern bool                silc_env_tracing;
-
-extern bool                silc_env_profiling;
-
-
 #endif /* SILC_CONFIG_H */

@@ -29,6 +29,7 @@
 #include "silc_status.h"
 #include "silc_mpi.h"
 #include <SILC_Config.h>
+#include "silc_environment.h"
 
 #include <limits.h>
 #include <assert.h>
@@ -74,8 +75,8 @@ silc_status_initialize_common()
     // environment variables already processed. can we check this somehow?
 
     // These two variables may become public in future due to performance reasons.
-    status.is_profiling_enabled = silc_env_profiling;
-    status.is_tracing_enabled   = silc_env_tracing;
+    status.is_profiling_enabled = SILC_Env_DoProfiling();
+    status.is_tracing_enabled   = SILC_Env_DoTracing();
 }
 
 
