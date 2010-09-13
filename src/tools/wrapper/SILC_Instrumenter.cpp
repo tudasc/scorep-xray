@@ -57,7 +57,7 @@ SILC_Instrumenter::SILC_Instrumenter()
     c_compiler = "";
     nm         = "nm";
     awk        = "awk";
-    opari      = "opari";
+    opari      = "opari2";
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()

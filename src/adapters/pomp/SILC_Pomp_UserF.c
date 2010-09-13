@@ -17,16 +17,16 @@
  * @file       SILC_Pomp_UserF.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
- * @ingroup    POMP
+ * @ingroup    POMP2
  *
- * @brief Implementation of the POMP fortran user adapter functions and initialization.
+ * @brief Implementation of the POMP2 fortran user adapter functions and initialization.
  */
 
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "pomp_lib.h"
+#include "pomp2_lib.h"
 #include "SILC_Fortran_Wrapper.h"
 #include "SILC_Pomp_Variables.h"
 #include "SILC_Pomp_Fortran.h"
@@ -36,46 +36,46 @@
  */
 /* *INDENT-OFF*  */
 
-void FSUB(POMP_Assign_handle)(POMP_Region_handle_fortran* regionHandle,
+void FSUB(POMP2_Assign_handle)(POMP2_Region_handle_fortran* regionHandle,
                               char* ctc_string,
                               int ctc_string_len)
 {
     char *str;
-    POMP_Region_handle c_handle;
+    POMP2_Region_handle c_handle;
     str = (char*) malloc((ctc_string_len+1)*sizeof(char));
     strncpy(str,ctc_string,ctc_string_len);
     str[ctc_string_len] = '\0';
-    POMP_Assign_handle(&c_handle,str);
+    POMP2_Assign_handle(&c_handle,str);
     *regionHandle = SILC_POMP_C2F_REGION( c_handle );
     free(str);
 }
 
-void FSUB(POMP_Finalize)()
+void FSUB(POMP2_Finalize)()
 {
-  POMP_Finalize();
+  POMP2_Finalize();
 }
 
-void FSUB(POMP_Init)()
+void FSUB(POMP2_Init)()
 {
-  POMP_Init();
+  POMP2_Init();
 }
 
-void FSUB(POMP_Off)()
+void FSUB(POMP2_Off)()
 {
   silc_pomp_is_tracing_on = 0;
 }
 
-void FSUB(POMP_On)()
+void FSUB(POMP2_On)()
 {
   silc_pomp_is_tracing_on = 1;
 }
 
-void FSUB(POMP_Begin)(POMP_Region_handle_fortran* regionHandle)
+void FSUB(POMP2_Begin)(POMP2_Region_handle_fortran* regionHandle)
 {
-  if ( silc_pomp_is_tracing_on ) POMP_Begin(SILC_POMP_F2C_REGION(regionHandle));
+  if ( silc_pomp_is_tracing_on ) POMP2_Begin(SILC_POMP_F2C_REGION(regionHandle));
 }
 
-void FSUB(POMP_End)(POMP_Region_handle_fortran* regionHandle)
+void FSUB(POMP2_End)(POMP2_Region_handle_fortran* regionHandle)
 {
-  if ( silc_pomp_is_tracing_on ) POMP_End(SILC_POMP_F2C_REGION(regionHandle));
+  if ( silc_pomp_is_tracing_on ) POMP2_End(SILC_POMP_F2C_REGION(regionHandle));
 }

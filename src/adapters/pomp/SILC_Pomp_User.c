@@ -17,9 +17,9 @@
  * @file       SILC_Pomp_User.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
- * @ingroup    POMP
+ * @ingroup    POMP2
  *
- * @brief Implementation of the POMP user adapter functions and initialization.
+ * @brief Implementation of the POMP2 user adapter functions and initialization.
  */
 
 #include <config.h>
@@ -30,12 +30,12 @@
 #include "SILC_Definitions.h"
 #include "SILC_Events.h"
 #include "SILC_Pomp_Init.h"
-#include "pomp_lib.h"
+#include "pomp2_lib.h"
 #include "SILC_Pomp_RegionInfo.h"
 #include "SILC_Pomp_Lock.h"
 #include "silc_utility/SILC_Utils.h"
 
-/** @ingroup POMP
+/** @ingroup POMP2
     @{
  */
 
@@ -49,7 +49,7 @@ SILC_Pomp_Region* silc_pomp_regions;
 /** Contains the region handle for all implicit barriers */
 SILC_RegionHandle silc_pomp_implicit_barrier_region = SILC_INVALID_REGION;
 
-/** Flag to indicate, wether POMP traceing is enable/disabled */
+/** Flag to indicate, wether POMP2 traceing is enable/disabled */
 bool silc_pomp_is_tracing_on = true;
 
 /** Source file handle for pomp wrapper functions and implicit barrier region. */
@@ -140,10 +140,10 @@ silc_pomp_init()
         SILC_InitMeasurement();
 
         /* Initialize file handle for implicit barrier */
-        silc_pomp_file_handle = SILC_DefineSourceFile( "POMP" );
+        silc_pomp_file_handle = SILC_DefineSourceFile( "POMP2" );
 
-        /* Allocate memory for your POMP_Get_num_regions() regions */
-        silc_pomp_regions = calloc( POMP_Get_num_regions(),
+        /* Allocate memory for your POMP2_Get_num_regions() regions */
+        silc_pomp_regions = calloc( POMP2_Get_num_regions(),
                                     sizeof( SILC_Pomp_Region ) );
 
         /* Initialize implicit barrier region */
@@ -161,7 +161,7 @@ silc_pomp_init()
 #endif  // _OPENMP
 
         /* Register regions inserted by Opari */
-        POMP_Init_regions();
+        POMP2_Init_regions();
     }
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_EXIT,
@@ -195,7 +195,7 @@ silc_pomp_final()
 {
     static int   pomp_finalize_called = 0;
     size_t       i;
-    const size_t nRegions = POMP_Get_num_regions();
+    const size_t nRegions = POMP2_Get_num_regions();
 
     if ( silc_pomp_regions )
     {
@@ -226,12 +226,12 @@ silc_pomp_deregister()
 }
 
 /** Struct which contains the adapter iniitialization and finalization functions for the
-    POMP adapter.
+    POMP2 adapter.
  */
 struct SILC_Adapter SILC_Pomp_Adapter =
 {
     SILC_ADAPTER_POMP,
-    "POMP Adapter / Version 1.0",
+    "POMP2 Adapter / Version 1.0",
     &silc_pomp_register,
     &silc_pomp_init,
     &silc_pomp_init_location,
@@ -247,17 +247,17 @@ struct SILC_Adapter SILC_Pomp_Adapter =
 
 
 void
-POMP_Finalize()
+POMP2_Finalize()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "Enter POMP_Finalize\n" );
+                       "Enter POMP2_Finalize\n" );
 }
 
 void
-POMP_Init()
+POMP2_Init()
 {
     SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP | SILC_DEBUG_FUNCTION_ENTRY,
-                       "Enter POMP_Init\n" );
+                       "Enter POMP2_Init\n" );
 
     /* If adapter is not initialized, it means that the measurement system is not
        initialized. */
@@ -265,22 +265,22 @@ POMP_Init()
 }
 
 void
-POMP_Off()
+POMP2_Off()
 {
     silc_pomp_is_tracing_on = false;
 }
 
 void
-POMP_On()
+POMP2_On()
 {
     silc_pomp_is_tracing_on = true;
 }
 
 void
-POMP_Assign_handle( POMP_Region_handle* pomp_handle,
-                    const char          init_string[] )
+POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
+                     const char           init_string[] )
 {
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Assign_handle" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP2_Assign_handle" );
     /* Index counter */
     static size_t count = 0;
 
@@ -292,7 +292,7 @@ POMP_Assign_handle( POMP_Region_handle* pomp_handle,
 
     /* Increase array index */
     ++count;
-    SILC_ASSERT( count <= POMP_Get_num_regions() );
+    SILC_ASSERT( count <= POMP2_Get_num_regions() );
 }
 
 /* **************************************************************************************
@@ -300,9 +300,9 @@ POMP_Assign_handle( POMP_Region_handle* pomp_handle,
  ***************************************************************************************/
 
 void
-POMP_Begin( POMP_Region_handle pomp_handle )
+POMP2_Begin( POMP2_Region_handle pomp_handle )
 {
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_Begin" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP2_Begin" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;
@@ -311,9 +311,9 @@ POMP_Begin( POMP_Region_handle pomp_handle )
 }
 
 void
-POMP_End( POMP_Region_handle pomp_handle )
+POMP2_End( POMP2_Region_handle pomp_handle )
 {
-    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP_End" );
+    SILC_DEBUG_PRINTF( SILC_DEBUG_OPENMP, "In POMP2_End" );
     if ( silc_pomp_is_tracing_on )
     {
         SILC_Pomp_Region* region = ( SILC_Pomp_Region* )pomp_handle;

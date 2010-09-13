@@ -20,16 +20,16 @@
  * @file       SILC_Pomp_Variables.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
- * @ingroup    POMP
+ * @ingroup    POMP2
  *
  * @brief Declaration of global variables, used in several source files of the
-          POMP adapter.
+          POMP2 adapter.
  */
 
 #include "SILC_PublicTypes.h"
 #include <stdbool.h>
 
-/** @ingroup POMP
+/** @ingroup POMP2
     @{
  */
 
