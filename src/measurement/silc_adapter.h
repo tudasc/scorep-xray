@@ -22,7 +22,7 @@
  * @file        silc_adatper.h
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      ALPHA
+ * @status      alpha
  *
  * @brief       Exports the adapters array for the measurement system.
  */

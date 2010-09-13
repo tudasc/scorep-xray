@@ -18,7 +18,7 @@
  * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * Test of the implementation of the SILC_Timing.h interface that uses the
  * gettimeofday timer.

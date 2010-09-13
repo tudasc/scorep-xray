@@ -18,7 +18,7 @@
  * @file       self_contained_silc_definition_locking.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */

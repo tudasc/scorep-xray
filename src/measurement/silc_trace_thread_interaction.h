@@ -22,7 +22,7 @@
  * @file       SILC_Trace_ThreadInteraction.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */

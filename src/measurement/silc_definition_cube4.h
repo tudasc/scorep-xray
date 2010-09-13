@@ -21,7 +21,7 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  * Declares functions and types needed for writing definitions in Cube 4
  * format.
  */

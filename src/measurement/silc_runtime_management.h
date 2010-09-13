@@ -22,7 +22,7 @@
  * @file       silc_runtime_management.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  */
 

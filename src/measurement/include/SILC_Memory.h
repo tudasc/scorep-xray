@@ -25,7 +25,7 @@
  *
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  * @todo add comments about synchronization needs
  */

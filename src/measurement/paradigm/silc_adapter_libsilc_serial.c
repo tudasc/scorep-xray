@@ -18,7 +18,7 @@
  * @file        silc_adatper_libsilc_serial.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      ALPHA
+ * @status      alpha
  *
  * @brief       Holds the list of adapters linked into the measurement system.
  */

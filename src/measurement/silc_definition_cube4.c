@@ -18,7 +18,7 @@
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  * Writes the definitions to Cube 4.
  */
 

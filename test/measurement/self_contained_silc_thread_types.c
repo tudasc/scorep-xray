@@ -18,7 +18,7 @@
  * @file       self_contained_silc_thread_types.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */

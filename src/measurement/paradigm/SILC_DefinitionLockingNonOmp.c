@@ -21,7 +21,7 @@
  * @todo       When using threaded MPI this implementation may not be sufficient.
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */

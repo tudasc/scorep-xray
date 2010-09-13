@@ -26,7 +26,7 @@
  * @file        silc_types.h
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      ALPHA
+ * @status      alpha
  *
  * @brief Functions to convert types from @ref SILC_Types.h into strings.
  */
