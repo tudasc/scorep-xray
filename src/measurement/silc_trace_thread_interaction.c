@@ -18,7 +18,7 @@
  * @file       silc_trace_thread_interaction.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status ALPHA
+ * @status alpha
  *
  *
  */
@@ -135,7 +135,6 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
     }
     else
     {
-        // needs locking?
         SILC_SetOtf2WriterLocationId( locationData );
     }
 }
@@ -144,6 +143,7 @@ SILC_Trace_OnLocationCreation( SILC_Thread_LocationData* locationData,
 void
 SILC_SetOtf2WriterLocationId( SILC_Thread_LocationData* threadLocationData )
 {
+    // Does this function needs locking? I don't think so, it operates just on local data.
     if ( !SILC_IsTracingEnabled() )
     {
         return;
