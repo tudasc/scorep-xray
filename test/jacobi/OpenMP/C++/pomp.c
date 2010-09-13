@@ -28,19 +28,19 @@
 #include <stddef.h>
 
 extern void
-POMP_Init_regions_1269949776865275_3();
+POMP2_Init_regions_1269949776865275_3();
 extern void
-POMP_Init_regions_1269949782624507_1();
+POMP2_Init_regions_1269949782624507_1();
 
 void
-POMP_Init_regions()
+POMP2_Init_regions()
 {
-    POMP_Init_regions_1269949776865275_3();
-    POMP_Init_regions_1269949782624507_1();
+    POMP2_Init_regions_1269949776865275_3();
+    POMP2_Init_regions_1269949782624507_1();
 }
 
 size_t
-POMP_Get_num_regions()
+POMP2_Get_num_regions()
 {
     return 4;
 }

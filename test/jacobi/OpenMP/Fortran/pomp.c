@@ -33,14 +33,14 @@ extern void
 pomp_init_regions_1276000359657996_1_();
 
 void
-POMP_Init_regions()
+POMP2_Init_regions()
 {
     pomp_init_regions_1276000369681619_3_();
     pomp_init_regions_1276000359657996_1_();
 }
 
 size_t
-POMP_Get_num_regions()
+POMP2_Get_num_regions()
 {
     return 4;
 }

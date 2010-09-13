@@ -46,14 +46,14 @@ main()
 {
     printf( "thread %d in main.     pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
     int pomp_num_threads = omp_get_max_threads();
-    POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
+    POMP2_Parallel_fork( pomp_region_1, pomp_num_threads );
     PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
     {
         printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
         foo();
     }
     printf( "thread %d before join. pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
-    POMP_Parallel_join( pomp_region_1 );
+    POMP2_Parallel_join( pomp_region_1 );
     printf( "thread %d after join.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
 
     return 0;

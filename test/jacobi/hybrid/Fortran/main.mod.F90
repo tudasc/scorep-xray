@@ -1,7 +1,7 @@
-#ifdef _POMP
-#  undef _POMP
+#ifdef _POMP2
+#  undef _POMP2
 #endif
-#define _POMP 200110
+#define _POMP2 200110
 
 #line 1 "main.F90"
 program MAIN
@@ -256,11 +256,11 @@ subroutine InitializeMatrix (myData)
     ! Initilize initial condition and RHS
   
 pomp_num_threads = omp_get_max_threads();
-      call POMP_Parallel_fork(pomp_region_1,pomp_num_threads)
+      call POMP2_Parallel_fork(pomp_region_1,pomp_num_threads)
 #line 249 "main.F90"
 !$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
-      call POMP_Parallel_begin(pomp_region_1)
-      call POMP_Do_enter(pomp_region_1)
+      call POMP2_Parallel_begin(pomp_region_1)
+      call POMP2_Do_enter(pomp_region_1)
 #line 249 "main.F90"
 !$omp          do                       
     do j = myData%iRowFirst, myData%iRowLast
@@ -274,13 +274,13 @@ pomp_num_threads = omp_get_max_threads();
         end do
     end do
 !$omp end do nowait
-      call POMP_Barrier_enter(pomp_region_1)
+      call POMP2_Barrier_enter(pomp_region_1)
 !$omp barrier
-      call POMP_Barrier_exit(pomp_region_1)
-      call POMP_Do_exit(pomp_region_1)
-      call POMP_Parallel_end(pomp_region_1)
+      call POMP2_Barrier_exit(pomp_region_1)
+      call POMP2_Do_exit(pomp_region_1)
+      call POMP2_Parallel_end(pomp_region_1)
 !$omp end parallel
-      call POMP_Parallel_join(pomp_region_1)
+      call POMP2_Parallel_join(pomp_region_1)
 #line 261 "main.F90"
 end subroutine InitializeMatrix
 
@@ -354,7 +354,7 @@ subroutine CheckError(myData)
    
 end subroutine CheckError
 
-      subroutine POMP_Init_regions_1276000461487383_1()
+      subroutine POMP2_Init_regions_1276000461487383_1()
          include 'main.F90.opari.inc'
-         call POMP_Assign_handle( pomp_region_1, "68*regionType=paralleldo*sscl=main.F90:249:249*escl=main.F90:260:260**" );
+         call POMP2_Assign_handle( pomp_region_1, "68*regionType=paralleldo*sscl=main.F90:249:249*escl=main.F90:260:260**" );
       end subroutine

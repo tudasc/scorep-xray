@@ -27,7 +27,7 @@
 
 #include <config.h>
 
-#include <pomp_lib.h>
+#include <pomp2_lib.h>
 
 
 int

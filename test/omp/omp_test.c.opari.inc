@@ -1,5 +1,5 @@
 #include <config.h>
-#include "pomp_lib.h"
+#include "pomp2_lib.h"
 
 extern int64_t FORTRAN_MANGLED(pomp_tpd);
 #define STR_( s ) #s
@@ -10,9 +10,9 @@ PRAGMA_OMP_THREADPRIVATE(FORTRAN_MANGLED(pomp_tpd))
 #endif
 
 #define POMP_DLIST_00001 shared( pomp_region_1 )
-static POMP_Region_handle pomp_region_1;
+static POMP2_Region_handle pomp_region_1;
 
-void POMP_Init_regions_1274996139600418_1()
+void POMP2_Init_regions_1274996139600418_1()
 {
-    POMP_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**" );
+    POMP2_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**" );
 }
