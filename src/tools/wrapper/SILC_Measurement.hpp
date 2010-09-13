@@ -28,7 +28,7 @@
 #include <iostream>
 #include <string>
 
-#include "SILC_Application.hpp"
+#include <silc_utility/SILC_ParserBase.hpp>
 
 /* ****************************************************************************
    Class SILC_Measurement
@@ -39,7 +39,7 @@
  *  This class performs a measurement run. Currently, it only invokes the
  *  user command.
  */
-class SILC_Measurement : public SILC_Application
+class SILC_Measurement : public SILC_ParserBase
 {
     /* ****************************************************** Public methods */
 public:

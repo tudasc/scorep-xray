@@ -26,8 +26,7 @@
 #include <iostream>
 #include <string>
 
-
-#include "SILC_Application.hpp"
+#include "silc_utility/SILC_ParserBase.hpp"
 
 /* ****************************************************************************
    Class SILC_Instrumenter
@@ -39,7 +38,7 @@
  *  instrumentation. Makes the necessary modifications to the user command
  *  for instrumentation and executed the user command.
  */
-class SILC_Instrumenter : public SILC_Application
+class SILC_Instrumenter : public SILC_ParserBase
 {
     /* ******************************************************* Private Types */
 private:

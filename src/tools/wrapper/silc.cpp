@@ -96,7 +96,7 @@ int
 main( int   argc,
       char* argv[] )
 {
-    SILC_Application* app = NULL;
+    SILC_ParserBase* app = NULL;
 
     if ( argc > 1 )
     {

@@ -3,16 +3,16 @@
 bin_PROGRAMS += silc
 
 silc_SOURCES = \
-    $(SRC_ROOT)src/tools/wrapper/SILC_Application.cpp     \
     $(SRC_ROOT)src/tools/wrapper/silc.cpp                 \
     $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.cpp    \
     $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.cpp     \
-    $(SRC_ROOT)src/tools/wrapper/SILC_Application.hpp     \
     $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.hpp    \
     $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.hpp
 
 silc_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(SRC_ROOT)src/tools/wrapper  \
-    -I$(INC_DIR_UTIL)
+    -I$(INC_DIR_UTIL)               \
+    -I$(SRC_ROOT)vendor/otf2/vendor/utility/src/parser
 
-silc_LDADD = $(LIB_DIR_UTIL)libsilc_utilities.la
+silc_LDADD = $(LIB_DIR_UTIL)libsilc_utilities.la    \
+             $(LIB_DIR_UTIL)libsilc_parser_tools.la
