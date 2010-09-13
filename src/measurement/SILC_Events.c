@@ -51,10 +51,7 @@
  * Generate a region enter event in the measurement system.
  */
 void
-SILC_EnterRegion
-(
-    SILC_RegionHandle regionHandle
-)
+SILC_EnterRegion( SILC_RegionHandle regionHandle )
 {
     uint64_t                  timestamp = SILC_GetClockTicks();
     SILC_Thread_LocationData* location  = SILC_Thread_GetLocationData();
@@ -66,10 +63,13 @@ SILC_EnterRegion
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
 
-    OTF2_EvtWriter_Enter( SILC_Thread_GetTraceLocationData( location )->otf_writer,
-                          NULL,
-                          timestamp,
-                          SILC_HANDLE_TO_ID( regionHandle, Region ) );
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_Enter( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                              NULL,
+                              timestamp,
+                              SILC_HANDLE_TO_ID( regionHandle, Region ) );
+    }
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -84,10 +84,7 @@ SILC_EnterRegion
  * Generate a region exit event in the measurement system.
  */
 void
-SILC_ExitRegion
-(
-    SILC_RegionHandle regionHandle
-)
+SILC_ExitRegion( SILC_RegionHandle regionHandle )
 {
     uint64_t                  timestamp = SILC_GetClockTicks();
     SILC_Thread_LocationData* location  = SILC_Thread_GetLocationData();
@@ -99,10 +96,13 @@ SILC_ExitRegion
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
 
-    OTF2_EvtWriter_Leave( SILC_Thread_GetTraceLocationData( location )->otf_writer,
-                          NULL,
-                          timestamp,
-                          SILC_HANDLE_TO_ID( regionHandle, Region ) );
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_Leave( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                              NULL,
+                              timestamp,
+                              SILC_HANDLE_TO_ID( regionHandle, Region ) );
+    }
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -118,13 +118,10 @@ SILC_ExitRegion
  * Generate an mpi send event in the measurement system.
  */
 void
-SILC_MpiSend
-(
-    uint32_t                   globalDestinationRank,
-    SILC_MPICommunicatorHandle communicatorHandle,
-    uint32_t                   tag,
-    uint64_t                   bytesSent
-)
+SILC_MpiSend( uint32_t                   globalDestinationRank,
+              SILC_MPICommunicatorHandle communicatorHandle,
+              uint32_t                   tag,
+              uint64_t                   bytesSent )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -138,14 +135,21 @@ SILC_MpiSend
                        tag,
                        ( unsigned long long )bytesSent );
 
-    OTF2_EvtWriter_MpiSend( SILC_Thread_GetTraceLocationData( location )->otf_writer,
-                            NULL,
-                            SILC_GetClockTicks(),
-                            OTF2_MPI_BLOCK,
-                            globalDestinationRank,
-                            SILC_HANDLE_TO_ID( communicatorHandle, Group ),
-                            tag,
-                            bytesSent );
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_MpiSend( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                NULL,
+                                SILC_GetClockTicks(),
+                                OTF2_MPI_BLOCK,
+                                globalDestinationRank,
+                                SILC_HANDLE_TO_ID( communicatorHandle, Group ),
+                                tag,
+                                bytesSent );
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -153,13 +157,10 @@ SILC_MpiSend
  * Generate an mpi recv event in the measurement system.
  */
 void
-SILC_MpiRecv
-(
-    uint32_t                   globalSourceRank,
-    SILC_MPICommunicatorHandle communicatorHandle,
-    uint32_t                   tag,
-    uint64_t                   bytesReceived
-)
+SILC_MpiRecv( uint32_t                   globalSourceRank,
+              SILC_MPICommunicatorHandle communicatorHandle,
+              uint32_t                   tag,
+              uint64_t                   bytesReceived )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -173,14 +174,21 @@ SILC_MpiRecv
                        tag,
                        ( unsigned long long )bytesReceived );
 
-    OTF2_EvtWriter_MpiRecv( SILC_Thread_GetTraceLocationData( location )->otf_writer,
-                            NULL,
-                            SILC_GetClockTicks(),
-                            OTF2_MPI_BLOCK,
-                            globalSourceRank,
-                            SILC_HANDLE_TO_ID( communicatorHandle, Group ),
-                            tag,
-                            bytesReceived );
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_MpiRecv( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                NULL,
+                                SILC_GetClockTicks(),
+                                OTF2_MPI_BLOCK,
+                                globalSourceRank,
+                                SILC_HANDLE_TO_ID( communicatorHandle, Group ),
+                                tag,
+                                bytesReceived );
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -188,14 +196,11 @@ SILC_MpiRecv
  * Generate an mpi collective event in the measurement system.
  */
 void
-SILC_MpiCollective
-(
-    SILC_RegionHandle          regionHandle,
-    SILC_MPICommunicatorHandle communicatorHandle,
-    uint32_t                   globalRootRank,
-    uint64_t                   bytesSent,
-    uint64_t                   bytesReceived
-)
+SILC_MpiCollective( SILC_RegionHandle          regionHandle,
+                    SILC_MPICommunicatorHandle communicatorHandle,
+                    uint32_t                   globalRootRank,
+                    uint64_t                   bytesSent,
+                    uint64_t                   bytesReceived )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
@@ -215,14 +220,21 @@ SILC_MpiCollective
                        ( unsigned long long )bytesSent,
                        ( unsigned long long )bytesReceived );
 
-    OTF2_EvtWriter_MpiCollective( SILC_Thread_GetTraceLocationData( location )->otf_writer,
-                                  NULL,
-                                  SILC_GetClockTicks(),
-                                  OTF2_MPI_BARRIER,
-                                  SILC_HANDLE_TO_ID( communicatorHandle, Group ),
-                                  globalRootRank,
-                                  bytesSent,
-                                  bytesReceived );
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_MpiCollective( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                      NULL,
+                                      SILC_GetClockTicks(),
+                                      OTF2_MPI_BARRIER,
+                                      SILC_HANDLE_TO_ID( communicatorHandle, Group ),
+                                      globalRootRank,
+                                      bytesSent,
+                                      bytesReceived );
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -230,11 +242,8 @@ SILC_MpiCollective
  * Generate an OpenMP fork event in the measurement system.
  */
 void
-SILC_OmpFork
-(
-    SILC_RegionHandle regionHandle,
-    uint32_t          nRequestedThreads
-)
+SILC_OmpFork( SILC_RegionHandle regionHandle,
+              uint32_t          nRequestedThreads )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -247,6 +256,15 @@ SILC_OmpFork
 
     SILC_Thread_OnThreadFork( nRequestedThreads );
 
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_OmpFork( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                NULL,
+                                SILC_GetClockTicks(),
+                                nRequestedThreads,
+                                SILC_HANDLE_TO_ID( regionHandle, Region ) );
+    }
+
     if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_OnFork( location, nRequestedThreads );
@@ -258,12 +276,9 @@ SILC_OmpFork
  * Generate an OpenMP join event in the measurement system.
  */
 void
-SILC_OmpJoin
-(
-    SILC_RegionHandle regionHandle
-)
+SILC_OmpJoin( SILC_RegionHandle regionHandle )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -273,6 +288,22 @@ SILC_OmpJoin
                                               "%x", regionHandle ) );
 
     SILC_Thread_OnThreadJoin();
+
+    if ( SILC_IsTracingEnabled() )
+    {
+        OTF2_EvtWriter_OmpJoin( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                NULL,
+                                SILC_GetClockTicks(),
+                                SILC_HANDLE_TO_ID( regionHandle, Region ) );
+        // @todo better write n join events and pass the locationids of the joined
+        // threads (the master/father is implicitly given). let the master-thread-join
+        // be the last one to indicate the the corresponding fork can be closed.
+        SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -280,13 +311,29 @@ SILC_OmpJoin
  * Generate an OpenMP acquire lock event in the measurement system.
  */
 void
-SILC_OmpAcquireLock
-(
-    uint32_t lockId
-)
+SILC_OmpAcquireLock( uint32_t lockId/*,
+                                       uint32_t acquire_release_count*/)
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Lock:%x", lockId );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+        uint32_t dummy_acquire_release_count = 0;
+        uint32_t dummy_region_id             = 0; // OTF2_EvtWriter_OmpALock needs to be changed, there
+                                                  // is no need for a region id here
+        OTF2_EvtWriter_OmpALock( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                 NULL,
+                                 SILC_GetClockTicks(),
+                                 lockId,
+                                 dummy_acquire_release_count,
+                                 dummy_region_id );
+        SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -294,13 +341,29 @@ SILC_OmpAcquireLock
  * Generate an OpenMP release lock event in the measurement system.
  */
 void
-SILC_OmpReleaseLock
-(
-    uint32_t lockId
-)
+SILC_OmpReleaseLock( uint32_t lockId/*,
+                                       uint32_t acquire_release_count*/)
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "Lock:%x", lockId );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+        uint32_t dummy_acquire_release_count = 0;
+        uint32_t dummy_region_id             = 0; // OTF2_EvtWriter_OmpRLock needs to be changed, there
+                                                  // is no need for a region id here
+        OTF2_EvtWriter_OmpRLock( SILC_Thread_GetTraceLocationData( location )->otf_writer,
+                                 NULL,
+                                 SILC_GetClockTicks(),
+                                 lockId,
+                                 dummy_acquire_release_count,
+                                 dummy_region_id );
+        SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -308,12 +371,9 @@ SILC_OmpReleaseLock
  *
  */
 void
-SILC_ExitRegionOnException
-(
-    SILC_RegionHandle regionHandle
-)
+SILC_ExitRegionOnException( SILC_RegionHandle regionHandle )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_ONLY( char stringBuffer[ 16 ];
                      )
 
@@ -321,6 +381,16 @@ SILC_ExitRegionOnException
                        silc_region_to_string( stringBuffer,
                                               sizeof( stringBuffer ),
                                               "%x", regionHandle ) );
+
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -328,14 +398,16 @@ SILC_ExitRegionOnException
  *
  */
 void
-SILC_TriggerCounterInt64
-(
-    SILC_CounterHandle counterHandle,
-    int64_t            value
-)
+SILC_TriggerCounterInt64( SILC_CounterHandle counterHandle,
+                          int64_t            value )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+        SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+    }
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -348,14 +420,16 @@ SILC_TriggerCounterInt64
  *
  */
 void
-SILC_TriggerCounterDouble
-(
-    SILC_CounterHandle counterHandle,
-    double             value
-)
+SILC_TriggerCounterDouble( SILC_CounterHandle counterHandle,
+                           double             value )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+        SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+    }
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -368,13 +442,20 @@ SILC_TriggerCounterDouble
  *
  */
 void
-SILC_TriggerMarker
-(
-    SILC_MarkerHandle markerHandle
-)
+SILC_TriggerMarker( SILC_MarkerHandle markerHandle )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -382,14 +463,16 @@ SILC_TriggerMarker
  *
  */
 void
-SILC_TriggerParameterInt64
-(
-    SILC_ParameterHandle parameterHandle,
-    int64_t              value
-)
+SILC_TriggerParameterInt64( SILC_ParameterHandle parameterHandle,
+                            int64_t              value )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+        SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+    }
 
     if ( SILC_IsProfilingEnabled() )
     {
@@ -404,14 +487,21 @@ SILC_TriggerParameterInt64
  *
  */
 void
-SILC_TriggerParameterDouble
-(
-    SILC_ParameterHandle parameterHandle,
-    double               value
-)
+SILC_TriggerParameterDouble( SILC_ParameterHandle parameterHandle,
+                             double               value )
 {
-    //SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
+    SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
+
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+
+    if ( SILC_IsTracingEnabled() )
+    {
+    }
+
+    if ( SILC_IsProfilingEnabled() )
+    {
+    }
 }
 
 
@@ -419,19 +509,20 @@ SILC_TriggerParameterDouble
  *
  */
 void
-SILC_TriggerParameterString
-(
-    SILC_ParameterHandle parameterHandle,
-    const char*          value
-)
+SILC_TriggerParameterString( SILC_ParameterHandle parameterHandle,
+                             const char*          value )
 {
     SILC_Thread_LocationData* location = SILC_Thread_GetLocationData();
     SILC_DEBUG_PRINTF( SILC_DEBUG_EVENTS, "" );
 
-    SILC_StringHandle string_handle = silc_get_parameter_string_handle( value );
+    if ( SILC_IsTracingEnabled() )
+    {
+        SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
+    }
 
     if ( SILC_IsProfilingEnabled() )
     {
+        SILC_StringHandle string_handle = silc_get_parameter_string_handle( value );
         SILC_Profile_ParameterString( location,
                                       parameterHandle,
                                       string_handle );
@@ -443,9 +534,8 @@ SILC_TriggerParameterString
  *
  */
 uint64_t
-SILC_GetLastTimeStamp
-(
-)
+SILC_GetLastTimeStamp()
 {
+    // todo this does not match the above comment
     return SILC_GetClockTicks();
 }

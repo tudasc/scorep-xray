@@ -274,6 +274,7 @@ SILC_DefineMPIWindow( SILC_MPICommunicatorHandle communicatorHandle )
     SILC_ALLOC_NEW_DEFINITION( MPIWindow, mpi_window );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS,
                        "    Handle ID: %x", new_definition->sequence_number );
@@ -301,6 +302,7 @@ SILC_DefineMPICartesianTopology( const char*                topologyName,
     SILC_ALLOC_NEW_DEFINITION( MPICartesianTopology, mpi_cartesian_topology );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
 // TODO: make this to a silc_debug_dump_*_definition
 #ifdef SILC_DEBUG
@@ -344,6 +346,7 @@ SILC_DefineMPICartesianCoords(
     SILC_ALLOC_NEW_DEFINITION( MPICartesianCoords, mpi_cartesian_coords );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
 // TODO: make this into a silc_debug_dump_*_definition function
 #ifdef SILC_DEBUG
@@ -374,6 +377,7 @@ SILC_DefineCounterGroup( const char* name )
     SILC_DEBUG_PRINTF( SILC_DEBUG_DEFINITIONS, "" );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     return new_handle;
 }
@@ -395,6 +399,7 @@ SILC_DefineCounter( const char*             name,
     SILC_ALLOC_NEW_DEFINITION( Counter, counter );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     return new_handle;
 }
@@ -413,6 +418,7 @@ SILC_DefineIOFileGroup( const char* name )
     SILC_ALLOC_NEW_DEFINITION( IOFileGroup, io_file_group );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     return new_handle;
 }
@@ -432,6 +438,7 @@ SILC_DefineIOFile( const char*            name,
     SILC_ALLOC_NEW_DEFINITION( IOFile, io_file );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     return new_handle;
 }
@@ -450,6 +457,7 @@ SILC_DefineMarkerGroup( const char* name )
     SILC_ALLOC_NEW_DEFINITION( MarkerGroup, marker_group );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     return new_handle;
 }
@@ -472,6 +480,7 @@ SILC_DefineMarker
     SILC_ALLOC_NEW_DEFINITION( Marker, marker );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Not yet implemented." );
 
     return new_handle;
 }
@@ -494,6 +503,7 @@ SILC_DefineParameter
     SILC_ALLOC_NEW_DEFINITION( Parameter, parameter );
 
     // Init new_definition
+    SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
     new_definition->parameter_type = type;
     HASH_ADD_POD( parameter_type );
 
