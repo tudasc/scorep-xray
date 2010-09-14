@@ -34,9 +34,9 @@
 #include "silc_mpi.h"
 #include "silc_runtime_management.h"
 
-#include "cube.h"
-#include "cubew.h"
-#include "services.h"
+#include "cubew_cube.h"
+#include "cubew_cubew.h"
+#include "cubew_services.h"
 
 /**
    Defines a function type which returns a metric value from a given node.
@@ -126,7 +126,7 @@ silc_profile_get_visits_value( silc_profile_node* node )
  */
 static void
 silc_profile_write_cube_metric( cube_t*                     my_cube,
-                                CubeWriter*                 cube_writer,
+                                cube_writer*                cube_writer,
                                 cube_metric*                metric,
                                 silc_profile_node**         id_2_node,
                                 silc_cube4_definitions_map* map,
@@ -192,7 +192,7 @@ silc_profile_write_cube_metric( cube_t*                     my_cube,
  */
 void
 silc_profile_write_data_to_cube4( cube_t*                     my_cube,
-                                  CubeWriter*                 cube_writer,
+                                  cube_writer*                cube_writer,
                                   silc_cube4_definitions_map* map )
 {
     uint64_t            callpath_number = silc_cube4_get_number_of_callpathes( map );
@@ -242,9 +242,9 @@ silc_profile_write_cube4()
                                                           be more */
     uint64_t                    number_of_threads = silc_profile_get_number_of_threads();
     uint64_t                    my_rank           = SILC_Mpi_GetRank();
-    cube_t*                     my_cube           = NULL; /* The cube structure */
-    CubeWriter*                 cube_writer       = NULL; /* The cube writer */
-    char*                       filename          = NULL; /* Contains the basename for the cube file */
+    cube_t*                     my_cube           = NULL;  /* The cube structure */
+    cube_writer*                cube_writer       = NULL;  /* The cube writer */
+    char*                       filename          = NULL;  /* Contains the basename for the cube file */
     char*                       dirname           = SILC_GetExperimentDirName();
     silc_cube4_definitions_map* map               = NULL;
 
