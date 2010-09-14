@@ -66,7 +66,7 @@ AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2], [${args} ac_silc_platform=${ac_silc_platf
 
 # handle own package's subdir configures
 AC_SILC_MPI_COMPILER
-AC_CONFIG_SUBDIR_CUSTOM([build-backend/build-mpi], [$args CC=$MPICC CXX=$MPICXX F77=$MPIF77 FC=$MPIFC ac_silc_platform=${ac_silc_platform} ac_silc_cross_compiling=${ac_silc_cross_compiling}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend/build-mpi], [${args} MPICC=${MPICC} MPICXX=${MPICXX} MPIF77=${MPIF77} MPIFC=${MPIFC} ac_silc_platform=${ac_silc_platform} ac_silc_cross_compiling=${ac_silc_cross_compiling}])
 AC_CONFIG_SUBDIR_CUSTOM([build-backend],           [${args} ac_silc_platform=${ac_silc_platform} ac_silc_cross_compiling=${ac_silc_cross_compiling}])
 
 if test "x${ac_silc_cross_compiling}" = "xyes"; then

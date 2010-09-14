@@ -1,6 +1,16 @@
 AC_PREREQ([2.65])
 AC_INIT([silc-backend-mpi], [0])
 
+CC_SAVE=$CC
+CXX_SAVE=$CXX
+F77_SAVE=$F77
+FC_SAVE=$FC
+
+CC=$MPICC
+CXX=$MPICXX
+F77=$MPIF77
+FC=$MPIFC
+
 ## require $ac_silc_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
