@@ -228,7 +228,6 @@ silc_compiler_register_region
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "Define region %s", node->region_name );
 
     SILC_LockRegionDefinition();
-
     node->region_handle = SILC_DefineRegion( node->region_name,
                                              file_handle,
                                              node->line_no_begin,

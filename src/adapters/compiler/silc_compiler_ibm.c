@@ -77,11 +77,16 @@ __func_trace_enter( char* region_name,
     /* put function to list */
     if ( ( hash_node = silc_compiler_hash_get( ( long )region_name ) ) == 0 )
     {
-        hash_node = silc_compiler_hash_put( ( long )region_name, region_name,
-                                            file_name, line_no );
-        SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
-                           " number %ld and put name -- %s -- to list",
-                           ( long )region_name, region_name );
+        SILC_LockRegionDefinition();
+        if ( ( hash_node = silc_compiler_hash_get( ( long )region_name ) ) == 0 )
+        {
+            hash_node = silc_compiler_hash_put( ( long )region_name, region_name,
+                                                file_name, line_no );
+            SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
+                               " number %ld and put name -- %s -- to list",
+                               ( long )region_name, region_name );
+        }
+        SILC_UnlockRegionDefinition();
     }
 
     if ( ( hash_node->region_handle == SILC_INVALID_REGION ) )
