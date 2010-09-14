@@ -33,7 +33,7 @@ else
     AC_LANG_PUSH([C])
     AC_MSG_CHECKING([for libcubew])    
     silc_save_libs=$LIBS
-    CUBE_LIBS="-lcubew -lz -lm"
+    CUBE_LIBS="-lcubew4 -lsc.z -lz -lm"
     LIBS="$LIBS $CUBE_LIBS"
     AC_LINK_IFELSE([AC_LANG_PROGRAM([void* cubew_create(unsigned myrank, unsigned Nthreads, unsigned Nwriters, const char * cubename, int compression);],
                                     [[cubew_create(1,1,1,"test",0);]])],[has_cube4_lib=yes],[CUBE_LIBS=""])
