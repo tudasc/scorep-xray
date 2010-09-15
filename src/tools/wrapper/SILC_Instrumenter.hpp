@@ -187,6 +187,14 @@ protected:
     virtual void
     SetOpariScript( std::string value );
 
+    /**
+       This function is called from ReadConfigFile. It should set the flags
+       for the C compiler for using OpenMP.
+       @param value the awk script for region initialization.
+     */
+    virtual void
+    SetOpenmpCflags( std::string value );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -433,6 +441,11 @@ private:
        Stores compiler instruemntation flags
      */
     std::string compiler_instrumentation_flags;
+
+    /**
+       Stores C compiler OpenMP flags
+     */
+    std::string openmp_cflags;
 
     /**
        Stores include path of SILC header files

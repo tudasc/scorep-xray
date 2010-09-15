@@ -54,11 +54,12 @@ SILC_Instrumenter::SILC_Instrumenter()
     silc_library_path = "";
     external_libs     = "";
 
-    c_compiler   = "";
-    nm           = "nm";
-    awk          = "awk";
-    opari        = "opari2";
-    opari_script = "";
+    c_compiler    = "";
+    openmp_cflags = "";
+    nm            = "nm";
+    awk           = "awk";
+    opari         = "opari2";
+    opari_script  = "";
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -75,13 +76,21 @@ SILC_Instrumenter::Run()
         PrintParameter();
     }
 
-    if ( compiler_instrumentation == enabled )
-    {
-        prepare_compiler();
-    }
+    /* First user and compiler instrumentation,  because we want to have
+       the user instrumentation effects already present when we compile
+       opari instrumented sources in the preparation step. The sources
+       are already compiled in the preparation step if compiling and
+       linking was done by the same user command. Because we must
+       find the initialzation routines, compiling and linking must be splitted
+       if Opari instrumentation is used.
+     */
     if ( user_instrumentation == enabled )
     {
         prepare_user();
+    }
+    if ( compiler_instrumentation == enabled )
+    {
+        prepare_compiler();
     }
     if ( opari_instrumentation == enabled )
     {
@@ -95,6 +104,13 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
                                  char** argv )
 {
     silc_parse_mode_t mode = silc_parse_mode_param;
+
+    /* We must read the config file when the wrapper tool specific options
+       are parsed, before the command options are parsed. Thus we must detect
+       the point where the mode has changed to silc_parse_mode_command.
+     */
+    bool            is_config_file_read = false;
+    SILC_Error_Code ret_val;
 
     for ( int i = 2; i < argc; i++ )
     {
@@ -113,8 +129,13 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
                 mode = parse_config( argv[ i ] );
                 break;
         }
+
+        if ( mode == silc_parse_mode_command && !is_config_file_read )
+        {
+            ret_val = ReadConfigFile( argv[ 0 ] );
+        }
     }
-    return ReadConfigFile( argv[ 0 ] );
+    return ret_val;
 }
 
 void
@@ -279,7 +300,7 @@ SILC_Instrumenter::parse_command( std::string arg )
     {
         return silc_parse_mode_output;
     }
-    else if ( arg == "-openmp" || arg == "-fopenmp" || arg == "-qsmp=omp" )
+    else if ( arg == openmp_cflags )
     {
         if ( is_openmp_application == detect )
         {
@@ -435,6 +456,12 @@ void
 SILC_Instrumenter::SetOpariScript( std::string value )
 {
     opari_script = value;
+}
+
+void
+SILC_Instrumenter::SetOpenmpCflags( std::string value )
+{
+    openmp_cflags = value;
 }
 
 /* ****************************************************************************
