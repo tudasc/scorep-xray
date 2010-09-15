@@ -295,9 +295,9 @@ SILC_OmpJoin( SILC_RegionHandle regionHandle )
                                 NULL,
                                 SILC_GetClockTicks(),
                                 SILC_HANDLE_TO_ID( regionHandle, Region ) );
-        // @todo better write n join events and pass the locationids of the joined
-        // threads (the master/father is implicitly given). let the master-thread-join
-        // be the last one to indicate the the corresponding fork can be closed.
+        /// @todo better write n join events and pass the locationids of the joined
+        /// threads (the master/father is implicitly given). let the master-thread-join
+        /// be the last one to indicate the the corresponding fork can be closed.
         SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
 
@@ -536,6 +536,6 @@ SILC_TriggerParameterString( SILC_ParameterHandle parameterHandle,
 uint64_t
 SILC_GetLastTimeStamp()
 {
-    // todo this does not match the above comment
+    /// @todo this does not match the above comment
     return SILC_GetClockTicks();
 }
