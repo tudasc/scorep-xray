@@ -255,6 +255,9 @@ SILC_Instrumenter::parse_parameter( std::string arg )
         std::cerr << "ERROR: Unknown parameter: " << arg << std::endl;
         abort();
     }
+
+    /* Never executed but removes a warning with xl-compilers. */
+    return silc_parse_mode_param;
 }
 
 SILC_Instrumenter::silc_parse_mode_t
