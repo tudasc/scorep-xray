@@ -57,6 +57,7 @@ uninstall-local:
 
 silc-config-tool-install:
 	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
+	echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                         >> $(builddir)/silc_config.dat
 	echo PREFIX=\"$(prefix)\"                                                       >> $(builddir)/silc_config.dat
 	echo DATADIR=\"$(datadir)\"                                                     >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"$(libdir)\"                                                       >> $(builddir)/silc_config.dat
@@ -79,6 +80,7 @@ clean-local-silc-config-tool:
 
 silc-config-tool-local:
 	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/silc_config.dat
+	echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/silc_config.dat
 	echo LIBDIR=\".libs\"                                                      >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/silc_config.dat
 	echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/silc_config.dat
