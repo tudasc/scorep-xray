@@ -179,6 +179,14 @@ protected:
     virtual void
     SetOpari( std::string value );
 
+    /**
+       This function is called from ReadConfigFile. It should set awk script
+       which is used to generate the region initialization functions.
+       @param value the awk script for region initialization.
+     */
+    virtual void
+    SetOpariScript( std::string value );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -460,6 +468,12 @@ private:
        Opari
      */
     std::string opari;
+
+    /**
+       awk script used to generate functions for initialization of Opari
+       instrumented regions.
+     */
+    std::string opari_script;
 };
 
 #endif /*SILC_INSTRUMENTER_H_*/

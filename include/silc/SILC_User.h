@@ -668,7 +668,7 @@
     Declares a metric group.
     It defines a variable which must be in scope at all places where
     the metric group is used. If it is used in more than one place it need to be a global
-    definition. Its scopy can never be beyond one source file. If a larger scope is
+    definition. Its scope can never be beyond one source file. If a larger scope is
     needed use SILC_USER_METRIC_GROUP_GLOBAL.
     @param groupHandle The name of the variable which contains the groupHandle.
 

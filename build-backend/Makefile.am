@@ -69,6 +69,8 @@ silc-config-tool-install:
 	echo CC=\"$(CC)\"                                                               >> $(builddir)/silc_config.dat
 	echo NM=\"$(NM)\"                                                               >> $(builddir)/silc_config.dat
 	echo AWK=\"$(AWK)\"                                                             >> $(builddir)/silc_config.dat
+	echo OPARI=\"$(prefix)bin/opari2\"                                              >> $(builddir)/silc_config.dat
+	echo OPARI_SCRIPT=\"$(prefix)bin/parse_pomp_init_regions.awk\"                  >> $(builddir)/silc_config.dat
 	$(INSTALL_DATA) $(builddir)/silc_config.dat $(DESTDIR)$(exec_prefix)/bin/silc_config.dat
 # add compiler-suite, name of libs, static/shared, ...
 
@@ -92,3 +94,5 @@ silc-config-tool-local:
 	echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/silc_config.dat
 	echo NM=\"$(NM)\"                                                          >> $(builddir)/silc_config.dat
 	echo AWK=\"$(AWK)\"                                                        >> $(builddir)/silc_config.dat
+	echo OPARI=\"../vendor/opari2/build-frontend/opari2\"                      >> $(builddir)/silc_config.dat
+	echo OPARI_SCRIPT=\"$(PUBLIC_INC_DIR)../../vendor/opari2/src/pomp-lib-dummy/parse_pomp_init_regions.awk\" >> $(builddir)/silc_config.dat

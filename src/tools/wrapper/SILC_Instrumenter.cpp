@@ -54,10 +54,11 @@ SILC_Instrumenter::SILC_Instrumenter()
     silc_library_path = "";
     external_libs     = "";
 
-    c_compiler = "";
-    nm         = "nm";
-    awk        = "awk";
-    opari      = "opari2";
+    c_compiler   = "";
+    nm           = "nm";
+    awk          = "awk";
+    opari        = "opari2";
+    opari_script = "";
 }
 
 SILC_Instrumenter::~SILC_Instrumenter ()
@@ -67,6 +68,8 @@ SILC_Instrumenter::~SILC_Instrumenter ()
 int
 SILC_Instrumenter::Run()
 {
+    check_parameter();
+
     if ( verbosity >= 2 )
     {
         PrintParameter();
@@ -76,13 +79,13 @@ SILC_Instrumenter::Run()
     {
         prepare_compiler();
     }
-    if ( opari_instrumentation == enabled )
-    {
-        prepare_opari();
-    }
     if ( user_instrumentation == enabled )
     {
         prepare_user();
+    }
+    if ( opari_instrumentation == enabled )
+    {
+        prepare_opari();
     }
     return execute_command();
 }
@@ -111,7 +114,6 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
                 break;
         }
     }
-    check_parameter();
     return ReadConfigFile( argv[ 0 ] );
 }
 
@@ -351,6 +353,23 @@ SILC_Instrumenter::check_parameter()
     {
         mpi_instrumentation = is_mpi_application;
     }
+
+    if ( opari_script == "" && opari_instrumentation == enabled )
+    {
+        std:: cout << "Opari: " << opari << std::endl;
+        char* path = SILC_GetExecutablePath( opari.c_str() );
+        printf( "Path %s\n", path );
+        if ( path != NULL )
+        {
+            opari_script = path;
+        }
+        opari_script += "/parse_pomp_init_regions.awk";
+        if ( !SILC_DoesFileExist( opari_script.c_str() ) )
+        {
+            std::cout << "WARNING: Script " << opari_script << " not found."
+                      << std::endl;
+        }
+    }
 }
 
 SILC_Instrumenter::silc_parse_mode_t
@@ -412,6 +431,12 @@ SILC_Instrumenter::SetOpari( std::string value )
     opari = value;
 }
 
+void
+SILC_Instrumenter::SetOpariScript( std::string value )
+{
+    opari_script = value;
+}
+
 /* ****************************************************************************
    Preparation
 ******************************************************************************/
@@ -451,12 +476,10 @@ void
 SILC_Instrumenter::invoke_awk_script( std::string object_files,
                                       std::string output_file )
 {
-    std::string path    = SILC_GetExecutablePath( opari.c_str() );
     std::string command = nm + " " +  object_files
-                          + " | grep -i \" pomp_init_regions\" | "
-                          + awk + " -f "
-                          + path + "/parse_pomp_init_regions.awk > "
-                          + output_file;
+                          + " | grep -i \" pomp2_init_regions\" | "
+                          + awk + " -f " + opari_script
+                          + " > " + output_file;
     if ( verbosity >= 1 )
     {
         std::cout << command << std::endl;
