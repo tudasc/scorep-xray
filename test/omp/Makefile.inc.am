@@ -59,5 +59,7 @@ internal_thread_handling_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_
 
 TESTS      += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
 EXTRA_DIST += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
+TESTS      += $(SRC_ROOT)test/omp/run_omp_test_inst.sh
+EXTRA_DIST += $(SRC_ROOT)test/omp/run_omp_test_inst.sh
 
 endif
