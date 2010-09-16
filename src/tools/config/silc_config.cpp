@@ -103,13 +103,19 @@ main( int    argc,
         }
     }
 
+    char* path = SILC_GetExecutablePath( argv[ 0 ] );
+    std::string
+          otf2_config( path );
+    otf2_config += "/otf2_config";
+
     switch ( action )
     {
         case ACTION_LIBS:
             std::cout << app.str_libdir << " -l" << silc_libs[ mode ] << app.str_libs;
             std::cout.flush();
 
-            ret = system( "otf2_config --libs" );
+            otf2_config += " --libs";
+            ret          = system( otf2_config.c_str() );
 
             break;
 
@@ -117,7 +123,8 @@ main( int    argc,
             std::cout << app.str_flags << app.str_incdir;
             std::cout.flush();
 
-            ret = system( "otf2_config --cflags" );
+            otf2_config += " --cflags";
+            ret          = system( otf2_config.c_str() );
 
             break;
 
@@ -136,6 +143,8 @@ main( int    argc,
 
             break;
     }
+
+    free( path );
 
     return 0;
 }
