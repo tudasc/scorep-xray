@@ -162,12 +162,15 @@ AC_MSG_RESULT([$silc_timer_gettimeofday_available])
 
 AC_DEFUN([SILC_TIMER_INTEL_MMTIMER_AVAILABLE],[
 silc_timer_intel_mmtimer_available="no"
-mmtimer_header_available="no"
-AC_CHECK_HEADERS([mmtimer.h], [mmtimer_header_available="yes"],
-    [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes"],
-        [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes"])])])
-if test "x${mmtimer_header_available}" = "xyes"; then
-    AC_CHECK_FILE([/dev/mmtimer], [silc_timer_intel_mmtimer_available="yes"])
+# cannot check for file existence when cross compiling
+if test "x${cross_compiling}" = "xno"; then
+    mmtimer_header_available="no"
+    AC_CHECK_HEADERS([mmtimer.h], [mmtimer_header_available="yes"],
+        [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes"],
+            [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes"])])])
+    if test "x${mmtimer_header_available}" = "xyes"; then
+        AC_CHECK_FILE([/dev/mmtimer], [silc_timer_intel_mmtimer_available="yes"])
+    fi
 fi
 AC_MSG_CHECKING([for intel_mmtimer timer])
 AC_MSG_RESULT([$silc_timer_intel_mmtimer_available])
