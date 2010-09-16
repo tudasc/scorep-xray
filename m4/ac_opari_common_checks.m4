@@ -1,5 +1,27 @@
 AC_DEFUN([AC_OPARI_COMMON_CHECKS],
 [
+## Determine a C compiler to use. If CC is not already set in the environment,
+## check for gcc and cc, then for other C compilers. Set output variable CC to
+## the name of the compiler found.
+## 
+## This macro may, however, be invoked with an optional first argument which,
+## if specified, must be a blank-separated list of C compilers to search
+## for. This just gives the user an opportunity to specify an alternative
+## search list for the C compiler. For example, if you didn't like the default
+## order, then you could invoke AC_PROG_CC like this: AC_PROG_CC([gcc cl cc])
+AC_REQUIRE([AC_PROG_CC])
+
+## If the C compiler is not in C99 mode by default, try to add an option to
+## output variable CC to make it so. This macro tries various options that
+## select C99 on some system or another. It considers the compiler to be in
+## C99 mode if it handles _Bool, // comments, flexible array members, inline,
+## signed and unsigned long long int, mixed code and declarations, named
+## initialization of structs, restrict, va_copy, varargs macros, variable
+## declarations in for loops, and variable length arrays.  After calling this
+## macro you can check whether the C compiler has been set to accept C99; if
+## not, the shell variable ac_cv_prog_cc_c99 is set to `no'.
+AC_REQUIRE([AC_PROG_CC_C99])
+
 ## Determine a C++ compiler to use. Check whether the environment variable CXX 
 ## or CCC (in that order) is set; if so, then set output variable CXX to its 
 ## value.
@@ -15,38 +37,10 @@ AC_DEFUN([AC_OPARI_COMMON_CHECKS],
 ## search list for the C++ compiler. For example, if you didn't like the
 ## default order, then you could invoke AC_PROG_CXX like this:
 ## AC_PROG_CXX([gcc cl KCC CC cxx cc++ xlC aCC c++ g++])
-AC_PROG_CXX
+AC_REQUIRE([AC_PROG_CXX])
 
 ## Enable using per-target flags or subdir-objects with C sources
-AM_PROG_CC_C_O
-
-## If the current language is C, the macro AC_OPENMP sets the variable
-## OPENMP_CFLAGS to the C compiler flags needed for supporting
-## OpenMP. OPENMP_CFLAGS is set to empty if the compiler already supports
-## OpenMP, if it has no way to activate OpenMP support, or if the user rejects
-## OpenMP support by invoking ‘configure’ with the ‘--disable-openmp’
-## option.
-##
-## OPENMP_CFLAGS needs to be used when compiling programs, when preprocessing
-## program source, and when linking programs. Therefore you need to add
-## $(OPENMP_CFLAGS) to the CFLAGS of C programs that use OpenMP. If you
-## preprocess OpenMP-specific C code, you also need to add $(OPENMP_CFLAGS) to
-## CPPFLAGS. The presence of OpenMP support is revealed at compile time by the
-## preprocessor macro _OPENMP.
-##
-## Linking a program with OPENMP_CFLAGS typically adds one more shared library
-## to the program's dependencies, so its use is recommended only on programs
-## that actually require OpenMP.
-##
-## If the current language is C++, AC_OPENMP sets the variable
-## OPENMP_CXXFLAGS, suitably for the C++ compiler. The same remarks hold as
-## for C.
-##
-## If the current language is Fortran 77 or Fortran, AC_OPENMP sets the
-## variable OPENMP_FFLAGS or OPENMP_FCFLAGS, respectively. Similar remarks as
-## for C hold, except that CPPFLAGS is not used for Fortran, and no
-## preprocessor macro signals OpenMP support.
-AC_OPENMP
+AC_REQUIRE([AM_PROG_CC_C_O])
 
 
 ## Determine a Fortran 77 compiler to use. If F77 is not already set in the
@@ -65,7 +59,7 @@ AC_OPENMP
 ## to ‘yes’. If the output variable FFLAGS was not already set in the
 ## environment, then set it to -g -02 for g77 (or -O2 where g77 does not
 ## accept -g). Otherwise, set FFLAGS to -g for all other Fortran 77 compilers.
-AC_PROG_F77
+AC_REQUIRE([AC_PROG_F77])
 
 
 ## Determine a Fortran compiler to use. If FC is not already set in the
@@ -89,11 +83,28 @@ AC_PROG_F77
 ## If the output variable FCFLAGS was not already set in the environment, then
 ## set it to -g -02 for GNU g77 (or -O2 where g77 does not accept
 ## -g). Otherwise, set FCFLAGS to -g for all other Fortran compilers.
-#AC_PROG_FC ([compiler-search-list], [dialect])
+AC_REQUIRE([AC_PROG_FC])
 
 #AC_CXX_NAMESPACES
 #AC_CXX_HAVE_SSTREAM
 #AC_CXX_HAVE_STRSTREAM
+
+AC_LANG_PUSH([C])
+AC_OPENMP
+AC_LANG_POP([C])
+
+AC_LANG_PUSH([C++])
+AC_OPENMP
+AC_LANG_POP([C++])
+
+AC_LANG_PUSH([Fortran 77])
+AC_OPENMP
+AC_LANG_POP([Fortran 77])
+
+AC_LANG_PUSH([Fortran])
+AC_OPENMP
+AC_LANG_POP([Fortran])
+
 
 AC_PROG_RANLIB
 ])
