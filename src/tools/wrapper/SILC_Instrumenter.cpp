@@ -132,7 +132,8 @@ SILC_Instrumenter::ParseCmdLine( int    argc,
 
         if ( mode == silc_parse_mode_command && !is_config_file_read )
         {
-            ret_val = ReadConfigFile( argv[ 0 ] );
+            ret_val             = ReadConfigFile( argv[ 0 ] );
+            is_config_file_read = true;
         }
     }
     return ret_val;
@@ -462,6 +463,13 @@ void
 SILC_Instrumenter::SetOpenmpCflags( std::string value )
 {
     openmp_cflags = value;
+}
+
+void
+SILC_Instrumenter::SetPrefix( std::string value )
+{
+    AddIncDir( value + "/include" );
+    AddLibDir( value + "/lib" );
 }
 
 /* ****************************************************************************

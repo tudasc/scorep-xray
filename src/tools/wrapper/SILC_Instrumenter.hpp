@@ -173,6 +173,14 @@ protected:
     SetAwk( std::string value );
 
     /**
+       This function is called from ReadConfigFile. It should set the prefix
+       for the installation directory.
+       @param value awk
+     */
+    virtual void
+    SetPrefix( std::string value );
+
+    /**
        This function is called from ReadConfigFile. It should set Opari.
        @param value opari
      */
