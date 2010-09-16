@@ -15,6 +15,7 @@ FC=$MPIFC
 if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
 fi
+cross_compiling=${ac_silc_cross_compiling}
 
 AC_SILC_CHECK_COMPILER_VAR_SET([CC])
 AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
@@ -157,5 +158,6 @@ AC_SILC_COMPILER_CHECKS
 AC_SILC_MPI
 
 AC_CONFIG_FILES([Makefile])
+
 
 AC_OUTPUT
