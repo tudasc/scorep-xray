@@ -35,6 +35,13 @@ SVN=svn
 export LC_ALL=
 export LANG=C
 
+# for blacklisting
+# should the given path in $1 be ignored by the beautifier
+is_ignored()
+{
+    test -n "$($SVN propget --strict "silc:ignore:beautifier" "$1")"
+}
+
 ################################################################################
 # General idea:
 # - cd to the top-level directory of your svn working copy in order to find 
@@ -88,22 +95,28 @@ if [ ! -f "$BEAUTIFY_CONFIG" ]; then
 fi
 
 # Find and beautify modified and added source files.
-RELEVANT_FILES=`$SVN status | $GREP -e '^M\|^A' |                              \
-                $AWK '{print substr($0, 8)}' |                                 \
-                $GREP -e '\.c$\|\.h$\|\.cpp$\|\.hpp$'`
+RELEVANT_FILES="$($SVN status | $AWK '/^(M|A).*\.(c|h|cpp|hpp)$/ {print substr($0, 9)}')"
 if [ -n "$RELEVANT_FILES" ]; then
-    echo "Beautifying modified source files using `$BEAUTIFY --version`: $RELEVANT_FILES"
+    printf "Beautifying modified source files using %s:\n" \
+        "$($BEAUTIFY --version)"
     for FILE in $RELEVANT_FILES; do
-        if [ ! -s $FILE ]; then # file is zero size
-            echo "Beautifying skipped for file \"$FILE\"."
+        if is_ignored "$FILE"; then # file should be ignored
+            echo "Beautifying skipped for file \"$FILE\" (explicitly ignored)."
             continue
         fi
+        if [ ! -s $FILE ]; then # file is zero size
+            echo "Beautifying skipped for file \"$FILE\" (empty file)."
+            continue
+        fi
+        echo "Beautifying $FILE:"
         $BEAUTIFY -c $BEAUTIFY_CONFIG --replace -q $FILE
         if [ $? -ne 0 ]; then
-            echo "Beautifying aborted: `$BEAUTIFY --version` (`which $BEAUTIFY`) failed on file \"$FILE\"."
+            printf "Beautifying aborted: %s (%s) failed on file \"%s\".\n" \
+                "$($BEAUTIFY --version)" \
+                "$(command -v $BEAUTIFY)" \
+                "$FILE"
             exit 1
         fi
-        echo "Beautifying $FILE"
     done
 fi
 echo "Beautifying successful. Ready for commit."
