@@ -511,9 +511,14 @@ SILC_DefineParameter
 
     // Init new_definition
     SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
-    new_definition->parameter_type = type;
-    new_definition->name_handle    = SILC_DefineString( name );
+
+    new_definition->name_handle = SILC_DefineString( name );
     HASH_ADD_HANDLE( name_handle, String );
+    /* currently not used */
+    new_definition->description_handle = SILC_DefineString( "" );
+    HASH_ADD_HANDLE( description_handle, String );
+
+    new_definition->parameter_type = type;
     HASH_ADD_POD( parameter_type );
 
     return new_handle;
