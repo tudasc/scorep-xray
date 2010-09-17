@@ -101,4 +101,6 @@ silc_profile_get_number_of_threads();
 void
 silc_profile_dump();
 
+SILC_ParameterHandle silc_profile_param_instance;
+
 #endif // SILC_PROFILE_DEFINITION_H

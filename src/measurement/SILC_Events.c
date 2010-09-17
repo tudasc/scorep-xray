@@ -74,7 +74,7 @@ SILC_EnterRegion( SILC_RegionHandle regionHandle )
     if ( SILC_IsProfilingEnabled() )
     {
         SILC_Profile_Enter( location, regionHandle,
-                            SILC_REGION_UNKNOWN,
+                            SILC_Region_GetType( regionHandle ),
                             timestamp, NULL );
     }
 }

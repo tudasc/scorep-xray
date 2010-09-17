@@ -170,6 +170,8 @@ SILC_DEFINE_DEFINITION_TYPE( Parameter )
     SILC_DEFINITION_HEADER( Parameter );
 
     // Add SILC_Parameter stuff from here on.
+    SILC_StringHandle  name_handle;
+    SILC_StringHandle  description_handle;                 // currently not used
     SILC_ParameterType parameter_type;
 };
 

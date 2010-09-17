@@ -35,6 +35,7 @@
 #include "silc_profile_definition.h"
 #include "silc_profile_process.h"
 #include "silc_profile_writer.h"
+#include "SILC_Definitions.h"
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -266,6 +267,8 @@ SILC_Profile_Initialize( int32_t             numDenseMetrics,
     silc_profile_init_definition( silc_profile_max_callpath_depth,
                                   silc_profile_max_callpath_num,
                                   numDenseMetrics, metrics );
+
+    silc_profile_param_instance = SILC_DefineParameter( "instance", SILC_PARAMETER_INT64 );
 }
 
 void
@@ -411,7 +414,6 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
     node = silc_profile_find_or_create_child( thread, silc_profile_node_regular_region,
                                               SILC_PROFILE_REGION2DATA( region ),
                                               timestamp );
-
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
@@ -431,6 +433,17 @@ SILC_Profile_Enter( SILC_Thread_LocationData* thread,
 
     /* Update current node pointer */
     silc_profile_set_current_node( thread, node );
+
+    /* If dynamic region call trigger parameter */
+
+    if ( type == SILC_REGION_DYNAMIC )
+    {
+        /* For Dynamic Regions we use a special "instance" type paramter defined
+         * during initialization */
+        SILC_Profile_ParameterInteger( thread,
+                                       silc_profile_param_instance,
+                                       node->count );
+    }
 }
 
 void
@@ -636,9 +649,26 @@ SILC_Profile_ParameterInteger( SILC_Thread_LocationData* thread,
     data.handle = param;
     data.value  = value;
 
+    /* Set name */
+
     /* Get new callpath node */
-    node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_integer,
-                                              SILC_PROFILE_PARAMINT2DATA( &data ), -1 );
+    /* If this parameter is the "instance" type, we will always create a new
+     * node */
+    if ( param == silc_profile_param_instance )
+    {
+        silc_profile_node* parent = silc_profile_get_current_node( thread );
+        node = silc_profile_create_node( silc_profile_get_current_node( thread ),
+                                         silc_profile_node_parameter_integer, SILC_PROFILE_PARAMINT2DATA( &data ),
+                                         -1 );
+        node->next_sibling  = parent->first_child;
+        parent->first_child = node;
+    }
+    else
+    {
+        node = silc_profile_find_or_create_child( thread, silc_profile_node_parameter_integer,
+                                                  SILC_PROFILE_PARAMINT2DATA( &data ), -1 );
+    }
+    //param.name_handle = node->parent->string_data + " [" + node->parent->count + "]"
 
     /* Disable profiling if node creation failed */
     if ( node == NULL )

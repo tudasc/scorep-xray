@@ -106,8 +106,11 @@ silc_profile_write_region_tau( silc_profile_node* node,
     }
 
     /* write definition */
-    silc_profile_write_tausnap_def( path, file, callpath_counter );
-
+    if ( SILC_Region_GetType( SILC_PROFILE_DATA2REGION( node->type_specific_data
+                                                        ) ) != SILC_REGION_DYNAMIC )
+    {
+        silc_profile_write_tausnap_def( path, file, callpath_counter );
+    }
     /* invoke children */
     silc_profile_node* child = node->first_child;
     while ( child != NULL )
@@ -159,6 +162,39 @@ silc_profile_write_paramint_tau( silc_profile_node* node,
                                  uint64_t*          callpath_counter )
 {
     /** TODO: implement paramter integer definition writing */
+    /* Construct callpath name */
+    //const char* name   = SILC_Region_GetName( SILC_PROFILE_DATA2REGION( node->type_specific_data ) );
+    char*                           path;
+
+    silc_profile_integer_node_data* data
+        = SILC_PROFILE_DATA2PARAMINT( node->type_specific_data );
+
+    if ( data->handle == silc_profile_param_instance )
+    {
+        /* 12 digit max data length. */
+        int length = strlen( parentpath ) + 12 + 3 + 1;
+        path = ( char* )malloc( length );
+        sprintf( path, "%s [%d]", parentpath,
+                 data->value );
+    }
+    else
+    {
+        /* 12 digit max data length. */
+        int length = strlen( parentpath ) + strlen( SILC_Parameter_GetName( data->handle ) ) + 12 + 6 + 1;
+        path = ( char* )malloc( length );
+        sprintf( path, "%s (%s = %d)", parentpath,
+                 SILC_Parameter_GetName( data->handle ), data->value );
+    }
+    /* write definition */
+    silc_profile_write_tausnap_def( path, file, callpath_counter );
+
+    /* invoke children */
+    silc_profile_node* child = node->first_child;
+    while ( child != NULL )
+    {
+        silc_profile_write_node_tau( child, path, file, callpath_counter );
+        child = child->next_sibling;
+    }
 }
 
 /**
@@ -230,13 +266,17 @@ silc_profile_write_data_tau( silc_profile_node* node,
     /* Write data in format:
        <callpath id> <number of calls> <child calls> <exclusive time> <inclusive time>
      */
-    fprintf( file,
-             "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
-             *callpath_counter, node->count,
-             silc_profile_get_number_of_child_calls( node ),
-             ( silc_profile_get_exclusive_time( node ) * 1000000llu / tps ),
-             ( node->inclusive_time.sum * 1000000llu / tps ) );
-    ( *callpath_counter )++;
+    if ( node->node_type != silc_profile_node_regular_region || SILC_Region_GetType( SILC_PROFILE_DATA2REGION( node->type_specific_data
+                                                                                                               ) ) != SILC_REGION_DYNAMIC )
+    {
+        fprintf( file,
+                 "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
+                 *callpath_counter, node->count,
+                 silc_profile_get_number_of_child_calls( node ),
+                 ( silc_profile_get_exclusive_time( node ) * 1000000llu / tps ),
+                 ( node->inclusive_time.sum * 1000000llu / tps ) );
+        ( *callpath_counter )++;
+    }
 
     /* invoke children */
     silc_profile_node* child = node->first_child;

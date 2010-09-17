@@ -166,6 +166,13 @@ SILC_Region_GetName( SILC_RegionHandle handle )
     return SILC_HANDLE_DEREF( region->name_handle, String )->string_data;
 }
 
+const char*
+SILC_Parameter_GetName( SILC_ParameterHandle handle )
+{
+    SILC_Parameter_Definition* param = SILC_HANDLE_DEREF( handle, Parameter );
+
+    return SILC_HANDLE_DEREF( param->name_handle, String )->string_data;
+}
 /**
  * Gets read-only access to the file name of the region.
  *
@@ -505,6 +512,8 @@ SILC_DefineParameter
     // Init new_definition
     SILC_DEBUG_PRINTF( 0, "Only partially implemented." );
     new_definition->parameter_type = type;
+    new_definition->name_handle    = SILC_DefineString( name );
+    HASH_ADD_HANDLE( name_handle, String );
     HASH_ADD_POD( parameter_type );
 
     return new_handle;
