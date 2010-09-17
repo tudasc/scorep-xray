@@ -35,6 +35,7 @@
 #include <silc_utility/SILC_Omp.h>
 #include <otf2/OTF2_EvtWriter.h>
 #include <SILC_Profile.h>
+#include <SILC_Definitions.h>
 
 #include "silc_runtime_management.h"
 #include "silc_types.h"

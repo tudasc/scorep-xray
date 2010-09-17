@@ -151,6 +151,9 @@ SILC_Region_GetFileName( SILC_RegionHandle handle );
 SILC_RegionType
 SILC_Region_GetType( SILC_RegionHandle handle );
 
+const char*
+SILC_Parameter_GetName( SILC_ParameterHandle handle );
+
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  *
