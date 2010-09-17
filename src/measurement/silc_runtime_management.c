@@ -198,9 +198,9 @@ silc_create_directory( const char* dirname )
 {
     //first check to see if directory already exists.
     struct stat buf;
+    mode_t      mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
     if ( stat( silc_experiment_dir_name, &buf ) == -1 )
     {
-        mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
         if ( mkdir( silc_experiment_dir_name, mode ) == -1 )
         {
             SILC_ERROR_POSIX( "Can't create experiment directory \"%s\".",
@@ -220,6 +220,15 @@ silc_create_directory( const char* dirname )
             SILC_ERROR_POSIX( "Can't rename experiment directory \"%s\" to \"%s\".",
                               silc_experiment_dir_name, new_experiment_dir_name );
             _Exit( EXIT_FAILURE );
+        }
+        else
+        {
+            if ( mkdir( silc_experiment_dir_name, mode ) == -1 )
+            {
+                SILC_ERROR_POSIX( "Can't create experiment directory \"%s\".",
+                                  silc_experiment_dir_name );
+                _Exit( EXIT_FAILURE );
+            }
         }
     }
 }
