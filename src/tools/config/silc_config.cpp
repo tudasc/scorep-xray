@@ -53,9 +53,6 @@ main( int    argc,
 
     SILC_Config app;
 
-    /* read config file */
-    app.ParseConfigFile( argv[ 0 ] );
-
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
     {
@@ -107,6 +104,9 @@ main( int    argc,
     std::string
           otf2_config( path );
     otf2_config += "/otf2_config";
+
+    /* read config file */
+    app.ParseConfigFile( argv[ 0 ] );
 
     switch ( action )
     {
@@ -193,29 +193,63 @@ SILC_Config::PrintParameter()
 void
 SILC_Config::SetCompilerFlags( std::string flags )
 {
-    this->str_flags += flags + " ";
+    if ( std::string::npos == this->str_flags.find( flags ) )
+    {
+        this->str_flags += flags + " ";
+    }
 }
 
 void
 SILC_Config::AddIncDir( std::string dir )
 {
-    this->str_incdir += " -I" + dir;
+    std::string incdir = "-I" + dir;
+
+    if ( std::string::npos == this->str_incdir.find( incdir ) )
+    {
+        this->str_incdir += " " + incdir;
+    }
 }
 
 void
 SILC_Config::AddLibDir( std::string dir )
 {
-    this->str_libdir += " -L" + dir;
+    std::string libdir = "-L" + dir;
+
+    if ( std::string::npos == this->str_libdir.find( libdir ) )
+    {
+        this->str_libdir += " " + libdir;
+    }
 }
 
 void
 SILC_Config::AddLib( std::string lib )
 {
-    this->str_libs += " " + lib;
+    if ( std::string::npos == this->str_libs.find( lib ) )
+    {
+        this->str_libs += " " + lib;
+    }
 }
 
 void
 SILC_Config::SetCompiler( std::string value )
 {
     this->str_cc = value;
+}
+
+void
+SILC_Config::SetPrefix( std::string value )
+{
+    std::string libdir = "-L" + value + "/lib";
+    std::string incdir = "-I" + value + "/include/silc";
+
+    /* only insert libdir if the path not already exists */
+    if ( std::string::npos == this->str_libdir.find( libdir ) )
+    {
+        this->str_libdir += " " + libdir;
+    }
+
+    if ( std::string::npos == this->str_incdir.find( incdir ) )
+    {
+        this->str_incdir += " " + incdir;
+    }
 }

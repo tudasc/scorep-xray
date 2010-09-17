@@ -79,4 +79,7 @@ public:
 
     virtual void
     SetCompiler( std::string value );
+
+    virtual void
+    SetPrefix( std::string value );
 };
