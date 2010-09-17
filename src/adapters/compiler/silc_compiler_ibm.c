@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <silc_utility/SILC_Utils.h>
 #include <SILC_Events.h>
@@ -80,20 +81,41 @@ __func_trace_enter( char* region_name,
         SILC_LockRegionDefinition();
         if ( ( hash_node = silc_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
-            hash_node = silc_compiler_hash_put( ( long )region_name, region_name,
+            hash_node = silc_compiler_hash_put( ( long )region_name,
+                                                region_name,
                                                 file_name, line_no );
             SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER,
                                " number %ld and put name -- %s -- to list",
                                ( long )region_name, region_name );
         }
         SILC_UnlockRegionDefinition();
+
+        /* Check for filters:
+           1. In case OpenMP is used, the XL compiler creates some functions
+              like <func_name>:<func_name>$OL$OL.1 which cause the measurement
+              system to crash. Thus, filter functions which names contain a
+              '$' symbol.
+           2. POMP and POMP2 functions.
+         */
+        bool is_filtered = false;
+        if ( ( strchr( region_name, '$' ) != NULL ) ||
+             ( strncmp( region_name, "POMP", 4 ) == 0 ) )
+        {
+            is_filtered = true;
+        }
+
+        /* If no $ found in name register region */
+        if ( !is_filtered )
+        {
+            silc_compiler_register_region( hash_node );
+        }
     }
 
-    if ( ( hash_node->region_handle == SILC_INVALID_REGION ) )
+    /* Invalid handle marks filtered regions */
+    if ( ( hash_node->region_handle != SILC_INVALID_REGION ) )
     {
-        silc_compiler_register_region( hash_node );
+        SILC_EnterRegion( hash_node->region_handle );
     }
-    SILC_EnterRegion( hash_node->region_handle );
 }
 
 /**
@@ -113,7 +135,11 @@ __func_trace_exit( char* region_name,
     SILC_DEBUG_PRINTF( SILC_DEBUG_COMPILER, "call function exit!!!" );
     if ( hash_node = silc_compiler_hash_get( ( long )region_name ) )
     {
-        SILC_ExitRegion( hash_node->region_handle );
+        /* Invalid handle marks filtered regions */
+        if ( ( hash_node->region_handle != SILC_INVALID_REGION ) )
+        {
+            SILC_ExitRegion( hash_node->region_handle );
+        }
     }
 }
 
@@ -132,7 +158,6 @@ silc_compiler_init_adapter()
         /* Sez flag */
         silc_compiler_initialize = 0;
     }
-
     return SILC_SUCCESS;
 }
 
