@@ -35,5 +35,4 @@
 extern const SILC_Adapter* silc_adapters[];
 extern const size_t        silc_number_of_adapters;
 
-
 #endif /* SILC_INTERNAL_ADAPTER_H */
