@@ -137,7 +137,6 @@ AC_SILC_CUBE4
 
 # assuming that mpi configure already ran
 AM_CONDITIONAL([MPI_SUPPORTED], [test -f build-mpi/mpi_supported])
-rm  build-mpi/mpi_supported
 
 AC_CONFIG_FILES([Makefile])
 

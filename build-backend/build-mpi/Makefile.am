@@ -100,7 +100,7 @@ include ../../build-includes/mpi-backend-only.am
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../../build-config/m4
 
-clean-local:
+distclean-local:
 	rm -f mpi_supported
 
 
