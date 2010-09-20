@@ -24,7 +24,7 @@ echo "==================="
 
 rm -f config.h omp_inst_test
 make silc-config-tool-local
-. silc_config.dat
+. ./silc_config.dat
 echo "/* Dummy */" > config.h
 cp $SRC_ROOT/test/omp/omp_test.c .
 ./silc --instrument -verbosity=1 $CC -I. -o omp_inst_test omp_test.c $OPENMP_CFLAGS

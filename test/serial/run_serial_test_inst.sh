@@ -19,7 +19,7 @@
 
 rm -f config.h serial_inst_test
 make silc-config-tool-local
-. silc_config.dat
+. ./silc_config.dat
 echo "/* Dummy */" > config.h
 ./silc --instrument -verbosity=1 $CC -I. -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
 if [ ! -e serial_inst_test ]; then
