@@ -160,6 +160,7 @@ fi
 AM_CONDITIONAL([MPI_SUPPORTED], [test "x${silc_mpi_supported}" = "xyes"])
 AM_CONDITIONAL([HAVE_MPIFC], [test "x${silc_mpi_f90_supported}" = "xyes"])
 
+rm -f mpi_supported
 if test "x${silc_mpi_supported}" = "xyes"; then
 
   touch mpi_supported
