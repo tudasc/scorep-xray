@@ -1,4 +1,3 @@
-/* *INDENT-OFF* */
 #ifndef VENDOR_HASH_JENKINS_H
 #define VENDOR_HASH_JENKINS_H
 
