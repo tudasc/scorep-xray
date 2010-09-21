@@ -1,5 +1,7 @@
 /config-backend.h.in
+/config-backend-mpi.h.in
 /config-frontend.h.in
 /config-backend.h
+/config-backend-mpi.h
 /config-frontend.h
 /stamp-h1
