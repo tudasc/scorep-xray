@@ -93,18 +93,23 @@ AC_LANG_PUSH([C])
 AC_OPENMP
 AC_LANG_POP([C])
 
-AC_LANG_PUSH([C++])
-AC_OPENMP
-AC_LANG_POP([C++])
+AM_CONDITIONAL([OPENMP_SUPPORTED], [test "x${ac_cv_prog_c_openmp}" != "xunsupported"])
 
-AC_LANG_PUSH([Fortran 77])
-AC_OPENMP
-AC_LANG_POP([Fortran 77])
+if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
+    AC_MSG_WARN([Non suitbale OpenMP compilers found. POMP2 dummy lib will not be build.])
+else
+    AC_LANG_PUSH([C++])
+    AC_OPENMP
+    AC_LANG_POP([C++])
 
-AC_LANG_PUSH([Fortran])
-AC_OPENMP
-AC_LANG_POP([Fortran])
+    AC_LANG_PUSH([Fortran 77])
+    AC_OPENMP
+    AC_LANG_POP([Fortran 77])
 
+    AC_LANG_PUSH([Fortran])
+    AC_OPENMP
+    AC_LANG_POP([Fortran])
+fi
 
 AC_PROG_RANLIB
 ])
