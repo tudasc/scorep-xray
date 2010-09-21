@@ -89,5 +89,6 @@ else
         [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SILC_Allocator.])
 fi
 
+AC_SILC_DEBUG_OPTION
 AC_SILC_ON_DEBUG_OPTION
 ])
