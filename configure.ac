@@ -51,6 +51,8 @@ AC_SILC_UNCRUSTIFY
 
 AC_SILC_DOXYGEN
 
+AC_SILC_DEBUG_OPTION
+
 ## Autoconf supports changing the names of programs when installing them. In
 ## order to use these transformations, configure.ac must call the macro
 ## AC_ARG_PROGRAM.
