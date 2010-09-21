@@ -37,6 +37,6 @@ AC_DEFUN([AC_SILC_ON_DEBUG_OPTION],
 if test  "x${ac_silc_enable_debug}" = "xyes"; then
     AC_DEFINE([HAVE_SILC_DEBUG], [1], [activate internal debug output])
 elif test  "x${ac_silc_enable_debug}" != "xno"; then
-    AC_MSG_ERROR([ac_silc_enable_debug neither "yes" nor "no". Need to be passed from invocing configure.])
+    AC_MSG_ERROR([ac_silc_enable_debug neither "yes" nor "no" but "$ac_silc_enable_debug", that's weird.])
 fi
 ])
