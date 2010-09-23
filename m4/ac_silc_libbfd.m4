@@ -71,6 +71,7 @@ if test "x${silc_compiler_gnu}" = "xyes" -o "x${silc_compiler_intel}" = "xyes"; 
                                     [[cplus_demangle("test", 27)]])],
                    [silc_have_demangle="yes"], 
                    [silc_have_demangle="no"])
+    AC_MSG_RESULT([$silc_have_demangle])
 
     silc_bfd_libs="$LIBS"
     LIBS="$silc_libbfd_save_LIBS"
