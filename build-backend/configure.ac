@@ -133,7 +133,11 @@ AC_SILC_OPENMP
 SILC_TIMER
 AC_SILC_COMPILER_CHECKS
 AC_SILC_LIBBFD
-AC_SILC_CUBE4
+
+# We get cube via svn:externals and build it ourselves with compression 
+# support disabled. This solves difficulties with library detection on 
+# cross compile systems. The following check can be omitted.
+#AC_SILC_CUBE4
 
 # assuming that mpi configure already ran
 AM_CONDITIONAL([MPI_SUPPORTED], [test -f build-mpi/mpi_supported])

@@ -23,18 +23,14 @@
  */
 
 #include <config.h>
+#include "silc_definition_cube4.h"
 
-#include "SILC_Memory.h"
-#include "SILC_Definitions.h"
+#include <SILC_Memory.h>
 
 #include "silc_mpi.h"
 #include "silc_types.h"
 #include "silc_definitions.h"
-#include "silc_definition_cube4.h"
-
-#include "cube.h"
-#include "cubew.h"
-#include "services.h"
+#include <cubew_services.h>
 
 extern SILC_DefinitionManager silc_definition_manager;
 

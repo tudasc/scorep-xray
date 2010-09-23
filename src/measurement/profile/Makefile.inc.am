@@ -25,7 +25,8 @@ PROFILE_FLAGS =                                 \
     -I$(INC_ROOT)src/measurement/profile        \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/services                   \
-    -I$(INC_ROOT)src/measurement/               \
+    -I$(INC_ROOT)src/measurement                \
+    -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_OTF2)                           \
     -I$(INC_DIR_UTIL)                           \
@@ -44,19 +45,11 @@ libsilc_profile_base_la_SOURCES =                                    \
     $(SRC_ROOT)src/measurement/profile/silc_profile_expand.c         \
     $(SRC_ROOT)src/measurement/profile/silc_profile_tausnap_writer.c \
     $(SRC_ROOT)src/measurement/profile/silc_profile_writer.h         \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_callpath.c
+    $(SRC_ROOT)src/measurement/profile/silc_profile_callpath.c       \
+    $(SRC_ROOT)src/measurement/profile/silc_profile_cube4_writer.c
 
 libsilc_profile_base_la_CPPFLAGS = $(PROFILE_FLAGS)
 
-## Cube 4 additions
-if HAVE_CUBE4
-PROFILE_FLAGS += -DHAVE_CUBE4=1
-
-libsilc_profile_base_la_SOURCES +=                                   \
-    $(SRC_ROOT)src/measurement/profile/silc_profile_cube4_writer.c
-
-libsilc_profile_base_la_LIBADD = $(CUBE_LIBS)
-endif
 
 ## non omp
 
@@ -84,4 +77,4 @@ endif
 if PLATFORM_ALTIX
 libsilc_profile_base_la_SOURCES += 	$(SRC_ROOT)src/measurement/profile/SILC_Profile_OAConsumer.h	\
 										$(SRC_ROOT)src/measurement/profile/SILC_Profile_OAConsumer.c
-endif 
+endif

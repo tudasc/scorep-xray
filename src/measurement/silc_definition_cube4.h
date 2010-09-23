@@ -26,10 +26,11 @@
  * format.
  */
 
-#include "silc_utility/SILC_Utils.h"
+#include <silc_utility/SILC_Utils.h>
 
-#include <cubew.h>
-#include <cube.h>
+#include <cubew_cubew.h>
+#include <cubew_cube.h>
+#include <SILC_Definitions.h>
 
 /**
    Contains the mapping structs for Cube 4 handles to SILC handles.

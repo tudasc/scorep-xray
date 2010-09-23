@@ -47,7 +47,9 @@ libsilc_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/silc_environment.c               \
     $(SRC_ROOT)src/measurement/silc_environment.h               \
     $(SRC_ROOT)src/measurement/silc_unify.c                     \
-    $(SRC_ROOT)src/measurement/silc_unify.h
+    $(SRC_ROOT)src/measurement/silc_unify.h                     \
+    $(SRC_ROOT)src/measurement/silc_definition_cube4.h          \
+    $(SRC_ROOT)src/measurement/silc_definition_cube4.c
 
 
 libsilc_measurement_la_CPPFLAGS =               \
@@ -57,19 +59,12 @@ libsilc_measurement_la_CPPFLAGS =               \
     -I$(INC_ROOT)src/measurement/OA             \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/services                   \
+    -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_OTF2)                           \
     -I$(INC_DIR_UTIL)                           \
     -I$(INC_DIR_VENDOR_HASH)
 
-## addtions of cube 4
-if HAVE_CUBE4
-libsilc_measurement_la_SOURCES +=                               \
-    $(SRC_ROOT)src/measurement/silc_definition_cube4.h          \
-    $(SRC_ROOT)src/measurement/silc_definition_cube4.c
-
-libsilc_measurement_la_LIBADD = $(CUBE_LIBS)
-endif
 
 ## paradigm omp
 

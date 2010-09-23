@@ -1,0 +1,45 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the SILC project (http://www.silc.de)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.cube_writer.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+noinst_LTLIBRARIES += libsilc_cube_writer.la
+libsilc_cube_writer_la_SOURCES =                               \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.c   \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.c       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.c        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cubew.c       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_machine.c     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_metric.c      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_node.c        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_process.c     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_region.c      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_services.c    \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.c      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.h   \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.h        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cubew.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_machine.h     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_metric.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_node.h        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_process.h     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_region.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_services.h    \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_types.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_vector.h
