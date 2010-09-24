@@ -24,6 +24,5 @@ AC_ARG_ENABLE([backend-test-runs],
               [ac_silc_enable_backend_test_runs=$enableval],
               [ac_silc_enable_backend_test_runs="no"])
 
-echo "ac_silc_enable_backend_test_runs = $ac_silc_enable_backend_test_runs"
 AM_CONDITIONAL([BACKEND_TEST_RUNS], [test "x$ac_silc_enable_backend_test_runs" = "xyes"])
 ])
