@@ -385,7 +385,7 @@ SILC_Instrumenter::check_parameter()
         {
             opari_script = path;
         }
-        opari_script += "/parse_pomp_init_regions.awk";
+        opari_script += "/pomp2_parse_init_regions.awk";
         if ( !SILC_DoesFileExist( opari_script.c_str() ) )
         {
             std::cout << "WARNING: Script " << opari_script << " not found."
