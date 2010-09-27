@@ -66,6 +66,8 @@ EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
                             clean-local-scorep-config-tool
 
 clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
+	rm -f scorep_serial_tests.sh  scorep_omp_tests.sh
+	
 .PHONY: $(EXTRA_LOCAL_CLEAN_TARGETS) \
         install-scorep-meets-tau
 

@@ -126,6 +126,9 @@ include ../../build-includes/mpi-backend-only.am
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../../build-config/m4
 
+clean-local:
+	rm -f scorep_mpi_omp_tests.sh  scorep_mpi_tests.sh
+
 distclean-local:
 	rm -f mpi_supported
 
