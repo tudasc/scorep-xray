@@ -34,7 +34,7 @@ jacobi_serial_c_uninstrumented_SOURCES  = $(jacobi_serial_c_sources)
 jacobi_serial_c_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_c_uninstrumented_LDADD    = -lm
 
-#TESTS += jacobi_serial_c
+SCOREP_SERIAL_TESTS += jacobi_serial_c
 
 ## OpenMP C
 
@@ -59,6 +59,9 @@ jacobi_omp_c_uninstrumented_SOURCES = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c \
                                       $(SRC_ROOT)test/jacobi/OpenMP/C/main.c
 jacobi_omp_c_uninstrumented_CFLAGS  = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_uninstrumented_LDADD   = -lm
+
+SCOREP_OMP_TESTS += jacobi_omp_c
+
 endif
 
 ## Serial C++
@@ -76,6 +79,7 @@ jacobi_serial_cxx_uninstrumented_SOURCES  = $(jacobi_serial_cxx_sources)
 jacobi_serial_cxx_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_cxx_uninstrumented_LDADD    = -lm
 
+SCOREP_SERIAL_TESTS += jacobi_serial_cxx
 
 ## OpenMP C++
 
@@ -101,6 +105,9 @@ jacobi_omp_cxx_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacob
                                          $(SRC_ROOT)test/jacobi/OpenMP/C++/main.cpp
 jacobi_omp_cxx_uninstrumented_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_omp_cxx_uninstrumented_LDADD    = -lm
+
+SCOREP_OMP_TESTS += jacobi_omp_cxx
+
 endif
 
 ## Serial Fortran
@@ -124,6 +131,7 @@ jacobi_serial_f90_uninstrumented_SOURCES  = $(jacobi_serial_f90_sources)
 jacobi_serial_f90_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 jacobi_serial_f90_uninstrumented_LDADD    = -lm
 
+SCOREP_SERIAL_TESTS += jacobi_serial_f90
 
 ## OpenMP Fortran
 
@@ -153,9 +161,9 @@ jacobi_omp_f90_uninstrumented_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/V
                                          $(SRC_ROOT)test/jacobi/OpenMP/Fortran/main.F90
 jacobi_omp_f90_uninstrumented_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_omp_f90_uninstrumented_LDADD    = -lm
-endif
-# if OPENMP_SUPPORTED
 
-##
+SCOREP_OMP_TESTS += jacobi_omp_f90
+
+endif
 
 CLEANFILES += variabledef.mod jacobimod.mod

@@ -55,8 +55,10 @@ lib_LTLIBRARIES =
 noinst_LTLIBRARIES = 
 include_HEADERS = 
 # TESTS_ENVIRONMENT = 
-TESTS = 
-XFAIL_TESTS = 
+SCOREP_MPI_TESTS =
+SCOREP_MPI_OMP_TESTS =
+SCOREP_MPI_XFAIL_TESTS = 
+SCOREP_MPI_OMP_XFAIL_TESTS =
 check_PROGRAMS = 
 # check_LIBRARIES =
 # check_LTLIBRARIES =
@@ -85,7 +87,31 @@ if CROSS_BUILD
 AM_CPPFLAGS += -DCROSS_BUILD
 else
 AM_CPPFLAGS += -DNOCROSS_BUILD
+# no automatic test runs for MPI or hybrid programs
+#if BACKEND_TEST_RUNS
+#TESTS = $(SCOREP_MPI_TESTS) $(SCOREP_MPI_OMP_TESTS)
+#XFAIL_TESTS = $(SCOREP_MPI_XFAIL_TESTS) $(SCOREP_MPI_OMP_XFAIL_TESTS)
+#endif
 endif
+
+
+# build always scripts for MPI or hybrid programs
+#if !BACKEND_TEST_RUNS
+BUILT_SOURCES += scorep_mpi_tests.sh scorep_mpi_omp_tests.sh
+
+scorep_mpi_tests.sh: 
+	rm -f scorep_mpi_tests.sh
+	echo "#!/bin/bash" > scorep_mpi_tests.sh
+	for i in $(SCOREP_MPI_TESTS); do echo "./$$i" >> scorep_mpi_tests.sh; done
+	chmod +x scorep_mpi_tests.sh
+
+scorep_mpi_omp_tests.sh: 
+	rm -f scorep_mpi_omp_tests.sh
+	echo "#!/bin/bash" > scorep_mpi_omp_tests.sh
+	for i in $(SCOREP_MPI_OMP_TESTS); do echo "./$$i" >> scorep_mpi_omp_tests.sh; done
+	chmod +x scorep_mpi_omp_tests.sh	
+#endif
+
 
 bindir=${exec_prefix}@backend_bin_dir@
 libdir=${exec_prefix}@backend_lib_dir@

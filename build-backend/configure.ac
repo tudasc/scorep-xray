@@ -30,6 +30,7 @@ AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 AC_SCOREP_PLATFORM_SETTINGS   
 
 AC_SCOREP_COMMON_CHECKS
+AC_SCOREP_BACKEND_TEST_RUNS
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])

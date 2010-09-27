@@ -12,15 +12,43 @@ bindir=${exec_prefix}@backend_bin_dir@
 libdir=${exec_prefix}@backend_lib_dir@
 
 if CROSS_BUILD
+
 AM_CPPFLAGS += -DCROSS_BUILD
 include ../build-includes/backend-only.am
 include ../build-includes/front-and-backend.am
+
 else
+
 AM_CPPFLAGS += -DNOCROSS_BUILD
 include ../build-includes/backend-only.am
 include ../build-includes/front-and-backend.am
 include ../build-includes/frontend-only.am
+
+if BACKEND_TEST_RUNS
+TESTS = $(SCOREP_SERIAL_TESTS) $(SCOREP_OMP_TESTS)
+XFAIL_TESTS = $(SCOREP_SERIAL_XFAIL_TESTS) $(SCOREP_OMP_XFAIL_TESTS)
 endif
+
+endif
+
+
+if !BACKEND_TEST_RUNS
+BUILT_SOURCES += scorep_serial_tests.sh scorep_omp_tests.sh
+
+scorep_serial_tests.sh: 
+	rm -f scorep_serial_tests.sh
+	echo "#!/bin/bash" > scorep_serial_tests.sh
+	for i in $(SCOREP_SERIAL_TESTS); do echo "./$$i" >> scorep_serial_tests.sh; done
+	chmod +x scorep_serial_tests.sh
+
+scorep_omp_tests.sh: 
+	rm -f scorep_omp_tests.sh
+	echo "#!/bin/bash" > scorep_omp_tests.sh
+	for i in $(SCOREP_OMP_TESTS); do echo "./$$i" >> scorep_omp_tests.sh; done
+	chmod +x scorep_omp_tests.sh
+	
+endif
+
 
 ## Convenience variable, used in common.am
 BUILD_DIR=build-backend

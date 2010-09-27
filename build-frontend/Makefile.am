@@ -14,7 +14,7 @@ include ../build-includes/front-and-backend.am
 
 
 
-
+TESTS = $(SCOREP_SERIAL_TESTS) $(SCOREP_OMP_TESTS)
 
 ## Convenience variable, used in common.am
 BUILD_DIR=build-frontend

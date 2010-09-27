@@ -75,8 +75,8 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_DIR_VENDOR_HASH)
 definitions_test_c_LDADD = $(LIB_ROOT)libscorep_serial.la $(LIB_DIR_UTIL)libscorep_utilities.la
 
-TESTS += definitions_test_c
- 
+SCOREP_SERIAL_TESTS += definitions_test_c
+
 string_duplicates_c_SOURCES  = $(SRC_ROOT)test/measurement/string_duplicates.c \
                                $(SRC_ROOT)vendor/cutest/CuTest.c
 string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
@@ -88,4 +88,4 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_DIR_VENDOR_HASH)
 string_duplicates_c_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
-TESTS += string_duplicates_c
+SCOREP_SERIAL_TESTS += string_duplicates_c

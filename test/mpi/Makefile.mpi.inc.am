@@ -36,6 +36,8 @@ mpi_hello_world_LDADD =                 \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
     -lm
 
+SCOREP_MPI_TESTS += mpi_hello_world
+
 check_PROGRAMS += mpi_hello_world_uninstrumented
 mpi_hello_world_uninstrumented_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
 

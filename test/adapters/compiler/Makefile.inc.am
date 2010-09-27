@@ -49,4 +49,4 @@ compiler_adapter_test_LDADD =                          \
     $(LIB_ROOT)libscorep_timer.la                        \
     $(LIB_ROOT)libcompiler_test_dummy_ms.la
 
-TESTS += compiler_adapter_test
+SCOREP_SERIAL_TESTS += compiler_adapter_test
