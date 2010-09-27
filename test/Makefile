@@ -1,13 +1,13 @@
 
 OBJ_DIR?=..
-COMP = $(OBJ_DIR)/build-backend/silc --instrument
+COMP = $(OBJ_DIR)/build-backend/scorep --instrument
 INST = comp:gnu 
 COMPFLAGS = -c 
 INCLUDE=
 OBJ=-Wl,--whole-archive \
-    $(OBJ_DIR)/build-backend/.libs/libsilc_serial.a \
+    $(OBJ_DIR)/build-backend/.libs/libscorep_serial.a \
     $(OBJ_DIR)/vendor/otf2/build-backend/.libs/libotf2.a \
-    $(OBJ_DIR)/vendor/otf2/vendor/utility/build-backend/.libs/libsilc_utilities.a \
+    $(OBJ_DIR)/vendor/otf2/vendor/utility/build-backend/.libs/libscorep_utilities.a \
     -Wl,--no-whole-archive \
     -lm -lbfd
 

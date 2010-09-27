@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -14,18 +14,18 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       /silc/src/adapters/tau/Makefile.inc.am
+## file       /scorep/src/adapters/tau/Makefile.inc.am
 ## maintainer TAU group (please put in a name and an email address)
 
 
-noinst_LTLIBRARIES += libsilc_adapter_tau.la
+noinst_LTLIBRARIES += libscorep_adapter_tau.la
 
-libsilc_adapter_tau_la_SOURCES  = \
-    $(SRC_ROOT)src/adapters/tau/SILC_Tau.c
-libsilc_adapter_tau_la_CPPFLAGS = \
+libscorep_adapter_tau_la_SOURCES  = \
+    $(SRC_ROOT)src/adapters/tau/SCOREP_Tau.c
+libscorep_adapter_tau_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                \
     -I$(PUBLIC_INC_DIR)           \
     -I$(INC_DIR_UTIL)             \
     -I$(INC_ROOT)src/measurement/include
 
-#libsilc_adapter_tau_la_LIBADD   = 
+#libscorep_adapter_tau_la_LIBADD   = 

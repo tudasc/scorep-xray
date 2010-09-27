@@ -8,6 +8,6 @@ tau_test_CPPFLAGS = $(AM_CPPFLAGS) \
     -I$(INC_DIR_UTIL)
 
 tau_test_LDADD = \
-    $(LIB_ROOT)libsilc_serial.la \
-    $(LIB_DIR_UTIL)libsilc_utilities.la
+    $(LIB_ROOT)libscorep_serial.la \
+    $(LIB_DIR_UTIL)libscorep_utilities.la
 

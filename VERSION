@@ -1,4 +1,4 @@
-# This is the VERSION file for SILC, describing the precise version of SILC in
+# This is the VERSION file for SCOREP, describing the precise version of SCOREP in
 # this distribution. The various components of the version number below are
 # combined to form a single version number string.
 
@@ -15,7 +15,7 @@ sub=0
 string=alpha
 
 # library is used for the library versioning. These three numbers will be added
-# to the name of the library (e.g. libsilc.so.1.2.3).
+# to the name of the library (e.g. libscorep.so.1.2.3).
 # The meaning of these numbers is as follows (from left to right):
 #
 #   current            The number of the current API exported by the library.

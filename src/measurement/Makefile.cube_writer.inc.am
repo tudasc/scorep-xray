@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -17,8 +17,8 @@
 ## file       Makefile.cube_writer.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-noinst_LTLIBRARIES += libsilc_cube_writer.la
-libsilc_cube_writer_la_SOURCES =                               \
+noinst_LTLIBRARIES += libscorep_cube_writer.la
+libscorep_cube_writer_la_SOURCES =                               \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.c   \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.c        \

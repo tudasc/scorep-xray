@@ -1,7 +1,7 @@
 ## -*- mode: awk -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -18,9 +18,9 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 BEGIN{
-    print "SILC_DefinitionManager silc_definition_manager ="
+    print "SCOREP_DefinitionManager scorep_definition_manager ="
     print "{"
-    print "     { { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }"
+    print "     { { SCOREP_MEMORY_MOVABLE_INVALID_PAGE_ID, SCOREP_MEMORY_MOVABLE_INVALID_OFFSET } }"
 }
 
 {
@@ -28,7 +28,7 @@ BEGIN{
     {
         next;
     }
-    print "    ,{ { SILC_MEMORY_MOVABLE_INVALID_PAGE_ID, SILC_MEMORY_MOVABLE_INVALID_OFFSET } }"
+    print "    ,{ { SCOREP_MEMORY_MOVABLE_INVALID_PAGE_ID, SCOREP_MEMORY_MOVABLE_INVALID_OFFSET } }"
 }
 
 END{

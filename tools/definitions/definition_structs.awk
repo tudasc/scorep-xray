@@ -1,7 +1,7 @@
 ## -*- mode: awk -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -18,7 +18,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 {
-    print "SILC_MOVABLE_TYPE( " $2 "_Definition );"
+    print "SCOREP_MOVABLE_TYPE( " $2 "_Definition );"
     print "struct " $2 "_Definition"
     print "{"
     print "    " $2 "_Definition_Movable next;"

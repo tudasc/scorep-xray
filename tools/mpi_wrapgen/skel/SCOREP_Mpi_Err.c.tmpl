@@ -1,0 +1,22 @@
+/**
+ * @file  SCOREP_Mpi_Err.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     alpha
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief C interface wrappers for error handling
+ */
+
+#include <config.h>
+#include "SCOREP_Mpi.h"
+
+/**
+ * @name C wrappers
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gerr) skel/SCOREP_Mpi_Std.w
+
+/**
+ * @}
+ */

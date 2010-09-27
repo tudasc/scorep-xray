@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -36,7 +36,7 @@
 #include <CuTest.h>
 
 
-#include <SILC_Config.h>
+#include <SCOREP_Config.h>
 
 
 #include "error_callback.h"
@@ -45,23 +45,23 @@
 static void
 test_number( CuTest* tc )
 {
-    uint64_t            number_variable;
-    SILC_ConfigVariable config_variables[] = {
+    uint64_t              number_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "number",
-            SILC_CONFIG_TYPE_NUMBER,
+            SCOREP_CONFIG_TYPE_NUMBER,
             &number_variable,
             NULL,
             "0",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_Error_Code     ret;
-    ret = SILC_ConfigRegister( NULL, config_variables );
-    CuAssert( tc, "SILC_ConfigRegister", ret == SILC_SUCCESS );
+    SCOREP_Error_Code     ret;
+    ret = SCOREP_ConfigRegister( NULL, config_variables );
+    CuAssert( tc, "SCOREP_ConfigRegister", ret == SCOREP_SUCCESS );
 
     printf( "%" PRIu64 "\n", number_variable );
 }
@@ -70,8 +70,8 @@ test_number( CuTest* tc )
 int
 main()
 {
-    SILC_Error_CallbackPointer old_error_callback =
-        SILC_Error_RegisterCallback( cutest_silc_error_callback );
+    SCOREP_Error_CallbackPointer old_error_callback =
+        SCOREP_Error_RegisterCallback( cutest_scorep_error_callback );
 
     the_test = CuTestNew( "test", test_number );
     CuTestRun( the_test );
@@ -82,7 +82,7 @@ main()
     int failed = the_test->failed != 0;
     CuTestFree( the_test );
 
-    SILC_Error_RegisterCallback( old_error_callback );
+    SCOREP_Error_RegisterCallback( old_error_callback );
 
     return failed;
 }

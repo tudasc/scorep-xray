@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -19,7 +19,7 @@
 #include <mpi.h>
 #include <stdio.h>
 
-#include "SILC_User.h"
+#include "SCOREP_User.h"
 
 int
 main( int    argc,
@@ -36,9 +36,9 @@ main( int    argc,
     if (myrank==0)
         printf("add example started with %d processes\n", np);
 
-    SILC_USER_REGION_DEFINE( mainRegion );
-    SILC_USER_OA_PHASE_BEGIN( mainRegion );
-    SILC_USER_REGION_BEGIN( mainRegion, "mainRegion", SILC_USER_REGION_TYPE_COMMON );
+    SCOREP_USER_REGION_DEFINE( mainRegion );
+    SCOREP_USER_OA_PHASE_BEGIN( mainRegion );
+    SCOREP_USER_REGION_BEGIN( mainRegion, "mainRegion", SCOREP_USER_REGION_TYPE_COMMON );
 
     for(k=0;k<30;k++)
     {
@@ -52,8 +52,8 @@ main( int    argc,
         MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    SILC_USER_REGION_END( mainRegion );
-    SILC_USER_OA_PHASE_END( mainRegion );
+    SCOREP_USER_REGION_END( mainRegion );
+    SCOREP_USER_OA_PHASE_END( mainRegion );
 
     if (myrank==0)
         printf("hello %g\n", a[100]);

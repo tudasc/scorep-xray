@@ -1,4 +1,4 @@
-# silc--frontend
+# scorep--frontend
 
 include ../build-includes/common.am
 

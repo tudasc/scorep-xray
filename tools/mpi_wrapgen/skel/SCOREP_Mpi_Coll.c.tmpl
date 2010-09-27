@@ -1,0 +1,23 @@
+/**
+ * @file  SCOREP_Mpi_Coll.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     alpha
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief C interface wrappers for collective communication
+ */
+
+#include <config.h>
+#include "SCOREP_Mpi.h"
+
+/**
+ * @name C wrappers
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gcoll+!nReduce_local) skel/SCOREP_Mpi_Coll.w
+
+#pragma wrapgen single MPI_Reduce_local skel/SCOREP_Mpi_Std.w
+/**
+ * @}
+ */

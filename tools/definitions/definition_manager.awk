@@ -1,7 +1,7 @@
 ## -*- mode: awk -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -18,8 +18,8 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 BEGIN{
-    print "typedef struct SILC_DefinitionManager SILC_DefinitionManager;"
-    print "struct SILC_DefinitionManager"
+    print "typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;"
+    print "struct SCOREP_DefinitionManager"
     print "{"
 }
 

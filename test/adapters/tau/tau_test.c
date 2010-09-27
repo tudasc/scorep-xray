@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -21,30 +21,30 @@
  * @brief Test program for the TAU adapter.
  *
  * This is compile time test to insure that all the functions and types defined in the
- * SILC_TAU.h include file are compatible with their usage in TAU. Currently this
+ * SCOREP_TAU.h include file are compatible with their usage in TAU. Currently this
  * test initialization and creating starting and stopping Regions. More test
- * will be added as the TAU-SILC integration continues.
+ * will be added as the TAU-SCOREP integration continues.
  */
 
 #include <config.h>
 
-#include "SILC_Tau.h"
+#include "SCOREP_Tau.h"
 
 int
 main( int   argc,
       char* argv[] )
 {
-    SILC_Tau_InitMeasurement();
+    SCOREP_Tau_InitMeasurement();
 
     long FunctionId;
-    FunctionId =  SILC_Tau_DefineRegion( "test",
-                                         SILC_TAU_INVALID_SOURCE_FILE,
-                                         SILC_TAU_INVALID_LINE_NO,
-                                         SILC_TAU_INVALID_LINE_NO,
-                                         SILC_TAU_ADAPTER_COMPILER,
-                                         SILC_TAU_REGION_FUNCTION
-                                         );
+    FunctionId =  SCOREP_Tau_DefineRegion( "test",
+                                           SCOREP_TAU_INVALID_SOURCE_FILE,
+                                           SCOREP_TAU_INVALID_LINE_NO,
+                                           SCOREP_TAU_INVALID_LINE_NO,
+                                           SCOREP_TAU_ADAPTER_COMPILER,
+                                           SCOREP_TAU_REGION_FUNCTION
+                                           );
 
-    SILC_Tau_EnterRegion( FunctionId );
-    SILC_Tau_ExitRegion( FunctionId );
+    SCOREP_Tau_EnterRegion( FunctionId );
+    SCOREP_Tau_ExitRegion( FunctionId );
 }

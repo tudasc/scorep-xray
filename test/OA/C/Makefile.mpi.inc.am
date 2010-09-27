@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -32,9 +32,9 @@ oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	 \
 					-I$(INC_ROOT)src/measurement/include    \
 					-I$(PUBLIC_INC_DIR)                     \
 					-I$(INC_DIR_UTIL)                       \
-					-DSILC_USER_ENABLE
+					-DSCOREP_USER_ENABLE
     				
-oa_mpi_c_LDADD    = $(LIB_ROOT)libsilc_mpi.la
+oa_mpi_c_LDADD    = $(LIB_ROOT)libscorep_mpi.la
 
 endif
 # if MPI_SUPPOERTED

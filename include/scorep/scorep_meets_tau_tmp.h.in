@@ -1,0 +1,41 @@
+#ifndef SCOREP_MEETS_TAU_H
+#define SCOREP_MEETS_TAU_H
+
+/* 
+ * This file is part of the SCOREP project (http://www.scorep.de)
+ *
+ * Copyright (c) 2009-2011, 
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene, USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+/**
+ * @file scorep_meets_tau.h This file defined a limited private interface to
+ * the SCOREP measurement system particularly tailored to the needs of the TAU
+ * Performance System (http://www.cs.uoregon.edu/research/tau/home.php). There
+ * will be no support for other users than the TAU developers. SCOREP major
+ * releases may brake this interface where minor releases may only add
+ * functionality.
+ * 
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status alpha
+ *    
+ */
+
+#define SCOREP_VERSION @PACKAGE_VERSION@
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <SCOREP_PublicTypes.h>
+

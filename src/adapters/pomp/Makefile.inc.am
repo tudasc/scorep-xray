@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -17,74 +17,74 @@
 ## file       Makefile.mpi.inc.am
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
-SILC_POMP_USER_FORTRAN_SOURCES =                        \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_UserF.c      \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Variables.h  \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Fortran.h    \
-    $(SRC_ROOT)src/adapters/include/SILC_Fortran_Wrapper.h
+SCOREP_POMP_USER_FORTRAN_SOURCES =                        \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c      \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Variables.h  \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Fortran.h    \
+    $(SRC_ROOT)src/adapters/include/SCOREP_Fortran_Wrapper.h
 
-SILC_POMP_USER_FORTRAN_FLAGS =                          \
+SCOREP_POMP_USER_FORTRAN_FLAGS =                          \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)
 
 noinst_LTLIBRARIES                   +=                 \
-    libsilc_adapter_pomp_user.la                        \
-    libsilc_adapter_pomp_user_fortran_sub1.la           \
-    libsilc_adapter_pomp_user_fortran_sub2.la           \
-    libsilc_adapter_pomp_user_fortran_sub3.la           \
-    libsilc_adapter_pomp_user_fortran_sub4.la
+    libscorep_adapter_pomp_user.la                        \
+    libscorep_adapter_pomp_user_fortran_sub1.la           \
+    libscorep_adapter_pomp_user_fortran_sub2.la           \
+    libscorep_adapter_pomp_user_fortran_sub3.la           \
+    libscorep_adapter_pomp_user_fortran_sub4.la
 
-libsilc_adapter_pomp_user_la_SOURCES  =                 \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_User.c       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.c \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.h \
-    $(SRC_ROOT)src/adapters/include/SILC_Pomp_Init.h
-libsilc_adapter_pomp_user_la_CPPFLAGS =                 \
+libscorep_adapter_pomp_user_la_SOURCES  =                 \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_User.c       \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.c \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.h \
+    $(SRC_ROOT)src/adapters/include/SCOREP_Pomp_Init.h
+libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/adapters/pomp                      \
     -I$(INC_ROOT)src/measurement/include                \
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)
-libsilc_adapter_pomp_user_la_LIBADD =                   \
-    libsilc_adapter_pomp_user_fortran_sub1.la           \
-    libsilc_adapter_pomp_user_fortran_sub2.la           \
-    libsilc_adapter_pomp_user_fortran_sub3.la           \
-    libsilc_adapter_pomp_user_fortran_sub4.la
+libscorep_adapter_pomp_user_la_LIBADD =                   \
+    libscorep_adapter_pomp_user_fortran_sub1.la           \
+    libscorep_adapter_pomp_user_fortran_sub2.la           \
+    libscorep_adapter_pomp_user_fortran_sub3.la           \
+    libscorep_adapter_pomp_user_fortran_sub4.la
 
-libsilc_adapter_pomp_user_fortran_sub1_la_SOURCES =     \
-    $(SILC_POMP_USER_FORTRAN_SOURCES)
-libsilc_adapter_pomp_user_fortran_sub2_la_SOURCES =     \
-    $(SILC_POMP_USER_FORTRAN_SOURCES)
-libsilc_adapter_pomp_user_fortran_sub3_la_SOURCES =     \
-    $(SILC_POMP_USER_FORTRAN_SOURCES)
-libsilc_adapter_pomp_user_fortran_sub4_la_SOURCES =     \
-    $(SILC_POMP_USER_FORTRAN_SOURCES)
+libscorep_adapter_pomp_user_fortran_sub1_la_SOURCES =     \
+    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+libscorep_adapter_pomp_user_fortran_sub2_la_SOURCES =     \
+    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+libscorep_adapter_pomp_user_fortran_sub3_la_SOURCES =     \
+    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+libscorep_adapter_pomp_user_fortran_sub4_la_SOURCES =     \
+    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
 
-libsilc_adapter_pomp_user_fortran_sub1_la_CPPFLAGS =    \
-    -DFSUB=SILC_FORTRAN_SUB1                            \
-    $(SILC_POMP_USER_FORTRAN_FLAGS)
-libsilc_adapter_pomp_user_fortran_sub2_la_CPPFLAGS =    \
-    -DFSUB=SILC_FORTRAN_SUB2                            \
-    $(SILC_POMP_USER_FORTRAN_FLAGS)
-libsilc_adapter_pomp_user_fortran_sub3_la_CPPFLAGS =    \
-    -DFSUB=SILC_FORTRAN_SUB3                            \
-    $(SILC_POMP_USER_FORTRAN_FLAGS)
-libsilc_adapter_pomp_user_fortran_sub4_la_CPPFLAGS =    \
-    -DFSUB=SILC_FORTRAN_SUB4                            \
-    $(SILC_POMP_USER_FORTRAN_FLAGS)
+libscorep_adapter_pomp_user_fortran_sub1_la_CPPFLAGS =    \
+    -DFSUB=SCOREP_FORTRAN_SUB1                            \
+    $(SCOREP_POMP_USER_FORTRAN_FLAGS)
+libscorep_adapter_pomp_user_fortran_sub2_la_CPPFLAGS =    \
+    -DFSUB=SCOREP_FORTRAN_SUB2                            \
+    $(SCOREP_POMP_USER_FORTRAN_FLAGS)
+libscorep_adapter_pomp_user_fortran_sub3_la_CPPFLAGS =    \
+    -DFSUB=SCOREP_FORTRAN_SUB3                            \
+    $(SCOREP_POMP_USER_FORTRAN_FLAGS)
+libscorep_adapter_pomp_user_fortran_sub4_la_CPPFLAGS =    \
+    -DFSUB=SCOREP_FORTRAN_SUB4                            \
+    $(SCOREP_POMP_USER_FORTRAN_FLAGS)
 
 if OPENMP_SUPPORTED
-SILC_POMP_OMP_FORTRAN_SOURCES =                         \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_UserF.c      \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_LibF.c       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Variables.h  \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Fortran.h    \
-    $(SRC_ROOT)src/adapters/include/SILC_Fortran_Wrapper.h
+SCOREP_POMP_OMP_FORTRAN_SOURCES =                         \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c      \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_LibF.c       \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Variables.h  \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Fortran.h    \
+    $(SRC_ROOT)src/adapters/include/SCOREP_Fortran_Wrapper.h
 
-SILC_POMP_OMP_FORTRAN_FLAGS =                           \
+SCOREP_POMP_OMP_FORTRAN_FLAGS =                           \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(PUBLIC_INC_DIR)                                 \
@@ -92,55 +92,55 @@ SILC_POMP_OMP_FORTRAN_FLAGS =                           \
     -D_OPENMP
 
 noinst_LTLIBRARIES             +=                       \
-    libsilc_adapter_pomp_omp.la                         \
-    libsilc_adapter_pomp_omp_fortran_sub1.la            \
-    libsilc_adapter_pomp_omp_fortran_sub2.la            \
-    libsilc_adapter_pomp_omp_fortran_sub3.la            \
-    libsilc_adapter_pomp_omp_fortran_sub4.la
+    libscorep_adapter_pomp_omp.la                         \
+    libscorep_adapter_pomp_omp_fortran_sub1.la            \
+    libscorep_adapter_pomp_omp_fortran_sub2.la            \
+    libscorep_adapter_pomp_omp_fortran_sub3.la            \
+    libscorep_adapter_pomp_omp_fortran_sub4.la
 
-libsilc_adapter_pomp_omp_la_SOURCES =                   \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_User.c       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.c \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_RegionInfo.h \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lib.c        \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.c       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Lock.h       \
-    $(SRC_ROOT)src/adapters/pomp/SILC_Pomp_Variables.h  \
-    $(SRC_ROOT)src/adapters/include/SILC_Pomp_Init.h
+libscorep_adapter_pomp_omp_la_SOURCES =                   \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_User.c       \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.c \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.h \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lib.c        \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lock.c       \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lock.h       \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Variables.h  \
+    $(SRC_ROOT)src/adapters/include/SCOREP_Pomp_Init.h
 
-libsilc_adapter_pomp_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libsilc_adapter_pomp_omp_la_CPPFLAGS =                  \
+libscorep_adapter_pomp_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_adapter_pomp_omp_la_CPPFLAGS =                  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/adapters/pomp                      \
     -I$(INC_ROOT)src/measurement/include                \
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)
-libsilc_adapter_pomp_omp_la_LIBADD =                    \
-    libsilc_adapter_pomp_omp_fortran_sub1.la            \
-    libsilc_adapter_pomp_omp_fortran_sub2.la            \
-    libsilc_adapter_pomp_omp_fortran_sub3.la            \
-    libsilc_adapter_pomp_omp_fortran_sub4.la
+libscorep_adapter_pomp_omp_la_LIBADD =                    \
+    libscorep_adapter_pomp_omp_fortran_sub1.la            \
+    libscorep_adapter_pomp_omp_fortran_sub2.la            \
+    libscorep_adapter_pomp_omp_fortran_sub3.la            \
+    libscorep_adapter_pomp_omp_fortran_sub4.la
 
-libsilc_adapter_pomp_omp_fortran_sub1_la_SOURCES =      \
-    $(SILC_POMP_OMP_FORTRAN_SOURCES)
-libsilc_adapter_pomp_omp_fortran_sub2_la_SOURCES =      \
-    $(SILC_POMP_OMP_FORTRAN_SOURCES)
-libsilc_adapter_pomp_omp_fortran_sub3_la_SOURCES =      \
-    $(SILC_POMP_OMP_FORTRAN_SOURCES)
-libsilc_adapter_pomp_omp_fortran_sub4_la_SOURCES =      \
-    $(SILC_POMP_OMP_FORTRAN_SOURCES)
+libscorep_adapter_pomp_omp_fortran_sub1_la_SOURCES =      \
+    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+libscorep_adapter_pomp_omp_fortran_sub2_la_SOURCES =      \
+    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+libscorep_adapter_pomp_omp_fortran_sub3_la_SOURCES =      \
+    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+libscorep_adapter_pomp_omp_fortran_sub4_la_SOURCES =      \
+    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
 
-libsilc_adapter_pomp_omp_fortran_sub1_la_CPPFLAGS =     \
-    -DFSUB=SILC_FORTRAN_SUB1                            \
-    $(SILC_POMP_OMP_FORTRAN_FLAGS)
-libsilc_adapter_pomp_omp_fortran_sub2_la_CPPFLAGS =     \
-    -DFSUB=SILC_FORTRAN_SUB2                            \
-    $(SILC_POMP_OMP_FORTRAN_FLAGS)
-libsilc_adapter_pomp_omp_fortran_sub3_la_CPPFLAGS =     \
-    -DFSUB=SILC_FORTRAN_SUB3                            \
-    $(SILC_POMP_OMP_FORTRAN_FLAGS)
-libsilc_adapter_pomp_omp_fortran_sub4_la_CPPFLAGS =     \
-    -DFSUB=SILC_FORTRAN_SUB4                            \
-    $(SILC_POMP_OMP_FORTRAN_FLAGS)
+libscorep_adapter_pomp_omp_fortran_sub1_la_CPPFLAGS =     \
+    -DFSUB=SCOREP_FORTRAN_SUB1                            \
+    $(SCOREP_POMP_OMP_FORTRAN_FLAGS)
+libscorep_adapter_pomp_omp_fortran_sub2_la_CPPFLAGS =     \
+    -DFSUB=SCOREP_FORTRAN_SUB2                            \
+    $(SCOREP_POMP_OMP_FORTRAN_FLAGS)
+libscorep_adapter_pomp_omp_fortran_sub3_la_CPPFLAGS =     \
+    -DFSUB=SCOREP_FORTRAN_SUB3                            \
+    $(SCOREP_POMP_OMP_FORTRAN_FLAGS)
+libscorep_adapter_pomp_omp_fortran_sub4_la_CPPFLAGS =     \
+    -DFSUB=SCOREP_FORTRAN_SUB4                            \
+    $(SCOREP_POMP_OMP_FORTRAN_FLAGS)
 endif

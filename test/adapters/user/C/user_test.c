@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -15,12 +15,12 @@
 
 #include <config.h>
 
-#include "SILC_User.h"
+#include "SCOREP_User.h"
 
 #include "user_test_baz.c.inc"
 
-SILC_USER_METRIC_GROUP_GLOBAL( globalGroup )
-SILC_USER_METRIC_GLOBAL( globalMetric )
+SCOREP_USER_METRIC_GROUP_GLOBAL( globalGroup )
+SCOREP_USER_METRIC_GLOBAL( globalMetric )
 
 extern void
 foo();
@@ -28,39 +28,39 @@ foo();
 void
 test()
 {
-    SILC_USER_FUNC_BEGIN
-    SILC_USER_METRIC_INT64( globalMetric,
-                            2 );
+    SCOREP_USER_FUNC_BEGIN
+    SCOREP_USER_METRIC_INT64( globalMetric,
+                              2 );
 
-    SILC_USER_FUNC_END
+    SCOREP_USER_FUNC_END
 }
 
 int
 main( int   argc,
       char* argv[] )
 {
-    SILC_USER_METRIC_GROUP_LOCAL( localGroup );
-    SILC_USER_METRIC_LOCAL( localMetric );
-    SILC_USER_FUNC_BEGIN;
-    SILC_USER_METRIC_GROUP_INIT( localGroup, "localGroup" );
-    SILC_USER_METRIC_GROUP_INIT( globalGroup, "globalGroup" );
-    SILC_USER_METRIC_INIT( localMetric, "localMetric", "s", SILC_USER_METRIC_TYPE_DOUBLE,
-                           SILC_USER_METRIC_CONTEXT_GLOBAL, SILC_USER_METRIC_GROUP_DEFAULT );
-    SILC_USER_METRIC_INIT( globalMetric, "globalMetric", "s", SILC_USER_METRIC_TYPE_INT64,
-                           SILC_USER_METRIC_CONTEXT_CALLPATH, localGroup );
+    SCOREP_USER_METRIC_GROUP_LOCAL( localGroup );
+    SCOREP_USER_METRIC_LOCAL( localMetric );
+    SCOREP_USER_FUNC_BEGIN;
+    SCOREP_USER_METRIC_GROUP_INIT( localGroup, "localGroup" );
+    SCOREP_USER_METRIC_GROUP_INIT( globalGroup, "globalGroup" );
+    SCOREP_USER_METRIC_INIT( localMetric, "localMetric", "s", SCOREP_USER_METRIC_TYPE_DOUBLE,
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, SCOREP_USER_METRIC_GROUP_DEFAULT );
+    SCOREP_USER_METRIC_INIT( globalMetric, "globalMetric", "s", SCOREP_USER_METRIC_TYPE_INT64,
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH, localGroup );
     foo();
-    SILC_USER_METRIC_DOUBLE( localMetric, 3.0 );
+    SCOREP_USER_METRIC_DOUBLE( localMetric, 3.0 );
     baz();
-    SILC_USER_METRIC_INT64( globalMetric, 1 );
+    SCOREP_USER_METRIC_INT64( globalMetric, 1 );
     test();
     foo();
-    SILC_USER_FUNC_END
+    SCOREP_USER_FUNC_END
     foo();
 
-    SILC_RECORDING_OFF
-    if ( !SILC_RECORDING_IS_ON )
+    SCOREP_RECORDING_OFF
+    if ( !SCOREP_RECORDING_IS_ON )
     {
-        SILC_RECORDING_ON
+        SCOREP_RECORDING_ON
         return 0;
     }
 }

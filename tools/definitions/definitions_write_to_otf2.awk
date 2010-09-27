@@ -1,7 +1,7 @@
 ## -*- mode: awk -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -19,18 +19,18 @@
 
 {
     print "static void"
-    print "silc_write_" $3 "_definitions_to_otf2( OTF2_DefWriter* definitionWriter )"
+    print "scorep_write_" $3 "_definitions_to_otf2( OTF2_DefWriter* definitionWriter )"
     print "{"
     print "    " $2 "_Definition* definition ="
-    print "        &( silc_definition_manager." $3 "_definitions_head_dummy );"
-    print "    while ( !SILC_MEMORY_MOVABLE_IS_NULL( definition->next ) )"
+    print "        &( scorep_definition_manager." $3 "_definitions_head_dummy );"
+    print "    while ( !SCOREP_MEMORY_MOVABLE_IS_NULL( definition->next ) )"
     print "    {"
-    print "        definition = SILC_MEMORY_DEREF_MOVABLE( &( definition->next ),"
+    print "        definition = SCOREP_MEMORY_DEREF_MOVABLE( &( definition->next ),"
     print "                                                " $2 "_Definition* );"
-    print "        //SILC_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);"
-    print "        //if ( status != SILC_SUCCESS )"
+    print "        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);"
+    print "        //if ( status != SCOREP_SUCCESS )"
     print "        //{"
-    print "        //    silc_handle_definition_writing_error( status, \"" $2 "_Definition\" );"
+    print "        //    scorep_handle_definition_writing_error( status, \"" $2 "_Definition\" );"
     print "        //}"
     print "        assert( false ); // implement me"
     print "    }"

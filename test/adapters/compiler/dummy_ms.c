@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -34,78 +34,78 @@
 #include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <SILC_Events.h>
-#include <SILC_Adapter.h>
-#include <silc_utility/SILC_Utils.h>
-#include <SILC_Compiler_Init.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_Adapter.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Compiler_Init.h>
 
 int test = 0;
 
 void
-SILC_LockSourceFileDefinition()
+SCOREP_LockSourceFileDefinition()
 {
 }
 
 void
-SILC_UnlockSourceFileDefinition()
+SCOREP_UnlockSourceFileDefinition()
 {
 }
 
 void
-SILC_LockRegionDefinition()
+SCOREP_LockRegionDefinition()
 {
 }
 
 void
-SILC_UnlockRegionDefinition()
+SCOREP_UnlockRegionDefinition()
 {
 }
 
-SILC_SourceFileHandle
-SILC_DefineSourceFile
+SCOREP_SourceFileHandle
+SCOREP_DefineSourceFile
 (
     const char* fileName
 )
 {
-    return ( SILC_SourceFileHandle )1;
+    return ( SCOREP_SourceFileHandle )1;
 }
 
-SILC_RegionHandle
-SILC_DefineRegion
+SCOREP_RegionHandle
+SCOREP_DefineRegion
 (
-    const char*           regionName,
-    SILC_SourceFileHandle fileHandle,
-    SILC_LineNo           beginLine,
-    SILC_LineNo           endLine,
-    SILC_AdapterType      adapter,
-    SILC_RegionType       regionType
+    const char*             regionName,
+    SCOREP_SourceFileHandle fileHandle,
+    SCOREP_LineNo           beginLine,
+    SCOREP_LineNo           endLine,
+    SCOREP_AdapterType      adapter,
+    SCOREP_RegionType       regionType
 )
 {
-    return ( SILC_RegionHandle )1;
+    return ( SCOREP_RegionHandle )1;
 }
 
 void
-SILC_InitMeasurement( void )
+SCOREP_InitMeasurement( void )
 {
-    SILC_Compiler_Adapter.adapter_register();
-    SILC_Compiler_Adapter.adapter_init();
-    SILC_Compiler_Adapter.adapter_init_location();
+    SCOREP_Compiler_Adapter.adapter_register();
+    SCOREP_Compiler_Adapter.adapter_init();
+    SCOREP_Compiler_Adapter.adapter_init_location();
 }
 
-SILC_Error_Code
-SILC_ConfigRegister
+SCOREP_Error_Code
+SCOREP_ConfigRegister
 (
-    const char*          nameSpace,
-    SILC_ConfigVariable* variables
+    const char*            nameSpace,
+    SCOREP_ConfigVariable* variables
 )
 {
-    return SILC_SUCCESS;
+    return SCOREP_SUCCESS;
 }
 
 void
-SILC_EnterRegion
+SCOREP_EnterRegion
 (
-    SILC_RegionHandle regionHandle
+    SCOREP_RegionHandle regionHandle
 )
 {
     printf( "Enter Region\n" );
@@ -113,9 +113,9 @@ SILC_EnterRegion
 }
 
 void
-SILC_ExitRegion
+SCOREP_ExitRegion
 (
-    SILC_RegionHandle regionHandle
+    SCOREP_RegionHandle regionHandle
 )
 {
     printf( "Exit Region\n" );

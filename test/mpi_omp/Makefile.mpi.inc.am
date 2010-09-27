@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -37,7 +37,7 @@ mpi_omp_hello_world_SOURCES  = $(SRC_ROOT)/test/mpi_omp/mpi_omp_hello_world.mod.
                                $(SRC_ROOT)/test/mpi_omp/mpi_omp_hello_world.c.opari.inc
 mpi_omp_hello_world_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-mpi_omp_hello_world_LDADD    = $(LIB_ROOT)libsilc_mpi_omp.la libmpi_omp_hello_world_pomp.la
+mpi_omp_hello_world_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libmpi_omp_hello_world_pomp.la
 
 endif
 endif

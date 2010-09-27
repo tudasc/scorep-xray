@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -35,27 +35,27 @@
 #include <CuTest.h>
 
 
-#include <SILC_Config.h>
+#include <SCOREP_Config.h>
 
 
 static void
 test_bool_default_true( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_true",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "true",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"true\"", bool_variable == true );
 }
@@ -64,21 +64,21 @@ test_bool_default_true( CuTest* tc )
 static void
 test_bool_default_yes( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_yes",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "yes",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"yes\"", bool_variable == true );
 }
@@ -87,21 +87,21 @@ test_bool_default_yes( CuTest* tc )
 static void
 test_bool_default_on( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_on",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "on",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"on\"", bool_variable == true );
 }
@@ -110,21 +110,21 @@ test_bool_default_on( CuTest* tc )
 static void
 test_bool_default_1( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_1",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "1",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"1\"", bool_variable == true );
 }
@@ -133,21 +133,21 @@ test_bool_default_1( CuTest* tc )
 static void
 test_bool_default_42( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_42",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "42",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"42\"", bool_variable == true );
 }
@@ -156,21 +156,21 @@ test_bool_default_42( CuTest* tc )
 static void
 test_bool_default_false( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_false",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "false",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"false\"", bool_variable == false );
 }
@@ -179,21 +179,21 @@ test_bool_default_false( CuTest* tc )
 static void
 test_bool_default_no( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_no",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "no",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"no\"", bool_variable == false );
 }
@@ -202,21 +202,21 @@ test_bool_default_no( CuTest* tc )
 static void
 test_bool_default_off( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_off",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "off",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"off\"", bool_variable == false );
 }
@@ -225,21 +225,21 @@ test_bool_default_off( CuTest* tc )
 static void
 test_bool_default_0( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_0",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "0",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"0\"", bool_variable == false );
 }
@@ -248,21 +248,21 @@ test_bool_default_0( CuTest* tc )
 static void
 test_bool_default_garbage( CuTest* tc )
 {
-    bool                bool_variable;
-    SILC_ConfigVariable config_variables[] = {
+    bool                  bool_variable;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "bool_default_garbage",
-            SILC_CONFIG_TYPE_BOOL,
+            SCOREP_CONFIG_TYPE_BOOL,
             &bool_variable,
             NULL,
             "garbage",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssert( tc, "default \"garbage\"", bool_variable == false );
 }

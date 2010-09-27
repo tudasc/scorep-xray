@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -15,16 +15,16 @@
 
 #include <config.h>
 
-#include "SILC_User.h"
+#include "SCOREP_User.h"
 
-SILC_USER_METRIC_GROUP_EXTERNAL( globalGroup )
-SILC_USER_METRIC_EXTERNAL( globalMetric )
+SCOREP_USER_METRIC_GROUP_EXTERNAL( globalGroup )
+SCOREP_USER_METRIC_EXTERNAL( globalMetric )
 
 void
 foo()
 {
-    SILC_USER_REGION_DEFINE( foo_handle )
-    SILC_USER_REGION_BEGIN( foo_handle, "foo", SILC_USER_REGION_TYPE_COMMON );
-    SILC_USER_METRIC_INT64( globalMetric, 3 );
-    SILC_USER_REGION_END( foo_handle );
+    SCOREP_USER_REGION_DEFINE( foo_handle )
+    SCOREP_USER_REGION_BEGIN( foo_handle, "foo", SCOREP_USER_REGION_TYPE_COMMON );
+    SCOREP_USER_METRIC_INT64( globalMetric, 3 );
+    SCOREP_USER_REGION_END( foo_handle );
 }

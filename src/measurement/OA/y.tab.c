@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -141,10 +141,10 @@
 
 #include <config.h>
 
-#include "silc_oa_mri_control.h"
-#include "silc_oa_connection.h"
-#include "SILC_OA_Init.h"
-#include "silc_utility/SILC_Utils.h"//#include "SILC_Utils.h"
+#include "scorep_oa_mri_control.h"
+#include "scorep_oa_connection.h"
+#include "SCOREP_OA_Init.h"
+#include "scorep_utility/SCOREP_Utils.h"//#include "SCOREP_Utils.h"
 #include <stdio.h>
 
 /*----------------------------------------------------------------------------*/
@@ -1254,98 +1254,98 @@ yyreduce:
     {
         case 2:
 #line 83 "yacc.l"
-    {silc_oa_connection_send_string(connection,"OK\n");}
+    {scorep_oa_connection_send_string(connection,"OK\n");}
     break;
 
   case 3:
 #line 84 "yacc.l"
-    {silc_oa_connection_send_string(connection,"OK\n");}
+    {scorep_oa_connection_send_string(connection,"OK\n");}
     break;
 
   case 5:
 #line 88 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Termination request received\n");silc_oa_mri_set_appl_control(SILC_OA_MRI_EXEC_REQUEST_TERMINATE,0,0);silc_oa_connection_send_string(connection,"OK\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Termination request received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE,0,0);scorep_oa_connection_send_string(connection,"OK\n");}
     break;
 
   case 6:
 #line 89 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Execution request run_to_beginning received\n");silc_oa_mri_set_appl_control(SILC_OA_MRI_STATUS_RUNNING_TO_BEGINNING,(yyvsp[-3].Zahl),(yyvsp[-1].Zahl));}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Execution request run_to_beginning received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING,(yyvsp[-3].Zahl),(yyvsp[-1].Zahl));}
     break;
 
   case 7:
 #line 90 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Execution request run_to_end received\n");silc_oa_mri_set_appl_control(SILC_OA_MRI_STATUS_RUNNING_TO_END,(yyvsp[-3].Zahl),(yyvsp[-1].Zahl));}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Execution request run_to_end received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_STATUS_RUNNING_TO_END,(yyvsp[-3].Zahl),(yyvsp[-1].Zahl));}
     break;
 
   case 8:
 #line 91 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Measured data requested\n");silc_oa_mri_return_summary_data(connection);}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Measured data requested\n");scorep_oa_mri_return_summary_data(connection);}
     break;
 
   case 9:
 #line 92 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Standby for requests...\n");silc_oa_connection_send_string(connection,"OK\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Standby for requests...\n");scorep_oa_connection_send_string(connection,"OK\n");}
     break;
 
   case 10:
 #line 93 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Requests submitted\n");silc_oa_connection_send_string(connection,"OK\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Requests submitted\n");scorep_oa_connection_send_string(connection,"OK\n");}
     break;
 
   case 12:
 #line 97 "yacc.l"
     {
-                                                        SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Not supported and never be\n");}
+                                                        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Not supported and never be\n");}
     break;
 
   case 14:
 #line 101 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Not supported and never be\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Not supported and never be\n");}
     break;
 
   case 15:
 #line 102 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Not supported and never be\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Not supported and never be\n");}
     break;
 
   case 16:
 #line 103 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Not supported and never be\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Not supported and never be\n");}
     break;
 
   case 17:
 #line 105 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Measurements are requested\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Measurements are requested\n");}
     break;
 
   case 20:
 #line 108 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Local requests are not supported yet\n");silc_oa_connection_send_string(connection,"Local requests are not supported yet\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Local requests are not supported yet\n");scorep_oa_connection_send_string(connection,"Local requests are not supported yet\n");}
     break;
 
   case 22:
 #line 111 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Node lists are ignored\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Node lists are ignored\n");}
     break;
 
   case 23:
 #line 113 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Node lists are ignored\n");}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Node lists are ignored\n");}
     break;
 
   case 26:
 #line 119 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Global MPI request was received\n");silc_oa_mri_set_profiling(1);silc_oa_mri_set_mpiprofiling(1);}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Global MPI request was received\n");scorep_oa_mri_set_profiling(1);scorep_oa_mri_set_mpiprofiling(1);}
     break;
 
   case 27:
 #line 120 "yacc.l"
-    {SILC_DEBUG_PRINTF( SILC_DEBUG_OA,"Global Execution time request was received\n");silc_oa_mri_set_profiling(1);}
+    {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Global Execution time request was received\n");scorep_oa_mri_set_profiling(1);}
     break;
 
   case 28:
 #line 123 "yacc.l"
-    {silc_oa_mri_setphase((yyvsp[-5].Zahl),(yyvsp[-1].Zahl));}
+    {scorep_oa_mri_setphase((yyvsp[-5].Zahl),(yyvsp[-1].Zahl));}
     break;
 
   case 29:

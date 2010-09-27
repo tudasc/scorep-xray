@@ -46,7 +46,7 @@ endif
 
 clean-local: clean-doxygen-user
 	rm -rf $(builddir)/user_provided_configure_args
-	rm -f  $(builddir)/include/silc/scorep_meets_tau.h
+	rm -f  $(builddir)/include/scorep/scorep_meets_tau.h
 
 ## In the following conditional we must distinguish if we are in "developer
 ## mode", i.e. if we are working on a svn working copy, or if we are in "user
@@ -57,7 +57,7 @@ clean-local: clean-doxygen-user
 ## make dist. When creating a distribution, the developer should make sure
 ## that she has doxygen and related tools e.g. latex in path in order to
 ## generate a complete documentation, see also
-## build-config/m4/ac_silc_doxygen.m4.
+## build-config/m4/ac_scorep_doxygen.m4.
 ##
 ## make install is ignorant of documentation issues in developer mode.
 ##
@@ -67,7 +67,7 @@ clean-local: clean-doxygen-user
 if SVN_CONTROLLED #-----------------------------------------------------------
 
 #USER_DOC_DIR = $(top_distdir)/doc
-USER_DOC_DIR = $(top_distdir)$(ac_silc_doxygen_distdir)/doc
+USER_DOC_DIR = $(top_distdir)$(ac_scorep_doxygen_distdir)/doc
 
 install-data-local: install-scorep-meets-tau
 
@@ -213,19 +213,19 @@ endif # SVN_CONTROLLED -------------------------------------------------------
 
 
 install-scorep-meets-tau:
-	cp -p $(builddir)/include/silc/scorep_meets_tau_tmp.h $(builddir)/include/silc/scorep_meets_tau.h
-	ordered_headers="SILC_DefinitionHandles.h SILC_DefinitionLocking.h SILC_Memory.h SILC_RuntimeManagement.h SILC_Thread_Types.h SILC_Types.h SILC_Adapter.h SILC_Config.h SILC_Definitions.h SILC_Events.h"; \
+	cp -p $(builddir)/include/scorep/scorep_meets_tau_tmp.h $(builddir)/include/scorep/scorep_meets_tau.h
+	ordered_headers="SCOREP_DefinitionHandles.h SCOREP_DefinitionLocking.h SCOREP_Memory.h SCOREP_RuntimeManagement.h SCOREP_Thread_Types.h SCOREP_Types.h SCOREP_Adapter.h SCOREP_Config.h SCOREP_Definitions.h SCOREP_Events.h"; \
 	for i in $$ordered_headers; do                                                                \
 	    awk -f $(srcdir)/tools/tau/scorep_meets_tau.awk $(srcdir)/src/measurement/include/$$i >>  \
-                   $(builddir)/include/silc/scorep_meets_tau.h;                   \
+                   $(builddir)/include/scorep/scorep_meets_tau.h;                   \
 	done
-	echo "#ifdef __cplusplus"              >> ./include/silc/scorep_meets_tau.h;
-	echo "} /* extern C */"                >> ./include/silc/scorep_meets_tau.h;
-	echo "#endif"                          >> ./include/silc/scorep_meets_tau.h;
-	echo ""                                >> ./include/silc/scorep_meets_tau.h;
-	echo "#endif /* SCOREP_MEETS_TAU_H */" >> ./include/silc/scorep_meets_tau.h;
+	echo "#ifdef __cplusplus"              >> ./include/scorep/scorep_meets_tau.h;
+	echo "} /* extern C */"                >> ./include/scorep/scorep_meets_tau.h;
+	echo "#endif"                          >> ./include/scorep/scorep_meets_tau.h;
+	echo ""                                >> ./include/scorep/scorep_meets_tau.h;
+	echo "#endif /* SCOREP_MEETS_TAU_H */" >> ./include/scorep/scorep_meets_tau.h;
 	$(MKDIR_P) $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel
-	$(INSTALL_DATA) $(builddir)/include/silc/scorep_meets_tau.h $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel/scorep_meets_tau.h
+	$(INSTALL_DATA) $(builddir)/include/scorep/scorep_meets_tau.h $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel/scorep_meets_tau.h
 
 
 uninstall-local:

@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -19,50 +19,50 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-check_PROGRAMS += self_contained_silc_adapter_c            \
-                  self_contained_silc_config_c             \
-                  self_contained_silc_definition_locking_c \
-                  self_contained_silc_definitions_c        \
-                  self_contained_silc_events_c             \
-                  self_contained_silc_memory_c             \
-                  self_contained_silc_public_types_c       \
-                  self_contained_silc_runtime_management_c \
-                  self_contained_silc_thread_types_c       \
-                  self_contained_silc_types_c              \
+check_PROGRAMS += self_contained_scorep_adapter_c            \
+                  self_contained_scorep_config_c             \
+                  self_contained_scorep_definition_locking_c \
+                  self_contained_scorep_definitions_c        \
+                  self_contained_scorep_events_c             \
+                  self_contained_scorep_memory_c             \
+                  self_contained_scorep_public_types_c       \
+                  self_contained_scorep_runtime_management_c \
+                  self_contained_scorep_thread_types_c       \
+                  self_contained_scorep_types_c              \
                   definitions_test_c                       \
                   string_duplicates_c
 
 self_contained_cppflags = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_DIR_UTIL) -I$(PUBLIC_INC_DIR)
 
-self_contained_silc_adapter_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_adapter.c
-self_contained_silc_adapter_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_adapter_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_adapter.c
+self_contained_scorep_adapter_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_config_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_config.c
-self_contained_silc_config_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_config_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_config.c
+self_contained_scorep_config_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_definition_locking_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_definition_locking.c
-self_contained_silc_definition_locking_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_definition_locking_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_definition_locking.c
+self_contained_scorep_definition_locking_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_definitions_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_definitions.c
-self_contained_silc_definitions_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_definitions_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_definitions.c
+self_contained_scorep_definitions_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_events_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_events.c
-self_contained_silc_events_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_events_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_events.c
+self_contained_scorep_events_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_memory_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_memory.c
-self_contained_silc_memory_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_memory_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_memory.c
+self_contained_scorep_memory_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_public_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_public_types.c
-self_contained_silc_public_types_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_public_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_public_types.c
+self_contained_scorep_public_types_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_runtime_management_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_runtime_management.c
-self_contained_silc_runtime_management_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_runtime_management_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_runtime_management.c
+self_contained_scorep_runtime_management_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_thread_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_thread_types.c
-self_contained_silc_thread_types_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_thread_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_thread_types.c
+self_contained_scorep_thread_types_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_silc_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_silc_types.c
-self_contained_silc_types_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_types.c
+self_contained_scorep_types_c_CPPFLAGS = $(self_contained_cppflags)
 
 definitions_test_c_SOURCES = $(SRC_ROOT)test/measurement/definitions_test.c \
                              $(SRC_ROOT)vendor/cutest/CuTest.c
@@ -70,10 +70,10 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_ROOT)vendor/cutest \
                               -I$(INC_ROOT)src/measurement \
                               -I$(INC_ROOT)src/measurement/include \
-                              -I$(INC_ROOT)include/silc \
+                              -I$(INC_ROOT)include/scorep \
                               -I$(INC_DIR_UTIL) \
                               -I$(INC_DIR_VENDOR_HASH)
-definitions_test_c_LDADD = $(LIB_ROOT)libsilc_serial.la $(LIB_DIR_UTIL)libsilc_utilities.la
+definitions_test_c_LDADD = $(LIB_ROOT)libscorep_serial.la $(LIB_DIR_UTIL)libscorep_utilities.la
 
 TESTS += definitions_test_c
  
@@ -83,9 +83,9 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_ROOT)vendor/cutest \
                                -I$(INC_ROOT)src/measurement \
                                -I$(INC_ROOT)src/measurement/include \
-                               -I$(INC_ROOT)include/silc \
+                               -I$(INC_ROOT)include/scorep \
                                -I$(INC_DIR_UTIL) \
                                -I$(INC_DIR_VENDOR_HASH)
-string_duplicates_c_LDADD    = $(LIB_ROOT)libsilc_serial.la
+string_duplicates_c_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 TESTS += string_duplicates_c

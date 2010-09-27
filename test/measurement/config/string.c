@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -34,27 +34,27 @@
 #include <CuTest.h>
 
 
-#include <SILC_Config.h>
+#include <SCOREP_Config.h>
 
 
 static void
 test_string_default_empty( CuTest* tc )
 {
-    char*               string_variable    = NULL;
-    SILC_ConfigVariable config_variables[] = {
+    char*                 string_variable    = NULL;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "string_default_empty",
-            SILC_CONFIG_TYPE_STRING,
+            SCOREP_CONFIG_TYPE_STRING,
             &string_variable,
             NULL,
             "",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssertPtrNotNull( tc, string_variable );
     CuAssertStrEquals( tc, "", string_variable );
@@ -66,21 +66,21 @@ test_string_default_empty( CuTest* tc )
 static void
 test_string_default_foo( CuTest* tc )
 {
-    char*               string_variable    = NULL;
-    SILC_ConfigVariable config_variables[] = {
+    char*                 string_variable    = NULL;
+    SCOREP_ConfigVariable config_variables[] = {
         {
             "string_default_empty",
-            SILC_CONFIG_TYPE_STRING,
+            SCOREP_CONFIG_TYPE_STRING,
             &string_variable,
             NULL,
             "foo",
             "",
             ""
         },
-        SILC_CONFIG_TERMINATOR
+        SCOREP_CONFIG_TERMINATOR
     };
 
-    SILC_ConfigRegister( NULL, config_variables );
+    SCOREP_ConfigRegister( NULL, config_variables );
 
     CuAssertPtrNotNull( tc, string_variable );
     CuAssertStrEquals( tc, "foo", string_variable );

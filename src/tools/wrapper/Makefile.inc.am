@@ -1,18 +1,18 @@
 ## -*- mode: makefile -*-
 
-bin_PROGRAMS += silc
+bin_PROGRAMS += scorep
 
-silc_SOURCES = \
-    $(SRC_ROOT)src/tools/wrapper/silc.cpp                 \
-    $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.cpp    \
-    $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.cpp     \
-    $(SRC_ROOT)src/tools/wrapper/SILC_Instrumenter.hpp    \
-    $(SRC_ROOT)src/tools/wrapper/SILC_Measurement.hpp
+scorep_SOURCES = \
+    $(SRC_ROOT)src/tools/wrapper/scorep.cpp                 \
+    $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.cpp    \
+    $(SRC_ROOT)src/tools/wrapper/SCOREP_Measurement.cpp     \
+    $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.hpp    \
+    $(SRC_ROOT)src/tools/wrapper/SCOREP_Measurement.hpp
 
-silc_CPPFLAGS = $(AM_CPPFLAGS)      \
+scorep_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(SRC_ROOT)src/tools/wrapper  \
     -I$(INC_DIR_UTIL)               \
     -I$(SRC_ROOT)vendor/otf2/vendor/utility/src/parser
 
-silc_LDADD = $(LIB_DIR_UTIL)libsilc_utilities.la    \
-             $(LIB_DIR_UTIL)libsilc_parser_tools.la
+scorep_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la    \
+             $(LIB_DIR_UTIL)libscorep_parser_tools.la

@@ -1,15 +1,15 @@
 OBJ_DIR?=..
-COMP = $(OBJ_DIR)/build-frontend/silc --instrument
+COMP = $(OBJ_DIR)/build-frontend/scorep --instrument
 INST = comp:pgi 
 COMPFLAGS = -c 
 INCLUDE=
-OBJ= $(OBJ_DIR)/build-backend/libsilc_adapter_comp_la-SILC_compiler_pgi.o 
+OBJ= $(OBJ_DIR)/build-backend/libscorep_adapter_comp_la-SCOREP_compiler_pgi.o 
 
 
 hello: 
 	$(COMP) $(INST) $(INCLUDE) $(COMPFLAGS) hello_functions.c  
 	$(COMP) $(INST) $(OBJ) hello_functions.o -o hello
-#	pgcc ../build-backend/libsilc_adapter_comp_la-SILC_compiler_pgi.o hello_functions.o -o hello
+#	pgcc ../build-backend/libscorep_adapter_comp_la-SCOREP_compiler_pgi.o hello_functions.o -o hello
 
 clean:
 	-rm *.o hello

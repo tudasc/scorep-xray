@@ -1,4 +1,4 @@
-# silc-utilities--mpi
+# scorep-utilities--mpi
 
 ## AM_CPPFLAGS: The contents of this variable are passed to every compilation 
 ## that invokes the C preprocessor; it is a list of arguments to the 
@@ -23,7 +23,7 @@ AM_CPPFLAGS = -I$(srcdir)/../../src
 ## foo_SOURCES = $(SRC_ROOT)src/foo/foo.c. For CPPFLAGS use SRC_ROOT_*
 ## See the note below
 SRC_ROOT = ../../
-PUBLIC_INC_SRC = $(SRC_ROOT)include/silc/
+PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 
 
 ## Convenience variables, use for referencing include directories, e.g.
@@ -35,7 +35,7 @@ PUBLIC_INC_SRC = $(SRC_ROOT)include/silc/
 ## it is not recommended to use $(srcdir). On the other hand the INC_ROOT
 ## variables are evaluated during configure.
 INC_ROOT = $(srcdir)/../../
-PUBLIC_INC_DIR = $(INC_ROOT)include/silc/
+PUBLIC_INC_DIR = $(INC_ROOT)include/scorep/
 INC_DIR_OTF2 = $(srcdir)/../../vendor/otf2/include
 INC_DIR_UTIL = $(srcdir)/../../vendor/otf2/vendor/utility/include
 

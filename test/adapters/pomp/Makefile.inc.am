@@ -14,6 +14,6 @@ pomp_test_CPPFLAGS = $(AM_CPPFLAGS)         \
 pomp_test_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
 pomp_test_LDADD =                       \
-    $(LIB_ROOT)libsilc_serial.la
+    $(LIB_ROOT)libscorep_serial.la
 
 endif

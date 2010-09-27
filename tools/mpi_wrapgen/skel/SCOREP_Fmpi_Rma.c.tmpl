@@ -1,0 +1,124 @@
+
+/**
+ * @file  SCOREP_Fmpi_Rma.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     alpha
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief Fortran interface wrappers for one-sided communication
+ */
+
+#include <config.h>
+#include "SCOREP_Fmpi.h"
+
+/* uppercase defines */
+#pragma wrapgen multiple restrict(grma)      skel/SCOREP_Fmpi_DefineU.w
+
+#pragma wrapgen multiple restrict(grma_err)  skel/SCOREP_Fmpi_DefineU.w
+
+#pragma wrapgen multiple restrict(grma_ext)  skel/SCOREP_Fmpi_DefineU.w
+
+#pragma wrapgen multiple restrict(grma_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineU.w
+
+/* lowercase defines */
+#pragma wrapgen multiple restrict(grma)      skel/SCOREP_Fmpi_DefineL.w
+
+#pragma wrapgen multiple restrict(grma_err)  skel/SCOREP_Fmpi_DefineL.w
+
+#pragma wrapgen multiple restrict(grma_ext)  skel/SCOREP_Fmpi_DefineL.w
+
+#pragma wrapgen multiple restrict(grma_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineL.w
+
+#ifndef NEED_F2C_CONV
+
+/* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
+ * as it would require a "real" function if it is really needed
+ * => we can save the f2c and c2s conversions */
+
+/**
+ * @name Fortran wrappers for access functions
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_(Accumulate|Get|Put)$) skel/SCOREP_Fmpi_Std.w
+
+/**
+ * @}
+ * @name Fortran wrappers for window management functions
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_Win_(create|free)$) skel/SCOREP_Fmpi_Std.w
+
+#pragma wrapgen single MPI_Win_get_group skel/SCOREP_Fmpi_Std.w
+
+/**
+ * @}
+ * @name Fortran wrappers for synchonization functions
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_Win_(fence|post|test|wait|start|complete|lock|unlock)$) skel/SCOREP_Fmpi_Std.w
+
+/**
+ * @}
+ * @name Fortran wrappers for error handling functions
+ * @{
+ */
+#pragma wrapgen multiple restrict(grma_err)  skel/SCOREP_Fmpi_Std.w
+
+/**
+ * @}
+ * @name Fortran wrappers for external interface functions
+ * @{
+ */
+#pragma wrapgen multiple restrict(grma_ext)  skel/SCOREP_Fmpi_Std.w
+
+
+#else /* !NEED_F2C_CONV */
+
+/**
+ * @name Fortran wrappers for access functions
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_(Accumulate|Get|Put)$) skel/SCOREP_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for window management functions
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_Win_(create|free)$) skel/SCOREP_Mpi_F2c_C2f.w
+
+#pragma wrapgen single MPI_Win_get_group skel/SCOREP_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for synchonization functions
+ * @{
+ */
+#pragma wrapgen multiple regex(MPI_Win_(fence|post|test|wait|start|complete|lock|unlock)$) skel/SCOREP_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for error handling functions
+ * @{
+ */
+#pragma wrapgen multiple restrict(grma_err)  skel/SCOREP_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for external interface functions
+ * @{
+ */
+#pragma wrapgen multiple restrict(grma_ext)  skel/SCOREP_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for handle conversion functions
+ * @{
+ */
+#pragma wrapgen multiple restrict(grma_misc+!n_c2f+!n_f2c) skel/SCOREP_Mpi_F2c_C2f.w
+
+#endif /* !NEED_F2C_CONV */
+
+/**
+ * @}
+ */

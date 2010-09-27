@@ -38,7 +38,7 @@
 #       }
 #     }
 #   }
-  else { # FILENAME == "${ac_silc_platform}"
+  else { # FILENAME == "${ac_scorep_platform}"
     if (index($0, "#") == 0) { # ! commented line
       n = split($0, split_array, "=")
       if (n == 2) {

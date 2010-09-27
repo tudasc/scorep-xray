@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([silc-backend-mpi], [0])
+AC_INIT([scorep-backend-mpi], [0])
 
 CC_SAVE=$CC
 CXX_SAVE=$CXX
@@ -11,37 +11,37 @@ CXX=$MPICXX
 F77=$MPIF77
 FC=$MPIFC
 
-## require $ac_silc_cross_compiling to be set to 'yes' or 'no'
-if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}" != "xno"; then
-    AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
+## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
+if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
+    AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
-cross_compiling=${ac_silc_cross_compiling}
+cross_compiling=${ac_scorep_cross_compiling}
 
-AC_SILC_CHECK_COMPILER_VAR_SET([CC])
-AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
-AC_SILC_CHECK_COMPILER_VAR_SET([F77])
-AC_SILC_CHECK_COMPILER_VAR_SET([FC])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([FC])
 
 AC_LANG_PUSH([C])
-AC_SILC_MPI_WORKING([silc_mpi_c_supported="yes"],[silc_mpi_c_supported="no"])
+AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
 AC_LANG_POP([C])
-#echo "silc_mpi_c_supported=$silc_mpi_c_supported"
+#echo "scorep_mpi_c_supported=$scorep_mpi_c_supported"
 
 # C++ MPI is needed for the jacobi C++ tests only.
 AC_LANG_PUSH([C++])
-AC_SILC_MPI_WORKING([silc_mpi_cxx_supported="yes"],[silc_mpi_cxx_supported="no"])
+AC_SCOREP_MPI_WORKING([scorep_mpi_cxx_supported="yes"],[scorep_mpi_cxx_supported="no"])
 AC_LANG_POP([C++])
-#echo "silc_mpi_cxx_supported=$silc_mpi_cxx_supported"
+#echo "scorep_mpi_cxx_supported=$scorep_mpi_cxx_supported"
 
 AC_LANG_PUSH([Fortran 77])
-AC_SILC_MPI_WORKING([silc_mpi_f77_supported="yes"],[silc_mpi_f77_supported="no"])
+AC_SCOREP_MPI_WORKING([scorep_mpi_f77_supported="yes"],[scorep_mpi_f77_supported="no"])
 AC_LANG_POP([Fortran 77])
-#echo "silc_mpi_f77_supported=$silc_mpi_f77_supported"
+#echo "scorep_mpi_f77_supported=$scorep_mpi_f77_supported"
 
 AC_LANG_PUSH([Fortran])
-AC_SILC_MPI_WORKING([silc_mpi_f90_supported="yes"],[silc_mpi_f90_supported="no"])
+AC_SCOREP_MPI_WORKING([scorep_mpi_f90_supported="yes"],[scorep_mpi_f90_supported="no"])
 AC_LANG_POP([Fortran])
-#echo "silc_mpi_f90_supported=$silc_mpi_f90_supported"
+#echo "scorep_mpi_f90_supported=$scorep_mpi_f90_supported"
 
 #echo "CC =$CC"
 #echo "CXX=$CXX"
@@ -49,8 +49,8 @@ AC_LANG_POP([Fortran])
 #echo "FC =$FC"
 #echo "MPILIBS=$MPILIBS"
 
-AC_SILC_SVN_CONTROLLED
-AH_SILC_CONFIG_HEADER_CUSTOM
+AC_SCOREP_SVN_CONTROLLED
+AH_SCOREP_CONFIG_HEADER_CUSTOM
 AC_CONFIG_HEADERS([../../src/config-backend-mpi.h])
 
 
@@ -58,11 +58,11 @@ AC_CONFIG_AUX_DIR([../../build-config])
 AC_CONFIG_MACRO_DIR([../../build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
-AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
-AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
-AC_SILC_PLATFORM_SETTINGS   
+AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
+AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
+AC_SCOREP_PLATFORM_SETTINGS   
 
-AC_SILC_COMMON_CHECKS
+AC_SCOREP_COMMON_CHECKS
 AM_PROG_AS
 
 LT_PREREQ([2.2.6])
@@ -72,7 +72,7 @@ AC_SUBST([LIBTOOL_DEPS])
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
 backend_lib_dir="/lib"
-if test "x${ac_silc_cross_compiling}" = "xyes"; then
+if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     backend_bin_dir="/bin/backend"
     backend_lib_dir="/lib/backend"
 fi
@@ -153,9 +153,9 @@ AC_PROG_FC_C_O
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
-AC_SILC_OPENMP
-AC_SILC_COMPILER_CHECKS
-AC_SILC_MPI
+AC_SCOREP_OPENMP
+AC_SCOREP_COMPILER_CHECKS
+AC_SCOREP_MPI
 
 AC_CONFIG_FILES([Makefile])
 

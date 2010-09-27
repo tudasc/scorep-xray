@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -29,7 +29,7 @@
 #include <limits.h>
 #include <inttypes.h>
 #include <CuTest.h>
-#include <silc_utility/SILC_Error.h>
+#include <scorep_utility/SCOREP_Error.h>
 #include "error_callback.h"
 
 
@@ -38,19 +38,19 @@ CuTest* the_test = NULL;
 
 
 int64_t
-cutest_silc_error_callback( const char*           function,
-                            const char*           file,
-                            const uint64_t        line,
-                            const SILC_Error_Code errorCode,
-                            const char*           msgFormatString,
-                            va_list               va )
+cutest_scorep_error_callback( const char*             function,
+                              const char*             file,
+                              const uint64_t          line,
+                              const SCOREP_Error_Code errorCode,
+                              const char*             msgFormatString,
+                              va_list                 va )
 {
     CuString message2, message;
 
     CuStringInit( &message2 );
     CuStringAppendFormat( &message2, "In function '%s': error: %s",
                           function,
-                          SILC_Error_GetDescription( errorCode ) );
+                          SCOREP_Error_GetDescription( errorCode ) );
 
     CuStringInit( &message );
     CuStringAppendVFormat( &message, msgFormatString, va );

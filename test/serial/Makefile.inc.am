@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -23,7 +23,7 @@ check_PROGRAMS += serial_test
 
 serial_test_SOURCES  = $(SRC_ROOT)test/serial/serial_test.c
 serial_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-serial_test_LDADD    = $(LIB_ROOT)libsilc_serial.la
+serial_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 TESTS      += $(SRC_ROOT)test/serial/run_serial_test.sh
 EXTRA_DIST += $(SRC_ROOT)test/serial/run_serial_test.sh

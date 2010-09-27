@@ -1,0 +1,324 @@
+/*
+ * This file is part of the SCOREP project (http://www.scorep.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+/**
+ * @file       SCOREP_Pomp_User.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     alpha
+ * @ingroup    POMP2
+ *
+ * @brief Implementation of the POMP2 user adapter functions and initialization.
+ */
+
+#include <config.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "SCOREP_RuntimeManagement.h"
+#include "SCOREP_Definitions.h"
+#include "SCOREP_Events.h"
+#include "SCOREP_Pomp_Init.h"
+#include "pomp2_lib.h"
+#include "SCOREP_Pomp_RegionInfo.h"
+#include "SCOREP_Pomp_Lock.h"
+#include "scorep_utility/SCOREP_Utils.h"
+
+/** @ingroup POMP2
+    @{
+ */
+
+/* **************************************************************************************
+                                                                             Declarations
+****************************************************************************************/
+
+/** Pointer to an array of all pomp regions */
+SCOREP_Pomp_Region* scorep_pomp_regions;
+
+/** Contains the region handle for all implicit barriers */
+SCOREP_RegionHandle scorep_pomp_implicit_barrier_region = SCOREP_INVALID_REGION;
+
+/** Flag to indicate, wether POMP2 traceing is enable/disabled */
+bool scorep_pomp_is_tracing_on = true;
+
+/** Source file handle for pomp wrapper functions and implicit barrier region. */
+SCOREP_SourceFileHandle scorep_pomp_file_handle = SCOREP_INVALID_SOURCE_FILE;
+
+/** Flag to indicate wether the adapter is initialized */
+bool scorep_pomp_is_initialized = false;
+
+/* **************************************************************************************
+                                                                       Internal functions
+****************************************************************************************/
+
+/** Frees allocated memory and sets the pointer to 0. Used to free members of a
+    SCOREP_Pomp_Region instance.
+    @param member Pointer to the pointer which should be freed. If member is 0 nothing
+                  happens.
+ */
+static void
+scorep_pomp_free_region_member( char** member )
+{
+    if ( *member )
+    {
+        free( *member );
+        *member = 0;
+    }
+}
+
+/** Frees allocated memory of all members of a SCOREP_Pomp_Region instance.
+    @param region The region for which all members should be freed. If region is 0,
+                  nothing happens.
+ */
+static void
+scorep_pomp_free_region_members( SCOREP_Pomp_Region* region )
+{
+    if ( region )
+    {
+        scorep_pomp_free_region_member( &region->name );
+        scorep_pomp_free_region_member( &region->startFileName );
+        scorep_pomp_free_region_member( &region->endFileName );
+        scorep_pomp_free_region_member( &region->regionName );
+    }
+}
+
+/** Copys a string to a given position. Allocates the necessary space for the
+    destination.
+    @param destination Pointer to the string where the string is copied into.
+    @param source      String which is copied.
+ */
+static void
+scorep_pomp_assign_string( char**      destination,
+                           const char* source )
+{
+    SCOREP_ASSERT( source );
+    *destination = malloc( strlen( source ) * sizeof( char ) + 1 );
+    strcpy( *destination, source );
+}
+
+/* **************************************************************************************
+                                                                           Initialization
+****************************************************************************************/
+
+/** Adapter initialization function to allow registering configuration variables. No
+    variables are regstered.
+ */
+SCOREP_Error_Code
+scorep_pomp_register()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_register\n" );
+    return SCOREP_SUCCESS;
+}
+
+/** Adapter initialization function.
+ */
+SCOREP_Error_Code
+scorep_pomp_init()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_init\n" );
+
+    /* Initialize the adapter */
+    if ( !scorep_pomp_is_initialized )
+    {
+        /* Set flag */
+        scorep_pomp_is_initialized = true;
+
+        /* If initialized from user instrumentation initialize measurement before. */
+        SCOREP_InitMeasurement();
+
+        /* Initialize file handle for implicit barrier */
+        scorep_pomp_file_handle = SCOREP_DefineSourceFile( "POMP2" );
+
+        /* Allocate memory for your POMP2_Get_num_regions() regions */
+        scorep_pomp_regions = calloc( POMP2_Get_num_regions(),
+                                      sizeof( SCOREP_Pomp_Region ) );
+
+        /* Initialize implicit barrier region */
+#ifdef _OPENMP
+        scorep_pomp_implicit_barrier_region =
+            SCOREP_DefineRegion( "implicit barrier",
+                                 scorep_pomp_file_handle,
+                                 SCOREP_INVALID_LINE_NO,
+                                 SCOREP_INVALID_LINE_NO,
+                                 SCOREP_ADAPTER_POMP,
+                                 SCOREP_REGION_OMP_IMPLICIT_BARRIER );
+
+        /* Register regions for locking functions */
+        scorep_pomp_register_lock_regions();
+#endif  // _OPENMP
+
+        /* Register regions inserted by Opari */
+        POMP2_Init_regions();
+    }
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_EXIT,
+                         "scorep_pomp_init done.\n" );
+
+    return SCOREP_SUCCESS;
+}
+
+/** Allows initialization of location specific data. Nothing done inside this funcion. */
+SCOREP_Error_Code
+scorep_pomp_init_location()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_init_location\n" );
+    return SCOREP_SUCCESS;
+}
+
+/** Allows finaltialization of location specific data. Nothing done inside this funcion.
+ */
+void
+scorep_pomp_final_location( void* location )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_final_location\n" );
+}
+
+/** Adapter finalialization function.
+ */
+void
+scorep_pomp_final()
+{
+    static int   pomp_finalize_called = 0;
+    size_t       i;
+    const size_t nRegions = POMP2_Get_num_regions();
+
+    if ( scorep_pomp_regions )
+    {
+        for ( i = 0; i < nRegions; ++i )
+        {
+            scorep_pomp_free_region_members( &scorep_pomp_regions[ i ] );
+        }
+        free( scorep_pomp_regions );
+        scorep_pomp_regions = 0;
+    }
+
+    if ( !pomp_finalize_called )
+    {
+        pomp_finalize_called = 1;
+    }
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_final\n" );
+}
+
+/** Called when the adapter is derigistered. Nothing done inside the function
+ */
+void
+scorep_pomp_deregister()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_deregister\n" );
+}
+
+/** Struct which contains the adapter iniitialization and finalization functions for the
+    POMP2 adapter.
+ */
+struct SCOREP_Adapter SCOREP_Pomp_Adapter =
+{
+    SCOREP_ADAPTER_POMP,
+    "POMP2 Adapter / Version 1.0",
+    &scorep_pomp_register,
+    &scorep_pomp_init,
+    &scorep_pomp_init_location,
+    &scorep_pomp_final_location,
+    &scorep_pomp_final,
+    &scorep_pomp_deregister
+};
+
+/* **************************************************************************************
+ *                                                                C pomp function library
+ ***************************************************************************************/
+
+
+
+void
+POMP2_Finalize()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "Enter POMP2_Finalize\n" );
+}
+
+void
+POMP2_Init()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "Enter POMP2_Init\n" );
+
+    /* If adapter is not initialized, it means that the measurement system is not
+       initialized. */
+    SCOREP_InitMeasurement();
+}
+
+void
+POMP2_Off()
+{
+    scorep_pomp_is_tracing_on = false;
+}
+
+void
+POMP2_On()
+{
+    scorep_pomp_is_tracing_on = true;
+}
+
+void
+POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
+                     const char           init_string[] )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Assign_handle" );
+    /* Index counter */
+    static size_t count = 0;
+
+    /* Initialize new region struct */
+    SCOREP_Pomp_ParseInitString( init_string, &scorep_pomp_regions[ count ] );
+
+    /* Set return value */
+    *pomp_handle = &scorep_pomp_regions[ count ];
+
+    /* Increase array index */
+    ++count;
+    SCOREP_ASSERT( count <= POMP2_Get_num_regions() );
+}
+
+/* **************************************************************************************
+ *                                                                   POMP event functions
+ ***************************************************************************************/
+
+void
+POMP2_Begin( POMP2_Region_handle pomp_handle )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Begin" );
+    if ( scorep_pomp_is_tracing_on )
+    {
+        SCOREP_Pomp_Region* region = ( SCOREP_Pomp_Region* )pomp_handle;
+        SCOREP_EnterRegion( region->innerBlock );
+    }
+}
+
+void
+POMP2_End( POMP2_Region_handle pomp_handle )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_End" );
+    if ( scorep_pomp_is_tracing_on )
+    {
+        SCOREP_Pomp_Region* region = ( SCOREP_Pomp_Region* )pomp_handle;
+        SCOREP_ExitRegion( region->innerBlock );
+    }
+}
+
+/** @} */

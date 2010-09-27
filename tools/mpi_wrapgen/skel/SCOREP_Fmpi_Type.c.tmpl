@@ -1,0 +1,196 @@
+/**
+ * @file       SCOREP_Fmpi_Type.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     alpha
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief Fortran interface wrappers for datatype functions
+ */
+
+#include <config.h>
+#include "SCOREP_Fmpi.h"
+
+/* uppercase defines */
+#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SCOREP_Fmpi_DefineU.w
+
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SCOREP_Fmpi_DefineU.w
+
+#pragma wrapgen multiple restrict(gtype_ext)          skel/SCOREP_Fmpi_DefineU.w
+                                                     
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineU.w
+
+/* lowercase defines */
+#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SCOREP_Fmpi_DefineL.w
+
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof) skel/SCOREP_Fmpi_DefineL.w
+
+#pragma wrapgen multiple restrict(gtype_ext)          skel/SCOREP_Fmpi_DefineL.w
+                                                     
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineL.w
+
+/**
+ * @name Fortran wrappers for general functions
+ * @{
+ */
+
+#ifndef NEED_F2C_CONV
+
+/* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
+ * as it would require a "real" function if it is really needed
+ * => we can save the f2c and c2s conversions */
+
+#pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SCOREP_Fmpi_Std.w
+
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof+!nf90) skel/SCOREP_Fmpi_Std.w
+
+/**
+ * @}
+ * @name Fortran wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_ext) skel/SCOREP_Fmpi_Std.w
+                                                     
+/**
+ * @}
+ * @name Fortran wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_Std.w
+
+
+#else /* !NEED_F2C_CONV */
+
+#pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SCOREP_Mpi_F2c_C2f.w
+
+#if HAVE(DECL_PMPI_TYPE_STRUCT) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
+/**
+ * Manual measurement wrapper for MPI_Type_struct
+ * @ingroup manual_wrapper
+ * @ingroup interface_fortran
+ * @ingroup mpi_version_1
+ * @ingroup mpi_enabled_type
+ */
+void FSUB(MPI_Type_struct)(MPI_Fint* count,
+                           MPI_Fint* array_of_blocklengths,
+                           MPI_Aint* array_of_displacements, 
+                           MPI_Fint* array_of_types, 
+                           MPI_Fint* newtype, 
+                           MPI_Fint* ierr)
+{
+  MPI_Fint i;
+  MPI_Datatype c_newtype;
+  MPI_Datatype* c_array_of_types = 
+          (MPI_Datatype*) malloc(*count * sizeof(MPI_Datatype));
+  if (!c_array_of_types) exit(EXIT_FAILURE);
+
+  for (i = 0; i < *count; ++i)
+  {
+    c_array_of_types[i] = PMPI_Type_f2c(array_of_types[i]);
+  }
+  *ierr    = MPI_Type_struct(*count, array_of_blocklengths, 
+                             array_of_displacements, 
+                             c_array_of_types, &c_newtype);
+  *newtype = PMPI_Type_c2f(c_newtype);
+}
+#endif
+
+#if HAVE(DECL_PMPI_TYPE_CREATE_STRUCT) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
+/**
+ * Manual measurement wrapper for MPI_Type_create_struct
+ * @ingroup manual_wrapper
+ * @ingroup interface_fortran
+ * @ingroup mpi_version_2
+ * @ingroup mpi_enabled_type
+ */
+void FSUB(MPI_Type_create_struct)(MPI_Fint* count,
+                                  MPI_Fint* array_of_blocklengths,
+                                  MPI_Aint  array_of_displacements[],
+                                  MPI_Fint* array_of_types,
+                                  MPI_Fint* newtype,
+                                  MPI_Fint* ierr)
+{
+  MPI_Fint i;
+  MPI_Datatype c_newtype;
+  MPI_Datatype* c_array_of_types = 
+          (MPI_Datatype*) malloc(*count * sizeof(MPI_Datatype));
+  if (!c_array_of_types) exit(EXIT_FAILURE);
+
+  for (i = 0; i < *count; ++i)
+  {
+    c_array_of_types[i] = PMPI_Type_f2c(array_of_types[i]);
+  }
+  *ierr    = MPI_Type_struct(*count, array_of_blocklengths, 
+                             array_of_displacements, 
+                             c_array_of_types, &c_newtype);
+  *newtype = PMPI_Type_c2f(c_newtype);
+}
+#endif
+
+#if HAVE(DECL_PMPI_TYPE_GET_CONTENTS) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
+/**
+ * Manual measurement wrapper for MPI_Type_get_contents
+ * @ingroup manual_wrapper
+ * @ingroup interface_fortran
+ * @ingroup mpi_version_2
+ * @ingroup mpi_enabled_type
+ */
+void FSUB(MPI_Type_get_contents)(MPI_Fint* datatype,
+                                 MPI_Fint* max_integers,
+                                 MPI_Fint* max_addresses,
+                                 MPI_Fint* max_datatypes,
+                                 MPI_Fint* array_of_integers,
+                                 MPI_Aint* array_of_addresses,
+                                 MPI_Fint* array_of_datatypes,
+                                 MPI_Fint* ierr)
+{
+  MPI_Fint      i;
+  MPI_Datatype* c_array_of_datatypes = NULL;
+  /* provide storage for C Datatypes */
+  c_array_of_datatypes =
+    (MPI_Datatype*)malloc(*max_datatypes * sizeof (MPI_Datatype));
+  if (!c_array_of_datatypes)
+  {
+    exit(EXIT_FAILURE);
+  }
+  *ierr = MPI_Type_get_contents(PMPI_Type_f2c(*datatype),
+                                *max_integers,
+                                *max_addresses,
+                                *max_datatypes,
+                                array_of_integers,
+                                array_of_addresses,
+                                c_array_of_datatypes);
+  /* convert C handles to Fortran handles */
+  for (i = 0; i < *max_datatypes; ++i)
+  {
+    array_of_datatypes[i] = PMPI_Type_c2f(c_array_of_datatypes[i]);
+  }
+  /* free local buffer */
+  free(c_array_of_datatypes);
+}
+#endif
+
+#pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+!n_get_contents+!nf90) skel/SCOREP_Mpi_F2c_C2f.w
+
+/**
+ * @}
+ * @name Fortran wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_ext)                    skel/SCOREP_Mpi_F2c_C2f.w
+                                                     
+/**
+ * @}
+ * @name Fortran wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c)     skel/SCOREP_Mpi_F2c_C2f.w
+
+#endif
+
+/**
+ * @}
+ */

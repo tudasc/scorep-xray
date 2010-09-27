@@ -13,7 +13,7 @@ include ../src/adapters/tau/Makefile.inc.am
 include ../src/services/Makefile.inc.am
 include ../vendor/cutest/Makefile.inc.am
 include ../vendor/hash/Makefile.inc.am
-include ../include/silc/Makefile.inc.am
+include ../include/scorep/Makefile.inc.am
 
 
 ## include Online Access only when building on ALTIX

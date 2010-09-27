@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -25,7 +25,7 @@ check_PROGRAMS += omp_test_unistrumented
 omp_test_unistrumented_SOURCES  = $(SRC_ROOT)test/omp/omp_test.c
 omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 #omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-#omp_test_unistrumented_LDADD    = $(LIB_ROOT)libsilc_omp.la
+#omp_test_unistrumented_LDADD    = $(LIB_ROOT)libscorep_omp.la
 
 #TESTS += omp_test_unistrumented
 
@@ -41,7 +41,7 @@ omp_test_SOURCES  = $(SRC_ROOT)test/omp/omp_test.mod.c       \
                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-omp_test_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_test_pomp.la
+omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
 TESTS      += $(SRC_ROOT)test/omp/run_omp_test.sh
 EXTRA_DIST += $(SRC_ROOT)test/omp/run_omp_test.sh
@@ -55,7 +55,7 @@ internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling
                                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-internal_thread_handling_LDADD    = $(LIB_ROOT)libsilc_omp.la $(LIB_ROOT)libomp_test_pomp.la
+internal_thread_handling_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
 TESTS      += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
 EXTRA_DIST += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh

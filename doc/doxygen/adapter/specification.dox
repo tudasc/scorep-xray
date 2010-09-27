@@ -3,8 +3,8 @@
 Before any application can be measured, the application need some preparation to perform the measurement. The preparation inserts calls the the measurement library using a variety of methods. This process is called instrumentation. Furthermore, the application needs to be linked together with some additional libraries, containing the implementation of the inserted calls, called the adapters, and the measurement libraries itself.
 
 This module can be split in two main parts. First, the instrumentation part, which contains all tools and methods for the application instrumentation. Second the runtime part whih contains the adapters and interfaces to the measurement system. The module architecture is depicted here:
-@image html SILC_Adapter_Architecture.png "Architecture of the instrumentation and adapter module"
-@image latex SILC_Adapter_Architecture.eps "Architecture of the instrumentation and adapter module" width=14cm
+@image html SCOREP_Adapter_Architecture.png "Architecture of the instrumentation and adapter module"
+@image latex SCOREP_Adapter_Architecture.eps "Architecture of the instrumentation and adapter module" width=14cm
 
 For instrumentation, several methods are possible:
 @li The user can add instrumentation manually
@@ -230,7 +230,7 @@ The POSIX IO functions are wrapped to measure the input and output per file.
 
 @subsection conclusions_io Conclusions
 
-Can be done via user counters do creating a set of new events. On the SILC Face-to-Face Meeting a set of extra events are wanted.
+Can be done via user counters do creating a set of new events. On the SCOREP Face-to-Face Meeting a set of extra events are wanted.
 
 @section markers Markers
 @subsection vampir_marker VampirTrace

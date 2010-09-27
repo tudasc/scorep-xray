@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -17,16 +17,16 @@
 ## file       Makefile.inc.am
 ## maintainer Johannes Spazier <johannes.spazier@tu-dresden.de>
 
-bin_PROGRAMS += silc_config
+bin_PROGRAMS += scorep_config
 
-silc_config_SOURCES = $(SRC_ROOT)src/tools/config/silc_config.cpp       \
-                      $(SRC_ROOT)src/tools/config/silc_config.hpp
+scorep_config_SOURCES = $(SRC_ROOT)src/tools/config/scorep_config.cpp       \
+                      $(SRC_ROOT)src/tools/config/scorep_config.hpp
 
-silc_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
+scorep_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
 
-silc_config_CPPFLAGS = $(AM_CPPFLAGS)    \
+scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
     		       -I$(INC_DIR_UTIL)
 
-silc_config_LDADD = $(LIB_DIR_UTIL)libsilc_parser_tools.la \
-		    $(LIB_DIR_UTIL)libsilc_utilities.la
+scorep_config_LDADD = $(LIB_DIR_UTIL)libscorep_parser_tools.la \
+		    $(LIB_DIR_UTIL)libscorep_utilities.la
 

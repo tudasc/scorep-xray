@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -16,110 +16,110 @@
 
 # Common settings
 
-libsilc_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)        \
+libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)        \
     -I$(INC_DIR_UTIL)                                        \
     -I$(PUBLIC_INC_DIR)                                      \
     -I$(INC_ROOT)src/adapters/compiler                       \
     -I$(INC_ROOT)src/adapters/include                        \
     -I$(INC_ROOT)src/measurement/include
 
-noinst_LTLIBRARIES += libsilc_adapter_compiler.la
-libsilc_adapter_compiler_la_LIBADD = @LIBBFD@
+noinst_LTLIBRARIES += libscorep_adapter_compiler.la
+libscorep_adapter_compiler_la_LIBADD = @LIBBFD@
 
-libsilc_adapter_compiler_la_SOURCES =                         \
-	$(SRC_ROOT)src/adapters/include/SILC_Compiler_Init.h  \
-	$(SRC_ROOT)src/adapters/compiler/silc_compiler_data.h \
-	$(SRC_ROOT)src/adapters/compiler/silc_compiler_data.c
+libscorep_adapter_compiler_la_SOURCES =                         \
+	$(SRC_ROOT)src/adapters/include/SCOREP_Compiler_Init.h  \
+	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
+	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c
 
 
 # intel specific settings
 
-if SILC_COMPILER_INTEL
+if SCOREP_COMPILER_INTEL
 if HAVE_LIBBFD
-libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
 endif
 if HAVE_DEMANGLE
-libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
 endif
-libsilc_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
+libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
 
 if HAVE_NM_AS_BFD_REPLACEMENT
-libsilc_adapter_compiler_la_CPPFLAGS += \
+libscorep_adapter_compiler_la_CPPFLAGS += \
 	-I$(INC_ROOT)src/services       \
         -DHAVE_NM
 
-libsilc_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/SILC_Timing.h
+libscorep_adapter_compiler_la_SOURCES  += \
+	$(SRC_ROOT)src/services/SCOREP_Timing.h
 endif
 
-libsilc_adapter_compiler_la_SOURCES +=                                \
-        $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c         \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_symbol_table.c \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_symbol_table.h \
-	$(SRC_ROOT)src/adapters/compiler/silc_compiler_intel.c
+libscorep_adapter_compiler_la_SOURCES +=                                \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
 endif 
 
 #ibm specific settings
 
-if SILC_COMPILER_IBM
-libsilc_adapter_compiler_la_SOURCES +=                        \
-        $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_ibm.c
+if SCOREP_COMPILER_IBM
+libscorep_adapter_compiler_la_SOURCES +=                        \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
 endif
 
 # pgi specific settings
 
-if SILC_COMPILER_PGI
-libsilc_adapter_compiler_la_SOURCES +=                        \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_pgi.c  \
-        $(SRC_ROOT)src/measurement/include/SILC_Thread_Types.h
+if SCOREP_COMPILER_PGI
+libscorep_adapter_compiler_la_SOURCES +=                        \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c  \
+        $(SRC_ROOT)src/measurement/include/SCOREP_Thread_Types.h
 endif
 
 # gnu specific settings
 
-if SILC_COMPILER_GNU
+if SCOREP_COMPILER_GNU
 if HAVE_LIBBFD
-libsilc_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
 endif
 if HAVE_DEMANGLE
-libsilc_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
 endif 
 
 if HAVE_NM_AS_BFD_REPLACEMENT
-libsilc_adapter_compiler_la_CPPFLAGS += \
+libscorep_adapter_compiler_la_CPPFLAGS += \
 	-I$(INC_ROOT)src/services       \
         -DHAVE_NM
 
-libsilc_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/SILC_Timing.h
+libscorep_adapter_compiler_la_SOURCES  += \
+	$(SRC_ROOT)src/services/SCOREP_Timing.h
 endif
 
-libsilc_adapter_compiler_la_SOURCES +=                                \
-        $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c         \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_symbol_table.c \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_symbol_table.h \
-	$(SRC_ROOT)src/adapters/compiler/silc_compiler_gnu.c
+libscorep_adapter_compiler_la_SOURCES +=                                \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
 endif
 
 # sx specific settings
 
-if SILC_COMPILER_SX
-libsilc_adapter_compiler_la_SOURCES +=                          \
-        $(SRC_ROOT)src/adapters/compiler/SILC_Compiler_Init.c   \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_ftrace.c \
-        $(SRC_ROOT)src/adapters/compiler/silc_compiler_ftrace_1.s
+if SCOREP_COMPILER_SX
+libscorep_adapter_compiler_la_SOURCES +=                          \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c   \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
 endif
 
 # sun specific settings
 
-#if SILC_COMPILER_SUN
-# libsilc_adapter_compiler_la_SOURCES += \
-#    $(SRC_ROOT)src/adapters/compiler/silc_compiler_sun.c
+#if SCOREP_COMPILER_SUN
+# libscorep_adapter_compiler_la_SOURCES += \
+#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
 #endif
 
 # hp specific settings
 
-#if SILC_COMPILER_HP
-# libsilc_adapter_compiler_la_SOURCES += \
-#    $(SRC_ROOT)src/adapters/compiler/silc_compiler_hp.c
+#if SCOREP_COMPILER_HP
+# libscorep_adapter_compiler_la_SOURCES += \
+#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_hp.c
 #endif

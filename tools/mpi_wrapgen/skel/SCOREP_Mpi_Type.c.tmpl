@@ -1,0 +1,44 @@
+/**
+ * @file       SCOREP_Mpi_Type.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     alpha
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief C interface wrappers for datatype functions
+ */
+
+#include <config.h>
+#include "SCOREP_Mpi.h"
+
+/**
+ * @name C wrappers for general functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(nMPI_Sizeof)        skel/SCOREP_Mpi_Std.w
+
+/* Excluded the creation of the wrappers for PMPI_Type_create_f90_complex,
+   PMPI_Type_create_f90_real, and PMPI_Type_create_f90_integer. If we have a 
+   link test they may be included again. This is done by removing the !nf90.
+ */
+#pragma wrapgen multiple restrict(gtype+!nMPI_Sizeof+!nf90) skel/SCOREP_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for external interface functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_ext)          skel/SCOREP_Mpi_Std.w
+
+/**
+ * @}
+ * @name C wrappers for handle conversion functions
+ * @{
+ */
+
+#pragma wrapgen multiple restrict(gtype_misc+!n_c2f+!n_f2c) skel/SCOREP_Mpi_Std.w
+
+/**
+ * @}
+ */

@@ -1,7 +1,7 @@
 ## -*- mode: makefile -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -19,7 +19,7 @@
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 ## Checks whether the compiler adapter creates events. Its done by calling 
-## other implementation of SILC_EnterRegion and SILC_ExitRegion. Terminate 
+## other implementation of SCOREP_EnterRegion and SCOREP_ExitRegion. Terminate 
 ## successfully if both are called. Else return with error.
 
 noinst_LTLIBRARIES += libcompiler_test_dummy_ms.la
@@ -44,9 +44,9 @@ compiler_adapter_test_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include
 
 compiler_adapter_test_LDADD =                          \
-    $(LIB_ROOT)libsilc_adapter_compiler.la             \
-    $(LIB_DIR_UTIL)libsilc_utilities.la                \
-    $(LIB_ROOT)libsilc_timer.la                        \
+    $(LIB_ROOT)libscorep_adapter_compiler.la             \
+    $(LIB_DIR_UTIL)libscorep_utilities.la                \
+    $(LIB_ROOT)libscorep_timer.la                        \
     $(LIB_ROOT)libcompiler_test_dummy_ms.la
 
 TESTS += compiler_adapter_test

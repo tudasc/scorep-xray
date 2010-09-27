@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-# This file is part of the SILC project (http://www.silc.de)
+# This file is part of the SCOREP project (http://www.scorep.de)
 #
 # Copyright (c) 2009-2011,
 #    RWTH Aachen, Germany
@@ -13,46 +13,46 @@
 # See the COPYING file in the package base directory for details.
 
 
-noinst_LTLIBRARIES += libsilc_measurement.la
-libsilc_measurement_la_SOURCES =                                \
-    $(SRC_ROOT)src/measurement/SILC_Config.c                    \
-    $(SRC_ROOT)src/measurement/SILC_Definitions.c               \
-    $(SRC_ROOT)src/measurement/SILC_Memory.c                    \
-    $(SRC_ROOT)src/measurement/include/SILC_Adapter.h           \
-    $(SRC_ROOT)src/measurement/include/SILC_Config.h            \
-    $(SRC_ROOT)src/measurement/include/SILC_Definitions.h       \
-    $(SRC_ROOT)src/measurement/include/SILC_DefinitionLocking.h \
-    $(SRC_ROOT)src/measurement/include/SILC_Events.h            \
-    $(SRC_ROOT)src/measurement/include/SILC_Memory.h            \
-    $(SRC_ROOT)src/measurement/include/SILC_RuntimeManagement.h \
-    $(SRC_ROOT)src/measurement/include/SILC_Thread_Types.h      \
-    $(SRC_ROOT)src/measurement/include/SILC_Types.h             \
-    $(SRC_ROOT)src/measurement/include/SILC_DefinitionHandles.h \
-    $(SRC_ROOT)src/measurement/silc_adapter.h                   \
-    $(SRC_ROOT)src/measurement/silc_types.c                     \
-    $(SRC_ROOT)src/measurement/silc_types.h                     \
-    $(SRC_ROOT)src/measurement/silc_thread.h                    \
-    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.h  \
-    $(SRC_ROOT)src/measurement/silc_trace_types.h               \
-    $(SRC_ROOT)src/measurement/silc_runtime_management.h        \
-    $(SRC_ROOT)src/measurement/silc_definition_locking.h        \
-    $(SRC_ROOT)src/measurement/silc_definitions.h               \
-    $(SRC_ROOT)src/measurement/silc_definition_structs.h        \
-    $(SRC_ROOT)src/measurement/silc_definition_handles.h        \
-    $(SRC_ROOT)src/measurement/silc_status.c                    \
-    $(SRC_ROOT)src/measurement/silc_status.h                    \
-    $(SRC_ROOT)src/measurement/silc_parameter_registration.h    \
-    $(SRC_ROOT)src/measurement/silc_parameter_registration.c    \
-    $(SRC_ROOT)src/measurement/silc_mpi.h                       \
-    $(SRC_ROOT)src/measurement/silc_environment.c               \
-    $(SRC_ROOT)src/measurement/silc_environment.h               \
-    $(SRC_ROOT)src/measurement/silc_unify.c                     \
-    $(SRC_ROOT)src/measurement/silc_unify.h                     \
-    $(SRC_ROOT)src/measurement/silc_definition_cube4.h          \
-    $(SRC_ROOT)src/measurement/silc_definition_cube4.c
+noinst_LTLIBRARIES += libscorep_measurement.la
+libscorep_measurement_la_SOURCES =                                \
+    $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
+    $(SRC_ROOT)src/measurement/SCOREP_Definitions.c               \
+    $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Adapter.h           \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Definitions.h       \
+    $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionLocking.h \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h            \
+    $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Thread_Types.h      \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
+    $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
+    $(SRC_ROOT)src/measurement/scorep_adapter.h                   \
+    $(SRC_ROOT)src/measurement/scorep_types.c                     \
+    $(SRC_ROOT)src/measurement/scorep_types.h                     \
+    $(SRC_ROOT)src/measurement/scorep_thread.h                    \
+    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.h  \
+    $(SRC_ROOT)src/measurement/scorep_trace_types.h               \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
+    $(SRC_ROOT)src/measurement/scorep_definition_locking.h        \
+    $(SRC_ROOT)src/measurement/scorep_definitions.h               \
+    $(SRC_ROOT)src/measurement/scorep_definition_structs.h        \
+    $(SRC_ROOT)src/measurement/scorep_definition_handles.h        \
+    $(SRC_ROOT)src/measurement/scorep_status.c                    \
+    $(SRC_ROOT)src/measurement/scorep_status.h                    \
+    $(SRC_ROOT)src/measurement/scorep_parameter_registration.h    \
+    $(SRC_ROOT)src/measurement/scorep_parameter_registration.c    \
+    $(SRC_ROOT)src/measurement/scorep_mpi.h                       \
+    $(SRC_ROOT)src/measurement/scorep_environment.c               \
+    $(SRC_ROOT)src/measurement/scorep_environment.h               \
+    $(SRC_ROOT)src/measurement/scorep_unify.c                     \
+    $(SRC_ROOT)src/measurement/scorep_unify.h                     \
+    $(SRC_ROOT)src/measurement/scorep_definition_cube4.h          \
+    $(SRC_ROOT)src/measurement/scorep_definition_cube4.c
 
 
-libsilc_measurement_la_CPPFLAGS =               \
+libscorep_measurement_la_CPPFLAGS =               \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/profile        \
@@ -69,19 +69,19 @@ libsilc_measurement_la_CPPFLAGS =               \
 ## paradigm omp
 
 if OPENMP_SUPPORTED
-noinst_LTLIBRARIES              += libsilc_paradigm_omp.la
-libsilc_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-# Sources include SILC_Omp.h that conditionally compiles on _OPENMP
-libsilc_paradigm_omp_la_SOURCES  =                       \
-    $(SRC_ROOT)src/measurement/SILC_Events.c             \
-    $(SRC_ROOT)src/measurement/SILC_RuntimeManagement.c  \
-    $(SRC_ROOT)src/measurement/silc_runtime_management.c \
-    $(SRC_ROOT)src/measurement/silc_thread.c             \
-    $(SRC_ROOT)src/measurement/silc_definitions.c        \
-    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.c      \
-    $(SRC_ROOT)src/measurement/paradigm/silc_memory_locking_omp.c   \
-    $(SRC_ROOT)src/measurement/paradigm/SILC_DefinitionLockingOmp.c
-libsilc_paradigm_omp_la_CPPFLAGS =       \
+noinst_LTLIBRARIES              += libscorep_paradigm_omp.la
+libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+# Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP
+libscorep_paradigm_omp_la_SOURCES  =                       \
+    $(SRC_ROOT)src/measurement/SCOREP_Events.c             \
+    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c  \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
+    $(SRC_ROOT)src/measurement/scorep_thread.c             \
+    $(SRC_ROOT)src/measurement/scorep_definitions.c        \
+    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c      \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_memory_locking_omp.c   \
+    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingOmp.c
+libscorep_paradigm_omp_la_CPPFLAGS =       \
     $(AM_CPPFLAGS)                       \
     -I$(INC_DIR_OTF2)                    \
     -I$(INC_DIR_UTIL)                    \
@@ -96,18 +96,18 @@ endif
 
 ##paradigm non omp
 
-noinst_LTLIBRARIES                  += libsilc_paradigm_non_omp.la
-libsilc_paradigm_non_omp_la_SOURCES  =                   \
-    $(SRC_ROOT)src/measurement/SILC_Events.c             \
-    $(SRC_ROOT)src/measurement/SILC_RuntimeManagement.c  \
-    $(SRC_ROOT)src/measurement/silc_runtime_management.c \
-    $(SRC_ROOT)src/measurement/silc_thread.c             \
-    $(SRC_ROOT)src/measurement/silc_definitions.c        \
-    $(SRC_ROOT)src/measurement/silc_trace_thread_interaction.c        \
-    $(SRC_ROOT)src/measurement/paradigm/silc_memory_locking_non_omp.c \
-    $(SRC_ROOT)src/measurement/paradigm/SILC_DefinitionLockingNonOmp.c
+noinst_LTLIBRARIES                  += libscorep_paradigm_non_omp.la
+libscorep_paradigm_non_omp_la_SOURCES  =                   \
+    $(SRC_ROOT)src/measurement/SCOREP_Events.c             \
+    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c  \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
+    $(SRC_ROOT)src/measurement/scorep_thread.c             \
+    $(SRC_ROOT)src/measurement/scorep_definitions.c        \
+    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c        \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_memory_locking_non_omp.c \
+    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingNonOmp.c
 
-libsilc_paradigm_non_omp_la_CPPFLAGS =   \
+libscorep_paradigm_non_omp_la_CPPFLAGS =   \
     $(AM_CPPFLAGS)                       \
     -I$(INC_DIR_OTF2)                    \
     -I$(INC_DIR_UTIL)                    \
@@ -122,11 +122,11 @@ libsilc_paradigm_non_omp_la_CPPFLAGS =   \
 
 ## paradigm non mpi
 
-noinst_LTLIBRARIES                  += libsilc_paradigm_non_mpi.la
-libsilc_paradigm_non_mpi_la_SOURCES  =                            \
-    $(SRC_ROOT)src/measurement/paradigm/silc_mpi_disabled.c       \
-    $(SRC_ROOT)src/measurement/paradigm/silc_unify_mpi_disabled.c
-libsilc_paradigm_non_mpi_la_CPPFLAGS =   \
+noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
+libscorep_paradigm_non_mpi_la_SOURCES  =                            \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_disabled.c       \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c
+libscorep_paradigm_non_mpi_la_CPPFLAGS =   \
     $(AM_CPPFLAGS)                       \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \

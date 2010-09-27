@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -29,9 +29,9 @@
 #include <string.h>
 #include <assert.h>
 
-#include <silc_definitions.h>
-#include <silc_definition_structs.h>
-#include <silc_utility/SILC_Allocator.h>
+#include <scorep_definitions.h>
+#include <scorep_definition_structs.h>
+#include <scorep_utility/SCOREP_Allocator.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -46,8 +46,8 @@
 // void CuAssertPtrNotNull(CuTest* tc, void* pointer);
 
 
-SILC_Allocator_Allocator*   allocator;
-SILC_Allocator_PageManager* page_manager;
+SCOREP_Allocator_Allocator*   allocator;
+SCOREP_Allocator_PageManager* page_manager;
 
 /* *INDENT-OFF* */
 typedef struct test_definition_manager test_definition_manager;
@@ -55,8 +55,8 @@ struct test_definition_manager
 {
     // note: no ';'
     #define TEST_DEFINE_DEFINITION_LIST( counter_type, Type, type ) \
-        SILC_ ## Type ## Handle type ## _definition_head; \
-        SILC_ ## Type ## Handle* type ## _definition_tail_pointer; \
+        SCOREP_ ## Type ## Handle type ## _definition_head; \
+        SCOREP_ ## Type ## Handle* type ## _definition_tail_pointer; \
         counter_type type ## _definition_counter;
 
     TEST_DEFINE_DEFINITION_LIST( uint32_t, String, string )
@@ -68,20 +68,20 @@ static test_definition_manager definition_manager;
 
 /* *INDENT-OFF* */
 #define TEST_MEMORY_DEREF_MOVABLE( movable_memory, target_type ) \
-    ( ( target_type )SILC_Allocator_GetAddressFromMovableMemory( \
+    ( ( target_type )SCOREP_Allocator_GetAddressFromMovableMemory( \
           page_manager, \
           movable_memory ) )
 
 
 #define TEST_ALLOC_NEW_DEFINITION( Type, type ) \
     do { \
-        new_handle = SILC_Allocator_AllocMovable( \
+        new_handle = SCOREP_Allocator_AllocMovable( \
                 page_manager, \
-                sizeof( SILC_ ## Type ## _Definition ) ); \
+                sizeof( SCOREP_ ## Type ## _Definition ) ); \
         new_definition = \
             TEST_MEMORY_DEREF_MOVABLE( new_handle, \
-                                       SILC_ ## Type ## _Definition* ); \
-        new_definition->next = SILC_MOVABLE_NULL; \
+                                       SCOREP_ ## Type ## _Definition* ); \
+        new_definition->next = SCOREP_MOVABLE_NULL; \
         *definition_manager.type ## _definition_tail_pointer = \
             new_handle; \
         definition_manager.type ## _definition_tail_pointer = \
@@ -96,14 +96,14 @@ static test_definition_manager definition_manager;
                                                   array_type, \
                                                   number_of_members ) \
     do { \
-        new_handle = SILC_Allocator_AllocMovable( \
+        new_handle = SCOREP_Allocator_AllocMovable( \
                 page_manager, \
-                sizeof( SILC_ ## Type ## _Definition ) + \
+                sizeof( SCOREP_ ## Type ## _Definition ) + \
                 ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
         new_definition = \
             TEST_MEMORY_DEREF_MOVABLE( new_handle, \
-                                       SILC_ ## Type ## _Definition* ); \
-        new_definition->next = SILC_MOVABLE_NULL; \
+                                       SCOREP_ ## Type ## _Definition* ); \
+        new_definition->next = SCOREP_MOVABLE_NULL; \
         *definition_manager.type ## _definition_tail_pointer = \
             new_handle; \
         definition_manager.type ## _definition_tail_pointer = \
@@ -114,14 +114,14 @@ static test_definition_manager definition_manager;
 
 #define TEST_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
-        SILC_ ## Type ## _Definition* definition; \
-        SILC_ ## Type ## Handle handle; \
+        SCOREP_ ## Type ## _Definition* definition; \
+        SCOREP_ ## Type ## Handle handle; \
         for ( handle = ( manager_pointer )->type ## _definition_head; \
-              handle != SILC_MOVABLE_NULL; \
+              handle != SCOREP_MOVABLE_NULL; \
               handle = definition->next ) \
         { \
             definition = TEST_MEMORY_DEREF_MOVABLE( \
-                handle, SILC_ ## Type ## _Definition* ); \
+                handle, SCOREP_ ## Type ## _Definition* ); \
             {
 
 
@@ -156,9 +156,9 @@ test_definitions_initialize()
 static void
 test_definitions_finalize()
 {
-//    OTF2_DefWriter* definition_writer = silc_create_definition_writer();
-//    silc_write_definitions( definition_writer );
-//    silc_delete_definition_writer( definition_writer );
+//    OTF2_DefWriter* definition_writer = scorep_create_definition_writer();
+//    scorep_write_definitions( definition_writer );
+//    scorep_delete_definition_writer( definition_writer );
 }
 
 static const char const* test_stings[] = {
@@ -184,21 +184,21 @@ loop_over_string_definitions( CuTest* tc )
 }
 
 
-static SILC_StringHandle
+static SCOREP_StringHandle
 test_define_string( CuTest*     tc,
                     const char* str )
 {
-    SILC_String_Definition* new_definition = NULL;
-    SILC_StringHandle       new_handle     = SILC_INVALID_STRING;
+    SCOREP_String_Definition* new_definition = NULL;
+    SCOREP_StringHandle       new_handle     = SCOREP_INVALID_STRING;
 
-    uint32_t                string_length = strlen( str );
+    uint32_t                  string_length = strlen( str );
     TEST_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
                                               string,
                                               char,
                                               string_length + 1 );
 
     CuAssertPtrNotNull( tc, new_definition );
-    CuAssertTrue( tc, new_handle != SILC_INVALID_STRING );
+    CuAssertTrue( tc, new_handle != SCOREP_INVALID_STRING );
 
     new_definition->string_length = string_length;
     strcpy( new_definition->string_data, str );
@@ -212,9 +212,9 @@ allocator_initialize( CuTest* tc )
 {
     int total_mem = 1024;
     int page_size = 64; // that makes two strings of length 3 per page
-    allocator = SILC_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
+    allocator = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
-    page_manager = SILC_Allocator_CreatePageManager( allocator );
+    page_manager = SCOREP_Allocator_CreatePageManager( allocator );
     CuAssertPtrNotNull( tc, page_manager );
 }
 
@@ -232,7 +232,7 @@ test_1( CuTest* tc )
           i < sizeof( test_stings ) / sizeof( test_stings[ 0 ] );
           i++ )
     {
-        SILC_StringHandle str = test_define_string( tc, test_stings[ i ] );
+        SCOREP_StringHandle str = test_define_string( tc, test_stings[ i ] );
     }
 
     loop_over_string_definitions( tc );

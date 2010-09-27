@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -18,9 +18,9 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-SILC_ENABLE_PROFILING=true ./omp_test
+SCOREP_ENABLE_PROFILING=true ./omp_test
 if [ $? -ne 0 ]; then
-    rm -rf silc-measurement-tmp
+    rm -rf scorep-measurement-tmp
     exit 1
 fi
 exit 0

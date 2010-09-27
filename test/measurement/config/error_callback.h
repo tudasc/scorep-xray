@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef SILC_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK
-#define SILC_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK
+#ifndef SCOREP_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK
+#define SCOREP_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK
 
 
 
@@ -37,12 +37,12 @@ extern CuTest* the_test;
 
 
 int64_t
-cutest_silc_error_callback( const char*           function,
-                            const char*           file,
-                            const uint64_t        line,
-                            const SILC_Error_Code errorCode,
-                            const char*           msgFormatString,
-                            va_list               va );
+cutest_scorep_error_callback( const char*             function,
+                              const char*             file,
+                              const uint64_t          line,
+                              const SCOREP_Error_Code errorCode,
+                              const char*             msgFormatString,
+                              va_list                 va );
 
 
 #ifdef _cplusplus
@@ -50,4 +50,4 @@ cutest_silc_error_callback( const char*           function,
 #endif
 
 
-#endif /* SILC_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK */
+#endif /* SCOREP_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK */

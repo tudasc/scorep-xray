@@ -1,5 +1,5 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen, Germany
@@ -15,13 +15,13 @@
 
 #include <config.h>
 
-#include <SILC_RuntimeManagement.h>
+#include <SCOREP_RuntimeManagement.h>
 
 int
 main( int   ac,
       char* av[] )
 {
-    SILC_InitMeasurement();
+    SCOREP_InitMeasurement();
 
     return 0;
 }

@@ -1,23 +1,23 @@
 AC_PREREQ([2.65])
-AC_INIT([silc-backend], [0])
+AC_INIT([scorep-backend], [0])
 
-## require $ac_silc_cross_compiling to be set to 'yes' or 'no'
-if test "x${ac_silc_cross_compiling}" != "xyes" -a "x${ac_silc_cross_compiling}" != "xno"; then
-    AC_MSG_ERROR([invalid value '$ac_silc_cross_compiling' for variable \$ac_silc_cross_compiling.], [1])
+## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
+if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
+    AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
-cross_compiling=${ac_silc_cross_compiling}
+cross_compiling=${ac_scorep_cross_compiling}
 
 
 
 
 
-AC_SILC_CHECK_COMPILER_VAR_SET([CC])
-AC_SILC_CHECK_COMPILER_VAR_SET([CXX])
-AC_SILC_CHECK_COMPILER_VAR_SET([F77])
-AC_SILC_CHECK_COMPILER_VAR_SET([FC])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([FC])
 
-AC_SILC_SVN_CONTROLLED
-AH_SILC_CONFIG_HEADER_CUSTOM
+AC_SCOREP_SVN_CONTROLLED
+AH_SCOREP_CONFIG_HEADER_CUSTOM
 AC_CONFIG_HEADERS([../src/config-backend.h])
 
 
@@ -25,11 +25,11 @@ AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall])
-AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_silc_cross_compiling}" = "xno"])
-AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_silc_cross_compiling}" = "xyes"])
-AC_SILC_PLATFORM_SETTINGS   
+AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
+AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
+AC_SCOREP_PLATFORM_SETTINGS   
 
-AC_SILC_COMMON_CHECKS
+AC_SCOREP_COMMON_CHECKS
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
@@ -43,7 +43,7 @@ AC_SUBST([LIBTOOL_DEPS])
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
 backend_lib_dir="/lib"
-if test "x${ac_silc_cross_compiling}" = "xyes"; then
+if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     backend_bin_dir="/bin/backend"
     backend_lib_dir="/lib/backend"
 fi
@@ -128,16 +128,16 @@ AC_PROG_FC_C_O
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 
-AC_SILC_OPENMP
+AC_SCOREP_OPENMP
 
-SILC_TIMER
-AC_SILC_COMPILER_CHECKS
-AC_SILC_LIBBFD
+SCOREP_TIMER
+AC_SCOREP_COMPILER_CHECKS
+AC_SCOREP_LIBBFD
 
 # We get cube via svn:externals and build it ourselves with compression 
 # support disabled. This solves difficulties with library detection on 
 # cross compile systems. The following check can be omitted.
-#AC_SILC_CUBE4
+#AC_SCOREP_CUBE4
 
 # assuming that mpi configure already ran
 AM_CONDITIONAL([MPI_SUPPORTED], [test -f build-mpi/mpi_supported])
