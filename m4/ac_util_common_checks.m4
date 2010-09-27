@@ -79,16 +79,16 @@ AC_CHECK_SIZEOF([void *])
 AC_CHECK_SIZEOF([double])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
     AC_DEFINE_UNQUOTED(
-        [SILC_ALLOCATOR_ALIGNMENT], 
+        [SCOREP_ALLOCATOR_ALIGNMENT], 
         [$ac_cv_sizeof_void_p], 
-        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SILC_Allocator.])
+        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 else
     AC_DEFINE_UNQUOTED(
-        [SILC_ALLOCATOR_ALIGNMENT], 
+        [SCOREP_ALLOCATOR_ALIGNMENT], 
         [$ac_cv_sizeof_double], 
-        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SILC_Allocator.])
+        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 fi
 
-AC_SILC_DEBUG_OPTION
-AC_SILC_ON_DEBUG_OPTION
+AC_SCOREP_DEBUG_OPTION
+AC_SCOREP_ON_DEBUG_OPTION
 ])

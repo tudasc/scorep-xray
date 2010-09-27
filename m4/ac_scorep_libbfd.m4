@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -15,7 +15,7 @@
 ##
 
 
-AC_DEFUN([SILC_LIBBFD_LINK_TEST], [
+AC_DEFUN([SCOREP_LIBBFD_LINK_TEST], [
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[char bfd_init ();
 char bfd_openr ();
 char bfd_check_format ();
@@ -24,13 +24,13 @@ char bfd_close ();]],
 bfd_openr ();
 bfd_check_format ();
 bfd_close ();]])],
-               [silc_have_libbfd="yes"], 
-               [silc_have_libbfd="no"])
+               [scorep_have_libbfd="yes"], 
+               [scorep_have_libbfd="no"])
 ])
 
 
-AC_DEFUN([AC_SILC_LIBBFD], [
-AC_REQUIRE([AC_SILC_COMPILER_CHECKS])
+AC_DEFUN([AC_SCOREP_LIBBFD], [
+AC_REQUIRE([AC_SCOREP_COMPILER_CHECKS])
 # In scalasca we use bfd only for the gnu compiler instrumentation.
 
 # What shall we do if there is a frontend and a backend libbfd? We need the
@@ -38,9 +38,9 @@ AC_REQUIRE([AC_SILC_COMPILER_CHECKS])
 # approach is to require user input on dual-architecture machines. But for now
 # we will just abort (until this problem shows up in reality).
 
-if test "x${silc_compiler_gnu}" = "xyes" -o "x${silc_compiler_intel}" = "xyes"; then
+if test "x${scorep_compiler_gnu}" = "xyes" -o "x${scorep_compiler_intel}" = "xyes"; then
 
-    if test "x${ac_silc_cross_compiling}" = "xyes"; then
+    if test "x${ac_scorep_cross_compiling}" = "xyes"; then
         AC_MSG_ERROR([Can't reliably determine backend libbfd in cross compiling mode.])
         AC_MSG_ERROR([Can't reliably determine backend nm in cross compiling mode.])
     fi
@@ -49,17 +49,17 @@ if test "x${silc_compiler_gnu}" = "xyes" -o "x${silc_compiler_intel}" = "xyes"; 
     AC_CHECK_HEADER([bfd.h])
     
     AC_MSG_CHECKING([for libbfd])    
-    silc_libbfd_save_LIBS="$LIBS"
+    scorep_libbfd_save_LIBS="$LIBS"
 
     LIBS="-lbfd"
-    SILC_LIBBFD_LINK_TEST
-    AS_IF([test "x${silc_have_libbfd}" = "xno"],
+    SCOREP_LIBBFD_LINK_TEST
+    AS_IF([test "x${scorep_have_libbfd}" = "xno"],
           [LIBS="-lbfd -liberty"; 
-           SILC_LIBBFD_LINK_TEST
-           AS_IF([test "x${silc_have_libbfd}" = "xno"],
+           SCOREP_LIBBFD_LINK_TEST
+           AS_IF([test "x${scorep_have_libbfd}" = "xno"],
                  [LIBS="-lbfd -liberty -lz";
-                  SILC_LIBBFD_LINK_TEST
-                  AS_IF([test "x${silc_have_libbfd}" = "xno"],
+                  SCOREP_LIBBFD_LINK_TEST
+                  AS_IF([test "x${scorep_have_libbfd}" = "xno"],
                         [AC_MSG_RESULT([no])],
                         [AC_MSG_RESULT([$LIBS])])],
                  [AC_MSG_RESULT([$LIBS])])],
@@ -69,26 +69,26 @@ if test "x${silc_compiler_gnu}" = "xyes" -o "x${silc_compiler_intel}" = "xyes"; 
     AC_MSG_CHECKING([for cplus_demangle])    
     AC_LINK_IFELSE([AC_LANG_PROGRAM([[char* cplus_demangle( const char* mangled, int options );]],
                                     [[cplus_demangle("test", 27)]])],
-                   [silc_have_demangle="yes"], 
-                   [silc_have_demangle="no"])
-    AC_MSG_RESULT([$silc_have_demangle])
+                   [scorep_have_demangle="yes"], 
+                   [scorep_have_demangle="no"])
+    AC_MSG_RESULT([$scorep_have_demangle])
 
-    silc_bfd_libs="$LIBS"
-    LIBS="$silc_libbfd_save_LIBS"
+    scorep_bfd_libs="$LIBS"
+    LIBS="$scorep_libbfd_save_LIBS"
 
-    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${silc_have_libbfd}" = "xyes"])
-    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${silc_have_libbfd}" = "xno"; then
+    AM_CONDITIONAL([HAVE_LIBBFD], [test "x${ac_cv_header_bfd_h}" = "xyes" && test "x${scorep_have_libbfd}" = "xyes"])
+    if test "x${ac_cv_header_bfd_h}" = "xno" || test "x${scorep_have_libbfd}" = "xno"; then
         AC_MSG_WARN([libbfd not available. Trying compiler instrumentation via nm.])
         AC_SUBST([LIBBFD], [""])
 
         # ok, bfd not available, search for nm
-        AC_CHECK_PROG([silc_have_nm], [nm], ["yes"], ["no"])
-        AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test "x${silc_have_nm}" = "xyes"])
-        if test "x${silc_have_nm}" = "xno"; then
+        AC_CHECK_PROG([scorep_have_nm], [nm], ["yes"], ["no"])
+        AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test "x${scorep_have_nm}" = "xyes"])
+        if test "x${scorep_have_nm}" = "xno"; then
             AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
         fi
     else
-        AC_SUBST([LIBBFD], ["$silc_bfd_libs"])
+        AC_SUBST([LIBBFD], ["$scorep_bfd_libs"])
         AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -ne 1])
     fi
     AC_LANG_POP([C])
@@ -98,5 +98,5 @@ else
     AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -ne 1])
 fi
 
-AM_CONDITIONAL([HAVE_DEMANGLE], [test "x${silc_have_demangle}" = "xyes"])
+AM_CONDITIONAL([HAVE_DEMANGLE], [test "x${scorep_have_demangle}" = "xyes"])
 ])

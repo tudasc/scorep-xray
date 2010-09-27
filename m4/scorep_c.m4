@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -14,9 +14,9 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       silc_c.m4 
+## file       scorep_c.m4 
 ##            This file contains a modified version of autoconf's 2.65
-##            macro _AC_PROG_CC_C99. In SILC we don't want to use the
+##            macro _AC_PROG_CC_C99. In SCOREP we don't want to use the
 ##            GNU option -std=gnu99 (but -std=c99 instead) as this prevents 
 ##            some warnings that may cause portability issues. Please find
 ##            the autoconf licence below.

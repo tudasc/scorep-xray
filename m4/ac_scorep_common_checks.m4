@@ -1,7 +1,7 @@
 # Add checks here that are common for frontend- and backend-
 # build-configurations.
 
-AC_DEFUN([AC_SILC_COMMON_CHECKS],
+AC_DEFUN([AC_SCOREP_COMMON_CHECKS],
 [
 ## Determine a C compiler to use. If CC is not already set in the environment,
 ## check for gcc and cc, then for other C compilers. Set output variable CC to
@@ -75,6 +75,6 @@ AC_REQUIRE([AC_C_BIGENDIAN])
 
 AC_REQUIRE([AC_PROG_RANLIB])
 
-AC_SILC_DEBUG_OPTION
-AC_SILC_ON_DEBUG_OPTION
+AC_SCOREP_DEBUG_OPTION
+AC_SCOREP_ON_DEBUG_OPTION
 ])

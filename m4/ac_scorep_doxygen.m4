@@ -1,9 +1,9 @@
-# AC_SILC_DOXYGEN
+# AC_SCOREP_DOXYGEN
 #----------------
 # Check doxygen related stuff, sets some output variables and the
 # AM_CONDITIONAL HAVE_DOXYGEN.
 #
-AC_DEFUN([AC_SILC_DOXYGEN],
+AC_DEFUN([AC_SCOREP_DOXYGEN],
 [
 #if test -z "$have_svnversion"; then
 #  AC_CHECK_PROG([have_svnversion], [svnversion], [yes], [no],,)
@@ -23,15 +23,15 @@ fi
 AC_SUBST([have_doxygen_latex])
 AM_CONDITIONAL(HAVE_DOXYGEN_LATEX, test "x${have_doxygen_latex}" = xyes)
 
-if test "x${ac_silc_svn_controlled}" = "xyes"; then
+if test "x${ac_scorep_svn_controlled}" = "xyes"; then
    AC_CONFIG_FILES([doc/doxygen-user.cfg:doc/doxygen/config/doxygen-user.cfg.in doc/doxygen-dev.cfg:doc/doxygen/config/doxygen-dev.cfg.in])
 fi
 
-# ac_silc_doxygen_distdir may be passed in from upper level configure
-if test ! -n "$ac_silc_doxygen_distdir"; then
-   ac_silc_doxygen_distdir=""
+# ac_scorep_doxygen_distdir may be passed in from upper level configure
+if test ! -n "$ac_scorep_doxygen_distdir"; then
+   ac_scorep_doxygen_distdir=""
 fi
-AC_SUBST([ac_silc_doxygen_distdir])
+AC_SUBST([ac_scorep_doxygen_distdir])
 
 ])
 

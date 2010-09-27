@@ -1,5 +1,5 @@
 # Save user provided arguments for use by sub-configures.
-AC_DEFUN([AC_SILC_TOPLEVEL_ARGS],
+AC_DEFUN([AC_SCOREP_TOPLEVEL_ARGS],
 [
 # Quote arguments with shell meta charatcers.
 TOPLEVEL_CONFIGURE_ARGUMENTS=

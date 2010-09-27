@@ -1,7 +1,7 @@
 ## -*- mode: autoconf -*-
 
 ## 
-## This file is part of the SILC project (http://www.silc.de)
+## This file is part of the SCOREP project (http://www.scorep.de)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
@@ -14,10 +14,10 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       ac_silc_openmp.m4
+## file       ac_scorep_openmp.m4
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-AC_DEFUN([AC_SILC_OPENMP],
+AC_DEFUN([AC_SCOREP_OPENMP],
 [
 AC_LANG_PUSH([C])
 AC_OPENMP
@@ -26,7 +26,7 @@ AM_CONDITIONAL([OPENMP_SUPPORTED],
                [test "x${ac_cv_prog_c_openmp}" != "xunsupported"])
 
 if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
-  AC_MSG_WARN([Non suitbale OpenMP compilers found. SILC OpenMP and hybrid libraries will not be build.])
+  AC_MSG_WARN([Non suitbale OpenMP compilers found. SCOREP OpenMP and hybrid libraries will not be build.])
 fi
 
 AC_LANG_PUSH([C++])

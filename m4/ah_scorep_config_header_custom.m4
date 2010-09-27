@@ -1,4 +1,4 @@
-AC_DEFUN([AH_SILC_CONFIG_HEADER_CUSTOM],
+AC_DEFUN([AH_SCOREP_CONFIG_HEADER_CUSTOM],
 [
 ## Please note that text gets included "verbatim" to the template file, not to
 ## the resulting config header, so it can easily get mangled when the template
