@@ -135,6 +135,10 @@ SCOREP_TIMER
 AC_SCOREP_COMPILER_CHECKS
 AC_SCOREP_LIBBFD
 
+## trunc and ceil needed by the cube4 writer
+AC_SEARCH_LIBS([trunc], [m])
+AC_SEARCH_LIBS([ceil], [m])
+
 # We get cube via svn:externals and build it ourselves with compression 
 # support disabled. This solves difficulties with library detection on 
 # cross compile systems. The following check can be omitted.
