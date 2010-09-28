@@ -1,0 +1,4 @@
+CC=pathcc
+CXX=pathCC
+F77=pathf90
+FC=pathf90

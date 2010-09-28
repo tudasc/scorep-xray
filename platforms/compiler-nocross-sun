@@ -1,0 +1,4 @@
+CC=cc
+CXX=CC
+F77=f77
+FC=f95

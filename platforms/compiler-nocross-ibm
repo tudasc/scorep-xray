@@ -1,0 +1,4 @@
+CC=xlc_r
+CXX=xlC_r
+F77=xlf_r
+FC=xlf_r

@@ -1,0 +1,4 @@
+CC=gcc
+CXX=g++
+F77=gfortran
+FC=gfortran

@@ -1,0 +1,4 @@
+CC=icc
+CXX=icpc
+F77=ifort
+FC=ifort

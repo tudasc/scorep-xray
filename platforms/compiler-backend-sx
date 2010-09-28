@@ -1,0 +1,4 @@
+CC=sxcc
+CXX=sxc++
+F77=sxf90
+FC=sxf90

@@ -1,0 +1,4 @@
+CC_FOR_BUILD=icc
+CXX_FOR_BUILD=icpc
+F77_FOR_BUILD=ifort
+FC_FOR_BUILD=ifort

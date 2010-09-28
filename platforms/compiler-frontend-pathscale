@@ -1,0 +1,4 @@
+CC_FOR_BUILD=pathcc
+CXX_FOR_BUILD=pathCC
+F77_FOR_BUILD=pathf90
+FC_FOR_BUILD=pathf90

@@ -1,0 +1,4 @@
+CC=pgcc
+CXX=pgCC
+F77=pgf77
+FC=pgf90
