@@ -186,7 +186,11 @@ scorep_otf2_initialize()
                                             "traces",
                                             OTF2_FILEMODE_WRITE,
                                             1024 * 1024, // 1MB
-                                            OTF2_SUBSTRATE_POSIX );
+                                            OTF2_SUBSTRATE_POSIX,
+                                            0,           // allocate
+                                            0,           // free
+                                            0            // allocaterData
+                                            );
     assert( scorep_otf2_archive );
 }
 
