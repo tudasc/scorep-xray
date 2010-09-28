@@ -34,14 +34,11 @@
 extern void
 scorep_profile_write_tau_snapshot();
 
-#ifdef HAVE_CUBE4
 /**
    Writes the profile in Cube 4 format to disk. For each metric a separate
    file is created.
  */
 extern void
 scorep_profile_write_cube4();
-
-#endif /* HAVE_CUBE4 */
 
 #endif /* SCOREP_PROFILE_WRITER_H */

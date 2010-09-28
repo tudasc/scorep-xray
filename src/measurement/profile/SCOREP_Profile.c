@@ -50,11 +50,7 @@ struct SCOREP_Profile_LocationData
     uint32_t             current_depth; // Stores the current length of the callpath
 };
 
-#ifdef HAVE_CUBE4
 #define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputCube4
-#else
-#define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputTauSnapshot
-#endif
 
 /**
    Allows to limit the depth of the calltree. If the current
@@ -125,9 +121,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
       "The following formats are supported:\n"
       " None: No profile output. This does not disable profile recording.\n"
       " TauSnapshot: Tau snapshot format.\n"
-#ifdef HAVE_CUBE4
       " Cube4: Cube4 format.\n"
-#endif
       " Default: Default format. If Cube4 is supported, Cube4 is the default\n"
       "          else the Tau snapshot format is default.\n", },
     SCOREP_CONFIG_TERMINATOR
@@ -369,12 +363,10 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
     {
         return;
     }
-#ifdef HAVE_CUBE4
     else if ( scorep_profile_output_format & SCOREP_Profile_OutputCube4 )
     {
         scorep_profile_write_cube4();
     }
-#endif  /* HAVE_CUBE4 */
     else if ( scorep_profile_output_format & SCOREP_Profile_OutputTauSnapshot )
     {
         scorep_profile_write_tau_snapshot();
