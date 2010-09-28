@@ -41,12 +41,15 @@ scorep_serial_tests.sh:
 	for i in $(SCOREP_SERIAL_TESTS); do echo "./$$i" >> scorep_serial_tests.sh; done
 	chmod +x scorep_serial_tests.sh
 
+if OPENMP_SUPPORTED
 scorep_omp_tests.sh: 
 	rm -f scorep_omp_tests.sh
 	echo "#!/bin/bash" > scorep_omp_tests.sh
 	for i in $(SCOREP_OMP_TESTS); do echo "./$$i" >> scorep_omp_tests.sh; done
 	chmod +x scorep_omp_tests.sh
-	
+else
+scorep_omp_tests.sh:
+endif
 endif
 
 
@@ -67,7 +70,7 @@ EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
 
 clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
 	rm -f scorep_serial_tests.sh  scorep_omp_tests.sh
-	
+
 .PHONY: $(EXTRA_LOCAL_CLEAN_TARGETS) \
         install-scorep-meets-tau
 

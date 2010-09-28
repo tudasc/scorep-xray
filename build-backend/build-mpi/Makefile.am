@@ -99,17 +99,26 @@ endif
 #if !BACKEND_TEST_RUNS
 BUILT_SOURCES += scorep_mpi_tests.sh scorep_mpi_omp_tests.sh
 
-scorep_mpi_tests.sh: 
+if MPI_SUPPORTED
+scorep_mpi_tests.sh:
 	rm -f scorep_mpi_tests.sh
 	echo "#!/bin/bash" > scorep_mpi_tests.sh
 	for i in $(SCOREP_MPI_TESTS); do echo "./$$i" >> scorep_mpi_tests.sh; done
 	chmod +x scorep_mpi_tests.sh
 
-scorep_mpi_omp_tests.sh: 
+if OPENMP_SUPPORTED
+scorep_mpi_omp_tests.sh:
 	rm -f scorep_mpi_omp_tests.sh
 	echo "#!/bin/bash" > scorep_mpi_omp_tests.sh
 	for i in $(SCOREP_MPI_OMP_TESTS); do echo "./$$i" >> scorep_mpi_omp_tests.sh; done
-	chmod +x scorep_mpi_omp_tests.sh	
+	chmod +x scorep_mpi_omp_tests.sh
+else
+scorep_mpi_omp_tests.sh:
+endif
+else
+scorep_mpi_tests.sh:
+scorep_mpi_omp_tests.sh:
+endif
 #endif
 
 
