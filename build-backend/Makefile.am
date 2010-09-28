@@ -91,7 +91,7 @@ scorep-config-tool-install:
 	echo PREFIX=\"$(prefix)\"                                                       >> $(builddir)/scorep_config.dat
 	echo DATADIR=\"$(datadir)\"                                                     >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"$(libdir)\"                                                       >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(LIBS)\"                                                         >> $(builddir)/scorep_config.dat
+	echo LIBS=\"$(LIBS)\"                                                           >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                                >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"$(TIMER_LIBDIR)\"                                                 >> $(builddir)/scorep_config.dat
 	echo LIBS=\"$(LIBBFD)\"                                                         >> $(builddir)/scorep_config.dat
@@ -114,7 +114,7 @@ scorep-config-tool-local:
 	echo LIBDIR=\".libs\"                                                      >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(LIBS)\"                                                    >> $(builddir)/scorep_config.dat
+	echo LIBS=\"$(LIBS)\"                                                      >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
 	echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
