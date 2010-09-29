@@ -30,10 +30,12 @@ AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall tar-ustar])
 if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_provided}" = "xno"; then
     # $ac_scorep_cross_compiling, $ac_scorep_platform are set here
     AC_SCOREP_DETECT_PLATFORMS
+    AC_SCOREP_WITH_COMPILER_SUITE
     AC_SCOREP_LOAD_PLATFORMS_DEFAULTS
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/build-config/process_arguments.awk \
-           $srcdir/build-config/platforms/$ac_scorep_platform   \
+           $srcdir/build-config/platforms/$ac_scorep_platform \
+           $ac_scorep_compiler_suite_files                    \
            user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
