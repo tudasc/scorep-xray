@@ -43,6 +43,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     opari_instrumentation    = detect;
     user_instrumentation     = disabled;
     mpi_instrumentation      = detect;
+    pdt_instrumentation      = disabled;
 
     is_mpi_application    = detect;
     is_openmp_application = detect;
@@ -53,6 +54,8 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     scorep_include_path = "";
     scorep_library_path = "";
     external_libs       = "";
+    pdt_bin_path        = "";
+    pdt_config_file     = "";
 
     c_compiler    = "";
     openmp_cflags = "";
@@ -92,6 +95,12 @@ SCOREP_Instrumenter::Run()
     {
         prepare_compiler();
     }
+#ifdef HAVE_PDT
+    if ( pdt_instrumentation == enabled )
+    {
+        prepare_pdt();
+    }
+#endif
     if ( opari_instrumentation == enabled )
     {
         prepare_opari();
@@ -257,6 +266,18 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
         mpi_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
+#ifdef HAVE_PDT
+    else if ( arg == "-pdt" )
+    {
+        pdt_instrumentation = enabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "-nopdt" )
+    {
+        pdt_instrumentation = disabled;
+        return scorep_parse_mode_param;
+    }
+#endif
 
     /* Check for application type settings */
     else if ( arg == "-openmp_support" )
@@ -392,6 +413,13 @@ SCOREP_Instrumenter::check_parameter()
                       << std::endl;
         }
     }
+
+    /* Check pdt dependencies */
+    if ( pdt_instrumentation == enabled )
+    {
+        user_instrumentation     = enabled;  // Needed to activate the inserted macros.
+        compiler_instrumentation = disabled; // Avoid double instrumentation.
+    }
 }
 
 SCOREP_Instrumenter::scorep_parse_mode_t
@@ -470,6 +498,29 @@ SCOREP_Instrumenter::SetPrefix( std::string value )
 {
     AddIncDir( value + "/include" );
     AddLibDir( value + "/lib" );
+}
+
+void
+SCOREP_Instrumenter::SetPdtRoot( std::string value )
+{
+    if ( value == "yes" )
+    {
+        pdt_bin_path = SCOREP_GetExecutablePath( "tau_instrumentor" );
+    }
+    else if ( value == "no" )
+    {
+        return;
+    }
+    else
+    {
+        pdt_bin_path = value;
+    }
+}
+
+void
+SCOREP_Instrumenter::SetPdtConfig( std::string value )
+{
+    pdt_config_file = value;
 }
 
 /* ****************************************************************************
@@ -749,6 +800,92 @@ SCOREP_Instrumenter::prepare_opari()
         compile_init_file( init_source, init_object );
         input_files += " " + init_object;
     }
+}
+
+std::string
+SCOREP_Instrumenter::remove_path( std::string full_path )
+{
+    size_t pos = full_path.rfind( "/" );
+    if ( pos == std::string::npos )
+    {
+        return full_path;
+    }
+    else
+    {
+        return full_path.substr( pos + 1, std::string::npos );
+    }
+}
+
+void
+SCOREP_Instrumenter::prepare_pdt()
+{
+    std::string new_input_files = "";
+    std::string current_file    = "";
+    std::string extension       = "";
+    std::string modified_file   = "";
+    std::string pdb_file        = "";
+    std::string command         = "";
+    size_t      old_pos         = 0;
+    size_t      cur_pos         = 0;
+
+    // Instrument sources and substitute the sources in the source list.
+    while ( cur_pos != std::string::npos )
+    {
+        cur_pos = input_files.find( " ", old_pos );
+        if ( old_pos < cur_pos ) // Discard a blank
+        {
+            current_file  = input_files.substr( old_pos, cur_pos - old_pos );
+            extension     = get_extension( current_file );
+            modified_file = get_basename( current_file ) + "_pdt" + extension;
+            pdb_file      = remove_path( get_basename( current_file ) + ".pdb" );
+            if ( is_source_file( current_file ) )
+            {
+                // Create database file
+                if ( extension == ".c" || extension == ".C" )
+                {
+                    command = pdt_bin_path + "/cparse " + current_file;
+                }
+                else if ( extension == ".f" || extension == ".F" ||
+                          extension == ".f90" || extension == ".F90" )
+                {
+                    command = pdt_bin_path + "/f90parse " + current_file;
+                }
+                else
+                {
+                    command = pdt_bin_path + "/cxxparse " + current_file;
+                }
+                if ( verbosity >= 1 )
+                {
+                    std::cout << command << std::endl;
+                }
+                system( command.c_str() );
+
+                // instrument source
+                command = pdt_bin_path + "/tau_instrumentor "
+                          + pdb_file + " "
+                          + current_file
+                          + " -o " + modified_file
+                          + " -spec " + pdt_config_file;
+                if ( verbosity >= 1 )
+                {
+                    std::cout << command << std::endl;
+                }
+                system( command.c_str() );
+
+                // Add modified source to new sourse list
+                new_input_files += " " + modified_file;
+            }
+            else
+            {
+                new_input_files += " " + current_file;
+            }
+        }
+        // Setup for next file
+        old_pos = cur_pos + 1;
+    }
+
+    // Replace sources by modified sources in compile command
+    input_files = new_input_files;
 }
 
 /* ****************************************************************************

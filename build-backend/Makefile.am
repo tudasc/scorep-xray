@@ -104,8 +104,11 @@ scorep-config-tool-install:
 	echo NM=\"$(NM)\"                                                               >> $(builddir)/scorep_config.dat
 	echo AWK=\"$(AWK)\"                                                             >> $(builddir)/scorep_config.dat
 	echo OPARI=\"$(prefix)bin/opari2\"                                              >> $(builddir)/scorep_config.dat
-	echo OPARI_SCRIPT=\"$(prefix)bin/pomp2_parse_init_regions.awk\"                  >> $(builddir)/scorep_config.dat
+	echo OPARI_SCRIPT=\"$(prefix)bin/pomp2_parse_init_regions.awk\"                 >> $(builddir)/scorep_config.dat
+	echo PDT=\"$(PDT_PATH)\"                                                        >> $(builddir)/scorep_config.dat
+	echo PDT_CONFIG=\"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"                  >> $(builddir)/scorep_config.dat
 	$(INSTALL_DATA) $(builddir)/scorep_config.dat $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat
+	$(INSTALL_DATA) $(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(datadir)/SCOREP_Pdt_Instrumentation.conf
 # add compiler-suite, name of libs, static/shared, ...
 
 clean-local-scorep-config-tool:
@@ -122,6 +125,7 @@ scorep-config-tool-local:
 	echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
 	echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
 	echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
+	echo INCDIR=\"$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
 	echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/scorep_config.dat
 	echo CC=\"$(CC)\"                                                          >> $(builddir)/scorep_config.dat
 	echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
@@ -131,3 +135,5 @@ scorep-config-tool-local:
 	echo AWK=\"$(AWK)\"                                                        >> $(builddir)/scorep_config.dat
 	echo OPARI=\"../vendor/opari2/build-frontend/opari2\"                      >> $(builddir)/scorep_config.dat
 	echo OPARI_SCRIPT=\"$(PUBLIC_INC_DIR)../../vendor/opari2/src/pomp-lib-dummy/pomp2_parse_init_regions.awk\" >> $(builddir)/scorep_config.dat
+	echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
+	echo PDT_CONFIG=\"$(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat

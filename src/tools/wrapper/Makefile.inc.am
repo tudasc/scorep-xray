@@ -13,6 +13,11 @@ scorep_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(SRC_ROOT)src/tools/wrapper  \
     -I$(INC_DIR_UTIL)               \
     -I$(SRC_ROOT)vendor/otf2/vendor/utility/src/parser
+if HAVE_PDT
+scorep_CPPFLAGS += -DHAVE_PDT=1
+endif
 
 scorep_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la    \
              $(LIB_DIR_UTIL)libscorep_parser_tools.la
+
+EXTRA_DIST +=  $(SRC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf

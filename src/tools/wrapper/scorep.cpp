@@ -77,6 +77,14 @@ print_help( std::string toolname )
               << "                  if it is no OpenMP program.\n"
               << "  -user           Enables manual user instrumentation.\n"
               << "  -nouser         Disables manual user instrumentation. Is disabled by default.\n"
+#ifdef HAVE_PDT
+              << "  -pdt            Enables source code instrumentation with pdt using\n"
+              << "                  the TAU instrumentor.\n"
+              << "                  It will automatically enable the user instrumentation\n"
+              << "                  and disable compiler instrumentation.\n"
+              << "  -nopdt          Disables the source code instrumentation with pdt.\n"
+              << "                  It is disabled by default.\n"
+#endif
               << "  -openmp_support Enables OpenMP support. Needed if the instrumentation\n"
               << "                  does not coorectly identify your application as OpenMP\n"
               << "                  program.\n"

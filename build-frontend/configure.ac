@@ -22,7 +22,7 @@ AC_CONFIG_HEADERS([../src/config-frontend.h])
 
 
 
-
+AC_SCOREP_PDT
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../build-config/m4])
 

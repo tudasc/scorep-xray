@@ -203,6 +203,21 @@ protected:
     virtual void
     SetOpenmpCflags( std::string value );
 
+    /**
+       This function sets the root directory if one is specified.
+       @param value The path to the PDT binaries. If no path is
+       specified explicitly, it contains "yes".
+     */
+    virtual void
+    SetPdtRoot( std::string value );
+
+    /**
+       Sets the instrumentation specification file for PDT instrumentation.
+       @param value specification file.
+     */
+    virtual void
+    SetPdtConfig( std::string value );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -265,6 +280,13 @@ private:
      */
     void
     prepare_user();
+
+    /**
+       Performs necessary modifications to the command for enabling
+       pdt instrumentation.
+     */
+    void
+    prepare_pdt();
 
     /**
        Performs necessary modifications to the command for enabling
@@ -365,6 +387,14 @@ private:
     bool
     is_object_file( std::string filename );
 
+    /**
+       Removes everything before the first slash from @a full_path.
+       @param a file with its full path.
+       @returns The filename without its path.
+     */
+    std::string
+    remove_path( std::string full_path );
+
     /* ***************************************************** Private members */
 private:
     /* --------------------------------------------
@@ -389,6 +419,13 @@ private:
        Specifies if mpi wrappers are enabled. Default detect.
      */
     instrumentation_usage_t mpi_instrumentation;
+
+    /**
+       Specifies if pdt instrumentation enabled. Default disabled. If it is enabled,
+       it will automatically enable the user adapter and disable the compiler
+       instrumentation.
+     */
+    instrumentation_usage_t pdt_instrumentation;
 
     /* --------------------------------------------
        Flags for application type
@@ -495,6 +532,16 @@ private:
        instrumented regions.
      */
     std::string opari_script;
+
+    /**
+        Path to PDT binaries.
+     */
+    std::string pdt_bin_path;
+
+    /**
+        PDT instrumentation specificaion file.
+     */
+    std::string pdt_config_file;
 };
 
 #endif /*SCOREP_INSTRUMENTER_H_*/
