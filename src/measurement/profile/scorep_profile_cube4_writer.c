@@ -171,7 +171,7 @@ scorep_profile_write_cube_metric( cube_t*                       my_cube,
             /* Assume that the first location contains all callpathes that
                appear in this process. */
             cnode = scorep_get_cube4_callpath( map, id_2_node[ id ]->callpath_handle );
-            cube_write_sev_row( my_cube, metric, cnode, values );
+            cube_write_sev_row_of_uint64( my_cube, metric, cnode, values );
         }
     }
 
