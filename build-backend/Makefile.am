@@ -31,6 +31,7 @@ endif
 
 endif
 
+CONFIG_HEADER_BACKEND = ../src/scorep_config_tool_backend.h
 
 if !BACKEND_TEST_RUNS
 BUILT_SOURCES += scorep_serial_tests.sh scorep_omp_tests.sh
@@ -69,7 +70,7 @@ EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
                             clean-local-scorep-config-tool
 
 clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
-	rm -f scorep_serial_tests.sh  scorep_omp_tests.sh $(datadir)/SCOREP_Pdt_Instrumentation.conf
+	rm -f scorep_serial_tests.sh  scorep_omp_tests.sh
 
 .PHONY: $(EXTRA_LOCAL_CLEAN_TARGETS) \
         install-scorep-meets-tau
@@ -86,54 +87,55 @@ clean-local-scorep-config-tests:
 install-data-local: scorep-config-tool-install
 
 uninstall-local:
-	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat
+	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 scorep-config-tool-install:
-	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
-	echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                         >> $(builddir)/scorep_config.dat
-	echo PREFIX=\"$(prefix)\"                                                       >> $(builddir)/scorep_config.dat
-	echo DATADIR=\"$(datadir)\"                                                     >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(libdir)\"                                                       >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(LIBS)\"                                                           >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                                >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(TIMER_LIBDIR)\"                                                 >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(LIBBFD)\"                                                         >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(CUBE_LIBS)\"                                                      >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(TIMER_LIB)\"                                                      >> $(builddir)/scorep_config.dat
-	echo CC=\"$(CC)\"                                                               >> $(builddir)/scorep_config.dat
-	echo NM=\"$(NM)\"                                                               >> $(builddir)/scorep_config.dat
-	echo AWK=\"$(AWK)\"                                                             >> $(builddir)/scorep_config.dat
-	echo OPARI=\"$(prefix)bin/opari2\"                                              >> $(builddir)/scorep_config.dat
-	echo OPARI_SCRIPT=\"$(prefix)bin/pomp2_parse_init_regions.awk\"                 >> $(builddir)/scorep_config.dat
-	echo PDT=\"$(PDT_PATH)\"                                                        >> $(builddir)/scorep_config.dat
-	echo PDT_CONFIG=\"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"                  >> $(builddir)/scorep_config.dat
-	$(INSTALL_DATA) $(builddir)/scorep_config.dat $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat
 	$(INSTALL_DATA) $(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(datadir)/SCOREP_Pdt_Instrumentation.conf
-# add compiler-suite, name of libs, static/shared, ...
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
 
 scorep-config-tool-local:
-	echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
-	echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\".libs\"                                                      >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(LIBS)\"                                                      >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
-	echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
-	echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
-	echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
-	echo INCDIR=\"$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
-	echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/scorep_config.dat
-	echo CC=\"$(CC)\"                                                          >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
-	echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
-	echo NM=\"$(NM)\"                                                          >> $(builddir)/scorep_config.dat
-	echo AWK=\"$(AWK)\"                                                        >> $(builddir)/scorep_config.dat
-	echo OPARI=\"../vendor/opari2/build-frontend/opari2\"                      >> $(builddir)/scorep_config.dat
-	echo OPARI_SCRIPT=\"$(PUBLIC_INC_DIR)../../vendor/opari2/src/pomp-lib-dummy/pomp2_parse_init_regions.awk\" >> $(builddir)/scorep_config.dat
-	echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
-	echo PDT_CONFIG=\"$(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
+	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
+	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\".libs\"                                                      >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/scorep_config.dat
+	@echo LIBS=\"$(LIBS)\"                                                      >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
+	@echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/scorep_config.dat
+	@echo CC=\"$(CC)\"                                                          >> $(builddir)/scorep_config.dat
+	@echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
+	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
+	@echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
+	@echo NM=\"$(NM)\"                                                          >> $(builddir)/scorep_config.dat
+	@echo AWK=\"$(AWK)\"                                                        >> $(builddir)/scorep_config.dat
+	@echo OPARI=\"../vendor/opari2/build-frontend/opari2\"                      >> $(builddir)/scorep_config.dat
+	@echo OPARI_SCRIPT=\"$(PUBLIC_INC_DIR)../../vendor/opari2/src/pomp-lib-dummy/pomp2_parse_init_regions.awk\" >> $(builddir)/scorep_config.dat
+	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
+	@echo PDT_CONFIG=\"$(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
+
+
+## Here we write only the backend values.
+create-config-tool-headers:
+	@echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"" >  $(CONFIG_HEADER_BACKEND)
+	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""    >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define SCOREP_PREFIX  \"$(prefix)\""           >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define SCOREP_DATADIR \"$(datadir)\""          >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define SCOREP_LIBDIR  \"$(libdir)\""           >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD) $(CUBE_LIBS) $(TIMER_LIB)\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define CUBE_LIBDIR    \"$(CUBE_LIB_PATH)\""    >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define TIMER_LIBDIR   \"$(TIMER_LIBDIR)\""     >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define CC             \"$(CC)\""               >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define CXX            \"$(CXX)\""              >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define FC             \"$(FC)\""               >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define NM             \"$(NM)\""               >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define AWK            \"$(AWK)\""              >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define OPARI          \"$(prefix)bin/opari2\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define OPARI_SCRIPT   \"$(prefix)bin/pomp2_parse_init_regions.awk\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)

@@ -25,19 +25,21 @@
 
 #include <string.h>
 
-#include "scorep_config.hpp"
+#include <scorep_config_tool_backend.h>
+#include <scorep_config.hpp>
 
 #define MODE_SEQ 0
 #define MODE_OMP 1
 #define MODE_MPI 2
 #define MODE_HYB 3
 
-#define ACTION_LIBS 1
+#define ACTION_LIBS   1
 #define ACTION_CFLAGS 2
-#define ACTION_CC 3
-#define ACTION_CXX 4
+#define ACTION_CC     3
+#define ACTION_CXX    4
+#define ACTION_FC     5
 
-#define HELPTEXT "\nUsage: scorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--libs|--cc|--cxx)\n"
+#define HELPTEXT "\nUsage: scorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--libs|--cc|--cxx | --fc) [--config <config_file>]\n"
 
 int
 main( int    argc,
@@ -48,6 +50,7 @@ main( int    argc,
     int           mode   = MODE_MPI;
     int           action = 0;
     int           ret;
+    char*         config_file = NULL;
 
     const char*   scorep_libs[ 4 ] = { "scorep_serial", "scorep_omp", "scorep_mpi", "scorep_mpi_omp" };
 
@@ -93,6 +96,23 @@ main( int    argc,
         {
             action = ACTION_CXX;
         }
+        else if ( strcmp( argv[ i ], "--fc" ) == 0 )
+        {
+            action = ACTION_FC;
+        }
+        else if ( strcmp( argv[ i ], "--config" ) == 0 )
+        {
+            // Expect the config file name as next parameter
+            if ( argc < i + 2 || *argv[ i + 1 ] == '-' )
+            {
+                std::cerr << "\nConfig file name missing. Abort.\n" << std::endl;
+                return EXIT_FAILURE;
+            }
+            config_file = argv[ i + 1 ];
+
+            // The next parameter is already processed now.
+            i++;
+        }
         else
         {
             std::cerr << "\nUnknown option " << argv[ i ] << ". Abort.\n" << std::endl;
@@ -100,51 +120,118 @@ main( int    argc,
         }
     }
 
-    char* path = SCOREP_GetExecutablePath( argv[ 0 ] );
-    std::string
-          otf2_config( path );
-    otf2_config += "/otf2_config";
-
-    /* read config file */
-    app.ParseConfigFile( argv[ 0 ] );
-
-    switch ( action )
+    char*       path        = SCOREP_GetExecutablePath( argv[ 0 ] );
+    std::string otf2_config = "otf2_config";
+    if ( path != NULL )
     {
-        case ACTION_LIBS:
-            std::cout << app.str_libdir << " -l" << scorep_libs[ mode ] << app.str_libs;
-            std::cout.flush();
-
-            otf2_config += " --libs";
-            ret          = system( otf2_config.c_str() );
-
-            break;
-
-        case ACTION_CFLAGS:
-            std::cout << app.str_flags << app.str_incdir;
-            std::cout.flush();
-
-            otf2_config += " --cflags";
-            ret          = system( otf2_config.c_str() );
-
-            break;
-
-        case ACTION_CC:
-            std::cout << app.str_cc << std::endl;
-
-            break;
-
-        case ACTION_CXX:
-            std::cout << CXX << std::endl;
-
-            break;
-
-        default:
-            std::cout << HELPTEXT << std::endl;
-
-            break;
+        otf2_config = "/" + otf2_config;
+        otf2_config = path + otf2_config;
     }
-
     free( path );
+
+    /* print data in case a config file was specified */
+    if ( config_file != NULL )
+    {
+        if ( app.ParseConfigFile( config_file ) != SCOREP_SUCCESS )
+        {
+            std::cerr << "Unable to open file '" << config_file  << std::endl;
+            abort();
+        }
+        switch ( action )
+        {
+            case ACTION_LIBS:
+                std::cout << app.str_libdir << " -l" << scorep_libs[ mode ] << app.str_libs;
+                std::cout.flush();
+
+                otf2_config += " --libs";
+                ret          = system( otf2_config.c_str() );
+
+                break;
+
+            case ACTION_CFLAGS:
+                std::cout << app.str_flags << app.str_incdir;
+                std::cout.flush();
+
+                otf2_config += " --cflags";
+                ret          = system( otf2_config.c_str() );
+
+                break;
+
+            case ACTION_CC:
+                std::cout << app.str_cc << std::endl;
+
+                break;
+
+            case ACTION_CXX:
+                std::cout << app.str_cxx << std::endl;
+
+                break;
+
+            case ACTION_FC:
+                std::cout << app.str_fc << std::endl;
+
+                break;
+
+            default:
+                std::cout << HELPTEXT << std::endl;
+
+                break;
+        }
+    }
+    else
+    {
+        switch ( action )
+        {
+            case ACTION_LIBS:
+                std::cout << "-L" SCOREP_LIBDIR;
+                if ( CUBE_LIBDIR != "" )
+                {
+                    std::cout << " -L" CUBE_LIBDIR;
+                }
+
+                if ( TIMER_LIBDIR != "" )
+                {
+                    std::cout << " -L" TIMER_LIBDIR;
+                }
+
+                std::cout << " -l" << scorep_libs[ mode ] << " " SCOREP_LIBS " ";
+                std::cout.flush();
+
+                otf2_config += " --libs";
+                ret          = system( otf2_config.c_str() );
+
+                break;
+
+            case ACTION_CFLAGS:
+                std::cout << SCOREP_CFLAGS " -I" SCOREP_PREFIX "/include ";
+                std::cout.flush();
+
+                otf2_config += " --cflags";
+                ret          = system( otf2_config.c_str() );
+
+                break;
+
+            case ACTION_CC:
+                std::cout << CC << std::endl;
+
+                break;
+
+            case ACTION_CXX:
+                std::cout << CXX << std::endl;
+
+                break;
+
+            case ACTION_FC:
+                std::cout << FC << std::endl;
+
+                break;
+
+            default:
+                std::cout << HELPTEXT << std::endl;
+
+                break;
+        }
+    }
 
     return 0;
 }
@@ -162,12 +249,11 @@ SCOREP_Config::~SCOREP_Config()
 
 
 /** */
-int
+SCOREP_Error_Code
 SCOREP_Config::ParseConfigFile( char* arg0 )
 {
     std::string arg = std::string( arg0 );
-
-    this->ReadConfigFile( arg );
+    return this->ReadConfigFile( arg );
 }
 
 
@@ -234,6 +320,18 @@ void
 SCOREP_Config::SetCompiler( std::string value )
 {
     this->str_cc = value;
+}
+
+void
+SCOREP_Config::SetCxx( std::string value )
+{
+    this->str_cxx = value;
+}
+
+void
+SCOREP_Config::SetFc( std::string value )
+{
+    this->str_fc = value;
 }
 
 void

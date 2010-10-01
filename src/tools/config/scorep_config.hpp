@@ -34,6 +34,8 @@ private:
 public:
 
     std::string str_cc;
+    std::string str_cxx;
+    std::string str_fc;
     std::string str_libs;
     std::string str_flags;
     std::string str_libdir;
@@ -47,7 +49,7 @@ public:
 
 
     /** */
-    virtual int
+    virtual SCOREP_Error_Code
     ParseConfigFile( char* arg );
 
 
@@ -79,6 +81,12 @@ public:
 
     virtual void
     SetCompiler( std::string value );
+
+    virtual void
+    SetCxx( std::string value );
+
+    virtual void
+    SetFc( std::string value );
 
     virtual void
     SetPrefix( std::string value );

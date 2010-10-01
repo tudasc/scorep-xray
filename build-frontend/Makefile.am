@@ -26,3 +26,7 @@ BUILD_DIR=build-frontend
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../build-config/m4
+
+## Here we write only the backend values.
+create-config-tool-headers:
+	(cd ../build-backend; make create-config-tool-headers)
