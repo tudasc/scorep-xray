@@ -505,7 +505,16 @@ SCOREP_Instrumenter::SetPdtRoot( std::string value )
 {
     if ( value == "yes" )
     {
-        pdt_bin_path = SCOREP_GetExecutablePath( "tau_instrumentor" );
+        char* path = SCOREP_GetExecutablePath( "tau_instrumentor" );
+        if ( path != NULL )
+        {
+            pdt_bin_path = path;
+        }
+        else
+        {
+            std::cout << "ERROR: Unable to find PDT binaries.\n";
+            abort();
+        }
     }
     else if ( value == "no" )
     {
@@ -542,7 +551,7 @@ void
 SCOREP_Instrumenter::invoke_opari( std::string input_file,
                                    std::string output_file )
 {
-    std::string command = opari + " -nthreads " + input_file
+    std::string command = opari + " " + input_file
                           + " " + output_file;
     if ( verbosity >= 1 )
     {
