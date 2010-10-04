@@ -76,6 +76,20 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 int
 SCOREP_Instrumenter::Run()
 {
+    if ( has_data_from_file )
+    {
+        if ( is_mpi_application == enabled )
+        {
+            external_libs = ( is_openmp_application == enabled ? " -lscorep_mpi_omp" :
+                              " -lscorep_mpi" ) + external_libs;
+        }
+        else
+        {
+            external_libs = ( is_openmp_application == enabled ? " -lscorep_omp" :
+                              " -lscorep_serial" ) + external_libs;
+        }
+    }
+
     if ( verbosity >= 2 )
     {
         PrintParameter();

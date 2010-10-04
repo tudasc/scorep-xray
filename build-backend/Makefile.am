@@ -97,13 +97,13 @@ clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
 
 scorep-config-tool-local:
-	echo "Creating $(builddir)/scorep_config.dat"
+	@echo "Creating $(builddir)/scorep_config.dat"
 	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
 	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\".libs\"                                                      >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/scorep_config.dat
-	@echo LIBS=\"$(LIBS)\"                                                      >> $(builddir)/scorep_config.dat
+	@echo LIBS=\"$(LIBS) -lotf2 -lscorep_utilities\"                            >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
@@ -124,7 +124,7 @@ scorep-config-tool-local:
 
 ## Here we write only the backend values.
 create-config-tool-headers:
-	echo "Creating $(CONFIG_HEADER_BACKEND)"
+	@echo "Creating $(CONFIG_HEADER_BACKEND)"
 	@echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"" >  $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""    >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_PREFIX  \"$(prefix)\""           >> $(CONFIG_HEADER_BACKEND)
