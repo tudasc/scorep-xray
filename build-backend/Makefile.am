@@ -87,11 +87,10 @@ clean-local-scorep-config-tests:
 install-data-local: scorep-config-tool-install
 
 uninstall-local:
-	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(datadir)/SCOREP_Pdt_Instrumentation.conf
+	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 scorep-config-tool-install:
-	$(INSTALL_DATA) $(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(datadir)/SCOREP_Pdt_Instrumentation.conf
-	chmod u+w $(datadir)/SCOREP_Pdt_Instrumentation.conf
+	$(INSTALL_DATA) $(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
