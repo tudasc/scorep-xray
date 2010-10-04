@@ -32,6 +32,7 @@
 #include <scorep_utility/SCOREP_Error.h>
 
 #include "SCOREP_Instrumenter.hpp"
+#include "scorep_config_tool_backend.h"
 
 /* ****************************************************************************
    Main interface
@@ -54,15 +55,18 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     scorep_include_path = "";
     scorep_library_path = "";
     external_libs       = "";
-    pdt_bin_path        = "";
-    pdt_config_file     = "";
+    pdt_bin_path        = PDT;
+    pdt_config_file     = PDT_CONFIG;
 
-    c_compiler    = "";
-    openmp_cflags = "";
-    nm            = "nm";
-    awk           = "awk";
-    opari         = "opari2";
-    opari_script  = "";
+    compiler_instrumentation_flags = SCOREP_CFLAGS;
+    c_compiler                     = CC;
+    openmp_cflags                  = SCOREP_OPENMP_CFLAGS;
+    nm                             = NM;
+    awk                            = AWK;
+    opari                          = OPARI;
+    opari_script                   = OPARI_SCRIPT;
+
+    has_data_from_file = false;
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
@@ -72,8 +76,6 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 int
 SCOREP_Instrumenter::Run()
 {
-    check_parameter();
-
     if ( verbosity >= 2 )
     {
         PrintParameter();
@@ -141,10 +143,21 @@ SCOREP_Instrumenter::ParseCmdLine( int    argc,
 
         if ( mode == scorep_parse_mode_command && !is_config_file_read )
         {
-            ret_val             = ReadConfigFile( argv[ 0 ] );
+            if ( config_file != "" )
+            {
+                ret_val            = ReadConfigFile( argv[ 0 ] );
+                has_data_from_file = true;
+            }
             is_config_file_read = true;
         }
     }
+
+    check_parameter();
+    if ( !has_data_from_file )
+    {
+        prepare_config_tool_calls( argv[ 0 ] );
+    }
+
     return ret_val;
 }
 
@@ -509,6 +522,7 @@ SCOREP_Instrumenter::SetPdtRoot( std::string value )
         if ( path != NULL )
         {
             pdt_bin_path = path;
+            free( path );
         }
         else
         {
@@ -535,6 +549,42 @@ SCOREP_Instrumenter::SetPdtConfig( std::string value )
 /* ****************************************************************************
    Preparation
 ******************************************************************************/
+void
+SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
+{
+    std::string mode = " --seq";
+    std::string config_path;
+    char*       path = SCOREP_GetExecutablePath( arg.c_str() );
+
+    // Determine config tool path
+    if ( path != NULL )
+    {
+        config_path = path;
+        free( path );
+    }
+    else
+    {
+        std::cout << "ERROR: Unable to find Score-P config tool.\n";
+        abort();
+    }
+    config_path += "/scorep_config";
+
+    // Determine mode parameter
+    if ( is_mpi_application == enabled )
+    {
+        mode = ( is_openmp_application == enabled ? " --hyb" : " --mpi" );
+    }
+    else if ( is_openmp_application == enabled )
+    {
+        mode = " --omp";
+    }
+
+    // Generate calls
+    scorep_include_path = "`" + config_path + mode + " --inc` ";
+    scorep_library_path = "";
+    external_libs       = "`" + config_path + mode + " --libs` ";
+}
+
 void
 SCOREP_Instrumenter::prepare_compiler()
 {
@@ -906,30 +956,32 @@ SCOREP_Instrumenter::execute_command()
     std::string scorep_lib;
     if ( is_linking )
     {
-        if ( is_mpi_application == enabled )
-        {
-            scorep_lib = ( is_openmp_application == enabled ?
-                           " -lscorep_mpi_omp" : " -lscorep_mpi" );
-        }
-        else
-        {
-            scorep_lib = ( is_openmp_application == enabled ?
-                           " -lscorep_omp" : " -lscorep_serial" );
-        }
-        scorep_lib += " -lotf2 -lscorep_utilities";
+        /*
+           if ( is_mpi_application == enabled )
+           {
+              scorep_lib = ( is_openmp_application == enabled ?
+                             " -lscorep_mpi_omp" : " -lscorep_mpi" );
+           }
+           else
+           {
+              scorep_lib = ( is_openmp_application == enabled ?
+                             " -lscorep_omp" : " -lscorep_serial" );
+           }
+           scorep_lib += " -lotf2 -lscorep_utilities";
+         */
         if ( is_openmp_application == enabled &&
              opari_instrumentation == disabled )
         {
             scorep_lib += " -lscorep_pomp_dummy";
         }
     }
-    std::string command = compiler_name
+    std::string command = compiler_name + " "
                           + scorep_library_path
                           + scorep_include_path
                           + input_files
                           + scorep_lib
                           + compiler_flags
-                          + external_libs
+                          + " " + external_libs
                           + " -o " + output_name;
 
     if ( verbosity >= 1 )

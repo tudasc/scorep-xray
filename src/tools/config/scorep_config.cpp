@@ -35,11 +35,12 @@
 
 #define ACTION_LIBS   1
 #define ACTION_CFLAGS 2
-#define ACTION_CC     3
-#define ACTION_CXX    4
-#define ACTION_FC     5
+#define ACTION_INCDIR 3
+#define ACTION_CC     4
+#define ACTION_CXX    5
+#define ACTION_FC     6
 
-#define HELPTEXT "\nUsage: scorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--libs|--cc|--cxx | --fc) [--config <config_file>]\n"
+#define HELPTEXT "\nUsage: scorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config <config_file>]\n"
 
 int
 main( int    argc,
@@ -87,6 +88,10 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--cflags" ) == 0 )
         {
             action = ACTION_CFLAGS;
+        }
+        else if ( strcmp( argv[ i ], "--inc" ) == 0 )
+        {
+            action = ACTION_INCDIR;
         }
         else if ( strcmp( argv[ i ], "--cc" ) == 0 )
         {
@@ -157,6 +162,15 @@ main( int    argc,
 
                 break;
 
+            case ACTION_INCDIR:
+                std::cout << app.str_incdir;
+                std::cout.flush();
+
+                otf2_config += " --cflags";
+                ret          = system( otf2_config.c_str() );
+
+                break;
+
             case ACTION_CC:
                 std::cout << app.str_cc << std::endl;
 
@@ -204,6 +218,15 @@ main( int    argc,
 
             case ACTION_CFLAGS:
                 std::cout << SCOREP_CFLAGS " -I" SCOREP_PREFIX "/include ";
+                std::cout.flush();
+
+                otf2_config += " --cflags";
+                ret          = system( otf2_config.c_str() );
+
+                break;
+
+            case ACTION_INCDIR:
+                std::cout << "-I" SCOREP_PREFIX "/include ";
                 std::cout.flush();
 
                 otf2_config += " --cflags";

@@ -296,6 +296,13 @@ private:
     prepare_opari();
 
     /**
+       Constructs calls to the config tools.
+       @param arg Needs argv[0] as input.
+     */
+    void
+    prepare_config_tool_calls( std::string arg );
+
+    /**
        Tries to open a configuration file for instrumentation.
        @inFile Pointer to a stream which returns the open file.
        @returns SCOREP_SUCCESS if the file was successfully opened.
@@ -452,6 +459,12 @@ private:
        True if linking
      */
     bool is_linking;
+
+    /**
+       True if data input is a config file. Avoids calls the the config tool. Default
+       is false.
+     */
+    bool has_data_from_file;
 
     /* --------------------------------------------
        Input command elements

@@ -91,11 +91,13 @@ uninstall-local:
 
 scorep-config-tool-install:
 	$(INSTALL_DATA) $(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(datadir)/SCOREP_Pdt_Instrumentation.conf
+	chmod u+w $(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
 
 scorep-config-tool-local:
+	echo "Creating $(builddir)/scorep_config.dat"
 	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
 	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\".libs\"                                                      >> $(builddir)/scorep_config.dat
@@ -122,6 +124,7 @@ scorep-config-tool-local:
 
 ## Here we write only the backend values.
 create-config-tool-headers:
+	echo "Creating $(CONFIG_HEADER_BACKEND)"
 	@echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"" >  $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""    >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_PREFIX  \"$(prefix)\""           >> $(CONFIG_HEADER_BACKEND)
@@ -135,7 +138,7 @@ create-config-tool-headers:
 	@echo "#define FC             \"$(FC)\""               >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define NM             \"$(NM)\""               >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define AWK            \"$(AWK)\""              >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define OPARI          \"$(prefix)bin/opari2\"" >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define OPARI_SCRIPT   \"$(prefix)bin/pomp2_parse_init_regions.awk\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define OPARI          \"$(prefix)/bin/opari2\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define OPARI_SCRIPT   \"$(prefix)/bin/pomp2_parse_init_regions.awk\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)
