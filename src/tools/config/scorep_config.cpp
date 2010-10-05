@@ -235,17 +235,17 @@ main( int    argc,
                 break;
 
             case ACTION_CC:
-                std::cout << CC << std::endl;
+                std::cout << SCOREP_CC << std::endl;
 
                 break;
 
             case ACTION_CXX:
-                std::cout << CXX << std::endl;
+                std::cout << SCOREP_CXX << std::endl;
 
                 break;
 
             case ACTION_FC:
-                std::cout << FC << std::endl;
+                std::cout << SCOREP_FC << std::endl;
 
                 break;
 
@@ -285,11 +285,13 @@ SCOREP_Error_Code
 SCOREP_Config::ParseCmdLine( int    argc,
                              char** argv )
 {
+    return SCOREP_SUCCESS;
 }
 
 int
 SCOREP_Config::Run()
 {
+    return 0;
 }
 
 void

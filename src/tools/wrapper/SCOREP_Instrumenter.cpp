@@ -59,7 +59,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     pdt_config_file     = PDT_CONFIG;
 
     compiler_instrumentation_flags = SCOREP_CFLAGS;
-    c_compiler                     = CC;
+    c_compiler                     = SCOREP_CC;
     openmp_cflags                  = SCOREP_OPENMP_CFLAGS;
     nm                             = NM;
     awk                            = AWK;
