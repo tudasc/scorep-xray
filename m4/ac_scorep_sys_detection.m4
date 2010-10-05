@@ -117,6 +117,7 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
 
 AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
 [
+    AC_REQUIRE([AC_CANONICAL_BUILD])
     AM_CONDITIONAL([PLATFORM_ALTIX],  [test "x${ac_scorep_platform}" = "xaltix"])
     AM_CONDITIONAL([PLATFORM_POWER6], [test "x${ac_scorep_platform}" = "xibm" -a "x${build_cpu}" = "xpowerpc"])
 ])
