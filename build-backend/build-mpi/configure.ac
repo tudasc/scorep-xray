@@ -15,17 +15,26 @@ FC=$MPIFC
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
-cross_compiling=${ac_scorep_cross_compiling}
 
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([FC])
 
+cross_compiling=${ac_scorep_cross_compiling}
+if test "x${ac_scorep_platform}" = "xibm"; then
+    cross_compiling=yes
+    # on power6 systems with poe, e.g. JUMP, we cannot execute a MPI
+    # program on the login node. By setting cross_compiling temporarily
+    # to "yes", we allow configure to succeed. Wrap all macros that might
+    # execute a program in a cross_compiling=yes block, e.g. AC_CHECK_SIZEOF
+fi
 AC_LANG_PUSH([C])
 AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
+AC_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 #echo "scorep_mpi_c_supported=$scorep_mpi_c_supported"
+cross_compiling=${ac_scorep_cross_compiling}
 
 # C++ MPI is needed for the jacobi C++ tests only.
 AC_LANG_PUSH([C++])
@@ -81,7 +90,6 @@ fi
 AC_SUBST(backend_bin_dir)
 AC_SUBST(backend_lib_dir)
 
-AC_CHECK_SIZEOF([void *])
 
 ## Determine a Fortran 77 compiler to use. If F77 is not already set in the
 ## environment, then check for g77 and f77, and then some other names. Set the
