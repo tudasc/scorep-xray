@@ -18,10 +18,11 @@ AC_DEFUN([AC_SCOREP_PDT], [
 
 ## Evalute parameters
 AC_ARG_WITH(pdt, [AS_HELP_STRING([--with-pdt=path_to_binaries], [Specifies the path where the binaries of the program database toolkit (PDT) are located])],[
-    AC_SUBST(PDT_PATH,$withval)
+    pdt_path=$withval
     have_pdt=yes
 ],[have_pdt=no])
 
+AC_SUBST(PDT_PATH,"$pdt_path")
 AM_CONDITIONAL(HAVE_PDT,[test x$have_pdt = xyes])
 
 ])
