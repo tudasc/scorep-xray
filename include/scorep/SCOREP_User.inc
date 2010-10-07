@@ -25,9 +25,9 @@
 
 !************************************************************* Data types
 
-#define SCOREP_REGION_HANDLE integer
-#define SCOREP_METRIC_GROUP  integer
-#define SCOREP_METRIC_HANDLE integer
+#define SCOREP_REGION_HANDLE integer*8
+#define SCOREP_METRIC_GROUP  integer*8
+#define SCOREP_METRIC_HANDLE integer*8
 
 !************************************************************* Constants
 
@@ -54,31 +54,31 @@
 #define SCOREP_USER_REGION_DEFINE( handle ) \
         SCOREP_REGION_HANDLE :: handle = SCOREP_INVALID_REGION
 
-#define SCOREP_USER_REGION_BEGIN( handle, name, type ) call SCOREP_User_RegionBeginF(\
-        handle, name, type, __FILE__, __LINE__)
+#define SCOREP_USER_REGION_BEGIN( handle, name, type )\
+        call SCOREP_F_Begin(handle,name,type,__FILE__,__LINE__)
 
-#define SCOREP_USER_REGION_INIT( handle, name, type ) call SCOREP_User_RegionInitF(\
-        handle, name, type, __FILE__, __LINE__)
+#define SCOREP_USER_REGION_INIT( handle, name, type )\
+        call SCOREP_F_Init(handle,name,type,__FILE__,__LINE__)
 
-#define SCOREP_USER_REGION_END( handle ) call SCOREP_User_RegionEndF(handle)
+#define SCOREP_USER_REGION_END( handle ) call SCOREP_F_RegionEnd( handle )
 
-#define SCOREP_USER_REGION_ENTER( handle ) call SCOREP_User_RegionEnterF(handle)
+#define SCOREP_USER_REGION_ENTER( handle ) call SCOREP_F_RegionEnter( handle )
 
 #define SCOREP_GLOBAL_REGION_DEFINE( handle ) \
-        blockdata handle##g;SCOREP_REGION_HANDLE::handle;common/handle##id/handle;data handle/SCOREP_INVALID_REGION/;end
+        blockdata##handle##g;SCOREP_REGION_HANDLE::handle;common/handle##id/handle;data##handle/SCOREP_INVALID_REGION/;end
       
 
 #define SCOREP_GLOBAL_REGION_EXTERNAL( handle ) \
         SCOREP_REGION_HANDLE::handle; \
         common /handle##id/handle
 
-#define SCOREP_USER_FUNC_DEFINE SCOREP_USER_REGION_DEFINE( scorepufh )
+#define SCOREP_USER_FUNC_DEFINE SCOREP_USER_REGION_DEFINE( scrpfh )
 
 #define SCOREP_USER_FUNC_BEGIN( name ) \
-        SCOREP_USER_REGION_BEGIN(scorepufh, name, \
+        SCOREP_USER_REGION_BEGIN(scrpfh, name, \
         SCOREP_USER_REGION_TYPE_FUNCTION)
 
-#define SCOREP_USER_FUNC_END SCOREP_USER_REGION_END(scorepufh)
+#define SCOREP_USER_FUNC_END SCOREP_USER_REGION_END(scrpfh)
 
 !************************************************************* User metric
 
@@ -86,41 +86,41 @@
         SCOREP_METRIC_GROUP :: groupHandle = SCOREP_INVALID_METRIC_GROUP
 
 #define SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle ) \
-        blockdata groupHandle##g;SCOREP_METRIC_GROUP::groupHandle;common/groupHandle##id/groupHandle;data groupHandle/SCOREP_INVALID_METRIC_GROUP/;end
+        blockdata##groupHandle##g;SCOREP_METRIC_GROUP::groupHandle;common/groupHandle##id/groupHandle;data##groupHandle/SCOREP_INVALID_METRIC_GROUP/;end
 
 #define SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
         SCOREP_METRIC_GROUP::groupHandle; \
         common /groupHandle##id/ groupHandle
 
 #define SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name ) \
-        call SCOREP_User_InitMetricGroupF( groupHandle, name )
+        call SCOREP_F_InitMetricGroup(groupHandle,name)
 
 #define SCOREP_USER_METRIC_LOCAL( metricHandle ) \
         SCOREP_METRIC_HANDLE :: metricHandle = SCOREP_INVALID_METRIC
 
 #define SCOREP_USER_METRIC_GLOBAL( metricHandle ) \
-        blockdata metricHandle##g;SCOREP_METRIC_HANDLE::metricHandle;common/metricHandle##id/metricHandle;data metricHandle/SCOREP_INVALID_METRIC/;end
+        blockdata##metricHandle##g;SCOREP_METRIC_HANDLE::metricHandle;common/metricHandle##id/metricHandle;data##metricHandle/SCOREP_INVALID_METRIC/;end
 
 #define SCOREP_USER_METRIC_EXTERNAL( metricHandle ) \
         SCOREP_METRIC_HANDLE::metricHandle;\
         common /metricHandle##id/ metricHandle
 
 #define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context, groupHandle ) \
-        call SCOREP_User_InitMetricF( metricHandle, name, unit, type, context, groupHandle )
+        call SCOREP_F_InitMetric(metricHandle,name,unit,type,context,groupHandle)
 
 #define SCOREP_USER_METRIC_INT64( metricHandle, value ) \
-        call SCOREP_User_MetricInt64F( metricHandle, value )
+        call SCOREP_F_MetricInt64( metricHandle, value )
 
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value ) \
-        call SCOREP_User_MetricDoubleF( metricHandle, value )
+        call SCOREP_F_MetricDouble( metricHandle, value )
 
 !************************************************************* User control
 
-#define SCOREP_RECORDING_ON call SCOREP_User_EnableRecordingF()
+#define SCOREP_RECORDING_ON call SCOREP_F_EnableRecording()
 
-#define SCOREP_RECORDING_OFF call SCOREP_User_DisableRecordingF()
+#define SCOREP_RECORDING_OFF call SCOREP_F_DisableRecording()
 
-#define SCOREP_RECORDING_IS_ON( isOn ) call SCOREP_User_RecordingEnabledF( isOn )
+#define SCOREP_RECORDING_IS_ON( isOn ) call SCOREP_F_RecordingEnabled( isOn )
 
 !************************************************************* Empty defines
 

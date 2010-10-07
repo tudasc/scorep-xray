@@ -1,7 +1,7 @@
 check_PROGRAMS += user_f_test
 
 user_f_test_SOURCES =                                       \
-	$(SRC_ROOT)/test/adapters/user/Fortran/user_f_test.f
+	$(SRC_ROOT)/test/adapters/user/Fortran/user_f_test.mod.f
 
 user_f_test_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include       \

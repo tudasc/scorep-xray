@@ -33,21 +33,21 @@
 #include "scorep_utility/SCOREP_Utils.h"
 #include "SCOREP_Fortran_Wrapper.h"
 
-#define SCOREP_User_InitMetricGroupF_L scorep_user_initmetricgroupf
-#define SCOREP_User_InitMetricGroupF_U SCOREP_USER_INITMETRICGROUPF
-#define SCOREP_User_InitMetricF_L      scorep_user_initmetricf
-#define SCOREP_User_InitMetricF_U      SCOREP_USER_INITMETRICF
-#define SCOREP_User_MetricInt64F_L     scorep_user_metricint64f
-#define SCOREP_User_MetricInt64F_U     SCOREP_USER_METRICINT64F
-#define SCOREP_User_MetricDoubleF_L    scorep_user_metricdoublef
-#define SCOREP_User_MetricDoubleF_U    SCOREP_USER_METRICDOUBLEF
+#define SCOREP_F_InitMetricGroup_L scorep_f_initmetricgroup
+#define SCOREP_F_InitMetricGroup_U SCOREP_F_INITMETRICGROUP
+#define SCOREP_F_InitMetric_L      scorep_f_initmetric
+#define SCOREP_F_InitMetric_U      SCOREP_F_INITMETRIC
+#define SCOREP_F_MetricInt64_L     scorep_f_metricint64
+#define SCOREP_F_MetricInt64_U     SCOREP_F_METRICINT64
+#define SCOREP_F_MetricDouble_L    scorep_f_metricdouble
+#define SCOREP_F_MetricDouble_U    SCOREP_F_METRICDOUBLE
 
 extern SCOREP_CounterGroupHandle SCOREP_User_DefaultMetricGroup;
 
 void
-FSUB( SCOREP_User_InitMetricGroupF )( SCOREP_Fortran_MetricGroup* groupHandle,
-                                      char*                       nameF,
-                                      int                         nameLen )
+FSUB( SCOREP_F_InitMetricGroup )( SCOREP_Fortran_MetricGroup* groupHandle,
+                                  char*                       nameF,
+                                  int                         nameLen )
 {
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -77,7 +77,7 @@ FSUB( SCOREP_User_InitMetricGroupF )( SCOREP_Fortran_MetricGroup* groupHandle,
 }
 
 void
-FSUB( SCOREP_User_InitMetricF )
+FSUB( SCOREP_F_InitMetric )
 (
     SCOREP_Fortran_MetricHandle* metricHandle,
     char*                        nameF,
@@ -141,15 +141,15 @@ FSUB( SCOREP_User_InitMetricF )
 }
 
 void
-FSUB( SCOREP_User_MetricInt64F )( SCOREP_Fortran_MetricHandle* metric,
-                                  int64_t*                     value )
+FSUB( SCOREP_F_MetricInt64 )( SCOREP_Fortran_MetricHandle* metric,
+                              int64_t*                     value )
 {
     SCOREP_TriggerCounterInt64( SCOREP_F2C_COUNTER( *metric ), *value );
 }
 
 void
-FSUB( SCOREP_User_MetricDoubleF )( SCOREP_Fortran_MetricHandle* metric,
-                                   double*                      value )
+FSUB( SCOREP_F_MetricDouble )( SCOREP_Fortran_MetricHandle* metric,
+                               double*                      value )
 {
     SCOREP_TriggerCounterDouble( SCOREP_F2C_COUNTER( *metric ), *value );
 }

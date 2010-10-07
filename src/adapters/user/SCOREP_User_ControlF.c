@@ -27,15 +27,15 @@
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_Fortran_Wrapper.h"
 
-#define SCOREP_User_EnableRecordingF_U  SCOREP_USER_ENABLERECORDINGF
-#define SCOREP_User_DisableRecordingF_U SCOREP_USER_DISABLERECORDINGF
-#define SCOREP_User_RecordingEnabledF_U SCOREP_USER_RECORDINGENABLEDF
-#define SCOREP_User_EnableRecordingF_L  scorep_user_enablerecordingf
-#define SCOREP_User_DisableRecordingF_L scorep_user_disablerecordingf
-#define SCOREP_User_RecordingEnabledF_L scorep_user_recordingenabledf
+#define SCOREP_F_EnableRecording_U  SCOREP_F_ENABLERECORDING
+#define SCOREP_F_DisableRecording_U SCOREP_F_DISABLERECORDING
+#define SCOREP_F_RecordingEnabled_U SCOREP_F_RECORDINGENABLED
+#define SCOREP_F_EnableRecording_L  scorep_f_enablerecording
+#define SCOREP_F_DisableRecording_L scorep_f_disablerecording
+#define SCOREP_F_RecordingEnabled_L scorep_f_recordingenabled
 
 void
-FSUB( SCOREP_User_EnableRecordingF )()
+FSUB( SCOREP_F_EnableRecording )()
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -45,7 +45,7 @@ FSUB( SCOREP_User_EnableRecordingF )()
 }
 
 void
-FSUB( SCOREP_User_DisableRecordingF )()
+FSUB( SCOREP_F_DisableRecording )()
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -55,7 +55,7 @@ FSUB( SCOREP_User_DisableRecordingF )()
 }
 
 void
-FSUB( SCOREP_User_RecordingEnabledF )( int* enabled )
+FSUB( SCOREP_F_RecordingEnabled )( int* enabled )
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;

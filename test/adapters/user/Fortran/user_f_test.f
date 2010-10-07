@@ -11,45 +11,40 @@
 !
 ! See the COPYING file in the package base directory for details.
 !
-      blockdata glo1g;integer::glo1;common/glo1id/glo1;data glo1/-1/;end
-      blockdata glo2g;integer::glo2;common/glo2id/glo2;data glo2/-1/;end
-      blockdata glo3g;integer::glo3;common/glo3id/glo3;data glo3/-1/;end
+
+#include <SCOREP_User.inc>
+
+      SCOREP_GLOBAL_REGION_DEFINE(glo1)
+      SCOREP_USER_METRIC_GROUP_GLOBAL(glo2)
+      SCOREP_USER_METRIC_GLOBAL(glo3)
 
       program ScorepTest
 
       integer * 8 :: i1 = 19
       double precision :: r1 = 24.5
       logical :: l
-      integer :: region1 = -1
-      integer :: scorepufh = -1
-      integer :: local1 = -1
-      integer :: local2 = -1
-      integer :: local3 = -1
+      SCOREP_USER_REGION_DEFINE(region1)
+      SCOREP_USER_FUNC_DEFINE
+      SCOREP_USER_METRIC_GROUP_LOCAL(local1)
+      SCOREP_USER_METRIC_LOCAL(local2)
+      SCOREP_USER_METRIC_LOCAL(local3)
 
-      write (*,*) "real type:", r8
-      call SCOREP_User_RegionBeginF( scorepufh, "ScorepTest", 1,
-     +                               "test.f", 19)
-      call SCOREP_User_InitMetricGroupF( local1, "local1" )
+      SCOREP_USER_FUNC_BEGIN("ScorepTest")
+      SCOREP_USER_METRIC_GROUP_INIT(local1,"local1")
+      SCOREP_USER_REGION_BEGIN(region1,"Region1",SCOREP_USER_REGION_TYPE_FUNCTION)
 
-      call SCOREP_User_RegionBeginF( region1, "Region1", 0,
-     +                               "test.f", 23)
+      SCOREP_USER_METRIC_INIT(local2,"local2","s",SCOREP_USER_METRIC_TYPE_INT64,SCOREP_USER_METRIC_CONTEXT_GLOBAL,SCOREP_USER_METRIC_GROUP_DEFAULT)
+      SCOREP_USER_METRIC_INIT(local3,"local3","s",SCOREP_USER_METRIC_TYPE_DOUBLE,SCOREP_USER_METRIC_CONTEXT_GLOBAL,local1)
 
+      SCOREP_USER_METRIC_INT64(local2, i1)
+      SCOREP_USER_METRIC_DOUBLE(local3, r1)
 
-      call SCOREP_User_InitMetricF( local2, "local2", "s", 0, 0, -2 )
+      SCOREP_USER_REGION_END(region1)
+      SCOREP_USER_FUNC_END
 
-      call SCOREP_User_InitMetricF( local3, "local3", "s", 1, 0,
-     +                              local1 )
-
-
-      call SCOREP_User_MetricInt64F( local2, i1 )
-      call SCOREP_User_MetricDoubleF( local3, r1 )
-
-      call SCOREP_User_RegionEndF(region1)
-      call SCOREP_User_RegionEndF(scorepufh)
-
-      call SCOREP_User_DisableRecordingF()
-      call SCOREP_User_RecordingEnabledF( l )
+      SCOREP_RECORDING_OFF
+      SCOREP_RECORDING_IS_ON( l )
       if (.not. l) then
-        call SCOREP_User_EnableRecordingF()
+         SCOREP_RECORDING_ON  
       endif
       end program ScorepTest

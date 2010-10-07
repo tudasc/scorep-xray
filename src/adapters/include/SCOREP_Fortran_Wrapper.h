@@ -108,17 +108,17 @@
 /**
     Defines the type obtained from Fortran calls for region handles.
  */
-typedef int SCOREP_Fortran_RegionHandle;
+typedef int64_t SCOREP_Fortran_RegionHandle;
 
 /**
     Defines the type obtained from Fortran calls for metric handles.
  */
-typedef int SCOREP_Fortran_MetricHandle;
+typedef int64_t SCOREP_Fortran_MetricHandle;
 
 /**
     Defines the type obtained from Fortran calls for metric group handles.
  */
-typedef int SCOREP_Fortran_MetricGroup;
+typedef int64_t SCOREP_Fortran_MetricGroup;
 
 /**
     @def SCOREP_FORTRAN_INVALID_REGION

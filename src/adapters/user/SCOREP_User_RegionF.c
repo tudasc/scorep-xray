@@ -35,11 +35,15 @@
 
 #include <string.h>
 
-#define SCOREP_User_RegionBeginF_U SCOREP_USER_REGIONBEGINF
-#define SCOREP_User_RegionEndF_U SCOREP_USER_REGIONENDF
+#define SCOREP_F_Begin_U SCOREP_F_BEGIN
+#define SCOREP_F_Init_U SCOREP_F_INIT
+#define SCOREP_F_RegionEnd_U SCOREP_F_REGIONEND
+#define SCOREP_F_RegionEnter_U SCOREP_F_REGIONENTER
 
-#define SCOREP_User_RegionBeginF_L scorep_user_regionbeginf
-#define SCOREP_User_RegionEndF_L scorep_user_regionendf
+#define SCOREP_F_Begin_L scorep_f_begin
+#define SCOREP_F_Init_L scorep_f_init
+#define SCOREP_F_RegionEnd_L scorep_f_regionend
+#define SCOREP_F_RegionEnter_L scorep_f_regionenter
 
 extern SCOREP_Hashtab* scorep_user_file_table;
 
@@ -129,13 +133,13 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
 }
 
 void
-FSUB( SCOREP_User_RegionBeginF )( SCOREP_Fortran_RegionHandle* handle,
-                                  char*                        name_f,
-                                  int32_t*                     type,
-                                  char*                        fileName_f,
-                                  int32_t*                     lineNo,
-                                  int                          nameLen,
-                                  int                          fileNameLen )
+FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* handle,
+                        char*                        name_f,
+                        int32_t*                     type,
+                        char*                        fileName_f,
+                        int32_t*                     lineNo,
+                        int                          nameLen,
+                        int                          fileNameLen )
 {
     /* Make sure the region handle is already defined */
     if ( *handle == SCOREP_FORTRAN_INVALID_REGION )
@@ -150,13 +154,13 @@ FSUB( SCOREP_User_RegionBeginF )( SCOREP_Fortran_RegionHandle* handle,
 }
 
 void
-FSUB( SCOREP_User_RegionEndF )( SCOREP_Fortran_RegionHandle* handle )
+FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
     SCOREP_User_RegionEnd( SCOREP_F2C_REGION( *handle ) );
 }
 
 void
-FSUB( SCOREP_User_RegionEnterF )( SCOREP_Fortran_RegionHandle* handle )
+FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* handle )
 {
     SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *handle ) );
 }
