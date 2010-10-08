@@ -164,13 +164,22 @@ AS_IF([test "x${scorep_compiler_sx}" = "xyes"],
 ## 
 
 AC_DEFUN([SCOREP_ATTRIBUTE_ALIGNMENT],[
+AC_LANG_PUSH([C])
 AC_MSG_CHECKING([for alignment attribute])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[int __attribute__((aligned (16))) tpd;]])],
-                [has_alignment_attribute="yes";AC_DEFINE([FORTRAN_ALIGNED],[__attribute__((aligned (16)))],[Makes C variable allignement consistent with Fortran])]
-                [has_alignment_attribute="no";AC_DEFINE([FORTRAN_ALIGNED],[],[Alignment attribute not supported])] 
+                [has_alignment_attribute="yes"],
+                [has_alignment_attribute="no"] 
 )
+
+if test "x${has_alignment_attribute}" = "xyes"; then
+  AC_DEFINE([FORTRAN_ALIGNED],[__attribute__((aligned (16)))],[Makes C variable allignement consistent with Fortran])
+else
+  AC_DEFINE([FORTRAN_ALIGNED],[],[Alignment attribute not supported])
+fi
+
 AC_MSG_RESULT([$has_alignment_attribute])
+AC_LANG_POP([C])
 ])
 
 ##
@@ -198,7 +207,6 @@ SCOREP_COMPILER_PGI
 SCOREP_COMPILER_GNU
 SCOREP_COMPILER_HP
 SCOREP_COMPILER_SX
-SCOREP_ATTRIBUTE_ALIGNMENT
 AC_LANG_POP([C])
 
 if test "x${scorep_compiler_unknown}" = "xyes"; then
