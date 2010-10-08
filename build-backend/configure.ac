@@ -7,10 +7,6 @@ if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compili
 fi
 cross_compiling=${ac_scorep_cross_compiling}
 
-
-
-
-
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
@@ -31,6 +27,7 @@ AC_SCOREP_PLATFORM_SETTINGS
 
 AC_SCOREP_COMMON_CHECKS
 AC_SCOREP_BACKEND_TEST_RUNS
+SCOREP_ATTRIBUTE_ALIGNMENT
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
