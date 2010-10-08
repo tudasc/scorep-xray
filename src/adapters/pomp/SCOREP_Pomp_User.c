@@ -267,12 +267,14 @@ POMP2_Init()
 void
 POMP2_Off()
 {
+    SCOREP_POMP2_ENSURE_INITIALIZED;
     scorep_pomp_is_tracing_on = false;
 }
 
 void
 POMP2_On()
 {
+    SCOREP_POMP2_ENSURE_INITIALIZED;
     scorep_pomp_is_tracing_on = true;
 }
 
@@ -300,23 +302,25 @@ POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
  ***************************************************************************************/
 
 void
-POMP2_Begin( POMP2_Region_handle pomp_handle )
+POMP2_Begin( POMP2_Region_handle* pomp_handle )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Begin" );
+    SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_Pomp_Region* region = ( SCOREP_Pomp_Region* )pomp_handle;
+        SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerBlock );
     }
 }
 
 void
-POMP2_End( POMP2_Region_handle pomp_handle )
+POMP2_End( POMP2_Region_handle* pomp_handle )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_End" );
+    SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_Pomp_Region* region = ( SCOREP_Pomp_Region* )pomp_handle;
+        SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ExitRegion( region->innerBlock );
     }
 }

@@ -1,21 +1,23 @@
-#include "pomp_lib.h"
+#include <pomp2_lib.h>
 
-#define POMP_DLIST_00001 shared(pomp_region_1,pomp_region_2,pomp_region_3,pomp_region_4,pomp_region_5,pomp_region_6,pomp_region_7)
-static POMP_Region_handle pomp_region_1;
-static POMP_Region_handle pomp_region_2;
-static POMP_Region_handle pomp_region_3;
-static POMP_Region_handle pomp_region_4;
-static POMP_Region_handle pomp_region_5;
-static POMP_Region_handle pomp_region_6;
-static POMP_Region_handle pomp_region_7;
+extern void* pomp_tpd_;
+#pragma omp threadprivate(pomp_tpd_)
+#define POMP2_DLIST_00001 shared(pomp2_region_1,pomp2_region_2,pomp2_region_3,pomp2_region_4,pomp2_region_5,pomp2_region_6,pomp2_region_7)
+static POMP2_Region_handle pomp2_region_1 = NULL;
+static POMP2_Region_handle pomp2_region_2 = NULL;
+static POMP2_Region_handle pomp2_region_3 = NULL;
+static POMP2_Region_handle pomp2_region_4 = NULL;
+static POMP2_Region_handle pomp2_region_5 = NULL;
+static POMP2_Region_handle pomp2_region_6 = NULL;
+static POMP2_Region_handle pomp2_region_7 = NULL;
 
-void POMP_Init_regions_1271318765876893_7()
+void POMP2_Init_regions_1286533991217016_7()
 {
-    POMP_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=pomp_test.c:6:6*escl=pomp_test.c:41:41**" );
-    POMP_Assign_handle( &pomp_region_2, "61*regionType=for*sscl=pomp_test.c:9:9*escl=pomp_test.c:13:13**" );
-    POMP_Assign_handle( &pomp_region_3, "66*regionType=master*sscl=pomp_test.c:15:15*escl=pomp_test.c:18:18**" );
-    POMP_Assign_handle( &pomp_region_4, "65*regionType=barrier*sscl=pomp_test.c:20:20*escl=pomp_test.c:0:0**" );
-    POMP_Assign_handle( &pomp_region_5, "87*regionType=critical*sscl=pomp_test.c:22:22*escl=pomp_test.c:25:25*criticalName=test1**" );
-    POMP_Assign_handle( &pomp_region_6, "66*regionType=atomic*sscl=pomp_test.c:27:27*escl=pomp_test.c:28:28**" );
-    POMP_Assign_handle( &pomp_region_7, "82*regionType=sections*sscl=pomp_test.c:30:30*escl=pomp_test.c:40:40*numSections=2**" );
+    POMP2_Assign_handle( &pomp2_region_1, "68*regionType=parallel*sscl=pomp_test.c:25:25*escl=pomp_test.c:60:60**" );
+    POMP2_Assign_handle( &pomp2_region_2, "63*regionType=for*sscl=pomp_test.c:28:28*escl=pomp_test.c:32:32**" );
+    POMP2_Assign_handle( &pomp2_region_3, "66*regionType=master*sscl=pomp_test.c:34:34*escl=pomp_test.c:37:37**" );
+    POMP2_Assign_handle( &pomp2_region_4, "65*regionType=barrier*sscl=pomp_test.c:39:39*escl=pomp_test.c:0:0**" );
+    POMP2_Assign_handle( &pomp2_region_5, "87*regionType=critical*sscl=pomp_test.c:41:41*escl=pomp_test.c:44:44*criticalName=test1**" );
+    POMP2_Assign_handle( &pomp2_region_6, "66*regionType=atomic*sscl=pomp_test.c:46:46*escl=pomp_test.c:47:47**" );
+    POMP2_Assign_handle( &pomp2_region_7, "82*regionType=sections*sscl=pomp_test.c:49:49*escl=pomp_test.c:59:59*numSections=2**" );
 }

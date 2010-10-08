@@ -1,3 +1,11 @@
+#include <config.h>
+#ifdef _POMP2
+#  undef _POMP2
+#endif
+#define _POMP2 200110
+
+#include "pomp_test.c.opari.inc"
+#line 1 "pomp_test.c"
 /*
  * This file is part of the SCOREP project (http://www.scorep.de)
  *
@@ -13,16 +21,6 @@
  *
  */
 
-#ifdef _POMP
-#  undef _POMP
-#endif
-#define _POMP 200110
-
-#include <config.h>
-
-#include "pomp_test.c.opari.inc"
-#line 1 "pomp_test.c"
-
 int
 main( int   argc,
       char* argv[] )
@@ -30,100 +28,100 @@ main( int   argc,
     int a;
     {
         int pomp_num_threads = omp_get_max_threads();
-        POMP_Parallel_fork( pomp_region_1, pomp_num_threads );
-#line 6 "pomp_test.c"
-  #pragma omp parallel POMP_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd)
-        { POMP_Parallel_begin( pomp_region_1 );
-#line 7 "pomp_test.c"
+        POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads );
+#line 25 "pomp_test.c"
+  #pragma omp parallel POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd_)
+        { POMP2_Parallel_begin( &pomp2_region_1 );
+#line 26 "pomp_test.c"
           {
               int i;
-              POMP_For_enter( pomp_region_2 );
-#line 9 "pomp_test.c"
+              POMP2_For_enter( &pomp2_region_2 );
+#line 28 "pomp_test.c"
     #pragma omp for nowait
               for ( i = 0; i < 1000; i++ )
               {
                   a++;
               }
-              POMP_Barrier_enter( pomp_region_2 );
+              POMP2_Barrier_enter( &pomp2_region_2 );
 #pragma omp barrier
-              POMP_Barrier_exit( pomp_region_2 );
-              POMP_For_exit( pomp_region_2 );
-#line 14 "pomp_test.c"
+              POMP2_Barrier_exit( &pomp2_region_2 );
+              POMP2_For_exit( &pomp2_region_2 );
+#line 33 "pomp_test.c"
 
-#line 15 "pomp_test.c"
+#line 34 "pomp_test.c"
     #pragma omp master
-              { POMP_Master_begin( pomp_region_3 );
-#line 16 "pomp_test.c"
+              { POMP2_Master_begin( &pomp2_region_3 );
+#line 35 "pomp_test.c"
                 {
                     a++;
                 }
-                POMP_Master_end( pomp_region_3 );
+                POMP2_Master_end( &pomp2_region_3 );
               }
-#line 19 "pomp_test.c"
+#line 38 "pomp_test.c"
 
-              POMP_Barrier_enter( pomp_region_4 );
-#line 20 "pomp_test.c"
+              POMP2_Barrier_enter( &pomp2_region_4 );
+#line 39 "pomp_test.c"
     #pragma omp barrier
-              POMP_Barrier_exit( pomp_region_4 );
-#line 21 "pomp_test.c"
+              POMP2_Barrier_exit( &pomp2_region_4 );
+#line 40 "pomp_test.c"
 
-              POMP_Critical_enter( pomp_region_5 );
-#line 22 "pomp_test.c"
+              POMP2_Critical_enter( &pomp2_region_5 );
+#line 41 "pomp_test.c"
     #pragma omp critical(test1)
-              { POMP_Critical_begin( pomp_region_5 );
-#line 23 "pomp_test.c"
+              { POMP2_Critical_begin( &pomp2_region_5 );
+#line 42 "pomp_test.c"
                 {
                     a++;
                 }
-                POMP_Critical_end( pomp_region_5 );
+                POMP2_Critical_end( &pomp2_region_5 );
               }
-              POMP_Critical_exit( pomp_region_5 );
-#line 26 "pomp_test.c"
+              POMP2_Critical_exit( &pomp2_region_5 );
+#line 45 "pomp_test.c"
 
-              POMP_Atomic_enter( pomp_region_6 );
-#line 27 "pomp_test.c"
+              POMP2_Atomic_enter( &pomp2_region_6 );
+#line 46 "pomp_test.c"
     #pragma omp atomic
               a++;
-              POMP_Atomic_exit( pomp_region_6 );
-#line 29 "pomp_test.c"
+              POMP2_Atomic_exit( &pomp2_region_6 );
+#line 48 "pomp_test.c"
 
-              POMP_Sections_enter( pomp_region_7 );
-#line 30 "pomp_test.c"
+              POMP2_Sections_enter( &pomp2_region_7 );
+#line 49 "pomp_test.c"
     #pragma omp sections nowait
               {
-#line 32 "pomp_test.c"
+#line 51 "pomp_test.c"
       #pragma omp section
-                  { POMP_Section_begin( pomp_region_7 );
-#line 33 "pomp_test.c"
+                  { POMP2_Section_begin( &pomp2_region_7 );
+#line 52 "pomp_test.c"
                     {
                         a++;
                     }
-                    POMP_Section_end( pomp_region_7 );
+                    POMP2_Section_end( &pomp2_region_7 );
                   }
-#line 36 "pomp_test.c"
+#line 55 "pomp_test.c"
       #pragma omp section
-                  { POMP_Section_begin( pomp_region_7 );
-#line 37 "pomp_test.c"
+                  { POMP2_Section_begin( &pomp2_region_7 );
+#line 56 "pomp_test.c"
                     {
                         a += 2;
                     }
-                    POMP_Section_end( pomp_region_7 );
+                    POMP2_Section_end( &pomp2_region_7 );
                   }
-#line 40 "pomp_test.c"
+#line 59 "pomp_test.c"
               }
-              POMP_Barrier_enter( pomp_region_7 );
+              POMP2_Barrier_enter( &pomp2_region_7 );
 #pragma omp barrier
-              POMP_Barrier_exit( pomp_region_7 );
-              POMP_Sections_exit( pomp_region_7 );
-#line 41 "pomp_test.c"
+              POMP2_Barrier_exit( &pomp2_region_7 );
+              POMP2_Sections_exit( &pomp2_region_7 );
+#line 60 "pomp_test.c"
           }
-          POMP_Barrier_enter( pomp_region_1 );
+          POMP2_Barrier_enter( &pomp2_region_1 );
 #pragma omp barrier
-          POMP_Barrier_exit( pomp_region_1 );
-          POMP_Parallel_end( pomp_region_1 );
+          POMP2_Barrier_exit( &pomp2_region_1 );
+          POMP2_Parallel_end( &pomp2_region_1 );
         }
-        POMP_Parallel_join( pomp_region_1 );
+        POMP2_Parallel_join( &pomp2_region_1 );
     }
-#line 42 "pomp_test.c"
+#line 61 "pomp_test.c"
     return 0;
 }

@@ -59,22 +59,22 @@ main( int    argc,
 
     {
         int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( pomp_region_1, pomp_num_threads );
+        POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads );
 #line 45 "mpi_omp_test.c"
         PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
         {
-            POMP2_Parallel_begin( pomp_region_1 );
+            POMP2_Parallel_begin( &pomp_region_1 );
 #line 46 "mpi_omp_test.c"
             {
                 printf( "Hello world from process %d, thread %d of %d, %d\n",
                         rank, omp_get_thread_num(), size, omp_get_num_threads() );
             }
-            POMP2_Barrier_enter( pomp_region_1 );
+            POMP2_Barrier_enter( &pomp_region_1 );
 #pragma omp barrier
-            POMP2_Barrier_exit( pomp_region_1 );
-            POMP2_Parallel_end( pomp_region_1 );
+            POMP2_Barrier_exit( &pomp_region_1 );
+            POMP2_Parallel_end( &pomp_region_1 );
         }
-        POMP2_Parallel_join( pomp_region_1 );
+        POMP2_Parallel_join( &pomp_region_1 );
     }
 #line 50 "mpi_omp_test.c"
 

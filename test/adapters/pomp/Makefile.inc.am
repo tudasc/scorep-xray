@@ -7,13 +7,13 @@ pomp_test_SOURCES =                                      \
 	$(SRC_ROOT)/test/adapters/pomp/pomp_test_init.c  \
 	$(SRC_ROOT)/test/adapters/pomp/pomp_test.c.opari.inc
 
-pomp_test_CPPFLAGS = $(AM_CPPFLAGS)         \
-    -I$(INC_ROOT)src/adapters/include       \
+pomp_test_CPPFLAGS = $(AM_CPPFLAGS)  \
+    -I$(PUBLIC_INC_DIR)              \
     -I$(INC_DIR_UTIL)
 
 pomp_test_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
 pomp_test_LDADD =                       \
-    $(LIB_ROOT)libscorep_serial.la
+    $(LIB_ROOT)libscorep_omp.la
 
 endif
