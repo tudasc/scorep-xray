@@ -148,7 +148,7 @@ scorep_profile_write_cube_metric( cube_t*                       my_cube,
     cube_metric_set_known_cnodes( metric, bit_vector );
 
     /* Iterate over all cube cnodes */
-    for (; cubew_is_valid_id( cube_writer ) == TRUE; cubew_step( cube_writer ) )
+    for (; cubew_is_valid_id( cube_writer ) == CUBE_TRUE; cubew_step( cube_writer ) )
     {
         /* Gather data from locations */
         int id = cubew_get_next_callnode_id( cube_writer );
@@ -282,7 +282,7 @@ scorep_profile_write_cube4()
                         number_of_threads, /* sum of all threads of all nodes */
                         number_of_writers, /* number of parallel writers */
                         filename,          /* base file name */
-                        FALSE );           /* zlib compression */
+                        CUBE_FALSE );      /* zlib compression */
 
     /* Retrieve the cube object to which all data is written */
     my_cube = cubew_get_cube( cube_writer );
