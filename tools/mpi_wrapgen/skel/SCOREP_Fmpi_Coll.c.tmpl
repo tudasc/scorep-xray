@@ -34,6 +34,13 @@
 #pragma wrapgen multiple restrict(v1+gcoll) skel/SCOREP_Mpi_F2c_C2f.w
 
 #if HAVE(DECL_PMPI_ALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
+/**
+ * Measurement wrapper for MPI_Alltoallv
+ * @note Manually created wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI 1.0
+ * @ingroup coll
+ */
 void FSUB(MPI_Alltoallw)(void*     sendbuf, 
                          MPI_Fint* sendcounts,
                          MPI_Fint* sdispls,
@@ -49,6 +56,25 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
   MPI_Datatype* crecvtypes;
   MPI_Comm      ccomm;
   int           size;
+
+  #if defined(HAS_MPI_IN_PLACE)
+  if (sendbuf == scorep_mpi_fortran_in_place)
+  {
+    sendbuf = MPI_IN_PLACE;
+  }
+  #endif
+  #if defined(HAS_MPI_BOTTOM)
+  if (sendbuf == scorep_mpi_fortran_bottom)
+  {
+    sendbuf = MPI_BOTTOM;
+  }
+  #endif
+  #if defined(HAS_MPI_BOTTOM)
+  if (recvbuf == scorep_mpi_fortran_bottom)
+  {
+    recvbuf = MPI_BOTTOM;
+  }
+  #endif
 
   ccomm = PMPI_Comm_f2c(*comm);
   PMPI_Comm_size(ccomm, &size);

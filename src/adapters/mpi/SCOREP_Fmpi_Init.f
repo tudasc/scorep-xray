@@ -42,3 +42,24 @@
       INTEGER status_size
       status_size = MPI_STATUS_SIZE
       END
+
+      SUBROUTINE scorep_mpi_fortran_init_cb___()
+      call scorep_mpi_fortran_init_cb()
+      END
+
+      SUBROUTINE scorep_mpi_fortran_init_cb__()
+      call scorep_mpi_fortran_init_cb()
+      END
+
+      SUBROUTINE scorep_mpi_fortran_init_cb_()
+      call scorep_mpi_fortran_init_cb()
+      END
+
+      SUBROUTINE scorep_mpi_fortran_init_cb()
+      INCLUDE  'mpif.h'
+      CALL scorep_mpi_fortran_init_bottom(MPI_BOTTOM)
+      CALL scorep_mpi_fortran_init_in_place(MPI_IN_PLACE)
+      CALL scorep_mpi_fortran_init_status_ignore(MPI_STATUS_IGNORE)
+      CALL scorep_mpi_fortran_init_statuses_ignore(MPI_STATUSES_IGNORE)
+      END
+      

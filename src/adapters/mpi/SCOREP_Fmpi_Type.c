@@ -586,6 +586,14 @@ FSUB( MPI_Pack )( void*         inbuf,
                   MPI_Comm*     comm,
                   int*          ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( inbuf == scorep_mpi_fortran_bottom )
+    {
+        inbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Pack( inbuf, *incount, *datatype, outbuf, *outsize, position, *comm );
 }
 #endif
@@ -618,6 +626,15 @@ FSUB( MPI_Pack_external )( char*         datarep,
     c_datarep[ datarep_len ] = '\0';
 
 
+
+    #if defined( HAS_MPI_BOTTOM )
+    if ( inbuf == scorep_mpi_fortran_bottom )
+    {
+        inbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Pack_external( c_datarep, inbuf, *incount, *datatype, outbuf, *outsize, position );
 
     free( c_datarep );
@@ -647,6 +664,7 @@ FSUB( MPI_Pack_external_size )( char*         datarep,
     }
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
+
 
 
     *ierr = MPI_Pack_external_size( c_datarep, *incount, *datatype, size );
@@ -869,10 +887,20 @@ FSUB( MPI_Type_dup )( MPI_Datatype* type,
  */
 void
 FSUB( MPI_Type_extent )( MPI_Datatype* datatype,
-                         MPI_Aint*     extent,
+                         int*          extent,
                          int*          ierr )
 {
-    *ierr = MPI_Type_extent( *datatype, extent );
+    MPI_Aint c_extent;
+
+
+
+    *ierr = MPI_Type_extent( *datatype, &c_extent );
+
+    *extent = ( int )c_extent;
+    if ( *extent != c_extent )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_free )
@@ -975,12 +1003,24 @@ FSUB( MPI_Type_get_true_extent )( MPI_Datatype* datatype,
 void
 FSUB( MPI_Type_hindexed )( int*          count,
                            int*          array_of_blocklengths,
-                           MPI_Aint*     array_of_displacements,
+                           int*          array_of_displacements,
                            MPI_Datatype* oldtype,
                            MPI_Datatype* newtype,
                            int*          ierr )
 {
-    *ierr = MPI_Type_hindexed( *count, array_of_blocklengths, array_of_displacements, *oldtype, newtype );
+    MPI_Aint* c_array_of_displacements;
+
+    c_array_of_displacements = ( MPI_Aint* )malloc( *count * sizeof( MPI_Aint ) );
+    for ( int i = 0; i < *count; ++i )
+    {
+        c_array_of_displacements[ i ] = array_of_displacements[ i ];
+    }
+
+
+
+    *ierr = MPI_Type_hindexed( *count, array_of_blocklengths, c_array_of_displacements, *oldtype, newtype );
+
+    free( c_array_of_displacements );
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hvector )
@@ -994,12 +1034,16 @@ FSUB( MPI_Type_hindexed )( int*          count,
 void
 FSUB( MPI_Type_hvector )( int*          count,
                           int*          blocklength,
-                          MPI_Aint*     stride,
+                          int*          stride,
                           MPI_Datatype* oldtype,
                           MPI_Datatype* newtype,
                           int*          ierr )
 {
-    *ierr = MPI_Type_hvector( *count, *blocklength, *stride, *oldtype, newtype );
+    MPI_Aint c_stride = *stride;
+
+
+
+    *ierr = MPI_Type_hvector( *count, *blocklength, *&c_stride, *oldtype, newtype );
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_INDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_indexed )
@@ -1031,10 +1075,20 @@ FSUB( MPI_Type_indexed )( int*          count,
  */
 void
 FSUB( MPI_Type_lb )( MPI_Datatype* datatype,
-                     MPI_Aint*     displacement,
+                     int*          displacement,
                      int*          ierr )
 {
-    *ierr = MPI_Type_lb( *datatype, displacement );
+    MPI_Aint c_displacement;
+
+
+
+    *ierr = MPI_Type_lb( *datatype, &c_displacement );
+
+    *displacement = ( int )c_displacement;
+    if ( *displacement != c_displacement )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_MATCH_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_match_size )
@@ -1081,12 +1135,24 @@ FSUB( MPI_Type_size )( MPI_Datatype* datatype,
 void
 FSUB( MPI_Type_struct )( int*          count,
                          int*          array_of_blocklengths,
-                         MPI_Aint*     array_of_displacements,
+                         int*          array_of_displacements,
                          MPI_Datatype* array_of_types,
                          MPI_Datatype* newtype,
                          int*          ierr )
 {
-    *ierr = MPI_Type_struct( *count, array_of_blocklengths, array_of_displacements, array_of_types, newtype );
+    MPI_Aint* c_array_of_displacements;
+
+    c_array_of_displacements = ( MPI_Aint* )malloc( *count * sizeof( MPI_Aint ) );
+    for ( int i = 0; i < *count; ++i )
+    {
+        c_array_of_displacements[ i ] = array_of_displacements[ i ];
+    }
+
+
+
+    *ierr = MPI_Type_struct( *count, array_of_blocklengths, c_array_of_displacements, array_of_types, newtype );
+
+    free( c_array_of_displacements );
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_UB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_ub )
@@ -1099,10 +1165,20 @@ FSUB( MPI_Type_struct )( int*          count,
  */
 void
 FSUB( MPI_Type_ub )( MPI_Datatype* datatype,
-                     MPI_Aint*     displacement,
+                     int*          displacement,
                      int*          ierr )
 {
-    *ierr = MPI_Type_ub( *datatype, displacement );
+    MPI_Aint c_displacement;
+
+
+
+    *ierr = MPI_Type_ub( *datatype, &c_displacement );
+
+    *displacement = ( int )c_displacement;
+    if ( *displacement != c_displacement )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_VECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_vector )
@@ -1142,6 +1218,14 @@ FSUB( MPI_Unpack )( void*         inbuf,
                     MPI_Comm*     comm,
                     int*          ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( outbuf == scorep_mpi_fortran_bottom )
+    {
+        outbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Unpack( inbuf, *insize, position, outbuf, *outcount, *datatype, *comm );
 }
 #endif
@@ -1172,6 +1256,15 @@ FSUB( MPI_Unpack_external )( char*         datarep,
     }
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
+
+
+
+    #if defined( HAS_MPI_BOTTOM )
+    if ( outbuf == scorep_mpi_fortran_bottom )
+    {
+        outbuf = MPI_BOTTOM;
+    }
+    #endif
 
 
     *ierr = MPI_Unpack_external( c_datarep, inbuf, *insize, position, outbuf, *outcount, *datatype );
@@ -1277,6 +1370,7 @@ FSUB( MPI_Type_get_name )( MPI_Datatype* type,
     }
 
 
+
     *ierr = MPI_Type_get_name( *type, c_type_name, resultlen );
 
 
@@ -1325,6 +1419,7 @@ FSUB( MPI_Type_set_name )( MPI_Datatype* type,
     }
     strncpy( c_type_name, type_name, type_name_len );
     c_type_name[ type_name_len ] = '\0';
+
 
 
     *ierr = MPI_Type_set_name( *type, c_type_name );
@@ -1496,6 +1591,14 @@ FSUB( MPI_Pack )( void*     inbuf,
                   MPI_Fint* comm,
                   int*      ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( inbuf == scorep_mpi_fortran_bottom )
+    {
+        inbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Pack( inbuf, *incount, PMPI_Type_f2c( *datatype ), outbuf, *outsize, position, PMPI_Comm_f2c( *comm ) );
 }
 #endif
@@ -1528,7 +1631,18 @@ FSUB( MPI_Pack_external )( char*     datarep,
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
 
+
+
+    #if defined( HAS_MPI_BOTTOM )
+    if ( inbuf == scorep_mpi_fortran_bottom )
+    {
+        inbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Pack_external( c_datarep, inbuf, *incount, PMPI_Type_f2c( *datatype ), outbuf, *outsize, position );
+
     free( c_datarep );
 }
 #endif
@@ -1558,7 +1672,10 @@ FSUB( MPI_Pack_external_size )( char*     datarep,
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
 
+
+
     *ierr = MPI_Pack_external_size( c_datarep, *incount, PMPI_Type_f2c( *datatype ), size );
+
     free( c_datarep );
 }
 #endif
@@ -1595,7 +1712,10 @@ FSUB( MPI_Type_commit )( MPI_Fint* datatype,
                          int*      ierr )
 {
     MPI_Datatype c_datatype = PMPI_Type_f2c( *datatype );
-    *ierr     = MPI_Type_commit( &c_datatype );
+
+
+    *ierr = MPI_Type_commit( &c_datatype );
+
     *datatype = PMPI_Type_c2f( c_datatype );
 }
 #endif
@@ -1615,7 +1735,10 @@ FSUB( MPI_Type_contiguous )( MPI_Fint* count,
                              int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_contiguous( *count, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_contiguous( *count, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1642,7 +1765,10 @@ FSUB( MPI_Type_create_darray )( MPI_Fint* size,
                                 int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_create_darray( *size, *rank, *ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, *order, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_create_darray( *size, *rank, *ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, *order, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1664,7 +1790,10 @@ FSUB( MPI_Type_create_hindexed )( MPI_Fint* count,
                                   int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_create_hindexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_create_hindexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1686,7 +1815,10 @@ FSUB( MPI_Type_create_hvector )( MPI_Fint* count,
                                  int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_create_hvector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_create_hvector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1708,7 +1840,10 @@ FSUB( MPI_Type_create_indexed_block )( MPI_Fint* count,
                                        int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_create_indexed_block( *count, *blocklength, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_create_indexed_block( *count, *blocklength, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1729,7 +1864,10 @@ FSUB( MPI_Type_create_resized )( MPI_Fint* oldtype,
                                  int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_create_resized( PMPI_Type_f2c( *oldtype ), *lb, *extent, &c_newtype );
+
+
+    *ierr = MPI_Type_create_resized( PMPI_Type_f2c( *oldtype ), *lb, *extent, &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1753,7 +1891,10 @@ FSUB( MPI_Type_create_subarray )( MPI_Fint* ndims,
                                   int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_create_subarray( *ndims, array_of_sizes, array_of_subsizes, array_of_starts, *order, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_create_subarray( *ndims, array_of_sizes, array_of_subsizes, array_of_starts, *order, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1772,7 +1913,10 @@ FSUB( MPI_Type_dup )( MPI_Fint* type,
                       int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_dup( PMPI_Type_f2c( *type ), &c_newtype );
+
+
+    *ierr = MPI_Type_dup( PMPI_Type_f2c( *type ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1787,10 +1931,19 @@ FSUB( MPI_Type_dup )( MPI_Fint* type,
  */
 void
 FSUB( MPI_Type_extent )( MPI_Fint* datatype,
-                         MPI_Aint* extent,
+                         MPI_Fint* extent,
                          int*      ierr )
 {
-    *ierr = MPI_Type_extent( PMPI_Type_f2c( *datatype ), extent );
+    MPI_Aint c_extent;
+
+
+    *ierr = MPI_Type_extent( PMPI_Type_f2c( *datatype ), &c_extent );
+
+    *extent = ( MPI_Fint )c_extent;
+    if ( *extent != c_extent )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_free )
@@ -1807,7 +1960,10 @@ FSUB( MPI_Type_free )( MPI_Fint* datatype,
                        int*      ierr )
 {
     MPI_Datatype c_datatype = PMPI_Type_f2c( *datatype );
-    *ierr     = MPI_Type_free( &c_datatype );
+
+
+    *ierr = MPI_Type_free( &c_datatype );
+
     *datatype = PMPI_Type_c2f( c_datatype );
 }
 #endif
@@ -1879,13 +2035,26 @@ FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype,
 void
 FSUB( MPI_Type_hindexed )( MPI_Fint* count,
                            MPI_Fint* array_of_blocklengths,
-                           MPI_Aint* array_of_displacements,
+                           MPI_Fint* array_of_displacements,
                            MPI_Fint* oldtype,
                            MPI_Fint* newtype,
                            int*      ierr )
 {
+    int          i;
+    MPI_Aint*    c_array_of_displacements;
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_hindexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+    c_array_of_displacements = ( MPI_Aint* )malloc( *count * sizeof( MPI_Aint ) );
+    for ( i = 0; i < *count; ++i )
+    {
+        c_array_of_displacements[ i ] = array_of_displacements[ i ];
+    }
+
+
+
+    *ierr = MPI_Type_hindexed( *count, array_of_blocklengths, c_array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+    free( c_array_of_displacements );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1901,13 +2070,17 @@ FSUB( MPI_Type_hindexed )( MPI_Fint* count,
 void
 FSUB( MPI_Type_hvector )( MPI_Fint* count,
                           MPI_Fint* blocklength,
-                          MPI_Aint* stride,
+                          MPI_Fint* stride,
                           MPI_Fint* oldtype,
                           MPI_Fint* newtype,
                           int*      ierr )
 {
+    MPI_Aint     c_stride = *stride;
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_hvector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_hvector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1929,7 +2102,10 @@ FSUB( MPI_Type_indexed )( MPI_Fint* count,
                           int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_indexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_indexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -1944,10 +2120,19 @@ FSUB( MPI_Type_indexed )( MPI_Fint* count,
  */
 void
 FSUB( MPI_Type_lb )( MPI_Fint* datatype,
-                     MPI_Aint* displacement,
+                     MPI_Fint* displacement,
                      int*      ierr )
 {
-    *ierr = MPI_Type_lb( PMPI_Type_f2c( *datatype ), displacement );
+    MPI_Aint c_displacement;
+
+
+    *ierr = MPI_Type_lb( PMPI_Type_f2c( *datatype ), &c_displacement );
+
+    *displacement = ( MPI_Fint )c_displacement;
+    if ( *displacement != c_displacement )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_MATCH_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_match_size )
@@ -1966,7 +2151,10 @@ FSUB( MPI_Type_match_size )( MPI_Fint* typeclass,
                              int*      ierr )
 {
     MPI_Datatype c_type;
+
+
     *ierr = MPI_Type_match_size( *typeclass, *size, &c_type );
+
     *type = PMPI_Type_c2f( c_type );
 }
 #endif
@@ -1998,10 +2186,19 @@ FSUB( MPI_Type_size )( MPI_Fint* datatype,
  */
 void
 FSUB( MPI_Type_ub )( MPI_Fint* datatype,
-                     MPI_Aint* displacement,
+                     MPI_Fint* displacement,
                      int*      ierr )
 {
-    *ierr = MPI_Type_ub( PMPI_Type_f2c( *datatype ), displacement );
+    MPI_Aint c_displacement;
+
+
+    *ierr = MPI_Type_ub( PMPI_Type_f2c( *datatype ), &c_displacement );
+
+    *displacement = ( MPI_Fint )c_displacement;
+    if ( *displacement != c_displacement )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_VECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_vector )
@@ -2022,7 +2219,10 @@ FSUB( MPI_Type_vector )( MPI_Fint* count,
                          int*      ierr )
 {
     MPI_Datatype c_newtype;
-    *ierr    = MPI_Type_vector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
+
+    *ierr = MPI_Type_vector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
+
     *newtype = PMPI_Type_c2f( c_newtype );
 }
 #endif
@@ -2045,6 +2245,14 @@ FSUB( MPI_Unpack )( void*     inbuf,
                     MPI_Fint* comm,
                     int*      ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( outbuf == scorep_mpi_fortran_bottom )
+    {
+        outbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Unpack( inbuf, *insize, position, outbuf, *outcount, PMPI_Type_f2c( *datatype ), PMPI_Comm_f2c( *comm ) );
 }
 #endif
@@ -2077,7 +2285,18 @@ FSUB( MPI_Unpack_external )( char*     datarep,
     strncpy( c_datarep, datarep, datarep_len );
     c_datarep[ datarep_len ] = '\0';
 
+
+
+    #if defined( HAS_MPI_BOTTOM )
+    if ( outbuf == scorep_mpi_fortran_bottom )
+    {
+        outbuf = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Unpack_external( c_datarep, inbuf, *insize, position, outbuf, *outcount, PMPI_Type_f2c( *datatype ) );
+
     free( c_datarep );
 }
 #endif
@@ -2122,7 +2341,10 @@ FSUB( MPI_Type_delete_attr )( MPI_Fint* type,
                               int*      ierr )
 {
     MPI_Datatype c_type = PMPI_Type_f2c( *type );
+
+
     *ierr = MPI_Type_delete_attr( c_type, *type_keyval );
+
     *type = PMPI_Type_c2f( c_type );
 }
 #endif
@@ -2185,7 +2407,10 @@ FSUB( MPI_Type_get_name )( MPI_Fint* type,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Type_get_name( PMPI_Type_f2c( *type ), c_type_name, resultlen );
+
 
     c_type_name_len = strlen( c_type_name );
     strncpy( type_name, c_type_name, c_type_name_len );
@@ -2209,7 +2434,10 @@ FSUB( MPI_Type_set_attr )( MPI_Fint* type,
                            int*      ierr )
 {
     MPI_Datatype c_type = PMPI_Type_f2c( *type );
+
+
     *ierr = MPI_Type_set_attr( c_type, *type_keyval, attribute_val );
+
     *type = PMPI_Type_c2f( c_type );
 }
 #endif
@@ -2228,8 +2456,8 @@ FSUB( MPI_Type_set_name )( MPI_Fint* type,
                            int*      ierr,
                            int       type_name_len )
 {
-    char*        c_type_name = NULL;
     MPI_Datatype c_type      = PMPI_Type_f2c( *type );
+    char*        c_type_name = NULL;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
     if ( !c_type_name )
     {
@@ -2238,9 +2466,12 @@ FSUB( MPI_Type_set_name )( MPI_Fint* type,
     strncpy( c_type_name, type_name, type_name_len );
     c_type_name[ type_name_len ] = '\0';
 
+
+
     *ierr = MPI_Type_set_name( c_type, c_type_name );
-    free( c_type_name );
+
     *type = PMPI_Type_c2f( c_type );
+    free( c_type_name );
 }
 #endif
 

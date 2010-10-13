@@ -44,6 +44,12 @@ int scorep_mpi_status_size;
 extern void
 scorep_mpi_get_status_size___( int* status_size );
 
+/** External fortran function to to trigger callbacks to set fortran MPI constants.
+    @param mpi_status_size Address of a variable where the value is to be stored.
+ */
+extern void
+scorep_mpi_fortran_init_cb___();
+
 /* Mapping of string keys to enabling group IDs
  * @note The values are sorted in decreasing order, to beautify the debug
  * output. Ie.: if all groups are enabled we get "ALL", because it matches first.
@@ -126,6 +132,7 @@ scorep_mpi_init_adapter
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_init_adapter\n" );
+    scorep_mpi_fortran_init_cb___();
     scorep_mpi_get_status_size___( &scorep_mpi_status_size );
     scorep_mpi_register_regions();
     return SCOREP_SUCCESS;

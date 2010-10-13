@@ -109,6 +109,8 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "proto:f2c_c2f" ]    = handler::mpi::proto_f2c_c2f;
     func_handlers[ "rtype" ]            = handler::mpi::rtype;
     func_handlers[ "xblock" ]           = handler::mpi::xblock;
+    func_handlers[ "xblock:fortran" ]   = handler::mpi::xblock_fortran;
+    func_handlers[ "xblock:f2c_c2f" ]   = handler::mpi::xblock_f2c_c2f;
     func_handlers[ "guard:start" ]      = handler::mpi::guard_start;
     func_handlers[ "guard:end" ]        = handler::mpi::guard_end;
     func_handlers[ "guard:hooks" ]      = handler::mpi::guard_hooks;
@@ -176,12 +178,19 @@ SCOREP::Wrapgen::handler::mpi::call_f2c_c2f
             /* output parameter needs a local variable */
             else
             {
-                if ( datatype::is_pointer( arg ) )
+                if ( ( datatype::is_pointer( arg ) )
+                     && !( striped_type == "MPI_Status" ) )
                 {
                     str += "&";
                 }
 
-                str     += "c_" + arg_name;
+                str += "c_" + arg_name;
+
+                if ( ( datatype::is_pointer( arg ) )
+                     && ( striped_type == "MPI_Status" ) )
+                {
+                    str += "_ptr";
+                }
                 f2c_used = true;
             }
         }
@@ -232,6 +241,18 @@ SCOREP::Wrapgen::handler::mpi::call_f2c_c2f
                 // initialized in a preceding declaration and init block
                 str += "c_";
             }
+            else if ( arg.has_special_tag( "noaint" ) )
+            {
+                if ( datatype::is_pointer( arg )
+                     && datatype::is_input_param( arg ) )
+                {
+                    str += "c_";
+                }
+                else
+                {
+                    str += "&c_";
+                }
+            }
 
             if ( !( datatype::needs_cast( arg ) &&
                     datatype::is_handler_function( arg ) &&
@@ -269,15 +290,28 @@ SCOREP::Wrapgen::handler::mpi::call_fortran
 
         if ( !( datatype::is_pointer( arg ) || datatype::is_range_triplet( arg ) ) )
         {
-            // dereference argument
+            // de-reference argument
             str += '*';
         }
+
         if ( datatype::is_char_pointer( arg ) )
         {
             // character arrays from Fortran are not null-terminated
             // thus we have to use our own internal character array,
             // initialized in a preceding declaration and init block
             str += "c_" + arg_name;
+        }
+        else if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "c_" + arg_name;
+            }
+            else
+            {
+                str += "&c_" + arg_name;
+            }
         }
         else
         {
@@ -412,12 +446,11 @@ SCOREP::Wrapgen::handler::mpi::cleanup_fortran
     // depending on call parameters
     for ( size_t i = 0; i < func.get_param_count(); ++i )
     {
-        const Funcparam& arg = func.get_param( i );
+        const Funcparam& arg      = func.get_param( i );
+        string           arg_name = arg.get_name();
 
         if ( datatype::is_char_pointer( arg ) )
         {
-            string arg_name = arg.get_name();
-
             if ( str.length() > 0 )
             {
                 str += "\n    ";
@@ -431,6 +464,27 @@ SCOREP::Wrapgen::handler::mpi::cleanup_fortran
             }
             str += "free(c_" + arg_name + ");";
         }
+
+        /* do we need special handling based on tags? */
+        if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_output_param( arg ) )
+            {
+                str += "*" + arg_name + " = (int) c_" + arg_name + ";\n";
+                str += "if (*" + arg_name + " != c_" + arg_name + ")\n";
+                str += "  SCOREP_DEBUG_PRINTF(SCOREP_DEBUG_MPI, "
+                       "\"Value truncated in \\\"" + func.get_name() +
+                       "\\\". Function is deprecated due to mismatching parameter types! "
+                       "Consult the MPI Standard for more details.\");\n";
+            }
+
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "free(c_" + arg_name + ");\n";
+            }
+        }
     }
 
     return str;
@@ -442,7 +496,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
     const Func& func
 )
 {
-    string str = handler::mpi::cleanup_fortran( func );
+    string str;
 
     for ( size_t i = 0; i < func.get_param_count(); ++i )
     {
@@ -451,6 +505,42 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
         string                 arg_name     = arg.get_name();
         string                 striped_type = arg_type.substr( 0, arg_type.find_first_of( "*" ) );
         info_t::const_iterator it           = f2c_types.find( striped_type );
+
+        if ( datatype::is_char_pointer( arg ) )
+        {
+            if ( str.length() > 0 )
+            {
+                str += "\n    ";
+            }
+            // Output parameters need to be copied and padded with spaces
+            if ( datatype::is_output_param( arg ) )
+            {
+                str += "\n  c_" + arg_name + "_len = strlen(c_" + arg_name + ");\n  " +
+                       "strncpy(" + arg_name + ", c_" + arg_name + ", c_" + arg_name + "_len);\n  " +
+                       "memset(" + arg_name + " + c_" + arg_name + "_len, ' ', " + arg_name + "_len - c_" + arg_name + "_len);\n";
+            }
+            str += "free(c_" + arg_name + ");";
+        }
+
+        /* do we need special handling based on tags? */
+        if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_output_param( arg ) )
+            {
+                str += "*" + arg_name + " = (MPI_Fint) c_" + arg_name + ";\n";
+                str += "if (*" + arg_name + " != c_" + arg_name + ")\n";
+                str += "  SCOREP_DEBUG_PRINTF(SCOREP_DEBUG_MPI, "
+                       "\"Value truncated in \\\"" + func.get_name() +
+                       "\\\". Function is deprecated due to mismatching parameter types! "
+                       "Consult the MPI Standard for more details.\");\n";
+            }
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "free(c_" + arg_name + ");\n";
+            }
+        }
 
         /* do we need to handle the parameter with f2c conversion? */
         if ( it != f2c_types.end() &&
@@ -462,7 +552,12 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
             }
             if ( striped_type == "MPI_Status" )
             {
-                str += "PMPI_Status_c2f(&c_" + arg.get_name() + ", " + arg.get_name() + ");";
+                str += "#if defined(HAS_MPI_STATUS_IGNORE)\n";
+                str += "if (c_" + arg_name + "_ptr != MPI_STATUS_IGNORE)\n";
+                str += "#endif\n";
+                str += "    {\n";
+                str += "      PMPI_Status_c2f(c_" + arg.get_name() + "_ptr, " + arg.get_name() + ");";
+                str += "    }\n";
             }
             else
             {
@@ -488,7 +583,80 @@ SCOREP::Wrapgen::handler::mpi::decl_f2c_c2f
     const Func& func
 )
 {
-    string str = decl_fortran( func );
+    string str;
+    // Fortran wrappers might need additional declarations,
+    // depending on call parameters
+    for ( size_t i = 0; i < func.get_param_count(); ++i )
+    {
+        const Funcparam&       arg          = func.get_param( i );
+        string                 arg_name     = arg.get_name();
+        string                 arg_type     = arg.get_type();
+        string                 striped_type = arg_type.substr( 0, arg_type.find_first_of( "*" ) );
+        info_t::const_iterator it           = f2c_types.find( striped_type );
+
+
+        if ( datatype::is_char_pointer( arg ) )
+        {
+            if ( str.length() > 0 )
+            {
+                str += "\n    ";
+            }
+            str += "char* c_" + arg_name + " = NULL;";
+            if ( datatype::is_output_param( arg ) )
+            {
+                str += "\nint c_" + arg_name + "_len = 0;";
+            }
+        }
+        else if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "int i;\n";
+                str += "MPI_Aint* c_" + arg_name + ";\n";
+            }
+            else
+            {
+                if ( datatype::is_input_param( arg )
+                     || datatype::is_input_output_param( arg ) )
+                {
+                    str += "MPI_Aint c_" + arg_name + " = *" + arg_name + ";\n";
+                }
+                else
+                {
+                    str += "MPI_Aint c_" + arg_name + ";";
+                }
+            }
+        }
+
+        if ( it != f2c_types.end() )
+        {
+            if ( ( datatype::needs_input_handling( arg ) &&
+                   striped_type == "MPI_Status" )
+                 || datatype::needs_output_handling( arg ) )
+            {
+                str += striped_type + " c_" + arg.get_name();
+            }
+
+            if ( datatype::is_input_output_param( arg )
+                 && striped_type != "MPI_Status" )
+            {
+                // initialize with f2c'ed input value
+                str += " = " + it->second + "_f2c(*" + arg.get_name() + ");";
+            }
+            else
+            {
+                if ( ( datatype::needs_input_handling( arg ) &&
+                       striped_type == "MPI_Status" )
+                     || datatype::needs_output_handling( arg ) )
+                {
+                    str += ";";
+                }
+            }
+        }
+    }
+
+    str += func.get_decl_block( "f2c_c2f" );
 
     return str;
 }
@@ -521,7 +689,26 @@ SCOREP::Wrapgen::handler::mpi::decl_fortran
                 str += "\nint c_" + arg_name + "_len = 0;";
             }
         }
+        else if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "MPI_Aint* c_" + arg_name + ";\n";
+            }
+            else
+            {
+                str += "MPI_Aint c_" + arg_name;
+                if ( datatype::is_input_param( arg ) )
+                {
+                    str += " = *" + arg_name;
+                }
+                str += ";\n";
+            }
+        }
     }
+
+    str += func.get_decl_block( "fortran" );
 
     return str;
 }
@@ -581,29 +768,17 @@ SCOREP::Wrapgen::handler::mpi::init_f2c_c2f
                 {
                     str += "\n    ";
                 }
-                str += striped_type + " c_" + arg.get_name() + ";";
+                // declare pointer to C status for subsequent use
+                str += striped_type + "* c_" + arg.get_name()
+                       + "_ptr = &c_" + arg.get_name() + ";";
 
                 if ( datatype::is_input_output_param( arg ) ||
                      datatype::is_input_param( arg ) )
                 {
                     str += "\n    ";
-                    str += it->second + "_f2c(" + arg.get_name() + ", &c_" + arg.get_name() + ");";
+                    str += it->second + "_f2c(" + arg.get_name()
+                           + ", c_" + arg.get_name() + "_ptr);";
                 }
-            }
-            else if ( datatype::needs_output_handling( arg ) )
-            {
-                if ( str != "" )
-                {
-                    str += "\n    ";
-                }
-                str += striped_type + " c_" + arg.get_name();
-
-                if ( datatype::is_input_output_param( arg ) )
-                {
-                    // initialize with f2c'ed input value
-                    str += " = " + it->second + "_f2c(*" + arg.get_name() + ")";
-                }
-                str += ";";
             }
         }
 
@@ -622,6 +797,17 @@ SCOREP::Wrapgen::handler::mpi::init_f2c_c2f
             {
                 str += "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
                        "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+            }
+        }
+
+        if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "c_" + arg_name + " = (" + arg_type + ") malloc(*count * sizeof(MPI_Aint));\n";
+                str += "for(i = 0; i < *count; ++i)\n"
+                       "  c_" + arg_name + "[i] = " + arg_name + "[i];\n";
             }
         }
     }
@@ -660,6 +846,17 @@ SCOREP::Wrapgen::handler::mpi::init_fortran
             {
                 str += "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
                        "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+            }
+        }
+
+        if ( arg.has_special_tag( "noaint" ) )
+        {
+            if ( datatype::is_pointer( arg )
+                 && datatype::is_input_param( arg ) )
+            {
+                str += "c_" + arg_name + " = (" + arg_type + ") malloc(*count * sizeof(MPI_Aint));\n";
+                str += "for(int i = 0; i < *count; ++i)\n"
+                       "  c_" + arg_name + "[i] = " + arg_name + "[i];\n";
             }
         }
     }
@@ -755,13 +952,23 @@ SCOREP::Wrapgen::handler::mpi::proto_fortran
             /*
                str += "MPI_Fint* ";
              */
-            if ( datatype::is_pointer( arg ) )
+            if ( arg_type.find( "MPI_Aint" ) != string::npos &&
+                 arg.has_special_tag( "noaint" ) )
             {
-                str += arg_type + " ";
+                str += "int* ";
             }
             else
             {
-                str += arg_type + "* ";
+                str += arg_type;
+
+                if ( datatype::is_pointer( arg ) )
+                {
+                    str += " ";
+                }
+                else
+                {
+                    str += "* ";
+                }
             }
         }
 
@@ -819,13 +1026,23 @@ SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
         }
         else if ( datatype::is_special_int( arg ) )
         {
-            if ( datatype::is_pointer( arg ) )
+            if ( arg_type.find( "MPI_Aint" ) != string::npos &&
+                 arg.has_special_tag( "noaint" ) )
             {
-                str += arg_type + " ";
+                str += "MPI_Fint* ";
             }
             else
             {
-                str += arg_type + "* ";
+                str += arg_type;
+
+                if ( datatype::is_pointer( arg ) )
+                {
+                    str += " ";
+                }
+                else
+                {
+                    str += "* ";
+                }
             }
         }
         else if ( datatype::is_handler_function( arg ) ||
@@ -921,6 +1138,18 @@ SCOREP::Wrapgen::handler::mpi::xblock
 )
 {
     return func.get_expr_block();
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::xblock_fortran( const Func& func )
+{
+    return func.get_expr_block( "fortran" );
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::xblock_f2c_c2f( const Func& func )
+{
+    return func.get_expr_block( "f2c_c2f" );
 }
 
 string

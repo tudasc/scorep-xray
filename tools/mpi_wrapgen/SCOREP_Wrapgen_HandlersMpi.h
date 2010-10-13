@@ -296,6 +296,12 @@ xblock
     const SCOREP::Wrapgen::Func& func
 );
 
+std::string
+xblock_fortran( const SCOREP::Wrapgen::Func& func );
+
+std::string
+xblock_f2c_c2f( const SCOREP::Wrapgen::Func& func );
+
 /**
  * @}
  * @name MPI related functions

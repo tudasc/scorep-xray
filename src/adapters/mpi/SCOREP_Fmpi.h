@@ -45,7 +45,7 @@
  */
 
 #include "SCOREP_Fortran_Wrapper.h"
-#include "scorep_utility/SCOREP_Error.h"
+#include "scorep_utility/SCOREP_Utils.h"
 #include <stdlib.h>
 #include <string.h>
 #include <mpi.h>
@@ -56,6 +56,26 @@
 #endif
 
 extern int scorep_mpi_status_size;
+
+#if defined( HAS_MPI_BOTTOM )
+/** pointer representing the Fortran value for MPI_BOTTOM */
+extern void* scorep_mpi_fortran_bottom;
+#endif
+
+#if defined( HAS_MPI_IN_PLACE )
+/** pointer representing the Fortran value for MPI_IN_PLACE */
+extern void* scorep_mpi_fortran_in_place;
+#endif
+
+#if defined( HAS_MPI_STATUS_IGNORE )
+/** pointer representing the Fortran value for MPI_STATUS_IGNORE */
+extern void* scorep_mpi_fortran_status_ignore;
+#endif
+
+#if defined( HAS_MPI_STATUSES_IGNORE )
+/** pointer representing the Fortran value for MPI_STATUSES_IGNORE */
+extern void* scorep_mpi_fortran_statuses_ignore;
+#endif
 
 #if defined( SGI_MPT )
 

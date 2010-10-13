@@ -1216,6 +1216,7 @@ FSUB( MPI_Comm_get_name )( MPI_Comm* comm,
     }
 
 
+
     *ierr = MPI_Comm_get_name( *comm, c_comm_name, resultlen );
 
 
@@ -1264,6 +1265,7 @@ FSUB( MPI_Comm_set_name )( MPI_Comm* comm,
     }
     strncpy( c_comm_name, comm_name, comm_name_len );
     c_comm_name[ comm_name_len ] = '\0';
+
 
 
     *ierr = MPI_Comm_set_name( *comm, c_comm_name );
@@ -1336,7 +1338,10 @@ FSUB( MPI_Comm_create )( MPI_Fint* comm,
                          int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Comm_create( PMPI_Comm_f2c( *comm ), PMPI_Group_f2c( *group ), &c_newcomm );
+
+
+    *ierr = MPI_Comm_create( PMPI_Comm_f2c( *comm ), PMPI_Group_f2c( *group ), &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -1355,7 +1360,10 @@ FSUB( MPI_Comm_dup )( MPI_Fint* comm,
                       int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Comm_dup( PMPI_Comm_f2c( *comm ), &c_newcomm );
+
+
+    *ierr = MPI_Comm_dup( PMPI_Comm_f2c( *comm ), &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -1376,7 +1384,10 @@ FSUB( MPI_Comm_split )( MPI_Fint* comm,
                         int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Comm_split( PMPI_Comm_f2c( *comm ), *color, *key, &c_newcomm );
+
+
+    *ierr = MPI_Comm_split( PMPI_Comm_f2c( *comm ), *color, *key, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -1399,7 +1410,10 @@ FSUB( MPI_Intercomm_create )( MPI_Fint* local_comm,
                               int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Intercomm_create( PMPI_Comm_f2c( *local_comm ), *local_leader, PMPI_Comm_f2c( *peer_comm ), *remote_leader, *tag, &c_newcomm );
+
+
+    *ierr = MPI_Intercomm_create( PMPI_Comm_f2c( *local_comm ), *local_leader, PMPI_Comm_f2c( *peer_comm ), *remote_leader, *tag, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -1419,7 +1433,10 @@ FSUB( MPI_Intercomm_merge )( MPI_Fint* intercomm,
                              int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Intercomm_merge( PMPI_Comm_f2c( *intercomm ), *high, &c_newcomm );
+
+
+    *ierr = MPI_Intercomm_merge( PMPI_Comm_f2c( *intercomm ), *high, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -1444,7 +1461,10 @@ FSUB( MPI_Comm_free )( MPI_Fint* comm,
                        int*      ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
+
+
     *ierr = MPI_Comm_free( &c_comm );
+
     *comm = PMPI_Comm_c2f( c_comm );
 }
 #endif
@@ -1471,7 +1491,10 @@ FSUB( MPI_Group_difference )( MPI_Fint* group1,
                               int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_difference( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
+
+
+    *ierr = MPI_Group_difference( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1492,7 +1515,10 @@ FSUB( MPI_Group_excl )( MPI_Fint* group,
                         int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_excl( PMPI_Group_f2c( *group ), *n, ranks, &c_newgroup );
+
+
+    *ierr = MPI_Group_excl( PMPI_Group_f2c( *group ), *n, ranks, &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1513,7 +1539,10 @@ FSUB( MPI_Group_incl )( MPI_Fint* group,
                         int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_incl( PMPI_Group_f2c( *group ), *n, ranks, &c_newgroup );
+
+
+    *ierr = MPI_Group_incl( PMPI_Group_f2c( *group ), *n, ranks, &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1533,7 +1562,10 @@ FSUB( MPI_Group_intersection )( MPI_Fint* group1,
                                 int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_intersection( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
+
+
+    *ierr = MPI_Group_intersection( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1554,7 +1586,10 @@ FSUB( MPI_Group_range_excl )( MPI_Fint* group,
                               int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_range_excl( PMPI_Group_f2c( *group ), *n, ( int( * )[ 3 ] )ranges, &c_newgroup );
+
+
+    *ierr = MPI_Group_range_excl( PMPI_Group_f2c( *group ), *n, ( int( * )[ 3 ] )ranges, &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1575,7 +1610,10 @@ FSUB( MPI_Group_range_incl )( MPI_Fint* group,
                               int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_range_incl( PMPI_Group_f2c( *group ), *n, ( int( * )[ 3 ] )ranges, &c_newgroup );
+
+
+    *ierr = MPI_Group_range_incl( PMPI_Group_f2c( *group ), *n, ( int( * )[ 3 ] )ranges, &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1595,7 +1633,10 @@ FSUB( MPI_Group_union )( MPI_Fint* group1,
                          int*      ierr )
 {
     MPI_Group c_newgroup;
-    *ierr     = MPI_Group_union( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
+
+
+    *ierr = MPI_Group_union( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
+
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
@@ -1614,7 +1655,10 @@ FSUB( MPI_Comm_group )( MPI_Fint* comm,
                         int*      ierr )
 {
     MPI_Group c_group;
-    *ierr  = MPI_Comm_group( PMPI_Comm_f2c( *comm ), &c_group );
+
+
+    *ierr = MPI_Comm_group( PMPI_Comm_f2c( *comm ), &c_group );
+
     *group = PMPI_Group_c2f( c_group );
 }
 #endif
@@ -1633,7 +1677,10 @@ FSUB( MPI_Comm_remote_group )( MPI_Fint* comm,
                                int*      ierr )
 {
     MPI_Group c_group;
-    *ierr  = MPI_Comm_remote_group( PMPI_Comm_f2c( *comm ), &c_group );
+
+
+    *ierr = MPI_Comm_remote_group( PMPI_Comm_f2c( *comm ), &c_group );
+
     *group = PMPI_Group_c2f( c_group );
 }
 #endif
@@ -1658,7 +1705,10 @@ FSUB( MPI_Group_free )( MPI_Fint* group,
                         int*      ierr )
 {
     MPI_Group c_group = PMPI_Group_f2c( *group );
-    *ierr  = MPI_Group_free( &c_group );
+
+
+    *ierr = MPI_Group_free( &c_group );
+
     *group = PMPI_Group_c2f( c_group );
 }
 #endif
@@ -1900,7 +1950,10 @@ FSUB( MPI_Comm_set_errhandler )( MPI_Fint* comm,
                                  int*      ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
+
+
     *ierr = MPI_Comm_set_errhandler( c_comm, *( ( MPI_Errhandler* )errhandler ) );
+
     *comm = PMPI_Comm_c2f( c_comm );
 }
 #endif
@@ -1999,7 +2052,10 @@ FSUB( MPI_Comm_delete_attr )( MPI_Fint* comm,
                               int*      ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
+
+
     *ierr = MPI_Comm_delete_attr( c_comm, *comm_keyval );
+
     *comm = PMPI_Comm_c2f( c_comm );
 }
 #endif
@@ -2062,7 +2118,10 @@ FSUB( MPI_Comm_get_name )( MPI_Fint* comm,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Comm_get_name( PMPI_Comm_f2c( *comm ), c_comm_name, resultlen );
+
 
     c_comm_name_len = strlen( c_comm_name );
     strncpy( comm_name, c_comm_name, c_comm_name_len );
@@ -2086,7 +2145,10 @@ FSUB( MPI_Comm_set_attr )( MPI_Fint* comm,
                            int*      ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
+
+
     *ierr = MPI_Comm_set_attr( c_comm, *comm_keyval, attribute_val );
+
     *comm = PMPI_Comm_c2f( c_comm );
 }
 #endif
@@ -2105,8 +2167,8 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm,
                            int*      ierr,
                            int       comm_name_len )
 {
-    char*    c_comm_name = NULL;
     MPI_Comm c_comm      = PMPI_Comm_f2c( *comm );
+    char*    c_comm_name = NULL;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
     if ( !c_comm_name )
     {
@@ -2115,9 +2177,12 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm,
     strncpy( c_comm_name, comm_name, comm_name_len );
     c_comm_name[ comm_name_len ] = '\0';
 
+
+
     *ierr = MPI_Comm_set_name( c_comm, c_comm_name );
-    free( c_comm_name );
+
     *comm = PMPI_Comm_c2f( c_comm );
+    free( c_comm_name );
 }
 #endif
 #if HAVE( DECL_PMPI_KEYVAL_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_create )

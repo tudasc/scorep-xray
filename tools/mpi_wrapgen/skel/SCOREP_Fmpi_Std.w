@@ -10,6 +10,8 @@ ${proto:fortran} {
   ${decl:fortran}
   ${init:fortran}
 
+  ${xblock:fortran}
+
   *ierr = ${call:fortran}
   
   ${cleanup:fortran}

@@ -26,9 +26,9 @@
  */
 
 #include <string>
-using std::          string;
 #include <vector>
-using std::          vector;
+#include <map>
+
 #include "SCOREP_Wrapgen_Funcparam.h"
 using SCOREP::Wrapgen::Funcparam;
 
@@ -37,7 +37,7 @@ namespace SCOREP
 namespace Wrapgen
 {
 /** List of function parameters */
-typedef vector<Funcparam> paramlist_t;
+typedef std::vector<Funcparam> paramlist_t;
 
 /**
  * General function class
@@ -45,22 +45,32 @@ typedef vector<Funcparam> paramlist_t;
 class Func
 {
 public:
-    Func( const string &rtype,
-          const string &name,
-          const string &group,
-          const string &guard );
-    Func( const string &     rtype,
-          const string &     name,
-          const string &     group,
-          const string &     guard,
-          const paramlist_t &params );
+    /**
+     * @brief Constructor for creating an object without yet knowing about the
+     *        function call parameters.
+     */
+    Func( const std::string &rtype,
+          const std::string &name,
+          const std::string &group,
+          const std::string &guard );
+
+    /**
+     * @brief Construtor for creating an object with the knowledge of
+     *        the function call parameters.
+     */
+    Func( const std::string & rtype,
+          const std::string & name,
+          const std::string & group,
+          const std::string & guard,
+          const paramlist_t & params );
+
     virtual ~
     Func();
 
     /** return unique identifier of function
      * @return unique identifier
      */
-    string
+    std::string
     get_id
         ()     const
     {
@@ -70,7 +80,7 @@ public:
     /** return return type of function
      * @return string name of return type
      */
-    string
+    std::string
     get_rtype
         ()  const
     {
@@ -80,7 +90,7 @@ public:
     /** return name of function
      * @return name of function
      */
-    string
+    std::string
     get_name
         ()   const
     {
@@ -90,7 +100,7 @@ public:
     /** return family of prototype
      * @return family of prototype
      */
-    string
+    std::string
     get_family
         () const
     {
@@ -100,7 +110,7 @@ public:
     /** return group of prototype
      * @return group of prototype
      */
-    string
+    std::string
     get_group
         ()  const
     {
@@ -110,7 +120,7 @@ public:
     /** get optional guarding define for this wrapper
      * @return guard name
      */
-    string
+    std::string
     get_guard
         () const
     {
@@ -120,125 +130,280 @@ public:
     /** get special initialization block for wrapper
      * @return string of initialization block
      */
-    string
-    get_init_block
-        () const
+    std::string
+    get_init_block() const
     {
-        return m_init_block;
+        std::map<std::string, std::string>::const_iterator it = m_init_block.find( "" );
+        if ( it != m_init_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return std::string( "" );
+        }
+    }
+
+    /** get special initialization block for wrapper
+     * @param  id     id of initialization block
+     * @return string of initialization block
+     */
+    std::string
+    get_init_block( const std::string& id ) const
+    {
+        std::map<std::string, std::string>::const_iterator it = m_init_block.find( id );
+        if ( it != m_init_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
     }
 
     /** set special initialization block for wrapper
      * @param init string of initialization block
      */
     void
-    set_init_block
-    (
-        const string& decl
-    )
+    set_init_block( const std::string& decl )
     {
-        m_init_block = decl;
+        m_init_block[ "" ] = decl;
+    }
+
+    /** set special initialization block for wrapper
+     * @param id   id of initialization block
+     * @param init string of initialization block
+     */
+    void
+    set_init_block( const std::string& id,
+                    const std::string& decl )
+    {
+        m_init_block[ id ] = decl;
     }
 
     /** add statements to special initialization block
      * @param init string of initialization statement
      */
     void
-    add_init_block
-    (
-        const string& decl
-    )
+    add_init_block( const std::string& decl )
     {
-        m_init_block += decl;
+        m_init_block[ "" ] += decl;
+    }
+
+    /** add statements to special initialization block
+     * @param id   id of initialization block
+     * @param init string of initialization statement
+     */
+    void
+    add_init_block( const std::string& id,
+                    const std::string& decl )
+    {
+        m_init_block[ id ] += decl;
     }
 
     /** get special declaration block for wrapper
      * @return string of declaration block
      */
-    string
-    get_decl_block
-        () const
+    std::string
+    get_decl_block() const
     {
-        return m_decl_block;
+        std::map<std::string, std::string>::const_iterator it = m_decl_block.find( "" );
+        if ( it != m_decl_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    /** get special declaration block for wrapper
+     * @param  id     id of declaration block
+     * @return string of declaration block
+     */
+    std::string
+    get_decl_block( const std::string& id ) const
+    {
+        std::map<std::string, std::string>::const_iterator it = m_decl_block.find( id );
+        if ( it != m_decl_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
     }
 
     /** set special declaration block for wrapper
      * @param decl string of declaration block
      */
     void
-    set_decl_block
-    (
-        const string& decl
-    )
+    set_decl_block( const std::string& decl )
     {
-        m_decl_block = decl;
+        m_decl_block[ "" ] = decl;
+    }
+
+    /** set special declaration block for wrapper
+     * @param id   id of declaration block
+     * @param decl string of declaration block
+     */
+    void
+    set_decl_block( const std::string& id,
+                    const std::string& decl )
+    {
+        m_decl_block[ id ] = decl;
     }
 
     /** add statements to special declaration block
      * @param decl string of additional statement in declaration block
      */
     void
-    add_decl_block
-    (
-        const string& decl
-    )
+    add_decl_block( const std::string& decl )
     {
-        m_decl_block += decl;
+        m_decl_block[ "" ] += decl;
+    }
+
+    /** add statements to special declaration block
+     * @param decl string of additional statement in declaration block
+     */
+    void
+    add_decl_block( const std::string& id,
+                    const std::string& decl )
+    {
+        m_decl_block[ id ] += decl;
     }
 
     /** get special expression block for wrapper
      * @return string of expression block
      */
-    string
-    get_expr_block
-        () const
+    std::string
+    get_expr_block() const
     {
-        return m_expr_block;
+        std::map<std::string, std::string>::const_iterator it = m_expr_block.find( "" );
+        if ( it != m_expr_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    /** get special expression block for wrapper
+     * @return string of expression block
+     */
+    std::string
+    get_expr_block( const std::string& id ) const
+    {
+        std::map<std::string, std::string>::const_iterator it = m_expr_block.find( id );
+        if ( it != m_expr_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
     }
 
     /** set special expression block for wrapper
      * @param string of expression block
      */
     void
-    set_expr_block
-    (
-        const string& expr
-    )
+    set_expr_block( const std::string& expr )
     {
-        m_expr_block = expr;
+        m_expr_block[ "" ] = expr;
     }
+
+    /** set special expression block for wrapper
+     * @param id     id of expression block
+     * @param string content of expression block
+     */
+    void
+    set_expr_block( const std::string& id,
+                    const std::string& expr )
+    {
+        m_expr_block[ id ] = expr;
+    }
+
 
     /** get special cleanup block for wrapper
      * @return string of cleanup block
      */
-    string
-    get_cleanup_block
-        () const
+    std::string
+    get_cleanup_block() const
     {
-        return m_cleanup_block;
+        std::map<std::string, std::string>::const_iterator it = m_cleanup_block.find( "" );
+        if ( it != m_cleanup_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    /** get special cleanup block for wrapper
+     * @param  id     id of cleanup block
+     * @return string of cleanup block
+     */
+    std::string
+    get_cleanup_block( const std::string& id ) const
+    {
+        std::map<std::string, std::string>::const_iterator it = m_cleanup_block.find( id );
+        if ( it != m_cleanup_block.end() )
+        {
+            return it->second;
+        }
+        else
+        {
+            return "";
+        }
     }
 
     /** set special cleanup block for wrapper
      * @param statement string of cleanup block
      */
     void
-    set_cleanup_block
-    (
-        const string& statement
-    )
+    set_cleanup_block( const std::string& statement )
     {
-        m_cleanup_block = statement;
+        m_cleanup_block[ "" ] = statement;
+    }
+
+    /** set special cleanup block for wrapper
+     * @param id        id of cleanup block
+     * @param statement string of cleanup block
+     */
+    void
+    set_cleanup_block( const std::string& id,
+                       const std::string& statement )
+    {
+        m_cleanup_block[ id ] = statement;
     }
 
     /** add statements to special cleanup block
      * @param statement string of cleanup statement
      */
     void
-    add_cleanup_block
-    (
-        const string& statement
-    )
+    add_cleanup_block( const std::string& statement )
     {
-        m_cleanup_block += statement;
+        m_cleanup_block[ "" ] += statement;
+    }
+
+    /** add statements to special cleanup block
+     * #param id        id of cleanup block
+     * @param statement string of cleanup statement
+     */
+    void
+    add_cleanup_block( const std::string& id,
+                       const std::string& statement )
+    {
+        m_cleanup_block[ id ] += statement;
     }
 
     /** get number of parameters of this function
@@ -278,9 +443,9 @@ public:
     void
     add_param
     (
-        const string& type,
-        const string& name,
-        const string& suffix
+        const std::string& type,
+        const std::string& name,
+        const std::string& suffix
     );
 
     /** get the n-th function parameter
@@ -299,17 +464,17 @@ public:
      * @param filename associated wrapper template
      * @return string object containing the function wrapper
      */
-    virtual string
+    virtual std::string
     generate_wrapper
     (
-        const string& filename
+        const std::string& filename
     ) const;
 
     /** write function configuration
      * @return string holding the configurations values for the function
      *         call
      */
-    virtual string
+    virtual std::string
     write_conf
         () const;
 
@@ -320,7 +485,7 @@ protected:
     void
     set_family
     (
-        const string& family
+        const std::string& family
     )
     {
         m_family = family;
@@ -328,27 +493,27 @@ protected:
 
 private:
     /** unique function id */
-    string      m_id;
+    std::string                        m_id;
     /** return type of function */
-    string      m_rtype;
+    std::string                        m_rtype;
     /** name of function */
-    string      m_name;
+    std::string                        m_name;
     /** functional group */
-    string      m_group;
+    std::string                        m_group;
     /** guard name that is used to decide whether this wrapper is built */
-    string      m_guard;
+    std::string                        m_guard;
     /** family of prototype */
-    string      m_family;
+    std::string                        m_family;
     /** special declaration block */
-    string      m_decl_block;
+    std::map<std::string, std::string> m_decl_block;
     /** special initialization block */
-    string      m_init_block;
+    std::map<std::string, std::string> m_init_block;
     /** special expression block */
-    string      m_expr_block;
+    std::map<std::string, std::string> m_expr_block;
     /** special cleanup block */
-    string      m_cleanup_block;
+    std::map<std::string, std::string> m_cleanup_block;
     /** vector of function parameters */
-    paramlist_t m_params;
+    paramlist_t                        m_params;
 
     /** number of created function objects */
     static int num_func;

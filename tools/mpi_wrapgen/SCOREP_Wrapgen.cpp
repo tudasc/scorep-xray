@@ -259,11 +259,11 @@ SCOREP::Wrapgen::read_xml_prototypes
             {
                 if ( cur->type == XML_ELEMENT_NODE )
                 {
-                    string      name, rtype, group;
-                    string      version, send = "0", recv = "0";
-                    string      decl, xblock;
-                    string      guard;
-                    paramlist_t params;
+                    string              name, rtype, group;
+                    string              version, send = "0", recv = "0";
+                    map<string, string> decl, xblock;
+                    string              guard;
+                    paramlist_t         params;
 
                     // 'name' is attribute of prototype
                     XML_GET_STR_ATTR( cur, "name", name );
@@ -284,16 +284,24 @@ SCOREP::Wrapgen::read_xml_prototypes
                             if ( xmlStrcmp( el->name, ( const xmlChar* )
                                             "param" ) == 0 )
                             {
-                                string pname, type, suffix;
-                                char   access;
+                                string         pname, type, suffix, special;
+                                char           access;
+                                vector<string> special_tags;
 
                                 XML_GET_STR_ATTR( el, "type", type );
                                 XML_GET_STR_ATTR( el, "name", pname );
                                 XML_GET_CHAR_ATTR( el, "access", access );
                                 XML_GET_STR_ATTR( el, "suffix", suffix );
+                                XML_GET_STR_ATTR( el, "special", special );
 
                                 params.push_back( Funcparam( type, pname,
                                                              suffix, access ) );
+                                tokenize( special, ",", special_tags );
+                                for ( vector<string>::const_iterator tag = special_tags.begin();
+                                      tag != special_tags.end(); ++tag )
+                                {
+                                    params.back().add_special( *tag );
+                                }
                             }
                             if ( xmlStrcmp( el->name, ( const xmlChar* )
                                             "decl" ) == 0 )
@@ -302,7 +310,9 @@ SCOREP::Wrapgen::read_xml_prototypes
                                 content = xmlNodeGetContent( el );
                                 if ( content )
                                 {
-                                    decl = string( ( const char* )content );
+                                    string id;
+                                    XML_GET_STR_ATTR( el, "id", id );
+                                    decl[ id ] = string( ( const char* )content );
                                     xmlFree( content );
                                 }
                             }
@@ -313,7 +323,9 @@ SCOREP::Wrapgen::read_xml_prototypes
                                 content = xmlNodeGetContent( el );
                                 if ( content )
                                 {
-                                    xblock = string( ( const char* )content );
+                                    string id;
+                                    XML_GET_STR_ATTR( el, "id", id );
+                                    xblock[ id ] = string( ( const char* )content );
                                     xmlFree( content );
                                 }
                             }
@@ -342,8 +354,18 @@ SCOREP::Wrapgen::read_xml_prototypes
                         // and register it in map
                         MPIFunc f = MPIFunc( rtype, name, group, guard,
                                              version, params );
-                        f.set_decl_block( decl );
-                        f.set_expr_block( xblock );
+                        for ( map<string, string>::const_iterator it = decl.begin();
+                              it != decl.end();
+                              ++it )
+                        {
+                            f.set_decl_block( it->first, it->second );
+                        }
+                        for ( map<string, string>::const_iterator it = xblock.begin();
+                              it != xblock.end();
+                              ++it )
+                        {
+                            f.set_expr_block( it->first, it->second );
+                        }
                         f.set_sendcount_rule( send );
                         f.set_recvcount_rule( recv );
                         mpiFuncs.insert( make_pair( name, f ) );

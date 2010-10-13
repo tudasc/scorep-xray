@@ -36,8 +36,7 @@ SCOREP::Wrapgen::Func::Func( const string&      rtype,
                              const string&      guard,
                              const paramlist_t& params ) :
     m_id( int2string( num_func++ ) ), m_rtype( rtype ), m_name( name ),
-    m_group( group ), m_guard( guard ), m_family( "default" ), m_decl_block( "" ),
-    m_expr_block( "" ), m_params( params )
+    m_group( group ), m_guard( guard ), m_family( "default" ), m_params( params )
 {
 }
 

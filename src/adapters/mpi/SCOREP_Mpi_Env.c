@@ -115,12 +115,6 @@ MPI_Init( int*    argc,
 #if defined( SCOREP_WITH_OA )
     SCOREP_OA_Init();
 #endif
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    if ( SCOREP_IS_MPI_HOOKS_ON )
-    {
-        scorep_mpiprofile_init();
-    }
-#endif
 
     return return_val;
 }

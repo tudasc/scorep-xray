@@ -268,11 +268,21 @@
  * @ingroup misc
  */
 void
-FSUB( MPI_Address )( void*     location,
-                     MPI_Aint* address,
-                     int*      ierr )
+FSUB( MPI_Address )( void* location,
+                     int*  address,
+                     int*  ierr )
 {
-    *ierr = MPI_Address( location, address );
+    MPI_Aint c_address;
+
+
+
+    *ierr = MPI_Address( location, &c_address );
+
+    *address = ( int )c_address;
+    if ( *address != c_address )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Address\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_ALLOC_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Alloc_mem )
@@ -378,6 +388,7 @@ FSUB( MPI_Info_delete )( MPI_Info* info,
     c_key[ key_len ] = '\0';
 
 
+
     *ierr = MPI_Info_delete( *info, c_key );
 
     free( c_key );
@@ -450,6 +461,7 @@ FSUB( MPI_Info_get )( MPI_Info* info,
     }
 
 
+
     *ierr = MPI_Info_get( *info, c_key, *valuelen, c_value, flag );
 
     free( c_key );
@@ -500,6 +512,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Info* info,
     }
 
 
+
     *ierr = MPI_Info_get_nthkey( *info, *n, c_key );
 
 
@@ -533,6 +546,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Info* info,
     }
     strncpy( c_key, key, key_len );
     c_key[ key_len ] = '\0';
+
 
 
     *ierr = MPI_Info_get_valuelen( *info, c_key, valuelen, flag );
@@ -573,6 +587,7 @@ FSUB( MPI_Info_set )( MPI_Info* info,
     }
     strncpy( c_value, value, value_len );
     c_value[ value_len ] = '\0';
+
 
 
     *ierr = MPI_Info_set( *info, c_key, c_value );
@@ -643,6 +658,14 @@ FSUB( MPI_Request_get_status )( MPI_Request* request,
                                 MPI_Status*  status,
                                 int*         ierr )
 {
+    #if defined( MPI_HAS_STATUS_IGNORE )
+    if ( status == scorep_mpi_fortran_status_ignore )
+    {
+        status = MPI_STATUS_IGNORE;
+    }
+    #endif
+
+
     *ierr = MPI_Request_get_status( *request, flag, status );
 }
 #endif
@@ -660,10 +683,19 @@ FSUB( MPI_Request_get_status )( MPI_Request* request,
  */
 void
 FSUB( MPI_Address )( void*     location,
-                     MPI_Aint* address,
+                     MPI_Fint* address,
                      int*      ierr )
 {
-    *ierr = MPI_Address( location, address );
+    MPI_Aint c_address;
+
+
+    *ierr = MPI_Address( location, &c_address );
+
+    *address = ( MPI_Fint )c_address;
+    if ( *address != c_address )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Address\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_ALLOC_MEM ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Alloc_mem )
@@ -748,7 +780,10 @@ FSUB( MPI_Info_create )( MPI_Fint* info,
                          int*      ierr )
 {
     MPI_Info c_info;
+
+
     *ierr = MPI_Info_create( &c_info );
+
     *info = PMPI_Info_c2f( c_info );
 }
 #endif
@@ -767,8 +802,8 @@ FSUB( MPI_Info_delete )( MPI_Fint* info,
                          int*      ierr,
                          int       key_len )
 {
-    char*    c_key  = NULL;
     MPI_Info c_info = PMPI_Info_f2c( *info );
+    char*    c_key  = NULL;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
@@ -777,9 +812,12 @@ FSUB( MPI_Info_delete )( MPI_Fint* info,
     strncpy( c_key, key, key_len );
     c_key[ key_len ] = '\0';
 
+
+
     *ierr = MPI_Info_delete( c_info, c_key );
-    free( c_key );
+
     *info = PMPI_Info_c2f( c_info );
+    free( c_key );
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_dup )
@@ -797,7 +835,10 @@ FSUB( MPI_Info_dup )( MPI_Fint* info,
                       int*      ierr )
 {
     MPI_Info c_newinfo;
-    *ierr    = MPI_Info_dup( PMPI_Info_f2c( *info ), &c_newinfo );
+
+
+    *ierr = MPI_Info_dup( PMPI_Info_f2c( *info ), &c_newinfo );
+
     *newinfo = PMPI_Info_c2f( c_newinfo );
 }
 #endif
@@ -815,7 +856,10 @@ FSUB( MPI_Info_free )( MPI_Fint* info,
                        int*      ierr )
 {
     MPI_Info c_info = PMPI_Info_f2c( *info );
+
+
     *ierr = MPI_Info_free( &c_info );
+
     *info = PMPI_Info_c2f( c_info );
 }
 #endif
@@ -855,7 +899,10 @@ FSUB( MPI_Info_get )( MPI_Fint* info,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Info_get( PMPI_Info_f2c( *info ), c_key, *valuelen, c_value, flag );
+
     free( c_key );
 
     c_value_len = strlen( c_value );
@@ -905,7 +952,10 @@ FSUB( MPI_Info_get_nthkey )( MPI_Fint* info,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Info_get_nthkey( PMPI_Info_f2c( *info ), *n, c_key );
+
 
     c_key_len = strlen( c_key );
     strncpy( key, c_key, c_key_len );
@@ -939,7 +989,10 @@ FSUB( MPI_Info_get_valuelen )( MPI_Fint* info,
     strncpy( c_key, key, key_len );
     c_key[ key_len ] = '\0';
 
+
+
     *ierr = MPI_Info_get_valuelen( PMPI_Info_f2c( *info ), c_key, valuelen, flag );
+
     free( c_key );
 }
 #endif
@@ -960,9 +1013,9 @@ FSUB( MPI_Info_set )( MPI_Fint* info,
                       int       key_len,
                       int       value_len )
 {
+    MPI_Info c_info  = PMPI_Info_f2c( *info );
     char*    c_key   = NULL;
     char*    c_value = NULL;
-    MPI_Info c_info  = PMPI_Info_f2c( *info );
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
     if ( !c_key )
     {
@@ -979,10 +1032,13 @@ FSUB( MPI_Info_set )( MPI_Fint* info,
     strncpy( c_value, value, value_len );
     c_value[ value_len ] = '\0';
 
+
+
     *ierr = MPI_Info_set( c_info, c_key, c_value );
+
+    *info = PMPI_Info_c2f( c_info );
     free( c_key );
     free( c_value );
-    *info = PMPI_Info_c2f( c_info );
 }
 #endif
 #if HAVE( DECL_PMPI_OP_COMMUTATIVE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_commutative )
@@ -1018,8 +1074,11 @@ FSUB( MPI_Op_create )( void*     function,
                        int*      ierr )
 {
     MPI_Op c_op;
+
+
     *ierr = MPI_Op_create( ( MPI_User_function* )function, *commute, &c_op );
-    *op   = PMPI_Op_c2f( c_op );
+
+    *op = PMPI_Op_c2f( c_op );
 }
 #endif
 #if HAVE( DECL_PMPI_OP_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_free )
@@ -1036,8 +1095,11 @@ FSUB( MPI_Op_free )( MPI_Fint* op,
                      int*      ierr )
 {
     MPI_Op c_op = PMPI_Op_f2c( *op );
+
+
     *ierr = MPI_Op_free( &c_op );
-    *op   = PMPI_Op_c2f( c_op );
+
+    *op = PMPI_Op_c2f( c_op );
 }
 #endif
 #if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_get_status )
@@ -1055,9 +1117,27 @@ FSUB( MPI_Request_get_status )( MPI_Fint* request,
                                 MPI_Fint* status,
                                 int*      ierr )
 {
-    MPI_Status c_status;
-    *ierr = MPI_Request_get_status( PMPI_Request_f2c( *request ), flag, &c_status );
-    PMPI_Status_c2f( &c_status, status );
+    MPI_Status  c_status;
+    MPI_Status* c_status_ptr = &c_status;
+
+
+    #if defined( MPI_HAS_STATUS_IGNORE )
+    if ( status == scorep_mpi_fortran_status_ignore )
+    {
+        /* hardcoded c_status_ptr needs to be reset */
+        c_status_ptr = MPI_STATUS_IGNORE;
+    }
+    #endif
+
+
+    *ierr = MPI_Request_get_status( PMPI_Request_f2c( *request ), flag, c_status_ptr );
+
+    #if defined( HAS_MPI_STATUS_IGNORE )
+    if ( c_status_ptr != MPI_STATUS_IGNORE )
+#endif
+    {
+        PMPI_Status_c2f( c_status_ptr, status );
+    }
 }
 #endif
 

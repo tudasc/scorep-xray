@@ -26,6 +26,7 @@
  */
 
 #include <string>
+#include <set>
 
 namespace SCOREP
 {
@@ -39,50 +40,80 @@ enum access_type { IN, OUT, BOTH };
 class Funcparam
 {
 public:
-    /** Create a function parameter object with full set of attributes */
-    Funcparam( const string &type,
-               const string &name,
-               const string &suffix,
-               char          atype );
-
-    /** Returns the type of the parameter as a string. The type includes pointer (*) and
-        reference (&) types.
+    /**
+       Creates a function parameter object with full set of attributes
      */
-    string
+    Funcparam( const std::string &type,
+               const std::string &name,
+               const std::string &suffix,
+               char               atype );
+
+    /**
+       Returns the type of the parameter as a string. The type includes pointer (*) and
+       reference (&) types.
+     */
+    std::string
     get_type
         ()   const
     {
         return m_type;
     }
 
-    /** Returns the name of the parameter */
-    string
+    /**
+       Returns the name of the parameter
+     */
+    std::string
     get_name
         ()   const
     {
         return m_name;
     }
 
-    /** Returns any suffix for the parameter. E.g., an array specification */
-    string
+    /**
+       Returns any suffix for the parameter. E.g., an array specification
+     */
+    std::string
     get_suffix
         () const
     {
         return m_suffix;
     }
 
-    /** Returns character indicating the access type. It can be 'i' for input, 'o' for
-        output, or 'b' for both.
+    /**
+       Returns character indicating the access type. It can be 'i' for input, 'o' for
+       output, or 'b' for both.
      */
     char
     get_atype
         ()  const;
 
+    /**
+       Adds a special tag to the parameter.
+     */
+    void
+    add_special( std::string tag )
+    {
+        m_special.insert( tag );
+    }
+
+    /**
+       Returns whether the parameter has a special tag.
+     */
+    bool
+    has_special_tag( std::string tag ) const
+    {
+        return m_special.find( tag ) != m_special.end();
+    }
+
 private:
-    string      m_type;      // Type; includes pointer (*) and reference (&) types
-    string      m_name;
-    string      m_suffix;    // Type suffix; typically array specifications
-    access_type m_atype;     // Type of Argument (i,o,b) Input,Ouput,Both
+    std::string m_type;           // Type; includes pointer (*) and reference (&) types
+    std::string m_name;
+    std::string m_suffix;         // Type suffix; typically array specifications
+    access_type m_atype;          // Type of Argument (i,o,b) Input,Ouput,Both
+    /**
+       Special tag for a parameter. Used to support deprecated functions.
+     */
+    std::set<std::string> m_special;
 };
 }
 }

@@ -367,6 +367,14 @@ FSUB( MPI_Accumulate )( void*         origin_addr,
                         MPI_Win*      win,
                         int*          ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Accumulate( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *op, *win );
 }
 #endif
@@ -389,6 +397,14 @@ FSUB( MPI_Get )( void*         origin_addr,
                  MPI_Win*      win,
                  int*          ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Get( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win );
 }
 #endif
@@ -411,6 +427,14 @@ FSUB( MPI_Put )( void*         origin_addr,
                  MPI_Win*      win,
                  int*          ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Put( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win );
 }
 #endif
@@ -775,6 +799,7 @@ FSUB( MPI_Win_get_name )( MPI_Win* win,
     }
 
 
+
     *ierr = MPI_Win_get_name( *win, c_win_name, resultlen );
 
 
@@ -825,6 +850,7 @@ FSUB( MPI_Win_set_name )( MPI_Win* win,
     c_win_name[ win_name_len ] = '\0';
 
 
+
     *ierr = MPI_Win_set_name( *win, c_win_name );
 
     free( c_win_name );
@@ -859,6 +885,14 @@ FSUB( MPI_Accumulate )( void*     origin_addr,
                         MPI_Fint* win,
                         int*      ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
 }
 #endif
@@ -882,6 +916,14 @@ FSUB( MPI_Get )( void*     origin_addr,
                  MPI_Fint* win,
                  int*      ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Get( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
 }
 #endif
@@ -905,6 +947,14 @@ FSUB( MPI_Put )( void*     origin_addr,
                  MPI_Fint* win,
                  int*      ierr )
 {
+    #if defined( HAS_MPI_BOTTOM )
+    if ( origin_addr == scorep_mpi_fortran_bottom )
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+
+
     *ierr = MPI_Put( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
 }
 #endif
@@ -933,8 +983,11 @@ FSUB( MPI_Win_create )( void*     base,
                         int*      ierr )
 {
     MPI_Win c_win;
+
+
     *ierr = MPI_Win_create( base, *size, *disp_unit, PMPI_Info_f2c( *info ), PMPI_Comm_f2c( *comm ), &c_win );
-    *win  = PMPI_Win_c2f( c_win );
+
+    *win = PMPI_Win_c2f( c_win );
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_free )
@@ -951,8 +1004,11 @@ FSUB( MPI_Win_free )( MPI_Fint* win,
                       int*      ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
+
+
     *ierr = MPI_Win_free( &c_win );
-    *win  = PMPI_Win_c2f( c_win );
+
+    *win = PMPI_Win_c2f( c_win );
 }
 #endif
 
@@ -971,7 +1027,10 @@ FSUB( MPI_Win_get_group )( MPI_Fint* win,
                            int*      ierr )
 {
     MPI_Group c_group;
-    *ierr  = MPI_Win_get_group( PMPI_Win_f2c( *win ), &c_group );
+
+
+    *ierr = MPI_Win_get_group( PMPI_Win_f2c( *win ), &c_group );
+
     *group = PMPI_Group_c2f( c_group );
 }
 #endif
@@ -1191,8 +1250,11 @@ FSUB( MPI_Win_set_errhandler )( MPI_Fint* win,
                                 int*      ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
+
+
     *ierr = MPI_Win_set_errhandler( c_win, *( ( MPI_Errhandler* )errhandler ) );
-    *win  = PMPI_Win_c2f( c_win );
+
+    *win = PMPI_Win_c2f( c_win );
 }
 #endif
 
@@ -1235,8 +1297,11 @@ FSUB( MPI_Win_delete_attr )( MPI_Fint* win,
                              int*      ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
+
+
     *ierr = MPI_Win_delete_attr( c_win, *win_keyval );
-    *win  = PMPI_Win_c2f( c_win );
+
+    *win = PMPI_Win_c2f( c_win );
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_free_keyval )
@@ -1298,7 +1363,10 @@ FSUB( MPI_Win_get_name )( MPI_Fint* win,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Win_get_name( PMPI_Win_f2c( *win ), c_win_name, resultlen );
+
 
     c_win_name_len = strlen( c_win_name );
     strncpy( win_name, c_win_name, c_win_name_len );
@@ -1322,8 +1390,11 @@ FSUB( MPI_Win_set_attr )( MPI_Fint* win,
                           int*      ierr )
 {
     MPI_Win c_win = PMPI_Win_f2c( *win );
+
+
     *ierr = MPI_Win_set_attr( c_win, *win_keyval, attribute_val );
-    *win  = PMPI_Win_c2f( c_win );
+
+    *win = PMPI_Win_c2f( c_win );
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
@@ -1341,8 +1412,8 @@ FSUB( MPI_Win_set_name )( MPI_Fint* win,
                           int*      ierr,
                           int       win_name_len )
 {
-    char*   c_win_name = NULL;
     MPI_Win c_win      = PMPI_Win_f2c( *win );
+    char*   c_win_name = NULL;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
     if ( !c_win_name )
     {
@@ -1351,9 +1422,12 @@ FSUB( MPI_Win_set_name )( MPI_Fint* win,
     strncpy( c_win_name, win_name, win_name_len );
     c_win_name[ win_name_len ] = '\0';
 
+
+
     *ierr = MPI_Win_set_name( c_win, c_win_name );
-    free( c_win_name );
+
     *win = PMPI_Win_c2f( c_win );
+    free( c_win_name );
 }
 #endif
 

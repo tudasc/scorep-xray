@@ -11,7 +11,11 @@ ${proto:f2c_c2f}
 {
     ${decl:f2c_c2f}
     ${init:f2c_c2f}
+
+    ${xblock:f2c_c2f}
+
     *ierr = ${call:f2c_c2f}
+
     ${cleanup:f2c_c2f}
 }
 ${guard:end}

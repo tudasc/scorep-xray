@@ -136,6 +136,13 @@ is_array
 }
 
 bool
+needs_input_handling( const Funcparam& param )
+{
+    return is_input_param( param ) ||
+           is_input_output_param( param );
+}
+
+bool
 needs_output_handling
 (
     const Funcparam& param
@@ -158,7 +165,7 @@ needs_cast
 }               // namespace datatypes
 }               // namespace mpi
 }               // namespace handler
-}               // namespace wrapgen
+}               // namespace Wrapgen
 }               // namespace SCOREP
 
 #endif

@@ -204,6 +204,7 @@ FSUB( MPI_Add_error_string )( int*  errorcode,
     c_string[ string_len ] = '\0';
 
 
+
     *ierr = MPI_Add_error_string( *errorcode, c_string );
 
     free( c_string );
@@ -312,6 +313,7 @@ FSUB( MPI_Error_string )( int*  errorcode,
     }
 
 
+
     *ierr = MPI_Error_string( *errorcode, c_string, resultlen );
 
 
@@ -381,7 +383,10 @@ FSUB( MPI_Add_error_string )( MPI_Fint* errorcode,
     strncpy( c_string, string, string_len );
     c_string[ string_len ] = '\0';
 
+
+
     *ierr = MPI_Add_error_string( *errorcode, c_string );
+
     free( c_string );
 }
 #endif
@@ -493,7 +498,10 @@ FSUB( MPI_Error_string )( MPI_Fint* errorcode,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Error_string( *errorcode, c_string, resultlen );
+
 
     c_string_len = strlen( c_string );
     strncpy( string, c_string, c_string_len );

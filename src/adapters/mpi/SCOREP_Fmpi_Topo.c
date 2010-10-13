@@ -696,7 +696,10 @@ FSUB( MPI_Cart_create )( MPI_Fint* comm_old,
                          int*      ierr )
 {
     MPI_Comm c_comm_cart;
-    *ierr      = MPI_Cart_create( PMPI_Comm_f2c( *comm_old ), *ndims, dims, periods, *reorder, &c_comm_cart );
+
+
+    *ierr = MPI_Cart_create( PMPI_Comm_f2c( *comm_old ), *ndims, dims, periods, *reorder, &c_comm_cart );
+
     *comm_cart = PMPI_Comm_c2f( c_comm_cart );
 }
 #endif
@@ -794,7 +797,10 @@ FSUB( MPI_Cart_sub )( MPI_Fint* comm,
                       int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Cart_sub( PMPI_Comm_f2c( *comm ), remain_dims, &c_newcomm );
+
+
+    *ierr = MPI_Cart_sub( PMPI_Comm_f2c( *comm ), remain_dims, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -855,7 +861,10 @@ FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old,
                                int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Dist_graph_create( PMPI_Comm_f2c( *comm_old ), *n, sources, degrees, destinations, weights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
+
+
+    *ierr = MPI_Dist_graph_create( PMPI_Comm_f2c( *comm_old ), *n, sources, degrees, destinations, weights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -882,7 +891,10 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old,
                                         int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Dist_graph_create_adjacent( PMPI_Comm_f2c( *comm_old ), *indegree, sources, sourceweights, *outdegree, destinations, destweights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
+
+
+    *ierr = MPI_Dist_graph_create_adjacent( PMPI_Comm_f2c( *comm_old ), *indegree, sources, sourceweights, *outdegree, destinations, destweights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif
@@ -946,7 +958,10 @@ FSUB( MPI_Graph_create )( MPI_Fint* comm_old,
                           int*      ierr )
 {
     MPI_Comm c_newcomm;
-    *ierr    = MPI_Graph_create( PMPI_Comm_f2c( *comm_old ), *nnodes, index, edges, *reorder, &c_newcomm );
+
+
+    *ierr = MPI_Graph_create( PMPI_Comm_f2c( *comm_old ), *nnodes, index, edges, *reorder, &c_newcomm );
+
     *newcomm = PMPI_Comm_c2f( c_newcomm );
 }
 #endif

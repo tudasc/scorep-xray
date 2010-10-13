@@ -24,16 +24,10 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include "SCOREP_Fmpi.h"
 
 /* uppercase defines */
-/** @def MPI_Init_thread_U
-    Exchange MPI_Init_thread_U by MPI_INIT_THREAD.
-    It is used for the Fortran wrappers of me).
- */
-#define MPI_Init_thread_U MPI_INIT_THREAD
-
-
 /** @def MPI_Finalize_U
     Exchange MPI_Finalize_U by MPI_FINALIZE.
     It is used for the Fortran wrappers of me).
@@ -51,6 +45,12 @@
     It is used for the Fortran wrappers of me).
  */
 #define MPI_Init_U MPI_INIT
+
+/** @def MPI_Init_thread_U
+    Exchange MPI_Init_thread_U by MPI_INIT_THREAD.
+    It is used for the Fortran wrappers of me).
+ */
+#define MPI_Init_thread_U MPI_INIT_THREAD
 
 /** @def MPI_Initialized_U
     Exchange MPI_Initialized_U by MPI_INITIALIZED.
@@ -72,13 +72,6 @@
 
 
 /* lowercase defines */
-/** @def MPI_Init_thread_L
-    Exchanges MPI_Init_thread_L by mpi_init_thread.
-    It is used for the Forran wrappers of me).
- */
-#define MPI_Init_thread_L mpi_init_thread
-
-
 /** @def MPI_Finalize_L
     Exchanges MPI_Finalize_L by mpi_finalize.
     It is used for the Forran wrappers of me).
@@ -96,6 +89,12 @@
     It is used for the Forran wrappers of me).
  */
 #define MPI_Init_L mpi_init
+
+/** @def MPI_Init_thread_L
+    Exchanges MPI_Init_thread_L by mpi_init_thread.
+    It is used for the Forran wrappers of me).
+ */
+#define MPI_Init_thread_L mpi_init_thread
 
 /** @def MPI_Initialized_L
     Exchanges MPI_Initialized_L by mpi_initialized.
@@ -117,6 +116,86 @@
 
 
 /**
+ * @name Fortran utility functions
+ * @{
+ */
+
+/** lowercase macro for fortran callback */
+#define scorep_mpi_fortran_init_cb_L scorep_mpi_fortran_init_cb
+/** uppercase macro for fortran callback */
+#define scorep_mpi_fortran_init_cb_U SCOREP_MPI_FORTRAN_INIT_CB
+
+/** lowercase define for initialization call for fortran MPI_BOTTOM */
+#define scorep_mpi_fortran_init_bottom_L scorep_mpi_fortran_init_bottom
+/** uppercase define for initialization call for fortran MPI_BOTTOM */
+#define scorep_mpi_fortran_init_bottom_U SCOREP_MPI_FORTRAN_INIT_BOTTOM
+/** address of fortran variable used as reference for MPI_BOTTOM */
+void* scorep_mpi_fortran_bottom = NULL;
+/** lowercase define for initialization call for fortran MPI_IN_PLACE */
+#define scorep_mpi_fortran_init_in_place_L scorep_mpi_fortran_init_in_place
+/** uppercase define for initialization call for fortran MPI_IN_PLACE */
+#define scorep_mpi_fortran_init_in_place_U SCOREP_MPI_FORTRAN_INIT_IN_PLACE
+/** address of fortran variable used as reference for MPI_IN_PLACE */
+void* scorep_mpi_fortran_in_place = NULL;
+/** lowercase define for initialization call for fortran MPI_STATUS_IGNORE */
+#define scorep_mpi_fortran_init_status_ignore_L scorep_mpi_fortran_init_status_ignore
+/** uppercase define for initialization call for fortran MPI_STATUS_IGNORE */
+#define scorep_mpi_fortran_init_status_ignore_U SCOREP_MPI_FORTRAN_INIT_STATUS_IGNORE
+/** address of fortran variable used as reference for MPI_STATUS_IGNORE */
+void* scorep_mpi_fortran_status_ignore = NULL;
+/** lowercase define for initialization call for fortran MPI_STATUSES_IGNORE */
+#define scorep_mpi_fortran_init_statuses_ignore_L scorep_mpi_fortran_init_statuses_ignore
+/** uppercase define for initialization call for fortran MPI_STATUSES_IGNORE */
+#define scorep_mpi_fortran_init_statuses_ignore_U SCOREP_MPI_FORTRAN_INIT_STATUSES_IGNORE
+/** address of fortran variable used as reference for MPI_STATUSES_IGNORE */
+void* scorep_mpi_fortran_statuses_ignore = NULL;
+
+/** initialization function for fortran MPI_BOTTOM
+ * @param bottom address of variable acting as reference for MPI_BOTTOM
+ */
+void
+FSUB( scorep_mpi_fortran_init_bottom )( MPI_Fint* bottom )
+{
+#if defined( HAS_MPI_BOTTOM )
+    scorep_mpi_fortran_bottom = bottom;
+#endif
+}
+
+/** initialization function for fortran MPI_IN_PLACE
+ * @param in_place address of variable acting as reference for MPI_IN_PLACE
+ */
+void
+FSUB( scorep_mpi_fortran_init_in_place )( MPI_Fint* in_place )
+{
+#if defined( HAS_MPI_IN_PLACE )
+    scorep_mpi_fortran_in_place = in_place;
+#endif
+}
+
+/** initialization function for fortran MPI_STATUS_IGNORE
+ * @param status_ignore address of variable acting as reference for MPI_STATUS_IGNORE
+ */
+void
+FSUB( scorep_mpi_fortran_init_status_ignore )( MPI_Fint* status_ignore )
+{
+#if defined( HAS_MPI_STATUS_IGNORE )
+    scorep_mpi_fortran_status_ignore = status_ignore;
+#endif
+}
+
+/** initialization function for fortran MPI_STATUSES_IGNORE
+ * @param statuses_ignore address of variable acting as reference for MPI_STATUSES_IGNORE
+ */
+void
+FSUB( scorep_mpi_fortran_init_statuses_ignore )( MPI_Fint* statuses_ignore )
+{
+#if defined( HAS_MPI_STATUSES_IGNORE )
+    scorep_mpi_fortran_statuses_ignore = statuses_ignore;
+#endif
+}
+
+/**
+ * @}
  * @name Fortran wrappers
  * @{
  */

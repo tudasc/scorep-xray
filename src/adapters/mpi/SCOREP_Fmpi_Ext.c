@@ -235,6 +235,7 @@ FSUB( MPI_Get_processor_name )( char* name,
     }
 
 
+
     *ierr = MPI_Get_processor_name( c_name, resultlen );
 
 
@@ -346,9 +347,12 @@ FSUB( MPI_Get_count )( MPI_Fint* status,
                        MPI_Fint* count,
                        int*      ierr )
 {
-    MPI_Status c_status;
-    PMPI_Status_f2c( status, &c_status );
-    *ierr = MPI_Get_count( &c_status, PMPI_Type_f2c( *datatype ), count );
+    MPI_Status  c_status;
+    MPI_Status* c_status_ptr = &c_status;
+    PMPI_Status_f2c( status, c_status_ptr );
+
+
+    *ierr = MPI_Get_count( c_status_ptr, PMPI_Type_f2c( *datatype ), count );
 }
 #endif
 #if HAVE( DECL_PMPI_GET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements )
@@ -366,9 +370,12 @@ FSUB( MPI_Get_elements )( MPI_Fint* status,
                           MPI_Fint* count,
                           int*      ierr )
 {
-    MPI_Status c_status;
-    PMPI_Status_f2c( status, &c_status );
-    *ierr = MPI_Get_elements( &c_status, PMPI_Type_f2c( *datatype ), count );
+    MPI_Status  c_status;
+    MPI_Status* c_status_ptr = &c_status;
+    PMPI_Status_f2c( status, c_status_ptr );
+
+
+    *ierr = MPI_Get_elements( c_status_ptr, PMPI_Type_f2c( *datatype ), count );
 }
 #endif
 #if HAVE( DECL_PMPI_GET_PROCESSOR_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_processor_name )
@@ -394,7 +401,10 @@ FSUB( MPI_Get_processor_name )( char*     name,
         exit( EXIT_FAILURE );
     }
 
+
+
     *ierr = MPI_Get_processor_name( c_name, resultlen );
+
 
     c_name_len = strlen( c_name );
     strncpy( name, c_name, c_name_len );
@@ -416,7 +426,10 @@ FSUB( MPI_Grequest_complete )( MPI_Fint* request,
                                int*      ierr )
 {
     MPI_Request c_request = PMPI_Request_f2c( *request );
-    *ierr    = MPI_Grequest_complete( c_request );
+
+
+    *ierr = MPI_Grequest_complete( c_request );
+
     *request = PMPI_Request_c2f( c_request );
 }
 #endif
@@ -438,7 +451,10 @@ FSUB( MPI_Grequest_start )( void*     query_fn,
                             int*      ierr )
 {
     MPI_Request c_request;
-    *ierr    = MPI_Grequest_start( ( MPI_Grequest_query_function* )query_fn, ( MPI_Grequest_free_function* )free_fn, ( MPI_Grequest_cancel_function* )cancel_fn, extra_state, &c_request );
+
+
+    *ierr = MPI_Grequest_start( ( MPI_Grequest_query_function* )query_fn, ( MPI_Grequest_free_function* )free_fn, ( MPI_Grequest_cancel_function* )cancel_fn, extra_state, &c_request );
+
     *request = PMPI_Request_c2f( c_request );
 }
 #endif
@@ -456,10 +472,19 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status,
                                   MPI_Fint* flag,
                                   int*      ierr )
 {
-    MPI_Status c_status;
-    PMPI_Status_f2c( status, &c_status );
-    *ierr = MPI_Status_set_cancelled( &c_status, *flag );
-    PMPI_Status_c2f( &c_status, status );
+    MPI_Status  c_status;
+    MPI_Status* c_status_ptr = &c_status;
+    PMPI_Status_f2c( status, c_status_ptr );
+
+
+    *ierr = MPI_Status_set_cancelled( c_status_ptr, *flag );
+
+    #if defined( HAS_MPI_STATUS_IGNORE )
+    if ( c_status_ptr != MPI_STATUS_IGNORE )
+#endif
+    {
+        PMPI_Status_c2f( c_status_ptr, status );
+    }
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
@@ -477,10 +502,19 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status,
                                  MPI_Fint* count,
                                  int*      ierr )
 {
-    MPI_Status c_status;
-    PMPI_Status_f2c( status, &c_status );
-    *ierr = MPI_Status_set_elements( &c_status, PMPI_Type_f2c( *datatype ), *count );
-    PMPI_Status_c2f( &c_status, status );
+    MPI_Status  c_status;
+    MPI_Status* c_status_ptr = &c_status;
+    PMPI_Status_f2c( status, c_status_ptr );
+
+
+    *ierr = MPI_Status_set_elements( c_status_ptr, PMPI_Type_f2c( *datatype ), *count );
+
+    #if defined( HAS_MPI_STATUS_IGNORE )
+    if ( c_status_ptr != MPI_STATUS_IGNORE )
+#endif
+    {
+        PMPI_Status_c2f( c_status_ptr, status );
+    }
 }
 #endif
 
