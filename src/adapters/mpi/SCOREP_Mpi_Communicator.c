@@ -380,7 +380,8 @@ scorep_mpi_comm_init()
 
         scorep_mpi_world.handle =
             SCOREP_DefineMPICommunicator( scorep_mpi_world.size,
-                                          scorep_mpi_world.ranks );
+                                          scorep_mpi_world.ranks,
+                                          "MPI_COMM_WORLD" );
     }
     else
     {
@@ -462,7 +463,7 @@ scorep_mpi_comm_create( MPI_Comm comm )
     int32_t size = scorep_mpi_group_translate_ranks( group );
 
     /* register mpi communicator definition */
-    handle = SCOREP_DefineMPICommunicator( size, scorep_mpi_ranks );
+    handle = SCOREP_DefineMPICommunicator( size, scorep_mpi_ranks, "" );
 
     /* enter comm in scorep_mpi_comms[] arrray */
     scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
@@ -612,7 +613,7 @@ scorep_mpi_group_create( MPI_Group group )
         int32_t size = scorep_mpi_group_translate_ranks( group );
 
         /* register mpi group definition (as communicator) */
-        handle = SCOREP_DefineMPICommunicator( size, scorep_mpi_ranks );
+        handle = SCOREP_DefineMPICommunicator( size, scorep_mpi_ranks, "" );
 
         /* enter group in scorep_mpi_groups[] arrray */
         scorep_mpi_groups[ scorep_mpi_last_group ].group  = group;

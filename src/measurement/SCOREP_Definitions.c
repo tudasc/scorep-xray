@@ -212,8 +212,9 @@ SCOREP_Region_GetType( SCOREP_RegionHandle handle )
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineMPICommunicator( int32_t  numberOfRanks,
-                              int32_t* ranks )
+SCOREP_DefineMPICommunicator( int32_t     numberOfRanks,
+                              int32_t*    ranks,
+                              const char* name )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Define new MPI Communicator:" );
@@ -228,8 +229,7 @@ SCOREP_DefineMPICommunicator( int32_t  numberOfRanks,
     // Init new_definition
     new_definition->group_type = SCOREP_GROUP_COMMUNICATOR;
 
-    /* currently not used */
-    new_definition->name_handle = SCOREP_DefineString( "" );
+    new_definition->name_handle = SCOREP_DefineString( name );
     HASH_ADD_HANDLE( name_handle, String );
 
     HASH_ADD_POD( group_type );
