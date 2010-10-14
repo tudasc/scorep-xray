@@ -16,8 +16,9 @@
 /**
  * @status alpha
  *
- * @maintainer Johannes Spazier <johannes.spazier@tu-dresden.de>
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @autors     Johannes Spazier <johannes.spazier@tu-dresden.de>
+ * @autors     Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  */
 
@@ -40,7 +41,7 @@
 #define ACTION_CXX    5
 #define ACTION_FC     6
 
-#define HELPTEXT "\nUsage: scorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config <config_file>]\n"
+#define HELPTEXT "\nUsage:\nscorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config <config_file>]\n"
 
 int
 main( int    argc,
@@ -147,48 +148,41 @@ main( int    argc,
             case ACTION_LIBS:
                 std::cout << app.str_libdir << " -l" << scorep_libs[ mode ] << app.str_libs;
                 std::cout.flush();
-
                 otf2_config += " --libs";
                 ret          = system( otf2_config.c_str() );
-
                 break;
 
             case ACTION_CFLAGS:
                 std::cout << app.str_flags << app.str_incdir;
                 std::cout.flush();
-
                 otf2_config += " --cflags";
                 ret          = system( otf2_config.c_str() );
-
                 break;
 
             case ACTION_INCDIR:
                 std::cout << app.str_incdir;
                 std::cout.flush();
-
                 otf2_config += " --cflags";
                 ret          = system( otf2_config.c_str() );
-
                 break;
 
             case ACTION_CC:
-                std::cout << app.str_cc << std::endl;
-
+                std::cout << app.str_cc;
+                std::cout.flush();
                 break;
 
             case ACTION_CXX:
-                std::cout << app.str_cxx << std::endl;
-
+                std::cout << app.str_cxx;
+                std::cout.flush();
                 break;
 
             case ACTION_FC:
-                std::cout << app.str_fc << std::endl;
-
+                std::cout << app.str_fc;
+                std::cout.flush();
                 break;
 
             default:
                 std::cout << HELPTEXT << std::endl;
-
                 break;
         }
     }
@@ -213,45 +207,39 @@ main( int    argc,
 
                 otf2_config += " --libs";
                 ret          = system( otf2_config.c_str() );
-
                 break;
 
             case ACTION_CFLAGS:
                 std::cout << SCOREP_CFLAGS " -I" SCOREP_PREFIX "/include ";
                 std::cout.flush();
-
                 otf2_config += " --cflags";
                 ret          = system( otf2_config.c_str() );
-
                 break;
 
             case ACTION_INCDIR:
                 std::cout << "-I" SCOREP_PREFIX "/include ";
                 std::cout.flush();
-
                 otf2_config += " --cflags";
                 ret          = system( otf2_config.c_str() );
-
                 break;
 
             case ACTION_CC:
-                std::cout << SCOREP_CC << std::endl;
-
+                std::cout << SCOREP_CC;
+                std::cout.flush();
                 break;
 
             case ACTION_CXX:
-                std::cout << SCOREP_CXX << std::endl;
-
+                std::cout << SCOREP_CXX;
+                std::cout.flush();
                 break;
 
             case ACTION_FC:
-                std::cout << SCOREP_FC << std::endl;
-
+                std::cout << SCOREP_FC;
+                std::cout.flush();
                 break;
 
             default:
                 std::cout << HELPTEXT << std::endl;
-
                 break;
         }
     }
