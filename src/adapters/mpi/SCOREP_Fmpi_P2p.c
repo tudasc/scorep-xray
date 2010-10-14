@@ -438,7 +438,6 @@
  */
 #define MPI_Waitsome_L mpi_waitsome
 
-
 #ifndef NEED_F2C_CONV
 
 /* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)
@@ -1511,7 +1510,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
         {
             for ( i = 0; i < *count; i++ )
             {
-                PMPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i ][ 0 ] ) );
+                PMPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i * scorep_mpi_status_size ] ) );
             }
         }
     }
@@ -1659,7 +1658,7 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
         {
             for ( i = 0; i < *outcount; i++ )
             {
-                PMPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i ][ 0 ] ) );
+                PMPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i * scorep_mpi_status_size ] ) );
                 /* See the description of waitsome in the standard;
                    the Fortran index ranges are from 1, not zero */
                 if ( indices[ i ] >= 0 )
@@ -1830,7 +1829,7 @@ FSUB( MPI_Testall )( MPI_Fint* count,
         {
             for ( i = 0; i < *count; i++ )
             {
-                PMPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i ][ 0 ] ) );
+                PMPI_Status_c2f( &( c_status[ i ] ), &( array_of_statuses[ i * scorep_mpi_status_size ] ) );
             }
         }
     }
@@ -1913,7 +1912,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
         {
             for ( i = 0; i < *outcount; i++ )
             {
-                PMPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i ][ 0 ] ) );
+                PMPI_Status_c2f( &c_status[ i ], &( array_of_statuses[ i * scorep_mpi_status_size ] ) );
                 /* See the description of testsome in the standard;
                    the Fortran index ranges are from 1, not zero */
                 if ( indices[ i ] >= 0 )

@@ -305,7 +305,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
     {
       for (i=0; i<*count; i++)
       {
-        PMPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i][0]));
+        PMPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i * scorep_mpi_status_size ]));
       }
     }
   }
@@ -448,7 +448,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
     {
       for (i=0; i<*outcount; i++)
       {
-        PMPI_Status_c2f(&c_status[i], &(array_of_statuses[i][0]));
+        PMPI_Status_c2f(&c_status[i], &(array_of_statuses[i * scorep_mpi_status_size ]));
         /* See the description of waitsome in the standard;
            the Fortran index ranges are from 1, not zero */
         if (indices[i] >= 0)
@@ -616,7 +616,7 @@ void FSUB(MPI_Testall)(MPI_Fint* count,
     {
       for (i=0; i<*count; i++)
       {
-        PMPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i][0]));
+        PMPI_Status_c2f(&(c_status[i]), &(array_of_statuses[i * scorep_mpi_status_size ]));
       }
     }
   }
@@ -695,7 +695,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
     {
       for (i=0; i<*outcount; i++)
       {
-        PMPI_Status_c2f(&c_status[i], &(array_of_statuses[i][0]));
+        PMPI_Status_c2f(&c_status[i], &(array_of_statuses[i * scorep_mpi_status_size]));
         /* See the description of testsome in the standard;
            the Fortran index ranges are from 1, not zero */
         if (indices[i] >= 0)
