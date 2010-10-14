@@ -80,6 +80,7 @@ AM_PROG_AS
 LT_PREREQ([2.2.6])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
+AC_SUBST([MPIRUN], [$mpi_run_or_exec])
 
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
@@ -168,7 +169,7 @@ AC_SCOREP_OPENMP
 AC_SCOREP_COMPILER_CHECKS
 AC_SCOREP_MPI
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile run_otf2_speed_test.sh])
 
 
 AC_OUTPUT

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+@MPIRUN@ -np 2 ./otf2_speed_test
+ls -lh otf2_speed_test_trace/TestTrace >> otf2_speed_test.log
+
+rm -rf otf2_speed_test_trace
+
+exit 0
