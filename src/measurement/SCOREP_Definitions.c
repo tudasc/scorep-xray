@@ -227,6 +227,11 @@ SCOREP_DefineMPICommunicator( int32_t  numberOfRanks,
 
     // Init new_definition
     new_definition->group_type = SCOREP_GROUP_COMMUNICATOR;
+
+    /* currently not used */
+    new_definition->name_handle = SCOREP_DefineString( "" );
+    HASH_ADD_HANDLE( name_handle, String );
+
     HASH_ADD_POD( group_type );
     new_definition->number_of_members = numberOfRanks;
     HASH_ADD_POD( number_of_members );

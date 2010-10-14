@@ -648,6 +648,7 @@ scorep_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
             definitionWriter,
             definition->sequence_number,
             scorep_group_type_to_otf_group_type( definition->group_type ),
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String ),
             definition->number_of_members,
             definition->members );
         if ( status != SCOREP_SUCCESS )

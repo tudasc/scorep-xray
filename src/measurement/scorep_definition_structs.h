@@ -86,10 +86,11 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
      */
 
     // Add SCOREP_Group stuff from here on.
-    SCOREP_GroupType group_type;
-    uint64_t         number_of_members;
+    SCOREP_GroupType    group_type;
+    SCOREP_StringHandle name_handle;    // currently not used
+    uint64_t            number_of_members;
     // variable array member
-    uint64_t         members[ 1 ];
+    uint64_t            members[ 1 ];
 };
 
 
