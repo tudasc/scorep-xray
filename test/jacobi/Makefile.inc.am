@@ -111,6 +111,7 @@ SCOREP_OMP_TESTS += jacobi_omp_cxx
 endif
 
 ## Serial Fortran
+if FORTRAN_SUPPORT_ALLOCATABLE
 
 # Specify fortran dependencies manually
 variabledef.mod: VariableDef.$(OBJEXT)
@@ -133,9 +134,11 @@ jacobi_serial_f90_uninstrumented_LDADD    = -lm
 
 SCOREP_SERIAL_TESTS += jacobi_serial_f90
 
+
 ## OpenMP Fortran
 
 if OPENMP_SUPPORTED
+
 # Specify fortran dependencies manually
 jacobi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_omp_f90-main.$(OBJEXT): variabledef.mod
@@ -165,5 +168,9 @@ jacobi_omp_f90_uninstrumented_LDADD    = -lm
 SCOREP_OMP_TESTS += jacobi_omp_f90
 
 endif
+# if OPENMP_SUPPORTED
+
+endif
+# if FORTRAN_SUPPORT_ALLOCATABLE
 
 CLEANFILES += variabledef.mod jacobimod.mod

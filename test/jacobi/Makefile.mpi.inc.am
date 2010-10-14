@@ -115,6 +115,7 @@ endif
 ## MPI Fortran
 
 if HAVE_MPIFC
+if FORTRAN_SUPPORT_ALLOCATABLE
 
 # Specify fortran dependencies manually
 variabledef.mod: VariableDef.$(OBJEXT)
@@ -170,6 +171,9 @@ SCOREP_MPI_OMP_TESTS += jacobi_mpi_omp_f90
 
 endif
 # if OPENMP_SUPPORTED
+
+endif
+# if FORTRAN_SUPPORT_ALLOCATABLE
 
 endif
 # if HAVE_MPIFC
