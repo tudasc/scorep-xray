@@ -479,7 +479,7 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status,
 
     *ierr = MPI_Status_set_cancelled( c_status_ptr, *flag );
 
-    #if defined( HAS_MPI_STATUS_IGNORE )
+    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
 #endif
     {
@@ -509,7 +509,7 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status,
 
     *ierr = MPI_Status_set_elements( c_status_ptr, PMPI_Type_f2c( *datatype ), *count );
 
-    #if defined( HAS_MPI_STATUS_IGNORE )
+    #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
 #endif
     {

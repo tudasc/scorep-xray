@@ -367,7 +367,7 @@ FSUB( MPI_Accumulate )( void*         origin_addr,
                         MPI_Win*      win,
                         int*          ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
@@ -397,7 +397,7 @@ FSUB( MPI_Get )( void*         origin_addr,
                  MPI_Win*      win,
                  int*          ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
@@ -427,7 +427,7 @@ FSUB( MPI_Put )( void*         origin_addr,
                  MPI_Win*      win,
                  int*          ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
@@ -885,7 +885,7 @@ FSUB( MPI_Accumulate )( void*     origin_addr,
                         MPI_Fint* win,
                         int*      ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
@@ -916,7 +916,7 @@ FSUB( MPI_Get )( void*     origin_addr,
                  MPI_Fint* win,
                  int*      ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;
@@ -947,7 +947,7 @@ FSUB( MPI_Put )( void*     origin_addr,
                  MPI_Fint* win,
                  int*      ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
         origin_addr = MPI_BOTTOM;

@@ -552,7 +552,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
             }
             if ( striped_type == "MPI_Status" )
             {
-                str += "#if defined(HAS_MPI_STATUS_IGNORE)\n";
+                str += "#if HAVE(MPI_STATUS_IGNORE)\n";
                 str += "if (c_" + arg_name + "_ptr != MPI_STATUS_IGNORE)\n";
                 str += "#endif\n";
                 str += "    {\n";

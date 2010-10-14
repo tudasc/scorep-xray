@@ -57,19 +57,19 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
   MPI_Comm      ccomm;
   int           size;
 
-  #if defined(HAS_MPI_IN_PLACE)
+  #if HAVE(MPI_IN_PLACE)
   if (sendbuf == scorep_mpi_fortran_in_place)
   {
     sendbuf = MPI_IN_PLACE;
   }
   #endif
-  #if defined(HAS_MPI_BOTTOM)
+  #if HAVE(MPI_BOTTOM)
   if (sendbuf == scorep_mpi_fortran_bottom)
   {
     sendbuf = MPI_BOTTOM;
   }
   #endif
-  #if defined(HAS_MPI_BOTTOM)
+  #if HAVE(MPI_BOTTOM)
   if (recvbuf == scorep_mpi_fortran_bottom)
   {
     recvbuf = MPI_BOTTOM;

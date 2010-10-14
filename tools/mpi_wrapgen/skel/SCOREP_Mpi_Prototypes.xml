@@ -26,7 +26,7 @@
       esd_mpi_put_1ts( dpid, wid, EPK_NEXT_RMA_ID, origin_count * sendsz);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
     {
         origin_addr = MPI_BOTTOM;
@@ -34,7 +34,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
     {
         origin_addr = MPI_BOTTOM;
@@ -86,19 +86,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -106,19 +106,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -150,19 +150,19 @@
       for(i = 0; i<N; i++) recvcount += recvcounts[i];
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -170,19 +170,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -216,19 +216,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -236,19 +236,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -277,19 +277,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -297,19 +297,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -345,19 +345,19 @@
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -365,19 +365,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -413,19 +413,19 @@
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -433,19 +433,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -502,7 +502,7 @@
         N = 0;]]>
 </xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buffer == scorep_mpi_fortran_bottom)
     {
         buffer = MPI_BOTTOM;
@@ -510,7 +510,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buffer == scorep_mpi_fortran_bottom)
     {
         buffer = MPI_BOTTOM;
@@ -528,7 +528,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -536,7 +536,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -960,19 +960,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -980,19 +980,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -1113,7 +1113,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1121,7 +1121,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1139,7 +1139,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1147,7 +1147,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1164,7 +1164,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1172,7 +1172,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1189,7 +1189,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1197,7 +1197,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1215,7 +1215,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1223,7 +1223,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1240,7 +1240,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1248,7 +1248,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1280,13 +1280,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1294,14 +1294,14 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1318,13 +1318,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1332,14 +1332,14 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1355,7 +1355,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1363,7 +1363,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1378,13 +1378,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1392,14 +1392,14 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1417,13 +1417,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1431,14 +1431,14 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1456,13 +1456,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1470,14 +1470,14 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1494,7 +1494,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1502,7 +1502,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1517,13 +1517,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1531,14 +1531,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1555,13 +1555,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1569,14 +1569,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1592,7 +1592,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1600,7 +1600,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1615,13 +1615,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1629,14 +1629,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1653,13 +1653,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1667,14 +1667,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1744,13 +1744,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1758,14 +1758,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1782,13 +1782,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1796,14 +1796,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1819,7 +1819,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1827,7 +1827,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1842,13 +1842,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1856,14 +1856,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1881,13 +1881,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1895,14 +1895,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1920,13 +1920,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1934,14 +1934,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1958,7 +1958,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1966,7 +1966,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1980,13 +1980,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -1994,14 +1994,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2017,13 +2017,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2031,14 +2031,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2053,7 +2053,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2061,7 +2061,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2075,13 +2075,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2089,14 +2089,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2112,13 +2112,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2126,14 +2126,14 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2182,19 +2182,19 @@
       }]]>
 </xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -2202,19 +2202,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -2251,19 +2251,19 @@
       }]]>
 </xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -2271,19 +2271,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -2303,7 +2303,7 @@
     <param access="i" type="MPI_Win" name="win" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
     {
         origin_addr = MPI_BOTTOM;
@@ -2311,7 +2311,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
     {
         origin_addr = MPI_BOTTOM;
@@ -2522,7 +2522,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2530,7 +2530,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2652,7 +2652,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -2660,7 +2660,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -2680,7 +2680,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2688,7 +2688,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2707,7 +2707,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2715,7 +2715,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2739,7 +2739,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2747,7 +2747,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2766,7 +2766,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2774,7 +2774,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -2847,7 +2847,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (inbuf == scorep_mpi_fortran_bottom)
     {
         inbuf = MPI_BOTTOM;
@@ -2855,7 +2855,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (inbuf == scorep_mpi_fortran_bottom)
     {
         inbuf = MPI_BOTTOM;
@@ -2874,7 +2874,7 @@
     <param access="b" type="MPI_Aint*" name="position" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (inbuf == scorep_mpi_fortran_bottom)
     {
         inbuf = MPI_BOTTOM;
@@ -2882,7 +2882,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (inbuf == scorep_mpi_fortran_bottom)
     {
         inbuf = MPI_BOTTOM;
@@ -2920,7 +2920,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -2928,7 +2928,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -2963,7 +2963,7 @@
       esd_mpi_put_1ts( dpid, wid, SCOREP_NEXT_RMA_ID, origin_count * sendsz);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
     {
         origin_addr = MPI_BOTTOM;
@@ -2971,7 +2971,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (origin_addr == scorep_mpi_fortran_bottom)
     {
         origin_addr = MPI_BOTTOM;
@@ -2995,13 +2995,13 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3009,14 +3009,14 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3035,7 +3035,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3043,7 +3043,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3072,19 +3072,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3092,19 +3092,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3143,19 +3143,19 @@
       for (i = 0; i<N; i++) count += recvcounts[i];
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3163,19 +3163,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3202,19 +3202,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3222,19 +3222,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3273,7 +3273,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -3281,7 +3281,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -3300,7 +3300,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3308,7 +3308,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3327,7 +3327,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3335,7 +3335,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3363,19 +3363,19 @@
       PMPI_Comm_size(comm, &N);
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3383,19 +3383,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3430,19 +3430,19 @@
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (recvbuf == scorep_mpi_fortran_in_place)
     {
         recvbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3450,19 +3450,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (recvbuf == scorep_mpi_fortran_in_place)
     {
         recvbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3498,19 +3498,19 @@
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (recvbuf == scorep_mpi_fortran_in_place)
     {
         recvbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3518,19 +3518,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_IN_PLACE)
+    #if HAVE(MPI_IN_PLACE)
     if (recvbuf == scorep_mpi_fortran_in_place)
     {
         recvbuf = MPI_IN_PLACE;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -3548,7 +3548,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3556,7 +3556,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3575,7 +3575,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3583,7 +3583,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3608,19 +3608,19 @@
     <version id="1.0" />
     <countrules send="count*sendsz" recv="count*recvsz" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -3628,19 +3628,19 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
     }
     #endif
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -3663,13 +3663,13 @@
     <version id="1.0" />
     <countrules send="count*sendsz" recv="count*sendsz" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
     }
     #endif
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -3677,13 +3677,13 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
     }
     #endif
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -3708,7 +3708,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3716,7 +3716,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3735,7 +3735,7 @@
     <param access="o" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3743,7 +3743,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
     {
         buf = MPI_BOTTOM;
@@ -3794,7 +3794,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -3802,7 +3802,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -3825,7 +3825,7 @@
     <param access="o" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUSES_IGNORE)
+    #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses == scorep_mpi_fortran_statuses_ignore)
     {
       array_of_statuses = MPI_STATUSES_IGNORE;
@@ -3833,7 +3833,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUSES_IGNORE)
+    #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -3851,7 +3851,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -3859,7 +3859,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -3877,7 +3877,7 @@
     <param access="o" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUSES_IGNORE)
+    #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses == scorep_mpi_fortran_statuses_ignore)
     {
       array_of_statuses = MPI_STATUSES_IGNORE;
@@ -3885,7 +3885,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUSES_IGNORE)
+    #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -4190,7 +4190,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (outbuf == scorep_mpi_fortran_bottom)
     {
         outbuf = MPI_BOTTOM;
@@ -4198,7 +4198,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (outbuf == scorep_mpi_fortran_bottom)
     {
         outbuf = MPI_BOTTOM;
@@ -4217,7 +4217,7 @@
     <param access="i" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (outbuf == scorep_mpi_fortran_bottom)
     {
         outbuf = MPI_BOTTOM;
@@ -4225,7 +4225,7 @@
     #endif
 ]]></xblock>
 <xblock id="f2c_c2f"><![CDATA[
-    #if defined(HAS_MPI_BOTTOM)
+    #if HAVE(MPI_BOTTOM)
     if (outbuf == scorep_mpi_fortran_bottom)
     {
         outbuf = MPI_BOTTOM;
@@ -4246,7 +4246,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -4254,7 +4254,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -4270,7 +4270,7 @@
     <param access="o" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUSES_IGNORE)
+    #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses == scorep_mpi_fortran_statuses_ignore)
     {
       array_of_statuses = MPI_STATUSES_IGNORE;
@@ -4278,7 +4278,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (array_of_statuses == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */
@@ -4295,7 +4295,7 @@
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       status = MPI_STATUS_IGNORE;
@@ -4303,7 +4303,7 @@
     #endif
 ]]></xblock>
     <xblock id="f2c_c2f"><![CDATA[ 
-    #if defined(MPI_HAS_STATUS_IGNORE)
+    #if HAVE(MPI_STATUS_IGNORE)
     if (status == scorep_mpi_fortran_status_ignore)
     {
       /* hardcoded c_status_ptr needs to be reset */

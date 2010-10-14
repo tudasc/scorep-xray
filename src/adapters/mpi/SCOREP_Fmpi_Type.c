@@ -586,7 +586,7 @@ FSUB( MPI_Pack )( void*         inbuf,
                   MPI_Comm*     comm,
                   int*          ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
@@ -627,7 +627,7 @@ FSUB( MPI_Pack_external )( char*         datarep,
 
 
 
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
@@ -1218,7 +1218,7 @@ FSUB( MPI_Unpack )( void*         inbuf,
                     MPI_Comm*     comm,
                     int*          ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
@@ -1259,7 +1259,7 @@ FSUB( MPI_Unpack_external )( char*         datarep,
 
 
 
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
@@ -1591,7 +1591,7 @@ FSUB( MPI_Pack )( void*     inbuf,
                   MPI_Fint* comm,
                   int*      ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
@@ -1633,7 +1633,7 @@ FSUB( MPI_Pack_external )( char*     datarep,
 
 
 
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
         inbuf = MPI_BOTTOM;
@@ -2245,7 +2245,7 @@ FSUB( MPI_Unpack )( void*     inbuf,
                     MPI_Fint* comm,
                     int*      ierr )
 {
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;
@@ -2287,7 +2287,7 @@ FSUB( MPI_Unpack_external )( char*     datarep,
 
 
 
-    #if defined( HAS_MPI_BOTTOM )
+    #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
         outbuf = MPI_BOTTOM;

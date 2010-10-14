@@ -57,22 +57,22 @@
 
 extern int scorep_mpi_status_size;
 
-#if defined( HAS_MPI_BOTTOM )
+#if HAVE( MPI_BOTTOM )
 /** pointer representing the Fortran value for MPI_BOTTOM */
 extern void* scorep_mpi_fortran_bottom;
 #endif
 
-#if defined( HAS_MPI_IN_PLACE )
+#if HAVE( MPI_IN_PLACE )
 /** pointer representing the Fortran value for MPI_IN_PLACE */
 extern void* scorep_mpi_fortran_in_place;
 #endif
 
-#if defined( HAS_MPI_STATUS_IGNORE )
+#if HAVE( MPI_STATUS_IGNORE )
 /** pointer representing the Fortran value for MPI_STATUS_IGNORE */
 extern void* scorep_mpi_fortran_status_ignore;
 #endif
 
-#if defined( HAS_MPI_STATUSES_IGNORE )
+#if HAVE( MPI_STATUSES_IGNORE )
 /** pointer representing the Fortran value for MPI_STATUSES_IGNORE */
 extern void* scorep_mpi_fortran_statuses_ignore;
 #endif

@@ -42,13 +42,27 @@ int scorep_mpi_status_size;
     @param mpi_status_size Address of a variable where the value is to be stored.
  */
 extern void
-scorep_mpi_get_status_size___( int* status_size );
+FORTRAN_MANGLED( scorep_fortran_get_mpi_status_size ) ( int* status_size );
 
-/** External fortran function to to trigger callbacks to set fortran MPI constants.
-    @param mpi_status_size Address of a variable where the value is to be stored.
+/** External fortran function to trigger a callback which sets MPI_BOTTOM.
  */
 extern void
-scorep_mpi_fortran_init_cb___();
+FORTRAN_MANGLED( scorep_fortran_get_mpi_bottom ) ();
+
+/** External fortran function to trigger a callback which sets MPI_IN_PLACE.
+ */
+extern void
+FORTRAN_MANGLED( scorep_fortran_get_mpi_in_place ) ();
+
+/** External fortran function to trigger a callback which sets MPI_STATUS_IGNORE.
+ */
+extern void
+FORTRAN_MANGLED( scorep_fortran_get_mpi_status_ignore ) ();
+
+/** External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
+ */
+extern void
+FORTRAN_MANGLED( scorep_fortran_get_mpi_statuses_ignore ) ();
 
 /* Mapping of string keys to enabling group IDs
  * @note The values are sorted in decreasing order, to beautify the debug
@@ -132,8 +146,22 @@ scorep_mpi_init_adapter
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_init_adapter\n" );
-    scorep_mpi_fortran_init_cb___();
-    scorep_mpi_get_status_size___( &scorep_mpi_status_size );
+
+    /* Set Fortran constants */
+    FORTRAN_MANGLED( scorep_fortran_get_mpi_status_size ) ( &scorep_mpi_status_size );
+#if HAVE( MPI_BOTTOM )
+    FORTRAN_MANGLED( scorep_fortran_get_mpi_bottom ) ();
+#endif
+#if HAVE( MPI_IN_PLACE )
+    FORTRAN_MANGLED( scorep_fortran_get_mpi_in_place ) ();
+#endif
+#if HAVE( MPI_STATUS_IGNORE )
+    FORTRAN_MANGLED( scorep_fortran_get_mpi_status_ignore ) ();
+#endif
+#if HAVE( MPI_STATUSES_IGNORE )
+    FORTRAN_MANGLED( scorep_fortran_get_mpi_statuses_ignore ) ();
+#endif
+
     scorep_mpi_register_regions();
     return SCOREP_SUCCESS;
 }

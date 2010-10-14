@@ -22,44 +22,29 @@
 !! @ingroup    MPI_Wrapper
 !<
 
-      SUBROUTINE scorep_mpi_get_status_size___ (status_size)
-      INTEGER status_size
-      CALL scorep_mpi_get_status_size (status_size)
-      END 
-
-      SUBROUTINE scorep_mpi_get_status_size__ (status_size)
-      INTEGER status_size
-      CALL scorep_mpi_get_status_size (status_size)
-      END
-
-      SUBROUTINE scorep_mpi_get_status_size_ (status_size)
-      INTEGER status_size
-      CALL scorep_mpi_get_status_size (status_size)
-      END
-
-      SUBROUTINE scorep_mpi_get_status_size (status_size)
+      SUBROUTINE scorep_fortran_get_mpi_status_size (status_size)
       INCLUDE 'mpif.h'
       INTEGER status_size
       status_size = MPI_STATUS_SIZE
       END
 
-      SUBROUTINE scorep_mpi_fortran_init_cb___()
-      call scorep_mpi_fortran_init_cb()
-      END
-
-      SUBROUTINE scorep_mpi_fortran_init_cb__()
-      call scorep_mpi_fortran_init_cb()
-      END
-
-      SUBROUTINE scorep_mpi_fortran_init_cb_()
-      call scorep_mpi_fortran_init_cb()
-      END
-
-      SUBROUTINE scorep_mpi_fortran_init_cb()
+      SUBROUTINE scorep_fortran_get_mpi_bottom()
       INCLUDE  'mpif.h'
       CALL scorep_mpi_fortran_init_bottom(MPI_BOTTOM)
+      END
+
+      SUBROUTINE scorep_fortran_get_mpi_in_place()
+      INCLUDE  'mpif.h'
       CALL scorep_mpi_fortran_init_in_place(MPI_IN_PLACE)
+      END
+
+      SUBROUTINE scorep_fortran_get_mpi_status_ignore()
+      INCLUDE  'mpif.h'
       CALL scorep_mpi_fortran_init_status_ignore(MPI_STATUS_IGNORE)
+      END
+
+      SUBROUTINE scorep_fortran_get_mpi_statuses_ignore()
+      INCLUDE  'mpif.h'
       CALL scorep_mpi_fortran_init_statuses_ignore(MPI_STATUSES_IGNORE)
       END
       

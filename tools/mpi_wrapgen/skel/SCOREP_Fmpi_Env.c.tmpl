@@ -57,7 +57,7 @@ void* scorep_mpi_fortran_statuses_ignore = NULL;
  */
 void FSUB(scorep_mpi_fortran_init_bottom)(MPI_Fint* bottom)
 {
-#if defined(HAS_MPI_BOTTOM)
+#if HAVE(MPI_BOTTOM)
   scorep_mpi_fortran_bottom = bottom;
 #endif
 }
@@ -67,7 +67,7 @@ void FSUB(scorep_mpi_fortran_init_bottom)(MPI_Fint* bottom)
  */
 void FSUB(scorep_mpi_fortran_init_in_place)(MPI_Fint* in_place)
 {
-#if defined(HAS_MPI_IN_PLACE)
+#if HAVE(MPI_IN_PLACE)
   scorep_mpi_fortran_in_place = in_place;
 #endif
 }
@@ -77,7 +77,7 @@ void FSUB(scorep_mpi_fortran_init_in_place)(MPI_Fint* in_place)
  */
 void FSUB(scorep_mpi_fortran_init_status_ignore)(MPI_Fint* status_ignore) 
 {
-#if defined(HAS_MPI_STATUS_IGNORE)
+#if HAVE(MPI_STATUS_IGNORE)
   scorep_mpi_fortran_status_ignore = status_ignore;
 #endif
 }
@@ -87,7 +87,7 @@ void FSUB(scorep_mpi_fortran_init_status_ignore)(MPI_Fint* status_ignore)
  */
 void FSUB(scorep_mpi_fortran_init_statuses_ignore)(MPI_Fint* statuses_ignore) 
 {
-#if defined(HAS_MPI_STATUSES_IGNORE)
+#if HAVE(MPI_STATUSES_IGNORE)
   scorep_mpi_fortran_statuses_ignore = statuses_ignore;
 #endif
 }

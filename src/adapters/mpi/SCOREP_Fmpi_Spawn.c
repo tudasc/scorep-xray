@@ -359,7 +359,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
 
 #endif
 
-#if defined( HAS_MPI_COMM_SPAWN ) && !defined( NO_MPI_SPAWN ) \
+#if HAVE( MPI_COMM_SPAWN ) && !defined( NO_MPI_SPAWN ) \
     && !defined( NO_MPI_EXTRA )
 /**
  * Measurement wrapper for MPI_Comm_spawn
@@ -966,7 +966,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
 } /* FSUB(MPI_Comm_spawn_multiple) */
 #endif
 
-#if defined( HAS_MPI_COMM_SPAWN ) && !defined( NO_MPI_SPAWN ) \
+#if HAVE( PMPI_COMM_SPAWN ) && !defined( NO_MPI_SPAWN ) \
     && !defined( NO_MPI_EXTRA )
 /**
  * Measurement wrapper for MPI_Comm_spawn
