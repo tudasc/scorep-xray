@@ -22,7 +22,9 @@ AC_LANG_PUSH(Fortran)
 AC_MSG_CHECKING([whether double precision, allocatable arrays are supported])
 AC_COMPILE_IFELSE([
        PROGRAM test
+       TYPE mydata
        double precision, allocatable :: afF(:,:)
+       END TYPE mydata
        END PROGRAM test
 ], [scorep_support_allocatable="yes"], [scorep_support_allocatable="no"]
 ) #AC_COMPILE_IFELSE
