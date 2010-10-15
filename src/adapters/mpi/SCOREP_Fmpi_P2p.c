@@ -438,6 +438,7 @@
  */
 #define MPI_Waitsome_L mpi_waitsome
 
+
 #ifndef NEED_F2C_CONV
 
 /* If MPI_Comm_f2c is HAVE as a simple macro (which typically does nothing)

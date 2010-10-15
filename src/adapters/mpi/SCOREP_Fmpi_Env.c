@@ -129,26 +129,18 @@
 #define scorep_mpi_fortran_init_bottom_L scorep_mpi_fortran_init_bottom
 /** uppercase define for initialization call for fortran MPI_BOTTOM */
 #define scorep_mpi_fortran_init_bottom_U SCOREP_MPI_FORTRAN_INIT_BOTTOM
-/** address of fortran variable used as reference for MPI_BOTTOM */
-void* scorep_mpi_fortran_bottom = NULL;
 /** lowercase define for initialization call for fortran MPI_IN_PLACE */
 #define scorep_mpi_fortran_init_in_place_L scorep_mpi_fortran_init_in_place
 /** uppercase define for initialization call for fortran MPI_IN_PLACE */
 #define scorep_mpi_fortran_init_in_place_U SCOREP_MPI_FORTRAN_INIT_IN_PLACE
-/** address of fortran variable used as reference for MPI_IN_PLACE */
-void* scorep_mpi_fortran_in_place = NULL;
 /** lowercase define for initialization call for fortran MPI_STATUS_IGNORE */
 #define scorep_mpi_fortran_init_status_ignore_L scorep_mpi_fortran_init_status_ignore
 /** uppercase define for initialization call for fortran MPI_STATUS_IGNORE */
 #define scorep_mpi_fortran_init_status_ignore_U SCOREP_MPI_FORTRAN_INIT_STATUS_IGNORE
-/** address of fortran variable used as reference for MPI_STATUS_IGNORE */
-void* scorep_mpi_fortran_status_ignore = NULL;
 /** lowercase define for initialization call for fortran MPI_STATUSES_IGNORE */
 #define scorep_mpi_fortran_init_statuses_ignore_L scorep_mpi_fortran_init_statuses_ignore
 /** uppercase define for initialization call for fortran MPI_STATUSES_IGNORE */
 #define scorep_mpi_fortran_init_statuses_ignore_U SCOREP_MPI_FORTRAN_INIT_STATUSES_IGNORE
-/** address of fortran variable used as reference for MPI_STATUSES_IGNORE */
-void* scorep_mpi_fortran_statuses_ignore = NULL;
 
 /** initialization function for fortran MPI_BOTTOM
  * @param bottom address of variable acting as reference for MPI_BOTTOM
