@@ -109,6 +109,8 @@ else
     AC_LANG_PUSH([Fortran])
     AC_OPENMP
     AC_LANG_POP([Fortran])
+
+    AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 fi
 
 AC_PROG_RANLIB
