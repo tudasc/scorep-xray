@@ -463,6 +463,14 @@ FSUB( MPI_Dist_graph_create )( MPI_Comm* comm_old,
                                MPI_Comm* newcomm,
                                int*      ierr )
 {
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( weights == scorep_mpi_fortran_unweighted )
+    {
+        weights = MPI_UNWEIGHTED;
+    }
+    #endif
+
+
     *ierr = MPI_Dist_graph_create( *comm_old, *n, sources, degrees, destinations, weights, *info, *reorder, newcomm );
 }
 #endif
@@ -487,6 +495,20 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Comm* comm_old,
                                         MPI_Comm* newcomm,
                                         int*      ierr )
 {
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( sourceweights == scorep_mpi_fortran_unweighted )
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( destweights == scorep_mpi_fortran_unweighted )
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+
+
     *ierr = MPI_Dist_graph_create_adjacent( *comm_old, *indegree, sources, sourceweights, *outdegree, destinations, destweights, *info, *reorder, newcomm );
 }
 #endif
@@ -508,7 +530,35 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Comm* comm,
                                   int       destweights[],
                                   int*      ierr )
 {
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( sourceweights == scorep_mpi_fortran_unweighted )
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( destweights == scorep_mpi_fortran_unweighted )
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+
+
     *ierr = MPI_Dist_graph_neighbors( *comm, *maxindegree, sources, sourceweights, *maxoutdegree, destinations, destweights );
+
+
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( sourceweights == MPI_UNWEIGHTED )
+    {
+        sourceweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( destweights == MPI_UNWEIGHTED )
+    {
+        destweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )
@@ -863,6 +913,14 @@ FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old,
     MPI_Comm c_newcomm;
 
 
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( weights == scorep_mpi_fortran_unweighted )
+    {
+        weights = MPI_UNWEIGHTED;
+    }
+    #endif
+
+
     *ierr = MPI_Dist_graph_create( PMPI_Comm_f2c( *comm_old ), *n, sources, degrees, destinations, weights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
@@ -893,6 +951,20 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old,
     MPI_Comm c_newcomm;
 
 
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( sourceweights == scorep_mpi_fortran_unweighted )
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( destweights == scorep_mpi_fortran_unweighted )
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+
+
     *ierr = MPI_Dist_graph_create_adjacent( PMPI_Comm_f2c( *comm_old ), *indegree, sources, sourceweights, *outdegree, destinations, destweights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
@@ -917,7 +989,35 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm,
                                   MPI_Fint* destweights,
                                   int*      ierr )
 {
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( sourceweights == scorep_mpi_fortran_unweighted )
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( destweights == scorep_mpi_fortran_unweighted )
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+
+
     *ierr = MPI_Dist_graph_neighbors( PMPI_Comm_f2c( *comm ), *maxindegree, sources, sourceweights, *maxoutdegree, destinations, destweights );
+
+
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( sourceweights == MPI_UNWEIGHTED )
+    {
+        sourceweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
+    #if HAVE( MPI_UNWEIGHTED )
+    if ( destweights == MPI_UNWEIGHTED )
+    {
+        destweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )

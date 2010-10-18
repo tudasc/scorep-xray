@@ -440,7 +440,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_fortran
     const Func& func
 )
 {
-    string str = handler::mpi::cleanup( func );
+    string str = func.get_cleanup_block( "fortran" );
 
     // Fortran wrappers need additional cleanup
     // depending on call parameters
@@ -496,7 +496,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
     const Func& func
 )
 {
-    string str;
+    string str = func.get_cleanup_block( "f2c_c2f" );
 
     for ( size_t i = 0; i < func.get_param_count(); ++i )
     {

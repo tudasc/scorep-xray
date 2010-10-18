@@ -870,6 +870,22 @@
     <param access="i" type="int" name="reorder" />
     <param access="o" type="MPI_Comm*" name="newcomm" />
     <version id="2.2" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (weights == scorep_mpi_fortran_unweighted)
+    {
+        weights = MPI_UNWEIGHTED;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (weights == scorep_mpi_fortran_unweighted)
+    {
+        weights = MPI_UNWEIGHTED;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Dist_graph_create_adjacent" rtype="int" group="topo" guard="topo" >
@@ -884,17 +900,101 @@
     <param access="i" type="int" name="reorder" />
     <param access="o" type="MPI_Comm*" name="newcomm" />
     <version id="2.2" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (sourceweights == scorep_mpi_fortran_unweighted)
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE(MPI_UNWEIGHTED)
+    if (destweights == scorep_mpi_fortran_unweighted)
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (sourceweights == scorep_mpi_fortran_unweighted)
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE(MPI_UNWEIGHTED)
+    if (destweights == scorep_mpi_fortran_unweighted)
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Dist_graph_neighbors" rtype="int" group="topo" guard="extra,topo" >
     <param access="i" type="MPI_Comm" name="comm" />
     <param access="i" type="int" name="maxindegree" />
     <param access="o" type="int" name="sources" suffix="[]" />
-    <param access="o" type="int" name="sourceweights" suffix="[]" />
+    <param access="b" type="int" name="sourceweights" suffix="[]" />
     <param access="i" type="int" name="maxoutdegree" />
     <param access="o" type="int" name="destinations" suffix="[]" />
-    <param access="o" type="int" name="destweights" suffix="[]" />
+    <param access="b" type="int" name="destweights" suffix="[]" />
     <version id="2.2" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (sourceweights == scorep_mpi_fortran_unweighted)
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE(MPI_UNWEIGHTED)
+    if (destweights == scorep_mpi_fortran_unweighted)
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (sourceweights == scorep_mpi_fortran_unweighted)
+    {
+        sourceweights = MPI_UNWEIGHTED;
+    }
+    #endif
+    #if HAVE(MPI_UNWEIGHTED)
+    if (destweights == scorep_mpi_fortran_unweighted)
+    {
+        destweights = MPI_UNWEIGHTED;
+    }
+    #endif
+]]></xblock>
+<cleanup id="fortran"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (sourceweights == MPI_UNWEIGHTED)
+    {
+        sourceweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
+    #if HAVE(MPI_UNWEIGHTED)
+    if (destweights == MPI_UNWEIGHTED)
+    {
+        destweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
+]]></cleanup>
+<cleanup id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_UNWEIGHTED)
+    if (sourceweights == MPI_UNWEIGHTED)
+    {
+        sourceweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
+    #if HAVE(MPI_UNWEIGHTED)
+    if (destweights == MPI_UNWEIGHTED)
+    {
+        destweights = scorep_mpi_fortran_unweighted;
+    }
+    #endif
+]]></cleanup>
 </prototype>
 
 <prototype name="MPI_Dist_graph_neighbors_count" rtype="int" group="topo" guard="extra,topo" >

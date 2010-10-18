@@ -47,4 +47,9 @@
       INCLUDE  'mpif.h'
       CALL scorep_mpi_fortran_init_statuses_ignore(MPI_STATUSES_IGNORE)
       END
+
+      SUBROUTINE scorep_fortran_get_mpi_unweighted()
+      INCLUDE  'mpif.h'
+      CALL scorep_mpi_fortran_init_unweighted(MPI_UNWEIGHTED)
+      END
       

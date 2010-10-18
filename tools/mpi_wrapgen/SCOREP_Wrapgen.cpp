@@ -261,7 +261,7 @@ SCOREP::Wrapgen::read_xml_prototypes
                 {
                     string              name, rtype, group;
                     string              version, send = "0", recv = "0";
-                    map<string, string> decl, xblock;
+                    map<string, string> decl, xblock, cleanup;
                     string              guard;
                     paramlist_t         params;
 
@@ -329,6 +329,19 @@ SCOREP::Wrapgen::read_xml_prototypes
                                     xmlFree( content );
                                 }
                             }
+                            if ( xmlStrcmp( el->name, ( const xmlChar* )
+                                            "cleanup" ) == 0 )
+                            {
+                                xmlChar* content = NULL;
+                                content = xmlNodeGetContent( el );
+                                if ( content )
+                                {
+                                    string id;
+                                    XML_GET_STR_ATTR( el, "id", id );
+                                    cleanup[ id ] = string( ( const char* )content );
+                                    xmlFree( content );
+                                }
+                            }
                             if ( family == "mpi" )
                             {
                                 if ( xmlStrcmp( el->name, ( const xmlChar* )
@@ -365,6 +378,12 @@ SCOREP::Wrapgen::read_xml_prototypes
                               ++it )
                         {
                             f.set_expr_block( it->first, it->second );
+                        }
+                        for ( map<string, string>::const_iterator it = cleanup.begin();
+                              it != cleanup.end();
+                              ++it )
+                        {
+                            f.set_cleanup_block( it->first, it->second );
                         }
                         f.set_sendcount_rule( send );
                         f.set_recvcount_rule( recv );

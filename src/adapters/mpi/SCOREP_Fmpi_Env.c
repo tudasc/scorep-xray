@@ -120,11 +120,6 @@
  * @{
  */
 
-/** lowercase macro for fortran callback */
-#define scorep_mpi_fortran_init_cb_L scorep_mpi_fortran_init_cb
-/** uppercase macro for fortran callback */
-#define scorep_mpi_fortran_init_cb_U SCOREP_MPI_FORTRAN_INIT_CB
-
 /** lowercase define for initialization call for fortran MPI_BOTTOM */
 #define scorep_mpi_fortran_init_bottom_L scorep_mpi_fortran_init_bottom
 /** uppercase define for initialization call for fortran MPI_BOTTOM */
@@ -141,6 +136,11 @@
 #define scorep_mpi_fortran_init_statuses_ignore_L scorep_mpi_fortran_init_statuses_ignore
 /** uppercase define for initialization call for fortran MPI_STATUSES_IGNORE */
 #define scorep_mpi_fortran_init_statuses_ignore_U SCOREP_MPI_FORTRAN_INIT_STATUSES_IGNORE
+/** lowercase define for initialization call for fortran MPI_UNWEIGHTED */
+#define scorep_mpi_fortran_init_unweighted_L scorep_mpi_fortran_init_unweighted
+/** uppercase define for initialization call for fortran MPI_UNWEIGHTED */
+#define scorep_mpi_fortran_init_unweighted_U SCOREP_MPI_FORTRAN_INIT_UNWEIGHTED
+/** address of fortran variable used as reference for MPI_UNWEIGHTED */
 
 /** initialization function for fortran MPI_BOTTOM
  * @param bottom address of variable acting as reference for MPI_BOTTOM
@@ -183,6 +183,17 @@ FSUB( scorep_mpi_fortran_init_statuses_ignore )( MPI_Fint* statuses_ignore )
 {
 #if HAVE( MPI_STATUSES_IGNORE )
     scorep_mpi_fortran_statuses_ignore = statuses_ignore;
+#endif
+}
+
+/** initialization function for fortran MPI_UNWEIGHTED
+ * @param statuses_ignore address of variable acting as reference for MPI_UNWEIGHTED
+ */
+void
+FSUB( scorep_mpi_fortran_init_unweighted )( MPI_Fint* unweighted )
+{
+#if HAVE( MPI_UNWEIGHTED )
+    scorep_mpi_fortran_unweighted = unweighted;
 #endif
 }
 

@@ -59,6 +59,12 @@ void* scorep_mpi_fortran_status_ignore = NULL;
 void* scorep_mpi_fortran_statuses_ignore = NULL;
 
 /**
+   address of fortran variable used as reference for MPI_UNWEIGHTED
+ */
+void* scorep_mpi_fortran_unweighted = NULL;
+
+
+/**
    External fortran function to retrieve the constant value MPI_STATUS_SIZE defined
    in Fortran MPI. It is used for Fortran-C conversions.
    @param mpi_status_size Address of a variable where the value is to be stored.
@@ -89,6 +95,12 @@ FORTRAN_MANGLED( scorep_fortran_get_mpi_status_ignore ) ();
  */
 extern void
 FORTRAN_MANGLED( scorep_fortran_get_mpi_statuses_ignore ) ();
+
+/**
+   External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
+ */
+extern void
+FORTRAN_MANGLED( scorep_fortran_get_mpi_unweighted ) ();
 
 /**
  * Mapping of string keys to enabling group IDs
@@ -190,6 +202,9 @@ scorep_mpi_init_adapter
 #endif
 #if HAVE( MPI_STATUSES_IGNORE )
     FORTRAN_MANGLED( scorep_fortran_get_mpi_statuses_ignore ) ();
+#endif
+#if HAVE( MPI_UNWEIGHTED )
+    FORTRAN_MANGLED( scorep_fortran_get_mpi_unweighted ) ();
 #endif
 
     scorep_mpi_register_regions();

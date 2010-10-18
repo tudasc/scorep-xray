@@ -77,6 +77,11 @@ extern void* scorep_mpi_fortran_status_ignore;
 extern void* scorep_mpi_fortran_statuses_ignore;
 #endif
 
+#if HAVE( MPI_UNWEIGHTED )
+/** pointer representing the Fortran value for MPI_STATUSES_IGNORE */
+extern void* scorep_mpi_fortran_unweighted;
+#endif
+
 #if defined( SGI_MPT )
 
   #if !( HAVE( DECL_PMPI_STATUS_F2C ) )
