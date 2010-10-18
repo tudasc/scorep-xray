@@ -413,7 +413,7 @@ SCOREP_RecordingEnabled
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
-    return false;
+    return true; /* Currently, there is no way to disable it */
 }
 
 
