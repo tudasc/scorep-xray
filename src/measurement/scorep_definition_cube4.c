@@ -317,7 +317,7 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
         const char* file_name = "";
         if ( definition->file_handle != SCOREP_INVALID_SOURCE_FILE )
         {
-            SCOREP_HANDLE_DEREF( definition->file_handle, String )->string_data;
+            file_name = SCOREP_HANDLE_DEREF( definition->file_handle, String )->string_data;
         }
 
         /* Register region to cube */
