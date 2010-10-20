@@ -83,7 +83,7 @@ subroutine Init (myData)
     integer :: provided
     integer :: version, subversion
     integer :: iErr, i
-!    integer :: omp_get_max_threads
+    integer :: omp_get_max_threads
     integer :: block_lengths(8), typelist(8), MPI_JacobiData
 #if !defined(MPI_VERSION) || (MPI_VERSION>=2)
     integer (kind=MPI_ADDRESS_KIND) :: displacements(8), iStructDisp
@@ -255,12 +255,12 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-pomp_num_threads = omp_get_max_threads();
-      call POMP2_Parallel_fork(pomp_region_1,pomp_num_threads)
+      pomp_num_threads = pomp_get_max_threads128749821082277();
+      call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads)
 #line 249 "main.F90"
-!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
-      call POMP2_Parallel_begin(pomp_region_1)
-      call POMP2_Do_enter(pomp_region_1)
+!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) 
+      call POMP2_Parallel_begin(pomp2_region_1)
+      call POMP2_Do_enter(pomp2_region_1)
 #line 249 "main.F90"
 !$omp          do                       
     do j = myData%iRowFirst, myData%iRowLast
@@ -274,13 +274,13 @@ pomp_num_threads = omp_get_max_threads();
         end do
     end do
 !$omp end do nowait
-      call POMP2_Barrier_enter(pomp_region_1)
+      call POMP2_Barrier_enter(pomp2_region_1)
 !$omp barrier
-      call POMP2_Barrier_exit(pomp_region_1)
-      call POMP2_Do_exit(pomp_region_1)
-      call POMP2_Parallel_end(pomp_region_1)
+      call POMP2_Barrier_exit(pomp2_region_1)
+      call POMP2_Do_exit(pomp2_region_1)
+      call POMP2_Parallel_end(pomp2_region_1)
 !$omp end parallel
-      call POMP2_Parallel_join(pomp_region_1)
+      call POMP2_Parallel_join(pomp2_region_1)
 #line 261 "main.F90"
 end subroutine InitializeMatrix
 
@@ -354,7 +354,13 @@ subroutine CheckError(myData)
    
 end subroutine CheckError
 
-      subroutine POMP2_Init_regions_1276000461487383_1()
+      integer function pomp_get_max_threads128749821082277()
+         integer omp_get_max_threads
+         pomp_get_max_threads128749821082277=omp_get_max_threads()
+         return
+      end function
+
+      subroutine POMP2_Init_regions_128749821082277_1()
          include 'main.F90.opari.inc'
-         call POMP2_Assign_handle( pomp_region_1, "68*regionType=paralleldo*sscl=main.F90:249:249*escl=main.F90:260:260**" );
+         call POMP2_Assign_handle( pomp2_region_1, "68*regionType=paralleldo*sscl=main.F90:249:249*escl=main.F90:260:260**" )
       end subroutine

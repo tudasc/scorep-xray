@@ -1,7 +1,4 @@
-      INTEGER( KIND=8 ) pomp_region_1
-      include "omp_lib.h"
-      integer( kind=8 ) pomp_num_threads 
-      integer( kind=8 ) pomp_tpd 
-      common /pomp_tpd/ pomp_tpd 
-!$omp threadprivate(/pomp_tpd/)
-      common /cb1276000359657996/ pomp_region_1
+      INTEGER( KIND=8 ) :: pomp2_region_1
+      integer pomp_get_max_threads1287559610567943
+      integer pomp_num_threads 
+      common /cb1287559610567943/ pomp2_region_1

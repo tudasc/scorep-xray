@@ -33,7 +33,7 @@ program MAIN
     use VariableDef
     use JacobiMod
 #ifdef _OPENMP
-!    use omp_lib
+    use omp_lib
 #endif
     implicit none
       include 'main.F90.opari.inc'
@@ -77,7 +77,7 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
-!    use omp_lib
+    use omp_lib
     implicit none
       include 'main.F90.opari.inc'
     type(JacobiData), intent(inout) :: myData
@@ -152,12 +152,12 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-pomp_num_threads = omp_get_max_threads();
-      call POMP2_Parallel_fork(pomp_region_1,pomp_num_threads)
+      pomp_num_threads = pomp_get_max_threads1287559610567943();
+      call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads)
 #line 146 "main.F90"
-!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
-      call POMP2_Parallel_begin(pomp_region_1)
-      call POMP2_Do_enter(pomp_region_1)
+!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) 
+      call POMP2_Parallel_begin(pomp2_region_1)
+      call POMP2_Do_enter(pomp2_region_1)
 #line 146 "main.F90"
 !$omp          do                       
     do j = myData%iRowFirst, myData%iRowLast
@@ -171,13 +171,13 @@ pomp_num_threads = omp_get_max_threads();
         end do
     end do
 !$omp end do nowait
-      call POMP2_Barrier_enter(pomp_region_1)
+      call POMP2_Barrier_enter(pomp2_region_1)
 !$omp barrier
-      call POMP2_Barrier_exit(pomp_region_1)
-      call POMP2_Do_exit(pomp_region_1)
-      call POMP2_Parallel_end(pomp_region_1)
+      call POMP2_Barrier_exit(pomp2_region_1)
+      call POMP2_Do_exit(pomp2_region_1)
+      call POMP2_Parallel_end(pomp2_region_1)
 !$omp end parallel
-      call POMP2_Parallel_join(pomp_region_1)
+      call POMP2_Parallel_join(pomp2_region_1)
 #line 158 "main.F90"
 end subroutine InitializeMatrix
 
@@ -248,7 +248,7 @@ end subroutine CheckError
 
 double precision function get_wtime()
 #ifdef _OPENMP
-!    use omp_lib
+    use omp_lib
     get_wtime = omp_get_wtime()
 #else
     real, dimension(2) :: tarray
@@ -257,7 +257,13 @@ double precision function get_wtime()
     return
 end function get_wtime
 
-      subroutine POMP2_Init_regions_1276000359657996_1()
+      integer function pomp_get_max_threads1287559610567943()
+         integer omp_get_max_threads
+         pomp_get_max_threads1287559610567943=omp_get_max_threads()
+         return
+      end function
+
+      subroutine POMP2_Init_regions_1287559610567943_1()
          include 'main.F90.opari.inc'
-         call POMP2_Assign_handle( pomp_region_1, "68*regionType=paralleldo*sscl=main.F90:146:146*escl=main.F90:157:157**" );
+         call POMP2_Assign_handle( pomp2_region_1, "68*regionType=paralleldo*sscl=main.F90:146:146*escl=main.F90:157:157**" )
       end subroutine

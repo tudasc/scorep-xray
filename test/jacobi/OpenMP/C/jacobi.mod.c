@@ -1,9 +1,9 @@
-#ifdef _POMP
-#  undef _POMP
-#endif
-#define _POMP 200110
-
 #include <config.h>
+
+#ifdef _POMP2
+#  undef _POMP2
+#endif
+#define _POMP2 200110
 
 #include "jacobi.c.opari.inc"
 #line 1 "jacobi.c"
@@ -28,6 +28,8 @@
  * Output : u(n,m) - Solution
  *****************************************************************
  */
+#include <config.h>
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,10 +39,6 @@
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
-#define PRAGMA_OMP_PARALLEL_1( tpd ) _Pragma( STR( omp parallel POMP2_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
-#define PRAGMA_OMP_PARALLEL_2( tpd ) _Pragma( STR( omp parallel POMP2_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
-#define PRAGMA_OMP_PARALLEL_3( tpd ) _Pragma( STR( omp parallel private ( i, j, xx, yy, xx2, yy2 ) POMP2_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
-#define PRAGMA_OMP_PARALLEL_4( tpd ) _Pragma( STR( omp parallel private ( j, i ) POMP2_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
 
 void
 Jacobi( struct JacobiData* data )
@@ -70,63 +68,62 @@ Jacobi( struct JacobiData* data )
             /* copy new solution into old */
             {
                 int pomp_num_threads = omp_get_max_threads();
-                POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads );
-#line 58 "jacobi.c"
-                PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
-                {
-                    POMP2_Parallel_begin( &pomp_region_1 );
-#line 59 "jacobi.c"
-                    {
-                        POMP2_For_enter( &pomp_region_2 );
+                POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads );
 #line 60 "jacobi.c"
+#pragma omp parallel POMP2_DLIST_00001 num_threads(pomp_num_threads)
+                { POMP2_Parallel_begin( &pomp2_region_1 );
+#line 61 "jacobi.c"
+                  {
+                      POMP2_For_enter( &pomp2_region_2 );
+#line 62 "jacobi.c"
 #pragma omp for private(j, i) nowait
-                        for ( j = 1; j < data->iRows - 1; j++ )
-                        {
-                            for ( i = 1; i < data->iCols - 1; i++ )
-                            {
-                                UOLD( j, i ) = U( j, i );
-                            }
-                        }
-                        POMP2_Barrier_enter( &pomp_region_2 );
+                      for ( j = 1; j < data->iRows - 1; j++ )
+                      {
+                          for ( i = 1; i < data->iCols - 1; i++ )
+                          {
+                              UOLD( j, i ) = U( j, i );
+                          }
+                      }
+                      POMP2_Barrier_enter( &pomp2_region_2 );
 #pragma omp barrier
-                        POMP2_Barrier_exit( &pomp_region_2 );
-                        POMP2_For_exit( &pomp_region_2 );
-#line 68 "jacobi.c"
+                      POMP2_Barrier_exit( &pomp2_region_2 );
+                      POMP2_For_exit( &pomp2_region_2 );
+#line 70 "jacobi.c"
 
 
-                        /* compute stencil, residual and update */
-                        POMP2_For_enter( &pomp_region_3 );
-#line 71 "jacobi.c"
+                      /* compute stencil, residual and update */
+                      POMP2_For_enter( &pomp2_region_3 );
+#line 73 "jacobi.c"
 #pragma omp for private(j, i, fLRes) reduction(+:residual) nowait
-                        for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
-                        {
-                            for ( i = 1; i <= data->iCols - 2; i++ )
-                            {
-                                fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
-                                          + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
-                                          +  b * UOLD( j, i ) - F( j, i ) ) / b;
+                      for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
+                      {
+                          for ( i = 1; i <= data->iCols - 2; i++ )
+                          {
+                              fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
+                                        + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
+                                        +  b * UOLD( j, i ) - F( j, i ) ) / b;
 
-                                /* update solution */
-                                U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
+                              /* update solution */
+                              U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
 
-                                /* accumulate residual error */
-                                residual += fLRes * fLRes;
-                            }
-                        }
-                        POMP2_Barrier_enter( &pomp_region_3 );
+                              /* accumulate residual error */
+                              residual += fLRes * fLRes;
+                          }
+                      }
+                      POMP2_Barrier_enter( &pomp2_region_3 );
 #pragma omp barrier
-                        POMP2_Barrier_exit( &pomp_region_3 );
-                        POMP2_For_exit( &pomp_region_3 );
-#line 87 "jacobi.c"
-                    }
-                    POMP2_Barrier_enter( &pomp_region_1 );
+                      POMP2_Barrier_exit( &pomp2_region_3 );
+                      POMP2_For_exit( &pomp2_region_3 );
+#line 89 "jacobi.c"
+                  }
+                  POMP2_Barrier_enter( &pomp2_region_1 );
 #pragma omp barrier
-                    POMP2_Barrier_exit( &pomp_region_1 );
-                    POMP2_Parallel_end( &pomp_region_1 );
+                  POMP2_Barrier_exit( &pomp2_region_1 );
+                  POMP2_Parallel_end( &pomp2_region_1 );
                 }
-                POMP2_Parallel_join( &pomp_region_1 );
+                POMP2_Parallel_join( &pomp2_region_1 );
             }
-#line 87 "jacobi.c"
+#line 89 "jacobi.c"
             /* end omp parallel */
 
             /* error check */
