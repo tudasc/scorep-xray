@@ -28,15 +28,15 @@
 #include <stddef.h>
 
 extern void
-pomp2_init_regions_1287563582389818_3_();
+FORTRAN_MANGLED( pomp2_init_regions_1287563582389818_3 ) ();
 extern void
-pomp2_init_regions_1287563586935021_1_();
+FORTRAN_MANGLED( pomp2_init_regions_1287563586935021_1 ) ();
 
 void
 POMP2_Init_regions()
 {
-    pomp2_init_regions_1287563582389818_3_();
-    pomp2_init_regions_1287563586935021_1_();
+    FORTRAN_MANGLED( pomp2_init_regions_1287563582389818_3 ) ();
+    FORTRAN_MANGLED( pomp2_init_regions_1287563586935021_1 ) ();
 }
 
 size_t
