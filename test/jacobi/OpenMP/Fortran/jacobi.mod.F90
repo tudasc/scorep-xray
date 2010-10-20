@@ -60,10 +60,10 @@ module JacobiMod
                 residual = 0.0d0
         
             ! Copy new solution into old
-      pomp_num_threads = pomp_get_max_threads1287559604408488();
+      pomp_num_threads = pomp_get_max_threads1287563317750978();
       call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads)
 #line 56 "jacobi.F90"
-!$omp parallel private(flres, tmpresd, i) num_threads(pomp_num_threads) 
+!$omp parallel private(flres, tmpresd, i) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP2_Parallel_begin(pomp2_region_1)
 #line 57 "jacobi.F90"
       call POMP2_Do_enter(pomp2_region_2)
@@ -132,13 +132,13 @@ module JacobiMod
 
 end module JacobiMod
 
-      integer function pomp_get_max_threads1287559604408488()
+      integer function pomp_get_max_threads1287563317750978()
          integer omp_get_max_threads
-         pomp_get_max_threads1287559604408488=omp_get_max_threads()
+         pomp_get_max_threads1287563317750978=omp_get_max_threads()
          return
       end function
 
-      subroutine POMP2_Init_regions_1287559604408488_3()
+      subroutine POMP2_Init_regions_1287563317750978_3()
          include 'jacobi.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, "66*regionType=parallel*sscl=jacobi.F90:56:56*escl=jacobi.F90:81:81**" )
          call POMP2_Assign_handle( pomp2_region_2, "60*regionType=do*sscl=jacobi.F90:57:57*escl=jacobi.F90:63:63**" )

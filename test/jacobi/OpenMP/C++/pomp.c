@@ -28,15 +28,15 @@
 #include <stddef.h>
 
 extern void
-POMP2_Init_regions_1287559828951328_3();
+POMP2_Init_regions_1287563513947239_3();
 extern void
-POMP2_Init_regions_1287559834726324_1();
+POMP2_Init_regions_1287563517757035_1();
 
 void
 POMP2_Init_regions()
 {
-    POMP2_Init_regions_1287559828951328_3();
-    POMP2_Init_regions_1287559834726324_1();
+    POMP2_Init_regions_1287563513947239_3();
+    POMP2_Init_regions_1287563517757035_1();
 }
 
 size_t

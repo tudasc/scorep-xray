@@ -255,10 +255,10 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-      pomp_num_threads = pomp_get_max_threads128749821082277();
+      pomp_num_threads = pomp_get_max_threads1287563586935021();
       call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads)
 #line 249 "main.F90"
-!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) 
+!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP2_Parallel_begin(pomp2_region_1)
       call POMP2_Do_enter(pomp2_region_1)
 #line 249 "main.F90"
@@ -354,13 +354,13 @@ subroutine CheckError(myData)
    
 end subroutine CheckError
 
-      integer function pomp_get_max_threads128749821082277()
+      integer function pomp_get_max_threads1287563586935021()
          integer omp_get_max_threads
-         pomp_get_max_threads128749821082277=omp_get_max_threads()
+         pomp_get_max_threads1287563586935021=omp_get_max_threads()
          return
       end function
 
-      subroutine POMP2_Init_regions_128749821082277_1()
+      subroutine POMP2_Init_regions_1287563586935021_1()
          include 'main.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, "68*regionType=paralleldo*sscl=main.F90:249:249*escl=main.F90:260:260**" )
       end subroutine

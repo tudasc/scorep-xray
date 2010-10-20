@@ -1,10 +1,12 @@
 #include <pomp2_lib.h>
 
+extern void* pomp_tpd_;
+#pragma omp threadprivate(pomp_tpd_)
 #define POMP2_DLIST_00001 shared(pomp2_region_1)
 static POMP2_Region_handle pomp2_region_1 = NULL;
 extern "C" 
 {
-void POMP2_Init_regions_1287559913265066_1()
+void POMP2_Init_regions_1287563699634359_1()
 {
     POMP2_Assign_handle( &pomp2_region_1, "69*regionType=parallelfor*sscl=main.cpp:185:185*escl=main.cpp:201:201**" );
 }

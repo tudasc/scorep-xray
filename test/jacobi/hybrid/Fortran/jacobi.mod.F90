@@ -62,10 +62,10 @@ module JacobiMod
         
             ! Copy new solution into old
                 call ExchangeJacobiMpiData(myData, uold)
-      pomp_num_threads = pomp_get_max_threads1287498186326385();
+      pomp_num_threads = pomp_get_max_threads1287563582389818();
       call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads)
 #line 58 "jacobi.F90"
-!$omp parallel private(flres, tmpresd, i) num_threads(pomp_num_threads) 
+!$omp parallel private(flres, tmpresd, i) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP2_Parallel_begin(pomp2_region_1)
 #line 59 "jacobi.F90"
       call POMP2_Do_enter(pomp2_region_2)
@@ -163,10 +163,10 @@ module JacobiMod
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1,           &
                            iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
-      pomp_num_threads = pomp_get_max_threads1287498186326385();
+      pomp_num_threads = pomp_get_max_threads1287563582389818();
       call POMP2_Parallel_fork(pomp2_region_3,pomp_num_threads)
 #line 138 "jacobi.F90"
-!$omp parallel    num_threads(pomp_num_threads) 
+!$omp parallel    num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP2_Parallel_begin(pomp2_region_3)
       call POMP2_Do_enter(pomp2_region_3)
 #line 138 "jacobi.F90"
@@ -190,13 +190,13 @@ module JacobiMod
     end subroutine ExchangeJacobiMpiData
 end module JacobiMod
 
-      integer function pomp_get_max_threads1287498186326385()
+      integer function pomp_get_max_threads1287563582389818()
          integer omp_get_max_threads
-         pomp_get_max_threads1287498186326385=omp_get_max_threads()
+         pomp_get_max_threads1287563582389818=omp_get_max_threads()
          return
       end function
 
-      subroutine POMP2_Init_regions_1287498186326385_3()
+      subroutine POMP2_Init_regions_1287563582389818_3()
          include 'jacobi.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, "66*regionType=parallel*sscl=jacobi.F90:58:58*escl=jacobi.F90:76:76**" )
          call POMP2_Assign_handle( pomp2_region_2, "60*regionType=do*sscl=jacobi.F90:59:59*escl=jacobi.F90:75:75**" )

@@ -1,12 +1,14 @@
 #include <pomp2_lib.h>
 
+extern void* pomp_tpd_;
+#pragma omp threadprivate(pomp_tpd_)
 #define POMP2_DLIST_00001 shared(pomp2_region_1,pomp2_region_2)
 static POMP2_Region_handle pomp2_region_1 = NULL;
 static POMP2_Region_handle pomp2_region_2 = NULL;
 #define POMP2_DLIST_00003 shared(pomp2_region_3)
 static POMP2_Region_handle pomp2_region_3 = NULL;
 
-void POMP2_Init_regions_1287559968402249_3()
+void POMP2_Init_regions_1287563645158730_3()
 {
     POMP2_Assign_handle( &pomp2_region_1, "62*regionType=parallel*sscl=jacobi.c:66:66*escl=jacobi.c:85:85**" );
     POMP2_Assign_handle( &pomp2_region_2, "57*regionType=for*sscl=jacobi.c:69:69*escl=jacobi.c:84:84**" );
