@@ -194,7 +194,7 @@ InitializeMatrix( JacobiData &data )
 int pomp_num_threads = omp_get_max_threads();
 POMP2_Parallel_fork(&pomp2_region_1,pomp_num_threads);
 #line 185 "main.cpp"
-#pragma omp parallel     POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(pomp_tpd_)
+#pragma omp parallel     POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
 { POMP2_Parallel_begin(&pomp2_region_1);
 POMP2_For_enter(&pomp2_region_1);
 #line 185 "main.cpp"
