@@ -127,12 +127,12 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@ 
+jacobi_mpi_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@ 
 jacobi_mpi_f90_LDADD    = $(LIB_ROOT)libscorep_mpi.la
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_uninstrumented_CPPFLAGS = $(OPENMP_CXXFLAGS) -DMPI_VERSION=@HAVE_MPI_VERSION@
+jacobi_mpi_f90_uninstrumented_CPPFLAGS = -DMPI_VERSION=@HAVE_MPI_VERSION@
 jacobi_mpi_f90_uninstrumented_LDADD    = -lm
 
 SCOREP_MPI_TESTS += jacobi_mpi_f90
