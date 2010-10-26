@@ -1,6 +1,6 @@
 #include <pomp2_lib.h>
 
-extern void* FORTRAN_MANGLED(pomp_tpd);
+extern int64_t FORTRAN_MANGLED(pomp_tpd);
 #pragma omp threadprivate(FORTRAN_MANGLED(pomp_tpd))
 #define POMP2_DLIST_00001 shared(pomp2_region_1,pomp2_region_2,pomp2_region_3)
 static POMP2_Region_handle pomp2_region_1 = NULL;
