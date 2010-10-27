@@ -32,7 +32,7 @@
 /* Fortran types */
 typedef uint64_t POMP2_Region_handle_fortran;
 
-#define SCOREP_POMP_F2C_REGION( handle ) ( ( POMP2_Region_handle* )SCOREP_F2C_POINTER( handle ) )
+#define SCOREP_POMP_F2C_REGION( handle ) ( ( POMP2_Region_handle )SCOREP_F2C_POINTER( handle ) )
 #define SCOREP_POMP_C2F_REGION( handle ) SCOREP_C2F_POINTER( handle )
 
 /*
