@@ -42,12 +42,10 @@ void FSUB(POMP2_Assign_handle)(POMP2_Region_handle_fortran* regionHandle,
                               int ctc_string_len)
 {
     char *str;
-    POMP2_Region_handle c_handle;
     str = (char*) malloc((ctc_string_len+1)*sizeof(char));
     strncpy(str,ctc_string,ctc_string_len);
     str[ctc_string_len] = '\0';
-    POMP2_Assign_handle(&c_handle,str);
-    *regionHandle = SCOREP_POMP_C2F_REGION( c_handle );
+    POMP2_Assign_handle(SCOREP_POMP_F2C_REGION(regionHandle),str);
     free(str);
 }
 
@@ -73,11 +71,9 @@ void FSUB(POMP2_On)()
 
 void FSUB(POMP2_Begin)(POMP2_Region_handle_fortran* regionHandle)
 {
-    SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
-	POMP2_Region_handle c_handle = SCOREP_POMP_F2C_REGION( *regionHandle );
-        POMP2_Begin(&c_handle);
+        POMP2_Begin(SCOREP_POMP_F2C_REGION( regionHandle ));
     }
 }
 
@@ -85,7 +81,6 @@ void FSUB(POMP2_End)(POMP2_Region_handle_fortran* regionHandle)
 {
     if ( scorep_pomp_is_tracing_on )
     {
-	POMP2_Region_handle c_handle = SCOREP_POMP_F2C_REGION( *regionHandle );
-        POMP2_End(c_handle);
+        POMP2_End(SCOREP_POMP_F2C_REGION( regionHandle ));
     }
 }
