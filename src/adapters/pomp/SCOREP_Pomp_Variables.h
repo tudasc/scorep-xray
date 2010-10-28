@@ -37,14 +37,27 @@
                                                               Defined in SCOREP_Pomp_User.c
 ****************************************************************************************/
 
-/** Contains the region handle for all implicit barriers */
+/**
+   Contains the region handle for all implicit barriers
+ */
 extern SCOREP_RegionHandle scorep_pomp_implicit_barrier_region;
 
-/** Flag to indicate, wether POMP traceing is enable/disabled */
+/**
+    Flag to indicate, wether POMP traceing is enable/disabled
+ */
 extern bool scorep_pomp_is_tracing_on;
 
-/** Flag to indicate wether the adapter is initialized */
+/**
+   Flag that indicates whether the POMP2 adapter is initialized.
+ */
 extern bool scorep_pomp_is_initialized;
+
+/**
+   @def SCOREP_POMP2_ENSURE_INITIALIZED
+   Checks whether pomp adapter is initialized and if not initializes the measurement
+   system.
+ */
+#define SCOREP_POMP2_ENSURE_INITIALIZED if ( !scorep_pomp_is_initialized ) { POMP2_Init(); }
 
 /** @} */
 

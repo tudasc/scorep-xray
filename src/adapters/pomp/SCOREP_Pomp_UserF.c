@@ -30,6 +30,7 @@
 #include "SCOREP_Fortran_Wrapper.h"
 #include "SCOREP_Pomp_Variables.h"
 #include "SCOREP_Pomp_Fortran.h"
+#include "SCOREP_Pomp_Variables.h"
 
 /*
  * Fortran wrappers calling the C versions
@@ -72,10 +73,19 @@ void FSUB(POMP2_On)()
 
 void FSUB(POMP2_Begin)(POMP2_Region_handle_fortran* regionHandle)
 {
-  if ( scorep_pomp_is_tracing_on ) POMP2_Begin(SCOREP_POMP_F2C_REGION(regionHandle));
+    SCOREP_POMP2_ENSURE_INITIALIZED;
+    if ( scorep_pomp_is_tracing_on )
+    {
+	POMP2_Region_handle c_handle = SCOREP_POMP_F2C_REGION( *regionHandle );
+        POMP2_Begin(&c_handle);
+    }
 }
 
 void FSUB(POMP2_End)(POMP2_Region_handle_fortran* regionHandle)
 {
-  if ( scorep_pomp_is_tracing_on ) POMP2_End(SCOREP_POMP_F2C_REGION(regionHandle));
+    if ( scorep_pomp_is_tracing_on )
+    {
+	POMP2_Region_handle c_handle = SCOREP_POMP_F2C_REGION( *regionHandle );
+        POMP2_End(c_handle);
+    }
 }

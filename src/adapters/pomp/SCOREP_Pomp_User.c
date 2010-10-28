@@ -34,6 +34,7 @@
 #include "SCOREP_Pomp_RegionInfo.h"
 #include "SCOREP_Pomp_Lock.h"
 #include "scorep_utility/SCOREP_Utils.h"
+#include "SCOREP_Pomp_Variables.h"
 
 /** @ingroup POMP2
     @{

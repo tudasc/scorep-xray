@@ -32,11 +32,4 @@
  */
 extern struct SCOREP_Adapter SCOREP_Pomp_Adapter;
 
-/**
-   Flag that indicates whether the POMP2 adapter is initialized.
- */
-extern bool scorep_pomp_is_initialized;
-
-#define SCOREP_POMP2_ENSURE_INITIALIZED if ( !scorep_pomp_is_initialized ) { POMP2_Init(); }
-
 #endif // SCOREP_POMP_INIT_H
