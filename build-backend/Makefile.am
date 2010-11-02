@@ -95,7 +95,9 @@ scorep-config-tool-install:
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
 
-scorep-config-tool-local:
+scorep-config-tool-local: $(builddir)/scorep_config.dat
+
+$(builddir)/scorep_config.dat:
 	@echo "Creating $(builddir)/scorep_config.dat"
 	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
 	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
@@ -122,7 +124,9 @@ scorep-config-tool-local:
 
 
 ## Here we write only the backend values.
-create-config-tool-headers:
+create-config-tool-headers: $(CONFIG_HEADER_BACKEND)
+
+$(CONFIG_HEADER_BACKEND):
 	@echo "Creating $(CONFIG_HEADER_BACKEND)"
 	@echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"" >  $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""    >> $(CONFIG_HEADER_BACKEND)
