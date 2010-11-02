@@ -26,22 +26,18 @@
 #include <config.h>
 #include <SCOREP_Memory.h>
 #include <scorep_utility/SCOREP_Allocator.h>
+#include <SCOREP_Mutex.h>
 #include "scorep_thread.h"
 #include "scorep_status.h"
 #include <assert.h>
 #include <stdbool.h>
 
 
-/// The memory guard stuff is implemented in paradigm/scorep_memory_locking_*
 /* *INDENT-OFF* */
-void scorep_memory_guard_initialze();
-void scorep_memory_guard_finalize();
 /* *INDENT-ON* */
 
 
-extern SCOREP_Allocator_Guard scorep_memory_lock;
-extern SCOREP_Allocator_Guard       scorep_memory_unlock;
-extern SCOREP_Allocator_GuardObject scorep_memory_guard_object_ptr;
+static SCOREP_Mutex memory_lock;
 
 
 /// @todo implement memory statistics
@@ -79,17 +75,19 @@ SCOREP_Memory_Initialize( size_t totalMemory,
     }
     scorep_memory_is_initialized = true;
 
-    scorep_memory_guard_initialze();
+    SCOREP_MutexCreate( &memory_lock );
 
     assert( scorep_memory_allocator == 0 );
-    scorep_memory_allocator = SCOREP_Allocator_CreateAllocator( totalMemory,
-                                                                pageSize,
-                                                                scorep_memory_lock,
-                                                                scorep_memory_unlock,
-                                                                scorep_memory_guard_object_ptr );
+    scorep_memory_allocator = SCOREP_Allocator_CreateAllocator(
+        totalMemory,
+        pageSize,
+        ( SCOREP_Allocator_Guard )SCOREP_MutexLock,
+        ( SCOREP_Allocator_Guard )SCOREP_MutexUnlock,
+        ( SCOREP_Allocator_GuardObject )memory_lock );
+
     if ( !scorep_memory_allocator )
     {
-        scorep_memory_guard_finalize();
+        SCOREP_MutexDestroy( &memory_lock );
         scorep_memory_is_initialized = false;
         assert( false );
     }
@@ -98,7 +96,7 @@ SCOREP_Memory_Initialize( size_t totalMemory,
     scorep_memory_definition_pagemanager = SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
     if ( !scorep_memory_definition_pagemanager )
     {
-        scorep_memory_guard_finalize();
+        SCOREP_MutexDestroy( &memory_lock );
         scorep_memory_is_initialized = false;
         SCOREP_ERROR( SCOREP_ERROR_MEMORY_OUT_OF_PAGES,
                       "Can't create new page manager due to lack of free pages." );
@@ -132,7 +130,7 @@ SCOREP_Memory_Finalize()
     SCOREP_Allocator_DeleteAllocator( scorep_memory_allocator );
     scorep_memory_allocator = 0;
 
-    scorep_memory_guard_finalize();
+    SCOREP_MutexDestroy( &memory_lock );
 }
 
 

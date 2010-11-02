@@ -1,0 +1,176 @@
+/*
+ * This file is part of the SCOREP project (http://www.scorep.de)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+
+/**
+ * @file       src/measurement/paradigm/scorep_lock_omp.c
+ * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
+ *
+ * @status alpha
+ *
+ * Provides a lock implemention for OpenMP programs.
+ *
+ */
+
+
+#include <config.h>
+
+
+#include <stdlib.h>
+
+
+#include <omp.h>
+
+
+#include <SCOREP_Mutex.h>
+
+
+/**
+ * Allocates and initializes a new OpenMP lock.
+ *
+ * @param scorepMutex Reference to a SCOREP_Mutex variable.
+ *
+ * @return SCOREP_SUCCESS for success, or the error code.
+ *
+ * @error SCOREP_ERROR_INVALID_ARGUMENT The given @a scorepMutex parameter is a
+ *                                      @a NULL pointer.
+ * @error scorep_errno Any errors from malloc(3) converted to an SCOREP error code.
+ *
+ */
+SCOREP_Error_Code
+SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
+{
+    if ( !scorepMutex )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+    }
+
+    omp_lock_t** omp_lock = ( omp_lock_t** )scorepMutex;
+
+    *omp_lock = malloc( sizeof( **omp_lock ) );
+    if ( !omp_lock )
+    {
+        return SCOREP_ERROR_POSIX( "Can't allocate lock object" );
+    }
+
+    /* this call does not give us a success status */
+    omp_init_lock( *omp_lock );
+
+    return SCOREP_SUCCESS;
+}
+
+
+/**
+ * Destroys and Deallocates a OpenMP lock.
+ *
+ * @param scorepMutex Reference to a SCOREP_Mutex variable.
+ *
+ * @return SCOREP_SUCCESS for success, or the error code.
+ *
+ * @error SCOREP_ERROR_INVALID_ARGUMENT The given @a scorepMutex parameter is a
+ *                                      @a NULL pointer.
+ *
+ */
+SCOREP_Error_Code
+SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
+{
+    if ( !scorepMutex )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+    }
+
+    omp_lock_t** omp_lock = ( omp_lock_t** )scorepMutex;
+
+    if ( !*omp_lock )
+    {
+        /* NULL pointers are allowed but not for omp_destroy_lock */
+        return SCOREP_SUCCESS;
+    }
+
+    /* this call does not give us a success status */
+#if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+    // Do nothing here. Intel OpenMP RTL shuts down at the end of main
+    // function, so omp_destroy_lock, which is called after the end
+    // of main from the atexit handler, causes segmentation fault. The
+    // problem will be fixed in  Intel Compiler 11.1 update 6.
+    // See http://software.intel.com/en-us/forums/showpost.php?p=110592
+#else
+    omp_destroy_lock( *omp_lock );
+#endif
+
+    free( *omp_lock );
+    *omp_lock = NULL;
+
+    return SCOREP_SUCCESS;
+}
+
+
+/**
+ * Locks an SCOREP_Mutex by using the OpenMP API.
+ *
+ * @param scorepMutex A SCOREP_Mutex variable, previously created with @a
+ *                    SCOREP_MutexCreate.
+ *
+ * @return SCOREP_SUCCESS for success, or the error code.
+ *
+ * @error SCOREP_ERROR_INVALID_ARGUMENT The given @a scorepMutex parameter is a
+ *                                      @a NULL pointer.
+ *
+ */
+SCOREP_Error_Code
+SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
+{
+    if ( !scorepMutex )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+    }
+
+    omp_lock_t* omp_lock = ( omp_lock_t* )scorepMutex;
+
+    /* this call does not give us a success status */
+    omp_set_lock( omp_lock );
+
+    return SCOREP_SUCCESS;
+}
+
+
+/**
+ * Unlocks an SCOREP_Mutex by using the OpenMP API.
+ *
+ * @param scorepMutex A SCOREP_Mutex variable, previously created with @a
+ *                    SCOREP_MutexCreate.
+ *
+ * @return SCOREP_SUCCESS for success, or the error code.
+ *
+ * @error SCOREP_ERROR_INVALID_ARGUMENT The given @a scorepMutex parameter is a
+ *                                      @a NULL pointer.
+ *
+ */
+SCOREP_Error_Code
+SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
+{
+    if ( !scorepMutex )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+    }
+
+    omp_lock_t* omp_lock = ( omp_lock_t* )scorepMutex;
+
+    /* this call does not give us a success status */
+    omp_unset_lock( omp_lock );
+
+    return SCOREP_SUCCESS;
+}

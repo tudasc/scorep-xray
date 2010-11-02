@@ -28,6 +28,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_Thread_Types.h      \
     $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \
     $(SRC_ROOT)src/measurement/scorep_adapter.h                   \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
@@ -79,8 +80,8 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
     $(SRC_ROOT)src/measurement/scorep_definitions.c        \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c      \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_memory_locking_omp.c   \
-    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingOmp.c
+    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingOmp.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
 libscorep_paradigm_omp_la_CPPFLAGS =       \
     $(AM_CPPFLAGS)                       \
     -I$(INC_DIR_OTF2)                    \
@@ -103,9 +104,9 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
     $(SRC_ROOT)src/measurement/scorep_definitions.c        \
-    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c        \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_memory_locking_non_omp.c \
-    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingNonOmp.c
+    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c         \
+    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingNonOmp.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c
 
 libscorep_paradigm_non_omp_la_CPPFLAGS =   \
     $(AM_CPPFLAGS)                       \
