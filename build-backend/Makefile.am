@@ -90,7 +90,8 @@ uninstall-local:
 	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 scorep-config-tool-install:
-	$(INSTALL_DATA) $(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
+	$(MKDIR_P) $(DESTDIR)$(datadir)
+	$(INSTALL_DATA) $(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
@@ -118,9 +119,9 @@ $(builddir)/scorep_config.dat:
 	@echo NM=\"$(NM)\"                                                          >> $(builddir)/scorep_config.dat
 	@echo AWK=\"$(AWK)\"                                                        >> $(builddir)/scorep_config.dat
 	@echo OPARI=\"../vendor/opari2/build-frontend/opari2\"                      >> $(builddir)/scorep_config.dat
-	@echo OPARI_SCRIPT=\"$(PUBLIC_INC_DIR)../../vendor/opari2/src/pomp-lib-dummy/pomp2_parse_init_regions.awk\" >> $(builddir)/scorep_config.dat
+	@echo OPARI_SCRIPT=\"$(INC_ROOT)vendor/opari2/src/pomp-lib-dummy/pomp2_parse_init_regions.awk\" >> $(builddir)/scorep_config.dat
 	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
-	@echo PDT_CONFIG=\"$(PUBLIC_INC_DIR)../../src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
+	@echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
 
 
 ## Here we write only the backend values.
