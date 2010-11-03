@@ -32,8 +32,7 @@
 #include <string.h>
 
 #include <scorep_utility/SCOREP_Utils.h>
-#include "SCOREP_Types.h"
-#include "scorep_utility/SCOREP_Error.h"
+#include <SCOREP_Types.h>
 
 /**
    @def SCOREP_COMPILER_HASH_MAX The number of slots in the region hash table.
@@ -70,9 +69,12 @@ typedef struct scorep_compiler_hash_node
 } scorep_compiler_hash_node;
 
 /**
-   Returns a the hash_node for a given key. If no node with the requested key exists,
-   it returns NULL.
+   Returns the hash_node for the given key. If no node with the requested key exists,
+   it returns NULL. In multithreaded environments, calls to this function do not need
+   to be locked if it is guaranteed that initialization is already finished and
+   finalization will not start before this function returns.
    @param key The key value.
+   @returns the hash_node for the given key.
  */
 extern scorep_compiler_hash_node*
 scorep_compiler_hash_get( long key );

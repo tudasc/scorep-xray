@@ -29,7 +29,7 @@
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_DefinitionLocking.h>
+#include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Thread_Types.h>
 #include <scorep_compiler_data.h>
@@ -106,6 +106,10 @@ static int scorep_compiler_initialize = 1;
  */
 SCOREP_Hashtab* scorep_compiler_location_table = NULL;
 
+/**
+ * Mutex for exclusive access to the region hash table.
+ */
+static SCOREP_Mutex scorep_compiler_region_mutex;
 
 
 /* **************************************************************************************
@@ -210,10 +214,10 @@ scorep_compiler_init_location()
     uint64_t                       location_id = scorep_compiler_get_location_id();
     scorep_compiler_location_data* data        = scorep_compiler_create_location_data( location_id );
 
-    SCOREP_LockRegionDefinition();
+    SCOREP_MutexLock( scorep_compiler_region_mutex );
     SCOREP_Hashtab_Insert( scorep_compiler_location_table, &data->location_id,
                            data, NULL );
-    SCOREP_UnlockRegionDefinition();
+    SCOREP_MutexUnlock( scorep_compiler_region_mutex );
 
     return SCOREP_SUCCESS;
 }
@@ -232,6 +236,9 @@ scorep_compiler_init_adapter()
     if ( scorep_compiler_initialize )
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
+
+        /* Initialize region mutex */
+        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 
         /* Initialize location table */
         scorep_compiler_init_location_table();
@@ -258,6 +265,9 @@ scorep_compiler_finalize()
 
         /* Finalize location table */
         scorep_compiler_final_location_table();
+
+        /* Delete region mutex */
+        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 
         scorep_compiler_initialize = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
@@ -355,7 +365,7 @@ ___rouent2( struct s1* p )
     {
         /* get file id beloning to file name */
         p->file_handle = ( double )scorep_compiler_get_file( p->file_name ) + ( double )0.1;
-        SCOREP_LockRegionDefinition();
+        SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( !p->isseen )
         {
             p->region_handle = ( double )0.1 + ( double )
@@ -368,7 +378,7 @@ ___rouent2( struct s1* p )
                                                     );
         }
         p->isseen = 1;
-        SCOREP_UnlockRegionDefinition();
+        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
     /* Check callstack */

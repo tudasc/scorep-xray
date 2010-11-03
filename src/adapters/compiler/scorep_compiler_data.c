@@ -26,11 +26,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "SCOREP_Definitions.h"
-#include "SCOREP_DefinitionLocking.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
+#include <scorep_utility/SCOREP_Utils.h>
 
-#include "scorep_compiler_data.h"
+#include <scorep_compiler_data.h>
 
 /**
    A hash table which stores information about regions under their name as
@@ -39,9 +39,14 @@
 scorep_compiler_hash_node* region_hash_table[ SCOREP_COMPILER_REGION_SLOTS ];
 
 /**
-    Hash table for mapping source file names to SCOREP file handles.
+   Hash table for mapping source file names to SCOREP file handles.
  */
 SCOREP_Hashtab* scorep_compiler_file_table = NULL;
+
+/**
+   Mutex for mutual exclusive access to @ref scorep_compiler_file_table.
+ */
+SCOREP_Mutex scorep_compiler_file_table_mutex;
 
 /* ***************************************************************************************
    File hash table functions
@@ -64,6 +69,7 @@ scorep_compiler_delete_file_entry( SCOREP_Hashtab_Entry* entry )
 void
 scorep_compiler_init_file_table()
 {
+    SCOREP_MutexCreate( &scorep_compiler_file_table_mutex );
     scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                             &SCOREP_Hashtab_CompareStrings );
 }
@@ -75,6 +81,7 @@ scorep_compiler_final_file_table()
     SCOREP_Hashtab_Foreach( scorep_compiler_file_table, &scorep_compiler_delete_file_entry );
     SCOREP_Hashtab_Free( scorep_compiler_file_table );
     scorep_compiler_file_table = NULL;
+    SCOREP_MutexDestroy( &scorep_compiler_file_table_mutex );
 }
 
 /* Returns the file handle for a given file name. */
@@ -89,7 +96,7 @@ scorep_compiler_get_file( const char* file )
         return SCOREP_INVALID_SOURCE_FILE;
     }
 
-    SCOREP_LockSourceFileDefinition();
+    SCOREP_MutexLock( scorep_compiler_file_table_mutex );
 
     entry = SCOREP_Hashtab_Find( scorep_compiler_file_table, file,
                                  &index );
@@ -109,11 +116,11 @@ scorep_compiler_get_file( const char* file )
         SCOREP_Hashtab_Insert( scorep_compiler_file_table, ( void* )file_name,
                                handle, &index );
 
-        SCOREP_UnlockSourceFileDefinition();
+        SCOREP_MutexUnlock( scorep_compiler_file_table_mutex );
         return *handle;
     }
 
-    SCOREP_UnlockSourceFileDefinition();
+    SCOREP_MutexUnlock( scorep_compiler_file_table_mutex );
     return *( SCOREP_SourceFileHandle* )entry->value;
 }
 
@@ -146,6 +153,10 @@ scorep_compiler_hash_get( long key )
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld: \n", hash_code );
 
     scorep_compiler_hash_node* curr = region_hash_table[ hash_code ];
+    /* The tail after curr will never change because, new elements are instered before
+       curr. Thus, it allows a parallel @ref scorep_compiler_hash_put which can only
+       insert a new element before curr.
+     */
     while ( curr )
     {
         if ( curr->key == key )
@@ -171,12 +182,15 @@ scorep_compiler_hash_put
     long                       hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
-    add->key                       = key;
-    add->region_name               = SCOREP_CStr_dup( region_name );
-    add->file_name                 = SCOREP_CStr_dup( file_name );
-    add->line_no_begin             = line_no_begin;
-    add->line_no_end               = SCOREP_INVALID_LINE_NO;
-    add->region_handle             = SCOREP_INVALID_REGION;
+    add->key           = key;
+    add->region_name   = SCOREP_CStr_dup( region_name );
+    add->file_name     = SCOREP_CStr_dup( file_name );
+    add->line_no_begin = line_no_begin;
+    add->line_no_end   = SCOREP_INVALID_LINE_NO;
+    add->region_handle = SCOREP_INVALID_REGION;
+    /* Inserting elements at the head allows parallel calls to
+       @ref scorep_compiler_hash_get
+     */
     add->next                      = region_hash_table[ hash_code ];
     region_hash_table[ hash_code ] = add;
     return add;
@@ -227,7 +241,6 @@ scorep_compiler_register_region
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name );
 
-    SCOREP_LockRegionDefinition();
     node->region_handle = SCOREP_DefineRegion( node->region_name,
                                                file_handle,
                                                node->line_no_begin,
@@ -235,7 +248,6 @@ scorep_compiler_register_region
                                                SCOREP_ADAPTER_COMPILER,
                                                SCOREP_REGION_FUNCTION
                                                );
-    SCOREP_UnlockRegionDefinition();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name );
 }

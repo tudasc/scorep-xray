@@ -31,6 +31,7 @@
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
 
 #include <SCOREP_Compiler_Init.h>
@@ -42,6 +43,10 @@
  */
 static int scorep_compiler_initialize = 1;
 
+/**
+ * Mutex for exclusive access to the region hash table.
+ */
+static SCOREP_Mutex scorep_compiler_region_mutex;
 
 void
 __func_trace_enter( char* region_name,
@@ -78,7 +83,7 @@ __func_trace_enter( char* region_name,
     /* put function to list */
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
     {
-        SCOREP_LockRegionDefinition();
+        SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
             hash_node = scorep_compiler_hash_put( ( long )region_name,
@@ -87,28 +92,28 @@ __func_trace_enter( char* region_name,
             SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                                  " number %ld and put name -- %s -- to list",
                                  ( long )region_name, region_name );
-        }
-        SCOREP_UnlockRegionDefinition();
 
-        /* Check for filters:
-           1. In case OpenMP is used, the XL compiler creates some functions
-              like <func_name>:<func_name>$OL$OL.1 which cause the measurement
-              system to crash. Thus, filter functions which names contain a
-              '$' symbol.
-           2. POMP and POMP2 functions.
-         */
-        bool is_filtered = false;
-        if ( ( strchr( region_name, '$' ) != NULL ) ||
-             ( strncmp( region_name, "POMP", 4 ) == 0 ) )
-        {
-            is_filtered = true;
-        }
+            /* Check for filters:
+               1. In case OpenMP is used, the XL compiler creates some functions
+                  like <func_name>:<func_name>$OL$OL.1 which cause the measurement
+                  system to crash. Thus, filter functions which names contain a
+                  '$' symbol.
+               2. POMP and POMP2 functions.
+             */
+            bool is_filtered = false;
+            if ( ( strchr( region_name, '$' ) != NULL ) ||
+                 ( strncmp( region_name, "POMP", 4 ) == 0 ) )
+            {
+                is_filtered = true;
+            }
 
-        /* If no $ found in name register region */
-        if ( !is_filtered )
-        {
-            scorep_compiler_register_region( hash_node );
+            /* If no $ found in name register region */
+            if ( !is_filtered )
+            {
+                scorep_compiler_register_region( hash_node );
+            }
         }
+        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
     /* Invalid handle marks filtered regions */
@@ -152,6 +157,9 @@ scorep_compiler_init_adapter()
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                              " inititialize IBM xl compiler adapter!" );
 
+        /* Initialize region mutex */
+        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
         /* Initialize hash table */
         scorep_compiler_hash_init();
 
@@ -175,5 +183,8 @@ scorep_compiler_finalize()
 
         /* Set flag to not initialized */
         scorep_compiler_initialize = 1;
+
+        /* Delete region mutex */
+        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
     }
 }
