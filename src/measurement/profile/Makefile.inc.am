@@ -32,9 +32,10 @@ PROFILE_FLAGS =                                 \
     -I$(INC_DIR_UTIL)                           \
     -I$(INC_DIR_VENDOR_HASH)
 
-noinst_LTLIBRARIES += libscorep_profile_base.la
-libscorep_profile_base_la_SOURCES =                                    \
+noinst_LTLIBRARIES += libscorep_profile.la
+libscorep_profile_la_SOURCES =                                         \
     $(SRC_ROOT)src/measurement/profile/SCOREP_Profile.h                \
+    $(SRC_ROOT)src/measurement/profile/SCOREP_Profile.c                \
     $(SRC_ROOT)src/measurement/profile/scorep_profile_metric.h         \
     $(SRC_ROOT)src/measurement/profile/scorep_profile_metric.c         \
     $(SRC_ROOT)src/measurement/profile/scorep_profile_node.h           \
@@ -48,33 +49,12 @@ libscorep_profile_base_la_SOURCES =                                    \
     $(SRC_ROOT)src/measurement/profile/scorep_profile_callpath.c       \
     $(SRC_ROOT)src/measurement/profile/scorep_profile_cube4_writer.c
 
-libscorep_profile_base_la_CPPFLAGS = $(PROFILE_FLAGS)
-
-
-## non omp
-
-noinst_LTLIBRARIES += libscorep_profile_non_omp.la
-libscorep_profile_non_omp_la_SOURCES =                               \
-    $(SRC_ROOT)src/measurement/profile/SCOREP_Profile.c
-
-libscorep_profile_non_omp_la_CPPFLAGS = $(PROFILE_FLAGS)
-libscorep_profile_non_omp_la_LIBADD = libscorep_profile_base.la
-
-## omp 
-
-if OPENMP_SUPPORTED
-noinst_LTLIBRARIES += libscorep_profile_omp.la
-libscorep_profile_omp_la_SOURCES =                                   \
-    $(SRC_ROOT)src/measurement/profile/SCOREP_Profile.c 
-libscorep_profile_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libscorep_profile_omp_la_CPPFLAGS =  $(PROFILE_FLAGS)
-libscorep_profile_omp_la_LIBADD = libscorep_profile_base.la
-endif
-
+libscorep_profile_la_CPPFLAGS = $(PROFILE_FLAGS)
 
 ## include Online Access only when building on ALTIX
 
 if PLATFORM_ALTIX
-libscorep_profile_base_la_SOURCES += 	$(SRC_ROOT)src/measurement/profile/SCOREP_Profile_OAConsumer.h	\
-										$(SRC_ROOT)src/measurement/profile/SCOREP_Profile_OAConsumer.c
+libscorep_profile_la_SOURCES +=                                    \
+    $(SRC_ROOT)src/measurement/profile/SCOREP_Profile_OAConsumer.h \
+    $(SRC_ROOT)src/measurement/profile/SCOREP_Profile_OAConsumer.c
 endif

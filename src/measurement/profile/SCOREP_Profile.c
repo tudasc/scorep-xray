@@ -24,18 +24,19 @@
  */
 
 #include <config.h>
-#include "SCOREP_Memory.h"
-#include "scorep_utility/SCOREP_Utils.h"
-#include "SCOREP_Profile.h"
-#include "SCOREP_Config.h"
+#include <SCOREP_Memory.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Profile.h>
+#include <SCOREP_Config.h>
+#include <SCOREP_Mutex.h>
 
-#include "scorep_thread.h"
+#include <scorep_thread.h>
 
-#include "scorep_profile_node.h"
-#include "scorep_profile_definition.h"
-#include "scorep_profile_process.h"
-#include "scorep_profile_writer.h"
-#include "SCOREP_Definitions.h"
+#include <scorep_profile_node.h>
+#include <scorep_profile_definition.h>
+#include <scorep_profile_process.h>
+#include <scorep_profile_writer.h>
+#include <SCOREP_Definitions.h>
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -127,6 +128,10 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
     SCOREP_CONFIG_TERMINATOR
 };
 
+/**
+   Mutex for exclusive execution when adding a new location to the profile.
+ */
+static SCOREP_Mutex scorep_profile_location_mutex;
 
 /* ***************************************************************************************
    internal helper functions
@@ -258,6 +263,8 @@ SCOREP_Profile_Initialize( int32_t               numDenseMetrics,
 
     scorep_profile_is_initialized = true;
 
+    SCOREP_MutexCreate( &scorep_profile_location_mutex );
+
     scorep_profile_init_definition( scorep_profile_max_callpath_depth,
                                     scorep_profile_max_callpath_num,
                                     numDenseMetrics, metrics );
@@ -306,6 +313,9 @@ SCOREP_Profile_Finalize()
 
     /* Reset profile definition struct */
     scorep_profile_delete_definition();
+
+    /* Delete mutex */
+    SCOREP_MutexDestroy( &scorep_profile_location_mutex );
 
     /* Free all requested memory */
     SCOREP_Memory_FreeProfileMem();
@@ -829,21 +839,20 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
     if ( parent_data == NULL )
     {
         /* It is the initial thread. Insert as first new root node. */
-        #pragma omp critical (scorep_profile_add_location)
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
-            node->next_sibling             = scorep_profile.first_root_node;
-            scorep_profile.first_root_node = node;
-        }
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
+
+        SCOREP_MutexLock( scorep_profile_location_mutex );
+        node->next_sibling             = scorep_profile.first_root_node;
+        scorep_profile.first_root_node = node;
+        SCOREP_MutexUnlock( scorep_profile_location_mutex );
     }
     else
     {
         /* Append after parent root node */
-        #pragma omp critical (scorep_profile_add_location)
-        {
-            node->next_sibling                   = parent_data->root_node->next_sibling;
-            parent_data->root_node->next_sibling = node;
-        }
+        SCOREP_MutexLock( scorep_profile_location_mutex );
+        node->next_sibling                   = parent_data->root_node->next_sibling;
+        parent_data->root_node->next_sibling = node;
+        SCOREP_MutexUnlock( scorep_profile_location_mutex );
     }
 }
 
