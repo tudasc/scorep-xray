@@ -207,6 +207,7 @@ scorep_mpi_init_adapter
     FORTRAN_MANGLED( scorep_fortran_get_mpi_unweighted ) ();
 #endif
 
+    scorep_mpi_win_init();
     scorep_mpi_register_regions();
     return SCOREP_SUCCESS;
 }
@@ -265,6 +266,8 @@ scorep_mpi_finalize
         }
     }
     SCOREP_MPI_EVENT_GEN_ON();
+
+    scorep_mpi_win_final();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "End of scorep_mpi_finalize\n" );
 }

@@ -131,8 +131,9 @@ MPI_Get( void*        origin_addr,
 /* One-sided communication not handled in first version
     dest_proc_rank = scorep_mpi_win_rank_to_pe( target_rank, win );
     win_handle = scorep_mpi_win_id( win );
-
-    /* in MPI_GET the target buffer is remote
+ */
+        /* in MPI_GET the target buffer is remote */
+/* One-sided communication not handled in first version
     PMPI_Type_size(target_datatype, &sendsz);
     esd_mpi_get_1ts_remote(dest_proc_rank, win_handle, SCOREP_NEXT_RMA_ID, target_count * sendsz);
  */

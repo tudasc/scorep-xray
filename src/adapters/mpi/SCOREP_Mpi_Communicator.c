@@ -27,10 +27,9 @@
 #include <string.h>
 
 #include "SCOREP_Mpi_Communicator.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include "scorep_utility/SCOREP_Debug.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_DefinitionLocking.h"
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
 
 /*
  *-----------------------------------------------------------------------------
@@ -103,8 +102,15 @@ static int32_t scorep_mpi_last_window = 0;
 
 /**
  *  @internal
- *  Window tracking array */
+ *  Window tracking array
+ */
 static struct scorep_mpi_win_type scorep_mpi_windows[ SCOREP_MPI_MAX_WIN ];
+
+/**
+ *  @internal
+ *  Mutex for mpi window deinfitions.
+ */
+static SCOREP_Mutex scorep_mpi_window_mutex;
 
 #endif // SCOREP_MPI_NO_RMA
 
@@ -168,6 +174,12 @@ static SCOREP_Mpi_Rank* scorep_mpi_ranks;
  *  scorep_mpi_comm_init() is called.
  */
 static int scorep_mpi_comm_initialized = 0;
+
+/**
+ *  @internal
+ *  Mutex for communicator definition.
+ */
+static SCOREP_Mutex scorep_mpi_communicator_mutex;
 
 /* ------------------------------------------------ Definition for one sided operations */
 #ifndef SCOREP_MPI_NO_RMA
@@ -244,6 +256,24 @@ scorep_mpi_rank_to_pe( SCOREP_Mpi_Rank rank,
     return global_rank;
 }
 
+/* -------------------------------------------------------------------- window handling */
+
+void
+scorep_mpi_win_init()
+{
+#ifndef SCOREP_MPI_NO_RMA
+    SCOREP_MutexCreate( &scorep_mpi_window_mutex );
+#endif
+}
+
+void
+scorep_mpi_win_final()
+{
+#ifndef SCOREP_MPI_NO_RMA
+    SCOREP_MutexDestroy( &scorep_mpi_window_mutex );
+#endif
+}
+
 #ifndef SCOREP_MPI_NO_RMA
 
 SCOREP_Mpi_Rank
@@ -263,14 +293,12 @@ scorep_mpi_win_rank_to_pe( SCOREP_Mpi_Rank rank,
     return global_rank;
 }
 
-/* -------------------------------------------------------------------- window handling */
-
 SCOREP_MPIWindowHandle
 scorep_mpi_win_id( MPI_Win win )
 {
     int i = 0;
 
-    SCOREP_LockMPIWindowDefinition();
+    SCOREP_MutexLock( scorep_mpi_window_mutex );
     while ( i < scorep_mpi_last_window && scorep_mpi_windows[ i ].win != win )
     {
         i++;
@@ -278,12 +306,12 @@ scorep_mpi_win_id( MPI_Win win )
 
     if ( i <= scorep_mpi_last_window )
     {
-        SCOREP_UnlockMPIWindowDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_window_mutex );
         return scorep_mpi_windows[ i ].wid;
     }
     else
     {
-        SCOREP_UnlockMPIWindowDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_window_mutex );
         SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
         return SCOREP_INVALID_MPI_WINDOW;
     }
@@ -295,7 +323,7 @@ scorep_mpi_win_create( MPI_Win  win,
 {
     SCOREP_MPIWindowHandle handle = SCOREP_INVALID_MPI_WINDOW;
 
-    SCOREP_LockMPIWindowDefinition();
+    SCOREP_MutexLock( scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
     {
         SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS, "" );
@@ -312,13 +340,13 @@ scorep_mpi_win_create( MPI_Win  win,
     scorep_mpi_windows[ scorep_mpi_last_window ].wid = handle;
 
     scorep_mpi_last_window++;
-    SCOREP_UnlockMPIWindowDefinition();
+    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
 }
 
 void
 scorep_mpi_win_free( MPI_Win win )
 {
-    SCOREP_LockMPIWindowDefinition();
+    SCOREP_MutexLock( scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window == 1 && scorep_mpi_windows[ 0 ].win == win )
     {
         scorep_mpi_last_window = 0;
@@ -345,7 +373,7 @@ scorep_mpi_win_free( MPI_Win win )
     {
         SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
     }
-    SCOREP_UnlockMPIWindowDefinition();
+    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
 }
 #endif
 
@@ -355,6 +383,8 @@ void
 scorep_mpi_comm_init()
 {
     int i;
+
+    SCOREP_MutexCreate( &scorep_mpi_communicator_mutex );
 
     /* check, if we already initialized the data structures */
     if ( !scorep_mpi_comm_initialized )
@@ -402,6 +432,8 @@ scorep_mpi_comm_finalize()
     /* reset initialization flag
      * (needed to prevent crashes with broken MPI implementations) */
     scorep_mpi_comm_initialized = 0;
+
+    SCOREP_MutexDestroy( &scorep_mpi_communicator_mutex );
 }
 
 int32_t
@@ -446,12 +478,12 @@ scorep_mpi_comm_create( MPI_Comm comm )
     }
 
     /* Lock communicator definition */
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
     /* is storage available */
     if ( scorep_mpi_last_comm >= SCOREP_MPI_MAX_COMM )
     {
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS, "" );
         return;
     }
@@ -472,7 +504,7 @@ scorep_mpi_comm_create( MPI_Comm comm )
 
     /* clean up */
     PMPI_Group_free( &group );
-    SCOREP_UnlockMPICommunicatorDefinition();
+    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
 void
@@ -492,7 +524,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
     }
 
     /* Lock communicator definition */
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
     /* if only one communicator exists, we just need to decrease \a
      * scorep_mpi_last_comm */
@@ -527,7 +559,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
     }
 
     /* Unlock communicator definition */
-    SCOREP_UnlockMPICommunicatorDefinition();
+    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
 SCOREP_MPICommunicatorHandle
@@ -536,7 +568,7 @@ scorep_mpi_comm_id( MPI_Comm comm )
     int i = 0;
 
     /* Lock communicator definition */
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
     while ( i < scorep_mpi_last_comm && scorep_mpi_comms[ i ].comm != comm )
     {
@@ -546,14 +578,14 @@ scorep_mpi_comm_id( MPI_Comm comm )
     if ( i != scorep_mpi_last_comm )
     {
         /* Unlock communicator definition */
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 
         return scorep_mpi_comms[ i ].cid;
     }
     else
     {
         /* Unlock communicator definition */
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 
         if ( comm == MPI_COMM_WORLD )
         {
@@ -599,7 +631,7 @@ scorep_mpi_group_create( MPI_Group group )
     }
 
     /* Lock communicator definition */
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
     if ( scorep_mpi_last_group >= SCOREP_MPI_MAX_GROUP )
     {
@@ -628,7 +660,7 @@ scorep_mpi_group_create( MPI_Group group )
     }
 
     /* Unlock communicator definition */
-    SCOREP_UnlockMPICommunicatorDefinition();
+    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
 void
@@ -647,7 +679,7 @@ scorep_mpi_group_free( MPI_Group group )
         return;
     }
 
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
     if ( scorep_mpi_last_group == 1 && scorep_mpi_groups[ 0 ].group == group )
     {
@@ -683,7 +715,7 @@ scorep_mpi_group_free( MPI_Group group )
         SCOREP_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
     }
 
-    SCOREP_UnlockMPICommunicatorDefinition();
+    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
 SCOREP_Mpi_GroupHandle
@@ -691,7 +723,7 @@ scorep_mpi_group_id( MPI_Group group )
 {
     int32_t i = 0;
 
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
     while ( ( i < scorep_mpi_last_group ) && ( scorep_mpi_groups[ i ].group != group ) )
     {
         i++;
@@ -699,12 +731,12 @@ scorep_mpi_group_id( MPI_Group group )
 
     if ( i != scorep_mpi_last_group )
     {
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return scorep_mpi_groups[ i ].gid;
     }
     else
     {
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         SCOREP_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
         return SCOREP_INVALID_MPI_GROUP;
     }
@@ -715,7 +747,7 @@ scorep_mpi_group_search( MPI_Group group )
 {
     int32_t i = 0;
 
-    SCOREP_LockMPICommunicatorDefinition();
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
     while ( ( i < scorep_mpi_last_group ) && ( scorep_mpi_groups[ i ].group != group ) )
     {
         i++;
@@ -723,12 +755,12 @@ scorep_mpi_group_search( MPI_Group group )
 
     if ( i != scorep_mpi_last_group )
     {
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return i;
     }
     else
     {
-        SCOREP_UnlockMPICommunicatorDefinition();
+        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return -1;
     }
 }
