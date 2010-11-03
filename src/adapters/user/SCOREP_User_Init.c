@@ -33,6 +33,8 @@ extern void
 scorep_user_final_regions();
 extern void
 scorep_user_init_metric();
+extern void
+scorep_user_final_metric();
 
 int8_t scorep_user_is_initialized = 0;
 
@@ -85,6 +87,7 @@ scorep_user_finalize()
     {
         /*  Set the intialization flag to indicate that the adapter is not initialized */
         scorep_user_is_initialized = 0;
+        scorep_user_final_metric();
         scorep_user_final_regions();
     }
 }

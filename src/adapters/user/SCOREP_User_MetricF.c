@@ -23,15 +23,14 @@
  */
 
 #include <config.h>
-#include "SCOREP_User_Functions.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_DefinitionLocking.h"
-#include "SCOREP_Events.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include "SCOREP_User_Init.h"
-#include "SCOREP_Types.h"
-#include "scorep_utility/SCOREP_Utils.h"
-#include "SCOREP_Fortran_Wrapper.h"
+#include <SCOREP_User_Functions.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_User_Init.h>
+#include <SCOREP_Types.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Fortran_Wrapper.h>
 
 #define SCOREP_F_InitMetricGroup_L scorep_f_initmetricgroup
 #define SCOREP_F_InitMetricGroup_U SCOREP_F_INITMETRICGROUP
@@ -43,6 +42,8 @@
 #define SCOREP_F_MetricDouble_U    SCOREP_F_METRICDOUBLE
 
 extern SCOREP_CounterGroupHandle SCOREP_User_DefaultMetricGroup;
+extern SCOREP_Mutex              scorep_user_metric_group_mutex;
+extern SCOREP_Mutex              scorep_user_metric_mutex;
 
 void
 FSUB( SCOREP_F_InitMetricGroup )( SCOREP_Fortran_MetricGroup* groupHandle,
@@ -58,7 +59,7 @@ FSUB( SCOREP_F_InitMetricGroup )( SCOREP_Fortran_MetricGroup* groupHandle,
     name[ nameLen ] = '\0';
 
     /* Lock metric group definition */
-    SCOREP_LockCounterGroupDefinition();
+    SCOREP_MutexLock( scorep_user_metric_group_mutex );
 
     /* Test if handle is already initialized */
     if ( *groupHandle != SCOREP_FORTRAN_INVALID_GROUP )
@@ -72,7 +73,7 @@ FSUB( SCOREP_F_InitMetricGroup )( SCOREP_Fortran_MetricGroup* groupHandle,
     }
 
     /* Clean up */
-    SCOREP_UnlockCounterGroupDefinition();
+    SCOREP_MutexUnlock( scorep_user_metric_group_mutex );
     free( name );
 }
 
@@ -118,21 +119,16 @@ FSUB( SCOREP_F_InitMetric )
     else
     {
         /* Lock metric definition */
-        SCOREP_LockCounterDefinition();
+        SCOREP_MutexLock( scorep_user_metric_mutex );
 
         /* Check if metric handle is already initialized */
-        if ( *metricHandle != SCOREP_FORTRAN_INVALID_METRIC )
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_WARNING,
-                                 "Reinitializtaion of user metric not possible\n" );
-        }
-        else
+        if ( *metricHandle == SCOREP_FORTRAN_INVALID_METRIC )
         {
             /* Define user metric */
             *metricHandle = SCOREP_C2F_COUNTER( SCOREP_DefineCounter( name, *metricType, group, unit ) );
         }
         /* Unlock metric definition */
-        SCOREP_UnlockCounterDefinition();
+        SCOREP_MutexUnlock( scorep_user_metric_mutex );
     }
 
     /* Clean up */

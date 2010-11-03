@@ -23,21 +23,43 @@
  */
 
 #include <config.h>
-#include "SCOREP_User_Functions.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_DefinitionLocking.h"
-#include "SCOREP_Events.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include "SCOREP_User_Init.h"
-#include "SCOREP_Types.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <SCOREP_User_Functions.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_User_Init.h>
+#include <SCOREP_Types.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Mutex.h>
 
+/**
+   Contains the handle for the default metric group.
+ */
 SCOREP_CounterGroupHandle SCOREP_User_DefaultMetricGroup = SCOREP_INVALID_COUNTER_GROUP;
+
+/**
+   Mutex to avoid parallel assignments to the same user metrics group.
+ */
+SCOREP_Mutex scorep_user_metric_group_mutex;
+
+/**
+   Mutex to avoid parallel assignments to the same user metric.
+ */
+SCOREP_Mutex scorep_user_metric_mutex;
+
 
 void
 scorep_user_init_metric()
 {
+    SCOREP_MutexCreate( &scorep_user_metric_group_mutex );
+    SCOREP_MutexCreate( &scorep_user_metric_mutex );
     SCOREP_User_DefaultMetricGroup = SCOREP_DefineCounterGroup( "default" );
+}
+
+void
+scorep_user_final_metric()
+{
+    SCOREP_MutexDestroy( &scorep_user_metric_mutex );
+    SCOREP_MutexDestroy( &scorep_user_metric_group_mutex );
 }
 
 
@@ -52,7 +74,7 @@ SCOREP_User_InitMetricGroup
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Lock metric group definition */
-    SCOREP_LockCounterGroupDefinition();
+    SCOREP_MutexLock( scorep_user_metric_group_mutex );
 
     /* Test if handle is already initialized */
     if ( *groupHandle != SCOREP_INVALID_COUNTER_GROUP )
@@ -67,7 +89,7 @@ SCOREP_User_InitMetricGroup
     }
 
     /* Unlock metric group definition */
-    SCOREP_UnlockCounterGroupDefinition();
+    SCOREP_MutexUnlock( scorep_user_metric_group_mutex );
 }
 
 void
@@ -92,7 +114,7 @@ SCOREP_User_InitMetric
     }
 
     /* Lock metric definition */
-    SCOREP_LockCounterDefinition();
+    SCOREP_MutexLock( scorep_user_metric_mutex );
 
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SCOREP_INVALID_COUNTER )
@@ -107,7 +129,7 @@ SCOREP_User_InitMetric
     }
 
     /* Unlock metric definition */
-    SCOREP_UnlockCounterDefinition();
+    SCOREP_MutexUnlock( scorep_user_metric_mutex );
 }
 
 void

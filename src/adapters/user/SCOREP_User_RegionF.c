@@ -23,15 +23,14 @@
  */
 
 #include <config.h>
-#include "SCOREP_User_Functions.h"
-#include "SCOREP_User_Init.h"
-#include "SCOREP_Types.h"
-#include "SCOREP_Events.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_DefinitionLocking.h"
-#include "scorep_utility/SCOREP_Utils.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include "SCOREP_Fortran_Wrapper.h"
+#include <SCOREP_User_Functions.h>
+#include <SCOREP_User_Init.h>
+#include <SCOREP_Types.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Fortran_Wrapper.h>
 
 #include <string.h>
 
@@ -46,6 +45,8 @@
 #define SCOREP_F_RegionEnter_L scorep_f_regionenter
 
 extern SCOREP_Hashtab* scorep_user_file_table;
+extern SCOREP_Mutex    scorep_user_file_table_mutex;
+extern SCOREP_Mutex    scorep_user_region_mutex;
 
 extern SCOREP_RegionType
 scorep_user_to_scorep_region_type( const SCOREP_User_RegionType user_type );
@@ -78,7 +79,7 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
     name[ nameLen ] = '\0';
 
     /* Lock file definition */
-    SCOREP_LockSourceFileDefinition();
+    SCOREP_MutexLock( scorep_user_file_table_mutex );
 
     /* Search for source file handle */
     entry = SCOREP_Hashtab_Find( scorep_user_file_table, fileName, &index );
@@ -104,11 +105,10 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
         fileHandle = ( SCOREP_SourceFileHandle* )entry->value;
     }
     /* Unlock file defintion */
-    SCOREP_UnlockSourceFileDefinition();
+    SCOREP_MutexUnlock( scorep_user_file_table_mutex );
 
     /* Lock region definition */
-    SCOREP_LockRegionDefinition();
-
+    SCOREP_MutexLock( scorep_user_region_mutex );
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean
        time. If the handle is invalid, register a new region */
@@ -129,7 +129,7 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
         free( name );
     }
     /* Unlock region definition */
-    SCOREP_UnlockRegionDefinition();
+    SCOREP_MutexUnlock( scorep_user_region_mutex );
 }
 
 void

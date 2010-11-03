@@ -23,19 +23,29 @@
  */
 
 #include <config.h>
-#include "SCOREP_User_Functions.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_DefinitionLocking.h"
-#include "SCOREP_Events.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include "SCOREP_User_Init.h"
-#include "SCOREP_Types.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <SCOREP_User_Functions.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_User_Init.h>
+#include <SCOREP_Types.h>
+#include <scorep_utility/SCOREP_Utils.h>
 
-/** @internal
+/**
+    @internal
     Hash table for mapping source file names to SCOREP file handles.
  */
 SCOREP_Hashtab* scorep_user_file_table = NULL;
+
+/**
+   Mutex for @ref scorep_user_file_table.
+ */
+SCOREP_Mutex scorep_user_file_table_mutex;
+
+/**
+   Mutex to avoid parallel assignement of region handles to the same region.
+ */
+SCOREP_Mutex scorep_user_region_mutex;
 
 void
 scorep_user_delete_file_entry( SCOREP_Hashtab_Entry* entry )
@@ -49,6 +59,8 @@ scorep_user_delete_file_entry( SCOREP_Hashtab_Entry* entry )
 void
 scorep_user_init_regions()
 {
+    SCOREP_MutexCreate( &scorep_user_region_mutex );
+    SCOREP_MutexCreate( &scorep_user_file_table_mutex );
     scorep_user_file_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                         &SCOREP_Hashtab_CompareStrings );
 }
@@ -59,6 +71,8 @@ scorep_user_final_regions()
     SCOREP_Hashtab_Foreach( scorep_user_file_table, &scorep_user_delete_file_entry );
     SCOREP_Hashtab_Free( scorep_user_file_table );
     scorep_user_file_table = NULL;
+    SCOREP_MutexDestroy( &scorep_user_file_table_mutex );
+    SCOREP_MutexDestroy( &scorep_user_region_mutex );
 }
 
 SCOREP_SourceFileHandle
@@ -67,6 +81,9 @@ scorep_user_get_file( const char*              file,
                       SCOREP_SourceFileHandle* lastFile )
 {
     size_t index;
+
+    /* Hashtable access must be emutual exclusive */
+    SCOREP_MutexLock( scorep_user_file_table_mutex );
 
     /* In most cases, it is expected that in most cases no regions are in included
        files. If the compiler inserts always the same string adress for file names,
@@ -107,6 +124,8 @@ scorep_user_get_file( const char*              file,
         /* Else store last used handle */
         *lastFile = *( SCOREP_SourceFileHandle* )entry->value;
     }
+
+    SCOREP_MutexUnlock( scorep_user_file_table_mutex );
     return *lastFile;
 }
 
@@ -211,12 +230,10 @@ SCOREP_User_RegionInit
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Get source file handle */
-    SCOREP_LockSourceFileDefinition();
     SCOREP_SourceFileHandle file = scorep_user_get_file( fileName, lastFileName, lastFile );
-    SCOREP_UnlockSourceFileDefinition();
 
     /* Lock region definition */
-    SCOREP_LockRegionDefinition();
+    SCOREP_MutexLock( scorep_user_region_mutex );
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean time.
        If the handle is invalid, register a new region */
@@ -234,7 +251,7 @@ SCOREP_User_RegionInit
                                        region_type );
     }
     /* Release lock */
-    SCOREP_UnlockRegionDefinition();
+    SCOREP_MutexUnlock( scorep_user_region_mutex );
 }
 
 void
