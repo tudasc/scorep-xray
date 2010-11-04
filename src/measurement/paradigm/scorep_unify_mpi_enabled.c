@@ -77,8 +77,6 @@ static void scorep_unify_mpi_servant( void );
 void
 SCOREP_Mpi_Unify( void )
 {
-    int rank;
-
     if ( SCOREP_Mpi_GetRank() == 0 )
     {
         scorep_unify_mpi_master();
