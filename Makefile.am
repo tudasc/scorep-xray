@@ -241,7 +241,7 @@ endif # SVN_CONTROLLED -------------------------------------------------------
 
 install-scorep-meets-tau:
 	cp -p $(builddir)/include/scorep/scorep_meets_tau_tmp.h $(builddir)/include/scorep/scorep_meets_tau.h
-	ordered_headers="SCOREP_DefinitionHandles.h SCOREP_DefinitionLocking.h SCOREP_Memory.h SCOREP_RuntimeManagement.h SCOREP_Thread_Types.h SCOREP_Types.h SCOREP_Adapter.h SCOREP_Config.h SCOREP_Definitions.h SCOREP_Events.h"; \
+	ordered_headers="SCOREP_DefinitionHandles.h SCOREP_Memory.h SCOREP_RuntimeManagement.h SCOREP_Thread_Types.h SCOREP_Types.h SCOREP_Adapter.h SCOREP_Config.h SCOREP_Definitions.h SCOREP_Events.h"; \
 	for i in $$ordered_headers; do                                                                \
 	    awk -f $(srcdir)/tools/tau/scorep_meets_tau.awk $(srcdir)/src/measurement/include/$$i >>  \
                    $(builddir)/include/scorep/scorep_meets_tau.h;                   \

@@ -25,7 +25,6 @@
 
 #include <config.h>
 #include "SCOREP_Mpi.h"
-#include "SCOREP_DefinitionLocking.h"
 
 /**
  * @name C wrappers

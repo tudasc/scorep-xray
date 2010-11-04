@@ -21,7 +21,6 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_Adapter.h           \
     $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Definitions.h       \
-    $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionLocking.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h \

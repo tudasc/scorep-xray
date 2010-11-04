@@ -21,7 +21,6 @@
 
 check_PROGRAMS += self_contained_scorep_adapter_c            \
                   self_contained_scorep_config_c             \
-                  self_contained_scorep_definition_locking_c \
                   self_contained_scorep_definitions_c        \
                   self_contained_scorep_events_c             \
                   self_contained_scorep_memory_c             \
@@ -39,9 +38,6 @@ self_contained_scorep_adapter_c_CPPFLAGS = $(self_contained_cppflags)
 
 self_contained_scorep_config_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_config.c
 self_contained_scorep_config_c_CPPFLAGS = $(self_contained_cppflags)
-
-self_contained_scorep_definition_locking_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_definition_locking.c
-self_contained_scorep_definition_locking_c_CPPFLAGS = $(self_contained_cppflags)
 
 self_contained_scorep_definitions_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_definitions.c
 self_contained_scorep_definitions_c_CPPFLAGS = $(self_contained_cppflags)
