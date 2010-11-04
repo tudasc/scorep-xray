@@ -109,15 +109,13 @@ scorep_profile_substitute_parameter_data( scorep_profile_node* node,
         strcpy( region_name, region );
 
         /* Register region to measurement system */
-        handle = malloc( sizeof( SCOREP_RegionHandle ) );
-        SCOREP_LockRegionDefinition();
+        handle  = malloc( sizeof( SCOREP_RegionHandle ) );
         *handle = SCOREP_DefineRegion( region_name,
                                        SCOREP_INVALID_SOURCE_FILE,
                                        SCOREP_INVALID_LINE_NO,
                                        SCOREP_INVALID_LINE_NO,
                                        SCOREP_ADAPTER_USER,
                                        SCOREP_REGION_UNKNOWN );
-        SCOREP_UnlockRegionDefinition();
 
         /* Store handle in hashtable */
         SCOREP_Hashtab_Insert( scorep_profile_name_table, ( void* )region_name,
