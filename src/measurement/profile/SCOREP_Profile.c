@@ -84,7 +84,8 @@ static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
     { "None",        SCOREP_Profile_OutputNone        },
     { "TauSnapshot", SCOREP_Profile_OutputTauSnapshot },
     { "Cube4",       SCOREP_Profile_OutputCube4       },
-    { "Default",     SCOREP_Profile_OutputDefault     }
+    { "Default",     SCOREP_Profile_OutputDefault     },
+    { NULL,          0                                }
 };
 
 /**

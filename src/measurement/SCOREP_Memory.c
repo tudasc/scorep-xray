@@ -44,12 +44,16 @@ static SCOREP_Mutex memory_lock;
 
 
 /// The one and only allocator for the measurement and the adapters
-static SCOREP_Allocator_Allocator*   scorep_memory_allocator = 0;
+static SCOREP_Allocator_Allocator* scorep_memory_allocator = 0;
 
-static bool                          scorep_memory_is_initialized = false;
+static bool                        scorep_memory_is_initialized = false;
 
-static SCOREP_Allocator_PageManager* scorep_memory_definition_pagemanager = 0;
+//static SCOREP_Allocator_PageManager* scorep_local_movable_page_manager = 0;
+SCOREP_Allocator_PageManager* scorep_local_movable_page_manager  = 0;
+SCOREP_Allocator_PageManager* scorep_remote_movable_page_manager = 0;
 
+/// @todo croessel will be initialized when pages are moved via MPI or by offline unification
+static SCOREP_Allocator_PageManager* scorep_remote_memory_definition_pagemanager = 0;
 
 enum scorep_memory_page_type
 {
@@ -92,9 +96,9 @@ SCOREP_Memory_Initialize( size_t totalMemory,
         assert( false );
     }
 
-    assert( scorep_memory_definition_pagemanager == 0 );
-    scorep_memory_definition_pagemanager = SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
-    if ( !scorep_memory_definition_pagemanager )
+    assert( scorep_local_movable_page_manager == 0 );
+    scorep_local_movable_page_manager = SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
+    if ( !scorep_local_movable_page_manager )
     {
         SCOREP_MutexDestroy( &memory_lock );
         scorep_memory_is_initialized = false;
@@ -114,7 +118,7 @@ SCOREP_Memory_Finalize()
     }
     scorep_memory_is_initialized = false;
 
-    assert( scorep_memory_definition_pagemanager );
+    assert( scorep_local_movable_page_manager );
 #if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
     // Do nothing here. Intel OpenMP RTL shuts down at the end of main
     // function, so omp_set/unset_lock, which is called after the end
@@ -122,9 +126,9 @@ SCOREP_Memory_Finalize()
     // problem will be fixed in  Intel Compiler 11.1 update 6.
     // See http://software.intel.com/en-us/forums/showpost.php?p=110592
 #else
-    SCOREP_Allocator_DeletePageManager( scorep_memory_definition_pagemanager );
+    SCOREP_Allocator_DeletePageManager( scorep_local_movable_page_manager );
 #endif
-    scorep_memory_definition_pagemanager = 0;
+    scorep_local_movable_page_manager = 0;
 
     assert( scorep_memory_allocator );
     SCOREP_Allocator_DeleteAllocator( scorep_memory_allocator );
@@ -223,7 +227,7 @@ SCOREP_Allocator_MovableMemory
 SCOREP_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    return SCOREP_Allocator_AllocMovable( scorep_memory_definition_pagemanager, size );
+    return SCOREP_Allocator_AllocMovable( scorep_local_movable_page_manager, size );
 }
 
 
@@ -231,14 +235,54 @@ void
 SCOREP_Memory_FreeDefinitionMem()
 {
     // print mem usage statistics
-    SCOREP_Allocator_Free( scorep_memory_definition_pagemanager );
+    SCOREP_Allocator_Free( scorep_local_movable_page_manager );
 }
 
 
 void*
-SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory )
+SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory,
+                                           SCOREP_Allocator_PageManager*  movablePageManager )
 {
     return SCOREP_Allocator_GetAddressFromMovableMemory(
-               scorep_memory_definition_pagemanager,
+               movablePageManager,
                movableMemory );
+}
+
+
+//void*
+//SCOREP_Memory_GetAddressFromMovedMemory( SCOREP_Allocator_MovableMemory movedMemory )
+//{
+//    return SCOREP_Allocator_GetAddressFromMovedMemory(
+//               scorep_remote_memory_definition_pagemanager,
+//               movedMemory );
+//}
+
+
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreateMovedPagedMemory( void )
+{
+    return SCOREP_Allocator_CreateMovedPageManager( scorep_memory_allocator );
+}
+
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_GetLocalDefinitionPageManager()
+{
+    assert( scorep_memory_is_initialized );
+    return scorep_local_movable_page_manager;
+}
+
+
+void
+SCOREP_Memory_SetRemoteDefinitionPageManager( SCOREP_Allocator_PageManager* pageManager )
+{
+    assert( scorep_memory_is_initialized );
+    scorep_remote_movable_page_manager = pageManager;
+}
+
+
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_GetRemoteDefinitionPageManager()
+{
+    assert( scorep_memory_is_initialized );
+    return scorep_remote_movable_page_manager;
 }

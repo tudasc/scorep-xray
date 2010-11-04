@@ -45,7 +45,7 @@ static int                      number_of_counter_defs    = 0;
 static int64_t                  current_context_index     = 0;
 static int64_t                  current_measurement_index = 0;
 
-extern SCOREP_DefinitionManager scorep_definition_manager;
+extern SCOREP_DefinitionManager scorep_local_definition_manager;
 
 static void
 scorep_oaconsumer_count
@@ -89,9 +89,9 @@ scorep_oaconsumer_get_definitions
     int                            counter_def_count
 )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Region, region )
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Region, region )
     {
-        int index = SCOREP_HANDLE_TO_ID( handle, Region );
+        int index = SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
         if ( index >= 0 && index < region_def_count )
         {
             region_def_buffer[ index ].region_id = index;
@@ -100,7 +100,7 @@ scorep_oaconsumer_get_definitions
                 strncpy( region_def_buffer[ index ].name, SCOREP_Region_GetName( handle ), MAX_REGION_NAME_LENGTH );
                 region_def_buffer[ index ].name[ MAX_REGION_NAME_LENGTH - 1 ] = '\0';
             }
-            if ( definition->file_handle != SCOREP_INVALID_STRING )
+            if ( definition->file_name_handle != SCOREP_INVALID_STRING )
             {
                 strncpy( region_def_buffer[ index ].file, SCOREP_Region_GetFileName( handle ), MAX_FILE_NAME_LENGTH );
                 region_def_buffer[ index ].file[ MAX_FILE_NAME_LENGTH - 1 ] = '\0';

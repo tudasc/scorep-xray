@@ -36,170 +36,225 @@
 /**
  * Lock the SCOREP_DefineSourceFile() and related operations (in the adapters).
  */
-void
-SCOREP_LockSourceFileDefinition();
+static inline void
+SCOREP_LockSourceFileDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineSourceFile() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockSourceFileDefinition();
-
+static inline void
+SCOREP_UnlockSourceFileDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineRegion() and related operations (in the adapters).
  */
-void
-SCOREP_LockRegionDefinition();
+static inline void
+SCOREP_LockRegionDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineRegion() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockRegionDefinition();
-
+static inline void
+SCOREP_UnlockRegionDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineMPICommunicator() and related operations (in the adapters).
  */
-void
-SCOREP_LockMPICommunicatorDefinition();
+static inline void
+SCOREP_LockMPICommunicatorDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineMPICommunicator() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockMPICommunicatorDefinition();
-
+static inline void
+SCOREP_UnlockMPICommunicatorDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineMPIWindow() and related operations (in the adapters).
  */
-void
-SCOREP_LockMPIWindowDefinition();
+static inline void
+SCOREP_LockMPIWindowDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineMPIWindow() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockMPIWindowDefinition();
-
+static inline void
+SCOREP_UnlockMPIWindowDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineMPICartesianTopology() and related operations (in the adapters).
  */
-void
-SCOREP_LockMPICartesianTopologyDefinition();
+static inline void
+SCOREP_LockMPICartesianTopologyDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineMPICartesianTopology() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockMPICartesianTopologyDefinition();
-
+static inline void
+SCOREP_UnlockMPICartesianTopologyDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineMPICartesianCoords() and related operations (in the adapters).
  */
-void
-SCOREP_LockMPICartesianCoordsDefinition();
+static inline void
+SCOREP_LockMPICartesianCoordsDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineMPICartesianCoords() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockMPICartesianCoordsDefinition();
-
+static inline void
+SCOREP_UnlockMPICartesianCoordsDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineCounterGroup() and related operations (in the adapters).
  */
-void
-SCOREP_LockCounterGroupDefinition();
+static inline void
+SCOREP_LockCounterGroupDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineCounterGroup() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockCounterGroupDefinition();
-
+static inline void
+SCOREP_UnlockCounterGroupDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineCounter() and related operations (in the adapters).
  */
-void
-SCOREP_LockCounterDefinition();
+static inline void
+SCOREP_LockCounterDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineCounter() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockCounterDefinition();
-
+static inline void
+SCOREP_UnlockCounterDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineIOFileGroup() and related operations (in the adapters).
  */
-void
-SCOREP_LockIOFileGroupDefinition();
+static inline void
+SCOREP_LockIOFileGroupDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineIOFileGroup() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockIOFileGroupDefinition();
-
+static inline void
+SCOREP_UnlockIOFileGroupDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineIOFile() and related operations (in the adapters).
  */
-void
-SCOREP_LockIOFileDefinition();
+static inline void
+SCOREP_LockIOFileDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineIOFile() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockIOFileDefinition();
-
+static inline void
+SCOREP_UnlockIOFileDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineMarkerGroup() and related operations (in the adapters).
  */
-void
-SCOREP_LockMarkerGroupDefinition();
+static inline void
+SCOREP_LockMarkerGroupDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineMarkerGroup() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockMarkerGroupDefinition();
-
+static inline void
+SCOREP_UnlockMarkerGroupDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineMarker() and related operations (in the adapters).
  */
-void
-SCOREP_LockMarkerDefinition();
+static inline void
+SCOREP_LockMarkerDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineMarker() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockMarkerDefinition();
-
+static inline void
+SCOREP_UnlockMarkerDefinition()
+{
+}
 
 /**
  * Lock the SCOREP_DefineParameter() and related operations (in the adapters).
  */
-void
-SCOREP_LockParameterDefinition();
+static inline void
+SCOREP_LockParameterDefinition()
+{
+}
 
 /**
  * Unlock the SCOREP_DefineParameter() and related operations (in the adapters).
  */
-void
-SCOREP_UnlockParameterDefinition();
+static inline void
+SCOREP_UnlockParameterDefinition()
+{
+}
 
+/**
+ * Lock the SCOREP_DefineCallpath*() and related operations (in the adapters).
+ */
+static inline void
+SCOREP_LockCallpathDefinition()
+{
+}
+
+/**
+ * Unlock the SCOREP_DefineCallpath*() and related operations (in the adapters).
+ */
+static inline void
+SCOREP_UnlockCallpathDefinition()
+{
+}
 
 #endif /* SCOREP_DEFINITIONLOCKING_H */

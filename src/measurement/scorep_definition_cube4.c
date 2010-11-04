@@ -32,7 +32,7 @@
 #include "scorep_definitions.h"
 #include <cubew_services.h>
 
-extern SCOREP_DefinitionManager scorep_definition_manager;
+extern SCOREP_DefinitionManager scorep_local_definition_manager;
 
 /* ****************************************************************************
  * Initialization / Finalization
@@ -308,16 +308,16 @@ static void
 scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
                                           scorep_cube4_definitions_map* map )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Region, region )
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Region, region )
     {
         /* Collect necessary data */
-        const char* region_name = SCOREP_HANDLE_DEREF( definition->name_handle,
-                                                       String )->string_data;
+        const char* region_name = SCOREP_LOCAL_HANDLE_DEREF( definition->name_handle,
+                                                             String )->string_data;
         const char* adapter   = scorep_adapter_type_to_string( definition->adapter_type );
         const char* file_name = "";
-        if ( definition->file_handle != SCOREP_INVALID_SOURCE_FILE )
+        if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
-            file_name = SCOREP_HANDLE_DEREF( definition->file_handle, String )->string_data;
+            file_name = SCOREP_LOCAL_HANDLE_DEREF( definition->file_name_handle, String )->string_data;
         }
 
         /* Register region to cube */
@@ -346,7 +346,7 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
     SCOREP_RegionHandle   scorep_region;
     SCOREP_CallpathHandle scorep_callpath;
 
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Callpath, callpath )
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Callpath, callpath )
     {
         /* Collect necessary data */
         scorep_region   = definition->callpath_argument.region_handle;
@@ -378,7 +378,7 @@ scorep_write_location_definitions_to_cube4( cube_t*                       my_cub
     cube_thread*  thread = NULL;
     int           index  = 0;
 
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Location, location )
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
     {
         sprintf( name, "thread %d", index ),
         thread = cube_def_thrd( my_cube, name,

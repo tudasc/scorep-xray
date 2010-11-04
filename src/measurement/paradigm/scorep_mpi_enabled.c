@@ -160,7 +160,14 @@ SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
     // send buf
     int* n_local_definitions = calloc( SCOREP_Thread_GetNumberOfLocations(), sizeof( int ) );
     assert( n_local_definitions );
-    n_local_definitions[ 0 ] = SCOREP_GetNumberOfDefinitions();
+    int  number_of_locations = SCOREP_GetNumberOfDefinitions();
+    for ( int i = 0; i < SCOREP_Thread_GetNumberOfLocations(); ++i )
+    {
+        // assign all locations the same number of definitions. This is a temporary solution
+        // as we need to duplicate the definitions for every location until OTF2 is able
+        // to handle pre-process definitions.
+        n_local_definitions[ i ] = number_of_locations;
+    }
 
     PMPI_Gatherv( n_local_definitions,
                   SCOREP_Thread_GetNumberOfLocations(),
@@ -172,13 +179,57 @@ SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
                   0,
                   scorep_mpi_comm_world );
 
-    if ( n_local_definitions )
-    {
-        free( n_local_definitions );
-    }
-    if ( diplacements )
-    {
-        free( diplacements );
-    }
+    free( n_local_definitions );
+    free( diplacements );
+
     return n_definitions_per_location;
+}
+
+static MPI_Datatype
+scorep_mpi_to_mpi_datatype( enum SCOREP_Mpi_Datatype scorep_datatype )
+{
+    switch ( scorep_datatype )
+    {
+#define SCOREP_MPI_DATATYPE( datatype ) \
+    case SCOREP_ ## datatype: \
+        return datatype;
+        SCOREP_MPI_DATATYPES
+#undef SCOREP_MPI_DATATYPE
+        default:
+            assert( !"Unknown mpi datatype" );
+    }
+}
+
+
+int
+SCOREP_Mpi_Send( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 dest )
+{
+    return PMPI_Send( buf,
+                      count,
+                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                      dest,
+                      0,
+                      scorep_mpi_comm_world );
+}
+
+
+int
+SCOREP_Mpi_Recv( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 source,
+                 SCOREP_Mpi_Status   status )
+{
+    return PMPI_Recv( buf,
+                      count,
+                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                      source,
+                      0,
+                      scorep_mpi_comm_world,
+                      status == SCOREP_MPI_STATUS_IGNORE
+                      ? MPI_STATUS_IGNORE
+                      : ( MPI_Status* )status );
 }

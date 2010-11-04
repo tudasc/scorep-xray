@@ -28,65 +28,24 @@
 #include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_PublicTypes.h>
 #include "scorep_definition_structs.h"
+#include "scorep_definition_macros.h"
 #include <SCOREP_Memory.h>
 
 #include <jenkins_hash.h>
 
 
-/**
- * Allocate, assign the sequence number, and store in manager list a new
- * definition of type @type
- */
-/* *INDENT-OFF* */
-#define SCOREP_ALLOC_NEW_DEFINITION( Type, type ) \
-    do { \
-        new_handle = SCOREP_Memory_AllocForDefinitions( \
-            sizeof( SCOREP_ ## Type ## _Definition ) ); \
-        new_definition = \
-            SCOREP_MEMORY_DEREF_MOVABLE( new_handle, \
-                                       SCOREP_ ## Type ## _Definition* ); \
-        new_definition->next = SCOREP_MOVABLE_NULL; \
-        new_definition->hash_value = 0; \
-        *scorep_definition_manager.type ## _definition_tail_pointer = \
-            new_handle; \
-        scorep_definition_manager.type ## _definition_tail_pointer = \
-            &new_definition->next; \
-        new_definition->sequence_number = \
-            scorep_definition_manager.type ## _definition_counter++; \
-    } while ( 0 )
-/* *INDENT-ON* */
+typedef struct SCOREP_DefinitionMappings SCOREP_DefinitionMappings;
+struct SCOREP_DefinitionMappings
+{
+    //uint32_t* location_mappings;
+    uint32_t* region_mappings;
+    uint32_t* group_mappings;
+    uint32_t* mpi_window_mappings;
+    //uint32_t* gats_group_mappings; /// @todo what definition type does this correspond to?
+    uint32_t* parameter_mappings;
+    uint32_t* callpath_mappings;
+};
 
-/**
- * Allocate, assign the sequence number, and store in manager list a new
- * definition of type @type with a variable array member of type @array_type
- * and a total number of members of @number_of_members
- */
-/* *INDENT-OFF* */
-#define SCOREP_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( Type, \
-                                                  type, \
-                                                  array_type, \
-                                                  number_of_members ) \
-    do { \
-        new_handle = SCOREP_Memory_AllocForDefinitions( \
-            sizeof( SCOREP_ ## Type ## _Definition ) + \
-            ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
-        new_definition = \
-            SCOREP_MEMORY_DEREF_MOVABLE( new_handle, \
-                                       SCOREP_ ## Type ## _Definition* ); \
-        new_definition->next = SCOREP_MOVABLE_NULL; \
-        new_definition->hash_value = 0; \
-        *scorep_definition_manager.type ## _definition_tail_pointer = \
-            new_handle; \
-        scorep_definition_manager.type ## _definition_tail_pointer = \
-            &new_definition->next; \
-        new_definition->sequence_number = \
-            scorep_definition_manager.type ## _definition_counter++; \
-    } while ( 0 )
-/* *INDENT-ON* */
-
-/* this size is temporary */
-#define SCOREP_DEFINITION_HASH_TABLE_SIZE hashsize( 8 )
-#define SCOREP_DEFINITION_HASH_TABLE_MASK hashmask( 8 )
 
 /**
  * Holds all definitions.
@@ -98,87 +57,32 @@
 typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
 struct SCOREP_DefinitionManager
 {
-    /* note: no ';' */
-    #define SCOREP_DEFINE_DEFINITION_LIST( Type, type ) \
-        SCOREP_ ## Type ## Handle  type ## _definition_head; \
-        SCOREP_ ## Type ## Handle* type ## _definition_tail_pointer; \
-        uint32_t                              type ## _definition_counter;
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( String, string )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Location, location )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SourceFile, source_file )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Region, region )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Group, group )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPIWindow, mpi_window )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( CounterGroup, counter_group )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Counter, counter )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( IOFileGroup, io_file_group )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( IOFile, io_file )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MarkerGroup, marker_group )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Marker, marker )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Parameter, parameter )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Callpath, callpath )
 
-    SCOREP_DEFINE_DEFINITION_LIST( String, string )
-    SCOREP_StringHandle* string_definition_hash_table;
+    /** The pager manager where all definition objects resides */
+    SCOREP_Allocator_PageManager* page_manager;
 
-    SCOREP_DEFINE_DEFINITION_LIST( Location, location )
-    SCOREP_DEFINE_DEFINITION_LIST( SourceFile, source_file )
-    SCOREP_DEFINE_DEFINITION_LIST( Region, region )
-    SCOREP_DEFINE_DEFINITION_LIST( Group, group )
-    SCOREP_DEFINE_DEFINITION_LIST( MPIWindow, mpi_window )
-    SCOREP_DEFINE_DEFINITION_LIST( MPICartesianTopology, mpi_cartesian_topology )
-    SCOREP_DEFINE_DEFINITION_LIST( MPICartesianCoords, mpi_cartesian_coords )
-    SCOREP_DEFINE_DEFINITION_LIST( CounterGroup, counter_group )
-    SCOREP_DEFINE_DEFINITION_LIST( Counter, counter )
-    SCOREP_DEFINE_DEFINITION_LIST( IOFileGroup, io_file_group )
-    SCOREP_DEFINE_DEFINITION_LIST( IOFile, io_file )
-    SCOREP_DEFINE_DEFINITION_LIST( MarkerGroup, marker_group )
-    SCOREP_DEFINE_DEFINITION_LIST( Marker, marker )
-    SCOREP_DEFINE_DEFINITION_LIST( Parameter, parameter )
-    SCOREP_DEFINE_DEFINITION_LIST( Callpath, callpath )
-
-    #undef SCOREP_DEFINE_DEFINITION_LIST
+    /** Mappings for local definition ids to global ids.
+     * Used only in local definition instance.
+     */
+    SCOREP_DefinitionMappings* mappings;
 };
 /* *INDENT-ON* */
-
-/**
- * Iterator functions for definition. The iterator variable is named
- * @definition.
- *
- * Example:
- * @code
- *  SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, String, string )
- *  {
- *      :
- *      definition->member = ...
- *      :
- *  }
- *  SCOREP_DEFINITION_FOREACH_WHILE();
- * @endcode
- */
-/* *INDENT-OFF* */
-#define SCOREP_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
-    do { \
-        SCOREP_ ## Type ## _Definition* definition; \
-        SCOREP_ ## Type ## Handle handle; \
-        for ( handle = ( manager_pointer )->type ## _definition_head; \
-              handle != SCOREP_MOVABLE_NULL; \
-              handle = definition->next ) \
-        { \
-            definition = SCOREP_MEMORY_DEREF_MOVABLE( \
-                handle, SCOREP_ ## Type ## _Definition* ); \
-            {
-
-#define SCOREP_DEFINITION_FOREACH_WHILE() \
-            } \
-        } \
-    } while ( 0 )
-/* *INDENT-ON* */
-
-
-/* Some convenient macros to add members or sub-hashes to the hash value */
-#define HASH_ADD_POD( pod_member ) \
-    new_definition->hash_value = hash( &new_definition->pod_member, \
-                                       sizeof( new_definition->pod_member ), \
-                                       new_definition->hash_value )
-
-#define HASH_ADD_HANDLE( handle_member, Type ) \
-    new_definition->hash_value = hashword( \
-        &SCOREP_HANDLE_GET_HASH( new_definition->handle_member, Type ), \
-        1, new_definition->hash_value )
-
-#define HASH_ADD_ARRAY( array_member, number_member ) \
-    new_definition->hash_value = hash( \
-        new_definition->array_member, \
-        sizeof( new_definition->array_member[ 0 ] ) \
-        * new_definition->number_member, \
-        new_definition->hash_value )
 
 
 void
@@ -190,6 +94,18 @@ SCOREP_Definitions_Finalize();
 
 
 void
+SCOREP_Definitions_Lock();
+
+void
+SCOREP_Definitions_Unlock();
+
+void
+SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    manager,
+                                    SCOREP_Allocator_PageManager* pageManager,
+                                    bool                          allocHashTables );
+
+
+void
 SCOREP_Definitions_Write();
 
 
@@ -197,9 +113,67 @@ SCOREP_StringHandle
 SCOREP_DefineString( const char* str );
 
 
+void
+SCOREP_CopyStringDefinitionToUnified( SCOREP_String_Definition*     definition,
+                                      SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+// for testing purposes only, use SCOREP_CopyStringDefinitionToUnified() or
+// SCOREP_DefineString() instead.
+SCOREP_StringHandle
+scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                 const char*               str );
+
+
+void
+SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFile_Definition* definition,
+                                          SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+// for testing purposes only, use SCOREP_CopySourceFileDefinitionToUnified() or
+// SCOREP_DefineSourceFile() instead.
+SCOREP_SourceFileHandle
+scorep_source_file_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                      SCOREP_StringHandle       fileNameHandle );
+
+
+void
+SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
+                                      SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+// for testing purposes only, use SCOREP_CopyRegionDefinitionToUnified() or
+// SCOREP_DefineRegion() instead.
+SCOREP_RegionHandle
+scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                 SCOREP_StringHandle       regionNameHandle,
+                                 SCOREP_StringHandle       descriptionNameHandle,
+                                 SCOREP_StringHandle       fileNameHandle,
+                                 SCOREP_LineNo             beginLine,
+                                 SCOREP_LineNo             endLine,
+                                 SCOREP_AdapterType        adapter,
+                                 SCOREP_RegionType         regionType );
+
+
 SCOREP_LocationHandle
-SCOREP_DefineLocation( uint64_t    globalLocationId,
-                       const char* name );
+SCOREP_DefineLocation( uint64_t              globalLocationId,
+                       SCOREP_LocationHandle parent,
+                       const char*           name );
+
+
+void
+SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition,
+                                        SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+void
+SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
+                                     SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+void
+SCOREP_CopyParameterDefinitionToUnified( SCOREP_Parameter_Definition*  definition,
+                                         SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 SCOREP_CallpathHandle
@@ -219,6 +193,11 @@ SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parent,
                                       SCOREP_StringHandle    value );
 
 
+void
+SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition,
+                                        SCOREP_Allocator_PageManager* handlesPageManager );
+
+
 int
 SCOREP_GetNumberOfDefinitions();
 
@@ -233,5 +212,9 @@ SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle );
 
 int
 SCOREP_GetHandleToID( SCOREP_RegionHandle handle );
+
+void
+SCOREP_UpdateLocationDefinitions();
+
 
 #endif /* SCOREP_INTERNAL_DEFINITIONS_H */

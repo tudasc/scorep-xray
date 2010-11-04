@@ -102,6 +102,38 @@ SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
 {
     int* n_definitions_per_location = calloc( nGlobalLocations, sizeof( int ) );
     assert( n_definitions_per_location );
-    n_definitions_per_location[ 0 ] = SCOREP_GetNumberOfDefinitions();
+    int  number_of_locations = SCOREP_GetNumberOfDefinitions();
+    for ( int i = 0; i < nGlobalLocations; ++i )
+    {
+        // assign all locations the same number of definitions. This is a temporary solution
+        // as we need to duplicate the definitions for every location until OTF2 is able
+        // to handle pre-process definitions.
+        n_definitions_per_location[ i ] = number_of_locations;
+    }
     return n_definitions_per_location;
+}
+
+
+int
+SCOREP_Mpi_Send( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 dest )
+{
+    assert( !"SCOREP_Mpi_Send() called in non-mpi build" );
+
+    return 1;
+}
+
+
+int
+SCOREP_Mpi_Recv( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 source,
+                 SCOREP_Mpi_Status   status )
+{
+    assert( !"SCOREP_Mpi_Recv() called in non-mpi build" );
+
+    return 1;
 }

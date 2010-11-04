@@ -27,7 +27,6 @@
 #include <config.h>
 #include "scorep_thread.h"
 #include <scorep_definitions.h>
-#include <scorep_definition_locking.h>
 #include <SCOREP_Memory.h>
 #include <scorep_utility/SCOREP_Omp.h>
 #include <scorep_mpi.h>
@@ -62,13 +61,7 @@ int64_t FORTRAN_ALIGNED POMP_TPD_MANGLED = 0;
 // We want to write #pragma omp threadprivate(POMP_TPD_MANGLED) but as
 // POMP_TPD_MANGLED is a macro itself, we need to do some preprocessor
 // magic to be on the safe side.
-#define STR_( s ) #s
-#define STR( s ) STR_( s )
-#define PRA( x ) _Pragma( x )
-#define PRAGMA_OMP_THREADPRIVATE( tpd ) PRA( STR( omp threadprivate( tpd ) ) )
-#ifdef _OPENMP
-PRAGMA_OMP_THREADPRIVATE( POMP_TPD_MANGLED )
-#endif
+SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 
 
 typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
@@ -85,7 +78,19 @@ static void scorep_thread_delete_location_data();
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
 static void scorep_thread_init_childs_to_null(SCOREP_Thread_ThreadPrivateData** childs, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
+static void scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent );
 /* *INDENT-ON* */
+
+
+typedef struct scorep_deferred_location scorep_deferred_location;
+struct scorep_deferred_location
+{
+    SCOREP_Thread_LocationData* location;
+    SCOREP_Thread_LocationData* parent;
+    scorep_deferred_location*   next;
+};
+
+static scorep_deferred_location scorep_deferred_locations_head_dummy = { 0, 0 };
 
 
 struct SCOREP_Thread_ThreadPrivateData
@@ -105,7 +110,7 @@ struct SCOREP_Thread_ThreadPrivateData
 // multiple ones.
 struct SCOREP_Thread_LocationData
 {
-    uint32_t                       location_id; // local id
+    uint32_t                       location_id; // process local id, 0, 1, ...
     SCOREP_Allocator_PageManager** page_managers;
     SCOREP_LocationHandle          location_handle;
     SCOREP_Profile_LocationData*   profile_data;
@@ -184,17 +189,19 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
 
     if ( !SCOREP_Mpi_IsInitialized() )
     {
-        SCOREP_LockLocationDefinition();
-        locationData->location_handle = SCOREP_DefineLocation( INVALID_LOCATION_DEFINITION_ID, "" );
-        SCOREP_DeferLocationInitialization( locationData );
-        SCOREP_UnlockLocationDefinition();
+        locationData->location_handle = SCOREP_DefineLocation(
+            INVALID_LOCATION_DEFINITION_ID,
+            SCOREP_INVALID_LOCATION,
+            "" );
+        scorep_defer_location_initialization( locationData, parent );
     }
     else
     {
         uint64_t global_location_id = SCOREP_CalculateGlobalLocationId( locationData );
-        SCOREP_LockLocationDefinition();
-        locationData->location_handle = SCOREP_DefineLocation( global_location_id, "" );
-        SCOREP_UnlockLocationDefinition();
+        locationData->location_handle = SCOREP_DefineLocation(
+            global_location_id,
+            parent ? parent->location_handle : SCOREP_INVALID_LOCATION,
+            "" );
     }
 }
 
@@ -243,7 +250,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         assert( new_location->trace_data );
     }
 
-    #pragma omp critical (new_location)
+    SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
         new_location->location_id     = location_counter++;
         new_location->next            = location_list_head_dummy.next;
@@ -520,9 +527,75 @@ SCOREP_Thread_GetNumberOfLocations()
 {
     assert( location_counter > 0 );
     uint32_t n_locations = 0;
-    #pragma omp critical (new_location)
+    SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
         n_locations = location_counter;
     }
     return n_locations;
+}
+
+
+void
+scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData,
+                                      SCOREP_Thread_LocationData* parent )
+{
+    scorep_deferred_location* deferred_location = SCOREP_Memory_AllocForMisc( sizeof( scorep_deferred_location ) );
+    assert( deferred_location );
+
+    deferred_location->location = locationData;
+    deferred_location->parent   = parent;
+    SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
+    {
+        deferred_location->next                   = scorep_deferred_locations_head_dummy.next;
+        scorep_deferred_locations_head_dummy.next = deferred_location;
+    }
+}
+
+
+void
+SCOREP_ProcessDeferredLocations()
+{
+    SCOREP_Thread_LocationData* current_location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
+    {
+        scorep_deferred_location* deferred_location                      = scorep_deferred_locations_head_dummy.next;
+        bool                      current_location_in_deferred_locations = false;
+
+        while ( deferred_location )
+        {
+            SCOREP_Thread_LocationData* location = deferred_location->location;
+            if ( location == current_location )
+            {
+                current_location_in_deferred_locations = true;
+            }
+
+            SCOREP_SetOtf2WriterLocationId( location );
+            SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->global_location_id =
+                location->trace_data->otf_location;
+
+            deferred_location = deferred_location->next;
+        }
+
+        assert( current_location_in_deferred_locations );
+
+        // update parents
+        deferred_location = scorep_deferred_locations_head_dummy.next;
+        while ( deferred_location )
+        {
+            SCOREP_Thread_LocationData* location = deferred_location->location;
+            SCOREP_Thread_LocationData* parent   = deferred_location->parent;
+            if ( parent )
+            {
+                SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent =
+                    parent->location_handle;
+            }
+            else
+            {
+                assert( SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent
+                        == SCOREP_INVALID_LOCATION );
+            }
+            deferred_location = deferred_location->next;
+        }
+    }
 }

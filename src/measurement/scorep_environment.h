@@ -44,10 +44,6 @@ SCOREP_Env_RunVerbose();
 
 
 bool
-SCOREP_Env_DoUnification();
-
-
-bool
 SCOREP_Env_DoTracing();
 
 

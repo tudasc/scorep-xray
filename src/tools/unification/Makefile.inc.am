@@ -18,7 +18,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-bin_PROGRAMS += scorep_unify
+noinst_PROGRAMS += scorep_unify
 scorep_unify_SOURCES = $(SRC_ROOT)src/tools/unification/scorep_unify.cpp
 scorep_unify_CPPFLAGS =                    \
     $(AM_CPPFLAGS)                       \

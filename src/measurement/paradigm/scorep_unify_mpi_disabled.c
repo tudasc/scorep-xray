@@ -25,8 +25,16 @@
 
 
 #include <config.h>
+
+
+#include <assert.h>
+
+
 #include <scorep_unify.h>
 
 
-/* *INDENT-OFF* */
-/* *INDENT-ON*  */
+void
+SCOREP_Mpi_Unify()
+{
+    assert( !"SCOREP_Mpi_Unify() called in non-mpi build" );
+}

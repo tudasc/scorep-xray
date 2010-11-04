@@ -32,6 +32,7 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Config.h>
 #include <assert.h>
+#include <stdio.h>
 
 
 static bool scorep_env_core_environment_variables_initialized = false;
@@ -39,7 +40,6 @@ static bool scorep_env_core_environment_variables_initialized = false;
 
 // some config variables.
 static bool     scorep_env_verbose;
-static bool     scorep_env_unify;
 static bool     scorep_env_tracing;
 static bool     scorep_env_profiling;
 static uint64_t scorep_env_total_memory;
@@ -76,15 +76,6 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "Long help"
     },
     {
-        "UNIFY",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_unify,
-        NULL,
-        "false",
-        "do unification step",
-        ""
-    },
-    {
         "TOTAL_MEMORY",
         SCOREP_CONFIG_TYPE_SIZE,
         &scorep_env_total_memory,
@@ -114,6 +105,8 @@ SCOREP_Env_InitializeCoreEnvironmentVariables()
         return;
     }
 
+    scorep_env_core_environment_variables_initialized = true;
+
     SCOREP_Error_Code error = SCOREP_ConfigRegister( NULL, scorep_env_core_environment_variables );
 
     if ( SCOREP_SUCCESS != error )
@@ -124,7 +117,13 @@ SCOREP_Env_InitializeCoreEnvironmentVariables()
 
     assert( scorep_env_total_memory > scorep_env_page_size );
 
-    scorep_env_core_environment_variables_initialized = true;
+    if ( SCOREP_Env_RunVerbose() )
+    {
+        fprintf( stderr, "SCOREP running in verbose mode\n" );
+    }
+
+    /// @todo print summary of environment variables and/or a config file.
+    /// Therefore it would be better to centralize all environment variables.
 }
 
 
@@ -142,13 +141,6 @@ SCOREP_Env_RunVerbose()
     return scorep_env_verbose;
 }
 
-
-bool
-SCOREP_Env_DoUnification()
-{
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_unify;
-}
 
 bool
 SCOREP_Env_DoTracing()

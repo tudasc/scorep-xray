@@ -36,3 +36,4 @@ include ../test/adapters/pomp/Makefile.inc.am
 include ../test/serial/Makefile.inc.am
 include ../test/omp/Makefile.inc.am
 include ../test/alignment/Makefile.inc.am
+include ../test/unification/Makefile.inc.am

@@ -54,7 +54,6 @@
 #include "scorep_mpi.h"
 #include "scorep_thread.h"
 #include "scorep_runtime_management.h"
-#include "scorep_definition_locking.h"
 #include "scorep_parameter_registration.h"
 
 #include <otf2/otf2.h>
@@ -115,10 +114,10 @@ SCOREP_InitMeasurement( void )
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the adapter initialization.
     scorep_initialized = true;
+    scorep_initialization_sanity_checks();
+
     SCOREP_Env_InitializeCoreEnvironmentVariables();
     SCOREP_Status_Initialize();
-
-    scorep_initialization_sanity_checks();
     SCOREP_Timer_Initialize();
     SCOREP_CreateExperimentDir();
 
@@ -130,7 +129,6 @@ SCOREP_InitMeasurement( void )
     // writer that needs the archive.
     scorep_otf2_initialize();
 
-    SCOREP_DefinitionLocks_Initialize();
     // initialize before SCOREP_Thread_Initialize() because latter creates at least a
     // location definition.
     SCOREP_Definitions_Initialize();
@@ -166,11 +164,6 @@ scorep_initialization_sanity_checks()
     {
         SCOREP_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
-    }
-
-    if ( SCOREP_Env_RunVerbose() )
-    {
-        fprintf( stderr, "SCOREP running in verbose mode\n" );
     }
 }
 
@@ -440,12 +433,11 @@ scorep_finalize( void )
     // an instrumentation error.
 
     // order is important
-    SCOREP_Unify();
     scorep_profile_finalize();
     scorep_parameter_table_finalize();
+    SCOREP_Unify();
     SCOREP_Definitions_Write();
     SCOREP_Definitions_Finalize();
-    SCOREP_DefinitionLocks_Finalize();
     scorep_otf2_finalize();
     SCOREP_RenameExperimentDir();  // needs MPI
 
@@ -530,75 +522,10 @@ scorep_adapters_deregister()
 void
 scorep_otf2_finalize()
 {
-    /// @todo refactor
-    if ( !SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() )
     {
-        return;
+        assert( scorep_otf2_archive );
+        /// @todo? set archive to "unified"/"not unified"
+        OTF2_Archive_Delete( scorep_otf2_archive );
     }
-
-    assert( scorep_otf2_archive );
-
-    int* n_locations_per_rank = SCOREP_Mpi_GatherNumberOfLocationsPerRank();
-    int  n_global_locations   = 0;
-    if ( SCOREP_Mpi_GetRank() == 0 )
-    {
-        for ( int rank = 0; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
-        {
-            n_global_locations += n_locations_per_rank[ rank ];
-        }
-    }
-
-    int* n_definitions_per_location = 0;
-    if ( !SCOREP_Env_DoUnification() )
-    {
-        n_definitions_per_location = SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( n_locations_per_rank, n_global_locations );
-    }
-
-    if ( SCOREP_Mpi_GetRank() == 0 )
-    {
-        OTF2_Archive_SetNumberOfLocations( scorep_otf2_archive, n_global_locations );
-
-        if ( !SCOREP_Env_DoUnification() )
-        {
-            OTF2_GlobDefWriter* global_definition_writer =
-                OTF2_Archive_GetGlobDefWriter( scorep_otf2_archive,
-                                               SCOREP_OnTracePreFlush,
-                                               SCOREP_OnTraceAndDefinitionPostFlush );
-            assert( global_definition_writer );
-
-            /* write def for empty string */
-            SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefString(
-                global_definition_writer, 0, "" );
-            assert( status == SCOREP_SUCCESS );
-
-            int index = 0;
-            for ( int rank = 0; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
-            {
-                for ( int location_id = 0; location_id < n_locations_per_rank[ rank ]; ++location_id )
-                {
-                    uint64_t global_location_id = ( ( ( uint64_t )location_id ) << 32 ) | ( uint64_t )rank;
-                    status = OTF2_GlobDefWriter_GlobDefLocation(
-                        global_definition_writer,
-                        global_location_id,
-                        0,
-                        OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
-                        n_definitions_per_location[ index ] );
-                    assert( status == SCOREP_SUCCESS );
-                    ++index;
-                }
-            }
-            /// @todo set archive not unified
-        }
-    }
-
-
-    if ( n_definitions_per_location )
-    {
-        free( n_definitions_per_location );
-    }
-    if ( n_locations_per_rank )
-    {
-        free( n_locations_per_rank );
-    }
-    OTF2_Archive_Delete( scorep_otf2_archive );
 }

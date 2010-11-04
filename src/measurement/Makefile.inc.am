@@ -36,10 +36,10 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.h  \
     $(SRC_ROOT)src/measurement/scorep_trace_types.h               \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
-    $(SRC_ROOT)src/measurement/scorep_definition_locking.h        \
     $(SRC_ROOT)src/measurement/scorep_definitions.h               \
     $(SRC_ROOT)src/measurement/scorep_definition_structs.h        \
     $(SRC_ROOT)src/measurement/scorep_definition_handles.h        \
+    $(SRC_ROOT)src/measurement/scorep_definition_macros.h         \
     $(SRC_ROOT)src/measurement/scorep_status.c                    \
     $(SRC_ROOT)src/measurement/scorep_status.h                    \
     $(SRC_ROOT)src/measurement/scorep_parameter_registration.h    \
@@ -80,7 +80,6 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
     $(SRC_ROOT)src/measurement/scorep_definitions.c        \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c      \
-    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingOmp.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
 libscorep_paradigm_omp_la_CPPFLAGS =       \
     $(AM_CPPFLAGS)                       \
@@ -104,8 +103,7 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
     $(SRC_ROOT)src/measurement/scorep_definitions.c        \
-    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c         \
-    $(SRC_ROOT)src/measurement/paradigm/SCOREP_DefinitionLockingNonOmp.c \
+    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c
 
 libscorep_paradigm_non_omp_la_CPPFLAGS =   \

@@ -64,14 +64,6 @@ uint64_t
 SCOREP_CalculateGlobalLocationId( SCOREP_Thread_LocationData* locationData );
 
 
-void
-SCOREP_DeferLocationInitialization( SCOREP_Thread_LocationData* locationData );
-
-
-void
-SCOREP_ProcessDeferredLocations();
-
-
 /**
  * Archive for trace data. One per process, can contain multiple "location"
  * writers.

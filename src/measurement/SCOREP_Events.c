@@ -69,7 +69,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
         OTF2_EvtWriter_Enter( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                               NULL,
                               timestamp,
-                              SCOREP_HANDLE_TO_ID( regionHandle, Region ) );
+                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -102,7 +102,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
         OTF2_EvtWriter_Leave( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                               NULL,
                               timestamp,
-                              SCOREP_HANDLE_TO_ID( regionHandle, Region ) );
+                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -143,7 +143,7 @@ SCOREP_MpiSend( uint32_t                     globalDestinationRank,
                                 SCOREP_GetClockTicks(),
                                 OTF2_MPI_BLOCK,
                                 globalDestinationRank,
-                                SCOREP_HANDLE_TO_ID( communicatorHandle, Group ),
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                 tag,
                                 bytesSent );
     }
@@ -182,7 +182,7 @@ SCOREP_MpiRecv( uint32_t                     globalSourceRank,
                                 SCOREP_GetClockTicks(),
                                 OTF2_MPI_BLOCK,
                                 globalSourceRank,
-                                SCOREP_HANDLE_TO_ID( communicatorHandle, Group ),
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                 tag,
                                 bytesReceived );
     }
@@ -227,7 +227,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                                       NULL,
                                       SCOREP_GetClockTicks(),
                                       OTF2_MPI_BARRIER,
-                                      SCOREP_HANDLE_TO_ID( communicatorHandle, Group ),
+                                      SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                       globalRootRank,
                                       bytesSent,
                                       bytesReceived );
@@ -263,7 +263,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
                                 NULL,
                                 SCOREP_GetClockTicks(),
                                 nRequestedThreads,
-                                SCOREP_HANDLE_TO_ID( regionHandle, Region ) );
+                                SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -295,7 +295,7 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
         OTF2_EvtWriter_OmpJoin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
                                 SCOREP_GetClockTicks(),
-                                SCOREP_HANDLE_TO_ID( regionHandle, Region ) );
+                                SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
         /// @todo better write n join events and pass the locationids of the joined
         /// threads (the master/father is implicitly given). let the master-thread-join
         /// be the last one to indicate the the corresponding fork can be closed.

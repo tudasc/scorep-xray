@@ -28,13 +28,15 @@
 
 #include "scorep_definitions.h"
 
-
+#include "scorep_environment.h"
 #include "scorep_definition_structs.h"
+#include "scorep_definition_macros.h"
 #include "scorep_runtime_management.h"
 #include "scorep_thread.h"
 #include <scorep_utility/SCOREP_Omp.h>
 #include <SCOREP_PublicTypes.h>
 #include <SCOREP_Timing.h>
+#include <SCOREP_Mutex.h>
 #include <otf2/otf2.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -44,35 +46,55 @@
 #include <jenkins_hash.h>
 
 
-SCOREP_DefinitionManager  scorep_definition_manager;
-SCOREP_DefinitionManager* scorep_remote_definition_manager = 0;
-static bool               scorep_definitions_initialized   = false;
+SCOREP_DefinitionManager  scorep_local_definition_manager;
+SCOREP_DefinitionManager* scorep_unified_definition_manager = 0;
+SCOREP_DefinitionManager* scorep_remote_definition_manager  = 0;
+static bool               scorep_definitions_initialized    = false;
 
 
 /* *INDENT-OFF* */
-static void scorep_write_definitions_to_otf2(void);
-static OTF2_DefWriter* scorep_create_definition_writer();
+static void scorep_write_local_definitions_to_otf2( OTF2_DefWriter* localDefinitionWriter );
+static void scorep_write_global_definitions_to_otf2( OTF2_GlobDefWriter* global_definition_writer );
+static void scorep_write_number_of_definitions_per_location_to_otf2( OTF2_GlobDefWriter* global_definition_writer );
+static OTF2_GlobDefWriter* scorep_create_global_definition_writer();
+static OTF2_DefWriter* scorep_create_local_definition_writer( SCOREP_Location_Definition* definition );
 static OTF2_FlushType scorep_on_definitions_pre_flush();
-static void scorep_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_io_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_io_file_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_marker_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_marker_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_mpi_cartesian_coords_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_mpi_cartesian_topology_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_mpi_window_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_parameter_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
-static void scorep_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter );
+static void scorep_write_callpath_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_counter_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_counter_group_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_io_file_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_io_file_group_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_marker_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_marker_group_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_mpi_cartesian_coords_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_mpi_cartesian_topology_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_group_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_mpi_window_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_parameter_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_region_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_source_file_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_string_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_location_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
 static void scorep_handle_definition_writing_error( SCOREP_Error_Code status, const char* definitionType );
-static OTF2_RegionType scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType );
+static OTF2_RegionType scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType, bool isGlobal );
+static void scorep_write_mappings_to_otf2( OTF2_DefWriter* localDefinitionWriter );
 /* *INDENT-ON* */
 
+
+/* global definition lock */
+static SCOREP_Mutex definitions_lock;
+
+void
+SCOREP_Definitions_Lock( void )
+{
+    SCOREP_MutexLock( definitions_lock );
+}
+
+void
+SCOREP_Definitions_Unlock( void )
+{
+    SCOREP_MutexUnlock( definitions_lock );
+}
 
 void
 SCOREP_Definitions_Initialize()
@@ -83,43 +105,74 @@ SCOREP_Definitions_Initialize()
     }
     scorep_definitions_initialized = true;
 
-    memset( &scorep_definition_manager, 0, sizeof( scorep_definition_manager ) );
+    SCOREP_MutexCreate( &definitions_lock );
 
-    // note, only lower-case type needed
-    #define SCOREP_INIT_DEFINITION_LIST( type ) \
-    do { \
-        scorep_definition_manager.type ## _definition_tail_pointer = \
-            &scorep_definition_manager.type ## _definition_head; \
-    } while ( 0 )
-
-    SCOREP_INIT_DEFINITION_LIST( string );
-    scorep_definition_manager.string_definition_hash_table =
-        calloc( SCOREP_DEFINITION_HASH_TABLE_SIZE,
-                sizeof( *scorep_definition_manager.string_definition_hash_table ) );
-    assert( scorep_definition_manager.string_definition_hash_table );
-
-    SCOREP_INIT_DEFINITION_LIST( location );
-    SCOREP_INIT_DEFINITION_LIST( source_file );
-    SCOREP_INIT_DEFINITION_LIST( region );
-    SCOREP_INIT_DEFINITION_LIST( group );
-    SCOREP_INIT_DEFINITION_LIST( mpi_window );
-    SCOREP_INIT_DEFINITION_LIST( mpi_cartesian_topology );
-    SCOREP_INIT_DEFINITION_LIST( mpi_cartesian_coords );
-    SCOREP_INIT_DEFINITION_LIST( counter_group );
-    SCOREP_INIT_DEFINITION_LIST( counter );
-    SCOREP_INIT_DEFINITION_LIST( io_file_group );
-    SCOREP_INIT_DEFINITION_LIST( io_file );
-    SCOREP_INIT_DEFINITION_LIST( marker_group );
-    SCOREP_INIT_DEFINITION_LIST( marker );
-    SCOREP_INIT_DEFINITION_LIST( parameter );
-    SCOREP_INIT_DEFINITION_LIST( callpath );
-
-    #undef SCOREP_INIT_DEFINITION_LIST
-
-    // No need the create the definition writer, its only needed in the
-    // finalization phase and will be created there.
+    SCOREP_DefinitionManager* local_definition_manager = &scorep_local_definition_manager;
+    assert( local_definition_manager );
+    SCOREP_InitializeDefinitionManager( &local_definition_manager,
+                                        SCOREP_Memory_GetLocalDefinitionPageManager(),
+                                        false );
 }
 
+
+void
+SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionManager,
+                                    SCOREP_Allocator_PageManager* pageManager,
+                                    bool                          allocHashTables )
+{
+    assert( definitionManager );
+    assert( pageManager );
+
+    if ( *definitionManager )
+    {
+        memset( *definitionManager, 0, sizeof( SCOREP_DefinitionManager ) );
+    }
+    else
+    {
+        *definitionManager = calloc( 1, sizeof( SCOREP_DefinitionManager ) );
+    }
+
+    ( *definitionManager )->page_manager = pageManager;
+    ( *definitionManager )->mappings     = 0;
+
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( string, *definitionManager );
+    SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( string, *definitionManager );
+
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( location, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( source_file, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( region, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( group, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_window, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter_group, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( io_file_group, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( io_file, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( marker_group, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( marker, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( parameter, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( callpath, *definitionManager );
+
+    if ( allocHashTables )
+    {
+        //SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( location, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( source_file, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( region, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( group, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_window, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_topology, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_coords, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( counter_group, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( counter, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( io_file_group, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( io_file, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( marker_group, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( marker, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( parameter, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( callpath, *definitionManager );
+    }
+}
 
 void
 SCOREP_Definitions_Finalize()
@@ -128,9 +181,40 @@ SCOREP_Definitions_Finalize()
     {
         return;
     }
-    scorep_definitions_initialized = false;
 
-    free( scorep_definition_manager.string_definition_hash_table );
+    free( scorep_local_definition_manager.string_definition_hash_table );
+    if ( scorep_unified_definition_manager )
+    {
+        free( scorep_unified_definition_manager->string_definition_hash_table );
+        free( scorep_unified_definition_manager->location_definition_hash_table );
+        free( scorep_unified_definition_manager->source_file_definition_hash_table );
+        free( scorep_unified_definition_manager->region_definition_hash_table );
+        free( scorep_unified_definition_manager->group_definition_hash_table );
+        free( scorep_unified_definition_manager->mpi_window_definition_hash_table );
+        free( scorep_unified_definition_manager->mpi_cartesian_topology_definition_hash_table );
+        free( scorep_unified_definition_manager->mpi_cartesian_coords_definition_hash_table );
+        free( scorep_unified_definition_manager->counter_group_definition_hash_table );
+        free( scorep_unified_definition_manager->counter_definition_hash_table );
+        free( scorep_unified_definition_manager->io_file_group_definition_hash_table );
+        free( scorep_unified_definition_manager->io_file_definition_hash_table );
+        free( scorep_unified_definition_manager->marker_group_definition_hash_table );
+        free( scorep_unified_definition_manager->marker_definition_hash_table );
+        free( scorep_unified_definition_manager->parameter_definition_hash_table );
+        free( scorep_unified_definition_manager->callpath_definition_hash_table );
+    }
+    free( scorep_unified_definition_manager );
+    if ( scorep_remote_definition_manager )
+    {
+        free( scorep_remote_definition_manager->string_definition_hash_table );
+    }
+    free( scorep_remote_definition_manager );
+    // the contents of the definition managers is allocated using
+    // SCOREP_Memory_AllocForDefinitions, so we don't need to free it
+    // explicitly.
+
+    SCOREP_MutexDestroy( &definitions_lock );
+
+    scorep_definitions_initialized = false;
 }
 
 
@@ -142,23 +226,79 @@ SCOREP_Definitions_Write()
         return;
     }
 
-    if ( SCOREP_IsTracingEnabled() )
+    assert( scorep_otf2_archive );
+
+    /* Write for all local locations the same local definition file */
+    SCOREP_CreateExperimentDir();
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
     {
-        scorep_write_definitions_to_otf2();
+        OTF2_DefWriter* local_definition_writer =
+            scorep_create_local_definition_writer( definition );
+        if ( 1 /* unify debug/fallback */ )
+        {
+            scorep_write_local_definitions_to_otf2( local_definition_writer );
+        }
+        scorep_write_mappings_to_otf2( local_definition_writer );
     }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+
+
+    OTF2_GlobDefWriter* global_definition_writer = NULL;
+    if ( SCOREP_Mpi_GetRank() == 0 )
+    {
+        global_definition_writer = scorep_create_global_definition_writer();
+        scorep_write_global_definitions_to_otf2( global_definition_writer );
+        /// @todo Daniel, what to do here for profiling?
+    }
+    // uses MPI communication. references string handle, so write after strings
+    // this may become obsolete, see comment in scorep_write_location_definitions_to_otf2()
+    // only rank 0 will reference global_definition_writer
+    scorep_write_number_of_definitions_per_location_to_otf2( global_definition_writer );
+    /// @todo Daniel, what to do here for profiling?
+}
+
+
+static void
+scorep_write_local_definitions_to_otf2( OTF2_DefWriter* localDefinitionWriter )
+{
+    if ( !SCOREP_IsTracingEnabled() )
+    {
+        return;
+    }
+
+    scorep_write_string_definitions_to_otf2(                 localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_location_definitions_to_otf2(               localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_source_file_definitions_to_otf2(            localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_region_definitions_to_otf2(                 localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_group_definitions_to_otf2(                  localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_mpi_window_definitions_to_otf2(             localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_mpi_cartesian_topology_definitions_to_otf2( localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_mpi_cartesian_coords_definitions_to_otf2(   localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_counter_group_definitions_to_otf2(          localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_counter_definitions_to_otf2(                localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_io_file_group_definitions_to_otf2(          localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_io_file_definitions_to_otf2(                localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_marker_group_definitions_to_otf2(           localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_marker_definitions_to_otf2(                 localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_parameter_definitions_to_otf2(              localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_callpath_definitions_to_otf2(               localDefinitionWriter, &scorep_local_definition_manager, false );
+}
+
+
+static void
+scorep_write_mappings_to_otf2( OTF2_DefWriter* localDefinitionWriter )
+{
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
 }
 
 
 static OTF2_DefWriter*
-scorep_create_definition_writer()
+scorep_create_local_definition_writer( SCOREP_Location_Definition* definition )
 {
-    SCOREP_CreateExperimentDir();
-    uint64_t otf2_location = SCOREP_Thread_GetTraceLocationData(
-        SCOREP_Thread_GetLocationData() )->otf_location;
-
     OTF2_DefWriter* definition_writer =
         OTF2_Archive_GetDefWriter( scorep_otf2_archive,
-                                   otf2_location,
+                                   definition->global_location_id,
                                    scorep_on_definitions_pre_flush,
                                    SCOREP_OnTraceAndDefinitionPostFlush );
 
@@ -180,251 +320,107 @@ scorep_on_definitions_pre_flush()
 }
 
 
+static OTF2_GlobDefWriter*
+scorep_create_global_definition_writer()
+{
+    if ( !SCOREP_IsTracingEnabled() )
+    {
+        return 0;
+    }
+
+    SCOREP_CreateExperimentDir();
+    assert( scorep_otf2_archive );
+    OTF2_GlobDefWriter* global_definition_writer =
+        OTF2_Archive_GetGlobDefWriter( scorep_otf2_archive,
+                                       SCOREP_OnTracePreFlush,
+                                       SCOREP_OnTraceAndDefinitionPostFlush );
+    assert( global_definition_writer );
+    return global_definition_writer;
+}
+
+
 static void
-scorep_write_definitions_to_otf2( void )
+scorep_write_number_of_definitions_per_location_to_otf2( OTF2_GlobDefWriter* global_definition_writer )
 {
-    OTF2_DefWriter* definition_writer = scorep_create_definition_writer();
-
-    scorep_write_string_definitions_to_otf2( definition_writer );
-    scorep_write_location_definitions_to_otf2( definition_writer );
-    scorep_write_source_file_definitions_to_otf2( definition_writer );
-    scorep_write_region_definitions_to_otf2( definition_writer );
-    scorep_write_group_definitions_to_otf2( definition_writer );
-    scorep_write_mpi_window_definitions_to_otf2( definition_writer );
-    scorep_write_mpi_cartesian_topology_definitions_to_otf2( definition_writer );
-    scorep_write_mpi_cartesian_coords_definitions_to_otf2( definition_writer );
-    scorep_write_counter_group_definitions_to_otf2( definition_writer );
-    scorep_write_counter_definitions_to_otf2( definition_writer );
-    scorep_write_io_file_group_definitions_to_otf2( definition_writer );
-    scorep_write_io_file_definitions_to_otf2( definition_writer );
-    scorep_write_marker_group_definitions_to_otf2( definition_writer );
-    scorep_write_marker_definitions_to_otf2( definition_writer );
-    scorep_write_parameter_definitions_to_otf2( definition_writer );
-    //scorep_write_callpath_definitions_to_otf2( definition_writer );
-}
-
-
-SCOREP_StringHandle
-SCOREP_DefineString( const char* str )
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new string \"%s\":", str );
-
-    SCOREP_String_Definition* new_definition = NULL;
-    SCOREP_StringHandle       new_handle     = SCOREP_INVALID_STRING;
-
-    #pragma omp critical (define_string)
+    if ( !SCOREP_IsTracingEnabled() )
     {
-        uint32_t string_length = strlen( str );
-        uint32_t string_hash   = hash( str, string_length, 0 );
+        return;
+    }
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                             "  Hash value for string %x", string_hash );
-
-        /* get reference to table bucket for new string */
-        SCOREP_StringHandle* hash_table_bucket =
-            &scorep_definition_manager.string_definition_hash_table[
-                string_hash & SCOREP_DEFINITION_HASH_TABLE_MASK ];
-
-        SCOREP_StringHandle hash_list_iterator = *hash_table_bucket;
-        while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
+    int* n_locations_per_rank = SCOREP_Mpi_GatherNumberOfLocationsPerRank();
+    int  n_global_locations   = 0;
+    if ( SCOREP_Mpi_GetRank() == 0 )
+    {
+        for ( int rank = 0; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
         {
-            SCOREP_String_Definition* string_definition = SCOREP_HANDLE_DEREF(
-                hash_list_iterator, String );
+            n_global_locations += n_locations_per_rank[ rank ];
+        }
+    }
 
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                                 "  Comparing against: \"%s\" (#%x)",
-                                 string_definition->string_data,
-                                 string_definition->hash_value );
+    int* n_definitions_per_location = 0;
+    n_definitions_per_location = SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( n_locations_per_rank, n_global_locations );
 
-            if ( string_definition->hash_value == string_hash
-                 && string_definition->string_length == string_length
-                 && 0 == strcmp( string_definition->string_data, str ) )
+    if ( SCOREP_Mpi_GetRank() == 0 )
+    {
+        OTF2_Archive_SetNumberOfLocations( scorep_otf2_archive, n_global_locations );
+
+        if ( 0 /* unify failed => fallback */ )
+        {
+            SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefString( global_definition_writer, 0, "" );
+            assert( status == SCOREP_SUCCESS );
+            uint32_t          location_name_id = 0;
+
+            int               location_index = 0; // index into n_definitions_per_location[]
+            for ( int rank = 0; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
             {
-                break;
+                for ( int local_location_id = 0; local_location_id < n_locations_per_rank[ rank ]; ++local_location_id )
+                {
+                    uint64_t          global_location_id = ( ( ( uint64_t )local_location_id ) << 32 ) | ( uint64_t )rank;
+                    SCOREP_Error_Code status             = OTF2_GlobDefWriter_GlobDefLocation(
+                        global_definition_writer,
+                        global_location_id,
+                        location_name_id,
+                        OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
+                        n_definitions_per_location[ location_index ] );
+                    assert( status == SCOREP_SUCCESS );
+                    ++location_index;
+                }
             }
-
-            hash_list_iterator = string_definition->hash_next;
-        }
-
-        /* need to define new string  */
-        if ( hash_list_iterator == SCOREP_MOVABLE_NULL )
-        {
-            SCOREP_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
-                                                        string,
-                                                        char,
-                                                        string_length + 1 );
-
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                                 "  Allocate new string" );
-
-            /*
-             * string_length is a derived member, no need to add this to the
-             * hash value
-             */
-            new_definition->string_length = string_length;
-
-            /*
-             * we know the length of the string already, therefore we can use
-             * the faster memcpy
-             */
-            memcpy( new_definition->string_data, str, string_length + 1 );
-            new_definition->hash_value = string_hash;
-
-            /* link into hash chain */
-            new_definition->hash_next = *hash_table_bucket;
-            *hash_table_bucket        = new_handle;
-        }
-        else
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                                 "  Re-using string" );
-
-            /* return found existing string */
-            new_handle = hash_list_iterator;
         }
     }
 
-    return new_handle;
+    free( n_definitions_per_location );
+    free( n_locations_per_rank );
 }
 
 
-/**
- * Registers a new local location into the definitions.
- *
- * @in internal
- */
-SCOREP_LocationHandle
-SCOREP_DefineLocation( uint64_t    globalLocationId,
-                       const char* name )
+static void
+scorep_write_global_definitions_to_otf2( OTF2_GlobDefWriter* global_definition_writer )
 {
-    SCOREP_Location_Definition* new_definition = NULL;
-    SCOREP_LocationHandle       new_handle     = SCOREP_INVALID_LOCATION;
-
-    SCOREP_ALLOC_NEW_DEFINITION( Location, location );
-
-    new_definition->global_location_id = globalLocationId;
-    new_definition->name_handle        = SCOREP_DefineString( name );
-
-    /* locations wont be unfied, therfore no hash value needed, yet? */
-
-    /** @todo: this needs clarification after the location hierarchy
-               has settled */
-    new_definition->location_type = SCOREP_LOCATION_OMP_THREAD;
-
-    return new_handle;
-}
-
-
-SCOREP_CallpathHandle
-SCOREP_DefineCallpath( SCOREP_CallpathHandle parentCallpath,
-                       SCOREP_RegionHandle   region )
-{
-    SCOREP_Callpath_Definition* new_definition = NULL;
-    SCOREP_CallpathHandle       new_handle     = SCOREP_INVALID_CALLPATH;
-
-    SCOREP_ALLOC_NEW_DEFINITION( Callpath, callpath );
-
-    // Init new_definition
-    new_definition->parent_callpath_handle = parentCallpath;
-    if ( new_definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
+    if ( !SCOREP_IsTracingEnabled() )
     {
-        HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
+        return;
     }
 
-    new_definition->with_parameter = false;
-    HASH_ADD_POD( with_parameter );
+    assert( SCOREP_Mpi_GetRank() == 0 );
+    assert( scorep_unified_definition_manager );
 
-    new_definition->callpath_argument.region_handle = region;
-    if ( new_definition->callpath_argument.region_handle
-         != SCOREP_INVALID_REGION )
-    {
-        HASH_ADD_HANDLE( callpath_argument.region_handle, Region );
-    }
-
-    return new_handle;
-}
-
-
-SCOREP_CallpathHandle
-SCOREP_DefineCallpathParameterInteger( SCOREP_CallpathHandle  parentCallpath,
-                                       SCOREP_ParameterHandle callpathParameter,
-                                       int64_t                integerValue )
-{
-    SCOREP_Callpath_Definition* new_definition = NULL;
-    SCOREP_CallpathHandle       new_handle     = SCOREP_INVALID_CALLPATH;
-
-    SCOREP_ALLOC_NEW_DEFINITION( Callpath, callpath );
-
-    // Init new_definition
-    new_definition->parent_callpath_handle = parentCallpath;
-    if ( new_definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
-    {
-        HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
-    }
-
-    new_definition->with_parameter = true;
-    HASH_ADD_POD( with_parameter );
-
-    new_definition->callpath_argument.parameter_handle = callpathParameter;
-    if ( new_definition->callpath_argument.parameter_handle
-         != SCOREP_INVALID_PARAMETER )
-    {
-        SCOREP_ParameterType parameter_type = SCOREP_HANDLE_DEREF(
-            new_definition->callpath_argument.parameter_handle,
-            Parameter )->parameter_type;
-        assert( parameter_type == SCOREP_PARAMETER_INT64 );
-
-        HASH_ADD_HANDLE( callpath_argument.parameter_handle, Parameter );
-
-        new_definition->parameter_value.integer_value = integerValue;
-        HASH_ADD_POD( parameter_value.integer_value );
-    }
-
-    return new_handle;
-}
-
-
-SCOREP_CallpathHandle
-SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parentCallpath,
-                                      SCOREP_ParameterHandle callpathParameter,
-                                      SCOREP_StringHandle    stringValue )
-{
-    SCOREP_Callpath_Definition* new_definition = NULL;
-    SCOREP_CallpathHandle       new_handle     = SCOREP_INVALID_CALLPATH;
-
-    SCOREP_ALLOC_NEW_DEFINITION( Callpath, callpath );
-
-    // Init new_definition
-    new_definition->parent_callpath_handle = parentCallpath;
-    if ( new_definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
-    {
-        HASH_ADD_HANDLE( parent_callpath_handle, Callpath );
-    }
-
-    new_definition->with_parameter = true;
-    HASH_ADD_POD( with_parameter );
-
-    new_definition->callpath_argument.parameter_handle = callpathParameter;
-    if ( new_definition->callpath_argument.parameter_handle
-         != SCOREP_INVALID_PARAMETER )
-    {
-        SCOREP_ParameterType type = SCOREP_HANDLE_DEREF(
-            new_definition->callpath_argument.parameter_handle,
-            Parameter )->parameter_type;
-        assert( type == SCOREP_PARAMETER_STRING );
-
-        HASH_ADD_HANDLE( callpath_argument.parameter_handle, Parameter );
-
-        new_definition->parameter_value.string_handle = stringValue;
-        if ( new_definition->parameter_value.string_handle
-             != SCOREP_INVALID_STRING )
-        {
-            HASH_ADD_HANDLE( parameter_value.string_handle, String );
-        }
-    }
-
-    return new_handle;
+    scorep_write_string_definitions_to_otf2(                 global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_location_definitions_to_otf2(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_source_file_definitions_to_otf2(            global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_region_definitions_to_otf2(                 global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_group_definitions_to_otf2(                  global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_mpi_window_definitions_to_otf2(             global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_mpi_cartesian_topology_definitions_to_otf2( global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_mpi_cartesian_coords_definitions_to_otf2(   global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_counter_group_definitions_to_otf2(          global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_counter_definitions_to_otf2(                global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_io_file_group_definitions_to_otf2(          global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_io_file_definitions_to_otf2(                global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_marker_group_definitions_to_otf2(           global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_marker_definitions_to_otf2(                 global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_parameter_definitions_to_otf2(              global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_callpath_definitions_to_otf2(               global_definition_writer, scorep_unified_definition_manager, true );
 }
 
 
@@ -437,138 +433,121 @@ scorep_handle_definition_writing_error( SCOREP_Error_Code status,
 
 
 static OTF2_LocationType
-scorep_location_type_to_otf_location_type( SCOREP_LocationType scorepType )
+scorep_location_type_to_otf_location_type( SCOREP_LocationType scorepType,
+                                           bool                isGlobal )
 {
-    /* see SCOREP_Types.h
-       SCOREP_LOCATION_UNKNOWN = 0,
-       SCOREP_LOCATION_OMP_THREAD,
-     */
+    switch ( scorepType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_LOCATION_ ## SCOREP: \
+        return isGlobal \
+               ? OTF2_GLOB_LOCATION_TYPE_ ## OTF2 \
+               : OTF2_LOCATION_TYPE_ ## OTF2
 
-    static OTF2_LocationType type_map[ SCOREP_INVALID_LOCATION_TYPE ] = {
-        OTF2_LOCATION_TYPE_UNKNOWN,
-        OTF2_LOCATION_TYPE_THREAD,
+        case_return( UNKNOWN, UNKNOWN );
+        case_return( OMP_THREAD, THREAD );
 
-        /* unused */
-        /*
-           OTF2_LOCATION_TYPE_MACHINE,
-           OTF2_LOCATION_TYPE_NODE,
-           OTF2_LOCATION_TYPE_PROCESS,
-         */
-    };
-
-    return type_map[ scorepType ];
+#undef case_return
+        default:
+            assert( !"Invalid location type" );
+    }
 }
 
 static OTF2_RegionType
-scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType )
+scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType,
+                                       bool              isGlobal )
 {
-    /* see SCOREP_Types.h
-       SCOREP_REGION_UNKNOWN = 0,
-       SCOREP_REGION_FUNCTION,
-       SCOREP_REGION_LOOP,
-       SCOREP_REGION_USER,
-       SCOREP_REGION_PHASE,
-       SCOREP_REGION_DYNAMIC,
+    switch ( scorepType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_REGION_ ## SCOREP: \
+        return isGlobal \
+               ? OTF2_GLOB_REGION_ ## OTF2 \
+               : OTF2_REGION_ ## OTF2
 
-       SCOREP_REGION_DYNAMIC_PHASE,
-       SCOREP_REGION_DYNAMIC_LOOP,
-       SCOREP_REGION_DYNAMIC_FUNCTION,
-       SCOREP_REGION_DYNAMIC_LOOP_PHASE,
+        case_return( UNKNOWN,              TYPE_UNKNOWN );
+        case_return( FUNCTION,             TYPE_FUNCTION );
+        case_return( LOOP,                 TYPE_LOOP );
+        case_return( USER,                 TYPE_USER_REGION );
+        case_return( PHASE,                PHASE );
+        case_return( DYNAMIC,              DYNAMIC );
+        case_return( DYNAMIC_PHASE,        DYNAMIC_PHASE );
+        case_return( DYNAMIC_LOOP,         DYNAMIC_LOOP );
+        case_return( DYNAMIC_FUNCTION,     DYNAMIC_FUNCTION );
+        case_return( DYNAMIC_LOOP_PHASE,   DYNAMIC_LOOP_PHASE );
+        case_return( MPI_COLL_BARRIER,     TYPE_MPI_COLL_BARRIER );
+        case_return( MPI_COLL_ONE2ALL,     TYPE_MPI_COLL_ONE2ALL );
+        case_return( MPI_COLL_ALL2ONE,     TYPE_MPI_COLL_ALL2ONE );
+        case_return( MPI_COLL_ALL2ALL,     TYPE_MPI_COLL_ALL2ALL );
+        case_return( MPI_COLL_OTHER,       TYPE_MPI_COLL_OTHER );
+        case_return( OMP_PARALLEL,         TYPE_OMP_PARALLEL );
+        case_return( OMP_LOOP,             TYPE_OMP_LOOP );
+        case_return( OMP_SECTIONS,         TYPE_OMP_SECTIONS );
+        case_return( OMP_SECTION,          TYPE_OMP_SECTION );
+        case_return( OMP_WORKSHARE,        TYPE_OMP_WORKSHARE );
+        case_return( OMP_SINGLE,           TYPE_OMP_SINGLE );
+        case_return( OMP_MASTER,           TYPE_OMP_MASTER );
+        case_return( OMP_CRITICAL,         TYPE_OMP_CRITICAL );
+        case_return( OMP_ATOMIC,           TYPE_OMP_ATOMIC );
+        case_return( OMP_BARRIER,          TYPE_OMP_BARRIER );
+        case_return( OMP_IMPLICIT_BARRIER, TYPE_OMP_IBARRIER );
+        case_return( OMP_FLUSH,            TYPE_OMP_FLUSH );
+        case_return( OMP_CRITICAL_SBLOCK,  TYPE_OMP_CRITICAL_SBLOCK );
+        case_return( OMP_SINGLE_SBLOCK,    TYPE_OMP_SINGLE_SBLOCK );
+        case_return( OMP_WRAPPER,          TYPE_OMP_WRAPPER );
 
-       SCOREP_REGION_MPI_COLL_BARRIER,
-       SCOREP_REGION_MPI_COLL_ONE2ALL,
-       SCOREP_REGION_MPI_COLL_ALL2ONE,
-       SCOREP_REGION_MPI_COLL_ALL2ALL,
-       SCOREP_REGION_MPI_COLL_OTHER,
-
-       SCOREP_REGION_OMP_PARALLEL,
-       SCOREP_REGION_OMP_LOOP,
-       SCOREP_REGION_OMP_SECTIONS,
-       SCOREP_REGION_OMP_SECTION,
-       SCOREP_REGION_OMP_WORKSHARE,
-       SCOREP_REGION_OMP_SINGLE,
-       SCOREP_REGION_OMP_MASTER,
-       SCOREP_REGION_OMP_CRITICAL,
-       SCOREP_REGION_OMP_ATOMIC,
-       SCOREP_REGION_OMP_BARRIER,
-       SCOREP_REGION_OMP_IMPLICIT_BARRIER,
-       SCOREP_REGION_OMP_FLUSH,
-       SCOREP_REGION_OMP_CRITICAL_SBLOCK, /// @todo what is SBLOCK?
-       SCOREP_REGION_OMP_SINGLE_SBLOCK,
-       SCOREP_REGION_OMP_WRAPPER,
-
-       SCOREP_INVALID_REGION_TYPE
-     */
-
-    /* see Records/OTF2_LocalDefinitions.c */
-
-    static OTF2_RegionType type_map[ SCOREP_INVALID_REGION_TYPE ] = {
-        OTF2_REGION_TYPE_UNKNOWN,
-        OTF2_REGION_TYPE_FUNCTION,
-        OTF2_REGION_TYPE_LOOP,
-        OTF2_REGION_TYPE_USER_REGION,
-        OTF2_REGION_PHASE,
-        OTF2_REGION_DYNAMIC,
-        OTF2_REGION_DYNAMIC_PHASE,
-        OTF2_REGION_DYNAMIC_LOOP,
-        OTF2_REGION_DYNAMIC_FUNCTION,
-        OTF2_REGION_DYNAMIC_LOOP_PHASE,
-        OTF2_REGION_TYPE_MPI_COLL_BARRIER,
-        OTF2_REGION_TYPE_MPI_COLL_ONE2ALL,
-        OTF2_REGION_TYPE_MPI_COLL_ALL2ONE,
-        OTF2_REGION_TYPE_MPI_COLL_ALL2ALL,
-        OTF2_REGION_TYPE_MPI_COLL_OTHER,
-        OTF2_REGION_TYPE_OMP_PARALLEL,
-        OTF2_REGION_TYPE_OMP_LOOP,
-        OTF2_REGION_TYPE_OMP_SECTIONS,
-        OTF2_REGION_TYPE_OMP_SECTION,
-        OTF2_REGION_TYPE_OMP_WORKSHARE,
-        OTF2_REGION_TYPE_OMP_SINGLE,
-        OTF2_REGION_TYPE_OMP_MASTER,
-        OTF2_REGION_TYPE_OMP_CRITICAL,
-        OTF2_REGION_TYPE_OMP_ATOMIC,
-        OTF2_REGION_TYPE_OMP_BARRIER,
-        OTF2_REGION_TYPE_OMP_IBARRIER,
-        OTF2_REGION_TYPE_OMP_FLUSH,
-        OTF2_REGION_TYPE_OMP_CRITICAL_SBLOCK,
-        OTF2_REGION_TYPE_OMP_SINGLE_SBLOCK,
-        OTF2_REGION_TYPE_OMP_WRAPPER,
-    };
-
-    return type_map[ scorepType ];
+#undef case_return
+        default:
+            assert( !"Invalid location type" );
+    }
 }
 
 static OTF2_GroupType
-scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType )
+scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
+                                     bool             isGlobal )
 {
-    /* see SCOREP_Types.h
-       SCOREP_GROUP_UNKNOWN      = 0,
-       SCOREP_GROUP_LOCATIONS    = 1,
-       SCOREP_GROUP_REGIONS      = 2,
-       SCOREP_GROUP_COMMUNICATOR = 3,
-       SCOREP_GROUP_METRIC       = 4,
-     */
+    switch ( scorepType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_GROUP_ ## SCOREP: \
+        return isGlobal \
+               ? OTF2_GLOB_GROUPTYPE_ ## OTF2 \
+               : OTF2_GROUPTYPE_ ## OTF2
 
-    static OTF2_GroupType type_map[ SCOREP_INVALID_GROUP_TYPE ] = {
-        OTF2_GROUPTYPE_NON,
-        OTF2_GROUPTYPE_LOCATIONS,
-        OTF2_GROUPTYPE_REGIONS,
-        OTF2_GROUPTYPE_COMMUNICATOR,
-        OTF2_GROUPTYPE_METRIC,
-    };
+        case_return( UNKNOWN,      NON );
+        case_return( LOCATIONS,    LOCATIONS );
+        case_return( REGIONS,      REGIONS );
+        case_return( COMMUNICATOR, COMMUNICATOR );
+        case_return( METRIC,       METRIC );
 
-    return type_map[ scorepType ];
+#undef case_return
+        default:
+            assert( !"Invalid location type" );
+    }
 }
 
 static void
-scorep_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_string_definitions_to_otf2( void*                     writerHandle,
+                                         SCOREP_DefinitionManager* definitionManager,
+                                         bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, String, string )
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defString )( void*,
+                                       uint32_t,
+                                       char* ) =
+        ( void* )OTF2_DefWriter_DefString;
+    if ( isGlobal )
     {
-        SCOREP_Error_Code status = OTF2_DefWriter_DefString(
-            definitionWriter,
+        defString = ( void* )OTF2_GlobDefWriter_GlobDefString;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, String, string )
+    {
+        SCOREP_Error_Code status = defString(
+            writerHandle,
             definition->sequence_number,
             definition->string_data );
+
         if ( status != SCOREP_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
@@ -579,17 +558,32 @@ scorep_write_string_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_location_definitions_to_otf2(
+    void*                     writerHandle,
+    SCOREP_DefinitionManager* definitionManager,
+    bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Location, location )
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defLocation )( void*,
+                                         uint64_t,
+                                         uint32_t,
+                                         OTF2_LocationType,
+                                         uint64_t ) =
+        ( void* )OTF2_DefWriter_DefLocation;
+    if ( isGlobal )
     {
-        /** @todo add definition count */
-        SCOREP_Error_Code status = OTF2_DefWriter_DefLocation(
-            definitionWriter,
+        defLocation = ( void* )OTF2_GlobDefWriter_GlobDefLocation;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Location, location )
+    {
+        SCOREP_Error_Code status = defLocation(
+            writerHandle,
             definition->global_location_id,
-            SCOREP_HANDLE_TO_ID( definition->name_handle, String ),
-            scorep_location_type_to_otf_location_type( definition->location_type ),
-            0 );
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            scorep_location_type_to_otf_location_type( definition->location_type, isGlobal ),
+            definition->number_of_definitions );
+
         if ( status != SCOREP_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
@@ -600,7 +594,9 @@ scorep_write_location_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_source_file_definitions_to_otf2( void*                     writerHandle,
+                                              SCOREP_DefinitionManager* definitionManager,
+                                              bool                      isGlobal )
 {
     // nothing to be done here
     // SourceFile_Definitions are only available as String_Definition in
@@ -610,22 +606,42 @@ scorep_write_source_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_region_definitions_to_otf2( void*                     writerHandle,
+                                         SCOREP_DefinitionManager* definitionManager,
+                                         bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Region, region )
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defRegion )( void*,
+                                       uint32_t,
+                                       uint32_t,
+                                       uint32_t,
+                                       OTF2_RegionType,
+                                       uint32_t,
+                                       uint32_t,
+                                       uint32_t ) =
+        ( void* )OTF2_DefWriter_DefRegion;
+    if ( isGlobal )
+    {
+        defRegion = ( void* )OTF2_GlobDefWriter_GlobDefRegion;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Region, region )
     {
         uint32_t source_file_id = OTF2_UNDEFINED_UINT32;
-        if ( definition->file_handle != SCOREP_INVALID_STRING )
+        if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
-            source_file_id = SCOREP_HANDLE_TO_ID( definition->file_handle, String );
+            source_file_id = SCOREP_HANDLE_TO_ID(
+                definition->file_name_handle,
+                String,
+                definitionManager->page_manager );
         }
 
-        SCOREP_Error_Code status = OTF2_DefWriter_DefRegion(
-            definitionWriter,
+        SCOREP_Error_Code status = defRegion(
+            writerHandle,
             definition->sequence_number,
-            SCOREP_HANDLE_TO_ID( definition->name_handle, String ),
-            SCOREP_HANDLE_TO_ID( definition->description_handle, String ),
-            scorep_region_type_to_otf_region_type( definition->region_type ),
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            SCOREP_HANDLE_TO_ID( definition->description_handle, String, definitionManager->page_manager ),
+            scorep_region_type_to_otf_region_type( definition->region_type, isGlobal ),
             source_file_id,
             definition->begin_line,
             definition->end_line );
@@ -640,17 +656,33 @@ scorep_write_region_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_group_definitions_to_otf2( void*                     writerHandle,
+                                        SCOREP_DefinitionManager* definitionManager,
+                                        bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, Group, group )
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defGroup )( void*,
+                                      uint64_t,
+                                      OTF2_GroupType,
+                                      uint32_t,
+                                      uint64_t,
+                                      uint64_t* ) =
+        ( void* )OTF2_DefWriter_DefGroup;
+    if ( isGlobal )
     {
-        SCOREP_Error_Code status = OTF2_DefWriter_DefGroup(
-            definitionWriter,
+        defGroup = ( void* )OTF2_GlobDefWriter_GlobDefGroup;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Group, group )
+    {
+        SCOREP_Error_Code status = defGroup(
+            writerHandle,
             definition->sequence_number,
-            scorep_group_type_to_otf_group_type( definition->group_type ),
-            SCOREP_HANDLE_TO_ID( definition->name_handle, String ),
+            scorep_group_type_to_otf_group_type( definition->group_type, isGlobal ),
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             definition->number_of_members,
             definition->members );
+
         if ( status != SCOREP_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SCOREP_Group_Definition" );
@@ -661,13 +693,25 @@ scorep_write_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_mpi_window_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_mpi_window_definitions_to_otf2( void*                     writerHandle,
+                                             SCOREP_DefinitionManager* definitionManager,
+                                             bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defMpiWin )( void*,
+                                       uint32_t,
+                                       uint64_t ) =
+        ( void* )OTF2_DefWriter_DefMpiWin;
+    if ( isGlobal )
+    {
+        defMpiWin = ( void* )OTF2_GlobDefWriter_GlobDefMpiWin;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   MPIWindow,
                                   mpi_window )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = defMpiWin(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPIWindow_Definition" );
@@ -679,13 +723,25 @@ scorep_write_mpi_window_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_mpi_cartesian_topology_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_mpi_cartesian_topology_definitions_to_otf2( void*                     writerHandle,
+                                                         SCOREP_DefinitionManager* definitionManager,
+                                                         bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   MPICartesianTopology,
                                   mpi_cartesian_topology )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPICartesianTopology_Definition" );
@@ -697,13 +753,25 @@ scorep_write_mpi_cartesian_topology_definitions_to_otf2( OTF2_DefWriter* definit
 
 
 static void
-scorep_write_mpi_cartesian_coords_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_mpi_cartesian_coords_definitions_to_otf2( void*                     writerHandle,
+                                                       SCOREP_DefinitionManager* definitionManager,
+                                                       bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   MPICartesianCoords,
                                   mpi_cartesian_coords )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPICartesianCoords_Definition" );
@@ -715,13 +783,25 @@ scorep_write_mpi_cartesian_coords_definitions_to_otf2( OTF2_DefWriter* definitio
 
 
 static void
-scorep_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_counter_group_definitions_to_otf2( void*                     writerHandle,
+                                                SCOREP_DefinitionManager* definitionManager,
+                                                bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   CounterGroup,
                                   counter_group )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_CounterGroup_Definition" );
@@ -733,13 +813,25 @@ scorep_write_counter_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter
 
 
 static void
-scorep_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_counter_definitions_to_otf2( void*                     writerHandle,
+                                          SCOREP_DefinitionManager* definitionManager,
+                                          bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Counter,
                                   counter )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Counter_Definition" );
@@ -751,13 +843,25 @@ scorep_write_counter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_io_file_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_io_file_group_definitions_to_otf2( void*                     writerHandle,
+                                                SCOREP_DefinitionManager* definitionManager,
+                                                bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   IOFileGroup,
                                   io_file_group )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_IOFileGroup_Definition" );
@@ -769,13 +873,25 @@ scorep_write_io_file_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter
 
 
 static void
-scorep_write_io_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_io_file_definitions_to_otf2( void*                     writerHandle,
+                                          SCOREP_DefinitionManager* definitionManager,
+                                          bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   IOFile,
                                   io_file )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_IOFile_Definition" );
@@ -787,13 +903,25 @@ scorep_write_io_file_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_marker_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_marker_group_definitions_to_otf2( void*                     writerHandle,
+                                               SCOREP_DefinitionManager* definitionManager,
+                                               bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   MarkerGroup,
                                   marker_group )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MarkerGroup_Definition" );
@@ -805,13 +933,25 @@ scorep_write_marker_group_definitions_to_otf2( OTF2_DefWriter* definitionWriter 
 
 
 static void
-scorep_write_marker_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_marker_definitions_to_otf2( void*                     writerHandle,
+                                         SCOREP_DefinitionManager* definitionManager,
+                                         bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Marker,
                                   marker )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Marker_Definition" );
@@ -823,13 +963,25 @@ scorep_write_marker_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_parameter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_parameter_definitions_to_otf2( void*                     writerHandle,
+                                            SCOREP_DefinitionManager* definitionManager,
+                                            bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Parameter,
                                   parameter )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Parameter_Definition" );
@@ -841,13 +993,25 @@ scorep_write_parameter_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
 
 
 static void
-scorep_write_callpath_definitions_to_otf2( OTF2_DefWriter* definitionWriter )
+scorep_write_callpath_definitions_to_otf2( void*                     writerHandle,
+                                           SCOREP_DefinitionManager* definitionManager,
+                                           bool                      isGlobal )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager,
+    assert( writerHandle );
+    //SCOREP_Error_Code ( * def... )( void*,
+    //                                ...
+    //                                ... ) =
+    //    ( void* )OTF2_DefWriter_Def...;
+    //if ( isGlobal )
+    //{
+    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //}
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Callpath,
                                   callpath )
     {
-        //SCOREP_Error_Code status = OTF2_DefWriter_Def...(definitionWriter, ...);
+        //SCOREP_Error_Code status = def...(writerHandle, ...);
         //if ( status != SCOREP_SUCCESS )
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Callpath_Definition" );
@@ -864,22 +1028,22 @@ SCOREP_GetNumberOfDefinitions()
     assert( !omp_in_parallel() );
 
     int n_definitions = 0;
-    n_definitions += scorep_definition_manager.string_definition_counter;
-    n_definitions += scorep_definition_manager.location_definition_counter;
-    n_definitions += scorep_definition_manager.source_file_definition_counter;
-    n_definitions += scorep_definition_manager.region_definition_counter;
-    n_definitions += scorep_definition_manager.group_definition_counter;
-    n_definitions += scorep_definition_manager.mpi_window_definition_counter;
-    n_definitions += scorep_definition_manager.mpi_cartesian_topology_definition_counter;
-    n_definitions += scorep_definition_manager.mpi_cartesian_coords_definition_counter;
-    n_definitions += scorep_definition_manager.counter_group_definition_counter;
-    n_definitions += scorep_definition_manager.counter_definition_counter;
-    n_definitions += scorep_definition_manager.io_file_group_definition_counter;
-    n_definitions += scorep_definition_manager.io_file_definition_counter;
-    n_definitions += scorep_definition_manager.marker_group_definition_counter;
-    n_definitions += scorep_definition_manager.marker_definition_counter;
-    n_definitions += scorep_definition_manager.parameter_definition_counter;
-    n_definitions += scorep_definition_manager.callpath_definition_counter;
+    n_definitions += scorep_local_definition_manager.string_definition_counter;
+    n_definitions += scorep_local_definition_manager.location_definition_counter;
+    n_definitions += scorep_local_definition_manager.source_file_definition_counter;
+    n_definitions += scorep_local_definition_manager.region_definition_counter;
+    n_definitions += scorep_local_definition_manager.group_definition_counter;
+    n_definitions += scorep_local_definition_manager.mpi_window_definition_counter;
+    n_definitions += scorep_local_definition_manager.mpi_cartesian_topology_definition_counter;
+    n_definitions += scorep_local_definition_manager.mpi_cartesian_coords_definition_counter;
+    n_definitions += scorep_local_definition_manager.counter_group_definition_counter;
+    n_definitions += scorep_local_definition_manager.counter_definition_counter;
+    n_definitions += scorep_local_definition_manager.io_file_group_definition_counter;
+    n_definitions += scorep_local_definition_manager.io_file_definition_counter;
+    n_definitions += scorep_local_definition_manager.marker_group_definition_counter;
+    n_definitions += scorep_local_definition_manager.marker_definition_counter;
+    n_definitions += scorep_local_definition_manager.parameter_definition_counter;
+    n_definitions += scorep_local_definition_manager.callpath_definition_counter;
 
     return n_definitions;
 }
@@ -888,27 +1052,42 @@ int
 SCOREP_GetNumberOfRegionDefinitions()
 {
     assert( !omp_in_parallel() );
-    return scorep_definition_manager.region_definition_counter;
+    return scorep_local_definition_manager.region_definition_counter;
 }
 
 int
 SCOREP_GetNumberOfCounterDefinitions()
 {
     assert( !omp_in_parallel() );
-    return scorep_definition_manager.counter_definition_counter;
+    return scorep_local_definition_manager.counter_definition_counter;
 }
 
 int
 SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
 {
     assert( !omp_in_parallel() );
-    return SCOREP_HANDLE_TO_ID( handle, Region );
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
 }
 
 int
 SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
 {
-    SCOREP_Callpath_Definition* callpath = SCOREP_HANDLE_DEREF( handle, Callpath );
+    SCOREP_Callpath_Definition* callpath = SCOREP_LOCAL_HANDLE_DEREF( handle, Callpath );
 
     return SCOREP_GetRegionHandleToID( callpath->callpath_argument.region_handle );
+}
+
+
+void
+SCOREP_UpdateLocationDefinitions()
+{
+    int number_of_definitions = SCOREP_GetNumberOfDefinitions();
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
+    {
+        // assign all locations the same number of definitions. This is a temporary solution
+        // as we need to duplicate the definitions for every location until OTF2 is able
+        // to handle pre-process definitions.
+        definition->number_of_definitions = number_of_definitions;
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
 }

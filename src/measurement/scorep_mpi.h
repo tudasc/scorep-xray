@@ -101,4 +101,37 @@ SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
                                                  int  nGlobalLocations );
 
 
+// list of used mpi datatypes
+#define SCOREP_MPI_DATATYPES \
+    SCOREP_MPI_DATATYPE( MPI_UNSIGNED_CHAR ) \
+    SCOREP_MPI_DATATYPE( MPI_UNSIGNED )
+
+typedef enum SCOREP_Mpi_Datatype
+{
+    #define SCOREP_MPI_DATATYPE( datatype ) \
+    SCOREP_ ## datatype,
+    SCOREP_MPI_DATATYPES
+    #undef SCOREP_MPI_DATATYPE
+} SCOREP_Mpi_Datatype;
+
+
+typedef void* SCOREP_Mpi_Status;
+#define SCOREP_MPI_STATUS_IGNORE NULL
+
+
+int
+SCOREP_Mpi_Send( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 dest );
+
+
+int
+SCOREP_Mpi_Recv( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 source,
+                 SCOREP_Mpi_Status   status );
+
+
 #endif /* SCOREP_MPI_H */

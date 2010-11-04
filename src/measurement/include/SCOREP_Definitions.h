@@ -170,9 +170,9 @@ SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle );
 SCOREP_MPICommunicatorHandle
 SCOREP_DefineMPICommunicator
 (
-    int32_t     numberOfRanks,
-    int32_t*    ranks,
-    const char* name
+    int32_t        numberOfRanks,
+    const int32_t* ranks,
+    const char*    name
 );
 
 

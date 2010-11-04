@@ -104,4 +104,8 @@ uint32_t
 SCOREP_Thread_GetNumberOfLocations();
 
 
+void
+SCOREP_ProcessDeferredLocations();
+
+
 #endif /* SCOREP_INTERNAL_THREAD_H */

@@ -27,8 +27,34 @@
  */
 
 
+#include "scorep_definitions.h"
+
 void
-SCOREP_Unify();
+SCOREP_Unify( void );
+
+
+void
+SCOREP_Unify_Locally( void );
+
+
+void
+SCOREP_Mpi_Unify( void );
+
+
+void
+SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManager );
+
+
+void
+SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager );
+
+
+void
+SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definitionManager );
+
+
+void
+SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager );
 
 
 #endif /* SCOREP_UNIFY_H_ */

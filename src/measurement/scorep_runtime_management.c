@@ -33,6 +33,8 @@
 #include "scorep_mpi.h"
 #include "scorep_thread.h"
 #include "scorep_definition_structs.h"
+#include "scorep_definition_macros.h"
+#include <SCOREP_Thread_Types.h>
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -46,7 +48,6 @@ static void scorep_create_experiment_dir_name();
 static void scorep_set_event_writer_location_id(OTF2_EvtWriter* writer);
 static bool scorep_dir_name_is_created();
 static void scorep_set_otf2_event_writer_location_id();
-static void scorep_update_location_definition_id( SCOREP_Thread_LocationData* location );
 /* *INDENT-ON* */
 
 
@@ -55,16 +56,6 @@ static void scorep_update_location_definition_id( SCOREP_Thread_LocationData* lo
 char scorep_experiment_dir_name[ dir_name_size ];
 
 OTF2_Archive* scorep_otf2_archive = 0;
-
-
-typedef struct scorep_deferred_location scorep_deferred_location;
-struct scorep_deferred_location
-{
-    SCOREP_Thread_LocationData* location;
-    scorep_deferred_location*   next;
-};
-
-static scorep_deferred_location scorep_deferred_locations_head_dummy = { 0, 0 };
 
 
 char*
@@ -123,54 +114,6 @@ SCOREP_CalculateGlobalLocationId( SCOREP_Thread_LocationData* locationData )
 
     uint64_t global_location_id = ( local_location_id << 32 ) | rank;
     return global_location_id;
-}
-
-
-void
-SCOREP_DeferLocationInitialization( SCOREP_Thread_LocationData* locationData )
-{
-    scorep_deferred_location* deferred_location = SCOREP_Memory_AllocForMisc( sizeof( scorep_deferred_location ) );
-    assert( deferred_location );
-
-    deferred_location->location               = locationData;
-    deferred_location->next                   = scorep_deferred_locations_head_dummy.next;
-    scorep_deferred_locations_head_dummy.next = deferred_location;
-}
-
-
-void
-SCOREP_ProcessDeferredLocations()
-{
-    SCOREP_Thread_LocationData* current_location                       = SCOREP_Thread_GetLocationData();
-    scorep_deferred_location*   deferred_location                      = scorep_deferred_locations_head_dummy.next;
-    bool                        current_location_in_deferred_locations = false;
-
-    while ( deferred_location )
-    {
-        if ( deferred_location->location == current_location )
-        {
-            current_location_in_deferred_locations = true;
-        }
-
-        SCOREP_SetOtf2WriterLocationId( deferred_location->location );
-        scorep_update_location_definition_id( deferred_location->location );
-
-        deferred_location = deferred_location->next;
-    }
-
-    assert( current_location_in_deferred_locations );
-}
-
-
-static void
-scorep_update_location_definition_id( SCOREP_Thread_LocationData* location )
-{
-    SCOREP_Trace_LocationData*  trace_data          = SCOREP_Thread_GetTraceLocationData( location );
-    SCOREP_Location_Definition* location_definition =
-        SCOREP_MEMORY_DEREF_MOVABLE( SCOREP_Thread_GetLocationHandle( location ),
-                                     SCOREP_Location_Definition* );
-
-    location_definition->global_location_id = trace_data->otf_location;
 }
 
 

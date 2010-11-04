@@ -83,7 +83,7 @@ scorep_any_handle_to_string
     }
 
     snprintf( stringBuffer, stringBufferSize, format,
-              ( SCOREP_MEMORY_DEREF_MOVABLE( handle, scorep_any_definition* ) )->sequence_number );
+              ( SCOREP_MEMORY_DEREF_LOCAL( handle, scorep_any_definition* ) )->sequence_number );
     return stringBuffer;
 }
 

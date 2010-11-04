@@ -173,35 +173,23 @@ SCOREP_Memory_FreeDefinitionMem();
 
 
 void*
-SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory );
+SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory,
+                                           SCOREP_Allocator_PageManager*  movablePageManager );
+
+void
+SCOREP_Memory_SetRemoteDefinitionPageManager( SCOREP_Allocator_PageManager* remoteMovablePageManager );
 
 
-//void*
-//SCOREP_Memory_GetAddressFromMovedMemory( SCOREP_Allocator_MovableMemory     movedMemory,
-//                                       SCOREP_Allocator_MovedPageManager* movedPageManager );
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreateMovedPagedMemory( void );
 
 
-//void
-//SCOREP_Memory_FreeMovedPages( SCOREP_Allocator_PageManager* movedPageManager );
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_GetRemoteDefinitionPageManager();
 
 
-/**
- * Just a convenience macro to access the @e real memory a
- * SCOREP_Allocator_MovableMemory object is referring to.
- *
- * @param definition_memory_ptr Pointer to some SCOREP_Memory_DefinitionMemory
- * object.
- * @param target_type The type @a definition_memory_ptr should be converted to.
- *
- * @return A pointer to an object of type @a target_type.
- */
-#define SCOREP_MEMORY_DEREF_MOVABLE( movable_memory, target_type ) \
-    ( ( target_type )SCOREP_Memory_GetAddressFromMovableMemory( movable_memory ) )
-
-
-#define SCOREP_MEMORY_DEREF_MOVED( moved_memory, moved_page_manager, target_type )  \
-    ( ( target_type )SCOREP_Allocator_GetAddressFromMovedMemory(                        \
-          movable_memory, moved_page_manager ) )
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_GetLocalDefinitionPageManager();
 
 
 /*@}*/
