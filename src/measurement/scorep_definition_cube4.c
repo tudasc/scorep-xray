@@ -32,7 +32,8 @@
 #include "scorep_definitions.h"
 #include <cubew_services.h>
 
-extern SCOREP_DefinitionManager scorep_local_definition_manager;
+extern SCOREP_DefinitionManager  scorep_local_definition_manager;
+extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 /* ****************************************************************************
  * Initialization / Finalization
@@ -285,6 +286,7 @@ scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map )
  *****************************************************************************/
 static void
 scorep_write_counter_definitions_to_cube4( cube_t*                       my_cube,
+                                           SCOREP_DefinitionManager*     manager,
                                            scorep_cube4_definitions_map* map )
 {
     /** TODO: Write real counter definitions */
@@ -300,15 +302,16 @@ scorep_write_counter_definitions_to_cube4( cube_t*                       my_cube
 
     metric = cube_def_met( my_cube, "Visits", "visits", "INTEGER", "occ", "",
                            "http://www.cs.utk.edu/usr.html",
-                           "Number of visits", NULL, CUBE_METRIC_INCLUSIVE );
+                           "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
     scorep_cube4_add_metric_mapping( map, metric, ( SCOREP_CounterHandle )2 );
 }
 
 static void
 scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
+                                          SCOREP_DefinitionManager*     manager,
                                           scorep_cube4_definitions_map* map )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Region, region )
+    SCOREP_DEFINITION_FOREACH_DO( manager, Region, region )
     {
         /* Collect necessary data */
         const char* region_name = SCOREP_LOCAL_HANDLE_DEREF( definition->name_handle,
@@ -337,6 +340,7 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
 
 static void
 scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cube,
+                                            SCOREP_DefinitionManager*     manager,
                                             scorep_cube4_definitions_map* map )
 {
     int                   index  = 0;
@@ -346,17 +350,17 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
     SCOREP_RegionHandle   scorep_region;
     SCOREP_CallpathHandle scorep_callpath;
 
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Callpath, callpath )
+    SCOREP_DEFINITION_FOREACH_DO( manager, Callpath, callpath )
     {
         /* Collect necessary data */
         scorep_region   = definition->callpath_argument.region_handle;
         region          = scorep_get_cube4_region( map, scorep_region );
         scorep_callpath = definition->parent_callpath_handle;
         parent          = scorep_get_cube4_callpath( map, scorep_callpath );
+        index           = definition->sequence_number;
 
         /* Register region to cube */
         cnode = cube_def_cnode( my_cube, region, parent, index );
-        index++;
 
         /* Create entry in mapping table */
         scorep_cube4_add_callpath_mapping( map, cnode, handle );
@@ -366,6 +370,7 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
 
 static void
 scorep_write_location_definitions_to_cube4( cube_t*                       my_cube,
+                                            SCOREP_DefinitionManager*     manager,
                                             scorep_cube4_definitions_map* map )
 {
     char          name[ 32 ];
@@ -378,7 +383,7 @@ scorep_write_location_definitions_to_cube4( cube_t*                       my_cub
     cube_thread*  thread = NULL;
     int           index  = 0;
 
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
+    SCOREP_DEFINITION_FOREACH_DO( manager, Location, location )
     {
         sprintf( name, "thread %d", index ),
         thread = cube_def_thrd( my_cube, name,
@@ -395,8 +400,17 @@ void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map )
 {
-    scorep_write_counter_definitions_to_cube4( my_cube, map );
-    scorep_write_region_definitions_to_cube4( my_cube, map );
-    scorep_write_callpath_definitions_to_cube4( my_cube, map );
-    scorep_write_location_definitions_to_cube4( my_cube, map );
+    SCOREP_DefinitionManager* manager = &scorep_local_definition_manager;
+    /*
+       if ( SCOREP_Mpi_HasMpi() )
+       {
+       if (SCOREP_Mpi_GetRank() != 0) return;
+       assert( scorep_unified_definition_manager );
+       manager = scorep_unified_definition_manager;
+       }
+     */
+    scorep_write_counter_definitions_to_cube4( my_cube, manager, map );
+    scorep_write_region_definitions_to_cube4( my_cube, manager, map );
+    scorep_write_callpath_definitions_to_cube4( my_cube, manager, map );
+    scorep_write_location_definitions_to_cube4( my_cube, manager, map );
 }
