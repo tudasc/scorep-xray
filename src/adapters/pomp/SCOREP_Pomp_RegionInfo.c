@@ -21,6 +21,8 @@
  * @ingroup    POMP
  *
  * @brief Implements functionality for interpretation of pomp region strings.
+ * @note  All functions in this file are only called during initialization.
+ *        The initialization is assumed to be executed serially.
  *
  */
 

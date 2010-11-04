@@ -54,7 +54,6 @@
 #include "scorep_mpi.h"
 #include "scorep_thread.h"
 #include "scorep_runtime_management.h"
-#include "scorep_parameter_registration.h"
 
 #include <otf2/otf2.h>
 
@@ -134,7 +133,6 @@ SCOREP_InitMeasurement( void )
     SCOREP_Definitions_Initialize();
 
     SCOREP_Thread_Initialize();
-    scorep_parameter_table_initialize();
 
     scorep_profile_initialize();
 
@@ -434,7 +432,6 @@ scorep_finalize( void )
 
     // order is important
     scorep_profile_finalize();
-    scorep_parameter_table_finalize();
     SCOREP_Unify();
     SCOREP_Definitions_Write();
     SCOREP_Definitions_Finalize();

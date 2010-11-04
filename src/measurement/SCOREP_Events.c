@@ -43,9 +43,8 @@
 #include "scorep_thread.h"
 #include "scorep_definition_handles.h"
 #include "scorep_status.h"
-#include "scorep_parameter_registration.h"
 #include "scorep_definition_structs.h"
-
+#include "scorep_definitions.h"
 
 
 /**
@@ -523,7 +522,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_StringHandle string_handle = scorep_get_parameter_string_handle( value );
+        SCOREP_StringHandle string_handle = SCOREP_DefineString( value );
         SCOREP_Profile_ParameterString( location,
                                         parameterHandle,
                                         string_handle );

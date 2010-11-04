@@ -42,8 +42,6 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_definition_macros.h         \
     $(SRC_ROOT)src/measurement/scorep_status.c                    \
     $(SRC_ROOT)src/measurement/scorep_status.h                    \
-    $(SRC_ROOT)src/measurement/scorep_parameter_registration.h    \
-    $(SRC_ROOT)src/measurement/scorep_parameter_registration.c    \
     $(SRC_ROOT)src/measurement/scorep_mpi.h                       \
     $(SRC_ROOT)src/measurement/scorep_environment.c               \
     $(SRC_ROOT)src/measurement/scorep_environment.h               \
