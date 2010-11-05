@@ -1424,5 +1424,36 @@ SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
 }
 
 /**
+ * Returns the sequence number of the unified defintions for a local callpath handle from
+ * the mappings.
+ * @param handle handle to local callpath handle.
+ */
+uint32_t
+SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle )
+{
+    uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Callpath );
+    return scorep_local_definition_manager.mappings->callpath_mappings[ local_id ];
+}
+
+/**
+ * Returns the unified handle from a local handle.
+ */
+SCOREP_CallpathHandle
+SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle )
+{
+    return SCOREP_HANDLE_GET_UNIFIED( handle, Callpath,
+                                      SCOREP_Memory_GetLocalDefinitionPageManager() );
+}
+
+/**
+ * Returns the number of unified callpath definitions.
+ */
+uint32_t
+SCOREP_Callpath_GetNumberOfUnifiedDefinitions()
+{
+    return scorep_unified_definition_manager->callpath_definition_counter;
+}
+
+/**
  * @}
  */

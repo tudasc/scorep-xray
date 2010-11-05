@@ -190,7 +190,7 @@ scorep_profile_write_cube_metric( cube_t*                       my_cube,
    @param cube_writer  Pointer to a writer for the @a my_cube.
    @param map          Mapping structure to map between scorep and cube handles.
  */
-void
+static void
 scorep_profile_write_data_to_cube4( cube_t*                       my_cube,
                                     cube_writer*                  cube_writer,
                                     scorep_cube4_definitions_map* map )

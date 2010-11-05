@@ -397,9 +397,26 @@ SCOREP_DefineParameter
     SCOREP_ParameterType type
 );
 
+/**
+ * Returns the sequence number of the unified defintions for a local callpath handle from
+ * the mappings.
+ * @param handle handle to local callpath handle.
+ */
+uint32_t
+SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle );
 
+/**
+ * Returns the unified handle from a local handle.
+ * @param handle Handle of a local callpath.
+ */
+SCOREP_CallpathHandle
+SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle );
 
-
+/**
+ * Returns the number of unified callpath definitions.
+ */
+uint32_t
+SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
 
 /*@}*/
 
