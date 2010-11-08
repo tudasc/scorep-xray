@@ -904,6 +904,7 @@ SCOREP_Instrumenter::prepare_pdt()
     // Instrument sources and substitute the sources in the source list.
     while ( cur_pos != std::string::npos )
     {
+        int return_value = 0;
         cur_pos = input_files.find( " ", old_pos );
         if ( old_pos < cur_pos ) // Discard a blank
         {
@@ -931,7 +932,12 @@ SCOREP_Instrumenter::prepare_pdt()
                 {
                     std::cout << command << std::endl;
                 }
-                system( command.c_str() );
+                return_value = system( command.c_str() );
+                if ( return_value != 0 )
+                {
+                    std::cerr << "Failed to create PDT database file." << std::endl;
+                    exit( return_value );
+                }
 
                 // instrument source
                 command = pdt_bin_path + "/tau_instrumentor "
@@ -943,7 +949,13 @@ SCOREP_Instrumenter::prepare_pdt()
                 {
                     std::cout << command << std::endl;
                 }
-                system( command.c_str() );
+                return_value = system( command.c_str() );
+                if ( return_value != 0 )
+                {
+                    std::cerr << "PDT instrumentation failed." << std::endl;
+                    exit( return_value );
+                }
+
 
                 // Add modified source to new sourse list
                 new_input_files += " " + modified_file;
