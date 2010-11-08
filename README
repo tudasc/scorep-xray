@@ -1,3 +1,6 @@
+Run your application with Score-P
+---------------------------------
+
 To run your application with Score-P just insert 'scorep --instrument' before
 your actual compiler command, e.g. in your make file:
 CC = scorep --instrument mpicc
@@ -6,3 +9,24 @@ After compiling run your binary as usual.
 
 You can have a look on the trace file with the otf2_print tool:
 otf2_print --anchor-file=scorep-***/traces.otf2
+
+
+
+Useful Environment Variables:
+-----------------------------
+
+SCOREP_ENABLE_PROFILING:
+ - enable profiling
+   (default: false)
+
+SCOREP_ENABLE_TRACING:
+ - enable tracing
+   (default: true)
+
+SCOREP_TOTAL_MEMORY:
+ - total memory in bytes for the measurement system, excluding trace memory
+   (default: 1200k)
+
+SCOREP_PAGE_SIZE:
+ - SCOREP_TOTAL_MEMORY will be split up into pages of size SCOREP_PAGE_SIZE.
+   (default: 8k)
