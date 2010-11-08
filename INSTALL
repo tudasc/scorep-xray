@@ -1,0 +1,4 @@
+To install Score-P just run:
+configure
+make
+make install

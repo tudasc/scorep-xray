@@ -1,0 +1,5 @@
+To run your application with Score-P just insert 'scorep --instrument' before
+your actual compiler command, e.g. in your make file:
+CC = scorep --instrument mpicc
+
+After compiling run your binary as usual.
