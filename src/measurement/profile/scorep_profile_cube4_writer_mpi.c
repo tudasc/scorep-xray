@@ -163,8 +163,8 @@ scorep_profile_write_cube_metric( cube_t*                       my_cube,
         }
 
         /* Collect data from all processes */
-        MPI_Gatherv( local_values, local_threads, MPI_INT64, global_values, recvcnts,
-                     displs, MPI_INT, 0, MPI_COMM_WORLD );
+        PMPI_Gatherv( local_values, local_threads, MPI_INT64, global_values, recvcnts,
+                      displs, MPI_INT, 0, MPI_COMM_WORLD );
 
         /* Write data for one callpath */
         if ( my_rank == 0 )
@@ -243,19 +243,19 @@ scorep_profile_write_data_to_cube4( cube_t*                       my_cube,
     }
 
     /* Distribute number of callpathes in unified definitions */
-    MPI_Bcast( &callpath_number, 1, MPI_INT, 0, MPI_COMM_WORLD );
+    PMPI_Bcast( &callpath_number, 1, MPI_INT, 0, MPI_COMM_WORLD );
 
     /* Get sum of locations of all processes */
-    MPI_Allreduce( &local_threads, &global_threads, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+    PMPI_Allreduce( &local_threads, &global_threads, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
 
     /* Calculate offset of this thread in the value vector */
-    MPI_Exscan( &local_threads, &offset, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+    PMPI_Exscan( &local_threads, &offset, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
 
     /* Collect number of threads from every rank to rank 0. */
-    MPI_Gather( &local_threads, 1, MPI_INT, recvcnts, 1, MPI_INT, 0, MPI_COMM_WORLD );
+    PMPI_Gather( &local_threads, 1, MPI_INT, recvcnts, 1, MPI_INT, 0, MPI_COMM_WORLD );
 
     /* Collect number of offsets from every rank to rank 0. */
-    MPI_Gather( &offset, 1, MPI_INT, displs, 1, MPI_INT, 0, MPI_COMM_WORLD );
+    PMPI_Gather( &offset, 1, MPI_INT, displs, 1, MPI_INT, 0, MPI_COMM_WORLD );
 
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */

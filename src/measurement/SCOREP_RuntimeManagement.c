@@ -431,8 +431,12 @@ scorep_finalize( void )
     // an instrumentation error.
 
     // order is important
-    scorep_profile_finalize();
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
+    }
     SCOREP_Unify();
+    scorep_profile_finalize();
     SCOREP_Definitions_Write();
     SCOREP_Definitions_Finalize();
     scorep_otf2_finalize();
@@ -452,7 +456,7 @@ scorep_profile_finalize()
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
+        SCOREP_Profile_Write();
         SCOREP_Profile_Finalize();
     }
 }

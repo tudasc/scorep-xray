@@ -368,8 +368,11 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
         scorep_profile_assign_callpath_to_master();
         scorep_profile_assign_callpath_to_workers();
     }
+}
 
-    /* Write profile */
+void
+SCOREP_Profile_Write()
+{
     if ( scorep_profile_output_format == SCOREP_Profile_OutputNone )
     {
         return;

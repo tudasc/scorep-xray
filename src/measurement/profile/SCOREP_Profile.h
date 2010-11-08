@@ -119,12 +119,20 @@ SCOREP_Profile_Finalize();
 
 /**
    Post processes a profile. This function performs transfomations on the calltree
-   like expansion of thread start nodes and assignment of callpath handles to every node
-   and output in some file format.
-   Which steps are included can be specified via parameters.
+   like expansion of thread start nodes and assignment of callpath handles to every node.
+   Which steps are included can be specified via parameters. It must be called before
+   unification in order to register callpathe sto be unified.
  */
 void
 SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags );
+
+/**
+   Writes the Profile. The output format can be set via environment variable
+   SCOREP_ProfileFormat. Possible values are None, TauSnapshot, Cube4, Default.
+   Should be called after unification.
+ */
+void
+SCOREP_Profile_Write();
 
 /**
    Configures the callpath size for the next profile. The configuration is stored and
