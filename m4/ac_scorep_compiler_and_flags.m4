@@ -1,18 +1,20 @@
 ## -*- mode: autoconf -*-
 
 ## 
-## This file is part of the SCOREP project (http://www.scorep.de)
+## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011, 
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene USA
+##    University of Oregon, Eugene, USA
 ##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich, Germany
 ##    Technische Universitaet Muenchen, Germany
 ##
 ## See the COPYING file in the package base directory for details.
 ##
+
 
 ## file       ac_scorep_compiler_and_flags.m4
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>

@@ -1,3 +1,21 @@
+## -*- mode: autoconf -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+
 # AC_DIR_ARG_CONSISTENT(DIR_ARG [, FAILED_OPTION])
 # ------------------------------
 # Check directory argument DIR_ARG for consistency, i.e. remove trailing
@@ -28,5 +46,3 @@ do
   fi
 done
 ])
-
-## -*- mode: autoconf -*- 
