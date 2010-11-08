@@ -2,7 +2,7 @@
  * This file is part of the SCOREP project (http://www.scorep.de)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen, Germany
+ *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
  *    University of Oregon, Eugene USA
