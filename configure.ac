@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([scorep],[0.1],[zih-scorep@groups.tu-dresden.de])
+AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
 #echo "cross_compiling = $cross_compiling"
 

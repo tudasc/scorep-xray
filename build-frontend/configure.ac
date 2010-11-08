@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([scorep-frontend], [0])
+AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
 ## Declare variable as precious variable and include its description in the
 ## variable section of `./configure --help'.

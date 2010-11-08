@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([scorep-backend-mpi], [0])
+AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
 CC_SAVE=$CC
 CXX_SAVE=$CXX

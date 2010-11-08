@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([scorep-backend], [0])
+AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
