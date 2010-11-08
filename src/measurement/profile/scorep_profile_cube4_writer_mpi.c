@@ -25,7 +25,6 @@
 
 #include <config.h>
 #include <sys/stat.h>
-#include <mpi.h>
 
 #include "SCOREP_Memory.h"
 #include "scorep_utility/SCOREP_Utils.h"
@@ -39,6 +38,23 @@
 #include "cubew_cube.h"
 #include "cubew_cubew.h"
 #include "cubew_services.h"
+
+/* *****************************************************************************
+   Typedefs and variable declarations
+*******************************************************************************/
+
+/**
+   Defines a function type which returns a metric value from a given node.
+   This functions are given to scorep_profile_write_cube_metric.
+   @param node Pointer to a node which should return the metric value.
+   @returns the metric value of @a node.
+ */
+typedef uint64_t ( *scorep_profile_get_value_func )( scorep_profile_node* node );
+
+/**
+   Contains a mapping structure between scorep handles and cube handles.
+ */
+static scorep_cube4_definitions_map* scorep_map;
 
 /* *****************************************************************************
    Internal helper functions
@@ -57,6 +73,13 @@ static void
 scorep_cube4_make_mapping( scorep_profile_node* node,
                            void*                param )
 {
+    /* Check whether this node has a callpath handle assigned. Thread nodes have none */
+    if ( !node->callpath_handle )
+    {
+        return;
+    }
+
+    /* Use the sequence number of the unified definitions as index. */
     uint64_t              index     = SCOREP_Callpath_GetUnifiedSequenceNumber( node->callpath_handle );
     scorep_profile_node** id_2_node = ( scorep_profile_node** )param;
 
@@ -101,7 +124,8 @@ scorep_profile_get_visits_value( scorep_profile_node* node )
                           corresponding callpath in the location.
    @param map             Mapping structure to map between scorep and cube handles
    @param callpath_number The number of callpathes in the unified definitions.
-   @param global_threads  The number of threads in the unified defintions
+   @param global_threads  The number of threads in the unified definitions. Only needed
+                          on rank 0. Ignored on other ranks.
    @param local_threads   The number of locations in this process.
    @param offset          Position in the global value vector where this process writes.
    @param recvcnts        Array with the number of threads for every process. Only needed
@@ -117,12 +141,12 @@ scorep_profile_write_cube_metric( cube_t*                       my_cube,
                                   cube_metric*                  metric,
                                   scorep_profile_node**         id_2_node,
                                   scorep_cube4_definitions_map* map,
-                                  int32_t                       callpath_number,
-                                  int32_t                       global_threads,
-                                  int32_t                       local_threads,
-                                  int32_t                       offset,
-                                  int32_t*                      recvcnts,
-                                  int32_t*                      displs,
+                                  uint32_t                      callpath_number,
+                                  uint32_t                      global_threads,
+                                  uint32_t                      local_threads,
+                                  uint32_t                      offset,
+                                  uint32_t*                     recvcnts,
+                                  uint32_t*                     displs,
                                   scorep_profile_get_value_func get_value )
 {
     scorep_profile_node* node          = NULL;
@@ -150,30 +174,30 @@ scorep_profile_write_cube_metric( cube_t*                       my_cube,
     /* Iterate over all unified callpathes */
     for ( uint64_t cp_index = 0; cp_index < callpath_number; cp_index++ )
     {
-        for ( uint64_t thread = 0; thread < local_threads; thread++ )
+        for ( uint64_t thread_index = 0; thread_index < local_threads; thread_index++ )
         {
-            node = id_2_node[ thread * callpath_number + cp_index ];
+            node = id_2_node[ thread_index * callpath_number + cp_index ];
             if ( node != NULL )
             {
-                local_values[ i ] = get_value( node );
+                local_values[ thread_index ] = get_value( node );
             }
             else
             {
-                local_values[ i ] = 0;
+                local_values[ thread_index ] = 0;
             }
         }
 
         /* Collect data from all processes */
-        PMPI_Gatherv( local_values, local_threads, MPI_INT64, global_values, recvcnts,
-                      displs, MPI_INT, 0, MPI_COMM_WORLD );
+        SCOREP_Mpi_Gatherv( local_values, local_threads, SCOREP_MPI_LONG_LONG,
+                            global_values, recvcnts, displs, SCOREP_MPI_LONG_LONG, 0 );
 
         /* Write data for one callpath */
         if ( my_rank == 0 )
         {
             /* Assume that the first location contains all callpathes that
                appear in this process. */
-            cnode = scorep_get_cube4_callpath( map, SCOREP_Callpath_GetUnifiedHandle( id_2_node[ id ]->callpath_handle ) );
-            cube_write_sev_row_of_uint64( my_cube, metric, cnode, values );
+            cnode = scorep_get_cube4_callpath( map, SCOREP_Callpath_GetUnifiedHandle( id_2_node[ cp_index ]->callpath_handle ) );
+            cube_write_sev_row_of_uint64( my_cube, metric, cnode, global_values );
         }
     }
 
@@ -201,28 +225,28 @@ scorep_profile_write_data_to_cube4( cube_t*                       my_cube,
     /*-------------------------------- Variable definition
 
        /* Number of this rank in MPI_COMM_WORLD */
-    int32_t my_rank = SCOREP_Mpi_GetRank();
+    uint32_t my_rank = SCOREP_Mpi_GetRank();
 
     /* Number of ranks in MPI_COMM_WORLD */
-    int32_t ranks_number = SCOREP_Mpi_GetCommWorldSize();
+    uint32_t ranks_number = SCOREP_Mpi_GetCommWorldSize();
 
     /* Number of threads in this rank */
-    int32_t local_threads = scorep_profile_get_number_of_threads();
+    uint32_t local_threads = scorep_profile_get_number_of_threads();
 
-    /* Sum of all threads in all processes */
-    int32_t global_threads = 0;
+    /* Sum of all threads in all processes. Only used on Rank 0 */
+    uint32_t global_threads = 0;
 
     /* Number of callpathes in the unified definitions */
-    int32_t callpath_number = 0;
+    uint32_t callpath_number = 0;
 
     /* Offset for values of this process in the value vector */
-    int32_t offset = 0;
+    uint32_t offset = 0;
 
     /* List of numbers of locations on each process. Only used on rank 0 */
-    int32_t* recvcnts = NULL;
+    uint32_t* recvcnts = NULL;
 
     /* List of offsets of every process in the value vector. Only used on rank 0 */
-    int32_t* displs = NULL;
+    uint32_t* displs = NULL;
 
     /* Mapping from global sequence number to local profile node of every thread */
     scorep_profile_node** id_2_node = NULL;
@@ -244,19 +268,21 @@ scorep_profile_write_data_to_cube4( cube_t*                       my_cube,
     }
 
     /* Distribute number of callpathes in unified definitions */
-    PMPI_Bcast( &callpath_number, 1, MPI_INT, 0, MPI_COMM_WORLD );
+    SCOREP_Mpi_Bcast( &callpath_number, 1, SCOREP_MPI_UNSIGNED, 0 );
 
     /* Get sum of locations of all processes */
-    PMPI_Allreduce( &local_threads, &global_threads, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+    SCOREP_Mpi_Reduce( &local_threads, &global_threads, 1, SCOREP_MPI_UNSIGNED,
+                       SCOREP_MPI_SUM, 0 );
 
     /* Calculate offset of this thread in the value vector */
-    PMPI_Exscan( &local_threads, &offset, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+    SCOREP_Mpi_Exscan( &local_threads, &offset, 1, SCOREP_MPI_UNSIGNED, SCOREP_MPI_SUM );
 
     /* Collect number of threads from every rank to rank 0. */
-    PMPI_Gather( &local_threads, 1, MPI_INT, recvcnts, 1, MPI_INT, 0, MPI_COMM_WORLD );
+    SCOREP_Mpi_Gather( &local_threads, 1, SCOREP_MPI_UNSIGNED, recvcnts, 1,
+                       SCOREP_MPI_UNSIGNED, 0 );
 
     /* Collect number of offsets from every rank to rank 0. */
-    PMPI_Gather( &offset, 1, MPI_INT, displs, 1, MPI_INT, 0, MPI_COMM_WORLD );
+    SCOREP_Mpi_Gather( &offset, 1, SCOREP_MPI_UNSIGNED, displs, 1, SCOREP_MPI_UNSIGNED, 0 );
 
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */
@@ -305,22 +331,25 @@ scorep_profile_write_data_to_cube4( cube_t*                       my_cube,
 void
 scorep_profile_write_cube4()
 {
-    int32_t      number_of_writers = 1;                  /* Initially one writer, in MPI
-                                                            case it can be more */
+    int32_t      number_of_writers = 1;    /* Initially one writer, in MPI
+                                              case it can be more */
     int32_t      number_of_threads = scorep_profile_get_number_of_threads();
     int32_t      my_rank           = SCOREP_Mpi_GetRank();
-    cube_t*      my_cube           = NULL;                  /* The cube structure */
-    cube_writer* cube_writer       = NULL;                  /* The cube writer */
+    cube_t*      my_cube           = NULL; /* The cube structure */
+    cube_writer* cube_writer       = NULL; /* The cube writer */
+    char*        filename          = NULL; /* Contains the basename for the cube file */
+    char*        dirname           = SCOREP_GetExperimentDirName();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
                          "Writing profile in Cube 4 format ..." );
 
     /* Create definition mapping tables */
+    scorep_cube4_definitions_map* map = NULL;
     map = scorep_cube4_create_definitions_map();
     if ( map == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocat ememory for defintion mapping\n"
+                      "Failed to allocate ememory for defintion mapping\n"
                       "Failed to write Cube 4 profile" );
         return;
     }

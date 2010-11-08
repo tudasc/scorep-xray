@@ -257,7 +257,7 @@ scorep_profile_write_cube4()
     if ( map == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocat ememory for defintion mapping\n"
+                      "Failed to allocate ememory for defintion mapping\n"
                       "Failed to write Cube 4 profile" );
         return;
     }

@@ -401,15 +401,17 @@ void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map )
 {
-    SCOREP_DefinitionManager* manager = &scorep_local_definition_manager;
-    /*
-       if ( SCOREP_Mpi_HasMpi() )
-       {
-       if (SCOREP_Mpi_GetRank() != 0) return;
-       assert( scorep_unified_definition_manager );
-       manager = scorep_unified_definition_manager;
-       }
-     */
+    /* The unification is always processed, even in serial case. Thus, we have
+       always access to the unified definitions on rank 0.
+       In non-mpi case SCOREP_Mpi_GetRank() returns always 0. Thus, we need only
+       to test for the rank. */
+    SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
+    if ( SCOREP_Mpi_GetRank() != 0 )
+    {
+        return;
+    }
+    assert( scorep_unified_definition_manager );
+
     scorep_write_counter_definitions_to_cube4( my_cube, manager, map );
     scorep_write_region_definitions_to_cube4( my_cube, manager, map );
     scorep_write_callpath_definitions_to_cube4( my_cube, manager, map );

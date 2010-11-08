@@ -201,6 +201,25 @@ scorep_mpi_to_mpi_datatype( enum SCOREP_Mpi_Datatype scorep_datatype )
     }
 }
 
+/**
+ * Translation table for mpi operations. The scorep value serves as index to get the
+ * MPI_Op type. Thus, the entries must be in the same order as in
+ * enum SCOREP_Mpi_Datatype.
+ */
+static MPI_Op scorep_mpi_to_mpi_operation[] =
+{
+    MPI_LAND,
+    MPI_LOR,
+    MPI_LXOR,
+    MPI_BAND,
+    MPI_BOR,
+    MPI_BXOR,
+    MPI_MIN,
+    MPI_MAX,
+    MPI_SUM,
+    MPI_PROD,
+};
+
 
 int
 SCOREP_Mpi_Send( void*               buf,
@@ -233,4 +252,72 @@ SCOREP_Mpi_Recv( void*               buf,
                       status == SCOREP_MPI_STATUS_IGNORE
                       ? MPI_STATUS_IGNORE
                       : ( MPI_Status* )status );
+}
+
+int
+SCOREP_Mpi_Bcast( void*               buf,
+                  int                 count,
+                  SCOREP_Mpi_Datatype scorep_datatype,
+                  int                 root )
+{
+    return PMPI_Bcast( buf, count, scorep_mpi_to_mpi_datatype( scorep_datatype ), root,
+                       scorep_mpi_comm_world );
+}
+
+int
+SCOREP_Mpi_Exscan( void*                sendbuf,
+                   void*                recvbuf,
+                   int                  count,
+                   SCOREP_Mpi_Datatype  scorep_datatype,
+                   SCOREP_Mpi_Operation scorep_operation )
+{
+    return PMPI_Exscan( sendbuf, recvbuf, count,
+                        scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                        scorep_mpi_to_mpi_operation[ scorep_operation ],
+                        scorep_mpi_comm_world );
+}
+
+int
+SCOREP_Mpi_Gather( void*               sendbuf,
+                   int                 sendcount,
+                   SCOREP_Mpi_Datatype scorep_sendtype,
+                   void*               recvbuf,
+                   int                 recvcount,
+                   SCOREP_Mpi_Datatype scorep_recvtype,
+                   int                 root )
+{
+    return PMPI_Gather( sendbuf, sendcount, scorep_mpi_to_mpi_datatype( scorep_sendtype ),
+                        recvbuf, recvcount, scorep_mpi_to_mpi_datatype( scorep_recvtype ),
+                        root, scorep_mpi_comm_world );
+}
+
+int
+SCOREP_Mpi_Gatherv( void*               sendbuf,
+                    int                 sendcount,
+                    SCOREP_Mpi_Datatype scorep_sendtype,
+                    void*               recvbuf,
+                    int*                recvcnts,
+                    int*                displs,
+                    SCOREP_Mpi_Datatype scorep_recvtype,
+                    int                 root )
+{
+    return PMPI_Gatherv( sendbuf, sendcount,
+                         scorep_mpi_to_mpi_datatype( scorep_sendtype ),
+                         recvbuf, recvcnts, displs,
+                         scorep_mpi_to_mpi_datatype( scorep_recvtype ),
+                         root, scorep_mpi_comm_world );
+}
+
+int
+SCOREP_Mpi_Reduce( void*                sendbuf,
+                   void*                recvbuf,
+                   int                  count,
+                   SCOREP_Mpi_Datatype  scorep_datatype,
+                   SCOREP_Mpi_Operation scorep_operation,
+                   int                  root )
+{
+    return PMPI_Reduce( sendbuf, recvbuf, count,
+                        scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                        scorep_mpi_to_mpi_operation[ scorep_operation ],
+                        root, scorep_mpi_comm_world );
 }

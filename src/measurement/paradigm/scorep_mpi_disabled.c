@@ -138,3 +138,82 @@ SCOREP_Mpi_Recv( void*               buf,
 
     return 1;
 }
+
+static int scorep_mpi_datatype_size[] =
+{
+    1, /* MPI_UNSIGNED_CHAR */
+    4, /* MPI_UNSINGED */
+    8  /* MPI_LONG_LONG */
+};
+
+
+int
+SCOREP_Mpi_Bcast( void*               buf,
+                  int                 count,
+                  SCOREP_Mpi_Datatype scorep_datatype,
+                  int                 root )
+{
+    /* In non-mpi case there is no other rank to which we send something.
+       Thus, nothing to do */
+    return 0;
+}
+
+int
+SCOREP_Mpi_Exscan( void*                sendbuf,
+                   void*                recvbuf,
+                   int                  count,
+                   SCOREP_Mpi_Datatype  scorep_datatype,
+                   SCOREP_Mpi_Operation scorep_operation )
+{
+    /* In non-mpi case we, have only rank zero. the rnk itself is excluded from the scan.
+       thus, set recvbuffer to zero */
+    int num = scorep_mpi_datatype_size[ scorep_datatype ] * count;
+    memset( recvbuf, 0, num );
+    return 0;
+}
+
+int
+SCOREP_Mpi_Gather( void*               sendbuf,
+                   int                 sendcount,
+                   SCOREP_Mpi_Datatype scorep_sendtype,
+                   void*               recvbuf,
+                   int                 recvcount,
+                   SCOREP_Mpi_Datatype scorep_recvtype,
+                   int                 root )
+{
+    /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
+    int num = scorep_mpi_datatype_size[ scorep_sendtype ] * sendcount;
+    memcpy( recvbuf, sendbuf, num );
+    return 0;
+}
+
+int
+SCOREP_Mpi_Gatherv( void*               sendbuf,
+                    int                 sendcount,
+                    SCOREP_Mpi_Datatype scorep_sendtype,
+                    void*               recvbuf,
+                    int*                recvcnts,
+                    int*                displs,
+                    SCOREP_Mpi_Datatype scorep_recvtype,
+                    int                 root )
+{
+    /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
+    int num = scorep_mpi_datatype_size[ scorep_sendtype ] * sendcount;
+    memcpy( recvbuf, sendbuf, num );
+    return 0;
+}
+
+int
+SCOREP_Mpi_Reduce( void*                sendbuf,
+                   void*                recvbuf,
+                   int                  count,
+                   SCOREP_Mpi_Datatype  scorep_datatype,
+                   SCOREP_Mpi_Operation scorep_operation,
+                   int                  root )
+{
+    /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
+       recvbuf. */
+    int num = scorep_mpi_datatype_size[ scorep_datatype ] * count;
+    memcpy( recvbuf, sendbuf, num );
+    return 0;
+}
