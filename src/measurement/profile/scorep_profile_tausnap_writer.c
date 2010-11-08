@@ -174,7 +174,7 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
         /* 12 digit max data length. */
         int length = strlen( parentpath ) + 12 + 3 + 1;
         path = ( char* )malloc( length );
-        sprintf( path, "%s [%d]", parentpath,
+        sprintf( path, "%s [%" PRIu64 "]", parentpath,
                  data->value );
     }
     else
@@ -182,7 +182,7 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
         /* 12 digit max data length. */
         int length = strlen( parentpath ) + strlen( SCOREP_Parameter_GetName( data->handle ) ) + 12 + 6 + 1;
         path = ( char* )malloc( length );
-        sprintf( path, "%s (%s = %d)", parentpath,
+        sprintf( path, "%s (%s = %" PRIu64 ")", parentpath,
                  SCOREP_Parameter_GetName( data->handle ), data->value );
     }
     /* write definition */
@@ -273,8 +273,8 @@ scorep_profile_write_data_tau( scorep_profile_node* node,
                  "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
                  *callpath_counter, node->count,
                  scorep_profile_get_number_of_child_calls( node ),
-                 ( scorep_profile_get_exclusive_time( node ) * 1000000llu / tps ),
-                 ( node->inclusive_time.sum * 1000000llu / tps ) );
+                 ( scorep_profile_get_exclusive_time( node ) * 1000000 / tps ),
+                 ( node->inclusive_time.sum * 1000000 / tps ) );
         ( *callpath_counter )++;
     }
 
