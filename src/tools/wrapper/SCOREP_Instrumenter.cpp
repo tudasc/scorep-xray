@@ -983,19 +983,6 @@ SCOREP_Instrumenter::execute_command()
     std::string scorep_lib;
     if ( is_linking )
     {
-        /*
-           if ( is_mpi_application == enabled )
-           {
-              scorep_lib = ( is_openmp_application == enabled ?
-                             " -lscorep_mpi_omp" : " -lscorep_mpi" );
-           }
-           else
-           {
-              scorep_lib = ( is_openmp_application == enabled ?
-                             " -lscorep_omp" : " -lscorep_serial" );
-           }
-           scorep_lib += " -lotf2 -lscorep_utilities";
-         */
         if ( is_openmp_application == enabled &&
              opari_instrumentation == disabled )
         {
@@ -1008,8 +995,11 @@ SCOREP_Instrumenter::execute_command()
                           + input_files
                           + scorep_lib
                           + compiler_flags
-                          + " " + external_libs
-                          + " -o " + output_name;
+                          + " " + external_libs;
+    if ( output_name != "" )
+    {
+        command += " -o " + output_name;
+    }
 
     if ( verbosity >= 1 )
     {
