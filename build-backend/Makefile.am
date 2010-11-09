@@ -108,6 +108,7 @@ $(builddir)/scorep_config.dat:
 	@echo LIBS=\"$(LIBS) -lotf2 -lscorep_utilities\"                            >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(INC_ROOT)\include\"                                        >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
@@ -130,7 +131,7 @@ create-config-tool-headers: $(CONFIG_HEADER_BACKEND)
 $(CONFIG_HEADER_BACKEND):
 	@echo "Creating $(CONFIG_HEADER_BACKEND)"
 	@echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"" >  $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""    >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_PREFIX  \"$(prefix)\""           >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_DATADIR \"$(datadir)\""          >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_LIBDIR  \"$(libdir)\""           >> $(CONFIG_HEADER_BACKEND)
@@ -142,7 +143,7 @@ $(CONFIG_HEADER_BACKEND):
 	@echo "#define SCOREP_FC      \"$(FC)\""               >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define NM             \"$(NM)\""               >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define AWK            \"$(AWK)\""              >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define OPARI          \"$(prefix)/bin/opari2\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define OPARI          \"$(prefix)/bin/opari2\"">> $(CONFIG_HEADER_BACKEND)
 	@echo "#define OPARI_SCRIPT   \"$(prefix)/bin/pomp2_parse_init_regions.awk\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)

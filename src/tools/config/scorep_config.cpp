@@ -218,7 +218,8 @@ main( int    argc,
                 break;
 
             case ACTION_INCDIR:
-                std::cout << "-I" SCOREP_PREFIX "/include ";
+                std::cout << "-I" SCOREP_PREFIX "/include -I"
+                SCOREP_PREFIX "/include/scorep ";
                 std::cout.flush();
                 otf2_config += " --cflags";
                 ret          = system( otf2_config.c_str() );

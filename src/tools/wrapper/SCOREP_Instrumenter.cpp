@@ -525,6 +525,7 @@ void
 SCOREP_Instrumenter::SetPrefix( std::string value )
 {
     AddIncDir( value + "/include" );
+    AddIncDir( value + "/include/scorep" );
     AddLibDir( value + "/lib" );
 }
 
