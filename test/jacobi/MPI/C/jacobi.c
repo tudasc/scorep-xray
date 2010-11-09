@@ -104,7 +104,7 @@ void
 ExchangeJacobiMpiData( struct JacobiData* data,
                        double*            uold )
 {
-    MPI_Request request[ 4 ];
+    MPI_Request request[ 2 ];
     MPI_Status  status[ 4 ];
     double*     afU, * afF;
     int         iReqCnt = 0;
@@ -113,24 +113,6 @@ ExchangeJacobiMpiData( struct JacobiData* data,
     const int   iTagMoveRight = 11;
     afU = data->afU;
     afF = data->afF;
-
-    if ( data->iMyRank != 0 )
-    {
-        /*  receive stripe mlo from left neighbour blocking */
-        MPI_Irecv( &UOLD( data->iRowFirst, 0 ), data->iCols, MPI_DOUBLE,
-                   data->iMyRank - 1, iTagMoveRight, MPI_COMM_WORLD,
-                   &request[ iReqCnt ] );
-        iReqCnt++;
-    }
-
-    if ( data->iMyRank != data->iNumProcs - 1 )
-    {
-        /* receive stripe mhi from right neighbour blocking */
-        MPI_Irecv( &UOLD( data->iRowLast, 0 ), data->iCols, MPI_DOUBLE,
-                   data->iMyRank + 1, iTagMoveLeft, MPI_COMM_WORLD,
-                   &request[ iReqCnt ] );
-        iReqCnt++;
-    }
 
     if ( data->iMyRank != data->iNumProcs - 1 )
     {
@@ -149,12 +131,29 @@ ExchangeJacobiMpiData( struct JacobiData* data,
                    &request[ iReqCnt ] );
         iReqCnt++;
     }
+
     for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
     {
         for ( i = 0; i < data->iCols; i++ )
         {
             UOLD( j, i ) = U( j, i );
         }
+    }
+
+    if ( data->iMyRank != 0 )
+    {
+        /*  receive stripe mlo from left neighbour blocking */
+        MPI_Recv( &UOLD( data->iRowFirst, 0 ), data->iCols, MPI_DOUBLE,
+                  data->iMyRank - 1, iTagMoveRight, MPI_COMM_WORLD,
+                  &status[ 2 ] );
+    }
+
+    if ( data->iMyRank != data->iNumProcs - 1 )
+    {
+        /* receive stripe mhi from right neighbour blocking */
+        MPI_Recv( &UOLD( data->iRowLast, 0 ), data->iCols, MPI_DOUBLE,
+                  data->iMyRank + 1, iTagMoveLeft, MPI_COMM_WORLD,
+                  &status[ 3 ] );
     }
 
     MPI_Waitall( iReqCnt, request, status );

@@ -113,24 +113,6 @@ ExchangeJacobiMpiData( JacobiData & data,
     const int iTagMoveLeft  = 10;
     const int iTagMoveRight = 11;
 
-    if ( data.iMyRank != 0 )
-    {
-        /*  receive stripe mlo from left neighbour blocking */
-        MPI_Irecv( &UOLD( data.iRowFirst, 0 ), data.iCols, MPI_DOUBLE,
-                   data.iMyRank - 1, iTagMoveRight, MPI_COMM_WORLD,
-                   &request[ iReqCnt ] );
-        iReqCnt++;
-    }
-
-    if ( data.iMyRank != data.iNumProcs - 1 )
-    {
-        /* receive stripe mhi from right neighbour blocking */
-        MPI_Irecv( &UOLD( data.iRowLast, 0 ), data.iCols, MPI_DOUBLE,
-                   data.iMyRank + 1, iTagMoveLeft, MPI_COMM_WORLD,
-                   &request[ iReqCnt ] );
-        iReqCnt++;
-    }
-
     if ( data.iMyRank != data.iNumProcs - 1 )
     {
         /* send stripe mhi-1 to right neighbour async */
@@ -148,12 +130,29 @@ ExchangeJacobiMpiData( JacobiData & data,
                    &request[ iReqCnt ] );
         iReqCnt++;
     }
+
     for ( int j = data.iRowFirst + 1; j <= data.iRowLast - 1; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )
         {
             UOLD( j, i ) = U( j, i );
         }
+    }
+
+    if ( data.iMyRank != 0 )
+    {
+        /*  receive stripe mlo from left neighbour blocking */
+        MPI_Recv( &UOLD( data.iRowFirst, 0 ), data.iCols, MPI_DOUBLE,
+                  data.iMyRank - 1, iTagMoveRight, MPI_COMM_WORLD,
+                  &status[ 2 ] );
+    }
+
+    if ( data.iMyRank != data.iNumProcs - 1 )
+    {
+        /* receive stripe mhi from right neighbour blocking */
+        MPI_Recv( &UOLD( data.iRowLast, 0 ), data.iCols, MPI_DOUBLE,
+                  data.iMyRank + 1, iTagMoveLeft, MPI_COMM_WORLD,
+                  &status[ 3 ] );
     }
 
     MPI_Waitall( iReqCnt, request, status );
