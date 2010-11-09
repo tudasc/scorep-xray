@@ -197,8 +197,9 @@ scorep_profile_sum_children( scorep_profile_node* parent )
     {
         return;              /* Nothing to do */
     }
-    /* Reinitialize thee metrics with values from first child */
+    /* Reinitialize the metrics with values from first child */
     scorep_profile_copy_all_dense_metrics( parent, child );
+    parent->count = 0;
 
     /* Add the statistics of all children */
     while ( child->next_sibling != NULL )
