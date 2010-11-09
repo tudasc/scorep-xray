@@ -172,6 +172,7 @@ scorep_unify_mpi_master( void )
         SEND_MAPPING( region );
         SEND_MAPPING( group );
         SEND_MAPPING( callpath );
+        SEND_MAPPING( parameter );
 
         SCOREP_DestroyDefinitionMappings( remote_definition_manager );
 
@@ -234,6 +235,7 @@ scorep_unify_mpi_servant( void )
     RECV_MAPPING( region );
     RECV_MAPPING( group );
     RECV_MAPPING( callpath );
+    RECV_MAPPING( parameter );
 
     free( moved_page_ids );
     free( moved_page_fills );
