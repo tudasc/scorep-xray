@@ -108,7 +108,7 @@ $(builddir)/scorep_config.dat:
 	@echo LIBS=\"$(LIBS) -lotf2 -lscorep_utilities\"                            >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(INC_ROOT)\include\"                                        >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(INC_ROOT)/include\"                                        >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
