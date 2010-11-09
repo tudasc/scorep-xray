@@ -315,13 +315,13 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
     SCOREP_DEFINITION_FOREACH_DO( manager, Region, region )
     {
         /* Collect necessary data */
-        const char* region_name = SCOREP_LOCAL_HANDLE_DEREF( definition->name_handle,
-                                                             String )->string_data;
+        const char* region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                               String )->string_data;
         const char* adapter   = scorep_adapter_type_to_string( definition->adapter_type );
         const char* file_name = "";
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
-            file_name = SCOREP_LOCAL_HANDLE_DEREF( definition->file_name_handle, String )->string_data;
+            file_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->file_name_handle, String )->string_data;
         }
 
         /* Register region to cube */
@@ -371,27 +371,29 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
 
 static void
 scorep_write_location_definitions_to_cube4( cube_t*                       my_cube,
-                                            SCOREP_DefinitionManager*     manager,
-                                            scorep_cube4_definitions_map* map )
+                                            scorep_cube4_definitions_map* map,
+                                            uint32_t                      ranks,
+                                            uint32_t*                     threads )
 {
     char          name[ 32 ];
     cube_machine* machine = cube_def_mach( my_cube, "machine name", "no description" );
     cube_node*    node    = cube_def_node( my_cube, "node name", machine );
+    cube_process* process = NULL;
+    cube_thread*  thread  = NULL;
+    int           index   = 0;
 
-    sprintf( name, "rank %d", SCOREP_Mpi_GetRank() );
-    cube_process* process = cube_def_proc( my_cube, name,
-                                           SCOREP_Mpi_GetRank(), node );
-    cube_thread*  thread = NULL;
-    int           index  = 0;
-
-    SCOREP_DEFINITION_FOREACH_DO( manager, Location, location )
+    for ( uint32_t rank = 0; rank < ranks; rank++ )
     {
-        sprintf( name, "thread %d", index ),
-        thread = cube_def_thrd( my_cube, name,
-                                definition->global_location_id, process );
-        index++;
+        sprintf( name, "rank %d", rank );
+        process = cube_def_proc( my_cube, name, rank, node );
+
+        for ( uint32_t loc = 0; loc < threads[ rank ]; loc++ )
+        {
+            sprintf( name, "thread %d", loc ),
+            thread = cube_def_thrd( my_cube, name, index, process );
+            index++;
+        }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
 }
 
 /* ****************************************************************************
@@ -399,7 +401,9 @@ scorep_write_location_definitions_to_cube4( cube_t*                       my_cub
  *****************************************************************************/
 void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
-                                   scorep_cube4_definitions_map* map )
+                                   scorep_cube4_definitions_map* map,
+                                   uint32_t                      ranks,
+                                   uint32_t*                     threads )
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.
@@ -415,5 +419,5 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     scorep_write_counter_definitions_to_cube4( my_cube, manager, map );
     scorep_write_region_definitions_to_cube4( my_cube, manager, map );
     scorep_write_callpath_definitions_to_cube4( my_cube, manager, map );
-    scorep_write_location_definitions_to_cube4( my_cube, manager, map );
+    scorep_write_location_definitions_to_cube4( my_cube, map, ranks, threads );
 }

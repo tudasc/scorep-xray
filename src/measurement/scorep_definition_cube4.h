@@ -54,10 +54,15 @@ typedef struct
    the mapping table given by map.
    @param my_cube Pointer to the cube struct to which the data is written.
    @param map     Pointer to an already inititialized mapping structure.
+   @param ranks   Number of ranks
+   @param threads Array with @a entries. Each entry specify the number of threads
+                  on a rank with this index.
  */
 void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
-                                   scorep_cube4_definitions_map* map );
+                                   scorep_cube4_definitions_map* map,
+                                   uint32_t                      ranks,
+                                   uint32_t*                     threads );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
