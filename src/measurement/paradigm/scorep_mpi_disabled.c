@@ -143,7 +143,8 @@ static int scorep_mpi_datatype_size[] =
 {
     1, /* MPI_UNSIGNED_CHAR */
     4, /* MPI_UNSINGED */
-    8  /* MPI_LONG_LONG */
+    8, /* MPI_LONG_LONG */
+    8  /* MPI_DOUBLE */
 };
 
 
