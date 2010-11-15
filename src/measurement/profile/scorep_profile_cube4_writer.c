@@ -163,7 +163,7 @@ scorep_profile_write_cube_##cube_type(                                          
         /* Initialize writing of a new metric */                                        \
         cubew_reset( cube_writer );                                                     \
         cubew_set_array( cube_writer, callpath_number );                                \
-        cube_metric_set_known_cnodes( metric, bit_vector );                             \
+        cube_set_known_cnodes_for_metric( my_cube, metric, bit_vector );         \
     }                                                                                   \
     /* Iterate over all unified callpathes */                                           \
     for ( uint64_t cp_index = 0; cp_index < callpath_number; cp_index++ )               \
@@ -188,9 +188,7 @@ scorep_profile_write_cube_##cube_type(                                          
         /* Write data for one callpath */                                               \
         if ( my_rank == 0 )                                                             \
         {                                                                               \
-	    /* Assume that the first location contains all callpathes that */           \
-            /* appear in this process. */                                               \
-            cnode = scorep_get_cube4_callpath( map, SCOREP_Callpath_GetUnifiedHandle( id_2_node[ cp_index ]->callpath_handle ) ); \
+	    cnode = cube_get_cnode( my_cube, cp_index );                                \
             cube_write_sev_row_of_##cube_type( my_cube, metric, cnode, global_values ); \
         }                                                                               \
     }                                                                                   \
