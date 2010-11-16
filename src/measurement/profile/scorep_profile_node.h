@@ -53,6 +53,7 @@ typedef enum
     scorep_profile_node_parameter_integer,
     scorep_profile_node_thread_root,
     scorep_profile_node_thread_start,
+    scorep_profile_node_collapse,
 } scorep_profile_node_type;
 
 /**

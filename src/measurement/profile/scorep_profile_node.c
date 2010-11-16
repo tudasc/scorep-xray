@@ -52,6 +52,9 @@ scorep_profile_copy_thread_root_data( scorep_profile_type_data_t data );
 static scorep_profile_type_data_t
 scorep_profile_copy_thread_start_data( scorep_profile_type_data_t data );
 
+static scorep_profile_type_data_t
+scorep_profile_copy_collapse_data( scorep_profile_type_data_t data );
+
 static bool
 scorep_profile_compare_regular_region_data( scorep_profile_type_data_t data1,
                                             scorep_profile_type_data_t data2 );
@@ -71,6 +74,10 @@ scorep_profile_compare_thread_root_data( scorep_profile_type_data_t data1,
 static bool
 scorep_profile_compare_thread_start_data( scorep_profile_type_data_t data1,
                                           scorep_profile_type_data_t data2 );
+
+static bool
+scorep_profile_compare_collapse_data( scorep_profile_type_data_t data1,
+                                      scorep_profile_type_data_t data2 );
 
 /* ***************************************************************************************
    Type dependent data handling types and variables
@@ -99,7 +106,8 @@ scorep_profile_type_data_func_t scorep_profile_type_data_funcs[] = {
   { &scorep_profile_compare_parameter_string_data,  &scorep_profile_copy_parameter_string_data  },
   { &scorep_profile_compare_parameter_integer_data, &scorep_profile_copy_parameter_integer_data },
   { &scorep_profile_compare_thread_root_data,       &scorep_profile_copy_thread_root_data       },
-  { &scorep_profile_compare_thread_start_data,      &scorep_profile_copy_thread_start_data      }
+  { &scorep_profile_compare_thread_start_data,      &scorep_profile_copy_thread_start_data      },
+  { &scorep_profile_compare_collapse_data,          &scorep_profile_copy_collapse_data          }
 };
 
 /* *INDENT-ON* */
