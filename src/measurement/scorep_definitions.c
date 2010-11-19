@@ -717,7 +717,7 @@ scorep_write_mpi_window_definitions_to_otf2( void*                     writerHan
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPIWindow_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -747,7 +747,7 @@ scorep_write_mpi_cartesian_topology_definitions_to_otf2( void*                  
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPICartesianTopology_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -777,7 +777,7 @@ scorep_write_mpi_cartesian_coords_definitions_to_otf2( void*                    
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPICartesianCoords_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -807,7 +807,7 @@ scorep_write_counter_group_definitions_to_otf2( void*                     writer
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_CounterGroup_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -837,7 +837,7 @@ scorep_write_counter_definitions_to_otf2( void*                     writerHandle
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Counter_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -867,7 +867,7 @@ scorep_write_io_file_group_definitions_to_otf2( void*                     writer
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_IOFileGroup_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -897,7 +897,7 @@ scorep_write_io_file_definitions_to_otf2( void*                     writerHandle
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_IOFile_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -927,7 +927,7 @@ scorep_write_marker_group_definitions_to_otf2( void*                     writerH
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MarkerGroup_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -957,7 +957,7 @@ scorep_write_marker_definitions_to_otf2( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Marker_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -987,7 +987,7 @@ scorep_write_parameter_definitions_to_otf2( void*                     writerHand
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Parameter_Definition" );
         //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -999,25 +999,45 @@ scorep_write_callpath_definitions_to_otf2( void*                     writerHandl
                                            bool                      isGlobal )
 {
     assert( writerHandle );
-    //SCOREP_Error_Code ( * def... )( void*,
-    //                                ...
-    //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
-    //if ( isGlobal )
-    //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
-    //}
+    SCOREP_Error_Code ( * defCallpath )( void*,
+                                         uint32_t,
+                                         uint32_t,
+                                         uint32_t,
+                                         uint8_t ) =
+        ( void* )OTF2_DefWriter_DefCallpath;
+    if ( isGlobal )
+    {
+        defCallpath = ( void* )OTF2_GlobDefWriter_GlobDefCallpath;
+    }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Callpath,
                                   callpath )
     {
-        //SCOREP_Error_Code status = def...(writerHandle, ...);
-        //if ( status != SCOREP_SUCCESS )
-        //{
-        //    scorep_handle_definition_writing_error( status, "SCOREP_Callpath_Definition" );
-        //}
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        if ( !definition->with_parameter )
+        {
+            uint32_t parent_callpath_sequence_number = 0;
+            if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
+            {
+                parent_callpath_sequence_number = SCOREP_HANDLE_TO_ID( definition->parent_callpath_handle,
+                                                                       Callpath,
+                                                                       definitionManager->page_manager );
+            }
+            SCOREP_Error_Code status = defCallpath(
+                writerHandle,
+                definition->sequence_number,
+                parent_callpath_sequence_number,
+                SCOREP_HANDLE_TO_ID( definition->callpath_argument.region_handle,
+                                     Region,
+                                     definitionManager->page_manager ),
+                0 /// @todo (uint8_t call_path_order) what are we supposed to pass here?
+                );
+
+            if ( status != SCOREP_SUCCESS )
+            {
+                scorep_handle_definition_writing_error( status, "SCOREP_Callpath_Definition" );
+            }
+        }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
