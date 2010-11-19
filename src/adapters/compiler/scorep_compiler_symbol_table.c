@@ -311,13 +311,18 @@ scorep_compiler_get_sym_tab( void )
         }
 #endif  /* GNU_DEMANGLE */
 
+        if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
+             ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
+             ( strncmp( funcname, "pomp", 4 ) != 0 ) )
+        {
 #ifdef INTEL_COMPILER
-        scorep_compiler_hash_put( region_counter, funcname, filename, lno );
-        scorep_compiler_name_add( funcname, region_counter );
-        region_counter++;
+            scorep_compiler_hash_put( region_counter, funcname, filename, lno );
+            scorep_compiler_name_add( funcname, region_counter );
+            region_counter++;
 #else
-        scorep_compiler_hash_put( addr, funcname, filename, lno );
-#endif  /* INTEL_COMPILER */
+            scorep_compiler_hash_put( addr, funcname, filename, lno );
+#endif      /* INTEL_COMPILER */
+        }
     }
     free( canonic_symbols );
     bfd_close( bfd_image );
@@ -453,7 +458,10 @@ scorep_compiler_get_sym_tab( void )
         while ( ( col = strtok( 0, delim ) ) );
 
         /* add symbol to hash table */
-        if ( col_num >= 3 )
+        if ( ( col_num >= 3 ) &&
+             ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
+             ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
+             ( strncmp( funcname, "pomp", 4 ) != 0 ) )
         {
 #ifdef INTEL_COMPILER
             scorep_compiler_hash_put( region_counter, funcname, filename, line_no );
