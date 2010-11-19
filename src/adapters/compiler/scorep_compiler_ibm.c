@@ -103,7 +103,9 @@ __func_trace_enter( char* region_name,
              */
             bool is_filtered = false;
             if ( ( strchr( region_name, '$' ) != NULL ) ||
-                 ( strncmp( region_name, "POMP", 4 ) == 0 ) )
+                 ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
+                 ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
+                 ( strncmp( region_name, "pomp", 4 ) == 0 ) )
             {
                 is_filtered = true;
             }
