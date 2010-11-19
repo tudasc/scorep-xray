@@ -368,9 +368,9 @@ ___rouent2( struct s1* p )
         p->file_handle = ( double )scorep_compiler_get_file( p->file_name ) + ( double )0.1;
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( !p->isseen ) &&
-             ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
-             ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
-             ( strncmp( region_name, "pomp", 4 ) != 0 ) )
+             ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
+             ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
+             ( strncmp( p->region_name, "pomp", 4 ) != 0 ) )
         {
             p->region_handle = ( double )0.1 + ( double )
                                SCOREP_DefineRegion( p->region_name,
