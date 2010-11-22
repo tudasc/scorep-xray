@@ -42,6 +42,7 @@ scorep_ftrace_getname( void );
 extern int
 scorep_ftrace_getname_len( void );
 
+#define SCOREP_FILTERED_REGION ( SCOREP_INVALID_REGION - 1 )
 
 static uint32_t scorep_compiler_initialize = 1;
 
@@ -84,13 +85,29 @@ _ftrace_enter2_()
     {
         if ( hash_node->reghandle == SCOREP_INVALID_REGION )
         {
-            /* -- region entered the first time, register region -- */
-            scorep_compiler_register_region( hash_node );
+            /* Check for filtered regions */
+            if ( ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
+                 ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
+                 ( strncmp( region_name, "pomp", 4 ) == 0 ) )
+            {
+                hash_node->reghandle = SCOREP_FILTERED_REGION;
+            }
+
+            /* Region entered the first time, register region */
+            else
+            {
+                scorep_compiler_register_region( hash_node );
+                assert( hash_node->reghandle != SCOREP_FILTERED_REGION );
+                assert( hash_node->reghandle != SCOREP_INVALID_REGION );
+            }
         }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "enter the region with handle %i \n",
-                             hash_node->region_handle );
-        SCOREP_EnterRegion( hash_node->region_handle );
+        if ( hash_node->reghandle != SCOREP_FILTERED_REGION )
+        {
+            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                                 "enter the region with handle %i \n",
+                                 hash_node->region_handle );
+            SCOREP_EnterRegion( hash_node->region_handle );
+        }
     }
 }
 
@@ -111,7 +128,10 @@ _ftrace_exit2_()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 \t %i \n", key );
     if ( hash_node = scorep_compiler_hash_get( key ) )
     {
-        SCOREP_ExitRegion( hash_node->region_handle );
+        if ( hash_node->region_handle != SCOREP_FILTERED_REGION )
+        {
+            SCOREP_ExitRegion( hash_node->region_handle );
+        }
     }
 }
 
