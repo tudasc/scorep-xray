@@ -15,7 +15,6 @@
  */
 
 /* *INDENT-OFF* */
-#include <config.h>
 
 #include <mpi.h>
 #include <math.h>

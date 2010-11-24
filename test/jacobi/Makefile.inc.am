@@ -40,6 +40,9 @@ SCOREP_SERIAL_TESTS += jacobi_serial_c
 ## OpenMP C
 
 if OPENMP_SUPPORTED
+
+# the pomp.c file needs to be compiled without compiler instrumentation
+# so achieve this, we put it in a noinst library and link against it
 noinst_LTLIBRARIES         += libjacobi_pomp_c.la
 libjacobi_pomp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/pomp.c
 libjacobi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)/src
