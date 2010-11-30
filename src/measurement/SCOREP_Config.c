@@ -154,11 +154,13 @@ SCOREP_ConfigRegister
                                  "    Variable is unset" );
         }
 
-        SCOREP_DEBUG_ONLY(
+        SCOREP_DEBUG_ONLY
+        (
             dump_value( "  Final value: ",
                         variables->type,
                         variables->variableReference,
-                        variables->variableContext ) );
+                        variables->variableContext );
+        )
 
         variables++;
     }
