@@ -351,6 +351,10 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
     SCOREP_RegionHandle   scorep_region;
     SCOREP_CallpathHandle scorep_callpath;
 
+    /* We must write the callpathes in the order that the sequence_number of the
+       unified definitions go from 0 to n-1. The unified defintions on rank zero
+       are in the correct order.
+     */
     SCOREP_DEFINITION_FOREACH_DO( manager, Callpath, callpath )
     {
         /* Collect necessary data */
@@ -358,10 +362,9 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
         region          = scorep_get_cube4_region( map, scorep_region );
         scorep_callpath = definition->parent_callpath_handle;
         parent          = scorep_get_cube4_callpath( map, scorep_callpath );
-        index           = definition->sequence_number;
 
         /* Register region to cube */
-        cnode = cube_def_cnode( my_cube, region, parent, index );
+        cnode = cube_def_cnode( my_cube, region, parent );
 
         /* Create entry in mapping table */
         scorep_cube4_add_callpath_mapping( map, cnode, handle );
