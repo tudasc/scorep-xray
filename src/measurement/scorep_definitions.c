@@ -1016,7 +1016,7 @@ scorep_write_callpath_definitions_to_otf2( void*                     writerHandl
     {
         if ( !definition->with_parameter )
         {
-            uint32_t parent_callpath_sequence_number = 0;
+            uint32_t parent_callpath_sequence_number = OTF2_UNDEFINED_UINT32;
             if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
             {
                 parent_callpath_sequence_number = SCOREP_HANDLE_TO_ID( definition->parent_callpath_handle,
