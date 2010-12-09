@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       SCOREP_User_Region.c
+ *  @file       SCOREP_User_RegionF.c
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *  @status     alpha
  *

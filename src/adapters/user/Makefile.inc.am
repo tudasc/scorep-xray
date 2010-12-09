@@ -1,11 +1,12 @@
 
-SCOREP_USER_FORTRAN_SOURCES =                           \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_MetricF.c  \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_ControlF.c \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_RegionF.c  \
+SCOREP_USER_FORTRAN_SOURCES =                             \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_MetricF.c    \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_ControlF.c   \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_RegionF.c    \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_ParameterF.c \
     $(SRC_ROOT)src/adapters/include/SCOREP_Fortran_Wrapper.h
 
-SCOREP_USER_FORTRAN_FLAGS =                       \
+SCOREP_USER_FORTRAN_FLAGS =                     \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
@@ -13,14 +14,15 @@ SCOREP_USER_FORTRAN_FLAGS =                       \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
-SCOREP_USER_C_SOURCES =                                 \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.c     \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c  \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c   \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c   \
+SCOREP_USER_C_SOURCES =                                  \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.c      \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c   \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c    \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c    \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c \
     $(SRC_ROOT)src/adapters/include/SCOREP_User_Init.h
 
-SCOREP_USER_C_FLAGS =                             \
+SCOREP_USER_C_FLAGS =                           \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
@@ -29,7 +31,7 @@ SCOREP_USER_C_FLAGS =                             \
     -I$(INC_DIR_UTIL)
 
 
-noinst_LTLIBRARIES +=                    \
+noinst_LTLIBRARIES +=                      \
     libscorep_adapter_user.la              \
     libscorep_adapter_user_fortran_sub1.la \
     libscorep_adapter_user_fortran_sub2.la \

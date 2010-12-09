@@ -653,11 +653,13 @@
  * *************************************************************************************/
 #ifdef SCOREP_USER_ENABLE
 
-#define SCOREP_USER_PARAMETER_INT64( name, value )  SCOREP_User_ParameterInt64( \
-        name, value );
+#define SCOREP_USER_PARAMETER_INT64( name, value ) { \
+        static SCOREP_User_ParameterHandle scorep_param = SCOREP_USER_INVALID_PARAMETER; \
+        SCOREP_User_ParameterInt64( &scorep_param, name, value ); }
 
-#define SCOREP_USER_PARAMETER_STRING( name, value ) SCOREP_User_ParameterString( \
-        name, value );
+#define SCOREP_USER_PARAMETER_STRING( name, value ) { \
+        static SCOREP_User_ParameterHandle scorep_param = SCOREP_USER_INVALID_PARAMETER; \
+        SCOREP_User_ParameterString( &scorep_param, name, value ); }
 
 #endif // SCOREP_USER_ENABLE
 

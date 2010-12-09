@@ -122,6 +122,13 @@ typedef int64_t SCOREP_Fortran_MetricHandle;
 typedef int64_t SCOREP_Fortran_MetricGroup;
 
 /**
+    Defines the type obtained from Fortran calls for parameter handles.
+ */
+typedef int64_t SCOREP_Fortran_Parameter;
+
+
+
+/**
     @def SCOREP_FORTRAN_INVALID_REGION
     Value of an invalid region handle from fortran calls.
  */

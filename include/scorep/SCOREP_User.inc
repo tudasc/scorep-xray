@@ -26,15 +26,17 @@
 
 !************************************************************* Data types
 
-#define SCOREP_REGION_HANDLE integer*8
-#define SCOREP_METRIC_GROUP  integer*8
-#define SCOREP_METRIC_HANDLE integer*8
+#define SCOREP_REGION_HANDLE    integer*8
+#define SCOREP_METRIC_GROUP     integer*8
+#define SCOREP_METRIC_HANDLE    integer*8
+#define SCOREP_PARAMETER_HANDLE integer*8
 
 !************************************************************* Constants
 
 #define SCOREP_INVALID_REGION        -1
 #define SCOREP_INVALID_METRIC_GROUP  -1
 #define SCOREP_INVALID_METRIC        -1
+#define SCOREP_INAVLID_PARAMETER     -1
 
 #define SCOREP_USER_REGION_TYPE_COMMON    0
 #define SCOREP_USER_REGION_TYPE_FUNCTION  1
@@ -122,6 +124,17 @@
 #define SCOREP_RECORDING_OFF call SCOREP_F_DisableRecording()
 
 #define SCOREP_RECORDING_IS_ON( isOn ) call SCOREP_F_RecordingEnabled( isOn )
+
+!************************************************************* Parameter
+
+#define SCOREP_PARAMETER_DEFINE( handle ) \
+        SCOREP_PARAMETER_HANDLE :: handle = SCOREP_INAVLID_PARAMETER
+
+#define SCOREP_PARAMETER_INT64( handle, name, value ) \
+        call SCOREP_F_ParameterInt64( handle, name, value )
+
+#define SCOREP_PARAMETER_STRING( handle, name, value \
+        call SCOREP_F_ParameterInt64( handle, name, value )
 
 !************************************************************* Empty defines
 

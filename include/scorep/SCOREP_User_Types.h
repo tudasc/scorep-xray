@@ -41,6 +41,14 @@ typedef uint32_t SCOREP_User_RegionType;
 /** Type for the user metric type */
 typedef uint32_t SCOREP_User_MetricType;
 
+/** Type for parameter handles */
+typedef uint64_t SCOREP_User_ParameterHandle;
+
+/** @def SCOREP_USER_INVALID_PARAMETER
+    Marks an parameter handle as invalid or uninitialized
+ */
+#define SCOREP_USER_INVALID_PARAMETER -1
+
 /** @} */
 
 /* **************************************************************************************

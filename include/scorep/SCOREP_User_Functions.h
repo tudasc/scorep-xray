@@ -150,26 +150,32 @@ SCOREP_User_RegionEnter
 
 /**
     Generates a parameter event for a parameter of 64 bit integer data type.
+    @param handle Pointer where the parameter handle is stored. If it is
+                  SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
  */
 void
 SCOREP_User_ParameterInt64
 (
-    const char* name,
-    int64_t     value
+    SCOREP_User_ParameterHandle* handle,
+    const char*                  name,
+    int64_t                      value
 );
 
 /**
     Generates a parameter event for a parameter of string type.
+    @param handle Pointer where the parameter handle is stored. If it is
+                  SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
     @param name  The unique name for the paramater.
     @param value The value for the parameter.
  */
 void
 SCOREP_User_ParameterString
 (
-    const char* name,
-    char*       value
+    SCOREP_User_ParameterHandle* handle,
+    const char*                  name,
+    char*                        value
 );
 
 /* **************************************************************************************
