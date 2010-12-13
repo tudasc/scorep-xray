@@ -141,7 +141,7 @@ SCOREP_Error_Code scorep_unify_on_read_topology_graph_definition( void* userdata
 SCOREP_Error_Code scorep_unify_on_read_topology_graph_edge_definition( void* userdata, uint32_t topologyGraphId, uint64_t from, uint64_t to );
 SCOREP_Error_Code scorep_unify_on_read_mpi_win_definition( void* userdata, uint32_t windowId, uint64_t communicatorId );
 
-SCOREP_Error_Code scorep_unify_on_read_global_location_definition( void* userdata, uint64_t locationId, uint32_t name_id, OTF2_GlobLocationType locationType, uint64_t numberOfDefinitions );
+SCOREP_Error_Code scorep_unify_on_read_global_location_definition( void* userdata, uint64_t locationId, uint32_t name_id, OTF2_GlobLocationType locationType, uint64_t numberOfDefinitions, uint64_t timerResolution );
 
 void scorep_unify_build_local_hash_tables();
 void scorep_unify_build_local_string_hash_table();
@@ -368,9 +368,10 @@ scorep_unify_on_read_global_location_definition( void*                 userdata,
                                                  uint64_t              locationId,
                                                  uint32_t              nameId,
                                                  OTF2_GlobLocationType locationType,
-                                                 uint64_t              numberOfDefinitions )
+                                                 uint64_t              numberOfDefinitions,
+                                                 uint64_t              timerResolution )
 {
-    std::cout << "locationId " << locationId << ", numberOfDefinitions " << numberOfDefinitions << std::endl;
+    std::cout << "locationId " << locationId << ", numberOfDefinitions " << numberOfDefinitions << ", timerResolution " << timerResolution << std::endl;
     if ( numberOfDefinitions > 0 )
     {
         scorep_unify_locations_with_definitions.push_back( locationId );

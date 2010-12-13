@@ -16,9 +16,7 @@
 
 
 #include <config.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <SCOREP_Definitions.h>
 
 
 /**
@@ -30,18 +28,21 @@
  *
  */
 
-#include <SCOREP_Definitions.h>
+
 
 #include <scorep_utility/SCOREP_Debug.h>
 #include <scorep_utility/SCOREP_Omp.h>
 #include <SCOREP_DefinitionHandles.h>
+#include <SCOREP_Timing.h>
 #include <jenkins_hash.h>
 
 #include "scorep_definition_structs.h"
 #include "scorep_definitions.h"
 #include "scorep_types.h"
 #include <assert.h>
-
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
@@ -211,7 +212,8 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_LocationHandle     parent,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
-                                   uint64_t                  numberOfDefinitions );
+                                   uint64_t                  numberOfDefinitions,
+                                   uint64_t                  timerResolution );
 
 /**
  * Registers a new local location into the definitions.
@@ -237,7 +239,8 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
             &scorep_local_definition_manager,
             name ? name : "" ),
         SCOREP_LOCATION_OMP_THREAD,
-        0 );
+        0,
+        SCOREP_GetClockResolution() );
 
     SCOREP_Definitions_Unlock();
 
@@ -268,7 +271,8 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
         unified_parent_location_handle,
         SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
         definition->location_type,
-        definition->number_of_definitions );
+        definition->number_of_definitions,
+        definition->timer_resolution );
 }
 
 static inline bool
@@ -285,7 +289,8 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_LocationHandle     parent,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
-                                   uint64_t                  numberOfDefinitions )
+                                   uint64_t                  numberOfDefinitions,
+                                   uint64_t                  timerResolution )
 {
     assert( definition_manager );
 
@@ -300,6 +305,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     new_definition->name_handle           = nameHandle;
     new_definition->location_type         = locationType;
     new_definition->number_of_definitions = numberOfDefinitions;
+    new_definition->timer_resolution      = timerResolution;
 
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Location, location );
 }
