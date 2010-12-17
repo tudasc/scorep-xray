@@ -395,6 +395,13 @@ private:
     bool
     is_object_file( std::string filename );
 
+    /** Checks whether a file is a library.
+        @param filename A file name.
+        @returns true if the file extension indicates an object file.
+     */
+    bool
+    is_library( std::string filename );
+
     /**
        Removes everything before the first slash from @a full_path.
        @param a file with its full path.

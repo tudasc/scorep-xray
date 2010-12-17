@@ -788,6 +788,33 @@ SCOREP_Instrumenter::is_object_file( std::string filename )
     return false;
 }
 
+bool
+SCOREP_Instrumenter::is_library( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    if ( extension == ".a" )
+    {
+        return true;
+    }
+    if ( extension == ".so" )
+    {
+        return true;
+    }
+    if ( extension.find( ".a." ) != std::string::npos )
+    {
+        return true;
+    }
+    if ( extension.find( ".so." ) != std::string::npos )
+    {
+        return true;
+    }
+    return false;
+}
+
 void
 SCOREP_Instrumenter::prepare_opari()
 {
@@ -863,7 +890,7 @@ SCOREP_Instrumenter::prepare_opari()
             if ( old_pos < cur_pos ) // Discard a blank
             {
                 current_file = input_files.substr( old_pos, cur_pos - old_pos );
-                if ( is_object_file( current_file ) )
+                if ( is_object_file( current_file ) || is_library( current_file ) )
                 {
                     object_files += " " + current_file;
                 }
@@ -873,7 +900,7 @@ SCOREP_Instrumenter::prepare_opari()
         }
         invoke_awk_script( object_files, init_source );
         compile_init_file( init_source, init_object );
-        input_files += " " + init_object;
+        input_files = init_object + " " + input_files + " " + init_object;
     }
 }
 
