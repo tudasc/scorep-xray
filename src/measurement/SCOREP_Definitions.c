@@ -212,6 +212,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_LocationHandle     parent,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
+                                   uint64_t                  numberOfEvents,
                                    uint64_t                  numberOfDefinitions,
                                    uint64_t                  timerResolution );
 
@@ -239,6 +240,7 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
             &scorep_local_definition_manager,
             name ? name : "" ),
         SCOREP_LOCATION_OMP_THREAD,
+        0,
         0,
         SCOREP_GetClockResolution() );
 
@@ -271,6 +273,7 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
         unified_parent_location_handle,
         SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
         definition->location_type,
+        definition->number_of_events,
         definition->number_of_definitions,
         definition->timer_resolution );
 }
@@ -289,6 +292,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_LocationHandle     parent,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
+                                   uint64_t                  numberOfEvents,
                                    uint64_t                  numberOfDefinitions,
                                    uint64_t                  timerResolution )
 {
@@ -304,6 +308,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     new_definition->parent                = parent;
     new_definition->name_handle           = nameHandle;
     new_definition->location_type         = locationType;
+    new_definition->number_of_events      = numberOfEvents;
     new_definition->number_of_definitions = numberOfDefinitions;
     new_definition->timer_resolution      = timerResolution;
 

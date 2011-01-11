@@ -382,6 +382,7 @@ scorep_write_number_of_definitions_per_location_to_otf2( OTF2_GlobDefWriter* glo
                         global_location_id,
                         location_name_id,
                         OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
+                        0 /* dummy number of events */,
                         n_definitions_per_location[ location_index ],
                         1 /* dummy timer resolution */ );
                     assert( status == SCOREP_SUCCESS );
@@ -571,6 +572,7 @@ scorep_write_location_definitions_to_otf2(
                                          uint32_t,
                                          OTF2_LocationType,
                                          uint64_t,
+                                         uint64_t,
                                          uint64_t ) =
         ( void* )OTF2_DefWriter_DefLocation;
     if ( isGlobal )
@@ -585,6 +587,7 @@ scorep_write_location_definitions_to_otf2(
             definition->global_location_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_location_type_to_otf_location_type( definition->location_type, isGlobal ),
+            definition->number_of_events,
             definition->number_of_definitions,
             definition->timer_resolution );
 
@@ -1108,6 +1111,12 @@ SCOREP_UpdateLocationDefinitions()
     int number_of_definitions = SCOREP_GetNumberOfDefinitions();
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
     {
+        if ( SCOREP_IsTracingEnabled() )
+        {
+            // how do I get the OTF2_EvtWriter from a location definition?
+            //OTF2_EvtWriter_GetNumberOfEvents(, &definition->number_of_events);
+        }
+
         // assign all locations the same number of definitions. This is a temporary solution
         // as we need to duplicate the definitions for every location until OTF2 is able
         // to handle pre-process definitions.

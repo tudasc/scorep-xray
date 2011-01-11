@@ -129,7 +129,7 @@ static SCOREP_RegionType         scorep_unify_region_type_map[ OTF2_REGION_DYNAM
 std::string scorep_unify_parse_cmd_line(int argc, char* argv[] );
 
 SCOREP_Error_Code scorep_unify_on_read_string_definition( void* userData, uint32_t stringId, char* string );
-SCOREP_Error_Code scorep_unify_on_read_location_definition( void* userdata, uint64_t locationId, uint32_t nameId, OTF2_LocationType locationType, uint64_t numberOfDefinitions );
+SCOREP_Error_Code scorep_unify_on_read_location_definition( void* userdata, uint64_t locationId, uint32_t nameId, OTF2_LocationType locationType, uint64_t numberOfEvents, uint64_t numberOfDefinitions, uint64_t timerResolution );
 SCOREP_Error_Code scorep_unify_on_read_location_group_definition( void* userdata, uint64_t locationId, uint32_t nameId, OTF2_LocationType locationType, uint64_t numberOfDefinitions, uint64_t locationsNumber, uint64_t* locations );
 SCOREP_Error_Code scorep_unify_on_read_region_definition( void* userdata, uint32_t regionId, uint32_t regionNameId, uint32_t regionDescriptionId, OTF2_RegionType regionType, uint32_t sourceFileId, uint32_t beginLineNumber, uint32_t endLineNumber );
 SCOREP_Error_Code scorep_unify_on_read_callsite_definition( void* userdata, uint32_t callsiteId, uint32_t sourceFileId, uint32_t lineNumber, uint32_t regionEnterd, uint32_t regionLeft );
@@ -141,7 +141,7 @@ SCOREP_Error_Code scorep_unify_on_read_topology_graph_definition( void* userdata
 SCOREP_Error_Code scorep_unify_on_read_topology_graph_edge_definition( void* userdata, uint32_t topologyGraphId, uint64_t from, uint64_t to );
 SCOREP_Error_Code scorep_unify_on_read_mpi_win_definition( void* userdata, uint32_t windowId, uint64_t communicatorId );
 
-SCOREP_Error_Code scorep_unify_on_read_global_location_definition( void* userdata, uint64_t locationId, uint32_t name_id, OTF2_GlobLocationType locationType, uint64_t numberOfDefinitions, uint64_t timerResolution );
+SCOREP_Error_Code scorep_unify_on_read_global_location_definition( void* userdata, uint64_t locationId, uint32_t name_id, OTF2_GlobLocationType locationType, uint64_t numberOfEvents, uint64_t numberOfDefinitions, uint64_t timerResolution );
 
 void scorep_unify_build_local_hash_tables();
 void scorep_unify_build_local_string_hash_table();
@@ -357,7 +357,9 @@ scorep_unify_on_read_location_definition( void*             userdata,
                                           uint64_t          locationId,
                                           uint32_t          nameId,
                                           OTF2_LocationType locationType,
-                                          uint64_t          numberOfDefinitions )
+                                          uint64_t          numberOfEvents,
+                                          uint64_t          numberOfDefinitions,
+                                          uint64_t          timerResolution )
 {
     return SCOREP_SUCCESS;
 }
@@ -368,6 +370,7 @@ scorep_unify_on_read_global_location_definition( void*                 userdata,
                                                  uint64_t              locationId,
                                                  uint32_t              nameId,
                                                  OTF2_GlobLocationType locationType,
+                                                 uint64_t              numberOfEvents,
                                                  uint64_t              numberOfDefinitions,
                                                  uint64_t              timerResolution )
 {

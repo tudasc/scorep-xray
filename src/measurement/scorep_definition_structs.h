@@ -51,6 +51,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
     SCOREP_LocationHandle parent;
     SCOREP_StringHandle   name_handle;
     SCOREP_LocationType   location_type;
+    uint64_t              number_of_events;      // only known after measurement
     uint64_t              number_of_definitions; // only known after measurement
     uint64_t              timer_resolution;
 };
