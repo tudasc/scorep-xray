@@ -71,8 +71,8 @@ SCOREP_Timer_Initialize()
         return;
     }
 
-    scorep_ticks_per_sec = scorep_get_frequency_from_proc_cpuinfo();
     scorep_ticks_per_sec = scorep_get_improved_frequency_from_timing_measurement();
+    scorep_ticks_per_sec = scorep_get_frequency_from_proc_cpuinfo();
     assert( scorep_ticks_per_sec != 0 );
 
     isInitialized = true;
@@ -89,22 +89,25 @@ scorep_get_frequency_from_proc_cpuinfo()
     }
 
     char     line[ 1024 ];
-    uint64_t ticks_per_sec = 0;
+    uint64_t ticks_per_sec = scorep_ticks_per_sec;
     while ( fgets( line, sizeof( line ), cpuinfofp ) )
     {
         if ( !strncmp( "cpu MHz", line, 7 ) )
         {
             strtok( line, ":" );
-            ticks_per_sec = strtol( ( char* )strtok( NULL, " \n" ), ( char** )NULL, 0 ) * 1e6;
+            ticks_per_sec = ( uint64_t )( strtod( ( char* )strtok( NULL, " \n" ), ( char** )NULL ) * 1e6 );
+            break;
         }
-        else if ( !strncmp( "timebase", line, 8 ) )
+        if ( !strncmp( "timebase", line, 8 ) )
         {
             strtok( line, ":" );
             ticks_per_sec = strtol( ( char* )strtok( NULL, " \n" ), ( char** )NULL, 0 );
+            break;
         }
     }
 
     fclose( cpuinfofp );
+    /* printf("updating cylce_counter freq to: %lu\n", ticks_per_sec); */
     return ticks_per_sec;
 }
 
