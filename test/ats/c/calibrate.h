@@ -1,0 +1,1 @@
+#define N_PER_SEC 9773790
