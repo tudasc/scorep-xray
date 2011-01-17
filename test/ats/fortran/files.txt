@@ -1,0 +1,6 @@
+-x calibrate.f90
+-x mpi_pattern.f90
+-x mpi_util.f90
+-x mpi_patt_all_test.f90
+-x distribution.f90
+-x work.f90
