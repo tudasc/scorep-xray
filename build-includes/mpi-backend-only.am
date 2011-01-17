@@ -3,6 +3,11 @@
 include ../../src/adapters/mpi/Makefile.mpi.inc.am
 include ../../src/measurement/Makefile.mpi.inc.am
 
+## include Online Access only when building on ALTIX
+if PLATFORM_ALTIX
+include ../../src/measurement/OA/Makefile.mpi.inc.am
+endif
+
 ## include tests
 include ../../test/mpi/Makefile.mpi.inc.am
 include ../../test/jacobi/Makefile.mpi.inc.am
@@ -10,5 +15,6 @@ include ../../test/mpi_omp/Makefile.mpi.inc.am
 
 ## include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
-include ../../test/OA/C/Makefile.mpi.inc.am
+include ../../test/OA/MPI/C/Makefile.mpi.inc.am
+include ../../test/ats/Makefile.mpi.inc.am
 endif

@@ -30,11 +30,6 @@ common_libadd = libscorep_measurement.la              \
                 $(LIB_DIR_OTF2)libotf2.la             \
                 $(LIB_DIR_UTIL)libscorep_utilities.la \
                 libjenkins_hash.la
-# include Online Access only when building on ALTIX
-if PLATFORM_ALTIX
-common_libadd	+= libscorep_oa_base.la
-endif
-
 
 common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(INC_ROOT)src/adapters/include    \
@@ -58,7 +53,7 @@ libscorep_mpi_la_LIBADD   = $(common_libadd)                           \
                           libscorep_pomp_dummy.la
 # include Online Access only when building on ALTIX                         
 if PLATFORM_ALTIX
-libscorep_mpi_la_LIBADD	+= libscorep_oa_base.la
+libscorep_mpi_la_LIBADD	+= libscorep_oa_mpi.la
 endif
 endif              		
 
@@ -74,7 +69,7 @@ libscorep_serial_la_LIBADD   = $(common_libadd)                    \
                              libscorep_pomp_dummy.la
 # include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
-libscorep_serial_la_LIBADD	+= libscorep_oa_base.la
+libscorep_serial_la_LIBADD	+= libscorep_oa_serial.la
 endif
 
 ## OpenMP
@@ -90,7 +85,7 @@ libscorep_omp_la_LIBADD   = $(common_libadd)                \
                           libscorep_paradigm_omp.la
 # include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
-libscorep_omp_la_LIBADD	+= libscorep_oa_base.la
+libscorep_omp_la_LIBADD	+= libscorep_oa_serial.la
 endif 
 
 endif
@@ -111,7 +106,7 @@ libscorep_mpi_omp_la_LIBADD   = $(common_libadd)                           \
 
 # include Online Access only when building on ALTIX                             
 if PLATFORM_ALTIX
-libscorep_mpi_omp_la_LIBADD	+= libscorep_oa_base.la
+libscorep_mpi_omp_la_LIBADD	+= libscorep_oa_mpi.la
 endif                              
 endif
 endif
