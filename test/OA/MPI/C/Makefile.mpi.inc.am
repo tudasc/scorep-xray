@@ -1,0 +1,42 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## author     Yury Oleynik <oleynik@in.tum.de>
+## maintainer Yury Oleynik <oleynik@in.tum.de>
+
+
+if MPI_SUPPORTED
+
+## MPI C
+
+check_PROGRAMS       += oa_mpi_c
+oa_mpi_c_sources  = $(SRC_ROOT)test/OA/C/main.c
+
+oa_mpi_c_SOURCES  = $(oa_mpi_c_sources)
+oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	 \
+					-I$(INC_ROOT)src/adapters/include       \
+					-I$(INC_ROOT)src/measurement/include    \
+					-I$(PUBLIC_INC_DIR)                     \
+					-I$(INC_DIR_UTIL)                       \
+					-DSCOREP_USER_ENABLE
+
+oa_mpi_c_LDADD    = $(LIB_ROOT)libscorep_mpi.la
+
+endif
+# if MPI_SUPPOERTED
+
