@@ -146,7 +146,7 @@ public:
     void
     close_server();
     int
-    execute_test();
+    execute_test( const char* scenario_file );
 
     int
     get_connection_socket()

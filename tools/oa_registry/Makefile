@@ -4,7 +4,7 @@ OBJDIR=obj
 DEPDIR=.dep
 BUILDOPT_FLAGS=-c  -g -O2 
 LINK_FLAGS=
-REGSRV=psc_regsrv
+REGSRV=oa_regsrv
 
 SRCS = \
 	regsrv_client.cc \
