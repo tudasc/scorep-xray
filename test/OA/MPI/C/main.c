@@ -41,6 +41,7 @@ main( int    argc,
     SCOREP_USER_OA_PHASE_BEGIN( mainRegion );
     SCOREP_USER_REGION_BEGIN( mainRegion, "mainRegion", SCOREP_USER_REGION_TYPE_COMMON );
 
+    printf("add is inside the phase\n", np);
     for(k=0;k<30;k++)
     {
 
