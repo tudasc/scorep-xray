@@ -19,7 +19,7 @@
  * @file        SCOREP_MPIHooks.c
  * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
- * @brief   Declaration of mpi hooks functions to be used by MPI profiling
+ * @brief   mpi hooks functions to be used by MPI profiling
  *
  * @status alpha
  *
@@ -39,7 +39,7 @@
  * 1x1 pre- and post- communication hooks
    -----------------------------------------------*/
 
-int32_t scorep_hooks_on = 1;
+int32_t scorep_hooks_on = 0;
 
 /**
  * Pre-communication hook for MPI_Send
@@ -737,7 +737,7 @@ SCOREP_Hooks_Post_MPI_Bcast
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
-    scorep_mpiprofile_init();
+
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
     remoteTimePack = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );

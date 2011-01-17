@@ -23,7 +23,7 @@ libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h              \
     $(SRC_ROOT)src/adapters/include/SCOREP_Mpi_Init.h			\
     $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.c				\
-    $(SRC_ROOT)src/adapters/include/SCOREP_MPIHooks.h			\
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.h			\
     $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.c			\
     $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.h	
 

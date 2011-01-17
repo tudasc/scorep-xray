@@ -112,9 +112,8 @@ MPI_Init( int*    argc,
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
-
-#if defined( SCOREP_WITH_OA )
-    SCOREP_OA_Init();
+#if !defined( SCOREP_MPI_NO_HOOKS )
+    scorep_mpiprofile_init();
 #endif
 
     return return_val;

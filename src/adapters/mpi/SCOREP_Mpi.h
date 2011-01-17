@@ -37,6 +37,10 @@
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_DefinitionHandles.h"
 
+#if !defined( SCOREP_MPI_NO_HOOKS )
+#include "SCOREP_MPIHooks.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
