@@ -563,9 +563,10 @@ scorep_pomp_check_consistency( scorep_pomp_parsing_data* obj )
 void
 scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 {
-    char*             name       = 0;
-    SCOREP_RegionType type_outer = SCOREP_REGION_UNKNOWN;
-    SCOREP_RegionType type_inner = SCOREP_REGION_UNKNOWN;
+    char*             name        = 0;
+    char*             region_name = 0;
+    SCOREP_RegionType type_outer  = SCOREP_REGION_UNKNOWN;
+    SCOREP_RegionType type_inner  = SCOREP_REGION_UNKNOWN;
     int32_t           start, end;
 
     /* Assume that all regions from one file are registered in a row.
@@ -592,11 +593,17 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         name = region->regionName;
     }
 
+    int length = strlen( name ) + 5;
+    region_name = ( char* )malloc( length );
+    strcpy( region_name, "omp_" );
+    strcpy( &region_name[ 4 ], name );
+    region_name[ length - 1 ] = '\0';
+
     /* Register parallel regions */
     if ( ( region->regionType >= SCOREP_Pomp_Parallel ) &&
          ( region->regionType <= SCOREP_Pomp_ParallelWorkshare ) )
     {
-        region->outerParallel = SCOREP_DefineRegion( name,
+        region->outerParallel = SCOREP_DefineRegion( region_name,
                                                      last_file,
                                                      region->startLine1,
                                                      region->endLine2,
@@ -613,7 +620,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
             start = region->startLine2;
             end   = region->endLine1;
         }
-        region->innerParallel = SCOREP_DefineRegion( name,
+        region->innerParallel = SCOREP_DefineRegion( region_name,
                                                      last_file,
                                                      start,
                                                      end,
@@ -640,7 +647,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
             end   = region->endLine2;
         }
 
-        region->outerBlock = SCOREP_DefineRegion( name,
+        region->outerBlock = SCOREP_DefineRegion( region_name,
                                                   last_file,
                                                   start,
                                                   end,
@@ -650,13 +657,15 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 
     if ( type_inner != SCOREP_REGION_UNKNOWN )
     {
-        region->innerBlock = SCOREP_DefineRegion( name,
+        region->innerBlock = SCOREP_DefineRegion( region_name,
                                                   last_file,
                                                   region->startLine2,
                                                   region->endLine1,
                                                   SCOREP_ADAPTER_POMP,
                                                   type_inner );
     }
+
+    free( region_name );
 }
 
 /* **************************************************************************************
