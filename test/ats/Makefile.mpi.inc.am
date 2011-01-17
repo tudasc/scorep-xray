@@ -1,0 +1,97 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.mpi.inc.am
+## author     Yury Oleynik <oleynik@in.tum.de>
+## maintainer Yury Oleynik <oleynik@in.tum.de>
+
+if MPI_SUPPORTED
+
+## MPI C
+
+check_PROGRAMS          +=	mpi_util_test_c
+mpi_util_test_c_sources  = 	$(SRC_ROOT)test/ats/c/mpi_util_test.c \
+							$(SRC_ROOT)test/ats/c/distribution.c \
+                          	$(SRC_ROOT)test/ats/c/work.c \
+                          	$(SRC_ROOT)test/ats/c/mpi_util.c \
+                          	$(SRC_ROOT)test/ats/c/mpi_pattern.c
+mpi_util_test_c_SOURCES  = 	$(mpi_util_test_c_sources)
+mpi_util_test_c_CFLAGS   = 	$(AM_CFLAGS)
+mpi_util_test_c_CPPFLAGS = 	$(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+mpi_util_test_c_LDADD    =	$(LIB_ROOT)libscorep_mpi.la
+
+## MPI Fortran
+
+##if HAVE_MPIFC
+
+##if FORTRAN_SUPPORT_ALLOCATABLE
+
+
+
+check_PROGRAMS                  += mpi_util_test_f90
+mpi_util_test_f90_SOURCES       =  $(SRC_ROOT)test/ats/fortran/calibrate.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/work.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/type_convert.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/distribution.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_util.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_pattern.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_util_test.f90
+mpi_util_test_f90_CPPFLAGS      = $(AM_CPPFLAGS) -DMPI_VERSION=@HAVE_MPI_VERSION@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+mpi_util_test_f90_LDADD         = $(LIB_ROOT)libscorep_mpi.la
+
+check_PROGRAMS                  += mpi_patt_all_test_f90
+mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/ats/fortran/calibrate.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/work.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/type_convert.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/distribution.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_util.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_pattern.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_patt_all_test.f90
+mpi_patt_all_test_f90_CPPFLAGS   = $(AM_CPPFLAGS) -I/lrz/sys/mpi_altix/include -DMPI_VERSION=@HAVE_MPI_VERSION@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+mpi_patt_all_test_f90_LDADD      = $(LIB_ROOT)libscorep_mpi.la
+
+
+check_PROGRAMS                  += mpi_patt_2comm_test_f90
+mpi_patt_2comm_test_f90_SOURCES  = $(SRC_ROOT)test/ats/fortran/calibrate.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/work.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/type_convert.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/distribution.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_util.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_pattern.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_patt_2comm_test.f90
+mpi_patt_2comm_test_f90_CPPFLAGS         = $(AM_CPPFLAGS) -I/lrz/sys/mpi_altix/include -DMPI_VERSION=@HAVE_MPI_VERSION@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+mpi_patt_2comm_test_f90_LDADD            = $(LIB_ROOT)libscorep_mpi.la
+
+
+check_PROGRAMS                  += distribution_test_f90
+distribution_test_f90_SOURCES    = $(SRC_ROOT)test/ats/fortran/calibrate.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/work.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/type_convert.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/distribution.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/mpi_util.f90 \
+                                   $(SRC_ROOT)test/ats/fortran/distribution_test.f90
+distribution_test_f90_CPPFLAGS   = $(AM_CPPFLAGS) -I/lrz/sys/mpi_altix/include -DMPI_VERSION=@HAVE_MPI_VERSION@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+distribution_test_f90_LDADD      = $(LIB_ROOT)libscorep_mpi.la
+
+##endif
+# if FORTRAN_SUPPORT_ALLOCATABLE
+
+##endif
+# if HAVE_MPIFC
+
+endif
+# if MPI_SUPPOERTED

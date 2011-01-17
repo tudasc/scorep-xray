@@ -1,0 +1,16 @@
+# Serial C
+
+check_PROGRAMS                  += distribution_test
+distribution_test_sources        = $(SRC_ROOT)test/ats/c/distribution_test.c \
+                                   $(SRC_ROOT)test/ats/c/distribution.c
+distribution_test_SOURCES        = $(distribution_test_sources)
+distribution_test_CPPFLAGS       = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+distribution_test_LDADD          = $(LIB_ROOT)libscorep_serial.la
+
+check_PROGRAMS                  += distribution_test2
+distribution_test2_sources       = $(SRC_ROOT)test/ats/c/distribution_test2.c \
+                                   $(SRC_ROOT)test/ats/c/distribution.c
+distribution_test2_SOURCES       = $(distribution_test2_sources)
+distribution_test2_CPPFLAGS      = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+distribution_test2_LDADD         = $(LIB_ROOT)libscorep_serial.la
+
