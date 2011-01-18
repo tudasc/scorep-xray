@@ -100,5 +100,7 @@ AC_CONFIG_FILES([run_otf2_reader_test.sh:../test/OTF2_Reader_test/run_otf2_reade
                 [chmod u+x run_otf2_reader_test.sh])
 AC_CONFIG_FILES([run_otf2_reader_read_global_locations_test.sh:../test/OTF2_Reader_test/run_otf2_reader_read_global_locations_test.sh.in], 
                 [chmod u+x run_otf2_reader_read_global_locations_test.sh])
+AC_CONFIG_FILES([run_otf2_integrity_test.sh:../test/OTF2_Integrity_test/run_otf2_integrity_test.sh.in], 
+                [chmod u+x run_otf2_integrity_test.sh])
 
 ])
