@@ -476,7 +476,7 @@ SCOREP_Instrumenter::AddIncDir( std::string dir )
 void
 SCOREP_Instrumenter::AddLibDir( std::string dir )
 {
-    scorep_library_path += " -L" + dir;
+    scorep_library_path += " -L" + dir + " -Wl,-rpath," + dir;
 }
 
 void

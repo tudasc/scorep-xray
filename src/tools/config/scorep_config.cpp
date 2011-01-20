@@ -192,7 +192,7 @@ main( int    argc,
         switch ( action )
         {
             case ACTION_LIBS:
-                std::cout << "-L" SCOREP_LIBDIR;
+                std::cout << "-L" SCOREP_LIBDIR << " -Wl,-rpath," SCOREP_LIBDIR;
                 if ( CUBE_LIBDIR != "" )
                 {
                     std::cout << " -L" CUBE_LIBDIR;
@@ -314,7 +314,7 @@ SCOREP_Config::AddIncDir( std::string dir )
 void
 SCOREP_Config::AddLibDir( std::string dir )
 {
-    std::string libdir = "-L" + dir;
+    std::string libdir = "-L" + dir + " -Wl,-rpath," + dir;
 
     if ( std::string::npos == this->str_libdir.find( libdir ) )
     {
