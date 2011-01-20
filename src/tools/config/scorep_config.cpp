@@ -352,7 +352,7 @@ SCOREP_Config::SetFc( std::string value )
 void
 SCOREP_Config::SetPrefix( std::string value )
 {
-    std::string libdir = "-L" + value + "/lib";
+    std::string libdir = "-L" + value + "/lib -Wl,-rpath," + value + "/lib";
     std::string incdir = "-I" + value + "/include/scorep";
 
     /* only insert libdir if the path not already exists */
