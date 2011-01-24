@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 noinst_LTLIBRARIES += libscorep_cube_writer.la
-libscorep_cube_writer_la_SOURCES =                               \
+libscorep_cube_writer_la_SOURCES =                             \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.c   \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.c        \
@@ -43,4 +43,9 @@ libscorep_cube_writer_la_SOURCES =                               \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_services.h    \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.h      \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_types.h       \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_vector.h
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_vector.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_direct_writing.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_file_layout_embedded.h \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_file_layout_hybrid.h   \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_tar_writing.h 
