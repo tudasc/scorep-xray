@@ -147,3 +147,4 @@ $(CONFIG_HEADER_BACKEND):
 	@echo "#define OPARI_SCRIPT   \"$(prefix)/bin/pomp2_parse_init_regions.awk\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\"">> $(CONFIG_HEADER_BACKEND)

@@ -1022,7 +1022,7 @@ SCOREP_Instrumenter::execute_command()
                           + scorep_include_path
                           + input_files
                           + scorep_lib
-                          + compiler_flags
+                          + compiler_flags + " -g "
                           + " " + external_libs;
     if ( output_name != "" )
     {
