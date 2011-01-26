@@ -27,6 +27,6 @@ BUILD_DIR=build-frontend
 ## Can't be moved to common.am
 ACLOCAL_AMFLAGS = -I ../build-config/m4
 
-## Here we write only the backend values.
+## Here we write only backend values.
 create-config-tool-headers:
 	(cd ../build-backend; make create-config-tool-headers)

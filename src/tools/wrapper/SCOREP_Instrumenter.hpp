@@ -219,6 +219,17 @@ protected:
     virtual void
     SetPdtConfig( std::string value );
 
+    /**
+       This function gives a (key, value) pair found in a configuration file and not
+       processed by one of the former functions.
+       @param key   The key
+       @param value The value
+     */
+    virtual void
+    SetValue( std::string key,
+              std::string value );
+
+
     /* ***************************************************** Private methods */
 private:
 
@@ -547,6 +558,11 @@ private:
        Opari
      */
     std::string opari;
+
+    /**
+       grep
+     */
+    std::string grep;
 
     /**
        awk script used to generate functions for initialization of Opari

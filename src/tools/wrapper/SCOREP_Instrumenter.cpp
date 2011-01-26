@@ -66,6 +66,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     awk                            = AWK;
     opari                          = OPARI;
     opari_script                   = OPARI_SCRIPT;
+    grep                           = "grep"; // Default in case not set lateron
 
     has_data_from_file = false;
 }
@@ -562,6 +563,16 @@ SCOREP_Instrumenter::SetPdtConfig( std::string value )
     pdt_config_file = value;
 }
 
+void
+SCOREP_Instrumenter::SetValue( std::string key,
+                               std::string value )
+{
+    if ( key == "EGREP" )
+    {
+        grep = value;
+    }
+}
+
 /* ****************************************************************************
    Preparation
 ******************************************************************************/
@@ -599,6 +610,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     scorep_include_path = "`" + config_path + mode + " --inc` ";
     scorep_library_path = "";
     external_libs       = "`" + config_path + mode + " --libs` ";
+    grep                = "`" + config_path + " -egrap` ";
 }
 
 void
@@ -638,7 +650,7 @@ SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
                                         std::string output_file )
 {
     std::string command = nm + " " +  object_files
-                          + " | grep -i \" pomp2_init_regions\" | "
+                          + " | " + grep + " -i \" pomp2_init_regions\" | "
                           + awk + " -f " + opari_script
                           + " > " + output_file;
     if ( verbosity >= 1 )
