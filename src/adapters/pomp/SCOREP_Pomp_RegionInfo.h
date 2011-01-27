@@ -51,9 +51,9 @@ typedef enum /* SCOREP_Pomp_RegionType */
     SCOREP_Pomp_ParallelFor,
     SCOREP_Pomp_ParallelSections,
     SCOREP_Pomp_ParallelWorkshare,
+    SCOREP_Pomp_UserRegion,
     SCOREP_Pomp_Sections,
     SCOREP_Pomp_Single,
-    SCOREP_Pomp_UserRegion,
     SCOREP_Pomp_Workshare,
     SCOREP_Pomp_NoType
 } SCOREP_Pomp_RegionType;
