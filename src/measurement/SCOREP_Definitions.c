@@ -46,6 +46,7 @@
 #include <inttypes.h>
 #include <sys/stat.h>
 
+
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
