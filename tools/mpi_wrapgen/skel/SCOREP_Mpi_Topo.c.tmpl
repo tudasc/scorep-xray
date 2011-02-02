@@ -61,7 +61,7 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     scorep_mpi_comm_create(*comm_cart);
   
     /* get the internal comminicator id for the communicator of the new topology */
-    cid = scorep_mpi_comm_id(*comm_cart);
+    cid = scorep_mpi_comm_handle(*comm_cart);
 
     /* find the rank of the calling process */
     PMPI_Comm_rank(*comm_cart, &my_rank); 

@@ -255,7 +255,7 @@ scorep_mpi_comm_free( MPI_Comm comm );
  * @return Internal SCOREP handle of MPI communicator %comm
  */
 extern SCOREP_MPICommunicatorHandle
-scorep_mpi_comm_id( MPI_Comm comm );
+scorep_mpi_comm_handle( MPI_Comm comm );
 
 /**
  * @internal
@@ -298,15 +298,16 @@ extern int8_t scorep_mpi_comm_determination;
 #define SCOREP_MPI_COMM_WORLD_HANDLE scorep_mpi_world.handle
 
 /**
- * @def SCOREP_MPI_COMM_ID
- * Trabslates a MPI communicator to the SCOREP communicator handle
+ * @def SCOREP_MPI_COMM_HANDLE
+ * Translates a MPI communicator to the SCOREP communicator handle
  */
-#define SCOREP_MPI_COMM_ID( c ) ( !scorep_mpi_comm_determination ? SCOREP_INVALID_MPI_COMMUNICATOR : ( ( ( c ) == MPI_COMM_WORLD ) ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_id( c ) ) )
+#define SCOREP_MPI_COMM_HANDLE( c ) ( !scorep_mpi_comm_determination ? SCOREP_INVALID_MPI_COMMUNICATOR : ( ( ( c ) == MPI_COMM_WORLD ) ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) ) )
 
 /**
  * @def SCOREP_MPI_RANK_TO_PE
  * Trabslates a rank with respect to arbitrary communicator to its global rank
  */
-#define SCOREP_MPI_RANK_TO_PE( r, c ) ( !scorep_mpi_comm_determination ? SCOREP_MPI_INVALID_RANK : ( ( ( c ) == MPI_COMM_WORLD ) ? r : scorep_mpi_rank_to_pe( r, c ) ) )
+#define SCOREP_MPI_RANK_TO_PE( r, c ) r
+//#define SCOREP_MPI_RANK_TO_PE( r, c ) ( !scorep_mpi_comm_determination ? SCOREP_MPI_INVALID_RANK : ( ( ( c ) == MPI_COMM_WORLD ) ? r : scorep_mpi_rank_to_pe( r, c ) ) )
 
 #endif // SCOREP_MPI_COMMUNICATOR_H

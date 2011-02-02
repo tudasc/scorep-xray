@@ -71,7 +71,7 @@ MPI_Bsend( void*        buf,
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
         return_val = PMPI_Bsend( buf, count, datatype, dest, tag, comm );
@@ -134,7 +134,7 @@ MPI_Rsend( void*        buf,
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
         return_val = PMPI_Rsend( buf, count, datatype, dest, tag, comm );
@@ -197,7 +197,7 @@ MPI_Send( void*        buf,
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
         return_val = PMPI_Send( buf, count, datatype, dest, tag, comm );
@@ -260,7 +260,7 @@ MPI_Ssend( void*        buf,
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
         return_val = PMPI_Ssend( buf, count, datatype, dest, tag, comm );
@@ -342,7 +342,7 @@ MPI_Recv( void*        buf,
             PMPI_Type_size( datatype, &sz );
             PMPI_Get_count( status, datatype, &count );
             SCOREP_MpiRecv( SCOREP_MPI_RANK_TO_PE( status->MPI_SOURCE, comm ),
-                            SCOREP_MPI_COMM_ID( comm ), status->MPI_TAG, count * sz );
+                            SCOREP_MPI_COMM_HANDLE( comm ), status->MPI_TAG, count * sz );
         }
 
 
@@ -439,7 +439,7 @@ MPI_Sendrecv( void*        sendbuf,
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( sendtype, &sendsz );
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             sendtag, sendcount * sendsz );
         }
 
@@ -456,7 +456,7 @@ MPI_Sendrecv( void*        sendbuf,
             PMPI_Type_size( recvtype, &recvsz );
             PMPI_Get_count( status, recvtype, &recvcount );
             SCOREP_MpiRecv( SCOREP_MPI_RANK_TO_PE( status->MPI_SOURCE, comm ),
-                            SCOREP_MPI_COMM_ID( comm ), status->MPI_TAG, recvcount * recvsz );
+                            SCOREP_MPI_COMM_HANDLE( comm ), status->MPI_TAG, recvcount * recvsz );
         }
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SENDRECV ] );
@@ -514,7 +514,7 @@ MPI_Sendrecv_replace( void*        buf,
         if ( dest != MPI_PROC_NULL )
         {
             SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ),
-                            SCOREP_MPI_COMM_ID( comm ),
+                            SCOREP_MPI_COMM_HANDLE( comm ),
                             sendtag,
                             count * sz );
         }
@@ -530,7 +530,7 @@ MPI_Sendrecv_replace( void*        buf,
         if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             SCOREP_MpiRecv( SCOREP_MPI_RANK_TO_PE( status->MPI_SOURCE, comm ),
-                            SCOREP_MPI_COMM_ID( comm ), status->MPI_TAG, count * sz );
+                            SCOREP_MPI_COMM_HANDLE( comm ), status->MPI_TAG, count * sz );
         }
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SENDRECV_REPLACE ] );
@@ -591,7 +591,7 @@ MPI_Ibsend( void*        buf,
       if (xnb_active)
         scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
  */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
 
@@ -651,7 +651,7 @@ MPI_Irsend( void*        buf,
       if (xnb_active)
         scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
  */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
 
@@ -711,7 +711,7 @@ MPI_Isend( void*        buf,
       if (xnb_active)
         scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
  */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
 
@@ -771,7 +771,7 @@ MPI_Issend( void*        buf,
       if (xnb_active)
         scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
  */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_ID( comm ),
+            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
 

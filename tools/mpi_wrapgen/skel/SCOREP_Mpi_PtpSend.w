@@ -30,7 +30,7 @@ ${proto:c}
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(datatype, &sz);
-      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_ID(comm),
+      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
                    tag, count * sz);
     }
     return_val = ${call:pmpi};

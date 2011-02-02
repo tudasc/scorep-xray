@@ -34,7 +34,7 @@ ${proto:c}
 
       ${xblock}
       SCOREP_MpiCollective(scorep_mpi_regid[SCOREP__${name|uppercase}],
-		       SCOREP_MPI_COMM_ID(comm), 
+		       SCOREP_MPI_COMM_HANDLE(comm), 
                        root_loc,
                        ${mpi:sendcount}, 
                        ${mpi:recvcount});

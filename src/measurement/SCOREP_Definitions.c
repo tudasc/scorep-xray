@@ -43,6 +43,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include <sys/stat.h>
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
@@ -490,6 +493,132 @@ scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinit
 
 
 /////////////////////////////////////////////////////////////////////////////
+// CommunicatorDefinitions //////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+uint32_t scorep_number_of_self_comms = 0;
+uint32_t scorep_number_of_root_comms = 0;
+
+static SCOREP_MPICommunicatorHandle
+scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                           const uint64_t            numberOfRanks,
+                                           const uint64_t            localRank,
+                                           const uint64_t            globalRootRank,
+                                           const uint64_t            id );
+
+bool
+scorep_mpi_communicator_definitions_equal
+(
+    const SCOREP_MPICommunicator_Definition* existingDefinition,
+    const SCOREP_MPICommunicator_Definition* newDefinition
+);
+
+/**
+ * Associate a MPI communicator with a process unique communicator handle.
+ */
+SCOREP_MPICommunicatorHandle
+SCOREP_DefineMPICommunicator( const uint64_t numberOfRanks,
+                              const uint64_t localRank,
+                              const uint64_t globalRootRank,
+                              const uint64_t id )
+{
+    printf( "Local Rank %" PRIu64 ": Define Communicator\n"
+            "  size     : %" PRIu64 "\n"
+            "  root:      %" PRIu64 "\n"
+            "  id:        %" PRIu64 "\n\n", localRank, numberOfRanks, globalRootRank,
+            id );
+
+    SCOREP_Definitions_Lock();
+    SCOREP_MPICommunicatorHandle new_handle
+        = scorep_mpi_communicator_definition_define( &scorep_local_definition_manager,
+                                                     numberOfRanks,
+                                                     localRank,
+                                                     globalRootRank,
+                                                     id );
+
+    /* Count the number of comm self instances and communicators where this process
+       is rank 0.
+     */
+    if ( localRank == 0 )
+    {
+        if ( numberOfRanks > 1 )
+        {
+            scorep_number_of_root_comms++;
+        }
+        else
+        {
+            scorep_number_of_self_comms++;
+        }
+    }
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+/**
+ * Associate a MPI communicator with a process unique communicator handle.
+ * The number of ranks information is obtained if the process group is
+ * associated. The local rank is ignored.
+ */
+SCOREP_MPICommunicatorHandle
+SCOREP_DefineUnifiedMPICommunicator( const uint64_t globalRootRank,
+                                     const uint64_t local_id )
+{
+    printf( "Define unified Communicator\n"
+            "  root:      %" PRIu64 "\n"
+            "  id:        %" PRIu64 "\n\n", globalRootRank, local_id );
+
+    SCOREP_Definitions_Lock();
+    SCOREP_MPICommunicatorHandle new_handle
+        = scorep_mpi_communicator_definition_define( scorep_unified_definition_manager,
+                                                     1,  // Use the default for self communcators.
+                                                     -1, // Local rank is ignored for unified definitions
+                                                     globalRootRank,
+                                                     local_id );
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+SCOREP_MPICommunicatorHandle
+scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                           const uint64_t            numberOfRanks,
+                                           const uint64_t            localRank,
+                                           const uint64_t            globalRootRank,
+                                           const uint64_t            id )
+{
+    SCOREP_MPICommunicator_Definition* new_definition = NULL;
+    SCOREP_MPICommunicatorHandle       new_handle     = SCOREP_INVALID_MPI_COMMUNICATOR;
+
+    SCOREP_DEFINITION_ALLOC( MPICommunicator );
+
+    // Init new_definition
+    new_definition->number_of_ranks  = numberOfRanks;
+    new_definition->local_rank       = localRank;
+    new_definition->global_root_rank = globalRootRank;
+    new_definition->root_id          = id;
+    new_definition->group            = SCOREP_INVALID_GROUP;
+
+    // The (globalRootRank, id) pair is unique
+    HASH_ADD_POD( new_definition, global_root_rank );
+    HASH_ADD_POD( new_definition, root_id );
+
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator, mpi_communicator );
+}
+
+bool
+scorep_mpi_communicator_definitions_equal
+(
+    const SCOREP_MPICommunicator_Definition* existingDefinition,
+    const SCOREP_MPICommunicator_Definition* newDefinition
+)
+{
+    return ( existingDefinition->global_root_rank == newDefinition->global_root_rank ) &&
+           ( existingDefinition->root_id          == newDefinition->root_id );
+}
+
+/////////////////////////////////////////////////////////////////////////////
 // GroupDefinitions /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
@@ -512,26 +641,57 @@ scorep_group_definition_debug( void );
 
 
 /**
- * Associate a MPI communicator with a process unique communicator handle.
+ * Associate a MPI group with a process unique group handle.
  */
-SCOREP_MPICommunicatorHandle
-SCOREP_DefineMPICommunicator( int32_t        numberOfRanks,
-                              const int32_t* ranks,
-                              const char*    name )
+SCOREP_GroupHandle
+SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
+                       const int32_t* ranks )
 {
     SCOREP_Definitions_Lock();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new MPI Communicator: %s", name );
-
-    SCOREP_MPICommunicatorHandle new_handle = scorep_group_definition_define(
+    SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
         SCOREP_GROUP_COMMUNICATOR,
         numberOfRanks,
         ( const uint64_t* )ranks,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
-            name ? name : "<unknown MPI communicator>" ),
+            "<unknown MPI group>" ),
+        true /* need to convert to global ids */ );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+/**
+ * Associate a MPI group with a process unique group handle.
+ * Used to add groups from the communicator unifiaction after
+ * group unification was done.
+ */
+SCOREP_GroupHandle
+SCOREP_DefineUnifiedMPIGroup( int32_t  numberOfRanks,
+                              int32_t* ranks )
+{
+    SCOREP_GroupType type = SCOREP_GROUP_COMMUNICATOR;
+    SCOREP_Definitions_Lock();
+
+    if ( ( ranks == NULL ) || ( numberOfRanks <= 1 ) )
+    {
+        type          = SCOREP_GROUP_COMM_SELF;
+        numberOfRanks = 0;
+        ranks         = NULL;
+    }
+
+    SCOREP_GroupHandle new_handle = scorep_group_definition_define(
+        scorep_unified_definition_manager,
+        type,
+        numberOfRanks,
+        ( const uint64_t* )ranks,
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            "<unknown MPI group>" ),
         true /* need to convert to global ids */ );
 
     SCOREP_Definitions_Unlock();

@@ -105,6 +105,7 @@ SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
 // list of used mpi datatypes
 #define SCOREP_MPI_DATATYPES \
     SCOREP_MPI_DATATYPE( MPI_UNSIGNED_CHAR ) \
+    SCOREP_MPI_DATATYPE( MPI_INT ) \
     SCOREP_MPI_DATATYPE( MPI_UNSIGNED ) \
     SCOREP_MPI_DATATYPE( MPI_LONG_LONG ) \
     SCOREP_MPI_DATATYPE( MPI_DOUBLE )
@@ -137,18 +138,19 @@ typedef enum SCOREP_Mpi_Operation
 
 
 int
-SCOREP_Mpi_Send( void*               buf,
-                 int                 count,
-                 SCOREP_Mpi_Datatype scorep_datatype,
-                 int                 dest );
-
+SCOREP_Mpi_Allgather( void*               sendbuf,
+                      int                 sendcount,
+                      SCOREP_Mpi_Datatype sendtype,
+                      void*               recvbuf,
+                      int                 recvcount,
+                      SCOREP_Mpi_Datatype recvtype );
 
 int
-SCOREP_Mpi_Recv( void*               buf,
-                 int                 count,
-                 SCOREP_Mpi_Datatype scorep_datatype,
-                 int                 source,
-                 SCOREP_Mpi_Status   status );
+SCOREP_Mpi_Allreduce( void*                sendbuf,
+                      void*                recvbuf,
+                      int                  count,
+                      SCOREP_Mpi_Datatype  datatype,
+                      SCOREP_Mpi_Operation scorep_operation );
 
 int
 SCOREP_Mpi_Bcast( void*               buf,
@@ -183,11 +185,30 @@ SCOREP_Mpi_Gatherv( void*               sendbuf,
                     int                 root );
 
 int
+SCOREP_Mpi_Recv( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 source,
+                 SCOREP_Mpi_Status   status );
+int
 SCOREP_Mpi_Reduce( void*                sendbuf,
                    void*                recvbuf,
                    int                  count,
                    SCOREP_Mpi_Datatype  scorep_datatype,
                    SCOREP_Mpi_Operation scorep_operation,
                    int                  root );
+
+int
+SCOREP_Mpi_Scan( void*                sendbuf,
+                 void*                recvbuf,
+                 int                  count,
+                 SCOREP_Mpi_Datatype  scorep_datatype,
+                 SCOREP_Mpi_Operation scorep_operation );
+
+int
+SCOREP_Mpi_Send( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 dest );
 
 #endif /* SCOREP_MPI_H */

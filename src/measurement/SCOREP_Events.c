@@ -119,7 +119,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
  * Generate an mpi send event in the measurement system.
  */
 void
-SCOREP_MpiSend( uint32_t                     globalDestinationRank,
+SCOREP_MpiSend( uint32_t                     destinationRank,
                 SCOREP_MPICommunicatorHandle communicatorHandle,
                 uint32_t                     tag,
                 uint64_t                     bytesSent )
@@ -129,7 +129,7 @@ SCOREP_MpiSend( uint32_t                     globalDestinationRank,
                        )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%u Comm:%s Tag:%u Bytes:%llu",
-                         globalDestinationRank,
+                         destinationRank,
                          scorep_comm_to_string( stringBuffer,
                                                 sizeof( stringBuffer ),
                                                 "%x", communicatorHandle ),
@@ -142,7 +142,7 @@ SCOREP_MpiSend( uint32_t                     globalDestinationRank,
                                 NULL,
                                 SCOREP_GetClockTicks(),
                                 OTF2_MPI_BLOCK,
-                                globalDestinationRank,
+                                destinationRank,
                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                 tag,
                                 bytesSent );
@@ -158,7 +158,7 @@ SCOREP_MpiSend( uint32_t                     globalDestinationRank,
  * Generate an mpi recv event in the measurement system.
  */
 void
-SCOREP_MpiRecv( uint32_t                     globalSourceRank,
+SCOREP_MpiRecv( uint32_t                     sourceRank,
                 SCOREP_MPICommunicatorHandle communicatorHandle,
                 uint32_t                     tag,
                 uint64_t                     bytesReceived )
@@ -168,7 +168,7 @@ SCOREP_MpiRecv( uint32_t                     globalSourceRank,
                        )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Src:%u Comm:%s Tag:%u Bytes:%llu",
-                         globalSourceRank,
+                         sourceRank,
                          scorep_comm_to_string( stringBuffer,
                                                 sizeof( stringBuffer ),
                                                 "%x", communicatorHandle ),
@@ -181,7 +181,7 @@ SCOREP_MpiRecv( uint32_t                     globalSourceRank,
                                 NULL,
                                 SCOREP_GetClockTicks(),
                                 OTF2_MPI_BLOCK,
-                                globalSourceRank,
+                                sourceRank,
                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                 tag,
                                 bytesReceived );
@@ -199,7 +199,7 @@ SCOREP_MpiRecv( uint32_t                     globalSourceRank,
 void
 SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                       SCOREP_MPICommunicatorHandle communicatorHandle,
-                      uint32_t                     globalRootRank,
+                      uint32_t                     rootRank,
                       uint64_t                     bytesSent,
                       uint64_t                     bytesReceived )
 {
@@ -216,7 +216,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                                                 "%x", communicatorHandle ),
                          scorep_uint32_to_string( stringBuffer[ 2 ],
                                                   sizeof( stringBuffer[ 2 ] ),
-                                                  "%x", globalRootRank,
+                                                  "%x", rootRank,
                                                   SCOREP_INVALID_ROOT_RANK ),
                          ( unsigned long long )bytesSent,
                          ( unsigned long long )bytesReceived );
@@ -228,7 +228,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                                       SCOREP_GetClockTicks(),
                                       OTF2_MPI_BARRIER,
                                       SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
-                                      globalRootRank,
+                                      rootRank,
                                       bytesSent,
                                       bytesReceived );
     }

@@ -117,14 +117,16 @@ static SCOREP_Mutex scorep_mpi_window_mutex;
 
 /* ------------------------------------------- Definitions for communicators and groups */
 
+typedef uint32_t SCOREP_CommunicatorId;
+
 /**
  *  @internal
  * structure for communicator tracking
  */
 struct scorep_mpi_communicator_type
 {
-    MPI_Comm                     comm; /** MPI Communicator handle */
-    SCOREP_MPICommunicatorHandle cid;  /** Internal SCOREP Communicator handle */
+    MPI_Comm                     comm; /**< MPI Communicator handle */
+    SCOREP_MPICommunicatorHandle cid;  /**< Internal SCOREP Communicator handle */
 };
 
 /**
@@ -133,9 +135,18 @@ struct scorep_mpi_communicator_type
  */
 struct scorep_mpi_group_type
 {
-    MPI_Group              group;  /** MPI group handle */
-    SCOREP_Mpi_GroupHandle gid;    /** Internal SCOREP group handle */
-    int32_t                refcnt; /** Number of references to this group */
+    MPI_Group              group;  /**< MPI group handle */
+    SCOREP_Mpi_GroupHandle gid;    /**< Internal SCOREP group handle */
+    int32_t                refcnt; /**< Number of references to this group */
+};
+
+/**
+ * @brief Structure to exchange id and root value
+ */
+struct scorep_mpi_id_root_pair
+{
+    unsigned int id;      /**< identifier of communicator */
+    int          root;    /**< global rank of id-providing process */
 };
 
 /**
@@ -181,6 +192,27 @@ static int scorep_mpi_comm_initialized = 0;
  *  Mutex for communicator definition.
  */
 static SCOREP_Mutex scorep_mpi_communicator_mutex;
+
+/**
+   MPI datatype for ID-ROOT exchange
+ */
+static MPI_Datatype scorep_mpi_id_root_type = MPI_DATATYPE_NULL;
+
+/**
+   Rank of local process in esd_comm_world
+ */
+static int scorep_mpi_my_global_rank = -1;
+
+/**
+   local communicator id counter
+ */
+static SCOREP_CommunicatorId scorep_mpi_current_comm_id = 0;
+
+/**
+    local comm-self id counter
+ */
+static SCOREP_CommunicatorId scorep_mpi_current_self_id = 0;
+
 
 /* ------------------------------------------------ Definition for one sided operations */
 #ifndef SCOREP_MPI_NO_RMA
@@ -332,9 +364,9 @@ scorep_mpi_win_create( MPI_Win  win,
 
     /* register mpi window definition */
     /* NOTE: MPI_COMM_WORLD is _not_ present in the internal structures,
-     * and _must not_ be queried by scorep_mpi_comm_id */
+     * and _must not_ be queried by scorep_mpi_comm_handle */
     handle = SCOREP_DefineMPIWindow(
-        comm == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_id( comm ) );
+        comm == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( comm ) );
 
     /* enter win in scorep_mpi_windows[] arrray */
     scorep_mpi_windows[ scorep_mpi_last_window ].win = win;
@@ -383,7 +415,11 @@ scorep_mpi_win_free( MPI_Win win )
 void
 scorep_mpi_comm_init()
 {
-    int i;
+    int                            i;
+    MPI_Datatype                   types[ 2 ]   = { MPI_UNSIGNED, MPI_INT };
+    int                            lengths[ 2 ] = { 1, 1 };
+    MPI_Aint                       disp[ 2 ];
+    struct scorep_mpi_id_root_pair pair;
 
     SCOREP_MutexCreate( &scorep_mpi_communicator_mutex );
 
@@ -409,10 +445,49 @@ scorep_mpi_comm_init()
         /* allocate translation buffers */
         scorep_mpi_ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_Mpi_Rank ) );
 
+        /* initialize global rank variable */
+        PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
+
+        /* initialize MPI_COMM_WORLD */
         scorep_mpi_world.handle =
             SCOREP_DefineMPICommunicator( scorep_mpi_world.size,
-                                          scorep_mpi_world.ranks,
-                                          "MPI_COMM_WORLD" );
+                                          scorep_mpi_my_global_rank,
+                                          0, 0 );
+        if ( scorep_mpi_my_global_rank == 0 )
+        {
+            if ( scorep_mpi_world.size > 1 )
+            {
+                scorep_mpi_current_comm_id++;
+            }
+            else
+            {
+                scorep_mpi_current_self_id++;
+            }
+        }
+
+        /* initialize MPI_COMM_SELF */
+        scorep_mpi_comm_create( MPI_COMM_SELF );
+
+        /* create a derived datatype for distributed communicator
+         * definition handling */
+#if HAVE( MPI_GET_ADDRESS )
+        PMPI_Get_address( &pair.id, &( disp[ 0 ] ) );
+        PMPI_Get_address( &pair.root, &( disp[ 1 ] ) );
+#else
+        PMPI_Address( &pair.id, &( disp[ 0 ] ) );
+        PMPI_Address( &pair.root, &( disp[ 1 ] ) );
+#endif
+        for ( i = 1; i >= 0; --i )
+        {
+            disp[ i ] -= disp[ 0 ];
+        }
+
+#if HAVE( MPI_TYPE_CREATE_STRUCT )
+        PMPI_Type_create_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
+#else
+        PMPI_Type_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
+#endif
+        PMPI_Type_commit( &scorep_mpi_id_root_type );
     }
     else
     {
@@ -458,11 +533,53 @@ scorep_mpi_group_translate_ranks( MPI_Group group )
     return size;
 }
 
+/**
+ * @brief Determine id and root for communicator
+ * @param comm Communicator to be tracked
+ * @param id   Id returned from rank 0
+ * @param root Global rank of id-providing rank (rank 0)
+ */
+static void
+scorep_mpi_comm_create_id( MPI_Comm               comm,
+                           int                    size,
+                           int                    local_rank,
+                           SCOREP_Mpi_Rank*       root,
+                           SCOREP_CommunicatorId* id )
+{
+    struct scorep_mpi_id_root_pair pair;
+
+    if ( size == 1 )
+    {
+        *id   = scorep_mpi_current_self_id++;
+        *root = scorep_mpi_my_global_rank;
+    }
+    else
+    {
+        pair.id   = scorep_mpi_current_comm_id;
+        pair.root = scorep_mpi_my_global_rank;
+
+        /* root determines the id used by all processes */
+        PMPI_Bcast( &pair, 1,  scorep_mpi_id_root_type, 0, comm );
+        *id   = pair.id;
+        *root = pair.root;
+
+        /* increase local communicator id counter, if this
+         * process was root in the preceding broadcast */
+        if ( local_rank == 0 )
+        {
+            ++scorep_mpi_current_comm_id;
+        }
+    }
+}
+
 void
 scorep_mpi_comm_create( MPI_Comm comm )
 {
-    MPI_Group                    group;
-    SCOREP_MPICommunicatorHandle handle;
+    SCOREP_CommunicatorId        id;         /* identifier unique to root */
+    SCOREP_Mpi_Rank              root;       /* global rank of rank 0 */
+    int                          local_rank; /* local rank in this communicator */
+    int                          size;       /* size of communicator */
+    SCOREP_MPICommunicatorHandle handle;     /* Scorep-P handle for the communicator */
 
     /* Check if communicator handling has been initialized.
      * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
@@ -489,14 +606,15 @@ scorep_mpi_comm_create( MPI_Comm comm )
         return;
     }
 
-    /* get group of this communicator */
-    PMPI_Comm_group( comm, &group );
+    /* fill in local data */
+    PMPI_Comm_rank( comm, &local_rank );
+    PMPI_Comm_size( comm, &size );
 
-    /* create group entry in scorep_mpi_ranks */
-    int32_t size = scorep_mpi_group_translate_ranks( group );
+    /* determine id and root for communicator definition */
+    scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
 
-    /* register mpi communicator definition */
-    handle = SCOREP_DefineMPICommunicator( size, scorep_mpi_ranks, "" );
+    /* create definition in measurement system */
+    handle = SCOREP_DefineMPICommunicator( size, local_rank, root, id );
 
     /* enter comm in scorep_mpi_comms[] arrray */
     scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
@@ -504,7 +622,6 @@ scorep_mpi_comm_create( MPI_Comm comm )
     scorep_mpi_last_comm++;
 
     /* clean up */
-    PMPI_Group_free( &group );
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
@@ -564,7 +681,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
 }
 
 SCOREP_MPICommunicatorHandle
-scorep_mpi_comm_id( MPI_Comm comm )
+scorep_mpi_comm_handle( MPI_Comm comm )
 {
     int i = 0;
 
@@ -615,8 +732,8 @@ scorep_mpi_comm_id( MPI_Comm comm )
 void
 scorep_mpi_group_create( MPI_Group group )
 {
-    int32_t                      i;
-    SCOREP_MPICommunicatorHandle handle;
+    int32_t            i;
+    SCOREP_GroupHandle handle;
 
     /* Check if communicator handling has been initialized.
      * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
@@ -646,7 +763,7 @@ scorep_mpi_group_create( MPI_Group group )
         int32_t size = scorep_mpi_group_translate_ranks( group );
 
         /* register mpi group definition (as communicator) */
-        handle = SCOREP_DefineMPICommunicator( size, scorep_mpi_ranks, "" );
+        handle = SCOREP_DefineMPIGroup( size, scorep_mpi_ranks );
 
         /* enter group in scorep_mpi_groups[] arrray */
         scorep_mpi_groups[ scorep_mpi_last_group ].group  = group;

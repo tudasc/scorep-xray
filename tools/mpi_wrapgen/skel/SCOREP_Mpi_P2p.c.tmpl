@@ -65,7 +65,7 @@ int MPI_Recv( void* buf,
       PMPI_Type_size(datatype, &sz);
       PMPI_Get_count(status, datatype, &count);
       SCOREP_MpiRecv(SCOREP_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SCOREP_MPI_COMM_ID(comm), status->MPI_TAG, count * sz);
+                   SCOREP_MPI_COMM_HANDLE(comm), status->MPI_TAG, count * sz);
     }
 
 
@@ -125,7 +125,7 @@ int MPI_Sendrecv(void* sendbuf,
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(sendtype, &sendsz);
-      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_ID(comm),
+      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
                    sendtag, sendcount * sendsz);
     }
 
@@ -142,7 +142,7 @@ int MPI_Sendrecv(void* sendbuf,
         PMPI_Type_size(recvtype, &recvsz);
         PMPI_Get_count(status, recvtype, &recvcount);
         SCOREP_MpiRecv(SCOREP_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
-                     SCOREP_MPI_COMM_ID(comm), status->MPI_TAG, recvcount * recvsz);
+                     SCOREP_MPI_COMM_HANDLE(comm), status->MPI_TAG, recvcount * recvsz);
       }
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_SENDRECV]);
@@ -199,7 +199,7 @@ int MPI_Sendrecv_replace(void* buf,
     if (dest != MPI_PROC_NULL)
     {
       SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm),
-                   SCOREP_MPI_COMM_ID(comm),
+                   SCOREP_MPI_COMM_HANDLE(comm),
                    sendtag,
                    count * sz);
     }
@@ -215,7 +215,7 @@ int MPI_Sendrecv_replace(void* buf,
     if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
       SCOREP_MpiRecv(SCOREP_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SCOREP_MPI_COMM_ID(comm), status->MPI_TAG, count * sz);
+                   SCOREP_MPI_COMM_HANDLE(comm), status->MPI_TAG, count * sz);
     }
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_SENDRECV_REPLACE]);

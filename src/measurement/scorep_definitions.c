@@ -61,6 +61,7 @@ static OTF2_GlobDefWriter* scorep_create_global_definition_writer();
 static OTF2_DefWriter* scorep_create_local_definition_writer( SCOREP_Location_Definition* definition );
 static OTF2_FlushType scorep_on_definitions_pre_flush();
 static void scorep_write_callpath_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
+static void scorep_write_communicator_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager );
 static void scorep_write_counter_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
 static void scorep_write_counter_group_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
 static void scorep_write_io_file_definitions_to_otf2( void* writerHandle, SCOREP_DefinitionManager* definitionManager, bool isGlobal );
@@ -143,6 +144,7 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( source_file, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( region, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( group, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_communicator, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_window, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
@@ -161,6 +163,7 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( source_file, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( region, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( group, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_communicator, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_window, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_topology, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_coords, *definitionManager );
@@ -291,6 +294,7 @@ scorep_write_mappings_to_otf2( OTF2_DefWriter* localDefinitionWriter )
 {
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( mpi_communicator, MPI_COMMUNICATOR, localDefinitionWriter );
 }
 
 
@@ -407,7 +411,6 @@ scorep_write_global_definitions_to_otf2( OTF2_GlobDefWriter* global_definition_w
 
     assert( SCOREP_Mpi_GetRank() == 0 );
     assert( scorep_unified_definition_manager );
-
     scorep_write_string_definitions_to_otf2(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_definitions_to_otf2(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_source_file_definitions_to_otf2(            global_definition_writer, scorep_unified_definition_manager, true );
@@ -424,6 +427,7 @@ scorep_write_global_definitions_to_otf2( OTF2_GlobDefWriter* global_definition_w
     scorep_write_marker_definitions_to_otf2(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_parameter_definitions_to_otf2(              global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_callpath_definitions_to_otf2(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_communicator_definitions_to_otf2(           global_definition_writer, scorep_unified_definition_manager );
 }
 
 
@@ -521,6 +525,7 @@ scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
         case_return( LOCATIONS,    LOCATIONS );
         case_return( REGIONS,      REGIONS );
         case_return( COMMUNICATOR, COMMUNICATOR );
+        case_return( COMM_SELF,    COMMUNICATOR_SELF );
         case_return( METRIC,       METRIC );
 
 #undef case_return
@@ -693,6 +698,33 @@ scorep_write_group_definitions_to_otf2( void*                     writerHandle,
         if ( status != SCOREP_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SCOREP_Group_Definition" );
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
+static void
+scorep_write_communicator_definitions_to_otf2( void*                     writerHandle,
+                                               SCOREP_DefinitionManager* definitionManager )
+{
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defComm )( void*,
+                                     uint64_t,
+                                     uint64_t,
+                                     uint64_t ) =
+        ( void* )OTF2_GlobDefWriter_GlobDefMpiComm;
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
+    {
+        SCOREP_Error_Code status = defComm(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->group, Group, definitionManager->page_manager ),
+            definition->number_of_ranks );
+
+        if ( status != SCOREP_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();

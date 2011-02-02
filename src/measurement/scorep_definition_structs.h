@@ -97,6 +97,18 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
 };
 
 
+SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( MPICommunicator )
+
+    // Add SCOREP_MPIWindow stuff from here on.
+    uint64_t number_of_ranks;
+    uint64_t           local_rank;
+    uint64_t           global_root_rank;
+    uint64_t           root_id;
+    SCOREP_GroupHandle group;
+};
+
 SCOREP_DEFINE_DEFINITION_TYPE( MPIWindow )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( MPIWindow )

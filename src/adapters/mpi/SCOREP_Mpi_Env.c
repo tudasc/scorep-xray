@@ -235,7 +235,7 @@ MPI_Finalize()
     /* finalize MPI event handling */
     SCOREP_FinalizeMeasurementMPI();
 
-    /* fake finalization, so that MPI can be used during EPIK finalization */
+    /* fake finalization, so that MPI can be used during SCOREP finalization */
     return_val = PMPI_Barrier( MPI_COMM_WORLD );
 
     if ( event_gen_active )

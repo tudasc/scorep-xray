@@ -98,9 +98,9 @@ SCOREP_ExitRegion
 /**
  * Generate an mpi send event in the measurement system.
  *
- * @param globalDestinationRank The MPI destination rank in MPI_COMM_WORLD. If
- * your communicator is not MPI_COMM_WORLD, you need to convert your local
- * rank to the corresponding rank in MPI_COMM_WORLD.
+ * @param destinationRank The MPI destination rank in the communicator
+ * specified with @a communicatorHandle. Because of the scalable
+ * communicator handleing, it is not possible to covert ranks anymore.
  *
  * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
@@ -109,17 +109,16 @@ SCOREP_ExitRegion
  *
  * @param bytesSent The number of bytes send in the communication.
  *
- * @note @a globalDestinationRank and @a communicatorHandle may change in
- * future versions to @a localRank and @a groupHandle for performance
- * reasons. Querying the global rank is quite expensive if you are not in
- * MPI_COMM_WORLD.
+ * @note the former globalDestinationRank has changed to a local
+ * rank specification. Querying the global rank is quite expensive
+ * if you are not in MPI_COMM_WORLD.
  *
  * @see SCOREP_DefineMPICommunicator()
  */
 void
 SCOREP_MpiSend
 (
-    uint32_t                     globalDestinationRank,
+    uint32_t                     destinationRank,
     SCOREP_MPICommunicatorHandle communicatorHandle,
     uint32_t                     tag,
     uint64_t                     bytesSent
@@ -129,9 +128,9 @@ SCOREP_MpiSend
 /**
  * Generate an mpi recv event in the measurement system.
  *
- * @param globalSourceRank The MPI source rank in MPI_COMM_WORLD. If your
- * communicator is not MPI_COMM_WORLD, you need to convert your local rank to
- * the corresponding rank in MPI_COMM_WORLD.
+ * @param sourceRank The MPI source rank in the communicator
+ * specified with @a communicatorHandle. Because of the scalable
+ * communicator handleing, it is not possible to covert ranks anymore.
  *
  * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
@@ -140,10 +139,9 @@ SCOREP_MpiSend
  *
  * @param bytesReceived The number of bytes received in the communication.
  *
- * @note @a globalSourceRank and @a communicatorHandle may change in future
- * versions to @a localRank and @a groupHandle for performance
- * reasons. Querying the global rank is quite expensive if you are not in
- * MPI_COMM_WORLD.
+ * @note the former globalSourceRank has changed to a local
+ * rank specification. Querying the global rank is quite expensive
+ * if you are not in MPI_COMM_WORLD.
  *
  * @todo Do measurements to compare the global/local rank performance at large
  * scale.
@@ -168,7 +166,8 @@ SCOREP_MpiRecv
  * communicator that is used in this communication.
  *
  * @param globalRootRank Root rank of the collective operation in
- * MPI_COMM_WORLD, or SCOREP_INVALID_ROOT_RANK.
+ * the communicator specified with @a communicatorHandle,
+ * or SCOREP_INVALID_ROOT_RANK.
  *
  * @param bytesSent The number of bytes send in the communication.
  *
@@ -179,7 +178,7 @@ SCOREP_MpiCollective
 (
     SCOREP_RegionHandle          regionHandle,
     SCOREP_MPICommunicatorHandle communicatorHandle,
-    uint32_t                     globalRootRank,
+    uint32_t                     rootRank,
     uint64_t                     bytesSent,
     uint64_t                     bytesReceived
 );

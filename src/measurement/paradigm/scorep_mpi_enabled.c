@@ -222,36 +222,31 @@ static MPI_Op scorep_mpi_to_mpi_operation[] =
 
 
 int
-SCOREP_Mpi_Send( void*               buf,
-                 int                 count,
-                 SCOREP_Mpi_Datatype scorep_datatype,
-                 int                 dest )
+SCOREP_Mpi_Allgather( void*               sendbuf,
+                      int                 sendcount,
+                      SCOREP_Mpi_Datatype sendtype,
+                      void*               recvbuf,
+                      int                 recvcount,
+                      SCOREP_Mpi_Datatype recvtype )
 {
-    return PMPI_Send( buf,
-                      count,
-                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
-                      dest,
-                      0,
-                      scorep_mpi_comm_world );
+    return PMPI_Allgather( sendbuf, sendcount,
+                           scorep_mpi_to_mpi_datatype( sendtype ),
+                           recvbuf, recvcount,
+                           scorep_mpi_to_mpi_datatype( recvtype ),
+                           scorep_mpi_comm_world );
 }
 
-
 int
-SCOREP_Mpi_Recv( void*               buf,
-                 int                 count,
-                 SCOREP_Mpi_Datatype scorep_datatype,
-                 int                 source,
-                 SCOREP_Mpi_Status   status )
+SCOREP_Mpi_Allreduce( void*                sendbuf,
+                      void*                recvbuf,
+                      int                  count,
+                      SCOREP_Mpi_Datatype  datatype,
+                      SCOREP_Mpi_Operation scorep_operation )
 {
-    return PMPI_Recv( buf,
-                      count,
-                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
-                      source,
-                      0,
-                      scorep_mpi_comm_world,
-                      status == SCOREP_MPI_STATUS_IGNORE
-                      ? MPI_STATUS_IGNORE
-                      : ( MPI_Status* )status );
+    return PMPI_Allreduce( sendbuf, recvbuf, count,
+                           scorep_mpi_to_mpi_datatype( datatype ),
+                           scorep_mpi_to_mpi_operation[ scorep_operation ],
+                           scorep_mpi_comm_world );
 }
 
 int
@@ -309,6 +304,24 @@ SCOREP_Mpi_Gatherv( void*               sendbuf,
 }
 
 int
+SCOREP_Mpi_Recv( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 source,
+                 SCOREP_Mpi_Status   status )
+{
+    return PMPI_Recv( buf,
+                      count,
+                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                      source,
+                      0,
+                      scorep_mpi_comm_world,
+                      status == SCOREP_MPI_STATUS_IGNORE
+                      ? MPI_STATUS_IGNORE
+                      : ( MPI_Status* )status );
+}
+
+int
 SCOREP_Mpi_Reduce( void*                sendbuf,
                    void*                recvbuf,
                    int                  count,
@@ -320,4 +333,31 @@ SCOREP_Mpi_Reduce( void*                sendbuf,
                         scorep_mpi_to_mpi_datatype( scorep_datatype ),
                         scorep_mpi_to_mpi_operation[ scorep_operation ],
                         root, scorep_mpi_comm_world );
+}
+
+int
+SCOREP_Mpi_Scan( void*                sendbuf,
+                 void*                recvbuf,
+                 int                  count,
+                 SCOREP_Mpi_Datatype  scorep_datatype,
+                 SCOREP_Mpi_Operation scorep_operation )
+{
+    return PMPI_Scan( sendbuf, recvbuf, count,
+                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                      scorep_mpi_to_mpi_operation[ scorep_operation ],
+                      scorep_mpi_comm_world );
+}
+
+int
+SCOREP_Mpi_Send( void*               buf,
+                 int                 count,
+                 SCOREP_Mpi_Datatype scorep_datatype,
+                 int                 dest )
+{
+    return PMPI_Send( buf,
+                      count,
+                      scorep_mpi_to_mpi_datatype( scorep_datatype ),
+                      dest,
+                      0,
+                      scorep_mpi_comm_world );
 }

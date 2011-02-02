@@ -142,11 +142,39 @@ SCOREP_Mpi_Recv( void*               buf,
 static int scorep_mpi_datatype_size[] =
 {
     1, /* MPI_UNSIGNED_CHAR */
+    4, /* MPI_INT */
     4, /* MPI_UNSINGED */
     8, /* MPI_LONG_LONG */
     8  /* MPI_DOUBLE */
 };
 
+int
+SCOREP_Mpi_Allgather( void*               sendbuf,
+                      int                 sendcount,
+                      SCOREP_Mpi_Datatype sendtype,
+                      void*               recvbuf,
+                      int                 recvcount,
+                      SCOREP_Mpi_Datatype recvtype )
+{
+    /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
+    int num = scorep_mpi_datatype_size[ sendtype ] * sendcount;
+    memcpy( recvbuf, sendbuf, num );
+    return 0;
+}
+
+int
+SCOREP_Mpi_Allreduce( void*                sendbuf,
+                      void*                recvbuf,
+                      int                  count,
+                      SCOREP_Mpi_Datatype  scorep_datatype,
+                      SCOREP_Mpi_Operation scorep_operation )
+{
+    /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
+       recvbuf. */
+    int num = scorep_mpi_datatype_size[ scorep_datatype ] * count;
+    memcpy( recvbuf, sendbuf, num );
+    return 0;
+}
 
 int
 SCOREP_Mpi_Bcast( void*               buf,
@@ -211,6 +239,20 @@ SCOREP_Mpi_Reduce( void*                sendbuf,
                    SCOREP_Mpi_Datatype  scorep_datatype,
                    SCOREP_Mpi_Operation scorep_operation,
                    int                  root )
+{
+    /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
+       recvbuf. */
+    int num = scorep_mpi_datatype_size[ scorep_datatype ] * count;
+    memcpy( recvbuf, sendbuf, num );
+    return 0;
+}
+
+int
+SCOREP_Mpi_Scan( void*                sendbuf,
+                 void*                recvbuf,
+                 int                  count,
+                 SCOREP_Mpi_Datatype  scorep_datatype,
+                 SCOREP_Mpi_Operation scorep_operation )
 {
     /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
        recvbuf. */

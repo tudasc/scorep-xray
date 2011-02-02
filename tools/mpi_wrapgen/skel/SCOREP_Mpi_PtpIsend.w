@@ -28,7 +28,7 @@ ${proto:c}
       if (xnb_active)
         scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
 */
-      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_ID(comm),
+      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
                    tag, count * sz);
     }
 
