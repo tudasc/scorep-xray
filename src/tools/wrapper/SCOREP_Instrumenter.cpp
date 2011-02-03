@@ -433,9 +433,10 @@ SCOREP_Instrumenter::check_parameter()
         printf( "Path %s\n", path );
         if ( path != NULL )
         {
-            opari_script = path;
+            opari_script  = path;
+            opari_script += "/";
         }
-        opari_script += "/pomp2_parse_init_regions.awk";
+        opari_script += "pomp2_parse_init_regions.awk";
         if ( !SCOREP_DoesFileExist( opari_script.c_str() ) )
         {
             std::cout << "WARNING: Script " << opari_script << " not found."
@@ -610,7 +611,16 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     scorep_include_path = "`" + config_path + mode + " --inc` ";
     scorep_library_path = "";
     external_libs       = "`" + config_path + mode + " --libs` ";
-    grep                = "`" + config_path + " -egrap` ";
+
+    if ( opari_instrumentation == enabled )
+    {
+        path = SCOREP_GetExecutablePath( opari.c_str() );
+        if ( path != NULL )
+        {
+            grep = path;
+            grep = "`" + grep + "/opari2_config -egrep` ";
+        }
+    }
 }
 
 void
@@ -692,7 +702,7 @@ void
 SCOREP_Instrumenter::compile_source_file( std::string input_file,
                                           std::string output_file )
 {
-    std::string command = compiler_name
+    std::string command = compiler_name + " "
                           + scorep_include_path
                           + " -c " + input_file
                           + compiler_flags
@@ -912,7 +922,7 @@ SCOREP_Instrumenter::prepare_opari()
         }
         invoke_awk_script( object_files, init_source );
         compile_init_file( init_source, init_object );
-        input_files = init_object + " " + input_files + " " + init_object;
+        input_files += " " + init_object;
     }
 }
 
