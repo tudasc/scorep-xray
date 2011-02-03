@@ -274,12 +274,7 @@ scorep_unify_mpi_communicators( void )
 
     /* get the maximum number of different MPI_COMM_SELF references
      * on a single process */
-    printf( "Number of destinct comm self references: %u\n", scorep_number_of_self_comms );
     SCOREP_Mpi_Allreduce( &scorep_number_of_self_comms, &max_number_of_self_ids, 1, SCOREP_MPI_UNSIGNED, SCOREP_MPI_MAX );
-    if ( my_rank == 0 )
-    {
-        printf( "Maximum number of destinct comm self references on a process: %u\n", max_number_of_self_ids );
-    }
 
     /*
      * An MPI_Scan is used here to
@@ -291,8 +286,6 @@ scorep_unify_mpi_communicators( void )
     /* Due to MPI_Scan, the local_offset of rank n-1 holds the first self id */
     offset_of_first_self = local_offset;
     SCOREP_Mpi_Bcast( &offset_of_first_self, 1, SCOREP_MPI_UNSIGNED, comm_world_size - 1 );
-    printf( "First global ID for comm self: %i\n", offset_of_first_self );
-
     /* final step in MPI_Exscan emulation to obtain real offsets */
     local_offset -= scorep_number_of_root_comms;
     assert( local_offset <= offset_of_first_self );
@@ -316,7 +309,6 @@ scorep_unify_mpi_communicators( void )
     {
         global_id += offset_of_first_self;
     }
-    printf( "rank %d: map local comm %d to global id %d\n", my_rank, definition->sequence_number, global_id );
     scorep_local_definition_manager.mappings->mpi_communicator_mappings[ definition->sequence_number ] = global_id;
     SCOREP_DEFINITION_FOREACH_WHILE();
 
@@ -418,9 +410,6 @@ scorep_map_communicator_to_group( uint64_t           sequence_number,
 
     definition->group           = group;
     definition->number_of_ranks = number_of_ranks;
-
-    printf( "mapped communicator %" PRIu64 " with %" PRIu64 " ranks to group %" PRIu32 "\n",
-            sequence_number, number_of_ranks, SCOREP_LOCAL_HANDLE_DEREF( group, Group )->sequence_number );
 
     /* Remember next defintion */
     handle = definition->next;

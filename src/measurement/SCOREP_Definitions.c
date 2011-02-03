@@ -521,11 +521,12 @@ SCOREP_DefineMPICommunicator( const uint64_t numberOfRanks,
                               const uint64_t globalRootRank,
                               const uint64_t id )
 {
-    printf( "Local Rank %" PRIu64 ": Define Communicator\n"
-            "  size     : %" PRIu64 "\n"
-            "  root:      %" PRIu64 "\n"
-            "  id:        %" PRIu64 "\n\n", localRank, numberOfRanks, globalRootRank,
-            id );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
+                         "Local Rank %" PRIu64 ": Define Communicator\n"
+                         "  size:    %" PRIu64 "\n"
+                         "  root:    %" PRIu64 "\n"
+                         "  id:      %" PRIu64 "\n\n", localRank, numberOfRanks, globalRootRank,
+                         id );
 
     SCOREP_Definitions_Lock();
     SCOREP_MPICommunicatorHandle new_handle
@@ -564,9 +565,10 @@ SCOREP_MPICommunicatorHandle
 SCOREP_DefineUnifiedMPICommunicator( const uint64_t globalRootRank,
                                      const uint64_t local_id )
 {
-    printf( "Define unified Communicator\n"
-            "  root:      %" PRIu64 "\n"
-            "  id:        %" PRIu64 "\n\n", globalRootRank, local_id );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
+                         "Define unified Communicator\n"
+                         "  root:      %" PRIu64 "\n"
+                         "  id:        %" PRIu64 "\n\n", globalRootRank, local_id );
 
     SCOREP_Definitions_Lock();
     SCOREP_MPICommunicatorHandle new_handle
