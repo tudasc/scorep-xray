@@ -657,7 +657,7 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
         ( const uint64_t* )ranks,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
-            "<unknown MPI group>" ),
+            "" ),
         true /* need to convert to global ids */ );
 
     SCOREP_Definitions_Unlock();
@@ -691,8 +691,8 @@ SCOREP_DefineUnifiedMPIGroup( int32_t  numberOfRanks,
         numberOfRanks,
         ( const uint64_t* )ranks,
         scorep_string_definition_define(
-            &scorep_local_definition_manager,
-            "<unknown MPI group>" ),
+            scorep_unified_definition_manager,
+            "" ),
         true /* need to convert to global ids */ );
 
     SCOREP_Definitions_Unlock();
