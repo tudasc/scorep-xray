@@ -11,7 +11,9 @@ ${guard:start}
 ${proto:c} 
 {
   ${rtype} return_val;
-  ${declarehooks};
+  ${guard:hooks}
+    ${declarehooks};
+  ${guard:end}
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
     {

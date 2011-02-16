@@ -515,7 +515,7 @@ scorep_mpi_comm_finalize()
 int32_t
 scorep_mpi_group_translate_ranks( MPI_Group group )
 {
-    int32_t i, size;
+    int32_t size;
 
     /*
      * Determine the world rank of each process in group.

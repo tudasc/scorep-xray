@@ -52,7 +52,9 @@ MPI_Allgather( void*        sendbuf,
                MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -121,7 +123,9 @@ MPI_Allgatherv( void*        sendbuf,
                 MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -193,7 +197,9 @@ MPI_Allreduce( void*        sendbuf,
                MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -260,7 +266,9 @@ MPI_Alltoall( void*        sendbuf,
               MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -330,7 +338,9 @@ MPI_Alltoallv( void*        sendbuf,
                MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -405,7 +415,9 @@ MPI_Alltoallw( void*        sendbuf,
                MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -472,7 +484,9 @@ int
 MPI_Barrier( MPI_Comm comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -531,7 +545,9 @@ MPI_Bcast( void*        buffer,
            MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -605,7 +621,9 @@ MPI_Exscan( void*        sendbuf,
             MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -674,7 +692,9 @@ MPI_Gather( void*        sendbuf,
             MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -752,7 +772,9 @@ MPI_Gatherv( void*        sendbuf,
              MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -832,7 +854,9 @@ MPI_Reduce( void*        sendbuf,
             MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -899,7 +923,9 @@ MPI_Reduce_scatter( void*        sendbuf,
                     MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -970,7 +996,9 @@ MPI_Reduce_scatter_block( void*        sendbuf,
                           MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -1036,7 +1064,9 @@ MPI_Scan( void*        sendbuf,
           MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -1105,7 +1135,9 @@ MPI_Scatter( void*        sendbuf,
              MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
@@ -1183,7 +1215,9 @@ MPI_Scatterv( void*        sendbuf,
               MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {

@@ -52,7 +52,9 @@ MPI_Bsend( void*        buf,
            MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
@@ -115,7 +117,9 @@ MPI_Rsend( void*        buf,
            MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
@@ -178,7 +182,9 @@ MPI_Send( void*        buf,
           MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
@@ -241,7 +247,9 @@ MPI_Ssend( void*        buf,
            MPI_Comm     comm )
 {
     int      return_val;
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
+  #endif
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {

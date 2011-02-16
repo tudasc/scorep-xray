@@ -431,15 +431,15 @@ scorep_unify_mpi_define_groups( uint64_t global_communicator_number,
     SCOREP_DefineUnifiedMPIGroup( const int32_t  numberOfRanks,
                                   const int32_t* ranks );
 
-    int32_t   comm_world_size = SCOREP_Mpi_GetCommWorldSize();
-    int32_t   i               = 0;        // Loop counter outer loop
-    int32_t   j               = 0;        // Loop counter inner loop
-    int32_t*  buffer          = NULL;     // Buffer for collate ranks information
-    int32_t   my_rank         = -1;       // Input of this rank: -1 if not part of communicator
+    int32_t  comm_world_size = SCOREP_Mpi_GetCommWorldSize();
+    int32_t  i               = 0;         // Loop counter outer loop
+    int32_t  j               = 0;         // Loop counter inner loop
+    int32_t* buffer          = NULL;      // Buffer for collate ranks information
+    int32_t  my_rank         = -1;        // Input of this rank: -1 if not part of communicator
     // global rank otherwise
-    int32_t   size    = 0;                // number of ranks members
-    uint32_t* ranks   = NULL;             // Vector of rank in group
-    bool      is_root = ( SCOREP_Mpi_GetRank() == 0 );
+    int32_t  size    = 0;                 // number of ranks members
+    int32_t* ranks   = NULL;              // Vector of rank in group
+    bool     is_root = ( SCOREP_Mpi_GetRank() == 0 );
 
     /* Allocate memory for the array to exchange the comminicator belonginge */
     buffer = ( int* )malloc( comm_world_size * sizeof( int ) );
@@ -448,7 +448,7 @@ scorep_unify_mpi_define_groups( uint64_t global_communicator_number,
     if ( is_root )
     {
         /* Allocate memory for the rank list. */
-        ranks = ( uint32_t* )malloc( comm_world_size * sizeof( uint32_t ) );
+        ranks = ( int32_t* )malloc( comm_world_size * sizeof( uint32_t ) );
         assert( ranks );
     }
 
