@@ -428,9 +428,7 @@ SCOREP_Instrumenter::check_parameter()
 
     if ( opari_script == "" && opari_instrumentation == enabled )
     {
-        std:: cout << "Opari: " << opari << std::endl;
         char* path = SCOREP_GetExecutablePath( opari.c_str() );
-        printf( "Path %s\n", path );
         if ( path != NULL )
         {
             opari_script  = path;
