@@ -104,8 +104,8 @@ $(builddir)/scorep_config.dat:
 	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
 	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\".libs\"                                                      >> $(builddir)/scorep_config.dat
-	@echo LIBDIR=\"../vendor/otf2/build-backend/.libs\"                         >> $(builddir)/scorep_config.dat
-	@echo LIBDIR=\"../vendor/otf2/vendor/utility/build-backend/.libs\"          >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"$(PWD)/../vendor/otf2/build-backend/.libs\"                  >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"$(PWD)/../vendor/otf2/vendor/utility/build-backend/.libs\"   >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(LIBS) -lotf2 -lscorep_utilities\"                            >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
@@ -118,13 +118,10 @@ $(builddir)/scorep_config.dat:
 	@echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
-	@echo NM=\"$(NM)\"                                                          >> $(builddir)/scorep_config.dat
-	@echo AWK=\"$(AWK)\"                                                        >> $(builddir)/scorep_config.dat
-	@echo OPARI=\"../vendor/opari2/build-frontend/opari2\"                      >> $(builddir)/scorep_config.dat
-	@echo OPARI_SCRIPT=\"\"                                                     >> $(builddir)/scorep_config.dat
+	@echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"               >> $(builddir)/scorep_config.dat
+	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2_config --config $(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"                         >> $(builddir)/scorep_config.dat
 	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
 	@echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
-	@echo EGREP=\"$(EGREP)\"                                                    >> $(builddir)/scorep_config.dat
 
 
 ## Here we write only the backend values.
@@ -143,10 +140,8 @@ $(CONFIG_HEADER_BACKEND):
 	@echo "#define SCOREP_CC      \"$(CC)\""               >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_CXX     \"$(CXX)\""              >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define SCOREP_FC      \"$(FC)\""               >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define NM             \"$(NM)\""               >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define AWK            \"$(AWK)\""              >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define OPARI          \"$(prefix)/bin/opari2\"">> $(CONFIG_HEADER_BACKEND)
-	@echo "#define OPARI_SCRIPT   \"$(prefix)/bin/pomp2_parse_init_regions.awk\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2_config\"">> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\"">> $(CONFIG_HEADER_BACKEND)

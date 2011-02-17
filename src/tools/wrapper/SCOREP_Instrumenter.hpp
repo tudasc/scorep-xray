@@ -160,20 +160,6 @@ protected:
     SetCompiler( std::string value );
 
     /**
-       This function is called from ReadConfigFile. It should set the nm.
-       @param value nm
-     */
-    virtual void
-    SetNm( std::string value );
-
-    /**
-       This function is called from ReadConfigFile. It should set the awk.
-       @param value awk
-     */
-    virtual void
-    SetAwk( std::string value );
-
-    /**
        This function is called from ReadConfigFile. It should set the prefix
        for the installation directory.
        @param value awk
@@ -187,14 +173,6 @@ protected:
      */
     virtual void
     SetOpari( std::string value );
-
-    /**
-       This function is called from ReadConfigFile. It should set awk script
-       which is used to generate the region initialization functions.
-       @param value the awk script for region initialization.
-     */
-    virtual void
-    SetOpariScript( std::string value );
 
     /**
        This function is called from ReadConfigFile. It should set the flags

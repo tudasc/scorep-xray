@@ -62,11 +62,11 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     compiler_instrumentation_flags = SCOREP_CFLAGS;
     c_compiler                     = SCOREP_CC;
     openmp_cflags                  = SCOREP_OPENMP_CFLAGS;
-    nm                             = NM;
-    awk                            = AWK;
+    nm                             = "`" OPARI_CONFIG " --nm`";
+    awk                            =  "`" OPARI_CONFIG " --awk_cmd`";
     opari                          = OPARI;
-    opari_script                   = OPARI_SCRIPT;
-    grep                           = "grep"; // Default in case not set lateron
+    opari_script                   = "`" OPARI_CONFIG " --awk_script`";
+    grep                           =  "`" OPARI_CONFIG " --egrep`";
 
     has_data_from_file = false;
 }
@@ -426,22 +426,6 @@ SCOREP_Instrumenter::check_parameter()
         mpi_instrumentation = is_mpi_application;
     }
 
-    if ( opari_script == "" && opari_instrumentation == enabled )
-    {
-        char* path = SCOREP_GetExecutablePath( opari.c_str() );
-        if ( path != NULL )
-        {
-            opari_script  = path;
-            opari_script += "/";
-        }
-        opari_script += "pomp2_parse_init_regions.awk";
-        if ( !SCOREP_DoesFileExist( opari_script.c_str() ) )
-        {
-            std::cout << "WARNING: Script " << opari_script << " not found."
-                      << std::endl;
-        }
-    }
-
     /* Check pdt dependencies */
     if ( pdt_instrumentation == enabled )
     {
@@ -492,27 +476,9 @@ SCOREP_Instrumenter::SetCompiler( std::string value )
 }
 
 void
-SCOREP_Instrumenter::SetNm( std::string value )
-{
-    nm = value;
-}
-
-void
-SCOREP_Instrumenter::SetAwk( std::string value )
-{
-    awk = value;
-}
-
-void
 SCOREP_Instrumenter::SetOpari( std::string value )
 {
     opari = value;
-}
-
-void
-SCOREP_Instrumenter::SetOpariScript( std::string value )
-{
-    opari_script = value;
 }
 
 void
@@ -570,6 +536,14 @@ SCOREP_Instrumenter::SetValue( std::string key,
     {
         grep = value;
     }
+
+    else if ( key == "OPARI_CONFIG" )
+    {
+        nm           = "`" + value + " --nm`";
+        awk          = "`" + value + " --awk_cmd`";
+        opari_script = "`" + value + " --awk_script`";
+        grep         = "`" + value + " --egrep`";
+    }
 }
 
 /* ****************************************************************************
@@ -609,16 +583,6 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     scorep_include_path = "`" + config_path + mode + " --inc` ";
     scorep_library_path = "";
     external_libs       = "`" + config_path + mode + " --libs` ";
-
-    if ( opari_instrumentation == enabled )
-    {
-        path = SCOREP_GetExecutablePath( opari.c_str() );
-        if ( path != NULL )
-        {
-            grep = path;
-            grep = "`" + grep + "/opari2_config -egrep` ";
-        }
-    }
 }
 
 void
