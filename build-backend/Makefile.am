@@ -95,7 +95,7 @@ scorep-config-tool-install:
 	$(INSTALL_DATA) $(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 clean-local-scorep-config-tool:
-	rm -f $(builddir)/scorep_config.dat
+	rm -f $(builddir)/scorep_config.dat $(CONFIG_HEADER_BACKEND)
 
 scorep-config-tool-local: $(builddir)/scorep_config.dat
 
@@ -119,7 +119,7 @@ $(builddir)/scorep_config.dat:
 	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
 	@echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"               >> $(builddir)/scorep_config.dat
-	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2_config --config $(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"                         >> $(builddir)/scorep_config.dat
+	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2_config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"                         >> $(builddir)/scorep_config.dat
 	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
 	@echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
 
