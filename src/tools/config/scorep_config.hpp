@@ -48,28 +48,11 @@ public:
     virtual ~
     SCOREP_Config();
 
-
     /** */
     virtual SCOREP_Error_Code
     ParseConfigFile( char* arg );
 
-
-    /** these methods must be overwritten, but they are not needed in class SCOREP_Config */
-    virtual SCOREP_Error_Code
-    ParseCmdLine( int    argc,
-                  char** argv );
-
-    virtual int
-    Run();
-
-    virtual void
-    PrintParameter();
-
-
     /** callbacks */
-
-    virtual void
-    SetCompilerFlags( std::string flags );
 
     virtual void
     AddIncDir( std::string dir );
@@ -81,14 +64,6 @@ public:
     AddLib( std::string lib );
 
     virtual void
-    SetCompiler( std::string value );
-
-    virtual void
-    SetCxx( std::string value );
-
-    virtual void
-    SetFc( std::string value );
-
-    virtual void
-    SetPrefix( std::string value );
+    SetValue( std::string key,
+              std::string value );
 };

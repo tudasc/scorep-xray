@@ -59,37 +59,37 @@ print_help( std::string toolname )
               << "  --measure       Performs a measurement run of the instrumented application.\n"
               << "  --help, -h      Show help output.\n\n"
               << "Common options are:\n"
-              << "  -config=<file>  Specifies file for the instrumentation configuration.\n"
-              << "  -verbosity=<value> Specifies the verbosity level. The following\n"
+              << "  --config=<file>  Specifies file for the instrumentation configuration.\n"
+              << "  --verbosity=<value> Specifies the verbosity level. The following\n"
               << "                  levels are available:\n"
               << "                  0 = No output (default)\n"
               << "                  1 = Executed commands are displayed\n"
               << "                  2 = Detailed information is displayed\n\n"
               << "For instrumentation the following options are supported:\n"
-              << "  -compiler       Enables compiler instrumentation Is enabled by default.\n"
-              << "  -nocompiler     Disables compiler istrumentation.\n"
-              << "  -mpi            Enables mpi wrapper. Is enabled by default if it is a\n"
+              << "  --compiler      Enables compiler instrumentation Is enabled by default.\n"
+              << "  --nocompiler    Disables compiler istrumentation.\n"
+              << "  --mpi           Enables mpi wrapper. Is enabled by default if it is a\n"
               << "                  mpi program.\n"
-              << "  -nompi          Disables mpi wrappers. They are disabled by default if\n"
+              << "  --nompi         Disables mpi wrappers. They are disabled by default if\n"
               << "                  it is no mpi program.\n"
-              << "  -opari          Enables Opari instrumentation. Is enabled by default\n"
+              << "  --opari         Enables Opari instrumentation. Is enabled by default\n"
               << "                  if it is an OpenMP program.\n"
-              << "  -noopari        Disables Opari instrumentation. Is disabled by default\n"
+              << "  --noopari       Disables Opari instrumentation. Is disabled by default\n"
               << "                  if it is no OpenMP program.\n"
-              << "  -user           Enables manual user instrumentation.\n"
-              << "  -nouser         Disables manual user instrumentation. Is disabled by default.\n"
+              << "  --user          Enables manual user instrumentation.\n"
+              << "  --nouser        Disables manual user instrumentation. Is disabled by default.\n"
 #ifdef HAVE_PDT
-              << "  -pdt            Enables source code instrumentation with pdt using\n"
+              << "  --pdt           Enables source code instrumentation with pdt using\n"
               << "                  the TAU instrumentor.\n"
               << "                  It will automatically enable the user instrumentation\n"
               << "                  and disable compiler instrumentation.\n"
-              << "  -nopdt          Disables the source code instrumentation with pdt.\n"
+              << "  --nopdt         Disables the source code instrumentation with pdt.\n"
               << "                  It is disabled by default.\n"
 #endif
-              << "  -openmp_support Enables OpenMP support. Needed if the instrumentation\n"
+              << "  --openmp_support Enables OpenMP support. Needed if the instrumentation\n"
               << "                  does not coorectly identify your application as OpenMP\n"
               << "                  program.\n"
-              << "  -noopenmp_support Disables OpenMP support.\n"
+              << "  --noopenmp_support Disables OpenMP support.\n"
               << std::endl;
 }
 
@@ -105,19 +105,21 @@ int
 main( int   argc,
       char* argv[] )
 {
-    SCOREP_ParserBase* app = NULL;
-
     if ( argc > 1 )
     {
         // Select action
         std::string action = argv[ 1 ];
         if ( action == "--instrument" )
         {
-            app = new SCOREP_Instrumenter();
+            SCOREP_Instrumenter app;
+            app.ParseCmdLine( argc, argv );
+            return app.Run();
         }
         else if ( action == "--measure" )
         {
-            app = new SCOREP_Measurement();
+            SCOREP_Measurement app;
+            app.ParseCmdLine( argc, argv );
+            return app.Run();
         }
         else if ( action == "--help" || action == "-h" )
         {
@@ -130,14 +132,6 @@ main( int   argc,
             print_short_usage( argv[ 0 ] );
             return -1;
         }
-
-        // Analyze options
-        app->ParseCmdLine( argc, argv );
-
-        // Perform action
-        int retval = app->Run();
-        delete ( app );
-        return retval;
     }
     else
     {

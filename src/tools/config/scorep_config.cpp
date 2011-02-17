@@ -42,7 +42,7 @@
 #define ACTION_CXX    5
 #define ACTION_FC     6
 
-#define HELPTEXT "\nUsage:\nscorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config <config_file>]\n"
+#define HELPTEXT "\nUsage:\nscorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config=<config_file>]\n"
 
 int
 main( int    argc,
@@ -53,7 +53,6 @@ main( int    argc,
     int           mode   = MODE_MPI;
     int           action = 0;
     int           ret;
-    char*         config_file = NULL;
 
     const char*   scorep_libs[ 4 ] = { "scorep_serial", "scorep_omp", "scorep_mpi", "scorep_mpi_omp" };
 
@@ -62,7 +61,11 @@ main( int    argc,
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
     {
-        if ( strcmp( argv[ i ], "--help" ) == 0 || strcmp( argv[ i ], "-h" ) == 0 )
+        if ( app.CheckForCommonArg( argv[ i ] ) )
+        {
+            continue;
+        }
+        else if ( strcmp( argv[ i ], "--help" ) == 0 || strcmp( argv[ i ], "-h" ) == 0 )
         {
             std::cout << HELPTEXT << std::endl;
             return EXIT_SUCCESS;
@@ -107,19 +110,6 @@ main( int    argc,
         {
             action = ACTION_FC;
         }
-        else if ( strcmp( argv[ i ], "--config" ) == 0 )
-        {
-            // Expect the config file name as next parameter
-            if ( argc < i + 2 || *argv[ i + 1 ] == '-' )
-            {
-                std::cerr << "\nConfig file name missing. Abort.\n" << std::endl;
-                return EXIT_FAILURE;
-            }
-            config_file = argv[ i + 1 ];
-
-            // The next parameter is already processed now.
-            i++;
-        }
         else
         {
             std::cerr << "\nUnknown option " << argv[ i ] << ". Abort.\n" << std::endl;
@@ -137,11 +127,11 @@ main( int    argc,
     free( path );
 
     /* print data in case a config file was specified */
-    if ( config_file != NULL )
+    if ( app.IsConfigFileSet() )
     {
-        if ( app.ParseConfigFile( config_file ) != SCOREP_SUCCESS )
+        if ( app.ParseConfigFile( argv[ 0 ] ) != SCOREP_SUCCESS )
         {
-            std::cerr << "Unable to open file '" << config_file  << std::endl;
+            std::cerr << "Unable to open config file." << std::endl;
             abort();
         }
         switch ( action )
@@ -269,34 +259,31 @@ SCOREP_Config::ParseConfigFile( char* arg0 )
     return this->ReadConfigFile( arg );
 }
 
-
-/** these methods must be overwritten, but they are not needed in class SCOREP_Config */
-SCOREP_Error_Code
-SCOREP_Config::ParseCmdLine( int    argc,
-                             char** argv )
-{
-    return SCOREP_SUCCESS;
-}
-
-int
-SCOREP_Config::Run()
-{
-    return 0;
-}
-
-void
-SCOREP_Config::PrintParameter()
-{
-}
-
-
 /** callbacks */
 void
-SCOREP_Config::SetCompilerFlags( std::string flags )
+SCOREP_Config::SetValue( std::string key,
+                         std::string value )
 {
-    if ( std::string::npos == this->str_flags.find( flags ) )
+    if ( key == "COMPILER_INSTRUMENTATION_CPPFLAGS" )
     {
-        this->str_flags += flags + " ";
+        this->str_flags += value + " ";
+    }
+    else if ( key == "CC" && value != "" )
+    {
+        this->str_cc = value;
+    }
+    else if ( key == "CXX" && value != "" )
+    {
+        this->str_cxx = value;
+    }
+    else if ( key == "FC" && value != "" )
+    {
+        this->str_fc = value;
+    }
+    else if ( key == "PREFIX" && value != "" )
+    {
+        AddIncDir( value + "/include/scorep" );
+        AddLibDir( value + "/lib" );
     }
 }
 
@@ -328,41 +315,5 @@ SCOREP_Config::AddLib( std::string lib )
     if ( std::string::npos == this->str_libs.find( lib ) )
     {
         this->str_libs += " " + lib;
-    }
-}
-
-void
-SCOREP_Config::SetCompiler( std::string value )
-{
-    this->str_cc = value;
-}
-
-void
-SCOREP_Config::SetCxx( std::string value )
-{
-    this->str_cxx = value;
-}
-
-void
-SCOREP_Config::SetFc( std::string value )
-{
-    this->str_fc = value;
-}
-
-void
-SCOREP_Config::SetPrefix( std::string value )
-{
-    std::string libdir = "-L" + value + "/lib -Wl,-rpath," + value + "/lib";
-    std::string incdir = "-I" + value + "/include/scorep";
-
-    /* only insert libdir if the path not already exists */
-    if ( std::string::npos == this->str_libdir.find( libdir ) )
-    {
-        this->str_libdir += " " + libdir;
-    }
-
-    if ( std::string::npos == this->str_incdir.find( incdir ) )
-    {
-        this->str_incdir += " " + incdir;
     }
 }

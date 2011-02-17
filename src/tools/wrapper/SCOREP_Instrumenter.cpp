@@ -248,60 +248,60 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
     }
 
     /* Check for instrumenatation settings */
-    else if ( arg == "-compiler" )
+    else if ( arg == "--compiler" )
     {
         compiler_instrumentation = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-nocompiler" )
+    else if ( arg == "--nocompiler" )
     {
         compiler_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-opari" )
+    else if ( arg == "--opari" )
     {
         opari_instrumentation = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-noopari" )
+    else if ( arg == "--noopari" )
     {
         opari_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-nouser" )
+    else if ( arg == "--nouser" )
     {
         opari_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-user" )
+    else if ( arg == "--user" )
     {
         user_instrumentation = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-nouser" )
+    else if ( arg == "--nouser" )
     {
         user_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-mpi" )
+    else if ( arg == "--mpi" )
     {
         mpi_instrumentation = enabled;
         is_mpi_application  = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-nompi" )
+    else if ( arg == "--nompi" )
     {
         is_mpi_application  = disabled;
         mpi_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
 #ifdef HAVE_PDT
-    else if ( arg == "-pdt" )
+    else if ( arg == "--pdt" )
     {
         pdt_instrumentation = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-nopdt" )
+    else if ( arg == "--nopdt" )
     {
         pdt_instrumentation = disabled;
         return scorep_parse_mode_param;
@@ -309,12 +309,12 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
 #endif
 
     /* Check for application type settings */
-    else if ( arg == "-openmp_support" )
+    else if ( arg == "--openmp_support" )
     {
         is_openmp_application = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "-noopenmp_support" )
+    else if ( arg == "--noopenmp_support" )
     {
         is_openmp_application = disabled;
         return scorep_parse_mode_param;
@@ -446,12 +446,6 @@ SCOREP_Instrumenter::parse_config( std::string arg )
 ******************************************************************************/
 
 void
-SCOREP_Instrumenter::SetCompilerFlags( std::string flags )
-{
-    compiler_instrumentation_flags = flags;
-}
-
-void
 SCOREP_Instrumenter::AddIncDir( std::string dir )
 {
     scorep_include_path += " -I" + dir;
@@ -470,35 +464,9 @@ SCOREP_Instrumenter::AddLib( std::string lib )
 }
 
 void
-SCOREP_Instrumenter::SetCompiler( std::string value )
+SCOREP_Instrumenter::set_pdt_path( std::string pdt )
 {
-    c_compiler = value;
-}
-
-void
-SCOREP_Instrumenter::SetOpari( std::string value )
-{
-    opari = value;
-}
-
-void
-SCOREP_Instrumenter::SetOpenmpCflags( std::string value )
-{
-    openmp_cflags = value;
-}
-
-void
-SCOREP_Instrumenter::SetPrefix( std::string value )
-{
-    AddIncDir( value + "/include" );
-    AddIncDir( value + "/include/scorep" );
-    AddLibDir( value + "/lib" );
-}
-
-void
-SCOREP_Instrumenter::SetPdtRoot( std::string value )
-{
-    if ( value == "yes" )
+    if ( pdt == "yes" )
     {
         char* path = SCOREP_GetExecutablePath( "tau_instrumentor" );
         if ( path != NULL )
@@ -512,37 +480,61 @@ SCOREP_Instrumenter::SetPdtRoot( std::string value )
             abort();
         }
     }
-    else if ( value == "no" )
+    else if ( pdt == "no" )
     {
         return;
     }
     else
     {
-        pdt_bin_path = value;
+        pdt_bin_path = pdt;
     }
-}
-
-void
-SCOREP_Instrumenter::SetPdtConfig( std::string value )
-{
-    pdt_config_file = value;
 }
 
 void
 SCOREP_Instrumenter::SetValue( std::string key,
                                std::string value )
 {
-    if ( key == "EGREP" )
+    if ( key == "EGREP" && value != "" )
     {
         grep = value;
     }
 
-    else if ( key == "OPARI_CONFIG" )
+    else if ( key == "OPARI_CONFIG" && value != "" )
     {
         nm           = "`" + value + " --nm`";
         awk          = "`" + value + " --awk_cmd`";
         opari_script = "`" + value + " --awk_script`";
         grep         = "`" + value + " --egrep`";
+    }
+    else if ( key == "PREFIX" && value != "" )
+    {
+        AddIncDir( value + "/include" );
+        AddIncDir( value + "/include/scorep" );
+        AddLibDir( value + "/lib" );
+    }
+    else if ( key == "PDT" && value != "" )
+    {
+        set_pdt_path( value );
+    }
+    else if ( key == "OPENMP_CFLAGS" && value != "" )
+    {
+        openmp_cflags = value;
+    }
+    else if ( key == "OPARI" && value != "" )
+    {
+        opari = value;
+    }
+    else if ( key == "CC"  && value != "" )
+    {
+        c_compiler = value;
+    }
+    else if ( key == "COMPILER_INSTRUMENTATION_CPPFLAGS" && value != "" )
+    {
+        compiler_instrumentation_flags = value;
+    }
+    else if ( key == "PDT_CONFIG" && value != "" )
+    {
+        pdt_config_file = value;
     }
 }
 

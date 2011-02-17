@@ -82,13 +82,6 @@ public:
 
     /* *************************************************** Protected methods */
 protected:
-    /**
-       This function is called from ReadConfigFile. It should set the
-       compiler instrumentation flags.
-       @param flags A string containing the instrumentation flags.
-     */
-    virtual void
-    SetCompilerFlags( std::string flags );
 
     /**
        This function is called from ReadConfigFile. It should add one include
@@ -113,6 +106,16 @@ protected:
      */
     virtual void
     AddLib( std::string lib );
+
+    /**
+       This function gives a (key, value) pair found in a configuration file and not
+       processed by one of the former functions.
+       @param key   The key
+       @param value The value
+     */
+    virtual void
+    SetValue( std::string key,
+              std::string value );
 
     /* ***************************************************** Private members */
 private:

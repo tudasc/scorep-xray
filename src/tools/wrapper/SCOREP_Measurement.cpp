@@ -96,11 +96,6 @@ SCOREP_Measurement::PrintParameter()
 ******************************************************************************/
 
 void
-SCOREP_Measurement::SetCompilerFlags( std::string flags )
-{
-}
-
-void
 SCOREP_Measurement::AddIncDir( std::string dir )
 {
 }
@@ -120,5 +115,11 @@ SCOREP_Measurement::AddLibDir( std::string dir )
 
 void
 SCOREP_Measurement::AddLib( std::string lib )
+{
+}
+
+void
+SCOREP_Measurement::SetValue( std::string key,
+                              std::string value )
 {
 }

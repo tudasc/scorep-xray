@@ -119,13 +119,6 @@ public:
 
     /* *************************************************** Protected methods */
 protected:
-    /**
-       This function is called from ReadConfigFile. It should set the
-       compiler instrumentation flags.
-       @param flags A string containing the instrumentation flags.
-     */
-    virtual void
-    SetCompilerFlags( std::string flags );
 
     /**
        This function is called from ReadConfigFile. It should add one include
@@ -152,52 +145,6 @@ protected:
     AddLib( std::string lib );
 
     /**
-       This function is called from ReadConfigFile. It should set the C
-       compiler.
-       @param value Name of the C compiler.
-     */
-    virtual void
-    SetCompiler( std::string value );
-
-    /**
-       This function is called from ReadConfigFile. It should set the prefix
-       for the installation directory.
-       @param value awk
-     */
-    virtual void
-    SetPrefix( std::string value );
-
-    /**
-       This function is called from ReadConfigFile. It should set Opari.
-       @param value opari
-     */
-    virtual void
-    SetOpari( std::string value );
-
-    /**
-       This function is called from ReadConfigFile. It should set the flags
-       for the C compiler for using OpenMP.
-       @param value the awk script for region initialization.
-     */
-    virtual void
-    SetOpenmpCflags( std::string value );
-
-    /**
-       This function sets the root directory if one is specified.
-       @param value The path to the PDT binaries. If no path is
-       specified explicitly, it contains "yes".
-     */
-    virtual void
-    SetPdtRoot( std::string value );
-
-    /**
-       Sets the instrumentation specification file for PDT instrumentation.
-       @param value specification file.
-     */
-    virtual void
-    SetPdtConfig( std::string value );
-
-    /**
        This function gives a (key, value) pair found in a configuration file and not
        processed by one of the former functions.
        @param key   The key
@@ -207,9 +154,15 @@ protected:
     SetValue( std::string key,
               std::string value );
 
-
     /* ***************************************************** Private methods */
 private:
+
+    /**
+       This function processes a setting of the PDT path from config file.
+       @param pdt A string containing the binary directory of the PDT installation.
+     */
+    void
+    set_pdt_path( std::string pdt );
 
     /**
        Executes the modified user command.

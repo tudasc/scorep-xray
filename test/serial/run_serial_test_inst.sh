@@ -22,12 +22,12 @@ rm -f config.h serial_inst_test
 make scorep-config-tool-local
 . ./scorep_config.dat
 echo "/* Dummy */" > config.h
-./scorep --instrument -verbosity=1 -config=scorep_config.dat $CC -I. -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
+./scorep --instrument --verbosity=1 --config=scorep_config.dat $CC -I. -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
 if [ ! -e serial_inst_test ]; then
     rm -f config.h
     exit 1
 fi
-./scorep --measure -verbosity=1 ./serial_inst_test
+./scorep --measure --verbosity=1 ./serial_inst_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp config.h
     exit 1
