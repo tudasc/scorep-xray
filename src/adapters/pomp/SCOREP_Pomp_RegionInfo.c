@@ -593,10 +593,10 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         name = region->regionName;
     }
 
-    int length = strlen( name ) + 5;
+    int length = strlen( name ) + 7;
     region_name = ( char* )malloc( length );
-    strcpy( region_name, "omp_" );
-    strcpy( &region_name[ 4 ], name );
+    strcpy( region_name, "!$omp " );
+    strcpy( &region_name[ 6 ], name );
     region_name[ length - 1 ] = '\0';
 
     /* Register parallel regions */
