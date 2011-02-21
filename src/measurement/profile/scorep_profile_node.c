@@ -456,7 +456,7 @@ scorep_profile_move_children(  scorep_profile_node* destination,
     }
     else
     {
-        /* If destination has no childs */
+        /* If destination has no children */
         child = destination->first_child;
         if ( child == NULL )
         {

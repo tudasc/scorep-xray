@@ -77,7 +77,7 @@ static void scorep_thread_call_externals_on_thread_activation(SCOREP_Thread_Loca
 static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
 static void scorep_thread_delete_location_data();
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
-static void scorep_thread_init_childs_to_null(SCOREP_Thread_ThreadPrivateData** childs, size_t startIndex, size_t endIndex);
+static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
 static void scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent );
 /* *INDENT-ON* */
@@ -97,8 +97,8 @@ static scorep_deferred_location scorep_deferred_locations_head_dummy = { 0, 0 };
 struct SCOREP_Thread_ThreadPrivateData
 {
     SCOREP_Thread_ThreadPrivateData*  parent;
-    SCOREP_Thread_ThreadPrivateData** childs;
-    uint32_t                          n_childs;
+    SCOREP_Thread_ThreadPrivateData** children;
+    uint32_t                          n_children;
     bool                              is_active;
     SCOREP_Thread_LocationData*       location_data;
 };
@@ -111,7 +111,8 @@ struct SCOREP_Thread_ThreadPrivateData
 // multiple ones.
 struct SCOREP_Thread_LocationData
 {
-    uint32_t                       location_id; // process local id, 0, 1, ...
+    uint32_t                       local_id;    // process local id, 0, 1, ...
+    uint64_t                       location_id; // global id
     SCOREP_Allocator_PageManager** page_managers;
     SCOREP_LocationHandle          location_handle;
     SCOREP_Profile_LocationData*   profile_data;
@@ -142,7 +143,7 @@ SCOREP_Thread_Initialize()
     assert( TPD );
     assert( TPD->is_active );
     assert( TPD->location_data );
-    assert( TPD->location_data->location_id == 0 );
+    assert( TPD->location_data->local_id == 0 );
 
     initial_location = TPD->location_data;
 
@@ -198,9 +199,9 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
     }
     else
     {
-        uint64_t global_location_id = SCOREP_CalculateGlobalLocationId( locationData );
+        SCOREP_Thread_GetGlobalLocationId( locationData );
         locationData->location_handle = SCOREP_DefineLocation(
-            global_location_id,
+            locationData->location_id,
             parent ? parent->location_handle : SCOREP_INVALID_LOCATION,
             "" );
     }
@@ -237,6 +238,8 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
     scorep_thread_update_tpd( tpd );                                  // from here on clients can use
                                                                       // SCOREP_Thread_GetLocationData, i.e. TPD
 
+    new_location->location_id = UINT64_MAX;
+
     new_location->profile_data = 0;
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -253,7 +256,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
 
     SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
-        new_location->location_id     = location_counter++;
+        new_location->local_id        = location_counter++;
         new_location->next            = location_list_head_dummy.next;
         location_list_head_dummy.next = new_location;
     }
@@ -267,8 +270,8 @@ scorep_thread_create_thread_private_data()
     SCOREP_Thread_ThreadPrivateData* new_tpd;
     new_tpd                = malloc( sizeof( SCOREP_Thread_ThreadPrivateData ) );
     new_tpd->parent        = TPD;
-    new_tpd->childs        = 0;
-    new_tpd->n_childs      = 0;
+    new_tpd->children      = 0;
+    new_tpd->n_children    = 0;
     new_tpd->is_active     = true;
     new_tpd->location_data = 0;
     return new_tpd;
@@ -322,13 +325,13 @@ scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivat
 {
     assert( tpd );
     bool have_unused_child = false;
-    for ( int i = 0; i < tpd->n_childs; ++i )
+    for ( int i = 0; i < tpd->n_children; ++i )
     {
-        if ( tpd->childs[ i ] )
+        if ( tpd->children[ i ] )
         {
             assert( have_unused_child == false ); // no used child after first unused allowed
-            assert( !tpd->childs[ i ]->is_active );
-            scorep_thread_delete_thread_private_data_recursively( tpd->childs[ i ] );
+            assert( !tpd->children[ i ]->is_active );
+            scorep_thread_delete_thread_private_data_recursively( tpd->children[ i ] );
         }
         else
         {
@@ -339,7 +342,7 @@ scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivat
             }
         }
     }
-    free( tpd->childs ); /// @todo remove if SCOREP_Memory is used for child allocation
+    free( tpd->children ); /// @todo remove if SCOREP_Memory is used for child allocation
     free( tpd );
 }
 
@@ -352,25 +355,25 @@ SCOREP_Thread_OnThreadFork( size_t nRequestedThreads )
 
     /// @todo replace malloc/realloc with SCOREPs memory management to get rid of
     ///  locking. we have access to TPD->location_data->page_managers.
-    if ( !TPD->childs || TPD->n_childs < nRequestedThreads )
+    if ( !TPD->children || TPD->n_children < nRequestedThreads )
     {
-        TPD->childs = realloc( TPD->childs, nRequestedThreads *
-                               sizeof( SCOREP_Thread_ThreadPrivateData* ) );
-        scorep_thread_init_childs_to_null( TPD->childs, TPD->n_childs, nRequestedThreads - 1 );
-        TPD->n_childs = nRequestedThreads;
+        TPD->children = realloc( TPD->children, nRequestedThreads *
+                                 sizeof( SCOREP_Thread_ThreadPrivateData* ) );
+        scorep_thread_init_children_to_null( TPD->children, TPD->n_children, nRequestedThreads - 1 );
+        TPD->n_children = nRequestedThreads;
     }
 }
 
 
 void
-scorep_thread_init_childs_to_null( SCOREP_Thread_ThreadPrivateData** childs,
-                                   size_t                            firstIndex,
-                                   size_t                            lastIndex )
+scorep_thread_init_children_to_null( SCOREP_Thread_ThreadPrivateData** children,
+                                     size_t                            firstIndex,
+                                     size_t                            lastIndex )
 {
     assert( firstIndex <= lastIndex );
     for ( size_t i = firstIndex; i <= lastIndex; ++i )
     {
-        childs[ i ] = 0;
+        children[ i ] = 0;
     }
 }
 
@@ -392,13 +395,13 @@ SCOREP_Thread_OnThreadJoin()
     if ( !TPD->is_active )
     {
         // last parallel region used by more than one thread
-        for ( size_t i = 0; i < TPD->n_childs; ++i )
+        for ( size_t i = 0; i < TPD->n_children; ++i )
         {
-            if ( TPD->childs[ i ]->is_active )
+            if ( TPD->children[ i ]->is_active )
             {
                 scorep_thread_call_externals_on_thread_deactivation(
-                    TPD->childs[ i ]->location_data, TPD->location_data );
-                TPD->childs[ i ]->is_active = false;
+                    TPD->children[ i ]->location_data, TPD->location_data );
+                TPD->children[ i ]->is_active = false;
             }
         }
         TPD->is_active = true;
@@ -440,7 +443,7 @@ SCOREP_Thread_GetLocationData()
         // there is no additional parallelism in this parallel region. don't
         // update TPD with a child but reuse the parent.
         TPD->is_active = true;
-        if ( !TPD->childs[ 0 ] )
+        if ( !TPD->children[ 0 ] )
         {
             /// @todo do we see this as a new thread?
             scorep_thread_call_externals_on_new_thread( TPD->location_data,
@@ -453,7 +456,7 @@ SCOREP_Thread_GetLocationData()
     {
         // set TPD to a child of itself, create new one if neccessary
         size_t                            my_thread_id = omp_get_thread_num();
-        SCOREP_Thread_ThreadPrivateData** my_tpd       = &( TPD->childs[ my_thread_id ] );
+        SCOREP_Thread_ThreadPrivateData** my_tpd       = &( TPD->children[ my_thread_id ] );
         if ( *my_tpd )
         {
             // already been in this thread
@@ -512,6 +515,26 @@ SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData )
 uint64_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData )
 {
+    return locationData->local_id;
+}
+
+
+uint64_t
+SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData )
+{
+    assert( SCOREP_Mpi_IsInitialized() );
+
+    if ( locationData->location_id == UINT64_MAX )
+    {
+        uint64_t local_location_id = SCOREP_Thread_GetLocationId( locationData );
+        uint64_t rank              = SCOREP_Mpi_GetRank();
+
+        assert( rank >> 32 == 0 );
+        assert( local_location_id >> 32 == 0 );
+
+        locationData->location_id = ( local_location_id << 32 ) | rank;
+    }
+
     return locationData->location_id;
 }
 
@@ -571,9 +594,10 @@ SCOREP_ProcessDeferredLocations()
                 current_location_in_deferred_locations = true;
             }
 
-            SCOREP_SetOtf2WriterLocationId( location );
             SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->global_location_id =
-                location->trace_data->otf_location;
+                location->location_id;
+
+            SCOREP_SetOtf2WriterLocationId( location );
 
             deferred_location = deferred_location->next;
         }

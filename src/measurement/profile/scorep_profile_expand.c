@@ -182,7 +182,7 @@ scorep_profile_add_callpath( scorep_profile_node* destination_root,
 }
 
 /**
-   Calculates the implicit metrics of parent from all its childs.
+   Calculates the implicit metrics of parent from all its children.
    @param parent Pointer to a node which implcit (dense) metrics are calculated.
  */
 void
