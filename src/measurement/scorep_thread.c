@@ -440,7 +440,7 @@ SCOREP_Thread_GetLocationData()
         // there is no additional parallelism in this parallel region. don't
         // update TPD with a child but reuse the parent.
         TPD->is_active = true;
-        if ( !TPD->childs[ 0 ] )
+        if ( !TPD->children[ 0 ] )
         {
             /// @todo do we see this as a new thread?
             scorep_thread_call_externals_on_new_thread( TPD->location_data,
