@@ -180,6 +180,11 @@ SCOREP_RecordingEnabled
 );
 
 
+typedef int ( *SCOREP_ExitCallback )( void );
+
+void
+SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
+
 /*@}*/
 
 

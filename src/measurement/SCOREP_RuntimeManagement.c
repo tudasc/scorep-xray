@@ -67,6 +67,9 @@ static bool scorep_initialized;
 static bool scorep_finalized;
 
 
+static SCOREP_ExitCallback scorep_exit_callback = 0;
+
+
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
@@ -420,6 +423,11 @@ scorep_finalize( void )
     }
     scorep_finalized = true;
 
+    if ( scorep_exit_callback )
+    {
+        ( *scorep_exit_callback )( );
+    }
+
     // MPICH1 creates some extra processes that are not properely SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
     // finalization of these processes. See otf2:ticket:154.
@@ -530,4 +538,11 @@ scorep_otf2_finalize()
         /// @todo? set archive to "unified"/"not unified"
         OTF2_Archive_Delete( scorep_otf2_archive );
     }
+}
+
+
+void
+SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
+{
+    scorep_exit_callback = exitCallback;
 }
