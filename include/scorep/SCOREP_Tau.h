@@ -71,6 +71,9 @@ SCOREP_Tau_InitMeasurement
 
 typedef uint32_t SCOREP_Tau_LineNo;
 
+typedef int ( *SCOREP_Tau_ExitCallback )( void );
+
+
 /**
  * Symbolic constant representing an invalid or unknown line number.
  * @see SCOREP_DefineRegion()
@@ -256,6 +259,19 @@ SCOREP_Tau_EnterRegion(
 void
 SCOREP_Tau_ExitRegion(
     SCOREP_Tau_RegionHandle regionHandle
+    );
+
+/**
+ * Register a function that can close the callstack. This is invoked by
+ * the SCOREP routine that is called by atexit. Before flushing the data to
+ * disk, all the open timers are closed by invoking the function callback.
+ *
+ * @param: callback, a function pointer. It points to the routine
+ * Tau_profile_exit_all_threads.
+ */
+void
+SCOREP_Tau_RegisterExitCallback(
+    SCOREP_Tau_ExitCallback
     );
 
 

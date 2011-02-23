@@ -37,8 +37,6 @@
 
 typedef uint32_t SCOREP_LineNo;
 
-typedef int ( *SCOREP_Tau_ExitCallback )( void );
-
 extern void
 SCOREP_InitMeasurement
 (
