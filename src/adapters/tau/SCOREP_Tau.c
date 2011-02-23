@@ -37,10 +37,15 @@
 
 typedef uint32_t SCOREP_LineNo;
 
+typedef int ( *SCOREP_Tau_ExitCallback )( void );
+
 extern void
 SCOREP_InitMeasurement
 (
 );
+
+extern void
+SCOREP_RegisterExitCallback( SCOREP_Tau_ExitCallback );
 
 extern SCOREP_RegionHandle
 SCOREP_DefineRegion(
@@ -98,6 +103,22 @@ SCOREP_Tau_InitMeasurement()
 {
     SCOREP_InitMeasurement();
 }
+
+/**
+ * Register a function that can close the callstack. This is invoked by
+ * the SCOREP routine that is called by atexit. Before flushing the data to
+ * disk, all the open timers are closed by invoking the function callback.
+ *
+ * @param: callback, a function pointer. It points to the routine
+ * Tau_profile_exit_all_threads.
+ */
+
+void
+SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback callback )
+{
+    SCOREP_RegisterExitCallback( callback );
+}
+
 
 /**
  * Associate a code region with a process unique file handle.
