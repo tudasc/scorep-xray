@@ -228,3 +228,12 @@ SCOREP_OnTracePreFlush( void* evtWriter,
     // master/slave and writer id already set during initialization
     return OTF2_FLUSH;
 }
+
+OTF2_EvtWriter*
+SCOREP_Trace_GetEventWriter( uint64_t location_id )
+{
+    return OTF2_Archive_GetEvtWriter( scorep_otf2_archive,
+                                      location_id,
+                                      SCOREP_OnTracePreFlush,
+                                      SCOREP_OnTraceAndDefinitionPostFlush );
+}

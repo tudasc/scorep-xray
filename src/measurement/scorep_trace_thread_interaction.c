@@ -118,10 +118,8 @@ SCOREP_Trace_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
     #pragma omp critical (trace_on_location_creation)
     {
-        trace_data->otf_writer = OTF2_Archive_GetEvtWriter( scorep_otf2_archive,
-                                                            OTF2_UNDEFINED_UINT64,
-                                                            SCOREP_OnTracePreFlush,
-                                                            SCOREP_OnTraceAndDefinitionPostFlush );
+        trace_data->otf_writer =
+            SCOREP_Trace_GetEventWriter( OTF2_UNDEFINED_UINT64 );
     }
 
     if ( !trace_data->otf_writer )

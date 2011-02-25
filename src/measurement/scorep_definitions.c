@@ -1145,8 +1145,10 @@ SCOREP_UpdateLocationDefinitions()
     {
         if ( SCOREP_IsTracingEnabled() )
         {
-            // how do I get the OTF2_EvtWriter from a location definition?
-            //OTF2_EvtWriter_GetNumberOfEvents(, &definition->number_of_events);
+            OTF2_EvtWriter* evt_writer =
+                SCOREP_Trace_GetEventWriter( definition->global_location_id );
+            assert( evt_writer );
+            OTF2_EvtWriter_GetNumberOfEvents( evt_writer, &definition->number_of_events );
         }
 
         // assign all locations the same number of definitions. This is a temporary solution
