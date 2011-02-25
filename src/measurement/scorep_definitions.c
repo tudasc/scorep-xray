@@ -367,8 +367,6 @@ scorep_write_number_of_definitions_per_location_to_otf2( OTF2_GlobDefWriter* glo
 
     if ( SCOREP_Mpi_GetRank() == 0 )
     {
-        OTF2_Archive_SetNumberOfLocations( scorep_otf2_archive, n_global_locations );
-
         if ( 0 /* unify failed => fallback */ )
         {
             SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefString( global_definition_writer, 0, "" );
