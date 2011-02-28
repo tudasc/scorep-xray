@@ -16,7 +16,7 @@
 ##
 
 
-## file       ac_scorep_compiler_and_flags.m4
+## file       ac_scorep_fortran_checks.m4
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE],[
@@ -34,3 +34,16 @@ AC_LANG_POP(Fortran)
 AC_MSG_RESULT($scorep_support_allocatable)
 AM_CONDITIONAL(FORTRAN_SUPPORT_ALLOCATABLE, test "x$scorep_support_allocatable" = "xyes")
 ]) #AC_DEFUN
+
+
+
+AC_DEFUN([AC_SCOREP_HAVE_FC],[
+    AC_REQUIRE([AC_PROG_FC])
+    AM_CONDITIONAL([SCOREP_HAVE_FC], [test "x${FC}" != "x"])
+])
+
+
+AC_DEFUN([AC_SCOREP_HAVE_F77],[
+    AC_REQUIRE([AC_PROG_F77])
+    AM_CONDITIONAL([SCOREP_HAVE_F77], [test "x${F77}" != "x"])
+])

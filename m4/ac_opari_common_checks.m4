@@ -38,7 +38,7 @@ AC_REQUIRE([AC_PROG_CC])
 ## declarations in for loops, and variable length arrays.  After calling this
 ## macro you can check whether the C compiler has been set to accept C99; if
 ## not, the shell variable ac_cv_prog_cc_c99 is set to `no'.
-AC_REQUIRE([AC_PROG_CC_C99])
+AC_REQUIRE([SCOREP_PROG_CC_C99])
 
 ## Determine a C++ compiler to use. Check whether the environment variable CXX 
 ## or CCC (in that order) is set; if so, then set output variable CXX to its 
@@ -78,7 +78,7 @@ AC_REQUIRE([AM_PROG_CC_C_O])
 ## environment, then set it to -g -02 for g77 (or -O2 where g77 does not
 ## accept -g). Otherwise, set FFLAGS to -g for all other Fortran 77 compilers.
 AC_REQUIRE([AC_PROG_F77])
-
+AC_SCOREP_HAVE_F77
 
 ## Determine a Fortran compiler to use. If FC is not already set in the
 ## environment, then dialect is a hint to indicate what Fortran dialect to
@@ -102,13 +102,14 @@ AC_REQUIRE([AC_PROG_F77])
 ## set it to -g -02 for GNU g77 (or -O2 where g77 does not accept
 ## -g). Otherwise, set FCFLAGS to -g for all other Fortran compilers.
 AC_REQUIRE([AC_PROG_FC])
+AC_SCOREP_HAVE_FC
 
 #AC_CXX_NAMESPACES
 #AC_CXX_HAVE_SSTREAM
 #AC_CXX_HAVE_STRSTREAM
 
 AC_LANG_PUSH([C])
-AC_OPENMP
+SCOREP_OPENMP
 AC_LANG_POP([C])
 
 AM_CONDITIONAL([OPENMP_SUPPORTED], [test "x${ac_cv_prog_c_openmp}" != "xunsupported"])
@@ -117,15 +118,15 @@ if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
     AC_MSG_WARN([Non suitbale OpenMP compilers found. POMP2 dummy lib will not be build.])
 else
     AC_LANG_PUSH([C++])
-    AC_OPENMP
+    SCOREP_OPENMP
     AC_LANG_POP([C++])
 
     AC_LANG_PUSH([Fortran 77])
-    AC_OPENMP
+    SCOREP_OPENMP
     AC_LANG_POP([Fortran 77])
 
     AC_LANG_PUSH([Fortran])
-    AC_OPENMP
+    SCOREP_OPENMP
     AC_LANG_POP([Fortran])
 fi
 

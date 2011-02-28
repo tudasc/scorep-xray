@@ -22,7 +22,7 @@
 AC_DEFUN([AC_SCOREP_OPENMP],
 [
 AC_LANG_PUSH([C])
-AC_OPENMP
+SCOREP_OPENMP
 AC_LANG_POP([C])
 AM_CONDITIONAL([OPENMP_SUPPORTED], 
                [test "x${ac_cv_prog_c_openmp}" != "xunsupported"])
@@ -32,14 +32,14 @@ if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
 fi
 
 AC_LANG_PUSH([C++])
-AC_OPENMP
+SCOREP_OPENMP
 AC_LANG_POP([C++])
 
 AC_LANG_PUSH([Fortran 77])
-AC_OPENMP
+SCOREP_OPENMP
 AC_LANG_POP([Fortran 77])
 
 AC_LANG_PUSH([Fortran])
-AC_OPENMP
+SCOREP_OPENMP
 AC_LANG_POP([Fortran])
 ])

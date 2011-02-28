@@ -49,7 +49,8 @@ if test "x${scorep_timer_have_librt}" = "xyes"; then
     scorep_timer_librt="$ac_cv_search_clock_gettime"
 
     AC_MSG_CHECKING([for clock_gettime timer])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <time.h>]],
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _POSIX_C_SOURCE 199309L
+#include <time.h>]],
                                        [[struct timespec tp;
 clock_getres(  CLOCK_REALTIME, &tp );
 clock_gettime( CLOCK_REALTIME, &tp );]])],

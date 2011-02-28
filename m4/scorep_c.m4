@@ -17,11 +17,18 @@
 
 
 ## file       scorep_c.m4 
-##            This file contains a modified version of autoconf's 2.65
-##            macro _AC_PROG_CC_C99. In SCOREP we don't want to use the
-##            GNU option -std=gnu99 (but -std=c99 instead) as this prevents 
-##            some warnings that may cause portability issues. Please find
-##            the autoconf licence below.
+##            This file contains a modified versions of the following
+##            autoconf's 2.65 macros:
+##            
+##            AC_PROG_CC_C99 (renamed to SCOREP_PROG_CC_C99):
+##              In SCOREP we don't want to use the GNU option -std=gnu99
+##              (but -std=c99 instead) as this prevents some warnings that
+##              may cause portability issues.
+##
+##            AC_OPENMP (renamed to SCOREP_OPENMP):
+##              Add support for NEC SX compiler.
+##
+##            Please find the autoconf licence below.
 ##
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 ##
@@ -58,15 +65,15 @@
 # Roland McGrath, Noah Friedman, david d zuhn, and many others.
 
 
-# # AC_PROG_CC_C99
-# # --------------
-# AC_DEFUN([AC_PROG_CC_C99],
-# [ AC_REQUIRE([AC_PROG_CC])dnl
-#   _AC_PROG_CC_C99
-# ])
+# SCOREP_PROG_CC_C99
+# --------------
+AC_DEFUN([SCOREP_PROG_CC_C99],
+[ AC_REQUIRE([AC_PROG_CC])dnl
+  _SCOREP_PROG_CC_C99
+])
 
 
-# _AC_PROG_CC_C99 ([ACTION-IF-AVAILABLE], [ACTION-IF-UNAVAILABLE])
+# _SCOREP_PROG_CC_C99 ([ACTION-IF-AVAILABLE], [ACTION-IF-UNAVAILABLE])
 # ----------------------------------------------------------------
 # If the C compiler is not in ISO C99 mode by default, try to add an
 # option to output variable CC to make it so.  This macro tries
@@ -76,7 +83,7 @@
 # code and declarations, named initialization of structs, restrict,
 # va_copy, varargs macros, variable declarations in for loops and
 # variable length arrays.
-AC_DEFUN([_AC_PROG_CC_C99],
+AC_DEFUN([_SCOREP_PROG_CC_C99],
 [_AC_C_STD_TRY([c99],
 [[#include <stdarg.h>
 #include <stdbool.h>
@@ -217,6 +224,62 @@ dnl IRIX	-c99
 dnl Solaris	-xc99=all (Forte Developer 7 C mishandles -xc99 on Solaris 9,
 dnl		as it incorrectly assumes C99 semantics for library functions)
 dnl Tru64	-c99
+dnl NEC SX	-Kc99
 dnl with extended modes being tried first.
-[[-std=c99 -c99 -AC99 -xc99=all -qlanglvl=extc99]], [$1], [$2])[]dnl
-])# _AC_PROG_CC_C99
+[[-std=c99 -c99 -AC99 -xc99=all -qlanglvl=extc99 -Kc99]], [$1], [$2])[]dnl
+])# _SCOREP_PROG_CC_C99
+
+# SCOREP_OPENMP
+# ---------
+# Check which options need to be passed to the C compiler to support OpenMP.
+# Set the OPENMP_CFLAGS / OPENMP_CXXFLAGS / OPENMP_FFLAGS variable to these
+# options.
+# The options are necessary at compile time (so the #pragmas are understood)
+# and at link time (so the appropriate library is linked with).
+# This macro takes care to not produce redundant options if $CC $CFLAGS already
+# supports OpenMP. It also is careful to not pass options to compilers that
+# misinterpret them; for example, most compilers accept "-openmp" and create
+# an output file called 'penmp' rather than activating OpenMP support.
+AC_DEFUN([SCOREP_OPENMP],
+[
+  OPENMP_[]_AC_LANG_PREFIX[]FLAGS=
+  AC_ARG_ENABLE([openmp],
+    [AS_HELP_STRING([--disable-openmp], [do not use OpenMP])])
+  if test "$enable_openmp" != no; then
+    AC_CACHE_CHECK([for $[]_AC_CC[] option to support OpenMP],
+      [ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp],
+      [AC_LINK_IFELSE([_AC_LANG_OPENMP],
+	 [ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp='none needed'],
+	 [ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp='unsupported'
+	  dnl Try these flags:
+	  dnl   GCC >= 4.2           -fopenmp
+	  dnl   SunPRO C             -xopenmp
+	  dnl   Intel C              -openmp
+	  dnl   SGI C, PGI C         -mp
+	  dnl   Tru64 Compaq C       -omp
+	  dnl   IBM C (AIX, Linux)   -qsmp=omp
+	  dnl   NEC SX               -Popenmp
+	  dnl If in this loop a compiler is passed an option that it doesn't
+	  dnl understand or that it misinterprets, the AC_LINK_IFELSE test
+	  dnl will fail (since we know that it failed without the option),
+	  dnl therefore the loop will continue searching for an option, and
+	  dnl no output file called 'penmp' or 'mp' is created.
+	  for ac_option in -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp -Popenmp; do
+	    ac_save_[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
+	    _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $ac_option"
+	    AC_LINK_IFELSE([_AC_LANG_OPENMP],
+	      [ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp=$ac_option])
+	    _AC_LANG_PREFIX[]FLAGS=$ac_save_[]_AC_LANG_PREFIX[]FLAGS
+	    if test "$ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp" != unsupported; then
+	      break
+	    fi
+	  done])])
+    case $ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp in #(
+      "none needed" | unsupported)
+	;; #(
+      *)
+	OPENMP_[]_AC_LANG_PREFIX[]FLAGS=$ac_cv_prog_[]_AC_LANG_ABBREV[]_openmp ;;
+    esac
+  fi
+  AC_SUBST([OPENMP_]_AC_LANG_PREFIX[FLAGS])
+])
