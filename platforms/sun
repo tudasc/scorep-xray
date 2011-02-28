@@ -2,7 +2,7 @@ CC=cc
 #CFLAGS=
 
 CXX=CC
-#CXXFLAGS=
+CXXFLAGS=-features=extensions
 
 F77=f77
 #FFLAGS=    

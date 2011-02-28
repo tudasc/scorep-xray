@@ -1,6 +1,6 @@
 # It is necessary to set this because "sxmpic++ -E" always tries to
 # link and fails
-#CPP="sxcc -E" 
+#CPP=sxcc -E
 
 CC=sxcc
 MPICC=sxmpicc
@@ -12,3 +12,8 @@ F77=sxf90
 FC=sxf90
 MPIF77=sxmpif90
 MPIFC=sxmpif90
+
+CC_FOR_BUILD=gcc
+CXX_FOR_BUILD=g++
+F77_FOR_BUILD=f77
+FC_FOR_BUILD=
