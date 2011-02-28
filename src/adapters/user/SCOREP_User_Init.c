@@ -36,6 +36,10 @@ extern void
 scorep_user_init_metric();
 extern void
 scorep_user_final_metric();
+extern void
+scorep_selective_init();
+extern SCOREP_Error_Code
+scorep_selective_register();
 
 int8_t scorep_user_is_initialized = 0;
 
@@ -46,7 +50,7 @@ int8_t scorep_user_is_initialized = 0;
 SCOREP_Error_Code
 scorep_user_register()
 {
-    return SCOREP_SUCCESS;
+    return scorep_selective_register();
 }
 
 /** Initializes the user adapter.
@@ -61,6 +65,7 @@ scorep_user_init()
 
         scorep_user_init_regions();
         scorep_user_init_metric();
+        scorep_selective_init();
     }
     return SCOREP_SUCCESS;
 }

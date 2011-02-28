@@ -136,7 +136,7 @@ static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
  */
 SCOREP_ConfigVariable scorep_mpi_configs[] = {
     {
-        "enable_groups",
+        "ENABLE_GROUPS",
         SCOREP_CONFIG_TYPE_BITSET,
         &scorep_mpi_enabled,
         ( void* )scorep_mpi_enable_groups,
@@ -170,13 +170,11 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
    for the initialization process of the MPI adapter.
  */
 SCOREP_Error_Code
-scorep_mpi_register
-    ()
+scorep_mpi_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_register\n" );
-    SCOREP_ConfigRegister( "mpi", scorep_mpi_configs );
-    return SCOREP_SUCCESS;
+    return SCOREP_ConfigRegister( "mpi", scorep_mpi_configs );
 }
 
 /**
@@ -184,8 +182,7 @@ scorep_mpi_register
    for the initialization process of the MPI adapter.
  */
 SCOREP_Error_Code
-scorep_mpi_init_adapter
-    ()
+scorep_mpi_init_adapter()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_init_adapter\n" );
@@ -218,8 +215,7 @@ scorep_mpi_init_adapter
    for the initialization process of the MPI adapter.
  */
 SCOREP_Error_Code
-scorep_mpi_init_location
-    ()
+scorep_mpi_init_location()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_init_location\n" );
@@ -231,8 +227,7 @@ scorep_mpi_init_location
    struct for the initialization process of the MPI adapter.
  */
 void
-scorep_mpi_final_location
-    ( void* location )
+scorep_mpi_final_location( void* location )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_final_location\n" );
@@ -243,8 +238,7 @@ scorep_mpi_final_location
    for the initialization process of the MPI adapter.
  */
 void
-scorep_mpi_finalize
-    ()
+scorep_mpi_finalize()
 {
     int res;
 
@@ -278,8 +272,7 @@ scorep_mpi_finalize
    for the initialization process of the MPI adapter.
  */
 void
-scorep_mpi_deregister
-    ()
+scorep_mpi_deregister()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_deregister\n" );

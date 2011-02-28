@@ -14,12 +14,13 @@ SCOREP_USER_FORTRAN_FLAGS =                     \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
-SCOREP_USER_C_SOURCES =                                  \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.c      \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c   \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c    \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c    \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c \
+SCOREP_USER_C_SOURCES =                                    \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.c        \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c     \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c      \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c      \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c   \
+    $(SRC_ROOT)src/adapters/user/scorep_selective_parser.c \
     $(SRC_ROOT)src/adapters/include/SCOREP_User_Init.h
 
 SCOREP_USER_C_FLAGS =                           \
