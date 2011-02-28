@@ -432,7 +432,6 @@ SCOREP_RecordingEnabled
 static void
 scorep_finalize( void )
 {
-    printf( "SCOREP: entering scorep_finalize\n" );
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
     if ( !scorep_initialized || scorep_finalized )
@@ -462,31 +461,19 @@ scorep_finalize( void )
     {
         SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
     }
-    printf( "SCOREP: before unify\n" );
     SCOREP_Unify();
-    printf( "SCOREP: after unify\n" );
     scorep_profile_finalize();
-    printf( "SCOREP: after profile finalize\n" );
     SCOREP_Definitions_Write();
-    printf( "SCOREP: after definitions write\n" );
     SCOREP_Definitions_Finalize();
-    printf( "SCOREP: after definitions finalize\n" );
     scorep_otf2_finalize();
-    printf( "SCOREP: after oft2 finalize\n" );
     SCOREP_RenameExperimentDir();  // needs MPI
-    printf( "SCOREP: after rename dir\n" );
 
     scorep_adapters_finalize_location();
-    printf( "SCOREP: after adapters_finalize_location\n" );
     scorep_adapters_finalize(); // here PMPI_Finalize is called
-    printf( "SCOREP: after adapters_finalize\n" );
     scorep_adapters_deregister();
-    printf( "SCOREP: after adapters_deregister\n" );
 
     SCOREP_Thread_Finalize();
-    printf( "SCOREP: after Thread_Finalize\n" );
     SCOREP_Memory_Finalize();
-    printf( "SCOREP: after Memory_Finalize\n" );
 }
 
 
