@@ -34,6 +34,54 @@
 #include <stdio.h>
 
 /**
+ * @def SCOREP_FORTRAN_GET_MPI_STATUS_SIZE
+ * Defines the Fortran mangled form of scorep_fortran_get_mpi_status_size.
+ */
+#define SCOREP_FORTRAN_GET_MPI_STATUS_SIZE \
+    F77_FUNC_( scorep_fortran_get_mpi_status_size, \
+               SCOREP_FORTRAN_GET_MPI_STATUS_SIZE )
+
+/**
+ * @def SCOREP_FORTRAN_GET_MPI_BOTTOM
+ * Defines the Fortran mangled form of scorep_fortran_get_mpi_bottom.
+ */
+#define SCOREP_FORTRAN_GET_MPI_BOTTOM \
+    F77_FUNC_( scorep_fortran_get_mpi_bottom, \
+               SCOREP_FORTRAN_GET_MPI_BOTTOM )
+
+/**
+ * @def SCOREP_FORTRAN_GET_MPI_IN_PLACE
+ * Defines the Fortran mangled form of scorep_fortran_get_mpi_in_place.
+ */
+#define SCOREP_FORTRAN_GET_MPI_IN_PLACE \
+    F77_FUNC_( scorep_fortran_get_mpi_in_place, \
+               SCOREP_FORTRAN_GET_MPI_IN_PLACE )
+
+/**
+ * @def SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE
+ * Defines the Fortran mangled form of scorep_fortran_get_mpi_status_ignore.
+ */
+#define SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE \
+    F77_FUNC_( scorep_fortran_get_mpi_status_ignore, \
+               SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE )
+
+/**
+ * @def SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE
+ * Defines the Fortran mangled form of scorep_fortran_get_mpi_statuses_ignore.
+ */
+#define SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE \
+    F77_FUNC_( scorep_fortran_get_mpi_statuses_ignore, \
+               SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE )
+
+/**
+ * @def SCOREP_FORTRAN_GET_MPI_UNWEIGHTED
+ * Defines the Fortran mangled form of scorep_fortran_get_mpi_unweighted.
+ */
+#define SCOREP_FORTRAN_GET_MPI_UNWEIGHTED \
+    F77_FUNC_( scorep_fortran_get_mpi_unweighted, \
+               SCOREP_FORTRAN_GET_MPI_UNWEIGHTED )
+
+/**
    Stores the value of the Fortran MPI constant MPI_STATUS_SIZE. It is used for
    Fortran-C conversions.
  */
@@ -71,37 +119,37 @@ void* scorep_mpi_fortran_unweighted = NULL;
    @param mpi_status_size Address of a variable where the value is to be stored.
  */
 extern void
-FORTRAN_MANGLED( scorep_fortran_get_mpi_status_size ) ( int* status_size );
+SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( int* status_size );
 
 /**
    External fortran function to trigger a callback which sets MPI_BOTTOM.
  */
 extern void
-FORTRAN_MANGLED( scorep_fortran_get_mpi_bottom ) ();
+SCOREP_FORTRAN_GET_MPI_BOTTOM();
 
 /**
    External fortran function to trigger a callback which sets MPI_IN_PLACE.
  */
 extern void
-FORTRAN_MANGLED( scorep_fortran_get_mpi_in_place ) ();
+SCOREP_FORTRAN_GET_MPI_IN_PLACE();
 
 /**
    External fortran function to trigger a callback which sets MPI_STATUS_IGNORE.
  */
 extern void
-FORTRAN_MANGLED( scorep_fortran_get_mpi_status_ignore ) ();
+SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE();
 
 /**
    External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
  */
 extern void
-FORTRAN_MANGLED( scorep_fortran_get_mpi_statuses_ignore ) ();
+SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE();
 
 /**
    External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
  */
 extern void
-FORTRAN_MANGLED( scorep_fortran_get_mpi_unweighted ) ();
+SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
 
 /**
  * Mapping of string keys to enabling group IDs
@@ -188,21 +236,21 @@ scorep_mpi_init_adapter()
                          "In scorep_mpi_init_adapter\n" );
 
     /* Set Fortran constants */
-    FORTRAN_MANGLED( scorep_fortran_get_mpi_status_size ) ( &scorep_mpi_status_size );
+    SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( &scorep_mpi_status_size );
 #if HAVE( MPI_BOTTOM )
-    FORTRAN_MANGLED( scorep_fortran_get_mpi_bottom ) ();
+    SCOREP_FORTRAN_GET_MPI_BOTTOM();
 #endif
 #if HAVE( MPI_IN_PLACE )
-    FORTRAN_MANGLED( scorep_fortran_get_mpi_in_place ) ();
+    SCOREP_FORTRAN_GET_MPI_IN_PLACE();
 #endif
 #if HAVE( MPI_STATUS_IGNORE )
-    FORTRAN_MANGLED( scorep_fortran_get_mpi_status_ignore ) ();
+    SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE();
 #endif
 #if HAVE( MPI_STATUSES_IGNORE )
-    FORTRAN_MANGLED( scorep_fortran_get_mpi_statuses_ignore ) ();
+    SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE();
 #endif
 #if HAVE( MPI_UNWEIGHTED )
-    FORTRAN_MANGLED( scorep_fortran_get_mpi_unweighted ) ();
+    SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
 #endif
 
     scorep_mpi_win_init();

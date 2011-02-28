@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 noinst_LTLIBRARIES += libscorep_cube_writer.la
-libscorep_cube_writer_la_SOURCES =                             \
+libscorep_cube_writer_la_SOURCES =                               \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.c   \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.c        \

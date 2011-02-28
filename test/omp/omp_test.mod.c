@@ -41,10 +41,10 @@
 /* *INDENT-ON*  */
 
 
-#define PRAGMA_OMP_PARALLEL_1( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
-#define PRAGMA_OMP_PARALLEL_2( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
-#define PRAGMA_OMP_PARALLEL_3( tpd ) _Pragma( STR( omp parallel private ( i, j, xx, yy, xx2, yy2 ) POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
-#define PRAGMA_OMP_PARALLEL_4( tpd ) _Pragma( STR( omp parallel private ( j, i ) POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+#define PRAGMA_OMP_PARALLEL_1( tpd ) SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) )
+#define PRAGMA_OMP_PARALLEL_2( tpd ) SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) )
+#define PRAGMA_OMP_PARALLEL_3( tpd ) SCOREP_PRAGMA_OMP( parallel private ( i, j, xx, yy, xx2, yy2 ) POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) )
+#define PRAGMA_OMP_PARALLEL_4( tpd ) SCOREP_PRAGMA_OMP( parallel private ( j, i ) POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) )
 
 
 void

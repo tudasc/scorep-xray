@@ -1,13 +1,15 @@
 #include <config.h>
-#include "pomp2_lib.h"
+#include <pomp2_lib.h>
 
-extern int64_t FORTRAN_MANGLED(pomp_tpd);
-#define STR_( s ) #s
-#define STR( s ) STR_( s )
-#define PRAGMA_OMP_THREADPRIVATE(tpd) _Pragma( STR(omp threadprivate(tpd)) )
-#ifdef _OPENMP
-PRAGMA_OMP_THREADPRIVATE(FORTRAN_MANGLED(pomp_tpd))
-#endif
+#define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
+#define SCOREP_PRAGMA_STR_( str ) #str
+#define SCOREP_PRAGMA_STR( str ) SCOREP_PRAGMA_STR_( str )
+#define PRAGMA_OP( x ) _Pragma( x )
+#define SCOREP_PRAGMA( pragma ) PRAGMA_OP( SCOREP_PRAGMA_STR( pragma ) )
+#define SCOREP_PRAGMA_OMP( omp_pragma ) SCOREP_PRAGMA( omp omp_pragma )
+
+extern int64_t FORTRAN_ALIGNED POMP_TPD_MANGLED;
+SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 
 #define POMP_DLIST_00001 shared( pomp_region_1 )
 static POMP2_Region_handle pomp_region_1;

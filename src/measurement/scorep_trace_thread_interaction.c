@@ -49,8 +49,7 @@ SCOREP_Trace_CreateLocationData()
     SCOREP_Trace_LocationData* new_data = SCOREP_Memory_AllocForMisc(
         sizeof( SCOREP_Trace_LocationData ) );
     // initialize in SCOREP_Trace_OnLocationCreation
-    new_data->otf_writer   = 0;
-    new_data->otf_location = OTF2_UNDEFINED_UINT64;
+    new_data->otf_writer = 0;
     return new_data;
 }
 
@@ -150,11 +149,11 @@ SCOREP_SetOtf2WriterLocationId( SCOREP_Thread_LocationData* threadLocationData )
     }
 
     SCOREP_Trace_LocationData* trace_data = SCOREP_Thread_GetTraceLocationData( threadLocationData );
-    assert( trace_data->otf_location == OTF2_UNDEFINED_UINT64 );
-    trace_data->otf_location = SCOREP_CalculateGlobalLocationId( threadLocationData );
+    //assert( threadLocationData->location_id == UINT64_MAX );
+    uint64_t                   location_id = SCOREP_Thread_GetGlobalLocationId( threadLocationData );
 
-    SCOREP_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
-                                                            trace_data->otf_location );
+    SCOREP_Error_Code          error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
+                                                                     location_id );
     if ( SCOREP_SUCCESS != error )
     {
         _Exit( EXIT_FAILURE );

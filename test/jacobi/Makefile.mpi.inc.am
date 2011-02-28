@@ -30,7 +30,7 @@ jacobi_mpi_c_sources  = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
                         $(SRC_ROOT)test/jacobi/MPI/C/main.c
 jacobi_mpi_c_SOURCES  = $(jacobi_mpi_c_sources)
 jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_mpi_c_LDADD    = $(LIB_ROOT)libscorep_mpi.la
+jacobi_mpi_c_LDADD    = $(LIB_ROOT)libscorep_mpi.la @LIBBFD@
 
 check_PROGRAMS                      += jacobi_mpi_c_uninstrumented
 jacobi_mpi_c_uninstrumented_SOURCES  = $(jacobi_mpi_c_sources)
@@ -54,7 +54,7 @@ jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c       \
                             $(SRC_ROOT)test/jacobi/hybrid/C/main.c.opari.inc
 jacobi_mpi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_mpi_omp_c_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la
+jacobi_mpi_omp_c_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la @LIBBFD@
 
 check_PROGRAMS                        += jacobi_mpi_omp_c_unistrumented
 jacobi_mpi_omp_c_unistrumented_SOURCES = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c \
@@ -75,7 +75,7 @@ jacobi_mpi_cxx_sources  = $(SRC_ROOT)test/jacobi/MPI/C++/jacobi.cpp  \
                           $(SRC_ROOT)test/jacobi/MPI/C++/main.cpp
 jacobi_mpi_cxx_SOURCES  = $(jacobi_mpi_cxx_sources)
 jacobi_mpi_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_mpi_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi.la
+jacobi_mpi_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi.la @LIBBFD@
 
 check_PROGRAMS                        += jacobi_mpi_cxx_uninstrumented
 jacobi_mpi_cxx_uninstrumented_SOURCES  = $(jacobi_mpi_cxx_sources)
@@ -100,7 +100,7 @@ jacobi_mpi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.mod.cpp  
 jacobi_mpi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-jacobi_mpi_omp_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_cxx.la
+jacobi_mpi_omp_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_cxx.la @LIBBFD@
 
 check_PROGRAMS                            += jacobi_mpi_omp_cxx_unistrumented
 jacobi_mpi_omp_cxx_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp \
@@ -128,12 +128,14 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@ 
-jacobi_mpi_f90_LDADD    = $(LIB_ROOT)libscorep_mpi.la
+jacobi_mpi_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@ 
+jacobi_mpi_f90_LDADD    = $(LIB_ROOT)libscorep_mpi.la @LIBBFD@
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_uninstrumented_CPPFLAGS = -DMPI_VERSION=@HAVE_MPI_VERSION@
+# if the CPP flags are not specified  AM_CPPFLAGS are used by default which
+# cause an error on Jump.
+jacobi_mpi_f90_uninstrumented_CPPFLAGS = 
 jacobi_mpi_f90_uninstrumented_LDADD    = -lm
 
 SCOREP_MPI_TESTS += jacobi_mpi_f90
@@ -158,8 +160,8 @@ jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.
 jacobi_mpi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_mpi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
-jacobi_mpi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -DMPI_VERSION=@HAVE_MPI_VERSION@ -I$(INC_ROOT)test/jacobi/hybrid/Fortran -I$(INC_ROOT)/src -I$(SRC_ROOT)/src
-jacobi_mpi_omp_f90_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_f90.la
+jacobi_mpi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/hybrid/Fortran -I$(INC_ROOT)/src -I$(SRC_ROOT)/src
+jacobi_mpi_omp_f90_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_f90.la @LIBBFD@
 
 check_PROGRAMS                            += jacobi_mpi_omp_f90_unistrumented
 jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90 \
@@ -167,7 +169,7 @@ jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortr
                                              $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90
 jacobi_mpi_omp_f90_unistrumented_LDFLAGS   = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_unistrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS) -DMPI_VERSION=@HAVE_MPI_VERSION@
+jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS) 
 jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
 
 SCOREP_MPI_OMP_TESTS += jacobi_mpi_omp_f90

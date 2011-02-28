@@ -349,6 +349,11 @@ __rouexit()
 void
 ___rouent2( struct s1* p )
 {
+    /* For the reason of having 8 bytes the handles are stored in double fields.
+       However, we want to use them as 64 byte integers. */
+    SCOREP_SourceFileHandle* file   = ( SCOREP_SourceFileHandle* )&( p->file_handle );
+    SCOREP_RegionHandle*     region = ( SCOREP_RegionHandle* )&( p->region_handle );
+
     /* Ensure the compiler adapter is initialized */
     if ( scorep_compiler_initialize )
     {
@@ -364,22 +369,21 @@ ___rouent2( struct s1* p )
     /* Register new regions */
     if ( !p->isseen )
     {
-        /* get file id beloning to file name */
-        p->file_handle = ( double )scorep_compiler_get_file( p->file_name ) + ( double )0.1;
+        /* get file id belonging to file name */
+        *file = scorep_compiler_get_file( p->file_name );
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( !p->isseen ) &&
              ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
              ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
              ( strncmp( p->region_name, "pomp", 4 ) != 0 ) )
         {
-            p->region_handle = ( double )0.1 + ( double )
-                               SCOREP_DefineRegion( p->region_name,
-                                                    p->file_handle,
-                                                    p->lineno,
-                                                    SCOREP_INVALID_LINE_NO,
-                                                    SCOREP_ADAPTER_COMPILER,
-                                                    SCOREP_REGION_FUNCTION
-                                                    );
+            *region = SCOREP_DefineRegion( p->region_name,
+                                           *file,
+                                           p->lineno,
+                                           SCOREP_INVALID_LINE_NO,
+                                           SCOREP_ADAPTER_COMPILER,
+                                           SCOREP_REGION_FUNCTION
+                                           );
         }
         p->isseen = 1;
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
@@ -404,6 +408,13 @@ ___rouent2( struct s1* p )
 #pragma save_all_regs
 void
 ___rouent( struct s1* p )
+{
+    ___rouent2( p );
+}
+
+#pragma save_all_regs
+void
+___rouent64( struct s1* p )
 {
     ___rouent2( p );
 }
@@ -433,6 +444,13 @@ ___rouret2( void )
 #pragma save_all_regs
 void
 ___rouret( void )
+{
+    ___rouret2();
+}
+
+#pragma save_all_regs
+void
+___rouret64( void )
 {
     ___rouret2();
 }

@@ -54,7 +54,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_profiling,
         NULL,
-        "false",
+        "true",
         "enable profiling",
         "enable profiling"
     },

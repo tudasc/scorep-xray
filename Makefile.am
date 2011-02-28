@@ -25,9 +25,24 @@ EXTRA_DIST = $(srcdir)/src/config.h                         \
              $(srcdir)/build-config/platforms/altix         \
              $(srcdir)/build-config/platforms/bgl           \
              $(srcdir)/build-config/platforms/bgp           \
+             $(srcdir)/build-config/platforms/compiler-backend-ibm \
+             $(srcdir)/build-config/platforms/compiler-backend-sx \
+             $(srcdir)/build-config/platforms/compiler-frontend-gcc \
+             $(srcdir)/build-config/platforms/compiler-frontend-ibm \
+             $(srcdir)/build-config/platforms/compiler-frontend-intel \
+             $(srcdir)/build-config/platforms/compiler-frontend-pathscale \
+             $(srcdir)/build-config/platforms/compiler-frontend-pgi \
+             $(srcdir)/build-config/platforms/compiler-frontend-sun \
+             $(srcdir)/build-config/platforms/compiler-nocross-gcc \
+             $(srcdir)/build-config/platforms/compiler-nocross-ibm \
+             $(srcdir)/build-config/platforms/compiler-nocross-intel \
+             $(srcdir)/build-config/platforms/compiler-nocross-pathscale \
+             $(srcdir)/build-config/platforms/compiler-nocross-pgi \
+             $(srcdir)/build-config/platforms/compiler-nocross-sun \
              $(srcdir)/build-config/platforms/crayxt        \
              $(srcdir)/build-config/platforms/ibm           \
              $(srcdir)/build-config/platforms/linux         \
+             $(srcdir)/build-config/platforms/necsx         \
              $(srcdir)/build-config/platforms/sun           \
              $(srcdir)/build-config/platforms/user_provided \
              $(srcdir)/tools/tau/scorep_meets_tau.awk

@@ -14,31 +14,22 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_TRACE_TYPES_H
-#define SCOREP_INTERNAL_TRACE_TYPES_H
-
+#ifndef SCOREP_TRACING_DEFINITIONS_H
+#define SCOREP_TRACING_DEFINITIONS_H
 
 
 /**
- * @file       scorep_trace_types.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ * @status      alpha
+ * @file        src/measurement/tracing/scorep_tracing_definitions.h
+ * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
+ * @brief   Handles tracing specific definitions tasks.
  *
  *
  */
 
-#include <SCOREP_DefinitionHandles.h>
 
-#include <otf2/OTF2_EvtWriter.h>
+void
+SCOREP_Tracing_WriteDefinitions();
 
-
-typedef struct SCOREP_Trace_LocationData SCOREP_Trace_LocationData;
-
-
-struct SCOREP_Trace_LocationData
-{
-    OTF2_EvtWriter* otf_writer;
-};
-
-#endif /* SCOREP_INTERNAL_TRACE_TYPES_H */
+#endif /* SCOREP_TRACING_DEFINITIONS_H */

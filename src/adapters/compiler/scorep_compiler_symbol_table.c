@@ -268,6 +268,12 @@ scorep_compiler_get_sym_tab( void )
         const char*  funcname;
         unsigned int lno;
 
+        /* Process only symbols of type function */
+        if ( !( canonic_symbols[ i ]->flags & BSF_FUNCTION ) )
+        {
+            continue;
+        }
+
         /* ignore system functions */
         if ( strncmp( canonic_symbols[ i ]->name, "__", 2 ) == 0 ||
              strncmp( canonic_symbols[ i ]->name, "bfd_", 4 ) == 0 ||

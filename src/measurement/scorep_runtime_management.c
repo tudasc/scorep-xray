@@ -103,21 +103,6 @@ scorep_dir_name_is_created()
 }
 
 
-uint64_t
-SCOREP_CalculateGlobalLocationId( SCOREP_Thread_LocationData* locationData )
-{
-    assert( SCOREP_Mpi_IsInitialized() );
-    uint64_t local_location_id = SCOREP_Thread_GetLocationId( locationData );
-    uint64_t rank              = SCOREP_Mpi_GetRank();
-
-    assert( rank >> 32 == 0 );
-    assert( local_location_id >> 32 == 0 );
-
-    uint64_t global_location_id = ( local_location_id << 32 ) | rank;
-    return global_location_id;
-}
-
-
 void
 scorep_format_local_time( char* name )
 {

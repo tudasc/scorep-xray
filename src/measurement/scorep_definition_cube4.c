@@ -344,7 +344,6 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
                                             SCOREP_DefinitionManager*     manager,
                                             scorep_cube4_definitions_map* map )
 {
-    int                   index  = 0;
     cube_cnode*           cnode  = NULL;
     cube_region*          region = NULL;
     cube_cnode*           parent = NULL;
@@ -376,7 +375,7 @@ static void
 scorep_write_location_definitions_to_cube4( cube_t*                       my_cube,
                                             scorep_cube4_definitions_map* map,
                                             uint32_t                      ranks,
-                                            uint32_t*                     threads )
+                                            int*                          threads )
 {
     char          name[ 32 ];
     cube_machine* machine = cube_def_mach( my_cube, "machine name", "no description" );
@@ -406,7 +405,7 @@ void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      ranks,
-                                   uint32_t*                     threads )
+                                   int*                          threads )
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.

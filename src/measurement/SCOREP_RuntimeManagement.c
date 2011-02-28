@@ -149,7 +149,9 @@ SCOREP_InitMeasurement( void )
     scorep_adapters_initialize();
     scorep_adapters_initialize_location(); // not sure if this should be triggered by thread management
 
-    /* register finalization handler */
+    /* Register finalization handler, also called in SCOREP_InitMeasurementMPI() and
+     * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
+     * called before the MPI one. */
     atexit( scorep_finalize );
 }
 
@@ -352,12 +354,27 @@ SCOREP_InitMeasurementMPI( int rank )
     SCOREP_CreateExperimentDir();
     SCOREP_ProcessDeferredLocations();
     scorep_set_otf2_archive_master_slave();
+
+    /* Register finalization handler, also called in SCOREP_InitMeasurement() and
+     * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
+     * called before the MPI one. */
+    atexit( scorep_finalize );
+}
+
+void
+SCOREP_RegisterExitHandler()
+{
+    atexit( scorep_finalize );
 }
 
 
 void
 SCOREP_FinalizeMeasurementMPI()
 {
+    /* Register finalization handler, also called in SCOREP_InitMeasurement() and
+     * SCOREP_InitMeasurementMPI(). We need to make sure that our handler is
+     * called before the MPI one. */
+    atexit( scorep_finalize );
     /*
         // What Scalasca does here:
         // mark start of finalization

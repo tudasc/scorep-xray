@@ -38,7 +38,7 @@ mpi_omp_hello_world_SOURCES  = $(SRC_ROOT)/test/mpi_omp/mpi_omp_hello_world.mod.
                                $(SRC_ROOT)/test/mpi_omp/mpi_omp_hello_world.c.opari.inc
 mpi_omp_hello_world_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-mpi_omp_hello_world_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libmpi_omp_hello_world_pomp.la
+mpi_omp_hello_world_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libmpi_omp_hello_world_pomp.la @LIBBFD@
 
 SCOREP_MPI_OMP_TESTS += mpi_omp_hello_world
 

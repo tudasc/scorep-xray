@@ -57,16 +57,16 @@ struct scorep_status
 
 
 scorep_status status = {
-    INT_MAX,                              // mpi_rank
-    false,                                // mpi_rank_is_set
-    false,                                // mpi_is_initialized
-    false,                                // mpi_is_finalized
-    0,                                    // mpi_comm_world_size
-    false,                                // is_experiment_dir_created
-    true,                                 // is_profiling_enabled
-    true,                                 // is_tracing_enabled
-    true,                                 // is_oa_enabled
-    false                                 // otf2_has_flushed
+    INT_MAX,                               // mpi_rank
+    false,                                 // mpi_rank_is_set
+    false,                                 // mpi_is_initialized
+    false,                                 // mpi_is_finalized
+    0,                                     // mpi_comm_world_size
+    false,                                 // is_experiment_dir_created
+    true,                                  // is_profiling_enabled
+    true,                                  // is_tracing_enabled
+    false,                                 // is_oa_enabled
+    false                                  // otf2_has_flushed
 };
 
 

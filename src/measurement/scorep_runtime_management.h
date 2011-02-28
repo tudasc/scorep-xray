@@ -61,10 +61,6 @@ void
 SCOREP_RenameExperimentDir();
 
 
-uint64_t
-SCOREP_CalculateGlobalLocationId( SCOREP_Thread_LocationData* locationData );
-
-
 /**
  * Archive for trace data. One per process, can contain multiple "location"
  * writers.

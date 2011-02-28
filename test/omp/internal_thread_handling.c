@@ -27,13 +27,29 @@
 
 #include <config.h>
 
+#include <omp.h>
+#include <pomp2_lib.h>
 #include <stdio.h>
 #include <inttypes.h>
-#include "omp_test.c.opari.inc"
 
+#define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
+#define SCOREP_PRAGMA_STR_( str ) #str
+#define SCOREP_PRAGMA_STR( str ) SCOREP_PRAGMA_STR_( str )
+#define PRAGMA_OP( x ) _Pragma( x )
+#define SCOREP_PRAGMA( pragma ) PRAGMA_OP( SCOREP_PRAGMA_STR( pragma ) )
+#define SCOREP_PRAGMA_OMP( omp_pragma ) SCOREP_PRAGMA( omp omp_pragma )
 
-#define PRAGMA_OMP_PARALLEL_1( tpd ) _Pragma( STR( omp parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) ) )
+extern int64_t FORTRAN_ALIGNED POMP_TPD_MANGLED;
+SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 
+#define POMP_DLIST_00001 shared( pomp_region_1 )
+static POMP2_Region_handle pomp_region_1;
+
+void
+POMP2_Init_regions_1274996139600418_1()
+{
+    POMP2_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**" );
+}
 
 void
 foo()
@@ -48,7 +64,7 @@ main()
     printf( "thread %d in main.     pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
     int pomp_num_threads = omp_get_max_threads();
     POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads );
-    PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
+    SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( FORTRAN_MANGLED( pomp_tpd ) ) )
     {
         printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
         foo();

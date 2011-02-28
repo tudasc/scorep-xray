@@ -37,6 +37,7 @@
 #include <otf2/OTF2_EvtWriter.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
@@ -304,6 +305,21 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+    }
+
+    /*
+     * The OpenMP implementation on JUMP uses
+     * its own exit handler. This exit handler is registered after our
+     * Scorep-P exit handler in the test cases. Causing segmentation faults
+     * during finalization, due to invalid TPD variables. Thus, we register
+     * an exit handler in the join event, which ensures that the Score-P
+     * finalization can access threadprivate variables.
+     */
+    static bool is_exit_handler_registered = false;
+    if ( !is_exit_handler_registered && !omp_in_parallel() )
+    {
+        is_exit_handler_registered = true;
+        SCOREP_RegisterExitHandler();
     }
 }
 

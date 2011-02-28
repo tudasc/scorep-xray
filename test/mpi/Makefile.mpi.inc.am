@@ -8,7 +8,7 @@ mpitest_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_DIR_UTIL)
 
 mpitest_LDADD = \
-    $(LIB_ROOT)libscorep_mpi.la \
+    $(LIB_ROOT)libscorep_mpi.la @LIBBFD@ \
     $(LIB_ROOT)libscorep_pomp_dummy.la \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libscorep_utilities.la
@@ -21,7 +21,7 @@ test_link_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_DIR_UTIL)
 test_link_LDADD = \
-    $(LIB_ROOT)libscorep_mpi.la \
+    $(LIB_ROOT)libscorep_mpi.la @LIBBFD@ \
     $(LIB_ROOT)libscorep_pomp_dummy.la \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
@@ -31,7 +31,7 @@ test_link_LDADD = \
 check_PROGRAMS += mpi_hello_world
 mpi_hello_world_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
 mpi_hello_world_LDADD =                 \
-    $(LIB_ROOT)libscorep_mpi.la           \
+    $(LIB_ROOT)libscorep_mpi.la @LIBBFD@ \
     $(LIB_DIR_OTF2)libotf2.la           \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
     -lm

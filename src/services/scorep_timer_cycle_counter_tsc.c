@@ -86,6 +86,7 @@ scorep_get_frequency_from_proc_cpuinfo()
     if ( ( cpuinfofp = fopen( SCOREP_PROCDIR "cpuinfo", "r" ) ) == NULL )
     {
         SCOREP_ERROR_POSIX();
+        _Exit( EXIT_FAILURE );
     }
 
     char     line[ 1024 ];

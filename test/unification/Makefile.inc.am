@@ -32,6 +32,6 @@ unification_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
                             -I$(INC_ROOT)vendor/hash             \
                             -I$(INC_ROOT)vendor/cutest           \
                             -I$(INC_DIR_UTIL)
-unification_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
+unification_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
 
 SCOREP_SERIAL_TESTS += unification_test

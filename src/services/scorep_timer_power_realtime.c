@@ -31,32 +31,28 @@
 
 #include <assert.h>
 #include <stdbool.h>
-
-static bool isInitialized = false;
+#include <sys/time.h>
+#include <sys/systemcfg.h>
 
 void
 SCOREP_Timer_Initialize()
 {
-    assert( false ); // implement me
-    if ( isInitialized )
-    {
-        return;
-    }
-    isInitialized = true;
+    return;
 }
 
 
 uint64_t
 SCOREP_GetClockTicks()
 {
-    assert( false ); // implement me
-    return 0;
+    timebasestruct_t t;
+    read_real_time( &t, TIMEBASE_SZ );
+    time_base_to_time( &t, TIMEBASE_SZ );
+    return t.tb_high * 1e9 + t.tb_low;
 }
 
 
 uint64_t
 SCOREP_GetClockResolution()
 {
-    assert( false ); // implement me
-    return 0;
+    return 1e9;
 }

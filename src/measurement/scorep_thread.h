@@ -97,6 +97,10 @@ SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData );
 uint64_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 
+uint64_t
+SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData );
+
+
 SCOREP_LocationHandle
 SCOREP_Thread_GetLocationHandle( SCOREP_Thread_LocationData* locationData );
 

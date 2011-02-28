@@ -614,7 +614,7 @@ SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
                                         std::string output_file )
 {
     std::string command = nm + " " +  object_files
-                          + " | " + grep + " -i \" pomp2_init_regions\" | "
+                          + " | grep -E -i \"T \\.{0,1}_{0,2}pomp2_init_regions\" | "
                           + awk + " -f " + opari_script
                           + " > " + output_file;
     if ( verbosity >= 1 )

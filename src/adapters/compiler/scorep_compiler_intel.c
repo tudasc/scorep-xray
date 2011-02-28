@@ -186,14 +186,10 @@ __VT_IntelEntry( char*     str,
         {
             /* -- region entered the first time, register region -- */
             scorep_compiler_register_region( hash_node );
-
-            /* Set exit id */
-            *id2 = hash_node->key;
         }
         else
         {
-            *id  = SCOREP_COMPILER_FILTER_ID;
-            *id2 = SCOREP_COMPILER_FILTER_ID;
+            *id = SCOREP_COMPILER_FILTER_ID;
         }
     }
     else if ( *id != SCOREP_COMPILER_FILTER_ID )
@@ -209,6 +205,9 @@ __VT_IntelEntry( char*     str,
                              hash_node->region_handle );
         SCOREP_EnterRegion( hash_node->region_handle );
     }
+
+    /* Set exit id */
+    *id2 = *id;
 }
 
 void

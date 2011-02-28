@@ -113,10 +113,11 @@ endif
 
 # sun specific settings
 
-#if SCOREP_COMPILER_SUN
-# libscorep_adapter_compiler_la_SOURCES += \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
-#endif
+if SCOREP_COMPILER_SUN
+ libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
+endif
 
 # hp specific settings
 
@@ -124,3 +125,21 @@ endif
 # libscorep_adapter_compiler_la_SOURCES += \
 #    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_hp.c
 #endif
+
+# If no compiler adapter is available
+if !SCOREP_COMPILER_INTEL 
+if !SCOREP_COMPILER_IBM 
+if !SCOREP_COMPILER_PGI 
+if !SCOREP_COMPILER_GNU 
+if !SCOREP_COMPILER_SX
+if !SCOREP_COMPILER_SUN
+libscorep_adapter_compiler_la_SOURCES +=                                \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c
+endif
+endif
+endif
+endif
+endif
+endif
+

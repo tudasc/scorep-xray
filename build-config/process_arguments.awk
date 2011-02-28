@@ -16,10 +16,10 @@
     if ($0 == "") {
       next
     }
-    n = split($0, split_array, "=")
-    if (n == 2) {
-      args_binary[split_array[1]]=split_array[2]
-    }
+    n = index($0, "=")
+    if (n != 0) { # line with at least one "=". Use first "=" as key-value separator
+      args_binary[substr($0, 0, n-1)] = substr($0, n+1)
+    }    
     else {
       args_unary = "'" $0 "' " args_unary
     }
@@ -38,11 +38,11 @@
 #       }
 #     }
 #   }
-  else { # FILENAME == "${ac_scorep_platform}"
+  else { # FILENAME == "${ac_scorep_platform}"  
     if (index($0, "#") == 0) { # ! commented line
-      n = split($0, split_array, "=")
-      if (n == 2) {
-        args_binary[split_array[1]]=split_array[2]
+      n = index($0, "=")
+      if (n != 0) { # line with at least one "=". Use first "=" as key-value separator
+        args_binary[substr($0, 1, n-1)] = substr($0, n+1)
       }
     }
   }
