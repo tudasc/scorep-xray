@@ -142,6 +142,8 @@ SCOREP_DefineRegion
 
 // scorep_meets_tau_end
 
+const char*
+SCOREP_String_Get( SCOREP_StringHandle handle );
 
 const char*
 SCOREP_Region_GetName( SCOREP_RegionHandle handle );

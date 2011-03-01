@@ -1580,6 +1580,13 @@ SCOREP_Region_GetType( SCOREP_RegionHandle handle )
  * @{
  */
 
+const char*
+SCOREP_String_Get( SCOREP_StringHandle handle )
+{
+    SCOREP_String_Definition* str = SCOREP_LOCAL_HANDLE_DEREF( handle, String );
+
+    return str->string_data;
+}
 
 /**
  * Gets read-only access to the name of the parameter.

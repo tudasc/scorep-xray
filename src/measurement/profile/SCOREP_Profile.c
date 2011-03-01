@@ -356,6 +356,7 @@ void
 SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+    scorep_profile_substitute_parameter();
 
     /* Thread start node expansion */
     if ( processFlags & SCOREP_Profile_ProcessThreads )

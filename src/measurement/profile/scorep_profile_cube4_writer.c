@@ -322,6 +322,8 @@ scorep_profile_write_cube4()
 
     /* -------------------------------- Initialization */
 
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
+
     /* Perform initilazation for on rank 0 */
     if ( my_rank == 0 )
     {
@@ -399,11 +401,13 @@ scorep_profile_write_cube4()
         cube_def_attr( my_cube, "experiment time", "need a date" );
 
         /* Write definitions to cube */
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
         scorep_write_definitions_to_cube4( my_cube, map, ranks_number, threads_per_rank );
     }
 
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
     id_2_node = calloc( callpath_number * local_threads, sizeof( scorep_profile_node* ) );
 
     for ( uint64_t i = 0; node != NULL; node = node->next_sibling )
@@ -415,6 +419,7 @@ scorep_profile_write_cube4()
     }
 
     /* Write implicit time */
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
     if ( my_rank == 0 )
     {
         metric = scorep_get_cube4_metric( map, ( SCOREP_CounterHandle )1 );
@@ -426,6 +431,7 @@ scorep_profile_write_cube4()
 
 
     /* Write visits */
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing visits" );
     if ( my_rank == 0 )
     {
         metric = scorep_get_cube4_metric( map, ( SCOREP_CounterHandle )2 );
@@ -438,6 +444,7 @@ scorep_profile_write_cube4()
 
     /* Clean up */
 cleanup:
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Clean up" );
     free( id_2_node );
     free( offset_per_rank );
     free( threads_per_rank );

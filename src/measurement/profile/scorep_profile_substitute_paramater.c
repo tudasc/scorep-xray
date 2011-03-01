@@ -61,7 +61,7 @@ scorep_profile_delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
    Initialize the name table
  */
 void
-scorep_compiler_init_name_table()
+scorep_profile_init_name_table()
 {
     scorep_profile_name_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                            &SCOREP_Hashtab_CompareStrings );
@@ -71,11 +71,11 @@ scorep_compiler_init_name_table()
    Finalize the file table
  */
 void
-scorep_compiler_final_file_table()
+scorep_profile_finalize_name_table()
 {
-    SCOREP_Hashtab_Foreach( scorep_profile_name_table, &scorep_profile_delete_name_entry );
+    SCOREP_Hashtab_Foreach( scorep_profile_name_table, &scorep_profile_delete_name_table_entry );
     SCOREP_Hashtab_Free( scorep_profile_name_table );
-    scorep_compiler_file_table = NULL;
+    scorep_profile_name_table = NULL;
 }
 
 
@@ -96,7 +96,7 @@ scorep_profile_substitute_parameter_data( scorep_profile_node* node,
 {
     size_t                index;
     SCOREP_Hashtab_Entry* entry  = NULL;
-    SCOREP_Region_Handle* handle = NULL;
+    SCOREP_RegionHandle*  handle = NULL;
 
     /* check whether a region of this name is already registered */
     entry = SCOREP_Hashtab_Find( scorep_profile_name_table, region,
@@ -140,14 +140,14 @@ scorep_profile_substitute_parameter_data( scorep_profile_node* node,
    @param param unused.
  */
 static void
-scorep_profile_substitute_paramter_in_node( scorep_profile_node* node,
-                                            void*                param )
+scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
+                                             void*                param )
 {
     /* process integer parameter nodes */
-    if ( node->node_type == scorep_profile_node_paramter_integer )
+    if ( node->node_type == scorep_profile_node_parameter_integer )
     {
         scorep_profile_integer_node_data* data = SCOREP_PROFILE_DATA2PARAMINT( node->type_specific_data );
-        char*                             name = SCOREP_Parameter_GetName( data->handle );
+        const char*                       name = SCOREP_Parameter_GetName( data->handle );
 
         /* Use malloc, because its in post-processing => not time critical
            and its immediately freed => saves memory */
@@ -164,12 +164,12 @@ scorep_profile_substitute_paramter_in_node( scorep_profile_node* node,
     }
 
     /* process string parameter nodes */
-    else if ( node->node_type == scorep_profile_node_paramter_string )
+    else if ( node->node_type == scorep_profile_node_parameter_string )
     {
         scorep_profile_string_node_data* data
             = SCOREP_PROFILE_DATA2PARAMSTR( node->type_specific_data );
-        char*                            name  = SCOREP_Parameter_GetName( data->handle );
-        char*                            value = SCOREP_String_Get( data->value );
+        const char*                      name  = SCOREP_Parameter_GetName( data->handle );
+        const char*                      value = SCOREP_String_Get( data->value );
 
         /* Use malloc, because its in post-processing => not time critical
            and its immediately freed => saves memory */
@@ -195,11 +195,11 @@ scorep_profile_substitute_paramter_in_node( scorep_profile_node* node,
    region has the name '<parameter name>=<value>'.
  */
 void
-scorep_profile_subsitute_parameter()
+scorep_profile_substitute_parameter()
 {
     scorep_profile_node* node = scorep_profile.first_root_node;
 
-    scorep_profile_initialize_name_table();
+    scorep_profile_init_name_table();
 
     while ( node != NULL )
     {
