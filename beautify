@@ -27,7 +27,7 @@
 
 AWK=awk
 BEAUTIFY=uncrustify
-BEAUTIFY_CONFIG=tools/beautifier/beautify.cfg
+BEAUTIFY_CONFIG=vendor/common/beautifier/beautify.cfg
 GREP=grep
 SED=sed
 SVN=svn
