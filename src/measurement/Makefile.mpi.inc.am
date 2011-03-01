@@ -27,13 +27,13 @@
 if MPI_SUPPORTED
 noinst_LTLIBRARIES += libscorep_paradigm_mpi.la
 libscorep_paradigm_mpi_la_CPPFLAGS = $(AM_CPPFLAGS)                       \
-                                   -I$(INC_ROOT)src/measurement         \
-                                   -I$(INC_ROOT)src/measurement/include \
-                                   -I$(INC_ROOT)src/measurement/profile \
-                                   -I$(INC_ROOT)src/adapters/include    \
-                                   -I$(PUBLIC_INC_DIR)                  \
-                                   -I$(INC_DIR_OTF2)                    \
-                                   -I$(INC_DIR_UTIL)                    \
+                                   -I$(INC_ROOT)src/measurement           \
+                                   -I$(INC_ROOT)src/measurement/include   \
+                                   -I$(INC_ROOT)src/measurement/profiling \
+                                   -I$(INC_ROOT)src/adapters/include      \
+                                   -I$(PUBLIC_INC_DIR)                    \
+                                   -I$(INC_DIR_OTF2)                      \
+                                   -I$(INC_DIR_UTIL)                      \
                                    -I$(INC_DIR_VENDOR_HASH)
 libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \

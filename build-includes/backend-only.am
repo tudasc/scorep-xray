@@ -5,7 +5,7 @@
 include ../src/Makefile.inc.am
 include ../src/measurement/Makefile.inc.am
 include ../src/measurement/Makefile.cube_writer.inc.am
-include ../src/measurement/profile/Makefile.inc.am
+include ../src/measurement/profiling/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/pomp/Makefile.inc.am

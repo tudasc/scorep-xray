@@ -23,34 +23,34 @@
 
 ## include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
-OA_FLAGS =                                 							\
-    $(AM_CPPFLAGS)                              					\
-    -I$(INC_ROOT)src/measurement/OA        							\
-    -I$(INC_ROOT)src/measurement/profile   							\
-    -I$(INC_ROOT)src/measurement/include        					\
-    -I$(INC_ROOT)src/measurement/               					\
-    -I$(INC_ROOT)src/adapters/mpi									\
-    -I$(PUBLIC_INC_DIR)                         					\
+OA_FLAGS =                                 	\
+    $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/measurement/OA        	\
+    -I$(INC_ROOT)src/measurement/profile   	\
+    -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_ROOT)src/measurement/               \
+    -I$(INC_ROOT)src/adapters/mpi		\
+    -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
 noinst_LTLIBRARIES += libscorep_oa_base.la
-libscorep_oa_base_la_SOURCES =                                  		\
+libscorep_oa_base_la_SOURCES =                                  	\
     $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Functions.c            	\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.h       				\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.c       				\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.h       		\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.c       		\
     $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.h         		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c					\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.h				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.c				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.h				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.c				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c			\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.h		\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.c		\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.h		\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.c		\
     $(SRC_ROOT)src/measurement/OA/scorep_oa_registry_protocol.h		\
-    $(SRC_ROOT)src/measurement/OA/y.tab.c							\
-    $(SRC_ROOT)src/measurement/OA/y.tab.h							\
-    $(SRC_ROOT)src/measurement/OA/scanner.h							\
-    #$(SRC_ROOT)src/measurement/OA/lex.yy.c							\
+    $(SRC_ROOT)src/measurement/OA/y.tab.c				\
+    $(SRC_ROOT)src/measurement/OA/y.tab.h				\
+    $(SRC_ROOT)src/measurement/OA/scanner.h				\
+    #$(SRC_ROOT)src/measurement/OA/lex.yy.c				\
     $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c         
-    
+
 libscorep_oa_base_la_CPPFLAGS = $(OA_FLAGS)
 endif
 

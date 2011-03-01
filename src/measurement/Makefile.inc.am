@@ -55,7 +55,7 @@ libscorep_measurement_la_SOURCES =                                \
 libscorep_measurement_la_CPPFLAGS =               \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/include        \
-    -I$(INC_ROOT)src/measurement/profile        \
+    -I$(INC_ROOT)src/measurement/profiling        \
     -I$(INC_ROOT)src/measurement/OA             \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/services                   \
@@ -87,7 +87,7 @@ libscorep_paradigm_omp_la_CPPFLAGS =       \
     -I$(INC_DIR_UTIL)                    \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement/profile \
+    -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
     -I$(INC_ROOT)src/services            \
     -I$(PUBLIC_INC_DIR)                  \
@@ -113,7 +113,7 @@ libscorep_paradigm_non_omp_la_CPPFLAGS =   \
     -I$(INC_DIR_UTIL)                    \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement/profile \
+    -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
     -I$(INC_ROOT)src/services            \
     -I$(PUBLIC_INC_DIR)                  \
@@ -130,7 +130,7 @@ libscorep_paradigm_non_mpi_la_CPPFLAGS =   \
     $(AM_CPPFLAGS)                       \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement/profile \
+    -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
     -I$(INC_ROOT)src/adapters/include    \
     -I$(PUBLIC_INC_DIR)                  \
