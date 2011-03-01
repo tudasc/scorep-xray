@@ -37,6 +37,29 @@
 #define BUFFER_SIZE 1024
 
 /* **************************************************************************************
+   Type definitions
+****************************************************************************************/
+
+/**
+   Type for an instance interval of a selected region.
+ */
+typedef struct
+{
+    uint64_t first;
+    uint64_t last;
+} scorep_selected_interval;
+
+/**
+   Type for storing data of one selected region. Contained intervals are sorted after
+   their first instance.
+ */
+typedef struct
+{
+    char*          region_name;
+    SCOREP_Vector* intervals;
+} scorep_selected_region;
+
+/* **************************************************************************************
    Variable definitions
 ****************************************************************************************/
 
@@ -61,75 +84,170 @@ SCOREP_ConfigVariable scorep_selective_configs[] = {
     }
 };
 
+/**
+   The list of traced regions. The regions are alphabetically sorted after their
+   region name.
+ */
+SCOREP_Vector* scorep_selected_regions = NULL;
 
-#if 0
-char*
-scorep_strtok( char* str,
-               char* delimiters )
-{
-    static size_t length  = 0;
-    static size_t pos     = 0;
-    static char*  buffer  = NULL;
-    char*         ret_val = NULL;
-
-    /* Remember new string data */
-    if ( str != NULL )
-    {
-        buffer = str;
-        length = strlen( buffer );
-        pos    = 0;
-    }
-
-    if ( buffer == NULL )
-    {
-        return NULL;
-    }
-
-    /* Skip leading delimiters */
-    pos = strspn( buffer, delimiters );
-    if ( pos == length )
-    {
-        buffer = NULL;
-        return NULL;
-    }
-    buffer  = &buffer[ pos ];
-    length -= pos;
-
-    /* Find next delimiter */
-    pos     = strcspn( buffer, delimiters );
-    ret_val = buffer;
-    if ( pos == length )
-    {
-        buffer = NULL;
-    }
-    else
-    {
-        buffer[ pos ] = '\0';
-        buffer        = &buffer[ pos + 1 ];
-    }
-    return ret_val;
-}
-#endif
 
 /* **************************************************************************************
    Local helper functions
 ****************************************************************************************/
 
 /**
+   Compares a pointer to a 64 bit integer with the first entry of an interval.
+ */
+static int8_t
+scorep_selective_compare_intervals( const void* value,
+                                    const void* item )
+{
+    return *( uint64_t* )value - ( ( scorep_selected_interval* )item )->first;
+}
+
+/**
+   Compares an string to the region name of a selected region.
+ */
+static int8_t
+scorep_selective_compare_regions( const void* value,
+                                  const void* item )
+{
+    return strcmp( ( const char* )value, ( ( scorep_selected_region* )item )->region_name );
+}
+
+/**
+   Initializes the traced region list
+ */
+static SCOREP_Error_Code
+scorep_selective_init_region_list()
+{
+    scorep_selected_regions = SCOREP_Vector_Create( 4 );
+    if ( scorep_selected_regions == NULL )
+    {
+        return SCOREP_ERROR_MEM_ALLOC_FAILED;
+    }
+    else
+    {
+        return SCOREP_SUCCESS;
+    }
+}
+
+/**
+   Adds an addtional interval to an existing traced region. It checks whether the new
+   region overlaps and concatenates to an existing region. In this case regions are
+   merged.
+   @param region Pointer to the regio instance to which a new interval is added.
+   @param first  First instance number of the new interval.
+   @param last   Last instance number of the new interval.
+ */
+void
+scorep_selective_add_interval( scorep_selected_region* region,
+                               uint64_t                first,
+                               uint64_t                last )
+{
+    size_t pos = 0;
+
+    /* Create a new entry */
+    scorep_selected_interval* new_interval =
+        ( scorep_selected_interval* )malloc( sizeof( scorep_selected_interval ) );
+    new_interval->first = first;
+    new_interval->last  = last;
+
+    SCOREP_Vector_LowerBound( region->intervals,
+                              &first,
+                              scorep_selective_compare_intervals,
+                              &pos );
+    SCOREP_Vector_Insert( region->intervals, pos, new_interval );
+}
+
+/**
+   Create a new new entry for the traced region list.
+   @param region The region name of the new traced region.
+   @param first  The first instance number of the initial instance interval.
+   @param last   The last instance numbe of the initial instance interval.
+   @param index  Index in the list where the new entry is inserted.
+ */
+static SCOREP_Error_Code
+scorep_selective_insert_new_region( const char* region,
+                                    int         first,
+                                    int         last,
+                                    size_t      index )
+{
+    /* Create region */
+    scorep_selected_region* new_region =
+        ( scorep_selected_region* )malloc( sizeof( scorep_selected_region ) );
+    if ( new_region == NULL )
+    {
+        SCOREP_ERROR_POSIX( "Failed to allocate memory for new entry" );
+        return SCOREP_ERROR_MEM_ALLOC_FAILED;
+    }
+
+    new_region->region_name = NULL;
+    new_region->intervals   = NULL;
+
+    new_region->region_name = SCOREP_CStr_dup( region );
+    new_region->intervals   = SCOREP_Vector_Create( 1 );
+
+    if ( new_region->region_name == NULL || new_region->intervals == NULL )
+    {
+        SCOREP_ERROR_POSIX( "Failed to allocate memory for new entry" );
+        free( new_region->region_name );
+        free( new_region->intervals );
+        free( new_region );
+        return SCOREP_ERROR_MEM_ALLOC_FAILED;
+    }
+
+    SCOREP_Vector_Insert( scorep_selected_regions, index, new_region );
+
+    /* Insert initial interval */
+    scorep_selective_add_interval( new_region, first, last );
+
+    return SCOREP_SUCCESS;
+}
+
+/**
    Adds an traced region to the list of traced regions.
-   @param region  The region name of the traced region.
-   @param start   The first instance number of the traced interval of instances.
-   @param end     The last instance number of the traced interval of instances.
+   @param name    The region name of the traced region.
+   @param first   The first instance number of the traced interval of instances.
+   @param last    The last instance number of the traced interval of instances.
  */
 static void
-scorep_selective_add( const char* region,
-                      int         start,
-                      int         end )
+scorep_selective_add( const char* name,
+                      int         first,
+                      int         last )
 {
-    printf(
-        //SCOREP_DEBUG_PRINTF(SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-        "Add treced region %s %d:%d\n", region, start, end );
-    printf( "Implementment me:scorep_selective_add\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                         "Add treced region %s %d:%d\n", name, first, last );
+    assert( scorep_selected_regions != NULL );
+
+    size_t                  index      = 0;
+    scorep_selected_region* new_region = NULL;
+
+    /* Region does already exist */
+    if ( SCOREP_Vector_Find( scorep_selected_regions,
+                             name,
+                             scorep_selective_compare_regions,
+                             &index ) )
+    {
+        scorep_selected_region* region =
+            ( scorep_selected_region* )SCOREP_Vector_At( scorep_selected_regions, index );
+        scorep_selective_add_interval( region, first, last );
+        return;
+    }
+
+    /* It is a new region */
+    if ( SCOREP_Vector_UpperBound( scorep_selected_regions,
+                                   name,
+                                   scorep_selective_compare_regions,
+                                   &index ) )
+    {
+        scorep_selective_insert_new_region( name, first, last, index );
+    }
+    else
+    {
+        index = SCOREP_Vector_Size( scorep_selected_regions );
+        scorep_selective_insert_new_region( name, first, last, index );
+    }
 }
 
 /**
@@ -247,6 +365,14 @@ scorep_selective_init()
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                          "Initialize selective tracing" );
+
+    /* Initialize data structures */
+    if ( scorep_selective_init_region_list() != SCOREP_SUCCESS )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                      "Failed to create traced region list" );
+        return;
+    }
 
     /* Check whether a configuraion file name was specified */
     if ( scorep_selective_file_name == NULL || *scorep_selective_file_name == '\0' )
