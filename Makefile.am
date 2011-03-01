@@ -223,7 +223,7 @@ beautify:
 	for dir in $(SUBDIRS); do                        \
             (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
         done
-	cd $(srcdir); ./vendor/common/tools/beautifier/beautify
+	cd $(srcdir); ./vendor/common/beautifier/beautify
 
 beautify-clean:
 	find $(srcdir) -name "*.unc-backup*" -exec rm '{}' \;
