@@ -133,7 +133,7 @@ include ../../build-includes/mpi-backend-only.am
 ## Gettext's macros should be installed. So even if you do not really care about
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ## Can't be moved to common.am
-ACLOCAL_AMFLAGS = -I ../../build-config/m4
+ACLOCAL_AMFLAGS = -I ../../vendor/common/build-config/m4
 
 clean-local:
 	rm -f scorep_mpi_omp_tests.sh  scorep_mpi_tests.sh

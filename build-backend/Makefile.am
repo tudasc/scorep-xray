@@ -64,7 +64,7 @@ BUILD_DIR=build-backend
 ## Gettext's macros should be installed. So even if you do not really care about
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ## Can't be moved to common.am
-ACLOCAL_AMFLAGS = -I ../build-config/m4
+ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
                             clean-local-scorep-config-tests    \

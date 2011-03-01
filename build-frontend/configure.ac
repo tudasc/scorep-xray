@@ -24,7 +24,7 @@ AC_CONFIG_HEADERS([../src/config-frontend.h])
 
 AC_SCOREP_PDT
 AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../build-config/m4])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall tar-ustar])
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])

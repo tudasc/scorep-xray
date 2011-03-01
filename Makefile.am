@@ -8,7 +8,7 @@ SUBDIRS = $(subdirs) $(subdirs_custom)
 ## suitable options, or by autopoint and gettextize to locate the place where
 ## Gettext's macros should be installed. So even if you do not really care about
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
-ACLOCAL_AMFLAGS = -I build-config/m4
+ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 
 ## Still, sometimes there are files that must be distributed, but which are not
 ## covered in the automatic rules. These files should be listed in the 
@@ -18,33 +18,11 @@ ACLOCAL_AMFLAGS = -I build-config/m4
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
-EXTRA_DIST = $(srcdir)/src/config.h                         \
-             $(srcdir)/src/config-custom.h                  \
-             $(srcdir)/build-config/VERSION                 \
-             $(srcdir)/build-config/process_arguments.awk   \
-             $(srcdir)/build-config/platforms/altix         \
-             $(srcdir)/build-config/platforms/bgl           \
-             $(srcdir)/build-config/platforms/bgp           \
-             $(srcdir)/build-config/platforms/compiler-backend-ibm \
-             $(srcdir)/build-config/platforms/compiler-backend-sx \
-             $(srcdir)/build-config/platforms/compiler-frontend-gcc \
-             $(srcdir)/build-config/platforms/compiler-frontend-ibm \
-             $(srcdir)/build-config/platforms/compiler-frontend-intel \
-             $(srcdir)/build-config/platforms/compiler-frontend-pathscale \
-             $(srcdir)/build-config/platforms/compiler-frontend-pgi \
-             $(srcdir)/build-config/platforms/compiler-frontend-sun \
-             $(srcdir)/build-config/platforms/compiler-nocross-gcc \
-             $(srcdir)/build-config/platforms/compiler-nocross-ibm \
-             $(srcdir)/build-config/platforms/compiler-nocross-intel \
-             $(srcdir)/build-config/platforms/compiler-nocross-pathscale \
-             $(srcdir)/build-config/platforms/compiler-nocross-pgi \
-             $(srcdir)/build-config/platforms/compiler-nocross-sun \
-             $(srcdir)/build-config/platforms/crayxt        \
-             $(srcdir)/build-config/platforms/ibm           \
-             $(srcdir)/build-config/platforms/linux         \
-             $(srcdir)/build-config/platforms/necsx         \
-             $(srcdir)/build-config/platforms/sun           \
-             $(srcdir)/build-config/platforms/user_provided \
+EXTRA_DIST = $(srcdir)/src/config.h                                     \
+             $(srcdir)/src/config-custom.h                              \
+             $(srcdir)/build-config/VERSION                             \
+             $(srcdir)/vendor/common/build-config/platforms             \
+             $(srcdir)/vendor/common/build-config/process_arguments.awk \
              $(srcdir)/tools/tau/scorep_meets_tau.awk
 
 if ! CROSS_BUILD
@@ -245,7 +223,7 @@ beautify:
 	for dir in $(SUBDIRS); do                        \
             (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
         done
-	cd $(srcdir); ./tools/beautifier/beautify
+	cd $(srcdir); ./vendor/common/tools/beautifier/beautify
 
 beautify-clean:
 	find $(srcdir) -name "*.unc-backup*" -exec rm '{}' \;

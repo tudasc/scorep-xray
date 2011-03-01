@@ -18,7 +18,7 @@ AC_CONFIG_HEADERS([../src/config-backend.h])
 
 
 AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../build-config/m4])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall tar-ustar])
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])

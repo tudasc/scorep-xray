@@ -17,7 +17,7 @@ AC_CONFIG_AUX_DIR([build-config])
 
 ## Packages that use aclocal should declare where local macros can be found
 ## using AC_CONFIG_MACRO_DIR.
-AC_CONFIG_MACRO_DIR([build-config/m4])
+AC_CONFIG_MACRO_DIR([vendor/common/build-config/m4])
 
 ## Set the default installation prefix to /opt/scorep instead of /usr/local
 AC_PREFIX_DEFAULT([/opt/scorep])
@@ -33,15 +33,15 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
     AC_SCOREP_WITH_COMPILER_SUITE
     AC_SCOREP_LOAD_PLATFORMS_DEFAULTS
     # determine arguments for subdir configures
-    args="`$AWK -f $srcdir/build-config/process_arguments.awk \
-           $srcdir/build-config/platforms/$ac_scorep_platform \
+    args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
+           $srcdir/vendor/common/build-config/platforms/$ac_scorep_platform \
            $ac_scorep_compiler_suite_files                    \
            user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
     AC_MSG_NOTICE([debug: ac_scorep_cross_compiling: $ac_scorep_cross_compiling])
     # determine arguments for subdir configures
-    args="`$AWK -f $srcdir/build-config/process_arguments.awk \
+    args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            user_provided_configure_args`"
 fi
    
