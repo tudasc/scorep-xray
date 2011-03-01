@@ -53,7 +53,7 @@ fi
 AC_DEFUN([AC_SCOREP_WITH_COMPILER_SUITE],
 [
 ac_scorep_compiler_suite_files=""
-path_to_compiler_files="$srcdir/build-config/platforms/"
+path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([nocross-compiler-suite],
             [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|sun)], 
