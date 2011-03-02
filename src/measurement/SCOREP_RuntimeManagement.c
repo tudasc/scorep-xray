@@ -69,6 +69,8 @@ static bool scorep_finalized;
 
 static SCOREP_ExitCallback scorep_exit_callback = 0;
 
+bool                       scorep_recording_enabled = true;
+
 
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
@@ -398,6 +400,9 @@ SCOREP_EnableRecording
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
+    /* TODO: Check whether we are in a parallel region */
+    scorep_recording_enabled = true;
+    /*  TODO: Write event */
 }
 
 
@@ -411,6 +416,9 @@ SCOREP_DisableRecording
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
+    /* TODO: Check whether we are in a parallel region */
+    scorep_recording_enabled = false;
+    /*  TODO: Write event */
 }
 
 
@@ -425,7 +433,7 @@ SCOREP_RecordingEnabled
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
-    return true; /* Currently, there is no way to disable it */
+    return scorep_recording_enabled;
 }
 
 

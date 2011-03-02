@@ -179,14 +179,14 @@ typedef int64_t SCOREP_Fortran_Parameter;
    Converts a Fortran region handle to a C region handle.
    @param handle A Fortran region handle.
  */
-#define SCOREP_F2C_REGION( handle ) ( handle )
+#define SCOREP_F2C_REGION( handle ) ( SCOREP_F2C_POINTER( handle ) )
 
 /**
    @def SCOREP_C2F_REGION( handle )
    Converts a C region handle to a Fortran region handle.
    @param handle A C region handle.
  */
-#define SCOREP_C2F_REGION( handle ) ( handle )
+#define SCOREP_C2F_REGION( handle ) ( SCOREP_C2F_POINTER( handle ) )
 
 /**
    @def SCOREP_F2C_COUNTER( handle )

@@ -24,6 +24,8 @@
  */
 
 #include <config.h>
+#include <string.h>
+
 #include <SCOREP_User_Functions.h>
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Types.h>
@@ -32,8 +34,7 @@
 #include <SCOREP_Mutex.h>
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Fortran_Wrapper.h>
-
-#include <string.h>
+#include <scorep_selective_region.h>
 
 #define SCOREP_F_Begin_U SCOREP_F_BEGIN
 #define SCOREP_F_Init_U SCOREP_F_INIT
@@ -119,12 +120,17 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( *type );
 
         /* Register new region */
-        *handle = SCOREP_C2F_REGION( SCOREP_DefineRegion( name,
-                                                          *fileHandle,
-                                                          *lineNo,
-                                                          SCOREP_INVALID_LINE_NO,
-                                                          SCOREP_ADAPTER_USER,
-                                                          region_type ) );
+        SCOREP_User_RegionHandle region = scorep_user_create_region( name );
+        if ( region != SCOREP_INVALID_USER_REGION )
+        {
+            region->handle = SCOREP_DefineRegion( name,
+                                                  *fileHandle,
+                                                  *lineNo,
+                                                  SCOREP_INVALID_LINE_NO,
+                                                  SCOREP_ADAPTER_USER,
+                                                  region_type );
+        }
+        *handle = SCOREP_C2F_REGION( region );
 
         /* Cleanup */
         free( name );
@@ -151,7 +157,7 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* handle,
     }
 
     /* Generate region event */
-    SCOREP_EnterRegion( SCOREP_F2C_REGION( *handle ) );
+    SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *handle ) );
 }
 
 void

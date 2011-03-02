@@ -20,7 +20,7 @@
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  *  This file contains the implementation of the parser for selective tracing
- *  configuration file
+ *  configuration file.
  */
 
 #include <config.h>
@@ -33,31 +33,10 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_selective_region.h>
 
 #define BUFFER_SIZE 1024
 
-/* **************************************************************************************
-   Type definitions
-****************************************************************************************/
-
-/**
-   Type for an instance interval of a selected region.
- */
-typedef struct
-{
-    uint64_t first;
-    uint64_t last;
-} scorep_selected_interval;
-
-/**
-   Type for storing data of one selected region. Contained intervals are sorted after
-   their first instance.
- */
-typedef struct
-{
-    char*          region_name;
-    SCOREP_Vector* intervals;
-} scorep_selected_region;
 
 /* **************************************************************************************
    Variable definitions
@@ -81,7 +60,8 @@ SCOREP_ConfigVariable scorep_selective_configs[] = {
         NULL,
         "",
         "A file name which configures selective tracing"
-    }
+    },
+    SCOREP_CONFIG_TERMINATOR
 };
 
 /**
@@ -280,10 +260,10 @@ scorep_selective_parse_file( FILE* file )
     {
         /* Reads a line of arbitrary length*/
         fgets( buffer, buffer_size, file );
-        if ( feof( file ) )
-        {
-            break;
-        }
+        //if ( feof( file ) )
+        //{
+        //    break;
+        //}
         while ( strlen( buffer ) == buffer_size - 1 )
         {
             buffer_size += BUFFER_SIZE;
@@ -325,30 +305,61 @@ scorep_selective_parse_file( FILE* file )
         {
             while ( interval != NULL )
             {
-                pos   = strcspn( interval, ":" );
-                start = 0;
-                end   = -1;
-                if ( pos >= strlen( interval ) )
+                /* Check whether the interval contains only valid charakters */
+                pos = strspn( interval, "0123456789:" );
+                if ( pos < strlen( interval ) )
                 {
-                    sscanf( interval, "%d", &start );
-                    end = start;
+                    SCOREP_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
+                                  "Invalid interval in selective tracing configuration "
+                                  "file for region %s: '%s'. Ignore interval.",
+                                  region_name, interval );
                 }
                 else
                 {
-                    interval[ pos ] = '\0';
-                    sscanf( interval, "%d", &start );
-                    sscanf( &interval[ pos + 1 ], "%d", &end );
+                    /* Check wether it is a single iteration or an interval */
+                    pos   = strcspn( interval, ":" );
+                    start = 0;
+                    end   = -1;
+                    if ( pos >= strlen( interval ) )
+                    {
+                        /* Single instance number */
+                        sscanf( interval, "%d", &start );
+                        end = start;
+                    }
+                    else
+                    {
+                        /* Interval */
+                        interval[ pos ] = '\0';
+                        sscanf( interval, "%d", &start );
+                        sscanf( &interval[ pos + 1 ], "%d", &end );
+                    }
+                    scorep_selective_add( region_name, start, end );
                 }
-                scorep_selective_add( region_name, start, end );
                 interval = strtok( NULL, " \t\n," );
             }
         }
+        *buffer = '\0';
     }
 
 
     /* Clean up */
     free( buffer );
     return SCOREP_SUCCESS;
+}
+
+/* **************************************************************************************
+   Functions used in the adapter
+****************************************************************************************/
+scorep_selected_region*
+scorep_selective_get_region( const char* name )
+{
+    size_t index = 0;
+    if ( SCOREP_Vector_Find( scorep_selected_regions, name,
+                             scorep_selective_compare_regions, &index ) )
+    {
+        return ( scorep_selected_region* )SCOREP_Vector_At( scorep_selected_regions, index );
+    }
+    return NULL;
 }
 
 /* **************************************************************************************

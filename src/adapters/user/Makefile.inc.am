@@ -21,6 +21,8 @@ SCOREP_USER_C_SOURCES =                                    \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c      \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c   \
     $(SRC_ROOT)src/adapters/user/scorep_selective_parser.c \
+    $(SRC_ROOT)src/adapters/user/scorep_selective_region.c \
+    $(SRC_ROOT)src/adapters/user/scorep_selective_region.h \
     $(SRC_ROOT)src/adapters/include/SCOREP_User_Init.h
 
 SCOREP_USER_C_FLAGS =                           \

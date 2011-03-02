@@ -78,7 +78,7 @@ extern "C" {
 void
 SCOREP_User_RegionBegin
 (
-    SCOREP_RegionHandle*         handle,
+    SCOREP_User_RegionHandle*    handle,
     const char**                 lastFileName,
     SCOREP_SourceFileHandle*     lastFile,
     const char*                  name,
@@ -94,7 +94,7 @@ SCOREP_User_RegionBegin
 void
 SCOREP_User_RegionEnd
 (
-    const SCOREP_RegionHandle handle
+    const SCOREP_User_RegionHandle handle
 );
 
 /**
@@ -124,7 +124,7 @@ SCOREP_User_RegionEnd
 void
 SCOREP_User_RegionInit
 (
-    SCOREP_RegionHandle*         handle,
+    SCOREP_User_RegionHandle*    handle,
     const char**                 lastFileName,
     SCOREP_SourceFileHandle*     lastFile,
     const char*                  name,
@@ -141,7 +141,7 @@ SCOREP_User_RegionInit
 void
 SCOREP_User_RegionEnter
 (
-    const SCOREP_RegionHandle handle
+    const SCOREP_User_RegionHandle handle
 );
 
 /* **************************************************************************************
@@ -370,11 +370,11 @@ SCOREP_User_RecordingEnabled();
  * *************************************************************************************/
 
 /**
-    @class SCOREP_User_Region
+    @class SCOREP_User_RegionClass
     This class implements the SCOREP_USER_REGION statement. Its constructor and destructor
     generates the enter and respectively the exit event for the instrumented function.
  */
-class SCOREP_User_Region
+class SCOREP_User_RegionClass
 {
 public:
 /**
@@ -387,10 +387,10 @@ public:
     @param lineNo     The line number of the first source code line of the instrumented
                       region.
  */
-    SCOREP_User_Region( const char*                  regionName,
-                        const SCOREP_User_RegionType regionType,
-                        const char*                  file,
-                        const uint32_t               lineNo )
+    SCOREP_User_RegionClass( const char*                  regionName,
+                             const SCOREP_User_RegionType regionType,
+                             const char*                  file,
+                             const uint32_t               lineNo )
     {
         SCOREP_User_RegionBegin( &region_handle, &SCOREP_User_LastFileName,
                                  &SCOREP_User_LastFileHandle, regionName, regionType,
@@ -401,7 +401,7 @@ public:
         Generates an exit event for the instrumented region
      */
     ~
-    SCOREP_User_Region()
+    SCOREP_User_RegionClass()
     {
         SCOREP_User_RegionEnd( region_handle );
     }
@@ -410,7 +410,7 @@ private:
     /**
         Stores the region handle
      */
-    SCOREP_RegionHandle region_handle;
+    SCOREP_User_RegionHandle region_handle;
 };
 #endif /* __cplusplus */
 

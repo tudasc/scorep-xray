@@ -48,6 +48,7 @@
 #include "scorep_definition_structs.h"
 #include "scorep_definitions.h"
 
+extern bool scorep_recording_enabled;
 
 /**
  * Generate a region enter event in the measurement system.
@@ -65,7 +66,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_Enter( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                               NULL,
@@ -98,7 +99,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_Leave( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                               NULL,
@@ -137,7 +138,7 @@ SCOREP_MpiSend( uint32_t                     destinationRank,
                          tag,
                          ( unsigned long long )bytesSent );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_MpiSend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -176,7 +177,7 @@ SCOREP_MpiRecv( uint32_t                     sourceRank,
                          tag,
                          ( unsigned long long )bytesReceived );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_MpiRecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -222,7 +223,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                          ( unsigned long long )bytesSent,
                          ( unsigned long long )bytesReceived );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_MpiCollective( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                       NULL,
@@ -258,7 +259,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
 
     SCOREP_Thread_OnThreadFork( nRequestedThreads );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_OmpFork( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -291,7 +292,7 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
 
     SCOREP_Thread_OnThreadJoin();
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_OmpJoin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -334,7 +335,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         uint32_t dummy_acquire_release_count = 0;
         uint32_t dummy_region_id             = 0; // OTF2_EvtWriter_OmpALock needs to be changed, there
@@ -364,7 +365,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId/*,
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         uint32_t dummy_acquire_release_count = 0;
         uint32_t dummy_region_id             = 0; // OTF2_EvtWriter_OmpRLock needs to be changed, there
@@ -401,7 +402,7 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
 
     SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
     }
 
@@ -421,7 +422,7 @@ SCOREP_TriggerCounterInt64( SCOREP_CounterHandle counterHandle,
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
     }
@@ -443,7 +444,7 @@ SCOREP_TriggerCounterDouble( SCOREP_CounterHandle counterHandle,
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
     }
@@ -466,7 +467,7 @@ SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
 
     SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
     }
 
@@ -486,7 +487,7 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
     }
@@ -512,7 +513,7 @@ SCOREP_TriggerParameterDouble( SCOREP_ParameterHandle parameterHandle,
 
     SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
     }
 
@@ -532,7 +533,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
     }
