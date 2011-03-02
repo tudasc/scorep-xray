@@ -116,8 +116,9 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( region, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( group, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_window, *definitionManager );
-    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_communicator, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter_group, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( io_file_group, *definitionManager );
@@ -134,6 +135,7 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( region, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( group, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_window, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_communicator, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_topology, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_coords, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( counter_group, *definitionManager );
