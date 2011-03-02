@@ -159,13 +159,6 @@ SCOREP_Mpi_Bcast( void*               buf,
                   int                 root );
 
 int
-SCOREP_Mpi_Exscan( void*                sendbuf,
-                   void*                recvbuf,
-                   int                  count,
-                   SCOREP_Mpi_Datatype  scorep_datatype,
-                   SCOREP_Mpi_Operation scorep_operation );
-
-int
 SCOREP_Mpi_Gather( void*               sendbuf,
                    int                 sendcount,
                    SCOREP_Mpi_Datatype scorep_sendtype,

@@ -346,8 +346,12 @@ scorep_profile_write_cube4()
     SCOREP_Mpi_Reduce( &local_threads, &global_threads, 1, SCOREP_MPI_UNSIGNED,
                        SCOREP_MPI_SUM, 0 );
 
-    /* Calculate offset of this thread in the value vector */
-    SCOREP_Mpi_Exscan( &local_threads, &offset, 1, SCOREP_MPI_UNSIGNED, SCOREP_MPI_SUM );
+    /* Calculate offset of this thread in the value vector
+       Normally, I need MPI_Exscan, but since it is not available in MPI 1.0 it is
+       emulated with MPI_Scan.
+     */
+    SCOREP_Mpi_Scan( &local_threads, &offset, 1, SCOREP_MPI_UNSIGNED, SCOREP_MPI_SUM );
+    offset -= local_threads;
 
     /* Collect number of threads from every rank to rank 0. */
     SCOREP_Mpi_Gather( &local_threads, 1, SCOREP_MPI_UNSIGNED, threads_per_rank, 1,

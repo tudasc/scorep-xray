@@ -188,20 +188,6 @@ SCOREP_Mpi_Bcast( void*               buf,
 }
 
 int
-SCOREP_Mpi_Exscan( void*                sendbuf,
-                   void*                recvbuf,
-                   int                  count,
-                   SCOREP_Mpi_Datatype  scorep_datatype,
-                   SCOREP_Mpi_Operation scorep_operation )
-{
-    /* In non-mpi case we, have only rank zero. the rnk itself is excluded from the scan.
-       thus, set recvbuffer to zero */
-    int num = scorep_mpi_datatype_size[ scorep_datatype ] * count;
-    memset( recvbuf, 0, num );
-    return 0;
-}
-
-int
 SCOREP_Mpi_Gather( void*               sendbuf,
                    int                 sendcount,
                    SCOREP_Mpi_Datatype scorep_sendtype,

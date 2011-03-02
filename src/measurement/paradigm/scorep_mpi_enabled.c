@@ -260,19 +260,6 @@ SCOREP_Mpi_Bcast( void*               buf,
 }
 
 int
-SCOREP_Mpi_Exscan( void*                sendbuf,
-                   void*                recvbuf,
-                   int                  count,
-                   SCOREP_Mpi_Datatype  scorep_datatype,
-                   SCOREP_Mpi_Operation scorep_operation )
-{
-    return PMPI_Exscan( sendbuf, recvbuf, count,
-                        scorep_mpi_to_mpi_datatype( scorep_datatype ),
-                        scorep_mpi_to_mpi_operation[ scorep_operation ],
-                        scorep_mpi_comm_world );
-}
-
-int
 SCOREP_Mpi_Gather( void*               sendbuf,
                    int                 sendcount,
                    SCOREP_Mpi_Datatype scorep_sendtype,
