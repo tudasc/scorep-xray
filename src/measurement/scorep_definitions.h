@@ -215,16 +215,16 @@ SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition
 int
 SCOREP_GetNumberOfDefinitions();
 
-int
+uint32_t
 SCOREP_GetNumberOfRegionDefinitions();
 
-int
+uint32_t
 SCOREP_GetNumberOfCounterDefinitions();
 
-int
+uint32_t
 SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle );
 
-int
+uint32_t
 SCOREP_GetHandleToID( SCOREP_RegionHandle handle );
 
 void

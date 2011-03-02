@@ -213,7 +213,7 @@ SCOREP_GetNumberOfDefinitions()
 {
     assert( !omp_in_parallel() );
 
-    int n_definitions = 0;
+    int n_definitions = 0; /// @todo might overflow
     n_definitions += scorep_local_definition_manager.string_definition_counter;
     n_definitions += scorep_local_definition_manager.location_definition_counter;
     n_definitions += scorep_local_definition_manager.source_file_definition_counter;
@@ -234,28 +234,28 @@ SCOREP_GetNumberOfDefinitions()
     return n_definitions;
 }
 
-int
+uint32_t
 SCOREP_GetNumberOfRegionDefinitions()
 {
     assert( !omp_in_parallel() );
     return scorep_local_definition_manager.region_definition_counter;
 }
 
-int
+uint32_t
 SCOREP_GetNumberOfCounterDefinitions()
 {
     assert( !omp_in_parallel() );
     return scorep_local_definition_manager.counter_definition_counter;
 }
 
-int
+uint32_t
 SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
 {
     assert( !omp_in_parallel() );
     return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
 }
 
-int
+uint32_t
 SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
 {
     SCOREP_Callpath_Definition* callpath = SCOREP_LOCAL_HANDLE_DEREF( handle, Callpath );
