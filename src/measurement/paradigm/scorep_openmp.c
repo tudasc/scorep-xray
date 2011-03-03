@@ -30,5 +30,10 @@
 int
 SCOREP_Omp_InParallel()
 {
+    /* Because we use the define from SCOREP_Omp.h from the utilities, the actual code
+       looks the same for the omp and non-omp version. However, it need to be compiled
+       separately for each paradigm, because we use differnt ifdef branches in
+       SCOREP_Omp.h
+     */
     return omp_in_parallel();
 }

@@ -21,10 +21,11 @@
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @status alpha
  *
- * Abstraction funcitons for omp functions. In order to use the omp functions, the code
- * that calls these functions must be compiled in an omp and an non-omp version. Else
- * the calls are substituted by 0 by the compiler. In order to avoid this, we can provide
- * an abstraction.
+ * This file contain abstraction functions for omp functions. In order to use the
+ * omp functions, the code that calls these functions must be compiled in an omp and
+ * an non-omp version. This is still true when using the macros in SCOREP_Omp.h from
+ * the utilities, else the calls are substituted by 0 by the compiler. In order to
+ * avoid this, we can provide. an abstraction.
  */
 
 /**
