@@ -259,11 +259,11 @@ scorep_selective_parse_file( FILE* file )
     while ( !feof( file ) )
     {
         /* Reads a line of arbitrary length*/
-        fgets( buffer, buffer_size, file );
-        //if ( feof( file ) )
-        //{
-        //    break;
-        //}
+        if ( !fgets( buffer, buffer_size, file ) )
+        {
+            break;
+        }
+
         while ( strlen( buffer ) == buffer_size - 1 )
         {
             buffer_size += BUFFER_SIZE;
@@ -273,7 +273,11 @@ scorep_selective_parse_file( FILE* file )
                 SCOREP_ERROR_POSIX( "Failed to increase memory for string buffer" );
                 return SCOREP_ERROR_MEM_ALLOC_FAILED;
             }
-            fgets( &buffer[ buffer_size - BUFFER_SIZE - 1 ], BUFFER_SIZE + 1, file );
+            if ( !fgets( &buffer[ buffer_size - BUFFER_SIZE - 1 ],
+                         BUFFER_SIZE + 1, file ) )
+            {
+                break;
+            }
         }
         if ( ferror( file ) )
         {
@@ -338,7 +342,7 @@ scorep_selective_parse_file( FILE* file )
                 interval = strtok( NULL, " \t\n," );
             }
         }
-        *buffer = '\0';
+        //*buffer = '\0';
     }
 
 

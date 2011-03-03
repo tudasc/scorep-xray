@@ -39,6 +39,9 @@
 #include <scorep_profile_writer.h>
 #include <SCOREP_Definitions.h>
 
+void
+scorep_profile_substitute_parameter();
+
 /* ***************************************************************************************
    Type definitions and variables
 *****************************************************************************************/

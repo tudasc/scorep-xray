@@ -28,6 +28,7 @@
  */
 
 #include <config.h>
+#include <inttypes.h>
 #include "SCOREP_Memory.h"
 #include "scorep_utility/SCOREP_Utils.h"
 #include "SCOREP_Definitions.h"
@@ -154,7 +155,7 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
         char* region_name = ( char* )malloc( strlen( name ) + 18 );
 
         /* construct region name */
-        sprintf( region_name, "%s=%d", name, data->value );
+        sprintf( region_name, "%s=%" PRIi64, name, data->value );
 
         /* Register region and modify node data */
         scorep_profile_substitute_parameter_data( node, region_name );
