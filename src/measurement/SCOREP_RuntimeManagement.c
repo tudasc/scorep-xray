@@ -45,7 +45,7 @@
 #include <scorep_utility/SCOREP_Omp.h>
 #include <SCOREP_Profile.h>
 #include <scorep_unify.h>
-
+#include <scorep_openmp.h>
 
 #include "scorep_types.h"
 #include "scorep_adapter.h"
@@ -400,8 +400,17 @@ SCOREP_EnableRecording
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
-    /* TODO: Check whether we are in a parallel region */
-    scorep_recording_enabled = true;
+    if ( !SCOREP_Omp_InParallel() )
+    {
+        scorep_recording_enabled = true;
+    }
+    else
+    {
+        SCOREP_ERROR( SCOREP_ERROR_SWITCH_IN_PARALLEL,
+                      "Invalid request for enabling recording. "
+                      "Recording is not enabled" );
+        return;
+    }
     /*  TODO: Write event */
 }
 
@@ -416,8 +425,17 @@ SCOREP_DisableRecording
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
-    /* TODO: Check whether we are in a parallel region */
-    scorep_recording_enabled = false;
+    if ( !SCOREP_Omp_InParallel() )
+    {
+        scorep_recording_enabled = false;
+    }
+    else
+    {
+        SCOREP_ERROR( SCOREP_ERROR_SWITCH_IN_PARALLEL,
+                      "Invalid request for disabling recording. "
+                      "Recording is not disabled" );
+        return;
+    }
     /*  TODO: Write event */
 }
 

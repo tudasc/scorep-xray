@@ -80,6 +80,8 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/scorep_definitions.c        \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c    \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
 libscorep_paradigm_omp_la_CPPFLAGS =       \
     $(AM_CPPFLAGS)                       \
@@ -87,6 +89,7 @@ libscorep_paradigm_omp_la_CPPFLAGS =       \
     -I$(INC_DIR_UTIL)                    \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement/paradigm  \
     -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
     -I$(INC_ROOT)src/services            \
@@ -105,6 +108,8 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/scorep_definitions.c        \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c
 
 libscorep_paradigm_non_omp_la_CPPFLAGS =   \
@@ -113,6 +118,7 @@ libscorep_paradigm_non_omp_la_CPPFLAGS =   \
     -I$(INC_DIR_UTIL)                    \
     -I$(INC_ROOT)src/measurement         \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement/paradigm  \
     -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
     -I$(INC_ROOT)src/services            \
