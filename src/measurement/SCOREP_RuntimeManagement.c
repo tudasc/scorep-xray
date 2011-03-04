@@ -399,10 +399,19 @@ SCOREP_EnableRecording
     void
 )
 {
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )
     {
         scorep_recording_enabled = true;
+        if ( SCOREP_IsTracingEnabled() )
+        {
+            OTF2_EvtWriter_MeasurementOnOff( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                             NULL,
+                                             SCOREP_GetClockTicks(),
+                                             OTF2_MEASUREMENT_ON );
+        }
     }
     else
     {
@@ -411,7 +420,6 @@ SCOREP_EnableRecording
                       "Recording is not enabled" );
         return;
     }
-    /*  TODO: Write event */
 }
 
 
@@ -424,10 +432,19 @@ SCOREP_DisableRecording
     void
 )
 {
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )
     {
         scorep_recording_enabled = false;
+        if ( SCOREP_IsTracingEnabled() )
+        {
+            OTF2_EvtWriter_MeasurementOnOff( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                             NULL,
+                                             SCOREP_GetClockTicks(),
+                                             OTF2_MEASUREMENT_OFF );
+        }
     }
     else
     {
@@ -436,7 +453,6 @@ SCOREP_DisableRecording
                       "Recording is not disabled" );
         return;
     }
-    /*  TODO: Write event */
 }
 
 
