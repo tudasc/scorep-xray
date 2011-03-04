@@ -40,6 +40,8 @@ extern void
 scorep_selective_init();
 extern SCOREP_Error_Code
 scorep_selective_register();
+void
+scorep_selective_finalize();
 
 int8_t scorep_user_is_initialized = 0;
 
@@ -63,9 +65,9 @@ scorep_user_init()
         /* Set the intialization flag to indicate that the adapter is initialized */
         scorep_user_is_initialized = 1;
 
+        scorep_selective_init();
         scorep_user_init_regions();
         scorep_user_init_metric();
-        scorep_selective_init();
     }
     return SCOREP_SUCCESS;
 }
@@ -96,6 +98,7 @@ scorep_user_finalize()
         scorep_user_final_metric();
         scorep_user_final_regions();
     }
+    scorep_selective_finalize();
 }
 
 /** Deregisters the user adapter.

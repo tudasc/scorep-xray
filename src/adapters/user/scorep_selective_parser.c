@@ -76,6 +76,27 @@ SCOREP_Vector* scorep_selected_regions = NULL;
 ****************************************************************************************/
 
 /**
+   Frees the memory for an interval entry.
+ */
+static void
+scorep_selectiv_delete_interval( void* item )
+{
+    free( item );
+}
+
+/**
+   Frees the memory for an selected region entry.
+ */
+static void
+scorep_selective_delete_selected_region( void* item )
+{
+    scorep_selected_region* region = ( scorep_selected_region* )item;
+    SCOREP_Vector_Foreach( region->intervals, &scorep_selectiv_delete_interval );
+    SCOREP_Vector_Free( region->intervals );
+    free( region );
+}
+
+/**
    Compares a pointer to a 64 bit integer with the first entry of an interval.
  */
 static int8_t
@@ -439,4 +460,16 @@ scorep_selective_register()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                          "Register config variables for selective tracing" );
     return SCOREP_ConfigRegister( NULL, scorep_selective_configs );
+}
+
+/**
+   Cleans up the data structures
+ */
+void
+scorep_selective_finalize()
+{
+    SCOREP_Vector_Foreach( scorep_selected_regions,
+                           scorep_selective_delete_selected_region );
+    SCOREP_Vector_Free( scorep_selected_regions );
+    scorep_selected_regions = NULL;
 }
