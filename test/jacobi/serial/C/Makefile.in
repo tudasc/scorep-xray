@@ -20,7 +20,7 @@ all: jacobi
 	./jacobi
 
 clean:
-	rm -f jacobi $(OBJECTS) jacobi.c jacobi.h
+	rm -f jacobi $(OBJECTS) jacobi.c jacobi.h main.c
 	rm -rf scorep-2*
 	rm -rf scorep-measurement-tmp
 
