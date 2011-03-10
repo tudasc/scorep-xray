@@ -19,7 +19,6 @@
  * Output : u(n,m) - Solution
  *****************************************************************
  */
-#include <config.h>
 
 #include <math.h>
 #include <stdio.h>

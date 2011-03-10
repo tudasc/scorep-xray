@@ -4,7 +4,7 @@
 
 PREP = @prefix@/bin/scorep --instrument
 CC = $(PREP) @CC@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ @OPENMP_CFLAGS@
 LDLIBS =
 
 #------------------------------------------------------------------------------
