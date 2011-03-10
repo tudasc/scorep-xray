@@ -173,7 +173,10 @@ AC_SCOREP_LIBBFD
 AC_F77_WRAPPERS
 AC_FC_WRAPPERS
 
-AC_CONFIG_FILES([Makefile run_otf2_speed_test.sh])
+AC_CONFIG_FILES([Makefile \
+                 run_otf2_speed_test.sh \
+                 ../../test/jacobi/MPI/C/Makefile \
+                 ../../test/jacobi/hybrid/C/Makefile])
 
 
 AC_OUTPUT

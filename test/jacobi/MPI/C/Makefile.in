@@ -4,7 +4,7 @@
 
 PREP = @prefix@/bin/scorep --instrument
 CC = $(PREP) @CC@
-CFLAGS = @CFLAGS@ @OPENMP_CFLAGS@
+CFLAGS = @CFLAGS@
 LDLIBS =
 
 #------------------------------------------------------------------------------
@@ -17,10 +17,10 @@ OBJECTS = \
 
 
 all: jacobi
-	./jacobi
+#	mpiexec -np 2 ./jacobi
 
 clean:
-	rm -f jacobi $(OBJECTS) jacobi.c jacobi.h main.c jacobi.c.opari.inc  jacobi.opari.c  jacobi.pomp_init.c  jacobi.pomp_init.o  main.c.opari.inc  main.opari.c
+	rm -f jacobi $(OBJECTS) jacobi.c jacobi.h main.c
 	rm -rf scorep-2*
 	rm -rf scorep-measurement-tmp
 
@@ -47,4 +47,3 @@ jacobi: $(OBJECTS)
 
 jacobi.o: jacobi.c jacobi.h
 main.o: main.c jacobi.h
-
