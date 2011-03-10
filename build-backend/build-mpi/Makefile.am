@@ -140,7 +140,8 @@ clean-local:
 
 distclean-local:
 	rm -f mpi_supported
-
+	rm -rf ../../test/jacobi/MPI
+	rm -rf ../../test/jacobi/hybrid
 
 check-build: $(BUILT_SOURCES) all $(check_PROGRAMS)
 	for dir in $(SUBDIRS); do                        \
