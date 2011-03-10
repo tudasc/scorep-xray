@@ -145,3 +145,14 @@ $(CONFIG_HEADER_BACKEND):
 	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\"">> $(CONFIG_HEADER_BACKEND)
+
+
+if OPENMP_SUPPORTED
+installcheck-local:
+	(cd ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+	(cd ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+else
+installcheck-local:
+	(cd ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+endif
+

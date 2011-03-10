@@ -17,7 +17,7 @@ OBJECTS = \
 
 
 all: jacobi
-	./jacobi
+#	./jacobi
 
 clean:
 	rm -f jacobi $(OBJECTS) jacobi.c jacobi.h main.c

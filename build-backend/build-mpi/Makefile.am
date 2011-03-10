@@ -153,3 +153,17 @@ check-run: check-build check-TESTS
         done
 
 beautify:
+
+
+if MPI_SUPPORTED
+if OPENMP_SUPPORTED
+installcheck-local:
+	(cd ../../test/jacobi/MPI/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+	(cd ../../test/jacobi/hybrid/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+else
+installcheck-local:
+	(cd ../../test/jacobi/MPI/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+endif
+else
+installcheck-local:
+endif
