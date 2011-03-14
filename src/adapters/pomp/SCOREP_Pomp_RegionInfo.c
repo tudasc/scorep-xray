@@ -112,7 +112,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
     /* Entries must be in same order like SCOREP_Pomp_RegionType to allow lookup. */
   { "atomic",            SCOREP_Pomp_Atomic              , SCOREP_REGION_OMP_ATOMIC,    SCOREP_REGION_UNKNOWN              },
   { "barrier",           SCOREP_Pomp_Barrier             , SCOREP_REGION_OMP_BARRIER,   SCOREP_REGION_OMP_BARRIER          },
-  { "critical",          SCOREP_Pomp_Critical            , SCOREP_REGION_OMP_CRITICAL,  SCOREP_REGION_OMP_CRITICAL         },
+  { "critical",          SCOREP_Pomp_Critical            , SCOREP_REGION_OMP_CRITICAL,  SCOREP_REGION_OMP_CRITICAL_SBLOCK  },
   { "do",                SCOREP_Pomp_Do                  , SCOREP_REGION_OMP_LOOP,      SCOREP_REGION_UNKNOWN              },
   { "flush",             SCOREP_Pomp_Flush               , SCOREP_REGION_OMP_FLUSH,     SCOREP_REGION_OMP_FLUSH            },
   { "for",               SCOREP_Pomp_For                 , SCOREP_REGION_OMP_LOOP,      SCOREP_REGION_UNKNOWN              },
@@ -124,7 +124,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
   { "parallelworkshare", SCOREP_Pomp_ParallelWorkshare   , SCOREP_REGION_OMP_WORKSHARE, SCOREP_REGION_OMP_WORKSHARE        },
   { "region",            SCOREP_Pomp_UserRegion          , SCOREP_REGION_USER,          SCOREP_REGION_USER,                },
   { "sections",          SCOREP_Pomp_Sections            , SCOREP_REGION_OMP_SECTIONS,  SCOREP_REGION_OMP_SECTION          },
-  { "single",            SCOREP_Pomp_Single              , SCOREP_REGION_OMP_SINGLE,    SCOREP_REGION_OMP_SINGLE,          },
+  { "single",            SCOREP_Pomp_Single              , SCOREP_REGION_OMP_SINGLE,    SCOREP_REGION_OMP_SINGLE_SBLOCK,   },
   { "workshare",         SCOREP_Pomp_Workshare           , SCOREP_REGION_OMP_WORKSHARE, SCOREP_REGION_OMP_WORKSHARE        }
 };
 /* *INDENT-ON* */
