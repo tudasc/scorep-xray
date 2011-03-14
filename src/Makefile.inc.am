@@ -42,15 +42,18 @@ common_cppflags = $(AM_CPPFLAGS)                       \
 ## MPI
 
 if MPI_SUPPORTED
-lib_LTLIBRARIES        += libscorep_mpi.la
-libscorep_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_mpi.c
-libscorep_mpi_la_CPPFLAGS = $(common_cppflags)
-libscorep_mpi_la_LIBADD   = $(common_libadd)                           \
-                          $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la  \
-                          $(LIB_DIR_SCOREP_MPI)libscorep_paradigm_mpi.la \
-                          libscorep_adapter_pomp_user.la               \
-                          libscorep_paradigm_non_omp.la                \
-                          libscorep_pomp_dummy.la
+lib_LTLIBRARIES                      += libscorep_mpi.la
+libscorep_mpi_la_SOURCES              = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_mpi.c
+nodist_EXTRA_libscorep_mpi_la_SOURCES = force_link_with_F77LD.f
+libscorep_mpi_la_CPPFLAGS             = $(common_cppflags)
+libscorep_mpi_la_LIBADD               = $(common_libadd)                               \
+                                        $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la  \
+                                        $(LIB_DIR_SCOREP_MPI)libscorep_paradigm_mpi.la \
+                                        libscorep_adapter_pomp_user.la                 \
+                                        libscorep_paradigm_non_omp.la                  \
+                                        libscorep_pomp_dummy.la                        \
+                                        $(FLIBS)
+
 # include Online Access only when building on ALTIX                         
 if PLATFORM_ALTIX
 libscorep_mpi_la_LIBADD	+= libscorep_oa_mpi.la
@@ -59,14 +62,15 @@ endif
 
 ## Serial
 
-lib_LTLIBRARIES           += libscorep_serial.la
+lib_LTLIBRARIES             += libscorep_serial.la
 libscorep_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_serial.c
 libscorep_serial_la_CPPFLAGS = $(common_cppflags)
-libscorep_serial_la_LIBADD   = $(common_libadd)                    \
-                             libscorep_adapter_pomp_user.la        \
-                             libscorep_paradigm_non_mpi.la         \
-                             libscorep_paradigm_non_omp.la         \
-                             libscorep_pomp_dummy.la
+libscorep_serial_la_LIBADD   = $(common_libadd)               \
+                               libscorep_adapter_pomp_user.la \
+                               libscorep_paradigm_non_mpi.la  \
+                               libscorep_paradigm_non_omp.la  \
+                               libscorep_pomp_dummy.la
+
 # include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
 libscorep_serial_la_LIBADD	+= libscorep_oa_serial.la
@@ -75,14 +79,15 @@ endif
 ## OpenMP
 
 if OPENMP_SUPPORTED
-lib_LTLIBRARIES        += libscorep_omp.la
+lib_LTLIBRARIES          += libscorep_omp.la
 libscorep_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_omp.c
 libscorep_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_omp_la_CPPFLAGS = $(common_cppflags)
-libscorep_omp_la_LIBADD   = $(common_libadd)                \
-                          libscorep_adapter_pomp_omp.la     \
-                          libscorep_paradigm_non_mpi.la     \
-                          libscorep_paradigm_omp.la
+libscorep_omp_la_LIBADD   = $(common_libadd)              \
+                            libscorep_adapter_pomp_omp.la \
+                            libscorep_paradigm_non_mpi.la \
+                            libscorep_paradigm_omp.la
+
 # include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
 libscorep_omp_la_LIBADD	+= libscorep_oa_serial.la
@@ -94,15 +99,17 @@ endif
 
 if MPI_SUPPORTED
 if OPENMP_SUPPORTED
-lib_LTLIBRARIES            += libscorep_mpi_omp.la
-libscorep_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_mpi_omp.c
-libscorep_mpi_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libscorep_mpi_omp_la_CPPFLAGS = $(common_cppflags)
-libscorep_mpi_omp_la_LIBADD   = $(common_libadd)                           \
-                              $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la  \
-                              $(LIB_DIR_SCOREP_MPI)libscorep_paradigm_mpi.la \
-                              libscorep_adapter_pomp_omp.la                \
-                              libscorep_paradigm_omp.la
+lib_LTLIBRARIES                          += libscorep_mpi_omp.la
+libscorep_mpi_omp_la_SOURCES              = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_mpi_omp.c
+nodist_EXTRA_libscorep_mpi_omp_la_SOURCES = force_link_with_F77LD.f
+libscorep_mpi_omp_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_mpi_omp_la_CPPFLAGS             = $(common_cppflags)
+libscorep_mpi_omp_la_LIBADD               = $(common_libadd)                               \
+                                            $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la  \
+                                            $(LIB_DIR_SCOREP_MPI)libscorep_paradigm_mpi.la \
+                                            libscorep_adapter_pomp_omp.la                  \
+                                            libscorep_paradigm_omp.la                      \
+                                            $(FLIBS)
 
 # include Online Access only when building on ALTIX                             
 if PLATFORM_ALTIX
