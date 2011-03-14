@@ -65,7 +65,11 @@ SCOREP_Measurement::ParseCmdLine
             user_command +=  argv[ i ];
         }
     }
-    return ReadConfigFile( argv[ 0 ] );
+    if ( config_file != "" )
+    {
+        return ReadConfigFile( argv[ 0 ] );
+    }
+    return SCOREP_SUCCESS;
 }
 
 
