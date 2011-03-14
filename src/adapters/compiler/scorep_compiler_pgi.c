@@ -394,13 +394,13 @@ ___rouent2( struct s1* p )
     if ( location_data->callstack_count < scorep_compiler_callstack_max )
     {
         /* Update callstack */
-        *location_data->callstack_top = p->region_handle;
+        *location_data->callstack_top = *region;
         location_data->callstack_top++;
 
         /* Enter event */
-        if ( p->region_handle != SCOREP_INVALID_REGION )
+        if ( *region != SCOREP_INVALID_REGION )
         {
-            SCOREP_EnterRegion( p->region_handle );
+            SCOREP_EnterRegion( *region );
         }
     }
 }
