@@ -50,8 +50,18 @@ fi
 ])
 
 
+dnl dont' use together with AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE
 AC_DEFUN([AC_SCOREP_WITH_COMPILER_SUITE],
 [
+m4_pattern_allow([AC_SCOREP_WITH_COMPILER_SUITE])
+m4_pattern_allow([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE])
+if test "x${ac_scorep_compiler_suite_called}" != "x"; then
+    # We need m4 quoting magic here ...
+    AC_MSG_ERROR([cannot use [AC_SCOREP_WITH_COMPILER_SUITE] and [AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE] in one configure.ac.])
+else
+    ac_scorep_compiler_suite_called="yes"
+fi
+
 ac_scorep_compiler_suite_files=""
 path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
@@ -98,5 +108,35 @@ AC_ARG_WITH([frontend-compiler-suite],
                    [AC_MSG_ERROR([Option --with-frontend-compiler-suite not supported in non cross-compiling mode. Please use --with-nocross-compiler-suite instead.])])],
             [])
 
-echo "ac_scorep_compiler_suite_files=${ac_scorep_compiler_suite_files}"
+#echo "ac_scorep_compiler_suite_files=${ac_scorep_compiler_suite_files}"
+])
+
+
+dnl dont' use together with AC_SCOREP_WITH_COMPILER_SUITE, inteded to be used by OPARI
+AC_DEFUN([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE],
+[
+m4_pattern_allow([AC_SCOREP_WITH_COMPILER_SUITE])
+m4_pattern_allow([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE])
+if test "x${ac_scorep_compiler_suite_called}" != "x"; then
+    # We need m4 quoting magic here ...
+    AC_MSG_ERROR([cannot use [AC_SCOREP_WITH_COMPILER_SUITE] and [AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE] in one configure.ac.])
+else
+    ac_scorep_compiler_suite_called="yes"
+fi
+
+ac_scorep_compiler_suite_files=""
+path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
+
+AC_ARG_WITH([compiler-suite],
+            [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pathscale|pgi|sun)], 
+                            [The compiler suite to build this package with. Needs to be in $PATH [gcc].])],
+            [AS_CASE([$withval],
+                     ["gcc"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-gcc"],
+                     ["ibm"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-ibm"],
+                     ["intel"],     [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-intel"],
+                     ["pathscale"], [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pathscale"],
+                     ["pgi"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pgi"],
+                     ["sun"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-sun"])],
+            [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-compiler-suite, ignoring.])],
+            [])
 ])
