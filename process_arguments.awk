@@ -18,10 +18,10 @@
     }
     n = index($0, "=")
     if (n != 0) { # line with at least one "=". Use first "=" as key-value separator
-      args_binary[substr($0, 1, n-1)] = substr($0, n+1)
+      args_binary_user_provided[substr($0, 1, n-1)] = substr($0, n+1)
     }    
     else {
-      args_unary = "'" $0 "' " args_unary
+      args_unary_user_provided = "'" $0 "' " args_unary_user_provided
     }
   }
 #   else if (FILENAME == "args_exported") {
@@ -42,17 +42,22 @@
     if (index($0, "#") == 0) { # ! commented line
       n = index($0, "=")
       if (n != 0) { # line with at least one "=". Use first "=" as key-value separator
-        args_binary[substr($0, 1, n-1)] = substr($0, n+1)
+        args_binary_platform[substr($0, 1, n-1)] = substr($0, n+1)
       }
     }
   }
 }
 
 END{
-  # concatenate the map's content into a "key=value" pair sequence, add the
-  # unary arguments and print it to stdout.
-  for (key in args_binary) {
-    result = "'" key "=" args_binary[key] "' " result
+  # Concatenate the map's content into a "key=value" pair sequence, add the
+  # unary arguments and print it to stdout. User provided arguments need to
+  # take precedence.
+  for (key in args_binary_user_provided) {
+    result = "'" key "=" args_binary_user_provided[key] "' " result
+  } 
+  for (key in args_binary_platform) {
+    result = "'" key "=" args_binary_platform[key] "' " result
   }
-  print result args_unary
+  print result args_unary_user_provided
 }
+ 
