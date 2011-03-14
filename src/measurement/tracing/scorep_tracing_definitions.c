@@ -287,6 +287,33 @@ scorep_write_region_definitions( void*                     writerHandle,
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
 
+static void
+scorep_write_communicator_definitions( void*                     writerHandle,
+                                       SCOREP_DefinitionManager* definitionManager )
+{
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defComm )( void*,
+                                     uint64_t,
+                                     uint64_t,
+                                     uint64_t ) =
+        ( void* )OTF2_GlobDefWriter_GlobDefMpiComm;
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
+    {
+        SCOREP_Error_Code status = defComm(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->group, Group, definitionManager->page_manager ),
+            definition->number_of_ranks );
+
+        if ( status != SCOREP_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
 
 static void
 scorep_write_group_definitions( void*                     writerHandle,
@@ -680,6 +707,7 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( mpi_communicator, MPI_COMMUNICATOR, localDefinitionWriter );
 }
 
 
@@ -727,6 +755,7 @@ scorep_write_global_definitions( OTF2_GlobDefWriter* global_definition_writer )
     scorep_write_marker_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
 }
 
 
