@@ -14,6 +14,7 @@ include ../src/services/Makefile.inc.am
 include ../vendor/cutest/Makefile.inc.am
 include ../vendor/hash/Makefile.inc.am
 include ../include/scorep/Makefile.inc.am
+include ../src/tools/wrapper/Makefile-backend.inc.am
 
 
 ## include Online Access only when building on ALTIX
@@ -32,7 +33,7 @@ include ../test/measurement/config/Makefile.inc.am
 include ../test/public_headers/Makefile.inc.am
 include ../test/jacobi/Makefile.inc.am
 include ../test/adapters/user/C/Makefile.inc.am
-include ../test/adapters/user/Fortran/Makefile.inc.am
+include ../test/adapters/user/Fortran/Makefile.inc.am 
 include ../test/adapters/compiler/Makefile.inc.am
 include ../test/adapters/tau/Makefile.inc.am
 include ../test/adapters/pomp/Makefile.inc.am
