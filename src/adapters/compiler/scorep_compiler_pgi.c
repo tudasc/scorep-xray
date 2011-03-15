@@ -103,6 +103,11 @@ static const uint32_t scorep_compiler_callstack_max = 30;
 static int scorep_compiler_initialize = 1;
 
 /**
+ * static variable that indicates whether the adapter is already finalized.
+ */
+static int scorep_compiler_finalized = 0;
+
+/**
     Hash table for mapping location id to the location's callstack.
  */
 SCOREP_Hashtab* scorep_compiler_location_table = NULL;
@@ -130,6 +135,15 @@ SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 inline uint64_t
 scorep_compiler_get_location_id()
 {
+    /* If the measurement system is not yet initialized or already finalized, it can only
+       be the master thread
+     */
+    if ( scorep_compiler_initialize )
+    {
+        return 0;
+    }
+
+    /* Else get the thread id from the measurement system */
     SCOREP_Thread_LocationData* data = SCOREP_Thread_GetLocationData();
     SCOREP_ASSERT( data != NULL );
     return SCOREP_Thread_GetLocationId( data );
@@ -271,6 +285,7 @@ scorep_compiler_finalize()
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 
         scorep_compiler_initialize = 1;
+        scorep_compiler_finalized  = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
     }
 }
@@ -354,6 +369,12 @@ ___rouent2( struct s1* p )
     SCOREP_SourceFileHandle* file   = ( SCOREP_SourceFileHandle* )&( p->file_handle );
     SCOREP_RegionHandle*     region = ( SCOREP_RegionHandle* )&( p->region_handle );
 
+    /* Check whether adapter is already finalized */
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     /* Ensure the compiler adapter is initialized */
     if ( scorep_compiler_initialize )
     {
@@ -384,6 +405,10 @@ ___rouent2( struct s1* p )
                                            SCOREP_ADAPTER_COMPILER,
                                            SCOREP_REGION_FUNCTION
                                            );
+        }
+        else
+        {
+            *region = SCOREP_INVALID_REGION;
         }
         p->isseen = 1;
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
@@ -426,6 +451,12 @@ ___rouent64( struct s1* p )
 void
 ___rouret2( void )
 {
+    /* Check whether adapter is already finalized */
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     scorep_compiler_location_data* location_data = scorep_compiler_get_location_data();
     if ( location_data == NULL )
     {
@@ -434,8 +465,14 @@ ___rouret2( void )
     if ( location_data->callstack_count < scorep_compiler_callstack_max )
     {
         location_data->callstack_top--;
-        /* Exit event */
-        SCOREP_ExitRegion( *location_data->callstack_top );
+
+        /* Check whether the top element of the callstack has a valid region handle.
+           If the region is filtered the top pointer is SCOREP_INVALID_REGION.
+         */
+        if ( *location_data->callstack_top != SCOREP_INVALID_REGION )
+        {
+            SCOREP_ExitRegion( *location_data->callstack_top );
+        }
     }
 
     location_data->callstack_count--;
