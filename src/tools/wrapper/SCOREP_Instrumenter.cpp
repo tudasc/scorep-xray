@@ -58,6 +58,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     external_libs       = "";
     pdt_bin_path        = PDT;
     pdt_config_file     = PDT_CONFIG;
+    input_file_number   = 0;
 
     compiler_instrumentation_flags = SCOREP_CFLAGS;
     c_compiler                     = SCOREP_CC;
@@ -70,6 +71,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
 
     has_data_from_file = false;
     is_dry_run         = false;
+    no_final_step      = false;
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
@@ -349,6 +351,7 @@ SCOREP_Instrumenter::parse_command( std::string arg )
     {
         /* Assume it is a input file */
         input_files += " " + arg;
+        input_file_number++;
         return scorep_parse_mode_command;
     }
     else if ( arg == "-c" )
@@ -386,22 +389,6 @@ SCOREP_Instrumenter::parse_output( std::string arg )
 void
 SCOREP_Instrumenter::check_parameter()
 {
-    if ( compiler_name == "" )
-    {
-        std::cout << "ERROR: Could not identify compiler name." << std::endl;
-        abort();
-    }
-
-    if ( output_name == "" )
-    {
-        std::cout << "WARNING: Could not identify output file name." << std::endl;
-    }
-
-    if ( input_files == "" )
-    {
-        std::cout << "WARNING: Found no input files." << std::endl;
-    }
-
     /* If is_mpi_application not manually specified, try a guess from the
        compiler name */
     if ( is_mpi_application == detect )
@@ -445,6 +432,23 @@ SCOREP_Instrumenter::check_parameter()
     if ( is_dry_run && verbosity < 1 )
     {
         verbosity = 1;
+    }
+
+    if ( compiler_name == "" )
+    {
+        std::cout << "ERROR: Could not identify compiler name." << std::endl;
+        abort();
+    }
+
+    if ( output_name != "" && !is_linking && input_file_number > 1 )
+    {
+        std::cerr << "ERROR: Can not specify -o with multiple files if only"
+                  << " compiling or preprocessing." << std::endl;
+    }
+
+    if ( input_files == "" || input_file_number < 1 )
+    {
+        std::cout << "WARNING: Found no input files." << std::endl;
     }
 }
 
@@ -679,6 +683,15 @@ void
 SCOREP_Instrumenter::compile_source_file( std::string input_file,
                                           std::string output_file )
 {
+    /* If the we have only one source file and do not link, then the user could
+       specify object file name.
+     */
+    if ( ( input_file_number == 1 ) && !is_linking && ( output_name != "" ) )
+    {
+        output_file = output_name;
+    }
+
+    /* Construct command */
     std::string command = compiler_name + " "
                           + scorep_include_path
                           + " -c " + input_file
@@ -690,6 +703,7 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
         std::cout << command << std::endl;
     }
 
+    /* Execute compilation */
     if ( !is_dry_run )
     {
         if ( system( command.c_str() ) != 0 )
@@ -848,22 +862,15 @@ SCOREP_Instrumenter::prepare_opari()
                        we need to split compilation and linking, because
                        we need to run the script on the object files.
                        Thus, we do already compile the source and add the
-                       object files
+                       object files.
+                       Furthermore, if the user specifies multiple source files
+                       in the compile step, we need to compile them separately, because
+                       the sources are modified and, thus, the object file ends up with
+                       a different name. In this case we do not execute the last step.
                      */
-                    if ( is_linking )
-                    {
-                        object_file = get_basename( current_file ) + ".o";
-                        compile_source_file( modified_file, object_file );
-                        new_input_files += " " + object_file;
-                    }
-                    /* Else the compiling is done in the final execution step.
-                       Thus, we replace the original source file by the
-                       instrumented one.
-                     */
-                    else
-                    {
-                        new_input_files += " " + modified_file;
-                    }
+                    object_file = get_basename( current_file ) + ".o";
+                    compile_source_file( modified_file, object_file );
+                    new_input_files += " " + object_file;
                 }
                 // If it is no source file, leave the file in the input list
                 else
@@ -904,6 +911,13 @@ SCOREP_Instrumenter::prepare_opari()
         invoke_awk_script( object_files, init_source );
         compile_init_file( init_source, init_object );
         input_files += " " + init_object;
+    }
+    /* In OpenMP case all compilation is done here. Thus, if we do not link, no final
+       step is performed
+     */
+    else
+    {
+        no_final_step = true;
     }
 }
 
@@ -1011,6 +1025,11 @@ SCOREP_Instrumenter::prepare_pdt()
 int
 SCOREP_Instrumenter::execute_command()
 {
+    if ( no_final_step )
+    {
+        return 0;
+    }
+
     std::string scorep_lib;
     if ( is_linking )
     {

@@ -442,6 +442,11 @@ private:
      */
     std::string input_files;
 
+    /**
+       number of input file names.
+     */
+    int input_file_number;
+
     /* --------------------------------------------
        Config file data
        ------------------------------------------*/
@@ -519,6 +524,13 @@ private:
        only printed to stdout but are not executed. The default is false.
      */
     bool is_dry_run;
+
+    /**
+       In case we compile multiple source files that need preprocessing with Opari,
+       all files are already compiled during the Opari preprocssing. This, flag indicate
+       that the final command execution step is omitted.
+     */
+    bool no_final_step;
 };
 
 #endif /*SCOREP_INSTRUMENTER_H_*/
