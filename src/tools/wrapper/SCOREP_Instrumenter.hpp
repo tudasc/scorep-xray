@@ -510,6 +510,15 @@ private:
         PDT instrumentation specificaion file.
      */
     std::string pdt_config_file;
+
+    /* --------------------------------------------
+       Execution flags
+       ------------------------------------------*/
+    /**
+       True, if the instrumentation is a dry run. It means that the commands are
+       only printed to stdout but are not executed. The default is false.
+     */
+    bool is_dry_run;
 };
 
 #endif /*SCOREP_INSTRUMENTER_H_*/

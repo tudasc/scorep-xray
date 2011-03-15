@@ -117,6 +117,11 @@ protected:
     SetValue( std::string key,
               std::string value );
 
+    /* ***************************************************** Private methods */
+private:
+    bool
+    process_parameter( std::string param );
+
     /* ***************************************************** Private members */
 private:
     /**
@@ -124,5 +129,6 @@ private:
      */
     std::string user_command;
     std::string scorep_library_path;
+    bool        is_dry_run;
 };
 #endif /*SCOREP_MEASUREMENT_H_*/

@@ -69,6 +69,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     grep                           =  "`" OPARI_CONFIG " --egrep`";
 
     has_data_from_file = false;
+    is_dry_run         = false;
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
@@ -245,6 +246,13 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
            validity check later */
         compiler_name = arg;
         return scorep_parse_mode_command;
+    }
+
+    /* Check for execution parameters */
+    else if ( arg == "--dry-run" )
+    {
+        is_dry_run = true;
+        return scorep_parse_mode_param;
     }
 
     /* Check for instrumenatation settings */
@@ -432,6 +440,12 @@ SCOREP_Instrumenter::check_parameter()
         user_instrumentation     = enabled;  // Needed to activate the inserted macros.
         compiler_instrumentation = disabled; // Avoid double instrumentation.
     }
+
+    /* If this is a dry run, enable printing out commands, if it is not already */
+    if ( is_dry_run && verbosity < 1 )
+    {
+        verbosity = 1;
+    }
 }
 
 SCOREP_Instrumenter::scorep_parse_mode_t
@@ -599,13 +613,16 @@ SCOREP_Instrumenter::invoke_opari( std::string input_file,
     {
         std::cout << command << std::endl;
     }
-    if ( system( command.c_str() ) != 0 )
+    if ( !is_dry_run )
     {
-        if ( verbosity < 1 )
+        if ( system( command.c_str() ) != 0 )
         {
-            std::cout << "Error executing: " << command << std::endl;
+            if ( verbosity < 1 )
+            {
+                std::cout << "Error executing: " << command << std::endl;
+            }
+            abort();
         }
-        abort();
     }
 }
 
@@ -621,13 +638,16 @@ SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
     {
         std::cout << command << std::endl;
     }
-    if ( system( command.c_str() ) != 0 )
+    if ( !is_dry_run )
     {
-        if ( verbosity < 1 )
+        if ( system( command.c_str() ) != 0 )
         {
-            std::cout << "Error executing: " << command << std::endl;
+            if ( verbosity < 1 )
+            {
+                std::cout << "Error executing: " << command << std::endl;
+            }
+            abort();
         }
-        abort();
     }
 }
 
@@ -642,13 +662,16 @@ SCOREP_Instrumenter::compile_init_file( std::string input_file,
     {
         std::cout << command << std::endl;
     }
-    if ( system( command.c_str() ) != 0 )
+    if ( !is_dry_run )
     {
-        if ( verbosity < 1 )
+        if ( system( command.c_str() ) != 0 )
         {
-            std::cout << "Error executing: " << command << std::endl;
+            if ( verbosity < 1 )
+            {
+                std::cout << "Error executing: " << command << std::endl;
+            }
+            abort();
         }
-        abort();
     }
 }
 
@@ -666,13 +689,17 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
     {
         std::cout << command << std::endl;
     }
-    if ( system( command.c_str() ) != 0 )
+
+    if ( !is_dry_run )
     {
-        if ( verbosity < 1 )
+        if ( system( command.c_str() ) != 0 )
         {
-            std::cout << "Error executing: " << command << std::endl;
+            if ( verbosity < 1 )
+            {
+                std::cout << "Error executing: " << command << std::endl;
+            }
+            abort();
         }
-        abort();
     }
 }
 
@@ -1009,5 +1036,10 @@ SCOREP_Instrumenter::execute_command()
     {
         std::cout << command << std::endl;
     }
-    return system( command.c_str() );
+
+    if ( !is_dry_run )
+    {
+        return system( command.c_str() );
+    }
+    return 0;
 }

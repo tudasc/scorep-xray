@@ -30,6 +30,7 @@ SCOREP_Measurement::SCOREP_Measurement()
 {
     scorep_library_path = "";
     user_command        = "";
+    is_dry_run          = false;
 }
 
 SCOREP_Measurement::~SCOREP_Measurement ()
@@ -51,6 +52,10 @@ SCOREP_Measurement::ParseCmdLine
             if ( *argv[ i ] != '-' )
             {
                 parameter_mode = false;
+            }
+            else if ( process_parameter( argv[ i ] ) )
+            {
+                /* Do nothing here, everything done in if clause */
             }
             else if ( !CheckForCommonArg( argv[ i ] ) )
             {
@@ -83,16 +88,34 @@ SCOREP_Measurement::Run()
                        + ":$LD_LIBRARY_PATH "
                        + user_command;
     }
-    if ( verbosity >= 1 )
+    if ( verbosity >= 1 || is_dry_run )
     {
         std::cout << user_command << std::endl;
     }
-    return system( user_command.c_str() );
+    if ( !is_dry_run )
+    {
+        return system( user_command.c_str() );
+    }
+    return 0;
 }
 
 void
 SCOREP_Measurement::PrintParameter()
 {
+}
+
+/* ****************************************************************************
+   Command line parsing
+******************************************************************************/
+bool
+SCOREP_Measurement::process_parameter( std::string param )
+{
+    if ( param == "--dry-run" )
+    {
+        is_dry_run = true;
+        return true;
+    }
+    return false;
 }
 
 /* ****************************************************************************
