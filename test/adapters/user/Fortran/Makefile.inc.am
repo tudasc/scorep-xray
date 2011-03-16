@@ -1,11 +1,16 @@
 check_PROGRAMS += user_f_test
 
 user_f_test_SOURCES =                                       \
-	$(SRC_ROOT)/test/adapters/user/Fortran/user_f_test.mod.f
+	$(SRC_ROOT)/test/adapters/user/Fortran/user_test.F
 
 user_f_test_CPPFLAGS = $(AM_CPPFLAGS)       \
+    -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_DIR_UTIL)
+
+if SCOREP_COMPILER_PGI
+user_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
+endif
 
 user_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_serial.la         \

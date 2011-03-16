@@ -19,10 +19,11 @@
 ## author     Christian Roessel <c.roessel@fz-juelich.de>
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-nobase_include_HEADERS +=                    \
+nobase_include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_PublicTypes.h      \
     $(PUBLIC_INC_SRC)SCOREP_User.h             \
     $(PUBLIC_INC_SRC)SCOREP_User.inc           \
+    $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc       \
     $(PUBLIC_INC_SRC)SCOREP_User_Functions.h   \
     $(PUBLIC_INC_SRC)SCOREP_User_Types.h       \
     $(PUBLIC_INC_SRC)SCOREP_User_Variables.h   \
