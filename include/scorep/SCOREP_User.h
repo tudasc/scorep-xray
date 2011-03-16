@@ -57,7 +57,9 @@
     'SCOREP_User.h', for Fortran files, 'SCOREP_User.inc' must be included. Because the
     Fortran compilers can not expand the macros, the Fortran source code must be
     preprocessed by a C or C++ preprocessor, to include the headers and expand the
-    macros.
+    macros. Which Fortran files are passed to the preprocessor depends on the suffix.
+    Usually, suffixes .f and .f90 are not preprocessed, .F and .F90 files are
+    preprocessed. However, this may depend on the used compiler.
 
    @{
  */
@@ -424,6 +426,7 @@
     you are using a Fortran version which has a limited length of code lines, the length
     of the @a handle parameter must be at most 4 characters, else the declaration line
     exceeds the allowed length.
+    This macro is not available with the PGI Fortran compiler.
 
     @param handle  A name for a parameter must be provided. This parameter is declared in
                    the macro. This handle is used in the SCOREP_USER_REGION_BEGIN and
@@ -492,6 +495,7 @@
     which contains the handle.
     Thus, it must be declared at the top of any module or program which uses this
     handle.
+    This macro is not available with the PGI Fortran compiler.
 
     @param handle  A name for a variable must be provided. This variable name must be
                    the same like for the corresponding SCOREP_GLOBAL_REGION_DEFINE
@@ -729,6 +733,7 @@
     If you are using a Fortran version which has a limited length of code lines, the
     length of the @a handle parameter must be at most 4 characters, else the declaration
     line exceeds the allowed length.
+    This macro is not available with the PGI Fortran compiler.
 
     @param groupHandle The variable name for the variable declared in this statement.
                        If you are using a Fortran version which has a limited length of
@@ -803,6 +808,7 @@
     using SCOREP_USER_METRIC_GROUP_EXTERNAL.
 
     In Fortran, tt uses the common block created by SCOREP_USER_METRIC_GROUP_GLOBAL.
+    This macro is not available with the PGI Fortran compiler.
 
     @param groupHandle The variable name for the variable declared in this statement.
 
@@ -977,6 +983,7 @@
     If you are using a Fortran version which has a limited length of code lines, the
     length of the @a handle parameter must be at most 4 characters, else the declaration
     line exceeds the allowed length.
+    This macro is not available with the PGI Fortran compiler.
 
     @param metricHandle The variable name for the handle.
                         If you are using a Fortran version which has a limited length of
@@ -1046,6 +1053,7 @@
 
     In Fortran, this statement uses the common block created by
     SCOREP_USER_METRIC_GLOBAL.
+    This macro is not available with the PGI Fortran compiler.
 
     @param metricHandle The variable name of the handle. it must be the same name as used
                         in the corresponding SCOREP_USER_METRIC_GLOBAL statement.
@@ -1466,17 +1474,17 @@
     }
     @endcode
 
-    In Fortran, this macro has a different syntax. A logical variable must be
-    specified as parameter, which is set to true if recording is enabled, else the
-    value is set to false.
+    In Fortran, this macro has a different syntax. An integer variable must be
+    specified as parameter, which is set to non-zero if recording is enabled, else the
+    value is set to zero.
 
     Fortran example:
     @code
     subroutine foo
-      logical :: l
+      integer :: l
 
       SCOREP_RECORDING_IS_ON( l )
-      if (l) then
+      if (l .eq. 0) then
         ! do something
       end if
 

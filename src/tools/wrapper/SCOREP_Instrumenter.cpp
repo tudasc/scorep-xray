@@ -747,46 +747,25 @@ SCOREP_Instrumenter::is_source_file( std::string filename )
     {
         return false;
     }
-    if ( extension == ".c" )
-    {
-        return true;
-    }
-    if ( extension == ".C" )
-    {
-        return true;
-    }
-    if ( extension == ".cpp" )
-    {
-        return true;
-    }
-    if ( extension == ".CPP" )
-    {
-        return true;
-    }
-    if ( extension == ".cxx" )
-    {
-        return true;
-    }
-    if ( extension == ".CXX" )
-    {
-        return true;
-    }
-    if ( extension == ".f" )
-    {
-        return true;
-    }
-    if ( extension == ".F" )
-    {
-        return true;
-    }
-    if ( extension == ".f90" )
-    {
-        return true;
-    }
-    if ( extension == ".F90" )
-    {
-        return true;
-    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".c" );
+    SCOREP_CHECK_EXT( ".C" );
+    SCOREP_CHECK_EXT( ".cpp" );
+    SCOREP_CHECK_EXT( ".CPP" );
+    SCOREP_CHECK_EXT( ".cxx" );
+    SCOREP_CHECK_EXT( ".CXX" );
+    SCOREP_CHECK_EXT( ".f" );
+    SCOREP_CHECK_EXT( ".F" );
+    SCOREP_CHECK_EXT( ".f90" );
+    SCOREP_CHECK_EXT( ".F90" );
+    SCOREP_CHECK_EXT( ".fpp" );
+    SCOREP_CHECK_EXT( ".FPP" );
+    SCOREP_CHECK_EXT( ".FOR" );
+    SCOREP_CHECK_EXT( ".FTN" );
+    SCOREP_CHECK_EXT( ".F95" );
+    SCOREP_CHECK_EXT( ".F03" );
+    SCOREP_CHECK_EXT( ".F08" );
+    #undef SCOREP_CHECK_EXT
     return false;
 }
 
