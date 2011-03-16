@@ -62,16 +62,8 @@ FSUB( SCOREP_F_InitMetricGroup )( SCOREP_Fortran_MetricGroup* groupHandle,
     /* Lock metric group definition */
     SCOREP_MutexLock( scorep_user_metric_group_mutex );
 
-    /* Test if handle is already initialized */
-    if ( *groupHandle != SCOREP_FORTRAN_INVALID_GROUP )
-    {
-        *groupHandle = SCOREP_C2F_COUNTER_GROUP( SCOREP_DefineCounterGroup( name ) );
-    }
-    else
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_WARNING,
-                             "Reinitializtaion of user metric group not possible\n" );
-    }
+    /* Make sure handle is already initialized */
+    *groupHandle = SCOREP_C2F_COUNTER_GROUP( SCOREP_DefineCounterGroup( name ) );
 
     /* Clean up */
     SCOREP_MutexUnlock( scorep_user_metric_group_mutex );
@@ -112,25 +104,14 @@ FSUB( SCOREP_F_InitMetric )
     group = ( *groupF == SCOREP_FORTRAN_DEFAULT_GROUP ?
               SCOREP_User_DefaultMetricGroup : SCOREP_F2C_COUNTER_GROUP( *groupF ) );
 
-    /* Check if group handle is valid */
-    if ( *groupF == SCOREP_FORTRAN_INVALID_GROUP )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_USER_INVALID_MGROUP, "" );
-    }
-    else
-    {
-        /* Lock metric definition */
-        SCOREP_MutexLock( scorep_user_metric_mutex );
+    /* Lock metric definition */
+    SCOREP_MutexLock( scorep_user_metric_mutex );
 
-        /* Check if metric handle is already initialized */
-        if ( *metricHandle == SCOREP_FORTRAN_INVALID_METRIC )
-        {
-            /* Define user metric */
-            *metricHandle = SCOREP_C2F_COUNTER( SCOREP_DefineCounter( name, *metricType, group, unit ) );
-        }
-        /* Unlock metric definition */
-        SCOREP_MutexUnlock( scorep_user_metric_mutex );
-    }
+    /* Make sure handle is initialized */
+    *metricHandle = SCOREP_C2F_COUNTER( SCOREP_DefineCounter( name, *metricType, group, unit ) );
+
+    /* Unlock metric definition */
+    SCOREP_MutexUnlock( scorep_user_metric_mutex );
 
     /* Clean up */
     free( name );

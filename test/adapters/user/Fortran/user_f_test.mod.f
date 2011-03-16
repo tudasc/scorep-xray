@@ -15,14 +15,14 @@
       blockdataglo2g;integer*8::glo2;common/glo2id/glo2;dataglo2/-1/;end
       blockdataglo3g;integer*8::glo3;common/glo3id/glo3;dataglo3/-1/;end
       program ScorepTest
-      integer * 8 :: i1 = 19
-      double precision :: r1 = 24.5
-      logical :: l
-      integer*8 :: region1 = -1
-      integer*8 :: scrpfh = -1
-      integer*8 :: local1 = -1
-      integer*8 :: local2 = -1
-      integer*8 :: local3 = -1
+      integer * 8 i1
+      double precision r1
+      integer l
+      integer*8 region1
+      integer*8 scrpfh
+      integer*8 local1
+      integer*8 local2
+      integer*8 local3
       call SCOREP_F_Begin(scrpfh,"ScorepTest",1,"user_test.f",32)
       call SCOREP_F_InitMetricGroup(local1,"local1")
       call SCOREP_F_Begin(region1,"Region1",1,"user_test.f",34)
@@ -34,7 +34,7 @@
       call SCOREP_F_RegionEnd( scrpfh )
       call SCOREP_F_DisableRecording()
       call SCOREP_F_RecordingEnabled( l )
-      if (.not. l) then
+      if (l .eq. 0) then
          call SCOREP_F_EnableRecording()
       endif
       end program ScorepTest

@@ -49,7 +49,27 @@ SCOREP_Mutex scorep_user_file_table_mutex;
  */
 SCOREP_Mutex scorep_user_region_mutex;
 
-void
+/**
+    @internal
+    Hash table for mapping regions names to the User adapte region structs.
+    Needed for the fortran regions which can not be initialized in declaration. We can
+    not determine by the handle value whether we initialized the region already. Thus, we need
+    to lookup the name in a extra datastructure.
+ */
+SCOREP_Hashtab* scorep_user_region_table = NULL;
+
+
+static void
+scorep_user_delete_region_entry( SCOREP_Hashtab_Entry* entry )
+{
+    SCOREP_ASSERT( entry );
+
+    /* the value entry is stored in a structure that is allocated with the scorep
+       memory management system. Thus, it must not free the value. */
+    free( ( char* )entry->key );
+}
+
+static void
 scorep_user_delete_file_entry( SCOREP_Hashtab_Entry* entry )
 {
     SCOREP_ASSERT( entry );
@@ -65,11 +85,15 @@ scorep_user_init_regions()
     SCOREP_MutexCreate( &scorep_user_file_table_mutex );
     scorep_user_file_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                         &SCOREP_Hashtab_CompareStrings );
+    scorep_user_region_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
+                                                          &SCOREP_Hashtab_CompareStrings );
 }
 
 void
 scorep_user_final_regions()
 {
+    SCOREP_Hashtab_Foreach( scorep_user_region_table, &scorep_user_delete_region_entry );
+    SCOREP_Hashtab_Free( scorep_user_region_table );
     SCOREP_Hashtab_Foreach( scorep_user_file_table, &scorep_user_delete_file_entry );
     SCOREP_Hashtab_Free( scorep_user_file_table );
     scorep_user_file_table = NULL;
@@ -77,7 +101,7 @@ scorep_user_final_regions()
     SCOREP_MutexDestroy( &scorep_user_region_mutex );
 }
 
-SCOREP_SourceFileHandle
+static SCOREP_SourceFileHandle
 scorep_user_get_file( const char*              file,
                       const char**             lastFileName,
                       SCOREP_SourceFileHandle* lastFile )
