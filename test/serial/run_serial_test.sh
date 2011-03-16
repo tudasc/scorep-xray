@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-./serial_test
+SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./serial_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp
     exit 1

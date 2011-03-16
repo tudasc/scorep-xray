@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-SCOREP_ENABLE_PROFILING=true ./omp_test
+SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./omp_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp
     exit 1
