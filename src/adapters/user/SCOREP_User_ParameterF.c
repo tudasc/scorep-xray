@@ -59,7 +59,7 @@ FSUB( SCOREP_F_ParameterInt64 )
         c_name[ name_len ] = '\0';
     }
 
-    SCOREP_User_ParameterInt64( handle, c_name, *value );
+    SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )handle, c_name, *value );
 
     free( c_name );
 }
@@ -86,7 +86,7 @@ FSUB( SCOREP_F_ParameterString )
         c_name[ name_len ] = '\0';
     }
 
-    SCOREP_User_ParameterString( handle, c_name, c_value );
+    SCOREP_User_ParameterString( ( SCOREP_User_ParameterHandle* )handle, c_name, c_value );
 
     free( c_name );
     free( c_value );
