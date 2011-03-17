@@ -441,7 +441,14 @@ ___rouent( struct s1* p )
 void
 ___rouent64( struct s1* p )
 {
-    ___rouent2( p );
+    static bool print_warning = true;
+    if ( print_warning )
+    {
+        print_warning = false;
+        fprintf( stderr,
+                 "Warning: You instruented the application with an unsupported interface."
+                 "\n" );
+    }
 }
 
 /**
@@ -489,7 +496,7 @@ ___rouret( void )
 void
 ___rouret64( void )
 {
-    ___rouret2();
+    /* The ...64 bit versions are not supported. */
 }
 
 #pragma save_all_regs
