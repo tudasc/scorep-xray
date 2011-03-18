@@ -599,6 +599,39 @@ void
 SCOREP_Instrumenter::prepare_compiler()
 {
     compiler_flags += " " + compiler_instrumentation_flags;
+
+    /* The sun compiler can only instrument Fortran files. Thus, any C/C++ files
+       are not instrumented. To avoid user confusion, the instrumneter aborts in
+       case a C/C++ file should be compiler instumented.
+     */
+#ifdef SCOREP_COMPILER_SUN
+    if ( is_compiling )
+    {
+        std::string current_file = "";
+        std::string extension    = "";
+        size_t      old_pos      = 0;
+        size_t      cur_pos      = 0;
+        while ( cur_pos != std::string::npos )
+        {
+            cur_pos = input_files.find( " ", old_pos );
+            if ( old_pos < cur_pos ) // Discard a blank
+            {
+                current_file = input_files.substr( old_pos, cur_pos - old_pos );
+                if ( !is_fortran_file( current_file ) )
+                {
+                    std::cerr << "Compiler instrumentation with the Sun compiler ist "
+                              << "only possible for Fortran files. If you want to "
+                              << "switch off compiler instrumentation, please use the "
+                              << "--nocompiler option."
+                              << std::endl;
+                    abort();
+                }
+            }
+            // Setup for next file
+            old_pos = cur_pos + 1;
+        }
+    }
+#endif // SCOREP_COMPILER_SUN
 }
 
 void
@@ -737,6 +770,30 @@ SCOREP_Instrumenter::get_basename( std::string filename )
         return filename;
     }
     return filename.substr( 0, pos );
+}
+
+bool
+SCOREP_Instrumenter::is_fortran_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".f" );
+    SCOREP_CHECK_EXT( ".F" );
+    SCOREP_CHECK_EXT( ".f90" );
+    SCOREP_CHECK_EXT( ".F90" );
+    SCOREP_CHECK_EXT( ".fpp" );
+    SCOREP_CHECK_EXT( ".FPP" );
+    SCOREP_CHECK_EXT( ".FOR" );
+    SCOREP_CHECK_EXT( ".FTN" );
+    SCOREP_CHECK_EXT( ".F95" );
+    SCOREP_CHECK_EXT( ".F03" );
+    SCOREP_CHECK_EXT( ".F08" );
+    #undef SCOREP_CHECK_EXT
+    return false;
 }
 
 bool

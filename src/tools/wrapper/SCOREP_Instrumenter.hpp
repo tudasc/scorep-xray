@@ -330,6 +330,13 @@ private:
     bool
     is_source_file( std::string filename );
 
+    /** Checks whether a file is a Fortran source file.
+        @param filename A file name.
+        @returns true if the file extension indicates Fortran source file.
+     */
+    bool
+    is_fortran_file( std::string filename );
+
     /** Checks whether a file is an object file.
         @param filename A file name.
         @returns true if the file extension indicates an object file.
