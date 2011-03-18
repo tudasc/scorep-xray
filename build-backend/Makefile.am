@@ -107,17 +107,17 @@ $(builddir)/scorep_config.dat:
 	@echo "Creating $(builddir)/scorep_config.dat"
 	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
 	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
-	@echo LIBDIR=\"$(PWD)/.libs\"                                                      >> $(builddir)/scorep_config.dat
+	@echo LIBDIR=\"$(PWD)/.libs\"                                               >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(PWD)/../vendor/otf2/build-backend/.libs\"                  >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(PWD)/../vendor/otf2/vendor/utility/build-backend/.libs\"   >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(LIBS) -lotf2 -lscorep_utilities\"                            >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(INC_ROOT)include\"                                        >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
-	@echo SRC_ROOT=\"$(PWD)/$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PWD)/$(INC_ROOT)include\"                                  >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"                                   >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PWD)/$(INC_DIR_OTF2)\"                                     >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PWD)/$(INC_DIR_UTIL)\"                                     >> $(builddir)/scorep_config.dat
+	@echo SRC_ROOT=\"$(PWD)/$(PUBLIC_INC_DIR)../../\"                           >> $(builddir)/scorep_config.dat
 	@echo CC=\"$(CC)\"                                                          >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
@@ -126,7 +126,6 @@ $(builddir)/scorep_config.dat:
 	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2_config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"                         >> $(builddir)/scorep_config.dat
 	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
 	@echo PDT_CONFIG=\"$(PWD)/$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
-
 
 ## Here we write only the backend values.
 create-config-tool-headers: $(CONFIG_HEADER_BACKEND)

@@ -32,5 +32,7 @@ EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test.sh
 SCOREP_SERIAL_TESTS += $(srcdir)/../test/serial/run_serial_test_profile.sh
 EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test_profile.sh
 
+if !SCOREP_COMPILER_SUN
 SCOREP_SERIAL_TESTS += $(srcdir)/../test/serial/run_serial_test_inst.sh
+endif
 EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test_inst.sh
