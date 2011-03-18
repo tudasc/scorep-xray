@@ -1,4 +1,4 @@
-AC_PREREQ([2.65])
+AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
 ## Declare variable as precious variable and include its description in the
@@ -26,14 +26,15 @@ AC_SCOREP_PDT
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
-AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11 -Wall tar-ustar])
+AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11.1 -Wall tar-ustar])
+
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
 AC_SCOREP_PLATFORM_SETTINGS   
 
 AC_SCOREP_COMMON_CHECKS
 AC_CHECK_FUNCS_ONCE([readlink])
 
-LT_PREREQ([2.2.6])
+LT_PREREQ([2.4])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
