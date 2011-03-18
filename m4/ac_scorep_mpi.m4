@@ -216,69 +216,79 @@ AC_LANG_POP(Fortran)
 
 
 AC_DEFUN([AC_SCOREP_MPI_INFO_COMPLIANT], [
-AC_LANG_PUSH(C)
+    AC_LANG_PUSH(C)
 
-AC_MSG_CHECKING([whether MPI_Info_delete is standard compliant])
-AC_COMPILE_IFELSE([
-#include<mpi.h>
-int MPI_Info_delete(MPI_Info info, char *c)
-{
-  return 0;
-}
-],[AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_INFO_DELETE_COMPLIANT, 1, [MPI_Info_delete is standard compliant])
-], [AC_MSG_RESULT(no)]
-) # AC_COMPILE_IF_ELSE
+    AC_MSG_CHECKING([whether MPI_Info_delete is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Info_delete(MPI_Info info, char *c)
+            {
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_INFO_DELETE_COMPLIANT, 1, [MPI_Info_delete is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
  
-AC_MSG_CHECKING([whether MPI_Info_get is standard compliant])
-AC_COMPILE_IFELSE([
-#include<mpi.h>
-int MPI_Info_get(MPI_Info info, char *c1, int i1, char *c2, int *i2)
-{
-  return 0;
-}
-],[AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_INFO_GET_COMPLIANT, 1, [MPI_Info_get is standard compliant])
-], [AC_MSG_RESULT(no)]
-) # AC_COMPILE_IF_ELSE
+    AC_MSG_CHECKING([whether MPI_Info_get is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Info_get(MPI_Info info, char *c1, int i1, char *c2, int *i2)
+            {
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_INFO_GET_COMPLIANT, 1, [MPI_Info_get is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
  
-AC_MSG_CHECKING([whether MPI_Info_get_valuelen is standard compliant])
-AC_COMPILE_IFELSE([
-#include<mpi.h>
-int MPI_Info_get_valuelen(MPI_Info info, char *c, int *i1, int *i2)
-{
-  return 0;
-}
-],[AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_INFO_GET_VALUELEN_COMPLIANT, 1, [MPI_Info_get_valuelen is standard compliant])
-], [AC_MSG_RESULT(no)]
-) # AC_COMPILE_IF_ELSE
+    AC_MSG_CHECKING([whether MPI_Info_get_valuelen is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Info_get_valuelen(MPI_Info info, char *c, int *i1, int *i2)
+            {
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_INFO_GET_VALUELEN_COMPLIANT, 1, [MPI_Info_get_valuelen is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
  
-AC_MSG_CHECKING([whether MPI_Info_set is standard compliant])
-AC_COMPILE_IFELSE([
-#include<mpi.h>
-int MPI_Info_set(MPI_Info info, char *c1, char *c2)
-{
-  return 0;
-}
-],[AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_INFO_SET_COMPLIANT, 1, [MPI_Info_set is standard compliant])
-], [AC_MSG_RESULT(no)]
-) # AC_COMPILE_IF_ELSE
+    AC_MSG_CHECKING([whether MPI_Info_set is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Info_set(MPI_Info info, char *c1, char *c2)
+            {
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_INFO_SET_COMPLIANT, 1, [MPI_Info_set is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
  
-AC_MSG_CHECKING([whether MPI_Grequest_complete is standard compliant])
-AC_COMPILE_IFELSE([
-#include<mpi.h>
-int MPI_Grequest_complete(MPI_Request request)
-{
-  return 0;
-}
-],[AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_GREQUEST_COMPLETE_COMPLIANT, 1, [MPI_Grequest_complete is standard compliant])
-], [AC_MSG_RESULT(no)]
-) # AC_COMPILE_IF_ELSE
+    AC_MSG_CHECKING([whether MPI_Grequest_complete is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Grequest_complete(MPI_Request request)
+            {
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_GREQUEST_COMPLETE_COMPLIANT, 1, [MPI_Grequest_complete is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
 
-AC_LANG_POP(C)
+    AC_LANG_POP(C)
 ]) # AC_DEFUN(AC_SCOREP_MPI_INFO_COMPLIANT)
 
 
