@@ -139,11 +139,16 @@ scorep_profile_search_subtree_for_phases( scorep_profile_node* thread_root,
            next sibling before we deal with the child */
         next = child->next_sibling;
 
+        /* We need to remove all phases that are in the child's subtree, before we can
+           deal with the child, else nested phases cause errors. */
+        scorep_profile_search_subtree_for_phases( thread_root, child );
+
+        /* Here we know that no phases are left in the subtree oh child */
         if ( scorep_profile_node_is_phase( child ) )
         {
             scorep_profile_setup_phase( thread_root, child );
         }
-        scorep_profile_search_subtree_for_phases( thread_root, child );
+
         child = next;
     }
 }
