@@ -273,13 +273,25 @@ extern scorep_profile_node*
 scorep_profile_copy_node( scorep_profile_node* source );
 
 /**
+   Find a child node of @a parent of a specified type. If parent has a child
+   which matches @a type this node is returned.
+   @param parent    Pointer to a node which children are searched.
+   @param type      Pointer to a node for which a matching node is searched.
+   @returns The matching node from the children of @a parent. If no matching node is
+            found, it returns NULL.
+ */
+extern scorep_profile_node*
+scorep_profile_find_child( scorep_profile_node* parent,
+                           scorep_profile_node* type );
+
+/**
    Find or create a child node of @a parent of a specified type. If parent has a child
    which matches @a type this node is returned. Else a copy of @a type without metrics
    is created and added to the children of @a parent.
    @param parent    Pointer to a node which children are searched.
    @param type      Pointer to a node for which a matching node is searched.
    @param timestamp Timestamp for the first enter time in case a new node is created.
-   @returns The mathcing node from the children of @a parent. this might be a newly
+   @returns The matching node from the children of @a parent. This might be a newly
             created node.
  */
 extern scorep_profile_node*
@@ -393,5 +405,36 @@ scorep_profile_get_number_of_child_calls( scorep_profile_node* node );
  */
 extern uint64_t
 scorep_profile_get_exclusive_time( scorep_profile_node* node );
+
+/**
+   Add dense metrics from source to destination.
+   @param destination A pointer to a node to which the metrics are added.
+   @param source      A pointer to a node which metrics are added to @a destination.
+ */
+extern void
+scorep_profile_merge_node_dense( scorep_profile_node* destination,
+                                 scorep_profile_node* source );
+
+/**
+   Add sparse metric from source to destination.
+   @param destination A pointer to a node to which the metrics are added.
+   @param source      A pointer to a node which metrics are added to @a destination.
+ */
+extern void
+scorep_profile_merge_node_sparse( scorep_profile_node* destination,
+                                  scorep_profile_node* source );
+
+
+/**
+   Merges the subtree rooted in @a source into the subtree rooted in @a destination.
+   Adds all statistics of @a source to @a destination and processes the children
+   recursively.
+   @param destination A pointer to the node which is the root of the target subtree.
+   @param source      A pointer to the node of the subtree which is merged into
+                      @a destination.
+ */
+void
+scorep_profile_merge_subtree( scorep_profile_node* destination,
+                              scorep_profile_node* source );
 
 #endif // SCOREP_PROFILE_NODE_H

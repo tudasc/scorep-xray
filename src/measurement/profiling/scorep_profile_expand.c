@@ -35,98 +35,6 @@
 #include "scorep_profile_definition.h"
 
 /**
-   Add dense metrics from source to destination.
-   @param destination A pointer to a node to which the metrics are added.
-   @param source      A pointer to a node which metrics are added to @a destination.
- */
-void
-scorep_profile_merge_node_dense( scorep_profile_node* destination,
-                                 scorep_profile_node* source )
-{
-    int i;
-
-    /* Merge static values */
-    destination->count += source->count;
-    if ( destination->first_enter_time > source->first_enter_time )
-    {
-        destination->first_enter_time = source->first_enter_time;
-    }
-    if ( destination->last_exit_time < source->last_exit_time )
-    {
-        destination->last_exit_time = source->last_exit_time;
-    }
-
-    /* Merge dense metrics */
-    scorep_profile_merge_dense_metric( &destination->inclusive_time, &source->inclusive_time );
-    for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
-    {
-        scorep_profile_merge_dense_metric( &destination->dense_metrics[ i ],
-                                           &source->dense_metrics[ i ] );
-    }
-}
-
-/**
-   Add sparse metric from source to destination.
-   @param destination A pointer to a node to which the metrics are added.
-   @param source      A pointer to a node which metrics are added to @a destination.
- */
-void
-scorep_profile_merge_node_sparse( scorep_profile_node* destination,
-                                  scorep_profile_node* source )
-{
-    scorep_profile_sparse_metric_int*    dest_sparse_int      = NULL;
-    scorep_profile_sparse_metric_int*    source_sparse_int    = source->first_int_sparse;
-    scorep_profile_sparse_metric_double* dest_sparse_double   = NULL;
-    scorep_profile_sparse_metric_double* source_sparse_double = source->first_double_sparse;
-
-    /* Merge sparse integer metrics */
-    while ( source_sparse_int != NULL )
-    {
-        dest_sparse_int = destination->first_int_sparse;
-        while ( ( dest_sparse_int != NULL ) &&
-                ( dest_sparse_int->metric != source_sparse_int->metric ) )
-        {
-            dest_sparse_int = dest_sparse_int->next_metric;
-        }
-        if ( dest_sparse_int == NULL )
-        {
-            dest_sparse_int = scorep_profile_copy_sparse_int( source_sparse_int );
-        }
-        else
-        {
-            scorep_profile_merge_sparse_metric_int( dest_sparse_int, source_sparse_int );
-            dest_sparse_int->next_metric  = destination->first_int_sparse;
-            destination->first_int_sparse = dest_sparse_int;
-        }
-
-        source_sparse_int = source_sparse_int->next_metric;
-    }
-
-    /* Merge sparse double metrics */
-    while ( source_sparse_double != NULL )
-    {
-        dest_sparse_double = destination->first_double_sparse;
-        while ( ( dest_sparse_double != NULL ) &&
-                ( dest_sparse_double->metric != source_sparse_double->metric ) )
-        {
-            dest_sparse_double = dest_sparse_double->next_metric;
-        }
-        if ( dest_sparse_double == NULL )
-        {
-            dest_sparse_double               = scorep_profile_copy_sparse_double( source_sparse_double );
-            dest_sparse_double->next_metric  = destination->first_double_sparse;
-            destination->first_double_sparse = dest_sparse_double;
-        }
-        else
-        {
-            scorep_profile_merge_sparse_metric_double( dest_sparse_double, source_sparse_double );
-        }
-
-        source_sparse_double = source_sparse_double->next_metric;
-    }
-}
-
-/**
    Finds or creates a child of parent which matches type and adds dense metrics from
    source.
    @param parent Pointer to a node whose children are are searched for a node that
@@ -250,7 +158,7 @@ scorep_profile_expand_thread_start( scorep_profile_node* thread_start )
     /* Else insert callpath */
     else
     {
-        /* Sum up shild statistics */
+        /* Sum up child statistics */
         scorep_profile_sum_children( thread_start );
 
         /* Add callpath */
