@@ -14,6 +14,13 @@
  *
  */
 
+/**
+ * @ file      user_test.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *
+ * @brief Tests user instrumentation.
+ */
+
 #include <config.h>
 
 #include "SCOREP_User.h"

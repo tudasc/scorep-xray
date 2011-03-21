@@ -17,3 +17,9 @@ user_c_test_LDADD =                         \
     $(LIB_ROOT)libscorep_pomp_dummy.la      \
     $(LIB_DIR_OTF2)libotf2.la               \
     $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+
+EXTRA_DIST       += \
+    $(SRC_ROOT)test/adapters/user/C/scorep_phase_test.c \
+    $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh
+
+SCOREP_OMP_TESTS += $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh
