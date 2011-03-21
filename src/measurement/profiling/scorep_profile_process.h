@@ -52,4 +52,10 @@ scorep_profile_assign_callpath_to_master();
 extern void
 scorep_profile_assign_callpath_to_workers();
 
+/**
+   Cuts out phases from the tree and makes phases to root nodes of separate trees.
+ */
+extern void
+scorep_profile_process_phases();
+
 #endif // SCOREP_PROFILE_PROCESS_H

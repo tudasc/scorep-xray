@@ -36,44 +36,6 @@
 #include "scorep_profile_definition.h"
 
 
-/* Merges source into destination. Adds all statistics of source to destination and
-   try to find equal callpathes
- */
-void
-scorep_profile_merge_subtree( scorep_profile_node* destination,
-                              scorep_profile_node* source )
-{
-    assert( destination );
-    assert( source );
-
-    scorep_profile_merge_node_dense( destination, source );
-    scorep_profile_merge_node_sparse( destination, source );
-
-    scorep_profile_node* child = source->first_child;
-    scorep_profile_node* next  = NULL;
-    scorep_profile_node* match = NULL;
-    while ( child != NULL )
-    {
-        next  = child->next_sibling;
-        match = scorep_profile_find_child( destination, source );
-
-        /* If no equal child node of destination exists, insert the child of source as
-           first child of destination. */
-        if ( match == NULL )
-        {
-            child->next_sibling      = destination->first_child;
-            destination->first_child = child;
-        }
-        /* If a matching node exists, merge the subtree recursively */
-        else
-        {
-            scorep_profile_merge_subtree( match, child );
-        }
-
-        child = next;
-    }
-}
-
 /**
    Removes a phase from its current position and insert it at the thread root level
  */
@@ -143,7 +105,7 @@ scorep_profile_search_subtree_for_phases( scorep_profile_node* thread_root,
            deal with the child, else nested phases cause errors. */
         scorep_profile_search_subtree_for_phases( thread_root, child );
 
-        /* Here we know that no phases are left in the subtree oh child */
+        /* Here we know that no phases are left in the subtree of child */
         if ( scorep_profile_node_is_phase( child ) )
         {
             scorep_profile_setup_phase( thread_root, child );

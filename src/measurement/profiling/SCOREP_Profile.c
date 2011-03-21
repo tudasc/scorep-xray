@@ -85,50 +85,50 @@ static uint64_t scorep_profile_output_format = SCOREP_Profile_OutputDefault;
    Bitset table for output format string configuration.
  */
 static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
-    { "None",        SCOREP_Profile_OutputNone        },
-    { "TauSnapshot", SCOREP_Profile_OutputTauSnapshot },
-    { "Cube4",       SCOREP_Profile_OutputCube4       },
-    { "Default",     SCOREP_Profile_OutputDefault     },
-    { NULL,          0                                }
+    { "NONE",         SCOREP_Profile_OutputNone         },
+    { "TAU_SNAPSHOT", SCOREP_Profile_OutputTauSnapshot  },
+    { "CUBE4",        SCOREP_Profile_OutputCube4        },
+    { "DEFAULT",      SCOREP_Profile_OutputDefault      },
+    { NULL,           0                                 }
 };
 
 /**
    Configuration variable registration structures for the profiling system.
  */
 static SCOREP_ConfigVariable scorep_profile_configs[] = {
-    { "MaxCallpathDepth",
+    { "MAX_CALLPATH_DEPTH",
       SCOREP_CONFIG_TYPE_NUMBER,
       &scorep_profile_max_callpath_depth,
       NULL,
       "30",
       "Maximum depth of the calltree",
       "Maximum depth of the calltree" },
-    { "MaxCallpathNum",
+    { "MAX_CALLPATH_NUM",
       SCOREP_CONFIG_TYPE_NUMBER,
       &scorep_profile_max_callpath_num,
       NULL,
       "1000000000",
       "Maximum number of nodes in the calltree",
       "Maximum number of nodes in the calltree" },
-    { "BaseFileName",
+    { "PROFILE_BASE_NAME",
       SCOREP_CONFIG_TYPE_STRING,
       &scorep_profile_basename,
       NULL,
       "profile",
       "Base for construction of the profile filename",
       "String which is used as based to create the filenames for the profile files" },
-    { "ProfileFormat",
+    { "PROFILE_FORMAT",
       SCOREP_CONFIG_TYPE_BITSET,
       &scorep_profile_output_format,
       ( void* )scorep_profile_format_table,
-      "Default",
+      "DEFAULT",
       "Profile output format",
       "Sets the output format for the profile.\n"
       "The following formats are supported:\n"
-      " None: No profile output. This does not disable profile recording.\n"
-      " TauSnapshot: Tau snapshot format.\n"
-      " Cube4: Cube4 format.\n"
-      " Default: Default format. If Cube4 is supported, Cube4 is the default\n"
+      " NONE: No profile output. This does not disable profile recording.\n"
+      " TAU_SNAPSHOT: Tau snapshot format.\n"
+      " CUBE4: Cube4 format.\n"
+      " DEFAULT: Default format. If Cube4 is supported, Cube4 is the default\n"
       "          else the Tau snapshot format is default.\n", },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -370,6 +370,12 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
     if ( processFlags & SCOREP_Profile_ProcessThreads )
     {
         scorep_profile_expand_threads();
+    }
+
+    /* Make phases to the root of separate trees */
+    if ( processFlags & SCOREP_Profile_Phase )
+    {
+        scorep_profile_process_phases();
     }
 
     /* Register callpath and assign callpath handles to every node */

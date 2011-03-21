@@ -784,7 +784,7 @@ scorep_profile_merge_subtree( scorep_profile_node* destination,
     while ( child != NULL )
     {
         next  = child->next_sibling;
-        match = scorep_profile_find_child( destination, source );
+        match = scorep_profile_find_child( destination, child );
 
         /* If no equal child node of destination exists, insert the child of source as
            first child of destination. */

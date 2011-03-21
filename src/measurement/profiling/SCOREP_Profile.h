@@ -69,8 +69,9 @@ typedef enum
     SCOREP_Profile_ProcessThreads  = 1,
     SCOREP_Profile_ProcessCallpath = 3, /* Threadprocessing is a prerequisiste */
     SCOREP_Profile_ParamToRegion   = 4,
+    SCOREP_Profile_Phase           = 8,
 
-    SCOREP_Profile_ProcessDefault  = 7
+    SCOREP_Profile_ProcessDefault  = 15
 } SCOREP_Profile_ProcessingFlag;
 
 /**
