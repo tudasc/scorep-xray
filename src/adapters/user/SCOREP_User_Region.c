@@ -238,8 +238,11 @@ SCOREP_User_RegionEnd
 )
 {
     /* Generate exit event */
-    SCOREP_ExitRegion( handle->handle );
-    scorep_selective_check_exit( handle );
+    if ( handle != SCOREP_INVALID_USER_REGION )
+    {
+        SCOREP_ExitRegion( handle->handle );
+        scorep_selective_check_exit( handle );
+    }
 }
 
 void
@@ -271,15 +274,23 @@ SCOREP_User_RegionInit
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( regionType );
 
         /* Register new region */
-        *handle = scorep_user_create_region( name );
-        if ( *handle != SCOREP_INVALID_USER_REGION )
+
+        /* We store the new handle in a local variable and assign it to *handle
+           only after it is completly initialized. Else other threads may test in
+           between whether the handle is intialized, and use it while initialization
+           is not completed.
+           We do not want to secure the initial test with locks.
+         */
+        SCOREP_User_RegionHandle new_handle = scorep_user_create_region( name );
+        if ( new_handle != SCOREP_INVALID_USER_REGION )
         {
-            ( *handle )->handle = SCOREP_DefineRegion( name,
-                                                       file,
-                                                       lineNo,
-                                                       SCOREP_INVALID_LINE_NO,
-                                                       SCOREP_ADAPTER_USER,
-                                                       region_type );
+            new_handle->handle = SCOREP_DefineRegion( name,
+                                                      file,
+                                                      lineNo,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_ADAPTER_USER,
+                                                      region_type );
+            *handle = new_handle;
         }
     }
     /* Release lock */
@@ -296,6 +307,9 @@ SCOREP_User_RegionEnter
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Generate enter event */
-    scorep_selective_check_enter( handle );
-    SCOREP_EnterRegion( handle->handle );
+    if ( handle != SCOREP_INVALID_USER_REGION )
+    {
+        scorep_selective_check_enter( handle );
+        SCOREP_EnterRegion( handle->handle );
+    }
 }
