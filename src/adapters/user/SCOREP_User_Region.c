@@ -121,6 +121,7 @@ scorep_user_get_file( const char*              file,
      */
     if ( *lastFileName == file )
     {
+        SCOREP_MutexUnlock( scorep_user_file_table_mutex );
         return *lastFile;
     }
 
