@@ -126,7 +126,7 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
                 uint32_t                     tag,
                 uint64_t                     bytesSent )
 {
-    assert( destinationRank < 0 && "Passed invalid rank to SCOREP_MpiSend\n" );
+    assert( destinationRank >= 0 && "Passed invalid rank to SCOREP_MpiSend\n" );
 
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -167,7 +167,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
                 uint32_t                     tag,
                 uint64_t                     bytesReceived )
 {
-    assert( sourceRank < 0 && "Passed invalid rank to SCOREP_MpiRecv\n" );
+    assert( sourceRank >= 0 && "Passed invalid rank to SCOREP_MpiRecv\n" );
 
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -209,7 +209,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                       uint64_t                     bytesSent,
                       uint64_t                     bytesReceived )
 {
-    assert( rootRank < 0     && "Passed invalid rank to SCOREP_MpiCollective\n" );
+    assert( rootRank >= 0 && "Passed invalid rank to SCOREP_MpiCollective\n" );
 
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
