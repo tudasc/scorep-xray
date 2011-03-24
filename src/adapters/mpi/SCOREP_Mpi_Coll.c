@@ -58,8 +58,8 @@ MPI_Allgather( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         recvsz, sendsz, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        recvsz, sendsz, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -129,8 +129,8 @@ MPI_Allgatherv( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         recvcount, recvsz, sendsz, i, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        recvcount, recvsz, sendsz, i, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -203,8 +203,8 @@ MPI_Allreduce( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sz, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        sz, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -272,8 +272,8 @@ MPI_Alltoall( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         recvsz, sendsz, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        recvsz, sendsz, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -344,8 +344,8 @@ MPI_Alltoallv( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         recvcount = 0, sendcount = 0, recvsz, sendsz, N, i;
-        SCOREP_Mpi_Rank root_loc  = SCOREP_INVALID_ROOT_RANK;
+        int32_t        recvcount = 0, sendcount = 0, recvsz, sendsz, N, i;
+        SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -421,8 +421,8 @@ MPI_Alltoallw( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         recvcount = 0, sendcount = 0, recvsz, sendsz, N, i;
-        SCOREP_Mpi_Rank root_loc  = SCOREP_INVALID_ROOT_RANK;
+        int32_t        recvcount = 0, sendcount = 0, recvsz, sendsz, N, i;
+        SCOREP_MpiRank root_loc  = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -490,7 +490,7 @@ MPI_Barrier( MPI_Comm comm )
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
         SCOREP_MPI_EVENT_GEN_OFF();
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_BARRIER ] );
@@ -551,8 +551,8 @@ MPI_Bcast( void*        buffer,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sz, N, me;
-        SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
+        int32_t        sz, N, me;
+        SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -627,8 +627,8 @@ MPI_Exscan( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sz, me, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        sz, me, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -698,8 +698,8 @@ MPI_Gather( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sendsz, recvsz, N, me;
-        SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
+        int32_t        sendsz, recvsz, N, me;
+        SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -778,8 +778,8 @@ MPI_Gatherv( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         recvsz, sendsz, recvcount = 0, me, N, i;
-        SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
+        int32_t        recvsz, sendsz, recvcount = 0, me, N, i;
+        SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -860,8 +860,8 @@ MPI_Reduce( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sz, me, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
+        int32_t        sz, me, N;
+        SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -929,8 +929,8 @@ MPI_Reduce_scatter( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         i, sz, me, N, count = 0;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        i, sz, me, N, count = 0;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -1002,8 +1002,8 @@ MPI_Reduce_scatter_block( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int             sz, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int            sz, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -1070,8 +1070,8 @@ MPI_Scan( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sz, me, N;
-        SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+        int32_t        sz, me, N;
+        SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -1141,8 +1141,8 @@ MPI_Scatter( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sendsz, recvsz, N, me;
-        SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
+        int32_t        sendsz, recvsz, N, me;
+        SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 
         SCOREP_MPI_EVENT_GEN_OFF();
@@ -1221,8 +1221,8 @@ MPI_Scatterv( void*        sendbuf,
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
-        int32_t         sendcount, sendsz, recvsz, me, N, i;
-        SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
+        int32_t        sendcount, sendsz, recvsz, me, N, i;
+        SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 
         SCOREP_MPI_EVENT_GEN_OFF();

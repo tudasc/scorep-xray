@@ -20,7 +20,7 @@
  * @status     alpha
  * @ingroup    MPI_Wrapper
  *
- * @brief Internal funcions for communicator, group and window management.
+ * @brief Internal functions for communicator, group and window management.
  */
 
 #include <config.h>
@@ -33,11 +33,11 @@
 #include <SCOREP_Mutex.h>
 
 /*
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
  *
  * Internal definitions
  *
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
  */
 
 /**
@@ -109,7 +109,7 @@ static struct scorep_mpi_win_type scorep_mpi_windows[ SCOREP_MPI_MAX_WIN ];
 
 /**
  *  @internal
- *  Mutex for mpi window deinfitions.
+ *  Mutex for mpi window definitions.
  */
 static SCOREP_Mutex scorep_mpi_window_mutex;
 
@@ -177,12 +177,12 @@ static struct scorep_mpi_group_type scorep_mpi_groups[ SCOREP_MPI_MAX_GROUP ];
  *  @internal
  *  Internal array used for rank translation.
  */
-static SCOREP_Mpi_Rank* scorep_mpi_ranks;
+static SCOREP_MpiRank* scorep_mpi_ranks;
 
 /**
  *  @internal
  *  Internal flag to indicate communicator initialization. It is set o non-zero if the
- *  communicator managment is initialzed. This happens when the function
+ *  communicator management is initialized. This happens when the function
  *  scorep_mpi_comm_init() is called.
  */
 static int scorep_mpi_comm_initialized = 0;
@@ -235,7 +235,7 @@ struct scorep_mpi_winacc_type
 {
     MPI_Win                win;   /* MPI window identifier */
     SCOREP_Mpi_GroupHandle gid;   /* SCOREP MPI group handle */
-    SCOREP_Mpi_Color       color; /* byte to help distiguish accesses on same window */
+    SCOREP_Mpi_Color       color; /* byte to help distinguish accesses on same window */
 };
 
 /**
@@ -253,22 +253,22 @@ static int scorep_mpi_last_winacc = 0;
 #endif // SCOREP_MPI_NO_RMA
 
 /*
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  *
  * Communicator management
  *
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 
 /* -- rank translation -- */
 
-SCOREP_Mpi_Rank
-scorep_mpi_rank_to_pe( SCOREP_Mpi_Rank rank,
-                       MPI_Comm        comm )
+SCOREP_MpiRank
+scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
+                       MPI_Comm       comm )
 {
-    MPI_Group       group;
-    SCOREP_Mpi_Rank global_rank;
-    int32_t         inter;
+    MPI_Group      group;
+    SCOREP_MpiRank global_rank;
+    int32_t        inter;
 
     /* inter-communicators need different call than intra-communicators */
     PMPI_Comm_test_inter( comm, &inter );
@@ -309,12 +309,12 @@ scorep_mpi_win_final()
 
 #ifndef SCOREP_MPI_NO_RMA
 
-SCOREP_Mpi_Rank
-scorep_mpi_win_rank_to_pe( SCOREP_Mpi_Rank rank,
-                           MPI_Win         win )
+SCOREP_MpiRank
+scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
+                           MPI_Win        win )
 {
-    MPI_Group       group;
-    SCOREP_Mpi_Rank global_rank;
+    MPI_Group      group;
+    SCOREP_MpiRank global_rank;
 
     /* get group of communicator associated with input window */
     PMPI_Win_get_group( win, &group );
@@ -368,7 +368,7 @@ scorep_mpi_win_create( MPI_Win  win,
     handle = SCOREP_DefineMPIWindow(
         comm == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( comm ) );
 
-    /* enter win in scorep_mpi_windows[] arrray */
+    /* enter win in scorep_mpi_windows[] array */
     scorep_mpi_windows[ scorep_mpi_last_window ].win = win;
     scorep_mpi_windows[ scorep_mpi_last_window ].wid = handle;
 
@@ -436,14 +436,14 @@ scorep_mpi_comm_init()
         PMPI_Group_size( scorep_mpi_world.group, &scorep_mpi_world.size );
 
         /* initialize translation data structure for \a MPI_COMM_WORLD */
-        scorep_mpi_world.ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_Mpi_Rank ) );
+        scorep_mpi_world.ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_MpiRank ) );
         for ( i = 0; i < scorep_mpi_world.size; i++ )
         {
             scorep_mpi_world.ranks[ i ] = i;
         }
 
         /* allocate translation buffers */
-        scorep_mpi_ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_Mpi_Rank ) );
+        scorep_mpi_ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_MpiRank ) );
 
         /* initialize global rank variable */
         PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
@@ -543,7 +543,7 @@ static void
 scorep_mpi_comm_create_id( MPI_Comm               comm,
                            int                    size,
                            int                    local_rank,
-                           SCOREP_Mpi_Rank*       root,
+                           SCOREP_MpiRank*        root,
                            SCOREP_CommunicatorId* id )
 {
     struct scorep_mpi_id_root_pair pair;
@@ -576,7 +576,7 @@ void
 scorep_mpi_comm_create( MPI_Comm comm )
 {
     SCOREP_CommunicatorId        id;         /* identifier unique to root */
-    SCOREP_Mpi_Rank              root;       /* global rank of rank 0 */
+    SCOREP_MpiRank               root;       /* global rank of rank 0 */
     int                          local_rank; /* local rank in this communicator */
     int                          size;       /* size of communicator */
     SCOREP_MPICommunicatorHandle handle;     /* Scorep-P handle for the communicator */
@@ -616,7 +616,7 @@ scorep_mpi_comm_create( MPI_Comm comm )
     /* create definition in measurement system */
     handle = SCOREP_DefineMPICommunicator( size, local_rank, root, id );
 
-    /* enter comm in scorep_mpi_comms[] arrray */
+    /* enter comm in scorep_mpi_comms[] array */
     scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
     scorep_mpi_comms[ scorep_mpi_last_comm ].cid  = handle;
     scorep_mpi_last_comm++;
@@ -722,11 +722,11 @@ scorep_mpi_comm_handle( MPI_Comm comm )
 }
 
 /*
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  *
  * Group management
  *
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 
 void
@@ -765,7 +765,7 @@ scorep_mpi_group_create( MPI_Group group )
         /* register mpi group definition (as communicator) */
         handle = SCOREP_DefineMPIGroup( size, scorep_mpi_ranks );
 
-        /* enter group in scorep_mpi_groups[] arrray */
+        /* enter group in scorep_mpi_groups[] array */
         scorep_mpi_groups[ scorep_mpi_last_group ].group  = group;
         scorep_mpi_groups[ scorep_mpi_last_group ].gid    = handle;
         scorep_mpi_groups[ scorep_mpi_last_group ].refcnt = 1;
@@ -884,11 +884,11 @@ scorep_mpi_group_search( MPI_Group group )
 }
 
 /*
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  *
  * Window Access Groups -- which window is accessed by what group
  *
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 
 #ifndef SCOREP_MPI_NO_RMA

@@ -100,7 +100,7 @@ SCOREP_ExitRegion
  *
  * @param destinationRank The MPI destination rank in the communicator
  * specified with @a communicatorHandle. Because of the scalable
- * communicator handleing, it is not possible to covert ranks anymore.
+ * communicator handling, it is not possible to covert ranks anymore.
  *
  * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
@@ -118,7 +118,7 @@ SCOREP_ExitRegion
 void
 SCOREP_MpiSend
 (
-    uint32_t                     destinationRank,
+    SCOREP_MpiRank               destinationRank,
     SCOREP_MPICommunicatorHandle communicatorHandle,
     uint32_t                     tag,
     uint64_t                     bytesSent
@@ -130,7 +130,7 @@ SCOREP_MpiSend
  *
  * @param sourceRank The MPI source rank in the communicator
  * specified with @a communicatorHandle. Because of the scalable
- * communicator handleing, it is not possible to covert ranks anymore.
+ * communicator handling, it is not possible to covert ranks anymore.
  *
  * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
@@ -149,7 +149,7 @@ SCOREP_MpiSend
 void
 SCOREP_MpiRecv
 (
-    uint32_t                     globalSourceRank,
+    SCOREP_MpiRank               sourceRank,
     SCOREP_MPICommunicatorHandle communicatorHandle,
     uint32_t                     tag,
     uint64_t                     bytesReceived
@@ -178,7 +178,7 @@ SCOREP_MpiCollective
 (
     SCOREP_RegionHandle          regionHandle,
     SCOREP_MPICommunicatorHandle communicatorHandle,
-    uint32_t                     rootRank,
+    SCOREP_MpiRank               rootRank,
     uint64_t                     bytesSent,
     uint64_t                     bytesReceived
 );

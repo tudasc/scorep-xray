@@ -121,11 +121,13 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
  * Generate an mpi send event in the measurement system.
  */
 void
-SCOREP_MpiSend( uint32_t                     destinationRank,
+SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
                 SCOREP_MPICommunicatorHandle communicatorHandle,
                 uint32_t                     tag,
                 uint64_t                     bytesSent )
 {
+    assert( destinationRank < 0 && "Passed invalid rank to SCOREP_MpiSend\n" );
+
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
@@ -144,7 +146,7 @@ SCOREP_MpiSend( uint32_t                     destinationRank,
                                 NULL,
                                 SCOREP_GetClockTicks(),
                                 OTF2_MPI_BLOCK,
-                                destinationRank,
+                                ( uint64_t )destinationRank,
                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                 tag,
                                 bytesSent );
@@ -160,11 +162,13 @@ SCOREP_MpiSend( uint32_t                     destinationRank,
  * Generate an mpi recv event in the measurement system.
  */
 void
-SCOREP_MpiRecv( uint32_t                     sourceRank,
+SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
                 SCOREP_MPICommunicatorHandle communicatorHandle,
                 uint32_t                     tag,
                 uint64_t                     bytesReceived )
 {
+    assert( sourceRank < 0 && "Passed invalid rank to SCOREP_MpiRecv\n" );
+
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
@@ -183,7 +187,7 @@ SCOREP_MpiRecv( uint32_t                     sourceRank,
                                 NULL,
                                 SCOREP_GetClockTicks(),
                                 OTF2_MPI_BLOCK,
-                                sourceRank,
+                                ( uint64_t )sourceRank,
                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                 tag,
                                 bytesReceived );
@@ -201,10 +205,12 @@ SCOREP_MpiRecv( uint32_t                     sourceRank,
 void
 SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                       SCOREP_MPICommunicatorHandle communicatorHandle,
-                      uint32_t                     rootRank,
+                      SCOREP_MpiRank               rootRank,
                       uint64_t                     bytesSent,
                       uint64_t                     bytesReceived )
 {
+    assert( rootRank < 0     && "Passed invalid rank to SCOREP_MpiCollective\n" );
+
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
                        )
@@ -230,7 +236,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                                       SCOREP_GetClockTicks(),
                                       OTF2_MPI_BARRIER,
                                       SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
-                                      rootRank,
+                                      ( uint64_t )rootRank,
                                       bytesSent,
                                       bytesReceived );
     }

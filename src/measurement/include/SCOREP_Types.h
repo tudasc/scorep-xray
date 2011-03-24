@@ -403,6 +403,18 @@ typedef struct SCOREP_ConfigType_SetEntry
 } SCOREP_ConfigType_SetEntry;
 
 
+/**
+ * Type of MPI Ranks. Type of MPI ranks always int.
+ */
+typedef int SCOREP_MpiRank;
+
+
+/**
+ * @def SCOREP_MPI_INVALID_RANK
+ * Defines an invalid MPI rank.
+ */
+#define SCOREP_MPI_INVALID_RANK -1
+
 /*@}*/
 
 

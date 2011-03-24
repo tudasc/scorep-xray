@@ -27,13 +27,13 @@
 #define SCOREP_MPI_COMMUNICATOR_H
 
 /*
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  *
  *  EPIK Library (Event Processing Interface Kit)
  *
  *  - MPI communicator management
  *
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 
 #include <SCOREP_Types.h>
@@ -53,21 +53,12 @@ typedef SCOREP_MPICommunicatorHandle SCOREP_Mpi_GroupHandle;
  */
 typedef uint8_t SCOREP_Mpi_Color;
 
-/**
- * Type of Ranks
- */
-typedef int32_t SCOREP_Mpi_Rank;
 
 /* Check MPI version. Disable RMA if MPI version 1 */
 #if defined( MPI_VERSION ) && ( MPI_VERSION == 1 ) && !defined( SCOREP_MPI_NO_RMA )
   #define SCOREP_MPI_NO_RMA
 #endif
 
-/**
- * @def SCOREP_MPI_INVALID_RANK
- * Defines an invalid mpi rank.
- */
-#define SCOREP_MPI_INVALID_RANK -1
 
 /**
  * Defines the value for SCOREP_Mpi_GroupHandle which marks an invalid group
@@ -124,7 +115,7 @@ scorep_mpi_group_free( MPI_Group group );
 
 /**
  * @internal
- * @brief Retrieve the internal SCOREP handle for a givem MPI group handle.
+ * @brief Retrieve the internal SCOREP handle for a given MPI group handle.
  * @param  group MPI group handle.
  * @return Internal SCOREP handle for the given MPI group handle.
  */
@@ -160,13 +151,13 @@ scorep_mpi_win_final();
  * Translate a rank to its global rank in reference to a window (and its
  * communicator.
  * @param  rank Local rank to be translated
- * @param  win  Window that implicitely defines the communicator rank
+ * @param  win  Window that implicitly defines the communicator rank
  *              refers to.
  * @return Global rank
  */
-extern SCOREP_Mpi_Rank
-scorep_mpi_win_rank_to_pe( SCOREP_Mpi_Rank rank,
-                           MPI_Win         win );
+extern SCOREP_MpiRank
+scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
+                           MPI_Win        win );
 
 /**
  * @internal
@@ -190,7 +181,7 @@ scorep_mpi_win_create( MPI_Win  win,
 /**
  * @internal
  * Free definition record and internal tracking handle.
- * @param win MPI window handlte of the window to be freed.
+ * @param win MPI window handle of the window to be freed.
  */
 extern void
 scorep_mpi_win_free( MPI_Win win );
@@ -265,9 +256,9 @@ scorep_mpi_comm_handle( MPI_Comm comm );
  * @param  comm Local communicator the rank refers to.
  * @return Global rank.
  */
-extern SCOREP_Mpi_Rank
-scorep_mpi_rank_to_pe( SCOREP_Mpi_Rank rank,
-                       MPI_Comm        comm );
+extern SCOREP_MpiRank
+scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
+                       MPI_Comm       comm );
 
 /**
  * @internal
@@ -275,10 +266,10 @@ scorep_mpi_rank_to_pe( SCOREP_Mpi_Rank rank,
  */
 struct scorep_mpi_world_type
 {
-    MPI_Group                    group;     /** Associated MPI group */
-    int                          size;      /** Number of ranks */
-    SCOREP_Mpi_Rank*             ranks;     /** Array which contains the rank numbers */
-    SCOREP_MPICommunicatorHandle handle;    /** SCOREP handle */
+    MPI_Group                    group;    /** Associated MPI group */
+    int                          size;     /** Number of ranks */
+    SCOREP_MpiRank*              ranks;    /** Array which contains the rank numbers */
+    SCOREP_MPICommunicatorHandle handle;   /** SCOREP handle */
 };
 
 /**
@@ -293,7 +284,7 @@ extern int8_t scorep_mpi_comm_determination;
 
 /**
  * @def SCOREP_MPI_COMM_WORLD_HANDLE
- * The SCOREP comminicator handle for MPI_COMM_WORLD.
+ * The SCOREP communicator handle for MPI_COMM_WORLD.
  */
 #define SCOREP_MPI_COMM_WORLD_HANDLE scorep_mpi_world.handle
 
@@ -305,7 +296,7 @@ extern int8_t scorep_mpi_comm_determination;
 
 /**
  * @def SCOREP_MPI_RANK_TO_PE
- * Trabslates a rank with respect to arbitrary communicator to its global rank
+ * Translates a rank with respect to arbitrary communicator to its global rank
  */
 #define SCOREP_MPI_RANK_TO_PE( r, c ) r
 //#define SCOREP_MPI_RANK_TO_PE( r, c ) ( !scorep_mpi_comm_determination ? SCOREP_MPI_INVALID_RANK : ( ( ( c ) == MPI_COMM_WORLD ) ? r : scorep_mpi_rank_to_pe( r, c ) ) )
