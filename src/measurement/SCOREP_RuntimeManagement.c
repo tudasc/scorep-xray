@@ -107,7 +107,7 @@ SCOREP_IsInitialized()
  * Initialize the measurement system from the adapter layer.
  */
 void
-SCOREP_InitMeasurement( void )
+SCOREP_InitMeasurement()
 {
     if ( scorep_initialized )
     {
@@ -320,10 +320,7 @@ scorep_adapters_initialize_location()
  * Finalize the measurement system.
  */
 void
-SCOREP_FinalizeMeasurement
-(
-    void
-)
+SCOREP_FinalizeMeasurement()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     SCOREP_FinalizeMeasurementMPI();
@@ -394,10 +391,7 @@ SCOREP_FinalizeMeasurementMPI()
  * Enable event recording for this process.
  */
 void
-SCOREP_EnableRecording
-(
-    void
-)
+SCOREP_EnableRecording()
 {
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
 
@@ -427,10 +421,7 @@ SCOREP_EnableRecording
  * Disable event recording for this process.
  */
 void
-SCOREP_DisableRecording
-(
-    void
-)
+SCOREP_DisableRecording()
 {
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
 

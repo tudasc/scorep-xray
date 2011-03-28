@@ -62,9 +62,7 @@
  * @return true if measurement system is initialized, false otherwise.
  */
 bool
-SCOREP_IsInitialized
-(
-);
+SCOREP_IsInitialized();
 
 // scorep_meets_tau_begin
 /**
@@ -87,9 +85,7 @@ SCOREP_IsInitialized
  * @see SCOREP_FinalizeMeasurement()
  */
 void
-SCOREP_InitMeasurement
-(
-);
+SCOREP_InitMeasurement();
 
 // scorep_meets_tau_end
 
@@ -103,9 +99,7 @@ SCOREP_InitMeasurement
  * @see SCOREP_InitMeasurement()
  */
 void
-SCOREP_FinalizeMeasurement
-(
-);
+SCOREP_FinalizeMeasurement();
 
 
 /**
@@ -114,10 +108,7 @@ SCOREP_FinalizeMeasurement
  *
  */
 void
-SCOREP_InitMeasurementMPI
-(
-    int rank
-);
+SCOREP_InitMeasurementMPI( int rank );
 
 /**
  * Registers an exit handler. The OpenMP implementation on JUMP uses
@@ -163,9 +154,7 @@ SCOREP_OnPMPI_Finalize();
  *
  */
 void
-SCOREP_EnableRecording
-(
-);
+SCOREP_EnableRecording();
 
 
 /**
@@ -174,9 +163,7 @@ SCOREP_EnableRecording
  *
  */
 void
-SCOREP_DisableRecording
-(
-);
+SCOREP_DisableRecording();
 
 
 /**
@@ -185,9 +172,7 @@ SCOREP_DisableRecording
  * @return True if the process is recording, false otherwise.
  */
 bool
-SCOREP_RecordingEnabled
-(
-);
+SCOREP_RecordingEnabled();
 
 
 typedef int ( *SCOREP_ExitCallback )( void );
