@@ -157,12 +157,6 @@ typedef uint32_t SCOREP_LineNo;
  */
 #define SCOREP_INVALID_LOCATION SCOREP_MOVABLE_NULL
 
-/**
- * Symbolic constant representing an invalid or unknown rank.
- * @see SCOREP_MpiCollective()
- */
-#define SCOREP_INVALID_ROOT_RANK INT32_MAX
-
 
 // scorep_meets_tau_begin
 /**
@@ -414,6 +408,14 @@ typedef int SCOREP_MpiRank;
  * Defines an invalid MPI rank.
  */
 #define SCOREP_MPI_INVALID_RANK -1
+
+
+/**
+ * Symbolic constant representing an invalid or unknown rank.
+ * @see SCOREP_MpiCollective()
+ */
+#define SCOREP_INVALID_ROOT_RANK -1
+
 
 /*@}*/
 
