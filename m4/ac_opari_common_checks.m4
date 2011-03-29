@@ -28,6 +28,7 @@ AC_DEFUN([AC_OPARI_COMMON_CHECKS],
 ## search list for the C compiler. For example, if you didn't like the default
 ## order, then you could invoke AC_PROG_CC like this: AC_PROG_CC([gcc cl cc])
 AC_REQUIRE([AC_PROG_CC])
+AC_SCOREP_COMPILER_CHECKS
 
 ## If the C compiler is not in C99 mode by default, try to add an option to
 ## output variable CC to make it so. This macro tries various options that

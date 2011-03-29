@@ -164,6 +164,29 @@ AS_IF([test "x${scorep_compiler_sx}" = "xyes"],
 
 ## 
 
+AC_DEFUN([SCOREP_COMPILER_CRAY],[
+AC_MSG_CHECKING([for cray compiler])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
+[[#if defined(_CRAYC)
+#else
+# error "Not a Cray compiler."
+#endif
+]])],
+                  [scorep_compiler_cray="yes"; scorep_compiler_unknown="no"], 
+                  [scorep_compiler_cray="no"])
+AC_MSG_RESULT([$scorep_compiler_cray])
+AS_IF([test "x${scorep_compiler_cray}" = "xyes"], 
+      [scorep_compiler_instrumentation_cppflags="-hfunc_trace"]
+      [CC="${CC} -hnoomp"]
+      [CXX="${CXX} -hnoomp"]
+      [F77="${F77} -hnoomp"]
+      [FC="${FC} -hnoomp"]
+       AC_DEFINE([FORTRAN_MANGLED(var)], [var ## _], 
+                 [Name of var after mangled by the Fortran compiler.]))
+])
+
+##
+
 AC_DEFUN([SCOREP_ATTRIBUTE_ALIGNMENT],[
 AC_LANG_PUSH([C])
 AC_MSG_CHECKING([for alignment attribute])
@@ -195,6 +218,7 @@ scorep_compiler_pgi="no"
 scorep_compiler_gnu="no"
 scorep_compiler_hp="no"
 scorep_compiler_sx="no"
+scorep_compiler_cray="no"
 
 scorep_compiler_instrumentation_cppflags=""
 
@@ -208,6 +232,7 @@ SCOREP_COMPILER_PGI
 SCOREP_COMPILER_GNU
 SCOREP_COMPILER_HP
 SCOREP_COMPILER_SX
+SCOREP_COMPILER_CRAY
 AC_LANG_POP([C])
 
 if test "x${scorep_compiler_unknown}" = "xyes"; then
@@ -223,4 +248,5 @@ AM_CONDITIONAL([SCOREP_COMPILER_PGI],   [test "x${scorep_compiler_pgi}"   = "xye
 AM_CONDITIONAL([SCOREP_COMPILER_GNU],   [test "x${scorep_compiler_gnu}"   = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_HP],    [test "x${scorep_compiler_hp}"    = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_SX],    [test "x${scorep_compiler_sx}"    = "xyes"])
+AM_CONDITIONAL([SCOREP_COMPILER_CRAY],  [test "x${scorep_compiler_cray}"  = "xyes"])
 ])

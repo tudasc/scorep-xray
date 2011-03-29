@@ -21,8 +21,14 @@
 
 AC_DEFUN([AC_SCOREP_OPENMP],
 [
+# set *FLAGS temporarily to "" because the cray compiler ignores
+# the OpenMP flags if -g is set (which is done per default by configure)
+
 AC_LANG_PUSH([C])
+scorep_cflags_save=${CFLAGS}
+CFLAGS=""
 AC_OPENMP
+CFLAGS=${scorep_cflags_save}
 AC_LANG_POP([C])
 AM_CONDITIONAL([OPENMP_SUPPORTED], 
                [test "x${ac_cv_prog_c_openmp}" != "xunsupported"])
@@ -32,14 +38,23 @@ if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
 fi
 
 AC_LANG_PUSH([C++])
+scorep_cxxflags_save=${CXXFLAGS}
+CXXFLAGS=""
 AC_OPENMP
+CXXFLAGS=${scorep_cxxflags_save}
 AC_LANG_POP([C++])
 
 AC_LANG_PUSH([Fortran 77])
+scorep_fflags_save=${FFLAGS}
+FFLAGS=""
 AC_OPENMP
+FFLAGS=${scorep_fflags_save}
 AC_LANG_POP([Fortran 77])
 
 AC_LANG_PUSH([Fortran])
+scorep_fcflags_save=${FCFLAGS}
+FCFLAGS=""
 AC_OPENMP
+FCFLAGS=${scorep_fflags_save}
 AC_LANG_POP([Fortran])
 ])
