@@ -4,6 +4,7 @@ user_f_test_SOURCES =                                       \
 	$(SRC_ROOT)/test/adapters/user/Fortran/user_test.F
 
 user_f_test_CPPFLAGS = $(AM_CPPFLAGS)       \
+    -DSCOREP_USER_ENABLE=1                  \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_DIR_UTIL)

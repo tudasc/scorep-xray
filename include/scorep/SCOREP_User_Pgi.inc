@@ -58,10 +58,10 @@
         SCOREP_REGION_HANDLE handle
 
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )\
-        call SCOREP_F_Begin(handle,name,type,__FILE__,__LINE__)
+        call SCOREP_F_Begin(handle,name,type,"",__LINE__)
 
 #define SCOREP_USER_REGION_INIT( handle, name, type )\
-        call SCOREP_F_Init(handle,name,type,__FILE__,__LINE__)
+        call SCOREP_F_Init(handle,name,type,"",__LINE__)
 
 #define SCOREP_USER_REGION_END( handle ) call SCOREP_F_RegionEnd( handle )
 
@@ -111,7 +111,7 @@
 #define SCOREP_PARAMETER_INT64( handle, name, value ) \
         call SCOREP_F_ParameterInt64( handle, name, value )
 
-#define SCOREP_PARAMETER_STRING( handle, name, value \
+#define SCOREP_PARAMETER_STRING( handle, name, value ) \
         call SCOREP_F_ParameterInt64( handle, name, value )
 
 !************************************************************* Empty defines
