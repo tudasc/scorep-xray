@@ -63,7 +63,7 @@ main()
 {
     printf( "thread %d in main.     pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
     int pomp_num_threads = omp_get_max_threads();
-    POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads );
+    POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads, "" );
     SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( FORTRAN_MANGLED( pomp_tpd ) ) )
     {
         printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );

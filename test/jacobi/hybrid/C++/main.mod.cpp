@@ -193,11 +193,11 @@ InitializeMatrix( JacobiData &data )
     /* Initilize initial condition and RHS */
 {
 int pomp_num_threads = omp_get_max_threads();
-POMP2_Parallel_fork(&pomp2_region_1,pomp_num_threads);
+ POMP2_Parallel_fork(&pomp2_region_1,pomp_num_threads, "");
 #line 185 "main.cpp"
 #pragma omp parallel     POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
 { POMP2_Parallel_begin(&pomp2_region_1);
-POMP2_For_enter(&pomp2_region_1);
+  POMP2_For_enter(&pomp2_region_1, "");
 #line 185 "main.cpp"
 #pragma omp          for nowait
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
@@ -216,9 +216,9 @@ POMP2_For_enter(&pomp2_region_1);
                         + 2.0 * ( -2.0 + xx2 + yy2 );
         }
     }
-POMP2_Barrier_enter(&pomp2_region_1);
+POMP2_Implicit_barrier_enter(&pomp2_region_1);
 #pragma omp barrier
-POMP2_Barrier_exit(&pomp2_region_1);
+POMP2_Implicit_barrier_exit(&pomp2_region_1);
 POMP2_For_exit(&pomp2_region_1);
 POMP2_Parallel_end(&pomp2_region_1); }
 POMP2_Parallel_join(&pomp2_region_1);

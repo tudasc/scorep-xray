@@ -78,7 +78,7 @@ typedef enum
     <dt>scorep_profile_node_parameter_integer</dt>
     <dd>A pointer to a @ref scorep_profile_integer_node_data instance</dd>
     <dt>scorep_profile_node_thread_root</dt>
-    <dd>A location definition handle</dd>
+    <dd>A pointer to a @ref scorep_profile_root_node_data instance</dd>
     <dt>scorep_profile_node_thread_start</dt>
     <dd>A pointer to the @ref scorep_profile_node instance from which the new thread
         was created</dd>

@@ -122,9 +122,11 @@ POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
 #ifdef _OPENMP
 /** Called before an atomic statement.
     @param pomp_handle  The handle of the started region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Atomic_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Atomic_enter( POMP2_Region_handle* pomp_handle,
+                    const char           ctc_string[] );
 
 /** Called after an atomic statement.
     @param pomp_handle  The handle of the ended region.
@@ -132,17 +134,31 @@ POMP2_Atomic_enter( POMP2_Region_handle* pomp_handle );
 extern void
 POMP2_Atomic_exit( POMP2_Region_handle* pomp_handle );
 
-/** Called before an barrier.
+/** Called before a barrier.
     @param pomp_handle  The handle of the started region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Barrier_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Barrier_enter( POMP2_Region_handle* pomp_handle,
+                     const char           ctc_string[] );
 
-/** Called after an barrier.
+/** Called after a barrier.
     @param pomp_handle  The handle of the ended region.
  */
 extern void
 POMP2_Barrier_exit( POMP2_Region_handle* pomp_handle );
+
+/** Called before an implicit barrier.
+    @param pomp_handle  The handle of the started region.
+ */
+extern void
+POMP2_Implicit_barrier_enter( POMP2_Region_handle* pomp2_handle );
+
+/** Called after an implicit barrier.
+    @param pomp_handle  The handle of the started region.
+ */
+extern void
+POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp2_handle );
 
 /** Called before an flush.
     @param pomp_handle  The handle of the started region.
@@ -170,9 +186,11 @@ POMP2_Critical_end( POMP2_Region_handle* pomp_handle );
 
 /** Called before a critical region.
     @param pomp_handle  The handle of the started region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Critical_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Critical_enter( POMP2_Region_handle* pomp_handle,
+                      const char           ctc_string[] );
 
 /** Called after a critical region.
     @param pomp_handle  The handle of the region.
@@ -182,9 +200,11 @@ POMP2_Critical_exit( POMP2_Region_handle* pomp_handle );
 
 /** Called before a for loop.
     @param pomp_handle  The handle of the region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_For_enter( POMP2_Region_handle* pomp_handle );
+POMP2_For_enter( POMP2_Region_handle* pomp_handle,
+                 const char           ctc_string[] );
 
 /** Called after a for loop.
     @param pomp_handle  The handle of the region.
@@ -194,9 +214,11 @@ POMP2_For_exit( POMP2_Region_handle* pomp_handle );
 
 /** Called at the start of a master region.
     @param pomp_handle  The handle of the region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Master_begin( POMP2_Region_handle* pomp_handle );
+POMP2_Master_begin( POMP2_Region_handle* pomp_handle,
+                    const char           ctc_string[] );
 
 /** Called at the end of a master region.
     @param pomp_handle  The handle of the ended region.
@@ -218,10 +240,13 @@ POMP2_Parallel_end( POMP2_Region_handle* pomp_handle );
 
 /** Called before a parallel region.
     @param pomp_handle  The handle of the region.
+    @param num_threads  Upper bound for number of child threads
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
 POMP2_Parallel_fork( POMP2_Region_handle* pomp_handle,
-                     int                  num_threads );
+                     int                  num_threads,
+                     const char           ctc_string[] );
 
 /** Called after a parallel region.
     @param pomp_handle  The handle of the region.
@@ -231,9 +256,11 @@ POMP2_Parallel_join( POMP2_Region_handle* pomp_handle );
 
 /** Called at the start of a section.
     @param pomp_handle  The handle of the region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Section_begin( POMP2_Region_handle* pomp_handle );
+POMP2_Section_begin( POMP2_Region_handle* pomp_handle,
+                     const char           ctc_string[] );
 
 /** Called at the end of a section.
     @param pomp_handle  The handle of the region.
@@ -243,9 +270,11 @@ POMP2_Section_end( POMP2_Region_handle* pomp_handle );
 
 /** Called before a set of sections.
     @param pomp_handle  The handle of the region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Sections_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Sections_enter( POMP2_Region_handle* pomp_handle,
+                      const char           ctc_string[] );
 
 /** Called after a set of sections.
     @param pomp_handle  The handle of the region.
@@ -267,9 +296,11 @@ POMP2_Single_end( POMP2_Region_handle* pomp_handle );
 
 /** Called before a single region.
     @param pomp_handle  The handle of the region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Single_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Single_enter( POMP2_Region_handle* pomp_handle,
+                    const char           ctc_string[] );
 
 /** Called after a single region.
     @param pomp_handle  The handle of the region.
@@ -279,9 +310,11 @@ POMP2_Single_exit( POMP2_Region_handle* pomp_handle );
 
 /** Called before a workshare region.
     @param pomp_handle  The handle of the region.
+    @param ctc_string   Initialization string. Ignored.
  */
 extern void
-POMP2_Workshare_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Workshare_enter( POMP2_Region_handle* pomp_handle,
+                       const char           ctc_string[] );
 
 /** Called after a workshare region.
     @param pomp_handle  The handle of the region.

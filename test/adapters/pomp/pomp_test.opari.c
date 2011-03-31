@@ -29,29 +29,29 @@ main( int   argc,
     int a;
     {
         int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads );
+        POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads, "" );
 #line 25 "pomp_test.c"
   #pragma omp parallel POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
         { POMP2_Parallel_begin( &pomp2_region_1 );
 #line 26 "pomp_test.c"
           {
               int i;
-              POMP2_For_enter( &pomp2_region_2 );
+              POMP2_For_enter( &pomp2_region_2, "" );
 #line 28 "pomp_test.c"
     #pragma omp for nowait
               for ( i = 0; i < 1000; i++ )
               {
                   a++;
               }
-              POMP2_Barrier_enter( &pomp2_region_2 );
+              POMP2_Implicit_barrier_enter( &pomp2_region_2 );
 #pragma omp barrier
-              POMP2_Barrier_exit( &pomp2_region_2 );
+              POMP2_Implicit_barrier_exit( &pomp2_region_2 );
               POMP2_For_exit( &pomp2_region_2 );
 #line 33 "pomp_test.c"
 
 #line 34 "pomp_test.c"
     #pragma omp master
-              { POMP2_Master_begin( &pomp2_region_3 );
+              { POMP2_Master_begin( &pomp2_region_3, "" );
 #line 35 "pomp_test.c"
                 {
                     a++;
@@ -60,13 +60,13 @@ main( int   argc,
               }
 #line 38 "pomp_test.c"
 
-              POMP2_Barrier_enter( &pomp2_region_4 );
+              POMP2_Barrier_enter( &pomp2_region_4, "" );
 #line 39 "pomp_test.c"
     #pragma omp barrier
               POMP2_Barrier_exit( &pomp2_region_4 );
 #line 40 "pomp_test.c"
 
-              POMP2_Critical_enter( &pomp2_region_5 );
+              POMP2_Critical_enter( &pomp2_region_5, "" );
 #line 41 "pomp_test.c"
     #pragma omp critical(test1)
               { POMP2_Critical_begin( &pomp2_region_5 );
@@ -79,20 +79,20 @@ main( int   argc,
               POMP2_Critical_exit( &pomp2_region_5 );
 #line 45 "pomp_test.c"
 
-              POMP2_Atomic_enter( &pomp2_region_6 );
+              POMP2_Atomic_enter( &pomp2_region_6, "" );
 #line 46 "pomp_test.c"
     #pragma omp atomic
               a++;
               POMP2_Atomic_exit( &pomp2_region_6 );
 #line 48 "pomp_test.c"
 
-              POMP2_Sections_enter( &pomp2_region_7 );
+              POMP2_Sections_enter( &pomp2_region_7, "" );
 #line 49 "pomp_test.c"
     #pragma omp sections nowait
               {
 #line 51 "pomp_test.c"
       #pragma omp section
-                  { POMP2_Section_begin( &pomp2_region_7 );
+                  { POMP2_Section_begin( &pomp2_region_7, "" );
 #line 52 "pomp_test.c"
                     {
                         a++;
@@ -101,7 +101,7 @@ main( int   argc,
                   }
 #line 55 "pomp_test.c"
       #pragma omp section
-                  { POMP2_Section_begin( &pomp2_region_7 );
+                  { POMP2_Section_begin( &pomp2_region_7, "" );
 #line 56 "pomp_test.c"
                     {
                         a += 2;
@@ -110,15 +110,15 @@ main( int   argc,
                   }
 #line 59 "pomp_test.c"
               }
-              POMP2_Barrier_enter( &pomp2_region_7 );
+              POMP2_Implicit_barrier_enter( &pomp2_region_7 );
 #pragma omp barrier
-              POMP2_Barrier_exit( &pomp2_region_7 );
+              POMP2_Implicit_barrier_exit( &pomp2_region_7 );
               POMP2_Sections_exit( &pomp2_region_7 );
 #line 60 "pomp_test.c"
           }
-          POMP2_Barrier_enter( &pomp2_region_1 );
+          POMP2_Implicit_barrier_enter( &pomp2_region_1 );
 #pragma omp barrier
-          POMP2_Barrier_exit( &pomp2_region_1 );
+          POMP2_Implicit_barrier_exit( &pomp2_region_1 );
           POMP2_Parallel_end( &pomp2_region_1 );
         }
         POMP2_Parallel_join( &pomp2_region_1 );

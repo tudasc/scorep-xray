@@ -60,7 +60,7 @@ main()
     printf( "in main\n" );
     {
         int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads );
+        POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads, "" );
 #line 45 "omp_test.c"
         PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
         {
@@ -69,9 +69,9 @@ main()
             {
                 foo();
             }
-            POMP2_Barrier_enter( &pomp_region_1 );
+            POMP2_Implicit_barrier_enter( &pomp_region_1 );
 #pragma omp barrier
-            POMP2_Barrier_exit( &pomp_region_1 );
+            POMP2_Implicit_barrier_exit( &pomp_region_1 );
             POMP2_Parallel_end( &pomp_region_1 );
         }
         POMP2_Parallel_join( &pomp_region_1 );
