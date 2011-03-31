@@ -153,11 +153,11 @@ subroutine InitializeMatrix (myData)
     ! Initilize initial condition and RHS
   
       pomp_num_threads = pomp_get_max_threads1287563324447323();
-      call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads)
+      call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads,"")
 #line 146 "main.F90"
 !$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
       call POMP2_Parallel_begin(pomp2_region_1)
-      call POMP2_Do_enter(pomp2_region_1)
+      call POMP2_Do_enter(pomp2_region_1,"")
 #line 146 "main.F90"
 !$omp          do                       
     do j = myData%iRowFirst, myData%iRowLast
@@ -171,9 +171,9 @@ subroutine InitializeMatrix (myData)
         end do
     end do
 !$omp end do nowait
-      call POMP2_Barrier_enter(pomp2_region_1)
+      call POMP2_Implicit_barrier_enter(pomp2_region_1)
 !$omp barrier
-      call POMP2_Barrier_exit(pomp2_region_1)
+      call POMP2_Implicit_barrier_exit(pomp2_region_1)
       call POMP2_Do_exit(pomp2_region_1)
       call POMP2_Parallel_end(pomp2_region_1)
 !$omp end parallel

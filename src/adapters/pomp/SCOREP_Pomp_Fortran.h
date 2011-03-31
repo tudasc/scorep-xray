@@ -47,6 +47,8 @@ typedef uint64_t POMP2_Region_handle_fortran;
 #define POMP2_Atomic_exit_U      POMP2_ATOMIC_EXIT
 #define POMP2_Barrier_enter_U    POMP2_BARRIER_ENTER
 #define POMP2_Barrier_exit_U     POMP2_BARRIER_EXIT
+#define POMP2_Implicit_barrier_enter_U    POMP2_IMPLICIT_BARRIER_ENTER
+#define POMP2_Implicit_barrier_exit_U     POMP2_IMPLICIT_BARRIER_EXIT
 #define POMP2_Flush_enter_U      POMP2_FLUSH_ENTER
 #define POMP2_Flush_exit_U       POMP2_FLUSH_EXIT
 #define POMP2_Critical_begin_U   POMP2_CRITICAL_BEGIN
@@ -103,6 +105,8 @@ typedef uint64_t POMP2_Region_handle_fortran;
 #define POMP2_Atomic_exit_L      pomp2_atomic_exit
 #define POMP2_Barrier_enter_L    pomp2_barrier_enter
 #define POMP2_Barrier_exit_L     pomp2_barrier_exit
+#define POMP2_Implicit_barrier_enter_L    pomp2_implicit_barrier_enter
+#define POMP2_Implicit_barrier_exit_L     pomp2_implicit_barrier_exit
 #define POMP2_Flush_enter_L      pomp2_flush_enter
 #define POMP2_Flush_exit_L       pomp2_flush_exit
 #define POMP2_Critical_begin_L   pomp2_critical_begin

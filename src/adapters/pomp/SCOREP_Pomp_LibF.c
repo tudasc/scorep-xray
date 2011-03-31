@@ -72,6 +72,22 @@ void FSUB(POMP2_Barrier_exit)(POMP2_Region_handle_fortran* regionHandle)
     }
 }
 
+void FSUB(POMP2_Implicit_barrier_enter)(POMP2_Region_handle_fortran* regionHandle)
+{
+    if ( scorep_pomp_is_tracing_on )
+    {
+      POMP2_Implicit_barrier_enter(SCOREP_POMP_F2C_REGION( regionHandle ));
+    }
+}
+
+void FSUB(POMP2_Implicit_barrier_exit)(POMP2_Region_handle_fortran* regionHandle)
+{
+    if ( scorep_pomp_is_tracing_on )
+    {
+      POMP2_Implicit_barrier_exit(SCOREP_POMP_F2C_REGION( regionHandle ));
+    }
+}
+
 void FSUB(POMP2_Flush_enter)(POMP2_Region_handle_fortran* regionHandle)
 {
     if ( scorep_pomp_is_tracing_on )
