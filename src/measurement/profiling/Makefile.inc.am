@@ -25,7 +25,7 @@ PROFILE_FLAGS =                                 \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/profiling      \
     -I$(INC_ROOT)src/measurement/include        \
-    -I$(INC_ROOT)src/services                   \
+    -I$(INC_ROOT)src/services/include           \
     -I$(INC_ROOT)src/measurement                \
     -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(PUBLIC_INC_DIR)                         \

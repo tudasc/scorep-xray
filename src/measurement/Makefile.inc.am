@@ -52,13 +52,13 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.c
 
 
-libscorep_measurement_la_CPPFLAGS =               \
+libscorep_measurement_la_CPPFLAGS =             \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/measurement/include        \
-    -I$(INC_ROOT)src/measurement/profiling        \
+    -I$(INC_ROOT)src/measurement/profiling      \
     -I$(INC_ROOT)src/measurement/OA             \
     -I$(INC_ROOT)src/adapters/include           \
-    -I$(INC_ROOT)src/services                   \
+    -I$(INC_ROOT)src/services/include           \
     -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_OTF2)                           \
@@ -83,7 +83,7 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
-libscorep_paradigm_omp_la_CPPFLAGS =       \
+libscorep_paradigm_omp_la_CPPFLAGS =     \
     $(AM_CPPFLAGS)                       \
     -I$(INC_DIR_OTF2)                    \
     -I$(INC_DIR_UTIL)                    \
@@ -92,7 +92,7 @@ libscorep_paradigm_omp_la_CPPFLAGS =       \
     -I$(INC_ROOT)src/measurement/paradigm  \
     -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
-    -I$(INC_ROOT)src/services            \
+    -I$(INC_ROOT)src/services/include    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_VENDOR_HASH)
 endif
@@ -121,7 +121,7 @@ libscorep_paradigm_non_omp_la_CPPFLAGS =   \
     -I$(INC_ROOT)src/measurement/paradigm  \
     -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement/OA      \
-    -I$(INC_ROOT)src/services            \
+    -I$(INC_ROOT)src/services/include    \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_VENDOR_HASH)
 

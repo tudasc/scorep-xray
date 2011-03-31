@@ -14,10 +14,14 @@
 # See the COPYING file in the package base directory for details.
 
 
+################################################################################
+# Timer
+################################################################################
+
 noinst_LTLIBRARIES += libscorep_timer.la
-libscorep_timer_la_SOURCES = $(SRC_ROOT)src/services/SCOREP_Timing.h
+libscorep_timer_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Timing.h
 libscorep_timer_la_LIBADD = @TIMER_LIB@ $(LIB_DIR_UTIL)libscorep_utilities.la
-libscorep_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) 
+libscorep_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/services/include
 
 # compile just one of the following scorep_timer_*.c. The conditionals are set in 
 # build-config/m4/ac-scorep-timers.m4
@@ -88,3 +92,14 @@ if SCOREP_TIMER_NEC_SYSSX_HGTIME
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/scorep_timer_nec_syssx_hgtime.c
 endif
 
+################################################################################
+# Platform
+################################################################################
+
+noinst_LTLIBRARIES += libscorep_platform.la
+libscorep_platform_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Platform.h
+#libscorep_platform_la_LIBADD = @PLATFORM_LIB@
+libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS)  -I$(INC_ROOT)src/services/include
+
+
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/scorep_platform_dummy.h
