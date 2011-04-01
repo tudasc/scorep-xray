@@ -291,7 +291,7 @@ scorep_write_counter_definitions_to_cube4( cube_t*                       my_cube
                                            scorep_cube4_definitions_map* map )
 {
     /** TODO: Write real counter definitions */
-    SCOREP_DEBUG_PRINTF( SCOREP_WARNING | SCOREP_DEBUG_DEFINITIONS,
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_DEFINITIONS,
                          "Counter definitions writing not yet implemented." );
     cube_metric* metric;
 

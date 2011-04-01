@@ -124,14 +124,14 @@ scorep_profile_assign_callpath_to_master()
     /* Check consistency */
     if ( master == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING | SCOREP_DEBUG_PROFILE,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_PROFILE,
                              "Try to assign callpathes to empty callpath." );
         return;
     }
     SCOREP_ASSERT( master->node_type == scorep_profile_node_thread_root );
     if ( master->first_child == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING | SCOREP_DEBUG_PROFILE,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_PROFILE,
                              "Master thread contains no regions." );
         return;
     }

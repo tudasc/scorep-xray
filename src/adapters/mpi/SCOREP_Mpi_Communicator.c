@@ -491,7 +491,7 @@ scorep_mpi_comm_init()
     }
     else
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING | SCOREP_DEBUG_MPI, "Duplicate call to communicator initialization ignored!\n" );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI, "Duplicate call to communicator initialization ignored!\n" );
     }
 }
 
@@ -589,7 +589,7 @@ scorep_mpi_comm_create( MPI_Comm comm )
      */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING,
                              "Skipping attempt to create communicator "
                              "outside init->finalize scope" );
         return;
@@ -635,7 +635,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
     /* check if comm handling is initialized (see scorep_mpi_comm_create comment) */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING,
                              "Skipping attempt to create communicator "
                              "outside init->finalize scope" );
         return;
@@ -707,7 +707,7 @@ scorep_mpi_comm_handle( MPI_Comm comm )
 
         if ( comm == MPI_COMM_WORLD )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_WARNING | SCOREP_DEBUG_MPI, "This function SHOULD NOT be called with MPI_COMM_WORLD" );
+            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI, "This function SHOULD NOT be called with MPI_COMM_WORLD" );
             return SCOREP_MPI_COMM_WORLD_HANDLE;
         }
         else
@@ -742,7 +742,7 @@ scorep_mpi_group_create( MPI_Group group )
      */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING,
                              "Skipping attempt to create communicator "
                              "outside init->finalize scope" );
         return;
@@ -791,7 +791,7 @@ scorep_mpi_group_free( MPI_Group group )
      */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING,
                              "Skipping attempt to create communicator "
                              "outside init->finalize scope" );
         return;

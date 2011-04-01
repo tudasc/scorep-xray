@@ -80,7 +80,7 @@ SCOREP_User_InitMetricGroup
     /* Test if handle is already initialized */
     if ( *groupHandle != SCOREP_INVALID_COUNTER_GROUP )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_WARNING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_DEBUG_WARNING,
                              "Reinitializtaion of user metric group not possible\n" );
     }
     else
@@ -120,7 +120,7 @@ SCOREP_User_InitMetric
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SCOREP_INVALID_COUNTER )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_WARNING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_DEBUG_WARNING,
                              "Reinitializtaion of user metric not possible\n" );
     }
     else

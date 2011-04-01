@@ -174,7 +174,7 @@ MPI_Init_thread( int*    argc,
 
     if ( ( return_val == MPI_SUCCESS ) && ( *provided > MPI_THREAD_FUNNELED ) )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING | SCOREP_DEBUG_MPI,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI,
                              "MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!" );
         /* XXXX continue even though not supported by analysis */
     }
