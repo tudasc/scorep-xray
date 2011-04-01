@@ -376,7 +376,7 @@ scorep_write_mpi_window_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPIWindow_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -406,7 +406,7 @@ scorep_write_mpi_cartesian_topology_definitions( void*                     write
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPICartesianTopology_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -436,7 +436,7 @@ scorep_write_mpi_cartesian_coords_definitions( void*                     writerH
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MPICartesianCoords_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -466,7 +466,7 @@ scorep_write_counter_group_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_CounterGroup_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -496,7 +496,7 @@ scorep_write_counter_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Counter_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -526,7 +526,7 @@ scorep_write_io_file_group_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_IOFileGroup_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -556,7 +556,7 @@ scorep_write_io_file_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_IOFile_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -586,7 +586,7 @@ scorep_write_marker_group_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_MarkerGroup_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -616,7 +616,7 @@ scorep_write_marker_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Marker_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -646,7 +646,7 @@ scorep_write_parameter_definitions( void*                     writerHandle,
         //{
         //    scorep_handle_definition_writing_error( status, "SCOREP_Parameter_Definition" );
         //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
