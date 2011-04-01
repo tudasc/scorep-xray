@@ -89,6 +89,7 @@ MPI_Allgather( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_ALLGATHER,
                               N * sendcount * sendsz,
                               N * recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ] );
@@ -165,6 +166,7 @@ MPI_Allgatherv( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_ALLGATHERV,
                               N * sendcount * sendsz,
                               recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ] );
@@ -233,6 +235,7 @@ MPI_Allreduce( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_ALLREDUCE,
                               N * count * sz,
                               N * count * sz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ] );
@@ -303,6 +306,7 @@ MPI_Alltoall( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_ALLTOALL,
                               N * sendcount * sendsz,
                               N * recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ] );
@@ -380,6 +384,7 @@ MPI_Alltoallv( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_ALLTOALLV,
                               sendcount * sendsz,
                               recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ] );
@@ -457,6 +462,7 @@ MPI_Alltoallw( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_ALLTOALLW,
                               sendcount,
                               recvcount );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ] );
@@ -514,6 +520,7 @@ MPI_Barrier( MPI_Comm comm )
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_BARRIER ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_BARRIER,
                               0,
                               0 );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BARRIER ] );
@@ -589,6 +596,7 @@ MPI_Bcast( void*        buffer,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_BCAST ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_BCAST,
                               N * count * sz,
                               count * sz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BCAST ] );
@@ -658,6 +666,7 @@ MPI_Exscan( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_EXSCAN,
                               ( N - me - 1 ) * sz * count,
                               me * sz * count );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ] );
@@ -737,6 +746,7 @@ MPI_Gather( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_GATHER ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_GATHER,
                               sendcount * sendsz,
                               N * recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GATHER ] );
@@ -821,6 +831,7 @@ MPI_Gatherv( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_GATHERV ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_GATHERV,
                               sendcount * sendsz,
                               recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GATHERV ] );
@@ -891,6 +902,7 @@ MPI_Reduce( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_REDUCE ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_REDUCE,
                               count * sz,
                               ( root == me ? N * count * sz : 0 ) );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE ] );
@@ -964,6 +976,7 @@ MPI_Reduce_scatter( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER,
                               count * sz,
                               N * recvcounts[ me ] * sz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ] );
@@ -1032,6 +1045,7 @@ MPI_Reduce_scatter_block( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER_BLOCK,
                               N * recvcount * sz,
                               N * recvcount * sz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ] );
@@ -1101,6 +1115,7 @@ MPI_Scan( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_SCAN ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_SCAN,
                               ( N - me ) * count * sz,
                               ( me + 1 ) * count * sz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCAN ] );
@@ -1180,6 +1195,7 @@ MPI_Scatter( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_SCATTER ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_SCATTER,
                               N * sendcount * sendsz,
                               recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTER ] );
@@ -1261,6 +1277,7 @@ MPI_Scatterv( void*        sendbuf,
         SCOREP_MpiCollective( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ],
                               SCOREP_MPI_COMM_HANDLE( comm ),
                               root_loc,
+                              SCOREP_COLLECTIVE_MPI_SCATTERV,
                               sendcount * sendsz,
                               recvcount * recvsz );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ] );

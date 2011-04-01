@@ -179,6 +179,7 @@ SCOREP_MpiCollective
     SCOREP_RegionHandle          regionHandle,
     SCOREP_MPICommunicatorHandle communicatorHandle,
     SCOREP_MpiRank               rootRank,
+    SCOREP_MpiCollectiveType     collectiveType,
     uint64_t                     bytesSent,
     uint64_t                     bytesReceived
 );

@@ -34,7 +34,7 @@
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Omp.h>
-#include <otf2/OTF2_EvtWriter.h>
+#include <otf2/otf2.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
@@ -198,6 +198,42 @@ SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
     }
 }
 
+static OTF2_Mpi_CollectiveType
+scorep_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
+{
+    switch ( scorep_type )
+    {
+#define CONVERT( name ) \
+    case SCOREP_COLLECTIVE_MPI_ ## name: \
+        return OTF2_MPI_ ## name
+
+        CONVERT( BARRIER );
+        CONVERT( BCAST );
+        CONVERT( GATHER );
+        CONVERT( GATHERV );
+        CONVERT( SCATTER );
+        CONVERT( SCATTERV );
+        CONVERT( ALLGATHER );
+        CONVERT( ALLGATHERV );
+        CONVERT( ALLTOALL );
+        CONVERT( ALLTOALLV );
+        CONVERT( ALLTOALLW );
+        CONVERT( ALLREDUCE );
+        CONVERT( REDUCE );
+        CONVERT( REDUCE_SCATTER );
+        CONVERT( REDUCE_SCATTER_BLOCK );
+        CONVERT( SCAN );
+        CONVERT( EXSCAN );
+        CONVERT( EXIT );
+
+        default:
+            SCOREP_BUG( "Unknown collective type" );
+            return 0;
+
+#undef CONVERT
+    }
+}
+
 
 /**
  * Generate an mpi collective event in the measurement system.
@@ -206,6 +242,7 @@ void
 SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                       SCOREP_MPICommunicatorHandle communicatorHandle,
                       SCOREP_MpiRank               rootRank,
+                      SCOREP_MpiCollectiveType     collectiveType,
                       uint64_t                     bytesSent,
                       uint64_t                     bytesReceived )
 {
@@ -241,7 +278,7 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
         OTF2_EvtWriter_MpiCollective( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                       NULL,
                                       SCOREP_GetClockTicks(),
-                                      OTF2_MPI_BARRIER,
+                                      scorep_collective_to_otf2( collectiveType ),
                                       SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
                                       root_rank,
                                       bytesSent,
