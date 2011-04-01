@@ -60,8 +60,7 @@ static int scorep_mpi_parallel_entered = 0;
  * @li exit region 'MPI_Init'
  */
 int
-MPI_Init( int*    argc,
-          char*** argv )
+MPI_Init( int* argc, char*** argv )
 {
     int event_gen_active = 0;          /* init is deferred to later */
     int return_val;
@@ -138,10 +137,7 @@ MPI_Init( int*    argc,
  * @li exit region 'MPI_Init_thread'
  */
 int
-MPI_Init_thread( int*    argc,
-                 char*** argv,
-                 int     required,
-                 int*    provided )
+MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 {
     int event_gen_active = 0;
     int return_val;

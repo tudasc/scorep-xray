@@ -290,7 +290,49 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
     }
 }
 
+void
+SCOREP_MpiSendComplete( SCOREP_MpiRequestId requestId )
+{
+    printf( "In SCOREP_MpiSendComplete\n" );
+}
 
+void
+SCOREP_MpiRecvRequest( SCOREP_MpiRequestId requestId )
+{
+    printf( "In SCOREP_MpiRecvRequest\n" );
+}
+
+void
+SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
+{
+    printf( "In SCOREP_MpiRequestTested\n" );
+}
+
+void
+SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
+{
+    printf( "In SCOREP_MpiRequestCancelled\n" );
+}
+
+void
+SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
+                  SCOREP_MPICommunicatorHandle communicatorHandle,
+                  uint32_t                     tag,
+                  uint64_t                     bytesSent,
+                  SCOREP_MpiRequestId          requestId )
+{
+    printf( "In SCOREP_MpiIsend\n" );
+}
+
+void
+SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
+                 SCOREP_MPICommunicatorHandle communicatorHandle,
+                 uint32_t                     tag,
+                 uint64_t                     bytesReceived,
+                 SCOREP_MpiRequestId          requestId )
+{
+    printf( "In SCOREP_MpiIrecv\n" );
+}
 /**
  * Generate an OpenMP fork event in the measurement system.
  */

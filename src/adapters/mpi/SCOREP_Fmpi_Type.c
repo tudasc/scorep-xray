@@ -561,9 +561,7 @@
  * @ingroup type
  */
 void
-FSUB( MPI_Sizeof )( MPI_Datatype* x,
-                    int*          size,
-                    int*          ierr )
+FSUB( MPI_Sizeof )( MPI_Datatype* x, int* size, int* ierr )
 {
     *ierr = MPI_Sizeof( *x, *size );
 }
@@ -578,14 +576,7 @@ FSUB( MPI_Sizeof )( MPI_Datatype* x,
  * @ingroup type
  */
 void
-FSUB( MPI_Pack )( void*         inbuf,
-                  int*          incount,
-                  MPI_Datatype* datatype,
-                  void*         outbuf,
-                  int*          outsize,
-                  int*          position,
-                  MPI_Comm*     comm,
-                  int*          ierr )
+FSUB( MPI_Pack )( void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, int* outsize, int* position, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
@@ -607,15 +598,7 @@ FSUB( MPI_Pack )( void*         inbuf,
  * @ingroup type
  */
 void
-FSUB( MPI_Pack_external )( char*         datarep,
-                           void*         inbuf,
-                           int*          incount,
-                           MPI_Datatype* datatype,
-                           void*         outbuf,
-                           MPI_Aint*     outsize,
-                           MPI_Aint*     position,
-                           int*          ierr,
-                           int           datarep_len )
+FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -650,12 +633,7 @@ FSUB( MPI_Pack_external )( char*         datarep,
  * @ingroup type
  */
 void
-FSUB( MPI_Pack_external_size )( char*         datarep,
-                                int*          incount,
-                                MPI_Datatype* datatype,
-                                MPI_Aint*     size,
-                                int*          ierr,
-                                int           datarep_len )
+FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datatype, MPI_Aint* size, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -682,11 +660,7 @@ FSUB( MPI_Pack_external_size )( char*         datarep,
  * @ingroup type
  */
 void
-FSUB( MPI_Pack_size )( int*          incount,
-                       MPI_Datatype* datatype,
-                       MPI_Comm*     comm,
-                       int*          size,
-                       int*          ierr )
+FSUB( MPI_Pack_size )( int* incount, MPI_Datatype* datatype, MPI_Comm* comm, int* size, int* ierr )
 {
     *ierr = MPI_Pack_size( *incount, *datatype, *comm, size );
 }
@@ -700,8 +674,7 @@ FSUB( MPI_Pack_size )( int*          incount,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_commit )( MPI_Datatype* datatype,
-                         int*          ierr )
+FSUB( MPI_Type_commit )( MPI_Datatype* datatype, int* ierr )
 {
     *ierr = MPI_Type_commit( datatype );
 }
@@ -715,10 +688,7 @@ FSUB( MPI_Type_commit )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_contiguous )( int*          count,
-                             MPI_Datatype* oldtype,
-                             MPI_Datatype* newtype,
-                             int*          ierr )
+FSUB( MPI_Type_contiguous )( int* count, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_contiguous( *count, *oldtype, newtype );
 }
@@ -732,17 +702,7 @@ FSUB( MPI_Type_contiguous )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_darray )( int*          size,
-                                int*          rank,
-                                int*          ndims,
-                                int           array_of_gsizes[],
-                                int           array_of_distribs[],
-                                int           array_of_dargs[],
-                                int           array_of_psizes[],
-                                int*          order,
-                                MPI_Datatype* oldtype,
-                                MPI_Datatype* newtype,
-                                int*          ierr )
+FSUB( MPI_Type_create_darray )( int* size, int* rank, int* ndims, int array_of_gsizes[], int array_of_distribs[], int array_of_dargs[], int array_of_psizes[], int* order, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_darray( *size, *rank, *ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, *order, *oldtype, newtype );
 }
@@ -756,12 +716,7 @@ FSUB( MPI_Type_create_darray )( int*          size,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_hindexed )( int*          count,
-                                  int           array_of_blocklengths[],
-                                  MPI_Aint      array_of_displacements[],
-                                  MPI_Datatype* oldtype,
-                                  MPI_Datatype* newtype,
-                                  int*          ierr )
+FSUB( MPI_Type_create_hindexed )( int* count, int array_of_blocklengths[], MPI_Aint array_of_displacements[], MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_hindexed( *count, array_of_blocklengths, array_of_displacements, *oldtype, newtype );
 }
@@ -775,12 +730,7 @@ FSUB( MPI_Type_create_hindexed )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_hvector )( int*          count,
-                                 int*          blocklength,
-                                 MPI_Aint*     stride,
-                                 MPI_Datatype* oldtype,
-                                 MPI_Datatype* newtype,
-                                 int*          ierr )
+FSUB( MPI_Type_create_hvector )( int* count, int* blocklength, MPI_Aint* stride, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_hvector( *count, *blocklength, *stride, *oldtype, newtype );
 }
@@ -794,12 +744,7 @@ FSUB( MPI_Type_create_hvector )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_indexed_block )( int*          count,
-                                       int*          blocklength,
-                                       int           array_of_displacements[],
-                                       MPI_Datatype* oldtype,
-                                       MPI_Datatype* newtype,
-                                       int*          ierr )
+FSUB( MPI_Type_create_indexed_block )( int* count, int* blocklength, int array_of_displacements[], MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_indexed_block( *count, *blocklength, array_of_displacements, *oldtype, newtype );
 }
@@ -813,11 +758,7 @@ FSUB( MPI_Type_create_indexed_block )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_resized )( MPI_Datatype* oldtype,
-                                 MPI_Aint*     lb,
-                                 MPI_Aint*     extent,
-                                 MPI_Datatype* newtype,
-                                 int*          ierr )
+FSUB( MPI_Type_create_resized )( MPI_Datatype* oldtype, MPI_Aint* lb, MPI_Aint* extent, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_resized( *oldtype, *lb, *extent, newtype );
 }
@@ -831,12 +772,7 @@ FSUB( MPI_Type_create_resized )( MPI_Datatype* oldtype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_struct )( int*          count,
-                                int           array_of_blocklengths[],
-                                MPI_Aint      array_of_displacements[],
-                                MPI_Datatype  array_of_types[],
-                                MPI_Datatype* newtype,
-                                int*          ierr )
+FSUB( MPI_Type_create_struct )( int* count, int array_of_blocklengths[], MPI_Aint array_of_displacements[], MPI_Datatype array_of_types[], MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_struct( *count, array_of_blocklengths, array_of_displacements, array_of_types, newtype );
 }
@@ -850,14 +786,7 @@ FSUB( MPI_Type_create_struct )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_create_subarray )( int*          ndims,
-                                  int           array_of_sizes[],
-                                  int           array_of_subsizes[],
-                                  int           array_of_starts[],
-                                  int*          order,
-                                  MPI_Datatype* oldtype,
-                                  MPI_Datatype* newtype,
-                                  int*          ierr )
+FSUB( MPI_Type_create_subarray )( int* ndims, int array_of_sizes[], int array_of_subsizes[], int array_of_starts[], int* order, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_create_subarray( *ndims, array_of_sizes, array_of_subsizes, array_of_starts, *order, *oldtype, newtype );
 }
@@ -871,9 +800,7 @@ FSUB( MPI_Type_create_subarray )( int*          ndims,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_dup )( MPI_Datatype* type,
-                      MPI_Datatype* newtype,
-                      int*          ierr )
+FSUB( MPI_Type_dup )( MPI_Datatype* type, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_dup( *type, newtype );
 }
@@ -887,9 +814,7 @@ FSUB( MPI_Type_dup )( MPI_Datatype* type,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_extent )( MPI_Datatype* datatype,
-                         int*          extent,
-                         int*          ierr )
+FSUB( MPI_Type_extent )( MPI_Datatype* datatype, int* extent, int* ierr )
 {
     MPI_Aint c_extent;
 
@@ -913,8 +838,7 @@ FSUB( MPI_Type_extent )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_free )( MPI_Datatype* datatype,
-                       int*          ierr )
+FSUB( MPI_Type_free )( MPI_Datatype* datatype, int* ierr )
 {
     *ierr = MPI_Type_free( datatype );
 }
@@ -928,14 +852,7 @@ FSUB( MPI_Type_free )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_get_contents )( MPI_Datatype* datatype,
-                               int*          max_integers,
-                               int*          max_addresses,
-                               int*          max_datatypes,
-                               int           array_of_integers[],
-                               MPI_Aint      array_of_addresses[],
-                               MPI_Datatype  array_of_datatypes[],
-                               int*          ierr )
+FSUB( MPI_Type_get_contents )( MPI_Datatype* datatype, int* max_integers, int* max_addresses, int* max_datatypes, int array_of_integers[], MPI_Aint array_of_addresses[], MPI_Datatype array_of_datatypes[], int* ierr )
 {
     *ierr = MPI_Type_get_contents( *datatype, *max_integers, *max_addresses, *max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes );
 }
@@ -949,12 +866,7 @@ FSUB( MPI_Type_get_contents )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_get_envelope )( MPI_Datatype* datatype,
-                               int*          num_integers,
-                               int*          num_addresses,
-                               int*          num_datatypes,
-                               int*          combiner,
-                               int*          ierr )
+FSUB( MPI_Type_get_envelope )( MPI_Datatype* datatype, int* num_integers, int* num_addresses, int* num_datatypes, int* combiner, int* ierr )
 {
     *ierr = MPI_Type_get_envelope( *datatype, num_integers, num_addresses, num_datatypes, combiner );
 }
@@ -968,10 +880,7 @@ FSUB( MPI_Type_get_envelope )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_get_extent )( MPI_Datatype* datatype,
-                             MPI_Aint*     lb,
-                             MPI_Aint*     extent,
-                             int*          ierr )
+FSUB( MPI_Type_get_extent )( MPI_Datatype* datatype, MPI_Aint* lb, MPI_Aint* extent, int* ierr )
 {
     *ierr = MPI_Type_get_extent( *datatype, lb, extent );
 }
@@ -985,10 +894,7 @@ FSUB( MPI_Type_get_extent )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_get_true_extent )( MPI_Datatype* datatype,
-                                  MPI_Aint*     true_lb,
-                                  MPI_Aint*     true_extent,
-                                  int*          ierr )
+FSUB( MPI_Type_get_true_extent )( MPI_Datatype* datatype, MPI_Aint* true_lb, MPI_Aint* true_extent, int* ierr )
 {
     *ierr = MPI_Type_get_true_extent( *datatype, true_lb, true_extent );
 }
@@ -1002,12 +908,7 @@ FSUB( MPI_Type_get_true_extent )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_hindexed )( int*          count,
-                           int*          array_of_blocklengths,
-                           int*          array_of_displacements,
-                           MPI_Datatype* oldtype,
-                           MPI_Datatype* newtype,
-                           int*          ierr )
+FSUB( MPI_Type_hindexed )( int* count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     MPI_Aint* c_array_of_displacements;
 
@@ -1033,12 +934,7 @@ FSUB( MPI_Type_hindexed )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_hvector )( int*          count,
-                          int*          blocklength,
-                          int*          stride,
-                          MPI_Datatype* oldtype,
-                          MPI_Datatype* newtype,
-                          int*          ierr )
+FSUB( MPI_Type_hvector )( int* count, int* blocklength, int* stride, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     MPI_Aint c_stride = *stride;
 
@@ -1056,12 +952,7 @@ FSUB( MPI_Type_hvector )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_indexed )( int*          count,
-                          int*          array_of_blocklengths,
-                          int*          array_of_displacements,
-                          MPI_Datatype* oldtype,
-                          MPI_Datatype* newtype,
-                          int*          ierr )
+FSUB( MPI_Type_indexed )( int* count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_indexed( *count, array_of_blocklengths, array_of_displacements, *oldtype, newtype );
 }
@@ -1075,9 +966,7 @@ FSUB( MPI_Type_indexed )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_lb )( MPI_Datatype* datatype,
-                     int*          displacement,
-                     int*          ierr )
+FSUB( MPI_Type_lb )( MPI_Datatype* datatype, int* displacement, int* ierr )
 {
     MPI_Aint c_displacement;
 
@@ -1101,10 +990,7 @@ FSUB( MPI_Type_lb )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_match_size )( int*          typeclass,
-                             int*          size,
-                             MPI_Datatype* type,
-                             int*          ierr )
+FSUB( MPI_Type_match_size )( int* typeclass, int* size, MPI_Datatype* type, int* ierr )
 {
     *ierr = MPI_Type_match_size( *typeclass, *size, type );
 }
@@ -1118,9 +1004,7 @@ FSUB( MPI_Type_match_size )( int*          typeclass,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_size )( MPI_Datatype* datatype,
-                       int*          size,
-                       int*          ierr )
+FSUB( MPI_Type_size )( MPI_Datatype* datatype, int* size, int* ierr )
 {
     *ierr = MPI_Type_size( *datatype, size );
 }
@@ -1134,12 +1018,7 @@ FSUB( MPI_Type_size )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_struct )( int*          count,
-                         int*          array_of_blocklengths,
-                         int*          array_of_displacements,
-                         MPI_Datatype* array_of_types,
-                         MPI_Datatype* newtype,
-                         int*          ierr )
+FSUB( MPI_Type_struct )( int* count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype* array_of_types, MPI_Datatype* newtype, int* ierr )
 {
     MPI_Aint* c_array_of_displacements;
 
@@ -1165,9 +1044,7 @@ FSUB( MPI_Type_struct )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_ub )( MPI_Datatype* datatype,
-                     int*          displacement,
-                     int*          ierr )
+FSUB( MPI_Type_ub )( MPI_Datatype* datatype, int* displacement, int* ierr )
 {
     MPI_Aint c_displacement;
 
@@ -1191,12 +1068,7 @@ FSUB( MPI_Type_ub )( MPI_Datatype* datatype,
  * @ingroup type
  */
 void
-FSUB( MPI_Type_vector )( int*          count,
-                         int*          blocklength,
-                         int*          stride,
-                         MPI_Datatype* oldtype,
-                         MPI_Datatype* newtype,
-                         int*          ierr )
+FSUB( MPI_Type_vector )( int* count, int* blocklength, int* stride, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
     *ierr = MPI_Type_vector( *count, *blocklength, *stride, *oldtype, newtype );
 }
@@ -1210,14 +1082,7 @@ FSUB( MPI_Type_vector )( int*          count,
  * @ingroup type
  */
 void
-FSUB( MPI_Unpack )( void*         inbuf,
-                    int*          insize,
-                    int*          position,
-                    void*         outbuf,
-                    int*          outcount,
-                    MPI_Datatype* datatype,
-                    MPI_Comm*     comm,
-                    int*          ierr )
+FSUB( MPI_Unpack )( void* inbuf, int* insize, int* position, void* outbuf, int* outcount, MPI_Datatype* datatype, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
@@ -1239,15 +1104,7 @@ FSUB( MPI_Unpack )( void*         inbuf,
  * @ingroup type
  */
 void
-FSUB( MPI_Unpack_external )( char*         datarep,
-                             void*         inbuf,
-                             MPI_Aint*     insize,
-                             MPI_Aint*     position,
-                             void*         outbuf,
-                             int*          outcount,
-                             MPI_Datatype* datatype,
-                             int*          ierr,
-                             int           datarep_len )
+FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, int* outcount, MPI_Datatype* datatype, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -1289,11 +1146,7 @@ FSUB( MPI_Unpack_external )( char*         datarep,
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_create_keyval )( MPI_Type_copy_attr_function*   type_copy_attr_fn,
-                                MPI_Type_delete_attr_function* type_delete_attr_fn,
-                                int*                           type_keyval,
-                                void*                          extra_state,
-                                int*                           ierr )
+FSUB( MPI_Type_create_keyval )( MPI_Type_copy_attr_function* type_copy_attr_fn, MPI_Type_delete_attr_function* type_delete_attr_fn, int* type_keyval, void* extra_state, int* ierr )
 {
     *ierr = MPI_Type_create_keyval( type_copy_attr_fn, type_delete_attr_fn, type_keyval, extra_state );
 }
@@ -1307,9 +1160,7 @@ FSUB( MPI_Type_create_keyval )( MPI_Type_copy_attr_function*   type_copy_attr_fn
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_delete_attr )( MPI_Datatype* type,
-                              int*          type_keyval,
-                              int*          ierr )
+FSUB( MPI_Type_delete_attr )( MPI_Datatype* type, int* type_keyval, int* ierr )
 {
     *ierr = MPI_Type_delete_attr( *type, *type_keyval );
 }
@@ -1323,8 +1174,7 @@ FSUB( MPI_Type_delete_attr )( MPI_Datatype* type,
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_free_keyval )( int* type_keyval,
-                              int* ierr )
+FSUB( MPI_Type_free_keyval )( int* type_keyval, int* ierr )
 {
     *ierr = MPI_Type_free_keyval( type_keyval );
 }
@@ -1338,11 +1188,7 @@ FSUB( MPI_Type_free_keyval )( int* type_keyval,
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_get_attr )( MPI_Datatype* type,
-                           int*          type_keyval,
-                           void*         attribute_val,
-                           int*          flag,
-                           int*          ierr )
+FSUB( MPI_Type_get_attr )( MPI_Datatype* type, int* type_keyval, void* attribute_val, int* flag, int* ierr )
 {
     *ierr = MPI_Type_get_attr( *type, *type_keyval, attribute_val, flag );
 }
@@ -1356,11 +1202,7 @@ FSUB( MPI_Type_get_attr )( MPI_Datatype* type,
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_get_name )( MPI_Datatype* type,
-                           char*         type_name,
-                           int*          resultlen,
-                           int*          ierr,
-                           int           type_name_len )
+FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, int* ierr, int type_name_len )
 {
     char* c_type_name     = NULL;
     int   c_type_name_len = 0;
@@ -1390,10 +1232,7 @@ FSUB( MPI_Type_get_name )( MPI_Datatype* type,
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_set_attr )( MPI_Datatype* type,
-                           int*          type_keyval,
-                           void*         attribute_val,
-                           int*          ierr )
+FSUB( MPI_Type_set_attr )( MPI_Datatype* type, int* type_keyval, void* attribute_val, int* ierr )
 {
     *ierr = MPI_Type_set_attr( *type, *type_keyval, attribute_val );
 }
@@ -1407,10 +1246,7 @@ FSUB( MPI_Type_set_attr )( MPI_Datatype* type,
  * @ingroup type_ext
  */
 void
-FSUB( MPI_Type_set_name )( MPI_Datatype* type,
-                           char*         type_name,
-                           int*          ierr,
-                           int           type_name_len )
+FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, int type_name_len )
 {
     char* c_type_name = NULL;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
@@ -1449,9 +1285,7 @@ FSUB( MPI_Type_set_name )( MPI_Datatype* type,
  * For the order of events see @ref MPI_Sizeof
  */
 void
-FSUB( MPI_Sizeof )( MPI_Fint* x,
-                    MPI_Fint* size,
-                    int*      ierr )
+FSUB( MPI_Sizeof )( MPI_Fint* x, MPI_Fint* size, int* ierr )
 {
     *ierr = MPI_Sizeof( PMPI_Type_f2c( *x ), *size );
 }
@@ -1583,14 +1417,7 @@ FSUB( MPI_Type_get_contents )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Pack
  */
 void
-FSUB( MPI_Pack )( void*     inbuf,
-                  MPI_Fint* incount,
-                  MPI_Fint* datatype,
-                  void*     outbuf,
-                  MPI_Fint* outsize,
-                  MPI_Fint* position,
-                  MPI_Fint* comm,
-                  int*      ierr )
+FSUB( MPI_Pack )( void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Fint* outsize, MPI_Fint* position, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
@@ -1613,15 +1440,7 @@ FSUB( MPI_Pack )( void*     inbuf,
  * For the order of events see @ref MPI_Pack_external
  */
 void
-FSUB( MPI_Pack_external )( char*     datarep,
-                           void*     inbuf,
-                           MPI_Fint* incount,
-                           MPI_Fint* datatype,
-                           void*     outbuf,
-                           MPI_Aint* outsize,
-                           MPI_Aint* position,
-                           int*      ierr,
-                           int       datarep_len )
+FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -1657,12 +1476,7 @@ FSUB( MPI_Pack_external )( char*     datarep,
  * For the order of events see @ref MPI_Pack_external_size
  */
 void
-FSUB( MPI_Pack_external_size )( char*     datarep,
-                                MPI_Fint* incount,
-                                MPI_Fint* datatype,
-                                MPI_Aint* size,
-                                int*      ierr,
-                                int       datarep_len )
+FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* datatype, MPI_Aint* size, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -1690,11 +1504,7 @@ FSUB( MPI_Pack_external_size )( char*     datarep,
  * For the order of events see @ref MPI_Pack_size
  */
 void
-FSUB( MPI_Pack_size )( MPI_Fint* incount,
-                       MPI_Fint* datatype,
-                       MPI_Fint* comm,
-                       MPI_Fint* size,
-                       int*      ierr )
+FSUB( MPI_Pack_size )( MPI_Fint* incount, MPI_Fint* datatype, MPI_Fint* comm, MPI_Fint* size, int* ierr )
 {
     *ierr = MPI_Pack_size( *incount, PMPI_Type_f2c( *datatype ), PMPI_Comm_f2c( *comm ), size );
 }
@@ -1709,8 +1519,7 @@ FSUB( MPI_Pack_size )( MPI_Fint* incount,
  * For the order of events see @ref MPI_Type_commit
  */
 void
-FSUB( MPI_Type_commit )( MPI_Fint* datatype,
-                         int*      ierr )
+FSUB( MPI_Type_commit )( MPI_Fint* datatype, int* ierr )
 {
     MPI_Datatype c_datatype = PMPI_Type_f2c( *datatype );
 
@@ -1730,10 +1539,7 @@ FSUB( MPI_Type_commit )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_contiguous
  */
 void
-FSUB( MPI_Type_contiguous )( MPI_Fint* count,
-                             MPI_Fint* oldtype,
-                             MPI_Fint* newtype,
-                             int*      ierr )
+FSUB( MPI_Type_contiguous )( MPI_Fint* count, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1753,17 +1559,7 @@ FSUB( MPI_Type_contiguous )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_create_darray
  */
 void
-FSUB( MPI_Type_create_darray )( MPI_Fint* size,
-                                MPI_Fint* rank,
-                                MPI_Fint* ndims,
-                                MPI_Fint* array_of_gsizes,
-                                MPI_Fint* array_of_distribs,
-                                MPI_Fint* array_of_dargs,
-                                MPI_Fint* array_of_psizes,
-                                MPI_Fint* order,
-                                MPI_Fint* oldtype,
-                                MPI_Fint* newtype,
-                                int*      ierr )
+FSUB( MPI_Type_create_darray )( MPI_Fint* size, MPI_Fint* rank, MPI_Fint* ndims, MPI_Fint* array_of_gsizes, MPI_Fint* array_of_distribs, MPI_Fint* array_of_dargs, MPI_Fint* array_of_psizes, MPI_Fint* order, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1783,12 +1579,7 @@ FSUB( MPI_Type_create_darray )( MPI_Fint* size,
  * For the order of events see @ref MPI_Type_create_hindexed
  */
 void
-FSUB( MPI_Type_create_hindexed )( MPI_Fint* count,
-                                  MPI_Fint* array_of_blocklengths,
-                                  MPI_Aint  array_of_displacements[],
-                                  MPI_Fint* oldtype,
-                                  MPI_Fint* newtype,
-                                  int*      ierr )
+FSUB( MPI_Type_create_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Aint array_of_displacements[], MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1808,12 +1599,7 @@ FSUB( MPI_Type_create_hindexed )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_create_hvector
  */
 void
-FSUB( MPI_Type_create_hvector )( MPI_Fint* count,
-                                 MPI_Fint* blocklength,
-                                 MPI_Aint* stride,
-                                 MPI_Fint* oldtype,
-                                 MPI_Fint* newtype,
-                                 int*      ierr )
+FSUB( MPI_Type_create_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Aint* stride, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1833,12 +1619,7 @@ FSUB( MPI_Type_create_hvector )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_create_indexed_block
  */
 void
-FSUB( MPI_Type_create_indexed_block )( MPI_Fint* count,
-                                       MPI_Fint* blocklength,
-                                       MPI_Fint* array_of_displacements,
-                                       MPI_Fint* oldtype,
-                                       MPI_Fint* newtype,
-                                       int*      ierr )
+FSUB( MPI_Type_create_indexed_block )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* array_of_displacements, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1858,11 +1639,7 @@ FSUB( MPI_Type_create_indexed_block )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_create_resized
  */
 void
-FSUB( MPI_Type_create_resized )( MPI_Fint* oldtype,
-                                 MPI_Aint* lb,
-                                 MPI_Aint* extent,
-                                 MPI_Fint* newtype,
-                                 int*      ierr )
+FSUB( MPI_Type_create_resized )( MPI_Fint* oldtype, MPI_Aint* lb, MPI_Aint* extent, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1882,14 +1659,7 @@ FSUB( MPI_Type_create_resized )( MPI_Fint* oldtype,
  * For the order of events see @ref MPI_Type_create_subarray
  */
 void
-FSUB( MPI_Type_create_subarray )( MPI_Fint* ndims,
-                                  MPI_Fint* array_of_sizes,
-                                  MPI_Fint* array_of_subsizes,
-                                  MPI_Fint* array_of_starts,
-                                  MPI_Fint* order,
-                                  MPI_Fint* oldtype,
-                                  MPI_Fint* newtype,
-                                  int*      ierr )
+FSUB( MPI_Type_create_subarray )( MPI_Fint* ndims, MPI_Fint* array_of_sizes, MPI_Fint* array_of_subsizes, MPI_Fint* array_of_starts, MPI_Fint* order, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1909,9 +1679,7 @@ FSUB( MPI_Type_create_subarray )( MPI_Fint* ndims,
  * For the order of events see @ref MPI_Type_dup
  */
 void
-FSUB( MPI_Type_dup )( MPI_Fint* type,
-                      MPI_Fint* newtype,
-                      int*      ierr )
+FSUB( MPI_Type_dup )( MPI_Fint* type, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -1931,9 +1699,7 @@ FSUB( MPI_Type_dup )( MPI_Fint* type,
  * For the order of events see @ref MPI_Type_extent
  */
 void
-FSUB( MPI_Type_extent )( MPI_Fint* datatype,
-                         MPI_Fint* extent,
-                         int*      ierr )
+FSUB( MPI_Type_extent )( MPI_Fint* datatype, MPI_Fint* extent, int* ierr )
 {
     MPI_Aint c_extent;
 
@@ -1957,8 +1723,7 @@ FSUB( MPI_Type_extent )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_free
  */
 void
-FSUB( MPI_Type_free )( MPI_Fint* datatype,
-                       int*      ierr )
+FSUB( MPI_Type_free )( MPI_Fint* datatype, int* ierr )
 {
     MPI_Datatype c_datatype = PMPI_Type_f2c( *datatype );
 
@@ -1978,12 +1743,7 @@ FSUB( MPI_Type_free )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_get_envelope
  */
 void
-FSUB( MPI_Type_get_envelope )( MPI_Fint* datatype,
-                               MPI_Fint* num_integers,
-                               MPI_Fint* num_addresses,
-                               MPI_Fint* num_datatypes,
-                               MPI_Fint* combiner,
-                               int*      ierr )
+FSUB( MPI_Type_get_envelope )( MPI_Fint* datatype, MPI_Fint* num_integers, MPI_Fint* num_addresses, MPI_Fint* num_datatypes, MPI_Fint* combiner, int* ierr )
 {
     *ierr = MPI_Type_get_envelope( PMPI_Type_f2c( *datatype ), num_integers, num_addresses, num_datatypes, combiner );
 }
@@ -1998,10 +1758,7 @@ FSUB( MPI_Type_get_envelope )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_get_extent
  */
 void
-FSUB( MPI_Type_get_extent )( MPI_Fint* datatype,
-                             MPI_Aint* lb,
-                             MPI_Aint* extent,
-                             int*      ierr )
+FSUB( MPI_Type_get_extent )( MPI_Fint* datatype, MPI_Aint* lb, MPI_Aint* extent, int* ierr )
 {
     *ierr = MPI_Type_get_extent( PMPI_Type_f2c( *datatype ), lb, extent );
 }
@@ -2016,10 +1773,7 @@ FSUB( MPI_Type_get_extent )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_get_true_extent
  */
 void
-FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype,
-                                  MPI_Aint* true_lb,
-                                  MPI_Aint* true_extent,
-                                  int*      ierr )
+FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype, MPI_Aint* true_lb, MPI_Aint* true_extent, int* ierr )
 {
     *ierr = MPI_Type_get_true_extent( PMPI_Type_f2c( *datatype ), true_lb, true_extent );
 }
@@ -2034,12 +1788,7 @@ FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_hindexed
  */
 void
-FSUB( MPI_Type_hindexed )( MPI_Fint* count,
-                           MPI_Fint* array_of_blocklengths,
-                           MPI_Fint* array_of_displacements,
-                           MPI_Fint* oldtype,
-                           MPI_Fint* newtype,
-                           int*      ierr )
+FSUB( MPI_Type_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Fint* array_of_displacements, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     int          i;
     MPI_Aint*    c_array_of_displacements;
@@ -2069,12 +1818,7 @@ FSUB( MPI_Type_hindexed )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_hvector
  */
 void
-FSUB( MPI_Type_hvector )( MPI_Fint* count,
-                          MPI_Fint* blocklength,
-                          MPI_Fint* stride,
-                          MPI_Fint* oldtype,
-                          MPI_Fint* newtype,
-                          int*      ierr )
+FSUB( MPI_Type_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* stride, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Aint     c_stride = *stride;
     MPI_Datatype c_newtype;
@@ -2095,12 +1839,7 @@ FSUB( MPI_Type_hvector )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_indexed
  */
 void
-FSUB( MPI_Type_indexed )( MPI_Fint* count,
-                          MPI_Fint* array_of_blocklengths,
-                          MPI_Fint* array_of_displacements,
-                          MPI_Fint* oldtype,
-                          MPI_Fint* newtype,
-                          int*      ierr )
+FSUB( MPI_Type_indexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Fint* array_of_displacements, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -2120,9 +1859,7 @@ FSUB( MPI_Type_indexed )( MPI_Fint* count,
  * For the order of events see @ref MPI_Type_lb
  */
 void
-FSUB( MPI_Type_lb )( MPI_Fint* datatype,
-                     MPI_Fint* displacement,
-                     int*      ierr )
+FSUB( MPI_Type_lb )( MPI_Fint* datatype, MPI_Fint* displacement, int* ierr )
 {
     MPI_Aint c_displacement;
 
@@ -2146,10 +1883,7 @@ FSUB( MPI_Type_lb )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_match_size
  */
 void
-FSUB( MPI_Type_match_size )( MPI_Fint* typeclass,
-                             MPI_Fint* size,
-                             MPI_Fint* type,
-                             int*      ierr )
+FSUB( MPI_Type_match_size )( MPI_Fint* typeclass, MPI_Fint* size, MPI_Fint* type, int* ierr )
 {
     MPI_Datatype c_type;
 
@@ -2169,9 +1903,7 @@ FSUB( MPI_Type_match_size )( MPI_Fint* typeclass,
  * For the order of events see @ref MPI_Type_size
  */
 void
-FSUB( MPI_Type_size )( MPI_Fint* datatype,
-                       MPI_Fint* size,
-                       int*      ierr )
+FSUB( MPI_Type_size )( MPI_Fint* datatype, MPI_Fint* size, int* ierr )
 {
     *ierr = MPI_Type_size( PMPI_Type_f2c( *datatype ), size );
 }
@@ -2186,9 +1918,7 @@ FSUB( MPI_Type_size )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_ub
  */
 void
-FSUB( MPI_Type_ub )( MPI_Fint* datatype,
-                     MPI_Fint* displacement,
-                     int*      ierr )
+FSUB( MPI_Type_ub )( MPI_Fint* datatype, MPI_Fint* displacement, int* ierr )
 {
     MPI_Aint c_displacement;
 
@@ -2212,12 +1942,7 @@ FSUB( MPI_Type_ub )( MPI_Fint* datatype,
  * For the order of events see @ref MPI_Type_vector
  */
 void
-FSUB( MPI_Type_vector )( MPI_Fint* count,
-                         MPI_Fint* blocklength,
-                         MPI_Fint* stride,
-                         MPI_Fint* oldtype,
-                         MPI_Fint* newtype,
-                         int*      ierr )
+FSUB( MPI_Type_vector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* stride, MPI_Fint* oldtype, MPI_Fint* newtype, int* ierr )
 {
     MPI_Datatype c_newtype;
 
@@ -2237,14 +1962,7 @@ FSUB( MPI_Type_vector )( MPI_Fint* count,
  * For the order of events see @ref MPI_Unpack
  */
 void
-FSUB( MPI_Unpack )( void*     inbuf,
-                    MPI_Fint* insize,
-                    MPI_Fint* position,
-                    void*     outbuf,
-                    MPI_Fint* outcount,
-                    MPI_Fint* datatype,
-                    MPI_Fint* comm,
-                    int*      ierr )
+FSUB( MPI_Unpack )( void* inbuf, MPI_Fint* insize, MPI_Fint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
@@ -2267,15 +1985,7 @@ FSUB( MPI_Unpack )( void*     inbuf,
  * For the order of events see @ref MPI_Unpack_external
  */
 void
-FSUB( MPI_Unpack_external )( char*     datarep,
-                             void*     inbuf,
-                             MPI_Aint* insize,
-                             MPI_Aint* position,
-                             void*     outbuf,
-                             MPI_Fint* outcount,
-                             MPI_Fint* datatype,
-                             int*      ierr,
-                             int       datarep_len )
+FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -2318,11 +2028,7 @@ FSUB( MPI_Unpack_external )( char*     datarep,
  * For the order of events see @ref MPI_Type_create_keyval
  */
 void
-FSUB( MPI_Type_create_keyval )( void*     type_copy_attr_fn,
-                                void*     type_delete_attr_fn,
-                                MPI_Fint* type_keyval,
-                                void*     extra_state,
-                                int*      ierr )
+FSUB( MPI_Type_create_keyval )( void* type_copy_attr_fn, void* type_delete_attr_fn, MPI_Fint* type_keyval, void* extra_state, int* ierr )
 {
     *ierr = MPI_Type_create_keyval( ( MPI_Type_copy_attr_function* )type_copy_attr_fn, ( MPI_Type_delete_attr_function* )type_delete_attr_fn, type_keyval, extra_state );
 }
@@ -2337,9 +2043,7 @@ FSUB( MPI_Type_create_keyval )( void*     type_copy_attr_fn,
  * For the order of events see @ref MPI_Type_delete_attr
  */
 void
-FSUB( MPI_Type_delete_attr )( MPI_Fint* type,
-                              MPI_Fint* type_keyval,
-                              int*      ierr )
+FSUB( MPI_Type_delete_attr )( MPI_Fint* type, MPI_Fint* type_keyval, int* ierr )
 {
     MPI_Datatype c_type = PMPI_Type_f2c( *type );
 
@@ -2359,8 +2063,7 @@ FSUB( MPI_Type_delete_attr )( MPI_Fint* type,
  * For the order of events see @ref MPI_Type_free_keyval
  */
 void
-FSUB( MPI_Type_free_keyval )( MPI_Fint* type_keyval,
-                              int*      ierr )
+FSUB( MPI_Type_free_keyval )( MPI_Fint* type_keyval, int* ierr )
 {
     *ierr = MPI_Type_free_keyval( type_keyval );
 }
@@ -2375,11 +2078,7 @@ FSUB( MPI_Type_free_keyval )( MPI_Fint* type_keyval,
  * For the order of events see @ref MPI_Type_get_attr
  */
 void
-FSUB( MPI_Type_get_attr )( MPI_Fint* type,
-                           MPI_Fint* type_keyval,
-                           void*     attribute_val,
-                           MPI_Fint* flag,
-                           int*      ierr )
+FSUB( MPI_Type_get_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribute_val, MPI_Fint* flag, int* ierr )
 {
     *ierr = MPI_Type_get_attr( PMPI_Type_f2c( *type ), *type_keyval, attribute_val, flag );
 }
@@ -2394,11 +2093,7 @@ FSUB( MPI_Type_get_attr )( MPI_Fint* type,
  * For the order of events see @ref MPI_Type_get_name
  */
 void
-FSUB( MPI_Type_get_name )( MPI_Fint* type,
-                           char*     type_name,
-                           MPI_Fint* resultlen,
-                           int*      ierr,
-                           int       type_name_len )
+FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen, int* ierr, int type_name_len )
 {
     char* c_type_name     = NULL;
     int   c_type_name_len = 0;
@@ -2429,10 +2124,7 @@ FSUB( MPI_Type_get_name )( MPI_Fint* type,
  * For the order of events see @ref MPI_Type_set_attr
  */
 void
-FSUB( MPI_Type_set_attr )( MPI_Fint* type,
-                           MPI_Fint* type_keyval,
-                           void*     attribute_val,
-                           int*      ierr )
+FSUB( MPI_Type_set_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribute_val, int* ierr )
 {
     MPI_Datatype c_type = PMPI_Type_f2c( *type );
 
@@ -2452,10 +2144,7 @@ FSUB( MPI_Type_set_attr )( MPI_Fint* type,
  * For the order of events see @ref MPI_Type_set_name
  */
 void
-FSUB( MPI_Type_set_name )( MPI_Fint* type,
-                           char*     type_name,
-                           int*      ierr,
-                           int       type_name_len )
+FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, int* ierr, int type_name_len )
 {
     MPI_Datatype c_type      = PMPI_Type_f2c( *type );
     char*        c_type_name = NULL;

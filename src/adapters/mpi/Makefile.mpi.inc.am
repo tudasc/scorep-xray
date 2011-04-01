@@ -4,6 +4,7 @@ if MPI_SUPPORTED
 noinst_LTLIBRARIES += libscorep_adapter_mpi_c_wrapper.la
 libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Communicator.c     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Request.c          \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Init.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Cg.c               \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Coll.c             \
@@ -19,16 +20,18 @@ libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Topo.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Type.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Communicator.h     \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Request.h          \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h              \
-    $(SRC_ROOT)src/adapters/include/SCOREP_Mpi_Init.h			\
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.c				\
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.h			\
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.c			\
+    $(SRC_ROOT)src/adapters/include/SCOREP_Mpi_Init.h	      \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.c             \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.h	      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.c           \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.h	
 
 libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                          \
+    -I$(INC_ROOT)src/adapters/mpi           \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_ROOT)src/measurement/OA         \

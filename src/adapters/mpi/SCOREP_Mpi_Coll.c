@@ -43,13 +43,7 @@
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Allgather( void*        sendbuf,
-               int          sendcount,
-               MPI_Datatype sendtype,
-               void*        recvbuf,
-               int          recvcount,
-               MPI_Datatype recvtype,
-               MPI_Comm     comm )
+MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -114,14 +108,7 @@ MPI_Allgather( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Allgatherv( void*        sendbuf,
-                int          sendcount,
-                MPI_Datatype sendtype,
-                void*        recvbuf,
-                int*         recvcounts,
-                int*         displs,
-                MPI_Datatype recvtype,
-                MPI_Comm     comm )
+MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -191,12 +178,7 @@ MPI_Allgatherv( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Allreduce( void*        sendbuf,
-               void*        recvbuf,
-               int          count,
-               MPI_Datatype datatype,
-               MPI_Op       op,
-               MPI_Comm     comm )
+MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -260,13 +242,7 @@ MPI_Allreduce( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Alltoall( void*        sendbuf,
-              int          sendcount,
-              MPI_Datatype sendtype,
-              void*        recvbuf,
-              int          recvcount,
-              MPI_Datatype recvtype,
-              MPI_Comm     comm )
+MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -331,15 +307,7 @@ MPI_Alltoall( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Alltoallv( void*        sendbuf,
-               int*         sendcounts,
-               int*         sdispls,
-               MPI_Datatype sendtype,
-               void*        recvbuf,
-               int*         recvcounts,
-               int*         rdispls,
-               MPI_Datatype recvtype,
-               MPI_Comm     comm )
+MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -409,15 +377,7 @@ MPI_Alltoallv( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Alltoallw( void*        sendbuf,
-               int          sendcounts[],
-               int          sdispls[],
-               MPI_Datatype sendtypes[],
-               void*        recvbuf,
-               int          recvcounts[],
-               int          rdispls[],
-               MPI_Datatype recvtypes[],
-               MPI_Comm     comm )
+MPI_Alltoallw( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -545,11 +505,7 @@ MPI_Barrier( MPI_Comm comm )
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Bcast( void*        buffer,
-           int          count,
-           MPI_Datatype datatype,
-           int          root,
-           MPI_Comm     comm )
+MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -621,12 +577,7 @@ MPI_Bcast( void*        buffer,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Exscan( void*        sendbuf,
-            void*        recvbuf,
-            int          count,
-            MPI_Datatype datatype,
-            MPI_Op       op,
-            MPI_Comm     comm )
+MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -691,14 +642,7 @@ MPI_Exscan( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Gather( void*        sendbuf,
-            int          sendcount,
-            MPI_Datatype sendtype,
-            void*        recvbuf,
-            int          recvcount,
-            MPI_Datatype recvtype,
-            int          root,
-            MPI_Comm     comm )
+MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -771,15 +715,7 @@ MPI_Gather( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Gatherv( void*        sendbuf,
-             int          sendcount,
-             MPI_Datatype sendtype,
-             void*        recvbuf,
-             int*         recvcounts,
-             int*         displs,
-             MPI_Datatype recvtype,
-             int          root,
-             MPI_Comm     comm )
+MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -856,13 +792,7 @@ MPI_Gatherv( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Reduce( void*        sendbuf,
-            void*        recvbuf,
-            int          count,
-            MPI_Datatype datatype,
-            MPI_Op       op,
-            int          root,
-            MPI_Comm     comm )
+MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -927,12 +857,7 @@ MPI_Reduce( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Reduce_scatter( void*        sendbuf,
-                    void*        recvbuf,
-                    int*         recvcounts,
-                    MPI_Datatype datatype,
-                    MPI_Op       op,
-                    MPI_Comm     comm )
+MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1001,12 +926,7 @@ MPI_Reduce_scatter( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Reduce_scatter_block( void*        sendbuf,
-                          void*        recvbuf,
-                          int          recvcount,
-                          MPI_Datatype datatype,
-                          MPI_Op       op,
-                          MPI_Comm     comm )
+MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1070,12 +990,7 @@ MPI_Reduce_scatter_block( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Scan( void*        sendbuf,
-          void*        recvbuf,
-          int          count,
-          MPI_Datatype datatype,
-          MPI_Op       op,
-          MPI_Comm     comm )
+MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1140,14 +1055,7 @@ MPI_Scan( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Scatter( void*        sendbuf,
-             int          sendcount,
-             MPI_Datatype sendtype,
-             void*        recvbuf,
-             int          recvcount,
-             MPI_Datatype recvtype,
-             int          root,
-             MPI_Comm     comm )
+MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1220,15 +1128,7 @@ MPI_Scatter( void*        sendbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Scatterv( void*        sendbuf,
-              int*         sendcounts,
-              int*         displs,
-              MPI_Datatype sendtype,
-              void*        recvbuf,
-              int          recvcount,
-              MPI_Datatype recvtype,
-              int          root,
-              MPI_Comm     comm )
+MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1303,11 +1203,7 @@ MPI_Scatterv( void*        sendbuf,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Reduce_local( void*        inbuf,
-                  void*        inoutbuf,
-                  int          count,
-                  MPI_Datatype datatype,
-                  MPI_Op       op )
+MPI_Reduce_local( void* inbuf, void* inoutbuf, int count, MPI_Datatype datatype, MPI_Op op )
 {
     int return_val;
 

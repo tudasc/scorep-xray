@@ -44,11 +44,7 @@
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_accept( char*     port_name,
-                 MPI_Info  info,
-                 int       root,
-                 MPI_Comm  comm,
-                 MPI_Comm* newcomm )
+MPI_Comm_accept( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -85,11 +81,7 @@ MPI_Comm_accept( char*     port_name,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_connect( char*     port_name,
-                  MPI_Info  info,
-                  int       root,
-                  MPI_Comm  comm,
-                  MPI_Comm* newcomm )
+MPI_Comm_connect( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -126,8 +118,7 @@ MPI_Comm_connect( char*     port_name,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_join( int       fd,
-               MPI_Comm* newcomm )
+MPI_Comm_join( int fd, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -164,14 +155,7 @@ MPI_Comm_join( int       fd,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_spawn( char*     command,
-                char*     argv[],
-                int       maxprocs,
-                MPI_Info  info,
-                int       root,
-                MPI_Comm  comm,
-                MPI_Comm* newcomm,
-                int       array_of_errcodes[] )
+MPI_Comm_spawn( char* command, char* argv[], int maxprocs, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -208,15 +192,7 @@ MPI_Comm_spawn( char*     command,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_spawn_multiple( int       count,
-                         char*     array_of_commands[],
-                         char**    array_of_argv[],
-                         int       array_of_maxprocs[],
-                         MPI_Info  array_of_info[],
-                         int       root,
-                         MPI_Comm  comm,
-                         MPI_Comm* newcomm,
-                         int       array_of_errcodes[] )
+MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_argv[], int array_of_maxprocs[], MPI_Info array_of_info[], int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -323,9 +299,7 @@ MPI_Comm_get_parent( MPI_Comm* parent )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Lookup_name( char*    service_name,
-                 MPI_Info info,
-                 char*    port_name )
+MPI_Lookup_name( char* service_name, MPI_Info info, char* port_name )
 {
     int return_val;
 
@@ -359,9 +333,7 @@ MPI_Lookup_name( char*    service_name,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Publish_name( char*    service_name,
-                  MPI_Info info,
-                  char*    port_name )
+MPI_Publish_name( char* service_name, MPI_Info info, char* port_name )
 {
     int return_val;
 
@@ -395,9 +367,7 @@ MPI_Publish_name( char*    service_name,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Unpublish_name( char*    service_name,
-                    MPI_Info info,
-                    char*    port_name )
+MPI_Unpublish_name( char* service_name, MPI_Info info, char* port_name )
 {
     int return_val;
 
@@ -466,8 +436,7 @@ MPI_Close_port( char* port_name )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Open_port( MPI_Info info,
-               char*    port_name )
+MPI_Open_port( MPI_Info info, char* port_name )
 {
     int return_val;
 

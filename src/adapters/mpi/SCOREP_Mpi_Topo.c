@@ -157,9 +157,7 @@ MPI_Cart_create( MPI_Comm  comm_old,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Cart_sub( MPI_Comm  comm,
-              int*      remain_dims,
-              MPI_Comm* newcomm )
+MPI_Cart_sub( MPI_Comm comm, int* remain_dims, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -196,12 +194,7 @@ MPI_Cart_sub( MPI_Comm  comm,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Graph_create( MPI_Comm  comm_old,
-                  int       nnodes,
-                  int*      index,
-                  int*      edges,
-                  int       reorder,
-                  MPI_Comm* newcomm )
+MPI_Graph_create( MPI_Comm comm_old, int nnodes, int* index, int* edges, int reorder, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -239,15 +232,7 @@ MPI_Graph_create( MPI_Comm  comm_old,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Dist_graph_create( MPI_Comm  comm_old,
-                       int       n,
-                       int       sources[],
-                       int       degrees[],
-                       int       destinations[],
-                       int       weights[],
-                       MPI_Info  info,
-                       int       reorder,
-                       MPI_Comm* newcomm )
+MPI_Dist_graph_create( MPI_Comm comm_old, int n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -284,16 +269,7 @@ MPI_Dist_graph_create( MPI_Comm  comm_old,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Dist_graph_create_adjacent( MPI_Comm  comm_old,
-                                int       indegree,
-                                int       sources[],
-                                int       sourceweights[],
-                                int       outdegree,
-                                int       destinations[],
-                                int       destweights[],
-                                MPI_Info  info,
-                                int       reorder,
-                                MPI_Comm* newcomm )
+MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, int sources[], int sourceweights[], int outdegree, int destinations[], int destweights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -331,10 +307,7 @@ MPI_Dist_graph_create_adjacent( MPI_Comm  comm_old,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Cart_coords( MPI_Comm comm,
-                 int      rank,
-                 int      maxdims,
-                 int*     coords )
+MPI_Cart_coords( MPI_Comm comm, int rank, int maxdims, int* coords )
 {
     int return_val;
 
@@ -368,11 +341,7 @@ MPI_Cart_coords( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Cart_get( MPI_Comm comm,
-              int      maxdims,
-              int*     dims,
-              int*     periods,
-              int*     coords )
+MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
 {
     int return_val;
 
@@ -406,11 +375,7 @@ MPI_Cart_get( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Cart_map( MPI_Comm comm,
-              int      ndims,
-              int*     dims,
-              int*     periods,
-              int*     newrank )
+MPI_Cart_map( MPI_Comm comm, int ndims, int* dims, int* periods, int* newrank )
 {
     int return_val;
 
@@ -444,9 +409,7 @@ MPI_Cart_map( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Cart_rank( MPI_Comm comm,
-               int*     coords,
-               int*     rank )
+MPI_Cart_rank( MPI_Comm comm, int* coords, int* rank )
 {
     int return_val;
 
@@ -480,11 +443,7 @@ MPI_Cart_rank( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Cart_shift( MPI_Comm comm,
-                int      direction,
-                int      disp,
-                int*     rank_source,
-                int*     rank_dest )
+MPI_Cart_shift( MPI_Comm comm, int direction, int disp, int* rank_source, int* rank_dest )
 {
     int return_val;
 
@@ -518,8 +477,7 @@ MPI_Cart_shift( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Cartdim_get( MPI_Comm comm,
-                 int*     ndims )
+MPI_Cartdim_get( MPI_Comm comm, int* ndims )
 {
     int return_val;
 
@@ -553,13 +511,7 @@ MPI_Cartdim_get( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Dist_graph_neighbors( MPI_Comm comm,
-                          int      maxindegree,
-                          int      sources[],
-                          int      sourceweights[],
-                          int      maxoutdegree,
-                          int      destinations[],
-                          int      destweights[] )
+MPI_Dist_graph_neighbors( MPI_Comm comm, int maxindegree, int sources[], int sourceweights[], int maxoutdegree, int destinations[], int destweights[] )
 {
     int return_val;
 
@@ -593,10 +545,7 @@ MPI_Dist_graph_neighbors( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Dist_graph_neighbors_count( MPI_Comm comm,
-                                int*     indegree,
-                                int*     outdegree,
-                                int*     weighted )
+MPI_Dist_graph_neighbors_count( MPI_Comm comm, int* indegree, int* outdegree, int* weighted )
 {
     int return_val;
 
@@ -630,11 +579,7 @@ MPI_Dist_graph_neighbors_count( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Graph_get( MPI_Comm comm,
-               int      maxindex,
-               int      maxedges,
-               int*     index,
-               int*     edges )
+MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges )
 {
     int return_val;
 
@@ -668,11 +613,7 @@ MPI_Graph_get( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Graph_map( MPI_Comm comm,
-               int      nnodes,
-               int*     index,
-               int*     edges,
-               int*     newrank )
+MPI_Graph_map( MPI_Comm comm, int nnodes, int* index, int* edges, int* newrank )
 {
     int return_val;
 
@@ -706,10 +647,7 @@ MPI_Graph_map( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Graph_neighbors( MPI_Comm comm,
-                     int      rank,
-                     int      maxneighbors,
-                     int*     neighbors )
+MPI_Graph_neighbors( MPI_Comm comm, int rank, int maxneighbors, int* neighbors )
 {
     int return_val;
 
@@ -743,9 +681,7 @@ MPI_Graph_neighbors( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Graph_neighbors_count( MPI_Comm comm,
-                           int      rank,
-                           int*     nneighbors )
+MPI_Graph_neighbors_count( MPI_Comm comm, int rank, int* nneighbors )
 {
     int return_val;
 
@@ -779,9 +715,7 @@ MPI_Graph_neighbors_count( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Graphdims_get( MPI_Comm comm,
-                   int*     nnodes,
-                   int*     nedges )
+MPI_Graphdims_get( MPI_Comm comm, int* nnodes, int* nedges )
 {
     int return_val;
 
@@ -815,8 +749,7 @@ MPI_Graphdims_get( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Topo_test( MPI_Comm comm,
-               int*     status )
+MPI_Topo_test( MPI_Comm comm, int* status )
 {
     int return_val;
 
@@ -850,9 +783,7 @@ MPI_Topo_test( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Dims_create( int  nnodes,
-                 int  ndims,
-                 int* dims )
+MPI_Dims_create( int nnodes, int ndims, int* dims )
 {
     int return_val;
 

@@ -29,13 +29,14 @@
 
 #include "SCOREP_Mpi_Communicator.h"
 #include "SCOREP_Mpi_Reg.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include "scorep_utility/SCOREP_Debug.h"
+#include "SCOREP_Mpi_Request.h"
+#include <scorep_utility/SCOREP_Error.h>
+#include <scorep_utility/SCOREP_Debug.h>
 
-#include "SCOREP_Definitions.h"
-#include "SCOREP_Events.h"
-#include "SCOREP_RuntimeManagement.h"
-#include "SCOREP_DefinitionHandles.h"
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_DefinitionHandles.h>
 
 #if !defined( SCOREP_MPI_NO_HOOKS )
 #include "SCOREP_MPIHooks.h"

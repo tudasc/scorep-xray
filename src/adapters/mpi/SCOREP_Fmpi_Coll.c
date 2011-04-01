@@ -267,14 +267,7 @@
  * @ingroup coll
  */
 void
-FSUB( MPI_Allgather )( void*         sendbuf,
-                       int*          sendcount,
-                       MPI_Datatype* sendtype,
-                       void*         recvbuf,
-                       int*          recvcount,
-                       MPI_Datatype* recvtype,
-                       MPI_Comm*     comm,
-                       int*          ierr )
+FSUB( MPI_Allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -308,15 +301,7 @@ FSUB( MPI_Allgather )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Allgatherv )( void*         sendbuf,
-                        int*          sendcount,
-                        MPI_Datatype* sendtype,
-                        void*         recvbuf,
-                        int*          recvcounts,
-                        int*          displs,
-                        MPI_Datatype* recvtype,
-                        MPI_Comm*     comm,
-                        int*          ierr )
+FSUB( MPI_Allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -350,13 +335,7 @@ FSUB( MPI_Allgatherv )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Allreduce )( void*         sendbuf,
-                       void*         recvbuf,
-                       int*          count,
-                       MPI_Datatype* datatype,
-                       MPI_Op*       op,
-                       MPI_Comm*     comm,
-                       int*          ierr )
+FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -390,14 +369,7 @@ FSUB( MPI_Allreduce )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Alltoall )( void*         sendbuf,
-                      int*          sendcount,
-                      MPI_Datatype* sendtype,
-                      void*         recvbuf,
-                      int*          recvcount,
-                      MPI_Datatype* recvtype,
-                      MPI_Comm*     comm,
-                      int*          ierr )
+FSUB( MPI_Alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -431,16 +403,7 @@ FSUB( MPI_Alltoall )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Alltoallv )( void*         sendbuf,
-                       int*          sendcounts,
-                       int*          sdispls,
-                       MPI_Datatype* sendtype,
-                       void*         recvbuf,
-                       int*          recvcounts,
-                       int*          rdispls,
-                       MPI_Datatype* recvtype,
-                       MPI_Comm*     comm,
-                       int*          ierr )
+FSUB( MPI_Alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -474,16 +437,7 @@ FSUB( MPI_Alltoallv )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Alltoallw )( void*        sendbuf,
-                       int          sendcounts[],
-                       int          sdispls[],
-                       MPI_Datatype sendtypes[],
-                       void*        recvbuf,
-                       int          recvcounts[],
-                       int          rdispls[],
-                       MPI_Datatype recvtypes[],
-                       MPI_Comm*    comm,
-                       int*         ierr )
+FSUB( MPI_Alltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -517,8 +471,7 @@ FSUB( MPI_Alltoallw )( void*        sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Barrier )( MPI_Comm* comm,
-                     int*      ierr )
+FSUB( MPI_Barrier )( MPI_Comm* comm, int* ierr )
 {
     *ierr = MPI_Barrier( *comm );
 }
@@ -532,12 +485,7 @@ FSUB( MPI_Barrier )( MPI_Comm* comm,
  * @ingroup coll
  */
 void
-FSUB( MPI_Bcast )( void*         buffer,
-                   int*          count,
-                   MPI_Datatype* datatype,
-                   int*          root,
-                   MPI_Comm*     comm,
-                   int*          ierr )
+FSUB( MPI_Bcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buffer == scorep_mpi_fortran_bottom )
@@ -559,13 +507,7 @@ FSUB( MPI_Bcast )( void*         buffer,
  * @ingroup coll
  */
 void
-FSUB( MPI_Exscan )( void*         sendbuf,
-                    void*         recvbuf,
-                    int*          count,
-                    MPI_Datatype* datatype,
-                    MPI_Op*       op,
-                    MPI_Comm*     comm,
-                    int*          ierr )
+FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -599,15 +541,7 @@ FSUB( MPI_Exscan )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Gather )( void*         sendbuf,
-                    int*          sendcount,
-                    MPI_Datatype* sendtype,
-                    void*         recvbuf,
-                    int*          recvcount,
-                    MPI_Datatype* recvtype,
-                    int*          root,
-                    MPI_Comm*     comm,
-                    int*          ierr )
+FSUB( MPI_Gather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -641,16 +575,7 @@ FSUB( MPI_Gather )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Gatherv )( void*         sendbuf,
-                     int*          sendcount,
-                     MPI_Datatype* sendtype,
-                     void*         recvbuf,
-                     int*          recvcounts,
-                     int*          displs,
-                     MPI_Datatype* recvtype,
-                     int*          root,
-                     MPI_Comm*     comm,
-                     int*          ierr )
+FSUB( MPI_Gatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -684,14 +609,7 @@ FSUB( MPI_Gatherv )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce )( void*         sendbuf,
-                    void*         recvbuf,
-                    int*          count,
-                    MPI_Datatype* datatype,
-                    MPI_Op*       op,
-                    int*          root,
-                    MPI_Comm*     comm,
-                    int*          ierr )
+FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, int* root, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -725,12 +643,7 @@ FSUB( MPI_Reduce )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce_local )( void*         inbuf,
-                          void*         inoutbuf,
-                          int*          count,
-                          MPI_Datatype* datatype,
-                          MPI_Op*       op,
-                          int*          ierr )
+FSUB( MPI_Reduce_local )( void* inbuf, void* inoutbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, int* ierr )
 {
     *ierr = MPI_Reduce_local( inbuf, inoutbuf, *count, *datatype, *op );
 }
@@ -744,13 +657,7 @@ FSUB( MPI_Reduce_local )( void*         inbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce_scatter )( void*         sendbuf,
-                            void*         recvbuf,
-                            int*          recvcounts,
-                            MPI_Datatype* datatype,
-                            MPI_Op*       op,
-                            MPI_Comm*     comm,
-                            int*          ierr )
+FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -784,13 +691,7 @@ FSUB( MPI_Reduce_scatter )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Reduce_scatter_block )( void*         sendbuf,
-                                  void*         recvbuf,
-                                  int*          recvcount,
-                                  MPI_Datatype* datatype,
-                                  MPI_Op*       op,
-                                  MPI_Comm*     comm,
-                                  int*          ierr )
+FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -824,13 +725,7 @@ FSUB( MPI_Reduce_scatter_block )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Scan )( void*         sendbuf,
-                  void*         recvbuf,
-                  int*          count,
-                  MPI_Datatype* datatype,
-                  MPI_Op*       op,
-                  MPI_Comm*     comm,
-                  int*          ierr )
+FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -864,15 +759,7 @@ FSUB( MPI_Scan )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Scatter )( void*         sendbuf,
-                     int*          sendcount,
-                     MPI_Datatype* sendtype,
-                     void*         recvbuf,
-                     int*          recvcount,
-                     MPI_Datatype* recvtype,
-                     int*          root,
-                     MPI_Comm*     comm,
-                     int*          ierr )
+FSUB( MPI_Scatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
@@ -906,16 +793,7 @@ FSUB( MPI_Scatter )( void*         sendbuf,
  * @ingroup coll
  */
 void
-FSUB( MPI_Scatterv )( void*         sendbuf,
-                      int*          sendcounts,
-                      int*          displs,
-                      MPI_Datatype* sendtype,
-                      void*         recvbuf,
-                      int*          recvcount,
-                      MPI_Datatype* recvtype,
-                      int*          root,
-                      MPI_Comm*     comm,
-                      int*          ierr )
+FSUB( MPI_Scatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
@@ -953,14 +831,7 @@ FSUB( MPI_Scatterv )( void*         sendbuf,
  * For the order of events see @ref MPI_Allgather
  */
 void
-FSUB( MPI_Allgather )( void*     sendbuf,
-                       MPI_Fint* sendcount,
-                       MPI_Fint* sendtype,
-                       void*     recvbuf,
-                       MPI_Fint* recvcount,
-                       MPI_Fint* recvtype,
-                       MPI_Fint* comm,
-                       int*      ierr )
+FSUB( MPI_Allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -995,15 +866,7 @@ FSUB( MPI_Allgather )( void*     sendbuf,
  * For the order of events see @ref MPI_Allgatherv
  */
 void
-FSUB( MPI_Allgatherv )( void*     sendbuf,
-                        MPI_Fint* sendcount,
-                        MPI_Fint* sendtype,
-                        void*     recvbuf,
-                        MPI_Fint* recvcounts,
-                        MPI_Fint* displs,
-                        MPI_Fint* recvtype,
-                        MPI_Fint* comm,
-                        int*      ierr )
+FSUB( MPI_Allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1038,13 +901,7 @@ FSUB( MPI_Allgatherv )( void*     sendbuf,
  * For the order of events see @ref MPI_Allreduce
  */
 void
-FSUB( MPI_Allreduce )( void*     sendbuf,
-                       void*     recvbuf,
-                       MPI_Fint* count,
-                       MPI_Fint* datatype,
-                       MPI_Fint* op,
-                       MPI_Fint* comm,
-                       int*      ierr )
+FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1079,14 +936,7 @@ FSUB( MPI_Allreduce )( void*     sendbuf,
  * For the order of events see @ref MPI_Alltoall
  */
 void
-FSUB( MPI_Alltoall )( void*     sendbuf,
-                      MPI_Fint* sendcount,
-                      MPI_Fint* sendtype,
-                      void*     recvbuf,
-                      MPI_Fint* recvcount,
-                      MPI_Fint* recvtype,
-                      MPI_Fint* comm,
-                      int*      ierr )
+FSUB( MPI_Alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1121,16 +971,7 @@ FSUB( MPI_Alltoall )( void*     sendbuf,
  * For the order of events see @ref MPI_Alltoallv
  */
 void
-FSUB( MPI_Alltoallv )( void*     sendbuf,
-                       MPI_Fint* sendcounts,
-                       MPI_Fint* sdispls,
-                       MPI_Fint* sendtype,
-                       void*     recvbuf,
-                       MPI_Fint* recvcounts,
-                       MPI_Fint* rdispls,
-                       MPI_Fint* recvtype,
-                       MPI_Fint* comm,
-                       int*      ierr )
+FSUB( MPI_Alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1165,8 +1006,7 @@ FSUB( MPI_Alltoallv )( void*     sendbuf,
  * For the order of events see @ref MPI_Barrier
  */
 void
-FSUB( MPI_Barrier )( MPI_Fint* comm,
-                     int*      ierr )
+FSUB( MPI_Barrier )( MPI_Fint* comm, int* ierr )
 {
     *ierr = MPI_Barrier( PMPI_Comm_f2c( *comm ) );
 }
@@ -1181,12 +1021,7 @@ FSUB( MPI_Barrier )( MPI_Fint* comm,
  * For the order of events see @ref MPI_Bcast
  */
 void
-FSUB( MPI_Bcast )( void*     buffer,
-                   MPI_Fint* count,
-                   MPI_Fint* datatype,
-                   MPI_Fint* root,
-                   MPI_Fint* comm,
-                   int*      ierr )
+FSUB( MPI_Bcast )( void* buffer, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* root, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buffer == scorep_mpi_fortran_bottom )
@@ -1209,15 +1044,7 @@ FSUB( MPI_Bcast )( void*     buffer,
  * For the order of events see @ref MPI_Gather
  */
 void
-FSUB( MPI_Gather )( void*     sendbuf,
-                    MPI_Fint* sendcount,
-                    MPI_Fint* sendtype,
-                    void*     recvbuf,
-                    MPI_Fint* recvcount,
-                    MPI_Fint* recvtype,
-                    MPI_Fint* root,
-                    MPI_Fint* comm,
-                    int*      ierr )
+FSUB( MPI_Gather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1252,16 +1079,7 @@ FSUB( MPI_Gather )( void*     sendbuf,
  * For the order of events see @ref MPI_Gatherv
  */
 void
-FSUB( MPI_Gatherv )( void*     sendbuf,
-                     MPI_Fint* sendcount,
-                     MPI_Fint* sendtype,
-                     void*     recvbuf,
-                     MPI_Fint* recvcounts,
-                     MPI_Fint* displs,
-                     MPI_Fint* recvtype,
-                     MPI_Fint* root,
-                     MPI_Fint* comm,
-                     int*      ierr )
+FSUB( MPI_Gatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1296,14 +1114,7 @@ FSUB( MPI_Gatherv )( void*     sendbuf,
  * For the order of events see @ref MPI_Reduce
  */
 void
-FSUB( MPI_Reduce )( void*     sendbuf,
-                    void*     recvbuf,
-                    MPI_Fint* count,
-                    MPI_Fint* datatype,
-                    MPI_Fint* op,
-                    MPI_Fint* root,
-                    MPI_Fint* comm,
-                    int*      ierr )
+FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* root, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1338,13 +1149,7 @@ FSUB( MPI_Reduce )( void*     sendbuf,
  * For the order of events see @ref MPI_Reduce_scatter
  */
 void
-FSUB( MPI_Reduce_scatter )( void*     sendbuf,
-                            void*     recvbuf,
-                            MPI_Fint* recvcounts,
-                            MPI_Fint* datatype,
-                            MPI_Fint* op,
-                            MPI_Fint* comm,
-                            int*      ierr )
+FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1379,13 +1184,7 @@ FSUB( MPI_Reduce_scatter )( void*     sendbuf,
  * For the order of events see @ref MPI_Scan
  */
 void
-FSUB( MPI_Scan )( void*     sendbuf,
-                  void*     recvbuf,
-                  MPI_Fint* count,
-                  MPI_Fint* datatype,
-                  MPI_Fint* op,
-                  MPI_Fint* comm,
-                  int*      ierr )
+FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1420,15 +1219,7 @@ FSUB( MPI_Scan )( void*     sendbuf,
  * For the order of events see @ref MPI_Scatter
  */
 void
-FSUB( MPI_Scatter )( void*     sendbuf,
-                     MPI_Fint* sendcount,
-                     MPI_Fint* sendtype,
-                     void*     recvbuf,
-                     MPI_Fint* recvcount,
-                     MPI_Fint* recvtype,
-                     MPI_Fint* root,
-                     MPI_Fint* comm,
-                     int*      ierr )
+FSUB( MPI_Scatter )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
@@ -1463,16 +1254,7 @@ FSUB( MPI_Scatter )( void*     sendbuf,
  * For the order of events see @ref MPI_Scatterv
  */
 void
-FSUB( MPI_Scatterv )( void*     sendbuf,
-                      MPI_Fint* sendcounts,
-                      MPI_Fint* displs,
-                      MPI_Fint* sendtype,
-                      void*     recvbuf,
-                      MPI_Fint* recvcount,
-                      MPI_Fint* recvtype,
-                      MPI_Fint* root,
-                      MPI_Fint* comm,
-                      int*      ierr )
+FSUB( MPI_Scatterv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* displs, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
@@ -1573,13 +1355,7 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
  * For the order of events see @ref MPI_Exscan
  */
 void
-FSUB( MPI_Exscan )( void*     sendbuf,
-                    void*     recvbuf,
-                    MPI_Fint* count,
-                    MPI_Fint* datatype,
-                    MPI_Fint* op,
-                    MPI_Fint* comm,
-                    int*      ierr )
+FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
@@ -1614,12 +1390,7 @@ FSUB( MPI_Exscan )( void*     sendbuf,
  * For the order of events see @ref MPI_Reduce_local
  */
 void
-FSUB( MPI_Reduce_local )( void*     inbuf,
-                          void*     inoutbuf,
-                          MPI_Fint* count,
-                          MPI_Fint* datatype,
-                          MPI_Fint* op,
-                          int*      ierr )
+FSUB( MPI_Reduce_local )( void* inbuf, void* inoutbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, int* ierr )
 {
     *ierr = MPI_Reduce_local( inbuf, inoutbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ) );
 }
@@ -1634,13 +1405,7 @@ FSUB( MPI_Reduce_local )( void*     inbuf,
  * For the order of events see @ref MPI_Reduce_scatter_block
  */
 void
-FSUB( MPI_Reduce_scatter_block )( void*     sendbuf,
-                                  void*     recvbuf,
-                                  MPI_Fint* recvcount,
-                                  MPI_Fint* datatype,
-                                  MPI_Fint* op,
-                                  MPI_Fint* comm,
-                                  int*      ierr )
+FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, int* ierr )
 {
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )

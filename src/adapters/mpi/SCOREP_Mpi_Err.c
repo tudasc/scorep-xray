@@ -77,8 +77,7 @@ MPI_Add_error_class( int* errorclass )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Add_error_code( int  errorclass,
-                    int* errorcode )
+MPI_Add_error_code( int errorclass, int* errorcode )
 {
     int return_val;
 
@@ -112,8 +111,7 @@ MPI_Add_error_code( int  errorclass,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Add_error_string( int   errorcode,
-                      char* string )
+MPI_Add_error_string( int errorcode, char* string )
 {
     int return_val;
 
@@ -147,8 +145,7 @@ MPI_Add_error_string( int   errorcode,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Errhandler_create( MPI_Handler_function* function,
-                       MPI_Errhandler*       errhandler )
+MPI_Errhandler_create( MPI_Handler_function* function, MPI_Errhandler* errhandler )
 {
     int return_val;
 
@@ -216,8 +213,7 @@ MPI_Errhandler_free( MPI_Errhandler* errhandler )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Errhandler_get( MPI_Comm        comm,
-                    MPI_Errhandler* errhandler )
+MPI_Errhandler_get( MPI_Comm comm, MPI_Errhandler* errhandler )
 {
     int return_val;
 
@@ -251,8 +247,7 @@ MPI_Errhandler_get( MPI_Comm        comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Errhandler_set( MPI_Comm       comm,
-                    MPI_Errhandler errhandler )
+MPI_Errhandler_set( MPI_Comm comm, MPI_Errhandler errhandler )
 {
     int return_val;
 
@@ -286,8 +281,7 @@ MPI_Errhandler_set( MPI_Comm       comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Error_class( int  errorcode,
-                 int* errorclass )
+MPI_Error_class( int errorcode, int* errorclass )
 {
     int return_val;
 
@@ -321,9 +315,7 @@ MPI_Error_class( int  errorcode,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Error_string( int   errorcode,
-                  char* string,
-                  int*  resultlen )
+MPI_Error_string( int errorcode, char* string, int* resultlen )
 {
     int return_val;
 

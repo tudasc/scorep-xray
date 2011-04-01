@@ -2309,8 +2309,7 @@ scorep_mpi_register_regions()
  * @return result is equivalent to \p strcasecmp result of two strings
  */
 static int
-scorep_mpi_mycmp( const void* v1,
-                  const void* v2 )
+scorep_mpi_mycmp( const void* v1, const void* v2 )
 {
     return strcasecmp( ( char* )v1, ( ( scorep_mpi_type* )v2 )->name );
 }

@@ -78,7 +78,7 @@
     <countrules send="N * sendcount * sendsz" recv="N * recvcount * recvsz" />
 <decl><![CDATA[
     int32_t recvsz, sendsz, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -140,7 +140,7 @@
     <countrules send="N * sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
     int32_t recvcount, recvsz, sendsz, i, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -209,7 +209,7 @@
     <countrules send="N * count * sz" recv="N * count * sz" />
 <decl><![CDATA[
     int32_t sz, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -269,7 +269,7 @@
     <countrules send="N * sendcount * sendsz" recv="N * recvcount * recvsz" />
 <decl><![CDATA[
     int32_t recvsz, sendsz, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -332,7 +332,7 @@
     <countrules send="sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
     int32_t recvcount=0, sendcount=0, recvsz, sendsz, N, i;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -400,7 +400,7 @@
     <countrules send="sendcount" recv="recvcount" />
 <decl><![CDATA[
     int32_t recvcount=0, sendcount=0, recvsz, sendsz, N, i;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Comm_size(comm, &N);
@@ -478,7 +478,7 @@
 <prototype name="MPI_Barrier" rtype="int" group="coll" guard="coll" >
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <decl>SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;</decl>
+    <decl>SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;</decl>
 </prototype>
 
 <prototype name="MPI_Bcast" rtype="int" group="coll" guard="coll" >
@@ -491,7 +491,7 @@
     <countrules send="N*count*sz" recv="count*sz" />
 <decl><![CDATA[
     int32_t sz, N, me;
-    SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
+    SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -1052,7 +1052,7 @@
     <countrules send="(N-me-1) * sz * count" recv="me * sz * count" />
 <decl><![CDATA[
     int32_t       sz, me, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -2269,7 +2269,7 @@
     <countrules send="sendcount*sendsz" recv="N*recvcount*recvsz" />
 <decl><![CDATA[
     int32_t sendsz, recvsz, N, me;
-    SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
+    SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(sendtype, &sendsz);
@@ -2337,7 +2337,7 @@
     <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
 <decl><![CDATA[
     int32_t recvsz, sendsz, recvcount = 0, me, N, i; 
-    SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
+    SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(sendtype, &sendsz);
@@ -3164,7 +3164,7 @@
     <countrules send="count*sz" recv="(root == me ? N*count*sz : 0 )" />
 <decl><![CDATA[
     int32_t sz, me, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
+    SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -3234,7 +3234,7 @@
     <countrules send="count * sz" recv="N * recvcounts[me] * sz" />
 <decl><![CDATA[
     int32_t i, sz, me, N, count = 0;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -3295,7 +3295,7 @@
     <countrules send="N * recvcount * sz" recv="N * recvcount * sz" />
 <decl><![CDATA[
     int     sz, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -3455,7 +3455,7 @@
     <countrules send="(N-me) * count * sz" recv="(me+1) * count * sz" />
 <decl><![CDATA[
     int32_t sz, me, N;
-    SCOREP_Mpi_Rank root_loc = SCOREP_INVALID_ROOT_RANK;
+    SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
@@ -3517,7 +3517,7 @@
     <countrules send="N * sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
     int32_t sendsz, recvsz, N, me;
-    SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
+    SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
@@ -3585,7 +3585,7 @@
     <countrules send="sendcount * sendsz" recv="recvcount * recvsz" />
 <decl><![CDATA[
     int32_t sendcount, sendsz, recvsz, me, N, i;
-    SCOREP_Mpi_Rank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
+    SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       sendcount = sendsz = 0;

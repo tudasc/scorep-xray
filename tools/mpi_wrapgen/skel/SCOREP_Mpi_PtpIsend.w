@@ -9,37 +9,32 @@ ${guard:start}
 ${proto:c}
 {
   ${rtype} return_val;
-/*
   const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-*/
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
   {
     int sz;
-/*
-    uint32_t reqid = scorep_get_request_id();
-*/
+    SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
     SCOREP_MPI_EVENT_GEN_OFF();
     SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
 
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(datatype, &sz);
-/*
       if (xnb_active)
-        scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
-*/
-      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
-                   tag, count * sz);
+         SCOREP_MpiIsend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
+                     tag, count * sz, reqid);
+      else
+         SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
+                     tag, count * sz);
+
     }
 
     return_val = ${call:pmpi};
-/*
     if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
-       scorep_request_create(*request, ERF_SEND, 
+       scorep_mpi_request_create(*request, SCOREP_MPI_REQUEST_SEND, 
                            tag, dest, count*sz, datatype, comm, reqid);
     }
-*/
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
     SCOREP_MPI_EVENT_GEN_ON();
   }

@@ -43,9 +43,7 @@
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_create( MPI_Comm  comm,
-                 MPI_Group group,
-                 MPI_Comm* newcomm )
+MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -82,8 +80,7 @@ MPI_Comm_create( MPI_Comm  comm,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_dup( MPI_Comm  comm,
-              MPI_Comm* newcomm )
+MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -120,10 +117,7 @@ MPI_Comm_dup( MPI_Comm  comm,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Comm_split( MPI_Comm  comm,
-                int       color,
-                int       key,
-                MPI_Comm* newcomm )
+MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -160,12 +154,7 @@ MPI_Comm_split( MPI_Comm  comm,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Intercomm_create( MPI_Comm  local_comm,
-                      int       local_leader,
-                      MPI_Comm  peer_comm,
-                      int       remote_leader,
-                      int       tag,
-                      MPI_Comm* newcomm )
+MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm, int remote_leader, int tag, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -202,9 +191,7 @@ MPI_Intercomm_create( MPI_Comm  local_comm,
  * event, @ref SCOREP_DefineMPICommunicator is called.
  */
 int
-MPI_Intercomm_merge( MPI_Comm  intercomm,
-                     int       high,
-                     MPI_Comm* newcomm )
+MPI_Intercomm_merge( MPI_Comm intercomm, int high, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -289,9 +276,7 @@ MPI_Comm_free( MPI_Comm* comm )
  * event is called between enter and exit.
  */
 int
-MPI_Group_difference( MPI_Group  group1,
-                      MPI_Group  group2,
-                      MPI_Group* newgroup )
+MPI_Group_difference( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -328,10 +313,7 @@ MPI_Group_difference( MPI_Group  group1,
  * event is called between enter and exit.
  */
 int
-MPI_Group_excl( MPI_Group  group,
-                int        n,
-                int*       ranks,
-                MPI_Group* newgroup )
+MPI_Group_excl( MPI_Group group, int n, int* ranks, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -368,10 +350,7 @@ MPI_Group_excl( MPI_Group  group,
  * event is called between enter and exit.
  */
 int
-MPI_Group_incl( MPI_Group  group,
-                int        n,
-                int*       ranks,
-                MPI_Group* newgroup )
+MPI_Group_incl( MPI_Group group, int n, int* ranks, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -408,9 +387,7 @@ MPI_Group_incl( MPI_Group  group,
  * event is called between enter and exit.
  */
 int
-MPI_Group_intersection( MPI_Group  group1,
-                        MPI_Group  group2,
-                        MPI_Group* newgroup )
+MPI_Group_intersection( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -447,10 +424,7 @@ MPI_Group_intersection( MPI_Group  group1,
  * event is called between enter and exit.
  */
 int
-MPI_Group_range_excl( MPI_Group  group,
-                      int        n,
-                      int        ranges[][ 3 ],
-                      MPI_Group* newgroup )
+MPI_Group_range_excl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -487,10 +461,7 @@ MPI_Group_range_excl( MPI_Group  group,
  * event is called between enter and exit.
  */
 int
-MPI_Group_range_incl( MPI_Group  group,
-                      int        n,
-                      int        ranges[][ 3 ],
-                      MPI_Group* newgroup )
+MPI_Group_range_incl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -527,9 +498,7 @@ MPI_Group_range_incl( MPI_Group  group,
  * event is called between enter and exit.
  */
 int
-MPI_Group_union( MPI_Group  group1,
-                 MPI_Group  group2,
-                 MPI_Group* newgroup )
+MPI_Group_union( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -566,8 +535,7 @@ MPI_Group_union( MPI_Group  group1,
  * event is called between enter and exit.
  */
 int
-MPI_Comm_group( MPI_Comm   comm,
-                MPI_Group* group )
+MPI_Comm_group( MPI_Comm comm, MPI_Group* group )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -604,8 +572,7 @@ MPI_Comm_group( MPI_Comm   comm,
  * event is called between enter and exit.
  */
 int
-MPI_Comm_remote_group( MPI_Comm   comm,
-                       MPI_Group* group )
+MPI_Comm_remote_group( MPI_Comm comm, MPI_Group* group )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -688,9 +655,7 @@ MPI_Group_free( MPI_Group* group )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_compare( MPI_Comm comm1,
-                  MPI_Comm comm2,
-                  int*     result )
+MPI_Comm_compare( MPI_Comm comm1, MPI_Comm comm2, int* result )
 {
     int return_val;
 
@@ -724,8 +689,7 @@ MPI_Comm_compare( MPI_Comm comm1,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_rank( MPI_Comm comm,
-               int*     rank )
+MPI_Comm_rank( MPI_Comm comm, int* rank )
 {
     int return_val;
 
@@ -759,8 +723,7 @@ MPI_Comm_rank( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_size( MPI_Comm comm,
-               int*     size )
+MPI_Comm_size( MPI_Comm comm, int* size )
 {
     int return_val;
 
@@ -794,8 +757,7 @@ MPI_Comm_size( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_test_inter( MPI_Comm comm,
-                     int*     flag )
+MPI_Comm_test_inter( MPI_Comm comm, int* flag )
 {
     int return_val;
 
@@ -829,9 +791,7 @@ MPI_Comm_test_inter( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Group_compare( MPI_Group group1,
-                   MPI_Group group2,
-                   int*      result )
+MPI_Group_compare( MPI_Group group1, MPI_Group group2, int* result )
 {
     int return_val;
 
@@ -865,8 +825,7 @@ MPI_Group_compare( MPI_Group group1,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Group_rank( MPI_Group group,
-                int*      rank )
+MPI_Group_rank( MPI_Group group, int* rank )
 {
     int return_val;
 
@@ -900,8 +859,7 @@ MPI_Group_rank( MPI_Group group,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Group_size( MPI_Group group,
-                int*      size )
+MPI_Group_size( MPI_Group group, int* size )
 {
     int return_val;
 
@@ -942,8 +900,7 @@ MPI_Group_size( MPI_Group group,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_call_errhandler( MPI_Comm comm,
-                          int      errorcode )
+MPI_Comm_call_errhandler( MPI_Comm comm, int errorcode )
 {
     int return_val;
 
@@ -977,8 +934,7 @@ MPI_Comm_call_errhandler( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function,
-                            MPI_Errhandler*         errhandler )
+MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function, MPI_Errhandler* errhandler )
 {
     int return_val;
 
@@ -1012,8 +968,7 @@ MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_get_errhandler( MPI_Comm        comm,
-                         MPI_Errhandler* errhandler )
+MPI_Comm_get_errhandler( MPI_Comm comm, MPI_Errhandler* errhandler )
 {
     int return_val;
 
@@ -1047,8 +1002,7 @@ MPI_Comm_get_errhandler( MPI_Comm        comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_set_errhandler( MPI_Comm       comm,
-                         MPI_Errhandler errhandler )
+MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
 {
     int return_val;
 
@@ -1089,8 +1043,7 @@ MPI_Comm_set_errhandler( MPI_Comm       comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Attr_delete( MPI_Comm comm,
-                 int      keyval )
+MPI_Attr_delete( MPI_Comm comm, int keyval )
 {
     int return_val;
 
@@ -1124,10 +1077,7 @@ MPI_Attr_delete( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Attr_get( MPI_Comm comm,
-              int      keyval,
-              void*    attribute_val,
-              int*     flag )
+MPI_Attr_get( MPI_Comm comm, int keyval, void* attribute_val, int* flag )
 {
     int return_val;
 
@@ -1161,9 +1111,7 @@ MPI_Attr_get( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Attr_put( MPI_Comm comm,
-              int      keyval,
-              void*    attribute_val )
+MPI_Attr_put( MPI_Comm comm, int keyval, void* attribute_val )
 {
     int return_val;
 
@@ -1197,10 +1145,7 @@ MPI_Attr_put( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_create_keyval( MPI_Comm_copy_attr_function*   comm_copy_attr_fn,
-                        MPI_Comm_delete_attr_function* comm_delete_attr_fn,
-                        int*                           comm_keyval,
-                        void*                          extra_state )
+MPI_Comm_create_keyval( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm_delete_attr_function* comm_delete_attr_fn, int* comm_keyval, void* extra_state )
 {
     int return_val;
 
@@ -1234,8 +1179,7 @@ MPI_Comm_create_keyval( MPI_Comm_copy_attr_function*   comm_copy_attr_fn,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_delete_attr( MPI_Comm comm,
-                      int      comm_keyval )
+MPI_Comm_delete_attr( MPI_Comm comm, int comm_keyval )
 {
     int return_val;
 
@@ -1303,10 +1247,7 @@ MPI_Comm_free_keyval( int* comm_keyval )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_get_attr( MPI_Comm comm,
-                   int      comm_keyval,
-                   void*    attribute_val,
-                   int*     flag )
+MPI_Comm_get_attr( MPI_Comm comm, int comm_keyval, void* attribute_val, int* flag )
 {
     int return_val;
 
@@ -1340,9 +1281,7 @@ MPI_Comm_get_attr( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_get_name( MPI_Comm comm,
-                   char*    comm_name,
-                   int*     resultlen )
+MPI_Comm_get_name( MPI_Comm comm, char* comm_name, int* resultlen )
 {
     int return_val;
 
@@ -1376,9 +1315,7 @@ MPI_Comm_get_name( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_set_attr( MPI_Comm comm,
-                   int      comm_keyval,
-                   void*    attribute_val )
+MPI_Comm_set_attr( MPI_Comm comm, int comm_keyval, void* attribute_val )
 {
     int return_val;
 
@@ -1412,8 +1349,7 @@ MPI_Comm_set_attr( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_set_name( MPI_Comm comm,
-                   char*    comm_name )
+MPI_Comm_set_name( MPI_Comm comm, char* comm_name )
 {
     int return_val;
 
@@ -1447,10 +1383,7 @@ MPI_Comm_set_name( MPI_Comm comm,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Keyval_create( MPI_Copy_function*   copy_fn,
-                   MPI_Delete_function* delete_fn,
-                   int*                 keyval,
-                   void*                extra_state )
+MPI_Keyval_create( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, int* keyval, void* extra_state )
 {
     int return_val;
 

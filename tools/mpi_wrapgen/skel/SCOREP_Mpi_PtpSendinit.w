@@ -23,12 +23,10 @@ ${proto:c}
   PMPI_Type_size(datatype, &sz);
 
   return_val = ${call:pmpi};
-/*
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    scorep_request_create(*request, (ERF_SEND | ERF_IS_PERSISTENT),
+    scorep_mpi_request_create(*request, (SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT),
                        tag, dest, count*sz, datatype, comm,
                        scorep_get_request_id());
-*/
   if (event_gen_active)
     {
       SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);

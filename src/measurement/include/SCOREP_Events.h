@@ -184,6 +184,103 @@ SCOREP_MpiCollective
     uint64_t                     bytesReceived
 );
 
+/**
+ * Generates a MPI send complete event in the measurement system.
+ * @param requestId The request identifier, which specifies the request that was
+ *                  completed.
+ */
+void
+SCOREP_MpiSendComplete( SCOREP_MpiRequestId requestId );
+
+/**
+ * Generates a MPI receive request event in the measurement system.
+ * @param requestId The request identifier, which specifies the new receive request.
+ */
+void
+SCOREP_MpiRecvRequest( SCOREP_MpiRequestId requestId );
+
+/**
+ * Generates a MPI request test event in the measurement system.
+ * @param requestId The request identifier, which specifies the request that was
+ *                  tested.
+ */
+void
+SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId );
+
+/**
+ * Generates a MPI request cancel event in the measurement system.
+ * @param requestId The request identifier, which specifies the request that was
+ *                  cancelled.
+ */
+void
+SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId );
+
+
+/**
+ * Generate an mpi non-blocking send event in the measurement system.
+ *
+ * @param destinationRank The MPI destination rank in the communicator
+ * specified with @a communicatorHandle. Because of the scalable
+ * communicator handling, it is not possible to covert ranks anymore.
+ *
+ * @param communicatorHandle The previously defined handle belonging to the
+ * communicator that is used in this communication.
+ *
+ * @param tag The MPI tag used in the communication.
+ *
+ * @param bytesSent The number of bytes send in the communication.
+ *
+ * @param requestId The request identifier that is associated with the newly created
+ * send request.
+ *
+ * @note the former globalDestinationRank has changed to a local
+ * rank specification. Querying the global rank is quite expensive
+ * if you are not in MPI_COMM_WORLD.
+ *
+ * @see SCOREP_DefineMPICommunicator()
+ */
+void
+SCOREP_MpiIsend
+(
+    SCOREP_MpiRank               destinationRank,
+    SCOREP_MPICommunicatorHandle communicatorHandle,
+    uint32_t                     tag,
+    uint64_t                     bytesSent,
+    SCOREP_MpiRequestId          requestId
+);
+
+
+/**
+ * Generate an mpi recv event in the measurement system.
+ *
+ * @param sourceRank The MPI source rank in the communicator
+ * specified with @a communicatorHandle. Because of the scalable
+ * communicator handling, it is not possible to covert ranks anymore.
+ *
+ * @param communicatorHandle The previously defined handle belonging to the
+ * communicator that is used in this communication.
+ *
+ * @param tag The MPI tag used in the communication.
+ *
+ * @param bytesReceived The number of bytes received in the communication.
+ *
+ * @param requestId The request identifier that is associated with the now completed
+ * request.
+ *
+ * @note the former globalSourceRank has changed to a local
+ * rank specification. Querying the global rank is quite expensive
+ * if you are not in MPI_COMM_WORLD.
+ */
+void
+SCOREP_MpiIrecv
+(
+    SCOREP_MpiRank               sourceRank,
+    SCOREP_MPICommunicatorHandle communicatorHandle,
+    uint32_t                     tag,
+    uint64_t                     bytesReceived,
+    SCOREP_MpiRequestId          requestId
+);
+
 
 /**
  * Generate an OpenMP fork event in the measurement system.

@@ -44,12 +44,7 @@
  * @li exit region 'me)'
  */
 int
-MPI_Bsend( void*        buf,
-           int          count,
-           MPI_Datatype datatype,
-           int          dest,
-           int          tag,
-           MPI_Comm     comm )
+MPI_Bsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -109,12 +104,7 @@ MPI_Bsend( void*        buf,
  * @li exit region 'me)'
  */
 int
-MPI_Rsend( void*        buf,
-           int          count,
-           MPI_Datatype datatype,
-           int          dest,
-           int          tag,
-           MPI_Comm     comm )
+MPI_Rsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -174,12 +164,7 @@ MPI_Rsend( void*        buf,
  * @li exit region 'me)'
  */
 int
-MPI_Send( void*        buf,
-          int          count,
-          MPI_Datatype datatype,
-          int          dest,
-          int          tag,
-          MPI_Comm     comm )
+MPI_Send( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -239,12 +224,7 @@ MPI_Send( void*        buf,
  * @li exit region 'me)'
  */
 int
-MPI_Ssend( void*        buf,
-           int          count,
-           MPI_Datatype datatype,
-           int          dest,
-           int          tag,
-           MPI_Comm     comm )
+MPI_Ssend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int      return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -305,13 +285,12 @@ MPI_Ssend( void*        buf,
  * @li exit region 'MPI_Recv'
  */
 int
-MPI_Recv( void*        buf,
-          int          count,
+MPI_Recv( void* buf,
+          int count,
           MPI_Datatype datatype,
-          int          source,
-          int          tag,
-          MPI_Comm     comm,
-          MPI_Status*  status )
+          int source, int tag,
+          MPI_Comm comm,
+          MPI_Status* status )
 {
     int return_val;
 
@@ -379,10 +358,7 @@ MPI_Recv( void*        buf,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Probe( int         source,
-           int         tag,
-           MPI_Comm    comm,
-           MPI_Status* status )
+MPI_Probe( int source, int tag, MPI_Comm comm, MPI_Status* status )
 {
     int return_val;
 
@@ -571,46 +547,38 @@ MPI_Sendrecv_replace( void*        buf,
  * @ingroup p2p
  */
 int
-MPI_Ibsend( void*        buf,
-            int          count,
-            MPI_Datatype datatype,
-            int          dest,
-            int          tag,
-            MPI_Comm     comm,
-            MPI_Request* request )
+MPI_Ibsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
-    int return_val;
-/*
-   const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
+    int       return_val;
+    const int xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
-        int sz;
-/*
-    uint32_t reqid = scorep_get_request_id();
- */
+        int                 sz;
+        SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IBSEND ] );
 
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-/*
-      if (xnb_active)
-        scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
- */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
-                            tag, count * sz );
+            if ( xnb_active )
+            {
+                SCOREP_MpiIsend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                 tag, count * sz, reqid );
+            }
+            else
+            {
+                SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                tag, count * sz );
+            }
         }
 
         return_val = PMPI_Ibsend( buf, count, datatype, dest, tag, comm, request );
-/*
-    if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    {
-       scorep_request_create(*request, ERF_SEND,
-                           tag, dest, count*sz, datatype, comm, reqid);
-    }
- */
+        if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
+        {
+            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
+                                       tag, dest, count * sz, datatype, comm, reqid );
+        }
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IBSEND ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -631,46 +599,38 @@ MPI_Ibsend( void*        buf,
  * @ingroup p2p
  */
 int
-MPI_Irsend( void*        buf,
-            int          count,
-            MPI_Datatype datatype,
-            int          dest,
-            int          tag,
-            MPI_Comm     comm,
-            MPI_Request* request )
+MPI_Irsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
-    int return_val;
-/*
-   const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
+    int       return_val;
+    const int xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
-        int sz;
-/*
-    uint32_t reqid = scorep_get_request_id();
- */
+        int                 sz;
+        SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IRSEND ] );
 
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-/*
-      if (xnb_active)
-        scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
- */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
-                            tag, count * sz );
+            if ( xnb_active )
+            {
+                SCOREP_MpiIsend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                 tag, count * sz, reqid );
+            }
+            else
+            {
+                SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                tag, count * sz );
+            }
         }
 
         return_val = PMPI_Irsend( buf, count, datatype, dest, tag, comm, request );
-/*
-    if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    {
-       scorep_request_create(*request, ERF_SEND,
-                           tag, dest, count*sz, datatype, comm, reqid);
-    }
- */
+        if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
+        {
+            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
+                                       tag, dest, count * sz, datatype, comm, reqid );
+        }
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IRSEND ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -691,46 +651,38 @@ MPI_Irsend( void*        buf,
  * @ingroup p2p
  */
 int
-MPI_Isend( void*        buf,
-           int          count,
-           MPI_Datatype datatype,
-           int          dest,
-           int          tag,
-           MPI_Comm     comm,
-           MPI_Request* request )
+MPI_Isend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
-    int return_val;
-/*
-   const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
+    int       return_val;
+    const int xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
-        int sz;
-/*
-    uint32_t reqid = scorep_get_request_id();
- */
+        int                 sz;
+        SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ISEND ] );
 
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-/*
-      if (xnb_active)
-        scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
- */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
-                            tag, count * sz );
+            if ( xnb_active )
+            {
+                SCOREP_MpiIsend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                 tag, count * sz, reqid );
+            }
+            else
+            {
+                SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                tag, count * sz );
+            }
         }
 
         return_val = PMPI_Isend( buf, count, datatype, dest, tag, comm, request );
-/*
-    if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    {
-       scorep_request_create(*request, ERF_SEND,
-                           tag, dest, count*sz, datatype, comm, reqid);
-    }
- */
+        if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
+        {
+            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
+                                       tag, dest, count * sz, datatype, comm, reqid );
+        }
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ISEND ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -751,46 +703,38 @@ MPI_Isend( void*        buf,
  * @ingroup p2p
  */
 int
-MPI_Issend( void*        buf,
-            int          count,
-            MPI_Datatype datatype,
-            int          dest,
-            int          tag,
-            MPI_Comm     comm,
-            MPI_Request* request )
+MPI_Issend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
-    int return_val;
-/*
-   const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
+    int       return_val;
+    const int xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
-        int sz;
-/*
-    uint32_t reqid = scorep_get_request_id();
- */
+        int                 sz;
+        SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ISSEND ] );
 
         if ( dest != MPI_PROC_NULL )
         {
             PMPI_Type_size( datatype, &sz );
-/*
-      if (xnb_active)
-        scorep_attr_ui4(ELG_ATTR_REQUEST, reqid);
- */
-            SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
-                            tag, count * sz );
+            if ( xnb_active )
+            {
+                SCOREP_MpiIsend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                 tag, count * sz, reqid );
+            }
+            else
+            {
+                SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( dest, comm ), SCOREP_MPI_COMM_HANDLE( comm ),
+                                tag, count * sz );
+            }
         }
 
         return_val = PMPI_Issend( buf, count, datatype, dest, tag, comm, request );
-/*
-    if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-    {
-       scorep_request_create(*request, ERF_SEND,
-                           tag, dest, count*sz, datatype, comm, reqid);
-    }
- */
+        if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
+        {
+            scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
+                                       tag, dest, count * sz, datatype, comm, reqid );
+        }
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ISSEND ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -822,10 +766,8 @@ MPI_Irecv( void*        buf,
            MPI_Request* request )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-/* no asynchroneous communication handling at first
-   const int xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
-    int return_val;
+    const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int       return_val;
 
     if ( event_gen_active )
     {
@@ -836,20 +778,20 @@ MPI_Irecv( void*        buf,
 
     return_val = PMPI_Irecv( buf, count, datatype, source, tag, comm, request );
 
-/* no asynchroneous communication handling at first
-   if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-   {
-    uint32_t reqid = scorep_get_request_id();
-    int sz;
-    PMPI_Type_size(datatype, &sz);
+    if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
+    {
+        SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
+        int                 sz;
+        PMPI_Type_size( datatype, &sz );
 
-    if (event_gen_active && xnb_active)
-      scorep_mpi_recv_request(reqid);
+        if ( event_gen_active && xnb_active )
+        {
+            SCOREP_MpiRecvRequest( reqid );
+        }
 
-    scorep_request_create(*request, ERF_RECV,
-                       tag, 0, count * sz, datatype, comm, regid);
-   }
- */
+        scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_RECV,
+                                   tag, 0, count * sz, datatype, comm, reqid );
+    }
 
     if ( event_gen_active )
     {
@@ -873,11 +815,7 @@ MPI_Irecv( void*        buf,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Iprobe( int         source,
-            int         tag,
-            MPI_Comm    comm,
-            int*        flag,
-            MPI_Status* status )
+MPI_Iprobe( int source, int tag, MPI_Comm comm, int* flag, MPI_Status* status )
 {
     int return_val;
 
@@ -914,12 +852,10 @@ int
 MPI_Wait( MPI_Request* request,
           MPI_Status*  status )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   MPI_Status         mystatus;
-   struct ScorepRequest* orig_req;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    MPI_Status          mystatus;
+    scorep_mpi_request* orig_req;
 
     if ( event_gen_active )
     {
@@ -928,19 +864,15 @@ MPI_Wait( MPI_Request* request,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAIT ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (status == MPI_STATUS_IGNORE)
-   {
-    status = &mystatus;
-   }
+    if ( status == MPI_STATUS_IGNORE )
+    {
+        status = &mystatus;
+    }
 
-   orig_req   = scorep_request_get(*request);
- */
+    orig_req   = scorep_mpi_request_get( *request );
     return_val = PMPI_Wait( request, status );
 
-/* no asynchroneous communication handling at the beginning included
-   scorep_check_request(orig_req, status);
- */
+    scorep_mpi_check_request( orig_req, status );
 
     if ( event_gen_active )
     {
@@ -967,12 +899,10 @@ MPI_Waitall( int          count,
              MPI_Request* requests,
              MPI_Status*  array_of_statuses )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-/* no asynchroneous communication handling at the beginning included
-   struct ScorepRequest* orig_req;
-   int                 i;
- */
-    int return_val;
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    scorep_mpi_request* orig_req;
+    int                 i;
+    int                 return_val;
 
     if ( event_gen_active )
     {
@@ -981,21 +911,18 @@ MPI_Waitall( int          count,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITALL ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (array_of_statuses == MPI_STATUSES_IGNORE)
-   {
-    array_of_statuses = scorep_get_status_array(count);
-   }
-   scorep_save_request_array(requests, count);
- */
+    if ( array_of_statuses == MPI_STATUSES_IGNORE )
+    {
+        array_of_statuses = scorep_get_status_array( count );
+    }
+    scorep_mpi_save_request_array( requests, count );
+
     return_val = PMPI_Waitall( count, requests, array_of_statuses );
-/* no asynchroneous communication handling at the beginning included
-   for (i = 0; i < count; i++)
-   {
-    orig_req = scorep_saved_request_get(i);
-    scorep_check_request(orig_req, &(array_of_statuses[i]));
-   }
- */
+    for ( i = 0; i < count; i++ )
+    {
+        orig_req = scorep_mpi_saved_request_get( i );
+        scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
+    }
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WAITALL ] );
@@ -1022,13 +949,11 @@ MPI_Waitany( int          count,
              int*         index,
              MPI_Status*  status )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-   struct ScorepRequest* orig_req;
-   MPI_Status         mystatus;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    scorep_mpi_request* orig_req;
+    MPI_Status          mystatus;
 
     if ( event_gen_active )
     {
@@ -1037,37 +962,38 @@ MPI_Waitany( int          count,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITANY ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (status == MPI_STATUS_IGNORE)
-   {
-    status = &mystatus;
-   }
+    if ( status == MPI_STATUS_IGNORE )
+    {
+        status = &mystatus;
+    }
 
-   scorep_save_request_array(requests, count);
- */
+    scorep_mpi_save_request_array( requests, count );
     return_val = PMPI_Waitany( count, requests, index, status );
 
-/* no asynchroneous communication handling at the beginning included
-   if (event_gen_active && xnb_active)
+    if ( event_gen_active && xnb_active )
     {
-      int i;
+        int i;
 
-      for (i = 0; i < count; ++i) {
-        orig_req = scorep_saved_request_get(i);
+        for ( i = 0; i < count; ++i )
+        {
+            orig_req = scorep_mpi_saved_request_get( i );
 
-        if (i == *index)
-          scorep_check_request(orig_req, status);
-        else if (orig_req)
-          scorep_mpi_request_tested(orig_req->id);
-      }
+            if ( i == *index )
+            {
+                scorep_mpi_check_request( orig_req, status );
+            }
+            else if ( orig_req )
+            {
+                SCOREP_MpiRequestTested( orig_req->id );
+            }
+        }
     }
-   else
+    else
     {
-      orig_req   = scorep_saved_request_get(*index);
-      scorep_check_request(orig_req, status);
+        orig_req = scorep_mpi_saved_request_get( *index );
+        scorep_mpi_check_request( orig_req, status );
     }
 
- */
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WAITANY ] );
@@ -1095,13 +1021,11 @@ MPI_Waitsome( int          incount,
               int*         array_of_indices,
               MPI_Status*  array_of_statuses )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-   int                i;
-   struct ScorepRequest* orig_req;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int                 i;
+    scorep_mpi_request* orig_req;
 
     if ( event_gen_active )
     {
@@ -1110,61 +1034,58 @@ MPI_Waitsome( int          incount,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITSOME ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (array_of_statuses == MPI_STATUSES_IGNORE)
-   {
-    array_of_statuses = scorep_get_status_array(incount);
-   }
-   scorep_save_request_array(array_of_requests, incount);
- */
+    if ( array_of_statuses == MPI_STATUSES_IGNORE )
+    {
+        array_of_statuses = scorep_get_status_array( incount );
+    }
+    scorep_mpi_save_request_array( array_of_requests, incount );
     return_val = PMPI_Waitsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
-/* no asynchroneous communication handling at the beginning included
-   if (event_gen_active && xnb_active)
+    if ( event_gen_active && xnb_active )
     {
-      int j, tmp, cur;
-      MPI_Status tmpstat;
+        int        j, tmp, cur;
+        MPI_Status tmpstat;
 
-      cur = 0;
+        cur = 0;
 
-      for (i = 0; i < incount; ++i)
+        for ( i = 0; i < incount; ++i )
         {
-          orig_req = scorep_saved_request_get(i);
+            orig_req = scorep_mpi_saved_request_get( i );
 
-          if (orig_req)
+            if ( orig_req )
             {
-              for (j = cur; j < *outcount && i != array_of_indices[j]; ++j)
-                ;
-
-              if (j < *outcount)
+                for ( j = cur; j < *outcount && i != array_of_indices[ j ]; ++j )
                 {
-                  tmpstat               = array_of_statuses[cur];
-                  scorep_check_request(orig_req, &(array_of_statuses[cur]));
-                  array_of_statuses[j]  = tmpstat;
-
-                  tmp                   = array_of_indices[cur];
-                  array_of_indices[cur] = array_of_indices[j];
-                  array_of_indices[j]   = tmp;
-
- ++cur;
+                    ;
                 }
-              else
+
+                if ( j < *outcount )
                 {
-                  scorep_mpi_request_tested(orig_req->id);
+                    tmpstat = array_of_statuses[ cur ];
+                    scorep_mpi_check_request( orig_req, &( array_of_statuses[ cur ] ) );
+                    array_of_statuses[ j ] = tmpstat;
+
+                    tmp                     = array_of_indices[ cur ];
+                    array_of_indices[ cur ] = array_of_indices[ j ];
+                    array_of_indices[ j ]   = tmp;
+
+                    ++cur;
+                }
+                else
+                {
+                    SCOREP_MpiRequestTested( orig_req->id );
                 }
             }
         }
     }
-   else
+    else
     {
-      for (i=0; i<*outcount; ++i)
+        for ( i = 0; i < *outcount; ++i )
         {
-          orig_req = scorep_saved_request_get(array_of_indices[i]);
-          scorep_check_request(orig_req, &(array_of_statuses[i]));
+            orig_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
+            scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
-
- */
 
     if ( event_gen_active )
     {
@@ -1191,13 +1112,11 @@ MPI_Test( MPI_Request* request,
           int*         flag,
           MPI_Status*  status )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-   struct ScorepRequest* orig_req;
-   MPI_Status         mystatus;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    scorep_mpi_request* orig_req;
+    MPI_Status          mystatus;
 
     if ( event_gen_active )
     {
@@ -1206,24 +1125,20 @@ MPI_Test( MPI_Request* request,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TEST ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (status == MPI_STATUS_IGNORE)
-   {
-    status = &mystatus;
-   }
-   orig_req   = scorep_request_get(*request);
- */
+    if ( status == MPI_STATUS_IGNORE )
+    {
+        status = &mystatus;
+    }
+    orig_req   = scorep_mpi_request_get( *request );
     return_val = PMPI_Test( request, flag, status );
-/* no asynchroneous communication handling at the beginning included
-   if (*flag)
+    if ( *flag )
     {
-      scorep_check_request(orig_req, status);
+        scorep_mpi_check_request( orig_req, status );
     }
-   else if (orig_req && event_gen_active && xnb_active)
+    else if ( orig_req && event_gen_active && xnb_active )
     {
-      scorep_mpi_request_tested(orig_req->id);
+        SCOREP_MpiRequestTested( orig_req->id );
     }
- */
 
     if ( event_gen_active )
     {
@@ -1252,13 +1167,11 @@ MPI_Testany( int          count,
              int*         flag,
              MPI_Status*  status )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-   struct ScorepRequest* orig_req;
-   MPI_Status         mystatus;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    scorep_mpi_request* orig_req;
+    MPI_Status          mystatus;
 
     if ( event_gen_active )
     {
@@ -1267,35 +1180,36 @@ MPI_Testany( int          count,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTANY ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (status == MPI_STATUS_IGNORE)
-   {
-    status = &mystatus;
-   }
-   scorep_save_request_array(array_of_requests, count);
- */
+    if ( status == MPI_STATUS_IGNORE )
+    {
+        status = &mystatus;
+    }
+    scorep_mpi_save_request_array( array_of_requests, count );
     return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
 
-/* no asynchroneous communication handling at the beginning included
-   if (event_gen_active && xnb_active)
+    if ( event_gen_active && xnb_active )
     {
-      int i;
+        int i;
 
-      for (i = 0; i < count; ++i) {
-        orig_req = scorep_saved_request_get(i);
+        for ( i = 0; i < count; ++i )
+        {
+            orig_req = scorep_mpi_saved_request_get( i );
 
-        if (*index == i)
-          scorep_check_request(orig_req, status);
-        else if (orig_req)
-          scorep_mpi_request_tested(orig_req->id);
-      }
+            if ( *index == i )
+            {
+                scorep_mpi_check_request( orig_req, status );
+            }
+            else if ( orig_req )
+            {
+                SCOREP_MpiRequestTested( orig_req->id );
+            }
+        }
     }
-   else if (*flag && *index != MPI_UNDEFINED)
+    else if ( *flag && *index != MPI_UNDEFINED )
     {
-      orig_req = scorep_saved_request_get(*index);
-      scorep_check_request(orig_req, status);
+        orig_req = scorep_mpi_saved_request_get( *index );
+        scorep_mpi_check_request( orig_req, status );
     }
- */
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_TESTANY ] );
@@ -1322,13 +1236,11 @@ MPI_Testall( int          count,
              int*         flag,
              MPI_Status*  array_of_statuses )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-   int                i;
-   struct ScorepRequest* orig_req;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int                 i;
+    scorep_mpi_request* orig_req;
 
     if ( event_gen_active )
     {
@@ -1336,35 +1248,36 @@ MPI_Testall( int          count,
 
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTALL ] );
     }
-/* no asynchroneous communication handling at the beginning included
-   if (array_of_statuses == MPI_STATUSES_IGNORE)
-   {
-    array_of_statuses = scorep_get_status_array(count);
-   }
-   scorep_save_request_array(array_of_requests, count);
- */
-    return_val = PMPI_Testall( count, array_of_requests, flag, array_of_statuses );
-/* no asynchroneous communication handling at the beginning included
-   if (*flag)
-    {
-      for (i = 0; i < count; i++)
-        {
-          orig_req = scorep_saved_request_get(i);
-          scorep_check_request(orig_req, &(array_of_statuses[i]));
-        }
-    }
-   else if (event_gen_active && xnb_active)
-    {
-      int i;
 
-      for (i = 0; i < count; i++)
+    if ( array_of_statuses == MPI_STATUSES_IGNORE )
+    {
+        array_of_statuses = scorep_get_status_array( count );
+    }
+    scorep_mpi_save_request_array( array_of_requests, count );
+
+    return_val = PMPI_Testall( count, array_of_requests, flag, array_of_statuses );
+
+    if ( *flag )
+    {
+        for ( i = 0; i < count; i++ )
         {
-          orig_req = scorep_saved_request_get(i);
-          if (orig_req)
-            scorep_mpi_request_tested(orig_req->id);
+            orig_req = scorep_mpi_saved_request_get( i );
+            scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
- */
+    else if ( event_gen_active && xnb_active )
+    {
+        int i;
+
+        for ( i = 0; i < count; i++ )
+        {
+            orig_req = scorep_mpi_saved_request_get( i );
+            if ( orig_req )
+            {
+                SCOREP_MpiRequestTested( orig_req->id );
+            }
+        }
+    }
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_TESTALL ] );
@@ -1392,13 +1305,11 @@ MPI_Testsome( int          incount,
               int*         array_of_indices,
               MPI_Status*  array_of_statuses )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
-   int                i;
-   struct ScorepRequest* orig_req;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int                 i;
+    scorep_mpi_request* orig_req;
 
     if ( event_gen_active )
     {
@@ -1407,62 +1318,61 @@ MPI_Testsome( int          incount,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTSOME ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   if (array_of_statuses == MPI_STATUSES_IGNORE)
-   {
-    array_of_statuses = scorep_get_status_array(incount);
-   }
-   scorep_save_request_array(array_of_requests, incount);
- */
+    if ( array_of_statuses == MPI_STATUSES_IGNORE )
+    {
+        array_of_statuses = scorep_get_status_array( incount );
+    }
+    scorep_mpi_save_request_array( array_of_requests, incount );
+
     return_val = PMPI_Testsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
 
-/* no asynchroneous communication handling at the beginning included
-   if (event_gen_active && xnb_active)
+    if ( event_gen_active && xnb_active )
     {
-      int cur, j, tmp;
-      MPI_Status tmpstat;
+        int        cur, j, tmp;
+        MPI_Status tmpstat;
 
-      cur = 0;
+        cur = 0;
 
-      for (i=0; i<incount; ++i)
+        for ( i = 0; i < incount; ++i )
         {
-          orig_req = scorep_saved_request_get(i);
+            orig_req = scorep_mpi_saved_request_get( i );
 
-          if (orig_req)
+            if ( orig_req )
             {
-              for (j = cur; j < *outcount && i != array_of_indices[j]; ++j)
-                ;
-
-              if (j < *outcount)
+                for ( j = cur; j < *outcount && i != array_of_indices[ j ]; ++j )
                 {
-                  tmpstat               = array_of_statuses[cur];
-                  scorep_check_request(orig_req, &(array_of_statuses[cur]));
-                  array_of_statuses[j]  = tmpstat;
-
-                  tmp                   = array_of_indices[cur];
-                  array_of_indices[cur] = array_of_indices[j];
-                  array_of_indices[j]   = tmp;
-
- ++cur;
+                    ;
                 }
-              else
+
+                if ( j < *outcount )
                 {
-                  scorep_mpi_request_tested(orig_req->id);
+                    tmpstat = array_of_statuses[ cur ];
+                    scorep_mpi_check_request( orig_req, &( array_of_statuses[ cur ] ) );
+                    array_of_statuses[ j ] = tmpstat;
+
+                    tmp                     = array_of_indices[ cur ];
+                    array_of_indices[ cur ] = array_of_indices[ j ];
+                    array_of_indices[ j ]   = tmp;
+
+                    ++cur;
+                }
+                else
+                {
+                    SCOREP_MpiRequestTested( orig_req->id );
                 }
             }
         }
     }
-   else
+    else
     {
-      for (i=0; i<*outcount; ++i)
+        for ( i = 0; i < *outcount; ++i )
         {
-          orig_req = scorep_saved_request_get(array_of_indices[i]);
-          scorep_check_request(orig_req, &(array_of_statuses[i]));
+            orig_req = scorep_mpi_saved_request_get( array_of_indices[ i ] );
+            scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
 
- */
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_TESTSOME ] );
@@ -1494,13 +1404,7 @@ MPI_Testsome( int          incount,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Bsend_init( void*        buf,
-                int          count,
-                MPI_Datatype datatype,
-                int          dest,
-                int          tag,
-                MPI_Comm     comm,
-                MPI_Request* request )
+MPI_Bsend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -1534,13 +1438,7 @@ MPI_Bsend_init( void*        buf,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Rsend_init( void*        buf,
-                int          count,
-                MPI_Datatype datatype,
-                int          dest,
-                int          tag,
-                MPI_Comm     comm,
-                MPI_Request* request )
+MPI_Rsend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -1574,13 +1472,7 @@ MPI_Rsend_init( void*        buf,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Send_init( void*        buf,
-               int          count,
-               MPI_Datatype datatype,
-               int          dest,
-               int          tag,
-               MPI_Comm     comm,
-               MPI_Request* request )
+MPI_Send_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -1614,13 +1506,7 @@ MPI_Send_init( void*        buf,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Ssend_init( void*        buf,
-                int          count,
-                MPI_Datatype datatype,
-                int          dest,
-                int          tag,
-                MPI_Comm     comm,
-                MPI_Request* request )
+MPI_Ssend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -1673,16 +1559,14 @@ MPI_Recv_init( void*        buf,
     }
 
     return_val = PMPI_Recv_init( buf, count, datatype, source, tag, comm, request );
-/* no asynchroneous communication handling at the beginning included
-   if (source != MPI_PROC_NULL && return_val == MPI_SUCCESS)
-   {
-    int sz;
-    PMPI_Type_size(datatype, &sz);
-    scorep_request_create(*request, (ERF_RECV | ERF_IS_PERSISTENT),
-                       tag, source, count * sz, datatype, comm,
-                       scorep_get_request_id());
-   }
- */
+    if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
+    {
+        int sz;
+        PMPI_Type_size( datatype, &sz );
+        scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_RECV | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
+                                   tag, source, count * sz, datatype, comm,
+                                   scorep_mpi_get_request_id() );
+    }
 
     if ( event_gen_active )
     {
@@ -1708,38 +1592,39 @@ int
 MPI_Start( MPI_Request* request )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
-    int return_val;
+    const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int       return_val;
 
     if ( event_gen_active )
     {
-        struct ScorepRequest* req;
+        scorep_mpi_request* req;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_START ] );
 
-/* no asynchroneous communication handling at the beginning included
-    req = scorep_request_get(*request);
-    if (req && (req->flags & ERF_IS_PERSISTENT))
-      {
-        req->flags |= ERF_IS_ACTIVE;
-        if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
-          {
-            if (xnb_active)
-              scorep_attr_ui4(ELG_ATTR_REQUEST, req->id);
-
-            SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(req->dest, req->comm),
-                         SCOREP_COMM_ID(req->comm), req->tag,  req->bytes);
-          }
-        else if (req->flags & ERF_RECV && xnb_active)
-          {
-            scorep_mpi_recv_request(req->id);
-          }
-      }
- */
+        req = scorep_mpi_request_get( *request );
+        if ( req && ( req->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
+        {
+            req->flags |= SCOREP_MPI_REQUEST_IS_ACTIVE;
+            if ( ( req->flags & SCOREP_MPI_REQUEST_SEND ) && ( req->dest != MPI_PROC_NULL ) )
+            {
+                if ( xnb_active )
+                {
+                    SCOREP_MpiIsend( SCOREP_MPI_RANK_TO_PE( req->dest, req->comm ),
+                                     SCOREP_MPI_COMM_HANDLE( req->comm ), req->tag,  req->bytes, req->id );
+                }
+                else
+                {
+                    SCOREP_MpiSend( SCOREP_MPI_RANK_TO_PE( req->dest, req->comm ),
+                                    SCOREP_MPI_COMM_HANDLE( req->comm ), req->tag,  req->bytes );
+                }
+            }
+            else if ( req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active )
+            {
+                SCOREP_MpiRecvRequest( req->id );
+            }
+        }
     }
 
     return_val = PMPI_Start( request );
@@ -1769,48 +1654,38 @@ MPI_Startall( int          count,
               MPI_Request* array_of_requests )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
-    int return_val, i;
+    const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int       return_val, i;
 
     if ( event_gen_active )
     {
-        MPI_Request* request;
+        MPI_Request*        request;
 
-/* no asynchroneous communication handling at the beginning included
-    struct ScorepRequest* req;
- */
+        scorep_mpi_request* req;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_STARTALL ] );
 
-/* no asynchroneous communication handling at the beginning included
-    for (i = 0; i < count; i++)
-    {
-      request = &array_of_requests[i];
-      req     = scorep_request_get(*request);
-
-      if (req && (req->flags & ERF_IS_PERSISTENT))
+        for ( i = 0; i < count; i++ )
         {
-          req->flags |= ERF_IS_ACTIVE;
-          if ((req->flags & ERF_SEND) && (req->dest != MPI_PROC_NULL))
-            {
-              if (xnb_active)
-                scorep_attr_ui4(ELG_ATTR_REQUEST, req->id);
+            request = &array_of_requests[ i ];
+            req     = scorep_mpi_request_get( *request );
 
-              SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(req->dest, req->comm),
-                           SCOREP_COMM_ID(req->comm), req->tag,  req->bytes);
-            }
-          else if (req->flags & ERF_RECV && xnb_active)
+            if ( req && ( req->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
             {
-              scorep_mpi_recv_request(req->id);
+                req->flags |= SCOREP_MPI_REQUEST_IS_ACTIVE;
+                if ( ( req->flags & SCOREP_MPI_REQUEST_SEND ) && ( req->dest != MPI_PROC_NULL ) )
+                {
+                    SCOREP_MpiIsend( SCOREP_MPI_RANK_TO_PE( req->dest, req->comm ),
+                                     SCOREP_MPI_COMM_HANDLE( req->comm ), req->tag,  req->bytes, req->id );
+                }
+                else if ( req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active )
+                {
+                    SCOREP_MpiRecvRequest( req->id );
+                }
             }
         }
-
-    }
- */
     }
 
     return_val = PMPI_Startall( count, array_of_requests );
@@ -1838,15 +1713,11 @@ MPI_Startall( int          count,
 int
 MPI_Request_free( MPI_Request* request )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-/* no asynchroneous communication handling at the beginning included
-   const int          xnb_active       = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
- */
-    int orig_req_null = ( *request == MPI_REQUEST_NULL );
-    int return_val;
-/* no asynchroneous communication handling at the beginning included
-   struct ScorepRequest* req;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    const int           xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    int                 orig_req_null    = ( *request == MPI_REQUEST_NULL );
+    int                 return_val;
+    scorep_mpi_request* req;
 
     if ( event_gen_active )
     {
@@ -1855,43 +1726,46 @@ MPI_Request_free( MPI_Request* request )
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_REQUEST_FREE ] );
     }
 
-/* no asynchroneous communication handling at the beginning included
-   req = scorep_request_get(*request);
-   if (req)
+    req = scorep_mpi_request_get( *request );
+    if ( req )
     {
-      if (req->flags & ERF_CAN_CANCEL && event_gen_active && xnb_active)
+        if ( req->flags & SCOREP_MPI_REQUEST_CAN_CANCEL && event_gen_active && xnb_active )
         {
-          MPI_Status status;
-          int        cancelled;
- */
-    /* -- Must check if request was cancelled and write the
-     *    cancel event. Not doing so will confuse the trace
-     *    analysis.
-     */
-/*
-          return_val = PMPI_Wait(request, &status);
-          PMPI_Test_cancelled(&status, &cancelled);
+            MPI_Status status;
+            int        cancelled;
+            /* -- Must check if request was cancelled and write the
+             *    cancel event. Not doing so will confuse the trace
+             *    analysis.
+             */
+            return_val = PMPI_Wait( request, &status );
+            PMPI_Test_cancelled( &status, &cancelled );
 
-          if (cancelled)
-            esd_mpi_cancelled(req->id);
+            if ( cancelled )
+            {
+                SCOREP_MpiRequestCancelled( req->id );
+            }
         }
 
-      if ((req->flags & ERF_IS_PERSISTENT) && (req->flags & ERF_IS_ACTIVE))
- */        /* mark active requests for deallocation */
-/*        req->flags |= ERF_DEALLOCATE;
-      else
- */        /* deallocate inactive requests -*/
-/*        epk_request_free(req);
+        if ( ( req->flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) && ( req->flags & SCOREP_MPI_REQUEST_IS_ACTIVE ) )
+        {
+            /* mark active requests for deallocation */
+            req->flags |= SCOREP_MPI_REQUEST_DEALLOCATE;
+        }
+        else
+        {
+            /* deallocate inactive requests -*/
+            scorep_mpi_request_free( req );
+        }
     }
- */
-/* -- We had to call PMPI_Wait for cancellable requests, which already
- *    frees (non-persistent) requests itself and sets them to
- *    MPI_REQUEST_NULL.
- *    As MPI_Request_free does not really like being called with
- *    MPI_REQUEST_NULL, we have to catch this situation here and only
- *    pass MPI_REQUEST_NULL if the application explicitely wanted that
- *    for some reason.
- */
+
+    /* -- We had to call PMPI_Wait for cancellable requests, which already
+     *    frees (non-persistent) requests itself and sets them to
+     *    MPI_REQUEST_NULL.
+     *    As MPI_Request_free does not really like being called with
+     *    MPI_REQUEST_NULL, we have to catch this situation here and only
+     *    pass MPI_REQUEST_NULL if the application explicitely wanted that
+     *    for some reason.
+     */
     if ( *request != MPI_REQUEST_NULL || orig_req_null )
     {
         return_val = PMPI_Request_free( request );
@@ -1921,11 +1795,9 @@ MPI_Request_free( MPI_Request* request )
 int
 MPI_Cancel( MPI_Request* request )
 {
-    const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
-    int       return_val;
-/* no asynchroneous communication handling at the beginning included
-   struct ScorepRequest* req;
- */
+    const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
+    int                 return_val;
+    scorep_mpi_request* req;
 
     if ( event_gen_active )
     {
@@ -1941,12 +1813,13 @@ MPI_Cancel( MPI_Request* request )
      * checked for by the trace analysis.
      */
 
-/* no asynchroneous communication handling at the beginning included
-   req = scorep_request_get(*request);
+    req = scorep_mpi_request_get( *request );
 
-   if (req)
-    req->flags |= ERF_CAN_CANCEL;
- */
+    if ( req )
+    {
+        req->flags |= SCOREP_MPI_REQUEST_CAN_CANCEL;
+    }
+
     return_val = PMPI_Cancel( request );
 
     if ( event_gen_active )
@@ -1971,8 +1844,7 @@ MPI_Cancel( MPI_Request* request )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Test_cancelled( MPI_Status* status,
-                    int*        flag )
+MPI_Test_cancelled( MPI_Status* status, int* flag )
 {
     int return_val;
 
@@ -2013,8 +1885,7 @@ MPI_Test_cancelled( MPI_Status* status,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Buffer_attach( void* buffer,
-                   int   size )
+MPI_Buffer_attach( void* buffer, int size )
 {
     int return_val;
 
@@ -2048,8 +1919,7 @@ MPI_Buffer_attach( void* buffer,
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Buffer_detach( void* buffer,
-                   int*  size )
+MPI_Buffer_detach( void* buffer, int* size )
 {
     int return_val;
 

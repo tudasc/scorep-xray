@@ -215,8 +215,7 @@ FSUB( scorep_mpi_fortran_init_unweighted )( MPI_Fint* unweighted )
  * @ingroup env
  */
 void
-FSUB( MPI_Initialized )( int* flag,
-                         int* ierr )
+FSUB( MPI_Initialized )( int* flag, int* ierr )
 {
     *ierr = MPI_Initialized( flag );
 }
@@ -279,8 +278,7 @@ FSUB( MPI_Finalize )( int* ierr )
  * @ingroup env
  */
 void
-FSUB( MPI_Finalized )( int* flag,
-                       int* ierr )
+FSUB( MPI_Finalized )( int* flag, int* ierr )
 {
     *ierr = MPI_Finalized( flag );
 }
@@ -294,8 +292,7 @@ FSUB( MPI_Finalized )( int* flag,
  * @ingroup env
  */
 void
-FSUB( MPI_Is_thread_main )( int* flag,
-                            int* ierr )
+FSUB( MPI_Is_thread_main )( int* flag, int* ierr )
 {
     *ierr = MPI_Is_thread_main( flag );
 }
@@ -309,8 +306,7 @@ FSUB( MPI_Is_thread_main )( int* flag,
  * @ingroup env
  */
 void
-FSUB( MPI_Query_thread )( int* provided,
-                          int* ierr )
+FSUB( MPI_Query_thread )( int* provided, int* ierr )
 {
     *ierr = MPI_Query_thread( provided );
 }
@@ -381,8 +377,7 @@ FSUB( MPI_Finalize )( int* ierr )
  * For the order of events see @ref MPI_Finalized
  */
 void
-FSUB( MPI_Finalized )( MPI_Fint* flag,
-                       int*      ierr )
+FSUB( MPI_Finalized )( MPI_Fint* flag, int* ierr )
 {
     *ierr = MPI_Finalized( flag );
 }
@@ -397,8 +392,7 @@ FSUB( MPI_Finalized )( MPI_Fint* flag,
  * For the order of events see @ref MPI_Is_thread_main
  */
 void
-FSUB( MPI_Is_thread_main )( MPI_Fint* flag,
-                            int*      ierr )
+FSUB( MPI_Is_thread_main )( MPI_Fint* flag, int* ierr )
 {
     *ierr = MPI_Is_thread_main( flag );
 }
@@ -413,8 +407,7 @@ FSUB( MPI_Is_thread_main )( MPI_Fint* flag,
  * For the order of events see @ref MPI_Query_thread
  */
 void
-FSUB( MPI_Query_thread )( MPI_Fint* provided,
-                          int*      ierr )
+FSUB( MPI_Query_thread )( MPI_Fint* provided, int* ierr )
 {
     *ierr = MPI_Query_thread( provided );
 }
@@ -429,8 +422,7 @@ FSUB( MPI_Query_thread )( MPI_Fint* provided,
  * @ingroup env
  */
 void
-FSUB( MPI_Initialized )( int* flag,
-                         int* ierr )
+FSUB( MPI_Initialized )( int* flag, int* ierr )
 {
     *ierr = MPI_Initialized( flag );
 }
