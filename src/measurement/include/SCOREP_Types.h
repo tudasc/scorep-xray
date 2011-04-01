@@ -402,6 +402,11 @@ typedef struct SCOREP_ConfigType_SetEntry
  */
 typedef int SCOREP_MpiRank;
 
+/**
+ * Type of a MPI Non-blocking communication request id.
+ */
+typedef int32_t SCOREP_MpiRequestId;
+
 
 /**
  * @def SCOREP_MPI_INVALID_RANK
