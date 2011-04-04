@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 /**
  * @file       SCOREP_Fmpi_Topo.c
@@ -625,7 +641,7 @@ FSUB( MPI_Topo_test )( MPI_Comm* comm, int* status, int* ierr )
  * For the order of events see @ref MPI_Cart_coords
  */
 void
-FSUB( MPI_Cart_coords )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxdims, MPI_Fint* coords, int* ierr )
+FSUB( MPI_Cart_coords )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxdims, MPI_Fint* coords, MPI_Fint* ierr )
 {
     *ierr = MPI_Cart_coords( PMPI_Comm_f2c( *comm ), *rank, *maxdims, coords );
 }
@@ -640,7 +656,7 @@ FSUB( MPI_Cart_coords )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxdims, MPI_
  * For the order of events see @ref MPI_Cart_create
  */
 void
-FSUB( MPI_Cart_create )( MPI_Fint* comm_old, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* reorder, MPI_Fint* comm_cart, int* ierr )
+FSUB( MPI_Cart_create )( MPI_Fint* comm_old, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* reorder, MPI_Fint* comm_cart, MPI_Fint* ierr )
 {
     MPI_Comm c_comm_cart;
 
@@ -660,7 +676,7 @@ FSUB( MPI_Cart_create )( MPI_Fint* comm_old, MPI_Fint* ndims, MPI_Fint* dims, MP
  * For the order of events see @ref MPI_Cart_get
  */
 void
-FSUB( MPI_Cart_get )( MPI_Fint* comm, MPI_Fint* maxdims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* coords, int* ierr )
+FSUB( MPI_Cart_get )( MPI_Fint* comm, MPI_Fint* maxdims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* coords, MPI_Fint* ierr )
 {
     *ierr = MPI_Cart_get( PMPI_Comm_f2c( *comm ), *maxdims, dims, periods, coords );
 }
@@ -675,7 +691,7 @@ FSUB( MPI_Cart_get )( MPI_Fint* comm, MPI_Fint* maxdims, MPI_Fint* dims, MPI_Fin
  * For the order of events see @ref MPI_Cart_map
  */
 void
-FSUB( MPI_Cart_map )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* newrank, int* ierr )
+FSUB( MPI_Cart_map )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* newrank, MPI_Fint* ierr )
 {
     *ierr = MPI_Cart_map( PMPI_Comm_f2c( *comm ), *ndims, dims, periods, newrank );
 }
@@ -690,7 +706,7 @@ FSUB( MPI_Cart_map )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint*
  * For the order of events see @ref MPI_Cart_rank
  */
 void
-FSUB( MPI_Cart_rank )( MPI_Fint* comm, MPI_Fint* coords, MPI_Fint* rank, int* ierr )
+FSUB( MPI_Cart_rank )( MPI_Fint* comm, MPI_Fint* coords, MPI_Fint* rank, MPI_Fint* ierr )
 {
     *ierr = MPI_Cart_rank( PMPI_Comm_f2c( *comm ), coords, rank );
 }
@@ -705,7 +721,7 @@ FSUB( MPI_Cart_rank )( MPI_Fint* comm, MPI_Fint* coords, MPI_Fint* rank, int* ie
  * For the order of events see @ref MPI_Cart_shift
  */
 void
-FSUB( MPI_Cart_shift )( MPI_Fint* comm, MPI_Fint* direction, MPI_Fint* disp, MPI_Fint* rank_source, MPI_Fint* rank_dest, int* ierr )
+FSUB( MPI_Cart_shift )( MPI_Fint* comm, MPI_Fint* direction, MPI_Fint* disp, MPI_Fint* rank_source, MPI_Fint* rank_dest, MPI_Fint* ierr )
 {
     *ierr = MPI_Cart_shift( PMPI_Comm_f2c( *comm ), *direction, *disp, rank_source, rank_dest );
 }
@@ -720,7 +736,7 @@ FSUB( MPI_Cart_shift )( MPI_Fint* comm, MPI_Fint* direction, MPI_Fint* disp, MPI
  * For the order of events see @ref MPI_Cart_sub
  */
 void
-FSUB( MPI_Cart_sub )( MPI_Fint* comm, MPI_Fint* remain_dims, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Cart_sub )( MPI_Fint* comm, MPI_Fint* remain_dims, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -740,7 +756,7 @@ FSUB( MPI_Cart_sub )( MPI_Fint* comm, MPI_Fint* remain_dims, MPI_Fint* newcomm, 
  * For the order of events see @ref MPI_Cartdim_get
  */
 void
-FSUB( MPI_Cartdim_get )( MPI_Fint* comm, MPI_Fint* ndims, int* ierr )
+FSUB( MPI_Cartdim_get )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* ierr )
 {
     *ierr = MPI_Cartdim_get( PMPI_Comm_f2c( *comm ), ndims );
 }
@@ -755,7 +771,7 @@ FSUB( MPI_Cartdim_get )( MPI_Fint* comm, MPI_Fint* ndims, int* ierr )
  * For the order of events see @ref MPI_Dims_create
  */
 void
-FSUB( MPI_Dims_create )( MPI_Fint* nnodes, MPI_Fint* ndims, MPI_Fint* dims, int* ierr )
+FSUB( MPI_Dims_create )( MPI_Fint* nnodes, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* ierr )
 {
     *ierr = MPI_Dims_create( *nnodes, *ndims, dims );
 }
@@ -770,7 +786,7 @@ FSUB( MPI_Dims_create )( MPI_Fint* nnodes, MPI_Fint* ndims, MPI_Fint* dims, int*
  * For the order of events see @ref MPI_Dist_graph_create
  */
 void
-FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old, MPI_Fint* n, MPI_Fint* sources, MPI_Fint* degrees, MPI_Fint* destinations, MPI_Fint* weights, MPI_Fint* info, MPI_Fint* reorder, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old, MPI_Fint* n, MPI_Fint* sources, MPI_Fint* degrees, MPI_Fint* destinations, MPI_Fint* weights, MPI_Fint* info, MPI_Fint* reorder, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -798,7 +814,7 @@ FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old, MPI_Fint* n, MPI_Fint* source
  * For the order of events see @ref MPI_Dist_graph_create_adjacent
  */
 void
-FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old, MPI_Fint* indegree, MPI_Fint* sources, MPI_Fint* sourceweights, MPI_Fint* outdegree, MPI_Fint* destinations, MPI_Fint* destweights, MPI_Fint* info, MPI_Fint* reorder, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old, MPI_Fint* indegree, MPI_Fint* sources, MPI_Fint* sourceweights, MPI_Fint* outdegree, MPI_Fint* destinations, MPI_Fint* destweights, MPI_Fint* info, MPI_Fint* reorder, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -832,7 +848,7 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old, MPI_Fint* indegree, 
  * For the order of events see @ref MPI_Dist_graph_neighbors
  */
 void
-FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm, MPI_Fint* maxindegree, MPI_Fint* sources, MPI_Fint* sourceweights, MPI_Fint* maxoutdegree, MPI_Fint* destinations, MPI_Fint* destweights, int* ierr )
+FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm, MPI_Fint* maxindegree, MPI_Fint* sources, MPI_Fint* sourceweights, MPI_Fint* maxoutdegree, MPI_Fint* destinations, MPI_Fint* destweights, MPI_Fint* ierr )
 {
     #if HAVE( MPI_UNWEIGHTED )
     if ( sourceweights == scorep_mpi_fortran_unweighted )
@@ -875,7 +891,7 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm, MPI_Fint* maxindegree, MPI_Fin
  * For the order of events see @ref MPI_Dist_graph_neighbors_count
  */
 void
-FSUB( MPI_Dist_graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* indegree, MPI_Fint* outdegree, MPI_Fint* weighted, int* ierr )
+FSUB( MPI_Dist_graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* indegree, MPI_Fint* outdegree, MPI_Fint* weighted, MPI_Fint* ierr )
 {
     *ierr = MPI_Dist_graph_neighbors_count( PMPI_Comm_f2c( *comm ), indegree, outdegree, weighted );
 }
@@ -890,7 +906,7 @@ FSUB( MPI_Dist_graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* indegree, MPI_
  * For the order of events see @ref MPI_Graph_create
  */
 void
-FSUB( MPI_Graph_create )( MPI_Fint* comm_old, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* reorder, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Graph_create )( MPI_Fint* comm_old, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* reorder, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -910,7 +926,7 @@ FSUB( MPI_Graph_create )( MPI_Fint* comm_old, MPI_Fint* nnodes, MPI_Fint* index,
  * For the order of events see @ref MPI_Graph_get
  */
 void
-FSUB( MPI_Graph_get )( MPI_Fint* comm, MPI_Fint* maxindex, MPI_Fint* maxedges, MPI_Fint* index, MPI_Fint* edges, int* ierr )
+FSUB( MPI_Graph_get )( MPI_Fint* comm, MPI_Fint* maxindex, MPI_Fint* maxedges, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* ierr )
 {
     *ierr = MPI_Graph_get( PMPI_Comm_f2c( *comm ), *maxindex, *maxedges, index, edges );
 }
@@ -925,7 +941,7 @@ FSUB( MPI_Graph_get )( MPI_Fint* comm, MPI_Fint* maxindex, MPI_Fint* maxedges, M
  * For the order of events see @ref MPI_Graph_map
  */
 void
-FSUB( MPI_Graph_map )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* newrank, int* ierr )
+FSUB( MPI_Graph_map )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* newrank, MPI_Fint* ierr )
 {
     *ierr = MPI_Graph_map( PMPI_Comm_f2c( *comm ), *nnodes, index, edges, newrank );
 }
@@ -940,7 +956,7 @@ FSUB( MPI_Graph_map )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fi
  * For the order of events see @ref MPI_Graph_neighbors
  */
 void
-FSUB( MPI_Graph_neighbors )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxneighbors, MPI_Fint* neighbors, int* ierr )
+FSUB( MPI_Graph_neighbors )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxneighbors, MPI_Fint* neighbors, MPI_Fint* ierr )
 {
     *ierr = MPI_Graph_neighbors( PMPI_Comm_f2c( *comm ), *rank, *maxneighbors, neighbors );
 }
@@ -955,7 +971,7 @@ FSUB( MPI_Graph_neighbors )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxneighb
  * For the order of events see @ref MPI_Graph_neighbors_count
  */
 void
-FSUB( MPI_Graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* nneighbors, int* ierr )
+FSUB( MPI_Graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* nneighbors, MPI_Fint* ierr )
 {
     *ierr = MPI_Graph_neighbors_count( PMPI_Comm_f2c( *comm ), *rank, nneighbors );
 }
@@ -970,7 +986,7 @@ FSUB( MPI_Graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* nne
  * For the order of events see @ref MPI_Graphdims_get
  */
 void
-FSUB( MPI_Graphdims_get )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* nedges, int* ierr )
+FSUB( MPI_Graphdims_get )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* nedges, MPI_Fint* ierr )
 {
     *ierr = MPI_Graphdims_get( PMPI_Comm_f2c( *comm ), nnodes, nedges );
 }
@@ -985,7 +1001,7 @@ FSUB( MPI_Graphdims_get )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* nedges, i
  * For the order of events see @ref MPI_Topo_test
  */
 void
-FSUB( MPI_Topo_test )( MPI_Fint* comm, MPI_Fint* status, int* ierr )
+FSUB( MPI_Topo_test )( MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
     *ierr = MPI_Topo_test( PMPI_Comm_f2c( *comm ), status );
 }

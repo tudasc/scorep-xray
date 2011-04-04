@@ -64,38 +64,6 @@
 
 #pragma wrapgen multiple restrict(nMPI_Sizeof) skel/SCOREP_Mpi_F2c_C2f.w
 
-#if HAVE(DECL_PMPI_TYPE_STRUCT) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
-/**
- * Manual measurement wrapper for MPI_Type_struct
- * @ingroup manual_wrapper
- * @ingroup interface_fortran
- * @ingroup mpi_version_1
- * @ingroup mpi_enabled_type
- */
-void FSUB(MPI_Type_struct)(MPI_Fint* count,
-                           MPI_Fint* array_of_blocklengths,
-                           MPI_Aint* array_of_displacements, 
-                           MPI_Fint* array_of_types, 
-                           MPI_Fint* newtype, 
-                           MPI_Fint* ierr)
-{
-  MPI_Fint i;
-  MPI_Datatype c_newtype;
-  MPI_Datatype* c_array_of_types = 
-          (MPI_Datatype*) malloc(*count * sizeof(MPI_Datatype));
-  if (!c_array_of_types) exit(EXIT_FAILURE);
-
-  for (i = 0; i < *count; ++i)
-  {
-    c_array_of_types[i] = PMPI_Type_f2c(array_of_types[i]);
-  }
-  *ierr    = MPI_Type_struct(*count, array_of_blocklengths, 
-                             array_of_displacements, 
-                             c_array_of_types, &c_newtype);
-  *newtype = PMPI_Type_c2f(c_newtype);
-}
-#endif
-
 #if HAVE(DECL_PMPI_TYPE_CREATE_STRUCT) && ! defined(SCOREP_MPI_NO_EXTRA) && ! defined(SCOREP_MPI_NO_TYPE)
 /**
  * Manual measurement wrapper for MPI_Type_create_struct
@@ -121,10 +89,12 @@ void FSUB(MPI_Type_create_struct)(MPI_Fint* count,
   {
     c_array_of_types[i] = PMPI_Type_f2c(array_of_types[i]);
   }
-  *ierr    = MPI_Type_struct(*count, array_of_blocklengths, 
-                             array_of_displacements, 
-                             c_array_of_types, &c_newtype);
+  *ierr    = MPI_Type_create_struct(*count, array_of_blocklengths, 
+                                    array_of_displacements, 
+                                    c_array_of_types, &c_newtype);
   *newtype = PMPI_Type_c2f(c_newtype);
+
+  free(c_array_of_types);
 }
 #endif
 
@@ -171,7 +141,7 @@ void FSUB(MPI_Type_get_contents)(MPI_Fint* datatype,
 }
 #endif
 
-#pragma wrapgen multiple restrict(gtype+!n_Sizeof+!n_struct+!n_get_contents+!nf90) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gtype+!n_create_struct+!n_get_contents) skel/SCOREP_Mpi_F2c_C2f.w
 
 /**
  * @}

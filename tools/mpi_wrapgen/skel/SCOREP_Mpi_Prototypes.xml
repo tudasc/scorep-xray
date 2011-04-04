@@ -75,15 +75,29 @@
     <param access="i" type="MPI_Datatype" name="recvtype" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="N * sendcount * sendsz" recv="N * recvcount * recvsz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t recvsz, sendsz, N;
+    int     recvsz, sendsz, N;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
-      PMPI_Type_size(recvtype, &recvsz);
-      PMPI_Type_size(sendtype, &sendsz);
-      PMPI_Comm_size(comm, &N);
+     PMPI_Comm_size(comm, &N);
+     PMPI_Type_size(recvtype, &recvsz);
+     #if HAVE( MPI_IN_PLACE )
+     if (sendbuf != MPI_IN_PLACE)
+     #endif
+     {
+       PMPI_Type_size(sendtype, &sendsz);
+       sendbytes = N * sendcount * sendsz;
+       recvbytes = N * recvcount * recvsz;
+     }
+     #if HAVE( MPI_IN_PLACE )
+     else
+     {
+       sendbytes = recvbytes = (N-1) * recvcount * recvsz;
+     }
+     #endif
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -137,17 +151,39 @@
     <param access="i" type="MPI_Datatype" name="recvtype" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="N * sendcount * sendsz" recv="recvcount * recvsz" />
+    <countrules send="sendbytes" recv="recvcount * recvsz" />
 <decl><![CDATA[
-    int32_t recvcount, recvsz, sendsz, i, N;
+    int32_t recvcount, recvsz, sendsz, i, N, me;
+    int     sendbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
-      PMPI_Type_size(recvtype, &recvsz);
-      PMPI_Type_size(sendtype, &sendsz);
       PMPI_Comm_size(comm, &N);
+      PMPI_Type_size(recvtype, &recvsz);
+      PMPI_Comm_rank(comm, &me);
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf != MPI_IN_PLACE)
+      #endif
+      {
+        PMPI_Type_size(sendtype, &sendsz);
+        sendbytes = N * sendcount * sendsz;
+      }
+      #if HAVE( MPI_IN_PLACE )
+      else
+      {
+        sendbytes = (N-1) * recvcounts[me] * recvsz;
+      }
+      #endif
+
       recvcount = 0;
-      for(i = 0; i<N; i++) recvcount += recvcounts[i];
+      for(i = 0; i<N; i++) 
+        recvcount += recvcounts[i];
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf == MPI_IN_PLACE) 
+        recvcount -= recvcounts[me];
+      #endif
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -206,14 +242,26 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="N * count * sz" recv="N * count * sz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
     int32_t sz, N;
+    int     sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
       PMPI_Comm_size(comm, &N);
+
+      #if HAVE( HAS_MPI_IN_PLACE )
+      if (sendbuf == MPI_IN_PLACE)
+      {
+        sendbytes = recvbytes = (N-1) * count * sz; 
+      }
+      else
+      #endif
+      {
+        sendbytes = recvbytes = N * count * sz;
+      }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -266,15 +314,22 @@
     <param access="i" type="MPI_Datatype" name="recvtype" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="N * sendcount * sendsz" recv="N * recvcount * recvsz" />
+    <countrules send="bytes" recv="bytes" />
 <decl><![CDATA[
-    int32_t recvsz, sendsz, N;
+    int32_t recvsz, N;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
+    int     bytes = 0;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(recvtype, &recvsz);
-      PMPI_Type_size(sendtype, &sendsz);
       PMPI_Comm_size(comm, &N);
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf == MPI_IN_PLACE)
+          --N;
+      #endif
+
+      bytes = N * recvcount * recvsz;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -329,35 +384,54 @@
     <param access="i" type="MPI_Datatype" name="recvtype" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="sendcount * sendsz" recv="recvcount * recvsz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t recvcount=0, sendcount=0, recvsz, sendsz, N, i;
+    int recvcount=0, recvsz, sendsz, N, i, me;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
-      PMPI_Type_size(recvtype, &recvsz);
-      PMPI_Type_size(sendtype, &sendsz);
       PMPI_Comm_size(comm, &N);
-      for(i = 0; i<N; i++)
+      PMPI_Type_size(recvtype, &recvsz);
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf != MPI_IN_PLACE)
+      #endif
       {
-        recvcount += recvcounts[i];
-        sendcount += sendcounts[i];
+        PMPI_Type_size(sendtype, &sendsz);
+        for(i = 0; i<N; i++)
+        {
+          recvbytes += recvcounts[i] * recvsz;
+          sendbytes += sendcounts[i] * sendsz;
+        }
       }
+      #if HAVE( MPI_IN_PLACE )
+      else
+      {
+        PMPI_Comm_rank(comm, &me);
+        for(i = 0; i<N; i++)
+          recvcount += recvcounts[i];
+
+        recvcount -= recvcounts[me];
+
+        sendbytes = recvbytes = recvcount * recvsz;
+      }
+      #endif
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
-    #if HAVE(MPI_IN_PLACE)
+    #if HAVE( MPI_IN_PLACE )
     if (sendbuf == scorep_mpi_fortran_in_place)
     {
         sendbuf = MPI_IN_PLACE;
     }
     #endif
-    #if HAVE(MPI_BOTTOM)
+    #if HAVE( MPI_BOTTOM )
     if (sendbuf == scorep_mpi_fortran_bottom)
     {
         sendbuf = MPI_BOTTOM;
     }
     #endif
-    #if HAVE(MPI_BOTTOM)
+    #if HAVE( MPI_BOTTOM )
     if (recvbuf == scorep_mpi_fortran_bottom)
     {
         recvbuf = MPI_BOTTOM;
@@ -397,20 +471,45 @@
     <param access="i" type="MPI_Datatype" name="recvtypes" suffix="[]" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="2.0" />
-    <countrules send="sendcount" recv="recvcount" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t recvcount=0, sendcount=0, recvsz, sendsz, N, i;
+    int     recvsz, sendsz, N, i, me;
+    int     sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Comm_size(comm, &N);
-      for(i = 0; i<N; i++)
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf != MPI_IN_PLACE)
+      #endif
       {
+        for(i = 0; i<N; i++)
+        {
           PMPI_Type_size(recvtypes[i], &recvsz);
+          recvbytes += recvcounts[i] * recvsz;
+
           PMPI_Type_size(sendtypes[i], &sendsz);
-          recvcount += recvsz * recvcounts[i];
-          sendcount += sendsz * sendcounts[i];
+          sendbytes += sendcounts[i] * sendsz;
+        }
       }
+      #if HAVE( MPI_IN_PLACE )
+      else
+      {
+        PMPI_Comm_rank(comm, &me);
+
+        for(i = 0; i<N; i++)
+        {
+          PMPI_Type_size(recvtypes[i], &recvsz);
+          recvbytes += recvcounts[i] * recvsz;
+        }
+        
+        PMPI_Type_size(recvtypes[me], &recvsz);
+        recvbytes -= recvcounts[me] * recvsz;
+        
+        sendbytes = recvbytes;
+      }
+      #endif
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -2266,19 +2365,31 @@
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="sendcount*sendsz" recv="N*recvcount*recvsz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t sendsz, recvsz, N, me;
+    int sendsz, recvsz, N, me;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
-      PMPI_Type_size(sendtype, &sendsz);
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf != MPI_IN_PLACE)
+      #endif
+      {
+        PMPI_Type_size(sendtype, &sendsz);
+        sendbytes = sendcount * sendsz;
+      }
+      /* MPI_IN_PLACE: sendbytes is initialized to 0 */
+
       PMPI_Comm_rank(comm, &me);
       if ( me == root ) {
         PMPI_Comm_size(comm, &N);
         PMPI_Type_size(recvtype, &recvsz);
-      } else {
-        N = recvsz = 0;
+        #if HAVE( MPI_IN_PLACE )
+        if (sendbuf == MPI_IN_PLACE)
+          --N;
+        #endif
+        recvbytes = recvcount * N * recvsz;
       }]]>
 </xblock>
 <xblock id="fortran"><![CDATA[
@@ -2334,20 +2445,34 @@
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t recvsz, sendsz, recvcount = 0, me, N, i; 
+    int recvsz, sendsz, me, N, i; 
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
-      PMPI_Type_size(sendtype, &sendsz);
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf != MPI_IN_PLACE)
+      #endif
+      {
+        PMPI_Type_size(sendtype, &sendsz);
+        sendbytes = sendcount * sendsz;
+      }
+      /* MPI_IN_PLACE: sendbytes is initialized to 0 */
+      
       PMPI_Comm_rank(comm, &me);
       if ( me == root ) {
         PMPI_Comm_size(comm, &N);
         PMPI_Type_size(recvtype, &recvsz);
-        for(i = 0; i < N; i++) recvcount += recvcounts[i];
-      } else {
-        recvcount = recvsz = 0;
+
+        for(i = 0; i < N; ++i)
+          recvbytes += recvcounts[i] * recvsz;
+
+        #if HAVE( MPI_IN_PLACE )
+        if (sendbuf == MPI_IN_PLACE)
+          recvbytes -= recvcounts[me] * recvsz;
+        #endif
       }]]>
 </xblock>
 <xblock id="fortran"><![CDATA[
@@ -3161,15 +3286,32 @@
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="count*sz" recv="(root == me ? N*count*sz : 0 )" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t sz, me, N;
+    int sz, me, N;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
       PMPI_Comm_rank(comm, &me);
       PMPI_Comm_size(comm, &N);
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf != MPI_IN_PLACE)
+      #endif
+      {
+        sendbytes = count * sz;
+      }
+      #if HAVE( MPI_IN_PLACE )
+      else
+      #endif
+      {
+        --N;
+      }
+
+      if (root == me)
+        recvbytes = N * count * sz;
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -3231,9 +3373,10 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="count * sz" recv="N * recvcounts[me] * sz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t i, sz, me, N, count = 0;
+    int i, sz, me, N, count = 0;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
@@ -3241,6 +3384,18 @@
       PMPI_Comm_rank(comm, &me);
       PMPI_Comm_size(comm, &N);
       for (i = 0; i<N; i++) count += recvcounts[i];
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf == MPI_IN_PLACE)
+      {
+        sendbytes = (count-1) * sz;
+        recvbytes = (N-1) * recvcounts[me] * sz;
+      }
+      else
+      #endif
+      {
+        sendbytes = count * sz;
+        recvbytes = N * recvcounts[me] * sz;
+      }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -3300,6 +3455,11 @@
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
       PMPI_Comm_size(comm, &N);
+      
+      #if HAVE ( MPI_IN_PLACE )
+      if (sendbuf == MPI_IN_PLACE)
+          --N;
+      #endif
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -3452,15 +3612,29 @@
     <param access="i" type="MPI_Op" name="op" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="(N-me) * count * sz" recv="(me+1) * count * sz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t sz, me, N;
+    int sz, me, N;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 ]]></decl>
 <xblock><![CDATA[
       PMPI_Type_size(datatype, &sz);
       PMPI_Comm_rank(comm, &me);
       PMPI_Comm_size(comm, &N);
+
+      #if HAVE( MPI_IN_PLACE )
+      if (sendbuf == MPI_IN_PLACE)
+      {
+        sendbytes = (N - me - 1) * count * sz;
+        recvbytes = me * count * sz;
+      }
+      else
+      #endif
+      {
+        sendbytes = (N - me) * count * sz;
+        recvbytes = (me + 1) * count * sz;
+      }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -3514,20 +3688,37 @@
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="N * sendcount * sendsz" recv="recvcount * recvsz" />
+    <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t sendsz, recvsz, N, me;
+    int sendsz, recvsz, N, me;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
-      PMPI_Type_size(recvtype, &recvsz);
       PMPI_Comm_rank(comm, &me);
-      if ( me == root ) {
+      #if HAVE( MPI_IN_PLACE )
+      if (recvbuf != MPI_IN_PLACE)
+      #endif
+      {
+        if (me == root)
+        {
+          PMPI_Comm_size(comm, &N);
+          PMPI_Type_size(sendtype, &sendsz);
+          sendbytes = N * sendcount * sendsz;
+        }
+
+        PMPI_Type_size(recvtype, &recvsz);
+        recvbytes = recvcount * recvsz;
+      }
+      #if HAVE( MPI_IN_PLACE )
+      else
+      {
         PMPI_Comm_size(comm, &N);
         PMPI_Type_size(sendtype, &sendsz);
-      } else {
-        N = sendsz = 0;
+        sendbytes = (N-1) * sendcount * sendsz;
+        /* recvbytes is initialized to 0 */
       }
+      #endif
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_IN_PLACE)
@@ -3582,19 +3773,34 @@
     <param access="i" type="int" name="root" />
     <param access="i" type="MPI_Comm" name="comm" />
     <version id="1.0" />
-    <countrules send="sendcount * sendsz" recv="recvcount * recvsz" />
+    <countrules send="sendcount * sendsz" recv="recvbytes" />
 <decl><![CDATA[
-    int32_t sendcount, sendsz, recvsz, me, N, i;
+    int sendcount, sendsz, recvsz, me, N, i;
+    int sendbytes = 0, recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
       sendcount = sendsz = 0;
-      PMPI_Type_size(recvtype, &recvsz);
+      #if HAVE( MPI_IN_PLACE )
+      if (recvbuf != MPI_IN_PLACE)
+      #endif
+      {
+        PMPI_Type_size(recvtype, &recvsz);
+        recvbytes = recvcount * recvsz;
+      }
+      /* MPI_IN_PLACE: recvbytes is initialized to 0 */ 
+
       PMPI_Comm_rank(comm, &me);
       if ( me == root ) {
         PMPI_Comm_size(comm, &N);
         PMPI_Type_size(sendtype, &sendsz);
-        for(i = 0; i<N; i++) sendcount += sendcounts[i];
+        for(i = 0; i<N; i++) 
+          sendcount += sendcounts[i];
+
+        #if HAVE( MPI_IN_PLACE )
+        if (recvbuf == MPI_IN_PLACE)
+          sendcount -= sendcounts[me];
+        #endif
       }
 ]]></xblock>
 <xblock id="fortran"><![CDATA[
@@ -4263,6 +4469,26 @@
     <param access="i" type="MPI_Datatype*" name="array_of_types" />
     <param access="o" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
+<decl id="f2c_c2f"><![CDATA[
+  MPI_Datatype* c_array_of_types;
+]]></decl>
+<xblock id="f2c_c2f"><![CDATA[
+  c_array_of_types = (MPI_Datatype*) malloc(*count * sizeof(MPI_Datatype));
+  if (!c_array_of_types)
+  {
+     SCOREP_ERROR(SCOREP_ERROR_MEM_ALLOC_FAILED, "");
+     abort();
+  }
+  /* index variable i, is already defined by the implicit conversion done
+   * in the special 'noaint' handler */
+  for (i=0; i < *count; ++i)
+  {
+    c_array_of_types[i] = PMPI_Type_f2c(array_of_types[i]);
+  }
+]]></xblock>
+<cleanup id="f2c_c2f"><![CDATA[
+  free(c_array_of_types);
+]]></cleanup>
 </prototype>
 
 <prototype name="MPI_Type_ub" rtype="int" group="type" guard="extra,type" >

@@ -509,13 +509,12 @@ void FSUB(MPI_Comm_spawn)(char*     command,
                           MPI_Fint* comm,
                           MPI_Fint* newcomm,
                           MPI_Fint* array_of_errcodes,
-                          int*      ierr,
-                          int       command_len,
-                          int       argv_len)
+                          MPI_Fint* ierr,
+                          MPI_Fint  command_len,
+                          MPI_Fint  argv_len)
 {
   char*    c_command = NULL;
   char**   c_argv    = NULL;
-  MPI_Comm c_comm    = MPI_COMM_NULL;
   MPI_Comm c_newcomm = MPI_COMM_NULL;
   int      arg_count = 0;
   int      arg_size  = 0;

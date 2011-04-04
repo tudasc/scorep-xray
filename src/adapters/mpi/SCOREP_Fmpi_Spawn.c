@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 
 /**
@@ -949,13 +965,12 @@ FSUB( MPI_Comm_spawn )( char*     command,
                         MPI_Fint* comm,
                         MPI_Fint* newcomm,
                         MPI_Fint* array_of_errcodes,
-                        int*      ierr,
-                        int       command_len,
-                        int       argv_len )
+                        MPI_Fint* ierr,
+                        MPI_Fint  command_len,
+                        MPI_Fint  argv_len )
 {
     char*    c_command = NULL;
     char**   c_argv    = NULL;
-    MPI_Comm c_comm    = MPI_COMM_NULL;
     MPI_Comm c_newcomm = MPI_COMM_NULL;
     int      arg_count = 0;
     int      arg_size  = 0;
@@ -1057,7 +1072,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
  * For the order of events see @ref MPI_Close_port
  */
 void
-FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
 {
     char* c_port_name = NULL;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1085,7 +1100,7 @@ FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
  * For the order of events see @ref MPI_Comm_accept
  */
 void
-FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, int port_name_len )
 {
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
@@ -1115,7 +1130,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fi
  * For the order of events see @ref MPI_Comm_connect
  */
 void
-FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, int* ierr, int port_name_len )
+FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, int port_name_len )
 {
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
@@ -1145,7 +1160,7 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_F
  * For the order of events see @ref MPI_Comm_disconnect
  */
 void
-FSUB( MPI_Comm_disconnect )( MPI_Fint* comm, int* ierr )
+FSUB( MPI_Comm_disconnect )( MPI_Fint* comm, MPI_Fint* ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
@@ -1165,7 +1180,7 @@ FSUB( MPI_Comm_disconnect )( MPI_Fint* comm, int* ierr )
  * For the order of events see @ref MPI_Comm_get_parent
  */
 void
-FSUB( MPI_Comm_get_parent )( MPI_Fint* parent, int* ierr )
+FSUB( MPI_Comm_get_parent )( MPI_Fint* parent, MPI_Fint* ierr )
 {
     MPI_Comm c_parent;
 
@@ -1185,7 +1200,7 @@ FSUB( MPI_Comm_get_parent )( MPI_Fint* parent, int* ierr )
  * For the order of events see @ref MPI_Comm_join
  */
 void
-FSUB( MPI_Comm_join )( MPI_Fint* fd, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Comm_join )( MPI_Fint* fd, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -1205,7 +1220,7 @@ FSUB( MPI_Comm_join )( MPI_Fint* fd, MPI_Fint* newcomm, int* ierr )
  * For the order of events see @ref MPI_Lookup_name
  */
 void
-FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
 {
     char* c_service_name  = NULL;
     char* c_port_name     = NULL;
@@ -1246,7 +1261,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, in
  * For the order of events see @ref MPI_Open_port
  */
 void
-FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, int* ierr, int port_name_len )
+FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, int port_name_len )
 {
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
@@ -1277,7 +1292,7 @@ FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, int* ierr, int port_name
  * For the order of events see @ref MPI_Publish_name
  */
 void
-FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
@@ -1315,7 +1330,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, i
  * For the order of events see @ref MPI_Unpublish_name
  */
 void
-FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
+FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;

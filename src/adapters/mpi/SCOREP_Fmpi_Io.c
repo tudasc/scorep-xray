@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 
 /**
@@ -1916,7 +1932,7 @@ FSUB( MPI_File_set_errhandler )( MPI_File* file, MPI_Errhandler* errhandler, int
  * For the order of events see @ref MPI_File_close
  */
 void
-FSUB( MPI_File_close )( MPI_Fint* fh, int* ierr )
+FSUB( MPI_File_close )( MPI_Fint* fh, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -1936,7 +1952,7 @@ FSUB( MPI_File_close )( MPI_Fint* fh, int* ierr )
  * For the order of events see @ref MPI_File_delete
  */
 void
-FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, int* ierr, int filename_len )
+FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, int filename_len )
 {
     char* c_filename = NULL;
     c_filename = ( char* )malloc( ( filename_len + 1 ) * sizeof( char ) );
@@ -1964,7 +1980,7 @@ FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, int* ierr, int filename
  * For the order of events see @ref MPI_File_get_amode
  */
 void
-FSUB( MPI_File_get_amode )( MPI_Fint* fh, MPI_Fint* amode, int* ierr )
+FSUB( MPI_File_get_amode )( MPI_Fint* fh, MPI_Fint* amode, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_amode( PMPI_File_f2c( *fh ), amode );
 }
@@ -1979,7 +1995,7 @@ FSUB( MPI_File_get_amode )( MPI_Fint* fh, MPI_Fint* amode, int* ierr )
  * For the order of events see @ref MPI_File_get_atomicity
  */
 void
-FSUB( MPI_File_get_atomicity )( MPI_Fint* fh, MPI_Fint* flag, int* ierr )
+FSUB( MPI_File_get_atomicity )( MPI_Fint* fh, MPI_Fint* flag, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_atomicity( PMPI_File_f2c( *fh ), flag );
 }
@@ -1994,7 +2010,7 @@ FSUB( MPI_File_get_atomicity )( MPI_Fint* fh, MPI_Fint* flag, int* ierr )
  * For the order of events see @ref MPI_File_get_byte_offset
  */
 void
-FSUB( MPI_File_get_byte_offset )( MPI_Fint* fh, MPI_Offset* offset, MPI_Offset* disp, int* ierr )
+FSUB( MPI_File_get_byte_offset )( MPI_Fint* fh, MPI_Offset* offset, MPI_Offset* disp, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_byte_offset( PMPI_File_f2c( *fh ), *offset, disp );
 }
@@ -2009,7 +2025,7 @@ FSUB( MPI_File_get_byte_offset )( MPI_Fint* fh, MPI_Offset* offset, MPI_Offset* 
  * For the order of events see @ref MPI_File_get_group
  */
 void
-FSUB( MPI_File_get_group )( MPI_Fint* fh, MPI_Fint* group, int* ierr )
+FSUB( MPI_File_get_group )( MPI_Fint* fh, MPI_Fint* group, MPI_Fint* ierr )
 {
     MPI_Group c_group;
 
@@ -2029,7 +2045,7 @@ FSUB( MPI_File_get_group )( MPI_Fint* fh, MPI_Fint* group, int* ierr )
  * For the order of events see @ref MPI_File_get_info
  */
 void
-FSUB( MPI_File_get_info )( MPI_Fint* fh, MPI_Fint* info_used, int* ierr )
+FSUB( MPI_File_get_info )( MPI_Fint* fh, MPI_Fint* info_used, MPI_Fint* ierr )
 {
     MPI_Info c_info_used;
 
@@ -2049,7 +2065,7 @@ FSUB( MPI_File_get_info )( MPI_Fint* fh, MPI_Fint* info_used, int* ierr )
  * For the order of events see @ref MPI_File_get_position
  */
 void
-FSUB( MPI_File_get_position )( MPI_Fint* fh, MPI_Offset* offset, int* ierr )
+FSUB( MPI_File_get_position )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_position( PMPI_File_f2c( *fh ), offset );
 }
@@ -2064,7 +2080,7 @@ FSUB( MPI_File_get_position )( MPI_Fint* fh, MPI_Offset* offset, int* ierr )
  * For the order of events see @ref MPI_File_get_position_shared
  */
 void
-FSUB( MPI_File_get_position_shared )( MPI_Fint* fh, MPI_Offset* offset, int* ierr )
+FSUB( MPI_File_get_position_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_position_shared( PMPI_File_f2c( *fh ), offset );
 }
@@ -2079,7 +2095,7 @@ FSUB( MPI_File_get_position_shared )( MPI_Fint* fh, MPI_Offset* offset, int* ier
  * For the order of events see @ref MPI_File_get_size
  */
 void
-FSUB( MPI_File_get_size )( MPI_Fint* fh, MPI_Offset* size, int* ierr )
+FSUB( MPI_File_get_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_size( PMPI_File_f2c( *fh ), size );
 }
@@ -2094,7 +2110,7 @@ FSUB( MPI_File_get_size )( MPI_Fint* fh, MPI_Offset* size, int* ierr )
  * For the order of events see @ref MPI_File_get_type_extent
  */
 void
-FSUB( MPI_File_get_type_extent )( MPI_Fint* fh, MPI_Fint* datatype, MPI_Aint* extent, int* ierr )
+FSUB( MPI_File_get_type_extent )( MPI_Fint* fh, MPI_Fint* datatype, MPI_Aint* extent, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_type_extent( PMPI_File_f2c( *fh ), PMPI_Type_f2c( *datatype ), extent );
 }
@@ -2109,7 +2125,7 @@ FSUB( MPI_File_get_type_extent )( MPI_Fint* fh, MPI_Fint* datatype, MPI_Aint* ex
  * For the order of events see @ref MPI_File_get_view
  */
 void
-FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, int* ierr, int datarep_len )
+FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* ierr, int datarep_len )
 {
     MPI_Datatype c_etype;
     MPI_Datatype c_filetype;
@@ -2144,7 +2160,7 @@ FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
  * For the order of events see @ref MPI_File_open
  */
 void
-FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint* info, MPI_Fint* fh, int* ierr, int filename_len )
+FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint* info, MPI_Fint* fh, MPI_Fint* ierr, int filename_len )
 {
     char*    c_filename = NULL;
     MPI_File c_fh;
@@ -2174,7 +2190,7 @@ FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint
  * For the order of events see @ref MPI_File_preallocate
  */
 void
-FSUB( MPI_File_preallocate )( MPI_Fint* fh, MPI_Offset* size, int* ierr )
+FSUB( MPI_File_preallocate )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2194,7 +2210,7 @@ FSUB( MPI_File_preallocate )( MPI_Fint* fh, MPI_Offset* size, int* ierr )
  * For the order of events see @ref MPI_File_seek
  */
 void
-FSUB( MPI_File_seek )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, int* ierr )
+FSUB( MPI_File_seek )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2214,7 +2230,7 @@ FSUB( MPI_File_seek )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, int* 
  * For the order of events see @ref MPI_File_seek_shared
  */
 void
-FSUB( MPI_File_seek_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, int* ierr )
+FSUB( MPI_File_seek_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2234,7 +2250,7 @@ FSUB( MPI_File_seek_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence
  * For the order of events see @ref MPI_File_set_atomicity
  */
 void
-FSUB( MPI_File_set_atomicity )( MPI_Fint* fh, MPI_Fint* flag, int* ierr )
+FSUB( MPI_File_set_atomicity )( MPI_Fint* fh, MPI_Fint* flag, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2254,7 +2270,7 @@ FSUB( MPI_File_set_atomicity )( MPI_Fint* fh, MPI_Fint* flag, int* ierr )
  * For the order of events see @ref MPI_File_set_info
  */
 void
-FSUB( MPI_File_set_info )( MPI_Fint* fh, MPI_Fint* info, int* ierr )
+FSUB( MPI_File_set_info )( MPI_Fint* fh, MPI_Fint* info, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2274,7 +2290,7 @@ FSUB( MPI_File_set_info )( MPI_Fint* fh, MPI_Fint* info, int* ierr )
  * For the order of events see @ref MPI_File_set_size
  */
 void
-FSUB( MPI_File_set_size )( MPI_Fint* fh, MPI_Offset* size, int* ierr )
+FSUB( MPI_File_set_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2294,7 +2310,7 @@ FSUB( MPI_File_set_size )( MPI_Fint* fh, MPI_Offset* size, int* ierr )
  * For the order of events see @ref MPI_File_set_view
  */
 void
-FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* info, int* ierr, int datarep_len )
+FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* info, MPI_Fint* ierr, int datarep_len )
 {
     MPI_File c_fh      = PMPI_File_f2c( *fh );
     char*    c_datarep = NULL;
@@ -2324,7 +2340,7 @@ FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
  * For the order of events see @ref MPI_File_sync
  */
 void
-FSUB( MPI_File_sync )( MPI_Fint* fh, int* ierr )
+FSUB( MPI_File_sync )( MPI_Fint* fh, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2344,7 +2360,7 @@ FSUB( MPI_File_sync )( MPI_Fint* fh, int* ierr )
  * For the order of events see @ref MPI_Register_datarep
  */
 void
-FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, int* ierr, int datarep_len )
+FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, MPI_Fint* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
     c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
@@ -2380,7 +2396,7 @@ FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* wri
  * For the order of events see @ref MPI_File_iread
  */
 void
-FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, int* ierr )
+FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
@@ -2410,7 +2426,7 @@ FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
  * For the order of events see @ref MPI_File_iread_at
  */
 void
-FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, int* ierr )
+FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2438,7 +2454,7 @@ FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
  * For the order of events see @ref MPI_File_iread_shared
  */
 void
-FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, int* ierr )
+FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
@@ -2468,7 +2484,7 @@ FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
  * For the order of events see @ref MPI_File_iwrite
  */
 void
-FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, int* ierr )
+FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
@@ -2498,7 +2514,7 @@ FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* dat
  * For the order of events see @ref MPI_File_iwrite_at
  */
 void
-FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, int* ierr )
+FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
@@ -2528,7 +2544,7 @@ FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fin
  * For the order of events see @ref MPI_File_iwrite_shared
  */
 void
-FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, int* ierr )
+FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
@@ -2558,7 +2574,7 @@ FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
  * For the order of events see @ref MPI_File_read
  */
 void
-FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -2601,7 +2617,7 @@ FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datat
  * For the order of events see @ref MPI_File_read_all
  */
 void
-FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -2644,7 +2660,7 @@ FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* d
  * For the order of events see @ref MPI_File_read_all_begin
  */
 void
-FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, int* ierr )
+FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2672,7 +2688,7 @@ FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_F
  * For the order of events see @ref MPI_File_read_all_end
  */
 void
-FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -2715,7 +2731,7 @@ FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* i
  * For the order of events see @ref MPI_File_read_at
  */
 void
-FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2756,7 +2772,7 @@ FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint*
  * For the order of events see @ref MPI_File_read_at_all
  */
 void
-FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2797,7 +2813,7 @@ FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_F
  * For the order of events see @ref MPI_File_read_at_all_begin
  */
 void
-FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, int* ierr )
+FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
@@ -2820,7 +2836,7 @@ FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf,
  * For the order of events see @ref MPI_File_read_at_all_end
  */
 void
-FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2861,7 +2877,7 @@ FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int
  * For the order of events see @ref MPI_File_read_ordered
  */
 void
-FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -2904,7 +2920,7 @@ FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
  * For the order of events see @ref MPI_File_read_ordered_begin
  */
 void
-FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, int* ierr )
+FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -2932,7 +2948,7 @@ FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, M
  * For the order of events see @ref MPI_File_read_ordered_end
  */
 void
-FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -2975,7 +2991,7 @@ FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, in
  * For the order of events see @ref MPI_File_read_shared
  */
 void
-FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3018,7 +3034,7 @@ FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint
  * For the order of events see @ref MPI_File_write
  */
 void
-FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3061,7 +3077,7 @@ FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
  * For the order of events see @ref MPI_File_write_all
  */
 void
-FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3104,7 +3120,7 @@ FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
  * For the order of events see @ref MPI_File_write_all_begin
  */
 void
-FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, int* ierr )
+FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -3132,7 +3148,7 @@ FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_
  * For the order of events see @ref MPI_File_write_all_end
  */
 void
-FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3175,7 +3191,7 @@ FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* 
  * For the order of events see @ref MPI_File_write_at
  */
 void
-FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3218,7 +3234,7 @@ FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
  * For the order of events see @ref MPI_File_write_at_all
  */
 void
-FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3261,7 +3277,7 @@ FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
  * For the order of events see @ref MPI_File_write_at_all_begin
  */
 void
-FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, int* ierr )
+FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -3289,7 +3305,7 @@ FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf
  * For the order of events see @ref MPI_File_write_at_all_end
  */
 void
-FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3332,7 +3348,7 @@ FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, in
  * For the order of events see @ref MPI_File_write_ordered
  */
 void
-FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3375,7 +3391,7 @@ FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
  * For the order of events see @ref MPI_File_write_ordered_begin
  */
 void
-FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, int* ierr )
+FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
@@ -3403,7 +3419,7 @@ FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, 
  * For the order of events see @ref MPI_File_write_ordered_end
  */
 void
-FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3446,7 +3462,7 @@ FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, i
  * For the order of events see @ref MPI_File_write_shared
  */
 void
-FSUB( MPI_File_write_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, int* ierr )
+FSUB( MPI_File_write_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
@@ -3496,7 +3512,7 @@ FSUB( MPI_File_write_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
  * For the order of events see @ref MPI_File_call_errhandler
  */
 void
-FSUB( MPI_File_call_errhandler )( MPI_Fint* fh, MPI_Fint* errorcode, int* ierr )
+FSUB( MPI_File_call_errhandler )( MPI_Fint* fh, MPI_Fint* errorcode, MPI_Fint* ierr )
 {
     *ierr = MPI_File_call_errhandler( PMPI_File_f2c( *fh ), *errorcode );
 }
@@ -3511,7 +3527,7 @@ FSUB( MPI_File_call_errhandler )( MPI_Fint* fh, MPI_Fint* errorcode, int* ierr )
  * For the order of events see @ref MPI_File_create_errhandler
  */
 void
-FSUB( MPI_File_create_errhandler )( void* function, void* errhandler, int* ierr )
+FSUB( MPI_File_create_errhandler )( void* function, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_File_create_errhandler( ( MPI_File_errhandler_fn* )function, ( MPI_Errhandler* )errhandler );
 }
@@ -3526,7 +3542,7 @@ FSUB( MPI_File_create_errhandler )( void* function, void* errhandler, int* ierr 
  * For the order of events see @ref MPI_File_get_errhandler
  */
 void
-FSUB( MPI_File_get_errhandler )( MPI_Fint* file, void* errhandler, int* ierr )
+FSUB( MPI_File_get_errhandler )( MPI_Fint* file, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_File_get_errhandler( PMPI_File_f2c( *file ), ( MPI_Errhandler* )errhandler );
 }
@@ -3541,7 +3557,7 @@ FSUB( MPI_File_get_errhandler )( MPI_Fint* file, void* errhandler, int* ierr )
  * For the order of events see @ref MPI_File_set_errhandler
  */
 void
-FSUB( MPI_File_set_errhandler )( MPI_Fint* file, void* errhandler, int* ierr )
+FSUB( MPI_File_set_errhandler )( MPI_Fint* file, void* errhandler, MPI_Fint* ierr )
 {
     MPI_File c_file = PMPI_File_f2c( *file );
 

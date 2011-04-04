@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 /**
  * @file       SCOREP_Fmpi_Cg.c
@@ -1218,7 +1234,7 @@ FSUB( MPI_Keyval_free )( int* keyval, int* ierr )
  * For the order of events see @ref MPI_Comm_create
  */
 void
-FSUB( MPI_Comm_create )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Comm_create )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -1238,7 +1254,7 @@ FSUB( MPI_Comm_create )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* newcomm, int
  * For the order of events see @ref MPI_Comm_dup
  */
 void
-FSUB( MPI_Comm_dup )( MPI_Fint* comm, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Comm_dup )( MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -1258,7 +1274,7 @@ FSUB( MPI_Comm_dup )( MPI_Fint* comm, MPI_Fint* newcomm, int* ierr )
  * For the order of events see @ref MPI_Comm_split
  */
 void
-FSUB( MPI_Comm_split )( MPI_Fint* comm, MPI_Fint* color, MPI_Fint* key, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Comm_split )( MPI_Fint* comm, MPI_Fint* color, MPI_Fint* key, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -1278,7 +1294,7 @@ FSUB( MPI_Comm_split )( MPI_Fint* comm, MPI_Fint* color, MPI_Fint* key, MPI_Fint
  * For the order of events see @ref MPI_Intercomm_create
  */
 void
-FSUB( MPI_Intercomm_create )( MPI_Fint* local_comm, MPI_Fint* local_leader, MPI_Fint* peer_comm, MPI_Fint* remote_leader, MPI_Fint* tag, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Intercomm_create )( MPI_Fint* local_comm, MPI_Fint* local_leader, MPI_Fint* peer_comm, MPI_Fint* remote_leader, MPI_Fint* tag, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -1298,7 +1314,7 @@ FSUB( MPI_Intercomm_create )( MPI_Fint* local_comm, MPI_Fint* local_leader, MPI_
  * For the order of events see @ref MPI_Intercomm_merge
  */
 void
-FSUB( MPI_Intercomm_merge )( MPI_Fint* intercomm, MPI_Fint* high, MPI_Fint* newcomm, int* ierr )
+FSUB( MPI_Intercomm_merge )( MPI_Fint* intercomm, MPI_Fint* high, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
     MPI_Comm c_newcomm;
 
@@ -1325,7 +1341,7 @@ FSUB( MPI_Intercomm_merge )( MPI_Fint* intercomm, MPI_Fint* high, MPI_Fint* newc
  * For the order of events see @ref MPI_Comm_free
  */
 void
-FSUB( MPI_Comm_free )( MPI_Fint* comm, int* ierr )
+FSUB( MPI_Comm_free )( MPI_Fint* comm, MPI_Fint* ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
@@ -1352,7 +1368,7 @@ FSUB( MPI_Comm_free )( MPI_Fint* comm, int* ierr )
  * For the order of events see @ref MPI_Group_difference
  */
 void
-FSUB( MPI_Group_difference )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_difference )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1372,7 +1388,7 @@ FSUB( MPI_Group_difference )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newg
  * For the order of events see @ref MPI_Group_excl
  */
 void
-FSUB( MPI_Group_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1392,7 +1408,7 @@ FSUB( MPI_Group_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint*
  * For the order of events see @ref MPI_Group_incl
  */
 void
-FSUB( MPI_Group_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1412,7 +1428,7 @@ FSUB( MPI_Group_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint*
  * For the order of events see @ref MPI_Group_intersection
  */
 void
-FSUB( MPI_Group_intersection )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_intersection )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1432,7 +1448,7 @@ FSUB( MPI_Group_intersection )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* ne
  * For the order of events see @ref MPI_Group_range_excl
  */
 void
-FSUB( MPI_Group_range_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3 ], MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_range_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3 ], MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1452,7 +1468,7 @@ FSUB( MPI_Group_range_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3
  * For the order of events see @ref MPI_Group_range_incl
  */
 void
-FSUB( MPI_Group_range_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3 ], MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_range_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3 ], MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1472,7 +1488,7 @@ FSUB( MPI_Group_range_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3
  * For the order of events see @ref MPI_Group_union
  */
 void
-FSUB( MPI_Group_union )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, int* ierr )
+FSUB( MPI_Group_union )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
     MPI_Group c_newgroup;
 
@@ -1492,7 +1508,7 @@ FSUB( MPI_Group_union )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup,
  * For the order of events see @ref MPI_Comm_group
  */
 void
-FSUB( MPI_Comm_group )( MPI_Fint* comm, MPI_Fint* group, int* ierr )
+FSUB( MPI_Comm_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* ierr )
 {
     MPI_Group c_group;
 
@@ -1512,7 +1528,7 @@ FSUB( MPI_Comm_group )( MPI_Fint* comm, MPI_Fint* group, int* ierr )
  * For the order of events see @ref MPI_Comm_remote_group
  */
 void
-FSUB( MPI_Comm_remote_group )( MPI_Fint* comm, MPI_Fint* group, int* ierr )
+FSUB( MPI_Comm_remote_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* ierr )
 {
     MPI_Group c_group;
 
@@ -1539,7 +1555,7 @@ FSUB( MPI_Comm_remote_group )( MPI_Fint* comm, MPI_Fint* group, int* ierr )
  * For the order of events see @ref MPI_Group_free
  */
 void
-FSUB( MPI_Group_free )( MPI_Fint* group, int* ierr )
+FSUB( MPI_Group_free )( MPI_Fint* group, MPI_Fint* ierr )
 {
     MPI_Group c_group = PMPI_Group_f2c( *group );
 
@@ -1566,7 +1582,7 @@ FSUB( MPI_Group_free )( MPI_Fint* group, int* ierr )
  * For the order of events see @ref MPI_Comm_compare
  */
 void
-FSUB( MPI_Comm_compare )( MPI_Fint* comm1, MPI_Fint* comm2, MPI_Fint* result, int* ierr )
+FSUB( MPI_Comm_compare )( MPI_Fint* comm1, MPI_Fint* comm2, MPI_Fint* result, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_compare( PMPI_Comm_f2c( *comm1 ), PMPI_Comm_f2c( *comm2 ), result );
 }
@@ -1581,7 +1597,7 @@ FSUB( MPI_Comm_compare )( MPI_Fint* comm1, MPI_Fint* comm2, MPI_Fint* result, in
  * For the order of events see @ref MPI_Comm_rank
  */
 void
-FSUB( MPI_Comm_rank )( MPI_Fint* comm, MPI_Fint* rank, int* ierr )
+FSUB( MPI_Comm_rank )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_rank( PMPI_Comm_f2c( *comm ), rank );
 }
@@ -1596,7 +1612,7 @@ FSUB( MPI_Comm_rank )( MPI_Fint* comm, MPI_Fint* rank, int* ierr )
  * For the order of events see @ref MPI_Comm_remote_size
  */
 void
-FSUB( MPI_Comm_remote_size )( MPI_Fint* comm, MPI_Fint* size, int* ierr )
+FSUB( MPI_Comm_remote_size )( MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_remote_size( PMPI_Comm_f2c( *comm ), size );
 }
@@ -1611,7 +1627,7 @@ FSUB( MPI_Comm_remote_size )( MPI_Fint* comm, MPI_Fint* size, int* ierr )
  * For the order of events see @ref MPI_Comm_size
  */
 void
-FSUB( MPI_Comm_size )( MPI_Fint* comm, MPI_Fint* size, int* ierr )
+FSUB( MPI_Comm_size )( MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_size( PMPI_Comm_f2c( *comm ), size );
 }
@@ -1626,7 +1642,7 @@ FSUB( MPI_Comm_size )( MPI_Fint* comm, MPI_Fint* size, int* ierr )
  * For the order of events see @ref MPI_Comm_test_inter
  */
 void
-FSUB( MPI_Comm_test_inter )( MPI_Fint* comm, MPI_Fint* flag, int* ierr )
+FSUB( MPI_Comm_test_inter )( MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_test_inter( PMPI_Comm_f2c( *comm ), flag );
 }
@@ -1641,7 +1657,7 @@ FSUB( MPI_Comm_test_inter )( MPI_Fint* comm, MPI_Fint* flag, int* ierr )
  * For the order of events see @ref MPI_Group_compare
  */
 void
-FSUB( MPI_Group_compare )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* result, int* ierr )
+FSUB( MPI_Group_compare )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* result, MPI_Fint* ierr )
 {
     *ierr = MPI_Group_compare( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), result );
 }
@@ -1656,7 +1672,7 @@ FSUB( MPI_Group_compare )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* result,
  * For the order of events see @ref MPI_Group_rank
  */
 void
-FSUB( MPI_Group_rank )( MPI_Fint* group, MPI_Fint* rank, int* ierr )
+FSUB( MPI_Group_rank )( MPI_Fint* group, MPI_Fint* rank, MPI_Fint* ierr )
 {
     *ierr = MPI_Group_rank( PMPI_Group_f2c( *group ), rank );
 }
@@ -1671,7 +1687,7 @@ FSUB( MPI_Group_rank )( MPI_Fint* group, MPI_Fint* rank, int* ierr )
  * For the order of events see @ref MPI_Group_size
  */
 void
-FSUB( MPI_Group_size )( MPI_Fint* group, MPI_Fint* size, int* ierr )
+FSUB( MPI_Group_size )( MPI_Fint* group, MPI_Fint* size, MPI_Fint* ierr )
 {
     *ierr = MPI_Group_size( PMPI_Group_f2c( *group ), size );
 }
@@ -1686,7 +1702,7 @@ FSUB( MPI_Group_size )( MPI_Fint* group, MPI_Fint* size, int* ierr )
  * For the order of events see @ref MPI_Group_translate_ranks
  */
 void
-FSUB( MPI_Group_translate_ranks )( MPI_Fint* group1, MPI_Fint* n, MPI_Fint* ranks1, MPI_Fint* group2, MPI_Fint* ranks2, int* ierr )
+FSUB( MPI_Group_translate_ranks )( MPI_Fint* group1, MPI_Fint* n, MPI_Fint* ranks1, MPI_Fint* group2, MPI_Fint* ranks2, MPI_Fint* ierr )
 {
     *ierr = MPI_Group_translate_ranks( PMPI_Group_f2c( *group1 ), *n, ranks1, PMPI_Group_f2c( *group2 ), ranks2 );
 }
@@ -1708,7 +1724,7 @@ FSUB( MPI_Group_translate_ranks )( MPI_Fint* group1, MPI_Fint* n, MPI_Fint* rank
  * For the order of events see @ref MPI_Comm_call_errhandler
  */
 void
-FSUB( MPI_Comm_call_errhandler )( MPI_Fint* comm, MPI_Fint* errorcode, int* ierr )
+FSUB( MPI_Comm_call_errhandler )( MPI_Fint* comm, MPI_Fint* errorcode, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_call_errhandler( PMPI_Comm_f2c( *comm ), *errorcode );
 }
@@ -1723,7 +1739,7 @@ FSUB( MPI_Comm_call_errhandler )( MPI_Fint* comm, MPI_Fint* errorcode, int* ierr
  * For the order of events see @ref MPI_Comm_create_errhandler
  */
 void
-FSUB( MPI_Comm_create_errhandler )( void* function, void* errhandler, int* ierr )
+FSUB( MPI_Comm_create_errhandler )( void* function, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_create_errhandler( ( MPI_Comm_errhandler_fn* )function, ( MPI_Errhandler* )errhandler );
 }
@@ -1738,7 +1754,7 @@ FSUB( MPI_Comm_create_errhandler )( void* function, void* errhandler, int* ierr 
  * For the order of events see @ref MPI_Comm_get_errhandler
  */
 void
-FSUB( MPI_Comm_get_errhandler )( MPI_Fint* comm, void* errhandler, int* ierr )
+FSUB( MPI_Comm_get_errhandler )( MPI_Fint* comm, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_get_errhandler( PMPI_Comm_f2c( *comm ), ( MPI_Errhandler* )errhandler );
 }
@@ -1753,7 +1769,7 @@ FSUB( MPI_Comm_get_errhandler )( MPI_Fint* comm, void* errhandler, int* ierr )
  * For the order of events see @ref MPI_Comm_set_errhandler
  */
 void
-FSUB( MPI_Comm_set_errhandler )( MPI_Fint* comm, void* errhandler, int* ierr )
+FSUB( MPI_Comm_set_errhandler )( MPI_Fint* comm, void* errhandler, MPI_Fint* ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
@@ -1780,7 +1796,7 @@ FSUB( MPI_Comm_set_errhandler )( MPI_Fint* comm, void* errhandler, int* ierr )
  * For the order of events see @ref MPI_Attr_delete
  */
 void
-FSUB( MPI_Attr_delete )( MPI_Fint* comm, MPI_Fint* keyval, int* ierr )
+FSUB( MPI_Attr_delete )( MPI_Fint* comm, MPI_Fint* keyval, MPI_Fint* ierr )
 {
     *ierr = MPI_Attr_delete( PMPI_Comm_f2c( *comm ), *keyval );
 }
@@ -1795,7 +1811,7 @@ FSUB( MPI_Attr_delete )( MPI_Fint* comm, MPI_Fint* keyval, int* ierr )
  * For the order of events see @ref MPI_Attr_get
  */
 void
-FSUB( MPI_Attr_get )( MPI_Fint* comm, MPI_Fint* keyval, void* attribute_val, MPI_Fint* flag, int* ierr )
+FSUB( MPI_Attr_get )( MPI_Fint* comm, MPI_Fint* keyval, void* attribute_val, MPI_Fint* flag, MPI_Fint* ierr )
 {
     *ierr = MPI_Attr_get( PMPI_Comm_f2c( *comm ), *keyval, attribute_val, flag );
 }
@@ -1810,7 +1826,7 @@ FSUB( MPI_Attr_get )( MPI_Fint* comm, MPI_Fint* keyval, void* attribute_val, MPI
  * For the order of events see @ref MPI_Attr_put
  */
 void
-FSUB( MPI_Attr_put )( MPI_Fint* comm, MPI_Fint* keyval, void* attribute_val, int* ierr )
+FSUB( MPI_Attr_put )( MPI_Fint* comm, MPI_Fint* keyval, void* attribute_val, MPI_Fint* ierr )
 {
     *ierr = MPI_Attr_put( PMPI_Comm_f2c( *comm ), *keyval, attribute_val );
 }
@@ -1825,7 +1841,7 @@ FSUB( MPI_Attr_put )( MPI_Fint* comm, MPI_Fint* keyval, void* attribute_val, int
  * For the order of events see @ref MPI_Comm_create_keyval
  */
 void
-FSUB( MPI_Comm_create_keyval )( void* comm_copy_attr_fn, void* comm_delete_attr_fn, MPI_Fint* comm_keyval, void* extra_state, int* ierr )
+FSUB( MPI_Comm_create_keyval )( void* comm_copy_attr_fn, void* comm_delete_attr_fn, MPI_Fint* comm_keyval, void* extra_state, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_create_keyval( ( MPI_Comm_copy_attr_function* )comm_copy_attr_fn, ( MPI_Comm_delete_attr_function* )comm_delete_attr_fn, comm_keyval, extra_state );
 }
@@ -1840,7 +1856,7 @@ FSUB( MPI_Comm_create_keyval )( void* comm_copy_attr_fn, void* comm_delete_attr_
  * For the order of events see @ref MPI_Comm_delete_attr
  */
 void
-FSUB( MPI_Comm_delete_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, int* ierr )
+FSUB( MPI_Comm_delete_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, MPI_Fint* ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
@@ -1860,7 +1876,7 @@ FSUB( MPI_Comm_delete_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, int* ierr )
  * For the order of events see @ref MPI_Comm_free_keyval
  */
 void
-FSUB( MPI_Comm_free_keyval )( MPI_Fint* comm_keyval, int* ierr )
+FSUB( MPI_Comm_free_keyval )( MPI_Fint* comm_keyval, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_free_keyval( comm_keyval );
 }
@@ -1875,7 +1891,7 @@ FSUB( MPI_Comm_free_keyval )( MPI_Fint* comm_keyval, int* ierr )
  * For the order of events see @ref MPI_Comm_get_attr
  */
 void
-FSUB( MPI_Comm_get_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribute_val, MPI_Fint* flag, int* ierr )
+FSUB( MPI_Comm_get_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribute_val, MPI_Fint* flag, MPI_Fint* ierr )
 {
     *ierr = MPI_Comm_get_attr( PMPI_Comm_f2c( *comm ), *comm_keyval, attribute_val, flag );
 }
@@ -1890,7 +1906,7 @@ FSUB( MPI_Comm_get_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribut
  * For the order of events see @ref MPI_Comm_get_name
  */
 void
-FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen, int* ierr, int comm_name_len )
+FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen, MPI_Fint* ierr, int comm_name_len )
 {
     char* c_comm_name     = NULL;
     int   c_comm_name_len = 0;
@@ -1921,7 +1937,7 @@ FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen,
  * For the order of events see @ref MPI_Comm_set_attr
  */
 void
-FSUB( MPI_Comm_set_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribute_val, int* ierr )
+FSUB( MPI_Comm_set_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribute_val, MPI_Fint* ierr )
 {
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
@@ -1941,7 +1957,7 @@ FSUB( MPI_Comm_set_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribut
  * For the order of events see @ref MPI_Comm_set_name
  */
 void
-FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, int* ierr, int comm_name_len )
+FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, int comm_name_len )
 {
     MPI_Comm c_comm      = PMPI_Comm_f2c( *comm );
     char*    c_comm_name = NULL;
@@ -1971,7 +1987,7 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, int* ierr, int comm_
  * For the order of events see @ref MPI_Keyval_create
  */
 void
-FSUB( MPI_Keyval_create )( void* copy_fn, void* delete_fn, MPI_Fint* keyval, void* extra_state, int* ierr )
+FSUB( MPI_Keyval_create )( void* copy_fn, void* delete_fn, MPI_Fint* keyval, void* extra_state, MPI_Fint* ierr )
 {
     *ierr = MPI_Keyval_create( ( MPI_Copy_function* )copy_fn, ( MPI_Delete_function* )delete_fn, keyval, extra_state );
 }
@@ -1986,7 +2002,7 @@ FSUB( MPI_Keyval_create )( void* copy_fn, void* delete_fn, MPI_Fint* keyval, voi
  * For the order of events see @ref MPI_Keyval_free
  */
 void
-FSUB( MPI_Keyval_free )( MPI_Fint* keyval, int* ierr )
+FSUB( MPI_Keyval_free )( MPI_Fint* keyval, MPI_Fint* ierr )
 {
     *ierr = MPI_Keyval_free( keyval );
 }

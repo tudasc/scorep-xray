@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 
 /**
@@ -1858,7 +1874,7 @@ FSUB( MPI_Cancel )( MPI_Fint* request,
  * For the order of events see @ref MPI_Bsend
  */
 void
-FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, int* ierr )
+FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
@@ -1881,7 +1897,7 @@ FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
  * For the order of events see @ref MPI_Bsend_init
  */
 void
-FSUB( MPI_Bsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Bsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -1901,7 +1917,7 @@ FSUB( MPI_Bsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
  * For the order of events see @ref MPI_Buffer_attach
  */
 void
-FSUB( MPI_Buffer_attach )( void* buffer, MPI_Fint* size, int* ierr )
+FSUB( MPI_Buffer_attach )( void* buffer, MPI_Fint* size, MPI_Fint* ierr )
 {
     *ierr = MPI_Buffer_attach( buffer, *size );
 }
@@ -1916,7 +1932,7 @@ FSUB( MPI_Buffer_attach )( void* buffer, MPI_Fint* size, int* ierr )
  * For the order of events see @ref MPI_Buffer_detach
  */
 void
-FSUB( MPI_Buffer_detach )( void* buffer, MPI_Fint* size, int* ierr )
+FSUB( MPI_Buffer_detach )( void* buffer, MPI_Fint* size, MPI_Fint* ierr )
 {
     *ierr = MPI_Buffer_detach( buffer, size );
 }
@@ -1931,7 +1947,7 @@ FSUB( MPI_Buffer_detach )( void* buffer, MPI_Fint* size, int* ierr )
  * For the order of events see @ref MPI_Ibsend
  */
 void
-FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -1959,7 +1975,7 @@ FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
  * For the order of events see @ref MPI_Iprobe
  */
 void
-FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* status, int* ierr )
+FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1994,7 +2010,7 @@ FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* f
  * For the order of events see @ref MPI_Irecv
  */
 void
-FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2022,7 +2038,7 @@ FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sou
  * For the order of events see @ref MPI_Irsend
  */
 void
-FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2050,7 +2066,7 @@ FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
  * For the order of events see @ref MPI_Isend
  */
 void
-FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2078,7 +2094,7 @@ FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
  * For the order of events see @ref MPI_Issend
  */
 void
-FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2106,7 +2122,7 @@ FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
  * For the order of events see @ref MPI_Probe
  */
 void
-FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* status, int* ierr )
+FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2141,7 +2157,7 @@ FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* st
  * For the order of events see @ref MPI_Recv
  */
 void
-FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* status, int* ierr )
+FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2182,7 +2198,7 @@ FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sour
  * For the order of events see @ref MPI_Recv_init
  */
 void
-FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2210,7 +2226,7 @@ FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
  * For the order of events see @ref MPI_Rsend
  */
 void
-FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, int* ierr )
+FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
@@ -2233,7 +2249,7 @@ FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
  * For the order of events see @ref MPI_Rsend_init
  */
 void
-FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2261,7 +2277,7 @@ FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
  * For the order of events see @ref MPI_Send
  */
 void
-FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, int* ierr )
+FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
@@ -2284,7 +2300,7 @@ FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest
  * For the order of events see @ref MPI_Send_init
  */
 void
-FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2312,7 +2328,7 @@ FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
  * For the order of events see @ref MPI_Sendrecv
  */
 void
-FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MPI_Fint* dest, MPI_Fint* sendtag, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* source, MPI_Fint* recvtag, MPI_Fint* comm, MPI_Fint* status, int* ierr )
+FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MPI_Fint* dest, MPI_Fint* sendtag, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* source, MPI_Fint* recvtag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2359,7 +2375,7 @@ FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MP
  * For the order of events see @ref MPI_Sendrecv_replace
  */
 void
-FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* sendtag, MPI_Fint* source, MPI_Fint* recvtag, MPI_Fint* comm, MPI_Fint* status, int* ierr )
+FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* sendtag, MPI_Fint* source, MPI_Fint* recvtag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2400,7 +2416,7 @@ FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MP
  * For the order of events see @ref MPI_Ssend
  */
 void
-FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, int* ierr )
+FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
@@ -2423,7 +2439,7 @@ FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
  * For the order of events see @ref MPI_Ssend_init
  */
 void
-FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, int* ierr )
+FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -2451,7 +2467,7 @@ FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
  * For the order of events see @ref MPI_Start
  */
 void
-FSUB( MPI_Start )( MPI_Fint* request, int* ierr )
+FSUB( MPI_Start )( MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request = PMPI_Request_f2c( *request );
 
@@ -2472,7 +2488,7 @@ FSUB( MPI_Start )( MPI_Fint* request, int* ierr )
  * For the order of events see @ref MPI_Test_cancelled
  */
 void
-FSUB( MPI_Test_cancelled )( MPI_Fint* status, MPI_Fint* flag, int* ierr )
+FSUB( MPI_Test_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;

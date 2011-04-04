@@ -560,6 +560,17 @@ SCOREP::Wrapgen::handle_file_template
                     }
                 }
             }
+            else if ( scope == "include" )
+            {
+                ifstream include_file;
+                string   line;
+                OPEN_STREAM( include_file, cmd.c_str() );
+
+                while ( getline( include_file, line ) )
+                {
+                    cout << line << endl;
+                }
+            }
         }
         else
         {

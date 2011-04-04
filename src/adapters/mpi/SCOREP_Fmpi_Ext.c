@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 
 /**
@@ -304,7 +320,7 @@ FSUB( MPI_Status_set_elements )( MPI_Status* status, MPI_Datatype* datatype, int
  * For the order of events see @ref MPI_Abort
  */
 void
-FSUB( MPI_Abort )( MPI_Fint* comm, MPI_Fint* errorcode, int* ierr )
+FSUB( MPI_Abort )( MPI_Fint* comm, MPI_Fint* errorcode, MPI_Fint* ierr )
 {
     *ierr = MPI_Abort( PMPI_Comm_f2c( *comm ), *errorcode );
 }
@@ -319,7 +335,7 @@ FSUB( MPI_Abort )( MPI_Fint* comm, MPI_Fint* errorcode, int* ierr )
  * For the order of events see @ref MPI_Get_count
  */
 void
-FSUB( MPI_Get_count )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, int* ierr )
+FSUB( MPI_Get_count )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -339,7 +355,7 @@ FSUB( MPI_Get_count )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, in
  * For the order of events see @ref MPI_Get_elements
  */
 void
-FSUB( MPI_Get_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, int* ierr )
+FSUB( MPI_Get_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -359,7 +375,7 @@ FSUB( MPI_Get_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count,
  * For the order of events see @ref MPI_Get_processor_name
  */
 void
-FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, int* ierr, int name_len )
+FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr, int name_len )
 {
     char* c_name     = NULL;
     int   c_name_len = 0;
@@ -390,7 +406,7 @@ FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, int* ierr, int 
  * For the order of events see @ref MPI_Grequest_complete
  */
 void
-FSUB( MPI_Grequest_complete )( MPI_Fint* request, int* ierr )
+FSUB( MPI_Grequest_complete )( MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request = PMPI_Request_f2c( *request );
 
@@ -410,7 +426,7 @@ FSUB( MPI_Grequest_complete )( MPI_Fint* request, int* ierr )
  * For the order of events see @ref MPI_Grequest_start
  */
 void
-FSUB( MPI_Grequest_start )( void* query_fn, void* free_fn, void* cancel_fn, void* extra_state, MPI_Fint* request, int* ierr )
+FSUB( MPI_Grequest_start )( void* query_fn, void* free_fn, void* cancel_fn, void* extra_state, MPI_Fint* request, MPI_Fint* ierr )
 {
     MPI_Request c_request;
 
@@ -430,7 +446,7 @@ FSUB( MPI_Grequest_start )( void* query_fn, void* free_fn, void* cancel_fn, void
  * For the order of events see @ref MPI_Status_set_cancelled
  */
 void
-FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, int* ierr )
+FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -457,7 +473,7 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, int* ierr )
  * For the order of events see @ref MPI_Status_set_elements
  */
 void
-FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, int* ierr )
+FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;

@@ -233,7 +233,21 @@ SCOREP::Wrapgen::handler::mpi::call_f2c_c2f
             // dereference non-pointer arguments which are not casted
             else if ( !datatype::is_pointer( arg ) )
             {
-                str += "*";
+                if ( arg.has_special_tag( "noaint" ) )
+                {
+                    if ( datatype::is_input_param( arg ) )
+                    {
+                        str += "c_";
+                    }
+                    else
+                    {
+                        str += "&c_";
+                    }
+                }
+                else
+                {
+                    str += "*";
+                }
             }
             else if ( datatype::is_char_pointer( arg ) )
             {
@@ -1067,7 +1081,7 @@ SCOREP::Wrapgen::handler::mpi::proto_f2c_c2f
     {
         str += ", ";
     }
-    str += "int* ierr" + c_str_lengths + ")";
+    str += "MPI_Fint* ierr" + c_str_lengths + ")";
 
     return str;
 }

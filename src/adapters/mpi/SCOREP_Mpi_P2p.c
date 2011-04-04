@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 /**
  * @file  SCOREP_Mpi_P2p.c
@@ -26,6 +42,51 @@
 
 #include <config.h>
 #include "SCOREP_Mpi.h"
+
+/**
+ * internal array of statuses
+ */
+static MPI_Status* scorep_mpi_status_array = NULL;
+
+/**
+ * size of internal status array
+ */
+static int scorep_mpi_status_array_size = 0;
+
+/**
+ * Get a pointer to a status array of at least 'size' statuses
+ * @param  size minimal requested size
+ * @return pointer to status array
+ */
+static MPI_Status*
+scorep_mpi_get_status_array( int size )
+{
+    if ( ( scorep_mpi_status_array_size == 0 )
+         && ( size > 0 ) )
+    {
+        /* -- never used: initialize -- */
+        scorep_mpi_status_array = malloc( size * sizeof( MPI_Status ) );
+        if ( scorep_mpi_status_array == NULL )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "" );
+            abort();
+        }
+        scorep_mpi_status_array_size = size;
+    }
+    else
+    if ( size > scorep_mpi_status_array_size )
+    {
+        /* -- not enough room: expand -- */
+        scorep_mpi_status_array = realloc( scorep_mpi_status_array, size * sizeof( MPI_Status ) );
+        if ( scorep_mpi_status_array == NULL )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "" );
+            abort();
+        }
+        scorep_mpi_status_array_size = size;
+    }
+    return scorep_mpi_status_array;
+}
 
 /**
  * @name Blocking
@@ -911,13 +972,18 @@ MPI_Waitall( int          count,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITALL ] );
     }
 
+  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
-        array_of_statuses = scorep_get_status_array( count );
+        /* allocate status array for internal use */
+        array_of_statuses = scorep_mpi_get_status_array( count );
     }
+  #endif
+
     scorep_mpi_save_request_array( requests, count );
 
     return_val = PMPI_Waitall( count, requests, array_of_statuses );
+
     for ( i = 0; i < count; i++ )
     {
         orig_req = scorep_mpi_saved_request_get( i );
@@ -1034,11 +1100,16 @@ MPI_Waitsome( int          incount,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITSOME ] );
     }
 
+  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
-        array_of_statuses = scorep_get_status_array( incount );
+        /* allocate status array for internal use */
+        array_of_statuses = scorep_mpi_get_status_array( incount );
     }
+  #endif
+
     scorep_mpi_save_request_array( array_of_requests, incount );
+
     return_val = PMPI_Waitsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
     if ( event_gen_active && xnb_active )
@@ -1249,10 +1320,14 @@ MPI_Testall( int          count,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTALL ] );
     }
 
+  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
-        array_of_statuses = scorep_get_status_array( count );
+        /* allocate status array for internal use */
+        array_of_statuses = scorep_mpi_get_status_array( count );
     }
+  #endif
+
     scorep_mpi_save_request_array( array_of_requests, count );
 
     return_val = PMPI_Testall( count, array_of_requests, flag, array_of_statuses );
@@ -1318,12 +1393,15 @@ MPI_Testsome( int          incount,
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTSOME ] );
     }
 
+  #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == MPI_STATUSES_IGNORE )
     {
-        array_of_statuses = scorep_get_status_array( incount );
+        /* allocate status array for internal use */
+        array_of_statuses = scorep_mpi_get_status_array( incount );
     }
-    scorep_mpi_save_request_array( array_of_requests, incount );
+  #endif
 
+    scorep_mpi_save_request_array( array_of_requests, incount );
     return_val = PMPI_Testsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
 

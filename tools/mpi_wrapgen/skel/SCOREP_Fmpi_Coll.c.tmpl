@@ -50,7 +50,7 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
                          MPI_Fint* rdispls,
                          MPI_Fint* recvtypes,
                          MPI_Fint* comm,
-                         int*      ierr)
+                         MPI_Fint* ierr)
 {
   MPI_Datatype* csendtypes;
   MPI_Datatype* crecvtypes;

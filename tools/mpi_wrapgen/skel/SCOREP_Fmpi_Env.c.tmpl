@@ -148,9 +148,9 @@ void FSUB(MPI_Init)(int* ierr)
  * @note Introduced with MPI-2
  * @ingroup env
  */
-void FSUB(MPI_Init_thread)(int* required,
-                           int* provided,
-                           int* ierr)
+void FSUB(MPI_Init_thread)(MPI_Fint* required,
+                           MPI_Fint* provided,
+                           MPI_Fint* ierr)
 {
   if (sizeof(MPI_Fint) != sizeof(int))
   {
@@ -167,7 +167,7 @@ void FSUB(MPI_Init_thread)(int* required,
  * @note Introduced with MPI-1
  * @ingroup env
  */
-void FSUB(MPI_Init)(int* ierr)
+void FSUB(MPI_Init)(MPI_Fint* ierr)
 {
   if (sizeof(MPI_Fint) != sizeof(int))
   {

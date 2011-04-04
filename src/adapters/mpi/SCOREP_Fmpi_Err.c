@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 /**
  * @file  SCOREP_Fmpi_Err.c
@@ -318,7 +334,7 @@ FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ier
  * For the order of events see @ref MPI_Add_error_class
  */
 void
-FSUB( MPI_Add_error_class )( MPI_Fint* errorclass, int* ierr )
+FSUB( MPI_Add_error_class )( MPI_Fint* errorclass, MPI_Fint* ierr )
 {
     *ierr = MPI_Add_error_class( errorclass );
 }
@@ -333,7 +349,7 @@ FSUB( MPI_Add_error_class )( MPI_Fint* errorclass, int* ierr )
  * For the order of events see @ref MPI_Add_error_code
  */
 void
-FSUB( MPI_Add_error_code )( MPI_Fint* errorclass, MPI_Fint* errorcode, int* ierr )
+FSUB( MPI_Add_error_code )( MPI_Fint* errorclass, MPI_Fint* errorcode, MPI_Fint* ierr )
 {
     *ierr = MPI_Add_error_code( *errorclass, errorcode );
 }
@@ -348,7 +364,7 @@ FSUB( MPI_Add_error_code )( MPI_Fint* errorclass, MPI_Fint* errorcode, int* ierr
  * For the order of events see @ref MPI_Add_error_string
  */
 void
-FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, int* ierr, int string_len )
+FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr, int string_len )
 {
     char* c_string = NULL;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
@@ -376,7 +392,7 @@ FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, int* ierr, int 
  * For the order of events see @ref MPI_Errhandler_create
  */
 void
-FSUB( MPI_Errhandler_create )( void* function, void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_create )( void* function, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_Errhandler_create( ( MPI_Handler_function* )function, ( MPI_Errhandler* )errhandler );
 }
@@ -391,7 +407,7 @@ FSUB( MPI_Errhandler_create )( void* function, void* errhandler, int* ierr )
  * For the order of events see @ref MPI_Errhandler_free
  */
 void
-FSUB( MPI_Errhandler_free )( void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_free )( void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_Errhandler_free( ( MPI_Errhandler* )errhandler );
 }
@@ -406,7 +422,7 @@ FSUB( MPI_Errhandler_free )( void* errhandler, int* ierr )
  * For the order of events see @ref MPI_Errhandler_get
  */
 void
-FSUB( MPI_Errhandler_get )( MPI_Fint* comm, void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_get )( MPI_Fint* comm, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_Errhandler_get( PMPI_Comm_f2c( *comm ), ( MPI_Errhandler* )errhandler );
 }
@@ -421,7 +437,7 @@ FSUB( MPI_Errhandler_get )( MPI_Fint* comm, void* errhandler, int* ierr )
  * For the order of events see @ref MPI_Errhandler_set
  */
 void
-FSUB( MPI_Errhandler_set )( MPI_Fint* comm, void* errhandler, int* ierr )
+FSUB( MPI_Errhandler_set )( MPI_Fint* comm, void* errhandler, MPI_Fint* ierr )
 {
     *ierr = MPI_Errhandler_set( PMPI_Comm_f2c( *comm ), *( ( MPI_Errhandler* )errhandler ) );
 }
@@ -436,7 +452,7 @@ FSUB( MPI_Errhandler_set )( MPI_Fint* comm, void* errhandler, int* ierr )
  * For the order of events see @ref MPI_Error_class
  */
 void
-FSUB( MPI_Error_class )( MPI_Fint* errorcode, MPI_Fint* errorclass, int* ierr )
+FSUB( MPI_Error_class )( MPI_Fint* errorcode, MPI_Fint* errorclass, MPI_Fint* ierr )
 {
     *ierr = MPI_Error_class( *errorcode, errorclass );
 }
@@ -451,7 +467,7 @@ FSUB( MPI_Error_class )( MPI_Fint* errorcode, MPI_Fint* errorclass, int* ierr )
  * For the order of events see @ref MPI_Error_string
  */
 void
-FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen, int* ierr, int string_len )
+FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen, MPI_Fint* ierr, int string_len )
 {
     char* c_string     = NULL;
     int   c_string_len = 0;

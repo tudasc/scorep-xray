@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 
 /**
  * @file  SCOREP_Fmpi_Env.c
@@ -323,9 +339,9 @@ FSUB( MPI_Query_thread )( int* provided, int* ierr )
  * @ingroup env
  */
 void
-FSUB( MPI_Init_thread )( int* required,
-                         int* provided,
-                         int* ierr )
+FSUB( MPI_Init_thread )( MPI_Fint* required,
+                         MPI_Fint* provided,
+                         MPI_Fint* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
@@ -343,7 +359,7 @@ FSUB( MPI_Init_thread )( int* required,
  * @ingroup env
  */
 void
-FSUB( MPI_Init )( int* ierr )
+FSUB( MPI_Init )( MPI_Fint* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
@@ -362,7 +378,7 @@ FSUB( MPI_Init )( int* ierr )
  * For the order of events see @ref MPI_Finalize
  */
 void
-FSUB( MPI_Finalize )( int* ierr )
+FSUB( MPI_Finalize )( MPI_Fint* ierr )
 {
     *ierr = MPI_Finalize();
 }
@@ -377,7 +393,7 @@ FSUB( MPI_Finalize )( int* ierr )
  * For the order of events see @ref MPI_Finalized
  */
 void
-FSUB( MPI_Finalized )( MPI_Fint* flag, int* ierr )
+FSUB( MPI_Finalized )( MPI_Fint* flag, MPI_Fint* ierr )
 {
     *ierr = MPI_Finalized( flag );
 }
@@ -392,7 +408,7 @@ FSUB( MPI_Finalized )( MPI_Fint* flag, int* ierr )
  * For the order of events see @ref MPI_Is_thread_main
  */
 void
-FSUB( MPI_Is_thread_main )( MPI_Fint* flag, int* ierr )
+FSUB( MPI_Is_thread_main )( MPI_Fint* flag, MPI_Fint* ierr )
 {
     *ierr = MPI_Is_thread_main( flag );
 }
@@ -407,7 +423,7 @@ FSUB( MPI_Is_thread_main )( MPI_Fint* flag, int* ierr )
  * For the order of events see @ref MPI_Query_thread
  */
 void
-FSUB( MPI_Query_thread )( MPI_Fint* provided, int* ierr )
+FSUB( MPI_Query_thread )( MPI_Fint* provided, MPI_Fint* ierr )
 {
     *ierr = MPI_Query_thread( provided );
 }
