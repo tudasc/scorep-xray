@@ -446,6 +446,17 @@ scorep_unify_mpi_define_groups( uint64_t global_communicator_number,
         /* Allocate memory for the rank list. */
         ranks = ( int32_t* )malloc( comm_world_size * sizeof( uint32_t ) );
         assert( ranks );
+
+        /* Define the list of locations which are MPI ranks. */
+        for ( i = 0; i < comm_world_size; i++ )
+        {
+            /* If we support MPI_THREADED_FUNNELED, this needs to be the
+             * location, wich has called MPI_Init/MPI_Thread_init.
+             * For the moment, the location and rank ids match. */
+            ranks[ i ] = i;
+        }
+        SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_LOCATIONS,
+                                      comm_world_size, ranks );
     }
 
     for ( i = 0; i < global_communicator_number; i++ )
