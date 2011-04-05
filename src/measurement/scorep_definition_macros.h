@@ -361,28 +361,6 @@
     SCOREP_INIT_DEFINITION_HEADER( tmp_definition )
 
 
-/**
- * Declare a temporary definition struct on the stack with name tmp_definition
- * and definition type @a Type*.
- *
- * Also initializes common fields with @a SCOREP_INIT_DEFINITION_HEADER.
- */
-/* *INDENT-OFF* */
-#define SCOREP_DEFINITION_DEFINE_TEMP_VARIABLE_ARRAY_OLD( Type, \
-                                                      array_type, \
-                                                      number_of_members ) \
-    union \
-    { \
-        SCOREP_ ## Type ## _Definition definition; \
-        char storage[ sizeof( SCOREP_ ## Type ## _Definition ) + \
-                      ( ( number_of_members ) - 1 ) * sizeof( array_type ) ]; \
-    } tmp_definition_union; \
-    SCOREP_ ## Type ## _Definition* tmp_definition = \
-        &tmp_definition_union.definition; \
-    SCOREP_INIT_DEFINITION_HEADER( tmp_definition )
-/* *INDENT-ON* */
-
-
 /* this size is temporary */
 #define SCOREP_DEFINITION_HASH_TABLE_SIZE hashsize( 8 )
 #define SCOREP_DEFINITION_HASH_TABLE_MASK hashmask( 8 )
