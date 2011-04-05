@@ -210,12 +210,14 @@ typedef enum SCOREP_LocationType
  */
 typedef enum SCOREP_GroupType
 {
-    SCOREP_GROUP_UNKNOWN      = 0,
-    SCOREP_GROUP_LOCATIONS    = 1,
-    SCOREP_GROUP_REGIONS      = 2,
-    SCOREP_GROUP_COMMUNICATOR = 3,
-    SCOREP_GROUP_COMM_SELF    = 4,
-    SCOREP_GROUP_METRIC       = 5,
+    SCOREP_GROUP_UNKNOWN       = 0,
+    SCOREP_GROUP_LOCATIONS     = 1,
+    SCOREP_GROUP_REGIONS       = 2,
+    SCOREP_GROUP_COMMUNICATOR  = 3,
+    SCOREP_GROUP_COMM_SELF     = 4,
+    SCOREP_GROUP_METRIC        = 5,
+    SCOREP_GROUP_MPI_GROUP     = 6,
+    SCOREP_GROUP_MPI_LOCATIONS = 7,
 
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;

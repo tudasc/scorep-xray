@@ -142,16 +142,18 @@ scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
                ? OTF2_GLOB_GROUPTYPE_ ## OTF2 \
                : OTF2_GROUPTYPE_ ## OTF2
 
-        case_return( UNKNOWN,      NON );
-        case_return( LOCATIONS,    LOCATIONS );
-        case_return( REGIONS,      REGIONS );
-        case_return( COMMUNICATOR, COMMUNICATOR );
-        case_return( METRIC,       METRIC );
-        case_return( COMM_SELF,    COMMUNICATOR_SELF );
+        case_return( UNKNOWN,       NON );
+        case_return( LOCATIONS,     LOCATIONS );
+        case_return( REGIONS,       REGIONS );
+        case_return( COMMUNICATOR,  COMMUNICATOR );
+        case_return( METRIC,        METRIC );
+        case_return( COMM_SELF,     COMMUNICATOR_SELF );
+        case_return( MPI_GROUP,     MPI_GROUP );
+        case_return( MPI_LOCATIONS, MPI_LOCATIONS );
 
 #undef case_return
         default:
-            assert( !"Invalid location type" );
+            assert( !"Invalid group type" );
     }
 }
 
