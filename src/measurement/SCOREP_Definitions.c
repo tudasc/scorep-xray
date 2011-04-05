@@ -672,18 +672,11 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
  * group unification was done.
  */
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedMPIGroup( int32_t  numberOfRanks,
-                              int32_t* ranks )
+SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
+                              int32_t          numberOfRanks,
+                              int32_t*         ranks )
 {
-    SCOREP_GroupType type = SCOREP_GROUP_COMMUNICATOR;
     SCOREP_Definitions_Lock();
-
-    if ( ( ranks == NULL ) || ( numberOfRanks <= 1 ) )
-    {
-        type          = SCOREP_GROUP_COMM_SELF;
-        numberOfRanks = 0;
-        ranks         = NULL;
-    }
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         scorep_unified_definition_manager,

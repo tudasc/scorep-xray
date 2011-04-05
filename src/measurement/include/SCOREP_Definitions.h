@@ -157,9 +157,14 @@ SCOREP_Region_GetType( SCOREP_RegionHandle handle );
 const char*
 SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle );
 
-SCOREP_MPICommunicatorHandle
+SCOREP_GroupHandle
 SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
                        const int32_t* ranks );
+
+SCOREP_GroupHandle
+SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
+                              int32_t          numberOfRanks,
+                              int32_t*         ranks );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
@@ -171,8 +176,6 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
  * @param globalRootRank The global rank the rank 0 in the new communicator.
  *
  * @param id unique identifier of the root rank for the new communicator.
- *
- * @note See the Scalasca MPI wrapper for the format of the bit vector.
  *
  * @return A process unique communicator handle to be used in calls to other
  * SCOREP_DefineMPI* functions.
