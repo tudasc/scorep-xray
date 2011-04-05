@@ -1350,7 +1350,7 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         int            sendcount, sendsz, recvsz, me, N, i;
-        int            sendbytes = 0, recvbytes = 0;
+        int            recvbytes = 0;
         SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
 
 

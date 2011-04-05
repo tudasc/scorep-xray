@@ -3776,7 +3776,7 @@
     <countrules send="sendcount * sendsz" recv="recvbytes" />
 <decl><![CDATA[
     int sendcount, sendsz, recvsz, me, N, i;
-    int sendbytes = 0, recvbytes = 0;
+    int recvbytes = 0;
     SCOREP_MpiRank root_loc = SCOREP_MPI_RANK_TO_PE(root, comm);
 ]]></decl>
 <xblock><![CDATA[
