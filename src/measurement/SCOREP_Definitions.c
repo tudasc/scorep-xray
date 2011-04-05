@@ -652,7 +652,7 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
-        SCOREP_GROUP_COMMUNICATOR,
+        SCOREP_GROUP_MPI_GROUP,
         numberOfRanks,
         ( const uint64_t* )ranks,
         scorep_string_definition_define(

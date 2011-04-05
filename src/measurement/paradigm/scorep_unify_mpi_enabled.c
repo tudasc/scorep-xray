@@ -472,7 +472,7 @@ scorep_unify_mpi_define_groups( uint64_t global_communicator_number,
             }
 
             /* Define ranks */
-            group = SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_COMMUNICATOR,
+            group = SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_GROUP,
                                                   size, ranks );
 
             /* Map communicator to group */
