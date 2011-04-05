@@ -630,7 +630,7 @@ scorep_group_definition_define( SCOREP_DefinitionManager* definition_manager,
                                 uint64_t                  numberOfMembers,
                                 const uint64_t*           members,
                                 SCOREP_StringHandle       groupNameHandle,
-                                bool                      convertRanks );
+                                bool                      convertFromUint32 );
 
 static bool
 scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinition,
@@ -658,7 +658,7 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
             "" ),
-        true /* need to convert to global ids */ );
+        true /* need to convert to uint64_t */ );
 
     SCOREP_Definitions_Unlock();
 
@@ -693,7 +693,7 @@ SCOREP_DefineUnifiedMPIGroup( int32_t  numberOfRanks,
         scorep_string_definition_define(
             scorep_unified_definition_manager,
             "" ),
-        true /* need to convert to global ids */ );
+        true /* need to convert to uint64_t */ );
 
     SCOREP_Definitions_Unlock();
 
@@ -723,7 +723,7 @@ scorep_group_definition_define( SCOREP_DefinitionManager* definition_manager,
                                 uint64_t                  numberOfMembers,
                                 const uint64_t*           members,
                                 SCOREP_StringHandle       groupNameHandle,
-                                bool                      convertFromRanks )
+                                bool                      convertFromUint32 )
 {
     SCOREP_Group_Definition* new_definition = NULL;
     SCOREP_GroupHandle       new_handle     = SCOREP_INVALID_MPI_COMMUNICATOR;
@@ -741,12 +741,11 @@ scorep_group_definition_define( SCOREP_DefinitionManager* definition_manager,
     new_definition->number_of_members = numberOfMembers;
     HASH_ADD_POD( new_definition, number_of_members );
 
-    if ( convertFromRanks )
+    if ( convertFromUint32 )
     {
         const int32_t* ranks = ( const int32_t* )members;
         for ( uint64_t i = 0; i < numberOfMembers; i++ )
         {
-            /* convert ranks to global location ids */
             new_definition->members[ i ] = ( uint64_t )ranks[ i ];
         }
     }
