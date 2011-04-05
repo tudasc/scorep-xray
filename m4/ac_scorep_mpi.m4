@@ -288,6 +288,48 @@ AC_DEFUN([AC_SCOREP_MPI_INFO_COMPLIANT], [
         [AC_MSG_RESULT(no)]
     ) # AC_COMPILE_IF_ELSE
 
+    AC_MSG_CHECKING([whether PMPI_Type_create_f90_complex is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Type_create_f90_complex(int p, int r, MPI_Datatype *newtype)
+            {
+                return PMPI_Type_create_f90_complex(p, r, newtype);
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_COMPLEX_COMPLIANT, 1, [MPI_Type_create_f90_complex is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
+
+    AC_MSG_CHECKING([whether PMPI_Type_create_f90_integer is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Type_create_f90_integer(int r, MPI_Datatype *newtype)
+            {
+                return PMPI_Type_create_f90_integer(r, newtype);
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_INTEGER_COMPLIANT, 1, [MPI_Type_create_f90_integer is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
+
+    AC_MSG_CHECKING([whether PMPI_Type_create_f90_real is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            int MPI_Type_create_f90_real(int p, int r, MPI_Datatype *newtype)
+            {
+                return PMPI_Type_create_f90_real(p, r, newtype);
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_REAL_COMPLIANT, 1, [MPI_Type_create_f90_integer is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
+
     AC_LANG_POP(C)
 ]) # AC_DEFUN(AC_SCOREP_MPI_INFO_COMPLIANT)
 
