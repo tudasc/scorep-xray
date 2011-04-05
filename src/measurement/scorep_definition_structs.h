@@ -38,7 +38,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( String )
 
     uint32_t string_length;
     // variable array member
-    char string_data[ 1 ];
+    char string_data[];
 };
 
 
@@ -93,7 +93,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
     SCOREP_StringHandle name_handle;    // currently not used
     uint64_t            number_of_members;
     // variable array member
-    uint64_t            members[ 1 ];
+    uint64_t            members[];
 };
 
 

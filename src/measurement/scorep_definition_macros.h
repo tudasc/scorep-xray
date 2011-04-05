@@ -221,7 +221,7 @@
     { \
         new_handle = SCOREP_Memory_AllocForDefinitions( \
             sizeof( SCOREP_ ## Type ## _Definition ) + \
-            ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
+            ( ( number_of_members ) * sizeof( array_type ) ) ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
     } \
@@ -334,7 +334,7 @@
     { \
         new_handle = SCOREP_Memory_AllocForDefinitions( \
             sizeof( SCOREP_ ## Type ## _Definition ) + \
-            ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
+            ( ( number_of_members ) * sizeof( array_type ) ) ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
         *( ( definition_manager )->type ## _definition_tail_pointer ) = \
