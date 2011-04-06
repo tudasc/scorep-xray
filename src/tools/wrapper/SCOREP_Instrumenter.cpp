@@ -598,7 +598,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
 void
 SCOREP_Instrumenter::prepare_compiler()
 {
-    compiler_flags += " " + compiler_instrumentation_flags;
+    compiler_flags += " -g " + compiler_instrumentation_flags;
 
     /* The sun compiler can only instrument Fortran files. Thus, any C/C++ files
        are not instrumented. To avoid user confusion, the instrumneter aborts in
@@ -1080,7 +1080,7 @@ SCOREP_Instrumenter::execute_command()
                           + scorep_include_path
                           + input_files
                           + scorep_lib
-                          + compiler_flags + " -g "
+                          + compiler_flags
                           + " " + external_libs;
     if ( output_name != "" )
     {
