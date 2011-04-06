@@ -420,13 +420,7 @@
     events, even if other code blocks conatain a different name or type in their
     SCOREP_USER_REGION_BEGIN statement.
 
-    In Fortran, it creates a named common block. For the name, a 'id' is appended to the
-    handle name. Furthermore, a blockdata construct for initialization is defined with the
-    name of the handle and a 'g' appended. If
-    you are using a Fortran version which has a limited length of code lines, the length
-    of the @a handle parameter must be at most 4 characters, else the declaration line
-    exceeds the allowed length.
-    This macro is not available with the PGI Fortran compiler.
+    This macro is not available in Fortran.
 
     @param handle  A name for a parameter must be provided. This parameter is declared in
                    the macro. This handle is used in the SCOREP_USER_REGION_BEGIN and
@@ -464,23 +458,7 @@
     }
     @endcode
 
-    Fortran example:
-    @code
-    SCOREP_GLOBAL_REGION_DEFINE( my_global_handle )
-
-    program myProg
-      SCOREP_USER_REGION_EXTERNAL( my_global_handle )
-      ! declarations
-
-      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
-      ! do something
-      SCOREP_USER_REGION_END( my_global_handle )
-
-    end program myProg
-    @endcode
- */
-
-/** @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
+   /** @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
     This macro declares an axternally defined global region.  Every global region must
     only declared once usingSCOREP_GLOBAL_REGION_DEFINE( handle ). All other files in
     which this region handle is accessed must declare the region handle with
@@ -491,11 +469,7 @@
     events, even if other code blocks conatain a different name or type in their
     SCOREP_USER_REGION_BEGIN statement.
 
-    It uses a common block, which is initialized by SCOREP_GLOBAL_REGION_DEFINE
-    which contains the handle.
-    Thus, it must be declared at the top of any module or program which uses this
-    handle.
-    This macro is not available with the PGI Fortran compiler.
+    This macro is not available in Fortran
 
     @param handle  A name for a variable must be provided. This variable name must be
                    the same like for the corresponding SCOREP_GLOBAL_REGION_DEFINE
@@ -529,21 +503,6 @@
 
       SCOREP_USER_REGION_END( my_global_handle )
     }
-    @endcode
-
-    Fortran example:
-    @code
-    SCOREP_GLOBAL_REGION_DEFINE( my_global_handle )
-
-    program myProg
-      SCOREP_USER_REGION_EXTERNAL( my_global_handle )
-      ! declarations
-
-      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
-      ! do something
-      SCOREP_USER_REGION_END( my_global_handle )
-
-    end program myProg
     @endcode
  */
 
@@ -727,13 +686,7 @@
     All other files in which the same group handle is  accessed, must declare the handle
     using SCOREP_USER_METRIC_GROUP_EXTERNAL.
 
-    In Fortran, it creates a named common block. For the name, a 'id' is appended to the
-    handle name. Furthermore, a blockdata construct for initialization is defined with the
-    name of the handle and a 'g' appended.
-    If you are using a Fortran version which has a limited length of code lines, the
-    length of the @a handle parameter must be at most 4 characters, else the declaration
-    line exceeds the allowed length.
-    This macro is not available with the PGI Fortran compiler.
+    This macro is not available in Fortran.
 
     @param groupHandle The variable name for the variable declared in this statement.
                        If you are using a Fortran version which has a limited length of
@@ -778,27 +731,6 @@
       SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
     }
     @endcode
-
-    Fortran example:
-    @code
-    SCOREP_USER_METRIC_GROUP_GLOBAL( my_global_group )
-    SCOREP_USER_METRIC_GLOBAL( my_global_metric )
-
-    program myProg
-      SCOREP_USER_METRIC_GROUP_EXTERNAL( my_global_group )
-      SCOREP_USER_METRIC_EXTERNAL( my_global_metric )
-      integer (kind=selected_int_kind(8)):: my_int = 19
-    ! more declarations
-
-      SCOREP_USER_METRIC_GROUP_INIT( my_global_group )
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
-                             SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-    ! do something
-
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    end program myProg
-    @endcode
  */
 
 /** @def SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle )
@@ -807,8 +739,7 @@
     All other files in which the same group handle is  accessed, must declare the handle
     using SCOREP_USER_METRIC_GROUP_EXTERNAL.
 
-    In Fortran, tt uses the common block created by SCOREP_USER_METRIC_GROUP_GLOBAL.
-    This macro is not available with the PGI Fortran compiler.
+    This macro is not available in Fortran
 
     @param groupHandle The variable name for the variable declared in this statement.
 
@@ -849,27 +780,6 @@
       SCOREP_USER_METRIC_DOUBLE( my_local_metric, my_double )
       SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
     }
-    @endcode
-
-    Fortran example:
-    @code
-    SCOREP_USER_METRIC_GROUP_GLOBAL( my_global_group )
-    SCOREP_USER_METRIC_GLOBAL( my_global_metric )
-
-    program myProg
-      SCOREP_USER_METRIC_GROUP_EXTERNAL( my_global_group )
-      SCOREP_USER_METRIC_EXTERNAL( my_global_metric )
-      integer (kind=selected_int_kind(8)):: my_int = 19
-    ! more declarations
-
-      SCOREP_USER_METRIC_GROUP_INIT( my_global_group )
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
-                             SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-    ! do something
-
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    end program myProg
     @endcode
  */
 
@@ -977,13 +887,7 @@
     other files in which this handle is accessed must declare it with
     SCOREP_USER_METRIC_EXTERNAL.
 
-    In Fortran, it creates a named common block. For the name, a 'id' is appended to the
-    handle name. Furthermore, a blockdata construct for initialization is defined with the
-    name of the handle and a 'g' appended.
-    If you are using a Fortran version which has a limited length of code lines, the
-    length of the @a handle parameter must be at most 4 characters, else the declaration
-    line exceeds the allowed length.
-    This macro is not available with the PGI Fortran compiler.
+    This macro is not available in Fortran.
 
     @param metricHandle The variable name for the handle.
                         If you are using a Fortran version which has a limited length of
@@ -1022,27 +926,6 @@
       SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
     }
     @endcode
-
-    Fortran example:
-    @code
-    SCOREP_USER_METRIC_GROUP_GLOBAL( my_global_group )
-    SCOREP_USER_METRIC_GLOBAL( my_global_metric )
-
-    program myProg
-      SCOREP_USER_METRIC_GROUP_EXTERNAL( my_global_group )
-      SCOREP_USER_METRIC_EXTERNAL( my_global_metric )
-      integer (kind=selected_int_kind(8)):: my_int = 19
-    ! more declarations
-
-      SCOREP_USER_METRIC_GROUP_INIT( my_global_group )
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
-                             SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-    ! do something
-
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    end program myProg
-    @endcode
  */
 
 /** @def SCOREP_USER_METRIC_EXTERNAL( metricHandle )
@@ -1051,9 +934,7 @@
     other files in which this handle is accessed must declare it with
     SCOREP_USER_METRIC_EXTERNAL.
 
-    In Fortran, this statement uses the common block created by
-    SCOREP_USER_METRIC_GLOBAL.
-    This macro is not available with the PGI Fortran compiler.
+    This macro is not available in Fortran.
 
     @param metricHandle The variable name of the handle. it must be the same name as used
                         in the corresponding SCOREP_USER_METRIC_GLOBAL statement.
@@ -1087,27 +968,6 @@
       uint64 my_int = get_some_int_value();
       SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
     }
-    @endcode
-
-    Fortran example:
-    @code
-    SCOREP_USER_METRIC_GROUP_GLOBAL( my_global_group )
-    SCOREP_USER_METRIC_GLOBAL( my_global_metric )
-
-    program myProg
-      SCOREP_USER_METRIC_GROUP_EXTERNAL( my_global_group )
-      SCOREP_USER_METRIC_EXTERNAL( my_global_metric )
-      integer (kind=selected_int_kind(8)):: my_int = 19
-    ! more declarations
-
-      SCOREP_USER_METRIC_GROUP_INIT( my_global_group )
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", &
-                             SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-    ! do something
-
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    end program myProg
     @endcode
  */
 

@@ -67,13 +67,6 @@
 
 #define SCOREP_USER_REGION_ENTER( handle ) call SCOREP_F_RegionEnter( handle )
 
-#define SCOREP_GLOBAL_REGION_DEFINE( handle ) \
-        blockdata##handle##g;SCOREP_REGION_HANDLE::handle;common/handle##id/handle;data##handle/SCOREP_INVALID_REGION/;end
-
-#define SCOREP_GLOBAL_REGION_EXTERNAL( handle ) \
-        SCOREP_REGION_HANDLE::handle; \
-        common /handle##id/handle
-
 #define SCOREP_USER_FUNC_DEFINE SCOREP_USER_REGION_DEFINE( scrpfh )
 
 #define SCOREP_USER_FUNC_BEGIN( name ) \
@@ -87,25 +80,11 @@
 #define SCOREP_USER_METRIC_GROUP_LOCAL( groupHandle ) \
         SCOREP_METRIC_GROUP :: groupHandle = SCOREP_INVALID_METRIC_GROUP
 
-#define SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle ) \
-        blockdata##groupHandle##g;SCOREP_METRIC_GROUP::groupHandle;common/groupHandle##id/groupHandle;data##groupHandle/SCOREP_INVALID_METRIC_GROUP/;end
-
-#define SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
-        SCOREP_METRIC_GROUP::groupHandle; \
-        common /groupHandle##id/ groupHandle
-
 #define SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name ) \
         call SCOREP_F_InitMetricGroup(groupHandle,name)
 
 #define SCOREP_USER_METRIC_LOCAL( metricHandle ) \
         SCOREP_METRIC_HANDLE :: metricHandle = SCOREP_INVALID_METRIC
-
-#define SCOREP_USER_METRIC_GLOBAL( metricHandle ) \
-        blockdata##metricHandle##g;SCOREP_METRIC_HANDLE::metricHandle;common/metricHandle##id/metricHandle;data##metricHandle/SCOREP_INVALID_METRIC/;end
-
-#define SCOREP_USER_METRIC_EXTERNAL( metricHandle ) \
-        SCOREP_METRIC_HANDLE::metricHandle;\
-        common /metricHandle##id/ metricHandle
 
 #define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context, groupHandle ) \
         call SCOREP_F_InitMetric(metricHandle,name,unit,type,context,groupHandle)
