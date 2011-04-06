@@ -311,6 +311,7 @@ scorep_mpi_finalize()
     SCOREP_MPI_EVENT_GEN_ON();
 
     scorep_mpi_win_final();
+    scorep_mpi_request_finalize();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "End of scorep_mpi_finalize\n" );
 }
