@@ -216,14 +216,14 @@ SCOREP_MpiCollectiveEnd
  *                  completed.
  */
 void
-SCOREP_MpiSendComplete( SCOREP_MpiRequestId requestId );
+SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId );
 
 /**
  * Processs a MPI receive request event in the measurement system.
  * @param requestId The request identifier, which specifies the new receive request.
  */
 void
-SCOREP_MpiRecvRequest( SCOREP_MpiRequestId requestId );
+SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId );
 
 /**
  * Process a MPI request test event in the measurement system.

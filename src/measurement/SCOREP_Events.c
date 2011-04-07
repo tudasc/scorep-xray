@@ -316,6 +316,8 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle regionHandle,
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = SCOREP_GetClockTicks();
 
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter* evt_writer
@@ -342,27 +344,83 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle regionHandle,
 }
 
 void
-SCOREP_MpiSendComplete( SCOREP_MpiRequestId requestId )
+SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 {
-    printf( "In SCOREP_MpiSendComplete\n" );
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter_MpiIsendComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                         NULL,
+                                         SCOREP_GetClockTicks(),
+                                         requestId );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+    }
 }
 
 void
-SCOREP_MpiRecvRequest( SCOREP_MpiRequestId requestId )
+SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 {
-    printf( "In SCOREP_MpiRecvRequest\n" );
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter_MpiIrecvRequest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                        NULL,
+                                        SCOREP_GetClockTicks(),
+                                        requestId );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+    }
 }
 
 void
 SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 {
-    printf( "In SCOREP_MpiRequestTested\n" );
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter_MpiRequestTest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                       NULL,
+                                       SCOREP_GetClockTicks(),
+                                       requestId );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+    }
 }
 
 void
 SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 {
-    printf( "In SCOREP_MpiRequestCancelled\n" );
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter_MpiRequestCancelled( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                            NULL,
+                                            SCOREP_GetClockTicks(),
+                                            requestId );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+    }
 }
 
 void
@@ -372,7 +430,27 @@ SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
                   uint64_t                     bytesSent,
                   SCOREP_MpiRequestId          requestId )
 {
-    printf( "In SCOREP_MpiIsend\n" );
+    assert( destinationRank >= 0 && "Passed invalid rank to SCOREP_MpiSend\n" );
+
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter_MpiIsend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                 NULL,
+                                 SCOREP_GetClockTicks(),
+                                 ( uint64_t )destinationRank,
+                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                 tag,
+                                 bytesSent,
+                                 requestId );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+    }
 }
 
 void
@@ -382,8 +460,29 @@ SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
                  uint64_t                     bytesReceived,
                  SCOREP_MpiRequestId          requestId )
 {
-    printf( "In SCOREP_MpiIrecv\n" );
+    assert( sourceRank >= 0 && "Passed invalid rank to SCOREP_MpiRecv\n" );
+
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter_MpiIrecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                 NULL,
+                                 SCOREP_GetClockTicks(),
+                                 ( uint64_t )sourceRank,
+                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                 tag,
+                                 bytesReceived,
+                                 requestId );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+    }
 }
+
 /**
  * Process an OpenMP fork event in the measurement system.
  */

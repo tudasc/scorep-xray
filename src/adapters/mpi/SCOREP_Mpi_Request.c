@@ -577,7 +577,7 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
         }
         else if ( req->flags & SCOREP_MPI_REQUEST_SEND && xnb_active )
         {
-            SCOREP_MpiSendComplete( req->id );
+            SCOREP_MpiIsendComplete( req->id );
         }
     }
 

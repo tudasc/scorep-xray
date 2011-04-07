@@ -847,7 +847,7 @@ MPI_Irecv( void*        buf,
 
         if ( event_gen_active && xnb_active )
         {
-            SCOREP_MpiRecvRequest( reqid );
+            SCOREP_MpiIrecvRequest( reqid );
         }
 
         scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_RECV,
@@ -1700,7 +1700,7 @@ MPI_Start( MPI_Request* request )
             }
             else if ( req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active )
             {
-                SCOREP_MpiRecvRequest( req->id );
+                SCOREP_MpiIrecvRequest( req->id );
             }
         }
     }
@@ -1760,7 +1760,7 @@ MPI_Startall( int          count,
                 }
                 else if ( req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active )
                 {
-                    SCOREP_MpiRecvRequest( req->id );
+                    SCOREP_MpiIrecvRequest( req->id );
                 }
             }
         }
