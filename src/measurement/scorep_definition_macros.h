@@ -114,7 +114,7 @@
     SCOREP_ ## Type ## Handle unified;          \
     SCOREP_ ## Type ## Handle hash_next;        \
     uint32_t hash_value;                        \
-    uint32_t sequence_number;
+    uint32_t sequence_number
 
 /**
  * Initializes common members of the definition @a definition.
