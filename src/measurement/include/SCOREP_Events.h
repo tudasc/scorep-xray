@@ -67,7 +67,7 @@
 
 // scorep_meets_tau_begin
 /**
- * Generate a region enter event in the measurement system.
+ * Process a region enter event in the measurement system.
  *
  * @param regionHandle The corresponding region for the enter event.
  */
@@ -82,7 +82,7 @@ SCOREP_EnterRegion
 
 // scorep_meets_tau_begin
 /**
- * Generate a region exit event in the measurement system.
+ * Process a region exit event in the measurement system.
  *
  * @param regionHandle The corresponding region for the exit event.
  */
@@ -96,7 +96,7 @@ SCOREP_ExitRegion
 
 
 /**
- * Generate an mpi send event in the measurement system.
+ * Process an mpi send event in the measurement system.
  *
  * @param destinationRank The MPI destination rank in the communicator
  * specified with @a communicatorHandle. Because of the scalable
@@ -126,7 +126,7 @@ SCOREP_MpiSend
 
 
 /**
- * Generate an mpi recv event in the measurement system.
+ * Process an mpi recv event in the measurement system.
  *
  * @param sourceRank The MPI source rank in the communicator
  * specified with @a communicatorHandle. Because of the scalable
@@ -157,7 +157,9 @@ SCOREP_MpiRecv
 
 
 /**
- * Generate an mpi collective event in the measurement system.
+ * Process an mpi collective begin event in the measurement system.
+ *
+ * Records also an enter event into the region @regionHandle.
  *
  * @param regionHandle The region handle corresponding to the MPI function
  * that triggers this event.
@@ -172,20 +174,44 @@ SCOREP_MpiRecv
  * @param bytesSent The number of bytes send in the communication.
  *
  * @param bytesReceived The number of bytes received in the communication.
+ *
+ * @param matchingId A process unique sequence number to match the corresponding
+ *                   SCOREP_MpiCollectiveEnd event
+ *
+ * @return The used timestamp for this event.
  */
-void
-SCOREP_MpiCollective
+uint64_t
+SCOREP_MpiCollectiveBegin
 (
     SCOREP_RegionHandle          regionHandle,
     SCOREP_MPICommunicatorHandle communicatorHandle,
     SCOREP_MpiRank               rootRank,
     SCOREP_MpiCollectiveType     collectiveType,
     uint64_t                     bytesSent,
-    uint64_t                     bytesReceived
+    uint64_t                     bytesReceived,
+    uint64_t                     matchingId
 );
 
 /**
- * Generates a MPI send complete event in the measurement system.
+ * Process an mpi collective event in the measurement system.
+ *
+ * Records also an leave event out of the region @regionHandle.
+ *
+ * @param regionHandle The region handle corresponding to the MPI function
+ * that triggers this event.
+ *
+ * @param matchingId A process unique sequence number to match the corresponding
+ *                   SCOREP_MpiCollectiveBegin event
+ */
+void
+SCOREP_MpiCollectiveEnd
+(
+    SCOREP_RegionHandle regionHandle,
+    uint64_t            matchingId
+);
+
+/**
+ * Processs a MPI send complete event in the measurement system.
  * @param requestId The request identifier, which specifies the request that was
  *                  completed.
  */
@@ -193,14 +219,14 @@ void
 SCOREP_MpiSendComplete( SCOREP_MpiRequestId requestId );
 
 /**
- * Generates a MPI receive request event in the measurement system.
+ * Processs a MPI receive request event in the measurement system.
  * @param requestId The request identifier, which specifies the new receive request.
  */
 void
 SCOREP_MpiRecvRequest( SCOREP_MpiRequestId requestId );
 
 /**
- * Generates a MPI request test event in the measurement system.
+ * Process a MPI request test event in the measurement system.
  * @param requestId The request identifier, which specifies the request that was
  *                  tested.
  */
@@ -208,7 +234,7 @@ void
 SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId );
 
 /**
- * Generates a MPI request cancel event in the measurement system.
+ * Process a MPI request cancel event in the measurement system.
  * @param requestId The request identifier, which specifies the request that was
  *                  cancelled.
  */
@@ -217,7 +243,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId );
 
 
 /**
- * Generate an mpi non-blocking send event in the measurement system.
+ * Process an mpi non-blocking send event in the measurement system.
  *
  * @param destinationRank The MPI destination rank in the communicator
  * specified with @a communicatorHandle. Because of the scalable
@@ -251,11 +277,11 @@ SCOREP_MpiIsend
 
 
 /**
- * Generate an mpi recv event in the measurement system.
+ * Process an mpi recv event in the measurement system.
  *
  * @param sourceRank The MPI source rank in the communicator
  * specified with @a communicatorHandle. Because of the scalable
- * communicator handling, it is not possible to covert ranks anymore.
+ * communicator handling, it is not possible to convert ranks anymore.
  *
  * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
@@ -283,7 +309,7 @@ SCOREP_MpiIrecv
 
 
 /**
- * Generate an OpenMP fork event in the measurement system.
+ * Process an OpenMP fork event in the measurement system.
  *
  * @param regionHandle The previous defined region handle which identifies the
  *                     the region into which this event forks.
@@ -301,7 +327,7 @@ SCOREP_OmpFork
 
 
 /**
- * Generate an OpenMP join event in the measurement system.
+ * Process an OpenMP join event in the measurement system.
  *
  * @param regionHandle The previous defined region handle which identifies the
  *                     the region from which this event joins.
@@ -316,7 +342,7 @@ SCOREP_OmpJoin
 
 
 /**
- * Generate an OpenMP acquire lock event in the measurement system.
+ * Process an OpenMP acquire lock event in the measurement system.
  *
  * @param lockId A unique ID to identify the lock. Needs to be maintained by
  *               the caller.
@@ -329,7 +355,7 @@ SCOREP_OmpAcquireLock
 
 
 /**
- * Generate an OpenMP release lock event in the measurement system.
+ * Process an OpenMP release lock event in the measurement system.
  *
  * @param lockId A unique ID to identify the lock. Needs to be maintained by
  *               the caller.

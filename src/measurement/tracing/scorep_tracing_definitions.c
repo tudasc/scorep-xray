@@ -145,7 +145,6 @@ scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
         case_return( UNKNOWN,       NON );
         case_return( LOCATIONS,     LOCATIONS );
         case_return( REGIONS,       REGIONS );
-        case_return( COMMUNICATOR,  COMMUNICATOR );
         case_return( METRIC,        METRIC );
         case_return( COMM_SELF,     COMMUNICATOR_SELF );
         case_return( MPI_GROUP,     MPI_GROUP );

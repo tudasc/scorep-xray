@@ -51,7 +51,7 @@
 extern bool scorep_recording_enabled;
 
 /**
- * Generate a region enter event in the measurement system.
+ * Process a region enter event in the measurement system.
  */
 void
 SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
@@ -84,7 +84,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 
 
 /**
- * Generate a region exit event in the measurement system.
+ * Process a region exit event in the measurement system.
  */
 void
 SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
@@ -118,7 +118,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 
 
 /**
- * Generate an mpi send event in the measurement system.
+ * Process an mpi send event in the measurement system.
  */
 void
 SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
@@ -145,9 +145,8 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
         OTF2_EvtWriter_MpiSend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
                                 SCOREP_GetClockTicks(),
-                                OTF2_MPI_BLOCK,
                                 ( uint64_t )destinationRank,
-                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                 tag,
                                 bytesSent );
     }
@@ -159,7 +158,7 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
 
 
 /**
- * Generate an mpi recv event in the measurement system.
+ * Process an mpi recv event in the measurement system.
  */
 void
 SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
@@ -186,9 +185,8 @@ SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
         OTF2_EvtWriter_MpiRecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
                                 SCOREP_GetClockTicks(),
-                                OTF2_MPI_BLOCK,
                                 ( uint64_t )sourceRank,
-                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                 tag,
                                 bytesReceived );
     }
@@ -236,15 +234,16 @@ scorep_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
 
 
 /**
- * Generate an mpi collective event in the measurement system.
+ * Process an mpi collective begin event in the measurement system.
  */
-void
-SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
-                      SCOREP_MPICommunicatorHandle communicatorHandle,
-                      SCOREP_MpiRank               rootRank,
-                      SCOREP_MpiCollectiveType     collectiveType,
-                      uint64_t                     bytesSent,
-                      uint64_t                     bytesReceived )
+uint64_t
+SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
+                           SCOREP_MPICommunicatorHandle communicatorHandle,
+                           SCOREP_MpiRank               rootRank,
+                           SCOREP_MpiCollectiveType     collectiveType,
+                           uint64_t                     bytesSent,
+                           uint64_t                     bytesReceived,
+                           uint64_t                     matchingId )
 {
     assert( ( rootRank >= 0 || rootRank == SCOREP_INVALID_ROOT_RANK )
             && "Passed invalid rank to SCOREP_MpiCollective\n" );
@@ -273,20 +272,72 @@ SCOREP_MpiCollective( SCOREP_RegionHandle          regionHandle,
                          ( unsigned long long )bytesSent,
                          ( unsigned long long )bytesReceived );
 
+    uint64_t timestamp = SCOREP_GetClockTicks();
+
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter_MpiCollective( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                      NULL,
-                                      SCOREP_GetClockTicks(),
-                                      scorep_collective_to_otf2( collectiveType ),
-                                      SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, Group ),
-                                      root_rank,
-                                      bytesSent,
-                                      bytesReceived );
+        OTF2_EvtWriter* evt_writer
+            = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+
+        OTF2_EvtWriter_Enter( evt_writer,
+                              NULL,
+                              timestamp,
+                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+
+        OTF2_EvtWriter_MpiCollectiveBegin( evt_writer,
+                                           NULL,
+                                           timestamp,
+                                           scorep_collective_to_otf2( collectiveType ),
+                                           SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                           root_rank,
+                                           bytesSent,
+                                           bytesReceived,
+                                           matchingId );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        SCOREP_Profile_Enter( location,
+                              regionHandle,
+                              SCOREP_Region_GetType( regionHandle ),
+                              timestamp, NULL );
+    }
+
+    return timestamp;
+}
+
+/**
+ * Process an mpi collective end event in the measurement system.
+ */
+void
+SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle regionHandle,
+                         uint64_t            matchingId )
+{
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_EvtWriter* evt_writer
+            = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+
+        OTF2_EvtWriter_MpiCollectiveEnd( evt_writer,
+                                         NULL,
+                                         timestamp,
+                                         matchingId );
+
+        OTF2_EvtWriter_Leave( evt_writer,
+                              NULL,
+                              timestamp,
+                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_Exit( location,
+                             regionHandle,
+                             timestamp,
+                             NULL );
     }
 }
 
@@ -334,7 +385,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
     printf( "In SCOREP_MpiIrecv\n" );
 }
 /**
- * Generate an OpenMP fork event in the measurement system.
+ * Process an OpenMP fork event in the measurement system.
  */
 void
 SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
@@ -368,7 +419,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
 
 
 /**
- * Generate an OpenMP join event in the measurement system.
+ * Process an OpenMP join event in the measurement system.
  */
 void
 SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
@@ -418,7 +469,7 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
 
 
 /**
- * Generate an OpenMP acquire lock event in the measurement system.
+ * Process an OpenMP acquire lock event in the measurement system.
  */
 void
 SCOREP_OmpAcquireLock( uint32_t lockId/*,
@@ -448,7 +499,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
 
 
 /**
- * Generate an OpenMP release lock event in the measurement system.
+ * Process an OpenMP release lock event in the measurement system.
  */
 void
 SCOREP_OmpReleaseLock( uint32_t lockId/*,

@@ -11,21 +11,23 @@ ${guard:start}
 ${proto:c} 
 {
   ${rtype} return_val;
-  ${guard:hooks}
-    ${declarehooks};
-  ${guard:end}
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
     {
       ${decl}
-
       SCOREP_MPI_EVENT_GEN_OFF();
-      SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
-      
-      ${guard:hooks}
-        ${check:hooks}
-          ${call:prehook};
-      ${guard:end}
+      ${xblock}
+      uint64_t matchingId = scorep_collective_matching_sequence++;
+
+      /* Enters region too. */
+      uint64_t start_time_stamp
+        = SCOREP_MpiCollectiveBegin(scorep_mpi_regid[SCOREP__${name|uppercase}],
+                                    SCOREP_MPI_COMM_HANDLE(comm),
+                                    root_loc,
+                                    SCOREP_COLLECTIVE_${name|uppercase},
+                                    ${mpi:sendcount},
+                                    ${mpi:recvcount},
+                                    matchingId);
 
       return_val = ${call:pmpi};
       
@@ -34,14 +36,10 @@ ${proto:c}
           ${call:posthook};
       ${guard:end}
 
-      ${xblock}
-      SCOREP_MpiCollective(scorep_mpi_regid[SCOREP__${name|uppercase}],
-		       SCOREP_MPI_COMM_HANDLE(comm), 
-                       root_loc,
-                       SCOREP_COLLECTIVE_${name|uppercase},
-                       ${mpi:sendcount}, 
-                       ${mpi:recvcount});
-      SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+      /* Leaves region too. */
+      SCOREP_MpiCollectiveEnd(scorep_mpi_regid[SCOREP__${name|uppercase}],
+                              matchingId);
+
       SCOREP_MPI_EVENT_GEN_ON();
     }
   else
