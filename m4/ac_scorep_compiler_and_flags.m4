@@ -66,7 +66,7 @@ ac_scorep_compiler_suite_files=""
 path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([nocross-compiler-suite],
-            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|sun)], 
+            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)], 
                             [The compiler suite to build this package in non cross-compiling environments with. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"], 
                    [AS_CASE([$withval],
@@ -75,7 +75,7 @@ AC_ARG_WITH([nocross-compiler-suite],
                             ["intel"],     [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-intel"],
                             ["pathscale"], [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pathscale"],
                             ["pgi"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pgi"],
-                            ["sun"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-sun"],
+                            ["studio"],    [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-studio"],
                             [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-nocross-compiler-suite, ignoring.])])],
                    [AC_MSG_ERROR([Option --with-nocross-compiler-suite not supported in cross-compiling mode. Please use --with-backend-compiler-suite and --with-frontend-compiler-suite instead.])])],
             [])
@@ -94,7 +94,7 @@ AC_ARG_WITH([backend-compiler-suite],
 
 
 AC_ARG_WITH([frontend-compiler-suite],
-            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|sun)], 
+            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)], 
                             [The compiler suite to build the frontend parts of this package in cross-compiling environments with. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], 
                    [AS_CASE([$withval],
@@ -103,7 +103,7 @@ AC_ARG_WITH([frontend-compiler-suite],
                             ["intel"],     [ac_scorep_compiler_suite_files="${ac_scorep_compiler_suite_files} ${path_to_compiler_files}compiler-frontend-intel"],
                             ["pathscale"], [ac_scorep_compiler_suite_files="${ac_scorep_compiler_suite_files} ${path_to_compiler_files}compiler-frontend-pathscale"],
                             ["pgi"],       [ac_scorep_compiler_suite_files="${ac_scorep_compiler_suite_files} ${path_to_compiler_files}compiler-frontend-pgi"],
-                            ["sun"],       [ac_scorep_compiler_suite_files="${ac_scorep_compiler_suite_files} ${path_to_compiler_files}compiler-frontend-sun"],
+                            ["studio"],    [ac_scorep_compiler_suite_files="${ac_scorep_compiler_suite_files} ${path_to_compiler_files}compiler-frontend-studio"],
                             [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-frontend-compiler-suite, ignoring.])])],
                    [AC_MSG_ERROR([Option --with-frontend-compiler-suite not supported in non cross-compiling mode. Please use --with-nocross-compiler-suite instead.])])],
             [])
@@ -128,7 +128,7 @@ ac_scorep_compiler_suite_files=""
 path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([compiler-suite],
-            [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pathscale|pgi|sun)], 
+            [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)], 
                             [The compiler suite to build this package with. Needs to be in $PATH [gcc].])],
             [AS_CASE([$withval],
                      ["gcc"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-gcc"],
@@ -136,7 +136,7 @@ AC_ARG_WITH([compiler-suite],
                      ["intel"],     [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-intel"],
                      ["pathscale"], [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pathscale"],
                      ["pgi"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pgi"],
-                     ["sun"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-sun"])],
+                     ["studio"],    [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-studio"])],
             [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-compiler-suite, ignoring.])],
             [])
 ])
