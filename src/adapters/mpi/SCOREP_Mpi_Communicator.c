@@ -491,7 +491,7 @@ scorep_mpi_comm_init()
     }
     else
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI, "Duplicate call to communicator initialization ignored!\n" );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI, "Duplicate call to communicator initialization ignored!" );
     }
 }
 

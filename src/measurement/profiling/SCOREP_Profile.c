@@ -258,7 +258,7 @@ SCOREP_Profile_Initialize( int32_t               numDenseMetrics,
                            SCOREP_CounterHandle* metrics )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "Initialize profile with %d dense metrics\n",
+                         "Initialize profile with %d dense metrics",
                          numDenseMetrics );
 
     if ( scorep_profile_is_initialized )
@@ -728,7 +728,7 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
     scorep_profile_node*         node           = NULL;
     scorep_profile_node*         creation_point = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
     SCOREP_ASSERT( locationData != NULL );
@@ -801,7 +801,7 @@ void
 SCOREP_Profile_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
                                     SCOREP_Thread_LocationData* parentLocationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
 
     /* If it is the same location as the parent, do not do anything */
     if ( locationData == parentLocationData )
@@ -825,7 +825,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
 
     /* Initialize type specific data structure */
     data.thread_data = SCOREP_Thread_GetProfileLocationData( locationData );
@@ -882,7 +882,7 @@ SCOREP_Profile_OnFork( SCOREP_Thread_LocationData* threadData,
 {
     scorep_profile_node* fork_node = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 

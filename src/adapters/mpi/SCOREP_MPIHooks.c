@@ -74,7 +74,7 @@ SCOREP_Hooks_Post_MPI_Send
     int          return_value
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -98,7 +98,7 @@ SCOREP_Hooks_Post_MPI_Bsend
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -122,7 +122,7 @@ SCOREP_Hooks_Post_MPI_Ssend
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -146,7 +146,7 @@ SCOREP_Hooks_Post_MPI_Rsend
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     PMPI_Send(  localTimePack,
                 MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -192,7 +192,7 @@ SCOREP_Hooks_Post_MPI_Recv
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     source = status->MPI_SOURCE;
     tag    = status->MPI_TAG;
@@ -390,7 +390,7 @@ SCOREP_Hooks_Post_MPI_Alltoall
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -427,7 +427,7 @@ SCOREP_Hooks_Post_MPI_Alltoallv
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -456,7 +456,7 @@ SCOREP_Hooks_Post_MPI_Barrier
     int      return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -498,7 +498,7 @@ SCOREP_Hooks_Post_MPI_Gather
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -541,7 +541,7 @@ SCOREP_Hooks_Post_MPI_Gatherv
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -582,7 +582,7 @@ SCOREP_Hooks_Post_MPI_Reduce
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -620,7 +620,7 @@ SCOREP_Hooks_Post_MPI_Allreduce
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -658,7 +658,7 @@ SCOREP_Hooks_Post_MPI_Allgather
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -697,7 +697,7 @@ SCOREP_Hooks_Post_MPI_Allgatherv
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePacks;
     int   commSize;
@@ -736,7 +736,7 @@ SCOREP_Hooks_Post_MPI_Bcast
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
 
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
@@ -773,7 +773,7 @@ SCOREP_Hooks_Post_MPI_Scatter
     int          return_val
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s \n", myrank, __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
     remoteTimePack = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );

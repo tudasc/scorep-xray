@@ -42,7 +42,7 @@ SCOREP_OA_Init
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     printf( "%d \n", 1 << 14 );
     if ( !SCOREP_IsOAEnabled() )
     {
@@ -73,7 +73,7 @@ SCOREP_OA_Finalize
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     if ( !SCOREP_IsOAEnabled() )
     {
         return SCOREP_SUCCESS;

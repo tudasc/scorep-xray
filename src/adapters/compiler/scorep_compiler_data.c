@@ -151,7 +151,7 @@ scorep_compiler_hash_get( long key )
 {
     long hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld: \n", hash_code );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
     scorep_compiler_hash_node* curr = region_hash_table[ hash_code ];
     /* The tail after curr will never change because, new elements are instered before

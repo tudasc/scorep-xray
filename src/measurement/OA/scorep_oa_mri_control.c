@@ -85,7 +85,7 @@ scorep_oa_mri_receive_and_process_requests
 {
     int  length, i;
     char buffer[ 2000 ];
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     buffer[ 0 ] = 0;
     bzero( buffer, 2000 );
 
@@ -103,17 +103,17 @@ scorep_oa_mri_receive_and_process_requests
         {
             buffer[ i ] = toupper( buffer[ i ] );
         }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s\n", buffer );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
 
 
         if ( scorep_oa_mri_parse( buffer ) != SCOREP_SUCCESS )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command\n" );
+            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
         }
 
         if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Application Terminating!\n" );
+            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Application Terminating!" );
             //cleanup_registry();
             //PMPI_Finalize();
             //exit(0);
@@ -121,7 +121,7 @@ scorep_oa_mri_receive_and_process_requests
     }
 
     PMPI_Barrier( MPI_COMM_WORLD );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __FUNCTION__ );
     return SCOREP_SUCCESS;
 }
 
@@ -133,7 +133,7 @@ scorep_oa_mri_set_appl_control
     uint8_t                        region_line
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     appl_control = command;
     // appl_control_file=file_id;
     //appl_control_region=region_line;
@@ -144,7 +144,7 @@ scorep_oa_mri_get_appl_control
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     return appl_control;
 }
 
@@ -154,7 +154,7 @@ scorep_oa_mri_return_summary_data
     int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 
     //scorep_profile_dump();void
 
@@ -230,7 +230,7 @@ scorep_profile_print_func
             number++;
             sparse_int = sparse_int->next_metric;
         }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";\n" );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";" );
     }
 }
 
@@ -248,7 +248,7 @@ scorep_oa_mri_parse_subtree( scorep_profile_node* node,
 
     if ( node == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<end of the subtree>\n" );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<end of the subtree>" );
         return;
     }
 
@@ -275,7 +275,7 @@ scorep_oa_mri_parse_subtree( scorep_profile_node* node,
         number++;
         sparse_int = sparse_int->next_metric;
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";" );
 
     if ( node->first_child != NULL )
     {
@@ -290,11 +290,11 @@ scorep_oa_mri_parse_subtree( scorep_profile_node* node,
 void
 scorep_oa_mri_dump_profile()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Number of dense metrics is %d \n", scorep_profile.num_of_dense_metrics );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<Root>:\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Number of dense metrics is %d ", scorep_profile.num_of_dense_metrics );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<Root>:" );
     //scorep_oa_mri_parse_subtree( scorep_profile.first_root_node, 0 );
     scorep_profile_for_all( scorep_profile.first_root_node, &scorep_profile_print_func, NULL );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<End of the tree.>\n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<End of the tree.>" );
 }
 
 
@@ -303,7 +303,7 @@ scorep_oa_mri_noop
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 }
 
 
@@ -313,12 +313,12 @@ scorep_oa_mri_parse
     char* buffer
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     SCOREP_Error_Code return_status = SCOREP_SUCCESS;
 
     YY_BUFFER_STATE   my_string_buffer;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s\n", buffer );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
     my_string_buffer = yy_scan_string( buffer );
     if ( yyparse() == 0 )
     {
@@ -339,7 +339,7 @@ scorep_oa_mri_set_mpiprofiling
     int value
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     SCOREP_MPI_HOOKS_SET( value );
 }
 
@@ -349,7 +349,7 @@ scorep_oa_mri_set_profiling
     int value
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     //SCOREP_MPI_HOOKS_SET(value);
 }
 

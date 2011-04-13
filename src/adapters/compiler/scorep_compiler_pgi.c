@@ -309,7 +309,7 @@ scorep_compiler_register()
 void
 scorep_compiler_deregister()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " PGI compiler adapter deregister!n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " PGI compiler adapter deregister!" );
 }
 
 /* Implementation of the compiler adapter initialization/finalization struct */

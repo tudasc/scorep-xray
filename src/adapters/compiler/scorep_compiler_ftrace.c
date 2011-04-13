@@ -73,8 +73,8 @@ _ftrace_enter2_()
         SCOREP_InitMeasurement();
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function name: %s \n", region_name );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function length: %i \n", name_len );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function name: %s", region_name );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function length: %i", name_len );
 
     if ( !hash_node )
     {
@@ -104,7 +104,7 @@ _ftrace_enter2_()
         if ( hash_node->reghandle != SCOREP_FILTERED_REGION )
         {
             SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                                 "enter the region with handle %i \n",
+                                 "enter the region with handle %i",
                                  hash_node->region_handle );
             SCOREP_EnterRegion( hash_node->region_handle );
         }
@@ -124,8 +124,8 @@ _ftrace_exit2_()
     long                       key         = ( long )region_name;
     scorep_compiler_hash_node* hash_node;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!\n" );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 \t %i \n", key );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 %i", key );
     if ( hash_node = scorep_compiler_hash_get( key ) )
     {
         if ( hash_node->region_handle != SCOREP_FILTERED_REGION )
@@ -142,7 +142,7 @@ _ftrace_exit2_()
 void
 _ftrace_stop2_()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace stop 2 \n" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace stop 2" );
 }
 
 SCOREP_Error_Code
