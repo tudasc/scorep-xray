@@ -60,6 +60,8 @@ __cyg_profile_func_enter( void* func,
 {
     scorep_compiler_hash_node* hash_node;
 
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function enter." );
+
     /*
      * put hash table entries via mechanism for bfd symbol table
      * to calculate function addresses if measurement was not initialized
@@ -79,8 +81,8 @@ __cyg_profile_func_enter( void* func,
             scorep_compiler_register_region( hash_node );
         }
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "enter the region with handle %i ",
-                             hash_node->region_handle );
+                             "enter the region with address %p",
+                             func );
         SCOREP_EnterRegion( hash_node->region_handle );
     }
 }
@@ -97,8 +99,11 @@ __cyg_profile_func_exit( void* func,
 {
     scorep_compiler_hash_node* hash_node;
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
-    if ( hash_node = scorep_compiler_hash_get( ( long )func ) )
+    if ( ( hash_node = scorep_compiler_hash_get( ( long )func ) ) )
     {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                             "exit the region with address %p",
+                             func );
         SCOREP_ExitRegion( hash_node->region_handle );
     }
 }
