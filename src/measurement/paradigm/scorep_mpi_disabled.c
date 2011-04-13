@@ -103,13 +103,13 @@ SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
 {
     int* n_definitions_per_location = calloc( nGlobalLocations, sizeof( int ) );
     assert( n_definitions_per_location );
-    int  number_of_locations = SCOREP_GetNumberOfDefinitions();
+    int  number_of_definitions = SCOREP_GetNumberOfDefinitions();
     for ( int i = 0; i < nGlobalLocations; ++i )
     {
         // assign all locations the same number of definitions. This is a temporary solution
         // as we need to duplicate the definitions for every location until OTF2 is able
         // to handle pre-process definitions.
-        n_definitions_per_location[ i ] = number_of_locations;
+        n_definitions_per_location[ i ] = number_of_definitions;
     }
     return n_definitions_per_location;
 }
