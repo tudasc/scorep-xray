@@ -141,7 +141,8 @@ enum scorep_mpi_groups
                                  SCOREP_MPI_ENABLED_IO    |
                                  SCOREP_MPI_ENABLED_P2P   |
                                  SCOREP_MPI_ENABLED_RMA   |
-                                 SCOREP_MPI_ENABLED_TOPO
+                                 SCOREP_MPI_ENABLED_TOPO  |
+                                 SCOREP_MPI_ENABLED_XNONBLOCK
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
