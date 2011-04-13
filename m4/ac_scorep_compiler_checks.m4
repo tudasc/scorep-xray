@@ -239,7 +239,15 @@ if test "x${scorep_compiler_unknown}" = "xyes"; then
     AC_MSG_WARN([Could not determine compiler vendor. Compiler instrumentation may not work.])
 fi
 
-AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS], [${scorep_compiler_instrumentation_cppflags}])
+AC_ARG_WITH([extra-instrumentation-flags],
+            [AS_HELP_STRING([--with-extra-instrumentation-flags=flags],
+                            [Add additional instrumentation flags.])],
+            [ac_scorep_with_extra_instrumentation_cppflags=$withval],
+            [ac_scorep_with_extra_instrumentation_cppflags=""])
+
+AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS], ["${scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}"])
+
+AC_MSG_NOTICE([using this instrumentation flags: ${scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
 
 AM_CONDITIONAL([SCOREP_COMPILER_INTEL], [test "x${scorep_compiler_intel}" = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_SUN],   [test "x${scorep_compiler_sun}"   = "xyes"])
