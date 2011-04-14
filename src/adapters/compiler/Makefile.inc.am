@@ -46,11 +46,11 @@ libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
 
 if HAVE_NM_AS_BFD_REPLACEMENT
 libscorep_adapter_compiler_la_CPPFLAGS += \
-	-I$(INC_ROOT)src/services       \
+	-I$(INC_ROOT)src/services/include \
         -DHAVE_NM
 
 libscorep_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/SCOREP_Timing.h
+	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
 endif
 
 libscorep_adapter_compiler_la_SOURCES +=                                \
@@ -88,11 +88,11 @@ endif
 
 if HAVE_NM_AS_BFD_REPLACEMENT
 libscorep_adapter_compiler_la_CPPFLAGS += \
-	-I$(INC_ROOT)src/services       \
+	-I$(INC_ROOT)src/services/include \
         -DHAVE_NM
 
 libscorep_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/SCOREP_Timing.h
+	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
 endif
 
 libscorep_adapter_compiler_la_SOURCES +=                                \
