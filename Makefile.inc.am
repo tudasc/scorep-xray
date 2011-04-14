@@ -1,0 +1,44 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
+              $(srcdir)/vendor/common/build-config/platforms/altix \
+              $(srcdir)/vendor/common/build-config/platforms/bgl \
+              $(srcdir)/vendor/common/build-config/platforms/bgp \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-backend-ibm \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-backend-sx \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-gcc \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-ibm \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-intel \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pathscale \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pgi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-studio \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-gcc \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-ibm \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-intel \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pathscale \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pgi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-studio \
+              $(srcdir)/vendor/common/build-config/platforms/crayxt \
+              $(srcdir)/vendor/common/build-config/platforms/ibm \
+              $(srcdir)/vendor/common/build-config/platforms/linux \
+              $(srcdir)/vendor/common/build-config/platforms/necsx \
+              $(srcdir)/vendor/common/build-config/platforms/sun \
+              $(srcdir)/vendor/common/build-config/platforms/user_provided
