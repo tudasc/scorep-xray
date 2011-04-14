@@ -136,7 +136,7 @@ AC_ARG_WITH([compiler-suite],
                      ["intel"],     [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-intel"],
                      ["pathscale"], [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pathscale"],
                      ["pgi"],       [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-pgi"],
-                     ["studio"],    [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-studio"])],
-            [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-compiler-suite, ignoring.])],
+                     ["studio"],    [ac_scorep_compiler_suite_files="${path_to_compiler_files}compiler-nocross-studio"],
+                     [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-compiler-suite, ignoring.])])],
             [])
 ])

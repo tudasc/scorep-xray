@@ -12,7 +12,7 @@
 
 {
   if (FILENAME == "user_provided_configure_args") {
-    gsub("\'", "")
+    gsub("'", "")
     if ($0 == "") {
       next
     }
