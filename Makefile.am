@@ -21,9 +21,9 @@ ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 EXTRA_DIST = $(srcdir)/src/config.h                                     \
              $(srcdir)/src/config-custom.h                              \
              $(srcdir)/build-config/VERSION                             \
-             $(srcdir)/vendor/common/build-config/platforms             \
-             $(srcdir)/vendor/common/build-config/process_arguments.awk \
              $(srcdir)/tools/tau/scorep_meets_tau.awk
+
+include vendor/common/build-config/Makefile.inc.am
 
 if ! CROSS_BUILD
 EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
