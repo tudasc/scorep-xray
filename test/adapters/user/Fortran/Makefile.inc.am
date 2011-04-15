@@ -3,11 +3,16 @@ check_PROGRAMS += user_f_test
 user_f_test_SOURCES =                                       \
 	$(SRC_ROOT)/test/adapters/user/Fortran/user_test.F
 
-user_f_test_CPPFLAGS = $(AM_CPPFLAGS)       \
-    -DSCOREP_USER_ENABLE=1                  \
+user_f_test_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_DIR_UTIL)
+
+if SCOREP_COMPILER_IBM
+user_f_test_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
+else
+user_f_test_CPPFLAGS += -DSCOREP_USER_ENABLE=1
+endif
 
 if SCOREP_COMPILER_PGI
 user_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
