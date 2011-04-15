@@ -39,6 +39,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/crayxt \
               $(srcdir)/vendor/common/build-config/platforms/ibm \
               $(srcdir)/vendor/common/build-config/platforms/linux \
+              $(srcdir)/vendor/common/build-config/platforms/mac \
               $(srcdir)/vendor/common/build-config/platforms/necsx \
               $(srcdir)/vendor/common/build-config/platforms/sun \
               $(srcdir)/vendor/common/build-config/platforms/user_provided
