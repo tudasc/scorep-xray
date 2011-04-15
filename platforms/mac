@@ -1,0 +1,11 @@
+CC=gcc
+#CFLAGS=
+
+CXX=g++
+#CXXFLAGS=
+
+F77=gfortran
+#FFLAGS=
+
+FC=gfortran
+#FCFLAGS=
