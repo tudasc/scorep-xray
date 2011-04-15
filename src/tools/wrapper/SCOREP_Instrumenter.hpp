@@ -56,6 +56,17 @@ private:
     } instrumentation_usage_t;
 
     /**
+       Type for possible source code languages.
+     */
+    typedef enum
+    {
+        unknown_language,
+        c_language,
+        cpp_language,
+        fortran_language
+    } source_language_t;
+
+    /**
        Type of the state of the command line parser. The parser starts in
        state scorep_parse_mode_param which means that arguments are interpreted
        as options of the wrapper tool. When the first argument is reached
@@ -89,7 +100,8 @@ public:
     /**
        Destroys a SCOREP_Instrumenter object.
      */
-    virtual ~
+    virtual
+    ~
     SCOREP_Instrumenter();
 
     /**
@@ -337,6 +349,20 @@ private:
     bool
     is_fortran_file( std::string filename );
 
+    /** Checks whether a file is a C source file.
+        @param filename A file name.
+        @returns true if the file extension indicates C source file.
+     */
+    bool
+    is_c_file( std::string filename );
+
+    /** Checks whether a file is a C++ source file.
+        @param filename A file name.
+        @returns true if the file extension indicates C++ source file.
+     */
+    bool
+    is_cpp_file( std::string filename );
+
     /** Checks whether a file is an object file.
         @param filename A file name.
         @returns true if the file extension indicates an object file.
@@ -453,6 +479,11 @@ private:
        number of input file names.
      */
     int input_file_number;
+
+    /**
+       Source code language of input files.
+     */
+    source_language_t language;
 
     /* --------------------------------------------
        Config file data

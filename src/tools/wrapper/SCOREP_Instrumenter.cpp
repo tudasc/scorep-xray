@@ -68,6 +68,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     opari                          = OPARI;
     opari_script                   = "`" OPARI_CONFIG " --awk_script`";
     grep                           =  "`" OPARI_CONFIG " --egrep`";
+    language                       = unknown_language;
 
     has_data_from_file = false;
     is_dry_run         = false;
@@ -352,6 +353,18 @@ SCOREP_Instrumenter::parse_command( std::string arg )
         /* Assume it is a input file */
         input_files += " " + arg;
         input_file_number++;
+        if ( is_c_file( arg ) )
+        {
+            language = c_language;
+        }
+        else if ( is_cpp_file( arg ) )
+        {
+            language = cpp_language;
+        }
+        else if ( is_fortran_file( arg ) )
+        {
+            language = fortran_language;
+        }
         return scorep_parse_mode_command;
     }
     else if ( arg == "-c" )
@@ -637,6 +650,14 @@ SCOREP_Instrumenter::prepare_compiler()
 void
 SCOREP_Instrumenter::prepare_user()
 {
+    #ifdef SCOREP_COMPILER_IBM
+    if ( language == fortran_language )
+    {
+        compiler_flags = " -WF,-DSCOREP_USER_ENABLE=1" + compiler_flags;
+        return;
+    }
+    #endif // SCOREP_COMPILER_IBM
+
     compiler_flags = " -DSCOREP_USER_ENABLE=1" + compiler_flags;
 }
 
@@ -797,7 +818,7 @@ SCOREP_Instrumenter::is_fortran_file( std::string filename )
 }
 
 bool
-SCOREP_Instrumenter::is_source_file( std::string filename )
+SCOREP_Instrumenter::is_c_file( std::string filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -807,23 +828,33 @@ SCOREP_Instrumenter::is_source_file( std::string filename )
     #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
     SCOREP_CHECK_EXT( ".c" );
     SCOREP_CHECK_EXT( ".C" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
+SCOREP_Instrumenter::is_cpp_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
     SCOREP_CHECK_EXT( ".cpp" );
     SCOREP_CHECK_EXT( ".CPP" );
     SCOREP_CHECK_EXT( ".cxx" );
     SCOREP_CHECK_EXT( ".CXX" );
-    SCOREP_CHECK_EXT( ".f" );
-    SCOREP_CHECK_EXT( ".F" );
-    SCOREP_CHECK_EXT( ".f90" );
-    SCOREP_CHECK_EXT( ".F90" );
-    SCOREP_CHECK_EXT( ".fpp" );
-    SCOREP_CHECK_EXT( ".FPP" );
-    SCOREP_CHECK_EXT( ".FOR" );
-    SCOREP_CHECK_EXT( ".FTN" );
-    SCOREP_CHECK_EXT( ".F95" );
-    SCOREP_CHECK_EXT( ".F03" );
-    SCOREP_CHECK_EXT( ".F08" );
     #undef SCOREP_CHECK_EXT
     return false;
+}
+
+bool
+SCOREP_Instrumenter::is_source_file( std::string filename )
+{
+    return is_c_file( filename ) ||
+           is_cpp_file( filename ) ||
+           is_fortran_file( filename );
 }
 
 bool

@@ -13,8 +13,13 @@ scorep_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(SRC_ROOT)src/tools/wrapper  \
     -I$(INC_DIR_UTIL)               \
     -I$(SRC_ROOT)vendor/otf2/vendor/utility/src/parser
+
 if HAVE_PDT
 scorep_CPPFLAGS += -DHAVE_PDT=1
+endif
+
+if SCOREP_COMPILER_IBM
+scorep_CPPFLAGS += -DSCOREP_COMPILER_IBM=1
 endif
 
 if SCOREP_COMPILER_SUN
