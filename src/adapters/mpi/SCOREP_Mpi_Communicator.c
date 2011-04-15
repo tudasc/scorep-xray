@@ -201,7 +201,7 @@ static MPI_Datatype scorep_mpi_id_root_type = MPI_DATATYPE_NULL;
 /**
    Rank of local process in esd_comm_world
  */
-static int scorep_mpi_my_global_rank = -1;
+static int scorep_mpi_my_global_rank = SCOREP_INVALID_ROOT_RANK;
 
 /**
    local communicator id counter

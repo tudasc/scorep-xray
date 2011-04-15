@@ -457,8 +457,9 @@
       SCOREP_USER_REGION_END( my_global_handle )
     }
     @endcode
+ */
 
-   /** @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
+/** @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
     This macro declares an axternally defined global region.  Every global region must
     only declared once usingSCOREP_GLOBAL_REGION_DEFINE( handle ). All other files in
     which this region handle is accessed must declare the region handle with
