@@ -54,25 +54,6 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-AC_DEFUN([AC_SCOREP_MPI_COMPILER], [
-
-	AC_ARG_VAR(MPICC,[MPI C compiler command])
-	AC_CHECK_PROGS(MPICC, mpicc hcc mpxlc_r mpxlc mpcc cmpicc, $CC)
-	AC_SUBST(MPICC)
-
-	AC_ARG_VAR(MPICXX,[MPI C++ compiler command])
-	AC_CHECK_PROGS(MPICXX, mpic++ mpicxx mpiCC hcp mpxlC_r mpxlC mpCC cmpic++, $CXX)
-	AC_SUBST(MPICXX)
-
-	AC_ARG_VAR(MPIF77,[MPI Fortran 77 compiler command])
-	AC_CHECK_PROGS(MPIF77, mpif77 hf77 mpxlf_r mpxlf mpf77 cmpifc, $F77)
-	AC_SUBST(MPIF77)
-
-	AC_ARG_VAR(MPIFC,[MPI Fortran compiler command])
-	AC_CHECK_PROGS(MPIFC, mpif90 mpxlf95_r mpxlf90_r mpxlf95 mpxlf90 mpf90 cmpif90c, $FC)
-	AC_SUBST(MPIFC)
-])
-
 
 AC_DEFUN([AC_SCOREP_MPI_WORKING], [
 if test x = x"$MPILIBS"; then

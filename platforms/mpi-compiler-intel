@@ -1,0 +1,4 @@
+MPICC="mpiicc"
+MPICXX="mpiicpc"
+MPIF77="mpiifort"
+MPIFC="mpiifort"

@@ -140,3 +140,38 @@ AC_ARG_WITH([compiler-suite],
                      [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-compiler-suite, ignoring.])])],
             [])
 ])
+
+
+
+AC_DEFUN([AC_SCOREP_WITH_MPI_COMPILER_SUITE],
+[
+AC_ARG_VAR(MPICC,[MPI C compiler command])
+AC_ARG_VAR(MPICXX,[MPI C++ compiler command])
+AC_ARG_VAR(MPIF77,[MPI Fortran 77 compiler command])
+AC_ARG_VAR(MPIFC,[MPI Fortran compiler command])
+
+ac_scorep_mpi_compiler_suite_file=""
+path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
+
+AC_ARG_WITH([mpi],
+            [AS_HELP_STRING([--with-mpi=(mpich2|intel|openmpi)], 
+                            [The mpi compiler suite to build this package with. Needs to be in $PATH [mpich2].])],
+            [AS_CASE([$withval],
+                     ["mpich"],       [ac_scorep_mpi_compiler_suite_file="${path_to_compiler_files}mpi-compiler-mpich2"],
+                     ["intel"],       [ac_scorep_mpi_compiler_suite_file="${path_to_compiler_files}mpi-compiler-intel"],
+                     ["openmpi"],     [ac_scorep_mpi_compiler_suite_file="${path_to_compiler_files}mpi-compiler-openmpi"],
+                     [AC_MSG_WARN([MPI compiler suite "${withval}" not supported by --with-mpi, ignoring.])])],
+            [])
+
+if test "x${ac_scorep_mpi_compiler_suite_file}" = "x"; then
+   AC_CHECK_PROGS(MPICC, mpicc hcc mpxlc_r mpxlc mpcc cmpicc mpiicc, $CC)
+   AC_CHECK_PROGS(MPICXX, mpic++ mpicxx mpiCC hcp mpxlC_r mpxlC mpCC cmpic++ mpiicpc, $CXX)
+   AC_CHECK_PROGS(MPIF77, mpif77 hf77 mpxlf_r mpxlf mpf77 cmpifc mpiifort, $F77)
+   AC_CHECK_PROGS(MPIFC, mpif90 mpxlf95_r mpxlf90_r mpxlf95 mpxlf90 mpf90 cmpif90c mpiifort, $FC)
+   echo "MPICC=${MPICC}"   >  mpi_compiler_suite_file
+   echo "MPICXX=${MPICXX}" >> mpi_compiler_suite_file
+   echo "MPIF77=${MPIF77}" >> mpi_compiler_suite_file
+   echo "MPIFC=${MPIFC}"   >> mpi_compiler_suite_file
+   ac_scorep_mpi_compiler_suite_file="mpi_compiler_suite_file"
+fi
+])
