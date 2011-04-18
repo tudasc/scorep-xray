@@ -32,11 +32,13 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
     # $ac_scorep_cross_compiling, $ac_scorep_platform are set here
     AC_SCOREP_DETECT_PLATFORMS
     AC_SCOREP_WITH_COMPILER_SUITE
+    AC_SCOREP_WITH_MPI_COMPILER_SUITE
     AC_SCOREP_LOAD_PLATFORMS_DEFAULTS
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            $srcdir/vendor/common/build-config/platforms/$ac_scorep_platform \
-           $ac_scorep_compiler_suite_files                    \
+           $ac_scorep_compiler_suite_files                                  \
+           $ac_scorep_mpi_compiler_suite_file                               \
            user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
@@ -71,8 +73,7 @@ AC_CONFIG_SUBDIR_CUSTOM([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep
 AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])
 
 # handle own package's subdir configures
-AC_SCOREP_MPI_COMPILER
-AC_CONFIG_SUBDIR_CUSTOM([build-backend/build-mpi], [${args} MPICC=${MPICC} MPICXX=${MPICXX} MPIF77=${MPIF77} MPIFC=${MPIFC} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend/build-mpi], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 AC_CONFIG_SUBDIR_CUSTOM([build-backend],           [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
