@@ -83,7 +83,7 @@ SCOREP_Platform_GetNumberOfCPUs()
 }
 
 
-SCOREP_HardwareTopology*
+SCOREP_Platform_HardwareTopology*
 SCOREP_Platform_GetHardwareTopology()
 {
     return 0;

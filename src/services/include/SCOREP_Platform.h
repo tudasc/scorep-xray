@@ -25,7 +25,7 @@
  *
  */
 
-
+#include <stdbool.h>
 #include <stdint.h>
 
 /*
@@ -113,7 +113,7 @@ typedef struct
     uint32_t xperiod, yperiod, zperiod; /* periodicity of dimension  */
 } SCOREP_Platform_HardwareTopology;
 
-SCOREP_HardwareTopology*
+SCOREP_Platform_HardwareTopology*
 SCOREP_Platform_GetHardwareTopology();
 
 
