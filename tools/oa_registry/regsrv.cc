@@ -39,6 +39,45 @@
 using namespace std;
 
 
+
+typedef struct Measurement
+{
+    int     rank;       ///<MPI process
+    int     thread;     ///<thread
+    int    	file;     ///<region fileId
+    int     rfl;        ///<region first line number
+    int     regionType; ///<regionType, e.g., loop, subroutine
+    int     samples;    ///<number of measurements
+    int     metric;     ///<metric, e.g., execution time
+    int     ignore;     ///<number of measurements that could not be performed due to shortage of counters
+    double  fpVal;      ///<value as floating point number
+    int64_t intVal;     ///<value as integer number
+} MeasurementType;
+
+#define MAX_REGION_NAME_LENGTH                          20
+#define MAX_FILE_NAME_LENGTH                            150
+
+typedef struct SCOREP_OA_CallPathRegionDef_struct
+{
+    unsigned long int region_id;
+    char     name[ MAX_REGION_NAME_LENGTH ];
+    char     file[ MAX_FILE_NAME_LENGTH ];
+    unsigned int rfl;
+    unsigned int rel;
+    unsigned int adapter_type;
+}SCOREP_OA_CallPathRegionDef;
+
+typedef struct SCOREP_OA_StaticProfileMeasurement_struct
+{
+	unsigned long int  measurement_id;
+	unsigned int rank;
+	unsigned int thread;
+	unsigned long int region_id;
+	unsigned long int samples;
+	unsigned long int metric_id;
+	unsigned long int int_val;
+}SCOREP_OA_StaticProfileMeasurement;
+
 int RegServ::open( int port )
 {
 	char hostname[ 100 ];
@@ -109,7 +148,9 @@ int RegServ::execute_test(const char* scenario_file)
 		int sock=scorep_oa_sockets_client_connect_retry(it->second->node.c_str(),it->second->port,1);
 		if (sock<0)
 		{
-				printf("\nRegistry service: test failed!!! could not connect to the monitoring process at %s:%d\n",it->second->node.c_str(),it->second->port);
+				fprintf(stderr,"\nRegistry service: test failed!!! could not connect to the monitoring process at %s:%d\n",
+							it->second->node.c_str(),
+							it->second->port);
 				exit(1);
 		}
 
@@ -120,7 +161,7 @@ int RegServ::execute_test(const char* scenario_file)
 	//open scenario file
 	ifstream f (scenario_file);
 	if (!f.is_open()){
-		printf("Registry service: Opening test scenario file failed!\n");
+		fprintf(stderr,"Registry service: Opening test scenario file failed!\n");
 		exit(1);
 	}
 
@@ -128,7 +169,7 @@ int RegServ::execute_test(const char* scenario_file)
 	int     pos;
 	string  delim   = "|"; //delimiter for the request lines in scenario file
 	string  none    = "-"; //no confirmation from OA
-	string  yes     = "1"; //receive data
+	string  data     = "data"; //receive data
 	string  wait	= "<wait>"; //wait for input from OA
 	string  buffer, response, recv_data;
 
@@ -166,27 +207,125 @@ int RegServ::execute_test(const char* scenario_file)
 				}
 				printf("Registry service: received from process %i: %s\n", it->second->pid, buf);
 				if (strcmp(response.c_str(), buf)!=0){
-						printf("Registry service: Wrong answer. Expected: %s.\n", response.c_str());
+						fprintf(stderr,"Registry service: Wrong answer. Expected: %s.\n", response.c_str());
 						exit(1);
 				}
 			}
 
-			if (recv_data == yes){
-				char *str;
-				int len;
-
-				//read data -> len
-				int nr = scorep_oa_sockets_blockread( it->second->test_comm_sock, (char*) (&len), sizeof(int) );
-				printf("Registry service: Receiving summary data from process %i, size: %i bytes\n", it->second->pid, len);
-
-				if (len > 0){
-					str = (char*)malloc(len);
-					if (!str){
-						printf("Registry service: Error allocating string\n");
+			if (recv_data == data)
+			{
+				int number;
+				int nr = scorep_oa_sockets_blockread( it->second->test_comm_sock,
+														(char*)(&number), 
+														sizeof(int));
+				if(nr!=sizeof(int))
+				{
+					fprintf(stderr,"Registry service: Couldn't receive number of records\n");
+					exit(1);
+				}
+				
+				printf("Registry service: Expecting Merged Region Definitions from process %i, size: %d entries\n", 
+						it->second->pid, 
+						number);
+				
+				if (number > 0)
+				{
+					
+					SCOREP_OA_CallPathRegionDef* recv_buffer = (SCOREP_OA_CallPathRegionDef *) 
+															calloc( number, sizeof(SCOREP_OA_CallPathRegionDef) );
+					if (!recv_buffer)
+					{
+						fprintf(stderr,"Registry service: Error allocating recv_buffer\n");
 						exit(1);
 					}
-					int length = scorep_oa_sockets_blockread( it->second->test_comm_sock, str, len );
-					printf("Registry service: Got summary data from process %i\n", it->second->pid);
+					nr=scorep_oa_sockets_blockread( it->second->test_comm_sock,
+													(char*)(recv_buffer), 
+													number*sizeof(SCOREP_OA_CallPathRegionDef));
+													
+					if(nr!=number*sizeof(SCOREP_OA_CallPathRegionDef))
+					{
+						fprintf(stderr,"Registry service: Couldn't receive measurements buffer\n");
+						exit(1);
+					}
+					printf("Registry service: Got Static Regions Definitions from process %i:\n", it->second->pid);
+					int i;
+					for ( i = 0; i < number; i++ )
+					{
+						printf("record %d: \t|region_id=%ld \t| name=%s \t| file=%s \t| rfl=%d \t| rel=%d \t| adapter_type=%d\t|\n",
+												i,
+												recv_buffer[ i ].region_id,
+												recv_buffer[ i ].name,
+												recv_buffer[ i ].file,
+												recv_buffer[ i ].rfl,
+												recv_buffer[ i ].rel,
+												recv_buffer[ i ].adapter_type
+												);
+					}	
+					free(recv_buffer);
+				
+				}
+				
+				int maxlen = MAX_MESSAGE_SIZE;
+				char buf[ maxlen ];
+				buf[ 0 ] = 0;
+				bzero( buf, maxlen );
+				int length;
+				while ( ( length = scorep_oa_sockets_read_line( it->second->test_comm_sock, buf, maxlen ) ) == 0 )
+				{
+				}
+				printf("Registry service: received from process %i: %s\n", it->second->pid, buf);
+				
+				number=0;
+				nr = scorep_oa_sockets_blockread( it->second->test_comm_sock,
+														(char*)(&number), 
+														sizeof(int));
+				if(nr!=sizeof(int))
+				{
+					fprintf(stderr,"Registry service: Couldn't receive number of records\n");
+					exit(1);
+				}
+				
+				printf("Registry service: Expecting Static Profile from process %i, size: %d entries\n", 
+						it->second->pid, 
+						number);
+				
+				if (number > 0)
+				{
+				
+					SCOREP_OA_StaticProfileMeasurement* recv_buffer = (SCOREP_OA_StaticProfileMeasurement *) 
+															calloc( number, sizeof(SCOREP_OA_StaticProfileMeasurement) );
+					if (!recv_buffer)
+					{
+						fprintf(stderr,"Registry service: Error allocating recv_buffer\n");
+						exit(1);
+					}
+					nr=scorep_oa_sockets_blockread( it->second->test_comm_sock,
+													(char*)(recv_buffer), 
+													number*sizeof(SCOREP_OA_StaticProfileMeasurement));
+													
+					if(nr!=number*sizeof(SCOREP_OA_StaticProfileMeasurement))
+					{
+						fprintf(stderr,"Registry service: Couldn't receive measurements buffer\n");
+						exit(1);
+					}
+					
+					printf("Registry service: Got Static Profile from process %i:\n", it->second->pid);
+					int i;
+					for ( i = 0; i < number; i++ )
+					{
+						printf("record %d: \t|meas_id=%ld \t| rank=%d \t| thread=%d \t| region_id=%ld \t| samples=%ld \t| counter=%ld\t| int_val=%ld \t|\n",
+												i,
+												recv_buffer[ i ].measurement_id,
+												recv_buffer[ i ].rank,
+												recv_buffer[ i ].thread,
+												recv_buffer[ i ].region_id,
+												recv_buffer[ i ].samples,
+												recv_buffer[ i ].metric_id,
+												recv_buffer[ i ].int_val
+												);
+					}
+					
+					free(recv_buffer);
 				}
 			}
 		}
