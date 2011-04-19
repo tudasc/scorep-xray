@@ -154,6 +154,12 @@ SCOREP_Region_GetFileName( SCOREP_RegionHandle handle );
 SCOREP_RegionType
 SCOREP_Region_GetType( SCOREP_RegionHandle handle );
 
+SCOREP_AdapterType
+SCOREP_Region_GetAdapterType( SCOREP_RegionHandle handle );
+
+SCOREP_LineNo
+SCOREP_Region_GetRfl( SCOREP_RegionHandle handle );
+
 const char*
 SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle );
 

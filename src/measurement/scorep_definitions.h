@@ -222,6 +222,9 @@ uint32_t
 SCOREP_GetNumberOfCounterDefinitions();
 
 uint32_t
+SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle );
+
+uint32_t
 SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle );
 
 uint32_t

@@ -1563,6 +1563,44 @@ SCOREP_Region_GetType( SCOREP_RegionHandle handle )
 
 
 /**
+ * Gets the adapter type of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region\s adapter type.
+ */
+SCOREP_AdapterType
+SCOREP_Region_GetAdapterType( SCOREP_RegionHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->adapter_type;
+}
+
+/**
+ * Gets the region first line of the region
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region\s first line.
+ */
+SCOREP_LineNo
+SCOREP_Region_GetRfl( SCOREP_RegionHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->begin_line;
+}
+
+/**
+ * Gets the region end line of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region\s end line.
+ */
+SCOREP_LineNo
+SCOREP_Region_GetRel( SCOREP_RegionHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->end_line;
+}
+/**
  * @}
  */
 
