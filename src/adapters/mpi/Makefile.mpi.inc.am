@@ -38,13 +38,8 @@ libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_DIR_UTIL)
 
+## Disable mpi profiling hooks
 libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS
-## include Online Access only when building on ALTIX
-#if PLATFORM_ALTIX
-#libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_WITH_OA
-#else
-#libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS
-#endif
 
 
 libscorep_adapter_mpi_c_wrapper_la_LIBADD =   \

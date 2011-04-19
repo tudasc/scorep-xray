@@ -48,6 +48,8 @@ static int     mpiprofiling_initialized = 0;
 SCOREP_USER_METRIC_LOCAL( lateSend )
 SCOREP_USER_METRIC_LOCAL( lateRecv )
 
+#define SCOREP_MPI_PROFILED_DEFAULT = 0
+
 /**
  * Initializes MPI profiling module
  */
@@ -66,8 +68,6 @@ scorep_mpiprofile_init
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "INIT: myrank = %d, numprocs = %d", myrank, numprocs );
 
     lateThreshold = 0.001;
-
-    /// @TODO synchronize clocks here
 
     SCOREP_USER_METRIC_INIT( lateSend, "lateSend", "s", SCOREP_USER_METRIC_TYPE_INT64,
                              SCOREP_USER_METRIC_CONTEXT_CALLPATH, SCOREP_USER_METRIC_GROUP_DEFAULT );
@@ -302,12 +302,13 @@ scorep_mpiprofile_eval_time_stamps
     else if ( delta < -mpiprofiling_get_late_threshold() )
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "LATE SENDER: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld", myrank, src, dst, delta, recvTime, sendTime );
-        SCOREP_USER_METRIC_INT64( lateSend, delta );
+        SCOREP_USER_METRIC_INT64( lateSend, -delta );
         ///sending process is late: store LATE_SEND/EARLY_RECEIVE=-delta value on the current process
         ///trigger user metric here
     }
     else
     {
+        delta = abs( delta );
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "IN TIME: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld", myrank, src, dst, delta, recvTime, sendTime );
         ///no late state
         ///trigger user metric here
