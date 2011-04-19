@@ -137,6 +137,10 @@ AC_SCOREP_LIBBFD
 AC_F77_WRAPPERS
 AC_FC_WRAPPERS
 
+AM_PROG_LEX
+AM_CONDITIONAL([HAVE_LEX], [test "x${LEX}" != "x:"])
+AC_PROG_YACC
+
 ## trunc and ceil needed by the cube4 writer
 AC_SEARCH_LIBS([trunc], [m])
 AC_SEARCH_LIBS([ceil], [m])

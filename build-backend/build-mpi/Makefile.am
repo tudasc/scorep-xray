@@ -136,7 +136,7 @@ include ../../build-includes/mpi-backend-only.am
 ACLOCAL_AMFLAGS = -I ../../vendor/common/build-config/m4
 
 clean-local:
-	rm -f scorep_mpi_omp_tests.sh  scorep_mpi_tests.sh
+	rm -f scorep_mpi_omp_tests.sh  scorep_mpi_tests.sh lex.yy.c scanner.h yacc.c yacc.h
 
 distclean-local:
 	rm -f mpi_supported
