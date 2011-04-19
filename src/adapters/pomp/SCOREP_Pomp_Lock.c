@@ -177,7 +177,12 @@ scorep_pomp_get_lock( const void* lock )
 SCOREP_Pomp_LockHandleType
 scorep_pomp_get_lock_handle( const void* lock )
 {
-    return scorep_pomp_get_lock( lock )->handle;
+    struct scorep_pomp_lock* lock_struct = scorep_pomp_get_lock( lock );
+    if ( lock_struct != NULL )
+    {
+        return scorep_pomp_get_lock( lock )->handle;
+    }
+    return SCOREP_POMP_INVALID_LOCK;
 }
 
 void

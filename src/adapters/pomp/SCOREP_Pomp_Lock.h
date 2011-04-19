@@ -31,6 +31,9 @@
 /** Definition of the type of the lock handle */
 typedef uint32_t SCOREP_Pomp_LockHandleType;
 
+/** Defines an invalid value for locks */
+#define SCOREP_POMP_INVALID_LOCK -1
+
 /** Number of omp regions */
 #define SCOREP_POMP_REGION_NUM 10
 
@@ -65,7 +68,7 @@ scorep_pomp_lock_init( const void* lock );
 SCOREP_Pomp_LockHandleType
 scorep_pomp_get_lock_handle( const void* lock );
 
-/** Deletes teh given lock from the management system */
+/** Deletes the given lock from the management system */
 void
 scorep_pomp_lock_destroy( const void* lock );
 

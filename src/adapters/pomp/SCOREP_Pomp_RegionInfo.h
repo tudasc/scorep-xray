@@ -29,6 +29,9 @@
 
 #include <stdbool.h>
 #include "SCOREP_Types.h"
+#ifdef _OPENMP
+#include "SCOREP_Pomp_Lock.h"
+#endif
 
 /**
  * SCOREP_Pomp_RegionType
@@ -69,19 +72,22 @@ typedef struct
        four SCOREP regions. So we use a pair of SCOREP regions for the parallel
        statements and a pair of regions for other statements.                        */
     /// @todo Why four and not three? (croessel)
-    SCOREP_RegionHandle outerParallel;    /* SCOREP handle for the outer parallel region */
-    SCOREP_RegionHandle innerParallel;    /* SCOREP handle for the inner parallel region */
-    SCOREP_RegionHandle outerBlock;       /* SCOREP handle for the enclosing region      */
-    SCOREP_RegionHandle innerBlock;       /* SCOREP handle for the enclosed region       */
+    SCOREP_RegionHandle        outerParallel; /* SCOREP handle for the outer parallel region */
+    SCOREP_RegionHandle        innerParallel; /* SCOREP handle for the inner parallel region */
+    SCOREP_RegionHandle        outerBlock;    /* SCOREP handle for the enclosing region      */
+    SCOREP_RegionHandle        innerBlock;    /* SCOREP handle for the enclosed region       */
+#ifdef _OPENMP
+    SCOREP_Pomp_LockHandleType lock;          /* SCOREP handle for lock in critical regions */
+#endif
 
-    char*               startFileName;    /* File containing opening statement         */
-    int32_t             startLine1;       /* First line of the opening statement       */
-    int32_t             startLine2;       /* Last line of the opening statement        */
+    char*   startFileName;                /* File containing opening statement         */
+    int32_t startLine1;                   /* First line of the opening statement       */
+    int32_t startLine2;                   /* Last line of the opening statement        */
 
-    char*               endFileName;      /* File containing the closing statement     */
-    int32_t             endLine1;         /* First line of the closing statement       */
-    int32_t             endLine2;         /* Last line of the closing statement        */
-    char*               regionName;       /* For user regions and criticals            */
+    char*   endFileName;                  /* File containing the closing statement     */
+    int32_t endLine1;                     /* First line of the closing statement       */
+    int32_t endLine2;                     /* Last line of the closing statement        */
+    char*   regionName;                   /* For user regions and criticals            */
 } SCOREP_Pomp_Region;
 
 

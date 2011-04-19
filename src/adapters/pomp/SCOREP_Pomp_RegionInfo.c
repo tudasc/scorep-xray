@@ -666,6 +666,18 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     }
 
     free( region_name );
+
+#ifdef _OPENMP
+    /* Register locks for critical regions */
+    if ( region->regionType == SCOREP_Pomp_Critical )
+    {
+        region->lock = scorep_pomp_get_lock_handle( region->regionName );
+        if ( region->lock == SCOREP_POMP_INVALID_LOCK )
+        {
+            region->lock = scorep_pomp_lock_init( region->regionName );
+        }
+    }
+#endif
 }
 
 /* **************************************************************************************
