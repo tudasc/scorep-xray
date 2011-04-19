@@ -44,7 +44,13 @@
 void
 SCOREP_OA_PhaseBegin
 (
-    const SCOREP_RegionHandle* handle
+    SCOREP_User_RegionHandle*    handle,
+    const char**                 lastFileName,
+    SCOREP_SourceFileHandle*     lastFile,
+    const char*                  name,
+    const SCOREP_User_RegionType regionType,
+    const char*                  fileName,
+    const uint32_t               lineNo
 );
 
 /**
@@ -59,7 +65,7 @@ SCOREP_OA_PhaseBegin
 void
 SCOREP_OA_PhaseEnd
 (
-    const SCOREP_RegionHandle* handle
+    const SCOREP_User_RegionHandle handle
 );
 
 

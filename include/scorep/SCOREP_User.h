@@ -516,9 +516,12 @@
 
 #ifdef SCOREP_USER_ENABLE
 
-#define SCOREP_USER_OA_PHASE_BEGIN( handle ) SCOREP_OA_PhaseBegin( &handle );
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  ) SCOREP_OA_PhaseBegin( \
+        &handle, &SCOREP_User_LastFileName, &SCOREP_User_LastFileHandle, name, \
+        type, __FILE__, __LINE__ );
 
-#define SCOREP_USER_OA_PHASE_END( handle ) SCOREP_OA_PhaseEnd( &handle );
+#define SCOREP_USER_OA_PHASE_END( handle ) \
+    SCOREP_OA_PhaseEnd( handle );
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
     static SCOREP_User_RegionHandle handle = SCOREP_INVALID_USER_REGION;
@@ -1439,6 +1442,8 @@
 
 #define SCOREP_USER_REGION( name, type )
 #define SCOREP_USER_REGION_DEFINE( handle )
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  )
+#define SCOREP_USER_OA_PHASE_END( handle )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
