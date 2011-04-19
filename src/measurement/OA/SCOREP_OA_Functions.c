@@ -24,56 +24,58 @@
 
 #include <config.h>
 
+#include "SCOREP_User_Functions.h"
 #include "SCOREP_OA_Functions.h"
 #include "SCOREP_OA_Init.h"
-
+#include "SCOREP_Types.h"
 #include "scorep_utility/SCOREP_Utils.h"
 
-#include "SCOREP_Types.h"
-#include "scorep_oa_mri_control.h"
-#include "scorep_oa_connection.h"
+#include "scorep_oa_phase.h"
 #include "scorep_status.h"
-
-#include <stdio.h>
-
-
 
 void
 SCOREP_OA_PhaseBegin
 (
-    const SCOREP_RegionHandle* handle
+    SCOREP_User_RegionHandle*    handle,
+    const char**                 lastFileName,
+    SCOREP_SourceFileHandle*     lastFile,
+    const char*                  name,
+    const SCOREP_User_RegionType regionType,
+    const char*                  fileName,
+    const uint32_t               lineNo
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
-    if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_Initialized() )
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+
+    if ( !SCOREP_OA_Init() )
     {
         return;
     }
-    if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING )
-    {
-        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_BEGINNING, 0, 0 );
-        scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
-        scorep_oa_mri_receive_and_process_requests( connection );
-    }
-    printf( "Leaving %s\n", __FUNCTION__ );
+
+    SCOREP_User_RegionInit( \
+        handle, lastFileName, lastFile, name, \
+        regionType, fileName, lineNo );
+
+    scorep_oa_phase_enter( *handle );
+
+    SCOREP_User_RegionEnter( *handle );
 }
+
 
 void
 SCOREP_OA_PhaseEnd
 (
-    const SCOREP_RegionHandle* handle
+    const SCOREP_User_RegionHandle handle
 )
 {
-    printf( "Entering %s\n", __FUNCTION__ );
-    if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_Initialized() )
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+
+    if ( !SCOREP_OA_Initialized() )
     {
         return;
     }
-    if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_END )
-    {
-        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_END, 0, 0 );
-        scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
-        scorep_oa_mri_receive_and_process_requests( connection );
-    }
-    printf( "Leaving %s\n", __FUNCTION__ );
+
+    SCOREP_User_RegionEnd( handle );
+
+    scorep_oa_phase_exit( handle );
 }

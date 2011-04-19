@@ -29,10 +29,12 @@
 #include <stdio.h>
 #include <strings.h>
 #include <mpi.h>
+#include <ctype.h>
 
 #include <SCOREP_Profile.h>
 #include <SCOREP_Mpi.h>
 #include <SCOREP_Profile_OAConsumer.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_oa_connection.h"
 #include "scanner.h"
@@ -40,15 +42,19 @@
 #include "scorep_profile_definition.h"
 
 
+
+
 static scorep_oa_mri_app_control_type appl_control = SCOREP_OA_MRI_STATUS_UNDEFINED;
 
 static int32_t                        scorep_phase_fileid, scorep_phase_rfl;
+
+static SCOREP_RegionHandle            phase_handle = SCOREP_INVALID_REGION;
 
 typedef struct Measurement
 {
     int     rank;       ///<MPI process
     int     thread;     ///<thread
-    int     fileId;     ///<region fileId
+    int     file;       ///<region fileId
     int     rfl;        ///<region first line number
     int     regionType; ///<regionType, e.g., loop, subroutine
     int     samples;    ///<number of measurements
@@ -85,7 +91,7 @@ scorep_oa_mri_receive_and_process_requests
 {
     int  length, i;
     char buffer[ 2000 ];
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     buffer[ 0 ] = 0;
     bzero( buffer, 2000 );
 
@@ -103,25 +109,26 @@ scorep_oa_mri_receive_and_process_requests
         {
             buffer[ i ] = toupper( buffer[ i ] );
         }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
-
+        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
 
         if ( scorep_oa_mri_parse( buffer ) != SCOREP_SUCCESS )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
+            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
         }
-
         if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Application Terminating!" );
+            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Application Terminating!" );
             //cleanup_registry();
             //PMPI_Finalize();
             //exit(0);
+            SCOREP_FinalizeMeasurement();
+            _Exit( EXIT_SUCCESS );
         }
     }
-
+#ifdef WITH_MPI
     PMPI_Barrier( MPI_COMM_WORLD );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __FUNCTION__ );
+#endif
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __FUNCTION__ );
     return SCOREP_SUCCESS;
 }
 
@@ -133,10 +140,21 @@ scorep_oa_mri_set_appl_control
     uint8_t                        region_line
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Execution control is SET TO: %d", ( int )command );
     appl_control = command;
     // appl_control_file=file_id;
     //appl_control_region=region_line;
+}
+
+void
+scorep_oa_mri_set_phase
+(
+    SCOREP_RegionHandle handle
+)
+{
+    phase_handle = handle;
+    printf( "Phase set to region (handle = %ld )\n", phase_handle );
 }
 
 scorep_oa_mri_app_control_type
@@ -144,7 +162,7 @@ scorep_oa_mri_get_appl_control
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     return appl_control;
 }
 
@@ -154,148 +172,37 @@ scorep_oa_mri_return_summary_data
     int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 
-    //scorep_profile_dump();void
+    /** Initialize OA Consumer interface and index Profile data */
+    SCOREP_OAConsumer_Initialize( phase_handle );
 
-    scorep_oa_mri_dump_profile();
-    SCOREP_OA_PeriscopeSummary* summary = SCOREP_Profile_GetPeriscopeSummary();
+    /** Get number of merged regions definitions*/
+    int                          region_defs_size = SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
+    /** Generate merged regions definitions buffer*/
+    SCOREP_OA_CallPathRegionDef* region_defs = ( SCOREP_OA_CallPathRegionDef* )SCOREP_OAConsumer_GetData(
+        MERGED_REGION_DEFINITIONS );
 
+    /** Send merged region definitions to the agent*/
+    scorep_oa_connection_send_string( connection, "MERGED_REGION_DEFINITIONS\n" );
+    scorep_oa_connection_send_data( connection, region_defs, region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
 
-
-
-    MeasurementType* send_buffer = calloc( summary->measurement_size, sizeof( MeasurementType ) );
-    int              i;
-    for ( i = 0; i < summary->measurement_size; i++ )
-    {
-        send_buffer[ i ].rank       = summary->context_buffer[ summary->measurement_buffer[ i ].context_id ].rank;
-        send_buffer[ i ].thread     = summary->context_buffer[ summary->measurement_buffer[ i ].context_id ].thread_id;
-        send_buffer[ i ].fileId     = scorep_phase_fileid;
-        send_buffer[ i ].rfl        = scorep_phase_rfl;
-        send_buffer[ i ].regionType = 27;
-        send_buffer[ i ].samples    = summary->measurement_buffer->count;
-        send_buffer[ i ].metric     = 540;
-        send_buffer[ i ].ignore     = 0;
-        send_buffer[ i ].fpVal      = 0;
-        send_buffer[ i ].intVal     = summary->measurement_buffer->sum;
-    }
+    /** Get number of static profile records*/
+    int                                 static_profile_size = SCOREP_OAConsumer_GetDataSize( STATIC_PROFILE );
+    /** Get static profile buffer*/
+    SCOREP_OA_StaticProfileMeasurement* static_profile = ( SCOREP_OA_StaticProfileMeasurement* )SCOREP_OAConsumer_GetData(
+        STATIC_PROFILE );
+    /** Send static profile to the agent*/
+    scorep_oa_connection_send_string( connection, "STATIC_PROFILE\n" );
+    scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
 
 
-    scorep_oa_connection_send_string( connection, "SUMMARYDATA\n" );
-
-    scorep_oa_connection_send_data( connection, send_buffer, summary->measurement_size, sizeof( MeasurementType ) );
-
-    free( summary->context_buffer );
-    free( summary->measurement_buffer );
-    free( summary );
-    free( send_buffer );
+    /** Dissmiss the data*/
+    SCOREP_OAConsumer_DismissData();
 }
 
-void
-scorep_profile_print_func
-(
-    scorep_profile_node* node,
-    void*                param
-)
-{
-    //SCOREP_OA_PeriscopeSummary* summary_buffer = (SCOREP_OA_PeriscopeSummary*)param;
-    if ( node == NULL )
-    {
-        return;
-    }
-
-    static char* type_name_map[] = {
-        "regular region",
-        "paramater string",
-        "parameter integer",
-        "thread root",
-        "thread start"
-    };
-    if ( node->node_type == scorep_profile_node_regular_region )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "+ type: %s, time=%ld, count=%ld;", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
 
 
-        int i;
-        for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, " dense_%i=%ld", i, node->dense_metrics[ i ].sum );
-        }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";" );
-        int                               number     = 0;
-        scorep_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
-        while ( sparse_int != NULL )
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, " sparse_int_%d=%ld", number, sparse_int->sum );
-            number++;
-            sparse_int = sparse_int->next_metric;
-        }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";" );
-    }
-}
-
-void
-scorep_oa_mri_parse_subtree( scorep_profile_node* node,
-                             uint32_t             level )
-{
-    static char* type_name_map[] = {
-        "regular region",
-        "paramater string",
-        "parameter integer",
-        "thread root",
-        "thread start"
-    };
-
-    if ( node == NULL )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<end of the subtree>" );
-        return;
-    }
-
-    int i;
-    for ( i = 0; i < level; i++ )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "| " );
-    }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "+ type: %s, time=%ld, count=%ld, sparse double:", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
-    scorep_profile_sparse_metric_double* sparse_double = node->first_double_sparse;
-    int                                  number        = 0;
-    while ( sparse_double != NULL )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, " metric_%d=%f", number, sparse_double->sum );
-        number++;
-        sparse_double = sparse_double->next_metric;
-    }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "; sparse int:" );
-    scorep_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
-    number = 0;
-    while ( sparse_int != NULL )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, " metric_%d=%ld", number, sparse_int->sum );
-        number++;
-        sparse_int = sparse_int->next_metric;
-    }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, ";" );
-
-    if ( node->first_child != NULL )
-    {
-        scorep_oa_mri_parse_subtree( node->first_child, level + 1 );
-    }
-    if ( node->next_sibling != NULL )
-    {
-        scorep_oa_mri_parse_subtree( node->next_sibling, level );
-    }
-}
-
-void
-scorep_oa_mri_dump_profile()
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Number of dense metrics is %d ", scorep_profile.num_of_dense_metrics );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<Root>:" );
-    //scorep_oa_mri_parse_subtree( scorep_profile.first_root_node, 0 );
-    scorep_profile_for_all( scorep_profile.first_root_node, &scorep_profile_print_func, NULL );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "<End of the tree.>" );
-}
 
 
 void
@@ -303,7 +210,7 @@ scorep_oa_mri_noop
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 }
 
 
@@ -313,12 +220,12 @@ scorep_oa_mri_parse
     char* buffer
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     SCOREP_Error_Code return_status = SCOREP_SUCCESS;
 
     YY_BUFFER_STATE   my_string_buffer;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
     my_string_buffer = yy_scan_string( buffer );
     if ( yyparse() == 0 )
     {
@@ -339,8 +246,12 @@ scorep_oa_mri_set_mpiprofiling
     int value
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+#ifdef WITH_MPI
     SCOREP_MPI_HOOKS_SET( value );
+#else
+    scorep_oa_connection_send_string( connection, "this is serial version of Score-P, no MPI available\n" );
+#endif
 }
 
 void
@@ -349,7 +260,7 @@ scorep_oa_mri_set_profiling
     int value
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     //SCOREP_MPI_HOOKS_SET(value);
 }
 

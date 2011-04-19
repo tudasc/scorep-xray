@@ -30,7 +30,7 @@
 
 
 #include "scorep_utility/SCOREP_Utils.h"
-
+#include "SCOREP_Types.h"
 
 typedef enum
 {
@@ -70,6 +70,11 @@ scorep_oa_mri_set_appl_control
     uint8_t                        region_line
 );
 
+void
+scorep_oa_mri_set_phase
+(
+    SCOREP_RegionHandle handle
+);
 
 scorep_oa_mri_app_control_type
 scorep_oa_mri_get_appl_control

@@ -34,7 +34,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#ifdef WITH_MPI
 #include <mpi.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,7 +61,7 @@ scorep_oa_sockets_server_startup_retry
     int                stat = -1;
     int                port;
     struct sockaddr_in my_addr;                 /* my address information */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 
     /**
      * create a new socket socket() returns positive interger on success
@@ -73,7 +75,7 @@ scorep_oa_sockets_server_startup_retry
         {
             if ( port + step > *init_port + retries * step )
             {
-                SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::socket()" );
+                SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::socket()" );
             }
             stat = -1;
         }
@@ -83,7 +85,7 @@ scorep_oa_sockets_server_startup_retry
             {
                 if ( port + step > *init_port + retries * step )
                 {
-                    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::setsockopt()" );
+                    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::setsockopt()" );
                 }
                 stat = -1;
             }
@@ -98,7 +100,7 @@ scorep_oa_sockets_server_startup_retry
                 {
                     if ( port + step > *init_port + retries * step )
                     {
-                        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::bind()" );
+                        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::bind()" );
                     }
                     stat = -1;
                 }
@@ -108,7 +110,7 @@ scorep_oa_sockets_server_startup_retry
                     {
                         if ( port + step > *init_port + retries * step )
                         {
-                            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::listen()" );
+                            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::listen()" );
                         }
                         stat = -1;
                     }
@@ -127,7 +129,7 @@ scorep_oa_sockets_server_startup_retry
     }
     else
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d", __FUNCTION__, port );
+        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d", __FUNCTION__, port );
         *init_port = port;
         return sock;
     }
@@ -243,6 +245,7 @@ scorep_oa_sockets_registry_create_entry
              , CMD_CREATE, app, site, mach, node, port, pid, comp, tag );
     scorep_oa_sockets_write_line( reg->sock_, buf );
     scorep_oa_sockets_read_line( reg->sock_, buf, BUFSIZE );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "received from registry: %s", buf );
     n = sscanf( buf, MSG_CREATE_SUCCESS, &id );
     if ( n < 1 )
     {
@@ -450,7 +453,7 @@ scorep_oa_sockets_register_with_registry
     int port
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     registry* reg;
     int       i;
     int       nprocs, rank, initialized;
@@ -463,21 +466,30 @@ scorep_oa_sockets_register_with_registry
     };
 
     typedef struct p_info P_info;
-    P_info myinfo, * allinfo;
+    P_info myinfo;
     int    entry_id;
     char   appl_name[ 2000 ];
     char   psc_reghost[ 200 ];
     int    psc_regport;
+    char   site_name[ 50 ];
+    char   machine_name[ 50 ];
+    char   library_name[ 50 ];
 
-    sprintf( appl_name, "appl" );        /// need to get appl name from config variable
-    sprintf( psc_reghost, "hlrb2" );     /// need to get appl name from config variable
-    psc_regport = 50001;
+    sprintf( appl_name, "appl" );
+    sprintf( psc_reghost, "hlrb2" );                            /// TODO grab the registry host name from the config file
+    psc_regport = 50100;                                        /// TODO grab the registry port number from the config file
+    sprintf( site_name, "LRZ" );                                /// TODO grab the site name from the config file
+    sprintf( machine_name, "ALTIX4700" );                       /// TODO grab the machine name from the config file
+    sprintf( library_name, "MRIMONITOR" );                      /// TODO swith to SILC when Periscope is ready
 
+#ifdef WITH_MPI
+
+    P_info* allinfo;
 
     PMPI_Initialized( &initialized );
     if ( !initialized )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "ERROR: MPI not initialized" );
+        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "ERROR: MPI not initialized" );
         exit( 1 );
     }
     PMPI_Comm_size( MPI_COMM_WORLD, &nprocs );
@@ -506,9 +518,16 @@ scorep_oa_sockets_register_with_registry
         int* ids = ( int* )calloc( nprocs, sizeof( int ) );                             ///@TODO: switch to scorep memory allocator
         for ( i = 0; i < nprocs; i++ )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Registering process %d with port %d and host %s", allinfo[ i ].rank, allinfo[ i ].port, allinfo[ i ].hostname );
-            entry_id = scorep_oa_sockets_registry_create_entry( reg, appl_name, "LRZ",
-                                                                "ALTIX4700", allinfo[ i ].hostname, allinfo[ i ].port, allinfo[ i ].rank + 1, "MRIMONITOR", "none" );
+            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Registering process %d with port %d and host %s", allinfo[ i ].rank, allinfo[ i ].port, allinfo[ i ].hostname );
+            entry_id = scorep_oa_sockets_registry_create_entry( reg,
+                                                                appl_name,
+                                                                site_name,
+                                                                machine_name,
+                                                                allinfo[ i ].hostname,
+                                                                allinfo[ i ].port,
+                                                                allinfo[ i ].rank + 1,
+                                                                library_name,
+                                                                "none" );
             ids[ allinfo[ i ].rank ] = entry_id;
             if ( entry_id == 0 )
             {
@@ -516,7 +535,7 @@ scorep_oa_sockets_register_with_registry
             }
             else
             {
-                SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entry_id= %d", entry_id );
+                SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entry_id= %d", entry_id );
             }
 
 //			sprintf( str,"PERISCOPE processrank [%i:%i:%i]", nprocs, allinfo[i].rank, allinfo[i].cpu);
@@ -525,7 +544,7 @@ scorep_oa_sockets_register_with_registry
 
         if ( !scorep_oa_sockets_close_registry( reg ) )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Something went wrong when closing registry" );
+            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Something went wrong when closing registry" );
         }
 
         PMPI_Scatter( ids, 1, MPI_INTEGER, &entry_id, 1, MPI_INTEGER, 0, MPI_COMM_WORLD );
@@ -541,6 +560,42 @@ scorep_oa_sockets_register_with_registry
 
         PMPI_Scatter( &help_int, 1, MPI_INTEGER, &entry_id, 1, MPI_INTEGER, 0, MPI_COMM_WORLD );
     }
+#else
+
+    myinfo.cpu  = 1;                                                                                    /// get rid of later
+    myinfo.port = port;
+    myinfo.rank = 1;
+    gethostname( myinfo.hostname, 100 );
+
+    reg = scorep_oa_sockets_open_registry( psc_reghost, psc_regport );
+    if ( !reg )
+    {
+        fprintf( stderr, "Cannot open registry at %s:%d\n", psc_reghost, psc_regport );
+        exit( 1 );
+    }
+    entry_id = scorep_oa_sockets_registry_create_entry( reg,
+                                                        appl_name,
+                                                        site_name,
+                                                        machine_name,
+                                                        myinfo.hostname,
+                                                        myinfo.port,
+                                                        myinfo.rank,
+                                                        library_name,
+                                                        "none" );
+    if ( entry_id == 0 )
+    {
+        fprintf( stderr, "Failed to create registry entry\n" );
+    }
+    else
+    {
+        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entry_id= %d", entry_id );
+    }
+
+    if ( !scorep_oa_sockets_close_registry( reg ) )
+    {
+        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Something went wrong when closing registry" );
+    }
+#endif
 }
 
 int
@@ -557,10 +612,10 @@ scorep_oa_sockets_server_accept_client
     unsigned int sin_size;
 
     sin_size = sizeof( struct sockaddr_in );
-    printf( "Waiting for client to connect... %d\n", 1 << 15 );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Waiting for client to connect..." );
     if ( ( newsock = accept( sock, ( struct sockaddr* )&client_addr, &sin_size ) ) < 0 )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_accept_client::accept() error" );
+        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "socket_server_accept_client::accept() error" );
         return -1;
     }
 

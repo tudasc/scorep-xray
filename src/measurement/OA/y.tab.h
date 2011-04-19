@@ -53,33 +53,34 @@
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     T_CALL = 258,
-     T_CONFIG = 259,
-     T_EXECUTION_TIME = 260,
-     T_GLOBAL = 261,
-     T_INCLUDE = 262,
-     T_L1_CACHE_MISS = 263,
-     T_OFF = 264,
-     T_ON = 265,
-     T_ONLY = 266,
-     T_REGION_SUMMARY = 267,
-     T_REQUEST = 268,
-     T_STRING = 269,
-     T_USER = 270,
-     T_ZAHL = 271,
-     T_TERMINATE = 272,
-     T_RUNTOSTART = 273,
-     T_RUNTOEND = 274,
-     T_GETSUMMARYDATA = 275,
-     T_BEGINREQUESTS = 276,
-     T_ENDREQUESTS = 277,
-     T_SDDF_BUFFER_FLUSH_RATE = 278,
-     T_MPI = 279,
-     T_LOCAL = 280
-   };
+/* Put the tokens into the symbol table, so that GDB and other debuggers
+   know about them.  */
+enum yytokentype
+{
+    T_CALL                   = 258,
+    T_CONFIG                 = 259,
+    T_EXECUTION_TIME         = 260,
+    T_GLOBAL                 = 261,
+    T_INCLUDE                = 262,
+    T_L1_CACHE_MISS          = 263,
+    T_OFF                    = 264,
+    T_ON                     = 265,
+    T_ONLY                   = 266,
+    T_REGION_SUMMARY         = 267,
+    T_REQUEST                = 268,
+    T_STRING                 = 269,
+    T_USER                   = 270,
+    T_ZAHL                   = 271,
+    T_TERMINATE              = 272,
+    T_RUNTOSTART             = 273,
+    T_RUNTOEND               = 274,
+    T_GETSUMMARYDATA         = 275,
+    T_BEGINREQUESTS          = 276,
+    T_ENDREQUESTS            = 277,
+    T_SDDF_BUFFER_FLUSH_RATE = 278,
+    T_MPI                    = 279,
+    T_LOCAL                  = 280
+};
 #endif
 /* Tokens.  */
 #define T_CALL 258
@@ -109,11 +110,12 @@
 
 
 
-#if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 46 "yacc.l"
-typedef union YYSTYPE {
-  int   Zahl;
-  char *String;
+#if !defined ( YYSTYPE ) && !defined ( YYSTYPE_IS_DECLARED )
+#line 74 "yacc.l"
+typedef union YYSTYPE
+{
+    int   Zahl;
+    char* String;
 } YYSTYPE;
 /* Line 1447 of yacc.c.  */
 #line 93 "y.tab.h"

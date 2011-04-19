@@ -19,38 +19,143 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-## base
+AM_YFLAGS = -d
 
-## include Online Access only when building on ALTIX
-if PLATFORM_ALTIX
-OA_FLAGS =                                 	\
-    $(AM_CPPFLAGS)                              \
-    -I$(INC_ROOT)src/measurement/OA        	\
-    -I$(INC_ROOT)src/measurement/profile   	\
-    -I$(INC_ROOT)src/measurement/include        \
-    -I$(INC_ROOT)src/measurement/               \
-    -I$(INC_ROOT)src/adapters/mpi		\
-    -I$(PUBLIC_INC_DIR)                         \
+BUILT_SOURCES += lex.yy.c
+
+if HAVE_LEX
+lex.yy.c:
+       $(LEX) --header=scanner.h $(INC_ROOT)src/measurement/OA/lex.l
+else
+lex.yy.c:
+       if test -f $(INC_ROOT)src/measurement/OA/lex.yy.c; then \
+           cp $(INC_ROOT)src/measurement/OA/lex.yy.c .         \
+       else                                                    \
+           echo "LEX not available and lex.yy.c not provided." \
+           exit 1                                              \
+       fi
+endif
+
+SCOREP_OA_FORTRAN_SOURCES =  										\
+	$(SRC_ROOT)src/measurement/OA/SCOREP_OA_FunctionsF.c
+
+SCOREP_OA_FORTRAN_FLAGS =                     						\
+    $(AM_CPPFLAGS)                              					\
+    -I$(INC_ROOT)src/adapters/include           					\
+    -I$(PUBLIC_INC_DIR)                         					\
     -I$(INC_DIR_UTIL)
 
-noinst_LTLIBRARIES += libscorep_oa_base.la
-libscorep_oa_base_la_SOURCES =                                  	\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Functions.c            	\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.h       		\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.c       		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.h         		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c			\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.h		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.c		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.h		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.c		\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_registry_protocol.h		\
-    $(SRC_ROOT)src/measurement/OA/y.tab.c				\
-    $(SRC_ROOT)src/measurement/OA/y.tab.h				\
-    $(SRC_ROOT)src/measurement/OA/scanner.h				\
-    #$(SRC_ROOT)src/measurement/OA/lex.yy.c				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c         
+libscorep_oa_fortran_sub1_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_base_la_CPPFLAGS = $(OA_FLAGS)
+libscorep_oa_fortran_sub1_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB1              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_fortran_sub2_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub2_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB2              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_fortran_sub3_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub3_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB3              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_fortran_sub4_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub4_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB4              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+noinst_LTLIBRARIES +=                      	\
+    libscorep_oa_fortran_sub1.la 			\
+    libscorep_oa_fortran_sub2.la 			\
+    libscorep_oa_fortran_sub3.la 			\
+    libscorep_oa_fortran_sub4.la
+
+if MPI_SUPPORTED
+OA_MPI_FLAGS =                                 						\
+    $(AM_CPPFLAGS)                              					\
+    -I$(INC_ROOT)src/measurement/OA        							\
+    -I$(INC_ROOT)src/measurement/profiling   						\
+    -I$(INC_ROOT)src/measurement/include        					\
+    -I$(INC_ROOT)src/measurement/               					\
+    -I$(INC_ROOT)src/adapters/mpi									\
+    -I$(INC_ROOT)src/adapters/user               					\
+    -I$(PUBLIC_INC_DIR)                         					\
+    -I$(INC_DIR_UTIL)												\
+    -DWITH_MPI
+
+noinst_LTLIBRARIES += libscorep_oa_mpi.la
+libscorep_oa_mpi_la_SOURCES =                                  			\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Functions.c            		\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.h       				\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.c       				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.h         			\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c					\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.h				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.c				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.h				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.c				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_registry_protocol.h			\
+    $(SRC_ROOT)src/measurement/OA/yacc.y
+
+libscorep_oa_mpi_la_SOURCES +=											\
+	$(SRC_ROOT)src/measurement/OA/scorep_oa_phase.c         			\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_phase.h         			
+
+libscorep_oa_mpi_la_CPPFLAGS = $(OA_MPI_FLAGS)
+
+libscorep_oa_mpi_la_LIBADD =                \
+    libscorep_oa_fortran_sub1.la        	\
+    libscorep_oa_fortran_sub2.la        	\
+    libscorep_oa_fortran_sub3.la        	\
+    libscorep_oa_fortran_sub4.la
 endif
+
+OA_SERIAL_FLAGS =                                 					\
+    $(AM_CPPFLAGS)                              					\
+    -I$(INC_ROOT)src/measurement/OA        							\
+    -I$(INC_ROOT)src/measurement/profiling   						\
+    -I$(INC_ROOT)src/measurement/include        					\
+    -I$(INC_ROOT)src/measurement/               					\
+    -I$(INC_ROOT)src/adapters/mpi									\
+    -I$(INC_ROOT)src/adapters/user               					\
+    -I$(PUBLIC_INC_DIR)                         					\
+    -I$(INC_DIR_UTIL)												
+
+
+noinst_LTLIBRARIES += libscorep_oa_serial.la
+libscorep_oa_serial_la_SOURCES =                                  		\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Functions.c            		\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.h       				\
+    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.c       				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.h         			\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c					\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.h				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.c				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.h				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.c				\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_registry_protocol.h			\
+	$(SRC_ROOT)src/measurement/OA/yacc.y			
+
+libscorep_oa_serial_la_SOURCES +=										\
+	$(SRC_ROOT)src/measurement/OA/scorep_oa_phase.c         			\
+    $(SRC_ROOT)src/measurement/OA/scorep_oa_phase.h         			
+
+libscorep_oa_serial_la_CPPFLAGS = $(OA_SERIAL_FLAGS)
+
+libscorep_oa_serial_la_LIBADD =               	\
+    libscorep_oa_fortran_sub1.la        		\
+    libscorep_oa_fortran_sub2.la        		\
+    libscorep_oa_fortran_sub3.la        		\
+    libscorep_oa_fortran_sub4.la
+
+
 

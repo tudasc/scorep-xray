@@ -35,373 +35,833 @@
 #include "scorep_profile_node.h"
 #include "scorep_profile_metric.h"
 #include "scorep_definitions.h"
+#include "scorep_mpi.h"
 
 #include <stdio.h>
 #include <string.h>
 
-/* Number of nodes in the call-tree */
-static uint64_t                 number_of_nodes = 0;
-/* Number of metrics in the call-tree */
-static uint64_t                 number_of_metrics = 0;
-/* Number of region definitions in the call-tree */
-static int                      number_of_region_defs = 0;
-/* Number of counter definitions in the call-tree */
-static int                      number_of_counter_defs = 0;
-/* Index pointing to the currently selected context */
-static int64_t                  current_context_index = 0;
-/* Index pointing to the currently selected measurement */
-static int64_t                  current_measurement_index = 0;
-/* Flag enabling print out of the accessed call-tree */
-static int                      do_print_out = 1;
 
 extern SCOREP_DefinitionManager scorep_local_definition_manager;
+static int                      do_print_out = 1;
 
-/* ***************************************************************************************
-   Prototypes of internal comparison and copy functions for type dependent data.
-*****************************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 
-static void
-scorep_oaconsumer_count
+
+typedef struct
+{
+    uint32_t                            rank;
+    uint32_t                            thread;
+    uint64_t                            num_measurements;
+    uint64_t                            num_contexts;
+    uint64_t                            num_def_regions;
+    uint64_t                            num_def_counters;
+    uint64_t                            num_def_regions_merged;
+    uint64_t                            num_static_measurements;
+    SCOREP_Hashtab*                     merged_regions_def_table;                                 ///Hash table for mapping already registered region names region handles.
+    SCOREP_Hashtab*                     static_measurements_table;
+    scorep_profile_node*                phase_node;
+    SCOREP_OA_StaticProfileMeasurement* static_measurement_buffer;
+    SCOREP_OA_CallPathRegionDef*        merged_region_def_buffer;
+} data_index_type;
+
+scorep_profile_node*
+scorep_oaconsumer_get_phase_node
+(
+    scorep_profile_node* node,
+    int                  phase_id
+);
+
+void
+scorep_oaconsumer_count_index
 (
     scorep_profile_node* node,
     void*                param
 );
 
-static int64_t
-scorep_oaconsumer_copy_node
+uint64_t
+scorep_oa_index_data_key
 (
-    scorep_profile_node*        node,
-    SCOREP_OA_PeriscopeSummary* summary_buffer,
-    int64_t                     parent_index
+    SCOREP_Hashtab* hash_table,
+    uint64_t        key,
+    uint64_t        current_index
 );
 
-static void
-scorep_oaconsumer_copy_sub_tree
+uint64_t
+scorep_oaconsumer_generate_region_key
 (
-    scorep_profile_node*        node,
-    SCOREP_OA_PeriscopeSummary* summary_buffer,
-    uint64_t                    parent_index,
-    int32_t                     level
+    scorep_profile_node* node
 );
 
-static void
-scorep_oaconsumer_get_definitions
+uint64_t
+scorep_oaconsumer_generate_static_measurement_key
 (
-    SCOREP_OA_PeriscopeRegionDef*  region_def_buffer,
-    SCOREP_OA_PeriscopeCounterDef* counter_def_buffer,
-    int                            region_def_count,
-    int                            counter_def_count
+    uint64_t region_key,
+    uint64_t counter_id
 );
 
-/* Accesses profile data, transforms it to the Periscope representation and returns it */
-SCOREP_OA_PeriscopeSummary*
-SCOREP_Profile_GetPeriscopeSummary
+void
+print_hash_table
 (
+    const SCOREP_Hashtab* hash_table,
+    char*                 tag
+);
+
+void
+print_region_definitions
+(
+);
+
+int32_t
+update_static_measurement
+(
+    uint64_t         static_meas_key,
+    uint64_t         value,
+    uint64_t         samples,
+    data_index_type* data_index
+);
+
+SCOREP_OA_StaticProfileMeasurement*
+get_static_profile_measurements
+(
+);
+
+SCOREP_OA_CallPathRegionDef*
+get_merged_region_definitions
+(
+);
+
+static data_index_type* oa_consumer_data_index = NULL;
+static int              myrank                 = 0;
+
+void
+SCOREP_OAConsumer_Initialize
+(
+    SCOREP_RegionHandle phase_handle
 )
 {
-    if ( do_print_out )
+    /*
+     * 0. Find the starting node from the given region handle
+     * 1. Start traversing Call-Tree from the found node, count:
+     *          1.1. number of contexts,
+     *          1.2. number of measurements,
+     *          1.3. insert hash def_regions_merged: key (region_key=parent_region_id:region_id) value (index++)
+     *          1.4. insert hash static_measurements: key (region_key:counter_id) value (index++)
+     */
+    if ( phase_handle == SCOREP_INVALID_REGION )
     {
-        printf( "Entering %s\n", __FUNCTION__ );
+        printf( "ATTENTION! Phase region is handle is not valid!\n" );
+        //return data_index;
+        return;
+    }
+    /** Allocate data index */
+    oa_consumer_data_index = calloc( 1, sizeof( data_index_type ) );
+
+    /** Find node associated with phase region*/
+    oa_consumer_data_index->phase_node = scorep_oaconsumer_get_phase_node( scorep_profile.first_root_node,
+                                                                           SCOREP_GetRegionHandleToID( phase_handle ) );
+
+    oa_consumer_data_index->rank = SCOREP_Mpi_GetRank();
+    ;
+    oa_consumer_data_index->thread = 0;
+
+    if ( oa_consumer_data_index->phase_node == NULL )
+    {
+        printf( "ATTENTION! Phase node not found!\n" );
+        //return data_index;
+        return;
     }
 
-    /* Declaration of summary buffer */
-    SCOREP_OA_PeriscopeSummary* summary_buffer;
+    scorep_profile_dump_subtree( oa_consumer_data_index->phase_node, 0 );
 
-    /* Requesting the numbers of call-tree nodes, measurements, region and counter definitions */
-    number_of_nodes   = 0;
-    number_of_metrics = 0;
-    scorep_profile_for_all( scorep_profile.first_root_node, &scorep_oaconsumer_count, NULL );
-    number_of_region_defs = SCOREP_GetNumberOfRegionDefinitions();
+    /** Allocate key index tales for merged region definitions and static measurements */
+    oa_consumer_data_index->merged_regions_def_table = SCOREP_Hashtab_CreateSize( 11, &SCOREP_Hashtab_HashInt64,
+                                                                                  &SCOREP_Hashtab_CompareInt64 );
+    oa_consumer_data_index->static_measurements_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashInt64,
+                                                                                   &SCOREP_Hashtab_CompareInt64 );
+    if ( do_print_out )
+    {
+        print_region_definitions();
+    }
 
-    /* Requesting the number of definictions + 0 is preserved for implicit time stored in the node */
-    number_of_counter_defs = SCOREP_GetNumberOfCounterDefinitions() + 1;
+    /** Index all nodes starting from phase node*/
+    scorep_profile_for_all( oa_consumer_data_index->phase_node, &scorep_oaconsumer_count_index, oa_consumer_data_index );
 
     if ( do_print_out )
     {
-        printf( "Number of regions=%d counter=%d\n",
-                number_of_region_defs,
-                number_of_counter_defs );
+        print_hash_table( oa_consumer_data_index->merged_regions_def_table, "REGIONS" );
+        print_hash_table( oa_consumer_data_index->static_measurements_table, "STATIC" );
     }
+}
 
-    if ( do_print_out )
+scorep_profile_node*
+scorep_oaconsumer_get_phase_node
+(
+    scorep_profile_node* node,
+    int                  phase_id
+)
+{
+    scorep_profile_node* phase_node = NULL;
+
+    if ( node->node_type == scorep_profile_node_regular_region )
     {
-        printf( "Number of nodes = %ld, Number of measurements = %ld\n",
-                number_of_nodes,
-                number_of_metrics + number_of_nodes * ( scorep_profile.num_of_dense_metrics + 1 ) );
+        SCOREP_RegionHandle region_handle     = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+        int                 current_region_id = SCOREP_GetRegionHandleToID( region_handle );
+        if ( current_region_id == phase_id )
+        {
+            phase_node = node;
+            return phase_node;
+        }
     }
 
-    /* allocating memory for buffers */
-    SCOREP_OA_PeriscopeContext*     context_buffer = calloc( number_of_nodes,
-                                                             sizeof( SCOREP_OA_PeriscopeContext ) );
-    SCOREP_OA_PeriscopeMeasurement* measurement_buffer = calloc( number_of_metrics + number_of_nodes * ( scorep_profile.num_of_dense_metrics + 1 ),
-                                                                 sizeof( SCOREP_OA_PeriscopeMeasurement ) );
-    SCOREP_OA_PeriscopeRegionDef*   region_def_buffer = calloc( number_of_region_defs,
-                                                                sizeof( SCOREP_OA_PeriscopeRegionDef ) );
-    SCOREP_OA_PeriscopeCounterDef*  counter_def_buffer = calloc( number_of_counter_defs,
-                                                                 sizeof( SCOREP_OA_PeriscopeCounterDef ) );
+    if ( node->first_child != NULL )
+    {
+        phase_node = scorep_oaconsumer_get_phase_node( node->first_child, phase_id );
+    }
 
-    summary_buffer                     = calloc( 1, sizeof( SCOREP_OA_PeriscopeSummary ) );
-    summary_buffer->context_buffer     = context_buffer;
-    summary_buffer->measurement_buffer = measurement_buffer;
-    summary_buffer->counter_def_buffer = counter_def_buffer;
-    summary_buffer->region_def_buffer  = region_def_buffer;
-    summary_buffer->context_size       = number_of_nodes;
-    summary_buffer->measurement_size   = number_of_metrics + number_of_nodes * ( scorep_profile.num_of_dense_metrics + 1 );
-    summary_buffer->counter_def_size   = number_of_counter_defs;
-    summary_buffer->region_def_size    = number_of_region_defs;
+    if ( phase_node )
+    {
+        return phase_node;
+    }
 
-    /* pulling nodes together with measurements from the profile call-tree */
-    scorep_oaconsumer_copy_sub_tree( scorep_profile.first_root_node, summary_buffer, 0, 0 );
+    if ( node->next_sibling != NULL )
+    {
+        phase_node = scorep_oaconsumer_get_phase_node( node->next_sibling, phase_id );
+    }
 
-    /* pulling region and counter definitions from definition handling module */
-    scorep_oaconsumer_get_definitions( summary_buffer->region_def_buffer,
-                                       summary_buffer->counter_def_buffer,
-                                       number_of_region_defs,
-                                       number_of_counter_defs );
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,
-                         "Leaving %s\n",
-                         __FUNCTION__ );
-    return summary_buffer;
+    return phase_node;
 }
 
 void
-scorep_oaconsumer_get_definitions
+scorep_oaconsumer_count_index
 (
-    SCOREP_OA_PeriscopeRegionDef*  region_def_buffer,
-    SCOREP_OA_PeriscopeCounterDef* counter_def_buffer,
-    int                            region_def_count,
-    int                            counter_def_count
+    scorep_profile_node* node,
+    void*                param
+)
+{
+    if ( node == NULL )
+    {
+        printf( "scorep_oaconsumer_count_index: node == NULL\n" );
+        return;
+    }
+    if ( param == NULL )
+    {
+        printf( "scorep_oaconsumer_count_index: param == NULL\n" );
+        return;
+    }
+    if ( do_print_out )
+    {
+        printf( "scorep_oaconsumer_count_index: node->type = %d\n", ( int )node->node_type );
+    }
+    if ( node->node_type == scorep_profile_node_regular_region )
+    {
+        data_index_type* data_index = ( data_index_type* )param;
+        if ( do_print_out )
+        {
+            printf( "_count_index: |context %ld\t|", data_index->num_contexts );
+        }
+        /** Count this node as a context*/
+        data_index->num_contexts++;
+
+        /** Generate merged region definition key*/
+        uint64_t region_key = scorep_oaconsumer_generate_region_key( node );
+
+
+        /** Index merged region definition key in hash table*/
+        data_index->num_def_regions_merged = scorep_oa_index_data_key(  data_index->merged_regions_def_table,
+                                                                        region_key,
+                                                                        data_index->num_def_regions_merged );
+        if ( do_print_out )
+        {
+            printf( " meas %ld\t|", data_index->num_measurements );
+        }
+        /** Count one measurement, since time is stored by default in every node*/
+        data_index->num_measurements++;
+
+        /** Generate static measurement key for TIME and this region*/
+        uint64_t static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
+                                                                                          ( uint64_t )SCOREP_OA_COUNTER_TIME );
+
+        /** Index static measurement key in hash table*/
+        data_index->num_static_measurements = scorep_oa_index_data_key( data_index->static_measurements_table,
+                                                                        static_meas_key,
+                                                                        data_index->num_static_measurements );
+
+        /** Since counter definitions are not implemented, only first sparse int metric is considered as
+         *      MPI Profiler LATE metric*/
+        scorep_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
+        if ( sparse_int != NULL )
+        {
+            if ( do_print_out )
+            {
+                printf( " meas %ld\t|", data_index->num_measurements );
+            }
+            /** Count one int sparse metric as a measurement*/
+            data_index->num_measurements++;
+            /** Generate static measurement key for TIME and this region*/
+            static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
+                                                                                      SCOREP_OA_COUNTER_LATE );
+            /** Index static measurement key in hash table*/
+            data_index->num_static_measurements = scorep_oa_index_data_key( data_index->static_measurements_table,
+                                                                            static_meas_key,
+                                                                            data_index->num_static_measurements );
+        }
+        else
+        {
+            if ( do_print_out )
+            {
+                printf( " \t\t\t|" );
+            }
+        }
+
+        if ( do_print_out )
+        {
+            printf( "\n" );
+        }
+    }
+}
+
+void
+print_hash_table
+(
+    const SCOREP_Hashtab* hash_table,
+    char*                 tag
+)
+{
+    typedef struct scorep_hashtab_listitem_struct scorep_hashtab_listitem;
+    /* Collision list entry */
+    struct scorep_hashtab_listitem_struct
+    {
+        SCOREP_Hashtab_Entry     entry;            /* Table entry (key, value) */
+        scorep_hashtab_listitem* next;             /* Pointer to next entry */
+    };
+    struct scorep_hashtab_struct
+    {
+        scorep_hashtab_listitem**      table;           /* Field elements */
+        size_t                         tabsize;         /* Number of field elements */
+        size_t                         size;            /* Number of items stored */
+        SCOREP_Hashtab_HashFunction    hash;            /* Hashing function */
+        SCOREP_Hashtab_CompareFunction kcmp;            /* Comparison function */
+    };
+
+    struct scorep_hashtab_struct* print_table = ( struct scorep_hashtab_struct* )hash_table;
+
+    scorep_hashtab_listitem*      item;
+    int                           i;
+    printf( "\n/////////////%s////////\n", tag );
+    for ( i = 0; i < print_table->tabsize; i++ )
+    {
+        item = print_table->table[ i ];
+        printf( "Hash: %d\n", i );
+        while ( item )
+        {
+            printf( "Item %ld-%ld\n", *( const uint64_t* )item->entry.key, *( const uint64_t* )item->entry.value );
+
+            item = item->next;
+        }
+    }
+    printf( "///////////////////////////\n\n" );
+}
+
+uint64_t
+scorep_oa_index_data_key
+(
+    SCOREP_Hashtab* hash_table,
+    uint64_t        key,
+    uint64_t        current_index
+)
+{
+    SCOREP_Hashtab_Entry* entry = NULL;
+    size_t                index;
+
+    /** Search for already indexed key */
+    entry = SCOREP_Hashtab_Find(    hash_table,
+                                    &key,
+                                    &index );
+    /** If not found, store given key-index pair*/
+    if ( !entry )
+    {
+        if ( do_print_out )
+        {
+            printf( " HIT %ld-%ld\t|", key, current_index );
+        }
+        uint64_t* entry_key = malloc( sizeof( uint64_t ) );
+        *entry_key = key;
+        uint64_t* entry_index = malloc( sizeof( uint64_t ) );
+        *entry_index = current_index;
+
+        SCOREP_Hashtab_Insert(  hash_table,
+                                ( void* )( entry_key ),
+                                ( void* )( entry_index ),
+                                &index );
+        current_index++;
+    }
+    else
+    {
+        if ( do_print_out )
+        {
+            printf( " MISS %ld-%ld\t|", key, current_index );
+        }
+    }
+    return current_index;
+}
+
+
+uint64_t
+scorep_oaconsumer_generate_region_key
+(
+    scorep_profile_node* node
+)
+{
+    SCOREP_RegionHandle region_handle = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+
+    uint64_t            current_region_id = ( uint64_t )SCOREP_GetRegionHandleToID( region_handle );
+
+    uint64_t            parent_region_id = 0;
+
+    if ( SCOREP_Region_GetAdapterType( region_handle ) == SCOREP_ADAPTER_MPI )
+    {
+        scorep_profile_node* parent_node = node->parent;
+        if ( parent_node != NULL )
+        {
+            if ( parent_node->node_type == scorep_profile_node_regular_region )
+            {
+                parent_region_id = ( uint64_t )SCOREP_GetRegionHandleToID(
+                    SCOREP_PROFILE_DATA2REGION(
+                        parent_node->type_specific_data ) );
+            }
+            else
+            {
+                printf( "scorep_oaconsumer_count_index: Attention! MPI node under non-regular profile node!\n" );
+            }
+        }
+        else
+        {
+            printf( "scorep_oaconsumer_count_index: Attention! MPI node under NULL profile node!\n" );
+        }
+    }
+
+    return ( parent_region_id << 8 ) | current_region_id;
+}
+
+uint64_t
+scorep_oaconsumer_generate_static_measurement_key
+(
+    uint64_t region_key,
+    uint64_t counter_id
+)
+{
+    return ( region_key << 8 ) | counter_id;
+}
+
+
+void
+print_region_definitions
+(
 )
 {
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Region, region )
     {
         int index = SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
-        if ( index >= 0 && index < region_def_count )
+        printf( "region definition index=%d,", index );
+
+        if ( definition->name_handle != SCOREP_INVALID_STRING )
         {
-            region_def_buffer[ index ].region_id = index;
-            if ( definition->name_handle != SCOREP_INVALID_STRING )
-            {
-                strncpy( region_def_buffer[ index ].name, SCOREP_Region_GetName( handle ), MAX_REGION_NAME_LENGTH );
-                region_def_buffer[ index ].name[ MAX_REGION_NAME_LENGTH - 1 ] = '\0';
-            }
-            if ( definition->file_name_handle != SCOREP_INVALID_STRING )
-            {
-                strncpy( region_def_buffer[ index ].file, SCOREP_Region_GetFileName( handle ), MAX_FILE_NAME_LENGTH );
-                region_def_buffer[ index ].file[ MAX_FILE_NAME_LENGTH - 1 ] = '\0';
-            }
-            region_def_buffer[ index ].rfl = definition->begin_line;
-            if ( do_print_out )
-            {
-                printf( "region definition index=%d,name=%s,file=%s,rfl=%d\n",
-                        index,
-                        region_def_buffer[ index ].name,
-                        region_def_buffer[ index ].file,
-                        region_def_buffer[ index ].rfl );
-            }
+            printf( " name %s,", SCOREP_Region_GetName( handle ) );
         }
-        else
+        if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
-            printf( "Region definition ID=%d is out of bounds [0,%d)!", index, region_def_count );
+            printf( " file %s,", SCOREP_Region_GetFileName( handle ) );
         }
+        int rfl          = definition->begin_line;
+        int rel          = definition->end_line;
+        int adapter_type = ( int )definition->adapter_type;
+        printf( " rfl=%d,adapter=%d\n",
+                rfl,
+                adapter_type );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
-
-    /* Add implicit time to the beginning of counter definition buffer */
-    counter_def_buffer[ 0 ].counter_id = 0;
-    strcpy( counter_def_buffer[ 0 ].name, "Time" );
 }
 
-void
-scorep_oaconsumer_count
+int32_t
+update_static_measurement
 (
-    scorep_profile_node* node,
-    void*                param
+    uint64_t         static_meas_key,
+    uint64_t         value,
+    uint64_t         samples,
+    data_index_type* data_index
 )
 {
-    if ( node == NULL )
+    if ( data_index == NULL )
     {
-        printf( "scorep_oaconsumer_count: node == NULL\n" );
-        return;
-    }
-    printf( "node type is %d\n", node->node_type );
-    if ( node->node_type == scorep_profile_node_regular_region )
-    {
-        number_of_nodes++;
-
-        scorep_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
-        while ( sparse_int != NULL )
-        {
-            number_of_metrics++;
-            sparse_int = sparse_int->next_metric;
-        }
-    }
-}
-
-int64_t
-scorep_oaconsumer_copy_node
-(
-    scorep_profile_node*        node,
-    SCOREP_OA_PeriscopeSummary* summary_buffer,
-    int64_t                     parent_index
-)
-{
-    if ( node == NULL || summary_buffer == NULL )
-    {
-        printf( "node == NULL || summary_buffer == NULL\n" );
+        printf( "update_static_measurement: data_index == NULL\n" );
         return -1;
     }
-    printf( "node type is %d\n", node->node_type );
+    if ( data_index->static_measurement_buffer == NULL &&
+         data_index->static_measurements_table == NULL &&
+         data_index->merged_regions_def_table == NULL )
+    {
+        printf( "update_static_measurement: something is not initialized == NULL\n" );
+        return -1;
+    }
+    SCOREP_Hashtab_Entry* entry = NULL;
+    size_t                index;
+
+    /** Search for static measurement key and aquire the index */
+    entry = SCOREP_Hashtab_Find(    data_index->static_measurements_table,
+                                    &static_meas_key,
+                                    &index );
+    if ( !entry )
+    {
+        printf( "update_static_measurement: static_meas_key not found!\n" );
+        return -1;
+    }
+    uint64_t static_meas_index = *( const uint64_t* )( entry->value );
+
+    /** Extract merged region definition key */
+    uint64_t merged_region_def_key = static_meas_key >> 8;
+    uint64_t metric_id             = static_meas_key & ( uint64_t )255;
+
+    /** Search for merged region definition key and aquire the index */
+    index = 0;
+    entry = NULL;
+    entry = SCOREP_Hashtab_Find(    data_index->merged_regions_def_table,
+                                    &merged_region_def_key,
+                                    &index );
+    if ( !entry )
+    {
+        printf( "update_static_measurement: merged_region_def_key not found!\n" );
+        return -1;
+    }
+    uint64_t merged_region_def_index = *( const int64_t* )( entry->value );
+
+    /** Update corresponding record in static measurement buffer */
+    data_index->static_measurement_buffer[ static_meas_index ].measurement_id = static_meas_key;
+    data_index->static_measurement_buffer[ static_meas_index ].rank           = data_index->rank;
+    data_index->static_measurement_buffer[ static_meas_index ].thread         = data_index->thread;
+    data_index->static_measurement_buffer[ static_meas_index ].region_id      = merged_region_def_index;
+    data_index->static_measurement_buffer[ static_meas_index ].samples       += samples;
+    data_index->static_measurement_buffer[ static_meas_index ].metric_id      = metric_id;
+    data_index->static_measurement_buffer[ static_meas_index ].int_val       += value;
+
+    return 1;
+}
+
+void
+scorep_oaconsumer_copy_static_measurement
+(
+    scorep_profile_node* node,
+    void*                param                          /// COREP_OA_StaticProfileMeasurement* buffer
+)
+{
+    if ( node == NULL )
+    {
+        printf( "scorep_oaconsumer_count_index: node == NULL\n" );
+        return;
+    }
+    if ( param == NULL )
+    {
+        printf( "scorep_oaconsumer_count_index: param == NULL\n" );
+        return;
+    }
     if ( node->node_type == scorep_profile_node_regular_region )
     {
-        if ( current_context_index >= summary_buffer->context_size )
-        {
-            printf( "Prealocated size for context buffer is not sufficient!\n" );
-            return -1;
-        }
+        data_index_type* data_index = ( data_index_type* )param;
 
-        /* Copy node to the buffer */
-        summary_buffer->context_buffer[ current_context_index ].region_id         = SCOREP_CallPathHandleToRegionID( node->callpath_handle );                                    ///@TODO access definition system here and get unique ID
-        summary_buffer->context_buffer[ current_context_index ].context_id        = current_context_index;                                                                       ///@TODO access definition system here and get unique ID
-        summary_buffer->context_buffer[ current_context_index ].parent_context_id = parent_index;                                                                                ///@TODO access definition system here and get unique ID
-        summary_buffer->context_buffer[ current_context_index ].thread_id         = 0;                                                                                           ///@TODO store current thread_id in a global variable and assign it here
-        summary_buffer->context_buffer[ current_context_index ].rank              = 0;
-        summary_buffer->context_buffer[ current_context_index ].call_count        = node->count;
+        /** Generate merged region definition key*/
+        uint64_t region_key = scorep_oaconsumer_generate_region_key( node );
 
+        /** Generate static measurement key for TIME and this region*/
+        uint64_t static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
+                                                                                          ( uint64_t )SCOREP_OA_COUNTER_TIME );
+        /** Update static measurement record which corresponds to the key */
+        update_static_measurement(      static_meas_key,
+                                        node->inclusive_time.sum,
+                                        node->count,
+                                        data_index );
         if ( do_print_out )
         {
-            printf( "Node inserted: context_id=%d, parent_id=%d, thread_id=%d, rank=%d, call_count=%ld |",
-                    summary_buffer->context_buffer[ current_context_index ].context_id,
-                    summary_buffer->context_buffer[ current_context_index ].parent_context_id,
-                    summary_buffer->context_buffer[ current_context_index ].thread_id,
-                    summary_buffer->context_buffer[ current_context_index ].rank,
-                    summary_buffer->context_buffer[ current_context_index ].call_count );
+            printf( "Node %ld time=%ld\n", region_key, node->inclusive_time.sum );
         }
-
-        /* Copy implicit time to the measurement buffer */
-        summary_buffer->measurement_buffer[ current_measurement_index ].sum        = node->inclusive_time.sum;
-        summary_buffer->measurement_buffer[ current_measurement_index ].count      = node->count;
-        summary_buffer->measurement_buffer[ current_measurement_index ].context_id = current_context_index;
-        summary_buffer->measurement_buffer[ current_measurement_index ].counter_id = 0;
-
-        if ( do_print_out )
-        {
-            printf( " time_%ld=%ld/%ld", current_measurement_index,
-                    summary_buffer->measurement_buffer[ current_measurement_index ].sum,
-                    summary_buffer->measurement_buffer[ current_measurement_index ].count );
-        }
-
-        current_measurement_index++;
-
-        /* Copy dense metrics */
-        int i;
-        for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
-        {
-            if ( current_measurement_index >= summary_buffer->measurement_size )
-            {
-                printf( "Prealocated size for measurement buffer is not sufficient!\n" );
-                break;
-            }
-            summary_buffer->measurement_buffer[ current_measurement_index ].sum        = node->dense_metrics[ i ].sum;
-            summary_buffer->measurement_buffer[ current_measurement_index ].count      = node->count;
-            summary_buffer->measurement_buffer[ current_measurement_index ].context_id = current_context_index;
-            summary_buffer->measurement_buffer[ current_measurement_index ].counter_id = 0;
-            printf( " dense_%ld=%ld/%ld",        current_measurement_index,
-                    summary_buffer->measurement_buffer[ current_measurement_index ].sum,
-                    summary_buffer->measurement_buffer[ current_measurement_index ].count );
-            current_measurement_index++;
-        }
-        if ( do_print_out )
-        {
-            printf( " |" );
-        }
-
+        /** Since counter definitions are not implemented, only first sparse int metric is considered as
+         *      MPI Profiler LATE metric*/
         scorep_profile_sparse_metric_int* sparse_int = node->first_int_sparse;
-
-        /* Copy sparse int metrics */
-        while ( sparse_int != NULL )
+        if ( sparse_int != NULL )
         {
-            if ( current_measurement_index >= summary_buffer->measurement_size )
-            {
-                printf(
-                    "Prealocated size for measurement buffer is not sufficient!\n" );
-                break;
-            }
-            summary_buffer->measurement_buffer[ current_measurement_index ].sum        = sparse_int->sum;
-            summary_buffer->measurement_buffer[ current_measurement_index ].count      = sparse_int->count;
-            summary_buffer->measurement_buffer[ current_measurement_index ].context_id = current_context_index;
-            summary_buffer->measurement_buffer[ current_measurement_index ].counter_id = 0;
-            if ( do_print_out )
-            {
-                printf( " sparse_%ld=%ld/%ld",     current_measurement_index,
-                        summary_buffer->measurement_buffer[ current_measurement_index ].sum,
-                        summary_buffer->measurement_buffer[ current_measurement_index ].count );
-            }
-            current_measurement_index++;
-            sparse_int = sparse_int->next_metric;
+            /** Generate static measurement key for TIME and this region*/
+            static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
+                                                                                      ( uint64_t )SCOREP_OA_COUNTER_LATE );
+            update_static_measurement(      static_meas_key,
+                                            sparse_int->sum,
+                                            sparse_int->count,
+                                            data_index );
         }
-        if ( do_print_out )
-        {
-            printf( " |\n" );
-        }
-        current_context_index++;
-        return current_context_index - 1;
     }
-    else
+}
+
+void
+scorep_oaconsumer_copy_merged_region_definitions
+(
+    scorep_profile_node* node,
+    void*                param                          /// COREP_OA_StaticProfileMeasurement* buffer
+)
+{
+    if ( node == NULL )
     {
-        return current_context_index;
+        printf( "scorep_oaconsumer_count_index: node == NULL\n" );
+        return;
+    }
+    if ( param == NULL )
+    {
+        printf( "scorep_oaconsumer_count_index: param == NULL\n" );
+        return;
+    }
+    if ( node->node_type == scorep_profile_node_regular_region )
+    {
+        data_index_type* data_index = ( data_index_type* )param;
+
+        /** Generate merged region definition key*/
+        uint64_t              region_key = scorep_oaconsumer_generate_region_key( node );
+
+        SCOREP_Hashtab_Entry* entry = NULL;
+        size_t                index;
+
+        /** Search for static measurement key and aquire the index */
+        entry = SCOREP_Hashtab_Find(    data_index->merged_regions_def_table,
+                                        &region_key,
+                                        &index );
+        if ( !entry )
+        {
+            printf( "scorep_oaconsumer_copy_merged_region_definitions: region_key not found!\n" );
+            return;
+        }
+        uint64_t region_index = *( const uint64_t* )( entry->value );
+
+        /** Get associated region handle of this node */
+        SCOREP_RegionHandle region_handle = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+
+        /** Get associated region handle of parent node */
+        SCOREP_RegionHandle parent_region_handle = region_handle;
+        if ( SCOREP_Region_GetAdapterType( region_handle ) == SCOREP_ADAPTER_MPI )
+        {
+            scorep_profile_node* parent_node = node->parent;
+            if ( parent_node != NULL )
+            {
+                if ( parent_node->node_type == scorep_profile_node_regular_region )
+                {
+                    parent_region_handle = SCOREP_PROFILE_DATA2REGION( parent_node->type_specific_data );
+                }
+                else
+                {
+                    printf( "scorep_oaconsumer_copy_merged_region_definitions: Attention! MPI node under non-regular profile node!\n" );
+                }
+            }
+            else
+            {
+                printf( "scorep_oaconsumer_copy_merged_region_definitions: Attention! MPI node under NULL profile node!\n" );
+            }
+        }
+
+        /** Copy data into the merged regions buffer*/
+        data_index->merged_region_def_buffer[ region_index ].region_id    = region_key;
+        data_index->merged_region_def_buffer[ region_index ].rfl          = SCOREP_Region_GetRfl( parent_region_handle );
+        data_index->merged_region_def_buffer[ region_index ].rel          = SCOREP_Region_GetRel( parent_region_handle );
+        data_index->merged_region_def_buffer[ region_index ].adapter_type = SCOREP_Region_GetAdapterType( region_handle );
+        const char* name = SCOREP_Region_GetName( region_handle );
+        strncpy( data_index->merged_region_def_buffer[ region_index ].name,
+                 name,
+                 MAX_REGION_NAME_LENGTH );
+        const char* file = SCOREP_Region_GetFileName( parent_region_handle );
+        strncpy( data_index->merged_region_def_buffer[ region_index ].file,
+                 file,
+                 MAX_FILE_NAME_LENGTH );
     }
 }
 
 
-
-void
-scorep_oaconsumer_copy_sub_tree
+SCOREP_OA_StaticProfileMeasurement*
+get_static_profile_measurements
 (
-    scorep_profile_node*        node,
-    SCOREP_OA_PeriscopeSummary* summary_buffer,
-    uint64_t                    parent_index,
-    int32_t                     level
 )
 {
-    static char* type_name_map[] = {
-        "regular region",
-        "paramater string",
-        "parameter integer",
-        "thread root",
-        "thread start"
-    };
-    if ( node == NULL )
+    if ( oa_consumer_data_index == NULL )
     {
-        return;
+        printf( "SCOREP_OAConsumer_GetStaticProfileMeasurement: data_index == NULL\n" );
+        return NULL;
     }
-    int i;
+
+    if ( oa_consumer_data_index->num_static_measurements == 0 )
+    {
+        printf( "get_merged_region_definitions: num_static_measurements==0\n" );
+        return NULL;
+    }
+
+    /** Allocate static measurements buffer*/
+    oa_consumer_data_index->static_measurement_buffer = calloc(     oa_consumer_data_index->num_static_measurements,
+                                                                    sizeof( SCOREP_OA_StaticProfileMeasurement ) );
+
+    /** Copy static measurements to the buffer*/
+    scorep_profile_for_all( oa_consumer_data_index->phase_node,
+                            &scorep_oaconsumer_copy_static_measurement,
+                            oa_consumer_data_index );
 
     if ( do_print_out )
     {
-        for ( i = 0; i < level; i++ )
+        printf( "STATIC MEASUREMENTS:\n" );
+        int i;
+        for ( i = 0; i < oa_consumer_data_index->num_static_measurements; i++ )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,
-                                 "| " );
-        }
-
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,
-                             "+ type: %s, time=%ld, count=%ld \n", type_name_map[ node->node_type ], node->inclusive_time.sum, node->count );
-
-        for ( i = 0; i < level; i++ )
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,
-                                 "| " );
+            printf( "RECORD %i\t| rank %d\t| thread %d\t| region_id %ld\t| metric_id %ld\t| samples %ld\t| value %ld\t|\n",
+                    i,
+                    oa_consumer_data_index->static_measurement_buffer[ i ].rank,
+                    oa_consumer_data_index->static_measurement_buffer[ i ].thread,
+                    oa_consumer_data_index->static_measurement_buffer[ i ].region_id,
+                    oa_consumer_data_index->static_measurement_buffer[ i ].metric_id,
+                    oa_consumer_data_index->static_measurement_buffer[ i ].samples,
+                    oa_consumer_data_index->static_measurement_buffer[ i ].int_val
+                    );
         }
     }
-    int64_t my_index = scorep_oaconsumer_copy_node( node, summary_buffer, parent_index );
 
-    if ( node->first_child != NULL )
+    return oa_consumer_data_index->static_measurement_buffer;
+}
+SCOREP_OA_CallPathRegionDef*
+get_merged_region_definitions
+(
+)
+{
+    if ( oa_consumer_data_index == NULL )
     {
-        scorep_oaconsumer_copy_sub_tree( node->first_child, summary_buffer, my_index, level + 1 );
+        printf( "get_merged_region_definitions: data_index == NULL\n" );
+        return NULL;
     }
-    if ( node->next_sibling != NULL )
+
+    if ( oa_consumer_data_index->num_def_regions_merged == 0 )
     {
-        scorep_oaconsumer_copy_sub_tree( node->next_sibling, summary_buffer, parent_index, level );
+        printf( "get_merged_region_definitions: num_def_regions_merged==0\n" );
+        return NULL;
+    }
+
+    /** Allocate merged region definitions buffer*/
+    oa_consumer_data_index->merged_region_def_buffer = calloc(      oa_consumer_data_index->num_def_regions_merged,
+                                                                    sizeof( SCOREP_OA_CallPathRegionDef ) );
+
+    /** Copy merged regions definitions to the buffer*/
+    scorep_profile_for_all( oa_consumer_data_index->phase_node,
+                            &scorep_oaconsumer_copy_merged_region_definitions,
+                            oa_consumer_data_index );
+
+    if ( do_print_out )
+    {
+        printf( "MERGED DEFINITIONS:\n" );
+        int i;
+        for ( i = 0; i < oa_consumer_data_index->num_def_regions_merged; i++ )
+        {
+            printf( "DEFINITION %i\t| region_id %ld\t| name %s\t| rfl %d\t| rel %d\t| adapter %d\t| file %s\t|\n",
+                    i,
+                    oa_consumer_data_index->merged_region_def_buffer[ i ].region_id,
+                    oa_consumer_data_index->merged_region_def_buffer[ i ].name,
+                    oa_consumer_data_index->merged_region_def_buffer[ i ].rfl,
+                    oa_consumer_data_index->merged_region_def_buffer[ i ].rel,
+                    ( int )oa_consumer_data_index->merged_region_def_buffer[ i ].adapter_type,
+                    oa_consumer_data_index->merged_region_def_buffer[ i ].file
+                    );
+        }
+    }
+    return oa_consumer_data_index->merged_region_def_buffer;
+}
+
+int
+SCOREP_OAConsumer_GetDataSize
+(
+    SCOREP_OAConsumer_DataTypes data_type
+)
+{
+    if ( oa_consumer_data_index == NULL )
+    {
+        printf( "SCOREP_OAConsumer_GetDataSize: data_index == NULL\n" );
+        return -1;
+    }
+    switch ( data_type )
+    {
+        case STATIC_PROFILE:
+            return oa_consumer_data_index->num_static_measurements;
+        case MERGED_REGION_DEFINITIONS:
+            return oa_consumer_data_index->num_def_regions_merged;
+        case REGION_DEFINITIONS:
+            return -1;
+        case COUNTER_DEFINITIONS:
+            return -1;
+        case CALLPATH_PROFILE_CONTEXTS:
+            return -1;
+        case CALLPATH_PROFILE_MEASUREMENTS:
+            return -1;
+        default:
+            return -1;
     }
 }
+
+void*
+SCOREP_OAConsumer_GetData
+(
+    SCOREP_OAConsumer_DataTypes data_type
+)
+{
+    if ( oa_consumer_data_index == NULL )
+    {
+        printf( "SCOREP_OAConsumer_GetDataSize: data_index == NULL\n" );
+        return NULL;
+    }
+    switch ( data_type )
+    {
+        case STATIC_PROFILE:
+            return get_static_profile_measurements();
+        case MERGED_REGION_DEFINITIONS:
+            return get_merged_region_definitions();
+        case REGION_DEFINITIONS:
+            return NULL;
+        case COUNTER_DEFINITIONS:
+            return NULL;
+        case CALLPATH_PROFILE_CONTEXTS:
+            return NULL;
+        case CALLPATH_PROFILE_MEASUREMENTS:
+            return NULL;
+        default:
+            return NULL;
+    }
+}
+
+void
+SCOREP_OAConsumer_DismissData
+(
+)
+{
+    if ( oa_consumer_data_index == NULL )
+    {
+        printf( "SCOREP_OAConsumer_DismissData: data_index == NULL\n" );
+        return;
+    }
+    if ( oa_consumer_data_index->merged_region_def_buffer )
+    {
+        free( oa_consumer_data_index->merged_region_def_buffer );
+    }
+    if ( oa_consumer_data_index->static_measurement_buffer )
+    {
+        free( oa_consumer_data_index->static_measurement_buffer );
+    }
+    if ( oa_consumer_data_index->merged_regions_def_table )
+    {
+        SCOREP_Hashtab_Free( oa_consumer_data_index->merged_regions_def_table );
+    }
+    if ( oa_consumer_data_index->static_measurements_table )
+    {
+        SCOREP_Hashtab_Free( oa_consumer_data_index->static_measurements_table );
+    }
+    free( oa_consumer_data_index );
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////

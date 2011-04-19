@@ -37,16 +37,15 @@
 
 static int8_t scorep_oa_is_initialized = 0;
 
-SCOREP_Error_Code
+int8_t
 SCOREP_OA_Init
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
-    printf( "%d \n", 1 << 14 );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     if ( !SCOREP_IsOAEnabled() )
     {
-        return SCOREP_SUCCESS;
+        return 0;
     }
 
     if ( scorep_oa_is_initialized == 0 )
@@ -57,7 +56,7 @@ SCOREP_OA_Init
         connection = scorep_oa_connection_connect();
         scorep_oa_mri_receive_and_process_requests( connection );
     }
-    return SCOREP_SUCCESS;
+    return 1;
 }
 
 int8_t
@@ -68,15 +67,15 @@ SCOREP_OA_Initialized
     return scorep_oa_is_initialized;
 }
 
-SCOREP_Error_Code
+int8_t
 SCOREP_OA_Finalize
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     if ( !SCOREP_IsOAEnabled() )
     {
-        return SCOREP_SUCCESS;
+        return 1;
     }
     if ( scorep_oa_is_initialized )
     {
@@ -84,5 +83,5 @@ SCOREP_OA_Finalize
 
         //scorep_oa_mri_send_data(SCOREP_OA_MRI_SYMBOLS,void*,count)
     }
-    return SCOREP_SUCCESS;
+    return 1;
 }

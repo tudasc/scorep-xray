@@ -33,8 +33,9 @@
 
 static int8_t scorep_oa_is_connected = 0;
 static int    scorep_oa_socket       = 0;
-static int    sil_oa_port            = 50010;
+static int    silc_oa_port           = 50010;
 int           connection             = 0;
+
 
 
 int
@@ -43,20 +44,18 @@ scorep_oa_connection_connect
 (
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     if ( scorep_oa_is_connected )
     {
         return SCOREP_SUCCESS;
     }
-    sil_oa_port      = 50001;
-    scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &sil_oa_port, 10, 1 );
+    scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &silc_oa_port, 10, 1 );
     if ( scorep_oa_socket == -1 )
     {
-        //_Exit( EXIT_FAILURE );
-        //return SCOREP_ERROR_MEMORY_OUT_OF_PAGES;				///@todo introduce my own error codes
+        _Exit( EXIT_FAILURE );
     }
     scorep_oa_is_connected = 1;
-    scorep_oa_sockets_register_with_registry( sil_oa_port );
+    scorep_oa_sockets_register_with_registry( silc_oa_port );
     scorep_oa_socket = scorep_oa_sockets_server_accept_client( scorep_oa_socket );
     //receive_and_process_requests(scorep_oa_socket);
     return scorep_oa_socket;
@@ -78,7 +77,7 @@ scorep_oa_connection_send_string
     const char* message_string
 )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "%s sending: %s", __FUNCTION__, message_string );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "%s sending: %s", __FUNCTION__, message_string );
     scorep_oa_sockets_write_line( connection, message_string );
     return SCOREP_SUCCESS;
 }

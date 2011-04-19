@@ -14,37 +14,30 @@
  *
  */
 
-
-#ifndef SCOREP_OA_INIT_H
-#define SCOREP_OA_INIT_H
-
+#ifndef SCOREP_OA_PHASE_H_
+#define SCOREP_OA_PHASE_H_
 
 /**
- * @file        SCOREP_OA_Init.h
+ * @file        scorep_oa_phase.h
  * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
- * @brief   Declaration of OA initialization and finalization functions
+ * @brief   Declarations of Online Access phase enter and exit functions.
  *
  * @status alpha
  */
 
-#include "scorep_utility/SCOREP_Utils.h"
-//extern int connection;					///@TODO move to SCOREP_OA_Status.h
+#include "SCOREP_User_Types.h"
 
-
-int8_t
-SCOREP_OA_Init
+void
+scorep_oa_phase_enter
 (
+   const SCOREP_User_RegionHandle handle
 );
 
-int8_t
-SCOREP_OA_Initialized
+void
+scorep_oa_phase_exit
 (
+   const SCOREP_User_RegionHandle handle
 );
 
-int8_t
-SULC_OA_Finalize
-(
-);
-
-#endif /* SCOREP_OA_INIT_H */
+#endif /* SCOREP_OA_PHASE_H_ */
