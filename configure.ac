@@ -33,16 +33,14 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
     AC_SCOREP_DETECT_PLATFORMS
     AC_SCOREP_WITH_COMPILER_SUITE
     AC_SCOREP_WITH_MPI_COMPILER_SUITE
-    AC_SCOREP_LOAD_PLATFORMS_DEFAULTS
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
-           $srcdir/vendor/common/build-config/platforms/$ac_scorep_platform \
-           $ac_scorep_compiler_suite_files                                  \
-           $ac_scorep_mpi_compiler_suite_file                               \
+           $ac_scorep_compilers_frontend                                    \
+           $ac_scorep_compilers_backend                                     \
+           mpi_compiler_suite                                               \
            user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
-    AC_MSG_NOTICE([debug: ac_scorep_cross_compiling: $ac_scorep_cross_compiling])
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            user_provided_configure_args`"

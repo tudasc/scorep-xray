@@ -1,25 +1,31 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
-CC_SAVE=$CC
-CXX_SAVE=$CXX
-F77_SAVE=$F77
-FC_SAVE=$FC
+AC_SCOREP_PRECIOUS_VARS_MPI
 
-CC=$MPICC
-CXX=$MPICXX
-F77=$MPIF77
-FC=$MPIFC
+AC_SCOREP_CHECK_COMPILER_VAR_SET([MPICC])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([MPICXX])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([MPIF77])
+AC_SCOREP_CHECK_COMPILER_VAR_SET([MPIFC])
+
+AC_SCOREP_CONVERT_MPI_COMPILER([CC])
+AC_SCOREP_CONVERT_MPI_COMPILER([CXX])
+AC_SCOREP_CONVERT_MPI_COMPILER([F77])
+AC_SCOREP_CONVERT_MPI_COMPILER([FC])
+
+AC_SCOREP_CONVERT_MPI_FLAGS([CPPFLAGS])
+AC_SCOREP_CONVERT_MPI_FLAGS([CFLAGS])
+AC_SCOREP_CONVERT_MPI_FLAGS([CXXFLAGS])
+AC_SCOREP_CONVERT_MPI_FLAGS([FFLAGS])
+AC_SCOREP_CONVERT_MPI_FLAGS([FCFLAGS])
+AC_SCOREP_CONVERT_MPI_FLAGS([LD_FLAGS])
+AC_SCOREP_CONVERT_MPI_FLAGS([LIBS])
+
 
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
-
-AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
-AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
-AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
-AC_SCOREP_CHECK_COMPILER_VAR_SET([FC])
 
 cross_compiling=${ac_scorep_cross_compiling}
 #if test "x${ac_scorep_platform}" = "xibm"; then

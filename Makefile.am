@@ -66,7 +66,7 @@ EXTRA_DIST += \
 
 clean-local: clean-doxygen-user
 	rm -rf $(builddir)/user_provided_configure_args
-	rm -rf $(builddir)/mpi_compiler_suite_file
+	rm -rf $(builddir)/mpi_compiler_suite
 	rm -f  $(builddir)/include/scorep/scorep_meets_tau.h
 
 ## In the following conditional we must distinguish if we are in "developer
