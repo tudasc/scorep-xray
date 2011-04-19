@@ -1,7 +1,7 @@
 CC=cc
 CXX=CC
-F77=f77
-FC=f95
+F77=ftn
+FC=ftn
 
 #CPPFLAGS=
 #CFLAGS=

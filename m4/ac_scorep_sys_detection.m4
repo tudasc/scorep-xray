@@ -85,6 +85,12 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
     ac_scorep_platform_detection=""
     ac_scorep_platform_detection_given=""
 
+    ac_scorep_compilers_frontend=""
+    ac_scorep_compilers_backend=""
+    ac_scorep_compilers_mpi=""
+
+    path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
+
     if test "x${host_alias}" != "x"; then
         AC_CANONICAL_HOST
         if test "x${build}" != "x${host}"; then
@@ -116,7 +122,10 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
         if test "x${ac_scorep_platform}" = "xunknown"; then
             AC_MSG_RESULT([$ac_scorep_platform, please contact <AC_PACKAGE_BUGREPORT> if you encounter any problems.])
         else
-            AC_MSG_RESULT([$ac_scorep_platform])  
+            AC_MSG_RESULT([$ac_scorep_platform])
+            ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-${ac_scorep_platform}"
+            ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-${ac_scorep_platform}"
+            ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-${ac_scorep_platform}"  
         fi
         AC_MSG_CHECKING([for cross compilation])
         AC_MSG_RESULT([$ac_scorep_cross_compiling])
@@ -124,7 +133,9 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
         AC_MSG_NOTICE([platform detection disabled.])
         AC_MSG_CHECKING([for cross compilation])
         AC_MSG_RESULT([$ac_scorep_cross_compiling]) 
-        ac_scorep_platform="user_provided"
+        ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-user-provided"
+        ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-user-provided"
+        ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-user-provided"
     else
         AC_MSG_ERROR([unknown value for ac_scorep_platform_detection: $ac_scorep_platform_detection])
     fi
@@ -133,7 +144,17 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
 
 AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
 [
-    AC_REQUIRE([AC_CANONICAL_BUILD])
-    AM_CONDITIONAL([PLATFORM_ALTIX],  [test "x${ac_scorep_platform}" = "xaltix"])
-    AM_CONDITIONAL([PLATFORM_POWER6], [test "x${ac_scorep_platform}" = "xibm" -a "x${build_cpu}" = "xpowerpc"])
+    AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
+
+    AM_CONDITIONAL([PLATFORM_ALTIX],    [test "x${ac_scorep_platform}" = "xaltix"])
+    AM_CONDITIONAL([PLATFORM_POWER6],   [test "x${ac_scorep_platform}" = "xibm" -a "x${build_cpu}" = "xpowerpc"])
+    AM_CONDITIONAL([PLATFORM_BGL],      [test "x${ac_scorep_platform}" = "xbgl"])
+    AM_CONDITIONAL([PLATFORM_BGP],      [test "x${ac_scorep_platform}" = "xbgp"])
+    AM_CONDITIONAL([PLATFORM_CRAYXT],   [test "x${ac_scorep_platform}" = "xcrayxt"])
+    AM_CONDITIONAL([PLATFORM_SICORTEX], [test "x${ac_scorep_platform}" = "xsicortex"])
+    AM_CONDITIONAL([PLATFORM_LINUX],    [test "x${ac_scorep_platform}" = "xlinux"])
+    AM_CONDITIONAL([PLATFORM_SUN],      [test "x${ac_scorep_platform}" = "xsun"])
+    AM_CONDITIONAL([PLATFORM_MAC],      [test "x${ac_scorep_platform}" = "xmac"])
+    AM_CONDITIONAL([PLATFORM_CRAYX1],   [test "x${ac_scorep_platform}" = "xcrayx1"])
+    AM_CONDITIONAL([PLATFORM_NECSX],    [test "x${ac_scorep_platform}" = "xnecsx"])
 ])

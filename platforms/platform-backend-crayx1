@@ -1,7 +1,9 @@
-CC=cc
-CXX=CC
-F77=f77
-FC=f95
+# no useful defaults set so far
+
+#CC=
+#CXX=
+#F77=
+#FC=
 
 #CPPFLAGS=
 #CFLAGS=

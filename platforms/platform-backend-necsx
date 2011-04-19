@@ -3,12 +3,14 @@
 #CPP="sxcc -E" 
 
 CC=sxcc
-MPICC=sxmpicc
-
 CXX=sxc++
-MPICXX=sxmpic++
-
 F77=sxf90
 FC=sxf90
-MPIF77=sxmpif90
-MPIFC=sxmpif90
+
+#CPPFLAGS=
+#CFLAGS=
+#CXXFLAGS=
+#FFLAGS=
+#FCFLAGS=
+#LD_FLAGS=
+#LIBS=
