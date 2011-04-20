@@ -91,8 +91,7 @@ AC_DEFUN([AC_SCOREP_OPARI2_FOR_BUILD_ARGS_TAKES_PRECEDENCE],
 AC_DEFUN([AC_SCOREP_OPARI2_CONVERT_FOR_BUILD_ARG],
 [
     if test "x${ac_cv_env_[$1]_FOR_BUILD_set}" == "xset"; then
-        # append key-value pair to list of arguments
-        opari2_cross_build_args="${opari2_cross_build_args} [$1]=$ac_cv_env_[$1]_FOR_BUILD_value"
+       [$1]=$ac_cv_env_[$1]_FOR_BUILD_value
     fi
 ])
 
