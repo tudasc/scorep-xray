@@ -196,9 +196,9 @@ AC_ARG_WITH([mpi],
             [AS_HELP_STRING([--with-mpi=(mpich2|intel|openmpi)], 
                             [The mpi compiler suite to build this package with. Needs to be in $PATH [mpich2].])],
             [AS_CASE([$withval],
-                     ["mpich"],       [ac_scorep_compilers_mpi="${path_to_compiler_files}mpi-compiler-mpich2"],
-                     ["intel"],       [ac_scorep_compilers_mpi="${path_to_compiler_files}mpi-compiler-intel"],
-                     ["openmpi"],     [ac_scorep_compilers_mpi="${path_to_compiler_files}mpi-compiler-openmpi"],
+                     ["mpich"],       [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-mpich2"],
+                     ["intel"],       [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-intel"],
+                     ["openmpi"],     [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-openmpi"],
                      [AC_MSG_WARN([MPI compiler suite "${withval}" not supported by --with-mpi, ignoring.])])],
             [])
 
