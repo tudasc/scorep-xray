@@ -25,7 +25,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pathscale  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pgi  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-studio  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intel  \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-impi  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich2  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-openmpi  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-gcc  \
