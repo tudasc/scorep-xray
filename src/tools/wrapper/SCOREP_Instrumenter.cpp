@@ -73,6 +73,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     has_data_from_file = false;
     is_dry_run         = false;
     no_final_step      = false;
+    lmpi_set           = false;
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
@@ -367,6 +368,21 @@ SCOREP_Instrumenter::parse_command( std::string arg )
         }
         return scorep_parse_mode_command;
     }
+    else if ( arg == "-lmpi" )
+    {
+        lmpi_set = true;
+        /* is_mpi_application can only be disabled, if --nompi was specified. In this case
+           do not enable mpi wrappers.
+         */
+        if ( is_mpi_application != disabled )
+        {
+            is_mpi_application = enabled;
+        }
+        /* We must append the -lmpi after our flags, else our mpi wrappers are not
+           used. Thus, do not store this flag in the flag list, but return.
+         */
+        return scorep_parse_mode_command;
+    }
     else if ( arg == "-c" )
     {
         is_linking = false;
@@ -606,6 +622,12 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     scorep_include_path = "`" + config_path + mode + " --inc` ";
     scorep_library_path = "";
     external_libs       = "`" + config_path + mode + " --libs` ";
+
+    // Handle manual -lmpi flag
+    if ( lmpi_set )
+    {
+        external_libs += "-mpi ";
+    }
 }
 
 void

@@ -485,6 +485,11 @@ private:
      */
     source_language_t language;
 
+    /**
+       True, if -lmpi was specified.
+     */
+    bool lmpi_set;
+
     /* --------------------------------------------
        Config file data
        ------------------------------------------*/
