@@ -626,7 +626,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     // Handle manual -lmpi flag
     if ( lmpi_set )
     {
-        external_libs += "-mpi ";
+        external_libs += "-lmpi ";
     }
 }
 
