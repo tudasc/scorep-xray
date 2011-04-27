@@ -10,6 +10,9 @@ SUBDIRS = $(subdirs) $(subdirs_custom)
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 
+EXTRA_DIST =
+CLEANFILES =
+
 ## Still, sometimes there are files that must be distributed, but which are not
 ## covered in the automatic rules. These files should be listed in the 
 ## EXTRA_DIST variable. You can mention files from subdirectories in EXTRA_DIST.
@@ -18,10 +21,10 @@ ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version
 ## control files. We recommend against using this feature.
-EXTRA_DIST = $(srcdir)/src/config.h                                     \
-             $(srcdir)/src/config-custom.h                              \
-             $(srcdir)/build-config/VERSION                             \
-             $(srcdir)/tools/tau/scorep_meets_tau.awk
+EXTRA_DIST += $(srcdir)/src/config.h                                     \
+              $(srcdir)/src/config-custom.h                              \
+              $(srcdir)/build-config/VERSION                             \
+              $(srcdir)/tools/tau/scorep_meets_tau.awk
 
 include vendor/common/build-config/Makefile.inc.am
 
@@ -65,9 +68,8 @@ EXTRA_DIST += \
 .PHONY: doxygen-project-number update-revision clean-doxygen-user doxygen-user doxygen-user-pdf beautify beautify-clean
 
 clean-local: clean-doxygen-user
-	rm -rf $(builddir)/user_provided_configure_args
-	rm -rf $(builddir)/mpi_compiler_suite
-	rm -f  $(builddir)/include/scorep/scorep_meets_tau.h
+
+CLEANFILES += $(builddir)/include/scorep/scorep_meets_tau.h
 
 ## In the following conditional we must distinguish if we are in "developer
 ## mode", i.e. if we are working on a svn working copy, or if we are in "user
