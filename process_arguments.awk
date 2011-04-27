@@ -1,7 +1,11 @@
 # We assume that the order of the passed files is
-# - platform defautls
-# - exported symbols
-# - user-specified arguments
+# - frontend compilers
+# - backend compilers
+# - mpi compilers
+# - user-provided arguments
+#
+# With this order we guarantee that user-provided binary arguments takes 
+# precedence. They just overwrite already existing binary arguments.
 #
 # iterate over the fields. if a field is of the form "key=value", store it in
 # a map<key, value>. subsequent insertions of the same key override the old
@@ -18,10 +22,10 @@
     }
     n = index($0, "=")
     if (n != 0) { # line with at least one "=". Use first "=" as key-value separator
-      args_binary_user_provided[substr($0, 1, n-1)] = substr($0, n+1)
+      args_binary[substr($0, 1, n-1)] = substr($0, n+1)
     }    
     else {
-      args_unary_user_provided = "'" $0 "' " args_unary_user_provided
+      args_unary = "'" $0 "' " args_unary
     }
   }
 #   else if (FILENAME == "args_exported") {
@@ -42,22 +46,37 @@
     if (index($0, "#") == 0) { # ! commented line
       n = index($0, "=")
       if (n != 0) { # line with at least one "=". Use first "=" as key-value separator
-        args_binary_platform[substr($0, 1, n-1)] = substr($0, n+1)
+        args_binary[substr($0, 1, n-1)] = substr($0, n+1)
       }
     }
   }
 }
 
-END{
-  # Concatenate the map's content into a "key=value" pair sequence, add the
-  # unary arguments and print it to stdout. User provided arguments need to
-  # take precedence.
-  for (key in args_binary_user_provided) {
-    result = "'" key "=" args_binary_user_provided[key] "' " result
-  } 
-  for (key in args_binary_platform) {
-    result = "'" key "=" args_binary_platform[key] "' " result
+
+function evaluate_placeholder(compiler)
+{
+  # e.g. transform MPICC="mpiicc -cc=${CC}" to MPICC="mpiicc -cc=gcc",
+  # assuming that CC=gcc
+  mpi_compiler = "MPI" compiler
+  pattern = "\${" compiler "}"
+  if (match(args_binary[mpi_compiler], pattern) != 0) {
+    sub(pattern, args_binary[compiler], args_binary[mpi_compiler])
   }
-  print result args_unary_user_provided
+}
+
+
+END{
+  evaluate_placeholder("CC")
+  evaluate_placeholder("CXX")
+  evaluate_placeholder("F77")
+  evaluate_placeholder("FC")
+
+  # Concatenate the map's content into a "key=value" pair sequence, add the
+  # unary arguments and print it to stdout. 
+  for (key in args_binary) {
+    result = "'" key "=" args_binary[key] "' " result
+  }
+
+  print result args_unary
 }
  

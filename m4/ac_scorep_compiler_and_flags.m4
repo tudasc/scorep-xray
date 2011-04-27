@@ -201,9 +201,17 @@ AC_ARG_WITH([mpi],
                      [AC_MSG_WARN([MPI compiler suite "${withval}" not supported by --with-mpi, ignoring.])])],
             [])
 
-# find suitable defaults if not already set by platform detection
-. ${ac_scorep_compilers_mpi}
+# use mpi_compiler_suite as input for process_arguments.awk
 cat ${ac_scorep_compilers_mpi} > mpi_compiler_suite
+
+# find suitable defaults if not already set by platform detection or
+# configure arguments. Note that we can't source
+# ${ac_scorep_compilers_mpi} directly as it may contain lines like
+# 'MPIF77=mpiifort -fc=${F77}' which are not valid shell code. Adding
+# quotes like in 'MPIF77="mpiifort -fc=${F77}"' would solve the
+# problem here but cause headaches using AC_CONFIG_SUBDIR_CUSTOM
+$AWK '{print $[]1}' ${ac_scorep_compilers_mpi} | grep MPI > mpi_compiler_suite_to_source
+. ./mpi_compiler_suite_to_source
 
 if test "x${MPICC}" = "x"; then
     AC_CHECK_PROGS(MPICC, mpicc hcc mpxlc_r mpxlc mpcc cmpicc mpiicc, $CC)
