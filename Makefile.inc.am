@@ -18,6 +18,10 @@
 ## file       Makefile.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
+# Create platform entries for EXTRA_DIST using e.g.:
+# cd vendor/common/build-config/platforms
+# for i in *; do echo "              \$(srcdir)/vendor/common/build-config/platforms/$i \\"; done
+
 EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-gcc  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-ibm  \
@@ -70,3 +74,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-sicortex  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-sun  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-user-provided
+
+CLEANFILES += $(builddir)/user_provided_configure_args \
+              $(builddir)/mpi_compiler_suite           \
+              $(builddir)/mpi_compiler_suite_to_source
