@@ -264,3 +264,9 @@ check-run: check-build
 	for dir in $(SUBDIRS); do                        \
             (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
         done
+
+
+# Intended to be used from bitten only:
+bitten-copy-tarball-to-prefix: $(distdir).tar.gz
+	$(MKDIR_P) $(DESTDIR)$(prefix)
+	$(INSTALL_DATA) $(distdir).tar.gz $(DESTDIR)$(prefix)/
