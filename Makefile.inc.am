@@ -78,3 +78,171 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
 CLEANFILES += $(builddir)/user_provided_configure_args \
               $(builddir)/mpi_compiler_suite           \
               $(builddir)/mpi_compiler_suite_to_source
+
+
+
+## this needs to be in the real Makefile
+##install-data-local: doxygen-user-install
+
+## this needs to be in the real Makefile
+##uninstall-local: doxygen-user-uninstall
+
+## this needs to be in the real Makefile
+##dist-hook: doxygen-user-generate
+
+##clean-local: doxygen-user-clean
+
+###############################################################################
+## doxygen related targets 
+##
+
+## In the following conditional we must distinguish if we are in "developer
+## mode", i.e. if we are working on a svn working copy, or if we are in "user
+## mode", i.e. we are working on a tarball.
+##
+## In developer mode we can create doxygen and pdf user documentation (make
+## doxygen-user) that will be (automatically) included in the distribution at
+## make dist. When creating a distribution, the developer should make sure
+## that she has doxygen and related tools e.g. pdflatex in PATH in order to
+## generate a complete documentation, see also
+## vendor/common/build-config/m4/ac_scorep_doxygen.m4.
+##
+## make install is ignorant of documentation issues in developer mode.
+##
+## The user gets ready to install documentation in the tarball, i.e. there is no
+## need to run doxygen and pdflatex in user mode. In user mode the provided
+## documentation is just copied to a subdirectory of $prefix.
+
+if SVN_CONTROLLED #-----------------------------------------------------------
+
+USER_DOC_DIR = $(top_distdir)$(ac_scorep_doxygen_distdir)/doc
+
+doxygen-user-install:
+
+doxygen-user-uninstall:
+
+doxygen-user-generate: doxygen-user-pdf doxygen-user-html-compress copy-revision-file-to-dist
+
+update-revision:
+	echo `svnversion $(srcdir)` > "$(srcdir)/build-config/REVISION"
+
+copy-revision-file-to-dist:
+	$(MKDIR_P) "$(distdir)/build-config/"
+	cp -p "$(srcdir)/build-config/REVISION" "$(distdir)/build-config/"
+	if grep -E [A-Z] "$(srcdir)/build-config/REVISION" ||                               \
+           grep "-" "$(srcdir)/build-config/REVISION"; then                                 \
+            echo "WARNING: distribution does not match a single, unmodified revision." >&2; \
+        fi
+
+doxygen-user-html-compress:
+	if test -d "$(USER_DOC_DIR)/html"; then                               \
+	    cd "$(USER_DOC_DIR)"; tar czvf html.tar.gz html; rm -rf html/;    \
+	fi
+
+doxygen-project-number: update-revision
+	echo "PROJECT_NUMBER = `cat $(srcdir)/build-config/VERSION` (revision `cat $(srcdir)/build-config/REVISION`)" > doc/doxygen-project-number.cfg
+
+doxygen-user-clean:
+	rm -f doc/doxygen-project-number.cfg
+	rm -f doc/doxygen-at-make-time.cfg
+	rm -rf $(USER_DOC_DIR)/*
+
+if HAVE_DOXYGEN #-----------------------------------------------------
+
+doxygen-user: doxygen-project-number
+	$(MKDIR_P) "$(USER_DOC_DIR)/tags"
+	echo "OUTPUT_DIRECTORY = $(USER_DOC_DIR)" > doc/doxygen-at-make-time.cfg
+	echo "GENERATE_TAGFILE = $(USER_DOC_DIR)/tags/@PACKAGE_NAME@.tag" >> doc/doxygen-at-make-time.cfg
+	cat doc/doxygen-user.cfg doc/doxygen-project-number.cfg doc/doxygen-at-make-time.cfg | doxygen -
+
+else # i.e. ! HAVE_DOXYGEN -------------------------------------------
+
+doxygen-user:
+	echo "WARNING: doxygen not available. Can not generate documentation." >&2
+
+endif # HAVE_DOXYGEN -------------------------------------------------
+
+if HAVE_DOXYGEN_LATEX #-----------------------------------------------
+
+doxygen-user-pdf: doxygen-user
+	cd "$(USER_DOC_DIR)/pdf"; \
+	make;                     \
+	mv refman.pdf ../;        \
+	rm -f *;                  \
+	mv ../refman.pdf @PACKAGE_NAME@.pdf
+
+else # i.e. ! HAVE_DOXYGEN_LATEX -------------------------------------
+
+doxygen-user-pdf: doxygen-user
+	echo "WARNING: pdflatex not available. Can not generate doxygen pdf documentation." >&2
+	if test -d "$(USER_DOC_DIR)/pdf"; then rm -rf "$(USER_DOC_DIR)/pdf"; fi
+
+endif # HAVE_DOXYGEN_LATEX -------------------------------------------
+
+else # i.e. ! SVN_CONTROLLED -------------------------------------------------
+
+DOC_SRC_DIR = $(srcdir)/doc
+
+doxygen-user-clean:
+
+doxygen-user-generate:
+
+doxygen-user-pdf:
+
+doxygen-user-install:
+	if test -f "$(DOC_SRC_DIR)/html.tar.gz"; then                            \
+            $(MKDIR_P) $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc;                  \
+            $(INSTALL_DATA) $(DOC_SRC_DIR)/html.tar.gz                           \
+                            $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/html.tar.gz; \
+	    cd $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc;                          \
+            tar xzvf html.tar.gz;                                                \
+	    rm -f html.tar.gz;                                                   \
+	fi
+	if test -d "$(DOC_SRC_DIR)"; then                                                       \
+            cd $(DOC_SRC_DIR);                                                                  \
+            dirs=`find . -type d`;                                                              \
+            cd -;                                                                               \
+            for i in $$dirs; do                                                                 \
+                $(MKDIR_P) $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/$$i;                         \
+            done;                                                                               \
+	    cd $(DOC_SRC_DIR);                                                                  \
+            files=`find . -type f`;                                                             \
+            cd -;                                                                               \
+            for i in $$files; do                                                                \
+                $(INSTALL_DATA) $(DOC_SRC_DIR)/$$i $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/$$i; \
+            done;                                                                               \
+            rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/doxygen;                             \
+        fi
+
+doxygen-user-uninstall:
+	rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@
+
+endif # SVN_CONTROLLED 
+                                                                             ##
+                                                                             ##
+###############################################################################
+
+
+
+
+###############################################################################
+## code beautification targets 
+##
+if SVN_CONTROLLED
+if HAVE_UNCRUSTIFY
+
+beautify:
+	for dir in $(SUBDIRS); do                        \
+            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
+        done
+	cd $(srcdir); ./vendor/common/beautifier/beautify
+
+beautify-clean:
+	find $(srcdir) -name "*.unc-backup*" -exec rm '{}' \;
+
+endif # HAVE_UNCRUSTIFY
+endif # SVN_CONTROLLED 
+                                                                             ##
+                                                                             ##
+###############################################################################
+
