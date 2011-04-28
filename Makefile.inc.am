@@ -81,17 +81,6 @@ CLEANFILES += $(builddir)/user_provided_configure_args \
 
 
 
-## this needs to be in the real Makefile
-##install-data-local: doxygen-user-install
-
-## this needs to be in the real Makefile
-##uninstall-local: doxygen-user-uninstall
-
-## this needs to be in the real Makefile
-##dist-hook: doxygen-user-generate
-
-##clean-local: doxygen-user-clean
-
 ###############################################################################
 ## doxygen related targets 
 ##
@@ -246,3 +235,17 @@ endif # SVN_CONTROLLED
                                                                              ##
 ###############################################################################
 
+
+###############################################################################
+## bitten targets, intended to be used from bitten only
+##
+
+bitten-copy-tarball-to-prefix: $(distdir).tar.gz
+	$(MKDIR_P) $(DESTDIR)$(prefix)
+	$(INSTALL_DATA) $(distdir).tar.gz $(DESTDIR)$(prefix)/
+
+bitten-print-environment:
+	env
+                                                                             ##
+                                                                             ##
+###############################################################################
