@@ -69,7 +69,7 @@ print_help( std::string toolname )
               << "                  execute any command.\n\n"
               << "For instrumentation the following options are supported:\n"
               << "  --compiler      Enables compiler instrumentation Is enabled by default.\n"
-              << "  --nocompiler    Disables compiler istrumentation.\n"
+              << "  --nocompiler    Disables compiler instrumentation.\n"
               << "  --mpi           Enables mpi wrapper. Is enabled by default if it is a\n"
               << "                  mpi program.\n"
               << "  --nompi         Disables mpi wrappers. They are disabled by default if\n"
