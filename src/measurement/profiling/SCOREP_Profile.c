@@ -380,6 +380,10 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
                                      SCOREP_PROFILE_DATA2REGION( node->type_specific_data ),
                                      exit_time, NULL );
             }
+            else
+            {
+                break;
+            }
         }
         while ( node != NULL );
     }
