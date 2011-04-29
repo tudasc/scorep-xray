@@ -38,6 +38,7 @@
 #include <scorep_profile_process.h>
 #include <scorep_profile_writer.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Timing.h>
 
 void
 scorep_profile_substitute_parameter();
@@ -359,6 +360,29 @@ void
 SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+
+    /* Exit all regions that are not exited, yet. We assume that we post-process
+       only when we are outside of a parallel region. Thus, we only exit
+       regions on the main location.
+     */
+    uint64_t                    exit_time = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* thread    = SCOREP_Thread_GetLocationData();
+    scorep_profile_node*        node      = NULL;
+
+    if ( thread != NULL )
+    {
+        do
+        {
+            node = scorep_profile_get_current_node( thread );
+            if ( node->node_type == scorep_profile_node_regular_region  )
+            {
+                SCOREP_Profile_Exit( thread,
+                                     SCOREP_PROFILE_DATA2REGION( node->type_specific_data ),
+                                     exit_time, NULL );
+            }
+        }
+        while ( node != NULL );
+    }
 
     /* Substitute parameter entries by regions */
     if ( processFlags & SCOREP_Profile_ParamToRegion )
