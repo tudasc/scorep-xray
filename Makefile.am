@@ -70,7 +70,7 @@ install-data-local: doxygen-user-install install-scorep-meets-tau
 
 uninstall-local: doxygen-user-uninstall
 
-dist-hook: doxygen-user-generate
+dist-hook: prohibit-svn-files-in-dist doxygen-user-generate
 
 clean-local: doxygen-user-clean
 
