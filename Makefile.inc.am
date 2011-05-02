@@ -80,6 +80,16 @@ CLEANFILES += $(builddir)/user_provided_configure_args \
               $(builddir)/mpi_compiler_suite_to_source
 
 
+prohibit-svn-files-in-dist:
+	@find $(top_distdir) -type d | grep "\.svn"; \
+	if [ $$? -eq 0 ]; then \
+            echo "ERROR: subversion files found in distrubution. This is usually caused by";  \
+            echo "referencing directories in EXTRA_DIST. Please specify the files that need"; \
+            echo "to go into the distribution explicitly."; \
+            exit 1; \
+        fi
+
+
 
 ###############################################################################
 ## doxygen related targets 
