@@ -126,8 +126,12 @@ AC_PROG_FC_C_O
 ## The macros AC_F77_DUMMY_MAIN and AC_FC_DUMMY_MAIN or AC_F77_MAIN and
 ## AC_FC_MAIN are probably also necessary to link C/C++ with Fortran; see
 ## the autoconf manual.
-AC_F77_LIBRARY_LDFLAGS
-AC_FC_LIBRARY_LDFLAGS
+
+# Should not be needed as we link the libscorep_* libs with the fontran 
+# compiler. Users of libscorep_* use the appropriate compiler anyhow.
+# Well , these macros are implicitly called by AC_F7*_WRAPPERS
+#AC_F77_LIBRARY_LDFLAGS
+#AC_FC_LIBRARY_LDFLAGS
 
 AC_SCOREP_OPENMP
 AC_SCOREP_PDT
