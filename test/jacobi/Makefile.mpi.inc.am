@@ -143,6 +143,11 @@ SCOREP_MPI_TESTS += jacobi_mpi_f90
 ## MPI + OpenMP Fortran
 
 if OPENMP_SUPPORTED
+
+if ! SCOREP_COMPILER_CRAY
+# The cray fortran compiler bails out on #line directives so we just
+# deactivate the tests with opari2-preinstrumented fortran sources.
+
 # Specify fortran dependencies manually
 jacobi_mpi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_mpi_omp_f90-main.$(OBJEXT): variabledef.mod
@@ -173,6 +178,9 @@ jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
 
 SCOREP_MPI_OMP_TESTS += jacobi_mpi_omp_f90
+
+endif
+# if ! SCOREP_COMPILER_CRAY
 
 endif
 # if OPENMP_SUPPORTED
