@@ -29,4 +29,4 @@ ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 ## Here we write only backend values.
 create-config-tool-headers:
-	(cd ../build-backend; make create-config-tool-headers)
+	(cd ../build-backend; $(MAKE) create-config-tool-headers)
