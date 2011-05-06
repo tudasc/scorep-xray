@@ -177,10 +177,10 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$scorep_compiler_cray])
 AS_IF([test "x${scorep_compiler_cray}" = "xyes"], 
       [scorep_compiler_instrumentation_cppflags="-hfunc_trace"]
-      [CC="${CC} -hnoomp"]
-      [CXX="${CXX} -hnoomp"]
-      [F77="${F77} -hnoomp"]
-      [FC="${FC} -hnoomp"]
+      [CC="${CC} -hnoomp -O2"]
+      [CXX="${CXX} -hnoomp -O2"]
+      [F77="${F77} -hnoomp -O2"]
+      [FC="${FC} -hnoomp -O2"]
        AC_DEFINE([FORTRAN_MANGLED(var)], [var ## _], 
                  [Name of var after mangled by the Fortran compiler.]))
 ])
