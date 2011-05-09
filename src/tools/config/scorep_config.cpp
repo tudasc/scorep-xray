@@ -42,6 +42,9 @@
 #define ACTION_CXX    5
 #define ACTION_FC     6
 
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
+
 #define HELPTEXT "\nUsage:\nscorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config=<config_file>]\n"
 
 int
@@ -52,7 +55,7 @@ main( int    argc,
     /* set default mode to mpi */
     int           mode   = MODE_MPI;
     int           action = 0;
-    int           ret;
+    int           ret    = EXIT_SUCCESS;
 
     const char*   scorep_libs[ 4 ] = { "scorep_serial", "scorep_omp", "scorep_mpi", "scorep_mpi_omp" };
 
@@ -236,7 +239,7 @@ main( int    argc,
         }
     }
 
-    return 0;
+    return ret;
 }
 
 

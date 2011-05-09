@@ -687,7 +687,13 @@ void
 SCOREP_Instrumenter::invoke_opari( std::string input_file,
                                    std::string output_file )
 {
-    std::string command = opari + " -tpd " + input_file
+    std::string command = opari
+#ifdef SCOREP_COMPILER_CRAY
+                          + " -tpd -nosrc "
+#else
+                          + " -tpd "
+#endif
+                          + input_file
                           + " " + output_file;
     if ( verbosity >= 1 )
     {

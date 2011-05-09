@@ -26,6 +26,10 @@ if SCOREP_COMPILER_SUN
 scorep_CPPFLAGS += -DSCOREP_COMPILER_SUN=1
 endif
 
+if SCOREP_COMPILER_CRAY
+scorep_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
+endif
+
 scorep_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la    \
              $(LIB_DIR_UTIL)libscorep_parser_tools.la
 
