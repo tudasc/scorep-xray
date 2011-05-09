@@ -317,8 +317,6 @@ scorep_compiler_get_sym_tab( void )
         }
 #endif  /* GNU_DEMANGLE */
 
-        printf( "Funcname: %s\n", funcname );
-
         if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
              ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
              ( strncmp( funcname, "pomp", 4 ) != 0 ) &&
