@@ -275,8 +275,8 @@ scorep_compiler_get_sym_tab( void )
         }
 
         /* ignore system functions */
-        if ( strncmp( canonic_symbols[ i ]->name, "__", 2 ) == 0 ||
-             strncmp( canonic_symbols[ i ]->name, "bfd_", 4 ) == 0 ||
+        if ( strncmp( canonic_symbols[ i ]->name, "bfd_", 4 ) == 0 ||
+             strncmp( canonic_symbols[ i ]->name, "_bfd_", 4 ) == 0 ||
              strstr( canonic_symbols[ i ]->name, "@@" ) != NULL )
         {
             continue;
@@ -317,9 +317,16 @@ scorep_compiler_get_sym_tab( void )
         }
 #endif  /* GNU_DEMANGLE */
 
+        printf( "Funcname: %s\n", funcname );
+
         if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
              ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
-             ( strncmp( funcname, "pomp", 4 ) != 0 ) )
+             ( strncmp( funcname, "pomp", 4 ) != 0 ) &&
+             ( strncmp( funcname, "SCOREP_", 4 ) != 0 ) &&
+             ( strncmp( funcname, "scorep_", 4 ) != 0 ) &&
+             ( strncmp( funcname, "OTF2_", 4 ) != 0 ) &&
+             ( strncmp( funcname, "otf2_", 4 ) != 0 ) &&
+             ( strncmp( funcname, "cube_", 4 ) != 0 ) )
         {
 #ifdef INTEL_COMPILER
             scorep_compiler_hash_put( region_counter, funcname, filename, lno );
