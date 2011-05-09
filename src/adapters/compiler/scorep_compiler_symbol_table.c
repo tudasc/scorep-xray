@@ -325,11 +325,11 @@ scorep_compiler_get_sym_tab( void )
         if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
              ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
              ( strncmp( funcname, "pomp", 4 ) != 0 ) &&
-             ( strncmp( funcname, "SCOREP_", 4 ) != 0 ) &&
-             ( strncmp( funcname, "scorep_", 4 ) != 0 ) &&
-             ( strncmp( funcname, "OTF2_", 4 ) != 0 ) &&
-             ( strncmp( funcname, "otf2_", 4 ) != 0 ) &&
-             ( strncmp( funcname, "cube_", 4 ) != 0 ) )
+             ( strncmp( funcname, "SCOREP_", 7 ) != 0 ) &&
+             ( strncmp( funcname, "scorep_", 7 ) != 0 ) &&
+             ( strncmp( funcname, "OTF2_", 5 ) != 0 ) &&
+             ( strncmp( funcname, "otf2_", 5 ) != 0 ) &&
+             ( strncmp( funcname, "cube_", 5 ) != 0 ) )
         {
 #ifdef INTEL_COMPILER
             scorep_compiler_hash_put( region_counter, funcname, filename, lno );
