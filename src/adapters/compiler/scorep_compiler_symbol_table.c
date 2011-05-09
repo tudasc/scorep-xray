@@ -276,7 +276,7 @@ scorep_compiler_get_sym_tab( void )
 
         /* ignore system functions */
         if ( strncmp( canonic_symbols[ i ]->name, "bfd_", 4 ) == 0 ||
-             strncmp( canonic_symbols[ i ]->name, "_bfd_", 4 ) == 0 ||
+             strncmp( canonic_symbols[ i ]->name, "_bfd_", 5 ) == 0 ||
              strstr( canonic_symbols[ i ]->name, "@@" ) != NULL )
         {
             continue;
