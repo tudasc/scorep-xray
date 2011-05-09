@@ -290,7 +290,7 @@ scorep_compiler_get_sym_tab( void )
         /* calculate function address */
         addr = canonic_symbols[ i ]->section->vma + canonic_symbols[ i ]->value;
 
-        /* get the source info for every funciont in case of gnu by default */
+        /* get the source info for every function in case of gnu by default */
         /* calls BFD_SEND */
         bfd_find_nearest_line( bfd_image,
                                bfd_get_section( canonic_symbols[ i ] ),
@@ -300,9 +300,14 @@ scorep_compiler_get_sym_tab( void )
                                &funcname,
                                &lno );
 
-        /* In case no debugging symbols are found, funcname is NULL. */
-        /* Thus, set it from the alway present csnonic Symbols.      */
-        funcname = canonic_symbols[ i ]->name;
+        /* The debug information has often undecorated function names,
+           thus, tey are nicer to use.
+           If no debugging symbols are found and thus funcname is NULL,
+           set it from the alway present canonic symbols.      */
+        if ( funcname == NULL )
+        {
+            funcname = canonic_symbols[ i ]->name;
+        }
 
 #ifdef GNU_DEMANGLE
         /* use demangled name if possible */
