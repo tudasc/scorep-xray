@@ -27,64 +27,51 @@
 
 #include <config.h>
 #include <SCOREP_Platform.h>
+#include <stdlib.h>
+#include <unistd.h>
 
+SCOREP_Platform_SystemTreeNode*
+SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
+{
+    /* Initialize */
+    SCOREP_Platform_SystemTreeNode* path = NULL;
+    *number_of_entries = 0;
+
+    /* Allocate Array with two elements:
+       node, machine */
+    path = ( SCOREP_Platform_SystemTreeNode* )
+           malloc( 2 * sizeof( SCOREP_Platform_SystemTreeNode ) );
+    if ( path == NULL )
+    {
+        return NULL;
+    }
+
+    /* Get hostname */
+    path[ 0 ].name = ( char* )malloc( 256 * sizeof( char ) );
+    if ( path[ 0 ].name == NULL )
+    {
+        free( path );
+        return NULL;
+    }
+    if ( gethostname( &path[ 0 ].name, 256 ) != 0 )
+    {
+        SCOREP_Platform_FreePath( path, 2 );
+        return NULL;
+    }
+    path[ 0 ].class = "node";
+
+    /* Set machine */
+    path[ 1 ].name  = "generic cluster";
+    path[ 1 ].class = "machine";
+
+    *number_of_entries = 2;
+    return path;
+}
 
 void
-SCOREP_Platform_Initialize()
+SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreeNode* path,
+                          size_t                          number_of_entries )
 {
-}
-
-
-void
-SCOREP_Platform_Finalize()
-{
-}
-
-
-bool
-SCOREP_Platform_ClockIsGlobal()
-{
-    return true;
-}
-
-
-const char*
-SCOREP_Platform_GetName()
-{
-    return "foo";
-}
-
-
-uint32_t
-SCOREP_Platform_GetNumberOfNodes()
-{
-    return 42;
-}
-
-
-uint64_t
-SCOREP_Platform_GetNodeId()
-{
-    return 1;
-}
-
-
-const char*
-SCOREP_Platform_GetNodeName()
-{
-    return "hot node";
-}
-
-
-uint32_t
-SCOREP_Platform_GetNumberOfCPUs()
-{
-    return 4;
-}
-
-
-SCOREP_Platform_HardwareTopology*
-SCOREP_Platform_GetHardwareTopology()
-{
-    return 0;
+    free( &path[ 0 ].name );
+    free( path );
 }
