@@ -205,6 +205,111 @@ scorep_source_file_definitions_equal( const SCOREP_SourceFile_Definition* existi
 
 
 /////////////////////////////////////////////////////////////////////////////
+// LocationGroupDefinitions /////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+static SCOREP_LocationGroupHandle
+scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_manager,
+                                         uint64_t                    globalLocationGroupId,
+                                         SCOREP_SystemTreeNodeHandle parent,
+                                         SCOREP_StringHandle         nameHandle,
+                                         SCOREP_LocationGroupType    locationType );
+
+/**
+ * Registers a new local location into the definitions.
+ *
+ * @note No locking needed, will be done by the caller.
+ *
+ * @in internal
+ */
+SCOREP_LocationGroupHandle
+SCOREP_DefineLocationGroup( uint64_t                    globalLocationGroupId,
+                            SCOREP_SystemTreeNodeHandle parent,
+                            const char*                 name )
+{
+    SCOREP_Definitions_Lock();
+
+    /** @todo: location_type: this needs clarification after the location hierarchy
+               has settled */
+    uint64_t group_id = SCOREP_INVALID_LOCATION_GROUP;
+    if ( parent != SCOREP_INVALID_LOCATION )
+    {
+        group_id = SCOREP_LOCAL_HANDLE_DEREF( parent, Location )->location_group_id;
+    }
+
+    SCOREP_LocationGroupHandle new_handle = scorep_location_group_definition_define(
+        &scorep_local_definition_manager,
+        globalLocationGroupId,
+        parent,
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            name ? name : "" ),
+        SCOREP_LOCATION_GROUP_TYPE_PROCESS );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+void
+SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* definition,
+                                             SCOREP_Allocator_PageManager*    handlesPageManager )
+{
+    assert( !omp_in_parallel() );
+    assert( definition );
+    assert( handlesPageManager );
+
+    SCOREP_SystemTreeNodeHandle unified_parent_handle = SCOREP_INVALID_LOCATION;
+    if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
+    {
+        unified_parent_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->parent,
+            SystemTreeNode,
+            handlesPageManager );
+        assert( unified_parent_handle != SCOREP_MOVABLE_NULL );
+    }
+
+    definition->unified = scorep_location_group_definition_define(
+        scorep_unified_definition_manager,
+        definition->global_location_group_id,
+        unified_parent_handle,
+        SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
+        definition->location_group_type );
+}
+
+static inline bool
+scorep_location_group_definitions_equal( const SCOREP_LocationGroup_Definition* existingDefinition,
+                                         const SCOREP_LocationGroup_Definition* tmpDefinition )
+{
+    return false;
+}
+
+
+SCOREP_LocationGroupHandle
+scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_manager,
+                                         uint64_t                    globalLocationGroupId,
+                                         SCOREP_SystemTreeNodeHandle parent,
+                                         SCOREP_StringHandle         nameHandle,
+                                         SCOREP_LocationGroupType    locationGroupType )
+{
+    assert( definition_manager );
+
+    SCOREP_LocationGroup_Definition* new_definition = NULL;
+    SCOREP_LocationGroupHandle       new_handle     = SCOREP_INVALID_LOCATION;
+
+    SCOREP_DEFINITION_ALLOC( LocationGroup );
+
+    /* locations wont be unfied, therefore no hash value needed, yet? */
+    new_definition->global_location_group_id = globalLocationGroupId;
+    new_definition->parent                   = parent;
+    new_definition->name_handle              = nameHandle;
+    new_definition->location_group_type      = locationGroupType;
+
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
 // LocationDefinitions //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
@@ -216,7 +321,8 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_LocationType       locationType,
                                    uint64_t                  numberOfEvents,
                                    uint64_t                  numberOfDefinitions,
-                                   uint64_t                  timerResolution );
+                                   uint64_t                  timerResolution,
+                                   uint64_t                  locationGroupId );
 
 /**
  * Registers a new local location into the definitions.
@@ -234,6 +340,12 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
 
     /** @todo: location_type: this needs clarification after the location hierarchy
                has settled */
+    uint64_t group_id = SCOREP_INVALID_LOCATION_GROUP;
+    if ( parent != SCOREP_INVALID_LOCATION )
+    {
+        group_id = SCOREP_LOCAL_HANDLE_DEREF( parent, Location )->location_group_id;
+    }
+
     SCOREP_SourceFileHandle new_handle = scorep_location_definition_define(
         &scorep_local_definition_manager,
         globalLocationId,
@@ -241,10 +353,11 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
             name ? name : "" ),
-        SCOREP_LOCATION_OMP_THREAD,
+        SCOREP_LOCATION_TYPE_CPU_THREAD,
         0,
         0,
-        SCOREP_GetClockResolution() );
+        SCOREP_GetClockResolution(),
+        group_id );
 
     SCOREP_Definitions_Unlock();
 
@@ -277,7 +390,8 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
         definition->location_type,
         definition->number_of_events,
         definition->number_of_definitions,
-        definition->timer_resolution );
+        definition->timer_resolution,
+        definition->location_group_id );
 }
 
 static inline bool
@@ -296,7 +410,8 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_LocationType       locationType,
                                    uint64_t                  numberOfEvents,
                                    uint64_t                  numberOfDefinitions,
-                                   uint64_t                  timerResolution )
+                                   uint64_t                  timerResolution,
+                                   uint64_t                  locationGroupId )
 {
     assert( definition_manager );
 
@@ -313,6 +428,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     new_definition->number_of_events      = numberOfEvents;
     new_definition->number_of_definitions = numberOfDefinitions;
     new_definition->timer_resolution      = timerResolution;
+    new_definition->location_group_id     = locationGroupId;
 
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Location, location );
 }

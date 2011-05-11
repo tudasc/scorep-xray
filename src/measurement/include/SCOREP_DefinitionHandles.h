@@ -36,6 +36,9 @@
 
 typedef SCOREP_Allocator_MovableMemory SCOREP_StringHandle;
 
+typedef SCOREP_Allocator_MovableMemory SCOREP_SystemTreeNodeHandle;
+
+typedef SCOREP_Allocator_MovableMemory SCOREP_LocationGroupHandle;
 
 typedef SCOREP_Allocator_MovableMemory SCOREP_LocationHandle;
 

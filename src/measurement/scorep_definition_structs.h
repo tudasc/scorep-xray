@@ -54,6 +54,28 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
     uint64_t              number_of_events;      // only known after measurement
     uint64_t              number_of_definitions; // only known after measurement
     uint64_t              timer_resolution;
+    uint64_t              location_group_id;
+};
+
+SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
+
+    /* don't use the sequence number for the id, this is generated */
+    uint64_t                    global_location_group_id;
+    SCOREP_SystemTreeNodeHandle parent;
+    SCOREP_StringHandle         name_handle;
+    SCOREP_LocationGroupType    location_group_type;
+};
+
+SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
+
+    /* don't use the sequence number for the id, this is generated */
+    SCOREP_SystemTreeNodeHandle parent;
+    SCOREP_StringHandle         name_handle;
+    SCOREP_StringHandle         class_handle;
 };
 
 

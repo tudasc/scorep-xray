@@ -157,6 +157,17 @@ typedef uint32_t SCOREP_LineNo;
  */
 #define SCOREP_INVALID_LOCATION SCOREP_MOVABLE_NULL
 
+/**
+ * Symbolic constant representing an invalid or unknown location group definition.
+ */
+#define SCOREP_INVALID_LOCATION_GROUP SCOREP_MOVABLE_NULL
+
+/**
+ * Symbolic constant representing an invalid or unknown system tree node
+ */
+#define SCOREP_INVALID_SYSTEM_TREE_NODE SCOREP_MOVABLE_NULL
+
+
 
 // scorep_meets_tau_begin
 /**
@@ -197,11 +208,23 @@ typedef enum SCOREP_CounterType
  */
 typedef enum SCOREP_LocationType
 {
-    SCOREP_LOCATION_UNKNOWN = 0,
-    SCOREP_LOCATION_OMP_THREAD,
+    SCOREP_LOCATION_TYPE_CPU_THREAD = 0,
+    SCOREP_LOCATION_TYPE_GPU        = 1,
+    SCOREP_LOCATION_TYPE_METRIC     = 2,
 
     SCOREP_INVALID_LOCATION_TYPE /**< For internal use only. */
 } SCOREP_LocationType;
+
+/**
+ * Types to be used in defining a location group (SCOREP_DefineLocationGroup()).
+ *
+ */
+typedef enum SCOREP_LocationGroupType
+{
+    SCOREP_LOCATION_GROUP_TYPE_PROCESS = 0,
+
+    SCOREP_INVALID_LOCATION_GROUP_TYPE /**< For internal use only. */
+} SCOREP_LocationGroupType;
 
 
 /**

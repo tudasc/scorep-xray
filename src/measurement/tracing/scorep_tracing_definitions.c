@@ -67,17 +67,38 @@ scorep_location_type_to_otf_location_type( SCOREP_LocationType scorepType,
     switch ( scorepType )
     {
 #define case_return( SCOREP, OTF2 ) \
-    case SCOREP_LOCATION_ ## SCOREP: \
+    case SCOREP_LOCATION_TYPE_ ## SCOREP: \
         return isGlobal \
                ? OTF2_GLOB_LOCATION_TYPE_ ## OTF2 \
                : OTF2_LOCATION_TYPE_ ## OTF2
 
-        case_return( UNKNOWN, UNKNOWN );
-        case_return( OMP_THREAD, THREAD );
+        case_return( CPU_THREAD, CPU_THREAD );
+        case_return( GPU, GPU );
+        case_return( METRIC, METRIC );
 
 #undef case_return
         default:
             assert( !"Invalid location type" );
+    }
+}
+
+static OTF2_LocationGroupType
+scorep_location_group_type_to_otf_location_group_type( SCOREP_LocationType scorepType,
+                                                       bool                isGlobal )
+{
+    switch ( scorepType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_LOCATION_GROUP_TYPE_ ## SCOREP: \
+        return isGlobal \
+               ? OTF2_GLOB_LOCATION_GROUP_TYPE_ ## OTF2 \
+               : OTF2_LOCATION_GROUP_TYPE_ ## OTF2
+
+        case_return( PROCESS, PROCESS );
+
+#undef case_return
+        default:
+            assert( !"Invalid location group type" );
     }
 }
 
@@ -200,6 +221,7 @@ scorep_write_location_definitions(
                                          OTF2_LocationType,
                                          uint64_t,
                                          uint64_t,
+                                         uint64_t,
                                          uint64_t ) =
         ( void* )OTF2_DefWriter_DefLocation;
     if ( isGlobal )
@@ -216,8 +238,43 @@ scorep_write_location_definitions(
             scorep_location_type_to_otf_location_type( definition->location_type, isGlobal ),
             definition->number_of_events,
             definition->number_of_definitions,
-            definition->timer_resolution );
+            definition->timer_resolution,
+            definition->location_group_id );
 
+        if ( status != SCOREP_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
+static void
+scorep_write_location_group_definitions(
+    void*                     writerHandle,
+    SCOREP_DefinitionManager* definitionManager,
+    bool                      isGlobal )
+{
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defLocationGroup )( void*,
+                                              uint64_t,
+                                              uint32_t,
+                                              OTF2_LocationGroupType,
+                                              uint32_t ) =
+        ( void* )OTF2_DefWriter_DefLocationGroup;
+    if ( isGlobal )
+    {
+        defLocationGroup = ( void* )OTF2_GlobDefWriter_GlobDefLocationGroup;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocationGroup, location_group )
+    {
+        SCOREP_Error_Code status = defLocationGroup(
+            writerHandle,
+            definition->global_location_group_id,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            scorep_location_group_type_to_otf_location_group_type( definition->location_group_type, isGlobal ),
+            SCOREP_HANDLE_TO_ID( definition->parent, SystemTreeNode, definitionManager->page_manager ) );
         if ( status != SCOREP_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
@@ -716,6 +773,7 @@ static void
 scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
     scorep_write_string_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_location_group_definitions(         localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_location_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_source_file_definitions(            localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_region_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
@@ -741,6 +799,7 @@ scorep_write_global_definitions( OTF2_GlobDefWriter* global_definition_writer )
     assert( scorep_unified_definition_manager );
 
     scorep_write_string_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_location_group_definitions(         global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_source_file_definitions(            global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_region_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
@@ -796,10 +855,11 @@ scorep_write_number_of_definitions_per_location( OTF2_GlobDefWriter* global_defi
                         global_definition_writer,
                         global_location_id,
                         location_name_id,
-                        OTF2_GLOB_LOCATION_TYPE_THREAD, // use THREAD instead of PROCESS according to Dominic
+                        OTF2_GLOB_LOCATION_TYPE_CPU_THREAD, // use THREAD instead of PROCESS according to Dominic
                         0 /* dummy number of events */,
                         n_definitions_per_location[ location_index ],
-                        1 /* dummy timer resolution */  );
+                        1 /* dummy timer resolution */,
+                        rank /*assume that the rank is global id of process group */  );
                     assert( status == SCOREP_SUCCESS );
                     ++location_index;
                 }
