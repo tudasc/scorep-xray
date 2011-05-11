@@ -243,7 +243,7 @@ scorep_write_location_definitions(
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
+            scorep_handle_definition_writing_error( status, "SCOREP_Location_Definition" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -277,7 +277,41 @@ scorep_write_location_group_definitions(
             SCOREP_HANDLE_TO_ID( definition->parent, SystemTreeNode, definitionManager->page_manager ) );
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
+            scorep_handle_definition_writing_error( status, "SCOREP_LocationGroup_Definition" );
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
+static void
+scorep_write_system_tree_node_definitions(
+    void*                     writerHandle,
+    SCOREP_DefinitionManager* definitionManager,
+    bool                      isGlobal )
+{
+    assert( writerHandle );
+    SCOREP_Error_Code ( * defSystemTreeNode )( void*,
+                                               uint32_t,
+                                               uint32_t,
+                                               uint32_t,
+                                               uint32_t ) =
+        ( void* )OTF2_DefWriter_DefSystemTreeNode;
+    if ( isGlobal )
+    {
+        defSystemTreeNode = ( void* )OTF2_GlobDefWriter_GlobDefSystemTreeNode;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, SystemTreeNode, system_tree_node )
+    {
+        SCOREP_Error_Code status = defSystemTreeNode(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            SCOREP_HANDLE_TO_ID( definition->class_handle, String, definitionManager->page_manager ),
+            SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager ) );
+        if ( status != SCOREP_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "SCOREP_SystemTreeNode_Definition" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -773,6 +807,7 @@ static void
 scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
     scorep_write_string_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_system_tree_node_definitions(       localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_location_group_definitions(         localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_location_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_source_file_definitions(            localDefinitionWriter, &scorep_local_definition_manager, false );
@@ -799,6 +834,7 @@ scorep_write_global_definitions( OTF2_GlobDefWriter* global_definition_writer )
     assert( scorep_unified_definition_manager );
 
     scorep_write_string_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_system_tree_node_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_group_definitions(         global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_source_file_definitions(            global_definition_writer, scorep_unified_definition_manager, true );

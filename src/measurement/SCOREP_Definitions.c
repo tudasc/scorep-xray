@@ -305,6 +305,10 @@ scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_
     new_definition->name_handle              = nameHandle;
     new_definition->location_group_type      = locationGroupType;
 
+    HASH_ADD_HANDLE( new_definition, name_handle, String );
+    HASH_ADD_HANDLE( new_definition, parent, SystemTreeNode );
+    HASH_ADD_POD( new_definition, global_location_group_id );
+
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
 }
 
@@ -340,12 +344,6 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
 
     /** @todo: location_type: this needs clarification after the location hierarchy
                has settled */
-    uint64_t group_id = SCOREP_INVALID_LOCATION_GROUP;
-    if ( parent != SCOREP_INVALID_LOCATION )
-    {
-        group_id = SCOREP_LOCAL_HANDLE_DEREF( parent, Location )->location_group_id;
-    }
-
     SCOREP_SourceFileHandle new_handle = scorep_location_definition_define(
         &scorep_local_definition_manager,
         globalLocationId,
@@ -357,7 +355,7 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
         0,
         0,
         SCOREP_GetClockResolution(),
-        group_id );
+        0 );
 
     SCOREP_Definitions_Unlock();
 
@@ -433,6 +431,105 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Location, location );
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// SystemTreeNodeDefinitions ////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+SCOREP_SystemTreeNodeHandle
+scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definition_manager,
+                                           SCOREP_SystemTreeNodeHandle parent,
+                                           SCOREP_StringHandle         name,
+                                           SCOREP_StringHandle         class );
+
+bool
+scorep_system_tree_node_definitions_equal( const SCOREP_SystemTreeNode_Definition* existingDefinition,
+                                           const SCOREP_SystemTreeNode_Definition* tmpDefinition );
+
+
+SCOREP_SystemTreeNodeHandle
+SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
+                             const char*                 name,
+                             const char*                 class )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
+                         "Define new system tree node %s of class %s",
+                         name, class );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_SystemTreeNodeHandle new_handle
+        = scorep_system_tree_node_definition_define(
+        &scorep_local_definition_manager,
+        parent,
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            name ? name : "<unnamed system tree node>" ),
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            class ? class : "<unnamed system tree class>" ) );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+void
+SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* definition,
+                                              SCOREP_Allocator_PageManager*     handlesPageManager )
+{
+    assert( !omp_in_parallel() );
+    assert( definition );
+    assert( handlesPageManager );
+
+    SCOREP_SystemTreeNodeHandle unified_parent_handle = SCOREP_INVALID_SYSTEM_TREE_NODE;
+    if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
+    {
+        unified_parent_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->parent_handle,
+            SystemTreeNode,
+            handlesPageManager );
+        assert( unified_parent_handle != SCOREP_MOVABLE_NULL );
+    }
+
+    definition->unified = scorep_system_tree_node_definition_define(
+        scorep_unified_definition_manager,
+        unified_parent_handle,
+        SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED( definition->class_handle, String, handlesPageManager )
+        );
+}
+
+bool
+scorep_system_tree_node_definitions_equal( const SCOREP_SystemTreeNode_Definition* existingDefinition,
+                                           const SCOREP_SystemTreeNode_Definition* tmpDefinition )
+{
+    return existingDefinition->class_handle == tmpDefinition->class_handle &&
+           existingDefinition->name_handle  == tmpDefinition->name_handle;
+}
+
+SCOREP_SystemTreeNodeHandle
+scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definition_manager,
+                                           SCOREP_SystemTreeNodeHandle parent,
+                                           SCOREP_StringHandle         name,
+                                           SCOREP_StringHandle         class )
+{
+    assert( definition_manager );
+
+    SCOREP_SystemTreeNode_Definition* new_definition = NULL;
+    SCOREP_SystemTreeNodeHandle       new_handle     = SCOREP_INVALID_SYSTEM_TREE_NODE;
+
+    SCOREP_DEFINITION_ALLOC( SystemTreeNode );
+
+    new_definition->parent_handle = parent;
+    new_definition->name_handle   = name;
+    new_definition->class_handle  = class;
+
+    HASH_ADD_HANDLE( new_definition, name_handle, String );
+    HASH_ADD_HANDLE( new_definition, class_handle, String );
+    HASH_ADD_HANDLE( new_definition, parent_handle, SystemTreeNode );
+
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // RegionDefinitions ////////////////////////////////////////////////////////

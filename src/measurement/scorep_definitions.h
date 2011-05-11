@@ -60,6 +60,7 @@ typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
 struct SCOREP_DefinitionManager
 {
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( String, string )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SystemTreeNode, system_tree_node )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( LocationGroup, location_group )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Location, location )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SourceFile, source_file )
