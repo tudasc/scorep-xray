@@ -301,14 +301,23 @@ scorep_write_system_tree_node_definitions(
         defSystemTreeNode = ( void* )OTF2_GlobDefWriter_GlobDefSystemTreeNode;
     }
 
+
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, SystemTreeNode, system_tree_node )
     {
+        /* Determine parent id savely */
+        uint64_t parent = 0;
+        if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
+        {
+            parent = SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager );
+        }
+
+        /* Write defintion */
         SCOREP_Error_Code status = defSystemTreeNode(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             SCOREP_HANDLE_TO_ID( definition->class_handle, String, definitionManager->page_manager ),
-            SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager ) );
+            parent );
         if ( status != SCOREP_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SCOREP_SystemTreeNode_Definition" );

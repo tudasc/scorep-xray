@@ -53,7 +53,7 @@ SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
         free( path );
         return NULL;
     }
-    if ( gethostname( &path[ 0 ].name, 256 ) != 0 )
+    if ( gethostname( path[ 0 ].name, 256 ) != 0 )
     {
         SCOREP_Platform_FreePath( path, 2 );
         return NULL;
@@ -72,6 +72,6 @@ void
 SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreeNode* path,
                           size_t                          number_of_entries )
 {
-    free( &path[ 0 ].name );
+    free( path[ 0 ].name );
     free( path );
 }

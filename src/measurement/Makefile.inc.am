@@ -49,11 +49,14 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_unify.c                     \
     $(SRC_ROOT)src/measurement/scorep_unify.h                     \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.h          \
-    $(SRC_ROOT)src/measurement/scorep_definition_cube4.c
+    $(SRC_ROOT)src/measurement/scorep_definition_cube4.c          \
+    $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
+    $(SRC_ROOT)src/measurement/scorep_system_tree.c
 
 
 libscorep_measurement_la_CPPFLAGS =             \
     $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/measurement                \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/profiling      \
     -I$(INC_ROOT)src/measurement/OA             \

@@ -17,7 +17,7 @@
 
 #include <config.h>
 #include <SCOREP_Definitions.h>
-
+#include <scorep_mpi.h>
 
 /**
  * @status     alpha
@@ -526,7 +526,6 @@ scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definitio
 
     HASH_ADD_HANDLE( new_definition, name_handle, String );
     HASH_ADD_HANDLE( new_definition, class_handle, String );
-    HASH_ADD_HANDLE( new_definition, parent_handle, SystemTreeNode );
 
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );
 }

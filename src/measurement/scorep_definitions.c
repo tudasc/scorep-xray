@@ -111,6 +111,8 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( string, *definitionManager );
     SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( string, *definitionManager );
 
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( system_tree_node, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( location_group, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( location, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( source_file, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( region, *definitionManager );
@@ -130,6 +132,8 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
 
     if ( allocHashTables )
     {
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( system_tree_node, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( location_group, *definitionManager );
         //SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( location, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( source_file, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( region, *definitionManager );
@@ -162,6 +166,8 @@ SCOREP_Definitions_Finalize()
     {
         free( scorep_unified_definition_manager->string_definition_hash_table );
         free( scorep_unified_definition_manager->location_definition_hash_table );
+        free( scorep_unified_definition_manager->location_group_definition_hash_table );
+        free( scorep_unified_definition_manager->system_tree_node_definition_hash_table );
         free( scorep_unified_definition_manager->source_file_definition_hash_table );
         free( scorep_unified_definition_manager->region_definition_hash_table );
         free( scorep_unified_definition_manager->group_definition_hash_table );
@@ -218,6 +224,8 @@ SCOREP_GetNumberOfDefinitions()
 
     int n_definitions = 0; /// @todo might overflow
     n_definitions += scorep_local_definition_manager.string_definition_counter;
+    n_definitions += scorep_local_definition_manager.system_tree_node_definition_counter;
+    n_definitions += scorep_local_definition_manager.location_group_definition_counter;
     n_definitions += scorep_local_definition_manager.location_definition_counter;
     n_definitions += scorep_local_definition_manager.source_file_definition_counter;
     n_definitions += scorep_local_definition_manager.region_definition_counter;

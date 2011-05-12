@@ -45,7 +45,7 @@ typedef struct
    allocates the arrey, which must be freed by the application.
    @param number_of_entries Returns the number of entries in the returned array.
  */
-SCOREP_Platform_SystemTreeNode*
+extern SCOREP_Platform_SystemTreeNode*
 SCOREP_Platform_GetSystemTree( size_t* number_of_entries );
 
 /**
@@ -56,7 +56,7 @@ SCOREP_Platform_GetSystemTree( size_t* number_of_entries );
                should be freed.
    @param number_of_entries number of entries in the path.
  */
-void
+extern void
 SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreeNode* path,
                           size_t                          number_of_entries );
 

@@ -55,6 +55,7 @@
 #include "scorep_mpi.h"
 #include "scorep_thread.h"
 #include "scorep_runtime_management.h"
+#include "scorep_system_tree.h"
 
 #include <otf2/otf2.h>
 
@@ -490,6 +491,7 @@ scorep_finalize( void )
     // an instrumentation error.
 
     // order is important
+    SCOREP_DefineSystemTree();
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
