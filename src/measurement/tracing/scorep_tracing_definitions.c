@@ -305,7 +305,7 @@ scorep_write_system_tree_node_definitions(
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, SystemTreeNode, system_tree_node )
     {
         /* Determine parent id savely */
-        uint64_t parent = 0;
+        uint64_t parent = OTF2_UNDEFINED_UINT64;
         if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             parent = SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager );
@@ -776,7 +776,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
     {
         if ( !definition->with_parameter )
         {
-            uint32_t parent_callpath_sequence_number = 0;
+            uint32_t parent_callpath_sequence_number = OTF2_UNDEFINED_UINT32;
             if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
             {
                 parent_callpath_sequence_number = SCOREP_HANDLE_TO_ID( definition->parent_callpath_handle,

@@ -51,38 +51,38 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
    @param tablesize Defines the number of slots for the mapping table.
  */
 /* *INDENT-OFF* */
-#define SCOREP_CUBE4_INIT_MAP(Type, type, tablesize)                            \
-    if ( sizeof( SCOREP_ ## Type ## Handle ) == 8 )                             \
+#define SCOREP_CUBE4_INIT_MAP(Type, type, tablesize)                          \
+    if ( sizeof( SCOREP_ ## Type ## Handle ) == 8 )                           \
     {                                                                         \
         map-> type ## _table_cube                                             \
-            = SCOREP_Hashtab_CreateSize( tablesize,                             \
-                                       &SCOREP_Hashtab_HashInt64,               \
-                                       &SCOREP_Hashtab_CompareInt64 );          \
+            = SCOREP_Hashtab_CreateSize( tablesize,                           \
+                                       &SCOREP_Hashtab_HashInt64,             \
+                                       &SCOREP_Hashtab_CompareInt64 );        \
     }                                                                         \
-    else if ( sizeof( SCOREP_ ## Type ## Handle ) == 4 )                        \
+    else if ( sizeof( SCOREP_ ## Type ## Handle ) == 4 )                      \
     {                                                                         \
         map-> type ## _table_cube                                             \
-             = SCOREP_Hashtab_CreateSize( tablesize,                            \
-                                        &SCOREP_Hashtab_HashInt32,              \
-                                        &SCOREP_Hashtab_CompareInt32 );         \
+             = SCOREP_Hashtab_CreateSize( tablesize,                          \
+                                        &SCOREP_Hashtab_HashInt32,            \
+                                        &SCOREP_Hashtab_CompareInt32 );       \
     }                                                                         \
     else                                                                      \
     {                                                                         \
-        SCOREP_ASSERT( false );                                                 \
+        SCOREP_ASSERT( false );                                               \
         goto cleanup;                                                         \
     }                                                                         \
     if ( map-> type ## _table_cube == NULL )                                  \
     {                                                                         \
-        SCOREP_ERROR_POSIX( "Unable to create " #type " mapping table" );       \
+        SCOREP_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
         goto cleanup;                                                         \
     }                                                                         \
-    map-> type ## _table_scorep                                                 \
-        = SCOREP_Hashtab_CreateSize( tablesize,                                 \
-                                   &SCOREP_Hashtab_HashPointer,                 \
-                                   &SCOREP_Hashtab_ComparePointer );            \
-    if ( map-> type ## _table_scorep == NULL )                                  \
+    map-> type ## _table_scorep                                               \
+        = SCOREP_Hashtab_CreateSize( tablesize,                               \
+                                   &SCOREP_Hashtab_HashPointer,               \
+                                   &SCOREP_Hashtab_ComparePointer );          \
+    if ( map-> type ## _table_scorep == NULL )                                \
     {                                                                         \
-        SCOREP_ERROR_POSIX( "Unable to create " #type " mapping table" );       \
+        SCOREP_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
         goto cleanup;                                                         \
     }
 /* *INDENT-ON* */
@@ -233,13 +233,13 @@ scorep_cube4_add_metric_mapping( scorep_cube4_definitions_map* map,
  *****************************************************************************/
 
 /* *INDENT-OFF* */
-#define SCOREP_GET_CUBE_MAPPING( ret_type, type, Type )                         \
+#define SCOREP_GET_CUBE_MAPPING( ret_type, type, Type )                       \
 ret_type *                                                                    \
-scorep_get_cube4_ ## type (scorep_cube4_definitions_map* map,                     \
-                         SCOREP_ ## Type ## Handle     handle )                 \
+scorep_get_cube4_ ## type (scorep_cube4_definitions_map* map,                 \
+                         SCOREP_ ## Type ## Handle     handle )               \
 {                                                                             \
-    SCOREP_Hashtab_Entry* entry = NULL;                                         \
-    entry = SCOREP_Hashtab_Find( map->type ## _table_cube,                      \
+    SCOREP_Hashtab_Entry* entry = NULL;                                       \
+    entry = SCOREP_Hashtab_Find( map->type ## _table_cube,                    \
                                &handle, NULL );                               \
     if ( entry == NULL )                                                      \
     {                                                                         \
@@ -248,19 +248,19 @@ scorep_get_cube4_ ## type (scorep_cube4_definitions_map* map,                   
     return ( ret_type *) entry->value;                                        \
 }
 
-#define SCOREP_GET_SCOREP_MAPPING( in_type, type, Type, TYPE )                    \
-SCOREP_ ## Type ## Handle                                                       \
-scorep_get_ ## type ## _from_cube4 (scorep_cube4_definitions_map* map,            \
+#define SCOREP_GET_SCOREP_MAPPING( in_type, type, Type, TYPE )                \
+SCOREP_ ## Type ## Handle                                                     \
+scorep_get_ ## type ## _from_cube4 (scorep_cube4_definitions_map* map,        \
                                   in_type *                   handle)         \
 {                                                                             \
-    SCOREP_Hashtab_Entry* entry = NULL;                                         \
-    entry = SCOREP_Hashtab_Find( map->type ## _table_scorep,                      \
+    SCOREP_Hashtab_Entry* entry = NULL;                                       \
+    entry = SCOREP_Hashtab_Find( map->type ## _table_scorep,                  \
                                handle, NULL );                                \
     if ( entry == NULL )                                                      \
     {                                                                         \
-        return SCOREP_INVALID_ ## TYPE;                                         \
+        return SCOREP_INVALID_ ## TYPE;                                       \
     }                                                                         \
-    return *( SCOREP_ ## Type ## Handle *) entry->value;                        \
+    return *( SCOREP_ ## Type ## Handle *) entry->value;                      \
 }
 /* *INDENT-ON* */
 
