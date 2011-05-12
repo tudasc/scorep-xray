@@ -14,6 +14,9 @@
  *
  */
 
+#ifndef SCOREP_SYSTEM_TREE_H
+#define SCOREP_SYSTEM_TREE_H
+
 /**
  * @status      alpha
  * @file        scorep_system_tree.h
@@ -26,3 +29,5 @@
 
 void
 SCOREP_DefineSystemTree();
+
+#endif // SCOREP_SYSTEM_TREE_H

@@ -17,7 +17,6 @@
 
 #include <config.h>
 #include <SCOREP_Definitions.h>
-#include <scorep_mpi.h>
 
 /**
  * @status     alpha
