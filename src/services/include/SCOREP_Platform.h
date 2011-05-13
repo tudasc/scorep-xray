@@ -35,8 +35,8 @@
  */
 typedef struct
 {
-    const char* name;
-    const char* class;
+    char* name;
+    char* class;
 } SCOREP_Platform_SystemTreeNode;
 
 /**
