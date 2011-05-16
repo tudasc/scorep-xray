@@ -579,7 +579,7 @@ scorep_mpi_comm_create( MPI_Comm comm )
     SCOREP_MpiRank               root;       /* global rank of rank 0 */
     int                          local_rank; /* local rank in this communicator */
     int                          size;       /* size of communicator */
-    SCOREP_MPICommunicatorHandle handle;     /* Scorep-P handle for the communicator */
+    SCOREP_MPICommunicatorHandle handle;     /* Score-P handle for the communicator */
 
     /* Check if communicator handling has been initialized.
      * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)

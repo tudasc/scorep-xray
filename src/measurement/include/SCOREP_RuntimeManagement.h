@@ -113,7 +113,7 @@ SCOREP_InitMeasurementMPI( int rank );
 /**
  * Registers an exit handler. The OpenMP implementation on JUMP uses
  * its own exit handler. This exit handler is registered after our
- * Scorep-P exit handler in the test cases. Causing segmentation faults
+ * Score-P exit handler in the test cases. Causing segmentation faults
  * during finalization, due to invalid TPD variables. Thus, we register
  * an exit handler in the join event, which ensures that the Score-P
  * finalization can access threadprivate variables.
