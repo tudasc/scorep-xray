@@ -58,7 +58,7 @@ SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
         }
 
         /* Allocate memory for name strings */
-        for ( int i = 0; i < 5; i++ )
+        for ( int i = 1; i < 5; i++ )
         {
             path[ i ].name = ( char* )malloc( 32 * sizeof( char ) );
             if ( path[ i ].name == NULL )
@@ -72,11 +72,11 @@ SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
         path[ 0 ].name  = "BlueGene/P";
         path[ 1 ].class = "rack row";
         sprintf( path[ 1 ].name, "%u", rack_row );
-        path[ 2 ].name = "rack column";
+        path[ 2 ].class = "rack column";
         sprintf( path[ 2 ].name, "%u", rack_col );
-        path[ 3 ].name = "midplane";
+        path[ 3 ].class = "midplane";
         sprintf( path[ 3 ].name, "%u", midplane );
-        path[ 4 ].name = "nodecard";
+        path[ 4 ].class = "nodecard";
         sprintf( path[ 4 ].name, "%u", nodecard );
         *number_of_entries = 5;
         return path;
