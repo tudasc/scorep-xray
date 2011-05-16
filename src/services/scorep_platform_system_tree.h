@@ -34,11 +34,11 @@
  * Use this function if you build the path top-down, ie. the first one added is
  * the root.
  *
- * @param path           The path.
+ * @param tail           The tail of the path.
  * @param node_class     Name of the class for this node.
- * @param name_len       Strict upper bound for the length of the name of this
+ * @param node_name_len  Strict upper bound for the length of the name of this
  *                       node, including the trailing NUL.
- *                       As special case, if @a node_len is zero, than @a
+ *                       As a special case, if @a node_name_len is zero, than @a
  *                       node_name_fmt should not have format specifiers
  *                       and the length is taken from the @a node_name_fmt.
  * @param node_name_fmt  A @a printf-like format string which forms the name of
@@ -49,7 +49,7 @@ SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_top_down_add(
     SCOREP_Platform_SystemTreePathElement*** tail,
     const char*                              node_class,
-    size_t                                   name_len,
+    size_t                                   node_name_len,
     const char*                              node_name_fmt,
     ... );
 
@@ -58,11 +58,11 @@ scorep_platform_system_tree_top_down_add(
  * Use this function if you build the path bottom-up, ie. the last one added
  * is the root.
  *
- * @param path           The path.
+ * @param head           The head of the path.
  * @param node_class     Name of the class for this node.
- * @param name_len       Strict upper bound for the length of the name of this
+ * @param node_name_len  Strict upper bound for the length of the name of this
  *                       node, including the trailing NUL.
- *                       As special case, if @a node_len is zero, than @a
+ *                       As a special case, if @a node_name_len is zero, than @a
  *                       node_name_fmt should not have format specifiers
  *                       and the length is taken from the @a node_name_fmt.
  * @param node_name_fmt  A @a printf-like format string which forms the name of
@@ -73,7 +73,7 @@ SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_bottom_up_add(
     SCOREP_Platform_SystemTreePathElement** head,
     const char*                             node_class,
-    size_t                                  name_len,
+    size_t                                  node_name_len,
     const char*                             node_name_fmt,
     ... );
 

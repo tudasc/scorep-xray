@@ -59,11 +59,11 @@ SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path )
 
 /**
  *
- * @param name_len Total space alloacted for the node_name, including trailing NUL.
+ * @param node_name_len Total space alloacted for the node_name, including trailing NUL.
  */
 static SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_create_element( const char* node_class,
-                                            size_t      name_len,
+                                            size_t      node_name_len,
                                             const char* node_name_fmt,
                                             va_list     vl )
 {
@@ -76,13 +76,13 @@ scorep_platform_system_tree_create_element( const char* node_class,
         return NULL;
     }
 
-    if ( name_len == 0 )
+    if ( node_name_len == 0 )
     {
-        name_len = strlen( node_name_fmt ) + 1;
+        node_name_len = strlen( node_name_fmt ) + 1;
     }
 
     name_offset  = sizeof( *new_element );
-    class_offset = name_offset + name_len;
+    class_offset = name_offset + node_name_len;
     class_len    = strlen( node_class ) + 1;
     total_size   = class_offset + class_len;
 
@@ -97,7 +97,7 @@ scorep_platform_system_tree_create_element( const char* node_class,
     new_element->node_class = ( char* )new_element + class_offset;
 
     /* set node name */
-    vsnprintf( new_element->node_name, name_len, node_name_fmt, vl );
+    vsnprintf( new_element->node_name, node_name_len, node_name_fmt, vl );
 
     /* set class name */
     memcpy( new_element->node_class, node_class, class_len );
@@ -110,7 +110,7 @@ SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_top_down_add(
     SCOREP_Platform_SystemTreePathElement*** tail,
     const char*                              node_class,
-    size_t                                   name_len,
+    size_t                                   node_name_len,
     const char*                              node_name_fmt,
     ... )
 {
@@ -124,7 +124,7 @@ scorep_platform_system_tree_top_down_add(
 
     SCOREP_Platform_SystemTreePathElement* new_element =
         scorep_platform_system_tree_create_element( node_class,
-                                                    name_len,
+                                                    node_name_len,
                                                     node_name_fmt,
                                                     vl );
 
@@ -146,7 +146,7 @@ SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_bottom_up_add(
     SCOREP_Platform_SystemTreePathElement** head,
     const char*                             node_class,
-    size_t                                  name_len,
+    size_t                                  node_name_len,
     const char*                             node_name_fmt,
     ... )
 {
@@ -160,7 +160,7 @@ scorep_platform_system_tree_bottom_up_add(
 
     SCOREP_Platform_SystemTreePathElement* new_element =
         scorep_platform_system_tree_create_element( node_class,
-                                                    name_len,
+                                                    node_name_len,
                                                     node_name_fmt,
                                                     vl );
 
