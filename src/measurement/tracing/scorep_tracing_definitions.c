@@ -305,7 +305,7 @@ scorep_write_system_tree_node_definitions(
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, SystemTreeNode, system_tree_node )
     {
         /* Determine parent id savely */
-        uint64_t parent = OTF2_UNDEFINED_UINT64;
+        uint32_t parent = OTF2_UNDEFINED_UINT32;
         if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             parent = SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager );

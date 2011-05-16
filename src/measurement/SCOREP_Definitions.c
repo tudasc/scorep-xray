@@ -215,9 +215,7 @@ scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_
                                          SCOREP_LocationGroupType    locationType );
 
 /**
- * Registers a new local location into the definitions.
- *
- * @note No locking needed, will be done by the caller.
+ * Registers a new local location group into the definitions.
  *
  * @in internal
  */
@@ -227,14 +225,6 @@ SCOREP_DefineLocationGroup( uint64_t                    globalLocationGroupId,
                             const char*                 name )
 {
     SCOREP_Definitions_Lock();
-
-    /** @todo: location_type: this needs clarification after the location hierarchy
-               has settled */
-    uint64_t group_id = SCOREP_INVALID_LOCATION_GROUP;
-    if ( parent != SCOREP_INVALID_LOCATION )
-    {
-        group_id = SCOREP_LOCAL_HANDLE_DEREF( parent, Location )->location_group_id;
-    }
 
     SCOREP_LocationGroupHandle new_handle = scorep_location_group_definition_define(
         &scorep_local_definition_manager,
@@ -258,7 +248,7 @@ SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* de
     assert( definition );
     assert( handlesPageManager );
 
-    SCOREP_SystemTreeNodeHandle unified_parent_handle = SCOREP_INVALID_LOCATION;
+    SCOREP_SystemTreeNodeHandle unified_parent_handle = SCOREP_INVALID_SYSTEM_TREE_NODE;
     if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
     {
         unified_parent_handle = SCOREP_HANDLE_GET_UNIFIED(
@@ -294,19 +284,15 @@ scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_
     assert( definition_manager );
 
     SCOREP_LocationGroup_Definition* new_definition = NULL;
-    SCOREP_LocationGroupHandle       new_handle     = SCOREP_INVALID_LOCATION;
+    SCOREP_LocationGroupHandle       new_handle     = SCOREP_INVALID_LOCATION_GROUP;
 
     SCOREP_DEFINITION_ALLOC( LocationGroup );
 
-    /* locations wont be unfied, therefore no hash value needed, yet? */
+    /* location groups wont be unfied, therefore no hash value needed */
     new_definition->global_location_group_id = globalLocationGroupId;
     new_definition->parent                   = parent;
     new_definition->name_handle              = nameHandle;
     new_definition->location_group_type      = locationGroupType;
-
-    HASH_ADD_HANDLE( new_definition, name_handle, String );
-    HASH_ADD_HANDLE( new_definition, parent, SystemTreeNode );
-    HASH_ADD_POD( new_definition, global_location_group_id );
 
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
 }
@@ -328,9 +314,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    uint64_t                  locationGroupId );
 
 /**
- * Registers a new local location into the definitions.
- *
- * @note No locking needed, will be done by the caller.
+ * Registers a new location into the definitions.
  *
  * @in internal
  */
@@ -341,8 +325,6 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
 {
     SCOREP_Definitions_Lock();
 
-    /** @todo: location_type: this needs clarification after the location hierarchy
-               has settled */
     SCOREP_SourceFileHandle new_handle = scorep_location_definition_define(
         &scorep_local_definition_manager,
         globalLocationId,
@@ -417,7 +399,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
 
     SCOREP_DEFINITION_ALLOC( Location );
 
-    /* locations wont be unfied, therefore no hash value needed, yet? */
+    /* locations wont be unfied, therefore no hash value needed */
     new_definition->global_location_id    = globalLocationId;
     new_definition->parent                = parent;
     new_definition->name_handle           = nameHandle;
@@ -502,8 +484,10 @@ bool
 scorep_system_tree_node_definitions_equal( const SCOREP_SystemTreeNode_Definition* existingDefinition,
                                            const SCOREP_SystemTreeNode_Definition* tmpDefinition )
 {
-    return existingDefinition->class_handle == tmpDefinition->class_handle &&
-           existingDefinition->name_handle  == tmpDefinition->name_handle;
+    return existingDefinition->hash_value    == tmpDefinition->hash_value &&
+           existingDefinition->parent_handle == tmpDefinition->parent_handle &&
+           existingDefinition->class_handle  == tmpDefinition->class_handle &&
+           existingDefinition->name_handle   == tmpDefinition->name_handle;
 }
 
 SCOREP_SystemTreeNodeHandle
@@ -520,10 +504,15 @@ scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definitio
     SCOREP_DEFINITION_ALLOC( SystemTreeNode );
 
     new_definition->parent_handle = parent;
-    new_definition->name_handle   = name;
-    new_definition->class_handle  = class;
+    if ( new_definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
+    {
+        HASH_ADD_HANDLE( new_definition, parent_handle, SystemTreeNode );
+    }
 
+    new_definition->name_handle = name;
     HASH_ADD_HANDLE( new_definition, name_handle, String );
+
+    new_definition->class_handle = class;
     HASH_ADD_HANDLE( new_definition, class_handle, String );
 
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );

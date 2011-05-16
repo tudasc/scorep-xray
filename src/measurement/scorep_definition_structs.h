@@ -72,7 +72,6 @@ SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
 
-    /* don't use the sequence number for the id, this is generated */
     SCOREP_SystemTreeNodeHandle parent_handle;
     SCOREP_StringHandle         name_handle;
     SCOREP_StringHandle         class_handle;

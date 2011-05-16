@@ -174,7 +174,7 @@ scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
 SCOREP_SystemTreeNodeHandle
 SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                              const char*                 name,
-                             const                       char*                 class );
+                             const char*                 klass );
 
 SCOREP_LocationGroupHandle
 SCOREP_DefineLocationGroup( uint64_t                    globalLocationGroupId,
