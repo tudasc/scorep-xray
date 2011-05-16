@@ -87,7 +87,7 @@
  * @code
  *     SCOREP_DEFINE_DEFINITION_TYPE( Type )
  *     {
- *         SCOREP_DEFINE_DEFINITION_HEADER( Type ) // must be first
+ *         SCOREP_DEFINE_DEFINITION_HEADER( Type ); // must be first
  *         // definition specfic members
  *         :
  *     };
@@ -326,10 +326,10 @@
  */
 /* *INDENT-OFF* */
 #define SCOREP_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY_OLD( Type, \
-                                                    type, \
-                                                    array_type, \
-                                                    number_of_members, \
-                                                    definition_manager ) \
+                                                        type, \
+                                                        array_type, \
+                                                        number_of_members, \
+                                                        definition_manager ) \
     do \
     { \
         new_handle = SCOREP_Memory_AllocForDefinitions( \
@@ -518,70 +518,6 @@
 /**
  * @}
  */
-
-
-/**
- * Search for the definition @a tmp_definition in the definition manager @a
- * definition_manager.
- *
- * @return Definition, if found.
- *
- * @declares Variable named @a hash_table_bucket of handle type @a Type*.
- *           Will be used by @see SCOREP_APPEND_NEW_DEFINITION_TO_HASH_TABLE.
- * @needs Variable named @a tmp_definition of definition type @a Type*.
- *        @see SCOREP_DEFINITION_DEFINE_TEMP
- *        @see SCOREP_DEFINITION_DEFINE_TEMP_VARIABLE_ARRAY
- * @needs Variable named @a definition_manager of type @a SCOREP_DefinitionManager*.
- *
- * @note Only usable for local objects (ie. uses the local page manager).
- */
-#define SCOREP_CHECK_FOR_EXISTING_DEFINITION_IN_HASH_TABLE_OLD( type, Type ) \
-    SCOREP_ ## Type ## Handle * hash_table_bucket = 0; \
-    do \
-    { \
-        if ( definition_manager->type ## _definition_hash_table ) \
-        { \
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, \
-                                 "  Hash value for type %x", tmp_definition->hash_value ); \
-            hash_table_bucket = &definition_manager->type ## _definition_hash_table[ \
-                tmp_definition->hash_value & SCOREP_DEFINITION_HASH_TABLE_MASK ]; \
-            SCOREP_ ## Type ## Handle hash_list_iterator = *hash_table_bucket; \
-            while ( hash_list_iterator != SCOREP_MOVABLE_NULL ) \
-            { \
-                SCOREP_ ## Type ## _Definition * existing_definition = SCOREP_LOCAL_HANDLE_DEREF( \
-                    hash_list_iterator, Type ); \
-                if ( scorep_ ## type ## _definitions_equal( existing_definition, tmp_definition ) ) \
-                { \
-                    break; \
-                } \
-                hash_list_iterator = existing_definition->hash_next; \
-            } \
-            if ( hash_list_iterator != SCOREP_MOVABLE_NULL ) \
-            { \
-                return hash_list_iterator; \
-            } \
-        } \
-    } \
-    while ( 0 )
-
-
-/**
- * Appends the new definition @a new_definition
- *
- * @needs Variable named @a hash_table_bucket of handle type @a Type*.
- * @needs Variable with name @a new_handle of handle type @a Type.
- * @needs Variable with name @a new_definition of definition type @a Type*.
- */
-#define SCOREP_APPEND_NEW_DEFINITION_TO_HASH_TABLE_OLD() \
-    do \
-    { \
-        if ( hash_table_bucket ) \
-        { \
-            new_definition->hash_next = *hash_table_bucket; \
-            *hash_table_bucket        = new_handle; \
-        } \
-    } \
-    while ( 0 )
 
 
 /**
