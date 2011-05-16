@@ -99,11 +99,31 @@ endif
 noinst_LTLIBRARIES += libscorep_platform.la
 libscorep_platform_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Platform.h
 #libscorep_platform_la_LIBADD = @PLATFORM_LIB@
-libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS)  -I$(INC_ROOT)src/services/include
+libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS) \
+                                 -I$(INC_DIR_UTIL) \
+                                 -I$(INC_ROOT)src/services/include
 
+libscorep_platform_la_SOURCES += \
+    $(SRC_ROOT)src/services/scorep_platform_system_tree.c \
+    $(SRC_ROOT)src/services/scorep_platform_system_tree.h
 
+if PLATFORM_BGP
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/scorep_platform_bgp.c
+libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
+endif
+
+# for any platform not handled above, use the dummy platform
+# currently unhandled platforms:
+#     PLATFORM_ALTIX
+#     PLATFORM_POWER6
+#     PLATFORM_BGL
+#     PLATFORM_CRAYXT
+#     PLATFORM_SICORTEX
+#     PLATFORM_LINUX
+#     PLATFORM_SUN
+#     PLATFORM_MAC
+#     PLATFORM_CRAYX1
+#     PLATFORM_NECSX
+if !PLATFORM_BGP
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/scorep_platform_dummy.c
-
-# BlueGene/P
-#libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/scorep_platform_bgp.c
-#libscorep_platform_la_CPPFLAGS += $(AM_CPPFLAGS) -I/bgsys/drivers/ppcfloor/arch/include
+endif

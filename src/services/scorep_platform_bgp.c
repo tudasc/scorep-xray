@@ -1,18 +1,18 @@
 /*
- * This file is part of the SILC project (http://www.silc.de)
+ * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen, Germany
+ *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
  *    University of Oregon, Eugene, USA
  *    Forschungszentrum Juelich GmbH, Germany
+ *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
  *
  */
-
 
 /**
  * @file        scorep_platform_bgp.c
@@ -24,22 +24,49 @@
  * system.
  */
 
+
 #include <config.h>
+
+
+#include <scorep_utility/SCOREP_Error.h>
+
+
 #include <SCOREP_Platform.h>
+
+
+#include "scorep_platform_system_tree.h"
+
+
 #include <common/bgp_personality.h>
 #include <common/bgp_personality_inlines.h>
 #include <spi/kernel_interface.h>
 
-SCOREP_Platform_SystemTreeNode*
-SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
+
+SCOREP_Error_Code
+SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
 {
-    SCOREP_Platform_SystemTreeNode* path;
-    *number_of_entries = 0;
+    if ( !root )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+    }
+    *root = NULL;
+    SCOREP_Platform_SystemTreePathElement** tail = root;
+    SCOREP_Platform_SystemTreePathElement*  node;
+
 
     _BGP_Personality_t                mybgp;
     _BGP_UniversalComponentIdentifier uci;
     Kernel_GetPersonality( &mybgp, sizeof( _BGP_Personality_t ) );
     uci.UCI = mybgp.Kernel_Config.UniversalComponentIdentifier;
+
+
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     "machine",
+                                                     0, "BlueGene/P" );
+    if ( !node )
+    {
+        goto fail;
+    }
 
     if ( ( uci.ComputeCard.Component == _BGP_UCI_Component_ComputeCard ) ||
          ( uci.IOCard.Component == _BGP_UCI_Component_IOCard ) )
@@ -49,61 +76,44 @@ SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
         unsigned midplane = uci.ComputeCard.Midplane;
         unsigned nodecard = uci.ComputeCard.NodeCard;
 
-        /* Allocate memory for path */
-        path = ( SCOREP_Platform_SystemTreeNode* )
-               malloc( 5 * sizeof( SCOREP_Platform_SystemTreeNode ) );
-        if ( path == NULL )
+        node = scorep_platform_system_tree_top_down_add( &tail,
+                                                         "rack row",
+                                                         16, "%u", rack_row );
+        if ( !node )
         {
-            return NULL;
+            goto fail;
         }
 
-        /* Allocate memory for name strings */
-        for ( int i = 1; i < 5; i++ )
+        node = scorep_platform_system_tree_top_down_add( &tail,
+                                                         "rack column",
+                                                         16, "%u", rack_col );
+        if ( !node )
         {
-            path[ i ].name = ( char* )malloc( 32 * sizeof( char ) );
-            if ( path[ i ].name == NULL )
-            {
-                SCOREP_Platform_FreePath( path, i - 1 );
-                return 0;
-            }
+            goto fail;
         }
 
-        path[ 0 ].class = "machine";
-        path[ 0 ].name  = "BlueGene/P";
-        path[ 1 ].class = "rack row";
-        sprintf( path[ 1 ].name, "%u", rack_row );
-        path[ 2 ].class = "rack column";
-        sprintf( path[ 2 ].name, "%u", rack_col );
-        path[ 3 ].class = "midplane";
-        sprintf( path[ 3 ].name, "%u", midplane );
-        path[ 4 ].class = "nodecard";
-        sprintf( path[ 4 ].name, "%u", nodecard );
-        *number_of_entries = 5;
-        return path;
-    }
-    else
-    {
-        /* Allocate memory for path */
-        path = ( SCOREP_Platform_SystemTreeNode* )
-               malloc( sizeof( SCOREP_Platform_SystemTreeNode ) );
-        if ( path == NULL )
+        node = scorep_platform_system_tree_top_down_add( &tail,
+                                                         "midplane",
+                                                         16, "%u", midplane );
+        if ( !node )
         {
-            return NULL;
+            goto fail;
         }
-        path[ 0 ].class    = "machine";
-        path[ 0 ].name     = "BlueGene/P";
-        *number_of_entries = 1;
-        return path;
-    }
-}
 
-void
-SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreeNode* path,
-                          size_t                          number_of_entries )
-{
-    for ( int i = 1; i < number_of_entries; i++ )
-    {
-        free( path[ i ].name );
+        node = scorep_platform_system_tree_top_down_add( &tail,
+                                                         "nodecard",
+                                                         16, "%u", nodecard );
+        if ( !node )
+        {
+            goto fail;
+        }
     }
-    free( path );
+
+    return SCOREP_SUCCESS;
+
+fail:
+    SCOREP_Platform_FreePath( *root );
+
+    return SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                         "Failed to build system tree path" );
 }

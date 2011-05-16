@@ -1,11 +1,11 @@
 /*
- * This file is part of the Scorep-P project (http://www.score-p.org)
+ * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen, Germany
+ *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene USA
+ *    University of Oregon, Eugene, USA
  *    Forschungszentrum Juelich GmbH, Germany
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *    Technische Universitaet Muenchen, Germany
@@ -13,8 +13,6 @@
  * See the COPYING file in the package base directory for details.
  *
  */
-
-
 
 /**
  * @file       scorep_platform_dummy.c
@@ -26,52 +24,59 @@
 
 
 #include <config.h>
-#include <SCOREP_Platform.h>
+
+
 #include <stdlib.h>
 #include <unistd.h>
 
-SCOREP_Platform_SystemTreeNode*
-SCOREP_Platform_GetSystemTree( size_t* number_of_entries )
+
+#include <scorep_utility/SCOREP_Error.h>
+
+
+#include <SCOREP_Platform.h>
+
+
+#include "scorep_platform_system_tree.h"
+
+
+SCOREP_Error_Code
+SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
 {
     /* Initialize */
-    SCOREP_Platform_SystemTreeNode* path = NULL;
-    *number_of_entries = 0;
-
-    /* Allocate Array with two elements:
-       node, machine */
-    path = ( SCOREP_Platform_SystemTreeNode* )
-           malloc( 2 * sizeof( SCOREP_Platform_SystemTreeNode ) );
-    if ( path == NULL )
+    if ( !root )
     {
-        return NULL;
+        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
     }
+    *root = NULL;
 
     /* Get hostname */
-    path[ 0 ].name = ( char* )malloc( 256 * sizeof( char ) );
-    if ( path[ 0 ].name == NULL )
+    SCOREP_Platform_SystemTreePathElement* node =
+        scorep_platform_system_tree_bottom_up_add( root,
+                                                   "node",
+                                                   256, "" );
+    if ( !node )
     {
-        free( path );
-        return NULL;
+        return SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Failed to add hostname node" );
     }
-    if ( gethostname( path[ 0 ].name, 256 ) != 0 )
+
+    if ( gethostname( node->node_name, 256 ) != 0 )
     {
-        SCOREP_Platform_FreePath( path, 2 );
-        return NULL;
+        int errno_safed = errno;
+        SCOREP_Platform_FreePath( *root );
+        errno = errno_safed;
+        return SCOREP_ERROR_POSIX( "gethostname() failed." );
     }
-    path[ 0 ].class = "node";
 
     /* Set machine */
-    path[ 1 ].name  = "generic cluster";
-    path[ 1 ].class = "machine";
+    node = scorep_platform_system_tree_bottom_up_add( root,
+                                                      "machine",
+                                                      0, "generic cluster" );
+    if ( !node )
+    {
+        SCOREP_Platform_FreePath( *root );
+        return SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                             "Failed to build system tree path" );
+    }
 
-    *number_of_entries = 2;
-    return path;
-}
-
-void
-SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreeNode* path,
-                          size_t                          number_of_entries )
-{
-    free( path[ 0 ].name );
-    free( path );
+    return SCOREP_SUCCESS;
 }

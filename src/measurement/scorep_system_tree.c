@@ -37,40 +37,54 @@ void
 SCOREP_DefineSystemTree()
 {
     /* Obtain system tree information from platform dependent implementation */
-    size_t                          tree_depth  = 0;
-    SCOREP_Platform_SystemTreeNode* system_tree =
-        SCOREP_Platform_GetSystemTree( &tree_depth );
-    if ( system_tree == NULL )
+
+    SCOREP_Platform_SystemTreePathElement* path;
+    SCOREP_Error_Code                      err = SCOREP_Platform_GetPathInSystemTree( &path );
+    if ( err != SCOREP_SUCCESS )
     {
-        SCOREP_ERROR_POSIX( "Failed to obtain system tree information." );
+        SCOREP_ERROR( err, "Failed to obtain system tree information." );
         return;
     }
 
     /* Create SystemTreeNode defintions */
-    SCOREP_SystemTreeNodeHandle parent = SCOREP_INVALID_SYSTEM_TREE_NODE;
-    for ( int i = tree_depth - 1; i >= 0; i-- )
+    SCOREP_SystemTreeNodeHandle            parent = SCOREP_INVALID_SYSTEM_TREE_NODE;
+    SCOREP_Platform_SystemTreePathElement* node;
+    SCOREP_PLATFORM_SYSTEM_TREE_FORALL( path, node )
     {
         parent = SCOREP_DefineSystemTreeNode( parent,
-                                              system_tree[ i ].name,
-                                              system_tree[ i ].class );
+                                              node->node_name,
+                                              node->node_class );
     }
 
-    /* System tree array is not needed anymore */
-    SCOREP_Platform_FreePath( system_tree, tree_depth );
-    system_tree = NULL;
+    /* System tree path is not needed anymore */
+    SCOREP_Platform_FreePath( path );
+    path = NULL;
 
     /* Create Location Group definition */
-    char                       name[ 32 ];
-    int                        rank = SCOREP_Mpi_GetRank();
-    sprintf( name, "rank %d", rank );
+    char     name[ 32 ];
+    uint64_t location_group_id = 0;
+    if ( SCOREP_Mpi_HasMpi() )
+    {
+        int rank = SCOREP_Mpi_GetRank();
+        sprintf( name, "MPI Rank %d", rank );
+        location_group_id = rank;
+    }
+    else if ( scorep_local_definition_manager.location_definition_counter > 1 )
+    {
+        strcpy( name, "OpenMP Process" );
+    }
+    else
+    {
+        strcpy( name, "Process" );
+    }
     SCOREP_LocationGroupHandle location_group =
-        SCOREP_DefineLocationGroup( rank, parent, name );
+        SCOREP_DefineLocationGroup( location_group_id, parent, name );
 
 
     /* Set location group in all locations */
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
     {
-        definition->location_group_id = rank;
+        definition->location_group_id = location_group_id;
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
