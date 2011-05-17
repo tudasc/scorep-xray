@@ -222,7 +222,6 @@ scorep_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
         CONVERT( REDUCE_SCATTER_BLOCK );
         CONVERT( SCAN );
         CONVERT( EXSCAN );
-        CONVERT( EXIT );
 
         default:
             SCOREP_BUG( "Unknown collective type" );
