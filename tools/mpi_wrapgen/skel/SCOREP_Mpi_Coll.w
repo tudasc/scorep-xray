@@ -25,8 +25,6 @@ ${proto:c}
                                     SCOREP_MPI_COMM_HANDLE(comm),
                                     root_loc,
                                     SCOREP_COLLECTIVE_${name|uppercase},
-                                    ${mpi:sendcount},
-                                    ${mpi:recvcount},
                                     matchingId);
 
       return_val = ${call:pmpi};
@@ -38,7 +36,10 @@ ${proto:c}
 
       /* Leaves region too. */
       SCOREP_MpiCollectiveEnd(scorep_mpi_regid[SCOREP__${name|uppercase}],
-                              matchingId);
+                              SCOREP_MPI_COMM_HANDLE(comm),
+                              matchingId,
+                              ${mpi:sendcount},
+                              ${mpi:recvcount});
 
       SCOREP_MPI_EVENT_GEN_ON();
     }

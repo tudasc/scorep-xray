@@ -181,16 +181,11 @@ SCOREP_MpiRecv
  * @return The used timestamp for this event.
  */
 uint64_t
-SCOREP_MpiCollectiveBegin
-(
-    SCOREP_RegionHandle          regionHandle,
-    SCOREP_MPICommunicatorHandle communicatorHandle,
-    SCOREP_MpiRank               rootRank,
-    SCOREP_MpiCollectiveType     collectiveType,
-    uint64_t                     bytesSent,
-    uint64_t                     bytesReceived,
-    uint64_t                     matchingId
-);
+SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
+                           SCOREP_MPICommunicatorHandle communicatorHandle,
+                           SCOREP_MpiRank               rootRank,
+                           SCOREP_MpiCollectiveType     collectiveType,
+                           uint64_t                     matchingId );
 
 /**
  * Process an mpi collective event in the measurement system.
@@ -204,11 +199,11 @@ SCOREP_MpiCollectiveBegin
  *                   SCOREP_MpiCollectiveBegin event
  */
 void
-SCOREP_MpiCollectiveEnd
-(
-    SCOREP_RegionHandle regionHandle,
-    uint64_t            matchingId
-);
+SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle          regionHandle,
+                         SCOREP_MPICommunicatorHandle communicatorHandle,
+                         uint64_t                     matchingId,
+                         uint64_t                     bytesSent,
+                         uint64_t                     bytesReceived );
 
 /**
  * Processs a MPI send complete event in the measurement system.

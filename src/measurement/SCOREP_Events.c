@@ -240,8 +240,6 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
                            SCOREP_MPICommunicatorHandle communicatorHandle,
                            SCOREP_MpiRank               rootRank,
                            SCOREP_MpiCollectiveType     collectiveType,
-                           uint64_t                     bytesSent,
-                           uint64_t                     bytesReceived,
                            uint64_t                     matchingId )
 {
     assert( ( rootRank >= 0 || rootRank == SCOREP_INVALID_ROOT_RANK )
@@ -257,7 +255,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
     SCOREP_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
                        )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s Comm:%s Root:%s Sent:%llu Recv:%llu",
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s Comm:%s Root:%s",
                          scorep_region_to_string( stringBuffer[ 0 ],
                                                   sizeof( stringBuffer[ 0 ] ),
                                                   "%x", regionHandle ),
@@ -267,9 +265,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
                          scorep_uint32_to_string( stringBuffer[ 2 ],
                                                   sizeof( stringBuffer[ 2 ] ),
                                                   "%x", rootRank,
-                                                  SCOREP_INVALID_ROOT_RANK ),
-                         ( unsigned long long )bytesSent,
-                         ( unsigned long long )bytesReceived );
+                                                  SCOREP_INVALID_ROOT_RANK ) );
 
     uint64_t timestamp = SCOREP_GetClockTicks();
 
@@ -289,8 +285,6 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
                                            scorep_collective_to_otf2( collectiveType ),
                                            SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                            root_rank,
-                                           bytesSent,
-                                           bytesReceived,
                                            matchingId );
     }
 
@@ -309,8 +303,11 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
  * Process an mpi collective end event in the measurement system.
  */
 void
-SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle regionHandle,
-                         uint64_t            matchingId )
+SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle          regionHandle,
+                         SCOREP_MPICommunicatorHandle communicatorHandle,
+                         uint64_t                     matchingId,
+                         uint64_t                     bytesSent,
+                         uint64_t                     bytesReceived )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = SCOREP_GetClockTicks();
@@ -325,7 +322,10 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle regionHandle,
         OTF2_EvtWriter_MpiCollectiveEnd( evt_writer,
                                          NULL,
                                          timestamp,
-                                         matchingId );
+                                         SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                         matchingId,
+                                         bytesSent,
+                                         bytesReceived );
 
         OTF2_EvtWriter_Leave( evt_writer,
                               NULL,

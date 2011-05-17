@@ -99,8 +99,6 @@ MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbu
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_ALLGATHER,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
@@ -114,7 +112,10 @@ MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbu
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -189,8 +190,6 @@ MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_ALLGATHERV,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm );
@@ -204,7 +203,10 @@ MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -261,8 +263,6 @@ MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, M
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_ALLREDUCE,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Allreduce( sendbuf, recvbuf, count, datatype, op, comm );
@@ -276,7 +276,10 @@ MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, M
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -332,8 +335,6 @@ MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_ALLTOALL,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
@@ -347,7 +348,10 @@ MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -419,8 +423,6 @@ MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendty
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_ALLTOALLV,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm );
@@ -434,7 +436,10 @@ MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendty
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -510,8 +515,6 @@ MPI_Alltoallw( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype send
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_ALLTOALLW,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm );
@@ -525,7 +528,10 @@ MPI_Alltoallw( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype send
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -564,8 +570,6 @@ MPI_Barrier( MPI_Comm comm )
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_BARRIER,
-                                         0,
-                                         0,
                                          matchingId );
 
         return_val = PMPI_Barrier( comm );
@@ -579,7 +583,10 @@ MPI_Barrier( MPI_Comm comm )
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_BARRIER ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 0,
+                                 0 );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -636,8 +643,6 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_BCAST,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Bcast( buffer, count, datatype, root, comm );
@@ -651,7 +656,10 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_BCAST ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -701,8 +709,6 @@ MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_EXSCAN,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Exscan( sendbuf, recvbuf, count, datatype, op, comm );
@@ -716,7 +722,10 @@ MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -782,8 +791,6 @@ MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, 
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_GATHER,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Gather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm );
@@ -797,7 +804,10 @@ MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, 
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_GATHER ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -868,8 +878,6 @@ MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_GATHERV,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Gatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm );
@@ -883,7 +891,10 @@ MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_GATHERV ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -948,8 +959,6 @@ MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_REDUCE,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Reduce( sendbuf, recvbuf, count, datatype, op, root, comm );
@@ -963,7 +972,10 @@ MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_REDUCE ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1028,8 +1040,6 @@ MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype 
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, datatype, op, comm );
@@ -1043,7 +1053,10 @@ MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype 
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1099,8 +1112,6 @@ MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datat
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER_BLOCK,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Reduce_scatter_block( sendbuf, recvbuf, recvcount, datatype, op, comm );
@@ -1114,7 +1125,10 @@ MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datat
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1174,8 +1188,6 @@ MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_SCAN,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Scan( sendbuf, recvbuf, count, datatype, op, comm );
@@ -1189,7 +1201,10 @@ MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_SCAN ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1258,8 +1273,6 @@ MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_SCATTER,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Scatter( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm );
@@ -1273,7 +1286,10 @@ MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_SCATTER ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1345,8 +1361,6 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
                                          SCOREP_MPI_COMM_HANDLE( comm ),
                                          root_loc,
                                          SCOREP_COLLECTIVE_MPI_SCATTERV,
-                                         sendbytes,
-                                         recvbytes,
                                          matchingId );
 
         return_val = PMPI_Scatterv( sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm );
@@ -1360,7 +1374,10 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ],
-                                 matchingId );
+                                 SCOREP_MPI_COMM_HANDLE( comm ),
+                                 matchingId,
+                                 sendbytes,
+                                 recvbytes );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
