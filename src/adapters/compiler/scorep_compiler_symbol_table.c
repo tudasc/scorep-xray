@@ -40,6 +40,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <unistd.h>
+#include <inttypes.h>
 #include <sys/stat.h>
 
 
@@ -73,7 +74,7 @@ scorep_compiler_name_add( const char* name,
    Demangling declarations
 *****************************************************************************************/
 
-#if defined( GNU_DEMANGLE ) && defined( HAVE_LIBBFD )
+#if defined( GNU_DEMANGLE )
 /* Declaration of external demangeling function */
 /* It is contained in "demangle.h" */
 extern char*
@@ -92,7 +93,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
                                             SCOREP_COMPILER_DEMANGLE_ANSI    |
                                             SCOREP_COMPILER_DEMANGLE_VERBOSE |
                                             SCOREP_COMPILER_DEMANGLE_TYPES;
-#endif /* GNU_DEMANGLE && HAVE_LIBBFD */
+#endif /* GNU_DEMANGLE */
 
 /* ***************************************************************************************
    helper functions for symbaol table analysis
@@ -179,6 +180,81 @@ scorep_compiler_get_exe( char   path[],
     }
 }
 
+scorep_compiler_process_symbol( long addr,
+                                const char* funcname,
+                                const char* filename,
+                                unsigned int lno )
+{
+#ifdef GNU_DEMANGLE
+    /* use demangled name if possible */
+    char* dem_name = 0;
+    if ( scorep_compiler_demangle_style >= 0 )
+    {
+        dem_name = cplus_demangle( funcname,
+                                   scorep_compiler_demangle_style );
+        if ( dem_name != NULL )
+        {
+            funcname = dem_name;
+        }
+    }
+#endif  /* GNU_DEMANGLE */
+
+    if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
+         ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
+         ( strncmp( funcname, "pomp", 4 ) != 0 ) &&
+         ( strncmp( funcname, "SCOREP_", 7 ) != 0 ) &&
+         ( strncmp( funcname, "scorep_", 7 ) != 0 ) &&
+         ( strncmp( funcname, "OTF2_", 5 ) != 0 ) &&
+         ( strncmp( funcname, "otf2_", 5 ) != 0 ) &&
+         ( strncmp( funcname, "cube_", 5 ) != 0 ) )
+    {
+#ifdef INTEL_COMPILER
+        /* Counter for the last assigned region id.
+           When using the Intel VT_ instrumentation, the functions provide a 32 bit storage.
+           Thus, addresses may not fit, thus, we provide an other id as key.
+         */
+        static int32_t region_counter = 1;
+
+        /* ifort constructs function names like <module>_mp_<function>,
+           while __VT_Entry gets something like <module>.<function>
+           => replace _mp_ with a dot. */
+        char* name = SCOREP_CStr_dup( funcname );
+        for ( int i = 1; i + 5 < strlen( name ); i++ )
+        {
+            if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
+            {
+                name[ i ] = '.';
+                for ( int j = i + 1; j <= strlen( name ) - 2; j++ )
+                {
+                    name[ j ] = name[ j + 3 ];
+                }
+                break;
+            }
+        }
+
+        /* icpc appends the signature of the function. Unfortunately,
+           __VT_Entry gives a string without signature.
+           => cut off signature  */
+        for ( int i = 1; i + 1 < strlen( name ); i++ )
+        {
+            if ( name[ i ] == '(' )
+            {
+                name[ i ] = '\0';
+                break;
+            }
+        }
+
+        /* Store new symbol in hash table */
+        scorep_compiler_hash_put( region_counter, name, filename, lno );
+        scorep_compiler_name_add( name, region_counter );
+        region_counter++;
+        free( name );
+#else
+        scorep_compiler_hash_put( addr, funcname, filename, lno );
+#endif      /* INTEL_COMPILER */
+    }
+}
+
 /* ***************************************************************************************
    BFD based symbol table analysis
 *****************************************************************************************/
@@ -193,13 +269,6 @@ scorep_compiler_get_exe( char   path[],
 void
 scorep_compiler_get_sym_tab( void )
 {
-#ifdef INTEL_COMPILER
-    /* Counter for the last assigned region id.
-       When using the Intel VT_ instrumentation, the functions provide a 32 bit storage.
-       Thus, addresses may not fit, thus, we provide an other id as key.
-     */
-    int32_t   region_counter = 1;
-#endif /* INTEL_COMPILER */
     bfd*      bfd_image = 0;
     int       nr_all_syms;
     int       i;
@@ -262,7 +331,6 @@ scorep_compiler_get_sym_tab( void )
     }
     for ( i = 0; i < nr_all_syms; ++i )
     {
-        char*        dem_name = 0;
         long         addr;
         const char*  filename;
         const char*  funcname;
@@ -299,6 +367,7 @@ scorep_compiler_get_sym_tab( void )
                                &filename,
                                &funcname,
                                &lno );
+
 #ifndef INTEL_COMPILER
         /* The debug information has often undecorated function names,
            thus, tey are nicer to use.
@@ -315,67 +384,7 @@ scorep_compiler_get_sym_tab( void )
         funcname = canonic_symbols[ i ]->name;
 #endif  /* INTEL_COMPILER */
 
-#ifdef GNU_DEMANGLE
-        /* use demangled name if possible */
-        if ( scorep_compiler_demangle_style >= 0 )
-        {
-            dem_name = cplus_demangle( funcname,
-                                       scorep_compiler_demangle_style );
-            if ( dem_name != NULL )
-            {
-                funcname = dem_name;
-            }
-        }
-#endif  /* GNU_DEMANGLE */
-
-        if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
-             ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
-             ( strncmp( funcname, "pomp", 4 ) != 0 ) &&
-             ( strncmp( funcname, "SCOREP_", 7 ) != 0 ) &&
-             ( strncmp( funcname, "scorep_", 7 ) != 0 ) &&
-             ( strncmp( funcname, "OTF2_", 5 ) != 0 ) &&
-             ( strncmp( funcname, "otf2_", 5 ) != 0 ) &&
-             ( strncmp( funcname, "cube_", 5 ) != 0 ) )
-        {
-#ifdef INTEL_COMPILER
-            /* ifort constructs function names like <module>_mp_<function>,
-               while __VT_Entry gets something like <module>.<function>
-               => replace _mp_ with a dot. */
-            char* name = SCOREP_CStr_dup( funcname );
-            for ( int i = 1; i + 5 < strlen( name ); i++ )
-            {
-                if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
-                {
-                    name[ i ] = '.';
-                    for ( int j = i + 1; j <= strlen( name ) - 2; j++ )
-                    {
-                        name[ j ] = name[ j + 3 ];
-                    }
-                    break;
-                }
-            }
-
-            /* icpc appends the signature of the function. Unfortunately,
-               __VT_Entry gives a string without signature.
-               => cut off signature  */
-            for ( int i = 1; i + 1 < strlen( name ); i++ )
-            {
-                if ( name[ i ] == '(' )
-                {
-                    name[ i ] = '\0';
-                    break;
-                }
-            }
-
-            /* Store new symbol in hash table */
-            scorep_compiler_hash_put( region_counter, name, filename, lno );
-            scorep_compiler_name_add( name, region_counter );
-            region_counter++;
-            free( name );
-#else
-            scorep_compiler_hash_put( addr, funcname, filename, lno );
-#endif      /* INTEL_COMPILER */
-        }
+        scorep_compiler_process_symbol( addr, funcname, filename, lno );
     }
     free( canonic_symbols );
     bfd_close( bfd_image );
@@ -440,7 +449,7 @@ scorep_compiler_get_sym_tab( void )
     }
 
     /* open nm-file */
-    sprintf( nmfilename, "scorep_nm_file.%ld", SCOREP_GetClockTicks() );
+    sprintf( nmfilename, "scorep_nm_file.%" PRIu64, SCOREP_GetClockTicks() );
     scorep_compiler_create_nm_file( nmfilename, path );
     if ( !( nmfile = fopen( nmfilename, "r" ) ) )
     {
@@ -510,21 +519,9 @@ scorep_compiler_get_sym_tab( void )
         }
         while ( ( col = strtok( 0, delim ) ) );
 
-        /* add symbol to hash table */
-        if ( ( col_num >= 3 ) &&
-             ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
-             ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
-             ( strncmp( funcname, "pomp", 4 ) != 0 ) )
+        if ( col_num >= 3 )
         {
-#ifdef INTEL_COMPILER
-            sprintf( line, "%s:%s", filename, funcname );
-            //scorep_compiler_hash_put( region_counter, line, filename, line_no );
-            scorep_compiler_hash_put( region_counter, funcname, filename, line_no );
-            scorep_compiler_name_add( funcname, region_counter );
-            region_counter++;
-#else
-            scorep_compiler_hash_put( addr, funcname, filename, line_no );
-#endif      /* INTEL_COMPILER */
+            scorep_compiler_process_symbol( addr, funcname, filename, line_no );
         }
     }
 
