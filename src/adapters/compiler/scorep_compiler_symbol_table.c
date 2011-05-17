@@ -180,9 +180,10 @@ scorep_compiler_get_exe( char   path[],
     }
 }
 
-scorep_compiler_process_symbol( long addr,
-                                const char* funcname,
-                                const char* filename,
+void
+scorep_compiler_process_symbol( long         addr,
+                                const char*  funcname,
+                                const char*  filename,
                                 unsigned int lno )
 {
 #ifdef GNU_DEMANGLE
