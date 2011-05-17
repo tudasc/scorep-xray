@@ -96,7 +96,6 @@ scorep_compiler_get_id_from_name( const char* name )
 {
     SCOREP_Hashtab_Entry* entry = NULL;
     const char*           region_name;
-
     /* Check input */
     if ( name == NULL )
     {
