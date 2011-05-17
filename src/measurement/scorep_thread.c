@@ -631,3 +631,18 @@ SCOREP_ProcessDeferredLocations()
         }
     }
 }
+
+void
+SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Thread_LocationData*,
+                                               void* ),
+                               void* data )
+{
+    assert( cb );
+
+    for ( SCOREP_Thread_LocationData* location_data = location_list_head;
+          location_data;
+          location_data = location_data->next )
+    {
+        cb( location_data, data );
+    }
+}

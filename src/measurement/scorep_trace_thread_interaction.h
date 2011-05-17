@@ -112,4 +112,8 @@ void
 SCOREP_SetOtf2WriterLocationId( SCOREP_Thread_LocationData* threadLocationData );
 
 
+uint64_t
+SCOREP_Trace_GetNumberOfEvents( SCOREP_Thread_LocationData* locationData );
+
+
 #endif /* SCOREP_INTERNAL_TRACE_THREADINTERACTION_H */

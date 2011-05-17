@@ -159,3 +159,21 @@ SCOREP_SetOtf2WriterLocationId( SCOREP_Thread_LocationData* threadLocationData )
         _Exit( EXIT_FAILURE );
     }
 }
+
+uint64_t
+SCOREP_Trace_GetNumberOfEvents( SCOREP_Thread_LocationData* locationData )
+{
+    if ( !SCOREP_IsTracingEnabled() )
+    {
+        return 0;
+    }
+
+    SCOREP_Trace_LocationData* trace_data =
+        SCOREP_Thread_GetTraceLocationData( locationData );
+
+    uint64_t number_of_events;
+    OTF2_EvtWriter_GetNumberOfEvents( trace_data->otf_writer,
+                                      &number_of_events );
+
+    return number_of_events;
+}

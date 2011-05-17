@@ -112,5 +112,10 @@ SCOREP_Thread_GetNumberOfLocations();
 void
 SCOREP_ProcessDeferredLocations();
 
+void
+SCOREP_Thread_ForAllLocations( void ( * cb )( SCOREP_Thread_LocationData*,
+                                              void* ),
+                               void* data );
+
 
 #endif /* SCOREP_INTERNAL_THREAD_H */

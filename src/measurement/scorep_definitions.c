@@ -276,16 +276,26 @@ SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
 }
 
 
+static void
+scorep_update_location_definition_cb( SCOREP_Thread_LocationData* locationData,
+                                      void*                       data )
+{
+    int                         number_of_definitions = *( int* )data;
+    SCOREP_LocationHandle       location_handle       =
+        SCOREP_Thread_GetLocationHandle( locationData );
+    SCOREP_Location_Definition* location_definition =
+        SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
+
+    location_definition->number_of_definitions = number_of_definitions;
+    location_definition->number_of_events      =
+        SCOREP_Trace_GetNumberOfEvents( locationData );
+}
+
 void
 SCOREP_UpdateLocationDefinitions()
 {
     int number_of_definitions = SCOREP_GetNumberOfDefinitions();
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
-    {
-        // assign all locations the same number of definitions. This is a temporary solution
-        // as we need to duplicate the definitions for every location until OTF2 is able
-        // to handle pre-process definitions.
-        definition->number_of_definitions = number_of_definitions;
-    }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+
+    SCOREP_Thread_ForAllLocations( scorep_update_location_definition_cb,
+                                   &number_of_definitions );
 }
