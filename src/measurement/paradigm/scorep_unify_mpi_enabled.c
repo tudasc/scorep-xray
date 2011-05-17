@@ -411,7 +411,7 @@ scorep_map_communicator_to_group( uint64_t           sequence_number,
     definition->group           = group;
     definition->number_of_ranks = number_of_ranks;
 
-    /* Remember next defintion */
+    /* Remember next definition */
     handle = definition->next;
 }
 
@@ -419,7 +419,7 @@ scorep_map_communicator_to_group( uint64_t           sequence_number,
    Collates the information from the communicator definitions on every process to
    obtain the process groups. Creates the group definitions for the process groups and
    creates the mappings from the communicators to the process group. All the data is
-   gathered to rank 0. Other ranks to not have the group defintions and mapping from
+   gathered to rank 0. Other ranks to not have the group definitions and mapping from
    communicator afterwards.
    This function requires that the communicator ids are already unified,
  */
