@@ -194,6 +194,14 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
 
 
 void
+SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* definition,
+                                             SCOREP_Allocator_PageManager*    handlesPageManager );
+
+void
+SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* definition,
+                                              SCOREP_Allocator_PageManager*     handlesPageManager );
+
+void
 SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
                                      SCOREP_Allocator_PageManager* handlesPageManager );
 
