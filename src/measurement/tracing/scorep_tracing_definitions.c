@@ -395,7 +395,6 @@ scorep_write_communicator_definitions( void*                     writerHandle,
     assert( writerHandle );
     SCOREP_Error_Code ( * defComm )( void*,
                                      uint64_t,
-                                     uint64_t,
                                      uint64_t ) =
         ( void* )OTF2_GlobDefWriter_GlobDefMpiComm;
 
@@ -404,8 +403,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
         SCOREP_Error_Code status = defComm(
             writerHandle,
             definition->sequence_number,
-            SCOREP_HANDLE_TO_ID( definition->group, Group, definitionManager->page_manager ),
-            definition->number_of_ranks );
+            SCOREP_HANDLE_TO_ID( definition->group, Group, definitionManager->page_manager ) );
 
         if ( status != SCOREP_SUCCESS )
         {
