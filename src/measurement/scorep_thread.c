@@ -119,10 +119,11 @@ struct SCOREP_Thread_LocationData
     SCOREP_Trace_LocationData*     trace_data;
     SCOREP_Thread_LocationData*    next; // store location objects in list for easy cleanup
 };
-struct SCOREP_Thread_LocationData       location_list_head_dummy = { 0, 0, 0, 0, 0 };
-struct SCOREP_Thread_ThreadPrivateData* initial_thread   = 0;
-struct SCOREP_Thread_LocationData*      initial_location = 0;
-static uint32_t                         location_counter = 0;
+static struct SCOREP_Thread_LocationData*      location_list_head;
+static struct SCOREP_Thread_LocationData**     location_list_tail = &location_list_head;
+static struct SCOREP_Thread_ThreadPrivateData* initial_thread;
+static struct SCOREP_Thread_LocationData*      initial_location;
+static uint32_t                                location_counter;
 
 
 void
@@ -238,7 +239,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
     scorep_thread_update_tpd( tpd );                                  // from here on clients can use
                                                                       // SCOREP_Thread_GetLocationData, i.e. TPD
 
-    new_location->location_id = UINT64_MAX;
+    new_location->location_id = INVALID_LOCATION_DEFINITION_ID;
 
     new_location->profile_data = 0;
     if ( SCOREP_IsProfilingEnabled() )
@@ -256,9 +257,10 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
 
     SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
-        new_location->local_id        = location_counter++;
-        new_location->next            = location_list_head_dummy.next;
-        location_list_head_dummy.next = new_location;
+        new_location->local_id = location_counter++;
+        new_location->next     = NULL;
+        *location_list_tail    = new_location;
+        location_list_tail     = &new_location->next;
     }
 }
 
@@ -291,10 +293,11 @@ SCOREP_Thread_Finalize()
     scorep_thread_delete_location_data();
     scorep_thread_delete_thread_private_data_recursively( initial_thread );
 
-    location_list_head_dummy.next = 0;
-    initial_thread                = 0;
-    initial_location              = 0;
-    location_counter              = 0;
+    location_list_head = 0;
+    location_list_tail = &location_list_head;
+    initial_thread     = 0;
+    initial_location   = 0;
+    location_counter   = 0;
 }
 
 
@@ -302,7 +305,7 @@ void
 scorep_thread_delete_location_data( SCOREP_Thread_LocationData* locationData )
 {
     size_t                      count         = 0;
-    SCOREP_Thread_LocationData* location_data = location_list_head_dummy.next;
+    SCOREP_Thread_LocationData* location_data = location_list_head;
     while ( location_data )
     {
         SCOREP_Thread_LocationData* tmp = location_data->next;
@@ -316,7 +319,8 @@ scorep_thread_delete_location_data( SCOREP_Thread_LocationData* locationData )
         count++;
     }
     assert( count == location_counter );
-    location_list_head_dummy.next = 0;
+    location_list_head = 0;
+    location_list_tail = &location_list_head;
 }
 
 
@@ -524,7 +528,7 @@ SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData )
 {
     assert( SCOREP_Mpi_IsInitialized() );
 
-    if ( locationData->location_id == UINT64_MAX )
+    if ( locationData->location_id == INVALID_LOCATION_DEFINITION_ID )
     {
         uint64_t local_location_id = SCOREP_Thread_GetLocationId( locationData );
         uint64_t rank              = SCOREP_Mpi_GetRank();
