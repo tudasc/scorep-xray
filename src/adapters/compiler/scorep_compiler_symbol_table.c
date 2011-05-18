@@ -371,9 +371,9 @@ scorep_compiler_get_sym_tab( void )
 
 #ifndef INTEL_COMPILER
         /* The debug information has often undecorated function names,
-           thus, tey are nicer to use.
+           thus, they are nicer to use.
            If no debugging symbols are found and thus funcname is NULL,
-           set it from the alway present canonic symbols.      */
+           set it from the always present canonic symbols.      */
         if ( funcname == NULL )
         {
             funcname = canonic_symbols[ i ]->name;
