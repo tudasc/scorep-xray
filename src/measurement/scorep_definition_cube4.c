@@ -149,9 +149,9 @@ cleanup:
     return NULL;
 }
 
-#define SCOREP_Hashtab_DeleteRegionHandle SCOREP_Hashtab_DeleteInt64
-#define SCOREP_Hashtab_DeleteMetricHandle SCOREP_Hashtab_DeleteInt64
-#define SCOREP_Hashtab_DeleteCallpathHandle SCOREP_Hashtab_DeleteInt64
+#define SCOREP_Hashtab_DeleteRegionHandle SCOREP_Hashtab_DeleteFree
+#define SCOREP_Hashtab_DeleteMetricHandle SCOREP_Hashtab_DeleteFree
+#define SCOREP_Hashtab_DeleteCallpathHandle SCOREP_Hashtab_DeleteFree
 
 /* Deletes the scorep_cube4_definitions_map */
 void

@@ -58,26 +58,6 @@ SCOREP_Mutex scorep_user_region_mutex;
  */
 SCOREP_Hashtab* scorep_user_region_table = NULL;
 
-
-static void
-scorep_user_delete_region_entry( SCOREP_Hashtab_Entry* entry )
-{
-    SCOREP_ASSERT( entry );
-
-    /* the value entry is stored in a structure that is allocated with the scorep
-       memory management system. Thus, it must not free the value. */
-    free( ( char* )entry->key );
-}
-
-static void
-scorep_user_delete_file_entry( SCOREP_Hashtab_Entry* entry )
-{
-    SCOREP_ASSERT( entry );
-
-    free( ( SCOREP_SourceFileHandle* )entry->value );
-    free( ( char* )entry->key );
-}
-
 void
 scorep_user_init_regions()
 {
@@ -92,11 +72,18 @@ scorep_user_init_regions()
 void
 scorep_user_final_regions()
 {
-    SCOREP_Hashtab_Foreach( scorep_user_region_table, &scorep_user_delete_region_entry );
-    SCOREP_Hashtab_Free( scorep_user_region_table );
-    SCOREP_Hashtab_Foreach( scorep_user_file_table, &scorep_user_delete_file_entry );
-    SCOREP_Hashtab_Free( scorep_user_file_table );
-    scorep_user_file_table = NULL;
+    /* the value entry is stored in a structure that is allocated with the scorep
+       memory management system. Thus, it must not free the value. */
+    SCOREP_Hashtab_FreeAll( scorep_user_region_table,
+                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteNone );
+
+    SCOREP_Hashtab_FreeAll( scorep_user_file_table,
+                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteFree );
+
+    scorep_user_region_table = NULL;
+    scorep_user_file_table   = NULL;
     SCOREP_MutexDestroy( &scorep_user_file_table_mutex );
     SCOREP_MutexDestroy( &scorep_user_region_mutex );
 }
