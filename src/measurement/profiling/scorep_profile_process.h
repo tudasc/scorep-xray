@@ -27,20 +27,29 @@
  *
  */
 
+
+/**
+   Substitutes collapse nodes by regular region nodes for a region named "COLLAPSE".
+   Thus, collpase nodes behave like a normals region during the rest of the
+   post-processing and writing. It must occur before scorep_profile_expand_threads().
+ */
+void
+scorep_profile_process_collapse();
+
 /**
    Expands all threads. All nodes of type @ref scorep_profile_node_thread_start
    in the profile are substituted by the callpath to the node where the thread was
    activated. In OpenMP this is the callpath which contained the parallel region
    statement.
  */
-extern void
+void
 scorep_profile_expand_threads();
 
 /**
    Walks through the master thread and assigns new callpath handles to those nodes
    which have no callpath handle so far.
  */
-extern void
+void
 scorep_profile_assign_callpath_to_master();
 
 /**
@@ -49,13 +58,21 @@ scorep_profile_assign_callpath_to_master();
    to the master thread and registered. Before executing this function you need to
    execute @ref scorep_profile_assign_callpath_to_master().
  */
-extern void
+void
 scorep_profile_assign_callpath_to_workers();
 
 /**
    Cuts out phases from the tree and makes phases to root nodes of separate trees.
  */
-extern void
+void
 scorep_profile_process_phases();
+
+/**
+   Substitute parameter nodes by regular region nodes. Thus they can be processed like
+   any other regular region and written to a profile which does not yet support
+   parameter profiling.
+ */
+void
+scorep_profile_substitute_parameter();
 
 #endif // SCOREP_PROFILE_PROCESS_H

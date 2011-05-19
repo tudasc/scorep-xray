@@ -487,15 +487,15 @@ scorep_finalize( void )
         return;
     }
 
-    // Calling SCOREP_Event.h functions after this point is considered
-    // an instrumentation error.
-
     // order is important
-    SCOREP_DefineSystemTree();
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
     }
+
+    // Calling SCOREP_Event.h functions after this point is considered
+    // an instrumentation error.
+    SCOREP_DefineSystemTree();
     SCOREP_Unify();
     scorep_profile_finalize();
     SCOREP_Definitions_Write();

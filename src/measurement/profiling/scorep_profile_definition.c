@@ -69,6 +69,8 @@ scorep_profile_init_definition( uint64_t              max_callpath_depth,
     scorep_profile_reinitialize = true;
 
     /* Store configuration */
+    scorep_profile.has_collapse_node    = false;
+    scorep_profile.reached_depth        = 0;
     scorep_profile.max_callpath_depth   = max_callpath_depth;
     scorep_profile.max_callpath_num     = max_callpath_num;
     scorep_profile.num_of_dense_metrics = num_dense_metrics;

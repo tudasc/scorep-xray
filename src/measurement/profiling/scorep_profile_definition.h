@@ -59,6 +59,12 @@ typedef struct
 
     /** Maximum number of callpathes */
     uint64_t max_callpath_num;
+
+    /** Maximum callpath depth actually reached during the run */
+    uint64_t reached_depth;
+
+    /** True if collapse nodes occur */
+    bool has_collapse_node;
 } scorep_profile_definition;
 
 /**

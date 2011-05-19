@@ -40,9 +40,6 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 
-void
-scorep_profile_substitute_parameter();
-
 /* ***************************************************************************************
    Type definitions and variables
 *****************************************************************************************/
@@ -368,17 +365,36 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
     uint64_t                    exit_time = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* thread    = SCOREP_Thread_GetLocationData();
     scorep_profile_node*        node      = NULL;
+    uint64_t*                   metrics   = NULL;
 
     if ( thread != NULL )
     {
         do
         {
             node = scorep_profile_get_current_node( thread );
+            while ( ( node != NULL ) &&
+                    ( ( node->node_type != scorep_profile_node_regular_region ) ||
+                      ( node->node_type != scorep_profile_node_collapse ) ) )
+            {
+                node = node->parent;
+            }
+            if ( node == NULL )
+            {
+                break;
+            }
+
             if ( node->node_type == scorep_profile_node_regular_region  )
             {
-                SCOREP_Profile_Exit( thread,
-                                     SCOREP_PROFILE_DATA2REGION( node->type_specific_data ),
-                                     exit_time, NULL );
+                SCOREP_RegionHandle region =
+                    SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+                fprintf( stderr, "Warning: Force exit for region %s\n",
+                         SCOREP_Region_GetName( region ) );
+                SCOREP_Profile_Exit( thread, region, exit_time, metrics );
+            }
+            else if ( node->node_type == scorep_profile_node_collapse )
+            {
+                fprintf( stderr, "Warning: Force exit from collapsed node\n" );
+                SCOREP_Profile_Exit( thread, SCOREP_INVALID_REGION, exit_time, metrics );
             }
             else
             {
@@ -387,6 +403,9 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
         }
         while ( node != NULL );
     }
+
+    /* Substitute collapse nodes by normal regio nodes */
+    scorep_profile_process_collapse();
 
     /* Substitute parameter entries by regions */
     if ( processFlags & SCOREP_Profile_ParamToRegion )
@@ -461,9 +480,42 @@ SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    node = scorep_profile_find_or_create_child( thread, scorep_profile_node_regular_region,
-                                                SCOREP_PROFILE_REGION2DATA( region ),
-                                                timestamp );
+    /* Check wether we excced the depth */
+    SCOREP_Profile_LocationData* loc = SCOREP_Thread_GetProfileLocationData( thread );
+    loc->current_depth++;
+
+    /* If we are already in a collapse node -> do nothing more */
+    if ( ( loc->current_node != NULL ) &&
+         ( loc->current_node->node_type == scorep_profile_node_collapse ) )
+    {
+        if ( scorep_profile.reached_depth <  loc->current_depth )
+        {
+            scorep_profile.reached_depth = loc->current_depth;
+        }
+        return;
+    }
+
+    /* If we just reached the depth limit */
+    if ( loc->current_depth > scorep_profile.max_callpath_depth )
+    {
+        scorep_profile.has_collapse_node = true;
+        if ( scorep_profile.reached_depth <  loc->current_depth )
+        {
+            scorep_profile.reached_depth = loc->current_depth;
+        }
+        node = scorep_profile_find_or_create_child( thread,
+                                                    scorep_profile_node_collapse,
+                                                    loc->current_depth,
+                                                    timestamp );
+    }
+    /* Regular enter */
+    else
+    {
+        node = scorep_profile_find_or_create_child( thread,
+                                                    scorep_profile_node_regular_region,
+                                                    SCOREP_PROFILE_REGION2DATA( region ),
+                                                    timestamp );
+    }
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
@@ -525,6 +577,15 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
         return;
     }
 
+    /* If we are in a collapse node, check whether the current depth is still
+       larger than the creation depth of the collapse node */
+    location->current_depth--;
+    if ( ( node->node_type == scorep_profile_node_collapse ) &&
+         ( location->current_depth >= node->type_specific_data ) )
+    {
+        return;
+    }
+
     /* Exit all parameters and the region itself. Thus, more than one node may be exited.
        Initialize loop: start with this node. Further iterations should work on the
        parent. */
@@ -543,11 +604,13 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
         parent = node->parent;
     }
     while ( ( node->node_type != scorep_profile_node_regular_region ) &&
+            ( node->node_type != scorep_profile_node_collapse ) &&
             ( parent != NULL ) );
     /* If this was a parameter node also exit next level node */
 
-    if ( ( node->node_type != scorep_profile_node_regular_region ) &&
-         ( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) != region ) )
+    if ( ( node->node_type != scorep_profile_node_collapse ) &&
+         ( ( node->node_type != scorep_profile_node_regular_region ) ||
+           ( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) != region ) ) )
     {
         SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                       "Exit event for other than current region occured" );
@@ -661,6 +724,16 @@ SCOREP_Profile_ParameterString( SCOREP_Thread_LocationData* thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
+    /* If we exceed the maximum callpath depth -> do nothing.
+       Do not even increase the depth level, because we do not know how many parameters
+       were entered on an exit event. */
+    SCOREP_Profile_LocationData* loc = SCOREP_Thread_GetProfileLocationData( thread );
+    if ( loc->current_depth >= scorep_profile.max_callpath_depth )
+    {
+        return;
+    }
+    loc->current_depth++;
+
     /* Initialize type specific data */
     data.handle = param;
     data.value  = string;
@@ -694,6 +767,16 @@ SCOREP_Profile_ParameterInteger( SCOREP_Thread_LocationData* thread,
     scorep_profile_integer_node_data data;
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+
+    /* If we exceed the maximum callpath depth -> do nothing.
+       Do not even increase the depth level, because we do not know how many parameters
+       were entered on an exit event. */
+    SCOREP_Profile_LocationData* loc = SCOREP_Thread_GetProfileLocationData( thread );
+    if ( loc->current_depth >= scorep_profile.max_callpath_depth )
+    {
+        return;
+    }
+    loc->current_depth++;
 
     /* Initialize type specific data */
     data.handle = param;
@@ -881,6 +964,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
     {
         parent_data                = SCOREP_Thread_GetProfileLocationData( parentLocationData );
         thread_data->creation_node = parent_data->fork_node;
+        thread_data->current_depth = parent_data->current_depth;
     }
 
     /* Add it to the profile node list */
