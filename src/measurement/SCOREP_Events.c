@@ -126,13 +126,15 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
                 uint32_t                     tag,
                 uint64_t                     bytesSent )
 {
-    assert( destinationRank >= 0 && "Passed invalid rank to SCOREP_MpiSend\n" );
+    assert( destinationRank >= 0 && "Invalid rank passed to SCOREP_MpiSend\n" );
 
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%u Comm:%s Tag:%u Bytes:%llu",
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%d Comm:%s Tag:%u Bytes:%llu",
                          destinationRank,
                          scorep_comm_to_string( stringBuffer,
                                                 sizeof( stringBuffer ),
@@ -144,8 +146,8 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
     {
         OTF2_EvtWriter_MpiSend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
-                                SCOREP_GetClockTicks(),
-                                ( uint64_t )destinationRank,
+                                timestamp,
+                                destinationRank,
                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                 tag,
                                 bytesSent );
@@ -166,9 +168,11 @@ SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
                 uint32_t                     tag,
                 uint64_t                     bytesReceived )
 {
-    assert( sourceRank >= 0 && "Passed invalid rank to SCOREP_MpiRecv\n" );
+    assert( sourceRank >= 0 && "Invalid rank passed to SCOREP_MpiRecv\n" );
 
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -184,8 +188,8 @@ SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
     {
         OTF2_EvtWriter_MpiRecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
-                                SCOREP_GetClockTicks(),
-                                ( uint64_t )sourceRank,
+                                timestamp,
+                                sourceRank,
                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                 tag,
                                 bytesReceived );
@@ -243,15 +247,23 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
                            uint64_t                     matchingId )
 {
     assert( ( rootRank >= 0 || rootRank == SCOREP_INVALID_ROOT_RANK )
-            && "Passed invalid rank to SCOREP_MpiCollective\n" );
-    uint64_t root_rank = ( uint64_t )rootRank;
+            && "Invalid rank passed to SCOREP_MpiCollectiveBegin\n" );
+
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
+
+    uint32_t root_rank;
     if ( rootRank == SCOREP_INVALID_ROOT_RANK )
     {
-        root_rank = OTF2_UNDEFINED_UINT64;
+        root_rank = OTF2_UNDEFINED_UINT32;
+    }
+    else
+    {
+        root_rank = ( uint32_t )rootRank;
     }
 
 
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
                        )
 
@@ -267,7 +279,6 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
                                                   "%x", rootRank,
                                                   SCOREP_INVALID_ROOT_RANK ) );
 
-    uint64_t timestamp = SCOREP_GetClockTicks();
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
@@ -309,8 +320,8 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle          regionHandle,
                          uint64_t                     bytesSent,
                          uint64_t                     bytesReceived )
 {
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -345,7 +356,8 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle          regionHandle,
 void
 SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -353,7 +365,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
     {
         OTF2_EvtWriter_MpiIsendComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                          NULL,
-                                         SCOREP_GetClockTicks(),
+                                         timestamp,
                                          requestId );
     }
 
@@ -365,7 +377,8 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 void
 SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -373,7 +386,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
     {
         OTF2_EvtWriter_MpiIrecvRequest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                         NULL,
-                                        SCOREP_GetClockTicks(),
+                                        timestamp,
                                         requestId );
     }
 
@@ -385,7 +398,8 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 void
 SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -393,7 +407,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
     {
         OTF2_EvtWriter_MpiRequestTest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                        NULL,
-                                       SCOREP_GetClockTicks(),
+                                       timestamp,
                                        requestId );
     }
 
@@ -405,7 +419,8 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 void
 SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -413,7 +428,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
     {
         OTF2_EvtWriter_MpiRequestCancelled( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                             NULL,
-                                            SCOREP_GetClockTicks(),
+                                            timestamp,
                                             requestId );
     }
 
@@ -429,9 +444,10 @@ SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
                   uint64_t                     bytesSent,
                   SCOREP_MpiRequestId          requestId )
 {
-    assert( destinationRank >= 0 && "Passed invalid rank to SCOREP_MpiSend\n" );
+    assert( destinationRank >= 0 && "Invalid rank passed to SCOREP_MpiIsend\n" );
 
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -439,8 +455,8 @@ SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
     {
         OTF2_EvtWriter_MpiIsend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                  NULL,
-                                 SCOREP_GetClockTicks(),
-                                 ( uint64_t )destinationRank,
+                                 timestamp,
+                                 destinationRank,
                                  SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                  tag,
                                  bytesSent,
@@ -459,9 +475,10 @@ SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
                  uint64_t                     bytesReceived,
                  SCOREP_MpiRequestId          requestId )
 {
-    assert( sourceRank >= 0 && "Passed invalid rank to SCOREP_MpiRecv\n" );
+    assert( sourceRank >= 0 && "Invalid rank passed to SCOREP_MpiIrecv\n" );
 
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -469,8 +486,8 @@ SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
     {
         OTF2_EvtWriter_MpiIrecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                  NULL,
-                                 SCOREP_GetClockTicks(),
-                                 ( uint64_t )sourceRank,
+                                 timestamp,
+                                 sourceRank,
                                  SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
                                  tag,
                                  bytesReceived,
@@ -489,7 +506,9 @@ void
 SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
                 uint32_t            nRequestedThreads )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -504,7 +523,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
     {
         OTF2_EvtWriter_OmpFork( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
-                                SCOREP_GetClockTicks(),
+                                timestamp,
                                 nRequestedThreads,
                                 SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
     }
@@ -522,7 +541,9 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
 void
 SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -537,7 +558,7 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
     {
         OTF2_EvtWriter_OmpJoin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
-                                SCOREP_GetClockTicks(),
+                                timestamp,
                                 SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
         /// @todo better write n join events and pass the locationids of the joined
         /// threads (the master/father is implicitly given). let the master-thread-join
@@ -573,7 +594,9 @@ void
 SCOREP_OmpAcquireLock( uint32_t lockId/*,
                                          uint32_t acquire_release_count*/)
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
@@ -583,7 +606,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
                                                   // is no need for a region id here
         OTF2_EvtWriter_OmpALock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                  NULL,
-                                 SCOREP_GetClockTicks(),
+                                 timestamp,
                                  lockId,
                                  dummy_acquire_release_count,
                                  dummy_region_id );
@@ -603,7 +626,9 @@ void
 SCOREP_OmpReleaseLock( uint32_t lockId/*,
                                          uint32_t acquire_release_count*/)
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
@@ -613,7 +638,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId/*,
                                                   // is no need for a region id here
         OTF2_EvtWriter_OmpRLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                  NULL,
-                                 SCOREP_GetClockTicks(),
+                                 timestamp,
                                  lockId,
                                  dummy_acquire_release_count,
                                  dummy_region_id );

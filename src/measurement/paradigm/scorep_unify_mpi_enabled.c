@@ -49,7 +49,7 @@
 static void scorep_unify_mpi_master( void );
 static void scorep_unify_mpi_servant( void );
 static void scorep_unify_mpi_communicators( void );
-static void scorep_unify_mpi_define_groups( uint64_t global_communicator_number, uint64_t max_number_of_self_ids );
+static void scorep_unify_mpi_define_groups( uint32_t global_communicator_number, uint32_t max_number_of_self_ids );
 /* *INDENT-ON* */
 
 extern SCOREP_DefinitionManager scorep_local_definition_manager;
@@ -261,8 +261,8 @@ static void
 scorep_unify_mpi_communicators( void )
 {
     extern SCOREP_MPICommunicatorHandle
-    SCOREP_DefineUnifiedMPICommunicator( const uint64_t globalRootRank,
-                                         const uint64_t local_id );
+    SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
+                                         uint32_t local_id );
 
     uint32_t  local_offset           = 0;
     uint32_t  max_number_of_self_ids = 0;                   // Maximum number of references to the self communicator
@@ -318,8 +318,8 @@ scorep_unify_mpi_communicators( void )
 
     if ( my_rank == 0 )
     {
-        uint64_t rank    = 0;  // Loop over all ranks
-        uint64_t comm_id = 0;  // Loop over all communicators per rank
+        uint32_t rank    = 0;  // Loop over all ranks
+        uint32_t comm_id = 0;  // Loop over all communicators per rank
 
         for ( rank = 0; rank < comm_world_size; rank++ )
         {
@@ -333,7 +333,7 @@ scorep_unify_mpi_communicators( void )
     /* Append information about self communicators */
     if ( my_rank == 0 )
     {
-        uint64_t comm_id; // iterate over local self comm reference number
+        uint32_t comm_id; // iterate over local self comm reference number
 
         for ( comm_id = 0; comm_id < max_number_of_self_ids; comm_id++ )
         {
@@ -384,9 +384,9 @@ scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id )
    handle, and does not search for the right one.
  */
 static void
-scorep_map_communicator_to_group( uint64_t           sequence_number,
+scorep_map_communicator_to_group( uint32_t           sequence_number,
                                   SCOREP_GroupHandle group,
-                                  uint64_t           number_of_ranks )
+                                  uint32_t           number_of_ranks )
 {
     SCOREP_MPICommunicator_Definition* definition = NULL;
 
@@ -424,8 +424,8 @@ scorep_map_communicator_to_group( uint64_t           sequence_number,
    This function requires that the communicator ids are already unified,
  */
 static void
-scorep_unify_mpi_define_groups( uint64_t global_communicator_number,
-                                uint64_t max_number_of_self_ids )
+scorep_unify_mpi_define_groups( uint32_t global_communicator_number,
+                                uint32_t max_number_of_self_ids )
 {
     int32_t  comm_world_size = SCOREP_Mpi_GetCommWorldSize();
     int32_t  i               = 0;         // Loop counter outer loop

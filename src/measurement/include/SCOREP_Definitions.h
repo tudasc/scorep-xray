@@ -188,13 +188,10 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
  *
  */
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineMPICommunicator
-(
-    const uint64_t numberOfRanks,
-    const uint64_t localRank,
-    const uint64_t globalRootRank,
-    const uint64_t id
-);
+SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
+                              uint32_t localRank,
+                              uint32_t globalRootRank,
+                              uint32_t id );
 
 
 /**

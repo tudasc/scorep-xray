@@ -393,14 +393,10 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                        SCOREP_DefinitionManager* definitionManager )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defComm )( void*,
-                                     uint64_t,
-                                     uint64_t ) =
-        ( void* )OTF2_GlobDefWriter_GlobDefMpiComm;
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
-        SCOREP_Error_Code status = defComm(
+        SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefMpiComm(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->group, Group, definitionManager->page_manager ) );

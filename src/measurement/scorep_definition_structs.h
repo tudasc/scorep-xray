@@ -123,10 +123,10 @@ SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
     SCOREP_DEFINE_DEFINITION_HEADER( MPICommunicator );
 
     // Add SCOREP_MPIWindow stuff from here on.
-    uint64_t           number_of_ranks;
-    uint64_t           local_rank;
-    uint64_t           global_root_rank;
-    uint64_t           root_id;
+    uint32_t           number_of_ranks;
+    uint32_t           local_rank;
+    uint32_t           global_root_rank;
+    uint32_t           root_id;
     SCOREP_GroupHandle group;
 };
 

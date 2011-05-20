@@ -700,10 +700,10 @@ uint32_t scorep_number_of_root_comms = 0;
 
 static SCOREP_MPICommunicatorHandle
 scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                           const uint64_t            numberOfRanks,
-                                           const uint64_t            localRank,
-                                           const uint64_t            globalRootRank,
-                                           const uint64_t            id );
+                                           uint32_t                  numberOfRanks,
+                                           uint32_t                  localRank,
+                                           uint32_t                  globalRootRank,
+                                           uint32_t                  id );
 
 bool
 scorep_mpi_communicator_definitions_equal
@@ -716,16 +716,16 @@ scorep_mpi_communicator_definitions_equal
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineMPICommunicator( const uint64_t numberOfRanks,
-                              const uint64_t localRank,
-                              const uint64_t globalRootRank,
-                              const uint64_t id )
+SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
+                              uint32_t localRank,
+                              uint32_t globalRootRank,
+                              uint32_t id )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Local Rank %" PRIu64 ": Define Communicator\n"
-                         "  size:    %" PRIu64 "\n"
-                         "  root:    %" PRIu64 "\n"
-                         "  id:      %" PRIu64 "\n\n", localRank, numberOfRanks, globalRootRank,
+                         "Local Rank %" PRIu32 ": Define Communicator\n"
+                         "  size:    %" PRIu32 "\n"
+                         "  root:    %" PRIu32 "\n"
+                         "  id:      %" PRIu32 "\n\n", localRank, numberOfRanks, globalRootRank,
                          id );
 
     SCOREP_Definitions_Lock();
@@ -762,19 +762,19 @@ SCOREP_DefineMPICommunicator( const uint64_t numberOfRanks,
  * associated. The local rank is ignored.
  */
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineUnifiedMPICommunicator( const uint64_t globalRootRank,
-                                     const uint64_t local_id )
+SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
+                                     uint32_t local_id )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Define unified Communicator\n"
-                         "  root:      %" PRIu64 "\n"
-                         "  id:        %" PRIu64 "\n\n", globalRootRank, local_id );
+                         "  root:      %" PRIu32 "\n"
+                         "  id:        %" PRIu32 "\n\n", globalRootRank, local_id );
 
     SCOREP_Definitions_Lock();
     SCOREP_MPICommunicatorHandle new_handle
         = scorep_mpi_communicator_definition_define( scorep_unified_definition_manager,
-                                                     1,  // Use the default for self communcators.
-                                                     -1, // Local rank is ignored for unified definitions
+                                                     1,              // Use the default for self communcators.
+                                                     ( uint32_t )-1, // Local rank is ignored for unified definitions
                                                      globalRootRank,
                                                      local_id );
     SCOREP_Definitions_Unlock();
@@ -784,10 +784,10 @@ SCOREP_DefineUnifiedMPICommunicator( const uint64_t globalRootRank,
 
 SCOREP_MPICommunicatorHandle
 scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                           const uint64_t            numberOfRanks,
-                                           const uint64_t            localRank,
-                                           const uint64_t            globalRootRank,
-                                           const uint64_t            id )
+                                           uint32_t                  numberOfRanks,
+                                           uint32_t                  localRank,
+                                           uint32_t                  globalRootRank,
+                                           uint32_t                  id )
 {
     SCOREP_MPICommunicator_Definition* new_definition = NULL;
     SCOREP_MPICommunicatorHandle       new_handle     = SCOREP_INVALID_MPI_COMMUNICATOR;
@@ -815,8 +815,7 @@ scorep_mpi_communicator_definitions_equal
     const SCOREP_MPICommunicator_Definition* newDefinition
 )
 {
-    return ( existingDefinition->global_root_rank == newDefinition->global_root_rank ) &&
-           ( existingDefinition->root_id          == newDefinition->root_id );
+    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -837,15 +836,11 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
                                 const SCOREP_Group_Definition* newDefinition );
 
 
-static void
-scorep_group_definition_debug( void );
-
-
 /**
  * Associate a MPI group with a process unique group handle.
  */
 SCOREP_GroupHandle
-SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
+SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
                        const int32_t* ranks )
 {
     SCOREP_Definitions_Lock();
@@ -858,7 +853,7 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
             "" ),
-        true /* need to convert to uint64_t */ );
+        true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
 
@@ -886,7 +881,7 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
         scorep_string_definition_define(
             scorep_unified_definition_manager,
             "" ),
-        true /* need to convert to uint64_t */ );
+        true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
 
@@ -966,37 +961,6 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
                            newDefinition->members,
                            sizeof( existingDefinition->members[ 0 ]
                                    * existingDefinition->number_of_members ) );
-}
-
-
-static void
-scorep_group_definition_debug( void )
-{
-#if 0
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "    Handle ID:   %x", new_definition->sequence_number );
-    SCOREP_DEBUG_PREFIX( SCOREP_DEBUG_DEFINITIONS );
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                             "    World ranks:" );
-
-    uint32_t ranks_in_line = 0;
-    for ( int32_t i = 0; i < numberOfRanks; ++i )
-    {
-        if ( ranks_in_line && ranks_in_line % 16 == 0 )
-        {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "\n" );
-            SCOREP_DEBUG_PREFIX( SCOREP_DEBUG_DEFINITIONS );
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "%*s",
-                                     ( int )strlen( "    World ranks:" ),
-                                     "" );
-        }
-
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, " %u", ranks[ i ] );
-
-        ranks_in_line++;
-    }
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "\n" );
-#endif
 }
 
 

@@ -133,13 +133,10 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     if ( allocHashTables )
     {
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( system_tree_node, *definitionManager );
-        //SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( location_group, *definitionManager );
-        //SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( location, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( source_file, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( region, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( group, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_window, *definitionManager );
-        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_communicator, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_topology, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_coords, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( counter_group, *definitionManager );
