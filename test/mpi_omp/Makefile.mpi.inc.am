@@ -40,6 +40,12 @@ mpi_omp_hello_world_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 mpi_omp_hello_world_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libmpi_omp_hello_world_pomp.la @LIBBFD@
 
+if SCOREP_COMPILER_PGI
+if SCOREP_MPI_OPENMPI
+mpi_omp_hello_world_LDADD += $(FLIBS)
+endif
+endif
+
 SCOREP_MPI_OMP_TESTS += mpi_omp_hello_world
 
 endif

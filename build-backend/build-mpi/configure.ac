@@ -84,12 +84,17 @@ AC_SCOREP_BACKEND_TEST_RUNS
 SCOREP_ATTRIBUTE_ALIGNMENT
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 
+# we need an openmpi conditional because of a bug in the pgi-openmpi
+# configuration. We might extend this hack for other MPI
+# implementations.
+$CC -show | grep openmpi > /dev/null
+AM_CONDITIONAL([SCOREP_MPI_OPENMPI], [test $? -eq 0])
+
 AM_PROG_AS
 
 LT_PREREQ([2.4])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
-AC_SUBST([MPIRUN], [$mpi_run_or_exec])
 
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
