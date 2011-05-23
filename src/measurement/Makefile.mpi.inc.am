@@ -39,6 +39,11 @@ libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c
 
+if SCOREP_COMPILER_PGI
+if SCOREP_MPI_OPENMPI
+libscorep_paradigm_mpi_la_LIBADD = $(FLIBS)
+endif
+endif
 
 noinst_PROGRAMS += otf2_speed_test
 otf2_speed_test_SOURCES = \

@@ -13,12 +13,6 @@ mpitest_LDADD = \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libscorep_utilities.la
 
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-mpitest_LDADD += $(FLIBS)
-endif
-endif
-
 check_PROGRAMS += test_link
 
 test_link_SOURCES =  $(SRC_ROOT)/test/mpi/test_link.c 
@@ -33,12 +27,6 @@ test_link_LDADD = \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
     -lm
 
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-test_link_LDADD += $(FLIBS)
-endif
-endif
-
 
 check_PROGRAMS += mpi_hello_world
 mpi_hello_world_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
@@ -47,12 +35,6 @@ mpi_hello_world_LDADD =                 \
     $(LIB_DIR_OTF2)libotf2.la           \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
     -lm
-
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-mpi_hello_world_LDADD += $(FLIBS)
-endif
-endif
 
 SCOREP_MPI_TESTS += mpi_hello_world
 

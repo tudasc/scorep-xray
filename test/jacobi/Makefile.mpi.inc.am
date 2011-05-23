@@ -32,12 +32,6 @@ jacobi_mpi_c_SOURCES  = $(jacobi_mpi_c_sources)
 jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_c_LDADD    = $(LIB_ROOT)libscorep_mpi.la @LIBBFD@
 
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-jacobi_mpi_c_LDADD += $(FLIBS)
-endif
-endif
-
 check_PROGRAMS                      += jacobi_mpi_c_uninstrumented
 jacobi_mpi_c_uninstrumented_SOURCES  = $(jacobi_mpi_c_sources)
 jacobi_mpi_c_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
@@ -62,12 +56,6 @@ jacobi_mpi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_omp_c_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la @LIBBFD@
 
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-jacobi_mpi_omp_c_LDADD += $(FLIBS)
-endif
-endif
-
 check_PROGRAMS                        += jacobi_mpi_omp_c_unistrumented
 jacobi_mpi_omp_c_unistrumented_SOURCES = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c \
                                          $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.h \
@@ -88,12 +76,6 @@ jacobi_mpi_cxx_sources  = $(SRC_ROOT)test/jacobi/MPI/C++/jacobi.cpp  \
 jacobi_mpi_cxx_SOURCES  = $(jacobi_mpi_cxx_sources)
 jacobi_mpi_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi.la @LIBBFD@
-
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-jacobi_mpi_cxx_LDADD += $(FLIBS)
-endif
-endif
 
 check_PROGRAMS                        += jacobi_mpi_cxx_uninstrumented
 jacobi_mpi_cxx_uninstrumented_SOURCES  = $(jacobi_mpi_cxx_sources)
@@ -119,12 +101,6 @@ jacobi_mpi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_omp_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_cxx.la @LIBBFD@
-
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-jacobi_mpi_omp_cxx_LDADD += $(FLIBS)
-endif
-endif
 
 check_PROGRAMS                            += jacobi_mpi_omp_cxx_unistrumented
 jacobi_mpi_omp_cxx_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp \
