@@ -97,14 +97,6 @@ AC_REQUIRE([AC_PROG_RANLIB])
 AC_SCOREP_DEBUG_OPTION
 AC_SCOREP_ON_DEBUG_OPTION
 
-if test "x${ac_scorep_cross_compiling}" != "xyes"; then
-    AC_SCOREP_PATH_GENERIC([otf], [1.8.0], [
-        AM_CONDITIONAL([HAVE_OTF], [true])
-    ], [
-        AM_CONDITIONAL([HAVE_OTF], [false])
-    ], [otfconfig], [--includes], [--libs])
-fi
-
 AC_CONFIG_FILES([run_otf2_reader_test.sh:../test/OTF2_Reader_test/run_otf2_reader_test.sh.in], 
                 [chmod u+x run_otf2_reader_test.sh])
 AC_CONFIG_FILES([run_otf2_reader_read_global_locations_test.sh:../test/OTF2_Reader_test/run_otf2_reader_read_global_locations_test.sh.in], 
