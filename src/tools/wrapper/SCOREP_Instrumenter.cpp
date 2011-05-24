@@ -654,7 +654,7 @@ SCOREP_Instrumenter::prepare_compiler()
                 current_file = input_files.substr( old_pos, cur_pos - old_pos );
                 if ( !is_fortran_file( current_file ) )
                 {
-                    std::cerr << "Compiler instrumentation with the Sun compiler ist "
+                    std::cerr << "Compiler instrumentation with the Sun compiler is "
                               << "only possible for Fortran files. If you want to "
                               << "switch off compiler instrumentation, please use the "
                               << "--nocompiler option."
