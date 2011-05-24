@@ -57,6 +57,12 @@ jacobi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_omp_c_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c.la @LIBBFD@
 
+# for some unknown reason we need an extra -I for the SUN compiler in
+# OpenMP and hybrid mode.
+if SCOREP_COMPILER_SUN
+jacobi_omp_c_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
+endif
+
 check_PROGRAMS                     += jacobi_omp_c_uninstrumented
 jacobi_omp_c_uninstrumented_SOURCES = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.c \
                                       $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.h \
