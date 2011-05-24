@@ -32,7 +32,7 @@ ELSE
 	CALL late_receiver(0.1D0, 0.2D0, 20, local)
 	CALL imbalance_at_mpi_alltoall(df_cyclic2, dd, 7, local)
 	!CALL late_scatter(0.4D0, 0.1D0, 2, 5, local)
-	CALL early_gather(0.2D0, 0.3D0, 5, 4, local) 
+	CALL early_gather(0.2D0, 0.3D0, 5, 4, local)
 END IF
 CALL do_work(0.2D0)
 CALL MPI_BARRIER(MPI_COMM_WORLD, ierror)
