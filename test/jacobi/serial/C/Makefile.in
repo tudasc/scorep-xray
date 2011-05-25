@@ -2,7 +2,9 @@
 # General Settings
 #------------------------------------------------------------------------------
 
-PREP = @prefix@/bin/scorep --instrument
+@SCOREP_COMPILER_SUN_FALSE@PREP = @prefix@/bin/scorep --instrument --verbosity=2
+@SCOREP_COMPILER_SUN_TRUE@PREP = @prefix@/bin/scorep --instrument --verbosity=2 --nocompiler
+
 CC = $(PREP) @CC@
 CFLAGS = @CFLAGS@
 LDLIBS =
