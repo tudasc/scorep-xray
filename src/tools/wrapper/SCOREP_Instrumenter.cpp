@@ -1077,7 +1077,7 @@ SCOREP_Instrumenter::prepare_pdt()
                 if ( return_value != 0 )
                 {
                     std::cerr << "Failed to create PDT database file." << std::endl;
-                    exit( return_value );
+                    exit( EXIT_FAILURE );
                 }
 
                 // instrument source
@@ -1094,7 +1094,7 @@ SCOREP_Instrumenter::prepare_pdt()
                 if ( return_value != 0 )
                 {
                     std::cerr << "PDT instrumentation failed." << std::endl;
-                    exit( return_value );
+                    exit( EXIT_FAILURE );
                 }
 
 

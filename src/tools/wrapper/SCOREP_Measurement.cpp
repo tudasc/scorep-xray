@@ -96,7 +96,7 @@ SCOREP_Measurement::Run()
     {
         return system( user_command.c_str() );
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 void

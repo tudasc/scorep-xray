@@ -115,30 +115,35 @@ main( int   argc,
         {
             SCOREP_Instrumenter app;
             app.ParseCmdLine( argc, argv );
-            return app.Run();
+            if ( app.Run() == EXIT_SUCCESS )
+            {
+                return EXIT_SUCCESS;
+            }
         }
         else if ( action == "--measure" )
         {
             SCOREP_Measurement app;
             app.ParseCmdLine( argc, argv );
-            return app.Run();
+            if ( app.Run() == EXIT_SUCCESS )
+            {
+                return EXIT_SUCCESS;
+            }
         }
         else if ( action == "--help" || action == "-h" )
         {
             print_help( argv[ 0 ] );
-            return 0;
+            return EXIT_SUCCESS;
         }
         else
         {
             std::cerr << "Invalid action specified" << std::endl;
             print_short_usage( argv[ 0 ] );
-            return -1;
         }
     }
     else
     {
         std::cerr << "No action specified" << std::endl;
         print_short_usage( argv[ 0 ] );
-        return -1;
     }
+    return EXIT_FAILURE;
 }
