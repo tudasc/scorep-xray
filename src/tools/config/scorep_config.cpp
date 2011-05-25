@@ -42,9 +42,6 @@
 #define ACTION_CXX    5
 #define ACTION_FC     6
 
-#define EXIT_SUCCESS 0
-#define EXIT_FAILURE 1
-
 #define HELPTEXT "\nUsage:\nscorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config=<config_file>]\n"
 
 int
