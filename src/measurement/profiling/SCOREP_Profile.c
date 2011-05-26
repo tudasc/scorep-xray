@@ -373,8 +373,8 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
         {
             node = scorep_profile_get_current_node( thread );
             while ( ( node != NULL ) &&
-                    ( ( node->node_type != scorep_profile_node_regular_region ) ||
-                      ( node->node_type != scorep_profile_node_collapse ) ) )
+                    ( node->node_type != scorep_profile_node_regular_region ) &&
+                    ( node->node_type != scorep_profile_node_collapse ) )
             {
                 node = node->parent;
             }
