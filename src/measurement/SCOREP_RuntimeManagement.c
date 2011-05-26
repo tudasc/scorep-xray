@@ -452,10 +452,7 @@ SCOREP_DisableRecording()
  * Predicate indicating if the process is recording events or not.
  */
 bool
-SCOREP_RecordingEnabled
-(
-    void
-)
+SCOREP_RecordingEnabled()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 

@@ -110,10 +110,10 @@ SCOREP_Definitions_Finalize();
 
 
 void
-SCOREP_Definitions_Lock();
+SCOREP_Definitions_Lock( void );
 
 void
-SCOREP_Definitions_Unlock();
+SCOREP_Definitions_Unlock( void );
 
 void
 SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    manager,

@@ -302,7 +302,7 @@ SCOREP_Thread_Finalize()
 
 
 void
-scorep_thread_delete_location_data( SCOREP_Thread_LocationData* locationData )
+scorep_thread_delete_location_data()
 {
     size_t                      count         = 0;
     SCOREP_Thread_LocationData* location_data = location_list_head;

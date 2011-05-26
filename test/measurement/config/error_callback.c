@@ -60,4 +60,6 @@ cutest_scorep_error_callback( const char*             function,
                  message2.buffer, message.buffer );
     CuStringClear( &message2 );
     CuStringClear( &message );
+
+    return errorCode;
 }
