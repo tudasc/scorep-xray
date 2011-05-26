@@ -689,9 +689,9 @@ SCOREP_Instrumenter::invoke_opari( std::string input_file,
 {
     std::string command = opari
 #ifdef SCOREP_COMPILER_CRAY
-                          + " -tpd -nosrc "
+                          + " --tpd --nosrc "
 #else
-                          + " -tpd "
+                          + " --tpd "
 #endif
                           + input_file
                           + " " + output_file;
