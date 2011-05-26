@@ -264,17 +264,17 @@ scorep_get_ ## type ## _from_cube4 (scorep_cube4_definitions_map* map,        \
 }
 /* *INDENT-ON* */
 
-SCOREP_GET_CUBE_MAPPING( cube_metric, metric, Counter );
+SCOREP_GET_CUBE_MAPPING( cube_metric, metric, Counter )
 
-SCOREP_GET_CUBE_MAPPING( cube_region, region, Region );
+SCOREP_GET_CUBE_MAPPING( cube_region, region, Region )
 
-SCOREP_GET_CUBE_MAPPING( cube_cnode, callpath, Callpath );
+SCOREP_GET_CUBE_MAPPING( cube_cnode, callpath, Callpath )
 
-SCOREP_GET_SCOREP_MAPPING( cube_metric, metric, Counter, COUNTER );
+SCOREP_GET_SCOREP_MAPPING( cube_metric, metric, Counter, COUNTER )
 
-SCOREP_GET_SCOREP_MAPPING( cube_region, region, Region, REGION );
+SCOREP_GET_SCOREP_MAPPING( cube_region, region, Region, REGION )
 
-SCOREP_GET_SCOREP_MAPPING( cube_cnode, callpath, Callpath, CALLPATH );
+SCOREP_GET_SCOREP_MAPPING( cube_cnode, callpath, Callpath, CALLPATH )
 
 uint64_t
 scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map )

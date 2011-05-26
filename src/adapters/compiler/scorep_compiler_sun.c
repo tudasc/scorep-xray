@@ -30,14 +30,15 @@
 #include <SCOREP_Types.h>
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Compiler_Init.h>
 #include <SCOREP_Mutex.h>
 
 /*
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  * Simple hash table to map function names to region handles
- *-----------------------------------------------------------------------------
+ * -----------------------------------------------------------------------------
  */
 
 typedef struct hash_node_struct
