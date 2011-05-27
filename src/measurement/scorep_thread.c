@@ -91,7 +91,8 @@ struct scorep_deferred_location
     scorep_deferred_location*   next;
 };
 
-static scorep_deferred_location scorep_deferred_locations_head_dummy = { 0, 0 };
+static scorep_deferred_location*  scorep_deferred_locations_head;
+static scorep_deferred_location** scorep_deferred_locations_tail = &scorep_deferred_locations_head;
 
 
 struct SCOREP_Thread_ThreadPrivateData
@@ -329,7 +330,7 @@ scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivat
 {
     assert( tpd );
     bool have_unused_child = false;
-    for ( int i = 0; i < tpd->n_children; ++i )
+    for ( uint32_t i = 0; i < tpd->n_children; ++i )
     {
         if ( tpd->children[ i ] )
         {
@@ -572,10 +573,11 @@ scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData,
 
     deferred_location->location = locationData;
     deferred_location->parent   = parent;
+    deferred_location->next     = 0;
     SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
     {
-        deferred_location->next                   = scorep_deferred_locations_head_dummy.next;
-        scorep_deferred_locations_head_dummy.next = deferred_location;
+        *scorep_deferred_locations_tail = deferred_location;
+        scorep_deferred_locations_tail  = &deferred_location->next;
     }
 }
 
@@ -587,7 +589,7 @@ SCOREP_ProcessDeferredLocations()
 
     SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
     {
-        scorep_deferred_location* deferred_location                      = scorep_deferred_locations_head_dummy.next;
+        scorep_deferred_location* deferred_location                      = scorep_deferred_locations_head;
         bool                      current_location_in_deferred_locations = false;
 
         while ( deferred_location )
@@ -612,7 +614,7 @@ SCOREP_ProcessDeferredLocations()
         assert( current_location_in_deferred_locations );
 
         // update parents
-        deferred_location = scorep_deferred_locations_head_dummy.next;
+        deferred_location = scorep_deferred_locations_head;
         while ( deferred_location )
         {
             SCOREP_Thread_LocationData* location = deferred_location->location;
