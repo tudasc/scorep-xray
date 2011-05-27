@@ -426,9 +426,6 @@ scorep_mpi_comm_init()
     /* check, if we already initialized the data structures */
     if ( !scorep_mpi_comm_initialized )
     {
-        /* Set the flag the communicator management is initialized */
-        scorep_mpi_comm_initialized = 1;
-
         /* get group of \a MPI_COMM_WORLD */
         PMPI_Comm_group( MPI_COMM_WORLD, &scorep_mpi_world.group );
 
@@ -444,29 +441,6 @@ scorep_mpi_comm_init()
 
         /* allocate translation buffers */
         scorep_mpi_ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_MpiRank ) );
-
-        /* initialize global rank variable */
-        PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
-
-        /* initialize MPI_COMM_WORLD */
-        scorep_mpi_world.handle =
-            SCOREP_DefineMPICommunicator( scorep_mpi_world.size,
-                                          scorep_mpi_my_global_rank,
-                                          0, 0 );
-        if ( scorep_mpi_my_global_rank == 0 )
-        {
-            if ( scorep_mpi_world.size > 1 )
-            {
-                scorep_mpi_current_comm_id++;
-            }
-            else
-            {
-                scorep_mpi_current_self_id++;
-            }
-        }
-
-        /* initialize MPI_COMM_SELF */
-        scorep_mpi_comm_create( MPI_COMM_SELF );
 
         /* create a derived datatype for distributed communicator
          * definition handling */
@@ -488,6 +462,32 @@ scorep_mpi_comm_init()
         PMPI_Type_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
 #endif
         PMPI_Type_commit( &scorep_mpi_id_root_type );
+
+        /* initialize global rank variable */
+        PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
+
+        /* initialize MPI_COMM_WORLD */
+        scorep_mpi_world.handle =
+            SCOREP_DefineMPICommunicator( scorep_mpi_world.size,
+                                          scorep_mpi_my_global_rank,
+                                          0, 0 );
+        if ( scorep_mpi_my_global_rank == 0 )
+        {
+            if ( scorep_mpi_world.size > 1 )
+            {
+                scorep_mpi_current_comm_id++;
+            }
+            else
+            {
+                scorep_mpi_current_self_id++;
+            }
+        }
+
+        /* The initialization is done, flag that */
+        scorep_mpi_comm_initialized = 1;
+
+        /* create MPI_COMM_SELF definition */
+        scorep_mpi_comm_create( MPI_COMM_SELF );
     }
     else
     {
@@ -564,7 +564,7 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
         *root = pair.root;
 
         /* increase local communicator id counter, if this
-         * process was root in the preceding broadcast */
+         * process is root in the new communicator */
         if ( local_rank == 0 )
         {
             ++scorep_mpi_current_comm_id;
