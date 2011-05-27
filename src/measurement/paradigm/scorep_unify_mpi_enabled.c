@@ -402,28 +402,18 @@ scorep_unify_mpi_communicators( void )
 static int
 scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id )
 {
-    int32_t i;
-
-    for ( i = 0;
-          i < scorep_local_definition_manager.mpi_communicator_definition_counter;
-          i++ )
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
+                                  MPICommunicator,
+                                  mpi_communicator )
     {
         if ( global_comm_id ==
              scorep_local_definition_manager.mappings->
-             mpi_communicator_mappings[ i ] )
+             mpi_communicator_mappings[ definition->sequence_number ] )
         {
-            SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                          MPICommunicator,
-                                          mpi_communicator )
-            {
-                if ( definition->sequence_number == i )
-                {
-                    return definition->local_rank;
-                }
-            }
-            SCOREP_DEFINITION_FOREACH_WHILE();
+            return definition->local_rank;
         }
     }
+    SCOREP_DEFINITION_FOREACH_WHILE();
 
     return -1;
 }
