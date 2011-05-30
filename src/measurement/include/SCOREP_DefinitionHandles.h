@@ -36,9 +36,12 @@
 
 typedef SCOREP_Allocator_MovableMemory SCOREP_StringHandle;
 
+
 typedef SCOREP_Allocator_MovableMemory SCOREP_SystemTreeNodeHandle;
 
+
 typedef SCOREP_Allocator_MovableMemory SCOREP_LocationGroupHandle;
+
 
 typedef SCOREP_Allocator_MovableMemory SCOREP_LocationHandle;
 
@@ -46,7 +49,7 @@ typedef SCOREP_Allocator_MovableMemory SCOREP_LocationHandle;
 typedef SCOREP_Allocator_MovableMemory SCOREP_GroupHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MPICommunicatorHandle;
+typedef SCOREP_Allocator_MovableMemory SCOREP_LocalMPICommunicatorHandle;
 
 
 typedef SCOREP_Allocator_MovableMemory SCOREP_MPIWindowHandle;

@@ -152,22 +152,20 @@ scorep_region_to_string
 
 
 /**
- * Converts a SCOREP_MPICommunicatorHandle into a string.
+ * Converts a SCOREP_LocalMPICommunicatorHandle into a string.
  */
 extern const char*
-scorep_comm_to_string
-(
-    char*                        stringBuffer,
-    size_t                       stringBufferSize,
-    const char*                  format,
-    SCOREP_MPICommunicatorHandle commHandle
-)
+scorep_comm_to_string(
+    char*                             stringBuffer,
+    size_t                            stringBufferSize,
+    const char*                       format,
+    SCOREP_LocalMPICommunicatorHandle commHandle )
 {
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
                                         ( scorep_any_handle )commHandle,
-                                        SCOREP_INVALID_MPI_COMMUNICATOR );
+                                        SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR );
 }
 
 

@@ -698,28 +698,26 @@ scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinit
 uint32_t scorep_number_of_self_comms = 0;
 uint32_t scorep_number_of_root_comms = 0;
 
-static SCOREP_MPICommunicatorHandle
-scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                           uint32_t                  numberOfRanks,
-                                           uint32_t                  localRank,
-                                           uint32_t                  globalRootRank,
-                                           uint32_t                  id );
+static SCOREP_LocalMPICommunicatorHandle
+scorep_local_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                                 uint32_t                  numberOfRanks,
+                                                 uint32_t                  localRank,
+                                                 uint32_t                  globalRootRank,
+                                                 uint32_t                  id );
 
-bool
-scorep_mpi_communicator_definitions_equal
-(
-    const SCOREP_MPICommunicator_Definition* existingDefinition,
-    const SCOREP_MPICommunicator_Definition* newDefinition
-);
+static bool
+scorep_local_mpi_communicator_definitions_equal(
+    const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
+    const SCOREP_LocalMPICommunicator_Definition* newDefinition );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  */
-SCOREP_MPICommunicatorHandle
-SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
-                              uint32_t localRank,
-                              uint32_t globalRootRank,
-                              uint32_t id )
+SCOREP_LocalMPICommunicatorHandle
+SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
+                                   uint32_t localRank,
+                                   uint32_t globalRootRank,
+                                   uint32_t id )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Local Rank %" PRIu32 ": Define Communicator\n"
@@ -729,12 +727,12 @@ SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
                          id );
 
     SCOREP_Definitions_Lock();
-    SCOREP_MPICommunicatorHandle new_handle
-        = scorep_mpi_communicator_definition_define( &scorep_local_definition_manager,
-                                                     numberOfRanks,
-                                                     localRank,
-                                                     globalRootRank,
-                                                     id );
+    SCOREP_LocalMPICommunicatorHandle new_handle
+        = scorep_local_mpi_communicator_definition_define( &scorep_local_definition_manager,
+                                                           numberOfRanks,
+                                                           localRank,
+                                                           globalRootRank,
+                                                           id );
 
     /* Count the number of comm self instances and communicators where this process
        is rank 0.
@@ -761,7 +759,7 @@ SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
  * The number of ranks information is obtained if the process group is
  * associated. The local rank is ignored.
  */
-SCOREP_MPICommunicatorHandle
+SCOREP_LocalMPICommunicatorHandle
 SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
                                      uint32_t local_id )
 {
@@ -773,27 +771,27 @@ SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
                          "  root:      %" PRIu32 "\n"
                          "  id:        %" PRIu32 "\n\n", globalRootRank, local_id );
 
-    SCOREP_MPICommunicatorHandle new_handle
-        = scorep_mpi_communicator_definition_define( scorep_unified_definition_manager,
-                                                     1,              // Use the default for self communcators.
-                                                     ( uint32_t )-1, // Local rank is ignored for unified definitions
-                                                     globalRootRank,
-                                                     local_id );
+    SCOREP_LocalMPICommunicatorHandle new_handle
+        = scorep_local_mpi_communicator_definition_define( scorep_unified_definition_manager,
+                                                           1,              // Use the default for self communcators.
+                                                           ( uint32_t )-1, // Local rank is ignored for unified definitions
+                                                           globalRootRank,
+                                                           local_id );
 
     return new_handle;
 }
 
-SCOREP_MPICommunicatorHandle
-scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                           uint32_t                  numberOfRanks,
-                                           uint32_t                  localRank,
-                                           uint32_t                  globalRootRank,
-                                           uint32_t                  id )
+SCOREP_LocalMPICommunicatorHandle
+scorep_local_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                                 uint32_t                  numberOfRanks,
+                                                 uint32_t                  localRank,
+                                                 uint32_t                  globalRootRank,
+                                                 uint32_t                  id )
 {
-    SCOREP_MPICommunicator_Definition* new_definition = NULL;
-    SCOREP_MPICommunicatorHandle       new_handle     = SCOREP_INVALID_MPI_COMMUNICATOR;
+    SCOREP_LocalMPICommunicator_Definition* new_definition = NULL;
+    SCOREP_LocalMPICommunicatorHandle       new_handle     = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
-    SCOREP_DEFINITION_ALLOC( MPICommunicator );
+    SCOREP_DEFINITION_ALLOC( LocalMPICommunicator );
 
     // Init new_definition
     new_definition->is_self_like     = numberOfRanks == 1;
@@ -806,15 +804,13 @@ scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_
     HASH_ADD_POD( new_definition, global_root_rank );
     HASH_ADD_POD( new_definition, root_id );
 
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator, mpi_communicator );
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator, local_mpi_communicator );
 }
 
 bool
-scorep_mpi_communicator_definitions_equal
-(
-    const SCOREP_MPICommunicator_Definition* existingDefinition,
-    const SCOREP_MPICommunicator_Definition* newDefinition
-)
+scorep_local_mpi_communicator_definitions_equal(
+    const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
+    const SCOREP_LocalMPICommunicator_Definition* newDefinition )
 {
     return false;
 }
@@ -915,7 +911,7 @@ scorep_group_definition_define( SCOREP_DefinitionManager* definition_manager,
                                 bool                      convertFromUint32 )
 {
     SCOREP_Group_Definition* new_definition = NULL;
-    SCOREP_GroupHandle       new_handle     = SCOREP_INVALID_MPI_COMMUNICATOR;
+    SCOREP_GroupHandle       new_handle     = SCOREP_INVALID_GROUP;
     SCOREP_DEFINITION_ALLOC_VARIABLE_ARRAY( Group,
                                             uint64_t,
                                             numberOfMembers );
@@ -974,7 +970,7 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
  * Associate a MPI window with a process unique window handle.
  */
 SCOREP_MPIWindowHandle
-SCOREP_DefineMPIWindow( SCOREP_MPICommunicatorHandle communicatorHandle )
+SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Define new MPI Window:" );
 
@@ -1005,11 +1001,11 @@ SCOREP_DefineMPIWindow( SCOREP_MPICommunicatorHandle communicatorHandle )
  * Associate a MPI cartesian topology with a process unique topology handle.
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology( const char*                  topologyName,
-                                   SCOREP_MPICommunicatorHandle communicatorHandle,
-                                   uint32_t                     nDimensions,
-                                   const uint32_t               nProcessesPerDimension[],
-                                   const uint8_t                periodicityPerDimension[] )
+SCOREP_DefineMPICartesianTopology( const char*                       topologyName,
+                                   SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                                   uint32_t                          nDimensions,
+                                   const uint32_t                    nProcessesPerDimension[],
+                                   const uint8_t                     periodicityPerDimension[] )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Define new MPI cartesian topology %s:",

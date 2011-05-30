@@ -117,8 +117,8 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( source_file, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( region, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( group, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( local_mpi_communicator, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_window, *definitionManager );
-    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_communicator, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter_group, *definitionManager );
@@ -168,7 +168,7 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->source_file_definition_hash_table );
         free( scorep_unified_definition_manager->region_definition_hash_table );
         free( scorep_unified_definition_manager->group_definition_hash_table );
-        free( scorep_unified_definition_manager->mpi_communicator_definition_hash_table );
+        free( scorep_unified_definition_manager->local_mpi_communicator_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_window_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_topology_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_coords_definition_hash_table );
@@ -227,7 +227,7 @@ SCOREP_GetNumberOfDefinitions()
     n_definitions += scorep_local_definition_manager.source_file_definition_counter;
     n_definitions += scorep_local_definition_manager.region_definition_counter;
     n_definitions += scorep_local_definition_manager.group_definition_counter;
-    n_definitions += scorep_local_definition_manager.mpi_communicator_definition_counter;
+    n_definitions += scorep_local_definition_manager.local_mpi_communicator_definition_counter;
     n_definitions += scorep_local_definition_manager.mpi_window_definition_counter;
     n_definitions += scorep_local_definition_manager.mpi_cartesian_topology_definition_counter;
     n_definitions += scorep_local_definition_manager.mpi_cartesian_coords_definition_counter;

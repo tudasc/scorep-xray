@@ -57,7 +57,7 @@
  * @note Introduced with MPI-2
  * @ingroup spawn
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Comm_accept( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
@@ -94,7 +94,7 @@ MPI_Comm_accept( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Co
  * @note Introduced with MPI-2
  * @ingroup spawn
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Comm_connect( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
@@ -131,7 +131,7 @@ MPI_Comm_connect( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_C
  * @note Introduced with MPI-2
  * @ingroup spawn
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Comm_join( int fd, MPI_Comm* newcomm )
@@ -168,7 +168,7 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Comm_spawn( char* command, char* argv[], int maxprocs, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
@@ -205,7 +205,7 @@ MPI_Comm_spawn( char* command, char* argv[], int maxprocs, MPI_Info info, int ro
  * @note Introduced with MPI-2
  * @ingroup spawn
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_argv[], int array_of_maxprocs[], MPI_Info array_of_info[], int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )

@@ -276,7 +276,7 @@ scorep_unify_mpi_servant( void )
 static void
 scorep_unify_mpi_communicators( void )
 {
-    extern SCOREP_MPICommunicatorHandle
+    extern SCOREP_LocalMPICommunicatorHandle
     SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
                                          uint32_t local_id );
 
@@ -327,11 +327,11 @@ scorep_unify_mpi_communicators( void )
 
     /* Create mapping tables
        Every process calculates its own mappings from the offsets.*/
-    SCOREP_ALLOC_MAPPINGS_ARRAY( mpi_communicator,
+    SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,
                                  &scorep_local_definition_manager );
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                  MPICommunicator,
-                                  mpi_communicator )
+                                  LocalMPICommunicator,
+                                  local_mpi_communicator )
     {
         uint32_t global_id = definition->root_id;
         if ( !definition->is_self_like )
@@ -343,7 +343,7 @@ scorep_unify_mpi_communicators( void )
             global_id += offset_of_first_self;
         }
         scorep_local_definition_manager.mappings
-        ->mpi_communicator_mappings[ definition->sequence_number ]
+        ->local_mpi_communicator_mappings[ definition->sequence_number ]
             = global_id;
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -403,12 +403,12 @@ static int
 scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id )
 {
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                  MPICommunicator,
-                                  mpi_communicator )
+                                  LocalMPICommunicator,
+                                  local_mpi_communicator )
     {
         if ( global_comm_id ==
              scorep_local_definition_manager.mappings->
-             mpi_communicator_mappings[ definition->sequence_number ] )
+             local_mpi_communicator_mappings[ definition->sequence_number ] )
         {
             return definition->local_rank;
         }
@@ -431,20 +431,20 @@ static void
 scorep_map_communicator_to_group( uint32_t           sequence_number,
                                   SCOREP_GroupHandle group )
 {
-    SCOREP_MPICommunicator_Definition* definition = NULL;
+    SCOREP_LocalMPICommunicator_Definition* definition = NULL;
 
     /* Store handle from last visit. They should be accessed in sequential order */
-    static SCOREP_MPICommunicatorHandle handle = SCOREP_INVALID_MPI_COMMUNICATOR;
+    static SCOREP_LocalMPICommunicatorHandle handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
     /* Initialize handle at first visit */
-    if ( handle == SCOREP_INVALID_MPI_COMMUNICATOR )
+    if ( handle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR )
     {
-        handle = scorep_unified_definition_manager->mpi_communicator_definition_head;
+        handle = scorep_unified_definition_manager->local_mpi_communicator_definition_head;
     }
 
-    assert( handle != SCOREP_INVALID_MPI_COMMUNICATOR );
+    assert( handle != SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR );
 
-    definition = SCOREP_HANDLE_DEREF( handle, MPICommunicator,
+    definition = SCOREP_HANDLE_DEREF( handle, LocalMPICommunicator,
                                       scorep_unified_definition_manager->page_manager );
 
     /*

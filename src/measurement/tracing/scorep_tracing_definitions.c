@@ -394,7 +394,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocalMPICommunicator, local_mpi_communicator )
     {
         SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefMpiComm(
             writerHandle,
@@ -804,10 +804,15 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
     if ( SCOREP_Mpi_HasMpi() )
     {
-        SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( mpi_communicator, MPI_COMMUNICATOR, localDefinitionWriter );
+        SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( local_mpi_communicator,
+                                                 MPI_COMMUNICATOR,
+                                                 localDefinitionWriter );
     }
-}
 
+    // do we need these two mappings for tracing?
+    //SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( callpath, , localDefinitionWriter );
+    //SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, , localDefinitionWriter );
+}
 
 static void
 scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )

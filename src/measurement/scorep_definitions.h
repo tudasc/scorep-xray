@@ -45,7 +45,7 @@ struct SCOREP_DefinitionMappings
     //uint32_t* gats_group_mappings; /// @todo what definition type does this correspond to?
     uint32_t* parameter_mappings;
     uint32_t* callpath_mappings;
-    uint32_t* mpi_communicator_mappings;
+    uint32_t* local_mpi_communicator_mappings;
 };
 
 
@@ -66,7 +66,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SourceFile, source_file )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Region, region )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Group, group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICommunicator, mpi_communicator )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( LocalMPICommunicator, local_mpi_communicator )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPIWindow, mpi_window )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )

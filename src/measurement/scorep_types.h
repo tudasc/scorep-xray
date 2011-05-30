@@ -155,10 +155,10 @@ scorep_region_to_string
 
 
 /**
- * Converts a SCOREP_MPICommunicatorHandle into a string.
+ * Converts a SCOREP_LocalMPICommunicatorHandle into a string.
  *
- * If @a lineNo equals to @ref SCOREP_INVALID_MPI_COMMUNICATOR "invalid" will be
- * returned, else a formated representation of the value.
+ * If @a lineNo equals to @ref SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR "invalid"
+ * will be returned, else a formated representation of the value.
 
  * @param stringBuffer      A string buffer that holds at least @a
  *                          stringBufferSize bytes.
@@ -175,13 +175,11 @@ scorep_region_to_string
  */
 
 extern const char*
-scorep_comm_to_string
-(
-    char*                        stringBuffer,
-    size_t                       stringBufferSize,
-    const char*                  format,
-    SCOREP_MPICommunicatorHandle commHandle
-);
+scorep_comm_to_string(
+    char*                             stringBuffer,
+    size_t                            stringBufferSize,
+    const char*                       format,
+    SCOREP_LocalMPICommunicatorHandle commHandle );
 
 
 /**

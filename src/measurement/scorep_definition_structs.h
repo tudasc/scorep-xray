@@ -118,9 +118,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
+SCOREP_DEFINE_DEFINITION_TYPE( LocalMPICommunicator )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( MPICommunicator );
+    SCOREP_DEFINE_DEFINITION_HEADER( LocalMPICommunicator );
 
     bool               is_self_like;
     uint32_t           local_rank;

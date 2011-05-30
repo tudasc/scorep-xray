@@ -187,12 +187,11 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
  * SCOREP_DefineMPI* functions.
  *
  */
-SCOREP_MPICommunicatorHandle
-SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
-                              uint32_t localRank,
-                              uint32_t globalRootRank,
-                              uint32_t id );
-
+SCOREP_LocalMPICommunicatorHandle
+SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
+                                   uint32_t localRank,
+                                   uint32_t globalRootRank,
+                                   uint32_t id );
 
 /**
  * Associate a MPI window with a process unique window handle.
@@ -207,10 +206,7 @@ SCOREP_DefineMPICommunicator( uint32_t numberOfRanks,
  *
  */
 SCOREP_MPIWindowHandle
-SCOREP_DefineMPIWindow
-(
-    SCOREP_MPICommunicatorHandle communicatorHandle
-);
+SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle );
 
 
 /**
@@ -220,7 +216,7 @@ SCOREP_DefineMPIWindow
  * copied.
  *
  * @param communicatorHandle A handle to the associated communicator,
- * previously defined by DefineMPICommunicator().
+ * previously defined by DefineLocalMPICommunicator().
  *
  * @param nDimensions Number of dimensions of the cartesian topology.
  *
@@ -238,14 +234,12 @@ SCOREP_DefineMPIWindow
  *
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology
-(
-    const char*                  topologyName,
-    SCOREP_MPICommunicatorHandle communicatorHandle,
-    uint32_t                     nDimensions,
-    const uint32_t               nProcessesPerDimension[],
-    const uint8_t                periodicityPerDimension[]
-);
+SCOREP_DefineMPICartesianTopology(
+    const char*                       topologyName,
+    SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+    uint32_t                          nDimensions,
+    const uint32_t                    nProcessesPerDimension[],
+    const uint8_t                     periodicityPerDimension[] );
 
 
 /**

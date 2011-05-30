@@ -243,7 +243,7 @@ scorep_mpi_comm_free( MPI_Comm comm );
  * @param  comm MPI communicator
  * @return Internal SCOREP handle of MPI communicator %comm
  */
-extern SCOREP_MPICommunicatorHandle
+extern SCOREP_LocalMPICommunicatorHandle
 scorep_mpi_comm_handle( MPI_Comm comm );
 
 /**
@@ -264,10 +264,10 @@ scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
  */
 struct scorep_mpi_world_type
 {
-    MPI_Group                    group;    /** Associated MPI group */
-    int                          size;     /** Number of ranks */
-    SCOREP_MpiRank*              ranks;    /** Array which contains the rank numbers */
-    SCOREP_MPICommunicatorHandle handle;   /** SCOREP handle */
+    MPI_Group                         group;    /** Associated MPI group */
+    int                               size;     /** Number of ranks */
+    SCOREP_MpiRank*                   ranks;    /** Array which contains the rank numbers */
+    SCOREP_LocalMPICommunicatorHandle handle;   /** SCOREP handle */
 };
 
 /**
@@ -290,7 +290,7 @@ extern int8_t scorep_mpi_comm_determination;
  * @def SCOREP_MPI_COMM_HANDLE
  * Translates a MPI communicator to the SCOREP communicator handle
  */
-#define SCOREP_MPI_COMM_HANDLE( c ) ( !scorep_mpi_comm_determination ? SCOREP_INVALID_MPI_COMMUNICATOR : ( ( ( c ) == MPI_COMM_WORLD ) ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) ) )
+#define SCOREP_MPI_COMM_HANDLE( c ) ( !scorep_mpi_comm_determination ? SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR : ( ( ( c ) == MPI_COMM_WORLD ) ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) ) )
 
 /**
  * @def SCOREP_MPI_RANK_TO_PE

@@ -84,7 +84,7 @@ MPI_Cart_create( MPI_Comm  comm_old,
     if ( *comm_cart != MPI_COMM_NULL )
     {
         SCOREP_MPICartesianTopologyHandle topid = SCOREP_INVALID_CART_TOPOLOGY;
-        SCOREP_MPICommunicatorHandle      cid;
+        SCOREP_LocalMPICommunicatorHandle cid;
         int32_t                           my_rank, i;
         int32_t*                          coordv;
         uint8_t*                          uperiodv;
@@ -170,7 +170,7 @@ MPI_Cart_create( MPI_Comm  comm_old,
  * @note Introduced with MPI-1
  * @ingroup topo
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Cart_sub( MPI_Comm comm, int* remain_dims, MPI_Comm* newcomm )
@@ -207,7 +207,7 @@ MPI_Cart_sub( MPI_Comm comm, int* remain_dims, MPI_Comm* newcomm )
  * @note Introduced with MPI-1
  * @ingroup topo
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Graph_create( MPI_Comm comm_old, int nnodes, int* index, int* edges, int reorder, MPI_Comm* newcomm )
@@ -245,7 +245,7 @@ MPI_Graph_create( MPI_Comm comm_old, int nnodes, int* index, int* edges, int reo
  * @note Introduced with MPI-2
  * @ingroup topo
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Dist_graph_create( MPI_Comm comm_old, int n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
@@ -282,7 +282,7 @@ MPI_Dist_graph_create( MPI_Comm comm_old, int n, int sources[], int degrees[], i
  * @note Introduced with MPI-2
  * @ingroup topo
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineMPICommunicator is called.
+ * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
 MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, int sources[], int sourceweights[], int outdegree, int destinations[], int destweights[], MPI_Info info, int reorder, MPI_Comm* newcomm )

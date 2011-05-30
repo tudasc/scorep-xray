@@ -50,7 +50,7 @@ int MPI_Cart_create(MPI_Comm  comm_old,
   if (*comm_cart != MPI_COMM_NULL)
   {
     SCOREP_MPICartesianTopologyHandle topid = SCOREP_INVALID_CART_TOPOLOGY;
-    SCOREP_MPICommunicatorHandle cid;
+    SCOREP_LocalMPICommunicatorHandle cid;
     int32_t   my_rank, i;
     int32_t*  coordv;
     uint8_t*  uperiodv;

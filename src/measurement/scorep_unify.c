@@ -117,6 +117,9 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     //SCOREP_ALLOC_MAPPINGS_ARRAY( gats_group, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( parameter, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( callpath,  definitionManager );
+
+    // will be done separately in the MPI unify code
+    //SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,  definitionManager );
 }
 
 

@@ -121,10 +121,10 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
  * Process an mpi send event in the measurement system.
  */
 void
-SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
-                SCOREP_MPICommunicatorHandle communicatorHandle,
-                uint32_t                     tag,
-                uint64_t                     bytesSent )
+SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
+                SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                uint32_t                          tag,
+                uint64_t                          bytesSent )
 {
     assert( destinationRank >= 0 && "Invalid rank passed to SCOREP_MpiSend\n" );
 
@@ -148,7 +148,7 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
                                 NULL,
                                 timestamp,
                                 destinationRank,
-                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                 tag,
                                 bytesSent );
     }
@@ -163,10 +163,10 @@ SCOREP_MpiSend( SCOREP_MpiRank               destinationRank,
  * Process an mpi recv event in the measurement system.
  */
 void
-SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
-                SCOREP_MPICommunicatorHandle communicatorHandle,
-                uint32_t                     tag,
-                uint64_t                     bytesReceived )
+SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
+                SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                uint32_t                          tag,
+                uint64_t                          bytesReceived )
 {
     assert( sourceRank >= 0 && "Invalid rank passed to SCOREP_MpiRecv\n" );
 
@@ -190,7 +190,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank               sourceRank,
                                 NULL,
                                 timestamp,
                                 sourceRank,
-                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                 tag,
                                 bytesReceived );
     }
@@ -240,11 +240,11 @@ scorep_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
  * Process an mpi collective begin event in the measurement system.
  */
 uint64_t
-SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
-                           SCOREP_MPICommunicatorHandle communicatorHandle,
-                           SCOREP_MpiRank               rootRank,
-                           SCOREP_MpiCollectiveType     collectiveType,
-                           uint64_t                     matchingId )
+SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
+                           SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                           SCOREP_MpiRank                    rootRank,
+                           SCOREP_MpiCollectiveType          collectiveType,
+                           uint64_t                          matchingId )
 {
     assert( ( rootRank >= 0 || rootRank == SCOREP_INVALID_ROOT_RANK )
             && "Invalid rank passed to SCOREP_MpiCollectiveBegin\n" );
@@ -294,7 +294,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
                                            NULL,
                                            timestamp,
                                            scorep_collective_to_otf2( collectiveType ),
-                                           SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                           SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                            root_rank,
                                            matchingId );
     }
@@ -314,11 +314,11 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle          regionHandle,
  * Process an mpi collective end event in the measurement system.
  */
 void
-SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle          regionHandle,
-                         SCOREP_MPICommunicatorHandle communicatorHandle,
-                         uint64_t                     matchingId,
-                         uint64_t                     bytesSent,
-                         uint64_t                     bytesReceived )
+SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
+                         SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                         uint64_t                          matchingId,
+                         uint64_t                          bytesSent,
+                         uint64_t                          bytesReceived )
 {
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
@@ -333,7 +333,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle          regionHandle,
         OTF2_EvtWriter_MpiCollectiveEnd( evt_writer,
                                          NULL,
                                          timestamp,
-                                         SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                         SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                          matchingId,
                                          bytesSent,
                                          bytesReceived );
@@ -438,11 +438,11 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 }
 
 void
-SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
-                  SCOREP_MPICommunicatorHandle communicatorHandle,
-                  uint32_t                     tag,
-                  uint64_t                     bytesSent,
-                  SCOREP_MpiRequestId          requestId )
+SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
+                  SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                  uint32_t                          tag,
+                  uint64_t                          bytesSent,
+                  SCOREP_MpiRequestId               requestId )
 {
     assert( destinationRank >= 0 && "Invalid rank passed to SCOREP_MpiIsend\n" );
 
@@ -457,7 +457,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
                                  NULL,
                                  timestamp,
                                  destinationRank,
-                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                  tag,
                                  bytesSent,
                                  requestId );
@@ -469,11 +469,11 @@ SCOREP_MpiIsend(  SCOREP_MpiRank               destinationRank,
 }
 
 void
-SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
-                 SCOREP_MPICommunicatorHandle communicatorHandle,
-                 uint32_t                     tag,
-                 uint64_t                     bytesReceived,
-                 SCOREP_MpiRequestId          requestId )
+SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
+                 SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                 uint32_t                          tag,
+                 uint64_t                          bytesReceived,
+                 SCOREP_MpiRequestId               requestId )
 {
     assert( sourceRank >= 0 && "Invalid rank passed to SCOREP_MpiIrecv\n" );
 
@@ -488,7 +488,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank               sourceRank,
                                  NULL,
                                  timestamp,
                                  sourceRank,
-                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, MPICommunicator ),
+                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                  tag,
                                  bytesReceived,
                                  requestId );
