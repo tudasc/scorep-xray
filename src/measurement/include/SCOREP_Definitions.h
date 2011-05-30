@@ -193,6 +193,11 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
                                    uint32_t globalRootRank,
                                    uint32_t id );
 
+SCOREP_LocalMPICommunicatorHandle
+SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
+                                     uint32_t id );
+
+
 /**
  * Associate a MPI window with a process unique window handle.
  *

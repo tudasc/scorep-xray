@@ -276,10 +276,6 @@ scorep_unify_mpi_servant( void )
 static void
 scorep_unify_mpi_communicators( void )
 {
-    extern SCOREP_LocalMPICommunicatorHandle
-    SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
-                                         uint32_t local_id );
-
     uint32_t local_offset           = 0;
     uint32_t max_number_of_self_ids = 0; // Maximum number of references to the
                                          // self communicator among all
