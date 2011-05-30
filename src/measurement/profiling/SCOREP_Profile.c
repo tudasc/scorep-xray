@@ -608,9 +608,8 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
             ( parent != NULL ) );
     /* If this was a parameter node also exit next level node */
 
-    if ( ( node->node_type != scorep_profile_node_collapse ) &&
-         ( ( node->node_type != scorep_profile_node_regular_region ) ||
-           ( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) != region ) ) )
+    if ( ( node->node_type == scorep_profile_node_regular_region ) &&
+         ( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) != region ) )
     {
         SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                       "Exit event for other than current region occured" );
