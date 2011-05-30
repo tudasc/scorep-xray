@@ -179,12 +179,13 @@ __VT_IntelEntry( char*     str,
     /* Register new region if unknown */
     if ( *id == 0 )
     {
-        *id = scorep_compiler_get_id_from_name( str );
+        uint32_t new_id = scorep_compiler_get_id_from_name( str );
 
-        if ( hash_node = scorep_compiler_hash_get( *id ) )
+        if ( hash_node = scorep_compiler_hash_get( new_id ) )
         {
             /* -- region entered the first time, register region -- */
             scorep_compiler_register_region( hash_node );
+            *id = new_id;
         }
         else
         {
