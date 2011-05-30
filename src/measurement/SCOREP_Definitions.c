@@ -123,6 +123,7 @@ scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
      *    - discard new if an old one was found
      *    - if not, link new one into the hash chain and into definition list
      */
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( String, string );
 }
 
@@ -190,6 +191,7 @@ scorep_source_file_definition_define( SCOREP_DefinitionManager* definition_manag
     new_definition->name_handle = fileNameHandle;
     new_definition->hash_value  = SCOREP_GET_HASH_OF_LOCAL_HANDLE( new_definition->name_handle, String );
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SourceFile, source_file );
 }
 
@@ -294,6 +296,7 @@ scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_
     new_definition->name_handle              = nameHandle;
     new_definition->location_group_type      = locationGroupType;
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
 }
 
@@ -409,6 +412,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     new_definition->timer_resolution      = timerResolution;
     new_definition->location_group_id     = locationGroupId;
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Location, location );
 }
 
@@ -515,6 +519,7 @@ scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definitio
     new_definition->class_handle = class;
     HASH_ADD_HANDLE( new_definition, class_handle, String );
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );
 }
 
@@ -637,6 +642,7 @@ scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
                                          adapter,
                                          regionType );
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Region, region );
 }
 
@@ -698,6 +704,14 @@ scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinit
 uint32_t scorep_number_of_self_comms = 0;
 uint32_t scorep_number_of_root_comms = 0;
 
+static SCOREP_LocalMPICommunicatorHandle
+scorep_local_mpi_communicator_definitions_define(
+    SCOREP_DefinitionManager* definition_manager,
+    bool                      isSelfLike,
+    uint32_t                  localRank,
+    uint32_t                  globalRootRank,
+    uint32_t                  id );
+
 static bool
 scorep_local_mpi_communicator_definitions_equal(
     const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
@@ -712,9 +726,7 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
                                    uint32_t globalRootRank,
                                    uint32_t id )
 {
-    SCOREP_LocalMPICommunicator_Definition* new_definition     = NULL;
-    SCOREP_LocalMPICommunicatorHandle       new_handle         = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
-    SCOREP_DefinitionManager*               definition_manager = &scorep_local_definition_manager;
+    SCOREP_LocalMPICommunicatorHandle new_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Local Rank %" PRIu32 ": Define local Communicator:"
@@ -728,18 +740,16 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_DEFINITION_ALLOC( LocalMPICommunicator );
+    new_handle = scorep_local_mpi_communicator_definitions_define(
+        &scorep_local_definition_manager,
+        numberOfRanks == 1,
+        localRank,
+        globalRootRank,
+        id );
 
-    // Init new_definition
-    new_definition->is_self_like     = numberOfRanks == 1;
-    new_definition->local_rank       = localRank;
-    new_definition->global_root_rank = globalRootRank;
-    new_definition->root_id          = id;
-
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator, local_mpi_communicator );
-
-    /* Count the number of comm self instances and communicators where this process
-       is rank 0.
+    /*
+     * Count the number of comm self instances and communicators where this
+     * process is rank 0.
      */
     if ( localRank == 0 )
     {
@@ -756,6 +766,30 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
     SCOREP_Definitions_Unlock();
 
     return new_handle;
+}
+
+static SCOREP_LocalMPICommunicatorHandle
+scorep_local_mpi_communicator_definitions_define(
+    SCOREP_DefinitionManager* definition_manager,
+    bool                      isSelfLike,
+    uint32_t                  localRank,
+    uint32_t                  globalRootRank,
+    uint32_t                  id )
+{
+    SCOREP_LocalMPICommunicator_Definition* new_definition = NULL;
+    SCOREP_LocalMPICommunicatorHandle       new_handle     = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+
+    SCOREP_DEFINITION_ALLOC( LocalMPICommunicator );
+
+    // Init new_definition
+    new_definition->is_self_like     = isSelfLike;
+    new_definition->local_rank       = localRank;
+    new_definition->global_root_rank = globalRootRank;
+    new_definition->root_id          = id;
+
+    /* Does return */
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator,
+                                              local_mpi_communicator );
 }
 
 bool
@@ -793,9 +827,9 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle )
     // Init new_definition
     new_definition->group = group_handle;
 
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator, mpi_communicator );
-
-    return new_handle;
+    /* Does return */
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator,
+                                              mpi_communicator );
 }
 
 bool
@@ -934,6 +968,7 @@ scorep_group_definition_define( SCOREP_DefinitionManager* definition_manager,
     }
     HASH_ADD_ARRAY( new_definition, members, number_of_members );
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Group, group );
 }
 
@@ -1335,6 +1370,7 @@ scorep_parameter_definition_define( SCOREP_DefinitionManager* definition_manager
     new_definition->parameter_type = type;
     HASH_ADD_POD( new_definition, parameter_type );
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Parameter, parameter );
 }
 
@@ -1557,6 +1593,7 @@ scorep_callpath_definition_define( SCOREP_DefinitionManager* definition_manager,
                                            integerValue,
                                            stringHandle );
 
+    /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Callpath, callpath );
 }
 

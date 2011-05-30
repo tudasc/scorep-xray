@@ -240,6 +240,8 @@
  * @return Let return the calling function with the found defintion's handle
  *         or the new definition as return value.
  *
+ * @note This returns the calling function!
+ *
  * @needs Variable named @a new_definition of definition type @a Type*.
  * @needs Variable with name @a new_handle of handle type @a Type.
  *        @see SCOREP_ALLOC_NEW_DEFINITION
