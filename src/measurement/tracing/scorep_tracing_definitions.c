@@ -802,7 +802,10 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( mpi_communicator, MPI_COMMUNICATOR, localDefinitionWriter );
+    if ( SCOREP_Mpi_HasMpi() )
+    {
+        SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( mpi_communicator, MPI_COMMUNICATOR, localDefinitionWriter );
+    }
 }
 
 
