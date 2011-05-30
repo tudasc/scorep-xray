@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <SCOREP_User.h>
 
 int i = 0;
@@ -87,4 +88,5 @@ main()
         SCOREP_USER_FUNC_END
     }
     printf( "%d\n", i );
+    return EXIT_SUCCESS;
 }
