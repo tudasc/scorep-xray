@@ -202,6 +202,8 @@ __VT_IntelEntry( char*     str,
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                              "enter the region with handle %i ",
                              hash_node->region_handle );
+        uint32_t page_id = hash_node->region_handle >> 32;
+        assert( page_id != 0 );
         SCOREP_EnterRegion( hash_node->region_handle );
     }
 
@@ -237,6 +239,8 @@ __VT_IntelExit( uint32_t* id2 )
 
     if ( hash_node = scorep_compiler_hash_get( *id2 ) )
     {
+        uint32_t page_id = hash_node->region_handle >> 32;
+        assert( page_id != 0 );
         SCOREP_ExitRegion( hash_node->region_handle );
     }
 }
@@ -266,6 +270,8 @@ __VT_IntelCatch( uint32_t* id2 )
 
     if ( hash_node = scorep_compiler_hash_get( *id2 ) )
     {
+        uint32_t page_id = hash_node->region_handle >> 32;
+        assert( page_id != 0 );
         SCOREP_ExitRegion( hash_node->region_handle );
     }
 }
@@ -291,6 +297,8 @@ __VT_IntelCheck( uint32_t* id2 )
 
     if ( hash_node = scorep_compiler_hash_get( *id2 ) )
     {
+        uint32_t page_id = hash_node->region_handle >> 32;
+        assert( page_id != 0 );
         SCOREP_ExitRegion( hash_node->region_handle );
     }
 }
