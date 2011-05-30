@@ -55,7 +55,7 @@ typedef struct
    @param my_cube Pointer to the cube struct to which the data is written.
    @param map     Pointer to an already inititialized mapping structure.
    @param ranks   Number of ranks
-   @param threads Array with @a entries. Each entry specify the number of threads
+   @param threads Array with @a ranks entries. Each entry specify the number of threads
                   on a rank with this index.
  */
 void

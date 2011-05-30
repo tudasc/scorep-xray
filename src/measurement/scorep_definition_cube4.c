@@ -37,6 +37,108 @@ extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 /* ****************************************************************************
+ * Internal system tree representation
+ *****************************************************************************/
+
+/**
+   Node type defintion for temporary internal system tree structure cor Cube defintion
+   writing. It is needed to map Score-P and Cube system tree definitions.
+ */
+typedef struct scorep_cube_system_node
+{
+    struct scorep_cube_system_node* parent;          /**< Pointer to the parent node */
+    SCOREP_SystemTreeNodeHandle     scorep_node;     /**< The Score-P handle */
+    cube_machine*                   my_cube_machine; /**< The Cube machine defintion */
+    cube_node*                      my_cube_node;    /**< The Cube node definition */
+} scorep_cube_system_node;
+
+/**
+   Finds the node of the system tree mapping that belongs the the Score-P system tree
+   node handle.
+   @param system_tree Pointer to an array of scorep_cube_system_node nodes that contain
+                      the system tree mapping structure.
+   @param size        Number of elements in the system tree.
+   @param node        Score-P system tree node handle that is seached in the mapping
+                      tree.
+   @returns A pointer to the mapping tree node that belong to @a node. If no matching
+            Node is found, ir returns NULL.
+ */
+static scorep_cube_system_node*
+scorep_cube_find_system_node( scorep_cube_system_node* system_tree, uint32_t size,
+                              SCOREP_SystemTreeNodeHandle node )
+{
+    for ( uint32_t i = 0; i < size; i++ )
+    {
+        if ( system_tree[ i ].scorep_node == node )
+        {
+            return &system_tree[ i ];
+        }
+    }
+    return NULL;
+}
+
+/**
+   Seaches the ancestors of @a node for the machine definition.
+   @param node Pointer to the mapping system tree for that the machine is seached.
+   @returns A pointer to the Cube definition. If no machine exists in the ancestors of
+            @a node, it returns NULL.
+ */
+static cube_machine*
+scorep_cube_get_mach( scorep_cube_system_node* node )
+{
+    assert( node );
+
+    /* Found machine */
+    if ( node->my_cube_machine != NULL )
+    {
+        return node->my_cube_machine;
+    }
+
+    if ( node->parent == NULL )
+    {
+        return NULL;
+    }
+    return scorep_cube_get_mach( node->parent );
+}
+
+/**
+   Lookup the cube node definition for a Score-P system tree handle.
+   In cases the Score-P system tree does not provide a node definition, a default node
+   is defined to Cube and returned.
+   @param my_cube     Pointer to the Cube instance.
+   @param system_tree Pointer to an array of scorep_cube_system_node nodes that contain
+                      the system tree mapping structure.
+   @param size        Number of entries in @a system_tree.
+   @returns A pointer to the Cube node defintion.
+ */
+static cube_node*
+scorep_cube_get_node(  cube_t* my_cube,
+                       scorep_cube_system_node* system_tree,
+                       SCOREP_SystemTreeNodeHandle node, uint32_t size )
+{
+    /* Need a default node, in cases a system tree implmentation does provide no node
+       definition. However, Cube insists of a node defintion. */
+    static cube_node*        default_node = NULL;
+    scorep_cube_system_node* scorep_node  =
+        scorep_cube_find_system_node( system_tree, size, node );
+
+    if ( scorep_node == NULL )
+    {
+        if ( default_node == NULL )
+        {
+            default_node = cube_def_node( my_cube, "default node",
+                                          scorep_cube_get_mach( &system_tree[ 0 ] ) );
+        }
+        return default_node;
+    }
+
+    assert( scorep_node );
+    assert( scorep_node->my_cube_node );
+    return scorep_node->my_cube_node;
+}
+
+
+/* ****************************************************************************
  * Initialization / Finalization
  *****************************************************************************/
 
@@ -285,6 +387,14 @@ scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map )
 /* ****************************************************************************
  * Internal definition writer functions
  *****************************************************************************/
+
+/**
+   Writes metric definitions to Cube. The new Cube definitions are added to the
+   mapping table @a map.
+   @param my_cube Pointer to Cube instance.
+   @param manager Pointer to Score-P definition manager with unified defintions.
+   @param map     Pointer to mapping instance to map Score-P und Cube defintions.
+ */
 static void
 scorep_write_counter_definitions_to_cube4( cube_t*                       my_cube,
                                            SCOREP_DefinitionManager*     manager,
@@ -307,6 +417,13 @@ scorep_write_counter_definitions_to_cube4( cube_t*                       my_cube
     scorep_cube4_add_metric_mapping( map, metric, ( SCOREP_CounterHandle )2 );
 }
 
+/**
+   Writes region definitions to Cube. The new Cube definitions are added to the
+   mapping table @a map.
+   @param my_cube Pointer to Cube instance.
+   @param manager Pointer to Score-P definition manager with unified defintions.
+   @param map     Pointer to mapping instance to map Score-P und Cube defintions.
+ */
 static void
 scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
                                           SCOREP_DefinitionManager*     manager,
@@ -339,6 +456,13 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
 
+/**
+   Writes callpath definitions to Cube. The new Cube definitions are added to the
+   mapping table @a map.
+   @param my_cube Pointer to Cube instance.
+   @param manager Pointer to Score-P definition manager with unified defintions.
+   @param map     Pointer to mapping instance to map Score-P und Cube defintions.
+ */
 static void
 scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cube,
                                             SCOREP_DefinitionManager*     manager,
@@ -371,21 +495,98 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
 
-static void
-scorep_write_location_definitions_to_cube4( cube_t*                       my_cube,
-                                            scorep_cube4_definitions_map* map,
-                                            uint32_t                      ranks,
-                                            int*                          threads )
+/**
+   Writes the inner nodes of the Score-P system tree definitions to Cube.
+   Because Cube assumes a fixed hierarchy the system tree is comressed in the two Cube
+   levels machine and node. In order to have a mapping between Cube and Score-P
+   definitions a tree is constructed where each node contains the respective defintions.
+   The tree's nodes are stored in a newly created array, which is returned from the
+   function.
+   @param my_cube Pointer to Cube instance.
+   @param manager Pointer to Score-P definition manager with unified defintions.
+   @returns A Pointer to the array which contains the mapping system tree. This array
+            must be freed by the caller of this function.
+ */
+static scorep_cube_system_node*
+scorep_write_cube_system_tree( cube_t*                   my_cube,
+                               SCOREP_DefinitionManager* manager )
 {
-    char          name[ 32 ];
-    cube_machine* machine = cube_def_mach( my_cube, "machine name", "no description" );
-    cube_node*    node    = cube_def_node( my_cube, "node name", machine );
-    cube_process* process = NULL;
-    cube_thread*  thread  = NULL;
-    int           index   = 0;
+    uint32_t                 end         = 0;
+    uint32_t                 nodes       = manager->system_tree_node_definition_counter;
+    scorep_cube_system_node* system_tree = ( scorep_cube_system_node* )
+                                           malloc( sizeof( scorep_cube_system_node ) * nodes );
 
-    for ( uint32_t rank = 0; rank < ranks; rank++ )
+    if ( system_tree == NULL )
     {
+        SCOREP_ERROR_POSIX( "Failed to allocate memory for system tree translation." );
+        return NULL;
+    }
+
+    /* The node for rank i is at position i in the system tree array. Inner nodes
+       follow afterwards. */
+    SCOREP_DEFINITION_FOREACH_DO( manager, SystemTreeNode, system_tree_node )
+    {
+        const char* class = SCOREP_UNIFIED_HANDLE_DEREF( definition->class_handle,
+                                                         String )->string_data;
+        const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                        String )->string_data;
+
+        system_tree[ end ].scorep_node     = handle;
+        system_tree[ end ].my_cube_machine = NULL;
+        system_tree[ end ].my_cube_node    = NULL;
+        system_tree[ end ].parent          = scorep_cube_find_system_node( system_tree, end,
+                                                                           definition->parent_handle );
+
+        /* Register nodes to cube on machine and node level, because Cube has still
+           a fixed system tree hiarachy */
+        if ( strcmp( "machine", class ) == 0 )
+        {
+            system_tree[ end ].my_cube_machine = cube_def_mach( my_cube, name, "" );
+        }
+        else if ( ( strcmp( "node", class ) == 0 ) ||
+                  ( strcmp( "nodecard", class ) == 0 ) )
+        {
+            system_tree[ end ].my_cube_node = cube_def_node( my_cube, name,
+                                                             scorep_cube_get_mach( &system_tree[ end ] ) );
+        }
+
+        end++;
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+    return system_tree;
+}
+
+/**
+   Writes location and location group  definitions to Cube.
+   @param my_cube Pointer to Cube instance.
+   @param manager Pointer to Score-P definition manager with unified defintions.
+   @param ranks   Number of MPI ranks. It must equal the number of array elements in
+                  @a threads.
+   @param threads Array of the number of threads in each rank. The ith entry contains
+                  the number of threads in rank i. The number of elements must equal
+                  @a ranks.
+ */
+static void
+scorep_write_location_definitions_to_cube4( cube_t*                   my_cube,
+                                            SCOREP_DefinitionManager* manager,
+                                            uint32_t                  ranks,
+                                            int*                      threads )
+{
+    char                     name[ 32 ];
+    cube_process*            process = NULL;
+    cube_thread*             thread  = NULL;
+    int                      index   = 0;
+
+    scorep_cube_system_node* system_tree = scorep_write_cube_system_tree( my_cube,
+                                                                          manager );
+    assert( system_tree );
+
+    SCOREP_DEFINITION_FOREACH_DO( manager, LocationGroup, location_group )
+    {
+        uint64_t   rank = definition->global_location_group_id;
+        cube_node* node = scorep_cube_get_node( my_cube, system_tree, definition->parent,
+                                                manager->system_tree_node_definition_counter );
+
         sprintf( name, "rank %d", rank );
         process = cube_def_proc( my_cube, name, rank, node );
 
@@ -396,6 +597,9 @@ scorep_write_location_definitions_to_cube4( cube_t*                       my_cub
             index++;
         }
     }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+
+    free( system_tree );
 }
 
 /* ****************************************************************************
@@ -421,5 +625,5 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     scorep_write_counter_definitions_to_cube4( my_cube, manager, map );
     scorep_write_region_definitions_to_cube4( my_cube, manager, map );
     scorep_write_callpath_definitions_to_cube4( my_cube, manager, map );
-    scorep_write_location_definitions_to_cube4( my_cube, map, ranks, threads );
+    scorep_write_location_definitions_to_cube4( my_cube, manager, ranks, threads );
 }
