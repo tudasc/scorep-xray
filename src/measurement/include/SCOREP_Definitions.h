@@ -193,7 +193,7 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
                                    uint32_t globalRootRank,
                                    uint32_t id );
 
-SCOREP_LocalMPICommunicatorHandle
+SCOREP_MPICommunicatorHandle
 SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
                                      uint32_t id );
 

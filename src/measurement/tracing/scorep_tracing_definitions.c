@@ -394,7 +394,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocalMPICommunicator, local_mpi_communicator )
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
         SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefMpiComm(
             writerHandle,

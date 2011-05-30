@@ -67,6 +67,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Region, region )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Group, group )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( LocalMPICommunicator, local_mpi_communicator )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICommunicator, mpi_communicator )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPIWindow, mpi_window )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )

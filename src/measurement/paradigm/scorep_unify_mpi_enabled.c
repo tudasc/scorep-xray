@@ -427,20 +427,20 @@ static void
 scorep_map_communicator_to_group( uint32_t           sequence_number,
                                   SCOREP_GroupHandle group )
 {
-    SCOREP_LocalMPICommunicator_Definition* definition = NULL;
+    SCOREP_MPICommunicator_Definition* definition = NULL;
 
     /* Store handle from last visit. They should be accessed in sequential order */
-    static SCOREP_LocalMPICommunicatorHandle handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+    static SCOREP_MPICommunicatorHandle handle = SCOREP_INVALID_MPI_COMMUNICATOR;
 
     /* Initialize handle at first visit */
-    if ( handle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR )
+    if ( handle == SCOREP_INVALID_MPI_COMMUNICATOR )
     {
-        handle = scorep_unified_definition_manager->local_mpi_communicator_definition_head;
+        handle = scorep_unified_definition_manager->mpi_communicator_definition_head;
     }
 
-    assert( handle != SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR );
+    assert( handle != SCOREP_INVALID_MPI_COMMUNICATOR );
 
-    definition = SCOREP_HANDLE_DEREF( handle, LocalMPICommunicator,
+    definition = SCOREP_HANDLE_DEREF( handle, MPICommunicator,
                                       scorep_unified_definition_manager->page_manager );
 
     /*
