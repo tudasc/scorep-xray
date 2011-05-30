@@ -425,6 +425,8 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
         }
         SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_LOCATIONS,
                                       comm_world_size, ranks_in_group );
+
+        assert( scorep_unified_definition_manager->mpi_communicator_definition_counter == 0 );
     }
 
     /* Gather the number of communicators per rank */
@@ -440,7 +442,6 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
      */
 
     uint32_t global_comm_id = 0;
-    assert( scorep_unified_definition_manager->mpi_communicator_definition_counter == 0 );
     for ( uint32_t i = 0; i < comm_world_size; i++ )
     {
         for ( uint32_t j = 0; j < comms_per_rank[ i ]; j++, global_comm_id++ )
