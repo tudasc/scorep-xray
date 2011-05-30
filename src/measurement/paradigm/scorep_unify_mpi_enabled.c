@@ -54,11 +54,6 @@ scorep_unify_mpi_servant( void );
 static void
 scorep_unify_mpi_communicators( void );
 
-static void
-scorep_unify_mpi_define_groups( uint32_t global_communicator_number,
-                                uint32_t max_number_of_self_ids );
-
-
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
@@ -266,6 +261,18 @@ scorep_unify_mpi_servant( void )
     free( moved_page_starts );
 }
 
+static void
+scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
+                                                     uint32_t rank );
+
+static void
+scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
+                                             uint32_t rank );
+
+static void
+scorep_unify_mpi_communicators_define_self_likes( uint32_t comm_world_size,
+                                                  uint32_t rank );
+
 /**
  * Unifies the communicator ids. The (root, local_id) pair is already unique.
  * Arrange all ids in an array sorted by root_process, and second by local id.
@@ -276,36 +283,39 @@ scorep_unify_mpi_servant( void )
 static void
 scorep_unify_mpi_communicators( void )
 {
-    uint32_t local_offset           = 0;
-    uint32_t max_number_of_self_ids = 0; // Maximum number of references to the
-                                         // self communicator among all
-                                         // processes.
-    uint32_t  offset_of_first_self = 0;
-    uint32_t* offsets;                   // Array with the offsets from every
-                                         // rank
-    int32_t   comm_world_size = SCOREP_Mpi_GetCommWorldSize();
-    int32_t   my_rank         = SCOREP_Mpi_GetRank();
+    uint32_t comm_world_size = SCOREP_Mpi_GetCommWorldSize();
+    uint32_t rank            = SCOREP_Mpi_GetRank();
 
-    /* get the maximum number of different MPI_COMM_SELF references
-     * on a single process */
-    SCOREP_Mpi_Allreduce( &scorep_number_of_self_comms,
-                          &max_number_of_self_ids,
-                          1,
-                          SCOREP_MPI_UNSIGNED,
-                          SCOREP_MPI_MAX );
+    /* 1) Generate mapping from local to global communicators */
+    scorep_unify_mpi_communicators_create_local_mapping( comm_world_size,
+                                                         rank );
 
+    /* 2) Generate definitions for MPI groups and non-self-like communicators */
+    scorep_unify_mpi_communicators_define_comms( comm_world_size,
+                                                 rank );
+
+    /* 3) Append information about self communicators */
+    scorep_unify_mpi_communicators_define_self_likes( comm_world_size,
+                                                      rank );
+}
+
+void
+scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
+                                                     uint32_t rank )
+{
     /*
      * An MPI_Scan is used here to
      * (a) emulate an MPI_Exscan, needed for the offsets, and
      * (b) compute the first global id for self communicators
      */
+    uint32_t local_offset;
     SCOREP_Mpi_Scan( &scorep_number_of_root_comms,
                      &local_offset,
                      1, SCOREP_MPI_UNSIGNED,
                      SCOREP_MPI_SUM );
 
     /* Due to MPI_Scan, the local_offset of rank n-1 holds the first self id */
-    offset_of_first_self = local_offset;
+    uint32_t offset_of_first_self = local_offset;
     SCOREP_Mpi_Bcast( &offset_of_first_self,
                       1, SCOREP_MPI_UNSIGNED,
                       comm_world_size - 1 );
@@ -314,7 +324,8 @@ scorep_unify_mpi_communicators( void )
     assert( local_offset <= offset_of_first_self );
 
     /* allocate memory for offsets */
-    offsets = calloc( comm_world_size, sizeof( *offsets ) );
+    uint32_t* offsets = calloc( comm_world_size, sizeof( *offsets ) );
+    assert( offsets );
     /* gather offsets from processes */
     SCOREP_Mpi_Allgather( &local_offset,
                           1, SCOREP_MPI_UNSIGNED,
@@ -322,68 +333,32 @@ scorep_unify_mpi_communicators( void )
                           1, SCOREP_MPI_UNSIGNED );
 
     /* Create mapping tables
-       Every process calculates its own mappings from the offsets.*/
+       Every process calculates its own mappings from the offsets. */
     SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,
                                  &scorep_local_definition_manager );
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
                                   LocalMPICommunicator,
                                   local_mpi_communicator )
     {
-        uint32_t global_id = definition->root_id;
+        uint32_t global_comm_id = definition->root_id;
         if ( !definition->is_self_like )
         {
-            global_id += offsets[ definition->global_root_rank ];
+            global_comm_id += offsets[ definition->global_root_rank ];
         }
         else
         {
-            global_id += offset_of_first_self;
+            global_comm_id += offset_of_first_self;
+            assert( definition->global_root_rank == rank );
         }
         scorep_local_definition_manager.mappings
         ->local_mpi_communicator_mappings[ definition->sequence_number ]
-            = global_id;
+            = global_comm_id;
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 
-    /* Store unified communicator definitions, reuse offsets buffer for storing
-       the number of communcators per rank */
-    SCOREP_Mpi_Gather( &scorep_number_of_root_comms,
-                       1, SCOREP_MPI_UNSIGNED,
-                       offsets,
-                       1, SCOREP_MPI_UNSIGNED,
-                       0 );
-
-    if ( my_rank == 0 )
-    {
-        uint32_t rank    = 0;  // Loop over all ranks
-        uint32_t comm_id = 0;  // Loop over all communicators per rank
-
-        for ( rank = 0; rank < comm_world_size; rank++ )
-        {
-            for ( comm_id = 0; comm_id < offsets[ rank ]; comm_id++ )
-            {
-                SCOREP_DefineUnifiedMPICommunicator( rank, comm_id );
-            }
-        }
-    }
-
-    /* Append information about self communicators */
-    if ( my_rank == 0 )
-    {
-        uint32_t comm_id; // iterate over local self comm reference number
-
-        for ( comm_id = 0; comm_id < max_number_of_self_ids; comm_id++ )
-        {
-            SCOREP_DefineUnifiedMPICommunicator( -1, comm_id );
-        }
-    }
-
-    /* free memory for offsets */
     free( offsets );
-
-    /* Create and associate process groups to communicators */
-    scorep_unify_mpi_define_groups( offset_of_first_self,
-                                    max_number_of_self_ids );
 }
+
 
 /**
  * Helper function which checks for a global communicator id whether this rank
@@ -414,150 +389,143 @@ scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id )
     return -1;
 }
 
-/**
- * This function assigns the group handle @a group to a unified communicator
- * defininition with sequence number @a sequence_number and sets the number of
- * processes acossiated with the communicator.
- * This function is a helper function for scorep_unify_mpi_define_groups. It
- * expects that all communicator are called sequentially and only once. Thus,
- * it remembers the last communicator handle, and does not search for the right
- * one.
- */
-static void
-scorep_map_communicator_to_group( uint32_t           sequence_number,
-                                  SCOREP_GroupHandle group )
+void
+scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
+                                             uint32_t rank )
 {
-    SCOREP_MPICommunicator_Definition* definition = NULL;
+    int32_t*  ranks_in_comm = NULL;  // Vector for the communicator belongings
+                                     // (only significant in root)
+    int32_t*  ranks_in_group = NULL; // Vector for the MPI group
+                                     // (only significant in root)
+    uint32_t* comms_per_rank = NULL; // Holds the number of communicators
+                                     // per rank (only significant in root)
 
-    /* Store handle from last visit. They should be accessed in sequential order */
-    static SCOREP_MPICommunicatorHandle handle = SCOREP_INVALID_MPI_COMMUNICATOR;
-
-    /* Initialize handle at first visit */
-    if ( handle == SCOREP_INVALID_MPI_COMMUNICATOR )
+    if ( rank == 0 )
     {
-        handle = scorep_unified_definition_manager->mpi_communicator_definition_head;
-    }
+        /* Allocate memory for the arrays. */
 
-    assert( handle != SCOREP_INVALID_MPI_COMMUNICATOR );
+        ranks_in_comm = calloc( comm_world_size, sizeof( *ranks_in_comm ) );
+        assert( ranks_in_comm );
 
-    definition = SCOREP_HANDLE_DEREF( handle, MPICommunicator,
-                                      scorep_unified_definition_manager->page_manager );
+        ranks_in_group = calloc( comm_world_size, sizeof( *ranks_in_group ) );
+        assert( ranks_in_group );
 
-    /*
-     * If this assertion fails the sequence numbers in the unified definitions
-     * are not consistent
-     */
-    assert( definition->sequence_number == sequence_number );
-
-    definition->group = group;
-
-    /* Remember next definition */
-    handle = definition->next;
-}
-
-/**
- * Collates the information from the communicator definitions on every process
- * to obtain the process groups. Creates the group definitions for the process
- * groups and creates the mappings from the communicators to the process group.
- * All the data is gathered to rank 0. Other ranks to not have the group
- * definitions and mapping from communicator afterwards.
- * This function requires that the communicator ids are already unified,
- */
-static void
-scorep_unify_mpi_define_groups( uint32_t global_communicator_number,
-                                uint32_t max_number_of_self_ids )
-{
-    int32_t  comm_world_size = SCOREP_Mpi_GetCommWorldSize();
-    int32_t  i               = 0;         // Loop counter outer loop
-    int32_t  j               = 0;         // Loop counter inner loop
-    int32_t* buffer          = NULL;      // Buffer for collate ranks information
-    int32_t  my_rank         = -1;        // Input of this rank:
-                                          //   -1 if not part of communicator
-                                          //   the global rank otherwise
-    int32_t  size    = 0;                 // number of ranks members
-    int32_t* ranks   = NULL;              // Vector of rank in group
-    bool     is_root = ( SCOREP_Mpi_GetRank() == 0 );
-
-    /*
-     * Allocate memory for the array to exchange the comminicator
-     * belonginge
-     */
-    buffer = calloc( comm_world_size, sizeof( *buffer ) );
-    assert( buffer );
-
-    if ( is_root )
-    {
-        /* Allocate memory for the rank list. */
-        ranks = calloc( comm_world_size, sizeof( *ranks ) );
-        assert( ranks );
+        comms_per_rank = calloc( comm_world_size, sizeof( *comms_per_rank ) );
+        assert( comms_per_rank );
 
         /* Define the list of locations which are MPI ranks. */
-        for ( i = 0; i < comm_world_size; i++ )
+        for ( uint32_t i = 0; i < comm_world_size; i++ )
         {
             /*
              * If we support MPI_THREADED_FUNNELED, this needs to be the
              * location, wich has called MPI_Init/MPI_Thread_init.
              * For the moment, the location and rank ids match.
              */
-            ranks[ i ] = i;
+            ranks_in_group[ i ] = i;
         }
         SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_LOCATIONS,
-                                      comm_world_size, ranks );
+                                      comm_world_size, ranks_in_group );
     }
 
-    for ( i = 0; i < global_communicator_number; i++ )
+    /* Gather the number of communicators per rank */
+    SCOREP_Mpi_Gather( &scorep_number_of_root_comms,
+                       1, SCOREP_MPI_UNSIGNED,
+                       comms_per_rank,
+                       1, SCOREP_MPI_UNSIGNED,
+                       0 );
+
+    /*
+     * Iterate over all communicators and create the corresponding MPI group
+     * and define both.
+     */
+
+    uint32_t global_comm_id = 0;
+    assert( scorep_unified_definition_manager->mpi_communicator_definition_counter == 0 );
+    for ( uint32_t i = 0; i < comm_world_size; i++ )
     {
-        SCOREP_GroupHandle group = SCOREP_INVALID_GROUP;
-        /* Check whether this rank belongs to the communicator */
-        my_rank = scorep_unify_mpi_is_this_rank_in_communicator( i );
-
-        /* gather communicator information */
-        SCOREP_Mpi_Gather( &my_rank,
-                           1, SCOREP_MPI_INT,
-                           buffer,
-                           1, SCOREP_MPI_INT,
-                           0 );
-
-        if ( is_root )
+        for ( uint32_t j = 0; j < comms_per_rank[ i ]; j++, global_comm_id++ )
         {
             /*
-             * Create rank list. The list contains at position i the global
-             * rank of process i in the communicator
+             * Check whether this rank belongs to the communicator
+             *
+             * It's either my local rank in this communicator, or -1 if I'm not
+             * a member of this communicator.
              */
-            size = 0;
-            for ( j = 0; j < comm_world_size; j++ )
+            int32_t my_rank_in_comm =
+                scorep_unify_mpi_is_this_rank_in_communicator( global_comm_id );
+
+            /* gather communicator information */
+            SCOREP_Mpi_Gather( &my_rank_in_comm,
+                               1, SCOREP_MPI_INT,
+                               ranks_in_comm,
+                               1, SCOREP_MPI_INT,
+                               0 );
+
+            if ( rank == 0 )
             {
-                if ( buffer[ j ] != -1 )
+                /*
+                 * Create MPI group. The list contains at position i the global
+                 * rank of process i in the communicator
+                 */
+                uint32_t size = 0;
+                for ( uint32_t i = 0; i < comm_world_size; i++ )
                 {
-                    ranks[ buffer[ j ] ] = j;
-                    size++;
+                    if ( ranks_in_comm[ i ] != -1 )
+                    {
+                        ranks_in_group[ ranks_in_comm[ i ] ] = i;
+                        size++;
+                    }
                 }
+
+                /* Define the MPI group */
+                SCOREP_GroupHandle group =
+                    SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_GROUP,
+                                                  size, ranks_in_group );
+
+                /* Define the global MPI communicator with this group */
+                SCOREP_MPICommunicatorHandle handle =
+                    SCOREP_DefineUnifiedMPICommunicator( group );
+                assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, MPICommunicator ) ==
+                        global_comm_id );
             }
-
-            /* Define ranks */
-            group = SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_GROUP,
-                                                  size, ranks );
-
-            /* Map communicator to group */
-            scorep_map_communicator_to_group( i, group );
         }
     }
 
-    if ( is_root )
+    free( comms_per_rank );
+    free( ranks_in_group );
+    free( ranks_in_comm );
+}
+
+void
+scorep_unify_mpi_communicators_define_self_likes( uint32_t comm_world_size,
+                                                  uint32_t rank )
+{
+    /*
+     * Get the maximum number of different MPI_COMM_SELF references
+     * on a single process
+     */
+    uint32_t max_number_of_self_ids = 0;
+    SCOREP_Mpi_Allreduce( &scorep_number_of_self_comms,
+                          &max_number_of_self_ids,
+                          1,
+                          SCOREP_MPI_UNSIGNED,
+                          SCOREP_MPI_MAX );
+
+    if ( rank == 0 )
     {
+        uint32_t number_of_comms =
+            scorep_unified_definition_manager->mpi_communicator_definition_counter;
+
         /* Create group for comm self */
         SCOREP_GroupHandle self = SCOREP_DefineUnifiedMPIGroup(
             SCOREP_GROUP_COMM_SELF, 0, NULL );
 
-        /* Map self communicators */
-        for ( i = 0; i < max_number_of_self_ids; i++ )
+        for ( uint32_t i = 0; i < max_number_of_self_ids; i++ )
         {
-            scorep_map_communicator_to_group(
-                i + global_communicator_number, self );
+            SCOREP_MPICommunicatorHandle handle =
+                SCOREP_DefineUnifiedMPICommunicator( self );
+            assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, MPICommunicator ) ==
+                    number_of_comms + i );
         }
     }
-
-    /* clean up */
-    free( ranks );
-    free( buffer );
 }

@@ -776,8 +776,7 @@ scorep_mpi_communicator_definitions_equal(
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
-                                     uint32_t id )
+SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle )
 {
     SCOREP_MPICommunicator_Definition* new_definition     = NULL;
     SCOREP_MPICommunicatorHandle       new_handle         = SCOREP_INVALID_MPI_COMMUNICATOR;
@@ -792,9 +791,7 @@ SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
     SCOREP_DEFINITION_ALLOC( MPICommunicator );
 
     // Init new_definition
-    new_definition->global_root_rank = globalRootRank;
-    new_definition->root_id          = id;
-    new_definition->group            = SCOREP_INVALID_GROUP;
+    new_definition->group = group_handle;
 
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator, mpi_communicator );
 
