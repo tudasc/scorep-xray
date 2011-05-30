@@ -765,19 +765,20 @@ SCOREP_MPICommunicatorHandle
 SCOREP_DefineUnifiedMPICommunicator( uint32_t globalRootRank,
                                      uint32_t local_id )
 {
+    assert( !omp_in_parallel() );
+    assert( scorep_unified_definition_manager );
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Define unified Communicator\n"
                          "  root:      %" PRIu32 "\n"
                          "  id:        %" PRIu32 "\n\n", globalRootRank, local_id );
 
-    SCOREP_Definitions_Lock();
     SCOREP_MPICommunicatorHandle new_handle
         = scorep_mpi_communicator_definition_define( scorep_unified_definition_manager,
                                                      1,              // Use the default for self communcators.
                                                      ( uint32_t )-1, // Local rank is ignored for unified definitions
                                                      globalRootRank,
                                                      local_id );
-    SCOREP_Definitions_Unlock();
 
     return new_handle;
 }
