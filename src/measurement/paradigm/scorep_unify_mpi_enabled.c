@@ -307,38 +307,32 @@ uint32_t
 scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
                                                      uint32_t rank )
 {
-    /*
-     * An MPI_Scan is used here to
-     * (a) emulate an MPI_Exscan, needed for the offsets, and
-     * (b) compute the first global id for self communicators
-     */
-    uint32_t local_offset;
-    SCOREP_Mpi_Scan( &scorep_number_of_root_comms,
-                     &local_offset,
-                     1, SCOREP_MPI_UNSIGNED,
-                     SCOREP_MPI_SUM );
-
-    /*
-     * Due to MPI_Scan, the local_offset of rank n-1 holds the sum of all
-     * scorep_number_of_root_comms, wich is the total number of communicators,
-     * and also the id of the first unified self like communicator.
-     */
-    uint32_t total_number_of_root_comms = local_offset;
-    SCOREP_Mpi_Bcast( &total_number_of_root_comms,
-                      1, SCOREP_MPI_UNSIGNED,
-                      comm_world_size - 1 );
-    /* final step in MPI_Exscan emulation to obtain real offsets */
-    local_offset -= scorep_number_of_root_comms;
-    assert( local_offset <= total_number_of_root_comms );
-
-    /* allocate memory for offsets */
+    /* Allocate memory for offsets */
     uint32_t* offsets = calloc( comm_world_size, sizeof( *offsets ) );
     assert( offsets );
-    /* gather offsets from processes */
-    SCOREP_Mpi_Allgather( &local_offset,
+
+    /* Gather communicator counts from all ranks */
+    SCOREP_Mpi_Allgather( &scorep_number_of_root_comms,
                           1, SCOREP_MPI_UNSIGNED,
                           offsets,
                           1, SCOREP_MPI_UNSIGNED );
+
+    /*
+     * Calculate the total number of communicators, which is also the id of
+     * the first unified self like communicator. And calculate the exclusive
+     * prefix sum of the number of comms in the ranks, which will serve
+     * as the offset to the global communicator for comms where this rank was
+     * root in the communicator.
+     */
+    uint32_t total_number_of_root_comms = 0;
+    for ( uint32_t i = 0; i < comm_world_size; i++ )
+    {
+        uint32_t comms_in_rank = offsets[ i ];
+
+        offsets[ i ] = total_number_of_root_comms;
+
+        total_number_of_root_comms += comms_in_rank;
+    }
 
     /* Create mapping tables
        Every process calculates its own mappings from the offsets. */
