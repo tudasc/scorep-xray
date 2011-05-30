@@ -46,11 +46,12 @@
 
 struct SCOREP_Profile_LocationData
 {
-    scorep_profile_node* current_node;  // Current callpath of this thread
-    scorep_profile_node* root_node;     // Root node of this thread
-    scorep_profile_node* fork_node;     // Last Fork node created by this thread
-    scorep_profile_node* creation_node; // Node where the thread was created
-    uint32_t             current_depth; // Stores the current length of the callpath
+    scorep_profile_node* current_node;  /**< Current callpath of this thread */
+    scorep_profile_node* root_node;     /**< Root node of this thread */
+    scorep_profile_node* fork_node;     /**< Last Fork node created by this thread */
+    scorep_profile_node* creation_node; /**< Node where the thread was created */
+    uint32_t             current_depth; /**< Stores the current length of the callpath */
+    uint32_t             fork_depth;    /**< Depth of last fork node */
 };
 
 #define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputCube4
@@ -963,7 +964,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
     {
         parent_data                = SCOREP_Thread_GetProfileLocationData( parentLocationData );
         thread_data->creation_node = parent_data->fork_node;
-        thread_data->current_depth = parent_data->current_depth;
+        thread_data->current_depth = parent_data->fork_depth;
     }
 
     /* Add it to the profile node list */
@@ -991,13 +992,16 @@ void
 SCOREP_Profile_OnFork( SCOREP_Thread_LocationData* threadData,
                        size_t                      maxChildThreads )
 {
-    scorep_profile_node* fork_node = NULL;
+    scorep_profile_node*         fork_node   = NULL;
+    SCOREP_Profile_LocationData* thread_data = NULL;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
-
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     fork_node = scorep_profile_get_current_node( threadData );
+
+    /* In case the fork node is a thread start node, this thread started at the same
+       node like its parent thread. Thus, transfer the pointer. */
     if ( fork_node->node_type == scorep_profile_node_thread_start )
     {
         fork_node = ( scorep_profile_node* )
@@ -1005,5 +1009,7 @@ SCOREP_Profile_OnFork( SCOREP_Thread_LocationData* threadData,
     }
 
     /* Store current fork node */
-    SCOREP_Thread_GetProfileLocationData( threadData )->fork_node = fork_node;
+    thread_data             = SCOREP_Thread_GetProfileLocationData( threadData );
+    thread_data->fork_node  = fork_node;
+    thread_data->fork_depth = thread_data->current_depth;
 }

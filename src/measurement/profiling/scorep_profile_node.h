@@ -82,6 +82,8 @@ typedef enum
     <dt>scorep_profile_node_thread_start</dt>
     <dd>A pointer to the @ref scorep_profile_node instance from which the new thread
         was created</dd>
+    <dt>scorep_profile_node_collapse</dt>
+    <dd>The depth level of the node</dd>
    </dl>
  */
 typedef struct scorep_profile_node_struct
