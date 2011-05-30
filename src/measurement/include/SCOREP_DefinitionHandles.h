@@ -43,9 +43,10 @@ typedef SCOREP_Allocator_MovableMemory SCOREP_LocationGroupHandle;
 typedef SCOREP_Allocator_MovableMemory SCOREP_LocationHandle;
 
 
-/* MPI Communicators are represented as an OTF2 group */
 typedef SCOREP_Allocator_MovableMemory SCOREP_GroupHandle;
-typedef SCOREP_GroupHandle             SCOREP_MPICommunicatorHandle;
+
+
+typedef SCOREP_Allocator_MovableMemory SCOREP_MPICommunicatorHandle;
 
 
 typedef SCOREP_Allocator_MovableMemory SCOREP_MPIWindowHandle;

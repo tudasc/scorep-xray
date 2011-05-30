@@ -41,11 +41,9 @@
 #include <mpi.h>
 
 /**
- * Type of internal SCOREP group handles. Currently, Communicators and groups use
- * the same realm and thus the handles are of the same type. Maybe tis changes later on.
- * Thus, we already use two different internal names.
+ * Type of internal SCOREP group handles.
  */
-typedef SCOREP_MPICommunicatorHandle SCOREP_Mpi_GroupHandle;
+typedef SCOREP_GroupHandle SCOREP_Mpi_GroupHandle;
 
 /**
  * Type of the different colors for MPI epochs. Its a boolean flag which can have
@@ -63,7 +61,7 @@ typedef uint8_t SCOREP_Mpi_Color;
 /**
  * Defines the value for SCOREP_Mpi_GroupHandle which marks an invalid group
  */
-#define SCOREP_INVALID_MPI_GROUP SCOREP_INVALID_MPI_COMMUNICATOR
+#define SCOREP_INVALID_MPI_GROUP SCOREP_INVALID_GROUP
 
 /**
  * @internal
