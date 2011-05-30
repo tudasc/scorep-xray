@@ -796,7 +796,7 @@ scorep_mpi_communicator_definition_define( SCOREP_DefinitionManager* definition_
     SCOREP_DEFINITION_ALLOC( MPICommunicator );
 
     // Init new_definition
-    new_definition->number_of_ranks  = numberOfRanks;
+    new_definition->is_self_like     = numberOfRanks == 1;
     new_definition->local_rank       = localRank;
     new_definition->global_root_rank = globalRootRank;
     new_definition->root_id          = id;

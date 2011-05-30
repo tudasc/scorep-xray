@@ -334,7 +334,7 @@ scorep_unify_mpi_communicators( void )
                                   mpi_communicator )
     {
         uint32_t global_id = definition->root_id;
-        if ( definition->number_of_ranks > 1 )
+        if ( !definition->is_self_like )
         {
             global_id += offsets[ definition->global_root_rank ];
         }
@@ -429,8 +429,7 @@ scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id )
  */
 static void
 scorep_map_communicator_to_group( uint32_t           sequence_number,
-                                  SCOREP_GroupHandle group,
-                                  uint32_t           number_of_ranks )
+                                  SCOREP_GroupHandle group )
 {
     SCOREP_MPICommunicator_Definition* definition = NULL;
 
@@ -454,8 +453,7 @@ scorep_map_communicator_to_group( uint32_t           sequence_number,
      */
     assert( definition->sequence_number == sequence_number );
 
-    definition->group           = group;
-    definition->number_of_ranks = number_of_ranks;
+    definition->group = group;
 
     /* Remember next definition */
     handle = definition->next;
@@ -545,7 +543,7 @@ scorep_unify_mpi_define_groups( uint32_t global_communicator_number,
                                                   size, ranks );
 
             /* Map communicator to group */
-            scorep_map_communicator_to_group( i, group, size );
+            scorep_map_communicator_to_group( i, group );
         }
     }
 
@@ -559,7 +557,7 @@ scorep_unify_mpi_define_groups( uint32_t global_communicator_number,
         for ( i = 0; i < max_number_of_self_ids; i++ )
         {
             scorep_map_communicator_to_group(
-                i + global_communicator_number, self, 1 );
+                i + global_communicator_number, self );
         }
     }
 
