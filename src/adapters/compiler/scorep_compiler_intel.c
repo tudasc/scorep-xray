@@ -201,6 +201,10 @@ __VT_IntelEntry( char*     str,
                 *id = SCOREP_COMPILER_FILTER_ID;
             }
         }
+        else if ( *id != SCOREP_COMPILER_FILTER_ID )
+        {
+            hash_node = scorep_compiler_hash_get( *id );
+        }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
     else if ( *id != SCOREP_COMPILER_FILTER_ID )

@@ -32,6 +32,7 @@
 #include <SCOREP_Mutex.h>
 
 #include <scorep_thread.h>
+#include <inttypes.h>
 
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>
@@ -612,9 +613,14 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
     if ( ( node->node_type == scorep_profile_node_regular_region ) &&
          ( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) != region ) )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Exit event for other than current region occured" );
         SCOREP_PROFILE_STOP;
+        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                      "Exit event for other than current region occured at "
+                      "location %" PRIu64 ": Expected exit for region %s. "
+                      "Exited region %s",
+                      SCOREP_Thread_GetLocationId( thread ),
+                      SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) ),
+                      SCOREP_Region_GetName( region ) );
         return;
     }
 
