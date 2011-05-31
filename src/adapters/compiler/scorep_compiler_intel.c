@@ -33,6 +33,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Mutex.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
@@ -53,6 +54,11 @@ static int scorep_compiler_initialize = 1;
  * Hashtable to map region name to region id.
  */
 static SCOREP_Hashtab* scorep_compiler_name_table = NULL;
+
+/**
+ * Mutex for exclusive access to the region hash table.
+ */
+static SCOREP_Mutex scorep_compiler_region_mutex;
 
 /* ***************************************************************************************
    Hashtable functions to map names to id.
@@ -179,18 +185,23 @@ __VT_IntelEntry( char*     str,
     /* Register new region if unknown */
     if ( *id == 0 )
     {
-        uint32_t new_id = scorep_compiler_get_id_from_name( str );
+        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        if ( *id == 0 )
+        {
+            uint32_t new_id = scorep_compiler_get_id_from_name( str );
 
-        if ( hash_node = scorep_compiler_hash_get( new_id ) )
-        {
-            /* -- region entered the first time, register region -- */
-            scorep_compiler_register_region( hash_node );
-            *id = new_id;
+            if ( hash_node = scorep_compiler_hash_get( new_id ) )
+            {
+                /* region entered the first time, register region */
+                scorep_compiler_register_region( hash_node );
+                *id = new_id;
+            }
+            else
+            {
+                *id = SCOREP_COMPILER_FILTER_ID;
+            }
         }
-        else
-        {
-            *id = SCOREP_COMPILER_FILTER_ID;
-        }
+        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
     else if ( *id != SCOREP_COMPILER_FILTER_ID )
     {
@@ -322,6 +333,9 @@ scorep_compiler_init_adapter()
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize intel compiler adapter." );
 
+        /* Initialize region mutex */
+        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
         /* Initialize hash tables */
         scorep_compiler_hash_init();
         scorep_compiler_init_name_table();
@@ -353,5 +367,8 @@ scorep_compiler_finalize()
         /* Set initilaization flag */
         scorep_compiler_initialize = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
+
+        /* Delete region mutex */
+        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
     }
 }
