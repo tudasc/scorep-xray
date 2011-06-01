@@ -35,21 +35,20 @@
 void
 scorep_oa_phase_enter
 (
-   const SCOREP_User_RegionHandle handle
+    const SCOREP_User_RegionHandle handle
 )
 {
-
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
-    
+
     assert( handle != SCOREP_INVALID_USER_REGION );
-    printf("OA phase enter: region handle %ld\n",handle->handle);
-    
+    printf( "OA phase enter: region handle %ld\n", handle->handle );
+
     SCOREP_RegionHandle ms_handle = handle->handle;
-    
+
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING )
     {
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_BEGINNING, 0, 0 );
-        scorep_oa_mri_set_phase(ms_handle);
+        scorep_oa_mri_set_phase( ms_handle );
         scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
         scorep_oa_mri_receive_and_process_requests( connection );
     }
@@ -59,19 +58,19 @@ scorep_oa_phase_enter
 void
 scorep_oa_phase_exit
 (
-   const SCOREP_User_RegionHandle handle
+    const SCOREP_User_RegionHandle handle
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
-    
+
     assert( handle != SCOREP_INVALID_USER_REGION );
-    printf("OA phase exit: region handle %ld\n",handle->handle);
-    
+    printf( "OA phase exit: region handle %ld\n", handle->handle );
+
     SCOREP_RegionHandle ms_handle = handle->handle;
-    
+
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_END )
     {
-    	scorep_oa_mri_set_phase(ms_handle);
+        scorep_oa_mri_set_phase( ms_handle );
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_END, 0, 0 );
         scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
         scorep_oa_mri_receive_and_process_requests( connection );

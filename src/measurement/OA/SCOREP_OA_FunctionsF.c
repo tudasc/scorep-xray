@@ -43,33 +43,35 @@
 #define SCOREP_F_OA_PhaseBegin_L scorep_f_oa_phasebegin
 #define SCOREP_F_OA_PhaseEnd_L scorep_f_oa_phaseend
 
-extern void FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
-								 char*                        name_f,
+extern void
+FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
+                       char*                        name_f,
+                       int32_t*                     type,
+                       char*                        fileName_f,
+                       int32_t*                     lineNo,
+                       int                          nameLen,
+                       int                          fileNameLen );
+extern void
+FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* handle );
+extern void
+FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* handle );
+
+void
+FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
+                                 char*                        name_f,
                                  int32_t*                     type,
                                  char*                        fileName_f,
                                  int32_t*                     lineNo,
                                  int                          nameLen,
-                                 int                          fileNameLen );
-extern void FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* handle );
-extern void FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* handle );
-
-void 
-FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
-                        char*                        name_f,
-                        int32_t*                     type,
-                        char*                        fileName_f,
-                        int32_t*                     lineNo,
-                        int                          nameLen,
-                        int                          fileNameLen)
+                                 int                          fileNameLen )
 {
-   
     if ( !SCOREP_OA_Init() )
     {
-       return;
+        return;
     }
-    
+
     FSUB( SCOREP_F_Init )( handle, name_f, type, fileName_f,
-                                     lineNo, nameLen, fileNameLen );
+                           lineNo, nameLen, fileNameLen );
     scorep_oa_phase_enter( SCOREP_F2C_REGION( *handle ) );
     FSUB( SCOREP_F_RegionEnter )(  handle );
 }
@@ -77,10 +79,10 @@ FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
 void
 FSUB( SCOREP_F_OA_PhaseEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
-	if ( !SCOREP_OA_Initialized() )
+    if ( !SCOREP_OA_Initialized() )
     {
-       return;
+        return;
     }
-	FSUB( SCOREP_F_RegionEnd )( handle );
+    FSUB( SCOREP_F_RegionEnd )( handle );
     scorep_oa_phase_exit( SCOREP_F2C_REGION( *handle ) );
 }

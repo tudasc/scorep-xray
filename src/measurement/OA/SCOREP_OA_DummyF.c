@@ -34,20 +34,20 @@
 #define SCOREP_F_OA_PhaseBegin_L scorep_f_oa_phasebegin
 #define SCOREP_F_OA_PhaseEnd_L scorep_f_oa_phaseend
 
-void 
+void
 FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
-                        char*                        name_f,
-                        int32_t*                     type,
-                        char*                        fileName_f,
-                        int32_t*                     lineNo,
-                        int                          nameLen,
-                        int                          fileNameLen)
+                                 char*                        name_f,
+                                 int32_t*                     type,
+                                 char*                        fileName_f,
+                                 int32_t*                     lineNo,
+                                 int                          nameLen,
+                                 int                          fileNameLen )
 {
-	printf("Dummy %s\n",__FUNCTION__);
+    printf( "Dummy %s\n", __FUNCTION__ );
 }
 
 void
 FSUB( SCOREP_F_OA_PhaseEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
-	printf("Dummy %s\n",__FUNCTION__);
+    printf( "Dummy %s\n", __FUNCTION__ );
 }
