@@ -139,7 +139,7 @@ doxygen-user-html-compress:
 	fi
 
 doxygen-project-number: update-revision
-	echo "PROJECT_NUMBER = `cat $(srcdir)/build-config/VERSION` (revision `cat $(srcdir)/build-config/REVISION`)" > doc/doxygen-project-number.cfg
+	echo "PROJECT_NUMBER = \"@PACKAGE_VERSION@ (revision `cat $(srcdir)/build-config/REVISION`)\"" > doc/doxygen-project-number.cfg
 
 doxygen-user-clean:
 	rm -f doc/doxygen-project-number.cfg
