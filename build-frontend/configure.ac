@@ -1,6 +1,9 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
+ac_scorep_frontend="yes"
+ac_scorep_backend="no"
+
 AC_SCOREP_PRECIOUS_VARS_FOR_BUILD
 
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC_FOR_BUILD])

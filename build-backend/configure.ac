@@ -7,6 +7,13 @@ if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compili
 fi
 cross_compiling=${ac_scorep_cross_compiling}
 
+ac_scorep_backend=yes
+if test "x${ac_scorep_cross_compiling}" = "xyes"; then
+    ac_scorep_frontend=no
+else
+    ac_scorep_frontend=yes
+fi
+
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
