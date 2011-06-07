@@ -20,6 +20,6 @@ user_c_test_LDADD =                         \
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/scorep_phase_test.c \
-    $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh
+    $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh.in
 
-SCOREP_OMP_TESTS += $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh
+SCOREP_OMP_TESTS += ./../test/adapters/user/C/run_phase_test.sh

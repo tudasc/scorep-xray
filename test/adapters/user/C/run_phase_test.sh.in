@@ -26,8 +26,10 @@ make scorep-config-tool-local
 . ./scorep_config.dat
 echo "/* Dummy */" > config.h
 
-cp  $SRC_ROOT/test/adapters/user/C/scorep_phase_test.c scorep_phase_test.c
-./scorep --instrument --user --verbosity=1 --config=scorep_config.dat $CC -I. -o scorep_phase_test scorep_phase_test.c $OPENMP_CFLAGS
+cp  @abs_srcdir@/scorep_phase_test.c scorep_phase_test.c
+@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
+@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
+./scorep --instrument --user --verbosity=1 --config=scorep_config.dat $extra_flag @CC@ -I. -o scorep_phase_test scorep_phase_test.c @OPENMP_CFLAGS@
 rm -f config.h scorep_config.dat scorep_phase_test.pomp_init.c  scorep_phase_test.opari.c  scorep_phase_test.c.opari.inc scorep_phase_test.c
 if [ ! -e scorep_phase_test ]; then
     exit 1
