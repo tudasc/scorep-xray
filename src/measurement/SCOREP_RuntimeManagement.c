@@ -67,8 +67,9 @@ static bool scorep_initialized;
 /** @brief Measurement system finalized? */
 static bool scorep_finalized;
 
-
-static SCOREP_ExitCallback scorep_exit_callback = 0;
+#define scorep_max_exit_callbacks 8
+static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
+static int                 scorep_n_exit_callbacks = 0;
 
 bool                       scorep_recording_enabled = true;
 
@@ -89,6 +90,7 @@ static void scorep_initialization_sanity_checks();
 static void scorep_register_config_variables( SCOREP_ConfigVariable configVars[] );
 static void scorep_profile_initialize();
 static void scorep_profile_finalize();
+static void scorep_trigger_exit_callbacks();
 //static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
@@ -471,10 +473,7 @@ scorep_finalize( void )
     }
     scorep_finalized = true;
 
-    if ( scorep_exit_callback )
-    {
-        ( *scorep_exit_callback )( );
-    }
+    scorep_trigger_exit_callbacks();
 
     // MPICH1 creates some extra processes that are not properly SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
@@ -593,5 +592,18 @@ scorep_otf2_finalize()
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
 {
-    scorep_exit_callback = exitCallback;
+    assert( scorep_n_exit_callbacks < scorep_max_exit_callbacks );
+    scorep_exit_callbacks[ scorep_n_exit_callbacks ] = exitCallback;
+    ++scorep_n_exit_callbacks;
+}
+
+void
+scorep_trigger_exit_callbacks()
+{
+    assert( scorep_n_exit_callbacks < scorep_max_exit_callbacks );
+    // trigger in lifo order
+    for ( int i = scorep_n_exit_callbacks - 1; i >= 0; --i )
+    {
+        ( *( scorep_exit_callbacks[ i ] ) )();
+    }
 }

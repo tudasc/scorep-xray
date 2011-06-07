@@ -114,6 +114,12 @@ scorep_compiler_register_region( char* region_name )
     return handle;
 }
 
+int
+on_scorep_finalize()
+{
+    SCOREP_ExitRegion( scorep_compiler_main_handle ); /*main*/
+}
+
 /*
  * This function is called at program start
  */
@@ -122,6 +128,7 @@ void
 phat_scorep_init()
 {
     SCOREP_InitMeasurement();
+    SCOREP_RegisterExitCallback( &on_scorep_finalize );
 }
 #pragma init (phat_scorep_init)
 
@@ -190,6 +197,5 @@ scorep_compiler_init_adapter()
 void
 scorep_compiler_finalize()
 {
-    SCOREP_ExitRegion( scorep_compiler_main_handle ); /*main*/
     SCOREP_MutexDestroy( &scorep_compiler_hash_lock );
 }
