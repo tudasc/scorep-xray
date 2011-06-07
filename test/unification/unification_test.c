@@ -68,7 +68,7 @@ test_1( CuTest* tc )
 
     // fill scorep_local_definition_manager
     int                 old_count     = scorep_local_definition_manager.string_definition_counter;
-    SCOREP_StringHandle local_handle1 = scorep_string_definition_define( &scorep_local_definition_manager, "main" );
+    SCOREP_StringHandle local_handle1 = scorep_string_definition_define( &scorep_local_definition_manager, "main_" );
     SCOREP_StringHandle local_handle2 = scorep_string_definition_define( &scorep_local_definition_manager, "foo" );
     SCOREP_StringHandle local_handle3 = scorep_string_definition_define( &scorep_local_definition_manager, "bar" );
     CuAssert( tc, "member unified != SCOREP_MOVABLE_NULL",
@@ -78,7 +78,7 @@ test_1( CuTest* tc )
 
     // fill scorep_remote_definition_manager
     CuAssertIntEquals( tc, 0, scorep_remote_definition_manager->string_definition_counter );
-    SCOREP_StringHandle remote_handle1 = scorep_string_definition_define( scorep_remote_definition_manager, "main" );
+    SCOREP_StringHandle remote_handle1 = scorep_string_definition_define( scorep_remote_definition_manager, "main_" );
     SCOREP_StringHandle remote_handle2 = scorep_string_definition_define( scorep_remote_definition_manager, "bar" );
     SCOREP_StringHandle remote_handle3 = scorep_string_definition_define( scorep_remote_definition_manager, "foo" );
     SCOREP_StringHandle remote_handle4 = scorep_string_definition_define( scorep_remote_definition_manager, "baz" );
