@@ -24,7 +24,7 @@ BUILT_SOURCES += lex.yy.c
 
 if HAVE_LEX
 lex.yy.c:
-	$(LEX) --header=scanner.h $(INC_ROOT)src/measurement/OA/lex.l
+	$(LEX) --header=scanner.h $(INC_ROOT)src/measurement/online_access/lex.l
 else
 lex.yy.c:
 	echo "LEX not available and lex.yy.c not provided." 			\
@@ -32,7 +32,7 @@ lex.yy.c:
 endif
 
 SCOREP_OA_FORTRAN_SOURCES =  										\
-	$(SRC_ROOT)src/measurement/OA/SCOREP_OA_FunctionsF.c
+	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_FunctionsF.c
 
 SCOREP_OA_FORTRAN_FLAGS =                     						\
     $(AM_CPPFLAGS)                              					\
@@ -76,7 +76,7 @@ noinst_LTLIBRARIES +=                      	\
 
 OA_MPI_FLAGS =                                 						\
     $(AM_CPPFLAGS)                              					\
-    -I$(INC_ROOT)src/measurement/OA        							\
+    -I$(INC_ROOT)src/measurement/online_access        							\
     -I$(INC_ROOT)src/measurement/profiling   						\
     -I$(INC_ROOT)src/measurement/include        					\
     -I$(INC_ROOT)src/measurement/               					\
@@ -88,21 +88,21 @@ OA_MPI_FLAGS =                                 						\
 
 noinst_LTLIBRARIES += libscorep_oa_mpi.la
 libscorep_oa_mpi_la_SOURCES =                                  			\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Functions.c            		\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.h       				\
-    $(SRC_ROOT)src/measurement/OA/SCOREP_OA_Init.c       				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.h         			\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_sockets.c					\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.h				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_connection.c				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.h				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_mri_control.c				\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_registry_protocol.h			\
-    $(SRC_ROOT)src/measurement/OA/yacc.y
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Functions.c            		\
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Init.h       				\
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Init.c       				\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.h         			\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.c					\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h				\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c				\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h				\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c				\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h			\
+    $(SRC_ROOT)src/measurement/online_access/yacc.y
 
 libscorep_oa_mpi_la_SOURCES +=											\
-	$(SRC_ROOT)src/measurement/OA/scorep_oa_phase.c         			\
-    $(SRC_ROOT)src/measurement/OA/scorep_oa_phase.h         			
+	$(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c         			\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h         			
 
 libscorep_oa_mpi_la_CPPFLAGS = $(OA_MPI_FLAGS)
 

@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 SCOREP_OA_FORTRAN_SOURCES =  										\
-	$(SRC_ROOT)src/measurement/OA/SCOREP_OA_DummyF.c
+	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_DummyF.c
 
 SCOREP_OA_FORTRAN_FLAGS =                     						\
     $(AM_CPPFLAGS)                              					\
@@ -67,7 +67,7 @@ if MPI_SUPPORTED
 noinst_LTLIBRARIES += libscorep_oa_mpi.la
 
 libscorep_oa_mpi_la_SOURCES =				\
-	$(SRC_ROOT)src/measurement/OA/SCOREP_OA_Dummy.c
+	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Dummy.c
 
 libscorep_oa_mpi_la_CPPFLAGS = $(SCOREP_OA_FORTRAN_FLAGS)
 
@@ -82,7 +82,7 @@ endif
 noinst_LTLIBRARIES += libscorep_oa_serial.la
 
 libscorep_oa_serial_la_SOURCES =			\
-	$(SRC_ROOT)src/measurement/OA/SCOREP_OA_Dummy.c
+	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Dummy.c
 
 libscorep_oa_serial_la_CPPFLAGS = $(SCOREP_OA_FORTRAN_FLAGS)
 

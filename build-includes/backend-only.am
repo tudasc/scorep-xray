@@ -19,7 +19,7 @@ include ../src/tools/wrapper/Makefile-backend.inc.am
 
 ## include Online Access only when building on ALTIX
 if PLATFORM_ALTIX
-include ../src/measurement/OA/Makefile.dummy.inc.am
+include ../src/measurement/online_access/Makefile.dummy.inc.am
 endif
 
 ## include tests

@@ -34,7 +34,7 @@ libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/mpi           \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
-    -I$(INC_ROOT)src/measurement/OA         \
+    -I$(INC_ROOT)src/measurement/online_access         \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_DIR_UTIL)
 
@@ -68,7 +68,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub1_la_SOURCES =   \
 libscorep_adapter_mpi_fortran_wrapper_sub1_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
-    -I$(INC_ROOT)src/measurement/OA       				\
+    -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB1
@@ -79,7 +79,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub2_la_SOURCES =   \
 libscorep_adapter_mpi_fortran_wrapper_sub2_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
-    -I$(INC_ROOT)src/measurement/OA       				\
+    -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB2
@@ -91,7 +91,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub3_la_SOURCES =   \
 libscorep_adapter_mpi_fortran_wrapper_sub3_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
-    -I$(INC_ROOT)src/measurement/OA       				\
+    -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB3
@@ -103,7 +103,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub4_la_SOURCES =   \
 libscorep_adapter_mpi_fortran_wrapper_sub4_la_CPPFLAGS =  \
     $(AM_CPPFLAGS)                                      \
     -I$(INC_ROOT)src/adapters/include                   \
-    -I$(INC_ROOT)src/measurement/OA       				\
+    -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
     -I$(INC_DIR_UTIL)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB4

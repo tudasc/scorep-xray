@@ -31,13 +31,13 @@ if MPI_SUPPORTED
 
 
 check_PROGRAMS                  += mpi_patt_all_test_f90
-mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/ats/fortran/calibrate.f90 \
-                                   $(SRC_ROOT)test/ats/fortran/work.f90 \
-                                   $(SRC_ROOT)test/ats/fortran/type_convert.f90 \
-                                   $(SRC_ROOT)test/ats/fortran/distribution.f90 \
-                                   $(SRC_ROOT)test/ats/fortran/mpi_util.f90 \
-                                   $(SRC_ROOT)test/ats/fortran/mpi_pattern.f90 \
-                                   $(SRC_ROOT)test/ats/fortran/mpi_patt_all_test.mod.f90
+mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/calibrate.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/work.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/type_convert.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/distribution.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_util.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_pattern.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.mod.f90
                                                                  
 mpi_patt_all_test_f90_CPPFLAGS   = $(AM_CPPFLAGS)\
  									-I$(INC_ROOT)src/adapters/include       \
