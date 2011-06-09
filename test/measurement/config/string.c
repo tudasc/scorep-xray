@@ -38,55 +38,50 @@
 #include <SCOREP_Config.h>
 
 
+static char* string_default_empty;
+static char* string_default_foo;
+
+
+static SCOREP_ConfigVariable string_config_variables[] =
+{
+    {
+        "string_default_empty",
+        SCOREP_CONFIG_TYPE_STRING,
+        &string_default_empty,
+        NULL,
+        "",
+        "",
+        ""
+    },
+    {
+        "string_default_empty",
+        SCOREP_CONFIG_TYPE_STRING,
+        &string_default_foo,
+        NULL,
+        "foo",
+        "",
+        ""
+    },
+    SCOREP_CONFIG_TERMINATOR
+};
+
 static void
 test_string_default_empty( CuTest* tc )
 {
-    char*                 string_variable    = NULL;
-    SCOREP_ConfigVariable config_variables[] = {
-        {
-            "string_default_empty",
-            SCOREP_CONFIG_TYPE_STRING,
-            &string_variable,
-            NULL,
-            "",
-            "",
-            ""
-        },
-        SCOREP_CONFIG_TERMINATOR
-    };
+    CuAssertPtrNotNull( tc, string_default_empty );
+    CuAssertStrEquals( tc, "", string_default_empty );
 
-    SCOREP_ConfigRegister( NULL, config_variables );
-
-    CuAssertPtrNotNull( tc, string_variable );
-    CuAssertStrEquals( tc, "", string_variable );
-
-    free( string_variable );
+    free( string_default_empty );
 }
 
 
 static void
 test_string_default_foo( CuTest* tc )
 {
-    char*                 string_variable    = NULL;
-    SCOREP_ConfigVariable config_variables[] = {
-        {
-            "string_default_empty",
-            SCOREP_CONFIG_TYPE_STRING,
-            &string_variable,
-            NULL,
-            "foo",
-            "",
-            ""
-        },
-        SCOREP_CONFIG_TERMINATOR
-    };
+    CuAssertPtrNotNull( tc, string_default_foo );
+    CuAssertStrEquals( tc, "foo", string_default_foo );
 
-    SCOREP_ConfigRegister( NULL, config_variables );
-
-    CuAssertPtrNotNull( tc, string_variable );
-    CuAssertStrEquals( tc, "foo", string_variable );
-
-    free( string_variable );
+    free( string_default_foo );
 }
 
 
@@ -95,6 +90,10 @@ main()
 {
     CuString* output = CuStringNew();
     CuSuite*  suite  = CuSuiteNew( "default values for config type string" );
+
+    SCOREP_ConfigInit();
+
+    SCOREP_ConfigRegister( "", string_config_variables );
 
     SUITE_ADD_TEST_NAME( suite, "string with default \"\"",
                          test_string_default_empty );
@@ -108,6 +107,8 @@ main()
     int failCount = suite->failCount;
     CuSuiteFree( suite );
     CuStringFree( output );
+
+    SCOREP_ConfigFini();
 
     return failCount;
 }

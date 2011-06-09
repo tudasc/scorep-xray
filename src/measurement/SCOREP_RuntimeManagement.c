@@ -87,10 +87,10 @@ static void scorep_adapters_finalize();
 static void scorep_adapters_initialize_location(); // needed?
 static void scorep_adapters_finalize_location(); // needed?
 static void scorep_initialization_sanity_checks();
-static void scorep_register_config_variables( SCOREP_ConfigVariable configVars[] );
 static void scorep_profile_initialize();
 static void scorep_profile_finalize();
 static void scorep_trigger_exit_callbacks();
+static void scorep_dump_config( void );
 //static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
@@ -124,7 +124,22 @@ SCOREP_InitMeasurement()
     scorep_initialized = true;
     scorep_initialization_sanity_checks();
 
-    SCOREP_Env_InitializeCoreEnvironmentVariables();
+    /* initialize the config system */
+    SCOREP_ConfigInit();
+
+    /* Register all config variables */
+    SCOREP_Env_RegisterCoreEnvironmentVariables();
+    scorep_adapters_register();
+    SCOREP_Profile_Register();
+
+    /* Parse the environment */
+    SCOREP_ConfigApplyEnv();
+
+    if ( SCOREP_Env_RunVerbose() )
+    {
+        fprintf( stderr, "SCOREP running in verbose mode\n" );
+    }
+
     SCOREP_Status_Initialize();
     SCOREP_Timer_Initialize();
     SCOREP_CreateExperimentDir();
@@ -150,7 +165,6 @@ SCOREP_InitMeasurement()
         scorep_set_otf2_archive_master_slave();
     }
 
-    scorep_adapters_register();
     scorep_adapters_initialize();
     scorep_adapters_initialize_location(); // not sure if this should be triggered by thread management
 
@@ -205,7 +219,6 @@ scorep_profile_initialize()
         return;
     }
 
-    SCOREP_Profile_Register();
     SCOREP_Profile_Initialize( 0, NULL );
     SCOREP_Profile_OnLocationCreation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_new_location
     SCOREP_Profile_OnThreadActivation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_thread_activation
@@ -497,6 +510,12 @@ scorep_finalize( void )
     SCOREP_Definitions_Write();
     SCOREP_Definitions_Finalize();
     scorep_otf2_finalize();
+
+    /* dump config variables into experiment directory */
+    scorep_dump_config();
+
+    SCOREP_ConfigFini();
+
     SCOREP_RenameExperimentDir();  // needs MPI
 
     scorep_adapters_finalize_location();
@@ -606,4 +625,34 @@ scorep_trigger_exit_callbacks()
     {
         ( *( scorep_exit_callbacks[ i ] ) )();
     }
+}
+
+static void
+scorep_dump_config( void )
+{
+    const char* experiment_dir = SCOREP_GetExperimentDirName();
+    char*       dump_file_name;
+
+    if ( SCOREP_Mpi_HasMpi() && SCOREP_Mpi_GetRank() != 0 )
+    {
+        return;
+    }
+
+    dump_file_name = calloc( 1, strlen( experiment_dir ) + strlen( "/scorep.cfg" ) + 1 );
+    sprintf( dump_file_name, "%s%s", experiment_dir, "/scorep.cfg" );
+
+    FILE* dump_file = fopen( dump_file_name, "w" );
+    if ( !dump_file )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
+                      "Can't write config variables into `%s'",
+                      dump_file_name );
+
+        free( dump_file_name );
+        return;
+    }
+    free( dump_file_name );
+
+    SCOREP_ConfigDump( dump_file );
+    fclose( dump_file );
 }

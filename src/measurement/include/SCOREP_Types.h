@@ -399,6 +399,14 @@ typedef enum SCOREP_ConfigType
      *
      * SCOREP_ConfigVariable::variableContext should point to a NULL terminated
      * string list with valid set members
+     *
+     * The strings can be separated by any of the following charachters:
+     *   @li " " - space
+     *   @li "," - comma
+     *   @li ":" - colon
+     *   @li ";" - semicolon
+     * The resulting string list will be converted to lower case.
+     * Only strings in the valid set members are allowed.
      */
     SCOREP_CONFIG_TYPE_SET,
 
@@ -414,7 +422,13 @@ typedef enum SCOREP_ConfigType
      * SCOREP_ConfigType_SetEntry with valid set members and there values.
      * For better debugging, they should be in decreasing order of the value
      * field.
-     * Terminate the array with an entry { NULL, 0 }.
+     * Terminate the array with an entry { NULL, 0 }. Case doesn't matter.
+     *
+     * The strings can be separated by any of the following charachters:
+     *   @li " " - space
+     *   @li "," - comma
+     *   @li ":" - colon
+     *   @li ";" - semicolon
      */
     SCOREP_CONFIG_TYPE_BITSET,
 

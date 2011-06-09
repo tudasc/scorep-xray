@@ -46,6 +46,7 @@
 static void
 test_number( CuTest* tc )
 {
+    SCOREP_Error_Code     ret;
     uint64_t              number_variable;
     SCOREP_ConfigVariable config_variables[] = {
         {
@@ -60,9 +61,17 @@ test_number( CuTest* tc )
         SCOREP_CONFIG_TERMINATOR
     };
 
-    SCOREP_Error_Code     ret;
-    ret = SCOREP_ConfigRegister( NULL, config_variables );
+
+    ret = SCOREP_ConfigInit();
+    CuAssert( tc, "SCOREP_ConfigInit", ret == SCOREP_SUCCESS );
+
+    ret = SCOREP_ConfigRegister( "", config_variables );
     CuAssert( tc, "SCOREP_ConfigRegister", ret == SCOREP_SUCCESS );
+
+    ret = SCOREP_ConfigApplyEnv();
+    CuAssert( tc, "SCOREP_ConfigApplyEnv", ret == SCOREP_SUCCESS );
+
+    SCOREP_ConfigFini();
 
     printf( "%" PRIu64 "\n", number_variable );
 }

@@ -84,7 +84,7 @@ scorep_compiler_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " register compiler adapter!" );
 
-    return SCOREP_ConfigRegister( NULL, scorep_compiler_configs );
+    return SCOREP_ConfigRegister( "", scorep_compiler_configs );
 }
 
 /**

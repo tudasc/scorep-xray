@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <strings.h>
 #include <ctype.h>
 #include <inttypes.h>
 
@@ -41,126 +42,285 @@
 
 #include "scorep_types.h"
 
+static SCOREP_Hashtab* scorep_config_name_spaces;
+
+static size_t
+scorep_config_hash_name_space( const void* key );
+
+static int32_t
+scorep_config_compare_name_space( const void* key,
+                                  const void* item_key );
+
+struct scorep_config_name_space
+{
+    const char*     name;
+    size_t          name_len;
+    SCOREP_Hashtab* variables;
+};
+
+static size_t
+scorep_config_hash_variable( const void* key );
+
+static int32_t
+scorep_config_compare_variable( const void* key,
+                                const void* item_key );
+
+#define ENV_NAME_NAME_MAX 80
+struct scorep_config_variable
+{
+    SCOREP_ConfigVariable data;
+    char                  env_var_name[ ENV_NAME_NAME_MAX ];
+};
+
+static bool
+check_name( const char* name,
+            bool        allow_underscore );
+
+static void
+string_to_lower( char* str );
+
+static void
+string_to_upper( char* str );
 
 static inline bool
-parse_value
-(
-    const char*       value,
-    SCOREP_ConfigType type,
-    void*             variableReference,
-    void*             variableContext
-);
+parse_value( const char*       value,
+             SCOREP_ConfigType type,
+             void*             variableReference,
+             void*             variableContext );
 
 
 static inline void
-dump_value( const char*       prefix,
+dump_value( FILE*             out,
+            const char*       name,
             SCOREP_ConfigType type,
             void*             variableReference,
             void*             variableContext );
 
 
 SCOREP_Error_Code
-SCOREP_ConfigRegister
-(
-    const char*            nameSpace,
-    SCOREP_ConfigVariable* variables
-)
+SCOREP_ConfigInit( void )
 {
+    /* prevent calling me twice */
+    assert( !scorep_config_name_spaces );
+
+    scorep_config_name_spaces = SCOREP_Hashtab_CreateSize(
+        32,
+        scorep_config_hash_name_space,
+        scorep_config_compare_name_space );
+
+    if ( !scorep_config_name_spaces )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
+                             "Can't allocate hash table for config susbsystem" );
+    }
+
+    return SCOREP_SUCCESS;
+}
+
+void
+SCOREP_ConfigFini( void )
+{
+    assert( scorep_config_name_spaces );
+
+    SCOREP_Hashtab_Iterator* name_space_iter;
+    SCOREP_Hashtab_Entry*    name_space_entry;
+
+    /* Execute function for each entry */
+    name_space_iter = SCOREP_Hashtab_IteratorCreate( scorep_config_name_spaces );
+    for ( name_space_entry = SCOREP_Hashtab_IteratorFirst( name_space_iter );
+          name_space_entry;
+          name_space_entry = SCOREP_Hashtab_IteratorNext( name_space_iter ) )
+    {
+        struct scorep_config_name_space* name_space = name_space_entry->value;
+
+        SCOREP_Hashtab_FreeAll( name_space->variables,
+                                SCOREP_Hashtab_DeleteNone,
+                                SCOREP_Hashtab_DeleteFree );
+        free( name_space );
+    }
+    SCOREP_Hashtab_IteratorFree( name_space_iter );
+    SCOREP_Hashtab_Free( scorep_config_name_spaces );
+    scorep_config_name_spaces = NULL;
+}
+
+static struct scorep_config_name_space*
+scorep_config_get_name_space( const char* name, size_t nameLen, bool create )
+{
+    struct scorep_config_name_space key, * name_space;
+    key.name     = name;
+    key.name_len = nameLen;
+
+    size_t                hashHint;
+    SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find(
+        scorep_config_name_spaces,
+        &key,
+        &hashHint );
+
+    if ( entry )
+    {
+        return entry->value;
+    }
+
+    if ( !create )
+    {
+        return NULL;
+    }
+
+    name_space = calloc( 1, sizeof( *name_space ) + nameLen + 1 );
+    assert( name_space );
+
+    char* name_buffer = ( char* )name_space + sizeof( *name_space );
+    memcpy( name_buffer, name, nameLen + 1 );
+    string_to_lower( name_buffer );
+
+    name_space->name     = name_buffer;
+    name_space->name_len = nameLen;
+
+    name_space->variables = SCOREP_Hashtab_CreateSize(
+        32,
+        scorep_config_hash_variable,
+        scorep_config_compare_variable );
+
+    SCOREP_Hashtab_Insert( scorep_config_name_spaces,
+                           name_space,
+                           name_space,
+                           &hashHint );
+
+    return name_space;
+}
+
+
+static struct scorep_config_variable*
+scorep_config_get_variable( struct scorep_config_name_space* nameSpace,
+                            const char*                      name,
+                            bool                             create )
+{
+    struct scorep_config_variable key, * variable;
+    key.data.name = name;
+
+    size_t                hashHint;
+    SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find(
+        nameSpace->variables,
+        &key,
+        &hashHint );
+
+    if ( entry )
+    {
+        return entry->value;
+    }
+
+    if ( !create )
+    {
+        return NULL;
+    }
+
+    size_t name_len = strlen( name );
+    variable = calloc( 1, sizeof( *variable ) + name_len + 1 );
+    assert( variable );
+
+    char* name_buffer = ( char* )variable + sizeof( *variable );
+    memcpy( name_buffer, name, name_len + 1 );
+    string_to_lower( name_buffer );
+
+    variable->data.name = name_buffer;
+
+    /* build env name */
+    sprintf( variable->env_var_name,
+             "SCOREP_%.32s%s%.32s",
+             nameSpace->name,
+             nameSpace->name_len ? "_" : "",
+             variable->data.name );
+    string_to_upper( variable->env_var_name );
+
+    SCOREP_Hashtab_Insert( nameSpace->variables,
+                           variable,
+                           variable,
+                           &hashHint );
+
+    return variable;
+}
+
+
+SCOREP_Error_Code
+SCOREP_ConfigRegister( const char*            nameSpaceName,
+                       SCOREP_ConfigVariable* variables )
+{
+    assert( scorep_config_name_spaces );
+
+    assert( nameSpaceName );
+    size_t name_space_len = strlen( nameSpaceName );
+
+    assert( name_space_len <= 32 );
+
+    assert( check_name( nameSpaceName, false ) );
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                          "Register new variables in name space %s",
-                         nameSpace ? nameSpace : "" );
+                         nameSpaceName );
+
+    struct scorep_config_name_space* name_space;
+    name_space = scorep_config_get_name_space( nameSpaceName,
+                                               name_space_len,
+                                               true );
 
     while ( variables->name )
     {
-        /* "SCOREP" (+ "_" + namespace)? + "_" + name + 1 */
-        char environment_variable_name[ 9 + 2 * 32 ];
         bool successfully_parsed;
 
-        /* fail, if the programmer does not use the config system right */
+        /* fail, if the programmer does not use the config system correctly */
+        assert( variables->name );
         assert( variables->variableReference );
         assert( variables->defaultValue );
         /* the variableContext is checked in the parse_value function */
 
+        size_t name_len = strlen( variables->name );
+        assert( name_len > 1 && name_len <= 32 );
+        assert( check_name( variables->name, true ) );
+        assert( !isdigit( variables->name[ 0 ] ) );
+        assert( variables->name[ 0 ] != '_' );
+        assert( variables->name[ name_len - 1 ] != '_' );
+
+        struct scorep_config_variable* variable;
+        variable = scorep_config_get_variable( name_space,
+                                               variables->name,
+                                               true );
+
+        variable->data.type              = variables->type;
+        variable->data.variableReference = variables->variableReference;
+        variable->data.variableContext   = variables->variableContext;
+        variable->data.defaultValue      = variables->defaultValue;
+        variable->data.shortHelp         = variables->shortHelp;
+        variable->data.longHelp          = variables->longHelp;
+
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                              "Variable:      %s%s%s",
-                             nameSpace ? nameSpace : "",
-                             nameSpace ? "/" : "",
-                             variables->name );
+                             nameSpaceName,
+                             name_space_len ? "/" : "",
+                             variable->data.name );
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                              "  Type:        %s",
-                             scorep_config_type_to_string( variables->type ) );
+                             scorep_config_type_to_string( variable->data.type ) );
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "  Default:     %s", variables->defaultValue );
+                             "  Default:     %s", variable->data.defaultValue );
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "  Description: %s", variables->shortHelp );
+                             "  Description: %s", variable->data.shortHelp );
 
         /* set the variable to its default value */
-        successfully_parsed = parse_value( variables->defaultValue,
-                                           variables->type,
-                                           variables->variableReference,
-                                           variables->variableContext );
+        successfully_parsed = parse_value( variable->data.defaultValue,
+                                           variable->data.type,
+                                           variable->data.variableReference,
+                                           variable->data.variableContext );
 
         if ( !successfully_parsed )
         {
             SCOREP_ERROR( SCOREP_ERROR_EINVAL,
-                          "Can't set variable '%s%s%s' to "
-                          "default value `%s'",
-                          nameSpace ? "_" : "",
-                          nameSpace ? nameSpace : "",
-                          variables->name,
-                          variables->defaultValue );
+                          "Can't set variable '%s' to default value `%s'",
+                          variable->data.name,
+                          variable->data.defaultValue );
             /* This is actually not user input, but a programming error */
             /* therefore we can assert here */
             assert( successfully_parsed );
         }
-
-        /* generate environment variable name */
-        sprintf( environment_variable_name, "SCOREP%s%.32s_%.32s",
-                 nameSpace ? "_" : "",
-                 nameSpace ? nameSpace : "",
-                 variables->name );
-
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "  Environment variable name: %s",
-                             environment_variable_name );
-
-        const char* environment_variable_value =
-            getenv( environment_variable_name );
-        if ( environment_variable_value )
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                 "    Value: %s", environment_variable_value );
-
-            /* set the variable to the value of the environment variable */
-            successfully_parsed = parse_value( environment_variable_value,
-                                               variables->type,
-                                               variables->variableReference,
-                                               variables->variableContext );
-
-            if ( !successfully_parsed )
-            {
-                return SCOREP_ERROR( SCOREP_ERROR_EINVAL,
-                                     "Can't set variable '%s%s%s' to "
-                                     "value `%s' from environment variable",
-                                     nameSpace ? "_" : "",
-                                     nameSpace ? nameSpace : "",
-                                     variables->name,
-                                     environment_variable_value );
-            }
-        }
-        else
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                 "    Variable is unset" );
-        }
-
-        SCOREP_DEBUG_ONLY
-        (
-            dump_value( "  Final value: ",
-                        variables->type,
-                        variables->variableReference,
-                        variables->variableContext );
-        )
 
         variables++;
     }
@@ -168,6 +328,206 @@ SCOREP_ConfigRegister
     return SCOREP_SUCCESS;
 }
 
+
+SCOREP_Error_Code
+SCOREP_ConfigApplyEnv( void )
+{
+    assert( scorep_config_name_spaces );
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Apply environment to config variables %s",
+                         nameSpace );
+
+    SCOREP_Hashtab_Iterator* name_space_iter;
+    SCOREP_Hashtab_Entry*    name_space_entry;
+
+    /* Execute function for each entry */
+    name_space_iter = SCOREP_Hashtab_IteratorCreate( scorep_config_name_spaces );
+    for ( name_space_entry = SCOREP_Hashtab_IteratorFirst( name_space_iter );
+          name_space_entry;
+          name_space_entry = SCOREP_Hashtab_IteratorNext( name_space_iter ) )
+    {
+        struct scorep_config_name_space* name_space = name_space_entry->value;
+
+        SCOREP_Hashtab_Iterator*         variable_iter;
+        SCOREP_Hashtab_Entry*            variable_entry;
+
+        variable_iter = SCOREP_Hashtab_IteratorCreate( name_space->variables );
+        for ( variable_entry = SCOREP_Hashtab_IteratorFirst( variable_iter );
+              variable_entry;
+              variable_entry = SCOREP_Hashtab_IteratorNext( variable_iter ) )
+        {
+            struct scorep_config_variable* variable = variable_entry->value;
+
+            const char*                    environment_variable_value =
+                getenv( variable->env_var_name );
+            if ( environment_variable_value )
+            {
+                SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                                     "Env value: %s", environment_variable_value );
+
+                /* set the variable to the value of the environment variable */
+                bool successfully_parsed;
+                successfully_parsed = parse_value( environment_variable_value,
+                                                   variable->data.type,
+                                                   variable->data.variableReference,
+                                                   variable->data.variableContext );
+
+                if ( !successfully_parsed )
+                {
+                    SCOREP_Hashtab_IteratorFree( variable_iter );
+                    SCOREP_Hashtab_IteratorFree( name_space_iter );
+
+                    return SCOREP_ERROR( SCOREP_ERROR_EINVAL,
+                                         "Can't set variable '%s' to "
+                                         "value `%s' from environment variable",
+                                         variable->env_var_name,
+                                         environment_variable_value );
+                }
+            }
+            else
+            {
+                SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                                     "    Variable is unset" );
+            }
+        }
+        SCOREP_Hashtab_IteratorFree( variable_iter );
+    }
+    SCOREP_Hashtab_IteratorFree( name_space_iter );
+
+    return SCOREP_SUCCESS;
+}
+
+
+SCOREP_Error_Code
+SCOREP_ConfigDump( FILE* dumpFile )
+{
+    assert( dumpFile );
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Dump config variables to file",
+                         nameSpace );
+
+    SCOREP_Hashtab_Iterator* name_space_iter;
+    SCOREP_Hashtab_Entry*    name_space_entry;
+
+    /* Execute function for each entry */
+    name_space_iter = SCOREP_Hashtab_IteratorCreate( scorep_config_name_spaces );
+    for ( name_space_entry = SCOREP_Hashtab_IteratorFirst( name_space_iter );
+          name_space_entry;
+          name_space_entry = SCOREP_Hashtab_IteratorNext( name_space_iter ) )
+    {
+        struct scorep_config_name_space* name_space = name_space_entry->value;
+
+        SCOREP_Hashtab_Iterator*         variable_iter;
+        SCOREP_Hashtab_Entry*            variable_entry;
+
+        variable_iter = SCOREP_Hashtab_IteratorCreate( name_space->variables );
+        for ( variable_entry = SCOREP_Hashtab_IteratorFirst( variable_iter );
+              variable_entry;
+              variable_entry = SCOREP_Hashtab_IteratorNext( variable_iter ) )
+        {
+            struct scorep_config_variable* variable = variable_entry->value;
+
+            dump_value( dumpFile,
+                        variable->env_var_name,
+                        variable->data.type,
+                        variable->data.variableReference,
+                        variable->data.variableContext );
+        }
+        SCOREP_Hashtab_IteratorFree( variable_iter );
+    }
+    SCOREP_Hashtab_IteratorFree( name_space_iter );
+
+    return SCOREP_SUCCESS;
+}
+
+
+static size_t
+scorep_config_hash_name_space( const void* key )
+{
+    const struct scorep_config_name_space* name_space = key;
+
+    return SCOREP_Hashtab_HashString( name_space->name );
+}
+
+
+static int32_t
+scorep_config_compare_name_space( const void* key, const void* item_key )
+{
+    const struct scorep_config_name_space* name_space_0 = key;
+    const struct scorep_config_name_space* name_space_1 = item_key;
+
+    if ( name_space_0->name_len == name_space_1->name_len )
+    {
+        return strcasecmp( name_space_0->name, name_space_1->name );
+    }
+
+    return 1;
+}
+
+
+static size_t
+scorep_config_hash_variable( const void* key )
+{
+    const struct scorep_config_variable* variable = key;
+
+    return SCOREP_Hashtab_HashString( variable->data.name );
+}
+
+
+static int32_t
+scorep_config_compare_variable( const void* key, const void* item_key )
+{
+    const struct scorep_config_variable* variable_0 = key;
+    const struct scorep_config_variable* variable_1 = item_key;
+
+    return strcasecmp( variable_0->data.name, variable_1->data.name );
+}
+
+
+static void
+string_to_upper( char* str )
+{
+    while ( *str )
+    {
+        if ( isalpha( *str ) )
+        {
+            *str = toupper( *str );
+        }
+        str++;
+    }
+}
+
+static void
+string_to_lower( char* str )
+{
+    while ( *str )
+    {
+        if ( isalpha( *str ) )
+        {
+            *str = tolower( *str );
+        }
+        str++;
+    }
+}
+
+static bool
+check_name( const char* name, bool allow_underscore )
+{
+    const char* str = name;
+    while ( *str )
+    {
+        if ( !isalnum( *str ) && ( !allow_underscore || *str != '_' ) )
+        {
+            printf( "invalid character in `%s' at position %zu: '%c'\n", name, str - name, *str );
+            return false;
+        }
+        str++;
+    }
+
+    return true;
+}
 
 static inline bool
 parse_bool( const char* value,
@@ -241,9 +601,9 @@ parse_bool( const char* value,
             bool*       boolReference )
 {
     /* try symbolic constants */
-    if ( 0 == strcmp( value, "true" ) ||
-         0 == strcmp( value, "yes" ) ||
-         0 == strcmp( value, "on" ) )
+    if ( 0 == strcasecmp( value, "true" ) ||
+         0 == strcasecmp( value, "yes" ) ||
+         0 == strcasecmp( value, "on" ) )
     {
         *boolReference = true;
         return true;
@@ -501,6 +861,8 @@ trim_string( char* str )
         }
     }
 
+    string_to_upper( str );
+
     return str;
 }
 
@@ -557,7 +919,7 @@ parse_set( const char* value,
         size_t i;
         for ( i = 0; i < string_list_len; i++ )
         {
-            if ( 0 == strcmp( entry, string_list[ i ] ) )
+            if ( 0 == strcasecmp( entry, string_list[ i ] ) )
             {
                 break;
             }
@@ -573,7 +935,7 @@ parse_set( const char* value,
               acceptedValues && *acceptedValue;
               acceptedValue++ )
         {
-            if ( 0 == strcmp( entry, *acceptedValue ) )
+            if ( 0 == strcasecmp( entry, *acceptedValue ) )
             {
                 /* found entry in accepted values list */
                 break;
@@ -628,7 +990,7 @@ parse_bitset( const char*                 value,
               acceptedValue->name;
               acceptedValue++ )
         {
-            if ( 0 == strcmp( entry, acceptedValue->name ) )
+            if ( 0 == strcasecmp( entry, acceptedValue->name ) )
             {
                 /* found entry in accepted values list
                    add its value to the set */
@@ -650,58 +1012,50 @@ parse_bitset( const char*                 value,
 
 
 static inline void
-dump_set( const char* prefix,
+dump_set( FILE*       out,
+          const char* name,
           char**      stringList )
 {
-    const char* prefix_printed = prefix;
-    const char* empty_set      = "<empty set>";
+    const char* sep = "";
 
-    SCOREP_DEBUG_PREFIX( SCOREP_DEBUG_CONFIG );
-
+    fprintf( out, "%s=\"", name );
     while ( *stringList )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CONFIG,
-                                 "%s%s", prefix, *stringList );
-        stringList++;
-        prefix         = ", ";
-        prefix_printed = "";
-        empty_set      = "";
-    }
+        fprintf( out, "%s%s", sep, *stringList );
+        sep = ",";
 
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "%s%s\n", prefix_printed, empty_set );
+        stringList++;
+    }
+    fprintf( out, "\"\n" );
 }
 
 static inline void
-dump_bitset( const char*                 prefix,
+dump_bitset( FILE*                       out,
+             const char*                 name,
              uint64_t                    bitmask,
              SCOREP_ConfigType_SetEntry* acceptedValues )
 {
-    const char* prefix_printed = prefix;
-    const char* empty_set      = "<empty set>";
+    const char* sep = "";
 
-    SCOREP_DEBUG_PREFIX( SCOREP_DEBUG_CONFIG );
-
+    fprintf( out, "%s=\"", name );
     while ( acceptedValues->name )
     {
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CONFIG,
-                                     "%s%s", prefix, acceptedValues->name );
-            bitmask       &= ~acceptedValues->value;
-            prefix         = ", ";
-            prefix_printed = "";
-            empty_set      = "";
+            fprintf( out, "%s%s", sep, acceptedValues->name );
+            sep = ",";
+
+            bitmask &= ~acceptedValues->value;
         }
+
         acceptedValues++;
     }
-
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "%s%s\n", prefix_printed, empty_set );
+    fprintf( out, "\"\n" );
 }
 
 static inline void
-dump_value( const char*       prefix,
+dump_value( FILE*             out,
+            const char*       name,
             SCOREP_ConfigType type,
             void*             variableReference,
             void*             variableContext )
@@ -709,43 +1063,43 @@ dump_value( const char*       prefix,
     switch ( type )
     {
         case SCOREP_CONFIG_TYPE_BOOL:
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                 "%s%s", prefix,
-                                 *( bool* )variableReference ? "true" : "false" );
+            fprintf( out,
+                     "%s=%s\n",
+                     name,
+                     *( bool* )variableReference ? "true" : "false" );
             break;
 
         case SCOREP_CONFIG_TYPE_SET:
-            dump_set( prefix, *( char*** )variableReference );
+            dump_set( out, name, *( char*** )variableReference );
             break;
 
         case SCOREP_CONFIG_TYPE_BITSET:
-            dump_bitset( prefix,
+            dump_bitset( out,
+                         name,
                          *( uint64_t* )variableReference,
                          variableContext );
             break;
 
         case SCOREP_CONFIG_TYPE_NUMBER:
         case SCOREP_CONFIG_TYPE_SIZE:
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG, "%s%" PRIu64,
-                                 prefix, *( uint64_t* )variableReference );
-
+            fprintf( out,
+                     "%s=%" PRIu64 "\n",
+                     name,
+                     *( uint64_t* )variableReference );
             break;
 
         case SCOREP_CONFIG_TYPE_STRING:
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG, "%s\"%s\"",
-                                 prefix, *( const char** )variableReference );
+            /** @todo escape string */
+            fprintf( out,
+                     "%s=\"%s\"\n",
+                     name,
+                     *( const char** )variableReference );
 
             break;
 
         case SCOREP_CONFIG_TYPE_PATH:
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                 "%stype not implemented", prefix );
-            break;
-
         case SCOREP_INVALID_CONFIG_TYPE:
         default:
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                 "%sinvalid type", prefix );
             break;
     }
 }

@@ -33,7 +33,7 @@
 
 
 void
-SCOREP_Env_InitializeCoreEnvironmentVariables();
+SCOREP_Env_RegisterCoreEnvironmentVariables();
 
 
 //bool

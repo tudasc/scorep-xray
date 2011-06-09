@@ -96,28 +96,28 @@ static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
    Configuration variable registration structures for the profiling system.
  */
 static SCOREP_ConfigVariable scorep_profile_configs[] = {
-    { "MAX_CALLPATH_DEPTH",
+    { "max_callpath_depth",
       SCOREP_CONFIG_TYPE_NUMBER,
       &scorep_profile_max_callpath_depth,
       NULL,
       "30",
       "Maximum depth of the calltree",
       "Maximum depth of the calltree" },
-    { "MAX_CALLPATH_NUM",
+    { "max_callpath_num",
       SCOREP_CONFIG_TYPE_NUMBER,
       &scorep_profile_max_callpath_num,
       NULL,
       "1000000000",
       "Maximum number of nodes in the calltree",
       "Maximum number of nodes in the calltree" },
-    { "PROFILE_BASE_NAME",
+    { "base_name",
       SCOREP_CONFIG_TYPE_STRING,
       &scorep_profile_basename,
       NULL,
       "profile",
       "Base for construction of the profile filename",
       "String which is used as based to create the filenames for the profile files" },
-    { "PROFILE_FORMAT",
+    { "format",
       SCOREP_CONFIG_TYPE_BITSET,
       &scorep_profile_output_format,
       ( void* )scorep_profile_format_table,
@@ -249,7 +249,7 @@ scorep_profile_setup_start_from_parent( scorep_profile_node* node )
 void
 SCOREP_Profile_Register()
 {
-    SCOREP_ConfigRegister( NULL, scorep_profile_configs );
+    SCOREP_ConfigRegister( "profiling", scorep_profile_configs );
 }
 
 

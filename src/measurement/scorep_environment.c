@@ -50,7 +50,7 @@ static uint64_t scorep_env_page_size;
 /** @brief Measurement system configure variables */
 SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
     {
-        "ENABLE_PROFILING",
+        "enable_profiling",
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_profiling,
         NULL,
@@ -59,7 +59,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "enable profiling"
     },
     {
-        "ENABLE_TRACING",
+        "enable_tracing",
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_tracing,
         NULL,
@@ -68,7 +68,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "enable tracing"
     },
     {
-        "VERBOSE",
+        "verbose",
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_verbose,
         NULL,
@@ -77,7 +77,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "Long help"
     },
     {
-        "TOTAL_MEMORY",
+        "total_memory",
         SCOREP_CONFIG_TYPE_SIZE,
         &scorep_env_total_memory,
         NULL,
@@ -86,7 +86,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         ""
     },
     {
-        "PAGE_SIZE",
+        "page_size",
         SCOREP_CONFIG_TYPE_SIZE,
         &scorep_env_page_size,
         NULL,
@@ -99,7 +99,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
 
 
 void
-SCOREP_Env_InitializeCoreEnvironmentVariables()
+SCOREP_Env_RegisterCoreEnvironmentVariables()
 {
     if ( scorep_env_core_environment_variables_initialized )
     {
@@ -108,7 +108,7 @@ SCOREP_Env_InitializeCoreEnvironmentVariables()
 
     scorep_env_core_environment_variables_initialized = true;
 
-    SCOREP_Error_Code error = SCOREP_ConfigRegister( NULL, scorep_env_core_environment_variables );
+    SCOREP_Error_Code error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
 
     if ( SCOREP_SUCCESS != error )
     {
@@ -116,12 +116,12 @@ SCOREP_Env_InitializeCoreEnvironmentVariables()
         _Exit( EXIT_FAILURE );
     }
 
-    assert( scorep_env_total_memory > scorep_env_page_size );
+    //assert( scorep_env_total_memory > scorep_env_page_size );
 
-    if ( SCOREP_Env_RunVerbose() )
-    {
-        fprintf( stderr, "SCOREP running in verbose mode\n" );
-    }
+    //if ( SCOREP_Env_RunVerbose() )
+    //{
+    //    fprintf( stderr, "SCOREP running in verbose mode\n" );
+    //}
 
     /// @todo print summary of environment variables and/or a config file.
     /// Therefore it would be better to centralize all environment variables.
@@ -163,6 +163,7 @@ uint64_t
 SCOREP_Env_GetTotalMemory()
 {
     assert( scorep_env_core_environment_variables_initialized );
+    assert( scorep_env_total_memory > scorep_env_page_size );
     return scorep_env_total_memory;
 }
 
@@ -171,5 +172,6 @@ uint64_t
 SCOREP_Env_GetPageSize()
 {
     assert( scorep_env_core_environment_variables_initialized );
+    assert( scorep_env_total_memory > scorep_env_page_size );
     return scorep_env_page_size;
 }

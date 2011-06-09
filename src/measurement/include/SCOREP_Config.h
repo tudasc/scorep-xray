@@ -18,6 +18,8 @@
 #define SCOREP_CONFIG_H
 
 
+#include <stdio.h>
+
 
 /**
  * @file        SCOREP_Config.h
@@ -48,6 +50,12 @@
    with their current and default value and a appropriate help description to
    the user.
 
+ * There is a limitation of 32 characters, per namespace, per variable name.
+
+ * Namespaces and variables can consists only of alpha numeric characters
+   and varialbes can also have "_" - underscore ( but not at the beginning
+   or end).
+
  * @{
  */
 
@@ -57,12 +65,21 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+
+SCOREP_Error_Code
+SCOREP_ConfigInit( void );
+
+
+void
+SCOREP_ConfigFini( void );
+
+
 /**
  * Register a set of configure variables to the measurement system.
  *
- * @param nameSpace the namespace in which these variables reside can be
- *                  @a NULL for global namespace
- * @param variables array of type SCOREP_ConfigVariable which will be registered
+ * @param nameSpace The namespace in which these variables reside in.
+ *                  (Can be the empty string, for the global namespace.)
+ * @param variables Array of type SCOREP_ConfigVariable which will be registered
  *                  to the measurement system. Terminated by
  *                  @a SCOREP_CONFIG_TERMINATOR.
 
@@ -82,7 +99,7 @@
  *          SCOREP_CONFIG_TERMINATOR
  *      };
  *      :
- *      SCOREP_ConfigRegister( NULL, unify_vars ); // in global namespace
+ *      SCOREP_ConfigRegister( "", unify_vars ); // in global namespace
  * @endcode
 
  * @note the @a variables array will not be referenced from the measurement
@@ -99,11 +116,16 @@
  * @return Successful registration or failure
  */
 SCOREP_Error_Code
-SCOREP_ConfigRegister
-(
-    const char*            nameSpace,
-    SCOREP_ConfigVariable* variables
-);
+SCOREP_ConfigRegister( const char*            nameSpace,
+                       SCOREP_ConfigVariable* variables );
+
+
+SCOREP_Error_Code
+SCOREP_ConfigApplyEnv( void );
+
+
+SCOREP_Error_Code
+SCOREP_ConfigDump( FILE* dumpFile );
 
 
 /**

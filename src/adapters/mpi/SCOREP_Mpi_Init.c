@@ -184,7 +184,7 @@ static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
  */
 SCOREP_ConfigVariable scorep_mpi_configs[] = {
     {
-        "ENABLE_GROUPS",
+        "enable_groups",
         SCOREP_CONFIG_TYPE_BITSET,
         &scorep_mpi_enabled,
         ( void* )scorep_mpi_enable_groups,

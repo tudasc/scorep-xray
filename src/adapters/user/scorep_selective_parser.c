@@ -54,12 +54,13 @@ char* scorep_selective_file_name = NULL;
  */
 SCOREP_ConfigVariable scorep_selective_configs[] = {
     {
-        "SELECTIVE_CONFIG_FILE",
+        "config_file",
         SCOREP_CONFIG_TYPE_STRING,
         &scorep_selective_file_name,
         NULL,
         "",
-        "A file name which configures selective tracing"
+        "A file name which configures selective tracing",
+        ""
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -459,7 +460,7 @@ scorep_selective_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                          "Register config variables for selective tracing" );
-    return SCOREP_ConfigRegister( NULL, scorep_selective_configs );
+    return SCOREP_ConfigRegister( "selective", scorep_selective_configs );
 }
 
 /**
