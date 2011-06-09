@@ -1,6 +1,28 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
+## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
+if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
+    AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
+fi
+
+cross_compiling=${ac_scorep_cross_compiling}
+
+ac_scorep_backend=yes
+if test "x${ac_scorep_cross_compiling}" = "xyes"; then
+    ac_scorep_frontend=no
+else
+    ac_scorep_frontend=yes
+fi
+
+#if test "x${ac_scorep_platform}" = "xibm"; then
+    cross_compiling=yes
+    # on power6 systems with poe, e.g. JUMP, we cannot execute a MPI
+    # program on the login node. By setting cross_compiling temporarily
+    # to "yes", we allow configure to succeed. Wrap all macros that might
+    # execute a program in a cross_compiling=yes block, e.g. AC_CHECK_SIZEOF
+#fi
+
 AC_SCOREP_PRECIOUS_VARS_MPI
 
 AC_SCOREP_CHECK_COMPILER_VAR_SET([MPICC])
@@ -21,20 +43,6 @@ AC_SCOREP_CONVERT_MPI_FLAGS([FCFLAGS])
 AC_SCOREP_CONVERT_MPI_FLAGS([LD_FLAGS])
 AC_SCOREP_CONVERT_MPI_FLAGS([LIBS])
 
-
-## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
-if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
-    AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
-fi
-
-cross_compiling=${ac_scorep_cross_compiling}
-#if test "x${ac_scorep_platform}" = "xibm"; then
-    cross_compiling=yes
-    # on power6 systems with poe, e.g. JUMP, we cannot execute a MPI
-    # program on the login node. By setting cross_compiling temporarily
-    # to "yes", we allow configure to succeed. Wrap all macros that might
-    # execute a program in a cross_compiling=yes block, e.g. AC_CHECK_SIZEOF
-#fi
 AC_LANG_PUSH([C])
 AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
 AC_CHECK_SIZEOF([void *])
