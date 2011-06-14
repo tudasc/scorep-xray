@@ -74,7 +74,7 @@ static uint64_t scorep_profile_max_callpath_depth = 30;
    a single node. This parameter allows to limit the memory
    usage of the profile.
  */
-static uint64_t scorep_profile_max_callpath_num = -1;
+static uint64_t scorep_profile_max_callpath_num = UINT64_MAX;
 
 /**
    Stores the configuration setting for output format.
