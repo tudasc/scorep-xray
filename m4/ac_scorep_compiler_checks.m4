@@ -126,22 +126,22 @@ AS_IF([test "x${scorep_compiler_gnu}" = "xyes"],
 
 ##
 
-AC_DEFUN([SCOREP_COMPILER_HP],[
-AC_MSG_CHECKING([for hp compiler])
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
-[[#if defined(__HP_cc) || defined(__hpux) || defined(__hpua)
-#else
-# error "Not a HP compiler."
-#endif
-]])],
-                  [scorep_compiler_hp="yes"; scorep_compiler_unknown="no"], 
-                  [scorep_compiler_hp="no"])
-AC_MSG_RESULT([$scorep_compiler_hp])
-AS_IF([test "x${scorep_compiler_hp}" = "xyes"], 
-      [scorep_compiler_instrumentation_cppflags=""]
-       AC_DEFINE([FORTRAN_MANGLED(var)], [hp compiler's Fortran mangling not implemented yet, see ac_scorep_compiler_checks.m4], 
-                 [Name of var after mangled by the Fortran compiler.]))
-])
+dnl AC_DEFUN([SCOREP_COMPILER_HP],[
+dnl AC_MSG_CHECKING([for hp compiler])
+dnl AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
+dnl [[#if defined(__HP_cc) || defined(__hpux) || defined(__hpua)
+dnl #else
+dnl # error "Not a HP compiler."
+dnl #endif
+dnl ]])],
+dnl                   [scorep_compiler_hp="yes"; scorep_compiler_unknown="no"], 
+dnl                   [scorep_compiler_hp="no"])
+dnl AC_MSG_RESULT([$scorep_compiler_hp])
+dnl AS_IF([test "x${scorep_compiler_hp}" = "xyes"], 
+dnl       [scorep_compiler_instrumentation_cppflags=""]
+dnl        AC_DEFINE([FORTRAN_MANGLED(var)], [hp compiler's Fortran mangling not implemented yet, see ac_scorep_compiler_checks.m4], 
+dnl                  [Name of var after mangled by the Fortran compiler.]))
+dnl ])
 
 ## 
 
@@ -216,7 +216,7 @@ scorep_compiler_sun="no"
 scorep_compiler_ibm="no"
 scorep_compiler_pgi="no"
 scorep_compiler_gnu="no"
-scorep_compiler_hp="no"
+dnl scorep_compiler_hp="no"
 scorep_compiler_sx="no"
 scorep_compiler_cray="no"
 
@@ -230,7 +230,7 @@ SCOREP_COMPILER_SUN
 SCOREP_COMPILER_IBM
 SCOREP_COMPILER_PGI
 SCOREP_COMPILER_GNU
-SCOREP_COMPILER_HP
+dnl SCOREP_COMPILER_HP
 SCOREP_COMPILER_SX
 SCOREP_COMPILER_CRAY
 AC_LANG_POP([C])
@@ -244,7 +244,7 @@ AM_CONDITIONAL([SCOREP_COMPILER_SUN],   [test "x${scorep_compiler_sun}"   = "xye
 AM_CONDITIONAL([SCOREP_COMPILER_IBM],   [test "x${scorep_compiler_ibm}"   = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_PGI],   [test "x${scorep_compiler_pgi}"   = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_GNU],   [test "x${scorep_compiler_gnu}"   = "xyes"])
-AM_CONDITIONAL([SCOREP_COMPILER_HP],    [test "x${scorep_compiler_hp}"    = "xyes"])
+dnl AM_CONDITIONAL([SCOREP_COMPILER_HP],    [test "x${scorep_compiler_hp}"    = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_SX],    [test "x${scorep_compiler_sx}"    = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_CRAY],  [test "x${scorep_compiler_cray}"  = "xyes"])
 ])
