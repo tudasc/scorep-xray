@@ -35,6 +35,32 @@
 #include "SCOREP_Instrumenter.hpp"
 #include "scorep_config_tool_backend.h"
 
+
+/* ****************************************************************************
+   Compiler specific defines
+******************************************************************************/
+#ifdef SCOREP_COMPILER_INTEL
+#define OPARI_MANGLING_SCHEME "intel"
+
+#elif SCOREP_COMPILER_SUN
+#define OPARI_MANGLING_SCHEME "sun"
+
+#elif SCOREP_COMPILER_IBM
+#define OPARI_MANGLING_SCHEME "ibm"
+
+#elif SCOREP_COMPILER_PGI
+#define OPARI_MANGLING_SCHEME "pgi"
+
+#elif SCOREP_COMPILER_GNU
+#define OPARI_MANGLING_SCHEME "gnu"
+
+#elif SCOREP_COMPILER_CRAY
+/* Opari2 has no option for the Cray compiler, yet. However, Cray uses the same
+   mangling scheme like the GNU compiler. */
+#define OPARI_MANGLING_SCHEME "gnu"
+
+#endif
+
 /* ****************************************************************************
    Main interface
 ******************************************************************************/
@@ -687,11 +713,12 @@ void
 SCOREP_Instrumenter::invoke_opari( std::string input_file,
                                    std::string output_file )
 {
-    std::string command = opari
+    std::string command = opari + " --tpd "
 #ifdef SCOREP_COMPILER_CRAY
-                          + " --tpd --nosrc "
-#else
-                          + " --tpd "
+                          "--nosrc "
+#endif
+#ifdef OPARI_MANGLING_SCHEME
+                          "--tpd-mangling " OPARI_MANGLING_SCHEME " "
 #endif
                           + input_file
                           + " " + output_file;
