@@ -51,7 +51,7 @@ local1)
       endif
       end
 #else
-#include <SCOREP_User_Pgi.inc>
+#include <scorep/SCOREP_User_Pgi.inc>
 
       program ScorepTest
 
