@@ -51,7 +51,7 @@ void
 scorep_profile_update_dense_metric( scorep_profile_dense_metric* metric,
                                     uint64_t                     end_value )
 {
-    double diff = end_value - metric->start_value;
+    uint64_t diff = end_value - metric->start_value;
     metric->sum += diff;
     if ( metric->min > diff )
     {
@@ -61,7 +61,7 @@ scorep_profile_update_dense_metric( scorep_profile_dense_metric* metric,
     {
         metric->max = diff;
     }
-    metric->squares += diff * diff;
+    metric->squares += ( diff * diff );
 }
 
 /* Copies the value of a dense metric to another dense metric. */
