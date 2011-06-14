@@ -28,7 +28,7 @@
 
 #include <config.h>
 
-#include <SCOREP_Tau.h>
+#include <scorep/SCOREP_Tau.h>
 
 
 int

@@ -30,7 +30,7 @@
 
 #include "SCOREP_DefinitionHandles.h"
 #include "SCOREP_Types.h"
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 #include <stdint.h>
 
 

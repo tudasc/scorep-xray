@@ -28,8 +28,8 @@
     use the macros provided in SCOREP_User.h.
  */
 
-#include "SCOREP_User_Types.h"
-#include "SCOREP_User_Variables.h"
+#include <scorep/SCOREP_User_Types.h>
+#include <scorep/SCOREP_User_Variables.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus

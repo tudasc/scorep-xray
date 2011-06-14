@@ -26,7 +26,7 @@
  * @brief Declaration of internal functins for lock management.
  */
 
-#include "SCOREP_PublicTypes.h"
+#include <scorep/SCOREP_PublicTypes.h>
 
 /** Definition of the type of the lock handle */
 typedef uint32_t SCOREP_Pomp_LockHandleType;

@@ -31,7 +31,7 @@
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Events.h"
 #include "SCOREP_Pomp_Init.h"
-#include "pomp2_lib.h"
+#include "scorep/pomp2_lib.h"
 #include "SCOREP_Pomp_RegionInfo.h"
 #include "SCOREP_Pomp_Lock.h"
 #include "scorep_utility/SCOREP_Utils.h"

@@ -29,7 +29,7 @@
  */
 
 
-#include "SCOREP_User_Types.h"
+#include <scorep/SCOREP_User_Types.h>
 
 /**
  * This function is called at the beginning of phase. It first checks whether OA module is configured

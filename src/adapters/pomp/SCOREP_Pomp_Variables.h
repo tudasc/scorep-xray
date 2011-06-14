@@ -27,7 +27,7 @@
           POMP2 adapter.
  */
 
-#include "SCOREP_PublicTypes.h"
+#include <scorep/SCOREP_PublicTypes.h>
 #include <stdbool.h>
 
 /** @ingroup POMP2

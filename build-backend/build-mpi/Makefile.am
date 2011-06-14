@@ -35,7 +35,7 @@ PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 ## it is not recommended to use $(srcdir). On the other hand the INC_ROOT
 ## variables are evaluated during configure.
 INC_ROOT = $(srcdir)/../../
-PUBLIC_INC_DIR = $(INC_ROOT)include/scorep/
+PUBLIC_INC_DIR = $(INC_ROOT)include
 INC_DIR_OTF2 = $(srcdir)/../../vendor/otf2/include
 INC_DIR_UTIL = $(srcdir)/../../vendor/otf2/vendor/utility/include
 

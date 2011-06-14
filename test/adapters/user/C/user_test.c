@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#include "SCOREP_User.h"
+#include <scorep/SCOREP_User.h>
 
 #include "user_test_baz.c.inc"
 

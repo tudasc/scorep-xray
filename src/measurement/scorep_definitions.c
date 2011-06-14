@@ -35,7 +35,7 @@
 #include "scorep_runtime_management.h"
 #include "scorep_thread.h"
 #include <scorep_utility/SCOREP_Omp.h>
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Mutex.h>
 #include <otf2/otf2.h>

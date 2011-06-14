@@ -38,7 +38,7 @@
 #include <scorep_utility/SCOREP_Debug.h>
 
 
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 #include <scorep_runtime_management.h>
 #include <scorep_environment.h>
 #include <scorep_mpi.h>

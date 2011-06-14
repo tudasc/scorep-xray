@@ -28,7 +28,7 @@
 
 #include <config.h>
 
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 
 
 int

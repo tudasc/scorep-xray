@@ -33,7 +33,7 @@
 extern "C" {
 #endif
 
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 
 
 /**

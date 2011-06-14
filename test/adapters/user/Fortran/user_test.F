@@ -13,7 +13,7 @@
 !
 
 #ifndef SCOREP_COMPILER_PGI
-#include <SCOREP_User.inc>
+#include <scorep/SCOREP_User.inc>
 
       program ScorepTest
 

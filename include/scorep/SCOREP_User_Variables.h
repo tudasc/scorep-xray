@@ -35,7 +35,7 @@
 
 #include <stddef.h>
 
-#include "SCOREP_PublicTypes.h"
+#include <scorep/SCOREP_PublicTypes.h>
 
 /** @ingroup SCOREP_User_External
     @{

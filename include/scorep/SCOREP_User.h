@@ -27,9 +27,9 @@
 
 /* Guarded because it declares variables in every file where it is included. */
 #ifdef SCOREP_USER_ENABLE
-#include "SCOREP_User_Variables.h"
-#include "SCOREP_User_Functions.h"
-#include "SCOREP_OA_Functions.h"
+#include <scorep/SCOREP_User_Variables.h>
+#include <scorep/SCOREP_User_Functions.h>
+#include <scorep/SCOREP_OA_Functions.h>
 #endif
 
 /** @defgroup SCOREP_User SCOREP User Adapter

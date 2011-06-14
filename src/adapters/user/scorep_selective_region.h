@@ -34,7 +34,7 @@
  */
 
 #include <stdbool.h>
-#include <SCOREP_User_Types.h>
+#include <scorep/SCOREP_User_Types.h>
 #include <scorep_utility/SCOREP_Vector.h>
 
 /* **************************************************************************************

@@ -53,7 +53,7 @@ jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c       \
                             $(SRC_ROOT)test/jacobi/hybrid/C/main.mod.c         \
                             $(SRC_ROOT)test/jacobi/hybrid/C/main.c.opari.inc
 jacobi_mpi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_omp_c_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la @LIBBFD@
 
 # for some unknown reason we need an extra -I for the SUN compiler in
@@ -105,7 +105,7 @@ jacobi_mpi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.mod.cpp  
                               $(SRC_ROOT)test/jacobi/hybrid/C++/main.cpp.opari.inc
 jacobi_mpi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
-jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_omp_cxx_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_cxx.la @LIBBFD@
 
 check_PROGRAMS                            += jacobi_mpi_omp_cxx_unistrumented
@@ -171,7 +171,7 @@ jacobi_mpi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.
 jacobi_mpi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_mpi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
-jacobi_mpi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/hybrid/Fortran -I$(INC_ROOT)/src -I$(SRC_ROOT)/src
+jacobi_mpi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/hybrid/Fortran -I$(INC_ROOT)/src -I$(SRC_ROOT)/src
 jacobi_mpi_omp_f90_LDADD    = $(LIB_ROOT)libscorep_mpi_omp.la libjacobi_mpi_pomp_f90.la @LIBBFD@
 
 check_PROGRAMS                            += jacobi_mpi_omp_f90_unistrumented

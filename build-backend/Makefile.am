@@ -115,6 +115,7 @@ $(builddir)/scorep_config.dat:
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_ROOT)include\"                                         >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PUBLIC_INC_DIR)/scorep\"                                   >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_DIR_OTF2)\"                                            >> $(builddir)/scorep_config.dat
 	@echo INCDIR=\"$(INC_DIR_UTIL)\"                                            >> $(builddir)/scorep_config.dat
 	@echo SRC_ROOT=\"$(PUBLIC_INC_DIR)../../\"                                  >> $(builddir)/scorep_config.dat

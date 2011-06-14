@@ -8,7 +8,7 @@ pomp_test_SOURCES =                                      \
 	$(SRC_ROOT)/test/adapters/pomp/pomp_test.c.opari.inc
 
 pomp_test_CPPFLAGS = $(AM_CPPFLAGS)  \
-    -I$(PUBLIC_INC_DIR)              \
+    -I$(PUBLIC_INC_DIR)/scorep       \
     -I$(INC_DIR_UTIL)
 
 pomp_test_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)

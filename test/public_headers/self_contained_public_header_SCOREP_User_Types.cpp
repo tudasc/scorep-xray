@@ -28,7 +28,7 @@
 
 #include <config.h>
 
-#include <SCOREP_User_Types.h>
+#include <scorep/SCOREP_User_Types.h>
 
 
 int

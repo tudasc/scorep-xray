@@ -31,8 +31,8 @@
 #include <stdio.h>
 #include <mpi.h>
 
-#include "scorep_utility/SCOREP_Debug.h"
-#include "SCOREP_User.h"
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep/SCOREP_User.h>
 
 #include "scorep_mpiprofile.h"
 

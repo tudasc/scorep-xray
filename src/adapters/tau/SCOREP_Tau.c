@@ -27,13 +27,7 @@
 
 
 #include <config.h>
-#include <SCOREP_Tau.h>
-
-/*
- #include <SCOREP_Types.h>
- #include <SCOREP_Events.h>
- #include <SCOREP_Definitions.h>
- */
+#include <scorep/SCOREP_Tau.h>
 
 typedef uint32_t SCOREP_LineNo;
 

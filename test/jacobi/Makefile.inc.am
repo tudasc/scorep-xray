@@ -54,7 +54,7 @@ jacobi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.mod.c       \
                         $(SRC_ROOT)test/jacobi/OpenMP/C/main.mod.c         \
                         $(SRC_ROOT)test/jacobi/OpenMP/C/main.c.opari.inc
 jacobi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_omp_c_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c.la @LIBBFD@
 
 # for some unknown reason we need an extra -I for the SUN compiler in
@@ -106,7 +106,7 @@ jacobi_omp_cxx_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/jacobi.mod.cpp      
                           $(SRC_ROOT)test/jacobi/OpenMP/C++/main.cpp.opari.inc
 jacobi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
-jacobi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_omp_cxx_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_cxx.la @LIBBFD@
 
 check_PROGRAMS                        += jacobi_omp_cxx_uninstrumented
@@ -170,7 +170,7 @@ jacobi_omp_f90_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/VariableDef.f90 
 jacobi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_omp_f90_FCFLAGS  = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
-jacobi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(PUBLIC_INC_DIR) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/OpenMP/Fortran
+jacobi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/OpenMP/Fortran
 jacobi_omp_f90_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_f90.la @LIBBFD@
 
 check_PROGRAMS                        += jacobi_omp_f90_uninstrumented

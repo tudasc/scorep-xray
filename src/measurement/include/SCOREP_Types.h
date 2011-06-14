@@ -34,7 +34,7 @@
 #include <scorep_utility/SCOREP_Allocator.h>
 
 
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 
 
 /**

@@ -26,7 +26,7 @@
    @brief This file contains type definitions for manual user instrumentation.
  */
 
-#include "SCOREP_PublicTypes.h"
+#include <scorep/SCOREP_PublicTypes.h>
 
 /* **************************************************************************************
  * Typedefs

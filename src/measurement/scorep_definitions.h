@@ -27,7 +27,7 @@
  */
 
 #include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_PublicTypes.h>
 #include "scorep_definition_structs.h"
 #include "scorep_definition_macros.h"
 #include <SCOREP_Memory.h>
