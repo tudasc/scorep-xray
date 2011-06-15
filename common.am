@@ -15,17 +15,12 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       vendor/common/build-config/common.am 
+## file  vendor/common/build-config/common.am 
+##       Intended to be included by the components
+##       build-includes/common.am. Defines "common" entities that all
+##       components rely on.
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-
-## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4 is to be
-## rebuilt by make. This line is also used by autoreconf to run aclocal with
-## suitable options, or by autopoint and gettextize to locate the place where
-## Gettext's macros should be installed. So even if you do not really care about
-## the rebuild rules, you should define ACLOCAL_AMFLAGS.
-## Can't be moved to common.am
-ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 ## AM_CPPFLAGS: The contents of this variable are passed to every compilation 
 ## that invokes the C preprocessor; it is a list of arguments to the 
@@ -41,7 +36,7 @@ ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 ## AM_CPPFLAGS is ignored in preference to a per-executable (or per-library) 
 ## _CPPFLAGS variable if it is defined.  So add it if necessary.
 ##
-## -I$(srcdir)/../src: path to config.h
+## -I$(srcdir)/../src: path to config.h; is this really necessary?
 AM_CPPFLAGS = -I$(srcdir)/../src 
 
 ## Convenience variable, use for referencing sources, e.g.
@@ -49,22 +44,22 @@ AM_CPPFLAGS = -I$(srcdir)/../src
 ## See the note below
 SRC_ROOT = ../
 
-## Convenience variables, use for referencing include directories, e.g.
-## foo_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/bar -I$(INC_DIR_UTIL)
-## -I$(PUBLIC_INC_DIR). 
-## The otf2 and utility variables may be overriden when configuring using
-## the --with-otf2/utility options (to be done)
-## Note: we need different convenience variable because they are evaluated at
-## different times. The SRC_ROOT variable is evaluated at autoreconf time where
-## it is not recommended to use $(srcdir). On the other hand the INC_ROOT
-## variables are evaluated during configure.
+## Convenience variables, use for referencing include directories,
+## e.g.  foo_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/bar
+## -I$(INC_DIR_UTIL) -I$(PUBLIC_INC_DIR).
+## Note: we need different convenience variable for SRC and INC
+## because they are evaluated at different times. The SRC_ROOT
+## variable is evaluated at autoreconf time where it is not
+## recommended to use $(srcdir). On the other hand the INC_ROOT
+## variable is evaluated during configure.
 INC_ROOT = $(srcdir)/../
 PUBLIC_INC_DIR = $(INC_ROOT)include
 
 ## Not really needed but already in use.
 LIB_ROOT =
 
-## Add entities using += to the following primaries in locale Makefile.inc.ams
+## Add entities using += to the following primaries/variables in
+## locale Makefile.inc.ams
 bin_PROGRAMS =
 noinst_PROGRAMS =
 lib_LTLIBRARIES =
@@ -73,9 +68,9 @@ nobase_include_HEADERS =
 BUILT_SOURCES = 
 CLEANFILES = 
 EXTRA_DIST = 
-
 check_PROGRAMS = 
 check_LTLIBRARIES =
+PHONY_TARGETS =
 
 ## TESTS are handlend differntly because of cross-, mpi- and openmp
 ## environments, see the component specific common.am or Makefile.am resp.
@@ -83,14 +78,13 @@ check_LTLIBRARIES =
 # XFAIL_TESTS =
 # TESTS_ENVIRONMENT = 
 
-PHONY_TARGETS =
 .PHONY: $(PHONY_TARGETS)
 
-# Automatically update the libtool script if it becomes out-of-date.
+## Automatically update the libtool script if it becomes out-of-date.
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
-# need to have an empty rule here in order to stop recursion.
+## need to have an empty rule here in order to stop recursion.
 beautify:
 
 
