@@ -35,8 +35,6 @@
 #include <scorep_utility/SCOREP_Utils.h>
 #include <scorep_selective_region.h>
 
-#define BUFFER_SIZE 1024
-
 
 /* **************************************************************************************
    Variable definitions
@@ -266,45 +264,19 @@ scorep_selective_add( const char* name,
 static SCOREP_Error_Code
 scorep_selective_parse_file( FILE* file )
 {
-    size_t buffer_size = BUFFER_SIZE;
-    char*  buffer      = ( char* )malloc( buffer_size );
+    size_t buffer_size = 0;
+    char*  buffer      = NULL;
 
     /* Validity assertions */
     assert( file );
-    if ( buffer == NULL )
-    {
-        SCOREP_ERROR_POSIX( "Failed to allocate memory for string buffer" );
-        return SCOREP_ERROR_MEM_ALLOC_FAILED;
-    }
 
     /* Read file line by line */
     while ( !feof( file ) )
     {
-        /* Reads a line of arbitrary length*/
-        if ( !fgets( buffer, buffer_size, file ) )
+        SCOREP_Error_Code err = SCOREP_IO_GetLine( &buffer, &buffer_size, file );
+        if ( ( err != SCOREP_SUCCESS ) && ( err != SCOREP_ERROR_END_OF_BUFFER ) )
         {
-            break;
-        }
-
-        while ( strlen( buffer ) == buffer_size - 1 )
-        {
-            buffer_size += BUFFER_SIZE;
-            buffer       = ( char* )realloc( buffer, buffer_size );
-            if ( buffer == NULL )
-            {
-                SCOREP_ERROR_POSIX( "Failed to increase memory for string buffer" );
-                return SCOREP_ERROR_MEM_ALLOC_FAILED;
-            }
-            if ( !fgets( &buffer[ buffer_size - BUFFER_SIZE - 1 ],
-                         BUFFER_SIZE + 1, file ) )
-            {
-                break;
-            }
-        }
-        if ( ferror( file ) )
-        {
-            SCOREP_ERROR_POSIX( "Error while reading from file" );
-            return SCOREP_ERROR_FILE_INTERACTION;
+            return err;
         }
 
         /* Process line */
