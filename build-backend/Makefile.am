@@ -78,6 +78,11 @@ endif
 ## Convenience variable, used in common.am
 BUILD_DIR=build-backend
 
+## Here all libscorep_*.la are build
+LIB_DIR_SCOREP = ./
+
+## Here the MPI convenience libraries are build
+LIB_DIR_SCOREP_MPI = ../build-mpi/
 
 EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
                             clean-local-scorep-config-tests    \

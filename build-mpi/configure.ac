@@ -74,11 +74,11 @@ AC_LANG_POP([Fortran])
 
 AC_SCOREP_SVN_CONTROLLED
 AH_SCOREP_CONFIG_HEADER_CUSTOM
-AC_CONFIG_HEADERS([../../src/config-backend-mpi.h])
+AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 
 
-AC_CONFIG_AUX_DIR([../../build-config])
-AC_CONFIG_MACRO_DIR([../../vendor/common/build-config/m4])
+AC_CONFIG_AUX_DIR([../build-config])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11.1 -Wall tar-ustar])
 
@@ -203,8 +203,8 @@ AC_PROG_YACC
 
 AC_CONFIG_FILES([Makefile \
                  run_otf2_speed_test.sh \
-                 ../../test/jacobi/MPI/C/Makefile \
-                 ../../test/jacobi/hybrid/C/Makefile])
+                 ../test/jacobi/MPI/C/Makefile \
+                 ../test/jacobi/hybrid/C/Makefile])
 
 
 AC_OUTPUT

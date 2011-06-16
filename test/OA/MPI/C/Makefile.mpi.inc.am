@@ -35,7 +35,7 @@ oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	 \
 					-I$(INC_DIR_UTIL)                       \
 					-DSCOREP_USER_ENABLE
 
-oa_mpi_c_LDADD    = $(LIB_ROOT)libscorep_mpi.la
+oa_mpi_c_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
 
 endif
 # if MPI_SUPPOERTED

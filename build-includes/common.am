@@ -36,16 +36,18 @@ LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
 INC_DIR_UTIL = $(INC_ROOT)vendor/otf2/vendor/utility/include
 LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
 
-LIB_DIR_SCOREP_MPI = build-mpi/
-
 ##  Where to find the Jenkins' hash headers.
 INC_DIR_VENDOR_HASH = $(srcdir)/../vendor/hash
 
 
-SCOREP_SERIAL_TESTS =
+SCOREP_MPI_OMP_TESTS =
+SCOREP_MPI_OMP_XFAIL_TESTS =
+SCOREP_MPI_TESTS =
+SCOREP_MPI_XFAIL_TESTS = 
 SCOREP_OMP_TESTS =
-SCOREP_SERIAL_XFAIL_TESTS = 
 SCOREP_OMP_XFAIL_TESTS =
+SCOREP_SERIAL_TESTS =
+SCOREP_SERIAL_XFAIL_TESTS = 
 
 ## Header files that get generated for building the *_config tools.
 CONFIG_HEADER_BACKEND = $(SRC_ROOT)src/scorep_config_tool_backend.h
