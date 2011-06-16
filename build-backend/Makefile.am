@@ -1,8 +1,32 @@
-# scorep--backend
+# -*- mode: makefile -*-
 
-## The SUBDIRS variable holds a list of subdirectories automake (recursivly) 
-## must build. 
-#SUBDIRS = 
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       build-backend/Makefile.am 
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+
+## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4
+## is to be rebuilt by make. This line is also used by autoreconf to
+## run aclocal with suitable options, or by autopoint and gettextize
+## to locate the place where Gettext's macros should be installed. So
+## even if you do not really care about the rebuild rules, you should
+## define ACLOCAL_AMFLAGS.
+## For some reason this can't be moved to common.am.
+ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
 
@@ -31,26 +55,22 @@ endif
 
 endif
 
-CONFIG_HEADER_BACKEND = ../src/scorep_config_tool_backend.h
-CONFIG_HEADER_FRONTEND = ../src/scorep_config_tool_frontend.h
 
 if !BACKEND_TEST_RUNS
-BUILT_SOURCES += scorep_serial_tests.sh scorep_omp_tests.sh
+BUILT_SOURCES += scorep_serial_tests scorep_omp_tests
 
-scorep_serial_tests.sh: 
-	rm -f scorep_serial_tests.sh
-	echo "#!/bin/bash" > scorep_serial_tests.sh
-	for i in $(SCOREP_SERIAL_TESTS); do echo "./$$i" >> scorep_serial_tests.sh; done
-	chmod +x scorep_serial_tests.sh
+scorep_serial_tests: 
+	rm -f scorep_serial_tests
+	echo "# Available serial tests:" > scorep_serial_tests
+	for i in $(SCOREP_SERIAL_TESTS); do echo "$$i" >> scorep_serial_tests; done
 
 if OPENMP_SUPPORTED
-scorep_omp_tests.sh: 
-	rm -f scorep_omp_tests.sh
-	echo "#!/bin/bash" > scorep_omp_tests.sh
-	for i in $(SCOREP_OMP_TESTS); do echo "./$$i" >> scorep_omp_tests.sh; done
-	chmod +x scorep_omp_tests.sh
+scorep_omp_tests: 
+	rm -f scorep_omp_tests
+	echo "# Available OpenMP tests:" > scorep_omp_tests
+	for i in $(SCOREP_OMP_TESTS); do echo "$$i" >> scorep_omp_tests; done
 else
-scorep_omp_tests.sh:
+scorep_omp_tests:
 endif
 endif
 
@@ -58,23 +78,15 @@ endif
 ## Convenience variable, used in common.am
 BUILD_DIR=build-backend
 
-## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4 is to be
-## rebuilt by make. This line is also used by autoreconf to run aclocal with
-## suitable options, or by autopoint and gettextize to locate the place where
-## Gettext's macros should be installed. So even if you do not really care about
-## the rebuild rules, you should define ACLOCAL_AMFLAGS.
-## Can't be moved to common.am
-ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
                             clean-local-scorep-config-tests    \
                             clean-local-scorep-config-tool
 
 clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
-	rm -f scorep_serial_tests.sh  scorep_omp_tests.sh lex.yy.c scanner.h yacc.c yacc.h
+	rm -f scorep_serial_tests  scorep_omp_tests lex.yy.c scanner.h yacc.c yacc.h
 
-.PHONY: $(EXTRA_LOCAL_CLEAN_TARGETS) \
-        install-scorep-meets-tau
+PHONY_TARGETS += $(EXTRA_LOCAL_CLEAN_TARGETS) install-scorep-meets-tau
 
 clean-local-scorep-experiment-dirs:
 	rm -rf scorep-2*
@@ -123,7 +135,7 @@ $(builddir)/scorep_config.dat:
 	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
 	@echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"               >> $(builddir)/scorep_config.dat
-	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2_config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"                         >> $(builddir)/scorep_config.dat
+	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2_config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\" >> $(builddir)/scorep_config.dat
 	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
 	@echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
 

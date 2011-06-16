@@ -1,88 +1,52 @@
 ## -*- mode: makefile -*-
 
-## AM_CPPFLAGS: The contents of this variable are passed to every compilation 
-## that invokes the C preprocessor; it is a list of arguments to the 
-## preprocessor. For instance, -I and -D options should be listed here.
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Automake already provides some -I options automatically, in a separate
-## variable that is also passed to every compilation that invokes the C
-## preprocessor. In particular it generates -I., -I$(srcdir), and a -I
-## pointing to the directory holding config.h (if you've used
-## AC_CONFIG_HEADERS or AM_CONFIG_HEADER). You can disable the default -I
-## options using the nostdinc option.
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
 ##
-## AM_CPPFLAGS is ignored in preference to a per-executable (or per-library) 
-## _CPPFLAGS variable if it is defined. 
+## See the COPYING file in the package base directory for details.
 ##
-## -I$(srcdir)/../src: path to config.h
-## -I$(srcdir)/../vendor/include: external includes are found here, if any 
-AM_CPPFLAGS = -I$(srcdir)/../src 
+
+## file  build-includes/common.am 
+##       Intended to be included by the components
+##       build-(front|back)end/Makefile.am. Defines "common" entities
+##       that all build-* Makefiles rely on.
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-## Convenience variable, use for referencing sources, e.g.
-## foo_SOURCES = $(SRC_ROOT)src/foo/foo.c. For CPPFLAGS use SRC_ROOT_*
-## See the note below
-SRC_ROOT = ../
+include ../vendor/common/build-config/common.am
+
+## Convenience variable for referencing public headers that will be
+## installed. Use e.g. with the primary nobase_include_HEADERS
 PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 
-## Convenience variables, use for referencing include directories, e.g.
-## foo_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/bar -I$(INC_DIR_UTIL)
-## The otf2 and utility variables may be overriden when configuring using
-## the --with-otf2/utility options (to be done)
-## Note: we need different convenience variable because they are evaluated at
-## different times. The SRC_ROOT variable is evaluated at autoreconf time where
-## it is not recommended to use $(srcdir). On the other hand the INC_ROOT
-## variables are evaluated during configure.
-INC_ROOT = $(srcdir)/../
-PUBLIC_INC_DIR = $(INC_ROOT)include
-INC_DIR_OTF2 = $(srcdir)/../vendor/otf2/include
-INC_DIR_UTIL = $(srcdir)/../vendor/otf2/vendor/utility/include
-
-## The otf2 and utility variables may be overriden when configuring using
-## the --with-otf2/utility options (to be done)
-LIB_ROOT     = 
+## Path to the public headers and the libraries of the utility and
+## otf2 component. These variables need to be overriden when
+## configuring using the --with-(utility|otf2) options (to be done)
+INC_DIR_OTF2 = $(INC_ROOT)vendor/otf2/include
 LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
+INC_DIR_UTIL = $(INC_ROOT)vendor/otf2/vendor/utility/include
 LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
+
 LIB_DIR_SCOREP_MPI = build-mpi/
 
-## Vendor convenience variables.
+##  Where to find the Jenkins' hash headers.
 INC_DIR_VENDOR_HASH = $(srcdir)/../vendor/hash
 
-## Add entities using += to the following primaries in locale Makefile.inc.ams
-bin_PROGRAMS =
-noinst_PROGRAMS =
-lib_LTLIBRARIES =
-noinst_LTLIBRARIES = 
-nobase_include_HEADERS = 
-# TESTS_ENVIRONMENT = 
+
 SCOREP_SERIAL_TESTS =
 SCOREP_OMP_TESTS =
 SCOREP_SERIAL_XFAIL_TESTS = 
 SCOREP_OMP_XFAIL_TESTS =
-check_PROGRAMS = 
-# check_LIBRARIES =
-# check_LTLIBRARIES =
-BUILT_SOURCES = 
-CLEANFILES = 
-EXTRA_DIST = 
 
-# Automatically update the libtool script if it becomes out-of-date.
-libtool: $(LIBTOOL_DEPS)
-	$(SHELL) ./config.status --recheck
-
-
-doxygen-dev:
-
-clean-doxygen-dev:
-
-beautify:
-
-check-build: $(BUILT_SOURCES) all $(check_PROGRAMS)
-	for dir in $(SUBDIRS); do                        \
-            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
-        done
-
-check-run: check-build check-TESTS
-	for dir in $(SUBDIRS); do                        \
-            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
-        done
+## Header files that get generated for building the *_config tools.
+CONFIG_HEADER_BACKEND = $(SRC_ROOT)src/scorep_config_tool_backend.h
+CONFIG_HEADER_FRONTEND = $(SRC_ROOT)src/scorep_config_tool_frontend.h
