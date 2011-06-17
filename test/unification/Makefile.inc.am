@@ -34,4 +34,4 @@ unification_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
                             -I$(INC_DIR_UTIL)
 unification_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
 
-SCOREP_SERIAL_TESTS += unification_test
+TESTS_SERIAL += unification_test

@@ -29,13 +29,16 @@
 ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
+include ../vendor/common/build-config/Makefile.tests-serial.inc.am
+include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 
 AM_CPPFLAGS += -DFRONTEND_BUILD -DCROSS_BUILD
 
 include ../build-includes/frontend-only.am
 include ../build-includes/front-and-backend.am
 
-TESTS = $(SCOREP_SERIAL_TESTS) $(SCOREP_OMP_TESTS)
+check-serial: check-run-serial
+check-omp:    check-run-omp
 
 ## Convenience variable, used in common.am
 BUILD_DIR=build-frontend

@@ -22,4 +22,4 @@ EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/scorep_phase_test.c \
     $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh.in
 
-SCOREP_OMP_TESTS += ./../test/adapters/user/C/run_phase_test.sh
+TESTS_OMP += ./../test/adapters/user/C/run_phase_test.sh

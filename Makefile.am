@@ -97,3 +97,17 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@
 
 
+if CROSS_BUILD
+check-local:
+	(cd build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-serial)  || exit 1;
+	(cd build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-omp)     || exit 1;
+	(cd build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-serial)  || exit 1;
+	(cd build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-omp)     || exit 1;
+else !CROSS_BUILD
+check-local:
+	(cd build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-serial)  || exit 1;
+	(cd build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-omp)     || exit 1;
+endif !CROSS_BUILD
+
+#	(cd build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi)     || exit 1;
+#	(cd build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp) || exit 1;

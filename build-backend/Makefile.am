@@ -29,6 +29,8 @@
 ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
+include ../vendor/common/build-config/Makefile.tests-serial.inc.am
+include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 
 AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
 
@@ -36,43 +38,29 @@ bindir=${exec_prefix}@backend_bin_dir@
 libdir=${exec_prefix}@backend_lib_dir@
 
 if CROSS_BUILD
-
 AM_CPPFLAGS += -DCROSS_BUILD
 include ../build-includes/backend-only.am
 include ../build-includes/front-and-backend.am
-
-else
-
+else !CROSS_BUILD
 AM_CPPFLAGS += -DNOCROSS_BUILD
 include ../build-includes/backend-only.am
 include ../build-includes/front-and-backend.am
 include ../build-includes/frontend-only.am
+endif !CROSS_BUILD
 
+## Determine how to handle tests
+if CROSS_BUILD
+check-serial: check-file-serial
+check-omp:    check-file-omp
+else !CROSS_BUILD
 if BACKEND_TEST_RUNS
-TESTS = $(SCOREP_SERIAL_TESTS) $(SCOREP_OMP_TESTS)
-XFAIL_TESTS = $(SCOREP_SERIAL_XFAIL_TESTS) $(SCOREP_OMP_XFAIL_TESTS)
-endif
-
-endif
-
-
-if !BACKEND_TEST_RUNS
-BUILT_SOURCES += scorep_serial_tests scorep_omp_tests
-
-scorep_serial_tests: 
-	rm -f scorep_serial_tests
-	echo "# Available serial tests:" > scorep_serial_tests
-	for i in $(SCOREP_SERIAL_TESTS); do echo "$$i" >> scorep_serial_tests; done
-
-if OPENMP_SUPPORTED
-scorep_omp_tests: 
-	rm -f scorep_omp_tests
-	echo "# Available OpenMP tests:" > scorep_omp_tests
-	for i in $(SCOREP_OMP_TESTS); do echo "$$i" >> scorep_omp_tests; done
-else
-scorep_omp_tests:
-endif
-endif
+check-serial: check-run-serial
+check-omp:    check-run-omp
+else !BACKEND_TEST_RUNS
+check-serial: check-file-serial
+check-omp:    check-file-omp
+endif !BACKEND_TEST_RUNS
+endif !CROSS_BUILD
 
 
 ## Convenience variable, used in common.am
@@ -89,7 +77,7 @@ EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
                             clean-local-scorep-config-tool
 
 clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
-	rm -f scorep_serial_tests  scorep_omp_tests lex.yy.c scanner.h yacc.c yacc.h
+	rm -f lex.yy.c scanner.h yacc.c yacc.h
 
 PHONY_TARGETS += $(EXTRA_LOCAL_CLEAN_TARGETS) install-scorep-meets-tau
 
@@ -175,4 +163,3 @@ else
 installcheck-local:
 	(cd ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
 endif
-

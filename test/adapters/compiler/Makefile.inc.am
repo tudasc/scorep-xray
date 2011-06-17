@@ -50,4 +50,4 @@
 #    $(LIB_ROOT)libscorep_timer.la                        \
 #    $(LIB_ROOT)libcompiler_test_dummy_ms.la
 
-#SCOREP_SERIAL_TESTS += compiler_adapter_test
+#TESTS_SERIAL += compiler_adapter_test

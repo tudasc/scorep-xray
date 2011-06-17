@@ -55,7 +55,7 @@ test_scorep_config_string_SOURCES = $(SRC_ROOT)test/measurement/config/string.c 
 test_scorep_config_string_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_string_LDADD = $(test_scorep_config_ldadd)
 
-SCOREP_SERIAL_TESTS += test_scorep_config_bool \
+TESTS_SERIAL += test_scorep_config_bool \
          test_scorep_config_string \
          $(srcdir)/../test/measurement/config/test_scorep_config_number.sh \
          $(srcdir)/../test/measurement/config/test_scorep_config_size.sh

@@ -28,7 +28,7 @@ omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 #omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 #omp_test_unistrumented_LDADD    = $(LIB_ROOT)libscorep_omp.la
 
-#SCOREP_OMP_TESTS += omp_test_unistrumented
+#TESTS_OMP += omp_test_unistrumented
 
 
 check_PROGRAMS += omp_test
@@ -44,10 +44,10 @@ omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la @LIBBFD@
 
-SCOREP_OMP_TESTS += $(srcdir)/../test/omp/run_omp_test.sh
+TESTS_OMP += $(srcdir)/../test/omp/run_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
 
-SCOREP_OMP_TESTS += $(srcdir)/../test/omp/run_omp_test_profile.sh
+TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_profile.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_profile.sh
 
 check_PROGRAMS += internal_thread_handling
@@ -58,10 +58,10 @@ internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 internal_thread_handling_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la @LIBBFD@
 
-SCOREP_OMP_TESTS += $(srcdir)/../test/omp/run_internal_thread_handling.sh
+TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
 if !SCOREP_COMPILER_SUN
-SCOREP_OMP_TESTS += $(srcdir)/../test/omp/run_omp_test_inst.sh
+TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_inst.sh
 endif
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_inst.sh
 
