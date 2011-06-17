@@ -29,6 +29,8 @@
 ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
+include ../vendor/common/build-config/Makefile.tests-mpi.inc.am
+include ../vendor/common/build-config/Makefile.tests-mpi-omp.inc.am
 
 AM_CPPFLAGS += -DBACKEND_BUILD_MPI
 
@@ -39,49 +41,29 @@ libdir=${exec_prefix}@backend_lib_dir@
 include ../build-includes/mpi-backend-only.am
 
 if CROSS_BUILD
-
 AM_CPPFLAGS += -DCROSS_BUILD
-
-else
-
+else !CROSS_BUILD
 AM_CPPFLAGS += -DNOCROSS_BUILD
+endif !CROSS_BUILD
 
-endif
-
-#if BACKEND_TEST_RUNS
-#TESTS = $(SCOREP_MPI_TESTS) $(SCOREP_MPI_OMP_TESTS)
-#XFAIL_TESTS = $(SCOREP_MPI_XFAIL_TESTS) $(SCOREP_MPI_OMP_XFAIL_TESTS)
-#endif
+## Determine how to handle tests
+if CROSS_BUILD
+check-mpi:     check-file-mpi
+check-mpi-omp: check-file-mpi-omp
+else !CROSS_BUILD
+if BACKEND_TEST_RUNS
+check-mpi:     check-run-mpi
+check-mpi-omp: check-run-mpi-omp
+else !BACKEND_TEST_RUNS
+check-mpi:     check-file-mpi
+check-mpi-omp: check-file-mpi-omp
+endif !BACKEND_TEST_RUNS
+endif !CROSS_BUILD
 
 
 # I'm not sure if this is the way to go or if we need per 
 # target _LDADD = $(MPILIBS)
 #LIBS += $(MPILIBS)
-
-
-#if !BACKEND_TEST_RUNS
-BUILT_SOURCES += scorep_mpi_tests scorep_mpi_omp_tests
-
-if MPI_SUPPORTED
-scorep_mpi_tests:
-	rm -f scorep_mpi_tests
-	echo "# Available MPI tests:" > scorep_mpi_tests
-	for i in $(SCOREP_MPI_TESTS); do echo "$$i" >> scorep_mpi_tests; done
-
-if OPENMP_SUPPORTED
-scorep_mpi_omp_tests:
-	rm -f scorep_mpi_omp_tests
-	echo "# Available hybrid tests:" > scorep_mpi_omp_tests
-	for i in $(SCOREP_MPI_OMP_TESTS); do echo "$$i" >> scorep_mpi_omp_tests; done
-
-else
-scorep_mpi_omp_tests:
-endif
-else
-scorep_mpi_tests:
-scorep_mpi_omp_tests:
-endif
-#endif
 
 
 ## Convenience variable, used in common.am. It is either build-backend
