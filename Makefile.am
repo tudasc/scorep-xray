@@ -97,12 +97,3 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@
 
 
-check-build: $(BUILT_SOURCES) all $(check_PROGRAMS)
-	for dir in $(SUBDIRS); do                        \
-            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
-        done
-
-check-run: check-build
-	for dir in $(SUBDIRS); do                        \
-            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
-        done
