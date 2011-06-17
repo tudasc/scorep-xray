@@ -30,7 +30,7 @@ ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
 include ../vendor/common/build-config/Makefile.tests-serial.inc.am
-include ../vendor/common/build-config/Makefile.tests-omp.inc.am
+#include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 
 AM_CPPFLAGS += -DFRONTEND_BUILD -DCROSS_BUILD
 
