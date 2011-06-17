@@ -16,7 +16,7 @@
 ##
 
 ## file  vendor/common/build-config/common.am 
-##       Intended to be included by the components
+##       Intended to be included by the component's
 ##       build-includes/common.am. Defines "common" entities that all
 ##       components rely on.
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
@@ -74,8 +74,10 @@ PHONY_TARGETS =
 dist_bin_SCRIPTS =
 
 ## TESTS are handlend differntly because of cross-, mpi- and openmp
-## environments, see the component specific common.am or Makefile.am resp.
-# TESTS = 
+## environments, see the component specific common.am or Makefile.am
+## resp.  But we need to define TESTS or else am__tty_colors will not
+## get defined which leads to an syntax error in our tests.
+TESTS = 
 # XFAIL_TESTS =
 # TESTS_ENVIRONMENT = 
 

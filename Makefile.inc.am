@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       Makefile.inc.am
+## file       vendor/common/build-config/Makefile.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 # Create platform entries for EXTRA_DIST using e.g.:
