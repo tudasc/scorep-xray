@@ -129,6 +129,7 @@ SCOREP_InitMeasurement()
 
     /* Register all config variables */
     SCOREP_Env_RegisterCoreEnvironmentVariables();
+    SCOREP_Filter_Register();
     scorep_adapters_register();
     SCOREP_Profile_Register();
 
@@ -164,6 +165,8 @@ SCOREP_InitMeasurement()
     {
         scorep_set_otf2_archive_master_slave();
     }
+
+    SCOREP_Filter_Initialize();
 
     scorep_adapters_initialize();
     scorep_adapters_initialize_location(); // not sure if this should be triggered by thread management

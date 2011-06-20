@@ -1,0 +1,457 @@
+/*
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen University, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene, USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+/**
+ * @file       scorep_filter_parser.c
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ *
+ * @status alpha
+ *
+ * Parses the filter file and creates a filter.
+ */
+
+#include <config.h>
+
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Config.h>
+
+/* **************************************************************************************
+   Variable and type definitions
+****************************************************************************************/
+
+/**
+ * Type for the possible states of the parser. The following states are possible:
+ * <dl>
+ * <dt>scorep_filter_parse_start
+ * <dd> Inital state or state outside of the file rule block and function rule block.
+ * <dt> scorep_filter_parse_files
+ * <dd> State after a file rule block began with SCOREP_FILE_NAMES_BEGIN.
+ * <dt> scorep_filter_parse_files_exclude
+ * <dd> Inside an exclude rule in the file rule block
+ * <dt> scorep_filter_parse_files_include
+ * <dd> Inside an include rule in the file rule block
+ * <dt> scorep_filter_parse_functions
+ * <dd> State after a function rule block began with SCOREP_FUNCTION_NAMES_BEGIN.
+ * <dt> scorep_filter_parse_functionss_exclude
+ * <dd> Inside an exclude rule in the function rule block
+ * <dt> scorep_filter_parse_functions_include
+ * <dd> Inside an include rule in the function rule block
+ * </dl>
+ * Beside this basic states two further values are defined with special purpose:
+ * <dl>
+ * <dt> scorep_filter_parse_fortran
+ * <dd> Can be combined with scorep_filter_parse_functions_exclude or
+ *      scorep_filter_parse_functions_include to indicate that the rules should be
+ *      Fortran mangled.
+ * <dt> scorep_filter_parse_base
+ * <dd> Is used to extract the base state without the fortran option from the
+ *      state variable.
+ */
+typedef enum
+{
+    scorep_filter_parse_start             = 0,
+    scorep_filter_parse_files             = 1,
+    scorep_filter_parse_files_exclude     = 2,
+    scorep_filter_parse_files_include     = 3,
+    scorep_filter_parse_functions         = 4,
+    scorep_filter_parse_functions_exclude = 5,
+    scorep_filter_parse_functions_include = 6,
+    scorep_filter_parse_base              = 7,
+    scorep_filter_parse_fortran           = 8
+} scorep_filter_parse_modes;
+
+/**
+ * @def SCOREP_FILTER_MODE_IS_FORTRAN
+ * Expands to a non-zero value if @mode has not the fortran mode set.
+ */
+#define SCOREP_FILTER_MODE_IS_FORTRAN( mode ) \
+    ( mode & scorep_filter_parse_fortran )
+
+/**
+ * @def SCOREP_FILTER_MODE_BASE
+ * Gives the mode without the fortran option set.
+ */
+#define SCOREP_FILTER_MODE_BASE( mode ) \
+    ( mode & scorep_filter_parse_base )
+
+/**
+ * Contains the file name of the filter file. The value is set in the configuration
+ * system through the variable SCOREP_FILTERING_FILE
+ */
+static char* scorep_filter_file_name          = NULL;
+
+/**
+   Array of configuration variables for filtering tracing.
+ */
+SCOREP_ConfigVariable scorep_filter_configs[] = {
+    {
+        "file",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_filter_file_name,
+        NULL,
+        "",
+        "A file name which contain the filter rules",
+        ""
+    },
+    SCOREP_CONFIG_TERMINATOR
+};
+
+/* **************************************************************************************
+   Local helper functions
+****************************************************************************************/
+
+static void
+scorep_filter_add_file_rule( const char* rule, bool is_exclude )
+{
+    printf( "In scorep_filter_add_file_rule, rule: %s\n", rule );
+}
+
+static void
+scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fortran )
+{
+    printf( "In scorep_filter_add_function_rule, rule: %s\n", rule );
+}
+
+/**
+ * Processes a token of the filter parser. A token may be a key word or an expression
+ * for name matching.
+ * @param token   The string that contains the token.
+ * @param mode    The current mode of the parser. This value may be changed when
+ *                the token is evaluated.
+ * @returns SCOREP_SUCCESS if the token was processed succesfully. Else an error code
+ *          is returned. The only possible error code is SCOREP_ERROR_PARSE_SYNTAX.
+ */
+static SCOREP_Error_Code
+scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode )
+{
+    assert( token );
+    if ( *token == '\0' )
+    {
+        return SCOREP_SUCCESS;
+    }
+
+    printf( "Token: %s\n", token );
+
+    /* ------------------------------ SCOREP_FILE_NAMES_BEGIN */
+    if ( strcmp( token, "SCOREP_FILE_NAMES_BEGIN" ) == 0 )
+    {
+        if ( *mode == scorep_filter_parse_start )
+        {
+            *mode = scorep_filter_parse_files;
+        }
+        else
+        {
+            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                          "Unexpected token 'SCOREP_FILE_NAMES_BEGIN'" );
+            return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ SCOREP_FILE_NAMES_END */
+    else if ( strcmp( token, "SCOREP_FILE_NAMES_END" ) == 0 )
+    {
+        if ( ( *mode >= scorep_filter_parse_files ) &&
+             ( *mode <= scorep_filter_parse_files_include ) )
+        {
+            *mode = scorep_filter_parse_start;
+        }
+        else
+        {
+            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                          "Unexpected token 'SCOREP_FILE_NAMES_END'" );
+            return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ SCOREP_FUNCTION_NAMES_BEGIN */
+    else if ( strcmp( token, "SCOREP_FUNCTION_NAMES_BEGIN" ) == 0 )
+    {
+        if ( *mode == scorep_filter_parse_start )
+        {
+            *mode = scorep_filter_parse_functions;
+        }
+        else
+        {
+            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                          "Unexpected token 'SCOREP_FUNCTION_NAMES_BEGIN'" );
+            return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ SCOREP_FUNCTION_NAMES_END */
+    else if ( strcmp( token, "SCOREP_FUNCTION_NAMES_END" ) == 0 )
+    {
+        if ( ( SCOREP_FILTER_MODE_BASE( *mode ) >= scorep_filter_parse_functions ) &&
+             ( SCOREP_FILTER_MODE_BASE( *mode ) <= scorep_filter_parse_functions_include ) )
+        {
+            *mode = scorep_filter_parse_start;
+        }
+        else
+        {
+            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                          "Unexpected token 'SCOREP_FUNCTION_NAMES_END'" );
+            return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ EXCLUDE */
+    else if ( strcmp( token, "EXCLUDE" ) == 0 )
+    {
+        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        {
+            case scorep_filter_parse_files:
+            case scorep_filter_parse_files_exclude:
+            case scorep_filter_parse_files_include:
+                *mode = scorep_filter_parse_files_exclude;
+                break;
+            case scorep_filter_parse_functions:
+            case scorep_filter_parse_functions_exclude:
+            case scorep_filter_parse_functions_include:
+                *mode = scorep_filter_parse_functions_exclude;
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                              "Unexpected token 'EXCLUDE'" );
+                return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ INCLUDE */
+    else if ( strcmp( token, "INCLUDE" ) == 0 )
+    {
+        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        {
+            case scorep_filter_parse_files:
+            case scorep_filter_parse_files_exclude:
+            case scorep_filter_parse_files_include:
+                *mode = scorep_filter_parse_files_include;
+                break;
+            case scorep_filter_parse_functions:
+            case scorep_filter_parse_functions_exclude:
+            case scorep_filter_parse_functions_include:
+                *mode = scorep_filter_parse_functions_include;
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                              "Unexpected token 'INCLUDE'" );
+                return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ FORTRAN */
+    else if ( strcmp( token, "FORTRAN" ) == 0 )
+    {
+        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        {
+            case scorep_filter_parse_functions_exclude:
+                *mode = scorep_filter_parse_functions_exclude | scorep_filter_parse_fortran;
+                break;
+            case scorep_filter_parse_functions_include:
+                *mode = scorep_filter_parse_functions_include | scorep_filter_parse_fortran;
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                              "Unexpected token 'FORTRAN'" );
+                return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    /* ------------------------------ Default */
+    else
+    {
+        switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
+        {
+            case scorep_filter_parse_files_exclude:
+                scorep_filter_add_file_rule( token, true );
+                break;
+            case scorep_filter_parse_files_include:
+                scorep_filter_add_file_rule( token, false );
+                break;
+            case scorep_filter_parse_functions_exclude:
+                scorep_filter_add_function_rule( token, true,
+                                                 SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
+                break;
+            case scorep_filter_parse_functions_include:
+                scorep_filter_add_function_rule( token, false,
+                                                 SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                              "Unexpected token '%s'", token );
+                return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+    }
+
+    return SCOREP_SUCCESS;
+}
+
+/**
+ * Parses the given filter file @a file.
+ * @param file  On already opened filter file that is parsed.
+ * @returns SCOREP_SUCCESS if the file was successfully parsed. Else an error code is
+ *          returned.
+ */
+static SCOREP_Error_Code
+scorep_filter_parse_file( FILE* file )
+{
+    size_t                    buffer_size  = 0;
+    char*                     buffer       = NULL;
+    size_t                    pos          = 0;
+    size_t                    length       = 0;
+    size_t                    token_start  = 0;
+    scorep_filter_parse_modes mode         = scorep_filter_parse_start;
+    SCOREP_Error_Code         return_value = SCOREP_SUCCESS;
+
+    /* Validity assertions */
+    assert( file );
+
+    /* Read file line by line */
+    while ( !feof( file ) )
+    {
+        SCOREP_Error_Code err = SCOREP_IO_GetLine( &buffer, &buffer_size, file );
+        if ( ( err != SCOREP_SUCCESS ) && ( err != SCOREP_ERROR_END_OF_BUFFER ) )
+        {
+            return err;
+        }
+        length = strlen( buffer );
+        if ( length == 0 )
+        {
+            continue;
+        }
+
+        /* Cut away comments:
+           Find first '#' that is not escaped by a backslash
+         */
+        pos = 0;
+        do
+        {
+            pos += strcspn( &buffer[ pos ], "#" );
+            if ( ( pos < length ) &&                                    // Whether '#' appears
+                 ( ( ( pos == 0 ) && ( *buffer == '#' ) ) ||            // Can not be escaped if first
+                   ( ( pos > 0 ) && ( buffer[ pos - 1 ] != '\\' ) ) ) ) // Check if '#' is escaped
+            {
+                buffer[ pos ] = '\0';
+                length        = pos;
+            }
+            pos++;
+        }
+        while ( pos < length );
+
+        /* Escaping linebreaks is not allowed */
+        if ( buffer[ length - 2 ] == '\\' )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                          "Escaping line breaks is not supported." );
+            free( buffer );
+            return SCOREP_ERROR_PARSE_SYNTAX;
+        }
+
+        /* Tokenize:
+           Find next whitespace that is not escaped and terminate there
+         */
+        pos         = 0;
+        token_start = 0;
+        while ( pos < length )
+        {
+            pos += strcspn( &buffer[ pos ], " \t\n\0" );
+
+            if ( ( pos <= length ) &&                                   // Whether whitespace appears
+                 ( ( pos == 0 ) ||                                      // Can not be escaped if first
+                   ( ( pos > 0 ) && ( buffer[ pos - 1 ] != '\\' ) ) ) ) // Check if whitespace is escaped
+            {
+                buffer[ pos ] = '\0';
+                return_value  = scorep_filter_process_token( &buffer[ token_start ],
+                                                             &mode );
+                if ( return_value != SCOREP_SUCCESS )
+                {
+                    free( buffer );
+                    return return_value;
+                }
+                token_start = pos + 1;
+            }
+            pos++;
+        }
+    }
+
+    free( buffer );
+    return SCOREP_SUCCESS;
+}
+
+
+/* **************************************************************************************
+   Initialization of selective tracing
+****************************************************************************************/
+
+/**
+   Initializes the filterign system and parses the configuration file.
+ */
+void
+SCOREP_Filter_Initialize()
+{
+    FILE* filter_file = NULL;
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Initialize selective tracing" );
+
+    /* Check whether a configuraion file name was specified */
+    if ( scorep_filter_file_name == NULL || *scorep_filter_file_name == '\0' )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                             "No configuration file for filtering specified.\n"
+                             "Disable filtering." );
+        return;
+    }
+
+    /* Open configuration file */
+    filter_file = fopen( scorep_filter_file_name, "r" );
+    if ( filter_file == NULL )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                             "Unable to open configuration file for filtering.\n"
+                             "Disable filtering." );
+        return;
+    }
+
+    /* Parse configuration file */
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Reading filter configuration file %s.",
+                         scorep_filter_file_name );
+
+    SCOREP_Error_Code err = scorep_filter_parse_file( filter_file );
+    if ( err != SCOREP_SUCCESS )
+    {
+        SCOREP_ERROR( err,
+                      "Error while parsing filter file.\n"
+                      "Disable filtering." );
+        fclose( filter_file );
+        return;
+    }
+
+    /* Clean up */
+    fclose( filter_file );
+}
+
+/**
+   Registers the config variables for filtering.
+ */
+SCOREP_Error_Code
+SCOREP_Filter_Register()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Register config variables for filtering system" );
+    return SCOREP_ConfigRegister( "filtering", scorep_filter_configs );
+}

@@ -30,6 +30,8 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.h \
+    $(SRC_ROOT)src/measurement/filtering/scorep_filter_parser.c   \
+    $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter.h          \
     $(SRC_ROOT)src/measurement/scorep_adapter.h                   \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
@@ -59,6 +61,7 @@ libscorep_measurement_la_CPPFLAGS =             \
     -I$(INC_ROOT)src/measurement                \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/profiling      \
+    -I$(INC_ROOT)src/measurement/filtering      \
     -I$(INC_ROOT)src/measurement/online_access             \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/services/include           \
