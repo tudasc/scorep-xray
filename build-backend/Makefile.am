@@ -157,9 +157,25 @@ $(CONFIG_HEADER_BACKEND):
 
 if OPENMP_SUPPORTED
 installcheck-local:
-	(cd ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
-	(cd ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
+	($(am__cd) ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
+        test -z "$$fail"
 else
 installcheck-local:
-	(cd ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || exit 1;
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
+        test -z "$$fail"
 endif
