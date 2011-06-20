@@ -259,3 +259,25 @@ bitten-print-environment:
                                                                              ##
                                                                              ##
 ###############################################################################
+
+
+###############################################################################
+## trigger build of check_* targets here and in subdirectories.
+##
+
+check-build: $(BUILT_SOURCES) all $(check_PROGRAMS) $(check_LTLIBRARIES)
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+        for subdir in $(SUBDIRS); do \
+            ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $@) || eval $$failcom; \
+        done; \
+        test -z "$$fail"
+
+                                                                             ##
+                                                                             ##
+###############################################################################
