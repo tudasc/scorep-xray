@@ -231,9 +231,17 @@ if SVN_CONTROLLED
 if HAVE_UNCRUSTIFY
 
 beautify:
-	for dir in $(SUBDIRS); do                        \
-            (cd $$dir && $(MAKE) $(AM_MAKEFLAGS) $@) || exit 1; \
-        done
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+        for subdir in $(SUBDIRS); do \
+            ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $@) || eval $$failcom; \
+        done; \
+        test -z "$$fail"
 	cd $(srcdir); ./vendor/common/beautifier/beautify
 
 beautify-clean:
