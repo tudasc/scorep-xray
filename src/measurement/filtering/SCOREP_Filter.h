@@ -41,4 +41,18 @@ SCOREP_Filter_Initialize();
 SCOREP_Error_Code
 SCOREP_Filter_Register();
 
+void
+SCOREP_Filter_Enable();
+
+void
+SCOREP_Filter_Disable();
+
+bool
+SCOREP_Filter_IsEnabled();
+
+bool
+SCOREP_Filter_Match( const char* file_name,
+                     const char* function_name,
+                     bool        use_fortran );
+
 #endif // SCOREP_FILTER_H

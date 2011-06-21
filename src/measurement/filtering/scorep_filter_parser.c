@@ -28,10 +28,14 @@
 
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Config.h>
+#include <SCOREP_Filter.h>
+#include <scorep_filter_matching.h>
 
 /* **************************************************************************************
    Variable and type definitions
 ****************************************************************************************/
+
+extern bool scorep_filter_is_enabled;
 
 /**
  * Type for the possible states of the parser. The following states are possible:
@@ -114,18 +118,6 @@ SCOREP_ConfigVariable scorep_filter_configs[] = {
    Local helper functions
 ****************************************************************************************/
 
-static void
-scorep_filter_add_file_rule( const char* rule, bool is_exclude )
-{
-    printf( "In scorep_filter_add_file_rule, rule: %s\n", rule );
-}
-
-static void
-scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fortran )
-{
-    printf( "In scorep_filter_add_function_rule, rule: %s\n", rule );
-}
-
 /**
  * Processes a token of the filter parser. A token may be a key word or an expression
  * for name matching.
@@ -143,8 +135,6 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     {
         return SCOREP_SUCCESS;
     }
-
-    printf( "Token: %s\n", token );
 
     /* ------------------------------ SCOREP_FILE_NAMES_BEGIN */
     if ( strcmp( token, "SCOREP_FILE_NAMES_BEGIN" ) == 0 )
@@ -396,6 +386,24 @@ scorep_filter_parse_file( FILE* file )
    Initialization of selective tracing
 ****************************************************************************************/
 
+void
+SCOREP_Filter_Enable()
+{
+    scorep_filter_is_enabled = true;
+}
+
+void
+SCOREP_Filter_Disable()
+{
+    scorep_filter_is_enabled = false;
+}
+
+bool
+SCOREP_Filter_IsEnabled()
+{
+    return scorep_filter_is_enabled;
+}
+
 /**
    Initializes the filterign system and parses the configuration file.
  */
@@ -440,6 +448,8 @@ SCOREP_Filter_Initialize()
         fclose( filter_file );
         return;
     }
+
+    SCOREP_Filter_Enable();
 
     /* Clean up */
     fclose( filter_file );

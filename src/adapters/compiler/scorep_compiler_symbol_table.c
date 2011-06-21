@@ -55,6 +55,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Filter.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
@@ -207,7 +208,8 @@ scorep_compiler_process_symbol( long         addr,
          ( strncmp( funcname, "scorep_", 7 ) != 0 ) &&
          ( strncmp( funcname, "OTF2_", 5 ) != 0 ) &&
          ( strncmp( funcname, "otf2_", 5 ) != 0 ) &&
-         ( strncmp( funcname, "cube_", 5 ) != 0 ) )
+         ( strncmp( funcname, "cube_", 5 ) != 0 ) &&
+         ( !SCOREP_Filter_Match( filename, funcname, true ) ) )
     {
 #ifdef INTEL_COMPILER
         /* Counter for the last assigned region id.
