@@ -101,15 +101,18 @@ scorep_compiler_hash_get( long hash )
 static SCOREP_RegionHandle
 scorep_compiler_register_region( char* region_name )
 {
-    SCOREP_RegionHandle handle;
+    SCOREP_RegionHandle handle = SCOREP_INVALID_REGION;
 
     /* -- register region with Score-P and store region identifier -- */
-    handle = SCOREP_DefineRegion( region_name,
-                                  SCOREP_INVALID_SOURCE_FILE,
-                                  SCOREP_INVALID_LINE_NO,
-                                  SCOREP_INVALID_LINE_NO,
-                                  SCOREP_ADAPTER_COMPILER,
-                                  SCOREP_REGION_FUNCTION );
+    if ( !SCOREP_Filter_Match( NULL, region_name, true ) )
+    {
+        handle = SCOREP_DefineRegion( region_name,
+                                      SCOREP_INVALID_SOURCE_FILE,
+                                      SCOREP_INVALID_LINE_NO,
+                                      SCOREP_INVALID_LINE_NO,
+                                      SCOREP_ADAPTER_COMPILER,
+                                      SCOREP_REGION_FUNCTION );
+    }
     scorep_compiler_hash_put( ( long )region_name, handle );
     return handle;
 }

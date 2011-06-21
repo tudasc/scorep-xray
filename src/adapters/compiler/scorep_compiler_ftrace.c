@@ -88,7 +88,8 @@ _ftrace_enter2_()
             /* Check for filtered regions */
             if ( ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
                  ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
-                 ( strncmp( region_name, "pomp", 4 ) == 0 ) )
+                 ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
+                 SCOREP_Filter_Match( NULL, region_name, true ) )
             {
                 hash_node->reghandle = SCOREP_FILTERED_REGION;
             }

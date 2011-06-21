@@ -35,6 +35,7 @@
 #include <SCOREP_Thread_Types.h>
 #include <scorep_compiler_data.h>
 #include <SCOREP_Compiler_Init.h>
+#include <SCOREP_Filter.h>
 
 /* **************************************************************************************
  * Typedefs and global variables
@@ -396,7 +397,8 @@ ___rouent2( struct s1* p )
         if ( ( !p->isseen ) &&
              ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
              ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
-             ( strncmp( p->region_name, "pomp", 4 ) != 0 ) )
+             ( strncmp( p->region_name, "pomp", 4 ) != 0 ) &&
+             ( !SCOREP_Filter_Match( p->file_name, p->region_name, true ) ) )
         {
             *region = SCOREP_DefineRegion( p->region_name,
                                            *file,
