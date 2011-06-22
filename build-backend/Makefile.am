@@ -72,14 +72,10 @@ LIB_DIR_SCOREP = ./
 ## Here the MPI convenience libraries are build
 LIB_DIR_SCOREP_MPI = ../build-mpi/
 
-EXTRA_LOCAL_CLEAN_TARGETS = clean-local-scorep-experiment-dirs \
-                            clean-local-scorep-config-tests    \
-                            clean-local-scorep-config-tool
-
-clean-local: $(EXTRA_LOCAL_CLEAN_TARGETS)
+clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests
 	rm -f lex.yy.c scanner.h yacc.c yacc.h
 
-PHONY_TARGETS += $(EXTRA_LOCAL_CLEAN_TARGETS) install-scorep-meets-tau
+PHONY_TARGETS += install-scorep-meets-tau
 
 clean-local-scorep-experiment-dirs:
 	rm -rf scorep-2*
@@ -104,7 +100,7 @@ scorep-config-tool-install:
 	$(INSTALL_DATA) $(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
 clean-local-scorep-config-tool:
-	rm -f $(builddir)/scorep_config.dat $(CONFIG_HEADER_BACKEND)
+	rm -f $(builddir)/scorep_config.dat
 
 scorep-config-tool-local: $(builddir)/scorep_config.dat
 

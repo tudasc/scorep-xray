@@ -48,3 +48,5 @@ SCOREP_MPI_XFAIL_TESTS =
 ## Header files that get generated for building the *_config tools.
 CONFIG_HEADER_BACKEND = $(SRC_ROOT)src/scorep_config_tool_backend.h
 CONFIG_HEADER_FRONTEND = $(SRC_ROOT)src/scorep_config_tool_frontend.h
+
+CLEANFILES += $(CONFIG_HEADER_BACKEND) $(CONFIG_HEADER_FRONTEND)
