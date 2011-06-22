@@ -593,11 +593,18 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         name = region->regionName;
     }
 
-    int length = strlen( name ) + 7;
-    region_name = ( char* )malloc( length );
-    strcpy( region_name, "!$omp " );
-    strcpy( &region_name[ 6 ], name );
-    region_name[ length - 1 ] = '\0';
+    if ( region->regionType != SCOREP_Pomp_UserRegion )
+    {
+        int length = strlen( name ) + 7;
+        region_name = ( char* )malloc( length );
+        strcpy( region_name, "!$omp " );
+        strcpy( &region_name[ 6 ], name );
+        region_name[ length - 1 ] = '\0';
+    }
+    else
+    {
+        region_name = SCOREP_CStr_dup( name );
+    }
 
     /* User regions can be filtered */
     if ( ( region->regionType == SCOREP_Pomp_UserRegion ) &&
