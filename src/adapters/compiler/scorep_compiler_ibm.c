@@ -34,6 +34,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Filter.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
@@ -105,7 +106,8 @@ __func_trace_enter( char* region_name,
             if ( ( strchr( region_name, '$' ) != NULL ) ||
                  ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
                  ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
-                 ( strncmp( region_name, "pomp", 4 ) == 0 ) )
+                 ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
+                 SCOREP_Filter_Match( file_name, region_name, true ) )
             {
                 is_filtered = true;
             }
