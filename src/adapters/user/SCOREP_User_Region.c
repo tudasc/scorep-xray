@@ -30,8 +30,11 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Types.h>
+#include <SCOREP_Filter.h>
 #include <scorep_utility/SCOREP_Utils.h>
 #include "scorep_selective_region.h"
+
+#define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 
 /**
     @internal
@@ -207,7 +210,7 @@ SCOREP_User_RegionBegin
 )
 {
     /* Make sure that the region is initialized */
-    if ( *handle == SCOREP_INVALID_REGION )
+    if ( *handle == SCOREP_INVALID_USER_REGION )
     {
         SCOREP_User_RegionInit( handle, lastFileName, lastFile,
                                 name, regionType, fileName, lineNo );
@@ -225,7 +228,8 @@ SCOREP_User_RegionEnd
 )
 {
     /* Generate exit event */
-    if ( handle != SCOREP_INVALID_USER_REGION )
+    if ( ( handle != SCOREP_INVALID_USER_REGION ) &&
+         ( handle != SCOREP_FILTERED_USER_REGION ) )
     {
         SCOREP_ExitRegion( handle->handle );
         scorep_selective_check_exit( handle );
@@ -260,16 +264,25 @@ SCOREP_User_RegionInit
         /* Translate region type from user adapter type to SCOREP measurement type */
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( regionType );
 
-        /* Register new region */
-
         /* We store the new handle in a local variable and assign it to *handle
            only after it is completly initialized. Else other threads may test in
            between whether the handle is intialized, and use it while initialization
            is not completed.
            We do not want to secure the initial test with locks.
          */
-        SCOREP_User_RegionHandle new_handle = scorep_user_create_region( name );
-        if ( new_handle != SCOREP_INVALID_USER_REGION )
+        SCOREP_User_RegionHandle new_handle = SCOREP_FILTERED_USER_REGION;
+
+        printf( "0\n" );
+        /* Check for filters */
+        if ( !SCOREP_Filter_Match( fileName, name, false ) )
+        {
+            new_handle = scorep_user_create_region( name );
+            printf( "1\n" );
+        }
+
+        /* Register new region */
+        if ( ( new_handle != SCOREP_INVALID_USER_REGION ) &&
+             ( new_handle != SCOREP_FILTERED_USER_REGION ) )
         {
             new_handle->handle = SCOREP_DefineRegion( name,
                                                       file,
@@ -277,8 +290,9 @@ SCOREP_User_RegionInit
                                                       SCOREP_INVALID_LINE_NO,
                                                       SCOREP_ADAPTER_USER,
                                                       region_type );
-            *handle = new_handle;
+            printf( "2\n" );
         }
+        *handle = new_handle;
     }
     /* Release lock */
     SCOREP_MutexUnlock( scorep_user_region_mutex );
@@ -294,7 +308,8 @@ SCOREP_User_RegionEnter
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Generate enter event */
-    if ( handle != SCOREP_INVALID_USER_REGION )
+    if ( ( handle != SCOREP_INVALID_USER_REGION ) &&
+         ( handle != SCOREP_FILTERED_USER_REGION ) )
     {
         scorep_selective_check_enter( handle );
         SCOREP_EnterRegion( handle->handle );

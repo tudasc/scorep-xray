@@ -32,6 +32,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Filter.h>
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Fortran_Wrapper.h>
 #include <scorep_selective_region.h>
@@ -45,6 +46,8 @@
 #define SCOREP_F_Init_L scorep_f_init
 #define SCOREP_F_RegionEnd_L scorep_f_regionend
 #define SCOREP_F_RegionEnter_L scorep_f_regionenter
+
+#define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 
 extern SCOREP_Hashtab* scorep_user_file_table;
 extern SCOREP_Mutex    scorep_user_file_table_mutex;
@@ -147,22 +150,30 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
         /* Translate region type from user adapter type to SCOREP measurement type */
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( *type );
 
-        /* Register new region */
-        region = scorep_user_create_region( name );
-        if ( region != SCOREP_INVALID_USER_REGION )
+        /* Check for filters */
+        if ( SCOREP_Filter_Match( fileName, name, false ) )
         {
-            region->handle = SCOREP_DefineRegion( name,
-                                                  *fileHandle,
-                                                  *lineNo,
-                                                  SCOREP_INVALID_LINE_NO,
-                                                  SCOREP_ADAPTER_USER,
-                                                  region_type );
-
+            region = SCOREP_FILTERED_USER_REGION;
             scorep_user_add_region( region, name );
+        }
+        else
+        {
+            region = scorep_user_create_region( name );
+
+            if ( region != SCOREP_INVALID_USER_REGION )
+            {
+                region->handle = SCOREP_DefineRegion( name,
+                                                      *fileHandle,
+                                                      *lineNo,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_ADAPTER_USER,
+                                                      region_type );
+
+                scorep_user_add_region( region, name );
+            }
         }
     }
     *handle = SCOREP_C2F_REGION( region );
-
 
     /* Unlock region definition */
     SCOREP_MutexUnlock( scorep_user_region_mutex );
