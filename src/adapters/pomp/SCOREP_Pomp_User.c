@@ -311,7 +311,10 @@ POMP2_Begin( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_EnterRegion( region->innerBlock );
+        if ( region->innerBlock != SCOREP_INVALID_REGION )
+        {
+            SCOREP_EnterRegion( region->innerBlock );
+        }
     }
 }
 
@@ -323,7 +326,10 @@ POMP2_End( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ExitRegion( region->innerBlock );
+        if ( region->innerBlock != SCOREP_INVALID_REGION )
+        {
+            SCOREP_ExitRegion( region->innerBlock );
+        }
     }
 }
 

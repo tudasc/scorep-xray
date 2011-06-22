@@ -16,7 +16,6 @@
 
 /**
  * @file       SCOREP_Pomp_RegionInfo.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    POMP
@@ -35,10 +34,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SCOREP_Pomp_RegionInfo.h"
-#include "scorep_utility/SCOREP_Utils.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_Types.h"
+#include <SCOREP_Pomp_RegionInfo.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Types.h>
+#include <SCOREP_Filter.h>
 
 /** @ingroup POMP
     @{
@@ -598,6 +598,15 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     strcpy( region_name, "!$omp " );
     strcpy( &region_name[ 6 ], name );
     region_name[ length - 1 ] = '\0';
+
+    /* User regions can be filtered */
+    if ( ( region->regionType == SCOREP_Pomp_UserRegion ) &&
+         SCOREP_Filter_Match( region->startFileName, region_name, false ) )
+    {
+        region->innerBlock = SCOREP_INVALID_REGION;
+        free( region_name );
+        return;
+    }
 
     /* Register parallel regions */
     if ( ( region->regionType >= SCOREP_Pomp_Parallel ) &&

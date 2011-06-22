@@ -272,12 +272,10 @@ SCOREP_User_RegionInit
          */
         SCOREP_User_RegionHandle new_handle = SCOREP_FILTERED_USER_REGION;
 
-        printf( "0\n" );
         /* Check for filters */
         if ( !SCOREP_Filter_Match( fileName, name, false ) )
         {
             new_handle = scorep_user_create_region( name );
-            printf( "1\n" );
         }
 
         /* Register new region */
@@ -290,7 +288,6 @@ SCOREP_User_RegionInit
                                                       SCOREP_INVALID_LINE_NO,
                                                       SCOREP_ADAPTER_USER,
                                                       region_type );
-            printf( "2\n" );
         }
         *handle = new_handle;
     }
