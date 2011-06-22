@@ -52,16 +52,14 @@ AC_ARG_VAR([SIONCONFIG], [Absolute path to sionconfig, including "sionconfig".])
 
 AC_ARG_WITH([sionconfig],
             [AS_HELP_STRING([--with-sionconfig=(yes|no|<path-to-sionconfig>)], 
-                            [Whether to use sionconfig and where to find it. "yes" assumes it is in PATH [yes].])],
+                            [Whether to use sionconfig and where to find it. "yes" assumes it is in PATH [no].])],
             # action-if-given
             [AS_CASE([$withval],
                      ["yes"], [scorep_with_sionconfig="yes"],
                      ["no"],  [scorep_with_sionconfig="no"],
                      [scorep_with_sionconfig="$withval"])],
             # action-if-not-given
-            [scorep_with_sionconfig="yes"])
-
-#echo "debug: scorep_with_sionconfig=${scorep_with_sionconfig}"
+            [scorep_with_sionconfig="no"])
 
 # macro-internal variables
 scorep_sion_cppflags=""
