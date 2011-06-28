@@ -335,7 +335,7 @@ scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize intel compiler adapter." );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " initialize intel compiler adapter." );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -347,11 +347,11 @@ scorep_compiler_init_adapter()
         /* call function to calculate symbol table */
         scorep_compiler_get_sym_tab();
 
-        /* Sez flag */
+        /* Set flag */
         scorep_compiler_initialize = 0;
 
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             " inititialization of intel compiler adapter done." );
+                             " initialization of intel compiler adapter done." );
     }
 
     return SCOREP_SUCCESS;
