@@ -392,6 +392,7 @@ ___rouent2( struct s1* p )
     if ( !p->isseen )
     {
         /* get file id belonging to file name */
+        SCOREP_IO_SimplifyPath( p->file_name );
         *file = scorep_compiler_get_file( p->file_name );
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( !p->isseen ) &&

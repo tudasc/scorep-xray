@@ -88,6 +88,7 @@ __func_trace_enter( char* region_name,
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
+            SCOREP_IO_SimplifyPath( file_name );
             hash_node = scorep_compiler_hash_put( ( long )region_name,
                                                   region_name,
                                                   file_name, line_no );

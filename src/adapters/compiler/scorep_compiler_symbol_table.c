@@ -187,6 +187,11 @@ scorep_compiler_process_symbol( long         addr,
                                 const char*  filename,
                                 unsigned int lno )
 {
+    if ( filename != NULL )
+    {
+        SCOREP_IO_SimplifyPath( ( char* )filename );
+    }
+
 #ifdef GNU_DEMANGLE
     /* use demangled name if possible */
     char* dem_name = 0;
