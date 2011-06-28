@@ -106,7 +106,8 @@ FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
 
     fileName = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
     strncpy( fileName, fileName_f, fileNameLen );
-    name[ nameLen ] = '\0';
+    fileName[ fileNameLen ] = '\0';
+    SCOREP_IO_SimplifyPath( fileName );
 
     /* Lock file definition */
     SCOREP_MutexLock( scorep_user_file_table_mutex );
