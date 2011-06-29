@@ -30,11 +30,15 @@
 
 #include <config.h>
 #include <fnmatch.h>
+#include <ctype.h>
 
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
+
+#define STR( x ) STR_( x )
+#define STR_( x ) #x
 
 /* **************************************************************************************
    Variable and type definitions
@@ -51,9 +55,9 @@ typedef struct scorep_filter_rule_struct scorep_filter_rule_t;
  */
 struct scorep_filter_rule_struct
 {
-    const char*           pattern;    /**< Pointer to the pattern string */
+    char*                 pattern;    /**< Pointer to the pattern string */
+    const char*           pattern2;   /**< Pointer to the modified pattern string */
     bool                  is_exclude; /**< True if it is a exclude rule, false else */
-    bool                  is_fortran; /**< True if the rule might be Fortran mangled */
     scorep_filter_rule_t* next;       /**< Next filter rule */
 };
 
@@ -83,6 +87,50 @@ bool                  scorep_filter_is_enabled = false;
    Rule representation manipulation functions
 ****************************************************************************************/
 
+/**
+ * Creates a string which contains the content of @a pattern which is mangled according
+ * to Fortran rules. Currently, upper or lower case are considered and up to one
+ * underscore appended.
+ * @param pattern The pattern that is mangled
+ * @returns A pointer to the mangled pattern string. The new string is allocated in
+ *          a Score-P Misc page. Thus it is automatically freed at memory management
+            finalization.
+ */
+static const char*
+scorep_filter_mangle_pattern( const char* pattern )
+{
+    size_t i;
+    size_t len    = strlen( pattern );
+    char*  result = ( char* )SCOREP_Memory_AllocForMisc( len + 2 );
+    strcpy( result, pattern );
+
+    /* Put everything to lower or upper case */
+    char* test_case = STR( FC_FUNC( x, X ) );
+
+    if ( *test_case == 'x' )
+    {
+        for ( i = 0; i < len; i++ )
+        {
+            result[ i ] = ( char )tolower( result[ i ] );
+        }
+    }
+    else
+    {
+        for ( i = 0; i < len; i++ )
+        {
+            result[ i ] = ( char )toupper( result[ i ] );
+        }
+    }
+
+    /* Append underscore */
+    if ( test_case[ 1 ] == '_' )
+    {
+        result[ len ]     = '_';
+        result[ len + 1 ] = '\0';
+    }
+    return result;
+}
+
 SCOREP_Error_Code
 scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 {
@@ -100,9 +148,17 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
-    new_rule->pattern    = SCOREP_CStr_dup( rule );
+    if ( SCOREP_IO_HasPath( rule ) )
+    {
+        new_rule->pattern  = SCOREP_CStr_dup( rule );
+        new_rule->pattern2 = SCOREP_IO_GetWithoutPath( new_rule->pattern );
+    }
+    else
+    {
+        new_rule->pattern  = NULL;
+        new_rule->pattern2 = SCOREP_CStr_dup( rule );
+    }
     new_rule->is_exclude = is_exclude;
-    new_rule->is_fortran = false;
     new_rule->next       = NULL;
 
     /* Insert entry in list */
@@ -138,9 +194,16 @@ scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fort
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
-    new_rule->pattern    = SCOREP_CStr_dup( rule );
+    new_rule->pattern = SCOREP_CStr_dup( rule );
+    if ( is_fortran )
+    {
+        new_rule->pattern2 = scorep_filter_mangle_pattern( new_rule->pattern );
+    }
+    else
+    {
+        new_rule->pattern2 = NULL;
+    }
     new_rule->is_exclude = is_exclude;
-    new_rule->is_fortran = is_fortran;
     new_rule->next       = NULL;
 
     /* Insert entry in list */
@@ -184,12 +247,82 @@ scorep_filter_free_rules()
 /* **************************************************************************************
    Matching requests
 ****************************************************************************************/
+
+static bool
+scorep_filter_match_file( const char*           with_path,
+                          const char*           file_only,
+                          scorep_filter_rule_t* rule,
+                          SCOREP_Error_Code*    error_code )
+{
+    int error_value = 0;
+    if ( ( with_path != NULL ) && ( rule->pattern != NULL ) )
+    {
+        error_value = fnmatch( rule->pattern, with_path, FNM_PERIOD );
+    }
+    else
+    {
+        error_value = fnmatch( rule->pattern2, file_only, FNM_PERIOD );
+    }
+
+    if ( error_value == 0 )
+    {
+        *error_code = SCOREP_SUCCESS;
+        return true;
+    }
+    else if ( error_value != FNM_NOMATCH )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                      "Error in pattern matching during evaluation of filter rules"
+                      "with file '%s' and pattern '%s'. Disable filtering",
+                      with_path, rule->pattern );
+        SCOREP_Filter_Disable();
+        *error_code = SCOREP_ERROR_PROCESSED_WITH_FAULTS;
+        return false;
+    }
+    return false;
+}
+
+static bool
+scorep_filter_match_function( const char*           function_name,
+                              scorep_filter_rule_t* rule,
+                              bool                  use_fortran,
+                              SCOREP_Error_Code*    error_code )
+{
+    int error_value = 0;
+    if ( use_fortran && ( rule->pattern2 != NULL ) )
+    {
+        error_value = fnmatch( rule->pattern2, function_name, FNM_PERIOD );
+    }
+    else
+    {
+        error_value = fnmatch( rule->pattern, function_name, FNM_PERIOD );
+    }
+
+    if ( error_value == 0 )
+    {
+        *error_code = SCOREP_SUCCESS;
+        return true;
+    }
+    else if ( error_value != FNM_NOMATCH )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                      "Error in pattern matching during evaluation of filter rules"
+                      "with file '%s' and pattern '%s'. Disable filtering",
+                      function_name, rule->pattern );
+        SCOREP_Filter_Disable();
+        return false;
+    }
+    return false;
+}
+
 bool
 SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_fortran )
 {
     scorep_filter_rule_t* current_rule = scorep_filter_file_rules_head;
     bool                  excluded     = false; /* Start with all included */
     int                   error_value;
+    const char*           file_only  = NULL;
+    SCOREP_Error_Code     error_code = SCOREP_SUCCESS;
 
     if ( !SCOREP_Filter_IsEnabled() )
     {
@@ -198,41 +331,31 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
 
     if ( file_name != NULL )
     {
+        file_only = SCOREP_IO_GetWithoutPath( file_name );
+        if ( !SCOREP_IO_HasPath( file_name ) )
+        {
+            file_name = NULL;
+        }
         while ( current_rule != NULL )
         {
             /* If included so far and we have an exclude rule */
             if ( ( !excluded ) && current_rule->is_exclude )
             {
-                error_value = fnmatch( current_rule->pattern, file_name, FNM_PERIOD );
-                if ( error_value == 0 )
+                excluded = scorep_filter_match_file( file_name, file_only,
+                                                     current_rule, &error_code );
+                if ( error_code != SCOREP_SUCCESS )
                 {
-                    excluded = true;
-                }
-                else if ( error_value != FNM_NOMATCH )
-                {
-                    SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                                  "Error in pattern matching during evaluation of filter rules"
-                                  "with file '%s' and pattern '%s'. Disable filtering",
-                                  file_name, current_rule->pattern );
-                    SCOREP_Filter_Disable();
                     return false;
                 }
             }
             /* If excluded so far and we have an include rule */
             else if ( excluded && ( !current_rule->is_exclude ) )
             {
-                error_value = fnmatch( current_rule->pattern, file_name, FNM_PERIOD );
-                if ( error_value == 0 )
+                excluded = !scorep_filter_match_file( file_name, file_only,
+                                                      current_rule, &error_code );
+
+                if ( error_code != SCOREP_SUCCESS )
                 {
-                    excluded = false;
-                }
-                else if ( error_value != FNM_NOMATCH )
-                {
-                    SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                                  "Error in pattern matching during evaluation of filter rules"
-                                  "with file '%s' and pattern '%s'. Disable filtering",
-                                  file_name, current_rule->pattern );
-                    SCOREP_Filter_Disable();
                     return false;
                 }
             }
@@ -258,36 +381,26 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
             /* If included so far and we have an exclude rule */
             if ( ( !excluded ) && current_rule->is_exclude )
             {
-                error_value = fnmatch( current_rule->pattern, function_name, FNM_PERIOD );
-                if ( error_value == 0 )
+                excluded = scorep_filter_match_function( function_name,
+                                                         current_rule,
+                                                         use_fortran,
+                                                         &error_code );
+
+                if ( error_code != SCOREP_SUCCESS )
                 {
-                    excluded = true;
-                }
-                else if ( error_value != FNM_NOMATCH )
-                {
-                    SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                                  "Error in pattern matching during evaluation of filter rules"
-                                  "with file '%s' and pattern '%s'. Disable filtering",
-                                  file_name, current_rule->pattern );
-                    SCOREP_Filter_Disable();
                     return false;
                 }
             }
             /* If excluded so far and we have an include rule */
             else if ( excluded && ( !current_rule->is_exclude ) )
             {
-                error_value = fnmatch( current_rule->pattern, function_name, FNM_PERIOD );
-                if ( error_value == 0 )
+                excluded = !scorep_filter_match_function( function_name,
+                                                          current_rule,
+                                                          use_fortran,
+                                                          &error_code );
+
+                if ( error_code != SCOREP_SUCCESS )
                 {
-                    excluded = false;
-                }
-                else if ( error_value != FNM_NOMATCH )
-                {
-                    SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                                  "Error in pattern matching during evaluation of filter rules"
-                                  "with file '%s' and pattern '%s'. Disable filtering",
-                                  file_name, current_rule->pattern );
-                    SCOREP_Filter_Disable();
                     return false;
                 }
             }
