@@ -89,9 +89,9 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
 
         scorep_sion_cppflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_sermpi_flag --cflags`
         scorep_sion_ldflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_sermpi_flag --libs | \
-                             awk '{for (i=1; i<=NF; i++) {if (index($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
+                             awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
         scorep_sion_libs=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_sermpi_flag --libs | \
-                          awk '{for (i=1; i<=NF; i++) {if (index($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
+                          awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
         #echo "debug: scorep_sion_cppflags=$scorep_sion_cppflags"
         #echo "debug: scorep_sion_ldflags=$scorep_sion_ldflags"
