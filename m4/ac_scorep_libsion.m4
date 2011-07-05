@@ -45,8 +45,12 @@
 # /usr/local/sionlib/v1.2p2
 
 
+# AC_SCOREP_LIBSION(serial|mpi)
 AC_DEFUN([AC_SCOREP_LIBSION],
 [
+# assert that either serial or mpi is passed
+m4_case([$1], [mpi], [], [serial], [], [m4_fatal([parameter must be either serial or mpi])])
+
 # make SIONCONFIG precious as we use it in AC_CHECK_PROG
 AC_ARG_VAR([SIONCONFIG], [Absolute path to sionconfig, including "sionconfig".])
 
@@ -84,20 +88,19 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
             sionconfig_febe_flag="--fe"
         fi
 
-        # this needs to be discussed as it add a MPI dependency to OTF2
-        sionconfig_sermpi_flag="--mpi"
+        m4_if([serial], [$1], [sionconfig_paradigm_flag="--ser"], [sionconfig_paradigm_flag="--mpi"])
 
-        scorep_sion_cppflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_sermpi_flag --cflags`
-        scorep_sion_ldflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_sermpi_flag --libs | \
+        scorep_sion_cppflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --cflags`
+        scorep_sion_ldflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
                              awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
-        scorep_sion_libs=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_sermpi_flag --libs | \
+        scorep_sion_libs=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
                           awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
         #echo "debug: scorep_sion_cppflags=$scorep_sion_cppflags"
         #echo "debug: scorep_sion_ldflags=$scorep_sion_ldflags"
         #echo "debug: scorep_sion_libs=$scorep_sion_libs"
 
-        # maybe add links checks, but how to do this with MPI?
+        m4_if([serial], [$1], [# add serial link check here], [# add mpi link check here])
     
     fi
 fi
