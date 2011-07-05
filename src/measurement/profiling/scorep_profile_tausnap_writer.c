@@ -112,12 +112,16 @@ scorep_profile_write_region_tau( scorep_profile_node* node,
     {
         scorep_profile_write_tausnap_def( path, file, callpath_counter );
     }
-    /* invoke children */
-    scorep_profile_node* child = node->first_child;
-    while ( child != NULL )
+
+    if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
     {
-        scorep_profile_write_node_tau( child, path, file, callpath_counter );
-        child = child->next_sibling;
+        /* invoke children */
+        scorep_profile_node* child = node->first_child;
+        while ( child != NULL )
+        {
+            scorep_profile_write_node_tau( child, path, file, callpath_counter );
+            child = child->next_sibling;
+        }
     }
 }
 
@@ -278,13 +282,15 @@ scorep_profile_write_data_tau( scorep_profile_node* node,
                  ( node->inclusive_time.sum * 1000000 / tps ) );
         ( *callpath_counter )++;
     }
-
-    /* invoke children */
-    scorep_profile_node* child = node->first_child;
-    while ( child != NULL )
+    if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
     {
-        scorep_profile_write_data_tau( child, file, callpath_counter );
-        child = child->next_sibling;
+        /* invoke children */
+        scorep_profile_node* child = node->first_child;
+        while ( child != NULL )
+        {
+            scorep_profile_write_data_tau( child, file, callpath_counter );
+            child = child->next_sibling;
+        }
     }
 }
 
@@ -350,6 +356,80 @@ scorep_profile_write_thread_tau( scorep_profile_node* node,
     fprintf( file, "</profile>\n\n" );
 }
 
+/**
+   Adds nodes to the callpath, as siblings of the root, to represent the nodes of the callgraph.
+   It also adds "dummy" nodes as children to these nodes.  The dummy nodes are used to correctly calculate
+   exclusive time and child counts. This function is a processing function for a scorep_profile_for_all call.
+   @param node  Pointer to the current profile node.
+   @param param Pointer to the list of added nodes.
+ */
+static void
+scorep_profile_write_tau_merge_callpath_nodes( scorep_profile_node* node,
+                                               void*                param )
+{
+    scorep_profile_node* parent = ( scorep_profile_node* )param;
+    scorep_profile_node* list   = parent;
+
+    bool                 root = scorep_profile_compare_nodes( parent, node );
+    //We are at the root of the call graph so there is no need to merge any nodes
+    if ( root )
+    {
+        return;
+    }
+
+    bool same = false;
+
+    while ( list != NULL )
+    {
+        same = scorep_profile_compare_nodes( list, node );
+        if ( same )
+        {
+            //If the node is found in the list, break and merge the nodes
+            break;
+        }
+        if ( list->next_sibling == NULL )
+        {
+            //if we reached the end of the list without finding the node, add a new one
+            scorep_profile_node* copy = scorep_profile_copy_node( node );
+            list->next_sibling = copy;
+
+            //need to collect exclusive time and child calls so that the information can be printed correctly
+            scorep_profile_node* dummy = scorep_profile_copy_node( copy );
+            dummy->inclusive_time.sum = copy->inclusive_time.sum  - scorep_profile_get_exclusive_time( node );
+            dummy->count              = scorep_profile_get_number_of_child_calls( node );
+            copy->first_child         = dummy;
+            dummy->callpath_handle    = SCOREP_INVALID_CALLPATH;
+            break;
+        }
+        else
+        {
+            list = list->next_sibling;
+        }
+    }
+    if ( same )
+    {
+        //need to add exclusive time and child calls to the dummy node
+        scorep_profile_node* dummy = list->first_child;
+        dummy->inclusive_time.sum += node->inclusive_time.sum  - scorep_profile_get_exclusive_time( node );
+        dummy->count              += scorep_profile_get_number_of_child_calls( node );
+
+        //merge the metrics
+        scorep_profile_merge_node_dense( list, node );
+        scorep_profile_merge_node_sparse( list, node );
+    }
+}
+
+/* Adds nodes to the callpath for the TAU snapshot profile.
+ * @param node Pointer to the root of the callpath.
+ */
+void
+scorep_profile_write_tau_add_callpath_nodes( scorep_profile_node* node )
+{
+    scorep_profile_for_all( node,
+                            scorep_profile_write_tau_merge_callpath_nodes,
+                            node );
+}
+
 /* Implemetation of the top function for writing a TAU snapshot profile.
  */
 void
@@ -382,6 +462,10 @@ scorep_profile_write_tau_snapshot()
         SCOREP_ERROR_POSIX( "Failed to write profile. Unable to open file" );
         return;
     }
+
+    /*Add the summary nodes to the calltree*/
+    scorep_profile_node* root = scorep_profile.first_root_node;
+    scorep_profile_write_tau_add_callpath_nodes( root->first_child );
 
     /* Write starting tag */
     fprintf( file, "<profile_xml>\n" );
