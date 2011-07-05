@@ -73,7 +73,9 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-sicortex  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-sun  \
-              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-user-provided
+              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-user-provided \
+              $(srcdir)/vendor/common/cutest/CuTest.c \
+              $(srcdir)/vendor/common/cutest/CuTest.h
 
 CLEANFILES += $(builddir)/user_provided_configure_args \
               $(builddir)/mpi_compiler_suite           \
