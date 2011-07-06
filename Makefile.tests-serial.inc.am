@@ -127,13 +127,14 @@ check-serial-TESTS: $(TESTS_SERIAL)
 	  fi; \
 	  dashes=`echo "$$dashes" | sed s/./=/g`; \
 	  if test "$$failed" -eq 0; then \
-	    echo "$$grn$$dashes"; \
+	    col="$$grn"; \
 	  else \
-	    echo "$$red$$dashes"; \
+	    col="$$red"; \
 	  fi; \
-	  echo "$$banner"; \
-	  test -z "$$skipped" || echo "$$skipped"; \
-	  test -z "$$report" || echo "$$report"; \
-	  echo "$$dashes$$std"; \
+	  echo "$${col}$$dashes$${std}"; \
+	  echo "$${col}$$banner$${std}"; \
+	  test -z "$$skipped" || echo "$${col}$$skipped$${std}"; \
+	  test -z "$$report" || echo "$${col}$$report$${std}"; \
+	  echo "$${col}$$dashes$${std}"; \
 	  test "$$failed" -eq 0; \
 	else :; fi
