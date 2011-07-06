@@ -44,6 +44,7 @@
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Omp.h>
 #include <SCOREP_Profile.h>
+#include <SCOREP_Filter.h>
 #include <scorep_unify.h>
 #include <scorep_openmp.h>
 
