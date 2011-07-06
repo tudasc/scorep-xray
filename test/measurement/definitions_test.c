@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <CuTest.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -245,14 +246,23 @@ test_1( CuTest* tc )
 int
 main()
 {
+    CuUseColors();
     CuString* output = CuStringNew();
     CuSuite*  suite  = CuSuiteNew( "definition manager" );
 
-    SUITE_ADD_TEST( suite, test_1 );
+    SUITE_ADD_TEST_NAME( suite, test_1, "string definitions" );
 
     CuSuiteRun( suite );
-    CuSuiteSummary( suite, output );
-    printf( "%s", output->buffer );
 
-    return suite->failCount;
+    CuSuiteSummary( suite, output );
+    int failCount = suite->failCount;
+    if ( failCount )
+    {
+        printf( "%s", output->buffer );
+    }
+
+    CuSuiteFree( suite );
+    CuStringFree( output );
+
+    return failCount ? EXIT_FAILURE : EXIT_SUCCESS;
 }

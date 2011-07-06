@@ -23,14 +23,14 @@
 
 check_PROGRAMS              += unification_test
 unification_test_SOURCES =  $(SRC_ROOT)test/unification/unification_test.c \
-                            $(SRC_ROOT)vendor/cutest/CuTest.c              \
-                            $(SRC_ROOT)vendor/cutest/CuTest.h
+                            $(SRC_ROOT)vendor/common/cutest/CuTest.c       \
+                            $(SRC_ROOT)vendor/common/cutest/CuTest.h
 unification_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
                             -I$(PUBLIC_INC_DIR)                  \
                             -I$(INC_ROOT)src/measurement/include \
                             -I$(INC_ROOT)src/measurement         \
                             -I$(INC_ROOT)vendor/hash             \
-                            -I$(INC_ROOT)vendor/cutest           \
+                            -I$(INC_ROOT)vendor/common/cutest    \
                             -I$(INC_DIR_UTIL)
 unification_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
 

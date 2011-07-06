@@ -28,6 +28,7 @@
 #include <config.h>
 
 #include <CuTest.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -148,17 +149,27 @@ init_definition_manager( CuTest*                    tc,
 int
 main()
 {
-    SCOREP_InitMeasurement();
-
+    CuUseColors();
     CuString* output = CuStringNew();
     CuSuite*  suite  = CuSuiteNew( "unification" );
 
-    SUITE_ADD_TEST( suite, test_1 );
+    SUITE_ADD_TEST_NAME( suite, test_1, "simple string unification" );
+
+    SCOREP_InitMeasurement();
 
     CuSuiteRun( suite );
-    CuSuiteSummary( suite, output );
-    printf( "%s\n", output->buffer );
 
     SCOREP_FinalizeMeasurement();
-    return suite->failCount;
+
+    CuSuiteSummary( suite, output );
+    int failCount = suite->failCount;
+    if ( failCount )
+    {
+        printf( "%s", output->buffer );
+    }
+
+    CuSuiteFree( suite );
+    CuStringFree( output );
+
+    return failCount ? EXIT_FAILURE : EXIT_SUCCESS;
 }

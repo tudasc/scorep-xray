@@ -220,43 +220,49 @@ test_bool_default_garbage( CuTest* tc )
 int
 main()
 {
+    CuUseColors();
     CuString* output = CuStringNew();
-    CuSuite*  suite  = CuSuiteNew( "default values for config type bool" );
+    CuSuite*  suite  = CuSuiteNew( "bool config type" );
+
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_true,
+                         "bool with default \"true\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_yes,
+                         "bool with default \"yes\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_on,
+                         "bool with default \"on\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_1,
+                         "bool with default \"1\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_42,
+                         "bool with default \"42\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_false,
+                         "bool with default \"false\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_no,
+                         "bool with default \"no\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_off,
+                         "bool with default \"off\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_0,
+                         "bool with default \"0\"" );
+    SUITE_ADD_TEST_NAME( suite, test_bool_default_garbage,
+                         "bool with default \"garbage\"" );
 
     SCOREP_ConfigInit();
 
     SCOREP_ConfigRegister( "", bool_config_variables );
 
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"true\"",
-                         test_bool_default_true );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"yes\"",
-                         test_bool_default_yes );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"on\"",
-                         test_bool_default_on );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"1\"",
-                         test_bool_default_1 );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"42\"",
-                         test_bool_default_42 );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"false\"",
-                         test_bool_default_false );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"no\"",
-                         test_bool_default_no );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"off\"",
-                         test_bool_default_off );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"0\"",
-                         test_bool_default_0 );
-    SUITE_ADD_TEST_NAME( suite, "bool with default \"garbage\"",
-                         test_bool_default_garbage );
-
     CuSuiteRun( suite );
-    CuSuiteSummary( suite, output );
-    printf( "%s", output->buffer );
-
-    int failCount = suite->failCount;
-    CuSuiteFree( suite );
-    CuStringFree( output );
 
     SCOREP_ConfigFini();
 
-    return failCount;
+    CuSuiteSummary( suite, output );
+
+    int failCount = suite->failCount;
+    if ( failCount )
+    {
+        printf( "%s", output->buffer );
+    }
+
+    CuSuiteFree( suite );
+    CuStringFree( output );
+
+    return failCount ? EXIT_FAILURE : EXIT_SUCCESS;
 }

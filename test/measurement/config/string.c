@@ -88,27 +88,32 @@ test_string_default_foo( CuTest* tc )
 int
 main()
 {
+    CuUseColors();
     CuString* output = CuStringNew();
-    CuSuite*  suite  = CuSuiteNew( "default values for config type string" );
+    CuSuite*  suite  = CuSuiteNew( "string config type" );
+
+    SUITE_ADD_TEST_NAME( suite, test_string_default_empty,
+                         "string with default \"\"" );
+    SUITE_ADD_TEST_NAME( suite, test_string_default_foo,
+                         "string with default \"foo\"" );
 
     SCOREP_ConfigInit();
 
     SCOREP_ConfigRegister( "", string_config_variables );
 
-    SUITE_ADD_TEST_NAME( suite, "string with default \"\"",
-                         test_string_default_empty );
-    SUITE_ADD_TEST_NAME( suite, "string with default \"foo\"",
-                         test_string_default_foo );
-
     CuSuiteRun( suite );
-    CuSuiteSummary( suite, output );
-    printf( "%s", output->buffer );
-
-    int failCount = suite->failCount;
-    CuSuiteFree( suite );
-    CuStringFree( output );
 
     SCOREP_ConfigFini();
 
-    return failCount;
+    CuSuiteSummary( suite, output );
+    int failCount = suite->failCount;
+    if ( failCount )
+    {
+        printf( "%s", output->buffer );
+    }
+
+    CuSuiteFree( suite );
+    CuStringFree( output );
+
+    return failCount ? EXIT_FAILURE : EXIT_SUCCESS;
 }

@@ -25,40 +25,41 @@ check_PROGRAMS += test_scorep_config_bool \
                   test_scorep_config_size
 
 test_scorep_config_cppflags = $(AM_CPPFLAGS) \
-                            -I$(INC_ROOT)vendor/cutest \
-                            -I$(INC_ROOT)src/measurement \
-                            -I$(INC_ROOT)src/measurement/include \
-                            -I$(PUBLIC_INC_DIR) \
-                            -I$(INC_DIR_UTIL)
+                              -I$(INC_ROOT)vendor/common/cutest \
+                              -I$(INC_ROOT)src/measurement \
+                              -I$(INC_ROOT)src/measurement/include \
+                              -I$(PUBLIC_INC_DIR) \
+                              -I$(INC_DIR_UTIL)
 test_scorep_config_ldadd = $(LIB_ROOT)libscorep_serial.la \
-                         $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+                           $(LIB_DIR_UTIL)libscorep_utilities.la \
+                           @LIBBFD@
 
 test_scorep_config_bool_SOURCES = $(SRC_ROOT)test/measurement/config/bool.c \
-                                $(SRC_ROOT)vendor/cutest/CuTest.c
+                                  $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_bool_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_bool_LDADD = $(test_scorep_config_ldadd)
 
 test_scorep_config_number_SOURCES = $(SRC_ROOT)test/measurement/config/number.c \
-                                  $(SRC_ROOT)test/measurement/config/error_callback.c \
-                                  $(SRC_ROOT)vendor/cutest/CuTest.c
+                                    $(SRC_ROOT)test/measurement/config/error_callback.c \
+                                    $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_number_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_number_LDADD = $(test_scorep_config_ldadd)
 
 test_scorep_config_size_SOURCES = $(SRC_ROOT)test/measurement/config/size.c \
-                                $(SRC_ROOT)test/measurement/config/error_callback.c \
-                                $(SRC_ROOT)vendor/cutest/CuTest.c
+                                  $(SRC_ROOT)test/measurement/config/error_callback.c \
+                                  $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_size_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_size_LDADD = $(test_scorep_config_ldadd)
 
 test_scorep_config_string_SOURCES = $(SRC_ROOT)test/measurement/config/string.c \
-                                  $(SRC_ROOT)vendor/cutest/CuTest.c
+                                    $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_string_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_string_LDADD = $(test_scorep_config_ldadd)
 
 TESTS_SERIAL += test_scorep_config_bool \
-         test_scorep_config_string \
-         $(srcdir)/../test/measurement/config/test_scorep_config_number.sh \
-         $(srcdir)/../test/measurement/config/test_scorep_config_size.sh
+                test_scorep_config_string \
+                $(srcdir)/../test/measurement/config/test_scorep_config_number.sh \
+                $(srcdir)/../test/measurement/config/test_scorep_config_size.sh
 
 EXTRA_DIST += $(SRC_ROOT)test/measurement/config/test-framework.sh \
               $(SRC_ROOT)test/measurement/config/error_callback.h \

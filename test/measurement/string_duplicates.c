@@ -26,6 +26,7 @@
 
 #include <config.h>
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <CuTest.h>
@@ -77,23 +78,26 @@ test_2( CuTest* tc )
 int
 main()
 {
+    CuUseColors();
     CuString* output = CuStringNew();
     CuSuite*  suite  = CuSuiteNew( "no string duplications" );
 
-    SUITE_ADD_TEST_NAME( suite,
-                         "three times \"foo\" equals one",
-                         test_1 );
-    SUITE_ADD_TEST_NAME( suite,
-                         "three times \"foo\" and \"bar\" equals two",
-                         test_2 );
+    SUITE_ADD_TEST_NAME( suite, test_1,
+                         "three times \"foo\" equals one" );
+    SUITE_ADD_TEST_NAME( suite, test_2,
+                         "three times \"foo\" and \"bar\" equals two" );
 
     CuSuiteRun( suite );
     CuSuiteSummary( suite, output );
-    printf( "%s", output->buffer );
 
     int failCount = suite->failCount;
+    if ( failCount )
+    {
+        printf( "%s", output->buffer );
+    }
+
     CuSuiteFree( suite );
     CuStringFree( output );
 
-    return failCount;
+    return failCount ? EXIT_FAILURE : EXIT_SUCCESS;
 }
