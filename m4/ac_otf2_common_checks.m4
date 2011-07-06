@@ -98,6 +98,7 @@ AC_REQUIRE([AC_PROG_RANLIB])
 
 AC_SCOREP_DEBUG_OPTION
 AC_SCOREP_ON_DEBUG_OPTION
+AC_CUTEST_COLOR_TESTS
 
 AC_CONFIG_FILES([
     run_otf2_integrity_test.sh:../test/OTF2_Integrity_test/run_otf2_integrity_test.sh.in
