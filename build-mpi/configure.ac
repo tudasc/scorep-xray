@@ -91,6 +91,7 @@ AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS
 AC_SCOREP_BACKEND_TEST_RUNS
 SCOREP_ATTRIBUTE_ALIGNMENT
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
+AC_SCOREP_LIBSION([mpi])
 
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI
