@@ -49,7 +49,7 @@ Init( struct JacobiData* data,
     int   i;
     int   block_lengths[ 8 ];
 
-    int   ITERATIONS = 100;
+    int   ITERATIONS = 5;
     char* env        = getenv( "ITERATIONS" );
     if ( env )
     {

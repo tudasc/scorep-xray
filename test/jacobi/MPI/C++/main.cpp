@@ -48,7 +48,7 @@ Init( JacobiData &data,
     if ( data.iMyRank == 0 )
     {
         int   version, subversion;
-        int   ITERATIONS = 100;
+        int   ITERATIONS = 5;
         char* env        = getenv( "ITERATIONS" );
 
         MPI_Get_version( &version, &subversion );

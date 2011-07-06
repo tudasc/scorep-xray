@@ -74,7 +74,7 @@ subroutine Init (myData)
     implicit none
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
-    integer :: ITERATIONS = 100
+    integer :: ITERATIONS = 5
     integer :: iErr, i
     call get_environment_variable("ITERATIONS", env)
     if (len_trim(env) > 0) then
