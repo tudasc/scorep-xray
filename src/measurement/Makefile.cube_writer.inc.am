@@ -51,6 +51,9 @@ libscorep_cube_writer_la_SOURCES =                               \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts.h       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_tar_writing.h          \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts_types.h
+libscorep_cube_writer_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -U_FORTIFY_SOURCE
 
 EXTRA_DIST += \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_direct_writing.c       \
