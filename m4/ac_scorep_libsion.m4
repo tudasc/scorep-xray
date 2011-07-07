@@ -79,6 +79,11 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
     fi
 
     if test "x${SIONCONFIG}" != "xno"; then
+        AC_LANG_PUSH([C])
+        cppflags_save=$CPPFLAGS
+        ldflags_save=$LDFLAGS
+        libs_save=$LIBS
+
         scorep_have_sion="yes"
 
         sionconfig_febe_flag=""
@@ -91,19 +96,76 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
         m4_if([serial], [$1], [sionconfig_paradigm_flag="--ser"], [sionconfig_paradigm_flag="--mpi"])
 
         scorep_sion_cppflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --cflags`
-        scorep_sion_ldflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
-                             awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
-        scorep_sion_libs=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
-                          awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
+        CPPFLAGS="$scorep_sion_cppflags $CPPFLAGS"
+        AC_CHECK_HEADER([sion.h], [], [scorep_have_sion="no"; scorep_sion_cppflags=""])
 
-        #echo "debug: scorep_sion_cppflags=$scorep_sion_cppflags"
-        #echo "debug: scorep_sion_ldflags=$scorep_sion_ldflags"
-        #echo "debug: scorep_sion_libs=$scorep_sion_libs"
+        if test "x${scorep_have_sion}" = "xyes"; then
+            scorep_sion_ldflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
+                                 awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
+            scorep_sion_libs=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
+                              awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
-        m4_if([serial], [$1], [# add serial link check here], [# add mpi link check here])
-    
+            AC_MSG_CHECKING([for libsion])
+            LDFLAGS="$scorep_sion_ldflags $LDFLAGS"
+            LIBS="$scorep_sion_libs $LIBS"
+
+            AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <sion.h>
+#include <stddef.h>
+]],[[
+/* common sion functions */
+sion_ensure_free_space(42, 84);
+sion_feof(42);
+sion_bytes_avail_in_block(42);
+sion_seek(42,42,42,42);
+sion_seek_fp(42,42,42,42, NULL);
+sion_fwrite(NULL,42,42,42);
+sion_fwrite(NULL,42,42,42);
+]])], 
+                           [],
+                           [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])
+            
+            m4_if([serial], [$1], 
+                  [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <sion.h>
+#include <stddef.h>
+]],[[
+/* serial sion functions */
+sion_open(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+sion_open_rank(NULL,NULL,NULL,NULL,NULL,NULL);
+sion_close(42);
+sion_get_locations(42,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+]])], 
+                                  [],
+                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])], 
+                  [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <sion.h>
+#include <stddef.h>
+#include <mpi.h>
+]],[[
+/* mpi sion functions */
+sion_paropen_mpi(NULL,NULL,NULL,MPI_COMM_WORLD,&MPI_COMM_WOLRD,NULL,NULL,NULL,NULL,NULL)
+sion_parclose_mpi(42);
+]])], 
+                                  [],
+                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])])
+
+            AC_MSG_RESULT([$scorep_have_sion])
+        fi
+
+        CPPFLAGS=$cppflags_save
+        LDFLAGS=$ldflags_save
+        LIBS=$libs_save
+        AC_LANG_POP([C])
     fi
 fi
+
+#echo "debug: scorep_sion_cppflags=$scorep_sion_cppflags"
+#echo "debug: scorep_sion_ldflags=$scorep_sion_ldflags"
+#echo "debug: scorep_sion_libs=$scorep_sion_libs"
 
 # The output of this macro
 AC_SUBST([SCOREP_SION_CPPFLAGS], [$scorep_sion_cppflags])
@@ -117,3 +179,12 @@ fi
 AM_CONDITIONAL([HAVE_SION], [test "x${scorep_have_sion}" = "xyes"])
 
 ]) 
+
+
+dnl # omp
+dnl #sion_paropen_omp(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+dnl #sion_parclose_omp(42);
+
+dnl # mpi_omp
+dnl #sion_paropen_ompi(NULL,NULL,NULL,MPI_COMM_WORLD,&MPI_COMM_WOLRD,NULL,NULL,NULL,NULL,NULL)
+dnl #sion_parclose_ompi(42);
