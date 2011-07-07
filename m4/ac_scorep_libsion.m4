@@ -147,7 +147,8 @@ sion_get_locations(42,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 #include <mpi.h>
 ]],[[
 /* mpi sion functions */
-sion_paropen_mpi(NULL,NULL,NULL,MPI_COMM_WORLD,&MPI_COMM_WOLRD,NULL,NULL,NULL,NULL,NULL)
+MPI_Comm foo = MPI_COMM_WORLD;
+sion_paropen_mpi(NULL,NULL,NULL,foo,&foo,NULL,NULL,NULL,NULL,NULL);
 sion_parclose_mpi(42);
 ]])], 
                                   [],
