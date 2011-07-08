@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <scorep_sion.h>
+#include <stdio.h>
 #include <sion.h>
 #include <otf2/OTF2_File_Sion_Ext.h>
 #include <assert.h>
