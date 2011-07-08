@@ -45,6 +45,7 @@ static bool     scorep_env_tracing;
 static bool     scorep_env_profiling;
 static uint64_t scorep_env_total_memory;
 static uint64_t scorep_env_page_size;
+static bool     scorep_env_use_sion_substrate;
 
 
 /** @brief Measurement system configure variables */
@@ -93,6 +94,15 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "8k", // with 1200k total memory this means 150 pages
         "memory page size in bytes",
         "TOTAL_MEMORY will be split up into pages of size PAGE_SIZE."
+    },
+    {
+        "use_sion_substrate",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_env_use_sion_substrate,
+        NULL,
+        "true",
+        "Whether or not to use libsion as OTF2 substrate.",
+        "Long help"
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -174,4 +184,12 @@ SCOREP_Env_GetPageSize()
     assert( scorep_env_core_environment_variables_initialized );
     assert( scorep_env_total_memory > scorep_env_page_size );
     return scorep_env_page_size;
+}
+
+
+bool
+SCOREP_Env_UseSionSubstrate()
+{
+    assert( scorep_env_core_environment_variables_initialized );
+    return scorep_env_use_sion_substrate;
 }

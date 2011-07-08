@@ -44,6 +44,7 @@
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Omp.h>
 #include <SCOREP_Profile.h>
+#include <SCOREP_Tracing.h>
 #include <SCOREP_Filter.h>
 #include <scorep_unify.h>
 #include <scorep_openmp.h>
@@ -57,6 +58,7 @@
 #include "scorep_thread.h"
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
+#include "scorep_sion.h"
 
 #include <otf2/otf2.h>
 
@@ -202,11 +204,12 @@ scorep_otf2_initialize()
     {
         return;
     }
+    SCOREP_RegisterSionCallbacks();
     scorep_otf2_archive = OTF2_Archive_New( SCOREP_GetExperimentDirName(),
                                             "traces",
                                             OTF2_FILEMODE_WRITE,
-                                            1024 * 1024, // 1MB
-                                            OTF2_SUBSTRATE_POSIX,
+                                            SCOREP_Tracing_GetOTF2ChunkSize(),
+                                            SCOREP_Tracing_GetFileSubstrate(),
                                             0,           // allocate
                                             0,           // free
                                             0            // allocaterData

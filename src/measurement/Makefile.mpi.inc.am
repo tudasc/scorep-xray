@@ -46,6 +46,26 @@ libscorep_paradigm_mpi_la_LIBADD += $(FLIBS)
 endif
 endif
 
+## sion
+
+noinst_LTLIBRARIES += libscorep_sion_mpi.la \
+                      libscorep_sion_mpi_omp.la
+
+if HAVE_SION
+libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi.c
+libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_mpi_la_LDFLAGS  = $(SCOREP_SION_LDFLAGS)
+libscorep_sion_mpi_la_LIBS     = $(SCOREP_SION_LIBS)
+else
+libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement
+endif
+
+libscorep_sion_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+libscorep_sion_mpi_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement 
+
+
+## build some otf2 code from here as it requires MPI
 noinst_PROGRAMS += otf2_speed_test
 otf2_speed_test_SOURCES = \
     $(SRC_ROOT)vendor/otf2/src/tools/otf2_speed_test/otf2_speed_test.c

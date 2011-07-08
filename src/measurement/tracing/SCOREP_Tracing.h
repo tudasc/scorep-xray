@@ -1,8 +1,11 @@
+#ifndef SCOREP_TRACING_H
+#define SCOREP_TRACING_H
+
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
+ *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
  *    University of Oregon, Eugene, USA
@@ -16,52 +19,23 @@
 
 
 /**
- * @file       scorep_environment.h
+ * @file       SCOREP_Tracing.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
  */
 
-
-#ifndef SCOREP_INTERNAL_ENVIRONMENT_H
-#define SCOREP_INTERNAL_ENVIRONMENT_H
-
-
-#include <stdbool.h>
+#include <otf2/OTF2_GeneralDefinitions.h>
 #include <stdint.h>
 
 
-void
-SCOREP_Env_RegisterCoreEnvironmentVariables();
-
-
-//bool
-//SCOREP_Env_CoreEnvironmentVariablesInitialized();
-
-
-bool
-SCOREP_Env_RunVerbose();
-
-
-bool
-SCOREP_Env_DoTracing();
-
-
-bool
-SCOREP_Env_DoProfiling();
+OTF2_FileSubstrate
+SCOREP_Tracing_GetFileSubstrate();
 
 
 uint64_t
-SCOREP_Env_GetTotalMemory();
+SCOREP_Tracing_GetOTF2ChunkSize();
 
 
-uint64_t
-SCOREP_Env_GetPageSize();
-
-
-bool
-SCOREP_Env_UseSionSubstrate();
-
-
-#endif /* SCOREP_INTERNAL_ENVIRONMENT_H */
+#endif /* SCOREP_TRACING_H */

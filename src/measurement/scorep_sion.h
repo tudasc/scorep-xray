@@ -14,54 +14,19 @@
  *
  */
 
+#ifndef SCOREP_SION_H
+#define SCOREP_SION_H
 
 /**
- * @file       scorep_environment.h
+ * @file       scorep_sion.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
  */
 
-
-#ifndef SCOREP_INTERNAL_ENVIRONMENT_H
-#define SCOREP_INTERNAL_ENVIRONMENT_H
-
-
-#include <stdbool.h>
-#include <stdint.h>
-
-
 void
-SCOREP_Env_RegisterCoreEnvironmentVariables();
+SCOREP_RegisterSionCallbacks();
 
 
-//bool
-//SCOREP_Env_CoreEnvironmentVariablesInitialized();
-
-
-bool
-SCOREP_Env_RunVerbose();
-
-
-bool
-SCOREP_Env_DoTracing();
-
-
-bool
-SCOREP_Env_DoProfiling();
-
-
-uint64_t
-SCOREP_Env_GetTotalMemory();
-
-
-uint64_t
-SCOREP_Env_GetPageSize();
-
-
-bool
-SCOREP_Env_UseSionSubstrate();
-
-
-#endif /* SCOREP_INTERNAL_ENVIRONMENT_H */
+#endif /* SCOREP_SION_H */

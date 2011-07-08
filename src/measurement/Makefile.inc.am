@@ -31,6 +31,8 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.h \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.h           \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.c           \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_parser.c   \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.c \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.h \
@@ -56,7 +58,8 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.h          \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.c          \
     $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
-    $(SRC_ROOT)src/measurement/scorep_system_tree.c
+    $(SRC_ROOT)src/measurement/scorep_system_tree.c               \
+    $(SRC_ROOT)src/measurement/scorep_sion.h
 libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/adapters/include \
@@ -111,3 +114,28 @@ libscorep_paradigm_non_mpi_la_SOURCES  =                            \
 libscorep_paradigm_non_mpi_la_CPPFLAGS =       \
     $(common_libscorep_cppflags)               \
     -I$(INC_ROOT)src/adapters/include
+
+
+## sion
+
+noinst_LTLIBRARIES += libscorep_sion_serial.la \
+                      libscorep_sion_omp.la
+libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement 
+
+libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement 
+
+# if HAVE_SION
+# if OPENMP_SUPPORTED
+# libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c
+# libscorep_sion_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+# libscorep_sion_omp_la_CPPFLAGS = when available, add sion omp stuff here
+# libscorep_sion_omp_la_LDFLAGS  = and here
+# libscorep_sion_omp_la_LIBS     = and here
+# else
+# libscorep_sion_omp_la_SOURCES = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+# endif
+# else
+# libscorep_sion_omp_la_SOURCES = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+# endif
