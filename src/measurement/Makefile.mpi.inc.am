@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       Makefile.mpi.inc.am
+## file       src/trunk/src/measurement/Makefile.mpi.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
@@ -34,35 +34,48 @@ libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c
 libscorep_paradigm_mpi_la_CPPFLAGS =  \
     $(common_libscorep_cppflags)      \
-    -I$(INC_ROOT)src/adapters/include \
-    $(SCOREP_SION_CPPFLAGS)
+    -I$(INC_ROOT)src/adapters/include
 
-libscorep_paradigm_mpi_la_LIBADD  = $(SCOREP_SION_LIBS)
-libscorep_paradigm_mpi_la_LDFLAGS = $(SCOREP_SION_LDFLAGS)
+# \
+#    $(SCOREP_SION_CPPFLAGS)
+
+#libscorep_paradigm_mpi_la_LIBADD  = $(SCOREP_SION_LIBS)
+#libscorep_paradigm_mpi_la_LDFLAGS = $(SCOREP_SION_LDFLAGS)
 
 if SCOREP_COMPILER_PGI
 if SCOREP_MPI_OPENMPI
-libscorep_paradigm_mpi_la_LIBADD += $(FLIBS)
+libscorep_paradigm_mpi_la_LIBADD = $(FLIBS)
 endif
 endif
 
-## sion
+## sion-mpi
 
-noinst_LTLIBRARIES += libscorep_sion_mpi.la \
-                      libscorep_sion_mpi_omp.la
-
-if HAVE_SION
-libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi.c
-libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
-libscorep_sion_mpi_la_LDFLAGS  = $(SCOREP_SION_LDFLAGS)
-libscorep_sion_mpi_la_LIBS     = $(SCOREP_SION_LIBS)
+noinst_LTLIBRARIES += libscorep_sion_mpi.la
+if HAVE_SION_MPI
+libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi.c \
+                                 $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.c
+libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_MPI_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+libscorep_sion_mpi_la_LDFLAGS  = $(SCOREP_SION_MPI_LDFLAGS)
+libscorep_sion_mpi_la_LIBADD   = $(SCOREP_SION_MPI_LIBS)
 else
-libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
-libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement
+libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
+libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 endif
 
-libscorep_sion_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
-libscorep_sion_mpi_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement 
+
+## sion-mpi-omp
+
+noinst_LTLIBRARIES += libscorep_sion_mpi_omp.la
+if HAVE_SION_MPI_OMP
+libscorep_sion_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi_omp.c \
+                                     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.c
+libscorep_sion_mpi_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_MPI_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+libscorep_sion_mpi_omp_la_LDFLAGS  = $(SCOREP_SION_MPI_OMP_LDFLAGS)
+libscorep_sion_mpi_omp_la_LIBADD   = $(SCOREP_SION_MPI_OMP_LIBS)
+else
+libscorep_sion_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
+libscorep_sion_mpi_omp_la_CPPFLAGS  = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+endif
 
 
 ## build some otf2 code from here as it requires MPI

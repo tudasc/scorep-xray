@@ -2,7 +2,7 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
+ *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
  *    University of Oregon, Eugene, USA
@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/trunk/src/measurement/paradigm/scorep_sion_serial.c
+ * @file       src/trunk/src/measurement/tracing/scorep_tracing_file_substrate.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -26,18 +26,20 @@
 
 #include <config.h>
 #include <SCOREP_Tracing.h>
-#include <otf2/OTF2_Sion_Ext.h>
 #include <scorep_environment.h>
 
-// no support from sionconfig yet!
 
-void
-SCOREP_Tracing_RegisterSionCallbacks()
+/* *INDENT-OFF* */
+/* *INDENT-ON*  */
+
+
+OTF2_FileSubstrate
+SCOREP_Tracing_GetFileSubstrate()
 {
+    OTF2_FileSubstrate substrate = OTF2_SUBSTRATE_POSIX;
     if ( SCOREP_Env_UseSionSubstrate() )
     {
-        // todo if sionconfig supports hybrid
-        //OTF2_File_Sion_Register_Open_Callback( scorep_sion_open );
-        //OTF2_File_Sion_Register_Close_Callback( scorep_sion_close );
+        substrate = OTF2_SUBSTRATE_SION;
     }
+    return substrate;
 }

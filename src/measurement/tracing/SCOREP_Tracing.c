@@ -30,22 +30,12 @@
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
 
-OTF2_FileSubstrate
-SCOREP_Tracing_GetFileSubstrate()
-{
-    OTF2_FileSubstrate substrate = OTF2_SUBSTRATE_POSIX;
-    if ( SCOREP_Env_UseSionSubstrate() )
-    {
-        #if HAVE( SION )
-        substrate = OTF2_SUBSTRATE_SION;
-        #endif
-    }
-    return substrate;
-}
+
+/* For the SCOREP_Tracing_GetFileSubstrate() see paradigm/scorep_sion_*.c */
 
 
 uint64_t
-SCOREP_Tracing_GetOTF2ChunkSize()
+SCOREP_Tracing_GetChunkSize()
 {
     return 1024 * 1024; // 1MB
 }

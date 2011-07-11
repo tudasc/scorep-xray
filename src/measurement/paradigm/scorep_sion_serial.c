@@ -16,7 +16,7 @@
 
 
 /**
- * @file       scorep_sion_serial.c
+ * @file       src/trunk/src/measurement/paradigm/scorep_sion_serial.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -25,12 +25,11 @@
 
 
 #include <config.h>
-#include <scorep_sion.h>
-//#include <otf2/OTF2_File_Sion_Ext.h>
+#include <SCOREP_Tracing.h>
 
 
 void
-SCOREP_RegisterSionCallbacks()
+SCOREP_Tracing_RegisterSionCallbacks()
 {
     // serial is implemented in otf2, so nothing to do here, not even call
     // the register functions

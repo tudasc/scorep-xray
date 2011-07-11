@@ -14,19 +14,31 @@
  *
  */
 
-#ifndef SCOREP_SION_H
-#define SCOREP_SION_H
 
 /**
- * @file       scorep_sion.h
+ * @file       src/trunk/src/measurement/paradigm/scorep_sion_not_supported.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
  */
 
+
+#include <config.h>
+#include <SCOREP_Tracing.h>
+
+
 void
-SCOREP_RegisterSionCallbacks();
+SCOREP_Tracing_RegisterSionCallbacks()
+{
+    // don't register anything if sion is not supported.
+    //OTF2_File_Sion_Register_Open_Callback( 0 );
+    //OTF2_File_Sion_Register_Close_Callback( 0 );
+}
 
 
-#endif /* SCOREP_SION_H */
+OTF2_FileSubstrate
+SCOREP_Tracing_GetFileSubstrate()
+{
+    return OTF2_SUBSTRATE_POSIX;
+}

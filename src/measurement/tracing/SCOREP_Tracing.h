@@ -35,7 +35,11 @@ SCOREP_Tracing_GetFileSubstrate();
 
 
 uint64_t
-SCOREP_Tracing_GetOTF2ChunkSize();
+SCOREP_Tracing_GetChunkSize();
+
+
+void
+SCOREP_Tracing_RegisterSionCallbacks();
 
 
 #endif /* SCOREP_TRACING_H */
