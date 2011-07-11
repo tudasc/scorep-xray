@@ -66,10 +66,8 @@ libscorep_measurement_la_SOURCES =                                \
 
 libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
-    -I$(INC_ROOT)src/adapters/include \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/cube_writer
-
 
 ## paradigm omp
 
@@ -115,9 +113,7 @@ noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
 libscorep_paradigm_non_mpi_la_SOURCES  =                            \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_disabled.c       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c
-libscorep_paradigm_non_mpi_la_CPPFLAGS =       \
-    $(common_libscorep_cppflags)               \
-    -I$(INC_ROOT)src/adapters/include
+libscorep_paradigm_non_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 
 
 ## sion-serial

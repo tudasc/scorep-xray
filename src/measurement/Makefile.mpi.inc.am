@@ -32,15 +32,8 @@ noinst_LTLIBRARIES += libscorep_paradigm_mpi.la
 libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c
-libscorep_paradigm_mpi_la_CPPFLAGS =  \
-    $(common_libscorep_cppflags)      \
-    -I$(INC_ROOT)src/adapters/include
+libscorep_paradigm_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 
-# \
-#    $(SCOREP_SION_CPPFLAGS)
-
-#libscorep_paradigm_mpi_la_LIBADD  = $(SCOREP_SION_LIBS)
-#libscorep_paradigm_mpi_la_LDFLAGS = $(SCOREP_SION_LDFLAGS)
 
 if SCOREP_COMPILER_PGI
 if SCOREP_MPI_OPENMPI
