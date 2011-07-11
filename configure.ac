@@ -1,6 +1,8 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
+AC_SCOREP_SUMMARY_INIT([Score-P configuration summary])
+
 #echo "cross_compiling = $cross_compiling"
 
 AC_SCOREP_VERSION_AND_REVISION
@@ -45,8 +47,9 @@ else
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            user_provided_configure_args`"
 fi
-   
 
+AC_SCOREP_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling])
+AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform])
 
 AC_SCOREP_SVN_CONTROLLED
 
@@ -81,4 +84,10 @@ fi
 AC_CONFIG_FILES([
 	Makefile include/scorep/scorep_meets_tau_tmp.h 
 ])
+
+
 AC_OUTPUT
+
+AS_IF([test "x$ac_scorep_platform_data_provided" != "xyes"], [
+    AC_SCOREP_SUMMARY_COLLECT
+])

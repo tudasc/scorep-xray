@@ -1,6 +1,8 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
+AC_SCOREP_SUMMARY_INIT([Score-P backend configuration summary])
+
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])

@@ -1,6 +1,8 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
+AC_SCOREP_SUMMARY_INIT([Score-P frontend configuration summary])
+
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 

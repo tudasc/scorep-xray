@@ -1,6 +1,8 @@
 AC_PREREQ([2.68])
 AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
 
+AC_SCOREP_SUMMARY_INIT([Score-P MPI configuration summary])
+
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
@@ -47,30 +49,41 @@ AC_LANG_PUSH([C])
 AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
 AC_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
-#echo "scorep_mpi_c_supported=$scorep_mpi_c_supported"
 cross_compiling=${ac_scorep_cross_compiling}
+AC_SCOREP_SUMMARY([MPI upport for C], [$scorep_mpi_c_supported])
+AS_IF([test "x$scorep_mpi_c_supported" = "xyes"], [
+    AC_SCOREP_SUMMARY([C compiler used for MPI], [$CC])
+])
 
 # C++ MPI is needed for the jacobi C++ tests only.
 AC_LANG_PUSH([C++])
 AC_SCOREP_MPI_WORKING([scorep_mpi_cxx_supported="yes"],[scorep_mpi_cxx_supported="no"])
 AC_LANG_POP([C++])
-#echo "scorep_mpi_cxx_supported=$scorep_mpi_cxx_supported"
+AC_SCOREP_SUMMARY([MPI upport for C++], [$scorep_mpi_cxx_supported])
+AS_IF([test "x$scorep_mpi_cxx_supported" = "xyes"], [
+    AC_SCOREP_SUMMARY([C++ compiler used for MPI], [$CXX])
+])
 
 AC_LANG_PUSH([Fortran 77])
 AC_SCOREP_MPI_WORKING([scorep_mpi_f77_supported="yes"],[scorep_mpi_f77_supported="no"])
 AC_LANG_POP([Fortran 77])
-#echo "scorep_mpi_f77_supported=$scorep_mpi_f77_supported"
+AC_SCOREP_SUMMARY([MPI upport for F77], [$scorep_mpi_f77_supported])
+AS_IF([test "x$scorep_mpi_f77_supported" = "xyes"], [
+    AC_SCOREP_SUMMARY([F77 compiler used for MPI], [$F77])
+])
 
 AC_LANG_PUSH([Fortran])
 AC_SCOREP_MPI_WORKING([scorep_mpi_f90_supported="yes"],[scorep_mpi_f90_supported="no"])
 AC_LANG_POP([Fortran])
-#echo "scorep_mpi_f90_supported=$scorep_mpi_f90_supported"
+AC_SCOREP_SUMMARY([MPI upport for F90], [$scorep_mpi_f90_supported])
+AS_IF([test "x$scorep_mpi_f90_supported" = "xyes"], [
+    AC_SCOREP_SUMMARY([F90 compiler used for MPI], [$F90])
+])
 
-#echo "CC =$CC"
-#echo "CXX=$CXX"
-#echo "F77=$F77"
-#echo "FC =$FC"
-#echo "MPILIBS=$MPILIBS"
+AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_supported$scorep_mpi_f90_supported" != "xnononono"], [
+    AC_SCOREP_SUMMARY([Library used for MPI], [$MPILIBS])
+])
+
 
 AC_SCOREP_SVN_CONTROLLED
 AH_SCOREP_CONFIG_HEADER_CUSTOM
