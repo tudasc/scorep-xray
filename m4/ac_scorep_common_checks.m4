@@ -43,6 +43,7 @@ AC_SCOREP_COMPILER_CHECKS
 ## macro you can check whether the C compiler has been set to accept C99; if
 ## not, the shell variable ac_cv_prog_cc_c99 is set to `no'.
 AC_REQUIRE([SCOREP_PROG_CC_C99])
+AC_SCOREP_SUMMARY([Using C99 compiler], [$CC])
 
 ## Determine a C++ compiler to use. Check whether the environment variable CXX 
 ## or CCC (in that order) is set; if so, then set output variable CXX to its 
