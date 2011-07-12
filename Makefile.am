@@ -12,6 +12,7 @@ ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 
 EXTRA_DIST =
 CLEANFILES =
+DISTCLEANFILES =
 
 ## Still, sometimes there are files that must be distributed, but which are not
 ## covered in the automatic rules. These files should be listed in the 
