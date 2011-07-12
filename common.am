@@ -67,6 +67,7 @@ noinst_LTLIBRARIES =
 nobase_include_HEADERS = 
 BUILT_SOURCES = 
 CLEANFILES = 
+DISTCLEANFILES =
 EXTRA_DIST = 
 check_PROGRAMS = 
 check_LTLIBRARIES =
@@ -94,3 +95,5 @@ beautify:
 ## just build all targets specified by check_PROGRAMS and
 ## check_LTLIBRARIES here, don't traverse into subdirectories
 check-build: $(BUILT_SOURCES) all $(check_PROGRAMS) $(check_LTLIBRARIES)
+
+DISTCLEANFILES += $(builddir)/config.summary

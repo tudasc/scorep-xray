@@ -81,6 +81,7 @@ CLEANFILES += $(builddir)/user_provided_configure_args \
               $(builddir)/mpi_compiler_suite           \
               $(builddir)/mpi_compiler_suite_to_source
 
+DISTCLEANFILES += $(builddir)/config.summary
 
 prohibit-svn-files-in-dist:
 	@find $(top_distdir) -type d | grep "\.svn"; \
