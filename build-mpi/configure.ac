@@ -50,7 +50,7 @@ AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no
 AC_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 cross_compiling=${ac_scorep_cross_compiling}
-AC_SCOREP_SUMMARY([MPI upport for C], [$scorep_mpi_c_supported])
+AC_SCOREP_SUMMARY([MPI support for C], [$scorep_mpi_c_supported])
 AS_IF([test "x$scorep_mpi_c_supported" = "xyes"], [
     AC_SCOREP_SUMMARY([C compiler used for MPI], [$CC])
 ])
@@ -59,7 +59,7 @@ AS_IF([test "x$scorep_mpi_c_supported" = "xyes"], [
 AC_LANG_PUSH([C++])
 AC_SCOREP_MPI_WORKING([scorep_mpi_cxx_supported="yes"],[scorep_mpi_cxx_supported="no"])
 AC_LANG_POP([C++])
-AC_SCOREP_SUMMARY([MPI upport for C++], [$scorep_mpi_cxx_supported])
+AC_SCOREP_SUMMARY([MPI support C++], [$scorep_mpi_cxx_supported])
 AS_IF([test "x$scorep_mpi_cxx_supported" = "xyes"], [
     AC_SCOREP_SUMMARY([C++ compiler used for MPI], [$CXX])
 ])
@@ -67,7 +67,7 @@ AS_IF([test "x$scorep_mpi_cxx_supported" = "xyes"], [
 AC_LANG_PUSH([Fortran 77])
 AC_SCOREP_MPI_WORKING([scorep_mpi_f77_supported="yes"],[scorep_mpi_f77_supported="no"])
 AC_LANG_POP([Fortran 77])
-AC_SCOREP_SUMMARY([MPI upport for F77], [$scorep_mpi_f77_supported])
+AC_SCOREP_SUMMARY([MPI support F77], [$scorep_mpi_f77_supported])
 AS_IF([test "x$scorep_mpi_f77_supported" = "xyes"], [
     AC_SCOREP_SUMMARY([F77 compiler used for MPI], [$F77])
 ])
@@ -75,7 +75,7 @@ AS_IF([test "x$scorep_mpi_f77_supported" = "xyes"], [
 AC_LANG_PUSH([Fortran])
 AC_SCOREP_MPI_WORKING([scorep_mpi_f90_supported="yes"],[scorep_mpi_f90_supported="no"])
 AC_LANG_POP([Fortran])
-AC_SCOREP_SUMMARY([MPI upport for F90], [$scorep_mpi_f90_supported])
+AC_SCOREP_SUMMARY([MPI support F90], [$scorep_mpi_f90_supported])
 AS_IF([test "x$scorep_mpi_f90_supported" = "xyes"], [
     AC_SCOREP_SUMMARY([F90 compiler used for MPI], [$F90])
 ])
