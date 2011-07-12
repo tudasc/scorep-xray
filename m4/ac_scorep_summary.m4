@@ -19,9 +19,6 @@
 ## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
 
 AC_DEFUN([AC_SCOREP_SUMMARY_INIT], [
-    AS_IF([test -f config.summary], [
-        AC_MSG_ERROR([SCOREP_SUMMARY_INIT called twice.])
-    ])
     AS_ECHO(["$1:"]) >config.summary
 ])
 
