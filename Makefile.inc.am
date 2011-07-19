@@ -18,6 +18,10 @@
 ## file       vendor/common/build-config/Makefile.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
+EXTRA_DIST =
+CLEANFILES =
+DISTCLEANFILES =
+
 # Create platform entries for EXTRA_DIST using e.g.:
 # cd vendor/common/build-config/platforms
 # for i in *; do echo "              \$(srcdir)/vendor/common/build-config/platforms/$i \\"; done
