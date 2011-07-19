@@ -88,10 +88,11 @@ __func_trace_enter( char* region_name,
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
-            SCOREP_IO_SimplifyPath( file_name );
+            char* file = SCOREP_CStr_dup( file_name );
+            SCOREP_IO_SimplifyPath( file );
             hash_node = scorep_compiler_hash_put( ( long )region_name,
                                                   region_name,
-                                                  file_name, line_no );
+                                                  file, line_no );
             SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                                  " number %ld and put name -- %s -- to list",
                                  ( long )region_name, region_name );
@@ -108,7 +109,7 @@ __func_trace_enter( char* region_name,
                  ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
                  ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
                  ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
-                 SCOREP_Filter_Match( file_name, region_name, true ) )
+                 SCOREP_Filter_Match( file, region_name, true ) )
             {
                 is_filtered = true;
             }
@@ -118,6 +119,7 @@ __func_trace_enter( char* region_name,
             {
                 scorep_compiler_register_region( hash_node );
             }
+            free( file );
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
