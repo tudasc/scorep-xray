@@ -10,9 +10,7 @@ SUBDIRS = $(subdirs) $(subdirs_custom)
 ## the rebuild rules, you should define ACLOCAL_AMFLAGS.
 ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 
-EXTRA_DIST =
-CLEANFILES =
-DISTCLEANFILES =
+include vendor/common/build-config/Makefile.inc.am
 
 ## Still, sometimes there are files that must be distributed, but which are not
 ## covered in the automatic rules. These files should be listed in the 
@@ -27,7 +25,6 @@ EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/build-config/VERSION                             \
               $(srcdir)/tools/tau/scorep_meets_tau.awk
 
-include vendor/common/build-config/Makefile.inc.am
 
 if ! CROSS_BUILD
 EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
