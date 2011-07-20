@@ -503,11 +503,6 @@ private:
     std::string scorep_include_path;
 
     /**
-       Stores library path of SCOREP libraries
-     */
-    std::string scorep_library_path;
-
-    /**
        Stores external dependency libraries of the SCOREP library
      */
     std::string external_libs;
@@ -564,7 +559,7 @@ private:
 
     /**
        In case we compile multiple source files that need preprocessing with Opari,
-       all files are already compiled during the Opari preprocssing. This, flag indicate
+       all files are already compiled during the Opari preprocssing. This flag indicate
        that the final command execution step is omitted.
      */
     bool no_final_step;

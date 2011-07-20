@@ -80,7 +80,6 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     is_linking   = true; // Opposite recognized on existence of -c flag
 
     scorep_include_path = "";
-    scorep_library_path = "";
     external_libs       = "";
     pdt_bin_path        = PDT;
     pdt_config_file     = PDT_CONFIG;
@@ -241,8 +240,6 @@ SCOREP_Instrumenter::PrintParameter()
 
     std::cout << "\nCompiler instrumentation flags: "
               << compiler_instrumentation_flags << std::endl;
-    std::cout << "SCOREP include path: " << scorep_include_path << std::endl;
-    std::cout << "SCOREP library path: " << scorep_library_path << std::endl;
 }
 
 /* ****************************************************************************
@@ -630,7 +627,6 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
 
     // Generate calls
     scorep_include_path = "`" + config_path + mode + " --inc` ";
-    scorep_library_path = "";
     external_libs       = "`" + config_path + mode + " --libs` ";
 
     // Handle manual -lmpi flag
@@ -1146,7 +1142,6 @@ SCOREP_Instrumenter::execute_command()
         }
     }
     std::string command = compiler_name + " "
-                          + scorep_library_path
                           + scorep_include_path
                           + input_files
                           + scorep_lib
