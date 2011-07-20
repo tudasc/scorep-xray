@@ -41,11 +41,13 @@ public:
     std::string str_flags;
     std::string str_libdir;
     std::string str_incdir;
+    std::string str_otf2_config;
 
     /** constructor and destructor */
-    SCOREP_Config();
+    SCOREP_Config( char* arg0 );
 
-    virtual ~
+    virtual
+    ~
     SCOREP_Config();
 
     /** */

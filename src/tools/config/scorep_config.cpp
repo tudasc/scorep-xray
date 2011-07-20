@@ -56,7 +56,7 @@ main( int    argc,
 
     const char*   scorep_libs[ 4 ] = { "scorep_serial", "scorep_omp", "scorep_mpi", "scorep_mpi_omp" };
 
-    SCOREP_Config app;
+    SCOREP_Config app( argv[ 0 ] );
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
@@ -117,15 +117,6 @@ main( int    argc,
         }
     }
 
-    char*       path        = SCOREP_GetExecutablePath( argv[ 0 ] );
-    std::string otf2_config = "otf2_config";
-    if ( path != NULL )
-    {
-        otf2_config = "/" + otf2_config;
-        otf2_config = path + otf2_config;
-    }
-    free( path );
-
     /* print data in case a config file was specified */
     if ( app.IsConfigFileSet() )
     {
@@ -139,22 +130,22 @@ main( int    argc,
             case ACTION_LIBS:
                 std::cout << app.str_libdir << " -l" << scorep_libs[ mode ] << app.str_libs;
                 std::cout.flush();
-                otf2_config += " --libs";
-                ret          = system( otf2_config.c_str() );
+                app.str_otf2_config += " --libs";
+                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CFLAGS:
                 std::cout << app.str_flags << app.str_incdir;
                 std::cout.flush();
-                otf2_config += " --cflags";
-                ret          = system( otf2_config.c_str() );
+                app.str_otf2_config += " --cflags";
+                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_INCDIR:
                 std::cout << app.str_incdir;
                 std::cout.flush();
-                otf2_config += " --cflags";
-                ret          = system( otf2_config.c_str() );
+                app.str_otf2_config += " --cflags";
+                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CC:
@@ -196,23 +187,23 @@ main( int    argc,
                 std::cout << " -l" << scorep_libs[ mode ] << " " SCOREP_LIBS " ";
                 std::cout.flush();
 
-                otf2_config += " --libs";
-                ret          = system( otf2_config.c_str() );
+                app.str_otf2_config += " --libs";
+                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CFLAGS:
                 std::cout << SCOREP_CFLAGS " -I" SCOREP_PREFIX "/include ";
                 std::cout.flush();
-                otf2_config += " --cflags";
-                ret          = system( otf2_config.c_str() );
+                app.str_otf2_config += " --cflags";
+                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_INCDIR:
                 std::cout << "-I" SCOREP_PREFIX "/include -I"
                 SCOREP_PREFIX "/include/scorep ";
                 std::cout.flush();
-                otf2_config += " --cflags";
-                ret          = system( otf2_config.c_str() );
+                app.str_otf2_config += " --cflags";
+                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CC:
@@ -241,9 +232,16 @@ main( int    argc,
 
 
 /** constructor and destructor */
-SCOREP_Config::SCOREP_Config()
+SCOREP_Config::SCOREP_Config( char* arg0 )
 {
-    this->config_file = "";
+    char* path = SCOREP_GetExecutablePath( arg0 );
+    str_otf2_config = "otf2_config";
+    if ( path != NULL )
+    {
+        str_otf2_config = "/" + str_otf2_config;
+        str_otf2_config = path + str_otf2_config;
+    }
+    free( path );
 }
 
 SCOREP_Config::~SCOREP_Config()
@@ -284,6 +282,10 @@ SCOREP_Config::SetValue( std::string key,
     {
         AddIncDir( value + "/include/scorep" );
         AddLibDir( value + "/lib" );
+    }
+    else if ( key == "OTF2_CONFIG" && value != "" )
+    {
+        this->str_otf2_config = value;
     }
 }
 

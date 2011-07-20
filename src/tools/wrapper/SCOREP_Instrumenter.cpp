@@ -96,10 +96,9 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     grep                           =  "`" OPARI_CONFIG " --egrep`";
     language                       = unknown_language;
 
-    has_data_from_file = false;
-    is_dry_run         = false;
-    no_final_step      = false;
-    lmpi_set           = false;
+    is_dry_run    = false;
+    no_final_step = false;
+    lmpi_set      = false;
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
@@ -109,20 +108,6 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 int
 SCOREP_Instrumenter::Run()
 {
-    if ( has_data_from_file )
-    {
-        if ( is_mpi_application == enabled )
-        {
-            external_libs = ( is_openmp_application == enabled ? " -lscorep_mpi_omp" :
-                              " -lscorep_mpi" ) + external_libs;
-        }
-        else
-        {
-            external_libs = ( is_openmp_application == enabled ? " -lscorep_omp" :
-                              " -lscorep_serial" ) + external_libs;
-        }
-    }
-
     if ( verbosity >= 2 )
     {
         PrintParameter();
@@ -192,18 +177,14 @@ SCOREP_Instrumenter::ParseCmdLine( int    argc,
         {
             if ( config_file != "" )
             {
-                ret_val            = ReadConfigFile( argv[ 0 ] );
-                has_data_from_file = true;
+                ret_val = ReadConfigFile( argv[ 0 ] );
             }
             is_config_file_read = true;
         }
     }
 
     check_parameter();
-    if ( !has_data_from_file )
-    {
-        prepare_config_tool_calls( argv[ 0 ] );
-    }
+    prepare_config_tool_calls( argv[ 0 ] );
 
     return ret_val;
 }
@@ -521,19 +502,16 @@ SCOREP_Instrumenter::parse_config( std::string arg )
 void
 SCOREP_Instrumenter::AddIncDir( std::string dir )
 {
-    scorep_include_path += " -I" + dir;
 }
 
 void
 SCOREP_Instrumenter::AddLibDir( std::string dir )
 {
-    scorep_library_path += " -L" + dir + " -Wl,-rpath," + dir;
 }
 
 void
 SCOREP_Instrumenter::AddLib( std::string lib )
 {
-    external_libs += " " + lib;
 }
 
 void
@@ -633,6 +611,12 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
         abort();
     }
     config_path += "/scorep_config";
+
+    // Append optional config file
+    if ( config_file != "" )
+    {
+        config_path += " --config=" + config_file;
+    }
 
     // Determine mode parameter
     if ( is_mpi_application == enabled )

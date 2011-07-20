@@ -443,12 +443,6 @@ private:
      */
     bool is_linking;
 
-    /**
-       True if data input is a config file. Avoids calls the the config tool. Default
-       is false.
-     */
-    bool has_data_from_file;
-
     /* --------------------------------------------
        Input command elements
        ------------------------------------------*/
