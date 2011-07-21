@@ -548,6 +548,11 @@ private:
      */
     std::string pdt_config_file;
 
+    /**
+        Name of the scorep_config tool.
+     */
+    std::string scorep_config;
+
     /* --------------------------------------------
        Execution flags
        ------------------------------------------*/

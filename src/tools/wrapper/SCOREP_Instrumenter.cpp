@@ -94,6 +94,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     opari_script                   = "`" OPARI_CONFIG " --awk_script`";
     grep                           =  "`" OPARI_CONFIG " --egrep`";
     language                       = unknown_language;
+    scorep_config                  = "";
 
     is_dry_run    = false;
     no_final_step = false;
@@ -584,6 +585,10 @@ SCOREP_Instrumenter::SetValue( std::string key,
     {
         pdt_config_file = value;
     }
+    else if ( key == "SCOREP_CONFIG" && value != "" )
+    {
+        scorep_config = value;
+    }
 }
 
 /* ****************************************************************************
@@ -593,26 +598,22 @@ void
 SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
 {
     std::string mode = " --seq";
-    std::string config_path;
-    char*       path = SCOREP_GetExecutablePath( arg.c_str() );
+    if ( scorep_config == "" )
+    {
+        char* path = SCOREP_GetExecutablePath( arg.c_str() );
 
-    // Determine config tool path
-    if ( path != NULL )
-    {
-        config_path = path;
-        free( path );
-    }
-    else
-    {
-        std::cout << "ERROR: Unable to find Score-P config tool.\n";
-        abort();
-    }
-    config_path += "/scorep_config";
-
-    // Append optional config file
-    if ( config_file != "" )
-    {
-        config_path += " --config=" + config_file;
+        // Determine config tool path
+        if ( path != NULL )
+        {
+            scorep_config = path;
+            free( path );
+        }
+        else
+        {
+            std::cout << "ERROR: Unable to find Score-P config tool.\n";
+            abort();
+        }
+        scorep_config += "/scorep_config";
     }
 
     // Determine mode parameter
@@ -626,8 +627,8 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     }
 
     // Generate calls
-    scorep_include_path = "`" + config_path + mode + " --inc` ";
-    external_libs       = "`" + config_path + mode + " --libs` ";
+    scorep_include_path = "`" + scorep_config + mode + " --inc` ";
+    external_libs       = "`" + scorep_config + mode + " --libs` ";
 
     // Handle manual -lmpi flag
     if ( lmpi_set )

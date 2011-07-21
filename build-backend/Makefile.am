@@ -133,6 +133,7 @@ $(builddir)/scorep_config.dat:
 	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
 	@echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
 	@echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2_config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\" >> $(builddir)/scorep_config.dat
+	@echo SCOREP_CONFIG=\"$(PWD)/scorep_config --config=$(PWD)/scorep_config.dat\" >> $(builddir)/scorep_config.dat
 
 ## Here we write only the backend values.
 create-config-tool-headers: $(CONFIG_HEADER_BACKEND)
