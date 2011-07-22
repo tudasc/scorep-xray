@@ -53,4 +53,5 @@ main()
     filtered2();
     filter_not1();
     filter_not2();
+    return 0;
 }
