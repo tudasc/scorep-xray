@@ -257,11 +257,11 @@ scorep_filter_match_file( const char*           with_path,
     int error_value = 0;
     if ( ( with_path != NULL ) && ( rule->pattern != NULL ) )
     {
-        error_value = fnmatch( rule->pattern, with_path, FNM_PERIOD );
+        error_value = fnmatch( rule->pattern, with_path, 0 );
     }
     else
     {
-        error_value = fnmatch( rule->pattern2, file_only, FNM_PERIOD );
+        error_value = fnmatch( rule->pattern2, file_only, 0 );
     }
 
     if ( error_value == 0 )
@@ -291,11 +291,11 @@ scorep_filter_match_function( const char*           function_name,
     int error_value = 0;
     if ( use_fortran && ( rule->pattern2 != NULL ) )
     {
-        error_value = fnmatch( rule->pattern2, function_name, FNM_PERIOD );
+        error_value = fnmatch( rule->pattern2, function_name, 0 );
     }
     else
     {
-        error_value = fnmatch( rule->pattern, function_name, FNM_PERIOD );
+        error_value = fnmatch( rule->pattern, function_name, 0 );
     }
 
     if ( error_value == 0 )

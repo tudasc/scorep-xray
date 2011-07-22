@@ -41,7 +41,7 @@ if [ "x$RESULT_DIR" = "x" ]; then
     echo "Can not identify output directory. Skip evaluation of filter test"
     exit 0
 fi
-$OTF2_PRINT $RESULT_DIR/traces.otf2
+$OTF2_PRINT -A $RESULT_DIR/traces.otf2
 
 # Check output
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | grep region > trace.txt
