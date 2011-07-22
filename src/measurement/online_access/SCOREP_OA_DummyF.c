@@ -26,7 +26,7 @@
 #include <stdio.h>
 
 #include <SCOREP_Fortran_Wrapper.h>
-#include "SCOREP_User_Functions.h"
+#include "scorep/SCOREP_User_Functions.h"
 #include "SCOREP_Types.h"
 #define SCOREP_F_OA_PhaseBegin_U SCOREP_F_OA_PHASEBEGIN
 #define SCOREP_F_OA_PhaseEnd_U SCOREP_F_OA_PHASEEND
