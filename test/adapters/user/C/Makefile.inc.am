@@ -1,3 +1,5 @@
+# User C test
+
 check_PROGRAMS += user_c_test
 
 user_c_test_SOURCES =                                       \
@@ -23,3 +25,25 @@ EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/run_phase_test.sh.in
 
 TESTS_OMP += ./../test/adapters/user/C/run_phase_test.sh
+
+# selctive test
+
+check_PROGRAMS += selective_test
+
+selective_test_SOURCES = $(SRC_ROOT)/test/adapters/user/C/selective_test.c
+
+selective_test_CPPFLAGS = $(AM_CPPFLAGS)    \
+    -I$(PUBLIC_INC_DIR)                     \
+    -I$(INC_DIR_UTIL)                       \
+    -DSCOREP_USER_ENABLE
+
+selective_test_LDADD =                      \
+    $(LIB_ROOT)libscorep_serial.la          \
+    $(LIB_DIR_OTF2)libotf2.la               \
+    $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+
+EXTRA_DIST       += \
+    $(SRC_ROOT)test/adapters/user/C/selective.cfg \
+    $(SRC_ROOT)test/adapters/user/C/run_selective_test.sh
+
+TESTS_SERIAL += $(srcdir)/../test/adapters/user/C/run_selective_test.sh
