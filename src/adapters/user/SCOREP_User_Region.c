@@ -82,7 +82,7 @@ scorep_user_final_regions()
                             &SCOREP_Hashtab_DeleteNone );
 
     SCOREP_Hashtab_FreeAll( scorep_user_file_table,
-                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteNone,
                             &SCOREP_Hashtab_DeleteFree );
 
     scorep_user_region_table = NULL;
@@ -94,8 +94,7 @@ scorep_user_final_regions()
 static SCOREP_SourceFileHandle
 scorep_user_get_file( const char*              file,
                       const char**             lastFileName,
-                      SCOREP_SourceFileHandle* lastFile,
-                      char**                   simplifiedName )
+                      SCOREP_SourceFileHandle* lastFile )
 {
     size_t index;
 
@@ -124,15 +123,17 @@ scorep_user_get_file( const char*              file,
     if ( !entry )
     {
         /* Reserve own storage for file name */
-        char* fileName = SCOREP_CStr_dup( file );
-        SCOREP_IO_SimplifyPath( fileName );
+        char* file_name = SCOREP_CStr_dup( file );
+        SCOREP_IO_SimplifyPath( file_name );
 
         /* Register file to measurement system */
         SCOREP_SourceFileHandle* handle = malloc( sizeof( SCOREP_SourceFileHandle ) );
-        *handle = SCOREP_DefineSourceFile( fileName );
+        *handle = SCOREP_DefineSourceFile( file_name );
+        free( file_name );
+        file_name = NULL;
 
         /* Store handle in hashtable */
-        SCOREP_Hashtab_Insert( scorep_user_file_table, ( void* )fileName, handle, &index );
+        SCOREP_Hashtab_Insert( scorep_user_file_table, ( void* )file, handle, &index );
 
         *lastFile = *handle;
     }
@@ -253,11 +254,9 @@ SCOREP_User_RegionInit
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Get source file handle */
-    char*                   simplified_name;
     SCOREP_SourceFileHandle file = scorep_user_get_file( fileName,
                                                          lastFileName,
-                                                         lastFile,
-                                                         &simplified_name );
+                                                         lastFile );
 
     /* Lock region definition */
     SCOREP_MutexLock( scorep_user_region_mutex );
@@ -278,8 +277,10 @@ SCOREP_User_RegionInit
         SCOREP_User_RegionHandle new_handle = SCOREP_FILTERED_USER_REGION;
 
         /* Check for filters */
+        char* simplified_name = SCOREP_SourceFile_GetName( file );
         if ( !SCOREP_Filter_Match( simplified_name, name, false ) )
         {
+            printf( "Simplified name: %s\n", simplified_name );
             new_handle = scorep_user_create_region( name );
         }
 

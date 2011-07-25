@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <scorep/SCOREP_User.h>
 
 void
 filtered2();
@@ -36,22 +37,28 @@ filter_not2();
 void
 filtered1()
 {
+    SCOREP_USER_FUNC_BEGIN;
     printf( "1" );
+    SCOREP_USER_FUNC_END;
 }
 
 void
 filter_not1()
 {
+    SCOREP_USER_FUNC_BEGIN;
     printf( "3" );
+    SCOREP_USER_FUNC_END;
 }
 
 int
 main()
 {
+    SCOREP_USER_FUNC_BEGIN;
     printf( "Run filter test: " );
     filtered1();
     filtered2();
     filter_not1();
     filter_not2();
+    SCOREP_USER_FUNC_END;
     return 0;
 }

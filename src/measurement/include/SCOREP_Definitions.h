@@ -146,6 +146,9 @@ const char*
 SCOREP_String_Get( SCOREP_StringHandle handle );
 
 const char*
+SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle );
+
+const char*
 SCOREP_Region_GetName( SCOREP_RegionHandle handle );
 
 const char*

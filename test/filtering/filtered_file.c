@@ -24,9 +24,12 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <scorep/SCOREP_User.h>
 
 void
 filtered2()
 {
+    SCOREP_USER_FUNC_BEGIN;
     printf( "2" );
+    SCOREP_USER_FUNC_END;
 }

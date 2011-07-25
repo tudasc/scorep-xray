@@ -1812,7 +1812,7 @@ SCOREP_String_Get( SCOREP_StringHandle handle )
  *
  * @param handle A handle to the parameter.
  *
- * @return region name.
+ * @return parameter name.
  */
 const char*
 SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
@@ -1820,6 +1820,21 @@ SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
     SCOREP_Parameter_Definition* param = SCOREP_LOCAL_HANDLE_DEREF( handle, Parameter );
 
     return SCOREP_LOCAL_HANDLE_DEREF( param->name_handle, String )->string_data;
+}
+
+/**
+ * Gets read-only access to the name of the source file.
+ *
+ * @param handle A handle to the source file definition.
+ *
+ * @return source file name.
+ */
+const char*
+SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle )
+{
+    SCOREP_SourceFile_Definition* source_file = SCOREP_LOCAL_HANDLE_DEREF( handle, SourceFile );
+
+    return SCOREP_LOCAL_HANDLE_DEREF( source_file->name_handle, String )->string_data;
 }
 
 /**

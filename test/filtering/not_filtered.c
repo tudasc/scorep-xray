@@ -26,9 +26,12 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <scorep/SCOREP_User.h>
 
 void
 filter_not2()
 {
+    SCOREP_USER_FUNC_BEGIN;
     printf( "4\n" );
+    SCOREP_USER_FUNC_END;
 }
