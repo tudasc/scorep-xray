@@ -280,7 +280,6 @@ SCOREP_User_RegionInit
         char* simplified_name = SCOREP_SourceFile_GetName( file );
         if ( !SCOREP_Filter_Match( simplified_name, name, false ) )
         {
-            printf( "Simplified name: %s\n", simplified_name );
             new_handle = scorep_user_create_region( name );
         }
 
