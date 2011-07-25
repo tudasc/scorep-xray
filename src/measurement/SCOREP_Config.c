@@ -42,7 +42,7 @@
 
 #include "scorep_types.h"
 
-static SCOREP_Hashtab* scorep_config_name_spaces;
+static SCOREP_Hashtab* scorep_config_name_spaces = NULL;
 
 static size_t
 scorep_config_hash_name_space( const void* key );

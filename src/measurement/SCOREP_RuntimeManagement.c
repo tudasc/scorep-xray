@@ -63,11 +63,11 @@
 
 
 /** @brief Measurement system initialized? */
-static bool scorep_initialized;
+static bool scorep_initialized = false;
 
 
 /** @brief Measurement system finalized? */
-static bool scorep_finalized;
+static bool scorep_finalized = false;
 
 #define scorep_max_exit_callbacks 8
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
