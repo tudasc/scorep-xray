@@ -40,7 +40,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_parser.c   \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.c \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.h \
-    $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter.h          \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Filter.h            \
     $(SRC_ROOT)src/measurement/scorep_adapter.h                   \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
