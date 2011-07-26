@@ -33,9 +33,7 @@ filter_test_CPPFLAGS = $(AM_CPPFLAGS)                      \
 
 filter_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
 
-if !SCOREP_COMPILER_SUN
 TESTS_SERIAL += $(srcdir)/../test/filtering/run_filter_test.sh
-endif
 
 EXTRA_DIST += \
      $(SRC_ROOT)test/filtering/filter.cfg \
