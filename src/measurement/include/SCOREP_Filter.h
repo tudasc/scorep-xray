@@ -23,11 +23,13 @@
  *
  * @status alpha
  *
- * The interface to the filtering system.
- * The file that contains the filter defintions can be set via the envirionment variable
- * SCOREP_FILTERING_FILE. If no file is specified or the given file is not found,
- * filtering is disabled.
+ * The interface to the filtering system.  The file that contains the filter
+ * defintions can be set via the envirionment variable
+ * SCOREP_FILTERING_FILE. If no file is specified or the given file is not
+ * found, filtering is disabled.
  */
+
+#include <scorep_utility/SCOREP_Error.h>
 
 /**
    Initializes the filterign system and parses the configuration file.
