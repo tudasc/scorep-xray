@@ -539,14 +539,19 @@ SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
     scorep_profile_set_current_node( thread, node );
 
     /* If dynamic region call trigger parameter */
-
-    if ( type == SCOREP_REGION_DYNAMIC )
+    switch ( type )
     {
-        /* For Dynamic Regions we use a special "instance" type paramter defined
-         * during initialization */
-        SCOREP_Profile_ParameterInteger( thread,
-                                         scorep_profile_param_instance,
-                                         node->count );
+        case SCOREP_REGION_DYNAMIC:
+        case SCOREP_REGION_DYNAMIC_PHASE:
+        case SCOREP_REGION_DYNAMIC_LOOP:
+        case SCOREP_REGION_DYNAMIC_FUNCTION:
+        case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
+
+            /* For Dynamic Regions we use a special "instance" paramter defined
+             * during initialization */
+            SCOREP_Profile_ParameterInteger( thread,
+                                             scorep_profile_param_instance,
+                                             node->count );
     }
 }
 
