@@ -51,9 +51,7 @@ SCOREP_Timer_Initialize();
  * @return Wall clock time in ticks.
  */
 uint64_t
-SCOREP_GetClockTicks
-(
-);
+SCOREP_GetClockTicks();
 
 
 
@@ -64,9 +62,7 @@ SCOREP_GetClockTicks
  * @return Clock resolution in ticks/second.
  */
 uint64_t
-SCOREP_GetClockResolution
-(
-);
+SCOREP_GetClockResolution();
 
 
 #endif /* SCOREP_TIMING_H */

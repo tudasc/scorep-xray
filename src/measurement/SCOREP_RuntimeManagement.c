@@ -481,6 +481,15 @@ SCOREP_RecordingEnabled()
 }
 
 
+// entity needs to be a function with the signature void entity();
+#define SCOREP_TIME( entity ) \
+    uint64_t timing_start_ ## entity = SCOREP_GetClockTicks(); \
+    entity(); \
+    uint64_t timing_stop_ ## entity = SCOREP_GetClockTicks(); \
+    double   duration_ ## entity = ( timing_stop_ ## entity - timing_start_ ## entity ) / ( double )SCOREP_GetClockResolution(); \
+    printf( "SCOREP_Timing[%d]: " #entity " took %f seconds.\n", SCOREP_Mpi_GetRank(), duration_ ## entity );
+
+
 static void
 scorep_finalize( void )
 {
@@ -492,7 +501,7 @@ scorep_finalize( void )
     }
     scorep_finalized = true;
 
-    scorep_trigger_exit_callbacks();
+    SCOREP_TIME( scorep_trigger_exit_callbacks );
 
     // MPICH1 creates some extra processes that are not properly SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
@@ -510,26 +519,26 @@ scorep_finalize( void )
 
     // Calling SCOREP_Event.h functions after this point is considered
     // an instrumentation error.
-    SCOREP_DefineSystemTree();
-    SCOREP_Unify();
-    scorep_profile_finalize();
-    SCOREP_Definitions_Write();
-    SCOREP_Definitions_Finalize();
-    scorep_otf2_finalize();
+    SCOREP_TIME( SCOREP_DefineSystemTree );
+    SCOREP_TIME( SCOREP_Unify );
+    SCOREP_TIME( scorep_profile_finalize );
+    SCOREP_TIME( SCOREP_Definitions_Write );
+    SCOREP_TIME( SCOREP_Definitions_Finalize );
+    SCOREP_TIME( scorep_otf2_finalize );
 
     /* dump config variables into experiment directory */
-    scorep_dump_config();
+    SCOREP_TIME( scorep_dump_config );
 
-    SCOREP_ConfigFini();
+    SCOREP_TIME( SCOREP_ConfigFini );
 
-    SCOREP_RenameExperimentDir();  // needs MPI
+    SCOREP_TIME( SCOREP_RenameExperimentDir );  // needs MPI
 
-    scorep_adapters_finalize_location();
-    scorep_adapters_finalize(); // here PMPI_Finalize is called
-    scorep_adapters_deregister();
+    SCOREP_TIME( scorep_adapters_finalize_location );
+    SCOREP_TIME( scorep_adapters_finalize ); // here PMPI_Finalize is called
+    SCOREP_TIME( scorep_adapters_deregister );
 
-    SCOREP_Thread_Finalize();
-    SCOREP_Memory_Finalize();
+    SCOREP_TIME( SCOREP_Thread_Finalize );
+    SCOREP_TIME( SCOREP_Memory_Finalize );
 }
 
 
