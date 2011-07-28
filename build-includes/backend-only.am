@@ -38,3 +38,4 @@ include ../test/omp/Makefile.inc.am
 include ../test/alignment/Makefile.inc.am
 include ../test/unification/Makefile.inc.am
 include ../test/filtering/Makefile.inc.am
+include ../test/profiling/Makefile.inc.am

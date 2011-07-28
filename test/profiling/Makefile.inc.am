@@ -1,0 +1,31 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Daniel Lorenz <d.lorenz@fz-juelich.de>
+## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+check_PROGRAMS += profile_depth_limit_test
+
+profile_depth_limit_test_SOURCES = $(SRC_ROOT)test/profiling/profile_depth_limit_test.c
+profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+profile_depth_limit_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
+
+EXTRA_DIST          += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test_profile.sh
+if !SCOREP_COMPILER_SUN
+TESTS_SERIAL += $(srcdir)/../test/profiling/run_profile_depth_limit_test.sh
+endif
