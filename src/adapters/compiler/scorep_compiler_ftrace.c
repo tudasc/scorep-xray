@@ -32,6 +32,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Mutex.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
@@ -85,22 +86,27 @@ _ftrace_enter2_()
     {
         if ( hash_node->reghandle == SCOREP_INVALID_REGION )
         {
-            /* Check for filtered regions */
-            if ( ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
-                 ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
-                 ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
-                 SCOREP_Filter_Match( NULL, region_name, true ) )
+            SCOREP_MutexLock( scorep_compiler_region_mutex );
+            if ( hash_node->reghandle == SCOREP_INVALID_REGION )
             {
-                hash_node->reghandle = SCOREP_FILTERED_REGION;
-            }
+                /* Check for filtered regions */
+                if ( ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
+                     ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
+                     ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
+                     SCOREP_Filter_Match( NULL, region_name, true ) )
+                {
+                    hash_node->reghandle = SCOREP_FILTERED_REGION;
+                }
 
-            /* Region entered the first time, register region */
-            else
-            {
-                scorep_compiler_register_region( hash_node );
-                assert( hash_node->reghandle != SCOREP_FILTERED_REGION );
-                assert( hash_node->reghandle != SCOREP_INVALID_REGION );
+                /* Region entered the first time, register region */
+                else
+                {
+                    scorep_compiler_register_region( hash_node );
+                    assert( hash_node->reghandle != SCOREP_FILTERED_REGION );
+                    assert( hash_node->reghandle != SCOREP_INVALID_REGION );
+                }
             }
+            SCOREP_MutexUnlock( scorep_compiler_region_mutex );
         }
         if ( hash_node->reghandle != SCOREP_FILTERED_REGION )
         {
@@ -154,10 +160,13 @@ scorep_compiler_init_adapter()
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                              " inititialize ftrace compiler adapter!" );
 
+        /* Initialize region mutex */
+        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
         /* Initialize hash table */
         scorep_compiler_hash_init();
 
-        /* Sez flag */
+        /* Set flag */
         scorep_compiler_initialize = 0;
     }
 
@@ -175,5 +184,8 @@ scorep_compiler_finalize()
 
         scorep_compiler_initialize = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
+
+        /* Delete region mutex */
+        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
     }
 }

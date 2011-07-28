@@ -368,7 +368,7 @@ scorep_compiler_finalize()
         scorep_compiler_hash_free();
         scorep_compiler_final_name_table();
 
-        /* Set initilaization flag */
+        /* Set initialization flag */
         scorep_compiler_initialize = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
 

@@ -33,6 +33,7 @@
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Mutex.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
@@ -43,6 +44,11 @@
  * static variable to control initialize status of GNU
  */
 static int scorep_compiler_initialize = 1;
+
+/**
+ * Mutex for exclusive access to the region hash table.
+ */
+static SCOREP_Mutex scorep_compiler_region_mutex;
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
@@ -77,8 +83,13 @@ __cyg_profile_func_enter( void* func,
     {
         if ( hash_node->region_handle == SCOREP_INVALID_REGION )
         {
-            /* -- region entered the first time, register region -- */
-            scorep_compiler_register_region( hash_node );
+            SCOREP_MutexLock( scorep_compiler_region_mutex );
+            if ( hash_node->region_handle == SCOREP_INVALID_REGION )
+            {
+                /* -- region entered the first time, register region -- */
+                scorep_compiler_register_region( hash_node );
+            }
+            SCOREP_MutexUnlock( scorep_compiler_region_mutex );
         }
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                              "enter the region with address %p",
@@ -119,6 +130,9 @@ scorep_compiler_init_adapter()
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize GNU compiler adapter." );
 
+        /* Initialize region mutex */
+        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
         /* Initialize hash tables */
         scorep_compiler_hash_init();
 
@@ -145,8 +159,11 @@ scorep_compiler_finalize()
         /* Delete hash table */
         scorep_compiler_hash_free();
 
-        /* Set initilaization flag */
+        /* Set initialization flag */
         scorep_compiler_initialize = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize GNU compiler adapter." );
+
+        /* Delete region mutex */
+        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
     }
 }
