@@ -285,11 +285,6 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
         opari_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "--nouser" )
-    {
-        opari_instrumentation = disabled;
-        return scorep_parse_mode_param;
-    }
     else if ( arg == "--user" )
     {
         user_instrumentation = enabled;
