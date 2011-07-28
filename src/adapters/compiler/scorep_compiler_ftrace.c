@@ -47,6 +47,11 @@ scorep_ftrace_getname_len( void );
 
 static uint32_t scorep_compiler_initialize = 1;
 
+/**
+ * Mutex for exclusive access to the region hash table.
+ */
+static SCOREP_Mutex scorep_compiler_region_mutex;
+
 
 void
 _ftrace_enter2_( void );
