@@ -496,11 +496,12 @@ scorep_unify_mpi_communicators_define_self_likes( uint32_t comm_world_size,
      * on a single process
      */
     uint32_t max_number_of_self_ids = 0;
-    SCOREP_Mpi_Allreduce( &scorep_number_of_self_comms,
-                          &max_number_of_self_ids,
-                          1,
-                          SCOREP_MPI_UNSIGNED,
-                          SCOREP_MPI_MAX );
+    SCOREP_Mpi_Reduce( &scorep_number_of_self_comms,
+                       &max_number_of_self_ids,
+                       1,
+                       SCOREP_MPI_UNSIGNED,
+                       SCOREP_MPI_MAX,
+                       0 );
 
     if ( rank == 0 )
     {
