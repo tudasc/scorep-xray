@@ -1368,77 +1368,11 @@
 
 #define SCOREP_RECORDING_IS_ON SCOREP_User_RecordingEnabled()
 
-#endif // SCOREP_USER_ENABLE
-
-/* **************************************************************************************
- * Documentation for Virtual Topologies
- * *************************************************************************************/
-
-/** @def SCOREP_DEFINE_CARTESIAN_2D
-    Defines a two-dimentional cartesian topology.
-    @param name     A string containing the name of the topology.
-    @param numX     Number of processes in the x-dimension.
-    @param numY     Number of processes in the y-dimension.
-    @param periodX  A truth value, if the x-dimension is periodical. A value of zero means
-                    false, other values mean true.
-    @param periodY  A truth value, if the y-dimension is periodical. A value of zero means
-                    false, other values mean true.
-    @return A handle to the newly created topology.
- */
-
-/** @def SCOREP_DEFINE_CARTESIAN_3D
-    Defines a three-dimentional cartesian topology.
-    @param name     A string containing the name of the topology.
-    @param numX     Number of processes in the x-dimension.
-    @param numY     Number of processes in the y-dimension.
-    @param numZ     Number of processes in the z-dimension.
-    @param periodX  A truth value, if the x-dimension is periodical. A value of zero means
-                    false, other values mean true.
-    @param periodY  A truth value, if the y-dimension is periodical. A value of zero means
-                    false, other values mean true.
-    @param periodZ  A truth value, if the z-dimension is periodical. A value of zero means
-                    false, other values mean true.
-    @return A handle to the newly created topology.
- */
-
-/** @def SCOREP_DEFINE_COORDINATE_2D
-    Defines the a coordinate in a two-dimensional cartesian topology.
-    @param topId    Handle of a previously defined two-dimensional cartesian topology.
-    @param coordX   X-coordinate
-    @param coordY   Y-coordinate
- */
-
-/** @def SCOREP_DEFINE_COORDINATE_3D
-    Defines the a coordinate in a three-dimensional cartesian topology.
-    @param topId    Handle of a previously defined two-dimensional cartesian topology.
-    @param coordX   X-coordinate
-    @param coordY   Y-coordinate
-    @param coordZ   Z-coordinate
- */
-
-/* **************************************************************************************
- * Virtual Topologies
- * *************************************************************************************/
-#ifdef SCOREP_USER_ENABLE
-
-#define SCOREP_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY ) \
-    SCOREP_User_DefineTopology2D( name, numX, numY, periodX, periodY )
-
-#define SCOREP_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
-                                    periodZ ) \
-    SCOREP_User_DefineTopology3D( name, numX, numY, numZ, periodX, periodY, \
-                                  periodZ )
-
-#define SCOREP_DEFINE_COORDINATE_2D( topId, coordX, coordY ) \
-    SCOREP_User_DefineCoordinates2D( topId, coordX, coordY );
-
-#define SCOREP_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ ) \
-    SCOREP_User_DefineCoordinates3D( topId, coordX, coordY, coordZ );
+#else // SCOREP_USER_ENABLE
 
 /* **************************************************************************************
  * Empty macros, if user instrumentation is disabled
  * *************************************************************************************/
-#else // SCOREP_USER_ENABLE
 
 #define SCOREP_USER_REGION( name, type )
 #define SCOREP_USER_REGION_DEFINE( handle )
@@ -1469,11 +1403,6 @@
 #define SCOREP_RECORDING_ON
 #define SCOREP_RECORDING_OFF
 #define SCOREP_RECORDING_IS_ON 0
-#define SCOREP_DEFINE_CARTESIAN_2D( name, numX, numY, periodX, periodY )
-#define SCOREP_DEFINE_CARTESIAN_3D( name, numX, numY, numZ, periodX, periodY, \
-                                    periodZ )
-#define SCOREP_DEFINE_COORDINATE_2D( topId, coordX, coordY )
-#define SCOREP_DEFINE_COORDINATE_3D( topId, coordX, coordY, coordZ )
 
 #endif // SCOREP_USER_ENABLE
 
