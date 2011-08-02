@@ -22,4 +22,4 @@ user_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_serial.la         \
     $(LIB_ROOT)libscorep_pomp_dummy.la     \
     $(LIB_DIR_OTF2)libotf2.la              \
-    $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+    $(LIB_DIR_UTIL)libscorep_utilities.la

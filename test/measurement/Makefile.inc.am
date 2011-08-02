@@ -70,7 +70,7 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(PUBLIC_INC_DIR) \
                               -I$(INC_DIR_UTIL) \
                               -I$(INC_DIR_VENDOR_HASH)
-definitions_test_c_LDADD = $(LIB_ROOT)libscorep_serial.la $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+definitions_test_c_LDADD = $(LIB_ROOT)libscorep_serial.la $(LIB_DIR_UTIL)libscorep_utilities.la
 
 TESTS_SERIAL += definitions_test_c
 

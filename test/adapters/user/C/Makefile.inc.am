@@ -18,7 +18,7 @@ user_c_test_LDADD =                         \
     $(LIB_ROOT)libscorep_serial.la          \
     $(LIB_ROOT)libscorep_pomp_dummy.la      \
     $(LIB_DIR_OTF2)libotf2.la               \
-    $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+    $(LIB_DIR_UTIL)libscorep_utilities.la
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/scorep_phase_test.c \
@@ -40,7 +40,7 @@ selective_test_CPPFLAGS = $(AM_CPPFLAGS)    \
 selective_test_LDADD =                      \
     $(LIB_ROOT)libscorep_serial.la          \
     $(LIB_DIR_OTF2)libotf2.la               \
-    $(LIB_DIR_UTIL)libscorep_utilities.la @LIBBFD@
+    $(LIB_DIR_UTIL)libscorep_utilities.la
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/selective.cfg \

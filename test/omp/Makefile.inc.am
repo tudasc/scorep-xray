@@ -42,7 +42,7 @@ omp_test_SOURCES  = $(SRC_ROOT)test/omp/omp_test.mod.c       \
                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
-omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la @LIBBFD@
+omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
@@ -56,7 +56,7 @@ internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling
                                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
-internal_thread_handling_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la @LIBBFD@
+internal_thread_handling_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
 TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh

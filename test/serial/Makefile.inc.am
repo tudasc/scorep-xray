@@ -24,7 +24,7 @@ check_PROGRAMS += serial_test
 
 serial_test_SOURCES  = $(SRC_ROOT)test/serial/serial_test.c
 serial_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-serial_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
+serial_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_test.sh
 EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test.sh

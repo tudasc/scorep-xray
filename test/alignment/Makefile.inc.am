@@ -26,6 +26,6 @@ libfortran_c_alignment_la_SOURCES = $(SRC_ROOT)test/alignment/alignment_test_c.c
 check_PROGRAMS             += fortran_c_alignment
 fortran_c_alignment_SOURCES = $(SRC_ROOT)test/alignment/alignment_test_f.F90
 fortran_c_alignment_CPPFLAGS = -I.
-fortran_c_alignment_LDADD   = libfortran_c_alignment.la @LIBBFD@
+fortran_c_alignment_LDADD   = libfortran_c_alignment.la
 
 TESTS_SERIAL += fortran_c_alignment

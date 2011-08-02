@@ -23,7 +23,7 @@ check_PROGRAMS += profile_depth_limit_test
 
 profile_depth_limit_test_SOURCES = $(SRC_ROOT)test/profiling/profile_depth_limit_test.c
 profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-profile_depth_limit_test_LDADD    = $(LIB_ROOT)libscorep_serial.la @LIBBFD@
+profile_depth_limit_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 EXTRA_DIST          += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh
 if !SCOREP_COMPILER_SUN
