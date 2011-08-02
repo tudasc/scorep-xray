@@ -36,6 +36,7 @@ AM_CONDITIONAL([OPENMP_SUPPORTED],
 if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
   AC_MSG_WARN([no suitbale OpenMP compilers found. SCOREP OpenMP and hybrid libraries will not be build.])
 fi
+AC_SCOREP_SUMMARY([OpenMP support], [${ac_cv_prog_c_openmp}])
 
 AC_LANG_PUSH([C++])
 scorep_cxxflags_save=${CXXFLAGS}
