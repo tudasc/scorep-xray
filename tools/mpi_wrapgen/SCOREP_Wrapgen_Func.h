@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 #ifndef SCOREP_FUNC_H
 #define SCOREP_FUNC_H
 
@@ -65,7 +81,8 @@ public:
           const std::string & guard,
           const paramlist_t & params );
 
-    virtual ~
+    virtual
+    ~
     Func();
 
     /** return unique identifier of function

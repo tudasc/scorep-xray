@@ -14,6 +14,22 @@
  *
  */
 
+/****************************************************************************
+**  SCALASCA    http://www.scalasca.org/                                   **
+*****************************************************************************
+**  Copyright (c) 1998-2011                                                **
+**  Forschungszentrum Juelich GmbH, Juelich Supercomputing Centre          **
+**                                                                         **
+**  Copyright (c) 2010-2011                                                **
+**  German Research School for Simulation Sciences GmbH,                   **
+**  Laboratory for Parallel Programming                                    **
+**                                                                         **
+**  Copyright (c) 2003-2008                                                **
+**  University of Tennessee, Innovative Computing Laboratory               **
+**                                                                         **
+**  See the file COPYRIGHT in the package base directory for details       **
+****************************************************************************/
+
 /**
  * @file       SCOREP_Wrapgen.cpp
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
@@ -22,6 +38,7 @@
  *
  * @brief Wrapper generator for automatic creation of MPI wrappers
  */
+
 #include <config.h>
 
 #include <cstdio>
