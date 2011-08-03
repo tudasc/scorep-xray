@@ -217,6 +217,8 @@ AM_PROG_LEX
 AM_CONDITIONAL([HAVE_LEX], [test "x${LEX}" != "x:"])
 AC_PROG_YACC
 
+AC_SCOREP_MPI_PROFILING_HEADERS
+
 AC_CONFIG_FILES([Makefile \
                  run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
