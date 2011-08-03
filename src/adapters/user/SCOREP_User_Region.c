@@ -277,7 +277,7 @@ SCOREP_User_RegionInit
         SCOREP_User_RegionHandle new_handle = SCOREP_FILTERED_USER_REGION;
 
         /* Check for filters */
-        char* simplified_name = SCOREP_SourceFile_GetName( file );
+        const char* simplified_name = SCOREP_SourceFile_GetName( file );
         if ( !SCOREP_Filter_Match( simplified_name, name, false ) )
         {
             new_handle = scorep_user_create_region( name );
