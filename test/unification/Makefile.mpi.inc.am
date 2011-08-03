@@ -1,0 +1,37 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011,
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/unification/Makefile.mpi.inc.am
+## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
+
+
+
+if MPI_SUPPORTED
+
+check_PROGRAMS                += mpi_unification_test
+mpi_unification_test_SOURCES   =  $(SRC_ROOT)test/unification/mpi_unification_test.c
+mpi_unification_test_CPPFLAGS  = $(AM_CPPFLAGS) \
+                                -I$(PUBLIC_INC_DIR) \
+                                -I$(INC_ROOT)src/measurement/include \
+                                -I$(INC_ROOT)src/measurement \
+                                -I$(INC_ROOT)vendor/hash \
+                                -I$(INC_DIR_UTIL)
+mpi_unification_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_mpi.la
+
+TESTS_MPI += mpi_unification_test
+
+endif
