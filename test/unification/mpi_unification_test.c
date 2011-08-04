@@ -170,7 +170,6 @@ main( int argc, char* argv[] )
     }
 
     double timing = SCOREP_GetClockTicks();
-    SCOREP_Unify_Locally();
     SCOREP_Mpi_Unify();
     timing = ( SCOREP_GetClockTicks() - timing ) / SCOREP_GetClockResolution();
 
