@@ -111,7 +111,7 @@ AC_SCOREP_LIBSION([MPI_OMP])
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI
 # implementations.
-$CC -show | grep openmpi > /dev/null
+$CC -showme:version 2>&1 | grep -q "Open MPI" > /dev/null
 AM_CONDITIONAL([SCOREP_MPI_OPENMPI], [test $? -eq 0])
 
 AM_PROG_AS
