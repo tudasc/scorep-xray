@@ -893,7 +893,8 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
                               int32_t          numberOfRanks,
                               int32_t*         ranks )
 {
-    SCOREP_Definitions_Lock();
+    assert( !omp_in_parallel() );
+    assert( scorep_unified_definition_manager );
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         scorep_unified_definition_manager,
@@ -904,8 +905,6 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
             scorep_unified_definition_manager,
             "" ),
         true /* need to be converted from uint32_t */ );
-
-    SCOREP_Definitions_Unlock();
 
     return new_handle;
 }
