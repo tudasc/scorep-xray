@@ -1086,6 +1086,7 @@ SCOREP_Instrumenter::prepare_pdt()
                 // instrument source
                 command = pdt_bin_path + "/tau_instrumentor "
                           + pdb_file + " "
+                          + compiler_flags + " "
                           + current_file
                           + " -o " + modified_file
                           + " -spec " + pdt_config_file;
