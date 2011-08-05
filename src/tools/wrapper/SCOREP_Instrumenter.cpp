@@ -1090,6 +1090,12 @@ SCOREP_Instrumenter::prepare_pdt()
                           + current_file
                           + " -o " + modified_file
                           + " -spec " + pdt_config_file;
+
+                if ( is_openmp_application == enabled )
+                {
+                    command += " -D_OPENMP";
+                }
+
                 if ( verbosity >= 1 )
                 {
                     std::cout << command << std::endl;
