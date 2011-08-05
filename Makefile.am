@@ -23,7 +23,9 @@ include vendor/common/build-config/Makefile.inc.am
 EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/src/config-custom.h                              \
               $(srcdir)/build-config/VERSION                             \
-              $(srcdir)/tools/tau/scorep_meets_tau.awk
+              $(srcdir)/tools/tau/scorep_meets_tau.awk                   \
+              $(srcdir)/doc/doxygen/scorep_usage.dox                     \
+              $(srcdir)/doc/doxygen/scorep_config_usage.dox
 
 
 if ! CROSS_BUILD
@@ -62,8 +64,6 @@ EXTRA_DIST += \
     $(srcdir)/vendor/tclap/XorHandler.h \
     $(srcdir)/vendor/tclap/ZshCompletionOutput.h
 
-#.PHONY: doxygen-project-number update-revision clean-doxygen-user doxygen-user doxygen-user-pdf beautify beautify-clean
-
 install-data-local: doxygen-user-install install-scorep-meets-tau
 
 uninstall-local: doxygen-user-uninstall
@@ -72,8 +72,23 @@ dist-hook: prohibit-svn-files-in-dist doxygen-user-generate
 
 clean-local: doxygen-user-clean
 
-CLEANFILES += $(builddir)/include/scorep/scorep_meets_tau.h
+CLEANFILES += $(builddir)/include/scorep/scorep_meets_tau.h \
+              doc/scorep.dox
 
+.PHONY: doc/scorep.dox
+
+if SVN_CONTROLLED
+doc/scorep.dox:
+	cat $(srcdir)/doc/doxygen/main_1.dox \
+            $(srcdir)/doc/doxygen/scorep_usage.dox \
+            $(srcdir)/doc/doxygen/main_2.dox \
+            $(srcdir)/doc/doxygen/scorep_config_usage.dox \
+            $(srcdir)/doc/doxygen/main_3.dox \
+            > doc/scorep.dox
+else
+doc/scorep.dox:
+	touch doc/scorep.dox
+endif
 
 install-scorep-meets-tau:
 	cp -p $(builddir)/include/scorep/scorep_meets_tau_tmp.h $(builddir)/include/scorep/scorep_meets_tau.h

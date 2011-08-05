@@ -1,0 +1,4 @@
+
+Usage:
+scorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config=<config_file>]
+

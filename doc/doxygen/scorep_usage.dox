@@ -1,0 +1,37 @@
+
+This is the SCOREP user tool. The usage is:
+./install/bin/scorep <action> <options> <orginal command>
+
+The action can be one of the following:
+  --instrument    Instruments the application.
+  --measure       Performs a measurement run of the instrumented application.
+  --help, -h      Show help output.
+
+Common options are:
+  --config=<file>  Specifies file for the instrumentation configuration.
+  --verbosity=<value> Specifies the verbosity level. The following
+                  levels are available:
+                  0 = No output (default)
+                  1 = Executed commands are displayed
+                  2 = Detailed information is displayed
+  --dry-run       Only displays the executed commands. It does not
+                  execute any command.
+
+For instrumentation the following options are supported:
+  --compiler      Enables compiler instrumentation Is enabled by default.
+  --nocompiler    Disables compiler instrumentation.
+  --mpi           Enables mpi wrapper. Is enabled by default if it is a
+                  mpi program.
+  --nompi         Disables mpi wrappers. They are disabled by default if
+                  it is no mpi program.
+  --opari         Enables Opari instrumentation. Is enabled by default
+                  if it is an OpenMP program.
+  --noopari       Disables Opari instrumentation. Is disabled by default
+                  if it is no OpenMP program.
+  --user          Enables manual user instrumentation.
+  --nouser        Disables manual user instrumentation. Is disabled by default.
+  --openmp_support Enables OpenMP support. Needed if the instrumentation
+                  does not coorectly identify your application as OpenMP
+                  program.
+  --noopenmp_support Disables OpenMP support.
+
