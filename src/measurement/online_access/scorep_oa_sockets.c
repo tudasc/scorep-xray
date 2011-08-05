@@ -497,7 +497,7 @@ scorep_oa_sockets_register_with_registry
 
     allinfo = ( P_info* )calloc( nprocs, sizeof( P_info ) );            ///@TODO: switch to scorep memory allocator
 
-    gethostname( myinfo.hostname, 100 );
+    SCOREP_IO_GetHostname( myinfo.hostname, 100 );
     myinfo.cpu  = 1;                                                                                    /// get rid of later
     myinfo.port = port;
     myinfo.rank = rank;
@@ -565,7 +565,7 @@ scorep_oa_sockets_register_with_registry
     myinfo.cpu  = 1;                                                                                    /// get rid of later
     myinfo.port = port;
     myinfo.rank = 1;
-    gethostname( myinfo.hostname, 100 );
+    SCOREP_IO_GetHostname( myinfo.hostname, 100 );
 
     reg = scorep_oa_sockets_open_registry( psc_reghost, psc_regport );
     if ( !reg )

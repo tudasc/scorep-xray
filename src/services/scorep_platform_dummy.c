@@ -31,6 +31,7 @@
 
 
 #include <scorep_utility/SCOREP_Error.h>
+#include <scorep_utility/SCOREP_IO.h>
 
 
 #include <SCOREP_Platform.h>
@@ -59,12 +60,12 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
         return SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Failed to add hostname node" );
     }
 
-    if ( gethostname( node->node_name, 256 ) != 0 )
+    if ( SCOREP_IO_GetHostname( node->node_name, 256 ) != 0 )
     {
         int errno_safed = errno;
         SCOREP_Platform_FreePath( *root );
         errno = errno_safed;
-        return SCOREP_ERROR_POSIX( "gethostname() failed." );
+        return SCOREP_ERROR_POSIX( "SCOREP_IO_GetHostname() failed." );
     }
 
     /* Set machine */
