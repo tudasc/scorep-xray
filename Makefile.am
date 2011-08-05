@@ -87,6 +87,7 @@ doc/scorep.dox:
             > doc/scorep.dox
 else
 doc/scorep.dox:
+	$(MKDIR_P) doc
 	touch doc/scorep.dox
 endif
 
