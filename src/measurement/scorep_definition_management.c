@@ -16,7 +16,7 @@
 
 
 /**
- * @file       scorep_definitions.c
+ * @file       src/measurement/scorep_definition_management.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
