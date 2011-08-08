@@ -50,3 +50,18 @@ CONFIG_HEADER_BACKEND = $(SRC_ROOT)src/scorep_config_tool_backend.h
 CONFIG_HEADER_FRONTEND = $(SRC_ROOT)src/scorep_config_tool_frontend.h
 
 CLEANFILES += $(CONFIG_HEADER_BACKEND) $(CONFIG_HEADER_FRONTEND)
+
+
+## Copy SCOREP_Allocator_PublicTypes.h from utility to Score-P. We need this
+## public types to get installed, but as the utilities will be converted into
+## a convenience library, and will therefore not be installed any longer,
+## copying the file seems to be the easiest way; it also incurs no additional
+## maintenance burden. SCOREP_Allocator_PublicTypes.h is required by
+## build-backend and build-mpi, therefore we place the target here, knowing
+## that the rule gets executed three times.
+scorep_allocator_public_types  = $(INC_ROOT)include/scorep/SCOREP_Allocator_PublicTypes.h
+utility_allocator_public_types = $(INC_DIR_UTIL)/SCOREP_Allocator_PublicTypes.h
+BUILT_SOURCES += $(scorep_allocator_public_types)
+CLEANFILES    += $(scorep_allocator_public_types)
+$(copy_scorep_allocator_public_types): $(utility_allocator_public_types)
+	cp $(utility_allocator_public_types) $(scorep_allocator_public_types)
