@@ -60,8 +60,8 @@ CLEANFILES += $(CONFIG_HEADER_BACKEND) $(CONFIG_HEADER_FRONTEND)
 ## build-backend and build-mpi, therefore we place the target here, knowing
 ## that the rule gets executed three times.
 scorep_allocator_public_types  = $(INC_ROOT)include/scorep/SCOREP_Allocator_PublicTypes.h
-utility_allocator_public_types = $(INC_DIR_UTIL)/SCOREP_Allocator_PublicTypes.h
+utility_allocator_public_types = $(INC_DIR_UTIL)/scorep_utility/SCOREP_Allocator_PublicTypes.h
 BUILT_SOURCES += $(scorep_allocator_public_types)
 CLEANFILES    += $(scorep_allocator_public_types)
-$(copy_scorep_allocator_public_types): $(utility_allocator_public_types)
+$(scorep_allocator_public_types): $(utility_allocator_public_types)
 	cp $(utility_allocator_public_types) $(scorep_allocator_public_types)
