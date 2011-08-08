@@ -18,9 +18,7 @@
 #define SCOREP_PUBLICTYPES_H
 
 #include <stdint.h>
-
-
-#include <scorep_utility/SCOREP_Allocator.h>
+#include <scorep/SCOREP_Allocator_PublicTypes.h>
 
 
 /** ingroup SCOREP_Types

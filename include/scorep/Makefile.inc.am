@@ -29,4 +29,4 @@ nobase_include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_User_Variables.h   \
     $(PUBLIC_INC_SRC)SCOREP_Tau.h              \
     $(PUBLIC_INC_SRC)SCOREP_OA_Functions.h     \
-    $(PUBLIC_INC_SRC)pomp2_lib.h				 
+    $(PUBLIC_INC_SRC)pomp2_lib.h

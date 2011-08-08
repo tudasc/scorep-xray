@@ -142,3 +142,15 @@ check-local:
 	($(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp) || eval $$failcom; \
         test -z "$$fail"
 endif !CROSS_BUILD
+
+## Copy SCOREP_Allocator_PublicTypes.h from utility to Score-P. We need this
+## public types to get installed, but as the utilities will not get installed
+## any longer this seems to be the easiest way; it also incurs no additional
+## maintenance. SCOREP_Allocator_PublicTypes.h is required by build-backend
+## and build-mpi, therefore, to avoid duplication, we place the target here.
+copy_scorep_allocator_public_types = $(srcdir)/include/scorep/SCOREP_Allocator_PublicTypes.h
+BUILT_SOURCES = $(copy_scorep_allocator_public_types)
+CLEANFILES   += $(copy_scorep_allocator_public_types)
+$(copy_scorep_allocator_public_types): $(srcdir)/vendor/otf2/vendor/utility/include/scorep_utility/SCOREP_Allocator_PublicTypes.h
+	cp $(srcdir)/vendor/otf2/vendor/utility/include/scorep_utility/SCOREP_Allocator_PublicTypes.h $(srcdir)/include/scorep/
+nobase_include_HEADERS = $(srcdir)/include/scorep/SCOREP_Allocator_PublicTypes.h
