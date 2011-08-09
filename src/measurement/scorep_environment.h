@@ -63,5 +63,8 @@ SCOREP_Env_GetPageSize();
 bool
 SCOREP_Env_UseSionSubstrate();
 
+bool
+SCOREP_Env_CompressTraces();
+
 
 #endif /* SCOREP_INTERNAL_ENVIRONMENT_H */

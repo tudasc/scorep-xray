@@ -208,7 +208,9 @@ scorep_otf2_initialize()
                                             "traces",
                                             OTF2_FILEMODE_WRITE,
                                             SCOREP_Tracing_GetChunkSize(),
+                                            SCOREP_Tracing_GetChunkSize(),
                                             SCOREP_Tracing_GetFileSubstrate(),
+                                            SCOREP_Tracing_GetCompression(),
                                             0,           // allocate
                                             0,           // free
                                             0            // allocaterData

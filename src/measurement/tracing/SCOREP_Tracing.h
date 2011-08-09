@@ -33,6 +33,8 @@
 OTF2_FileSubstrate
 SCOREP_Tracing_GetFileSubstrate();
 
+OTF2_Compression
+SCOREP_Tracing_GetCompression();
 
 uint64_t
 SCOREP_Tracing_GetChunkSize();

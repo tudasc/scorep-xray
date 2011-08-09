@@ -34,8 +34,28 @@
 /* For the SCOREP_Tracing_GetFileSubstrate() see paradigm/scorep_sion_*.c */
 
 
+OTF2_Compression
+SCOREP_Tracing_GetCompression()
+{
+    if ( SCOREP_Env_CompressTraces() )
+    {
+        return OTF2_COMPRESSION_ZLIB;
+    }
+    else
+    {
+        return OTF2_COMPRESSION_NONE;
+    }
+}
+
+
 uint64_t
 SCOREP_Tracing_GetChunkSize()
 {
+    /** @todo croessel in OTF2_Archive_New we need to specify an event
+        chunk-size and a definition chunk size. the chnunk size need to be
+        larger than the largest item that is written. events are relatively
+        small whereas some definition record grow with the number of
+        processes. We nee two environment variable here. does the event chunk
+        size equal the memory page size (scorep_env_page_size)? */
     return 1024 * 1024; // 1MB
 }

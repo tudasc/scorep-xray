@@ -46,7 +46,7 @@ static bool     scorep_env_profiling;
 static uint64_t scorep_env_total_memory;
 static uint64_t scorep_env_page_size;
 static bool     scorep_env_use_sion_substrate;
-
+static bool     scorep_env_compress_traces;
 
 /** @brief Measurement system configure variables */
 SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
@@ -102,6 +102,15 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         NULL,
         "true",
         "Whether or not to use libsion as OTF2 substrate.",
+        "Long help"
+    },
+    {
+        "compress_traces",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_env_compress_traces,
+        NULL,
+        "false",
+        "Whether or not to compress traces with libz.",
         "Long help"
     },
     SCOREP_CONFIG_TERMINATOR
@@ -192,4 +201,11 @@ SCOREP_Env_UseSionSubstrate()
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_use_sion_substrate;
+}
+
+bool
+SCOREP_Env_CompressTraces()
+{
+    assert( scorep_env_core_environment_variables_initialized );
+    return scorep_env_compress_traces;
 }
