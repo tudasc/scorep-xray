@@ -24,8 +24,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/src/config-custom.h                              \
               $(srcdir)/build-config/VERSION                             \
               $(srcdir)/tools/tau/scorep_meets_tau.awk                   \
-              $(srcdir)/doc/doxygen/scorep_usage.dox                     \
-              $(srcdir)/doc/doxygen/scorep_config_usage.dox
+              $(srcdir)/doc/doxygen-user/scorep_usage.dox.in             \
+              $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in
 
 
 if ! CROSS_BUILD
@@ -79,11 +79,11 @@ CLEANFILES += $(builddir)/include/scorep/scorep_meets_tau.h \
 
 if SVN_CONTROLLED
 doc/scorep.dox:
-	cat $(srcdir)/doc/doxygen/main_1.dox \
-            $(srcdir)/doc/doxygen/scorep_usage.dox \
-            $(srcdir)/doc/doxygen/main_2.dox \
-            $(srcdir)/doc/doxygen/scorep_config_usage.dox \
-            $(srcdir)/doc/doxygen/main_3.dox \
+	cat $(srcdir)/doc/doxygen-user/main_1.dox.in \
+            $(srcdir)/doc/doxygen-user/scorep_usage.dox.in \
+            $(srcdir)/doc/doxygen-user/main_2.dox.in \
+            $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in \
+            $(srcdir)/doc/doxygen-user/main_3.dox.in \
             > doc/scorep.dox
 else
 doc/scorep.dox:
