@@ -367,7 +367,7 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
     /* If file is excluded, function can no longer be included. Thus, return. */
     if ( excluded )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FILTEING,
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
                              "Filtered file %s\n", file_name );
         return true;
     }
