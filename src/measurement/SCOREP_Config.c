@@ -335,8 +335,7 @@ SCOREP_ConfigApplyEnv( void )
     assert( scorep_config_name_spaces );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Apply environment to config variables %s",
-                         nameSpace );
+                         "Apply environment to config variables" );
 
     SCOREP_Hashtab_Iterator* name_space_iter;
     SCOREP_Hashtab_Entry*    name_space_entry;
@@ -405,8 +404,7 @@ SCOREP_ConfigDump( FILE* dumpFile )
     assert( dumpFile );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Dump config variables to file",
-                         nameSpace );
+                         "Dump config variables to file" );
 
     SCOREP_Hashtab_Iterator* name_space_iter;
     SCOREP_Hashtab_Entry*    name_space_entry;
