@@ -119,7 +119,7 @@ SCOREP_Instrumenter::Run()
        are already compiled in the preparation step if compiling and
        linking was done by the same user command. Because we must
        find the initialzation routines, compiling and linking must be splitted
-       if Opari instrumentation is used.
+       if Opari or PDT instrumentation is used.
      */
     if ( user_instrumentation == enabled )
     {
@@ -129,17 +129,93 @@ SCOREP_Instrumenter::Run()
     {
         prepare_compiler();
     }
-#ifdef HAVE_PDT
-    if ( pdt_instrumentation == enabled )
+
+    std::string object_files = "";
+
+    if ( is_compiling )
     {
-        prepare_pdt();
+        /* Because Opari and PDT perform source code modifications, and store the
+           modified source file with a different name, we get object files with a
+           different name. To avoid this, we need to compile every source file separately
+            and explicitly specify the output file name.
+         */
+        std::string current_file = "";
+        std::string object_file  = "";
+        size_t      old_pos      = 0;
+        size_t      cur_pos      = 0;
+
+        /* If the original command compile and link in one step,
+           we need to split compilation and linking, because for Opari
+           we need to run the script on the object files.
+           Furthermore, if the user specifies multiple source files
+           in the compile step, we need to compile them separately, because
+           the sources are modified and, thus, the object file ends up with
+           a different name. In this case we do not execute the last step.
+         */
+        while ( cur_pos != std::string::npos )
+        {
+            cur_pos = input_files.find( " ", old_pos );
+            if ( old_pos < cur_pos ) // Discard a blank
+            {
+                current_file = input_files.substr( old_pos, cur_pos - old_pos );
+                if ( is_source_file( current_file ) )
+                {
+                    // Determine object file name
+                    if ( ( !is_linking ) && ( output_name != "" ) )
+                    {
+                        object_file = output_name;
+                    }
+                    else
+                    {
+                        object_file = get_basename( current_file ) + ".o";
+                    }
+
+                    // Perform PDT instrumentaion
+                    #ifdef HAVE_PDT
+                    if ( pdt_instrumentation == enabled )
+                    {
+                        current_file = instrument_pdt( current_file );
+                    }
+                    #endif
+
+                    // Perform Opari instrumentation
+                    if ( opari_instrumentation == enabled )
+                    {
+                        current_file = instrument_opari( current_file );
+                    }
+
+                    // Compile instrumented file
+                    compile_source_file( current_file, object_file );
+
+                    // Add object file to the input file list for the link command
+                    object_files += " " + object_file;
+                }
+                // If it is no source file, leave the file in the input list
+                else
+                {
+                    object_files += " " + current_file;
+                }
+            }
+            // Setup for next file
+            old_pos = cur_pos + 1;
+        }
+
+        // Replace sources by compiled by their object file names for the link command
+        input_files = object_files;
     }
-#endif
-    if ( opari_instrumentation == enabled )
+
+    if ( is_linking )
     {
-        prepare_opari();
+        // Perform Opari instrumentation
+        if ( opari_instrumentation == enabled )
+        {
+            prepare_opari_linking();
+        }
+
+        return link_step();
     }
-    return execute_command();
+
+    return 0;
 }
 
 SCOREP_Error_Code
@@ -587,7 +663,140 @@ SCOREP_Instrumenter::SetValue( std::string key,
 }
 
 /* ****************************************************************************
-   Preparation
+   Helper functions for file name manipulation and analysis
+******************************************************************************/
+
+std::string
+SCOREP_Instrumenter::get_extension( std::string filename )
+{
+    int pos = filename.rfind( "." );
+    if ( pos == std::string::npos )
+    {
+        return "";
+    }
+    return filename.substr( pos );
+}
+
+std::string
+SCOREP_Instrumenter::get_basename( std::string filename )
+{
+    int pos = filename.rfind( "." );
+    if ( pos == std::string::npos )
+    {
+        return filename;
+    }
+    return filename.substr( 0, pos );
+}
+
+bool
+SCOREP_Instrumenter::is_fortran_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".f" );
+    SCOREP_CHECK_EXT( ".F" );
+    SCOREP_CHECK_EXT( ".f90" );
+    SCOREP_CHECK_EXT( ".F90" );
+    SCOREP_CHECK_EXT( ".fpp" );
+    SCOREP_CHECK_EXT( ".FPP" );
+    SCOREP_CHECK_EXT( ".FOR" );
+    SCOREP_CHECK_EXT( ".FTN" );
+    SCOREP_CHECK_EXT( ".F95" );
+    SCOREP_CHECK_EXT( ".F03" );
+    SCOREP_CHECK_EXT( ".F08" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
+SCOREP_Instrumenter::is_c_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".c" );
+    SCOREP_CHECK_EXT( ".C" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
+SCOREP_Instrumenter::is_cpp_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".cpp" );
+    SCOREP_CHECK_EXT( ".CPP" );
+    SCOREP_CHECK_EXT( ".cxx" );
+    SCOREP_CHECK_EXT( ".CXX" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
+SCOREP_Instrumenter::is_source_file( std::string filename )
+{
+    return is_c_file( filename ) ||
+           is_cpp_file( filename ) ||
+           is_fortran_file( filename );
+}
+
+bool
+SCOREP_Instrumenter::is_object_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    if ( extension == ".o" )
+    {
+        return true;
+    }
+    return false;
+}
+
+bool
+SCOREP_Instrumenter::is_library( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    if ( extension == ".a" )
+    {
+        return true;
+    }
+    if ( extension == ".so" )
+    {
+        return true;
+    }
+    if ( extension.find( ".a." ) != std::string::npos )
+    {
+        return true;
+    }
+    if ( extension.find( ".so." ) != std::string::npos )
+    {
+        return true;
+    }
+    return false;
+}
+
+
+/* ****************************************************************************
+   Compilation
 ******************************************************************************/
 void
 SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
@@ -803,220 +1012,14 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
 }
 
 std::string
-SCOREP_Instrumenter::get_extension( std::string filename )
+SCOREP_Instrumenter::instrument_opari( std::string source_file )
 {
-    int pos = filename.rfind( "." );
-    if ( pos == std::string::npos )
-    {
-        return "";
-    }
-    return filename.substr( pos );
-}
+    std::string modified_file = get_basename( source_file )
+                                + ".opari"
+                                + get_extension( source_file );
 
-std::string
-SCOREP_Instrumenter::get_basename( std::string filename )
-{
-    int pos = filename.rfind( "." );
-    if ( pos == std::string::npos )
-    {
-        return filename;
-    }
-    return filename.substr( 0, pos );
-}
-
-bool
-SCOREP_Instrumenter::is_fortran_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".f" );
-    SCOREP_CHECK_EXT( ".F" );
-    SCOREP_CHECK_EXT( ".f90" );
-    SCOREP_CHECK_EXT( ".F90" );
-    SCOREP_CHECK_EXT( ".fpp" );
-    SCOREP_CHECK_EXT( ".FPP" );
-    SCOREP_CHECK_EXT( ".FOR" );
-    SCOREP_CHECK_EXT( ".FTN" );
-    SCOREP_CHECK_EXT( ".F95" );
-    SCOREP_CHECK_EXT( ".F03" );
-    SCOREP_CHECK_EXT( ".F08" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_c_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".c" );
-    SCOREP_CHECK_EXT( ".C" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_cpp_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".cpp" );
-    SCOREP_CHECK_EXT( ".CPP" );
-    SCOREP_CHECK_EXT( ".cxx" );
-    SCOREP_CHECK_EXT( ".CXX" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_source_file( std::string filename )
-{
-    return is_c_file( filename ) ||
-           is_cpp_file( filename ) ||
-           is_fortran_file( filename );
-}
-
-bool
-SCOREP_Instrumenter::is_object_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    if ( extension == ".o" )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_library( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    if ( extension == ".a" )
-    {
-        return true;
-    }
-    if ( extension == ".so" )
-    {
-        return true;
-    }
-    if ( extension.find( ".a." ) != std::string::npos )
-    {
-        return true;
-    }
-    if ( extension.find( ".so." ) != std::string::npos )
-    {
-        return true;
-    }
-    return false;
-}
-
-void
-SCOREP_Instrumenter::prepare_opari()
-{
-    std::string new_input_files = "";
-    std::string current_file    = "";
-
-    // Perform source code transformation on all source files
-    if ( is_compiling )
-    {
-        std::string modified_file = "";
-        std::string object_file   = "";
-        size_t      old_pos       = 0;
-        size_t      cur_pos       = 0;
-        while ( cur_pos != std::string::npos )
-        {
-            cur_pos = input_files.find( " ", old_pos );
-            if ( old_pos < cur_pos ) // Discard a blank
-            {
-                current_file = input_files.substr( old_pos, cur_pos - old_pos );
-                if ( is_source_file( current_file ) )
-                {
-                    modified_file = get_basename( current_file )
-                                    + ".opari"
-                                    + get_extension( current_file );
-                    invoke_opari( current_file, modified_file );
-
-                    /* If the original command compile and link in one step,
-                       we need to split compilation and linking, because
-                       we need to run the script on the object files.
-                       Thus, we do already compile the source and add the
-                       object files.
-                       Furthermore, if the user specifies multiple source files
-                       in the compile step, we need to compile them separately, because
-                       the sources are modified and, thus, the object file ends up with
-                       a different name. In this case we do not execute the last step.
-                     */
-                    object_file = get_basename( current_file ) + ".o";
-                    compile_source_file( modified_file, object_file );
-                    new_input_files += " " + object_file;
-                }
-                // If it is no source file, leave the file in the input list
-                else
-                {
-                    new_input_files += " " + current_file;
-                }
-            }
-            // Setup for next file
-            old_pos = cur_pos + 1;
-        }
-
-        // Replace sources by modified sources in compile command
-        input_files = new_input_files;
-    }
-
-    // if linking: Generate POMP_Region_init() and add it
-    if ( is_linking )
-    {
-        std::string object_files = "";
-        std::string init_source  = output_name + ".pomp_init.c";
-        std::string init_object  = output_name + ".pomp_init.o";
-        size_t      old_pos      = 0;
-        size_t      cur_pos      = 0;
-        while ( cur_pos != std::string::npos )
-        {
-            cur_pos = input_files.find( " ", old_pos );
-            if ( old_pos < cur_pos ) // Discard a blank
-            {
-                current_file = input_files.substr( old_pos, cur_pos - old_pos );
-                if ( is_object_file( current_file ) || is_library( current_file ) )
-                {
-                    object_files += " " + current_file;
-                }
-            }
-            // Setup for next file
-            old_pos = cur_pos + 1;
-        }
-        invoke_awk_script( object_files, init_source );
-        compile_init_file( init_source, init_object );
-        input_files += " " + init_object;
-    }
-    /* In OpenMP case all compilation is done here. Thus, if we do not link, no final
-       step is performed
-     */
-    else
-    {
-        no_final_step = true;
-    }
+    invoke_opari( source_file, modified_file );
+    return modified_file;
 }
 
 std::string
@@ -1033,123 +1036,127 @@ SCOREP_Instrumenter::remove_path( std::string full_path )
     }
 }
 
-void
-SCOREP_Instrumenter::prepare_pdt()
+std::string
+SCOREP_Instrumenter::instrument_pdt( std::string source_file )
 {
-    std::string new_input_files = "";
-    std::string current_file    = "";
-    std::string extension       = "";
-    std::string modified_file   = "";
-    std::string pdb_file        = "";
-    std::string command         = "";
-    size_t      old_pos         = 0;
-    size_t      cur_pos         = 0;
+    std::string extension     = get_extension( source_file );
+    std::string modified_file = get_basename( source_file ) + "_pdt" + extension;
+    std::string pdb_file      = remove_path( get_basename( source_file ) + ".pdb" );
+    std::string command       = "";
+    int         return_value  = 0;
 
-    // Instrument sources and substitute the sources in the source list.
+    // Create database file
+    if ( is_c_file( source_file ) )
+    {
+        command = pdt_bin_path + "/cparse " + source_file;
+    }
+    else if ( is_fortran_file( source_file ) )
+    {
+        command = pdt_bin_path + "/f90parse " + source_file;
+    }
+    else
+    {
+        command = pdt_bin_path + "/cxxparse " + source_file;
+    }
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
+    if ( !is_dry_run )
+    {
+        return_value = system( command.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "Failed to create PDT database file." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+    }
+
+    // instrument source
+    command = pdt_bin_path + "/tau_instrumentor "
+              + pdb_file + " "
+              + source_file
+              + compiler_flags + " "
+              + " -o " + modified_file
+              + " -spec " + pdt_config_file;
+
+    if ( is_openmp_application == enabled )
+    {
+        command += " -D_OPENMP";
+    }
+
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
+    if ( !is_dry_run )
+    {
+        return_value = system( command.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "PDT instrumentation failed." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+    }
+
+    return modified_file;
+}
+
+/* ****************************************************************************
+   Linking
+******************************************************************************/
+
+void
+SCOREP_Instrumenter::prepare_opari_linking()
+{
+    std::string current_file = "";
+    std::string object_files = "";
+    std::string init_source  = output_name + ".pomp_init.c";
+    std::string init_object  = output_name + ".pomp_init.o";
+    size_t      old_pos      = 0;
+    size_t      cur_pos      = 0;
+
+    // Compile list of library and object files
     while ( cur_pos != std::string::npos )
     {
-        int return_value = 0;
         cur_pos = input_files.find( " ", old_pos );
         if ( old_pos < cur_pos ) // Discard a blank
         {
-            current_file  = input_files.substr( old_pos, cur_pos - old_pos );
-            extension     = get_extension( current_file );
-            modified_file = get_basename( current_file ) + "_pdt" + extension;
-            pdb_file      = remove_path( get_basename( current_file ) + ".pdb" );
-            if ( is_source_file( current_file ) )
+            current_file = input_files.substr( old_pos, cur_pos - old_pos );
+            if ( is_object_file( current_file ) || is_library( current_file ) )
             {
-                // Create database file
-                if ( extension == ".c" || extension == ".C" )
-                {
-                    command = pdt_bin_path + "/cparse " + current_file;
-                }
-                else if ( extension == ".f" || extension == ".F" ||
-                          extension == ".f90" || extension == ".F90" )
-                {
-                    command = pdt_bin_path + "/f90parse " + current_file;
-                }
-                else
-                {
-                    command = pdt_bin_path + "/cxxparse " + current_file;
-                }
-                if ( verbosity >= 1 )
-                {
-                    std::cout << command << std::endl;
-                }
-                return_value = system( command.c_str() );
-                if ( return_value != 0 )
-                {
-                    std::cerr << "Failed to create PDT database file." << std::endl;
-                    exit( EXIT_FAILURE );
-                }
-
-                // instrument source
-                command = pdt_bin_path + "/tau_instrumentor "
-                          + pdb_file + " "
-                          + compiler_flags + " "
-                          + current_file
-                          + " -o " + modified_file
-                          + " -spec " + pdt_config_file;
-
-                if ( is_openmp_application == enabled )
-                {
-                    command += " -D_OPENMP";
-                }
-
-                if ( verbosity >= 1 )
-                {
-                    std::cout << command << std::endl;
-                }
-                return_value = system( command.c_str() );
-                if ( return_value != 0 )
-                {
-                    std::cerr << "PDT instrumentation failed." << std::endl;
-                    exit( EXIT_FAILURE );
-                }
-
-
-                // Add modified source to new sourse list
-                new_input_files += " " + modified_file;
-            }
-            else
-            {
-                new_input_files += " " + current_file;
+                object_files += " " + current_file;
             }
         }
         // Setup for next file
         old_pos = cur_pos + 1;
     }
 
-    // Replace sources by modified sources in compile command
-    input_files = new_input_files;
+    // Create and compile the POMP2 init file.
+    invoke_awk_script( object_files, init_source );
+    compile_init_file( init_source, init_object );
+
+    // Add the object file for POMP2 initialization to the input files for linking.
+    input_files += " " + init_object;
 }
 
-/* ****************************************************************************
-   Command execution
-******************************************************************************/
 int
-SCOREP_Instrumenter::execute_command()
+SCOREP_Instrumenter::link_step()
 {
-    if ( no_final_step )
+    std::string scorep_lib;
+    if ( is_openmp_application == enabled &&
+         opari_instrumentation == disabled )
     {
-        return 0;
+        scorep_lib += " -lscorep_pomp_dummy";
     }
 
-    std::string scorep_lib;
-    if ( is_linking )
-    {
-        if ( is_openmp_application == enabled &&
-             opari_instrumentation == disabled )
-        {
-            scorep_lib += " -lscorep_pomp_dummy";
-        }
-    }
     std::string command = compiler_name + " "
                           + scorep_include_path
                           + input_files
                           + scorep_lib
                           + compiler_flags
                           + " " + external_libs;
+
     if ( output_name != "" )
     {
         command += " -o " + output_name;

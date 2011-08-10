@@ -177,11 +177,11 @@ private:
     set_pdt_path( std::string pdt );
 
     /**
-       Executes the modified user command.
+       Executes the linking command.
        @returns the return value from the executed command.
      */
     int
-    execute_command();
+    link_step();
 
     /**
        Checks whether command line parameter parsing provided meaningful
@@ -237,18 +237,28 @@ private:
     prepare_user();
 
     /**
-       Performs necessary modifications to the command for enabling
-       pdt instrumentation.
+       Instruments @a source_file with the Tau instrumentor.
+       @param source_file File name of the source file, that is instrumented.
+       @returns the file name of the instrumented source file.
      */
-    void
-    prepare_pdt();
+    std::string
+    instrument_pdt( std::string source_file );
 
     /**
-       Performs necessary modifications to the command for enabling
-       Opari instrumentation.
+       Instruments @a source_file with Opari.
+       @param source_file File name of the source file, that is instrumented.
+       @returns the file name of the instrumented source file.
+     */
+    std::string
+    instrument_opari( std::string source_file );
+
+    /**
+       Performs the necessary actions for linking Opari instrumented object files and
+       libraries. Thus, it runs the awk script on the objects, creates the POMP2_Init
+       Function, and compiles it.
      */
     void
-    prepare_opari();
+    prepare_opari_linking();
 
     /**
        Constructs calls to the config tools.
