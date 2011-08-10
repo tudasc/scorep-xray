@@ -159,7 +159,7 @@ doxygen-user: doxygen-project-number
 	$(MKDIR_P) "$(USER_DOC_DIR)/tags"
 	echo "OUTPUT_DIRECTORY = $(USER_DOC_DIR)" > doc/doxygen-at-make-time.cfg
 	echo "GENERATE_TAGFILE = $(USER_DOC_DIR)/tags/@PACKAGE_NAME@.tag" >> doc/doxygen-at-make-time.cfg
-	cat doc/doxygen-user.cfg doc/doxygen-project-number.cfg doc/doxygen-at-make-time.cfg | doxygen -
+	cat doc/doxygen-user.cfg doc/doxygen-project-number.cfg doc/doxygen-at-make-time.cfg $(srcdir)/doc/doxygen-user/doxygen-user.cfg.in | doxygen -
 
 else # i.e. ! HAVE_DOXYGEN -------------------------------------------
 

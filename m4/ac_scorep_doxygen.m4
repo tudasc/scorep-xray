@@ -42,7 +42,7 @@ AC_SUBST([have_doxygen_latex])
 AM_CONDITIONAL(HAVE_DOXYGEN_LATEX, test "x${have_doxygen_latex}" = xyes)
 
 if test "x${ac_scorep_svn_controlled}" = "xyes"; then
-   AC_CONFIG_FILES([doc/doxygen-user.cfg:doc/doxygen-user/doxygen-user.cfg.in doc/doxygen-dev.cfg:doc/doxygen-dev/doxygen-dev.cfg.in])
+   AC_CONFIG_FILES([doc/doxygen-user.cfg:vendor/common/build_related/doxygen/doxygen-user.cfg.in doc/doxygen-dev.cfg:doc/doxygen-dev/doxygen-dev.cfg.in])
 fi
 
 # ac_scorep_doxygen_distdir may be passed in from upper level configure
