@@ -206,7 +206,7 @@ SCOREP_OnTracePreFlush( void* evtWriter,
                         void* evtReader )
 {
     printf( "SCOREP_OnTracePreFlush[%d]\n", SCOREP_Mpi_GetRank() );
-    if ( !SCOREP_Mpi_IsInitialized )
+    if ( !SCOREP_Mpi_IsInitialized() )
     {
         // flush before MPI_Init, we are lost.
         assert( false );
