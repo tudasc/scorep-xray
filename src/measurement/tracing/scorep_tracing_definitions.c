@@ -947,7 +947,7 @@ scorep_write_number_of_definitions_per_location( OTF2_GlobDefWriter* global_defi
 
 
 static OTF2_FlushType
-scorep_on_definitions_pre_flush()
+scorep_on_definitions_pre_flush( void* evtWriter, void* evtReader )
 {
     if ( !SCOREP_Mpi_IsInitialized() )
     {
