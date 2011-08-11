@@ -949,7 +949,7 @@ scorep_write_number_of_definitions_per_location( OTF2_GlobDefWriter* global_defi
 static OTF2_FlushType
 scorep_on_definitions_pre_flush()
 {
-    if ( !SCOREP_Mpi_IsInitialized )
+    if ( !SCOREP_Mpi_IsInitialized() )
     {
         // flush before MPI_Init, we are lost.
         assert( false );
