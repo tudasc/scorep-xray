@@ -1,6 +1,6 @@
 
 OBJ_DIR?=..
-COMP = $(OBJ_DIR)/build-backend/scorep --instrument
+COMP = $(OBJ_DIR)/build-backend/scorep
 INST = comp:gnu 
 COMPFLAGS = -c 
 INCLUDE=

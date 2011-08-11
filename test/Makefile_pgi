@@ -1,5 +1,5 @@
 OBJ_DIR?=..
-COMP = $(OBJ_DIR)/build-frontend/scorep --instrument
+COMP = $(OBJ_DIR)/build-frontend/scorep
 INST = comp:pgi 
 COMPFLAGS = -c 
 INCLUDE=

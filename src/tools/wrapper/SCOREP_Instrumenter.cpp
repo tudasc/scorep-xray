@@ -36,6 +36,9 @@
 #include "scorep_config_tool_backend.h"
 
 
+void
+print_help();
+
 /* ****************************************************************************
    Compiler specific defines
 ******************************************************************************/
@@ -231,7 +234,7 @@ SCOREP_Instrumenter::ParseCmdLine( int    argc,
     bool              is_config_file_read = false;
     SCOREP_Error_Code ret_val;
 
-    for ( int i = 2; i < argc; i++ )
+    for ( int i = 1; i < argc; i++ )
     {
         switch ( mode )
         {
@@ -406,6 +409,11 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
     {
         is_openmp_application = disabled;
         return scorep_parse_mode_param;
+    }
+    else if ( arg == "--help" || arg == "-h" )
+    {
+        print_help();
+        exit( EXIT_SUCCESS );
     }
     /* Configuration file */
     else if ( CheckForCommonArg( arg ) )

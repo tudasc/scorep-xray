@@ -18,8 +18,8 @@
 /**
  * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  * @status alpha
- * scorep user interaction
- * provides wrapper for instrumentation and binary for steering measurement system
+ * The instrumentation tool of Score-P: scorep.
+ * .
  */
 #include <config.h>
 #include <iostream>
@@ -30,44 +30,42 @@
 #include "SCOREP_Measurement.hpp"
 
 /**
+   Contains the name of the tool for help output
+ */
+const std::string toolname = "scorep";
+
+/**
     Prints a short usage message.
-    @param toolname Name of the tool on this platform (argv[0]).
  */
 void
-print_short_usage( std::string toolname )
+print_short_usage()
 {
-    std::cout << "\nThis is the SCOREP user tool. The usage is:\n"
-              << toolname << " <action> <options> <orginal command>\n\n"
-              << "The action can be one of the following:\n"
-              << "  --instrument    Instruments the application.\n"
-              << "  --measure       Performs a measurement run of the instrumented application.\n"
-              << "  --help, -h      Show help output.\n\n"
+    std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
+              << toolname << " <options> <orginal command>\n\n"
+              << "To print out more detailed help information on available parameters "
+              << "type\n"
+              << toolname << " --help\n"
               << std::endl;
 }
 
 /**
    Prints the long help text.
-   @param toolname Name of the tool on this platform (argv[0]).
  */
 void
-print_help( std::string toolname )
+print_help()
 {
     std::cout << "\nThis is the SCOREP user tool. The usage is:\n"
-              << toolname << " <action> <options> <orginal command>\n\n"
-              << "The action can be one of the following:\n"
-              << "  --instrument    Instruments the application.\n"
-              << "  --measure       Performs a measurement run of the instrumented application.\n"
-              << "  --help, -h      Show help output.\n\n"
+              << toolname << " <options> <orginal command>\n\n"
               << "Common options are:\n"
-              << "  --config=<file>  Specifies file for the instrumentation configuration.\n"
+              << "  --help, -h      Show help output. Does not execute any other command.\n"
+              << "  --config=<file> Specifies file for the instrumentation configuration.\n"
               << "  --verbosity=<value> Specifies the verbosity level. The following\n"
               << "                  levels are available:\n"
               << "                  0 = No output (default)\n"
               << "                  1 = Executed commands are displayed\n"
               << "                  2 = Detailed information is displayed\n"
               << "  --dry-run       Only displays the executed commands. It does not\n"
-              << "                  execute any command.\n\n"
-              << "For instrumentation the following options are supported:\n"
+              << "                  execute any command.\n"
               << "  --compiler      Enables compiler instrumentation Is enabled by default.\n"
               << "  --nocompiler    Disables compiler instrumentation.\n"
               << "  --mpi           Enables mpi wrapper. Is enabled by default if it is a\n"
@@ -96,8 +94,7 @@ print_help( std::string toolname )
 }
 
 /**
-   Main routine of the scorep wrapper tool. It decides which action to take, and
-   invokes appropriate subclasses.
+   Main routine of the scorep instrumentation tool.
    @param argc Number of arguments.
    @param argv List of arguments
    @returns If an error occurs, -1 is returned, if help was called, 0 is
@@ -109,41 +106,13 @@ main( int   argc,
 {
     if ( argc > 1 )
     {
-        // Select action
-        std::string action = argv[ 1 ];
-        if ( action == "--instrument" )
-        {
-            SCOREP_Instrumenter app;
-            app.ParseCmdLine( argc, argv );
-            if ( app.Run() == EXIT_SUCCESS )
-            {
-                return EXIT_SUCCESS;
-            }
-        }
-        else if ( action == "--measure" )
-        {
-            SCOREP_Measurement app;
-            app.ParseCmdLine( argc, argv );
-            if ( app.Run() == EXIT_SUCCESS )
-            {
-                return EXIT_SUCCESS;
-            }
-        }
-        else if ( action == "--help" || action == "-h" )
-        {
-            print_help( argv[ 0 ] );
-            return EXIT_SUCCESS;
-        }
-        else
-        {
-            std::cerr << "Invalid action specified" << std::endl;
-            print_short_usage( argv[ 0 ] );
-        }
+        SCOREP_Instrumenter app;
+        app.ParseCmdLine( argc, argv );
+        return app.Run();
     }
     else
     {
-        std::cerr << "No action specified" << std::endl;
-        print_short_usage( argv[ 0 ] );
+        print_short_usage();
     }
     return EXIT_FAILURE;
 }
