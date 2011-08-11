@@ -163,7 +163,7 @@ test_definitions_finalize()
 //    scorep_delete_definition_writer( definition_writer );
 }
 
-static const char const* test_stings[] = {
+static const char* const test_stings[] = {
     "foo",
     "bar",
     "baz"

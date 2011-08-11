@@ -56,36 +56,31 @@ Jacobi( struct JacobiData* data )
             residual = 0.0;
 
             /* copy new solution into old */
-#pragma omp parallel
+            for ( j = 1; j < data->iRows - 1; j++ )
             {
-#pragma omp for private(j, i)
-                for ( j = 1; j < data->iRows - 1; j++ )
+                for ( i = 1; i < data->iCols - 1; i++ )
                 {
-                    for ( i = 1; i < data->iCols - 1; i++ )
-                    {
-                        UOLD( j, i ) = U( j, i );
-                    }
+                    UOLD( j, i ) = U( j, i );
                 }
+            }
 
 
-                /* compute stencil, residual and update */
-#pragma omp for private(j, i, fLRes) reduction(+:residual)
-                for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
+            /* compute stencil, residual and update */
+            for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
+            {
+                for ( i = 1; i <= data->iCols - 2; i++ )
                 {
-                    for ( i = 1; i <= data->iCols - 2; i++ )
-                    {
-                        fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
-                                  + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
-                                  +  b * UOLD( j, i ) - F( j, i ) ) / b;
+                    fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
+                              + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
+                              +  b * UOLD( j, i ) - F( j, i ) ) / b;
 
-                        /* update solution */
-                        U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
+                    /* update solution */
+                    U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
 
-                        /* accumulate residual error */
-                        residual += fLRes * fLRes;
-                    }
+                    /* accumulate residual error */
+                    residual += fLRes * fLRes;
                 }
-            } /* end omp parallel */
+            }
 
             /* error check */
             ( data->iIterCount )++;

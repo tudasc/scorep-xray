@@ -54,37 +54,32 @@ Jacobi( JacobiData &data )
             residual = 0.0;
 
             /* copy new solution into old */
-#pragma omp parallel
+            for ( int j = 1; j < data.iRows - 1; j++ )
             {
-#pragma omp for
-                for ( int j = 1; j < data.iRows - 1; j++ )
+                for ( int i = 1; i < data.iCols - 1; i++ )
                 {
-                    for ( int i = 1; i < data.iCols - 1; i++ )
-                    {
-                        UOLD( j, i ) = U( j, i );
-                    }
+                    UOLD( j, i ) = U( j, i );
                 }
+            }
 
-                double fLRes;
+            double fLRes;
 
-                /* compute stencil, residual and update */
-#pragma omp for reduction(+:residual)
-                for ( int j = data.iRowFirst + 1; j <= data.iRowLast - 1; j++ )
+            /* compute stencil, residual and update */
+            for ( int j = data.iRowFirst + 1; j <= data.iRowLast - 1; j++ )
+            {
+                for ( int i = 1; i < data.iCols - 1; i++ )
                 {
-                    for ( int i = 1; i < data.iCols - 1; i++ )
-                    {
-                        fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
-                                  + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
-                                  +  b * UOLD( j, i ) - F( j, i ) ) / b;
+                    fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
+                              + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
+                              +  b * UOLD( j, i ) - F( j, i ) ) / b;
 
-                        /* update solution */
-                        U( j, i ) = UOLD( j, i ) - data.fRelax * fLRes;
+                    /* update solution */
+                    U( j, i ) = UOLD( j, i ) - data.fRelax * fLRes;
 
-                        /* accumulate residual error */
-                        residual += fLRes * fLRes;
-                    }
+                    /* accumulate residual error */
+                    residual += fLRes * fLRes;
                 }
-            } /* end omp parallel */
+            }
 
             /* error check */
             data.iIterCount++;

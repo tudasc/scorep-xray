@@ -81,16 +81,9 @@ sequential( int id )
     double sum;
 
     sum = do_work( 100 );
-  #pragma omp parallel private(tid)
+    for ( i = 0; i < 12; i++ )
     {
-    #ifdef OPENMP
-        tid = omp_get_thread_num();
-    #endif
-    #pragma omp for reduction(+:sum)
-        for ( i = 0; i < 12; i++ )
-        {
-            sum += step( id, tid, i );
-        }
+        sum += step( id, tid, i );
     }
     sum += do_work( 100 );
 

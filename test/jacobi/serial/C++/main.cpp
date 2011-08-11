@@ -127,7 +127,6 @@ void
 InitializeMatrix( JacobiData &data )
 {
     /* Initilize initial condition and RHS */
-#pragma omp parallel for
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )

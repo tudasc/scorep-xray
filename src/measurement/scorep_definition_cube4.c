@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <inttypes.h>
 #include "scorep_definition_cube4.h"
 
 #include <SCOREP_Memory.h>
@@ -587,12 +588,12 @@ scorep_write_location_definitions_to_cube4( cube_t*                   my_cube,
         cube_node* node = scorep_cube_get_node( my_cube, system_tree, definition->parent,
                                                 manager->system_tree_node_definition_counter );
 
-        sprintf( name, "rank %d", rank );
+        sprintf( name, "rank %" PRIu64, rank );
         process = cube_def_proc( my_cube, name, rank, node );
 
         for ( uint32_t loc = 0; loc < threads[ rank ]; loc++ )
         {
-            sprintf( name, "thread %d", loc ),
+            sprintf( name, "thread %" PRIu32, loc ),
             thread = cube_def_thrd( my_cube, name, index, process );
             index++;
         }
