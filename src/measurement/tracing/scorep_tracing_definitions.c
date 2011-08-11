@@ -820,6 +820,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
 static void
 scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, GLOBAL_STRING, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
     if ( SCOREP_Mpi_HasMpi() )
@@ -828,16 +829,6 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
                                                  MPI_COMMUNICATOR,
                                                  localDefinitionWriter );
     }
-
-    // do we need these two mappings for tracing?
-    // DL: We need mapping for parameters, because the parameter events write the local
-    //     ID of the parameter which must be mapped to the global ID in OTF2.
-    //
-    //     We have no events that write references to local callpath definitions
-    //     I think we have no events that write references to callpath defintions at all.
-    //     Thus, I guess we currently do not need the callpath mapping.
-
-    //SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( callpath, , localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, PARAMETER, localDefinitionWriter );
 }
 

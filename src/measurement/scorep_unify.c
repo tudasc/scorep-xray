@@ -110,6 +110,7 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     definitionManager->mappings = malloc( sizeof( *definitionManager->mappings ) );
     assert( definitionManager->mappings );
 
+    SCOREP_ALLOC_MAPPINGS_ARRAY( string,  definitionManager );
     //SCOREP_ALLOC_MAPPINGS_ARRAY( location, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( region, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( group, definitionManager );
@@ -129,6 +130,7 @@ SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definition
     assert( definitionManager );
     assert( definitionManager->mappings );
 
+    SCOREP_ASSIGN_MAPPINGS( definitionManager, String, string );
     //SCOREP_ASSIGN_MAPPINGS( definitionManager, Location, location );
     SCOREP_ASSIGN_MAPPINGS( definitionManager, Region, region );
     SCOREP_ASSIGN_MAPPINGS( definitionManager, Group, group );
@@ -145,6 +147,7 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     assert( definitionManager );
     assert( definitionManager->mappings );
 
+    SCOREP_FREE_MAPPINGS_ARRAY( string, definitionManager );
     //SCOREP_FREE_MAPPINGS_ARRAY( location, definitionManager );
     SCOREP_FREE_MAPPINGS_ARRAY( region, definitionManager );
     SCOREP_FREE_MAPPINGS_ARRAY( group, definitionManager );

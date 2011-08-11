@@ -415,8 +415,6 @@ SCOREP_TriggerMarker
  *
  * @param parameterHandle
  * @param value
- *
- * @planned To be implemented in milestone 3
  */
 void
 SCOREP_TriggerParameterInt64
@@ -431,14 +429,12 @@ SCOREP_TriggerParameterInt64
  *
  * @param parameterHandle
  * @param value
- *
- * @planned To be implemented in milestone 3
  */
 void
-SCOREP_TriggerParameterDouble
+SCOREP_TriggerParameterUint64
 (
     SCOREP_ParameterHandle parameterHandle,
-    double                 value
+    uint64_t               value
 );
 
 
@@ -447,8 +443,6 @@ SCOREP_TriggerParameterDouble
  *
  * @param parameterHandle
  * @param value
- *
- * @planned To be implemented in milestone 3
  */
 void
 SCOREP_TriggerParameterString

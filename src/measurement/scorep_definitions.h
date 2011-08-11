@@ -38,6 +38,7 @@
 typedef struct SCOREP_DefinitionMappings SCOREP_DefinitionMappings;
 struct SCOREP_DefinitionMappings
 {
+    uint32_t* string_mappings;
     //uint32_t* location_mappings;
     uint32_t* region_mappings;
     uint32_t* group_mappings;

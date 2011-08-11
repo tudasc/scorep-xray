@@ -187,6 +187,7 @@ scorep_unify_mpi_master( void )
         SCOREP_CreateDefinitionMappings( remote_definition_manager );
         SCOREP_AssignDefinitionMappingsFromUnified( remote_definition_manager );
 
+        SEND_MAPPING( string );
         SEND_MAPPING( region );
         SEND_MAPPING( group );
         SEND_MAPPING( callpath );
@@ -251,6 +252,7 @@ scorep_unify_mpi_servant( void )
     // 4) receive all mappings from root
     SCOREP_CreateDefinitionMappings( &scorep_local_definition_manager );
 
+    RECV_MAPPING( string );
     RECV_MAPPING( region );
     RECV_MAPPING( group );
     RECV_MAPPING( callpath );

@@ -750,12 +750,18 @@ void
 SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
                               int64_t                value )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        OTF2_EvtWriter_ParameterInt( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                     NULL,
+                                     timestamp,
+                                     SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
+                                     value );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -771,20 +777,26 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
  *
  */
 void
-SCOREP_TriggerParameterDouble( SCOREP_ParameterHandle parameterHandle,
-                               double                 value )
+SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
+                               uint64_t               value )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
+        OTF2_EvtWriter_ParameterUnsignedInt( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                             NULL,
+                                             timestamp,
+                                             SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
+                                             value );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
     }
 }
 
@@ -796,17 +808,24 @@ void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_StringHandle string_handle = SCOREP_DefineString( value );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        OTF2_EvtWriter_ParameterString( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                        NULL,
+                                        timestamp,
+                                        SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
+                                        SCOREP_LOCAL_HANDLE_TO_ID( string_handle, String ) );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_StringHandle string_handle = SCOREP_DefineString( value );
         SCOREP_Profile_ParameterString( location,
                                         parameterHandle,
                                         string_handle );
