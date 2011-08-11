@@ -343,8 +343,8 @@ scorep_parameter_type_to_string
     {
         case SCOREP_PARAMETER_INT64:
             return "int64";
-        case SCOREP_PARAMETER_DOUBLE:
-            return "double";
+        case SCOREP_PARAMETER_UINT64:
+            return "uint64";
         case SCOREP_PARAMETER_STRING:
             return "string";
         default:

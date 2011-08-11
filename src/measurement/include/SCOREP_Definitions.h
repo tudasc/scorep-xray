@@ -417,7 +417,7 @@ SCOREP_DefineParameter
 );
 
 /**
- * Returns the sequence number of the unified defintions for a local callpath handle from
+ * Returns the sequence number of the unified definitions for a local callpath handle from
  * the mappings.
  * @param handle handle to local callpath handle.
  */

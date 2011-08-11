@@ -177,6 +177,26 @@ scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
     }
 }
 
+static uint8_t
+scorep_parameter_type_to_otf_parameter_type( SCOREP_ParameterType scorepType )
+{
+    switch ( scorepType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_PARAMETER_ ## SCOREP: \
+        return OTF2_ParameterType_ ## OTF2
+
+        case_return( STRING, String );
+        case_return( INT64, Int64 );
+        case_return( UINT64, UInt64 );
+
+#undef case_return
+        default:
+            SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED, "Invalid parameter type" );
+    }
+}
+
+
 static void
 scorep_write_string_definitions( void*                     writerHandle,
                                  SCOREP_DefinitionManager* definitionManager,
@@ -719,29 +739,29 @@ scorep_write_marker_definitions( void*                     writerHandle,
 
 static void
 scorep_write_parameter_definitions( void*                     writerHandle,
-                                    SCOREP_DefinitionManager* definitionManager,
-                                    bool                      isGlobal )
+                                    SCOREP_DefinitionManager* definitionManager )
 {
     assert( writerHandle );
-    //SCOREP_Error_Code ( * def... )( void*,
-    //                                ...
-    //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
-    //if ( isGlobal )
-    //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
-    //}
+    SCOREP_Error_Code ( * defParameter )( void*,
+                                          uint32_t,
+                                          uint8_t,
+                                          uint32_t ) =
+        OTF2_GlobDefWriter_GlobDefParameter;
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Parameter,
                                   parameter )
     {
-        //SCOREP_Error_Code status = def...(writerHandle, ...);
-        //if ( status != SCOREP_SUCCESS )
-        //{
-        //    scorep_handle_definition_writing_error( status, "SCOREP_Parameter_Definition" );
-        //}
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+        SCOREP_Error_Code status = defParameter(
+            writerHandle,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            scorep_parameter_type_to_otf_parameter_type( definition->parameter_type ),
+            definition->sequence_number );
+
+        if ( status != SCOREP_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "SCOREP_Parameter_Definition" );
+        }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -810,8 +830,15 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     }
 
     // do we need these two mappings for tracing?
+    // DL: We need mapping for parameters, because the parameter events write the local
+    //     ID of the parameter which must be mapped to the global ID in OTF2.
+    //
+    //     We have no events that write references to local callpath definitions
+    //     I think we have no events that write references to callpath defintions at all.
+    //     Thus, I guess we currently do not need the callpath mapping.
+
     //SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( callpath, , localDefinitionWriter );
-    //SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, , localDefinitionWriter );
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, PARAMETER, localDefinitionWriter );
 }
 
 static void
@@ -833,7 +860,7 @@ scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_io_file_definitions(                localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_marker_group_definitions(           localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_marker_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
+    //scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false ); There is no local writer for parameter definitions
     scorep_write_callpath_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 
@@ -860,7 +887,7 @@ scorep_write_global_definitions( OTF2_GlobDefWriter* global_definition_writer )
     scorep_write_io_file_definitions(                global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_marker_group_definitions(           global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_marker_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager );
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
 }

@@ -312,7 +312,7 @@ typedef enum SCOREP_RegionType
 typedef enum SCOREP_ParameterType
 {
     SCOREP_PARAMETER_INT64,
-    SCOREP_PARAMETER_DOUBLE,
+    SCOREP_PARAMETER_UINT64,
     SCOREP_PARAMETER_STRING,
 
     SCOREP_INVALID_PARAMETER_TYPE /**< For internal use only. */
