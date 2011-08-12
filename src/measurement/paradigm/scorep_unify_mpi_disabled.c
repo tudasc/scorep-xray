@@ -34,7 +34,5 @@
 void
 SCOREP_Mpi_Unify()
 {
-    SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
-                  "SCOREP_Mpi_Unify() called in non-mpi build" );
-    abort();
+    SCOREP_BUG( "SCOREP_Mpi_Unify() called in non-mpi build" );
 }

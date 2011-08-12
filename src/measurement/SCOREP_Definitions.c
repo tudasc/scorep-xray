@@ -1553,9 +1553,7 @@ SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition
             }
             else
             {
-                SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
-                              "No valid parameter type." );
-                abort();
+                SCOREP_BUG( "Not a valid parameter type." );
             }
         }
     }
@@ -1658,9 +1656,7 @@ scorep_callpath_definition_initialize( SCOREP_Callpath_Definition* definition,
             }
             else
             {
-                SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
-                              "No valid parameter type." );
-                abort();
+                SCOREP_BUG( "Not a valid parameter type." );
             }
         }
     }

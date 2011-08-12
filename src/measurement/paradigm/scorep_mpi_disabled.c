@@ -121,9 +121,7 @@ SCOREP_Mpi_Send( void*               buf,
                  SCOREP_Mpi_Datatype scorep_datatype,
                  int                 dest )
 {
-    SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
-                  "SCOREP_Mpi_Send() called in non-mpi build" );
-    abort();
+    SCOREP_BUG( "SCOREP_Mpi_Send() called in non-mpi build" );
 
     return 1;
 }
@@ -136,9 +134,7 @@ SCOREP_Mpi_Recv( void*               buf,
                  int                 source,
                  SCOREP_Mpi_Status   status )
 {
-    SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
-                  "SCOREP_Mpi_Recv() called in non-mpi build" );
-    abort();
+    SCOREP_BUG( "SCOREP_Mpi_Recv() called in non-mpi build" );
 
     return 1;
 }
