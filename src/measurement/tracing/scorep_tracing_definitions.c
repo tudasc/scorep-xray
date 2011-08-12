@@ -30,7 +30,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-
+#include <stdlib.h>
 
 #include <otf2/otf2.h>
 
@@ -78,7 +78,9 @@ scorep_location_type_to_otf_location_type( SCOREP_LocationType scorepType,
 
 #undef case_return
         default:
-            assert( !"Invalid location type" );
+            SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
+                          "Invalid location type" );
+            abort();
     }
 }
 
@@ -98,7 +100,9 @@ scorep_location_group_type_to_otf_location_group_type( SCOREP_LocationType score
 
 #undef case_return
         default:
-            assert( !"Invalid location group type" );
+            SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
+                          "Invalid location group type" );
+            abort();
     }
 }
 
@@ -147,7 +151,9 @@ scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType,
 
 #undef case_return
         default:
-            assert( !"Invalid location type" );
+            SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
+                          "Invalid location type" );
+            abort();
     }
 }
 
@@ -173,7 +179,9 @@ scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
 
 #undef case_return
         default:
-            assert( !"Invalid group type" );
+            SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
+                          "Invalid group type" );
+            abort();
     }
 }
 
@@ -193,6 +201,7 @@ scorep_parameter_type_to_otf_parameter_type( SCOREP_ParameterType scorepType )
 #undef case_return
         default:
             SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED, "Invalid parameter type" );
+            abort();
     }
 }
 

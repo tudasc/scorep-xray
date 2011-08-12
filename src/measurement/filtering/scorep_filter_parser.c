@@ -64,19 +64,26 @@ extern bool scorep_filter_is_enabled;
  * <dt> scorep_filter_parse_base
  * <dd> Is used to extract the base state without the fortran option from the
  *      state variable.
+ * </dl>
+ *
+ * If you add further states for any reason make sure that
+ * scorep_filter_parse_fortran is a single bit that contains in no other
+ * state else the bitwise combination will not work anymore.
+ * Furthermore, scorep_filter_parse_base must have set all bits used in other
+ * states except the bit set by scorep_filter_parse_fortran.
  */
-typedef enum
-{
-    scorep_filter_parse_start             = 0,
-    scorep_filter_parse_files             = 1,
-    scorep_filter_parse_files_exclude     = 2,
-    scorep_filter_parse_files_include     = 3,
-    scorep_filter_parse_functions         = 4,
-    scorep_filter_parse_functions_exclude = 5,
-    scorep_filter_parse_functions_include = 6,
-    scorep_filter_parse_base              = 7,
-    scorep_filter_parse_fortran           = 8
-} scorep_filter_parse_modes;
+typedef uint32_t scorep_filter_parse_modes;
+
+static const uint32_t scorep_filter_parse_start             = 0;
+static const uint32_t scorep_filter_parse_files             = 1;
+static const uint32_t scorep_filter_parse_files_exclude     = 2;
+static const uint32_t scorep_filter_parse_files_include     = 3;
+static const uint32_t scorep_filter_parse_functions         = 4;
+static const uint32_t scorep_filter_parse_functions_exclude = 5;
+static const uint32_t scorep_filter_parse_functions_include = 6;
+static const uint32_t scorep_filter_parse_base              = 7;
+static const uint32_t scorep_filter_parse_fortran           = 8;
+
 
 /**
  * @def SCOREP_FILTER_MODE_IS_FORTRAN
@@ -96,7 +103,7 @@ typedef enum
  * Contains the file name of the filter file. The value is set in the configuration
  * system through the variable SCOREP_FILTERING_FILE
  */
-static char* scorep_filter_file_name          = NULL;
+static char* scorep_filter_file_name = NULL;
 
 /**
    Array of configuration variables for filtering tracing.

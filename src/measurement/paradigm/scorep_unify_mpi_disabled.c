@@ -26,16 +26,15 @@
 
 
 #include <config.h>
-
-
-#include <assert.h>
-
-
+#include <stdlib.h>
 #include <scorep_unify.h>
+#include <scorep_utility/SCOREP_Error.h>
 
 
 void
 SCOREP_Mpi_Unify()
 {
-    assert( !"SCOREP_Mpi_Unify() called in non-mpi build" );
+    SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
+                  "SCOREP_Mpi_Unify() called in non-mpi build" );
+    abort();
 }

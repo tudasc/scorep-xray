@@ -197,7 +197,9 @@ scorep_mpi_to_mpi_datatype( enum SCOREP_Mpi_Datatype scorep_datatype )
         SCOREP_MPI_DATATYPES
 #undef SCOREP_MPI_DATATYPE
         default:
-            assert( !"Unknown mpi datatype" );
+            SCOREP_ERROR( SCOREP_ERROR_ASSERTION_FAILED,
+                          "Unknown mpi datatype" );
+            abort();
     }
 }
 
