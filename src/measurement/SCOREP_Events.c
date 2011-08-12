@@ -666,7 +666,7 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
@@ -690,7 +690,7 @@ SCOREP_TriggerCounterInt64( SCOREP_CounterHandle counterHandle,
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -712,7 +712,7 @@ SCOREP_TriggerCounterDouble( SCOREP_CounterHandle counterHandle,
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -731,7 +731,7 @@ SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
     SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
@@ -796,7 +796,7 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
     }
 }
 

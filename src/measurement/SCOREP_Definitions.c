@@ -1012,7 +1012,7 @@ SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle )
     SCOREP_ALLOC_NEW_DEFINITION_OLD( MPIWindow, mpi_window, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "    Handle ID: %x", new_definition->sequence_number );
@@ -1049,7 +1049,7 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
     SCOREP_ALLOC_NEW_DEFINITION_OLD( MPICartesianTopology, mpi_cartesian_topology, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
 // TODO: make this to a scorep_debug_dump_*_definition
 #ifdef SCOREP_DEBUG
@@ -1102,7 +1102,7 @@ SCOREP_DefineMPICartesianCoords(
     SCOREP_ALLOC_NEW_DEFINITION_OLD( MPICartesianCoords, mpi_cartesian_coords, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
 // TODO: make this into a scorep_debug_dump_*_definition function
 #ifdef SCOREP_DEBUG
@@ -1141,7 +1141,7 @@ SCOREP_DefineCounterGroup( const char* name )
     SCOREP_ALLOC_NEW_DEFINITION_OLD( CounterGroup, counter_group, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1173,7 +1173,7 @@ SCOREP_DefineCounter( const char*               name,
     SCOREP_ALLOC_NEW_DEFINITION_OLD( Counter, counter, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1202,7 +1202,7 @@ SCOREP_DefineIOFileGroup( const char* name )
     SCOREP_ALLOC_NEW_DEFINITION_OLD( IOFileGroup, io_file_group, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1232,7 +1232,7 @@ SCOREP_DefineIOFile( const char*              name,
     SCOREP_ALLOC_NEW_DEFINITION_OLD( IOFile, io_file, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1263,7 +1263,7 @@ SCOREP_DefineMarkerGroup( const char* name )
     SCOREP_ALLOC_NEW_DEFINITION_OLD( MarkerGroup, marker_group, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1295,7 +1295,7 @@ SCOREP_DefineMarker( const char*              name,
     SCOREP_ALLOC_NEW_DEFINITION_OLD( Marker, marker, &scorep_local_definition_manager );
 
     // Init new_definition
-    SCOREP_DEBUG_PRINTF( 0, "Not yet implemented." );
+    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
