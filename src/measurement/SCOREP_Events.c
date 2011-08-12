@@ -246,7 +246,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
                            SCOREP_MpiCollectiveType          collectiveType,
                            uint64_t                          matchingId )
 {
-    SCOREP_BUG_ON( ( rootRank < 0 || rootRank == SCOREP_INVALID_ROOT_RANK ),
+    SCOREP_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
                    "Invalid rank passed to SCOREP_MpiCollectiveBegin\n" );
 
     uint64_t                    timestamp = SCOREP_GetClockTicks();
