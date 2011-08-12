@@ -83,8 +83,8 @@ scorep_location_type_to_otf_location_type( SCOREP_LocationType scorepType,
 }
 
 static OTF2_LocationGroupType
-scorep_location_group_type_to_otf_location_group_type( SCOREP_LocationType scorepType,
-                                                       bool                isGlobal )
+scorep_location_group_type_to_otf_location_group_type( SCOREP_LocationGroupType scorepType,
+                                                       bool                     isGlobal )
 {
     switch ( scorepType )
     {

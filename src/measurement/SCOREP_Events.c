@@ -126,7 +126,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
                 uint32_t                          tag,
                 uint64_t                          bytesSent )
 {
-    assert( destinationRank >= 0 && "Invalid rank passed to SCOREP_MpiSend\n" );
+    SCOREP_BUG_ON( destinationRank >= 0, "Invalid rank passed to SCOREP_MpiSend" );
 
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
@@ -168,7 +168,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
                 uint32_t                          tag,
                 uint64_t                          bytesReceived )
 {
-    assert( sourceRank >= 0 && "Invalid rank passed to SCOREP_MpiRecv\n" );
+    SCOREP_BUG_ON( sourceRank >= 0, "Invalid rank passed to SCOREP_MpiRecv" );
 
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
@@ -246,8 +246,8 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
                            SCOREP_MpiCollectiveType          collectiveType,
                            uint64_t                          matchingId )
 {
-    assert( ( rootRank >= 0 || rootRank == SCOREP_INVALID_ROOT_RANK )
-            && "Invalid rank passed to SCOREP_MpiCollectiveBegin\n" );
+    SCOREP_BUG_ON( ( rootRank >= 0 || rootRank == SCOREP_INVALID_ROOT_RANK ),
+                   "Invalid rank passed to SCOREP_MpiCollectiveBegin\n" );
 
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
@@ -444,7 +444,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
                   uint64_t                          bytesSent,
                   SCOREP_MpiRequestId               requestId )
 {
-    assert( destinationRank >= 0 && "Invalid rank passed to SCOREP_MpiIsend\n" );
+    SCOREP_BUG_ON( destinationRank >= 0, "Invalid rank passed to SCOREP_MpiIsend\n" );
 
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
@@ -475,7 +475,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
                  uint64_t                          bytesReceived,
                  SCOREP_MpiRequestId               requestId )
 {
-    assert( sourceRank >= 0 && "Invalid rank passed to SCOREP_MpiIrecv\n" );
+    SCOREP_BUG_ON( sourceRank >= 0,  "Invalid rank passed to SCOREP_MpiIrecv\n" );
 
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
