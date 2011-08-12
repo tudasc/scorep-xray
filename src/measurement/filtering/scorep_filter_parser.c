@@ -40,64 +40,63 @@ extern bool scorep_filter_is_enabled;
 /**
  * Type for the possible states of the parser. The following states are possible:
  * <dl>
- * <dt>scorep_filter_parse_start
+ * <dt>SCOREP_FILTER_PARSE_START
  * <dd> Inital state or state outside of the file rule block and function rule block.
- * <dt> scorep_filter_parse_files
+ * <dt> SCOREP_FILTER_PARSE_FILES
  * <dd> State after a file rule block began with SCOREP_FILE_NAMES_BEGIN.
- * <dt> scorep_filter_parse_files_exclude
+ * <dt> SCOREP_FILTER_PARSE_FILES_EXCLUDE
  * <dd> Inside an exclude rule in the file rule block
- * <dt> scorep_filter_parse_files_include
+ * <dt> SCOREP_FILTER_PARSE_FILES_INCLUDE
  * <dd> Inside an include rule in the file rule block
- * <dt> scorep_filter_parse_functions
+ * <dt> SCOREP_FILTER_PARSE_FUNCTIONS
  * <dd> State after a function rule block began with SCOREP_FUNCTION_NAMES_BEGIN.
- * <dt> scorep_filter_parse_functionss_exclude
+ * <dt> SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE
  * <dd> Inside an exclude rule in the function rule block
- * <dt> scorep_filter_parse_functions_include
+ * <dt> SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE
  * <dd> Inside an include rule in the function rule block
  * </dl>
  * Beside this basic states two further values are defined with special purpose:
  * <dl>
- * <dt> scorep_filter_parse_fortran
- * <dd> Can be combined with scorep_filter_parse_functions_exclude or
- *      scorep_filter_parse_functions_include to indicate that the rules should be
+ * <dt> SCOREP_FILTER_PARSE_FORTRAN
+ * <dd> Can be combined with SCOREP_FILTER_PARSE_FUNCTIONS_exclude or
+ *      SCOREP_FILTER_PARSE_FUNCTIONS_include to indicate that the rules should be
  *      Fortran mangled.
- * <dt> scorep_filter_parse_base
+ * <dt> SCOREP_FILTER_PARSE_BASE
  * <dd> Is used to extract the base state without the fortran option from the
  *      state variable.
  * </dl>
  *
  * If you add further states for any reason make sure that
- * scorep_filter_parse_fortran is a single bit that contains in no other
+ * SCOREP_FILTER_PARSE_FORTRAN is a single bit that contains in no other
  * state else the bitwise combination will not work anymore.
- * Furthermore, scorep_filter_parse_base must have set all bits used in other
- * states except the bit set by scorep_filter_parse_fortran.
+ * Furthermore, SCOREP_FILTER_PARSE_BASE must have set all bits used in other
+ * states except the bit set by SCOREP_FILTER_PARSE_FORTRAN.
  */
-typedef uint32_t scorep_filter_parse_modes;
+typedef int scorep_filter_parse_modes;
 
-static const uint32_t scorep_filter_parse_start             = 0;
-static const uint32_t scorep_filter_parse_files             = 1;
-static const uint32_t scorep_filter_parse_files_exclude     = 2;
-static const uint32_t scorep_filter_parse_files_include     = 3;
-static const uint32_t scorep_filter_parse_functions         = 4;
-static const uint32_t scorep_filter_parse_functions_exclude = 5;
-static const uint32_t scorep_filter_parse_functions_include = 6;
-static const uint32_t scorep_filter_parse_base              = 7;
-static const uint32_t scorep_filter_parse_fortran           = 8;
-
+#define SCOREP_FILTER_PARSE_START             0
+#define SCOREP_FILTER_PARSE_FILES             1
+#define SCOREP_FILTER_PARSE_FILES_EXCLUDE     2
+#define SCOREP_FILTER_PARSE_FILES_INCLUDE     3
+#define SCOREP_FILTER_PARSE_FUNCTIONS         4
+#define SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE 5
+#define SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE 6
+#define SCOREP_FILTER_PARSE_BASE              7
+#define SCOREP_FILTER_PARSE_FORTRAN           8
 
 /**
  * @def SCOREP_FILTER_MODE_IS_FORTRAN
  * Expands to a non-zero value if @mode has not the fortran mode set.
  */
 #define SCOREP_FILTER_MODE_IS_FORTRAN( mode ) \
-    ( mode & scorep_filter_parse_fortran )
+    ( mode & SCOREP_FILTER_PARSE_FORTRAN )
 
 /**
  * @def SCOREP_FILTER_MODE_BASE
  * Gives the mode without the fortran option set.
  */
 #define SCOREP_FILTER_MODE_BASE( mode ) \
-    ( mode & scorep_filter_parse_base )
+    ( mode & SCOREP_FILTER_PARSE_BASE )
 
 /**
  * Contains the file name of the filter file. The value is set in the configuration
@@ -146,9 +145,9 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_FILE_NAMES_BEGIN */
     if ( strcmp( token, "SCOREP_FILE_NAMES_BEGIN" ) == 0 )
     {
-        if ( *mode == scorep_filter_parse_start )
+        if ( *mode == SCOREP_FILTER_PARSE_START )
         {
-            *mode = scorep_filter_parse_files;
+            *mode = SCOREP_FILTER_PARSE_FILES;
         }
         else
         {
@@ -161,10 +160,10 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_FILE_NAMES_END */
     else if ( strcmp( token, "SCOREP_FILE_NAMES_END" ) == 0 )
     {
-        if ( ( *mode >= scorep_filter_parse_files ) &&
-             ( *mode <= scorep_filter_parse_files_include ) )
+        if ( ( *mode >= SCOREP_FILTER_PARSE_FILES ) &&
+             ( *mode <= SCOREP_FILTER_PARSE_FILES_INCLUDE ) )
         {
-            *mode = scorep_filter_parse_start;
+            *mode = SCOREP_FILTER_PARSE_START;
         }
         else
         {
@@ -177,9 +176,9 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_FUNCTION_NAMES_BEGIN */
     else if ( strcmp( token, "SCOREP_FUNCTION_NAMES_BEGIN" ) == 0 )
     {
-        if ( *mode == scorep_filter_parse_start )
+        if ( *mode == SCOREP_FILTER_PARSE_START )
         {
-            *mode = scorep_filter_parse_functions;
+            *mode = SCOREP_FILTER_PARSE_FUNCTIONS;
         }
         else
         {
@@ -192,10 +191,10 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     /* ------------------------------ SCOREP_FUNCTION_NAMES_END */
     else if ( strcmp( token, "SCOREP_FUNCTION_NAMES_END" ) == 0 )
     {
-        if ( ( SCOREP_FILTER_MODE_BASE( *mode ) >= scorep_filter_parse_functions ) &&
-             ( SCOREP_FILTER_MODE_BASE( *mode ) <= scorep_filter_parse_functions_include ) )
+        if ( ( SCOREP_FILTER_MODE_BASE( *mode ) >= SCOREP_FILTER_PARSE_FUNCTIONS ) &&
+             ( SCOREP_FILTER_MODE_BASE( *mode ) <= SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE ) )
         {
-            *mode = scorep_filter_parse_start;
+            *mode = SCOREP_FILTER_PARSE_START;
         }
         else
         {
@@ -210,15 +209,15 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
-            case scorep_filter_parse_files:
-            case scorep_filter_parse_files_exclude:
-            case scorep_filter_parse_files_include:
-                *mode = scorep_filter_parse_files_exclude;
+            case SCOREP_FILTER_PARSE_FILES:
+            case SCOREP_FILTER_PARSE_FILES_EXCLUDE:
+            case SCOREP_FILTER_PARSE_FILES_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_FILES_EXCLUDE;
                 break;
-            case scorep_filter_parse_functions:
-            case scorep_filter_parse_functions_exclude:
-            case scorep_filter_parse_functions_include:
-                *mode = scorep_filter_parse_functions_exclude;
+            case SCOREP_FILTER_PARSE_FUNCTIONS:
+            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
+            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE;
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -232,15 +231,15 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
-            case scorep_filter_parse_files:
-            case scorep_filter_parse_files_exclude:
-            case scorep_filter_parse_files_include:
-                *mode = scorep_filter_parse_files_include;
+            case SCOREP_FILTER_PARSE_FILES:
+            case SCOREP_FILTER_PARSE_FILES_EXCLUDE:
+            case SCOREP_FILTER_PARSE_FILES_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_FILES_INCLUDE;
                 break;
-            case scorep_filter_parse_functions:
-            case scorep_filter_parse_functions_exclude:
-            case scorep_filter_parse_functions_include:
-                *mode = scorep_filter_parse_functions_include;
+            case SCOREP_FILTER_PARSE_FUNCTIONS:
+            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
+            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE;
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -254,11 +253,11 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
-            case scorep_filter_parse_functions_exclude:
-                *mode = scorep_filter_parse_functions_exclude | scorep_filter_parse_fortran;
+            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
+                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
-            case scorep_filter_parse_functions_include:
-                *mode = scorep_filter_parse_functions_include | scorep_filter_parse_fortran;
+            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -272,17 +271,17 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
-            case scorep_filter_parse_files_exclude:
+            case SCOREP_FILTER_PARSE_FILES_EXCLUDE:
                 scorep_filter_add_file_rule( token, true );
                 break;
-            case scorep_filter_parse_files_include:
+            case SCOREP_FILTER_PARSE_FILES_INCLUDE:
                 scorep_filter_add_file_rule( token, false );
                 break;
-            case scorep_filter_parse_functions_exclude:
+            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
                 scorep_filter_add_function_rule( token, true,
                                                  SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
                 break;
-            case scorep_filter_parse_functions_include:
+            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
                 scorep_filter_add_function_rule( token, false,
                                                  SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
                 break;
@@ -310,7 +309,7 @@ scorep_filter_parse_file( FILE* file )
     size_t                    pos          = 0;
     size_t                    length       = 0;
     size_t                    token_start  = 0;
-    scorep_filter_parse_modes mode         = scorep_filter_parse_start;
+    scorep_filter_parse_modes mode         = SCOREP_FILTER_PARSE_START;
     SCOREP_Error_Code         return_value = SCOREP_SUCCESS;
 
     /* Validity assertions */
