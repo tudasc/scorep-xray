@@ -53,7 +53,7 @@ is_ignored()
 # cd to top-level directory, i.e. something svn controlled at a equivalent level
 # to (trunk|branches/<FOO>|tags/<BAR>). Count "/"s in path therefore.
 
-if $SVN info | $GREP -q "^Repository Root: "; then
+if $SVN info | $GREP "^Repository Root: " >/dev/null; then
     REPOS_ROOT_LEVEL=`$SVN info |
                       $AWK -F "/" '/^Repository Root: / {print NF}'`
 else
@@ -66,7 +66,7 @@ else
 fi
 CURRENT_LEVEL=`$SVN info | $AWK -F "/" '/^URL: / {print NF}'`
 OFFSET=1
-if $SVN info | $GREP "^URL: " | $GREP -q -e '/\(branches\|tags\)/'; then
+if $SVN info | $GREP "^URL: " | $GREP -e '/\(branches\|tags\)/' >/dev/null; then
     OFFSET=2
 fi
 let N_DIRS_UP=$CURRENT_LEVEL-$REPOS_ROOT_LEVEL-$OFFSET
