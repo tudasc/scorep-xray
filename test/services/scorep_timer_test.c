@@ -41,11 +41,11 @@ main()
     uint64_t stopTime  = SCOREP_GetClockTicks();
     assert( stopTime > startTime );
     startTime = SCOREP_GetClockTicks();
-    usleep( 100000 );
+    sleep( 1 );
     stopTime = SCOREP_GetClockTicks();
     double diff = ( ( double )( stopTime - startTime ) ) / ( ( double )SCOREP_GetClockResolution() );
-    printf( "Check clock accuracy. Expected difference 0.1.\n" );
+    printf( "Check clock accuracy. Expected difference 1.\n" );
     printf( "Measured difference: %f\n", diff );
-    assert( ( diff > 0.08 ) && ( diff < 0.15 ) );
+    assert( ( diff > 0.8 ) && ( diff < 1.5 ) );
     return 0;
 }
