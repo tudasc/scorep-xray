@@ -212,13 +212,16 @@ scorep_write_string_definitions( void*                     writerHandle,
                                  bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defString )( void*,
-                                       uint32_t,
-                                       char* ) =
-        ( void* )OTF2_DefWriter_DefString;
+    typedef SCOREP_Error_Code ( *def_string_pointer_t )( void*,
+                                                         uint32_t,
+                                                         char* );
+    def_string_pointer_t defString = ( def_string_pointer_t )
+                                     OTF2_DefWriter_DefString;
+
     if ( isGlobal )
     {
-        defString = ( void* )OTF2_GlobDefWriter_GlobDefString;
+        defString = ( def_string_pointer_t )
+                    OTF2_GlobDefWriter_GlobDefString;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, String, string )
@@ -244,18 +247,21 @@ scorep_write_location_definitions(
     bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defLocation )( void*,
-                                         uint64_t,
-                                         uint32_t,
-                                         OTF2_LocationType,
-                                         uint64_t,
-                                         uint64_t,
-                                         uint64_t,
-                                         uint64_t ) =
-        ( void* )OTF2_DefWriter_DefLocation;
+    typedef SCOREP_Error_Code ( *def_location_pointer_t )( void*,
+                                                           uint64_t,
+                                                           uint32_t,
+                                                           OTF2_LocationType,
+                                                           uint64_t,
+                                                           uint64_t,
+                                                           uint64_t,
+                                                           uint64_t );
+    def_location_pointer_t defLocation = ( def_location_pointer_t )
+                                         OTF2_DefWriter_DefLocation;
+
     if ( isGlobal )
     {
-        defLocation = ( void* )OTF2_GlobDefWriter_GlobDefLocation;
+        defLocation = ( def_location_pointer_t )
+                      OTF2_GlobDefWriter_GlobDefLocation;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Location, location )
@@ -285,15 +291,17 @@ scorep_write_location_group_definitions(
     bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defLocationGroup )( void*,
-                                              uint64_t,
-                                              uint32_t,
-                                              OTF2_LocationGroupType,
-                                              uint32_t ) =
-        ( void* )OTF2_DefWriter_DefLocationGroup;
+    typedef SCOREP_Error_Code ( *def_location_group_pointer_t )( void*,
+                                                                 uint64_t,
+                                                                 uint32_t,
+                                                                 OTF2_LocationGroupType,
+                                                                 uint32_t );
+    def_location_group_pointer_t defLocationGroup =
+        ( def_location_group_pointer_t )OTF2_DefWriter_DefLocationGroup;
     if ( isGlobal )
     {
-        defLocationGroup = ( void* )OTF2_GlobDefWriter_GlobDefLocationGroup;
+        defLocationGroup =  ( def_location_group_pointer_t )
+                           OTF2_GlobDefWriter_GlobDefLocationGroup;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocationGroup, location_group )
@@ -319,15 +327,17 @@ scorep_write_system_tree_node_definitions(
     bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defSystemTreeNode )( void*,
-                                               uint32_t,
-                                               uint32_t,
-                                               uint32_t,
-                                               uint32_t ) =
-        ( void* )OTF2_DefWriter_DefSystemTreeNode;
+    typedef SCOREP_Error_Code ( *def_system_tree_node_pointer_t )( void*,
+                                                                   uint32_t,
+                                                                   uint32_t,
+                                                                   uint32_t,
+                                                                   uint32_t );
+    def_system_tree_node_pointer_t defSystemTreeNode =
+        ( def_system_tree_node_pointer_t )OTF2_DefWriter_DefSystemTreeNode;
     if ( isGlobal )
     {
-        defSystemTreeNode = ( void* )OTF2_GlobDefWriter_GlobDefSystemTreeNode;
+        defSystemTreeNode =  ( def_system_tree_node_pointer_t )
+                            OTF2_GlobDefWriter_GlobDefSystemTreeNode;
     }
 
 
@@ -374,18 +384,20 @@ scorep_write_region_definitions( void*                     writerHandle,
                                  bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defRegion )( void*,
-                                       uint32_t,
-                                       uint32_t,
-                                       uint32_t,
-                                       OTF2_RegionType,
-                                       uint32_t,
-                                       uint32_t,
-                                       uint32_t ) =
-        ( void* )OTF2_DefWriter_DefRegion;
+    typedef SCOREP_Error_Code ( *def_region_pointer_t )( void*,
+                                                         uint32_t,
+                                                         uint32_t,
+                                                         uint32_t,
+                                                         OTF2_RegionType,
+                                                         uint32_t,
+                                                         uint32_t,
+                                                         uint32_t );
+
+    def_region_pointer_t defRegion = ( def_region_pointer_t )
+                                     OTF2_DefWriter_DefRegion;
     if ( isGlobal )
     {
-        defRegion = ( void* )OTF2_GlobDefWriter_GlobDefRegion;
+        defRegion = ( def_region_pointer_t )OTF2_GlobDefWriter_GlobDefRegion;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Region, region )
@@ -445,16 +457,20 @@ scorep_write_group_definitions( void*                     writerHandle,
                                 bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defGroup )( void*,
-                                      uint64_t,
-                                      OTF2_GroupType,
-                                      uint32_t,
-                                      uint64_t,
-                                      uint64_t* ) =
-        ( void* )OTF2_DefWriter_DefGroup;
+
+
+    typedef SCOREP_Error_Code ( *def_group_pointer_t )( void*,
+                                                        uint64_t,
+                                                        OTF2_GroupType,
+                                                        uint32_t,
+                                                        uint64_t,
+                                                        uint64_t* );
+
+    def_group_pointer_t defGroup = ( def_group_pointer_t )
+                                   OTF2_DefWriter_DefGroup;
     if ( isGlobal )
     {
-        defGroup = ( void* )OTF2_GlobDefWriter_GlobDefGroup;
+        defGroup = ( def_group_pointer_t )OTF2_GlobDefWriter_GlobDefGroup;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Group, group )
@@ -482,13 +498,14 @@ scorep_write_mpi_window_definitions( void*                     writerHandle,
                                      bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defMpiWin )( void*,
-                                       uint32_t,
-                                       uint64_t ) =
-        ( void* )OTF2_DefWriter_DefMpiWin;
+    typedef SCOREP_Error_Code ( *def_mpi_win_pointer_t )( void*,
+                                                          uint32_t,
+                                                          uint64_t );
+    def_mpi_win_pointer_t defMpiWin = ( def_mpi_win_pointer_t )
+                                      OTF2_DefWriter_DefMpiWin;
     if ( isGlobal )
     {
-        defMpiWin = ( void* )OTF2_GlobDefWriter_GlobDefMpiWin;
+        defMpiWin = ( def_mpi_win_pointer_t )OTF2_GlobDefWriter_GlobDefMpiWin;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -515,10 +532,10 @@ scorep_write_mpi_cartesian_topology_definitions( void*                     write
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -545,10 +562,10 @@ scorep_write_mpi_cartesian_coords_definitions( void*                     writerH
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -575,10 +592,10 @@ scorep_write_counter_group_definitions( void*                     writerHandle,
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -605,10 +622,10 @@ scorep_write_counter_definitions( void*                     writerHandle,
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -635,10 +652,10 @@ scorep_write_io_file_group_definitions( void*                     writerHandle,
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -665,10 +682,10 @@ scorep_write_io_file_definitions( void*                     writerHandle,
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -695,10 +712,10 @@ scorep_write_marker_group_definitions( void*                     writerHandle,
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -725,10 +742,10 @@ scorep_write_marker_definitions( void*                     writerHandle,
     //SCOREP_Error_Code ( * def... )( void*,
     //                                ...
     //                                ... ) =
-    //    ( void* )OTF2_DefWriter_Def...;
+    //    OTF2_DefWriter_Def...;
     //if ( isGlobal )
     //{
-    //    def... = ( void* )OTF2_GlobDefWriter_GlobDef...;
+    //    def... = OTF2_GlobDefWriter_GlobDef...;
     //}
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
@@ -751,17 +768,12 @@ scorep_write_parameter_definitions( void*                     writerHandle,
                                     SCOREP_DefinitionManager* definitionManager )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defParameter )( void*,
-                                          uint32_t,
-                                          uint8_t,
-                                          uint32_t ) =
-        OTF2_GlobDefWriter_GlobDefParameter;
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Parameter,
                                   parameter )
     {
-        SCOREP_Error_Code status = defParameter(
+        SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefParameter(
             writerHandle,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_parameter_type_to_otf_parameter_type( definition->parameter_type ),
@@ -782,15 +794,18 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                                    bool                      isGlobal )
 {
     assert( writerHandle );
-    SCOREP_Error_Code ( * defCallpath )( void*,
-                                         uint32_t,
-                                         uint32_t,
-                                         uint32_t,
-                                         uint8_t ) =
-        ( void* )OTF2_DefWriter_DefCallpath;
+
+    typedef  SCOREP_Error_Code ( *def_callpath_pointer_t )( void*,
+                                                            uint32_t,
+                                                            uint32_t,
+                                                            uint32_t,
+                                                            uint8_t );
+    def_callpath_pointer_t defCallpath = ( def_callpath_pointer_t )
+                                         OTF2_DefWriter_DefCallpath;
     if ( isGlobal )
     {
-        defCallpath = ( void* )OTF2_GlobDefWriter_GlobDefCallpath;
+        defCallpath = ( def_callpath_pointer_t )
+                      OTF2_GlobDefWriter_GlobDefCallpath;
     }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
