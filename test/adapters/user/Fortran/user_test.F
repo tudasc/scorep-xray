@@ -49,6 +49,9 @@ local1)
       if (l .eq. 0) then
          SCOREP_RECORDING_ON  
       endif
+      SCOREP_USER_REGION_BEGIN(region1,"Region1",\
+SCOREP_USER_REGION_TYPE_FUNCTION)
+      SCOREP_USER_REGION_END(region1)
       end
 #else
 #include <scorep/SCOREP_User_Pgi.inc>
@@ -85,5 +88,8 @@ local1)
       if (l .eq. 0) then
          SCOREP_RECORDING_ON  
       endif
+      SCOREP_USER_REGION_BEGIN(region1,"Region1",\
+SCOREP_USER_REGION_TYPE_FUNCTION)
+      SCOREP_USER_REGION_END(region1)
       end
 #endif

@@ -217,7 +217,7 @@ scorep_selective_add( const char* name,
                       int         last )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                         "Add treced region %s %d:%d\n", name, first, last );
+                         "Add traced region %s %d:%d\n", name, first, last );
     assert( scorep_selected_regions != NULL );
 
     size_t                  index      = 0;

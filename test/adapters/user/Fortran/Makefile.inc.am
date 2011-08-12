@@ -23,3 +23,11 @@ user_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_pomp_dummy.la     \
     $(LIB_DIR_OTF2)libotf2.la              \
     $(LIB_DIR_UTIL)libscorep_utilities.la
+
+TESTS_SERIAL += ./user_f_test
+
+EXTRA_DIST       += \
+    $(SRC_ROOT)test/adapters/user/Fortran/selective.cfg \
+    $(SRC_ROOT)test/adapters/user/Fortran/run_selective_test.sh
+
+TESTS_SERIAL += $(srcdir)/../test/adapters/user/Fortran/run_selective_test.sh
