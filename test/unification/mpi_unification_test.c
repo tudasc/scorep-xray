@@ -56,7 +56,7 @@ SCOREP_Unify_Locally( void );
 void
 SCOREP_Mpi_Unify( void );
 void
-SCOREP_Definitions_Initialize( void );
+SCOREP_Definitions_Initialize();
 void
 SCOREP_Mpi_SetRankTo( int rank );
 int
