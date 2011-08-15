@@ -204,11 +204,15 @@ scorep_otf2_initialize()
         return;
     }
     SCOREP_Tracing_RegisterSionCallbacks();
+    /* @todo croessel step1: remove the "4 *" intoduced on Michael's request
+     * when overflow checking for definitions is implemented.
+     * step2: provide environment variables to adjust the chunck sizes.
+     */
     scorep_otf2_archive = OTF2_Archive_New( SCOREP_GetExperimentDirName(),
                                             "traces",
                                             OTF2_FILEMODE_WRITE,
                                             SCOREP_Tracing_GetChunkSize(),
-                                            SCOREP_Tracing_GetChunkSize(),
+                                            4 * SCOREP_Tracing_GetChunkSize(),
                                             SCOREP_Tracing_GetFileSubstrate(),
                                             SCOREP_Tracing_GetCompression(),
                                             0,           // allocate
