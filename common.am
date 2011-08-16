@@ -72,6 +72,9 @@ EXTRA_DIST =
 check_PROGRAMS = 
 check_LTLIBRARIES =
 PHONY_TARGETS =
+INSTALL_DATA_LOCAL_TARGETS =
+INSTALL_DATA_HOOK_TARGETS =
+UNINSTALL_LOCAL_TARGETS =
 dist_bin_SCRIPTS =
 
 ## TESTS are handlend differntly because of cross-, mpi- and openmp
