@@ -167,6 +167,10 @@ AC_SEARCH_LIBS([ceil], [m])
 # cross compile systems. The following check can be omitted.
 #AC_SCOREP_CUBE4
 
+# When building Cube ourselves, we need to include the checks for fseeko in the configure,
+# because then Cube uses the Score-P config.h
+AC_SCOREP_POSIX_FUNCTIONS
+
 # assuming that mpi configure already ran
 AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
 
