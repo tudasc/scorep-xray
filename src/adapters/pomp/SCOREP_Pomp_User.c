@@ -60,6 +60,9 @@ SCOREP_SourceFileHandle scorep_pomp_file_handle = SCOREP_INVALID_SOURCE_FILE;
 /** Flag to indicate wether the adapter is initialized */
 bool scorep_pomp_is_initialized = false;
 
+/** Flag to indicate wether the adapter is finalized */
+bool scorep_pomp_is_finalized = false;
+
 /* **************************************************************************************
                                                                        Internal functions
 ****************************************************************************************/
@@ -195,9 +198,19 @@ scorep_pomp_final_location( void* location )
 void
 scorep_pomp_final()
 {
-    static int   pomp_finalize_called = 0;
     size_t       i;
     const size_t nRegions = POMP2_Get_num_regions();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_pomp_final\n" );
+
+    if ( scorep_pomp_is_finalized || !scorep_pomp_is_initialized )
+    {
+        return;
+    }
+
+    scorep_pomp_is_finalized  = true;
+    scorep_pomp_is_tracing_on = false;
 
     if ( scorep_pomp_regions )
     {
@@ -208,14 +221,6 @@ scorep_pomp_final()
         free( scorep_pomp_regions );
         scorep_pomp_regions = 0;
     }
-
-    if ( !pomp_finalize_called )
-    {
-        pomp_finalize_called = 1;
-    }
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_final\n" );
 }
 
 /** Called when the adapter is derigistered. Nothing done inside the function

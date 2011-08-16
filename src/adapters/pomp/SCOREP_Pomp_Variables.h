@@ -54,11 +54,23 @@ extern bool scorep_pomp_is_tracing_on;
 extern bool scorep_pomp_is_initialized;
 
 /**
+    Flag that indicates wether the POMP2 adapter is finalized
+ */
+extern bool scorep_pomp_is_finalized;
+
+/**
    @def SCOREP_POMP2_ENSURE_INITIALIZED
    Checks whether pomp adapter is initialized and if not initializes the measurement
    system.
  */
-#define SCOREP_POMP2_ENSURE_INITIALIZED if ( !scorep_pomp_is_initialized ) { POMP2_Init(); }
+#define SCOREP_POMP2_ENSURE_INITIALIZED      \
+    if ( !scorep_pomp_is_initialized )       \
+    {                                        \
+        POMP2_Init();                        \
+    }
+
+#define SCOREP_POMP2_RECORDING_ON            \
+    scorep_pomp_is_tracing_on && !scorep_pomp_is_finalized
 
 /** @} */
 

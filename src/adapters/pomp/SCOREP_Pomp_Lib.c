@@ -238,7 +238,7 @@ POMP2_Parallel_begin( POMP2_Region_handle* pomp_handle )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Parallel_begin" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
-    if ( scorep_pomp_is_tracing_on )
+    if ( !scorep_pomp_is_finalized )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerParallel );
@@ -249,7 +249,7 @@ void
 POMP2_Parallel_end( POMP2_Region_handle* pomp_handle )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Parallel_end" );
-    if ( scorep_pomp_is_tracing_on )
+    if ( !scorep_pomp_is_finalized )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ExitRegion( region->innerParallel );
@@ -265,7 +265,7 @@ POMP2_Parallel_fork( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
 
     /* Generate fork event */
-    if ( scorep_pomp_is_tracing_on )
+    if ( !scorep_pomp_is_finalized )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ASSERT( region != NULL );
@@ -277,7 +277,7 @@ void
 POMP2_Parallel_join( POMP2_Region_handle* pomp_handle )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Parallel_join" );
-    if ( scorep_pomp_is_tracing_on )
+    if ( !scorep_pomp_is_finalized )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_OmpJoin( region->outerParallel );
@@ -413,6 +413,11 @@ void
 POMP2_Init_lock( omp_lock_t* s )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Init_lock" );
+    if ( scorep_pomp_is_finalized )
+    {
+        omp_init_lock( s );
+        return;
+    }
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
@@ -432,7 +437,11 @@ void
 POMP2_Destroy_lock( omp_lock_t* s )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Destroy_lock" );
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_pomp_is_finalized )
+    {
+        omp_destroy_lock( s );
+    }
+    else if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_DESTROY_LOCK ] );
         omp_destroy_lock( s );
@@ -507,6 +516,11 @@ void
 POMP2_Init_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Init_nest_lock" );
+    if ( scorep_pomp_is_finalized )
+    {
+        omp_init_nest_lock( s );
+        return;
+    }
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
@@ -526,7 +540,11 @@ void
 POMP2_Destroy_nest_lock( omp_nest_lock_t* s )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Destroy_nest_lock" );
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_pomp_is_finalized )
+    {
+        omp_destroy_nest_lock( s );
+    }
+    else if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_DESTROY_NEST_LOCK ] );
         omp_destroy_nest_lock( s );
