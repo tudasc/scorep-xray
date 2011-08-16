@@ -90,11 +90,14 @@ distclean-local:
 	rm -rf ../test/jacobi/serial
 	rm -rf ../test/jacobi/OpenMP
 
-install-data-local: scorep-config-tool-install
+install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
-uninstall-local:
+install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
+
+uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
 	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
 
+INSTALL_DATA_LOCAL_TARGETS += scorep-config-tool-install 
 scorep-config-tool-install:
 	$(MKDIR_P) $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) $(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf

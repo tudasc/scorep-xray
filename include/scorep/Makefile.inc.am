@@ -22,8 +22,6 @@
 nobase_include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_PublicTypes.h      \
     $(PUBLIC_INC_SRC)SCOREP_User.h             \
-    $(PUBLIC_INC_SRC)SCOREP_User.inc           \
-    $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc       \
     $(PUBLIC_INC_SRC)SCOREP_User_Functions.h   \
     $(PUBLIC_INC_SRC)SCOREP_User_Types.h       \
     $(PUBLIC_INC_SRC)SCOREP_User_Variables.h   \
@@ -31,3 +29,14 @@ nobase_include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_OA_Functions.h     \
     $(PUBLIC_INC_SRC)pomp2_lib.h               \
     $(PUBLIC_INC_SRC)SCOREP_Allocator_PublicTypes.h
+
+if SCOREP_COMPILER_PGI
+nobase_include_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc
+INSTALL_DATA_HOOK_TARGETS += rename_fortran_user_adapter_include
+rename_fortran_user_adapter_include:
+	mv $(DESTDIR)$(includedir)/scorep/SCOREP_User_Pgi.inc $(DESTDIR)$(includedir)/scorep/SCOREP_User.inc
+else
+nobase_include_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User.inc
+endif
+
+
