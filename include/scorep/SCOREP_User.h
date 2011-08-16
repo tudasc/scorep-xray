@@ -1249,8 +1249,10 @@
 
 #ifdef __cplusplus
 
-#define SCOREP_USER_REGION( name, type ) static SCOREP_User_RegionClass \
-    scorep_user_region_inst( name, type, __FILE__, __LINE__ );
+#define SCOREP_USER_REGION( name, type ) static SCOREP_User_RegionHandle \
+    scorep_user_region_handle = SCOREP_INVALID_USER_REGION; \
+    SCOREP_User_RegionClass \
+    scorep_user_region_inst( &scorep_user_region_handle, name, type, __FILE__, __LINE__ );
 
 #else // __cplusplus
 

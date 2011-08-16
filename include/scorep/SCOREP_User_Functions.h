@@ -298,23 +298,27 @@ class SCOREP_User_RegionClass
 {
 public:
 /**
-    Generates an enter event for the specified region. It should not be inserted by the
-    user directly. The user should use the SCOREP_USER_REGION(name) statement instead.
-    @param regionName The name of the region.
-    @param regionType The type of the region.
-    @param file       The filename of the source file which contains the instrumented
-                      region.
-    @param lineNo     The line number of the first source code line of the instrumented
-                      region.
+    Generates an enter event for the specified region. It should not be inserted by a
+    user directly. As user you should use the SCOREP_USER_REGION macro instead.
+    @param regionHandle Pointer to a static region handle storage. This avoids
+                        reinitialization, if the region is revisited.
+    @param regionName   The name of the region.
+    @param regionType   The type of the region.
+    @param file         The filename of the source file which contains the instrumented
+                        region.
+    @param lineNo       The line number of the first source code line of the instrumented
+                        region.
  */
-    SCOREP_User_RegionClass( const char*                  regionName,
+    SCOREP_User_RegionClass( SCOREP_User_RegionHandle*    regionHandle,
+                             const char*                  regionName,
                              const SCOREP_User_RegionType regionType,
                              const char*                  file,
                              const uint32_t               lineNo )
     {
-        SCOREP_User_RegionBegin( &region_handle, &SCOREP_User_LastFileName,
+        SCOREP_User_RegionBegin( regionHandle, &SCOREP_User_LastFileName,
                                  &SCOREP_User_LastFileHandle, regionName, regionType,
                                  file, lineNo );
+        region_handle = *regionHandle;
     }
 
     /**
