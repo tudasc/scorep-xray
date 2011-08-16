@@ -312,6 +312,10 @@ scorep_mpi_finalize()
 
     scorep_mpi_win_final();
     scorep_mpi_request_finalize();
+
+    /* Prevent all further events */
+    scorep_mpi_enabled = 0;
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "End of scorep_mpi_finalize\n" );
 }

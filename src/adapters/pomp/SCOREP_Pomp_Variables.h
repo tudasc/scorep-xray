@@ -44,7 +44,7 @@
 extern SCOREP_RegionHandle scorep_pomp_implicit_barrier_region;
 
 /**
-    Flag to indicate, wether POMP traceing is enable/disabled
+    Flag to indicate, wether POMP tracing is enable/disabled
  */
 extern bool scorep_pomp_is_tracing_on;
 
@@ -68,9 +68,6 @@ extern bool scorep_pomp_is_finalized;
     {                                        \
         POMP2_Init();                        \
     }
-
-#define SCOREP_POMP2_RECORDING_ON            \
-    scorep_pomp_is_tracing_on && !scorep_pomp_is_finalized
 
 /** @} */
 
