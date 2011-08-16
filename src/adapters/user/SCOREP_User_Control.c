@@ -51,7 +51,10 @@ bool
 SCOREP_User_RecordingEnabled()
 {
     /* Assert that the adapter and management system are initialized */
-    SCOREP_USER_ASSERT_INITIALIZED;
+    if ( scorep_user_is_initialized != 1 )
+    {
+        return false;
+    }
 
     /* Return value */
     return SCOREP_RecordingEnabled();

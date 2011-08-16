@@ -93,8 +93,8 @@ scorep_user_finalize()
 {
     if ( scorep_user_is_initialized == 1 )
     {
-        /*  Set the intialization flag to indicate that the adapter is not initialized */
-        scorep_user_is_initialized = 0;
+        /*  Set the intialization flag to indicate that the adapter is finalized */
+        scorep_user_is_initialized = 2;
         scorep_user_final_metric();
         scorep_user_final_regions();
     }

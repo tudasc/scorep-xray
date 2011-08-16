@@ -192,6 +192,8 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* handle,
                         int                          nameLen,
                         int                          fileNameLen )
 {
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
     /* Make sure the handle is initialized */
     FSUB( SCOREP_User_RegionInitF )( handle, name_f, type, fileName_f,
                                      lineNo, nameLen, fileNameLen );
@@ -203,11 +205,13 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* handle,
 void
 FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
     SCOREP_User_RegionEnd( SCOREP_F2C_REGION( *handle ) );
 }
 
 void
 FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* handle )
 {
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
     SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *handle ) );
 }

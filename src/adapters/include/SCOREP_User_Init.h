@@ -49,7 +49,14 @@ extern int8_t scorep_user_is_initialized;
     initialized which should initialized the adapter.
  */
 #define SCOREP_USER_ASSERT_INITIALIZED \
-    if ( !scorep_user_is_initialized ) { SCOREP_InitMeasurement(); }
+    if ( scorep_user_is_initialized != 1 ) { \
+        if ( scorep_user_is_initialized == 0 ) { SCOREP_InitMeasurement(); } \
+        else { return; } \
+    }
+
+
+#define SCOREP_USER_ASSERT_NOT_FINALIZED \
+    if ( scorep_user_is_initialized == 2 ) { return; }
 
 /** @} */
 

@@ -211,6 +211,8 @@ SCOREP_User_RegionBegin
     const uint32_t               lineNo
 )
 {
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
     /* Make sure that the region is initialized */
     if ( *handle == SCOREP_INVALID_USER_REGION )
     {
@@ -229,6 +231,8 @@ SCOREP_User_RegionEnd
     const SCOREP_User_RegionHandle handle
 )
 {
+    SCOREP_USER_ASSERT_NOT_FINALIZED
+
     /* Generate exit event */
     if ( ( handle != SCOREP_INVALID_USER_REGION ) &&
          ( handle != SCOREP_FILTERED_USER_REGION ) )
