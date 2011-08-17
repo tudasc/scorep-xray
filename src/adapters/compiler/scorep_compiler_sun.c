@@ -60,6 +60,11 @@ static SCOREP_RegionHandle          scorep_compiler_main_handle = SCOREP_INVALID
 
 static SCOREP_Mutex                 scorep_compiler_hash_lock;
 
+/**
+ * Flag that indicates that the compiler is initialized.
+ */
+static int scorep_compiler_finalized = 0;
+
 /*
  * Stores Score-P region handle 'region' under hash code 'hash'
  */
@@ -128,6 +133,10 @@ phat_enter( char* name,
 {
     if ( !SCOREP_IsInitialized() )
     {
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
         SCOREP_InitMeasurement();
     }
 
@@ -162,6 +171,11 @@ void
 phat_exit( char* name,
            int*  id )
 {
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     SCOREP_RegionHandle handle = scorep_compiler_hash_get( ( long )name );
 
     if ( handle != SCOREP_INVALID_REGION )
@@ -196,4 +210,5 @@ void
 scorep_compiler_finalize()
 {
     SCOREP_MutexDestroy( &scorep_compiler_hash_lock );
+    scorep_compiler_finalized = 1;
 }

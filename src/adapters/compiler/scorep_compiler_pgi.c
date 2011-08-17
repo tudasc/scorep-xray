@@ -341,6 +341,12 @@ __rouinit()
 
     if ( scorep_compiler_initialize )
     {
+        /* Check whether adapter is already finalized */
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
+
         SCOREP_InitMeasurement();
     }
 }
@@ -370,15 +376,15 @@ ___rouent2( struct s1* p )
     SCOREP_SourceFileHandle* file   = ( SCOREP_SourceFileHandle* )&( p->file_handle );
     SCOREP_RegionHandle*     region = ( SCOREP_RegionHandle* )&( p->region_handle );
 
-    /* Check whether adapter is already finalized */
-    if ( scorep_compiler_finalized )
-    {
-        return;
-    }
-
     /* Ensure the compiler adapter is initialized */
     if ( scorep_compiler_initialize )
     {
+        /* Check whether adapter is already finalized */
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
+
         SCOREP_InitMeasurement();
     }
     scorep_compiler_location_data* location_data = scorep_compiler_get_location_data();

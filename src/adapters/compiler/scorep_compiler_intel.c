@@ -51,6 +51,11 @@
 static int scorep_compiler_initialize = 1;
 
 /**
+ * flag that indicates whether the intel compiler adapter is finalized.
+ */
+static int scorep_compiler_finalized = 0;
+
+/**
  * Hashtable to map region name to region id.
  */
 static SCOREP_Hashtab* scorep_compiler_name_table = NULL;
@@ -176,6 +181,11 @@ __VT_IntelEntry( char*     str,
 
     if ( scorep_compiler_initialize )
     {
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
+
         /* not initialized so far */
         SCOREP_InitMeasurement();
     }
@@ -245,6 +255,11 @@ __VT_IntelExit( uint32_t* id2 )
 {
     scorep_compiler_hash_node* hash_node;
 
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     /* Check if function is filtered */
     if ( *id2 == SCOREP_COMPILER_FILTER_ID )
     {
@@ -276,6 +291,11 @@ __VT_IntelCatch( uint32_t* id2 )
 {
     scorep_compiler_hash_node* hash_node;
 
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     /* Check if function is filtered */
     if ( *id2 == SCOREP_COMPILER_FILTER_ID )
     {
@@ -302,6 +322,11 @@ void
 __VT_IntelCheck( uint32_t* id2 )
 {
     scorep_compiler_hash_node* hash_node;
+
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
 
     /* Check if function is filtered */
     if ( *id2 == SCOREP_COMPILER_FILTER_ID )
@@ -370,6 +395,7 @@ scorep_compiler_finalize()
 
         /* Set initialization flag */
         scorep_compiler_initialize = 1;
+        scorep_compiler_finalized  = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
 
         /* Delete region mutex */

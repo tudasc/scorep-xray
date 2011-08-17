@@ -47,6 +47,8 @@ scorep_ftrace_getname_len( void );
 
 static uint32_t scorep_compiler_initialize = 1;
 
+static uint32_t scorep_compiler_finalized = 0;
+
 /**
  * Mutex for exclusive access to the region hash table.
  */
@@ -75,6 +77,11 @@ _ftrace_enter2_()
 
     if ( scorep_compiler_initialize )
     {
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
+
         /* not initialized so far */
         SCOREP_InitMeasurement();
     }
@@ -132,6 +139,11 @@ _ftrace_enter2_()
 void
 _ftrace_exit2_()
 {
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     char*                      region_name = scorep_ftrace_getname();
     long                       key         = ( long )region_name;
     scorep_compiler_hash_node* hash_node;
@@ -188,6 +200,7 @@ scorep_compiler_finalize()
         scorep_compiler_hash_free();
 
         scorep_compiler_initialize = 1;
+        scorep_compiler_finalized  = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
 
         /* Delete region mutex */
