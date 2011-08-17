@@ -46,6 +46,11 @@
 static int scorep_compiler_initialize = 1;
 
 /**
+ * flag that indicates whether the compiler adapter is finalized
+ */
+static int scorep_compiler_finalized = 0;
+
+/**
  * Mutex for exclusive access to the region hash table.
  */
 static SCOREP_Mutex scorep_compiler_region_mutex;
@@ -79,6 +84,10 @@ __func_trace_enter( char* region_name,
 
     if ( scorep_compiler_initialize )
     {
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
         SCOREP_InitMeasurement();
     }
 
@@ -145,6 +154,10 @@ __func_trace_exit( char* region_name,
                    int   line_no )
 {
     scorep_compiler_hash_node* hash_node;
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
     if ( hash_node = scorep_compiler_hash_get( ( long )region_name ) )
     {
@@ -191,6 +204,7 @@ scorep_compiler_finalize()
 
         /* Set flag to not initialized */
         scorep_compiler_initialize = 1;
+        scorep_compiler_finalized  = 1;
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
