@@ -46,6 +46,11 @@
 static int scorep_compiler_initialize = 1;
 
 /**
+ * flag that indicates whether the GNU compiler adapter was finalized
+ */
+static int scorep_compiler_finalized = 0;
+
+/**
  * Mutex for exclusive access to the region hash table.
  */
 static SCOREP_Mutex scorep_compiler_region_mutex;
@@ -75,6 +80,11 @@ __cyg_profile_func_enter( void* func,
 
     if ( scorep_compiler_initialize )
     {
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
+
         /* not initialized so far */
         SCOREP_InitMeasurement();
     }
@@ -108,6 +118,11 @@ void
 __cyg_profile_func_exit( void* func,
                          void* callsite )
 {
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
+
     scorep_compiler_hash_node* hash_node;
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
     if ( ( hash_node = scorep_compiler_hash_get( ( long )func ) ) )
@@ -161,6 +176,7 @@ scorep_compiler_finalize()
 
         /* Set initialization flag */
         scorep_compiler_initialize = 1;
+        scorep_compiler_finalized  = 1;
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize GNU compiler adapter." );
 
         /* Delete region mutex */
