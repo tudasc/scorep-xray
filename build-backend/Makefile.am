@@ -94,13 +94,16 @@ install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
 install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
 
+SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)$(datadir)/scorep
+SCOREP_PDT_CONFIG_INSTALL_TARGET = $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf
+
 uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
-	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
+	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
 
 INSTALL_DATA_LOCAL_TARGETS += scorep-config-tool-install 
 scorep-config-tool-install:
-	$(MKDIR_P) $(DESTDIR)$(datadir)
-	$(INSTALL_DATA) $(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(DESTDIR)$(datadir)/SCOREP_Pdt_Instrumentation.conf
+	$(MKDIR_P) $(SCOREP_SHARE_INSTALL_DIR)
+	$(INSTALL_DATA) $(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
@@ -158,7 +161,7 @@ $(CONFIG_HEADER_BACKEND):
 	@echo "#define OPARI          \"$(prefix)/bin/opari2\"">> $(CONFIG_HEADER_BACKEND)
 	@echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2_config\"">> $(CONFIG_HEADER_BACKEND)
 	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\"" >> $(CONFIG_HEADER_BACKEND)
+	@echo "#define PDT_CONFIG     \"$(SCOREP_PDT_CONFIG_INSTALL_TARGET)\"" >> $(CONFIG_HEADER_BACKEND)
 	@echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\"">> $(CONFIG_HEADER_BACKEND)
 
 
