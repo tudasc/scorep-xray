@@ -127,10 +127,11 @@ $(builddir)/scorep_config.dat:
 	@echo LIBS=\"$(LIBS)\"                                                      >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
 	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"                                          >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)/scorep\"                                   >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"                                   >> $(builddir)/scorep_config.dat
+	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)/scorep\"                            >> $(builddir)/scorep_config.dat
 	@echo SRC_ROOT=\"$(abs_top_srcdir)/..\"                                     >> $(builddir)/scorep_config.dat
 	@echo CC=\"$(CC)\"                                                          >> $(builddir)/scorep_config.dat
+	@echo CXX=\"$(CXX)\"                                                        >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
 	@echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
