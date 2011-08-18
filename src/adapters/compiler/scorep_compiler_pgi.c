@@ -405,7 +405,7 @@ ___rouent2( struct s1* p )
              ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
              ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
              ( strncmp( p->region_name, "pomp", 4 ) != 0 ) &&
-             ( !SCOREP_Filter_Match( p->file_name, p->region_name, true ) ) )
+             ( !SCOREP_Filter_Match( p->file_name, p->region_name, false ) ) )
         {
             *region = SCOREP_DefineRegion( p->region_name,
                                            *file,

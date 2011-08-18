@@ -41,11 +41,16 @@ filter_f_test_SOURCES = $(SRC_ROOT)test/filtering/filter_test.F90
 filter_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@
 filter_f_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
-
-
 TESTS_SERIAL += $(srcdir)/../test/filtering/run_filter_test.sh
 
+# Unfortunately, the PGI compiler does not give mangled fortran symbols to the system but only
+# partially mangled. Thus, the fortran comparisons fail.
+if !SCOREP_COMPILER_PGI 
+TESTS_SERIAL += $(srcdir)/../test/filtering/run_filter_f_test.sh
+endif
+
 EXTRA_DIST += \
-     $(SRC_ROOT)test/filtering/filter.cfg   \
-     $(SRC_ROOT)test/filtering/filter_f.cfg \
-     $(SRC_ROOT)test/filtering/run_filter_test.sh
+     $(SRC_ROOT)test/filtering/filter.cfg         \
+     $(SRC_ROOT)test/filtering/filter_f.cfg       \
+     $(SRC_ROOT)test/filtering/run_filter_test.sh \
+     $(SRC_ROOT)test/filtering/run_filter_f_test.sh
