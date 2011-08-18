@@ -37,7 +37,7 @@ filter_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 check_PROGRAMS += filter_f_test
 
-filter_f_test_SOURCES = $(SRC_ROOT)test/filtering/filter_test.F
+filter_f_test_SOURCES = $(SRC_ROOT)test/filtering/filter_test.F90
 filter_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@
 filter_f_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
