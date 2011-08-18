@@ -40,6 +40,8 @@
 int on_scorep_finalize();
 /* *INDENT-ON* */
 
+#define SCOREP_FILTERED_REGION ( SCOREP_INVALID_REGION - 1 )
+
 /*
  * -----------------------------------------------------------------------------
  * Simple hash table to map function names to region handles
@@ -107,7 +109,7 @@ scorep_compiler_hash_get( long hash )
 static SCOREP_RegionHandle
 scorep_compiler_register_region( char* region_name )
 {
-    SCOREP_RegionHandle handle = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle handle = SCOREP_FILTERED_REGION;
 
     /* register region with Score-P and store region identifier */
     if ( !SCOREP_Filter_Match( NULL, region_name, true ) )
@@ -158,13 +160,9 @@ phat_enter( char* name,
             handle = scorep_compiler_register_region( name );
         }
         SCOREP_MutexUnlock( scorep_compiler_hash_lock );
-
-        if ( handle != SCOREP_INVALID_REGION )
-        {
-            SCOREP_EnterRegion( handle );
-        }
     }
-    else
+
+    if ( handle != SCOREP_FILTERED_REGION )
     {
         SCOREP_EnterRegion( handle );
     }
@@ -186,7 +184,7 @@ phat_exit( char* name,
 
     SCOREP_RegionHandle handle = scorep_compiler_hash_get( ( long )name );
 
-    if ( handle != SCOREP_INVALID_REGION )
+    if ( ( handle != SCOREP_INVALID_REGION ) && ( handle != SCOREP_FILTERED_REGION ) )
     {
         SCOREP_ExitRegion( handle );
     }
