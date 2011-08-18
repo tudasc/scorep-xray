@@ -61,7 +61,7 @@ static SCOREP_RegionHandle          scorep_compiler_main_handle = SCOREP_INVALID
 static SCOREP_Mutex                 scorep_compiler_hash_lock;
 
 /**
- * Flag that indicates that the compiler is initialized.
+ * Flag that indicates that the compiler is finalized.
  */
 static int scorep_compiler_finalized = 0;
 
@@ -158,8 +158,16 @@ phat_enter( char* name,
             handle = scorep_compiler_register_region( name );
         }
         SCOREP_MutexUnlock( scorep_compiler_hash_lock );
+
+        if ( handle != SCOREP_INVALID_REGION )
+        {
+            SCOREP_EnterRegion( handle );
+        }
     }
-    SCOREP_EnterRegion( handle );
+    else
+    {
+        SCOREP_EnterRegion( handle );
+    }
 }
 
 
