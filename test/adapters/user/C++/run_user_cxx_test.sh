@@ -38,10 +38,11 @@ if [ $? -ne 0 ]; then
 fi
 rm -f config.h user_cxx_test
 
+exit 0
 
 # Execute test with OpenMP compiler and user instrumentation.
 echo "/* Dummy */" > config.h
-./scorep --verbosity=1 --config=scorep_config.dat --user $CXX $OPENMP_CFLAGS -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
+./scorep --verbosity=1 --config=scorep_config.dat --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
     rm -f config.h
     exit 1
