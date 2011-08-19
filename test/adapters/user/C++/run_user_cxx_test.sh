@@ -38,8 +38,6 @@ if [ $? -ne 0 ]; then
 fi
 rm -f config.h user_cxx_test
 
-exit 0
-
 
 # Execute test with OpenMP compiler and user instrumentation.
 echo "/* Dummy */" > config.h

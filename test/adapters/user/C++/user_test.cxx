@@ -64,4 +64,5 @@ int main()
 {
     SCOREP_USER_REGION("main", 0);
     printf("In main\n");
+    return 0;
 }
