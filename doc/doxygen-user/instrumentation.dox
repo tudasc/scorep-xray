@@ -1,0 +1,545 @@
+/** @page instrumentation Application instrumentation
+@seclabel{instrumentation}
+
+@scorep provides several possibilities to instrument user application code.
+Besides the automatic compiler-based instrumentation 
+(Section @secref{compiler_instrumentation}), it
+provides manual instrumentation using the @scorep User API 
+(Section @secref{manual_instrumentation}),
+semi-automatic instrumentation using @pomp2 directives 
+(Section @secref{pomp_instrumentation}) and,
+if configured, automatic source-code instrumentation using the PDToolkit-based
+instrumentor (Section @secref{tau_instrumentation}). 
+
+As well as user routines and specified source regions, @scorep currently supports the
+following kinds of events:
+
+<ul>
+  <li>
+    <b>@mpi library calls</b>:<br>
+    Instrumentation is accomplished using the standard @mpi profiling interface
+    @pmpi. To enable it, the application program has to be linked against the
+    @scorep @mpi (or hybrid) measurement library plus @mpi-specific libraries.
+    Note that the @scorep libraries must be linked <i>before</i> the @mpi library
+    to ensure interposition will be effective.
+  </li>
+  
+  <li>
+    <b>@openmp directives @& API calls</b>:<br>
+    The @scorep measurement system uses the @opari2 tool for instrumentation
+    of @openmp constructs. See the @opari2 documentation on how to instrument
+    @openmp source code. In addition, the application must be linked with the @scorep
+    @openmp (or hybrid) measurement library.
+  </li>
+</ul>
+
+The @scorep instrumenter command <tt>scorep</tt> automatically takes
+care of compilation and linking to produce an instrumented executable,
+and should be prefixed to compile and link commands.  Often this only
+requires prefixing definitions for @verb{$(CC)} or @verb{$(MPICC)} (and
+equivalents) in Makefiles.  
+
+When using Makefiles, it is often convenient to define a "preparation preposition"
+placeholder (e.g., <tt>PREP</tt>) which can be prefixed to (selected)
+compile and link commands:
+@verbatim
+    MPICC  = $(PREP) mpicc
+    MPICXX = $(PREP) mpicxx
+    MPIF90 = $(PREP) mpif90
+@endverbatim
+These can make it easier to prepare an instrumented version of the program with
+@verbatim
+    make PREP="scorep"
+@endverbatim
+while default builds (without specifying <tt>PREP</tt> on the command line)
+remain fully optimized and without instrumentation.
+
+When compiling without the @scorep instrumenter, the
+<tt>scorep_config</tt> command can be used to simplify determining the appropriate
+linker flags and libraries, or include pathes:
+@verbatim
+    scorep_config [--seq|--omp|--mpi|--hyb] --libs
+@endverbatim
+
+The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whether @mpi,
+@openmp or hybrid @mpi/@openmp measurement support is desired. 
+
+@note
+  A particular installation of @scorep may not offer all measurement
+  configurations!
+
+The <tt>scorep_config</tt> command can also be used to determine the right compiler
+flags for specifying the include directory of the <tt>SCOREP_User.h</tt> or
+<tt>SCOREP_User.inc</tt> header files when compiling without using the @scorep
+instrumenter:
+@verbatim
+    scorep_config  --inc
+@endverbatim
+
+@scorep supports a variety of instrumentation types for user-level
+source routines and arbitrary regions, in addition to fully-automatic
+@mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
+
+  <table border=1 cellspacing=0>
+    <caption>@scorep instrumenter option overview@tablabel{instopts}</caption>
+    <tr>
+      <th align="center" valign="middle" style="width:8em;">Type</th>
+      <th align="center" valign="middle" style="width:8em;">Switch</th>
+      <th align="center" valign="middle" style="width:8em;">Default</th>
+      <th align="center" valign="middle" style="width:8em;">Standard instrum'd routines</th>
+      <th align="center" valign="middle" style="width:8em;">Other<br>instrum'd regions</th>
+      <th align="center" valign="middle" style="width:8em;">Runtime meas'ment control</th>
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> MPI </td>
+      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> (auto) </td>
+      <td align="center" valign="middle"> configured by install </td>
+      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> (Sec. @secref{ME}) </td> 
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> OpenMP </td>
+      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> (auto) </td>
+      <td align="center" valign="middle"> (Sec. @secref{SI}) </td>
+      <td align="center" valign="middle"> all parallel constructs </td>
+      <td align="center" valign="middle"> &mdash; </td> 
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> Compiler<br>(Sec. @secref{AI}) </td>
+      <td align="center" valign="middle"> <tt>-comp</tt> </td>
+      <td align="center" valign="middle"> <tt>all</tt> </td>
+      <td align="center" valign="middle"> <tt>all</tt> or <tt>none</tt> </td>
+      <td align="center" valign="middle"> not supported </td>
+      <td align="center" valign="middle"> (Sec. @secref{CF}) </tt> </td> 
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> PDToolkit<br>(Sec. @secref{TI}) </td>
+      <td align="center" valign="middle"> <tt>-pdt</tt> </td>
+      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> all, or selective </td>
+      <td align="center" valign="middle"> not supported </td>
+      <td align="center" valign="middle"> &mdash; </td> 
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> POMP2<br>(Sec. @secref{PI}) </td>
+      <td align="center" valign="middle"> <tt>-pomp</tt> </td>
+      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> manually annotated </td>
+      <td align="center" valign="middle"> manually annotated </td>
+      <td align="center" valign="middle"> &mdash; </td> 
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> User API<br>(Sec. @secref{MI}) </td>
+      <td align="center" valign="middle"> <tt>-user</tt> </td>
+      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> manually annotated </td>
+      <td align="center" valign="middle"> manually annotated </td>
+      <td align="center" valign="middle"> &mdash; </td> 
+    </tr>
+  </table>
+
+When the instrumenter determines that MPI or OpenMP are being used, it
+automatically enables MPI library instrumentation and OPARI2-based OpenMP
+instrumentation, respectively.  The default set of instrumented MPI
+library functions is specified when @scorep is installed.  All OpenMP
+parallel constructs and API calls are instrumented by default.
+
+By default, automatic instrumentation of user-level source routines by
+the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
+This can be disabled with <tt>--nocompiler</tt> when desired, such as when
+using PDToolkit, or POMP2 or @scorep user API manual source annotations,
+enabled with <tt>--pdt</tt>, <tt>--opari</tt> and <tt>--user</tt>, respectively.
+Compiler, PDToolkit, POMP2 and @scorep user API instrumentation can all be
+used simultaneously, or in arbitrary combinations, however, it is
+generally desirable to avoid instrumentation duplication (which would
+result if all are used to instrument the same routines). Note that enabling
+PDToolkit instrumentation automatically enables @scorep user instrumentation,
+because it inserts @scorep user macros into the source code.
+
+Sometimes it is desirable to explicitly direct the @scorep instrumenter to
+do nothing except execute the associated compile/link command. For such cases 
+it is possible to disable default instrumentations with <tt>--nocompiler</tt>,
+<tt>--noopari</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
+performed, this can help verify that the @scorep instrumenter correctly
+handles the compile/link commands. 
+
+@section compiler_instrumentation Automatic compiler instrumentation
+@seclabel{compiler_instrumentation}
+
+Most current compilers support automatic insertion of instrumentation calls at
+routine entry and exit(s), and @scorep can use this capability to determine
+which routines are included in an instrumented measurement.
+
+Compiler instrumentation of all routines in the specified source file(s) is
+enabled by default by @scorep, or can be explicitly requested with
+@verb{--compiler}.  Compiler instrumentation is disabled with
+@verb{--nocompiler}.
+
+@note
+  Depending on the compiler, and how it performs instrumentation, insertion of
+  instrumentation may disable inlining and other significant optimizations, or
+  inlined routines may not be instrumented at all (and therefore "invisible").
+
+Automatic compiler-based instrumentation has been tested with a
+number of different compilers:
+<ul>
+  <li> GCC (UNIX-like operating systems, not tested with Windows)</li>
+  <li> @ibm xlc, xlC (version 7 or later, @ibm @bluegene)</li>
+  <li> @ibm xlf (version 9.1 or later, @ibm @bluegene)</li>
+  <li> PGI (on Linux)</li>
+  <li> Intel compilers (version 10 or later, Linux)</li>
+  <li> SUN Studio compilers (Linux, Fortran only)</li>
+</ul>
+In all cases, @scorep supports automatic instrumentation of C, C++ and
+Fortran codes, except for the SUN Studio compilers which only provide
+appropriate support in their Fortran compiler.
+
+@note
+  The automatic compiler instrumentation might create a significant relative
+  measurement overhead on short function calls. This can impact the overall
+  application performance during measurement.  C++ applications are especially
+  prone to suffer from this, depending on application design and whether C++ STL
+  functions are also instrumented by the compiler. Currently, it is not
+  possible to prevent the instrumentation of specific functions on all
+  platforms when using automatic compiler instrumentation.
+
+Names provided for instrumented routines depend on the compiler, which may
+add underscores and other decorations to Fortran and C++ routine names, and
+whether name "demangling" has been enabled when @scorep was installed
+and could be applied successfully.
+
+
+@section manual_instrumentation Manual region instrumentation
+@seclabel{manual_instrumentation}
+
+If the automatic compiler-based instrumentation 
+(see Section @secref{start_instrumentation}), 
+instrumentation can be done manually. Manual instrumentation can
+also be used to augment automatic instrumentation with region or phase
+annotations, which can improve the structure of analysis reports. Furthermore. it
+offers the possibility to record additional, used defined metrics. Generally,
+the main program routine should be instrumented, so that the entire
+execution is measured and included in the analyses.
+
+Instrumentation can be performed in the following ways, depending on the
+programming language used.
+
+@code
+    #include "SCOREP_User.inc"
+
+    subroutine foo
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      ! do something
+      SCOREP_USER_REGION_END( my_region_handle )
+
+    end subroutine foo
+@endcode
+
+C/C++:
+@code
+    #include <SCOREP_User.h>
+
+    void foo()
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SCOREP_USER_REGION_END( my_region_handle )
+    }
+@endcode
+
+C++ only:
+@code
+    void foo()
+    {
+      SCOREP_USER_REGION_( "foo", SCOREP_USER_REGION_TYPE_FUNCTION )
+
+      // do something
+    }
+@endcode
+
+Region handles (<tt>my_name_handle</tt>) should be registered in each annotated
+function/subroutine prologue before use within the associated body, and should
+not already be declared in the same program scope. 
+
+For every region, the region type can be indicated via the region type flag (e.g., 
+<tt>SCOREP_USER_REGION_TYPE_FUNCTION</tt>). Possible region types are:
+<dl>
+ <dt> SCOREP_USER_REGION_TYPE_COMMON </dt>
+   <dd> Indicates regions without a special region type. </dd>
+ <dt> SCOREP_USER_REGION_TYPE_FUNCTION </dt>
+   <dd> Indicates that the region is a function or subroutine </dd>
+ <dt> SCOREP_USER_REGION_TYPE_LOOP </dt>
+   <dd> Indicates that the region is the body of a loop, with the same number of 
+        iterations in all locations. </dd>
+ <dt> SCOREP_USER_REGION_TYPE_DYNAMIC </dt>
+   <dd> Set this type to create a separate branch in the calltree for every execution
+        of the region. See Section @secref{dynamic_regionS}. </dd>
+ <dt> SCOREP_USER_REGION_TYPE_PHASE </dt>
+   <dd> Indicates that this region belongs to a special phase. See Section 
+        @secref{phase_profiling}. </dd>
+</dl>
+To create a region of combined region types you can connect two or more types with the
+binary OR-operator, e.g.:
+@code
+   SCOREP_USER_REGION_BEGIN( handle, "foo",
+                             SCOREP_USER_REGION_TYPE_LOOP |
+                             SCOREP_USER_REGION_TYPE_PHASE |
+                             SCOREP_USER_REGION_TYPE_DYNAMIC )  
+@endcode
+
+For function instrumentation in C and C++, @scorep provides macros, which 
+automatically pass the name and function type to @scorep measurement system. 
+
+C/C++:
+@code
+    #include <SCOREP_User.h>
+
+    void foo()
+    {
+        SCOREP_USER_FUNC_BEGIN
+        // do something
+        SCOREP_USER_FUNC_END
+    }
+@endcode
+
+
+The source files instrumented with @scorep user macros have to be compiled with
+<tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are
+ignored. If the @scorep instrumenter <tt>--user</tt> flag is used, the
+<tt>SCOREP_USER_ENABLE</tt> symbol will be defined automatically. Also note, that Fortran
+source files instrumented this way have to be preprocessed with the C
+preprocessor (CPP).
+
+Manual routine instrumentation in combination with automatic source-code
+instrumentation by the compiler or PDT leads to double instrumentation of user
+routines, i.e., usually only user region instrumentation is desired in this
+case.
+
+
+@section parameter_instrumentation Instrumentation for parameter-based profiling
+@seclabel parameter_instrumentation
+
+The @scorep user API provides also macros for parameter-based profiling. In 
+parameter-based profiling, the parameters of a function are used to split up the callpath
+for executions of different parameter values. In @scorep parameter-based profiling is
+supported for integer and string parameters. To associate a parameter value to a region
+entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> or 
+<tt>SCOREP_USER_PARAMETER_STRING</tt> after the region entry (e.g. after 
+<tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>). 
+
+C/C++:
+@code
+    #include <SCOREP_User.h>
+
+    void foo(int64_t myint, char *mystring)
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      SCOREP_USER_PARAMETER_INT64("myint",myint)
+      SCOREP_USER_PARAMETER_STRING("mystring",mystring)
+
+      // do something
+
+      SCOREP_USER_REGION_END( my_region_handle )
+    }
+@endcode
+
+Fortran:
+@code
+    #include "SCOREP_User.inc"
+
+    subroutine foo(i, s)
+        integer :: i
+        character (*) :: s
+
+        SCOREP_USER_REGION_DEFINE( my_region_handle )
+        SCOREP_PARAMETER_DEFINE( int_param )
+        SCOREP_PARAMETER_DEFINE( string_param )
+        SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
+        SCOREP_USER_PARAMETER_INT64(int_param, "myint",i)
+        SCOREP_USER_PARAMETER_STRING(string_param, "mystring",s)
+
+        // do something
+
+        SCOREP_USER_REGION_END( my_region_handle )
+     end subroutine foo
+@endcode
+
+In C/C++ you need to provide only a name for the parameter and the value. In Fortran, you
+must define the handle first with <tt>SCOREP_PARAMETER_DEFINE</tt>. The defined handle
+name must be unique in the current scope. The <tt>SCOREP_USER_PARAMETER_INT64</tt> and
+<tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as first argument, followed by the
+name and the value.
+
+@section control_instrumentation Measurement control instrumentation
+@seclabel{control_instrumentation}
+
+The @scorep user API also provides several macros for measurement control
+that can be incorporated in source files and activated during
+instrumentation.   <tt>SCOREP_RECORDING_OFF</tt> can be used to
+(temporarily) pause measurement until a subsequent
+<tt>SCOREP_RECORDING_ON</tt>. Just like the already covered user-defined annotated
+regions, <tt>SCOREP_RECORDING_ON</tt> and corresponding <tt>SCOREP_RECORDING_OFF</tt> 
+must be correctly nested. Finally, with <tt>SCOREP_RECORDING_IS_ON</tt> you can test
+whether recording is switched on. 
+
+Events are not recorded when recording is switched off (though associated
+definitions are), resulting in smaller measurement overhead.  In particular,
+traces can be much smaller and can target specific application phases (e.g., 
+excluding initialization and/or finalization) or specific iterations.  Since
+the recording switch is process-local, and effects all threads on the process,
+it can only be initiated outside of OpenMP parallel regions.  Switching recording
+on/off is done independently on each MPI process without synchronization.
+
+@note Switching recording on/off may result in inconsistent traces and profiles,
+      if not applied with care. In particular, if communication is recorded incomplete
+      (e.g. if the send is missing but the corresponding receive event is missing)
+      it may result in errors during execution or analysis. Furthermore, it is not
+      possible to switch recording on/off from within parallel OpenMP regions. We
+      recommend to use the selective tracing interface, instead of the manual on/off
+      switch whenever possible. Special care is require in combination with 
+      selective tracing (see Section @secref{selective tracing}, which also 
+      switches recording on/off.
+
+
+@section pomp_instrumentation Semi-automatic instrumentation
+@seclabel{pomp_instrumentation}
+
+If you manually instrument the desired user functions and regions of your
+application source files using the @pomp2 <tt>INST</tt> directives described
+below, the @scorep instrumenter <tt>--opari</tt> flag will generate
+instrumentation for them. @pomp2 instrumentation directives are supported for
+Fortran and C/C++. The main advantages are that
+<ul>
+  <li>
+    being directives, the instrumentation is ignored during "normal"
+    compilation and
+  </li>
+  <li>
+    this semi-automatic instrumentation procedure can be used when fully
+    automatic compiler instrumentation is not supported.
+  </li>
+</ul>
+
+The <tt>INST BEGIN/END</tt> directives can be used to mark any user-defined
+sequence of statements. If this block has several exit points (as is often
+the case for functions), all but the last have to be instrumented by <tt>INST
+ALTEND</tt>.
+
+Fortran:
+@code
+    subroutine foo(...)
+        !declarations
+        !POMP$ INST BEGIN(foo)
+        ...
+        if (<condition>) then
+            !POMP$ INST ALTEND(foo)
+            return
+        end if
+        ...
+        !POMP$ INST END(foo)
+    end subroutine foo
+
+@endcode
+
+C/C++:
+@code
+    void foo(...)
+    {
+        /* declarations */
+        #pragma pomp inst begin(foo)
+        ...
+        if (<condition>)
+        {
+            #pragma pomp inst altend(foo)
+            return;
+        }
+        ...
+        #pragma pomp inst end(foo)
+    }
+@endcode
+
+At least the main program function has to be instrumented in this way, and
+additionally, one of the following should be inserted as the first executable
+statement of the main program:
+
+Fortran:
+@code
+    program main
+        ! declarations
+        !POMP$ INST INIT
+        ...
+    end program main
+@endcode
+
+C/C++:
+@code
+    int main(int argc, char** argv)
+    {
+        /* declarations */
+        #pragma pomp inst init
+        ...
+    }
+@endcode
+
+@section tau_instrumentation Automatic source-code instrumentation using PDT
+@seclabel{tau_instrumentation}
+
+If @scorep has been configured with PDToolkit support, automatic source-code
+instrumentation can be used as an alternative instrumentation method. In this
+case, the source code of the target application is pre-processed before
+compilation, and appropriate @scorep user API calls will be inserted
+automatically. However, please note that this feature is still somewhat
+experimental and has a number of limitations (see @secref{tau_inst_limitations}).
+
+To enable PDT-based source-code instrumentation, call <tt>scorep</tt> with the <tt>--pdt</tt> option, e.g.,
+@verbatim
+    scorep --pdt  mpicc -c foo.c
+@endverbatim
+This will by default instrument all routines found in <tt>foo.c</tt>. 
+(To avoid double instrumentation, automatic compiler instrumentation can
+be disabled with @verb{--nocompiler}.)
+
+@subsection tau_inst_limitations Limitations
+@seclabel{tau_inst_limitations}
+
+Currently the support for the PDT-based source-code instrumenter still has a number 
+of limitations:
+<ul>
+  <li>
+    When instrumenting Fortran 77 applications, the inserted instrumentation
+    code snippets do not yet adhere to the Fortran 77 line length limit.
+    Typically, it is possible to work around this issue by supplying extra
+    command line flags (e.g., <tt>-ffixed-line-length-132</tt> or
+    <tt>-qfixed=132</tt>) to the compiler.
+  </li>
+  <li>
+    Code in C/C++ header files as well as included code in Fortran (either
+    using the C preprocessor or the <tt>include</tt> keyword) will currently
+    not be instrumented.
+  </li>
+  <li>
+    Support for C++ templates and classes is currently only partially
+    implemented.
+  </li>
+  <li>
+    Advanced TAU instrumentation features such as static/dynamic timers, loop,
+    I/O and memory instrumentation are not yet supported. Respective entries
+    in the selective instrumentation file will be ignored.
+  </li>
+</ul>
+
+
+
+
