@@ -1,106 +1,37 @@
-Score-P provides several possibilities to instrument user applications. It is possible to combine multiple instrumentation methods.
 
-<ul>
-  <li> <b> compiler-based instrumentation</b><br>
-       Compiler based-instrumentation is the default instrumentation mechanism.
-  </li>
-  <li> <b> MPI library wrapper </b>
-       Instrumentation is accomplished using the standard MPI profiling interface
-       PMPI. If the instrumented application uses MPI, this instrumentation method is
-       enabled automatically.
-  </li>
-  <li> <b> Opari 2 source code instrumentation </b>
-       Opari 2 inserts instrumentation of OpenMP constructs into the source code. If
-       an application uses OpenMP, this instrumentation is required, because the
-       measurement system needs the thread management information. It is enabled by 
-       default, if the instrumented application uses OpenMP.
-  </li>
-  <li> <b> Manual user instrumentation </b>
-       Score-P provides a set of macros, that a user may insert in his source code
-       manually.
-  </li>
-  <li> <b> Automatic source code instrumentation with PDT </b>
-       Score-P can employ the Tau instrumentor to insert user instrumentation macros
-       into the source code. This option is only available, if Score-P was built with
-       PDT support. 
-  </li>
+This is the SCOREP user tool. The usage is:
+scorep <options> <orginal command>
 
-The Score-P instrumenter <tt>scorep</tt> automatically takes
-care of compilation and linking to produce an instrumented executable,
-and should be prefixed to compile and link commands.  Often this only
-requires prefixing definitions for @verb{$(CC)} or @verb{$(MPICC)} (and
-equivalents) in Makefiles.
-
-When using Makefiles, it is often convenient to define a "preparation preposition"
-placeholder (e.g., <tt>PREP</tt>) which can be prefixed to (selected)
-compile and link commands:
-@verbatim
-    MPICC  = $(PREP) mpicc
-    MPICXX = $(PREP) mpicxx
-    MPIF90 = $(PREP) mpif90
-@endverbatim
-These can make it easier to prepare an instrumented version of the program with
-@verbatim
-    make PREP="scorep"
-@endverbatim
-while default builds (without specifying <tt>PREP</tt> on the command line)
-remain fully optimized and without instrumentation. Any options for <tt> scorep </tt>
-must follow immidiately behind <tt> scorep </tt> and before the original compile command.
-The general usage looks like:
-@verbatim
-    scorep <action> <options> <orginal command>
-@endverbatim
-You may also add the options to the <tt> PREP </tt> variable, e.g.:
-@verbatim
-    make PREP="scorep --user --verbosity=1"
-@endverbatim
-
-The <tt>scorep</tt> tool tries to determine whether MPI and/or OpenMP are used and 
-enables the appropriate instrumentation methods. However, <tt>scorep</tt> allows to
-specify the paradigms manully, e.g. if the automtic detection is incorrect:
-<ul>
-  <li> <tt> --openmp_support </tt> enables the support for OpenMP and Opari2 
-       instrumentation. </li>
-  <li> <tt> --noopenmp_support </tt> disables the support for OpenMP. </li>
-  <li> <tt> --mpi </tt> enables MPI instrumentation and support. </li>
-  <li> <tt> --nompi </tt> disables MPI instrumentation and support. </li>
-</ul>
-
-If you want to chang the default instrumentation method, you can enable or disable
-instrumentation methods via command line parameters. 
-<ul>
-  <li> <tt> --compiler </tt> enables compiler instrumentation. By default compiler 
-       instrumentation is already enabled. </li>
-  <li> <tt> --nocompiler </tt> disables compiler instrumentation. </li>
-  <li> <tt> --opari </tt> enables Opari2 instrumentation. If the instrumentated 
-       application uses OpenMP, Opari2 instrumentation is already enabled. Set this,
-       parameter if a serial program contains POMP2 user regions. </li>
-  <li> <tt> --noopari </tt> diables Opari2 instrumentation. </li>
-  <li> <tt> --user </tt> enables manual user instrumentation. If the user instrumentation
-       is not enabled, the inserted macros take no effect. </li>
-  <li> <tt> --nouser </tt> disables manual user instrumentation. By default, the
-       user instrumentation is disabled. </li>
-  <li> <tt> --pdt </tt> enables source code instrumentation with the Tau instrumentor.
-       It automaically enables the user instrumentation, otherwise the instrumentation 
-       takes no effect. This option is only available if Score-P was built with PDT 
-       support. </li>
-  <li> <tt> --nopdt </tt> Disables the source code instrumentation with the TAU 
-       instrumentor. By default, this method is disabled. </li>
-</ul>
-
-Further available options are:
-<ul>
-  <li> <tt> --verbosity=<value> </tt> changes the verbosity level. The following levels
-       are avaliable:
-       <ol>
-         <li> No output (default) </li>
-         <li> Displays the executed commands </li>
-         <li> Displays an overview of its command line analysis and displays the 
-              executed commands </li>
-       </ol> </li>
-  <li> <tt> --dry-run </tt> Does not execute any command, but only displays the commands
-       it would perform on the command line. </li>
-  <li> <tt> -h,--help </tt> Displays a help output and exits. </li>
-</ul>
-
+Common options are:
+  --help, -h      Show help output. Does not execute any other command.
+  --config=<file> Specifies file for the instrumentation configuration.
+  --verbosity=<value> Specifies the verbosity level. The following
+                  levels are available:
+                  0 = No output (default)
+                  1 = Executed commands are displayed
+                  2 = Detailed information is displayed
+  --dry-run       Only displays the executed commands. It does not
+                  execute any command.
+  --compiler      Enables compiler instrumentation Is enabled by default.
+  --nocompiler    Disables compiler instrumentation.
+  --mpi           Enables mpi wrapper. Is enabled by default if it is a
+                  mpi program.
+  --nompi         Disables mpi wrappers. They are disabled by default if
+                  it is no mpi program.
+  --opari         Enables Opari instrumentation. Is enabled by default
+                  if it is an OpenMP program.
+  --noopari       Disables Opari instrumentation. Is disabled by default
+                  if it is no OpenMP program.
+  --user          Enables manual user instrumentation.
+  --nouser        Disables manual user instrumentation. Is disabled by default.
+  --pdt           Enables source code instrumentation with pdt using
+                  the TAU instrumentor.
+                  It will automatically enable the user instrumentation
+                  and disable compiler instrumentation.
+  --nopdt         Disables the source code instrumentation with pdt.
+                  It is disabled by default.
+  --openmp_support Enables OpenMP support. Needed if the instrumentation
+                  does not coorectly identify your application as OpenMP
+                  program.
+  --noopenmp_support Disables OpenMP support.
 
