@@ -600,7 +600,7 @@
     @param value  The value of the parameter. It must be a pointer to a C-string (a
                   NULL-terminated string).
 
-    Example:
+    C/C++ Example:
     @code
     void myfunc(char *mystring)
     {

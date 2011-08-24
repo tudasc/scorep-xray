@@ -1,0 +1,143 @@
+/** @page measurement Application measurement
+
+If an application was instrumented with @scorep, you will get an executable, which 
+you can execute like the uninetrumented application. After the application run, you
+will find a measurement directory in your current working directory, which contains
+all recorded data. The measurment directory has the format 
+<tt>scorep-YYYYMMDD_XXXX_XXXX</tt>, where <tt>YYYYMMDD</tt> encodes the date followed
+by a seriaes of random numbers.
+
+In general, you can record a profile and/or a event trace. Whether a profile and/or a
+trace is recoreded, is specified by the environment variables 
+<tt>SCOREP_ENABLE_PROFILING</tt> and <tt>SCOREP_ENABLE_TRACING</tt>. If the value of this
+variables is not set, zero or <tt>false</tt>, profiling/tracing is disabled. 
+Otherwise @scorep will record a profile and/or trace.
+
+You may start with a profiling run, because of its lower space requirements. According
+to profiling results, you may configure the trace buffer limits, filtering or selective 
+tracing for recording traces.
+
+
+
+@section profiling Profiling
+@seclabel{profiling}
+
+For enabling profiling, set the envrionment variable <tt>SCOREP_ENABLE_PROFILING</tt>
+to 1 or <tt>true</tt>. After the execution of your application you will then find
+a <tt>profile.cubex</tt> file in your measurement directory, which you can display
+with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
+changed through the environment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>. The
+extension <tt>.cubex</tt> will we appended to the base name you specify in
+<tt>SCOREP_PROFILING_BASE_NAME</tt>. 
+
+If you want to record the profile in TAU snapshot format instead of the @cube4 format,
+set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Verce versa, you might set 
+<tt>SCOREP_PROFILING_FORMAT=CUBE4</tt> to get a @cube4 profile.
+
+@scorep records a call tree profile. The maximum callpath depth that is recorded 
+is limited to 30, by default. This avoids
+extremely large profiles for recursive calls. However, this limit can be changed with
+the environment variable <tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt>. 
+
+
+
+@section filtering Filtering
+@seclabel{filtering}
+
+
+
+
+@section selective_tracing Selective tracing
+@seclabel{selective_tracing}
+
+@scorep experiments record by default all events during the whole execution run.
+If tracing is enabled of the event data are collected in buffers on each process 
+that must be adequately sized to store events from the entire execution.
+
+Instrumented routines which are executed frequently, while only performing a
+small amount of work each time they are called, have an undesirable impact on
+measurement. The measurement overhead for such routines is large in 
+comparison to the execution time of the uninstrumented routine, resulting in
+measurement dilation. Recording these events requires significant space and
+analysis takes longer with relatively little improvement in quality.
+Filtering can be employed during measurement (described in @secref{filtering}) to
+ignore events from compiler-instrumented routines or user-instrumented routines.
+
+Another possibility is not to record the whole application run. In many cases, 
+only parts of the application are of interest for analysis (e.g. a frequently
+performed calculation) while other parts are of less interest (e.g., initialization
+and finalization) for perfromance analysis. Or the calculation itself shows 
+iterative behavior, where recording of one iteration would be sufficient for
+analysis. Restricting recording to one or multiple time intervals during 
+measurement would reduce the required space and overhead. This approach is called 
+selective tracing.
+
+@scorep provides two possibilities for selective tracing.
+<ul>
+  <li> A configuration file can specify traced regions. The entry and exit of those 
+       regions define an interval during which events are recored. </li>
+  <li> With user instrumentation, the recording can be manually switched on /off.
+       (See Section @secref{manual_instrumentation}). 
+</ul>
+
+Switching recording on or off, can result in inconsistent traces or profiles, if not
+applied with care. Especially, switching recording on/off manually via the SCOREP user
+instrumentation macros <tt>SCOREP_USER_RECORDING_ON</tt> and 
+<tt>SCOREP_USER_RECORDING_OFF</tt> is not recommended. Inconsistent traces may result in
+errors or deadlocks during analysis, or show unusable data. The consistency is endangered
+if:
+<ul>
+  <li> @openmp events are missing in one thread while other threads have them. 
+       Furthermore, the @openmp parallel region events are required if any event 
+       inside a parallel region is recorded. To prevent inconsitencies from 
+       incomplete recording of @openmp events, it is not possible to switch 
+       recording on/off from inside a parallel region </li>
+  <li> @mpi a communication is only recorded partially, e.g. if a send is missing, but
+       the corresponding receive on another process is recorded. To ensure recording
+       of complete communication is the responsibility of the user. 
+  <li> enter/exit events are not corretly nested. <li>
+</ul>
+
+The usage of the @scorep user macros <tt>SCOREP_USER_RECORDING_ON</tt> and 
+<tt>SCOREP_USER_RECORDING_OFF</tt> is explained in 
+Section @secref{manual_instrumentation}. Thus, this section focusses on first
+possibility, where the user specify traced regions via a configuration file.
+Currently, selective tracing is restricted to trace recording. In profiling
+is enabled, the profile will always summarize the whole execution.
+
+For selective tracing, you can specify one or multiple traced regions. The 
+recording is enabled when a traced region is entered. If the region is exited,
+recording of events is switched off again. If a traced region is called inside 
+another traced region, thus, the recording is already enabled, it will not disable
+recording of it exits, but recording will be switched off, if all traced regions are
+exited. 
+
+For traced regions only regions from @scorep user instrumentation can be selected.
+If regions from other instrumentation methods are specified in the configuration
+file for selective tracing, they are ignored.
+
+For a traced region, the recording can be restricted to certain executions of that
+region. Therefor, the enters for a traced region are counted, and a particular
+execution can be specified by the number of its enter. If a traced region is called
+recursively, the recording is only switched off, if the exit is reached, that 
+corresponds to the enter that enabled recording.
+
+The configuration file is a simple text file, where every line contains the name of 
+exactly one region. Optionally, a 
+comma-separated list of execution numbers or intervals of execution numbers can be 
+specified. A configuration file could look like follows:
+@code
+    foo
+    bar 23:25, 50, 60:62
+    baz 1
+@endcode
+This configuration file would record all executions of foo, the executions 23, 24, 25,
+50, 60, 61, and 62 of bar, and the second (numbering starts with 0) execution of baz 
+are recorded.
+
+To apply the selective tracing configuration file to a measurement run of your 
+application, set the environment variable <tt>SCOREP_SELECTIVE_CONFIG_FILE</tt>
+to the configuration file and run your instrumented application. If 
+<tt>SCOREP_SELECTIVE_CONFIG_FILE</tt> is empty, or the given file can not be opened,
+the whole application run will be recorded (no selective tracing will apply).
+*/
