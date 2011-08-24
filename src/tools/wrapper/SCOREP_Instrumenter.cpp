@@ -170,7 +170,8 @@ SCOREP_Instrumenter::Run()
                     }
                     else
                     {
-                        object_file = get_basename( current_file ) + ".o";
+                        object_file = get_basename(
+                            SCOREP_IO_GetWithoutPath( current_file.c_str() ) ) + ".o";
                     }
 
                     // Perform PDT instrumentaion
