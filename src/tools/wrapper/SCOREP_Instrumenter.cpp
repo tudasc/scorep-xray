@@ -1160,7 +1160,7 @@ SCOREP_Instrumenter::link_step()
     }
 
     std::string command = compiler_name + " "
-                          + scorep_include_path
+                          //                      + scorep_include_path
                           + input_files
                           + scorep_lib
                           + compiler_flags

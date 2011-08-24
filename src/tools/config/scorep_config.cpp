@@ -42,7 +42,34 @@
 #define ACTION_CXX    5
 #define ACTION_FC     6
 
-#define HELPTEXT "\nUsage:\nscorep_config [--seq|--omp|--mpi|--hyb] (--cflags|--inc|--libs|--cc|--cxx | --fc) [--config=<config_file>]\n"
+#define HELPTEXT \
+    "\nUsage:\nscorep_config <command> [<options>]\n" \
+    "  Commands:\n" \
+    "   --cflags prints additional compiler flags. They already contain the\n" \
+    "            include flags.\n" \
+    "   --inc    prints the include flags. They are already contained in the\n" \
+    "            output of the --cflags command\n" \
+    "   --libs   prints the required linker flags\n" \
+    "   --cc     prints the C compiler name\n" \
+    "   --cxx    prints the C++ compiler name\n" \
+    "   --fc     prints the Fortran compiler name\n" \
+    "   --help   prints this usage information\n\n" \
+    "  Options:\n" \
+    "   --seq|--omp|--mpi|--hyb\n" \
+    "            specifys the mode: seqential, OpenMP, MPI, or hybrid (MPI + OpenMP)\n" \
+    "            Takes effect only for the --libs command. The default mode is MPI.\n\n" \
+    "   --config=<config_file>\n" \
+    "            Allows to specify a configuration file which overrides the data\n" \
+    "            specified at build time of the tool.\n\n" \
+    "   --user|--nouser\n" \
+    "            Specifies whether manual user instrumentation is used. Takes effect\n" \
+    "            only for the cflags. The default ist that user instrumentation is\n" \
+    "            disabled\n\n" \
+    "   --compiler|--nocompiler\n" \
+    "            Specifies whether compiler instrumentation is used. Takes effect\n" \
+    "            only for the cflags. The default is that compiler instrumentation in\n" \
+    "            enabled.\n\n" \
+    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n\n"
 
 int
 main( int    argc,
@@ -50,9 +77,12 @@ main( int    argc,
 {
     int           i;
     /* set default mode to mpi */
-    int           mode   = MODE_MPI;
-    int           action = 0;
-    int           ret    = EXIT_SUCCESS;
+    int           mode     = MODE_MPI;
+    int           action   = 0;
+    int           ret      = EXIT_SUCCESS;
+    bool          user     = false;
+    bool          compiler = true;
+    bool          fortran  = false;
 
     const char*   scorep_libs[ 4 ] = { "scorep_serial", "scorep_omp", "scorep_mpi", "scorep_mpi_omp" };
 
@@ -110,6 +140,27 @@ main( int    argc,
         {
             action = ACTION_FC;
         }
+        else if ( strcmp( argv[ i ], "--user" ) == 0 )
+        {
+            user = true;
+        }
+        else if ( strcmp( argv[ i ], "--nouser" ) == 0 )
+        {
+            user = false;
+        }
+        else if ( strcmp( argv[ i ], "--compiler" ) == 0 )
+        {
+            compiler = true;
+        }
+        else if ( strcmp( argv[ i ], "--nocompiler" ) == 0 )
+        {
+            compiler = false;
+        }
+        else if ( strcmp( argv[ i ], "--fortran" ) == 0 )
+        {
+            fortran = true;
+        }
+
         else
         {
             std::cerr << "\nUnknown option " << argv[ i ] << ". Abort.\n" << std::endl;
@@ -135,17 +186,32 @@ main( int    argc,
                 break;
 
             case ACTION_CFLAGS:
-                std::cout << app.str_flags << app.str_incdir;
-                std::cout.flush();
-                app.str_otf2_config += " --cflags";
-                ret                  = system( app.str_otf2_config.c_str() );
-                break;
+                if ( compiler )
+                {
+                    std::cout << app.str_flags;
+                }
+                if ( user )
+                {
+                    if ( fortran )
+                    {
+                       #ifdef SCOREP_COMPILER_IBM
+                        std::cout << " -WF,-DSCOREP_USER_ENABLE ";
+                       #else
+                        std::cout << " -DSCOREP_USER_ENABLE ";
+                       #endif // SCOREP_COMPILER_IBM
+                    }
+                    else
+                    {
+                        std::cout << " -DSCOREP_USER_ENABLE ";
+                    }
+                }
+            // Append the include directories, too
 
             case ACTION_INCDIR:
                 std::cout << app.str_incdir;
                 std::cout.flush();
-                app.str_otf2_config += " --cflags";
-                ret                  = system( app.str_otf2_config.c_str() );
+                //app.str_otf2_config += " --cflags";
+                //ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CC:
@@ -192,18 +258,33 @@ main( int    argc,
                 break;
 
             case ACTION_CFLAGS:
-                std::cout << SCOREP_CFLAGS " -I" SCOREP_PREFIX "/include ";
-                std::cout.flush();
-                app.str_otf2_config += " --cflags";
-                ret                  = system( app.str_otf2_config.c_str() );
-                break;
+                if ( compiler )
+                {
+                    std::cout << SCOREP_CFLAGS;
+                }
+                if ( user )
+                {
+                    if ( fortran )
+                    {
+                       #ifdef SCOREP_COMPILER_IBM
+                        std::cout << " -WF,-DSCOREP_USER_ENABLE ";
+                       #else
+                        std::cout << " -DSCOREP_USER_ENABLE ";
+                       #endif // SCOREP_COMPILER_IBM
+                    }
+                    else
+                    {
+                        std::cout << " -DSCOREP_USER_ENABLE ";
+                    }
+                }
+            // Append the include directories, too
 
             case ACTION_INCDIR:
                 std::cout << "-I" SCOREP_PREFIX "/include -I"
                 SCOREP_PREFIX "/include/scorep ";
                 std::cout.flush();
-                app.str_otf2_config += " --cflags";
-                ret                  = system( app.str_otf2_config.c_str() );
+                //app.str_otf2_config += " --cflags";
+                //ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CC:
