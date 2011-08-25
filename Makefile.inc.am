@@ -148,18 +148,22 @@ doxygen-user-html-compress:
 doxygen-project-number: update-revision
 	echo "PROJECT_NUMBER = \"@PACKAGE_VERSION@ (revision `cat $(srcdir)/build-config/REVISION`)\"" > doc/doxygen-project-number.cfg
 
+CLEANFILES += doc/doxygen-project-number.cfg
+
 doxygen-user-clean:
-	rm -f doc/doxygen-project-number.cfg
-	rm -f doc/doxygen-at-make-time.cfg
 	rm -rf $(USER_DOC_DIR)/*
+
 
 if HAVE_DOXYGEN #-----------------------------------------------------
 
-doxygen-user: doxygen-project-number
+doxygen-user: doxygen-project-number doc/doxygen-user/main.dox
 	$(MKDIR_P) "$(USER_DOC_DIR)/tags"
-	echo "OUTPUT_DIRECTORY = $(USER_DOC_DIR)" > doc/doxygen-at-make-time.cfg
-	echo "GENERATE_TAGFILE = $(USER_DOC_DIR)/tags/@PACKAGE_NAME@.tag" >> doc/doxygen-at-make-time.cfg
-	cat doc/doxygen-user.cfg doc/doxygen-project-number.cfg doc/doxygen-at-make-time.cfg $(srcdir)/doc/doxygen-user/doxygen-user.cfg.in | doxygen -
+	echo "OUTPUT_DIRECTORY = $(USER_DOC_DIR)" > doc/doxygen-user-at-make-time.cfg
+	echo "GENERATE_TAGFILE = $(USER_DOC_DIR)/tags/@PACKAGE_NAME@.tag" >> doc/doxygen-user-at-make-time.cfg
+	cat doc/doxygen-project-number.cfg doc/doxygen-user-at-make-time.cfg doc/doxygen-user-common.cfg doc/doxygen-user-component.cfg > doc/doxygen-user.cfg
+	doxygen doc/doxygen-user.cfg
+
+CLEANFILES += doc/doxygen-user.cfg doc/doxygen-user-at-make-time.cfg doxygen.err
 
 else # i.e. ! HAVE_DOXYGEN -------------------------------------------
 
