@@ -68,28 +68,28 @@ install-data-local: doxygen-user-install install-scorep-meets-tau
 
 uninstall-local: doxygen-user-uninstall
 
-dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/scorep.dox doxygen-user-generate
+dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/main.dox doxygen-user-generate
 
 clean-local: doxygen-user-clean
 
 CLEANFILES += $(builddir)/include/scorep/scorep_meets_tau.h \
-              doc/doxygen-user/scorep.dox
+              doc/doxygen-user/main.dox
 
-.PHONY: doc/doxygen-user/scorep.dox
+.PHONY: doc/doxygen-user/main.dox
 
 if SVN_CONTROLLED
-doc/doxygen-user/scorep.dox:
+doc/doxygen-user/main.dox:
 	$(MKDIR_P) doc/doxygen-user
 	cat $(srcdir)/doc/doxygen-user/main_1.dox.in \
             $(srcdir)/doc/doxygen-user/scorep_usage.dox.in \
             $(srcdir)/doc/doxygen-user/main_2.dox.in \
             $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in \
             $(srcdir)/doc/doxygen-user/main_3.dox.in \
-            > doc/doxygen-user/scorep.dox
+            > doc/doxygen-user/main.dox
 else
-doc/doxygen-user/scorep.dox:
+doc/doxygen-user/main.dox:
 	$(MKDIR_P) doc/doxygen-user
-	touch doc/doxygen-user/scorep.dox
+	touch doc/doxygen-user/main.dox
 endif
 
 install-scorep-meets-tau:
