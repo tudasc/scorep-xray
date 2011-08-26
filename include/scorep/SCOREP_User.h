@@ -308,6 +308,48 @@
     @endcode
  */
 
+/** @def SCOREP_USER_REGION_DEFINE(handle)
+    This macro defines a user region handle in a local context. Every user handle must
+    be defined, before it can be used.
+    @param handle  A unique name for the handle must be provided. This handle is
+                   declared in
+                   the macro. This handle is used in the SCOREP_USER_REGION_BEGIN and
+                   SCOREP_USER_REGION_END statements to specify which region is started,
+                   or ended.
+                   If you are using a Fortran version which has a limited length of code
+                   lines, the length of the @a handle parameter must be at most 4
+                   characters, else the declaration line exceeds the allowed length.
+
+    C/C++ example:
+    @code
+    void myfunc()
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SCOREP_USER_REGION_END( my_region_handle )
+    }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
+      ! do something
+      SCOREP_USER_REGION_END( my_region_handle )
+
+    end program myProg
+    @endcode
+ */
+
 /** @def SCOREP_USER_FUNC_DEFINE
     This macro is for Fortran only. It declares the handle for a function. Every function
     handle must be declared in the declaration part of the subroutine or function if
@@ -422,7 +464,8 @@
 
     This macro is not available in Fortran.
 
-    @param handle  A name for a parameter must be provided. This parameter is declared in
+    @param handle  A unique name for the handle must be provided. This handle is
+                   declared in
                    the macro. This handle is used in the SCOREP_USER_REGION_BEGIN and
                    SCOREP_USER_REGION_END statements to specify which region is started,
                    or ended.

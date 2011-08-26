@@ -47,3 +47,9 @@ ALIASES                = scorep=Score-P \
                          tabref{1}="\if LATEX \latexonly\ref{tab:\1}\xspace\endlatexonly \elseif HTML @ref \1 \endif" \
                          tablabel{1}="\latexonly\label{tab:\1}\endlatexonly" \
  
+
+# For manual instrumentation, the user should use the marcos and not the functions.
+# This means, that the macro documentation is much more important, than the function
+# documentation for the user adapter. Thus, we need to enable the macro documentation
+# in doxygen.
+ENABLE_PREPROCESSING=YES
