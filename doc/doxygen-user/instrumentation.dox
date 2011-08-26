@@ -56,7 +56,7 @@ remain fully optimized and without instrumentation.
 
 When compiling without the @scorep instrumenter, the
 <tt>scorep_config</tt> command can be used to simplify determining the appropriate
-linker flags and libraries, or include pathes:
+linker flags and libraries, or include paths:
 @verbatim
     scorep_config [--seq|--omp|--mpi|--hyb] --libs [--fortran]
 @endverbatim
@@ -78,7 +78,7 @@ instrumenter, necessary defines and compiler instrumentation flags:
 
 If you want to instrument Fortran code, you should add <tt>--fortran</tt>. The 
 <tt>--user</tt> and <tt>--nocompiler</tt> options allow to get the compiler flags 
-for non-default instrumentation possibiliies. Thus <tt>--user</tt> enables the 
+for non-default instrumentation possibilities. Thus <tt>--user</tt> enables the 
 manual instrumentation with the @scorep user API, the <tt>--nocompiler</tt> option
 disables compiler instrumentation. If you instrument Fortran code, you might need to
 add <tt>--fortran</tt>.
@@ -167,7 +167,7 @@ because it inserts @scorep user macros into the source code.
 
 Sometimes it is desirable to explicitly direct the @scorep instrumenter to
 do nothing except execute the associated compile/link command. For such cases 
-it is possible to disable default instrumentations with <tt>--nocompiler</tt>,
+it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
 <tt>--noopari</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumenter correctly
 handles the compile/link commands. 
@@ -186,8 +186,8 @@ enabled by default by @scorep, or can be explicitly requested with
 
 @note
   Depending on the compiler, and how it performs instrumentation, insertion of
-  instrumentation may disable inlining and other significant optimizations, or
-  inlined routines may not be instrumented at all (and therefore "invisible").
+  instrumentation may disable in-lining and other significant optimizations, or
+  in-lined routines may not be instrumented at all (and therefore "invisible").
 
 Automatic compiler-based instrumentation has been tested with a
 number of different compilers:
@@ -290,8 +290,8 @@ For every region, the region type can be indicated via the region type flag (e.g
    <dd> Indicates that the region is the body of a loop, with the same number of 
         iterations in all locations. </dd>
  <dt> SCOREP_USER_REGION_TYPE_DYNAMIC </dt>
-   <dd> Set this type to create a separate branch in the calltree for every execution
-        of the region. See Section @secref{dynamic_regionS}. </dd>
+   <dd> Set this type to create a separate branch in the call-tree for every execution
+        of the region. See Section @secref{dynamic_regions}. </dd>
  <dt> SCOREP_USER_REGION_TYPE_PHASE </dt>
    <dd> Indicates that this region belongs to a special phase. See Section 
         @secref{phase_profiling}. </dd>
@@ -338,7 +338,7 @@ case.
 @seclabel parameter_instrumentation
 
 The @scorep user API provides also macros for parameter-based profiling. In 
-parameter-based profiling, the parameters of a function are used to split up the callpath
+parameter-based profiling, the parameters of a function are used to split up the call-path
 for executions of different parameter values. In @scorep parameter-based profiling is
 supported for integer and string parameters. To associate a parameter value to a region
 entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> or 

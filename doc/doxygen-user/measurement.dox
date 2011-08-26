@@ -1,14 +1,14 @@
 /** @page measurement Application measurement
 
 If an application was instrumented with @scorep, you will get an executable, which 
-you can execute like the uninetrumented application. After the application run, you
+you can execute like the uninstrumented application. After the application run, you
 will find a measurement directory in your current working directory, which contains
-all recorded data. The measurment directory has the format 
+all recorded data. The measurement directory has the format 
 <tt>scorep-YYYYMMDD_XXXX_XXXX</tt>, where <tt>YYYYMMDD</tt> encodes the date followed
-by a seriaes of random numbers.
+by a series of random numbers.
 
 In general, you can record a profile and/or a event trace. Whether a profile and/or a
-trace is recoreded, is specified by the environment variables 
+trace is recorded, is specified by the environment variables 
 <tt>SCOREP_ENABLE_PROFILING</tt> and <tt>SCOREP_ENABLE_TRACING</tt>. If the value of this
 variables is not set, zero or <tt>false</tt>, profiling/tracing is disabled. 
 Otherwise @scorep will record a profile and/or trace.
@@ -22,7 +22,7 @@ tracing for recording traces.
 @section profiling Profiling
 @seclabel{profiling}
 
-For enabling profiling, set the envrionment variable <tt>SCOREP_ENABLE_PROFILING</tt>
+For enabling profiling, set the environment variable <tt>SCOREP_ENABLE_PROFILING</tt>
 to 1 or <tt>true</tt>. After the execution of your application you will then find
 a <tt>profile.cubex</tt> file in your measurement directory, which you can display
 with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
@@ -31,10 +31,10 @@ extension <tt>.cubex</tt> will we appended to the base name you specify in
 <tt>SCOREP_PROFILING_BASE_NAME</tt>. 
 
 If you want to record the profile in TAU snapshot format instead of the @cube4 format,
-set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Verce versa, you might set 
+set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Vice versa, you might set 
 <tt>SCOREP_PROFILING_FORMAT=CUBE4</tt> to get a @cube4 profile.
 
-@scorep records a call tree profile. The maximum callpath depth that is recorded 
+@scorep records a call tree profile. The maximum call-path depth that is recorded 
 is limited to 30, by default. This avoids
 extremely large profiles for recursive calls. However, this limit can be changed with
 the environment variable <tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt>. 
@@ -59,7 +59,7 @@ or based on the source file, in which they are defined.
 
 A file containing the filter definition can be specified via the environment
 variable <tt>SCOREP_FILTERING_FILE</tt>. If no filter definition file is specified,
-all instrumented regions are recoreded. For filtered regions, the enter/exit events
+all instrumented regions are recorded. For filtered regions, the enter/exit events
 are nor recorded in trace and profile.
 
 The filter definition file can contain two blocks:
@@ -76,7 +76,7 @@ a region is filtered because it appears in a filtered source file, it can not be
 by the function name filter. If a region was defined in a not-filtered source file,
 the region name filter is evaluated. This means, events for a region are not recorded
 it it is filtered by the source file filter or the region name filter. Events for
-a region are recoreded if the region is neither filtered by the source file filter nor
+a region are recorded if the region is neither filtered by the source file filter nor
 by the region name filter. If one of the both filter blocks is not specified, it is 
 equivalent to an empty filter block.
 
@@ -91,7 +91,7 @@ name contains '#', you must escape it with a backslash.
 The filter block for the source file names, must be enclosed by 
 <tt>SCOREP_FILE_NAMES_BEGIN</tt> and <tt>SCOREP_FILE_NAMES_END</tt>. In between you
 can specify an arbitrary number of include and exclude rules, that are evaluated in
-sequenial order. At the beginning all source files are included. Source files that 
+sequential order. At the beginning all source files are included. Source files that 
 are excluded after all rules are evaluated, are filtered.
 
 An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
@@ -110,7 +110,7 @@ SCOREP_FILE_NAMES_END
 <tt>SCOREP_FILE_NAMES_END</tt>,<tt>EXCLUDE</tt>, and <tt>INCLUDE</tt> are 
 case-sensitive.
 
-For evaluating the expessions the fnmatch() function is used with no flags set 
+For evaluating the expressions the fnmatch() function is used with no flags set 
 (see http://pubs.opengroup.org/onlinepubs/009695399/functions/fnmatch.html for a 
 detailed definition of fnmatch()). The most widely used expressions are exact
 matches, where you specify the exact name as expression, or '*' and '?' wild-cards
@@ -128,10 +128,16 @@ with the expression. E.g., assume the following files exist:
 <ul>
   <li> The expression <tt>file1</tt> would match all three files, because the path is 
        stripped before comparison.</li>
-  <li> The expression <tt>/bar/file1</tt> would not match <tt>/foo/bar/file1</tt>, but
-       only <tt>/bar/file1</tt>. </li>
+  <li> The expression <tt>/bar/file1</tt> matches only <tt>/bar/file1</tt>. </li>
   <li> <tt>*bar/file1</tt> matches all three files. </li>
 </ul>
+
+@note If the source code file name has a relative path, it is not possible to 
+      reconstruct the absolute path of the source file at runtime. If the expression
+      describes a relative path, the absolute path is not reconstructed, too.
+      Thus, the relative path may not be matched with the absolute path, even if they do
+      in reality. This missing matches can be avoided by using a '*'-wildcard prefix.
+
 
 @subsection region_filtering Region name filter block
 @seclabel{region_filtering}
@@ -139,7 +145,7 @@ with the expression. E.g., assume the following files exist:
 The filter block for the region names, must be enclosed by 
 <tt>SCOREP_REGION_NAMES_BEGIN</tt> and <tt>SCOREP_REGION_NAMES_END</tt>. In between you
 can specify an arbitrary number of include and exclude rules, that are evaluated in
-sequenial order. At the beginning all regions are included. Regions that 
+sequential order. At the beginning all regions are included. Regions that 
 are excluded after all rules are evaluated, are filtered. 
 
 @note Regions that are defined in source files that are filtered, are excluded
@@ -164,7 +170,7 @@ SCOREP_REGION_NAMES_END
 <tt>SCOREP_REGION_NAMES_END</tt>,<tt>EXCLUDE</tt>, and <tt>INCLUDE</tt> are 
 case-sensitive.
 
-For evaluating the expessions the fnmatch() function is used with no flags set 
+For evaluating the expressions the fnmatch() function is used with no flags set 
 (see http://pubs.opengroup.org/onlinepubs/009695399/functions/fnmatch.html for a 
 detailed definition of fnmatch()). The most widely used expressions are exact
 matches, where you specify the exact name as expression, or <tt>*</tt> and <tt>?</tt> 
@@ -199,7 +205,7 @@ ignore events from compiler-instrumented routines or user-instrumented routines.
 Another possibility is not to record the whole application run. In many cases, 
 only parts of the application are of interest for analysis (e.g. a frequently
 performed calculation) while other parts are of less interest (e.g., initialization
-and finalization) for perfromance analysis. Or the calculation itself shows 
+and finalization) for performance analysis. Or the calculation itself shows 
 iterative behavior, where recording of one iteration would be sufficient for
 analysis. Restricting recording to one or multiple time intervals during 
 measurement would reduce the required space and overhead. This approach is called 
@@ -222,18 +228,18 @@ if:
 <ul>
   <li> @openmp events are missing in one thread while other threads have them. 
        Furthermore, the @openmp parallel region events are required if any event 
-       inside a parallel region is recorded. To prevent inconsitencies from 
+       inside a parallel region is recorded. To prevent inconsistencies from 
        incomplete recording of @openmp events, it is not possible to switch 
        recording on/off from inside a parallel region </li>
   <li> @mpi a communication is only recorded partially, e.g. if a send is missing, but
        the corresponding receive on another process is recorded. To ensure recording
        of complete communication is the responsibility of the user. 
-  <li> enter/exit events are not corretly nested. <li>
+  <li> enter/exit events are not correctly nested. <li>
 </ul>
 
 The usage of the @scorep user macros <tt>SCOREP_USER_RECORDING_ON</tt> and 
 <tt>SCOREP_USER_RECORDING_OFF</tt> is explained in 
-Section @secref{manual_instrumentation}. Thus, this section focusses on first
+Section @secref{manual_instrumentation}. Thus, this section focuses on first
 possibility, where the user specify traced regions via a configuration file.
 Currently, selective tracing is restricted to trace recording. In profiling
 is enabled, the profile will always summarize the whole execution.
