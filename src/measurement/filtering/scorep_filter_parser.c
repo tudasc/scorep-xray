@@ -48,18 +48,18 @@ extern bool scorep_filter_is_enabled;
  * <dd> Inside an exclude rule in the file rule block
  * <dt> SCOREP_FILTER_PARSE_FILES_INCLUDE
  * <dd> Inside an include rule in the file rule block
- * <dt> SCOREP_FILTER_PARSE_FUNCTIONS
- * <dd> State after a function rule block began with SCOREP_FUNCTION_NAMES_BEGIN.
- * <dt> SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE
+ * <dt> SCOREP_FILTER_PARSE_REGIONS
+ * <dd> State after a function rule block began with SCOREP_REGION_NAMES_BEGIN.
+ * <dt> SCOREP_FILTER_PARSE_REGIONS_EXCLUDE
  * <dd> Inside an exclude rule in the function rule block
- * <dt> SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE
+ * <dt> SCOREP_FILTER_PARSE_REGIONS_INCLUDE
  * <dd> Inside an include rule in the function rule block
  * </dl>
  * Beside this basic states two further values are defined with special purpose:
  * <dl>
  * <dt> SCOREP_FILTER_PARSE_FORTRAN
- * <dd> Can be combined with SCOREP_FILTER_PARSE_FUNCTIONS_exclude or
- *      SCOREP_FILTER_PARSE_FUNCTIONS_include to indicate that the rules should be
+ * <dd> Can be combined with SCOREP_FILTER_PARSE_REGIONS_exclude or
+ *      SCOREP_FILTER_PARSE_REGIONS_include to indicate that the rules should be
  *      Fortran mangled.
  * <dt> SCOREP_FILTER_PARSE_BASE
  * <dd> Is used to extract the base state without the fortran option from the
@@ -78,9 +78,9 @@ typedef int scorep_filter_parse_modes;
 #define SCOREP_FILTER_PARSE_FILES             1
 #define SCOREP_FILTER_PARSE_FILES_EXCLUDE     2
 #define SCOREP_FILTER_PARSE_FILES_INCLUDE     3
-#define SCOREP_FILTER_PARSE_FUNCTIONS         4
-#define SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE 5
-#define SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE 6
+#define SCOREP_FILTER_PARSE_REGIONS           4
+#define SCOREP_FILTER_PARSE_REGIONS_EXCLUDE   5
+#define SCOREP_FILTER_PARSE_REGIONS_INCLUDE   6
 #define SCOREP_FILTER_PARSE_BASE              7
 #define SCOREP_FILTER_PARSE_FORTRAN           8
 
@@ -173,33 +173,33 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
         }
     }
 
-    /* ------------------------------ SCOREP_FUNCTION_NAMES_BEGIN */
-    else if ( strcmp( token, "SCOREP_FUNCTION_NAMES_BEGIN" ) == 0 )
+    /* ------------------------------ SCOREP_REGION_NAMES_BEGIN */
+    else if ( strcmp( token, "SCOREP_REGION_NAMES_BEGIN" ) == 0 )
     {
         if ( *mode == SCOREP_FILTER_PARSE_START )
         {
-            *mode = SCOREP_FILTER_PARSE_FUNCTIONS;
+            *mode = SCOREP_FILTER_PARSE_REGIONS;
         }
         else
         {
             SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Unexpected token 'SCOREP_FUNCTION_NAMES_BEGIN'" );
+                          "Unexpected token 'SCOREP_REGION_NAMES_BEGIN'" );
             return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
 
-    /* ------------------------------ SCOREP_FUNCTION_NAMES_END */
-    else if ( strcmp( token, "SCOREP_FUNCTION_NAMES_END" ) == 0 )
+    /* ------------------------------ SCOREP_REGION_NAMES_END */
+    else if ( strcmp( token, "SCOREP_REGION_NAMES_END" ) == 0 )
     {
-        if ( ( SCOREP_FILTER_MODE_BASE( *mode ) >= SCOREP_FILTER_PARSE_FUNCTIONS ) &&
-             ( SCOREP_FILTER_MODE_BASE( *mode ) <= SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE ) )
+        if ( ( SCOREP_FILTER_MODE_BASE( *mode ) >= SCOREP_FILTER_PARSE_REGIONS ) &&
+             ( SCOREP_FILTER_MODE_BASE( *mode ) <= SCOREP_FILTER_PARSE_REGIONS_INCLUDE ) )
         {
             *mode = SCOREP_FILTER_PARSE_START;
         }
         else
         {
             SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Unexpected token 'SCOREP_FUNCTION_NAMES_END'" );
+                          "Unexpected token 'SCOREP_REGION_NAMES_END'" );
             return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -214,10 +214,10 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
             case SCOREP_FILTER_PARSE_FILES_INCLUDE:
                 *mode = SCOREP_FILTER_PARSE_FILES_EXCLUDE;
                 break;
-            case SCOREP_FILTER_PARSE_FUNCTIONS:
-            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
-            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE;
+            case SCOREP_FILTER_PARSE_REGIONS:
+            case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
+            case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE;
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -236,10 +236,10 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
             case SCOREP_FILTER_PARSE_FILES_INCLUDE:
                 *mode = SCOREP_FILTER_PARSE_FILES_INCLUDE;
                 break;
-            case SCOREP_FILTER_PARSE_FUNCTIONS:
-            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
-            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE;
+            case SCOREP_FILTER_PARSE_REGIONS:
+            case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
+            case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE;
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -253,11 +253,11 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
-            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
-                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
+            case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
+                *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
-            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
+            case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
+                *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -277,11 +277,11 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
             case SCOREP_FILTER_PARSE_FILES_INCLUDE:
                 scorep_filter_add_file_rule( token, false );
                 break;
-            case SCOREP_FILTER_PARSE_FUNCTIONS_EXCLUDE:
+            case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
                 scorep_filter_add_function_rule( token, true,
                                                  SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
                 break;
-            case SCOREP_FILTER_PARSE_FUNCTIONS_INCLUDE:
+            case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
                 scorep_filter_add_function_rule( token, false,
                                                  SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
                 break;
