@@ -20,7 +20,6 @@
 
 noinst_LTLIBRARIES += libscorep_timer.la
 libscorep_timer_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-libscorep_timer_la_LIBADD = @TIMER_LIB@ $(LIB_DIR_UTIL)libscorep_utilities.la
 libscorep_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/services/include
 
 # compile just one of the following scorep_timer_*.c. The conditionals are set in 
@@ -98,7 +97,6 @@ endif
 
 noinst_LTLIBRARIES += libscorep_platform.la
 libscorep_platform_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Platform.h
-#libscorep_platform_la_LIBADD = @PLATFORM_LIB@
 libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS) \
                                  -I$(INC_DIR_UTIL) \
                                  -I$(INC_ROOT)src/services/include

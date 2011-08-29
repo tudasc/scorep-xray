@@ -30,7 +30,9 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_platform.la                 \
                 $(LIB_DIR_OTF2)libotf2.la             \
                 $(LIB_DIR_UTIL)libscorep_utilities.la \
-                libjenkins_hash.la
+                libjenkins_hash.la                    \
+                @LIBBFD@                              \
+                @TIMER_LIB@
 
 common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(INC_ROOT)src/adapters/include    \
