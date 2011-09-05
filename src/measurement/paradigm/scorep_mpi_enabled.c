@@ -32,6 +32,7 @@
 #include <scorep_definitions.h>
 #include <mpi.h>
 #include <assert.h>
+#include <stdlib.h>
 
 
 static MPI_Comm scorep_mpi_comm_world;

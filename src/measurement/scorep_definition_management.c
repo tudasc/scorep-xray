@@ -41,6 +41,9 @@
 #include <otf2/otf2.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
 #include <scorep_utility/SCOREP_Debug.h>
 #include "scorep_mpi.h"
 #include "scorep_status.h"

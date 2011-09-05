@@ -38,9 +38,12 @@
 #include <SCOREP_Thread_Types.h>
 
 #include <stdio.h>
-#include <sys/stat.h>
 #include <time.h>
-
+#include <string.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 /* *INDENT-OFF* */
 extern bool scorep_create_experiment_dir(char* dirName, int dirNameSize, void (*createDir) (const char*) );

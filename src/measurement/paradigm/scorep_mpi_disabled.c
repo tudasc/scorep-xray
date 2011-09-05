@@ -35,7 +35,9 @@
 
 #include <scorep_thread.h>
 #include <scorep_definitions.h>
-
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
 extern void
 scorep_status_initialize_non_mpi();

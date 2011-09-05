@@ -29,6 +29,8 @@
 
 #include <otf2/OTF2_Archive.h>
 #include <SCOREP_Thread_Types.h>
+#include <stdbool.h>
+
 
 /**
  * Toplevel relative experiment directory. In the non MPI case a valid name is

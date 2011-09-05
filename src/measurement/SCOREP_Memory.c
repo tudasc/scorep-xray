@@ -32,7 +32,7 @@
 #include "scorep_status.h"
 #include <assert.h>
 #include <stdbool.h>
-
+#include <stdlib.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON* */
