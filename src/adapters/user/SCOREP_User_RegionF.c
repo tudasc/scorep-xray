@@ -82,13 +82,13 @@ scorep_user_add_region( SCOREP_User_RegionHandle region,
 
 
 void
-FSUB( SCOREP_User_RegionInitF )( SCOREP_Fortran_RegionHandle* handle,
-                                 char*                        name_f,
-                                 int32_t*                     type,
-                                 char*                        fileName_f,
-                                 int32_t*                     lineNo,
-                                 int                          nameLen,
-                                 int                          fileNameLen )
+FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
+                       char*                        name_f,
+                       int32_t*                     type,
+                       char*                        fileName_f,
+                       int32_t*                     lineNo,
+                       int                          nameLen,
+                       int                          fileNameLen )
 {
     char*                    name;
     char*                    fileName;
@@ -195,8 +195,8 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* handle,
     SCOREP_USER_ASSERT_NOT_FINALIZED;
 
     /* Make sure the handle is initialized */
-    FSUB( SCOREP_User_RegionInitF )( handle, name_f, type, fileName_f,
-                                     lineNo, nameLen, fileNameLen );
+    FSUB( SCOREP_F_Init )( handle, name_f, type, fileName_f,
+                           lineNo, nameLen, fileNameLen );
 
     /* Generate region event */
     SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *handle ) );

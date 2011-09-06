@@ -46,7 +46,7 @@ echo "Output of selective test for Fortran can be found in $PWD/$RESULT_DIR"
 # Check output
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | grep region > trace.txt
 if [ x`grep -c Region1 trace.txt` = x4 ]; then
-  if [ x`grep -v Region1 trace.txt | grep -v main` = x ]; then
+  if [ x`grep -v Region1 trace.txt | grep -v main | grep -v Region2` = x ]; then
     rm trace.txt
     exit 0;
   else
