@@ -320,6 +320,42 @@ C/C++:
     }
 @endcode
 
+In some cases, it might be useful to have the possibility to define region
+handles with a global scope. In C/C++, a region handle can be defined at a
+global scope with <tt>SCOREP_GLOBAL_REGION_DEFINE</tt>. In this case, the 
+<tt>SCOREP_USER_REGION_DEFINE</tt> must be omitted. The 
+<tt>SCOREP_GLOBAL_REGION_DEFINE</tt> must only appear in one file. To use the same global
+variable in other files, too, declare the global region in other files with
+<tt>SCOREP_GLOBAL_REGION_EXTERNAL</tt>. 
+
+File 1:
+@code
+    SCOREP_GLOBAL_REGION_DEFINE( global_handle )
+
+    foo()
+    {
+        SCOREP_USER_REGION_BEGIN( global_handle, "phase 1", 
+                                  SCOREP_USER_REGION_TYPE_PHASE)
+        // do something
+        SCOREP_USER_REGION_END( global_handle )
+    }
+@endcode
+
+File 2:
+@code
+    SCOREP_GLOBAL_REGION_EXTERNAL( global_handle )
+
+    bar()
+    {
+        SCOREP_USER_REGION_BEGIN( global_handle, "phase 1", 
+                                  SCOREP_USER_REGION_TYPE_PHASE)
+        // do something
+        SCOREP_USER_REGION_END( global_handle )
+    }
+@endcode
+
+@note In Fortran are these macros not available.
+
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are

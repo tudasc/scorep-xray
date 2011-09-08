@@ -35,27 +35,30 @@
 /** @defgroup SCOREP_User SCOREP User Adapter
 
     The user adapter provides a set of macros for user manual instrumentation. The macros
-    are inserted in the users source code and call functions of the SCOREP runtime system.
-    The user should avoid calling the adapter functions directly.
+    are inserted in the source code and call functions of the Score-P runtime system.
+    The user should avoid calling the Score-P runtime functions directly.
 
-    The user adapter is initialization functions struct is
+    The user adapter's initialization functions struct is
     @ref SCOREP_User_Adapter. It is initialized from the measurement system. If a user
     instrumentation is called before the adapter is initialized, it will initialized the
     measurement system which call the initialization functions of the adapters.
 
     @defgroup SCOREP_User_Interface Macros for manual user instrumentation
     @ingroup SCOREP_User
-    For every macro two definitions are provided: The first one inserts calls to the
-    adapters, the second definitions resolve to nothing. Which implementation is used,
+    For every macro, two definitions are provided: The first one inserts calls to the
+    Score-P runtime system, the second definitions resolve to nothing. Which
+    implementation is used,
     depends on the definition of SCOREP_USER_ENABLE. If SCOREP_USER_ENABLE is defined, the
-    macros insert calls to the adapter functions. If SCOREP_USER_ENABLE is undefined,
+    macros resolve to calls to the Score-P runtime system. If SCOREP_USER_ENABLE is
+    undefined,
     the user instrumentation is removed by the preprocessor. This flag SCOREP_USER_ENABLE
-    should be set through the instrumentation wrapper tool.
+    should be set through the instrumentation wrapper tool automatically if user
+    manual instrumentation is enabled.
 
     Every source file which is instrumented must include a header file with the
-    SCOREP User instrumentation header. For C/C++ programs this is the header file
+    Score-P user instrumentation header. For C/C++ programs, the header file is
     'SCOREP_User.h', for Fortran files, 'SCOREP_User.inc' must be included. Because the
-    Fortran compilers can not expand the macros, the Fortran source code must be
+    Fortran compilers can not expand macros, the Fortran source code must be
     preprocessed by a C or C++ preprocessor, to include the headers and expand the
     macros. Which Fortran files are passed to the preprocessor depends on the suffix.
     Usually, suffixes .f and .f90 are not preprocessed, .F and .F90 files are
@@ -452,11 +455,13 @@
  */
 
 /** @def SCOREP_GLOBAL_REGION_DEFINE( handle )
-    This macro declares a region handle in a global scope for usage in more than one code
-    block in more than one source file. Every global region must only declared once using
-    this macro. All other files in which this region handle is accessed must declare the
-    region handle with SCOREP_GLOBAL_REGION_EXTERNAL( handle ). A global region has no
-    special associated source region with it. Enter and exit events for global regions
+    This macro defines a region handle in a global scope for usage in more than one code
+    block. If a region is used in multiple source files, only one of them must contain
+    the defintion using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
+    global handle is accessed, must only declare the global handle with
+    SCOREP_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
+    more than one code-block. However, code-blocks that share a handle, are handled as
+    they were all the same region. Enter and exit events for global regions
     are created with SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END, respectively.
     Its name and type is determined at the first enter event and is not changed on later
     events, even if other code blocks conatain a different name or type in their
@@ -503,11 +508,13 @@
  */
 
 /** @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
-    This macro declares an axternally defined global region.  Every global region must
-    only declared once usingSCOREP_GLOBAL_REGION_DEFINE( handle ). All other files in
-    which this region handle is accessed must declare the region handle with
-    SCOREP_GLOBAL_REGION_EXTERNAL( handle ).  A global region has no
-    special associated source region with it. Enter and exit events for global regions
+    This macro declares an axternally defined global region.
+    If a region is used in multiple source files, only one of them must contain
+    the defintion using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
+    global handle is accessed, must only declare the global handle with
+    SCOREP_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
+    more than one code-block. However, code-blocks that share a handle, are handled as
+    they were all the same region. Enter and exit events for global regions
     are created with SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END, respectively.
     Its name and type is determined at the first enter event and is not changed on later
     events, even if other code blocks conatain a different name or type in their
@@ -603,13 +610,11 @@
 /** @def SCOREP_USER_PARAMETER_INT64(name,value)
     This statement adds a 64 bit signed integer type parameter for parameter-based
     profiling to the current region.
-    The calltree for the region is split according to the different values of the
+    The call-tree for the region is split according to the different values of the
     parameters with the same name.
     It is possible to add an arbitrary number of parameters to a region. Each parameter
     must have a unique name. However, it is not recommended to use more than 1 parameter
     per region.
-    During one visit it is not allowed to use the same name twice
-    for two different parameters.
     @param name   A string containing the name of the parameter.
     @param value  The value of the parameter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
@@ -632,7 +637,7 @@
 /** @def SCOREP_USER_PARAMETER_STRING(name,value)
     This statement adds a string type parameter for parameter-based
     profiling to the current region.
-    The calltree for the region is split according to the different values of the
+    The call-tree for the region is split according to the different values of the
     parameters with the same name.
     It is possible to add an arbitrary number of parameters to a region. Each parameter
     must have a unique name. However, it is not recommended to use more than 1 parameter

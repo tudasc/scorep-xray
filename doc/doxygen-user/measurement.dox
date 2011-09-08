@@ -22,6 +22,17 @@ tracing for recording traces.
 @section profiling Profiling
 @seclabel{profiling}
 
+Score-P implements a call-tree based profiling system. Every node in the call tree 
+represent a recorded region. The edges of the tree represent the caller-callee 
+relationship: The children of a node are those regions, that are entered/exited within 
+a region. The path from the root to an arbitrary node, represents a call-path. Thus, 
+every node in the tree identifies also the call-path from the root to itself. 
+
+Together with a node, the statistics for the call-path are stored. 
+By default, the runtime and the number of visits are recorded. Additionally, hardware
+counters can be configured and are stored for every call-path. User defined metrics
+are only stored in those nodes, where the metric was triggered.
+
 For enabling profiling, set the environment variable <tt>SCOREP_ENABLE_PROFILING</tt>
 to 1 or <tt>true</tt>. After the execution of your application you will then find
 a <tt>profile.cubex</tt> file in your measurement directory, which you can display
@@ -39,6 +50,33 @@ is limited to 30, by default. This avoids
 extremely large profiles for recursive calls. However, this limit can be changed with
 the environment variable <tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt>. 
 
+
+@subsection parameter_profiling Parameter-based profiling
+
+Parameter-based profiling allows to separate the recoded statistics for a region, 
+depending on the values of one or multiple parameters. In the resulting call-tree,
+each occurred parameter-value will create a sub-node of the region. Every parameter has
+a parameter name. Thus, if multiple parameters are used, they can be distinguished and 
+split the call-tree in the order of the parameter events. In the final call-tree it
+looks like every parameter-name/parameter-value pair is a separate region.
+
+Currently, the only source parameter events is @secref{parameter_instrumentation}.
+
+
+@subsection phase_profiling Phase profiling
+
+Phase-profiling allows, to group the execution of the application into logical phases.
+Score-P records a separate call-tree for every phase in the application. A phase starts
+when a region of type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> 
+(see @secref{manual_instrumentation}) is entered. If the region is exited, the phase
+is left. If two phases are nested, then the outer phase is left, when the inner phase is
+entered. If the inner phase is exited, the outer phase is re-entered.
+
+If the phase consists of multiple partitions, and thus can not be enclosed by a single
+code region, all code-regions that form the phase must have the same region handle.
+The possibility to define global region handles in C/C++ might be useful for the 
+definition of phases that are have multiple partitions  
+(see @secref{manual_instrumentation}). 
 
 
 @section filtering Filtering
