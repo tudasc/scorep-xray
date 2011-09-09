@@ -462,9 +462,19 @@ private:
     std::string compiler_name;
 
     /**
-       compiler/linker flags
+       all compiler/linker flags, includeing the include path flags and defines.
      */
     std::string compiler_flags;
+
+    /**
+       include flags
+     */
+    std::string include_flags;
+
+    /**
+       define flags
+     */
+    std::string define_flags;
 
     /**
        file name of the compiler/linker output

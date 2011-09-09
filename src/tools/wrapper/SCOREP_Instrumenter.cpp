@@ -87,6 +87,8 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     pdt_bin_path        = PDT;
     pdt_config_file     = PDT_CONFIG;
     input_file_number   = 0;
+    define_flags        = "";
+    include_flags       = "";
 
     compiler_instrumentation_flags = SCOREP_CFLAGS;
     c_compiler                     = SCOREP_CC;
@@ -486,6 +488,14 @@ SCOREP_Instrumenter::parse_command( std::string arg )
         {
             opari_instrumentation = enabled;
         }
+    }
+    else if ( arg[ 1 ] == 'I' )
+    {
+        include_flags += " " + arg;
+    }
+    else if ( arg[ 1 ] == 'D' )
+    {
+        define_flags += " " + arg;
     }
 
     /* In any case that not yet returned, save the flag */
@@ -1067,6 +1077,8 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     {
         command = pdt_bin_path + "/cxxparse " + source_file;
     }
+    command += define_flags + include_flags;
+
     if ( verbosity >= 1 )
     {
         std::cout << command << std::endl;
