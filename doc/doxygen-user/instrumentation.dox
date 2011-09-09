@@ -109,41 +109,41 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="left" valign="middle"> OpenMP </td>
       <td align="center" valign="middle"> &mdash; </td>
       <td align="center" valign="middle"> (auto) </td>
-      <td align="center" valign="middle"> @secref{pomp_instrumentation} </td>
+      <td align="center" valign="middle"> (see Sec. @secref{pomp_instrumentation}) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> @secref{compiler_instrumentation} </td>
+      <td align="left" valign="middle"> Compiler instrumentation (see Sec. @secref{compiler_instrumentation}) </td>
       <td align="center" valign="middle"> --compiler --nocompiler </td>
       <td align="center" valign="middle"> --compiler </td>
       <td align="center" valign="middle"> all </td>
       <td align="center" valign="middle"> not supported </td>
-      <td align="center" valign="middle"> @secref{filtering} </tt> </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @secref{filtering}) </tt> </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> @secref{tau_instrumentation} </td>
+      <td align="left" valign="middle"> PDT instrumentation (see Sec. @secref{tau_instrumentation}) </td>
       <td align="center" valign="middle"> --pdt --nopdt </td>
       <td align="center" valign="middle"> --nopdt </td>
       <td align="center" valign="middle"> all </td>
       <td align="center" valign="middle"> not supported </td>
-      <td align="center" valign="middle"> @secref{filtering} </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @secref{filtering}) </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> @secref{pomp_instrumentation} </td>
+      <td align="left" valign="middle"> @opari2 (see Sec. @secref{pomp_instrumentation}) </td>
       <td align="center" valign="middle"> --opari </td>
       <td align="center" valign="middle"> depends on OpenMP usage </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> @secref{filtering} </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @secref{filtering}) </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> @secref{manual_instrumentation} </td>
+      <td align="left" valign="middle"> Manual instrumentation (see Sec. @secref{manual_instrumentation}) </td>
       <td align="center" valign="middle"> --user --nouser </td>
       <td align="center" valign="middle"> --nouser </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> @secref{filtering}<br> and<br> @secref{selective_tracing} </td> 
+      <td align="center" valign="middle"> Filtering (Sec. @secref{filtering})<br> and<br> selective tracing (Sec. @secref{selective_tracing}) </td> 
     </tr>
   </table>
 
@@ -544,7 +544,7 @@ instrumentation can be used as an alternative instrumentation method. In this
 case, the source code of the target application is pre-processed before
 compilation, and appropriate @scorep user API calls will be inserted
 automatically. However, please note that this feature is still somewhat
-experimental and has a number of limitations (see @secref{tau_inst_limitations}).
+experimental and has a number of limitations (see Section @secref{tau_inst_limitations}).
 
 To enable PDT-based source-code instrumentation, call <tt>scorep</tt> with the <tt>--pdt</tt> option, e.g.,
 @verbatim

@@ -60,7 +60,8 @@ a parameter name. Thus, if multiple parameters are used, they can be distinguish
 split the call-tree in the order of the parameter events. In the final call-tree it
 looks like every parameter-name/parameter-value pair is a separate region.
 
-Currently, the only source parameter events is @secref{parameter_instrumentation}.
+Currently, the only source parameter events is manual instrumentation 
+(see Section @secref{parameter_instrumentation}).
 
 
 @subsection phase_profiling Phase profiling
@@ -68,16 +69,21 @@ Currently, the only source parameter events is @secref{parameter_instrumentation
 Phase-profiling allows, to group the execution of the application into logical phases.
 Score-P records a separate call-tree for every phase in the application. A phase starts
 when a region of type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> 
-(see @secref{manual_instrumentation}) is entered. If the region is exited, the phase
+(see Section @secref{manual_instrumentation}) is entered. If the region is exited, 
+the phase
 is left. If two phases are nested, then the outer phase is left, when the inner phase is
-entered. If the inner phase is exited, the outer phase is re-entered.
+entered. If the inner phase is exited, the outer phase is re-entered. 
+Figure @figref{PhaseProfiling} shows the difference in the call-tree if the regions 
+with the names phase1 and phase2 are not of type 
+<tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the left side and the forest if they are of type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the right side.
+
+@img{phase_profiling.png,PhaseProfiling,Call-tree changes when using phases. The left side shows the calltree if no region is of type phase. The right side shows the call-tree forest with phases., width=0.9\textwidth}
 
 If the phase consists of multiple partitions, and thus can not be enclosed by a single
 code region, all code-regions that form the phase must have the same region handle.
 The possibility to define global region handles in C/C++ might be useful for the 
 definition of phases that are have multiple partitions  
-(see @secref{manual_instrumentation}). 
-
+(see Section @secref{manual_instrumentation}). 
 
 @section filtering Filtering
 @seclabel{filtering}
@@ -89,8 +95,9 @@ e.g., by small, frequently-executed and/or generally uninteresting
 functions, methods and subroutines.
 
 A measurement filtering capability is therefore supported for compiler instrumented
-regions, regions instrumented with @scorep user API and regions from 
-@secref{pomp_instrumentation}. Because @secref{tau_instrumentation} inserts,
+regions, regions instrumented with @scorep user API and regions from @opari 
+instrumentation (see Section @secref{pomp_instrumentation}). 
+Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts,
 @scorep user API instrumentation, those regions can be filtered, too.
 Regions can be filtered based on their region name (e.g., their function name)
 or based on the source file, in which they are defined. 
@@ -237,7 +244,7 @@ measurement. The measurement overhead for such routines is large in
 comparison to the execution time of the uninstrumented routine, resulting in
 measurement dilation. Recording these events requires significant space and
 analysis takes longer with relatively little improvement in quality.
-Filtering can be employed during measurement (described in @secref{filtering}) to
+Filtering can be employed during measurement (described in Section @secref{filtering}) to
 ignore events from compiler-instrumented routines or user-instrumented routines.
 
 Another possibility is not to record the whole application run. In many cases, 
