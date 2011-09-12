@@ -155,8 +155,9 @@ parallel constructs and API calls are instrumented by default.
 
 By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
-This can be disabled with <tt>--nocompiler</tt> when desired, such as when
-using PDToolkit, or POMP2 or @scorep user API manual source annotations,
+The compiler instrumentation can be disabled with <tt>--nocompiler</tt> when desired, 
+such as when
+using PDToolkit, or POMP2 or @scorep user API manual source annotations, are
 enabled with <tt>--pdt</tt>, <tt>--opari</tt> and <tt>--user</tt>, respectively.
 Compiler, PDToolkit, POMP2 and @scorep user API instrumentation can all be
 used simultaneously, or in arbitrary combinations, however, it is
@@ -279,8 +280,8 @@ Region handles (<tt>my_name_handle</tt>) should be registered in each annotated
 function/subroutine prologue before use within the associated body, and should
 not already be declared in the same program scope. 
 
-For every region, the region type can be indicated via the region type flag (e.g., 
-<tt>SCOREP_USER_REGION_TYPE_FUNCTION</tt>). Possible region types are:
+For every region, the region type can be indicated via the region type flag. 
+Possible region types are:
 <dl>
  <dt> SCOREP_USER_REGION_TYPE_COMMON </dt>
    <dd> Indicates regions without a special region type. </dd>

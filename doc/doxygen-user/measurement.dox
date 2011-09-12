@@ -35,11 +35,11 @@ are only stored in those nodes, where the metric was triggered.
 
 For enabling profiling, set the environment variable <tt>SCOREP_ENABLE_PROFILING</tt>
 to 1 or <tt>true</tt>. After the execution of your application you will then find
-a <tt>profile.cubex</tt> file in your measurement directory, which you can display
+a file, named <tt>profile.cubex</tt> in your measurement directory, which you can display
 with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
 changed through the environment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>. The
-extension <tt>.cubex</tt> will we appended to the base name you specify in
-<tt>SCOREP_PROFILING_BASE_NAME</tt>. 
+extension <tt>.cubex</tt> will be appended to the base name you specify in the 
+envorinment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>. 
 
 If you want to record the profile in TAU snapshot format instead of the @cube4 format,
 set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Vice versa, you might set 
@@ -88,10 +88,10 @@ definition of phases that are have multiple partitions
 @section filtering Filtering
 @seclabel{filtering}
 
-When automatic compiler instrumentation or automated source code instrumentation 
+When automatic compiler instrumentation or automated source code instrumentation with
 PDT has been used to instrument user-level source-program routines, there
 are cases where measurement and associated analysis are degraded,
-e.g., by small, frequently-executed and/or generally uninteresting
+e.g., by frequently-executed, small and/or generally uninteresting
 functions, methods and subroutines.
 
 A measurement filtering capability is therefore supported for compiler instrumented
@@ -102,10 +102,10 @@ Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts,
 Regions can be filtered based on their region name (e.g., their function name)
 or based on the source file, in which they are defined. 
 
-A file containing the filter definition can be specified via the environment
+A file that contains the filter definition can be specified via the environment
 variable <tt>SCOREP_FILTERING_FILE</tt>. If no filter definition file is specified,
 all instrumented regions are recorded. For filtered regions, the enter/exit events
-are nor recorded in trace and profile.
+are not recorded in trace and profile.
 
 The filter definition file can contain two blocks:
 <ul>
@@ -120,30 +120,37 @@ When the filter rules are applied, the source file name filter is evaluated firs
 a region is filtered because it appears in a filtered source file, it can not be included
 by the function name filter. If a region was defined in a not-filtered source file,
 the region name filter is evaluated. This means, events for a region are not recorded
-it it is filtered by the source file filter or the region name filter. Events for
+if they are filtered by the source file filter or the region name filter. Events for
 a region are recorded if the region is neither filtered by the source file filter nor
 by the region name filter. If one of the both filter blocks is not specified, it is 
 equivalent to an empty filter block.
 
 Beside the two filter blocks, you may use comments in the filter definition file. 
-Comments start with the character '#' and everything behind this character is ignored.
+Comments start with the character '#' and is terminated by a new line.
 You may use comments also inside the filter blocks. If a region name or source file
 name contains '#', you must escape it with a backslash.
 
 @subsection source_filtering Source file name filter block
 @seclabel{source_filtering}
 
-The filter block for the source file names, must be enclosed by 
+The filter block for source file names, must be enclosed by 
 <tt>SCOREP_FILE_NAMES_BEGIN</tt> and <tt>SCOREP_FILE_NAMES_END</tt>. In between you
-can specify an arbitrary number of include and exclude rules, that are evaluated in
+can specify an arbitrary number of include and exclude rules which are evaluated in
 sequential order. At the beginning all source files are included. Source files that 
 are excluded after all rules are evaluated, are filtered.
 
 An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
-one or multiple whitespace separated expression which is matched against the 
-source file names. Respectively, include rules start with <tt>INCLUDE</tt>
-followed by one or multiple whitespace separated expressions. An example source
-file filter block could look like this:
+one or multiple whitespace separated source file names. 
+Respectively, include rules start with <tt>INCLUDE</tt>
+followed by one or multiple whitespace separated file names. For the specification of 
+file names, bash-like wildcards are supported. In particular, the '*' wildcards an 
+string of arbitrary length, the '?' matches exactly one arbitrary character, or within
+`[]` you may specify multiple options.
+
+@note: Unlike bash, a '*' may match a string that contains slashes. E.g, you may 
+       use the '*' wildcard for path prefixes. 
+
+An example source file filter block could look like this:
 @code
 SCOREP_FILE_NAMES_BEGIN # This is a comment
   EXCLUDE */filtering/filter*
@@ -151,20 +158,16 @@ SCOREP_FILE_NAMES_BEGIN # This is a comment
 SCOREP_FILE_NAMES_END
 @endcode
 
-@note The keywords (e.g., <tt>SCOREP_FILE_NAMES_BEGIN</tt>, 
-<tt>SCOREP_FILE_NAMES_END</tt>,<tt>EXCLUDE</tt>, and <tt>INCLUDE</tt> are 
-case-sensitive.
+@note The keywords (<tt>SCOREP_FILE_NAMES_BEGIN</tt>, 
+      <tt>SCOREP_FILE_NAMES_END</tt>, <tt>EXCLUDE</tt>, and <tt>INCLUDE</tt>) are 
+      case-sensitive.
 
-For evaluating the expressions the fnmatch() function is used with no flags set 
-(see http://pubs.opengroup.org/onlinepubs/009695399/functions/fnmatch.html for a 
-detailed definition of fnmatch()). The most widely used expressions are exact
-matches, where you specify the exact name as expression, or '*' and '?' wild-cards
-with a bash-like semantic. 
-
-If the expression contains at least one slash, @scorep will match the 
-expression against the full path of the source file. If the expression contains no 
-slashes, @scorep will strip the path from the source file name before matching it 
-with the expression. E.g., assume the following files exist:
+If the file name in the filter definition and the source file name that the
+instrumnetation provides, both contain at least one slash, @scorep will compare the 
+full paths. If the file name in the filter defintion or the file name provided by
+instrumentation, contains no 
+slashes, @scorep will strip the path from the source file name before comparison. 
+E.g., assume the following files exist:
 @code
 /foobar/file1
 /bar/file1
@@ -177,9 +180,10 @@ with the expression. E.g., assume the following files exist:
   <li> <tt>*bar/file1</tt> matches all three files. </li>
 </ul>
 
-@note If the source code file name has a relative path, it is not possible to 
-      reconstruct the absolute path of the source file at runtime. If the expression
-      describes a relative path, the absolute path is not reconstructed, too.
+@note If the application insrumentation provides a relative path for the source
+      file of a region, it is not possible to 
+      reconstruct the absolute path of the source file at runtime. If the filter file
+      contains a relative path, the absolute path is not reconstructed, too.
       Thus, the relative path may not be matched with the absolute path, even if they do
       in reality. This missing matches can be avoided by using a '*'-wildcard prefix.
 
@@ -189,8 +193,8 @@ with the expression. E.g., assume the following files exist:
 
 The filter block for the region names, must be enclosed by 
 <tt>SCOREP_REGION_NAMES_BEGIN</tt> and <tt>SCOREP_REGION_NAMES_END</tt>. In between you
-can specify an arbitrary number of include and exclude rules, that are evaluated in
-sequential order. At the beginning all regions are included. Regions that 
+can specify an arbitrary number of include and exclude rules which are evaluated in
+sequential order. At the beginning, all regions are included. Regions that 
 are excluded after all rules are evaluated, are filtered. 
 
 @note Regions that are defined in source files that are filtered, are excluded
@@ -198,9 +202,15 @@ are excluded after all rules are evaluated, are filtered.
       include rule in the region filter block.
 
 An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
-one or multiple whitespace separated expression which is matched against the 
-region names. Respectively, include rules start with <tt>INCLUDE</tt>
-followed by one or multiple whitespace separated expressions. An example region
+one or multiple whitespace separated region names. 
+Respectively, include rules start with <tt>INCLUDE</tt>
+followed by one or multiple whitespace separated expressions. For the specification of 
+file names, bash-like wildcards are supported. In particular, the '*' wildcards an 
+string of arbitrary length, the '?' matches exactly one arbitrary character, or within
+`[]` you may specify multiple options.
+
+
+ An example region
 filter block could look like this:
 @code
 SCOREP_REGION_NAMES_BEGIN
@@ -211,16 +221,6 @@ SCOREP_REGION_NAMES_BEGIN
 SCOREP_REGION_NAMES_END
 @endcode
 
-@note The keywords (e.g., <tt>SCOREP_REGION_NAMES_BEGIN</tt>, 
-<tt>SCOREP_REGION_NAMES_END</tt>,<tt>EXCLUDE</tt>, and <tt>INCLUDE</tt> are 
-case-sensitive.
-
-For evaluating the expressions the fnmatch() function is used with no flags set 
-(see http://pubs.opengroup.org/onlinepubs/009695399/functions/fnmatch.html for a 
-detailed definition of fnmatch()). The most widely used expressions are exact
-matches, where you specify the exact name as expression, or <tt>*</tt> and <tt>?</tt> 
-wild-cards with a bash-like semantic. 
-
 Some instrumentation methods provide only mangled function names for Fortran
 subroutines and functions, where the name is made all upper/lower case or decorated
 with underscores. To keep a filter definition portable, we provide the <tt>FORTRAN</tt>
@@ -230,6 +230,10 @@ evaluating the expression. A Fortran rule would look like this:
 @code
   EXCLUDE FORTRAN MyFortranSub
 @endcode
+
+@note The keywords (e.g., <tt>SCOREP_REGION_NAMES_BEGIN</tt>, 
+      <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
+      and <tt>FORTRAN</tt>) are case-sensitive.
 
 @section selective_tracing Selective tracing
 @seclabel{selective_tracing}
@@ -279,11 +283,11 @@ if:
   <li> @mpi a communication is only recorded partially, e.g. if a send is missing, but
        the corresponding receive on another process is recorded. To ensure recording
        of complete communication is the responsibility of the user. 
-  <li> enter/exit events are not correctly nested. <li>
+  <li> enter/exit events are not correctly nested. </li>
 </ul>
 
-The usage of the @scorep user macros <tt>SCOREP_USER_RECORDING_ON</tt> and 
-<tt>SCOREP_USER_RECORDING_OFF</tt> is explained in 
+How recording can be controlled through @scorep macros which are inserted in the
+application's source code, is explained in 
 Section @secref{manual_instrumentation}. Thus, this section focuses on first
 possibility, where the user specify traced regions via a configuration file.
 Currently, selective tracing is restricted to trace recording. In profiling
