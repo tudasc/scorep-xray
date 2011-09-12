@@ -37,7 +37,7 @@
  * @defgroup POMP2 POMP2 Adapter implementation
  * This module implements the adapter functions fo the POMP2 adapter. POMP2 defines a set
  * of functions inserted by the source-to-source instrumenter OPARI. OPARI instruments
- * OpenMP construct.
+ * OpenMP constructs.
  * @{
  */
 

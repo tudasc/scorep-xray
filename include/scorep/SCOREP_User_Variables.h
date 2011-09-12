@@ -17,7 +17,8 @@
 #ifndef SCOREP_USER_VARIABLES_H
 #define SCOREP_USER_VARIABLES_H
 
-/** @file       SCOREP_User_Variables.h
+/**
+    @file       SCOREP_User_Variables.h
     @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
     @status     ALPHA
     @ingroup    SCOREP_User_External
@@ -37,7 +38,8 @@
 
 #include <scorep/SCOREP_PublicTypes.h>
 
-/** @ingroup SCOREP_User_External
+/**
+    @ingroup SCOREP_User_External
     @{
  */
 
@@ -64,6 +66,9 @@ static SCOREP_SourceFileHandle SCOREP_User_LastFileHandle = SCOREP_INVALID_SOURC
     entity. Only if code is included several source file names may appear.
     Thus, in most cases, the string comparison can be avoided when storing the pointer
     to the last used file name, if the compiler uses always the same pointer.
+
+    @note We strongly recommend not to use this variable directly in your application
+          code.
  */
 static const char* SCOREP_User_LastFileName = 0;
 

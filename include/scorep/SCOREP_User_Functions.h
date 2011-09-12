@@ -18,13 +18,15 @@
 #define SCOREP_USER_FUNCTIONS_H
 
 /**
-    @file SCOREP_User_Functions.h
+    @file       SCOREP_User_Functions.h
     @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
     @status     ALPHA
     @ingroup    SCOREP_User_External
 
     This File contains the function definitions which are called from the user manual
-    instrumentation. The user should not insert calls to theis functions directly, but
+    instrumentation.
+
+    @note The user should not insert calls to theis functions directly, but
     use the macros provided in SCOREP_User.h.
  */
 
@@ -43,6 +45,9 @@ extern "C" {
     This module contains all external visible items of the user adapter except the
     macros for the manual user instrumentation.
 
+    @note We strongly recommend not to insert
+    calls to this functions for instrumentation, but use the provided macros instead.
+
     @{
  */
 
@@ -54,6 +59,8 @@ extern "C" {
     Generates an enter event for the specified region. If the region was not registered
     before, it registers the region. On the first enter, the region is registered to
     the measurement system.
+    @note We strongly recommend not to insert calls to this
+    function for instrumentation, but use the SCOREP_USER_REGION_BEGIN macro instead.
     @param handle     The handle for this region. It must be defined before.
     @param lastFileName Pointer to the last source file name. In most cases, it is
                       expected that in most cases no regions are in included
@@ -89,6 +96,8 @@ SCOREP_User_RegionBegin
 
 /**
     Generates an exit event for the specified region.
+    @note We strongly recommend not to insert calls to this
+    function for instrumentation, but use the SCOREP_USER_REGION_END macro instead.
     @param handle     The handle for this region. It must be defined before.
  */
 void
@@ -100,6 +109,8 @@ SCOREP_User_RegionEnd
 /**
     Registers a region. The region handle must be defined before. If the handle
     was already initialized, no operation is performed.
+    @note We strongly recommend not to insert calls to this
+    function for instrumentation, but use the SCOREP_USER_REGION_INIT macro instead.
     @param handle     The handle for this region. It must be defined before.
     @param lastFileName Pointer to the last source file name. In most cases, it is
                       expected that in most cases no regions are in included
@@ -136,6 +147,8 @@ SCOREP_User_RegionInit
 /**
     Generates an enter event for the specified region. The region must be declared and
     initialized before.
+    @note We strongly recommend not to insert calls to this
+    function for instrumentation, but use the SCOREP_USER_REGION_ENTER macro instead.
     @param handle     The handle for this region. It must be defined before.
  */
 void
@@ -150,6 +163,8 @@ SCOREP_User_RegionEnter
 
 /**
     Generates a parameter event for a parameter of 64 bit integer data type.
+    @note We strongly recommend not to insert calls to this function for instrumentation,
+    but use the SCOREP_USER_PARAMETER_INT64 macro instead.
     @param handle Pointer where the parameter handle is stored. If it is
                   SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
     @param name  The unique name for the paramater.
@@ -165,6 +180,8 @@ SCOREP_User_ParameterInt64
 
 /**
     Generates a parameter event for a parameter of string type.
+    @note We strongly recommend not to insert calls to this function for instrumentation,
+    but use the SCOREP_USER_PARAMETER_STRING macro instead.
     @param handle Pointer where the parameter handle is stored. If it is
                   SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
     @param name  The unique name for the paramater.
@@ -263,6 +280,8 @@ extern SCOREP_CounterGroupHandle SCOREP_User_DefaultMetricGroup;
     Enables recording of events. If already enabled, this command has no effect.
     The control is not restricted to events from the user adapter, but enables the
     recording of all events.
+    @note We strongly recommend not to insert calls to this function for instrumentation,
+    but use the SCOREP_RECORDING_ON macro instead.
  */
 void
 SCOREP_User_EnableRecording();
@@ -271,12 +290,16 @@ SCOREP_User_EnableRecording();
     Disables recording of events. If already disabled, this command has no effect.
     The control is not restricted to events from the user adapter, but disables the
     recording of all events.
+    @note We strongly recommend not to insert calls to this function for instrumentation,
+    but use the SCOREP_RECORDING_OFF macro instead.
  */
 void
 SCOREP_User_DisableRecording();
 
 /**
     Checks if the recording is enabled.
+    @note We strongly recommend not to insert calls to this function for instrumentation,
+    but use the SCOREP_RECORDING_IS_ON macro instead.
     @returns false if the recording of events is disabled, else it returns true.
  */
 bool
@@ -293,6 +316,9 @@ SCOREP_User_RecordingEnabled();
     @class SCOREP_User_RegionClass
     This class implements the SCOREP_USER_REGION statement. Its constructor and destructor
     generates the enter and respectively the exit event for the instrumented function.
+    @note We strongly recommend not to instatiate this class directly, or insert
+    commands which contains this class for instrumentation directly,
+    but use the SCOREP_USER_REGION macro instead.
  */
 class SCOREP_User_RegionClass
 {
