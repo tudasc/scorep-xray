@@ -144,7 +144,30 @@ scorep_profile_write_paramstring_tau( scorep_profile_node* node,
                                       FILE*                file,
                                       uint64_t*            callpath_counter )
 {
-    /** TODO: implement paramter string definition writing */
+    /* Construct callpath name */
+    char*                            path;
+
+    scorep_profile_string_node_data* data
+        = SCOREP_PROFILE_DATA2PARAMSTR( node->type_specific_data );
+    const char*                      param_name  = SCOREP_Parameter_GetName( data->handle );
+    const char*                      param_value = SCOREP_String_Get( data->value );
+
+    /* Length is "<path> (<name> = <value>)" plus terminating '\0' */
+    int length = strlen( parentpath ) + strlen( param_name ) + 6 + strlen( param_value ) + 1;
+    path = ( char* )malloc( length );
+
+    sprintf( path, "%s (%s = %s)", parentpath, param_name, param_value );
+
+    /* write definition */
+    scorep_profile_write_tausnap_def( path, file, callpath_counter );
+
+    /* invoke children */
+    scorep_profile_node* child = node->first_child;
+    while ( child != NULL )
+    {
+        scorep_profile_write_node_tau( child, path, file, callpath_counter );
+        child = child->next_sibling;
+    }
 }
 
 /**
@@ -166,9 +189,7 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
                                    FILE*                file,
                                    uint64_t*            callpath_counter )
 {
-    /** TODO: implement paramter integer definition writing */
     /* Construct callpath name */
-    //const char* name   = SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) );
     char*                             path;
 
     scorep_profile_integer_node_data* data
