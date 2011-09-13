@@ -166,6 +166,9 @@ SCOREP_Region_GetRfl( SCOREP_RegionHandle handle );
 const char*
 SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle );
 
+SCOREP_ParameterType
+SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle );
+
 SCOREP_GroupHandle
 SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
                        const int32_t* ranks );

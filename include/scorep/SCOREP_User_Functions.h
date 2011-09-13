@@ -179,6 +179,23 @@ SCOREP_User_ParameterInt64
 );
 
 /**
+    Generates a parameter event for a parameter of 64 bit unsigned integer data type.
+    @note We strongly recommend not to insert calls to this function for instrumentation,
+    but use the SCOREP_USER_PARAMETER_UINT64 macro instead.
+    @param handle Pointer where the parameter handle is stored. If it is
+                  SCOREP_USER_INVALID_PARAMETER, the parameter will be registered.
+    @param name  The unique name for the paramater.
+    @param value The value for the parameter.
+ */
+void
+SCOREP_User_ParameterUint64
+(
+    SCOREP_User_ParameterHandle* handle,
+    const char*                  name,
+    uint64_t                     value
+);
+
+/**
     Generates a parameter event for a parameter of string type.
     @note We strongly recommend not to insert calls to this function for instrumentation,
     but use the SCOREP_USER_PARAMETER_STRING macro instead.

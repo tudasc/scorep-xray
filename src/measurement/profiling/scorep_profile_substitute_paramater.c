@@ -150,12 +150,22 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
         scorep_profile_integer_node_data* data = SCOREP_PROFILE_DATA2PARAMINT( node->type_specific_data );
         const char*                       name = SCOREP_Parameter_GetName( data->handle );
 
+        SCOREP_ParameterType              type = SCOREP_Parameter_GetType( data->handle );
+
+
         /* Use malloc, because its in post-processing => not time critical
            and its immediately freed => saves memory */
         char* region_name = ( char* )malloc( strlen( name ) + 18 );
 
         /* construct region name */
-        sprintf( region_name, "%s=%" PRIi64, name, data->value );
+        if ( type == SCOREP_PARAMETER_INT64 )
+        {
+            sprintf( region_name, "%s=%" PRIi64, name, data->value );
+        }
+        else
+        {
+            sprintf( region_name, "%s=%" PRIu64, name, data->value );
+        }
 
         /* Register region and modify node data */
         scorep_profile_substitute_parameter_data( node, region_name );

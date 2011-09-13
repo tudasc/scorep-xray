@@ -61,6 +61,33 @@ SCOREP_User_ParameterInt64
 }
 
 void
+SCOREP_User_ParameterUint64
+(
+    SCOREP_User_ParameterHandle* handle,
+    const char*                  name,
+    uint64_t                     value
+)
+{
+    /* Check for intialization */
+    SCOREP_USER_ASSERT_INITIALIZED;
+
+    if ( handle == NULL )
+    {
+        return;
+    }
+
+    /* Initialize parameter handle if necassary */
+    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+    {
+        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_DefineParameter( name, SCOREP_PARAMETER_UINT64 ) );
+    }
+
+    /* Trigger event */
+    SCOREP_TriggerParameterUint64( SCOREP_PARAMETER_FROM_USER( *handle ), value );
+}
+
+
+void
 SCOREP_User_ParameterString
 (
     SCOREP_User_ParameterHandle* handle,

@@ -796,7 +796,10 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+        /* The SCOREP_Profile_ParameterInteger handles unsigned and signed integers */
+        SCOREP_Profile_ParameterInteger( location,
+                                         parameterHandle,
+                                         value );
     }
 }
 

@@ -634,6 +634,33 @@
     @endcode
  */
 
+/** @def SCOREP_USER_PARAMETER_UINT64(name,value)
+    This statement adds a 64 bit unsigned integer type parameter for parameter-based
+    profiling to the current region.
+    The call-tree for the region is split according to the different values of the
+    parameters with the same name.
+    It is possible to add an arbitrary number of parameters to a region. Each parameter
+    must have a unique name. However, it is not recommended to use more than 1 parameter
+    per region.
+    @param name   A string containing the name of the parameter.
+    @param value  The value of the parameter. It must be possible for implicit casts to
+                  cast it to a 64 bit unsigned integer.
+
+    C/C++ example:
+    @code
+    void myfunc(uint64 myuint)
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
+      SCOREP_USER_PARAMETER_UINT64("A nice unsigned int",myuint)
+
+      // do something
+
+      SCOREP_USER_REGION_END( my_region_handle )
+    }
+    @endcode
+ */
+
 /** @def SCOREP_USER_PARAMETER_STRING(name,value)
     This statement adds a string type parameter for parameter-based
     profiling to the current region.
@@ -671,6 +698,10 @@
 #define SCOREP_USER_PARAMETER_INT64( name, value ) { \
         static SCOREP_User_ParameterHandle scorep_param = SCOREP_USER_INVALID_PARAMETER; \
         SCOREP_User_ParameterInt64( &scorep_param, name, value ); }
+
+#define SCOREP_USER_PARAMETER_UINT64( name, value ) { \
+        static SCOREP_User_ParameterHandle scorep_param = SCOREP_USER_INVALID_PARAMETER; \
+        SCOREP_User_ParameterUint64( &scorep_param, name, value ); }
 
 #define SCOREP_USER_PARAMETER_STRING( name, value ) { \
         static SCOREP_User_ParameterHandle scorep_param = SCOREP_USER_INVALID_PARAMETER; \
@@ -1437,6 +1468,7 @@
 #define SCOREP_GLOBAL_REGION_DEFINE( handle )
 #define SCOREP_GLOBAL_REGION_EXTERNAL ( handle )
 #define SCOREP_USER_PARAMETER_INT64( name, value )
+#define SCOREP_USER_PARAMETER_UINT64( name, value )
 #define SCOREP_USER_PARAMETER_STRING( name, value )
 #define SCOREP_USER_METRIC_GROUP_LOCAL( groupHandle )
 #define SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle )

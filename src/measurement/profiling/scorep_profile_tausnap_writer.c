@@ -206,10 +206,20 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
     else
     {
         /* 12 digit max data length. */
-        int length = strlen( parentpath ) + strlen( SCOREP_Parameter_GetName( data->handle ) ) + 12 + 6 + 1;
+        int                  length = strlen( parentpath ) + strlen( SCOREP_Parameter_GetName( data->handle ) ) + 12 + 6 + 1;
+        SCOREP_ParameterType type   = SCOREP_Parameter_GetType( data->handle );
         path = ( char* )malloc( length );
-        sprintf( path, "%s (%s = %" PRIu64 ")", parentpath,
-                 SCOREP_Parameter_GetName( data->handle ), data->value );
+
+        if ( type == SCOREP_PARAMETER_INT64 )
+        {
+            sprintf( path, "%s (%s = %" PRIi64 ")", parentpath,
+                     SCOREP_Parameter_GetName( data->handle ), data->value );
+        }
+        else
+        {
+            sprintf( path, "%s (%s = %" PRIu64 ")", parentpath,
+                     SCOREP_Parameter_GetName( data->handle ), data->value );
+        }
     }
     /* write definition */
     scorep_profile_write_tausnap_def( path, file, callpath_counter );

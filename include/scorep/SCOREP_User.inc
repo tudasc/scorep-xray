@@ -117,6 +117,9 @@
 #define SCOREP_PARAMETER_INT64( handle, name, value ) \
         call SCOREP_F_ParameterInt64( handle, name, value )
 
+#define SCOREP_PARAMETER_UINT64( handle, name, value ) \
+        call SCOREP_F_ParameterUint64( handle, name, value )
+
 #define SCOREP_PARAMETER_STRING( handle, name, value )\
         call SCOREP_F_ParameterInt64( handle, name, value )
 

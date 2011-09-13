@@ -40,7 +40,8 @@ test()
     SCOREP_USER_METRIC_INT64( globalMetric,
                               2 );
 
-    SCOREP_USER_PARAMETER_INT64( "int_param", 2 )
+    SCOREP_USER_PARAMETER_INT64( "int_param", -1 )
+    SCOREP_USER_PARAMETER_UINT64( "uint_param", -1 )
     SCOREP_USER_PARAMETER_STRING( "string_param", "test" )
     SCOREP_USER_FUNC_END
 }

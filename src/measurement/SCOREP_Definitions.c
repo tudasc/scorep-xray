@@ -1828,6 +1828,19 @@ SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
 }
 
 /**
+ * Returns the type of the parameter.
+ *
+ * @param handle A handle to the parameter.
+ *
+ * @return parameter type.
+ */
+SCOREP_ParameterType
+SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Parameter )->parameter_type;
+}
+
+/**
  * Gets read-only access to the name of the source file.
  *
  * @param handle A handle to the source file definition.
