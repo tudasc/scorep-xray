@@ -54,7 +54,7 @@ FSUB( SCOREP_F_ParameterInt64 )
 )
 {
     char* c_name = NULL;
-    if ( *handle == SCOREP_INVALID_PARAMETER )
+    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         c_name = malloc( name_len + 1 );
         strncpy( c_name, name, name_len );
@@ -76,7 +76,7 @@ FSUB( SCOREP_F_ParameterUint64 )
 )
 {
     char* c_name = NULL;
-    if ( *handle == SCOREP_INVALID_PARAMETER )
+    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         c_name = malloc( name_len + 1 );
         strncpy( c_name, name, name_len );
@@ -103,7 +103,7 @@ FSUB( SCOREP_F_ParameterString )
     strncpy( c_value, value, value_len );
     c_value[ value_len ] = '\0';
 
-    if ( *handle == SCOREP_INVALID_PARAMETER )
+    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         c_name = malloc( name_len + 1 );
         strncpy( c_name, name, name_len );

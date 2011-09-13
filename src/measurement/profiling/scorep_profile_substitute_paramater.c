@@ -155,7 +155,7 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
 
         /* Use malloc, because its in post-processing => not time critical
            and its immediately freed => saves memory */
-        char* region_name = ( char* )malloc( strlen( name ) + 18 );
+        char* region_name = ( char* )malloc( strlen( name ) + 23 );
 
         /* construct region name */
         if ( type == SCOREP_PARAMETER_INT64 )

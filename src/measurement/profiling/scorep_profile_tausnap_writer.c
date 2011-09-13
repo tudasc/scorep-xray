@@ -206,7 +206,7 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
     else
     {
         /* 12 digit max data length. */
-        int                  length = strlen( parentpath ) + strlen( SCOREP_Parameter_GetName( data->handle ) ) + 12 + 6 + 1;
+        int                  length = strlen( parentpath ) + strlen( SCOREP_Parameter_GetName( data->handle ) ) + 21 + 6 + 1;
         SCOREP_ParameterType type   = SCOREP_Parameter_GetType( data->handle );
         path = ( char* )malloc( length );
 
