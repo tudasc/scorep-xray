@@ -222,7 +222,6 @@ SCOREP::Wrapgen::handler::mpi::call_f2c_c2f
                 {
                     str += "(int(*)[3])";
                 }
-                // TODO
                 else if ( datatype::is_handler_function( arg ) )
                 {
                     if ( datatype::is_pointer( arg ) )

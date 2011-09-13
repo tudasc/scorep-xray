@@ -498,10 +498,12 @@ SCOREP::Wrapgen::handle_file_template
 {
     string   src_line;
     ifstream file_tmpl;
+    int      lineno = -1;
     OPEN_STREAM( file_tmpl, filename );
 
     while ( getline( file_tmpl, src_line ) )
     {
+        lineno++;
         if ( int pos = src_line.find( "#pragma wrapgen" ) != string::npos )
         {
             string scope, cmd, wrapper_tmpl;
@@ -560,7 +562,6 @@ SCOREP::Wrapgen::handle_file_template
                     regmatch_t match;
                     int        ret;
 
-                    // TODO evaluate return value of patter search
                     if ( ( ret = regcomp( &pattern, rule.c_str(),
                                           REG_EXTENDED + REG_ICASE + REG_NOSUB ) ) == 0 )
                     {
@@ -574,6 +575,12 @@ SCOREP::Wrapgen::handle_file_template
                                                 wrapper_tmpl.c_str(), "" );
                             }
                         }
+                    }
+                    else
+                    {
+                        cerr << "Failed to compile regular expression:\n"
+                             << filename << ":" << lineno << ": " << rule << endl;
+                        exit( EXIT_FAILURE );
                     }
                 }
             }
@@ -713,7 +720,8 @@ SCOREP::Wrapgen::is_selected
  * @param func MPI function to be processed
  * @param templatefile Filename of the wrapper tamplate
  * @param rstring Restriction filter
- * @return TODO
+ * @return Returns always false. Some calls to this functions invoke error handling
+ *         if the return would be true.
  */
 bool
 SCOREP::Wrapgen::generateOutput
