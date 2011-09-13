@@ -54,6 +54,12 @@ FSUB( SCOREP_F_ParameterInt64 )
 )
 {
     char* c_name = NULL;
+
+#ifdef SCOREP_COMPILER_PGI
+    /* The PGI Fortran interface provides no handle initialization */
+    *handle = SCOREP_USER_INVALID_PARAMETER;
+#endif
+
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         c_name = malloc( name_len + 1 );
@@ -76,6 +82,12 @@ FSUB( SCOREP_F_ParameterUint64 )
 )
 {
     char* c_name = NULL;
+
+#ifdef SCOREP_COMPILER_PGI
+    /* The PGI Fortran interface provides no handle initialization */
+    *handle = SCOREP_USER_INVALID_PARAMETER;
+#endif
+
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         c_name = malloc( name_len + 1 );
@@ -98,6 +110,11 @@ FSUB( SCOREP_F_ParameterString )
     int                          value_len
 )
 {
+#ifdef SCOREP_COMPILER_PGI
+    /* The PGI Fortran interface provides no handle initialization */
+    *handle = SCOREP_USER_INVALID_PARAMETER;
+#endif
+
     char* c_name  = NULL;
     char* c_value = malloc( value_len + 1 );
     strncpy( c_value, value, value_len );

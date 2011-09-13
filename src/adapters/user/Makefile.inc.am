@@ -15,6 +15,10 @@ SCOREP_USER_FORTRAN_FLAGS =                     \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL)
 
+if SCOREP_COMPILER_PGI
+SCOREP_USER_FORTRAN_FLAGS += -DSCOREP_COMPILER_PGI
+endif
+
 SCOREP_USER_C_SOURCES =                                    \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.c        \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c     \
