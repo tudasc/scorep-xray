@@ -3931,7 +3931,7 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
-    <countrules send="count*sendsz" recv="count*recvsz" />
+    <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (sendbuf == scorep_mpi_fortran_bottom)
@@ -3986,7 +3986,9 @@
     <param access="i" type="MPI_Comm" name="comm" />
     <param access="o" type="MPI_Status*" name="status" />
     <version id="1.0" />
-    <countrules send="count*sendsz" recv="count*sendsz" />
+    <countrules send="sendcount*sendsz" recv="recvcount*sendsz" />
+    <decl>int sendcount = count, recvcount = count;
+    MPI_Datatype sendtype = datatype, recvtype = datatype;</decl>
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)

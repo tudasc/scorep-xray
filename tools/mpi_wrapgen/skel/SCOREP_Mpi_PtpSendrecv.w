@@ -13,6 +13,7 @@ ${guard:start}
 ${proto:c}
 {
   int return_val;
+  ${decl}
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
   {
