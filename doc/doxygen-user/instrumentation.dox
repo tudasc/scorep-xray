@@ -103,13 +103,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> &mdash; </td>
-      <td align="center" valign="middle"> (Sec. @secref{ME}) </td> 
+      <td align="center" valign="middle"> (Sec. @secref{mpi_groups}) </td> 
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
       <td align="center" valign="middle"> &mdash; </td>
       <td align="center" valign="middle"> (auto) </td>
-      <td align="center" valign="middle"> (see Sec. @secref{pomp_instrumentation}) </td>
+      <td align="center" valign="middle"> @opari2 user regions (see Sec. @secref{pomp_instrumentation}) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td> 
     </tr>
@@ -378,19 +378,22 @@ The @scorep user API provides also macros for parameter-based profiling. In
 parameter-based profiling, the parameters of a function are used to split up the call-path
 for executions of different parameter values. In @scorep parameter-based profiling is
 supported for integer and string parameters. To associate a parameter value to a region
-entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> or 
-<tt>SCOREP_USER_PARAMETER_STRING</tt> after the region entry (e.g. after 
+entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> for signed integer 
+parameters, <tt>SCOREP_USER_PARAMETER_UINT64</tt> for unsigned integer parameters, or 
+<tt>SCOREP_USER_PARAMETER_STRING</tt> for string parameters after the region entry 
+(e.g. after 
 <tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>). 
 
 C/C++:
 @code
     #include <SCOREP_User.h>
 
-    void foo(int64_t myint, char *mystring)
+    void foo(int64_t myint, uint64_t myuint, char *mystring)
     {
       SCOREP_USER_REGION_DEFINE( my_region_handle )
       SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
       SCOREP_USER_PARAMETER_INT64("myint",myint)
+      SCOREP_USER_PARAMETER_INT64("myuint",myuint)
       SCOREP_USER_PARAMETER_STRING("mystring",mystring)
 
       // do something

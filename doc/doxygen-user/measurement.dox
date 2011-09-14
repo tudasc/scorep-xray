@@ -328,4 +328,112 @@ application, set the environment variable <tt>SCOREP_SELECTIVE_CONFIG_FILE</tt>
 to the configuration file and run your instrumented application. If 
 <tt>SCOREP_SELECTIVE_CONFIG_FILE</tt> is empty, or the given file can not be opened,
 the whole application run will be recorded (no selective tracing will apply).
+
+
+@section mpi_groups Selection of MPI groups
+@seclabel{mpi_groups}
+
+The Message Passing Intercace (MPI) adapter of @scorep supports the tracing
+of most of MPI's 300+ function calls. MPI defines a so-called 'profiling
+interface' that supports the provision of wrapper libraries that can
+easily interposed between the user application and the MPI library
+calls.
+
+@scorep supports selective event generation. Currently, this means that at
+start time of the application, the user can decide whether event
+generation is turned on or off for a group of @mpi functions. These groups
+are the listed sub modules of this adapter. Each module has a short
+string token that identifies this group. To activate event generation
+for a specific group, the user can specify a comma-seperated list of
+tokens in the configuration variable \p SCOREP_MPI_ENABLE_GROUPS. Additionally,
+special tokens exist to ease the handling by the user. A complete list
+of available tokens that can be specified in the runtime configuration
+is listed below.
+
+@latexonly
+\begin{table}
+@endlatexonly
+<table>
+<tr>
+ <th>Token</th><th>Module</th>
+</tr>
+<tr>
+ <td>ALL</td><td>Activate all available modules</td>
+</tr>
+<tr>
+ <td>DEFAULT</td><td>Activate the configured default modules of CG, COLL, ENV, IO, P2P, RMA, TOPO, XNONBLOCK. This can
+ be used to easily activate additional modules.</td>
+</tr>
+<tr>
+ <td>CG</td><td>Communicators and groups</td>
+</tr>
+<tr>
+ <td>COLL</td><td>Collective communication</td>
+</tr>
+<tr>
+ <td>ENV</td><td>Environmental management</td>
+</tr>
+<tr>
+ <td>ERR</td><td>Error handlers</td>
+</tr>
+<tr>
+ <td>EXT</td><td>External interfaces</td>
+</tr>
+<tr>
+ <td>IO</td><td>I/O</td>
+</tr>
+<tr>
+ <td>MISC</td><td>Miscellaneous</td>
+</tr>
+<tr>
+ <td>P2P</td><td>Point-to-point communication</td>
+</tr>
+<tr>
+ <td>RMA</td><td>One-sided communication</td>
+</tr>
+<tr>
+ <td>SPAWN</td><td>Process management interface (aka Spawn)</td>
+</tr>
+<tr>
+ <td>TOPO</td><td>Topology communicators</td>
+</tr>
+<tr>
+ <td>TYPE</td><td>MPI Datatypes</td>
+</tr>
+<tr>
+ <td>XNONBLOCK</td><td>Non-blocking communication</td>
+</tr>
+<tr>
+ <td>XREQTEST</td><td>Test events for tests of uncompleted requests</td>
+</tr>
+</table>
+@latexonly
+\end{table}
+@endlatexonly
+
+@note  Event generation in this context only relates to flow and and
+transfer events. Tracking of communicators, groups, and other internal
+data is unaffected and always turned on.
+
+Example:
+<pre>
+SCOREP_MPI_ENABLE_GROUPS=ENV,P2P
+</pre>
+
+This will enable event generation for environmental managment, including
+<tt>MPI_Init</tt> and <tt>MPI_Finalize</tt>, as well as point-to-point
+communication, but will disable it for all other functions groups.
+
+A shorthand to get event generation for all supported function calls is
+<pre>
+SCOREP_MPI_ENABLE_GROUPS=ALL
+</pre>
+
+A shorthand to add a single group, e.g. \p TYPE, to the configured default is
+<pre>
+SCOREP_MPI_ENABLE_GROUPS=DEFAULT,TYPE
+</pre>
+
+A detailed overview of the @mpi functions associated with each group can be
+found in Appendix @secref{wrapperannex}.
 */
