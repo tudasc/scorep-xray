@@ -65,13 +65,18 @@ typedef enum /* SCOREP_Pomp_RegionType */
 /** Struct which contains all data for a pomp region. */
 typedef struct
 {
-    SCOREP_Pomp_RegionType regionType;    /* region type of construct                  */
-    char*                  name;          /* critical or user region name              */
-    uint32_t               numSections;   /* sections only: number of sections         */
+    SCOREP_Pomp_RegionType regionType;        /* region type of construct              */
+    char*                  name;              /* critical or user region name          */
+    uint32_t               numSections;       /* sections only: number of sections     */
     /* For combined statements (parallel sections, parallel for) we need up to
        four SCOREP regions. So we use a pair of SCOREP regions for the parallel
-       statements and a pair of regions for other statements.                        */
-    /// @todo Why four and not three? (croessel)
+       statements and a pair of regions for other statements.
+       We must reserve space for 4 region handles, because the parallel sections
+       construct uses four region handles:
+         1. enclosing the parallel region (fork/join events)
+         2. inner parallel region (parallel begin/end events)
+         3. enclosing sections construct (sections enter/exit)
+         4. individual sections begin/end                                              */
     SCOREP_RegionHandle        outerParallel; /* SCOREP handle for the outer parallel region */
     SCOREP_RegionHandle        innerParallel; /* SCOREP handle for the inner parallel region */
     SCOREP_RegionHandle        outerBlock;    /* SCOREP handle for the enclosing region      */

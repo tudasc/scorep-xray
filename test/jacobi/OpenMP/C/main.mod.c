@@ -144,7 +144,8 @@ PrintResults( const struct JacobiData* data )
 void
 InitializeMatrix( struct JacobiData* data )
 {
-    int i, j, xx, yy, xx2, yy2;
+    int    i, j;
+    double xx, yy, xx2, yy2;
     /* Initialize initial condition and RHS */
     {
         int pomp_num_threads = omp_get_max_threads();
@@ -159,9 +160,8 @@ InitializeMatrix( struct JacobiData* data )
           {
               for ( i = 0; i < data->iCols; i++ )
               {
-                  /* TODO: check if this values have to be ints or doubles */
-                  xx = ( int )( -1.0 + data->fDx * i );
-                  yy = ( int )( -1.0 + data->fDy * j );
+                  xx = ( -1.0 + data->fDx * i );
+                  yy = ( -1.0 + data->fDy * j );
 
                   xx2 = xx * xx;
                   yy2 = yy * yy;
