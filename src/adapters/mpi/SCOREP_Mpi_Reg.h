@@ -108,6 +108,7 @@ enum scorep_mpi_groups
     SCOREP_MPI_ENABLED_TYPE      =  2048,
     SCOREP_MPI_ENABLED_PERF      =  4096,
     SCOREP_MPI_ENABLED_XNONBLOCK =  8192,
+    SCOREP_MPI_ENABLED_XREQTEST  = 16384,
     /* derived groups, which are a combination of existing groups */
     SCOREP_MPI_ENABLED_CG_ERR    =  SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_ERR,
     SCOREP_MPI_ENABLED_CG_EXT    =  SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_EXT,

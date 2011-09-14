@@ -1148,7 +1148,7 @@ MPI_Test( MPI_Request* request,
 {
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
-    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
     scorep_mpi_request* orig_req;
     MPI_Status          mystatus;
 
@@ -1169,7 +1169,7 @@ MPI_Test( MPI_Request* request,
     {
         scorep_mpi_check_request( orig_req, status );
     }
-    else if ( orig_req && event_gen_active && xnb_active )
+    else if ( orig_req && event_gen_active && xtest_active )
     {
         SCOREP_MpiRequestTested( orig_req->id );
     }
@@ -1203,7 +1203,7 @@ MPI_Testany( int          count,
 {
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
-    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
     scorep_mpi_request* orig_req;
     MPI_Status          mystatus;
 
@@ -1221,7 +1221,7 @@ MPI_Testany( int          count,
     scorep_mpi_save_request_array( array_of_requests, count );
     return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
 
-    if ( event_gen_active && xnb_active )
+    if ( event_gen_active && xtest_active )
     {
         int i;
 
@@ -1272,7 +1272,7 @@ MPI_Testall( int          count,
 {
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
-    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
     int                 i;
     scorep_mpi_request* orig_req;
 
@@ -1303,7 +1303,7 @@ MPI_Testall( int          count,
             scorep_mpi_check_request( orig_req, &( array_of_statuses[ i ] ) );
         }
     }
-    else if ( event_gen_active && xnb_active )
+    else if ( event_gen_active && xtest_active )
     {
         int i;
 
@@ -1345,7 +1345,7 @@ MPI_Testsome( int          incount,
 {
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
-    const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
+    const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
     int                 i;
     scorep_mpi_request* orig_req;
 
@@ -1368,7 +1368,7 @@ MPI_Testsome( int          incount,
     return_val = PMPI_Testsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
 
-    if ( event_gen_active && xnb_active )
+    if ( event_gen_active && xtest_active )
     {
         int        cur, j, tmp;
         MPI_Status tmpstat;

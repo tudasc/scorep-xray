@@ -73,21 +73,24 @@
    be set, which has the form SCOREP_MPI_NO_<GROUP_NAME>. This define should be set by the
    configure script and written to config.h.
    To specify the groups for which events are recorded, set the config variable
-   "enable_groups".
+   "SCOREP_MPI_ENABLE_GROUPS".
 
    The following groups are available:
-   @li CG:    Communicator and group management
-   @li COLL:  Collective communication
-   @li ENV:   Environment management, e.g. MPI_Init
-   @li ERR:   Error handling
-   @li EXT:   External
-   @li IO:    File IO
-   @li MISC:  Miscellaneous
-   @li P2P:   Peer-to-peer communication
-   @li RMA:   Remote memory access, one sided communication
-   @li SPAWN: Prozess management
-   @li TOPO:  Topology
-   @li TYPE:  Type definition
+   @li ALL:       All MPI functions
+   @li CG:        Communicator and group management
+   @li COLL:      Collective communication
+   @li ENV:       Environment management, e.g. MPI_Init
+   @li ERR:       Error handling
+   @li EXT:       External
+   @li IO:        File IO
+   @li MISC:      Miscellaneous
+   @li P2P:       Peer-to-peer communication
+   @li RMA:       Remote memory access, one sided communication
+   @li SPAWN:     Prozess management
+   @li TOPO:      Topology
+   @li TYPE:      Type definition
+   @li XNONBLOCK: Extended non-blocking events
+   @li XREQTEST:  Test events for uncompleted requests
 
    @{
  */

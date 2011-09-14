@@ -173,6 +173,7 @@ static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
     { "TOPO",      SCOREP_MPI_ENABLED_TOPO      },
     { "TYPE",      SCOREP_MPI_ENABLED_TYPE      },
     { "XNONBLOCK", SCOREP_MPI_ENABLED_XNONBLOCK },
+    { "XREQTEST",  SCOREP_MPI_ENABLED_XREQTEST  },
     { NULL,        0                            }
 };
 
@@ -208,7 +209,8 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         " SPAWN: Process management\n"
         " TOPO: Topology\n"
         " TYPE: MPI datatype functions\n"
-        " XNONBLOCK: Extended non-blocking events.\n",
+        " XNONBLOCK: Extended non-blocking events.\n"
+        " XREQTEST: Test events for uncompleted requests.\n",
     },
     SCOREP_CONFIG_TERMINATOR
 };
