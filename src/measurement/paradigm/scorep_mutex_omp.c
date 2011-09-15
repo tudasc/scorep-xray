@@ -37,6 +37,7 @@
 
 
 #include <SCOREP_Mutex.h>
+#include <SCOREP_RuntimeManagement.h>
 
 
 /**
@@ -134,6 +135,13 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 SCOREP_Error_Code
 SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 {
+    #if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+    if ( !SCOREP_IsInitialized() )
+    {
+        return SCOREP_SUCCESS;
+    }
+    #endif
+
     if ( !scorepMutex )
     {
         return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
@@ -163,6 +171,13 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 SCOREP_Error_Code
 SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 {
+    #if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
+    if ( !SCOREP_IsInitialized() )
+    {
+        return SCOREP_SUCCESS;
+    }
+    #endif
+
     if ( !scorepMutex )
     {
         return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
