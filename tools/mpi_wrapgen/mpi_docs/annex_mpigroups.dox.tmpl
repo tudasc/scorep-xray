@@ -1,0 +1,240 @@
+/** @page wrapperannex  MPI wrapper affiliation
+@seclabel{wrapperannex}
+
+Some wrapper functions are affiliated with a function group that has not
+been described for direct user access in section @secref{ME}. These
+groups are subgroups that contain function calls that are only enabled
+when both main groups are enabled. The reason for this is to control the
+amount of events generated during measurement, a user might want to turn
+off the measurement of non-critical function calls before the measurement
+of the complete main group is turned off.  Subgroups can either be
+related to \p MISC (miscellaneous functions, e.g. handle conversion), \p
+EXT (external interfaces, e.g. handle attributes), or \p ERR (error handlers).
+
+
+For example, the functions in group \p CG_MISC will only generate events
+if both groups \p CG and \p MISC are enabled at runtime. 
+@section f2g Function to group
+
+<table>
+<tr><td><b>Function</b></td><td><b>Group</b></td></tr>
+#pragma wrapgen multiple restrict() mpi_docs/SCOREP_Doc_FuncList.w
+</table>
+
+@section g2f Group to function
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b><b>CG</b></b></td><td>
+<b>Communicators and Groups</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gcg) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>CG_ERR</b></td><td>
+<b>Error handlers for
+Communicators and Groups</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gcg_err) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>CG_EXT</b></td><td>
+<b>External interfaces for
+Communicators and Groups</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gcg_ext) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>CG_MISC</b></td><td>
+<b>Miscellaneous functions for
+Communicators and Groups</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gcg_misc) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>COLL</b></td><td>
+<b>Collective communication</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gcoll) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>ENV</b></td><td>
+<b>Environmental management</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(genv) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>ERR</b></td><td>
+<b>Common error handlers</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gerr) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>EXT</b></td><td>
+<b>Common external interfaces </b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gext) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>IO</b></td><td>
+<b>Parallel I/O</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gio) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>IO_ERR</b></td><td>
+<b>Error handlers for Parallel I/O</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gio_err) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>IO_MISC</b></td><td>
+<b>Miscellaneous functions for Parallel I/O</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gio_misc) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>MISC</b></td><td>
+<b>Miscellaneous functions</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gmisc) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>P2P</b></td><td>
+<b>Point-to-point communication</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gp2p) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>PERF</b></td><td>
+<b>Profiling Interface</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gperf) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>RMA</b></td><td>
+<b>One-sided communication (Remote Memory Access)</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(grma) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>RMA_ERR</b></td><td>
+<b>Error handlers for
+One-sided communication (Remote Memory Access)</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(grma_err) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>RMA_EXT</b></td><td>
+<b>External interfaces for
+One-sided communication (Remote Memory Access)</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(grma_ext) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>RMA_MISC</b></td><td>
+<b>Miscellaneous functions for
+One-sided communication (Remote Memory Access)</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(grma_misc) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>SPAWN</b></td><td>
+<b>Process spawning</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gspawn) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>TOPO</b></td><td>
+<b>Topology (cartesian and graph) communicators</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gtopo) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>TYPE</b></td><td>
+<b>Datatypes</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gtype) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>TYPE_EXT</b></td><td>
+<b>External interfaces for
+datatypes</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gtype_ext) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%" valign=top rowspan="2"><b>TYPE_MISC</b></td><td>
+<b>Miscellaneous functions for
+datatypes</b>
+</td></tr>
+<tr><td>
+#pragma wrapgen multiple restrict(gtype_misc) mpi_docs/SCOREP_Doc_GroupList.w
+</td></tr>
+</table>
+*/
