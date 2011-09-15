@@ -175,6 +175,11 @@ endif # HAVE_DOXYGEN -------------------------------------------------
 if HAVE_DOXYGEN_LATEX #-----------------------------------------------
 
 doxygen-user-pdf: doxygen-user
+	cat doc/doxygen-user.cfg > doc/doxygen-user-pdf.cfg
+	echo "ENABLED_SECTIONS = LATEX" >> doc/doxygen-user-pdf.cfg
+	echo "GENERATE_LATEX   = YES"   >> doc/doxygen-user-pdf.cfg
+	echo "GENERATE_HTML    = NO"    >> doc/doxygen-user-pdf.cfg
+	doxygen doc/doxygen-user-pdf.cfg
 	cd "$(USER_DOC_DIR)/pdf"; \
 	make;                     \
 	mv refman.pdf ../;        \
