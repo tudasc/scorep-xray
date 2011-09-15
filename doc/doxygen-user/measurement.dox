@@ -401,7 +401,7 @@ is listed below.
  <td>TYPE</td><td>MPI Datatypes</td>
 </tr>
 <tr>
- <td>XNONBLOCK</td><td>Non-blocking communication</td>
+ <td>XNONBLOCK</td><td>Non-blocking communication events</td>
 </tr>
 <tr>
  <td>XREQTEST</td><td>Test events for tests of uncompleted requests</td>
