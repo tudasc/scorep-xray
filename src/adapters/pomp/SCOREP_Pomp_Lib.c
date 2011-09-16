@@ -114,7 +114,8 @@ POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp2_handle )
 }
 
 void
-POMP2_Flush_enter( POMP2_Region_handle* pomp_handle )
+POMP2_Flush_enter( POMP2_Region_handle* pomp_handle,
+                   const char           ctc_string[]  )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Flush_enter" );
     SCOREP_POMP2_ENSURE_INITIALIZED;

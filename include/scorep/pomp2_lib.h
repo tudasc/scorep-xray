@@ -164,7 +164,8 @@ POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp2_handle );
     @param pomp_handle  The handle of the started region.
  */
 extern void
-POMP2_Flush_enter( POMP2_Region_handle* pomp_handle );
+POMP2_Flush_enter( POMP2_Region_handle* pomp_handle,
+                   const char           ctc_string[] );
 
 /** Called after an flush.
     @param pomp_handle  The handle of the ended region.

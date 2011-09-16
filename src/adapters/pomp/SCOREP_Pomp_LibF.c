@@ -88,11 +88,13 @@ void FSUB(POMP2_Implicit_barrier_exit)(POMP2_Region_handle_fortran* regionHandle
     }
 }
 
-void FSUB(POMP2_Flush_enter)(POMP2_Region_handle_fortran* regionHandle)
+void FSUB(POMP2_Flush_enter)(POMP2_Region_handle_fortran* regionHandle,
+			      const char           *ctc_string,
+                              int ctc_string_len)
 {
     if ( scorep_pomp_is_tracing_on )
     {
-        POMP2_Flush_enter(SCOREP_POMP_F2C_REGION( regionHandle ));
+        POMP2_Flush_enter(SCOREP_POMP_F2C_REGION( regionHandle ), NULL);
     }
 }
 
