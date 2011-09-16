@@ -179,6 +179,7 @@ doxygen-user-pdf: doxygen-user
 	echo "ENABLED_SECTIONS = LATEX" >> doc/doxygen-user-pdf.cfg
 	echo "GENERATE_LATEX   = YES"   >> doc/doxygen-user-pdf.cfg
 	echo "GENERATE_HTML    = NO"    >> doc/doxygen-user-pdf.cfg
+	cp $(abs_srcdir)/vendor/common/build_related/doxygen/scorep.sty $(USER_DOC_DIR)/pdf/
 	doxygen doc/doxygen-user-pdf.cfg
 	cd "$(USER_DOC_DIR)/pdf"; \
 	make;                     \
