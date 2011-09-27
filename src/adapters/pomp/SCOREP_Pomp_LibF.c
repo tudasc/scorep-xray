@@ -298,3 +298,83 @@ void FSUB(POMP2_Workshare_exit)(POMP2_Region_handle_fortran* regionHandle)
           POMP2_Workshare_exit(SCOREP_POMP_F2C_REGION( regionHandle ));
     }
 }
+
+void FSUB(POMP2_Init_lock)(omp_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Init_lock(s);
+  }else{
+	  omp_init_lock(s);
+  }
+}
+
+void FSUB(POMP2_Destroy_lock)(omp_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Destroy_lock(s);
+  }else{
+	  omp_destroy_lock(s);
+  }
+}
+
+void FSUB(POMP2_Set_lock)(omp_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Set_lock(s);
+  }else{
+	  omp_set_lock(s);
+  }
+}
+
+void FSUB(POMP2_Unset_lock)(omp_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Unset_lock(s);
+  }else{
+	  omp_unset_lock(s);
+  }
+}
+
+int  FSUB(POMP2_Test_lock)(omp_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  return POMP2_Test_lock(s);
+  }else{
+	  return omp_test_lock(s);
+  }
+}
+
+void FSUB(POMP2_Init_nest_lock)(omp_nest_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Init_nest_lock(s);
+  }else{
+	  omp_init_nest_lock(s);
+  }
+}
+
+void FSUB(POMP2_Destroy_nest_lock)(omp_nest_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Destroy_nest_lock(s);
+  }else{
+	  omp_destroy_nest_lock(s);
+  }
+}
+
+void FSUB(POMP2_Set_nest_lock)(omp_nest_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Set_nest_lock(s);
+  }else{
+	  omp_set_nest_lock(s);
+  }
+}
+
+void FSUB(POMP2_Unset_nest_lock)(omp_nest_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  POMP2_Unset_nest_lock(s);
+  }else{
+	  omp_unset_nest_lock(s);
+  }
+}
+
+int  FSUB(POMP2_Test_nest_lock)(omp_nest_lock_t *s) {
+  if ( scorep_pomp_is_tracing_on ) {
+	  return POMP2_Test_nest_lock(s);
+  }else{
+	  return omp_test_nest_lock(s);
+  }
+}
