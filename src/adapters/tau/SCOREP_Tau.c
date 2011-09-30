@@ -18,7 +18,7 @@
 
 /**
  * @file       /scorep/src/adapters/tau/SCOREP_Tau.c
- * @maintainer Sameer Shende <sameer@cs.uoregon.edu>
+ * @maintainer  Suzanne Millstein <smillst@cs.uoregon.edu>
  * @status alpha
  * @ingroup    TAU
  *
@@ -145,11 +145,6 @@ SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback callback )
  * don't check for uniqueness of this tuple in this function, i.e. during
  * measurement, this is the adapters responsibility, but we require that every
  * call defines a unique and distinguishable region.
- *
- * @todo Change SCOREP_RegionType from enum to bitstring? When using phases,
- * parametr-based profiling and dynamic regions, combinations of these
- * features may be useful. These combinations can be encoded in a
- * bitstring. The adapter group was queried for detailed input.
  *
  * @return A process unique region handle to be used in calls to
  * SCOREP_EnterRegion() and SCOREP_ExitRegion().
