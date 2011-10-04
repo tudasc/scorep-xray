@@ -2,5 +2,5 @@
 
 ...
 
-A call to \c scorep_config has the following syntax:
+A call to \c scorep-config has the following syntax:
 \verbatim

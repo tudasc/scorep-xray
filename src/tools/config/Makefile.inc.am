@@ -18,7 +18,7 @@
 ## file       Makefile.inc.am
 ## maintainer Johannes Spazier <johannes.spazier@tu-dresden.de>
 
-bin_PROGRAMS += scorep_config
+bin_PROGRAMS += scorep-config
 
 scorep_config_SOURCES = $(SRC_ROOT)src/tools/config/scorep_config.cpp       \
                       $(SRC_ROOT)src/tools/config/scorep_config.hpp

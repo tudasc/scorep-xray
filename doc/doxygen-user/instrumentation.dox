@@ -55,10 +55,10 @@ while default builds (without specifying <tt>PREP</tt> on the command line)
 remain fully optimized and without instrumentation.
 
 When compiling without the @scorep instrumenter, the
-<tt>scorep_config</tt> command can be used to simplify determining the appropriate
+<tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
-    scorep_config [--seq|--omp|--mpi|--hyb] --libs [--fortran]
+    scorep-config [--seq|--omp|--mpi|--hyb] --libs [--fortran]
 @endverbatim
 
 The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whether @mpi,
@@ -68,12 +68,12 @@ The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whe
   A particular installation of @scorep may not offer all measurement
   configurations!
 
-The <tt>scorep_config</tt> command can also be used to determine the right compiler
+The <tt>scorep-config</tt> command can also be used to determine the right compiler
 flags for specifying the include directory of the <tt>SCOREP_User.h</tt> or
 <tt>SCOREP_User.inc</tt> header files when compiling without using the @scorep
 instrumenter, necessary defines and compiler instrumentation flags:
 @verbatim
-    scorep_config --cflags [--fortran] [--user] [--nocompiler]
+    scorep-config --cflags [--fortran] [--user] [--nocompiler]
 @endverbatim
 
 If you want to instrument Fortran code, you should add <tt>--fortran</tt>. The 

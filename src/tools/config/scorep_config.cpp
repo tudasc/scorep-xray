@@ -43,7 +43,7 @@
 #define ACTION_FC     6
 
 #define HELPTEXT \
-    "\nUsage:\nscorep_config <command> [<options>]\n" \
+    "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
     "   --cflags prints additional compiler flags. They already contain the\n" \
     "            include flags.\n" \
