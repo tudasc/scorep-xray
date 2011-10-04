@@ -836,7 +836,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
             std::cout << "ERROR: Unable to find Score-P config tool.\n";
             abort();
         }
-        scorep_config += "/scorep_config";
+        scorep_config += "/scorep-config";
     }
 
     // Determine mode parameter
