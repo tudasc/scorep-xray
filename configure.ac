@@ -25,7 +25,7 @@ AC_CONFIG_MACRO_DIR([vendor/common/build-config/m4])
 AC_PREFIX_DEFAULT([/opt/scorep])
 
 ## Call not before AC_CONFIG_MACRO_DIR
-AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11.1 -Wall tar-ustar])
+AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11.1 -Wall tar-pax])
 
 
 
