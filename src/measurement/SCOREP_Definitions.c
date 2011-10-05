@@ -1051,7 +1051,6 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
-// TODO: make this to a scorep_debug_dump_*_definition
 #ifdef SCOREP_DEBUG
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "    Handle ID:  %x", new_definition->sequence_number );
@@ -1104,7 +1103,6 @@ SCOREP_DefineMPICartesianCoords(
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
-// TODO: make this into a scorep_debug_dump_*_definition function
 #ifdef SCOREP_DEBUG
     char stringBuffer[ 16 ];
 
@@ -1691,11 +1689,14 @@ scorep_callpath_definitions_equal( const SCOREP_Callpath_Definition* existingDef
         return false;
     }
 
-    /** @todo: we would need to deref parameter_handle, to get to the type here
+    /** @note: we need to deref parameter_handle to know the type,
      *         but we don't have the associated page manager
-     *         we currently know, that sizeof(integer_value) == sizeof(string_handle)
+     *         thus, we use memcmp for comparison
+     *         luckily, the union members have equal size, currently
      */
-    return existingDefinition->parameter_value.integer_value == tmpDefinition->parameter_value.integer_value;
+    return 0 == memcmp( &existingDefinition->parameter_value,
+                        &tmpDefinition->parameter_value,
+                        sizeof( existingDefinition->parameter_value ) );
 }
 
 
