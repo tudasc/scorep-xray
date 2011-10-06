@@ -30,9 +30,7 @@ test_scorep_config_cppflags = $(AM_CPPFLAGS) \
                               -I$(INC_ROOT)src/measurement/include \
                               -I$(PUBLIC_INC_DIR) \
                               -I$(INC_DIR_UTIL)
-test_scorep_config_ldadd    = libscorep_measurement.la \
-                              libscorep_timer.la       \
-                              $(LIB_DIR_UTIL)libscorep_utilities.la
+test_scorep_config_ldadd    = libscorep_serial.la
 
 test_scorep_config_bool_SOURCES  = $(SRC_ROOT)test/measurement/config/bool.c \
                                    $(SRC_ROOT)vendor/common/cutest/CuTest.c
