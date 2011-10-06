@@ -1008,6 +1008,60 @@ parse_bitset( const char*                 value,
     return success;
 }
 
+/* quotes a string for shell consumption */
+static inline char*
+single_quote_string( const char* str )
+{
+    size_t      length = strlen( str );
+    /* original length plus two ' */
+    size_t      new_length = length + 2;
+
+    const char* string_it = str;
+    while ( *string_it )
+    {
+        switch ( *string_it )
+        {
+            case '\'':
+            case '!':
+                /* each escaped character c will be replaced by (literally) '\c' */
+                new_length += 3;
+                break;
+        }
+        string_it++;
+    }
+
+    char* new_string = calloc( new_length + 1, sizeof( char ) );
+    if ( !new_string )
+    {
+        SCOREP_ERROR_POSIX();
+        return NULL;
+    }
+
+    char* new_string_it = new_string;
+    string_it        = str;
+    *new_string_it++ = '\'';
+    while ( *string_it )
+    {
+        switch ( *string_it )
+        {
+            case '\'':
+            case '!':
+                *new_string_it++ = '\'';
+                *new_string_it++ = '\\';
+                *new_string_it++ = *string_it;
+                *new_string_it++ = '\'';
+                break;
+            default:
+                *new_string_it++ = *string_it;
+                break;
+        }
+        string_it++;
+    }
+    *new_string_it++ = '\'';
+    *new_string_it   = '\0';
+
+    return new_string;
+}
 
 static inline void
 dump_set( FILE*       out,
@@ -1016,15 +1070,21 @@ dump_set( FILE*       out,
 {
     const char* sep = "";
 
-    fprintf( out, "%s=\"", name );
+    fprintf( out, "%s=", name );
     while ( *stringList )
     {
-        fprintf( out, "%s%s", sep, *stringList );
+        char* quoted_string = single_quote_string( *stringList );
+        if ( !quoted_string )
+        {
+            break;
+        }
+        fprintf( out, "%s%s", sep, quoted_string );
         sep = ",";
+        free( quoted_string );
 
         stringList++;
     }
-    fprintf( out, "\"\n" );
+    fprintf( out, "\n" );
 }
 
 static inline void
@@ -1035,20 +1095,26 @@ dump_bitset( FILE*                       out,
 {
     const char* sep = "";
 
-    fprintf( out, "%s=\"", name );
+    fprintf( out, "%s=", name );
     while ( acceptedValues->name )
     {
         if ( ( bitmask & acceptedValues->value ) == acceptedValues->value )
         {
-            fprintf( out, "%s%s", sep, acceptedValues->name );
+            char* quoted_string = single_quote_string( acceptedValues->name );
+            if ( !quoted_string )
+            {
+                break;
+            }
+            fprintf( out, "%s%s", sep, quoted_string );
             sep = ",";
+            free( quoted_string );
 
             bitmask &= ~acceptedValues->value;
         }
 
         acceptedValues++;
     }
-    fprintf( out, "\"\n" );
+    fprintf( out, "\n" );
 }
 
 static inline void
@@ -1087,13 +1153,20 @@ dump_value( FILE*             out,
             break;
 
         case SCOREP_CONFIG_TYPE_STRING:
-            /** @todo escape string */
+        {
+            char* quoted_value = single_quote_string( *( const char** )variableReference );
+            if ( !quoted_value )
+            {
+                break;
+            }
             fprintf( out,
-                     "%s=\"%s\"\n",
+                     "%s=%s\n",
                      name,
-                     *( const char** )variableReference );
+                     quoted_value );
+            free( quoted_value );
 
             break;
+        }
 
         case SCOREP_CONFIG_TYPE_PATH:
         case SCOREP_INVALID_CONFIG_TYPE:
