@@ -16,6 +16,6 @@
 check_PROGRAMS      += timer_test
 timer_test_SOURCES   = $(SRC_ROOT)test/services/scorep_timer_test.c
 timer_test_CPPFLAGS  = $(AM_CPPFLAGS) -I$(INC_ROOT)src/services/include
-timer_test_LDADD     = libscorep_timer.la $(LIB_DIR_UTIL)libscorep_utilities.la
+timer_test_LDADD     = libscorep_serial.la
 #TESTS_SERIAL += timer_test
 

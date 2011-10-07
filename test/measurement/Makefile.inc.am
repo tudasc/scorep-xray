@@ -70,7 +70,7 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(PUBLIC_INC_DIR) \
                               -I$(INC_DIR_UTIL) \
                               -I$(INC_DIR_VENDOR_HASH)
-definitions_test_c_LDADD = $(LIB_ROOT)libscorep_serial.la $(LIB_DIR_UTIL)libscorep_utilities.la
+definitions_test_c_LDADD = libscorep_serial.la
 
 TESTS_SERIAL += definitions_test_c
 
@@ -83,14 +83,6 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(PUBLIC_INC_DIR) \
                                -I$(INC_DIR_UTIL) \
                                -I$(INC_DIR_VENDOR_HASH)
-string_duplicates_c_LDADD    = libscorep_paradigm_non_omp.la \
-                               libscorep_profile.la \
-                               libscorep_measurement.la \
-                               libjenkins_hash.la \
-                               libscorep_timer.la \
-                               libscorep_paradigm_non_mpi.la \
-                               libscorep_cube_writer.la \
-                               $(LIB_DIR_OTF2)libotf2.la \
-                               $(LIB_DIR_UTIL)libscorep_utilities.la
+string_duplicates_c_LDADD    = libscorep_serial.la
 
 TESTS_SERIAL += string_duplicates_c
