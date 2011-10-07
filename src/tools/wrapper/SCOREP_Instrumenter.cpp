@@ -21,6 +21,7 @@
  */
 
 #include <config.h>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -1033,9 +1034,17 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
 std::string
 SCOREP_Instrumenter::instrument_opari( std::string source_file )
 {
+    /* For Fortran source files, the extension must be in upper case to use the
+       C-Preporcessor */
+    std::string extension = get_extension( source_file );
+    if ( is_fortran_file( source_file ) )
+    {
+        std::transform( extension.begin(), extension.end(), extension.begin(), ::toupper );
+    }
+
     std::string modified_file = get_basename( source_file )
                                 + ".opari"
-                                + get_extension( source_file );
+                                + extension;
 
     invoke_opari( source_file, modified_file );
     return modified_file;
