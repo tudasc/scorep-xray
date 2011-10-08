@@ -171,6 +171,7 @@ scorep_unify_mpi_master( void )
                 remote_page_manager,
                 moved_page_ids[ page ],
                 moved_page_fills[ page ] );
+            assert( page_memory );
 
             SCOREP_Mpi_Recv( page_memory,
                              moved_page_fills[ page ],

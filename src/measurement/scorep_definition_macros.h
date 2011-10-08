@@ -197,6 +197,7 @@
     { \
         new_handle = SCOREP_Memory_AllocForDefinitions( \
             sizeof( SCOREP_ ## Type ## _Definition ) ); \
+        assert( new_handle != SCOREP_MOVABLE_NULL ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
     } \
@@ -222,6 +223,7 @@
         new_handle = SCOREP_Memory_AllocForDefinitions( \
             sizeof( SCOREP_ ## Type ## _Definition ) + \
             ( ( number_of_members ) * sizeof( array_type ) ) ); \
+        assert( new_handle != SCOREP_MOVABLE_NULL ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
     } \
