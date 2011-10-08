@@ -2,6 +2,5 @@
 
 include ../src/tools/wrapper/Makefile.inc.am
 include ../src/tools/config/Makefile.inc.am
-#include ../src/tools/unification/Makefile.inc.am
 
 #include ../test/...

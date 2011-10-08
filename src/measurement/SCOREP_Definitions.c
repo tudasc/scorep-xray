@@ -1009,7 +1009,6 @@ SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle )
 
     SCOREP_MPIWindow_Definition* new_definition = NULL;
     SCOREP_MPIWindowHandle       new_handle     = SCOREP_INVALID_MPI_WINDOW;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( MPIWindow, mpi_window, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1046,7 +1045,6 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
 
     SCOREP_MPICartesianTopology_Definition* new_definition = NULL;
     SCOREP_MPICartesianTopologyHandle       new_handle     = SCOREP_INVALID_CART_TOPOLOGY;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( MPICartesianTopology, mpi_cartesian_topology, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1098,7 +1096,6 @@ SCOREP_DefineMPICartesianCoords(
 
     SCOREP_MPICartesianCoords_Definition* new_definition = NULL;
     SCOREP_MPICartesianCoordsHandle       new_handle     = SCOREP_INVALID_CART_COORDS;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( MPICartesianCoords, mpi_cartesian_coords, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1136,7 +1133,6 @@ SCOREP_DefineCounterGroup( const char* name )
 
     SCOREP_CounterGroup_Definition* new_definition = NULL;
     SCOREP_CounterGroupHandle       new_handle     = SCOREP_INVALID_COUNTER_GROUP;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( CounterGroup, counter_group, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1168,7 +1164,6 @@ SCOREP_DefineCounter( const char*               name,
 
     SCOREP_Counter_Definition* new_definition = NULL;
     SCOREP_CounterHandle       new_handle     = SCOREP_INVALID_COUNTER;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( Counter, counter, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1197,7 +1192,6 @@ SCOREP_DefineIOFileGroup( const char* name )
 
     SCOREP_IOFileGroup_Definition* new_definition = NULL;
     SCOREP_IOFileGroupHandle       new_handle     = SCOREP_INVALID_IOFILE_GROUP;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( IOFileGroup, io_file_group, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1227,7 +1221,6 @@ SCOREP_DefineIOFile( const char*              name,
 
     SCOREP_IOFile_Definition* new_definition = NULL;
     SCOREP_IOFileHandle       new_handle     = SCOREP_INVALID_IOFILE;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( IOFile, io_file, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1258,7 +1251,6 @@ SCOREP_DefineMarkerGroup( const char* name )
 
     SCOREP_MarkerGroup_Definition* new_definition = NULL;
     SCOREP_MarkerGroupHandle       new_handle     = SCOREP_INVALID_MARKER_GROUP;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( MarkerGroup, marker_group, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -1290,7 +1282,6 @@ SCOREP_DefineMarker( const char*              name,
 
     SCOREP_Marker_Definition* new_definition = NULL;
     SCOREP_MarkerHandle       new_handle     = SCOREP_INVALID_MARKER;
-    SCOREP_ALLOC_NEW_DEFINITION_OLD( Marker, marker, &scorep_local_definition_manager );
 
     // Init new_definition
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
