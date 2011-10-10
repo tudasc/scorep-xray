@@ -50,6 +50,12 @@ SCOREP_Memory_Initialize( size_t totalMemory,
 
 
 /**
+ * Informs the user of an out of memory situation and aborts the measurement.
+ */
+void
+SCOREP_Memory_HandleOutOfMemory( void );
+
+/**
  * Clean up the memory system.
  */
 void
