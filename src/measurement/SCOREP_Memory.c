@@ -208,7 +208,7 @@ SCOREP_Memory_AllocForProfile( size_t size  )
     if ( !mem )
     {
         /* aborts */
-        SCOREP_Memory_HandleOutOfMemeory();
+        SCOREP_Memory_HandleOutOfMemory();
     }
     return mem;
 }
@@ -233,7 +233,7 @@ SCOREP_Memory_AllocForMisc( size_t size  )
     if ( !mem )
     {
         /* aborts */
-        SCOREP_Memory_HandleOutOfMemeory();
+        SCOREP_Memory_HandleOutOfMemory();
     }
     return mem;
 }
@@ -252,11 +252,12 @@ SCOREP_Allocator_MovableMemory
 SCOREP_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
-    void* mem = SCOREP_Allocator_AllocMovable( scorep_local_movable_page_manager, size );
+    SCOREP_Allocator_MovableMemory mem =
+        SCOREP_Allocator_AllocMovable( scorep_local_movable_page_manager, size );
     if ( mem == SCOREP_MOVABLE_NULL )
     {
         /* aborts */
-        SCOREP_Memory_HandleOutOfMemeory();
+        SCOREP_Memory_HandleOutOfMemory();
     }
     return mem;
 }
