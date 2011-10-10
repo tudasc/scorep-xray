@@ -146,7 +146,7 @@ void
 SCOREP_Memory_HandleOutOfMemory( void )
 {
     SCOREP_ERROR( SCOREP_ERROR_MEMORY_OUT_OF_PAGES,
-                  "Out of memory. Please increase SCOREP_TOTAL_MEMORY=" PRIu64 " and try again.",
+                  "Out of memory. Please increase SCOREP_TOTAL_MEMORY=%" PRIu64 " and try again.",
                   scorep_memory_total_memory );
     assert( false );
 }
