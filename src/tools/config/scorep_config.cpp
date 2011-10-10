@@ -316,7 +316,7 @@ main( int    argc,
 SCOREP_Config::SCOREP_Config( char* arg0 )
 {
     char* path = SCOREP_GetExecutablePath( arg0 );
-    str_otf2_config = "otf2_config";
+    str_otf2_config = "otf2-config";
     if ( path != NULL )
     {
         str_otf2_config = "/" + str_otf2_config;
