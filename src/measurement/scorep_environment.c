@@ -47,6 +47,8 @@ static uint64_t scorep_env_total_memory;
 static uint64_t scorep_env_page_size;
 static bool     scorep_env_use_sion_substrate;
 static bool     scorep_env_compress_traces;
+static char*    scorep_env_experiment_directory;
+static bool     scorep_env_overwrite_experiment_directory;
 
 /** @brief Measurement system configure variables */
 SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
@@ -112,6 +114,30 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "false",
         "Whether or not to compress traces with libz.",
         "Long help"
+    },
+    {
+        "experiment_directory",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_env_experiment_directory,
+        NULL,
+        "",
+        "name of the experiment directory",
+        "Name of the experiment directory.\n"
+        "When no experiment name is given (the default)Score-P names the "
+        "experiment directory `scorep-measurement-tmp' and renames this "
+        "after a successful measurement to a generated name based on the "
+        "current time."
+    },
+    {
+        "overwrite_experiment_directory",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_env_overwrite_experiment_directory,
+        NULL,
+        "true",
+        "overwrite an existing experiment directory",
+        "If you specified a specific experiment directory name, but this name "
+        "is already given, you can force overwriting it with this flag.\n"
+        "The previous experiment directory will be renamed."
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -208,4 +234,18 @@ SCOREP_Env_CompressTraces()
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_compress_traces;
+}
+
+const char*
+SCOREP_Env_ExperimentDirectory()
+{
+    assert( scorep_env_core_environment_variables_initialized );
+    return scorep_env_experiment_directory;
+}
+
+bool
+SCOREP_Env_OverwriteExperimentDirectory()
+{
+    assert( scorep_env_core_environment_variables_initialized );
+    return scorep_env_overwrite_experiment_directory;
 }

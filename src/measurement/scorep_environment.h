@@ -66,5 +66,12 @@ SCOREP_Env_UseSionSubstrate();
 bool
 SCOREP_Env_CompressTraces();
 
+const char*
+SCOREP_Env_ExperimentDirectory();
+
+
+bool
+SCOREP_Env_OverwriteExperimentDirectory();
+
 
 #endif /* SCOREP_INTERNAL_ENVIRONMENT_H */
