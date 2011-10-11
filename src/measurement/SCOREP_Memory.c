@@ -203,6 +203,11 @@ void*
 SCOREP_Memory_AllocForProfile( size_t size  )
 {
     // collect statistics
+    if ( size == 0 )
+    {
+        return NULL;
+    }
+
     void* mem = SCOREP_Allocator_Alloc(
         SCOREP_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ], size );
     if ( !mem )
@@ -228,6 +233,11 @@ void*
 SCOREP_Memory_AllocForMisc( size_t size  )
 {
     // collect statistics
+    if ( size == 0 )
+    {
+        return NULL;
+    }
+
     void* mem = SCOREP_Allocator_Alloc(
         SCOREP_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
     if ( !mem )
@@ -252,6 +262,11 @@ SCOREP_Allocator_MovableMemory
 SCOREP_Memory_AllocForDefinitions( size_t size )
 {
     // collect statistics
+    if ( size == 0 )
+    {
+        return 0;
+    }
+
     SCOREP_Allocator_MovableMemory mem =
         SCOREP_Allocator_AllocMovable( scorep_local_movable_page_manager, size );
     if ( mem == SCOREP_MOVABLE_NULL )
