@@ -56,9 +56,8 @@ SCOREP_Status_Initialize()
 
 
 bool
-scorep_create_experiment_dir( char* dirName,
-                              int   dirNameSize,
-                              void  ( * createDir )( const char* ) )
+scorep_create_experiment_dir( const char* dirName,
+                              void        ( * createDir )( const char* ) )
 {
     createDir( dirName );
     return true;

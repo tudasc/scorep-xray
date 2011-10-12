@@ -278,7 +278,7 @@ scorep_profile_write_cube4()
     char* filename = NULL;
 
     /* Directory where the data is stored */
-    char* dirname = SCOREP_GetExperimentDirName();
+    const char* dirname = SCOREP_GetExperimentDirName();
 
     /* Number of this rank in MPI_COMM_WORLD */
     uint32_t my_rank = SCOREP_Mpi_GetRank();

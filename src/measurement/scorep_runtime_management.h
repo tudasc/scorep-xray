@@ -44,7 +44,7 @@
  *
  * @todo rename directory in scorep_finalize().
  */
-char*
+const char*
 SCOREP_GetExperimentDirName();
 
 
