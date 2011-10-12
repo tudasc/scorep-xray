@@ -23,31 +23,21 @@ make clean-local-scorep-config-tool
 make scorep-config-tool-local
 . ./scorep_config.dat
 
-# Remember current content of directory ro figure out the result dir
-ls > start_ls.log
+RESULT_DIR=scorep-selective-f-test-dir
+rm -rf $RESULT_DIR
 
 # Execute selective test
-SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/Fortran/selective.cfg ./user_f_test
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/Fortran/selective.cfg ./user_f_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp start_ls.log
     exit 1
 fi
 
-# Figure out the result dir
-ls > end_ls.log
-RESULT_DIR=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
-rm end_ls.log start_ls.log
-if [ "x$RESULT_DIR" = "x" ]; then
-    echo "Can not identify output directory. Skip evaluation of selective test Fortran"
-    exit 0
-fi
-echo "Output of selective test for Fortran can be found in $PWD/$RESULT_DIR"
-
 # Check output
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | grep region > trace.txt
 if [ x`grep -c Region1 trace.txt` = x4 ]; then
   if [ x`grep -v Region1 trace.txt | grep -v main | grep -v Region2` = x ]; then
-    rm trace.txt
+    rm -rf trace.txt $RESULT_DIR
     exit 0;
   else
     echo "Unexpected events detected in trace:"

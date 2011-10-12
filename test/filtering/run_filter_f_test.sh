@@ -23,28 +23,20 @@ make clean-local-scorep-config-tool
 make scorep-config-tool-local
 . ./scorep_config.dat
 
+RESULT_DIR=scorep-filter-f-test-dir
+rm -rf $RESULT_DIR
+
 #-------------------------------------------------------------
 #                                          Fortran Filter test
 #-------------------------------------------------------------
 
-# Remember current content of directory ro figure out the result dir
-ls > start_ls.log
-
 # Execute filter test
-SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg ./filter_f_test
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg ./filter_f_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp start_ls.log
     exit 1
 fi
 
-# Figure out the result dir
-ls > end_ls.log
-RESULT_DIR=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
-rm end_ls.log start_ls.log
-if [ "x$RESULT_DIR" = "x" ]; then
-    echo "Can not identify output directory. Skip evaluation of filter test"
-    exit 0
-fi
 $OTF2_PRINT -A $RESULT_DIR/traces.otf2
 
 # Check output
@@ -92,5 +84,6 @@ if [ "`grep BAZ trace.txt`" ]; then
     exit 1
 fi
 
+rm -rf $RESULT_DIR
 exit 0
 

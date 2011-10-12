@@ -18,22 +18,11 @@
 ## file       run_profile_depth_limit_test.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
-# Remember current content of directory ro figure out the result dir
-ls > start_ls.log
+RESULT_DIR=scorep-profile-depth-limit-test-dir
+rm -rf $RESULT_DIR
 
 # Run test
-SCOREP_PROFILING_MAX_CALLPATH_DEPTH=5 SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./profile_depth_limit_test
-
-# Figure out the result dir
-ls > end_ls.log
-RESULT_DIR=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
-rm end_ls.log start_ls.log
-if [ "x$RESULT_DIR" = "x" ]; then
-    echo "Can not identify output directory. Skip evaluation of filter test"
-    exit 0
-fi
-
-echo "Output is located at $PWD/$RESULT_DIR"
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_PROFILING_MAX_CALLPATH_DEPTH=5 SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./profile_depth_limit_test
 
 # Check output
 if [ ! -e $RESULT_DIR/profile.cubex ]; then
@@ -47,4 +36,5 @@ if [ ! x$NUM_CNODES = x6 ]; then
   exit 1
 fi
 
+rm -rf $RESULT_DIR
 exit 0
