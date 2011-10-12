@@ -56,8 +56,7 @@ SCOREP_Status_Initialize()
 
 
 bool
-scorep_create_experiment_dir( const char* dirName,
-                              void        ( * createDir )( const char* ) )
+scorep_create_experiment_dir( void ( * createDir )( void ) )
 {
     if ( !SCOREP_Mpi_IsInitialized() )
     {
@@ -67,9 +66,8 @@ scorep_create_experiment_dir( const char* dirName,
 
     if ( SCOREP_Mpi_GetRank() == 0 )
     {
-        createDir( dirName );
+        createDir();
     }
-    //MPI_Bcast( dirName, dirNameSize, MPI_CHAR, 0, MPI_COMM_WORLD );
 
     return true;
 }

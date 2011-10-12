@@ -49,8 +49,8 @@
 #include <inttypes.h>
 
 /* *INDENT-OFF* */
-extern bool scorep_create_experiment_dir(char* dirName, void (*createDir) (const char*) );
-static void scorep_create_directory(const char* dirname);
+extern bool scorep_create_experiment_dir(void (*createDir) (void) );
+static void scorep_create_directory();
 static void scorep_create_experiment_dir_name();
 static bool scorep_dir_name_is_created();
 /* *INDENT-ON* */
@@ -81,8 +81,7 @@ SCOREP_CreateExperimentDir()
     }
     scorep_create_experiment_dir_name();
 
-    if ( scorep_create_experiment_dir( scorep_experiment_dir_name,
-                                       scorep_create_directory ) )
+    if ( scorep_create_experiment_dir( scorep_create_directory ) )
     {
         SCOREP_OnExperimentDirCreation();
     }
@@ -152,7 +151,7 @@ scorep_format_time( time_t* timestamp )
 
 
 void
-scorep_create_directory( const char* dirname )
+scorep_create_directory( void )
 {
     //first check to see if directory already exists.
     struct stat buf;
@@ -167,7 +166,7 @@ scorep_create_directory( const char* dirname )
              * we use the default scorep-measurement-tmp directory,
              * rename previous failed runs away
              */
-            char failed_experiment_dir_name[ strlen( "scorep-failed-" ) + format_time_size ] = "scorep-failed-";
+            char failed_experiment_dir_name[ sizeof( "scorep-failed-" ) + format_time_size ] = "scorep-failed-";
             strcat( failed_experiment_dir_name, scorep_format_time( NULL ) );
             if ( rename( scorep_experiment_dir_name, failed_experiment_dir_name ) != 0 )
             {
@@ -251,7 +250,7 @@ SCOREP_RenameExperimentDir()
      * we use the default scorep-measurement-tmp,
      * thus rename it to a timestamped based directory name
      */
-    char new_experiment_dir_name[ strlen( "scorep-" ) + format_time_size ] = "scorep-";
+    char new_experiment_dir_name[ sizeof( "scorep-" ) + format_time_size ] = "scorep-";
     strcat( new_experiment_dir_name, scorep_format_time( NULL ) );
     if ( rename( scorep_experiment_dir_name, new_experiment_dir_name ) != 0 )
     {
