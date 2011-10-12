@@ -257,7 +257,7 @@ SCOREP_RenameExperimentDir()
     strcat( new_experiment_dir_name, scorep_format_time( NULL ) );
     if ( rename( scorep_experiment_dir_name, new_experiment_dir_name ) != 0 )
     {
-        SCOREP_ERROR_POSIX( "Can't rename experiment directory form \"%s\" to \"%s\".",
+        SCOREP_ERROR_POSIX( "Can't rename experiment directory from \"%s\" to \"%s\".",
                             scorep_experiment_dir_name, new_experiment_dir_name );
         _Exit( EXIT_FAILURE );
     }
