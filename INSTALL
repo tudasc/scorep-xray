@@ -3,5 +3,6 @@ configure --prefix=<install_dir>
 make
 make install
 
+
 After installing you might add <install_dir>/bin to your path:
 export PATH=$PATH:<install_dir>/bin
