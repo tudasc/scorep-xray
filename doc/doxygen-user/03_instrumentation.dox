@@ -292,7 +292,7 @@ Possible region types are:
         iterations in all locations. </dd>
  <dt> SCOREP_USER_REGION_TYPE_DYNAMIC </dt>
    <dd> Set this type to create a separate branch in the call-tree for every execution
-        of the region. See Section @secref{dynamic_regions}. </dd>
+        of the region. See Section @secref{dynamic_profiling}. </dd>
  <dt> SCOREP_USER_REGION_TYPE_PHASE </dt>
    <dd> Indicates that this region belongs to a special phase. See Section 
         @secref{phase_profiling}. </dd>
@@ -372,7 +372,7 @@ case.
 
 
 @section parameter_instrumentation Instrumentation for parameter-based profiling
-@seclabel parameter_instrumentation
+@seclabel{parameter_instrumentation}
 
 The @scorep user API provides also macros for parameter-based profiling. In 
 parameter-based profiling, the parameters of a function are used to split up the call-path

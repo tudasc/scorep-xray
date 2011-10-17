@@ -23,7 +23,7 @@ tracing for recording traces.
 @section profiling Profiling
 @seclabel{profiling}
 
-Score-P implements a call-tree based profiling system. Every node in the call tree 
+@scorep implements a call-tree based profiling system. Every node in the call tree 
 represent a recorded region. The edges of the tree represent the caller-callee 
 relationship: The children of a node are those regions, that are entered/exited within 
 a region. The path from the root to an arbitrary node, represents a call-path. Thus, 
@@ -53,6 +53,7 @@ the environment variable <tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt>.
 
 
 @subsection parameter_profiling Parameter-based profiling
+@seclabel{parameter_profiling}
 
 Parameter-based profiling allows to separate the recoded statistics for a region, 
 depending on the values of one or multiple parameters. In the resulting call-tree,
@@ -61,11 +62,12 @@ a parameter name. Thus, if multiple parameters are used, they can be distinguish
 split the call-tree in the order of the parameter events. In the final call-tree it
 looks like every parameter-name/parameter-value pair is a separate region.
 
-Currently, the only source parameter events is manual instrumentation 
+Currently, the only source for parameter events is manual instrumentation 
 (see Section @secref{parameter_instrumentation}).
 
 
 @subsection phase_profiling Phase profiling
+@seclabel{phase_profiling}
 
 Phase-profiling allows, to group the execution of the application into logical phases.
 Score-P records a separate call-tree for every phase in the application. A phase starts
@@ -85,6 +87,54 @@ code region, all code-regions that form the phase must have the same region hand
 The possibility to define global region handles in C/C++ might be useful for the 
 definition of phases that are have multiple partitions  
 (see Section @secref{manual_instrumentation}). 
+
+
+@subsection dynamic_profiling Dynamic region profiling
+@seclabel{dynamic_profiling}
+
+When profiling, multiple visits of a callpath are summarized. However, @scorep allows
+to define regions to by of type dynamic. For dynamic
+regions, each entry of the region will create a separate path. For this cause, the
+@scorep profiling system creates an extra parameter, named <tt>instance</tt>. On each
+visit to a dynamic region, the instance parameter for this callpath is increased 
+and triggered automatically. Thus, the every visit to a dynamic region generates a 
+separate subtree in the profile.
+
+As an example, let us assume that an application conains the regions <tt>foo</tt> and
+<tt>main</tt>, where <tt>main</tt> calls <tt>foo</tt> three times. A regular profile
+would show two callpathes:
+<ul>
+  <li><tt>main</tt></li>
+  <li><tt>main/foo</tt></li>
+</ul>
+If <tt>foo</tt> is a dynmic region, the profile would contain addtional subnodes for
+each visit of <tt>foo</tt>. The resulting profile would contain the following
+callpathes:
+<ul>
+  <li><tt>main</tt></li>
+  <li><tt>main/foo</tt></li>
+  <li><tt>main/foo/instance=0</tt></li>
+  <li><tt>main/foo/instance=1</tt></li>
+  <li><tt>main/foo/instance=2</tt></li>
+</ul>
+
+In this case <tt>main/foo</tt> contains the summarized statistics for all 3 visits, while
+<tt>main/foo/instance=0</tt> contains the statistics for the first vists of the cllpath.
+
+@note The enumeration of the instance is per callpath and not per dynamic region. 
+      In particular, if a dynmaic region foo appears in 2 callpathes, it has 2
+      instance number 0, one in both callpathes. It is not a global enumeration of 
+      the visits to foo but enuerates the visits of foo in a particular callpath from 
+      0 to N.
+
+Currently, the only possibility to define dynamic regions is via the manual region 
+instrumentation, described in Section @secref{manual_instrumentation}.
+
+
+@note Using dynimc regions can easily create very large profiles. Thus, use this
+feature with care. If you are only interested in some parts of the application, selective
+tracing (see Section @secref{selective_tracing}) might be a memory space save alternative.
+
 
 @section filtering Filtering
 @seclabel{filtering}
@@ -437,4 +487,8 @@ SCOREP_MPI_ENABLE_GROUPS=DEFAULT,TYPE
 
 A detailed overview of the @mpi functions associated with each group can be
 found in Appendix @secref{wrapperannex}.
+
+@latexonly
+\appendix
+@endlatexonly
 */
