@@ -198,6 +198,7 @@ scorep_profile_write_cube_##cube_type(                                          
     /* Clean up */                                                                      \
     free( global_values );                                                              \
     free( local_values );                                                               \
+    free( bit_vector );                                                                 \
 }
 
 /* *INDENT-ON* */
