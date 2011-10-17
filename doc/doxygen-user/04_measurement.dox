@@ -1,4 +1,5 @@
 /** @page measurement Application measurement
+\seclabel{measurement}
 
 If an application was instrumented with @scorep, you will get an executable, which 
 you can execute like the uninstrumented application. After the application run, you

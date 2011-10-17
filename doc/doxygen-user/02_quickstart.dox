@@ -1,0 +1,242 @@
+/** @page quickstart Getting Started
+@seclabel{quickstart}
+
+In order to give the user a first feeling of how to use the @scorep
+system, we look at a simple example and go through this example in
+full detail.
+
+As mentioned above, the three core steps of a typical work cycle in 
+the investigation of the behavior of a software package can be 
+described as follows: 
+<ul>
+<li> \emph{Instrumentation} of the code: Calls to the measurement
+  system are inserted into the application. This can be done either
+  fully automatically or with a certain amount of control handed to
+  the software developer.</li>
+<li> \emph{Measurement and analysis} of the execution: The
+  instrumented application is executed under the control of the
+  measurement system and the information gathered during the run time
+  of this process is stored and analyzed.</li>
+<li> \emph{Examination} of the information produced in the previous
+  step: The information about the behavior of the code at run time is
+  visualized and the user gets the opportunity to examine the reported
+  results. </li>
+</ul>
+We shall go through these three steps one after the other in the next
+sections. This will be followed by a full workflow example. For
+getting a detailed presentations of available features, see Section
+@secref{instrumentation} for the instrumentation step and 
+Section @secref{measurement} for the measurement. 
+
+
+
+@section quick_instrumentation Instrumentation
+@seclabel{quick_instrumentation}
+
+Various analysis tools are supported by the @scorep infrastructure. 
+Most of these tools are focused on certain special aspects that are
+significant in the code optimization process, but none of them
+provides the full picture. In the traditional
+workflow, each tool used to have its own measurement system, and 
+hence its own instrumenter,
+so the user was forced to instrument his code more than once if more
+than one class of features of the application was to be investigated. 
+One of the key advantages of æscorep is that it provides an
+instrumentation system that can be used for all the performance
+measurement and analysis tools, so that the instrumentation work only
+needs to be done once.
+
+Internally, the instrumentation itself will insert special measurement
+calls into the application code at specific important points (events). 
+This can be done in an almost automatic way using corresponding
+features of typical compilers, but also semi-automatically or in a
+fully manual way, thus giving the user complete control of the process.
+In general, an automatic instrumentation is most convenient for the
+user. However, this approach may lead to too many and/or too
+disruptive measurements, and for such cases it is then advisable to
+use selective manual instrumentation and measurement instead.
+For the moment, we shall however start the procedure in an automatic
+way to keep things simple for novice users.
+
+To this end, we need to ask the @scorep instrumenter to take care of
+all the necessary instrumentation of user and @mpi functions. This is
+done by using the <tt>scorep</tt> command that needs to be
+prefixed to all the compile and link commands usually employed to
+build the application. Thus, an application executable <tt>app</tt> that
+is normally generated from the two source files <tt>app1.f90</tt> and
+<tt>app2.f90</tt> via the command
+@code
+  mpif90 app1.90 app2.f90 -o app
+@endcode
+will now be built by
+@code
+  scorep  mpif90 app1.90 app2.f90 -o app
+@endcode
+using the @scorep instrumenter.
+
+In practice one will usually perform compilation and linking in
+separate steps, and it is not necessary to compile all source files at
+the same time (e.g., if makefiles are used). It is possible to use the
+@scorep instrumenter in such a case too, and this actually gives more
+flexibility to the user. Specifically, it is often sufficient to use
+the instrumenter not in all compilations but only in those that deal
+with source files containing MPI code. However, when invoking the
+linker, the instrumenter must \emph{always} be used. 
+
+When makefiles are employed to build the application, it is convenient
+to define a placeholder variable to indicate whether a ``preparation''
+step like an instrumentation is desired or only the pure compilation
+and linking. For example, if this variable is called <tt>PREP</tt> then
+the lines defining the C compiler in the makefile can be changed from
+@code
+  MPICC = mpicc
+@endcode
+to
+@code
+  MPICC = $(PREP) mpicc
+@endcode
+(and analogously for linkers and other compilers). One can then use
+the same makefile to either build an instrumented version with the
+@code
+  make PREP="scorep" 
+@endcode
+command or a fully optimized and not instrumented default build by
+simply using
+@code
+  make 
+@endcode
+in the standard way, i.e. without specifying <tt>PREP</tt> on the
+command line. Of course it is also possible to define the same
+compiler twice in the makefile, once with and once without the <tt>PREP</tt>
+variable, as in
+@code
+   MPICC          = $(PREP) mpicc
+   MPICC_NO_INSTR =         mpicc
+@endcode
+and to assign the former to those source files that must be
+instrumented and the latter to those files that do not need this.
+
+
+@section quick_measurement Measurement and analysis
+@seclabel{quick_measurement}
+
+Once the code has been instrumented, the user can initiate a
+measurement run using this executable. To this end, it is sufficient
+to simply execute the target
+application in the usual way, i.e.
+@code
+  mpiexec $MPIFLAGS app [app_args]
+@endcode
+in the case of an MPI or hybrid code, or simply
+@code
+  app [app_args]
+@endcode
+for a serial or pure OpenMP program. Depending on the details of the
+local MPI installation, in the former case the <tt>mpiexec</tt> command
+may have to be substituted by an appropriate replacement.
+
+When running the instrumented executable, the measurement system will
+create a directory called <tt>scorep-YYYYMMDD_HHMM_NNNNN</tt> where
+its measurement data will be stored. Here <tt>YYYYMMDD</tt> and <tt>
+HHMM</tt> are the date (in year-month-day format) and time, respectively, 
+when the measurement run was started, whereas <tt>NNNNN</tt> is an 
+additional five-digit identification number. Thus, repeated measurements, 
+as required by the optimization work cycle, can
+easily be performed without the danger of accidentally overwriting
+results of earlier measurements. The environment variables 
+<tt>SCOREP_ENABLE_TRACING</tt> and <tt>SCOREP_ENABLE_PROFILING</tt>
+control whether event trace data or profiles are stored in this
+directory. By setting either variable to <tt>true</tt>, the corresponding
+data will be written to the directory. The default values are <tt>true</tt>
+for <tt>SCOREP_ENABLE_TRACING</tt> and <tt>false</tt> for 
+<tt>SCOREP_ENABLE_PROFILING</tt>. 
+
+
+@section quick_examination Report examination
+@seclabel{quick_examination}
+
+After the completion of the execution of the instrumented code, the
+requested data (traces or profiles) is available in the indicated
+locations. Appropriate tools can then be used to visualize this
+information and to generate reports, and thus to identify weaknesses
+of the code that need to be modified in order to obtain programs with
+a better performance. A number of tools are already available for this
+purpose. This includes, in particular, the 
+\href{http://www.scalasca.org,CUBE4 performance report explorer}
+for viewing and analyzing profile data,
+\href{http://www.vampir.eu,Vampir} for the investigation of trace
+information, and the corresponding components of the
+\href{http://www.cs.uoregon.edu/Research/tau/home.php,TAU}
+toolsuite. 
+
+Alternatively, the \href{http://www.lrr.in.tum.de/periscope,Periscope} 
+system may be used to analyze the behaviour of the code on-line during
+its run time, i.e. (in contrast to the approaches mentioned above)
+\emph{before} the end of the program run.
+
+
+
+@section quick_example An example
+@seclabel{quick_example}
+
+As a specific example, we look at a short C code for the solution of a
+Poisson equation in a hybrid (@mpi and OpenMP) environment. The
+corresponding source code is listed in Appendix \secref{jacobi}; it
+also comes as part of the @scorep distribution in this and various
+other versions (not only hybrid but also for a pure MPI
+parallelization, a pure OpenMP approach, and in a non-parallel way;
+and, in each case, not only in C but also in C++ and Fortran).
+
+As indicated above, the standard call sequence
+@code
+  mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
+  mpicc -std=c99 -g -O2 -fopenmp -c main.c
+  mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o \
+    main.o -lm
+@endcode
+that would first compile the two C source files and then link
+everything to form the final executable needs to be modified by
+prepending <tt>scorep</tt> to each of the three commands,
+i.e. we now have to write
+@code
+  scorep mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
+  scorep mpicc -std=c99 -g -O2 -fopenmp -c main.c
+  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi.o \ 
+    main.o -lm
+@endcode
+
+This call sequence will create a number of auxiliary C source files
+containing the original source code and a number of commands
+introduced by the measurement system in order to enable the latter to
+create the required measurements when the code is actually run. These
+modified source files are then complied and linked, thus producing the
+desired executable named <tt>jacobi</tt>. 
+
+The actual measurement process is then initiated, e.g.,  by the call
+@code
+  mpiexec --n 2 ./jacobi
+@endcode
+As indicated above, the output data of this process will be stored in
+a newly created directory <tt>scorep-YYYYMMDD_HHMM_NNNNN</tt> whose name
+is built up from the date and time when the measurement was started
+and an additional five-digit identification number. 
+
+As we had not explictly set any @scorep related environment variables,
+the tracing mode was active by default. Therefore, this subdirectory
+contains a subdirectory <tt>traces</tt> where the files with the actual
+trace data are stored. These files are provided in the newly developed
+Open Trace Format 2 (OTF2, for short) which is the joint successor of
+the classical formats OTF (used, e.\ g., by Vampir) and Epilog (used by
+Scalasca). Moreover, the {\tt scorep-YYYYMMDD_HHMM_NNNNN} directory
+contains the files <tt>traces.def</tt> and <tt>traces.otf2</tt> that provide
+some information required for the evaluation of the trace data (the
+latter file, in particular, is the anchor file for the trace data).
+A tool like Vampir can then be used to give a visual representation of
+the information contained in these files.
+
+If we had set the variable <tt>SCOREP_ENABLE_PROFILING</tt> to <tt>true</tt>, 
+we would additionally have have obtained a file called <tt>profile.cubex</tt> 
+in the directory <tt>scorep-YYYYMMDD_HHMM_NNNNN</tt>. This file contains
+the profiling data that can then, e. g., be visually analyzed with
+the help of CUBE.
+*/
