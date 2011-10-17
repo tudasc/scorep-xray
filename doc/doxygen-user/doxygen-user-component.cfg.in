@@ -10,7 +10,9 @@ PROJECT_NAME           = "Score-P"
 
 INPUT                  = doc/doxygen-user \
                          @abs_top_srcdir@/doc/doxygen-user \
-                         @abs_top_srcdir@/include/scorep
+                         @abs_top_srcdir@/include/scorep/SCOREP_User.h \
+                         @abs_top_srcdir@/include/scorep/SCOREP_User_Types.h \
+                         @abs_top_srcdir@/include/scorep/pomp2_lib.h \
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the stylesheet and background images according to
@@ -27,4 +29,12 @@ HTML_COLORSTYLE_HUE   = 0
 # in doxygen.
 ENABLE_PREPROCESSING=YES
 
+# List of extra packages that are used in latex.
 EXTRA_PACKAGES = xspace
+
+# Switch of file definition
+# A per file documentation only copies the module content.
+# Which item is documented in which file has no additional value for a user of 
+# Score-P
+SHOW_FILES             = NO
+
