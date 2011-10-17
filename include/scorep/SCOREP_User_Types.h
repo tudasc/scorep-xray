@@ -34,7 +34,7 @@
 
 struct SCOREP_User_Region;
 
-/**
+/*
     @ingroup SCOREP_User_External
     @{
  */
@@ -78,7 +78,12 @@ typedef uint64_t SCOREP_User_ParameterHandle;
  * *************************************************************************************/
 
 /**
-    @ingroup SCOREP_User_Interface
+    @ingroup SCOREP_User
+    @{
+ */
+
+/*
+    @name Region types
     @{
  */
 
@@ -113,9 +118,16 @@ typedef uint64_t SCOREP_User_ParameterHandle;
  */
 #define SCOREP_USER_REGION_TYPE_PHASE    8
 
+/**@}*/
+
 /* **************************************************************************************
  * Defines for the data type of a user counter
  * *************************************************************************************/
+
+/**
+    @name Metric types
+    @{
+ */
 
 /**
     @def SCOREP_USER_METRIC_TYPE_INT64
@@ -134,6 +146,8 @@ typedef uint64_t SCOREP_User_ParameterHandle;
     Indicates that a user counter is of data type double.
  */
 #define SCOREP_USER_METRIC_TYPE_DOUBLE 1
+
+/**@}*/
 
 /* **************************************************************************************
  * Defines for the context of user counters

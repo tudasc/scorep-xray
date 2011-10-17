@@ -26,7 +26,7 @@
     This File contains the function definitions which are called from the user manual
     instrumentation.
 
-    @note The user should not insert calls to theis functions directly, but
+    @note The user should not insert calls to this functions directly, but
     use the macros provided in SCOREP_User.h.
  */
 

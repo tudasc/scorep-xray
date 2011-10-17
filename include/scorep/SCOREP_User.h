@@ -17,7 +17,8 @@
 #ifndef SCOREP_USER_H
 #define SCOREP_USER_H
 
-/** @file       SCOREP_User.h
+/**
+    @file       SCOREP_User.h
     @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
     @status     ALPHA
     @ingroup    SCOREP_User_Interface
@@ -32,19 +33,13 @@
 #include <scorep/SCOREP_OA_Functions.h>
 #endif
 
-/** @defgroup SCOREP_User SCOREP User Adapter
+/**
+    @defgroup SCOREP_User SCOREP User Adapter
 
     The user adapter provides a set of macros for user manual instrumentation. The macros
     are inserted in the source code and call functions of the Score-P runtime system.
     The user should avoid calling the Score-P runtime functions directly.
 
-    The user adapter's initialization functions struct is
-    @ref SCOREP_User_Adapter. It is initialized from the measurement system. If a user
-    instrumentation is called before the adapter is initialized, it will initialized the
-    measurement system which call the initialization functions of the adapters.
-
-    @defgroup SCOREP_User_Interface Macros for manual user instrumentation
-    @ingroup SCOREP_User
     For every macro, two definitions are provided: The first one inserts calls to the
     Score-P runtime system, the second definitions resolve to nothing. Which
     implementation is used,
@@ -71,32 +66,17 @@
  * Documentation for region enclosing macros
  * *************************************************************************************/
 
-/** @def SCOREP_OA_REGION_DEFINE(handle)
-    This macro defines a region. Every region has to be defined before it is first
-    entered. The defines have to take place at the beginning of the enclosing block.
-    @param handle  A variable name for a parameter must be provided. This variable is
-                   declared in this macro. This handle is used in the
-                   SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END statements to specify
-                   which region is started, or ended.
-
-    Example:
-    @code
-    void myfunc()
-    {
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-
-      // do something
-
-      SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
-
-      // do something
-
-      SCOREP_USER_REGION_END( my_region_handle )
-    }
-    @endcode
+/**
+    @name Macros for region instrumentation
+    @{
  */
 
-/** @def SCOREP_USER_OA_PHASE_BEGIN(handle, name, type)
+/**
+    @def SCOREP_USER_OA_PHASE_END(handle)
+ */
+
+/**
+    @def SCOREP_USER_OA_PHASE_BEGIN(handle, name, type)
     This macro marks the start of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
     SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
     recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
@@ -146,7 +126,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_REGION_BEGIN(handle, name, type)
+/**
+    @def SCOREP_USER_REGION_BEGIN(handle, name, type)
     This macro marks the start of a user defined region. The SCOREP_USER_REGION_BEGIN and
     SCOREP_USER_REGION_END calls of all regions must be correctly nested.
     @param handle  The handle of the region to be started. This handle must be declared
@@ -189,7 +170,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_REGION_INIT(handle, name, type)
+/**
+    @def SCOREP_USER_REGION_INIT(handle, name, type)
     This macro initializes a user defined region. If the region handle is already
     inititialized, no operation is executed.
     @param handle  The handle of the region to be started. This handle must be declared
@@ -234,7 +216,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_REGION_END(handle)
+/**
+    @def SCOREP_USER_REGION_END(handle)
     This macro marks the end of a user defined region.  The SCOREP_USER_REGION_BEGIN and
     SCOREP_USER_REGION_END calls of all regions must be correctly nested.
     @param name  The handle of the region which ended here.
@@ -270,7 +253,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_REGION_ENTER(handle)
+/**
+    @def SCOREP_USER_REGION_ENTER(handle)
     This macro marks the beginning of a user defined and already initialized region.
     The SCOREP_USER_REGION_BEGIN/SCOREP_USER_REGION_ENTER and
     SCOREP_USER_REGION_END calls of all regions must be correctly nested. To initialize
@@ -311,7 +295,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_REGION_DEFINE(handle)
+/**
+    @def SCOREP_USER_REGION_DEFINE(handle)
     This macro defines a user region handle in a local context. Every user handle must
     be defined, before it can be used.
     @param handle  A unique name for the handle must be provided. This handle is
@@ -353,7 +338,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_FUNC_DEFINE
+/**
+    @def SCOREP_USER_FUNC_DEFINE
     This macro is for Fortran only. It declares the handle for a function. Every function
     handle must be declared in the declaration part of the subroutine or function if
     the SCOREP_USER_FUNC_BEGIN and SCOREP_USER_FUNC_END macros are used.
@@ -374,7 +360,8 @@
     before.
  */
 
-/** @def SCOREP_USER_FUNC_BEGIN
+/**
+    @def SCOREP_USER_FUNC_BEGIN
     This macro marks the start of a function. It should be inserted at the beginning
     of the instrumented function. It will generate a region, with the function
     name.
@@ -415,7 +402,8 @@
     before.
  */
 
-/** @def SCOREP_USER_FUNC_END
+/**
+    @def SCOREP_USER_FUNC_END
     This macro marks the end of a function. It should be inserted at
     every return point of the instrumented function.
 
@@ -454,7 +442,8 @@
     before.
  */
 
-/** @def SCOREP_GLOBAL_REGION_DEFINE( handle )
+/**
+    @def SCOREP_GLOBAL_REGION_DEFINE( handle )
     This macro defines a region handle in a global scope for usage in more than one code
     block. If a region is used in multiple source files, only one of them must contain
     the defintion using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
@@ -507,7 +496,8 @@
     @endcode
  */
 
-/** @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
+/**
+    @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
     This macro declares an axternally defined global region.
     If a region is used in multiple source files, only one of them must contain
     the defintion using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
@@ -556,6 +546,7 @@
     }
     @endcode
  */
+/**@}*/
 
 /* **************************************************************************************
  * Region enclosing macros
@@ -607,7 +598,14 @@
 /* **************************************************************************************
  * Documentation for Parameter macros
  * *************************************************************************************/
-/** @def SCOREP_USER_PARAMETER_INT64(name,value)
+
+/**
+    @name Macros for parameter instrumentation
+    @{
+ */
+
+/**
+    @def SCOREP_USER_PARAMETER_INT64(name,value)
     This statement adds a 64 bit signed integer type parameter for parameter-based
     profiling to the current region.
     The call-tree for the region is split according to the different values of the
@@ -634,7 +632,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_PARAMETER_UINT64(name,value)
+/**
+    @def SCOREP_USER_PARAMETER_UINT64(name,value)
     This statement adds a 64 bit unsigned integer type parameter for parameter-based
     profiling to the current region.
     The call-tree for the region is split according to the different values of the
@@ -661,7 +660,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_PARAMETER_STRING(name,value)
+/**
+    @def SCOREP_USER_PARAMETER_STRING(name,value)
     This statement adds a string type parameter for parameter-based
     profiling to the current region.
     The call-tree for the region is split according to the different values of the
@@ -690,6 +690,8 @@
     @endcode
  */
 
+/**@}*/
+
 /* **************************************************************************************
  * Parameter macros
  * *************************************************************************************/
@@ -713,7 +715,13 @@
  * Documentation for User Counter macros
  * *************************************************************************************/
 
-/** @def  SCOREP_USER_METRIC_GROUP_LOCAL(groupHandle)
+/**
+    @name Macros for user metric instrumentation
+    @{
+ */
+
+/**
+    @def  SCOREP_USER_METRIC_GROUP_LOCAL(groupHandle)
     Declares a metric group.
     It defines a variable which must be in scope at all places where
     the metric group is used. If it is used in more than one place it need to be a global
@@ -763,7 +771,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle)
+/**
+    @def SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle)
     Declares a group handle for user metrics for usage in more than one file. Every global
     group handle must only be declared in one file using SCOREP_USER_METRIC_GROUP_GLOBAL.
     All other files in which the same group handle is  accessed, must declare the handle
@@ -816,7 +825,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle )
+/**
+    @def SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle )
     Declares an external group handle. Every global
     group handle must only be declared in one file using SCOREP_USER_METRIC_GROUP_GLOBAL.
     All other files in which the same group handle is  accessed, must declare the handle
@@ -866,7 +876,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name )
+/**
+    @def SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name )
     Initializes a metric group. Each group need to be initialized before it is used for
     the first time.
     @param groupHandle The handle for the initilaized group. It must be declared using
@@ -915,7 +926,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_LOCAL(metricHandle)
+/**
+    @def SCOREP_USER_METRIC_LOCAL(metricHandle)
     Declares a handle for a user metric.
     It defines a variable which must be in scope at all places where
     the metric is used. If it is used in more than one place it need to be a global
@@ -963,7 +975,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_GLOBAL( metricHandle )
+/**
+    @def SCOREP_USER_METRIC_GLOBAL( metricHandle )
     Declares a handle for a user metric as a global variable. It must be used
     if a metric handle is accessed in more than one file. Every
     global metric must be declared only in one file using SCOREP_USER_METRIC_GLOBAL. All
@@ -1011,7 +1024,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_EXTERNAL( metricHandle )
+/**
+    @def SCOREP_USER_METRIC_EXTERNAL( metricHandle )
     Declares an externally defined handle for a user metric. Every
     global metric must be declared only in one file using SCOREP_USER_METRIC_GLOBAL. All
     other files in which this handle is accessed must declare it with
@@ -1054,7 +1068,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_INIT(metricHandle,name, unit, type, context,groupHandle)
+/**
+    @def SCOREP_USER_METRIC_INIT(metricHandle,name, unit, type, context,groupHandle)
     Initializes a new user counter. Each counter must be initialized before it is
     triggered the first time. The handle must be declared using SCOREP_USER_METRIC_LOCAL,
     SCOREP_USER_METRIC_GLOBAL, or SCOREP_USER_METRIC_EXTERNAL.
@@ -1113,7 +1128,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_INT64(name,value)
+/**
+    @def SCOREP_USER_METRIC_INT64(name,value)
     Triggers a new event for a user counter of a 64 bit integer data type.
     Each user metric must be declared with SCOREP_USER_COUNTER_LOCAL,
     SCOREP_USER_COUNTER_GLOBAL, or SCOREP_USER_COUNTER_EXTERNAL and initialized with
@@ -1163,7 +1179,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_UINT64(metricHandle,value)
+/**
+    @def SCOREP_USER_METRIC_UINT64(metricHandle,value)
     Triggers a new event for a user counter of a 64 bit unsigned  integer data type.
     Each user metric must be declared with SCOREP_USER_COUNTER_LOCAL,
     SCOREP_USER_COUNTER_GLOBAL, or SCOREP_USER_COUNTER_EXTERNAL and initialized with
@@ -1197,7 +1214,8 @@
     @endcode
  */
 
-/** @def SCOREP_USER_METRIC_DOUBLE(metricHandle,value)
+/**
+    @def SCOREP_USER_METRIC_DOUBLE(metricHandle,value)
     Triggers a new event for a user counter of a double precision floating point data
     type. Each user metric must be declared with SCOREP_USER_COUNTER_LOCAL,
     SCOREP_USER_COUNTER_GLOBAL, or SCOREP_USER_COUNTER_EXTERNAL and initialized with
@@ -1246,6 +1264,7 @@
     end program myProg
     @endcode
  */
+/**@}*/
 
 /* **************************************************************************************
  * User Counter macros
@@ -1298,7 +1317,13 @@
  * Documentation for C++ specific macros
  * *************************************************************************************/
 
-/** @def SCOREP_USER_REGION(name,type)
+/**
+    @name C++ specific macros for region instrumentation
+    @{
+ */
+
+/**
+    @def SCOREP_USER_REGION(name,type)
     Instruments a codeblock as a region with the given name. It inserts a local variable
     of the type class SCOREP_User_Region. Its constructor generates the enter event and
     its destructor generates the exit event. Thus, only one statement is necessary to
@@ -1321,6 +1346,8 @@
     }
     @endcode
  */
+/**@}*/
+
 /* **************************************************************************************
  * C++ specific macros
  * *************************************************************************************/
@@ -1345,7 +1372,13 @@
  * Documentation for Control macros
  * *************************************************************************************/
 
-/** @def SCOREP_RECORDING_ON
+/**
+    @name Macros for measurement control
+    @{
+ */
+
+/**
+    @def SCOREP_RECORDING_ON
     Enables recording of events. If already enabled, this command has no effect.
     The control is not restricted to events from the user adapter, but enables the
     recording of all events.
@@ -1374,7 +1407,8 @@
     @endcode
  */
 
-/** @def SCOREP_RECORDING_OFF
+/**
+    @def SCOREP_RECORDING_OFF
     Disables recording of events. If already disabled, this command has no effect.
     The control is not restricted to events from the user adapter, but disables the
     recording of all events.
@@ -1403,7 +1437,8 @@
     @endcode
  */
 
-/** @def SCOREP_RECORDING_IS_ON
+/**
+    @def SCOREP_RECORDING_IS_ON
     In C/C++ it behaves like a function call which returns wether recording is
     enabled or not. It returns false if the recording of events is disabled, else
     it returns true.
@@ -1436,6 +1471,8 @@
     end subroutine foo
     @endcode
  */
+
+/**@}*/
 
 /* **************************************************************************************
  * Control macros
