@@ -53,8 +53,8 @@ public:
     /**
        Destroys a SCOREP_Measurement object.
      */
-    virtual ~
-    SCOREP_Measurement ();
+    virtual
+    ~SCOREP_Measurement ();
 
     /**
        Parses the command line.

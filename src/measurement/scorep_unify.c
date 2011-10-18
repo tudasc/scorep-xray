@@ -65,13 +65,10 @@ void
 SCOREP_Unify( void )
 {
     SCOREP_UpdateLocationDefinitions();
+    SCOREP_Unify_Locally();
     if ( SCOREP_Mpi_HasMpi() )
     {
         SCOREP_Mpi_Unify();
-    }
-    else
-    {
-        SCOREP_Unify_Locally();
     }
 }
 

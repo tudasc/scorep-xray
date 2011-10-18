@@ -36,6 +36,8 @@
 
 #include <mpi.h>
 
+#include <scorep_utility/SCOREP_Error_Codes.h>
+
 #include <SCOREP_Types.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Memory.h>
@@ -70,6 +72,7 @@ SCOREP_Env_GetPageSize();
 
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
+extern bool                      scorep_mpi_hierarchical_unify;
 
 static uint64_t                  scorep_test_mpi_unify_verbose;
 static bool                      scorep_test_mpi_unify_define_mpi_group;
@@ -118,6 +121,7 @@ main( int argc, char* argv[] )
 
     SCOREP_Memory_Initialize( SCOREP_Env_GetTotalMemory(),
                               SCOREP_Env_GetPageSize() );
+
 
     SCOREP_Definitions_Initialize();
 
@@ -170,11 +174,14 @@ main( int argc, char* argv[] )
     }
 
     double timing = SCOREP_GetClockTicks();
+    SCOREP_Unify_Locally();
     SCOREP_Mpi_Unify();
     timing = ( SCOREP_GetClockTicks() - timing ) / SCOREP_GetClockResolution();
 
     char result_name[ 64 ];
-    sprintf( result_name, "mpi_unification_test.%d.result", size );
+    sprintf( result_name, "mpi_unification_test.%s.%d.result",
+             scorep_mpi_hierarchical_unify ? "hierarchical" : "sequential",
+             size );
 
     if ( rank == 0 )
     {

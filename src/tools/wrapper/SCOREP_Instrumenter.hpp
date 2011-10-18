@@ -101,8 +101,7 @@ public:
        Destroys a SCOREP_Instrumenter object.
      */
     virtual
-    ~
-    SCOREP_Instrumenter();
+    ~SCOREP_Instrumenter();
 
     /**
        Performs the instrumentation of an application

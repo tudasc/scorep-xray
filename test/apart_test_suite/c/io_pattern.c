@@ -11,7 +11,7 @@
    for (i=0; i<1024; i++)
     arrayA[i] = i;
    for (i=0; i<r; ++i) {
- #pragma omp parallel private(iam)
+   #pragma omp parallel private(iam)
      {
       iam = omp_get_thread_num();
       if (iam == 0)

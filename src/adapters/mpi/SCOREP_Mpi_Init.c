@@ -178,12 +178,24 @@ static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
 };
 
 
+bool scorep_mpi_hierarchical_unify;
+
+
 /**
    Array of configuration variables.
    They are registered to the measurement system and are filled during until the
    initialization function is called.
  */
 SCOREP_ConfigVariable scorep_mpi_configs[] = {
+    {
+        "hierarchical_unify",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_mpi_hierarchical_unify,
+        NULL,
+        "false",
+        "Use the hierarchical MPI unify algorithm.",
+        ""
+    },
     {
         "enable_groups",
         SCOREP_CONFIG_TYPE_BITSET,
