@@ -149,7 +149,7 @@ main( int   argc,
 {
     int       id = 0, numprocs;
     int       color;
-    MPI_Comm  local;
+    MPI_Comm  local, my_self, my_world;
     double    t1, t2;
 
     int       provided = 0;
@@ -196,6 +196,8 @@ main( int   argc,
     printf( "%03d: ctest start\n", id );
     color = ( id >= numprocs / 2 );
     MPI_Comm_split( MPI_COMM_WORLD, color, id, &local );
+    MPI_Comm_dup( MPI_COMM_WORLD, &my_self );
+    MPI_Comm_dup( MPI_COMM_SELF, &my_self );
 
     t1 = MPI_Wtime();
     parallel( MPI_COMM_WORLD );
