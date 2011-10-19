@@ -56,11 +56,9 @@ libscorep_mpi_la_LIBADD               = $(common_libadd)                        
                                         libscorep_adapter_pomp_user.la                 \
                                         libscorep_paradigm_non_omp.la                  \
                                         libscorep_pomp_dummy.la
+                         
+libscorep_mpi_la_LIBADD	+= $(LIB_DIR_SCOREP_MPI)libscorep_oa_mpi.la
 
-# include Online Access only when building on ALTIX                         
-if PLATFORM_ALTIX
-libscorep_mpi_la_LIBADD	+= libscorep_oa_mpi.la
-endif
 endif              		
 
 ## Serial
@@ -75,10 +73,8 @@ libscorep_serial_la_LIBADD   = $(common_libadd)               \
                                libscorep_pomp_dummy.la        \
                                libscorep_sion_serial.la
 
-# include Online Access only when building on ALTIX
-if PLATFORM_ALTIX
 libscorep_serial_la_LIBADD  += libscorep_oa_serial.la
-endif
+
 
 ## OpenMP
 
@@ -93,10 +89,8 @@ libscorep_omp_la_LIBADD   = $(common_libadd)              \
                             libscorep_paradigm_omp.la     \
                             libscorep_sion_omp.la
 
-# include Online Access only when building on ALTIX
-if PLATFORM_ALTIX
 libscorep_omp_la_LIBADD	+= libscorep_oa_serial.la
-endif 
+
 
 endif
 
@@ -116,10 +110,7 @@ libscorep_mpi_omp_la_LIBADD               = $(common_libadd)                    
                                             libscorep_adapter_pomp_omp.la                  \
                                             libscorep_paradigm_omp.la
 
-# include Online Access only when building on ALTIX                             
-if PLATFORM_ALTIX
-libscorep_mpi_omp_la_LIBADD	+= libscorep_oa_mpi.la
-endif                              
+libscorep_mpi_omp_la_LIBADD	+= $(LIB_DIR_SCOREP_MPI)libscorep_oa_mpi.la                            
 endif
 endif
 

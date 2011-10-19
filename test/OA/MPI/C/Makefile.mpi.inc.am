@@ -1,48 +1,36 @@
 ## -*- mode: makefile -*-
 
-## 
-## This file is part of the Score-P software (http://www.score-p.org)
-##
-## Copyright (c) 2009-2011, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
-##
-## See the COPYING file in the package base directory for details.
-##
+if HAVE_ONLINE_ACCESS_HEADERS
 
-## file       Makefile.mpi.inc.am
-## author     Yury Oleynik <oleynik@in.tum.de>
-## maintainer Yury Oleynik <oleynik@in.tum.de>
+check_PROGRAMS += oa_c_test_mpi
 
+oa_c_test_mpi_SOURCES =                                       \
+	$(SRC_ROOT)/test/OA/MPI/C/oa_test_mpi.c
 
-if MPI_SUPPORTED
+oa_c_test_mpi_CPPFLAGS = $(AM_CPPFLAGS)       \
+    -I$(INC_ROOT)src/adapters/include       \
+    -I$(INC_ROOT)include/scorep				\
+    -I$(INC_ROOT)src/measurement/include    \
+    -I$(PUBLIC_INC_DIR)                     \
+    -I$(INC_DIR_UTIL)                       \
+    -DSCOREP_USER_ENABLE
 
-## MPI C
-
-check_PROGRAMS       += oa_mpi_c
-oa_mpi_c_sources  = $(SRC_ROOT)test/OA/MPI/C/main.c
-
-oa_mpi_c_SOURCES  = $(oa_mpi_c_sources)
-oa_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ 	 \
-					-I$(INC_ROOT)src/adapters/include       \
-					-I$(INC_ROOT)src/measurement/include    \
-					-I$(PUBLIC_INC_DIR)                     \
-					-I$(INC_DIR_UTIL)                       \
-					-DSCOREP_USER_ENABLE
-
-oa_mpi_c_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
-
+if SCOREP_COMPILER_IBM
+oa_c_test_mpi_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
+else
+oa_c_test_mpi_CPPFLAGS += -DSCOREP_USER_ENABLE=1
 endif
-# if MPI_SUPPOERTED
 
-##-I$(INC_ROOT)src/adapters/include       \
-##-I$(INC_ROOT)src/measurement/include    \
-##					-I$(PUBLIC_INC_DIR)                     \
-##					-I$(INC_DIR_UTIL)                       \
-##					-DSCOREP_USER_ENABLE
+if SCOREP_COMPILER_PGI
+oa_c_test_mpi_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
+endif
 
+oa_c_test_mpi_LDADD =                        \
+    $(LIB_DIR_SCOREP)libscorep_mpi.la
+
+EXTRA_DIST       += \
+    $(SRC_ROOT)/test/OA/MPI/C/run_oa_c_test_mpi.sh
+
+#TESTS += $(srcdir)/../test/OA/MPI/C/run_oa_c_test_mpi.sh
+
+endif #if HAVE_ONLINE_ACCESS_HEADERS

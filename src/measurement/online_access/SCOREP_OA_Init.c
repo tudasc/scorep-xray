@@ -24,10 +24,13 @@
 
 
 #include <config.h>
+#include <SCOREP_Config.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_utility/SCOREP_Utils.h"
 #include "SCOREP_Types.h"
 #include "SCOREP_OA_Init.h"
+
 
 #include "scorep_oa_connection.h"
 #include "scorep_oa_mri_control.h"
@@ -36,6 +39,41 @@
 #include <stdio.h>
 
 static int8_t scorep_oa_is_initialized = 0;
+
+
+/**
+   Configuration variable registration structures for the profiling system.
+ */
+static SCOREP_ConfigVariable scorep_oa_configs[] = {
+    { "REG_PORT",
+      SCOREP_CONFIG_TYPE_NUMBER,
+      &silc_oa_registry_port,
+      NULL,
+      "50100",
+      "Online Access registry service port",
+      "Online Access registry service port" },
+    { "REG_HOST",
+      SCOREP_CONFIG_TYPE_STRING,
+      &silc_oa_registry_host,
+      NULL,
+      "localhost",
+      "Online Access registry service hostname",
+      "Online Access registry service hostname" },
+    { "BASE_PORT",
+      SCOREP_CONFIG_TYPE_NUMBER,
+      &silc_oa_port,
+      NULL,
+      "50010",
+      "Base port for Online Access server",
+      "Base port for Online Access server" },
+    SCOREP_CONFIG_TERMINATOR
+};
+
+void
+SCOREP_OA_Register()
+{
+    SCOREP_ConfigRegister( "ONLINEACCESS", scorep_oa_configs );
+}
 
 int8_t
 SCOREP_OA_Init
@@ -47,7 +85,11 @@ SCOREP_OA_Init
     {
         return 0;
     }
-
+    if ( !SCOREP_IsInitialized() )
+    {
+        SCOREP_InitMeasurement();
+    }
+    //printf("ENV variables: %ld %ld %s\n",silc_oa_port,silc_oa_registry_port,silc_oa_registry_host);
     if ( scorep_oa_is_initialized == 0 )
     {
         /* Set the intialization flag to indicate that the adapter is initialized */

@@ -39,7 +39,7 @@
  * 1x1 pre- and post- communication hooks
    -----------------------------------------------*/
 
-int32_t scorep_hooks_on = 0;
+bool scorep_hooks_on = false;
 
 /**
  * Pre-communication hook for MPI_Send
@@ -82,7 +82,7 @@ SCOREP_Hooks_Post_MPI_Send
                 dest,
                 tag,
                 comm );
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -106,7 +106,7 @@ SCOREP_Hooks_Post_MPI_Bsend
                 dest,
                 tag,
                 comm );
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -130,7 +130,7 @@ SCOREP_Hooks_Post_MPI_Ssend
                 dest,
                 tag,
                 comm );
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -154,7 +154,7 @@ SCOREP_Hooks_Post_MPI_Rsend
                 dest,
                 tag,
                 comm );
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 /**
@@ -196,7 +196,7 @@ SCOREP_Hooks_Post_MPI_Recv
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     source = status->MPI_SOURCE;
     tag    = status->MPI_TAG;
-    void*      remoteTimePack = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    void*      remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
     MPI_Status s;
     PMPI_Recv(      remoteTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -208,8 +208,8 @@ SCOREP_Hooks_Post_MPI_Recv
 
     scorep_mpiprofile_eval_1x1_time_packs( remoteTimePack,
                                            localTimePack );
-    free( remoteTimePack );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_pack( remoteTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -395,7 +395,7 @@ SCOREP_Hooks_Post_MPI_Alltoall
     void* remoteTimePacks;
     int   commSize;
     MPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
     PMPI_Allgather( localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
                     MPI_PACKED,
@@ -407,8 +407,8 @@ SCOREP_Hooks_Post_MPI_Alltoall
                                               localTimePack,
                                               commSize );
 
-    free( remoteTimePacks );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -432,7 +432,7 @@ SCOREP_Hooks_Post_MPI_Alltoallv
     void* remoteTimePacks;
     int   commSize;
     MPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
     PMPI_Allgather( localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
                     MPI_PACKED,
@@ -444,8 +444,8 @@ SCOREP_Hooks_Post_MPI_Alltoallv
                                               localTimePack,
                                               commSize );
 
-    free( remoteTimePacks );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -461,7 +461,7 @@ SCOREP_Hooks_Post_MPI_Barrier
     void* remoteTimePacks;
     int   commSize;
     MPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
     PMPI_Allgather( localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
                     MPI_PACKED,
@@ -472,8 +472,8 @@ SCOREP_Hooks_Post_MPI_Barrier
     scorep_mpiprofile_eval_multi_time_packs(  remoteTimePacks,
                                               localTimePack,
                                               commSize );
-    free( remoteTimePacks );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 /*----------------------------------------------
@@ -505,7 +505,7 @@ SCOREP_Hooks_Post_MPI_Gather
     if ( myrank == root )
     {
         PMPI_Comm_size( comm, &commSize );
-        remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+        remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
     }
     PMPI_Gather(    localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -520,9 +520,9 @@ SCOREP_Hooks_Post_MPI_Gather
     {
         scorep_mpiprofile_eval_nx1_time_packs( remoteTimePacks,
                                                commSize );
-        free( remoteTimePacks );
+        scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
     }
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -548,7 +548,7 @@ SCOREP_Hooks_Post_MPI_Gatherv
     if ( myrank == root )
     {
         PMPI_Comm_size( comm, &commSize );
-        remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+        remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
     }
     PMPI_Gather(    localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -563,9 +563,9 @@ SCOREP_Hooks_Post_MPI_Gatherv
     {
         scorep_mpiprofile_eval_nx1_time_packs( remoteTimePacks,
                                                commSize );
-        free( remoteTimePacks );
+        scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
     }
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -587,7 +587,7 @@ SCOREP_Hooks_Post_MPI_Reduce
     void* remoteTimePacks;
     int   commSize;
     PMPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
 
     PMPI_Gather(    localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -602,9 +602,9 @@ SCOREP_Hooks_Post_MPI_Reduce
     {
         scorep_mpiprofile_eval_nx1_time_packs( remoteTimePacks,
                                                commSize );
-        free( remoteTimePacks );
+        scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
     }
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -625,7 +625,7 @@ SCOREP_Hooks_Post_MPI_Allreduce
     void* remoteTimePacks;
     int   commSize;
     PMPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
 
     PMPI_Allgather( localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -639,9 +639,9 @@ SCOREP_Hooks_Post_MPI_Allreduce
     scorep_mpiprofile_eval_multi_time_packs(  remoteTimePacks,
                                               localTimePack,
                                               commSize );
-    free( remoteTimePacks );
+    scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
 
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -663,7 +663,7 @@ SCOREP_Hooks_Post_MPI_Allgather
     void* remoteTimePacks;
     int   commSize;
     PMPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
 
     PMPI_Allgather( localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -677,9 +677,9 @@ SCOREP_Hooks_Post_MPI_Allgather
     scorep_mpiprofile_eval_multi_time_packs(  remoteTimePacks,
                                               localTimePack,
                                               commSize );
-    free( remoteTimePacks );
+    scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
 
-    free( localTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -702,7 +702,7 @@ SCOREP_Hooks_Post_MPI_Allgatherv
     void* remoteTimePacks;
     int   commSize;
     PMPI_Comm_size( comm, &commSize );
-    remoteTimePacks = malloc( commSize * MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePacks = scorep_mpiprofile_get_remote_time_packs( commSize );
 
     PMPI_Allgather( localTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -716,8 +716,8 @@ SCOREP_Hooks_Post_MPI_Allgatherv
     scorep_mpiprofile_eval_multi_time_packs(  remoteTimePacks,
                                               localTimePack,
                                               commSize );
-    free( remoteTimePacks );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_packs( remoteTimePacks );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 /*----------------------------------------------
@@ -740,7 +740,7 @@ SCOREP_Hooks_Post_MPI_Bcast
 
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
-    remoteTimePack = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
     memcpy( remoteTimePack, localTimePack, MPIPROFILER_TIMEPACK_BUFSIZE );
     PMPI_Bcast(     remoteTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -754,8 +754,8 @@ SCOREP_Hooks_Post_MPI_Bcast
         scorep_mpiprofile_eval_1x1_time_packs( remoteTimePack,
                                                localTimePack );
     }
-    free( remoteTimePack );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_pack( remoteTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 
 void
@@ -776,7 +776,7 @@ SCOREP_Hooks_Post_MPI_Scatter
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
     void* remoteTimePack;
-    remoteTimePack = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
     memcpy( remoteTimePack, localTimePack, MPIPROFILER_TIMEPACK_BUFSIZE );
     PMPI_Bcast(     remoteTimePack,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
@@ -790,6 +790,6 @@ SCOREP_Hooks_Post_MPI_Scatter
         scorep_mpiprofile_eval_1x1_time_packs( remoteTimePack,
                                                localTimePack );
     }
-    free( remoteTimePack );
-    free( localTimePack );
+    scorep_mpiprofile_release_remote_time_pack( remoteTimePack );
+    scorep_mpiprofile_release_local_time_pack( localTimePack );
 }

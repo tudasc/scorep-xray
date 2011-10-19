@@ -14,12 +14,8 @@ include ../src/services/Makefile.inc.am
 include ../vendor/hash/Makefile.inc.am
 include ../include/scorep/Makefile.inc.am
 include ../src/tools/wrapper/Makefile-backend.inc.am
+include ../src/measurement/online_access/Makefile.inc.am
 
-
-## include Online Access only when building on ALTIX
-if PLATFORM_ALTIX
-include ../src/measurement/online_access/Makefile.dummy.inc.am
-endif
 
 ## include tests
 include ../test/Makefile.inc.am
@@ -40,3 +36,5 @@ include ../test/alignment/Makefile.inc.am
 include ../test/unification/Makefile.inc.am
 include ../test/filtering/Makefile.inc.am
 include ../test/profiling/Makefile.inc.am
+include ../test/OA/serial/Fortran/Makefile.inc.am
+include ../test/OA/serial/C/Makefile.inc.am

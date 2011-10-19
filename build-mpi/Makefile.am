@@ -74,7 +74,7 @@ BUILD_DIR=build-backend
 LIB_DIR_SCOREP = ../build-backend/
 
 clean-local:
-	rm -f scorep_mpi_omp_tests  scorep_mpi_tests lex.yy.c scanner.h yacc.c yacc.h
+	rm -f scorep_mpi_omp_tests  scorep_mpi_tests lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
 distclean-local:
 	rm -f mpi_supported

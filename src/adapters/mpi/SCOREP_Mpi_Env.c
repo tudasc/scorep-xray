@@ -211,6 +211,10 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
         SCOREP_MPI_EVENT_GEN_ON();
     }
 
+#if !defined( SCOREP_MPI_NO_HOOKS )
+    scorep_mpiprofile_init();
+#endif
+
     return return_val;
 }
 #endif

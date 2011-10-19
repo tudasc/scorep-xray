@@ -32,7 +32,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
-#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -164,7 +163,7 @@ scorep_oa_sockets_client_connect_retry
             /* fill in the socket structure with host information */
             memset( &pin, 0, sizeof( pin ) );
             pin.sin_family      = AF_INET;
-            pin.sin_addr.s_addr = ( ( struct in_addr* )( hp->h_addr ) )->s_addr;
+            pin.sin_addr.s_addr = ( ( struct in_addr* )( hp->h_addr_list[ 0 ] ) )->s_addr;
             pin.sin_port        = htons( port );
 
             /* grab an Internet domain socket */
@@ -335,7 +334,7 @@ scorep_oa_sockets_server_accept_client
 
     struct sockaddr_in client_addr;       /* client's address information */
 
-//size_t sin_size;				///@TODO find out which size should be this variable
+//size_t sin_size;
     unsigned int sin_size;
 
     sin_size = sizeof( struct sockaddr_in );

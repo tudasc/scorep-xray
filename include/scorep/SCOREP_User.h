@@ -72,16 +72,12 @@
  */
 
 /**
-    @def SCOREP_USER_OA_PHASE_END(handle)
- */
-
-/**
     @def SCOREP_USER_OA_PHASE_BEGIN(handle, name, type)
     This macro marks the start of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
     SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
     recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
     iterations for iterative online analisys.
-    @param handle  The handle of the associated user region, which will become a root of the call-tree.
+    @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
                                    This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be
                    unique.
@@ -93,7 +89,7 @@
 
     C/C++ example:
     @code
-    void myfunc()
+    void main()
     {
       SCOREP_USER_REGION_DEFINE( my_region_handle )
 
@@ -116,11 +112,74 @@
     @code
     program myProg
       SCOREP_USER_REGION_DEFINE( my_region_handle )
-      ! more declarations
 
-      SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
+      ! applications initialization
+
+          ! main loop of the application
+          do ...
+
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
+
       ! do something
-      SCOREP_USER_REGION_END( my_region_handle )
+
+      SCOREP_USER_OA_PHASE_END( my_region_handle )
+
+          enddo
+
+          !application finalization
+
+    end program myProg
+    @endcode
+ */
+
+/**
+    @def SCOREP_USER_OA_PHASE_END(handle)
+    This macro marks the end of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
+    SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
+    recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
+    iterations for iterative online analisys.
+    @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
+                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_GLOBAL_REGION_DEFINE before.
+    C/C++ example:
+    @code
+    void main()
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+
+      // application initialization
+
+      for ( ) // main loop of the application
+          {
+                  SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
+
+                  // do something
+
+                  SCOREP_USER_OA_PHASE_END( my_region_handle )
+          }
+
+          // application finalization
+    }
+    @endcode
+
+    Fortran example:
+    @code
+    program myProg
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+
+      ! applications initialization
+
+          ! main loop of the application
+          do ...
+
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "main loop",SCOREP_USER_REGION_TYPE_COMMON )
+
+      ! do something
+
+      SCOREP_USER_OA_PHASE_END( my_region_handle )
+
+          enddo
+
+          !application finalization
 
     end program myProg
     @endcode

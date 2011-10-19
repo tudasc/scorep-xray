@@ -18,18 +18,21 @@
 ## file       Makefile.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-AM_YFLAGS = -d
 
-BUILT_SOURCES += lex.yy.c
 
-if HAVE_LEX
-lex.yy.c:
+if HAVE_ONLINE_ACCESS_HEADERS
+
+EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.l \
+			$(SRC_ROOT)src/measurement/online_access/lex.l
+
+BUILT_SOURCES += lex.yy.c \
+					scanner.h
+
+scanner.h:
+	$(YACC) -d $(INC_ROOT)src/measurement/online_access/yacc.l
+lex.yy.c: scanner.h
 	$(LEX) --header=scanner.h $(INC_ROOT)src/measurement/online_access/lex.l
-else
-lex.yy.c:
-	echo "LEX not available and lex.yy.c not provided." 			\
-	exit 1                                              
-endif
+
 
 SCOREP_OA_FORTRAN_SOURCES =  										\
 	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_FunctionsF.c
@@ -37,6 +40,7 @@ SCOREP_OA_FORTRAN_SOURCES =  										\
 SCOREP_OA_FORTRAN_FLAGS =                     						\
     $(AM_CPPFLAGS)                              					\
     -I$(INC_ROOT)src/adapters/include           					\
+    -I$(INC_ROOT)include/scorep           					\
     -I$(PUBLIC_INC_DIR)                         					\
     -I$(INC_DIR_UTIL)
 
@@ -82,6 +86,7 @@ OA_MPI_FLAGS =                                 						\
     -I$(INC_ROOT)src/measurement/               					\
     -I$(INC_ROOT)src/adapters/mpi									\
     -I$(INC_ROOT)src/adapters/user               					\
+    -I$(INC_ROOT)include/scorep           					\
     -I$(PUBLIC_INC_DIR)                         					\
     -I$(INC_DIR_UTIL)												\
     -DWITH_MPI
@@ -111,5 +116,67 @@ libscorep_oa_mpi_la_LIBADD =                \
     libscorep_oa_fortran_sub2.la        	\
     libscorep_oa_fortran_sub3.la        	\
     libscorep_oa_fortran_sub4.la
+
+else #if HAVE_ONLINE_ACCESS_HEADERS
+
+SCOREP_OA_FORTRAN_SOURCES =  										\
+	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_DummyF.c
+
+SCOREP_OA_FORTRAN_FLAGS =                     						\
+    $(AM_CPPFLAGS)                              					\
+    -I$(INC_ROOT)src/adapters/include           					\
+    -I$(INC_ROOT)src/measurement/include        					\
+    -I$(PUBLIC_INC_DIR)                         					\
+    -I$(INC_DIR_UTIL)
+
+libscorep_oa_fortran_sub1_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub1_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB1              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_fortran_sub2_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub2_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB2              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_fortran_sub3_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub3_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB3              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_fortran_sub4_la_SOURCES =  	\
+    $(SCOREP_OA_FORTRAN_SOURCES)
+
+libscorep_oa_fortran_sub4_la_CPPFLAGS = 	\
+    -DFSUB=SCOREP_FORTRAN_SUB4              \
+    $(SCOREP_OA_FORTRAN_FLAGS)
+
+noinst_LTLIBRARIES +=                      	\
+    libscorep_oa_fortran_sub1.la 			\
+    libscorep_oa_fortran_sub2.la 			\
+    libscorep_oa_fortran_sub3.la 			\
+    libscorep_oa_fortran_sub4.la
+    
+
+noinst_LTLIBRARIES += libscorep_oa_mpi.la
+
+libscorep_oa_mpi_la_SOURCES =				\
+	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Dummy.c
+
+libscorep_oa_mpi_la_CPPFLAGS = $(SCOREP_OA_FORTRAN_FLAGS)
+
+libscorep_oa_mpi_la_LIBADD =                \
+    libscorep_oa_fortran_sub1.la        	\
+    libscorep_oa_fortran_sub2.la        	\
+    libscorep_oa_fortran_sub3.la        	\
+    libscorep_oa_fortran_sub4.la
+
+endif #if HAVE_ONLINE_ACCESS_HEADERS
 
 

@@ -31,27 +31,34 @@
 #define MAX_REGION_NAME_LENGTH                          20
 #define MAX_FILE_NAME_LENGTH                            150
 
+typedef struct SCOREP_OA_Key_struct
+{
+    uint32_t parent_region_id;
+    uint32_t region_id;
+    uint32_t metric_id;
+}SCOREP_OA_Key;
+
 typedef struct SCOREP_OA_CallPathContext_struct
 {
-    uint64_t region_id;
-    uint64_t context_id;
-    uint64_t parent_context_id;
+    uint32_t region_id;
+    uint32_t context_id;
+    uint32_t parent_context_id;
     uint32_t thread;
-    uint32_t rank;
+    uint64_t rank;
     uint64_t call_count;
 }SCOREP_OA_CallPathContext;
 
 typedef struct SCOREP_OA_CallPathMeasurement_struct
 {
-    uint64_t context_id;
-    uint64_t counter_id;
+    uint32_t context_id;
+    uint32_t counter_id;
     uint64_t sum;
     uint64_t count;
 }SCOREP_OA_CallPathMeasurement;
 
 typedef struct SCOREP_OA_CallPathCounterDef_struct
 {
-    uint64_t counter_id;
+    uint32_t counter_id;
     char     name[ MAX_COUNTER_NAME_LENGTH ];
     char     unit[ MAX_COUNTER_UNIT_LENGTH ];
     uint32_t status;
@@ -59,23 +66,23 @@ typedef struct SCOREP_OA_CallPathCounterDef_struct
 
 typedef struct SCOREP_OA_CallPathRegionDef_struct
 {
-    uint64_t           region_id;
-    char               name[ MAX_REGION_NAME_LENGTH ];
-    char               file[ MAX_FILE_NAME_LENGTH ];
-    uint32_t           rfl;
-    uint32_t           rel;
-    SCOREP_AdapterType adapter_type;
+    uint32_t region_id;
+    char     name[ MAX_REGION_NAME_LENGTH ];
+    char     file[ MAX_FILE_NAME_LENGTH ];
+    uint32_t rfl;
+    uint32_t rel;
+    uint32_t adapter_type;
 }SCOREP_OA_CallPathRegionDef;
 
 
 typedef struct SCOREP_OA_StaticProfileMeasurement_struct
 {
-    uint64_t measurement_id;
-    uint32_t rank;
+    uint32_t measurement_id;
+    uint64_t rank;
     uint32_t thread;
-    uint64_t region_id;
+    uint32_t region_id;
     uint64_t samples;
-    uint64_t metric_id;
+    uint32_t metric_id;
     uint64_t int_val;
 }SCOREP_OA_StaticProfileMeasurement;
 
@@ -86,14 +93,14 @@ typedef struct SCOREP_OA_ProfileSummary_struct
     SCOREP_OA_CallPathCounterDef*       counter_def_buffer;
     SCOREP_OA_CallPathRegionDef*        region_def_buffer;
     SCOREP_OA_StaticProfileMeasurement* static_measurement_buffer;
-    uint64_t                            context_size;
-    uint64_t                            measurement_size;
-    uint64_t                            counter_def_size;
-    uint64_t                            region_def_size;
-    uint64_t                            static_measurement_size;
+    uint32_t                            context_size;
+    uint32_t                            measurement_size;
+    uint32_t                            counter_def_size;
+    uint32_t                            region_def_size;
+    uint32_t                            static_measurement_size;
 } SCOREP_OA_CallPathSummary;
 
-#define SCOREP_OA_COUNTER_UNDEFINED     0
+#define SCOREP_OA_COUNTER_UNDEFINED                     0
 #define SCOREP_OA_COUNTER_TIME                  1
 #define SCOREP_OA_COUNTER_LATE                  2
 
@@ -130,7 +137,7 @@ SCOREP_OAConsumer_GetData
     SCOREP_OAConsumer_DataTypes data_type
 );
 
-int
+uint32_t
 SCOREP_OAConsumer_GetDataSize
 (
     SCOREP_OAConsumer_DataTypes data_type

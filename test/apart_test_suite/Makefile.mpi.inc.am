@@ -28,7 +28,39 @@ if MPI_SUPPORTED
 
 ##if FORTRAN_SUPPORT_ALLOCATABLE
 
+## Apart Test Suite to run with Online Access mode
 
+if HAVE_ONLINE_ACCESS_HEADERS
+
+check_PROGRAMS                  += mpi_patt_all_test_f90_with_oa
+mpi_patt_all_test_f90_with_oa_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/calibrate.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/work.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/type_convert.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/distribution.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_util.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_pattern.f90 \
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.F90
+
+mpi_patt_all_test_f90_with_oa_CPPFLAGS = \
+    -I$(PUBLIC_INC_DIR)                     \
+    -I$(INC_ROOT)src/adapters/include       \
+    -I$(INC_DIR_UTIL)
+
+if SCOREP_COMPILER_IBM
+mpi_patt_all_test_f90_with_oa_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
+else
+mpi_patt_all_test_f90_with_oa_CPPFLAGS += -DSCOREP_USER_ENABLE=1
+endif
+
+mpi_patt_all_test_f90_with_oa_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
+
+EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh
+
+CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod
+
+endif #if HAVE_ONLINE_ACCESS_HEADERS
+
+## Apart Test Suite to run without Online Access mode
 
 check_PROGRAMS                  += mpi_patt_all_test_f90
 mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/calibrate.f90 \
@@ -37,19 +69,19 @@ mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/cali
                                    $(SRC_ROOT)test/apart_test_suite/fortran/distribution.f90 \
                                    $(SRC_ROOT)test/apart_test_suite/fortran/mpi_util.f90 \
                                    $(SRC_ROOT)test/apart_test_suite/fortran/mpi_pattern.f90 \
-                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.mod.f90
+                                   $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.F90
 
-mpi_patt_all_test_f90_CPPFLAGS   = \
-    $(AM_CPPFLAGS)\
+mpi_patt_all_test_f90_CPPFLAGS = \
+    -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
-    -I$(INC_DIR_UTIL)						\
-    -I/lrz/sys/mpi_altix/include			\
-    -DMPI_VERSION=@HAVE_MPI_VERSION@		\
-    @COMPILER_INSTRUMENTATION_CPPFLAGS@
+    -I$(INC_DIR_UTIL)
+
 
 mpi_patt_all_test_f90_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
 
+TESTS_MPI += mpi_patt_all_test_f90
 
+CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod distribution.mod
 
 ##endif
 # if FORTRAN_SUPPORT_ALLOCATABLE

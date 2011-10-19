@@ -39,7 +39,7 @@ libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     -I$(INC_DIR_UTIL)
 
 ## Disable mpi profiling hooks
-libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS
+##libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 
 
 
 libscorep_adapter_mpi_c_wrapper_la_LIBADD =   \

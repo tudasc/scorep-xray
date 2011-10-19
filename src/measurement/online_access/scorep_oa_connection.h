@@ -30,10 +30,12 @@
 
 #include "scorep_utility/SCOREP_Utils.h"
 
-extern int connection;
+extern int      connection;
+extern uint64_t silc_oa_port;
+extern uint64_t silc_oa_registry_port;
+extern char*    silc_oa_registry_host;
 
 int
-///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
 scorep_oa_connection_connect
 (
 );
@@ -41,20 +43,20 @@ scorep_oa_connection_connect
 SCOREP_Error_Code
 scorep_oa_connection_disconnect
 (
-    int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int connection
 );
 
 SCOREP_Error_Code
 scorep_oa_connection_send_string
 (
-    int         connection,                     ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int         connection,
     const char* message_string
 );
 
 SCOREP_Error_Code
 scorep_oa_connection_send_data
 (
-    int   connection,                                   ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int   connection,
     void* message_data,
     int   size,
     int   type_size
@@ -63,7 +65,7 @@ scorep_oa_connection_send_data
 int
 scorep_oa_connection_read_string
 (
-    int   connection,                   ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int   connection,
     char* message_string,
     int   maxlen
 );

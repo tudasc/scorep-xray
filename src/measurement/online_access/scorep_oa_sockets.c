@@ -51,9 +51,9 @@ static char  read_buf[ 1000 ];
 int
 scorep_oa_sockets_server_startup_retry
 (
-    int* init_port,
-    int  retries,
-    int  step
+    uint64_t* init_port,
+    int       retries,
+    int       step
 )
 {
     int                sock;
@@ -67,7 +67,7 @@ scorep_oa_sockets_server_startup_retry
      * create a new socket socket() returns positive interger on success
      */
 
-    for ( port = *init_port; port <= *init_port + retries * step && stat == -1; port = port + step )
+    for ( port = ( int )*init_port; port <= *init_port + retries * step && stat == -1; port = port + step )
     {
         stat = 0;
 
@@ -130,7 +130,7 @@ scorep_oa_sockets_server_startup_retry
     else
     {
         SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d", __FUNCTION__, port );
-        *init_port = port;
+        *init_port = ( uint64_t )port;
         return sock;
     }
 }
@@ -142,7 +142,7 @@ scorep_oa_sockets_open_registry
     int         port
 )
 {
-    registry* reg = ( registry* )malloc( sizeof( registry ) );                                          ///@TODO: switch to scorep memory allocator
+    registry* reg = ( registry* )malloc( sizeof( registry ) );
     char      buf[ BUFSIZE ];
 
 
@@ -286,7 +286,7 @@ scorep_oa_sockets_client_connect_retry
             /* fill in the socket structure with host information */
             memset( &pin, 0, sizeof( pin ) );
             pin.sin_family      = AF_INET;
-            pin.sin_addr.s_addr = ( ( struct in_addr* )( hp->h_addr ) )->s_addr;
+            pin.sin_addr.s_addr = ( ( struct in_addr* )( hp->h_addr_list[ 0 ] ) )->s_addr;
             pin.sin_port        = htons( port );
 
             /* grab an Internet domain socket */
@@ -450,7 +450,9 @@ scorep_oa_sockets_read_line
 void
 scorep_oa_sockets_register_with_registry
 (
-    int port
+    uint64_t port,
+    uint64_t reg_port,
+    char*    reg_host
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
@@ -476,11 +478,12 @@ scorep_oa_sockets_register_with_registry
     char   library_name[ 50 ];
 
     sprintf( appl_name, "appl" );
-    sprintf( psc_reghost, "hlrb2" );                            /// TODO grab the registry host name from the config file
-    psc_regport = 50100;                                        /// TODO grab the registry port number from the config file
-    sprintf( site_name, "LRZ" );                                /// TODO grab the site name from the config file
-    sprintf( machine_name, "ALTIX4700" );                       /// TODO grab the machine name from the config file
-    sprintf( library_name, "MRIMONITOR" );                      /// TODO swith to SILC when Periscope is ready
+    sprintf( psc_reghost, reg_host );
+    //SCOREP_IO_GetHostname( psc_reghost, 100 );
+    psc_regport = ( int )reg_port;
+    sprintf( site_name, "none" );
+    sprintf( machine_name, "none" );
+    sprintf( library_name, "SCOREP" );
 
 #ifdef WITH_MPI
 
@@ -495,11 +498,11 @@ scorep_oa_sockets_register_with_registry
     PMPI_Comm_size( MPI_COMM_WORLD, &nprocs );
     PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
 
-    allinfo = ( P_info* )calloc( nprocs, sizeof( P_info ) );            ///@TODO: switch to scorep memory allocator
+    allinfo = ( P_info* )calloc( nprocs, sizeof( P_info ) );
 
     SCOREP_IO_GetHostname( myinfo.hostname, 100 );
-    myinfo.cpu  = 1;                                                                                    /// get rid of later
-    myinfo.port = port;
+    myinfo.cpu  = 1;
+    myinfo.port = ( int )port;
     myinfo.rank = rank;
 
     if ( rank == 0 )
@@ -515,7 +518,7 @@ scorep_oa_sockets_register_with_registry
 
         PMPI_Gather( &myinfo, sizeof( P_info ), MPI_BYTE, allinfo, sizeof( P_info ), MPI_BYTE, 0, MPI_COMM_WORLD );
 
-        int* ids = ( int* )calloc( nprocs, sizeof( int ) );                             ///@TODO: switch to scorep memory allocator
+        int* ids = ( int* )calloc( nprocs, sizeof( int ) );
         for ( i = 0; i < nprocs; i++ )
         {
             SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Registering process %d with port %d and host %s", allinfo[ i ].rank, allinfo[ i ].port, allinfo[ i ].hostname );
@@ -563,7 +566,7 @@ scorep_oa_sockets_register_with_registry
 #else
 
     myinfo.cpu  = 1;                                                                                    /// get rid of later
-    myinfo.port = port;
+    myinfo.port = ( int )port;
     myinfo.rank = 1;
     SCOREP_IO_GetHostname( myinfo.hostname, 100 );
 
@@ -608,7 +611,7 @@ scorep_oa_sockets_server_accept_client
 
     struct sockaddr_in client_addr;       /* client's address information */
 
-//size_t sin_size;				///@TODO find out which size should be this variable
+//size_t sin_size;
     unsigned int sin_size;
 
     sin_size = sizeof( struct sockaddr_in );

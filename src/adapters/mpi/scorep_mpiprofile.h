@@ -40,6 +40,35 @@ scorep_mpiprofile_init
 (
 );
 
+void*
+scorep_mpiprofile_get_remote_time_packs
+(
+    int size
+);
+
+void*
+scorep_mpiprofile_get_remote_time_pack
+(
+);
+
+void
+scorep_mpiprofile_release_local_time_pack
+(
+    void* local_time_pack
+);
+
+void
+scorep_mpiprofile_release_remote_time_pack
+(
+    void* remote_time_pack
+);
+
+void
+scorep_mpiprofile_release_remote_time_packs
+(
+    void* remote_time_packs
+);
+
 /**
  * Creates time pack buffer containing rank and time stamp
  *

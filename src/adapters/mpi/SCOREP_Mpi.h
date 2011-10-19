@@ -114,12 +114,11 @@ scorep_get_status_array( int32_t size );
  */
 extern int32_t scorep_mpi_nogen;
 
-/** Flag to indicate whether MPI Profiling hooks are turned on or off. If it is set to 1,
-    hooks are executed. If it is set to zero, no hooks are executed.
+/** Flag to indicate whether MPI Profiling hooks are turned on or off.
  */
-extern int32_t scorep_hooks_on;
+extern bool scorep_hooks_on;
 
-extern int     scorep_mpi_status_size;
+extern int  scorep_mpi_status_size;
 
 /** @def SCOREP_MPI_IS_EVENT_GEN_ON
     Check whether event generation is turned on. Returns the inverse value of
@@ -153,20 +152,21 @@ extern int     scorep_mpi_status_size;
 /** @def SCOREP_MPI_HOOKS_ON
     Turn on MPI Profiling hooks inside MPI adapter.
  */
-#define SCOREP_MPI_HOOKS_ON()                     scorep_hooks_on = 1
+#define SCOREP_MPI_HOOKS_ON()                     scorep_hooks_on = true
 
 /** @def SCOREP_MPI_HOOKS_OFF
     Turn off MPI Profiling hooks inside MPI adapter.
  */
-#define SCOREP_MPI_HOOKS_OFF()                    scorep_hooks_on = 0
+#define SCOREP_MPI_HOOKS_OFF()                    scorep_hooks_on = false
 
 #define SCOREP_MPI_HOOKS_SET( value )                     scorep_hooks_on = value
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
+/**
+ * Intializa MPI Profiling module
+ */
 extern void
 scorep_mpiprofile_init();
 
-#endif
 
 /** @} */
 

@@ -54,19 +54,19 @@ typedef enum
     SCOREP_OA_MRI_MEASUREMENTS_ALL,
     SCOREP_OA_MRI_MEASUREMENTS_MPI,
     SCOREP_OA_MRI_MEASUREMENTS_COUNTER
-} scorep_oa_mri_measurement_return_header_type;                   ///@TODO move to return measurements or to scorep_oa_mri_control.c
+} scorep_oa_mri_measurement_return_header_type;
 
 SCOREP_Error_Code
 scorep_oa_mri_receive_and_process_requests
 (
-    int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int connection
 );
 
 void
 scorep_oa_mri_set_appl_control
 (
     scorep_oa_mri_app_control_type command,
-    uint8_t                        file_id,     ///@TODO get rid of line number and file ID, should be OA_Phase name instead or region handle
+    uint8_t                        file_id,
     uint8_t                        region_line
 );
 

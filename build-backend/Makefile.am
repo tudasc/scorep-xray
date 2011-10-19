@@ -73,7 +73,7 @@ LIB_DIR_SCOREP = ./
 LIB_DIR_SCOREP_MPI = ../build-mpi/
 
 clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests
-	rm -f lex.yy.c scanner.h yacc.c yacc.h
+	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h 
 
 PHONY_TARGETS += install-scorep-meets-tau
 

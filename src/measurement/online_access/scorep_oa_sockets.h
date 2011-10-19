@@ -58,9 +58,9 @@ typedef struct
 int
 scorep_oa_sockets_server_startup_retry
 (
-    int* init_port,
-    int  retries,
-    int  step
+    uint64_t* init_port,
+    int       retries,
+    int       step
 );
 
 /*
@@ -153,7 +153,9 @@ scorep_oa_sockets_write_data
 void
 scorep_oa_sockets_register_with_registry
 (
-    int port
+    uint64_t port,
+    uint64_t reg_port,
+    char*    reg_host
 );
 
 int

@@ -28,11 +28,13 @@
 
 #include <stdio.h>
 #include <strings.h>
-#include <mpi.h>
+#ifdef WITH_MPI
+        #include <mpi.h>
+        #include <SCOREP_Mpi.h>
+#endif
 #include <ctype.h>
 
 #include <SCOREP_Profile.h>
-#include <SCOREP_Mpi.h>
 #include <SCOREP_Profile_OAConsumer.h>
 #include <SCOREP_RuntimeManagement.h>
 
@@ -86,7 +88,7 @@ scorep_oa_mri_dump_profile();
 SCOREP_Error_Code
 scorep_oa_mri_receive_and_process_requests
 (
-    int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int connection
 )
 {
     int  length, i;
@@ -136,7 +138,7 @@ void
 scorep_oa_mri_set_appl_control
 (
     scorep_oa_mri_app_control_type command,
-    uint8_t                        file_id,     ///@TODO get rid of line number and file ID, should be OA_Phase name instead or region handle
+    uint8_t                        file_id,
     uint8_t                        region_line
 )
 {
@@ -154,7 +156,7 @@ scorep_oa_mri_set_phase
 )
 {
     phase_handle = handle;
-    printf( "Phase set to region (handle = %ld )\n", phase_handle );
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Phase set to region (handle = %ld )\n", phase_handle );
 }
 
 scorep_oa_mri_app_control_type
@@ -169,7 +171,7 @@ scorep_oa_mri_get_appl_control
 void
 scorep_oa_mri_return_summary_data
 (
-    int connection                              ///@TODO switch to appropriate connection object which contains call backs to the chosen communication layer
+    int connection
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
@@ -178,21 +180,23 @@ scorep_oa_mri_return_summary_data
     SCOREP_OAConsumer_Initialize( phase_handle );
 
     /** Get number of merged regions definitions*/
-    int                          region_defs_size = SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
+    int                          region_defs_size = ( int )SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
     /** Generate merged regions definitions buffer*/
     SCOREP_OA_CallPathRegionDef* region_defs = ( SCOREP_OA_CallPathRegionDef* )SCOREP_OAConsumer_GetData(
         MERGED_REGION_DEFINITIONS );
 
     /** Send merged region definitions to the agent*/
+    printf( "Sending MERGED_REGION_DEFINITIONS size: %d elements of size %d\n", region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
     scorep_oa_connection_send_string( connection, "MERGED_REGION_DEFINITIONS\n" );
     scorep_oa_connection_send_data( connection, region_defs, region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
 
     /** Get number of static profile records*/
-    int                                 static_profile_size = SCOREP_OAConsumer_GetDataSize( STATIC_PROFILE );
+    int                                 static_profile_size = ( int )SCOREP_OAConsumer_GetDataSize( STATIC_PROFILE );
     /** Get static profile buffer*/
     SCOREP_OA_StaticProfileMeasurement* static_profile = ( SCOREP_OA_StaticProfileMeasurement* )SCOREP_OAConsumer_GetData(
         STATIC_PROFILE );
     /** Send static profile to the agent*/
+    printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
     scorep_oa_connection_send_string( connection, "STATIC_PROFILE\n" );
     scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
 
@@ -227,13 +231,9 @@ scorep_oa_mri_parse
 
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
     my_string_buffer = yy_scan_string( buffer );
-    if ( yyparse() == 0 )
+    if ( yyparse() != 0 )
     {
-        //TRF_create_globalRegionStructure (tid);
-    }
-    else
-    {
-        return_status = SCOREP_ERROR_MEMORY_OUT_OF_PAGES;                                 ///@TODO introduce my own error code here
+        return_status = SCOREP_ERROR_OA_PARSE_MRI;
     }
     yy_delete_buffer( my_string_buffer );
 

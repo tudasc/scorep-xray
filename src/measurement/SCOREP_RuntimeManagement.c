@@ -50,6 +50,7 @@
 #include <SCOREP_Filter.h>
 #include <scorep_unify.h>
 #include <scorep_openmp.h>
+#include <SCOREP_OA_Init.h>
 
 #include "scorep_types.h"
 #include "scorep_adapter.h"
@@ -136,6 +137,7 @@ SCOREP_InitMeasurement()
     SCOREP_Filter_Register();
     scorep_adapters_register();
     SCOREP_Profile_Register();
+    SCOREP_OA_Register();
 
     /* Parse the environment */
     SCOREP_ConfigApplyEnv();

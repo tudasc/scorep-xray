@@ -1,0 +1,47 @@
+#------------------------------------------------------------------------------
+# General Settings
+#------------------------------------------------------------------------------
+
+@SCOREP_COMPILER_SUN_FALSE@PREP = @prefix@/bin/scorep --user --verbosity=2
+@SCOREP_COMPILER_SUN_TRUE@PREP = @prefix@/bin/scorep --user --verbosity=2 --nocompiler
+
+CC = $(PREP) @CC@
+CFLAGS = @CFLAGS@
+LDLIBS =
+
+#------------------------------------------------------------------------------
+# Rules
+#------------------------------------------------------------------------------
+
+OBJECTS = \
+	oa_example.o 
+
+
+
+all: oa_example
+#	mpiexec -np 2 ./jacobi
+
+clean:
+	rm -f oa_example $(OBJECTS) oa_example.c
+	rm -rf scorep-2*
+	rm -rf scorep-measurement-tmp
+
+jacobi: $(OBJECTS)
+	$(CC) $(CFLAGS) -o oa_example $(OBJECTS) -lm $(LDLIBS)
+
+
+.PHONY: all clean
+.SUFFIXES: .c .o
+
+.c.o: 
+	$(CC) $(CFLAGS) -c $<
+
+
+%.c:
+	cp @abs_srcdir@/$@ .
+
+#------------------------------------------------------------------------------
+# Dependencies
+#------------------------------------------------------------------------------
+
+oa_example.o: oa_example.c 

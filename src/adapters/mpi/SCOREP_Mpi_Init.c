@@ -224,6 +224,15 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         " XNONBLOCK: Extended non-blocking events.\n"
         " XREQTEST: Test events for uncompleted requests.\n",
     },
+    {
+        "profiling",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_hooks_on,
+        NULL,
+        "false",
+        "enable mpi profiling",
+        "enable mpi profiling"
+    },
     SCOREP_CONFIG_TERMINATOR
 };
 

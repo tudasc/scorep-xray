@@ -14,42 +14,29 @@
  *
  */
 
+/* *INDENT-OFF* */
+#include <config.h>
+#include <stdio.h>
 
-#ifndef SCOREP_OA_INIT_H
-#define SCOREP_OA_INIT_H
+#include "SCOREP_User.h"
 
+int
+main( int    argc,
+      char** argv )
+{
+    int	retVal = 0; /* return value */
+    int k;
 
-/**
- * @file        SCOREP_OA_Init.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
- *
- * @brief   Declaration of OA initialization and finalization functions
- *
- * @status alpha
- */
+    for(k=0;k<30;k++)
+    {
+        SCOREP_USER_REGION_DEFINE( mainRegion );
+        SCOREP_USER_ONLINE_ACCESS_PHASE_BEGIN( mainRegion, "mainRegion", SCOREP_USER_REGION_TYPE_COMMON);
 
-#include "scorep_utility/SCOREP_Utils.h"
+        printf("OA_TEST_C: Inside Online Access phase\n");
 
+        SCOREP_USER_ONLINE_ACCESS_PHASE_END( mainRegion );
 
+    }
 
-int8_t
-SCOREP_OA_Init
-(
-);
-
-int8_t
-SCOREP_OA_Initialized
-(
-);
-
-int8_t
-SULC_OA_Finalize
-(
-);
-
-void
-SCOREP_OA_Register
-(
-);
-
-#endif /* SCOREP_OA_INIT_H */
+    return retVal;
+}

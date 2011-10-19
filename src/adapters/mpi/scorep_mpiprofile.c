@@ -32,6 +32,11 @@
 #include <mpi.h>
 
 #include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Config.h>
+#include <SCOREP_Types.h>
+#include <SCOREP_Mpi.h>
+
+#define SCOREP_USER_ENABLE
 #include <scorep/SCOREP_User.h>
 
 #include "scorep_mpiprofile.h"
@@ -45,10 +50,19 @@ int            myrank;
 static int     numprocs;
 static int     mpiprofiling_initialized = 0;
 
+static void*   mpi_profiling_remote_time_packs_pool;
+static void*   mpi_profiling_local_time_pack;
+static void*   mpi_profiling_remote_time_pack;
+static int     remote_time_packs_in_use = 0;
+static int     local_time_pack_in_use   = 0;
+static int     remote_time_pack_in_use  = 0;
+
 SCOREP_USER_METRIC_LOCAL( lateSend )
 SCOREP_USER_METRIC_LOCAL( lateRecv )
 
 #define SCOREP_MPI_PROFILED_DEFAULT = 0
+
+#define _WITH_PREALLOCATION_OF_TIME_PACKS
 
 /**
  * Initializes MPI profiling module
@@ -66,6 +80,20 @@ scorep_mpiprofile_init
     PMPI_Comm_size( MPI_COMM_WORLD, &numprocs );
     PMPI_Comm_rank( MPI_COMM_WORLD, &myrank );
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "INIT: myrank = %d, numprocs = %d", myrank, numprocs );
+
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    mpi_profiling_local_time_pack        = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    mpi_profiling_remote_time_pack       = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    mpi_profiling_remote_time_packs_pool = malloc( numprocs * MPIPROFILER_TIMEPACK_BUFSIZE );
+    if ( mpi_profiling_remote_time_packs_pool == NULL
+         || mpi_profiling_local_time_pack == NULL
+         || mpi_profiling_remote_time_pack == NULL )
+    {
+        fprintf( stderr, "MPI_Profiling not enough memory. MPI_Profiling will be disabled." );
+        SCOREP_MPI_HOOKS_SET( false );
+        return;
+    }
+        #endif
 
     lateThreshold = 0.001;
 
@@ -88,7 +116,17 @@ scorep_mpiprofile_get_time_pack
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", myrank, __FUNCTION__ );
+    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( local_time_pack_in_use == 1 )
+    {
+        fprintf( stderr, "1 Warning attempt of multiple use of time packs pool. MPI_Profiling will be disabled.\n" );
+        return malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    }
+    local_time_pack_in_use = 1;
+    void* buf = mpi_profiling_local_time_pack;
+    #else
     void* buf = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    #endif
     int   pos = 0;
     PMPI_Pack(      &time,
                     1,
@@ -109,6 +147,87 @@ scorep_mpiprofile_get_time_pack
     return buf;
 }
 
+/**
+ * Gives a pointer to the buffer for receiving remote timepacks
+ *
+ */
+void*
+scorep_mpiprofile_get_remote_time_packs
+(
+    int size
+)
+{
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( remote_time_packs_in_use == 1 )
+    {
+        fprintf( stderr, "2 Warning attempt of multiple use of time packs pool. MPI_Profiling will be disabled.\n" );
+        return malloc( size * MPIPROFILER_TIMEPACK_BUFSIZE );
+    }
+    remote_time_packs_in_use = 1;
+    return mpi_profiling_remote_time_packs_pool;
+        #else
+    return malloc( size * MPIPROFILER_TIMEPACK_BUFSIZE );
+        #endif
+}
+
+/**
+ * Gives a pointer to the buffer for receiving remote timepack
+ *
+ */
+void*
+scorep_mpiprofile_get_remote_time_pack
+(
+)
+{
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( remote_time_pack_in_use == 1 )
+    {
+        fprintf( stderr, "3 Warning attempt of multiple use of time packs pool. MPI_Profiling will be disabled.\n" );
+        return malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+    }
+    remote_time_pack_in_use = 1;
+    return mpi_profiling_remote_time_pack;
+        #else
+    return malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
+        #endif
+}
+
+void
+scorep_mpiprofile_release_local_time_pack
+(
+    void* local_time_pack
+)
+{
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    local_time_pack_in_use = 0;
+        #else
+    free( local_time_pack );
+        #endif
+}
+void
+scorep_mpiprofile_release_remote_time_pack
+(
+    void* remote_time_pack
+)
+{
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    remote_time_pack_in_use = 0;
+        #else
+    free( remote_time_pack );
+        #endif
+}
+void
+scorep_mpiprofile_release_remote_time_packs
+(
+    void* remote_time_packs
+)
+{
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    remote_time_packs_in_use = 0;
+        #else
+    free( remote_time_packs );
+        #endif
+}
 
 /**
  * Evaluates two time packs for p2p communications
@@ -309,7 +428,7 @@ scorep_mpiprofile_eval_time_stamps
     else
     {
         delta = abs( delta );
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "IN TIME: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld", myrank, src, dst, delta, recvTime, sendTime );
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "IN TIME: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld\n", myrank, src, dst, delta, recvTime, sendTime );
         ///no late state
         ///trigger user metric here
     }

@@ -1,0 +1,28 @@
+## -*- mode: makefile -*-
+
+if HAVE_ONLINE_ACCESS_HEADERS
+
+bin_PROGRAMS += online_access_registry
+
+online_access_registry_SOURCES = \
+	$(SRC_ROOT)/tools/oa_registry/regsrv_client.cc                 	\
+	$(SRC_ROOT)/tools/oa_registry/regsrv_client.h                 	\
+	$(SRC_ROOT)/tools/oa_registry/regsrv.cc                 		\
+	$(SRC_ROOT)/tools/oa_registry/regsrv.h                 			\
+	$(SRC_ROOT)/tools/oa_registry/regsrv_sockets.c                 	\
+	$(SRC_ROOT)/tools/oa_registry/regsrv_sockets.h                 	\
+	$(SRC_ROOT)/tools/oa_registry/stringutil.cc           		    \
+	$(SRC_ROOT)/tools/oa_registry/stringutil.h           		    \
+	$(SRC_ROOT)/tools/oa_registry/scorep_oa_registry_protocol.h		\
+	$(SRC_ROOT)/tools/oa_registry/strutil.c							\
+	$(SRC_ROOT)/tools/oa_registry/strutil.h
+
+online_access_registry_CPPFLAGS = $(AM_CPPFLAGS)      \
+    -I$(INC_DIR_UTIL)
+    
+online_access_registry_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la
+    
+EXTRA_DIST +=$(SRC_ROOT)/tools/oa_registry/scenario_mpi
+EXTRA_DIST +=$(SRC_ROOT)/tools/oa_registry/scenario_serial
+
+endif #if HAVE_ONLINE_ACCESS_HEADERS

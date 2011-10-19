@@ -14,3 +14,4 @@ distribution_test2_SOURCES       = $(distribution_test2_sources)
 distribution_test2_CPPFLAGS      = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 distribution_test2_LDADD         = $(LIB_ROOT)libscorep_serial.la
 
+CLEANFILES += distribution.mod

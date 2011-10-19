@@ -1,0 +1,34 @@
+if HAVE_ONLINE_ACCESS_HEADERS
+
+check_PROGRAMS += oa_f_test
+
+oa_f_test_SOURCES =                                       \
+	$(SRC_ROOT)/test/OA/serial/Fortran/oa_test.F90
+
+oa_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@\
+    -I$(PUBLIC_INC_DIR)                     \
+    -I$(INC_ROOT)src/adapters/include       \
+    -I$(INC_DIR_UTIL)
+
+if SCOREP_COMPILER_IBM
+oa_f_test_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
+else
+oa_f_test_CPPFLAGS += -DSCOREP_USER_ENABLE=1
+endif
+
+if SCOREP_COMPILER_PGI
+oa_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1 
+endif
+
+oa_f_test_LDADD =                        \
+    $(LIB_ROOT)libscorep_serial.la         \
+    $(LIB_ROOT)libscorep_pomp_dummy.la     \
+    $(LIB_DIR_OTF2)libotf2.la              \
+    $(LIB_DIR_UTIL)libscorep_utilities.la
+
+EXTRA_DIST       += \
+    $(SRC_ROOT)/test/OA/serial/Fortran/run_oa_f_test.sh
+
+TESTS += $(srcdir)/../test/OA/serial/Fortran/run_oa_f_test.sh
+
+endif #if HAVE_ONLINE_ACCESS_HEADERS

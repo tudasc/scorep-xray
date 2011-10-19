@@ -21,10 +21,14 @@
  *
  * This file implements registry service client class
  */
+
 #include <config.h>
- 
+
 #include <string>
 #include <stdlib.h>
+#include <cstdio>
+
+/* *INDENT-OFF* */
 
 using std::string;
 
@@ -37,43 +41,43 @@ using std::string;
 int RegServClient::receive_and_handle_request()
 {
 	int i, ret;
-		
+
 	printf("Registry service: listening for input...");
-	
+
 	if (sock_<0){
 		fprintf(stderr,"Connection is down!");
 		return 1;
 	}
-	
+
 	int maxlen = MAX_MESSAGE_SIZE;
-	char buf[ maxlen ];
+	char buf[ MAX_MESSAGE_SIZE ];
 	buf[ 0 ] = 0;
 	bzero( buf, maxlen );
-	
+
 	int length;
 	while ( ( length = scorep_oa_sockets_read_line( sock_, buf, maxlen ) ) == 0 )
 	{
 	}
-	
+
 	for ( i = 0; i < length; i++ )
 	{
-		
+
 		if(buf[ i ]==13) buf[ i ]=32;
 		//printf(" %d ",buf[ i ]);
-		
+
 	}
 	printf(" %s \n",buf);
-	
+
 	std::string::size_type pos;
 	std::string line;
 	std::string command;
-	
-	
+
+
 	line = buf;
 	pos=get_token(line, 0, " ", command);
-	
+
 	printf("Registry service: command: %s \n",command.c_str());
-	
+
 	if( !strcasecmp(command.c_str(), CMD_QUIT) )
 	{
 	  on_quit( line, pos);
@@ -84,32 +88,32 @@ int RegServClient::receive_and_handle_request()
 	  on_help( line, pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_CREATE) )
 	{
 	  on_create( line, pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_SEARCH) )
 	{
 	  on_search( line, pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_DELETE) ||
 	  !strcasecmp(command.c_str(), CMD_DELETE_SHORT) )
 	{
 	  on_delete( line, pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_LIST) )
 	{
 	  on_list( line, pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_SHOW) )
 	{
 	  on_show( line, pos);
@@ -121,37 +125,37 @@ int RegServClient::receive_and_handle_request()
 	  on_add_string( line,pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_STR_GET) )
 	{
 	  on_get_string( line,pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_STR_DEL) )
 	{
 	  on_delete_string( line,pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_STR_LIST) )
 	{
 	  on_list_strings( line, pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_STR_COUNT) )
 	{
 	  on_count_strings( line,pos);
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_CLEAN) )
 	{
 	  on_clean( line, pos );
 	  return 0;
 	}
-	
+
 	if( !strcasecmp(command.c_str(), CMD_CHANGE) )
 	{
 	  on_change( line, pos);
@@ -164,7 +168,7 @@ int RegServClient::receive_and_handle_request()
 	}
 	on_unknown( line, pos);
 	return 0;
-	
+
 }
 
 
@@ -176,6 +180,7 @@ int RegServClient::write_line( char *buf )
 		return 1;
 	}
 	scorep_oa_sockets_write_line( sock_, buf );
+	return 0;
 }
 
 
@@ -183,14 +188,14 @@ int RegServClient::write_line( char *buf )
 void RegServClient::on_quit( std::string& line, std::string::size_type pos )
 {
   char buf[400];
-  sprintf(buf, MSG_QUIT, 
+  sprintf(buf, MSG_QUIT,
 	  get_hostname().c_str(), get_port());
   write_line( buf);
 }
 
 
 
-void RegServClient::on_unknown( 
+void RegServClient::on_unknown(
 				string& line, string::size_type pos )
 {
   char buf[400];
@@ -202,7 +207,7 @@ void RegServClient::on_unknown(
 }
 
 
-void RegServClient::on_help( 
+void RegServClient::on_help(
 			     std::string& line, std::string::size_type pos )
 {
   char buf[400];
@@ -256,16 +261,16 @@ void RegServClient::on_help(
 }
 
 
-void RegServClient::on_create( 
+void RegServClient::on_create(
 			       string& line, string::size_type pos )
 {
   char buf[400];
   string key, value;
   string command;
   std::pair< string, string > mypair;
-  
+
   RegEntry *entry=new RegEntry();
-  
+
   do
   {
     pos=get_key_value_pair(line, pos, mypair);
@@ -336,11 +341,11 @@ void RegServClient::on_create(
 
   sprintf(buf, MSG_CREATE_SUCCESS, id );
   write_line( buf);
-  
+
 }
 
 
-void RegServClient::on_list( 
+void RegServClient::on_list(
 			     string& line, string::size_type pos )
 {
   char buf[400];
@@ -348,17 +353,17 @@ void RegServClient::on_list(
   std::map< int , RegEntry* >::iterator it;
   sprintf(buf, MSG_LIST_SUCCESS, (int) serv_->reg_data_.size() );
   write_line( buf);
-  
-  for( it=serv_->reg_data_.begin(); 
+
+  for( it=serv_->reg_data_.begin();
        it!=serv_->reg_data_.end(); it++ )
   {
-    sprintf(buf, STR_ENTRYDATA, it->first, 
+    sprintf(buf, STR_ENTRYDATA, it->first,
 	    it->second->app.c_str(),
 	    it->second->site.c_str(),
 	    it->second->mach.c_str(),
 	    it->second->node.c_str(),
-	    it->second->port, 
-	    it->second->pid, 
+	    it->second->port,
+	    it->second->pid,
 	    it->second->comp.c_str(),
 	    it->second->tag.c_str() );
     write_line( buf);
@@ -369,14 +374,14 @@ void RegServClient::on_list(
 }
 
 
-void RegServClient::on_show(   
+void RegServClient::on_show(
 			      std::string& line, std::string::size_type pos )
 {
   int id=0;
   string tok;
   char buf[400];
   std::map< int , RegEntry* >::iterator it;
-  
+
   get_token( line, pos, " ", tok );
   id=atoi(tok.c_str());
 
@@ -390,7 +395,7 @@ void RegServClient::on_show(
     sprintf(buf, MSG_SHOW_SUCCESS, id);
     write_line( buf);
     // write entry
-    sprintf(buf, STR_ENTRYDATA, it->first, 
+    sprintf(buf, STR_ENTRYDATA, it->first,
 	    it->second->app.c_str(),
 	    it->second->site.c_str(),
 	    it->second->mach.c_str(),
@@ -404,14 +409,14 @@ void RegServClient::on_show(
 }
 
 
-void RegServClient::on_delete(   
+void RegServClient::on_delete(
 				string& line, string::size_type pos )
 {
   int id=0;
   string tok;
   char buf[400];
   std::map< int , RegEntry* >::iterator it;
-  
+
   get_token( line, pos, " ", tok );
   id=atoi(tok.c_str());
 
@@ -436,7 +441,7 @@ void RegServClient::on_delete(
 
 
 
-void RegServClient::on_add_string(  
+void RegServClient::on_add_string(
 				    std::string& line, std::string::size_type pos )
 {
   string tok;
@@ -485,7 +490,7 @@ void RegServClient::on_add_string(
 }
 
 
-void RegServClient::on_count_strings(  
+void RegServClient::on_count_strings(
 				       std::string& line, std::string::size_type pos )
 {
   string tok;
@@ -517,7 +522,7 @@ void RegServClient::on_count_strings(
 }
 
 
-void RegServClient::on_get_string(  
+void RegServClient::on_get_string(
 				    std::string& line, std::string::size_type pos )
 {
   string tok;
@@ -551,7 +556,7 @@ void RegServClient::on_get_string(
     write_line( buf);
     return;
   }
-   
+
   sprintf(buf, MSG_GETSTR_SUCCESS, strid, id, (int) strlen(str.c_str()));
   write_line( buf);
 
@@ -559,7 +564,7 @@ void RegServClient::on_get_string(
   write_line( buf);
 }
 
-void RegServClient::on_delete_string(  
+void RegServClient::on_delete_string(
 				       std::string& line, std::string::size_type pos )
 {
   string tok;
@@ -593,13 +598,13 @@ void RegServClient::on_delete_string(
     write_line( buf);
     return;
   }
-   
+
   sprintf(buf, MSG_DELSTR_SUCCESS, strid, id);
   write_line( buf);
 }
 
 
-void RegServClient::on_search(  
+void RegServClient::on_search(
 				std::string& line, std::string::size_type pos )
 {
   char buf[200];
@@ -672,16 +677,16 @@ void RegServClient::on_search(
 	(entry.node=="" || entry.node==it->second->node) &&
 	(entry.port==0  || entry.port==it->second->port) &&
 	(entry.pid==0   || entry.pid==it->second->pid) &&
-	(entry.comp=="" || entry.comp==it->second->comp) && 
+	(entry.comp=="" || entry.comp==it->second->comp) &&
 	(entry.tag==""  || entry.tag==it->second->tag) )
     {
-      sprintf(buf, STR_ENTRYDATA, it->first, 
+      sprintf(buf, STR_ENTRYDATA, it->first,
 	      it->second->app.c_str(),
 	      it->second->site.c_str(),
 	      it->second->mach.c_str(),
 	      it->second->node.c_str(),
 	      it->second->port,
-	      it->second->pid, 
+	      it->second->pid,
 	      it->second->comp.c_str(),
 	      it->second->tag.c_str() );
       write_line( buf);
@@ -693,7 +698,7 @@ void RegServClient::on_search(
 }
 
 
-void RegServClient::on_list_strings(  
+void RegServClient::on_list_strings(
 				      std::string& line, std::string::size_type pos )
 {
   string tok;
@@ -738,7 +743,7 @@ void RegServClient::on_list_strings(
 
 
 
-void RegServClient::on_clean(  
+void RegServClient::on_clean(
 			       string& line, string::size_type pos )
 {
   char buf[200];
@@ -763,7 +768,7 @@ void RegServClient::on_clean(
   write_line( buf );
 }
 
-void RegServClient::on_test( 
+void RegServClient::on_test(
 			     string& line, string::size_type pos )
 {
   char buf[400];
@@ -771,7 +776,7 @@ void RegServClient::on_test(
   write_line( buf);
 }
 
-void RegServClient::on_change(  
+void RegServClient::on_change(
 				string& line, string::size_type pos )
 {
   int id=0;
@@ -853,7 +858,7 @@ void RegServClient::on_change(
       write_line( buf);
       return;
     }
-  
+
   (*it->second) = entry;
 
   sprintf(buf, MSG_CHANGE_SUCCESS, id);

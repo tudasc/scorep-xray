@@ -29,17 +29,18 @@
 #include "scorep_oa_sockets.h"
 
 #include <stdio.h>
-#include <mpi.h>
+
 
 static int8_t scorep_oa_is_connected = 0;
 static int    scorep_oa_socket       = 0;
-static int    silc_oa_port           = 50010;
+uint64_t      silc_oa_port           = 50010;
+uint64_t      silc_oa_registry_port  = 50100;
+char*         silc_oa_registry_host  = NULL;
 int           connection             = 0;
 
 
 
 int
-///@todo switch to appropriate connection object which contains call backs to the chosen communication layer
 scorep_oa_connection_connect
 (
 )
@@ -55,7 +56,7 @@ scorep_oa_connection_connect
         _Exit( EXIT_FAILURE );
     }
     scorep_oa_is_connected = 1;
-    scorep_oa_sockets_register_with_registry( silc_oa_port );
+    scorep_oa_sockets_register_with_registry( silc_oa_port, silc_oa_registry_port, silc_oa_registry_host );
     scorep_oa_socket = scorep_oa_sockets_server_accept_client( scorep_oa_socket );
     //receive_and_process_requests(scorep_oa_socket);
     return scorep_oa_socket;
@@ -64,7 +65,7 @@ scorep_oa_connection_connect
 SCOREP_Error_Code
 scorep_oa_connection_disconnect
 (
-    int connection                              ///@todo switch to appropriate connection object which contains call backs to the chosen communication layer
+    int connection
 )
 {
     return SCOREP_SUCCESS;
@@ -73,7 +74,7 @@ scorep_oa_connection_disconnect
 SCOREP_Error_Code
 scorep_oa_connection_send_string
 (
-    int         connection,                     ///@todo switch to appropriate connection object which contains call backs to the chosen communication layer
+    int         connection,
     const char* message_string
 )
 {
@@ -85,14 +86,14 @@ scorep_oa_connection_send_string
 SCOREP_Error_Code
 scorep_oa_connection_send_data
 (
-    int   connection,                           ///@todo switch to appropriate connection object which contains call backs to the chosen communication layer
+    int   connection,
     void* message_data,
     int   size,
     int   type_size
 )
 {
     scorep_oa_sockets_write_data( connection, &size, sizeof( int ) );
-    scorep_oa_sockets_write_data( connection, message_data, size * type_size );   ///@todo switch to appropriate return measurement type
+    scorep_oa_sockets_write_data( connection, message_data, size * type_size );
     return SCOREP_SUCCESS;
 }
 
@@ -100,10 +101,10 @@ scorep_oa_connection_send_data
 int
 scorep_oa_connection_read_string
 (
-    int   connection,                   ///@todo switch to appropriate connection object which contains call backs to the chosen communication layer
+    int   connection,
     char* message_string,
     int   maxlen
 )
 {
-    return scorep_oa_sockets_read_line( scorep_oa_socket, message_string, maxlen );                 ///@todo when connection object is deployed use it connection instead of socket
+    return scorep_oa_sockets_read_line( scorep_oa_socket, message_string, maxlen );
 }

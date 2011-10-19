@@ -52,3 +52,8 @@ SCOREP_OA_PhaseEnd
 {
     printf( "Dummy %s\n", __FUNCTION__ );
 }
+
+void
+SCOREP_OA_Register()
+{
+}
