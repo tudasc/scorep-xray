@@ -20,12 +20,29 @@ dnl maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_ONLINE_ACCESS_HEADERS],
 [
+ac_scorep_have_online_access="no"
+ac_scorep_have_online_access_flex="no"
+ac_scorep_have_online_access_headers="no"
 
-ac_scorep_have_online_access_headers="yes"
-AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h netinet/in.h unistd.h string.h], [], [ac_scorep_have_online_access_headers="no"])
+AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h netinet/in.h unistd.h string.h], [ac_scorep_have_online_access_headers="yes"], [])
 
-AM_CONDITIONAL([HAVE_ONLINE_ACCESS_HEADERS], [test "x${ac_scorep_have_online_access_headers}" = "xyes"])
+AM_PROG_LEX
 
-AC_MSG_CHECKING([for online access headers])
-AC_MSG_RESULT([${ac_scorep_have_online_access_headers}])
+AC_MSG_CHECKING([for a suitable version of flex])
+[flex_version=`${LEX} -V | sed 's/[a-z,\.]//g'`]
+if test "x${LEX}" != "x:" -a ${flex_version} -gt 254; then
+ac_scorep_have_online_access_flex="yes"
+fi
+AC_MSG_RESULT([${ac_scorep_have_online_access_flex}])
+
+AC_PROG_YACC
+
+if test "x${ac_scorep_have_online_access_headers}" = "xyes" -a "x${ac_scorep_have_online_access_flex}" = "xyes"; then
+ac_scorep_have_online_access="yes"
+fi
+
+AM_CONDITIONAL([HAVE_ONLINE_ACCESS_HEADERS], [test "x${ac_scorep_have_online_access}" = "xyes" ])
+
+AC_MSG_CHECKING([for online access possible])
+AC_MSG_RESULT([${ac_scorep_have_online_access}])
 ]) 
