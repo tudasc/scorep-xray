@@ -29,12 +29,3 @@ HTML_COLORSTYLE_HUE   = 0
 # in doxygen.
 ENABLE_PREPROCESSING=YES
 
-# List of extra packages that are used in latex.
-EXTRA_PACKAGES = xspace
-
-# Switch of file definition
-# A per file documentation only copies the module content.
-# Which item is documented in which file has no additional value for a user of 
-# Score-P
-SHOW_FILES             = NO
-
