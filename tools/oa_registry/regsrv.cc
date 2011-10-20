@@ -94,7 +94,7 @@ int RegServ::open( int port )
     if ( server_socket_ < 0 )
     {
         fprintf(stderr,"Selected regisrty port is busy");
-        exit(1);
+        exit(160);
     }
     port_=port;
     printf(" OK\n");

@@ -25,11 +25,19 @@ make scorep-config-tool-local
 
 run_test()
 {
-
+		
 	#get hostname and pick random port for periscope emulator
 	REG_HOST=`hostname`
 	REG_PORT=$((40000+$RANDOM%10000))
 	echo Starting OA_F_TEST with Periscope Emulator on $REG_HOST:$REG_PORT
+	
+	reg_serv_running="1";
+	while test -n "$pids_to_clean"
+	do
+		echo Checking that there are no other tests running..
+		sleep 2
+		reg_serv_running=`ps aux | grep "online_access_registry" | grep -v "grep" | awk '{print $2;}'`
+	done
 	
 	#start periscope emulator
 	./online_access_registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/scenario_serial  &
@@ -41,7 +49,14 @@ run_test()
 	
 	#wait for periscope emulator to finish
 	wait $REGSRV_PID
-	if [ $? -ne 0 ]; then
+	REG_RETURN=$?
+	if [ $REG_RETURN -eq 160 ]; then
+		rm -rf scorep-measurement-tmp start_ls.log
+	    kill -9 $TEST_PID
+	    echo Warning: test canceled due to periscope emulator port is busy
+	    exit 0
+	fi
+	if [ $REG_RETURN -ne 0 ]; then
 	    rm -rf scorep-measurement-tmp start_ls.log
 	    kill -9 $TEST_PID
 	    exit 1
@@ -87,7 +102,7 @@ watchit()
     kill -ALRM $$
 }
 
-watchit 100 & a=$!         #start the timeout of 100 sec.
+watchit 600 & a=$!         #start the timeout of 100 sec.
 trap "cleanup" ALRM INT    #cleanup after timeout
 run_test &                 #start the test
 test_pid=$!
