@@ -111,7 +111,13 @@ libscorep_adapter_mpi_fortran_wrapper_sub4_la_CPPFLAGS =  \
 noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_conv.la
 libscorep_adapter_mpi_fortran_conv_la_SOURCES =           \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Init.f
-libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS)
+if SCOREP_COMPILER_PGI
+# due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
+# PMPI_WTIME in openmpi's mpif.h we get four undeclared symbols when linking
+# applications to pgi-build libscorep_mpi[_omp].so. The language option
+# noref_externals prevents this.
+libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS) -Mnoref_externals
+endif
 
 noinst_LTLIBRARIES += libscorep_adapter_mpi.la
 libscorep_adapter_mpi_la_SOURCES =

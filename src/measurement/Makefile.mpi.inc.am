@@ -35,12 +35,6 @@ libscorep_paradigm_mpi_la_SOURCES =                                 \
 libscorep_paradigm_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 
 
-if SCOREP_COMPILER_PGI
-if SCOREP_MPI_OPENMPI
-libscorep_paradigm_mpi_la_LIBADD = $(FLIBS)
-endif
-endif
-
 ## sion-mpi
 
 noinst_LTLIBRARIES += libscorep_sion_mpi.la
