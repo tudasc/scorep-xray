@@ -28,11 +28,11 @@ run_test()
 
 	#get hostname and pick random port for periscope emulator
 	REG_HOST=`hostname`
-	REG_PORT=$((50100+$RANDOM%100))
+	REG_PORT=$((40000+$RANDOM%10000))
 	echo Starting OA_C_TEST with Periscope Emulator on $REG_HOST:$REG_PORT
 	
 	#start periscope emulator
-	./online_access_registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/scenario_serial >/dev/null &
+	./online_access_registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/scenario_serial  &
 	REGSRV_PID=$!
 	
 	#start online access test
