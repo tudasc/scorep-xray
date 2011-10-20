@@ -31,6 +31,19 @@
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Memory.h>
+
+/*
+ * ----------------------------------------------------------------------------
+ *
+ * External declarations
+ *
+ * ----------------------------------------------------------------------------
+ */
+extern uint64_t scorep_mpi_max_communicators;
+extern uint64_t scorep_mpi_max_windows;
+extern uint64_t scorep_mpi_max_access_epochs;
+extern uint64_t scorep_mpi_max_groups;
 
 /*
  * ----------------------------------------------------------------------------
@@ -45,21 +58,21 @@
  *  @internal
  *  Maximum amount of concurrently defined communicators per process.
  */
-#define SCOREP_MPI_MAX_COMM    50
+#define SCOREP_MPI_MAX_COMM    scorep_mpi_max_communicators
 
 /**
  *  @def SCOREP_MPI_MAX_GROUP
  *  @internal
- *  Maximum amount of concurrently defines groups per process.
+ *  Maximum amount of concurrently defined groups per process.
  */
-#define SCOREP_MPI_MAX_GROUP   50
+#define SCOREP_MPI_MAX_GROUP   scorep_mpi_max_groups
 
 /**
  *  @def SCOREP_MPI_MAX_WIN
  *  @internal
  *  Maximum amount of concurrently defined windows per process
  */
-#define SCOREP_MPI_MAX_WIN     50
+#define SCOREP_MPI_MAX_WIN    scorep_mpi_max_windows
 
 /**
  *  @def SCOREP_MPI_MAX_WINACC
@@ -67,19 +80,12 @@
  *  Maximum amount of concurrently active access or exposure epochs per
  *  process.
  */
-#define SCOREP_MPI_MAX_WINACC  50
+#define SCOREP_MPI_MAX_WINACC  scorep_mpi_max_access_epochs
 
 /**
  *  Contains the data of the MPI_COMM_WORLD definition.
  */
 struct scorep_mpi_world_type scorep_mpi_world;
-
-/**
- *  A switch if global ranks are calculated or not. If set to zero no global ranks are
- *  calculated. If set to non-zero global values are calculated. The current default
- *  are global ranks.
- */
-int8_t scorep_mpi_comm_determination = 1;
 
 /* ------------------------------------------------ Definitions for MPI Window handling */
 #ifndef SCOREP_MPI_NO_RMA
@@ -105,7 +111,7 @@ static int32_t scorep_mpi_last_window = 0;
  *  @internal
  *  Window tracking array
  */
-static struct scorep_mpi_win_type scorep_mpi_windows[ SCOREP_MPI_MAX_WIN ];
+static struct scorep_mpi_win_type* scorep_mpi_windows = NULL;
 
 /**
  *  @internal
@@ -165,13 +171,13 @@ static int32_t scorep_mpi_last_group = 0;
  *  @internal
  *  Communicator tracking data structure. Array of created communicators' handles.
  */
-static struct scorep_mpi_communicator_type scorep_mpi_comms[ SCOREP_MPI_MAX_COMM ];
+static struct scorep_mpi_communicator_type* scorep_mpi_comms = NULL;
 
 /**
  *  @internal
  *  Group tracking data structure. Array of created groups' handles.
  */
-static struct scorep_mpi_group_type scorep_mpi_groups[ SCOREP_MPI_MAX_GROUP ];
+static struct scorep_mpi_group_type* scorep_mpi_groups = NULL;
 
 /**
  *  @internal
@@ -242,7 +248,7 @@ struct scorep_mpi_winacc_type
  *  @internal
  *  Data structure to track active GATS epochs.
  */
-static struct scorep_mpi_winacc_type scorep_mpi_winaccs[ SCOREP_MPI_MAX_WINACC ];
+static struct scorep_mpi_winacc_type* scorep_mpi_winaccs = NULL;
 
 /**
  *  @internal
@@ -290,12 +296,15 @@ scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
 }
 
 /* -------------------------------------------------------------------- window handling */
-
 void
 scorep_mpi_win_init()
 {
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexCreate( &scorep_mpi_window_mutex );
+    scorep_mpi_windows = ( struct scorep_mpi_win_type* )SCOREP_Memory_AllocForMisc
+                             ( sizeof( struct scorep_mpi_win_type ) * SCOREP_MPI_MAX_WIN );
+    scorep_mpi_winaccs = ( struct scorep_mpi_winacc_type* )SCOREP_Memory_AllocForMisc
+                             ( sizeof( struct scorep_mpi_winacc_type ) * SCOREP_MPI_MAX_WINACC );
 #endif
 }
 
@@ -359,7 +368,8 @@ scorep_mpi_win_create( MPI_Win  win,
     SCOREP_MutexLock( scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS, "" );
+        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
+                      "Hint: Increase EPK_MPI_MAX_WINDOWS configuration variable." );
     }
 
     /* register mpi window definition */
@@ -411,7 +421,6 @@ scorep_mpi_win_free( MPI_Win win )
 #endif
 
 /* -------------------------------------------------------------- communicator handling */
-
 void
 scorep_mpi_comm_init()
 {
@@ -426,6 +435,13 @@ scorep_mpi_comm_init()
     /* check, if we already initialized the data structures */
     if ( !scorep_mpi_comm_initialized )
     {
+        /* Create tracking structures */
+        scorep_mpi_comms = ( struct scorep_mpi_communicator_type* )SCOREP_Memory_AllocForMisc
+                               ( sizeof( struct scorep_mpi_communicator_type ) * SCOREP_MPI_MAX_COMM );
+
+        scorep_mpi_groups = ( struct scorep_mpi_group_type* )SCOREP_Memory_AllocForMisc
+                                ( sizeof( struct scorep_mpi_group_type ) *  SCOREP_MPI_MAX_GROUP );
+
         /* get group of \a MPI_COMM_WORLD */
         PMPI_Comm_group( MPI_COMM_WORLD, &scorep_mpi_world.group );
 
@@ -498,16 +514,16 @@ scorep_mpi_comm_init()
 void
 scorep_mpi_comm_finalize()
 {
+    /* reset initialization flag
+     * (needed to prevent crashes with broken MPI implementations) */
+    scorep_mpi_comm_initialized = 0;
+
     /* free MPI group held internally */
     PMPI_Group_free( &scorep_mpi_world.group );
 
     /* free local translation buffers */
     free( scorep_mpi_world.ranks );
     free( scorep_mpi_ranks );
-
-    /* reset initialization flag
-     * (needed to prevent crashes with broken MPI implementations) */
-    scorep_mpi_comm_initialized = 0;
 
     SCOREP_MutexDestroy( &scorep_mpi_communicator_mutex );
 }
@@ -602,7 +618,9 @@ scorep_mpi_comm_create( MPI_Comm comm )
     if ( scorep_mpi_last_comm >= SCOREP_MPI_MAX_COMM )
     {
         SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS, "" );
+        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
+                      "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
+                      "configuration variable" );
         return;
     }
 
@@ -753,7 +771,9 @@ scorep_mpi_group_create( MPI_Group group )
 
     if ( scorep_mpi_last_group >= SCOREP_MPI_MAX_GROUP )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS, "" );
+        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS,
+                      "Hint: Increase SCOREP_MPI_MAX_GROUPS configuration variable." );
+        return;
     }
 
     /* check if group already exists */
@@ -900,7 +920,9 @@ scorep_mpi_winacc_start( MPI_Win          win,
 {
     if ( scorep_mpi_last_winacc >= SCOREP_MPI_MAX_WINACC )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINACCS, "" );
+        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINACCS,
+                      "Hint: Increase EPK_MPI_MAX_ACCESS_EPOCHS "
+                      "configuration variable." );
     }
 
     scorep_mpi_winaccs[ scorep_mpi_last_winacc ].win   = win;

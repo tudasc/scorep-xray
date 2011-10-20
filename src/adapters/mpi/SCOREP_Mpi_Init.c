@@ -152,6 +152,7 @@ extern void
 SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
 
 /**
+ * @internal
  * Mapping of string keys to enabling group IDs
  * @note The values are sorted in decreasing order, to beautify the debug
  * output. Ie.: if all groups are enabled we get "ALL", because it matches first.
@@ -177,11 +178,48 @@ static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
     { NULL,        0                            }
 };
 
-
+/**
+   @internal
+   Configuration variable that determined whether hierarchical unify is used.
+   It can be set via environment variable SCOREP_MPI_HIERARCHICAL_UNIFY.
+ */
 bool scorep_mpi_hierarchical_unify;
 
+/**
+   @internal
+   Configuration variable for the size of the communicator tracking array.
+   Determines the number of cuncurrently trackable communicators per process.
+   Can be defined via environment variable SCOREP_MPI_MAX_COMMUNICATORS.
+ */
+uint64_t scorep_mpi_max_communicators = 50;
 
 /**
+   @internal
+   Configuration variable for the size of the MPI groups tracking array.
+   Determines the number of cuncurrently trackable MPI groups per process.
+   Can be defined via environment variable SCOREP_MPI_MAX_GROUPS.
+ */
+uint64_t scorep_mpi_max_groups = 50;
+
+/**
+   @internal
+   Configuration variable for the size of the communicator tracking array.
+   Determines the number of cuncurrently trackable communicators per process.
+   Can be defined via environment variable SCOREP_MPI_MAX_COMMUNICATORS.
+ */
+uint64_t scorep_mpi_max_windows = 50;
+
+/**
+   @internal
+   Maximum amount of concurrently active access or exposure epochs per
+   process. Can be configured via envrionment variable
+   SCOREP_MPI_MAX_ACCESS_EPOCHS.
+ */
+
+uint64_t scorep_mpi_max_access_epochs = 50;
+
+/**
+   @internal
    Array of configuration variables.
    They are registered to the measurement system and are filled during until the
    initialization function is called.
@@ -194,6 +232,44 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         NULL,
         "false",
         "Use the hierarchical MPI unify algorithm.",
+        ""
+    },
+    {
+        "max_communicators",
+        SCOREP_CONFIG_TYPE_NUMBER,
+        &scorep_mpi_max_communicators,
+        NULL,
+        "50",
+        "Determines the number of concurrently used communicators per process.",
+        ""
+    },
+    {
+        "max_windows",
+        SCOREP_CONFIG_TYPE_NUMBER,
+        &scorep_mpi_max_windows,
+        NULL,
+        "50",
+        "Determines the number of concurrently used windows for MPI one-sieded "
+        "communication per process.",
+        ""
+    },
+    {
+        "max_access_epochs",
+        SCOREP_CONFIG_TYPE_NUMBER,
+        &scorep_mpi_max_access_epochs,
+        NULL,
+        "50",
+        "Maximum amount of concurrently active access or exposure epochs per "
+        "process.",
+        ""
+    },
+    {
+        "max_groups",
+        SCOREP_CONFIG_TYPE_NUMBER,
+        &scorep_mpi_max_groups,
+        NULL,
+        "50",
+        "Maximum number of concurrently used MPI groups per process.",
         ""
     },
     {

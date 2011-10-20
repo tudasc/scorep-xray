@@ -278,7 +278,7 @@ extern struct scorep_mpi_world_type scorep_mpi_world;
 /**
  * Flag that indicates whether comm/rank is determined for events
  */
-extern int8_t scorep_mpi_comm_determination;
+//extern int8_t scorep_mpi_comm_determination;
 
 /**
  * @def SCOREP_MPI_COMM_WORLD_HANDLE
@@ -290,13 +290,12 @@ extern int8_t scorep_mpi_comm_determination;
  * @def SCOREP_MPI_COMM_HANDLE
  * Translates a MPI communicator to the SCOREP communicator handle
  */
-#define SCOREP_MPI_COMM_HANDLE( c ) ( !scorep_mpi_comm_determination ? SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR : ( ( ( c ) == MPI_COMM_WORLD ) ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) ) )
+#define SCOREP_MPI_COMM_HANDLE( c ) ( ( c ) == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) )
 
 /**
  * @def SCOREP_MPI_RANK_TO_PE
  * Translates a rank with respect to arbitrary communicator to its global rank
  */
 #define SCOREP_MPI_RANK_TO_PE( r, c ) r
-//#define SCOREP_MPI_RANK_TO_PE( r, c ) ( !scorep_mpi_comm_determination ? SCOREP_MPI_INVALID_RANK : ( ( ( c ) == MPI_COMM_WORLD ) ? r : scorep_mpi_rank_to_pe( r, c ) ) )
 
 #endif // SCOREP_MPI_COMMUNICATOR_H
