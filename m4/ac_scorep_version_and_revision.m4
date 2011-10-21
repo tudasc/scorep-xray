@@ -16,18 +16,14 @@
 ##
 
 
-AC_DEFUN([AC_SCOREP_VERSION_AND_REVISION],
+AC_DEFUN([AC_SCOREP_REVISION],
 [
-    # When working with a svn checkout, write a VERSION and a REVISION
-    # file. The REVISION file is updated during each configure call and also
-    # at make doxygen-user and make dist. 
+    # When working with a svn checkout, write a REVISION file. The REVISION
+    # file is updated during each configure call and also at make doxygen-user
+    # and make dist.
 
-    # When working with a make-dist-generated tarball, VERSION and REVISION
-    # are already there.
-
-    if test ! -f $srcdir/build-config/VERSION; then
-        echo $PACKAGE_VERSION > $srcdir/build-config/VERSION
-    fi 
+    # When working with a make-dist-generated tarball, REVISION is already
+    # there.
 
     scorep_revision="invalid"
     which svnversion > /dev/null; \
