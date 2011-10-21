@@ -6,7 +6,7 @@
 @seclabel{wrapperannex}
 
 Some wrapper functions are affiliated with a function group that has not
-been described for direct user access in section @secref{ME}. These
+been described for direct user access in section @secref{mpi_groups}. These
 groups are subgroups that contain function calls that are only enabled
 when both main groups are enabled. The reason for this is to control the
 amount of events generated during measurement, a user might want to turn

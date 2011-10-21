@@ -186,8 +186,8 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 
     if ( ( return_val == MPI_SUCCESS ) && ( *provided > MPI_THREAD_FUNNELED ) )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI,
-                             "MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!" );
+        SCOREP_ERROR( SCOREP_WARNING,
+                      "MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!" );
         /* XXXX continue even though not supported by analysis */
     }
 
@@ -210,10 +210,6 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INIT_THREAD ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    scorep_mpiprofile_init();
-#endif
 
     return return_val;
 }
