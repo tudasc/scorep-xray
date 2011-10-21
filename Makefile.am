@@ -22,7 +22,6 @@ include vendor/common/build-config/Makefile.inc.am
 ## control files. We recommend against using this feature.
 EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/src/config-custom.h                              \
-              $(srcdir)/build-config/VERSION                             \
               $(srcdir)/tools/tau/scorep_meets_tau.awk                   \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in             \
               $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in

@@ -20,5 +20,5 @@ clean:
 	@cd build-backend;  rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	@cd build-mpi;      rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	@cd build-frontend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
-	@rm -f build-config/VERSION build-config/REVISION
+	@rm -f build-config/REVISION
 	@rm -f src/config-backend.h.in src/config-backend-mpi.h.in src/config-frontend.h.in

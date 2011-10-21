@@ -1,5 +1,7 @@
 AC_PREREQ([2.68])
-AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
+AC_INIT([scorep], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [zih-silc-dev@groups.tu-dresden.de])
+
+AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
 
 AC_SCOREP_SUMMARY_INIT([Score-P backend configuration summary])
 

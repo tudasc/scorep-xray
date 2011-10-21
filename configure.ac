@@ -1,11 +1,11 @@
 AC_PREREQ([2.68])
-AC_INIT([scorep],[0.1],[zih-silc-dev@groups.tu-dresden.de])
+AC_INIT([scorep], m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION]), [zih-silc-dev@groups.tu-dresden.de])
 
 AC_SCOREP_SUMMARY_INIT([Score-P configuration summary])
 
 #echo "cross_compiling = $cross_compiling"
 
-AC_SCOREP_VERSION_AND_REVISION
+AC_SCOREP_REVISION
 
 AC_SCOREP_TOPLEVEL_ARGS
 
