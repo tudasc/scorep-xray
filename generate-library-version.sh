@@ -12,4 +12,4 @@ version="$(sed -n -e 's/library.current=\+// p'  \
                   -e 's/library.age=\+// p'      \
            "$1")"
 set -- $version
-printf "%d.%d.%d" $1 $2 $3
+printf "%d:%d:%d" $1 $2 $3
