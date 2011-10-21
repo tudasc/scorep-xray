@@ -183,7 +183,7 @@ jacobi_mpi_omp_f90_unistrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
 jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS) 
 jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
 
-#TESTS_MPI_OMP += jacobi_mpi_omp_f90
+TESTS_MPI_OMP += jacobi_mpi_omp_f90
 
 endif
 # if ! SCOREP_COMPILER_CRAY
