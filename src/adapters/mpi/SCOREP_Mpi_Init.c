@@ -191,7 +191,7 @@ bool scorep_mpi_hierarchical_unify;
    Determines the number of cuncurrently trackable communicators per process.
    Can be defined via environment variable SCOREP_MPI_MAX_COMMUNICATORS.
  */
-uint64_t scorep_mpi_max_communicators = 50;
+uint64_t scorep_mpi_max_communicators;
 
 /**
    @internal
@@ -199,7 +199,7 @@ uint64_t scorep_mpi_max_communicators = 50;
    Determines the number of cuncurrently trackable MPI groups per process.
    Can be defined via environment variable SCOREP_MPI_MAX_GROUPS.
  */
-uint64_t scorep_mpi_max_groups = 50;
+uint64_t scorep_mpi_max_groups;
 
 /**
    @internal
@@ -207,7 +207,7 @@ uint64_t scorep_mpi_max_groups = 50;
    Determines the number of cuncurrently trackable communicators per process.
    Can be defined via environment variable SCOREP_MPI_MAX_COMMUNICATORS.
  */
-uint64_t scorep_mpi_max_windows = 50;
+uint64_t scorep_mpi_max_windows;
 
 /**
    @internal
@@ -216,7 +216,7 @@ uint64_t scorep_mpi_max_windows = 50;
    SCOREP_MPI_MAX_ACCESS_EPOCHS.
  */
 
-uint64_t scorep_mpi_max_access_epochs = 50;
+uint64_t scorep_mpi_max_access_epochs;
 
 /**
    @internal

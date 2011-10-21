@@ -132,6 +132,14 @@ extern int  scorep_mpi_status_size;
 #define SCOREP_MPI_IS_EVENT_GEN_ON_FOR( group ) ( ( !scorep_mpi_nogen ) && \
                                                   ( scorep_mpi_enabled & group ) )
 
+/**
+   @def SCOREP_MPI_DISABLE_GROUP( group )
+   Disable the wrapper of @group
+   @parameter group MPI wrapper group that is disabled.
+ */
+#define SCOREP_MPI_DISABLE_GROUP( group ) \
+    ( scorep_mpi_enabled = scorep_mpi_enabled & ( ~( group ) ) )
+
 
 /** @def SCOREP_MPI_EVENT_GEN_OFF
     Turn off event generation for MPI adapter. It is used inside the wrappers, to avoid

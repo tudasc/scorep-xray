@@ -26,7 +26,10 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
 
+#include "SCOREP_Mpi.h"
 #include "SCOREP_Mpi_Communicator.h"
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Definitions.h>
@@ -301,10 +304,56 @@ scorep_mpi_win_init()
 {
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexCreate( &scorep_mpi_window_mutex );
-    scorep_mpi_windows = ( struct scorep_mpi_win_type* )SCOREP_Memory_AllocForMisc
-                             ( sizeof( struct scorep_mpi_win_type ) * SCOREP_MPI_MAX_WIN );
-    scorep_mpi_winaccs = ( struct scorep_mpi_winacc_type* )SCOREP_Memory_AllocForMisc
-                             ( sizeof( struct scorep_mpi_winacc_type ) * SCOREP_MPI_MAX_WINACC );
+
+    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
+    {
+        if ( SCOREP_MPI_MAX_WIN == 0 )
+        {
+            fprintf( stderr, "Environment variable SCOREP_MPI_MAX_WINDOWS was set to 0, "
+                     "thus, one-sided communication can not be recorded and is disabled. "
+                     "To avoid this warning you can disable one sided communications, "
+                     "by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
+            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
+        }
+
+        if ( SCOREP_MPI_MAX_WINACC == 0 )
+        {
+            fprintf( stderr, "Environment variable SCOREP_MPI_MAX_ACCESS_EPOCHS was set "
+                     "to 0, thus, one-sided communication can not be recorded and is "
+                     "disabled. To avoid this warning you can disable one sided "
+                     "communications, by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
+            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
+        }
+
+
+        scorep_mpi_windows = ( struct scorep_mpi_win_type* )SCOREP_Memory_AllocForMisc
+                                 ( sizeof( struct scorep_mpi_win_type ) * SCOREP_MPI_MAX_WIN );
+        if ( scorep_mpi_windows == NULL )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                          "Failed to allocate memory for MPI window tracking.\n"
+                          "One-sided communication can not be recoreded.\n"
+                          "Space for %"PRIu 64 " windows was requested.\n"
+                          "You can change this number via the environment variable "
+                          "SCOREP_MPI_MAX_WINDOWS.", SCOREP_MPI_MAX_WIN );
+            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
+        }
+
+        scorep_mpi_winaccs = ( struct scorep_mpi_winacc_type* )SCOREP_Memory_AllocForMisc
+                                 ( sizeof( struct scorep_mpi_winacc_type ) * SCOREP_MPI_MAX_WINACC );
+
+        if ( scorep_mpi_winaccs == NULL )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                          "Failed to allocate memory for access epoch tracking.\n"
+                          "One-sided communication can not be recoreded.\n"
+                          "Space for %"PRIu 64 " access epochs was requested.\n"
+                          "You can change this number via environment variable "
+                          "SCOREP_MPI_MAX_ACCESS_EPOCHS.",
+                          SCOREP_MPI_MAX_WINACC );
+            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
+        }
+    }
 #endif
 }
 
@@ -369,7 +418,7 @@ scorep_mpi_win_create( MPI_Win  win,
     if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
     {
         SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
-                      "Hint: Increase EPK_MPI_MAX_WINDOWS configuration variable." );
+                      "Hint: Increase SCOREP_MPI_MAX_WINDOWS configuration variable." );
     }
 
     /* register mpi window definition */
@@ -439,8 +488,25 @@ scorep_mpi_comm_init()
         scorep_mpi_comms = ( struct scorep_mpi_communicator_type* )SCOREP_Memory_AllocForMisc
                                ( sizeof( struct scorep_mpi_communicator_type ) * SCOREP_MPI_MAX_COMM );
 
+        if ( scorep_mpi_comms == NULL )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                          "Failed to allocate memory for communicator tracking.\n"
+                          "Space for %"PRIu 64 " communicators was requested.\n"
+                          "You can change this number via the environment variable "
+                          "SCOREP_MPI_MAX_COMMUNICATORS.", SCOREP_MPI_MAX_COMM );
+        }
+
         scorep_mpi_groups = ( struct scorep_mpi_group_type* )SCOREP_Memory_AllocForMisc
                                 ( sizeof( struct scorep_mpi_group_type ) *  SCOREP_MPI_MAX_GROUP );
+        if ( scorep_mpi_groups == NULL )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                          "Failed to allocate memory for MPI group tracking.\n"
+                          "Space for %"PRIu 64 " groups was requested.\n"
+                          "You can change this number via the environment variable "
+                          "SCOREP_MPI_MAX_GROUPS.", SCOREP_MPI_MAX_GROUP );
+        }
 
         /* get group of \a MPI_COMM_WORLD */
         PMPI_Comm_group( MPI_COMM_WORLD, &scorep_mpi_world.group );
@@ -731,9 +797,8 @@ scorep_mpi_comm_handle( MPI_Comm comm )
         else
         {
             SCOREP_ERROR( SCOREP_ERROR_MPI_NO_COMM,
-                          "epk_comm_id: You are using a communicator that was "
-                          "not tracked. Maybe you used a non-standard "
-                          "MPI function call to create it." );
+                          "You are using a communicator that was "
+                          "not tracked. Please contact the Score-P support team." );
             return SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
         }
     }
@@ -921,7 +986,7 @@ scorep_mpi_winacc_start( MPI_Win          win,
     if ( scorep_mpi_last_winacc >= SCOREP_MPI_MAX_WINACC )
     {
         SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINACCS,
-                      "Hint: Increase EPK_MPI_MAX_ACCESS_EPOCHS "
+                      "Hint: Increase SCOREP_MPI_MAX_ACCESS_EPOCHS "
                       "configuration variable." );
     }
 
