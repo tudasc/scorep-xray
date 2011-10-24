@@ -924,8 +924,6 @@ SCOREP_DefineMPILocations( int32_t        numberOfRanks,
     scorep_mpi_locations_defined = true;
 
     SCOREP_Definitions_Unlock();
-
-    return new_handle;
 }
 
 
