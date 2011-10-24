@@ -8,7 +8,10 @@ jacobi_serial_c_metric_test_SOURCES   = $(SRC_ROOT)test/services/metric/data/jac
 									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/main.c
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
-jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+if SCOREP_COMPILER_GNU
+jacobi_serial_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
+endif
 jacobi_serial_c_metric_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_serial.la
 
 if HAVE_GETRUSAGE
@@ -26,6 +29,8 @@ endif
 
 ## OpenMP
 
+if OPENMP_SUPPORTED
+
 # the pomp.c file needs to be compiled without compiler instrumentation
 # to achieve this, we put it in a noinst library and link against it
 noinst_LTLIBRARIES                      += libjacobi_pomp_c_metric_test.la
@@ -41,7 +46,10 @@ jacobi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/
 jacobi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
-jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
+if SCOREP_COMPILER_GNU
+jacobi_omp_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
+endif
 jacobi_omp_c_metric_test_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c_metric_test.la
 
 if HAVE_GETRUSAGE
@@ -55,3 +63,6 @@ EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_openmp_metric_test.sh.in
 TESTS_OMP  += ./../test/services/metric/run_papi_openmp_metric_test.sh
 jacobi_omp_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
 endif
+
+endif
+# !OPENMP_SUPPORTED

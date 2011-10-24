@@ -10,7 +10,10 @@ jacobi_mpi_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/
 								    $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/main.c
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
-jacobi_mpi_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_mpi_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+if SCOREP_COMPILER_GNU
+jacobi_mpi_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
+endif
 jacobi_mpi_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
 
 if HAVE_GETRUSAGE
@@ -41,6 +44,7 @@ TESTS_MPI += jacobi_mpi_c_metric_test
 ## MPI + OpenMP C
 
 if OPENMP_SUPPORTED
+
 noinst_LTLIBRARIES                          += libjacobi_mpi_pomp_c_metric_test.la
 libjacobi_mpi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
 libjacobi_mpi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -54,7 +58,10 @@ jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jac
 jacobi_mpi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
-jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
+if SCOREP_COMPILER_GNU
+jacobi_mpi_omp_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
+endif
 jacobi_mpi_omp_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la
 
 # for some unknown reason we need an extra -I for the SUN compiler in
