@@ -57,8 +57,8 @@ if diff $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt > /dev
   then
     true
   else
-    echo "-------- ERROR: in metric definition output --------" > 2
-    diff -u $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt > 2
+    echo "-------- ERROR: in metric definition output --------" >&2
+    diff -u $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt >&2
     rm trace.txt
     exit 1
 fi
@@ -69,8 +69,8 @@ if [ x`grep -c METRIC trace.txt` = x`grep -c METRIC $TEST_DATA_DIR/jacobi_c_mpi_
     rm trace.txt
     exit 0
   else
-    echo "-------- ERROR: in metric event output --------" > 2
-    diff -u $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_events.out trace.txt > 2
+    echo "-------- ERROR: in metric event output --------" >&2
+    diff -u $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_events.out trace.txt >&2
     rm trace.txt
     exit 1
 fi
