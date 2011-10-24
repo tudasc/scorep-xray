@@ -1,3 +1,3 @@
-METRIC MEMBER                 0  Name: 20 (ru_utime), Descr.: 19 (user CPU time used), Type: RESOURCE USAGE, Mode: ACCUMULATED, Value type: 4, Base: 10, Exponent: -6, Unit: 18 (s)
-METRIC MEMBER                 1  Name: 22 (ru_stime), Descr.: 21 (system CPU time used), Type: RESOURCE USAGE, Mode: ACCUMULATED, Value type: 4, Base: 10, Exponent: -6, Unit: 18 (s)
+METRIC MEMBER                 0  Name: <id> (ru_utime), Descr.: <id> (user CPU time used), Type: RESOURCE USAGE, Mode: ACCUMULATED, Value type: 4, Base: 10, Exponent: -6, Unit: <id> (s)
+METRIC MEMBER                 1  Name: <id> (ru_stime), Descr.: <id> (system CPU time used), Type: RESOURCE USAGE, Mode: ACCUMULATED, Value type: 4, Base: 10, Exponent: -6, Unit: <id> (s)
 METRIC CLASS                  0  occurrence: SYNCHRONOUS_STRICT, number of metrics: 2, metric members: 0 1

@@ -1,2 +1,2 @@
-METRIC MEMBER                 0  Name: 20 (PAPI_TOT_INS), Descr.: 19 (Instructions completed. [ INSTRUCTIONS_RETIRED ]), Type: PAPI, Mode: ACCUMULATED, Value type: 4, Base: 10, Exponent: 0, Unit: 18 (#)
+METRIC MEMBER                 0  Name: <id> (PAPI_TOT_INS), Descr.: <id> (Instructions completed. [ INSTRUCTIONS_RETIRED ]), Type: PAPI, Mode: ACCUMULATED, Value type: 4, Base: 10, Exponent: 0, Unit: <id> (#)
 METRIC CLASS                  0  occurrence: SYNCHRONOUS_STRICT, number of metrics: 1, metric members: 0
