@@ -316,7 +316,6 @@ scorep_compiler_deregister()
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Compiler_Adapter =
 {
-    SCOREP_ADAPTER_COMPILER,
     "COMPILER",
     &scorep_compiler_register,
     &scorep_compiler_init_adapter,
