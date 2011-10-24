@@ -32,7 +32,7 @@ fi
 
 NUM_CNODES=`GREP_OPTIONS= grep -c "<cnode id=" $RESULT_DIR/profile.cubex`
 if [ ! x$NUM_CNODES = x6 ]; then
-  echo "Expected 6 calpath definitions, but found $NUM_CNODES"
+  echo "Expected 6 callpath definitions, but found $NUM_CNODES"
   exit 1
 fi
 

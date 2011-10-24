@@ -35,22 +35,14 @@ MPIRUN=mpiexec
 
 TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 
-# Remember current content of directory to figure out the result dir
-ls > start_ls.log
+# Set up directory that will contain experiment results
+RESULT_DIR=scorep-mpi-rusage-metric-test-dir
+rm -rf $RESULT_DIR
 
 # Run test
-SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime $MPIRUN -np 4 ./jacobi_mpi_c_metric_test
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime $MPIRUN -np 4 ./jacobi_mpi_c_metric_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp
-    exit 1
-fi
-
-# Figure out the result dir
-ls > end_ls.log
-RESULT_DIR=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
-rm end_ls.log start_ls.log
-if [ "x$RESULT_DIR" = "x" ]; then
-    echo "Can not identify output directory. Skip evaluation of metric test"
     exit 1
 fi
 echo "Output of metric test can be found in $PWD/$RESULT_DIR"
@@ -65,8 +57,8 @@ if diff $TEST_DATA_DIR/jacobi_c_mpi_rusage_metric_definitions.out trace.txt > /d
   then
     true
   else
-    echo "-------- ERROR: in metric definition output --------"
-    diff $TEST_DATA_DIR/jacobi_c_mpi_rusage_metric_definitions.out trace.txt
+    echo "-------- ERROR: in metric definition output --------" > 2
+    diff -u $TEST_DATA_DIR/jacobi_c_mpi_rusage_metric_definitions.out trace.txt > 2
     rm trace.txt
     exit 1
 fi
@@ -77,8 +69,8 @@ if [ x`grep -c METRIC trace.txt` = x`grep -c METRIC $TEST_DATA_DIR/jacobi_c_mpi_
     rm trace.txt
     exit 0
   else
-    echo "-------- ERROR: in metric event output --------"
-    diff $TEST_DATA_DIR/jacobi_c_mpi_rusage_metric_events.out trace.txt
+    echo "-------- ERROR: in metric event output --------" > 2
+    diff -u $TEST_DATA_DIR/jacobi_c_mpi_rusage_metric_events.out trace.txt > 2
     rm trace.txt
     exit 1
 fi
