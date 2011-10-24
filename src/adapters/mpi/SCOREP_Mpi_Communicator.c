@@ -470,15 +470,100 @@ scorep_mpi_win_free( MPI_Win win )
 #endif
 
 /* -------------------------------------------------------------- communicator handling */
+
+/* no static, because this is called from the mpi unification test */
 void
-scorep_mpi_comm_init()
+scorep_mpi_setup_world()
 {
+    assert( scorep_mpi_comm_initialized == 0 );
+
     int                            i;
     MPI_Datatype                   types[ 2 ]   = { MPI_UNSIGNED, MPI_INT };
     int                            lengths[ 2 ] = { 1, 1 };
     MPI_Aint                       disp[ 2 ];
     struct scorep_mpi_id_root_pair pair;
 
+    /* get group of \a MPI_COMM_WORLD */
+    PMPI_Comm_group( MPI_COMM_WORLD, &scorep_mpi_world.group );
+
+    /* determine the number of MPI processes */
+    PMPI_Group_size( scorep_mpi_world.group, &scorep_mpi_world.size );
+
+    /* initialize translation data structure for \a MPI_COMM_WORLD */
+    scorep_mpi_world.ranks = calloc( scorep_mpi_world.size,
+                                     sizeof( SCOREP_MpiRank ) );
+    assert( scorep_mpi_world.ranks );
+    for ( i = 0; i < scorep_mpi_world.size; i++ )
+    {
+        scorep_mpi_world.ranks[ i ] = i;
+    }
+
+    /* allocate translation buffers */
+    scorep_mpi_ranks = calloc( scorep_mpi_world.size,
+                               sizeof( SCOREP_MpiRank ) );
+    assert( scorep_mpi_ranks );
+
+    /* create a derived datatype for distributed communicator
+     * definition handling */
+#if HAVE( MPI_GET_ADDRESS )
+    PMPI_Get_address( &pair.id, &( disp[ 0 ] ) );
+    PMPI_Get_address( &pair.root, &( disp[ 1 ] ) );
+#else
+    PMPI_Address( &pair.id, &( disp[ 0 ] ) );
+    PMPI_Address( &pair.root, &( disp[ 1 ] ) );
+#endif
+    for ( i = 1; i >= 0; --i )
+    {
+        disp[ i ] -= disp[ 0 ];
+    }
+
+#if HAVE( MPI_TYPE_CREATE_STRUCT )
+    PMPI_Type_create_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
+#else
+    PMPI_Type_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
+#endif
+    PMPI_Type_commit( &scorep_mpi_id_root_type );
+
+    /* initialize global rank variable */
+    PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
+
+    /*
+     * Define the list of locations which are MPI ranks.
+     *
+     * If we support MPI_THREADED_FUNNELED, this needs to be the
+     * location, wich has called MPI_Init/MPI_Thread_init.
+     * For the moment, the location and rank ids match.
+     *
+     * This needs to be called early, so that the resulting definition
+     * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
+     *
+     * Called by all ranks, so that the definition do not asserts for the
+     * non-0 ranks.
+     */
+    SCOREP_DefineMPILocations( scorep_mpi_world.size,
+                               scorep_mpi_world.ranks );
+
+    /* initialize MPI_COMM_WORLD */
+    scorep_mpi_world.handle =
+        SCOREP_DefineLocalMPICommunicator( scorep_mpi_world.size,
+                                           scorep_mpi_my_global_rank,
+                                           0, 0 );
+    if ( scorep_mpi_my_global_rank == 0 )
+    {
+        if ( scorep_mpi_world.size > 1 )
+        {
+            scorep_mpi_current_comm_id++;
+        }
+        else
+        {
+            scorep_mpi_current_self_id++;
+        }
+    }
+}
+
+void
+scorep_mpi_comm_init()
+{
     SCOREP_MutexCreate( &scorep_mpi_communicator_mutex );
 
     /* check, if we already initialized the data structures */
@@ -508,78 +593,7 @@ scorep_mpi_comm_init()
                           "SCOREP_MPI_MAX_GROUPS.", SCOREP_MPI_MAX_GROUP );
         }
 
-        /* get group of \a MPI_COMM_WORLD */
-        PMPI_Comm_group( MPI_COMM_WORLD, &scorep_mpi_world.group );
-
-        /* determine the number of MPI processes */
-        PMPI_Group_size( scorep_mpi_world.group, &scorep_mpi_world.size );
-
-        /* initialize translation data structure for \a MPI_COMM_WORLD */
-        scorep_mpi_world.ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_MpiRank ) );
-        for ( i = 0; i < scorep_mpi_world.size; i++ )
-        {
-            scorep_mpi_world.ranks[ i ] = i;
-        }
-
-        /* allocate translation buffers */
-        scorep_mpi_ranks = calloc( scorep_mpi_world.size, sizeof( SCOREP_MpiRank ) );
-
-        /* create a derived datatype for distributed communicator
-         * definition handling */
-#if HAVE( MPI_GET_ADDRESS )
-        PMPI_Get_address( &pair.id, &( disp[ 0 ] ) );
-        PMPI_Get_address( &pair.root, &( disp[ 1 ] ) );
-#else
-        PMPI_Address( &pair.id, &( disp[ 0 ] ) );
-        PMPI_Address( &pair.root, &( disp[ 1 ] ) );
-#endif
-        for ( i = 1; i >= 0; --i )
-        {
-            disp[ i ] -= disp[ 0 ];
-        }
-
-#if HAVE( MPI_TYPE_CREATE_STRUCT )
-        PMPI_Type_create_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
-#else
-        PMPI_Type_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
-#endif
-        PMPI_Type_commit( &scorep_mpi_id_root_type );
-
-        /* initialize global rank variable */
-        PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
-
-        /*
-         * Define the list of locations which are MPI ranks.
-         *
-         * If we support MPI_THREADED_FUNNELED, this needs to be the
-         * location, wich has called MPI_Init/MPI_Thread_init.
-         * For the moment, the location and rank ids match.
-         *
-         * This needs to be called early, so that the resulting definition
-         * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
-         */
-        if ( scorep_mpi_my_global_rank == 0 )
-        {
-            SCOREP_DefineMPILocations( scorep_mpi_world.size,
-                                       scorep_mpi_world.ranks );
-        }
-
-        /* initialize MPI_COMM_WORLD */
-        scorep_mpi_world.handle =
-            SCOREP_DefineLocalMPICommunicator( scorep_mpi_world.size,
-                                               scorep_mpi_my_global_rank,
-                                               0, 0 );
-        if ( scorep_mpi_my_global_rank == 0 )
-        {
-            if ( scorep_mpi_world.size > 1 )
-            {
-                scorep_mpi_current_comm_id++;
-            }
-            else
-            {
-                scorep_mpi_current_self_id++;
-            }
-        }
+        scorep_mpi_setup_world();
 
         /* The initialization is done, flag that */
         scorep_mpi_comm_initialized = 1;

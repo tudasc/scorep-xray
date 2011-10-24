@@ -863,6 +863,10 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
                                 const SCOREP_Group_Definition* newDefinition );
 
 
+/* Used to protect defining a MPI group before the list of MPI locations */
+static bool scorep_mpi_locations_defined;
+
+
 /**
  * Associate a MPI group with a process unique group handle.
  */
@@ -871,6 +875,10 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
                        const int32_t* ranks )
 {
     SCOREP_Definitions_Lock();
+
+    /* we should also be called only once */
+    SCOREP_BUG_ON( scorep_mpi_locations_defined == false,
+                   "Called before SCOREP_DefineMPILocations" );
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
@@ -899,6 +907,9 @@ SCOREP_DefineMPILocations( int32_t        numberOfRanks,
 {
     SCOREP_Definitions_Lock();
 
+    SCOREP_BUG_ON( scorep_mpi_locations_defined == true,
+                   "We should be called only once" );
+
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
         SCOREP_GROUP_MPI_LOCATIONS,
@@ -908,6 +919,9 @@ SCOREP_DefineMPILocations( int32_t        numberOfRanks,
             &scorep_local_definition_manager,
             "" ),
         true /* need to be converted from uint32_t */ );
+
+    /* Its now semantically correct to define MPI groups */
+    scorep_mpi_locations_defined = true;
 
     SCOREP_Definitions_Unlock();
 

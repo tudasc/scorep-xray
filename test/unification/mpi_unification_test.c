@@ -60,6 +60,8 @@ SCOREP_Mpi_Unify( void );
 void
 SCOREP_Definitions_Initialize();
 void
+scorep_mpi_setup_world( void );
+void
 SCOREP_Mpi_SetRankTo( int rank );
 int
 SCOREP_Mpi_GetRank( void );
@@ -128,6 +130,7 @@ main( int argc, char* argv[] )
     PMPI_Init( &argc, &argv );
 
     SCOREP_OnPMPI_Init();
+    scorep_mpi_setup_world();
 
     int size;
     PMPI_Comm_size( MPI_COMM_WORLD, &size );
@@ -209,7 +212,6 @@ main( int argc, char* argv[] )
          * the MPI locations
          * the MPI comm self group
          */
-        assert( 3 == scorep_unified_definition_manager->group_definition_counter );
         if ( scorep_test_mpi_unify_verbose >= 2 )
         {
             SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
@@ -222,7 +224,20 @@ main( int argc, char* argv[] )
                 fflush( result );
             }
             SCOREP_DEFINITION_FOREACH_WHILE();
+
+            SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
+                                          MPICommunicator, mpi_communicator )
+            {
+                fprintf( result, "uc: %u ug:%u\n",
+                         definition->sequence_number,
+                         SCOREP_HANDLE_TO_ID( definition->group,
+                                              Group,
+                                              scorep_unified_definition_manager->page_manager ) );
+                fflush( result );
+            }
+            SCOREP_DEFINITION_FOREACH_WHILE();
         }
+        assert( 3 == scorep_unified_definition_manager->group_definition_counter );
 
         fclose( result );
     }
@@ -252,7 +267,6 @@ main( int argc, char* argv[] )
                 SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
                                               Group, group )
                 {
-                    //assert( 0 == scorep_local_definition_manager.mappings->group_mappings[ definition->sequence_number ] );
                     fprintf( result, "%d:g: %u -> %u\n",
                              rank,
                              definition->sequence_number,
@@ -261,6 +275,17 @@ main( int argc, char* argv[] )
                 }
                 SCOREP_DEFINITION_FOREACH_WHILE();
 
+                SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
+                                              LocalMPICommunicator,
+                                              local_mpi_communicator )
+                {
+                    fprintf( result, "%d:c: %u -> %u\n",
+                             rank,
+                             definition->sequence_number,
+                             scorep_local_definition_manager.mappings->local_mpi_communicator_mappings[ definition->sequence_number ] );
+                    fflush( result );
+                }
+                SCOREP_DEFINITION_FOREACH_WHILE();
 
                 fclose( result );
             }
