@@ -548,6 +548,22 @@ scorep_mpi_comm_init()
         /* initialize global rank variable */
         PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
 
+        /*
+         * Define the list of locations which are MPI ranks.
+         *
+         * If we support MPI_THREADED_FUNNELED, this needs to be the
+         * location, wich has called MPI_Init/MPI_Thread_init.
+         * For the moment, the location and rank ids match.
+         *
+         * This needs to be called early, so that the resulting definition
+         * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
+         */
+        if ( scorep_mpi_my_global_rank == 0 )
+        {
+            SCOREP_DefineMPILocations( scorep_mpi_world.size,
+                                       scorep_mpi_world.ranks );
+        }
+
         /* initialize MPI_COMM_WORLD */
         scorep_mpi_world.handle =
             SCOREP_DefineLocalMPICommunicator( scorep_mpi_world.size,

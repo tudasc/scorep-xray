@@ -830,19 +830,6 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
         ranks_in_group = calloc( comm_world_size, sizeof( *ranks_in_group ) );
         assert( ranks_in_group );
 
-        /* Define the list of locations which are MPI ranks. */
-        for ( uint32_t i = 0; i < comm_world_size; i++ )
-        {
-            /*
-             * If we support MPI_THREADED_FUNNELED, this needs to be the
-             * location, wich has called MPI_Init/MPI_Thread_init.
-             * For the moment, the location and rank ids match.
-             */
-            ranks_in_group[ i ] = i;
-        }
-        SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_LOCATIONS,
-                                      comm_world_size, ranks_in_group );
-
         assert( scorep_unified_definition_manager->mpi_communicator_definition_counter == 0 );
     }
 

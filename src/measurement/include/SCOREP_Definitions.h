@@ -181,6 +181,11 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
                               int32_t          numberOfRanks,
                               int32_t*         ranks );
 
+void
+SCOREP_DefineMPILocations( int32_t        numberOfRanks,
+                           const int32_t* locations );
+
+
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  *

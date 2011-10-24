@@ -889,6 +889,33 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
 
 
 /**
+ * Define the MPI locations
+ *
+ * needs only be called by rank 0
+ */
+void
+SCOREP_DefineMPILocations( int32_t        numberOfRanks,
+                           const int32_t* locations )
+{
+    SCOREP_Definitions_Lock();
+
+    SCOREP_GroupHandle new_handle = scorep_group_definition_define(
+        &scorep_local_definition_manager,
+        SCOREP_GROUP_MPI_LOCATIONS,
+        numberOfRanks,
+        ( const uint64_t* )locations,
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            "" ),
+        true /* need to be converted from uint32_t */ );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+/**
  * Associate a MPI group with a process unique group handle.
  * Used to add groups from the communicator unifiaction after
  * group unification was done.
