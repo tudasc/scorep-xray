@@ -6,12 +6,14 @@ check_PROGRAMS                       += jacobi_serial_c_metric_test
 jacobi_serial_c_metric_test_SOURCES   = $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.c  \
 									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.h  \
 									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/main.c
+jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
-jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 if SCOREP_COMPILER_GNU
 jacobi_serial_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
 endif
+
 jacobi_serial_c_metric_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_serial.la
 
 if HAVE_GETRUSAGE
@@ -44,12 +46,20 @@ jacobi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/
 									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.mod.c         \
 									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.c.opari.inc
 jacobi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
+
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
-jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
 if SCOREP_COMPILER_GNU
 jacobi_omp_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
 endif
+
+# for some unknown reason we need an extra -I for the SUN compiler in
+# OpenMP and hybrid mode.
+if SCOREP_COMPILER_SUN
+jacobi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
+endif
+
 jacobi_omp_c_metric_test_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c_metric_test.la
 
 if HAVE_GETRUSAGE
