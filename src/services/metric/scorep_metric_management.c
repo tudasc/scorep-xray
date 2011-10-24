@@ -384,6 +384,9 @@ SCOREP_Metric_read( void )
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between
  *          separate phases of program execution.
+ *
+ *  @return It returns SCOREP_SUCCESS if successful,
+ *          otherwise an error code will be reported.
  */
 SCOREP_Error_Code
 SCOREP_Metric_reinitialize()
@@ -408,6 +411,8 @@ SCOREP_Metric_reinitialize()
 
     /* Reinitialize each location */
     SCOREP_Thread_ForAllLocations( initialize_location_metric_cb, NULL );
+
+    return SCOREP_SUCCESS;
 }
 
 /** @brief  Returns the sampling set handle to the measurement system.
