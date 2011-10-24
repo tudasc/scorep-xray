@@ -54,6 +54,10 @@ endif
 
 mpi_patt_all_test_f90_with_oa_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
 
+if HAVE_PAPI
+mpi_patt_all_test_f90_with_oa_LDFLAGS    = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
 EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh
 
 CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod
@@ -76,8 +80,11 @@ mpi_patt_all_test_f90_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_DIR_UTIL)
 
-
 mpi_patt_all_test_f90_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
+
+if HAVE_PAPI
+mpi_patt_all_test_f90_LDFLAGS    = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 TESTS_MPI += mpi_patt_all_test_f90
 

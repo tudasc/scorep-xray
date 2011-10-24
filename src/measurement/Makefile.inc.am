@@ -24,7 +24,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Definitions.c               \
     $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Adapter.h           \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h         \
     $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Definitions.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
@@ -41,7 +41,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.c \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter.h            \
-    $(SRC_ROOT)src/measurement/scorep_adapter.h                   \
+    $(SRC_ROOT)src/measurement/scorep_subsystem.h                 \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
     $(SRC_ROOT)src/measurement/scorep_thread.h                    \
@@ -50,7 +50,6 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
     $(SRC_ROOT)src/measurement/scorep_definitions.h               \
     $(SRC_ROOT)src/measurement/scorep_definition_structs.h        \
-    $(SRC_ROOT)src/measurement/scorep_definition_handles.h        \
     $(SRC_ROOT)src/measurement/scorep_definition_macros.h         \
     $(SRC_ROOT)src/measurement/scorep_status.c                    \
     $(SRC_ROOT)src/measurement/scorep_status.h                    \
@@ -87,7 +86,8 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
 libscorep_paradigm_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+    $(common_libscorep_cppflags) \
+    -I$(INC_ROOT)src/services/metric
 endif
 
 ##paradigm non omp
@@ -105,7 +105,8 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c
 libscorep_paradigm_non_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+    $(common_libscorep_cppflags) \
+    -I$(INC_ROOT)src/services/metric
 
 ## paradigm non mpi
 

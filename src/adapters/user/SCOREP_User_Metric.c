@@ -33,16 +33,6 @@
 #include <SCOREP_Mutex.h>
 
 /**
-   Contains the handle for the default metric group.
- */
-SCOREP_CounterGroupHandle SCOREP_User_DefaultMetricGroup = SCOREP_INVALID_COUNTER_GROUP;
-
-/**
-   Mutex to avoid parallel assignments to the same user metrics group.
- */
-SCOREP_Mutex scorep_user_metric_group_mutex;
-
-/**
    Mutex to avoid parallel assignments to the same user metric.
  */
 SCOREP_Mutex scorep_user_metric_mutex;
@@ -51,84 +41,76 @@ SCOREP_Mutex scorep_user_metric_mutex;
 void
 scorep_user_init_metric()
 {
-    SCOREP_MutexCreate( &scorep_user_metric_group_mutex );
     SCOREP_MutexCreate( &scorep_user_metric_mutex );
-    SCOREP_User_DefaultMetricGroup = SCOREP_DefineCounterGroup( "default" );
 }
 
 void
 scorep_user_final_metric()
 {
     SCOREP_MutexDestroy( &scorep_user_metric_mutex );
-    SCOREP_MutexDestroy( &scorep_user_metric_group_mutex );
 }
 
-
-void
-SCOREP_User_InitMetricGroup
-(
-    SCOREP_CounterGroupHandle* groupHandle,
-    const char*                name
-)
-{
-    /* Check for intialization */
-    SCOREP_USER_ASSERT_INITIALIZED;
-
-    /* Lock metric group definition */
-    SCOREP_MutexLock( scorep_user_metric_group_mutex );
-
-    /* Test if handle is already initialized */
-    if ( *groupHandle != SCOREP_INVALID_COUNTER_GROUP )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_DEBUG_WARNING,
-                             "Reinitializtaion of user metric group not possible\n" );
-    }
-    else
-    {
-        /* Define metric group handle */
-        *groupHandle = SCOREP_DefineCounterGroup( name );
-    }
-
-    /* Unlock metric group definition */
-    SCOREP_MutexUnlock( scorep_user_metric_group_mutex );
-}
 
 void
 SCOREP_User_InitMetric
 (
-    SCOREP_CounterHandle*           metricHandle,
-    const char*                     name,
-    const char*                     unit,
-    const SCOREP_User_MetricType    metricType,
-    const int8_t                    context,
-    const SCOREP_CounterGroupHandle group
+    SCOREP_SamplingSetHandle*    metricHandle,
+    const char*                  name,
+    const char*                  unit,
+    const SCOREP_User_MetricType metricType,
+    const int8_t                 context
 )
 {
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;
-
-    /* Check if group handle is valid */
-    if ( group == SCOREP_INVALID_COUNTER_GROUP )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_USER_INVALID_MGROUP, "" );
-        return;
-    }
 
     /* Lock metric definition */
     SCOREP_MutexLock( scorep_user_metric_mutex );
 
     /* Check if metric handle is already initialized */
-    if ( *metricHandle != SCOREP_INVALID_COUNTER )
+    if ( *metricHandle != SCOREP_INVALID_SAMPLING_SET )
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_DEBUG_WARNING,
                              "Reinitializtaion of user metric not possible\n" );
     }
     else
     {
+        SCOREP_MetricValueType value_type;
+        switch ( metricType )
+        {
+            case SCOREP_USER_METRIC_TYPE_INT64:
+                value_type = SCOREP_METRIC_VALUE_INT64;
+                break;
+            case SCOREP_USER_METRIC_TYPE_UINT64:
+                value_type = SCOREP_METRIC_VALUE_UINT64;
+                break;
+            case SCOREP_USER_METRIC_TYPE_DOUBLE:
+                value_type = SCOREP_METRIC_VALUE_DOUBLE;
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                              "Invalid metric type given." );
+                goto out;
+        }
+
         /* Define user metric */
-        *metricHandle = SCOREP_DefineCounter( name, metricType, group, unit );
+        SCOREP_MetricHandle metric
+            = SCOREP_DefineMetric( name,
+                                   "",
+                                   SCOREP_METRIC_SOURCE_TYPE_USER,
+                                   SCOREP_METRIC_MODE_ABSOLUTE,
+                                   value_type,
+                                   SCOREP_METRIC_BASE_DECIMAL,
+                                   0,
+                                   unit,
+                                   SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE );
+
+        *metricHandle
+            = SCOREP_DefineSamplingSet( 1, &metric,
+                                        SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS );
     }
 
+out:
     /* Unlock metric definition */
     SCOREP_MutexUnlock( scorep_user_metric_mutex );
 }
@@ -136,18 +118,28 @@ SCOREP_User_InitMetric
 void
 SCOREP_User_TriggerMetricInt64
 (
-    SCOREP_CounterHandle metricHandle,
-    int64_t              value
+    SCOREP_SamplingSetHandle metricHandle,
+    int64_t                  value
 )
 {
     SCOREP_TriggerCounterInt64( metricHandle, value );
 }
 
 void
+SCOREP_User_TriggerMetricUint64
+(
+    SCOREP_SamplingSetHandle metricHandle,
+    uint64_t                 value
+)
+{
+    SCOREP_TriggerCounterUint64( metricHandle, value );
+}
+
+void
 SCOREP_User_TriggerMetricDouble
 (
-    SCOREP_CounterHandle metricHandle,
-    double               value
+    SCOREP_SamplingSetHandle metricHandle,
+    double                   value
 )
 {
     SCOREP_TriggerCounterDouble( metricHandle, value );

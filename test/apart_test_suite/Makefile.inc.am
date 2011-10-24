@@ -6,6 +6,9 @@ distribution_test_sources        = $(SRC_ROOT)test/apart_test_suite/c/distributi
 distribution_test_SOURCES        = $(distribution_test_sources)
 distribution_test_CPPFLAGS       = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 distribution_test_LDADD          = $(LIB_ROOT)libscorep_serial.la
+if HAVE_PAPI
+distribution_test_LDFLAGS        = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 check_PROGRAMS                  += distribution_test2
 distribution_test2_sources       = $(SRC_ROOT)test/apart_test_suite/c/distribution_test2.c \
@@ -13,5 +16,8 @@ distribution_test2_sources       = $(SRC_ROOT)test/apart_test_suite/c/distributi
 distribution_test2_SOURCES       = $(distribution_test2_sources)
 distribution_test2_CPPFLAGS      = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 distribution_test2_LDADD         = $(LIB_ROOT)libscorep_serial.la
+if HAVE_PAPI
+distribution_test2_LDFLAGS       = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 CLEANFILES += distribution.mod

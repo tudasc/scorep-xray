@@ -48,11 +48,11 @@ typedef struct
 
     /** Number of metrics in dense representation. All enter/exit events expect this
         number of metrics. */
-    uint32_t num_of_dense_metrics;
+    uint8_t num_of_dense_metrics;
 
     /** Array containing the Metric defintion handle for the metrics in dense
         representation. All enter/exit events expect the metrics in this order. */
-    SCOREP_CounterHandle* dense_metrics;
+    SCOREP_MetricHandle* dense_metrics;
 
     /** Maximum possible depth of the calltree */
     uint64_t max_callpath_depth;
@@ -84,10 +84,10 @@ extern char* scorep_profile_basename;
    Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition( uint64_t              max_callpath_depth,
-                                uint64_t              max_Callpath_num,
-                                uint32_t              num_dense_metrics,
-                                SCOREP_CounterHandle* metrics );
+scorep_profile_init_definition( uint64_t             max_callpath_depth,
+                                uint64_t             max_Callpath_num,
+                                uint32_t             num_dense_metrics,
+                                SCOREP_MetricHandle* metrics );
 
 /**
    Resets the profile definition struct

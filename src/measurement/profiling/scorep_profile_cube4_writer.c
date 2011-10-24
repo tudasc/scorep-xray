@@ -33,6 +33,7 @@
 
 #include "scorep_profile_definition.h"
 #include "scorep_definition_cube4.h"
+#include "scorep_definitions.h"
 #include "scorep_mpi.h"
 #include "scorep_runtime_management.h"
 
@@ -46,7 +47,7 @@
 
 /**
    Defines a function type which returns a metric value from a given node.
-   This functions are given to scorep_profile_write_cube_metric.
+   These functions are given to scorep_profile_write_cube_metric.
    @param node Pointer to a node which should return the metric value.
    @returns the metric value of @a node.
  */
@@ -54,11 +55,19 @@ typedef uint64_t ( *scorep_profile_get_uint64_func )( scorep_profile_node* node 
 
 /**
    Defines a function type which returns a metric value from a given node.
-   This functions are given to scorep_profile_write_cube_metric.
+   These functions are given to scorep_profile_write_cube_metric.
    @param node Pointer to a node which should return the metric value.
    @returns the metric value of @a node.
  */
 typedef double ( *scorep_profile_get_doubles_func )( scorep_profile_node* node );
+
+/**
+   Defines a function type which returns a metric value from an array of given node.
+   These function are given to scorep_profile_write_cube_metric.
+   @param node Pointer to a node which should return the metric value.
+   @returns the metric value of @a node.
+ */
+typedef uint64_t ( *scorep_profile_get_metric_from_array_func )( scorep_profile_node* node, uint8_t index );
 
 /**
    Contains a mapping structure between scorep handles and cube handles.
@@ -122,82 +131,96 @@ scorep_profile_get_visits_value( scorep_profile_node* node )
     return node->count;
 }
 
+
+
+/**
+   Returns the values of metrics for @a node.
+   This functions are given to scorep_profile_write_cube_metric.
+   @param node Pointer to a node which should return the metric value.
+   @returns the number of visits of @a node.
+ */
+static uint64_t
+scorep_profile_get_metrics_value_from_array( scorep_profile_node* node, uint8_t index )
+{
+    return node->dense_metrics[ index ].sum;
+}
+
 /* *INDENT-OFF* */
 
 /**
-   @def SCOREP_PROFILE_RESET_CUBE
-   Code to reset the cube struct in data writing. Used to reduce code replication.
+   @def SCOREP_PROFILE_WRITE_CUBE_METRIC
+   Code to write metric values in cube format. Used to reduce code replication.
  */
-#define SCOREP_PROFILE_WRITE_CUBE_METRIC( type, TYPE, cube_type )	                \
-static void                                                                             \
-scorep_profile_write_cube_##cube_type(                                                  \
-                                  cube_t*                             my_cube,          \
-                                  cube_writer*                        cube_writer,      \
-                                  cube_metric*                        metric,           \
-                                  scorep_profile_node**               id_2_node,        \
-                                  scorep_cube4_definitions_map*       map,              \
-                                  uint32_t                            callpath_number,  \
-                                  uint32_t                            global_threads,   \
-                                  uint32_t                            local_threads,    \
-                                  uint32_t                            offset,           \
-                                  int*                                recvcnts,         \
-                                  int*                                displs,           \
-                                  scorep_profile_get_ ## cube_type ## _func get_value ) \
-{                                                                                       \
-    scorep_profile_node* node          = NULL;                                          \
-    cube_cnode*          cnode         = NULL;                                          \
-    type *               local_values  = NULL;                                          \
-    type *               global_values = NULL;                                          \
-    int                  my_rank       = SCOREP_Mpi_GetRank();                          \
-    char*                bit_vector    = NULL;                                          \
-    if ( callpath_number == 0 ) return;                                                 \
-                                                                                        \
-    local_values = ( type * )malloc( local_threads * sizeof( type ) );                  \
-                                                                                        \
-    if ( my_rank == 0 )                                                                 \
-    {                                                                                   \
-        /* Array of all values for one metric for one callpath for all locations */     \
-        global_values = ( type * )malloc( global_threads * sizeof( type ) );            \
-        bit_vector    = ( char* )malloc( ( callpath_number + 7 ) / 8 );                 \
-        SCOREP_ASSERT( bit_vector );                                                    \
-        memset( bit_vector, 0xFF, ( callpath_number + 7 ) / 8 );                        \
-                                                                                        \
-        /* Initialize writing of a new metric */                                        \
-        cubew_reset( cube_writer );                                                     \
-        cubew_set_array( cube_writer, callpath_number );                                \
-        cube_set_known_cnodes_for_metric( my_cube, metric, bit_vector );                \
-    }                                                                                   \
-    /* Iterate over all unified callpathes */                                           \
-    for ( uint64_t cp_index = 0; cp_index < callpath_number; cp_index++ )               \
-    {                                                                                   \
-        for ( uint64_t thread_index = 0; thread_index < local_threads; thread_index++ ) \
-        {                                                                               \
-            node = id_2_node[ thread_index * callpath_number + cp_index ];              \
-            if ( node != NULL )                                                         \
-            {                                                                           \
-                local_values[ thread_index ] = get_value( node );                       \
-            }                                                                           \
-            else                                                                        \
-            {                                                                           \
-                local_values[ thread_index ] = 0;                                       \
-            }                                                                           \
-        }                                                                               \
-                                                                                        \
-        /* Collect data from all processes */                                           \
-        SCOREP_Mpi_Gatherv( local_values, local_threads, SCOREP_MPI_ ## TYPE,           \
-                            global_values, recvcnts, displs, SCOREP_MPI_ ## TYPE, 0 );  \
-                                                                                        \
-        /* Write data for one callpath */                                               \
-        if ( my_rank == 0 )                                                             \
-        {                                                                               \
-	    cnode = cube_get_cnode( my_cube, cp_index );                                \
-            cube_write_sev_row_of_##cube_type( my_cube, metric, cnode, global_values ); \
-        }                                                                               \
-    }                                                                                   \
-                                                                                        \
-    /* Clean up */                                                                      \
-    free( global_values );                                                              \
-    free( local_values );                                                               \
+#define SCOREP_PROFILE_WRITE_CUBE_METRIC( type, TYPE, cube_type )	                          \
+static void                                                                                   \
+scorep_profile_write_cube_##cube_type(                                                        \
+                                  cube_t*                                   my_cube,          \
+                                  cube_writer*                              cube_writer,      \
+                                  cube_metric*                              metric,           \
+                                  scorep_profile_node**                     id_2_node,        \
+                                  scorep_cube4_definitions_map*             map,              \
+                                  uint32_t                                  callpath_number,  \
+                                  uint32_t                                  global_threads,   \
+                                  uint32_t                                  local_threads,    \
+                                  uint32_t                                  offset,           \
+                                  int*                                      recvcnts,         \
+                                  int*                                      displs,           \
+                                  scorep_profile_get_ ## cube_type ## _func get_value )       \
+{                                                                                             \
+    scorep_profile_node* node          = NULL;                                                \
+    cube_cnode*          cnode         = NULL;                                                \
+    type *               local_values  = NULL;                                                \
+    type *               global_values = NULL;                                                \
+    int                  my_rank       = SCOREP_Mpi_GetRank();                                \
+    char*                bit_vector    = NULL;                                                \
+    if ( callpath_number == 0 ) return;                                                       \
+                                                                                              \
+    local_values = ( type * )malloc( local_threads * sizeof( type ) );                        \
+                                                                                              \
+    if ( my_rank == 0 )                                                                       \
+    {                                                                                         \
+        /* Array of all values for one metric for one callpath for all locations */           \
+        global_values = ( type * )malloc( global_threads * sizeof( type ) );                  \
+        bit_vector    = ( char* )malloc( ( callpath_number + 7 ) / 8 );                       \
+        SCOREP_ASSERT( bit_vector );                                                          \
+        memset( bit_vector, 0xFF, ( callpath_number + 7 ) / 8 );                              \
+                                                                                              \
+        /* Initialize writing of a new metric */                                              \
+        cubew_reset( cube_writer );                                                           \
+        cubew_set_array( cube_writer, callpath_number );                                      \
+        cube_set_known_cnodes_for_metric( my_cube, metric, bit_vector );                      \
+    }                                                                                         \
+    /* Iterate over all unified callpathes */                                                 \
+    for ( uint64_t cp_index = 0; cp_index < callpath_number; cp_index++ )                     \
+    {                                                                                         \
+        for ( uint64_t thread_index = 0; thread_index < local_threads; thread_index++ )       \
+        {                                                                                     \
+            node = id_2_node[ thread_index * callpath_number + cp_index ];                    \
+            if ( node != NULL )                                                               \
+            {                                                                                 \
+                local_values[ thread_index ] = get_value( node );                             \
+            }                                                                                 \
+            else                                                                              \
+            {                                                                                 \
+                local_values[ thread_index ] = 0;                                             \
+            }                                                                                 \
+        }                                                                                     \
+                                                                                              \
+        /* Collect data from all processes */                                                 \
+        SCOREP_Mpi_Gatherv( local_values, local_threads, SCOREP_MPI_ ## TYPE,                 \
+                            global_values, recvcnts, displs, SCOREP_MPI_ ## TYPE, 0 );        \
+                                                                                              \
+        /* Write data for one callpath */                                                     \
+        if ( my_rank == 0 )                                                                   \
+        {                                                                                     \
+	    cnode = cube_get_cnode( my_cube, cp_index );                                          \
+            cube_write_sev_row_of_##cube_type( my_cube, metric, cnode, global_values );       \
+        }                                                                                     \
+    }                                                                                         \
+                                                                                              \
+    /* Clean up */                                                                            \
+    free( global_values );                                                                    \
+    free( local_values );                                                                     \
     free( bit_vector );                                                                 \
 }
 
@@ -256,6 +279,107 @@ SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, LONG_LONG, uint64 )
                           profile node.
  */
 SCOREP_PROFILE_WRITE_CUBE_METRIC( double, DOUBLE, doubles )
+
+
+/**
+   @function scorep_profile_write_cube_single_metric
+   Writes data for the metric @a metric to a cube object.
+   @param my_cube         Pointer to a cube object to which the data is written.
+   @param cube_writer     Pointer to a writer for the @a my_cube.
+   @param metric          The cube metric handle for the written metric.
+   @param id_to_node      A field which maps unified sequence numbers
+                          to callpathes. Hereby, each location has an array
+                          of @a callpath_number length. The index within the
+                          array matches the sequence number. The value is a
+                          pointer to the profile node which represents the
+                          corresponding callpath in the location.
+   @param map             Mapping structure to map between scorep and cube handles
+   @param callpath_number The number of callpathes in the unified definitions.
+   @param global_threads  The number of threads in the unified definitions. Only needed
+                          on rank 0. Ignored on other ranks.
+   @param local_threads   The number of locations in this process.
+   @param offset          Position in the global value vector where this process writes.
+   @param recvcnts        Array with the number of threads for every process. Only needed
+                          on rank 0. Ignored on other ranks.
+   @param displs          Array with offsets for every process. Only needed on rank 0.
+                          Ignored on other ranks
+   @param get_value       Functionpointer which returns the value for a given
+                          profile node.
+   @param index           Index used to get metric value out of array.
+ */
+static void
+scorep_profile_write_cube_single_metric( cube_t*                                   my_cube,
+                                         cube_writer*                              cube_writer,
+                                         cube_metric*                              metric,
+                                         scorep_profile_node**                     id_2_node,
+                                         scorep_cube4_definitions_map*             map,
+                                         uint32_t                                  callpath_number,
+                                         uint32_t                                  global_threads,
+                                         uint32_t                                  local_threads,
+                                         uint32_t                                  offset,
+                                         int*                                      recvcnts,
+                                         int*                                      displs,
+                                         scorep_profile_get_metric_from_array_func get_value,
+                                         uint8_t                                   index )
+{
+    scorep_profile_node* node          = NULL;
+    cube_cnode*          cnode         = NULL;
+    uint64_t*            local_values  = NULL;
+    uint64_t*            global_values = NULL;
+    int                  my_rank       = SCOREP_Mpi_GetRank();
+    char*                bit_vector    = NULL;
+    if ( callpath_number == 0 )
+    {
+        return;
+    }
+
+    local_values = ( uint64_t* )malloc( local_threads * sizeof( uint64_t ) );
+
+    if ( my_rank == 0 )
+    {
+        /* Array of all values for one metric for one callpath for all locations */
+        global_values = ( uint64_t* )malloc( global_threads * sizeof( uint64_t ) );
+        bit_vector    = ( char* )malloc( ( callpath_number + 7 ) / 8 );
+        SCOREP_ASSERT( bit_vector );
+        memset( bit_vector, 0xFF, ( callpath_number + 7 ) / 8 );
+
+        /* Initialize writing of a new metric */
+        cubew_reset( cube_writer );
+        cubew_set_array( cube_writer, callpath_number );
+        cube_set_known_cnodes_for_metric( my_cube, metric, bit_vector );
+    }
+    /* Iterate over all unified callpathes */
+    for ( uint64_t cp_index = 0; cp_index < callpath_number; cp_index++ )
+    {
+        for ( uint64_t thread_index = 0; thread_index < local_threads; thread_index++ )
+        {
+            node = id_2_node[ thread_index * callpath_number + cp_index ];
+            if ( node != NULL )
+            {
+                local_values[ thread_index ] = get_value( node, index );
+            }
+            else
+            {
+                local_values[ thread_index ] = 0;
+            }
+        }
+
+        /* Collect data from all processes */
+        SCOREP_Mpi_Gatherv( local_values, local_threads, SCOREP_MPI_LONG_LONG,
+                            global_values, recvcnts, displs, SCOREP_MPI_LONG_LONG, 0 );
+
+        /* Write data for one callpath */
+        if ( my_rank == 0 )
+        {
+            cnode = cube_get_cnode( my_cube, cp_index );
+            cube_write_sev_row_of_uint64( my_cube, metric, cnode, global_values );
+        }
+    }
+
+    /* Clean up */
+    free( global_values );
+    free( local_values );
+}
 
 /* *****************************************************************************
    Main writer function
@@ -366,7 +490,7 @@ scorep_profile_write_cube4()
     if ( map == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocate ememory for defintion mapping\n"
+                      "Failed to allocate memory for defintion mapping\n"
                       "Failed to write Cube 4 profile" );
         goto cleanup;
     }
@@ -407,7 +531,7 @@ scorep_profile_write_cube4()
 
         /* Write definitions to cube */
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
-        scorep_write_definitions_to_cube4( my_cube, map, ranks_number, threads_per_rank );
+        scorep_write_definitions_to_cube4( my_cube, map, ranks_number, threads_per_rank, scorep_profile.num_of_dense_metrics, scorep_profile.dense_metrics );
     }
 
     /* Build mapping from sequence number in unified callpath definitions to
@@ -427,7 +551,7 @@ scorep_profile_write_cube4()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
     if ( my_rank == 0 )
     {
-        metric = scorep_get_cube4_metric( map, ( SCOREP_CounterHandle )1 );
+        metric = scorep_get_cube4_metric( map, scorep_get_time_metric_handle() );
     }
     scorep_profile_write_cube_doubles( my_cube, cube_writer, metric, id_2_node, map,
                                        callpath_number, global_threads, local_threads,
@@ -439,12 +563,26 @@ scorep_profile_write_cube4()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing visits" );
     if ( my_rank == 0 )
     {
-        metric = scorep_get_cube4_metric( map, ( SCOREP_CounterHandle )2 );
+        metric = scorep_get_cube4_metric( map, scorep_get_visits_metric_handle() );
     }
     scorep_profile_write_cube_uint64( my_cube, cube_writer, metric, id_2_node, map,
                                       callpath_number, global_threads, local_threads,
                                       offset, threads_per_rank, offset_per_rank,
                                       &scorep_profile_get_visits_value );
+
+    /* Write additional metrics (e.g. hardware counters) */
+    for ( uint8_t i = 0; i  < scorep_profile.num_of_dense_metrics; i++ )
+    {
+        if ( my_rank == 0 )
+        {
+            metric = scorep_get_cube4_metric( map, scorep_profile.dense_metrics[ i ] );
+        }
+
+        scorep_profile_write_cube_single_metric( my_cube, cube_writer, metric, id_2_node, map,
+                                                 callpath_number, global_threads, local_threads,
+                                                 offset, threads_per_rank, offset_per_rank,
+                                                 &scorep_profile_get_metrics_value_from_array, i );
+    }
 
 
     /* Clean up */

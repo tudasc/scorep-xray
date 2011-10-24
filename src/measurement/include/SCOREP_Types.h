@@ -197,17 +197,116 @@ typedef enum SCOREP_AdapterType
 
 
 /**
- * Types to be used in defining a counter (SCOREP_DefineCounter()).
+ * Metric sources to be used in defining a metric member (SCOREP_DefineMetric()).
  *
  */
-typedef enum SCOREP_CounterType
+typedef enum SCOREP_MetricSourceType
 {
-    SCOREP_COUNTER_INT64,
-    SCOREP_COUNTER_DOUBLE,
+    /** PAPI counter. */
+    SCOREP_METRIC_SOURCE_TYPE_PAPI   = 0,
+    /** Resource usage counter. */
+    SCOREP_METRIC_SOURCE_TYPE_RUSAGE = 1,
+    /** User metrics. */
+    SCOREP_METRIC_SOURCE_TYPE_USER   = 2,
+    /** Any other metrics. */
+    SCOREP_METRIC_SOURCE_TYPE_OTHER  = 3,
 
-    SCOREP_INVALID_COUNTER_TYPE /**< For internal use only. */
-} SCOREP_CounterType;
+    SCOREP_INVALID_METRIC_SOURCE_TYPE /**< For internal use only. */
+} SCOREP_MetricSourceType;            // maps to OTF2_GlobMetricType
 
+/**
+ * Types to be used in defining type of metric values (SCOREP_DefineMetric()).
+ *
+ */
+typedef enum SCOREP_MetricValueType
+{
+    SCOREP_METRIC_VALUE_INT64,
+    SCOREP_METRIC_VALUE_UINT64,
+    SCOREP_METRIC_VALUE_DOUBLE,
+
+    SCOREP_INVALID_METRIC_VALUE_TYPE /**< For internal use only. */
+} SCOREP_MetricValueType;            // maps to OTF2_TypeID
+
+/**
+ * Types to be used in defining metric mode (SCOREP_DefineMetric()).
+ *
+ */
+typedef enum SCOREP_MetricMode
+{
+    /** Accumulated metric. */
+    SCOREP_METRIC_MODE_ACCUMULATED = 0,
+    /** Absolute metric. */
+    SCOREP_METRIC_MODE_ABSOLUTE    = 1,
+    /** Relative metric. */
+    SCOREP_METRIC_MODE_RELATIVE    = 2,
+
+    SCOREP_INVALID_METRIC_MODE /**< For internal use only. */
+} SCOREP_MetricMode;           // maps to OTF2_MetricMode
+
+/**
+ * Types to be used in defining metric base (SCOREP_DefineMetric()).
+ *
+ */
+typedef enum SCOREP_MetricBase
+{
+    /** Binary base. */
+    SCOREP_METRIC_BASE_BINARY  = 0,
+    /** Decimal base. */
+    SCOREP_METRIC_BASE_DECIMAL = 1,
+
+    SCOREP_INVALID_METRIC_BASE /**< For internal use only. */
+} SCOREP_MetricBase;           // maps to OTF2_GlobMetricBase
+
+/**
+ * Types to be used in defining the occurrence of a sampling set.
+ *
+ */
+typedef enum SCOREP_MetricOccurrence
+{
+    /** Metric occurs at every region enter and leave. */
+    SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS_STRICT = 0,
+    /** Metric occurs only at a region enter and leave, but does not need to
+     *  occur at every enter/leave. */
+    SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS        = 1,
+    /** Metric can occur at any place i.e. it is not related to region enter and
+     *  leaves. */
+    SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS       = 2,
+
+    SCOREP_INVALID_METRIC_OCCURRENCE /**< For internal use only. */
+} SCOREP_MetricOccurrence;           // maps to OTF2_GlobMetricOccurrence_enum
+
+/**
+ * Types to be used in defining the scope of a scoped sampling set.
+ *
+ */
+typedef enum SCOREP_MetricScope
+{
+    /** Scope of a metric is another location. */
+    SCOREP_METRIC_SCOPE_LOCATION         = 0,
+    /** Scope of a metric is a location group. */
+    SCOREP_METRIC_SCOPE_LOCATION_GROUP   = 1,
+    /** Scope of a metric is a system tree node. */
+    SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE = 2,
+    /** Scope of a metric is a generic group of locations. */
+    SCOREP_METRIC_SCOPE_GROUP            = 3,
+
+    SCOREP_INVALID_METRIC_SCOPE /**< For internal use only. */
+} SCOREP_MetricScope;           // maps to OTF2_GlobMetricScope
+
+/**
+ * Types used to define type of profiling.
+ */
+typedef enum SCCOREP_MetricProfilingType
+{
+    /** Exclusive values (excludes values from subordinated items) */
+    SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE = 0,
+    /** Inclusive values (sum including values from subordinated items ) */
+    SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE = 1,
+    /** Single value */
+    SCOREP_METRIC_PROFILING_TYPE_SIMPLE    = 2,
+
+    SCOREP_INVALID_METRIC_PROFILING_TYPE /**< For internal use only. */
+} SCOREP_MetricProfilingType;
 
 /**
  * Types to be used in defining a location (SCOREP_DefineLocation()).

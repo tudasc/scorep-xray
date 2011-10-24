@@ -139,13 +139,13 @@ typedef uint64_t SCOREP_User_ParameterHandle;
     @def SCOREP_USER_METRIC_TYPE_UINT64
     Indicates that a user counter is of data type unsigned 64 bit integer.
  */
-#define SCOREP_USER_METRIC_TYPE_UINT64 0
+#define SCOREP_USER_METRIC_TYPE_UINT64 1
 
 /**
     @def SCOREP_USER_METRIC_TYPE_DOUBLE
     Indicates that a user counter is of data type double.
  */
-#define SCOREP_USER_METRIC_TYPE_DOUBLE 1
+#define SCOREP_USER_METRIC_TYPE_DOUBLE 2
 
 /**@}*/
 
@@ -168,12 +168,6 @@ typedef uint64_t SCOREP_User_ParameterHandle;
 /* **************************************************************************************
  * Default and uninitialized handles
  * *************************************************************************************/
-
-/**
-    The metric group handle for the default group. This group is created when the
-    user adapter is initialized.
- */
-#define SCOREP_USER_METRIC_GROUP_DEFAULT SCOREP_User_DefaultMetricGroup
 
 /**
    @}

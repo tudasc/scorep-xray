@@ -29,7 +29,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include <SCOREP_Adapter.h>
+//#include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_utility/SCOREP_Utils.h>

@@ -250,6 +250,10 @@ main( int    argc,
                     std::cout << " -L" TIMER_LIBDIR;
                 }
 
+                #if HAVE( PAPI )
+                std::cout << " " << PAPI_LDFLAGS << " " << PAPI_LIBS << " -Wl,-rpath," PAPI_LIBDIR;
+                #endif
+
                 std::cout << " -l" << scorep_libs[ mode ] << " " SCOREP_LIBS " ";
                 std::cout.flush();
 

@@ -26,10 +26,15 @@
  */
 
 /**
+ * Type of a opaque handle to any definition.
+ */
+typedef SCOREP_Allocator_MovableMemory SCOREP_AnyHandle;
+
+/**
  * Type of a opaque handle to a source file definition.
  * @see SCOREP_DefineSourceFile()
  */
-typedef SCOREP_Allocator_MovableMemory SCOREP_SourceFileHandle;
+typedef SCOREP_AnyHandle SCOREP_SourceFileHandle;
 
 /**
  * Symbolic constant representing an invalid or unknown source file definition.
@@ -38,35 +43,35 @@ typedef SCOREP_Allocator_MovableMemory SCOREP_SourceFileHandle;
 #define SCOREP_INVALID_SOURCE_FILE SCOREP_MOVABLE_NULL
 
 /**
- * Type of a opaque handle to a counter group definition.
- * @see SCOREP_DefineCounterGroup()
+ * Type of a opaque handle to a metric definition.
+ * @see SCOREP_DefineMetric()
  */
-typedef SCOREP_Allocator_MovableMemory SCOREP_CounterGroupHandle;
+typedef SCOREP_AnyHandle SCOREP_MetricHandle;
 
 /**
- * Symbolic constant representing an invalid or unknown counter group
+ * Symbolic constant representing an invalid or unknown metric
  * definition.
  */
-#define SCOREP_INVALID_COUNTER_GROUP SCOREP_MOVABLE_NULL
+#define SCOREP_INVALID_METRIC SCOREP_MOVABLE_NULL
 
 
 /**
- * Type of a opaque handle to a counter definition.
- * @see SCOREP_DefineCounter()
+ * Type of a opaque handle to a sampling set definition.
+ * @see SCOREP_DefineSamplingSet()
  */
-typedef SCOREP_Allocator_MovableMemory SCOREP_CounterHandle;
+typedef SCOREP_AnyHandle SCOREP_SamplingSetHandle;
 
 /**
- * Symbolic constant representing an invalid or unknown counter definition.
+ * Symbolic constant representing an invalid or unknown metric class definition.
  */
-#define SCOREP_INVALID_COUNTER SCOREP_MOVABLE_NULL
+#define SCOREP_INVALID_SAMPLING_SET SCOREP_MOVABLE_NULL
 
 
 /**
  * Type of a opaque handle to a region definition.
  * @see SCOREP_DefineRegion()
  */
-typedef SCOREP_Allocator_MovableMemory SCOREP_RegionHandle;
+typedef SCOREP_AnyHandle SCOREP_RegionHandle;
 
 /**
  * Symbolic constant representing an invalid or unknown region definition.

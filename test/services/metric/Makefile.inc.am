@@ -1,0 +1,57 @@
+# Metric test
+
+## Serial
+
+check_PROGRAMS                       += jacobi_serial_c_metric_test
+jacobi_serial_c_metric_test_SOURCES   = $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.c  \
+									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.h  \
+									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/main.c
+# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
+# printf statements, REMOVE this flag after this bug is fixed properly
+jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_serial_c_metric_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_serial.la
+
+if HAVE_GETRUSAGE
+EXTRA_DIST   += $(SRC_ROOT)test/services/metric/run_rusage_serial_metric_test.sh.in
+TESTS_SERIAL += ./../test/services/metric/run_rusage_serial_metric_test.sh
+jacobi_serial_c_metric_test_CPPFLAGS += $(SCOREP_RUSAGE_CPPFLAGS)
+endif
+
+if HAVE_PAPI
+EXTRA_DIST   += $(SRC_ROOT)test/services/metric/run_papi_serial_metric_test.sh.in
+TESTS_SERIAL += ./../test/services/metric/run_papi_serial_metric_test.sh
+jacobi_serial_c_metric_test_LDFLAGS   = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
+endif
+
+
+## OpenMP
+
+# the pomp.c file needs to be compiled without compiler instrumentation
+# to achieve this, we put it in a noinst library and link against it
+noinst_LTLIBRARIES                      += libjacobi_pomp_c_metric_test.la
+libjacobi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/pomp.c
+libjacobi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)/src
+
+check_PROGRAMS                   += jacobi_omp_c_metric_test
+jacobi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.mod.c       \
+									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.c.opari.inc \
+									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.h           \
+									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.mod.c         \
+									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.c.opari.inc
+jacobi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
+# printf statements, REMOVE this flag after this bug is fixed properly
+jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_omp_c_metric_test_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c_metric_test.la
+
+if HAVE_GETRUSAGE
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_openmp_metric_test.sh.in
+TESTS_OMP  += ./../test/services/metric/run_rusage_openmp_metric_test.sh
+jacobi_omp_c_metric_test_CPPFLAGS += $(SCOREP_RUSAGE_CPPFLAGS)
+endif
+
+if HAVE_PAPI
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_openmp_metric_test.sh.in
+TESTS_OMP  += ./../test/services/metric/run_papi_openmp_metric_test.sh
+jacobi_omp_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
+endif

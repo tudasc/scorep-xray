@@ -15,25 +15,24 @@
  */
 
 
-#ifndef SCOREP_INTERNAL_ADAPTER_H
-#define SCOREP_INTERNAL_ADAPTER_H
+#ifndef SCOREP_METRIC_RUSAGE_H_
+#define SCOREP_METRIC_RUSAGE_H_
 
 
 /**
- * @file        scorep_adatper.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ * @file       scorep_metric_rusage.h.h
+ * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
- * @status      alpha
- *
- * @brief       Exports the adapters array for the measurement system.
+ * @brief Resource usage metric source definition object.
  */
 
+#include "SCOREP_Metric_Source.h"
 
-#include <SCOREP_Adapter.h>
-#include <stddef.h>
+/**
+   The metric source initialization and finalization function structure for the
+   metric adapter.
+ */
+extern const SCOREP_MetricSource SCOREP_Metric_Rusage;
 
-/** @brief a NULL terminated list of linked in adapters. */
-extern const SCOREP_Adapter* scorep_adapters[];
-extern const size_t          scorep_number_of_adapters;
 
-#endif /* SCOREP_INTERNAL_ADAPTER_H */
+#endif /* SCOREP_METRIC_RUSAGE_H_ */

@@ -277,56 +277,64 @@ SCOREP_DefineMPICartesianCoords
 
 
 /**
- * Associate a name with a process unique counter group handle.
+ * Associate a name with a process unique metric member handle.
  *
- * @param name A meaningfule name of the counter group.
+ * @param name A meaningful name of the metric member.
  *
- * @planned To be implemented in milestone 2
- *
- * @return A process unique counter group handle to be used in calls to
- * SCOREP_DefineCounter().
- *
- * @planned To be implemented in milestone 2
- *
+ * @return A process unique metric member handle to be used in calls to
+ * SCOREP_DefineSamplingSet().
  */
-SCOREP_CounterGroupHandle
-SCOREP_DefineCounterGroup
-(
-    const char* name
-);
-
+SCOREP_MetricHandle
+SCOREP_DefineMetric( const char*                name,
+                     const char*                description,
+                     SCOREP_MetricSourceType    sourceType,
+                     SCOREP_MetricMode          mode,
+                     SCOREP_MetricValueType     valueType,
+                     SCOREP_MetricBase          base,
+                     int64_t                    exponent,
+                     const char*                unit,
+                     SCOREP_MetricProfilingType profilingType );
 
 /**
+ * Define a new sampling set.
  *
- * Associate the parameter tuple with a process unique counter handle.
+ * @param numberOfMetrics Number of metrics contained in array @a metrics.
+ * @param metrics         Array containing metric handles of all members
+ *                        of this sampling set.
+ * @param occurrence      Specifies whether a metric occurs at every region enter and leave
+ *                        (SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS_STRICT), only at a region
+ *                        enter and leave but does not need to occur at every enter/leave
+ *                        (SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS) or at any place i.e. it is
+ *                        not related to region enter or leaves (SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS).
  *
- * @param name A descriptive name for the counter.
- *
- * @param counterType The counters value type.
- *
- * @param counterGroupHandle Handle to the counter group this counter belongs
- * to.
- *
- * @param unit A descriptive name of the unit in which counter values are
- * measured.
- *
- * @return A process unique counter handle to be used in calls to
- * SCOREP_TriggerCounter().
- *
- * @todo add base parameter (i.e. 1000 or 1024)
- *
- * @planned To be implemented in milestone 2
- *
+ * @return A process unique sampling set handle to be used in calls to
+ * SCOREP_DefineScopedSamplingSet().
  */
-SCOREP_CounterHandle
-SCOREP_DefineCounter
-(
-    const char*               name,
-    SCOREP_CounterType        counterType,
-    SCOREP_CounterGroupHandle counterGroupHandle,
-    const char*               unit
-);
+SCOREP_SamplingSetHandle
+SCOREP_DefineSamplingSet( uint8_t                    numberOfMetrics,
+                          const SCOREP_MetricHandle* metrics,
+                          SCOREP_MetricOccurrence    occurrence );
 
+/**
+ * Define a new scoped sampling set. The scoped sampling set is recorded by
+ * a location specified by @a recorderHandle. In contrast to a normal
+ * <em>sampling set</em> the values of a scoped sampling set are valid for
+ * another location or a group of locations.
+ *
+ * @param samplingSet    Handle of a previously defined sampling set.
+ * @param recorderHandle Handle of the location that records this sampling set.
+ * @param scopeType      Defines whether the scope of the sampling set is another
+ *                       location (SCOREP_METRIC_SCOPE_LOCATION), a location group
+ *                       (SCOREP_METRIC_SCOPE_LOCATION_GROUP), a system tree node
+ *                       (SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE) or a generic group
+ *                       of locations (SCOREP_METRIC_SCOPE_GROUP).
+ * @param scopeHandle    Handle of the sampling set scope according to @a scopeType.
+ */
+SCOREP_SamplingSetHandle
+SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
+                                SCOREP_LocationHandle    recorderHandle,
+                                SCOREP_MetricScope       scopeType,
+                                SCOREP_AnyHandle         scopeHandle );
 
 /**
  * Associate a name with a process unique I/O file group handle.

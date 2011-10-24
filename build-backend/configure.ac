@@ -44,6 +44,8 @@ SCOREP_ATTRIBUTE_ALIGNMENT
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 AC_SCOREP_LIBSION([SERIAL])
 AC_SCOREP_LIBSION([OMP])
+AC_SCOREP_LIBPAPI
+AC_SCOREP_RUSAGE
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
@@ -178,5 +180,13 @@ AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/OpenMP/C/Makefile ])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_rusage_serial_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_rusage_serial_metric_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_rusage_openmp_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_rusage_openmp_metric_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_papi_serial_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_papi_serial_metric_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_papi_openmp_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_papi_openmp_metric_test.sh])
 
 AC_OUTPUT

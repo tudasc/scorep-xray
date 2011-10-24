@@ -50,6 +50,7 @@
     UNIFIED_DEF( String, string ) \
     UNIFIED_DEF( Region, region ) \
     UNIFIED_DEF( Group, group ) \
+    UNIFIED_DEF( SamplingSet, sampling_set ) \
     UNIFIED_DEF( Parameter, parameter ) \
     UNIFIED_DEF( Callpath, callpath )
 
@@ -119,7 +120,7 @@ static void
 scorep_unify_mpi_master( void )
 {
     SCOREP_DefinitionManager*     remote_definition_manager =
-        malloc( sizeof( *remote_definition_manager ) );
+        calloc( 1, sizeof( *remote_definition_manager ) );
     SCOREP_Allocator_PageManager* remote_page_manager =
         SCOREP_Memory_CreateMovedPagedMemory();
     assert( remote_definition_manager );

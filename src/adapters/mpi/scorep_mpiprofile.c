@@ -98,9 +98,9 @@ scorep_mpiprofile_init
     lateThreshold = 0.001;
 
     SCOREP_USER_METRIC_INIT( lateSend, "lateSend", "s", SCOREP_USER_METRIC_TYPE_INT64,
-                             SCOREP_USER_METRIC_CONTEXT_CALLPATH, SCOREP_USER_METRIC_GROUP_DEFAULT );
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
     SCOREP_USER_METRIC_INIT( lateRecv, "lateRecv", "s", SCOREP_USER_METRIC_TYPE_INT64,
-                             SCOREP_USER_METRIC_CONTEXT_CALLPATH, SCOREP_USER_METRIC_GROUP_DEFAULT );
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
 
     mpiprofiling_initialized = 1;
 }

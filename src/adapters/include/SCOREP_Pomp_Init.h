@@ -26,11 +26,11 @@
  * @brief Declares the intialization struct of the POMP adapter
  */
 
-#include "SCOREP_Adapter.h"
+#include "SCOREP_Subsystem.h"
 
 /**
    The POMP adapter struct
  */
-extern struct SCOREP_Adapter SCOREP_Pomp_Adapter;
+extern struct SCOREP_Subsystem SCOREP_Pomp_Adapter;
 
 #endif // SCOREP_POMP_INIT_H

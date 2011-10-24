@@ -25,9 +25,9 @@
     @brief Contains the initialization function definitions for the measurement system.
  */
 
-#include "SCOREP_Adapter.h"
+#include "SCOREP_Subsystem.h"
 
 /** The struct which contain the init functions */
-extern const SCOREP_Adapter SCOREP_Mpi_Adapter;
+extern const SCOREP_Subsystem SCOREP_Mpi_Adapter;
 
 #endif // SCOREP_MPI_INIT_H

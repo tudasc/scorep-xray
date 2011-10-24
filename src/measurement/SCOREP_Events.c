@@ -43,21 +43,27 @@
 #include "scorep_types.h"
 #include "scorep_trace_types.h"
 #include "scorep_thread.h"
-#include "scorep_definition_handles.h"
 #include "scorep_status.h"
 #include "scorep_definition_structs.h"
 #include "scorep_definitions.h"
 
-extern bool scorep_recording_enabled;
+#include "SCOREP_Metric_Management.h"
+
+extern bool                     scorep_recording_enabled;
+extern SCOREP_SamplingSetHandle scorep_current_sampling_set;
+extern uint8_t                  scorep_number_of_metrics;
+extern OTF2_TypeID*             scorep_current_metric_types;
 
 /**
  * Process a region enter event in the measurement system.
  */
-void
-SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
+static void
+scorep_enter_region( uint64_t            timestamp,
+                     SCOREP_RegionHandle regionHandle,
+                     uint64_t*           metricValues )
 {
-    uint64_t                    timestamp = SCOREP_GetClockTicks();
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -68,7 +74,20 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter_Enter( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+        OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+
+        if ( metricValues )
+        {
+            OTF2_EvtWriter_Metric( evt_writer,
+                                   NULL,
+                                   timestamp,
+                                   SCOREP_LOCAL_HANDLE_TO_ID( scorep_current_sampling_set, SamplingSet ),
+                                   scorep_number_of_metrics,
+                                   scorep_current_metric_types,
+                                   ( OTF2_MetricValue* )metricValues );
+        }
+
+        OTF2_EvtWriter_Enter( evt_writer,
                               NULL,
                               timestamp,
                               SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
@@ -78,19 +97,35 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
     {
         SCOREP_Profile_Enter( location, regionHandle,
                               SCOREP_Region_GetType( regionHandle ),
-                              timestamp, NULL );
+                              timestamp, metricValues );
     }
+}
+
+
+void
+SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
+{
+    uint64_t  timestamp     = SCOREP_GetClockTicks();
+    uint64_t* metric_values = NULL;
+    if ( scorep_number_of_metrics )
+    {
+        metric_values = SCOREP_Metric_read();
+    }
+
+    scorep_enter_region( timestamp, regionHandle, metric_values );
 }
 
 
 /**
  * Process a region exit event in the measurement system.
  */
-void
-SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
+static void
+scorep_exit_region( uint64_t            timestamp,
+                    SCOREP_RegionHandle regionHandle,
+                    uint64_t*           metricValues )
 {
-    uint64_t                    timestamp = SCOREP_GetClockTicks();
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -101,7 +136,20 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter_Leave( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+        OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+
+        if ( metricValues )
+        {
+            OTF2_EvtWriter_Metric( evt_writer,
+                                   NULL,
+                                   timestamp,
+                                   SCOREP_LOCAL_HANDLE_TO_ID( scorep_current_sampling_set, SamplingSet ),
+                                   scorep_number_of_metrics,
+                                   scorep_current_metric_types,
+                                   ( OTF2_MetricValue* )metricValues );
+        }
+
+        OTF2_EvtWriter_Leave( evt_writer,
                               NULL,
                               timestamp,
                               SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
@@ -112,8 +160,22 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
         SCOREP_Profile_Exit( location,
                              regionHandle,
                              timestamp,
-                             NULL );
+                             metricValues );
     }
+}
+
+
+void
+SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
+{
+    uint64_t  timestamp     = SCOREP_GetClockTicks();
+    uint64_t* metric_values = NULL;
+    if ( scorep_number_of_metrics )
+    {
+        metric_values = SCOREP_Metric_read();
+    }
+
+    scorep_exit_region( timestamp, regionHandle, metric_values );
 }
 
 
@@ -263,6 +325,11 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
         root_rank = ( uint32_t )rootRank;
     }
 
+    uint64_t* metric_values = NULL;
+    if ( scorep_number_of_metrics )
+    {
+        metric_values = SCOREP_Metric_read();
+    }
 
     SCOREP_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
                        )
@@ -280,15 +347,12 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
                                                   SCOREP_INVALID_ROOT_RANK ) );
 
 
+    scorep_enter_region( timestamp, regionHandle, metric_values );
+
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter* evt_writer
             = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
-
-        OTF2_EvtWriter_Enter( evt_writer,
-                              NULL,
-                              timestamp,
-                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
 
         OTF2_EvtWriter_MpiCollectiveBegin( evt_writer,
                                            NULL,
@@ -301,10 +365,6 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Enter( location,
-                              regionHandle,
-                              SCOREP_Region_GetType( regionHandle ),
-                              timestamp, NULL );
     }
 
     return timestamp;
@@ -323,6 +383,12 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
     uint64_t                    timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
 
+    uint64_t*                   metric_values = NULL;
+    if ( scorep_number_of_metrics )
+    {
+        metric_values = SCOREP_Metric_read();
+    }
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
@@ -337,20 +403,13 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
                                          matchingId,
                                          bytesSent,
                                          bytesReceived );
-
-        OTF2_EvtWriter_Leave( evt_writer,
-                              NULL,
-                              timestamp,
-                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Exit( location,
-                             regionHandle,
-                             timestamp,
-                             NULL );
     }
+
+    scorep_exit_region( timestamp, regionHandle, metric_values );
 }
 
 void
@@ -682,20 +741,40 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
  *
  */
 void
-SCOREP_TriggerCounterInt64( SCOREP_CounterHandle counterHandle,
-                            int64_t              value )
+SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
+                            int64_t                  value )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_SamplingSet_Definition* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
+                   "User sampling set with more than one metric" );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+        OTF2_TypeID      value_type = OTF2_INT64_T;
+        OTF2_MetricValue values;
+        values.signed_int = value;
+
+        OTF2_EvtWriter_Metric( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                               NULL,
+                               timestamp,
+                               SCOREP_LOCAL_HANDLE_TO_ID( counterHandle,
+                                                          SamplingSet ),
+                               1,
+                               &value_type,
+                               &values );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_TriggerInteger( location, counterHandle, value );
+        SCOREP_Profile_TriggerInteger( location,
+                                       sampling_set->metric_handles[ 0 ],
+                                       value );
     }
 }
 
@@ -704,20 +783,82 @@ SCOREP_TriggerCounterInt64( SCOREP_CounterHandle counterHandle,
  *
  */
 void
-SCOREP_TriggerCounterDouble( SCOREP_CounterHandle counterHandle,
-                             double               value )
+SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
+                             uint64_t                 value )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_SamplingSet_Definition* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
+                   "User sampling set with more than one metric" );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+        OTF2_TypeID      value_type = OTF2_UINT64_T;
+        OTF2_MetricValue values;
+        values.unsigned_int = value;
+
+        OTF2_EvtWriter_Metric( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                               NULL,
+                               timestamp,
+                               SCOREP_LOCAL_HANDLE_TO_ID( counterHandle,
+                                                          SamplingSet ),
+                               1,
+                               &value_type,
+                               &values );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_TriggerDouble( location, counterHandle, value );
+        SCOREP_Profile_TriggerInteger( location,
+                                       sampling_set->metric_handles[ 0 ],
+                                       value );
+    }
+}
+
+
+/**
+ *
+ */
+void
+SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
+                             double                   value )
+{
+    uint64_t                    timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_SamplingSet_Definition* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
+                   "User sampling set with more than one metric" );
+
+    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    {
+        OTF2_TypeID      value_type = OTF2_DOUBLE;
+        OTF2_MetricValue values;
+        values.floating_point = value;
+
+        OTF2_EvtWriter_Metric( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                               NULL,
+                               timestamp,
+                               SCOREP_LOCAL_HANDLE_TO_ID( counterHandle,
+                                                          SamplingSet ),
+                               1,
+                               &value_type,
+                               &values );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_TriggerDouble( location,
+                                      sampling_set->metric_handles[ 0 ],
+                                      value );
     }
 }
 

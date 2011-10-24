@@ -86,7 +86,7 @@ typedef struct
 
     /* Array containing the Metric defintion handle for the metrics in dense
        representation. All enter/exit events expect the metrics in this order. */
-    SCOREP_CounterHandle* dense_metrics;
+    SCOREP_MetricHandle* dense_metrics;
 } scorep_profile_definition;
 
 typedef struct

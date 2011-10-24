@@ -32,6 +32,14 @@
 #include "scorep_definition_macros.h"
 #include <SCOREP_Types.h>
 
+
+/* super object for all definitions */
+SCOREP_DEFINE_DEFINITION_TYPE( Any )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( Any );
+};
+
+
 SCOREP_DEFINE_DEFINITION_TYPE( String )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( String );
@@ -159,19 +167,53 @@ SCOREP_DEFINE_DEFINITION_TYPE( MPICartesianCoords )
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( CounterGroup )
+SCOREP_DEFINE_DEFINITION_TYPE( Metric )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( CounterGroup );
+    SCOREP_DEFINE_DEFINITION_HEADER( Metric );
 
-    // Add SCOREP_CounterGroup stuff from here on.
+    // Add SCOREP_Metric stuff from here on.
+    SCOREP_StringHandle        name_handle;
+    SCOREP_StringHandle        description_handle;
+    SCOREP_MetricSourceType    source_type;
+    SCOREP_MetricMode          mode;
+    SCOREP_MetricValueType     value_type;
+    SCOREP_MetricBase          base;
+    int64_t                    exponent;
+    SCOREP_StringHandle        unit_handle;
+    SCOREP_MetricProfilingType profiling_type;
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( Counter )
+SCOREP_DEFINE_DEFINITION_TYPE( SamplingSet )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( Counter );
+    SCOREP_DEFINE_DEFINITION_HEADER( SamplingSet );
 
-    // Add SCOREP_Counter stuff from here on.
+    // order is important
+    bool                    is_scoped;
+
+    SCOREP_MetricOccurrence occurrence;
+    uint8_t                 number_of_metrics;
+    SCOREP_MetricHandle     metric_handles[];
+};
+
+
+/*
+ * this is not a real definition
+ * but an overload of the SamplingSet definition
+ * because they share the same id namespace in OTF2
+ */
+SCOREP_DEFINE_DEFINITION_TYPE( ScopedSamplingSet )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( SamplingSet );
+
+    // order is important
+    bool                     is_scoped;
+
+    SCOREP_SamplingSetHandle sampling_set_handle;
+    SCOREP_LocationHandle    recorder_handle;
+    SCOREP_MetricScope       scope_type;
+    /* all types are handles */
+    SCOREP_AnyHandle         scope_handle;
 };
 
 

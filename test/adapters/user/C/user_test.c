@@ -27,7 +27,6 @@
 
 #include "user_test_baz.c.inc"
 
-SCOREP_USER_METRIC_GROUP_GLOBAL( globalGroup )
 SCOREP_USER_METRIC_GLOBAL( globalMetric )
 
 extern void
@@ -50,15 +49,12 @@ int
 main( int   argc,
       char* argv[] )
 {
-    SCOREP_USER_METRIC_GROUP_LOCAL( localGroup );
     SCOREP_USER_METRIC_LOCAL( localMetric );
     SCOREP_USER_FUNC_BEGIN;
-    SCOREP_USER_METRIC_GROUP_INIT( localGroup, "localGroup" );
-    SCOREP_USER_METRIC_GROUP_INIT( globalGroup, "globalGroup" );
     SCOREP_USER_METRIC_INIT( localMetric, "localMetric", "s", SCOREP_USER_METRIC_TYPE_DOUBLE,
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, SCOREP_USER_METRIC_GROUP_DEFAULT );
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL );
     SCOREP_USER_METRIC_INIT( globalMetric, "globalMetric", "s", SCOREP_USER_METRIC_TYPE_INT64,
-                             SCOREP_USER_METRIC_CONTEXT_CALLPATH, localGroup );
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
     foo();
     SCOREP_USER_METRIC_DOUBLE( localMetric, 3.0 );
     baz();

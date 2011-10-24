@@ -106,7 +106,6 @@
  *
  * @see SCOREP_DEFINE_DEFINITION_TYPE
  *
- * @note: This should be insync with the definition of @a scorep_any_definition
  * @note: No ';' after
  */
 #define SCOREP_DEFINE_DEFINITION_HEADER( Type ) \
@@ -347,7 +346,7 @@
  * @{
  *
  * Iterates over all definitions of definition type @a Type from the
- * definition mnager @a definition_manager.
+ * definition manager @a definition_manager.
  *
  * Example:
  * @code
@@ -494,7 +493,7 @@
 #define SCOREP_FREE_MAPPINGS_ARRAY( type, definition_manager ) \
     do \
     { \
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for %s", #type ); \
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Free mappings for %s", #type ); \
         free( ( definition_manager )->mappings->type ## _mappings ); \
         ( definition_manager )->mappings->type ## _mappings = NULL; \
     } \
@@ -541,24 +540,13 @@
              scorep_local_definition_manager.mappings->type ## _mappings && \
              scorep_local_definition_manager.type ## _definition_counter > 0 ) \
         { \
-            SCOREP_IdMap* map = SCOREP_IdMap_Create( \
-                SCOREP_ID_MAP_DENSE, \
-                scorep_local_definition_manager.type ## _definition_counter ); \
-            for ( uint32_t index = 0; \
-                  index < scorep_local_definition_manager.type ## _definition_counter; \
-                  ++index ) \
-            { \
-                SCOREP_IdMap_AddIdPair( \
-                    map, \
-                    index, \
-                    scorep_local_definition_manager.mappings->type ## _mappings[ index ] ); \
-            } \
             SCOREP_Error_Code status = OTF2_DefWriter_WriteMappingTable( \
                 definition_writer, \
-                map, \
+                SCOREP_IdMap_CreateDenseFromArray( \
+                    scorep_local_definition_manager.mappings->type ## _mappings, \
+                    scorep_local_definition_manager.type ## _definition_counter ), \
                 OTF2_MAPPING_ ## TYPE ); \
             assert( status == SCOREP_SUCCESS ); \
-            SCOREP_IdMap_Free( map ); \
         } \
     } \
     while ( 0 )

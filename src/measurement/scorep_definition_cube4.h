@@ -62,7 +62,9 @@ void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      ranks,
-                                   int*                          threads );
+                                   int*                          threads,
+                                   uint8_t                       num_metrics,
+                                   SCOREP_MetricHandle*          metric_handles );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
@@ -115,7 +117,7 @@ scorep_cube4_add_callpath_mapping( scorep_cube4_definitions_map* map,
 void
 scorep_cube4_add_metric_mapping( scorep_cube4_definitions_map* map,
                                  cube_metric*                  cube_handle,
-                                 SCOREP_CounterHandle          scorep_handle );
+                                 SCOREP_MetricHandle           scorep_handle );
 
 /**
    Returns the cube_region handle for a given scorep region handle.
@@ -139,7 +141,7 @@ scorep_get_cube4_region( scorep_cube4_definitions_map* map,
  */
 cube_metric*
 scorep_get_cube4_metric( scorep_cube4_definitions_map* map,
-                         SCOREP_CounterHandle          handle );
+                         SCOREP_MetricHandle           handle );
 
 /**
    Returns the cube_cnode handle for a given scorep callpath handle.
@@ -172,9 +174,9 @@ scorep_get_region_from_cube4( scorep_cube4_definitions_map* map,
    @param handle  The Cube metric handle for which the SCOREP handle is returned.
    @returns The SCOREP handle for the metric which is mapped to @a handle by the
             mapping. If @a handle was not found in the mapping,
-            SCOREP_INVALID_COUNTER is returned.
+            SCOREP_INVALID_METRIC is returned.
  */
-SCOREP_CounterHandle
+SCOREP_MetricHandle
 scorep_get_metric_from_cube4( scorep_cube4_definitions_map* map,
                               cube_metric*                  handle );
 
@@ -196,5 +198,17 @@ scorep_get_callpath_from_cube4( scorep_cube4_definitions_map* map,
  */
 uint64_t
 scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map );
+
+/**
+   Returns the handle used for metric 'inclusive time'.
+ */
+SCOREP_MetricHandle
+scorep_get_time_metric_handle();
+
+/**
+   Returns the handle used for the metric 'number of visits'.
+ */
+SCOREP_MetricHandle
+scorep_get_visits_metric_handle();
 
 #endif /* SCOREP_DEFINITION_CUBE4_H */

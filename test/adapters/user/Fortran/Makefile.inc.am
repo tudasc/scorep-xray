@@ -24,6 +24,10 @@ user_f_test_LDADD =                        \
     $(LIB_DIR_OTF2)libotf2.la              \
     $(LIB_DIR_UTIL)libscorep_utilities.la
 
+if HAVE_PAPI
+user_f_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
 TESTS_SERIAL += ./user_f_test
 
 EXTRA_DIST       += \

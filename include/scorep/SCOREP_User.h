@@ -771,219 +771,8 @@
 #endif // SCOREP_USER_ENABLE
 
 /* **************************************************************************************
- * Documentation for User Counter macros
+ * Documentation for User Metric macros
  * *************************************************************************************/
-
-/**
-    @name Macros for user metric instrumentation
-    @{
- */
-
-/**
-    @def  SCOREP_USER_METRIC_GROUP_LOCAL(groupHandle)
-    Declares a metric group.
-    It defines a variable which must be in scope at all places where
-    the metric group is used. If it is used in more than one place it need to be a global
-    definition. Its scope can never be beyond one source file. If a larger scope is
-    needed use SCOREP_USER_METRIC_GROUP_GLOBAL.
-    @param groupHandle The name of the variable which contains the groupHandle.
-
-    C/C++ example:
-    @code
-    SCOREP_USER_METRIC_GROUP_LOCAL( my_local_group )
-    SCOREP_USER_METRIC_LOCAL( my_local_metric )
-
-    int main()
-    {
-      SCOREP_USER_METRIC_GROUP_INIT( my_local_group )
-      SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
-                             SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
-      // do something
-    }
-
-    void foo()
-    {
-      uint64 my_int = get_some_int_value();
-      SCOREP_USER_METRIC_UINT64( my_local_metric, my_int )
-    }
-    @endcode
-
-    Fortran example:
-    @code
-    program myProg
-      SCOREP_USER_METRIC_GROUP_LOCAL( my_local_group )
-      SCOREP_USER_METRIC_LOCAL( my_local_metric )
-      integer (kind=selected_int_kind(8)):: my_int = 19
-    ! more declarations
-
-
-      SCOREP_USER_METRIC_GROUP_INIT( my_local_group )
-      SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
-                             SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
-
-    ! do something
-
-      SCOREP_USER_METRIC_INT64( my_local_metric, my_int )
-    end program myProg
-    @endcode
- */
-
-/**
-    @def SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle)
-    Declares a group handle for user metrics for usage in more than one file. Every global
-    group handle must only be declared in one file using SCOREP_USER_METRIC_GROUP_GLOBAL.
-    All other files in which the same group handle is  accessed, must declare the handle
-    using SCOREP_USER_METRIC_GROUP_EXTERNAL.
-
-    This macro is not available in Fortran.
-
-    @param groupHandle The variable name for the variable declared in this statement.
-                       If you are using a Fortran version which has a limited length of
-                       code lines, the length of the @a handle parameter must be at most
-                       4 characters, else the declaration line exceeds the allowed length.
-
-    C/C++ example:
-    @code
-    // In File 1
-    SCOREP_USER_METRIC_GROUP_GLOBAL( my_global_group )
-    SCOREP_USER_METRIC_GLOBAL( my_global_metric )
-
-    int main()
-    {
-      SCOREP_USER_METRIC_GROUP_INIT( my_global_group )
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
-                             SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-      // do something
-    }
-
-    void foo()
-    {
-      uint64 my_int = get_some_int_value();
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    }
-    @endcode
-    @code
-    // In File 2
-    SCOREP_USER_METRIC_GROUP_EXTERNAL( my_global_group )
-    SCOREP_USER_METRIC_EXTERNAL( my_global_metric )
-
-    void bar()
-    {
-      double my_double = get_some_double();
-      uint64 my_int = get_some_int();
-      SCOREP_USER_METRIC_LOCAL( my_local_metric )
-      SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "m", \
-                             SCOREP_USER_METRIC_TYPE_DOUBLE, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-      SCOREP_USER_METRIC_DOUBLE( my_local_metric, my_double )
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    }
-    @endcode
- */
-
-/**
-    @def SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle )
-    Declares an external group handle. Every global
-    group handle must only be declared in one file using SCOREP_USER_METRIC_GROUP_GLOBAL.
-    All other files in which the same group handle is  accessed, must declare the handle
-    using SCOREP_USER_METRIC_GROUP_EXTERNAL.
-
-    This macro is not available in Fortran
-
-    @param groupHandle The variable name for the variable declared in this statement.
-
-    C/C++ example:
-    @code
-    // In File 1
-    SCOREP_USER_METRIC_GROUP_GLOBAL( my_global_group )
-    SCOREP_USER_METRIC_GLOBAL( my_global_metric )
-
-    int main()
-    {
-      SCOREP_USER_METRIC_GROUP_INIT( my_global_group )
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
-                             SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-      // do something
-    }
-
-    void foo()
-    {
-      uint64 my_int = get_some_int_value();
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    }
-    @endcode
-    @code
-    // In File 2
-    SCOREP_USER_METRIC_GROUP_EXTERNAL( my_global_group )
-    SCOREP_USER_METRIC_EXTERNAL( my_global_metric )
-
-    void bar()
-    {
-      double my_double = get_some_double();
-      uint64 my_int = get_some_int();
-      SCOREP_USER_METRIC_LOCAL( my_local_metric )
-      SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "m", \
-                             SCOREP_USER_METRIC_TYPE_DOUBLE, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_global_group )
-      SCOREP_USER_METRIC_DOUBLE( my_local_metric, my_double )
-      SCOREP_USER_METRIC_UINT64( my_global_metric, my_int )
-    }
-    @endcode
- */
-
-/**
-    @def SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name )
-    Initializes a metric group. Each group need to be initialized before it is used for
-    the first time.
-    @param groupHandle The handle for the initilaized group. It must be declared using
-                       SCOREP_USER_METRIC_GROUP_DEF.
-    @param name        A string containing a unique name for that metric group.
-
-    C/C++ example:
-    @code
-    SCOREP_USER_METRIC_GROUP_LOCAL( my_local_group )
-    SCOREP_USER_METRIC_LOCAL( my_local_metric )
-
-    int main()
-    {
-      SCOREP_USER_METRIC_GROUP_INIT( my_local_group )
-      SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
-                             SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
-      // do something
-    }
-
-    void foo()
-    {
-      uint64 my_int = get_some_int_value();
-      SCOREP_USER_METRIC_UINT64( my_local_metric, my_int )
-    }
-    @endcode
-
-    Fortran example:
-    @code
-    program myProg
-      SCOREP_USER_METRIC_GROUP_LOCAL( my_local_group )
-      SCOREP_USER_METRIC_LOCAL( my_local_metric )
-      integer (kind=selected_int_kind(8)):: my_int = 19
-    ! more declarations
-
-
-      SCOREP_USER_METRIC_GROUP_INIT( my_local_group )
-      SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "s", &
-                             SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, my_local_group )
-
-    ! do something
-
-      SCOREP_USER_METRIC_INT64( my_local_metric, my_int )
-    end program myProg
-    @endcode
- */
 
 /**
     @def SCOREP_USER_METRIC_LOCAL(metricHandle)
@@ -1002,8 +791,7 @@
     {
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1024,8 +812,7 @@
 
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
                              SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, &
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
 
     ! do something
 
@@ -1060,8 +847,7 @@
     {
       SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1104,8 +890,7 @@
     {
       SCOREP_USER_METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1128,7 +913,7 @@
  */
 
 /**
-    @def SCOREP_USER_METRIC_INIT(metricHandle,name, unit, type, context,groupHandle)
+    @def SCOREP_USER_METRIC_INIT(metricHandle,name, unit, type, context)
     Initializes a new user counter. Each counter must be initialized before it is
     triggered the first time. The handle must be declared using SCOREP_USER_METRIC_LOCAL,
     SCOREP_USER_METRIC_GLOBAL, or SCOREP_USER_METRIC_EXTERNAL.
@@ -1143,9 +928,6 @@
     @param context Specifies the context for which the counter is measured. IT must be
                 one of the following: SCOREP_USER_METRIC_CONTEXT_GLOBAL, or
                 SCOREP_USER_METRIC_CONTEXT_CALLPATH.
-    @param groupHandle A handle of the group to which this counter belongs.
-                If this group does not exist, it will be created. If the default group
-                should be used, specify SCOREP_USER_METRIC_GROUP_DEFAULT as group handle.
 
     C/C++ example:
     @code
@@ -1155,8 +937,7 @@
     {
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1177,8 +958,7 @@
 
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
                              SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, &
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
 
     ! do something
 
@@ -1206,8 +986,7 @@
     {
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_INT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1228,8 +1007,7 @@
 
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
                              SCOREP_USER_METRIC_TYPE_INT64, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, &
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
 
     ! do something
 
@@ -1260,8 +1038,7 @@
     {
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1292,8 +1069,7 @@
     {
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", \
                              SCOREP_USER_METRIC_TYPE_DOUBLE, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, \
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 
@@ -1314,8 +1090,7 @@
 
       SCOREP_USER_METRIC_INIT( my_local_metric, "My Metric", "seconds", &
                              SCOREP_USER_METRIC_TYPE_DOUBLE, &
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL, &
-                             SCOREP_USER_METRIC_GROUP_DEFAULT )
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
 
     ! do something
 
@@ -1330,33 +1105,18 @@
  * *************************************************************************************/
 #ifdef SCOREP_USER_ENABLE
 
-#define SCOREP_USER_METRIC_GROUP_LOCAL( groupHandle ) static \
-    SCOREP_CounterGroupHandle groupHandle  \
-        = SCOREP_INVALID_COUNTER_GROUP;
-
-#define SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle )  SCOREP_CounterGroupHandle \
-    groupHandle = SCOREP_INVALID_COUNTER_GROUP;
-
-#define SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle ) \
-    extern SCOREP_CounterGroupHandle groupHandle;
-
-#define SCOREP_USER_METRIC_GROUP_INIT( groupHandle, \
-                                       name ) SCOREP_User_InitMetricGroup( \
-        &groupHandle, name );
-
-#define SCOREP_USER_METRIC_LOCAL( metricHandle ) static SCOREP_CounterHandle \
+#define SCOREP_USER_METRIC_LOCAL( metricHandle ) static SCOREP_SamplingSetHandle \
     metricHandle                                                                \
-        = SCOREP_INVALID_COUNTER;
+        = SCOREP_INVALID_SAMPLING_SET;
 
-#define SCOREP_USER_METRIC_GLOBAL( metricHandle ) SCOREP_CounterHandle metricHandle \
-        = SCOREP_INVALID_COUNTER;
+#define SCOREP_USER_METRIC_GLOBAL( metricHandle ) SCOREP_SamplingSetHandle metricHandle \
+        = SCOREP_INVALID_SAMPLING_SET;
 
 #define SCOREP_USER_METRIC_EXTERNAL( metricHandle ) \
-    extern SCOREP_CounterHandle metricHandle;
+    extern SCOREP_SamplingSetHandle metricHandle;
 
-#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
-                                 groupHandle ) \
-    SCOREP_User_InitMetric( &metricHandle, name, unit, type, context, groupHandle );
+#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context ) \
+    SCOREP_User_InitMetric( &metricHandle, name, unit, type, context );
 
 #define SCOREP_USER_METRIC_INT64( metricHandle, \
                                   value )  SCOREP_User_TriggerMetricInt64( \
@@ -1566,15 +1326,10 @@
 #define SCOREP_USER_PARAMETER_INT64( name, value )
 #define SCOREP_USER_PARAMETER_UINT64( name, value )
 #define SCOREP_USER_PARAMETER_STRING( name, value )
-#define SCOREP_USER_METRIC_GROUP_LOCAL( groupHandle )
-#define SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle )
-#define SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle )
-#define SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name )
 #define SCOREP_USER_METRIC_GLOBAL( metricHandle )
 #define SCOREP_USER_METRIC_EXTERNAL( metricHandle )
 #define SCOREP_USER_METRIC_LOCAL( metricHandle )
-#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context, \
-                                 groupHandle )
+#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context )
 #define SCOREP_USER_METRIC_INT64( metricHandle, value )
 #define SCOREP_USER_METRIC_UINT64( metricHandle, value )
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value )

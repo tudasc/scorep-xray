@@ -39,11 +39,9 @@ typedef struct SCOREP_DefinitionMappings SCOREP_DefinitionMappings;
 struct SCOREP_DefinitionMappings
 {
     uint32_t* string_mappings;
-    //uint32_t* location_mappings;
     uint32_t* region_mappings;
     uint32_t* group_mappings;
-    uint32_t* mpi_window_mappings;
-    //uint32_t* gats_group_mappings; /// @todo what definition type does this correspond to?
+    uint32_t* sampling_set_mappings;
     uint32_t* parameter_mappings;
     uint32_t* callpath_mappings;
     uint32_t* local_mpi_communicator_mappings;
@@ -72,8 +70,8 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPIWindow, mpi_window )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( CounterGroup, counter_group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Counter, counter )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Metric, metric )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SamplingSet, sampling_set )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( IOFileGroup, io_file_group )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( IOFile, io_file )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MarkerGroup, marker_group )
@@ -160,6 +158,16 @@ SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager );
 
 
+void
+SCOREP_CopyMetricDefinitionToUnified( SCOREP_Metric_Definition*     definition,
+                                      SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+void
+SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* definition,
+                                           SCOREP_Allocator_PageManager*  handlesPageManager );
+
+
 // for testing purposes only, use SCOREP_CopyRegionDefinitionToUnified() or
 // SCOREP_DefineRegion() instead.
 SCOREP_RegionHandle
@@ -240,9 +248,6 @@ SCOREP_GetNumberOfDefinitions();
 
 uint32_t
 SCOREP_GetNumberOfRegionDefinitions();
-
-uint32_t
-SCOREP_GetNumberOfCounterDefinitions();
 
 uint32_t
 SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle );

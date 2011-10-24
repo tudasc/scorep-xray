@@ -27,23 +27,25 @@
 
 #include <config.h>
 
-#include <scorep_adapter.h>
+#include <scorep_subsystem.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Pomp_Init.h>
 #include <SCOREP_Mpi_Init.h>
+#include <SCOREP_Metric.h>
 
 /**
  * List of adapters.
  */
-const SCOREP_Adapter* scorep_adapters[] = {
+const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Compiler_Adapter,
     &SCOREP_User_Adapter,
     &SCOREP_Pomp_Adapter,
-    &SCOREP_Mpi_Adapter
+    &SCOREP_Mpi_Adapter,
+    &SCOREP_Metric_Service
 };
 
 
-const size_t scorep_number_of_adapters = sizeof( scorep_adapters ) /
-                                         sizeof( scorep_adapters[ 0 ] );
+const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /
+                                           sizeof( scorep_subsystems[ 0 ] );

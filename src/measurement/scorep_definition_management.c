@@ -125,8 +125,8 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_window, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
-    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter_group, *definitionManager );
-    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( counter, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( metric, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( sampling_set, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( io_file_group, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( io_file, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( marker_group, *definitionManager );
@@ -143,8 +143,8 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_window, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_topology, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_coords, *definitionManager );
-        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( counter_group, *definitionManager );
-        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( counter, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( metric, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( sampling_set, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( io_file_group, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( io_file, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( marker_group, *definitionManager );
@@ -177,8 +177,8 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->mpi_window_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_topology_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_coords_definition_hash_table );
-        free( scorep_unified_definition_manager->counter_group_definition_hash_table );
-        free( scorep_unified_definition_manager->counter_definition_hash_table );
+        free( scorep_unified_definition_manager->metric_definition_hash_table );
+        free( scorep_unified_definition_manager->sampling_set_definition_hash_table );
         free( scorep_unified_definition_manager->io_file_group_definition_hash_table );
         free( scorep_unified_definition_manager->io_file_definition_hash_table );
         free( scorep_unified_definition_manager->marker_group_definition_hash_table );
@@ -237,8 +237,8 @@ SCOREP_GetNumberOfDefinitions()
     n_definitions += scorep_local_definition_manager.mpi_window_definition_counter;
     n_definitions += scorep_local_definition_manager.mpi_cartesian_topology_definition_counter;
     n_definitions += scorep_local_definition_manager.mpi_cartesian_coords_definition_counter;
-    n_definitions += scorep_local_definition_manager.counter_group_definition_counter;
-    n_definitions += scorep_local_definition_manager.counter_definition_counter;
+    n_definitions += scorep_local_definition_manager.metric_definition_counter;
+    n_definitions += scorep_local_definition_manager.sampling_set_definition_counter;
     n_definitions += scorep_local_definition_manager.io_file_group_definition_counter;
     n_definitions += scorep_local_definition_manager.io_file_definition_counter;
     n_definitions += scorep_local_definition_manager.marker_group_definition_counter;
@@ -254,13 +254,6 @@ SCOREP_GetNumberOfRegionDefinitions()
 {
     assert( !omp_in_parallel() );
     return scorep_local_definition_manager.region_definition_counter;
-}
-
-uint32_t
-SCOREP_GetNumberOfCounterDefinitions()
-{
-    assert( !omp_in_parallel() );
-    return scorep_local_definition_manager.counter_definition_counter;
 }
 
 uint32_t

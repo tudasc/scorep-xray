@@ -1,0 +1,95 @@
+# Metric test
+
+if MPI_SUPPORTED
+
+## MPI C
+
+check_PROGRAMS                   += jacobi_mpi_c_metric_test
+jacobi_mpi_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/jacobi.c  \
+								    $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/jacobi.h  \
+								    $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/main.c
+# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
+# printf statements, REMOVE this flag after this bug is fixed properly
+jacobi_mpi_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_mpi_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
+
+if HAVE_GETRUSAGE
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh.in
+jacobi_mpi_c_metric_test_CPPFLAGS += $(SCOREP_RUSAGE_CPPFLAGS)
+endif
+
+if HAVE_PAPI
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh.in
+jacobi_mpi_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
+endif
+
+# As long as there is no appropriate make target add binary to MPI test 
+# cases. No metrics will be recorded because corresponding environment
+# variables aren't set.
+TESTS_MPI += jacobi_mpi_c_metric_test
+##
+## Enable test scripts if appropriate make target will be available
+##
+##if HAVE_GETRUSAGE
+##TESTS_MPI += ./../test/services/metric/run_rusage_mpi_metric_test.sh
+##endif
+##if HAVE_PAPI
+##TESTS_MPI += ./../test/services/metric/run_papi_mpi_metric_test.sh
+##endif
+
+
+## MPI + OpenMP C
+
+if OPENMP_SUPPORTED
+noinst_LTLIBRARIES                          += libjacobi_mpi_pomp_c_metric_test.la
+libjacobi_mpi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
+libjacobi_mpi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS)
+
+check_PROGRAMS                       += jacobi_mpi_omp_c_metric_test
+jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.mod.c       \
+										$(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.c.opari.inc \
+										$(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.h           \
+										$(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.mod.c         \
+										$(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.c.opari.inc
+jacobi_mpi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
+# printf statements, REMOVE this flag after this bug is fixed properly
+jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@ -finstrument-functions-exclude-file-list=/usr/include
+jacobi_mpi_omp_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la
+
+# for some unknown reason we need an extra -I for the SUN compiler in
+# OpenMP and hybrid mode.
+if SCOREP_COMPILER_SUN
+jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/services/metric/data/jacobi/hybrid/C
+endif
+
+if HAVE_GETRUSAGE
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_hybrid_metric_test.sh.in
+jacobi_mpi_omp_c_metric_test_CPPFLAGS += $(SCOREP_RUSAGE_CPPFLAGS)
+endif
+
+if HAVE_PAPI
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh.in
+jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
+endif
+
+# As long as there is no appropriate make target add binary to MPI test 
+# cases. No metrics will be recorded because corresponding environment
+# variables aren't set.
+TESTS_MPI_OMP += jacobi_mpi_omp_c_metric_test
+##
+## Enable test scripts if appropriate make target will be available
+##
+##if HAVE_GETRUSAGE
+##TESTS_MPI_OMP += ./../test/services/metric/run_rusage_hybrid_metric_test.sh
+##endif
+##if HAVE_PAPI
+##TESTS_MPI_OMP += ./../test/services/metric/run_papi_hybrid_metric_test.sh
+##endif
+
+
+endif
+# !OPENMP_SUPPORTED
+
+endif
+# !MPI_SUPPORTED

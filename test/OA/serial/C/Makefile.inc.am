@@ -29,6 +29,10 @@ oa_c_test_LDADD =                        \
     $(LIB_DIR_OTF2)libotf2.la              \
     $(LIB_DIR_UTIL)libscorep_utilities.la
 
+if HAVE_PAPI
+oa_c_test_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/serial/C/run_oa_c_test.sh
 

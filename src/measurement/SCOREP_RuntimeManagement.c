@@ -20,7 +20,7 @@
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Declaration of event recording functions to be used by the
- *          adapter layer.
+ *          subsystem layer.
  *
  *
  */
@@ -41,7 +41,8 @@
 #include <scorep_utility/SCOREP_Error.h>
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Adapter.h>
+#include <SCOREP_Subsystem.h>
+#include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Omp.h>
@@ -53,7 +54,7 @@
 #include <SCOREP_OA_Init.h>
 
 #include "scorep_types.h"
-#include "scorep_adapter.h"
+#include "scorep_subsystem.h"
 #include "scorep_definitions.h"
 #include "scorep_environment.h"
 #include "scorep_status.h"
@@ -78,6 +79,9 @@ static int                 scorep_n_exit_callbacks = 0;
 
 bool                       scorep_recording_enabled = true;
 
+SCOREP_SamplingSetHandle   scorep_current_sampling_set = SCOREP_INVALID_SAMPLING_SET;
+uint8_t                    scorep_number_of_metrics    = 0;
+OTF2_TypeID*               scorep_current_metric_types = NULL;
 
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
@@ -85,17 +89,18 @@ static void scorep_finalize( void );
 static void scorep_otf2_initialize();
 static void scorep_otf2_finalize();
 static void scorep_set_otf2_archive_master_slave();
-static void scorep_adapters_register();
-static void scorep_adapters_deregister();
-static void scorep_adapters_initialize();
-static void scorep_adapters_finalize();
-static void scorep_adapters_initialize_location(); // needed?
-static void scorep_adapters_finalize_location(); // needed?
+static void scorep_subsystems_register();
+static void scorep_subsystems_deregister();
+static void scorep_subsystems_initialize();
+static void scorep_subsystems_finalize();
+static void scorep_subsystems_initialize_location(); // needed?
+static void scorep_subsystems_finalize_location(); // needed?
 static void scorep_initialization_sanity_checks();
 static void scorep_profile_initialize();
 static void scorep_profile_finalize();
 static void scorep_trigger_exit_callbacks();
 static void scorep_dump_config( void );
+static void scorep_setup_metrics( void );
 //static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
@@ -112,7 +117,7 @@ SCOREP_IsInitialized()
 
 
 /**
- * Initialize the measurement system from the adapter layer.
+ * Initialize the measurement system from the subsystem layer.
  */
 void
 SCOREP_InitMeasurement()
@@ -125,7 +130,7 @@ SCOREP_InitMeasurement()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
     // even if we are not ready with the initialization we must prevent recursive
-    // calls e.g. during the adapter initialization.
+    // calls e.g. during the subsystem initialization.
     scorep_initialized = true;
     scorep_initialization_sanity_checks();
 
@@ -135,7 +140,7 @@ SCOREP_InitMeasurement()
     /* Register all config variables */
     SCOREP_Env_RegisterCoreEnvironmentVariables();
     SCOREP_Filter_Register();
-    scorep_adapters_register();
+    scorep_subsystems_register();
     SCOREP_Profile_Register();
     SCOREP_OA_Register();
 
@@ -174,8 +179,10 @@ SCOREP_InitMeasurement()
 
     SCOREP_Filter_Initialize();
 
-    scorep_adapters_initialize();
-    scorep_adapters_initialize_location(); // not sure if this should be triggered by thread management
+    scorep_subsystems_initialize();
+    scorep_subsystems_initialize_location(); // not sure if this should be triggered by thread management
+
+    scorep_setup_metrics();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurementMPI() and
      * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
@@ -235,7 +242,20 @@ scorep_profile_initialize()
         return;
     }
 
-    SCOREP_Profile_Initialize( 0, NULL );
+    if ( scorep_current_sampling_set == SCOREP_INVALID_SAMPLING_SET )
+    {
+        SCOREP_Profile_Initialize( 0,
+                                   NULL );
+    }
+    else
+    {
+        SCOREP_SamplingSet_Definition* sampling_set_definition
+            = SCOREP_LOCAL_HANDLE_DEREF( scorep_current_sampling_set, SamplingSet );
+
+        SCOREP_Profile_Initialize( sampling_set_definition->number_of_metrics,
+                                   sampling_set_definition->metric_handles );
+    }
+
     SCOREP_Profile_OnLocationCreation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_new_location
     SCOREP_Profile_OnThreadActivation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_thread_activation
 }
@@ -271,21 +291,21 @@ scorep_set_otf2_archive_master_slave()
 
 
 void
-scorep_adapters_register()
+scorep_subsystems_register()
 {
     SCOREP_Error_Code error;
-    /* call register functions for all adapters */
-    for ( size_t i = 0; i < scorep_number_of_adapters; i++ )
+    /* call register functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
-        if ( scorep_adapters[ i ]->adapter_register )
+        if ( scorep_subsystems[ i ]->subsystem_register )
         {
-            error = scorep_adapters[ i ]->adapter_register();
+            error = scorep_subsystems[ i ]->subsystem_register();
         }
 
         if ( SCOREP_SUCCESS != error )
         {
-            SCOREP_ERROR( error, "Can't register %s adapter",
-                          scorep_adapters[ i ]->adapter_name );
+            SCOREP_ERROR( error, "Can't register %s subsystem",
+                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
     }
@@ -293,56 +313,59 @@ scorep_adapters_register()
 
 
 void
-scorep_adapters_initialize()
+scorep_subsystems_initialize()
 {
     SCOREP_Error_Code error;
-    /* call initialization functions for all adapters */
-    for ( size_t i = 0; i < scorep_number_of_adapters; i++ )
+    /* call initialization functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
-        if ( scorep_adapters[ i ]->adapter_init )
+        if ( scorep_subsystems[ i ]->subsystem_init )
         {
-            error = scorep_adapters[ i ]->adapter_init();
+            error = scorep_subsystems[ i ]->subsystem_init();
         }
 
         if ( SCOREP_SUCCESS != error )
         {
-            SCOREP_ERROR( error, "Can't initialize %s adapter",
-                          scorep_adapters[ i ]->adapter_name );
+            SCOREP_ERROR( error, "Can't initialize %s subsystem",
+                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
         else if ( SCOREP_Env_RunVerbose() )
         {
-            fprintf( stderr, "SCOREP successfully initialized %s adapter\n",
-                     scorep_adapters[ i ]->adapter_name );
+            fprintf( stderr, "SCOREP successfully initialized %s subsystem\n",
+                     scorep_subsystems[ i ]->subsystem_name );
         }
     }
 }
 
 
+/**
+ * Initialize subsystems for existing locations.
+ */
 static void
-scorep_adapters_initialize_location()
+scorep_subsystems_initialize_location()
 {
     SCOREP_Error_Code error;
     /* create location */
 
-    /* call initialization functions for all adapters */
-    for ( size_t i = 0; i < scorep_number_of_adapters; i++ )
+    /* call initialization functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
-        if ( scorep_adapters[ i ]->adapter_init_location )
+        if ( scorep_subsystems[ i ]->subsystem_init_location )
         {
-            error = scorep_adapters[ i ]->adapter_init_location();
+            error = scorep_subsystems[ i ]->subsystem_init_location();
         }
 
         if ( SCOREP_SUCCESS != error )
         {
-            SCOREP_ERROR( error, "Can't initialize location for %s adapter",
-                          scorep_adapters[ i ]->adapter_name );
+            SCOREP_ERROR( error, "Can't initialize location for %s subsystem",
+                          scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
         else if ( SCOREP_Env_RunVerbose() )
         {
-            fprintf( stderr, "SCOREP successfully initialized location for %s adapter\n",
-                     scorep_adapters[ i ]->adapter_name );
+            fprintf( stderr, "SCOREP successfully initialized location for %s subsystem\n",
+                     scorep_subsystems[ i ]->subsystem_name );
         }
     }
 }
@@ -543,9 +566,9 @@ scorep_finalize( void )
 
     SCOREP_TIME( SCOREP_RenameExperimentDir );  // needs MPI
 
-    SCOREP_TIME( scorep_adapters_finalize_location );
-    SCOREP_TIME( scorep_adapters_finalize ); // here PMPI_Finalize is called
-    SCOREP_TIME( scorep_adapters_deregister );
+    SCOREP_TIME( scorep_subsystems_finalize_location );
+    SCOREP_TIME( scorep_subsystems_finalize ); // here PMPI_Finalize is called
+    SCOREP_TIME( scorep_subsystems_deregister );
 
     SCOREP_TIME( SCOREP_Thread_Finalize );
     SCOREP_TIME( SCOREP_Memory_Finalize );
@@ -563,59 +586,59 @@ scorep_profile_finalize()
 }
 
 static void
-scorep_adapters_finalize_location()
+scorep_subsystems_finalize_location()
 {
-    for ( size_t i = scorep_number_of_adapters; i-- > 0; )
+    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
-        if ( scorep_adapters[ i ]->adapter_finalize_location )
+        if ( scorep_subsystems[ i ]->subsystem_finalize_location )
         {
-            //scorep_adapters[ i ]->adapter_finalize_location(location_ptr???);
+            //scorep_subsystems[ i ]->subsystem_finalize_location(location_ptr???);
         }
 
         if ( SCOREP_Env_RunVerbose() )
         {
-            fprintf( stderr, "SCOREP finalized %s adapter location\n",
-                     scorep_adapters[ i ]->adapter_name );
+            fprintf( stderr, "SCOREP finalized %s subsystem location\n",
+                     scorep_subsystems[ i ]->subsystem_name );
         }
     }
 }
 
 
 static void
-scorep_adapters_finalize()
+scorep_subsystems_finalize()
 {
-    /* call finalization functions for all adapters */
-    for ( size_t i = scorep_number_of_adapters; i-- > 0; )
+    /* call finalization functions for all subsystems */
+    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
-        if ( scorep_adapters[ i ]->adapter_finalize )
+        if ( scorep_subsystems[ i ]->subsystem_finalize )
         {
-            scorep_adapters[ i ]->adapter_finalize();
+            scorep_subsystems[ i ]->subsystem_finalize();
         }
 
         if ( SCOREP_Env_RunVerbose() )
         {
-            fprintf( stderr, "SCOREP finalized %s adapter\n",
-                     scorep_adapters[ i ]->adapter_name );
+            fprintf( stderr, "SCOREP finalized %s subsystem\n",
+                     scorep_subsystems[ i ]->subsystem_name );
         }
     }
 }
 
 
 static void
-scorep_adapters_deregister()
+scorep_subsystems_deregister()
 {
-    /* call de-register functions for all adapters */
-    for ( size_t i = scorep_number_of_adapters; i-- > 0; )
+    /* call de-register functions for all subsystems */
+    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
-        if ( scorep_adapters[ i ]->adapter_deregister )
+        if ( scorep_subsystems[ i ]->subsystem_deregister )
         {
-            scorep_adapters[ i ]->adapter_deregister();
+            scorep_subsystems[ i ]->subsystem_deregister();
         }
 
         if ( SCOREP_Env_RunVerbose() )
         {
-            fprintf( stderr, "SCOREP de-registered %s adapter\n",
-                     scorep_adapters[ i ]->adapter_name );
+            fprintf( stderr, "SCOREP de-registered %s subsystem\n",
+                     scorep_subsystems[ i ]->subsystem_name );
         }
     }
 }
@@ -680,4 +703,58 @@ scorep_dump_config( void )
 
     SCOREP_ConfigDump( dump_file );
     fclose( dump_file );
+}
+
+
+static void
+scorep_setup_metrics( void )
+{
+    SCOREP_Error_Code error;
+
+    /* initialize metric management */
+    error = SCOREP_Metric_Service.subsystem_init();
+    if ( SCOREP_SUCCESS != error )
+    {
+        SCOREP_ERROR( error, "Can't initialize %s subsystem",
+                      SCOREP_Metric_Service.subsystem_name );
+        _Exit( EXIT_FAILURE );
+    }
+    else if ( SCOREP_Env_RunVerbose() )
+    {
+        fprintf( stderr, "SCOREP successfully initialized %s subsystem\n",
+                 SCOREP_Metric_Service.subsystem_name );
+    }
+
+    /* get sampling set of metric management instance */
+    scorep_current_sampling_set = SCOREP_Metric_GetSamplingSet();
+    if ( scorep_current_sampling_set == SCOREP_INVALID_SAMPLING_SET )
+    {
+        return;
+    }
+    SCOREP_SamplingSet_Definition* sampling_set_definition
+                             = SCOREP_LOCAL_HANDLE_DEREF( scorep_current_sampling_set, SamplingSet );
+    scorep_number_of_metrics = sampling_set_definition->number_of_metrics;
+
+    /* still in the intialization, can use calloc() here */
+    scorep_current_metric_types = calloc( scorep_number_of_metrics, sizeof( OTF2_TypeID ) );
+    assert( scorep_current_metric_types );
+    for ( uint8_t i = 0; i < scorep_number_of_metrics; i++ )
+    {
+        SCOREP_Metric_Definition* metric = SCOREP_LOCAL_HANDLE_DEREF(
+            sampling_set_definition->metric_handles[ i ],
+            Metric );
+        /* same as scorep_metric_value_type_to_otf_metric_value_type */
+        switch ( metric->value_type )
+        {
+            case SCOREP_METRIC_VALUE_INT64:
+                scorep_current_metric_types[ i ] = OTF2_INT64_T;
+                break;
+            case SCOREP_METRIC_VALUE_UINT64:
+                scorep_current_metric_types[ i ] = OTF2_UINT64_T;
+                break;
+            case SCOREP_METRIC_VALUE_DOUBLE:
+                scorep_current_metric_types[ i ] = OTF2_DOUBLE;
+                break;
+        }
+    }
 }

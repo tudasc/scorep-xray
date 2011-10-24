@@ -1,0 +1,80 @@
+#!/bin/bash
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       run_papi_mpi_metric_test.sh
+## maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
+
+## At the moment there is no appropriate make target that allows executing
+## shell scripts in MPI tests. Therefore run this script manually from
+## inside your build-mpi directory. Furthermore some helpful make targets
+## are not available in MPI build mode. As a work-around we define needed
+## variables manually.
+# Get SRC_ROOT and OTF2_PRINT
+OTF2_PRINT=../vendor/otf2/build-backend/otf2_print
+SRC_ROOT=../..
+## The correct way to access these variables would be:
+##make clean-local-scorep-config-tool
+##make scorep-config-tool-local
+##. ./scorep_config.dat
+
+MPIRUN=mpiexec
+
+TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
+
+# Remember current content of directory to figure out the result dir
+ls > start_ls.log
+
+# Run test
+SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_PAPI_SEP=, SCOREP_METRIC_PAPI=PAPI_TOT_INS $MPIRUN -np 4 ./jacobi_mpi_c_metric_test
+if [ $? -ne 0 ]; then
+    rm -rf scorep-measurement-tmp
+    exit 1
+fi
+
+# Figure out the result dir
+ls > end_ls.log
+RESULT_DIR=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
+rm end_ls.log start_ls.log
+if [ "x$RESULT_DIR" = "x" ]; then
+    echo "Can not identify output directory. Skip evaluation of metric test"
+    exit 1
+fi
+echo "Output of metric test can be found in $PWD/$RESULT_DIR"
+
+# Check metric definitions
+$OTF2_PRINT -G $RESULT_DIR/traces.otf2 | grep METRIC > trace.txt
+if diff $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt > /dev/null
+  then
+    true
+  else
+    echo "-------- ERROR: in metric definition output --------"
+    diff $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt
+    rm trace.txt
+    exit 1
+fi
+
+# Check metric events
+$OTF2_PRINT $RESULT_DIR/traces.otf2 | grep METRIC > trace.txt
+if [ x`grep -c METRIC trace.txt` = x`grep -c METRIC $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_events.out` ]; then
+    rm trace.txt
+    exit 0
+  else
+    echo "-------- ERROR: in metric event output --------"
+    diff $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_events.out trace.txt
+    rm trace.txt
+    exit 1
+fi

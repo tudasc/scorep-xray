@@ -18,7 +18,6 @@
 
 #include <scorep/SCOREP_User.h>
 
-SCOREP_USER_METRIC_GROUP_EXTERNAL( globalGroup )
 SCOREP_USER_METRIC_EXTERNAL( globalMetric )
 
 void

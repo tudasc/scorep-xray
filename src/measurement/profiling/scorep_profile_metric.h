@@ -57,7 +57,7 @@ typedef struct
  */
 typedef struct scorep_profile_sparse_metric_int_struct
 {
-    SCOREP_CounterHandle                            metric;
+    SCOREP_MetricHandle                             metric;
     uint64_t                                        count;
     uint64_t                                        sum;
     uint64_t                                        min;
@@ -73,7 +73,7 @@ typedef struct scorep_profile_sparse_metric_int_struct
  */
 typedef struct scorep_profile_sparse_metric_double_struct
 {
-    SCOREP_CounterHandle                               metric;
+    SCOREP_MetricHandle                                metric;
     uint64_t                                           count;
     double                                             sum;
     double                                             min;
@@ -142,8 +142,8 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
  */
 scorep_profile_sparse_metric_int*
 scorep_profile_create_sparse_int(
-    SCOREP_CounterHandle metric,
-    uint64_t             value );
+    SCOREP_MetricHandle metric,
+    uint64_t            value );
 
 /**
  * Copy constructor for sparse metric for integer values. It allocates memory for a new
@@ -189,8 +189,8 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
  */
 scorep_profile_sparse_metric_double*
 scorep_profile_create_sparse_double(
-    SCOREP_CounterHandle metric,
-    double               value );
+    SCOREP_MetricHandle metric,
+    double              value );
 
 /**
  * Copy constructor for sparse metric for double values. It allocates memory for a new

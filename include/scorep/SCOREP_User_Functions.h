@@ -217,19 +217,6 @@ SCOREP_User_ParameterString
  * *************************************************************************************/
 
 /**
-    Initilizes a user metric group. Every group must be initialized before it is used
-    for the first time.
-    @param groupHandle A variable where the handle for the new group i stored. It must
-                       be declared with SCOREP_USER_METRIC_GROUP_DEF.
- */
-void
-SCOREP_User_InitMetricGroup
-(
-    SCOREP_CounterGroupHandle* groupHandle,
-    const char*                name
-);
-
-/**
     Initializes a user metric. Every user metric must be registered before it is used
     the first time.
     @param metricHandle A handle which identify the user metric.
@@ -243,31 +230,41 @@ SCOREP_User_InitMetricGroup
                        for each callpath. For global context enter
                        SCOREP_USER_METRIC_CONTEXT_GLOBAL, else for measuring
                        per callpath enter SCOREP_USER_METRIC_CONTEXT_CALLPATH.
-    @param group       The name of the user couter group to which this metric belongs.
-                       If the group does not exist already, it will be created.
  */
 void
 SCOREP_User_InitMetric
 (
-    SCOREP_CounterHandle*           metricHandle,
-    const char*                     name,
-    const char*                     unit,
-    const SCOREP_User_MetricType    metricType,
-    const int8_t                    context,
-    const SCOREP_CounterGroupHandle group
+    SCOREP_SamplingSetHandle*    metricHandle,
+    const char*                  name,
+    const char*                  unit,
+    const SCOREP_User_MetricType metricType,
+    const int8_t                 context
 );
 
 /**
-    Triggers an user metric of type integer. Every user metric must be registered
-    and initialized before it is used for the first time.
+    Triggers an user metric of type signed integer. Every user metric must be
+    registered and initialized before it is used for the first time.
     @param metricHandle A handle which identify the user metric.
     @param value        The value for the metric.
  */
 void
 SCOREP_User_TriggerMetricInt64
 (
-    SCOREP_CounterHandle metricHandle,
-    int64_t              value
+    SCOREP_SamplingSetHandle metricHandle,
+    int64_t                  value
+);
+
+/**
+    Triggers an user metric of type unsigned integer. Every user metric must be
+    registered and initialized before it is used for the first time.
+    @param metricHandle A handle which identify the user metric.
+    @param value        The value for the metric.
+ */
+void
+SCOREP_User_TriggerMetricUint64
+(
+    SCOREP_SamplingSetHandle metricHandle,
+    uint64_t                 value
 );
 
 /**
@@ -279,15 +276,9 @@ SCOREP_User_TriggerMetricInt64
 void
 SCOREP_User_TriggerMetricDouble
 (
-    SCOREP_CounterHandle metricHandle,
-    double               value
+    SCOREP_SamplingSetHandle metricHandle,
+    double                   value
 );
-
-/**
-    Declaration of the variable for storing the default metric group handle.
- */
-extern SCOREP_CounterGroupHandle SCOREP_User_DefaultMetricGroup;
-
 
 /* *************************************************************************************
 * Control functions

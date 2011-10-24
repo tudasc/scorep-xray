@@ -313,7 +313,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
 };
 
 /**
-   Implementation of the adapter_register function of the @ref SCOREP_Adapter struct
+   Implementation of the adapter_register function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
 SCOREP_Error_Code
@@ -325,7 +325,7 @@ scorep_mpi_register()
 }
 
 /**
-   Implementation of the adapter_init function of the @ref SCOREP_Adapter struct
+   Implementation of the subsystem_init function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
 SCOREP_Error_Code
@@ -358,7 +358,7 @@ scorep_mpi_init_adapter()
 }
 
 /**
-   Implementation of the adapter_init_location function of the @ref SCOREP_Adapter struct
+   Implementation of the subsystem_init_location function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
 SCOREP_Error_Code
@@ -370,7 +370,7 @@ scorep_mpi_init_location()
 }
 
 /**
-   Implementation of the adapter_finalize_location function of the @ref SCOREP_Adapter
+   Implementation of the adapter_finalize_location function of the @ref SCOREP_Subsystem
    struct for the initialization process of the MPI adapter.
  */
 void
@@ -381,7 +381,7 @@ scorep_mpi_final_location( void* location )
 }
 
 /**
-   Implementation of the adapter_finalize function of the @ref SCOREP_Adapter struct
+   Implementation of the adapter_finalize function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
 void
@@ -420,7 +420,7 @@ scorep_mpi_finalize()
 }
 
 /**
-   Implementation of the adapter_deregister function of the @ref SCOREP_Adapter struct
+   Implementation of the adapter_deregister function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
 void
@@ -431,9 +431,8 @@ scorep_mpi_deregister()
 }
 
 /* The initialization struct for the MPI adapter */
-const SCOREP_Adapter SCOREP_Mpi_Adapter =
+const SCOREP_Subsystem SCOREP_Mpi_Adapter =
 {
-    SCOREP_ADAPTER_MPI,
     "MPI",
     &scorep_mpi_register,
     &scorep_mpi_init_adapter,

@@ -94,7 +94,7 @@ scorep_compiler_register()
 SCOREP_Error_Code
 scorep_compiler_init_location()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter init loacation!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -105,7 +105,7 @@ scorep_compiler_init_location()
 void
 scorep_compiler_final_location( void* location )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter final loacation!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter final location!" );
 }
 
 /**
@@ -120,9 +120,8 @@ scorep_compiler_deregister()
 
 
 /* Implementation of the compiler adapter initialization/finalization struct */
-const SCOREP_Adapter SCOREP_Compiler_Adapter =
+const SCOREP_Subsystem SCOREP_Compiler_Adapter =
 {
-    SCOREP_ADAPTER_COMPILER,
     "COMPILER",
     &scorep_compiler_register,
     &scorep_compiler_init_adapter,

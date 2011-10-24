@@ -42,6 +42,10 @@ selective_test_LDADD =                      \
     $(LIB_DIR_OTF2)libotf2.la               \
     $(LIB_DIR_UTIL)libscorep_utilities.la
 
+if HAVE_PAPI
+selective_test_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/selective.cfg \
     $(SRC_ROOT)test/adapters/user/C/run_selective_test.sh

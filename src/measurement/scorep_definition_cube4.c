@@ -41,6 +41,10 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
  * Internal system tree representation
  *****************************************************************************/
 
+/** Handles of both default metrics (number of visits and time) */
+SCOREP_MetricHandle time_metric_handle   = SCOREP_INVALID_METRIC;
+SCOREP_MetricHandle visits_metric_handle = SCOREP_INVALID_METRIC;
+
 /**
    Node type defintion for temporary internal system tree structure cor Cube defintion
    writing. It is needed to map Score-P and Cube system tree definitions.
@@ -148,7 +152,7 @@ scorep_cube_get_node(  cube_t* my_cube,
    Defines a macro for the initialization of the mapping tables for one type
    of handles. This macro is used in scorep_cube4_create_definitions_map.
    @param Type      The definitions type with first letter capitalized. Values
-                    be 'Region', 'Counter', 'Callpath'.
+                    be 'Region', 'Metric', 'Callpath'.
    @param type      The definition type in small letters. Values can be
                     'region', 'metric', 'callpath'.
    @param tablesize Defines the number of slots for the mapping table.
@@ -216,7 +220,7 @@ scorep_cube4_create_definitions_map()
     SCOREP_CUBE4_INIT_MAP( Region, region, 128 )
 
     /* Initialize metric table */
-    SCOREP_CUBE4_INIT_MAP( Counter, metric, 8 )
+    SCOREP_CUBE4_INIT_MAP( Metric, metric, 8 )
 
     /* Initialize callpath table */
     SCOREP_CUBE4_INIT_MAP( Callpath, callpath, 256 )
@@ -318,10 +322,10 @@ scorep_cube4_add_callpath_mapping( scorep_cube4_definitions_map* map,
 void
 scorep_cube4_add_metric_mapping( scorep_cube4_definitions_map* map,
                                  cube_metric*                  cube_handle,
-                                 SCOREP_CounterHandle          scorep_handle )
+                                 SCOREP_MetricHandle           scorep_handle )
 {
     /* Create copy of the SCOREP region handle on the heap */
-    SCOREP_CounterHandle* scorep_copy = malloc( sizeof( SCOREP_CounterHandle ) );
+    SCOREP_MetricHandle* scorep_copy = malloc( sizeof( SCOREP_MetricHandle ) );
     *scorep_copy = scorep_handle;
 
     /* Store handle in hashtable */
@@ -367,13 +371,13 @@ scorep_get_ ## type ## _from_cube4 (scorep_cube4_definitions_map* map,        \
 }
 /* *INDENT-ON* */
 
-SCOREP_GET_CUBE_MAPPING( cube_metric, metric, Counter )
+SCOREP_GET_CUBE_MAPPING( cube_metric, metric, Metric )
 
 SCOREP_GET_CUBE_MAPPING( cube_region, region, Region )
 
 SCOREP_GET_CUBE_MAPPING( cube_cnode, callpath, Callpath )
 
-SCOREP_GET_SCOREP_MAPPING( cube_metric, metric, Counter, COUNTER )
+SCOREP_GET_SCOREP_MAPPING( cube_metric, metric, Metric, METRIC )
 
 SCOREP_GET_SCOREP_MAPPING( cube_region, region, Region, REGION )
 
@@ -393,29 +397,99 @@ scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map )
    Writes metric definitions to Cube. The new Cube definitions are added to the
    mapping table @a map.
    @param my_cube Pointer to Cube instance.
-   @param manager Pointer to Score-P definition manager with unified defintions.
+   @param manager Pointer to Score-P definition manager with unified definitions.
    @param map     Pointer to mapping instance to map Score-P und Cube defintions.
  */
 static void
 scorep_write_counter_definitions_to_cube4( cube_t*                       my_cube,
                                            SCOREP_DefinitionManager*     manager,
-                                           scorep_cube4_definitions_map* map )
+                                           scorep_cube4_definitions_map* map,
+                                           uint8_t                       num_metrics,
+                                           SCOREP_MetricHandle*          metric_handles )
 {
-    /** TODO: Write real counter definitions */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_DEFINITIONS,
-                         "Counter definitions writing not yet implemented." );
     cube_metric* metric;
 
-    /* Write fake defintions for count and implicit time */
-    metric = cube_def_met( my_cube, "Time", "time", "FLOAT", "sec", "",
-                           "@mirror@patterns-2.1.html#execution",
-                           "Total CPU allocation time", NULL, CUBE_METRIC_INCLUSIVE );
-    scorep_cube4_add_metric_mapping( map, metric, ( SCOREP_CounterHandle )1 );
+    /* Add default profiling metrics for number of visits and implicit time */
+    time_metric_handle = ( SCOREP_MetricHandle )SCOREP_Memory_AllocForDefinitions( 8 );
+    metric             = cube_def_met( my_cube, "Time", "time", "FLOAT", "sec", "",
+                                       "@mirror@patterns-2.1.html#execution",
+                                       "Total CPU allocation time", NULL, CUBE_METRIC_INCLUSIVE );
+    scorep_cube4_add_metric_mapping( map, metric, time_metric_handle );
 
-    metric = cube_def_met( my_cube, "Visits", "visits", "INTEGER", "occ", "",
-                           "http://www.cs.utk.edu/usr.html",
-                           "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
-    scorep_cube4_add_metric_mapping( map, metric, ( SCOREP_CounterHandle )2 );
+    visits_metric_handle = ( SCOREP_MetricHandle )SCOREP_Memory_AllocForDefinitions( 8 );
+    metric               = cube_def_met( my_cube, "Visits", "visits", "INTEGER", "occ", "",
+                                         "http://www.cs.utk.edu/usr.html",
+                                         "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
+    scorep_cube4_add_metric_mapping( map, metric, visits_metric_handle );
+
+    SCOREP_Metric_Definition* metric_definition;
+    char*                     metric_name;
+    char*                     metric_unit;
+    char*                     metric_description;
+    enum CubeMetricType       cube_metric_type;
+
+    for ( uint8_t i = 0; i < num_metrics; i++ )
+    {
+        metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric_handles[ i ], Metric );
+
+        /* Collect necessary data */
+        metric_name = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->name_handle,
+                                                   String )->string_data;
+        metric_unit = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->unit_handle,
+                                                   String )->string_data;
+        metric_description = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->description_handle,
+                                                          String )->string_data;
+
+        switch ( metric_definition->profiling_type )
+        {
+            case SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE:
+                cube_metric_type = CUBE_METRIC_EXCLUSIVE;
+                break;
+            case SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE:
+                cube_metric_type = CUBE_METRIC_INCLUSIVE;
+                break;
+            case SCOREP_METRIC_PROFILING_TYPE_SIMPLE:
+                cube_metric_type = CUBE_METRIC_SIMPLE;
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                              "Metric '%s' has unknown profiling type.",
+                              metric_name );
+                continue;
+        }
+
+        switch ( metric_definition->value_type )
+        {
+            case SCOREP_METRIC_VALUE_INT64:
+            case SCOREP_METRIC_VALUE_UINT64:
+                metric = cube_def_met( my_cube, metric_name, metric_name, "INTEGER", metric_unit, "",
+                                       "", metric_description, NULL, cube_metric_type );
+                break;
+            case SCOREP_METRIC_VALUE_DOUBLE:
+                metric = cube_def_met( my_cube, metric_name, metric_name, "FLOAT", metric_unit, "",
+                                       "", metric_description, NULL, cube_metric_type );
+                break;
+            default:
+                SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                              "Metric '%s' has unknown value type.",
+                              metric_name );
+                continue;
+        }
+
+        scorep_cube4_add_metric_mapping( map, metric, metric_handles[ i ] );
+    }
+}
+
+SCOREP_MetricHandle
+scorep_get_time_metric_handle()
+{
+    return time_metric_handle;
+}
+
+SCOREP_MetricHandle
+scorep_get_visits_metric_handle()
+{
+    return visits_metric_handle;
 }
 
 /**
@@ -610,7 +684,9 @@ void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      ranks,
-                                   int*                          threads )
+                                   int*                          threads,
+                                   uint8_t                       num_metrics,
+                                   SCOREP_MetricHandle*          metric_handles )
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.
@@ -623,7 +699,7 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     }
     assert( scorep_unified_definition_manager );
 
-    scorep_write_counter_definitions_to_cube4( my_cube, manager, map );
+    scorep_write_counter_definitions_to_cube4( my_cube, manager, map, num_metrics, metric_handles );
     scorep_write_region_definitions_to_cube4( my_cube, manager, map );
     scorep_write_callpath_definitions_to_cube4( my_cube, manager, map );
     scorep_write_location_definitions_to_cube4( my_cube, manager, ranks, threads );

@@ -99,8 +99,8 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
 /* Creates a new sparse metric struct instance for integer values */
 scorep_profile_sparse_metric_int*
 scorep_profile_create_sparse_int(
-    SCOREP_CounterHandle metric,
-    uint64_t             value )
+    SCOREP_MetricHandle metric,
+    uint64_t            value )
 {
     scorep_profile_sparse_metric_int* new_sparse = ( scorep_profile_sparse_metric_int* )
                                                    SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_int ) );
@@ -173,8 +173,8 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
 /* Creates a new sparse metric struct instance for double values */
 scorep_profile_sparse_metric_double*
 scorep_profile_create_sparse_double(
-    SCOREP_CounterHandle metric,
-    double               value )
+    SCOREP_MetricHandle metric,
+    double              value )
 {
     scorep_profile_sparse_metric_double* new_sparse = ( scorep_profile_sparse_metric_double* )
                                                       SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_double ) );

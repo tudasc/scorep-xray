@@ -235,9 +235,8 @@ scorep_pomp_deregister()
 /** Struct which contains the adapter iniitialization and finalization functions for the
     POMP2 adapter.
  */
-struct SCOREP_Adapter SCOREP_Pomp_Adapter =
+struct SCOREP_Subsystem SCOREP_Pomp_Adapter =
 {
-    SCOREP_ADAPTER_POMP,
     "POMP2 Adapter / Version 1.0",
     &scorep_pomp_register,
     &scorep_pomp_init,

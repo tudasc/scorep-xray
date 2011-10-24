@@ -84,15 +84,8 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, SourceFile, source_file );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Region, region );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Group, group );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, MPIWindow, mpi_window );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, MPICartesianTopology, mpi_cartesian_topology );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, MPICartesianCoords, mpi_cartesian_coords );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, CounterGroup, counter_group );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Counter, counter );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, IOFileGroup, io_file_group );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, IOFile, io_file );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, MarkerGroup, marker_group );
-//    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Marker, marker );
+    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Metric, metric );
+    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, SamplingSet, sampling_set );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Parameter, parameter );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Callpath, callpath );
 }
@@ -104,20 +97,17 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     assert( definitionManager );
     assert( !definitionManager->mappings );
 
-    definitionManager->mappings = malloc( sizeof( *definitionManager->mappings ) );
+    definitionManager->mappings = calloc( 1, sizeof( *definitionManager->mappings ) );
     assert( definitionManager->mappings );
 
     SCOREP_ALLOC_MAPPINGS_ARRAY( string,  definitionManager );
-    //SCOREP_ALLOC_MAPPINGS_ARRAY( location, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( region, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( group, definitionManager );
-    //SCOREP_ALLOC_MAPPINGS_ARRAY( mpi_window, definitionManager );
-    //SCOREP_ALLOC_MAPPINGS_ARRAY( gats_group, definitionManager );
+    SCOREP_ALLOC_MAPPINGS_ARRAY( sampling_set, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( parameter, definitionManager );
     SCOREP_ALLOC_MAPPINGS_ARRAY( callpath,  definitionManager );
 
-    // will be done separately in the MPI unify code
-    //SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,  definitionManager );
+    // local_mpi_communicator will be done separately in the MPI unify code
 }
 
 
@@ -128,13 +118,13 @@ SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definition
     assert( definitionManager->mappings );
 
     SCOREP_ASSIGN_MAPPINGS( definitionManager, String, string );
-    //SCOREP_ASSIGN_MAPPINGS( definitionManager, Location, location );
     SCOREP_ASSIGN_MAPPINGS( definitionManager, Region, region );
     SCOREP_ASSIGN_MAPPINGS( definitionManager, Group, group );
-    //SCOREP_ASSIGN_MAPPINGS( definitionManager, MPIWindow, mpi_window );
-    //SCOREP_ASSIGN_MAPPINGS( definitionManager, , gats_group );
+    SCOREP_ASSIGN_MAPPINGS( definitionManager, SamplingSet, sampling_set );
     SCOREP_ASSIGN_MAPPINGS( definitionManager, Parameter, parameter );
     SCOREP_ASSIGN_MAPPINGS( definitionManager, Callpath, callpath );
+
+    // local_mpi_communicator will be done separately in the MPI unify code
 }
 
 
@@ -145,13 +135,14 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     assert( definitionManager->mappings );
 
     SCOREP_FREE_MAPPINGS_ARRAY( string, definitionManager );
-    //SCOREP_FREE_MAPPINGS_ARRAY( location, definitionManager );
     SCOREP_FREE_MAPPINGS_ARRAY( region, definitionManager );
     SCOREP_FREE_MAPPINGS_ARRAY( group, definitionManager );
-    //SCOREP_FREE_MAPPINGS_ARRAY( mpi_window, definitionManager );
-    //SCOREP_FREE_MAPPINGS_ARRAY( gats_group, definitionManager );
+    SCOREP_FREE_MAPPINGS_ARRAY( sampling_set, definitionManager );
     SCOREP_FREE_MAPPINGS_ARRAY( parameter, definitionManager );
     SCOREP_FREE_MAPPINGS_ARRAY( callpath,  definitionManager );
+
+    // was probably allocated in the MPI unify code, but never freed there
+    SCOREP_FREE_MAPPINGS_ARRAY( local_mpi_communicator, definitionManager );
 
     free( definitionManager->mappings );
     definitionManager->mappings = NULL;

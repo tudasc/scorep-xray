@@ -117,11 +117,6 @@ typedef int64_t SCOREP_Fortran_RegionHandle;
 typedef int64_t SCOREP_Fortran_MetricHandle;
 
 /**
-    Defines the type obtained from Fortran calls for metric group handles.
- */
-typedef int64_t SCOREP_Fortran_MetricGroup;
-
-/**
     Defines the type obtained from Fortran calls for parameter handles.
  */
 typedef int64_t SCOREP_Fortran_Parameter;
@@ -201,20 +196,6 @@ typedef int64_t SCOREP_Fortran_Parameter;
    @param handle A C counter handle.
  */
 #define SCOREP_C2F_COUNTER( handle ) ( handle )
-
-/**
-   @def SCOREP_F2C_COUNTER_GROUP( handle )
-   Converts a Fortran counter group handle to a C counter group handle.
-   @param handle A Fortran counter group handle.
- */
-#define SCOREP_F2C_COUNTER_GROUP( handle ) ( handle )
-
-/**
-   @def SCOREP_C2F_COUNTER_GROUP( handle )
-   Converts a C counter group handle to a Fortran counter group handle.
-   @param handle A C counter group handle.
- */
-#define SCOREP_C2F_COUNTER_GROUP( handle ) ( handle )
 
 
 

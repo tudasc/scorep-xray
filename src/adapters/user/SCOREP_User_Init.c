@@ -108,9 +108,8 @@ scorep_user_deregister()
 {
 }
 
-SCOREP_Adapter SCOREP_User_Adapter =
+SCOREP_Subsystem SCOREP_User_Adapter =
 {
-    SCOREP_ADAPTER_USER,
     "user",
     &scorep_user_register,
     &scorep_user_init,

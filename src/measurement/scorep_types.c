@@ -29,7 +29,6 @@
 
 #include "scorep_types.h"
 #include "scorep_definition_structs.h"
-#include "scorep_definition_handles.h"
 #include <SCOREP_Memory.h>
 
 /**
@@ -71,11 +70,11 @@ scorep_uint32_to_string
 const char*
 scorep_any_handle_to_string
 (
-    char*             stringBuffer,
-    size_t            stringBufferSize,
-    const char*       format,
-    scorep_any_handle handle,
-    scorep_any_handle invalidValue
+    char*            stringBuffer,
+    size_t           stringBufferSize,
+    const char*      format,
+    SCOREP_AnyHandle handle,
+    SCOREP_AnyHandle invalidValue
 )
 {
     if ( handle == invalidValue )
@@ -83,8 +82,9 @@ scorep_any_handle_to_string
         return "invalid";
     }
 
-    snprintf( stringBuffer, stringBufferSize, format,
-              ( SCOREP_MEMORY_DEREF_LOCAL( handle, scorep_any_definition* ) )->sequence_number );
+    snprintf( stringBuffer, stringBufferSize,
+              format,
+              SCOREP_LOCAL_HANDLE_TO_ID( handle, Any ) );
     return stringBuffer;
 }
 
@@ -104,7 +104,7 @@ scorep_source_file_to_string
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
-                                        ( scorep_any_handle )handle,
+                                        handle,
                                         SCOREP_INVALID_SOURCE_FILE );
 }
 
@@ -146,7 +146,7 @@ scorep_region_to_string
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
-                                        ( scorep_any_handle )regionHandle,
+                                        regionHandle,
                                         SCOREP_INVALID_REGION );
 }
 
@@ -164,7 +164,7 @@ scorep_comm_to_string(
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
-                                        ( scorep_any_handle )commHandle,
+                                        commHandle,
                                         SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR );
 }
 
@@ -184,7 +184,7 @@ scorep_window_to_string
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
-                                        ( scorep_any_handle )windowHandle,
+                                        windowHandle,
                                         SCOREP_INVALID_MPI_WINDOW );
 }
 
@@ -204,7 +204,7 @@ scorep_mpi_cart_topol_to_string
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
-                                        ( scorep_any_handle )cartHandle,
+                                        cartHandle,
                                         SCOREP_INVALID_CART_TOPOLOGY );
 }
 
@@ -305,27 +305,6 @@ scorep_region_type_to_string
             return "omp single sblock";
         default:
             return "unknown";
-    }
-}
-
-
-/**
- * Converts a SCOREP_CounterType into a string.
- */
-const char*
-scorep_counter_type_to_string
-(
-    SCOREP_CounterType counterType
-)
-{
-    switch ( counterType )
-    {
-        case SCOREP_COUNTER_INT64:
-            return "int64";
-        case SCOREP_COUNTER_DOUBLE:
-            return "double";
-        default:
-            return "invalid";
     }
 }
 

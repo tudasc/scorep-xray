@@ -254,8 +254,8 @@ SCOREP_Profile_Register()
 
 
 void
-SCOREP_Profile_Initialize( int32_t               numDenseMetrics,
-                           SCOREP_CounterHandle* metrics )
+SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
+                           SCOREP_MetricHandle* metrics )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY,
                          "Initialize profile with %d dense metrics",
@@ -272,7 +272,8 @@ SCOREP_Profile_Initialize( int32_t               numDenseMetrics,
 
     scorep_profile_init_definition( scorep_profile_max_callpath_depth,
                                     scorep_profile_max_callpath_num,
-                                    numDenseMetrics, metrics );
+                                    numDenseMetrics,
+                                    metrics );
 
     scorep_profile_param_instance = SCOREP_DefineParameter( "instance", SCOREP_PARAMETER_INT64 );
 }
@@ -635,7 +636,7 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
 
 void
 SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
-                               SCOREP_CounterHandle        metric,
+                               SCOREP_MetricHandle         metric,
                                uint64_t                    value )
 {
     scorep_profile_node*              node    = NULL;
@@ -681,7 +682,7 @@ SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
 
 void
 SCOREP_Profile_TriggerDouble( SCOREP_Thread_LocationData* thread,
-                              SCOREP_CounterHandle        metric,
+                              SCOREP_MetricHandle         metric,
                               double                      value )
 {
     scorep_profile_node*                 node    = NULL;

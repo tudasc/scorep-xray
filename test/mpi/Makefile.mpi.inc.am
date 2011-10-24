@@ -6,12 +6,14 @@ mpitest_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_DIR_UTIL)
-
 mpitest_LDADD = \
     $(LIB_DIR_SCOREP)libscorep_mpi.la \
     $(LIB_DIR_SCOREP)libscorep_pomp_dummy.la \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libscorep_utilities.la
+if HAVE_PAPI
+mpitest_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 check_PROGRAMS += test_link
 
@@ -26,6 +28,9 @@ test_link_LDADD = \
     $(LIB_DIR_OTF2)libotf2.la \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
     -lm
+if HAVE_PAPI
+test_link_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 
 check_PROGRAMS += mpi_hello_world
@@ -35,6 +40,9 @@ mpi_hello_world_LDADD =                 \
     $(LIB_DIR_OTF2)libotf2.la           \
     $(LIB_DIR_UTIL)libscorep_utilities.la \
     -lm
+if HAVE_PAPI
+mpi_hello_world_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 TESTS_MPI += mpi_hello_world
 

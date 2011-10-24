@@ -103,13 +103,13 @@ SCOREP_Profile_Register();
                           every enter and exit event. The difference of the metric value
                           between exit and enter is calculated and included in the
                           statistics.
-   @param metrics An array of metric definitions. It is assmued, that on every enter
-                  and exit event, the measured metrics are given in the same order as
-                  the definitions in this array.
+    @param metrics An array of metric definitions. It is assmued, that on every enter
+                   and exit event, the measured metrics are given in the same order as
+                   the definitions in this array.
  */
 void
-SCOREP_Profile_Initialize( int32_t               numDenseMetrics,
-                           SCOREP_CounterHandle* metrics );
+SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
+                           SCOREP_MetricHandle* metrics );
 
 /**
    Deletes a existing profile and profile definition. Before other profile functions
@@ -202,7 +202,7 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
  */
 void
 SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
-                               SCOREP_CounterHandle        metric,
+                               SCOREP_MetricHandle         metric,
                                uint64_t                    value );
 
 /**
@@ -214,7 +214,7 @@ SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
  */
 void
 SCOREP_Profile_TriggerDouble( SCOREP_Thread_LocationData* thread,
-                              SCOREP_CounterHandle        metric,
+                              SCOREP_MetricHandle         metric,
                               double                      value );
 
 /**

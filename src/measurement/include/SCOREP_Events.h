@@ -369,14 +369,12 @@ SCOREP_ExitRegionOnException
  *
  * @param counterHandle
  * @param value
- *
- * @planned To be implemented in milestone 2
  */
 void
 SCOREP_TriggerCounterInt64
 (
-    SCOREP_CounterHandle counterHandle,
-    int64_t              value
+    SCOREP_SamplingSetHandle counterHandle,
+    int64_t                  value
 );
 
 
@@ -385,14 +383,26 @@ SCOREP_TriggerCounterInt64
  *
  * @param counterHandle
  * @param value
+ */
+void
+SCOREP_TriggerCounterUint64
+(
+    SCOREP_SamplingSetHandle counterHandle,
+    uint64_t                 value
+);
+
+
+/**
  *
- * @planned To be implemented in milestone 2
+ *
+ * @param counterHandle
+ * @param value
  */
 void
 SCOREP_TriggerCounterDouble
 (
-    SCOREP_CounterHandle counterHandle,
-    double               value
+    SCOREP_SamplingSetHandle counterHandle,
+    double                   value
 );
 
 

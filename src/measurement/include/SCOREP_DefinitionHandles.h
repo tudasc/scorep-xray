@@ -34,52 +34,55 @@
 #include <scorep_utility/SCOREP_Allocator.h>
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_StringHandle;
+#include <scorep/SCOREP_PublicTypes.h>
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_SystemTreeNodeHandle;
+typedef SCOREP_AnyHandle SCOREP_StringHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_LocationGroupHandle;
+typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_LocationHandle;
+typedef SCOREP_AnyHandle SCOREP_LocationGroupHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_GroupHandle;
+typedef SCOREP_AnyHandle SCOREP_LocationHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_LocalMPICommunicatorHandle;
+typedef SCOREP_AnyHandle SCOREP_GroupHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MPICommunicatorHandle;
+typedef SCOREP_AnyHandle SCOREP_LocalMPICommunicatorHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MPIWindowHandle;
+typedef SCOREP_AnyHandle SCOREP_MPICommunicatorHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MPICartesianTopologyHandle;
+typedef SCOREP_AnyHandle SCOREP_MPIWindowHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MPICartesianCoordsHandle;
+typedef SCOREP_AnyHandle SCOREP_MPICartesianTopologyHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_IOFileGroupHandle;
+typedef SCOREP_AnyHandle SCOREP_MPICartesianCoordsHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_IOFileHandle;
+typedef SCOREP_AnyHandle SCOREP_IOFileGroupHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MarkerGroupHandle;
+typedef SCOREP_AnyHandle SCOREP_IOFileHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_MarkerHandle;
+typedef SCOREP_AnyHandle SCOREP_MarkerGroupHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_ParameterHandle;
+typedef SCOREP_AnyHandle SCOREP_MarkerHandle;
 
 
-typedef SCOREP_Allocator_MovableMemory SCOREP_CallpathHandle;
+typedef SCOREP_AnyHandle SCOREP_ParameterHandle;
+
+
+typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
 
 
 #endif /* SCOREP_DEFINITIONHANDLES_H */

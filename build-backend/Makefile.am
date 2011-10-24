@@ -121,49 +121,58 @@ endif
 
 $(builddir)/scorep_config.dat: 
 	@echo "Creating $(builddir)/scorep_config.dat"
-	@echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\" >  $(builddir)/scorep_config.dat
-	@echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"                                    >> $(builddir)/scorep_config.dat
-	@echo LIBDIR=\"$(PWD)/.libs\"                                               >> $(builddir)/scorep_config.dat
-	@echo LIBS=\"$(LIBS)\"                                                      >> $(builddir)/scorep_config.dat
-	@echo LIBDIR=\"$(CUBE_LIB_PATH)\"                                           >> $(builddir)/scorep_config.dat
-	@echo LIBDIR=\"$(TIMER_LIBDIR)\"                                            >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"                                   >> $(builddir)/scorep_config.dat
-	@echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)/scorep\"                            >> $(builddir)/scorep_config.dat
-	@echo SRC_ROOT=\"$(abs_top_srcdir)/..\"                                     >> $(builddir)/scorep_config.dat
-	@echo CC=\"$(CC)\"                                                          >> $(builddir)/scorep_config.dat
-	@echo CXX=\"$(CXX)\"                                                        >> $(builddir)/scorep_config.dat
-	@echo LIBS=\"$(LIBBFD)\"                                                    >> $(builddir)/scorep_config.dat
-	@echo LIBS=\"$(CUBE_LIBS)\"                                                 >> $(builddir)/scorep_config.dat
-	@echo LIBS=\"$(TIMER_LIB)\"                                                 >> $(builddir)/scorep_config.dat
-	@echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"               >> $(builddir)/scorep_config.dat
-	@echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\" >> $(builddir)/scorep_config.dat
-	@echo PDT=\"$(PDT_PATH)\"                                                   >> $(builddir)/scorep_config.dat
-	@echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\" >> $(builddir)/scorep_config.dat
-	@echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\" >> $(builddir)/scorep_config.dat
-	@echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\" >> $(builddir)/scorep_config.dat
-	@echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2_print\" >> $(builddir)/scorep_config.dat
+	@( \
+	    echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"; \
+	    echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
+	    echo LIBDIR=\"$(PWD)/.libs\"; \
+	    echo LIBS=\"$(LIBS)\"; \
+	    echo LIBDIR=\"$(CUBE_LIB_PATH)\"; \
+	    echo LIBDIR=\"$(TIMER_LIBDIR)\"; \
+	    echo LIBDIR=\"$(SCOREP_PAPI_LIBDIR)\"; \
+	    echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"; \
+	    echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)/scorep\"; \
+	    echo SRC_ROOT=\"$(abs_top_srcdir)/..\"; \
+	    echo CC=\"$(CC)\"; \
+	    echo CXX=\"$(CXX)\"; \
+	    echo LIBS=\"$(LIBBFD)\"; \
+	    echo LIBS=\"$(CUBE_LIBS)\"; \
+	    echo LIBS=\"$(TIMER_LIB)\"; \
+	    echo LIBS=\"$(SCOREP_PAPI_LIBS)\"; \
+	    echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"; \
+	    echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"; \
+	    echo PDT=\"$(PDT_PATH)\"; \
+	    echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\"; \
+	    echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
+	    echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
+	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2_print\"; \
+	) >$(builddir)/scorep_config.dat
 
 ## Here we write only the backend values.
 create-config-tool-headers: $(CONFIG_HEADER_BACKEND)
 
 $(CONFIG_HEADER_BACKEND):
 	@echo "Creating $(CONFIG_HEADER_BACKEND)"
-	@echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"" >  $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\"" >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_PREFIX  \"$(prefix)\""           >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_DATADIR \"$(datadir)\""          >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_LIBDIR  \"$(libdir)\""           >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD) $(CUBE_LIBS) $(TIMER_LIB)\"" >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define CUBE_LIBDIR    \"$(CUBE_LIB_PATH)\""    >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define TIMER_LIBDIR   \"$(TIMER_LIBDIR)\""     >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_CC      \"$(CC)\""               >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_CXX     \"$(CXX)\""              >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define SCOREP_FC      \"$(FC)\""               >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define OPARI          \"$(prefix)/bin/opari2\"">> $(CONFIG_HEADER_BACKEND)
-	@echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2-config\"">> $(CONFIG_HEADER_BACKEND)
-	@echo "#define PDT            \"$(PDT_PATH)\""         >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define PDT_CONFIG     \"$(SCOREP_PDT_CONFIG_INSTALL_TARGET)\"" >> $(CONFIG_HEADER_BACKEND)
-	@echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\"">> $(CONFIG_HEADER_BACKEND)
+	@( \
+	    echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\""; \
+	    echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""; \
+	    echo "#define SCOREP_PREFIX  \"$(prefix)\""; \
+	    echo "#define SCOREP_DATADIR \"$(datadir)\""; \
+	    echo "#define SCOREP_LIBDIR  \"$(libdir)\""; \
+	    echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD) $(CUBE_LIBS) $(TIMER_LIB)\""; \
+	    echo "#define CUBE_LIBDIR    \"$(CUBE_LIB_PATH)\""; \
+	    echo "#define TIMER_LIBDIR   \"$(TIMER_LIBDIR)\""; \
+	    echo "#define PAPI_LIBS      \"$(SCOREP_PAPI_LIBS)\""; \
+	    echo "#define PAPI_LDFLAGS   \"$(SCOREP_PAPI_LDFLAGS)\""; \
+	    echo "#define PAPI_LIBDIR    \"$(SCOREP_PAPI_LIBDIR)\""; \
+	    echo "#define SCOREP_CC      \"$(CC)\""; \
+	    echo "#define SCOREP_CXX     \"$(CXX)\""; \
+	    echo "#define SCOREP_FC      \"$(FC)\""; \
+	    echo "#define OPARI          \"$(prefix)/bin/opari2\""; \
+	    echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2-config\""; \
+	    echo "#define PDT            \"$(PDT_PATH)\""; \
+	    echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\""; \
+	    echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\""; \
+	) >$(CONFIG_HEADER_BACKEND)
 
 
 if OPENMP_SUPPORTED

@@ -32,6 +32,7 @@
 #include "SCOREP_Definitions.h"
 
 #include "scorep_profile_definition.h"
+#include "scorep_definitions.h"
 
 /*----------------------------------------------------------------------------------------
    Global variables
@@ -53,10 +54,10 @@ char* scorep_profile_basename = NULL;
 /** Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition( uint64_t              max_callpath_depth,
-                                uint64_t              max_callpath_num,
-                                uint32_t              num_dense_metrics,
-                                SCOREP_CounterHandle* metrics )
+scorep_profile_init_definition( uint64_t             max_callpath_depth,
+                                uint64_t             max_callpath_num,
+                                uint32_t             num_dense_metrics,
+                                SCOREP_MetricHandle* metrics )
 {
     int i;
     /* On reinitialization of the profile during a phase, do not overwrite the pointer to
@@ -74,9 +75,7 @@ scorep_profile_init_definition( uint64_t              max_callpath_depth,
     scorep_profile.max_callpath_depth   = max_callpath_depth;
     scorep_profile.max_callpath_num     = max_callpath_num;
     scorep_profile.num_of_dense_metrics = num_dense_metrics;
-    scorep_profile.dense_metrics
-        = ( SCOREP_CounterHandle* )
-          SCOREP_Memory_AllocForProfile( num_dense_metrics * sizeof( SCOREP_CounterHandle ) );
+    scorep_profile.dense_metrics        = ( SCOREP_MetricHandle* )SCOREP_Memory_AllocForProfile( num_dense_metrics * sizeof( SCOREP_MetricHandle ) );
 
     for ( i = 0; i < num_dense_metrics; i++ )
     {

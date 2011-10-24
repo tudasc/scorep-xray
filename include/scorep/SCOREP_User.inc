@@ -27,14 +27,12 @@
 !************************************************************* Data types
 
 #define SCOREP_REGION_HANDLE    integer*8
-#define SCOREP_METRIC_GROUP     integer*8
 #define SCOREP_METRIC_HANDLE    integer*8
 #define SCOREP_PARAMETER_HANDLE integer*8
 
 !************************************************************* Constants
 
 #define SCOREP_INVALID_REGION        -1
-#define SCOREP_INVALID_METRIC_GROUP  -1
 #define SCOREP_INVALID_METRIC        -1
 #define SCOREP_INAVLID_PARAMETER     -1
 
@@ -45,12 +43,11 @@
 #define SCOREP_USER_REGION_TYPE_PHASE     8
 
 #define SCOREP_USER_METRIC_TYPE_INT64  0
-#define SCOREP_USER_METRIC_TYPE_DOUBLE 1
+#define SCOREP_USER_METRIC_TYPE_UINT64 1
+#define SCOREP_USER_METRIC_TYPE_DOUBLE 2
 
 #define SCOREP_USER_METRIC_CONTEXT_GLOBAL   0
 #define SCOREP_USER_METRIC_CONTEXT_CALLPATH 1
-
-#define SCOREP_USER_METRIC_GROUP_DEFAULT -2
 
 !************************************************************* Regions
 
@@ -82,20 +79,17 @@ call SCOREP_F_OA_PhaseBegin( handle,name,type,"",__LINE__)
 
 !************************************************************* User metric
 
-#define SCOREP_USER_METRIC_GROUP_LOCAL( groupHandle ) \
-        SCOREP_METRIC_GROUP :: groupHandle = SCOREP_INVALID_METRIC_GROUP
-
-#define SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name ) \
-        call SCOREP_F_InitMetricGroup(groupHandle,name)
-
 #define SCOREP_USER_METRIC_LOCAL( metricHandle ) \
         SCOREP_METRIC_HANDLE :: metricHandle = SCOREP_INVALID_METRIC
 
-#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context, groupHandle ) \
-        call SCOREP_F_InitMetric(metricHandle,name,unit,type,context,groupHandle)
+#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context ) \
+        call SCOREP_F_InitMetric(metricHandle,name,unit,type,context)
 
 #define SCOREP_USER_METRIC_INT64( metricHandle, value ) \
         call SCOREP_F_MetricInt64( metricHandle, value )
+
+#define SCOREP_USER_METRIC_UINT64( metricHandle, value ) \
+        call SCOREP_F_MetricUint64( metricHandle, value )
 
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value ) \
         call SCOREP_F_MetricDouble( metricHandle, value )
@@ -138,14 +132,10 @@ call SCOREP_F_OA_PhaseBegin( handle,name,type,"",__LINE__)
 #define SCOREP_USER_FUNC_DEFINE
 #define SCOREP_USER_FUNC_BEGIN( name )
 #define SCOREP_USER_FUNC_END
-#define SCOREP_USER_METRIC_GROUP_LOCAL( groupHandle )
-#define SCOREP_USER_METRIC_GROUP_GLOBAL( groupHandle )
-#define SCOREP_USER_METRIC_GROUP_EXTERNAL( groupHandle )
-#define SCOREP_USER_METRIC_GROUP_INIT( groupHandle, name )
 #define SCOREP_USER_METRIC_GLOBAL( metricHandle )
 #define SCOREP_USER_METRIC_EXTERNAL( metricHandle )
 #define SCOREP_USER_METRIC_LOCAL( metricHandle )
-#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context, groupHandle )
+#define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context )
 #define SCOREP_USER_METRIC_INT64( metricHandle, value )
 #define SCOREP_USER_METRIC_UINT64( metricHandle, value )
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value )

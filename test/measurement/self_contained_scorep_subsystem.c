@@ -16,7 +16,7 @@
 
 
 /**
- * @file       self_contained_scorep_adapter.c
+ * @file       self_contained_scorep_subsystem.c
  * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
@@ -28,7 +28,7 @@
 
 #include <config.h>
 
-#include <SCOREP_Adapter.h>
+#include <SCOREP_Subsystem.h>
 
 int
 main()

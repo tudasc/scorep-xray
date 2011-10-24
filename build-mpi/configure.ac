@@ -106,7 +106,8 @@ SCOREP_ATTRIBUTE_ALIGNMENT
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 AC_SCOREP_LIBSION([MPI])
 AC_SCOREP_LIBSION([MPI_OMP])
-
+AC_SCOREP_LIBPAPI
+AC_SCOREP_RUSAGE
 
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI
@@ -222,6 +223,13 @@ AC_CONFIG_FILES([Makefile \
                  run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
                  ../test/jacobi/hybrid/C/Makefile])
-
+AC_CONFIG_FILES([../test/services/metric/run_rusage_mpi_metric_test.sh], \ 
+	                [chmod +x ../test/services/metric/run_rusage_mpi_metric_test.sh]) 
+AC_CONFIG_FILES([../test/services/metric/run_rusage_hybrid_metric_test.sh], \ 
+                [chmod +x ../test/services/metric/run_rusage_hybrid_metric_test.sh]) 
+AC_CONFIG_FILES([../test/services/metric/run_papi_mpi_metric_test.sh], \ 
+                [chmod +x ../test/services/metric/run_papi_mpi_metric_test.sh]) 
+AC_CONFIG_FILES([../test/services/metric/run_papi_hybrid_metric_test.sh], \ 
+                [chmod +x ../test/services/metric/run_papi_hybrid_metric_test.sh])
 
 AC_OUTPUT

@@ -31,6 +31,7 @@
 
 #include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Profile.h>
+#include <SCOREP_Metric.h>
 #include <SCOREP_Thread_Types.h>
 #include "scorep_trace_thread_interaction.h"
 #include <stddef.h>
@@ -92,6 +93,10 @@ SCOREP_Thread_GetProfileLocationData( SCOREP_Thread_LocationData* locationData )
 
 SCOREP_Trace_LocationData*
 SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData );
+
+
+SCOREP_Metric_LocationData*
+SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData );
 
 
 uint64_t

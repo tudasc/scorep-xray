@@ -1,0 +1,56 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+# Common settings
+
+libscorep_metric_la_CPPFLAGS = $(AM_CPPFLAGS) \
+    -I$(INC_DIR_UTIL)                         \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/services/metric          \
+    -I$(INC_ROOT)src/services/include         \
+    -I$(INC_ROOT)src/measurement/include
+
+noinst_LTLIBRARIES += libscorep_metric.la
+
+
+libscorep_metric_la_SOURCES = \
+	$(SRC_ROOT)src/services/include/SCOREP_Metric.h            \
+	$(SRC_ROOT)src/services/include/SCOREP_Metric_Management.h \
+    $(SRC_ROOT)src/services/metric/SCOREP_Metric_Source.h      \
+    $(SRC_ROOT)src/services/metric/SCOREP_Metric_Init.c        \
+    $(SRC_ROOT)src/services/metric/scorep_metric_management.c
+
+libscorep_metric_la_LIBADD =
+libscorep_metric_la_LDFLAGS =
+
+# RUSAGE specific settings
+
+if HAVE_GETRUSAGE
+libscorep_metric_la_CPPFLAGS += @SCOREP_RUSAGE_CPPFLAGS@
+libscorep_metric_la_SOURCES += \
+    $(SRC_ROOT)src/services/metric/scorep_metric_rusage.c \
+    $(SRC_ROOT)src/services/metric/scorep_metric_rusage.h
+endif
+
+# PAPI specific settings
+
+if HAVE_PAPI
+libscorep_metric_la_CPPFLAGS += @SCOREP_PAPI_CPPFLAGS@
+libscorep_metric_la_SOURCES += \
+    $(SRC_ROOT)src/services/metric/scorep_metric_papi.c \
+    $(SRC_ROOT)src/services/metric/scorep_metric_papi.h
+endif

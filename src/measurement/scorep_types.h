@@ -273,21 +273,6 @@ scorep_region_type_to_string
 
 
 /**
- * Converts a SCOREP_CounterType into a string.
- *
- * @param counterType   The counter type which should be expressed as a string.
- *
- * @return              A string representation of @a counterType.
- */
-
-extern const char*
-scorep_counter_type_to_string
-(
-    SCOREP_CounterType counterType
-);
-
-
-/**
  * Converts a SCOREP_ParameterType into a string.
  *
  * @param parameterType The parameter type which should be expressed as a

@@ -26,7 +26,7 @@
  */
 
 
-#include "SCOREP_Adapter.h"
+#include "SCOREP_Subsystem.h"
 #include "SCOREP_RuntimeManagement.h"
 
 /** @ingroup SCOREP_User_External
@@ -35,7 +35,7 @@
 
 /** The struct which contains the initialization functions for the user adapter.
  */
-extern SCOREP_Adapter SCOREP_User_Adapter;
+extern SCOREP_Subsystem SCOREP_User_Adapter;
 
 /** @internal
     Flag to indicate whether the adapter was initialized. If it is set to zero it is not

@@ -27,13 +27,13 @@
  *        object.
  */
 
-#include "SCOREP_Adapter.h"
+#include "SCOREP_Subsystem.h"
 
 /**
    The adapter initialization and finalization function structure for the
    compiler adapter.
  */
-extern const SCOREP_Adapter SCOREP_Compiler_Adapter;
+extern const SCOREP_Subsystem SCOREP_Compiler_Adapter;
 
 
 #endif /* SCOREP_COMPILER_INIT_H_ */

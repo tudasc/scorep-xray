@@ -36,7 +36,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Adapter.h>
+#include <SCOREP_Subsystem.h>
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Compiler_Init.h>
 

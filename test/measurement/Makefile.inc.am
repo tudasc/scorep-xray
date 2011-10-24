@@ -20,7 +20,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-check_PROGRAMS += self_contained_scorep_adapter_c            \
+check_PROGRAMS += self_contained_scorep_subsystem_c          \
                   self_contained_scorep_config_c             \
                   self_contained_scorep_definitions_c        \
                   self_contained_scorep_events_c             \
@@ -34,8 +34,8 @@ check_PROGRAMS += self_contained_scorep_adapter_c            \
 
 self_contained_cppflags = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/include -I$(INC_DIR_UTIL) -I$(PUBLIC_INC_DIR)
 
-self_contained_scorep_adapter_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_adapter.c
-self_contained_scorep_adapter_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_subsystem_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_subsystem.c
+self_contained_scorep_subsystem_c_CPPFLAGS = $(self_contained_cppflags)
 
 self_contained_scorep_config_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_config.c
 self_contained_scorep_config_c_CPPFLAGS = $(self_contained_cppflags)
@@ -61,8 +61,8 @@ self_contained_scorep_thread_types_c_CPPFLAGS = $(self_contained_cppflags)
 self_contained_scorep_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_types.c
 self_contained_scorep_types_c_CPPFLAGS = $(self_contained_cppflags)
 
-definitions_test_c_SOURCES = $(SRC_ROOT)test/measurement/definitions_test.c \
-                             $(SRC_ROOT)vendor/common/cutest/CuTest.c
+definitions_test_c_SOURCES  = $(SRC_ROOT)test/measurement/definitions_test.c \
+                              $(SRC_ROOT)vendor/common/cutest/CuTest.c
 definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_ROOT)vendor/common/cutest \
                               -I$(INC_ROOT)src/measurement \
@@ -71,6 +71,9 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_DIR_UTIL) \
                               -I$(INC_DIR_VENDOR_HASH)
 definitions_test_c_LDADD = libscorep_serial.la
+if HAVE_PAPI
+definitions_test_c_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 TESTS_SERIAL += definitions_test_c
 
@@ -84,5 +87,8 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_DIR_UTIL) \
                                -I$(INC_DIR_VENDOR_HASH)
 string_duplicates_c_LDADD    = libscorep_serial.la
+if HAVE_PAPI
+string_duplicates_c_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
 
 TESTS_SERIAL += string_duplicates_c

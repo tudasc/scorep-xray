@@ -29,14 +29,19 @@
 #include "scorep_thread.h"
 #include <scorep_definitions.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Subsystem.h>
 #include <scorep_utility/SCOREP_Omp.h>
 #include <scorep_mpi.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "scorep_runtime_management.h"
 #include "scorep_status.h"
+#include "scorep_subsystem.h"
 
+
+#include "scorep_environment.h"
 
 #define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
 
@@ -71,7 +76,7 @@ typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 /* *INDENT-OFF* */
 static void scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
-static void scorep_thread_call_externals_on_new_location(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
+static void scorep_thread_call_externals_on_new_location(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent, bool isMainLocation );
 static void scorep_thread_call_externals_on_new_thread(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
 static void scorep_thread_call_externals_on_thread_activation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
 static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
@@ -80,6 +85,8 @@ static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
 static void scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent );
+
+static void scorep_subsystems_initialize_location();
 /* *INDENT-ON* */
 
 
@@ -118,6 +125,7 @@ struct SCOREP_Thread_LocationData
     SCOREP_LocationHandle          location_handle;
     SCOREP_Profile_LocationData*   profile_data;
     SCOREP_Trace_LocationData*     trace_data;
+    SCOREP_Metric_LocationData*    metric_data;
     SCOREP_Thread_LocationData*    next; // store location objects in list for easy cleanup
 };
 static struct SCOREP_Thread_LocationData*      location_list_head;
@@ -150,7 +158,7 @@ SCOREP_Thread_Initialize()
     initial_location = TPD->location_data;
 
     scorep_thread_call_externals_on_new_thread( TPD->location_data, 0 );
-    scorep_thread_call_externals_on_new_location( TPD->location_data, 0 );
+    scorep_thread_call_externals_on_new_location( TPD->location_data, 0, true );
     scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0 );
 }
 
@@ -182,7 +190,8 @@ scorep_thread_call_externals_on_new_thread( SCOREP_Thread_LocationData* location
 
 void
 scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locationData,
-                                              SCOREP_Thread_LocationData* parent )
+                                              SCOREP_Thread_LocationData* parent,
+                                              bool                        isMainLocation )
 {
     // Where to do the locking? Well, at the moment we do the locking
     // in SCOREP_Profile_OnLocationCreation, SCOREP_Trace_OnLocationCreation
@@ -206,6 +215,40 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
             locationData->location_id,
             parent ? parent->location_handle : SCOREP_INVALID_LOCATION,
             "" );
+    }
+
+    /* For the main location (e.g. first thread ) we will initialize subsystem later on,
+     * as we need an already initialized metric subsystem at this point. */
+    if ( isMainLocation == false )
+    {
+        scorep_subsystems_initialize_location();
+    }
+}
+
+static void
+scorep_subsystems_initialize_location()
+{
+    SCOREP_Error_Code error;
+
+    /* call initialization functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( scorep_subsystems[ i ]->subsystem_init_location )
+        {
+            error = scorep_subsystems[ i ]->subsystem_init_location();
+        }
+
+        if ( SCOREP_SUCCESS != error )
+        {
+            SCOREP_ERROR( error, "Can't initialize location for %s subsystem",
+                          scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
+        }
+        else if ( SCOREP_Env_RunVerbose() )
+        {
+            fprintf( stderr, "SCOREP successfully initialized location for %s subsystem\n",
+                     scorep_subsystems[ i ]->subsystem_name );
+        }
     }
 }
 
@@ -255,6 +298,16 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         new_location->trace_data = SCOREP_Trace_CreateLocationData();
         assert( new_location->trace_data );
     }
+
+    new_location->metric_data = 0;
+    /* TODO:
+     * Is this check needed here? I think it isn't, because we want
+     * metrics in both tracing and profiling mode. */
+    //if ( SCOREP_IsTracingEnabled() )
+    //{
+    new_location->metric_data = SCOREP_Metric_CreateLocationData();
+    assert( new_location->metric_data );
+    //}
 
     SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
@@ -311,6 +364,7 @@ scorep_thread_delete_location_data()
     {
         SCOREP_Thread_LocationData* tmp = location_data->next;
 
+        SCOREP_Metric_DeleteLocationData( location_data->metric_data );
         SCOREP_Trace_DeleteLocationData( location_data->trace_data );
         SCOREP_Profile_DeleteLocationData( location_data->profile_data );
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
@@ -483,7 +537,8 @@ SCOREP_Thread_GetLocationData()
             {
                 scorep_thread_create_location_data_for( *my_tpd );
                 scorep_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
-                                                              TPD->parent->location_data );
+                                                              TPD->parent->location_data,
+                                                              false );
             }
             scorep_thread_call_externals_on_new_thread( ( *my_tpd )->location_data,
                                                         TPD->parent->location_data );
@@ -514,6 +569,13 @@ SCOREP_Trace_LocationData*
 SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData )
 {
     return locationData->trace_data;
+}
+
+
+SCOREP_Metric_LocationData*
+SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData )
+{
+    return locationData->metric_data;
 }
 
 

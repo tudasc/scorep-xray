@@ -15,7 +15,33 @@
  */
 
 
-#ifndef SCOREP_INTERNAL_METRICS_H
-#define SCOREP_INTERNAL_METRICS_H
+/**
+ * @file       pomp.c
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status alpha
+ *
+ */
 
-#endif /* SCOREP_INTERNAL_METRICS_H */
+
+#include <config.h>
+
+#include <stddef.h>
+
+extern void
+POMP2_Init_regions_1287563449107105_3();
+extern void
+POMP2_Init_regions_1287563443944711_1();
+
+void
+POMP2_Init_regions()
+{
+    POMP2_Init_regions_1287563449107105_3();
+    POMP2_Init_regions_1287563443944711_1();
+}
+
+size_t
+POMP2_Get_num_regions()
+{
+    return 4;
+}

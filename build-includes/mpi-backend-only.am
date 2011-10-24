@@ -11,3 +11,4 @@ include ../test/mpi_omp/Makefile.mpi.inc.am
 include ../test/unification/Makefile.mpi.inc.am
 include ../test/apart_test_suite/Makefile.mpi.inc.am
 include ../test/OA/MPI/C/Makefile.mpi.inc.am
+include ../test/services/metric/Makefile.mpi.inc.am

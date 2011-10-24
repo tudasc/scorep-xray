@@ -14,33 +14,26 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_DEFINITION_HANDLES_H
-#define SCOREP_INTERNAL_DEFINITION_HANDLES_H
 
-
+#ifndef SCOREP_INTERNAL_METRICS_H
+#define SCOREP_INTERNAL_METRICS_H
 
 /**
- * @file       scorep_definition_handles.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ * @file       scorep_metrics.h
+ * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  * @status alpha
+ *
  *
  */
 
 
-
-typedef struct scorep_any_definition scorep_any_definition;
-typedef uint64_t                     scorep_any_handle;
+typedef struct SCOREP_Metric_LocationData SCOREP_Metric_LocationData;
 
 
-struct scorep_any_definition
+struct SCOREP_Metric_LocationData
 {
-    scorep_any_handle next;
-    scorep_any_handle unified;
-    scorep_any_handle hash_next;
-    uint32_t          hash_value;
-    uint32_t          sequence_number;
+    uint64_t* values;
 };
 
-
-#endif /* SCOREP_INTERNAL_DEFINITION_HANDLES_H */
+#endif /* SCOREP_INTERNAL_METRICS_H */
