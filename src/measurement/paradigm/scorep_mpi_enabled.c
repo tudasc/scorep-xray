@@ -248,6 +248,12 @@ SCOREP_Mpi_Allreduce( void*                sendbuf,
 }
 
 int
+SCOREP_Mpi_Barrier()
+{
+    return PMPI_Barrier( scorep_mpi_comm_world );
+}
+
+int
 SCOREP_Mpi_Bcast( void*               buf,
                   int                 count,
                   SCOREP_Mpi_Datatype scorep_datatype,

@@ -181,6 +181,12 @@ SCOREP_Mpi_Allreduce( void*                sendbuf,
 }
 
 int
+SCOREP_Mpi_Barrier()
+{
+    return 0;
+}
+
+int
 SCOREP_Mpi_Bcast( void*               buf,
                   int                 count,
                   SCOREP_Mpi_Datatype scorep_datatype,

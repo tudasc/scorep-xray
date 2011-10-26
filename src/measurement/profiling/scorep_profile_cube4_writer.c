@@ -207,6 +207,7 @@ scorep_profile_write_cube_##cube_type(                                          
         }                                                                                     \
                                                                                               \
         /* Collect data from all processes */                                                 \
+        SCOREP_Mpi_Barrier();                                                                 \
         SCOREP_Mpi_Gatherv( local_values, local_threads, SCOREP_MPI_ ## TYPE,                 \
                             global_values, recvcnts, displs, SCOREP_MPI_ ## TYPE, 0 );        \
                                                                                               \
@@ -365,6 +366,7 @@ scorep_profile_write_cube_single_metric( cube_t*                                
         }
 
         /* Collect data from all processes */
+        SCOREP_Mpi_Barrier();
         SCOREP_Mpi_Gatherv( local_values, local_threads, SCOREP_MPI_LONG_LONG,
                             global_values, recvcnts, displs, SCOREP_MPI_LONG_LONG, 0 );
 
