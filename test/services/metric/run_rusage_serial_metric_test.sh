@@ -26,7 +26,7 @@ make scorep-config-tool-local
 TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 
 # Set up directory that will contain experiment results
-RESULT_DIR=$(PWD)/scorep-serial-rusage-metric-test-dir
+RESULT_DIR=$(pwd)/scorep-serial-rusage-metric-test-dir
 rm -rf $RESULT_DIR
 
 # Remember current content of directory to figure out the result dir
