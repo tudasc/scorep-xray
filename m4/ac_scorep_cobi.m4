@@ -58,8 +58,10 @@ fi
 # Output results
 AM_CONDITIONAL(HAVE_COBI,[test x$have_cobi = xyes])
 
-if ["x$have_cobi" = "xyes" ]; then
-    AC_DEFINE(HAVE_COBI, "1", "Defined if configured to use Cobi" )
-    AC_DEFINE_UNQUOTED(SCOREP_COBI_PATH, "$cobi_path", "Defines path to Cobi" )
+if [test "x$have_cobi" = "xyes" ]; then
+    AC_DEFINE(HAVE_COBI, 1, "Defined if configured to use Cobi." )
+    AC_DEFINE_UNQUOTED(SCOREP_COBI_PATH, "$cobi_path", "Defines path to Cobi." )
+else
+    AC_DEFINE(SCOREP_COBI_PATH, "cobi", "No Cobi path defined." )
 fi
 ])
