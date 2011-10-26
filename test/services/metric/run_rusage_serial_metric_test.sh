@@ -29,6 +29,9 @@ TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 RESULT_DIR=$PWD/scorep-serial-rusage-metric-test-dir
 rm -rf $RESULT_DIR
 
+# Remember current content of directory to figure out the result dir
+ls > start_ls.log
+
 # Run test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime ./jacobi_serial_c_metric_test
 if [ $? -ne 0 ]; then
@@ -36,6 +39,18 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo "Output of metric test can be found in $RESULT_DIR"
+
+# Figure out the result dir
+ls > end_ls.log
+NEW_DIRECTORY=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
+rm end_ls.log start_ls.log
+if [ "x$NEW_DIRECTORY" = "x" ]; then
+    echo "Can not identify output directory. Skip evaluation of metric test"
+    exit 1
+else
+    echo "Experiment result directory is $NEW_DIRECTORY"
+fi
+rm start_ls.log end_ls.log
 
 if [ -d "$RESULT_DIR" ]; then
     echo "$RESULT_DIR exists"
