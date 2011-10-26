@@ -26,7 +26,7 @@ make scorep-config-tool-local
 TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 
 # Set up directory that will contain experiment results
-RESULT_DIR=$PWD/scorep-serial-rusage-metric-test-dir
+RESULT_DIR=$(PWD)/scorep-serial-rusage-metric-test-dir
 rm -rf $RESULT_DIR
 
 # Remember current content of directory to figure out the result dir
@@ -40,18 +40,6 @@ if [ $? -ne 0 ]; then
 fi
 echo "Output of metric test can be found in $RESULT_DIR"
 
-# Figure out the result dir
-ls > end_ls.log
-NEW_DIRECTORY=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
-rm end_ls.log start_ls.log
-if [ "x$NEW_DIRECTORY" = "x" ]; then
-    echo "Can not identify output directory. Skip evaluation of metric test"
-    exit 1
-else
-    echo "Experiment result directory is $NEW_DIRECTORY"
-fi
-rm start_ls.log end_ls.log
-
 if [ -d "$RESULT_DIR" ]; then
     echo "$RESULT_DIR exists"
 else
@@ -61,6 +49,17 @@ if [ -d "scorep-serial-rusage-metric-test-dir" ]; then
     echo "scorep-serial-rusage-metric-test-dir exists"
 else
     echo "scorep-serial-rusage-metric-test-dir DOES NOT exists"
+fi
+
+# Figure out the result dir
+ls > end_ls.log
+NEW_DIRECTORY=`diff end_ls.log start_ls.log | grep scorep- | sed 's!< !!g'`
+rm end_ls.log start_ls.log
+if [ "x$NEW_DIRECTORY" = "x" ]; then
+    echo "Can not identify output directory. Skip evaluation of metric test"
+    exit 1
+else
+    echo "Experiment result directory is $NEW_DIRECTORY"
 fi
 
 # Check metric definitions
