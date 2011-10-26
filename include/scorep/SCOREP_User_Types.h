@@ -46,7 +46,7 @@ typedef struct SCOREP_User_Region* SCOREP_User_RegionHandle;
 /**
    Value for uninitialized or invalid region handles
  */
-#define SCOREP_INVALID_USER_REGION NULL
+#define SCOREP_USER_INVALID_REGION NULL
 
 /**
    Type for the region type

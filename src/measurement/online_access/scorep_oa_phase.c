@@ -40,7 +40,7 @@ scorep_oa_phase_enter
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
-    assert( handle != SCOREP_INVALID_USER_REGION );
+    assert( handle != SCOREP_USER_INVALID_REGION );
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %ld\n", handle->handle );
 
     SCOREP_RegionHandle ms_handle = handle->handle;
@@ -63,7 +63,7 @@ scorep_oa_phase_exit
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
-    assert( handle != SCOREP_INVALID_USER_REGION );
+    assert( handle != SCOREP_USER_INVALID_REGION );
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %ld\n", handle->handle );
 
     SCOREP_RegionHandle ms_handle = handle->handle;

@@ -62,7 +62,7 @@ scorep_user_create_region( const char* name )
 bool
 scorep_selective_check_enter( SCOREP_User_RegionHandle region )
 {
-    assert( region != SCOREP_INVALID_USER_REGION );
+    assert( region != SCOREP_USER_INVALID_REGION );
 
     /* Check whether this region has an selection entry */
     if ( region->selection == NULL )
@@ -111,7 +111,7 @@ scorep_selective_check_enter( SCOREP_User_RegionHandle region )
 bool
 scorep_selective_check_exit( SCOREP_User_RegionHandle region )
 {
-    assert( region != SCOREP_INVALID_USER_REGION );
+    assert( region != SCOREP_USER_INVALID_REGION );
 
     /* If this region has enabled recording */
     if ( region->has_enabled )

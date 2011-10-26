@@ -26,15 +26,15 @@
 
 !************************************************************* Data types
 
-#define SCOREP_REGION_HANDLE    integer*8
-#define SCOREP_METRIC_HANDLE    integer*8
-#define SCOREP_PARAMETER_HANDLE integer*8
+#define SCOREP_USER_REGION_HANDLE    integer*8
+#define SCOREP_USER_METRIC_HANDLE    integer*8
+#define SCOREP_USER_PARAMETER_HANDLE integer*8
 
 !************************************************************* Constants
 
-#define SCOREP_INVALID_REGION        -1
-#define SCOREP_INVALID_METRIC        -1
-#define SCOREP_INAVLID_PARAMETER     -1
+#define SCOREP_USER_INVALID_REGION    -1
+#define SCOREP_USER_INVALID_METRIC    -1
+#define SCOREP_USER_INVALID_PARAMETER -1
 
 #define SCOREP_USER_REGION_TYPE_COMMON    0
 #define SCOREP_USER_REGION_TYPE_FUNCTION  1
@@ -52,7 +52,7 @@
 !************************************************************* Regions
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
-        SCOREP_REGION_HANDLE handle
+        SCOREP_USER_REGION_HANDLE handle
 
 #define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type ) \
 		call SCOREP_F_OA_PhaseBegin(handle,name,type,"",__LINE__) 
@@ -81,7 +81,7 @@
 !************************************************************* User metric
 
 #define SCOREP_USER_METRIC_LOCAL( metricHandle ) \
-        SCOREP_METRIC_HANDLE metricHandle
+        SCOREP_USER_METRIC_HANDLE metricHandle
 
 #define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context ) \
         call SCOREP_F_InitMetric(metricHandle,name,unit,type,context)
@@ -106,7 +106,7 @@
 !************************************************************* Parameter
 
 #define SCOREP_PARAMETER_DEFINE( handle ) \
-        SCOREP_PARAMETER_HANDLE handle
+        SCOREP_USER_PARAMETER_HANDLE handle
 
 #define SCOREP_PARAMETER_INT64( handle, name, value ) \
         call SCOREP_F_ParameterInt64( handle, name, value )

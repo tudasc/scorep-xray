@@ -214,7 +214,7 @@ SCOREP_User_RegionBegin
     SCOREP_USER_ASSERT_NOT_FINALIZED;
 
     /* Make sure that the region is initialized */
-    if ( *handle == SCOREP_INVALID_USER_REGION )
+    if ( *handle == SCOREP_USER_INVALID_REGION )
     {
         SCOREP_User_RegionInit( handle, lastFileName, lastFile,
                                 name, regionType, fileName, lineNo );
@@ -234,7 +234,7 @@ SCOREP_User_RegionEnd
     SCOREP_USER_ASSERT_NOT_FINALIZED
 
     /* Generate exit event */
-    if ( ( handle != SCOREP_INVALID_USER_REGION ) &&
+    if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
          ( handle != SCOREP_FILTERED_USER_REGION ) )
     {
         SCOREP_ExitRegion( handle->handle );
@@ -267,7 +267,7 @@ SCOREP_User_RegionInit
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean time.
        If the handle is invalid, register a new region */
-    if ( *handle == SCOREP_INVALID_USER_REGION )
+    if ( *handle == SCOREP_USER_INVALID_REGION )
     {
         /* Translate region type from user adapter type to SCOREP measurement type */
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( regionType );
@@ -288,7 +288,7 @@ SCOREP_User_RegionInit
         }
 
         /* Register new region */
-        if ( ( new_handle != SCOREP_INVALID_USER_REGION ) &&
+        if ( ( new_handle != SCOREP_USER_INVALID_REGION ) &&
              ( new_handle != SCOREP_FILTERED_USER_REGION ) )
         {
             new_handle->handle = SCOREP_DefineRegion( name,
@@ -314,7 +314,7 @@ SCOREP_User_RegionEnter
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Generate enter event */
-    if ( ( handle != SCOREP_INVALID_USER_REGION ) &&
+    if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
          ( handle != SCOREP_FILTERED_USER_REGION ) )
     {
         scorep_selective_check_enter( handle );

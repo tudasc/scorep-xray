@@ -64,7 +64,7 @@ scorep_user_find_region( char* name )
     SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( scorep_user_region_table, name, NULL );
     if ( !entry )
     {
-        return SCOREP_INVALID_USER_REGION;
+        return SCOREP_USER_INVALID_REGION;
     }
 
     return ( SCOREP_User_RegionHandle )entry->value;
@@ -74,7 +74,7 @@ static void
 scorep_user_add_region( SCOREP_User_RegionHandle region,
                         char*                    name )
 {
-    assert( region != SCOREP_INVALID_USER_REGION );
+    assert( region != SCOREP_USER_INVALID_REGION );
     assert( name );
 
     SCOREP_Hashtab_Insert( scorep_user_region_table, ( void* )SCOREP_CStr_dup( name ), region, NULL );
@@ -146,7 +146,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
 
     /* Test wether the handle is still invalid, or if it was initialized in the mean
        time. If the handle is invalid, register a new region */
-    if ( region == SCOREP_INVALID_USER_REGION )
+    if ( region == SCOREP_USER_INVALID_REGION )
     {
         /* Translate region type from user adapter type to SCOREP measurement type */
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( *type );
@@ -161,7 +161,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
         {
             region = scorep_user_create_region( name );
 
-            if ( region != SCOREP_INVALID_USER_REGION )
+            if ( region != SCOREP_USER_INVALID_REGION )
             {
                 region->handle = SCOREP_DefineRegion( name,
                                                       *fileHandle,

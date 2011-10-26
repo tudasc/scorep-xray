@@ -141,11 +141,6 @@ typedef int64_t SCOREP_Fortran_Parameter;
  */
 #define SCOREP_FORTRAN_INVALID_GROUP  -1
 
-/**
-    @def SCOREP_FORTRAN_INVALID_GROUP
-    Value of the metric group handle for the default group from fortran calls.
- */
-#define SCOREP_FORTRAN_DEFAULT_GROUP  -2
 
 /**
     @def SCOREP_F2C_POINTER( handle ) Converts a 64 bit integer to a pointer.

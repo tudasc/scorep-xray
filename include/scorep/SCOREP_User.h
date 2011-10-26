@@ -624,7 +624,7 @@
     SCOREP_OA_PhaseEnd( handle );
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
-    static SCOREP_User_RegionHandle handle = SCOREP_INVALID_USER_REGION;
+    static SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
 
 #define SCOREP_USER_REGION_ENTER( handle ) SCOREP_User_RegionEnter( &handle );
 
@@ -639,7 +639,7 @@
 #define SCOREP_USER_REGION_END( handle ) SCOREP_User_RegionEnd( handle );
 
 #define SCOREP_USER_FUNC_BEGIN static SCOREP_User_RegionHandle \
-    scorep_user_func_handle =  SCOREP_INVALID_USER_REGION; \
+    scorep_user_func_handle =  SCOREP_USER_INVALID_REGION; \
     SCOREP_User_RegionBegin( &scorep_user_func_handle, &SCOREP_User_LastFileName, \
                              &SCOREP_User_LastFileHandle, __func__,      \
                              SCOREP_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
@@ -647,7 +647,7 @@
 #define SCOREP_USER_FUNC_END SCOREP_User_RegionEnd( scorep_user_func_handle );
 
 #define SCOREP_GLOBAL_REGION_DEFINE( handle ) \
-    SCOREP_User_RegionHandle handle = SCOREP_INVALID_USER_REGION;
+    SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
 
 #define SCOREP_GLOBAL_REGION_EXTERNAL( handle ) \
     extern SCOREP_User_RegionHandle handle;
@@ -1175,7 +1175,7 @@
 #ifdef __cplusplus
 
 #define SCOREP_USER_REGION( name, type ) static SCOREP_User_RegionHandle \
-    scorep_user_region_handle = SCOREP_INVALID_USER_REGION; \
+    scorep_user_region_handle = SCOREP_USER_INVALID_REGION; \
     SCOREP_User_RegionClass \
     scorep_user_region_inst( &scorep_user_region_handle, name, type, __FILE__, __LINE__ );
 
