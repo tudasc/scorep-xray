@@ -137,7 +137,9 @@ create-cobi-config-local:
 	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_omp.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterOmp.xml
 	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpi.xml
 	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
-	cp $(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_LOCAL_DIR)/
+	if [ ! -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Filter.xml ]; then \
+	 cp $(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_LOCAL_DIR)/ \
+	fi
 
 # determine build dir for config tool
 if CROSS_BUILD
