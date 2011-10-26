@@ -223,13 +223,5 @@ AC_CONFIG_FILES([Makefile \
                  run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
                  ../test/jacobi/hybrid/C/Makefile])
-AC_CONFIG_FILES([../test/services/metric/run_rusage_mpi_metric_test.sh], \ 
-	                [chmod +x ../test/services/metric/run_rusage_mpi_metric_test.sh]) 
-AC_CONFIG_FILES([../test/services/metric/run_rusage_hybrid_metric_test.sh], \ 
-                [chmod +x ../test/services/metric/run_rusage_hybrid_metric_test.sh]) 
-AC_CONFIG_FILES([../test/services/metric/run_papi_mpi_metric_test.sh], \ 
-                [chmod +x ../test/services/metric/run_papi_mpi_metric_test.sh]) 
-AC_CONFIG_FILES([../test/services/metric/run_papi_hybrid_metric_test.sh], \ 
-                [chmod +x ../test/services/metric/run_papi_hybrid_metric_test.sh])
 
 AC_OUTPUT

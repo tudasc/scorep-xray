@@ -19,12 +19,12 @@ endif
 jacobi_mpi_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
 
 if HAVE_GETRUSAGE
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh.in
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh
 jacobi_mpi_c_metric_test_CPPFLAGS += $(SCOREP_RUSAGE_CPPFLAGS)
 endif
 
 if HAVE_PAPI
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh.in
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh
 jacobi_mpi_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
 endif
 
@@ -81,12 +81,12 @@ jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/services/metric/data/
 endif
 
 if HAVE_GETRUSAGE
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_hybrid_metric_test.sh.in
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_hybrid_metric_test.sh
 jacobi_mpi_omp_c_metric_test_CPPFLAGS += $(SCOREP_RUSAGE_CPPFLAGS)
 endif
 
 if HAVE_PAPI
-EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh.in
+EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh
 jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
 endif
 

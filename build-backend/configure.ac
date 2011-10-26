@@ -181,13 +181,5 @@ AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/OpenMP/C/Makefile ])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
-AC_CONFIG_FILES([../test/services/metric/run_rusage_serial_metric_test.sh], \
-                [chmod +x ../test/services/metric/run_rusage_serial_metric_test.sh])
-AC_CONFIG_FILES([../test/services/metric/run_rusage_openmp_metric_test.sh], \
-                [chmod +x ../test/services/metric/run_rusage_openmp_metric_test.sh])
-AC_CONFIG_FILES([../test/services/metric/run_papi_serial_metric_test.sh], \
-                [chmod +x ../test/services/metric/run_papi_serial_metric_test.sh])
-AC_CONFIG_FILES([../test/services/metric/run_papi_openmp_metric_test.sh], \
-                [chmod +x ../test/services/metric/run_papi_openmp_metric_test.sh])
 
 AC_OUTPUT
