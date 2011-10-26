@@ -301,7 +301,8 @@ m4_expand(m4_join([], [SCOREP_TIMER_], m4_toupper($1), [_AVAILABLE]))
 AC_DEFUN([SCOREP_TIMER_USE_IF_AVAILABLE], [[test "x$scorep_timer_$1_available" = "xyes"],[
 scorep_timer_given="yes"
 scorep_timer_$1="yes"
-scorep_timer="$1"]
+scorep_timer="$1"
+AC_MSG_NOTICE([Selecting platform default $1 timer])]
 ])
 
 ###############################################################################
@@ -343,11 +344,12 @@ AC_ARG_ENABLE([timer-$1],
               [AS_HELP_STRING([--enable-timer-$1],
                               [enable $1 timer if available instead of platform default])],
               [if test "x${scorep_user_timer_given}" = "xyes"; then
-                   AC_MSG_WARN(["Several timers provided, using $scorep_timer"])
+                   AC_MSG_WARN([Several timers provided, using $scorep_timer])
                else
                    if test "x${scorep_timer_$1_available}" = "xno"; then
-                       AC_MSG_WARN(["timer-$1 not available"])
+                       AC_MSG_WARN([User selected $1 timer not available])
                    else
+                       AC_MSG_NOTICE([User selected $1 timer available])
                        scorep_user_timer_given="yes"
                        scorep_timer="$1"
                        scorep_timer_$1="yes"
@@ -424,12 +426,11 @@ scorep_user_timer_given="no"
 SCOREP_TIMER_ENABLE_SPECIFIC
 
 scorep_timer_given="no"
-scorep_timer=""
 SCOREP_TIMER_PLATFORM_DEFAULTS
 
 AS_IF([test "x${scorep_user_timer_given}" = "xno" && test "x${scorep_timer_given}" = "xno"],
       [AC_MSG_ERROR([No suitable timer found. You may specify one with the --enable-timer options])],
-      [AC_MSG_NOTICE([Using timer ${scorep_timer}])])
+      [AC_MSG_NOTICE([Using ${scorep_timer} timer])])
 
 
 AM_CONDITIONAL([SCOREP_TIMER_BGL_RTS_GET_TIMEBASE], [test "x${scorep_timer_bgl_rts_get_timebase}" = "xyes"])
@@ -455,4 +456,6 @@ AS_IF([test "x${scorep_timer_clock_gettime}"    = "xyes"], [scorep_timer_lib=${s
       [test "x${scorep_timer_ibm_switch_clock}" = "xyes"], [scorep_timer_lib=${scorep_timer_libswclock}],
       [test "x${scorep_timer_bgp_get_timebase}" = "xyes"], [scorep_timer_lib="-lSPI.cna -lrt"])
 AC_SUBST([TIMER_LIB], ["$scorep_timer_lib"])
+
+AC_SCOREP_SUMMARY([Clock source used for measurement], [$scorep_timer])
 ])
