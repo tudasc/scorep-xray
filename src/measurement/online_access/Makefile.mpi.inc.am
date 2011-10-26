@@ -91,6 +91,10 @@ OA_MPI_FLAGS =                                 						\
     -I$(INC_DIR_UTIL)												\
     -DWITH_MPI
 
+noinst_LTLIBRARIES += libscorep_oa_mpi_parser.la
+libscorep_oa_mpi_parser_la_SOURCES = $(SRC_ROOT)src/measurement/online_access/yacc.y
+libscorep_oa_mpi_parser_la_CPPFLAGS = $(OA_MPI_FLAGS) -D_POSIX_SOURCE
+
 noinst_LTLIBRARIES += libscorep_oa_mpi.la
 libscorep_oa_mpi_la_SOURCES =                                  			\
     $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Functions.c            		\
@@ -102,8 +106,7 @@ libscorep_oa_mpi_la_SOURCES =                                  			\
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c				\
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h				\
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h			\
-    $(SRC_ROOT)src/measurement/online_access/yacc.y
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h			
 
 libscorep_oa_mpi_la_SOURCES +=											\
 	$(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c         			\
@@ -115,7 +118,8 @@ libscorep_oa_mpi_la_LIBADD =                \
     libscorep_oa_fortran_sub1.la        	\
     libscorep_oa_fortran_sub2.la        	\
     libscorep_oa_fortran_sub3.la        	\
-    libscorep_oa_fortran_sub4.la
+    libscorep_oa_fortran_sub4.la			\
+    libscorep_oa_mpi_parser.la
 
 else #if HAVE_ONLINE_ACCESS_HEADERS
 
