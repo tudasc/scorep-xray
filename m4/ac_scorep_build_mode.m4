@@ -18,7 +18,7 @@
 
 AC_DEFUN([AC_SCOREP_BUILD_MODE], [
 
-AM_CONDITIONAL(BUILD_SHARED_LIBRARIES, [test x$enable_shared = xyes])
-AM_CONDITIONAL(BUILD_STATIC_LIBRARIES, [test x$enable_static = xyes])
+AM_CONDITIONAL([BUILD_SHARED_LIBRARIES], [test "x${enable_shared}" = "xyes"])
+AM_CONDITIONAL([BUILD_STATIC_LIBRARIES], [test 'x${enable_static}" = "xyes"])
 
 ])
