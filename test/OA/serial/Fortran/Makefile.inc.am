@@ -33,6 +33,6 @@ endif
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/serial/Fortran/run_oa_f_test.sh
 
-#TESTS += $(srcdir)/../test/OA/serial/Fortran/run_oa_f_test.sh
+TESTS += $(srcdir)/../test/OA/serial/Fortran/run_oa_f_test.sh
 
 endif #if HAVE_ONLINE_ACCESS_HEADERS
