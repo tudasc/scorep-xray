@@ -33,7 +33,8 @@ rm -rf $RESULT_DIR
 ls > start_ls.log
 
 # Run test
-SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime ./jacobi_serial_c_metric_test
+#SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime ./jacobi_serial_c_metric_test
+SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime ./jacobi_serial_c_metric_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp
     exit 1
