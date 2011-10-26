@@ -37,12 +37,12 @@ if [ $? -ne 0 ]; then
 fi
 echo "Output of metric test can be found in $RESULT_DIR"
 
-if [ -d "$RESULT_DIR" ] then
+if [ -d "$RESULT_DIR" ]; then
     echo "$RESULT_DIR exists"
 else
     echo "$RESULT_DIR DOES NOT exists"
 fi
-if [ -d "scorep-serial-rusage-metric-test-dir" ] then
+if [ -d "scorep-serial-rusage-metric-test-dir" ]; then
     echo "scorep-serial-rusage-metric-test-dir exists"
 else
     echo "scorep-serial-rusage-metric-test-dir DOES NOT exists"
