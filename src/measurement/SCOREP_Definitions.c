@@ -901,7 +901,7 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
  *
  * needs only be called by rank 0
  */
-void
+SCOREP_GroupHandle
 SCOREP_DefineMPILocations( int32_t        numberOfRanks,
                            const int32_t* locations )
 {

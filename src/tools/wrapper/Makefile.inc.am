@@ -49,5 +49,11 @@ endif
 scorep_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la    \
              $(LIB_DIR_UTIL)libscorep_parser_tools.la
 
-EXTRA_DIST +=  $(SRC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf
+EXTRA_DIST += \
+     $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf \
+     $(SRC_ROOT)share/SCOREP_Cobi_Adapter.xml.in      \
+     $(SRC_ROOT)share/SCOREP_Cobi_Filter.xml
 
+if HAVE_COBI
+BUILT_SOURCES += create-cobi-config-local
+endif

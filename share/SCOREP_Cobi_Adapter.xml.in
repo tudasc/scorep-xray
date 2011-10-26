@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adapter>
+<dependencies>
+	<library name="libscorep_mpi.so" />
+</dependencies>
+
+<adaptersettings>
+	<saveallfprs value="false" />
+	<initfunctionname value="_start" />
+	<finalizefunctionname value="main" />
+</adaptersettings>
+
+<adapterfilter>
+	<or>
+		<property name="hasoverlay" />
+	</or>
+</adapterfilter>
+
+<adapterinitialization>
+	SCOREP_InitMeasurement();
+</adapterinitialization>
+
+<code name="functions">
+	<variables><var name="regionid" size="8" type="void*" /></variables>
+	<init>
+		regionid = SCOREP_DefineRegion(@ROUTINE@,
+						SCOREP_DefineSourceFile(@FILE@),
+						@LINE@,@LINE@,1,1);
+	</init>
+	<enter>
+                if ( SCOREP_IsInitialized() != 0 )
+                {
+                    SCOREP_EnterRegion(regionid);
+                };
+	</enter>
+	<exit>
+                if ( SCOREP_IsInitialized() != 0 )
+                {
+ 	            SCOREP_ExitRegion(regionid);
+                };
+	</exit>
+</code>
+</adapter>

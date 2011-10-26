@@ -46,3 +46,7 @@ BUILD_DIR=build-frontend
 ## Here we write only backend values.
 create-config-tool-headers:
 	(cd ../build-backend; $(MAKE) create-config-tool-headers)
+
+## Here we create the Cobi config scripts.
+create-cobi-config-local:
+	(cd ../build-backend; $(MAKE) create-cobi-config-local)

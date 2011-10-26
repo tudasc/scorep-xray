@@ -181,7 +181,7 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
                               int32_t          numberOfRanks,
                               int32_t*         ranks );
 
-void
+SCOREP_GroupHandle
 SCOREP_DefineMPILocations( int32_t        numberOfRanks,
                            const int32_t* locations );
 

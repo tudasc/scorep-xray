@@ -394,6 +394,12 @@ private:
     std::string
     remove_path( std::string full_path );
 
+    /**
+       Invoke the binary instrumenter Cobi.
+     */
+    int
+    invoke_cobi();
+
     /* ***************************************************** Private members */
 private:
     /* --------------------------------------------
@@ -425,6 +431,11 @@ private:
        instrumentation.
      */
     instrumentation_usage_t pdt_instrumentation;
+
+    /**
+       Specifies if binary instrumentation with Cobi is enabled.
+     */
+    instrumentation_usage_t cobi_instrumentation;
 
     /* --------------------------------------------
        Flags for application type
@@ -522,9 +533,9 @@ private:
     std::string scorep_include_path;
 
     /**
-       Stores external dependency libraries of the SCOREP library
+       Stores SCOREP library linking flags
      */
-    std::string external_libs;
+    std::string scorep_libs;
 
     /**
        C compiler
@@ -552,6 +563,11 @@ private:
     std::string grep;
 
     /**
+       cobi
+     */
+    std::string cobi;
+
+    /**
        awk script used to generate functions for initialization of Opari
        instrumented regions.
      */
@@ -571,6 +587,11 @@ private:
         Name of the scorep_config tool.
      */
     std::string scorep_config;
+
+    /**
+        Directory of the Cobi configuration files
+     */
+    std::string cobi_config_dir;
 
     /* --------------------------------------------
        Execution flags

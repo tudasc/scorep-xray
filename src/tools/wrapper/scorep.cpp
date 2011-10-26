@@ -86,11 +86,16 @@ print_help()
               << "  --nopdt         Disables the source code instrumentation with PDT.\n"
               << "                  It is disabled by default.\n"
 #endif
-              << "  --openmp_support Enables OpenMP support. Needed if the instrumentation\n"
-              << "                  does not correctly identify your application as OpenMP\n"
-              << "                  program.\n"
-              << "  --noopenmp_support Disables OpenMP support.\n"
-              << std::endl;
+#ifdef HAVE( COBI )
+    << "  --cobi          Enables binary instrumentation with Cobi.\n"
+    << "  --nocobi        Disables the binary instrumentation with Cobi.\n"
+    << "                  It is disabled by default.\n"
+#endif
+    << "  --openmp_support Enables OpenMP support. Needed if the instrumentation\n"
+    << "                  does not correctly identify your application as OpenMP\n"
+    << "                  program.\n"
+    << "  --noopenmp_support Disables OpenMP support.\n"
+    << std::endl;
 }
 
 /**

@@ -76,6 +76,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     user_instrumentation     = disabled;
     mpi_instrumentation      = detect;
     pdt_instrumentation      = disabled;
+    pdt_instrumentation      = disabled;
 
     is_mpi_application    = detect;
     is_openmp_application = detect;
@@ -84,7 +85,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     is_linking   = true; // Opposite recognized on existence of -c flag
 
     scorep_include_path = "";
-    external_libs       = "";
+    scorep_libs         = "";
     pdt_bin_path        = PDT;
     pdt_config_file     = PDT_CONFIG;
     input_file_number   = 0;
@@ -101,6 +102,8 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     grep                           =  "`" OPARI_CONFIG " --egrep`";
     language                       = unknown_language;
     scorep_config                  = "";
+    cobi                           = SCOREP_COBI_PATH;
+    cobi_config_dir                = COBI_CONFIG_DIR;
 
     is_dry_run    = false;
     no_final_step = false;
@@ -114,6 +117,8 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 int
 SCOREP_Instrumenter::Run()
 {
+    int ret_val = 0;
+
     if ( verbosity >= 2 )
     {
         PrintParameter();
@@ -219,8 +224,21 @@ SCOREP_Instrumenter::Run()
             prepare_opari_linking();
         }
 
-        return link_step();
+        ret_val = link_step();
+
+        if ( ret_val != EXIT_SUCCESS )
+        {
+            fprintf( stderr, "SCOREP: Error while linking\n" );
+            return ret_val;
+        }
     }
+
+    #if HAVE( COBI )
+    if ( cobi_instrumentation == enabled )
+    {
+        return invoke_cobi();
+    }
+    #endif
 
     return 0;
 }
@@ -399,6 +417,18 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
     else if ( arg == "--nopdt" )
     {
         pdt_instrumentation = disabled;
+        return scorep_parse_mode_param;
+    }
+#endif
+#if HAVE( COBI )
+    else if ( arg == "--cobi" )
+    {
+        cobi_instrumentation = enabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--nocobi" )
+    {
+        cobi_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
 #endif
@@ -680,6 +710,10 @@ SCOREP_Instrumenter::SetValue( std::string key,
     {
         scorep_config = value;
     }
+    else if ( key == "COBI_CONFIG_DIR" && value != "" )
+    {
+        cobi_config_dir = value;
+    }
 }
 
 /* ****************************************************************************
@@ -852,12 +886,12 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
 
     // Generate calls
     scorep_include_path = "`" + scorep_config + mode + " --inc` ";
-    external_libs       = "`" + scorep_config + mode + " --libs` ";
+    scorep_libs         = "`" + scorep_config + mode + " --libs` ";
 
     // Handle manual -lmpi flag
     if ( lmpi_set )
     {
-        external_libs += "-lmpi ";
+        scorep_libs += "-lmpi ";
     }
 }
 
@@ -1173,19 +1207,17 @@ SCOREP_Instrumenter::prepare_opari_linking()
 int
 SCOREP_Instrumenter::link_step()
 {
-    std::string scorep_lib;
     if ( is_openmp_application == enabled &&
          opari_instrumentation == disabled )
     {
-        scorep_lib += " -lscorep_pomp_dummy";
+        scorep_libs += " -lscorep_pomp_dummy";
     }
 
-    std::string command = compiler_name + " "
-                          //                      + scorep_include_path
-                          + input_files
-                          + scorep_lib
-                          + compiler_flags
-                          + " " + external_libs;
+    std::string command = compiler_name
+                          + " " + input_files
+                          + " " + scorep_libs
+                          + " " + compiler_flags
+                          + " " + scorep_libs;
 
     if ( output_name != "" )
     {
@@ -1197,6 +1229,44 @@ SCOREP_Instrumenter::link_step()
         std::cout << command << std::endl;
     }
 
+    if ( !is_dry_run )
+    {
+        return system( command.c_str() );
+    }
+    return 0;
+}
+
+int
+SCOREP_Instrumenter::invoke_cobi()
+{
+    std::string adapter = cobi_config_dir + "/SCOREP_Cobi_Adapter";
+    std::string command;
+
+    /* Define adapter defintion file */
+    if ( is_mpi_application == enabled )
+    {
+        adapter += "Mpi";
+    }
+    if ( is_openmp_application == enabled )
+    {
+        adapter += "Omp";
+    }
+    if ( ( is_mpi_application == disabled ) && ( is_openmp_application == disabled ) )
+    {
+        adapter += "Serial";
+    }
+    adapter += ".xml";
+
+    command = cobi
+              + " -a " + adapter
+              + " -b " + output_name
+              + " -f " + cobi_config_dir + "/SCOREP_Cobi_Filter.xml"
+              + " -o " + output_name + "_inst";
+
+    if ( verbosity >= 1 )
+    {
+        std::cout << command << std::endl;
+    }
     if ( !is_dry_run )
     {
         return system( command.c_str() );

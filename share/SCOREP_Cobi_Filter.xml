@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<filters>
+
+<filter name="filter1" start="all" instrument="functions">
+	<exclude>
+		<or>
+		<namespaces match="prefix">
+		std __gnu_cxx
+		</namespaces>
+		</or>
+	</exclude>
+</filter>
+
+</filters>
