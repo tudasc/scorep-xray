@@ -86,7 +86,7 @@ print_help()
               << "  --nopdt         Disables the source code instrumentation with PDT.\n"
               << "                  It is disabled by default.\n"
 #endif
-#ifdef HAVE( COBI )
+#if HAVE( COBI )
     << "  --cobi          Enables binary instrumentation with Cobi.\n"
     << "  --nocobi        Disables the binary instrumentation with Cobi.\n"
     << "                  It is disabled by default.\n"

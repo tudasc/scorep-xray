@@ -95,12 +95,23 @@ install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
 
 SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)$(datadir)/scorep
+SCOREP_SHARE_LOCAL_DIR=$(PWD)/../share
+SCOREP_SHARE_GLOBAL_DIR=$(abs_top_srcdir)/../share
 SCOREP_PDT_CONFIG_INSTALL_TARGET = $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf
-SCOREP_COBI_CONFIG_IN=$(abs_top_srcdir)/../share/SCOREP_Cobi_Adapter.xml.in
-SCOREP_SHARE_DIR=$(PWD)/../share
+SCOREP_COBI_CONFIG_IN=$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Adapter.xml.in
 
 uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
-	rm -rf $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat $(CONFIG_HEADER_BACKEND) $(SCOREP_PDT_CONFIG_INSTALL_TARGET) $(SCOREP_SHARE_DIR)
+	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat \
+	     $(CONFIG_HEADER_BACKEND) \
+	     $(SCOREP_PDT_CONFIG_INSTALL_TARGET) 
+	if [ -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml.in ]; then \
+	  rm -f  $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterSerial.xml \
+	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterOmp.xml \
+	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpi.xml \
+	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml; \
+	else \
+	  rm -rf $(SCOREP_SHARE_LOCAL_DIR); \
+	fi
 
 INSTALL_DATA_LOCAL_TARGETS += scorep-config-tool-install 
 
@@ -121,12 +132,12 @@ scorep-config-tool-local: $(builddir)/scorep_config.dat
 	@(cd ../vendor/otf2/build-backend; make otf2-config-tool-local)
 
 create-cobi-config-local:
-	$(MKDIR_P) $(SCOREP_SHARE_DIR)
-	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_serial.so!g'  $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_DIR)/SCOREP_Cobi_AdapterSerial.xml
-	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_omp.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_DIR)/SCOREP_Cobi_AdapterOmp.xml
-	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_DIR)/SCOREP_Cobi_AdapterMpi.xml
-	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
-	cp $(abs_top_srcdir)/../share/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_DIR)/
+	$(MKDIR_P) $(SCOREP_SHARE_LOCAL_DIR)
+	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_serial.so!g'  $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterSerial.xml
+	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_omp.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterOmp.xml
+	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpi.xml
+	sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
+	cp $(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_LOCAL_DIR)/
 
 # determine build dir for config tool
 if CROSS_BUILD
@@ -161,7 +172,7 @@ $(builddir)/scorep_config.dat:
 	    echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
 	    echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
 	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2_print\"; \
-	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_DIR)\"; \
+	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_LOCAL_DIR)\"; \
 	) >$(builddir)/scorep_config.dat
 
 ## Here we write only the backend values.

@@ -901,7 +901,7 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
  *
  * needs only be called by rank 0
  */
-SCOREP_GroupHandle
+void
 SCOREP_DefineMPILocations( int32_t        numberOfRanks,
                            const int32_t* locations )
 {
@@ -924,8 +924,6 @@ SCOREP_DefineMPILocations( int32_t        numberOfRanks,
     scorep_mpi_locations_defined = true;
 
     SCOREP_Definitions_Unlock();
-
-    return new_handle;
 }
 
 
