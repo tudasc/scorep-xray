@@ -76,7 +76,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     user_instrumentation     = disabled;
     mpi_instrumentation      = detect;
     pdt_instrumentation      = disabled;
-    pdt_instrumentation      = disabled;
+    cobi_instrumentation     = disabled;
 
     is_mpi_application    = detect;
     is_openmp_application = detect;
