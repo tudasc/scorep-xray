@@ -340,10 +340,10 @@ int RegServ::execute_test(const char* scenario_file)
 
 	f.close();
 
-	//for( it=reg_data_.begin(); it!=reg_data_.end(); it++ )
-	//{
-	//		close(it->second->test_comm_sock);
-	//}
+	for( it=reg_data_.begin(); it!=reg_data_.end(); it++ )
+	{
+			close(it->second->test_comm_sock);
+	}
 	printf("Periscope Emulator: test successfully completed!\n");
 	return 0;
 }
@@ -413,7 +413,8 @@ int main( int argc, char* argv[] ){
 			break;
 		}
 	}
+	regsrv.close_connection();
 	regsrv.close_server();
-	printf("Registry service: finished");
+	printf("Registry service: finished\n");
   return 0;
 }

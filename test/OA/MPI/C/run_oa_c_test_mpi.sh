@@ -25,83 +25,139 @@ make scorep-config-tool-local
 . ./scorep_config.dat
 cd ../build-mpi
 
-run_test()
-{
-
-	#get hostname and pick random port for periscope emulator
-	REG_HOST=`hostname`
-	REG_PORT=$((50100+$RANDOM%100))
-	echo Starting OA_MPI_C_TEST with Periscope Emulator on $REG_HOST:$REG_PORT
-	
-	#enable forwarding of environment variables to mprun command when needed
-	MPIRUN_FLAGS=
-	
-	
-	#start periscope emulator
-	../build-backend/online_access_registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/scenario_mpi >/dev/null &
-	REGSRV_PID=$!
-	
-	#start online access test
-	SCOREP_ONLINEACCESS_BASE_PORT=50000 SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST mpiexec $MPIRUN_FLAGS -np 4 ./oa_c_test_mpi &
-	TEST_PID=$!
-	
-	#wait for periscope emulator to finish
-	wait $REGSRV_PID
-	if [ $? -ne 0 ]; then
-	    rm -rf scorep-measurement-tmp start_ls.log
-	    kill -9 $TEST_PID
-	    exit 1
-	fi
-	
-	#wait for online access test to finish
-	wait $TEST_PID
-	if [ $? -ne 0 ]; then
-	    rm -rf scorep-measurement-tmp start_ls.log
-	    exit 1
-	fi
-	
-	exit 0
-
-}
+REGSRV_PID=
+TEST_PID=
+TEST_NAME=oa_c_test_mpi
+TIMEOUT=60
+RETURN_VALUE=0;
+MPIRUN_COMMAND="mpirun -np 4"
+SCENARIO_FILE=scenario_mpi
 
 #cleanup the background processes when timeout happens
 cleanup()
 {
-    trap - ALRM               							#reset handler to default
-    kill -ALRM $a 2>/dev/null 							#stop timer subshell if running
-    kill $! 2>/dev/null &&    							#kill last job
-
-    #find out pids of the periscope emulator and online access test and kill both
-    pids_to_clean=`ps -f | grep "online_access_registry" | grep -v "grep" | awk '{print $2;}'`
-    kill -9 $pids_to_clean 2>/dev/null
-    pids_to_clean=`ps -f | grep "\/oa_f_test" | grep -v "grep" | awk '{print $2;}'`
-    kill -9 $pids_to_clean 2>/dev/null
-
-    if test -n "$pids_to_clean" ; then
-    	echo Test failed due to timeout.
-    	rm -rf scorep-measurement-tmp start_ls.log
-    fi
+    trap "dummy" ALRM               					#reset handler to dummy
+    #echo cleaning $TIMER_PID $1 $2
+    kill -ALRM $TIMER_PID 								#stop timer subshell if running
+    wait $TIMER_PID
     
-    exit 124                #exit with 124 if timedout
+    trap - ALRM               							#reset handler to default
+    
+	if [ $1 -ne 0 -o $2 -ne 0 ]; then
+    	echo Test failed due to timeout \($TIMEOUT sec\). Killing periscope\(pid $1\) and $TEST_NAME\(pid $2\)
+    	echo $TEST_NAME FAILED! $TEST_ID
+    	
+    	clean_scorep_crash
+    	clean_scorep
+    	
+    	kill -9 $1 $2 2>/dev/null		# kill periscope emulator and oa test
+    	wait $1 $2	2>/dev/null
+    	
+    	exit 124
+    fi
+}
+
+#dummy function needed misguide the double issue of the signal when cleaning pids
+dummy()
+{
+dummy=
+}
+
+#clean experimental folder
+clean_scorep()
+{
+	rm -f ../build-backend/config.h ../build-backend/scorep_config.dat	
+}
+
+#clean experiment folder in case of failure
+clean_scorep_crash(){
+	rm -rf scorep-measurement-tmp start_ls.log
+}
+
+#kill sleep in the timer
+cleanup_timer()
+{
+	kill $1
 }
 
 #timeout function
 watchit()
 {
-    trap "cleanup" ALRM
-    sleep $1& wait
+    sleep $1 & 
+    SLEEP_PID=$!
+    trap "cleanup_timer $SLEEP_PID" ALRM	#clean sleep in case of finish before the timeout
+    wait $SLEEP_PID
     kill -ALRM $$
+
 }
 
-watchit 100 & a=$!         #start the timeout of 100 sec.
-trap "cleanup" ALRM INT    #cleanup after timeout
-run_test &                 #start the test
-test_pid=$!
-wait $test_pid; RET=$?     #wait for test and save its return value
-kill -ALRM $a              #send ALRM signal to watchit
-wait $a                    #wait for watchit to finish cleanup
-if [ $RET -eq 0 ]; then
-echo OA_MPI_C_TEST successful.
+watchit $TIMEOUT &					 #start the timeout of 100 sec.
+TIMER_PID=$!       
+
+###########################################################Starting tests###################################################
+#get hostname and pick random port for periscope emulator
+REG_HOST=`hostname`
+REG_PORT=$((40000+$RANDOM%10000))
+PORT_BUSY=`netstat -anp 2>/dev/null | grep $REG_PORT `
+
+#check whether the port is busy
+while test -n "$PORT_BUSY"
+do
+	echo Randomly picked port $REG_PORT is busy :$PORT_BUSY:
+	REG_PORT=$((40000+$RANDOM%10000))
+	PORT_BUSY=`netstat -ap 2>/dev/null | grep $REG_PORT`
+done
+
+BASE_PORT=$(($REG_PORT+1))
+echo Starting $TEST_NAME with Periscope Emulator on $REG_HOST:$REG_PORT	
+
+#start periscope emulator
+../build-backend/online_access_registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE >/dev/null &
+REGSRV_PID=$!
+
+#start online access test
+SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST $MPIRUN_COMMAND ./$TEST_NAME >/dev/null & 
+TEST_PID=$!
+
+#echo registry $REGSRV_PID application $TEST_PID
+############################################################################################################################
+
+trap "cleanup $REGSRV_PID $TEST_PID $TIMER_PID" ALRM INT    #cleanup in case of timeout
+
+###########################################################Waiting tests####################################################
+#echo wait_test PIDS: $REGSRV_PID $TEST_PID
+#wait for periscope emulator to finish
+wait $REGSRV_PID
+REG_RETURN=$?
+if [ $REG_RETURN -ne 0 ]; then
+    kill -9 $TEST_PID
+    echo FAILED registry 
+    RETURN_VALUE=$REG_RETURN
 fi
-rm -f config.h scorep_config.dat
-exit $RET                  #return the value
+
+#wait for online access test to finish
+wait $TEST_PID
+TEST_RETURN=$?
+if [ $TEST_RETURN -ne 0 ]; then
+    if [ $REG_RETURN -eq 0 ]; then
+    	echo FAILED application
+    fi 
+    RETURN_VALUE=$TEST_RETURN
+fi
+
+############################################################################################################################
+
+cleanup 0 0 $TIMER_PID
+
+if [ $RETURN_VALUE -eq 0 ]; then
+	
+	echo $TEST_NAME successful.
+else
+	clean_scorep_crash
+	echo $TEST_NAME FAILED! 
+fi 
+
+
+clean_scorep
+
+exit $RETURN_VALUE                  #return the value
