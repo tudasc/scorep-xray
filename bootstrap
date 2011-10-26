@@ -4,16 +4,42 @@
  exec make -f "$argv0" "$@"
 
 AUTORECONF      = autoreconf
-AUTORECONFFLAGS = --install -Wall --verbose --no-recursive
+AUTORECONFFLAGS = -Wall --no-recursive
 
-all: clean
-	@cd vendor/opari2 && ./bootstrap AUTORECONF=$(AUTORECONF)
-	@cd vendor/otf2 && ./bootstrap AUTORECONF=$(AUTORECONF)
-	$(AUTORECONF) $(AUTORECONFFLAGS) . build-backend build-mpi build-frontend
+CONFIGURES = configure \
+	build-backend/configure \
+	build-frontend/configure \
+	build-mpi/configure \
+	vendor/opari2/configure \
+	vendor/otf2/configure
 
-clean:
-	@cd vendor/opari2 && ./bootstrap clean
-	@cd vendor/otf2 && ./bootstrap clean
+.PHONY: all $(CONFIGURES) clean clean-local
+all: $(CONFIGURES)
+$(CONFIGURES): clean-local
+
+vendor/opari2/configure:
+	@$(MAKE) -C vendor/opari2 -f bootstrap AUTORECONF=$(AUTORECONF)
+
+vendor/otf2/configure:
+	@$(MAKE) -C vendor/otf2 -f bootstrap AUTORECONF=$(AUTORECONF)
+
+configure:
+	$(AUTORECONF) --install $(AUTORECONFFLAGS) .
+
+build-backend/configure: configure
+	$(AUTORECONF) --install $(AUTORECONFFLAGS) build-backend
+
+build-frontend/configure: build-backend/configure
+	$(AUTORECONF) $(AUTORECONFFLAGS) build-frontend
+
+build-mpi/configure: build-backend/configure
+	$(AUTORECONF) $(AUTORECONFFLAGS) build-mpi
+
+clean: clean-local
+	@$(MAKE) -C vendor/opari2 -f bootstrap clean
+	@$(MAKE) -C vendor/otf2   -f bootstrap clean
+
+clean-local:
 	@rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in
 	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing
 	@cd vendor/common/build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
