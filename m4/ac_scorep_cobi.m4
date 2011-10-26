@@ -32,23 +32,23 @@ AC_ARG_WITH(cobi, [AS_HELP_STRING([--with-cobi=yes|no|path_to_binary], [Specifie
 # and $have_cobi is no.
 
 # If cobe is enabled, test if shared libraries are build.
-if [ test "x$enable_shared$have_cobi" = "xnoyes" ]; then
+if test "x$enable_shared$have_cobi" = "xnoyes"; then
     AC_MSG_RESULT([ prerequisites missing])
     AC_MSG_ERROR([Cobi support is only possible when shared libraries are enabled. Please, enable building shared libraries by specifying --enable-shared or disable cobi-support via --with-cobi=no])
     have_cobi=no
 fi
 
 # If no specific path to cobi is given, try to find cobi from in the PATH.
-if [ test "x$cobi_path" = "xyes/cobi" ]; then
+if test "x$cobi_path" = "xyes/cobi"; then
     cobi_path="`which cobi 2>/dev/null`"
-    if [ test "x$cobi_path" = "x" ]; then
+    if test "x$cobi_path" = "x"; then
        AC_MSG_RESULT([ not found])
        have_cobi=no
     else
        AC_MSG_RESULT([$cobi_path])
     fi
 else
-    if [ test x$have_cobi = xyes]; then 
+    if test x$have_cobi = xyes; then
        AC_MSG_RESULT([ $cobi_path])
     else
        AC_MSG_RESULT([ no cobi support])
@@ -58,7 +58,7 @@ fi
 # Output results
 AM_CONDITIONAL(HAVE_COBI,[test x$have_cobi = xyes])
 
-if [test "x$have_cobi" = "xyes" ]; then
+if test "x$have_cobi" = "xyes"; then
     AC_DEFINE(HAVE_COBI, 1, "Defined if configured to use Cobi." )
     AC_DEFINE_UNQUOTED(SCOREP_COBI_PATH, "$cobi_path", "Defines path to Cobi." )
 else
