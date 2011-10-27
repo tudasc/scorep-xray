@@ -395,10 +395,13 @@ private:
     remove_path( std::string full_path );
 
     /**
-       Invoke the binary instrumenter Cobi.
+       Invoke the binary instrumenter Cobi. Instruments the binary @a orig_name. The
+       instrumented file will be named @a output_name.
+       @param orig_name The name of the uninstrumented exectable
+       @return The return value of the cobi execution.
      */
     int
-    invoke_cobi();
+    invoke_cobi( std::string orig_name );
 
     /* ***************************************************** Private members */
 private:

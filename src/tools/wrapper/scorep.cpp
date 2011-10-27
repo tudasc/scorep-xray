@@ -87,6 +87,7 @@ print_help()
 #endif
 #if HAVE( COBI )
     << "  --cobi          Enables binary instrumentation with Cobi.\n"
+    << "                  Disables compiler instrumentation.\n"
     << "  --nocobi        Disables the binary instrumentation with Cobi.\n"
     << "                  It is disabled by default.\n"
 #endif

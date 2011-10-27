@@ -236,11 +236,18 @@ SCOREP_Instrumenter::Run()
     #if HAVE( COBI )
     if ( cobi_instrumentation == enabled )
     {
-        return invoke_cobi();
+        std::string orig_name = output_name + ".orig";
+        if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
+        {
+            SCOREP_ERROR_POSIX( "Failed to rename binary" );
+            return EXIT_FAILURE;
+        }
+
+        return invoke_cobi( orig_name );
     }
     #endif
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 SCOREP_Error_Code
@@ -580,6 +587,12 @@ SCOREP_Instrumenter::check_parameter()
     if ( pdt_instrumentation == enabled )
     {
         user_instrumentation     = enabled;  // Needed to activate the inserted macros.
+        compiler_instrumentation = disabled; // Avoid double instrumentation.
+    }
+
+    /* Check pdt dependencies */
+    if ( cobi_instrumentation == enabled )
+    {
         compiler_instrumentation = disabled; // Avoid double instrumentation.
     }
 
@@ -1233,11 +1246,11 @@ SCOREP_Instrumenter::link_step()
     {
         return system( command.c_str() );
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int
-SCOREP_Instrumenter::invoke_cobi()
+SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
 {
     std::string adapter = cobi_config_dir + "/SCOREP_Cobi_Adapter";
     std::string command;
@@ -1259,9 +1272,9 @@ SCOREP_Instrumenter::invoke_cobi()
 
     command = cobi
               + " -a " + adapter
-              + " -b " + output_name
+              + " -b " + orig_name
               + " -f " + cobi_config_dir + "/SCOREP_Cobi_Filter.xml"
-              + " -o " + output_name + "_inst";
+              + " -o " + output_name;
 
     if ( verbosity >= 1 )
     {
@@ -1271,5 +1284,5 @@ SCOREP_Instrumenter::invoke_cobi()
     {
         return system( command.c_str() );
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
