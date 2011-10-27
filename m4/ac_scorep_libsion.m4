@@ -92,6 +92,11 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
             sionconfig_febe_flag="--fe"
         fi
 
+        AS_CASE([${build_cpu}], 
+                [i?86],   [sionconfig_architecture_flags="--32"], 
+                [x86_64], [sionconfig_architecture_flags="--64"],
+                [sionconfig_architecture_flags=""])
+
         m4_case([$1], [SERIAL],  [sionconfig_paradigm_flag="--ser"], 
                       [OMP],     [sionconfig_paradigm_flag="--ser"],
                       [MPI],     [sionconfig_paradigm_flag="--mpi"],
@@ -102,9 +107,9 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
         AC_CHECK_HEADER([sion.h], [], [scorep_have_sion="no"; scorep_sion_cppflags=""])
 
         if test "x${scorep_have_sion}" = "xyes"; then
-            scorep_sion_ldflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
+            scorep_sion_ldflags=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                                  awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
-            scorep_sion_libs=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --libs | \
+            scorep_sion_libs=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                               awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
             AC_MSG_CHECKING([for libsion $1])
