@@ -170,8 +170,6 @@ SCOREP_InitMeasurement()
 
     SCOREP_Thread_Initialize();
 
-    //scorep_profile_initialize();
-
     if ( !SCOREP_Mpi_HasMpi() )
     {
         scorep_set_otf2_archive_master_slave();
