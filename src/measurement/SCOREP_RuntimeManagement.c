@@ -96,11 +96,11 @@ static void scorep_subsystems_finalize();
 static void scorep_subsystems_initialize_location(); // needed?
 static void scorep_subsystems_finalize_location(); // needed?
 static void scorep_initialization_sanity_checks();
+static void scorep_metrics_initialize( void );
 static void scorep_profile_initialize();
 static void scorep_profile_finalize();
 static void scorep_trigger_exit_callbacks();
 static void scorep_dump_config( void );
-static void scorep_setup_metrics( void );
 //static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
@@ -170,7 +170,7 @@ SCOREP_InitMeasurement()
 
     SCOREP_Thread_Initialize();
 
-    scorep_profile_initialize();
+    //scorep_profile_initialize();
 
     if ( !SCOREP_Mpi_HasMpi() )
     {
@@ -182,7 +182,9 @@ SCOREP_InitMeasurement()
     scorep_subsystems_initialize();
     scorep_subsystems_initialize_location(); // not sure if this should be triggered by thread management
 
-    scorep_setup_metrics();
+    scorep_metrics_initialize();
+
+    scorep_profile_initialize();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurementMPI() and
      * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
@@ -707,23 +709,9 @@ scorep_dump_config( void )
 
 
 static void
-scorep_setup_metrics( void )
+scorep_metrics_initialize( void )
 {
     SCOREP_Error_Code error;
-
-    /* initialize metric management */
-    error = SCOREP_Metric_Service.subsystem_init();
-    if ( SCOREP_SUCCESS != error )
-    {
-        SCOREP_ERROR( error, "Can't initialize %s subsystem",
-                      SCOREP_Metric_Service.subsystem_name );
-        _Exit( EXIT_FAILURE );
-    }
-    else if ( SCOREP_Env_RunVerbose() )
-    {
-        fprintf( stderr, "SCOREP successfully initialized %s subsystem\n",
-                 SCOREP_Metric_Service.subsystem_name );
-    }
 
     /* get sampling set of metric management instance */
     scorep_current_sampling_set = SCOREP_Metric_GetSamplingSet();
