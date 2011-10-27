@@ -222,13 +222,17 @@ SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
  *
  *  @return It returns the identifier of recent location.
  */
-uint64_t
+unsigned long
 scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
     SCOREP_Thread_LocationData* data = SCOREP_Thread_GetLocationData();
     SCOREP_ASSERT( data != NULL );
-    return SCOREP_Thread_GetLocationId( data );
+
+    uint64_t thread_id = SCOREP_Thread_GetLocationId( data );
+    SCOREP_ASSERT( thread_id >> 32 == 0 );
+
+    return ( unsigned long )thread_id;
 }
 
 
