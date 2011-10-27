@@ -56,6 +56,6 @@ if test "x${COBI}" != "xno"; then
 else
     AC_DEFINE([HAVE_COBI], [0], [Defined if configured to use Cobi.])
 fi
-AC_DEFINE_UNQUOTED([SCOREP_COBI_PATH], [${COBI}], [Defines path to Cobi.])
+AC_DEFINE_UNQUOTED([SCOREP_COBI_PATH], ["${COBI}"], [Defines path to Cobi.])
 
 ])
