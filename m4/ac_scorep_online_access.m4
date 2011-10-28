@@ -41,6 +41,10 @@ if test "x${ac_scorep_have_online_access_headers}" = "xyes" -a "x${ac_scorep_hav
 ac_scorep_have_online_access="yes"
 fi
 
+if test "x${ac_scorep_platform}" = "xbgp" -o "x${ac_scorep_platform}" = "xbgl"; then
+ac_scorep_have_online_access="no"
+fi
+
 AM_CONDITIONAL([HAVE_ONLINE_ACCESS_HEADERS], [test "x${ac_scorep_have_online_access}" = "xyes" ])
 
 AC_MSG_CHECKING([for online access possible])
