@@ -64,7 +64,7 @@ scorep_sion_open( char*          fileName,
                                       automagically by sion in upcoming
                                       releases. */
     const char* file_mode     = "wb";
-    char*       new_file_name = 0;
+    char*       new_file_name = NULL;
     MPI_Comm    comm_world    = MPI_COMM_WORLD;
     int         global_rank   = SCOREP_Mpi_GetRank();
 
