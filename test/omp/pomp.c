@@ -30,12 +30,12 @@
 #include <stddef.h>
 
 extern void
-POMP2_Init_regions_1274996139600418_1();
+POMP2_Init_regions_131168713688096_1();
 
 void
 POMP2_Init_regions()
 {
-    POMP2_Init_regions_1274996139600418_1();
+    POMP2_Init_regions_131168713688096_1();
 }
 
 size_t

@@ -3,7 +3,7 @@
 #endif
 #define _POMP2 200110
 
-#line 1 "main.F90"
+#line 1 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/Fortran/main.F90"
 program MAIN
     !***********************************************************************
     ! program to solve a finite difference                                 * 
@@ -153,13 +153,25 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-      pomp_num_threads = pomp_get_max_threads1287563324447323();
-      call POMP2_Parallel_fork(pomp2_region_1,pomp_num_threads,"")
-#line 146 "main.F90"
-!$omp parallel    private (j, i, xx, yy) num_threads(pomp_num_threads) copyin(pomp_tpd)
+      pomp_num_threads = pomp_get_max_threads1311686640823452()
+      pomp_if = .true.
+      call POMP2_Parallel_fork(pomp2_region_1,&
+      pomp_if, pomp_num_threads, pomp2_old_task, &
+      "193*regionType=paralleldo*sscl=/home/peterp/currentwork/s"//&
+      "ilc/tasking/test/jacobi/OpenMP/Fortran/main.F90:146:146*"//&
+      "escl=/home/peterp/currentwork/silc/tasking/test/jacobi/O"//&
+      "penMP/Fortran/main.F90:0:0**" )
+#line 146 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/Fortran/main.F90"
+!$omp parallel    private (j, i, xx, yy)&
+  !$omp firstprivate(pomp2_old_task) private(pomp2_new_task)&
+  !$omp if(pomp_if) num_threads(pomp_num_threads) 
       call POMP2_Parallel_begin(pomp2_region_1)
-      call POMP2_Do_enter(pomp2_region_1,"")
-#line 146 "main.F90"
+      call POMP2_Do_enter(pomp2_region_1, &
+     "193*regionType=paralleldo*sscl=/home/peterp/currentwork/s"//&
+      "ilc/tasking/test/jacobi/OpenMP/Fortran/main.F90:146:146*"//&
+      "escl=/home/peterp/currentwork/silc/tasking/test/jacobi/O"//&
+      "penMP/Fortran/main.F90:0:0**" )
+#line 146 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/Fortran/main.F90"
 !$omp          do                       
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
@@ -172,14 +184,14 @@ subroutine InitializeMatrix (myData)
         end do
     end do
 !$omp end do nowait
-      call POMP2_Implicit_barrier_enter(pomp2_region_1)
+      call POMP2_Implicit_barrier_enter(pomp2_region_1, pomp2_old_task)
 !$omp barrier
-      call POMP2_Implicit_barrier_exit(pomp2_region_1)
+      call POMP2_Implicit_barrier_exit(pomp2_region_1, pomp2_old_task)
       call POMP2_Do_exit(pomp2_region_1)
       call POMP2_Parallel_end(pomp2_region_1)
 !$omp end parallel
-      call POMP2_Parallel_join(pomp2_region_1)
-#line 158 "main.F90"
+      call POMP2_Parallel_join(pomp2_region_1, pomp2_old_task)
+#line 158 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/Fortran/main.F90"
 end subroutine InitializeMatrix
 
 subroutine Finish(myData)
@@ -258,13 +270,17 @@ double precision function get_wtime()
     return
 end function get_wtime
 
-      integer function pomp_get_max_threads1287563324447323()
+      integer function pomp_get_max_threads1311686640823452()
          integer omp_get_max_threads
-         pomp_get_max_threads1287563324447323=omp_get_max_threads()
+         pomp_get_max_threads1311686640823452=omp_get_max_threads()
          return
-      end function
+      end
 
-      subroutine POMP2_Init_regions_1287563324447323_1()
+      subroutine POMP2_Init_regions_1311686640823452_1()
          include 'main.F90.opari.inc'
-         call POMP2_Assign_handle( pomp2_region_1, "68*regionType=paralleldo*sscl=main.F90:146:146*escl=main.F90:157:157**" )
-      end subroutine
+         call POMP2_Assign_handle( pomp2_region_1, &
+     "197*regionType=paralleldo*sscl=/home/peterp/currentwork/s"//&
+      "ilc/tasking/test/jacobi/OpenMP/Fortran/main.F90:146:146*"//&
+      "escl=/home/peterp/currentwork/silc/tasking/test/jacobi/O"//&
+      "penMP/Fortran/main.F90:157:157**" )
+      end

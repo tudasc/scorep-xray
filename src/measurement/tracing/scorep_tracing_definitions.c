@@ -145,6 +145,8 @@ scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType,
         case_return( OMP_CRITICAL_SBLOCK,  TYPE_OMP_CRITICAL_SBLOCK );
         case_return( OMP_SINGLE_SBLOCK,    TYPE_OMP_SINGLE_SBLOCK );
         case_return( OMP_WRAPPER,          TYPE_OMP_WRAPPER );
+        case_return( OMP_TASK,             TYPE_OMP_TASK );
+        case_return( OMP_TASKWAIT,         TYPE_OMP_TASK_WAIT );
 
 #undef case_return
         default:

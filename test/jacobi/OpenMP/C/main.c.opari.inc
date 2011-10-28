@@ -1,11 +1,12 @@
 #include <pomp2_lib.h>
 
-extern int64_t FORTRAN_MANGLED(pomp_tpd);
-#pragma omp threadprivate(FORTRAN_MANGLED(pomp_tpd))
+#include <stdint.h>
+extern int64_t __attribute__((aligned (16))) pomp_tpd_;
+#pragma omp threadprivate(pomp_tpd_)
 #define POMP2_DLIST_00001 shared(pomp2_region_1)
 static POMP2_Region_handle pomp2_region_1 = NULL;
 
-void POMP2_Init_regions_1287563443944711_1()
+void POMP2_Init_regions_1319702454368128_1()
 {
-    POMP2_Assign_handle( &pomp2_region_1, "65*regionType=parallelfor*sscl=main.c:140:140*escl=main.c:156:156**" );
+    POMP2_Assign_handle( &pomp2_region_1, "354*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/OpenMP/C/main.c:143:143*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/OpenMP/C/main.c:158:158**" );
 }

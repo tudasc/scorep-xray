@@ -125,12 +125,14 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
   { "region",            SCOREP_Pomp_UserRegion          , SCOREP_REGION_USER,          SCOREP_REGION_USER,                },
   { "sections",          SCOREP_Pomp_Sections            , SCOREP_REGION_OMP_SECTIONS,  SCOREP_REGION_OMP_SECTION          },
   { "single",            SCOREP_Pomp_Single              , SCOREP_REGION_OMP_SINGLE,    SCOREP_REGION_OMP_SINGLE_SBLOCK,   },
+  { "task",              SCOREP_Pomp_Task                , SCOREP_REGION_OMP_TASK,      SCOREP_REGION_OMP_TASK             },
+  { "taskwait",          SCOREP_Pomp_Taskwait            , SCOREP_REGION_OMP_TASKWAIT,  SCOREP_REGION_OMP_TASKWAIT         },
   { "workshare",         SCOREP_Pomp_Workshare           , SCOREP_REGION_OMP_WORKSHARE, SCOREP_REGION_OMP_WORKSHARE        }
 };
 /* *INDENT-ON* */
 
 /** Number of entries in scorep_pomp_region_type_map */
-const size_t scorep_pomp_region_type_map_size = 16;
+const size_t scorep_pomp_region_type_map_size = 18;
 
 /* **************************************************************************************
  *                                                                   Conversion functions

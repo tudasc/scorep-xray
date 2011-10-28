@@ -303,6 +303,8 @@ scorep_region_type_to_string
             return "omp critical sblock";
         case SCOREP_REGION_OMP_SINGLE_SBLOCK:
             return "omp single sblock";
+        case SCOREP_REGION_OMP_TASK:
+            return "omp task";
         default:
             return "unknown";
     }

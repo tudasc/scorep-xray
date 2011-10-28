@@ -41,12 +41,6 @@
 /* *INDENT-ON*  */
 
 
-#define PRAGMA_OMP_PARALLEL_1( tpd ) SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) )
-#define PRAGMA_OMP_PARALLEL_2( tpd ) SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) )
-#define PRAGMA_OMP_PARALLEL_3( tpd ) SCOREP_PRAGMA_OMP( parallel private ( i, j, xx, yy, xx2, yy2 ) POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( tpd ) )
-#define PRAGMA_OMP_PARALLEL_4( tpd ) SCOREP_PRAGMA_OMP( parallel private ( j, i ) POMP_DLIST_00003 num_threads( pomp_num_threads ) copyin( tpd ) )
-
-
 void
 foo()
 {
@@ -59,24 +53,27 @@ main()
 {
     printf( "in main\n" );
     {
-        int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( &pomp_region_1, pomp_num_threads, "" );
-#line 45 "omp_test.c"
-        PRAGMA_OMP_PARALLEL_1( FORTRAN_MANGLED( pomp_tpd ) )
-        {
-            POMP2_Parallel_begin( &pomp_region_1 );
-#line 46 "omp_test.c"
-            {
-                foo();
-            }
-            POMP2_Implicit_barrier_enter( &pomp_region_1 );
+        int               pomp_num_threads = omp_get_max_threads();
+        int               pomp_if          = 1;
+        POMP2_Task_handle pomp2_old_task;
+        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "157*regionType=parallel*sscl=/home/peterp/currentwork/silc/tasking/test/omp/omp_test.c:49:49*escl=/home/peterp/currentwork/silc/tasking/test/omp/omp_test.c:0:0**" );
+#line 49 "/home/peterp/currentwork/silc/tasking/test/omp/omp_test.c"
+#pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads)
+        { POMP2_Parallel_begin( &pomp2_region_1 );
+#line 50 "/home/peterp/currentwork/silc/tasking/test/omp/omp_test.c"
+          {
+              foo();
+          }
+          { POMP2_Task_handle pomp2_old_task;
+            POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
 #pragma omp barrier
-            POMP2_Implicit_barrier_exit( &pomp_region_1 );
-            POMP2_Parallel_end( &pomp_region_1 );
+            POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task );
+          }
+          POMP2_Parallel_end( &pomp2_region_1 );
         }
-        POMP2_Parallel_join( &pomp_region_1 );
+        POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 49 "omp_test.c"
+#line 53 "/home/peterp/currentwork/silc/tasking/test/omp/omp_test.c"
 
     return 0;
 }

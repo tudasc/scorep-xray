@@ -1,12 +1,11 @@
-#include <config.h>
-
 #ifdef _POMP2
 #  undef _POMP2
 #endif
 #define _POMP2 200110
 
+#include <config.h>
 #include "main.cpp.opari.inc"
-#line 1 "main.cpp"
+#line 1 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp"
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -136,13 +135,15 @@ InitializeMatrix( JacobiData &data )
 {
     /* Initilize initial condition and RHS */
     {
-        int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads, "" );
-#line 129 "main.cpp"
-#pragma omp parallel     POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+        int               pomp_num_threads = omp_get_max_threads();
+        int               pomp_if          = 1;
+        POMP2_Task_handle pomp2_old_task;
+        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "186*regionType=parallelfor*sscl=/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp:130:130*escl=/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp:0:0**" );
+#line 130 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp"
+#pragma omp parallel     POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads)
         { POMP2_Parallel_begin( &pomp2_region_1 );
-          POMP2_For_enter( &pomp2_region_1, "" );
-#line 129 "main.cpp"
+          POMP2_For_enter( &pomp2_region_1, "186*regionType=parallelfor*sscl=/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp:130:130*escl=/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp:0:0**"  );
+#line 130 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp"
 #pragma omp          for nowait
           for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
           {
@@ -159,15 +160,17 @@ InitializeMatrix( JacobiData &data )
                               + 2.0 * ( -2.0 + xx2 + yy2 );
               }
           }
-          POMP2_Implicit_barrier_enter( &pomp2_region_1 );
+          { POMP2_Task_handle pomp2_old_task;
+            POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
 #pragma omp barrier
-          POMP2_Implicit_barrier_exit( &pomp2_region_1 );
+            POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task );
+          }
           POMP2_For_exit( &pomp2_region_1 );
           POMP2_Parallel_end( &pomp2_region_1 );
         }
-        POMP2_Parallel_join( &pomp2_region_1 );
+        POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 146 "main.cpp"
+#line 147 "/home/peterp/currentwork/silc/tasking/test/jacobi/OpenMP/C++/main.cpp"
 }
 
 // Checks error between numerical and exact solution

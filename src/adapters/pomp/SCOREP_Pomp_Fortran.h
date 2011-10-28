@@ -32,8 +32,10 @@
 
 /* Fortran types */
 typedef uint64_t POMP2_Region_handle_fortran;
+typedef int64_t  POMP2_Task_handle_fortran;
 
 #define SCOREP_POMP_F2C_REGION( handle ) ( ( POMP2_Region_handle* )handle )
+#define SCOREP_POMP_F2C_TASK( handle ) ( ( POMP2_Task_handle* )handle )
 
 /*
  * Fortan subroutine external name setup

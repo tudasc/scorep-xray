@@ -1,10 +1,4 @@
 #include <config.h>
-
-#ifdef _POMP2
-#  undef _POMP2
-#endif
-#define _POMP2 200110
-
 #include "main.c.opari.inc"
 #line 1 "main.c"
 /*
@@ -23,7 +17,6 @@
  *
  */
 
-#include <config.h>
 
 #include <math.h>
 #include <stdio.h>
@@ -149,13 +142,15 @@ InitializeMatrix( struct JacobiData* data )
 
     /* Initialize initial condition and RHS */
     {
-        int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads, "" );
-#line 140 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+        int               pomp_num_threads = omp_get_max_threads();
+        int               pomp_if          = 1;
+        POMP2_Task_handle pomp2_old_task;
+        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "350*regionType=parallelfor*sscl=main.c:143:143*escl=main.c:0:0**" );
+#line 143 "main.c"
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd_)
         { POMP2_Parallel_begin( &pomp2_region_1 );
-          POMP2_For_enter( &pomp2_region_1, "" );
-#line 140 "main.c"
+          POMP2_For_enter( &pomp2_region_1, "350*regionType=parallelfor*sscl=main.c:143:143*escl=main.c:0:0**"  );
+#line 143 "main.c"
 #pragma omp          for                                 nowait
           for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
           {
@@ -172,15 +167,17 @@ InitializeMatrix( struct JacobiData* data )
                               + 2.0 * ( -2.0 + xx2 + yy2 );
               }
           }
-          POMP2_Implicit_barrier_enter( &pomp2_region_1 );
+          { POMP2_Task_handle pomp2_old_task;
+            POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
 #pragma omp barrier
-          POMP2_Implicit_barrier_exit( &pomp2_region_1 );
+            POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task );
+          }
           POMP2_For_exit( &pomp2_region_1 );
           POMP2_Parallel_end( &pomp2_region_1 );
         }
-        POMP2_Parallel_join( &pomp2_region_1 );
+        POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 157 "main.c"
+#line 159 "main.c"
 }
 
 /*

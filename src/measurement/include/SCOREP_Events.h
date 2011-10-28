@@ -363,6 +363,85 @@ SCOREP_ExitRegionOnException
     SCOREP_RegionHandle regionHandle
 );
 
+/**
+ * Process an OpenMP task create begin event in the measurement system.
+ *
+ * @param regionHandle The previous defined region handle which identifies
+ *                     the region where the task is created.
+ * @param taskId       The ID of the task beeing created.
+ */
+void
+SCOREP_OmpTaskCreateBegin
+(
+    SCOREP_RegionHandle regionHandle,
+    uint64_t            taskId
+);
+
+/**
+ * Process an OpenMP task create end event in the measurement system.
+ *
+ * @param regionHandle The previous defined region handle which identifies
+ *                     the region where the task is created.
+ * @param taskId       The ID of the task beeing created.
+ */
+void
+SCOREP_OmpTaskCreateEnd
+(
+    SCOREP_RegionHandle regionHandle,
+    uint64_t            taskId
+);
+
+/**
+ * Process an OpenMP task begin event in the measurement system.
+ *
+ * @param regionHandle The previous defined region handle which identifies
+ *                     the region the task executes.
+ * @param taskId       The ID of the task which starts execution.
+ */
+void
+SCOREP_OmpTaskBegin
+(
+    SCOREP_RegionHandle regionHandle,
+    uint64_t            taskId
+);
+
+/**
+ * Process an OpenMP task resume event in the measurement system.
+ *
+ * @param regionHandle The previous defined region handle which identifies
+ *                     the region the task executes.
+ * @param taskId       The ID of the task which is resumed.
+ */
+void
+SCOREP_OmpTaskResume
+(
+    SCOREP_RegionHandle regionHandle,
+    uint64_t            taskId
+);
+
+/**
+ * Process an OpenMP task suspend event in the measurement system.
+ *
+ * @param regionHandle The previous defined region handle which identifies
+ *                     the region the task executes.
+ */
+void
+SCOREP_OmpTaskSuspend
+(
+    SCOREP_RegionHandle regionHandle
+);
+
+/**
+ * Process an OpenMP task completed event in the measurement system.
+ *
+ * @param regionHandle The previous defined region handle which identifies
+ *                     the region the task has executed.
+ */
+void
+SCOREP_OmpTaskCompleted
+(
+    SCOREP_RegionHandle regionHandle
+);
 
 /**
  *

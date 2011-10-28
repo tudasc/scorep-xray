@@ -1,0 +1,52 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       Makefile.inc.am
+## author     Dirk Schmidl <schmidl@rz.rwth-aachen.de>
+## maintainer Dirk Schmidl <schmidl@rz.rwth-aachen.de>
+
+
+if OPENMP_SUPPORTED
+
+check_PROGRAMS += omp_tasks_unistrumented
+
+omp_tasks_unistrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.c
+omp_tasks_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+
+check_PROGRAMS += omp_tasks
+
+# do not instrument the OPARI2 generated POMP code
+noinst_LTLIBRARIES          += libomp_tasks_pomp.la
+libomp_tasks_pomp_la_SOURCES  = $(SRC_ROOT)test/omp_tasks/pomp.c
+libomp_tasks_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
+
+omp_tasks_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.mod.c       \
+                    $(SRC_ROOT)test/omp_tasks/omp_tasks.c.opari.inc
+omp_tasks_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
+omp_tasks_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_tasks_pomp.la
+if HAVE_PAPI
+omp_tasks_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
+TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
+EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh
+
+TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_profile.sh
+EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profile.sh
+
+endif

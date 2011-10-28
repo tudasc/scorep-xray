@@ -397,6 +397,8 @@ typedef enum SCOREP_RegionType
     SCOREP_REGION_OMP_CRITICAL_SBLOCK, /* type for the innerblock of criticals */
     SCOREP_REGION_OMP_SINGLE_SBLOCK,   /* type for the innerblock od singles */
     SCOREP_REGION_OMP_WRAPPER,
+    SCOREP_REGION_OMP_TASK,
+    SCOREP_REGION_OMP_TASKWAIT,
 
     SCOREP_INVALID_REGION_TYPE /**< For internal use only. */
 } SCOREP_RegionType;

@@ -1,12 +1,5 @@
-#include <config.h>
-
-#ifdef _POMP2
-#  undef _POMP2
-#endif
-#define _POMP2 200110
-
 #include "jacobi.c.opari.inc"
-#line 1 "jacobi.c"
+#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
 /*
  ******************************************************************
  * Subroutine HelmholtzJ
@@ -28,7 +21,8 @@
  * Output : u(n,m) - Solution
  *****************************************************************
  */
-#include <config.h>
+
+//#include <config.h>
 
 #include <mpi.h>
 #include <math.h>
@@ -73,16 +67,18 @@ Jacobi( struct JacobiData* data )
             /* copy new solution into old */
             ExchangeJacobiMpiData( data, uold );
             {
-                int pomp_num_threads = omp_get_max_threads();
-                POMP2_Parallel_fork( &pomp2_region_1, pomp_num_threads, "" );
-#line 66 "jacobi.c"
-#pragma omp parallel POMP2_DLIST_00001 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+                int               pomp_num_threads = omp_get_max_threads();
+                int               pomp_if          = 1;
+                POMP2_Task_handle pomp2_old_task;
+                POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "349*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:67:67*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:0:0**" );
+#line 67 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
+#pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd_)
                 { POMP2_Parallel_begin( &pomp2_region_1 );
-#line 67 "jacobi.c"
+#line 68 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
                   {
                       /* compute stencil, residual and update */
-                      POMP2_For_enter( &pomp2_region_2, "" );
-#line 69 "jacobi.c"
+                      POMP2_For_enter( &pomp2_region_2, "372*regionType=for*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:70:70*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:0:0*hasReduction=1*hasOrdered=1**"  );
+#line 70 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
 #pragma omp for private(j, i, fLRes) reduction(+:residual) nowait
                       for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
                       {
@@ -99,20 +95,24 @@ Jacobi( struct JacobiData* data )
                               residual += fLRes * fLRes;
                           }
                       }
-                      POMP2_Implicit_barrier_enter( &pomp2_region_2 );
+                      { POMP2_Task_handle pomp2_old_task;
+                        POMP2_Implicit_barrier_enter( &pomp2_region_2, &pomp2_old_task );
 #pragma omp barrier
-                      POMP2_Implicit_barrier_exit( &pomp2_region_2 );
+                        POMP2_Implicit_barrier_exit( &pomp2_region_2, pomp2_old_task );
+                      }
                       POMP2_For_exit( &pomp2_region_2 );
-#line 85 "jacobi.c"
+#line 86 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
                   }
-                  POMP2_Implicit_barrier_enter( &pomp2_region_1 );
+                  { POMP2_Task_handle pomp2_old_task;
+                    POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
 #pragma omp barrier
-                  POMP2_Implicit_barrier_exit( &pomp2_region_1 );
+                    POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task );
+                  }
                   POMP2_Parallel_end( &pomp2_region_1 );
                 }
-                POMP2_Parallel_join( &pomp2_region_1 );
+                POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
             }
-#line 85 "jacobi.c"
+#line 86 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
             /* end omp parallel */
             tmpResd = residual;
             MPI_Allreduce(
@@ -184,13 +184,15 @@ ExchangeJacobiMpiData( struct JacobiData* data,
         iReqCnt++;
     }
     {
-        int pomp_num_threads = omp_get_max_threads();
-        POMP2_Parallel_fork( &pomp2_region_3, pomp_num_threads, "" );
-#line 155 "jacobi.c"
-#pragma omp parallel     private(j, i) POMP2_DLIST_00003 num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+        int               pomp_num_threads = omp_get_max_threads();
+        int               pomp_if          = 1;
+        POMP2_Task_handle pomp2_old_task;
+        POMP2_Parallel_fork( &pomp2_region_3, pomp_if, pomp_num_threads, &pomp2_old_task, "354*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:156:156*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:0:0**" );
+#line 156 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
+#pragma omp parallel     private(j, i) POMP2_DLIST_00003 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd_)
         { POMP2_Parallel_begin( &pomp2_region_3 );
-          POMP2_For_enter( &pomp2_region_3, "" );
-#line 155 "jacobi.c"
+          POMP2_For_enter( &pomp2_region_3, "354*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:156:156*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c:0:0**"  );
+#line 156 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
 #pragma omp          for               nowait
           for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
           {
@@ -199,15 +201,17 @@ ExchangeJacobiMpiData( struct JacobiData* data,
                   UOLD( j, i ) = U( j, i );
               }
           }
-          POMP2_Implicit_barrier_enter( &pomp2_region_3 );
+          { POMP2_Task_handle pomp2_old_task;
+            POMP2_Implicit_barrier_enter( &pomp2_region_3, &pomp2_old_task );
 #pragma omp barrier
-          POMP2_Implicit_barrier_exit( &pomp2_region_3 );
+            POMP2_Implicit_barrier_exit( &pomp2_region_3, pomp2_old_task );
+          }
           POMP2_For_exit( &pomp2_region_3 );
           POMP2_Parallel_end( &pomp2_region_3 );
         }
-        POMP2_Parallel_join( &pomp2_region_3 );
+        POMP2_Parallel_join( &pomp2_region_3, pomp2_old_task );
     }
-#line 163 "jacobi.c"
+#line 164 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root-4-merge/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/services/metric/data/jacobi/hybrid/C/jacobi.c"
 
     MPI_Waitall( iReqCnt, request, status );
 }
