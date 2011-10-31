@@ -46,7 +46,7 @@ SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 static POMP2_Region_handle pomp_region_1;
 
 void
-POMP2_Init_regions_131168713688096_1()
+POMP2_Init_regions_1320069835786106_1()
 {
     POMP2_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**" );
 }

@@ -1,9 +1,5 @@
-#ifdef _POMP2
-#  undef _POMP2
-#endif
-#define _POMP2 200110
 
-#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 module JacobiMod
     use VariableDef
     implicit none 
@@ -62,30 +58,29 @@ module JacobiMod
         
             ! Copy new solution into old
                 call ExchangeJacobiMpiData(myData, uold)
-      pomp_num_threads = pomp_get_max_threads1311763976775744()
+      pomp_num_threads = pomp_get_max_threads1320070372569861()
       pomp_if = .true.
       call POMP2_Parallel_fork(pomp2_region_1,&
       pomp_if, pomp_num_threads, pomp2_old_task, &
-      "307*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds53"//&
-      "4486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pom"//&
-      "p2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90:58:58*e"//&
-      "scl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/bran"//&
-      "ches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/h"//&
-      "ybrid/Fortran/jacobi.F90:0:0**" )
-#line 58 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+      "225*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds53"//&
+      "4486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jac"//&
+      "obi.F90:58:58*escl=/rwthfs/rz/cluster/home/ds534486/SILC"//&
+      "/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90:0"//&
+      ":0**" )
+#line 58 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 !$omp parallel private(flres, tmpresd, i)&
   !$omp firstprivate(pomp2_old_task) private(pomp2_new_task)&
-  !$omp if(pomp_if) num_threads(pomp_num_threads) 
+  !$omp if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd)&
+  !$omp shared(/cb1320070372569861/)
       call POMP2_Parallel_begin(pomp2_region_1)
-#line 59 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 59 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
       call POMP2_Do_enter(pomp2_region_2, &
-     "329*regionType=do*sscl=/rwthfs/rz/cluster/home/ds534486/S"//&
-      "ILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tas"//&
-      "king/test/jacobi/hybrid/Fortran/jacobi.F90:59:59*escl=/r"//&
-      "wthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/T"//&
-      "RY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/"//&
-      "Fortran/jacobi.F90:0:0*hasReduction=1*hasOrdered=1**" )
-#line 59 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+     "247*regionType=do*sscl=/rwthfs/rz/cluster/home/ds534486/S"//&
+      "ILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F9"//&
+      "0:59:59*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-"//&
+      "root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90:0:0*has"//&
+      "Reduction=1*hasOrdered=1**" )
+#line 59 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 !$omp do reduction(+:residual)
                    do j = myData%iRowFirst + 1, myData%iRowLast - 1
                        do i = 1, myData%iCols - 2
@@ -101,21 +96,21 @@ module JacobiMod
                            residual = residual + fLRes * fLRes
                        end do
                    end do
-#line 75 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 75 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 !$omp end do nowait
       call POMP2_Implicit_barrier_enter(pomp2_region_2, pomp2_old_task)
 !$omp barrier
       call POMP2_Implicit_barrier_exit(pomp2_region_2, pomp2_old_task)
       call POMP2_Do_exit(pomp2_region_2)
-#line 76 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 76 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
       call POMP2_Implicit_barrier_enter(pomp2_region_1, pomp2_old_task)
 !$omp barrier
       call POMP2_Implicit_barrier_exit(pomp2_region_1, pomp2_old_task)
       call POMP2_Parallel_end(pomp2_region_1)
-#line 76 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 76 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 !$omp end parallel
       call POMP2_Parallel_join(pomp2_region_1, pomp2_old_task)
-#line 77 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 77 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
                   tmpResd = residual
                   call MPI_Allreduce(tmpResd, residual, 1, MPI_DOUBLE_PRECISION, &
                                 MPI_SUM, MPI_COMM_WORLD, Ierr)
@@ -178,29 +173,28 @@ module JacobiMod
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1,           &
                            iTagMoveLeft, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
-      pomp_num_threads = pomp_get_max_threads1311763976775744()
+      pomp_num_threads = pomp_get_max_threads1320070372569861()
       pomp_if = .true.
       call POMP2_Parallel_fork(pomp2_region_3,&
       pomp_if, pomp_num_threads, pomp2_old_task, &
-      "311*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
-      "534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_p"//&
-      "omp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90:138:1"//&
-      "38*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/"//&
-      "branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jaco"//&
-      "bi/hybrid/Fortran/jacobi.F90:0:0**" )
-#line 138 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+      "229*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
+      "534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/j"//&
+      "acobi.F90:138:138*escl=/rwthfs/rz/cluster/home/ds534486/"//&
+      "SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F"//&
+      "90:0:0**" )
+#line 138 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 !$omp parallel   &
   !$omp firstprivate(pomp2_old_task) private(pomp2_new_task)&
-  !$omp if(pomp_if) num_threads(pomp_num_threads) 
+  !$omp if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd)&
+  !$omp shared(/cb1320070372569861/)
       call POMP2_Parallel_begin(pomp2_region_3)
       call POMP2_Do_enter(pomp2_region_3, &
-     "311*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
-      "534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_p"//&
-      "omp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90:138:1"//&
-      "38*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/"//&
-      "branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jaco"//&
-      "bi/hybrid/Fortran/jacobi.F90:0:0**" )
-#line 138 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+     "229*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
+      "534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/j"//&
+      "acobi.F90:138:138*escl=/rwthfs/rz/cluster/home/ds534486/"//&
+      "SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F"//&
+      "90:0:0**" )
+#line 138 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 !$omp          do
         do j = myData%iRowFirst + 1, myData%iRowLast - 1
             do i = 0, myData%iCols - 1
@@ -215,39 +209,36 @@ module JacobiMod
       call POMP2_Parallel_end(pomp2_region_3)
 !$omp end parallel
       call POMP2_Parallel_join(pomp2_region_3, pomp2_old_task)
-#line 145 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90"
+#line 145 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90"
 
         call MPI_Waitall(iReqCnt, request, status, iErr)
     end subroutine ExchangeJacobiMpiData
 end module JacobiMod
 
-      integer function pomp_get_max_threads1311763976775744()
+      integer function pomp_get_max_threads1320070372569861()
          integer omp_get_max_threads
-         pomp_get_max_threads1311763976775744=omp_get_max_threads()
+         pomp_get_max_threads1320070372569861=omp_get_max_threads()
          return
       end
 
-      subroutine POMP2_Init_regions_1311763976775744_3()
+      subroutine POMP2_Init_regions_1320070372569861_3()
          include 'jacobi.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, &
-     "309*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds53"//&
-      "4486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pom"//&
-      "p2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90:58:58*e"//&
-      "scl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/bran"//&
-      "ches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/h"//&
-      "ybrid/Fortran/jacobi.F90:76:76**" )
+     "227*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds53"//&
+      "4486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jac"//&
+      "obi.F90:58:58*escl=/rwthfs/rz/cluster/home/ds534486/SILC"//&
+      "/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90:7"//&
+      "6:76**" )
          call POMP2_Assign_handle( pomp2_region_2, &
-     "331*regionType=do*sscl=/rwthfs/rz/cluster/home/ds534486/S"//&
-      "ILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tas"//&
-      "king/test/jacobi/hybrid/Fortran/jacobi.F90:59:59*escl=/r"//&
-      "wthfs/rz/cluster/home/ds534486/SILC/silc-root/branches/T"//&
-      "RY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jacobi/hybrid/"//&
-      "Fortran/jacobi.F90:75:75*hasReduction=1*hasOrdered=1**" )
+     "249*regionType=do*sscl=/rwthfs/rz/cluster/home/ds534486/S"//&
+      "ILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F9"//&
+      "0:59:59*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-"//&
+      "root/trunk/test/jacobi/hybrid/Fortran/jacobi.F90:75:75*h"//&
+      "asReduction=1*hasOrdered=1**" )
          call POMP2_Assign_handle( pomp2_region_3, &
-     "315*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
-      "534486/SILC/silc-root/branches/TRY_DSCHMIDL_PPHILIPPEN_p"//&
-      "omp2_tasking/test/jacobi/hybrid/Fortran/jacobi.F90:138:1"//&
-      "38*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/"//&
-      "branches/TRY_DSCHMIDL_PPHILIPPEN_pomp2_tasking/test/jaco"//&
-      "bi/hybrid/Fortran/jacobi.F90:144:144**" )
+     "233*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
+      "534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/j"//&
+      "acobi.F90:138:138*escl=/rwthfs/rz/cluster/home/ds534486/"//&
+      "SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/jacobi.F"//&
+      "90:144:144**" )
       end
