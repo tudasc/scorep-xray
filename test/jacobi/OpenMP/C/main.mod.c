@@ -147,7 +147,7 @@ InitializeMatrix( struct JacobiData* data )
         POMP2_Task_handle pomp2_old_task;
         POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "350*regionType=parallelfor*sscl=main.c:143:143*escl=main.c:0:0**" );
 #line 143 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd_)
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
         { POMP2_Parallel_begin( &pomp2_region_1 );
           POMP2_For_enter( &pomp2_region_1, "350*regionType=parallelfor*sscl=main.c:143:143*escl=main.c:0:0**"  );
 #line 143 "main.c"

@@ -66,7 +66,7 @@ Jacobi( struct JacobiData* data )
                 POMP2_Task_handle pomp2_old_task;
                 POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "349*regionType=parallel*sscl=jacobi.c:61:61*escl=jacobi.c:0:0**" );
 #line 61 "jacobi.c"
-#pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd_)
+#pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
                 { POMP2_Parallel_begin( &pomp2_region_1 );
 #line 62 "jacobi.c"
                   {
