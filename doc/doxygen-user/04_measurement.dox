@@ -462,7 +462,7 @@ is listed below.
 \end{table}
 @endlatexonly
 
-@note  Event generation in this context only relates to flow and and
+@note  Event generation in this context only relates to flow and
 transfer events. Tracking of communicators, groups, and other internal
 data is unaffected and always turned on.
 
