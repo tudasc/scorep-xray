@@ -775,7 +775,6 @@ scorep_metric_papi_finalize_source()
 SCOREP_Metric_EventSet*
 scorep_metric_papi_initialize_location()
 {
-    printf( "scorep_metric_papi_initialize_location\n" );
     if ( number_of_metrics == 0 )
     {
         return NULL;
