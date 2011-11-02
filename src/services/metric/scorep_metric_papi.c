@@ -65,7 +65,7 @@
  *  This metric source uses the Performance Application Programming Interface (PAPI) to
  *  access hardware performance counters.
  *
- *  You can enable recording of resource usage metrics by setting the environment variable
+ *  You can enable recording of PAPI performance metrics by setting the environment variable
  *  SCOREP_METRIC_PAPI to a comma-separated list of metric names. Metric names can be any
  *  PAPI preset names or PAPI native counter names. For example, set
  *  @verbatim SCOREP_METRIC_PAPI=PAPI_FP_OPS,PAPI_L2_TCM @endverbatim
