@@ -70,9 +70,10 @@
  *  PAPI preset names or PAPI native counter names. For example, set
  *  @verbatim SCOREP_METRIC_PAPI=PAPI_FP_OPS,PAPI_L2_TCM @endverbatim
  *  to record the number of floating point instructions and level 2 cache misses (both
- *  PAPI preset counters). The user can leave the environment variable unset to indicate
- *  that no metrics are requested. Use the tools \c papi_avail and \c papi_native_avail to
- *  get a list of available PAPI events. If you want to change the separator used in the
+ *  PAPI preset counters). If any of the requested metrics is not recognized program execution
+ *  will be aborted with an error message. The user can leave the environment variable unset to
+ *  indicate that no metrics are requested. Use the tools \c papi_avail and \c papi_native_avail
+ *  to get a list of available PAPI events. If you want to change the separator used in the
  *  list of PAPI metric names set the environment variable \c SCOREP_METRIC_PAPI_SEP to
  *  the needed character.
  */

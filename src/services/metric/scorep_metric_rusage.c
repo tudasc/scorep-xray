@@ -55,7 +55,7 @@
  *  For example, set
  *  @verbatim SCOREP_METRIC_RUSAGE=ru_utime,ru_stime @endverbatim
  *  to record the user time and system time consumed by each process. If any of the requested
- *  metrics are not recognized program execution will be aborted with an error message. The
+ *  metrics is not recognized program execution will be aborted with an error message. The
  *  user can leave the environment variable unset to indicate that no metrics are requested.
  *  It is also possible to set
  *  @verbatim SCOREP_METRIC_RUSAGE=all @endverbatim
