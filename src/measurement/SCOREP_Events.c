@@ -620,9 +620,6 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
                                 NULL,
                                 timestamp,
                                 SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
-        /// @todo better write n join events and pass the locationids of the joined
-        /// threads (the master/father is implicitly given). let the master-thread-join
-        /// be the last one to indicate the the corresponding fork can be closed.
         SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
 
@@ -1174,6 +1171,5 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 uint64_t
 SCOREP_GetLastTimeStamp()
 {
-    /// @todo this does not match the above comment
     return SCOREP_GetClockTicks();
 }

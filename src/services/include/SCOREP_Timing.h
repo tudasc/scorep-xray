@@ -22,8 +22,6 @@
  * @maintainer  Christian Roessel <c.roessel@fz-juelich.de>
  *
  * @brief       Provide platform independant timing functionality.
- *
- * @todo DD: please check the units and the docs in general.
  */
 
 #include <stdint.h>

@@ -160,24 +160,7 @@ SCOREP_Env_RegisterCoreEnvironmentVariables()
         SCOREP_ERROR( error, "Can't register core environment variables" );
         _Exit( EXIT_FAILURE );
     }
-
-    //assert( scorep_env_total_memory > scorep_env_page_size );
-
-    //if ( SCOREP_Env_RunVerbose() )
-    //{
-    //    fprintf( stderr, "SCOREP running in verbose mode\n" );
-    //}
-
-    /// @todo print summary of environment variables and/or a config file.
-    /// Therefore it would be better to centralize all environment variables.
 }
-
-
-//bool
-//SCOREP_Env_CoreEnvironmentVariablesInitialized()
-//{
-//    return scorep_env_core_environment_variables_initialized;
-//}
 
 
 bool
