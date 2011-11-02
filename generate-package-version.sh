@@ -10,4 +10,4 @@ version="$(sed -n -e 's/package.major=\+// p' \
                   -e 's/package.minor=\+// p' \
            "$1")"
 set -- $version
-printf "%d.%d" $1 $2
+printf "%d.%s" $1 $2
