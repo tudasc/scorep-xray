@@ -1,12 +1,8 @@
 #include <config.h>
 #include <pomp2_lib.h>
 
-#include <stdint.h>
-extern "C" 
-{
-extern int64_t __attribute__((aligned (16))) FORTRAN_MANGLED(pomp_tpd);
+extern int64_t FORTRAN_MANGLED(pomp_tpd);
 #pragma omp threadprivate(FORTRAN_MANGLED(pomp_tpd))
-}
 #define POMP2_DLIST_00001 shared(pomp2_region_1)
 static POMP2_Region_handle pomp2_region_1 = NULL;
 extern "C" 
