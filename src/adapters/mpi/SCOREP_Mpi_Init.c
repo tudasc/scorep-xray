@@ -391,9 +391,18 @@ scorep_mpi_finalize()
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_finalize\n" );
-    SCOREP_MPI_EVENT_GEN_OFF();
 
-    /* MPICH somehow creates some extra processes/threads. If PMPI_Finalize is called
+    /* Prevent all further events */
+    SCOREP_MPI_EVENT_GEN_OFF();
+    scorep_mpi_enabled = 0;
+
+    /* Finalize sub-systems */
+    scorep_mpi_win_final();
+    scorep_mpi_request_finalize();
+    scorep_mpi_comm_finalize();
+
+    /* Finalize MPI.
+       MPICH somehow creates some extra processes/threads. If PMPI_Finalize is called
        from the exit handler of SCOREP, these processes also try to execute MPI_Finalize.
        This causes errors, thus, we test if the call to PMPI_Finalize is save.
      */
@@ -407,13 +416,6 @@ scorep_mpi_finalize()
             SCOREP_OnPMPI_Finalize();
         }
     }
-    SCOREP_MPI_EVENT_GEN_ON();
-
-    scorep_mpi_win_final();
-    scorep_mpi_request_finalize();
-
-    /* Prevent all further events */
-    scorep_mpi_enabled = 0;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "End of scorep_mpi_finalize\n" );

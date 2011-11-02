@@ -239,12 +239,6 @@ MPI_Finalize()
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZE ] );
     }
 
-    /* finalize communicator and request management */
-    scorep_mpi_comm_finalize();
-/* Asynchroneous communication not supported
-   scorep_mpi_request_finalize();
- */
-
     /* finalize MPI event handling */
     SCOREP_FinalizeMeasurementMPI();
 
