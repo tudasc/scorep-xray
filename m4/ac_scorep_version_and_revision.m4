@@ -39,4 +39,9 @@ AC_DEFUN([AC_SCOREP_REVISION],
         scorep_revision=`cat $srcdir/build-config/REVISION`
         AC_MSG_WARN([distribution does not match a single, unmodified revision, but $scorep_revision.])
     fi
+
+    AC_SUBST([LIBRARY_CURRENT],  [`sed -n -e 's/library.current=\+// p' ${srcdir}/build-config/VERSION`])
+    AC_SUBST([LIBRARY_REVISION], [`sed -n -e 's/library.revision=\+// p' ${srcdir}/build-config/VERSION`])
+    AC_SUBST([LIBRARY_AGE],      [`sed -n -e 's/library.age=\+// p' ${srcdir}/build-config/VERSION`])
+
 ])
