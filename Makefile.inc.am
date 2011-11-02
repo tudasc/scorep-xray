@@ -227,7 +227,8 @@ doxygen-user-install:
             for i in $$files; do                                                                \
                 $(INSTALL_DATA) $(DOC_SRC_DIR)/$$i $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/$$i; \
             done;                                                                               \
-            rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/doxygen;                             \
+            rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/doxygen-user;                        \
+            rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@/doc/doxygen-dev;                         \
         fi
 
 doxygen-user-uninstall:
