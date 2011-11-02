@@ -488,6 +488,76 @@ SCOREP_MPI_ENABLE_GROUPS=DEFAULT,TYPE
 A detailed overview of the @mpi functions associated with each group can be
 found in Appendix @secref{wrapperannex}.
 
+
+@section perf_counters Recording Performance Metrics
+@seclabel{perf_metrics}
+
+If @scorep has been built with performance metric support it is capable of recording performance counter information.
+To request the measurement of certain counters, the user is required to set individual environment variables. 
+The user can leave these environment variables unset to indicate that no counters are requested.
+
+@subsection papi_counters PAPI Hardware Performance Counters
+@seclabel{papi_counters}
+
+This metric uses the Performance Application Programming Interface (PAPI) to access hardware performance counters.
+Recording of PAPI performance counters is enabled by setting the environment variable <tt>SCOREP_METRIC_PAPI</tt> to a comma-separated list of counter names.
+Counter names can be any PAPI preset names or PAPI native counter names.
+
+Example:
+<pre>
+SCOREP_METRIC_PAPI=PAPI_FP_OPS,PAPI_L2_TCM
+</pre>
+
+This will record the number of floating point instructions and level 2 cache misses.
+
+If any of the requested counters is not recognized, program execution will be aborted with an error message.
+
+The PAPI utility programs <tt>papi_avail</tt> and <tt>papi_native_avail</tt> report information about the counters available on the current platform.
+
+If you want to change the separator used in the list of PAPI counter names, set the environment variable <tt>SCOREP_METRIC_PAPI_SEP</tt> to the desired character.
+
+@subsection rusage_counters Resource Usage Counters
+@seclabel{rusage_counters}
+
+This metric uses the Unix system call <tt>getrusage</tt> to provide information about consumed resources and operating system events such as user/system time, received signals, and number of page faults.
+The manual page of <tt>getrusage</tt> provides a list of resource usage counters.
+Please note that the availability of specific counters depends on the operating system.
+
+You can enable recording of resource usage counters by setting the environment variable <tt>SCOREP_METRIC_RUSAGE</tt>.
+The variable should contain a comma-separated list of counter names.
+
+Example:
+<pre>
+SCOREP_METRIC_RUSAGE=ru_utime,ru_stime
+</pre>
+
+This will record the consumed user time and system time.
+
+If any of the requested counters is not recognized, program execution will be aborted with an error message.
+
+@note Please be aware of the scope of displayed resource usage statistics.
+@scorep records resource usage statistics for each individual thread, if the output while configuring your @scorep installation contains something like
+<pre>
+RUSAGE_THREAD support: yes
+</pre>
+Otherwise, the information displayed is valid for the whole process.
+That means, for multi-threaded programs the information is the sum of resources used by all threads in the process.
+
+
+A shorthand to record all resource usage counters is
+<pre>
+SCOREP_METRIC_RUSAGE=all
+</pre>
+However, this is not recommended as most operating systems does not support all metrics.
+
+If you want to change the separator used in the list of resource usage metrics, set the environment variable <tt>SCOREP_METRIC_RUSAGE_SEP</tt> to the desired character.
+
+Example:
+<pre>
+SCOREP_METRIC_RUSAGE_SEP=:
+</pre>
+This indicates that counter names in the list are separated by colons.
+
 @latexonly
 \appendix
 @endlatexonly
