@@ -515,12 +515,16 @@ SCOREP_RecordingEnabled()
 
 
 // entity needs to be a function with the signature void entity();
+#if HAVE( SCOREP_DEBUG )
 #define SCOREP_TIME( entity ) \
     uint64_t timing_start_ ## entity = SCOREP_GetClockTicks(); \
     entity(); \
     uint64_t timing_stop_ ## entity = SCOREP_GetClockTicks(); \
     double   duration_ ## entity = ( timing_stop_ ## entity - timing_start_ ## entity ) / ( double )SCOREP_GetClockResolution(); \
     printf( "SCOREP_Timing[%d]: " #entity " took %f seconds.\n", SCOREP_Mpi_GetRank(), duration_ ## entity );
+#else
+#define SCOREP_TIME( entity ) entity()
+#endif
 
 
 static void

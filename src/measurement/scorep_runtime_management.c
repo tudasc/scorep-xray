@@ -282,7 +282,9 @@ OTF2_FlushType
 SCOREP_OnTracePreFlush( void* evtWriter,
                         void* evtReader )
 {
+#if HAVE( SCOREP_DEBUG )
     printf( "SCOREP_OnTracePreFlush[%d]\n", SCOREP_Mpi_GetRank() );
+#endif
     if ( !SCOREP_Mpi_IsInitialized() )
     {
         // flush before MPI_Init, we are lost.
