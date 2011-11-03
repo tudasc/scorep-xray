@@ -112,41 +112,41 @@ scorep_region_type_to_otf_region_type( SCOREP_RegionType scorepType,
 #define case_return( SCOREP, OTF2 ) \
     case SCOREP_REGION_ ## SCOREP: \
         return isGlobal \
-               ? OTF2_GLOB_REGION_ ## OTF2 \
-               : OTF2_REGION_ ## OTF2
+               ? OTF2_GLOB_REGION_TYPE_ ## OTF2 \
+               : OTF2_REGION_TYPE_ ## OTF2
 
-        case_return( UNKNOWN,              TYPE_UNKNOWN );
-        case_return( FUNCTION,             TYPE_FUNCTION );
-        case_return( LOOP,                 TYPE_LOOP );
-        case_return( USER,                 TYPE_USER_REGION );
+        case_return( UNKNOWN,              UNKNOWN );
+        case_return( FUNCTION,             FUNCTION );
+        case_return( LOOP,                 LOOP );
+        case_return( USER,                 USER_REGION );
+        case_return( MPI_COLL_BARRIER,     MPI_COLL_BARRIER );
+        case_return( MPI_COLL_ONE2ALL,     MPI_COLL_ONE2ALL );
+        case_return( MPI_COLL_ALL2ONE,     MPI_COLL_ALL2ONE );
+        case_return( MPI_COLL_ALL2ALL,     MPI_COLL_ALL2ALL );
+        case_return( MPI_COLL_OTHER,       MPI_COLL_OTHER );
+        case_return( OMP_PARALLEL,         OMP_PARALLEL );
+        case_return( OMP_LOOP,             OMP_LOOP );
+        case_return( OMP_SECTIONS,         OMP_SECTIONS );
+        case_return( OMP_SECTION,          OMP_SECTION );
+        case_return( OMP_WORKSHARE,        OMP_WORKSHARE );
+        case_return( OMP_SINGLE,           OMP_SINGLE );
+        case_return( OMP_MASTER,           OMP_MASTER );
+        case_return( OMP_CRITICAL,         OMP_CRITICAL );
+        case_return( OMP_ATOMIC,           OMP_ATOMIC );
+        case_return( OMP_BARRIER,          OMP_BARRIER );
+        case_return( OMP_IMPLICIT_BARRIER, OMP_IBARRIER );
+        case_return( OMP_FLUSH,            OMP_FLUSH );
+        case_return( OMP_CRITICAL_SBLOCK,  OMP_CRITICAL_SBLOCK );
+        case_return( OMP_SINGLE_SBLOCK,    OMP_SINGLE_SBLOCK );
+        case_return( OMP_WRAPPER,          OMP_WRAPPER );
+        case_return( OMP_TASK,             OMP_TASK );
+        case_return( OMP_TASKWAIT,         OMP_TASK_WAIT );
         case_return( PHASE,                PHASE );
         case_return( DYNAMIC,              DYNAMIC );
         case_return( DYNAMIC_PHASE,        DYNAMIC_PHASE );
         case_return( DYNAMIC_LOOP,         DYNAMIC_LOOP );
         case_return( DYNAMIC_FUNCTION,     DYNAMIC_FUNCTION );
         case_return( DYNAMIC_LOOP_PHASE,   DYNAMIC_LOOP_PHASE );
-        case_return( MPI_COLL_BARRIER,     TYPE_MPI_COLL_BARRIER );
-        case_return( MPI_COLL_ONE2ALL,     TYPE_MPI_COLL_ONE2ALL );
-        case_return( MPI_COLL_ALL2ONE,     TYPE_MPI_COLL_ALL2ONE );
-        case_return( MPI_COLL_ALL2ALL,     TYPE_MPI_COLL_ALL2ALL );
-        case_return( MPI_COLL_OTHER,       TYPE_MPI_COLL_OTHER );
-        case_return( OMP_PARALLEL,         TYPE_OMP_PARALLEL );
-        case_return( OMP_LOOP,             TYPE_OMP_LOOP );
-        case_return( OMP_SECTIONS,         TYPE_OMP_SECTIONS );
-        case_return( OMP_SECTION,          TYPE_OMP_SECTION );
-        case_return( OMP_WORKSHARE,        TYPE_OMP_WORKSHARE );
-        case_return( OMP_SINGLE,           TYPE_OMP_SINGLE );
-        case_return( OMP_MASTER,           TYPE_OMP_MASTER );
-        case_return( OMP_CRITICAL,         TYPE_OMP_CRITICAL );
-        case_return( OMP_ATOMIC,           TYPE_OMP_ATOMIC );
-        case_return( OMP_BARRIER,          TYPE_OMP_BARRIER );
-        case_return( OMP_IMPLICIT_BARRIER, TYPE_OMP_IBARRIER );
-        case_return( OMP_FLUSH,            TYPE_OMP_FLUSH );
-        case_return( OMP_CRITICAL_SBLOCK,  TYPE_OMP_CRITICAL_SBLOCK );
-        case_return( OMP_SINGLE_SBLOCK,    TYPE_OMP_SINGLE_SBLOCK );
-        case_return( OMP_WRAPPER,          TYPE_OMP_WRAPPER );
-        case_return( OMP_TASK,             TYPE_OMP_TASK );
-        case_return( OMP_TASKWAIT,         TYPE_OMP_TASK_WAIT );
 
 #undef case_return
         default:
@@ -166,7 +166,7 @@ scorep_group_type_to_otf_group_type( SCOREP_GroupType scorepType,
                ? OTF2_GLOB_GROUPTYPE_ ## OTF2 \
                : OTF2_GROUPTYPE_ ## OTF2
 
-        case_return( UNKNOWN,       NON );
+        case_return( UNKNOWN,       UNKNOWN );
         case_return( LOCATIONS,     LOCATIONS );
         case_return( REGIONS,       REGIONS );
         case_return( METRIC,        METRIC );
@@ -311,17 +311,20 @@ scorep_metric_scope_type_to_otf_metric_scope_type( SCOREP_MetricScope scope,
 }
 
 static uint8_t
-scorep_parameter_type_to_otf_parameter_type( SCOREP_ParameterType scorepType )
+scorep_parameter_type_to_otf_parameter_type( SCOREP_ParameterType scorepType,
+                                             bool                 isGlobal )
 {
     switch ( scorepType )
     {
 #define case_return( SCOREP, OTF2 ) \
     case SCOREP_PARAMETER_ ## SCOREP: \
-        return OTF2_ParameterType_ ## OTF2
+        return isGlobal \
+               ? OTF2_GLOB_PARAMETER_TYPE_ ## OTF2 \
+               : OTF2_PARAMETER_TYPE_ ## OTF2
 
-        case_return( STRING, String );
-        case_return( INT64, Int64 );
-        case_return( UINT64, UInt64 );
+        case_return( STRING, STRING );
+        case_return( INT64,  INT64 );
+        case_return( UINT64, UINT64 );
 
 #undef case_return
         default:
@@ -767,19 +770,32 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
 
 static void
 scorep_write_parameter_definitions( void*                     writerHandle,
-                                    SCOREP_DefinitionManager* definitionManager )
+                                    SCOREP_DefinitionManager* definitionManager,
+                                    bool                      isGlobal )
 {
     assert( writerHandle );
+
+    typedef  SCOREP_Error_Code ( *def_parameter_pointer_t )( void*,
+                                                             uint32_t,
+                                                             uint32_t,
+                                                             uint8_t );
+    def_parameter_pointer_t defParameter = ( def_parameter_pointer_t )
+                                           OTF2_DefWriter_DefParameter;
+    if ( isGlobal )
+    {
+        defParameter = ( def_parameter_pointer_t )
+                       OTF2_GlobDefWriter_GlobDefParameter;
+    }
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager,
                                   Parameter,
                                   parameter )
     {
-        SCOREP_Error_Code status = OTF2_GlobDefWriter_GlobDefParameter(
+        SCOREP_Error_Code status = defParameter(
             writerHandle,
+            definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
-            scorep_parameter_type_to_otf_parameter_type( definition->parameter_type ),
-            definition->sequence_number );
+            scorep_parameter_type_to_otf_parameter_type( definition->parameter_type, isGlobal ) );
 
         if ( status != SCOREP_SUCCESS )
         {
@@ -846,7 +862,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
 static void
 scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, GLOBAL_STRING, localDefinitionWriter );
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, STRING, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
     if ( SCOREP_Mpi_HasMpi() )
@@ -872,7 +888,7 @@ scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_group_definitions(                  localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_metric_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_sampling_set_definitions(           localDefinitionWriter, &scorep_local_definition_manager, false );
-    //scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false ); There is no local writer for parameter definitions
+    scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_callpath_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 
@@ -891,7 +907,7 @@ scorep_write_global_definitions( OTF2_GlobDefWriter* global_definition_writer )
     scorep_write_group_definitions(                  global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_metric_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_sampling_set_definitions(           global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager );
+    scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
 }
