@@ -518,7 +518,7 @@ check_name( const char* name, bool allow_underscore )
     {
         if ( !isalnum( *str ) && ( !allow_underscore || *str != '_' ) )
         {
-            printf( "invalid character in `%s' at position %zu: '%c'\n", name, str - name, *str );
+            SCOREP_BUG( "Invalid character in config variable name." );
             return false;
         }
         str++;
