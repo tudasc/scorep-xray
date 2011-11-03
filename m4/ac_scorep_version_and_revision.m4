@@ -40,8 +40,8 @@ AC_DEFUN([AC_SCOREP_REVISION],
         AC_MSG_WARN([distribution does not match a single, unmodified revision, but $scorep_revision.])
     fi
 
-    AC_SUBST([LIBRARY_CURRENT],  [`sed -n -e 's/library.current=\+// p' ${srcdir}/build-config/VERSION`])
-    AC_SUBST([LIBRARY_REVISION], [`sed -n -e 's/library.revision=\+// p' ${srcdir}/build-config/VERSION`])
-    AC_SUBST([LIBRARY_AGE],      [`sed -n -e 's/library.age=\+// p' ${srcdir}/build-config/VERSION`])
+    AC_SUBST([LIBRARY_CURRENT],  m4_esyscmd([sed -n -e 's/library.current=\+// p' build-config/VERSION]))
+    AC_SUBST([LIBRARY_REVISION], m4_esyscmd([sed -n -e 's/library.revision=\+// p' build-config/VERSION]))
+    AC_SUBST([LIBRARY_AGE],      m4_esyscmd([sed -n -e 's/library.age=\+// p' build-config/VERSION]))
 
 ])
