@@ -201,7 +201,7 @@ $(CONFIG_HEADER_BACKEND):
 	    echo "#define OPARI          \"$(prefix)/bin/opari2\""; \
 	    echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2-config\""; \
 	    echo "#define PDT            \"$(PDT_PATH)\""; \
-	    echo "#define PDT_CONFIG     \"$(datadir)/SCOREP_Pdt_Instrumentation.conf\""; \
+	    echo "#define PDT_CONFIG     \"$(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf\""; \
 	    echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\""; \
 	    echo "#define COBI_CONFIG_DIR \"$(SCOREP_SHARE_INSTALL_DIR)\""; \
 	) >$(CONFIG_HEADER_BACKEND)
