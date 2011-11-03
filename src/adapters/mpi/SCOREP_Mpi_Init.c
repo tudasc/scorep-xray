@@ -387,8 +387,6 @@ scorep_mpi_final_location( void* location )
 void
 scorep_mpi_finalize()
 {
-    int res;
-
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_finalize\n" );
 
@@ -400,6 +398,22 @@ scorep_mpi_finalize()
     scorep_mpi_win_final();
     scorep_mpi_request_finalize();
     scorep_mpi_comm_finalize();
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "End of scorep_mpi_finalize\n" );
+}
+
+/**
+   Implementation of the adapter_deregister function of the @ref SCOREP_Subsystem struct
+   for the initialization process of the MPI adapter.
+ */
+void
+scorep_mpi_deregister()
+{
+    int res;
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
+                         "In scorep_mpi_deregister\n" );
 
     /* Finalize MPI.
        MPICH somehow creates some extra processes/threads. If PMPI_Finalize is called
@@ -416,20 +430,6 @@ scorep_mpi_finalize()
             SCOREP_OnPMPI_Finalize();
         }
     }
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "End of scorep_mpi_finalize\n" );
-}
-
-/**
-   Implementation of the adapter_deregister function of the @ref SCOREP_Subsystem struct
-   for the initialization process of the MPI adapter.
- */
-void
-scorep_mpi_deregister()
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_deregister\n" );
 }
 
 /* The initialization struct for the MPI adapter */

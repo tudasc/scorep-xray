@@ -544,14 +544,17 @@ scorep_finalize( void )
         return;
     }
 
+    SCOREP_TIME( scorep_subsystems_finalize_location );
+    SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
+
+    // Calling SCOREP_Event.h functions after this point is considered
+    // an instrumentation error.
     // order is important
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
     }
 
-    // Calling SCOREP_Event.h functions after this point is considered
-    // an instrumentation error.
     SCOREP_TIME( SCOREP_DefineSystemTree );
     SCOREP_TIME( SCOREP_Unify );
     SCOREP_TIME( scorep_profile_finalize );
@@ -564,11 +567,9 @@ scorep_finalize( void )
 
     SCOREP_TIME( SCOREP_ConfigFini );
 
-    SCOREP_TIME( SCOREP_RenameExperimentDir );  // needs MPI
+    SCOREP_TIME( SCOREP_RenameExperimentDir );   // needs MPI
 
-    SCOREP_TIME( scorep_subsystems_finalize_location );
-    SCOREP_TIME( scorep_subsystems_finalize ); // here PMPI_Finalize is called
-    SCOREP_TIME( scorep_subsystems_deregister );
+    SCOREP_TIME( scorep_subsystems_deregister ); // here PMPI_Finalize is called
 
     SCOREP_TIME( SCOREP_Thread_Finalize );
     SCOREP_TIME( SCOREP_Memory_Finalize );
