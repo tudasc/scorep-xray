@@ -69,9 +69,11 @@ endif
 jacobi_omp_c_metric_test_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c_metric_test.la
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_openmp_metric_test.sh \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out
+				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out \
+				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_events.out
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_openmp_metric_test.sh \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_definitions.out
+				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_definitions.out \
+				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_events.out
 
 if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
