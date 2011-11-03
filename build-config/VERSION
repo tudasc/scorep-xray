@@ -7,9 +7,9 @@ library interface version:
     https://www.gnu.org/software/libtool/manual/libtool.html#Versioning
     http://sourceware.org/autobook/autobook/autobook_91.html#SEC91
 
-package.major=0
-package.minor=9
+package.major=1
+package.minor=0-beta
 
-library.current=3
-library.revision=2
-library.age=1
+library.current=0
+library.revision=0
+library.age=0
