@@ -3,21 +3,32 @@
 
 If an application was instrumented with @scorep, you will get an executable, which 
 you can execute like the uninstrumented application. After the application run, you
-will find a measurement directory in your current working directory, which contains
-all recorded data. The measurement directory has the format 
+will find an experiment directory in your current working directory, which contains
+all recorded data. The experiment directory has the format 
 <tt>scorep-YYYYMMDD_XXXX_XXXX</tt>, where <tt>YYYYMMDD</tt> encodes the date followed
-by a series of random numbers.
+by a series of random numbers. You may specify the name of the experiment directory
+by setting the environment variable <tt>SCOREP_EXPERIMENT_DIRECTORY</tt> to the
+desired name of the directory. If the directory already exists, it will be overwritten
+by default. You can prevent Score-P to overwrite existing directories by setting:
+@code
+SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=false
+@endcode
 
 In general, you can record a profile and/or a event trace. Whether a profile and/or a
 trace is recorded, is specified by the environment variables 
 <tt>SCOREP_ENABLE_PROFILING</tt> and <tt>SCOREP_ENABLE_TRACING</tt>. If the value of this
-variables is not set, zero or <tt>false</tt>, profiling/tracing is disabled. 
-Otherwise @scorep will record a profile and/or trace.
+variables is zero or <tt>false</tt>, profiling/tracing is disabled. 
+Otherwise @scorep will record a profile and/or trace. By default, profiling and tracing
+are both enabled.
 
 You may start with a profiling run, because of its lower space requirements. According
 to profiling results, you may configure the trace buffer limits, filtering or selective 
 tracing for recording traces.
 
+@scorep allows to configure several parameters via environment variables. After the
+measurment run you can find a <tt>scorep.cfg</tt> file in your experiement directory
+which contains the configuration of the measurement run. If you had not set configuration
+values explicitly, the file will contain the default values.
 
 
 @section profiling Profiling
@@ -78,9 +89,12 @@ is left. If two phases are nested, then the outer phase is left, when the inner 
 entered. If the inner phase is exited, the outer phase is re-entered. 
 Figure @figref{PhaseProfiling} shows the difference in the call-tree if the regions 
 with the names phase1 and phase2 are not of type 
-<tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the left side and the forest if they are of type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the right side.
+<tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the left side and the forest if they are of 
+type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the right side.
 
-@img{phase_profiling.png,PhaseProfiling,Call-tree changes when using phases. The left side shows the calltree if no region is of type phase. The right side shows the call-tree forest with phases., width=0.9\textwidth}
+@img{phase_profiling.png,PhaseProfiling,Call-tree changes when using phases. The left 
+side shows the calltree if no region is of type phase. The right side shows the 
+call-tree forest with phases., width=0.9\textwidth}
 
 If the phase consists of multiple partitions, and thus can not be enclosed by a single
 code region, all code-regions that form the phase must have the same region handle.
@@ -134,6 +148,19 @@ instrumentation, described in Section @secref{manual_instrumentation}.
 @note Using dynimc regions can easily create very large profiles. Thus, use this
 feature with care. If you are only interested in some parts of the application, selective
 tracing (see Section @secref{selective_tracing}) might be a memory space save alternative.
+
+
+@section tracing Tracing
+@seclabel{tracing}
+
+@scorep can write events to OTF2 traces. By setting the environment variable
+<tt>SCOREP_ENABLE_TRACING</tt>, you can control whether a trace is recorded. If the
+value is <tt>0</tt> or <tt>false</tt> no trace is recorded, if the value is non-zero 
+or <tt>true</tt>, a trace is recorded. If the variable is not specified, 
+@scorep records traces on default.
+After trace recording you will find the OTF2 anchor file, named <tt>trace.otf2</tt>
+in the experiement directory, along with the trace data. 
+
 
 
 @section filtering Filtering

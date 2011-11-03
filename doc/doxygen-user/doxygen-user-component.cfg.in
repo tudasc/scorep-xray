@@ -8,8 +8,8 @@ PROJECT_NAME           = "Score-P"
 # or directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = doc/doxygen-user \
-                         @abs_top_srcdir@/doc/doxygen-user \
+INPUT                  = @abs_top_srcdir@/doc/doxygen-user \
+                         doc/doxygen-user \
                          @abs_top_srcdir@/include/scorep/SCOREP_User.h \
                          @abs_top_srcdir@/include/scorep/SCOREP_User_Types.h \
                          @abs_top_srcdir@/include/scorep/pomp2_lib.h \
