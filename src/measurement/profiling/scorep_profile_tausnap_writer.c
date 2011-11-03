@@ -37,6 +37,9 @@
 #include "scorep_definitions.h"
 #include "scorep_mpi.h"
 #include "scorep_runtime_management.h"
+#include "scorep_profile_metric.h"
+
+extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 /* Forward declaration */
 static void
@@ -279,6 +282,8 @@ scorep_profile_write_node_tau( scorep_profile_node* node,
     }
 }
 
+
+
 /**
    Helper function for the profile writer in TAU snapshot format.
    Writes the metric data for the runtime of a node and process its children
@@ -293,9 +298,11 @@ scorep_profile_write_node_tau( scorep_profile_node* node,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_data_tau( scorep_profile_node* node,
-                               FILE*                file,
-                               uint64_t*            callpath_counter )
+scorep_profile_write_data_tau( scorep_profile_node*      node,
+                               FILE*                     file,
+                               uint64_t*                 callpath_counter,
+                               SCOREP_DefinitionManager* manager )
+
 {
     uint64_t tps = SCOREP_GetClockResolution();
 
@@ -319,12 +326,187 @@ scorep_profile_write_data_tau( scorep_profile_node* node,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            scorep_profile_write_data_tau( child, file, callpath_counter );
+            scorep_profile_write_data_tau( child, file, callpath_counter, manager );
             child = child->next_sibling;
         }
     }
 }
 
+
+struct list_el
+{
+    int             val;
+    int             index;
+    struct list_el* next;
+};
+
+typedef struct list_el item;
+item* curr, * head, * tail;
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   It writes the user event names and eventID  for a thread to a given file.
+   @param node      Pointer to the root node of the thread.
+   @param threadnum Number of the thread on this node. The number must be
+                    unique on each node.
+   @param file      A pointer to an open file to which the data is written.
+ */
+
+static void
+scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
+                                     FILE*                     file,
+                                     uint64_t*                 callpath_counter,
+                                     SCOREP_DefinitionManager* manager )
+{
+    scorep_profile_sparse_metric_double* metric = node->first_double_sparse;
+
+    while ( metric != NULL )
+    {
+/* Write data in format:
+   <EventID> <NumSamples> <MaxValue> <MinValue> <MeanValue> <Sum of Squares>
+ */
+        int eventID = -1;
+
+        curr = head;
+
+        while ( curr != NULL )
+        {
+            if ( curr->val == ( int )metric->metric )
+            {
+                eventID = curr->index;
+            }
+            curr = curr->next;
+        }
+
+        fprintf( file, "%d %ld %.16G %.16G %.16G %.16G\n",
+                 eventID, metric->count, metric->max, metric->min,
+                 metric->sum / metric->count, metric->squares );
+        metric = metric->next_metric;
+    }
+
+    if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
+    {
+        /* invoke children */
+        scorep_profile_node* child = node->first_child;
+        while ( child != NULL )
+        {
+            scorep_profile_write_atomicdata_tau( child, file, callpath_counter, manager );
+            child = child->next_sibling;
+        }
+    }
+}
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   It writes the atomic event data for a thread to a given file.
+   @param node      Pointer to the root node of the thread.
+   @param file      A pointer to an open file to which the data is written.
+ */
+
+static void
+scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
+                                                FILE*                     file,
+                                                SCOREP_DefinitionManager* manager )
+
+{
+    scorep_profile_sparse_metric_double* metric = node->first_double_sparse;
+    while ( metric != NULL )
+    {
+        printf( "min:\n" );
+        curr = head;
+        int eventID = -1;
+        while ( curr != NULL )
+        {
+            if ( ( int )metric->metric == curr->val )
+            {
+                eventID = curr->index;
+                curr    = NULL;
+            }
+            if ( curr != NULL )
+            {
+                curr = curr->next;
+            }
+        }
+        if ( eventID == -1 )
+        {
+            if ( tail == NULL )
+            {
+                eventID = 0;
+            }
+            else
+            {
+                eventID = tail->index + 1;
+            }
+            item* new = ( item* )malloc( sizeof( item ) );
+            new->val   = metric->metric;
+            new->index = eventID;
+            new->next  = NULL;
+
+
+            if ( head == NULL )
+            {
+                head = new;
+            }
+            if ( tail != NULL )
+            {
+                tail->next = new;
+            }
+            tail = new;
+
+
+            SCOREP_Metric_Definition* metric_definition;
+            char*                     metric_name;
+            metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric->metric, Metric );
+            metric_name       = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->name_handle,
+                                                             String )->string_data;
+            fprintf( file, "<userevent id=\"%d\"><name>%s</name>", eventID, metric_name );
+            fprintf( file, "</userevent>\n" );
+        }
+        metric = metric->next_metric;
+    }
+
+    if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
+    {
+        /* invoke children */
+        scorep_profile_node* child = node->first_child;
+        while ( child != NULL )
+        {
+            scorep_profile_write_userevent_data_metric_tau( child, file,  manager );
+            child = child->next_sibling;
+        }
+    }
+}
+/**
+   Helper function for the profile writer in TAU snapshot format.
+   It calls the function to write out the user events.
+   @param node      Pointer to the root node of the thread.
+   @param threadnum Number of the thread on this node. The number must be
+                    unique on each node.
+   @param file      A pointer to an open file to which the data is written.
+ */
+
+static void
+scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
+                                         uint64_t                  threadnum,
+                                         FILE*                     file,
+                                         SCOREP_DefinitionManager* manager )
+{
+    head = NULL;
+    tail = NULL;
+
+
+    /*Write User Events Definitions*/
+    scorep_profile_node* node = child;
+    while ( node != NULL )
+    {
+        while ( child != NULL )
+        {
+            scorep_profile_write_userevent_data_metric_tau( child, file, manager );
+
+            child = child->next_sibling;
+        }
+        child = node->first_child;
+        node  = node->first_child;
+    }
+}
 /**
    Helper function for the profile writer in TAU snapshot format.
    It writes the metadata for a thread to a given file and process the regions
@@ -335,9 +517,10 @@ scorep_profile_write_data_tau( scorep_profile_node* node,
    @param file      A pointer to an open file to which the data is written.
  */
 static void
-scorep_profile_write_thread_tau( scorep_profile_node* node,
-                                 uint64_t             threadnum,
-                                 FILE*                file )
+scorep_profile_write_thread_tau( scorep_profile_node*      node,
+                                 uint64_t                  threadnum,
+                                 FILE*                     file,
+                                 SCOREP_DefinitionManager* manager )
 {
     /* The counter is used to enumerate the callpathes and
        serves as an unique id to map callpath definitions
@@ -359,17 +542,28 @@ scorep_profile_write_thread_tau( scorep_profile_node* node,
     fprintf( file, "</metric>\n" );
     fprintf( file, "</definitions>\n\n" );
 
+
+    scorep_profile_node* child = node->first_child;
+
+    fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
+             SCOREP_Mpi_GetRank(), threadnum );
+
+    scorep_profile_write_userevent_data_tau( child, threadnum, file,  manager );
+
+    fprintf( file, "</definitions>\n\n" );
+
     /* Write callpath definition */
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
              SCOREP_Mpi_GetRank(), threadnum );
-    scorep_profile_node* child = node->first_child;
     callpath_counter = 0;
+
     while ( child != NULL )
     {
         scorep_profile_write_node_tau( child, NULL, file, &callpath_counter );
         child = child->next_sibling;
     }
     fprintf( file, "</definitions>\n\n" );
+
 
     /* Write metrics data */
     fprintf( file, "<profile thread=\"%d.0.%" PRIu64 ".0\">\n",
@@ -380,10 +574,21 @@ scorep_profile_write_thread_tau( scorep_profile_node* node,
     callpath_counter = 0;
     while ( child != NULL )
     {
-        scorep_profile_write_data_tau( child, file, &callpath_counter );
+        scorep_profile_write_data_tau( child, file, &callpath_counter, manager );
         child = child->next_sibling;
     }
     fprintf( file, "</interval_data>\n" );
+/*Write Atomic Data*/
+    fprintf( file, "<atomicl_data>\n" );
+    child            = node->first_child;
+    callpath_counter = 0;
+    while ( child != NULL )
+    {
+        scorep_profile_write_atomicdata_tau( child, file, &callpath_counter, manager );
+        child = child->next_sibling;
+    }
+    fprintf( file, "</atomic_data>\n" );
+
     fprintf( file, "</profile>\n\n" );
 }
 
@@ -461,7 +666,7 @@ scorep_profile_write_tau_add_callpath_nodes( scorep_profile_node* node )
                             node );
 }
 
-/* Implemetation of the top function for writing a TAU snapshot profile.
+/* rImplemetatio  of the top function for writing a TAU snapshot profile.
  */
 void
 scorep_profile_write_tau_snapshot()
@@ -473,6 +678,16 @@ scorep_profile_write_tau_snapshot()
     FILE* file;
     char  filename[ 600 ];
     char  dirname[ 500 ];
+
+    /* The unification is always processed, even in serial case. Thus, we have
+        always access to the unified definitions on rank 0.
+        In non-mpi case SCOREP_Mpi_GetRank() returns always 0. Thus, we need only
+        to test for the rank. */
+    SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
+    if ( SCOREP_Mpi_GetRank() == 0 )
+    {
+        assert( scorep_unified_definition_manager );
+    }
 
     /* Create sub directory 'tau' */
     sprintf( dirname, "%s/tau", SCOREP_GetExperimentDirName() );
@@ -504,12 +719,13 @@ scorep_profile_write_tau_snapshot()
     /* Write thread data */
     while ( thread != NULL )
     {
-        scorep_profile_write_thread_tau( thread, threadnum, file );
+        scorep_profile_write_thread_tau( thread, threadnum, file, manager );
         thread = thread->next_sibling;
         threadnum++;
     }
 
     /* Write closing tag and close file */
     fprintf( file, "</profile_xml>\n" );
+
     fclose( file );
 }
