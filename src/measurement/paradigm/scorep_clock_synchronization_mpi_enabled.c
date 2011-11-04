@@ -26,6 +26,8 @@
 #include <config.h>
 #include <scorep_clock_synchronization.h>
 
+#include <scorep_definitions.h>
+#include <SCOREP_Timing.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -33,4 +35,5 @@
 void
 SCOREP_SynchronizeClocks()
 {
+    SCOREP_AddClockOffset( SCOREP_GetClockTicks(), 0, 0 );
 }

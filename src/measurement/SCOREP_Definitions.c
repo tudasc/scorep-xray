@@ -2221,6 +2221,13 @@ SCOREP_GetFirstClockSyncPair( int64_t*  offset1,
                               int64_t*  offset2,
                               uint64_t* timestamp2 )
 {
+    extern SCOREP_ClockOffset* scorep_clock_offset_head;
+    assert( scorep_clock_offset_head );
+    assert( scorep_clock_offset_head->next );
+    *offset1    = scorep_clock_offset_head->offset;
+    *timestamp1 = scorep_clock_offset_head->time;
+    *offset2    = scorep_clock_offset_head->next->offset;
+    *timestamp2 = scorep_clock_offset_head->next->time;
 }
 
 
@@ -2230,6 +2237,22 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
                              int64_t*  offset2,
                              uint64_t* timestamp2 )
 {
+    extern SCOREP_ClockOffset* scorep_clock_offset_head;
+    assert( scorep_clock_offset_head );
+    assert( scorep_clock_offset_head->next );
+    SCOREP_ClockOffset* previous = scorep_clock_offset_head;
+    SCOREP_ClockOffset* current  = previous->next;
+
+    while ( current->next )
+    {
+        previous = current;
+        current  = current->next;
+    }
+
+    *offset1    = previous->offset;
+    *timestamp1 = previous->time;
+    *offset2    = current->offset;
+    *timestamp2 = current->time;
 }
 
 /////////////////////////////////////////////////////////////////////////////
