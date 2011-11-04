@@ -102,7 +102,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_use_sion_substrate,
         NULL,
-        "true",
+        "false",
         "Whether or not to use libsion as OTF2 substrate.",
         "Long help"
     },
