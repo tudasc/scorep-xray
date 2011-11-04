@@ -587,6 +587,52 @@ of limitations:
   </li>
 </ul>
 
+@section online_access Source-code instrumentation enabling Online Access
+@seclabel{online_access}
+
+Online Access is an interface to the measurement system of Score-P allowing remote configuration of measurement
+and access to the profile data. If @scorep has been configured with Online Access (OA) support, 
+the code has to be manually instrumented using <tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and
+<tt>SCOREP_USER_OA_PHASE_END</tt> macros. These macros must be correctly nested and must be potential 
+global synchronization points, also it is recommended to mark the body of the application's main loop 
+in order to utilize the main loop iterations for iterative online analisys. Only the measurements collected
+inside the OA phase could be configured and retrieved.
+
+Instrumentation can be performed in the following ways, depending on the
+programming language used.
+
+@code
+    #include "SCOREP_User.inc"
+
+    subroutine foo
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      ! do something
+      SCOREP_USER_OA_PHASE_END( my_region_handle )
+
+    end subroutine foo
+@endcode
+
+C/C++:
+@code
+    #include <SCOREP_User.h>
+
+    void foo()
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SCOREP_USER_OA_PHASE_END( my_region_handle )
+    }
+@endcode
+
 */
 
 
