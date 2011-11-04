@@ -32,6 +32,7 @@ PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 ## otf2 component. These variables need to be overriden when
 ## configuring using the --with-(utility|otf2) options (to be done)
 INC_DIR_OTF2 = $(INC_ROOT)vendor/otf2/include
+BUILD_INC_DIR_OTF2 = ../vendor/otf2/include
 LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
 INC_DIR_UTIL = $(INC_ROOT)vendor/otf2/vendor/utility/include
 LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/

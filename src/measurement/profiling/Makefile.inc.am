@@ -29,6 +29,7 @@ PROFILE_FLAGS =                                 \
     -I$(INC_ROOT)src/measurement                \
     -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(PUBLIC_INC_DIR)                         \
+    -I$(BUILD_INC_DIR_OTF2)                     \
     -I$(INC_DIR_OTF2)                           \
     -I$(INC_DIR_UTIL)                           \
     -I$(INC_DIR_VENDOR_HASH)
