@@ -301,13 +301,13 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         " XREQTEST: Test events for uncompleted requests.\n",
     },
     {
-        "profiling",
+        "online_analysis",
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_hooks_on,
         NULL,
         "false",
-        "enable mpi profiling",
-        "enable mpi profiling"
+        "enable online mpi wait states analysis",
+        "enable online mpi wait states analysis"
     },
     SCOREP_CONFIG_TERMINATOR
 };
