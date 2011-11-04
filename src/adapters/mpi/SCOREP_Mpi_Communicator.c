@@ -195,6 +195,7 @@ static SCOREP_MpiRank* scorep_mpi_ranks;
  *  scorep_mpi_comm_init() is called.
  */
 static int scorep_mpi_comm_initialized = 0;
+static int scorep_mpi_comm_finalized   = 0;
 
 /**
  *  @internal
@@ -613,6 +614,7 @@ scorep_mpi_comm_finalize()
     /* reset initialization flag
      * (needed to prevent crashes with broken MPI implementations) */
     scorep_mpi_comm_initialized = 0;
+    scorep_mpi_comm_finalized   = 1;
 
     /* free MPI group held internally */
     PMPI_Group_free( &scorep_mpi_world.group );
@@ -699,7 +701,7 @@ scorep_mpi_comm_create( MPI_Comm comm )
      * internal communicators.
      * Also applies to scorep_mpi_comm_free and scorep_mpi_group_(create|free).
      */
-    if ( !scorep_mpi_comm_initialized )
+    if ( !scorep_mpi_comm_initialized && !scorep_mpi_comm_finalized )
     {
         SCOREP_ERROR( SCOREP_WARNING,
                       "Skipping attempt to create communicator "
