@@ -579,7 +579,7 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
     }
     fprintf( file, "</interval_data>\n" );
 /*Write Atomic Data*/
-    fprintf( file, "<atomicl_data>\n" );
+    fprintf( file, "<atomic_data>\n" );
     child            = node->first_child;
     callpath_counter = 0;
     while ( child != NULL )
