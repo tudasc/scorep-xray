@@ -26,6 +26,7 @@
 #include <config.h>
 #include "scorep_clock_synchronization.h"
 
+#include "scorep_definitions.h"
 #include <SCOREP_Timing.h>
 
 #include <assert.h>
@@ -62,12 +63,18 @@ SCOREP_EndEpoch()
 
 
 void
-SCOREP_InterpolateEpoch()
+scorep_interpolate_epoch( uint64_t* epochBegin, uint64_t* epochEnd )
 {
+    if ( scorep_epoch_interpolated )
+    {
+        *epochBegin = scorep_epoch_begin;
+        *epochEnd   = scorep_epoch_end;
+        return;
+    }
+
     // transform "worker" scorep_epoch_(begin|end) to "master" time.
     assert( scorep_epoch_begin_set );
     assert( scorep_epoch_end_set );
-    assert( !scorep_epoch_interpolated );
     uint64_t timestamp1 = 1; // dummy initialization to prevent devision by 0
     uint64_t timestamp2 = 2;
     int64_t  offset1, offset2;
@@ -78,6 +85,9 @@ SCOREP_InterpolateEpoch()
     SCOREP_GetLastClockSyncPair( &offset1, &timestamp1, &offset2, &timestamp2 );
     scorep_epoch_end = scorep_interpolate( scorep_epoch_end, offset1, timestamp1, offset2, timestamp2 );
 
+    *epochBegin = scorep_epoch_begin;
+    *epochEnd   = scorep_epoch_end;
+
     scorep_epoch_interpolated = true;
 }
 
@@ -86,20 +96,4 @@ static uint64_t
 scorep_interpolate( uint64_t workerTime, int64_t offset1, uint64_t workerTime1, int64_t offset2, uint64_t workerTime2 )
 {
     return workerTime + ( offset2 - offset1 ) / ( workerTime2 - workerTime1 ) * ( workerTime - workerTime1 ) + offset1;
-}
-
-
-uint64_t
-SCOREP_GetInterpolatedEpochBegin()
-{
-    assert( scorep_epoch_interpolated );
-    return scorep_epoch_begin;
-}
-
-
-uint64_t
-SCOREP_GetInterpolatedEpochEnd()
-{
-    assert( scorep_epoch_interpolated );
-    return scorep_epoch_end;
 }

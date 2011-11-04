@@ -555,7 +555,6 @@ scorep_finalize( void )
 
     SCOREP_SynchronizeClocks();
     SCOREP_EndEpoch();
-    SCOREP_InterpolateEpoch();
     SCOREP_TIME( scorep_subsystems_finalize_location );
     SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
 

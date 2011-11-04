@@ -39,13 +39,8 @@ void
 SCOREP_EndEpoch();
 
 void
-SCOREP_InterpolateEpoch();
-
-uint64_t
-SCOREP_GetInterpolatedEpochBegin();
-
-uint64_t
-SCOREP_GetInterpolatedEpochEnd();
+SCOREP_GetGlobalEpoch( uint64_t* globalEpochBegin,
+                       uint64_t* globalEpochEnd );
 
 
 #endif /* SCOREP_CLOCK_SYNCHRONIZATION_H */

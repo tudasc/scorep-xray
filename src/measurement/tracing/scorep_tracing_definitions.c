@@ -43,6 +43,7 @@
 #include <scorep_runtime_management.h>
 #include <scorep_environment.h>
 #include <scorep_mpi.h>
+#include <scorep_clock_synchronization.h>
 
 #include <scorep_definitions.h>
 #include <scorep_definition_structs.h>
@@ -1044,11 +1045,14 @@ SCOREP_Tracing_WriteDefinitions()
 
 
     OTF2_GlobDefWriter* global_definition_writer = NULL;
+    uint64_t            epoch_begin;
+    uint64_t            epoch_end;
+    SCOREP_GetGlobalEpoch( &epoch_begin, &epoch_end );
     if ( SCOREP_Mpi_GetRank() == 0 )
     {
         global_definition_writer = scorep_create_global_definition_writer();
         scorep_write_global_definitions( global_definition_writer );
-        /// @todo Daniel, what to do here for profiling?
+        OTF2_GlobDefWriter_GlobDefTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
     }
     // uses MPI communication. references string handle, so write after strings
     // this may become obsolete, see comment in scorep_write_location_definitions()

@@ -33,6 +33,7 @@
 #define N_PINGPONGS 10
 
 /* *INDENT-OFF* */
+extern void scorep_interpolate_epoch(uint64_t* epochBegin, uint64_t* epochEnd);
 /* *INDENT-ON*  */
 
 void
@@ -102,4 +103,27 @@ SCOREP_SynchronizeClocks()
 
     uint64_t stddev_not_calculated_yet = 0;
     SCOREP_AddClockOffset( offset_time, offset, stddev_not_calculated_yet );
+}
+
+
+void
+SCOREP_GetGlobalEpoch( uint64_t* globalEpochBegin, uint64_t* globalEpochEnd )
+{
+    uint64_t local_epoch_begin;
+    uint64_t local_epoch_end;
+    scorep_interpolate_epoch( &local_epoch_begin, &local_epoch_end );
+
+    SCOREP_Mpi_Reduce( &local_epoch_begin,
+                       globalEpochBegin,
+                       1,
+                       SCOREP_MPI_UNSIGNED_LONG_LONG,
+                       SCOREP_MPI_MIN,
+                       0 );
+
+    SCOREP_Mpi_Reduce( &local_epoch_end,
+                       globalEpochEnd,
+                       1,
+                       SCOREP_MPI_UNSIGNED_LONG_LONG,
+                       SCOREP_MPI_MAX,
+                       0 );
 }
