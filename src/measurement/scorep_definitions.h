@@ -199,6 +199,25 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
 
 
 void
+SCOREP_AddClockOffset( uint64_t time,
+                       int64_t  offset,
+                       double   stddev );
+
+void
+SCOREP_GetFirstClockSyncPair( int64_t*  offset1,
+                              uint64_t* timestamp1,
+                              int64_t*  offset2,
+                              uint64_t* timestamp2 );
+
+
+void
+SCOREP_GetLastClockSyncPair( int64_t*  offset1,
+                             uint64_t* timestamp1,
+                             int64_t*  offset2,
+                             uint64_t* timestamp2 );
+
+
+void
 SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager );
 

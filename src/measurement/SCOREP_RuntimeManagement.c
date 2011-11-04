@@ -62,6 +62,7 @@
 #include "scorep_thread.h"
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
+#include "scorep_clock_synchronization.h"
 
 #include <otf2/otf2.h>
 
@@ -82,6 +83,7 @@ bool                       scorep_recording_enabled = true;
 SCOREP_SamplingSetHandle   scorep_current_sampling_set = SCOREP_INVALID_SAMPLING_SET;
 uint8_t                    scorep_number_of_metrics    = 0;
 OTF2_TypeID*               scorep_current_metric_types = NULL;
+
 
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
@@ -154,6 +156,7 @@ SCOREP_InitMeasurement()
 
     SCOREP_Status_Initialize();
     SCOREP_Timer_Initialize();
+    SCOREP_BeginEpoch();
     SCOREP_CreateExperimentDir();
 
     // Need to be called before the first use of any SCOREP_Alloc function, in
@@ -173,6 +176,7 @@ SCOREP_InitMeasurement()
     if ( !SCOREP_Mpi_HasMpi() )
     {
         scorep_set_otf2_archive_master_slave();
+        SCOREP_SynchronizeClocks();
     }
 
     SCOREP_Filter_Initialize();
@@ -407,6 +411,7 @@ SCOREP_InitMeasurementMPI( int rank )
     SCOREP_Mpi_SetRankTo( rank );
     SCOREP_CreateExperimentDir();
     SCOREP_ProcessDeferredLocations();
+    SCOREP_SynchronizeClocks();
     scorep_set_otf2_archive_master_slave();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
@@ -548,6 +553,9 @@ scorep_finalize( void )
         return;
     }
 
+    SCOREP_SynchronizeClocks();
+    SCOREP_EndEpoch();
+    SCOREP_InterpolateEpoch();
     SCOREP_TIME( scorep_subsystems_finalize_location );
     SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
 

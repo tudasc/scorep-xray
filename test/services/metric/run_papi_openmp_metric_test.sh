@@ -40,7 +40,8 @@ echo "Output of metric test can be found in $RESULT_DIR"
 # Check metric definitions
 $OTF2_PRINT -G $RESULT_DIR/traces.otf2 |
     grep ^METRIC |
-    LC_ALL=C sed -e 's/Name: [[:digit:]]\+/Name: <id>/g' \
+    LC_ALL=C sed -e 's/^METRIC \(MEMBER\|CLASS\|INSTANCE\) \+/METRIC \1 /g' \
+                 -e 's/Name: [[:digit:]]\+/Name: <id>/g' \
                  -e 's/Descr\.: [[:digit:]]\+ (.*),/Descr.: <id> (<string>),/g' \
                  -e 's/Unit: [[:digit:]]\+/Unit: <id>/g' > trace.txt
 if diff $TEST_DATA_DIR/jacobi_c_openmp_papi_metric_definitions.out trace.txt > /dev/null

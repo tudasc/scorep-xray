@@ -284,4 +284,16 @@ SCOREP_DEFINE_DEFINITION_TYPE( Callpath )
 };
 
 
+/* Not really a definition, but we need to store them somewhere */
+typedef struct SCOREP_ClockOffset SCOREP_ClockOffset;
+struct SCOREP_ClockOffset
+{
+    SCOREP_ClockOffset* next;
+
+    uint64_t            time;
+    int64_t             offset;
+    double              stddev;
+};
+
+
 #endif /* SCOREP_DEFINITION_STRUCTS_H */

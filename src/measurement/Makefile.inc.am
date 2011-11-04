@@ -61,7 +61,9 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.h          \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.c          \
     $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
-    $(SRC_ROOT)src/measurement/scorep_system_tree.c
+    $(SRC_ROOT)src/measurement/scorep_system_tree.c               \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h     \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c
 
 libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
@@ -113,7 +115,8 @@ libscorep_paradigm_non_omp_la_CPPFLAGS = \
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
 libscorep_paradigm_non_mpi_la_SOURCES  =                            \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_disabled.c       \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_disabled.c
 libscorep_paradigm_non_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 
 

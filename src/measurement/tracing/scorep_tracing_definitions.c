@@ -878,6 +878,23 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 }
 
 static void
+scorep_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
+{
+    extern SCOREP_ClockOffset* scorep_clock_offset_head;
+    for ( SCOREP_ClockOffset* clock_offset = scorep_clock_offset_head;
+          clock_offset;
+          clock_offset = clock_offset->next )
+    {
+        SCOREP_Error_Code status = OTF2_DefWriter_WriteClockOffset(
+            localDefinitionWriter,
+            clock_offset->time,
+            clock_offset->offset,
+            clock_offset->stddev );
+        assert( status == SCOREP_SUCCESS );
+    }
+}
+
+static void
 scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
     scorep_write_string_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
@@ -1021,6 +1038,7 @@ SCOREP_Tracing_WriteDefinitions()
             scorep_write_local_definitions( local_definition_writer );
         }
         scorep_write_mappings( local_definition_writer );
+        scorep_write_clock_offsets( local_definition_writer );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 

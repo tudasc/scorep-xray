@@ -44,6 +44,7 @@
 #include "scorep_definitions.h"
 #include "scorep_types.h"
 #include <assert.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -2177,6 +2178,59 @@ scorep_callpath_definitions_equal( const SCOREP_Callpath_Definition* existingDef
                         sizeof( existingDefinition->parameter_value ) );
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+// ClockOffset //////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * Add a clock sync point into the local definitions
+ */
+void
+SCOREP_AddClockOffset( uint64_t time,
+                       int64_t  offset,
+                       double   stddev )
+{
+    extern SCOREP_ClockOffset** scorep_clock_offset_tail;
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Add clock offset" );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_AnyHandle*   new_handle =
+        SCOREP_Memory_AllocForDefinitions( sizeof( SCOREP_ClockOffset ) );
+    SCOREP_ClockOffset* new_clock_offset =
+        SCOREP_MEMORY_DEREF_LOCAL( new_handle, SCOREP_ClockOffset* );
+    new_clock_offset->next = NULL;
+
+    new_clock_offset->time   = time;
+    new_clock_offset->offset = offset;
+    new_clock_offset->stddev = stddev;
+
+    *scorep_clock_offset_tail = new_clock_offset;
+    scorep_clock_offset_tail  = &new_clock_offset->next;
+
+    SCOREP_Definitions_Unlock();
+}
+
+
+void
+SCOREP_GetFirstClockSyncPair( int64_t*  offset1,
+                              uint64_t* timestamp1,
+                              int64_t*  offset2,
+                              uint64_t* timestamp2 )
+{
+}
+
+
+void
+SCOREP_GetLastClockSyncPair( int64_t*  offset1,
+                             uint64_t* timestamp1,
+                             int64_t*  offset2,
+                             uint64_t* timestamp2 )
+{
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // misc definition stuff ////////////////////////////////////////////////////

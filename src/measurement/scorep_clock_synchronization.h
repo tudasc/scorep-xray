@@ -1,0 +1,51 @@
+#ifndef SCOREP_CLOCK_SYNCHRONIZATION_H
+#define SCOREP_CLOCK_SYNCHRONIZATION_H
+
+/*
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2009-2011,
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene, USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+/**
+ * @file       src/measurement/scorep_clock_synchronization.h
+ * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
+ *
+ * @status alpha
+ *
+ */
+
+
+#include <stdint.h>
+
+void
+SCOREP_SynchronizeClocks();
+
+void
+SCOREP_BeginEpoch();
+
+void
+SCOREP_EndEpoch();
+
+void
+SCOREP_InterpolateEpoch();
+
+uint64_t
+SCOREP_GetInterpolatedEpochBegin();
+
+uint64_t
+SCOREP_GetInterpolatedEpochEnd();
+
+
+#endif /* SCOREP_CLOCK_SYNCHRONIZATION_H */

@@ -31,7 +31,8 @@ if MPI_SUPPORTED
 noinst_LTLIBRARIES += libscorep_paradigm_mpi.la
 libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c  \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_enabled.c
 libscorep_paradigm_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 
 
