@@ -186,7 +186,7 @@ scorep_oa_mri_return_summary_data
         MERGED_REGION_DEFINITIONS );
 
     /** Send merged region definitions to the agent*/
-    printf( "Sending MERGED_REGION_DEFINITIONS size: %d elements of size %d\n", region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
+    //printf( "Sending MERGED_REGION_DEFINITIONS size: %d elements of size %d\n", region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
     scorep_oa_connection_send_string( connection, "MERGED_REGION_DEFINITIONS\n" );
     scorep_oa_connection_send_data( connection, region_defs, region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
 
@@ -196,7 +196,7 @@ scorep_oa_mri_return_summary_data
     SCOREP_OA_StaticProfileMeasurement* static_profile = ( SCOREP_OA_StaticProfileMeasurement* )SCOREP_OAConsumer_GetData(
         STATIC_PROFILE );
     /** Send static profile to the agent*/
-    printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
+    //printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
     scorep_oa_connection_send_string( connection, "STATIC_PROFILE\n" );
     scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
 

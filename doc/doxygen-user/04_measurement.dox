@@ -595,7 +595,7 @@ OA module of Score-P uses client-server paradigm, where Score-P acts as a server
 from the remote tool. During the initialization, the OA module of the Score-P creates one socket per each application 
 process. The network addresses and the ports of these sockets are published at the registry service  
 and could be later queried by the remote tool. The hostname and the port of the registry service should be specified 
-via the <tt>SCOREP_OA_REG_HOST</tt> and <tt>SCOREP_OA_REG_PORT</tt> environment variables respectively. After publishing the socket 
+via the <tt>SCOREP_ONLINEACCESS_REG_HOST</tt> and <tt>SCOREP_ONLINEACCESS_REG_PORT</tt> environment variables respectively. After publishing the socket 
 addresses and ports, the OA module will accept connections. Once the connection is established the OA module will suspend the 
 application execution and wait for requests. The format of the requests is plain text following the syntax below: 
 
