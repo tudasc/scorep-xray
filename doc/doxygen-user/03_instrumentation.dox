@@ -229,7 +229,7 @@ also be used to augment automatic instrumentation with region or phase
 annotations, which can improve the structure of analysis reports. Furthermore. it
 offers the possibility to record additional, used defined metrics. Generally,
 the main program routine should be instrumented, so that the entire
-execution is measured and included in the analyses.
+execution is measured and included in the analysis.
 
 Instrumentation can be performed in the following ways, depending on the
 programming language used.
@@ -595,7 +595,7 @@ and access to the profile data. If @scorep has been configured with Online Acces
 the code has to be manually instrumented using <tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and
 <tt>SCOREP_USER_OA_PHASE_END</tt> macros. These macros must be correctly nested and must be potential 
 global synchronization points, also it is recommended to mark the body of the application's main loop 
-in order to utilize the main loop iterations for iterative online analisys. Only the measurements collected
+in order to utilize the main loop iterations for iterative online analysis. Only the measurements collected
 inside the OA phase could be configured and retrieved.
 
 Instrumentation can be performed in the following ways, depending on the

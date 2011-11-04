@@ -5,14 +5,14 @@ If an application was instrumented with @scorep, you will get an executable, whi
 you can execute like the uninstrumented application. After the application run, you
 will find an experiment directory in your current working directory, which contains
 all recorded data. The experiment directory has the format 
-<tt>scorep-YYYYMMDD_XXXX_XXXX</tt>, where <tt>YYYYMMDD</tt> encodes the date followed
-by a series of random numbers. You may specify the name of the experiment directory
-by setting the environment variable <tt>SCOREP_EXPERIMENT_DIRECTORY</tt> to the
-desired name of the directory. If the directory already exists, it will be overwritten
-by default. You can prevent Score-P to overwrite existing directories by setting:
-@code
-SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=false
-@endcode
+<tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>, where <tt>YYYYMMDD</tt> and <tt>HHMM</tt> encodes
+the date followed by a series of random numbers. You may specify the name of the
+experiment directory by setting the environment variable <tt>SCOREP_EXPERIMENT_DIRECTORY</tt>
+to the desired name of the directory. If the directory already exists, the existing
+directory will be renamed by appending a date like above by default. You can let
+@scorep abort the measurement immediately by setting <tt>SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY</tt>
+to <tt>false</tt> if the experiment directory already exists. This has only an
+effect if <tt>SCOREP_EXPERIMENT_DIRECTORY</tt> was set too.
 
 In general, you can record a profile and/or a event trace. Whether a profile and/or a
 trace is recorded, is specified by the environment variables 
@@ -26,10 +26,17 @@ to profiling results, you may configure the trace buffer limits, filtering or se
 tracing for recording traces.
 
 @scorep allows to configure several parameters via environment variables. After the
-measurment run you can find a <tt>scorep.cfg</tt> file in your experiement directory
+measurement run you can find a <tt>scorep.cfg</tt> file in your experiment directory
 which contains the configuration of the measurement run. If you had not set configuration
-values explicitly, the file will contain the default values.
+values explicitly, the file will contain the default values. This file is safe to be used
+as input for a POSIX shell. For example if you want to reuse the same configuration from
+an previous measurement run use something like this:
 
+@code
+$ set -a
+$ . scorep.cfg
+$ set +a
+@endcode
 
 @section profiling Profiling
 @seclabel{profiling}
@@ -51,7 +58,7 @@ a file, named <tt>profile.cubex</tt> in your measurement directory, which you ca
 with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
 changed through the environment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>. The
 extension <tt>.cubex</tt> will be appended to the base name you specify in the 
-envorinment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>. 
+environment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>.
 
 If you want to record the profile in TAU snapshot format instead of the @cube4 format,
 set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Vice versa, you might set 
@@ -114,14 +121,14 @@ visit to a dynamic region, the instance parameter for this callpath is increased
 and triggered automatically. Thus, the every visit to a dynamic region generates a 
 separate subtree in the profile.
 
-As an example, let us assume that an application conains the regions <tt>foo</tt> and
+As an example, let us assume that an application contains the regions <tt>foo</tt> and
 <tt>main</tt>, where <tt>main</tt> calls <tt>foo</tt> three times. A regular profile
 would show two callpathes:
 <ul>
   <li><tt>main</tt></li>
   <li><tt>main/foo</tt></li>
 </ul>
-If <tt>foo</tt> is a dynmic region, the profile would contain addtional subnodes for
+If <tt>foo</tt> is a dynamic region, the profile would contain additional subnodes for
 each visit of <tt>foo</tt>. The resulting profile would contain the following
 callpathes:
 <ul>
@@ -133,19 +140,19 @@ callpathes:
 </ul>
 
 In this case <tt>main/foo</tt> contains the summarized statistics for all 3 visits, while
-<tt>main/foo/instance=0</tt> contains the statistics for the first vists of the cllpath.
+<tt>main/foo/instance=0</tt> contains the statistics for the first visits of the callpath.
 
 @note The enumeration of the instance is per callpath and not per dynamic region. 
-      In particular, if a dynmaic region foo appears in 2 callpathes, it has 2
+      In particular, if a dynamic region foo appears in 2 callpathes, it has 2
       instance number 0, one in both callpathes. It is not a global enumeration of 
-      the visits to foo but enuerates the visits of foo in a particular callpath from 
+      the visits to foo but enumerates the visits of foo in a particular callpath from
       0 to N.
 
 Currently, the only possibility to define dynamic regions is via the manual region 
 instrumentation, described in Section @secref{manual_instrumentation}.
 
 
-@note Using dynimc regions can easily create very large profiles. Thus, use this
+@note Using dynamic regions can easily create very large profiles. Thus, use this
 feature with care. If you are only interested in some parts of the application, selective
 tracing (see Section @secref{selective_tracing}) might be a memory space save alternative.
 
@@ -159,7 +166,7 @@ value is <tt>0</tt> or <tt>false</tt> no trace is recorded, if the value is non-
 or <tt>true</tt>, a trace is recorded. If the variable is not specified, 
 @scorep records traces on default.
 After trace recording you will find the OTF2 anchor file, named <tt>trace.otf2</tt>
-in the experiement directory, along with the trace data. 
+in the experiment directory, along with the trace data. 
 
 
 
@@ -241,8 +248,8 @@ SCOREP_FILE_NAMES_END
       case-sensitive.
 
 If the file name in the filter definition and the source file name that the
-instrumnetation provides, both contain at least one slash, @scorep will compare the 
-full paths. If the file name in the filter defintion or the file name provided by
+instrumentation provides, both contain at least one slash, @scorep will compare the 
+full paths. If the file name in the filter definition or the file name provided by
 instrumentation, contains no 
 slashes, @scorep will strip the path from the source file name before comparison. 
 E.g., assume the following files exist:
@@ -258,7 +265,7 @@ E.g., assume the following files exist:
   <li> <tt>*bar/file1</tt> matches all three files. </li>
 </ul>
 
-@note If the application insrumentation provides a relative path for the source
+@note If the application instrumentation provides a relative path for the source
       file of a region, it is not possible to 
       reconstruct the absolute path of the source file at runtime. If the filter file
       contains a relative path, the absolute path is not reconstructed, too.
@@ -341,7 +348,7 @@ selective tracing.
 @scorep provides two possibilities for selective tracing.
 <ul>
   <li> A configuration file can specify traced regions. The entry and exit of those 
-       regions define an interval during which events are recored. </li>
+       regions define an interval during which events are recorded. </li>
   <li> With user instrumentation, the recording can be manually switched on /off.
        (See Section @secref{manual_instrumentation}). 
 </ul>
@@ -411,7 +418,7 @@ the whole application run will be recorded (no selective tracing will apply).
 @section mpi_groups Selection of MPI groups
 @seclabel{mpi_groups}
 
-The Message Passing Intercace (MPI) adapter of @scorep supports the tracing
+The Message Passing Interface (MPI) adapter of @scorep supports the tracing
 of most of MPI's 300+ function calls. MPI defines a so-called 'profiling
 interface' that supports the provision of wrapper libraries that can
 easily interposed between the user application and the MPI library
@@ -422,7 +429,7 @@ start time of the application, the user can decide whether event
 generation is turned on or off for a group of @mpi functions. These groups
 are the listed sub modules of this adapter. Each module has a short
 string token that identifies this group. To activate event generation
-for a specific group, the user can specify a comma-seperated list of
+for a specific group, the user can specify a comma-separated list of
 tokens in the configuration variable \p SCOREP_MPI_ENABLE_GROUPS. Additionally,
 special tokens exist to ease the handling by the user. A complete list
 of available tokens that can be specified in the runtime configuration
@@ -498,7 +505,7 @@ Example:
 SCOREP_MPI_ENABLE_GROUPS=ENV,P2P
 </pre>
 
-This will enable event generation for environmental managment, including
+This will enable event generation for environmental management, including
 <tt>MPI_Init</tt> and <tt>MPI_Finalize</tt>, as well as point-to-point
 communication, but will disable it for all other functions groups.
 
@@ -611,7 +618,7 @@ where <tt>BEGINREQUESTS</tt> - indicates the beginning of the request list,
 <tt>ENDREQUESTS</tt> - indicates the end of the request list, 
 <tt>GLOBAL</tt> - indicates that the following measurement request is applied to all locations, 
 <tt>MPI</tt> - requests mpi wait states analysis, 
-<tt>EXECUTION_TIME</tt> - requests exeution time, 
+<tt>EXECUTION_TIME</tt> - requests execution time, 
 <tt>TERMINATE</tt> - requests termination of the application, 
 <tt>RUNTOSTART</tt> - requests Score-P to run the beginning of the OA phase, 
 <tt>RUNTOEND</tt> - requests Score-P to run the end of the OA phase, 
@@ -620,7 +627,7 @@ where <tt>BEGINREQUESTS</tt> - indicates the beginning of the request list,
 When the <tt>GETSUMMARY</tt> request is received, the OA module will transform call-path profile into static profile and send 
 the data back to the remote tool. The static profile is sent in two parts, where the first part carries the region 
 definition data and the second part carries profile measurements. Each part starts with the key word <tt>MERGED_REGION_DEFINITIONS</tt> 
-or <tt>STATIC_PROFILE</tt> and followed by the nuber of the entries and the buffer containing the data.
+or <tt>STATIC_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
 
 
 @latexonly

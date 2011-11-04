@@ -41,7 +41,7 @@ workflow, each tool used to have its own measurement system, and
 hence its own instrumenter,
 so the user was forced to instrument his code more than once if more
 than one class of features of the application was to be investigated. 
-One of the key advantages of æscorep is that it provides an
+One of the key advantages of @scorep is that it provides an
 instrumentation system that can be used for all the performance
 measurement and analysis tools, so that the instrumentation work only
 needs to be done once.
@@ -136,11 +136,11 @@ local MPI installation, in the former case the <tt>mpiexec</tt> command
 may have to be substituted by an appropriate replacement.
 
 When running the instrumented executable, the measurement system will
-create a directory called <tt>scorep-YYYYMMDD_HHMM_NNNNN</tt> where
+create a directory called <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> where
 its measurement data will be stored. Here <tt>YYYYMMDD</tt> and <tt>
 HHMM</tt> are the date (in year-month-day format) and time, respectively, 
-when the measurement run was started, whereas <tt>NNNNN</tt> is an 
-additional five-digit identification number. Thus, repeated measurements, 
+when the measurement run was started, whereas <tt>XXXXXXXX</tt> is an
+additional identification number. Thus, repeated measurements,
 as required by the optimization work cycle, can
 easily be performed without the danger of accidentally overwriting
 results of earlier measurements. The environment variables 
@@ -217,17 +217,17 @@ The actual measurement process is then initiated, e.g.,  by the call
   mpiexec --n 2 ./jacobi
 @endcode
 As indicated above, the output data of this process will be stored in
-a newly created directory <tt>scorep-YYYYMMDD_HHMM_NNNNN</tt> whose name
+a newly created directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> whose name
 is built up from the date and time when the measurement was started
 and an additional five-digit identification number. 
 
-As we had not explictly set any @scorep related environment variables,
+As we had not explicitly set any @scorep related environment variables,
 the tracing mode was active by default. Therefore, this subdirectory
 contains a subdirectory <tt>traces</tt> where the files with the actual
 trace data are stored. These files are provided in the newly developed
 Open Trace Format 2 (OTF2, for short) which is the joint successor of
 the classical formats OTF (used, e.\ g., by Vampir) and Epilog (used by
-Scalasca). Moreover, the {\tt scorep-YYYYMMDD_HHMM_NNNNN} directory
+Scalasca). Moreover, the {\tt scorep-YYYYMMDD_HHMM_XXXXXXXX} directory
 contains the files <tt>traces.def</tt> and <tt>traces.otf2</tt> that provide
 some information required for the evaluation of the trace data (the
 latter file, in particular, is the anchor file for the trace data).
@@ -236,7 +236,7 @@ the information contained in these files.
 
 If we had set the variable <tt>SCOREP_ENABLE_PROFILING</tt> to <tt>true</tt>, 
 we would additionally have have obtained a file called <tt>profile.cubex</tt> 
-in the directory <tt>scorep-YYYYMMDD_HHMM_NNNNN</tt>. This file contains
+in the directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>. This file contains
 the profiling data that can then, e. g., be visually analyzed with
 the help of CUBE.
 */
