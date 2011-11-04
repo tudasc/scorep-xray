@@ -120,6 +120,11 @@ MPI_Init( int* argc, char*** argv )
 
         /* complete initialization of measurement core and MPI event handling */
         SCOREP_InitMeasurementMPI( rank );
+
+    #if !defined( SCOREP_MPI_NO_HOOKS )
+        /* initialize mpi wait states analysis */
+        scorep_mpiprofile_init();
+        #endif
     }
 
     if ( event_gen_active )
@@ -127,10 +132,6 @@ MPI_Init( int* argc, char*** argv )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
-
-#if !defined( SCOREP_MPI_NO_HOOKS )
-    scorep_mpiprofile_init();
-#endif
 
     return return_val;
 }
@@ -203,6 +204,11 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 
         /* complete initialization of measurement core and MPI event handling */
         SCOREP_InitMeasurementMPI( rank );
+
+    #if !defined( SCOREP_MPI_NO_HOOKS )
+        /* initialize mpi wait states analysis */
+        scorep_mpiprofile_init();
+        #endif
     }
 
     if ( event_gen_active )
