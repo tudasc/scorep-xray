@@ -39,6 +39,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
+
 
 typedef struct
 {
@@ -639,7 +641,7 @@ scorep_oaconsumer_copy_static_measurement
                                         data_index );
         if ( do_print_out )
         {
-            printf( "Node (%d,%d,%d) time=%llu\n",      region_key->parent_region_id,
+            printf( "Node (%d,%d,%d) time=%" PRIu64 "\n",      region_key->parent_region_id,
                     region_key->region_id,
                     region_key->metric_id,
                     node->inclusive_time.sum );
@@ -777,7 +779,7 @@ get_static_profile_measurements
         int i;
         for ( i = 0; i < oa_consumer_data_index->num_static_measurements; i++ )
         {
-            printf( "RECORD %i\t| rank %llu\t| thread %d\t| region_id %d\t| samples %llu\t| metric_id %d\t| value %llu\t|\n",
+            printf( "RECORD %i\t| rank %" PRIu64 "\t| thread %d\t| region_id %d\t| samples %" PRIu64 "\t| metric_id %d\t| value %" PRIu64 "\t|\n",
                     i,
                     oa_consumer_data_index->static_measurement_buffer[ i ].rank,
                     oa_consumer_data_index->static_measurement_buffer[ i ].thread,
