@@ -130,7 +130,7 @@ scorep_mpiprofile_get_time_pack
     int   pos = 0;
     PMPI_Pack(      &time,
                     1,
-                    MPI_LONG,
+                    MPI_LONG_LONG_INT,
                     buf,
                     MPIPROFILER_TIMEPACK_BUFSIZE,
                     &pos,
@@ -251,7 +251,7 @@ scorep_mpiprofile_eval_1x1_time_packs
                     &pos,
                     &sendTime,
                     1,
-                    MPI_LONG,
+                    MPI_LONG_LONG_INT,
                     MPI_COMM_WORLD );
 
     PMPI_Unpack(    srcTimePack,
@@ -267,7 +267,7 @@ scorep_mpiprofile_eval_1x1_time_packs
                     &pos,
                     &recvTime,
                     1,
-                    MPI_LONG,
+                    MPI_LONG_LONG_INT,
                     MPI_COMM_WORLD );
 
     PMPI_Unpack(    dstTimePack,
@@ -313,7 +313,7 @@ scorep_mpiprofile_eval_nx1_time_packs
                         &pos,
                         &sendTime,
                         1,
-                        MPI_LONG,
+                        MPI_LONG_LONG_INT,
                         MPI_COMM_WORLD );
 
         PMPI_Unpack(    srcTimePack,
@@ -368,7 +368,7 @@ scorep_mpiprofile_eval_multi_time_packs
                         &pos,
                         &sendTime,
                         1,
-                        MPI_LONG,
+                        MPI_LONG_LONG_INT,
                         MPI_COMM_WORLD );
         PMPI_Unpack(    srcTimePack,
                         MPIPROFILER_TIMEPACK_BUFSIZE,

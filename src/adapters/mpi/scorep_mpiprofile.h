@@ -31,7 +31,7 @@
 
 #include <SCOREP_Types.h>
 
-#define MPIPROFILER_TIMEPACK_BUFSIZE ( sizeof( long ) + 1 * sizeof( int ) )
+#define MPIPROFILER_TIMEPACK_BUFSIZE ( sizeof( long long ) + 1 * sizeof( int ) )
 
 extern int myrank;
 
