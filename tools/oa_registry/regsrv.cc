@@ -56,7 +56,7 @@ typedef struct Measurement
     int64_t intVal;     ///<value as integer number
 } MeasurementType;
 
-#define MAX_REGION_NAME_LENGTH                          20
+#define MAX_REGION_NAME_LENGTH                          150
 #define MAX_FILE_NAME_LENGTH                            150
 
 typedef struct SCOREP_OA_CallPathRegionDef_struct
