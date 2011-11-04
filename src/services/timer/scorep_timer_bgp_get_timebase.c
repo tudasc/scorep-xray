@@ -67,3 +67,10 @@ SCOREP_GetClockResolution()
 {
     return scorep_ticks_per_sec;
 }
+
+
+bool
+SCOREP_ClockIsGlobal()
+{
+    return true;
+}

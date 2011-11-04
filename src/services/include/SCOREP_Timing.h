@@ -25,6 +25,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * Initialize Timer before usage of SCOREP_GetClockTicks() and
@@ -61,6 +62,13 @@ SCOREP_GetClockTicks();
  */
 uint64_t
 SCOREP_GetClockResolution();
+
+
+/**
+ * @return true if we have a global clock, e.g. on BG/P systems. False otherwise.
+ */
+bool
+SCOREP_ClockIsGlobal();
 
 
 #endif /* SCOREP_TIMING_H */

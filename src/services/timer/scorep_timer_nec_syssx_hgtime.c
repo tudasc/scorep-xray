@@ -60,3 +60,10 @@ SCOREP_GetClockResolution()
     assert( false ); // implement me
     return 0;
 }
+
+
+bool
+SCOREP_ClockIsGlobal()
+{
+    return false;
+}

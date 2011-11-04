@@ -84,3 +84,10 @@ SCOREP_GetClockResolution()
 {
     return clock_rate;
 }
+
+
+bool
+SCOREP_ClockIsGlobal()
+{
+    return false;
+}

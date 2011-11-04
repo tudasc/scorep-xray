@@ -65,3 +65,10 @@ SCOREP_GetClockResolution()
 {
     return 1e6;
 }
+
+
+bool
+SCOREP_ClockIsGlobal()
+{
+    return false;
+}

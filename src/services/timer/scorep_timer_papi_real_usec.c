@@ -74,3 +74,10 @@ SCOREP_GetClockResolution()
 {
     return 1000000;
 }
+
+
+bool
+SCOREP_ClockIsGlobal()
+{
+    return false;
+}
