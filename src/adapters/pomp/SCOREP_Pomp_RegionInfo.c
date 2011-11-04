@@ -66,7 +66,9 @@ typedef enum
     SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS,
     SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME,
     SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME,
-    SCOREP_POMP_TOKEN_TYPE_NO_TOKEN
+    SCOREP_POMP_TOKEN_TYPE_NO_TOKEN,
+    SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION,
+    SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED
 } scorep_pomp_token_type;
 
 /** Contains a token and its type from a region info string */
@@ -83,6 +85,8 @@ static const scorep_pomp_token_map_entry scorep_pomp_token_map[] =
     /* If you add/remove items, scorep_pomp_token_map_size   */
     { "criticalName",   SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME                        },
     { "escl",           SCOREP_POMP_TOKEN_TYPE_END_SOURCE_CODE_LOCATION             },
+    { "hasOrdered",     SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED                          },
+    { "hasReduction",   SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION                        },
     { "numSections",    SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS                         },
     { "regionType",     SCOREP_POMP_TOKEN_TYPE_REGION_TYPE                          },
     { "sscl",           SCOREP_POMP_TOKEN_TYPE_START_SOURCE_CODE_LOCATION           },
@@ -90,7 +94,7 @@ static const scorep_pomp_token_map_entry scorep_pomp_token_map[] =
 };
 
 /** Number of entries in @ref scorep_pomp_token_map */
-const size_t scorep_pomp_token_map_size = 6;
+const size_t scorep_pomp_token_map_size = 8;
 
 /** Contains the data for one region type */
 typedef struct
@@ -749,6 +753,10 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
                 break;
             case SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME:
                 scorep_pomp_assign_string( &region->regionName, value );
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION:
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_UNKNOWN_TOKEN, "%s\n", key );
