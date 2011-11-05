@@ -28,7 +28,7 @@
 
 #include <config.h>
 #include <scorep/SCOREP_Tau.h>
-
+#include <stdio.h>
 typedef uint32_t SCOREP_LineNo;
 
 extern void
@@ -188,6 +188,37 @@ SCOREP_Tau_ExitRegion( SCOREP_Tau_RegionHandle regionHandle )
     SCOREP_ExitRegion( ( SCOREP_RegionHandle )regionHandle );
 }
 
+
+void
+SCOREP_Tau_Metric( SCOREP_Tau_MetricHandle* metricHandle )
+
+{
+    metricHandle = SCOREP_INVALID_SAMPLING_SET;
+}
+
+
+
+
+void
+SCOREP_Tau_InitMetric
+(
+    SCOREP_Tau_MetricHandle* metricHandle,
+    const char*              name,
+    const char*              unit
+)
+{
+    SCOREP_User_InitMetric( ( SCOREP_SamplingSetHandle* )metricHandle, name, unit,
+                            SCOREP_USER_METRIC_TYPE_DOUBLE,  SCOREP_USER_METRIC_CONTEXT_GLOBAL );
+}
+void
+SCOREP_Tau_TriggerMetricDouble
+(
+    SCOREP_Tau_MetricHandle metricHandle,
+    double                  value
+)
+{
+    SCOREP_User_TriggerMetricDouble( ( SCOREP_SamplingSetHandle )metricHandle, value );
+}
 
 
 /* *INDENT-OFF* */

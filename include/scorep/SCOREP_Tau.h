@@ -34,6 +34,10 @@ extern "C" {
 #endif
 
 #include <scorep/SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_User.h>
+#include <scorep/SCOREP_User_Types.h>
+#include <scorep/SCOREP_User_Functions.h>
+#include <scorep/SCOREP_PublicTypes.h>
 
 
 /**
@@ -268,7 +272,38 @@ void
 SCOREP_Tau_RegisterExitCallback(
     SCOREP_Tau_ExitCallback
     );
+#define SCOREP_Tau_MetricHandle            SCOREP_SamplingSetHandle
+#define SCOREP_TAU_INIT_METRIC_HANDLE   SCOREP_INVALID_SAMPLING_SET
 
+void
+SCOREP_Tau_Metric
+(
+    SCOREP_Tau_MetricHandle* metricHandle
+);
+
+/*void
+   SCOREP_Tau_InitMetric
+   (
+    SCOREP_Tau_MetricHandle*     metricHandle,
+    const char*                  name,
+    const char*                  unit,
+    const SCOREP_User_MetricType metricType,
+    const int8_t                 context
+   );*/
+
+void
+SCOREP_Tau_InitMetric
+(
+    SCOREP_Tau_MetricHandle* metricHandle,
+    const char*              name,
+    const char*              unit
+);
+void
+SCOREP_Tau_TriggerMetricDouble
+(
+    SCOREP_Tau_MetricHandle metricHandle,
+    double                  value
+);
 
 #ifdef __cplusplus
 } /* extern C */
