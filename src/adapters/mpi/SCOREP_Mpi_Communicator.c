@@ -700,12 +700,20 @@ scorep_mpi_comm_create( MPI_Comm comm )
      * that use MPI_ calls instead of PMPI_ calls to create some
      * internal communicators.
      * Also applies to scorep_mpi_comm_free and scorep_mpi_group_(create|free).
+     *
+     * After finalization communicator tracking is not possible anymore.
+     * However, if Score-P uses SION, SION will create some communicators using
+     * MPI functions. In this case, we do not want to have error messages, but
+     * simply ignore those communicators.
      */
-    if ( !scorep_mpi_comm_initialized && !scorep_mpi_comm_finalized )
+    if ( !scorep_mpi_comm_initialized || scorep_mpi_comm_finalized )
     {
-        SCOREP_ERROR( SCOREP_WARNING,
-                      "Skipping attempt to create communicator "
-                      "outside init->finalize scope" );
+        if ( !scorep_mpi_comm_finalized )
+        {
+            SCOREP_ERROR( SCOREP_WARNING,
+                          "Skipping attempt to create communicator "
+                          "outside init->finalize scope" );
+        }
         return;
     }
 
