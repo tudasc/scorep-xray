@@ -377,7 +377,7 @@ scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
             curr = curr->next;
         }
 
-        fprintf( file, "%d %ld %.16G %.16G %.16G %.16G\n",
+        fprintf( file, "%d %lld %.16G %.16G %.16G %.16G\n",
                  eventID, metric->count, metric->max, metric->min,
                  metric->sum / metric->count, metric->squares );
         metric = metric->next_metric;
