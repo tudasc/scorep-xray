@@ -279,8 +279,8 @@
     @def SCOREP_USER_REGION_END(handle)
     This macro marks the end of a user defined region.  The SCOREP_USER_REGION_BEGIN and
     SCOREP_USER_REGION_END calls of all regions must be correctly nested.
-    @param name  The handle of the region which ended here.
-                 It must be the same handle which is used as the start of the region.
+    @param handle  The handle of the region which ended here.
+                   It must be the same handle which is used as the start of the region.
 
     C/C++ example:
     @code
@@ -319,8 +319,8 @@
     SCOREP_USER_REGION_END calls of all regions must be correctly nested. To initialize
     the region handle, @ref SCOREP_USER_REGION_INIT or @ref SCOREP_USER_REGION_BEGIN must
     be called before.
-    @param name  The handle of the region which ended here.
-                 It must be the same handle which is used as the start of the region.
+    @param handle  The handle of the region which ended here.
+                   It must be the same handle which is used as the start of the region.
 
     C/C++ example:
     @code

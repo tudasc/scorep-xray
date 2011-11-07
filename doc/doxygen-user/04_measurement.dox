@@ -180,7 +180,7 @@ e.g., by frequently-executed, small and/or generally uninteresting
 functions, methods and subroutines.
 
 A measurement filtering capability is therefore supported for compiler instrumented
-regions, regions instrumented with @scorep user API and regions from @opari 
+regions, regions instrumented with @scorep user API and regions from @opari2 
 instrumentation (see Section @secref{pomp_instrumentation}). 
 Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts,
 @scorep user API instrumentation, those regions can be filtered, too.

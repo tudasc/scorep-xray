@@ -93,9 +93,9 @@ reader can find more detailed information about the components of
 
 Performance optimization is a process that is usually executed in a
 work cycle consisting of a number of individual steps as indicated
-in Figure\ @figref{perf-opt-cycle}.
+in Figure @figref{perf-opt-cycle}.
 
-@img{perf-opt-cycle.png, perf-opt-cycle, The performance optimization
+@img{perf-opt-cycle.png,perf-opt-cycle, The performance optimization
   cycle, width=0.85\textwidth} 
 
 Thus, the process always begins with the original application in its
@@ -172,7 +172,7 @@ graphical overview of this structure is given in Fig.\ @figref{score-p-overview}
 We shall now briefly introduce the elements of this structure; more
 details will be given in the later chapters of this document.
 
-@img{score-p-overview.png, score-p-overview, Overview of the @scorep measurement system architecture and the tools interface., width=0.9\textwidth}
+@img{score-p-overview.png,score-p-overview, Overview of the @scorep measurement system architecture and the tools interface., width=0.9\textwidth}
 
 In order to instrument an application, the user needs to recompile the
 application using the @scorep instrumentation command, which is added

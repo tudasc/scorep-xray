@@ -114,7 +114,7 @@ typedef uint64_t SCOREP_User_ParameterHandle;
 
 /**
     @def SCOREP_USER_REGION_TYPE_PHASE
-    @Marks the region as being a root node of a phase.
+    Marks the region as being a root node of a phase.
  */
 #define SCOREP_USER_REGION_TYPE_PHASE    8
 

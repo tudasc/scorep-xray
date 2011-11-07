@@ -227,7 +227,7 @@ contains a subdirectory <tt>traces</tt> where the files with the actual
 trace data are stored. These files are provided in the newly developed
 Open Trace Format 2 (OTF2, for short) which is the joint successor of
 the classical formats OTF (used, e.\ g., by Vampir) and Epilog (used by
-Scalasca). Moreover, the {\tt scorep-YYYYMMDD_HHMM_XXXXXXXX} directory
+Scalasca). Moreover, the <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> directory
 contains the files <tt>traces.def</tt> and <tt>traces.otf2</tt> that provide
 some information required for the evaluation of the trace data (the
 latter file, in particular, is the anchor file for the trace data).
