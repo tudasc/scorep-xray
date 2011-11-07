@@ -29,35 +29,25 @@
 #include <fstream>
 #include <stdlib.h>
 #include <unistd.h>
-#include <scorep_utility/SCOREP_IO.h>
+#include <stdio.h>
+#include <string.h>
+#include <inttypes.h>
 
+
+#include <scorep_utility/SCOREP_IO.h>
 #include "regsrv.h"
 #include "regsrv_client.h"
 #include "regsrv_sockets.h"
 #include "scorep_oa_registry_protocol.h"
 #include "stringutil.h"
 
+
 /* *INDENT-OFF* */
 using namespace std;
 
-
-
-typedef struct Measurement
-{
-    int     rank;       ///<MPI process
-    int     thread;     ///<thread
-    int         file;     ///<region fileId
-    int     rfl;        ///<region first line number
-    int     regionType; ///<regionType, e.g., loop, subroutine
-    int     samples;    ///<number of measurements
-    int     metric;     ///<metric, e.g., execution time
-    int     ignore;     ///<number of measurements that could not be performed due to shortage of counters
-    double  fpVal;      ///<value as floating point number
-    int64_t intVal;     ///<value as integer number
-} MeasurementType;
-
 #define MAX_REGION_NAME_LENGTH                          150
 #define MAX_FILE_NAME_LENGTH                            150
+
 
 typedef struct SCOREP_OA_CallPathRegionDef_struct
 {
@@ -229,10 +219,10 @@ int RegServ::execute_test(const char* scenario_file)
 					exit(1);
 				}
 
-				printf("Periscope Emulator: Expecting Merged Region Definitions from process %i, size: %d entries of size %d\n",
+				/*printf("Periscope Emulator: Expecting Merged Region Definitions from process %i, size: %d entries of size %lu\n",
 						it->second->pid,
 						number,
-						sizeof(SCOREP_OA_CallPathRegionDef));
+						sizeof(SCOREP_OA_CallPathRegionDef));*/
 
 				if (number > 0)
 				{
@@ -255,9 +245,9 @@ int RegServ::execute_test(const char* scenario_file)
 					}
 					printf("Periscope Emulator: Got Static Regions Definitions from process %i:\n", it->second->pid);
 					int i;
-					for ( i = 0; i < number; i++ )
+					/*for ( i = 0; i < number; i++ )
 					{
-						printf("record %d: \t|region_id=%ld \t| name=%s \t| file=%s \t| rfl=%d \t| rel=%d \t| adapter_type=%d\t|\n",
+						printf("record %d: \t|region_id=%" PRIu32 " \t| name=%s \t| file=%s \t| rfl=%" PRIu32 " \t| rel=%" PRIu32 " \t| adapter_type=%" PRIu32 "\t|\n",
 												i,
 												recv_buffer[ i ].region_id,
 												recv_buffer[ i ].name,
@@ -266,7 +256,7 @@ int RegServ::execute_test(const char* scenario_file)
 												recv_buffer[ i ].rel,
 												recv_buffer[ i ].adapter_type
 												);
-					}
+					}*/
 					free(recv_buffer);
 
 				}
@@ -290,10 +280,10 @@ int RegServ::execute_test(const char* scenario_file)
 					exit(1);
 				}
 
-				printf("Periscope Emulator: Expecting Static Profile from process %i, size: %d entries of size %d\n",
+				/*printf("Periscope Emulator: Expecting Static Profile from process %i, size: %d entries of size %d\n",
 						it->second->pid,
 						number,
-						sizeof(SCOREP_OA_StaticProfileMeasurement));
+						sizeof(SCOREP_OA_StaticProfileMeasurement));*/
 
 				if (number > 0)
 				{
@@ -318,9 +308,9 @@ int RegServ::execute_test(const char* scenario_file)
 
 					printf("Periscope Emulator: Got Static Profile from process %i:\n", it->second->pid);
 					int i;
-					for ( i = 0; i < number; i++ )
+					/*for ( i = 0; i < number; i++ )
 					{
-						printf("record %d: \t|meas_id=%d \t| rank=%llu \t| thread=%d \t| region_id=%d \t| samples=%llu \t| counter=%d\t| int_val=%llu \t|\n",
+						printf("record %d: \t|meas_id=%" PRIu32 " \t| rank=%" PRIu64 " \t| thread=%" PRIu32 " \t| region_id=%" PRIu32 " \t| samples=%" PRIu64 " \t| counter=%" PRIu32 "\t| int_val=%" PRIu64 " \t|\n",
 												i,
 												recv_buffer[ i ].measurement_id,
 												recv_buffer[ i ].rank,
@@ -330,7 +320,7 @@ int RegServ::execute_test(const char* scenario_file)
 												recv_buffer[ i ].metric_id,
 												recv_buffer[ i ].int_val
 												);
-					}
+					}*/
 
 					free(recv_buffer);
 				}

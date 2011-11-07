@@ -206,7 +206,7 @@ scorep_oa_sockets_write_line
     const char* str
 )
 {
-    write( sock, str, strlen( str ) );
+    int result = write( sock, str, strlen( str ) );
 }
 
 void
@@ -217,7 +217,7 @@ scorep_oa_sockets_write_data
     int         nbyte
 )
 {
-    write( sock, buf, nbyte );
+    int result = write( sock, buf, nbyte );
 }
 
 int
