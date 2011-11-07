@@ -43,7 +43,6 @@
 #include <inttypes.h>
 #include <sys/stat.h>
 
-
 #ifdef HAVE_LIBBFD
 #include <bfd.h>
 #elif defined HAVE_NM
@@ -412,8 +411,9 @@ scorep_compiler_get_sym_tab( void )
  * Write output from nm for @a exefile to @a nmfile.
  * @param exefile Filename of the executable which is analysed.
  * @param nmfile  Filename of the file to which the output is written.
+ * @returns true if the nm output was created successfully, else it returns false.
  */
-static void
+static bool
 scorep_compiler_create_nm_file( char* nmfile,
                                 char* exefile )
 {
@@ -423,7 +423,14 @@ scorep_compiler_create_nm_file( char* nmfile,
 #else /* GNU_DEMANGLE */
     sprintf( command, "nm -ol %s > %s", exefile, nmfile );
 #endif /* GNU_DEMANGLE */
-    system( command );
+    if ( system( command ) != EXIT_SUCCESS )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_ON_SYSTEM_CALL,
+                      "Failed to get symbol table output for binary %s using nm",
+                      exefile );
+        return false;
+    }
+    return true;
 }
 
 
@@ -461,7 +468,10 @@ scorep_compiler_get_sym_tab( void )
 
     /* open nm-file */
     sprintf( nmfilename, "scorep_nm_file.%" PRIu64, SCOREP_GetClockTicks() );
-    scorep_compiler_create_nm_file( nmfilename, path );
+    if ( !scorep_compiler_create_nm_file( nmfilename, path ) )
+    {
+        return;
+    }
     if ( !( nmfile = fopen( nmfilename, "r" ) ) )
     {
         SCOREP_ERROR_POSIX();
