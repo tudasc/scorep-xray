@@ -116,7 +116,13 @@ scorep_mpiprofile_get_time_pack
 )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", myrank, __FUNCTION__ );
-    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+
+    if ( !mpiprofiling_initialized )
+    {
+        scorep_mpiprofile_init();
+    }
+
+        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     if ( local_time_pack_in_use == 1 )
     {
         fprintf( stderr, "1 Warning attempt of multiple use of time packs pool. MPI_Profiling will be disabled.\n" );
@@ -157,7 +163,11 @@ scorep_mpiprofile_get_remote_time_packs
     int size
 )
 {
-        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( !mpiprofiling_initialized )
+    {
+        scorep_mpiprofile_init();
+    }
+    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     if ( remote_time_packs_in_use == 1 )
     {
         fprintf( stderr, "2 Warning attempt of multiple use of time packs pool. MPI_Profiling will be disabled.\n" );
@@ -179,7 +189,11 @@ scorep_mpiprofile_get_remote_time_pack
 (
 )
 {
-        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( !mpiprofiling_initialized )
+    {
+        scorep_mpiprofile_init();
+    }
+    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     if ( remote_time_pack_in_use == 1 )
     {
         fprintf( stderr, "3 Warning attempt of multiple use of time packs pool. MPI_Profiling will be disabled.\n" );
@@ -198,7 +212,11 @@ scorep_mpiprofile_release_local_time_pack
     void* local_time_pack
 )
 {
-        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( !mpiprofiling_initialized )
+    {
+        scorep_mpiprofile_init();
+    }
+    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     local_time_pack_in_use = 0;
         #else
     free( local_time_pack );
@@ -210,7 +228,11 @@ scorep_mpiprofile_release_remote_time_pack
     void* remote_time_pack
 )
 {
-        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( !mpiprofiling_initialized )
+    {
+        scorep_mpiprofile_init();
+    }
+    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     remote_time_pack_in_use = 0;
         #else
     free( remote_time_pack );
@@ -222,7 +244,11 @@ scorep_mpiprofile_release_remote_time_packs
     void* remote_time_packs
 )
 {
-        #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
+    if ( !mpiprofiling_initialized )
+    {
+        scorep_mpiprofile_init();
+    }
+    #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     remote_time_packs_in_use = 0;
         #else
     free( remote_time_packs );
