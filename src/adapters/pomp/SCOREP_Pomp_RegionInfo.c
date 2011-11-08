@@ -68,7 +68,18 @@ typedef enum
     SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME,
     SCOREP_POMP_TOKEN_TYPE_NO_TOKEN,
     SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION,
-    SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED
+    SCOREP_POMP_TOKEN_TYPE_HAS_SCHEDULE,
+    SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED,
+    SCOREP_POMP_TOKEN_TYPE_HAS_COLLAPSE,
+    SCOREP_POMP_TOKEN_TYPE_HAS_COPYIN,
+    SCOREP_POMP_TOKEN_TYPE_HAS_COPYPRIVATE,
+    SCOREP_POMP_TOKEN_TYPE_HAS_FIRSTPRIVATE,
+    SCOREP_POMP_TOKEN_TYPE_HAS_IF,
+    SCOREP_POMP_TOKEN_TYPE_HAS_LASTPRIVATE,
+    SCOREP_POMP_TOKEN_TYPE_HAS_NOWAIT,
+    SCOREP_POMP_TOKEN_TYPE_HAS_NUMTHREADS,
+    SCOREP_POMP_TOKEN_TYPE_SCHEDULE_TYPE,
+    SCOREP_POMP_TOKEN_TYPE_USER_GROUP_NAME
 } scorep_pomp_token_type;
 
 /** Contains a token and its type from a region info string */
@@ -83,18 +94,29 @@ static const scorep_pomp_token_map_entry scorep_pomp_token_map[] =
 {
     /* Entries must be sorted to be used in binary search. */
     /* If you add/remove items, scorep_pomp_token_map_size   */
-    { "criticalName",   SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME                        },
-    { "escl",           SCOREP_POMP_TOKEN_TYPE_END_SOURCE_CODE_LOCATION             },
-    { "hasOrdered",     SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED                          },
-    { "hasReduction",   SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION                        },
-    { "numSections",    SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS                         },
-    { "regionType",     SCOREP_POMP_TOKEN_TYPE_REGION_TYPE                          },
-    { "sscl",           SCOREP_POMP_TOKEN_TYPE_START_SOURCE_CODE_LOCATION           },
-    { "userRegionName", SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME                     }
+    { "criticalName",    SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME                         },
+    { "escl",            SCOREP_POMP_TOKEN_TYPE_END_SOURCE_CODE_LOCATION              },
+    { "hasCollapse",     SCOREP_POMP_TOKEN_TYPE_HAS_COLLAPSE                          },
+    { "hasCopyIn",       SCOREP_POMP_TOKEN_TYPE_HAS_COPYIN                            },
+    { "hasCopyPrivate",  SCOREP_POMP_TOKEN_TYPE_HAS_COPYPRIVATE                       },
+    { "hasFirstPrivate", SCOREP_POMP_TOKEN_TYPE_HAS_FIRSTPRIVATE                      },
+    { "hasIf",           SCOREP_POMP_TOKEN_TYPE_HAS_IF                                },
+    { "hasLastPrivate",  SCOREP_POMP_TOKEN_TYPE_HAS_LASTPRIVATE                       },
+    { "hasNoWait",       SCOREP_POMP_TOKEN_TYPE_HAS_NOWAIT                            },
+    { "hasNumThreads",   SCOREP_POMP_TOKEN_TYPE_HAS_NUMTHREADS                        },
+    { "hasOrdered",      SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED                           },
+    { "hasReduction",    SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION                         },
+    { "hasSchedule",     SCOREP_POMP_TOKEN_TYPE_HAS_SCHEDULE                          },
+    { "numSections",     SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS                          },
+    { "regionType",      SCOREP_POMP_TOKEN_TYPE_REGION_TYPE                           },
+    { "scheduleType",    SCOREP_POMP_TOKEN_TYPE_SCHEDULE_TYPE                         },
+    { "sscl",            SCOREP_POMP_TOKEN_TYPE_START_SOURCE_CODE_LOCATION            },
+    { "userGroupName",   SCOREP_POMP_TOKEN_TYPE_USER_GROUP_NAME                       },
+    { "userRegionName",  SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME                      }
 };
 
 /** Number of entries in @ref scorep_pomp_token_map */
-const size_t scorep_pomp_token_map_size = 8;
+const size_t scorep_pomp_token_map_size = 19;
 
 /** Contains the data for one region type */
 typedef struct
@@ -757,6 +779,28 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
             case SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED:
                 break;
             case SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_SCHEDULE:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_COLLAPSE:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_COPYIN:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_COPYPRIVATE:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_FIRSTPRIVATE:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_IF:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_LASTPRIVATE:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_NOWAIT:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_HAS_NUMTHREADS:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_SCHEDULE_TYPE:
+                break;
+            case SCOREP_POMP_TOKEN_TYPE_USER_GROUP_NAME:
                 break;
             default:
                 SCOREP_ERROR( SCOREP_ERROR_PARSE_UNKNOWN_TOKEN, "%s\n", key );
