@@ -34,6 +34,7 @@ extern int      connection;
 extern uint64_t silc_oa_port;
 extern uint64_t silc_oa_registry_port;
 extern char*    silc_oa_registry_host;
+extern char*    silc_oa_app_name;
 
 int
 scorep_oa_connection_connect

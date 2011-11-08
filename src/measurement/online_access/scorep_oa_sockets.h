@@ -155,7 +155,8 @@ scorep_oa_sockets_register_with_registry
 (
     uint64_t port,
     uint64_t reg_port,
-    char*    reg_host
+    char*    reg_host,
+    char*    app_name
 );
 
 int

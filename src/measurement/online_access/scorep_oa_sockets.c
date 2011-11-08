@@ -452,7 +452,8 @@ scorep_oa_sockets_register_with_registry
 (
     uint64_t port,
     uint64_t reg_port,
-    char*    reg_host
+    char*    reg_host,
+    char*    app_name
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
@@ -477,7 +478,7 @@ scorep_oa_sockets_register_with_registry
     char   machine_name[ 50 ];
     char   library_name[ 50 ];
 
-    sprintf( appl_name, "appl" );
+    sprintf( appl_name, "%s", app_name );
     sprintf( psc_reghost, "%s", reg_host );
     //SCOREP_IO_GetHostname( psc_reghost, 100 );
     psc_regport = ( int )reg_port;

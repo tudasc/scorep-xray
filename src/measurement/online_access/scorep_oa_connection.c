@@ -36,6 +36,7 @@ static int    scorep_oa_socket       = 0;
 uint64_t      silc_oa_port           = 50010;
 uint64_t      silc_oa_registry_port  = 50100;
 char*         silc_oa_registry_host  = NULL;
+char*         silc_oa_app_name       = NULL;
 int           connection             = 0;
 
 
@@ -56,7 +57,7 @@ scorep_oa_connection_connect
         _Exit( EXIT_FAILURE );
     }
     scorep_oa_is_connected = 1;
-    scorep_oa_sockets_register_with_registry( silc_oa_port, silc_oa_registry_port, silc_oa_registry_host );
+    scorep_oa_sockets_register_with_registry( silc_oa_port, silc_oa_registry_port, silc_oa_registry_host, silc_oa_app_name );
     scorep_oa_socket = scorep_oa_sockets_server_accept_client( scorep_oa_socket );
     //receive_and_process_requests(scorep_oa_socket);
     return scorep_oa_socket;

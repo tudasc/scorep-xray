@@ -66,6 +66,13 @@ static SCOREP_ConfigVariable scorep_oa_configs[] = {
       "50010",
       "Base port for Online Access server",
       "Base port for Online Access server" },
+    { "APPL_NAME",
+      SCOREP_CONFIG_TYPE_STRING,
+      &silc_oa_app_name,
+      NULL,
+      "appl",
+      "application name to be registered",
+      "application name to be registered" },
     SCOREP_CONFIG_TERMINATOR
 };
 
