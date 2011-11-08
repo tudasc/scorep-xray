@@ -739,7 +739,7 @@ scorep_oaconsumer_copy_merged_region_definitions
         strncpy( data_index->merged_region_def_buffer[ region_index ].name,
                  name,
                  MAX_REGION_NAME_LENGTH );
-        const char* file = SCOREP_Region_GetFileName( parent_region_handle );
+        const char* file = SCOREP_IO_GetWithoutPath( SCOREP_Region_GetFileName( parent_region_handle ) );
         strncpy( data_index->merged_region_def_buffer[ region_index ].file,
                  file,
                  MAX_FILE_NAME_LENGTH );
