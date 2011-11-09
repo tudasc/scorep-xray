@@ -230,7 +230,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_mpi_hierarchical_unify,
         NULL,
-        "false",
+        "true",
         "Use the hierarchical MPI unify algorithm.",
         ""
     },
