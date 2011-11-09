@@ -2228,6 +2228,7 @@ SCOREP_GetFirstClockSyncPair( int64_t*  offset1,
     *timestamp1 = scorep_clock_offset_head->time;
     *offset2    = scorep_clock_offset_head->next->offset;
     *timestamp2 = scorep_clock_offset_head->next->time;
+    assert( *timestamp2 > *timestamp1 );
 }
 
 
@@ -2253,6 +2254,7 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
     *timestamp1 = previous->time;
     *offset2    = current->offset;
     *timestamp2 = current->time;
+    assert( *timestamp2 > *timestamp1 );
 }
 
 /////////////////////////////////////////////////////////////////////////////
