@@ -85,6 +85,8 @@ scorep_interpolate_epoch( uint64_t* epochBegin, uint64_t* epochEnd )
     SCOREP_GetLastClockSyncPair( &offset1, &timestamp1, &offset2, &timestamp2 );
     scorep_epoch_end = scorep_interpolate( scorep_epoch_end, offset1, timestamp1, offset2, timestamp2 );
 
+    assert( scorep_epoch_end > scorep_epoch_begin );
+
     *epochBegin = scorep_epoch_begin;
     *epochEnd   = scorep_epoch_end;
 
