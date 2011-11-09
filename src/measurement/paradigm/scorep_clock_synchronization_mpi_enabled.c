@@ -32,6 +32,7 @@
 
 #include <mpi.h>
 #include <stddef.h>
+#include <assert.h>
 
 #define N_PINGPONGS 10
 
