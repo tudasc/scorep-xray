@@ -377,7 +377,7 @@ scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
             curr = curr->next;
         }
 
-        fprintf( file, "%d %lld %.16G %.16G %.16G %.16G\n",
+        fprintf( file, "%d %" PRIu64 " %.16G %.16G %.16G %.16G\n",
                  eventID, metric->count, metric->max, metric->min,
                  metric->sum / metric->count, metric->squares );
         metric = metric->next_metric;
@@ -403,6 +403,7 @@ scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
 
 static void
 scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
+                                                char*                     parentpath,
                                                 FILE*                     file,
                                                 SCOREP_DefinitionManager* manager )
 
@@ -456,6 +457,15 @@ scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
             metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric->metric, Metric );
             metric_name       = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->name_handle,
                                                              String )->string_data;
+//In the future context events should somehow be marked
+            char* found = strchr( metric_name, ':' );
+            if ( found != NULL )
+            {
+                int   length     = strlen( metric_name ) + 1 + strlen( parentpath ) + 2;
+                char* metricpath = SCOREP_Memory_AllocForProfile( length );
+                sprintf( metricpath, "%s %s", metric_name, parentpath );
+                metric_name = metricpath;
+            }
             fprintf( file, "<userevent id=\"%d\"><name>%s</name>", eventID, metric_name );
             fprintf( file, "</userevent>\n" );
         }
@@ -466,9 +476,29 @@ scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
     {
         /* invoke children */
         scorep_profile_node* child = node->first_child;
+        if ( child != NULL )
+        {
+            /* Construct callpath name */
+            const char* name   = SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( child->type_specific_data ) );
+            int         length = strlen( name ) + 1;
+            if ( parentpath )
+            {
+                length += strlen( parentpath ) + 7;
+            }
+            char* path = SCOREP_Memory_AllocForProfile( length );
+            if ( parentpath == NULL )
+            {
+                strcpy( path, name );
+            }
+            else
+            {
+                sprintf( path, "%s =&gt; %s", parentpath, name );
+            }
+            parentpath = path;
+        }
         while ( child != NULL )
         {
-            scorep_profile_write_userevent_data_metric_tau( child, file,  manager );
+            scorep_profile_write_userevent_data_metric_tau( child, parentpath, file,  manager );
             child = child->next_sibling;
         }
     }
@@ -490,22 +520,42 @@ scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
 {
     head = NULL;
     tail = NULL;
-
-
+    char*                parentpath = NULL;
     /*Write User Events Definitions*/
     scorep_profile_node* node = child;
     while ( node != NULL )
     {
         while ( child != NULL )
         {
-            scorep_profile_write_userevent_data_metric_tau( child, file, manager );
+            /* Construct callpath name */
+            const char* name   = SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) );
+            int         length = strlen( name ) + 1;
+            if ( parentpath )
+            {
+                length += strlen( parentpath ) + 7;
+            }
+            char* path = SCOREP_Memory_AllocForProfile( length );
+            if ( parentpath == NULL )
+            {
+                strcpy( path, name );
+            }
+            else
+            {
+                sprintf( path, "%s =&gt; %s", parentpath, name );
+            }
 
+
+            parentpath = path;
+            scorep_profile_write_userevent_data_metric_tau( child, path, file, manager );
             child = child->next_sibling;
         }
         child = node->first_child;
         node  = node->first_child;
     }
 }
+
+
+
 /**
    Helper function for the profile writer in TAU snapshot format.
    It writes the metadata for a thread to a given file and process the regions
@@ -546,7 +596,6 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
 
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
              SCOREP_Mpi_GetRank(), threadnum );
-
     scorep_profile_write_userevent_data_tau( child, threadnum, file,  manager );
 
     fprintf( file, "</definitions>\n\n" );
