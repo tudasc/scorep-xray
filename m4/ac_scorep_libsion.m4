@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -54,7 +54,7 @@ m4_case([$1], [SERIAL], [], [OMP], [], [MPI], [], [MPI_OMP], [], [m4_fatal([para
 AC_ARG_VAR([SIONCONFIG], [Absolute path to sionconfig, including "sionconfig".])
 
 AC_ARG_WITH([sionconfig],
-            [AS_HELP_STRING([--with-sionconfig=(yes|no|<path-to-sionconfig>)], 
+            [AS_HELP_STRING([--with-sionconfig=(yes|no|<path-to-sionconfig>)],
                             [Whether to use sionconfig and where to find it. "yes" assumes it is in PATH [no].])],
             # action-if-given
             [AS_CASE([$withval],
@@ -92,12 +92,12 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
             sionconfig_febe_flag="--fe"
         fi
 
-        AS_CASE([${build_cpu}], 
-                [i?86],   [sionconfig_architecture_flags="--32"], 
+        AS_CASE([${build_cpu}],
+                [i?86],   [sionconfig_architecture_flags="--32"],
                 [x86_64], [sionconfig_architecture_flags="--64"],
                 [sionconfig_architecture_flags=""])
 
-        m4_case([$1], [SERIAL],  [sionconfig_paradigm_flag="--ser"], 
+        m4_case([$1], [SERIAL],  [sionconfig_paradigm_flag="--ser"],
                       [OMP],     [sionconfig_paradigm_flag="--ser"],
                       [MPI],     [sionconfig_paradigm_flag="--mpi"],
                       [MPI_OMP], [sionconfig_paradigm_flag="--mpi"])
@@ -130,14 +130,14 @@ sion_seek(42,42,42,42);
 sion_seek_fp(42,42,42,42, NULL);
 sion_fwrite(NULL,42,42,42);
 sion_fwrite(NULL,42,42,42);
-]])], 
+]])],
                            [],
                            [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])
 
 
             # paradigm specific libsion checks
-            m4_case([$1], 
-[SERIAL], 
+            m4_case([$1],
+[SERIAL],
 [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 #include <sion.h>
@@ -148,14 +148,14 @@ sion_open(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 sion_open_rank(NULL,NULL,NULL,NULL,NULL,NULL);
 sion_close(42);
 sion_get_locations(42,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-]])], 
+]])],
                                   [],
                                   [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])],
- 
-[OMP], 
-[scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""], 
 
-[MPI], 
+[OMP],
+[scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""],
+
+[MPI],
 [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
 #include <sion.h>
@@ -166,11 +166,11 @@ sion_get_locations(42,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 MPI_Comm foo = MPI_COMM_WORLD;
 sion_paropen_mpi(NULL,NULL,NULL,foo,&foo,NULL,NULL,NULL,NULL,NULL);
 sion_parclose_mpi(42);
-]])], 
+]])],
                                   [],
-                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])], 
+                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])],
 
-[MPI_OMP], 
+[MPI_OMP],
 [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])
 
 
@@ -192,14 +192,11 @@ fi
 AC_SUBST([SCOREP_SION_$1_CPPFLAGS], [$scorep_sion_cppflags])
 AC_SUBST([SCOREP_SION_$1_LDFLAGS],  [$scorep_sion_ldflags])
 AC_SUBST([SCOREP_SION_$1_LIBS],     [$scorep_sion_libs])
-if test "x${scorep_have_sion}" = "xyes"; then
-    AC_DEFINE([HAVE_SION_$1], [1], [Defined if libsion $1 is available.])
-else
-    AC_DEFINE([HAVE_SION_$1], [0], [Defined if libsion $1 is available.])
-fi
+AS_IF([test "x${scorep_have_sion}" = "xyes"],
+    [AC_DEFINE([HAVE_SION_$1], [1], [Defined if libsion $1 is available.])])
 AM_CONDITIONAL([HAVE_SION_$1], [test "x${scorep_have_sion}" = "xyes"])
-
-]) 
+AC_SCOREP_SUMMARY([SION $1 support], [${scorep_have_sion}])
+])
 
 
 dnl add omp and hybrid tests when sionconfig supports it
