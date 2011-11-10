@@ -36,6 +36,16 @@ AC_DEFUN([AC_SCOREP_SUMMARY], [
     AS_ECHO(["  $1: $2"]) >>config.summary
 ])
 
+# additional output if ./configure is called with --verbose
+AC_DEFUN([AC_SCOREP_SUMMARY_VERBOSE], [
+    AS_IF([test ! -f config.summary], [
+        AC_MSG_WARN([SCOREP_SUMMARY_VERBOSE used without calling SCOREP_SUMMARY_INIT.])
+    ])
+    AS_IF([test "x${verbose}" = "xyes"], [
+        AS_ECHO(["   $1: $2"]) >>config.summary
+    ])
+])
+
 # should be called after AC_OUTPUT
 AC_DEFUN([AC_SCOREP_SUMMARY_COLLECT], [
     AS_IF([test -f config.summary], [
