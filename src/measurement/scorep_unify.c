@@ -100,14 +100,10 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     definitionManager->mappings = calloc( 1, sizeof( *definitionManager->mappings ) );
     assert( definitionManager->mappings );
 
-    SCOREP_ALLOC_MAPPINGS_ARRAY( string,  definitionManager );
-    SCOREP_ALLOC_MAPPINGS_ARRAY( region, definitionManager );
-    SCOREP_ALLOC_MAPPINGS_ARRAY( group, definitionManager );
-    SCOREP_ALLOC_MAPPINGS_ARRAY( sampling_set, definitionManager );
-    SCOREP_ALLOC_MAPPINGS_ARRAY( parameter, definitionManager );
-    SCOREP_ALLOC_MAPPINGS_ARRAY( callpath,  definitionManager );
-
-    // local_mpi_communicator will be done separately in the MPI unify code
+    #define DEF_WITH_MAPPING( Type, type ) \
+    SCOREP_ALLOC_MAPPINGS_ARRAY( type,  definitionManager );
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 }
 
 
@@ -117,14 +113,10 @@ SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definition
     assert( definitionManager );
     assert( definitionManager->mappings );
 
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, String, string );
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, Region, region );
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, Group, group );
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, SamplingSet, sampling_set );
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, Parameter, parameter );
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, Callpath, callpath );
-
-    // local_mpi_communicator will be done separately in the MPI unify code
+    #define DEF_WITH_MAPPING( Type, type ) \
+    SCOREP_ASSIGN_MAPPINGS( definitionManager, Type, type );
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 }
 
 
@@ -134,15 +126,14 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     assert( definitionManager );
     assert( definitionManager->mappings );
 
-    SCOREP_FREE_MAPPINGS_ARRAY( string, definitionManager );
-    SCOREP_FREE_MAPPINGS_ARRAY( region, definitionManager );
-    SCOREP_FREE_MAPPINGS_ARRAY( group, definitionManager );
-    SCOREP_FREE_MAPPINGS_ARRAY( sampling_set, definitionManager );
-    SCOREP_FREE_MAPPINGS_ARRAY( parameter, definitionManager );
-    SCOREP_FREE_MAPPINGS_ARRAY( callpath,  definitionManager );
+    #define DEF_WITH_MAPPING( Type, type ) \
+    SCOREP_FREE_MAPPINGS_ARRAY( type, definitionManager );
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 
     // was probably allocated in the MPI unify code, but never freed there
-    SCOREP_FREE_MAPPINGS_ARRAY( local_mpi_communicator, definitionManager );
+    SCOREP_FREE_MAPPINGS_ARRAY( local_mpi_communicator,
+                                definitionManager );
 
     free( definitionManager->mappings );
     definitionManager->mappings = NULL;

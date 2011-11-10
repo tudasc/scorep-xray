@@ -34,18 +34,31 @@
 
 #include <jenkins_hash.h>
 
+// the list of definitions for what we generate mappings to global
+// ids in the unifier
+#define SCOREP_LIST_OF_DEFS_WITH_MAPPINGS \
+    DEF_WITH_MAPPING( String, string ) \
+    DEF_WITH_MAPPING( Region, region ) \
+    DEF_WITH_MAPPING( Group, group ) \
+    DEF_WITH_MAPPING( Metric, metric ) \
+    DEF_WITH_MAPPING( SamplingSet, sampling_set ) \
+    DEF_WITH_MAPPING( Parameter, parameter ) \
+    DEF_WITH_MAPPING( Callpath, callpath )
 
+
+/* *INDENT-OFF* */
 typedef struct SCOREP_DefinitionMappings SCOREP_DefinitionMappings;
 struct SCOREP_DefinitionMappings
 {
-    uint32_t* string_mappings;
-    uint32_t* region_mappings;
-    uint32_t* group_mappings;
-    uint32_t* sampling_set_mappings;
-    uint32_t* parameter_mappings;
-    uint32_t* callpath_mappings;
+    #define DEF_WITH_MAPPING( Type, type ) \
+    uint32_t* type ## _mappings;
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
+
+    /* handled special in the mpi communicator unifier code */
     uint32_t* local_mpi_communicator_mappings;
 };
+/* *INDENT-ON* */
 
 
 /**
@@ -166,19 +179,6 @@ SCOREP_CopyMetricDefinitionToUnified( SCOREP_Metric_Definition*     definition,
 void
 SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* definition,
                                            SCOREP_Allocator_PageManager*  handlesPageManager );
-
-
-// for testing purposes only, use SCOREP_CopyRegionDefinitionToUnified() or
-// SCOREP_DefineRegion() instead.
-SCOREP_RegionHandle
-scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                 SCOREP_StringHandle       regionNameHandle,
-                                 SCOREP_StringHandle       descriptionNameHandle,
-                                 SCOREP_StringHandle       fileNameHandle,
-                                 SCOREP_LineNo             beginLine,
-                                 SCOREP_LineNo             endLine,
-                                 SCOREP_AdapterType        adapter,
-                                 SCOREP_RegionType         regionType );
 
 
 SCOREP_SystemTreeNodeHandle

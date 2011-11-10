@@ -535,6 +535,18 @@ scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definitio
 /////////////////////////////////////////////////////////////////////////////
 
 
+static SCOREP_RegionHandle
+scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                 SCOREP_StringHandle       regionNameHandle,
+                                 SCOREP_StringHandle       descriptionNameHandle,
+                                 SCOREP_StringHandle       fileNameHandle,
+                                 SCOREP_LineNo             beginLine,
+                                 SCOREP_LineNo             endLine,
+                                 SCOREP_AdapterType        adapter,
+                                 SCOREP_RegionType         regionType );
+
+
+
 static void
 scorep_region_definition_initialize( SCOREP_Region_Definition* definition,
                                      SCOREP_DefinitionManager* definition_manager,

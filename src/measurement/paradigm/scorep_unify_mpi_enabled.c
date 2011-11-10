@@ -46,15 +46,6 @@
 #include <scorep_utility/SCOREP_Utils.h>
 
 
-#define LIST_OF_DEFS_WITH_LOCAL_MAPPINGS \
-    UNIFIED_DEF( String, string ) \
-    UNIFIED_DEF( Region, region ) \
-    UNIFIED_DEF( Group, group ) \
-    UNIFIED_DEF( SamplingSet, sampling_set ) \
-    UNIFIED_DEF( Parameter, parameter ) \
-    UNIFIED_DEF( Callpath, callpath )
-
-
 static void
 scorep_unify_mpi_sequential( void );
 static void
@@ -594,7 +585,7 @@ send_local_unified_definitions_to_parent( int        parent,
 void
 receive_mappings( int rank )
 {
-    #define UNIFIED_DEF( Type, type ) \
+    #define DEF_WITH_MAPPING( Type, type ) \
     if ( scorep_unified_definition_manager->type ## _definition_counter > 0 ) \
     { \
         SCOREP_Mpi_Recv( \
@@ -604,8 +595,8 @@ receive_mappings( int rank )
             rank, \
             SCOREP_MPI_STATUS_IGNORE ); \
     }
-    LIST_OF_DEFS_WITH_LOCAL_MAPPINGS
-    #undef UNIFIED_DEF
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 }
 
 
@@ -613,7 +604,7 @@ void
 send_mappings( int                       rank,
                SCOREP_DefinitionManager* remote_definition_manager )
 {
-    #define UNIFIED_DEF( Type, type ) \
+    #define DEF_WITH_MAPPING( Type, type ) \
     if ( remote_definition_manager->type ## _definition_counter > 0 ) \
     { \
         SCOREP_Mpi_Send( \
@@ -622,15 +613,15 @@ send_mappings( int                       rank,
             SCOREP_MPI_UNSIGNED, \
             rank ); \
     }
-    LIST_OF_DEFS_WITH_LOCAL_MAPPINGS
-    #undef UNIFIED_DEF
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 }
 
 
 void
 apply_mappings_to_local_manager( void )
 {
-    #define UNIFIED_DEF( Type, type ) \
+    #define DEF_WITH_MAPPING( Type, type ) \
     if ( scorep_local_definition_manager.type ## _definition_counter > 0 ) \
     { \
         if ( scorep_unified_definition_manager->mappings ) \
@@ -645,15 +636,15 @@ apply_mappings_to_local_manager( void )
             } \
         } \
     }
-    LIST_OF_DEFS_WITH_LOCAL_MAPPINGS
-    #undef UNIFIED_DEF
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 }
 
 void
 apply_and_send_mappings( int                       rank,
                          SCOREP_DefinitionManager* remote_definition_manager )
 {
-    #define UNIFIED_DEF( Type, type ) \
+    #define DEF_WITH_MAPPING( Type, type ) \
     if ( remote_definition_manager->type ## _definition_counter > 0 ) \
     { \
         if ( scorep_unified_definition_manager->mappings ) \
@@ -673,8 +664,8 @@ apply_and_send_mappings( int                       rank,
             SCOREP_MPI_UNSIGNED, \
             rank ); \
     }
-    LIST_OF_DEFS_WITH_LOCAL_MAPPINGS
-    #undef UNIFIED_DEF
+    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
+    #undef DEF_WITH_MAPPING
 }
 
 static uint32_t
