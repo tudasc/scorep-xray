@@ -24,19 +24,28 @@ AC_DEFUN([AC_SCOREP_LIBPAPI], [
 dnl Don't check for PAPI on the frontend.
 AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for PAPI on frontend.])])
 
-
 dnl checking for the header
 AC_ARG_WITH([papi-header],
             [AS_HELP_STRING([--with-papi-header=<path-to-papi.h>], 
                             [If papi.h is not installed in the default location, specify the dirname where it can be found.])],
-            [scorep_papi_cppflags="-I${withval} -DC99"], # action-if-given. The -DC99 is a necessary gcc workaround for a
-                                                         # bug in papi 4.1.2.1. It might be compiler dependent.
-            [scorep_papi_cppflags=""]                    # action-if-not-given
+            [scorep_papi_inc_dir="${withval}"],  # action-if-given.
+            [scorep_papi_inc_dir="${PAPI_INC-}"] # action-if-not-given
 )
+AS_IF([test "x$scorep_papi_inc_dir" != "x"], [
+    # The -DC99 is a necessary gcc workaround for a
+    # bug in papi 4.1.2.1. It might be compiler dependent.
+    scorep_papi_cppflags=-"I$scorep_papi_inc_dir -DC99"
+], [
+    scorep_papi_cppflags=""
+])
+
 AC_LANG_PUSH([C])
 cppflags_save="$CPPFLAGS"
+
 CPPFLAGS="$scorep_papi_cppflags $CPPFLAGS"
-AC_CHECK_HEADER([papi.h], [scorep_papi_header="yes"], [scorep_papi_header="no"])
+AC_CHECK_HEADER([papi.h],
+                [scorep_papi_header="yes"],
+                [scorep_papi_header="no"])
 CPPFLAGS="$cppflags_save"
 AC_LANG_POP([C])
 
@@ -45,8 +54,8 @@ dnl checking for the library
 AC_ARG_WITH([papi-lib],
             [AS_HELP_STRING([--with-papi-lib=<path-to-libpapi.*>], 
                             [If libpapi.* is not installed in the default location, specify the dirname where it can be found.])],
-            [scorep_papi_lib_dir="${withval}"], # action-if-given
-            [scorep_papi_lib_dir=""]            # action-if-not-given
+            [scorep_papi_lib_dir="${withval}"],  # action-if-given
+            [scorep_papi_lib_dir="${PAPI_LIB-}"] # action-if-not-given
 )
 AC_LANG_PUSH([C])
 ldflags_save="$LDFLAGS"
@@ -72,7 +81,6 @@ if test "x${scorep_have_papi}" = "xyes"; then
     AC_SUBST([SCOREP_PAPI_LDFLAGS], [-L${scorep_papi_lib_dir}])
     AC_SUBST([SCOREP_PAPI_LIBS],    [-l${scorep_papi_lib_name}])
 else
-    AC_DEFINE([HAVE_PAPI], [0],     [Defined if libpapi is available.])
     AC_SUBST([SCOREP_PAPI_LDFLAGS], [""])
     AC_SUBST([SCOREP_PAPI_LIBS],    [""])
 fi
@@ -80,6 +88,10 @@ AM_CONDITIONAL([HAVE_PAPI],         [test "x${scorep_have_papi}" = "xyes"])
 AC_SUBST([SCOREP_PAPI_CPPFLAGS],    [$scorep_papi_cppflags])
 AC_SUBST([SCOREP_PAPI_LIBDIR],      [$scorep_papi_lib_dir])
 AC_SCOREP_SUMMARY([PAPI support],   [${scorep_have_papi}])
+AS_IF([test "x${scorep_have_papi}" = "xyes"], [
+    AC_SCOREP_SUMMARY_VERBOSE([PAPI include directory], [$scorep_papi_inc_dir])
+    AC_SCOREP_SUMMARY_VERBOSE([PAPI library directory], [$scorep_papi_lib_dir])
+])
 ])
 
 
@@ -120,13 +132,11 @@ AC_LANG_POP([C])
 
 dnl generating results/output/summary
 AS_IF([test "x${scorep_getrusage}" = "xyes"], 
-      [AC_DEFINE([HAVE_GETRUSAGE], [1], [Defined if getrusage() is available.])],
-      [AC_DEFINE([HAVE_GETRUSAGE], [0], [Defined if getrusage() is available.])])
+      [AC_DEFINE([HAVE_GETRUSAGE], [1], [Defined if getrusage() is available.])])
 AS_IF([test "x${scorep_rusage_thread}" = "xyes"], 
       [AC_DEFINE([HAVE_RUSAGE_THREAD], [1], [Defined if RUSAGE_THREAD is available.])],
-      [AC_DEFINE([HAVE_RUSAGE_THREAD], [0], [Defined if RUSAGE_THREAD is available.])])
+      [AC_DEFINE([RUSAGE_THREAD], [RUSAGE_SELF], [Defined to RUSAGE_SELF, if RUSAGE_THREAD is not available.])])
 AM_CONDITIONAL([HAVE_GETRUSAGE], [test "x${scorep_getrusage}" = "xyes"])
-AM_CONDITIONAL([HAVE_RUSAGE_THREAD], [test "x${scorep_rusage_thread}" = "xyes"])
 AC_SUBST([SCOREP_RUSAGE_CPPFLAGS], [$scorep_rusage_cppflags])
 AC_SCOREP_SUMMARY([getrusage support], [${scorep_getrusage}])
 AS_IF([test "x"${scorep_rusage_cppflags} = "x"], 
