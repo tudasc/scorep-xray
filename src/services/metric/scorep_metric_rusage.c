@@ -421,8 +421,14 @@ scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
     assert( eventSet );
     assert( values );
 
-    /* Get resource usage */
-    int ret = getrusage( RUSAGE_THREAD, &( eventSet->ru ) );
+    /* Get resource usage statistics
+     *
+     * SCOREP_RUSAGE_SCOPE refers to one of the two modes:
+     *  - RUSAGE_THREAD: statistics for calling thread
+     *  - RUSAGE_SELF:   statistics for calling process, in multi-threaded applications
+     *                   it is the sum of resources used by all threads of calling process
+     * Please see configuration output to determine which mode is used by Score-P on your system. */
+    int ret = getrusage( SCOREP_RUSAGE_SCOPE, &( eventSet->ru ) );
     assert( ret != -1 );
 
     for ( uint32_t i = 0; i < number_of_metrics; i++ )
