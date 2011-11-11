@@ -422,7 +422,8 @@ scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
     assert( values );
 
     /* Get resource usage */
-    assert( getrusage( RUSAGE_THREAD, &( eventSet->ru ) ) != -1 );
+    int ret = getrusage( RUSAGE_THREAD, &( eventSet->ru ) );
+    assert( ret != -1 );
 
     for ( uint32_t i = 0; i < number_of_metrics; i++ )
     {
