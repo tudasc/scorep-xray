@@ -24,6 +24,10 @@ AC_DEFUN([AC_SCOREP_LIBPAPI], [
 dnl Don't check for PAPI on the frontend.
 AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for PAPI on frontend.])])
 
+# advertise the $PAPI_INC and $PAPI_LIB variables in the --help output
+AC_ARG_VAR([PAPI_INC], [Include path to the papi.h header.])
+AC_ARG_VAR([PAPI_LIB], [Library path to the papi library.])
+
 dnl checking for the header
 AC_ARG_WITH([papi-header],
             [AS_HELP_STRING([--with-papi-header=<path-to-papi.h>], 
