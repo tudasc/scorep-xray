@@ -135,15 +135,16 @@ AC_LANG_POP([C])
 
 
 dnl generating results/output/summary
-AS_IF([test "x${scorep_getrusage}" = "xyes"], 
+AS_IF([test "x${scorep_getrusage}" = "xyes"],
       [AC_DEFINE([HAVE_GETRUSAGE], [1], [Defined if getrusage() is available.])])
-AS_IF([test "x${scorep_rusage_thread}" = "xyes"], 
-      [AC_DEFINE([HAVE_RUSAGE_THREAD], [1], [Defined if RUSAGE_THREAD is available.])],
-      [AC_DEFINE([RUSAGE_THREAD], [RUSAGE_SELF], [Defined to RUSAGE_SELF, if RUSAGE_THREAD is not available.])])
+AS_IF([test "x${scorep_rusage_thread}" = "xyes"],
+      [AC_DEFINE([HAVE_RUSAGE_THREAD], [1], [Defined if RUSAGE_THREAD is available.])
+       AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_THREAD], [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])],
+      [AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_SELF],   [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])])
 AM_CONDITIONAL([HAVE_GETRUSAGE], [test "x${scorep_getrusage}" = "xyes"])
 AC_SUBST([SCOREP_RUSAGE_CPPFLAGS], [$scorep_rusage_cppflags])
 AC_SCOREP_SUMMARY([getrusage support], [${scorep_getrusage}])
-AS_IF([test "x"${scorep_rusage_cppflags} = "x"], 
-      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${scorep_rusage_thread}])], 
+AS_IF([test "x"${scorep_rusage_cppflags} = "x"],
+      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${scorep_rusage_thread}])],
       [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${scorep_rusage_thread}, using ${scorep_rusage_cppflags}])])
 ])
