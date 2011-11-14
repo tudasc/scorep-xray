@@ -405,7 +405,7 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
     }
     /*register handles*/
     scorep_pomp_register_region( region );
-    /*free regionInfo since all information is copied to Score-P*/
+    /*free regionInfo since all information is copied to Score-P */
     freePOMP2RegionInfoMembers( &regionInfo );
 }
 
