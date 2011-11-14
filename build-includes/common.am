@@ -37,6 +37,13 @@ LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
 INC_DIR_UTIL = $(INC_ROOT)vendor/otf2/vendor/utility/include
 LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
 
+## Path to the source files pomp2_region_info.c and 
+## pomp2_region_info.h. The files are taken from the vendor
+## directory, but when scorep supports a preinstalled opari
+## this directory can be overwritten with the directory where
+## installed these files.
+SRC_DIR_POMP2_REGION_INFO = $(abs_srcdir)/../vendor/opari2/src/pomp-lib-dummy/
+
 ##  Where to find the Jenkins' hash headers.
 INC_DIR_VENDOR_HASH = $(srcdir)/../vendor/hash
 

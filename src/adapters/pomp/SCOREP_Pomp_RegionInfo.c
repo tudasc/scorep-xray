@@ -39,6 +39,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Filter.h>
+#include <pomp2_region_info.h>
 
 /** @ingroup POMP
     @{
@@ -67,19 +68,6 @@ typedef enum
     SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME,
     SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME,
     SCOREP_POMP_TOKEN_TYPE_NO_TOKEN,
-    SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION,
-    SCOREP_POMP_TOKEN_TYPE_HAS_SCHEDULE,
-    SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED,
-    SCOREP_POMP_TOKEN_TYPE_HAS_COLLAPSE,
-    SCOREP_POMP_TOKEN_TYPE_HAS_COPYIN,
-    SCOREP_POMP_TOKEN_TYPE_HAS_COPYPRIVATE,
-    SCOREP_POMP_TOKEN_TYPE_HAS_FIRSTPRIVATE,
-    SCOREP_POMP_TOKEN_TYPE_HAS_IF,
-    SCOREP_POMP_TOKEN_TYPE_HAS_LASTPRIVATE,
-    SCOREP_POMP_TOKEN_TYPE_HAS_NOWAIT,
-    SCOREP_POMP_TOKEN_TYPE_HAS_NUMTHREADS,
-    SCOREP_POMP_TOKEN_TYPE_SCHEDULE_TYPE,
-    SCOREP_POMP_TOKEN_TYPE_USER_GROUP_NAME
 } scorep_pomp_token_type;
 
 /** Contains a token and its type from a region info string */
@@ -94,29 +82,16 @@ static const scorep_pomp_token_map_entry scorep_pomp_token_map[] =
 {
     /* Entries must be sorted to be used in binary search. */
     /* If you add/remove items, scorep_pomp_token_map_size   */
-    { "criticalName",    SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME                         },
-    { "escl",            SCOREP_POMP_TOKEN_TYPE_END_SOURCE_CODE_LOCATION              },
-    { "hasCollapse",     SCOREP_POMP_TOKEN_TYPE_HAS_COLLAPSE                          },
-    { "hasCopyIn",       SCOREP_POMP_TOKEN_TYPE_HAS_COPYIN                            },
-    { "hasCopyPrivate",  SCOREP_POMP_TOKEN_TYPE_HAS_COPYPRIVATE                       },
-    { "hasFirstPrivate", SCOREP_POMP_TOKEN_TYPE_HAS_FIRSTPRIVATE                      },
-    { "hasIf",           SCOREP_POMP_TOKEN_TYPE_HAS_IF                                },
-    { "hasLastPrivate",  SCOREP_POMP_TOKEN_TYPE_HAS_LASTPRIVATE                       },
-    { "hasNoWait",       SCOREP_POMP_TOKEN_TYPE_HAS_NOWAIT                            },
-    { "hasNumThreads",   SCOREP_POMP_TOKEN_TYPE_HAS_NUMTHREADS                        },
-    { "hasOrdered",      SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED                           },
-    { "hasReduction",    SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION                         },
-    { "hasSchedule",     SCOREP_POMP_TOKEN_TYPE_HAS_SCHEDULE                          },
-    { "numSections",     SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS                          },
-    { "regionType",      SCOREP_POMP_TOKEN_TYPE_REGION_TYPE                           },
-    { "scheduleType",    SCOREP_POMP_TOKEN_TYPE_SCHEDULE_TYPE                         },
-    { "sscl",            SCOREP_POMP_TOKEN_TYPE_START_SOURCE_CODE_LOCATION            },
-    { "userGroupName",   SCOREP_POMP_TOKEN_TYPE_USER_GROUP_NAME                       },
-    { "userRegionName",  SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME                      }
+    { "criticalName",   SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME                        },
+    { "escl",           SCOREP_POMP_TOKEN_TYPE_END_SOURCE_CODE_LOCATION             },
+    { "numSections",    SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS                         },
+    { "regionType",     SCOREP_POMP_TOKEN_TYPE_REGION_TYPE                          },
+    { "sscl",           SCOREP_POMP_TOKEN_TYPE_START_SOURCE_CODE_LOCATION           },
+    { "userRegionName", SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME                     }
 };
 
 /** Number of entries in @ref scorep_pomp_token_map */
-const size_t scorep_pomp_token_map_size = 19;
+const size_t scorep_pomp_token_map_size = 6;
 
 /** Contains the data for one region type */
 typedef struct
@@ -161,104 +136,6 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
 const size_t scorep_pomp_region_type_map_size = 18;
 
 /* **************************************************************************************
- *                                                                   Conversion functions
- ***************************************************************************************/
-
-/** Comparison function for a string and @mapElem->regionTypeString.
-    @param searchKey String containing the name of the region type.
-    @param mapElem   Entry of scorep_pomp_region_type_map to whose name @a searchKey is
-                     compared.
-    @return Returns an integral value indicating the relationship between the strings:
-            A zero value indicates that both strings are equal. A value greater than
-            zero indicates that the first character that does not match has a greater
-            value in @a searchKey than in mapElem->regionTypeString; And a value less
-            than zero indicates the opposite.
- */
-static int
-scorep_pomp_region_type_map_compare( const void* searchKey,
-                                     const void* mapElem )
-{
-    const char* const                  key  = ( const char* )searchKey;
-    scorep_pomp_region_type_map_entry* elem = ( scorep_pomp_region_type_map_entry* )mapElem;
-
-    return strcmp( key, elem->regionTypeString );
-}
-
-
-/** Comparison function for a string and @mapElem->tokenString.
-    @param searchToken Pointer to a string.
-    @param mapElem     Entry of scorep_pomp_token_map to whose tokenString member
-                       @a searchToken is compared.
-    @return Returns an integral value indicating the relationship between the strings:
-            A zero value indicates that both strings are equal. A value greater than
-            zero indicates that the first character that does not match has a greater
-            value in @a searchToken than in mapElem->tokenString; And a value less
-            than zero indicates the opposite.
- */
-static int
-scorep_pomp_token_map_compare( const void* searchToken,
-                               const void* mapElem )
-{
-    const char* const            token = ( const char* )searchToken;
-    scorep_pomp_token_map_entry* elem  = ( scorep_pomp_token_map_entry* )mapElem;
-
-    return strcmp( token, elem->tokenString );
-}
-
-/** Converts the string representation of a token type to scorep_pomp_token_type.
-    @param token  String representation of the token type.
-    @returns If the token name is contained in @ref scorep_pomp_token_map it returns
-             the particular scorep_pomp_token_type, else SCOREP_POMP_TOKEN_TYPE_NO_TOKEN
-             is returned.
- */
-static scorep_pomp_token_type
-scorep_pomp_get_token_from_string( char* token )
-{
-    scorep_pomp_token_map_entry* mapElem = ( scorep_pomp_token_map_entry* )bsearch(
-        token,
-        &scorep_pomp_token_map,
-        scorep_pomp_token_map_size,
-        sizeof( scorep_pomp_token_map_entry ),
-        scorep_pomp_token_map_compare );
-
-    if ( mapElem )
-    {
-        return mapElem->token;
-    }
-    else
-    {
-        return SCOREP_POMP_TOKEN_TYPE_NO_TOKEN;
-    }
-}
-
-/** Converts the string representation of a region type to SCOREP_Pomp_RegionType
-    @param regionTypeString String representation of the region type.
-    @returns If the token name is contained in @ref scorep_pomp_region_type_map it returns
-             the particular SCOREP_Pomp_RegionType, else SCOREP_Pomp_NoType
-             is returned.
- */
-static SCOREP_Pomp_RegionType
-scorep_pomp_get_region_type_from_string( const char* regionTypeString )
-{
-    scorep_pomp_region_type_map_entry* mapElem = ( scorep_pomp_region_type_map_entry* )
-                                                 bsearch(
-        regionTypeString,
-        &scorep_pomp_region_type_map,
-        scorep_pomp_region_type_map_size,
-        sizeof( scorep_pomp_region_type_map_entry ),
-        scorep_pomp_region_type_map_compare );
-
-    if ( mapElem )
-    {
-        return mapElem->regionType;
-    }
-    else
-    {
-        return SCOREP_Pomp_NoType;
-    }
-}
-
-/* **************************************************************************************
  *                                                                    Init/free functions
  ***************************************************************************************/
 
@@ -282,304 +159,6 @@ scorep_pomp_init_region( SCOREP_Pomp_Region* region )
     region->endLine1      = 0;
     region->endLine2      = 0;
     region->regionName    = 0;
-}
-
-/** Initailizes a scorep_pomp_parsing_data instance.
-    @param obj    The scorep_pomp_parsing_data instance that is initialized.
-    @param string The region information string that is parsed.
-    @param region The pointer to the SCOREP_Pomp_Region that will be filled during
-                  the parsing process.
- */
-static void
-scorep_pomp_init_parsing_data( scorep_pomp_parsing_data* obj,
-                               const char                string[],
-                               SCOREP_Pomp_Region*       region )
-{
-    /* Size of the init string */
-    const size_t nBytes = strlen( string ) * sizeof( char ) + 1;
-
-    /* Set fields */
-    obj->region            = region;
-    obj->stringToParse     = 0;
-    obj->stringMemory      = 0;
-    obj->stringForErrorMsg = 0;
-
-    /* Allocate memory for strings */
-    obj->stringMemory      = malloc( nBytes );
-    obj->stringForErrorMsg = malloc( nBytes );
-    obj->stringToParse     = obj->stringMemory;
-
-    /* Copy strings */
-    strcpy( obj->stringMemory, string );
-    strcpy( obj->stringForErrorMsg, string );
-}
-
-/** Frees allocated memory for mempers of a scorep_pomp_parsing_data instance.
-    @param obj The scorep_pomp_parsing_data instance whose members are freed.
- */
-static void
-scorep_pomp_free_parsing_data( scorep_pomp_parsing_data* obj )
-{
-    /* Free memory */
-    free( obj->stringMemory );
-    free( obj->stringForErrorMsg );
-
-    /* Set to 0 */
-    obj->stringMemory      = 0;
-    obj->stringForErrorMsg = 0;
-    obj->stringToParse     = 0;
-}
-
-/* **************************************************************************************
- *                                                             internal parsing functions
- ***************************************************************************************/
-
-/** Allocates memory for @a aString and copy the content of @a value into it.
-    @param aString Pointer to a string for which the new memory is allocated and into
-                   which the string is copied.
-    @param value   String which is copied to @a aString.
- */
-static void
-scorep_pomp_assign_string( char**      aString,
-                           const char* value )
-{
-    *aString = malloc( strlen( value ) * sizeof( char ) + 1 );
-    strcpy( *aString, value );
-}
-
-/** Extracts a new token from a string. Replaces the first appearance of
-    @a tokenDelimiter in @a string by zero and places the pointer of string on the
-    first character after the zero.
-    @param string         Pointer to the string which is parsed.
-    @param tokenDelimiter Character which separates two tokens.
-    @retuns true if a tokenDelimiter was found, else false.
- */
-static bool
-scorep_pomp_extract_next_token( char**     string,
-                                const char tokenDelimiter )
-{
-    *string = strchr( *string, tokenDelimiter );
-    if ( !( *string && **string == tokenDelimiter ) )
-    {
-        return false;
-    }
-    **string = '\0'; /* extraction */
-    ++( *string );
-    return true;
-}
-
-/** Extracts the next key-value pair from a the parsing data.
-    @param obj    The parsing data, containing the string to be parsed.
-    @param key    Returns the string representation of the next key.
-    @param value  Returns the string representation of the value.
-    @return false if the end of the string is reached, else true.
- */
-static bool
-scorep_pomp_get_key_value_pair( scorep_pomp_parsing_data* obj,
-                                char**                    key,
-                                char**                    value )
-{
-    /* We expect ctcString to look like "key=value*...**" or "*".   */
-    if ( *( obj->stringToParse ) == '*' )
-    {
-        return false; /* end of ctc string */
-    }
-
-    if ( *( obj->stringToParse ) == '\0' )
-    {
-        return false; /* also end of ctc string. we don't force the second "*" */
-    }
-
-    *key = obj->stringToParse;
-    if ( !scorep_pomp_extract_next_token( &obj->stringToParse, '=' ) )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_NO_KEY,
-                      "Parsed String: %s\nKey: %s", obj->stringForErrorMsg, *key );
-    }
-    if ( strlen( *key ) == 0 )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_NO_KEY,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-    }
-
-    *value = obj->stringToParse;
-    if ( !scorep_pomp_extract_next_token( &obj->stringToParse, '*' ) )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_NO_VALUE,
-                      "Parsed String: %s\nTried to get value from: %s",
-                      obj->stringForErrorMsg, *value );
-    }
-    if ( strlen( *value ) == 0 )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_NO_VALUE,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-    }
-    return true;
-}
-
-/** Sets the region type in a scorep_pomp_parsing_data instance from a string
-    representation.
-    @param obj   The scorep_pomp_parsing_data where the region type is set.
-    @param value The string representation of the region type.
- */
-static void
-scorep_pomp_assign_region_type( scorep_pomp_parsing_data* obj,
-                                const char*               value )
-{
-    /* Convert string to type */
-    obj->region->regionType = scorep_pomp_get_region_type_from_string( value );
-
-    if ( obj->region->regionType ==  SCOREP_Pomp_NoType )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_REGION_TYPE,
-                      "Parsed String: %s\nRegion type: %s",
-                      obj->stringForErrorMsg, value );
-    }
-}
-
-/** Parses the string representation of a source code location and sets the filename
-    and linenumbers.
-    @param obj      Parsing object containing tha full parsed string. Used only for
-                    error messages.
-    @param filename Returns the file name of the source code location.
-    @param line1    Returns the starting file number.
-    @param line2    Returns the ending file number.
-    @param value    Contains the string representation of the source code location.
-                    It is expeced that the string looks like  "foo.c:42:43".
- */
-static void
-scorep_pomp_assign_source_code_location( scorep_pomp_parsing_data* obj,
-                                         char**                    filename,
-                                         int32_t*                  line1,
-                                         int32_t*                  line2,
-                                         char*                     value )
-{
-    char* token    = value;
-    int   line1Tmp = -1;
-    int   line2Tmp = -1;
-    bool  continueExtraction;
-    assert( *filename == 0 );
-
-    if ( ( continueExtraction = scorep_pomp_extract_next_token( &value, ':' ) ) )
-    {
-        *filename = malloc( strlen( token ) * sizeof( char ) + 1 );
-        strcpy( *filename, token );
-    }
-    token = value;
-    if ( continueExtraction &&
-         ( continueExtraction = scorep_pomp_extract_next_token( &value, ':' ) ) )
-    {
-        line1Tmp = atoi( token );
-    }
-    token = value;
-    if ( continueExtraction && scorep_pomp_extract_next_token( &value, '\0' ) )
-    {
-        line2Tmp = atoi( token );
-    }
-
-    if ( *filename != 0 && line1Tmp > -1 && line2Tmp > -1 )
-    {
-        *line1 = line1Tmp;
-        *line2 = line2Tmp;
-        if ( *line1 > *line2 )
-        {
-            SCOREP_ERROR( SCOREP_ERROR_INVALID_LINENO,
-                          "Line1 (%d) > Line2 (%d)\nParsed String: %s",
-                          *line1, *line2, obj->stringForErrorMsg );
-        }
-    }
-    else
-    {
-        SCOREP_ERROR( SCOREP_ERROR_POMP_SCL_BROKEN,
-                      "Parsed String: %s\n", obj->stringForErrorMsg );
-    }
-}
-
-/** Assigns the value of an unsigne integer from its string representation.
-    @param obj        Parsing object containing tha full parsed string. Used only for
-                      error messages.
-    @param anUnsigned Pointer to an unsigned to which the value is written.
-    @param value      String representation of an unsinged.
- */
-static void
-scorep_pomp_assign_unsigned( scorep_pomp_parsing_data* obj,
-                             uint32_t*                 anUnsigned,
-                             const char*               value )
-{
-    int tmp = atoi( value );
-    if ( tmp < 0 )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
-                      "Parsed String: %s\n%s: Must be >= 0",
-                      obj->stringForErrorMsg, value );
-    }
-    *anUnsigned = tmp;
-}
-
-/** Seeks forwards after the length field of the information string.
-    @param obj   scorep_pomp_parsing_data instance containing the parsed string.
- */
-static void
-scorep_pomp_ignore_length_field( scorep_pomp_parsing_data* obj )
-{
-    /* We expect ctcString to look like "42*key=value*...**"
-     * The length field is redundant and we don't use it in our parsing
-     * implementation. */
-    while ( obj->stringToParse && isdigit( *obj->stringToParse ) )
-    {
-        ++( obj->stringToParse );
-    }
-
-    if ( !obj->stringToParse )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_UNEXPECTED_END,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-    }
-    if ( *obj->stringToParse != '*' )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_NO_SEPARATOR,
-                      "Parsed string: %s", obj->stringForErrorMsg );
-    }
-    ++( obj->stringToParse );
-    if ( !obj->stringToParse )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PARSE_UNEXPECTED_END,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-    }
-}
-
-/** Checks if the information retrieved from the parsed string is consistent. Otherwise,
-    error messages are printed.
-    @param obj scorep_pomp_parsing_data instance containing the parsed string.
- */
-static void
-scorep_pomp_check_consistency( scorep_pomp_parsing_data* obj )
-{
-    bool requiredAttributesFound;
-
-    if ( obj->region->regionType == SCOREP_Pomp_NoType )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_REGION_TYPE,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-        return;
-    }
-
-    requiredAttributesFound = ( obj->region->startFileName
-                                && obj->region->endFileName );
-    if ( !requiredAttributesFound )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_POMP_SCL_BROKEN,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-        return;
-    }
-
-    if ( obj->region->regionType == SCOREP_Pomp_UserRegion
-         && obj->region->regionName == 0 )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_POMP_NO_NAME,
-                      "Parsed String: %s", obj->stringForErrorMsg );
-        return;
-    }
 }
 
 /** Registers the pomp regions to scorep and sets the SCOREP region handle fields in
@@ -733,88 +312,101 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
                              SCOREP_Pomp_Region* region )
 {
     SCOREP_ASSERT( region );
-    scorep_pomp_parsing_data data;
-    char*                    key;
-    char*                    value;
-
-    /* Initizialize the data objects */
+    POMP2_Region_info regionInfo;
+    ctcString2RegionInfo( initString, &regionInfo );
     scorep_pomp_init_region( region );
-    scorep_pomp_init_parsing_data( &data, initString, region );
-
-    /* Ignore the length entry in the init string */
-    scorep_pomp_ignore_length_field( &data );
-
-    /* Process all data fields */
-    while ( scorep_pomp_get_key_value_pair( &data, &key, &value ) )
+    if ( regionInfo.mUserRegionName )
     {
-        /* Identify key type */
-        switch ( scorep_pomp_get_token_from_string( key ) )
-        {
-            case SCOREP_POMP_TOKEN_TYPE_REGION_TYPE:
-                scorep_pomp_assign_region_type( &data, value );
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_START_SOURCE_CODE_LOCATION:
-                scorep_pomp_assign_source_code_location( &data,
-                                                         &region->startFileName,
-                                                         &region->startLine1,
-                                                         &region->startLine2,
-                                                         value );
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_END_SOURCE_CODE_LOCATION:
-                scorep_pomp_assign_source_code_location( &data,
-                                                         &region->endFileName,
-                                                         &region->endLine1,
-                                                         &region->endLine2,
-                                                         value );
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_NUM_SECTIONS:
-                scorep_pomp_assign_unsigned( &data, &data.region->numSections, value );
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_CRITICAL_NAME:
-                scorep_pomp_assign_string( &region->regionName, value );
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_USER_REGION_NAME:
-                scorep_pomp_assign_string( &region->regionName, value );
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_ORDERED:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_REDUCTION:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_SCHEDULE:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_COLLAPSE:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_COPYIN:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_COPYPRIVATE:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_FIRSTPRIVATE:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_IF:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_LASTPRIVATE:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_NOWAIT:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_HAS_NUMTHREADS:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_SCHEDULE_TYPE:
-                break;
-            case SCOREP_POMP_TOKEN_TYPE_USER_GROUP_NAME:
-                break;
-            default:
-                SCOREP_ERROR( SCOREP_ERROR_PARSE_UNKNOWN_TOKEN, "%s\n", key );
-        }
+        region->name = ( char* )malloc( sizeof( char ) * ( strlen( regionInfo.mUserRegionName ) + 1 ) );
+        strcpy( region->name, regionInfo.mUserRegionName );
     }
-
-    /* Check consistency */
-    scorep_pomp_check_consistency( &data );
-
-    /* Register handles */
+    if ( regionInfo.mStartFileName )
+    {
+        region->startFileName = ( char* )malloc( sizeof( char ) * ( strlen( regionInfo.mStartFileName ) + 1 ) );
+        strcpy( region->startFileName, regionInfo.mStartFileName );
+    }
+    if ( regionInfo.mEndFileName )
+    {
+        region->endFileName = ( char* )malloc( sizeof( char ) * ( strlen( regionInfo.mEndFileName ) + 1 ) );
+        strcpy( region->endFileName, regionInfo.mEndFileName );
+    }
+    /* copy attributes from regionInfo into SCOREPs internal data structures*/
+    region->numSections = regionInfo.mNumSections;
+    region->startLine1  = regionInfo.mStartLine1;
+    region->startLine2  = regionInfo.mStartLine2;
+    region->endLine1    = regionInfo.mEndLine1;
+    region->endLine2    = regionInfo.mEndLine2;
+    switch ( regionInfo.mRegionType )
+    {
+        case POMP2_No_type:
+            region->regionType = SCOREP_Pomp_NoType;
+            break;
+        case POMP2_Atomic:
+            region->regionType = SCOREP_Pomp_Atomic;
+            break;
+        case POMP2_Barrier:
+            region->regionType = SCOREP_Pomp_Barrier;
+            break;
+        case POMP2_Critical:
+            region->regionType = SCOREP_Pomp_Critical;
+            break;
+        case POMP2_Do:
+            region->regionType = SCOREP_Pomp_Do;
+            break;
+        case POMP2_Flush:
+            region->regionType = SCOREP_Pomp_Flush;
+            break;
+        case POMP2_For:
+            region->regionType = SCOREP_Pomp_For;
+            break;
+        case POMP2_Master:
+            region->regionType = SCOREP_Pomp_Master;
+            break;
+        case POMP2_Ordered:
+            break;
+        case POMP2_Parallel:
+            region->regionType = SCOREP_Pomp_Parallel;
+            break;
+        case POMP2_Parallel_do:
+            region->regionType = SCOREP_Pomp_ParallelDo;
+            break;
+        case POMP2_Parallel_for:
+            region->regionType = SCOREP_Pomp_ParallelFor;
+            break;
+        case POMP2_Parallel_sections:
+            region->regionType = SCOREP_Pomp_ParallelSections;
+            break;
+        case POMP2_Parallel_workshare:
+            region->regionType = SCOREP_Pomp_ParallelWorkshare;
+            break;
+        case POMP2_Sections:
+            region->regionType = SCOREP_Pomp_Sections;
+            break;
+        case POMP2_Single:
+            region->regionType = SCOREP_Pomp_Single;
+            break;
+        case POMP2_Task:
+            region->regionType = SCOREP_Pomp_Task;
+            break;
+        case POMP2_Taskuntied:
+            region->regionType = SCOREP_Pomp_Task;
+            break;
+        case POMP2_Taskwait:
+            region->regionType = SCOREP_Pomp_Taskwait;
+            break;
+        case POMP2_User_region:
+            region->regionType = SCOREP_Pomp_UserRegion;
+            break;
+        case POMP2_Workshare:
+            region->regionType = SCOREP_Pomp_Workshare;
+            break;
+        default:
+            SCOREP_ERROR( SCOREP_ERROR_POMP_UNKNOWN_REGION_TYPE, "%s", initString );
+    }
+    /*register handles*/
     scorep_pomp_register_region( region );
-
-    /* Clean up */
-    scorep_pomp_free_parsing_data( &data );
+    /*free regionInfo since all information is copied to Score-P*/
+    freePOMP2RegionInfoMembers( &regionInfo );
 }
 
 /** @} */
