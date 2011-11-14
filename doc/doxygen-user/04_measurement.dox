@@ -533,7 +533,10 @@ The user can leave these environment variables unset to indicate that no counter
 @subsection papi_counters PAPI Hardware Performance Counters
 @seclabel{papi_counters}
 
-This metric uses the Performance Application Programming Interface (PAPI) to access hardware performance counters.
+@scorep provides the possibility to query hardware performance counters and include these
+metrics into the trace and/or profile. @scorep uses the 
+@href{http://icl.cs.utk.edu/papi/,Performance Application Programming Interface} 
+(PAPI) to access hardware performance counters.
 Recording of PAPI performance counters is enabled by setting the environment variable <tt>SCOREP_METRIC_PAPI</tt> to a comma-separated list of counter names.
 Counter names can be any PAPI preset names or PAPI native counter names.
 
@@ -543,9 +546,7 @@ SCOREP_METRIC_PAPI=PAPI_FP_OPS,PAPI_L2_TCM
 </pre>
 
 This will record the number of floating point instructions and level 2 cache misses.
-
 If any of the requested counters is not recognized, program execution will be aborted with an error message.
-
 The PAPI utility programs <tt>papi_avail</tt> and <tt>papi_native_avail</tt> report information about the counters available on the current platform.
 
 If you want to change the separator used in the list of PAPI counter names, set the environment variable <tt>SCOREP_METRIC_PAPI_SEP</tt> to the desired character.
@@ -553,7 +554,8 @@ If you want to change the separator used in the list of PAPI counter names, set 
 @subsection rusage_counters Resource Usage Counters
 @seclabel{rusage_counters}
 
-This metric uses the Unix system call <tt>getrusage</tt> to provide information about consumed resources and operating system events such as user/system time, received signals, and number of page faults.
+Besides PAPI, Resource Usage Counters can be recorded.
+These metrics use the Unix system call <tt>getrusage</tt> to provide information about consumed resources and operating system events such as user/system time, received signals, and number of page faults.
 The manual page of <tt>getrusage</tt> provides a list of resource usage counters.
 Please note that the availability of specific counters depends on the operating system.
 
@@ -566,7 +568,6 @@ SCOREP_METRIC_RUSAGE=ru_utime,ru_stime
 </pre>
 
 This will record the consumed user time and system time.
-
 If any of the requested counters is not recognized, program execution will be aborted with an error message.
 
 @note Please be aware of the scope of displayed resource usage statistics.
@@ -592,17 +593,17 @@ SCOREP_METRIC_RUSAGE_SEP=:
 </pre>
 This indicates that counter names in the list are separated by colons.
 
-@section online_access_measurement Online access interface
+@section online_access_measurement Online Access interface
 @seclabel{online_access_measurement}
 
 Online Access (OA) is an interface to the measurement system of Score-P allowing online analysis capable tools to 
 configure and retrieve profile measurements remotely over sockets. 
 
-OA module of Score-P uses client-server paradigm, where Score-P acts as a server accepting connections 
-from the remote tool. During the initialization, the OA module of the Score-P creates one socket per each application 
+The Online Access interface implememts a client-server paradigm, where Score-P acts as a server accepting connections 
+from the remote tool. During the initialization, the OA module of the Score-P creates one socket for each application 
 process. The network addresses and the ports of these sockets are published at the registry service  
 and could be later queried by the remote tool. The hostname and the port of the registry service should be specified 
-via the <tt>SCOREP_ONLINEACCESS_REG_HOST</tt> and <tt>SCOREP_ONLINEACCESS_REG_PORT</tt> environment variables respectively. After publishing the socket 
+via the <tt>SCOREP_ONLINEACCESS_REG_HOST</tt> and <tt>SCOREP_ONLINEACCESS_REG_PORT</tt> environment variables, respectively. After publishing the socket 
 addresses and ports, the OA module will accept connections. Once the connection is established the OA module will suspend the 
 application execution and wait for requests. The format of the requests is plain text following the syntax below: 
 
@@ -614,21 +615,41 @@ application execution and wait for requests. The format of the requests is plain
 <retrieval>       = GETSUMMARYDATA 
 @endcode
 
-where <tt>BEGINREQUESTS</tt> - indicates the beginning of the request list, 
-<tt>ENDREQUESTS</tt> - indicates the end of the request list, 
-<tt>GLOBAL</tt> - indicates that the following measurement request is applied to all locations, 
-<tt>MPI</tt> - requests mpi wait states analysis, 
-<tt>EXECUTION_TIME</tt> - requests execution time, 
-<tt>TERMINATE</tt> - requests termination of the application, 
-<tt>RUNTOSTART</tt> - requests Score-P to run the beginning of the OA phase, 
-<tt>RUNTOEND</tt> - requests Score-P to run the end of the OA phase, 
-<tt>GETSUMMARYDATA</tt> - requests retrieval of the profile data.
+where 
+<ul>
+ <li>
+    <tt>BEGINREQUESTS</tt> indicates the beginning of the request list, 
+ </li>
+ <li>
+    <tt>ENDREQUESTS</tt> indicates the end of the request list, 
+ </li>
+ <li>
+    <tt>GLOBAL</tt> indicates that the following measurement request is applied to all locations, 
+ </li>
+ <li>
+    <tt>MPI</tt> requests mpi wait states analysis, 
+ </li>
+ <li>
+    <tt>EXECUTION_TIME</tt> requests execution time, 
+ </li>
+ <li>
+    <tt>TERMINATE</tt> requests termination of the application, 
+ </li>
+ <li>
+    <tt>RUNTOSTART</tt> requests Score-P to run the beginning of the OA phase, 
+ </li>
+ <li>
+    <tt>RUNTOEND</tt> requests Score-P to run the end of the OA phase, 
+ </li>
+ <li>
+    <tt>GETSUMMARYDATA</tt> requests retrieval of the profile data.
+ </li>
+</ul>
 
-When the <tt>GETSUMMARY</tt> request is received, the OA module will transform call-path profile into static profile and send 
-the data back to the remote tool. The static profile is sent in two parts, where the first part carries the region 
+When the <tt>GETSUMMARY</tt> request is received, the OA module will transform the call-path profile into a  flat profile and send 
+the data back to the remote tool. The flat profile is sent in two parts, where the first part carries the region 
 definition data and the second part carries profile measurements. Each part starts with the key word <tt>MERGED_REGION_DEFINITIONS</tt> 
 or <tt>STATIC_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
-
 
 @latexonly
 \appendix

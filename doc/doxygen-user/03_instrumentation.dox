@@ -223,7 +223,7 @@ and could be applied successfully.
 @seclabel{manual_instrumentation}
 
 If the automatic compiler-based instrumentation 
-(see Section @secref{start_instrumentation}), 
+(see Section @secref{compiler_instrumentation}) fails, 
 instrumentation can be done manually. Manual instrumentation can
 also be used to augment automatic instrumentation with region or phase
 annotations, which can improve the structure of analysis reports. Furthermore. it
@@ -279,7 +279,7 @@ C++ only:
 Region handles (<tt>my_name_handle</tt>) should be registered in each annotated
 function/subroutine prologue before use within the associated body, and should
 not already be declared in the same program scope. 
-
+ 
 For every region, the region type can be indicated via the region type flag. 
 Possible region types are:
 <dl>
@@ -459,6 +459,67 @@ on/off is done independently on each MPI process without synchronization.
       selective tracing (see Section @secref{selective tracing}, which also 
       switches recording on/off.
 
+@section online_access Source-code instrumentation enabling Online Access
+@seclabel{online_access}
+
+The Online Access interface to the measurement system of Score-P allows remote
+control of measurement and access to the profile data. The online access interface
+may not be available on all platforms. To use the Online Access interface, @scorep must
+have been built with Online Access (OA) support, 
+
+The Online Access module requires the user to specify at least one 
+\emph{online access phase}. The online access phase does not show the behavior of
+a region of type phase as defined in Section @secref{manual_instrumentation}. 
+However, the way to specify an online access phase is similar to manual region 
+instrumentation. The start and end 
+of the online access phase defines the interaction points, where new measurement 
+control commands are applied and data requests are answered.
+
+To insert an online online access phase into the code, the user has to insert the macros
+<tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and
+<tt>SCOREP_USER_OA_PHASE_END</tt> at appropriate locations. These macros must be 
+<ul>
+ <li> correctly nested with all regions and </li>
+ <li> must be potential global synchronization points. </li>
+</ul>
+Common practice is to mark the body of the application's main loop as online access 
+phase, in order to utilize the main loop iterations for iterative online analysis. 
+Only the measurements collected inside the OA phase could be configured and retrieved.
+
+Instrumentation can be performed in the following ways, depending on the
+programming language used.
+
+@code
+    #include "SCOREP_User.inc"
+
+    subroutine foo
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      ! more declarations
+
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      ! do something
+      SCOREP_USER_OA_PHASE_END( my_region_handle )
+
+    end subroutine foo
+@endcode
+
+C/C++:
+@code
+    #include <SCOREP_User.h>
+
+    void foo()
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+
+      // do something
+
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+
+      // do something
+
+      SCOREP_USER_OA_PHASE_END( my_region_handle )
+    }
+@endcode
 
 @section pomp_instrumentation Semi-automatic instrumentation with @opari2
 @seclabel{pomp_instrumentation}
@@ -586,52 +647,6 @@ of limitations:
     in the selective instrumentation file will be ignored.
   </li>
 </ul>
-
-@section online_access Source-code instrumentation enabling Online Access
-@seclabel{online_access}
-
-Online Access is an interface to the measurement system of Score-P allowing remote configuration of measurement
-and access to the profile data. If @scorep has been configured with Online Access (OA) support, 
-the code has to be manually instrumented using <tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and
-<tt>SCOREP_USER_OA_PHASE_END</tt> macros. These macros must be correctly nested and must be potential 
-global synchronization points, also it is recommended to mark the body of the application's main loop 
-in order to utilize the main loop iterations for iterative online analysis. Only the measurements collected
-inside the OA phase could be configured and retrieved.
-
-Instrumentation can be performed in the following ways, depending on the
-programming language used.
-
-@code
-    #include "SCOREP_User.inc"
-
-    subroutine foo
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-      ! more declarations
-
-      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
-      ! do something
-      SCOREP_USER_OA_PHASE_END( my_region_handle )
-
-    end subroutine foo
-@endcode
-
-C/C++:
-@code
-    #include <SCOREP_User.h>
-
-    void foo()
-    {
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-
-      // do something
-
-      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
-
-      // do something
-
-      SCOREP_USER_OA_PHASE_END( my_region_handle )
-    }
-@endcode
 
 */
 
