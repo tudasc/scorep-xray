@@ -33,9 +33,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-static bool            isInitialized = false;
-
-static struct timespec scorep_timer_start;
+static bool isInitialized = false;
 
 void
 SCOREP_Timer_Initialize()
@@ -44,7 +42,6 @@ SCOREP_Timer_Initialize()
     {
         return;
     }
-    clock_gettime( CLOCK_REALTIME, &scorep_timer_start );
     isInitialized = true;
 }
 
@@ -54,8 +51,7 @@ SCOREP_GetClockTicks()
 {
     struct timespec time;
     clock_gettime( CLOCK_REALTIME, &time );
-    return ( time.tv_sec - scorep_timer_start.tv_sec ) * 1000000000
-           + time.tv_nsec - scorep_timer_start.tv_nsec;
+    return time.tv_sec * 1000000000 + time.tv_nsec;
 }
 
 

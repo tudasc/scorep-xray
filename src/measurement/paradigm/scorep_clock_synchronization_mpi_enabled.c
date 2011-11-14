@@ -149,6 +149,8 @@ SCOREP_GetGlobalEpoch( uint64_t* globalEpochBegin, uint64_t* globalEpochEnd )
                        SCOREP_MPI_UNSIGNED_LONG_LONG,
                        SCOREP_MPI_MAX,
                        0 );
-
-    //assert( *globalEpochEnd > *globalEpochBegin );
+    if ( SCOREP_Mpi_GetRank() == 0 )
+    {
+        assert( *globalEpochEnd > *globalEpochBegin );
+    }
 }

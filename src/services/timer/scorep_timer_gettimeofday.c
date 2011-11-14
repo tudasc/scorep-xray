@@ -32,8 +32,7 @@
 #include <stdbool.h>
 
 
-static time_t scorep_time_base = 0;
-static bool   isInitialized    = false;
+static bool isInitialized = false;
 
 
 void
@@ -43,11 +42,7 @@ SCOREP_Timer_Initialize()
     {
         return;
     }
-
-    struct timeval tp;
-    gettimeofday( &tp, 0 );
-    scorep_time_base = tp.tv_sec - ( tp.tv_sec & 0xFFFF );
-    isInitialized    = true;
+    isInitialized = true;
 }
 
 
@@ -56,7 +51,7 @@ SCOREP_GetClockTicks()
 {
     struct timeval tp;
     gettimeofday( &tp, 0 );
-    return ( ( tp.tv_sec - scorep_time_base ) * 1e6 ) + tp.tv_usec;
+    return ( tp.tv_sec * 1e6 ) + tp.tv_usec;
 }
 
 
