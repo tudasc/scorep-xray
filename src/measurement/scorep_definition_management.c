@@ -229,27 +229,18 @@ SCOREP_GetNumberOfDefinitions()
     assert( !omp_in_parallel() );
 
     int n_definitions = 0; /// @todo might overflow
+
+    /* this list must match the list in scorep_write_local_definitions() */
     n_definitions += scorep_local_definition_manager.string_definition_counter;
     n_definitions += scorep_local_definition_manager.system_tree_node_definition_counter;
     n_definitions += scorep_local_definition_manager.location_group_definition_counter;
     n_definitions += scorep_local_definition_manager.location_definition_counter;
-    n_definitions += scorep_local_definition_manager.source_file_definition_counter;
     n_definitions += scorep_local_definition_manager.region_definition_counter;
     n_definitions += scorep_local_definition_manager.group_definition_counter;
-    n_definitions += scorep_local_definition_manager.local_mpi_communicator_definition_counter;
-    n_definitions += scorep_local_definition_manager.mpi_communicator_definition_counter;
-    n_definitions += scorep_local_definition_manager.mpi_window_definition_counter;
-    n_definitions += scorep_local_definition_manager.mpi_cartesian_topology_definition_counter;
-    n_definitions += scorep_local_definition_manager.mpi_cartesian_coords_definition_counter;
     n_definitions += scorep_local_definition_manager.metric_definition_counter;
     n_definitions += scorep_local_definition_manager.sampling_set_definition_counter;
-    n_definitions += scorep_local_definition_manager.io_file_group_definition_counter;
-    n_definitions += scorep_local_definition_manager.io_file_definition_counter;
-    n_definitions += scorep_local_definition_manager.marker_group_definition_counter;
-    n_definitions += scorep_local_definition_manager.marker_definition_counter;
     n_definitions += scorep_local_definition_manager.parameter_definition_counter;
     n_definitions += scorep_local_definition_manager.callpath_definition_counter;
-
     return n_definitions;
 }
 
