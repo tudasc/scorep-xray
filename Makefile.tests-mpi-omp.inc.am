@@ -26,8 +26,8 @@
 ## Specify the number of processess and threads to be used for hybrid
 ## TESTS. The default can be overridden at make invocation, like 'make
 ## mpi_omp_num_processes=4 mpi_omp_num_threads=2 check-mpi-omp'
-mpi_omp_num_processes = 1
-mpi_omp_num_threads   = 1
+mpi_omp_num_processes = 3
+mpi_omp_num_threads   = 2
 
 #TESTS_ENVIRONMENT_MPI_OMP = mpiexec -env OMP_NUM_THREADS=$(mpi_omp_num_threads) -np $(mpi_omp_num_processes)
 TESTS_ENVIRONMENT_MPI_OMP = OMP_NUM_THREADS=$(mpi_omp_num_threads) mpiexec -np $(mpi_omp_num_processes)

@@ -25,8 +25,8 @@
 
 ## Specify the number of OpenMP threads to be used for the TESTS. The
 ## default can be overridden at make invocation, like 'make
-## omp_num_threads=4 check-omp'
-omp_num_threads = 1
+## omp_num_threads=8 check-omp'
+omp_num_threads = 4
 
 TESTS_ENVIRONMENT_OMP = OMP_NUM_THREADS=$(omp_num_threads)
 TESTS_OMP =

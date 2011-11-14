@@ -25,8 +25,8 @@
 
 ## Specify the number of MPI processess to be used for the TESTS. The
 ## default can be overridden at make invocation, like 'make
-## mpi_num_processes=4 check-mpi'
-mpi_num_processes = 1
+## mpi_num_processes=8 check-mpi'
+mpi_num_processes = 4
 
 TESTS_ENVIRONMENT_MPI = mpiexec -np $(mpi_num_processes)
 TESTS_MPI =
