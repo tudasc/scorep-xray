@@ -1,3 +1,5 @@
+#include <config.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -5,15 +7,15 @@ extern "C"
 #include <stddef.h>
 
 extern void
-pomp2_init_regions_1320070372569861_3_();
+FORTRAN_MANGLED( pomp2_init_regions_1320070372569861_3 ) ();
 extern void
-pomp2_init_regions_1320070368355742_1_();
+FORTRAN_MANGLED( pomp2_init_regions_1320070368355742_1 ) ();
 
 void
 POMP2_Init_regions()
 {
-    pomp2_init_regions_1320070372569861_3_();
-    pomp2_init_regions_1320070368355742_1_();
+    FORTRAN_MANGLED( pomp2_init_regions_1320070372569861_3 ) ();
+    FORTRAN_MANGLED( pomp2_init_regions_1320070368355742_1 ) ();
 }
 
 size_t
