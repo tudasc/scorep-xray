@@ -1621,6 +1621,9 @@ scorep_scoped_sampling_set_definition_initialize(
     SCOREP_MetricScope                   scopeType,
     SCOREP_AnyHandle                     scopeHandle )
 {
+    definition->is_scoped = true;
+    HASH_ADD_POD( definition, is_scoped );
+
     definition->sampling_set_handle = samplingSet;
     HASH_ADD_HANDLE( definition, sampling_set_handle, SamplingSet );
 
