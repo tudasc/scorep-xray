@@ -21,9 +21,8 @@
    @file       SCOREP_User_Types.h
    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
    @status     ALPHA
-   @ingroup    SCOREP_User_Interface
-
-   @brief This file contains type definitions for manual user instrumentation.
+   @ingroup    SCOREP_User
+   @brief      This file contains type definitions for manual user instrumentation.
  */
 
 #include <scorep/SCOREP_PublicTypes.h>
@@ -34,16 +33,13 @@
 
 struct SCOREP_User_Region;
 
-/*
-    @ingroup SCOREP_User_External
-    @{
- */
 /**
    Type for region handles in the user adapter.
  */
 typedef struct SCOREP_User_Region* SCOREP_User_RegionHandle;
 
 /**
+   @def SCOREP_USER_INVALID_REGION
    Value for uninitialized or invalid region handles
  */
 #define SCOREP_USER_INVALID_REGION NULL
@@ -69,20 +65,16 @@ typedef uint64_t SCOREP_User_ParameterHandle;
  */
 #define SCOREP_USER_INVALID_PARAMETER -1
 
-/**
-   @}
- */
-
 /* **************************************************************************************
  * Defines for the Region types
  * *************************************************************************************/
 
 /**
-    @ingroup SCOREP_User
+    @addtogroup SCOREP_User
     @{
  */
 
-/*
+/**
     @name Region types
     @{
  */
@@ -154,6 +146,10 @@ typedef uint64_t SCOREP_User_ParameterHandle;
  * *************************************************************************************/
 
 /**
+    @name Metric contexts
+    @{
+ */
+/**
     @def SCOREP_USER_METRIC_CONTEXT_GLOBAL
     Indicates that a user counter is is measured for the global context.
  */
@@ -164,6 +160,8 @@ typedef uint64_t SCOREP_User_ParameterHandle;
     Indicates that a user counter is is measured for every callpath.
  */
 #define SCOREP_USER_METRIC_CONTEXT_CALLPATH 1
+
+/**@}*/
 
 /* **************************************************************************************
  * Default and uninitialized handles

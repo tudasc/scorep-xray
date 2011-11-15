@@ -21,9 +21,9 @@
     @file       SCOREP_User.h
     @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
     @status     ALPHA
-    @ingroup    SCOREP_User_Interface
+    @ingroup    SCOREP_User
 
-    @brief contains the interface definitions for the manual user instrumentation.
+    @brief This file contains the interface for the manual user instrumentation.
  */
 
 /* Guarded because it declares variables in every file where it is included. */
@@ -775,6 +775,11 @@
  * *************************************************************************************/
 
 /**
+    @name Macros to provide user metrics
+    @{
+ */
+
+/**
     @def SCOREP_USER_METRIC_LOCAL(metricHandle)
     Declares a handle for a user metric.
     It defines a variable which must be in scope at all places where
@@ -1291,6 +1296,7 @@
     @endcode
  */
 
+/**@}*/
 /**@}*/
 
 /* **************************************************************************************
