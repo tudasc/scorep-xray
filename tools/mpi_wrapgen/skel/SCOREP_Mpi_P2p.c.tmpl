@@ -739,10 +739,7 @@ int MPI_Testsome(int incount,
  * @{
  */
 
-/* no asynchroneous communication handling at the beginning included 
-pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SCOREP_Mpi_PtpSendinit.w
-*/
-#pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple regex(MPI_(S|B|R)[s]?end_init$) skel/SCOREP_Mpi_PtpSendinit.w
 
 #if HAVE(DECL_PMPI_RECV_INIT) && !defined(SCOREP_MPI_NO_P2P)
 /**

@@ -5,10 +5,10 @@ ${guard:start}
  * @note C interface
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
- * @li enter region '$(name)'
+ * @li enter region '${name}'
  * @li MPI send event
  * @li MPI receive event
- * @li exit region '$(name)'
+ * @li exit region '${name}'
  */
 ${proto:c}
 {

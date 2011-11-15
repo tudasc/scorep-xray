@@ -6,8 +6,8 @@ ${guard:start}
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
  * Sequence of events:
- * @li enter region '$(name)'
- * @li exit region '$(name)'
+ * @li enter region '${name}'
+ * @li exit region '${name}'
  */
 ${proto:c}
 {
@@ -26,7 +26,7 @@ ${proto:c}
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     scorep_mpi_request_create(*request, (SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT),
                        tag, dest, count*sz, datatype, comm,
-                       scorep_get_request_id());
+                       scorep_mpi_get_request_id());
   if (event_gen_active)
     {
       SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);

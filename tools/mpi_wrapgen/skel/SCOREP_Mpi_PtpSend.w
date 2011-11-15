@@ -6,9 +6,9 @@ ${guard:start}
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
  * Sequence of events:
- * @li enter region '$(name)'
+ * @li enter region '${name}'
  * @li MPI send event
- * @li exit region '$(name)'
+ * @li exit region '${name}'
  */
 ${proto:c}
 {
