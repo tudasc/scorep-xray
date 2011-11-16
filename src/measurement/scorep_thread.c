@@ -121,6 +121,7 @@ struct SCOREP_Thread_LocationData
 {
     uint32_t                       local_id;    // process local id, 0, 1, ...
     uint64_t                       location_id; // global id
+    uint64_t                       last_timestamp;
     SCOREP_Allocator_PageManager** page_managers;
     SCOREP_LocationHandle          location_handle;
     SCOREP_Profile_LocationData*   profile_data;
@@ -610,6 +611,20 @@ SCOREP_LocationHandle
 SCOREP_Thread_GetLocationHandle( SCOREP_Thread_LocationData* locationData )
 {
     return locationData->location_handle;
+}
+
+
+uint64_t
+SCOREP_Thread_GetLastTimestamp( SCOREP_Thread_LocationData* locationData )
+{
+    return locationData->last_timestamp;
+}
+
+
+void
+SCOREP_Thread_SetLastTimestamp( SCOREP_Thread_LocationData* locationData, int64_t timestamp )
+{
+    locationData->last_timestamp = timestamp;
 }
 
 
