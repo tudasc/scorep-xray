@@ -218,6 +218,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -260,6 +261,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -366,6 +368,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 
     return timestamp;
@@ -408,6 +411,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 
     scorep_exit_region( timestamp, regionHandle, metric_values );
@@ -431,6 +435,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -452,6 +457,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -473,6 +479,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -494,6 +501,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -525,6 +533,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -556,6 +565,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -672,6 +682,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -704,6 +715,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId/*,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
@@ -913,6 +925,10 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
+    /* DL: My proposl would be to call scorep_exit_region until we have
+       a special event for exits on exceptions. However, for the profiling part
+       no special event is planned, but I do not know about OTF2.
+     */
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
@@ -921,6 +937,7 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* TODO: The same like for the regular exit */
     }
 }
 
@@ -1068,6 +1085,7 @@ SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        /* No action necessary */
     }
 }
 
