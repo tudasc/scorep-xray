@@ -2460,5 +2460,59 @@ SCOREP_Callpath_GetNumberOfUnifiedDefinitions()
 }
 
 /**
+ * Returns the sequence number of the unified defintions for a local metric handle from
+ * the mappings.
+ * @param handle handle to local metric handle.
+ */
+uint32_t
+SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle )
+{
+    uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
+    return scorep_local_definition_manager.mappings->metric_mappings[ local_id ];
+}
+
+/**
+ * Returns the unified handle from a local handle.
+ */
+SCOREP_MetricHandle
+SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle )
+{
+    return SCOREP_HANDLE_GET_UNIFIED( handle, Metric,
+                                      SCOREP_Memory_GetLocalDefinitionPageManager() );
+}
+
+/**
+ * Returns the number of unified metric definitions.
+ */
+uint32_t
+SCOREP_Metric_GetNumberOfUnifiedDefinitions()
+{
+    return scorep_unified_definition_manager->metric_definition_counter;
+}
+
+/**
+ * Returns the value type of a metric.
+ * @param handle to local meric definition.
+ */
+SCOREP_MetricValueType
+SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->value_type;
+}
+
+/**
+ * Returns the name of a metric.
+ * @param handle to local meric definition.
+ */
+const char*
+SCOREP_Metric_GetName( SCOREP_MetricHandle handle )
+{
+    SCOREP_Metric_Definition* metric = SCOREP_LOCAL_HANDLE_DEREF( handle, Metric );
+
+    return SCOREP_LOCAL_HANDLE_DEREF( metric->name_handle, String )->string_data;
+}
+
+
+/**
  * @}
  */
