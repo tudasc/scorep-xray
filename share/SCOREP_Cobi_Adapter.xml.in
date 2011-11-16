@@ -1,38 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <adapter>
 <dependencies>
+        <!-- A list of libraries that the binary instrumenter links to the
+             application. e use full pathes in order to be sure that the 
+             resulting executable can be found independent of the LD-LIBRARY_PATH.
+             We have 4 versions of this script linking 4 different libraries, one
+             script for each programming paradigm: scorep_serial.so, scorep_omp.so
+             scorep_mpi.so, scorep_mpi_omp.so -->
 	<library name="libscorep_mpi.so" />
 </dependencies>
 
 <adaptersettings>
-	<saveallfprs value="false" />
+        <!-- Set that floating point registers are always saved -->
+	<saveallfprs value="true" />
+        <!-- Function at which we apply initialization -->
 	<initfunctionname value="_start" />
+        <!-- Function at which we apply finalization -->
 	<finalizefunctionname value="main" />
 </adaptersettings>
 
 <adapterfilter>
 	<or>
-		<property name="hasoverlay" />
+            <!-- Possibility to exclude a function set, we exclude here all
+                 functions that share exit ot entry points -->         
+	    <property name="hasoverlay" />
 	</or>
 </adapterfilter>
 
+        <!-- Code snippet for adapter initialization. Function must be either in the
+             instrumented code, or in one of the libraries listed above. -->
 <adapterinitialization>
 	SCOREP_InitMeasurement();
 </adapterinitialization>
 
+        <!-- Code generated for every instrumented function -->
 <code name="functions">
+
+        <!-- A 8 byte opaque variable to store a region handle. -->
 	<variables><var name="regionid" size="8" type="void*" /></variables>
+
+        <!-- Code executed once for every function at initialization.
+             Assigns the region handle -->
 	<init>
 		regionid = SCOREP_DefineRegion(@ROUTINE@,
 						SCOREP_DefineSourceFile(@FILE@),
 						@LINE@,@LINE@,1,1);
 	</init>
+   
+        <!-- Code executed on enters -->
 	<enter>
                 if ( SCOREP_IsInitialized() != 0 )
                 {
                     SCOREP_EnterRegion(regionid);
                 };
 	</enter>
+
+        <!-- Code executed on exits -->
 	<exit>
                 if ( SCOREP_IsInitialized() != 0 )
                 {

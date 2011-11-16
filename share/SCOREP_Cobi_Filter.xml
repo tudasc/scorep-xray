@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <filters>
 
+<!-- Instrumentes all functions except those that have prefix of 
+     std or __gnu_cxx. The used code snippets are defined in 
+     SCOREP_Cobi_Adapter.xml -->
 <filter name="filter1" start="all" instrument="functions">
 	<exclude>
 		<or>
-		<namespaces match="prefix">
+		<functionnames match="prefix">
 		std __gnu_cxx
-		</namespaces>
+		</functionnames>
 		</or>
 	</exclude>
 </filter>

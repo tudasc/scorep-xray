@@ -237,10 +237,17 @@ SCOREP_Instrumenter::Run()
     if ( cobi_instrumentation == enabled )
     {
         std::string orig_name = output_name + ".orig";
-        if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
+        if ( verbosity >= 1 )
         {
-            SCOREP_ERROR_POSIX( "Failed to rename binary" );
-            return EXIT_FAILURE;
+            std::cout << "mv " << output_name << " " << orig_name << std::endl;
+        }
+        if ( !is_dry_run )
+        {
+            if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
+            {
+                SCOREP_ERROR_POSIX( "Failed to rename binary" );
+                return EXIT_FAILURE;
+            }
         }
 
         return invoke_cobi( orig_name );
