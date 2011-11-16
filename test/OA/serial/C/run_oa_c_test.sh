@@ -108,7 +108,7 @@ done
 BASE_PORT=$(($REG_PORT+1))
 echo Starting $TEST_NAME with Periscope Emulator on $REG_HOST:$REG_PORT	
 
-#start periscope emulator
+#start periscope emulator 
 ./online_access_registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE >/dev/null &
 REGSRV_PID=$!
 
