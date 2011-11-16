@@ -103,7 +103,7 @@ SCOREP_User_InitMetric
                                    SCOREP_METRIC_BASE_DECIMAL,
                                    0,
                                    unit,
-                                   SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE );
+                                   SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
         *metricHandle
             = SCOREP_DefineSamplingSet( 1, &metric,
