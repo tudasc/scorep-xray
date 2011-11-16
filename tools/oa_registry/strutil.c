@@ -22,12 +22,11 @@
  * This file contains implementation of strings utility functions
  */
 #include <config.h>
+#include "strutil.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "strutil.h"
 
 
 #define WHITESPACE " \t"
@@ -58,7 +57,7 @@ mystrndup( const char* str,
 
 
 
-__inline size_t
+static size_t
 skip_ws( const char* str,
          size_t      pos )
 {
@@ -69,7 +68,7 @@ skip_ws( const char* str,
 }
 
 
-__inline size_t
+static size_t
 next_token( const char* str,
             size_t      pos,
             const char* delim,

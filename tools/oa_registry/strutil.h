@@ -26,6 +26,7 @@
 #ifndef STRUTIL_H_INCLUDED
 #define STRUTIL_H_INCLUDED
 
+#include <stddef.h>
 
 typedef struct
 {
