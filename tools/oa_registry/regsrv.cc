@@ -219,10 +219,10 @@ int RegServ::execute_test(const char* scenario_file)
 					exit(1);
 				}
 
-				printf("Periscope Emulator: Expecting Merged Region Definitions from process %i, size: %" PRId32 " entries of size %" PRIu32 "\n",
+				printf("Periscope Emulator: Expecting Merged Region Definitions from process %i, size: %" PRId32 " entries of size %" PRIu64 "\n",
 						it->second->pid,
 						number,
-						sizeof(SCOREP_OA_CallPathRegionDef));
+            (uint64_t)sizeof(SCOREP_OA_CallPathRegionDef));
 
 				if (number > 0)
 				{
@@ -280,10 +280,10 @@ int RegServ::execute_test(const char* scenario_file)
 					exit(1);
 				}
 
-				printf("Periscope Emulator: Expecting Flat Profile from process %i, size: %" PRId32 " entries of size %" PRIu32 "\n",
+				printf("Periscope Emulator: Expecting Flat Profile from process %i, size: %" PRId32 " entries of size %" PRIu64 "\n",
 						it->second->pid,
 						number,
-						sizeof(SCOREP_OA_FlatProfileMeasurement));
+						(uint64_t)sizeof(SCOREP_OA_FlatProfileMeasurement));
 
 				if (number > 0)
 				{
