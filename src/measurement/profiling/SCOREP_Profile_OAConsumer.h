@@ -75,7 +75,7 @@ typedef struct SCOREP_OA_CallPathRegionDef_struct
 }SCOREP_OA_CallPathRegionDef;
 
 
-typedef struct SCOREP_OA_StaticProfileMeasurement_struct
+typedef struct SCOREP_OA_FlatProfileMeasurement_struct
 {
     uint32_t measurement_id;
     uint64_t rank;
@@ -84,20 +84,20 @@ typedef struct SCOREP_OA_StaticProfileMeasurement_struct
     uint64_t samples;
     uint32_t metric_id;
     uint64_t int_val;
-}SCOREP_OA_StaticProfileMeasurement;
+}SCOREP_OA_FlatProfileMeasurement;
 
 typedef struct SCOREP_OA_ProfileSummary_struct
 {
-    SCOREP_OA_CallPathContext*          context_buffer;
-    SCOREP_OA_CallPathMeasurement*      measurement_buffer;
-    SCOREP_OA_CallPathCounterDef*       counter_def_buffer;
-    SCOREP_OA_CallPathRegionDef*        region_def_buffer;
-    SCOREP_OA_StaticProfileMeasurement* static_measurement_buffer;
-    uint32_t                            context_size;
-    uint32_t                            measurement_size;
-    uint32_t                            counter_def_size;
-    uint32_t                            region_def_size;
-    uint32_t                            static_measurement_size;
+    SCOREP_OA_CallPathContext*        context_buffer;
+    SCOREP_OA_CallPathMeasurement*    measurement_buffer;
+    SCOREP_OA_CallPathCounterDef*     counter_def_buffer;
+    SCOREP_OA_CallPathRegionDef*      region_def_buffer;
+    SCOREP_OA_FlatProfileMeasurement* static_measurement_buffer;
+    uint32_t                          context_size;
+    uint32_t                          measurement_size;
+    uint32_t                          counter_def_size;
+    uint32_t                          region_def_size;
+    uint32_t                          static_measurement_size;
 } SCOREP_OA_CallPathSummary;
 
 #define SCOREP_OA_COUNTER_UNDEFINED                     0
@@ -106,7 +106,7 @@ typedef struct SCOREP_OA_ProfileSummary_struct
 
 typedef enum SCOREP_OAConsumer_DataTypes
 {
-    STATIC_PROFILE = 0,
+    FLAT_PROFILE = 0,
     MERGED_REGION_DEFINITIONS,
     REGION_DEFINITIONS,
     COUNTER_DEFINITIONS,

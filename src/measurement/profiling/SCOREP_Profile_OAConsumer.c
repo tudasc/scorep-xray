@@ -44,19 +44,19 @@
 
 typedef struct
 {
-    uint64_t                            rank;
-    uint32_t                            thread;
-    uint32_t                            num_measurements;
-    uint32_t                            num_contexts;
-    uint32_t                            num_def_regions;
-    uint32_t                            num_def_counters;
-    uint32_t                            num_def_regions_merged;
-    uint32_t                            num_static_measurements;
-    SCOREP_Hashtab*                     merged_regions_def_table;   ///Hash table for mapping already registered region names region handles.
-    SCOREP_Hashtab*                     static_measurements_table;
-    scorep_profile_node*                phase_node;
-    SCOREP_OA_StaticProfileMeasurement* static_measurement_buffer;
-    SCOREP_OA_CallPathRegionDef*        merged_region_def_buffer;
+    uint64_t                          rank;
+    uint32_t                          thread;
+    uint32_t                          num_measurements;
+    uint32_t                          num_contexts;
+    uint32_t                          num_def_regions;
+    uint32_t                          num_def_counters;
+    uint32_t                          num_def_regions_merged;
+    uint32_t                          num_static_measurements;
+    SCOREP_Hashtab*                   merged_regions_def_table;     ///Hash table for mapping already registered region names region handles.
+    SCOREP_Hashtab*                   static_measurements_table;
+    scorep_profile_node*              phase_node;
+    SCOREP_OA_FlatProfileMeasurement* static_measurement_buffer;
+    SCOREP_OA_CallPathRegionDef*      merged_region_def_buffer;
 } data_index_type;
 
 extern SCOREP_DefinitionManager scorep_local_definition_manager;
@@ -124,7 +124,7 @@ update_static_measurement
     data_index_type* data_index
 );
 
-SCOREP_OA_StaticProfileMeasurement*
+SCOREP_OA_FlatProfileMeasurement*
 get_static_profile_measurements
 (
 );
@@ -138,14 +138,14 @@ void
 scorep_oaconsumer_copy_static_measurement
 (
     scorep_profile_node* node,
-    void*                param                          /// SCOREP_OA_StaticProfileMeasurement* buffer
+    void*                param                          /// SCOREP_OA_FlatProfileMeasurement* buffer
 );
 
 void
 scorep_oaconsumer_copy_merged_region_definitions
 (
     scorep_profile_node* node,
-    void*                param                          /// SCOREP_OA_StaticProfileMeasurement* buffer
+    void*                param                          /// SCOREP_OA_FlatProfileMeasurement* buffer
 );
 
 int32_t
@@ -747,7 +747,7 @@ scorep_oaconsumer_copy_merged_region_definitions
 }
 
 
-SCOREP_OA_StaticProfileMeasurement*
+SCOREP_OA_FlatProfileMeasurement*
 get_static_profile_measurements
 (
 )
@@ -766,7 +766,7 @@ get_static_profile_measurements
 
     /** Allocate static measurements buffer*/
     oa_consumer_data_index->static_measurement_buffer = calloc(     oa_consumer_data_index->num_static_measurements,
-                                                                    sizeof( SCOREP_OA_StaticProfileMeasurement ) );
+                                                                    sizeof( SCOREP_OA_FlatProfileMeasurement ) );
 
     /** Copy static measurements to the buffer*/
     scorep_profile_for_all( oa_consumer_data_index->phase_node,
@@ -852,7 +852,7 @@ SCOREP_OAConsumer_GetDataSize
     }
     switch ( data_type )
     {
-        case STATIC_PROFILE:
+        case FLAT_PROFILE:
             return oa_consumer_data_index->num_static_measurements;
         case MERGED_REGION_DEFINITIONS:
             return oa_consumer_data_index->num_def_regions_merged;
@@ -882,7 +882,7 @@ SCOREP_OAConsumer_GetData
     }
     switch ( data_type )
     {
-        case STATIC_PROFILE:
+        case FLAT_PROFILE:
             return get_static_profile_measurements();
         case MERGED_REGION_DEFINITIONS:
             return get_merged_region_definitions();

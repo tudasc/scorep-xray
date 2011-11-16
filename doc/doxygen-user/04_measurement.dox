@@ -649,7 +649,7 @@ where
 When the <tt>GETSUMMARY</tt> request is received, the OA module will transform the call-path profile into a  flat profile and send 
 the data back to the remote tool. The flat profile is sent in two parts, where the first part carries the region 
 definition data and the second part carries profile measurements. Each part starts with the key word <tt>MERGED_REGION_DEFINITIONS</tt> 
-or <tt>STATIC_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
+or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
 
 @latexonly
 \appendix

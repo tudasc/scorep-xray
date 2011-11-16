@@ -59,7 +59,7 @@ typedef struct SCOREP_OA_CallPathRegionDef_struct
     uint32_t adapter_type;
 }SCOREP_OA_CallPathRegionDef;
 
-typedef struct SCOREP_OA_StaticProfileMeasurement_struct
+typedef struct SCOREP_OA_FlatProfileMeasurement_struct
 {
 	uint32_t measurement_id;
 	uint64_t rank;
@@ -68,7 +68,7 @@ typedef struct SCOREP_OA_StaticProfileMeasurement_struct
 	uint64_t samples;
 	uint32_t metric_id;
 	uint64_t int_val;
-}SCOREP_OA_StaticProfileMeasurement;
+}SCOREP_OA_FlatProfileMeasurement;
 
 int RegServ::open( int port )
 {
@@ -219,10 +219,10 @@ int RegServ::execute_test(const char* scenario_file)
 					exit(1);
 				}
 
-				/*printf("Periscope Emulator: Expecting Merged Region Definitions from process %i, size: %d entries of size %lu\n",
+				printf("Periscope Emulator: Expecting Merged Region Definitions from process %i, size: %" PRId32 " entries of size %" PRIu32 "\n",
 						it->second->pid,
 						number,
-						sizeof(SCOREP_OA_CallPathRegionDef));*/
+						sizeof(SCOREP_OA_CallPathRegionDef));
 
 				if (number > 0)
 				{
@@ -243,9 +243,9 @@ int RegServ::execute_test(const char* scenario_file)
 						fprintf(stderr,"Periscope Emulator: Couldn't receive measurements buffer\n");
 						exit(1);
 					}
-					printf("Periscope Emulator: Got Static Regions Definitions from process %i:\n", it->second->pid);
+					printf("Periscope Emulator: Got Regions Definitions from process %i:\n", it->second->pid);
 					int i;
-					/*for ( i = 0; i < number; i++ )
+					for ( i = 0; i < number; i++ )
 					{
 						printf("record %d: \t|region_id=%" PRIu32 " \t| name=%s \t| file=%s \t| rfl=%" PRIu32 " \t| rel=%" PRIu32 " \t| adapter_type=%" PRIu32 "\t|\n",
 												i,
@@ -256,7 +256,7 @@ int RegServ::execute_test(const char* scenario_file)
 												recv_buffer[ i ].rel,
 												recv_buffer[ i ].adapter_type
 												);
-					}*/
+					}
 					free(recv_buffer);
 
 				}
@@ -280,16 +280,16 @@ int RegServ::execute_test(const char* scenario_file)
 					exit(1);
 				}
 
-				/*printf("Periscope Emulator: Expecting Static Profile from process %i, size: %d entries of size %d\n",
+				printf("Periscope Emulator: Expecting Flat Profile from process %i, size: %" PRId32 " entries of size %" PRIu32 "\n",
 						it->second->pid,
 						number,
-						sizeof(SCOREP_OA_StaticProfileMeasurement));*/
+						sizeof(SCOREP_OA_FlatProfileMeasurement));
 
 				if (number > 0)
 				{
 
-					SCOREP_OA_StaticProfileMeasurement* recv_buffer = (SCOREP_OA_StaticProfileMeasurement *)
-															calloc( number, sizeof(SCOREP_OA_StaticProfileMeasurement) );
+					SCOREP_OA_FlatProfileMeasurement* recv_buffer = (SCOREP_OA_FlatProfileMeasurement *)
+															calloc( number, sizeof(SCOREP_OA_FlatProfileMeasurement) );
 
 					if (!recv_buffer)
 					{
@@ -298,17 +298,17 @@ int RegServ::execute_test(const char* scenario_file)
 					}
 					nr=scorep_oa_sockets_blockread( it->second->test_comm_sock,
 													(char*)(recv_buffer),
-													number*sizeof(SCOREP_OA_StaticProfileMeasurement));
+													number*sizeof(SCOREP_OA_FlatProfileMeasurement));
 
-					if(nr!=number*sizeof(SCOREP_OA_StaticProfileMeasurement))
+					if(nr!=number*sizeof(SCOREP_OA_FlatProfileMeasurement))
 					{
 						fprintf(stderr,"Periscope Emulator: Couldn't receive measurements buffer\n");
 						exit(1);
 					}
 
-					printf("Periscope Emulator: Got Static Profile from process %i:\n", it->second->pid);
+					printf("Periscope Emulator: Got Flat Profile from process %i:\n", it->second->pid);
 					int i;
-					/*for ( i = 0; i < number; i++ )
+					for ( i = 0; i < number; i++ )
 					{
 						printf("record %d: \t|meas_id=%" PRIu32 " \t| rank=%" PRIu64 " \t| thread=%" PRIu32 " \t| region_id=%" PRIu32 " \t| samples=%" PRIu64 " \t| counter=%" PRIu32 "\t| int_val=%" PRIu64 " \t|\n",
 												i,
@@ -320,7 +320,7 @@ int RegServ::execute_test(const char* scenario_file)
 												recv_buffer[ i ].metric_id,
 												recv_buffer[ i ].int_val
 												);
-					}*/
+					}
 
 					free(recv_buffer);
 				}

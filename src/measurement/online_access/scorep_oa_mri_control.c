@@ -191,14 +191,14 @@ scorep_oa_mri_return_summary_data
     scorep_oa_connection_send_data( connection, region_defs, region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
 
     /** Get number of static profile records*/
-    int                                 static_profile_size = ( int )SCOREP_OAConsumer_GetDataSize( STATIC_PROFILE );
+    int                               static_profile_size = ( int )SCOREP_OAConsumer_GetDataSize( FLAT_PROFILE );
     /** Get static profile buffer*/
-    SCOREP_OA_StaticProfileMeasurement* static_profile = ( SCOREP_OA_StaticProfileMeasurement* )SCOREP_OAConsumer_GetData(
-        STATIC_PROFILE );
+    SCOREP_OA_FlatProfileMeasurement* static_profile = ( SCOREP_OA_FlatProfileMeasurement* )SCOREP_OAConsumer_GetData(
+        FLAT_PROFILE );
     /** Send static profile to the agent*/
-    //printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
-    scorep_oa_connection_send_string( connection, "STATIC_PROFILE\n" );
-    scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_StaticProfileMeasurement ) );
+    //printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
+    scorep_oa_connection_send_string( connection, "FLAT_PROFILE\n" );
+    scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
 
 
     /** Dissmiss the data*/
