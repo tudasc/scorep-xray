@@ -255,7 +255,7 @@ initialize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
         SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( locationData );
         SCOREP_ASSERT( metric_data != NULL );
 
-        /* Allocate memeory for array of event sets in thread local storage */
+        /* Allocate memory for array of event sets in thread local storage */
         metric_data->event_set = malloc( SCOREP_NUMBER_OF_METRIC_SOURCES * sizeof( SCOREP_Metric_EventSet* ) );
         assert( metric_data->event_set );
 
