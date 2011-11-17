@@ -157,7 +157,7 @@ SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
         NULL,
         ",",
         "Separator of resource usage metric names.",
-        "Character that separates resource ussage metric names in RUSAGE.\n"
+        "Character that separates resource usage metric names in RUSAGE.\n"
     },
     SCOREP_CONFIG_TERMINATOR
 };

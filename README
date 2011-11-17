@@ -181,7 +181,7 @@ SCOREP_METRIC_RUSAGE - Resource ussage metric names
     Default: ""
 
 SCOREP_METRIC_RUSAGE_SEP - Separator of resource usage metric names
-    Character that separates resource ussage metric names in RUSAGE.
+    Character that separates resource usage metric names in RUSAGE.
     Type:    String
     Default: ","
 
