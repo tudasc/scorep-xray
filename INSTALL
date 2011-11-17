@@ -1,12 +1,12 @@
 For generic installation instructions see below.
 
-Configuration of scorep
-***********************
+Configuration of Score-P
+************************
 
 See ./configure --help=recursive for all options. There are duplicates
 though.
 
-Report bugs to <scorep-bugs@groups.tu-dresden.de>.
+Please report bugs to <scorep-bugs@groups.tu-dresden.de>.
 
 
 Installation Instructions
