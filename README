@@ -1,31 +1,21 @@
-Run your application with Score-P
----------------------------------
+Score-P
+-------
+The Score-P (Scalable Performance Measurement Infrastructure for
+Parallel Codes) measurement infrastructure is a highly scalable and
+easy-to-use tool suite for profiling, event trace recording, and
+online analysis of HPC applications.
 
-To run your application with Score-P just insert 'scorep' before
-your actual compiler command, e.g. in your make file:
-CC = scorep mpicc
+To build Score-P you usually just need to do 
 
-After compiling run your binary as usual.
+  ./configure
+  make
+  make install
 
-You can have a look on the trace file with the otf2_print tool:
-otf2_print --anchor-file=scorep-***/traces.otf2
+Please have a look at INSTALL for further configure and build options.
 
+After make install you will find html and pdf documentation as well as
+usage examples under $(prefix)/share/scorep/doc.
 
-Useful Environment Variables:
------------------------------
+Have fun!
 
-SCOREP_ENABLE_PROFILING:
- - enable profiling
-   (default: false)
-
-SCOREP_ENABLE_TRACING:
- - enable tracing
-   (default: true)
-
-SCOREP_TOTAL_MEMORY:
- - total memory in bytes for the measurement system, excluding trace memory
-   (default: 1200k)
-
-SCOREP_PAGE_SIZE:
- - SCOREP_TOTAL_MEMORY will be split up into pages of size SCOREP_PAGE_SIZE.
-   (default: 8k)
+Please report bugs to <scorep-bugs@groups.tu-dresden.de>.
