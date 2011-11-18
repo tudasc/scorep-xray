@@ -651,6 +651,288 @@ the data back to the remote tool. The flat profile is sent in two parts, where t
 definition data and the second part carries profile measurements. Each part starts with the key word <tt>MERGED_REGION_DEFINITIONS</tt> 
 or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
 
+@section list_of_configure_variables List of Configure Variables
+
+<dl>
+ <dt><tt>SCOREP_ENABLE_PROFILING</tt></dt>
+ <dd>Enable profiling<br>
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>True</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_ENABLE_TRACING</tt></dt>
+ <dd>Enable tracing<br>
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>True</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_VERBOSE</tt></dt>
+ <dd>Be verbose<br>
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>False</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_TOTAL_MEMORY</tt></dt>
+ <dd>Total memory in bytes for the measurement system excluding trace memory<br>
+  <dl>
+     <dt>Type:</dt><dd>Number with size suffixes.</dd>
+     <dt>Default:</dt><dd>1200k</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_PAGE_SIZE</tt></dt>
+ <dd>TOTAL_MEMORY will be split up into pages of size PAGE_SIZE<br>
+  <dl>
+     <dt>Type:</dt><dd>Number with size suffixes.</dd>
+     <dt>Default:</dt><dd>8k</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_COMPRESS_TRACES</tt></dt>
+ <dd>Whether or not to compress traces with libz<br>
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>False</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_EXPERIMENT_DIRECTORY</tt></dt>
+ <dd>Name of the experiment directory<br>
+     When no experiment name is given (the default) Score-P names the
+     experiment directory `scorep-measurement-tmp' and renames this
+     after a successful measurement to a generated name based on the
+     current time.
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>""</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY</tt></dt>
+ <dd>Overwrite an existing experiment directory<br>
+     If you specified a specific experiment directory name, but this name
+     is already given, you can force overwriting it with this flag.
+     The previous experiment directory will be renamed.
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>True</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_EXECUTABLE</tt></dt>
+ <dd>Executable of the application<br>
+     File name, preferrrably with full path, of the application's executable.
+     It is used for evaluating the symbol table of the application, which is
+     required by some compiler adapters.
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>""</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_HIERARCHICAL_UNIFY</tt></dt>
+ <dd>Use the hierarchical MPI unify algorithm<br>
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>True</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_MAX_COMMUNICATORS</tt></dt>
+ <dd>Determines the number of concurrently used communicators per process<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>50</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_MAX_WINDOWS</tt></dt>
+ <dd>Determines the number of concurrently used windows for MPI one-sieded communication per process<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>50</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_MAX_ACCESS_EPOCHS</tt></dt>
+ <dd>Maximum amount of concurrently active access or exposure epochs per process<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>50</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_MAX_GROUPS</tt></dt>
+ <dd>Maximum number of concurrently used MPI groups per process<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>50</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_ENABLE_GROUPS</tt></dt>
+ <dd>The names of the function groups which are measured<br>
+     The names of the function groups which are measured.
+     Other functions are not measured.<br>
+     Possible groups are:
+     <dl>
+      <dt>All:</dt><dd>All MPI functions</dd>
+      <dt>CG:</dt><dd>Communicator and group management</dd>
+      <dt>COLL:</dt><dd>Collective functions</dd>
+      <dt>DEFAULT:</dt><dd>Default configuration</dd>
+      <dt>ENV:</dt><dd>Environmental management</dd>
+      <dt>ERR:</dt><dd>MPI Error handling</dd>
+      <dt>EXT:</dt><dd>External interface functions</dd>
+      <dt>IO:</dt><dd>MPI file I/O</dd>
+      <dt>MISC:</dt><dd>Miscellaneous</dd>
+      <dt>PERF:</dt><dd>PControl</dd>
+      <dt>P2P:</dt><dd>Peer-to-peer communication</dd>
+      <dt>RMA:</dt><dd>One sided communication</dd>
+      <dt>SPAWN:</dt><dd>Process management</dd>
+      <dt>TOPO:</dt><dd>Topology</dd>
+      <dt>TYPE:</dt><dd>MPI datatype functions</dd>
+      <dt>XNONBLOCK:</dt><dd>Extended non-blocking events</dd>
+      <dt>XREQTEST:</dt><dd>Test events for uncompleted requests</dd>
+     </dl>
+  <dl>
+     <dt>Type:</dt><dd>Set</dd>
+     <dt>Default:</dt><dd>DEFAULT</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_MPI_ONLINE_ANALYSIS</tt></dt>
+ <dd>Enable online mpi wait states analysis<br>
+  <dl>
+     <dt>Type:</dt><dd>Boolean</dd>
+     <dt>Default:</dt><dd>False</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_SELECTIVE_CONFIG_FILE</tt></dt>
+ <dd>A file name which configures selective tracing<br>
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>""</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_FILTER_FILE</tt></dt>
+ <dd>A file name which contain the filter rules<br>
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>""</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_ONLINEACCESS_REG_PORT</tt></dt>
+ <dd>Online Access registry service port<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>50100</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_ONLINEACCESS_REG_HOST</tt></dt>
+ <dd>Online Access registry service hostname<br>
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>"localhost"</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_ONLINEACCESS_BASE_PORT</tt></dt>
+ <dd>Base port for Online Access server<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>50010</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_ONLINEACCESS_APPL_NAME</tt></dt>
+ <dd>Application name to be registered<br>
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>"appl"</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt></dt>
+ <dd>Maximum depth of the calltree<br>
+  <dl>
+     <dt>Type:</dt><dd>Number</dd>
+     <dt>Default:</dt><dd>30</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_PROFILING_BASE_NAME</tt></dt>
+ <dd>Base for construction of the profile filename<br>
+     String which is used as based to create the filenames for the profile
+     files.
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>"profile"</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_PROFILING_FORMAT</tt></dt>
+ <dd>Profile output format<br>
+     The following formats are supported:
+     <dl>
+      <dt>NONE:</dt><dd>No profile output. This does not disable profile recording.</dd>
+      <dt>TAU_SNAPSHOT:</dt><dd>Tau snapshot format.</dd>
+      <dt>CUBE4:</dt><dd>Cube4 format.</dd>
+      <dt>DEFAULT:</dt><dd>Default format. If Cube4 is supported, Cube4 is the default else the Tau snapshot format is default.</dd>
+     </dl>
+  <dl>
+     <dt>Type:</dt><dd>Set</dd>
+     <dt>Default:</dt><dd>DEFAULT</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_METRIC_PAPI</tt></dt>
+ <dd>PAPI metric names<br>
+     List of requested metric names that will be collected during program run.
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>""</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_METRIC_PAPI_SEP</tt></dt>
+ <dd>Separator of PAPI metric names<br>
+     Character that separates metric names in PAPI.
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>","</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_METRIC_RUSAGE</tt></dt>
+ <dd>Resource usage metric names<br>
+     List of requested resource usage metric names that will be collected during
+     program run
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>""</dd>
+  </dl>
+ </dd>
+
+ <dt><tt>SCOREP_METRIC_RUSAGE_SEP</tt></dt>
+ <dd>Separator of resource usage metric names<br>
+     Character that separates resource usage metric names in RUSAGE.
+  <dl>
+     <dt>Type:</dt><dd>String</dd>
+     <dt>Default:</dt><dd>","</dd>
+  </dl>
+ </dd>
+</dl>
+
 @latexonly
 \appendix
 @endlatexonly
