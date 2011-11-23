@@ -216,9 +216,18 @@ scorep_metric_mode_to_otf_metric_mode( SCOREP_MetricMode mode,
                ? OTF2_GLOB_METRIC_ ## OTF2 \
                : OTF2_METRIC_ ## OTF2
 
-        case_return( ACCUMULATED, ACCUMULATED );
-        case_return( ABSOLUTE,    ABSOLUTE );
-        case_return( RELATIVE,    RELATIVE );
+        case_return( ACCUMULATED_START, ACCUMULATED_START );
+        case_return( ACCUMULATED_POINT, ACCUMULATED_POINT );
+        case_return( ACCUMULATED_LAST,  ACCUMULATED_LAST );
+        case_return( ACCUMULATED_NEXT,  ACCUMULATED_NEXT );
+
+        case_return( ABSOLUTE_POINT, ABSOLUTE_POINT );
+        case_return( ABSOLUTE_LAST,  ABSOLUTE_LAST );
+        case_return( ABSOLUTE_NEXT,  ABSOLUTE_NEXT );
+
+        case_return( RELATIVE_POINT, RELATIVE_POINT );
+        case_return( RELATIVE_LAST,  RELATIVE_LAST );
+        case_return( RELATIVE_NEXT,  RELATIVE_NEXT );
 
 #undef case_return
         default:

@@ -233,15 +233,31 @@ typedef enum SCOREP_MetricValueType
  */
 typedef enum SCOREP_MetricMode
 {
-    /** Accumulated metric. */
-    SCOREP_METRIC_MODE_ACCUMULATED = 0,
-    /** Absolute metric. */
-    SCOREP_METRIC_MODE_ABSOLUTE    = 1,
-    /** Relative metric. */
-    SCOREP_METRIC_MODE_RELATIVE    = 2,
+    /** Accumulated metric, 'START' timing. */
+    SCOREP_METRIC_MODE_ACCUMULATED_START = 0,
+    /** Accumulated metric, 'POINT' timing. */
+    SCOREP_METRIC_MODE_ACCUMULATED_POINT = 1,
+    /** Accumulated metric, 'LAST' timing. */
+    SCOREP_METRIC_MODE_ACCUMULATED_LAST  = 2,
+    /** Accumulated metric, 'NEXT' timing. */
+    SCOREP_METRIC_MODE_ACCUMULATED_NEXT  = 3,
+
+    /** Absolute metric, 'POINT' timing. */
+    SCOREP_METRIC_MODE_ABSOLUTE_POINT    = 4,
+    /** Absolute metric, 'LAST' timing. */
+    SCOREP_METRIC_MODE_ABSOLUTE_LAST     = 5,
+    /** Absolute metric, 'NEXT' timing. */
+    SCOREP_METRIC_MODE_ABSOLUTE_NEXT     = 6,
+
+    /** Relative metric, 'POINT' timing. */
+    SCOREP_METRIC_MODE_RELATIVE_POINT    = 7,
+    /** Relative metric, 'LAST' timing. */
+    SCOREP_METRIC_MODE_RELATIVE_LAST     = 8,
+    /** Relative metric, 'NEXT' timing. */
+    SCOREP_METRIC_MODE_RELATIVE_NEXT     = 9,
 
     SCOREP_INVALID_METRIC_MODE /**< For internal use only. */
-} SCOREP_MetricMode;           // maps to OTF2_MetricMode
+} SCOREP_MetricMode;           // see also OTF2_GlobMetricMode
 
 /**
  * Types to be used in defining metric base (SCOREP_DefineMetric()).

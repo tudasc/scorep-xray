@@ -509,11 +509,11 @@ scorep_metric_papi_add( char* name,
         metricv[ number_of_metrics ]->description[ 0 ] = '\0';
         if ( isAbsolute )
         {
-            metricv[ number_of_metrics ]->mode = SCOREP_METRIC_MODE_ABSOLUTE;
+            metricv[ number_of_metrics ]->mode = SCOREP_METRIC_MODE_ABSOLUTE_NEXT;
         }
         else
         {
-            metricv[ number_of_metrics ]->mode = SCOREP_METRIC_MODE_ACCUMULATED;
+            metricv[ number_of_metrics ]->mode = SCOREP_METRIC_MODE_ACCUMULATED_START;
         }
         metricv[ number_of_metrics ]->papi_code = code;
         number_of_metrics++;

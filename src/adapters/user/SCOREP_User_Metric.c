@@ -98,7 +98,7 @@ SCOREP_User_InitMetric
             = SCOREP_DefineMetric( name,
                                    "",
                                    SCOREP_METRIC_SOURCE_TYPE_USER,
-                                   SCOREP_METRIC_MODE_ABSOLUTE,
+                                   SCOREP_METRIC_MODE_ABSOLUTE_POINT,
                                    value_type,
                                    SCOREP_METRIC_BASE_DECIMAL,
                                    0,

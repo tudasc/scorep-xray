@@ -185,22 +185,22 @@ SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
  */
 static scorep_rusage_metric scorep_rusage_metrics[ SCOREP_RUSAGE_CNTR_MAXNUM ] =
 {
-    { RU_UTIME,    "ru_utime",    "s",     "user CPU time used",               SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, -6    },
-    { RU_STIME,    "ru_stime",    "s",     "system CPU time used",             SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, -6    },
-    { RU_MAXRSS,   "ru_maxrss",   "Bytes", "maximum resident set size",        SCOREP_METRIC_MODE_ABSOLUTE,    SCOREP_METRIC_BASE_BINARY,  10    },
-    { RU_IXRSS,    "ru_ixrss",    "Bytes", "integral shared memory size",      SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_BINARY,  10    },
-    { RU_IDRSS,    "ru_idrss",    "Bytes", "integral unshared data size",      SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_BINARY,  10    },
-    { RU_ISRSS,    "ru_isrss",    "Bytes", "integral unshared stack size",     SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_BINARY,  10    },
-    { RU_MINFLT,   "ru_minflt",   "#",     "page reclaims (soft page faults)", SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_MAJFLT,   "ru_majflt",   "#",     "page faults (hard page faults)",   SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_NSWAP,    "ru_nswap",    "#",     "number of swaps",                  SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_INBLOCK,  "ru_inblock",  "#",     "block input operations",           SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_OUBLOCK,  "ru_oublock",  "#",     "block output operations",          SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_MSGSND,   "ru_msgsnd",   "#",     "IPC messages sent",                SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_MSGRCV,   "ru_msgrcv",   "#",     "IPC messages received",            SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_NSIGNALS, "ru_nsignals", "#",     "signals received",                 SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_NVCSW,    "ru_nvcsw",    "#",     "voluntary context switches",       SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     },
-    { RU_NIVCSW,   "ru_nivcsw",   "#",     "involuntary context switches",     SCOREP_METRIC_MODE_ACCUMULATED, SCOREP_METRIC_BASE_DECIMAL, 0     }
+    { RU_UTIME,    "ru_utime",    "s",     "user CPU time used",               SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, -6    },
+    { RU_STIME,    "ru_stime",    "s",     "system CPU time used",             SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, -6    },
+    { RU_MAXRSS,   "ru_maxrss",   "Bytes", "maximum resident set size",        SCOREP_METRIC_MODE_ABSOLUTE_NEXT,       SCOREP_METRIC_BASE_BINARY,  10    },
+    { RU_IXRSS,    "ru_ixrss",    "Bytes", "integral shared memory size",      SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_BINARY,  10    },
+    { RU_IDRSS,    "ru_idrss",    "Bytes", "integral unshared data size",      SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_BINARY,  10    },
+    { RU_ISRSS,    "ru_isrss",    "Bytes", "integral unshared stack size",     SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_BINARY,  10    },
+    { RU_MINFLT,   "ru_minflt",   "#",     "page reclaims (soft page faults)", SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_MAJFLT,   "ru_majflt",   "#",     "page faults (hard page faults)",   SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_NSWAP,    "ru_nswap",    "#",     "number of swaps",                  SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_INBLOCK,  "ru_inblock",  "#",     "block input operations",           SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_OUBLOCK,  "ru_oublock",  "#",     "block output operations",          SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_MSGSND,   "ru_msgsnd",   "#",     "IPC messages sent",                SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_MSGRCV,   "ru_msgrcv",   "#",     "IPC messages received",            SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_NSIGNALS, "ru_nsignals", "#",     "signals received",                 SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_NVCSW,    "ru_nvcsw",    "#",     "voluntary context switches",       SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     },
+    { RU_NIVCSW,   "ru_nivcsw",   "#",     "involuntary context switches",     SCOREP_METRIC_MODE_ACCUMULATED_START,   SCOREP_METRIC_BASE_DECIMAL, 0     }
 };
 
 /* *INDENT-ON* */
