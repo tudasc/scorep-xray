@@ -741,6 +741,8 @@ SCOREP_OmpReleaseLock( uint32_t lockId/*,
 
 /**
  * Process an OpenMP TaskCreateBegin event in the measurement system.
+ * @param regionHandle Region handle of the task region
+ * @param taskId       The ID of the created task
  */
 void
 SCOREP_OmpTaskCreateBegin( SCOREP_RegionHandle regionHandle,
@@ -774,6 +776,8 @@ SCOREP_OmpTaskCreateBegin( SCOREP_RegionHandle regionHandle,
 
 /**
  * Process an OpenMP TaskCreateEnd event in the measurement system.
+ * @param regionHandle Region handle of the task region
+ * @param taskId       The ID of the creating task
  */
 void
 SCOREP_OmpTaskCreateEnd( SCOREP_RegionHandle regionHandle,
@@ -807,6 +811,8 @@ SCOREP_OmpTaskCreateEnd( SCOREP_RegionHandle regionHandle,
 
 /**
  * Process an OpenMP TaskBegin event in the measurement system.
+ * @param regionHandle Region handle of the task region
+ * @param taskId       The ID of the starting task
  */
 void
 SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
@@ -839,6 +845,8 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
 
 /**
  * Process an OpenMP TaskResume event in the measurement system.
+ * @param regionHandle Region handle of the task region
+ * @param taskId       The ID of the resumeing task
  */
 void
 SCOREP_OmpTaskResume( SCOREP_RegionHandle regionHandle,
