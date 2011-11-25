@@ -51,7 +51,6 @@
 #include <sys/types.h>
 
 
-
 /** Thread local data related to metrics */
 struct SCOREP_Metric_LocationData
 {
