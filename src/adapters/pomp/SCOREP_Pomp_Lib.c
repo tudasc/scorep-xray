@@ -23,6 +23,7 @@
  * @brief Implementation of the POMP2 OpenMP adapter functions.
  */
 
+
 #include <config.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
