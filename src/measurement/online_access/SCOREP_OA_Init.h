@@ -30,7 +30,9 @@
 
 #include "scorep_utility/SCOREP_Utils.h"
 
+extern bool scorep_oa_is_requested;
 
+#define SCOREP_OA_IS_REQUESTED            ( scorep_oa_is_requested )
 
 int8_t
 SCOREP_OA_Init

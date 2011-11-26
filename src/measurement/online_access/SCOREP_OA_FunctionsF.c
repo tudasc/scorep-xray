@@ -23,11 +23,12 @@
  */
 
 #include <config.h>
-
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Fortran_Wrapper.h>
-#include "SCOREP_OA_Init.h"
 
+#include "SCOREP_OA_Init.h"
 #include "scorep_oa_phase.h"
+#include "scorep_status.h"
 
 #define SCOREP_F_OA_PhaseBegin_U SCOREP_F_OA_PHASEBEGIN
 #define SCOREP_F_OA_PhaseEnd_U SCOREP_F_OA_PHASEEND
@@ -65,9 +66,19 @@ FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
                                  int                          nameLen,
                                  int                          fileNameLen )
 {
-    if ( !SCOREP_OA_Init() )
+    if ( !SCOREP_IsInitialized() )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {
         return;
+    }
+
+    if ( !SCOREP_OA_Initialized() )
+    {
+        SCOREP_OA_Init();
     }
 
     FSUB( SCOREP_F_Init )( handle, name_f, type, fileName_f,
@@ -79,6 +90,11 @@ FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
 void
 FSUB( SCOREP_F_OA_PhaseEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
+    if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
+    {
+        return;
+    }
+
     if ( !SCOREP_OA_Initialized() )
     {
         return;

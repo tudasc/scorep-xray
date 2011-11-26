@@ -23,6 +23,7 @@
  */
 
 #include <config.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include "scorep/SCOREP_User_Functions.h"
 #include "SCOREP_OA_Functions.h"
@@ -47,9 +48,19 @@ SCOREP_OA_PhaseBegin
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
-    if ( !SCOREP_OA_Init() )
+    if ( !SCOREP_IsInitialized() )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {
         return;
+    }
+
+    if ( !SCOREP_OA_Initialized() )
+    {
+        SCOREP_OA_Init();
     }
 
     SCOREP_User_RegionInit( \
@@ -69,6 +80,11 @@ SCOREP_OA_PhaseEnd
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+
+    if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
+    {
+        return;
+    }
 
     if ( !SCOREP_OA_Initialized() )
     {

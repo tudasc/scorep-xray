@@ -39,6 +39,7 @@
 #include <stdio.h>
 
 static int8_t scorep_oa_is_initialized = 0;
+bool          scorep_oa_is_requested   = false;
 
 
 /**
@@ -52,6 +53,13 @@ static SCOREP_ConfigVariable scorep_oa_configs[] = {
       "50100",
       "Online Access registry service port",
       "Online Access registry service port" },
+    { "ENABLE",
+      SCOREP_CONFIG_TYPE_BOOL,
+      &scorep_oa_is_requested,
+      NULL,
+      "true",
+      "enable onlne access interface",
+      "enable onlne access interface" },
     { "REG_HOST",
       SCOREP_CONFIG_TYPE_STRING,
       &silc_oa_registry_host,
@@ -88,24 +96,18 @@ SCOREP_OA_Init
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
-    if ( !SCOREP_IsOAEnabled() )
-    {
-        return 0;
-    }
-    if ( !SCOREP_IsInitialized() )
-    {
-        SCOREP_InitMeasurement();
-    }
+
     //printf("ENV variables: %ld %ld %s\n",silc_oa_port,silc_oa_registry_port,silc_oa_registry_host);
-    if ( scorep_oa_is_initialized == 0 )
+    if ( scorep_oa_is_initialized == 0 && SCOREP_OA_IS_REQUESTED )
     {
         /* Set the intialization flag to indicate that the adapter is initialized */
         scorep_oa_is_initialized = 1;
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION, 0, 0 );
         connection = scorep_oa_connection_connect();
         scorep_oa_mri_receive_and_process_requests( connection );
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 int8_t
