@@ -41,7 +41,7 @@ print_short_usage()
 {
     std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
               << toolname << " <options> <orginal command>\n\n"
-              << "To print out more detailed help information on available parameters "
+              << "To print out more detailed help information on available parameters, "
               << "type\n"
               << toolname << " --help\n"
               << std::endl;

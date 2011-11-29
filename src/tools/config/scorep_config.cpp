@@ -44,7 +44,7 @@
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
-    "To print out more detailed help information on available parameters type\n" \
+    "To print out more detailed help information on available parameters, type\n" \
     "scorep-config --help\n"
 
 
