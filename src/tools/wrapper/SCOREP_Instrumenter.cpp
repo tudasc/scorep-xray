@@ -463,15 +463,20 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
         print_help();
         exit( EXIT_SUCCESS );
     }
-    /* Configuration file */
+    /* Misc parameters */
+    else if ( arg == "--version" )
+    {
+        printf( PACKAGE_STRING "\n" );
+        exit( EXIT_SUCCESS );
+    }
     else if ( CheckForCommonArg( arg ) )
     {
         return scorep_parse_mode_param;
     }
     else
     {
-        std::cerr << "ERROR: Unknown parameter: " << arg << std::endl;
-        abort();
+        std::cerr << "ERROR: Unknown parameter: " << arg << ". Abort." << std::endl;
+        exit( EXIT_FAILURE );
     }
 
     /* Never executed but removes a warning with xl-compilers. */

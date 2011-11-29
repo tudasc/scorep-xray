@@ -42,18 +42,25 @@
 #define ACTION_CXX    5
 #define ACTION_FC     6
 
+#define SHORT_HELP \
+    "\nUsage:\nscorep-config <command> [<options>]\n\n" \
+    "To print out more detailed help information on available parameters type\n" \
+    "scorep-config --help\n"
+
+
 #define HELPTEXT \
     "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
-    "   --cflags prints additional compiler flags. They already contain the\n" \
-    "            include flags.\n" \
-    "   --inc    prints the include flags. They are already contained in the\n" \
-    "            output of the --cflags command\n" \
-    "   --libs   prints the required linker flags\n" \
-    "   --cc     prints the C compiler name\n" \
-    "   --cxx    prints the C++ compiler name\n" \
-    "   --fc     prints the Fortran compiler name\n" \
-    "   --help   prints this usage information\n\n" \
+    "   --cflags  prints additional compiler flags. They already contain the\n" \
+    "             include flags.\n" \
+    "   --inc     prints the include flags. They are already contained in the\n" \
+    "             output of the --cflags command\n" \
+    "   --libs    prints the required linker flags\n" \
+    "   --cc      prints the C compiler name\n" \
+    "   --cxx     prints the C++ compiler name\n" \
+    "   --fc      prints the Fortran compiler name\n" \
+    "   --help    prints this usage information\n" \
+    "   --version prints the version number of the scorep package\n\n" \
     "  Options:\n" \
     "   --seq|--omp|--mpi|--hyb\n" \
     "            specifys the mode: seqential, OpenMP, MPI, or hybrid (MPI + OpenMP)\n" \
@@ -62,13 +69,11 @@
     "            Allows to specify a configuration file which overrides the data\n" \
     "            specified at build time of the tool.\n\n" \
     "   --user|--nouser\n" \
-    "            Specifies whether manual user instrumentation is used. Takes effect\n" \
-    "            only for the cflags. The default ist that user instrumentation is\n" \
-    "            disabled\n\n" \
+    "            Specifies whether manual user instrumentation is used. On default\n" \
+    "            user instrumentation is disabled.\n\n" \
     "   --compiler|--nocompiler\n" \
-    "            Specifies whether compiler instrumentation is used. Takes effect\n" \
-    "            only for the cflags. The default is that compiler instrumentation in\n" \
-    "            enabled.\n\n" \
+    "            Specifies whether compiler instrumentation is used. On default\n" \
+    "            compiler instrumentation is enabled.\n\n" \
     "   --fortran   Specifies that the required flags are for the Fortran compiler.\n\n"
 
 int
@@ -99,6 +104,12 @@ main( int    argc,
         {
             std::cout << HELPTEXT << std::endl;
             return EXIT_SUCCESS;
+        }
+        else if ( strcmp( argv[ i ], "--version" ) == 0 )
+        {
+            std::cout << PACKAGE_VERSION;
+            std::cout.flush();
+            exit( EXIT_SUCCESS );
         }
         else if ( strcmp( argv[ i ], "--seq" ) == 0 )
         {
@@ -164,7 +175,7 @@ main( int    argc,
         else
         {
             std::cerr << "\nUnknown option " << argv[ i ] << ". Abort.\n" << std::endl;
-            return EXIT_FAILURE;
+            exit( EXIT_FAILURE );
         }
     }
 
@@ -230,7 +241,7 @@ main( int    argc,
                 break;
 
             default:
-                std::cout << HELPTEXT << std::endl;
+                std::cout << SHORT_HELP << std::endl;
                 break;
         }
     }
@@ -307,7 +318,7 @@ main( int    argc,
                 break;
 
             default:
-                std::cout << HELPTEXT << std::endl;
+                std::cout << SHORT_HELP << std::endl;
                 break;
         }
     }
