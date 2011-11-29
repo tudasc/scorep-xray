@@ -503,10 +503,8 @@ receive_and_unify_remote_definitions( int                           rank,
             ( *moved_page_fills )[ page ] );
         if ( !page_memory )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                          "You may increase the total memory by setting the environment variable "
-                          "SCOREP_TOTAL_MEMORY." );
-            exit( EXIT_FAILURE );
+            // aborts
+            SCOREP_Memory_HandleOutOfMemory();
         }
 
         SCOREP_Mpi_Recv( page_memory,
