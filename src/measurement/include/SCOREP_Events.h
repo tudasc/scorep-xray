@@ -65,7 +65,7 @@
 /*@{*/
 
 
-// scorep_meets_tau_begin
+
 /**
  * Process a region enter event in the measurement system.
  *
@@ -77,10 +77,10 @@ SCOREP_EnterRegion
     SCOREP_RegionHandle regionHandle
 );
 
-// scorep_meets_tau_end
 
 
-// scorep_meets_tau_begin
+
+
 /**
  * Process a region exit event in the measurement system.
  *
@@ -92,7 +92,7 @@ SCOREP_ExitRegion
     SCOREP_RegionHandle regionHandle
 );
 
-// scorep_meets_tau_end
+
 
 
 /**

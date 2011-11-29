@@ -81,9 +81,7 @@ if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform}])
 fi
 
-AC_CONFIG_FILES([
-	Makefile include/scorep/scorep_meets_tau_tmp.h 
-])
+AC_CONFIG_FILES([Makefile])
 
 
 AC_OUTPUT

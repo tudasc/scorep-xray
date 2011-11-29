@@ -59,21 +59,21 @@
 /*@{*/
 
 
-// scorep_meets_tau_begin
+
 /**
  * Type used in specifying line numbers.
  * @see SCOREP_DefineRegion()
  */
 typedef uint32_t SCOREP_LineNo;
-// scorep_meets_tau_end
 
-// scorep_meets_tau_begin
+
+
 /**
  * Symbolic constant representing an invalid or unknown line number.
  * @see SCOREP_DefineRegion()
  */
 #define SCOREP_INVALID_LINE_NO 0
-// scorep_meets_tau_end
+
 
 
 /**
@@ -176,7 +176,7 @@ typedef uint32_t SCOREP_LineNo;
 
 
 
-// scorep_meets_tau_begin
+
 /**
  * Types to be used in defining a region (SCOREP_DefineRegion()). In order to
  * track the origin of a region definition, the adapter needs to provide @e
@@ -193,7 +193,7 @@ typedef enum SCOREP_AdapterType
 
     SCOREP_INVALID_ADAPTER_TYPE /**< For internal use only. */
 } SCOREP_AdapterType;
-// scorep_meets_tau_end
+
 
 
 /**
@@ -367,7 +367,7 @@ typedef enum SCOREP_GroupType
 } SCOREP_GroupType;
 
 
-// scorep_meets_tau_begin
+
 /**
  * Types to be used in defining a region (SCOREP_DefineRegion()). These types
  * are currently not used inside the measurement system. This @e may change in
@@ -418,7 +418,7 @@ typedef enum SCOREP_RegionType
 
     SCOREP_INVALID_REGION_TYPE /**< For internal use only. */
 } SCOREP_RegionType;
-// scorep_meets_tau_end
+
 
 
 /**

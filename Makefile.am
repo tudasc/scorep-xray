@@ -22,7 +22,6 @@ include vendor/common/build-config/Makefile.inc.am
 ## control files. We recommend against using this feature.
 EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/src/config-custom.h                              \
-              $(srcdir)/tools/tau/scorep_meets_tau.awk                   \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in             \
               $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in
 
@@ -63,7 +62,7 @@ EXTRA_DIST += \
     $(srcdir)/vendor/tclap/XorHandler.h \
     $(srcdir)/vendor/tclap/ZshCompletionOutput.h
 
-install-data-local: doxygen-user-install install-scorep-meets-tau
+install-data-local: doxygen-user-install
 
 uninstall-local: doxygen-user-uninstall
 
@@ -71,8 +70,7 @@ dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/main.dox doxygen-user-gen
 
 clean-local: doxygen-user-clean
 
-CLEANFILES += $(builddir)/include/scorep/scorep_meets_tau.h \
-              doc/doxygen-user/main.dox
+CLEANFILES += doc/doxygen-user/main.dox
 
 .PHONY: doc/doxygen-user/main.dox
 
@@ -90,21 +88,6 @@ doc/doxygen-user/main.dox:
 	$(MKDIR_P) doc/doxygen-user
 	touch doc/doxygen-user/main.dox
 endif
-
-install-scorep-meets-tau:
-	cp -p $(builddir)/include/scorep/scorep_meets_tau_tmp.h $(builddir)/include/scorep/scorep_meets_tau.h
-	ordered_headers="SCOREP_DefinitionHandles.h SCOREP_Memory.h SCOREP_RuntimeManagement.h SCOREP_Thread_Types.h SCOREP_Types.h SCOREP_Subsystem.h SCOREP_Config.h SCOREP_Definitions.h SCOREP_Events.h"; \
-	for i in $$ordered_headers; do                                                                \
-	    awk -f $(srcdir)/tools/tau/scorep_meets_tau.awk $(srcdir)/src/measurement/include/$$i >>  \
-                   $(builddir)/include/scorep/scorep_meets_tau.h;                   \
-	done
-	echo "#ifdef __cplusplus"              >> ./include/scorep/scorep_meets_tau.h;
-	echo "} /* extern C */"                >> ./include/scorep/scorep_meets_tau.h;
-	echo "#endif"                          >> ./include/scorep/scorep_meets_tau.h;
-	echo ""                                >> ./include/scorep/scorep_meets_tau.h;
-	echo "#endif /* SCOREP_MEETS_TAU_H */" >> ./include/scorep/scorep_meets_tau.h;
-	$(MKDIR_P) $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel
-	$(INSTALL_DATA) $(builddir)/include/scorep/scorep_meets_tau.h $(DESTDIR)$(datadir)/@PACKAGE_NAME@/devel/scorep_meets_tau.h
 
 
 uninstall-local:

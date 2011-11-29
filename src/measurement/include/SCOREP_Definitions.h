@@ -85,7 +85,7 @@ SCOREP_DefineSourceFile
 );
 
 
-// scorep_meets_tau_begin
+
 /**
  * Associate a code region with a process unique file handle.
  *
@@ -140,7 +140,7 @@ SCOREP_DefineRegion
     SCOREP_RegionType       regionType
 );
 
-// scorep_meets_tau_end
+
 
 const char*
 SCOREP_String_Get( SCOREP_StringHandle handle );
