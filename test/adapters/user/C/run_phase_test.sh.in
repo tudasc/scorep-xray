@@ -34,7 +34,7 @@ rm -f config.h scorep_config.dat scorep_phase_test.pomp_init.c  scorep_phase_tes
 if [ ! -e scorep_phase_test ]; then
     exit 1
 fi
-./scorep_phase_test
+SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./scorep_phase_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp scorep_phase_test
     exit 1
