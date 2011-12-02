@@ -4,8 +4,8 @@
 
 check_PROGRAMS                       += jacobi_serial_c_metric_test
 jacobi_serial_c_metric_test_SOURCES   = $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.c  \
-									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.h  \
-									    $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/main.c
+                                        $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.h  \
+                                        $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/main.c
 jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
@@ -17,11 +17,11 @@ endif
 jacobi_serial_c_metric_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_serial.la
 
 EXTRA_DIST   += $(SRC_ROOT)test/services/metric/run_rusage_serial_metric_test.sh \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_definitions.out \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_events.out
+                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_definitions.out \
+                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_rusage_metric_events.out
 EXTRA_DIST   += $(SRC_ROOT)test/services/metric/run_papi_serial_metric_test.sh \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_definitions.out \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_events.out
+                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_definitions.out \
+                $(SRC_ROOT)test/services/metric/data/jacobi_c_serial_papi_metric_events.out
 
 if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE
@@ -46,12 +46,12 @@ libjacobi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)/src
 
 check_PROGRAMS                   += jacobi_omp_c_metric_test
 jacobi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.mod.c       \
-									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.c.opari.inc \
-									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.h           \
-									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.mod.c         \
-									$(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.c.opari.inc
+                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.c.opari.inc \
+                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.h           \
+                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.mod.c         \
+                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.c.opari.inc
 jacobi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR)/scorep @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
@@ -68,11 +68,11 @@ endif
 jacobi_omp_c_metric_test_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c_metric_test.la
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_openmp_metric_test.sh \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_events.out
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_events.out
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_openmp_metric_test.sh \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_definitions.out \
-				$(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_events.out
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_definitions.out \
+              $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_papi_metric_events.out
 
 if !SCOREP_COMPILER_SUN
 if HAVE_GETRUSAGE

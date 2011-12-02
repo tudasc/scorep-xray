@@ -34,9 +34,11 @@ PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 INC_DIR_OTF2 = $(INC_ROOT)vendor/otf2/include
 BUILD_INC_DIR_OTF2 = ../vendor/otf2/include
 LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
+
 INC_DIR_UTIL = $(INC_ROOT)vendor/otf2/vendor/utility/include
 LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
 
+INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
 
 ##  Where to find the Jenkins' hash headers.
 INC_DIR_VENDOR_HASH = $(srcdir)/../vendor/hash

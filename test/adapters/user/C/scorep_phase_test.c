@@ -24,7 +24,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <SCOREP_User.h>
+#include <scorep/SCOREP_User.h>
 
 int i = 0;
 

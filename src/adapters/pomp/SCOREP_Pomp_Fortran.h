@@ -26,7 +26,7 @@
  * @brief Provides defines for function name decoration for POMP2 Fortran wrappers.
  */
 
-#include <scorep/pomp2_lib.h>
+#include <opari2/pomp2_lib.h>
 
 #include "SCOREP_Fortran_Wrapper.h"
 

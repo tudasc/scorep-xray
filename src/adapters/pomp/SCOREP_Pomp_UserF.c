@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "scorep/pomp2_lib.h"
+#include <opari2/pomp2_lib.h>
 #include "SCOREP_Fortran_Wrapper.h"
 #include "SCOREP_Pomp_Variables.h"
 #include "SCOREP_Pomp_Fortran.h"

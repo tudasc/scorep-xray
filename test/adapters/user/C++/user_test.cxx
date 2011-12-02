@@ -24,7 +24,7 @@
 
 #include <config.h>
 #include <stdio.h>
-#include <SCOREP_User.h>
+#include <scorep/SCOREP_User.h>
 
 #ifdef _OPENMP
 #include <omp.h>

@@ -1,5 +1,5 @@
 #include <config.h>
-#include <pomp2_lib.h>
+#include <opari2/pomp2_lib.h>
 
 extern int64_t FORTRAN_MANGLED(pomp_tpd);
 #pragma omp threadprivate(FORTRAN_MANGLED(pomp_tpd))

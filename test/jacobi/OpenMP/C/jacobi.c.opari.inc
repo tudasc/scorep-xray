@@ -1,5 +1,5 @@
 #include <config.h>
-#include <pomp2_lib.h>
+#include <opari2/pomp2_lib.h>
 
 #include <stdint.h>
 extern int64_t __attribute__((aligned (16))) FORTRAN_MANGLED(pomp_tpd);

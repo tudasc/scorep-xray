@@ -28,7 +28,7 @@
 #include <config.h>
 
 #include <omp.h>
-#include <pomp2_lib.h>
+#include <opari2/pomp2_lib.h>
 #include <stdio.h>
 #include <inttypes.h>
 

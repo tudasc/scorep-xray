@@ -577,6 +577,11 @@ private:
     std::string opari_script;
 
     /**
+       Opari2 config tool
+     */
+    std::string opari_config;
+
+    /**
         Path to PDT binaries.
      */
     std::string pdt_bin_path;

@@ -99,6 +99,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     awk                            =  "`" OPARI_CONFIG " --awk_cmd`";
     opari                          = OPARI;
     opari_script                   = "`" OPARI_CONFIG " --awk_script`";
+    opari_config                   = OPARI_CONFIG;
     grep                           =  "`" OPARI_CONFIG " --egrep`";
     language                       = unknown_language;
     scorep_config                  = "";
@@ -700,6 +701,7 @@ SCOREP_Instrumenter::SetValue( std::string key,
         awk          = "`" + value + " --awk_cmd`";
         opari_script = "`" + value + " --awk_script`";
         grep         = "`" + value + " --egrep`";
+        opari_config = value;
     }
     else if ( key == "PREFIX" && value != "" )
     {
@@ -912,6 +914,10 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     // Generate calls
     scorep_include_path = "`" + scorep_config + mode + " --inc` ";
     scorep_libs         = "`" + scorep_config + mode + " --libs` ";
+    if ( opari_instrumentation == enabled )
+    {
+        scorep_include_path += "`" + opari_config + " --cflags` ";
+    }
 
     // Handle manual -lmpi flag
     if ( lmpi_set )
@@ -1034,6 +1040,7 @@ SCOREP_Instrumenter::compile_init_file( std::string input_file,
 {
     std::string command = c_compiler
                           + " -c " + input_file
+                          + " `" + opari_config + " --cflags` "
                           + " -o " + output_file;
     if ( verbosity >= 1 )
     {

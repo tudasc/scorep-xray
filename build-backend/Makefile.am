@@ -157,7 +157,7 @@ $(builddir)/scorep_config.dat:
 	    echo LIBDIR=\"$(TIMER_LIBDIR)\"; \
 	    echo LIBDIR=\"$(SCOREP_PAPI_LIBDIR)\"; \
 	    echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"; \
-	    echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)/scorep\"; \
+	    echo INCDIR=\"$(PWD)/$(INC_DIR_OPARI2)\"; \
 	    echo SRC_ROOT=\"$(abs_top_srcdir)/..\"; \
 	    echo CC=\"$(CC)\"; \
 	    echo CXX=\"$(CXX)\"; \

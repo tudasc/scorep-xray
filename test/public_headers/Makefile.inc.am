@@ -39,7 +39,7 @@ self_contained_public_headers_cppflags = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) -I$(
 
 
 self_contained_public_header_pomp_lib_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_pomp_lib.c
-self_contained_public_header_pomp_lib_c_CPPFLAGS = $(self_contained_public_headers_cppflags) -I$(PUBLIC_INC_DIR)/scorep
+self_contained_public_header_pomp_lib_c_CPPFLAGS = $(self_contained_public_headers_cppflags) -I$(INC_DIR_OPARI2)
 
 self_contained_public_header_SCOREP_PublicTypes_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicTypes.c
 self_contained_public_header_SCOREP_PublicTypes_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
