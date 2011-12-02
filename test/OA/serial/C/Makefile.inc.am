@@ -36,6 +36,6 @@ endif
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/serial/C/run_oa_c_test.sh
 
-TESTS += $(srcdir)/../test/OA/serial/C/run_oa_c_test.sh
+TESTS_SERIAL += $(srcdir)/../test/OA/serial/C/run_oa_c_test.sh
 
 endif #if HAVE_ONLINE_ACCESS_HEADERS
