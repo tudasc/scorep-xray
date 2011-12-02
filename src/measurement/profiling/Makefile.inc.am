@@ -23,6 +23,7 @@
 
 PROFILE_FLAGS =                                 \
     $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/utils/include              \
     -I$(INC_ROOT)src/measurement/profiling      \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/services/include           \

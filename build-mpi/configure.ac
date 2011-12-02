@@ -223,5 +223,7 @@ AC_CONFIG_FILES([Makefile \
                  run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
                  ../test/jacobi/hybrid/C/Makefile])
+AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
+                [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
 
 AC_OUTPUT

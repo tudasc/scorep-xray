@@ -48,3 +48,5 @@ TESTS_MPI_OMP += mpi_omp_hello_world
 
 endif
 endif
+
+EXTRA_DIST += run_metric_collection_test.sh.in
