@@ -45,6 +45,12 @@ SCOREP_Bitstring_Clear( uint8_t* bitstring, uint32_t length )
     memset( bitstring, 0x00, ( length + 7 ) / 8 );
 }
 
+void
+SCOREP_Bitstring_SetAll( uint8_t* bitstring, uint32_t length )
+{
+    memset( bitstring, 0xFF, ( length + 7 ) / 8 );
+}
+
 uint32_t
 SCOREP_Bitstring_GetByteSize( uint32_t length )
 {

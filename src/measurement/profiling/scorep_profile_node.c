@@ -383,6 +383,15 @@ scorep_profile_copy_node( scorep_profile_node* source )
    Node operation
 *****************************************************************************************/
 
+void
+scorep_profile_add_child( scorep_profile_node* parent,
+                          scorep_profile_node* child )
+{
+    child->next_sibling = parent->first_child;
+    parent->first_child = child;
+    child->parent       = parent;
+}
+
 bool
 scorep_profile_compare_nodes( scorep_profile_node* node1,
                               scorep_profile_node* node2 )

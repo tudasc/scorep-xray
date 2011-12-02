@@ -250,6 +250,18 @@ typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node, void*
 *****************************************************************************************/
 
 /**
+   Adds @a child to the children of @a parent. No check whether a matching node
+   already exists is performed. If @a child is the root node to a sub-tree, the whole
+   sub-tree is added. If child is still child of another node, the tree ill become
+   inconsistent.
+   @param parent Pointer to the node to which the @a child is added.
+   @param child  Pointer to the node which is added to @a parent.
+ */
+void
+scorep_profile_add_child( scorep_profile_node* parent,
+                          scorep_profile_node* child );
+
+/**
    Constructs a node of a given type.
    @param parent Pointer to the parent node. It is NULL is it is a root node. This
                 function does not insert the child into the parents child list, but sets

@@ -25,7 +25,7 @@
 #include <mpi.h>
 #include <omp.h>
 #include <stdio.h>
-#include <SCOREP_User.h>
+#include <scorep/SCOREP_User.h>
 
 SCOREP_USER_METRIC_GLOBAL( global_metric );
 SCOREP_USER_METRIC_GLOBAL( process_metric );

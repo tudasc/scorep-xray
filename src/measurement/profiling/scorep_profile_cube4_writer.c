@@ -546,9 +546,10 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
     }
 
     /* Create bit_vector with all bits set. Used for dense metrics */
-    write_set->bit_vector = ( uint8_t* )
-                            calloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ), 1 );
+    write_set->bit_vector =
+        ( uint8_t* )malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
     SCOREP_ASSERT( write_set->bit_vector );
+    SCOREP_Bitstring_SetAll( write_set->bit_vector, write_set->callpath_number );
 
     return true;
 }

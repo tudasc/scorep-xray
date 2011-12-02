@@ -47,16 +47,25 @@ scorep_profile_setup_phase( scorep_profile_node* thread_root,
     assert( phase );
 
     scorep_profile_node* match =  scorep_profile_find_child( thread_root, phase );
-    scorep_profile_remove_node( phase );
 
+    /* If this top-level phase was not yet created */
     if ( match == NULL )
     {
-        phase->next_sibling      = thread_root->first_child;
-        thread_root->first_child = phase;
+        /* Replace phase root node and leave original phase node as remainder. */
+        match = scorep_profile_copy_node( phase );
+        scorep_profile_move_children( match, phase );
+
+        /* Move subtree to top level */
+        scorep_profile_add_child( thread_root, match );
     }
+    /* We found this phase at the top-level  */
     else
     {
+        /* Update phase at top level */
         scorep_profile_merge_subtree( match, phase );
+
+        /* Leave remainder for the phase */
+        phase->first_child = NULL;
     }
 }
 

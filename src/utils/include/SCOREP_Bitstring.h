@@ -60,6 +60,15 @@ SCOREP_Bitstring_Clear( uint8_t* bitstring,
                         uint32_t length );
 
 /**
+   Sets all bits of a bitstring to 1.
+   @param bitstring A bitstring
+   @param length    Number of bits in the bitstring.
+ */
+void
+SCOREP_Bitstring_SetAll( uint8_t* bitstring,
+                         uint32_t length );
+
+/**
    Calculates the number of bytes that needed for a bitstring of a given number of bits
    @param length    Number of bits in the bitstring.
    @returns the minimum number of bytes that are required for a bitstring of @a length
