@@ -37,7 +37,8 @@ AC_SCOREP_COBI
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
-AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11.1 -Wall tar-pax])
+AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
+AM_SILENT_RULES([yes])
 
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
 AC_SCOREP_PLATFORM_SETTINGS   

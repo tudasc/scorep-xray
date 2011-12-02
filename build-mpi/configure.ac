@@ -93,7 +93,8 @@ AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
-AM_INIT_AUTOMAKE([foreign silent-rules color-tests 1.11.1 -Wall tar-pax])
+AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
+AM_SILENT_RULES([yes])
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
