@@ -52,6 +52,51 @@ common_ldflags += @SCOREP_PAPI_LDFLAGS@
 ## MPI
 
 if MPI_SUPPORTED
+
+$(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la:
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_mpi.la ) || eval $$failcom; \
+        test -z "$$fail"
+
+$(LIB_DIR_SCOREP_MPI)libscorep_paradigm_mpi.la:
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_paradigm_mpi.la ) || eval $$failcom; \
+        test -z "$$fail"
+
+$(LIB_DIR_SCOREP_MPI)libscorep_sion_mpi.la:
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_sion_mpi.la ) || eval $$failcom; \
+        test -z "$$fail"
+
+$(LIB_DIR_SCOREP_MPI)libscorep_oa_mpi.la:
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_oa_mpi.la ) || eval $$failcom; \
+        test -z "$$fail"
+
 lib_LTLIBRARIES                      += libscorep_mpi.la
 libscorep_mpi_la_SOURCES              = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_mpi.c
 nodist_EXTRA_libscorep_mpi_la_SOURCES = force_link_with_F77LD.f
@@ -103,6 +148,19 @@ endif
 
 if MPI_SUPPORTED
 if OPENMP_SUPPORTED
+
+$(LIB_DIR_SCOREP_MPI)libscorep_sion_mpi_omp.la:
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	($(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_sion_mpi_omp.la ) || eval $$failcom; \
+        test -z "$$fail"
+
+
 lib_LTLIBRARIES                          += libscorep_mpi_omp.la
 libscorep_mpi_omp_la_SOURCES              = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_mpi_omp.c
 nodist_EXTRA_libscorep_mpi_omp_la_SOURCES = force_link_with_F77LD.f
