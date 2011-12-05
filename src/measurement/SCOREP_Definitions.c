@@ -2350,7 +2350,7 @@ SCOREP_Region_GetAdapterType( SCOREP_RegionHandle handle )
  * @return region\s first line.
  */
 SCOREP_LineNo
-SCOREP_Region_GetRfl( SCOREP_RegionHandle handle )
+SCOREP_Region_GetBeginLine( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->begin_line;
 }
@@ -2363,7 +2363,7 @@ SCOREP_Region_GetRfl( SCOREP_RegionHandle handle )
  * @return region\s end line.
  */
 SCOREP_LineNo
-SCOREP_Region_GetRel( SCOREP_RegionHandle handle )
+SCOREP_Region_GetEndLine( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->end_line;
 }

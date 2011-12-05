@@ -732,8 +732,8 @@ scorep_oaconsumer_copy_merged_region_definitions
 
         /** Copy data into the merged regions buffer*/
         data_index->merged_region_def_buffer[ region_index ].region_id    = region_index;
-        data_index->merged_region_def_buffer[ region_index ].rfl          = SCOREP_Region_GetRfl( parent_region_handle );
-        data_index->merged_region_def_buffer[ region_index ].rel          = SCOREP_Region_GetRel( parent_region_handle );
+        data_index->merged_region_def_buffer[ region_index ].rfl          = SCOREP_Region_GetBeginLine( parent_region_handle );
+        data_index->merged_region_def_buffer[ region_index ].rel          = SCOREP_Region_GetEndLine( parent_region_handle );
         data_index->merged_region_def_buffer[ region_index ].adapter_type = ( uint32_t )SCOREP_Region_GetAdapterType( region_handle );
         const char* name = SCOREP_Region_GetName( region_handle );
         strncpy( data_index->merged_region_def_buffer[ region_index ].name,
