@@ -200,7 +200,7 @@ scorep_metric_source_type_to_otf_metric_type( SCOREP_MetricSourceType sourceType
 
 #undef case_return
         default:
-            assert( !"Invalid metric source type" );
+            SCOREP_BUG( "Invalid metric source type" );
     }
 }
 
@@ -231,7 +231,7 @@ scorep_metric_mode_to_otf_metric_mode( SCOREP_MetricMode mode,
 
 #undef case_return
         default:
-            assert( !"Invalid metric mode" );
+            SCOREP_BUG( "Invalid metric mode" );
     }
 }
 
@@ -250,7 +250,7 @@ scorep_metric_value_type_to_otf_metric_value_type( SCOREP_MetricValueType valueT
 
 #undef case_return
         default:
-            assert( !"Invalid metric value type" );
+            SCOREP_BUG( "Invalid metric value type" );
     }
 }
 
@@ -271,7 +271,7 @@ scorep_metric_base_to_otf_metric_base( SCOREP_MetricBase base,
 
 #undef case_return
         default:
-            assert( !"Invalid metric base" );
+            SCOREP_BUG( "Invalid metric base" );
     }
 }
 
@@ -293,7 +293,7 @@ scorep_metric_occurrence_to_otf_metric_occurrence( SCOREP_MetricOccurrence occur
 
 #undef case_return
         default:
-            assert( !"Invalid metric occurrence" );
+            SCOREP_BUG( "Invalid metric occurrence" );
     }
 }
 
@@ -316,7 +316,7 @@ scorep_metric_scope_type_to_otf_metric_scope_type( SCOREP_MetricScope scope,
 
 #undef case_return
         default:
-            assert( !"Invalid metric scope" );
+            SCOREP_BUG( "Invalid metric scope" );
     }
 }
 
