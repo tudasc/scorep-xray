@@ -81,7 +81,7 @@ dist_bin_SCRIPTS =
 ## environments, see the component specific common.am or Makefile.am
 ## resp.  But we need to define TESTS or else am__tty_colors will not
 ## get defined which leads to an syntax error in our tests.
-# TESTS = 
+TESTS = 
 # XFAIL_TESTS =
 # TESTS_ENVIRONMENT = 
 
