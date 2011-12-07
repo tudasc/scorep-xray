@@ -27,6 +27,7 @@
  */
 
 #include <otf2/OTF2_GeneralDefinitions.h>
+#include <otf2/OTF2_Archive.h>
 #include <stdint.h>
 
 
@@ -41,7 +42,15 @@ SCOREP_Tracing_GetChunkSize();
 
 
 void
-SCOREP_Tracing_RegisterSionCallbacks();
+SCOREP_Tracing_RegisterSionCallbacks( OTF2_Archive* archive );
+
+
+void
+SCOREP_Tracing_FinalizeEventWriters( void );
+
+
+void
+SCOREP_Tracing_RegisterMemoryCallbacks( OTF2_Archive* archive );
 
 
 #endif /* SCOREP_TRACING_H */

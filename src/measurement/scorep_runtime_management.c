@@ -265,40 +265,9 @@ SCOREP_RenameExperimentDir()
     }
 }
 
-
-uint64_t
-SCOREP_OnTraceAndDefinitionPostFlush( void )
-{
-    /* remember that we have flushed the first time
-     * after this point, we can't switch into MPI mode anymore
-     */
-    SCOREP_Otf2_OnFlush();
-
-    return SCOREP_GetClockTicks();
-}
-
-
-OTF2_FlushType
-SCOREP_OnTracePreFlush( void* evtWriter,
-                        void* evtReader )
-{
-#if HAVE( SCOREP_DEBUG )
-    printf( "SCOREP_OnTracePreFlush[%d]\n", SCOREP_Mpi_GetRank() );
-#endif
-    if ( !SCOREP_Mpi_IsInitialized() )
-    {
-        // flush before MPI_Init, we are lost.
-        assert( false );
-    }
-    // master/slave and writer id already set during initialization
-    return OTF2_FLUSH;
-}
-
 OTF2_EvtWriter*
 SCOREP_Trace_GetEventWriter( uint64_t location_id )
 {
     return OTF2_Archive_GetEvtWriter( scorep_otf2_archive,
-                                      location_id,
-                                      SCOREP_OnTracePreFlush,
-                                      SCOREP_OnTraceAndDefinitionPostFlush );
+                                      location_id );
 }

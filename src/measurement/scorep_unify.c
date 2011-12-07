@@ -64,7 +64,6 @@ extern SCOREP_DefinitionManager* scorep_remote_definition_manager;
 void
 SCOREP_Unify( void )
 {
-    SCOREP_UpdateLocationDefinitions();
     SCOREP_Unify_Locally();
     if ( SCOREP_Mpi_HasMpi() )
     {

@@ -265,28 +265,3 @@ SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
 
     return SCOREP_GetRegionHandleToID( callpath->callpath_argument.region_handle );
 }
-
-
-static void
-scorep_update_location_definition_cb( SCOREP_Thread_LocationData* locationData,
-                                      void*                       data )
-{
-    int                         number_of_definitions = *( int* )data;
-    SCOREP_LocationHandle       location_handle       =
-        SCOREP_Thread_GetLocationHandle( locationData );
-    SCOREP_Location_Definition* location_definition =
-        SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
-
-    location_definition->number_of_definitions = number_of_definitions;
-    location_definition->number_of_events      =
-        SCOREP_Trace_GetNumberOfEvents( locationData );
-}
-
-void
-SCOREP_UpdateLocationDefinitions()
-{
-    int number_of_definitions = SCOREP_GetNumberOfDefinitions();
-
-    SCOREP_Thread_ForAllLocations( scorep_update_location_definition_cb,
-                                   &number_of_definitions );
-}

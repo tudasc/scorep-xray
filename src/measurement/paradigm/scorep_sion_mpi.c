@@ -26,7 +26,6 @@
 
 #include <config.h>
 #include <SCOREP_Tracing.h>
-#include <otf2/OTF2_File_Sion_Ext.h>
 #include <scorep_environment.h>
 #include <stdio.h>
 #include <sion.h>
@@ -34,25 +33,12 @@
 #include <mpi.h>
 #include <scorep_mpi.h>
 
-/* *INDENT-OFF* */
-static int scorep_sion_open(char*, const char*, long long int*, int*, FILE**);
-static int scorep_sion_close(int);
-/* *INDENT-ON*  */
-
-
-void
-SCOREP_Tracing_RegisterSionCallbacks()
-{
-    if ( SCOREP_Env_UseSionSubstrate() )
-    {
-        OTF2_File_Sion_Register_Open_Callback( scorep_sion_open );
-        OTF2_File_Sion_Register_Close_Callback( scorep_sion_close );
-    }
-}
-
 
 static int
-scorep_sion_open( char*          fileName,
+scorep_sion_open( void*          userData,
+                  OTF2_FileType  fileType,
+                  uint64_t       locationId,
+                  const char*    fileName,
                   const char*    fileMode,
                   long long int* chunkSize,
                   int*           fileSystemBlockSize,
@@ -85,9 +71,35 @@ scorep_sion_open( char*          fileName,
 
 
 static int
-scorep_sion_close( int sionFileHandle )
+scorep_sion_close( void*         userData,
+                   OTF2_FileType fileType,
+                   uint64_t      locationId,
+                   int           sionFileHandle )
 {
     int close_status = sion_parclose_mpi( sionFileHandle );
     assert( close_status == 1 );
     return close_status;
+}
+
+
+static OTF2_FileSionCallbacks scorep_sion_callbacks =
+{
+    .otf2_file_sion_open  = scorep_sion_open,
+    .otf2_file_sion_close = scorep_sion_close
+};
+
+
+void
+SCOREP_Tracing_RegisterSionCallbacks( OTF2_Archive* archive )
+{
+    assert( archive );
+
+    if ( SCOREP_Env_UseSionSubstrate() )
+    {
+        SCOREP_Error_code status = OTF2_Archive_SetFileSionCallbacks(
+            archive,
+            &scorep_sion_callbacks,
+            NULL );
+        assert( status == SCOREP_SUCCESS );
+    }
 }

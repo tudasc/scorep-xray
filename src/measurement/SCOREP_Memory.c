@@ -176,6 +176,17 @@ SCOREP_Memory_CreatePageManagers()
 }
 
 
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreatePageManager( void )
+{
+    SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
+    assert( page_manager );
+
+    return page_manager;
+}
+
+
 void
 SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 {

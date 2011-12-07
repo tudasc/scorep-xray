@@ -84,8 +84,8 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         SCOREP_CONFIG_TYPE_SIZE,
         &scorep_env_total_memory,
         NULL,
-        "1200k",
-        "total memory in bytes for the measurement system, excluding trace memory",
+        "16000k",
+        "total memory in bytes for the measurement system",
         ""
     },
     {

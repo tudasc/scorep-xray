@@ -993,27 +993,12 @@ scorep_write_number_of_definitions_per_location( OTF2_GlobDefWriter* global_defi
 }
 
 
-static OTF2_FlushType
-scorep_on_definitions_pre_flush( void* evtWriter, void* evtReader )
-{
-    if ( !SCOREP_Mpi_IsInitialized() )
-    {
-        // flush before MPI_Init, we are lost.
-        assert( false );
-    }
-    // master/slave already set during initialization
-    return OTF2_FLUSH;
-}
-
-
 static OTF2_DefWriter*
 scorep_create_local_definition_writer( SCOREP_Location_Definition* definition )
 {
     OTF2_DefWriter* definition_writer =
         OTF2_Archive_GetDefWriter( scorep_otf2_archive,
-                                   definition->global_location_id,
-                                   scorep_on_definitions_pre_flush,
-                                   SCOREP_OnTraceAndDefinitionPostFlush );
+                                   definition->global_location_id );
 
     assert( definition_writer );
     return definition_writer;
@@ -1024,9 +1009,7 @@ static OTF2_GlobDefWriter*
 scorep_create_global_definition_writer()
 {
     OTF2_GlobDefWriter* global_definition_writer =
-        OTF2_Archive_GetGlobDefWriter( scorep_otf2_archive,
-                                       SCOREP_OnTracePreFlush,
-                                       SCOREP_OnTraceAndDefinitionPostFlush );
+        OTF2_Archive_GetGlobDefWriter( scorep_otf2_archive );
     assert( global_definition_writer );
     return global_definition_writer;
 }
@@ -1049,6 +1032,8 @@ SCOREP_Tracing_WriteDefinitions()
         }
         scorep_write_mappings( local_definition_writer );
         scorep_write_clock_offsets( local_definition_writer );
+        OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
+                                     local_definition_writer );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 

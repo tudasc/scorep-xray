@@ -74,6 +74,9 @@ SCOREP_Memory_Finalize();
 SCOREP_Allocator_PageManager**
 SCOREP_Memory_CreatePageManagers();
 
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreatePageManager();
+
 
 void
 SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );

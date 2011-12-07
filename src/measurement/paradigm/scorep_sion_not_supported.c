@@ -29,11 +29,9 @@
 
 
 void
-SCOREP_Tracing_RegisterSionCallbacks()
+SCOREP_Tracing_RegisterSionCallbacks( OTF2_Archive* archive )
 {
     // don't register anything if sion is not supported.
-    //OTF2_File_Sion_Register_Open_Callback( 0 );
-    //OTF2_File_Sion_Register_Close_Callback( 0 );
 }
 
 

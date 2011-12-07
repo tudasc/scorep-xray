@@ -277,7 +277,4 @@ SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle );
 uint32_t
 SCOREP_GetHandleToID( SCOREP_RegionHandle handle );
 
-void
-SCOREP_UpdateLocationDefinitions();
-
 #endif /* SCOREP_INTERNAL_DEFINITIONS_H */
