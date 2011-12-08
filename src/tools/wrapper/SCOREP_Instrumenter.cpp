@@ -988,7 +988,7 @@ SCOREP_Instrumenter::invoke_opari( std::string input_file,
                           "--nosrc "
 #endif
 #ifdef OPARI_MANGLING_SCHEME
-                          "--tpd-mangling " OPARI_MANGLING_SCHEME " "
+                          "--tpd-mangling=" OPARI_MANGLING_SCHEME " "
 #endif
                           + input_file
                           + " " + output_file;
