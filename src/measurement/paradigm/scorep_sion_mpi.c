@@ -96,7 +96,7 @@ SCOREP_Tracing_RegisterSionCallbacks( OTF2_Archive* archive )
 
     if ( SCOREP_Env_UseSionSubstrate() )
     {
-        SCOREP_Error_code status = OTF2_Archive_SetFileSionCallbacks(
+        SCOREP_Error_Code status = OTF2_Archive_SetFileSionCallbacks(
             archive,
             &scorep_sion_callbacks,
             NULL );
