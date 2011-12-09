@@ -96,9 +96,9 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     c_compiler                     = SCOREP_CC;
     openmp_cflags                  = SCOREP_OPENMP_CFLAGS;
     nm                             = "`" OPARI_CONFIG " --nm`";
-    awk                            =  "`" OPARI_CONFIG " --awk_cmd`";
+    awk                            =  "`" OPARI_CONFIG " --awk-cmd`";
     opari                          = OPARI;
-    opari_script                   = "`" OPARI_CONFIG " --awk_script`";
+    opari_script                   = "`" OPARI_CONFIG " --awk-script`";
     opari_config                   = OPARI_CONFIG;
     grep                           =  "`" OPARI_CONFIG " --egrep`";
     language                       = unknown_language;
@@ -698,8 +698,8 @@ SCOREP_Instrumenter::SetValue( std::string key,
     else if ( key == "OPARI_CONFIG" && value != "" )
     {
         nm           = "`" + value + " --nm`";
-        awk          = "`" + value + " --awk_cmd`";
-        opari_script = "`" + value + " --awk_script`";
+        awk          = "`" + value + " --awk-cmd`";
+        opari_script = "`" + value + " --awk-script`";
         grep         = "`" + value + " --egrep`";
         opari_config = value;
     }
