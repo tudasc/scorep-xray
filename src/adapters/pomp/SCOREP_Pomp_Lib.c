@@ -662,6 +662,12 @@ POMP2_Workshare_exit( POMP2_Region_handle* pomp_handle )
     }
 }
 
+int
+POMP2_Lib_get_max_threads()
+{
+    return omp_get_max_threads();
+}
+
 /* **************************************************************************************
  *                                                                  C wrapper for OMP API
  ***************************************************************************************/

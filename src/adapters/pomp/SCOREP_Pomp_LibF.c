@@ -390,6 +390,11 @@ void FSUB(POMP2_Workshare_exit)( POMP2_Region_handle_fortran* region_handle )
     }
 }
 
+int FSUB(POMP2_Lib_get_max_threads)()
+{
+    return omp_get_max_threads();
+}
+
 void FSUB(POMP2_Init_lock)(omp_lock_t *s) {
   if ( scorep_pomp_is_tracing_on ) {
 	  POMP2_Init_lock(s);
