@@ -620,13 +620,13 @@ SCOREP_Instrumenter::check_parameter()
         std::cout << "ERROR: Could not identify compiler name." << std::endl;
         abort();
     }
-
-    if ( output_name != "" && !is_linking && input_file_number > 1 )
-    {
+    /*
+       if ( output_name != "" && !is_linking && input_file_number > 1 )
+       {
         std::cerr << "ERROR: Can not specify -o with multiple files if only"
                   << " compiling or preprocessing." << std::endl;
-    }
-
+       }
+     */
     if ( input_files == "" || input_file_number < 1 )
     {
         std::cout << "WARNING: Found no input files." << std::endl;
