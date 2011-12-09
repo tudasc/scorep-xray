@@ -1013,8 +1013,8 @@ SCOREP_Tracing_WriteDefinitions()
     SCOREP_GetGlobalEpoch( &epoch_begin, &epoch_end );
     if ( SCOREP_Mpi_GetRank() == 0 )
     {
-        OTF2_GlobalDefWriter_WriteTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
         global_definition_writer = scorep_create_global_definition_writer();
+        OTF2_GlobalDefWriter_WriteTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
         scorep_write_global_definitions( global_definition_writer );
     }
     // uses MPI communication. references string handle, so write after strings
