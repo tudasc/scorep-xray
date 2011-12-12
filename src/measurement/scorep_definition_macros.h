@@ -540,13 +540,24 @@
              scorep_local_definition_manager.mappings->type ## _mappings && \
              scorep_local_definition_manager.type ## _definition_counter > 0 ) \
         { \
+            OTF2_IdMap* map = OTF2_IdMap_Create( \
+                OTF2_ID_MAP_DENSE, \
+                scorep_local_definition_manager.type ## _definition_counter ); \
+            for ( uint32_t index = 0; \
+                  index < scorep_local_definition_manager.type ## _definition_counter; \
+                  ++index ) \
+            { \
+                OTF2_IdMap_AddIdPair( \
+                    map, \
+                    index, \
+                    scorep_local_definition_manager.mappings->type ## _mappings[ index ] ); \
+            } \
             SCOREP_Error_Code status = OTF2_DefWriter_WriteMappingTable( \
                 definition_writer, \
-                SCOREP_IdMap_CreateDenseFromArray( \
-                    scorep_local_definition_manager.mappings->type ## _mappings, \
-                    scorep_local_definition_manager.type ## _definition_counter ), \
+                map, \
                 OTF2_MAPPING_ ## TYPE ); \
             assert( status == SCOREP_SUCCESS ); \
+            OTF2_IdMap_Free( map ); \
         } \
     } \
     while ( 0 )
