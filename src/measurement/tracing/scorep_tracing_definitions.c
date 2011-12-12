@@ -876,6 +876,14 @@ scorep_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
 static void
 scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
+#if HAVE( SCOREP_DEBUG )
+    extern bool scorep_debug_unify;
+    if ( !scorep_debug_unify )
+    {
+        return;
+    }
+#endif
+
     scorep_write_string_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_system_tree_node_definitions(       localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_location_group_definitions(         localDefinitionWriter, &scorep_local_definition_manager, false );
@@ -997,10 +1005,7 @@ SCOREP_Tracing_WriteDefinitions()
             scorep_create_local_definition_writer( definition );
         scorep_write_mappings( local_definition_writer );
         scorep_write_clock_offsets( local_definition_writer );
-        if ( 1 /* unify debug/fallback */ )
-        {
-            scorep_write_local_definitions( local_definition_writer );
-        }
+        scorep_write_local_definitions( local_definition_writer );
         OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
                                      local_definition_writer );
     }

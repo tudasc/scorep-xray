@@ -143,6 +143,23 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
 };
 
 
+#if HAVE( SCOREP_DEBUG )
+bool                  scorep_debug_unify;
+SCOREP_ConfigVariable scorep_debug_environment_variables[] = {
+    {
+        "unify",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_debug_unify,
+        NULL,
+        "true",
+        "Writes the pre-unified definitions also in the local definition trace files",
+        ""
+    },
+    SCOREP_CONFIG_TERMINATOR
+};
+#endif
+
+
 void
 SCOREP_Env_RegisterCoreEnvironmentVariables()
 {
@@ -153,13 +170,22 @@ SCOREP_Env_RegisterCoreEnvironmentVariables()
 
     scorep_env_core_environment_variables_initialized = true;
 
-    SCOREP_Error_Code error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
-
+    SCOREP_Error_Code error;
+    error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
     if ( SCOREP_SUCCESS != error )
     {
         SCOREP_ERROR( error, "Can't register core environment variables" );
         _Exit( EXIT_FAILURE );
     }
+
+#if HAVE( SCOREP_DEBUG )
+    error = SCOREP_ConfigRegister( "debug", scorep_debug_environment_variables );
+    if ( SCOREP_SUCCESS != error )
+    {
+        SCOREP_ERROR( error, "Can't register debug environment variables" );
+        _Exit( EXIT_FAILURE );
+    }
+#endif
 }
 
 
