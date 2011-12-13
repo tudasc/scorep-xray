@@ -31,7 +31,7 @@ AC_OPENMP
 CFLAGS=${scorep_cflags_save}
 AC_LANG_POP([C])
 AM_CONDITIONAL([OPENMP_SUPPORTED], 
-               [test "x${ac_cv_prog_c_openmp}" != "xunsupported" && "x${enable_openmp}" != "xno"])
+               [test "x${ac_cv_prog_c_openmp}" != "xunsupported" && test "x${enable_openmp}" != "xno"])
 
 if test "x${enable_openmp}" != "xno"; then
   if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
