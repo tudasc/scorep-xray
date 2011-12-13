@@ -135,7 +135,7 @@ scorep_compiler_get_file( const char* file )
 void
 scorep_compiler_hash_init()
 {
-    int i;
+    uint64_t i;
 
     scorep_compiler_init_file_table();
 
@@ -147,9 +147,9 @@ scorep_compiler_hash_init()
 
 /* Get hash table entry for given ID. */
 scorep_compiler_hash_node*
-scorep_compiler_hash_get( long key )
+scorep_compiler_hash_get( uint64_t key )
 {
-    long hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
+    uint64_t hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
@@ -174,13 +174,13 @@ scorep_compiler_hash_get( long key )
 scorep_compiler_hash_node*
 scorep_compiler_hash_put
 (
-    long        key,
-    const char* region_name,
-    const char* file_name,
-    int         line_no_begin
+    uint64_t      key,
+    const char*   region_name,
+    const char*   file_name,
+    SCOREP_LineNo line_no_begin
 )
 {
-    long                       hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
+    uint64_t                   hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
     add->key           = key;
@@ -204,7 +204,7 @@ scorep_compiler_hash_free()
 {
     scorep_compiler_hash_node* next;
     scorep_compiler_hash_node* cur;
-    int                        i;
+    uint64_t                   i;
     for ( i = 0; i < SCOREP_COMPILER_REGION_SLOTS; i++ )
     {
         if ( region_hash_table[ i ] )

@@ -60,7 +60,7 @@
  */
 typedef struct scorep_compiler_hash_node
 {
-    long                              key;
+    uint64_t                          key;
     char*                             region_name;
     char*                             file_name;
     SCOREP_LineNo                     line_no_begin;
@@ -78,7 +78,7 @@ typedef struct scorep_compiler_hash_node
    @returns the hash_node for the given key.
  */
 extern scorep_compiler_hash_node*
-scorep_compiler_hash_get( long key );
+scorep_compiler_hash_get( uint64_t key );
 
 /**
    Creates a new entry for the region hashtable with the given values.
@@ -89,10 +89,10 @@ scorep_compiler_hash_get( long key );
    @returns a pointer to the newly created hash node.
  */
 extern scorep_compiler_hash_node*
-scorep_compiler_hash_put( long        key,
-                          const char* region_name,
-                          const char* file_name,
-                          int         line_no_begin );
+scorep_compiler_hash_put( uint64_t      key,
+                          const char*   region_name,
+                          const char*   file_name,
+                          SCOREP_LineNo line_no_begin );
 
 /**
    Frees the memory allocated for the hash table.
