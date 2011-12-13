@@ -873,16 +873,15 @@ scorep_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
     }
 }
 
+#if HAVE( SCOREP_DEBUG )
 static void
 scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
-#if HAVE( SCOREP_DEBUG )
     extern bool scorep_debug_unify;
     if ( !scorep_debug_unify )
     {
         return;
     }
-#endif
 
     scorep_write_string_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_system_tree_node_definitions(       localDefinitionWriter, &scorep_local_definition_manager, false );
@@ -895,6 +894,13 @@ scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_callpath_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
 }
+#else
+static inline void
+scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
+{
+    return;
+}
+#endif
 
 
 static void
