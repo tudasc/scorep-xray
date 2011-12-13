@@ -1,12 +1,258 @@
-For generic installation instructions see below.
+For generic installation instructions see "Installation Instructions" below.
 
 Configuration of Score-P
 ************************
 
-See ./configure --help=recursive for all options. There are duplicates
-though.
+`configure' configures scorep to adapt to many kinds of systems.
 
-Please report bugs to <scorep-bugs@groups.tu-dresden.de>.
+Usage: ./configure [OPTION]... [VAR=VALUE]...
+
+To assign environment variables (e.g., CC, CFLAGS...), specify them as
+VAR=VALUE.  See below for descriptions of some of the useful variables.
+
+Defaults for the options are specified in brackets.
+
+Configuration:
+  -h, --help              display this help and exit
+      --help=short        display options specific to this package
+      --help=recursive    display the short help of all the included packages
+  -V, --version           display version information and exit
+  -q, --quiet, --silent   do not print `checking ...' messages
+      --cache-file=FILE   cache test results in FILE [disabled]
+  -C, --config-cache      alias for `--cache-file=config.cache'
+  -n, --no-create         do not create output files
+      --srcdir=DIR        find the sources in DIR [configure dir or `..']
+
+Installation directories:
+  --prefix=PREFIX         install architecture-independent files in PREFIX
+                          [/opt/scorep]
+  --exec-prefix=EPREFIX   install architecture-dependent files in EPREFIX
+                          [PREFIX]
+
+By default, `make install' will install all the files in
+`/opt/scorep/bin', `/opt/scorep/lib' etc.  You can specify
+an installation prefix other than `/opt/scorep' using `--prefix',
+for instance `--prefix=$HOME'.
+
+For better control, use the options below.
+
+Fine tuning of the installation directories:
+  --bindir=DIR            user executables [EPREFIX/bin]
+  --sbindir=DIR           system admin executables [EPREFIX/sbin]
+  --libexecdir=DIR        program executables [EPREFIX/libexec]
+  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
+  --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
+  --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --libdir=DIR            object code libraries [EPREFIX/lib]
+  --includedir=DIR        C header files [PREFIX/include]
+  --oldincludedir=DIR     C header files for non-gcc [/usr/include]
+  --datarootdir=DIR       read-only arch.-independent data root [PREFIX/share]
+  --datadir=DIR           read-only architecture-independent data [DATAROOTDIR]
+  --infodir=DIR           info documentation [DATAROOTDIR/info]
+  --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
+  --mandir=DIR            man documentation [DATAROOTDIR/man]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/scorep]
+  --htmldir=DIR           html documentation [DOCDIR]
+  --dvidir=DIR            dvi documentation [DOCDIR]
+  --pdfdir=DIR            pdf documentation [DOCDIR]
+  --psdir=DIR             ps documentation [DOCDIR]
+
+Program names:
+  --program-prefix=PREFIX            prepend PREFIX to installed program names
+  --program-suffix=SUFFIX            append SUFFIX to installed program names
+  --program-transform-name=PROGRAM   run sed PROGRAM on installed program names
+
+System types:
+  --build=BUILD     configure for building on BUILD [guessed]
+  --host=HOST       cross-compile to build programs to run on HOST [BUILD]
+
+Optional Features:
+  --disable-option-checking  ignore unrecognized --enable/--with options
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-silent-rules          less verbose build output (undo: `make V=1')
+  --disable-silent-rules         verbose build output (undo: `make V=0')
+  --enable-platform-detection
+                          autodetect platform [yes]
+  --enable-debug          activate internal debug output [no]
+  --disable-dependency-tracking  speeds up one-time build
+  --enable-dependency-tracking   do not reject slow dependency extractors
+  --enable-shared[=PKGS]  build shared libraries [default=no]
+  --enable-static[=PKGS]  build static libraries [default=yes]
+  --enable-fast-install[=PKGS]
+                          optimize for fast installation [default=yes]
+  --disable-libtool-lock  avoid locking (might break parallel builds)
+  --enable-backend-test-runs
+                          Run tests at make check [no]. If disabled, tests are
+                          still build at make check. Additionally, scripts
+                          (scorep_*tests.sh) containing the tests are
+                          generated in <builddir>/build-backend.
+
+  --disable-openmp        do not use OpenMP
+  --enable-timer-bgl_rts_get_timebase
+                          enable bgl_rts_get_timebase timer if available
+                          instead of platform default
+  --enable-timer-bgp_get_timebase
+                          enable bgp_get_timebase timer if available instead
+                          of platform default
+  --enable-timer-clock_gettime
+                          enable clock_gettime timer if available instead of
+                          platform default
+  --enable-timer-cray_dclock
+                          enable cray_dclock timer if available instead of
+                          platform default
+  --enable-timer-cray_rtc enable cray_rtc timer if available instead of
+                          platform default
+  --enable-timer-cray_rtclock
+                          enable cray_rtclock timer if available instead of
+                          platform default
+  --enable-timer-cycle_counter_itc
+                          enable cycle_counter_itc timer if available instead
+                          of platform default
+  --enable-timer-cycle_counter_tsc
+                          enable cycle_counter_tsc timer if available instead
+                          of platform default
+  --enable-timer-gettimeofday
+                          enable gettimeofday timer if available instead of
+                          platform default
+  --enable-timer-ibm_realtime
+                          enable ibm_realtime timer if available instead of
+                          platform default
+  --enable-timer-ibm_switch_clock
+                          enable ibm_switch_clock timer if available instead
+                          of platform default
+  --enable-timer-intel_mmtimer
+                          enable intel_mmtimer timer if available instead of
+                          platform default
+  --enable-timer-nec_syssx_hgtime
+                          enable nec_syssx_hgtime timer if available instead
+                          of platform default
+  --enable-timer-papi_real_cyc
+                          enable papi_real_cyc timer if available instead of
+                          platform default
+  --enable-timer-papi_real_usec
+                          enable papi_real_usec timer if available instead of
+                          platform default
+  --enable-timer-sun_gethrtime
+                          enable sun_gethrtime timer if available instead of
+                          platform default
+
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
+                          The compiler suite to build this package in non
+                          cross-compiling environments with. Needs to be in
+                          $PATH [gcc].
+  --with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
+                          The compiler suite to build the frontend parts of
+                          this package in cross-compiling environments with.
+                          Needs to be in $PATH [gcc].
+  --with-mpi=(mpich2|impi|openmpi)
+                          The mpi compiler suite to build this package with.
+                          Needs to be in $PATH [mpich2].
+  --with-pdt=path_to_binaries
+                          Specifies the path where the binaries of the program
+                          database toolkit (PDT) are located
+  --with-cobi=(yes|no|<path-to-cobi-binary>)
+                          Whether to build with cobi binary instrumentation
+                          support. "yes" assumes it is in PATH [no].
+  --with-extra-instrumentation-flags=flags
+                          Add additional instrumentation flags.
+  --with-sionconfig=(yes|no|<path-to-sionconfig>)
+                          Whether to use sionconfig and where to find it.
+                          "yes" assumes it is in PATH [no].
+  --with-papi-header=<path-to-papi.h>
+                          If papi.h is not installed in the default location,
+                          specify the dirname where it can be found.
+  --with-papi-lib=<path-to-libpapi.*>
+                          If libpapi.* is not installed in the default
+                          location, specify the dirname where it can be found.
+  --with-pic              try to use only PIC/non-PIC objects [default=use
+                          both]
+  --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
+  --with-sysroot=DIR Search for dependent libraries within DIR
+                        (or the compiler's sysroot if not specified).
+
+Some influential environment variables:
+  CC_FOR_BUILD
+              C compiler command for the frontend build
+  CXX_FOR_BUILD
+              C++ compiler command for the frontend build
+  F77_FOR_BUILD
+              Fortran 77 compiler command for the frontend build
+  FC_FOR_BUILD
+              Fortran compiler command for the frontend build
+  CPPFLAGS_FOR_BUILD
+              (Objective) C/C++ preprocessor flags for the frontend build,
+              e.g. -I<include dir> if you have headers in a nonstandard
+              directory <include dir>
+  CFLAGS_FOR_BUILD
+              C compiler flags for the frontend build
+  CXXFLAGS_FOR_BUILD
+              C++ compiler flags for the frontend build
+  FFLAGS_FOR_BUILD
+              Fortran 77 compiler flags for the frontend build
+  FCFLAGS_FOR_BUILD
+              Fortran compiler flags for the frontend build
+  LD_FLAGS_FOR_BUILD
+              linker flags for the frontend build, e.g. -L<lib dir> if you
+              have libraries in a nonstandard directory <lib dir>
+  LIBS_FOR_BUILD
+              libraries to pass to the linker for the frontend build, e.g.
+              -l<library>
+
+  CC          C compiler command
+  CFLAGS      C compiler flags
+  LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
+              nonstandard directory <lib dir>
+  LIBS        libraries to pass to the linker, e.g. -l<library>
+  CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
+              you have headers in a nonstandard directory <include dir>
+  CPP         C preprocessor
+  CXX         C++ compiler command
+  CXXFLAGS    C++ compiler flags
+  CXXCPP      C++ preprocessor
+  CCAS        assembler compiler command (defaults to CC)
+  CCASFLAGS   assembler compiler flags (defaults to CFLAGS)
+  CXXCPP      C++ preprocessor
+  F77         Fortran 77 compiler command
+  FFLAGS      Fortran 77 compiler flags
+  FC          Fortran compiler command
+  FCFLAGS     Fortran compiler flags
+
+  MPICC       MPI C compiler command
+  MPICXX      MPI C++ compiler command
+  MPIF77      MPI Fortran 77 compiler command
+  MPIFC       MPI Fortran compiler command
+  MPI_CPPFLAGS
+              MPI (Objective) C/C++ preprocessor flags, e.g. -I<include dir>
+              if you have headers in a nonstandard directory <include dir>
+  MPI_CFLAGS  MPI C compiler flags
+  MPI_CXXFLAGS
+              MPI C++ compiler flags
+  MPI_FFLAGS  MPI Fortran 77 compiler flags
+  MPI_FCFLAGS MPI Fortran compiler flags
+  MPI_LD_FLAGS
+              MPI linker flags, e.g. -L<lib dir> if you have libraries in a
+              nonstandard directory <lib dir>
+  MPI_LIBS    MPI libraries to pass to the linker, e.g. -l<library>
+
+  YACC        The `Yet Another Compiler Compiler' implementation to use.
+              Defaults to the first program found out of: `bison -y', `byacc',
+              `yacc'.
+  YFLAGS      The list of arguments that will be passed by default to $YACC.
+              This script will default YFLAGS to the empty string to avoid a
+              default value of `-d' given by some make applications.
+
+  SIONCONFIG  Absolute path to sionconfig, including "sionconfig".
+  PAPI_INC    Include path to the papi.h header.
+  PAPI_LIB    Library path to the papi library.
+
+Use these variables to override the choices made by `configure' or to help
+it to find libraries and programs with nonstandard names/locations.
+
+Report bugs to <scorep-bugs@groups.tu-dresden.de>.
 
 
 Installation Instructions
