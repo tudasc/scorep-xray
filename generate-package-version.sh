@@ -1,13 +1,46 @@
 #! /bin/sh
 
-# this script expects an input that contains at least two lines specifying
+# this script expects an input that contains at least these lines specifying
 # the package version, e.g.
 # package.major=0
 # package.minor=9
+# package.bugfix=0
+# package.suffix=
 
-# order of major and minore in the input file does matter!
-version="$(sed -n -e 's/package.major=\+// p' \
-                  -e 's/package.minor=\+// p' \
-           "$1")"
-set -- $version
-printf "%d.%s" $1 $2
+format="${2-}"
+
+major=0
+minor=0
+bugfix=0
+suffix=
+
+errormsg=
+atexit_error()
+{
+    if test -n "$errormsg"
+    then
+        printf "%s\n" "$errormsg"
+    fi
+}
+trap atexit_error EXIT
+
+errormsg="$(printf "Malformed VERSION file: %s" "$1")"
+set -e
+eval "$(sed -n -e 's/package\.// p' "$1")"
+errormsg=
+
+if test -z "$format"
+then
+    if test "$bugfix" -eq 0
+    then
+        printf "%d.%d%s" "$major" "$minor" "$suffix"
+    else
+        printf "%d.%d.%d%s" "$major" "$minor" "$bugfix" "$suffix"
+    fi
+    if test -t 1
+    then
+        printf "\n"
+    fi
+else
+    eval "$format"
+fi
