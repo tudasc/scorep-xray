@@ -689,14 +689,11 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         uint32_t dummy_acquire_release_count = 0;
-        uint32_t dummy_region_id             = 0; // OTF2_EvtWriter_OmpALock needs to be changed, there
-                                                  // is no need for a region id here
-        OTF2_EvtWriter_OmpALock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                 NULL,
-                                 timestamp,
-                                 lockId,
-                                 dummy_acquire_release_count,
-                                 dummy_region_id );
+        OTF2_EvtWriter_OmpAcquireLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                       NULL,
+                                       timestamp,
+                                       lockId,
+                                       dummy_acquire_release_count );
         SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
 
@@ -722,14 +719,11 @@ SCOREP_OmpReleaseLock( uint32_t lockId/*,
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         uint32_t dummy_acquire_release_count = 0;
-        uint32_t dummy_region_id             = 0; // OTF2_EvtWriter_OmpRLock needs to be changed, there
-                                                  // is no need for a region id here
-        OTF2_EvtWriter_OmpRLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                 NULL,
-                                 timestamp,
-                                 lockId,
-                                 dummy_acquire_release_count,
-                                 dummy_region_id );
+        OTF2_EvtWriter_OmpReleaseLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                       NULL,
+                                       timestamp,
+                                       lockId,
+                                       dummy_acquire_release_count );
         SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
 
