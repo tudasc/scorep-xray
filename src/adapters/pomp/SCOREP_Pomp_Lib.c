@@ -744,8 +744,8 @@ POMP2_Unset_lock( omp_lock_t* s )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
-        omp_unset_lock( s );
         SCOREP_OmpReleaseLock( scorep_pomp_get_lock_handle( s ) );
+        omp_unset_lock( s );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
     }
     else
@@ -847,8 +847,8 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
-        omp_unset_nest_lock( s );
         SCOREP_OmpReleaseLock( scorep_pomp_get_lock_handle( s ) );
+        omp_unset_nest_lock( s );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
     }
     else
