@@ -120,6 +120,7 @@ MPI_Init( int* argc, char*** argv )
 
         /* complete initialization of measurement core and MPI event handling */
         SCOREP_InitMeasurementMPI( rank );
+        scorep_mpiprofile_init();
     }
 
     if ( event_gen_active )
@@ -199,6 +200,7 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 
         /* complete initialization of measurement core and MPI event handling */
         SCOREP_InitMeasurementMPI( rank );
+        scorep_mpiprofile_init();
     }
 
     if ( event_gen_active )
@@ -237,6 +239,7 @@ MPI_Finalize()
 
     /* finalize MPI event handling */
     SCOREP_FinalizeMeasurementMPI();
+    scorep_mpiprofile_finalize();
 
     /* fake finalization, so that MPI can be used during SCOREP finalization */
     return_val = PMPI_Barrier( MPI_COMM_WORLD );

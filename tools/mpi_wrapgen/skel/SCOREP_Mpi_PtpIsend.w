@@ -9,6 +9,11 @@ ${guard:start}
 ${proto:c}
 {
   ${rtype} return_val;
+  
+  ${guard:hooks}
+    ${declarehooks};
+  ${guard:end}
+  
   const int xnb_active = (scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK);
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
   {
@@ -16,7 +21,12 @@ ${proto:c}
     SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
     SCOREP_MPI_EVENT_GEN_OFF();
     SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
-
+	
+	${guard:hooks}
+    ${check:hooks}
+        ${call:prehook};
+    ${guard:end}
+    
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(datatype, &sz);
@@ -34,6 +44,12 @@ ${proto:c}
     {
        scorep_mpi_request_create(*request, SCOREP_MPI_REQUEST_SEND, 
                            tag, dest, count*sz, datatype, comm, reqid);
+       
+        ${guard:hooks}
+      	${check:hooks}
+        	${call:posthook};
+    	${guard:end}
+       
     }
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
     SCOREP_MPI_EVENT_GEN_ON();
