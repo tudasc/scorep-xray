@@ -51,6 +51,7 @@ typedef struct
     MPI_Datatype        datatype;
     MPI_Comm            comm;
     SCOREP_MpiRequestId id;
+    void*               online_analysis_pod;
 } scorep_mpi_request;
 
 /**

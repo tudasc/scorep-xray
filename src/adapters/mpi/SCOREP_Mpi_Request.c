@@ -440,15 +440,16 @@ scorep_mpi_request_create( MPI_Request         request,
         hash_entry->lastreq++;
     }
     /* store request information */
-    hash_entry->lastreq->request  = request;
-    hash_entry->lastreq->flags    = SCOREP_MPI_REQUEST_NONE;
-    hash_entry->lastreq->flags   |= flags;
-    hash_entry->lastreq->tag      = tag;
-    hash_entry->lastreq->dest     = dest;
-    hash_entry->lastreq->bytes    = bytes;
-    hash_entry->lastreq->datatype = datatype;
-    hash_entry->lastreq->comm     = comm;
-    hash_entry->lastreq->id       = id;
+    hash_entry->lastreq->request             = request;
+    hash_entry->lastreq->flags               = SCOREP_MPI_REQUEST_NONE;
+    hash_entry->lastreq->flags              |= flags;
+    hash_entry->lastreq->tag                 = tag;
+    hash_entry->lastreq->dest                = dest;
+    hash_entry->lastreq->bytes               = bytes;
+    hash_entry->lastreq->datatype            = datatype;
+    hash_entry->lastreq->comm                = comm;
+    hash_entry->lastreq->id                  = id;
+    hash_entry->lastreq->online_analysis_pod = NULL;
 }
 
 scorep_mpi_request*

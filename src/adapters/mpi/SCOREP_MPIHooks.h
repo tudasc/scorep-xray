@@ -28,22 +28,10 @@
  * @status ALPHA
  */
 
-
-#include "SCOREP_Types.h"
-
-
 #include <mpi.h>
 
-/**
- * MPI asynchronous profiling request tracking addition datastructure
- */
-
-typedef struct SCOREP_Hooks_tracking
-{
-    void*        tp_buffer;
-    MPI_Request* tp_request;
-    int          peer_type;
-}SCOREP_Hooks_tracking;
+#include "SCOREP_Types.h"
+#include "SCOREP_Mpi_Request.h"
 
 /*----------------------------------------------
  * 1x1 pre- and post- communication hooks
@@ -324,6 +312,109 @@ SCOREP_Hooks_Post_MPI_Irsend
     MPI_Request* request,
     int64_t      start_time_stamp,
     int          return_val
+);
+
+void
+SCOREP_Hooks_Post_MPI_Irecv
+(
+    void*        buf,
+    int          count,
+    MPI_Datatype datatype,
+    int          source,
+    int          tag,
+    MPI_Comm     comm,
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+
+void
+SCOREP_Hooks_Post_MPI_Send_init
+(
+    void*        buf,
+    int          count,
+    MPI_Datatype datatype,
+    int          dest,
+    int          tag,
+    MPI_Comm     comm,
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+void
+SCOREP_Hooks_Post_MPI_Ssend_init
+(
+    void*        buf,
+    int          count,
+    MPI_Datatype datatype,
+    int          dest,
+    int          tag,
+    MPI_Comm     comm,
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+void
+SCOREP_Hooks_Post_MPI_Rsend_init
+(
+    void*        buf,
+    int          count,
+    MPI_Datatype datatype,
+    int          dest,
+    int          tag,
+    MPI_Comm     comm,
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+void
+SCOREP_Hooks_Post_MPI_Bsend_init
+(
+    void*        buf,
+    int          count,
+    MPI_Datatype datatype,
+    int          dest,
+    int          tag,
+    MPI_Comm     comm,
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+void
+SCOREP_Hooks_Post_MPI_Recv_init
+(
+    void*        buf,
+    int          count,
+    MPI_Datatype datatype,
+    int          source,
+    int          tag,
+    MPI_Comm     comm,
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+void
+SCOREP_Hooks_Post_MPI_Start
+(
+    MPI_Request* request,
+    int64_t      start_time_stamp,
+    int          return_val
+);
+
+void
+SCOREP_Hooks_Post_MPI_Asynch_Complete
+(
+    scorep_mpi_request* orig_req,
+    MPI_Status*         status,
+    int64_t             start_time_stamp
+);
+
+void
+SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
+(
+    scorep_mpi_request* orig_req,
+    MPI_Status*         status,
+    int64_t             start_time_stamp
 );
 
 /*----------------------------------------------

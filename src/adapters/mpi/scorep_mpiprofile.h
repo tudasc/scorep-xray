@@ -33,10 +33,77 @@
 
 #define MPIPROFILER_TIMEPACK_BUFSIZE ( sizeof( long long ) + 1 * sizeof( int ) )
 
+/**
+ * MPI asynchronous profiling request tracking addition datastructure
+ */
+
+typedef struct scorep_wait_state_tracking_struct
+{
+    int         send_tp_position_in_pool;
+    MPI_Request tp_request;
+    int         tp_comm_partner;
+    int         tp_tag;
+    int         tp_comm_partner_wc;
+    int         tp_tag_wc;
+}scorep_wait_state_request_tracking;
+
+
 extern int myrank;
+
+/**
+ * @internal
+ * Structure to hold the \a MPI_COMM_WORLD duplication used in mpi profiling.
+ */
+typedef struct scorep_mpiprofile_world_comm_dup_struct
+{
+    MPI_Group group;                            /** Associated MPI group */
+    MPI_Comm  comm;
+}scorep_mpiprofile_world_comm_dup;
+
+/**
+ * Contains the data of the MPI_COMM_WORLD definition.
+ */
+extern scorep_mpiprofile_world_comm_dup world_comm_dup;
+
+int
+scorep_mpiprofile_get_timepack_from_pool
+(
+    void** free_buffer,
+    int*   index
+);
+
+void
+scorep_mpiprofile_store_timepack_request_in_pool
+(
+    MPI_Request request,
+    int         position
+);
+
+void
+scorep_mpiprofile_free_timepack_pool();
+
+void
+scorep_mpiprofile_init_timepack
+(
+    void*    buf,
+    uint64_t time
+);
+
+int
+scorep_mpiprofiling_rank_to_pe
+(
+    int      rank,
+    MPI_Comm comm,
+    int*     global_rank
+);
 
 void
 scorep_mpiprofile_init
+(
+);
+
+void
+scorep_mpiprofile_init_metrics
 (
 );
 
