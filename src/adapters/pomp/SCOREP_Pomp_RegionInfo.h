@@ -79,12 +79,13 @@ typedef struct
          2. inner parallel region (parallel begin/end events)
          3. enclosing sections construct (sections enter/exit)
          4. individual sections begin/end                                              */
-    SCOREP_RegionHandle        outerParallel; /* SCOREP handle for the outer parallel region */
-    SCOREP_RegionHandle        innerParallel; /* SCOREP handle for the inner parallel region */
-    SCOREP_RegionHandle        outerBlock;    /* SCOREP handle for the enclosing region      */
-    SCOREP_RegionHandle        innerBlock;    /* SCOREP handle for the enclosed region       */
+    SCOREP_RegionHandle outerParallel;        /* SCOREP handle for the outer parallel region */
+    SCOREP_RegionHandle innerParallel;        /* SCOREP handle for the inner parallel region */
+    SCOREP_RegionHandle outerBlock;           /* SCOREP handle for the enclosing region      */
+    SCOREP_RegionHandle innerBlock;           /* SCOREP handle for the enclosed region       */
 #ifdef _OPENMP
-    SCOREP_Pomp_LockHandleType lock;          /* SCOREP handle for lock in critical regions */
+    //SCOREP_Pomp_LockHandleType lock;          /* SCOREP handle for lock in critical regions */
+    SCOREP_PompLock* lock;
 #endif
 
     char*   startFileName;                /* File containing opening statement         */

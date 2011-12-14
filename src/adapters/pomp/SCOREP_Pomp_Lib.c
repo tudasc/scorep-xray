@@ -186,7 +186,7 @@ POMP2_Critical_begin( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_OmpAcquireLock( region->lock );
+        SCOREP_OmpAcquireLock( region->lock->handle, region->lock->acquisition_order );
         SCOREP_EnterRegion( region->innerBlock );
     }
 }
@@ -199,7 +199,7 @@ POMP2_Critical_end( POMP2_Region_handle* pomp_handle )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ExitRegion( region->innerBlock );
-        SCOREP_OmpReleaseLock( region->lock );
+        SCOREP_OmpReleaseLock( region->lock->handle, region->lock->acquisition_order );
     }
 }
 
@@ -728,7 +728,8 @@ POMP2_Set_lock( omp_lock_t* s )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_SET_LOCK ] );
         omp_set_lock( s );
-        SCOREP_OmpAcquireLock( scorep_pomp_get_lock_handle( s ) );
+        SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireLock( s );
+        SCOREP_OmpAcquireLock( lock->handle, lock->acquisition_order );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_SET_LOCK ] );
     }
     else
@@ -744,7 +745,8 @@ POMP2_Unset_lock( omp_lock_t* s )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
-        SCOREP_OmpReleaseLock( scorep_pomp_get_lock_handle( s ) );
+        SCOREP_PompLock* lock = SCOREP_Pomp_GetReleaseLock( s );
+        SCOREP_OmpReleaseLock( lock->handle, lock->acquisition_order );
         omp_unset_lock( s );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
     }
@@ -766,7 +768,8 @@ POMP2_Test_lock( omp_lock_t* s )
         result = omp_test_lock( s );
         if ( result )
         {
-            SCOREP_OmpAcquireLock( scorep_pomp_get_lock_handle( s ) );
+            SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireLock( s );
+            SCOREP_OmpAcquireLock( lock->handle, lock->acquisition_order );
         }
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_LOCK ] );
         return result;
@@ -831,7 +834,8 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_SET_NEST_LOCK ] );
         omp_set_nest_lock( s );
-        SCOREP_OmpAcquireLock( scorep_pomp_get_lock_handle( s ) );
+        SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireNestLock( s );
+        SCOREP_OmpAcquireLock( lock->handle, lock->acquisition_order );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_SET_NEST_LOCK ] );
     }
     else
@@ -847,7 +851,8 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
-        SCOREP_OmpReleaseLock( scorep_pomp_get_lock_handle( s ) );
+        SCOREP_PompLock* lock = SCOREP_Pomp_GetReleaseNestLock( s );
+        SCOREP_OmpReleaseLock( lock->handle, lock->acquisition_order );
         omp_unset_nest_lock( s );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
     }
@@ -869,7 +874,8 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
         result = omp_test_nest_lock( s );
         if ( result )
         {
-            SCOREP_OmpAcquireLock( scorep_pomp_get_lock_handle( s ) );
+            SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireNestLock( s );
+            SCOREP_OmpAcquireLock( lock->handle, lock->acquisition_order );
         }
 
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_NEST_LOCK ] );

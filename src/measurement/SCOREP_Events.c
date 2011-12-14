@@ -678,8 +678,8 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
  * Process an OpenMP acquire lock event in the measurement system.
  */
 void
-SCOREP_OmpAcquireLock( uint32_t lockId/*,
-                                         uint32_t acquire_release_count*/)
+SCOREP_OmpAcquireLock( uint32_t lockId,
+                       uint32_t acquisitionOrder )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = SCOREP_Thread_GetLastTimestamp( location ); // use the timestamp from the associated enter
@@ -688,13 +688,11 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        uint32_t dummy_acquire_release_count = 0;
         OTF2_EvtWriter_OmpAcquireLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                        NULL,
                                        timestamp,
                                        lockId,
-                                       dummy_acquire_release_count );
-        SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
+                                       acquisitionOrder );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -708,8 +706,8 @@ SCOREP_OmpAcquireLock( uint32_t lockId/*,
  * Process an OpenMP release lock event in the measurement system.
  */
 void
-SCOREP_OmpReleaseLock( uint32_t lockId/*,
-                                         uint32_t acquire_release_count*/)
+SCOREP_OmpReleaseLock( uint32_t lockId,
+                       uint32_t acquisitionOrder )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = SCOREP_Thread_GetLastTimestamp( location ); // use the timestamp from the associated enter
@@ -718,13 +716,11 @@ SCOREP_OmpReleaseLock( uint32_t lockId/*,
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        uint32_t dummy_acquire_release_count = 0;
         OTF2_EvtWriter_OmpReleaseLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                        NULL,
                                        timestamp,
                                        lockId,
-                                       dummy_acquire_release_count );
-        SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
+                                       acquisitionOrder );
     }
 
     if ( SCOREP_IsProfilingEnabled() )

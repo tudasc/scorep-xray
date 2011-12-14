@@ -31,24 +31,18 @@
 
 extern SCOREP_SourceFileHandle scorep_pomp_file_handle;
 
-struct scorep_pomp_lock
-{
-    const void*                lock;
-    SCOREP_Pomp_LockHandleType handle;
-};
-
 #define SCOREP_POMP_LOCKBLOCK_SIZE 100
 
 struct scorep_pomp_lock_block
 {
-    struct scorep_pomp_lock        lock[ SCOREP_POMP_LOCKBLOCK_SIZE ];
+    struct SCOREP_PompLock         lock[ SCOREP_POMP_LOCKBLOCK_SIZE ];
     struct scorep_pomp_lock_block* next;
     struct scorep_pomp_lock_block* prev;
 };
 
 static struct scorep_pomp_lock_block* scorep_pomp_lock_head_block = 0;
 static struct scorep_pomp_lock_block* scorep_pomp_lock_last_block = 0;
-static struct scorep_pomp_lock*       scorep_pomp_last_lock       = 0;
+static struct SCOREP_PompLock*        scorep_pomp_last_lock       = 0;
 static int                            scorep_pomp_last_index      = SCOREP_POMP_LOCKBLOCK_SIZE;
 
 static SCOREP_Pomp_LockHandleType     scorep_pomp_current_lock_handle = 0;
@@ -100,7 +94,7 @@ scorep_pomp_lock_close()
     }
 }
 
-SCOREP_Pomp_LockHandleType
+SCOREP_PompLock*
 scorep_pomp_lock_init( const void* lock )
 {
     struct scorep_pomp_lock_block* new_block;
@@ -142,17 +136,19 @@ scorep_pomp_lock_init( const void* lock )
         scorep_pomp_last_lock++;
     }
     /* store lock information */
-    scorep_pomp_last_lock->lock   = lock;
-    scorep_pomp_last_lock->handle = scorep_pomp_current_lock_handle++;
-    return scorep_pomp_last_lock->handle;
+    scorep_pomp_last_lock->lock              = lock;
+    scorep_pomp_last_lock->handle            = scorep_pomp_current_lock_handle++;
+    scorep_pomp_last_lock->acquisition_order = 0;
+    scorep_pomp_last_lock->nest_level        = 0;
+    return scorep_pomp_last_lock;
 }
 
-static struct scorep_pomp_lock*
+static struct SCOREP_PompLock*
 scorep_pomp_get_lock( const void* lock )
 {
     int                            i;
     struct scorep_pomp_lock_block* block;
-    struct scorep_pomp_lock*       curr;
+    struct SCOREP_PompLock*        curr;
 
     /* search all locks in all blocks */
     block = scorep_pomp_lock_head_block;
@@ -173,17 +169,53 @@ scorep_pomp_get_lock( const void* lock )
     return 0;
 }
 
-/** Returns the lock handle pair for a given OMP lock. */
-SCOREP_Pomp_LockHandleType
-scorep_pomp_get_lock_handle( const void* lock )
+
+SCOREP_PompLock*
+SCOREP_Pomp_GetAcquireLock( const void* lock )
 {
-    struct scorep_pomp_lock* lock_struct = scorep_pomp_get_lock( lock );
-    if ( lock_struct != NULL )
-    {
-        return scorep_pomp_get_lock( lock )->handle;
-    }
-    return SCOREP_POMP_INVALID_LOCK;
+    SCOREP_PompLock* lock_struct = scorep_pomp_get_lock( lock );
+    lock_struct->acquisition_order++;
+    return lock_struct;
 }
+
+
+SCOREP_PompLock*
+SCOREP_Pomp_GetReleaseLock( const void* lock )
+{
+    return scorep_pomp_get_lock( lock );
+}
+
+
+SCOREP_PompLock*
+SCOREP_Pomp_GetAcquireNestLock( const void* lock )
+{
+    SCOREP_PompLock* lock_struct = scorep_pomp_get_lock( lock );
+    if ( lock_struct->nest_level == 0 )
+    {
+        lock_struct->acquisition_order++;
+    }
+    lock_struct->nest_level++;
+    return lock_struct;
+}
+
+
+SCOREP_PompLock*
+SCOREP_Pomp_GetReleaseNestLock( const void* lock )
+{
+    SCOREP_PompLock* lock_struct = scorep_pomp_get_lock( lock );
+    lock_struct->nest_level--;
+    return lock_struct;
+}
+
+
+SCOREP_PompLock*
+SCOREP_Pomp_GetLock( const void* lock )
+{
+    // duplication, I (CR) know. The entire lock handling needs cleanup.
+    // I will create a ticket for that.
+    return scorep_pomp_get_lock( lock );
+}
+
 
 void
 scorep_pomp_lock_destroy( const void* lock )

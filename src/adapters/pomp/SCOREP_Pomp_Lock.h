@@ -27,6 +27,7 @@
  */
 
 #include <scorep/SCOREP_PublicTypes.h>
+#include <stdint.h>
 
 /** Definition of the type of the lock handle */
 typedef uint32_t SCOREP_Pomp_LockHandleType;
@@ -52,6 +53,16 @@ enum SCOREP_Pomp_Region_Index
     SCOREP_POMP_TEST_NEST_LOCK
 };
 
+typedef struct SCOREP_PompLock SCOREP_PompLock;
+
+struct SCOREP_PompLock
+{
+    const void*                lock;
+    SCOREP_Pomp_LockHandleType handle;
+    uint32_t                   acquisition_order;
+    uint32_t                   nest_level; // only used for nested locks
+};
+
 /** List of handles for omp regions. The handles must be stored in the same order as
     the corresponding SCOREP_Pomp_Region_Index.
  */
@@ -61,18 +72,39 @@ SCOREP_RegionHandle scorep_pomp_regid[ SCOREP_POMP_REGION_NUM ];
     @param lock The OMP lock which should be initialized
     @returns the new SCOREP lock handle.
  */
-SCOREP_Pomp_LockHandleType
+SCOREP_PompLock*
 scorep_pomp_lock_init( const void* lock );
 
-/** Returns the lock handle for a given OMP lock */
-SCOREP_Pomp_LockHandleType
-scorep_pomp_get_lock_handle( const void* lock );
+/** Returns the scorep lock representation for a given OMP lock when acquiring the lock */
+SCOREP_PompLock*
+SCOREP_Pomp_GetAcquireLock( const void* lock );
+
+
+/** Returns the scorep lock representation for a given OMP lock when releasing the lock */
+SCOREP_PompLock*
+SCOREP_Pomp_GetReleaseLock( const void* lock );
+
+
+/** Returns the scorep lock representation for a given OMP lock when acquiring the nested lock */
+SCOREP_PompLock*
+SCOREP_Pomp_GetAcquireNestLock( const void* lock );
+
+
+/** Returns the scorep lock representation for a given OMP lock when releasing the nested lock */
+SCOREP_PompLock*
+SCOREP_Pomp_GetReleaseNestLock( const void* lock );
+
+
+/** Returns the scorep lock representation for a given OMP lock/critical */
+SCOREP_PompLock*
+SCOREP_Pomp_GetLock( const void* lock );
+
 
 /** Deletes the given lock from the management system */
 void
 scorep_pomp_lock_destroy( const void* lock );
 
-/** Clean up of the locking management. Frres all memeory for locking managment. */
+/** Clean up of the locking management. Frees all memory for locking managment. */
 void
 scorep_pomp_lock_close();
 

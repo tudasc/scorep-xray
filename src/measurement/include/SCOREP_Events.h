@@ -329,12 +329,13 @@ SCOREP_OmpJoin
  *
  * @param lockId A unique ID to identify the lock. Needs to be maintained by
  *               the caller.
+ * @param acquisitionOrder A monotonically increasing id to determine the
+ *                         order of lock acquisitions. Same for corresponding
+ *                         acquire-release events.
  */
 void
-SCOREP_OmpAcquireLock
-(
-    uint32_t lockId
-);
+SCOREP_OmpAcquireLock( uint32_t lockId,
+                       uint32_t acquisitionOrder );
 
 
 /**
@@ -342,12 +343,13 @@ SCOREP_OmpAcquireLock
  *
  * @param lockId A unique ID to identify the lock. Needs to be maintained by
  *               the caller.
+ * @param acquisitionOrder A monotonically increasing id to determine the
+ *                         order of lock acquisitions. Same for corresponding
+ *                         acquire-release events.
  */
 void
-SCOREP_OmpReleaseLock
-(
-    uint32_t lockId
-);
+SCOREP_OmpReleaseLock( uint32_t lockId,
+                       uint32_t acquisitionOrder );
 
 
 /**
