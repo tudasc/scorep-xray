@@ -546,6 +546,13 @@ SCOREP_Instrumenter::parse_command( std::string arg )
     }
     else if ( arg[ 1 ] == 'D' )
     {
+        // we need to escape quotes since they get lost otherwise when calling system()
+        size_t pos = 0;
+        while ( ( pos = arg.find( '"', pos ) ) != std::string::npos )
+        {
+            arg.insert( pos, 1, '\\' );
+            pos += 2;
+        }
         define_flags += " " + arg;
     }
 
