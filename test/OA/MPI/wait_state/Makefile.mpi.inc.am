@@ -1,0 +1,22 @@
+## -*- mode: makefile -*-
+
+check_PROGRAMS += mpi_nonblocking_wait_states
+
+mpi_nonblocking_wait_states_SOURCES =                                       \
+	$(SRC_ROOT)/test/OA/MPI/wait_state/mpi_nonblocking_wait_states.c
+
+mpi_nonblocking_wait_states_CPPFLAGS = $(AM_CPPFLAGS)       \
+    -I$(INC_ROOT)include/scorep				\
+    -I$(PUBLIC_INC_DIR)                     \
+    -I$(INC_DIR_UTIL)                       
+
+
+mpi_nonblocking_wait_states_LDADD =                        \
+    $(LIB_DIR_SCOREP)libscorep_mpi.la
+
+if HAVE_PAPI
+mpi_nonblocking_wait_states_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
+TESTS_MPI += mpi_nonblocking_wait_states
+

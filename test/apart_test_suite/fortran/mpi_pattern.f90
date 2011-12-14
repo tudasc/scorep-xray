@@ -46,7 +46,7 @@ dd%high = basework
 
 DO i = 1, r
   CALL par_do_mpi_work(df_cyclic2, dd, default_sf, c)
-  CALL mpi_commpattern_sendrecv(buf, DIR_UP, 0, 0, c)
+  CALL mpi_commpattern_sendrecv(buf, DIR_UP, 0, 1, c)
 END DO
 
 CALL free_mpi_buf(buf)
