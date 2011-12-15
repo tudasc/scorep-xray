@@ -43,9 +43,6 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 
-#if defined( SCOREP_WITH_OA )
-#include <SCOREP_OA_Init.h>
-#endif
 
 /** Flag set if the measurement sysem was already opened by another adapter.
     If the measurement system is not already initilized, it is assumed that
@@ -120,7 +117,9 @@ MPI_Init( int* argc, char*** argv )
 
         /* complete initialization of measurement core and MPI event handling */
         SCOREP_InitMeasurementMPI( rank );
+    #if !defined( SCOREP_MPI_NO_HOOKS )
         scorep_mpiprofile_init();
+    #endif
     }
 
     if ( event_gen_active )
@@ -200,7 +199,9 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 
         /* complete initialization of measurement core and MPI event handling */
         SCOREP_InitMeasurementMPI( rank );
+    #if !defined( SCOREP_MPI_NO_HOOKS )
         scorep_mpiprofile_init();
+    #endif
     }
 
     if ( event_gen_active )
@@ -239,7 +240,9 @@ MPI_Finalize()
 
     /* finalize MPI event handling */
     SCOREP_FinalizeMeasurementMPI();
+  #if !defined( SCOREP_MPI_NO_HOOKS )
     scorep_mpiprofile_finalize();
+  #endif
 
     /* fake finalization, so that MPI can be used during SCOREP finalization */
     return_val = PMPI_Barrier( MPI_COMM_WORLD );

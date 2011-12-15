@@ -107,6 +107,11 @@ scorep_mpiprofile_init_metrics
 (
 );
 
+void
+scorep_mpiprofile_finalize
+(
+);
+
 void*
 scorep_mpiprofile_get_remote_time_packs
 (

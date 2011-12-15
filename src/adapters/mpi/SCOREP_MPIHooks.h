@@ -33,6 +33,17 @@
 #include "SCOREP_Types.h"
 #include "SCOREP_Mpi_Request.h"
 
+void
+scorep_mpiprofile_init
+(
+);
+
+void
+scorep_mpiprofile_finalize
+(
+);
+
+
 /*----------------------------------------------
  * 1x1 pre- and post- communication hooks
    -----------------------------------------------*/

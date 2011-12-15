@@ -300,6 +300,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         " XNONBLOCK: Extended non-blocking events.\n"
         " XREQTEST: Test events for uncompleted requests.\n",
     },
+    #if !defined( SCOREP_MPI_NO_HOOKS )
     {
         "online_analysis",
         SCOREP_CONFIG_TYPE_BOOL,
@@ -309,6 +310,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         "enable online mpi wait states analysis",
         "enable online mpi wait states analysis"
     },
+    #endif
     SCOREP_CONFIG_TERMINATOR
 };
 
