@@ -3,8 +3,6 @@ AC_INIT([scorep], m4_esyscmd([vendor/common/build-config/generate-package-versio
 
 AC_SCOREP_SUMMARY_INIT([Score-P configuration summary])
 
-#echo "cross_compiling = $cross_compiling"
-
 AC_SCOREP_REVISION
 
 AC_SCOREP_TOPLEVEL_ARGS
