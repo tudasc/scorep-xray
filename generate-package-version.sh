@@ -31,6 +31,7 @@ errormsg=
 
 if test -z "$format"
 then
+    suffix="${suffix:+-}${suffix}"
     if test "$bugfix" -eq 0
     then
         printf "%d.%d%s" "$major" "$minor" "$suffix"
