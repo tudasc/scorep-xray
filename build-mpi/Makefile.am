@@ -97,15 +97,7 @@ installcheck-local:
         test -z "$$fail"
 else
 installcheck-local:
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	($(am__cd) ../test/jacobi/MPI/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
-        test -z "$$fail"
+	@$(am__cd) ../test/jacobi/MPI/C && $(MAKE) $(AM_MAKEFLAGS)
 endif
 else
 installcheck-local:
