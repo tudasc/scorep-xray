@@ -102,11 +102,6 @@ AC_CUTEST_COLOR_TESTS
 AC_SEARCH_LIBS([rint], [m])
 
 AC_CONFIG_FILES([
-    run_otf2_integrity_test.sh:../test/OTF2_Integrity_test/run_otf2_integrity_test.sh.in
-], [
-    chmod u+x run_otf2_integrity_test.sh
-])
-AC_CONFIG_FILES([
     run_otf2_buffer_test.sh:../test/OTF2_Buffer_test/run_otf2_buffer_test.sh.in
 ], [
     chmod u+x run_otf2_buffer_test.sh
