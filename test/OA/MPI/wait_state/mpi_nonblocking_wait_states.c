@@ -55,9 +55,10 @@ main( int    argc,
         MPI_Buffer_attach(mpi_buffer,MPI_BSEND_OVERHEAD+sizeof(int));
 
         MPI_Status status;
-        MPI_Status statuses[4];
-        MPI_Request requests[4];
-        int indices[4];
+        MPI_Status statuses[3];
+        MPI_Request requests[3];
+        MPI_Request request;
+        int indices[3];
         int index;
         if(myrank%2==0)
         {
@@ -66,16 +67,21 @@ main( int    argc,
                 buffer2=1;
                 buffer3=2;
                 buffer4=3;
-                MPI_Issend(&buffer1,1,MPI_INT,comm_partner,100,MPI_COMM_WORLD,&(requests[0]));
-                MPI_Ibsend(&buffer2,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
-                MPI_Irsend(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[2]));
-                MPI_Isend(&buffer4,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[3]));
+                printf("Starting sends...\n");
+//                MPI_Issend(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&request);
+                MPI_Ibsend(&buffer2,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[0]));
+                MPI_Irsend(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
+                MPI_Isend(&buffer4,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[2]));
+//                printf("Cancelling send 1\n");
+//                MPI_Cancel(&request);
+//                printf("Freeing request send 1\n");
+//                PMPI_Request_free(&request);
 
-                //MPI_Cancel(request1);
-                MPI_Wait((&requests[0]),(&statuses[0]));
-                MPI_Waitall(4,requests,statuses);
-                MPI_Waitany(4,requests,&index,statuses);
-                MPI_Waitsome(4,requests,&index,indices,statuses);
+                printf("Waiting for sends...\n");
+
+                MPI_Waitall(3,requests,statuses);
+                MPI_Waitany(3,requests,&index,statuses);
+                MPI_Waitsome(3,requests,&index,indices,statuses);
 
 
         }
@@ -83,28 +89,30 @@ main( int    argc,
         {
                 comm_partner=myrank-1;
                 sleep(5);
-//              MPI_Recv(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&status);
-
-//              MPI_Recv(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&status);
-
-//              MPI_Recv(&buffer1,1,MPI_INT,comm_partner,100,MPI_COMM_WORLD,&status);
-
-//              MPI_Recv(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&status);
-
-                MPI_Irecv(&buffer1,1,MPI_INT,comm_partner,100,MPI_COMM_WORLD,&(requests[0]));
-                MPI_Irecv(&buffer2,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
-                MPI_Irecv(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[2]));
-                MPI_Irecv(&buffer4,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[3]));
+//				  MPI_Recv(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&status);
+//				  printf("0 Received %d\n",buffer1);
+//				  MPI_Recv(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&status);
+//				  printf("1 Received %d\n",buffer1);
+//				  MPI_Recv(&buffer1,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&status);
+//				  printf("2 Received %d\n",buffer1);
+//				  printf("Receives completed\n");
+//                MPI_Irecv(&buffer1,1,MPI_INT,comm_partner,100,MPI_COMM_WORLD,&(requests[0]));
+                printf("Starting receives...\n");
+                MPI_Irecv(&buffer2,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[0]));
+                MPI_Irecv(&buffer3,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[1]));
+                MPI_Irecv(&buffer4,1,MPI_INT,comm_partner,tag,MPI_COMM_WORLD,&(requests[2]));
                 sleep(3);
+                printf("Starting tests...\n");
                 int flag=0;
                 while(!flag)
                 {
 				MPI_Test(&(requests[0]),&flag,&status);
-				MPI_Testany(4,requests,&index,&flag,&status);
-				MPI_Testsome(4,requests,&index,indices,statuses);
-				MPI_Testall(4,requests,&flag,statuses);
+				MPI_Testany(3,requests,&index,&flag,&status);
+				MPI_Testsome(3,requests,&index,indices,statuses);
+				MPI_Testall(3,requests,&flag,statuses);
 
                 }
+                printf("Tests completed\n");
                 //MPI_Waitall(4,requests,statuses);
 
         }

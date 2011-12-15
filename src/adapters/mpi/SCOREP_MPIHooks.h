@@ -413,6 +413,18 @@ SCOREP_Hooks_Post_MPI_Start
 );
 
 void
+SCOREP_Hooks_Pre_MPI_Request_free
+(
+    scorep_mpi_request* scorep_req
+);
+
+void
+SCOREP_Hooks_Post_MPI_Cancel
+(
+    scorep_mpi_request* scorep_req
+);
+
+void
 SCOREP_Hooks_Post_MPI_Asynch_Complete
 (
     scorep_mpi_request* orig_req,

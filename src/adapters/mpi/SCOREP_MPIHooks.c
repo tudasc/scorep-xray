@@ -881,6 +881,60 @@ SCOREP_Hooks_Post_MPI_Start
 }
 
 void
+SCOREP_Hooks_Pre_MPI_Request_free
+(
+    scorep_mpi_request* scorep_req
+)
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
+    if ( !scorep_req )
+    {
+        return;
+    }
+    if ( !scorep_req->online_analysis_pod )
+    {
+        return;
+    }
+
+//	scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->online_analysis_pod;
+//		MPI_Status s;
+//	PMPI_Wait(&(online_analysis_pod->tp_request),&s);
+//	int canceled_flag=0;
+//    int err=PMPI_Test_cancelled(&s,&canceled_flag);
+//    if(err!=MPI_SUCCESS)
+//      printf("mpi failed\n");
+//    if(canceled_flag)
+//      printf("canceled successfully\n");
+
+    /* free online analysis request pod */
+    free( scorep_req->online_analysis_pod );
+}
+
+void
+SCOREP_Hooks_Post_MPI_Cancel
+(
+    scorep_mpi_request* scorep_req
+)
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __FUNCTION__ );
+    if ( !scorep_req )
+    {
+        return;
+    }
+    if ( !scorep_req->online_analysis_pod )
+    {
+        return;
+    }
+    /* cancel piggybacked send operation. In case of recv nothing has to be done, since the piggybacked recv
+     * is triggered only at the completetion time of the original recv*/
+    if ( scorep_req->flags & SCOREP_MPI_REQUEST_SEND )
+    {
+        scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->online_analysis_pod;
+        PMPI_Cancel( &( online_analysis_pod->tp_request ) );
+    }
+}
+
+void
 SCOREP_Hooks_Post_MPI_Asynch_Complete
 (
     scorep_mpi_request* orig_req,
@@ -910,10 +964,14 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete
         return;
     }
 
+    /* test if the communication associated with the request was canceled */
+    int canceled_flag = 0;
+    PMPI_Test_cancelled( status, &canceled_flag );
+
     /* Do online mpi wait states analysis only if it is a recv operation.
      * If waiting for a send operation, nothing to be done here. The associated piggyback send operation
      * will be completed by the timepack pool mamnagement*/
-    if ( ( flags & SCOREP_MPI_REQUEST_RECV ) )
+    if ( ( flags & SCOREP_MPI_REQUEST_RECV ) && !canceled_flag )
     {
         /* if the associated recv operation had a wild-card as a source, get the source from status
          * and translate it to the global rank. Else get it from the pod*/
@@ -1005,10 +1063,14 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
         return;
     }
 
+    /* test if the communication associated with the request was canceled */
+    int canceled_flag = 0;
+    PMPI_Test_cancelled( status, &canceled_flag );
+
     /* Do online mpi wait states analysis only if it is a recv operation.
      * If waiting for a send operation, nothing to be done here. The associated piggyback send operation
      * will be completed by the timepack pool mamnagement*/
-    if ( ( flags & SCOREP_MPI_REQUEST_RECV ) )
+    if ( ( flags & SCOREP_MPI_REQUEST_RECV ) && !canceled_flag )
     {
         /* if the associated recv operation had a wild-card as a source, get the source from status
          * and translate it to the global rank. Else get it from the pod*/

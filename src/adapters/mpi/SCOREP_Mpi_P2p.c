@@ -2061,6 +2061,12 @@ MPI_Request_free( MPI_Request* request )
     }
 
     req = scorep_mpi_request_get( *request );
+  #if !defined( SCOREP_MPI_NO_HOOKS )
+    if ( SCOREP_IS_MPI_HOOKS_ON )
+    {
+        SCOREP_Hooks_Pre_MPI_Request_free( req );
+    }
+  #endif
     if ( req )
     {
         if ( req->flags & SCOREP_MPI_REQUEST_CAN_CANCEL && event_gen_active && xnb_active )
@@ -2155,6 +2161,13 @@ MPI_Cancel( MPI_Request* request )
     }
 
     return_val = PMPI_Cancel( request );
+
+  #if !defined( SCOREP_MPI_NO_HOOKS )
+    if ( SCOREP_IS_MPI_HOOKS_ON )
+    {
+        SCOREP_Hooks_Post_MPI_Cancel( req );
+    }
+  #endif
 
     if ( event_gen_active )
     {
