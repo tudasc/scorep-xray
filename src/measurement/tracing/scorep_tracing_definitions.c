@@ -360,7 +360,6 @@ scorep_write_location_definitions(
                                                            OTF2_LocationType,
                                                            uint64_t,
                                                            uint64_t,
-                                                           uint64_t,
                                                            uint64_t );
     def_location_pointer_t defLocation = ( def_location_pointer_t )
                                          OTF2_DefWriter_WriteLocation;
@@ -379,7 +378,6 @@ scorep_write_location_definitions(
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_location_type_to_otf_location_type( definition->location_type ),
             definition->number_of_events,
-            definition->number_of_definitions,
             definition->timer_resolution,
             definition->location_group_id );
 
@@ -923,59 +921,6 @@ scorep_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer 
 }
 
 
-static void
-scorep_write_number_of_definitions_per_location( OTF2_GlobalDefWriter* global_definition_writer )
-{
-    int* n_locations_per_rank = SCOREP_Mpi_GatherNumberOfLocationsPerRank();
-    int  n_global_locations   = 0;
-    if ( SCOREP_Mpi_GetRank() == 0 )
-    {
-        for ( int rank = 0; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
-        {
-            n_global_locations += n_locations_per_rank[ rank ];
-        }
-    }
-
-    int* n_definitions_per_location = 0;
-    n_definitions_per_location = SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( n_locations_per_rank, n_global_locations );
-
-    if ( SCOREP_Mpi_GetRank() == 0 )
-    {
-        OTF2_Archive_SetNumberOfLocations( scorep_otf2_archive, n_global_locations );
-
-        if ( 0 /* unify failed => fallback */ )
-        {
-            SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteString( global_definition_writer, 0, "" );
-            assert( status == SCOREP_SUCCESS );
-            uint32_t          location_name_id = 0;
-
-            int               location_index = 0; // index into n_definitions_per_location[]
-            for ( int rank = 0; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
-            {
-                for ( int local_location_id = 0; local_location_id < n_locations_per_rank[ rank ]; ++local_location_id )
-                {
-                    uint64_t          global_location_id = ( ( ( uint64_t )local_location_id ) << 32 ) | ( uint64_t )rank;
-                    SCOREP_Error_Code status             = OTF2_GlobalDefWriter_WriteLocation(
-                        global_definition_writer,
-                        global_location_id,
-                        location_name_id,
-                        OTF2_LOCATION_TYPE_CPU_THREAD,
-                        0 /* dummy number of events */,
-                        n_definitions_per_location[ location_index ],
-                        1 /* dummy timer resolution */,
-                        rank /*assume that the rank is global id of process group */  );
-                    assert( status == SCOREP_SUCCESS );
-                    ++location_index;
-                }
-            }
-        }
-    }
-
-    free( n_definitions_per_location );
-    free( n_locations_per_rank );
-}
-
-
 static OTF2_DefWriter*
 scorep_create_local_definition_writer( SCOREP_Location_Definition* definition )
 {
@@ -1028,8 +973,4 @@ SCOREP_Tracing_WriteDefinitions()
         OTF2_GlobalDefWriter_WriteTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
         scorep_write_global_definitions( global_definition_writer );
     }
-    // uses MPI communication. references string handle, so write after strings
-    // this may become obsolete, see comment in scorep_write_location_definitions()
-    // only rank 0 will reference global_definition_writer
-    scorep_write_number_of_definitions_per_location( global_definition_writer );
 }

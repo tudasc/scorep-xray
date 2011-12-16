@@ -93,15 +93,6 @@ int
 SCOREP_Mpi_GetCommWorldSize();
 
 
-int*
-SCOREP_Mpi_GatherNumberOfLocationsPerRank();
-
-
-int*
-SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
-                                                 int  nGlobalLocations );
-
-
 // list of used mpi datatypes
 #define SCOREP_MPI_DATATYPES \
     SCOREP_MPI_DATATYPE( MPI_UNSIGNED_CHAR ) \

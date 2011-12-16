@@ -148,8 +148,7 @@ SCOREP_Unify_Locally( void )
     SCOREP_InitializeDefinitionManager( &scorep_unified_definition_manager,
                                         SCOREP_Memory_GetLocalDefinitionPageManager(),
                                         alloc_hash_tables );
-    // define empty string, used in scorep_write_number_of_definitions_per_location_to_otf2()
-    // for the location name.
+    // define empty string
     scorep_string_definition_define( scorep_unified_definition_manager, "" );
     SCOREP_CopyDefinitionsToUnified( &scorep_local_definition_manager );
     // The unified definitions might differ from the local ones if there were

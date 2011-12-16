@@ -91,34 +91,6 @@ SCOREP_Mpi_CalculateCommWorldSize()
 }
 
 
-int*
-SCOREP_Mpi_GatherNumberOfLocationsPerRank()
-{
-    int* n_locations_per_rank = malloc( SCOREP_Mpi_GetCommWorldSize() * sizeof( int ) );
-    assert( n_locations_per_rank );
-    *n_locations_per_rank = SCOREP_Thread_GetNumberOfLocations();
-    return n_locations_per_rank;
-}
-
-
-int*
-SCOREP_Mpi_GatherNumberOfDefinitionsPerLocation( int* nLocationsPerRank,
-                                                 int  nGlobalLocations )
-{
-    int* n_definitions_per_location = calloc( nGlobalLocations, sizeof( int ) );
-    assert( n_definitions_per_location );
-    int  number_of_definitions = SCOREP_GetNumberOfDefinitions();
-    for ( int i = 0; i < nGlobalLocations; ++i )
-    {
-        // assign all locations the same number of definitions. This is a temporary solution
-        // as we need to duplicate the definitions for every location until OTF2 is able
-        // to handle pre-process definitions.
-        n_definitions_per_location[ i ] = number_of_definitions;
-    }
-    return n_definitions_per_location;
-}
-
-
 int
 SCOREP_Mpi_Send( void*               buf,
                  int                 count,

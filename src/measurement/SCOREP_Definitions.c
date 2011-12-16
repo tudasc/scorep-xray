@@ -319,7 +319,6 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
                                    uint64_t                  numberOfEvents,
-                                   uint64_t                  numberOfDefinitions,
                                    uint64_t                  timerResolution,
                                    uint64_t                  locationGroupId );
 
@@ -343,7 +342,6 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
             &scorep_local_definition_manager,
             name ? name : "" ),
         SCOREP_LOCATION_TYPE_CPU_THREAD,
-        0,
         0,
         SCOREP_GetClockResolution(),
         0 );
@@ -378,7 +376,6 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
         SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
         definition->location_type,
         definition->number_of_events,
-        definition->number_of_definitions,
         definition->timer_resolution,
         definition->location_group_id );
 }
@@ -398,7 +395,6 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
                                    uint64_t                  numberOfEvents,
-                                   uint64_t                  numberOfDefinitions,
                                    uint64_t                  timerResolution,
                                    uint64_t                  locationGroupId )
 {
@@ -410,14 +406,13 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     SCOREP_DEFINITION_ALLOC( Location );
 
     /* locations wont be unfied, therefore no hash value needed */
-    new_definition->global_location_id    = globalLocationId;
-    new_definition->parent                = parent;
-    new_definition->name_handle           = nameHandle;
-    new_definition->location_type         = locationType;
-    new_definition->number_of_events      = numberOfEvents;
-    new_definition->number_of_definitions = numberOfDefinitions;
-    new_definition->timer_resolution      = timerResolution;
-    new_definition->location_group_id     = locationGroupId;
+    new_definition->global_location_id = globalLocationId;
+    new_definition->parent             = parent;
+    new_definition->name_handle        = nameHandle;
+    new_definition->location_type      = locationType;
+    new_definition->number_of_events   = numberOfEvents;
+    new_definition->timer_resolution   = timerResolution;
+    new_definition->location_group_id  = locationGroupId;
 
     /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Location, location );

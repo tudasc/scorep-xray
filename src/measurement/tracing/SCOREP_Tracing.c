@@ -82,15 +82,10 @@ static void
 scorep_trace_finalize_event_writer_cb( SCOREP_Thread_LocationData* locationData,
                                        void*                       userData )
 {
-    int                         number_of_definitions = *( int* )userData;
-
     SCOREP_LocationHandle       location_handle =
         SCOREP_Thread_GetLocationHandle( locationData );
     SCOREP_Location_Definition* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
-
-    /* update number of definitions */
-    location_definition->number_of_definitions = number_of_definitions;
 
     SCOREP_Trace_LocationData* trace_data =
         SCOREP_Thread_GetTraceLocationData( locationData );
@@ -121,10 +116,8 @@ SCOREP_Tracing_FinalizeEventWriters( void )
 
     assert( scorep_otf2_archive );
 
-    int number_of_definitions = SCOREP_GetNumberOfDefinitions();
-
     SCOREP_Thread_ForAllLocations( scorep_trace_finalize_event_writer_cb,
-                                   &number_of_definitions );
+                                   NULL );
 }
 
 
