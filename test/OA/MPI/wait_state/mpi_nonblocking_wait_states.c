@@ -36,7 +36,7 @@ main( int    argc,
 
     if(np%2!=0)
     {
-        printf("Wrong number of processes, has to be even\n",myrank);
+        printf("Wrong number of processes, has to be even\n");
         return 1;
     }
 
