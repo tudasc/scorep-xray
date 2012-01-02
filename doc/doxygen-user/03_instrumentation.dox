@@ -226,14 +226,15 @@ If the automatic compiler-based instrumentation
 (see Section @secref{compiler_instrumentation}) fails, 
 instrumentation can be done manually. Manual instrumentation can
 also be used to augment automatic instrumentation with region or phase
-annotations, which can improve the structure of analysis reports. Furthermore. it
-offers the possibility to record additional, used defined metrics. Generally,
+annotations, which can improve the structure of analysis reports. Furthermore, it
+offers the possibility to record additional, user defined metrics. Generally,
 the main program routine should be instrumented, so that the entire
 execution is measured and included in the analysis.
 
 Instrumentation can be performed in the following ways, depending on the
 programming language used.
 
+Fortran:
 @code
     #include "SCOREP_User.inc"
 
@@ -241,7 +242,7 @@ programming language used.
       SCOREP_USER_REGION_DEFINE( my_region_handle )
       ! more declarations
 
-      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo", SCOREP_USER_REGION_TYPE_COMMON )
       ! do something
       SCOREP_USER_REGION_END( my_region_handle )
 
