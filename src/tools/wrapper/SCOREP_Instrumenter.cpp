@@ -546,6 +546,8 @@ SCOREP_Instrumenter::parse_command( std::string arg )
     }
     else if ( arg[ 1 ] == 'D' )
     {
+        std::cout << "argument: " << arg << std::endl;
+
         // we need to escape quotes since they get lost otherwise when calling system()
         size_t pos = 0;
         while ( ( pos = arg.find( '"', pos ) ) != std::string::npos )
@@ -553,6 +555,16 @@ SCOREP_Instrumenter::parse_command( std::string arg )
             arg.insert( pos, 1, '\\' );
             pos += 2;
         }
+
+        /* Because enclosing quotes may disappear, we must always enclose the argument of
+           with quotes */
+        pos =  arg.find( '=', 0 );
+        if ( pos !=  std::string::npos )
+        {
+            arg.insert( pos + 1, 1, '\"' );
+            arg.append( 1, '\"' );
+        }
+
         define_flags += " " + arg;
     }
 
