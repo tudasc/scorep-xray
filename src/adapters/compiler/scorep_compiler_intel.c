@@ -196,24 +196,20 @@ __VT_IntelEntry( char*     str,
     if ( *id == 0 )
     {
         SCOREP_MutexLock( scorep_compiler_region_mutex );
-        if ( *id == 0 )
-        {
-            uint32_t new_id = scorep_compiler_get_id_from_name( str );
+        uint32_t new_id = scorep_compiler_get_id_from_name( str );
 
-            if ( hash_node = scorep_compiler_hash_get( new_id ) )
-            {
-                /* region entered the first time, register region */
-                scorep_compiler_register_region( hash_node );
-                *id = new_id;
-            }
-            else
-            {
-                *id = SCOREP_COMPILER_FILTER_ID;
-            }
-        }
-        else if ( *id != SCOREP_COMPILER_FILTER_ID )
+        if ( hash_node = scorep_compiler_hash_get( new_id ) )
         {
-            hash_node = scorep_compiler_hash_get( *id );
+            if ( hash_node->region_handle == SCOREP_INVALID_REGION )
+            {
+                /* -- region entered the first time, register region -- */
+                scorep_compiler_register_region( hash_node );
+            }
+            *id = new_id;
+        }
+        else
+        {
+            *id = SCOREP_COMPILER_FILTER_ID;
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
