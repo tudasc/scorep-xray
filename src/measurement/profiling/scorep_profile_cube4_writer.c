@@ -337,7 +337,7 @@ scorep_profile_write_cube_##cube_type(                                          
         cubew_reset( write_set->cube_writer );                                          \
         cubew_set_array( write_set->cube_writer, write_set->callpath_number );          \
         cube_set_known_cnodes_for_metric( write_set->my_cube, metric,                   \
-                                          write_set->bit_vector );                      \
+                                          (char*)write_set->bit_vector );               \
     }                                                                                   \
     /* Iterate over all unified callpathes */                                           \
     for ( uint64_t cp_index = 0; cp_index < write_set->callpath_number; cp_index++ )    \
@@ -492,9 +492,9 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
     /* Calculate the offsets of all ranks and the number of locations per rank */
     if ( write_set->my_rank == 0 )
     {
-        size_t buffer_size = write_set->ranks_number * sizeof( uint32_t );
-        write_set->threads_per_rank = ( uint32_t* )malloc( buffer_size );
-        write_set->offsets_per_rank = ( uint32_t* )malloc( buffer_size );
+        size_t buffer_size = write_set->ranks_number * sizeof( int );
+        write_set->threads_per_rank = ( int* )malloc( buffer_size );
+        write_set->offsets_per_rank = ( int* )malloc( buffer_size );
     }
     SCOREP_Mpi_Gather( &write_set->local_threads, 1, SCOREP_MPI_UNSIGNED,
                        write_set->threads_per_rank, 1, SCOREP_MPI_INT, 0 );
@@ -724,7 +724,7 @@ scorep_profile_write_cube4()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile writing done" );
 
     /* Clean up */
-cleanup:
+    //cleanup:
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Clean up" );
     scorep_profile_delete_cube_writing_data( &write_set );
 }
