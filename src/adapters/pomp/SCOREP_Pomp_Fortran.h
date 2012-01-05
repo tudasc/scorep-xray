@@ -88,6 +88,7 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define POMP2_Unset_nest_lock_U  POMP2_UNSET_NEST_LOCK
 #define POMP2_Test_nest_lock_U   POMP2_TEST_NEST_LOCK
 #define POMP2_Assign_handle_U    POMP2_ASSIGN_HANDLE
+#define POMP2_Lib_get_max_threads_U POMP2_LIB_GET_MAX_THREADS
 #define omp_init_lock_U         OMP_INIT_LOCK
 #define omp_destroy_lock_U      OMP_DESTROY_LOCK
 #define omp_set_lock_U          OMP_SET_LOCK
@@ -146,6 +147,7 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define POMP2_Unset_nest_lock_L  pomp2_unset_nest_lock
 #define POMP2_Test_nest_lock_L   pomp2_test_nest_lock
 #define POMP2_Assign_handle_L    pomp2_assign_handle
+#define POMP2_Lib_get_max_threads_L pomp2_lib_get_max_threads
 #define omp_init_lock_L         omp_init_lock
 #define omp_destroy_lock_L      omp_destroy_lock
 #define omp_set_lock_L          omp_set_lock
