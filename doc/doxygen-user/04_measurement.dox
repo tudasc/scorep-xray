@@ -691,10 +691,10 @@ or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffe
  </dd>
 
  <dt><tt>SCOREP_TOTAL_MEMORY</tt></dt>
- <dd>Total memory in bytes for the measurement system excluding trace memory<br>
+ <dd>Total memory in bytes for the measurement system<br>
   <dl>
      <dt>Type:</dt><dd>Number with size suffixes.</dd>
-     <dt>Default:</dt><dd>1200k</dd>
+     <dt>Default:</dt><dd>16000k</dd>
   </dl>
  </dd>
 
