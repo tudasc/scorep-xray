@@ -732,7 +732,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
 /**
  * Process an OpenMP TaskCreateBegin event in the measurement system.
  * @param regionHandle Region handle of the task region
- * @param taskId       The ID of the created task
+ * @param taskId       The ID of the creator task. Useless parameter.
  */
 void
 SCOREP_OmpTaskCreateBegin( SCOREP_RegionHandle regionHandle,

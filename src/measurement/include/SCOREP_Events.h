@@ -370,7 +370,8 @@ SCOREP_ExitRegionOnException
  *
  * @param regionHandle The previous defined region handle which identifies
  *                     the region where the task is created.
- * @param taskId       The ID of the task beeing created.
+ * @param taskId       The ID of the creator task beeing created. Useless information.
+ *                     This parameter can be dropped.
  */
 void
 SCOREP_OmpTaskCreateBegin
@@ -384,7 +385,8 @@ SCOREP_OmpTaskCreateBegin
  *
  * @param regionHandle The previous defined region handle which identifies
  *                     the region where the task is created.
- * @param taskId       The ID of the task beeing created.
+ * @param taskId       The ID of the creator task. Needed to know the task id if, other
+ *                     tasks have been executed in between.
  */
 void
 SCOREP_OmpTaskCreateEnd
