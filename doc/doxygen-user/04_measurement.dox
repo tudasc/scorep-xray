@@ -834,7 +834,7 @@ or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffe
   </dl>
  </dd>
 
- <dt><tt>SCOREP_FILTER_FILE</tt></dt>
+ <dt><tt>SCOREP_FILTERING_FILE</tt></dt>
  <dd>A file name which contain the filter rules<br>
   <dl>
      <dt>Type:</dt><dd>String</dd>
