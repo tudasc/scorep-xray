@@ -421,6 +421,7 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
     {
         scorep_profile_expand_threads();
     }
+    scorep_profile_sort_threads();
 
     /* Make phases to the root of separate trees */
     if ( processFlags & SCOREP_Profile_Phase )

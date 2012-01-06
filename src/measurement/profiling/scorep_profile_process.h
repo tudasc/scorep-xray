@@ -46,6 +46,16 @@ void
 scorep_profile_expand_threads();
 
 /**
+   We store the locations in the order they appear, which might be different from the
+   logical numbering they get from the threading system, e.g., different from
+   their omp_thread_num() value. Thus, thsi function oders the thread, thus, that the
+   profile writing algorithms find them in the correct order.
+   We assume that the local thread id is encoded in the left 32 bit of the location id.
+ */
+void
+scorep_profile_sort_threads();
+
+/**
    Walks through the master thread and assigns new callpath handles to those nodes
    which have no callpath handle so far.
  */

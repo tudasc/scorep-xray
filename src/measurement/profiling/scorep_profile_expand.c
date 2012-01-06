@@ -220,3 +220,75 @@ scorep_profile_expand_threads()
         thread_root = thread_root->next_sibling;
     }
 }
+
+/**
+   We store the locations in the order they appear, which might be different from the
+   logical numbering they get from the threading system, e.g., different from
+   their omp_thread_num() value. Thus, thsi function oders the thread, thus, that the
+   profile writing algorithms find them in the correct order.
+   We assume that the local thread id is encoded in the left 32 bit of the location id.
+ */
+void
+scorep_profile_sort_threads()
+{
+    uint32_t thread_count = 0;
+    bool     sort         = true;
+
+    /* Determine number of threads */
+    scorep_profile_node* thread_root = scorep_profile.first_root_node;
+    while ( thread_root != NULL )
+    {
+        if ( thread_root->node_type == scorep_profile_node_thread_root )
+        {
+            thread_count++;
+        }
+        thread_root = thread_root->next_sibling;
+    }
+
+    /* Sort threads. First write all root nodes to an array at position determined
+       by their number, then rebuild the child list. */
+    scorep_profile_node** root_list = ( scorep_profile_node** )
+                                      calloc( thread_count, sizeof( scorep_profile_node* ) );
+
+    /* If allocation fails, we omit sorting */
+    if ( root_list != NULL )
+    {
+        /* fill array */
+        thread_root = scorep_profile.first_root_node;
+        while ( thread_root != NULL )
+        {
+            if ( thread_root->node_type == scorep_profile_node_thread_root )
+            {
+                scorep_profile_root_node_data* location_data =
+                    SCOREP_PROFILE_DATA2THREADROOT( thread_root->type_specific_data );
+                //uint64_t index = location_data->thread_id >> 32;
+                uint64_t index = location_data->thread_id & 0x00000000FFFFFFFF;
+
+                /* If the locations are not numbered 0 to thread_count-1
+                   we omit sorting */
+                if ( ( index >= thread_count ) || ( root_list[ index ] != NULL ) )
+                {
+                    sort = false;
+                    break;
+                }
+                root_list[ index ] = thread_root;
+            }
+            thread_root = thread_root->next_sibling;
+        }
+
+        /* rebuild child list */
+        if ( sort )
+        {
+            scorep_profile.first_root_node = root_list[ 0 ];
+            thread_root                    = scorep_profile.first_root_node;
+            for ( uint32_t i = 1; i < thread_count; i++ )
+            {
+                thread_root->next_sibling = root_list[ i ];
+                thread_root               = root_list[ i ];
+            }
+            thread_root->next_sibling = NULL;
+        }
+
+        free( root_list );
+    }
+}
