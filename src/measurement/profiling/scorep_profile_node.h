@@ -421,7 +421,19 @@ extern uint64_t
 scorep_profile_get_exclusive_time( scorep_profile_node* node );
 
 /**
-   Add dense metrics from source to destination.
+   Add inclusive dense metrics from source to destination. Does not add the visit count,
+   because it is an exclusive metric.
+   @param destination A pointer to a node to which the metrics are added.
+   @param source      A pointer to a node which metrics are added to @a destination.
+ */
+extern void
+scorep_profile_merge_node_inclusive( scorep_profile_node* destination,
+                                     scorep_profile_node* source );
+
+/**
+   Add dense metrics from source to destination. In difference to
+   scorep_profile_merge_node_inclusive, it also adds the visit count from source
+   to destination.
    @param destination A pointer to a node to which the metrics are added.
    @param source      A pointer to a node which metrics are added to @a destination.
  */

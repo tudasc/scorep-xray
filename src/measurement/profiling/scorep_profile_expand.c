@@ -35,7 +35,7 @@
 #include "scorep_profile_definition.h"
 
 /**
-   Finds or creates a child of parent which matches type and adds dense metrics from
+   Finds or creates a child of parent which matches type and adds inclusive metrics from
    source.
    @param parent Pointer to a node whose children are are searched for a node that
                  matches @a type.
@@ -53,12 +53,12 @@ scorep_profile_merge_child( scorep_profile_node* parent,
     scorep_profile_node* child = scorep_profile_find_create_child( parent, type,
                                                                    source->first_enter_time );
     /* Add statistics */
-    scorep_profile_merge_node_dense( child, source );
+    scorep_profile_merge_node_inclusive( child, source );
     return child;
 }
 
 /**
-   Adds the callpath to callpath_leaf to destination_root with the metrics from
+   Adds the callpath to callpath_leaf to destination_root with the inclusive metrics from
    data_source.
    @param destination_root Pointer to a node to which the callpath is added.
    @param callpath_leaf Pointer to a node which represents the callpath which is added
@@ -113,7 +113,7 @@ scorep_profile_sum_children( scorep_profile_node* parent )
     while ( child->next_sibling != NULL )
     {
         child = child->next_sibling;
-        scorep_profile_merge_node_dense( parent, child );
+        scorep_profile_merge_node_inclusive( parent, child );
     }
 }
 

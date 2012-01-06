@@ -696,13 +696,12 @@ scorep_profile_get_exclusive_time( scorep_profile_node* node )
 }
 
 void
-scorep_profile_merge_node_dense( scorep_profile_node* destination,
-                                 scorep_profile_node* source )
+scorep_profile_merge_node_inclusive( scorep_profile_node* destination,
+                                     scorep_profile_node* source )
 {
     int i;
 
     /* Merge static values */
-    destination->count += source->count;
     if ( destination->first_enter_time > source->first_enter_time )
     {
         destination->first_enter_time = source->first_enter_time;
@@ -719,6 +718,15 @@ scorep_profile_merge_node_dense( scorep_profile_node* destination,
         scorep_profile_merge_dense_metric( &destination->dense_metrics[ i ],
                                            &source->dense_metrics[ i ] );
     }
+}
+
+void
+scorep_profile_merge_node_dense( scorep_profile_node* destination,
+                                 scorep_profile_node* source )
+{
+    /* Merge static values */
+    destination->count += source->count;
+    scorep_profile_merge_node_inclusive( destination, source );
 }
 
 void
