@@ -172,6 +172,20 @@ SCOREP_Instrumenter::Run()
                 current_file = input_files.substr( old_pos, cur_pos - old_pos );
                 if ( is_source_file( current_file ) )
                 {
+                    /* Make sure it has full path => Some compilers and
+                       user instrumentation use the file name given to the compiler.
+                       Thus, if we make all file names have full pathes, we get a
+                       consistent input. */
+                    if ( current_file[ 0 ] != '/' )
+                    {
+                        static char* cwd = SCOREP_IO_GetCwd( NULL, 0 );
+                        if ( cwd != NULL )
+                        {
+                            current_file = "/" + current_file;
+                            current_file = cwd + current_file;
+                        }
+                    }
+
                     // Determine object file name
                     if ( ( !is_linking ) && ( output_name != "" ) )
                     {
