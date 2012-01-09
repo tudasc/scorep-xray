@@ -23,7 +23,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 
     AC_LANG_PUSH(C)
 
-    AC_CHECK_DECLS([gethostname, fseeko], [], [], [[
+    AC_CHECK_DECLS([gethostname, fseeko, getcwd], [], [], [[
       #include <unistd.h>
       #include <stdio.h>
     ]])
@@ -43,7 +43,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
         [AC_MSG_RESULT(yes);
          AC_DEFINE(HAVE_GETHOSTNAME, 1, [Can link a gethostname function])], 
         [AC_MSG_RESULT(no)]
-    ) # AC_COMPILE_IF_ELSE
+    ) # AC_LINK_IF_ELSE
 
     AC_MSG_CHECKING([for fseeko])
     AC_LINK_IFELSE([
@@ -61,7 +61,27 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
         [AC_MSG_RESULT(yes);
          AC_DEFINE(HAVE_FSEEKO, 1, [Can link a fseeko function])], 
         [AC_MSG_RESULT(no)]
-    ) # AC_COMPILE_IF_ELSE
+    ) # AC_LINK_IF_ELSE
+
+    AC_MSG_CHECKING([for getcwd])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdio.h>
+	    #include <unistd.h>
+	    #include <stdlib.h>
+
+            char* getcwd(char* buf, size_t size);
+ 
+            int main()
+            {
+                char* cwd = getcwd(NULL, 0);
+                return (cwd == NULL ? EXIT_FAILURE : EXIT_SUCCESS);
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_GETCWD, 1, [Can link a getcwd function])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_LINK_IF_ELSE
 
     AC_LANG_POP(C)
 
