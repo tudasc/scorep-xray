@@ -172,7 +172,7 @@ SCOREP_Instrumenter::Run()
                 current_file = input_files.substr( old_pos, cur_pos - old_pos );
                 if ( is_source_file( current_file ) )
                 {
-                    /* Make sure it has full path => Some compilers and
+                    /* Make sure, it has full path => Some compilers and
                        user instrumentation use the file name given to the compiler.
                        Thus, if we make all file names have full pathes, we get a
                        consistent input. */
@@ -183,6 +183,10 @@ SCOREP_Instrumenter::Run()
                         {
                             current_file = "/" + current_file;
                             current_file = cwd + current_file;
+                            char* simplified = SCOREP_CStr_dup( current_file.c_str() );
+                            SCOREP_IO_SimplifyPath( simplified );
+                            current_file = simplified;
+                            free( simplified );
                         }
                     }
 
