@@ -417,6 +417,10 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
     else if ( arg == "--noopari" )
     {
         opari_instrumentation = disabled;
+        if ( is_openmp_application == detect )
+        {
+            is_openmp_application = disabled;
+        }
         return scorep_parse_mode_param;
     }
     else if ( arg == "--user" )
@@ -1274,12 +1278,6 @@ SCOREP_Instrumenter::prepare_opari_linking()
 int
 SCOREP_Instrumenter::link_step()
 {
-    if ( is_openmp_application == enabled &&
-         opari_instrumentation == disabled )
-    {
-        scorep_libs += " -lscorep_pomp_dummy";
-    }
-
     std::string command = compiler_name
                           + " " + input_files
                           + " " + scorep_libs
