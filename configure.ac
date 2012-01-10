@@ -33,6 +33,8 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
     AC_SCOREP_DETECT_PLATFORMS
     AC_SCOREP_WITH_COMPILER_SUITE
     AC_SCOREP_WITH_MPI_COMPILER_SUITE
+    echo $ac_scorep_compilers_backend
+    echo $ac_scorep_compilers_frontend
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            $ac_scorep_compilers_frontend                                    \
