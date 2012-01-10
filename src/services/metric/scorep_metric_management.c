@@ -236,6 +236,8 @@ scorep_metric_finalize_service()
         }
         metric_sources_management_data.overall_number_of_metrics = 0;
 
+        free( all_metric_handles );
+
         /* Set initialization flag */
         scorep_metric_management_initialize = 1;
 

@@ -237,6 +237,7 @@ scorep_metric_rusage_open()
     /* Return if environment variable is empty */
     if ( strlen( env_metrics ) == 0 )
     {
+        free( env_metrics );
         return;
     }
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_RUSAGE=%s", env_metrics );
