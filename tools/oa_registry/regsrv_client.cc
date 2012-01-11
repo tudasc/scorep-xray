@@ -52,7 +52,7 @@ int RegServClient::receive_and_handle_request()
 	int maxlen = MAX_MESSAGE_SIZE;
 	char buf[ MAX_MESSAGE_SIZE ];
 	buf[ 0 ] = 0;
-	bzero( buf, maxlen );
+	memset( buf, '\0', maxlen );
 
 	int length;
 	while ( ( length = scorep_oa_sockets_read_line( sock_, buf, maxlen ) ) == 0 )

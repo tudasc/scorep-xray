@@ -95,13 +95,13 @@ scorep_oa_mri_receive_and_process_requests
     char buffer[ 2000 ];
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     buffer[ 0 ] = 0;
-    bzero( buffer, 2000 );
+    memset( buffer, '\0', 2000 );
 
     while ( scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_STATUS_RUNNING_TO_END
             && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING
             && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {
-        bzero( buffer, 2000 );
+        memset( buffer, '\0', 2000 );
 
         while ( ( length = scorep_oa_connection_read_string( connection, buffer, 2000 ) ) == 0 )
         {

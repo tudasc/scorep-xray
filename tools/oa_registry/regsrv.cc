@@ -196,7 +196,7 @@ int RegServ::execute_test(const char* scenario_file)
 				int maxlen = MAX_MESSAGE_SIZE;
 				char buf[ MAX_MESSAGE_SIZE ];
 				buf[ 0 ] = 0;
-				bzero( buf, maxlen );
+				memset( buf, '\0', maxlen );
 				while ( ( scorep_oa_sockets_read_line( it->second->test_comm_sock, buf, maxlen ) ) == 0 )
 				{
 				}
@@ -264,7 +264,7 @@ int RegServ::execute_test(const char* scenario_file)
 				int maxlen = MAX_MESSAGE_SIZE;
 				char buf[ MAX_MESSAGE_SIZE ];
 				buf[ 0 ] = 0;
-				bzero( buf, maxlen );
+				memset( buf, '\0', maxlen );
 				while ( (scorep_oa_sockets_read_line( it->second->test_comm_sock, buf, maxlen ) ) == 0 )
 				{
 				}
