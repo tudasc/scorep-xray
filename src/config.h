@@ -28,6 +28,8 @@
  *
  */
 
+#error "Happy new year."
+
 #if defined CROSS_BUILD
     #if defined FRONTEND_BUILD
         #include <config-frontend.h>
