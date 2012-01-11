@@ -28,8 +28,17 @@
  *
  */
 
+void
+scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter );
 
 void
-SCOREP_Tracing_WriteDefinitions();
+scorep_tracing_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter );
+
+void
+scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter );
+
+void
+scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer );
+
 
 #endif /* SCOREP_TRACING_DEFINITIONS_H */

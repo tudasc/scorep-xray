@@ -90,7 +90,7 @@ static OTF2_FileSionCallbacks scorep_sion_callbacks =
 
 
 void
-SCOREP_Tracing_RegisterSionCallbacks( OTF2_Archive* archive )
+scorep_tracing_register_sion_callbacks( OTF2_Archive* archive )
 {
     assert( archive );
 

@@ -31,26 +31,40 @@
 #include <stdint.h>
 
 
-OTF2_FileSubstrate
-SCOREP_Tracing_GetFileSubstrate();
-
-OTF2_Compression
-SCOREP_Tracing_GetCompression();
-
-uint64_t
-SCOREP_Tracing_GetChunkSize();
+void
+SCOREP_Tracing_Initialize( void );
 
 
 void
-SCOREP_Tracing_RegisterSionCallbacks( OTF2_Archive* archive );
+SCOREP_Tracing_Finalize( void );
 
 
+/**
+ * Signals, that this process is the master for the OTF2 archive.
+ */
+SCOREP_Error_Code
+SCOREP_Tracing_SetIsMaster( bool isMaster );
+
+
+/**
+ * Get an event writer.
+ */
+OTF2_EvtWriter*
+SCOREP_Tracing_GetEventWriter( void );
+
+/**
+ *  Closes all event writers and collect the number of written events for each.
+ *
+ *  Needs to be called before @a SCOREP_Tracing_WriteDefinitions.
+ */
 void
 SCOREP_Tracing_FinalizeEventWriters( void );
 
-
+/**
+ *  Writes all definitions into the OTF2 archive.
+ */
 void
-SCOREP_Tracing_RegisterMemoryCallbacks( OTF2_Archive* archive );
+SCOREP_Tracing_WriteDefinitions( void );
 
 
 #endif /* SCOREP_TRACING_H */

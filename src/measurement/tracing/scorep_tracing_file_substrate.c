@@ -34,7 +34,7 @@
 
 
 OTF2_FileSubstrate
-SCOREP_Tracing_GetFileSubstrate()
+scorep_tracing_get_file_substrate()
 {
     OTF2_FileSubstrate substrate = OTF2_SUBSTRATE_POSIX;
     if ( SCOREP_Env_UseSionSubstrate() )

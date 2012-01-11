@@ -117,9 +117,8 @@ SCOREP_Trace_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
     #pragma omp critical (trace_on_location_creation)
     {
-        /* SCOREP_Trace_GetEventWriter aborts on failure */
-        trace_data->otf_writer =
-            SCOREP_Trace_GetEventWriter( OTF2_UNDEFINED_UINT64 );
+        /* SCOREP_Tracing_GetEventWriter aborts on failure */
+        trace_data->otf_writer = SCOREP_Tracing_GetEventWriter();
     }
 
     if ( !SCOREP_Mpi_IsInitialized() )
@@ -153,22 +152,4 @@ SCOREP_SetOtf2WriterLocationId( SCOREP_Thread_LocationData* threadLocationData )
     {
         _Exit( EXIT_FAILURE );
     }
-}
-
-uint64_t
-SCOREP_Trace_GetNumberOfEvents( SCOREP_Thread_LocationData* locationData )
-{
-    if ( !SCOREP_IsTracingEnabled() )
-    {
-        return 0;
-    }
-
-    SCOREP_Trace_LocationData* trace_data =
-        SCOREP_Thread_GetTraceLocationData( locationData );
-
-    uint64_t number_of_events;
-    OTF2_EvtWriter_GetNumberOfEvents( trace_data->otf_writer,
-                                      &number_of_events );
-
-    return number_of_events;
 }

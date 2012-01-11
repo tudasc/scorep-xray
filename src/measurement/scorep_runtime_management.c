@@ -61,9 +61,6 @@ static bool scorep_experiment_dir_needs_rename;
 /* length for generated experiment directory names based on timestamp */
 
 
-OTF2_Archive* scorep_otf2_archive = 0;
-
-
 const char*
 SCOREP_GetExperimentDirName()
 {
@@ -263,18 +260,4 @@ SCOREP_RenameExperimentDir()
     {
         printf( "SCOREP final experiment directory: %s\n", new_experiment_dir_name );
     }
-}
-
-OTF2_EvtWriter*
-SCOREP_Trace_GetEventWriter( uint64_t location_id )
-{
-    OTF2_EvtWriter* evt_writer = OTF2_Archive_GetEvtWriter(
-        scorep_otf2_archive, location_id );
-    if ( !evt_writer )
-    {
-        /* aborts */
-        SCOREP_Memory_HandleOutOfMemory();
-    }
-
-    return evt_writer;
 }

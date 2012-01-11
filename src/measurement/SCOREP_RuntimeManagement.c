@@ -212,84 +212,23 @@ scorep_initialization_sanity_checks()
 }
 
 
-static OTF2_FlushType
-scorep_on_trace_pre_flush( void*         userData,
-                           OTF2_FileType fileType,
-                           uint64_t      locationId,
-                           void*         callerData,
-                           bool          final )
-{
-    if ( !SCOREP_Mpi_IsInitialized() )
-    {
-        // flush before MPI_Init, we are lost.
-        assert( false );
-    }
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_TRACING,
-                         "[%d]: %s flush on %s#%" PRIu64 "\n",
-                         SCOREP_Mpi_GetRank(),
-                         final ? "final" : "intermediate",
-                         fileType == OTF2_FILETYPE_GLOBAL_DEFS ? "GlobDef" :
-                         fileType == OTF2_FILETYPE_LOCAL_DEFS ? "Def" : "Evt",
-                         fileType == OTF2_FILETYPE_GLOBAL_DEFS ? 0 : locationId );
-
-    // master/slave and writer id already set during initialization
-    return OTF2_FLUSH;
-}
-
-
-static uint64_t
-scorep_on_trace_post_flush( void*         userData,
-                            OTF2_FileType fileType,
-                            uint64_t      locationId )
-{
-    /* remember that we have flushed the first time
-     * after this point, we can't switch into MPI mode anymore
-     */
-    SCOREP_Otf2_OnFlush();
-
-    return SCOREP_GetClockTicks();
-}
-
-
-static OTF2_FlushCallbacks flush_callbacks =
-{
-    .otf2_pre_flush  = scorep_on_trace_pre_flush,
-    .otf2_post_flush = scorep_on_trace_post_flush
-};
-
-
 void
 scorep_otf2_initialize()
 {
-    if ( !SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() )
     {
-        return;
+        SCOREP_Tracing_Initialize();
     }
+}
 
-    /* @todo croessel step1: remove the "4 *" intoduced on Michael's request
-     * when overflow checking for definitions is implemented.
-     * step2: provide environment variables to adjust the chunck sizes.
-     */
-    scorep_otf2_archive = OTF2_Archive_New( SCOREP_GetExperimentDirName(),
-                                            "traces",
-                                            OTF2_FILEMODE_WRITE,
-                                            SCOREP_Tracing_GetChunkSize(),
-                                            4 * SCOREP_Tracing_GetChunkSize(),
-                                            SCOREP_Tracing_GetFileSubstrate(),
-                                            SCOREP_Tracing_GetCompression() );
-    assert( scorep_otf2_archive );
 
-    SCOREP_Error_Code status;
-    status = OTF2_Archive_SetFlushCallbacks( scorep_otf2_archive,
-                                             &flush_callbacks,
-                                             NULL );
-    assert( status == SCOREP_SUCCESS );
-
-    SCOREP_Tracing_RegisterSionCallbacks( scorep_otf2_archive );
-    SCOREP_Tracing_RegisterMemoryCallbacks( scorep_otf2_archive );
-
-    OTF2_Archive_SetCreator( scorep_otf2_archive, "Score-P " PACKAGE_VERSION );
+void
+scorep_otf2_finalize()
+{
+    if ( SCOREP_IsTracingEnabled() )
+    {
+        SCOREP_Tracing_Finalize();
+    }
 }
 
 
@@ -323,28 +262,14 @@ scorep_profile_initialize()
 void
 scorep_set_otf2_archive_master_slave()
 {
-    if ( !SCOREP_IsTracingEnabled() )
+    if ( SCOREP_IsTracingEnabled() )
     {
-        return;
-    }
-
-    // call this function only once
-    static bool archive_master_slave_already_set = false;
-    assert( !archive_master_slave_already_set );
-    archive_master_slave_already_set = true;
-
-    SCOREP_Error_Code error;
-    if ( SCOREP_Mpi_GetRank() == 0 )
-    {
-        error = OTF2_Archive_SetMasterSlaveMode( scorep_otf2_archive, OTF2_MASTER );
-    }
-    else
-    {
-        error = OTF2_Archive_SetMasterSlaveMode( scorep_otf2_archive, OTF2_SLAVE );
-    }
-    if ( SCOREP_SUCCESS != error )
-    {
-        _Exit( EXIT_FAILURE );
+        SCOREP_Error_Code status =
+            SCOREP_Tracing_SetIsMaster( SCOREP_Mpi_GetRank() == 0 );
+        if ( SCOREP_SUCCESS != status )
+        {
+            _Exit( EXIT_FAILURE );
+        }
     }
 }
 
@@ -710,19 +635,6 @@ scorep_subsystems_deregister()
             fprintf( stderr, "SCOREP de-registered %s subsystem\n",
                      scorep_subsystems[ i ]->subsystem_name );
         }
-    }
-}
-
-
-void
-scorep_otf2_finalize()
-{
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        assert( scorep_otf2_archive );
-        /// @todo? set archive to "unified"/"not unified"
-        OTF2_Archive_Delete( scorep_otf2_archive );
-        scorep_otf2_archive = 0;
     }
 }
 

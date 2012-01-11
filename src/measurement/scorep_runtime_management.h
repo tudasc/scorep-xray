@@ -63,18 +63,6 @@ void
 SCOREP_RenameExperimentDir();
 
 
-/**
- * Archive for trace data. One per process, can contain multiple "location"
- * writers.
- */
-extern OTF2_Archive* scorep_otf2_archive;
-
-/**
- * Get the event writer for this location id, if undefined creates a new one.
- */
-OTF2_EvtWriter*
-SCOREP_Trace_GetEventWriter( uint64_t location_id );
-
 /** @brief Did the first buffer flush happened, of so we can't switch to MPI
  *  anymore.
  */

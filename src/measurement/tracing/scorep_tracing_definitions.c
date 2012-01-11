@@ -838,8 +838,8 @@ scorep_write_callpath_definitions( void*                     writerHandle,
 }
 
 
-static void
-scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
+void
+scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, STRING, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
@@ -856,8 +856,8 @@ scorep_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, PARAMETER, localDefinitionWriter );
 }
 
-static void
-scorep_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
+void
+scorep_tracing_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
 {
     extern SCOREP_ClockOffset* scorep_clock_offset_head;
     for ( SCOREP_ClockOffset* clock_offset = scorep_clock_offset_head;
@@ -874,8 +874,8 @@ scorep_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
 }
 
 #if HAVE( SCOREP_DEBUG )
-static void
-scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
+void
+scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
     extern bool scorep_debug_unify;
     if ( !scorep_debug_unify )
@@ -895,16 +895,16 @@ scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_callpath_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 #else
-static inline void
-scorep_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
+void
+scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 {
     return;
 }
 #endif
 
 
-static void
-scorep_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer )
+void
+scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer )
 {
     assert( SCOREP_Mpi_GetRank() == 0 );
     assert( scorep_unified_definition_manager );
@@ -920,53 +920,4 @@ scorep_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer 
     scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
-}
-
-
-void
-SCOREP_Tracing_WriteDefinitions()
-{
-    assert( scorep_otf2_archive );
-
-    /* Write for all local locations the same local definition file */
-    SCOREP_CreateExperimentDir();
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
-    {
-        OTF2_DefWriter* local_definition_writer = OTF2_Archive_GetDefWriter(
-            scorep_otf2_archive,
-            definition->global_location_id );
-        if ( !local_definition_writer )
-        {
-            /* aborts */
-            SCOREP_Memory_HandleOutOfMemory();
-        }
-
-        scorep_write_mappings( local_definition_writer );
-        scorep_write_clock_offsets( local_definition_writer );
-        scorep_write_local_definitions( local_definition_writer );
-
-        OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
-                                     local_definition_writer );
-    }
-    SCOREP_DEFINITION_FOREACH_WHILE();
-
-
-    uint64_t epoch_begin;
-    uint64_t epoch_end;
-    SCOREP_GetGlobalEpoch( &epoch_begin, &epoch_end );
-    if ( SCOREP_Mpi_GetRank() == 0 )
-    {
-        OTF2_GlobalDefWriter* global_definition_writer =
-            OTF2_Archive_GetGlobalDefWriter( scorep_otf2_archive );
-        if ( !global_definition_writer )
-        {
-            /* aborts */
-            SCOREP_Memory_HandleOutOfMemory();
-        }
-
-        OTF2_GlobalDefWriter_WriteTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
-        scorep_write_global_definitions( global_definition_writer );
-
-        /* There is no OTF2_Archive_CloseGlobalDefWriter in OTF2 */
-    }
 }
