@@ -268,6 +268,13 @@ SCOREP_RenameExperimentDir()
 OTF2_EvtWriter*
 SCOREP_Trace_GetEventWriter( uint64_t location_id )
 {
-    return OTF2_Archive_GetEvtWriter( scorep_otf2_archive,
-                                      location_id );
+    OTF2_EvtWriter* evt_writer = OTF2_Archive_GetEvtWriter(
+        scorep_otf2_archive, location_id );
+    if ( !evt_writer )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+
+    return evt_writer;
 }

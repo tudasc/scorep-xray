@@ -117,14 +117,9 @@ SCOREP_Trace_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
     #pragma omp critical (trace_on_location_creation)
     {
+        /* SCOREP_Trace_GetEventWriter aborts on failure */
         trace_data->otf_writer =
             SCOREP_Trace_GetEventWriter( OTF2_UNDEFINED_UINT64 );
-    }
-
-    if ( !trace_data->otf_writer )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_ENOMEM, "Can't create event buffer" );
-        _Exit( EXIT_FAILURE );
     }
 
     if ( !SCOREP_Mpi_IsInitialized() )

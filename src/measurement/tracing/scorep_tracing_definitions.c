@@ -45,6 +45,8 @@
 #include <scorep_mpi.h>
 #include <scorep_clock_synchronization.h>
 
+#include <SCOREP_Memory.h>
+
 #include <scorep_definitions.h>
 #include <scorep_definition_structs.h>
 #include <scorep_definition_macros.h>
@@ -921,28 +923,6 @@ scorep_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer 
 }
 
 
-static OTF2_DefWriter*
-scorep_create_local_definition_writer( SCOREP_Location_Definition* definition )
-{
-    OTF2_DefWriter* definition_writer =
-        OTF2_Archive_GetDefWriter( scorep_otf2_archive,
-                                   definition->global_location_id );
-
-    assert( definition_writer );
-    return definition_writer;
-}
-
-
-static OTF2_GlobalDefWriter*
-scorep_create_global_definition_writer()
-{
-    OTF2_GlobalDefWriter* global_definition_writer =
-        OTF2_Archive_GetGlobalDefWriter( scorep_otf2_archive );
-    assert( global_definition_writer );
-    return global_definition_writer;
-}
-
-
 void
 SCOREP_Tracing_WriteDefinitions()
 {
@@ -952,25 +932,41 @@ SCOREP_Tracing_WriteDefinitions()
     SCOREP_CreateExperimentDir();
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
     {
-        OTF2_DefWriter* local_definition_writer =
-            scorep_create_local_definition_writer( definition );
+        OTF2_DefWriter* local_definition_writer = OTF2_Archive_GetDefWriter(
+            scorep_otf2_archive,
+            definition->global_location_id );
+        if ( !local_definition_writer )
+        {
+            /* aborts */
+            SCOREP_Memory_HandleOutOfMemory();
+        }
+
         scorep_write_mappings( local_definition_writer );
         scorep_write_clock_offsets( local_definition_writer );
         scorep_write_local_definitions( local_definition_writer );
+
         OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
                                      local_definition_writer );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 
 
-    OTF2_GlobalDefWriter* global_definition_writer = NULL;
-    uint64_t              epoch_begin;
-    uint64_t              epoch_end;
+    uint64_t epoch_begin;
+    uint64_t epoch_end;
     SCOREP_GetGlobalEpoch( &epoch_begin, &epoch_end );
     if ( SCOREP_Mpi_GetRank() == 0 )
     {
-        global_definition_writer = scorep_create_global_definition_writer();
+        OTF2_GlobalDefWriter* global_definition_writer =
+            OTF2_Archive_GetGlobalDefWriter( scorep_otf2_archive );
+        if ( !global_definition_writer )
+        {
+            /* aborts */
+            SCOREP_Memory_HandleOutOfMemory();
+        }
+
         OTF2_GlobalDefWriter_WriteTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
         scorep_write_global_definitions( global_definition_writer );
+
+        /* There is no OTF2_Archive_CloseGlobalDefWriter in OTF2 */
     }
 }
