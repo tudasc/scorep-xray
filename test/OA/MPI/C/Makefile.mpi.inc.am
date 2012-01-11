@@ -15,16 +15,6 @@ oa_c_test_mpi_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_DIR_UTIL)                       \
     -DSCOREP_USER_ENABLE
 
-if SCOREP_COMPILER_IBM
-oa_c_test_mpi_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
-else
-oa_c_test_mpi_CPPFLAGS += -DSCOREP_USER_ENABLE=1
-endif
-
-if SCOREP_COMPILER_PGI
-oa_c_test_mpi_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
-endif
-
 oa_c_test_mpi_LDADD =                        \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
 
