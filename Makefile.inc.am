@@ -272,7 +272,7 @@ endif # SVN_CONTROLLED
 
 bitten-copy-tarball-to-prefix: $(distdir).tar.gz
 	$(MKDIR_P) $(DESTDIR)$(prefix)
-	$(INSTALL_DATA) $(distdir).tar.gz $(DESTDIR)$(prefix)/
+	$(INSTALL_DATA) $(distdir).tar.gz $(DESTDIR)$(prefix)/$(PACKAGE)-latest.tar.gz
 
 bitten-print-environment:
 	env
