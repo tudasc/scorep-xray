@@ -33,10 +33,10 @@ following kinds of events:
   </li>
 </ul>
 
-The @scorep instrumenter command <tt>scorep</tt> automatically takes
+The @scorep instrumentor command <tt>scorep</tt> automatically takes
 care of compilation and linking to produce an instrumented executable,
 and should be prefixed to compile and link commands.  Often this only
-requires prefixing definitions for @verb{$(CC)} or @verb{$(MPICC)} (and
+requires prefixing definitions for @verb{CC} or @verb{MPICC} (and
 equivalents) in Makefiles.  
 
 When using Makefiles, it is often convenient to define a "preparation preposition"
@@ -54,7 +54,7 @@ These can make it easier to prepare an instrumented version of the program with
 while default builds (without specifying <tt>PREP</tt> on the command line)
 remain fully optimized and without instrumentation.
 
-When compiling without the @scorep instrumenter, the
+When compiling without the @scorep instrumentor, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
@@ -71,7 +71,7 @@ The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whe
 The <tt>scorep-config</tt> command can also be used to determine the right compiler
 flags for specifying the include directory of the <tt>SCOREP_User.h</tt> or
 <tt>SCOREP_User.inc</tt> header files when compiling without using the @scorep
-instrumenter, necessary defines and compiler instrumentation flags:
+instrumentor, necessary defines and compiler instrumentation flags:
 @verbatim
     scorep-config --cflags [--fortran] [--user] [--nocompiler]
 @endverbatim
@@ -88,7 +88,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 @mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
 
   <table border=1 cellspacing=0>
-    <caption>@scorep instrumenter option overview @tablabel{instopts}</caption>
+    <caption>@scorep instrumentor option overview @tablabel{instopts}</caption>
     <tr>
       <th align="center" valign="middle" style="width:8em;">Type</th>
       <th align="center" valign="middle" style="width:8em;">Switch</th>
@@ -147,7 +147,7 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
   </table>
 
-When the instrumenter determines that MPI or OpenMP are being used, it
+When the instrumentor determines that MPI or OpenMP are being used, it
 automatically enables MPI library instrumentation and OPARI2-based OpenMP
 instrumentation, respectively.  The default set of instrumented MPI
 library functions is specified when @scorep is installed.  All OpenMP
@@ -166,11 +166,11 @@ result if all are used to instrument the same routines). Note that enabling
 PDToolkit instrumentation automatically enables @scorep user instrumentation,
 because it inserts @scorep user macros into the source code.
 
-Sometimes it is desirable to explicitly direct the @scorep instrumenter to
+Sometimes it is desirable to explicitly direct the @scorep instrumentor to
 do nothing except execute the associated compile/link command. For such cases 
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
 <tt>--noopari</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
-performed, this can help verify that the @scorep instrumenter correctly
+performed, this can help verify that the @scorep instrumentor correctly
 handles the compile/link commands. 
 
 @section compiler_instrumentation Automatic compiler instrumentation
@@ -200,7 +200,7 @@ number of different compilers:
   <li> Intel compilers (version 10 or later, Linux)</li>
   <li> SUN Studio compilers (Linux, Fortran only)</li>
 </ul>
-In all cases, @scorep supports automatic instrumentation of C, C++ and
+In all cases, @scorep supports automatic instrumentation of C, C++ and,
 Fortran codes, except for the SUN Studio compilers which only provide
 appropriate support in their Fortran compiler.
 
@@ -277,7 +277,7 @@ C++ only:
     }
 @endcode
 
-Region handles (<tt>my_name_handle</tt>) should be registered in each annotated
+Region handles (<tt>my_region_handle</tt>) should be registered in each annotated
 function/subroutine prologue before use within the associated body, and should
 not already be declared in the same program scope. 
  
@@ -356,12 +356,12 @@ File 2:
     }
 @endcode
 
-@note In Fortran are these macros not available.
+@note These macros are not available in Fortran.
 
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are
-ignored. If the @scorep instrumenter <tt>--user</tt> flag is used, the
+ignored. If the @scorep instrumentor <tt>--user</tt> flag is used, the
 <tt>SCOREP_USER_ENABLE</tt> symbol will be defined automatically. Also note, that Fortran
 source files instrumented this way have to be preprocessed with the C
 preprocessor (CPP).
@@ -527,7 +527,7 @@ C/C++:
 
 If you manually instrument the desired user functions and regions of your
 application source files using the @pomp2 <tt>INST</tt> directives described
-below, the @scorep instrumenter <tt>--opari</tt> flag will generate
+below, the @scorep instrumentor <tt>--opari</tt> flag will generate
 instrumentation for them. @pomp2 instrumentation directives are supported for
 Fortran and C/C++. The main advantages are that
 <ul>
@@ -623,7 +623,7 @@ be disabled with @verb{--nocompiler}.)
 @subsection tau_inst_limitations Limitations
 @seclabel{tau_inst_limitations}
 
-Currently the support for the PDT-based source-code instrumenter still has a number 
+Currently the support for the PDT-based source-code instrumentor still has a number 
 of limitations:
 <ul>
   <li>

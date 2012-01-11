@@ -24,7 +24,7 @@ described as follows:
 </ul>
 We shall go through these three steps one after the other in the next
 sections. This will be followed by a full workflow example. For
-getting a detailed presentations of available features, see Section
+getting detailed presentations of available features, see Section
 @secref{instrumentation} for the instrumentation step and 
 Section @secref{measurement} for the measurement. 
 
@@ -38,7 +38,7 @@ Most of these tools are focused on certain special aspects that are
 significant in the code optimization process, but none of them
 provides the full picture. In the traditional
 workflow, each tool used to have its own measurement system, and 
-hence its own instrumenter,
+hence its own instrumentor,
 so the user was forced to instrument his code more than once if more
 than one class of features of the application was to be investigated. 
 One of the key advantages of @scorep is that it provides an
@@ -58,61 +58,76 @@ use selective manual instrumentation and measurement instead.
 For the moment, we shall however start the procedure in an automatic
 way to keep things simple for novice users.
 
-To this end, we need to ask the @scorep instrumenter to take care of
+To this end, we need to ask the @scorep instrumentor to take care of
 all the necessary instrumentation of user and @mpi functions. This is
 done by using the <tt>scorep</tt> command that needs to be
 prefixed to all the compile and link commands usually employed to
 build the application. Thus, an application executable <tt>app</tt> that
 is normally generated from the two source files <tt>app1.f90</tt> and
 <tt>app2.f90</tt> via the command
+
 @code
-  mpif90 app1.90 app2.f90 -o app
+  mpif90 app1.f90 app2.f90 -o app
 @endcode
+
 will now be built by
+
 @code
-  scorep  mpif90 app1.90 app2.f90 -o app
+  scorep  mpif90 app1.f90 app2.f90 -o app
 @endcode
-using the @scorep instrumenter.
+
+using the @scorep instrumentor.
 
 In practice one will usually perform compilation and linking in
 separate steps, and it is not necessary to compile all source files at
 the same time (e.g., if makefiles are used). It is possible to use the
-@scorep instrumenter in such a case too, and this actually gives more
+@scorep instrumentor in such a case too, and this actually gives more
 flexibility to the user. Specifically, it is often sufficient to use
-the instrumenter not in all compilations but only in those that deal
+the instrumentor not in all compilations but only in those that deal
 with source files containing MPI code. However, when invoking the
-linker, the instrumenter must \emph{always} be used. 
+linker, the instrumentor must \emph{always} be used. 
 
 When makefiles are employed to build the application, it is convenient
 to define a placeholder variable to indicate whether a ``preparation''
 step like an instrumentation is desired or only the pure compilation
 and linking. For example, if this variable is called <tt>PREP</tt> then
 the lines defining the C compiler in the makefile can be changed from
+
 @code
   MPICC = mpicc
+
 @endcode
+
 to
+
 @code
   MPICC = $(PREP) mpicc
 @endcode
+
 (and analogously for linkers and other compilers). One can then use
 the same makefile to either build an instrumented version with the
+
 @code
   make PREP="scorep" 
 @endcode
+
 command or a fully optimized and not instrumented default build by
 simply using
+
 @code
   make 
 @endcode
+
 in the standard way, i.e. without specifying <tt>PREP</tt> on the
 command line. Of course it is also possible to define the same
 compiler twice in the makefile, once with and once without the <tt>PREP</tt>
 variable, as in
+
 @code
    MPICC          = $(PREP) mpicc
    MPICC_NO_INSTR =         mpicc
 @endcode
+
 and to assign the former to those source files that must be
 instrumented and the latter to those files that do not need this.
 
@@ -209,7 +224,7 @@ This call sequence will create a number of auxiliary C source files
 containing the original source code and a number of commands
 introduced by the measurement system in order to enable the latter to
 create the required measurements when the code is actually run. These
-modified source files are then complied and linked, thus producing the
+modified source files are then compiled and linked, thus producing the
 desired executable named <tt>jacobi</tt>. 
 
 The actual measurement process is then initiated, e.g.,  by the call
@@ -219,7 +234,7 @@ The actual measurement process is then initiated, e.g.,  by the call
 As indicated above, the output data of this process will be stored in
 a newly created directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> whose name
 is built up from the date and time when the measurement was started
-and an additional five-digit identification number. 
+and an additional identification number. 
 
 As we had not explicitly set any @scorep related environment variables,
 the tracing mode was active by default. Therefore, this subdirectory
@@ -235,7 +250,7 @@ A tool like Vampir can then be used to give a visual representation of
 the information contained in these files.
 
 If we had set the variable <tt>SCOREP_ENABLE_PROFILING</tt> to <tt>true</tt>, 
-we would additionally have have obtained a file called <tt>profile.cubex</tt> 
+we would additionally have obtained a file called <tt>profile.cubex</tt> 
 in the directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>. This file contains
 the profiling data that can then, e. g., be visually analyzed with
 the help of CUBE.

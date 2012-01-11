@@ -27,7 +27,7 @@ the development of this system within the SILC and PRIMA projects were:
  <li> @href{http://www.rz.rwth-aachen.de,RWTH Aachen}, </li>
  <li> @href{http://www.tu-dresden.de/zih,TU Dresden}, </li>
  <li> @href{http://www.lrr.in.tum.de,TU München}, </li>
- <li> @href{http://nic.uoregon.edu/prl,University of Oregon}, and</li>
+ <li> and @href{http://nic.uoregon.edu/prl,University of Oregon} </li>
 </ul>
   
 The goal of the project was to simplify the analysis of the behaviour
@@ -53,7 +53,7 @@ each analysis tool had its own instrumentation system, so the user
 was commonly forced to repeat the instrumentation procedure if more
 than one tool was to be employed. 
 In this context, @scorep offers the user a maximum of convenience by
-providing the Opari2 instrumenter as a common infrastructure for a
+providing the Opari2 instrumentor as a common infrastructure for a
 number of analysis tools like
 @href{http://www.lrr.in.tum.de/periscope,Periscope}, 
 @href{http://www.scalasca.org,Scalasca},
@@ -68,7 +68,7 @@ better scaling of the tools with respect to both the run time of the
 process to be analyzed and the number of cores to be used.
 
 @scorep supports the programming paradigms @emph{serial},
-@emph{OpenMP}, @emph{MPI} and @emph{hybrid} (MPI combined with
+@emph{OpenMP}, @emph{MPI}, and @emph{hybrid} (MPI combined with
 OpenMP).
 
 
@@ -95,8 +95,8 @@ Performance optimization is a process that is usually executed in a
 work cycle consisting of a number of individual steps as indicated
 in Figure @figref{perf-opt-cycle}.
 
-@img{perf-opt-cycle.png,perf-opt-cycle, The performance optimization
-  cycle, width=0.85\textwidth} 
+@img{perf-opt-cycle.png,perf-opt-cycle, The performance optimization cycle,
+width=0.85\textwidth} 
 
 Thus, the process always begins with the original application in its
 unoptimized state. This application needs to be instrumented, i.\ e.\ it
@@ -164,8 +164,8 @@ ready for a re-entry into the optimization cycle.
 @seclabel{overview}
 
 In order to allow the user to perform such an optimization of his code
-(typically written in Fortran, C or C++ and implemented 
-in a serial way or using a parallelization via OpenMP, MPI or a
+(typically written in Fortran, C, or C++ and implemented 
+in a serial way or using a parallelization via OpenMP, MPI, or a
 combination thereof), the @scorep system provides a number of
 components that interact with each other and with external tools. A
 graphical overview of this structure is given in Fig.\ @figref{score-p-overview}.
@@ -181,10 +181,10 @@ detects the programming paradigm by parsing the original build
 instructions and utilizes appropriate and configurable methods of
 instrumentation. These are currently
 <ul>
- <li> compiler instrumentation,</li>
+ <li> compiler instrumentation, </li>
  <li> MPI library interposition, </li>
- <li> source code instrumentation via the TAU instrumenter, and </li>
- <li> OpenMP source code instrumentation using Opari2.</li>
+ <li> source code instrumentation via the TAU instrumentor, </li>
+ <li> and OpenMP source code instrumentation using Opari2. </li>
 </ul>
 
 While the first three of these methods are based on using tools
@@ -249,7 +249,7 @@ data is passed to the @scorep's profiling back-end CUBE4 for
 post mortem analysis using Scalasca or TAU or is used directly through
 the on-line access interface by Periscope. Also in profiling mode,
 @scorep supports the automatic detection of MPI wait states. Usually
-such inefficiencies are important bottle\-necks and are thoroughly
+such inefficiencies are important bottlenecks and are thoroughly
 investigated by means of automatic trace analysis and subsequent
 visual analysis using a time-line representation. In the case of
 @scorep wait time profiling, inefficiencies are detected immediately
