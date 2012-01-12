@@ -238,7 +238,7 @@ SCOREP_Tracing_Finalize()
 {
     assert( scorep_otf2_archive );
     /// @todo? set archive to "unified"/"not unified"
-    OTF2_Archive_Delete( scorep_otf2_archive );
+    OTF2_Archive_Close( scorep_otf2_archive );
     scorep_otf2_archive = 0;
 }
 
