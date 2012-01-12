@@ -55,7 +55,7 @@
 static OTF2_Archive* scorep_otf2_archive;
 
 
-/** @todo croessel in OTF2_Archive_New we need to specify an event
+/** @todo croessel in OTF2_Archive_Open we need to specify an event
     chunk-size and a definition chunk size. the chnunk size need to be
     larger than the largest item that is written. events are relatively
     small whereas some definition record grow with the number of
@@ -216,13 +216,13 @@ SCOREP_Tracing_Initialize()
      * step2: provide environment variables to adjust the chunck sizes.
      * For the scorep_tracing_get_file_substrate() see paradigm/scorep_sion_*.c
      */
-    scorep_otf2_archive = OTF2_Archive_New( SCOREP_GetExperimentDirName(),
-                                            "traces",
-                                            OTF2_FILEMODE_WRITE,
-                                            SCOREP_TRACING_CHUNK_SIZE,
-                                            4 * SCOREP_TRACING_CHUNK_SIZE,
-                                            scorep_tracing_get_file_substrate(),
-                                            scorep_tracing_get_compression() );
+    scorep_otf2_archive = OTF2_Archive_Open( SCOREP_GetExperimentDirName(),
+                                             "traces",
+                                             OTF2_FILEMODE_WRITE,
+                                             SCOREP_TRACING_CHUNK_SIZE,
+                                             4 * SCOREP_TRACING_CHUNK_SIZE,
+                                             scorep_tracing_get_file_substrate(),
+                                             scorep_tracing_get_compression() );
     assert( scorep_otf2_archive );
 
     scorep_tracing_register_flush_callbacks( scorep_otf2_archive );
