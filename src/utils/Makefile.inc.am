@@ -13,7 +13,7 @@
 #
 # See the COPYING file in the package base directory for details.
 
-## file       src/trunk/src/utils/Makefile.inc.am
+## file       src/utils/Makefile.inc.am
 
 noinst_LTLIBRARIES += libscorep_utils.la
 

@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/trunk/src/measurement/paradigm/scorep_sion_mpi.c
+ * @file       src/measurement/paradigm/scorep_sion_mpi.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha

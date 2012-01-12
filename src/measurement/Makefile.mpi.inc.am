@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       src/trunk/src/measurement/Makefile.mpi.inc.am
+## file       src/measurement/Makefile.mpi.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 

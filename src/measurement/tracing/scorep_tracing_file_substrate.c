@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/trunk/src/measurement/tracing/scorep_tracing_file_substrate.c
+ * @file       src/measurement/tracing/scorep_tracing_file_substrate.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha

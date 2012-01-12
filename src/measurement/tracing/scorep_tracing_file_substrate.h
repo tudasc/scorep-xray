@@ -20,7 +20,7 @@
 
 
 /**
- * @file       src/trunk/src/measurement/tracing/scorep_tracing_file_substrate.h
+ * @file       src/measurement/tracing/scorep_tracing_file_substrate.h
  * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  */
