@@ -35,6 +35,7 @@
 #include "scorep_thread.h"
 #include "scorep_status.h"
 #include "scorep_mpi.h"
+#include "SCOREP_Tracing.h"
 #include <stdlib.h>
 
 
@@ -60,7 +61,7 @@ SCOREP_Trace_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData )
     if ( traceLocationData && traceLocationData->otf_writer )
     {
         traceLocationData->otf_writer = 0;
-        // writer will be deleted by otf in call to OTF2_Archive_Delete()
+        // writer will be deleted by otf in call to OTF2_Archive_Close()
     }
 }
 

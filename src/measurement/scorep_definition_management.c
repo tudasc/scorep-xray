@@ -49,6 +49,7 @@
 #include "scorep_status.h"
 #include <jenkins_hash.h>
 #include "tracing/scorep_tracing_definitions.h"
+#include "tracing/SCOREP_Tracing.h"
 
 
 SCOREP_DefinitionManager  scorep_local_definition_manager;
