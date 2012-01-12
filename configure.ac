@@ -36,8 +36,8 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            mpi_compiler_suite                                               \
-           $ac_scorep_compilers_frontend                                    \ 
-           $ac_scorep_compilers_backend                                     \ 
+           $ac_scorep_compilers_frontend                                    \
+           $ac_scorep_compilers_backend                                     \
            user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
