@@ -17,15 +17,9 @@ ${proto:c}
       ${decl}
       SCOREP_MPI_EVENT_GEN_OFF();
       ${xblock}
-      uint64_t matchingId = scorep_collective_matching_sequence++;
-
       /* Enters region too. */
       uint64_t start_time_stamp
-        = SCOREP_MpiCollectiveBegin(scorep_mpi_regid[SCOREP__${name|uppercase}],
-                                    SCOREP_MPI_COMM_HANDLE(comm),
-                                    root_loc,
-                                    SCOREP_COLLECTIVE_${name|uppercase},
-                                    matchingId);
+        = SCOREP_MpiCollectiveBegin(scorep_mpi_regid[SCOREP__${name|uppercase}]);
 
       return_val = ${call:pmpi};
       
@@ -37,7 +31,8 @@ ${proto:c}
       /* Leaves region too. */
       SCOREP_MpiCollectiveEnd(scorep_mpi_regid[SCOREP__${name|uppercase}],
                               SCOREP_MPI_COMM_HANDLE(comm),
-                              matchingId,
+                              root_loc,
+                              SCOREP_COLLECTIVE_${name|uppercase},
                               ${mpi:sendcount},
                               ${mpi:recvcount});
 

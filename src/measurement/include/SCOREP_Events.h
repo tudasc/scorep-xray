@@ -158,28 +158,10 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
  * @param regionHandle The region handle corresponding to the MPI function
  * that triggers this event.
  *
- * @param communicatorHandle The previously defined handle belonging to the
- * communicator that is used in this communication.
- *
- * @param globalRootRank Root rank of the collective operation in
- * the communicator specified with @a communicatorHandle,
- * or SCOREP_INVALID_ROOT_RANK.
- *
- * @param bytesSent The number of bytes send in the communication.
- *
- * @param bytesReceived The number of bytes received in the communication.
- *
- * @param matchingId A process unique sequence number to match the corresponding
- *                   SCOREP_MpiCollectiveEnd event
- *
  * @return The used timestamp for this event.
  */
 uint64_t
-SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
-                           SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                           SCOREP_MpiRank                    rootRank,
-                           SCOREP_MpiCollectiveType          collectiveType,
-                           uint64_t                          matchingId );
+SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle );
 
 /**
  * Process an mpi collective event in the measurement system.
@@ -189,13 +171,25 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
  * @param regionHandle The region handle corresponding to the MPI function
  * that triggers this event.
  *
- * @param matchingId A process unique sequence number to match the corresponding
- *                   SCOREP_MpiCollectiveBegin event
+ * @param communicatorHandle The previously defined handle belonging to the
+ * communicator that is used in this communication.
+ *
+ * @param rootRank Root rank of the collective operation in
+ * the communicator specified with @a communicatorHandle,
+ * or SCOREP_INVALID_ROOT_RANK.
+ *
+ * @param collectiveType The type ff the collective.
+ *
+ * @param bytesSent The number of bytes send in the communication.
+ *
+ * @param bytesReceived The number of bytes received in the communication.
+ *
  */
 void
 SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
                          SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                         uint64_t                          matchingId,
+                         SCOREP_MpiRank                    rootRank,
+                         SCOREP_MpiCollectiveType          collectiveType,
                          uint64_t                          bytesSent,
                          uint64_t                          bytesReceived );
 
@@ -302,11 +296,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
  * @see SCOREP_DefineRegion()
  */
 void
-SCOREP_OmpFork
-(
-    SCOREP_RegionHandle regionHandle,
-    uint32_t            nRequestedThreads
-);
+SCOREP_OmpFork( uint32_t nRequestedThreads );
 
 
 /**
@@ -318,10 +308,7 @@ SCOREP_OmpFork
  * @see SCOREP_DefineRegion()
  */
 void
-SCOREP_OmpJoin
-(
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_OmpJoin( void );
 
 
 /**

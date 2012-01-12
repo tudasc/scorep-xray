@@ -322,29 +322,12 @@ scorep_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
  * Process an mpi collective begin event in the measurement system.
  */
 uint64_t
-SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
-                           SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                           SCOREP_MpiRank                    rootRank,
-                           SCOREP_MpiCollectiveType          collectiveType,
-                           uint64_t                          matchingId )
+SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
-                   "Invalid rank passed to SCOREP_MpiCollectiveBegin\n" );
-
-
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-
-    uint32_t root_rank;
-    if ( rootRank == SCOREP_INVALID_ROOT_RANK )
-    {
-        root_rank = OTF2_UNDEFINED_UINT32;
-    }
-    else
-    {
-        root_rank = ( uint32_t )rootRank;
-    }
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     uint64_t* metric_values = NULL;
     if ( scorep_number_of_metrics )
@@ -352,36 +335,13 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
         metric_values = SCOREP_Metric_read();
     }
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 3 ][ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s Comm:%s Root:%s",
-                         scorep_region_to_string( stringBuffer[ 0 ],
-                                                  sizeof( stringBuffer[ 0 ] ),
-                                                  "%x", regionHandle ),
-                         scorep_comm_to_string( stringBuffer[ 1 ],
-                                                sizeof( stringBuffer[ 1 ] ),
-                                                "%x", communicatorHandle ),
-                         scorep_uint32_to_string( stringBuffer[ 2 ],
-                                                  sizeof( stringBuffer[ 2 ] ),
-                                                  "%x", rootRank,
-                                                  SCOREP_INVALID_ROOT_RANK ) );
-
-
     scorep_enter_region( timestamp, regionHandle, metric_values );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter* evt_writer
-            = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
-
-        OTF2_EvtWriter_MpiCollectiveBegin( evt_writer,
+        OTF2_EvtWriter_MpiCollectiveBegin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                            NULL,
-                                           timestamp,
-                                           scorep_collective_to_otf2( collectiveType ),
-                                           SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
-                                           root_rank,
-                                           matchingId );
+                                           timestamp );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -398,31 +358,43 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle               regionHandle,
 void
 SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
                          SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                         uint64_t                          matchingId,
+                         SCOREP_MpiRank                    rootRank,
+                         SCOREP_MpiCollectiveType          collectiveType,
                          uint64_t                          bytesSent,
                          uint64_t                          bytesReceived )
 {
+    SCOREP_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
+                   "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
+
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    uint64_t*                   metric_values = NULL;
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    uint64_t* metric_values = NULL;
     if ( scorep_number_of_metrics )
     {
         metric_values = SCOREP_Metric_read();
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    uint32_t root_rank;
+    if ( rootRank == SCOREP_INVALID_ROOT_RANK )
+    {
+        root_rank = OTF2_UNDEFINED_UINT32;
+    }
+    else
+    {
+        root_rank = ( uint32_t )rootRank;
+    }
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter* evt_writer
-            = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
-
-        OTF2_EvtWriter_MpiCollectiveEnd( evt_writer,
+        OTF2_EvtWriter_MpiCollectiveEnd( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                          NULL,
                                          timestamp,
+                                         scorep_collective_to_otf2( collectiveType ),
                                          SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
-                                         matchingId,
+                                         root_rank,
                                          bytesSent,
                                          bytesReceived );
     }
@@ -593,8 +565,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
  * Process an OpenMP fork event in the measurement system.
  */
 void
-SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
-                uint32_t            nRequestedThreads )
+SCOREP_OmpFork( uint32_t nRequestedThreads )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
@@ -602,10 +573,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_Thread_OnThreadFork( nRequestedThreads );
 
@@ -614,8 +582,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
         OTF2_EvtWriter_OmpFork( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
                                 timestamp,
-                                nRequestedThreads,
-                                SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+                                nRequestedThreads );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -629,7 +596,7 @@ SCOREP_OmpFork( SCOREP_RegionHandle regionHandle,
  * Process an OpenMP join event in the measurement system.
  */
 void
-SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
+SCOREP_OmpJoin( void )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
@@ -637,10 +604,7 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_Thread_OnThreadJoin();
 
@@ -648,8 +612,7 @@ SCOREP_OmpJoin( SCOREP_RegionHandle regionHandle )
     {
         OTF2_EvtWriter_OmpJoin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
-                                timestamp,
-                                SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+                                timestamp );
         SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
 

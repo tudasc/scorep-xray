@@ -48,8 +48,6 @@
  * @{
  */
 
-static uint64_t scorep_collective_matching_sequence;
-
 #if HAVE( DECL_PMPI_ALLGATHER )
 /**
  * Measurement wrapper for MPI_Allgather
@@ -91,15 +89,9 @@ MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbu
         }
      #endif
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_ALLGATHER,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ] );
 
         return_val = PMPI_Allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
 
@@ -113,7 +105,8 @@ MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbu
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_ALLGATHER,
                                  sendbytes,
                                  recvbytes );
 
@@ -182,15 +175,9 @@ MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
       #endif
         recvbytes = recvcount * recvsz;
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_ALLGATHERV,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ] );
 
         return_val = PMPI_Allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm );
 
@@ -204,7 +191,8 @@ MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_ALLGATHERV,
                                  sendbytes,
                                  recvbytes );
 
@@ -255,15 +243,9 @@ MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, M
             sendbytes = recvbytes = N * count * sz;
         }
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_ALLREDUCE,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ] );
 
         return_val = PMPI_Allreduce( sendbuf, recvbuf, count, datatype, op, comm );
 
@@ -277,7 +259,8 @@ MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, M
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_ALLREDUCE,
                                  sendbytes,
                                  recvbytes );
 
@@ -327,15 +310,9 @@ MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf
         sendbytes = N * recvcount * recvsz;
         recvbytes = sendbytes;
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_ALLTOALL,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ] );
 
         return_val = PMPI_Alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
 
@@ -349,7 +326,8 @@ MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_ALLTOALL,
                                  sendbytes,
                                  recvbytes );
 
@@ -415,15 +393,9 @@ MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendty
         }
       #endif
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_ALLTOALLV,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ] );
 
         return_val = PMPI_Alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm );
 
@@ -437,7 +409,8 @@ MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendty
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_ALLTOALLV,
                                  sendbytes,
                                  recvbytes );
 
@@ -507,15 +480,9 @@ MPI_Alltoallw( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype send
         }
       #endif
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_ALLTOALLW,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ] );
 
         return_val = PMPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm );
 
@@ -529,7 +496,8 @@ MPI_Alltoallw( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype send
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_ALLTOALLW,
                                  sendbytes,
                                  recvbytes );
 
@@ -562,15 +530,9 @@ MPI_Barrier( MPI_Comm comm )
     {
         SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
         SCOREP_MPI_EVENT_GEN_OFF();
-        uint64_t       matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_BARRIER ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_BARRIER,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_BARRIER ] );
 
         return_val = PMPI_Barrier( comm );
 
@@ -584,7 +546,8 @@ MPI_Barrier( MPI_Comm comm )
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_BARRIER ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_BARRIER,
                                  0,
                                  0 );
 
@@ -635,15 +598,9 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
         sendbytes = N * count * sz;
         recvbytes = count * sz;
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_BCAST ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_BCAST,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_BCAST ] );
 
         return_val = PMPI_Bcast( buffer, count, datatype, root, comm );
 
@@ -657,7 +614,8 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_BCAST ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_BCAST,
                                  sendbytes,
                                  recvbytes );
 
@@ -701,15 +659,9 @@ MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
         sendbytes = ( N - me - 1 ) * sz * count;
         recvbytes = me * sz * count;
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_EXSCAN,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ] );
 
         return_val = PMPI_Exscan( sendbuf, recvbuf, count, datatype, op, comm );
 
@@ -723,7 +675,8 @@ MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_EXSCAN,
                                  sendbytes,
                                  recvbytes );
 
@@ -783,15 +736,9 @@ MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, 
             recvbytes = recvcount * N * recvsz;
         }
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_GATHER ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_GATHER,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_GATHER ] );
 
         return_val = PMPI_Gather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm );
 
@@ -805,7 +752,8 @@ MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_GATHER ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_GATHER,
                                  sendbytes,
                                  recvbytes );
 
@@ -870,15 +818,9 @@ MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
         #endif
         }
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_GATHERV ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_GATHERV,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_GATHERV ] );
 
         return_val = PMPI_Gatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm );
 
@@ -892,7 +834,8 @@ MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_GATHERV ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_GATHERV,
                                  sendbytes,
                                  recvbytes );
 
@@ -951,15 +894,9 @@ MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
             recvbytes = N * count * sz;
         }
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_REDUCE ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_REDUCE,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_REDUCE ] );
 
         return_val = PMPI_Reduce( sendbuf, recvbuf, count, datatype, op, root, comm );
 
@@ -973,7 +910,8 @@ MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_REDUCE ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_REDUCE,
                                  sendbytes,
                                  recvbytes );
 
@@ -1032,15 +970,9 @@ MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype 
             recvbytes = N * recvcounts[ me ] * sz;
         }
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ] );
 
         return_val = PMPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, datatype, op, comm );
 
@@ -1054,7 +986,8 @@ MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype 
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER,
                                  sendbytes,
                                  recvbytes );
 
@@ -1104,15 +1037,9 @@ MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datat
         sendbytes = N * recvcount * sz;
         recvbytes = sendbytes;
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER_BLOCK,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ] );
 
         return_val = PMPI_Reduce_scatter_block( sendbuf, recvbuf, recvcount, datatype, op, comm );
 
@@ -1126,7 +1053,8 @@ MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datat
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER_BLOCK,
                                  sendbytes,
                                  recvbytes );
 
@@ -1180,15 +1108,9 @@ MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op
             recvbytes = ( me + 1 ) * count * sz;
         }
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_SCAN ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_SCAN,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_SCAN ] );
 
         return_val = PMPI_Scan( sendbuf, recvbuf, count, datatype, op, comm );
 
@@ -1202,7 +1124,8 @@ MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_SCAN ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_SCAN,
                                  sendbytes,
                                  recvbytes );
 
@@ -1265,15 +1188,9 @@ MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
         }
       #endif
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_SCATTER ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_SCATTER,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_SCATTER ] );
 
         return_val = PMPI_Scatter( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm );
 
@@ -1287,7 +1204,8 @@ MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_SCATTER ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_SCATTER,
                                  sendbytes,
                                  recvbytes );
 
@@ -1353,15 +1271,9 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
         }
         sendbytes = sendcount * sendsz;
 
-        uint64_t matchingId = scorep_collective_matching_sequence++;
-
         /* Enters region too. */
         uint64_t start_time_stamp
-            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ],
-                                         SCOREP_MPI_COMM_HANDLE( comm ),
-                                         root_loc,
-                                         SCOREP_COLLECTIVE_MPI_SCATTERV,
-                                         matchingId );
+            = SCOREP_MpiCollectiveBegin( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ] );
 
         return_val = PMPI_Scatterv( sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm );
 
@@ -1375,7 +1287,8 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
         /* Leaves region too. */
         SCOREP_MpiCollectiveEnd( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ],
                                  SCOREP_MPI_COMM_HANDLE( comm ),
-                                 matchingId,
+                                 root_loc,
+                                 SCOREP_COLLECTIVE_MPI_SCATTERV,
                                  sendbytes,
                                  recvbytes );
 

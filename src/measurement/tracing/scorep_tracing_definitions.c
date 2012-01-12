@@ -795,8 +795,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
     typedef  SCOREP_Error_Code ( *def_callpath_pointer_t )( void*,
                                                             uint32_t,
                                                             uint32_t,
-                                                            uint32_t,
-                                                            uint8_t );
+                                                            uint32_t );
     def_callpath_pointer_t defCallpath = ( def_callpath_pointer_t )
                                          OTF2_DefWriter_WriteCallpath;
     if ( isGlobal )
@@ -824,9 +823,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                 parent_callpath_sequence_number,
                 SCOREP_HANDLE_TO_ID( definition->callpath_argument.region_handle,
                                      Region,
-                                     definitionManager->page_manager ),
-                0 /// @todo (uint8_t call_path_order) what are we supposed to pass here?
-                );
+                                     definitionManager->page_manager ) );
 
             if ( status != SCOREP_SUCCESS )
             {

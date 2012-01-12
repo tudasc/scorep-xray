@@ -318,7 +318,7 @@ POMP2_Parallel_fork( POMP2_Region_handle* pomp_handle,
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ASSERT( region != NULL );
-        SCOREP_OmpFork( region->outerParallel, num_threads );
+        SCOREP_OmpFork( num_threads );
     }
 }
 
@@ -332,7 +332,7 @@ POMP2_Parallel_join( POMP2_Region_handle* pomp_handle,
     if ( !scorep_pomp_is_finalized )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_OmpJoin( region->outerParallel );
+        SCOREP_OmpJoin();
     }
 }
 
