@@ -767,7 +767,7 @@ void driver1()
     h = hashlittle(&buf[0],1,h);
   }
   time(&z);
-  if (z-a > 0) printf("time %d %.8x\n", z-a, h);
+  if (z-a > 0) printf("time %ld %.8x\n", (long)(z-a), h);
 }
 
 /* check that every input bit changes every output bit half the time */
@@ -948,7 +948,7 @@ void driver3()
   for (i=0, h=0; i<8; ++i)
   {
     h = hashlittle(buf, 0, h);
-    printf("%2ld  0-byte strings, hash is  %.8x\n", i, h);
+    printf("%2u  0-byte strings, hash is  %.8x\n", i, h);
   }
 }
 
@@ -956,21 +956,21 @@ void driver5()
 {
   uint32_t b,c;
   b=0, c=0, hashlittle2("", 0, &c, &b);
-  printf("hash is %.8lx %.8lx\n", c, b);   /* deadbeef deadbeef */
+  printf("hash is %.8x %.8x\n", c, b);   /* deadbeef deadbeef */
   b=0xdeadbeef, c=0, hashlittle2("", 0, &c, &b);
-  printf("hash is %.8lx %.8lx\n", c, b);   /* bd5b7dde deadbeef */
+  printf("hash is %.8x %.8x\n", c, b);   /* bd5b7dde deadbeef */
   b=0xdeadbeef, c=0xdeadbeef, hashlittle2("", 0, &c, &b);
-  printf("hash is %.8lx %.8lx\n", c, b);   /* 9c093ccd bd5b7dde */
+  printf("hash is %.8x %.8x\n", c, b);   /* 9c093ccd bd5b7dde */
   b=0, c=0, hashlittle2("Four score and seven years ago", 30, &c, &b);
-  printf("hash is %.8lx %.8lx\n", c, b);   /* 17770551 ce7226e6 */
+  printf("hash is %.8x %.8x\n", c, b);   /* 17770551 ce7226e6 */
   b=1, c=0, hashlittle2("Four score and seven years ago", 30, &c, &b);
-  printf("hash is %.8lx %.8lx\n", c, b);   /* e3607cae bd371de4 */
+  printf("hash is %.8x %.8x\n", c, b);   /* e3607cae bd371de4 */
   b=0, c=1, hashlittle2("Four score and seven years ago", 30, &c, &b);
-  printf("hash is %.8lx %.8lx\n", c, b);   /* cd628161 6cbea4b3 */
+  printf("hash is %.8x %.8x\n", c, b);   /* cd628161 6cbea4b3 */
   c = hashlittle("Four score and seven years ago", 30, 0);
-  printf("hash is %.8lx\n", c);   /* 17770551 */
+  printf("hash is %.8x\n", c);   /* 17770551 */
   c = hashlittle("Four score and seven years ago", 30, 1);
-  printf("hash is %.8lx\n", c);   /* cd628161 */
+  printf("hash is %.8x\n", c);   /* cd628161 */
 }
 
 
