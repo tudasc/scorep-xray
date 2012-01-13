@@ -410,13 +410,13 @@ scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
     /* Add default profiling metrics for number of visits and implicit time */
     time_metric_handle = ( SCOREP_MetricHandle )SCOREP_Memory_AllocForDefinitions( 8 );
     cube_handle        = cube_def_met( my_cube, "Time", "time", "FLOAT", "sec", "",
-                                       "@mirror@patterns-2.1.html#execution",
+                                       "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
                                        "Total CPU allocation time", NULL, CUBE_METRIC_INCLUSIVE );
     scorep_cube4_add_metric_mapping( map, cube_handle, time_metric_handle );
 
     visits_metric_handle = ( SCOREP_MetricHandle )SCOREP_Memory_AllocForDefinitions( 8 );
     cube_handle          = cube_def_met( my_cube, "Visits", "visits", "INTEGER", "occ", "",
-                                         "http://www.cs.utk.edu/usr.html",
+                                         "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#visits",
                                          "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
     scorep_cube4_add_metric_mapping( map, cube_handle, visits_metric_handle );
 

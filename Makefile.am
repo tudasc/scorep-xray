@@ -23,7 +23,8 @@ include vendor/common/build-config/Makefile.inc.am
 EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/src/config-custom.h                              \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in             \
-              $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in
+              $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in      \
+              $(srcdir)/doc/profile/scorep_metrics.html
 
 
 if ! CROSS_BUILD
@@ -63,8 +64,11 @@ EXTRA_DIST += \
     $(srcdir)/vendor/tclap/ZshCompletionOutput.h
 
 install-data-local: doxygen-user-install
+	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
+	$(INSTALL_DATA) $(DOC_SRC_DIR)/profile/scorep_metrics.html \
+                        $(DESTDIR)$(docdir)/profile/scorep_metrics-$(PACKAGE_VERSION).html
 
-uninstall-local: doxygen-user-uninstall
+uninstall-hook: common-uninstall
 
 dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/main.dox doxygen-user-generate
 
@@ -88,10 +92,6 @@ doc/doxygen-user/main.dox:
 	$(MKDIR_P) doc/doxygen-user
 	touch doc/doxygen-user/main.dox
 endif
-
-
-uninstall-local:
-	rm -rf $(DESTDIR)$(datadir)/@PACKAGE_NAME@
 
 
 if CROSS_BUILD

@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Score-P metrics</title>
+</head>
+<body>
+<h2>Score-P metrics</h2>
+
+<a name="time"><h3>Time</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+    Total time spent for program execution including the idle times of CPUs
+    reserved for slave threads during OpenMP sequential execution. This
+    pattern assumes that every thread of a process allocated a separate CPU
+    during the entire runtime of the process.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Seconds</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+    Expand the call tree to identify important callpaths and routines where
+    most time is spent, and examine the times for each process or thread to
+    locate load imbalance.
+</dd>
+</dl>
+
+<hr width="75%" align="center">
+
+<a name="visits"><h3>Visits</h3></a>
+<dl>
+<dt><b>Description:</b></dt>
+<dd>
+    Number of times a call path has been visited. Visit counts for MPI routine
+    call paths directly relate to the number of MPI communications and
+    synchronizations. Visit counts for OpenMP operations and parallel regions
+    (loops) directly relate to the number of times they were executed.
+    Routines which were not instrumented, or were filtered during measurement,
+    do not appear on recorded call paths. Similarly, routines are not shown if
+    the compiler optimizer successfully in-lined them prior to automatic
+    instrumentation.
+</dd>
+<dt><b>Unit:</b></dt>
+<dd>Counts</dd>
+<dt><b>Diagnosis:</b></dt>
+<dd>
+    Call paths that are frequently visited (and thereby have high exclusive
+    Visit counts) can be expected to have an important role in application
+    execution performance (e.g., <a href="#time">Time</a>). Very frequently
+    executed routines, which are relatively short and quick to execute, may
+    have an adverse impact on measurement quality. This can be due to
+    instrumentation preventing in-lining and other compiler optimizations
+    and/or overheads associated with measurement such as reading timers and
+    hardware counters on routine entry and exit. When such routines consist
+    solely of local/sequential computation (i.e., neither communication nor
+    synchronization), they should be eliminated to improve the quality of the
+    parallel measurement and analysis. One approach is to specify the names of
+    such routines in a <em>filter</em> file for subsequent measurements to
+    ignore, and thereby considerably reduce their measurement impact.
+    Alternatively, <em>selective instrumentation</em> can be employed to
+    entirely avoid instrumenting such routines and thereby remove all
+    measurement impact. In both cases, uninstrumented and filtered routines
+    will not appear in the measurement and analysis, much as if they had been
+    "in-lined" into their calling routine.
+</dd>
+</dl>
+
+<hr>
+
+</body>
+</html>
