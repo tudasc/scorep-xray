@@ -155,6 +155,13 @@ SCOREP_Instrumenter::Run()
         std::string object_file  = "";
         size_t      old_pos      = 0;
         size_t      cur_pos      = 0;
+        char*       cwd          = SCOREP_IO_GetCwd( NULL, 0 );
+        char*       cwd_to_free  = cwd;
+        if ( !cwd )
+        {
+            /* ensure that cwd is non-NULL */
+            cwd = "";
+        }
 
         /* If the original command compile and link in one step,
            we need to split compilation and linking, because for Opari
@@ -176,18 +183,12 @@ SCOREP_Instrumenter::Run()
                        user instrumentation use the file name given to the compiler.
                        Thus, if we make all file names have full pathes, we get a
                        consistent input. */
-                    if ( current_file[ 0 ] != '/' )
+                    char* simplified = SCOREP_IO_JoinPath( 2, cwd, current_file.c_str() );
+                    if ( simplified )
                     {
-                        static char* cwd = SCOREP_IO_GetCwd( NULL, 0 );
-                        if ( cwd != NULL )
-                        {
-                            current_file = "/" + current_file;
-                            current_file = cwd + current_file;
-                            char* simplified = SCOREP_CStr_dup( current_file.c_str() );
-                            SCOREP_IO_SimplifyPath( simplified );
-                            current_file = simplified;
-                            free( simplified );
-                        }
+                        SCOREP_IO_SimplifyPath( simplified );
+                        current_file = simplified;
+                        free( simplified );
                     }
 
                     // Determine object file name
@@ -230,6 +231,7 @@ SCOREP_Instrumenter::Run()
             // Setup for next file
             old_pos = cur_pos + 1;
         }
+        free( cwd_to_free );
 
         // Replace sources by compiled by their object file names for the link command
         input_files = object_files;
