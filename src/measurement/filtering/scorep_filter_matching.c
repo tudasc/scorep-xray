@@ -56,7 +56,7 @@ typedef struct scorep_filter_rule_struct scorep_filter_rule_t;
 struct scorep_filter_rule_struct
 {
     char*                 pattern;    /**< Pointer to the pattern string */
-    const char*           pattern2;   /**< Pointer to the modified pattern string */
+    const char*           pattern2;   /**< Pointer to the mangled pattern string */
     bool                  is_exclude; /**< True if it is a exclude rule, false else */
     scorep_filter_rule_t* next;       /**< Next filter rule */
 };
@@ -148,16 +148,8 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
-    if ( SCOREP_IO_HasPath( rule ) )
-    {
-        new_rule->pattern  = SCOREP_CStr_dup( rule );
-        new_rule->pattern2 = SCOREP_IO_GetWithoutPath( new_rule->pattern );
-    }
-    else
-    {
-        new_rule->pattern  = NULL;
-        new_rule->pattern2 = SCOREP_CStr_dup( rule );
-    }
+    new_rule->pattern    = SCOREP_CStr_dup( rule );
+    new_rule->pattern2   = NULL;
     new_rule->is_exclude = is_exclude;
     new_rule->next       = NULL;
 
@@ -250,19 +242,10 @@ scorep_filter_free_rules()
 
 static bool
 scorep_filter_match_file( const char*           with_path,
-                          const char*           file_only,
                           scorep_filter_rule_t* rule,
                           SCOREP_Error_Code*    error_code )
 {
-    int error_value = 0;
-    if ( ( with_path != NULL ) && ( rule->pattern != NULL ) )
-    {
-        error_value = fnmatch( rule->pattern, with_path, 0 );
-    }
-    else
-    {
-        error_value = fnmatch( rule->pattern2, file_only, 0 );
-    }
+    int error_value = fnmatch( rule->pattern, with_path, 0 );
 
     if ( error_value == 0 )
     {
@@ -321,7 +304,6 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
     scorep_filter_rule_t* current_rule = scorep_filter_file_rules_head;
     bool                  excluded     = false; /* Start with all included */
     int                   error_value;
-    const char*           file_only  = NULL;
     SCOREP_Error_Code     error_code = SCOREP_SUCCESS;
 
     if ( !SCOREP_Filter_IsEnabled() )
@@ -331,18 +313,14 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
 
     if ( file_name != NULL )
     {
-        file_only = SCOREP_IO_GetWithoutPath( file_name );
-        if ( !SCOREP_IO_HasPath( file_name ) )
-        {
-            file_name = NULL;
-        }
         while ( current_rule != NULL )
         {
             /* If included so far and we have an exclude rule */
             if ( ( !excluded ) && current_rule->is_exclude )
             {
-                excluded = scorep_filter_match_file( file_name, file_only,
-                                                     current_rule, &error_code );
+                excluded = scorep_filter_match_file( file_name,
+                                                     current_rule,
+                                                     &error_code );
                 if ( error_code != SCOREP_SUCCESS )
                 {
                     return false;
@@ -351,8 +329,9 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
             /* If excluded so far and we have an include rule */
             else if ( excluded && ( !current_rule->is_exclude ) )
             {
-                excluded = !scorep_filter_match_file( file_name, file_only,
-                                                      current_rule, &error_code );
+                excluded = !scorep_filter_match_file( file_name,
+                                                      current_rule,
+                                                      &error_code );
 
                 if ( error_code != SCOREP_SUCCESS )
                 {

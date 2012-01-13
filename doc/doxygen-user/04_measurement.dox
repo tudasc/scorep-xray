@@ -239,7 +239,7 @@ An example source file filter block could look like this:
 @code
 SCOREP_FILE_NAMES_BEGIN # This is a comment
   EXCLUDE */filtering/filter*
-  INCLUDE filter_test.c
+  INCLUDE */filter_test.c
 SCOREP_FILE_NAMES_END
 @endcode
 
@@ -247,30 +247,13 @@ SCOREP_FILE_NAMES_END
       <tt>SCOREP_FILE_NAMES_END</tt>, <tt>EXCLUDE</tt>, and <tt>INCLUDE</tt>) are 
       case-sensitive.
 
-If the file name in the filter definition and the source file name that the
-instrumentation provides, both contain at least one slash, @scorep will compare the 
-full paths. If the file name in the filter definition or the file name provided by
-instrumentation, contains no 
-slashes, @scorep will strip the path from the source file name before comparison. 
-E.g., assume the following files exist:
-@code
-/foobar/file1
-/bar/file1
-/foo/bar/file1
-@endcode
-<ul>
-  <li> The expression <tt>file1</tt> would match all three files, because the path is 
-       stripped before comparison.</li>
-  <li> The expression <tt>/bar/file1</tt> matches only <tt>/bar/file1</tt>. </li>
-  <li> <tt>*bar/file1</tt> matches all three files. </li>
-</ul>
-
-@note If the application instrumentation provides a relative path for the source
-      file of a region, it is not possible to 
-      reconstruct the absolute path of the source file at runtime. If the filter file
-      contains a relative path, the absolute path is not reconstructed, too.
-      Thus, the relative path may not be matched with the absolute path, even if they do
-      in reality. This missing matches can be avoided by using a '*'-wildcard prefix.
+The filtering is based on the filenames as seen by the measurement system. 
+Depending on instrumentation method and compiler the actual filename may
+contain the absolute path, a relative path or no path at all. The instrumentation
+tool tries to create as much absolute paths as possible. Paths are 
+simplified before comparison to a rule. E.g. it removes <tt>path/../</tt>, 
+<tt>/./</tt> and multiple slashes. You may lookup the actual filename in the resulting
+output of the measurement.
 
 
 @subsection region_filtering Region name filter block
