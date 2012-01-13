@@ -34,4 +34,5 @@
  */
 extern const SCOREP_MetricSource SCOREP_Metric_Papi;
 
+
 #endif /* SCOREP_METRIC_RUSAGE_H_ */
