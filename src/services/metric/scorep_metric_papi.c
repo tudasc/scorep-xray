@@ -677,7 +677,7 @@ scorep_metric_papi_test()
             sprintf( errstring, "PAPI_add_event(%d:\"%s\")", i, metricv[ i ]->name );
             scorep_metric_papi_error( retval, errstring );
         }
-//      vt_cntl_msg( 2, "Event %s added to event set", metricv[ i ]->name );
+
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event %s added to event set", metricv[ i ]->name );
     }
 
@@ -698,7 +698,6 @@ scorep_metric_papi_test()
         free( event_set[ i ] );
     }
 
-//  vt_cntl_msg( 2, "Event set tested OK" );
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event set tested OK" );
 }
 
@@ -787,7 +786,7 @@ scorep_metric_papi_initialize_location()
     {
         scorep_metric_papi_error( retval, "PAPI_thread_init" );
     }
-//  vt_cntl_msg( 2, "PAPI thread support initialized" );
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "PAPI thread support initialized" );
 
     return scorep_metric_papi_create_event_set();
@@ -995,9 +994,9 @@ scorep_metric_papi_clock_rate()
     hwinfo = PAPI_get_hardware_info();
     if ( hwinfo == NULL )
     {
-        vt_error_msg( "Failed to access PAPI hardware info\n" );
+        SCOREP_ERROR( SCOREP_ERROR_PAPI_INIT, "Failed to access PAPI hardware info\n" );
     }
-//  vt_cntl_msg( 2, "Clock rate: %f MHz", hwinfo->mhz );
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Clock rate: %f MHz", hwinfo->mhz );
 
     hertz = hwinfo->mhz * 1000000.0;
