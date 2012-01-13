@@ -505,7 +505,7 @@
     @def SCOREP_GLOBAL_REGION_DEFINE( handle )
     This macro defines a region handle in a global scope for usage in more than one code
     block. If a region is used in multiple source files, only one of them must contain
-    the defintion using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
+    the definition using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
     global handle is accessed, must only declare the global handle with
     SCOREP_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
     more than one code-block. However, code-blocks that share a handle, are handled as
@@ -559,7 +559,7 @@
     @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
     This macro declares an axternally defined global region.
     If a region is used in multiple source files, only one of them must contain
-    the defintion using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
+    the definition using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
     global handle is accessed, must only declare the global handle with
     SCOREP_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
     more than one code-block. However, code-blocks that share a handle, are handled as

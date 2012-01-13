@@ -125,7 +125,7 @@ scorep_cube4_make_callpath_mapping( scorep_profile_node* node,
 }
 
 /**
-   Creates a mapping from global sequence numbers to local metric defintions. The
+   Creates a mapping from global sequence numbers to local metric definitions. The
    global sequence numbers define the order in which the metrics are written.
  */
 static SCOREP_MetricHandle*
@@ -464,7 +464,7 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
     write_set->local_threads = scorep_profile_get_number_of_threads();
     write_set->ranks_number  = SCOREP_Mpi_GetCommWorldSize();
 
-    /* Get the number of unified callpath defintions to all ranks */
+    /* Get the number of unified callpath definitions to all ranks */
     if ( write_set->my_rank == 0 )
     {
         write_set->callpath_number = SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
@@ -506,7 +506,7 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
     if ( write_set->map == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocate memory for defintion mapping\n"
+                      "Failed to allocate memory for definition mapping\n"
                       "Failed to write Cube 4 profile" );
 
         scorep_profile_delete_cube_writing_data( write_set );
@@ -592,7 +592,7 @@ scorep_profile_write_cube4()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
                          "Writing profile in Cube 4 format ..." );
 
-    /* -------------------------------- Initialization, header and defintions */
+    /* -------------------------------- Initialization, header and definitions */
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
 

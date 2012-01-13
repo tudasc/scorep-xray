@@ -2424,7 +2424,7 @@ SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle )
 }
 
 /**
- * Returns the sequence number of the unified defintions for a local callpath handle from
+ * Returns the sequence number of the unified definitions for a local callpath handle from
  * the mappings.
  * @param handle handle to local callpath handle.
  */
@@ -2455,7 +2455,7 @@ SCOREP_Callpath_GetNumberOfUnifiedDefinitions()
 }
 
 /**
- * Returns the sequence number of the unified defintions for a local metric handle from
+ * Returns the sequence number of the unified definitions for a local metric handle from
  * the mappings.
  * @param handle handle to local metric handle.
  */

@@ -135,7 +135,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
 
         fileHandle = ( SCOREP_SourceFileHandle* )entry->value;
     }
-    /* Unlock file defintion */
+    /* Unlock file definition */
     SCOREP_MutexUnlock( scorep_user_file_table_mutex );
 
     /* Lock region definition */

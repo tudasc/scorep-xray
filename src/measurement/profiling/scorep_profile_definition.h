@@ -50,7 +50,7 @@ typedef struct
         number of metrics. */
     uint8_t num_of_dense_metrics;
 
-    /** Array containing the Metric defintion handle for the metrics in dense
+    /** Array containing the Metric definition handle for the metrics in dense
         representation. All enter/exit events expect the metrics in this order. */
     SCOREP_MetricHandle* dense_metrics;
 

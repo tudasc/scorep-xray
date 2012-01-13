@@ -204,7 +204,7 @@ scorep_metric_initialize_service()
                 }
             }
 
-            /* Write definiton of sampling set */
+            /* Write definition of sampling set */
             sampling_set_handle = SCOREP_DefineSamplingSet( ( uint8_t )metric_sources_management_data.overall_number_of_metrics,
                                                             all_metric_handles,
                                                             SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS_STRICT );

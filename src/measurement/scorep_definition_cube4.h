@@ -97,7 +97,7 @@ scorep_cube4_add_region_mapping( scorep_cube4_definitions_map* map,
    Adds a callpath definition pair to the mapping.
    @param map         Pointer to the mapping structure, to which the mapping
                       is added.
-   @param cube_handle Pointer to the cube cnode defintion structure.
+   @param cube_handle Pointer to the cube cnode definition structure.
    @param scorep_handle SCOREP handle for the callpath.
  */
 void
@@ -109,7 +109,7 @@ scorep_cube4_add_callpath_mapping( scorep_cube4_definitions_map* map,
    Adds a metric definition pair to the mapping.
    @param map         Pointer to the mapping structure, to which the mapping
                       is added.
-   @param cube_handle Pointer to the cube metric defintion structure.
+   @param cube_handle Pointer to the cube metric definition structure.
    @param scorep_handle SCOREP handle for the metric.
  */
 void

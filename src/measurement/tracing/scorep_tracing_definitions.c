@@ -457,7 +457,7 @@ scorep_write_system_tree_node_definitions(
             parent = SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager );
         }
 
-        /* Write defintion */
+        /* Write definition */
         SCOREP_Error_Code status = defSystemTreeNode(
             writerHandle,
             definition->sequence_number,

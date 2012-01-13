@@ -457,7 +457,7 @@ uint32_t
 SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
 
 /**
- * Returns the sequence number of the unified defintions for a local metric handle from
+ * Returns the sequence number of the unified definitions for a local metric handle from
  * the mappings.
  * @param handle handle to local metric handle.
  */

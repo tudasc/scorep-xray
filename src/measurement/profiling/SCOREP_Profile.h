@@ -167,7 +167,7 @@ SCOREP_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
    @param type   The region type of the entered region.
    @param timestamp The timestamp, when the region was entered.
    @param metrics   An array with metric samples which were taken on the enter event.
-                    The samples must be in the same order as the metric defintions
+                    The samples must be in the same order as the metric definitions
                     at the @ref SCOREP_Profile_Initialize call.
  */
 void
@@ -184,7 +184,7 @@ SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
    @param region The handle of the left region.
    @param timestamp The timestamp, when the region was left.
    @param metrics   An array with metric samples which were taken on the exit event.
-                    The samples must be in the same order as the metric defintions
+                    The samples must be in the same order as the metric definitions
                     at the @ref SCOREP_Profile_Initialize call.
  */
 void

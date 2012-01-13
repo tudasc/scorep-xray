@@ -236,7 +236,7 @@
  * If not, chain @a new_definition into the hash table and the definition
  * manager definitions list and assign the sequence number.
  *
- * @return Let return the calling function with the found defintion's handle
+ * @return Let return the calling function with the found definition's handle
  *         or the new definition as return value.
  *
  * @note This returns the calling function!

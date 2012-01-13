@@ -1307,7 +1307,7 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
     std::string adapter = cobi_config_dir + "/SCOREP_Cobi_Adapter";
     std::string command;
 
-    /* Define adapter defintion file */
+    /* Define adapter definition file */
     if ( is_mpi_application == enabled )
     {
         adapter += "Mpi";

@@ -53,7 +53,7 @@ typedef struct
 /**
    Contains the data for a sparse metric of integer values. The sparse metrics are assumed
    to occur only in few callpathes. Thus, they are stored as single linked list for each
-   node and must contain their metric defintion handle.
+   node and must contain their metric definition handle.
  */
 typedef struct scorep_profile_sparse_metric_int_struct
 {
@@ -69,7 +69,7 @@ typedef struct scorep_profile_sparse_metric_int_struct
 /**
    Contains the data for a sparse metric of double values. The sparse metrics are assumed
    to occur only in few callpathes. Thus, they are stored as single linked list for each
-   node and must contain their metric defintion handle.
+   node and must contain their metric definition handle.
  */
 typedef struct scorep_profile_sparse_metric_double_struct
 {
