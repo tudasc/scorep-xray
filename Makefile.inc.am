@@ -90,7 +90,7 @@ DISTCLEANFILES += $(builddir)/config.summary
 prohibit-svn-files-in-dist:
 	@find $(top_distdir) -type d | grep "\.svn"; \
 	if [ $$? -eq 0 ]; then \
-            echo "ERROR: subversion files found in distrubution. This is usually caused by";  \
+            echo "ERROR: subversion files found in distribution. This is usually caused by";  \
             echo "referencing directories in EXTRA_DIST. Please specify the files that need"; \
             echo "to go into the distribution explicitly."; \
             exit 1; \
