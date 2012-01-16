@@ -781,6 +781,7 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
                          scorep_region_to_string( stringBuffer,
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
+    printf( "task begin\n" );
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
         OTF2_EvtWriter_OmpTaskBeginOrResume( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,

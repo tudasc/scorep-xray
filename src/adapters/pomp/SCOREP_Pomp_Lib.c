@@ -485,6 +485,7 @@ POMP2_Ordered_exit( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
+                         POMP2_Task_handle*   pomp_new_task,
                          POMP2_Task_handle*   pomp_old_task,
                          int                  pomp_if,
                          const char           ctc_string[] )
@@ -496,7 +497,7 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
        We cannot store the new task id in pomp_current_task, because other tasks
        maybe executed before. */
     *pomp_old_task = pomp_current_task;
-
+    *pomp_new_task = POMP2_Get_new_task_handle();
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
@@ -522,12 +523,12 @@ POMP2_Task_create_end( POMP2_Region_handle* pomp_handle,
 
 void
 POMP2_Task_begin( POMP2_Region_handle* pomp_handle,
-                  POMP2_Task_handle    pomp_parent_task )
+                  POMP2_Task_handle    pomp_task )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Task_begin" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
 
-    pomp_current_task = POMP2_Get_new_task_handle();
+    pomp_current_task = pomp_task;
 
     if ( scorep_pomp_is_tracing_on )
     {
@@ -551,13 +552,14 @@ POMP2_Task_end( POMP2_Region_handle* pomp_handle )
 
 void
 POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
+                                POMP2_Task_handle*   pomp_new_task,
                                 POMP2_Task_handle*   pomp_old_task,
                                 int                  pomp_if,
                                 const char           ctc_string[] )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Untied_task_create_begin" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
-
+    *pomp_new_task = POMP2_Get_new_task_handle();
     *pomp_old_task = pomp_current_task;
 
     if ( scorep_pomp_is_tracing_on )
@@ -584,12 +586,12 @@ POMP2_Untied_task_create_end( POMP2_Region_handle* pomp_handle,
 
 void
 POMP2_Untied_task_begin( POMP2_Region_handle* pomp_handle,
-                         POMP2_Task_handle    pomp_parent_task )
+                         POMP2_Task_handle    pomp_task )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Untied_task_begin" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
 
-    pomp_current_task = POMP2_Get_new_task_handle();
+    pomp_current_task = pomp_task;
 
     if ( scorep_pomp_is_tracing_on )
     {

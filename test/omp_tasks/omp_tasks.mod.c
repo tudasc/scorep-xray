@@ -49,10 +49,11 @@ foo( int depth )
         {
             int pomp_if = 1;
             { POMP2_Task_handle pomp2_old_task;
-              POMP2_Task_create_begin( &pomp2_region_1, &pomp2_old_task, pomp_if, "199*regionType=task*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:48:48*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:0:0**"  );
+              POMP2_Task_handle pomp2_new_task;
+              POMP2_Task_create_begin( &pomp2_region_1, &pomp2_new_task, &pomp2_old_task, pomp_if, "199*regionType=task*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:48:48*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:0:0**"  );
 #line 48 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c"
-#pragma omp task POMP2_DLIST_00001 if(pomp_if) firstprivate(pomp2_old_task)
-              { POMP2_Task_begin( &pomp2_region_1, pomp2_old_task );
+#pragma omp task POMP2_DLIST_00001 if(pomp_if) firstprivate(pomp2_new_task)
+              { POMP2_Task_begin( &pomp2_region_1, pomp2_new_task );
 #line 49 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c"
                 {
                     foo( depth - 1 );
