@@ -144,8 +144,8 @@ scorep_pomp_init()
         /* If initialized from user instrumentation initialize measurement before. */
         SCOREP_InitMeasurement();
 
-        /* Initialize file handle for implicit barrier */
-        scorep_pomp_file_handle = SCOREP_DefineSourceFile( "POMP2" );
+        /* Initialize file handle for OpenMP API functions */
+        scorep_pomp_file_handle = SCOREP_DefineSourceFile( "OMP" );
 
         /* Allocate memory for your POMP2_Get_num_regions() regions */
         scorep_pomp_regions = calloc( POMP2_Get_num_regions(),
