@@ -403,6 +403,12 @@ private:
     int
     invoke_cobi( std::string orig_name );
 
+    /**
+       Removes temorarily created files.
+     */
+    void
+    clean_temp_files();
+
     /* ***************************************************** Private members */
 private:
     /* --------------------------------------------
@@ -616,6 +622,11 @@ private:
        that the final command execution step is omitted.
      */
     bool no_final_step;
+
+    /* --------------------------------------------
+       Clean up information
+       ------------------------------------------*/
+    std::string temp_files;
 };
 
 #endif /*SCOREP_INSTRUMENTER_H_*/

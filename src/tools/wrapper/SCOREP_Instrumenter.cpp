@@ -91,6 +91,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     input_file_number   = 0;
     define_flags        = "";
     include_flags       = "";
+    temp_files          = "";
 
     compiler_instrumentation_flags = SCOREP_CFLAGS;
     c_compiler                     = SCOREP_CC;
@@ -160,7 +161,7 @@ SCOREP_Instrumenter::Run()
         if ( !cwd )
         {
             /* ensure that cwd is non-NULL */
-            cwd = "";
+            cwd = ( char* )"";
         }
 
         /* If the original command compile and link in one step,
@@ -200,6 +201,13 @@ SCOREP_Instrumenter::Run()
                     {
                         object_file = get_basename(
                             SCOREP_IO_GetWithoutPath( current_file.c_str() ) ) + ".o";
+                    }
+
+                    // If compiling and linking is performed in one step. The compiler leave no object file.
+                    // Thus, we delete the object file, too.
+                    if ( is_linking )
+                    {
+                        temp_files += " " + object_file;
                     }
 
                     // Perform PDT instrumentaion
@@ -274,6 +282,8 @@ SCOREP_Instrumenter::Run()
         return invoke_cobi( orig_name );
     }
     #endif
+
+    clean_temp_files();
 
     return EXIT_SUCCESS;
 }
@@ -918,6 +928,24 @@ SCOREP_Instrumenter::is_library( std::string filename )
 
 
 /* ****************************************************************************
+   Cleanup
+******************************************************************************/
+void
+SCOREP_Instrumenter::clean_temp_files()
+{
+    temp_files = "rm" + temp_files;
+    if ( verbosity >= 1 )
+    {
+        std::cout << temp_files << std::endl;
+    }
+    if ( !is_dry_run )
+    {
+        system( temp_files.c_str() );
+    }
+}
+
+
+/* ****************************************************************************
    Compilation
 ******************************************************************************/
 void
@@ -1073,6 +1101,8 @@ SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
             abort();
         }
     }
+
+    temp_files += " " + output_file;
 }
 
 void
@@ -1098,6 +1128,8 @@ SCOREP_Instrumenter::compile_init_file( std::string input_file,
             abort();
         }
     }
+
+    temp_files += " " + output_file;
 }
 
 void
@@ -1154,6 +1186,7 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
                                 + extension;
 
     invoke_opari( source_file, modified_file );
+    temp_files += " " + modified_file + " " + source_file + ".opari.inc";
     return modified_file;
 }
 
@@ -1235,6 +1268,8 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
             exit( EXIT_FAILURE );
         }
     }
+
+    temp_files += " " + modified_file + " " + pdb_file;
 
     return modified_file;
 }
@@ -1338,5 +1373,8 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
     {
         return system( command.c_str() );
     }
+
+    temp_files += " " + orig_name;
+
     return EXIT_SUCCESS;
 }
