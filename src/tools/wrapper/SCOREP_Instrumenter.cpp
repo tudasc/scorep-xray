@@ -110,6 +110,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     is_dry_run    = false;
     no_final_step = false;
     lmpi_set      = false;
+    keep_files    = false;
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
@@ -407,6 +408,12 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
     else if ( arg == "--dry-run" )
     {
         is_dry_run = true;
+        return scorep_parse_mode_param;
+    }
+
+    else if ( arg == "--keep-files" )
+    {
+        keep_files = true;
         return scorep_parse_mode_param;
     }
 
@@ -933,14 +940,17 @@ SCOREP_Instrumenter::is_library( std::string filename )
 void
 SCOREP_Instrumenter::clean_temp_files()
 {
-    temp_files = "rm" + temp_files;
-    if ( verbosity >= 1 )
+    if ( !keep_files )
     {
-        std::cout << temp_files << std::endl;
-    }
-    if ( !is_dry_run )
-    {
-        system( temp_files.c_str() );
+        temp_files = "rm" + temp_files;
+        if ( verbosity >= 1 )
+        {
+            std::cout << temp_files << std::endl;
+        }
+        if ( !is_dry_run )
+        {
+            system( temp_files.c_str() );
+        }
     }
 }
 

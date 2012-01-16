@@ -626,6 +626,17 @@ private:
     /* --------------------------------------------
        Clean up information
        ------------------------------------------*/
+    /**
+       True, if temporary files should be kept. By default temprary files are deleted
+       after successful instrumentation, but kept when the instrumenter aborts with an
+       error.
+     */
+    bool keep_files;
+
+    /**
+       A list of temorarily created files that are deleted at the end of a successful
+       execution, if @a keep_files is false.
+     */
     std::string temp_files;
 };
 
