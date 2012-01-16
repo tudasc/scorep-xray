@@ -47,4 +47,10 @@ scorep_filter_add_function_rule( const char* rule,
                                  bool        is_exclude,
                                  bool        is_fortran );
 
+/**
+ * Frees memory allocations for filter rules.
+ */
+void
+scorep_filter_free_rules();
+
 #endif /* SCOREP_FILTER_MATCHING_H */

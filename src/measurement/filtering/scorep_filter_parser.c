@@ -348,7 +348,7 @@ scorep_filter_parse_file( FILE* file )
         while ( pos < length );
 
         /* Escaping linebreaks is not allowed */
-        if ( buffer[ length - 2 ] == '\\' )
+        if ( ( length >= 2 ) && ( buffer[ length - 2 ] == '\\' ) )
         {
             SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
                           "Escaping line breaks is not supported." );
@@ -470,4 +470,10 @@ SCOREP_Filter_Register()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                          "Register config variables for filtering system" );
     return SCOREP_ConfigRegister( "filtering", scorep_filter_configs );
+}
+
+void
+SCOREP_Filter_Finalize()
+{
+    scorep_filter_free_rules();
 }

@@ -44,6 +44,9 @@ SCOREP_Error_Code
 SCOREP_Filter_Register();
 
 void
+SCOREP_Filter_Finalize();
+
+void
 SCOREP_Filter_Enable();
 
 void

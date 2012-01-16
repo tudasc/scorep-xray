@@ -537,6 +537,7 @@ scorep_finalize( void )
     SCOREP_EndEpoch();
     SCOREP_TIME( scorep_subsystems_finalize_location );
     SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
+    SCOREP_TIME( SCOREP_Filter_Finalize );
 
     /* finalize and close all event writers */
     SCOREP_TIME( SCOREP_Tracing_FinalizeEventWriters );
