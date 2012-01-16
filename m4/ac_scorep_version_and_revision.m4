@@ -39,9 +39,6 @@ AC_DEFUN([AC_SCOREP_REVISION],
         fi
     fi
 
-    AC_DEFINE_UNQUOTED([SCOREP_COMPONENT_REVISION], [${component_revision}], [Revision of ${PACKAGE_NAME}])
-    AC_DEFINE_UNQUOTED([SCOREP_COMMON_REVISION],    [${common_revision}], [Revision of commen repository}])
-
     if grep -E [[A-Z]] $srcdir/build-config/REVISION > /dev/null || \
        grep ":" $srcdir/build-config/REVISION > /dev/null ||
        grep -E [[A-Z]] $srcdir/build-config/REVISION_COMMON > /dev/null || \
@@ -64,4 +61,21 @@ AC_DEFUN([AC_SCOREP_REVISION],
              m4_esyscmd([vendor/common/build-config/generate-library-version.sh build-config/VERSION "echo \$revision"]))
     AC_SUBST([LIBRARY_AGE],
              m4_esyscmd([vendor/common/build-config/generate-library-version.sh build-config/VERSION "echo \$age"]))
+])
+
+
+
+
+AC_DEFUN([AC_SCOREP_DEFINE_REVISIONS],
+[
+    for i in REVISION REVISION_COMMON; do
+        if test ! -i ${srcdir}/../build-config/${i}; then
+            AC_MSG_ERROR([File ${srcdir}/../build-config/${i} must exist.])
+        fi
+    done
+
+    component_revision=`cat ${srcdir}/../build-config/REVISION`
+    common_revision=`cat ${srcdir}/../build-config/REVISION_COMMON`    
+    AC_DEFINE_UNQUOTED([SCOREP_COMPONENT_REVISION], ["${component_revision}"], [Revision of ${PACKAGE_NAME}])
+    AC_DEFINE_UNQUOTED([SCOREP_COMMON_REVISION],    ["${common_revision}"], [Revision of common repository])
 ])

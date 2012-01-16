@@ -107,4 +107,5 @@ AC_CONFIG_FILES([
     chmod u+x run_otf2_buffer_test.sh
 ])
 
+AC_SCOREP_DEFINE_REVISIONS
 ])
