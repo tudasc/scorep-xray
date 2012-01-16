@@ -59,9 +59,7 @@ print_help();
 #define OPARI_MANGLING_SCHEME "gnu"
 
 #elif SCOREP_COMPILER_CRAY
-/* Opari2 has no option for the Cray compiler, yet. However, Cray uses the same
-   mangling scheme like the GNU compiler. */
-#define OPARI_MANGLING_SCHEME "gnu"
+#define OPARI_MANGLING_SCHEME "cray"
 
 #endif
 
