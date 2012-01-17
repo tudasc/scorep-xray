@@ -60,7 +60,9 @@
     "   --cxx     prints the C++ compiler name\n" \
     "   --fc      prints the Fortran compiler name\n" \
     "   --help    prints this usage information\n" \
-    "   --version prints the version number of the scorep package\n\n" \
+    "   --version prints the version number of the scorep package\n" \
+    "   --scorep-revision prints the revision number of the scorep package\n" \
+    "   --common-revision prints the revision number of the common package\n\n" \
     "  Options:\n" \
     "   --seq|--omp|--mpi|--hyb\n" \
     "            specifys the mode: seqential, OpenMP, MPI, or hybrid (MPI + OpenMP)\n" \
@@ -109,6 +111,16 @@ main( int    argc,
         {
             std::cout << PACKAGE_VERSION;
             std::cout.flush();
+            exit( EXIT_SUCCESS );
+        }
+        else if ( strcmp( argv[ i ], "--scorep-revision" ) == 0 )
+        {
+            std::cout << SCOREP_COMPONENT_REVISION << std::endl;
+            exit( EXIT_SUCCESS );
+        }
+        else if ( strcmp( argv[ i ], "--common-revision" ) == 0 )
+        {
+            std::cout << SCOREP_COMMON_REVISION << std::endl;
             exit( EXIT_SUCCESS );
         }
         else if ( strcmp( argv[ i ], "--seq" ) == 0 )
