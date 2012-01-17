@@ -69,7 +69,7 @@ AC_DEFUN([AC_SCOREP_REVISION],
 AC_DEFUN([AC_SCOREP_DEFINE_REVISIONS],
 [
     for i in REVISION REVISION_COMMON; do
-        if test ! -i ${srcdir}/../build-config/${i}; then
+        if test ! -e ${srcdir}/../build-config/${i}; then
             AC_MSG_ERROR([File ${srcdir}/../build-config/${i} must exist.])
         fi
     done
