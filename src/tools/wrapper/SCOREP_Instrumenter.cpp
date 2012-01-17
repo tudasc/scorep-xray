@@ -674,7 +674,7 @@ SCOREP_Instrumenter::check_parameter()
        compiler name */
     if ( is_mpi_application == detect )
     {
-        if ( compiler_name.substr( 0, 3 ) == "mpi" )
+        if ( compiler_name.substr( 0, 2 ) == "mp" )
         {
             is_mpi_application = enabled;
         }
