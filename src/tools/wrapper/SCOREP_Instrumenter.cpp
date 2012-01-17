@@ -316,6 +316,18 @@ SCOREP_Instrumenter::ParseCmdLine( int    argc,
             case scorep_parse_mode_config:
                 mode = parse_config( argv[ i ] );
                 break;
+            case scorep_parse_mode_library:
+                mode = parse_library( argv[ i ] );
+                break;
+            case scorep_parse_mode_define:
+                mode = parse_define( argv[ i ] );
+                break;
+            case scorep_parse_mode_incdir:
+                mode = parse_incdir( argv[ i ] );
+                break;
+            case scorep_parse_mode_libdir:
+                mode = parse_libdir( argv[ i ] );
+                break;
         }
 
         if ( mode == scorep_parse_mode_command && !is_config_file_read )
@@ -564,6 +576,22 @@ SCOREP_Instrumenter::parse_command( std::string arg )
     {
         is_linking = false;
     }
+    else if ( arg == "-l" )
+    {
+        return scorep_parse_mode_library;
+    }
+    else if ( arg == "-L" )
+    {
+        return scorep_parse_mode_libdir;
+    }
+    else if ( arg == "-D" )
+    {
+        return scorep_parse_mode_define;
+    }
+    else if ( arg == "-I" )
+    {
+        return scorep_parse_mode_incdir;
+    }
     else if ( arg == "-o" )
     {
         return scorep_parse_mode_output;
@@ -589,35 +617,47 @@ SCOREP_Instrumenter::parse_command( std::string arg )
             opari_instrumentation = enabled;
         }
     }
+    else if ( arg[ 1 ] == 'o' )
+    {
+        output_name = arg.substr( 2, std::string::npos );
+    }
     else if ( arg[ 1 ] == 'I' )
     {
         include_flags += " " + arg;
     }
     else if ( arg[ 1 ] == 'D' )
     {
-        // we need to escape quotes since they get lost otherwise when calling system()
-        size_t pos = 0;
-        while ( ( pos = arg.find( '"', pos ) ) != std::string::npos )
-        {
-            arg.insert( pos, 1, '\\' );
-            pos += 2;
-        }
-
-        /* Because enclosing quotes may disappear, we must always enclose the argument of
-           with quotes */
-        pos =  arg.find( '=', 0 );
-        if ( pos !=  std::string::npos )
-        {
-            arg.insert( pos + 1, 1, '\"' );
-            arg.append( 1, '\"' );
-        }
-
-        define_flags += " " + arg;
+        add_define( arg );
+        return scorep_parse_mode_command;
     }
 
     /* In any case that not yet returned, save the flag */
     compiler_flags += " " + arg;
     return scorep_parse_mode_command;
+}
+
+void
+SCOREP_Instrumenter::add_define( std::string arg )
+{
+    // we need to escape quotes since they get lost otherwise when calling system()
+    size_t pos = 0;
+    while ( ( pos = arg.find( '"', pos ) ) != std::string::npos )
+    {
+        arg.insert( pos, 1, '\\' );
+        pos += 2;
+    }
+
+    /* Because enclosing quotes may disappear, we must always enclose the argument of
+       with quotes */
+    pos =  arg.find( '=', 0 );
+    if ( pos !=  std::string::npos )
+    {
+        arg.insert( pos + 1, 1, '\"' );
+        arg.append( 1, '\"' );
+    }
+
+    define_flags   += " " + arg;
+    compiler_flags += " " + arg;
 }
 
 SCOREP_Instrumenter::scorep_parse_mode_t
@@ -704,6 +744,52 @@ SCOREP_Instrumenter::parse_config( std::string arg )
 {
     config_file = arg;
     return scorep_parse_mode_param;
+}
+
+SCOREP_Instrumenter::scorep_parse_mode_t
+SCOREP_Instrumenter::parse_library( std::string arg )
+{
+    if ( arg == "mpi" )
+    {
+        lmpi_set = true;
+        /* is_mpi_application can only be disabled, if --nompi was specified. In this case
+           do not enable mpi wrappers.
+         */
+        if ( is_mpi_application != disabled )
+        {
+            is_mpi_application = enabled;
+        }
+        /* We must append the -lmpi after our flags, else our mpi wrappers are not
+           used. Thus, do not store this flag in the flag list, but return.
+         */
+    }
+    else
+    {
+        compiler_flags += " -l" + arg;
+    }
+    return scorep_parse_mode_command;
+}
+
+SCOREP_Instrumenter::scorep_parse_mode_t
+SCOREP_Instrumenter::parse_define( std::string arg )
+{
+    add_define( "-D" + arg );
+    return scorep_parse_mode_command;
+}
+
+SCOREP_Instrumenter::scorep_parse_mode_t
+SCOREP_Instrumenter::parse_incdir( std::string arg )
+{
+    include_flags  += " -I" + arg;
+    compiler_flags += " -I" + arg;
+    return scorep_parse_mode_command;
+}
+
+SCOREP_Instrumenter::scorep_parse_mode_t
+SCOREP_Instrumenter::parse_libdir( std::string arg )
+{
+    compiler_flags += " -L" + arg;
+    return scorep_parse_mode_command;
 }
 
 /* ****************************************************************************

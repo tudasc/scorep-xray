@@ -87,7 +87,11 @@ private:
         scorep_parse_mode_param,
         scorep_parse_mode_command,
         scorep_parse_mode_output,
-        scorep_parse_mode_config
+        scorep_parse_mode_config,
+        scorep_parse_mode_library,
+        scorep_parse_mode_define,
+        scorep_parse_mode_libdir,
+        scorep_parse_mode_incdir
     } scorep_parse_mode_t;
     /* ****************************************************** Public methods */
 public:
@@ -220,6 +224,45 @@ private:
      */
     scorep_parse_mode_t
     parse_config( std::string arg );
+
+    /**
+       Evaluates one parameter when in libray mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_library( std::string arg );
+
+    /**
+       Evaluates one parameter when in define mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_define( std::string arg );
+
+    /**
+       Evaluates one parameter when in incdir mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_incdir( std::string arg );
+
+    /**
+       Evaluates one parameter when in libdir mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_libdir( std::string arg );
+
+    /**
+       Processes a define parameter.
+       @param arg The define argument.
+     */
+    void
+    add_define( std::string arg );
 
     /**
        Performs necessary modifications to the command for enabling
