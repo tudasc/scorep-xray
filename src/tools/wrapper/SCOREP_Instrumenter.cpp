@@ -850,10 +850,15 @@ SCOREP_Instrumenter::is_fortran_file( std::string filename )
     SCOREP_CHECK_EXT( ".F90" );
     SCOREP_CHECK_EXT( ".fpp" );
     SCOREP_CHECK_EXT( ".FPP" );
+    SCOREP_CHECK_EXT( ".For" );
     SCOREP_CHECK_EXT( ".FOR" );
+    SCOREP_CHECK_EXT( ".Ftn" );
     SCOREP_CHECK_EXT( ".FTN" );
+    SCOREP_CHECK_EXT( ".f95" );
     SCOREP_CHECK_EXT( ".F95" );
+    SCOREP_CHECK_EXT( ".f03" );
     SCOREP_CHECK_EXT( ".F03" );
+    SCOREP_CHECK_EXT( ".f08" );
     SCOREP_CHECK_EXT( ".F08" );
     #undef SCOREP_CHECK_EXT
     return false;
@@ -887,6 +892,8 @@ SCOREP_Instrumenter::is_cpp_file( std::string filename )
     SCOREP_CHECK_EXT( ".CPP" );
     SCOREP_CHECK_EXT( ".cxx" );
     SCOREP_CHECK_EXT( ".CXX" );
+    SCOREP_CHECK_EXT( ".cc" );
+    SCOREP_CHECK_EXT( ".CC" );
     #undef SCOREP_CHECK_EXT
     return false;
 }
