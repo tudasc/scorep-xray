@@ -855,12 +855,6 @@ SCOREP_Instrumenter::SetValue( std::string key,
         grep         = "`" + value + " --egrep`";
         opari_config = value;
     }
-    else if ( key == "PREFIX" && value != "" )
-    {
-        AddIncDir( value + "/include" );
-        AddIncDir( value + "/include/scorep" );
-        AddLibDir( value + "/lib" );
-    }
     else if ( key == "PDT" && value != "" )
     {
         set_pdt_path( value );
@@ -1337,7 +1331,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     {
         command = pdt_bin_path + "/cxxparse " + source_file;
     }
-    command += define_flags + include_flags;
+    command += define_flags + include_flags + " " + scorep_include_path;
 
     if ( verbosity >= 1 )
     {
