@@ -568,9 +568,9 @@ SCOREP_Instrumenter::parse_command( std::string arg )
     {
         return scorep_parse_mode_output;
     }
-    /* Check for OpenMP flags. The compiler's OpenMP falg is detected during configure
+    /* Check for OpenMP flags. The compiler's OpenMP flag is detected during configure
        time. Unfortunately, newer intel compiler versions support the gnu-like
-       -fopenmp in addition. In this cases the configure detects -fopenmp as the
+       -fopenmp in addition. In this case the configure test detects -fopenmp as the
        OpenMP flag. Thus, we hardcode support for the standard -openmp flag for intel
        compilers.
      */
