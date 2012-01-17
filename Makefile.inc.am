@@ -137,11 +137,13 @@ update-revision:
 
 copy-revision-file-to-dist:
 	$(MKDIR_P) "$(distdir)/build-config/"
-	cp -p "$(srcdir)/build-config/REVISION" "$(distdir)/build-config/"
-	if grep -E [A-Z] "$(srcdir)/build-config/REVISION" ||                               \
-           grep "-" "$(srcdir)/build-config/REVISION"; then                                 \
-            echo "WARNING: distribution does not match a single, unmodified revision." >&2; \
-        fi
+	for i in REVISION REVISION_COMMON; do                                                   \
+	    cp -p "$(srcdir)/build-config/$$i" "$(distdir)/build-config/";                      \
+	    if grep -E [A-Z] "$(srcdir)/build-config/$$i" ||                                    \
+                grep "-" "$(srcdir)/build-config/$$i"; then                                     \
+                echo "WARNING: distribution does not match a single, unmodified revision." >&2; \
+            fi                                                                                  \
+        done
 
 doxygen-user-html-compress:
 	if test -d "$(USER_DOC_DIR)/html"; then                               \
