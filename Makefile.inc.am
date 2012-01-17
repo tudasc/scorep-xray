@@ -236,6 +236,8 @@ doxygen-user-install:
             rm -rf $(DESTDIR)$(docdir)/doxygen-dev;                         \
         fi
 
+copy-revision-file-to-dist:
+
 endif # SVN_CONTROLLED 
                                                                              ##
                                                                              ##
