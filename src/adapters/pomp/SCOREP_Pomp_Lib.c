@@ -502,7 +502,7 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         /* TODO: pomp_current_task is not needed here. We know where we are */
-        SCOREP_OmpTaskCreateBegin( region->outerBlock, pomp_current_task );
+        SCOREP_OmpTaskCreateBegin( region->outerBlock, *pomp_new_task );
     }
 }
 
@@ -512,13 +512,13 @@ POMP2_Task_create_end( POMP2_Region_handle* pomp_handle,
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Task_create_end" );
 
-    pomp_current_task = pomp_old_task;
-
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_OmpTaskCreateEnd( region->outerBlock, pomp_old_task );
+        SCOREP_OmpTaskResume( region->innerBlock, pomp_old_task );
+        SCOREP_OmpTaskCreateEnd( region->outerBlock, pomp_current_task );
     }
+    pomp_current_task = pomp_old_task;
 }
 
 void
@@ -566,7 +566,7 @@ POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         /* TODO: pomp_current_task is not needed here. We know where we are */
-        SCOREP_OmpTaskCreateBegin( region->outerBlock, pomp_current_task );
+        SCOREP_OmpTaskCreateBegin( region->outerBlock, *pomp_new_task );
     }
 }
 
@@ -576,12 +576,13 @@ POMP2_Untied_task_create_end( POMP2_Region_handle* pomp_handle,
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Untied_task_create_end" );
 
-    pomp_current_task = pomp_old_task;
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
+        SCOREP_OmpTaskResume( region->innerBlock, pomp_old_task );
         SCOREP_OmpTaskCreateEnd( region->outerBlock, pomp_current_task );
     }
+    pomp_current_task = pomp_old_task;
 }
 
 void
