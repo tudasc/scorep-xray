@@ -99,8 +99,36 @@ scorep_on_trace_pre_flush( void*         userData,
                          fileType == OTF2_FILETYPE_LOCAL_DEFS ? "Def" : "Evt",
                          fileType == OTF2_FILETYPE_GLOBAL_DEFS ? 0 : locationId );
 
-    // master/slave and writer id already set during initialization
-    return OTF2_FLUSH;
+    if ( fileType == OTF2_FILETYPE_EVENTS && !final )
+    {
+        /* A buffer flush happen in an event buffer before the end of the measurement */
+
+        /*
+         * disable recording, but forever
+         * - not via scorep_recording_enabled,
+         *   scorep_recording_enabled can be enabled by the user again.
+         * - not via SCOREP_IsTracingEnabled()
+         *   because we still need this to correctly finalize
+         */
+
+        if ( SCOREP_Env_RunVerbose() )
+        {
+            fprintf( stderr,
+                     "Score-P: Trace buffer flush on rank %d.\n",
+                     SCOREP_Mpi_GetRank() );
+            fprintf( stderr,
+                     "Score-P: Increase SCOREP_TOTAL_MEMORY and try again.\n" );
+        }
+    }
+
+    OTF2_FlushType do_flush = OTF2_FLUSH;
+    if ( final )
+    {
+        /* Always flush if this is the final one. */
+        do_flush = OTF2_FLUSH;
+    }
+
+    return do_flush;
 }
 
 
