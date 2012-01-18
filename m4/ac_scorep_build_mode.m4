@@ -16,9 +16,18 @@
 ##
 
 
+# needs to be called after LT_INIT, otherwise enable_(static|shared) are not set
 AC_DEFUN([AC_SCOREP_BUILD_MODE], [
 
 AM_CONDITIONAL([BUILD_SHARED_LIBRARIES], [test "x${enable_shared}" = "xyes"])
-AM_CONDITIONAL([BUILD_STATIC_LIBRARIES], [test 'x${enable_static}" = "xyes"])
+AM_CONDITIONAL([BUILD_STATIC_LIBRARIES], [test "x${enable_static}" = "xyes"])
+
+if test "x${enable_shared}" = "xyes"; then
+    AC_DEFINE([SCOREP_SHARED_BUILD], [], [Defined if we are building shared libraries. See also SCOREP_STATIC_BUILD])
+fi
+
+if test "x${enable_static}" = "xyes"; then
+    AC_DEFINE([SCOREP_STATIC_BUILD], [], [Defined if we are building static libraries. See also SCOREP_SHARED_BUILD])
+fi
 
 ])
