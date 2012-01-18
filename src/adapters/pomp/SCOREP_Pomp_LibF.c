@@ -394,7 +394,7 @@ void FSUB(POMP2_Workshare_exit)( POMP2_Region_handle_fortran* region_handle )
     }
 }
 
-int FSUB(POMP2_Lib_get_max_threads)()
+int FSUB(POMP2_Get_max_threads)()
 {
     return omp_get_max_threads();
 }
