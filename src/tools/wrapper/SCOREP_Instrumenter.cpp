@@ -538,7 +538,8 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
 SCOREP_Instrumenter::scorep_parse_mode_t
 SCOREP_Instrumenter::parse_command( std::string arg )
 {
-    if ( arg[ 0 ] != '-' )
+    if ( ( arg[ 0 ] != '-' ) &&
+         ( is_source_file( arg ) || is_object_file( arg ) || is_library( arg ) ) )
     {
         /* Assume it is a input file */
         input_files += " " + arg;
