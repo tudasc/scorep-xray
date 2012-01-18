@@ -117,7 +117,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
   { "do",                SCOREP_Pomp_Do                  , SCOREP_REGION_OMP_LOOP,      SCOREP_REGION_UNKNOWN              },
   { "flush",             SCOREP_Pomp_Flush               , SCOREP_REGION_OMP_FLUSH,     SCOREP_REGION_OMP_FLUSH            },
   { "for",               SCOREP_Pomp_For                 , SCOREP_REGION_OMP_LOOP,      SCOREP_REGION_UNKNOWN              },
-  { "master",            SCOREP_Pomp_Master              , SCOREP_REGION_OMP_MASTER,    SCOREP_REGION_OMP_MASTER           },
+  { "master",            SCOREP_Pomp_Master              , SCOREP_REGION_OMP_MASTER,    SCOREP_REGION_UNKNOWN              },
   { "parallel",          SCOREP_Pomp_Parallel            , SCOREP_REGION_UNKNOWN,       SCOREP_REGION_UNKNOWN              },
   { "paralleldo",        SCOREP_Pomp_ParallelDo          , SCOREP_REGION_OMP_LOOP,      SCOREP_REGION_UNKNOWN              },
   { "parallelfor",       SCOREP_Pomp_ParallelFor         , SCOREP_REGION_OMP_LOOP,      SCOREP_REGION_UNKNOWN              },
@@ -148,7 +148,6 @@ scorep_pomp_init_region( SCOREP_Pomp_Region* region )
     region->regionType    = SCOREP_Pomp_NoType;
     region->name          = 0;
     region->numSections   = 0;
-    region->outerParallel = SCOREP_INVALID_REGION;
     region->innerParallel = SCOREP_INVALID_REGION;
     region->outerBlock    = SCOREP_INVALID_REGION;
     region->innerBlock    = SCOREP_INVALID_REGION;
@@ -226,27 +225,10 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     if ( ( region->regionType >= SCOREP_Pomp_Parallel ) &&
          ( region->regionType <= SCOREP_Pomp_ParallelWorkshare ) )
     {
-        region->outerParallel = SCOREP_DefineRegion( region_name,
+        region->innerParallel = SCOREP_DefineRegion( region_name,
                                                      last_file,
                                                      region->startLine1,
                                                      region->endLine2,
-                                                     SCOREP_ADAPTER_POMP,
-                                                     SCOREP_REGION_OMP_PARALLEL );
-
-        if ( region->regionType == SCOREP_Pomp_Parallel )
-        {
-            start = region->startLine1;
-            end   = region->endLine2;
-        }
-        else
-        {
-            start = region->startLine2;
-            end   = region->endLine1;
-        }
-        region->innerParallel = SCOREP_DefineRegion( region_name,
-                                                     last_file,
-                                                     start,
-                                                     end,
                                                      SCOREP_ADAPTER_POMP,
                                                      SCOREP_REGION_OMP_PARALLEL );
     }

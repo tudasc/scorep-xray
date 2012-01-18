@@ -73,13 +73,11 @@ typedef struct
     /* For combined statements (parallel sections, parallel for) we need up to
        four SCOREP regions. So we use a pair of SCOREP regions for the parallel
        statements and a pair of regions for other statements.
-       We must reserve space for 4 region handles, because the parallel sections
-       construct uses four region handles:
-         1. enclosing the parallel region (fork/join events)
-         2. inner parallel region (parallel begin/end events)
-         3. enclosing sections construct (sections enter/exit)
-         4. individual sections begin/end                                              */
-    SCOREP_RegionHandle outerParallel;        /* SCOREP handle for the outer parallel region */
+       We must reserve space for 3 region handles, because the parallel sections
+       construct uses three region handles:
+         1. parallel region (parallel begin/end events)
+         2. enclosing sections construct (sections enter/exit)
+         3. individual sections begin/end                                              */
     SCOREP_RegionHandle innerParallel;        /* SCOREP handle for the inner parallel region */
     SCOREP_RegionHandle outerBlock;           /* SCOREP handle for the enclosing region      */
     SCOREP_RegionHandle innerBlock;           /* SCOREP handle for the enclosed region       */
