@@ -122,6 +122,8 @@ LT_PREREQ([2.4])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
+AC_SCOREP_BUILD_MODE
+
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
 backend_lib_dir="/lib"

@@ -57,6 +57,8 @@ LT_PREREQ([2.4])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
+AC_SCOREP_BUILD_MODE
+
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
 backend_lib_dir="/lib"
@@ -176,6 +178,14 @@ AC_SCOREP_POSIX_FUNCTIONS
 
 # assuming that mpi configure already ran
 AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
+
+
+echo hardcode_libdir_flag_spec     = `eval echo ${hardcode_libdir_flag_spec}`
+echo hardcode_libdir_flag_spec_CC  = `eval echo $hardcode_libdir_flag_spec_CC`
+echo hardcode_libdir_flag_spec_CXX = `eval echo $hardcode_libdir_flag_spec_CXX`
+echo hardcode_libdir_flag_spec_F77 = `eval echo $hardcode_libdir_flag_spec_F77`
+echo hardcode_libdir_flag_spec_FC  = `eval echo $hardcode_libdir_flag_spec_FC`
+
 
 AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/serial/C/Makefile \
