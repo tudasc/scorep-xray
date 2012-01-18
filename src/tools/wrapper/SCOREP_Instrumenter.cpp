@@ -1044,7 +1044,14 @@ SCOREP_Instrumenter::clean_temp_files()
         }
         if ( !is_dry_run )
         {
-            system( temp_files.c_str() );
+            if ( system( temp_files.c_str() ) != 0 )
+            {
+                if ( verbosity < 1 )
+                {
+                    std::cout << "Error executing: " << temp_files << std::endl;
+                }
+                abort();
+            }
         }
     }
 }
