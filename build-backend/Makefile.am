@@ -176,9 +176,7 @@ $(builddir)/scorep_config.dat:
 	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_LOCAL_DIR)\"; \
 	) >$(builddir)/scorep_config.dat
 
-## Here we write only the backend values.
-create-config-tool-headers: $(CONFIG_HEADER_BACKEND)
-
+## Provide the scorep-config build with information from this backend Makefile.
 $(CONFIG_HEADER_BACKEND):
 	@echo "Creating $(CONFIG_HEADER_BACKEND)"
 	@( \
@@ -202,6 +200,9 @@ $(CONFIG_HEADER_BACKEND):
 	    echo "#define PDT_CONFIG     \"$(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf\""; \
 	    echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\""; \
 	    echo "#define COBI_CONFIG_DIR \"$(SCOREP_SHARE_INSTALL_DIR)\""; \
+            echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
+            echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
+            echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
 	) >$(CONFIG_HEADER_BACKEND)
 
 

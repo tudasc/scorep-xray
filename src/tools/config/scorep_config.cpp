@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include <scorep_config_tool_backend.h>
+#include <scorep_config_tool_mpi.h>
 #include <scorep_config.hpp>
 
 #define MODE_SEQ 0

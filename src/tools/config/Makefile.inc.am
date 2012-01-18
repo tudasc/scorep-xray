@@ -33,3 +33,8 @@ scorep_config_LDADD = $(LIB_DIR_UTIL)libscorep_parser_tools.la \
 		    $(LIB_DIR_UTIL)libscorep_utilities.la
 
 BUILT_SOURCES += create-config-tool-headers
+
+## Get the config tool values from the backend and mpi Makefiles
+create-config-tool-headers:
+	(cd ../build-backend; $(MAKE) $(CONFIG_HEADER_BACKEND))
+	(cd ../build-mpi;     $(MAKE) $(CONFIG_HEADER_MPI))
