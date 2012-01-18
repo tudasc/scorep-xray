@@ -1035,7 +1035,7 @@ SCOREP_Instrumenter::is_library( std::string filename )
 void
 SCOREP_Instrumenter::clean_temp_files()
 {
-    if ( !keep_files )
+    if ( ( !keep_files ) && ( temp_files != "" ) )
     {
         temp_files = "rm" + temp_files;
         if ( verbosity >= 1 )
