@@ -66,7 +66,7 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_tracing,
         NULL,
-        "true",
+        "false",
         "enable tracing",
         "enable tracing"
     },
