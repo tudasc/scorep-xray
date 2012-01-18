@@ -69,13 +69,13 @@ call SCOREP_F_OA_PhaseBegin( handle,name,type,"",__LINE__)
 
 #define SCOREP_USER_REGION_ENTER( handle ) call SCOREP_F_RegionEnter( handle )
 
-#define SCOREP_USER_FUNC_DEFINE SCOREP_USER_REGION_DEFINE( scrpfh )
+#define SCOREP_USER_FUNC_DEFINE() SCOREP_USER_REGION_DEFINE( scrpfh )
 
 #define SCOREP_USER_FUNC_BEGIN( name ) \
         SCOREP_USER_REGION_BEGIN(scrpfh, name, \
         SCOREP_USER_REGION_TYPE_FUNCTION)
 
-#define SCOREP_USER_FUNC_END SCOREP_USER_REGION_END(scrpfh)
+#define SCOREP_USER_FUNC_END() SCOREP_USER_REGION_END(scrpfh)
 
 !************************************************************* User metric
 
@@ -96,9 +96,9 @@ call SCOREP_F_OA_PhaseBegin( handle,name,type,"",__LINE__)
 
 !************************************************************* User control
 
-#define SCOREP_RECORDING_ON call SCOREP_F_EnableRecording()
+#define SCOREP_RECORDING_ON() call SCOREP_F_EnableRecording()
 
-#define SCOREP_RECORDING_OFF call SCOREP_F_DisableRecording()
+#define SCOREP_RECORDING_OFF() call SCOREP_F_DisableRecording()
 
 #define SCOREP_RECORDING_IS_ON( isOn ) call SCOREP_F_RecordingEnabled( isOn )
 

@@ -31,15 +31,15 @@ static int c = 0;
 void
 foo()
 {
-    SCOREP_USER_FUNC_BEGIN;
+    SCOREP_USER_FUNC_BEGIN();
     c++;
-    SCOREP_USER_FUNC_END;
+    SCOREP_USER_FUNC_END();
 }
 
 int
 main()
 {
-    SCOREP_USER_FUNC_BEGIN;
+    SCOREP_USER_FUNC_BEGIN();
     for ( int i = 0; i < 20; i++ )
     {
         SCOREP_USER_REGION_DEFINE( loop );
@@ -47,7 +47,7 @@ main()
         foo();
         SCOREP_USER_REGION_END( loop );
     }
-    SCOREP_USER_FUNC_END;
+    SCOREP_USER_FUNC_END();
 
     return 0;
 }

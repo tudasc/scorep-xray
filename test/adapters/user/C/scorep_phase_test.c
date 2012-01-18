@@ -31,33 +31,33 @@ int i = 0;
 void
 foo()
 {
-    SCOREP_USER_FUNC_BEGIN
+    SCOREP_USER_FUNC_BEGIN();
     SCOREP_USER_REGION_DEFINE( phase4 );
 
     SCOREP_USER_REGION_BEGIN( phase4, "phase4", SCOREP_USER_REGION_TYPE_PHASE );
     i++;
     SCOREP_USER_REGION_END( phase4 );
     i++;
-    SCOREP_USER_FUNC_END
+    SCOREP_USER_FUNC_END();
 }
 
 void
 bar()
 {
-    SCOREP_USER_FUNC_BEGIN
+    SCOREP_USER_FUNC_BEGIN();
     SCOREP_USER_REGION_DEFINE( phase3 );
 
     SCOREP_USER_REGION_BEGIN( phase3, "phase3", SCOREP_USER_REGION_TYPE_PHASE );
     foo();
     SCOREP_USER_REGION_END( phase3 );
     foo();
-    SCOREP_USER_FUNC_END
+    SCOREP_USER_FUNC_END();
 }
 
 void
 baz()
 {
-    SCOREP_USER_FUNC_BEGIN
+    SCOREP_USER_FUNC_BEGIN();
     SCOREP_USER_REGION_DEFINE( phase2 );
 
     SCOREP_USER_REGION_BEGIN( phase2, "phase2", SCOREP_USER_REGION_TYPE_PHASE );
@@ -66,7 +66,7 @@ baz()
     SCOREP_USER_REGION_END( phase2 );
     bar();
     foo();
-    SCOREP_USER_FUNC_END
+    SCOREP_USER_FUNC_END();
 }
 
 int
@@ -74,7 +74,7 @@ main()
 {
   #pragma omp parallel
     {
-        SCOREP_USER_FUNC_BEGIN
+        SCOREP_USER_FUNC_BEGIN();
         SCOREP_USER_REGION_DEFINE( phase1 );
 
         SCOREP_USER_REGION_BEGIN( phase1, "phase1", SCOREP_USER_REGION_TYPE_PHASE );
@@ -85,7 +85,7 @@ main()
         baz();
         bar();
         foo();
-        SCOREP_USER_FUNC_END
+        SCOREP_USER_FUNC_END();
     }
     printf( "%d\n", i );
     return EXIT_SUCCESS;

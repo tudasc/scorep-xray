@@ -308,7 +308,10 @@ binary OR-operator, e.g.:
 @endcode
 
 For function instrumentation in C and C++, @scorep provides macros, which 
-automatically pass the name and function type to @scorep measurement system. 
+automatically pass the name and function type to @scorep measurement system.
+The <tt>SCOREP_USER_FUNC_BEGIN</tt> macro contains a variable definition.
+Thus, compilers that require strict separation of declarion and excution part,
+may not work with this macro.
 
 C/C++:
 @code
@@ -316,9 +319,9 @@ C/C++:
 
     void foo()
     {
-        SCOREP_USER_FUNC_BEGIN
+        SCOREP_USER_FUNC_BEGIN()
         // do something
-        SCOREP_USER_FUNC_END
+        SCOREP_USER_FUNC_END()
     }
 @endcode
 

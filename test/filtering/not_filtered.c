@@ -31,7 +31,7 @@
 void
 filter_not2()
 {
-    SCOREP_USER_FUNC_BEGIN;
+    SCOREP_USER_FUNC_BEGIN();
     printf( "4\n" );
-    SCOREP_USER_FUNC_END;
+    SCOREP_USER_FUNC_END();
 }

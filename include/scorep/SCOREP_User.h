@@ -398,7 +398,7 @@
  */
 
 /**
-    @def SCOREP_USER_FUNC_DEFINE
+    @def SCOREP_USER_FUNC_DEFINE()
     This macro is for Fortran only. It declares the handle for a function. Every function
     handle must be declared in the declaration part of the subroutine or function if
     the SCOREP_USER_FUNC_BEGIN and SCOREP_USER_FUNC_END macros are used.
@@ -406,12 +406,12 @@
    Example:
     @code
     subroutine myfunc
-      SCOREP_USER_FUNC_DEFINE
+      SCOREP_USER_FUNC_DEFINE()
       ! more declarations
 
       SCOREP_USER_FUNC_BEGIN( "myfunc" )
       ! do something
-      SCOREP_USER_FUNC_END
+      SCOREP_USER_FUNC_END()
 
     end subroutine myfunc
     @endcode
@@ -420,12 +420,16 @@
  */
 
 /**
-    @def SCOREP_USER_FUNC_BEGIN
+    @def SCOREP_USER_FUNC_BEGIN()
     This macro marks the start of a function. It should be inserted at the beginning
     of the instrumented function. It will generate a region, with the function
     name.
 
-    The C/C++ version of this command takes no arguments. In Fortran one argument is
+    The C/C++ version of this command takes no arguments. It contains a variable
+    declaration and a function call. Compilers that require a strict separation
+    between declaration block and execution block may fail if this maroc is used.
+
+    In Fortran one argument is
     required for the name of the function. Furthermore, the handle must be declared
     explicitly in Fortran.
 
@@ -437,23 +441,23 @@
     {
       // declarations
 
-      SCOREP_USER_FUNC_BEGIN
+      SCOREP_USER_FUNC_BEGIN()
 
       // do something
 
-      SCOREP_USER_FUNC_END
+      SCOREP_USER_FUNC_END()
     }
     @endcode
 
     Fortran example:
     @code
     subroutine myfunc
-      SCOREP_USER_FUNC_DEFINE
+      SCOREP_USER_FUNC_DEFINE()
       ! more declarations
 
       SCOREP_USER_FUNC_BEGIN( "myfunc" )
       ! do something
-      SCOREP_USER_FUNC_END
+      SCOREP_USER_FUNC_END()
 
     end subroutine myfunc
     @endcode
@@ -462,7 +466,7 @@
  */
 
 /**
-    @def SCOREP_USER_FUNC_END
+    @def SCOREP_USER_FUNC_END()
     This macro marks the end of a function. It should be inserted at
     every return point of the instrumented function.
 
@@ -472,28 +476,28 @@
     {
       // declarations
 
-      SCOREP_USER_FUNC_BEGIN
+      SCOREP_USER_FUNC_BEGIN()
 
       // do something
       if ( some_expression )
       {
-        SCOREP_USER_FUNC_END
+        SCOREP_USER_FUNC_END()
         return;
       }
 
-      SCOREP_USER_FUNC_END
+      SCOREP_USER_FUNC_END()
     }
     @endcode
 
     Fortran example:
     @code
     subroutine myfunc
-      SCOREP_USER_FUNC_DEFINE
+      SCOREP_USER_FUNC_DEFINE()
       ! more declarations
 
       SCOREP_USER_FUNC_BEGIN( "myfunc" )
       ! do something
-      SCOREP_USER_FUNC_END
+      SCOREP_USER_FUNC_END()
 
     end subroutine myfunc
     @endcode
@@ -612,7 +616,7 @@
  * *************************************************************************************/
 /* Empty define for SCOREP_USER_FUNC_DEFINE to allow documentation of the macro and
    let it disappear in C/C++ codes */
-#define SCOREP_USER_FUNC_DEFINE
+#define SCOREP_USER_FUNC_DEFINE()
 
 #ifdef SCOREP_USER_ENABLE
 
@@ -638,13 +642,13 @@
 
 #define SCOREP_USER_REGION_END( handle ) SCOREP_User_RegionEnd( handle );
 
-#define SCOREP_USER_FUNC_BEGIN static SCOREP_User_RegionHandle \
+#define SCOREP_USER_FUNC_BEGIN() static SCOREP_User_RegionHandle        \
     scorep_user_func_handle =  SCOREP_USER_INVALID_REGION; \
     SCOREP_User_RegionBegin( &scorep_user_func_handle, &SCOREP_User_LastFileName, \
                              &SCOREP_User_LastFileHandle, __func__,      \
                              SCOREP_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
 
-#define SCOREP_USER_FUNC_END SCOREP_User_RegionEnd( scorep_user_func_handle );
+#define SCOREP_USER_FUNC_END() SCOREP_User_RegionEnd( scorep_user_func_handle );
 
 #define SCOREP_GLOBAL_REGION_DEFINE( handle ) \
     SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
@@ -1202,7 +1206,7 @@
  */
 
 /**
-    @def SCOREP_RECORDING_ON
+    @def SCOREP_RECORDING_ON()
     Enables recording of events. If already enabled, this command has no effect.
     The control is not restricted to events from the user adapter, but enables the
     recording of all events.
@@ -1211,11 +1215,11 @@
     @code
     void foo()
     {
-      SCOREP_RECORDING_OFF
+      SCOREP_RECORDING_OFF()
 
       // do something
 
-     SCOREP_RECORDING_ON
+     SCOREP_RECORDING_ON()
     }
     @endcode
 
@@ -1223,16 +1227,16 @@
     @code
     subroutine foo
 
-      SCOREP_RECORDING_OFF
+      SCOREP_RECORDING_OFF()
     ! do something
-      SCOREP_RECORDING_ON
+      SCOREP_RECORDING_ON()
 
     end subroutine foo
     @endcode
  */
 
 /**
-    @def SCOREP_RECORDING_OFF
+    @def SCOREP_RECORDING_OFF()
     Disables recording of events. If already disabled, this command has no effect.
     The control is not restricted to events from the user adapter, but disables the
     recording of all events.
@@ -1241,11 +1245,11 @@
     @code
     void foo()
     {
-      SCOREP_RECORDING_OFF
+      SCOREP_RECORDING_OFF()
 
       // do something
 
-     SCOREP_RECORDING_ON
+     SCOREP_RECORDING_ON()
     }
     @endcode
 
@@ -1253,16 +1257,16 @@
     @code
     subroutine foo
 
-      SCOREP_RECORDING_OFF
+      SCOREP_RECORDING_OFF()
     ! do something
-      SCOREP_RECORDING_ON
+      SCOREP_RECORDING_ON()
 
     end subroutine foo
     @endcode
  */
 
 /**
-    @def SCOREP_RECORDING_IS_ON
+    @def SCOREP_RECORDING_IS_ON()
     In C/C++ it behaves like a function call which returns wether recording is
     enabled or not. It returns false if the recording of events is disabled, else
     it returns true.
@@ -1271,7 +1275,7 @@
     @code
     void foo()
     {
-      if ( SCOREP_RECORDING_IS_ON )
+      if ( SCOREP_RECORDING_IS_ON() )
       {
         // do something
       }
@@ -1305,11 +1309,11 @@
 
 #ifdef SCOREP_USER_ENABLE
 
-#define SCOREP_RECORDING_ON SCOREP_User_EnableRecording();
+#define SCOREP_RECORDING_ON() SCOREP_User_EnableRecording();
 
-#define SCOREP_RECORDING_OFF SCOREP_User_DisableRecording();
+#define SCOREP_RECORDING_OFF() SCOREP_User_DisableRecording();
 
-#define SCOREP_RECORDING_IS_ON SCOREP_User_RecordingEnabled()
+#define SCOREP_RECORDING_IS_ON() SCOREP_User_RecordingEnabled()
 
 #else // SCOREP_USER_ENABLE
 
@@ -1325,10 +1329,10 @@
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
 #define SCOREP_USER_REGION_ENTER( handle )
-#define SCOREP_USER_FUNC_BEGIN
-#define SCOREP_USER_FUNC_END
+#define SCOREP_USER_FUNC_BEGIN()
+#define SCOREP_USER_FUNC_END()
 #define SCOREP_GLOBAL_REGION_DEFINE( handle )
-#define SCOREP_GLOBAL_REGION_EXTERNAL ( handle )
+#define SCOREP_GLOBAL_REGION_EXTERNAL( handle )
 #define SCOREP_USER_PARAMETER_INT64( name, value )
 #define SCOREP_USER_PARAMETER_UINT64( name, value )
 #define SCOREP_USER_PARAMETER_STRING( name, value )
@@ -1339,9 +1343,9 @@
 #define SCOREP_USER_METRIC_INT64( metricHandle, value )
 #define SCOREP_USER_METRIC_UINT64( metricHandle, value )
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value )
-#define SCOREP_RECORDING_ON
-#define SCOREP_RECORDING_OFF
-#define SCOREP_RECORDING_IS_ON 0
+#define SCOREP_RECORDING_ON()
+#define SCOREP_RECORDING_OFF()
+#define SCOREP_RECORDING_IS_ON() 0
 
 #endif // SCOREP_USER_ENABLE
 
