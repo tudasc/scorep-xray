@@ -556,8 +556,8 @@ scorep_write_group_definitions( void*                     writerHandle,
 
     typedef SCOREP_Error_Code ( *def_group_pointer_t )( void*,
                                                         uint64_t,
-                                                        OTF2_GroupType,
                                                         uint32_t,
+                                                        OTF2_GroupType,
                                                         uint64_t,
                                                         uint64_t* );
 
@@ -573,8 +573,8 @@ scorep_write_group_definitions( void*                     writerHandle,
         SCOREP_Error_Code status = defGroup(
             writerHandle,
             definition->sequence_number,
-            scorep_group_type_to_otf_group_type( definition->group_type ),
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            scorep_group_type_to_otf_group_type( definition->group_type ),
             definition->number_of_members,
             definition->members );
 
