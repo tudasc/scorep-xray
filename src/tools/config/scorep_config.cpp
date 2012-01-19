@@ -269,6 +269,7 @@ main( int    argc,
             case ACTION_LIBS:
                 /** Create lib info */
                 app.AddLib( "-l" + scorep_libs[ mode ] );
+                app.AddLib( SCOREP_LIBS );
                 app.AddLibDir( SCOREP_LIBDIR );
                 app.AddLibDir( CUBE_LIBDIR );
                 app.AddLibDir( TIMER_LIBDIR );
