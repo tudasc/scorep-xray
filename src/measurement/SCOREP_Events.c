@@ -692,201 +692,64 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
     }
 }
 
-/**
- * Process an OpenMP TaskCreateBegin event in the measurement system.
- * @param regionHandle Region handle of the task region
- * @param taskId       The ID of the creator task. Useless parameter.
- */
+
 void
-SCOREP_OmpTaskCreateBegin( SCOREP_RegionHandle regionHandle,
-                           uint64_t            taskId )
+SCOREP_OmpTaskCreate( uint64_t taskId )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
-
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter_OmpTaskCreateBegin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                           NULL,
-                                           timestamp,
-                                           SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ),
-                                           taskId );
+        OTF2_EvtWriter_OmpTaskCreate( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                      NULL,
+                                      timestamp,
+                                      taskId );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_TaskCreateBegin( regionHandle, taskId, timestamp );
+        // task profiling not yet supported
     }
 }
 
-/**
- * Process an OpenMP TaskCreateEnd event in the measurement system.
- * @param regionHandle Region handle of the task region
- * @param taskId       The ID of the creating task
- */
 void
-SCOREP_OmpTaskCreateEnd( SCOREP_RegionHandle regionHandle,
-                         uint64_t            taskId )
+SCOREP_OmpTaskSwitch( uint64_t taskId )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
-
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter_OmpTaskCreateEnd( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                         NULL,
-                                         timestamp,
-                                         SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ),
-                                         taskId );
+        OTF2_EvtWriter_OmpTaskSwitch( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                      NULL,
+                                      timestamp,
+                                      taskId );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_TaskCreateEnd( regionHandle, taskId, timestamp );
+        // task profiling not yet supported
     }
 }
 
-/**
- * Process an OpenMP TaskBegin event in the measurement system.
- * @param regionHandle Region handle of the task region
- * @param taskId       The ID of the starting task
- */
 void
-SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
-                     uint64_t            taskId )
+SCOREP_OmpTaskComplete( uint64_t taskId )
 {
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
-        OTF2_EvtWriter_OmpTaskBeginOrResume( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                             NULL,
-                                             timestamp,
-                                             SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ),
-                                             taskId );
+        OTF2_EvtWriter_OmpTaskComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
+                                        NULL,
+                                        timestamp,
+                                        taskId );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_TaskBegin( regionHandle, taskId, timestamp );
-    }
-}
-
-/**
- * Process an OpenMP TaskResume event in the measurement system.
- * @param regionHandle Region handle of the task region
- * @param taskId       The ID of the resumeing task
- */
-void
-SCOREP_OmpTaskResume( SCOREP_RegionHandle regionHandle,
-                      uint64_t            taskId )
-{
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
-    uint64_t                    timestamp = scorep_get_timestamp( location );
-
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
-    // don't write resume events for implicit tasks (ID == 0)
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled && ( taskId != 0 ) )
-    {
-        OTF2_EvtWriter_OmpTaskBeginOrResume( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                             NULL,
-                                             timestamp,
-                                             SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ),
-                                             taskId );
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_TaskResume( regionHandle, taskId, timestamp );
-    }
-}
-
-/**
- * Process an OpenMP TaskSuspend event in the measurement system.
- */
-void
-SCOREP_OmpTaskSuspend( SCOREP_RegionHandle regionHandle )
-{
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
-
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
-
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
-    {
-        //nothing is done for Tracing, since the suspend event is unnessesary in the trace
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        // Do we need something for profiling? Profiling is not yet implemented anyway.
-        // Thus, leave at for the moment, as it is.
-    }
-}
-
-/**
- * Process an OpenMP TaskCompleted event in the measurement system.
- */
-void
-SCOREP_OmpTaskCompleted( SCOREP_RegionHandle regionHandle )
-{
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
-    uint64_t                    timestamp = scorep_get_timestamp( location );
-
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
-
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
-    {
-        OTF2_EvtWriter_OmpTaskCompleted( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                         NULL,
-                                         timestamp,
-                                         SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_TaskCompleted( regionHandle, timestamp );
+        // task profiling not yet supported
     }
 }
 

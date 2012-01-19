@@ -352,87 +352,33 @@ SCOREP_ExitRegionOnException
     SCOREP_RegionHandle regionHandle
 );
 
-/**
- * Process an OpenMP task create begin event in the measurement system.
- *
- * @param regionHandle The previous defined region handle which identifies
- *                     the region where the task is created.
- * @param taskId       The ID of the creator task beeing created. Useless information.
- *                     This parameter can be dropped.
- */
-void
-SCOREP_OmpTaskCreateBegin
-(
-    SCOREP_RegionHandle regionHandle,
-    uint64_t            taskId
-);
 
 /**
- * Process an OpenMP task create end event in the measurement system.
+ * Process an OpenMP task create event in the measurement system.
  *
- * @param regionHandle The previous defined region handle which identifies
- *                     the region where the task is created.
- * @param taskId       The ID of the creator task. Needed to know the task id if, other
- *                     tasks have been executed in between.
+ * @param taskId Id of the created task.
  */
 void
-SCOREP_OmpTaskCreateEnd
-(
-    SCOREP_RegionHandle regionHandle,
-    uint64_t            taskId
-);
+SCOREP_OmpTaskCreate( uint64_t taskId );
+
 
 /**
- * Process an OpenMP task begin event in the measurement system.
+ * Process an OpenMP task switch event in the measurement system.
  *
- * @param regionHandle The previous defined region handle which identifies
- *                     the region the task executes.
- * @param taskId       The ID of the task which starts execution.
+ * @param taskId Id of the task the runtime switched to.
  */
 void
-SCOREP_OmpTaskBegin
-(
-    SCOREP_RegionHandle regionHandle,
-    uint64_t            taskId
-);
+SCOREP_OmpTaskSwitch( uint64_t taskId );
 
-/**
- * Process an OpenMP task resume event in the measurement system.
- *
- * @param regionHandle The previous defined region handle which identifies
- *                     the region the task executes.
- * @param taskId       The ID of the task which is resumed.
- */
-void
-SCOREP_OmpTaskResume
-(
-    SCOREP_RegionHandle regionHandle,
-    uint64_t            taskId
-);
-
-/**
- * Process an OpenMP task suspend event in the measurement system.
- *
- * @param regionHandle The previous defined region handle which identifies
- *                     the region the task executes.
- */
-void
-SCOREP_OmpTaskSuspend
-(
-    SCOREP_RegionHandle regionHandle
-);
 
 /**
  * Process an OpenMP task completed event in the measurement system.
  *
- * @param regionHandle The previous defined region handle which identifies
- *                     the region the task has executed.
+ * @param taskId Id of the completed task.
  */
 void
-SCOREP_OmpTaskCompleted
-(
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_OmpTaskComplete( uint64_t taskId );
+
 
 /**
  *
