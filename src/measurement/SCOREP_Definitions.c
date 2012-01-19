@@ -1057,7 +1057,8 @@ SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle )
     SCOREP_MPIWindowHandle       new_handle     = SCOREP_INVALID_MPI_WINDOW;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "    Handle ID: %x", new_definition->sequence_number );
@@ -1093,7 +1094,8 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
     SCOREP_MPICartesianTopologyHandle       new_handle     = SCOREP_INVALID_CART_TOPOLOGY;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
 #ifdef SCOREP_DEBUG
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
@@ -1144,7 +1146,8 @@ SCOREP_DefineMPICartesianCoords(
     SCOREP_MPICartesianCoordsHandle       new_handle     = SCOREP_INVALID_CART_COORDS;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
 #ifdef SCOREP_DEBUG
     char stringBuffer[ 16 ];
@@ -1692,7 +1695,8 @@ SCOREP_DefineIOFileGroup( const char* name )
     SCOREP_IOFileGroupHandle       new_handle     = SCOREP_INVALID_IOFILE_GROUP;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1721,7 +1725,8 @@ SCOREP_DefineIOFile( const char*              name,
     SCOREP_IOFileHandle       new_handle     = SCOREP_INVALID_IOFILE;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1751,7 +1756,8 @@ SCOREP_DefineMarkerGroup( const char* name )
     SCOREP_MarkerGroupHandle       new_handle     = SCOREP_INVALID_MARKER_GROUP;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1782,7 +1788,8 @@ SCOREP_DefineMarker( const char*              name,
     SCOREP_MarkerHandle       new_handle     = SCOREP_INVALID_MARKER;
 
     // Init new_definition
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    // see ticket:423
+    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
