@@ -83,18 +83,21 @@ int
 main( int    argc,
       char** argv )
 {
-    int           i;
+    int               i;
     /* set default mode to mpi */
-    int           mode     = MODE_MPI;
-    int           action   = 0;
-    int           ret      = EXIT_SUCCESS;
-    bool          user     = false;
-    bool          compiler = true;
-    bool          fortran  = false;
+    int               mode     = MODE_MPI;
+    int               action   = 0;
+    int               ret      = EXIT_SUCCESS;
+    bool              user     = false;
+    bool              compiler = true;
+    bool              fortran  = false;
 
-    const char*   scorep_libs[ 4 ] = { "scorep_serial", "scorep_omp", "scorep_mpi", "scorep_mpi_omp" };
+    const std::string scorep_libs[ 4 ] = { "scorep_serial",
+                                           "scorep_omp",
+                                           "scorep_mpi",
+                                           "scorep_mpi_omp" };
 
-    SCOREP_Config app( argv[ 0 ] );
+    SCOREP_Config     app( argv[ 0 ] );
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
@@ -200,6 +203,7 @@ main( int    argc,
             std::cerr << "Unable to open config file." << std::endl;
             abort();
         }
+
         switch ( action )
         {
             case ACTION_LIBS:
@@ -263,22 +267,27 @@ main( int    argc,
         switch ( action )
         {
             case ACTION_LIBS:
-                std::cout << "-L" SCOREP_LIBDIR << " -Wl,-rpath," SCOREP_LIBDIR;
-                if ( CUBE_LIBDIR != "" )
-                {
-                    std::cout << " -L" CUBE_LIBDIR;
-                }
-
-                if ( TIMER_LIBDIR != "" )
-                {
-                    std::cout << " -L" TIMER_LIBDIR;
-                }
-
+                /** Create lib info */
+                app.AddLib( "-l" + scorep_libs[ mode ] );
+                app.AddLibDir( SCOREP_LIBDIR );
+                app.AddLibDir( CUBE_LIBDIR );
+                app.AddLibDir( TIMER_LIBDIR );
                 #if HAVE( PAPI )
-                std::cout << " " << PAPI_LDFLAGS << " " << PAPI_LIBS << " -Wl,-rpath," PAPI_LIBDIR;
+                app.AddLibDir( PAPI_LIBDIR );
+                app.AddLib( PAPI_LIBS );
                 #endif
+                if ( ( mode == MODE_MPI ) || ( mode == MODE_HYB ) )
+                {
+                    app.str_libdir += " " SCOREP_MPI_SION_LDFLAGS;
+                    app.AddLib( SCOREP_MPI_SION_LIBS );
+                }
+                else
+                {
+                    app.str_libdir += " " SCOREP_BACKEND_SION_LDFLAGS;
+                    app.AddLib( SCOREP_BACKEND_SION_LIBS );
+                }
 
-                std::cout << " -l" << scorep_libs[ mode ] << " " SCOREP_LIBS " ";
+                std::cout << app.str_libdir << " " << app.str_libs << " ";
                 std::cout.flush();
 
                 app.str_otf2_config += " --libs";
@@ -310,9 +319,15 @@ main( int    argc,
             case ACTION_INCDIR:
                 std::cout << "-I" SCOREP_PREFIX "/include -I"
                 SCOREP_PREFIX "/include/scorep ";
+                if ( ( mode == MODE_MPI ) || ( mode == MODE_HYB ) )
+                {
+                    std::cout << " " SCOREP_MPI_SION_CPPFLAGS;
+                }
+                else
+                {
+                    std::cout << " " SCOREP_BACKEND_SION_CPPFLAGS;
+                }
                 std::cout.flush();
-                //app.str_otf2_config += " --cflags";
-                //ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CC:
@@ -344,7 +359,7 @@ main( int    argc,
 SCOREP_Config::SCOREP_Config( char* arg0 )
 {
     char* path = SCOREP_GetExecutablePath( arg0 );
-    str_otf2_config = "otf2-config";
+    str_otf2_config = "otf2-config --backend";
     if ( path != NULL )
     {
         str_otf2_config = "/" + str_otf2_config;
@@ -394,7 +409,7 @@ SCOREP_Config::SetValue( std::string key,
     }
     else if ( key == "OTF2_CONFIG" && value != "" )
     {
-        this->str_otf2_config = value;
+        this->str_otf2_config = value + " --backend";
     }
 }
 
@@ -412,19 +427,29 @@ SCOREP_Config::AddIncDir( std::string dir )
 void
 SCOREP_Config::AddLibDir( std::string dir )
 {
-    std::string libdir = "-L" + dir + " -Wl,-rpath," + dir;
-
-    if ( std::string::npos == this->str_libdir.find( libdir ) )
+    if ( dir != "" )
     {
-        this->str_libdir += " " + libdir;
+        std::string libdir = "-L" + dir;
+
+        #ifdef SCOREP_SHARED_BUILD
+        libdir += " -Wl,-rpath," + dir;
+        #endif
+
+        if ( std::string::npos == this->str_libdir.find( libdir ) )
+        {
+            this->str_libdir += " " + libdir;
+        }
     }
 }
 
 void
 SCOREP_Config::AddLib( std::string lib )
 {
-    if ( std::string::npos == this->str_libs.find( lib ) )
+    if ( lib != "" )
     {
-        this->str_libs += " " + lib;
+        if ( std::string::npos == this->str_libs.find( lib ) )
+        {
+            this->str_libs += " " + lib;
+        }
     }
 }
