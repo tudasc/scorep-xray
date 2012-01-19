@@ -92,19 +92,11 @@ $(CONFIG_HEADER_MPI):
 if MPI_SUPPORTED
 if OPENMP_SUPPORTED
 installcheck-local:
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	($(am__cd) ../test/jacobi/MPI/C && $(MAKE) $(AM_MAKEFLAGS))    || eval $$failcom; \
-	($(am__cd) ../test/jacobi/hybrid/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
-        test -z "$$fail"
+	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
+	@$(am__cd) ../test/jacobi/hybrid/C && $(MAKE) $(AM_MAKEFLAGS)
 else
 installcheck-local:
-	@$(am__cd) ../test/jacobi/MPI/C && $(MAKE) $(AM_MAKEFLAGS)
+	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
 endif
 else
 installcheck-local:

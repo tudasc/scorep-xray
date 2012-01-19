@@ -96,32 +96,16 @@ endif
 
 if CROSS_BUILD
 check-local:
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	($(am__cd) build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-serial)  || eval $$failcom; \
-	($(am__cd) build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-omp)     || eval $$failcom; \
-	($(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-serial)  || eval $$failcom; \
-	($(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-omp)     || eval $$failcom; \
-	($(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi)     || eval $$failcom; \
-	($(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp) || eval $$failcom; \
-        test -z "$$fail"
+	@$(am__cd) build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-serial
+	@$(am__cd) build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-omp
+	@$(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-serial
+	@$(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-omp
+	@$(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi
+	@$(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp
 else !CROSS_BUILD
 check-local:
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	($(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-serial)  || eval $$failcom; \
-	($(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-omp)     || eval $$failcom; \
-	($(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi)     || eval $$failcom; \
-	($(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp) || eval $$failcom; \
-        test -z "$$fail"
+	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) check-serial
+	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) check-omp
+	@$(am__cd) build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi
+	@$(am__cd) build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp
 endif !CROSS_BUILD

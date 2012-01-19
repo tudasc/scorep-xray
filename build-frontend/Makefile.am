@@ -45,4 +45,4 @@ BUILD_DIR=build-frontend
 
 ## Here we create the Cobi config scripts.
 create-cobi-config-local:
-	(cd ../build-backend; $(MAKE) create-cobi-config-local)
+	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) create-cobi-config-local

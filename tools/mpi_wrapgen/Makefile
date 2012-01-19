@@ -74,12 +74,12 @@ SCOREP_Wrapgen.o : SCOREP_Wrapgen.cpp SCOREP_Wrapgen.h SCOREP_Wrapgen_Help.h
 all-files: $(addprefix $(MPI_OUTPUTDIR)/,$(MPI_FILES)) $(addprefix $(DOC_OUTPUTDIR)/,$(DOC_FILES))
 
 clean-files:
-	if [ -d $(MPI_OUTPUTDIR) ]; then (cd $(MPI_OUTPUTDIR); rm -f $(MPI_FILES)) fi
+	if [ -d $(MPI_OUTPUTDIR) ]; then (cd $(MPI_OUTPUTDIR) && rm -f $(MPI_FILES)) fi
 	if [ -d $(MPI_OUTPUTDIR) ] && [ -z `ls $(MPI_OUTPUTDIR)` ]; then (rmdir $(MPI_OUTPUTDIR)) fi
 
 install-files: all-files
-	(cd $(MPI_OUTPUTDIR); $(INSTALL) -m 644 $(MPI_FILES) $(MPI_INSTALLDIR))
-	(cd $(DOC_OUTPUTDIR); $(INSTALL) -m 644 $(DOC_FILES) $(DOC_INSTALLDIR))
+	(cd $(MPI_OUTPUTDIR) && $(INSTALL) -m 644 $(MPI_FILES) $(MPI_INSTALLDIR))
+	(cd $(DOC_OUTPUTDIR) && $(INSTALL) -m 644 $(DOC_FILES) $(DOC_INSTALLDIR))
 
 # Auto-gerenation targets for MPI wrappers
 

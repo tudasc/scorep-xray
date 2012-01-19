@@ -124,10 +124,10 @@ scorep-config-tool-install:
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
-	@(cd ../vendor/otf2/build-backend; make clean-local-otf2-config-tool)
+	@$(am__cd) ../vendor/otf2/build-backend && $(MAKE) $(AM_MAKEFLAGS) clean-local-otf2-config-tool
 
 scorep-config-tool-local: $(builddir)/scorep_config.dat
-	@(cd ../vendor/otf2/build-backend; make otf2-config-tool-local)
+	@$(am__cd) ../vendor/otf2/build-backend && $(MAKE) $(AM_MAKEFLAGS) otf2-config-tool-local
 
 create-cobi-config-local:
 	@$(MKDIR_P) $(SCOREP_SHARE_LOCAL_DIR)
@@ -208,16 +208,8 @@ $(CONFIG_HEADER_BACKEND):
 
 if OPENMP_SUPPORTED
 installcheck-local:
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	($(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
-	($(am__cd) ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)) || eval $$failcom; \
-        test -z "$$fail"
+	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
+	@$(am__cd) ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)
 else
 installcheck-local:
 	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
