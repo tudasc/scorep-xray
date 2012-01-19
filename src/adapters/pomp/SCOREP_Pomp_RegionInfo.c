@@ -157,7 +157,6 @@ scorep_pomp_init_region( SCOREP_Pomp_Region* region )
     region->endFileName   = 0;
     region->endLine1      = 0;
     region->endLine2      = 0;
-    region->regionName    = 0;
 }
 
 /** Registers the pomp regions to scorep and sets the SCOREP region handle fields in
@@ -190,13 +189,13 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     }
 
     /* Determine name */
-    if ( region->regionName == 0 )
+    if ( region->name == 0 )
     {
         name = scorep_pomp_region_type_map[ region->regionType ].regionTypeString;
     }
     else
     {
-        name = region->regionName;
+        name = region->name;
     }
 
     if ( region->regionType != SCOREP_Pomp_UserRegion )
@@ -276,10 +275,10 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     /* Register locks for critical regions */
     if ( region->regionType == SCOREP_Pomp_Critical )
     {
-        region->lock = SCOREP_Pomp_GetLock( region->regionName );
+        region->lock = SCOREP_Pomp_GetLock( region->name );
         if ( region->lock == NULL )
         {
-            region->lock = scorep_pomp_lock_init( region->regionName );
+            region->lock = scorep_pomp_lock_init( region->name );
         }
     }
 #endif
@@ -297,6 +296,13 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
     POMP2_Region_info regionInfo;
     ctcString2RegionInfo( initString, &regionInfo );
     scorep_pomp_init_region( region );
+    if ( regionInfo.mCriticalName )
+    {
+        region->name = ( char* )malloc( sizeof( char ) * ( strlen( regionInfo.mCriticalName ) + 12 ) );
+        strcpy( region->name, "critical (" );
+        strcat( region->name, regionInfo.mCriticalName );
+        strcat( region->name, ")" );
+    }
     if ( regionInfo.mUserRegionName )
     {
         region->name = ( char* )malloc( sizeof( char ) * ( strlen( regionInfo.mUserRegionName ) + 1 ) );

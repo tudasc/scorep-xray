@@ -93,7 +93,6 @@ typedef struct
     char*   endFileName;                  /* File containing the closing statement     */
     int32_t endLine1;                     /* First line of the closing statement       */
     int32_t endLine2;                     /* Last line of the closing statement        */
-    char*   regionName;                   /* For user regions and criticals            */
 } SCOREP_Pomp_Region;
 
 

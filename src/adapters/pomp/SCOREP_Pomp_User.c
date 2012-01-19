@@ -94,7 +94,6 @@ scorep_pomp_free_region_members( SCOREP_Pomp_Region* region )
         scorep_pomp_free_region_member( &region->name );
         scorep_pomp_free_region_member( &region->startFileName );
         scorep_pomp_free_region_member( &region->endFileName );
-        scorep_pomp_free_region_member( &region->regionName );
     }
 }
 
