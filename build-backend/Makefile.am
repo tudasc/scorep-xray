@@ -147,8 +147,7 @@ config_tool_build_dir = build-backend
 endif
 
 $(builddir)/scorep_config.dat: 
-	@echo "Creating $(builddir)/scorep_config.dat"
-	@( \
+	$(AM_V_GEN)( \
 	    echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"; \
 	    echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
 	    echo LIBDIR=\"$(PWD)/.libs\"; \
@@ -174,12 +173,11 @@ $(builddir)/scorep_config.dat:
 	    echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
 	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2_print\"; \
 	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_LOCAL_DIR)\"; \
-	) >$(builddir)/scorep_config.dat
+	) >$@
 
 ## Provide the scorep-config build with information from this backend Makefile.
 $(CONFIG_HEADER_BACKEND):
-	@echo "Creating $(CONFIG_HEADER_BACKEND)"
-	@( \
+	$(AM_V_GEN)( \
 	    echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\""; \
 	    echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""; \
 	    echo "#define SCOREP_PREFIX  \"$(prefix)\""; \
@@ -200,10 +198,10 @@ $(CONFIG_HEADER_BACKEND):
 	    echo "#define PDT_CONFIG     \"$(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf\""; \
 	    echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\""; \
 	    echo "#define COBI_CONFIG_DIR \"$(SCOREP_SHARE_INSTALL_DIR)\""; \
-            echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
-            echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
-            echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
-	) >$(CONFIG_HEADER_BACKEND)
+	    echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
+	    echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
+	    echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
+	) >$@
 
 
 if OPENMP_SUPPORTED

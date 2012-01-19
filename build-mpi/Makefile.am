@@ -83,10 +83,11 @@ distclean-local:
 
 ## Provide the scorep-config build with information from this mpi Makefile.
 $(CONFIG_HEADER_MPI):
-	@echo "Creating $(CONFIG_HEADER_BACKEND)"
-	@echo "#define SCOREP_MPI_SION_LIBS     \"$(SCOREP_SION_MPI_LIBS)\""     >  $(CONFIG_HEADER_MPI)
-	@echo "#define SCOREP_MPI_SION_LDFLAGS  \"$(SCOREP_SION_MPI_LDFLAGS)\""  >> $(CONFIG_HEADER_MPI)
-	@echo "#define SCOREP_MPI_SION_CPPFLAGS \"$(SCOREP_SION_MPI_CPPFLAGS)\"" >> $(CONFIG_HEADER_MPI)
+	$(AM_V_GEN)( \
+	    echo "#define SCOREP_MPI_SION_LIBS     \"$(SCOREP_SION_MPI_LIBS)\""; \
+	    echo "#define SCOREP_MPI_SION_LDFLAGS  \"$(SCOREP_SION_MPI_LDFLAGS)\""; \
+	    echo "#define SCOREP_MPI_SION_CPPFLAGS \"$(SCOREP_SION_MPI_CPPFLAGS)\""; \
+	) >$@
 
 
 if MPI_SUPPORTED
