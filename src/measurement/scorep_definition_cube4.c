@@ -658,11 +658,11 @@ scorep_write_location_definitions_to_cube4( cube_t*                   my_cube,
 
     SCOREP_DEFINITION_FOREACH_DO( manager, LocationGroup, location_group )
     {
-        uint64_t   rank = definition->global_location_group_id;
+        uint32_t   rank = definition->global_location_group_id;
         cube_node* node = scorep_cube_get_node( my_cube, system_tree, definition->parent,
                                                 manager->system_tree_node_definition_counter );
 
-        sprintf( name, "rank %" PRIu64, rank );
+        sprintf( name, "rank %u", rank );
         process = cube_def_proc( my_cube, name, rank, node );
 
         for ( uint32_t loc = 0; loc < threads[ rank ]; loc++ )

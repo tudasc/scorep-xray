@@ -62,7 +62,7 @@ SCOREP_DefineSystemTree()
 
     /* Create Location Group definition */
     char     name[ 32 ];
-    uint64_t location_group_id = 0;
+    uint32_t location_group_id = 0;
     if ( SCOREP_Mpi_HasMpi() )
     {
         int rank = SCOREP_Mpi_GetRank();

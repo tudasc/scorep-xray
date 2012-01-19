@@ -362,7 +362,7 @@ scorep_write_location_definitions(
                                                            OTF2_LocationType,
                                                            uint64_t,
                                                            uint64_t,
-                                                           uint64_t );
+                                                           uint32_t );
     def_location_pointer_t defLocation = ( def_location_pointer_t )
                                          OTF2_DefWriter_WriteLocation;
 
@@ -399,7 +399,7 @@ scorep_write_location_group_definitions(
 {
     assert( writerHandle );
     typedef SCOREP_Error_Code ( *def_location_group_pointer_t )( void*,
-                                                                 uint64_t,
+                                                                 uint32_t,
                                                                  uint32_t,
                                                                  OTF2_LocationGroupType,
                                                                  uint32_t );
@@ -557,10 +557,10 @@ scorep_write_group_definitions( void*                     writerHandle,
 
 
     typedef SCOREP_Error_Code ( *def_group_pointer_t )( void*,
-                                                        uint64_t,
+                                                        uint32_t,
                                                         uint32_t,
                                                         OTF2_GroupType,
-                                                        uint64_t,
+                                                        uint32_t,
                                                         uint64_t* );
 
     def_group_pointer_t defGroup = ( def_group_pointer_t )
@@ -597,7 +597,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
     assert( writerHandle );
 
     typedef SCOREP_Error_Code ( *def_metric_pointer_t )( void*,
-                                                         uint64_t,
+                                                         uint32_t,
                                                          uint32_t,
                                                          uint32_t,
                                                          OTF2_MetricType,
@@ -647,16 +647,16 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
     assert( writerHandle );
 
     typedef SCOREP_Error_Code ( *def_metric_class_pointer_t )( void*,
-                                                               uint64_t,
+                                                               uint32_t,
                                                                uint8_t,
-                                                               uint64_t*,
+                                                               uint32_t*,
                                                                OTF2_MetricOccurrence );
     def_metric_class_pointer_t defMetricClass = ( def_metric_class_pointer_t )
                                                 OTF2_DefWriter_WriteMetricClass;
 
     typedef SCOREP_Error_Code ( *def_metric_instance_pointer_t )( void*,
-                                                                  uint64_t,
-                                                                  uint64_t,
+                                                                  uint32_t,
+                                                                  uint32_t,
                                                                   uint64_t,
                                                                   OTF2_MetricScope,
                                                                   uint64_t );
@@ -678,7 +678,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
 
         if ( !definition->is_scoped )
         {
-            uint64_t metric_members[ definition->number_of_metrics ];
+            uint32_t metric_members[ definition->number_of_metrics ];
             for ( uint8_t i = 0; i < definition->number_of_metrics; i++ )
             {
                 metric_members[ i ] = SCOREP_HANDLE_TO_ID(
