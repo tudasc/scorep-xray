@@ -320,14 +320,6 @@ main( int    argc,
             case ACTION_INCDIR:
                 std::cout << "-I" SCOREP_PREFIX "/include -I"
                 SCOREP_PREFIX "/include/scorep ";
-                if ( ( mode == MODE_MPI ) || ( mode == MODE_HYB ) )
-                {
-                    std::cout << " " SCOREP_MPI_SION_CPPFLAGS;
-                }
-                else
-                {
-                    std::cout << " " SCOREP_BACKEND_SION_CPPFLAGS;
-                }
                 std::cout.flush();
                 break;
 
