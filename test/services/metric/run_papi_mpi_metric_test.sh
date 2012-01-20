@@ -49,11 +49,11 @@ echo "Output of metric test can be found in $RESULT_DIR"
 
 # Check metric definitions
 $OTF2_PRINT -G $RESULT_DIR/traces.otf2 |
-    LC_ALL=C grep -E '^METRIC MEMBER.*PAPI|^METRIC CLASS.*SYNCHRONOUS_STRICT' |
-    LC_ALL=C sed -e 's/^METRIC \(MEMBER\|CLASS\|INSTANCE\) \+/METRIC \1 /g' \
-                 -e 's/Name: [[:digit:]]\+/Name: <id>/g' \
-                 -e 's/Descr\.: [[:digit:]]\+ (.*), Type/Descr.: <id> (<string>), Type/g' \
-                 -e 's/Unit: [[:digit:]]\+/Unit: <id>/g' > trace.txt
+    grep '^METRIC_' |
+    LC_ALL=C sed -e 's/^METRIC_\(MEMBER\|CLASS\|INSTANCE\) \+/METRIC_\1 /g' \
+                 -e 's/Name: "\([^"]*\)" <[[:digit:]]\+>/Name: "\1" <id>/g' \
+                 -e 's/Descr\.: "[^"]*" <[[:digit:]]\+>/Descr.: "<string>" <id>/g' \
+                 -e 's/Unit: "\([^"]*\)" <[[:digit:]]\+>/Unit: "\1" <id>/g' > trace.txt
 if diff $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt > /dev/null
   then
     true
@@ -65,7 +65,7 @@ if diff $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_definitions.out trace.txt > /dev
 fi
 
 # Check metric events
-$OTF2_PRINT $RESULT_DIR/traces.otf2 | grep METRIC > trace.txt
+$OTF2_PRINT $RESULT_DIR/traces.otf2 | grep '^METRIC ' > trace.txt
 if [ x`grep -c METRIC trace.txt` = x`grep -c METRIC $TEST_DATA_DIR/jacobi_c_mpi_papi_metric_events.out` ]; then
     rm trace.txt
     exit 0

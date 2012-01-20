@@ -41,7 +41,7 @@ fi
 $OTF2_PRINT -A $RESULT_DIR/traces.otf2
 
 # Check output
-$OTF2_PRINT $RESULT_DIR/traces.otf2 | grep region > trace.txt
+$OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep '^\(ENTER\|LEAVE\) ' > trace.txt
 
 if [ "`grep filtered trace.txt`" ]; then
     echo "The following events should be filtered:"

@@ -34,7 +34,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Check output
-$OTF2_PRINT $RESULT_DIR/traces.otf2 | grep region > trace.txt
+$OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep '^\(ENTER\|LEAVE\) ' > trace.txt
 if [ x`grep -c Region1 trace.txt` = x4 ]; then
   if [ x`grep -v Region1 trace.txt | grep -v main | grep -v Region2` = x ]; then
     rm -rf trace.txt $RESULT_DIR

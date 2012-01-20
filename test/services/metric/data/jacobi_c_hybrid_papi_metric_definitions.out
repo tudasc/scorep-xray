@@ -1,2 +1,2 @@
-METRIC MEMBER 0  Name: <id> (PAPI_TOT_INS), Descr.: <id> (<string>), Type: PAPI, Mode: ACCUMULATED (START timing), Value type: UINT64, Base: 10, Exponent: 0, Unit: <id> (#)
-METRIC CLASS 0  occurrence: SYNCHRONOUS_STRICT, number of metrics: 1, metric members: 0
+METRIC_MEMBER 0  Name: "PAPI_TOT_INS" <id>, Descr.: "<string>" <id>, Type: PAPI, Mode: ACCUMULATED (START timing), Value Type: UINT64_T, Base: 10, Exponent: 0, Unit: "#" <id>
+METRIC_CLASS 0  Occurrence: SYNCHRONOUS_STRICT, 1 Members: "PAPI_TOT_INS" <0>
