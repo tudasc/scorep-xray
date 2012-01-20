@@ -168,7 +168,7 @@ $(builddir)/scorep_config.dat:
 	    echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"; \
 	    echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"; \
 	    echo PDT=\"$(PDT_PATH)\"; \
-	    echo PDT_CONFIG=\"$(INC_ROOT)src/tools/wrapper/SCOREP_Pdt_Instrumentation.conf\"; \
+	    echo PDT_CONFIG=\"$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Pdt_Instrumentation.conf\"; \
 	    echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
 	    echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
 	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2_print\"; \
