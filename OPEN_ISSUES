@@ -59,6 +59,9 @@ various Score-P components.
 
   - To build Score-P it is required to have MPI and Fortran compilers.
 
+  - To use PAPI in a shared library build of Score-P, libpapi.so needs
+    to be in the linker's search path, e.g., in LD_LIBRARY_PATH.
+
 --------------------------------------------------------------------------------
 
 * Automatic instrumentation via "scorep" based on (often undocumented)
