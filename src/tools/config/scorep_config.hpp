@@ -37,6 +37,9 @@ public:
     std::string str_cc;
     std::string str_cxx;
     std::string str_fc;
+    std::string str_mpicc;
+    std::string str_mpicxx;
+    std::string str_mpifc;
     std::string str_libs;
     std::string str_flags;
     std::string str_libdir;

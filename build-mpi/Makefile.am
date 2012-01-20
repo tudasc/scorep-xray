@@ -87,6 +87,9 @@ $(CONFIG_HEADER_MPI):
 	    echo "#define SCOREP_MPI_SION_LIBS     \"$(SCOREP_SION_MPI_LIBS)\""; \
 	    echo "#define SCOREP_MPI_SION_LDFLAGS  \"$(SCOREP_SION_MPI_LDFLAGS)\""; \
 	    echo "#define SCOREP_MPI_SION_CPPFLAGS \"$(SCOREP_SION_MPI_CPPFLAGS)\""; \
+	    echo "#define SCOREP_MPICC             \"$(CC)\"";\
+	    echo "#define SCOREP_MPICXX            \"$(CXX)\"";\
+	    echo "#define SCOREP_MPIFC             \"$(FC)\"";\
 	) >$@
 
 

@@ -42,6 +42,9 @@
 #define ACTION_CC     4
 #define ACTION_CXX    5
 #define ACTION_FC     6
+#define ACTION_MPICC  7
+#define ACTION_MPICXX 8
+#define ACTION_MPIFC  9
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
@@ -60,6 +63,9 @@
     "   --cc      prints the C compiler name\n" \
     "   --cxx     prints the C++ compiler name\n" \
     "   --fc      prints the Fortran compiler name\n" \
+    "   --mpicc   prints the MPI C compiler name\n" \
+    "   --mpicxx  prints the MPI C++ compiler name\n" \
+    "   --mpifc   prints the MPI Fortran compiler name\n" \
     "   --help    prints this usage information\n" \
     "   --version prints the version number of the scorep package\n" \
     "   --scorep-revision prints the revision number of the scorep package\n" \
@@ -167,6 +173,18 @@ main( int    argc,
         {
             action = ACTION_FC;
         }
+        else if ( strcmp( argv[ i ], "--mpicc" ) == 0 )
+        {
+            action = ACTION_MPICC;
+        }
+        else if ( strcmp( argv[ i ], "--mpicxx" ) == 0 )
+        {
+            action = ACTION_MPICXX;
+        }
+        else if ( strcmp( argv[ i ], "--mpifc" ) == 0 )
+        {
+            action = ACTION_MPIFC;
+        }
         else if ( strcmp( argv[ i ], "--user" ) == 0 )
         {
             user = true;
@@ -257,6 +275,21 @@ main( int    argc,
                 std::cout.flush();
                 break;
 
+            case ACTION_MPICC:
+                std::cout << app.str_mpicc;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPICXX:
+                std::cout << app.str_mpicxx;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPIFC:
+                std::cout << app.str_mpifc;
+                std::cout.flush();
+                break;
+
             default:
                 std::cout << SHORT_HELP << std::endl;
                 break;
@@ -338,6 +371,21 @@ main( int    argc,
                 std::cout.flush();
                 break;
 
+            case ACTION_MPICC:
+                std::cout << SCOREP_MPICC;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPICXX:
+                std::cout << SCOREP_MPICXX;
+                std::cout.flush();
+                break;
+
+            case ACTION_MPIFC:
+                std::cout << SCOREP_MPIFC;
+                std::cout.flush();
+                break;
+
             default:
                 std::cout << SHORT_HELP << std::endl;
                 break;
@@ -358,6 +406,12 @@ SCOREP_Config::SCOREP_Config( char* arg0 )
         str_otf2_config = "/" + str_otf2_config;
         str_otf2_config = path + str_otf2_config;
     }
+    str_cc     = SCOREP_CC;
+    str_cxx    = SCOREP_CXX;
+    str_fc     = SCOREP_FC;
+    str_mpicc  = SCOREP_MPICC;
+    str_mpicxx = SCOREP_MPICXX;
+    str_mpifc  = SCOREP_MPIFC;
     free( path );
 }
 
@@ -394,6 +448,18 @@ SCOREP_Config::SetValue( std::string key,
     else if ( key == "FC" && value != "" )
     {
         this->str_fc = value;
+    }
+    else if ( key == "MPICC" && value != "" )
+    {
+        this->str_mpicc = value;
+    }
+    else if ( key == "MPICXX" && value != "" )
+    {
+        this->str_mpicxx = value;
+    }
+    else if ( key == "MPIFC" && value != "" )
+    {
+        this->str_mpifc = value;
     }
     else if ( key == "PREFIX" && value != "" )
     {
