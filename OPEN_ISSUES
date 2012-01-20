@@ -1,0 +1,194 @@
+/* 
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2009-2012, 
+ *    RWTH Aachen, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene, USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+                        Score-P v1.0 OPEN ISSUES
+                        ========================
+
+                                                           Status: Jan 2012
+
+This file lists known limitations and unimplemented features of
+various Score-P components.
+
+--------------------------------------------------------------------------------
+
+* Platform support
+
+  - Score-P has been tested on the following platforms:
+    + IBM Blue Gene/P, only static libraries supported
+    + IBM SP & BladeCenter clusters, only static libraries supported
+    + SGI Altix/ICE
+    + various Linux/Intel (x86/x64) clusters
+    The provided configure options (see INSTALL) may provide a good
+    basis for building and testing the toolset on other systems.
+
+  - The following platforms have not been tested recently:
+    + Cray XE6/XK6
+    + Sun Solaris/SPARC-based clusters
+    However the supplied buildsystem might still work on these
+    systems.
+
+  - The following platforms have not been tested:
+    + Cray XT3/4, XT5/6
+    + NEC SX-9
+    + IBM Blue Gene/L
+    + SiCortex systems
+    + other NEC SX systems
+
+  - Each toolset installation can only support one MPI implementation
+    (because MPI is only source-code but not binary compatible). If
+    your systems support more than one MPI implementation (e.g. Linux
+    clusters often do), separate builds for each MPI implementation
+    have to be installed.
+
+  - The same is true if your system features more than one compiler
+    supporting automatic function instrumentation.
+
+  - To build Score-P it is required to have MPI and Fortran compilers.
+
+--------------------------------------------------------------------------------
+
+* Automatic instrumentation via "scorep" based on (often undocumented)
+  compiler switches
+
+  - GNU    : tested with GCC 4 and higher
+  - PGI    : tested with version 10.1
+  - Oracle : only works for Fortran (not C/C++), tested with version 12.2
+  - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and 
+             higher and corresponding bgxl compilers on BlueGene systems
+  - Intel  : only works with Intel icc/ifort version 10 and higher compilers
+
+  Measurement filtering can only be applied to functions instrumented
+  by the IBM, GNU, Intel, PGI, or Oracle compilers as well as
+  functions instrumented by PDT and user functions. (Filtering of MPI
+  functions, OpenMP is always ineffective.)
+
+  Function instrumentation based on using the GNU and Intel interface
+  has the limitation that instrumented functions in dynamically loaded
+  (shared) libraries are not measured (i.e., implicitly filtered).
+
+  The GNU Fortran compiler versions 4.6.0 and 4.6.1 have a bug which
+  leads to an internal compiler error when using automatic function
+  instrumentation.  It is therefore recommended to either use an
+  older/newer version of the compiler or to work around this issue by
+  using manual instrumentation or automatic source-code
+  instrumentation based on PDToolkit.
+
+  Function instrumentation using the Intel compiler version 11.1 for
+  codes using OpenMP tasking is erroneous. You might try PDT
+  instrumentation instead.
+
+--------------------------------------------------------------------------------
+
+* Score-P misc.
+
+  - Applications using an autotools-based buildsystem should add the
+    option "--disable-option-checking" to the usual configure
+    call. Score-P is added only at make time like "make CC="scorep
+    <your-CC>" (same for CXX, F77, and FC)
+
+  - Measurements of applications using OpenMP tasking is at the moment
+    only supported in tracing mode.
+
+  - Literal file-filter rules like "INCLUDE bt.f" for files that will
+    be processed by OPARI2 (i.e., files containing OpenMP or POMP2
+    user pragmas) do not work as expected as OPARI2 changes the file
+    name (here to bt.opari.f)
+
+--------------------------------------------------------------------------------
+
+* OTF2 v1.0
+
+  - Please avoid usage of OTF2_EvtReader_Seek function. Event seeking
+    is broken in recent OTF2 release.
+
+  - ZLIB compression of trace files is untested. Problems may occur if
+    you change compression mode to ZLIB manually.
+
+  - The MODIFY mode of OTF2, which can be used to rewrite time stamps
+    in trace files, is untested.
+
+--------------------------------------------------------------------------------
+
+* OPARI2 v1.0
+
+  - OPARI2 reports "ERROR: unbalanced pragma nesting".
+    This is normally caused by missing do-loop end directives.  In
+    contrast to the OpenMP standard, where they are optional, OPARI2
+    requires "!$OMP END DO" and "!$OMP END PARALLEL DO" directives for
+    parallel loops in Fortran.  The solution is to add them.
+
+  - Some OpenMP compilers (e.g. PGI) are non-standard-conforming in
+    the way they process OpenMP directives by not allowing macro
+    replacement of OpenMP directive parameters. This results in error
+    messages containing references to POMP_DLIST_##### where ##### is
+    a five-digit number.  In this case, try to use the OPARI2 option
+    "--nodecl". This is unfortunately not a perfect workaround, as
+    this can trigger other errors in some rare cases.
+
+  - Some Fortran compilers (e.g., Oracle) don't fully support C
+    preprocessor commands, especially the "#line" commands.  In case
+    you track a compilation error on a OPARI2 modified/instrumented
+    file down to such a statement, try using "--nosrc" as this
+    suppresses the generation of "#line" statements.  (With the Sun
+    Fortran compiler, using "-xpp=cpp" is a better workaround.)
+
+  - Sometimes instrumentation of OpenMP source files work, but the
+    traces get enormously large because the application is using large
+    numbers (millions) of small OpenMP synchronization operations like
+    atomic, locks or flushes which are instrumented by default. Also,
+    in that case, the instrumentation overhead might become excessive.
+
+    In that case, you can tell OPARI2 to not instrument these constructs
+    by using the "--disable=<construct>[,<construct>]..." option.
+    Valid values for constructs are:
+
+      atomic, critical, flush, locks, master, single
+
+    or "sync" which disables all of the above.
+
+    Of course, then these constructs are not measured and you have to
+    keep this in mind later, when you analyze the results, that
+    although they do not show up in the analysis report that the
+    application might have some performance problem because of too
+    many OpenMP synchronization calls!
+
+  - In Fortran sources Opari2 inserts variables in the variable
+    definition part of functions, subroutines, etc. If #ifdef
+    statements are used at the beginning of the variable definition
+    part, opari may insert its own variables in an #ifdef block which
+    is not compiled later on. This will cause the compile step to
+    fail. Workaround is to move #ifdef blocks between other variable
+    definitions, than opari2 inserts its variables before those.
+
+  - Having more than one Fortran statement per line, separated by
+    semicolons can lead to problems in opari2 to detect start and end
+    of loops. Sometimes this can lead "ERROR: unbalanced pragma
+    nesting" messages and will abort parsing the source
+    file. Workaround is to write one statement per line.
+
+  - Having the keyword "function", "module" or "subroutine" as part of
+    identifier names for variables, modules, etc. may result in
+    incorrect parsing of the fortran file. This may insert include
+    statements at incorrect points in the program. The Compiler will
+    give en error saying that variables are declared at illegal
+    positions. Workaround is to rename identifiers, so that they do
+    not include "function", "module" or "subroutine" as substring.
+
+--------------------------------------------------------------------------------
+
+Please report bugs, wishes, and suggestions to
+<scorep-bugs@groups.tu-dresden.de>.
