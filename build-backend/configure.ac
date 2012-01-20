@@ -179,14 +179,6 @@ AC_SCOREP_POSIX_FUNCTIONS
 # assuming that mpi configure already ran
 AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
 
-
-echo hardcode_libdir_flag_spec     = `eval echo ${hardcode_libdir_flag_spec}`
-echo hardcode_libdir_flag_spec_CC  = `eval echo $hardcode_libdir_flag_spec_CC`
-echo hardcode_libdir_flag_spec_CXX = `eval echo $hardcode_libdir_flag_spec_CXX`
-echo hardcode_libdir_flag_spec_F77 = `eval echo $hardcode_libdir_flag_spec_F77`
-echo hardcode_libdir_flag_spec_FC  = `eval echo $hardcode_libdir_flag_spec_FC`
-
-
 AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/serial/C/Makefile \
                  ../test/jacobi/OpenMP/C/Makefile ])
