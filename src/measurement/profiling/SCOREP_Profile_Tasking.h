@@ -25,65 +25,45 @@
  *
  */
 
-/**
-   Implemented the handling of a task creation starting point.
-   @param regionHandle The Score-P region handle of the associated source code
-                       region. E.g., the task construct enclosing region.
-   @param taskId       The task identifier of the newly created task.
-   @param timestamp    The timestamp of this event.
- */
-void
-SCOREP_Profile_TaskCreateBegin( SCOREP_RegionHandle regionHandle,
-                                uint64_t            taskId,
-                                uint64_t            timestamp );
+
+#include <stdint.h>
+#include <SCOREP_Thread_Types.h>
 
 /**
-   Implemented the handling of a task creation end point.
-   @param regionHandle The Score-P region handle of the associated source code
-                       region. E.g., the task construct enclosing region.
-   @param taskId       The task identifier of the creator task.
-   @param timestamp    The timestamp of this event.
+   Implements the handling of a task creation event.
+   @param location     Location this event happened on.
+   @param taskId       Id of the created task.
+   @param timestamp    Timestamp of this event.
  */
 void
-SCOREP_Profile_TaskCreateEnd( SCOREP_RegionHandle regionHandle,
-                              uint64_t            taskId,
-                              uint64_t            timestamp );
+SCOREP_Profile_TaskCreate( SCOREP_Thread_LocationData* location,
+                           uint64_t                    timestamp,
+                           uint64_t                    taskId );
+
 
 /**
-   Implemented the handling of a task begin event.
-   @param regionHandle The Score-P region handle of the associated source code
-                       region. E.g., the task construct's inner region.
-   @param taskId       The task identifier of the new task.
-   @param timestamp    The timestamp of this event.
+   Implements the handling of a task switch event.
+   @param location     Location this event happened on.
+   @param taskId       Id of the task the runtime switched to.
+   @param timestamp    Timestamp of this event.
  */
 void
-SCOREP_Profile_TaskBegin( SCOREP_RegionHandle regionHandle,
-                          uint64_t            taskId,
-                          uint64_t            timestamp );
+SCOREP_Profile_TaskSwitch( SCOREP_Thread_LocationData* location,
+                           uint64_t                    timestamp,
+                           uint64_t                    taskId );
+
 
 /**
-   Implemented the handling of a task resumption event. This event implies that the
-   former task was suspended if no explicit task complete event preceded this event.
-   @param regionHandle The Score-P region handle of the associated source code
-                       region. E.g., the task construct's inner region.
-   @param taskId       The task identifier of the resumed task. The task id of the
-                       suspended task is the current task in the profile.
-   @param timestamp    The timestamp of this event.
+   Implements the handling of a task completion event.
+   @param location     Location this event happened on.
+   @param taskId       Id of the completed task.
+   @param timestamp    Timestamp of this event.
  */
 void
-SCOREP_Profile_TaskResume( SCOREP_RegionHandle regionHandle,
-                           uint64_t            taskId,
-                           uint64_t            timestamp );
+SCOREP_Profile_TaskComplete( SCOREP_Thread_LocationData* location,
+                             uint64_t                    timestamp,
+                             uint64_t                    taskId );
 
-/**
-   Implemented the handling if the execution of the current task is complete.
-   @param regionHandle The Score-P region handle of the associated source code
-                       region. E.g., the task construct's inner region.
-   @param timestamp    The timestamp of this event.
- */
-void
-SCOREP_Profile_TaskCompleted( SCOREP_RegionHandle regionHandle,
-                              uint64_t            timestamp );
 
 
 #endif /* SCOREP_PROFILING_TASKING */

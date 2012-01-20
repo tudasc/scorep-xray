@@ -25,16 +25,15 @@
  */
 
 #include <config.h>
-#include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <scorep_utility/SCOREP_Utils.h>
-
 #include <scorep_profile_definition.h>
 
+
 void
-SCOREP_Profile_TaskCreateBegin( SCOREP_RegionHandle regionHandle,
-                                uint64_t            taskId,
-                                uint64_t            timestamp )
+SCOREP_Profile_TaskCreate( SCOREP_Thread_LocationData* location,
+                           uint64_t                    timestamp,
+                           uint64_t                    taskId )
 {
     if ( scorep_profile_is_initialized )
     {
@@ -44,10 +43,11 @@ SCOREP_Profile_TaskCreateBegin( SCOREP_RegionHandle regionHandle,
     }
 }
 
+
 void
-SCOREP_Profile_TaskCreateEnd( SCOREP_RegionHandle regionHandle,
-                              uint64_t            taskId,
-                              uint64_t            timestamp )
+SCOREP_Profile_TaskSwitch( SCOREP_Thread_LocationData* location,
+                           uint64_t                    timestamp,
+                           uint64_t                    taskId )
 {
     if ( scorep_profile_is_initialized )
     {
@@ -57,35 +57,11 @@ SCOREP_Profile_TaskCreateEnd( SCOREP_RegionHandle regionHandle,
     }
 }
 
-void
-SCOREP_Profile_TaskBegin( SCOREP_RegionHandle regionHandle,
-                          uint64_t            taskId,
-                          uint64_t            timestamp )
-{
-    if ( scorep_profile_is_initialized )
-    {
-        SCOREP_WARN_ONCE( "Tasking is not yet supported in profiling mode.\n"
-                          "Disabled profiling because a tasking event occured." );
-        SCOREP_PROFILE_STOP;
-    }
-}
 
 void
-SCOREP_Profile_TaskResume( SCOREP_RegionHandle regionHandle,
-                           uint64_t            taskId,
-                           uint64_t            timestamp )
-{
-    if ( scorep_profile_is_initialized )
-    {
-        SCOREP_WARN_ONCE( "Tasking is not yet supported in profiling mode.\n"
-                          "Disabled profiling because a tasking event occured." );
-        SCOREP_PROFILE_STOP;
-    }
-}
-
-void
-SCOREP_Profile_TaskCompleted( SCOREP_RegionHandle regionHandle,
-                              uint64_t            timestamp )
+SCOREP_Profile_TaskComplete( SCOREP_Thread_LocationData* location,
+                             uint64_t                    timestamp,
+                             uint64_t                    taskId )
 {
     if ( scorep_profile_is_initialized )
     {

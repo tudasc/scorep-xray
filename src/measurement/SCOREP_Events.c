@@ -709,7 +709,7 @@ SCOREP_OmpTaskCreate( uint64_t taskId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        // task profiling not yet supported
+        SCOREP_Profile_TaskCreate( location, timestamp, taskId );
     }
 }
 
@@ -729,7 +729,7 @@ SCOREP_OmpTaskSwitch( uint64_t taskId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        // task profiling not yet supported
+        SCOREP_Profile_TaskSwitch( location, timestamp, taskId );
     }
 }
 
@@ -749,7 +749,7 @@ SCOREP_OmpTaskComplete( uint64_t taskId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        // task profiling not yet supported
+        SCOREP_Profile_TaskComplete( location, timestamp, taskId );
     }
 }
 
