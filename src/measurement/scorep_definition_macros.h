@@ -549,8 +549,8 @@
             { \
                 SCOREP_Error_Code status = OTF2_DefWriter_WriteMappingTable( \
                     definition_writer, \
-                    map, \
-                    OTF2_MAPPING_ ## TYPE ); \
+                    OTF2_MAPPING_ ## TYPE, \
+                    map ); \
                 assert( status == SCOREP_SUCCESS ); \
                 OTF2_IdMap_Free( map ); \
             } \
