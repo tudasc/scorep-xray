@@ -106,9 +106,9 @@ various Score-P components.
   - Measurements of applications using OpenMP tasking is at the moment
     only supported in tracing mode.
 
-  - Literal file-filter rules like "INCLUDE bt.f" for files that will
-    be processed by OPARI2 (i.e., files containing OpenMP or POMP2
-    user pragmas) do not work as expected as OPARI2 changes the file
+  - Literal file-filter rules like "INCLUDE bt.f" for Fortran files that 
+    will be processed by OPARI2 (i.e., files containing OpenMP or POMP 
+    user pragmas) do not work as expected as OPARI2 changes the file 
     name (here to bt.opari.f)
 
 --------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ various Score-P components.
     This is normally caused by missing do-loop end directives.  In
     contrast to the OpenMP standard, where they are optional, OPARI2
     requires "!$OMP END DO" and "!$OMP END PARALLEL DO" directives for
-    parallel loops in Fortran.  The solution is to add them.
+    parallel loops in Fortran. The workaround is to add them.
 
   - Some OpenMP compilers (e.g. PGI) are non-standard-conforming in
     the way they process OpenMP directives by not allowing macro
@@ -159,7 +159,7 @@ various Score-P components.
     by using the "--disable=<construct>[,<construct>]..." option.
     Valid values for constructs are:
 
-      atomic, critical, flush, locks, master, single
+      atomic, critical, flush, locks, master, ordered, single
 
     or "sync" which disables all of the above.
 
@@ -175,7 +175,7 @@ various Score-P components.
     part, opari may insert its own variables in an #ifdef block which
     is not compiled later on. This will cause the compile step to
     fail. Workaround is to move #ifdef blocks between other variable
-    definitions, than opari2 inserts its variables before those.
+    definitions, then opari2 inserts its variables before those.
 
   - Having more than one Fortran statement per line, separated by
     semicolons can lead to problems in opari2 to detect start and end
@@ -186,9 +186,9 @@ various Score-P components.
   - Having the keyword "function", "module" or "subroutine" as part of
     identifier names for variables, modules, etc. may result in
     incorrect parsing of the fortran file. This may insert include
-    statements at incorrect points in the program. The Compiler will
+    statements at incorrect points in the program. The compiler will
     give en error saying that variables are declared at illegal
-    positions. Workaround is to rename identifiers, so that they do
+    positions. The workaround is to rename identifiers, so that they do
     not include "function", "module" or "subroutine" as substring.
 
 --------------------------------------------------------------------------------
