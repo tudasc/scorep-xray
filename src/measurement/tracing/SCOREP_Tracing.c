@@ -385,7 +385,11 @@ SCOREP_Tracing_WriteDefinitions()
             SCOREP_Memory_HandleOutOfMemory();
         }
 
-        OTF2_GlobalDefWriter_WriteTimeRange( global_definition_writer, epoch_begin, epoch_end - epoch_begin );
+        OTF2_GlobalDefWriter_WriteClockProperties(
+            global_definition_writer,
+            SCOREP_GetClockResolution(),
+            epoch_begin,
+            epoch_end - epoch_begin );
         scorep_tracing_write_global_definitions( global_definition_writer );
 
         /* There is no OTF2_Archive_CloseGlobalDefWriter in OTF2 */

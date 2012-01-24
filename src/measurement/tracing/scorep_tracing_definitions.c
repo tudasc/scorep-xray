@@ -361,7 +361,6 @@ scorep_write_location_definitions(
                                                            uint32_t,
                                                            OTF2_LocationType,
                                                            uint64_t,
-                                                           uint64_t,
                                                            uint32_t );
     def_location_pointer_t defLocation = ( def_location_pointer_t )
                                          OTF2_DefWriter_WriteLocation;
@@ -380,7 +379,6 @@ scorep_write_location_definitions(
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_location_type_to_otf_location_type( definition->location_type ),
             definition->number_of_events,
-            definition->timer_resolution,
             definition->location_group_id );
 
         if ( status != SCOREP_SUCCESS )

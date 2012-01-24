@@ -319,7 +319,6 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
                                    uint64_t                  numberOfEvents,
-                                   uint64_t                  timerResolution,
                                    uint64_t                  locationGroupId );
 
 /**
@@ -342,9 +341,7 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
             &scorep_local_definition_manager,
             name ? name : "" ),
         SCOREP_LOCATION_TYPE_CPU_THREAD,
-        0,
-        SCOREP_GetClockResolution(),
-        0 );
+        0, 0 );
 
     SCOREP_Definitions_Unlock();
 
@@ -376,7 +373,6 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
         SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
         definition->location_type,
         definition->number_of_events,
-        definition->timer_resolution,
         definition->location_group_id );
 }
 
@@ -395,7 +391,6 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_StringHandle       nameHandle,
                                    SCOREP_LocationType       locationType,
                                    uint64_t                  numberOfEvents,
-                                   uint64_t                  timerResolution,
                                    uint64_t                  locationGroupId )
 {
     assert( definition_manager );
@@ -411,7 +406,6 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
     new_definition->name_handle        = nameHandle;
     new_definition->location_type      = locationType;
     new_definition->number_of_events   = numberOfEvents;
-    new_definition->timer_resolution   = timerResolution;
     new_definition->location_group_id  = locationGroupId;
 
     /* Does return */
