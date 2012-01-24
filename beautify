@@ -109,7 +109,7 @@ if [ -n "$RELEVANT_FILES" ]; then
             continue
         fi
         echo "Beautifying $FILE:"
-        $BEAUTIFY -c $BEAUTIFY_CONFIG --replace -q $FILE
+        $BEAUTIFY -c $BEAUTIFY_CONFIG --no-backup -q $FILE
         if [ $? -ne 0 ]; then
             printf "Beautifying aborted: %s (%s) failed on file \"%s\".\n" \
                 "$($BEAUTIFY --version)" \
