@@ -107,14 +107,16 @@ __func_trace_enter( char* region_name,
                                  ( long )region_name, region_name );
 
             /* Check for filters:
-               1. In case OpenMP is used, the XL compiler creates some functions
-                  like <func_name>:<func_name>$OL$OL.1 which cause the measurement
-                  system to crash. Thus, filter functions which names contain a
-                  '$' symbol.
+               1. In case OpenMP is used, the XL compiler creates some
+                  functions like <func_name>:<func_name>$OL$OL.1 on BG/P or
+                  <func_name>@OL@1 on AIX which cause the measurement system
+                  to crash. Thus, filter functions which names contain a '$'
+                  or '@' symbol.
                2. POMP and POMP2 functions.
              */
             bool is_filtered = false;
             if ( ( strchr( region_name, '$' ) != NULL ) ||
+                 ( strchr( region_name, '@' ) != NULL ) ||
                  ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
                  ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
                  ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
