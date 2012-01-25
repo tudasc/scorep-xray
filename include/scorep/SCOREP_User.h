@@ -537,7 +537,7 @@
 
     void myfunc()
     {
-      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_PHASE )
+      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_TYPE_PHASE )
 
       // do something
 
@@ -550,7 +550,7 @@
 
     void foo()
     {
-      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_PHASE )
+      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_TYPE_PHASE )
 
       // do something
 
@@ -588,7 +588,7 @@
 
     void myfunc()
     {
-      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_PHASE )
+      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_TYPE_PHASE )
 
       // do something
 
@@ -601,7 +601,7 @@
 
     void foo()
     {
-      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_PHASE )
+      SCOREP_USER_REGION_BEGIN( my_global_handle, "my_global", SCOREP_USER_REGION_TYPE_PHASE )
 
       // do something
 
