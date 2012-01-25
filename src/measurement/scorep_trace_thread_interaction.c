@@ -116,7 +116,9 @@ SCOREP_Trace_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
     SCOREP_Trace_LocationData* trace_data = SCOREP_Thread_GetTraceLocationData( locationData );
 
+    #ifdef _OPENMP
     #pragma omp critical (trace_on_location_creation)
+    #endif
     {
         /* SCOREP_Tracing_GetEventWriter aborts on failure */
         trace_data->otf_writer = SCOREP_Tracing_GetEventWriter();

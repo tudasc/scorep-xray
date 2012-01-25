@@ -276,7 +276,7 @@ scorep_metric_rusage_open()
             {
                 if ( strcmp( scorep_rusage_metrics[ i ].name, token ) == 0 )
                 {
-                    index = ( int )scorep_rusage_metrics[ i ].index;
+                    index = scorep_rusage_metrics[ i ].index;
                 }
             }
 
