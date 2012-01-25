@@ -124,6 +124,9 @@ various Score-P components.
   - The MODIFY mode of OTF2, which can be used to rewrite time stamps
     in trace files, is untested.
 
+  - OTF2 currently assumes "homogeneous" systems, meaning that the 
+    clocks of all nodes/cores run at the same clock frequency.
+
 --------------------------------------------------------------------------------
 
 * OPARI2 v1.0
