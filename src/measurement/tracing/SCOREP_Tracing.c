@@ -95,6 +95,7 @@ scorep_on_trace_pre_flush( void*         userData,
                          "[%d]: %s flush on %s#%" PRIu64 "\n",
                          SCOREP_Mpi_GetRank(),
                          final ? "final" : "intermediate",
+                         fileType == OTF2_FILETYPE_ANCHOR ? "Anchor" :
                          fileType == OTF2_FILETYPE_GLOBAL_DEFS ? "GlobalDef" :
                          fileType == OTF2_FILETYPE_LOCAL_DEFS ? "Def" : "Evt",
                          fileType == OTF2_FILETYPE_GLOBAL_DEFS ? 0 : locationId );
