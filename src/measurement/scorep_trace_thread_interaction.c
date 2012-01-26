@@ -37,7 +37,7 @@
 #include "scorep_mpi.h"
 #include "SCOREP_Tracing.h"
 #include <stdlib.h>
-
+#include <scorep_utility/SCOREP_Omp.h>
 
 SCOREP_Trace_LocationData*
 SCOREP_Trace_CreateLocationData()
@@ -116,9 +116,7 @@ SCOREP_Trace_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
     SCOREP_Trace_LocationData* trace_data = SCOREP_Thread_GetTraceLocationData( locationData );
 
-    #ifdef _OPENMP
-    #pragma omp critical (trace_on_location_creation)
-    #endif
+    SCOREP_PRAGMA_OMP( critical( trace_on_location_creation ) )
     {
         /* SCOREP_Tracing_GetEventWriter aborts on failure */
         trace_data->otf_writer = SCOREP_Tracing_GetEventWriter();
