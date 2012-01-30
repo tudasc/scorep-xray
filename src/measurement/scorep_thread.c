@@ -121,10 +121,15 @@ struct SCOREP_Thread_LocationData
     uint64_t                       last_timestamp;
     SCOREP_Allocator_PageManager** page_managers;
     SCOREP_LocationHandle          location_handle;
+
     SCOREP_Profile_LocationData*   profile_data;
     SCOREP_Trace_LocationData*     trace_data;
     SCOREP_Metric_LocationData*    metric_data;
+
     SCOREP_Thread_LocationData*    next; // store location objects in list for easy cleanup
+
+    /** Flexible array member with length scorep_subsystems_get_number() */
+    void* per_subsystem_data[];
 };
 static struct SCOREP_Thread_LocationData*      location_list_head;
 static struct SCOREP_Thread_LocationData**     location_list_tail = &location_list_head;
@@ -238,9 +243,12 @@ scorep_thread_call_externals_on_thread_activation( SCOREP_Thread_LocationData* l
 void
 scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
 {
-    // need synchronized malloc here
     SCOREP_Thread_LocationData* new_location;
-    new_location = calloc( 1, sizeof( SCOREP_Thread_LocationData ) );
+    size_t                      total_memory =
+        sizeof( *new_location ) + ( sizeof( *new_location->per_subsystem_data )
+                                    * scorep_subsystems_get_number() );
+    // need synchronized malloc here
+    new_location = calloc( 1, total_memory );
     assert( new_location );
 
     assert( tpd->location_data == 0 );
@@ -269,15 +277,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         assert( new_location->trace_data );
     }
 
-    new_location->metric_data = 0;
-    /* TODO:
-     * Is this check needed here? I think it isn't, because we want
-     * metrics in both tracing and profiling mode. */
-    //if ( SCOREP_IsTracingEnabled() )
-    //{
     new_location->metric_data = SCOREP_Metric_CreateLocationData();
-    assert( new_location->metric_data );
-    //}
 
     SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
@@ -552,6 +552,25 @@ SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData )
     return locationData->metric_data;
 }
 
+
+void*
+SCOREP_Thread_GetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
+                                        size_t                      subsystem_id )
+{
+    assert( subsystem_id < scorep_subsystems_get_number() );
+
+    return locationData->per_subsystem_data[ subsystem_id ];
+}
+
+void
+SCOREP_Thread_SetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
+                                        size_t                      subsystem_id,
+                                        void*                       subsystem_data )
+{
+    assert( subsystem_id < scorep_subsystems_get_number() );
+
+    locationData->per_subsystem_data[ subsystem_id ] = subsystem_data;
+}
 
 uint32_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData )

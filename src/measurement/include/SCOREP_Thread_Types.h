@@ -61,6 +61,17 @@ struct SCOREP_Metric_LocationData*
 SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData );
 
 
+void*
+SCOREP_Thread_GetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
+                                        size_t                      subsystem_id );
+
+
+void
+SCOREP_Thread_SetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
+                                        size_t                      subsystem_id,
+                                        void*                       subsystem_data );
+
+
 void
 SCOREP_Thread_ForAllLocations( void ( * cb )( SCOREP_Thread_LocationData*,
                                               void* ),
