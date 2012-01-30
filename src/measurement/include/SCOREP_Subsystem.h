@@ -73,8 +73,10 @@ typedef struct SCOREP_Subsystem
      * The main purpose is to allow the subsystem to register config variables
      * to the system.
      *
+     * The subsystem gets a unique ID assigned, provided as the parameter
+     * of this callback.
      */
-    SCOREP_Error_Code ( * subsystem_register )( void );
+    SCOREP_Error_Code ( * subsystem_register )( size_t );
 
     /**
      * Initialize the subsystem for measurement.

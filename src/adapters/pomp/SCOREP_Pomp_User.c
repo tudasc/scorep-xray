@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -115,14 +115,19 @@ scorep_pomp_assign_string( char**      destination,
                                                                            Initialization
 ****************************************************************************************/
 
+static size_t scorep_pomp_subsystem_id;
+
 /** Adapter initialization function to allow registering configuration variables. No
     variables are regstered.
  */
 static SCOREP_Error_Code
-scorep_pomp_register()
+scorep_pomp_register( size_t subsystem_id )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_pomp_register\n" );
+
+    scorep_pomp_subsystem_id = subsystem_id;
+
     return SCOREP_SUCCESS;
 }
 

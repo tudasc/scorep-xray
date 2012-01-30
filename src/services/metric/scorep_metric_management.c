@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -95,6 +95,8 @@ static SCOREP_MetricHandle* all_metric_handles;
 /** Handle of sampling set */
 static SCOREP_SamplingSetHandle sampling_set_handle;
 
+/** Our subsystem id, used to address our per-location metric datas */
+static size_t scorep_metric_subsystem_id;
 
 /* *********************************************************************
  * Declarations from scorep_thread.h
@@ -122,9 +124,11 @@ SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Thread_LocationData*,
  *          otherwise an error code will be reported.
  */
 static SCOREP_Error_Code
-scorep_metric_register()
+scorep_metric_register( size_t subsystem_id )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
+
+    scorep_metric_subsystem_id = subsystem_id;
 
     /* Register metric sources */
     for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )

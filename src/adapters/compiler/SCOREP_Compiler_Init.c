@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -62,13 +62,16 @@ SCOREP_ConfigVariable scorep_compiler_configs[] = {
 };
 
 
+size_t scorep_compiler_subsystem_id;
 
 /**
    Registers configuration variables for the compiler adapters.
  */
 static SCOREP_Error_Code
-scorep_compiler_register()
+scorep_compiler_register( size_t subsystem_id )
 {
+    scorep_compiler_subsystem_id = subsystem_id;
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " register compiler adapter!" );
 
     return SCOREP_ConfigRegister( "", scorep_compiler_configs );

@@ -63,7 +63,7 @@ scorep_subsystems_register( void )
     {
         if ( scorep_subsystems[ i ]->subsystem_register )
         {
-            error = scorep_subsystems[ i ]->subsystem_register();
+            error = scorep_subsystems[ i ]->subsystem_register( i );
         }
 
         if ( SCOREP_SUCCESS != error )

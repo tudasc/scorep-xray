@@ -38,12 +38,17 @@
 int8_t scorep_user_is_initialized = 0;
 
 
+size_t scorep_user_subsystem_id;
+
+
 /** Registers the required configuration variables of the user adapter
     to the measurement system. Currently, it registers no variables.
  */
 static SCOREP_Error_Code
-scorep_user_register()
+scorep_user_register( size_t subsystem_id )
 {
+    scorep_user_subsystem_id = subsystem_id;
+
     return scorep_selective_register();
 }
 
