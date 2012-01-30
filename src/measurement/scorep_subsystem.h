@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -31,8 +31,26 @@
 
 #include <SCOREP_Subsystem.h>
 
-/** @brief a NULL terminated list of linked in subsystems. */
-extern const SCOREP_Subsystem* scorep_subsystems[];
-extern const size_t            scorep_number_of_subsystems;
+size_t
+scorep_subsystems_get_number( void );
+
+void
+scorep_subsystems_register( void );
+
+void
+scorep_subsystems_deregister( void );
+
+void
+scorep_subsystems_initialize( void );
+
+void
+scorep_subsystems_finalize( void );
+
+void
+scorep_subsystems_initialize_location( void );
+
+void
+scorep_subsystems_finalize_location( void );
+
 
 #endif /* SCOREP_INTERNAL_SUBSYSTEM_H */

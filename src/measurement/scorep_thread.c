@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -85,8 +85,6 @@ static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
 static void scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent );
-
-static void scorep_subsystems_initialize_location();
 /* *INDENT-ON* */
 
 
@@ -225,34 +223,6 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
         scorep_subsystems_initialize_location();
     }
 }
-
-static void
-scorep_subsystems_initialize_location()
-{
-    SCOREP_Error_Code error;
-
-    /* call initialization functions for all subsystems */
-    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_init_location )
-        {
-            error = scorep_subsystems[ i ]->subsystem_init_location();
-        }
-
-        if ( SCOREP_SUCCESS != error )
-        {
-            SCOREP_ERROR( error, "Can't initialize location for %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
-            _Exit( EXIT_FAILURE );
-        }
-        else if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr, "SCOREP successfully initialized location for %s subsystem\n",
-                     scorep_subsystems[ i ]->subsystem_name );
-        }
-    }
-}
-
 
 void
 scorep_thread_call_externals_on_thread_activation( SCOREP_Thread_LocationData* locationData,

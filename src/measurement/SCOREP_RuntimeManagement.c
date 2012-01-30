@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -92,12 +92,6 @@ static void scorep_finalize( void );
 static void scorep_otf2_initialize();
 static void scorep_otf2_finalize();
 static void scorep_set_otf2_archive_master_slave();
-static void scorep_subsystems_register();
-static void scorep_subsystems_deregister();
-static void scorep_subsystems_initialize();
-static void scorep_subsystems_finalize();
-static void scorep_subsystems_initialize_location(); // needed?
-static void scorep_subsystems_finalize_location(); // needed?
 static void scorep_initialization_sanity_checks();
 static void scorep_metrics_initialize( void );
 static void scorep_profile_initialize();
@@ -269,87 +263,6 @@ scorep_set_otf2_archive_master_slave()
         if ( SCOREP_SUCCESS != status )
         {
             _Exit( EXIT_FAILURE );
-        }
-    }
-}
-
-
-void
-scorep_subsystems_register()
-{
-    SCOREP_Error_Code error;
-    /* call register functions for all subsystems */
-    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_register )
-        {
-            error = scorep_subsystems[ i ]->subsystem_register();
-        }
-
-        if ( SCOREP_SUCCESS != error )
-        {
-            SCOREP_ERROR( error, "Can't register %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
-            _Exit( EXIT_FAILURE );
-        }
-    }
-}
-
-
-void
-scorep_subsystems_initialize()
-{
-    SCOREP_Error_Code error;
-    /* call initialization functions for all subsystems */
-    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_init )
-        {
-            error = scorep_subsystems[ i ]->subsystem_init();
-        }
-
-        if ( SCOREP_SUCCESS != error )
-        {
-            SCOREP_ERROR( error, "Can't initialize %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
-            _Exit( EXIT_FAILURE );
-        }
-        else if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr, "SCOREP successfully initialized %s subsystem\n",
-                     scorep_subsystems[ i ]->subsystem_name );
-        }
-    }
-}
-
-
-/**
- * Initialize subsystems for existing locations.
- */
-static void
-scorep_subsystems_initialize_location()
-{
-    SCOREP_Error_Code error;
-    /* create location */
-
-    /* call initialization functions for all subsystems */
-    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_init_location )
-        {
-            error = scorep_subsystems[ i ]->subsystem_init_location();
-        }
-
-        if ( SCOREP_SUCCESS != error )
-        {
-            SCOREP_ERROR( error, "Can't initialize location for %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
-            _Exit( EXIT_FAILURE );
-        }
-        else if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr, "SCOREP successfully initialized location for %s subsystem\n",
-                     scorep_subsystems[ i ]->subsystem_name );
         }
     }
 }
@@ -580,65 +493,6 @@ scorep_profile_finalize()
         SCOREP_Profile_Finalize();
     }
 }
-
-static void
-scorep_subsystems_finalize_location()
-{
-    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_finalize_location )
-        {
-            //scorep_subsystems[ i ]->subsystem_finalize_location(location_ptr???);
-        }
-
-        if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr, "SCOREP finalized %s subsystem location\n",
-                     scorep_subsystems[ i ]->subsystem_name );
-        }
-    }
-}
-
-
-static void
-scorep_subsystems_finalize()
-{
-    /* call finalization functions for all subsystems */
-    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_finalize )
-        {
-            scorep_subsystems[ i ]->subsystem_finalize();
-        }
-
-        if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr, "SCOREP finalized %s subsystem\n",
-                     scorep_subsystems[ i ]->subsystem_name );
-        }
-    }
-}
-
-
-static void
-scorep_subsystems_deregister()
-{
-    /* call de-register functions for all subsystems */
-    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
-    {
-        if ( scorep_subsystems[ i ]->subsystem_deregister )
-        {
-            scorep_subsystems[ i ]->subsystem_deregister();
-        }
-
-        if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr, "SCOREP de-registered %s subsystem\n",
-                     scorep_subsystems[ i ]->subsystem_name );
-        }
-    }
-}
-
 
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
