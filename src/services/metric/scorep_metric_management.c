@@ -340,16 +340,13 @@ scorep_metric_finalize_location( SCOREP_Thread_LocationData* location )
  *  @return Returns pointer to value array filled with recent metric values.
  */
 uint64_t*
-SCOREP_Metric_read( void )
+SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData )
 {
     /* Call only, if previously initialized */
     if ( scorep_metric_management_initialized )
     {
-        /* Get the thread local data */
-        SCOREP_Thread_LocationData* data = SCOREP_Thread_GetLocationData();
-        SCOREP_ASSERT( data != NULL );
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( data );
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( locationData );
         SCOREP_ASSERT( metric_data != NULL );
 
         assert( metric_data->event_set != NULL );

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -30,7 +30,7 @@
  *  @return Returns pointer to value array filled with recent metric values.
  */
 uint64_t*
-SCOREP_Metric_read();
+SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData );
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between

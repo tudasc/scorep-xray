@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -55,9 +55,14 @@ extern SCOREP_SamplingSetHandle scorep_current_sampling_set;
 extern uint8_t                  scorep_number_of_metrics;
 extern OTF2_TypeID*             scorep_current_metric_types;
 
-/* *INDENT-OFF* */
-static uint64_t scorep_get_timestamp( SCOREP_Thread_LocationData* location );
-/* *INDENT-ON* */
+static uint64_t
+scorep_get_timestamp( SCOREP_Thread_LocationData* location )
+{
+    uint64_t timestamp = SCOREP_GetClockTicks();
+    SCOREP_Thread_SetLastTimestamp( location, timestamp );
+    return timestamp;
+}
+
 
 /**
  * Process a region enter event in the measurement system.
@@ -115,19 +120,10 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
     uint64_t*                   metric_values = NULL;
     if ( scorep_number_of_metrics )
     {
-        metric_values = SCOREP_Metric_read();
+        metric_values = SCOREP_Metric_read( location );
     }
 
     scorep_enter_region( timestamp, regionHandle, metric_values );
-}
-
-
-static uint64_t
-scorep_get_timestamp( SCOREP_Thread_LocationData* location )
-{
-    uint64_t timestamp = SCOREP_GetClockTicks();
-    SCOREP_Thread_SetLastTimestamp( location, timestamp );
-    return timestamp;
 }
 
 
@@ -188,7 +184,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
     uint64_t*                   metric_values = NULL;
     if ( scorep_number_of_metrics )
     {
-        metric_values = SCOREP_Metric_read();
+        metric_values = SCOREP_Metric_read( location );
     }
 
     scorep_exit_region( timestamp, regionHandle, metric_values );
@@ -332,7 +328,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
     uint64_t* metric_values = NULL;
     if ( scorep_number_of_metrics )
     {
-        metric_values = SCOREP_Metric_read();
+        metric_values = SCOREP_Metric_read( location );
     }
 
     scorep_enter_region( timestamp, regionHandle, metric_values );
@@ -374,7 +370,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
     uint64_t* metric_values = NULL;
     if ( scorep_number_of_metrics )
     {
-        metric_values = SCOREP_Metric_read();
+        metric_values = SCOREP_Metric_read( location );
     }
 
     uint32_t root_rank;
