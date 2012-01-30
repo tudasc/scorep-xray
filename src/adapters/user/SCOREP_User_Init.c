@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -23,25 +23,17 @@
  *  adapter.
  */
 
+
 #include <config.h>
+
+
 #include "SCOREP_User_Init.h"
 #include "SCOREP_Types.h"
 #include "scorep_utility/SCOREP_Error.h"
 
-extern void
-scorep_user_init_regions();
-extern void
-scorep_user_final_regions();
-extern void
-scorep_user_init_metric();
-extern void
-scorep_user_final_metric();
-extern void
-scorep_selective_init();
-extern SCOREP_Error_Code
-scorep_selective_register();
-void
-scorep_selective_finalize();
+
+#include "scorep_user.h"
+
 
 int8_t scorep_user_is_initialized = 0;
 
