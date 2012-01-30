@@ -64,13 +64,13 @@ done by using the <tt>scorep</tt> command that needs to be
 prefixed to all the compile and link commands usually employed to
 build the application. Thus, an application executable <tt>app</tt> that
 is normally generated from the two source files <tt>app1.f90</tt> and
-<tt>app2.f90</tt> via the command
+<tt>app2.f90</tt> via the command:
 
 @code
   mpif90 app1.f90 app2.f90 -o app
 @endcode
 
-will now be built by
+will now be built by:
 
 @code
   scorep  mpif90 app1.f90 app2.f90 -o app
@@ -91,7 +91,7 @@ When makefiles are employed to build the application, it is convenient
 to define a placeholder variable to indicate whether a ``preparation''
 step like an instrumentation is desired or only the pure compilation
 and linking. For example, if this variable is called <tt>PREP</tt> then
-the lines defining the C compiler in the makefile can be changed from
+the lines defining the C compiler in the makefile can be changed from:
 
 @code
   MPICC = mpicc
@@ -112,7 +112,7 @@ the same makefile to either build an instrumented version with the
 @endcode
 
 command or a fully optimized and not instrumented default build by
-simply using
+simply using:
 
 @code
   make 
@@ -121,7 +121,7 @@ simply using
 in the standard way, i.e. without specifying <tt>PREP</tt> on the
 command line. Of course it is also possible to define the same
 compiler twice in the makefile, once with and once without the <tt>PREP</tt>
-variable, as in
+variable, as in:
 
 @code
    MPICC          = $(PREP) mpicc
@@ -138,11 +138,11 @@ instrumented and the latter to those files that do not need this.
 Once the code has been instrumented, the user can initiate a
 measurement run using this executable. To this end, it is sufficient
 to simply execute the target
-application in the usual way, i.e.
+application in the usual way, i.e.:
 @code
   mpiexec $MPIFLAGS app [app_args]
 @endcode
-in the case of an MPI or hybrid code, or simply
+in the case of an MPI or hybrid code, or simply:
 @code
   app [app_args]
 @endcode
@@ -202,7 +202,7 @@ other versions (not only hybrid but also for a pure MPI
 parallelization, a pure OpenMP approach, and in a non-parallel way;
 and, in each case, not only in C but also in C++ and Fortran).
 
-As indicated above, the standard call sequence
+As indicated above, the standard call sequence:
 @code
   mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
   mpicc -std=c99 -g -O2 -fopenmp -c main.c
@@ -212,7 +212,7 @@ As indicated above, the standard call sequence
 that would first compile the two C source files and then link
 everything to form the final executable needs to be modified by
 prepending <tt>scorep</tt> to each of the three commands,
-i.e. we now have to write
+i.e. we now have to write:
 @code
   scorep mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
   scorep mpicc -std=c99 -g -O2 -fopenmp -c main.c
@@ -227,7 +227,7 @@ create the required measurements when the code is actually run. These
 modified source files are then compiled and linked, thus producing the
 desired executable named <tt>jacobi</tt>. 
 
-The actual measurement process is then initiated, e.g.,  by the call
+The actual measurement process is then initiated, e.g.,  by the call:
 @code
   mpiexec --n 2 ./jacobi
 @endcode

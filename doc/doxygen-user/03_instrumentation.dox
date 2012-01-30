@@ -469,7 +469,7 @@ on/off is done independently on each MPI process without synchronization.
 The Online Access interface to the measurement system of Score-P allows remote
 control of measurement and access to the profile data. The online access interface
 may not be available on all platforms. To use the Online Access interface, @scorep must
-have been built with Online Access (OA) support, 
+have been built with Online Access (OA) support. 
 
 The Online Access module requires the user to specify at least one 
 \emph{online access phase}. The online access phase does not show the behavior of
@@ -493,6 +493,7 @@ Only the measurements collected inside the OA phase could be configured and retr
 Instrumentation can be performed in the following ways, depending on the
 programming language used.
 
+Fortran:
 @code
     #include "SCOREP_User.inc"
 

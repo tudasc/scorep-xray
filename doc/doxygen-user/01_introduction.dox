@@ -179,7 +179,7 @@ application using the @scorep instrumentation command, which is added
 as a prefix to the original compile and link command lines. It automatically
 detects the programming paradigm by parsing the original build
 instructions and utilizes appropriate and configurable methods of
-instrumentation. These are currently
+instrumentation. These are currently:
 <ul>
  <li> compiler instrumentation, </li>
  <li> MPI library interposition, </li>
