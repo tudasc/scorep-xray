@@ -31,7 +31,6 @@
 
 #include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Profile.h>
-#include <SCOREP_Metric.h>
 #include <SCOREP_Thread_Types.h>
 #include "scorep_trace_thread_interaction.h"
 #include <stddef.h>

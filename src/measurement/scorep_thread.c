@@ -124,7 +124,6 @@ struct SCOREP_Thread_LocationData
 
     SCOREP_Profile_LocationData*   profile_data;
     SCOREP_Trace_LocationData*     trace_data;
-    SCOREP_Metric_LocationData*    metric_data;
 
     SCOREP_Thread_LocationData*    next; // store location objects in list for easy cleanup
 
@@ -277,8 +276,6 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         assert( new_location->trace_data );
     }
 
-    new_location->metric_data = SCOREP_Metric_CreateLocationData();
-
     SCOREP_PRAGMA_OMP( critical( new_location ) )
     {
         new_location->local_id = location_counter++;
@@ -365,7 +362,6 @@ SCOREP_Thread_FinalizeLocations()
         SCOREP_Thread_LocationData* tmp = location_data->next;
 
         scorep_subsystems_finalize_location( location_data );
-        SCOREP_Metric_DeleteLocationData( location_data->metric_data );
         SCOREP_Trace_DeleteLocationData( location_data->trace_data );
         SCOREP_Profile_DeleteLocationData( location_data->profile_data );
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
@@ -543,13 +539,6 @@ SCOREP_Trace_LocationData*
 SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData )
 {
     return locationData->trace_data;
-}
-
-
-SCOREP_Metric_LocationData*
-SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData )
-{
-    return locationData->metric_data;
 }
 
 

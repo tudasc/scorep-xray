@@ -32,9 +32,6 @@
  */
 
 
-#include <SCOREP_Metric.h>
-
-
 typedef struct SCOREP_Thread_LocationData SCOREP_Thread_LocationData;
 
 
@@ -54,11 +51,6 @@ SCOREP_Thread_GetLocationData();
  */
 uint32_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
-
-
-struct SCOREP_Metric_LocationData;
-struct SCOREP_Metric_LocationData*
-SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData );
 
 
 void*

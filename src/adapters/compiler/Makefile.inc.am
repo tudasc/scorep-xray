@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -22,8 +22,7 @@ libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(PUBLIC_INC_DIR)                                      \
     -I$(INC_ROOT)src/adapters/compiler                       \
     -I$(INC_ROOT)src/adapters/include                        \
-    -I$(INC_ROOT)src/measurement/include                     \
-    -I$(INC_ROOT)src/services/include
+    -I$(INC_ROOT)src/measurement/include
 
 noinst_LTLIBRARIES += libscorep_adapter_compiler.la
 

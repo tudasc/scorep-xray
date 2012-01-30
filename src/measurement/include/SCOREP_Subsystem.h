@@ -29,7 +29,6 @@
  */
 
 
-struct SCOREP_Thread_LocationData;
 #include <scorep_utility/SCOREP_Error.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Thread_Types.h>

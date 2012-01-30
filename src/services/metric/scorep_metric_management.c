@@ -54,6 +54,9 @@
 
 
 /** Thread local data related to metrics */
+typedef struct SCOREP_Metric_LocationData SCOREP_Metric_LocationData;
+
+/** Thread local data related to metrics */
 struct SCOREP_Metric_LocationData
 {
     SCOREP_Metric_EventSet** event_set;
@@ -244,7 +247,9 @@ initialize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
     if ( scorep_metric_management_initialized )
     {
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( locationData );
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+            locationData,
+            scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
 
         /* Allocate memory for array of event sets in thread local storage */
@@ -289,6 +294,13 @@ scorep_metric_initialize_location()
     SCOREP_Thread_LocationData* thread_data = SCOREP_Thread_GetLocationData();
     SCOREP_ASSERT( thread_data != NULL );
 
+    SCOREP_Metric_LocationData* metric_data =
+        SCOREP_Memory_AllocForMisc( sizeof( *metric_data ) );
+
+    SCOREP_Thread_SetSubsystemLocationData( thread_data,
+                                            scorep_metric_subsystem_id,
+                                            metric_data );
+
     initialize_location_metric_cb( thread_data, NULL );
 
     return SCOREP_SUCCESS;
@@ -307,7 +319,9 @@ finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
         }
 
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( locationData );
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+            locationData,
+            scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
 
         free( metric_data->event_set );
@@ -322,13 +336,9 @@ finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
  *  @param location Reference to location that will finalize its metric related data structures.
  */
 static void
-scorep_metric_finalize_location( SCOREP_Thread_LocationData* location )
+scorep_metric_finalize_location( SCOREP_Thread_LocationData* locationData )
 {
-    /* Get the thread local data */
-    SCOREP_Thread_LocationData* thread_data = SCOREP_Thread_GetLocationData();
-    SCOREP_ASSERT( thread_data != NULL );
-
-    finalize_location_metric_cb( thread_data, NULL );
+    finalize_location_metric_cb( locationData, NULL );
 }
 
 /* *********************************************************************
@@ -346,7 +356,9 @@ SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData )
     if ( scorep_metric_management_initialized )
     {
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( locationData );
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+            locationData,
+            scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
 
         assert( metric_data->event_set != NULL );
@@ -412,35 +424,6 @@ SCOREP_Metric_GetSamplingSet()
 {
     return sampling_set_handle;
 }
-
-/* *********************************************************************
- * Thread events
- **********************************************************************/
-
-/** @brief  Allocate and initialize a valid SCOREP_Metric_LocationData object.
- *
- *  @return It returns a pointer to metric related data of current thread.
- */
-SCOREP_Metric_LocationData*
-SCOREP_Metric_CreateLocationData()
-{
-    SCOREP_Metric_LocationData* new_data = SCOREP_Memory_AllocForMisc( sizeof( SCOREP_Metric_LocationData ) );
-    assert( new_data );
-
-    return new_data;
-}
-
-/** @brief Clean up @a metricLocationData at the end of a phase or at the end of the
- *         measurement.
- *
- *  @param metricLocationData The object to be deleted
- */
-void
-SCOREP_Metric_DeleteLocationData( SCOREP_Metric_LocationData* metricLocationData )
-{
-    /* Space is freed if the misc memory pages are freed. */
-}
-
 
 /* *********************************************************************
  * Subsytem declaration

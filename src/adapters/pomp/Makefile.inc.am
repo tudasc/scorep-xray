@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -63,7 +63,6 @@ libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
     -I$(INC_ROOT)src/adapters/pomp                        \
     -I$(INC_ROOT)src/measurement/include                  \
     -I$(INC_ROOT)src/measurement/filtering                \
-    -I$(INC_ROOT)src/services/include                     \
     -I$(PUBLIC_INC_DIR)                                   \
     -I$(INC_DIR_OPARI2)                                   \
     -I$(INC_DIR_POMP2_REGION_INFO)                        \
@@ -137,7 +136,6 @@ libscorep_adapter_pomp_omp_la_CPPFLAGS =                  \
     -I$(INC_ROOT)src/adapters/pomp                        \
     -I$(INC_ROOT)src/measurement/include                  \
     -I$(INC_ROOT)src/measurement/filtering                \
-    -I$(INC_ROOT)src/services/include                     \
     -I$(PUBLIC_INC_DIR)                                   \
     -I$(INC_DIR_OPARI2)                                   \
     -I$(INC_DIR_POMP2_REGION_INFO)                        \
