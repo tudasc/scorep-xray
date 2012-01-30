@@ -318,7 +318,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
    Implementation of the adapter_register function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_mpi_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -330,7 +330,7 @@ scorep_mpi_register()
    Implementation of the subsystem_init function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_mpi_init_adapter()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -363,7 +363,7 @@ scorep_mpi_init_adapter()
    Implementation of the subsystem_init_location function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_mpi_init_location()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -375,7 +375,7 @@ scorep_mpi_init_location()
    Implementation of the adapter_finalize_location function of the @ref SCOREP_Subsystem
    struct for the initialization process of the MPI adapter.
  */
-void
+static void
 scorep_mpi_final_location( void* location )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -386,7 +386,7 @@ scorep_mpi_final_location( void* location )
    Implementation of the adapter_finalize function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-void
+static void
 scorep_mpi_finalize()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -409,7 +409,7 @@ scorep_mpi_finalize()
    Implementation of the adapter_deregister function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-void
+static void
 scorep_mpi_deregister()
 {
     int res;

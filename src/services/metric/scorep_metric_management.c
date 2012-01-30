@@ -59,7 +59,7 @@ struct SCOREP_Metric_LocationData
 };
 
 /** List of metric sources. */
-const SCOREP_MetricSource* scorep_metric_sources[] = {
+static const SCOREP_MetricSource* scorep_metric_sources[] = {
 #if HAVE( PAPI )
     &SCOREP_Metric_Papi,
 #endif
@@ -84,16 +84,16 @@ typedef struct scorep_metric_sources_management_data
 
 
 /** Flag indicating status of metric management */
-uint8_t scorep_metric_management_initialize = 1;
+static bool scorep_metric_management_initialized;
 
 /** Metric sources management data */
-scorep_metric_sources_management_data metric_sources_management_data;
+static scorep_metric_sources_management_data metric_sources_management_data;
 
 /** Array of all metric handles */
-SCOREP_MetricHandle* all_metric_handles;
+static SCOREP_MetricHandle* all_metric_handles;
 
 /** Handle of sampling set */
-SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_INVALID_SAMPLING_SET;
+static SCOREP_SamplingSetHandle sampling_set_handle;
 
 
 /* *********************************************************************
@@ -121,7 +121,7 @@ SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Thread_LocationData*,
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_metric_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
@@ -137,7 +137,7 @@ scorep_metric_register()
 
 /** @brief Called on deregistration of the metric service.
  */
-void
+static void
 scorep_metric_deregister()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " deregister metric management." );
@@ -154,11 +154,11 @@ scorep_metric_deregister()
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_metric_initialize_service()
 {
     /* Call only, if not previously initialized */
-    if ( scorep_metric_management_initialize )
+    if ( !scorep_metric_management_initialized )
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize metric management." );
 
@@ -211,7 +211,7 @@ scorep_metric_initialize_service()
         }
 
         /* Set initialization flag */
-        scorep_metric_management_initialize = 0;
+        scorep_metric_management_initialized = true;
 
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of metric management done." );
     }
@@ -221,11 +221,11 @@ scorep_metric_initialize_service()
 
 /** @brief Service finalization.
  */
-void
+static void
 scorep_metric_finalize_service()
 {
     /* Call only, if previously initialized */
-    if ( !scorep_metric_management_initialize )
+    if ( scorep_metric_management_initialized )
     {
         for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
         {
@@ -239,7 +239,7 @@ scorep_metric_finalize_service()
         free( all_metric_handles );
 
         /* Set initialization flag */
-        scorep_metric_management_initialize = 1;
+        scorep_metric_management_initialized = false;
 
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalization of metric management done." );
     }
@@ -250,7 +250,7 @@ initialize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
                                void*                       data )
 {
     /* Call only, if previously initialized */
-    if ( !scorep_metric_management_initialize )
+    if ( scorep_metric_management_initialized )
     {
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetMetricLocationData( locationData );
@@ -291,7 +291,7 @@ initialize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_metric_initialize_location()
 {
     /* Get the thread local data */
@@ -308,7 +308,7 @@ finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
                              void*                       data )
 {
     /* Call only, if previously initialized */
-    if ( !scorep_metric_management_initialize )
+    if ( scorep_metric_management_initialized )
     {
         for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
         {
@@ -330,7 +330,7 @@ finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
  *
  *  @param location Reference to location that will finalize its metric related data structures.
  */
-void
+static void
 scorep_metric_finalize_location( void* location )
 {
     /* Get the thread local data */
@@ -352,7 +352,7 @@ uint64_t*
 SCOREP_Metric_read( void )
 {
     /* Call only, if previously initialized */
-    if ( !scorep_metric_management_initialize )
+    if ( scorep_metric_management_initialized )
     {
         /* Get the thread local data */
         SCOREP_Thread_LocationData* data = SCOREP_Thread_GetLocationData();
@@ -452,3 +452,21 @@ SCOREP_Metric_DeleteLocationData( SCOREP_Metric_LocationData* metricLocationData
 {
     /* Space is freed if the misc memory pages are freed. */
 }
+
+/* *********************************************************************
+ * Subsytem declaration
+ **********************************************************************/
+
+/**
+   Implementation of the metric service initialization/finalization struct
+ */
+const SCOREP_Subsystem SCOREP_Metric_Service =
+{
+    "METRIC",
+    &scorep_metric_register,
+    &scorep_metric_initialize_service,
+    &scorep_metric_initialize_location,
+    &scorep_metric_finalize_location,
+    &scorep_metric_finalize_service,
+    &scorep_metric_deregister
+};

@@ -49,7 +49,7 @@ int8_t scorep_user_is_initialized = 0;
 /** Registers the required configuration variables of the user adapter
     to the measurement system. Currently, it registers no variables.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_user_register()
 {
     return scorep_selective_register();
@@ -57,7 +57,7 @@ scorep_user_register()
 
 /** Initializes the user adapter.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_user_init()
 {
     if ( scorep_user_is_initialized == 0 )
@@ -73,7 +73,7 @@ scorep_user_init()
 }
 
 /** Initializes the location specific data of the user adapter */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_user_init_location()
 {
     return SCOREP_SUCCESS;
@@ -81,14 +81,14 @@ scorep_user_init_location()
 
 /** Finalizes the location specific data of the user adapter.
  */
-void
+static void
 scorep_user_final_location( void* location )
 {
 }
 
 /** Finalizes the user adapter.
  */
-void
+static void
 scorep_user_finalize()
 {
     if ( scorep_user_is_initialized == 1 )
@@ -103,12 +103,12 @@ scorep_user_finalize()
 
 /** Deregisters the user adapter.
  */
-void
+static void
 scorep_user_deregister()
 {
 }
 
-SCOREP_Subsystem SCOREP_User_Adapter =
+const SCOREP_Subsystem SCOREP_User_Adapter =
 {
     "user",
     &scorep_user_register,

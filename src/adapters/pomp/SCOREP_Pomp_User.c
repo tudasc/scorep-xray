@@ -118,7 +118,7 @@ scorep_pomp_assign_string( char**      destination,
 /** Adapter initialization function to allow registering configuration variables. No
     variables are regstered.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_pomp_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -128,7 +128,7 @@ scorep_pomp_register()
 
 /** Adapter initialization function.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_pomp_init()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -175,7 +175,7 @@ scorep_pomp_init()
 }
 
 /** Allows initialization of location specific data. Nothing done inside this funcion. */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_pomp_init_location()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -185,7 +185,7 @@ scorep_pomp_init_location()
 
 /** Allows finaltialization of location specific data. Nothing done inside this funcion.
  */
-void
+static void
 scorep_pomp_final_location( void* location )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -194,7 +194,7 @@ scorep_pomp_final_location( void* location )
 
 /** Adapter finalialization function.
  */
-void
+static void
 scorep_pomp_final()
 {
     size_t       i;
@@ -224,7 +224,7 @@ scorep_pomp_final()
 
 /** Called when the adapter is derigistered. Nothing done inside the function
  */
-void
+static void
 scorep_pomp_deregister()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
@@ -234,7 +234,7 @@ scorep_pomp_deregister()
 /** Struct which contains the adapter iniitialization and finalization functions for the
     POMP2 adapter.
  */
-struct SCOREP_Subsystem SCOREP_Pomp_Adapter =
+const SCOREP_Subsystem SCOREP_Pomp_Adapter =
 {
     "POMP2 Adapter / Version 1.0",
     &scorep_pomp_register,

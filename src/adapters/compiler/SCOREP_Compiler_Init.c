@@ -66,7 +66,7 @@ SCOREP_ConfigVariable scorep_compiler_configs[] = {
 /**
    Registers configuration variables for the compiler adapters.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_compiler_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " register compiler adapter!" );

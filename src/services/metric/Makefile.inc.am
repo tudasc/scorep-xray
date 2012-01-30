@@ -33,7 +33,6 @@ libscorep_metric_la_SOURCES = \
 	$(SRC_ROOT)src/services/include/SCOREP_Metric.h            \
 	$(SRC_ROOT)src/services/include/SCOREP_Metric_Management.h \
     $(SRC_ROOT)src/services/metric/SCOREP_Metric_Source.h      \
-    $(SRC_ROOT)src/services/metric/SCOREP_Metric_Init.c        \
     $(SRC_ROOT)src/services/metric/scorep_metric_management.c
 
 libscorep_metric_la_LIBADD =

@@ -31,6 +31,6 @@
 /**
    The POMP adapter struct
  */
-extern struct SCOREP_Subsystem SCOREP_Pomp_Adapter;
+extern const SCOREP_Subsystem SCOREP_Pomp_Adapter;
 
 #endif // SCOREP_POMP_INIT_H
