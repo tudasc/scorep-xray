@@ -48,14 +48,14 @@ AC_REQUIRE([AC_SCOREP_COMPILER_CHECKS])
 # backend version, but usually the frontend version will be found. One
 # approach is to require user input on dual-architecture machines. But for now
 # we will just abort (until this problem shows up in reality).
-
+set -x
 scorep_have_demangle="no"
 scorep_have_libbfd="no"
 scorep_have_nm="no"
 scorep_bfd_libs=""
 scorep_have_compiler_instrumentation="yes"
 
-AS_IF([test "x${scorep_compiler_gnu}" = "xyes" || "x${scorep_compiler_intel}" = "xyes"], 
+AS_IF([test "x${scorep_compiler_gnu}" = "xyes" || test "x${scorep_compiler_intel}" = "xyes"], 
       [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
              [AC_MSG_ERROR([Can't reliably determine backend libbfd in cross compiling mode.])
               AC_MSG_ERROR([Can't reliably determine backend nm in cross compiling mode.])])
@@ -101,6 +101,8 @@ AS_IF([test "x${scorep_compiler_gnu}" = "xyes" || "x${scorep_compiler_intel}" = 
                      AC_SCOREP_SUMMARY([compiler instrumentation], [no, neither libbfd nor nm are available.])])])
 
        AC_LANG_POP([C])])
+set +x
+
 
 # setting output variables/defines
 AM_CONDITIONAL([HAVE_LIBBFD],                   
