@@ -25,6 +25,7 @@
 
 #include <config.h>
 
+#include <SCOREP_Thread_Types.h>
 #include "SCOREP_Mpi_Init.h"
 #include "SCOREP_Mpi_Reg.h"
 #include "SCOREP_Config.h"
@@ -381,7 +382,7 @@ scorep_mpi_init_location()
    struct for the initialization process of the MPI adapter.
  */
 static void
-scorep_mpi_final_location( void* location )
+scorep_mpi_final_location( SCOREP_Thread_LocationData* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_final_location\n" );

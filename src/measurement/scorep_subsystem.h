@@ -29,7 +29,9 @@
  */
 
 
+#include <SCOREP_Thread_Types.h>
 #include <SCOREP_Subsystem.h>
+
 
 size_t
 scorep_subsystems_get_number( void );
@@ -50,7 +52,7 @@ void
 scorep_subsystems_initialize_location( void );
 
 void
-scorep_subsystems_finalize_location( void );
+scorep_subsystems_finalize_location( SCOREP_Thread_LocationData* locationData );
 
 
 #endif /* SCOREP_INTERNAL_SUBSYSTEM_H */

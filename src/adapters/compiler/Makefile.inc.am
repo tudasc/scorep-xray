@@ -22,7 +22,8 @@ libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(PUBLIC_INC_DIR)                                      \
     -I$(INC_ROOT)src/adapters/compiler                       \
     -I$(INC_ROOT)src/adapters/include                        \
-    -I$(INC_ROOT)src/measurement/include
+    -I$(INC_ROOT)src/measurement/include                     \
+    -I$(INC_ROOT)src/services/include
 
 noinst_LTLIBRARIES += libscorep_adapter_compiler.la
 

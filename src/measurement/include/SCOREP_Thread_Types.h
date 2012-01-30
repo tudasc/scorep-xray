@@ -56,7 +56,8 @@ uint32_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 
 
-SCOREP_Metric_LocationData*
+struct SCOREP_Metric_LocationData;
+struct SCOREP_Metric_LocationData*
 SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData );
 
 

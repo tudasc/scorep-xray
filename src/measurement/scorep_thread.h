@@ -49,11 +49,21 @@ SCOREP_Thread_Initialize();
 
 /**
  * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up thread
- * local data structures. Who clears memory and when?
+ * private data structures. Who clears memory and when?
  *
  */
 void
 SCOREP_Thread_Finalize();
+
+
+/**
+ * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up
+ * locations data structures.
+ *
+ * Must be called before SCOREP_Thread_Finalize().
+ */
+void
+SCOREP_Thread_FinalizeLocations();
 
 
 /**

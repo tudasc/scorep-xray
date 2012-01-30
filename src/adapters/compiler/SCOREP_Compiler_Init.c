@@ -31,6 +31,7 @@
 
 #include "SCOREP_Compiler_Init.h"
 #include "SCOREP_Types.h"
+#include <SCOREP_Thread_Types.h>
 #include "SCOREP_Config.h"
 #include "scorep_utility/SCOREP_Error.h"
 #include <scorep_utility/SCOREP_Utils.h>
@@ -96,7 +97,7 @@ scorep_compiler_init_location();
    compiler adapter implementation.
  */
 extern void
-scorep_compiler_final_location( void* location );
+scorep_compiler_final_location( SCOREP_Thread_LocationData* location );
 
 /**
    The adapter finalize function is compiler specific. Thus it is contained in each

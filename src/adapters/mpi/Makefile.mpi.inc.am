@@ -35,6 +35,7 @@ libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_ROOT)src/measurement/online_access         \
+    -I$(INC_ROOT)src/services/include         \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_DIR_UTIL)
 

@@ -28,6 +28,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Thread_Types.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
@@ -230,7 +231,7 @@ scorep_compiler_init_location()
 
 /* Location finalization */
 void
-scorep_compiler_final_location( void* locationData )
+scorep_compiler_final_location( SCOREP_Thread_LocationData* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter final location!" );
 }

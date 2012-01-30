@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -29,9 +29,10 @@
  */
 
 
+struct SCOREP_Thread_LocationData;
 #include <scorep_utility/SCOREP_Error.h>
 #include <SCOREP_Types.h>
-
+#include <SCOREP_Thread_Types.h>
 
 /**
  * @defgroup SCOREP_Subsystem SCOREP Subsystem Management
@@ -98,7 +99,7 @@ typedef struct SCOREP_Subsystem
      * Finalizes the per-location data from this subsystem.
      *
      */
-    void ( * subsystem_finalize_location )( void* );
+    void ( * subsystem_finalize_location )( struct SCOREP_Thread_LocationData* );
 
     /**
      * Finalizes the subsystem for measurement.

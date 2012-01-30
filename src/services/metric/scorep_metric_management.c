@@ -322,7 +322,7 @@ finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
  *  @param location Reference to location that will finalize its metric related data structures.
  */
 static void
-scorep_metric_finalize_location( void* location )
+scorep_metric_finalize_location( SCOREP_Thread_LocationData* location )
 {
     /* Get the thread local data */
     SCOREP_Thread_LocationData* thread_data = SCOREP_Thread_GetLocationData();

@@ -26,12 +26,14 @@
  * @brief Metric adapter initialization and finalization function definition.
  */
 
+
 #include "SCOREP_Subsystem.h"
 
 
 /** The adapter initialization and finalization function structure for the
  *  metric adapter. */
-extern const SCOREP_Subsystem SCOREP_Metric_Service;
+struct SCOREP_Subsystem;
+extern const struct SCOREP_Subsystem SCOREP_Metric_Service;
 
 /** Thread local data related to metrics */
 typedef struct SCOREP_Metric_LocationData SCOREP_Metric_LocationData;

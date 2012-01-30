@@ -448,8 +448,6 @@ scorep_finalize( void )
 
     SCOREP_SynchronizeClocks();
     SCOREP_EndEpoch();
-    SCOREP_TIME( scorep_subsystems_finalize_location );
-    SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
     SCOREP_TIME( SCOREP_Filter_Finalize );
 
     /* finalize and close all event writers */
@@ -469,6 +467,10 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Definitions_Write );
     SCOREP_TIME( SCOREP_Definitions_Finalize );
     SCOREP_TIME( scorep_otf2_finalize );
+
+    SCOREP_TIME( SCOREP_Thread_FinalizeLocations );
+
+    SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
 
     /* dump config variables into experiment directory */
     SCOREP_TIME( scorep_dump_config );

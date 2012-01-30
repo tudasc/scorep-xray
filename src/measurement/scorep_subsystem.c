@@ -136,13 +136,13 @@ scorep_subsystems_initialize_location( void )
 
 
 void
-scorep_subsystems_finalize_location( void )
+scorep_subsystems_finalize_location( SCOREP_Thread_LocationData* locationData )
 {
     for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
         if ( scorep_subsystems[ i ]->subsystem_finalize_location )
         {
-            //scorep_subsystems[ i ]->subsystem_finalize_location(location_ptr???);
+            scorep_subsystems[ i ]->subsystem_finalize_location( locationData );
         }
 
         if ( SCOREP_Env_RunVerbose() )

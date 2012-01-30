@@ -29,6 +29,7 @@
 
 #include "SCOREP_User_Init.h"
 #include "SCOREP_Types.h"
+#include <SCOREP_Thread_Types.h>
 #include "scorep_utility/SCOREP_Error.h"
 
 
@@ -79,7 +80,7 @@ scorep_user_init_location()
 /** Finalizes the location specific data of the user adapter.
  */
 static void
-scorep_user_final_location( void* location )
+scorep_user_final_location( SCOREP_Thread_LocationData* locationData )
 {
 }
 

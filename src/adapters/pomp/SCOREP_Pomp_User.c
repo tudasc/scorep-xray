@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SCOREP_Thread_Types.h>
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Events.h"
@@ -191,7 +192,7 @@ scorep_pomp_init_location()
 /** Allows finaltialization of location specific data. Nothing done inside this funcion.
  */
 static void
-scorep_pomp_final_location( void* location )
+scorep_pomp_final_location( SCOREP_Thread_LocationData* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_pomp_final_location\n" );

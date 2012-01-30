@@ -80,7 +80,6 @@ static void scorep_thread_call_externals_on_new_location(SCOREP_Thread_LocationD
 static void scorep_thread_call_externals_on_new_thread(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
 static void scorep_thread_call_externals_on_thread_activation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
 static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
-static void scorep_thread_delete_location_data();
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
@@ -311,11 +310,9 @@ SCOREP_Thread_Finalize()
     assert( !omp_in_parallel() );
     assert( initial_thread != 0 );
     assert( initial_location != 0 );
-    assert( location_counter > 0 );
+    assert( location_counter == 0 );
     assert( POMP_TPD_MANGLED != 0 );
 
-    // order important, otherwise we will have invalid frees
-    scorep_thread_delete_location_data();
     scorep_thread_delete_thread_private_data_recursively( initial_thread );
 
     location_list_head = 0;
@@ -323,30 +320,6 @@ SCOREP_Thread_Finalize()
     initial_thread     = 0;
     initial_location   = 0;
     location_counter   = 0;
-}
-
-
-void
-scorep_thread_delete_location_data()
-{
-    size_t                      count         = 0;
-    SCOREP_Thread_LocationData* location_data = location_list_head;
-    while ( location_data )
-    {
-        SCOREP_Thread_LocationData* tmp = location_data->next;
-
-        SCOREP_Metric_DeleteLocationData( location_data->metric_data );
-        SCOREP_Trace_DeleteLocationData( location_data->trace_data );
-        SCOREP_Profile_DeleteLocationData( location_data->profile_data );
-        SCOREP_Memory_DeletePageManagers( location_data->page_managers );
-        free( location_data );
-
-        location_data = tmp;
-        count++;
-    }
-    assert( count == location_counter );
-    location_list_head = 0;
-    location_list_tail = &location_list_head;
 }
 
 
@@ -374,6 +347,36 @@ scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivat
     }
     free( tpd->children ); /// @todo remove if SCOREP_Memory is used for child allocation
     free( tpd );
+}
+
+
+void
+SCOREP_Thread_FinalizeLocations()
+{
+    assert( !omp_in_parallel() );
+    assert( initial_thread != 0 );
+    assert( initial_location != 0 );
+    assert( location_counter > 0 );
+    assert( POMP_TPD_MANGLED != 0 );
+
+    SCOREP_Thread_LocationData* location_data = location_list_head;
+    while ( location_data )
+    {
+        SCOREP_Thread_LocationData* tmp = location_data->next;
+
+        scorep_subsystems_finalize_location( location_data );
+        SCOREP_Metric_DeleteLocationData( location_data->metric_data );
+        SCOREP_Trace_DeleteLocationData( location_data->trace_data );
+        SCOREP_Profile_DeleteLocationData( location_data->profile_data );
+        SCOREP_Memory_DeletePageManagers( location_data->page_managers );
+        free( location_data );
+
+        location_data = tmp;
+        location_counter--;
+    }
+    assert( location_counter == 0 );
+    location_list_head = 0;
+    location_list_tail = &location_list_head;
 }
 
 
