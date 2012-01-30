@@ -26,8 +26,9 @@ libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
 
 noinst_LTLIBRARIES += libscorep_adapter_compiler.la
 
-libscorep_adapter_compiler_la_SOURCES =                         \
-	$(SRC_ROOT)src/adapters/include/SCOREP_Compiler_Init.h  \
+libscorep_adapter_compiler_la_SOURCES = \
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
+	$(SRC_ROOT)src/adapters/include/SCOREP_Compiler_Init.h \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c
 
@@ -52,8 +53,7 @@ libscorep_adapter_compiler_la_SOURCES  += \
 	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
 endif
 
-libscorep_adapter_compiler_la_SOURCES +=                                \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
@@ -62,17 +62,15 @@ endif
 #ibm specific settings
 
 if SCOREP_COMPILER_IBM
-libscorep_adapter_compiler_la_SOURCES +=                        \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
+libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
 endif
 
 # pgi specific settings
 
 if SCOREP_COMPILER_PGI
-libscorep_adapter_compiler_la_SOURCES +=                        \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c  \
-        $(SRC_ROOT)src/measurement/include/SCOREP_Thread_Types.h
+libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
 endif
 
 # gnu specific settings
@@ -94,8 +92,7 @@ libscorep_adapter_compiler_la_SOURCES  += \
 	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
 endif
 
-libscorep_adapter_compiler_la_SOURCES +=                                \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
@@ -104,8 +101,7 @@ endif
 # sx specific settings
 
 if SCOREP_COMPILER_SX
-libscorep_adapter_compiler_la_SOURCES +=                          \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c   \
+libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
 endif
@@ -114,7 +110,6 @@ endif
 
 if SCOREP_COMPILER_SUN
  libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
 endif
 
@@ -132,8 +127,7 @@ if !SCOREP_COMPILER_PGI
 if !SCOREP_COMPILER_GNU 
 if !SCOREP_COMPILER_SX
 if !SCOREP_COMPILER_SUN
-libscorep_adapter_compiler_la_SOURCES +=                                \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c         \
+libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c
 endif
 endif
@@ -141,4 +135,3 @@ endif
 endif
 endif
 endif
-

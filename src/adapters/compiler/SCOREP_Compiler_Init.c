@@ -62,19 +62,6 @@ SCOREP_ConfigVariable scorep_compiler_configs[] = {
 };
 
 
-/**
-   The adapter initialize function is compiler specific. Thus it is contained in each
-   compiler adapter implementation.
- */
-extern SCOREP_Error_Code
-scorep_compiler_init_adapter();
-
-/**
-   The adapter finalize function is compiler specific. Thus it is contained in each
-   compiler adapter implementation.
- */
-extern void
-scorep_compiler_finalize();
 
 /**
    Registers configuration variables for the compiler adapters.
@@ -88,25 +75,32 @@ scorep_compiler_register()
 }
 
 /**
-   Location specific initialization function for compiler adapters. Currently, no
-   location specific initialization is performed.
+   The adapter initialize function is compiler specific. Thus it is contained in each
+   compiler adapter implementation.
  */
-SCOREP_Error_Code
-scorep_compiler_init_location()
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter init location!" );
-    return SCOREP_SUCCESS;
-}
+extern SCOREP_Error_Code
+scorep_compiler_init_adapter();
 
 /**
-   Location specific finalization function for compiler adapters. Currently, no
-   location specific finalization is performed.
+   The location init function is compiler specific. Thus it is contained in each
+   compiler adapter implementation.
  */
-void
-scorep_compiler_final_location( void* location )
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter final location!" );
-}
+extern SCOREP_Error_Code
+scorep_compiler_init_location();
+
+/**
+   The location finalize function is compiler specific. Thus it is contained in each
+   compiler adapter implementation.
+ */
+extern void
+scorep_compiler_final_location( void* location );
+
+/**
+   The adapter finalize function is compiler specific. Thus it is contained in each
+   compiler adapter implementation.
+ */
+extern void
+scorep_compiler_finalize();
 
 /**
    Called on dereigstration of the compiler adapter. Currently, no action is performed

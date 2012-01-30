@@ -192,6 +192,20 @@ scorep_compiler_init_adapter()
     return SCOREP_SUCCESS;
 }
 
+SCOREP_Error_Code
+scorep_compiler_init_location()
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xl compiler adapter init location!" );
+    return SCOREP_SUCCESS;
+}
+
+/* Location finalization */
+void
+scorep_compiler_final_location( void* locationData )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xlcompiler adapter final location!" );
+}
+
 /* Finalize adapter */
 void
 scorep_compiler_finalize()

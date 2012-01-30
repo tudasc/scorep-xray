@@ -225,7 +225,7 @@ scorep_compiler_final_location_table()
 SCOREP_Error_Code
 scorep_compiler_init_location()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " PGI compiler adapter init loacation!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
 
     uint64_t                       location_id = scorep_compiler_get_location_id();
     scorep_compiler_location_data* data        = scorep_compiler_create_location_data( location_id );
@@ -240,9 +240,9 @@ scorep_compiler_init_location()
 
 /* Location finalization */
 void
-scorep_compiler_final_location()
+scorep_compiler_final_location( void* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter final loacation!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter final location!" );
 }
 
 /* Adapter initialization */
@@ -290,40 +290,6 @@ scorep_compiler_finalize()
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
     }
 }
-
-/**
-   Registers configuration variables for the compiler adapters. Currently no
-   configuration variables exist for PGI compiler adapters.
- */
-SCOREP_Error_Code
-scorep_compiler_register()
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " register PGI compiler adapter!" );
-
-    return SCOREP_SUCCESS;
-}
-
-/**
-   Called on dereigstration of the compiler adapter. Currently, no action is performed
-   on deregistration.
- */
-void
-scorep_compiler_deregister()
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " PGI compiler adapter deregister!" );
-}
-
-/* Implementation of the compiler adapter initialization/finalization struct */
-const SCOREP_Subsystem SCOREP_Compiler_Adapter =
-{
-    "COMPILER",
-    &scorep_compiler_register,
-    &scorep_compiler_init_adapter,
-    &scorep_compiler_init_location,
-    &scorep_compiler_final_location,
-    &scorep_compiler_finalize,
-    &scorep_compiler_deregister
-};
 
 /* **************************************************************************************
  * Implementation of complier inserted functions
