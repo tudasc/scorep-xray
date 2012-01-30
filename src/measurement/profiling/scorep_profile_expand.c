@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -226,7 +226,6 @@ scorep_profile_expand_threads()
    logical numbering they get from the threading system, e.g., different from
    their omp_thread_num() value. Thus, thsi function oders the thread, thus, that the
    profile writing algorithms find them in the correct order.
-   We assume that the local thread id is encoded in the left 32 bit of the location id.
  */
 void
 scorep_profile_sort_threads()
@@ -261,8 +260,7 @@ scorep_profile_sort_threads()
             {
                 scorep_profile_root_node_data* location_data =
                     SCOREP_PROFILE_DATA2THREADROOT( thread_root->type_specific_data );
-                //uint64_t index = location_data->thread_id >> 32;
-                uint64_t index = location_data->thread_id & 0x00000000FFFFFFFF;
+                uint32_t                       index = location_data->thread_id;
 
                 /* If the locations are not numbered 0 to thread_count-1
                    we omit sorting */

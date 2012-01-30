@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -130,7 +130,7 @@ typedef struct
 typedef struct
 {
     struct SCOREP_Profile_LocationData* thread_data;
-    uint64_t                            thread_id;
+    uint32_t                            thread_id;
 } scorep_profile_root_node_data;
 
 /**

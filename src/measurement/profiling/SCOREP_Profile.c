@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -623,7 +623,7 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
         SCOREP_PROFILE_STOP;
         SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                       "Exit event for other than current region occured at "
-                      "location %" PRIu64 ": Expected exit for region %s. "
+                      "location %u: Expected exit for region %s. "
                       "Exited region %s",
                       SCOREP_Thread_GetLocationId( thread ),
                       SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) ),

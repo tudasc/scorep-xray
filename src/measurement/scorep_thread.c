@@ -550,7 +550,7 @@ SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData )
 }
 
 
-uint64_t
+uint32_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData )
 {
     return locationData->local_id;

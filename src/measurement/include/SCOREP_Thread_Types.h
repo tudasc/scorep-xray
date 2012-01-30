@@ -47,7 +47,12 @@ SCOREP_Thread_LocationData*
 SCOREP_Thread_GetLocationData();
 
 
-uint64_t
+/**
+ *  Returns the local id of the location (ie. thread id).
+ *
+ * @return
+ */
+uint32_t
 SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 
 

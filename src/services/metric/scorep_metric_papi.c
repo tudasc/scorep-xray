@@ -224,10 +224,7 @@ scorep_metric_get_location_id()
     SCOREP_Thread_LocationData* data = SCOREP_Thread_GetLocationData();
     SCOREP_ASSERT( data != NULL );
 
-    uint64_t thread_id = SCOREP_Thread_GetLocationId( data );
-    SCOREP_ASSERT( thread_id >> 32 == 0 );
-
-    return ( unsigned long )thread_id;
+    return SCOREP_Thread_GetLocationId( data );
 }
 
 

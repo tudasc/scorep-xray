@@ -90,7 +90,7 @@ typedef struct
     /**
        Location ID
      */
-    uint64_t location_id;
+    uint32_t location_id;
 } scorep_compiler_location_data;
 
 /**
@@ -123,7 +123,7 @@ static SCOREP_Mutex scorep_compiler_region_mutex;
  * location table access
  ***************************************************************************************/
 
-inline uint64_t
+inline uint32_t
 scorep_compiler_get_location_id()
 {
     /* If the measurement system is not yet initialized or already finalized, it can only
@@ -143,7 +143,7 @@ scorep_compiler_get_location_id()
 inline scorep_compiler_location_data*
 scorep_compiler_get_location_data()
 {
-    uint64_t              location_id = scorep_compiler_get_location_id();
+    uint32_t              location_id = scorep_compiler_get_location_id();
     SCOREP_Hashtab_Entry* entry       = SCOREP_Hashtab_Find( scorep_compiler_location_table,
                                                              &location_id,
                                                              NULL );
@@ -163,7 +163,7 @@ scorep_compiler_get_location_data()
 
 /* Creates the callstack array for a new thread. */
 scorep_compiler_location_data*
-scorep_compiler_create_location_data( uint64_t id )
+scorep_compiler_create_location_data( uint32_t id )
 {
     /* Create location struct */
     scorep_compiler_location_data* data = NULL;
@@ -197,8 +197,8 @@ scorep_compiler_delete_location_entry( SCOREP_Hashtab_Entry* entry )
 void
 scorep_compiler_init_location_table()
 {
-    scorep_compiler_location_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashInt64,
-                                                                &SCOREP_Hashtab_CompareInt64 );
+    scorep_compiler_location_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashInt32,
+                                                                &SCOREP_Hashtab_CompareInt32 );
 }
 
 /* Finalize the location table */
@@ -217,7 +217,7 @@ scorep_compiler_init_location()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
 
-    uint64_t                       location_id = scorep_compiler_get_location_id();
+    uint32_t                       location_id = scorep_compiler_get_location_id();
     scorep_compiler_location_data* data        = scorep_compiler_create_location_data( location_id );
 
     SCOREP_MutexLock( scorep_compiler_region_mutex );
