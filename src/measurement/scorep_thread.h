@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -74,15 +74,6 @@ void
 SCOREP_Thread_OnThreadJoin();
 
 
-/**
- *
- *
- * @return
- */
-SCOREP_Thread_LocationData*
-SCOREP_Thread_GetLocationData();
-
-
 SCOREP_Allocator_PageManager**
 SCOREP_Thread_GetLocationLocalMemoryPageManagers();
 
@@ -94,13 +85,6 @@ SCOREP_Thread_GetProfileLocationData( SCOREP_Thread_LocationData* locationData )
 SCOREP_Trace_LocationData*
 SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData );
 
-
-SCOREP_Metric_LocationData*
-SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData );
-
-
-uint64_t
-SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 
 uint64_t
 SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData );
@@ -123,11 +107,6 @@ SCOREP_Thread_GetNumberOfLocations();
 
 void
 SCOREP_ProcessDeferredLocations();
-
-void
-SCOREP_Thread_ForAllLocations( void ( * cb )( SCOREP_Thread_LocationData*,
-                                              void* ),
-                               void* data );
 
 
 #endif /* SCOREP_INTERNAL_THREAD_H */

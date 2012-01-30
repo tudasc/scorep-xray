@@ -39,6 +39,8 @@
 /* Include to write definitions */
 #include "SCOREP_Definitions.h"
 
+#include <SCOREP_Thread_Types.h>
+
 /* Include header files of supported metric sources */
 #if HAVE( PAPI )
 #include "scorep_metric_papi.h"
@@ -97,21 +99,6 @@ static SCOREP_SamplingSetHandle sampling_set_handle;
 
 /** Our subsystem id, used to address our per-location metric datas */
 static size_t scorep_metric_subsystem_id;
-
-/* *********************************************************************
- * Declarations from scorep_thread.h
- **********************************************************************/
-
-extern SCOREP_Thread_LocationData*
-SCOREP_Thread_GetLocationData();
-
-extern SCOREP_Metric_LocationData*
-SCOREP_Thread_GetMetricLocationData( SCOREP_Thread_LocationData* locationData );
-
-extern void
-SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Thread_LocationData*,
-                                               void* ),
-                               void* data );
 
 
 /* *********************************************************************

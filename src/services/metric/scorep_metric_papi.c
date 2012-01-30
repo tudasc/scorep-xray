@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -33,6 +33,10 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_utility/SCOREP_Debug.h>
 #include <scorep_utility/SCOREP_Utils.h>
+
+
+#include <SCOREP_Thread_Types.h>
+
 
 #if defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) && !defined( C99 )
 #define C99
@@ -204,16 +208,6 @@ static uint32_t number_of_metrics = 0;
 static int scorep_metric_papi_initialize = 1;
 
 
-
-/* *********************************************************************
- * Declarations from scorep_thread.h
- **********************************************************************/
-
-extern SCOREP_Thread_LocationData*
-SCOREP_Thread_GetLocationData();
-
-extern uint64_t
-SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 
 /* *********************************************************************
  * Helper functions

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -118,16 +118,6 @@ SCOREP_Hashtab* scorep_compiler_location_table = NULL;
  */
 static SCOREP_Mutex scorep_compiler_region_mutex;
 
-
-/* **************************************************************************************
- * declarations from scorep_thread.h
- ***************************************************************************************/
-
-extern SCOREP_Thread_LocationData*
-SCOREP_Thread_GetLocationData();
-
-extern uint64_t
-SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
 
 /* **************************************************************************************
  * location table access
