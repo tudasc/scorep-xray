@@ -444,6 +444,7 @@ SCOREP_Metric_DeleteLocationData( SCOREP_Metric_LocationData* metricLocationData
     /* Space is freed if the misc memory pages are freed. */
 }
 
+
 /* *********************************************************************
  * Subsytem declaration
  **********************************************************************/
