@@ -27,7 +27,6 @@
  *
  */
 
-#include <otf2/OTF2_Archive.h>
 #include <SCOREP_Thread_Types.h>
 #include <stdbool.h>
 
@@ -61,30 +60,6 @@ SCOREP_CreateExperimentDir();
 
 void
 SCOREP_RenameExperimentDir();
-
-
-/** @brief Did the first buffer flush happened, of so we can't switch to MPI
- *  anymore.
- */
-extern bool flush_done;
-
-
-/**
- * Called per location by OTF2 after the location buffer has been flushed.
- *
- * @return The clock ticks of this event.
- */
-uint64_t
-SCOREP_OnTraceAndDefinitionPostFlush( void );
-
-
-/**
- * Called per location by OTF2 before the location buffer will be flushed.
- *
- */
-OTF2_FlushType
-SCOREP_OnTracePreFlush( void* evtWriter,
-                        void* evtReader );
 
 
 #endif /* SCOREP_INTERNAL_RUNTIME_MANAGEMENT_H */
