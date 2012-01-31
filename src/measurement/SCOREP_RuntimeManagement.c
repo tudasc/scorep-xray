@@ -49,6 +49,7 @@
 #include <scorep_utility/SCOREP_Omp.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Tracing.h>
+#include <SCOREP_Tracing_Events.h>
 #include <SCOREP_Filter.h>
 #include <scorep_unify.h>
 #include <scorep_openmp.h>
@@ -354,10 +355,9 @@ SCOREP_EnableRecording()
         scorep_recording_enabled = true;
         if ( SCOREP_IsTracingEnabled() )
         {
-            OTF2_EvtWriter_MeasurementOnOff( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                             NULL,
+            SCOREP_Tracing_MeasurementOnOff( location,
                                              SCOREP_GetClockTicks(),
-                                             OTF2_MEASUREMENT_ON );
+                                             true );
         }
     }
     else
@@ -384,10 +384,9 @@ SCOREP_DisableRecording()
         scorep_recording_enabled = false;
         if ( SCOREP_IsTracingEnabled() )
         {
-            OTF2_EvtWriter_MeasurementOnOff( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                             NULL,
+            SCOREP_Tracing_MeasurementOnOff( location,
                                              SCOREP_GetClockTicks(),
-                                             OTF2_MEASUREMENT_OFF );
+                                             false );
         }
     }
     else

@@ -35,6 +35,7 @@
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Omp.h>
 #include <otf2/otf2.h>
+#include <SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Definitions.h>
@@ -53,7 +54,6 @@
 extern bool                     scorep_recording_enabled;
 extern SCOREP_SamplingSetHandle scorep_current_sampling_set;
 extern uint8_t                  scorep_number_of_metrics;
-extern OTF2_TypeID*             scorep_current_metric_types;
 
 static uint64_t
 scorep_get_timestamp( SCOREP_Thread_LocationData* location )
@@ -89,23 +89,18 @@ scorep_enter_region( uint64_t            timestamp,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
-
         if ( metricValues )
         {
-            OTF2_EvtWriter_Metric( evt_writer,
-                                   NULL,
+            SCOREP_Tracing_Metric( location,
                                    timestamp,
-                                   SCOREP_LOCAL_HANDLE_TO_ID( scorep_current_sampling_set, SamplingSet ),
+                                   scorep_current_sampling_set,
                                    scorep_number_of_metrics,
-                                   scorep_current_metric_types,
-                                   ( OTF2_MetricValue* )metricValues );
+                                   metricValues );
         }
 
-        OTF2_EvtWriter_Enter( evt_writer,
-                              NULL,
+        SCOREP_Tracing_Enter( location,
                               timestamp,
-                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+                              regionHandle );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -152,23 +147,18 @@ scorep_exit_region( uint64_t            timestamp,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
-
         if ( metricValues )
         {
-            OTF2_EvtWriter_Metric( evt_writer,
-                                   NULL,
+            SCOREP_Tracing_Metric( location,
                                    timestamp,
-                                   SCOREP_LOCAL_HANDLE_TO_ID( scorep_current_sampling_set, SamplingSet ),
+                                   scorep_current_sampling_set,
                                    scorep_number_of_metrics,
-                                   scorep_current_metric_types,
-                                   ( OTF2_MetricValue* )metricValues );
+                                   metricValues );
         }
 
-        OTF2_EvtWriter_Leave( evt_writer,
-                              NULL,
+        SCOREP_Tracing_Leave( location,
                               timestamp,
-                              SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+                              regionHandle );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -224,11 +214,10 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiSend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                NULL,
+        SCOREP_Tracing_MpiSend( location,
                                 timestamp,
                                 destinationRank,
-                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                                communicatorHandle,
                                 tag,
                                 bytesSent );
     }
@@ -268,11 +257,10 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiRecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                NULL,
+        SCOREP_Tracing_MpiRecv( location,
                                 timestamp,
                                 sourceRank,
-                                SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                                communicatorHandle,
                                 tag,
                                 bytesReceived );
     }
@@ -282,42 +270,6 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
         /* No action necessary */
     }
 }
-
-static OTF2_Mpi_CollectiveType
-scorep_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
-{
-    switch ( scorep_type )
-    {
-#define CONVERT( name ) \
-    case SCOREP_COLLECTIVE_MPI_ ## name: \
-        return OTF2_MPI_ ## name
-
-        CONVERT( BARRIER );
-        CONVERT( BCAST );
-        CONVERT( GATHER );
-        CONVERT( GATHERV );
-        CONVERT( SCATTER );
-        CONVERT( SCATTERV );
-        CONVERT( ALLGATHER );
-        CONVERT( ALLGATHERV );
-        CONVERT( ALLTOALL );
-        CONVERT( ALLTOALLV );
-        CONVERT( ALLTOALLW );
-        CONVERT( ALLREDUCE );
-        CONVERT( REDUCE );
-        CONVERT( REDUCE_SCATTER );
-        CONVERT( REDUCE_SCATTER_BLOCK );
-        CONVERT( SCAN );
-        CONVERT( EXSCAN );
-
-        default:
-            SCOREP_BUG( "Unknown collective type" );
-            return 0;
-
-#undef CONVERT
-    }
-}
-
 
 /**
  * Process an mpi collective begin event in the measurement system.
@@ -340,8 +292,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiCollectiveBegin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                           NULL,
+        SCOREP_Tracing_MpiCollectiveBegin( location,
                                            timestamp );
     }
 
@@ -378,24 +329,13 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
         metric_values = SCOREP_Metric_read( location );
     }
 
-    uint32_t root_rank;
-    if ( rootRank == SCOREP_INVALID_ROOT_RANK )
-    {
-        root_rank = OTF2_UNDEFINED_UINT32;
-    }
-    else
-    {
-        root_rank = ( uint32_t )rootRank;
-    }
-
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiCollectiveEnd( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                         NULL,
+        SCOREP_Tracing_MpiCollectiveEnd( location,
                                          timestamp,
-                                         scorep_collective_to_otf2( collectiveType ),
-                                         SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
-                                         root_rank,
+                                         collectiveType,
+                                         communicatorHandle,
+                                         rootRank,
                                          bytesSent,
                                          bytesReceived );
     }
@@ -418,8 +358,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiIsendComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                         NULL,
+        SCOREP_Tracing_MpiIsendComplete( location,
                                          timestamp,
                                          requestId );
     }
@@ -440,8 +379,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiIrecvRequest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                        NULL,
+        SCOREP_Tracing_MpiIrecvRequest( location,
                                         timestamp,
                                         requestId );
     }
@@ -462,10 +400,9 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiRequestTest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                       NULL,
-                                       timestamp,
-                                       requestId );
+        SCOREP_Tracing_MpiRequestTested( location,
+                                         timestamp,
+                                         requestId );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -484,8 +421,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiRequestCancelled( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                            NULL,
+        SCOREP_Tracing_MpiRequestCancelled( location,
                                             timestamp,
                                             requestId );
     }
@@ -513,11 +449,10 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiIsend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                 NULL,
+        SCOREP_Tracing_MpiIsend( location,
                                  timestamp,
                                  destinationRank,
-                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                                 communicatorHandle,
                                  tag,
                                  bytesSent,
                                  requestId );
@@ -546,11 +481,10 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_MpiIrecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                 NULL,
+        SCOREP_Tracing_MpiIrecv( location,
                                  timestamp,
                                  sourceRank,
-                                 SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                                 communicatorHandle,
                                  tag,
                                  bytesReceived,
                                  requestId );
@@ -580,10 +514,7 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpFork( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                NULL,
-                                timestamp,
-                                nRequestedThreads );
+        SCOREP_Tracing_OmpFork( location, timestamp, nRequestedThreads );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -611,8 +542,7 @@ SCOREP_OmpJoin( void )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpJoin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                NULL,
+        SCOREP_Tracing_OmpJoin( location,
                                 timestamp );
         SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
@@ -652,8 +582,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpAcquireLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                       NULL,
+        SCOREP_Tracing_OmpAcquireLock( location,
                                        timestamp,
                                        lockId,
                                        acquisitionOrder );
@@ -680,8 +609,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpReleaseLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                       NULL,
+        SCOREP_Tracing_OmpReleaseLock( location,
                                        timestamp,
                                        lockId,
                                        acquisitionOrder );
@@ -702,8 +630,7 @@ SCOREP_OmpTaskCreate( uint64_t taskId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpTaskCreate( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                      NULL,
+        SCOREP_Tracing_OmpTaskCreate( location,
                                       timestamp,
                                       taskId );
     }
@@ -722,8 +649,7 @@ SCOREP_OmpTaskSwitch( uint64_t taskId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpTaskSwitch( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                      NULL,
+        SCOREP_Tracing_OmpTaskSwitch( location,
                                       timestamp,
                                       taskId );
     }
@@ -742,8 +668,7 @@ SCOREP_OmpTaskComplete( uint64_t taskId )
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_OmpTaskComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                        NULL,
+        SCOREP_Tracing_OmpTaskComplete( location,
                                         timestamp,
                                         taskId );
     }
@@ -949,11 +874,10 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_ParameterInt( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                     NULL,
-                                     timestamp,
-                                     SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
-                                     value );
+        SCOREP_Tracing_ParameterInt64( location,
+                                       timestamp,
+                                       parameterHandle,
+                                       value );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -979,11 +903,10 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_ParameterUnsignedInt( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                             NULL,
-                                             timestamp,
-                                             SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
-                                             value );
+        SCOREP_Tracing_ParameterUint64( location,
+                                        timestamp,
+                                        parameterHandle,
+                                        value );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -1012,11 +935,10 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_EvtWriter_ParameterString( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                                        NULL,
+        SCOREP_Tracing_ParameterString( location,
                                         timestamp,
-                                        SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
-                                        SCOREP_LOCAL_HANDLE_TO_ID( string_handle, String ) );
+                                        parameterHandle,
+                                        string_handle );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
