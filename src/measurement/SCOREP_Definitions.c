@@ -672,7 +672,7 @@ scorep_region_definition_initialize( SCOREP_Region_Definition* definition,
     definition->description_handle = descriptionNameHandle;
     HASH_ADD_HANDLE( definition, description_handle, String );
 
-    definition->region_type = regionType; // maps to OTF2_RegionType
+    definition->region_type = regionType;
     HASH_ADD_POD( definition, region_type );
 
     definition->file_name_handle = fileNameHandle;

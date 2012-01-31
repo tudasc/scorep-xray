@@ -212,7 +212,7 @@ typedef enum SCOREP_MetricSourceType
     SCOREP_METRIC_SOURCE_TYPE_OTHER  = 3,
 
     SCOREP_INVALID_METRIC_SOURCE_TYPE /**< For internal use only. */
-} SCOREP_MetricSourceType;            // maps to OTF2_GlobMetricType
+} SCOREP_MetricSourceType;
 
 /**
  * Types to be used in defining type of metric values (SCOREP_DefineMetric()).
@@ -225,7 +225,7 @@ typedef enum SCOREP_MetricValueType
     SCOREP_METRIC_VALUE_DOUBLE,
 
     SCOREP_INVALID_METRIC_VALUE_TYPE /**< For internal use only. */
-} SCOREP_MetricValueType;            // maps to OTF2_TypeID
+} SCOREP_MetricValueType;
 
 /**
  * Types to be used in defining metric mode (SCOREP_DefineMetric()).
@@ -257,7 +257,7 @@ typedef enum SCOREP_MetricMode
     SCOREP_METRIC_MODE_RELATIVE_NEXT     = 9,
 
     SCOREP_INVALID_METRIC_MODE /**< For internal use only. */
-} SCOREP_MetricMode;           // see also OTF2_GlobMetricMode
+} SCOREP_MetricMode;
 
 /**
  * Types to be used in defining metric base (SCOREP_DefineMetric()).
@@ -271,7 +271,7 @@ typedef enum SCOREP_MetricBase
     SCOREP_METRIC_BASE_DECIMAL = 1,
 
     SCOREP_INVALID_METRIC_BASE /**< For internal use only. */
-} SCOREP_MetricBase;           // maps to OTF2_GlobMetricBase
+} SCOREP_MetricBase;
 
 /**
  * Types to be used in defining the occurrence of a sampling set.
@@ -289,7 +289,7 @@ typedef enum SCOREP_MetricOccurrence
     SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS       = 2,
 
     SCOREP_INVALID_METRIC_OCCURRENCE /**< For internal use only. */
-} SCOREP_MetricOccurrence;           // maps to OTF2_GlobMetricOccurrence_enum
+} SCOREP_MetricOccurrence;
 
 /**
  * Types to be used in defining the scope of a scoped sampling set.
@@ -307,7 +307,7 @@ typedef enum SCOREP_MetricScope
     SCOREP_METRIC_SCOPE_GROUP            = 3,
 
     SCOREP_INVALID_METRIC_SCOPE /**< For internal use only. */
-} SCOREP_MetricScope;           // maps to OTF2_GlobMetricScope
+} SCOREP_MetricScope;
 
 /**
  * Types used to define type of profiling.
