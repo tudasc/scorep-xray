@@ -63,6 +63,11 @@ scorep_get_timestamp( SCOREP_Thread_LocationData* location )
     return timestamp;
 }
 
+static inline bool
+scorep_tracing_consume_event( void )
+{
+    return SCOREP_IsTracingEnabled() && scorep_recording_enabled;
+}
 
 /**
  * Process a region enter event in the measurement system.
@@ -82,7 +87,7 @@ scorep_enter_region( uint64_t            timestamp,
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -145,7 +150,7 @@ scorep_exit_region( uint64_t            timestamp,
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -217,7 +222,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
                          tag,
                          ( unsigned long long )bytesSent );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiSend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -261,7 +266,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
                          tag,
                          ( unsigned long long )bytesReceived );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiRecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -333,7 +338,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 
     scorep_enter_region( timestamp, regionHandle, metric_values );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiCollectiveBegin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                            NULL,
@@ -383,7 +388,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
         root_rank = ( uint32_t )rootRank;
     }
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiCollectiveEnd( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                          NULL,
@@ -411,7 +416,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiIsendComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                          NULL,
@@ -433,7 +438,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiIrecvRequest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                         NULL,
@@ -455,7 +460,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiRequestTest( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                        NULL,
@@ -477,7 +482,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiRequestCancelled( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                             NULL,
@@ -506,7 +511,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiIsend( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                  NULL,
@@ -539,7 +544,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_MpiIrecv( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                  NULL,
@@ -573,7 +578,7 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
 
     SCOREP_Thread_OnThreadFork( nRequestedThreads );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpFork( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -604,7 +609,7 @@ SCOREP_OmpJoin( void )
 
     SCOREP_Thread_OnThreadJoin();
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpJoin( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                 NULL,
@@ -645,7 +650,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId,
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpAcquireLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                        NULL,
@@ -673,7 +678,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpReleaseLock( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                        NULL,
@@ -695,7 +700,7 @@ SCOREP_OmpTaskCreate( uint64_t taskId )
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpTaskCreate( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                       NULL,
@@ -715,7 +720,7 @@ SCOREP_OmpTaskSwitch( uint64_t taskId )
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpTaskSwitch( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                       NULL,
@@ -735,7 +740,7 @@ SCOREP_OmpTaskComplete( uint64_t taskId )
     SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp = scorep_get_timestamp( location );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_OmpTaskComplete( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                         NULL,
@@ -771,7 +776,7 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
      */
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
     }
 
@@ -799,7 +804,7 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
                    "User sampling set with more than one metric" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_TypeID      value_type = OTF2_INT64_T;
         OTF2_MetricValue values;
@@ -841,7 +846,7 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
                    "User sampling set with more than one metric" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_TypeID      value_type = OTF2_UINT64_T;
         OTF2_MetricValue values;
@@ -883,7 +888,7 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
                    "User sampling set with more than one metric" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_TypeID      value_type = OTF2_DOUBLE;
         OTF2_MetricValue values;
@@ -919,7 +924,7 @@ SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
 
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
     }
 
@@ -942,7 +947,7 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_ParameterInt( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                      NULL,
@@ -972,7 +977,7 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_ParameterUnsignedInt( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                              NULL,
@@ -1005,7 +1010,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
     SCOREP_StringHandle string_handle = SCOREP_DefineString( value );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         OTF2_EvtWriter_ParameterString( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
                                         NULL,
