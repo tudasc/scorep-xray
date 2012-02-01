@@ -34,6 +34,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_types.h \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.h \
     $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.h           \
     $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.c           \

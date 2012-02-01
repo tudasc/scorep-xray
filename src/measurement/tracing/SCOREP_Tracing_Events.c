@@ -47,6 +47,7 @@
 
 
 #include "SCOREP_Tracing_Events.h"
+#include "scorep_tracing_types.h"
 
 
 extern OTF2_TypeID* scorep_current_metric_types;
@@ -154,42 +155,6 @@ SCOREP_Tracing_MpiRecv( SCOREP_Thread_LocationData*       location,
 }
 
 
-static OTF2_Mpi_CollectiveType
-scorep_tracing_collective_to_otf2( SCOREP_MpiCollectiveType scorep_type )
-{
-    switch ( scorep_type )
-    {
-#define CONVERT( name ) \
-    case SCOREP_COLLECTIVE_MPI_ ## name: \
-        return OTF2_MPI_ ## name
-
-        CONVERT( BARRIER );
-        CONVERT( BCAST );
-        CONVERT( GATHER );
-        CONVERT( GATHERV );
-        CONVERT( SCATTER );
-        CONVERT( SCATTERV );
-        CONVERT( ALLGATHER );
-        CONVERT( ALLGATHERV );
-        CONVERT( ALLTOALL );
-        CONVERT( ALLTOALLV );
-        CONVERT( ALLTOALLW );
-        CONVERT( ALLREDUCE );
-        CONVERT( REDUCE );
-        CONVERT( REDUCE_SCATTER );
-        CONVERT( REDUCE_SCATTER_BLOCK );
-        CONVERT( SCAN );
-        CONVERT( EXSCAN );
-
-        default:
-            SCOREP_BUG( "Unknown collective type" );
-            return 0;
-
-#undef CONVERT
-    }
-}
-
-
 void
 SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Thread_LocationData* location,
                                    uint64_t                    timestamp )
@@ -226,7 +191,7 @@ SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Thread_LocationData*       location,
     OTF2_EvtWriter_MpiCollectiveEnd( evt_writer,
                                      NULL,
                                      timestamp,
-                                     scorep_tracing_collective_to_otf2( collectiveType ),
+                                     scorep_tracing_collective_type_to_otf2( collectiveType ),
                                      SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                                      root_rank,
                                      bytesSent,
