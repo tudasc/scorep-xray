@@ -34,7 +34,6 @@
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Omp.h>
-#include <otf2/otf2.h>
 #include <SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
@@ -51,9 +50,7 @@
 
 #include "SCOREP_Metric_Management.h"
 
-extern bool                     scorep_recording_enabled;
-extern SCOREP_SamplingSetHandle scorep_current_sampling_set;
-extern uint8_t                  scorep_number_of_metrics;
+extern bool scorep_recording_enabled;
 
 static uint64_t
 scorep_get_timestamp( SCOREP_Thread_LocationData* location )
@@ -93,8 +90,7 @@ scorep_enter_region( uint64_t            timestamp,
         {
             SCOREP_Tracing_Metric( location,
                                    timestamp,
-                                   scorep_current_sampling_set,
-                                   scorep_number_of_metrics,
+                                   SCOREP_Metric_GetSamplingSet(),
                                    metricValues );
         }
 
@@ -147,8 +143,7 @@ scorep_exit_region( uint64_t            timestamp,
         {
             SCOREP_Tracing_Metric( location,
                                    timestamp,
-                                   scorep_current_sampling_set,
-                                   scorep_number_of_metrics,
+                                   SCOREP_Metric_GetSamplingSet(),
                                    metricValues );
         }
 
@@ -715,18 +710,17 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_TypeID      value_type = OTF2_INT64_T;
-        OTF2_MetricValue values;
-        values.signed_int = value;
+        union
+        {
+            uint64_t uint64;
+            int64_t  int64;
+        } union_value;
+        union_value.int64 = value;
 
-        OTF2_EvtWriter_Metric( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                               NULL,
+        SCOREP_Tracing_Metric( location,
                                timestamp,
-                               SCOREP_LOCAL_HANDLE_TO_ID( counterHandle,
-                                                          SamplingSet ),
-                               1,
-                               &value_type,
-                               &values );
+                               counterHandle,
+                               &union_value.uint64 );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -757,18 +751,10 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_TypeID      value_type = OTF2_UINT64_T;
-        OTF2_MetricValue values;
-        values.unsigned_int = value;
-
-        OTF2_EvtWriter_Metric( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                               NULL,
+        SCOREP_Tracing_Metric( location,
                                timestamp,
-                               SCOREP_LOCAL_HANDLE_TO_ID( counterHandle,
-                                                          SamplingSet ),
-                               1,
-                               &value_type,
-                               &values );
+                               counterHandle,
+                               &value );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -799,18 +785,17 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        OTF2_TypeID      value_type = OTF2_DOUBLE;
-        OTF2_MetricValue values;
-        values.floating_point = value;
+        union
+        {
+            uint64_t uint64;
+            double   float64;
+        } union_value;
+        union_value.float64 = value;
 
-        OTF2_EvtWriter_Metric( SCOREP_Thread_GetTraceLocationData( location )->otf_writer,
-                               NULL,
+        SCOREP_Tracing_Metric( location,
                                timestamp,
-                               SCOREP_LOCAL_HANDLE_TO_ID( counterHandle,
-                                                          SamplingSet ),
-                               1,
-                               &value_type,
-                               &values );
+                               counterHandle,
+                               &union_value.uint64 );
     }
 
     if ( SCOREP_IsProfilingEnabled() )

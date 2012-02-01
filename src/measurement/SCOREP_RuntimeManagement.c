@@ -66,9 +66,6 @@
 #include "scorep_system_tree.h"
 #include "scorep_clock_synchronization.h"
 
-#include <otf2/otf2.h>
-
-
 /** @brief Measurement system initialized? */
 static bool scorep_initialized = false;
 
@@ -82,11 +79,6 @@ static int                 scorep_n_exit_callbacks = 0;
 
 bool                       scorep_recording_enabled = true;
 
-SCOREP_SamplingSetHandle   scorep_current_sampling_set = SCOREP_INVALID_SAMPLING_SET;
-uint8_t                    scorep_number_of_metrics    = 0;
-OTF2_TypeID*               scorep_current_metric_types = NULL;
-
-
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
@@ -94,7 +86,6 @@ static void scorep_otf2_initialize();
 static void scorep_otf2_finalize();
 static void scorep_set_otf2_archive_master_slave();
 static void scorep_initialization_sanity_checks();
-static void scorep_metrics_initialize( void );
 static void scorep_profile_initialize();
 static void scorep_profile_finalize();
 static void scorep_trigger_exit_callbacks();
@@ -180,8 +171,6 @@ SCOREP_InitMeasurement()
     scorep_subsystems_initialize();
     scorep_subsystems_initialize_location(); // not sure if this should be triggered by thread management
 
-    scorep_metrics_initialize();
-
     scorep_profile_initialize();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurementMPI() and
@@ -235,19 +224,18 @@ scorep_profile_initialize()
         return;
     }
 
-    if ( scorep_current_sampling_set == SCOREP_INVALID_SAMPLING_SET )
-    {
-        SCOREP_Profile_Initialize( 0,
-                                   NULL );
-    }
-    else
-    {
-        SCOREP_SamplingSet_Definition* sampling_set_definition
-            = SCOREP_LOCAL_HANDLE_DEREF( scorep_current_sampling_set, SamplingSet );
+    uint32_t                 number_of_metrics = 0;
+    SCOREP_MetricHandle*     metrics           = NULL;
 
-        SCOREP_Profile_Initialize( sampling_set_definition->number_of_metrics,
-                                   sampling_set_definition->metric_handles );
+    SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
+    if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
+    {
+        SCOREP_SamplingSet_Definition* sampling_set
+                          = SCOREP_LOCAL_HANDLE_DEREF( sampling_set_handle, SamplingSet );
+        number_of_metrics = sampling_set->number_of_metrics;
+        metrics           = sampling_set->metric_handles;
     }
+    SCOREP_Profile_Initialize( number_of_metrics, metrics );
 
     SCOREP_Profile_OnLocationCreation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_new_location
     SCOREP_Profile_OnThreadActivation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_thread_activation
@@ -542,44 +530,4 @@ scorep_dump_config( void )
 
     SCOREP_ConfigDump( dump_file );
     fclose( dump_file );
-}
-
-
-static void
-scorep_metrics_initialize( void )
-{
-    SCOREP_Error_Code error;
-
-    /* get sampling set of metric management instance */
-    scorep_current_sampling_set = SCOREP_Metric_GetSamplingSet();
-    if ( scorep_current_sampling_set == SCOREP_INVALID_SAMPLING_SET )
-    {
-        return;
-    }
-    SCOREP_SamplingSet_Definition* sampling_set_definition
-                             = SCOREP_LOCAL_HANDLE_DEREF( scorep_current_sampling_set, SamplingSet );
-    scorep_number_of_metrics = sampling_set_definition->number_of_metrics;
-
-    /* still in the intialization, can use calloc() here */
-    scorep_current_metric_types = calloc( scorep_number_of_metrics, sizeof( OTF2_TypeID ) );
-    assert( scorep_current_metric_types );
-    for ( uint8_t i = 0; i < scorep_number_of_metrics; i++ )
-    {
-        SCOREP_Metric_Definition* metric = SCOREP_LOCAL_HANDLE_DEREF(
-            sampling_set_definition->metric_handles[ i ],
-            Metric );
-        /* same as scorep_metric_value_type_to_otf_metric_value_type */
-        switch ( metric->value_type )
-        {
-            case SCOREP_METRIC_VALUE_INT64:
-                scorep_current_metric_types[ i ] = OTF2_INT64_T;
-                break;
-            case SCOREP_METRIC_VALUE_UINT64:
-                scorep_current_metric_types[ i ] = OTF2_UINT64_T;
-                break;
-            case SCOREP_METRIC_VALUE_DOUBLE:
-                scorep_current_metric_types[ i ] = OTF2_DOUBLE;
-                break;
-        }
-    }
 }

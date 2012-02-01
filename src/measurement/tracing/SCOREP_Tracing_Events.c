@@ -50,8 +50,6 @@
 #include "scorep_tracing_types.h"
 
 
-extern OTF2_TypeID* scorep_current_metric_types;
-
 void
 SCOREP_Tracing_MeasurementOnOff( SCOREP_Thread_LocationData* location,
                                  uint64_t                    timestamp,
@@ -72,17 +70,29 @@ void
 SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
                        uint64_t                    timestamp,
                        SCOREP_SamplingSetHandle    samplingSet,
-                       uint8_t                     numberOfMetrics,
                        const uint64_t*             metricValues )
 {
-    OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+    OTF2_EvtWriter*                evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+
+    SCOREP_SamplingSet_Definition* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+
+    OTF2_TypeID value_types[ sampling_set->number_of_metrics ];
+    for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
+    {
+        SCOREP_MetricHandle       metric_handle = sampling_set->metric_handles[ i ];
+        SCOREP_Metric_Definition* metric        =
+            SCOREP_LOCAL_HANDLE_DEREF( metric_handle, Metric );
+        value_types[ i ]
+            = scorep_tracing_metric_value_type_to_otf2( metric->value_type );
+    }
 
     OTF2_EvtWriter_Metric( evt_writer,
                            NULL,
                            timestamp,
-                           SCOREP_LOCAL_HANDLE_TO_ID( samplingSet, SamplingSet ),
-                           numberOfMetrics,
-                           scorep_current_metric_types,
+                           sampling_set->sequence_number,
+                           sampling_set->number_of_metrics,
+                           value_types,
                            ( const OTF2_MetricValue* )metricValues );
 }
 
