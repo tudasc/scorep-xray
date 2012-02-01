@@ -26,8 +26,7 @@
  *
  */
 
-#include <otf2/OTF2_GeneralDefinitions.h>
-#include <otf2/OTF2_Archive.h>
+#include <otf2/otf2.h>
 #include <stdint.h>
 
 
