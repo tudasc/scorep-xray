@@ -40,7 +40,7 @@ SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
                        uint64_t                    timestamp,
                        SCOREP_SamplingSetHandle    samplingSet,
                        uint8_t                     numberOfMetrics,
-                       uint64_t*                   metricValues );
+                       const uint64_t*             metricValues );
 
 
 void

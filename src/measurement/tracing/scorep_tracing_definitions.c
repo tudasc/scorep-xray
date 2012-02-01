@@ -559,7 +559,7 @@ scorep_write_group_definitions( void*                     writerHandle,
                                                         uint32_t,
                                                         OTF2_GroupType,
                                                         uint32_t,
-                                                        uint64_t* );
+                                                        const uint64_t* );
 
     def_group_pointer_t defGroup = ( def_group_pointer_t )
                                    OTF2_DefWriter_WriteGroup;
@@ -647,7 +647,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
     typedef SCOREP_Error_Code ( *def_metric_class_pointer_t )( void*,
                                                                uint32_t,
                                                                uint8_t,
-                                                               uint32_t*,
+                                                               const uint32_t*,
                                                                OTF2_MetricOccurrence );
     def_metric_class_pointer_t defMetricClass = ( def_metric_class_pointer_t )
                                                 OTF2_DefWriter_WriteMetricClass;

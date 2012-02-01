@@ -72,7 +72,7 @@ SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
                        uint64_t                    timestamp,
                        SCOREP_SamplingSetHandle    samplingSet,
                        uint8_t                     numberOfMetrics,
-                       uint64_t*                   metricValues )
+                       const uint64_t*             metricValues )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -82,7 +82,7 @@ SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
                            SCOREP_LOCAL_HANDLE_TO_ID( samplingSet, SamplingSet ),
                            numberOfMetrics,
                            scorep_current_metric_types,
-                           ( OTF2_MetricValue* )metricValues );
+                           ( const OTF2_MetricValue* )metricValues );
 }
 
 
