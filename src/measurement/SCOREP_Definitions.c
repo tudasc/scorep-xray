@@ -15,15 +15,6 @@
  */
 
 
-#include <config.h>
-
-
-#include <scorep_utility/SCOREP_Debug.h>
-
-
-#include <SCOREP_Definitions.h>
-
-
 /**
  * @status     alpha
  * @file       SCOREP_Definitions.c
@@ -34,15 +25,9 @@
  */
 
 
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Omp.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Timing.h>
-#include <jenkins_hash.h>
+#include <config.h>
 
-#include "scorep_definition_structs.h"
-#include "scorep_definitions.h"
-#include "scorep_types.h"
+
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -51,6 +36,22 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <sys/stat.h>
+
+
+#include <scorep_utility/SCOREP_Debug.h>
+
+
+#include <jenkins_hash.h>
+
+
+#include <SCOREP_Definitions.h>
+#include <SCOREP_DefinitionHandles.h>
+#include <SCOREP_Timing.h>
+#include <scorep_openmp.h>
+#include <scorep_definition_structs.h>
+#include <scorep_definitions.h>
+#include <scorep_types.h>
+
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
@@ -83,7 +84,7 @@ void
 SCOREP_CopyStringDefinitionToUnified( SCOREP_String_Definition*     definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
     definition->unified = scorep_string_definition_define( scorep_unified_definition_manager,
@@ -172,7 +173,7 @@ void
 SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFile_Definition* definition,
                                           SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -253,7 +254,7 @@ void
 SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* definition,
                                              SCOREP_Allocator_PageManager*    handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -352,7 +353,7 @@ void
 SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -458,7 +459,7 @@ void
 SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* definition,
                                               SCOREP_Allocator_PageManager*     handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -597,7 +598,7 @@ void
 SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -826,7 +827,7 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle )
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
                          "Define unified Communicator" );
 
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( scorep_unified_definition_manager );
 
     SCOREP_DEFINITION_ALLOC( MPICommunicator );
@@ -939,7 +940,7 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
                               int32_t          numberOfRanks,
                               int32_t*         ranks )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( scorep_unified_definition_manager );
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
@@ -959,7 +960,7 @@ void
 SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
                                      SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
     definition->unified = scorep_group_definition_define(
@@ -1240,7 +1241,7 @@ void
 SCOREP_CopyMetricDefinitionToUnified( SCOREP_Metric_Definition*     definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -1455,7 +1456,7 @@ void
 SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* definition,
                                            SCOREP_Allocator_PageManager*  handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -1836,7 +1837,7 @@ void
 SCOREP_CopyParameterDefinitionToUnified( SCOREP_Parameter_Definition*  definition,
                                          SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -1987,7 +1988,7 @@ void
 SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     assert( definition );
     assert( handlesPageManager );
 
@@ -2458,14 +2459,14 @@ SCOREP_Callpath_GetNumberOfUnifiedDefinitions()
 uint32_t
 SCOREP_GetNumberOfRegionDefinitions()
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     return scorep_local_definition_manager.region_definition_counter;
 }
 
 uint32_t
 SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Omp_InParallel() );
     return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
 }
 
