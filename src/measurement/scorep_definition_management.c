@@ -37,7 +37,6 @@
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Mutex.h>
-#include <otf2/otf2.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <assert.h>
@@ -47,7 +46,6 @@
 #include "scorep_mpi.h"
 #include "scorep_status.h"
 #include <jenkins_hash.h>
-#include "tracing/scorep_tracing_definitions.h"
 #include "tracing/SCOREP_Tracing.h"
 
 
