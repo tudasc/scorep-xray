@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -2269,7 +2269,7 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// misc definition stuff ////////////////////////////////////////////////////
+// convenient definition accessor functions /////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -2453,6 +2453,28 @@ uint32_t
 SCOREP_Callpath_GetNumberOfUnifiedDefinitions()
 {
     return scorep_unified_definition_manager->callpath_definition_counter;
+}
+
+uint32_t
+SCOREP_GetNumberOfRegionDefinitions()
+{
+    assert( !omp_in_parallel() );
+    return scorep_local_definition_manager.region_definition_counter;
+}
+
+uint32_t
+SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
+{
+    assert( !omp_in_parallel() );
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
+}
+
+uint32_t
+SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
+{
+    SCOREP_Callpath_Definition* callpath = SCOREP_LOCAL_HANDLE_DEREF( handle, Callpath );
+
+    return SCOREP_GetRegionHandleToID( callpath->callpath_argument.region_handle );
 }
 
 /**

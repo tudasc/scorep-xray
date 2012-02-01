@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -34,7 +34,6 @@
 #include "scorep_definition_macros.h"
 #include "scorep_runtime_management.h"
 #include "scorep_thread.h"
-#include <scorep_utility/SCOREP_Omp.h>
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Mutex.h>
@@ -221,27 +220,4 @@ SCOREP_Definitions_Write()
     }
 
     /// @todo Daniel, what to do here for profiling?
-}
-
-
-uint32_t
-SCOREP_GetNumberOfRegionDefinitions()
-{
-    assert( !omp_in_parallel() );
-    return scorep_local_definition_manager.region_definition_counter;
-}
-
-uint32_t
-SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
-{
-    assert( !omp_in_parallel() );
-    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
-}
-
-uint32_t
-SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
-{
-    SCOREP_Callpath_Definition* callpath = SCOREP_LOCAL_HANDLE_DEREF( handle, Callpath );
-
-    return SCOREP_GetRegionHandleToID( callpath->callpath_argument.region_handle );
 }
