@@ -170,6 +170,7 @@ scorep_metric_initialize_service()
             metric_sources_management_data.overall_number_of_metrics += metric_sources_management_data.number_of_metrics_vector[ i ];
         }
 
+        sampling_set_handle = SCOREP_INVALID_SAMPLING_SET;
         if ( metric_sources_management_data.overall_number_of_metrics != 0 )
         {
             /* Now we know how many metrics are used, so we can allocate memory to store their handles */
@@ -229,6 +230,7 @@ scorep_metric_finalize_service()
             metric_sources_management_data.number_of_metrics_vector[ i ] = 0;
         }
         metric_sources_management_data.overall_number_of_metrics = 0;
+        sampling_set_handle                                      = SCOREP_INVALID_SAMPLING_SET;
 
         free( all_metric_handles );
 
