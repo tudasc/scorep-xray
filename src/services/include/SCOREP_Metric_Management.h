@@ -27,7 +27,8 @@
 
 /** @brief  Get recent values of all metrics.
  *
- *  @return Returns pointer to value array filled with recent metric values.
+ *  @return Returns pointer to value array filled with recent metric values,
+ *          or NULL if we don't have metrics to read from.
  */
 uint64_t*
 SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData );

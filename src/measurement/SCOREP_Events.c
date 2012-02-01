@@ -117,11 +117,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Thread_LocationData* location      = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp     = scorep_get_timestamp( location );
-    uint64_t*                   metric_values = NULL;
-    if ( scorep_number_of_metrics )
-    {
-        metric_values = SCOREP_Metric_read( location );
-    }
+    uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
     scorep_enter_region( timestamp, regionHandle, metric_values );
 }
@@ -176,11 +172,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Thread_LocationData* location      = SCOREP_Thread_GetLocationData();
     uint64_t                    timestamp     = scorep_get_timestamp( location );
-    uint64_t*                   metric_values = NULL;
-    if ( scorep_number_of_metrics )
-    {
-        metric_values = SCOREP_Metric_read( location );
-    }
+    uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
     scorep_exit_region( timestamp, regionHandle, metric_values );
 }
@@ -277,16 +269,11 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
 uint64_t
 SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
-    uint64_t                    timestamp = scorep_get_timestamp( location );
+    SCOREP_Thread_LocationData* location      = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp     = scorep_get_timestamp( location );
+    uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
-
-    uint64_t* metric_values = NULL;
-    if ( scorep_number_of_metrics )
-    {
-        metric_values = SCOREP_Metric_read( location );
-    }
 
     scorep_enter_region( timestamp, regionHandle, metric_values );
 
@@ -318,16 +305,13 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
     SCOREP_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
                    "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
 
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
-    uint64_t                    timestamp = scorep_get_timestamp( location );
+    SCOREP_Thread_LocationData* location      = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp     = scorep_get_timestamp( location );
+    uint64_t*                   metric_values = SCOREP_Metric_read( location );
+
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    uint64_t* metric_values = NULL;
-    if ( scorep_number_of_metrics )
-    {
-        metric_values = SCOREP_Metric_read( location );
-    }
 
     if ( scorep_tracing_consume_event() )
     {

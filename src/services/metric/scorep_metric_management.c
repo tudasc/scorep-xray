@@ -349,38 +349,42 @@ scorep_metric_finalize_location( SCOREP_Thread_LocationData* locationData )
 
 /** @brief  Get recent values of all metrics.
  *
- *  @return Returns pointer to value array filled with recent metric values.
+ *  @return Returns pointer to value array filled with recent metric values,
+ *          or NULL if we don't have metrics to read from.
  */
 uint64_t*
 SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData )
 {
-    /* Call only, if previously initialized */
-    if ( scorep_metric_management_initialized )
+    /* Call only, if previously initialized, and we have at least one metric
+     * to read
+     */
+    if ( !scorep_metric_management_initialized
+         || 0 == metric_sources_management_data.overall_number_of_metrics )
     {
-        /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
-            locationData,
-            scorep_metric_subsystem_id );
-        SCOREP_ASSERT( metric_data != NULL );
-
-        assert( metric_data->event_set != NULL );
-        assert( metric_data->values != NULL );
-
-        for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
-        {
-            if ( metric_sources_management_data.number_of_metrics_vector[ i ] > 0 )
-            {
-                /* Read values of selected metric */
-                scorep_metric_sources[ i ]->metric_source_read( metric_data->event_set[ i ], &metric_data->values[ metric_sources_management_data.metrics_offset_vector[ i ] ] );
-            }
-        }
-
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has read metric values." );
-
-        return metric_data->values;
+        return NULL;
     }
 
-    return NULL;
+    /* Get the thread local data related to metrics */
+    SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+        locationData,
+        scorep_metric_subsystem_id );
+    SCOREP_ASSERT( metric_data != NULL );
+
+    assert( metric_data->event_set != NULL );
+    assert( metric_data->values != NULL );
+
+    for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
+    {
+        if ( metric_sources_management_data.number_of_metrics_vector[ i ] > 0 )
+        {
+            /* Read values of selected metric */
+            scorep_metric_sources[ i ]->metric_source_read( metric_data->event_set[ i ], &metric_data->values[ metric_sources_management_data.metrics_offset_vector[ i ] ] );
+        }
+    }
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has read metric values." );
+
+    return metric_data->values;
 }
 
 /** @brief  Reinitialize metric management. This functionality is used by
