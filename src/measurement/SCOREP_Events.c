@@ -33,7 +33,7 @@
 
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Timing.h>
-#include <scorep_utility/SCOREP_Omp.h>
+#include <scorep_openmp.h>
 #include <SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
@@ -539,7 +539,7 @@ SCOREP_OmpJoin( void )
      * finalization can access threadprivate variables.
      */
     static bool is_exit_handler_registered = false;
-    if ( !is_exit_handler_registered && !omp_in_parallel() )
+    if ( !is_exit_handler_registered && !SCOREP_Omp_InParallel() )
     {
         is_exit_handler_registered = true;
         SCOREP_RegisterExitHandler();

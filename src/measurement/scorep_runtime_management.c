@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -28,7 +28,7 @@
 
 #include <SCOREP_Timing.h>
 #include <scorep_utility/SCOREP_Error.h>
-#include <scorep_utility/SCOREP_Omp.h>
+#include <scorep_openmp.h>
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"
 #include "scorep_mpi.h"
@@ -119,7 +119,7 @@ scorep_dir_name_is_created()
 static const char*
 scorep_format_time( time_t* timestamp )
 {
-    assert( !omp_in_parallel() ); // localtime() not reentrant
+    assert( !SCOREP_Omp_InParallel() ); // localtime() not reentrant
     static char local_time_buf[ format_time_size ];
     time_t      now;
     struct tm*  local_time;

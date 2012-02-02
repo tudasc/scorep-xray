@@ -21,6 +21,8 @@ include ../src/measurement/Makefile.common.inc.am
 
 noinst_LTLIBRARIES += libscorep_measurement.la
 libscorep_measurement_la_SOURCES =                                \
+    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c  \
+    $(SRC_ROOT)src/measurement/SCOREP_Events.c             \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Definitions.c               \
     $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
@@ -46,6 +48,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.c \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter.h            \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
     $(SRC_ROOT)src/measurement/scorep_subsystem.c                 \
     $(SRC_ROOT)src/measurement/scorep_subsystem.h                 \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
@@ -84,9 +87,6 @@ noinst_LTLIBRARIES              += libscorep_paradigm_omp.la
 libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP
 libscorep_paradigm_omp_la_SOURCES  =                       \
-    $(SRC_ROOT)src/measurement/SCOREP_Events.c             \
-    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c  \
-    $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
@@ -101,9 +101,6 @@ endif
 
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_omp.la
 libscorep_paradigm_non_omp_la_SOURCES  =                   \
-    $(SRC_ROOT)src/measurement/SCOREP_Events.c             \
-    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c  \
-    $(SRC_ROOT)src/measurement/scorep_runtime_management.c \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
     $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \

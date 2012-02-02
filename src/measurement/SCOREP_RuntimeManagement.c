@@ -46,7 +46,7 @@
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Timing.h>
-#include <scorep_utility/SCOREP_Omp.h>
+#include <scorep_openmp.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Tracing.h>
 #include <SCOREP_Tracing_Events.h>
@@ -77,7 +77,7 @@ static bool scorep_finalized = false;
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
 
-bool                       scorep_recording_enabled = true;
+bool scorep_recording_enabled = true;
 
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
@@ -188,7 +188,7 @@ scorep_initialization_sanity_checks()
         _Exit( EXIT_FAILURE );
     }
 
-    if ( omp_in_parallel() )
+    if ( SCOREP_Omp_InParallel() )
     {
         SCOREP_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
@@ -224,8 +224,8 @@ scorep_profile_initialize()
         return;
     }
 
-    uint32_t                 number_of_metrics = 0;
-    SCOREP_MetricHandle*     metrics           = NULL;
+    uint32_t             number_of_metrics = 0;
+    SCOREP_MetricHandle* metrics           = NULL;
 
     SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
     if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
@@ -277,7 +277,7 @@ SCOREP_InitMeasurementMPI( int rank )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
-    if ( omp_in_parallel() )
+    if ( SCOREP_Omp_InParallel() )
     {
         SCOREP_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
