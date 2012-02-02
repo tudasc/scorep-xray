@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -29,6 +29,14 @@
 
 #include <SCOREP_Thread_Types.h>
 #include <stdbool.h>
+
+
+/** Temporally disable trace event consumption.
+ *
+ * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
+ * functions.
+ */
+extern bool scorep_recording_enabled;
 
 
 /**

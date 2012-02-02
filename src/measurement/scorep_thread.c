@@ -39,7 +39,7 @@
 #include "scorep_runtime_management.h"
 #include "scorep_status.h"
 #include "scorep_subsystem.h"
-
+#include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 
 #include "scorep_environment.h"
 
@@ -186,7 +186,7 @@ scorep_thread_call_externals_on_new_thread( SCOREP_Thread_LocationData* location
     {
         SCOREP_Profile_OnThreadCreation( locationData, parent );
     }
-    SCOREP_Trace_OnThreadCreation( locationData, parent );
+    SCOREP_Tracing_OnThreadCreation( locationData, parent );
 }
 
 
@@ -196,11 +196,11 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
                                               bool                        isMainLocation )
 {
     // Where to do the locking? Well, at the moment we do the locking
-    // in SCOREP_Profile_OnLocationCreation, SCOREP_Trace_OnLocationCreation
+    // in SCOREP_Profile_OnLocationCreation, SCOREP_Tracing_OnLocationCreation
     // and below for the location definition. The alternative is to lock
     // this entire function.
     SCOREP_Profile_OnLocationCreation( locationData, parent );
-    SCOREP_Trace_OnLocationCreation( locationData, parent );
+    SCOREP_Tracing_OnLocationCreation( locationData, parent );
 
     if ( !SCOREP_Mpi_IsInitialized() )
     {
@@ -235,7 +235,7 @@ scorep_thread_call_externals_on_thread_activation( SCOREP_Thread_LocationData* l
     {
         SCOREP_Profile_OnThreadActivation( locationData, parent );
     }
-    SCOREP_Trace_OnThreadActivation( locationData, parent );
+    SCOREP_Tracing_OnThreadActivation( locationData, parent );
 }
 
 
@@ -272,7 +272,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
     new_location->trace_data = 0;
     if ( SCOREP_IsTracingEnabled() )
     {
-        new_location->trace_data = SCOREP_Trace_CreateLocationData();
+        new_location->trace_data = SCOREP_Tracing_CreateLocationData();
         assert( new_location->trace_data );
     }
 
@@ -362,7 +362,7 @@ SCOREP_Thread_FinalizeLocations()
         SCOREP_Thread_LocationData* tmp = location_data->next;
 
         scorep_subsystems_finalize_location( location_data );
-        SCOREP_Trace_DeleteLocationData( location_data->trace_data );
+        SCOREP_Tracing_DeleteLocationData( location_data->trace_data );
         SCOREP_Profile_DeleteLocationData( location_data->profile_data );
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
         free( location_data );
@@ -453,7 +453,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Thread_LocationData*
     {
         SCOREP_Profile_OnThreadDectivation( locationData, parent );
     }
-    SCOREP_Trace_OnThreadDectivation( locationData, parent );
+    SCOREP_Tracing_OnThreadDectivation( locationData, parent );
 }
 
 
@@ -664,7 +664,7 @@ SCOREP_ProcessDeferredLocations()
             SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->global_location_id =
                 location->location_id;
 
-            SCOREP_SetOtf2WriterLocationId( location );
+            SCOREP_Tracing_AssignLocationId( location );
 
             deferred_location = deferred_location->next;
         }

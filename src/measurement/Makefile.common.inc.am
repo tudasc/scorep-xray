@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -22,13 +22,10 @@ common_libscorep_cppflags = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_DIR_UTIL) \
-    -I$(BUILD_INC_DIR_OTF2) \
-    -I$(INC_DIR_OTF2) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/paradigm  \
     -I$(INC_ROOT)src/measurement/profiling \
-    -I$(INC_ROOT)src/measurement/tracing \
     -I$(INC_ROOT)src/measurement/filtering \
     -I$(INC_ROOT)src/measurement/online_access \
     -I$(INC_ROOT)src/services/include \

@@ -1,11 +1,8 @@
-#ifndef SCOREP_TRACING_H
-#define SCOREP_TRACING_H
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
- *    RWTH Aachen, Germany
+ * Copyright (c) 2009-2012,
+ *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
  *    University of Oregon, Eugene, USA
@@ -18,16 +15,22 @@
  */
 
 
+#ifndef SCOREP_TRACING_H
+#define SCOREP_TRACING_H
+
+
 /**
- * @file       SCOREP_Tracing.h
+ * @file       src/measurement/tracing/SCOREP_Tracing.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- *
- * @status alpha
  *
  */
 
-#include <otf2/otf2.h>
+
 #include <stdint.h>
+#include <stdbool.h>
+
+
+#include <scorep_utility/SCOREP_Error.h>
 
 
 void
@@ -44,12 +47,6 @@ SCOREP_Tracing_Finalize( void );
 SCOREP_Error_Code
 SCOREP_Tracing_SetIsMaster( bool isMaster );
 
-
-/**
- * Get an event writer.
- */
-OTF2_EvtWriter*
-SCOREP_Tracing_GetEventWriter( void );
 
 /**
  *  Closes all event writers and collect the number of written events for each.

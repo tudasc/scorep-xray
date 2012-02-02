@@ -23,10 +23,25 @@
  * @file        src/measurement/tracing/SCOREP_Tracing_Events.h
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
+ * @brief Event consumption functions for tracing.
  */
 
 
+#include <stdint.h>
+#include <stdbool.h>
+
+
+#include <scorep_status.h>
 #include <scorep_thread.h>
+#include <scorep_runtime_management.h>
+
+
+/** Use this predicate to decide, whether to record an event in the trace. */
+static inline bool
+scorep_tracing_consume_event( void )
+{
+    return SCOREP_IsTracingEnabled() && scorep_recording_enabled;
+}
 
 
 void

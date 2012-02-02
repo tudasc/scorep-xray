@@ -1,8 +1,8 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
- *    RWTH Aachen, Germany
+ * Copyright (c) 2009-2012,
+ *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
  *    University of Oregon, Eugene, USA
@@ -16,14 +16,16 @@
 
 
 /**
- * @file       SCOREP_Tracing.c
+ * @file       src/measurement/tracing/SCOREP_Tracing.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
  */
 
+
 #include <config.h>
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,7 +33,13 @@
 #include <inttypes.h>
 #include <assert.h>
 
+
+#include <otf2/otf2.h>
+
+
+#include <scorep_utility/SCOREP_Error.h>
 #include <scorep_utility/SCOREP_Debug.h>
+
 
 #include <scorep_status.h>
 #include <scorep_environment.h>
@@ -43,16 +51,18 @@
 #include <scorep_definitions.h>
 #include <scorep_definition_structs.h>
 #include <scorep_mpi.h>
+#include <SCOREP_Mutex.h>
 
+
+#include "scorep_tracing_internal.h"
 #include "SCOREP_Tracing.h"
+#include "SCOREP_Tracing_ThreadInteraction.h"
 #include "scorep_tracing_definitions.h"
 #include "scorep_tracing_file_substrate.h"
 
-/* *INDENT-OFF* */
-/* *INDENT-ON*  */
-
 
 static OTF2_Archive* scorep_otf2_archive;
+static SCOREP_Mutex  scorep_otf2_archive_lock;
 
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
@@ -236,7 +246,7 @@ scorep_tracing_register_memory_callbacks( OTF2_Archive* archive )
 
 
 void
-SCOREP_Tracing_Initialize()
+SCOREP_Tracing_Initialize( void )
 {
     assert( !scorep_otf2_archive );
 
@@ -259,16 +269,35 @@ SCOREP_Tracing_Initialize()
     scorep_tracing_register_memory_callbacks( scorep_otf2_archive );
 
     OTF2_Archive_SetCreator( scorep_otf2_archive, "Score-P " PACKAGE_VERSION );
+
+    SCOREP_MutexCreate( &scorep_otf2_archive_lock );
 }
 
 
 void
-SCOREP_Tracing_Finalize()
+SCOREP_Tracing_Finalize( void )
 {
     assert( scorep_otf2_archive );
+
     /// @todo? set archive to "unified"/"not unified"
     OTF2_Archive_Close( scorep_otf2_archive );
     scorep_otf2_archive = 0;
+
+    SCOREP_MutexDestroy( &scorep_otf2_archive_lock );
+}
+
+
+void
+SCOREP_Tracing_LockArchive( void )
+{
+    SCOREP_MutexLock( scorep_otf2_archive_lock );
+}
+
+
+void
+SCOREP_Tracing_UnockArchive( void )
+{
+    SCOREP_MutexUnlock( scorep_otf2_archive_lock );
 }
 
 
@@ -284,12 +313,12 @@ SCOREP_Tracing_SetIsMaster( bool isMaster )
                                             isMaster ? OTF2_MASTER : OTF2_SLAVE );
 }
 
-
 OTF2_EvtWriter*
-SCOREP_Tracing_GetEventWriter()
+SCOREP_Tracing_GetEventWriter( void )
 {
-    OTF2_EvtWriter* evt_writer =
-        OTF2_Archive_GetEvtWriter( scorep_otf2_archive, OTF2_UNDEFINED_UINT64 );
+    OTF2_EvtWriter* evt_writer = OTF2_Archive_GetEvtWriter(
+        scorep_otf2_archive,
+        OTF2_UNDEFINED_UINT64 );
     if ( !evt_writer )
     {
         /* aborts */
@@ -299,12 +328,11 @@ SCOREP_Tracing_GetEventWriter()
     return evt_writer;
 }
 
-
 static void
 scorep_trace_finalize_event_writer_cb( SCOREP_Thread_LocationData* locationData,
                                        void*                       userData )
 {
-    SCOREP_LocationHandle       location_handle =
+    SCOREP_LocationHandle location_handle =
         SCOREP_Thread_GetLocationHandle( locationData );
     SCOREP_Location_Definition* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
@@ -344,7 +372,7 @@ SCOREP_Tracing_FinalizeEventWriters( void )
 
 
 void
-SCOREP_Tracing_WriteDefinitions()
+SCOREP_Tracing_WriteDefinitions( void )
 {
     assert( scorep_otf2_archive );
 

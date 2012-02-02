@@ -1,0 +1,47 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012,
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       src/measurement/tracing/Makefile.inc.am
+## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+
+
+noinst_LTLIBRARIES += libscorep_tracing.la
+
+libscorep_tracing_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_UTIL) \
+    -I$(BUILD_INC_DIR_OTF2) \
+    -I$(INC_DIR_OTF2) \
+    -I$(INC_DIR_VENDOR_HASH) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/profiling
+
+libscorep_tracing_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_internal.h \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.c \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.h \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_Events.c \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_Events.h \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.c \
+    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.h \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.c \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.h \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.h \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_types.h

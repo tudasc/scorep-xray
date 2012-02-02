@@ -48,8 +48,8 @@
 #include <SCOREP_Timing.h>
 #include <scorep_openmp.h>
 #include <SCOREP_Profile.h>
-#include <SCOREP_Tracing.h>
-#include <SCOREP_Tracing_Events.h>
+#include <tracing/SCOREP_Tracing.h>
+#include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Filter.h>
 #include <scorep_unify.h>
 #include <scorep_openmp.h>

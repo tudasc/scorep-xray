@@ -34,7 +34,7 @@
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Timing.h>
 #include <scorep_openmp.h>
-#include <SCOREP_Tracing_Events.h>
+#include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Definitions.h>
@@ -42,7 +42,6 @@
 
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
-#include "scorep_trace_types.h"
 #include "scorep_thread.h"
 #include "scorep_status.h"
 #include "scorep_definition_structs.h"
@@ -50,20 +49,12 @@
 
 #include "SCOREP_Metric_Management.h"
 
-extern bool scorep_recording_enabled;
-
 static uint64_t
 scorep_get_timestamp( SCOREP_Thread_LocationData* location )
 {
     uint64_t timestamp = SCOREP_GetClockTicks();
     SCOREP_Thread_SetLastTimestamp( location, timestamp );
     return timestamp;
-}
-
-static inline bool
-scorep_tracing_consume_event( void )
-{
-    return SCOREP_IsTracingEnabled() && scorep_recording_enabled;
 }
 
 /**

@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012, 
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -30,8 +30,6 @@ PROFILE_FLAGS =                                 \
     -I$(INC_ROOT)src/measurement                \
     -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(BUILD_INC_DIR_OTF2)                     \
-    -I$(INC_DIR_OTF2)                           \
     -I$(INC_DIR_UTIL)                           \
     -I$(INC_DIR_VENDOR_HASH)
 

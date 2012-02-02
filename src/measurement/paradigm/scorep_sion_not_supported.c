@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -25,7 +25,12 @@
 
 
 #include <config.h>
-#include <SCOREP_Tracing.h>
+
+
+#include <otf2/otf2.h>
+
+
+#include <tracing/SCOREP_Tracing.h>
 
 
 void

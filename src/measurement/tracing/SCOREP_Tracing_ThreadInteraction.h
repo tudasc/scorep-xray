@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,33 +14,31 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_TRACE_THREADINTERACTION_H
-#define SCOREP_INTERNAL_TRACE_THREADINTERACTION_H
 
+#ifndef SCOREP_TRACING_THREAD_INTERACTION_H
+#define SCOREP_TRACING_THREAD_INTERACTION_H
 
 
 /**
- * @file       SCOREP_Trace_ThreadInteraction.h
+ * @file       src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- *
- * @status alpha
- *
  *
  */
 
 
-#include "scorep_trace_types.h"
 #include <SCOREP_Thread_Types.h>
 
+
+typedef struct SCOREP_Trace_LocationData SCOREP_Trace_LocationData;
 
 
 /**
  * Allocate a valid SCOREP_Trace_LocationData object, initialize it in
- * SCOREP_Trace_OnLocationCreation().
+ * SCOREP_Tracing_OnLocationCreation().
  *
  */
 SCOREP_Trace_LocationData*
-SCOREP_Trace_CreateLocationData();
+SCOREP_Tracing_CreateLocationData();
 
 
 /**
@@ -50,7 +48,7 @@ SCOREP_Trace_CreateLocationData();
  * @param traceLocationData The object to be deleted
  */
 void
-SCOREP_Trace_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData );
+SCOREP_Tracing_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData );
 
 
 /**
@@ -62,8 +60,8 @@ SCOREP_Trace_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData );
  * locationData.
  */
 void
-SCOREP_Trace_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
-                               SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
+                                 SCOREP_Thread_LocationData* parentLocationData );
 
 /**
  * Triggered at the start of every thread/parallel region. Always triggered,
@@ -77,8 +75,8 @@ SCOREP_Trace_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Trace_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
-                                 SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
+                                   SCOREP_Thread_LocationData* parentLocationData );
 
 
 /**
@@ -91,8 +89,8 @@ SCOREP_Trace_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Trace_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
-                                  SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
+                                    SCOREP_Thread_LocationData* parentLocationData );
 
 
 /**
@@ -104,12 +102,12 @@ SCOREP_Trace_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Trace_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
-                                 SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
+                                   SCOREP_Thread_LocationData* parentLocationData );
 
 
 void
-SCOREP_SetOtf2WriterLocationId( SCOREP_Thread_LocationData* threadLocationData );
+SCOREP_Tracing_AssignLocationId( SCOREP_Thread_LocationData* threadLocationData );
 
 
-#endif /* SCOREP_INTERNAL_TRACE_THREADINTERACTION_H */
+#endif /* SCOREP_TRACING_THREAD_INTERACTION_H */

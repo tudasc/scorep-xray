@@ -46,7 +46,7 @@
 #include "scorep_mpi.h"
 #include "scorep_status.h"
 #include <jenkins_hash.h>
-#include "tracing/SCOREP_Tracing.h"
+#include <tracing/SCOREP_Tracing.h>
 
 
 SCOREP_DefinitionManager  scorep_local_definition_manager;

@@ -36,14 +36,6 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \
-    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_types.h \
-    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.c \
-    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.h \
-    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.h           \
-    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing.c           \
-    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_Events.h    \
-    $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_Events.c    \
-    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.h \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_parser.c   \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.c \
     $(SRC_ROOT)src/measurement/filtering/scorep_filter_matching.h \
@@ -54,8 +46,6 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
     $(SRC_ROOT)src/measurement/scorep_thread.h                    \
-    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.h  \
-    $(SRC_ROOT)src/measurement/scorep_trace_types.h               \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
     $(SRC_ROOT)src/measurement/scorep_definition_management.c     \
     $(SRC_ROOT)src/measurement/scorep_definitions.h               \
@@ -88,7 +78,6 @@ libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP
 libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
-    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
@@ -102,7 +91,6 @@ endif
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_omp.la
 libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/scorep_thread.c             \
-    $(SRC_ROOT)src/measurement/scorep_trace_thread_interaction.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c
@@ -124,12 +112,11 @@ libscorep_paradigm_non_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 
 noinst_LTLIBRARIES += libscorep_sion_serial.la 
 #if HAVE_SION_SERIAL
-#libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c \
-#                                    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.c
-#libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+#libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+#libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
 #else
 libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 #endif
 
 
@@ -137,12 +124,11 @@ libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/
 
 noinst_LTLIBRARIES += libscorep_sion_omp.la 
 #if HAVE_SION_OMP
-#libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c \
-#                                 $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.c
-#libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+#libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c
+#libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
 #libscorep_sion_omp_la_LDFLAGS  = $(SCOREP_SION_OMP_LDFLAGS)
 #libscorep_sion_omp_la_LIBADD   = $(SCOREP_SION_OMP_LIBS)
 #else
 libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement/tracing -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 #endif

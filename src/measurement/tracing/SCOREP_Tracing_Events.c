@@ -20,8 +20,7 @@
  * @file        src/measurement/tracing/SCOREP_Tracing_Events.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @brief  Fuctions to produce records in the trace file.
- *
+ * @brief Event consumption functions for tracing.
  */
 
 
@@ -46,7 +45,7 @@
 #include <scorep_definitions.h>
 
 
-#include "SCOREP_Tracing_Events.h"
+#include "scorep_tracing_internal.h"
 #include "scorep_tracing_types.h"
 
 
@@ -72,7 +71,7 @@ SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
                        SCOREP_SamplingSetHandle    samplingSet,
                        const uint64_t*             metricValues )
 {
-    OTF2_EvtWriter*                evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
+    OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
     SCOREP_SamplingSet_Definition* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
@@ -188,7 +187,7 @@ SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Thread_LocationData*       location,
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
-    uint32_t        root_rank;
+    uint32_t root_rank;
     if ( rootRank == SCOREP_INVALID_ROOT_RANK )
     {
         root_rank = OTF2_UNDEFINED_UINT32;

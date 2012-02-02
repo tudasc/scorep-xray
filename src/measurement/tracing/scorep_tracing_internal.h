@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,26 +14,16 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_TRACE_TYPES_H
-#define SCOREP_INTERNAL_TRACE_TYPES_H
 
+#ifndef SCOREP_INTERNAL_TRACING_H
+#define SCOREP_INTERNAL_TRACING_H
 
 
 /**
- * @file       scorep_trace_types.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- *
- * @status alpha
- *
+ * @file       src/measurement/tracing/scorep_tracing_interal.h
+ * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  */
-
-#include <SCOREP_DefinitionHandles.h>
-
-#include <otf2/OTF2_EvtWriter.h>
-
-
-typedef struct SCOREP_Trace_LocationData SCOREP_Trace_LocationData;
 
 
 struct SCOREP_Trace_LocationData
@@ -41,4 +31,17 @@ struct SCOREP_Trace_LocationData
     OTF2_EvtWriter* otf_writer;
 };
 
-#endif /* SCOREP_INTERNAL_TRACE_TYPES_H */
+
+OTF2_EvtWriter*
+SCOREP_Tracing_GetEventWriter( void );
+
+
+void
+SCOREP_Tracing_LockArchive( void );
+
+
+void
+SCOREP_Tracing_UnockArchive( void );
+
+
+#endif /* SCOREP_INTERNAL_TRACING_H */

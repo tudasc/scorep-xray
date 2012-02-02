@@ -32,7 +32,7 @@
 #include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Thread_Types.h>
-#include "scorep_trace_thread_interaction.h"
+#include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 #include <stddef.h>
 #include <stdint.h>
 

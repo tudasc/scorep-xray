@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -25,13 +25,22 @@
 
 
 #include <config.h>
-#include <SCOREP_Tracing.h>
-#include <scorep_environment.h>
+
+
 #include <stdio.h>
-#include <sion.h>
 #include <assert.h>
+
+
 #include <mpi.h>
+#include <sion.h>
+
+
+#include <otf2/otf2.h>
+
+
+#include <scorep_environment.h>
 #include <scorep_mpi.h>
+#include <tracing/SCOREP_Tracing.h>
 
 
 static int
@@ -102,4 +111,16 @@ scorep_tracing_register_sion_callbacks( OTF2_Archive* archive )
             NULL );
         assert( status == SCOREP_SUCCESS );
     }
+}
+
+
+OTF2_FileSubstrate
+scorep_tracing_get_file_substrate()
+{
+    OTF2_FileSubstrate substrate = OTF2_SUBSTRATE_POSIX;
+    if ( SCOREP_Env_UseSionSubstrate() )
+    {
+        substrate = OTF2_SUBSTRATE_SION;
+    }
+    return substrate;
 }
