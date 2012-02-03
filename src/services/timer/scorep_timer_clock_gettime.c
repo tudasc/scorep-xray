@@ -51,7 +51,7 @@ SCOREP_GetClockTicks()
 {
     struct timespec time;
     clock_gettime( CLOCK_REALTIME, &time );
-    return time.tv_sec * 1000000000 + time.tv_nsec;
+    return ( uint64_t )time.tv_sec * ( uint64_t )1000000000 + time.tv_nsec;
 }
 
 
