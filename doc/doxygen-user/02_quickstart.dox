@@ -163,8 +163,8 @@ results of earlier measurements. The environment variables
 control whether event trace data or profiles are stored in this
 directory. By setting either variable to <tt>true</tt>, the corresponding
 data will be written to the directory. The default values are <tt>true</tt>
-for <tt>SCOREP_ENABLE_TRACING</tt> and <tt>false</tt> for 
-<tt>SCOREP_ENABLE_PROFILING</tt>. 
+for <tt>SCOREP_ENABLE_PROFILING</tt> and <tt>false</tt> for 
+<tt>SCOREP_ENABLE_TRACING</tt>. 
 
 
 @section quick_examination Report examination
@@ -232,26 +232,23 @@ The actual measurement process is then initiated, e.g.,  by the call:
   mpiexec --n 2 ./jacobi
 @endcode
 As indicated above, the output data of this process will be stored in
-a newly created directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> whose name
-is built up from the date and time when the measurement was started
+a newly created experiment directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> 
+whose name is built up from the date and time when the measurement was started
 and an additional identification number. 
 
-As we had not explicitly set any @scorep related environment variables,
-the tracing mode was active by default. Therefore, this subdirectory
-contains a subdirectory <tt>traces</tt> where the files with the actual
-trace data are stored. These files are provided in the newly developed
-Open Trace Format 2 (OTF2, for short) which is the joint successor of
-the classical formats OTF (used, e.\ g., by Vampir) and Epilog (used by
-Scalasca). Moreover, the <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> directory
-contains the files <tt>traces.def</tt> and <tt>traces.otf2</tt> that provide
-some information required for the evaluation of the trace data (the
-latter file, in particular, is the anchor file for the trace data).
-A tool like Vampir can then be used to give a visual representation of
-the information contained in these files.
-
-If we had set the variable <tt>SCOREP_ENABLE_PROFILING</tt> to <tt>true</tt>, 
-we would additionally have obtained a file called <tt>profile.cubex</tt> 
-in the directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>. This file contains
-the profiling data that can then, e. g., be visually analyzed with
+As we had not explicitly set any @scorep related environment variables, the
+profiling mode was active by default. We obtain a file called
+<tt>profile.cubex</tt> containing profiling data in the experiment directory
+as the result of the measurement run. This file can be visually analyzed with
 the help of CUBE.
+
+If we had set the variable <tt>SCOREP_ENABLE_TRACING</tt> to <tt>true</tt>, we
+would additionally have obtained trace data, namely the so called anchor file
+<tt>traces.otf2</tt> and the global definitions <tt>traces.def</tt> as well as
+a subdirectory <tt>traces</tt> that contains the actual trace data. This trace
+data is written in Open Trace Format 2 (OTF2) format. OTF2 is the joint
+successor of the classical formats OTF (used, e.\ g., by Vampir) and Epilog
+(used by Scalasca). A tool like Vampir can then be used to give a visual
+representation of the information contained in these files.
+
 */
