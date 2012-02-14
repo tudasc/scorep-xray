@@ -658,7 +658,6 @@ SCOREP_Instrumenter::add_define( std::string arg )
     }
 
     define_flags += " " + arg;
-    //compiler_flags += " " + arg;
 }
 
 SCOREP_Instrumenter::scorep_parse_mode_t
@@ -1258,7 +1257,6 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
     }
 
     /* Construct command */
-    std::cout << "defines: " << define_flags << std::endl;
     std::string command = compiler_name + " "
                           + scorep_include_path
                           + " -c " + input_file
