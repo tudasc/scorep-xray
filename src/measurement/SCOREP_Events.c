@@ -303,9 +303,9 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
     {
         SCOREP_Tracing_MpiCollectiveEnd( location,
                                          timestamp,
-                                         collectiveType,
                                          communicatorHandle,
                                          rootRank,
+                                         collectiveType,
                                          bytesSent,
                                          bytesReceived );
     }
