@@ -295,7 +295,7 @@ SCOREP_Tracing_LockArchive( void )
 
 
 void
-SCOREP_Tracing_UnockArchive( void )
+SCOREP_Tracing_UnlockArchive( void )
 {
     SCOREP_MutexUnlock( scorep_otf2_archive_lock );
 }

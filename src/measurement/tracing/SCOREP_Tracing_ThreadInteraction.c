@@ -109,7 +109,7 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
         /* SCOREP_Tracing_GetEventWriter() aborts on error */
         trace_data->otf_writer = SCOREP_Tracing_GetEventWriter();
     }
-    SCOREP_Tracing_UnockArchive();
+    SCOREP_Tracing_UnlockArchive();
 
     if ( !SCOREP_Mpi_IsInitialized() )
     {

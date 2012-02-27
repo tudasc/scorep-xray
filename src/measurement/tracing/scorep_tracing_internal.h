@@ -41,7 +41,7 @@ SCOREP_Tracing_LockArchive( void );
 
 
 void
-SCOREP_Tracing_UnockArchive( void );
+SCOREP_Tracing_UnlockArchive( void );
 
 
 #endif /* SCOREP_INTERNAL_TRACING_H */
