@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012, 
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -98,13 +98,17 @@ AC_DEFUN([SCOREP_TIMER_CYCLE_COUNTER_TSC_AVAILABLE],[
 # We can't really check for TSC without running a program on the
 # backend. A pragmatic solution is to check the cpu type.
 # See also the itc timer: SCOREP_TIMER_CYCLE_COUNTER_ITC_AVAILABLE
-scorep_timer_cycle_counter_tsc_available="no"
+scorep_timer_cycle_counter_tsc_available="yes"
 AC_MSG_CHECKING([for cycle_counter_tsc timer])
-case $host_cpu in
-     i*86 | x86* | powerpc*)
-          scorep_timer_cycle_counter_tsc_available="yes"
-     ;;
-esac
+AS_CASE([$host_cpu],
+        [i*86 | x86* | powerpc*], [AS_IF([test -e /proc/cpuinfo], 
+                                         [${GREP} constant_tsc /proc/cpuinfo | ${GREP} -v nonstop_tsc > /dev/null
+                                          AS_IF([test $? -eq 0], 
+                                                [scorep_timer_cycle_counter_tsc_available="no"])], 
+                                         [#no /proc/cpuinfo
+                                          scorep_timer_cycle_counter_tsc_available="no"])],
+                                  [scorep_timer_cycle_counter_tsc_available="no"])
+
 AC_MSG_RESULT([$scorep_timer_cycle_counter_tsc_available])
 
 AH_TEMPLATE([HAVE_USLEEP],
