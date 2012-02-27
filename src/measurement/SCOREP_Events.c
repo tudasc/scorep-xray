@@ -635,18 +635,26 @@ void
 SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
                      uint64_t            taskId )
 {
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
-    uint64_t                    timestamp = scorep_get_timestamp( location );
+    SCOREP_Thread_LocationData* location      = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp     = scorep_get_timestamp( location );
+    uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_OmpTaskSwitch( location, timestamp, taskId );
+
+        if ( metric_values )
+        {
+            SCOREP_Tracing_Metric( location,
+                                   timestamp,
+                                   SCOREP_Metric_GetSamplingSet(),
+                                   metric_values );
+        }
         SCOREP_Tracing_Enter( location, timestamp, regionHandle );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        uint64_t* metric_values = SCOREP_Metric_read( location );
         SCOREP_Profile_TaskBegin( location,
                                   regionHandle,
                                   taskId,
@@ -659,18 +667,26 @@ void
 SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
                    uint64_t            taskId )
 {
-    SCOREP_Thread_LocationData* location  = SCOREP_Thread_GetLocationData();
-    uint64_t                    timestamp = scorep_get_timestamp( location );
+    SCOREP_Thread_LocationData* location      = SCOREP_Thread_GetLocationData();
+    uint64_t                    timestamp     = scorep_get_timestamp( location );
+    uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {
+        if ( metric_values )
+        {
+            SCOREP_Tracing_Metric( location,
+                                   timestamp,
+                                   SCOREP_Metric_GetSamplingSet(),
+                                   metric_values );
+        }
+
         SCOREP_Tracing_Leave( location, timestamp, regionHandle );
         SCOREP_Tracing_OmpTaskComplete( location, timestamp, taskId );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        uint64_t* metric_values = SCOREP_Metric_read( location );
         SCOREP_Profile_TaskEnd( location,
                                 regionHandle,
                                 taskId,
