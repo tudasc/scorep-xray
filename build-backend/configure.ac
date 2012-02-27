@@ -184,5 +184,9 @@ AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/OpenMP/C/Makefile ])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
+AC_CONFIG_FILES([../test/omp_tasks/run_fibonacci_test.sh], \
+                [chmod +x ../test/omp_tasks/run_fibonacci_test.sh])
+AC_CONFIG_FILES([../test/omp_tasks/run_single_loop_test.sh], \
+                [chmod +x ../test/omp_tasks/run_single_loop_test.sh])
 
 AC_OUTPUT

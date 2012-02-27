@@ -239,15 +239,15 @@ scorep_metric_papi_open()
 {
     /** A leading exclamation mark let the metric be interpreted as absolute value counter.
      *  Appropriate metric properties have to be set. */
-    bool              is_absolute;
+    bool is_absolute;
     /** Content of environment variable SCOREP_METRIC_PAPI */
-    char*             env_metrics;
+    char* env_metrics;
     /** Separator of individual metrics in environment variable SCOREP_METRIC_PAPI */
-    char*             env_metrics_sep;
+    char* env_metrics_sep;
     /** Individual metric */
-    char*             token;
+    char* token;
     /** PAPI return value. */
-    int               retval;
+    int retval;
     /** Info struct about PAPI event */
     PAPI_event_info_t info;
 
@@ -270,7 +270,7 @@ scorep_metric_papi_open()
     assert( retval == PAPI_VER_CURRENT );
 
     /* PAPI code of recent metric */
-    int   code;
+    int code;
     /* Metric name */
     char* component;
     /* Read metrics from specification string */

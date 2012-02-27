@@ -1,0 +1,121 @@
+#!/bin/bash
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       run_single_loop_test.sh
+## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+cleanup ()
+{
+  rm -f  config.h \
+         task_single_loop.pomp_init.c \
+         task_single_loop.opari.c \
+         task_single_loop.c.opari.inc \
+         task_single_loop.c \
+         task_loop_main \
+         task_loop_pomp \
+         task_loop_full
+  rm -rf scorep-measurement-tmp
+}
+trap cleanup EXIT
+
+echo "==================="
+echo $PWD
+echo "==================="
+
+# Setup
+make scorep-config-tool-local
+. ./scorep_config.dat
+touch config.h
+cp  @abs_srcdir@/task_single_loop.c task_single_loop.c
+@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
+@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler --user"
+result_dir_base="scorep_single_loop_"
+
+# provide a reasonable default input for running the applications
+if [ ! x$1 = x ]; then
+  LOOP_NUM=$1
+fi 
+
+if [ x$LOOP_NUM = x ]; then
+   LOOP_NUM=100000
+fi
+
+
+# build with only main instrumented
+./scorep --user \
+         --noopari \
+         --nocompiler \
+         --verbosity=1 \
+         --config=scorep_config.dat \
+         @CC@ -I. -o task_loop_main task_single_loop.c @OPENMP_CFLAGS@
+
+if [ ! -e task_loop_main ]; then
+    exit 1
+fi
+
+# build with main and pomp instrumentation
+./scorep --user \
+         --nocompiler \
+         --verbosity=1 \
+         --config=scorep_config.dat \
+         @CC@ -I. -o task_loop_pomp task_single_loop.c @OPENMP_CFLAGS@
+
+if [ ! -e task_loop_pomp ]; then
+    exit 1
+fi
+
+# build with compiler and pomp instrumentation
+./scorep $extra_flag \
+         --verbosity=1 \
+         --config=scorep_config.dat \
+         @CC@ -I. -o task_loop_full task_single_loop.c @OPENMP_CFLAGS@
+
+if [ ! -e task_loop_full ]; then
+    exit 1
+fi
+
+# execute main test
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}main \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    ./task_loop_main $LOOP_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# execute pomp test
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    ./task_loop_pomp $LOOP_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# execute full test
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    ./task_loop_full $LOOP_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+exit 0

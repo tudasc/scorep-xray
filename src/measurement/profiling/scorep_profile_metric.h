@@ -27,11 +27,12 @@
 
 #include <stdint.h>
 
-#include "SCOREP_Types.h"
+#include <SCOREP_Types.h>
+#include <SCOREP_Profile.h>
 
-/* ***************************************************************************************
-   Typedefs
-*****************************************************************************************/
+/* **************************************************************************************
+   Metric types
+****************************************************************************************/
 
 /**
    Contains the data for one dense metric. The number of dense metrics is assumed to be
@@ -48,6 +49,7 @@ typedef struct
     uint64_t max;
     uint64_t squares;
     uint64_t start_value;
+    uint64_t intermediate_sum;
 } scorep_profile_dense_metric;
 
 /**
@@ -82,6 +84,7 @@ typedef struct scorep_profile_sparse_metric_double_struct
     struct scorep_profile_sparse_metric_double_struct* next_metric;
 } scorep_profile_sparse_metric_double;
 
+
 /* ***************************************************************************************
    Functions for dense metrics
 *****************************************************************************************/
@@ -92,7 +95,7 @@ typedef struct scorep_profile_sparse_metric_double_struct
  *  reserved piece of memory as dense metric.
  *  @param metric pointer to the dense metric instance which should be initialized.
  */
-extern void
+void
 scorep_profile_init_dense_metric( scorep_profile_dense_metric* metric );
 
 /**
@@ -103,7 +106,7 @@ scorep_profile_init_dense_metric( scorep_profile_dense_metric* metric );
  *  @param end_value The end metrics value of the intervall which is added to the
  *                   statistics.
  */
-extern void
+void
 scorep_profile_update_dense_metric( scorep_profile_dense_metric* metric,
                                     uint64_t                     end_value );
 
@@ -113,7 +116,7 @@ scorep_profile_update_dense_metric( scorep_profile_dense_metric* metric,
  *  @param destination Pointer to the instance to which vales are overwritten.
  *  @param source      Pointer to the instance which valies are copied to destination.
  */
-extern void
+void
 scorep_profile_copy_dense_metric( scorep_profile_dense_metric* destination,
                                   scorep_profile_dense_metric* source );
 
@@ -125,7 +128,7 @@ scorep_profile_copy_dense_metric( scorep_profile_dense_metric* destination,
  *  @param source      Pointer to the instance which contains the values which are added
  *                     to @a destination.
  */
-extern void
+void
 scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
                                    scorep_profile_dense_metric* source );
 
@@ -137,22 +140,25 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
  * Creates a new sparse metric struct instance for integer values. The memory for the
  * new metric is allocated from the profiling pool. The new instance is initialized with
  * the given first metric sample.
+ * @param location Pointer to the location data of the creatin thread.
  * @param metric The handle of the metric definition for the recorded values.
  * @param value  The first sample for the recorded statistics.
  */
 scorep_profile_sparse_metric_int*
-scorep_profile_create_sparse_int(
-    SCOREP_MetricHandle metric,
-    uint64_t            value );
+scorep_profile_create_sparse_int( SCOREP_Profile_LocationData* location,
+                                  SCOREP_MetricHandle          metric,
+                                  uint64_t                     value );
 
 /**
  * Copy constructor for sparse metric for integer values. It allocates memory for a new
  * instance and copies the content of @a source into the new instance.
+ * @param location Pointer to the location data of the creatin thread.
  * @param metric Pointer to the instance from which the content is copied.
  * @return the newly created instance.
  */
 scorep_profile_sparse_metric_int*
-scorep_profile_copy_sparse_int( scorep_profile_sparse_metric_int* source );
+scorep_profile_copy_sparse_int( SCOREP_Profile_LocationData*      location,
+                                scorep_profile_sparse_metric_int* source );
 
 /**
  * Updates a sparse metric struct instance for integer values. The given @a value is
@@ -184,22 +190,25 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
  * Creates a new sparse metric struct instance for double values. The memory for the
  * new metric is allocated from the profiling pool. The new instance is initialized with
  * the given first metric sample.
+ * @param location Pointer to the location data of the creatin thread.
  * @param metric The handle of the metric definition for the recorded values.
  * @param value  The first sample for the recorded statistics.
  */
 scorep_profile_sparse_metric_double*
-scorep_profile_create_sparse_double(
-    SCOREP_MetricHandle metric,
-    double              value );
+scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
+                                     SCOREP_MetricHandle          metric,
+                                     double                       value );
 
 /**
  * Copy constructor for sparse metric for double values. It allocates memory for a new
  * instance and copies the content of @a source into the new instance.
+ * @param location Pointer to the location data of the creatin thread.
  * @param metric Pointer to the instance from which the content is copied.
  * @return the newly created instance.
  */
 scorep_profile_sparse_metric_double*
-scorep_profile_copy_sparse_double( scorep_profile_sparse_metric_double* source );
+scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location,
+                                   scorep_profile_sparse_metric_double* source );
 
 /**
  * Updates a sparse metric struct instance for double values. The given @a value is

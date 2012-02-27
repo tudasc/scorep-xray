@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -29,64 +29,132 @@
 
 #include "scorep_profile_node.h"
 
-/** @def  SCOREP_PROFILE_ASSURE_INITIALIZED
-          Check wether the profiling system is initialized.
- */
-#define SCOREP_PROFILE_ASSURE_INITIALIZED if ( !scorep_profile_is_initialized ) { return; }
+/* **************************************************************************************
+   Defines
+****************************************************************************************/
 
-/** @def SCOREP_PROFILE_STOP
-    Disables further construction of the profile.
+/**
+   @def  SCOREP_PROFILE_ASSURE_INITIALIZED
+         Check wether the profiling system is initialized.
  */
-#define SCOREP_PROFILE_STOP scorep_profile_is_initialized = false;
+#define SCOREP_PROFILE_ASSURE_INITIALIZED if ( !scorep_profile.is_initialized ) { return; }
 
-/** Global profile definition data */
+/**
+   @def SCOREP_PROFILE_STOP
+   Disables further construction of the profile.
+ */
+#define SCOREP_PROFILE_STOP scorep_profile.is_initialized = false;
+
+/* **************************************************************************************
+   Typedefs
+****************************************************************************************/
+
+/**
+   Global profile definition data
+ */
 typedef struct
 {
-    /** Points to the first root node. Further root nodes are added as siblings
-        to a root node. */
+    /*--------------------- Profile data */
+
+    /**
+       Points to the first root node. Further root nodes are added as siblings
+       to a root node.
+     */
     scorep_profile_node* first_root_node;
 
-    /** Number of metrics in dense representation. All enter/exit events expect this
-        number of metrics. */
+    /**
+       Number of metrics in dense representation. All enter/exit events expect this
+       number of metrics.
+     */
     uint8_t num_of_dense_metrics;
 
     /** Array containing the Metric definition handle for the metrics in dense
         representation. All enter/exit events expect the metrics in this order. */
+
     SCOREP_MetricHandle* dense_metrics;
 
-    /** Maximum possible depth of the calltree */
-    uint64_t max_callpath_depth;
+    /**
+       True if collapse nodes occur
+     */
+    bool has_collapse_node;
 
-    /** Maximum number of callpathes */
-    uint64_t max_callpath_num;
-
-    /** Maximum callpath depth actually reached during the run */
+    /**
+       Maximum callpath depth actually reached during the run
+     */
     uint64_t reached_depth;
 
-    /** True if collapse nodes occur */
-    bool has_collapse_node;
-} scorep_profile_definition;
+    /**
+       Flag wether the profile is initialized
+     */
+    bool is_initialized;
+
+    /**
+       Flag wether an initialize is a reinitialize
+     */
+    bool reinitialize;
+
+    /*--------------------- Configuration data */
 
 /**
-   Global profile definition instance
+   Allows to limit the depth of the calltree. If the current
+   callpath becomes longer than specified by this parameter,
+   no further child nodes for this callpath are created.
+   This limit allows a reduction of the number of callpathes,
+   especially, if the application contains recursive function
+   calls.
  */
-extern scorep_profile_definition scorep_profile;
+    uint64_t max_callpath_depth;
 
-/** Flag wether the profile is initialized */
-extern bool scorep_profile_is_initialized;
+/**
+   Allows to limit the number of nodes in the calltree. If the
+   number of nodes in the calltree reaches its limit, no further
+   callpathes are created. All new callpathes are collapsed into
+   a single node. This parameter allows to limit the memory
+   usage of the profile.
+ */
+    uint64_t max_callpath_num;
 
 /**
    Contains the basename for profile files.
  */
-extern char* scorep_profile_basename;
+    char* basename;
+
+/**
+   Stores the configuration of the hash table size.
+ */
+    uint64_t task_table_size;
+
+/**
+   Stores the configuration setting for output format.
+ */
+    uint64_t output_format;
+} scorep_profile_definition;
+
+/* **************************************************************************************
+   Global variables
+****************************************************************************************/
+
+/**
+    Global profile definition instance
+ */
+extern scorep_profile_definition scorep_profile;
+
+
+/**
+   Configuration variable registration structures for the profiling system.
+ */
+extern SCOREP_ConfigVariable scorep_profile_configs[];
+
+
+/* **************************************************************************************
+   Functions
+****************************************************************************************/
 
 /**
    Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition( uint64_t             max_callpath_depth,
-                                uint64_t             max_Callpath_num,
-                                uint32_t             num_dense_metrics,
+scorep_profile_init_definition( uint32_t             num_dense_metrics,
                                 SCOREP_MetricHandle* metrics );
 
 /**

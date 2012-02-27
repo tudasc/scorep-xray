@@ -30,6 +30,7 @@
 #include <config.h>
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>
+#include <scorep_profile_location.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <stdio.h>
@@ -42,9 +43,9 @@ scorep_profile_substitute_collapse( scorep_profile_node* node, void* param )
 {
     if ( node->node_type == scorep_profile_node_collapse )
     {
-        node->node_type          = scorep_profile_node_regular_region;
-        node->type_specific_data =
-            SCOREP_PROFILE_REGION2DATA( scorep_profile_collapse_region );
+        node->node_type = scorep_profile_node_regular_region;
+        scorep_profile_type_set_region_handle( &node->type_specific_data,
+                                               scorep_profile_collapse_region );
     }
 }
 

@@ -28,6 +28,7 @@
 #include <stdbool.h>
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_profile_metric.h>
+#include <SCOREP_Profile.h>
 
 /* ***************************************************************************************
    Type definitions
@@ -39,7 +40,11 @@
    which should be enough to store a pointer, an handle, an integer value, or an double
    value.
  */
-typedef uint64_t scorep_profile_type_data_t;
+typedef struct
+{
+    uint64_t handle;
+    uint64_t value;
+} scorep_profile_type_data_t;
 
 /**
    List of profile node types.  Each node has special type and a field where it might
@@ -54,6 +59,7 @@ typedef enum
     scorep_profile_node_thread_root,
     scorep_profile_node_thread_start,
     scorep_profile_node_collapse,
+    scorep_profile_node_task_root,
 } scorep_profile_node_type;
 
 /**
@@ -74,16 +80,18 @@ typedef enum
     <dt>scorep_profile_node_regular_region</dt>
     <dd>The region handle</dd>
     <dt>scorep_profile_node_parameter_string</dt>
-    <dd>A pointer to a @ref scorep_profile_string_node_data instance</dd>
+    <dd>The parameter handle and a handle for the string value</dd>
     <dt>scorep_profile_node_parameter_integer</dt>
-    <dd>A pointer to a @ref scorep_profile_integer_node_data instance</dd>
+    <dd>The parameter handle and an integer value</dd>
     <dt>scorep_profile_node_thread_root</dt>
-    <dd>A pointer to a @ref scorep_profile_root_node_data instance</dd>
+    <dd>A pointer to a @ref scorep_profile_root_node_data instance and the thread id</dd>
     <dt>scorep_profile_node_thread_start</dt>
     <dd>A pointer to the @ref scorep_profile_node instance from which the new thread
         was created</dd>
     <dt>scorep_profile_node_collapse</dt>
     <dd>The depth level of the node</dd>
+    <dt>scorep_profile_node_task_root</dt>
+    <dd>The region handle</dd>
    </dl>
  */
 typedef struct scorep_profile_node_struct
@@ -104,36 +112,6 @@ typedef struct scorep_profile_node_struct
 } scorep_profile_node;
 
 /**
-   Contains the type specific data for a node of type
-   @a scorep_profile_node_parameter_integer
- */
-typedef struct
-{
-    SCOREP_ParameterHandle handle;
-    int64_t                value;
-} scorep_profile_integer_node_data;
-
-/**
-   Contains the type specific data for a node of type
-   @a scorep_profile_node_parameter_string
- */
-typedef struct
-{
-    SCOREP_ParameterHandle handle;
-    SCOREP_StringHandle    value;
-} scorep_profile_string_node_data;
-
-/**
-   Contains the type specific data for a node of type
-   @a scorep_profile_node_thread_root
- */
-typedef struct
-{
-    struct SCOREP_Profile_LocationData* thread_data;
-    uint32_t                            thread_id;
-} scorep_profile_root_node_data;
-
-/**
    Type of function pointer that must be passed to @ref scorep_profile_for_all().
    to be processed for each node.
    @param node  Pointer to the node in the profile which is currently processed.
@@ -143,188 +121,101 @@ typedef struct
 typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node, void* param );
 
 /* ***************************************************************************************
-   Defines
+   Getter / Setter functions fro type dependent data
 *****************************************************************************************/
 
 /**
-   @def SCOREP_PROFILE_POINTER2DATA( handle )
-   Casts a pointer to node specific data type.
-   @param handle The pointer which is casted to node specific data.
- */
-#if SIZEOF_VOID_P == 8
-#define SCOREP_PROFILE_POINTER2DATA( ptr ) ( ( uint64_t )ptr )
-#elif SIZEOF_VOID_P == 4
-#define SCOREP_PROFILE_POINTER2DATA( ptr ) ( ( uint32_t )ptr )
-#else
-#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
-#endif
-
-/**
-   @def SCOREP_PROFILE_DATA2POINTER( data )
-   Casts a node specific data item to a region handle.
-   @param data The node specific data that is casted to a pointer.
- */
-#if SIZEOF_VOID_P == 8
-#define SCOREP_PROFILE_DATA2POINTER( data )   ( ( void* )( uint64_t )data )
-#elif SIZEOF_VOID_P == 4
-#define SCOREP_PROFILE_DATA2POINTER( data )   ( ( void* )( uint32_t )data )
-#else
-#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
-#endif
-
-/**
-   @def SCOREP_PROFILE_REGION2DATA( handle )
-   Casts a region handle to node specific data type.
-   @param handle The region handle which is casted to node specific data.
- */
-#define SCOREP_PROFILE_REGION2DATA( handle ) ( handle )
-
-/**
-   @def SCOREP_PROFILE_DATA2REGION( data )
-   Casts a node specific data item to a region handle.
-   @param data The node specific data that is casted to a region handle.
- */
-#define SCOREP_PROFILE_DATA2REGION( data ) ( data )
-
-/**
-   @def SCOREP_PROFILE_PARAMSTR2DATA( handle )
-   Casts a pointer to a @ref scorep_profile_string_node_data instance to node specific
-   data type.
-   @param handle The pointer to a @ref scorep_profile_string_node_data instance which is
-                 casted to node specific data.
- */
-#define SCOREP_PROFILE_PARAMSTR2DATA( handle ) SCOREP_PROFILE_POINTER2DATA( handle )
-
-/**
-   @def SCOREP_PROFILE_DATA2PARAMSTR( data )
-   Casts a node specific data item to a pointer to a @ref scorep_profile_string_node_data
-   instance.
-   @param data The node specific data that is casted to a  pointer to a
-               @ref scorep_profile_string_node_data instance.
- */
-#define SCOREP_PROFILE_DATA2PARAMSTR( data ) ( ( scorep_profile_string_node_data* ) \
-                                               SCOREP_PROFILE_DATA2POINTER( data ) )
-
-/**
-   @def SCOREP_PROFILE_PARAMINT2DATA( handle )
-   Casts a pointer to a @ref scorep_profile_integer_node_data instance to node specific data
-   type.
-   @param handle The pointer to a @ref scorep_profile_integer_node_data instance which is
-                 casted to node specific data.
- */
-#define SCOREP_PROFILE_PARAMINT2DATA( handle ) SCOREP_PROFILE_POINTER2DATA( handle )
-
-/**
-   @def SCOREP_PROFILE_DATA2PARAMINT( data )
-   Casts a node specific data item to a pointer to a @ref scorep_profile_integer_node_data
-   instance.
-   @param data The node specific data that is casted to a  pointer to a
-               @ref scorep_profile_integer_node_data instance.
- */
-#define SCOREP_PROFILE_DATA2PARAMINT( data ) ( ( scorep_profile_integer_node_data* ) \
-                                               SCOREP_PROFILE_DATA2POINTER( data ) )
-
-/**
-   @def SCOREP_PROFILE_THREADROOT2DATA( handle )
-   Casts a pointer to a @ref scorep_profile_root_node_data instance to node specific data
-   type.
-   @param handle The pointer to a @ref scorep_profile_root_node_data instance which is
-                 casted to node specific data.
- */
-#define SCOREP_PROFILE_THREADROOT2DATA( handle ) SCOREP_PROFILE_POINTER2DATA( handle )
-
-/**
-   @def SCOREP_PROFILE_DATA2THREADROOT( data )
-   Casts a node specific data item to a pointer to a @ref scorep_profile_root_node_data
-   instance.
-   @param data The node specific data that is casted to a  pointer to a
-               @ref scorep_profile_root_node_data instance.
- */
-#define SCOREP_PROFILE_DATA2THREADROOT( data ) ( ( scorep_profile_root_node_data* ) \
-                                                 SCOREP_PROFILE_DATA2POINTER( data ) )
-
-
-
-/* ***************************************************************************************
-   Functions
-*****************************************************************************************/
-
-/**
-   Adds @a child to the children of @a parent. No check whether a matching node
-   already exists is performed. If @a child is the root node to a sub-tree, the whole
-   sub-tree is added. If child is still child of another node, the tree ill become
-   inconsistent.
-   @param parent Pointer to the node to which the @a child is added.
-   @param child  Pointer to the node which is added to @a parent.
+   Stores the region handle in the type specific data of a regular region node.
  */
 void
-scorep_profile_add_child( scorep_profile_node* parent,
-                          scorep_profile_node* child );
+scorep_profile_type_set_region_handle( scorep_profile_type_data_t* data,
+                                       SCOREP_RegionHandle         handle );
 
 /**
-   Constructs a node of a given type.
-   @param parent Pointer to the parent node. It is NULL is it is a root node. This
-                function does not insert the child into the parents child list, but sets
-                the parent pointer ot the new node only.
-   @param type   The type of the node.
-   @param data   The type dependent data for this node.
-   @param timestamp The timestamp of its first enter event.
-   @return A pointer to the newly created node.
+   Retrieves the region handle from the type specific data of a regular region node.
  */
-extern scorep_profile_node*
-scorep_profile_create_node( scorep_profile_node*       parent,
-                            scorep_profile_node_type   type,
-                            scorep_profile_type_data_t data,
-                            uint64_t                   timestamp );
+SCOREP_RegionHandle
+scorep_profile_type_get_region_handle( scorep_profile_type_data_t data );
 
 /**
-   Creates a new node and copies the statistics from @a source to it. The new node is
-   not added to a calltree, nor are children copied.
-   @param source Pointer to the node which gets copied.
-   @return A pointer to the new node.
+   Stores the parameter handle in the type specific data of a parameter node.
  */
-extern scorep_profile_node*
-scorep_profile_copy_node( scorep_profile_node* source );
+void
+scorep_profile_type_set_parameter_handle( scorep_profile_type_data_t* data,
+                                          SCOREP_ParameterHandle      handle );
 
 /**
-   Find a child node of @a parent of a specified type. If parent has a child
-   which matches @a type this node is returned.
-   @param parent    Pointer to a node which children are searched.
-   @param type      Pointer to a node for which a matching node is searched.
-   @returns The matching node from the children of @a parent. If no matching node is
-            found, it returns NULL.
+   Retrieves the parameter handle from the type specific data of a parameter node.
  */
-extern scorep_profile_node*
-scorep_profile_find_child( scorep_profile_node* parent,
-                           scorep_profile_node* type );
+SCOREP_ParameterHandle
+scorep_profile_type_get_parameter_handle( scorep_profile_type_data_t data );
 
 /**
-   Find or create a child node of @a parent of a specified type. If parent has a child
-   which matches @a type this node is returned. Else a copy of @a type without metrics
-   is created and added to the children of @a parent.
-   @param parent    Pointer to a node which children are searched.
-   @param type      Pointer to a node for which a matching node is searched.
-   @param timestamp Timestamp for the first enter time in case a new node is created.
-   @returns The matching node from the children of @a parent. This might be a newly
-            created node.
+   Stores the string handle in the type specific data of a parameter string node.
  */
-extern scorep_profile_node*
-scorep_profile_find_create_child( scorep_profile_node* parent,
-                                  scorep_profile_node* type,
-                                  uint64_t             timestamp );
+void
+scorep_profile_type_set_string_handle( scorep_profile_type_data_t* data,
+                                       SCOREP_StringHandle         handle );
 
 /**
-   Checks wether two nodes represent the same object (region, parameter, thread, ...).
-   It does only compare node type and type dependent data. The statistics are not
-   compared.
-   @param node1 The node that is compared to @a node2
-   @param node2 The node that is compared to @a node1
-   @return true, if @a node1 and @a node2 are of the same type, and their type dependent
-          data match. Else false is returned.
+   Retrieves the string handle from the type specific data of a parameter string node.
  */
-extern bool
-scorep_profile_compare_nodes( scorep_profile_node* node1,
-                              scorep_profile_node* node2 );
+SCOREP_StringHandle
+scorep_profile_type_get_string_handle( scorep_profile_type_data_t data );
+
+/**
+   Stores the fork node where the thread was created in the type specific data of
+   a thread start node.
+ */
+void
+scorep_profile_type_set_fork_node( scorep_profile_type_data_t* data,
+                                   scorep_profile_node*        node );
+
+/**
+   Retrieves the fork node where the thread was created from the type specific data of
+   a thread start node.
+ */
+scorep_profile_node*
+scorep_profile_type_get_fork_node( scorep_profile_type_data_t data );
+
+/**
+   Stores the profile location data in the type specific data of a thread root node.
+ */
+void
+scorep_profile_type_set_location_data( scorep_profile_type_data_t*  data,
+                                       SCOREP_Profile_LocationData* location );
+
+/**
+   Retrieves the profile location data from the type specific data of a thread root node.
+ */
+SCOREP_Profile_LocationData*
+scorep_profile_type_get_location_data( scorep_profile_type_data_t data );
+
+/**
+   Retrives the depth from the type specific data of a collapse node.
+ */
+uint64_t
+scorep_profile_type_get_depth( scorep_profile_type_data_t data );
+
+/**
+   Stores the depth in the type specific data of a collapse node.
+ */
+void
+scorep_profile_type_set_depth( scorep_profile_type_data_t* data,
+                               uint64_t                    depth );
+
+/**
+   Retrives the integer value from the type specific data of a parameter integer  node.
+ */
+uint64_t
+scorep_profile_type_get_int_value( scorep_profile_type_data_t data );
+
+/**
+   Stores the integer value in the type specific data of a parameter integer node.
+ */
+void
+scorep_profile_type_set_int_value( scorep_profile_type_data_t* data,
+                                   uint64_t                    value );
 
 /**
    Compares the type dependent data. Both objects are assumed to be of the same type
@@ -344,9 +235,124 @@ scorep_profile_compare_type_data( scorep_profile_type_data_t data1,
    @param data The data which is copied.
    @param type  Specifies the node type of @a data.
  */
-extern scorep_profile_type_data_t
-scorep_profile_copy_type_data( scorep_profile_type_data_t data,
-                               scorep_profile_node_type   type );
+extern void
+scorep_profile_copy_type_data( scorep_profile_type_data_t* destination,
+                               scorep_profile_type_data_t  source,
+                               scorep_profile_node_type    type );
+
+/* ***************************************************************************************
+   Functions
+*****************************************************************************************/
+
+/**
+   Adds @a child to the children of @a parent. No check whether a matching node
+   already exists is performed. If @a child is the root node to a sub-tree, the whole
+   sub-tree is added. If child is still child of another node, the tree ill become
+   inconsistent.
+   @param parent Pointer to the node to which the @a child is added.
+   @param child  Pointer to the node which is added to @a parent.
+ */
+void
+scorep_profile_add_child( scorep_profile_node* parent,
+                          scorep_profile_node* child );
+
+/**
+   Constructs a node of a given type.
+   @param location Pointer to the location data associated with the subtrees memory
+                   page.
+   @param parent Pointer to the parent node. It is NULL is it is a root node. This
+                function does not insert the child into the parents child list, but sets
+                the parent pointer ot the new node only.
+   @param type   The type of the node.
+   @param data   The type dependent data for this node.
+   @param timestamp The timestamp of its first enter event.
+   @return A pointer to the newly created node.
+ */
+extern scorep_profile_node*
+scorep_profile_create_node( SCOREP_Profile_LocationData* location,
+                            scorep_profile_node*         parent,
+                            scorep_profile_node_type     type,
+                            scorep_profile_type_data_t   data,
+                            uint64_t                     timestamp );
+
+/**
+   Creates a new node and copies the statistics from @a source to it. The new node is
+   not added to a calltree, nor are children copied.
+   @param location Pointer to the location data associated with the subtrees memory
+                   page.
+   @param source Pointer to the node which gets copied.
+   @return A pointer to the new node.
+ */
+extern scorep_profile_node*
+scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
+                          scorep_profile_node*         source );
+
+/**
+   Releases the subtree, rooted in @a root.
+   @param location Pointer to the location data associated with the subtrees memory
+                   page.
+   @param root     Pointer to the root node of a subtree, whose memory can be reused.
+ */
+extern void
+scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
+                                scorep_profile_node*         root );
+
+/**
+   Allocates or recycles memory for a new profile node.
+   @param location Pointer to the location data associated with the subtrees memory
+                   page.
+   @param type     Node type of the newly allocated node. The node type is not set, but
+                   used to determine whether the memory must be taken from miscellaneous
+                   of from the profile pool. Because some node must not be released on
+                   reconfiguration.
+ */
+extern scorep_profile_node*
+scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
+                           scorep_profile_node_type     type );
+
+/**
+   Find a child node of @a parent of a specified type. If parent has a child
+   which matches @a type this node is returned.
+   @param parent    Pointer to a node which children are searched.
+   @param type      Pointer to a node for which a matching node is searched.
+   @returns The matching node from the children of @a parent. If no matching node is
+            found, it returns NULL.
+ */
+extern scorep_profile_node*
+scorep_profile_find_child( scorep_profile_node* parent,
+                           scorep_profile_node* type );
+
+/**
+   Find or create a child node of @a parent of a specified type. If parent has a child
+   which matches @a type this node is returned. Else it creates a node of @a node_type
+   and the type specific datarics and adds it to the children of @a parent.
+   @param location  Pointer to the location data.
+   @param parent    Pointer to a node which children are searched.
+   @param node_type The node type of the searched or created node.
+   @param specific  The type sepcific data of the searched or created node.
+   @param timestamp Timestamp for the first enter time in case a new node is created.
+   @returns The matching node from the children of @a parent. This might be a newly
+            created node.
+ */
+extern scorep_profile_node*
+scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
+                                  scorep_profile_node*         parent,
+                                  scorep_profile_node_type     node_type,
+                                  scorep_profile_type_data_t   specific,
+                                  uint64_t                     timestamp );
+
+/**
+   Checks wether two nodes represent the same object (region, parameter, thread, ...).
+   It does only compare node type and type dependent data. The statistics are not
+   compared.
+   @param node1 The node that is compared to @a node2
+   @param node2 The node that is compared to @a node1
+   @return true, if @a node1 and @a node2 are of the same type, and their type dependent
+          data match. Else false is returned.
+ */
+extern bool
+scorep_profile_compare_nodes( scorep_profile_node* node1,
+                              scorep_profile_node* node2 );
 
 /**
    Copies all dense metrics and time statistics from @a source to @a destination.
@@ -392,6 +398,14 @@ extern void
 scorep_profile_for_all( scorep_profile_node*           root_node,
                         scorep_profile_process_func_t* func,
                         void*                          param );
+
+
+/**
+   Returns the location data of the location of @a node.
+   @param node  Pointer to the node for which the location data is returned.
+ */
+SCOREP_Profile_LocationData*
+scorep_profile_get_location_of_node( scorep_profile_node* node );
 
 /**
    Returns the number of children of @a node.
@@ -443,24 +457,32 @@ scorep_profile_merge_node_dense( scorep_profile_node* destination,
 
 /**
    Add sparse metric from source to destination.
+   @param location    A pointer to the location data structure which is associated to
+                      the memory page which is used to contribute released memory or
+                      create new records.
    @param destination A pointer to a node to which the metrics are added.
    @param source      A pointer to a node which metrics are added to @a destination.
  */
 extern void
-scorep_profile_merge_node_sparse( scorep_profile_node* destination,
-                                  scorep_profile_node* source );
+scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
+                                  scorep_profile_node*         destination,
+                                  scorep_profile_node*         source );
 
 
 /**
    Merges the subtree rooted in @a source into the subtree rooted in @a destination.
    Adds all statistics of @a source to @a destination and processes the children
    recursively.
+   @param location    A pointer to the location data structure which is associated to
+                      the memory page which is used to contribute released memory or
+                      create new records.
    @param destination A pointer to the node which is the root of the target subtree.
    @param source      A pointer to the node of the subtree which is merged into
                       @a destination.
  */
 void
-scorep_profile_merge_subtree( scorep_profile_node* destination,
-                              scorep_profile_node* source );
+scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
+                              scorep_profile_node*         destination,
+                              scorep_profile_node*         source );
 
 #endif // SCOREP_PROFILE_NODE_H

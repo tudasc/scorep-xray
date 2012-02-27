@@ -1,0 +1,121 @@
+#!/bin/bash
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       run_fibonacci_test.sh
+## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+cleanup ()
+{
+  rm -f  config.h \
+         task_fibonacci.pomp_init.c \
+         task_fibonacci.opari.c \
+         task_fibonacci.c.opari.inc \
+         task_fibonacci.c \
+         fib_main \
+         fib_pomp \
+         fib_full
+  rm -rf scorep-measurement-tmp
+}
+trap cleanup EXIT
+
+echo "==================="
+echo $PWD
+echo "==================="
+
+# Setup
+make scorep-config-tool-local
+. ./scorep_config.dat
+touch config.h
+cp  @abs_srcdir@/task_fibonacci.c task_fibonacci.c
+@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
+@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler --user"
+result_dir_base="scorep_fibonacci_"
+
+# provide a reasonable default input for running the applications
+if [ ! x$1 = x ]; then
+  FIB_NUM=$1
+fi 
+
+if [ x$FIB_NUM = x ]; then
+   FIB_NUM=20
+fi
+
+
+# build with only main instrumented
+./scorep --user \
+         --noopari \
+         --nocompiler \
+         --verbosity=1 \
+         --config=scorep_config.dat \
+         @CC@ -I. -o fib_main task_fibonacci.c @OPENMP_CFLAGS@
+
+if [ ! -e fib_main ]; then
+    exit 1
+fi
+
+# build with main and pomp instrumentation
+./scorep --user \
+         --nocompiler \
+         --verbosity=1 \
+         --config=scorep_config.dat \
+         @CC@ -I. -o fib_pomp task_fibonacci.c @OPENMP_CFLAGS@
+
+if [ ! -e fib_pomp ]; then
+    exit 1
+fi
+
+# build with compiler and pomp instrumentation
+./scorep $extra_flag \
+         --verbosity=1 \
+         --config=scorep_config.dat \
+         @CC@ -I. -o fib_full task_fibonacci.c @OPENMP_CFLAGS@
+
+if [ ! -e fib_full ]; then
+    exit 1
+fi
+
+# execute main test
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}main \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    ./fib_main $FIB_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# execute pomp test
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    ./fib_pomp $FIB_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# execute full test
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    ./fib_full $FIB_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+exit 0

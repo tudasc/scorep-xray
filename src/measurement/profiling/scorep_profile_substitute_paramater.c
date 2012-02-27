@@ -29,13 +29,14 @@
 
 #include <config.h>
 #include <inttypes.h>
-#include "SCOREP_Memory.h"
-#include "scorep_utility/SCOREP_Utils.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_Types.h"
+#include <SCOREP_Memory.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Types.h>
 
-#include "scorep_profile_definition.h"
-#include "scorep_definitions.h"
+#include <scorep_profile_definition.h>
+#include <scorep_definitions.h>
+#include <scorep_profile_location.h>
 
 /**
     Hash table for mapping already registered region names region handles.
@@ -129,8 +130,8 @@ scorep_profile_substitute_parameter_data( scorep_profile_node* node,
     }
 
     /* Modify node data */
-    node->node_type          = scorep_profile_node_regular_region;
-    node->type_specific_data = SCOREP_PROFILE_REGION2DATA( *handle );
+    node->node_type = scorep_profile_node_regular_region;
+    scorep_profile_type_set_region_handle( &node->type_specific_data, *handle );
 }
 
 /**
@@ -144,13 +145,14 @@ static void
 scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
                                              void*                param )
 {
+    SCOREP_RegionHandle handle = scorep_profile_type_get_region_handle( node->type_specific_data );
+
     /* process integer parameter nodes */
     if ( node->node_type == scorep_profile_node_parameter_integer )
     {
-        scorep_profile_integer_node_data* data = SCOREP_PROFILE_DATA2PARAMINT( node->type_specific_data );
-        const char*                       name = SCOREP_Parameter_GetName( data->handle );
+        const char* name = SCOREP_Parameter_GetName( handle );
 
-        SCOREP_ParameterType              type = SCOREP_Parameter_GetType( data->handle );
+        SCOREP_ParameterType type = SCOREP_Parameter_GetType( handle );
 
 
         /* Use malloc, because its in post-processing => not time critical
@@ -160,11 +162,13 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
         /* construct region name */
         if ( type == SCOREP_PARAMETER_INT64 )
         {
-            sprintf( region_name, "%s=%" PRIi64, name, data->value );
+            sprintf( region_name, "%s=%" PRIi64, name,
+                     scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
         else
         {
-            sprintf( region_name, "%s=%" PRIu64, name, data->value );
+            sprintf( region_name, "%s=%" PRIu64, name,
+                     scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
 
         /* Register region and modify node data */
@@ -177,10 +181,8 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
     /* process string parameter nodes */
     else if ( node->node_type == scorep_profile_node_parameter_string )
     {
-        scorep_profile_string_node_data* data
-            = SCOREP_PROFILE_DATA2PARAMSTR( node->type_specific_data );
-        const char*                      name  = SCOREP_Parameter_GetName( data->handle );
-        const char*                      value = SCOREP_String_Get( data->value );
+        const char* name  = SCOREP_Parameter_GetName( handle );
+        const char* value = SCOREP_String_Get( scorep_profile_type_get_string_handle( node->type_specific_data ) );
 
         /* Use malloc, because its in post-processing => not time critical
            and its immediately freed => saves memory */

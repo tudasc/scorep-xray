@@ -372,12 +372,24 @@ SCOREP_OmpTaskSwitch( uint64_t taskId );
 
 
 /**
- * Process an OpenMP task completed event in the measurement system.
+ * Process an OpenMP task begin event in the measurement system.
  *
+ * @param regionHandle region handle of the task region.
+ * @param taskId Id of the starting task.
+ */
+void
+SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
+                     uint64_t            taskId );
+
+/**
+ * Process an OpenMP task end event in the measurement system.
+ *
+ * @param regionHandle region handle of the task region.
  * @param taskId Id of the completed task.
  */
 void
-SCOREP_OmpTaskComplete( uint64_t taskId );
+SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
+                   uint64_t            taskId );
 
 
 /**

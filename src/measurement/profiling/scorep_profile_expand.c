@@ -29,10 +29,11 @@
  */
 
 #include <config.h>
-#include "SCOREP_Memory.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <SCOREP_Memory.h>
+#include <scorep_utility/SCOREP_Utils.h>
 
-#include "scorep_profile_definition.h"
+#include <scorep_profile_definition.h>
+#include <scorep_profile_location.h>
 
 /**
    Finds or creates a child of parent which matches type and adds inclusive metrics from
@@ -44,14 +45,20 @@
                  found or created node.
  */
 scorep_profile_node*
-scorep_profile_merge_child( scorep_profile_node* parent,
-                            scorep_profile_node* type,
-                            scorep_profile_node* source )
+scorep_profile_merge_child( SCOREP_Profile_LocationData* location,
+                            scorep_profile_node*         parent,
+                            scorep_profile_node*         type,
+                            scorep_profile_node*         source )
 {
     /* Search matching node */
     SCOREP_ASSERT( parent != NULL );
-    scorep_profile_node* child = scorep_profile_find_create_child( parent, type,
-                                                                   source->first_enter_time );
+    scorep_profile_node* child =
+        scorep_profile_find_create_child( location,
+                                          parent,
+                                          type->node_type,
+                                          type->type_specific_data,
+                                          source->first_enter_time );
+
     /* Add statistics */
     scorep_profile_merge_node_inclusive( child, source );
     return child;
@@ -68,9 +75,10 @@ scorep_profile_merge_child( scorep_profile_node* parent,
           nodes on the newly created callpath.
  */
 scorep_profile_node*
-scorep_profile_add_callpath( scorep_profile_node* destination_root,
-                             scorep_profile_node* callpath_leaf,
-                             scorep_profile_node* data_source )
+scorep_profile_add_callpath( SCOREP_Profile_LocationData* location,
+                             scorep_profile_node*         destination_root,
+                             scorep_profile_node*         callpath_leaf,
+                             scorep_profile_node*         data_source )
 {
     scorep_profile_node* parent = callpath_leaf->parent;
 
@@ -79,14 +87,15 @@ scorep_profile_add_callpath( scorep_profile_node* destination_root,
          ( ( parent->node_type == scorep_profile_node_thread_root ) ||
            ( parent->node_type == scorep_profile_node_thread_start ) ) )
     {
-        return scorep_profile_merge_child( destination_root, callpath_leaf, data_source );
+        return scorep_profile_merge_child( location, destination_root,
+                                           callpath_leaf, data_source );
     }
 
     /* Else reconstruct the new callpath */
-    parent = scorep_profile_add_callpath( destination_root,
+    parent = scorep_profile_add_callpath( location, destination_root,
                                           callpath_leaf->parent,
                                           data_source );
-    return scorep_profile_merge_child( parent, callpath_leaf, data_source );
+    return scorep_profile_merge_child( location, parent, callpath_leaf, data_source );
 }
 
 /**
@@ -125,7 +134,8 @@ scorep_profile_sum_children( scorep_profile_node* parent )
            data.
  */
 void
-scorep_profile_expand_thread_start( scorep_profile_node* thread_start )
+scorep_profile_expand_thread_start( SCOREP_Profile_LocationData* location,
+                                    scorep_profile_node*         thread_start )
 {
     scorep_profile_node* creation_point = NULL;
     scorep_profile_node* thread_root    = NULL;
@@ -138,8 +148,7 @@ scorep_profile_expand_thread_start( scorep_profile_node* thread_start )
     SCOREP_ASSERT( thread_root != NULL ); /* Thread activation without location creation */
     SCOREP_ASSERT( thread_root->node_type == scorep_profile_node_thread_root );
 
-    creation_point = ( scorep_profile_node* )
-                     SCOREP_PROFILE_DATA2POINTER( thread_start->type_specific_data );
+    creation_point = scorep_profile_type_get_fork_node( thread_start->type_specific_data );
 
     /* Separate the thread_start node from the profile */
     scorep_profile_remove_node( thread_start );
@@ -162,7 +171,8 @@ scorep_profile_expand_thread_start( scorep_profile_node* thread_start )
         scorep_profile_sum_children( thread_start );
 
         /* Add callpath */
-        creation_point = scorep_profile_add_callpath( thread_root, creation_point,
+        creation_point = scorep_profile_add_callpath( location, thread_root,
+                                                      creation_point,
                                                       thread_start );
 
         /* Move the subforest to the inserted callpath: */
@@ -179,8 +189,9 @@ void
 scorep_profile_expand_thread_root( scorep_profile_node* thread_root )
 {
     /* Expand the start nodes */
-    scorep_profile_node* thread_start = thread_root->first_child;
-    scorep_profile_node* next_node    = NULL;
+    scorep_profile_node*         thread_start = thread_root->first_child;
+    scorep_profile_node*         next_node    = NULL;
+    SCOREP_Profile_LocationData* location     = scorep_profile_type_get_location_data( thread_root->type_specific_data );
     while ( thread_start != NULL )
     {
         /* Need to store the next sibling, because the current is removed
@@ -190,7 +201,7 @@ scorep_profile_expand_thread_root( scorep_profile_node* thread_root )
         /* Expand thread_start node */
         if ( thread_start->node_type == scorep_profile_node_thread_start )
         {
-            scorep_profile_expand_thread_start( thread_start );
+            scorep_profile_expand_thread_start( location, thread_start );
         }
 
         /* Go to next node */
@@ -258,9 +269,8 @@ scorep_profile_sort_threads()
         {
             if ( thread_root->node_type == scorep_profile_node_thread_root )
             {
-                scorep_profile_root_node_data* location_data =
-                    SCOREP_PROFILE_DATA2THREADROOT( thread_root->type_specific_data );
-                uint32_t                       index = location_data->thread_id;
+                uint32_t index = ( uint32_t )
+                                 scorep_profile_type_get_int_value( thread_root->type_specific_data );
 
                 /* If the locations are not numbered 0 to thread_count-1
                    we omit sorting */

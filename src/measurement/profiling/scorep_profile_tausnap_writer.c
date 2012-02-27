@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -28,16 +28,17 @@
 #include <inttypes.h>
 #include <sys/stat.h>
 
-#include "SCOREP_Memory.h"
-#include "scorep_utility/SCOREP_Utils.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_Timing.h"
+#include <SCOREP_Memory.h>
+#include <scorep_utility/SCOREP_Utils.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Timing.h>
 
-#include "scorep_profile_definition.h"
-#include "scorep_definitions.h"
-#include "scorep_mpi.h"
-#include "scorep_runtime_management.h"
-#include "scorep_profile_metric.h"
+#include <scorep_profile_definition.h>
+#include <scorep_definitions.h>
+#include <scorep_mpi.h>
+#include <scorep_runtime_management.h>
+#include <scorep_profile_metric.h>
+#include <scorep_profile_location.h>
 
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
@@ -93,7 +94,7 @@ scorep_profile_write_region_tau( scorep_profile_node* node,
                                  uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
-    const char* name   = SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) );
+    const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
     int         length = strlen( name ) + 1;
     if ( parentpath )
     {
@@ -110,8 +111,7 @@ scorep_profile_write_region_tau( scorep_profile_node* node,
     }
 
     /* write definition */
-    if ( SCOREP_Region_GetType( SCOREP_PROFILE_DATA2REGION( node->type_specific_data
-                                                            ) ) != SCOREP_REGION_DYNAMIC )
+    if ( SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
         scorep_profile_write_tausnap_def( path, file, callpath_counter );
     }
@@ -148,12 +148,9 @@ scorep_profile_write_paramstring_tau( scorep_profile_node* node,
                                       uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
-    char*                            path;
-
-    scorep_profile_string_node_data* data
-        = SCOREP_PROFILE_DATA2PARAMSTR( node->type_specific_data );
-    const char*                      param_name  = SCOREP_Parameter_GetName( data->handle );
-    const char*                      param_value = SCOREP_String_Get( data->value );
+    char*       path;
+    const char* param_name  = SCOREP_Parameter_GetName( node->type_specific_data.handle );
+    const char* param_value = SCOREP_String_Get( node->type_specific_data.value );
 
     /* Length is "<path> (<name> = <value>)" plus terminating '\0' */
     int length = strlen( parentpath ) + strlen( param_name ) + 6 + strlen( param_value ) + 1;
@@ -193,35 +190,39 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
                                    uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
-    char*                             path;
+    char*                  path;
+    SCOREP_ParameterHandle param =
+        scorep_profile_type_get_parameter_handle( node->type_specific_data );
+    const char* param_name = SCOREP_Parameter_GetName( param );
 
-    scorep_profile_integer_node_data* data
-        = SCOREP_PROFILE_DATA2PARAMINT( node->type_specific_data );
-
-    if ( data->handle == scorep_profile_param_instance )
+    if ( param == scorep_profile_param_instance )
     {
         /* 12 digit max data length. */
         int length = strlen( parentpath ) + 12 + 3 + 1;
         path = ( char* )malloc( length );
         sprintf( path, "%s [%" PRIu64 "]", parentpath,
-                 data->value );
+                 node->type_specific_data.value );
     }
     else
     {
         /* 12 digit max data length. */
-        int                  length = strlen( parentpath ) + strlen( SCOREP_Parameter_GetName( data->handle ) ) + 21 + 6 + 1;
-        SCOREP_ParameterType type   = SCOREP_Parameter_GetType( data->handle );
+        int length = strlen( parentpath ) +
+                     strlen( SCOREP_Parameter_GetName( param ) ) +
+                     21 + 6 + 1;
+        SCOREP_ParameterType type = SCOREP_Parameter_GetType( param );
         path = ( char* )malloc( length );
 
         if ( type == SCOREP_PARAMETER_INT64 )
         {
             sprintf( path, "%s (%s = %" PRIi64 ")", parentpath,
-                     SCOREP_Parameter_GetName( data->handle ), data->value );
+                     param_name,
+                     scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
         else
         {
             sprintf( path, "%s (%s = %" PRIu64 ")", parentpath,
-                     SCOREP_Parameter_GetName( data->handle ), data->value );
+                     param_name,
+                     scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
     }
     /* write definition */
@@ -309,8 +310,7 @@ scorep_profile_write_data_tau( scorep_profile_node*      node,
     /* Write data in format:
        <callpath id> <number of calls> <child calls> <exclusive time> <inclusive time>
      */
-    if ( node->node_type != scorep_profile_node_regular_region || SCOREP_Region_GetType( SCOREP_PROFILE_DATA2REGION( node->type_specific_data
-                                                                                                                     ) ) != SCOREP_REGION_DYNAMIC )
+    if ( node->node_type != scorep_profile_node_regular_region || SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
         fprintf( file,
                  "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
@@ -479,7 +479,7 @@ scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
         if ( child != NULL )
         {
             /* Construct callpath name */
-            const char* name   = SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( child->type_specific_data ) );
+            const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( child->type_specific_data ) );
             int         length = strlen( name ) + 1;
             if ( parentpath )
             {
@@ -520,7 +520,7 @@ scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
 {
     head = NULL;
     tail = NULL;
-    char*                parentpath = NULL;
+    char* parentpath = NULL;
     /*Write User Events Definitions*/
     scorep_profile_node* node = child;
     while ( node != NULL )
@@ -528,7 +528,7 @@ scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
         while ( child != NULL )
         {
             /* Construct callpath name */
-            const char* name   = SCOREP_Region_GetName( SCOREP_PROFILE_DATA2REGION( node->type_specific_data ) );
+            const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
             int         length = strlen( name ) + 1;
             if ( parentpath )
             {
@@ -656,10 +656,12 @@ static void
 scorep_profile_write_tau_merge_callpath_nodes( scorep_profile_node* node,
                                                void*                param )
 {
-    scorep_profile_node* parent = ( scorep_profile_node* )param;
-    scorep_profile_node* list   = parent;
+    scorep_profile_node*         parent   = ( scorep_profile_node* )param;
+    scorep_profile_node*         list     = parent;
+    SCOREP_Profile_LocationData* location =
+        scorep_profile_type_get_location_data( scorep_profile.first_root_node->type_specific_data );
 
-    bool                 root = scorep_profile_compare_nodes( parent, node );
+    bool root = scorep_profile_compare_nodes( parent, node );
     //We are at the root of the call graph so there is no need to merge any nodes
     if ( root )
     {
@@ -679,11 +681,11 @@ scorep_profile_write_tau_merge_callpath_nodes( scorep_profile_node* node,
         if ( list->next_sibling == NULL )
         {
             //if we reached the end of the list without finding the node, add a new one
-            scorep_profile_node* copy = scorep_profile_copy_node( node );
+            scorep_profile_node* copy = scorep_profile_copy_node( location, node );
             list->next_sibling = copy;
 
             //need to collect exclusive time and child calls so that the information can be printed correctly
-            scorep_profile_node* dummy = scorep_profile_copy_node( copy );
+            scorep_profile_node* dummy = scorep_profile_copy_node( location, copy );
             dummy->inclusive_time.sum = copy->inclusive_time.sum  - scorep_profile_get_exclusive_time( node );
             dummy->count              = scorep_profile_get_number_of_child_calls( node );
             copy->first_child         = dummy;
@@ -704,7 +706,7 @@ scorep_profile_write_tau_merge_callpath_nodes( scorep_profile_node* node,
 
         //merge the metrics
         scorep_profile_merge_node_dense( list, node );
-        scorep_profile_merge_node_sparse( list, node );
+        scorep_profile_merge_node_sparse( location, list, node );
     }
 }
 

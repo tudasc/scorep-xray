@@ -32,40 +32,39 @@
 #include <SCOREP_Memory.h>
 #include <scorep_utility/SCOREP_Utils.h>
 
-#include "scorep_profile_node.h"
-#include "scorep_profile_definition.h"
+#include <scorep_profile_node.h>
+#include <scorep_profile_definition.h>
+#include <scorep_profile_location.h>
 
 
 /**
    Removes a phase from its current position and insert it at the thread root level
  */
 static void
-scorep_profile_setup_phase( scorep_profile_node* thread_root,
-                            scorep_profile_node* phase )
+scorep_profile_setup_phase( SCOREP_Profile_LocationData* location,
+                            scorep_profile_node*         thread_root,
+                            scorep_profile_node*         phase )
 {
     assert( thread_root );
     assert( phase );
 
-    scorep_profile_node* match =  scorep_profile_find_child( thread_root, phase );
+    scorep_profile_node* match = scorep_profile_find_child( thread_root, phase );
+
+    /* Replace phase root node and leave original phase node as remainder. */
+    scorep_profile_node* copy = scorep_profile_copy_node( location, phase );
+    scorep_profile_move_children( copy, phase );
 
     /* If this top-level phase was not yet created */
     if ( match == NULL )
     {
-        /* Replace phase root node and leave original phase node as remainder. */
-        match = scorep_profile_copy_node( phase );
-        scorep_profile_move_children( match, phase );
-
         /* Move subtree to top level */
-        scorep_profile_add_child( thread_root, match );
+        scorep_profile_add_child( thread_root, copy );
     }
     /* We found this phase at the top-level  */
     else
     {
         /* Update phase at top level */
-        scorep_profile_merge_subtree( match, phase );
-
-        /* Leave remainder for the phase */
-        phase->first_child = NULL;
+        scorep_profile_merge_subtree( location, match, copy );
     }
 }
 
@@ -80,7 +79,7 @@ scorep_profile_node_is_phase( scorep_profile_node* node )
         return false;
     }
 
-    SCOREP_RegionHandle region = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+    SCOREP_RegionHandle region = scorep_profile_type_get_region_handle( node->type_specific_data );
     SCOREP_RegionType   type   = SCOREP_Region_GetType( region );
     if ( ( type == SCOREP_REGION_PHASE ) ||
          ( type == SCOREP_REGION_DYNAMIC_PHASE ) ||
@@ -96,8 +95,9 @@ scorep_profile_node_is_phase( scorep_profile_node* node )
    they are moved to the thread_root.
  */
 static void
-scorep_profile_search_subtree_for_phases( scorep_profile_node* thread_root,
-                                          scorep_profile_node* subtree_root )
+scorep_profile_search_subtree_for_phases( SCOREP_Profile_LocationData* location,
+                                          scorep_profile_node*         thread_root,
+                                          scorep_profile_node*         subtree_root )
 {
     assert( subtree_root );
     assert( thread_root );
@@ -112,12 +112,12 @@ scorep_profile_search_subtree_for_phases( scorep_profile_node* thread_root,
 
         /* We need to remove all phases that are in the child's subtree, before we can
            deal with the child, else nested phases cause errors. */
-        scorep_profile_search_subtree_for_phases( thread_root, child );
+        scorep_profile_search_subtree_for_phases( location, thread_root, child );
 
         /* Here we know that no phases are left in the subtree of child */
         if ( scorep_profile_node_is_phase( child ) )
         {
-            scorep_profile_setup_phase( thread_root, child );
+            scorep_profile_setup_phase( location, thread_root, child );
         }
 
         child = next;
@@ -128,8 +128,9 @@ scorep_profile_search_subtree_for_phases( scorep_profile_node* thread_root,
 void
 scorep_profile_process_phases()
 {
-    scorep_profile_node* thread_root = scorep_profile.first_root_node;
-    scorep_profile_node* child       = NULL;
+    scorep_profile_node*         thread_root = scorep_profile.first_root_node;
+    scorep_profile_node*         child       = NULL;
+    SCOREP_Profile_LocationData* location;
 
     while ( thread_root != NULL )
     {
@@ -140,7 +141,8 @@ scorep_profile_process_phases()
         child = thread_root->first_child;
         while ( child != NULL )
         {
-            scorep_profile_search_subtree_for_phases( thread_root, child );
+            location = scorep_profile_type_get_location_data( thread_root->type_specific_data );
+            scorep_profile_search_subtree_for_phases( location, thread_root, child );
             child = child->next_sibling;
         }
         thread_root = thread_root->next_sibling;

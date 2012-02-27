@@ -71,8 +71,8 @@ _ftrace_stop2_( void );
 void
 _ftrace_enter2_()
 {
-    char*                      region_name = scorep_ftrace_getname();
-    int                        name_len    = scorep_ftrace_getname_len();
+    char* region_name = scorep_ftrace_getname();
+    int   name_len    = scorep_ftrace_getname_len();
 
     scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( ( long )region_name );
 

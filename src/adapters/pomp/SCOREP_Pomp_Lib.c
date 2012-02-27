@@ -544,8 +544,7 @@ POMP2_Task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_OmpTaskSwitch( pomp_current_task );
-        SCOREP_EnterRegion( region->innerBlock );
+        SCOREP_OmpTaskBegin( region->innerBlock, pomp_current_task );
     }
 }
 
@@ -556,8 +555,7 @@ POMP2_Task_end( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ExitRegion( region->innerBlock );
-        SCOREP_OmpTaskComplete( pomp_current_task );
+        SCOREP_OmpTaskEnd( region->innerBlock, pomp_current_task );
     }
 }
 
@@ -611,8 +609,7 @@ POMP2_Untied_task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_OmpTaskSwitch( pomp_current_task );
-        SCOREP_EnterRegion( region->innerBlock );
+        SCOREP_OmpTaskBegin( region->innerBlock, pomp_current_task );
     }
 }
 
@@ -623,8 +620,7 @@ POMP2_Untied_task_end( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ExitRegion( region->innerBlock );
-        SCOREP_OmpTaskComplete( pomp_current_task );
+        SCOREP_OmpTaskEnd( region->innerBlock, pomp_current_task );
     }
 }
 

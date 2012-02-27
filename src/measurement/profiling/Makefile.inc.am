@@ -43,12 +43,20 @@ libscorep_profile_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.h           \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.c           \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.h     \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.c     \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node_type.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.h     \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.c     \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.h       \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.c       \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.h     \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.c     \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_process.h        \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_expand.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_collapse.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_phase.c          \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_process.c   \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_tausnap_writer.c \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_writer.h         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c       \

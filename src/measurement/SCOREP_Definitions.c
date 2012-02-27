@@ -1596,7 +1596,7 @@ scorep_scoped_sampling_set_definition_define(
     {
         SCOREP_SamplingSet_Definition* new_definition
             = ( SCOREP_SamplingSet_Definition* )scoped_definition;
-        SCOREP_SamplingSetHandle       new_handle = scoped_handle;
+        SCOREP_SamplingSetHandle new_handle = scoped_handle;
 
         /* Does return */
         SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SamplingSet,
@@ -2210,7 +2210,7 @@ SCOREP_AddClockOffset( uint64_t time,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_AnyHandle    new_handle =
+    SCOREP_AnyHandle new_handle =
         SCOREP_Memory_AllocForDefinitions( sizeof( SCOREP_ClockOffset ) );
     SCOREP_ClockOffset* new_clock_offset =
         SCOREP_MEMORY_DEREF_LOCAL( new_handle, SCOREP_ClockOffset* );
@@ -2531,6 +2531,11 @@ SCOREP_Metric_GetName( SCOREP_MetricHandle handle )
     return SCOREP_LOCAL_HANDLE_DEREF( metric->name_handle, String )->string_data;
 }
 
+SCOREP_MetricProfilingType
+SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->profiling_type;
+}
 
 /**
  * @}

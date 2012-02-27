@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -27,230 +27,12 @@
 #include <config.h>
 #include <stddef.h>
 
-#include "SCOREP_Memory.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <SCOREP_Memory.h>
+#include <scorep_utility/SCOREP_Utils.h>
 
-#include "scorep_profile_node.h"
-#include "scorep_profile_definition.h"
-
-
-/* ***************************************************************************************
-   Prototypes of internal comparison and copy functions for type dependent data.
-*****************************************************************************************/
-static scorep_profile_type_data_t
-scorep_profile_copy_regular_region_data( scorep_profile_type_data_t data );
-
-static scorep_profile_type_data_t
-scorep_profile_copy_parameter_string_data( scorep_profile_type_data_t data );
-
-static scorep_profile_type_data_t
-scorep_profile_copy_parameter_integer_data( scorep_profile_type_data_t data );
-
-static scorep_profile_type_data_t
-scorep_profile_copy_thread_root_data( scorep_profile_type_data_t data );
-
-static scorep_profile_type_data_t
-scorep_profile_copy_thread_start_data( scorep_profile_type_data_t data );
-
-static scorep_profile_type_data_t
-scorep_profile_copy_collapse_data( scorep_profile_type_data_t data );
-
-static bool
-scorep_profile_compare_regular_region_data( scorep_profile_type_data_t data1,
-                                            scorep_profile_type_data_t data2 );
-
-static bool
-scorep_profile_compare_parameter_string_data( scorep_profile_type_data_t data1,
-                                              scorep_profile_type_data_t data2 );
-
-static bool
-scorep_profile_compare_parameter_integer_data( scorep_profile_type_data_t data1,
-                                               scorep_profile_type_data_t data2 );
-
-static bool
-scorep_profile_compare_thread_root_data( scorep_profile_type_data_t data1,
-                                         scorep_profile_type_data_t data2 );
-
-static bool
-scorep_profile_compare_thread_start_data( scorep_profile_type_data_t data1,
-                                          scorep_profile_type_data_t data2 );
-
-static bool
-scorep_profile_compare_collapse_data( scorep_profile_type_data_t data1,
-                                      scorep_profile_type_data_t data2 );
-
-/* ***************************************************************************************
-   Type dependent data handling types and variables
-*****************************************************************************************/
-
-/**
-   Type for entries in the functions table list @a scorep_profile_type_data_funcs, which
-   contains functions for handling type dependent data. Currently, it contains a
-   pointer to a comparison function and a pointer to a copy function.
- */
-typedef struct
-{
-    bool ( * comp_func )( scorep_profile_type_data_t data1,
-                          scorep_profile_type_data_t data2 );
-    scorep_profile_type_data_t ( * copy_func )( scorep_profile_type_data_t data );
-} scorep_profile_type_data_func_t;
-
-/* *INDENT-OFF* */
-
-/**
-  Functions table list for handling type dependent data. All entries must occur in the
-  same order like in @a scorep_profile_node_type.
- */
-scorep_profile_type_data_func_t scorep_profile_type_data_funcs[] = {
-  { &scorep_profile_compare_regular_region_data,    &scorep_profile_copy_regular_region_data    },
-  { &scorep_profile_compare_parameter_string_data,  &scorep_profile_copy_parameter_string_data  },
-  { &scorep_profile_compare_parameter_integer_data, &scorep_profile_copy_parameter_integer_data },
-  { &scorep_profile_compare_thread_root_data,       &scorep_profile_copy_thread_root_data       },
-  { &scorep_profile_compare_thread_start_data,      &scorep_profile_copy_thread_start_data      },
-  { &scorep_profile_compare_collapse_data,          &scorep_profile_copy_collapse_data          }
-};
-
-/* *INDENT-ON* */
-
-/* ***************************************************************************************
-   Implementation of comparison ond copy functions for type dependent data.
-*****************************************************************************************/
-
-static scorep_profile_type_data_t
-scorep_profile_copy_regular_region_data( scorep_profile_type_data_t data )
-{
-    return data;
-}
-
-static scorep_profile_type_data_t
-scorep_profile_copy_parameter_string_data( scorep_profile_type_data_t data )
-{
-    scorep_profile_string_node_data* old_data = SCOREP_PROFILE_DATA2PARAMSTR( data );
-    scorep_profile_string_node_data* new_data =
-        SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_string_node_data ) );
-    new_data->handle = old_data->handle;
-    new_data->value  = old_data->value;
-    return SCOREP_PROFILE_PARAMSTR2DATA( new_data );
-}
-
-static scorep_profile_type_data_t
-scorep_profile_copy_parameter_integer_data( scorep_profile_type_data_t data )
-{
-    scorep_profile_integer_node_data* old_data = SCOREP_PROFILE_DATA2PARAMINT( data );
-    scorep_profile_integer_node_data* new_data =
-        SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_integer_node_data ) );
-    new_data->handle = old_data->handle;
-    new_data->value  = old_data->value;
-    return SCOREP_PROFILE_PARAMINT2DATA( new_data );
-}
-
-static scorep_profile_type_data_t
-scorep_profile_copy_thread_fork_data( scorep_profile_type_data_t data )
-{
-    return data;
-}
-
-static scorep_profile_type_data_t
-scorep_profile_copy_thread_root_data( scorep_profile_type_data_t data )
-{
-    scorep_profile_root_node_data* old_data = SCOREP_PROFILE_DATA2THREADROOT( data );
-    scorep_profile_root_node_data* new_data =
-        SCOREP_Memory_AllocForMisc( sizeof( scorep_profile_root_node_data ) );
-    new_data->thread_data = old_data->thread_data;
-    new_data->thread_id   = old_data->thread_id;
-    return SCOREP_PROFILE_THREADROOT2DATA( new_data );
-}
-
-static scorep_profile_type_data_t
-scorep_profile_copy_thread_start_data( scorep_profile_type_data_t data )
-{
-    return data;
-}
-
-static scorep_profile_type_data_t
-scorep_profile_copy_collapse_data( scorep_profile_type_data_t data )
-{
-    return data;
-}
-
-static bool
-scorep_profile_compare_regular_region_data( scorep_profile_type_data_t data1,
-                                            scorep_profile_type_data_t data2 )
-{
-    return data1 == data2;
-}
-
-static bool
-scorep_profile_compare_parameter_string_data( scorep_profile_type_data_t data1,
-                                              scorep_profile_type_data_t data2 )
-{
-    scorep_profile_string_node_data* string_data1 = SCOREP_PROFILE_DATA2PARAMSTR( data1 );
-    scorep_profile_string_node_data* string_data2 = SCOREP_PROFILE_DATA2PARAMSTR( data2 );
-    return ( string_data1->handle == string_data2->handle ) &&
-           ( string_data1->value  == string_data2->value );
-}
-
-static bool
-scorep_profile_compare_parameter_integer_data( scorep_profile_type_data_t data1,
-                                               scorep_profile_type_data_t data2 )
-{
-    scorep_profile_integer_node_data* string_data1 = SCOREP_PROFILE_DATA2PARAMINT( data1 );
-    scorep_profile_integer_node_data* string_data2 = SCOREP_PROFILE_DATA2PARAMINT( data2 );
-    return ( string_data1->handle == string_data2->handle ) &&
-           ( string_data1->value  == string_data2->value );
-}
-
-static bool
-scorep_profile_compare_thread_fork_data( scorep_profile_type_data_t data1,
-                                         scorep_profile_type_data_t data2 )
-{
-    return true;
-}
-
-static bool
-scorep_profile_compare_thread_root_data( scorep_profile_type_data_t data1,
-                                         scorep_profile_type_data_t data2 )
-{
-    scorep_profile_root_node_data* root1 = SCOREP_PROFILE_DATA2THREADROOT( data1 );
-    scorep_profile_root_node_data* root2 = SCOREP_PROFILE_DATA2THREADROOT( data2 );
-    return root1->thread_id == root2->thread_id;
-}
-
-static bool
-scorep_profile_compare_thread_start_data( scorep_profile_type_data_t data1,
-                                          scorep_profile_type_data_t data2 )
-{
-    return data1 == data2;
-}
-
-static bool
-scorep_profile_compare_collapse_data( scorep_profile_type_data_t data1,
-                                      scorep_profile_type_data_t data2 )
-{
-    return true;
-}
-
-/* ***************************************************************************************
-   Type dependent functions
-*****************************************************************************************/
-
-/* Compares to data sets */
-bool
-scorep_profile_compare_type_data( scorep_profile_type_data_t data1,
-                                  scorep_profile_type_data_t data2,
-                                  scorep_profile_node_type   type )
-{
-    return ( *scorep_profile_type_data_funcs[ type ].comp_func )( data1, data2 );
-}
-
-/* Copies a data set */
-scorep_profile_type_data_t
-scorep_profile_copy_type_data( scorep_profile_type_data_t data,
-                               scorep_profile_node_type   type )
-{
-    return ( *scorep_profile_type_data_funcs[ type ].copy_func )( data );
-}
-
+#include <scorep_profile_node.h>
+#include <scorep_profile_definition.h>
+#include <scorep_profile_location.h>
 
 
 /* ***************************************************************************************
@@ -259,62 +41,17 @@ scorep_profile_copy_type_data( scorep_profile_type_data_t data,
 
 /** Creates a new child node of given type and data */
 scorep_profile_node*
-scorep_profile_create_node( scorep_profile_node*       parent,
-                            scorep_profile_node_type   type,
-                            scorep_profile_type_data_t data,
-                            uint64_t                   timestamp )
+scorep_profile_create_node( SCOREP_Profile_LocationData* location,
+                            scorep_profile_node*         parent,
+                            scorep_profile_node_type     type,
+                            scorep_profile_type_data_t   data,
+                            uint64_t                     timestamp )
 {
     int                  i;
-    scorep_profile_node* node = NULL;
-
-    /* Size of the allocated memory for dense metrics */
-    int size = scorep_profile.num_of_dense_metrics * sizeof( scorep_profile_dense_metric );
-
-    /* Reserve space for the node record and dense metrics.
-     *  Thread root nodes must not be deleted in Persicope phases, while all other
-     *  nodes are. The profile memory pages are deleted in Persicope phases.
-     *  Thus, space for thread root nodes must not be allocated
-     *  from profile memory.
-     */
-    if ( type == scorep_profile_node_thread_root )
+    scorep_profile_node* node = scorep_profile_alloc_node( location, type );
+    if ( node == NULL )
     {
-        node = ( scorep_profile_node* )
-               SCOREP_Memory_AllocForMisc( sizeof( scorep_profile_node ) );
-    }
-    else
-    {
-        node = ( scorep_profile_node* )
-               SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_node ) );
-    }
-    if ( !node )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Unable to allocate memory for new node" );
         return NULL;
-    }
-
-    /* Reserve space for dense metrics */
-    if ( scorep_profile.num_of_dense_metrics > 0 )
-    {
-        if ( type == scorep_profile_node_thread_root )
-        {
-            node->dense_metrics = ( scorep_profile_dense_metric* )
-                                  SCOREP_Memory_AllocForMisc( size );
-        }
-        else
-        {
-            node->dense_metrics = ( scorep_profile_dense_metric* )
-                                  SCOREP_Memory_AllocForProfile( size );
-        }
-        if ( !node->dense_metrics )
-        {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
-                          "Unable to allocate memory for dense metrics" );
-            return NULL;
-        }
-    }
-    else
-    {
-        node->dense_metrics = NULL;
     }
 
     /* Initialize values */
@@ -328,7 +65,7 @@ scorep_profile_create_node( scorep_profile_node*       parent,
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
     node->node_type           = type;
-    node->type_specific_data  = scorep_profile_copy_type_data( data, type );
+    scorep_profile_copy_type_data( &node->type_specific_data, data, type );
 
     /* Initialize dense metric values */
     scorep_profile_init_dense_metric( &node->inclusive_time );
@@ -342,7 +79,8 @@ scorep_profile_create_node( scorep_profile_node*       parent,
 
 /* Copies a node */
 scorep_profile_node*
-scorep_profile_copy_node( scorep_profile_node* source )
+scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
+                          scorep_profile_node*         source )
 {
     scorep_profile_sparse_metric_int*    dest_sparse_int      = NULL;
     scorep_profile_sparse_metric_int*    source_sparse_int    = source->first_int_sparse;
@@ -350,8 +88,11 @@ scorep_profile_copy_node( scorep_profile_node* source )
     scorep_profile_sparse_metric_double* source_sparse_double = source->first_double_sparse;
 
     /* Create node */
-    scorep_profile_node* node = scorep_profile_create_node( NULL, source->node_type,
-                                                            source->type_specific_data, 0 );
+    scorep_profile_node* node = scorep_profile_create_node( location,
+                                                            NULL,
+                                                            source->node_type,
+                                                            source->type_specific_data,
+                                                            0 );
 
     /* Copy dense metric values */
     scorep_profile_copy_all_dense_metrics( node, source );
@@ -359,7 +100,8 @@ scorep_profile_copy_node( scorep_profile_node* source )
     /* Copy sparse integer metrics */
     while ( source_sparse_int != NULL )
     {
-        dest_sparse_int              = scorep_profile_copy_sparse_int( source_sparse_int );
+        dest_sparse_int = scorep_profile_copy_sparse_int( location,
+                                                          source_sparse_int );
         dest_sparse_int->next_metric = node->first_int_sparse;
         node->first_int_sparse       = dest_sparse_int;
 
@@ -369,7 +111,8 @@ scorep_profile_copy_node( scorep_profile_node* source )
     /* Copy sparse double metrics */
     while ( source_sparse_double != NULL )
     {
-        dest_sparse_double              = scorep_profile_copy_sparse_double( source_sparse_double );
+        dest_sparse_double = scorep_profile_copy_sparse_double( location,
+                                                                source_sparse_double );
         dest_sparse_double->next_metric = node->first_double_sparse;
         node->first_double_sparse       = dest_sparse_double;
 
@@ -378,6 +121,120 @@ scorep_profile_copy_node( scorep_profile_node* source )
 
     return node;
 }
+
+void
+scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
+                                scorep_profile_node*         root )
+{
+    /* Process all children recursively */
+    scorep_profile_node* child = root->first_child;
+    while ( child != NULL )
+    {
+        scorep_profile_release_subtree( location, child );
+        child = child->next_sibling;
+    }
+
+    /* Extact sparse integer metric chain */
+    scorep_profile_sparse_metric_int* last_int_metric = root->first_int_sparse;
+    if ( last_int_metric != NULL )
+    {
+        while ( last_int_metric->next_metric != NULL )
+        {
+            last_int_metric = last_int_metric->next_metric;
+        }
+        last_int_metric->next_metric = location->free_int_metrics;
+        location->free_int_metrics   = root->first_int_sparse;
+    }
+
+    /* Extact sparse double metric chain */
+    scorep_profile_sparse_metric_double* last_double_metric = root->first_double_sparse;
+    if ( last_double_metric != NULL )
+    {
+        while ( last_double_metric->next_metric != NULL )
+        {
+            last_double_metric = last_double_metric->next_metric;
+        }
+        last_double_metric->next_metric = location->free_double_metrics;
+        location->free_double_metrics   = root->first_double_sparse;
+    }
+
+    /* Insert this node into list of released nodes */
+    root->first_child    = location->free_nodes;
+    location->free_nodes = root;
+}
+
+scorep_profile_node*
+scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
+                           scorep_profile_node_type     type )
+{
+    scorep_profile_node* new_node;
+
+    /* Try to recycle released nodes */
+    if ( ( location != NULL ) &&
+         ( location->free_nodes != NULL ) &&
+         ( type != scorep_profile_node_thread_root ) )
+    {
+        new_node             = location->free_nodes;
+        location->free_nodes = new_node->first_child;
+        return new_node;
+    }
+
+    /* Allocate new memory if no released nodes are available */
+
+    /* Size of the allocated memory for dense metrics */
+    uint32_t size = scorep_profile.num_of_dense_metrics * sizeof( scorep_profile_dense_metric );
+
+
+    /* Reserve space for the node record and dense metrics.
+     *  Thread root nodes must not be deleted in Persicope phases, while all other
+     *  nodes are. The profile memory pages are deleted in Persicope phases.
+     *  Thus, space for thread root nodes must not be allocated
+     *  from profile memory.
+     */
+    if ( type == scorep_profile_node_thread_root )
+    {
+        new_node = ( scorep_profile_node* )
+                   SCOREP_Memory_AllocForMisc( sizeof( scorep_profile_node ) );
+    }
+    else
+    {
+        new_node = ( scorep_profile_node* )
+                   SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_node ) );
+    }
+    if ( !new_node )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Unable to allocate memory for new node" );
+        return NULL;
+    }
+
+    /* Reserve space for dense metrics */
+    if ( scorep_profile.num_of_dense_metrics > 0 )
+    {
+        if ( type == scorep_profile_node_thread_root )
+        {
+            new_node->dense_metrics = ( scorep_profile_dense_metric* )
+                                      SCOREP_Memory_AllocForMisc( size );
+        }
+        else
+        {
+            new_node->dense_metrics = ( scorep_profile_dense_metric* )
+                                      SCOREP_Memory_AllocForProfile( size );
+        }
+        if ( !new_node->dense_metrics )
+        {
+            SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
+                          "Unable to allocate memory for dense metrics" );
+            return NULL;
+        }
+    }
+    else
+    {
+        new_node->dense_metrics = NULL;
+    }
+
+    return new_node;
+}
+
 
 /* ***************************************************************************************
    Node operation
@@ -609,15 +466,20 @@ scorep_profile_find_child( scorep_profile_node* parent,
 
 /* Find or create a child node of a specified type */
 scorep_profile_node*
-scorep_profile_find_create_child( scorep_profile_node* parent,
-                                  scorep_profile_node* type,
-                                  uint64_t             timestamp )
+scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
+                                  scorep_profile_node*         parent,
+                                  scorep_profile_node_type     node_type,
+                                  scorep_profile_type_data_t   specific_data,
+                                  uint64_t                     timestamp )
 {
     /* Search matching node */
     SCOREP_ASSERT( parent != NULL );
     scorep_profile_node* child = parent->first_child;
     while ( ( child != NULL ) &&
-            !scorep_profile_compare_nodes( child, type ) )
+            ( ( child->node_type != node_type ) ||
+              ( !scorep_profile_compare_type_data( specific_data,
+                                                   child->type_specific_data,
+                                                   node_type ) ) ) )
     {
         child = child->next_sibling;
     }
@@ -625,8 +487,8 @@ scorep_profile_find_create_child( scorep_profile_node* parent,
     /* If not found -> create new node */
     if ( child == NULL )
     {
-        child = scorep_profile_create_node( parent, type->node_type,
-                                            type->type_specific_data,
+        child = scorep_profile_create_node( location, parent, node_type,
+                                            specific_data,
                                             timestamp );
         child->next_sibling = parent->first_child;
         parent->first_child = child;
@@ -720,7 +582,22 @@ scorep_profile_merge_node_inclusive( scorep_profile_node* destination,
     }
 }
 
+SCOREP_Profile_LocationData*
+scorep_profile_get_location_of_node( scorep_profile_node* node )
+{
+    while ( node != NULL )
+    {
+        if ( node->node_type == scorep_profile_node_thread_root )
+        {
+            return scorep_profile_type_get_location_data( node->type_specific_data );
+        }
+        node = node->parent;
+    }
+    return NULL;
+}
+
 void
+
 scorep_profile_merge_node_dense( scorep_profile_node* destination,
                                  scorep_profile_node* source )
 {
@@ -730,8 +607,9 @@ scorep_profile_merge_node_dense( scorep_profile_node* destination,
 }
 
 void
-scorep_profile_merge_node_sparse( scorep_profile_node* destination,
-                                  scorep_profile_node* source )
+scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
+                                  scorep_profile_node*         destination,
+                                  scorep_profile_node*         source )
 {
     scorep_profile_sparse_metric_int*    dest_sparse_int      = NULL;
     scorep_profile_sparse_metric_int*    source_sparse_int    = source->first_int_sparse;
@@ -749,13 +627,14 @@ scorep_profile_merge_node_sparse( scorep_profile_node* destination,
         }
         if ( dest_sparse_int == NULL )
         {
-            dest_sparse_int = scorep_profile_copy_sparse_int( source_sparse_int );
+            dest_sparse_int = scorep_profile_copy_sparse_int( location,
+                                                              source_sparse_int );
+            dest_sparse_int->next_metric  = destination->first_int_sparse;
+            destination->first_int_sparse = dest_sparse_int;
         }
         else
         {
             scorep_profile_merge_sparse_metric_int( dest_sparse_int, source_sparse_int );
-            dest_sparse_int->next_metric  = destination->first_int_sparse;
-            destination->first_int_sparse = dest_sparse_int;
         }
 
         source_sparse_int = source_sparse_int->next_metric;
@@ -772,7 +651,7 @@ scorep_profile_merge_node_sparse( scorep_profile_node* destination,
         }
         if ( dest_sparse_double == NULL )
         {
-            dest_sparse_double               = scorep_profile_copy_sparse_double( source_sparse_double );
+            dest_sparse_double               = scorep_profile_copy_sparse_double( location, source_sparse_double );
             dest_sparse_double->next_metric  = destination->first_double_sparse;
             destination->first_double_sparse = dest_sparse_double;
         }
@@ -786,14 +665,15 @@ scorep_profile_merge_node_sparse( scorep_profile_node* destination,
 }
 
 void
-scorep_profile_merge_subtree( scorep_profile_node* destination,
-                              scorep_profile_node* source )
+scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
+                              scorep_profile_node*         destination,
+                              scorep_profile_node*         source )
 {
     assert( destination );
     assert( source );
 
     scorep_profile_merge_node_dense( destination, source );
-    scorep_profile_merge_node_sparse( destination, source );
+    scorep_profile_merge_node_sparse( location, destination, source );
 
     scorep_profile_node* child = source->first_child;
     scorep_profile_node* next  = NULL;
@@ -807,15 +687,19 @@ scorep_profile_merge_subtree( scorep_profile_node* destination,
            first child of destination. */
         if ( match == NULL )
         {
-            child->next_sibling      = destination->first_child;
-            destination->first_child = child;
+            scorep_profile_add_child( destination, child );
         }
         /* If a matching node exists, merge the subtree recursively */
         else
         {
-            scorep_profile_merge_subtree( match, child );
+            scorep_profile_merge_subtree( location, match, child );
         }
 
         child = next;
     }
+
+    /* Clean up. The children are either integrated into another tree, or already
+       released, recursively. Thus we must release only this node. */
+    source->first_child = NULL;
+    scorep_profile_release_subtree( location, source );
 }

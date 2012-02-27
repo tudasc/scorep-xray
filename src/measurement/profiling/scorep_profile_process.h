@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -84,5 +84,11 @@ scorep_profile_process_phases();
  */
 void
 scorep_profile_substitute_parameter();
+
+/**
+   Move the visit count of task pointer metrics to the "number of switches" metric.
+ */
+void
+scorep_profile_process_tasks();
 
 #endif // SCOREP_PROFILE_PROCESS_H

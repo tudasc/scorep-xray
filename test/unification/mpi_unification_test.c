@@ -75,10 +75,10 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern bool                      scorep_mpi_hierarchical_unify;
 
-static uint64_t                  scorep_test_mpi_unify_verbose;
-static bool                      scorep_test_mpi_unify_define_mpi_group;
-static bool                      scorep_test_mpi_unify_define_mpi_regions;
-static SCOREP_ConfigVariable     scorep_test_mpi_unify_config_variables[] = {
+static uint64_t              scorep_test_mpi_unify_verbose;
+static bool                  scorep_test_mpi_unify_define_mpi_group;
+static bool                  scorep_test_mpi_unify_define_mpi_regions;
+static SCOREP_ConfigVariable scorep_test_mpi_unify_config_variables[] = {
     {
         "mpi_unify_verbose",
         SCOREP_CONFIG_TYPE_NUMBER,

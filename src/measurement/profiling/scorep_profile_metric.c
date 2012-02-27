@@ -30,6 +30,7 @@
 #include "SCOREP_Memory.h"
 
 #include "scorep_profile_metric.h"
+#include "scorep_profile_location.h"
 
 /* ***************************************************************************************
    Dense metrics
@@ -39,11 +40,12 @@
 void
 scorep_profile_init_dense_metric( scorep_profile_dense_metric* metric )
 {
-    metric->sum         = 0;
-    metric->min         = UINT64_MAX;
-    metric->max         = 0;
-    metric->squares     = 0;
-    metric->start_value = 0;
+    metric->sum              = 0;
+    metric->min              = UINT64_MAX;
+    metric->max              = 0;
+    metric->squares          = 0;
+    metric->start_value      = 0;
+    metric->intermediate_sum = 0;
 }
 
 /* Updates the statistics of one dense metric on an exit event. */
@@ -51,7 +53,9 @@ void
 scorep_profile_update_dense_metric( scorep_profile_dense_metric* metric,
                                     uint64_t                     end_value )
 {
-    uint64_t diff = end_value - metric->start_value;
+    uint64_t diff = end_value - metric->start_value + metric->intermediate_sum;
+    metric->intermediate_sum = 0;
+
     metric->sum += diff;
     if ( metric->min > diff )
     {
@@ -69,10 +73,11 @@ void
 scorep_profile_copy_dense_metric( scorep_profile_dense_metric* destination,
                                   scorep_profile_dense_metric* source )
 {
-    destination->sum     = source->sum;
-    destination->min     = source->min;
-    destination->max     = source->max;
-    destination->squares = source->squares;
+    destination->sum              = source->sum;
+    destination->min              = source->min;
+    destination->max              = source->max;
+    destination->squares          = source->squares;
+    destination->intermediate_sum = source->intermediate_sum;
 }
 
 /* Merges the statistics of a dense metrics to another metric */
@@ -89,21 +94,44 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
     {
         destination->max = source->max;
     }
-    destination->squares += source->squares;
+    destination->squares          += source->squares;
+    destination->intermediate_sum += source->intermediate_sum;
 }
 
 /* ***************************************************************************************
    Sparse metrics for integer values
 *****************************************************************************************/
+static scorep_profile_sparse_metric_int*
+scorep_profile_alloc_sparse_int( SCOREP_Profile_LocationData* location )
+{
+    scorep_profile_sparse_metric_int* new_sparse = NULL;
+
+    if ( location->free_int_metrics != NULL )
+    {
+        new_sparse                 = location->free_int_metrics;
+        location->free_int_metrics = new_sparse->next_metric;
+    }
+    else
+    {
+        new_sparse = ( scorep_profile_sparse_metric_int* )
+                     SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_int ) );
+    }
+    return new_sparse;
+}
 
 /* Creates a new sparse metric struct instance for integer values */
 scorep_profile_sparse_metric_int*
-scorep_profile_create_sparse_int(
-    SCOREP_MetricHandle metric,
-    uint64_t            value )
+scorep_profile_create_sparse_int( SCOREP_Profile_LocationData* location,
+                                  SCOREP_MetricHandle          metric,
+                                  uint64_t                     value )
 {
-    scorep_profile_sparse_metric_int* new_sparse = ( scorep_profile_sparse_metric_int* )
-                                                   SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_int ) );
+    scorep_profile_sparse_metric_int* new_sparse =
+        scorep_profile_alloc_sparse_int( location );
+    if ( new_sparse == NULL )
+    {
+        return NULL;
+    }
+
     new_sparse->metric      = metric;
     new_sparse->count       = 1;
     new_sparse->sum         = value;
@@ -116,10 +144,16 @@ scorep_profile_create_sparse_int(
 
 /* Copy constructor for sparse metric for integer values. */
 scorep_profile_sparse_metric_int*
-scorep_profile_copy_sparse_int( scorep_profile_sparse_metric_int* source )
+scorep_profile_copy_sparse_int( SCOREP_Profile_LocationData*      location,
+                                scorep_profile_sparse_metric_int* source )
 {
-    scorep_profile_sparse_metric_int* new_sparse = ( scorep_profile_sparse_metric_int* )
-                                                   SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_int ) );
+    scorep_profile_sparse_metric_int* new_sparse =
+        scorep_profile_alloc_sparse_int( location );
+    if ( new_sparse == NULL )
+    {
+        return NULL;
+    }
+
     new_sparse->metric      = source->metric;
     new_sparse->count       = source->count;
     new_sparse->sum         = source->sum;
@@ -130,7 +164,7 @@ scorep_profile_copy_sparse_int( scorep_profile_sparse_metric_int* source )
     return new_sparse;
 }
 
-/** Updates a sparse metric struct instance for integer values */
+/* Updates a sparse metric struct instance for integer values */
 void
 scorep_profile_update_sparse_int( scorep_profile_sparse_metric_int* metric,
                                   uint64_t                          value )
@@ -170,14 +204,37 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
    Sparse metrics for double values
 *****************************************************************************************/
 
+static scorep_profile_sparse_metric_double*
+scorep_profile_alloc_sparse_double( SCOREP_Profile_LocationData* location )
+{
+    scorep_profile_sparse_metric_double* new_sparse = NULL;
+
+    if ( ( location != NULL ) && ( location->free_int_metrics != NULL ) )
+    {
+        new_sparse                    = location->free_double_metrics;
+        location->free_double_metrics = new_sparse->next_metric;
+    }
+    else
+    {
+        new_sparse = ( scorep_profile_sparse_metric_double* )
+                     SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_double ) );
+    }
+    return new_sparse;
+}
+
 /* Creates a new sparse metric struct instance for double values */
 scorep_profile_sparse_metric_double*
-scorep_profile_create_sparse_double(
-    SCOREP_MetricHandle metric,
-    double              value )
+scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
+                                     SCOREP_MetricHandle          metric,
+                                     double                       value )
 {
-    scorep_profile_sparse_metric_double* new_sparse = ( scorep_profile_sparse_metric_double* )
-                                                      SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_double ) );
+    scorep_profile_sparse_metric_double* new_sparse =
+        scorep_profile_alloc_sparse_double( location );
+    if ( new_sparse == NULL )
+    {
+        return NULL;
+    }
+
     new_sparse->metric      = metric;
     new_sparse->count       = 1;
     new_sparse->sum         = value;
@@ -190,10 +247,16 @@ scorep_profile_create_sparse_double(
 
 /* Copy constructor for  sparse metric for double values */
 scorep_profile_sparse_metric_double*
-scorep_profile_copy_sparse_double( scorep_profile_sparse_metric_double* source )
+scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location,
+                                   scorep_profile_sparse_metric_double* source )
 {
-    scorep_profile_sparse_metric_double* new_sparse = ( scorep_profile_sparse_metric_double* )
-                                                      SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_double ) );
+    scorep_profile_sparse_metric_double* new_sparse =
+        scorep_profile_alloc_sparse_double( location );
+    if ( new_sparse == NULL )
+    {
+        return NULL;
+    }
+
     new_sparse->metric      = source->metric;
     new_sparse->count       = source->count;
     new_sparse->sum         = source->sum;

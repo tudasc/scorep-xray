@@ -32,6 +32,7 @@
 
 #include "scorep_utility/SCOREP_Utils.h"
 #include "scorep_profile_definition.h"
+#include "scorep_profile_location.h"
 #include "scorep_profile_node.h"
 #include "scorep_profile_metric.h"
 #include "scorep_definitions.h"
@@ -255,7 +256,7 @@ scorep_oaconsumer_get_phase_node
 
     if ( node->node_type == scorep_profile_node_regular_region )
     {
-        SCOREP_RegionHandle region_handle     = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+        SCOREP_RegionHandle region_handle     = scorep_profile_type_get_region_handle( node->type_specific_data );
         uint32_t            current_region_id = SCOREP_GetRegionHandleToID( region_handle );
         if ( current_region_id == phase_id )
         {
@@ -462,12 +463,12 @@ scorep_oaconsumer_generate_region_key
     scorep_profile_node* node
 )
 {
-    SCOREP_OA_Key*      new_key = calloc( 1, sizeof( SCOREP_OA_Key ) );
+    SCOREP_OA_Key* new_key = calloc( 1, sizeof( SCOREP_OA_Key ) );
 
-    SCOREP_RegionHandle region_handle = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+    SCOREP_RegionHandle region_handle = scorep_profile_type_get_region_handle( node->type_specific_data );
 
-    uint32_t            current_region_id = SCOREP_GetRegionHandleToID( region_handle );
-    uint32_t            parent_region_id  = 0;
+    uint32_t current_region_id = SCOREP_GetRegionHandleToID( region_handle );
+    uint32_t parent_region_id  = 0;
     if ( SCOREP_Region_GetAdapterType( region_handle ) == SCOREP_ADAPTER_MPI )
     {
         scorep_profile_node* parent_node = node->parent;
@@ -476,7 +477,7 @@ scorep_oaconsumer_generate_region_key
             if ( parent_node->node_type == scorep_profile_node_regular_region )
             {
                 parent_region_id = SCOREP_GetRegionHandleToID(
-                    SCOREP_PROFILE_DATA2REGION(
+                    scorep_profile_type_get_region_handle(
                         parent_node->type_specific_data ) );
             }
             else
@@ -689,7 +690,7 @@ scorep_oaconsumer_copy_merged_region_definitions
         data_index_type* data_index = ( data_index_type* )param;
 
         /** Generate merged region definition key*/
-        SCOREP_OA_Key*        region_key = scorep_oaconsumer_generate_region_key( node );
+        SCOREP_OA_Key* region_key = scorep_oaconsumer_generate_region_key( node );
 
         SCOREP_Hashtab_Entry* entry = NULL;
         size_t                index;
@@ -706,7 +707,7 @@ scorep_oaconsumer_copy_merged_region_definitions
         uint32_t region_index = *( uint32_t* )( entry->value );
 
         /** Get associated region handle of this node */
-        SCOREP_RegionHandle region_handle = SCOREP_PROFILE_DATA2REGION( node->type_specific_data );
+        SCOREP_RegionHandle region_handle = scorep_profile_type_get_region_handle( node->type_specific_data );
 
         /** Get associated region handle of parent node */
         SCOREP_RegionHandle parent_region_handle = region_handle;
@@ -717,7 +718,7 @@ scorep_oaconsumer_copy_merged_region_definitions
             {
                 if ( parent_node->node_type == scorep_profile_node_regular_region )
                 {
-                    parent_region_handle = SCOREP_PROFILE_DATA2REGION( parent_node->type_specific_data );
+                    parent_region_handle = scorep_profile_type_get_region_handle( parent_node->type_specific_data );
                 }
                 else
                 {

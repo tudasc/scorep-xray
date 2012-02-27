@@ -62,9 +62,9 @@ typedef struct hash_node_struct
 
 static scorep_compiler_hash_node_t* htab[ HASH_MAX ];
 
-static SCOREP_RegionHandle          scorep_compiler_main_handle = SCOREP_INVALID_REGION;
+static SCOREP_RegionHandle scorep_compiler_main_handle = SCOREP_INVALID_REGION;
 
-static SCOREP_Mutex                 scorep_compiler_hash_lock;
+static SCOREP_Mutex scorep_compiler_hash_lock;
 
 /**
  * Flag that indicates that the compiler is finalized.

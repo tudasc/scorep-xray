@@ -57,12 +57,15 @@ typedef struct
    @param ranks   Number of ranks
    @param threads Array with @a ranks entries. Each entry specify the number of threads
                   on a rank with this index.
+   @param write_task_metrics Indicates whether task related metric defintions are
+                  written to the Cube file.
  */
 void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      ranks,
-                                   int*                          threads );
+                                   int*                          threads,
+                                   bool                          write_task_metrics );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
@@ -198,15 +201,33 @@ uint64_t
 scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map );
 
 /**
-   Returns the handle used for metric 'inclusive time'.
- */
-SCOREP_MetricHandle
-scorep_get_time_metric_handle();
-
-/**
    Returns the handle used for the metric 'number of visits'.
  */
-SCOREP_MetricHandle
-scorep_get_visits_metric_handle();
+cube_metric*
+scorep_get_visits_handle();
+
+/**
+   Returns the handle used for metric 'inclusive time sum'.
+ */
+cube_metric*
+scorep_get_sum_time_handle();
+
+/**
+   Returns the handle used for metric 'inclusive time maximum'.
+ */
+cube_metric*
+scorep_get_max_time_handle();
+
+/**
+   Returns the handle used for metric 'inclusive time minimum'.
+ */
+cube_metric*
+scorep_get_min_time_handle();
+
+/**
+   Returns the handle used for metric 'inclusive time mean'.
+ */
+cube_metric*
+scorep_get_mean_time_handle();
 
 #endif /* SCOREP_DEFINITION_CUBE4_H */

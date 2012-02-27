@@ -46,7 +46,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( String )
 
     uint32_t string_length;
     // variable array member
-    char     string_data[];
+    char string_data[];
 };
 
 
@@ -120,7 +120,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
     SCOREP_StringHandle name_handle;    // currently not used
     uint64_t            number_of_members;
     // variable array member
-    uint64_t            members[];
+    uint64_t members[];
 };
 
 
@@ -187,7 +187,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( SamplingSet )
     SCOREP_DEFINE_DEFINITION_HEADER( SamplingSet );
 
     // order is important
-    bool                    is_scoped;
+    bool is_scoped;
 
     SCOREP_MetricOccurrence occurrence;
     uint8_t                 number_of_metrics;
@@ -205,13 +205,13 @@ SCOREP_DEFINE_DEFINITION_TYPE( ScopedSamplingSet )
     SCOREP_DEFINE_DEFINITION_HEADER( SamplingSet );
 
     // order is important
-    bool                     is_scoped;
+    bool is_scoped;
 
     SCOREP_SamplingSetHandle sampling_set_handle;
     SCOREP_LocationHandle    recorder_handle;
     SCOREP_MetricScope       scope_type;
     /* all types are handles */
-    SCOREP_AnyHandle         scope_handle;
+    SCOREP_AnyHandle scope_handle;
 };
 
 
