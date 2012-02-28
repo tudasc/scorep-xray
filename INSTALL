@@ -151,9 +151,9 @@ Optional Packages:
   --with-mpi=(mpich2|impi|openmpi)
                           The mpi compiler suite to build this package with.
                           Needs to be in $PATH [mpich2].
-  --with-pdt=path_to_binaries
-                          Specifies the path where the binaries of the program
-                          database toolkit (PDT) are located
+  --with-pdt=<path-to-binaries>
+                          Specifies the path to the program database toolkit
+                          (PDT) binaries, e.g., cparse.
   --with-cobi=(yes|no|<path-to-cobi-binary>)
                           Whether to build with cobi binary instrumentation
                           support. "yes" assumes it is in PATH [no].
