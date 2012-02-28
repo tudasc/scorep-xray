@@ -18,7 +18,7 @@
 /**
  * @status      alpha
  * @file        SCOREP_Profile_Tasking.c
- * @maintainer  Dirk Schmidl <schmidl@rz.rwth-aachen.de>
+ * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief   Implementation of the Tasking functions of the profile interface
  *
