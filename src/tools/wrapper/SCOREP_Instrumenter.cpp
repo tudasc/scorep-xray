@@ -1332,7 +1332,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     }
     else if ( is_fortran_file( source_file ) )
     {
-        command = pdt_bin_path + "/f90parse " + source_file;
+        command = pdt_bin_path + "/gfparse " + source_file;
     }
     else
     {
