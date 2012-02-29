@@ -306,7 +306,6 @@ scorep_profile_get_sparse_uint64_value( scorep_profile_node* node, void* data )
             switch ( SCOREP_Metric_GetProfilingType( metric ) )
             {
                 case SCOREP_METRIC_PROFILING_TYPE_MAX:
-                    printf( "%" PRIu64 "\n", current->max );
                     return current->max;
                 case SCOREP_METRIC_PROFILING_TYPE_MIN:
                     return current->min;
