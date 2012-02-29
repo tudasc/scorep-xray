@@ -416,7 +416,7 @@ scorep_profile_set_bitstring_for_metric(
    a metric is not defined on this rank
  */
 void
-scorep_profile_set_bitstring_for_invalid_metric( scorep_cube_writing_data* write_set )
+scorep_profile_set_bitstring_for_unknown_metric( scorep_cube_writing_data* write_set )
 {
     /* Create empty bitstring */
     uint8_t* bits = malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
@@ -858,7 +858,7 @@ scorep_profile_write_cube4()
 
             if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )
             {
-                scorep_profile_set_bitstring_for_invalid_metric( &write_set );
+                scorep_profile_set_bitstring_for_unknown_metric( &write_set );
                 scorep_profile_write_cube_doubles( &write_set,
                                                    metric,
                                                    &scorep_profile_get_sparse_double_value,
