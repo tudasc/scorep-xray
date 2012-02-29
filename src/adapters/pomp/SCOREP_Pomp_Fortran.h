@@ -73,6 +73,12 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define POMP2_Single_end_U       POMP2_SINGLE_END
 #define POMP2_Single_enter_U     POMP2_SINGLE_ENTER
 #define POMP2_Single_exit_U      POMP2_SINGLE_EXIT
+#define POMP2_Task_begin_U       POMP2_TASK_BEGIN
+#define POMP2_Task_end_U         POMP2_TASK_END
+#define POMP2_Task_create_begin_U POMP2_TASK_CREATE_BEGIN
+#define POMP2_Task_create_end_U  POMP2_TASK_CREATE_END
+#define POMP2_Taskwait_begin_U   POMP2_TASKWAIT_BEGIN
+#define POMP2_Taskwait_end_U     POMP2_TASKWAIT_END
 #define POMP2_Workshare_enter_U  POMP2_WORKSHARE_ENTER
 #define POMP2_Workshare_exit_U   POMP2_WORKSHARE_EXIT
 #define POMP2_Begin_U            POMP2_BEGIN
@@ -132,6 +138,12 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define POMP2_Single_end_L       pomp2_single_end
 #define POMP2_Single_enter_L     pomp2_single_enter
 #define POMP2_Single_exit_L      pomp2_single_exit
+#define POMP2_Task_begin_L       pomp2_task_begin
+#define POMP2_Task_end_L         pomp2_task_end
+#define POMP2_Task_create_begin_L pomp2_task_create_begin
+#define POMP2_Task_create_end_L  pomp2_task_create_end
+#define POMP2_Taskwait_begin_L   pomp2_taskwait_begin
+#define POMP2_Taskwait_end_L     pomp2_taskwait_end
 #define POMP2_Workshare_enter_L  pomp2_workshare_enter
 #define POMP2_Workshare_exit_L   pomp2_workshare_exit
 #define POMP2_Begin_L            pomp2_begin
