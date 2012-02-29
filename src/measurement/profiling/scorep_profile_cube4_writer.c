@@ -44,8 +44,11 @@
 #include <cubew_cubew.h>
 #include <cubew_services.h>
 
-extern SCOREP_DefinitionManager scorep_local_definition_manager;
-extern SCOREP_MetricHandle      scorep_profile_active_task_metric;
+#define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT64_MAX - 1 )
+
+extern SCOREP_DefinitionManager  scorep_local_definition_manager;
+extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
+extern SCOREP_MetricHandle       scorep_profile_active_task_metric;
 
 /* *****************************************************************************
    Typedefs and variable declarations
@@ -62,15 +65,17 @@ typedef struct
     scorep_cube4_definitions_map* map;              /**< maps Score-P and Cube handles */
     uint32_t                      callpath_number;  /**< Number of callpathes */
     uint32_t                      global_threads;   /**< Global number of locations */
-    uint32_t                      local_threads;    /**< Number of locations in this rank */
+    uint32_t                      local_threads;    /**< Number of threads in this rank */
     uint32_t                      offset;           /**< Offset for this rank */
     uint32_t                      my_rank;          /**< This rank */
     uint32_t                      ranks_number;     /**< Number of ranks in COMM_WORLD */
     int*                          threads_per_rank; /**< List of elements per rank */
     int*                          offsets_per_rank; /**< List of offsets per rank */
     SCOREP_MetricHandle*          metric_map;       /**< map sequence no to handle */
+    SCOREP_MetricHandle*          unified_map;      /**< map sequence to unified handle */
     uint8_t*                      bit_vector;       /**< Indicates callpath with values */
     int32_t                       has_tasks;        /**< Whether tasks occured */
+    uint32_t                      num_unified;      /**< Number of unified metrics */
 } scorep_cube_writing_data;
 
 
@@ -130,13 +135,13 @@ scorep_cube4_make_callpath_mapping( scorep_profile_node* node,
 /**
    Creates a mapping from global sequence numbers to local metric definitions. The
    global sequence numbers define the order in which the metrics are written.
+   @param metric_number Number of unified definitions.
  */
 static SCOREP_MetricHandle*
-scorep_cube4_make_metric_mapping()
+scorep_cube4_make_metric_mapping( uint32_t metric_number )
 {
     uint32_t             i;
-    uint32_t             metric_number = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
-    SCOREP_MetricHandle* map           = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
+    SCOREP_MetricHandle* map = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
     if ( map == NULL )
     {
         return NULL;
@@ -155,6 +160,30 @@ scorep_cube4_make_metric_mapping()
     return map;
 }
 
+/**
+   Creates a mapping from global sequence numbers to unified metric definitions. The
+   global sequence numbers define the order in which the metrics are written.
+ */
+static SCOREP_MetricHandle*
+scorep_cube4_make_unified_mapping()
+{
+    uint32_t             i             = 0;
+    uint32_t             metric_number = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
+    SCOREP_MetricHandle* map           = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
+    if ( map == NULL )
+    {
+        return NULL;
+    }
+
+    SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager, Metric, metric )
+    {
+        map[ i ] = handle;
+        i++;
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+
+    return map;
+}
 
 /**
    Returns the sum of implicit runtime for @a node.
@@ -382,6 +411,25 @@ scorep_profile_set_bitstring_for_metric(
     free( bits );
 }
 
+/* We must ensure that all ranks paricipate in collective operations. Thus, this
+   function is a placeholder for @a scorep_profile_set_bitstring_for_metric in case
+   a metric is not defined on this rank
+ */
+void
+scorep_profile_set_bitstring_for_invalid_metric( scorep_cube_writing_data* write_set )
+{
+    /* Create empty bitstring */
+    uint8_t* bits = malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
+    SCOREP_ASSERT( bits );
+    SCOREP_Bitstring_Clear( bits, write_set->callpath_number );
+
+    SCOREP_Mpi_Allreduce( bits, write_set->bit_vector,
+                          ( write_set->callpath_number + 7 ) / 8,
+                          SCOREP_MPI_UNSIGNED_CHAR, SCOREP_MPI_BOR );
+    free( bits );
+}
+
+
 /* *INDENT-OFF* */
 
 /**
@@ -493,7 +541,7 @@ static bool
 scorep_profile_check_if_metric_shall_be_written( scorep_cube_writing_data* write_set,
                                                  SCOREP_MetricHandle       metric )
 {
-    return metric !=  SCOREP_INVALID_METRIC &&
+    return ( metric != SCOREP_PROFILE_DENSE_METRIC ) &&
            ( metric != scorep_profile_active_task_metric ||
              write_set->has_tasks );
 }
@@ -530,6 +578,7 @@ scorep_profile_delete_cube_writing_data( scorep_cube_writing_data* write_set )
     write_set->threads_per_rank = NULL;
     write_set->offsets_per_rank = NULL;
     write_set->metric_map       = NULL;
+    write_set->unified_map      = NULL;
     write_set->bit_vector       = NULL;
 }
 
@@ -590,6 +639,13 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
                        write_set->threads_per_rank, 1, SCOREP_MPI_INT, 0 );
     SCOREP_Mpi_Gather( &write_set->offset, 1, SCOREP_MPI_UNSIGNED,
                        write_set->offsets_per_rank, 1, SCOREP_MPI_INT, 0 );
+
+    /* Get number of unified metrics to every rank */
+    if ( write_set->my_rank == 0 )
+    {
+        write_set->num_unified = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
+    }
+    SCOREP_Mpi_Bcast( &write_set->num_unified, 1, SCOREP_MPI_UNSIGNED, 0 );
 
     /* Create the mappings from cube to Score-P handles and vice versa */
     write_set->map = scorep_cube4_create_definitions_map();
@@ -671,7 +727,12 @@ scorep_profile_add_mapping_to_cube_writing_data( scorep_cube_writing_data* write
 
     /* Mapping from global sequence number to local metric handle. Defines
        order of writing metrics */
-    write_set->metric_map = scorep_cube4_make_metric_mapping();
+    write_set->metric_map = scorep_cube4_make_metric_mapping( write_set->num_unified );
+
+    if ( write_set->my_rank == 0 )
+    {
+        write_set->unified_map = scorep_cube4_make_unified_mapping();
+    }
 }
 
 /* *****************************************************************************
@@ -750,6 +811,8 @@ scorep_profile_write_cube4()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
     for ( uint8_t i = 0; i  < scorep_profile.num_of_dense_metrics; i++ )
     {
+        cube_metric* metric = NULL; /* Only used on rank 0 */
+
         if ( write_set.my_rank == 0 )
         {
             metric = scorep_get_cube4_metric( write_set.map,
@@ -763,7 +826,7 @@ scorep_profile_write_cube4()
         {
             uint32_t current_number =
                 SCOREP_Metric_GetUnifiedSequenceNumber( scorep_profile.dense_metrics[ i ] );
-            write_set.metric_map[ current_number ] = SCOREP_INVALID_METRIC;
+            write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
         scorep_profile_write_cube_uint64( &write_set, metric,
@@ -777,7 +840,9 @@ scorep_profile_write_cube4()
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing sparse metrics" );
     if ( write_set.metric_map != NULL )
     {
-        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfUnifiedDefinitions(); i++ )
+        cube_metric* metric = NULL; /* Only used on rank 0 */
+
+        for ( uint32_t i = 0; i < write_set.num_unified; i++ )
         {
             if ( !scorep_profile_check_if_metric_shall_be_written( &write_set,
                                                                    write_set.metric_map[ i ] ) )
@@ -787,7 +852,18 @@ scorep_profile_write_cube4()
 
             if ( write_set.my_rank == 0 )
             {
-                metric = scorep_get_cube4_metric( write_set.map, SCOREP_Metric_GetUnifiedHandle( write_set.metric_map[ i ] ) );
+                metric = scorep_get_cube4_metric( write_set.map,
+                                                  write_set.unified_map[ i ] );
+            }
+
+            if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )
+            {
+                scorep_profile_set_bitstring_for_invalid_metric( &write_set );
+                scorep_profile_write_cube_doubles( &write_set,
+                                                   metric,
+                                                   &scorep_profile_get_sparse_double_value,
+                                                   &write_set.metric_map[ i ] );
+                continue;
             }
 
             switch ( SCOREP_Metric_GetValueType( write_set.metric_map[ i ] ) )
