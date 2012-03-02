@@ -305,8 +305,8 @@ scorep_region_type_to_string
             return "omp single sblock";
         case SCOREP_REGION_OMP_TASK:
             return "omp task";
-        case SCOREP_REGION_OMP_CREATE_TASK:
-            return "omp create task";
+        case SCOREP_REGION_OMP_TASK_CREATE:
+            return "omp task create";
         default:
             return "unknown";
     }
