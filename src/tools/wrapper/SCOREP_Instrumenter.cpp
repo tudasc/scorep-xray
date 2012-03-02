@@ -500,12 +500,12 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
 #endif
 
     /* Check for application type settings */
-    else if ( arg == "--openmp" )
+    else if ( arg == "--openmp_support" )
     {
         is_openmp_application = enabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "--noopenmp" )
+    else if ( arg == "--noopenmp_support" )
     {
         is_openmp_application = disabled;
         return scorep_parse_mode_param;
