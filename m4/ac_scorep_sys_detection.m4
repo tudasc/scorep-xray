@@ -31,6 +31,8 @@ AC_DEFUN([_AC_SCOREP_DETECT_LINUX_PLATFORMS],
                           [ac_scorep_platform="crayxt";   ac_scorep_cross_compiling="yes"],
                       [test "x${build_cpu}" = "xmips64"    -a -d /opt/sicortex],    
                           [ac_scorep_platform="sicortex"; ac_scorep_cross_compiling="yes"],
+                      [test "x${build_cpu}" = "xarmv7l"],
+                          [ac_scorep_platform="arm"; ac_scorep_cross_compiling="no"],
                       [ac_scorep_platform=linux]
                 )
             ;;
@@ -141,7 +143,7 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
     fi
 ])
 
-
+# This macro is called also by the build-backend/frondend/mpi configures
 AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
 [
     AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
@@ -157,4 +159,9 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_MAC],      [test "x${ac_scorep_platform}" = "xmac"])
     AM_CONDITIONAL([PLATFORM_CRAYX1],   [test "x${ac_scorep_platform}" = "xcrayx1"])
     AM_CONDITIONAL([PLATFORM_NECSX],    [test "x${ac_scorep_platform}" = "xnecsx"])
+    AM_CONDITIONAL([PLATFORM_ARM],      [test "x${ac_scorep_platform}" = "xarm"])
+
+    if test "x${ac_scorep_platform}" = "xarm"; then
+       AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for ARM platform])
+    fi
 ])

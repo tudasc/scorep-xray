@@ -337,6 +337,10 @@ AS_IF([test "x${scorep_user_timer_given}" = "xno"], [
                                  SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_tsc]),
                                  SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
                                  SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
+            ["arm"],      [AS_IF(SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_itc]),
+                                 SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_tsc]),
+                                 SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
+                                 SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
             [AC_MSG_ERROR([Encountered unsupported platform "$ac_scorep_platform" during timer checks.])])
 ])
 ])
