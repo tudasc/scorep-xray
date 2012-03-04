@@ -2,7 +2,7 @@
 
 if HAVE_ONLINE_ACCESS_HEADERS
 
-bin_PROGRAMS += online_access_registry
+bin_PROGRAMS += online-access-registry
 
 online_access_registry_SOURCES = \
 	$(SRC_ROOT)/tools/oa_registry/regsrv_client.cc                 	\
