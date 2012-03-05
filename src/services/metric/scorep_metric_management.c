@@ -343,6 +343,7 @@ scorep_metric_finalize_location( SCOREP_Thread_LocationData* locationData )
     finalize_location_metric_cb( locationData, NULL );
 }
 
+
 /* *********************************************************************
  * Functions called directly by measurement environment
  **********************************************************************/
@@ -430,6 +431,7 @@ SCOREP_Metric_GetSamplingSet()
 {
     return sampling_set_handle;
 }
+
 
 /* *********************************************************************
  * Subsytem declaration
