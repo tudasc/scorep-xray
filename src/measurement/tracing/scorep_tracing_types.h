@@ -99,6 +99,7 @@ scorep_tracing_region_type_to_otf2( SCOREP_RegionType scorepType )
         case_return( OMP_WRAPPER,          OMP_WRAPPER );
         case_return( OMP_TASK,             OMP_TASK );
         case_return( OMP_TASKWAIT,         OMP_TASK_WAIT );
+        case_return( OMP_TASK_CREATE,      OMP_TASK_CREATE );
         case_return( PHASE,                PHASE );
         case_return( DYNAMIC,              DYNAMIC );
         case_return( DYNAMIC_PHASE,        DYNAMIC_PHASE );
@@ -150,6 +151,7 @@ scorep_tracing_metric_source_type_to_otf2( SCOREP_MetricSourceType sourceType )
         case_return( RUSAGE, RUSAGE );
         case_return( USER,   USER );
         case_return( OTHER,  OTHER );
+        case_return( TASK,   OTHER );
 
 #undef case_return
         default:
