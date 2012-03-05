@@ -95,10 +95,10 @@ print_help()
     << "  --nocobi        Disables the binary instrumentation with Cobi.\n"
     << "                  It is disabled by default.\n"
 #endif
-    << "  --openmp_support Enables OpenMP support. Needed if the instrumentation\n"
+    << "  --openmp        Enables OpenMP support. Needed if the instrumentation\n"
     << "                  does not correctly identify your application as OpenMP\n"
     << "                  program.\n"
-    << "  --noopenmp_support Disables OpenMP support.\n"
+    << "  --noopenmp      Disables OpenMP support.\n"
     << std::endl;
 }
 
