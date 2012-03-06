@@ -293,6 +293,10 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
                                metric_values );
 
     /* Merge subtree and release unnecessary node records */
+    while ( task_node->parent != NULL )
+    {
+        task_node = task_node->parent;
+    }
     scorep_profile_node* match = scorep_profile_find_child( root_node, task_node );
 
     if ( match == NULL )
