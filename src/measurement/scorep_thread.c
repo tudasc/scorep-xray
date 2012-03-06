@@ -41,6 +41,8 @@
 #include "scorep_subsystem.h"
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 
+#include <scorep_utility/SCOREP_Debug.h>
+
 #include "scorep_environment.h"
 
 #define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
@@ -171,17 +173,12 @@ SCOREP_CreateLocation( SCOREP_Location*    parent,
                        SCOREP_LocationType type,
                        const char*         name )
 {
-    if ( type == SCOREP_LOCATION_TYPE_CPU_THREAD )
-    {
-        /*
-         * At the moment this function just supports creation of non-CPU
-         * locations (e.g. locations for GPU threads).
-         */
-
-        SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                      "At the moment SCOREP_CreateLocation() does not support creation of CPU locations." );
-        assert( false );
-    }
+    /*
+     * At the moment this function just supports creation of non-CPU
+     * locations (e.g. locations for GPU threads).
+     */
+    SCOREP_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
+                   "At the moment SCOREP_CreateLocation() does not support creation of CPU locations." );
 
     if ( parent == NULL )
     {
