@@ -329,6 +329,7 @@ scorep_location_definition_define( SCOREP_DefinitionManager* definition_manager,
  */
 SCOREP_LocationHandle
 SCOREP_DefineLocation( uint64_t              globalLocationId,
+                       SCOREP_LocationType   type,
                        SCOREP_LocationHandle parent,
                        const char*           name )
 {
@@ -341,8 +342,7 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
             name ? name : "" ),
-        SCOREP_LOCATION_TYPE_CPU_THREAD,
-        0, 0 );
+        type, 0, 0 );
 
     SCOREP_Definitions_Unlock();
 

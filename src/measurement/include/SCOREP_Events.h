@@ -31,6 +31,7 @@
 
 
 #include "SCOREP_Types.h"
+#include "SCOREP_Thread_Types.h"
 #include "SCOREP_DefinitionHandles.h"
 
 
@@ -90,6 +91,52 @@ void
 SCOREP_ExitRegion
 (
     SCOREP_RegionHandle regionHandle
+);
+
+
+
+
+/**
+ * Process a region exit event in the measurement system.
+ * Special version that allows to supply a specific context instead
+ * of using the current CPU thread/time/metrics.
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param regionHandle The corresponding region for the exit event.
+ * @param metricValues Custom metric values for this event.
+ */
+void
+SCOREP_Location_ExitRegion
+(
+    SCOREP_Thread_LocationData* location,
+    uint64_t                    timestamp,
+    SCOREP_RegionHandle         regionHandle,
+    uint64_t*                   metricValues
+);
+
+
+
+
+/**
+ * Process a region enter event in the measurement system.
+ * Special version that allows to supply a specific context instead
+ * of using the current CPU thread/time/metrics
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param regionHandle The corresponding region for the enter event.
+ * @param metriValues  Custom metric values for this event
+ */
+void
+SCOREP_Location_EnterRegion
+(
+    SCOREP_Thread_LocationData* location,
+    uint64_t                    timestamp,
+    SCOREP_RegionHandle         regionHandle,
+    uint64_t*                   metricValues
 );
 
 

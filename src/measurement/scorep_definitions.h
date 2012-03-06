@@ -194,6 +194,7 @@ SCOREP_DefineLocationGroup( uint64_t                    globalLocationGroupId,
 
 SCOREP_LocationHandle
 SCOREP_DefineLocation( uint64_t              globalLocationId,
+                       SCOREP_LocationType   type,
                        SCOREP_LocationHandle parent,
                        const char*           name );
 

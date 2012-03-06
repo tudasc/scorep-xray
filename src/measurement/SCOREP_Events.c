@@ -61,12 +61,11 @@ scorep_get_timestamp( SCOREP_Thread_LocationData* location )
  * Process a region enter event in the measurement system.
  */
 static void
-scorep_enter_region( uint64_t            timestamp,
-                     SCOREP_RegionHandle regionHandle,
-                     uint64_t*           metricValues )
+scorep_enter_region( uint64_t                    timestamp,
+                     SCOREP_RegionHandle         regionHandle,
+                     uint64_t*                   metricValues,
+                     SCOREP_Thread_LocationData* location )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
-
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -106,7 +105,29 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
     uint64_t                    timestamp     = scorep_get_timestamp( location );
     uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
-    scorep_enter_region( timestamp, regionHandle, metric_values );
+    scorep_enter_region( timestamp, regionHandle, metric_values, location );
+}
+
+/*
+ * NOTE: If dense metrics are used in the profile,
+ * they need to be specified for these two functions!
+ */
+void
+SCOREP_Location_EnterRegion( SCOREP_Thread_LocationData* location,
+                             uint64_t                    timestamp,
+                             SCOREP_RegionHandle         regionHandle,
+                             uint64_t*                   metricValues )
+{
+    if ( !location )
+    {
+        location = SCOREP_Thread_GetLocationData();
+    }
+    if ( timestamp == SCOREP_INVALID_TIMESTAMP )
+    {
+        timestamp = scorep_get_timestamp( location );
+    }
+
+    scorep_enter_region( timestamp, regionHandle, metricValues, location );
 }
 
 
@@ -114,12 +135,11 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
  * Process a region exit event in the measurement system.
  */
 static void
-scorep_exit_region( uint64_t            timestamp,
-                    SCOREP_RegionHandle regionHandle,
-                    uint64_t*           metricValues )
+scorep_exit_region( uint64_t                    timestamp,
+                    SCOREP_RegionHandle         regionHandle,
+                    uint64_t*                   metricValues,
+                    SCOREP_Thread_LocationData* location )
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
-
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -160,7 +180,25 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
     uint64_t                    timestamp     = scorep_get_timestamp( location );
     uint64_t*                   metric_values = SCOREP_Metric_read( location );
 
-    scorep_exit_region( timestamp, regionHandle, metric_values );
+    scorep_exit_region( timestamp, regionHandle, metric_values, location );
+}
+
+void
+SCOREP_Location_ExitRegion( SCOREP_Thread_LocationData* location,
+                            uint64_t                    timestamp,
+                            SCOREP_RegionHandle         regionHandle,
+                            uint64_t*                   metricValues )
+{
+    if ( !location )
+    {
+        location = SCOREP_Thread_GetLocationData();
+    }
+    if ( timestamp == SCOREP_INVALID_TIMESTAMP )
+    {
+        timestamp = scorep_get_timestamp( location );
+    }
+
+    scorep_exit_region( timestamp, regionHandle, metricValues, location );
 }
 
 
@@ -261,7 +299,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    scorep_enter_region( timestamp, regionHandle, metric_values );
+    scorep_enter_region( timestamp, regionHandle, metric_values, location );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -315,7 +353,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
         /* No action necessary */
     }
 
-    scorep_exit_region( timestamp, regionHandle, metric_values );
+    scorep_exit_region( timestamp, regionHandle, metric_values, location );
 }
 
 void
@@ -711,7 +749,7 @@ SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
                                                   sizeof( stringBuffer ),
                                                   "%x", regionHandle ) );
 
-    /* DL: My proposl would be to call scorep_exit_region until we have
+    /* DL: My proposal would be to call scorep_exit_region until we have
        a special event for exits on exceptions. However, for the profiling part
        no special event is planned, but I do not know about OTF2.
      */

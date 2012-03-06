@@ -74,7 +74,7 @@ typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 
 
 /* *INDENT-OFF* */
-static void scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
+static SCOREP_Thread_LocationData* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
 static void scorep_thread_call_externals_on_new_location(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent, bool isMainLocation );
 static void scorep_thread_call_externals_on_new_thread(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
@@ -119,6 +119,7 @@ struct SCOREP_Thread_LocationData
     uint32_t                       local_id;    // process local id, 0, 1, ...
     uint64_t                       location_id; // global id
     uint64_t                       last_timestamp;
+    SCOREP_LocationType            type;
     SCOREP_Allocator_PageManager** page_managers;
     SCOREP_LocationHandle          location_handle;
 
@@ -165,6 +166,50 @@ SCOREP_Thread_Initialize()
 }
 
 
+SCOREP_Thread_LocationData*
+SCOREP_CreateLocation( SCOREP_Thread_LocationData* parent,
+                       SCOREP_LocationType         type,
+                       const char*                 name )
+{
+    if ( type == SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        /*
+         * At the moment this function just supports creation of non-CPU
+         * locations (e.g. locations for GPU threads).
+         */
+
+        SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                      "At the moment SCOREP_CreateLocation() does not support creation of CPU locations." );
+        assert( false );
+    }
+
+    if ( parent == 0 )
+    {
+        parent = SCOREP_Thread_GetLocationData();
+    }
+
+    /*
+     * As long as this function is not used to create locations of type
+     * SCOREP_LOCATION_TYPE_CPU_THREAD, no SCOREP_Thread_ThreadPrivateData
+     * is needed.
+     */
+
+    SCOREP_Thread_LocationData* new_location = scorep_thread_create_location_data_for( NULL );
+
+    new_location->type = type;
+
+    scorep_thread_call_externals_on_new_location( new_location,
+                                                  parent,
+                                                  false );
+    scorep_thread_call_externals_on_new_thread( new_location,
+                                                parent );
+    scorep_thread_call_externals_on_thread_activation( new_location,
+                                                       parent );
+
+    return new_location;
+}
+
+
 void
 scorep_thread_update_tpd( SCOREP_Thread_ThreadPrivateData* newTPD )
 {
@@ -206,6 +251,7 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
     {
         locationData->location_handle = SCOREP_DefineLocation(
             INVALID_LOCATION_DEFINITION_ID,
+            locationData->type,
             SCOREP_INVALID_LOCATION,
             "" );
         scorep_defer_location_initialization( locationData, parent );
@@ -215,6 +261,7 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
         SCOREP_Thread_GetGlobalLocationId( locationData );
         locationData->location_handle = SCOREP_DefineLocation(
             locationData->location_id,
+            locationData->type,
             parent ? parent->location_handle : SCOREP_INVALID_LOCATION,
             "" );
     }
@@ -239,7 +286,7 @@ scorep_thread_call_externals_on_thread_activation( SCOREP_Thread_LocationData* l
 }
 
 
-void
+SCOREP_Thread_LocationData*
 scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
 {
     SCOREP_Thread_LocationData* new_location;
@@ -250,16 +297,24 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
     new_location = calloc( 1, total_memory );
     assert( new_location );
 
-    assert( tpd->location_data == 0 );
-    tpd->location_data = new_location;
+    if ( tpd != NULL )
+    {
+        assert( tpd->location_data == 0 );
+        tpd->location_data = new_location;
 
-    scorep_thread_update_tpd( 0 );                                    // to make sure that we don't access
-                                                                      // TPD during page manager creation
-    new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
-    assert( new_location->page_managers );
-    scorep_thread_update_tpd( tpd );                                  // from here on clients can use
-                                                                      // SCOREP_Thread_GetLocationData, i.e. TPD
+        scorep_thread_update_tpd( 0 );                                    // to make sure that we don't access
+                                                                          // TPD during page manager creation
+        new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
+        assert( new_location->page_managers );
+        scorep_thread_update_tpd( tpd );                                  // from here on clients can use
+                                                                          // SCOREP_Thread_GetLocationData, i.e. TPD
+    }
+    else
+    {
+        new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
+    }
 
+    new_location->type        = SCOREP_LOCATION_TYPE_CPU_THREAD;
     new_location->location_id = INVALID_LOCATION_DEFINITION_ID;
 
     new_location->profile_data = 0;
@@ -283,6 +338,8 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         *location_list_tail    = new_location;
         location_list_tail     = &new_location->next;
     }
+
+    return new_location;
 }
 
 

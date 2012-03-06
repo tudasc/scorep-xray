@@ -174,6 +174,11 @@ typedef uint32_t SCOREP_LineNo;
  */
 #define SCOREP_INVALID_SYSTEM_TREE_NODE SCOREP_MOVABLE_NULL
 
+/**
+ * Symbolic constant representing an invalid timestamp
+ */
+#define SCOREP_INVALID_TIMESTAMP 0
+
 
 
 
