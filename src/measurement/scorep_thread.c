@@ -183,7 +183,7 @@ SCOREP_CreateLocation( SCOREP_Thread_LocationData* parent,
         assert( false );
     }
 
-    if ( parent == 0 )
+    if ( parent == NULL )
     {
         parent = SCOREP_Thread_GetLocationData();
     }
