@@ -50,9 +50,9 @@
 
 
 void
-SCOREP_Tracing_MeasurementOnOff( SCOREP_Thread_LocationData* location,
-                                 uint64_t                    timestamp,
-                                 bool                        on )
+SCOREP_Tracing_MeasurementOnOff( SCOREP_Location* location,
+                                 uint64_t         timestamp,
+                                 bool             on )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -66,10 +66,10 @@ SCOREP_Tracing_MeasurementOnOff( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
-                       uint64_t                    timestamp,
-                       SCOREP_SamplingSetHandle    samplingSet,
-                       const uint64_t*             metricValues )
+SCOREP_Tracing_Metric( SCOREP_Location*         location,
+                       uint64_t                 timestamp,
+                       SCOREP_SamplingSetHandle samplingSet,
+                       const uint64_t*          metricValues )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -97,9 +97,9 @@ SCOREP_Tracing_Metric( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_Enter( SCOREP_Thread_LocationData* location,
-                      uint64_t                    timestamp,
-                      SCOREP_RegionHandle         regionHandle )
+SCOREP_Tracing_Enter( SCOREP_Location*    location,
+                      uint64_t            timestamp,
+                      SCOREP_RegionHandle regionHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -111,9 +111,9 @@ SCOREP_Tracing_Enter( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_Leave( SCOREP_Thread_LocationData* location,
-                      uint64_t                    timestamp,
-                      SCOREP_RegionHandle         regionHandle )
+SCOREP_Tracing_Leave( SCOREP_Location*    location,
+                      uint64_t            timestamp,
+                      SCOREP_RegionHandle regionHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -125,7 +125,7 @@ SCOREP_Tracing_Leave( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_MpiSend( SCOREP_Thread_LocationData*       location,
+SCOREP_Tracing_MpiSend( SCOREP_Location*                  location,
                         uint64_t                          timestamp,
                         SCOREP_MpiRank                    destinationRank,
                         SCOREP_LocalMPICommunicatorHandle communicatorHandle,
@@ -145,7 +145,7 @@ SCOREP_Tracing_MpiSend( SCOREP_Thread_LocationData*       location,
 
 
 void
-SCOREP_Tracing_MpiRecv( SCOREP_Thread_LocationData*       location,
+SCOREP_Tracing_MpiRecv( SCOREP_Location*                  location,
                         uint64_t                          timestamp,
                         SCOREP_MpiRank                    sourceRank,
                         SCOREP_LocalMPICommunicatorHandle communicatorHandle,
@@ -165,8 +165,8 @@ SCOREP_Tracing_MpiRecv( SCOREP_Thread_LocationData*       location,
 
 
 void
-SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Thread_LocationData* location,
-                                   uint64_t                    timestamp )
+SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Location* location,
+                                   uint64_t         timestamp )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -177,7 +177,7 @@ SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Thread_LocationData*       location,
+SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Location*                  location,
                                  uint64_t                          timestamp,
                                  SCOREP_LocalMPICommunicatorHandle communicatorHandle,
                                  SCOREP_MpiRank                    rootRank,
@@ -209,9 +209,9 @@ SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Thread_LocationData*       location,
 
 
 void
-SCOREP_Tracing_MpiIsendComplete( SCOREP_Thread_LocationData* location,
-                                 uint64_t                    timestamp,
-                                 SCOREP_MpiRequestId         requestId )
+SCOREP_Tracing_MpiIsendComplete( SCOREP_Location*    location,
+                                 uint64_t            timestamp,
+                                 SCOREP_MpiRequestId requestId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -223,9 +223,9 @@ SCOREP_Tracing_MpiIsendComplete( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_MpiIrecvRequest( SCOREP_Thread_LocationData* location,
-                                uint64_t                    timestamp,
-                                SCOREP_MpiRequestId         requestId )
+SCOREP_Tracing_MpiIrecvRequest( SCOREP_Location*    location,
+                                uint64_t            timestamp,
+                                SCOREP_MpiRequestId requestId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -237,9 +237,9 @@ SCOREP_Tracing_MpiIrecvRequest( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_MpiRequestTested( SCOREP_Thread_LocationData* location,
-                                 uint64_t                    timestamp,
-                                 SCOREP_MpiRequestId         requestId )
+SCOREP_Tracing_MpiRequestTested( SCOREP_Location*    location,
+                                 uint64_t            timestamp,
+                                 SCOREP_MpiRequestId requestId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -251,9 +251,9 @@ SCOREP_Tracing_MpiRequestTested( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_MpiRequestCancelled( SCOREP_Thread_LocationData* location,
-                                    uint64_t                    timestamp,
-                                    SCOREP_MpiRequestId         requestId )
+SCOREP_Tracing_MpiRequestCancelled( SCOREP_Location*    location,
+                                    uint64_t            timestamp,
+                                    SCOREP_MpiRequestId requestId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -265,7 +265,7 @@ SCOREP_Tracing_MpiRequestCancelled( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_MpiIsend(  SCOREP_Thread_LocationData*       location,
+SCOREP_Tracing_MpiIsend(  SCOREP_Location*                  location,
                           uint64_t                          timestamp,
                           SCOREP_MpiRank                    destinationRank,
                           SCOREP_LocalMPICommunicatorHandle communicatorHandle,
@@ -287,7 +287,7 @@ SCOREP_Tracing_MpiIsend(  SCOREP_Thread_LocationData*       location,
 
 
 void
-SCOREP_Tracing_MpiIrecv( SCOREP_Thread_LocationData*       location,
+SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
                          uint64_t                          timestamp,
                          SCOREP_MpiRank                    sourceRank,
                          SCOREP_LocalMPICommunicatorHandle communicatorHandle,
@@ -309,9 +309,9 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Thread_LocationData*       location,
 
 
 void
-SCOREP_Tracing_OmpFork( SCOREP_Thread_LocationData* location,
-                        uint64_t                    timestamp,
-                        uint32_t                    nRequestedThreads )
+SCOREP_Tracing_OmpFork( SCOREP_Location* location,
+                        uint64_t         timestamp,
+                        uint32_t         nRequestedThreads )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -323,8 +323,8 @@ SCOREP_Tracing_OmpFork( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_OmpJoin( SCOREP_Thread_LocationData* location,
-                        uint64_t                    timestamp )
+SCOREP_Tracing_OmpJoin( SCOREP_Location* location,
+                        uint64_t         timestamp )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -335,10 +335,10 @@ SCOREP_Tracing_OmpJoin( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_OmpAcquireLock( SCOREP_Thread_LocationData* location,
-                               uint64_t                    timestamp,
-                               uint32_t                    lockId,
-                               uint32_t                    acquisitionOrder )
+SCOREP_Tracing_OmpAcquireLock( SCOREP_Location* location,
+                               uint64_t         timestamp,
+                               uint32_t         lockId,
+                               uint32_t         acquisitionOrder )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -351,10 +351,10 @@ SCOREP_Tracing_OmpAcquireLock( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_OmpReleaseLock( SCOREP_Thread_LocationData* location,
-                               uint64_t                    timestamp,
-                               uint32_t                    lockId,
-                               uint32_t                    acquisitionOrder )
+SCOREP_Tracing_OmpReleaseLock( SCOREP_Location* location,
+                               uint64_t         timestamp,
+                               uint32_t         lockId,
+                               uint32_t         acquisitionOrder )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -367,9 +367,9 @@ SCOREP_Tracing_OmpReleaseLock( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_OmpTaskCreate( SCOREP_Thread_LocationData* location,
-                              uint64_t                    timestamp,
-                              uint64_t                    taskId )
+SCOREP_Tracing_OmpTaskCreate( SCOREP_Location* location,
+                              uint64_t         timestamp,
+                              uint64_t         taskId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -380,9 +380,9 @@ SCOREP_Tracing_OmpTaskCreate( SCOREP_Thread_LocationData* location,
 }
 
 void
-SCOREP_Tracing_OmpTaskSwitch( SCOREP_Thread_LocationData* location,
-                              uint64_t                    timestamp,
-                              uint64_t                    taskId )
+SCOREP_Tracing_OmpTaskSwitch( SCOREP_Location* location,
+                              uint64_t         timestamp,
+                              uint64_t         taskId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -393,9 +393,9 @@ SCOREP_Tracing_OmpTaskSwitch( SCOREP_Thread_LocationData* location,
 }
 
 void
-SCOREP_Tracing_OmpTaskComplete( SCOREP_Thread_LocationData* location,
-                                uint64_t                    timestamp,
-                                uint64_t                    taskId )
+SCOREP_Tracing_OmpTaskComplete( SCOREP_Location* location,
+                                uint64_t         timestamp,
+                                uint64_t         taskId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -407,10 +407,10 @@ SCOREP_Tracing_OmpTaskComplete( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_ParameterInt64( SCOREP_Thread_LocationData* location,
-                               uint64_t                    timestamp,
-                               SCOREP_ParameterHandle      parameterHandle,
-                               int64_t                     value )
+SCOREP_Tracing_ParameterInt64( SCOREP_Location*       location,
+                               uint64_t               timestamp,
+                               SCOREP_ParameterHandle parameterHandle,
+                               int64_t                value )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -422,10 +422,10 @@ SCOREP_Tracing_ParameterInt64( SCOREP_Thread_LocationData* location,
 }
 
 void
-SCOREP_Tracing_ParameterUint64( SCOREP_Thread_LocationData* location,
-                                uint64_t                    timestamp,
-                                SCOREP_ParameterHandle      parameterHandle,
-                                uint64_t                    value )
+SCOREP_Tracing_ParameterUint64( SCOREP_Location*       location,
+                                uint64_t               timestamp,
+                                SCOREP_ParameterHandle parameterHandle,
+                                uint64_t               value )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 
@@ -438,10 +438,10 @@ SCOREP_Tracing_ParameterUint64( SCOREP_Thread_LocationData* location,
 
 
 void
-SCOREP_Tracing_ParameterString( SCOREP_Thread_LocationData* location,
-                                uint64_t                    timestamp,
-                                SCOREP_ParameterHandle      parameterHandle,
-                                SCOREP_StringHandle         stringHandle )
+SCOREP_Tracing_ParameterString( SCOREP_Location*       location,
+                                uint64_t               timestamp,
+                                SCOREP_ParameterHandle parameterHandle,
+                                SCOREP_StringHandle    stringHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Thread_GetTraceLocationData( location )->otf_writer;
 

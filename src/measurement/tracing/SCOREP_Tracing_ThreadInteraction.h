@@ -60,8 +60,8 @@ SCOREP_Tracing_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData 
  * locationData.
  */
 void
-SCOREP_Tracing_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
-                                 SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnThreadCreation( SCOREP_Location* locationData,
+                                 SCOREP_Location* parentLocationData );
 
 /**
  * Triggered at the start of every thread/parallel region. Always triggered,
@@ -75,8 +75,8 @@ SCOREP_Tracing_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Tracing_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnThreadActivation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData );
 
 
 /**
@@ -89,8 +89,8 @@ SCOREP_Tracing_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Tracing_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
-                                    SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnThreadDectivation( SCOREP_Location* locationData,
+                                    SCOREP_Location* parentLocationData );
 
 
 /**
@@ -102,12 +102,12 @@ SCOREP_Tracing_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Tracing_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData );
 
 
 void
-SCOREP_Tracing_AssignLocationId( SCOREP_Thread_LocationData* threadLocationData );
+SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData );
 
 
 #endif /* SCOREP_TRACING_THREAD_INTERACTION_H */

@@ -70,32 +70,32 @@ SCOREP_Tracing_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData 
 
 
 void
-SCOREP_Tracing_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
-                                 SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Tracing_OnThreadCreation( SCOREP_Location* locationData,
+                                 SCOREP_Location* parentLocationData )
 {
     return;
 }
 
 
 void
-SCOREP_Tracing_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Tracing_OnThreadActivation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData )
 {
     return;
 }
 
 
 void
-SCOREP_Tracing_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
-                                    SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Tracing_OnThreadDectivation( SCOREP_Location* locationData,
+                                    SCOREP_Location* parentLocationData )
 {
     return;
 }
 
 
 void
-SCOREP_Tracing_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData )
 {
     if ( !SCOREP_IsTracingEnabled() )
     {
@@ -124,7 +124,7 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 
 
 void
-SCOREP_Tracing_AssignLocationId( SCOREP_Thread_LocationData* threadLocationData )
+SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
 {
     // Does this function needs locking? I don't think so, it operates just on local data.
     if ( !SCOREP_IsTracingEnabled() )

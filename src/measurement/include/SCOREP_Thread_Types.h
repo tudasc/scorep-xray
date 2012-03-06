@@ -32,7 +32,7 @@
  */
 
 
-typedef struct SCOREP_Thread_LocationData SCOREP_Thread_LocationData;
+typedef struct SCOREP_Location SCOREP_Location;
 
 
 /**
@@ -40,7 +40,7 @@ typedef struct SCOREP_Thread_LocationData SCOREP_Thread_LocationData;
  *
  * @return
  */
-SCOREP_Thread_LocationData*
+SCOREP_Location*
 SCOREP_Thread_GetLocationData();
 
 
@@ -50,22 +50,22 @@ SCOREP_Thread_GetLocationData();
  * @return
  */
 uint32_t
-SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData );
+SCOREP_Thread_GetLocationId( SCOREP_Location* locationData );
 
 
 void*
-SCOREP_Thread_GetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
-                                        size_t                      subsystem_id );
+SCOREP_Thread_GetSubsystemLocationData( SCOREP_Location* locationData,
+                                        size_t           subsystem_id );
 
 
 void
-SCOREP_Thread_SetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
-                                        size_t                      subsystem_id,
-                                        void*                       subsystem_data );
+SCOREP_Thread_SetSubsystemLocationData( SCOREP_Location* locationData,
+                                        size_t           subsystem_id,
+                                        void*            subsystem_data );
 
 
 void
-SCOREP_Thread_ForAllLocations( void ( * cb )( SCOREP_Thread_LocationData*,
+SCOREP_Thread_ForAllLocations( void ( * cb )( SCOREP_Location*,
                                               void* ),
                                void* data );
 

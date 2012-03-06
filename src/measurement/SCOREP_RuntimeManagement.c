@@ -335,7 +335,7 @@ SCOREP_FinalizeMeasurementMPI()
 void
 SCOREP_EnableRecording()
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* location = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )
@@ -364,7 +364,7 @@ SCOREP_EnableRecording()
 void
 SCOREP_DisableRecording()
 {
-    SCOREP_Thread_LocationData* location = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* location = SCOREP_Thread_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )

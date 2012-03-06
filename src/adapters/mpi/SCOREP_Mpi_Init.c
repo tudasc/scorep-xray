@@ -315,7 +315,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
     SCOREP_CONFIG_TERMINATOR
 };
 
-static size_t         scorep_mpi_subsystem_id;
+static size_t scorep_mpi_subsystem_id;
 
 /**
    Implementation of the adapter_register function of the @ref SCOREP_Subsystem struct
@@ -382,7 +382,7 @@ scorep_mpi_init_location()
    struct for the initialization process of the MPI adapter.
  */
 static void
-scorep_mpi_final_location( SCOREP_Thread_LocationData* locationData )
+scorep_mpi_final_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_final_location\n" );

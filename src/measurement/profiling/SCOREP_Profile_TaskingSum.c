@@ -212,21 +212,21 @@ scorep_profile_exit_task_pointer( SCOREP_Profile_LocationData* location,
 ****************************************************************************************/
 
 void
-SCOREP_Profile_TaskCreateBegin( SCOREP_Thread_LocationData* thread,
-                                SCOREP_RegionHandle         regionHandle,
-                                uint64_t                    taskId,
-                                uint64_t                    timestamp,
-                                uint64_t*                   metric_values )
+SCOREP_Profile_TaskCreateBegin( SCOREP_Location*    thread,
+                                SCOREP_RegionHandle regionHandle,
+                                uint64_t            taskId,
+                                uint64_t            timestamp,
+                                uint64_t*           metric_values )
 {
     SCOREP_Profile_Enter( thread, regionHandle, SCOREP_REGION_OMP_CREATE_TASK, timestamp, metric_values );
 }
 
 void
-SCOREP_Profile_TaskCreateEnd( SCOREP_Thread_LocationData* thread,
-                              SCOREP_RegionHandle         regionHandle,
-                              uint64_t                    taskId,
-                              uint64_t                    timestamp,
-                              uint64_t*                   metric_values )
+SCOREP_Profile_TaskCreateEnd( SCOREP_Location*    thread,
+                              SCOREP_RegionHandle regionHandle,
+                              uint64_t            taskId,
+                              uint64_t            timestamp,
+                              uint64_t*           metric_values )
 {
     SCOREP_Profile_LocationData* location =
         SCOREP_Thread_GetProfileLocationData( thread );
@@ -238,11 +238,11 @@ SCOREP_Profile_TaskCreateEnd( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_TaskBegin( SCOREP_Thread_LocationData* thread,
-                          SCOREP_RegionHandle         regionHandle,
-                          uint64_t                    taskId,
-                          uint64_t                    timestamp,
-                          uint64_t*                   metric_values )
+SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
+                          SCOREP_RegionHandle regionHandle,
+                          uint64_t            taskId,
+                          uint64_t            timestamp,
+                          uint64_t*           metric_values )
 {
     /* Create new task entry */
     SCOREP_Profile_LocationData* location =
@@ -262,11 +262,11 @@ SCOREP_Profile_TaskBegin( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_TaskResume( SCOREP_Thread_LocationData* thread,
-                           SCOREP_RegionHandle         regionHandle,
-                           uint64_t                    taskId,
-                           uint64_t                    timestamp,
-                           uint64_t*                   metric_values )
+SCOREP_Profile_TaskResume( SCOREP_Location*    thread,
+                           SCOREP_RegionHandle regionHandle,
+                           uint64_t            taskId,
+                           uint64_t            timestamp,
+                           uint64_t*           metric_values )
 {
     SCOREP_Profile_LocationData* location =
         SCOREP_Thread_GetProfileLocationData( thread );
@@ -301,10 +301,10 @@ SCOREP_Profile_TaskResume( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_TaskCompleted( SCOREP_Thread_LocationData* thread,
-                              SCOREP_RegionHandle         regionHandle,
-                              uint64_t                    timestamp,
-                              uint64_t*                   metric_values )
+SCOREP_Profile_TaskCompleted( SCOREP_Location*    thread,
+                              SCOREP_RegionHandle regionHandle,
+                              uint64_t            timestamp,
+                              uint64_t*           metric_values )
 {
     SCOREP_Profile_LocationData* location =
         SCOREP_Thread_GetProfileLocationData( thread );

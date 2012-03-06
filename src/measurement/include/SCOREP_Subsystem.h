@@ -98,7 +98,7 @@ typedef struct SCOREP_Subsystem
      * Finalizes the per-location data from this subsystem.
      *
      */
-    void ( * subsystem_finalize_location )( struct SCOREP_Thread_LocationData* );
+    void ( * subsystem_finalize_location )( struct SCOREP_Location* );
 
     /**
      * Finalizes the subsystem for measurement.

@@ -31,7 +31,7 @@
  *          or NULL if we don't have metrics to read from.
  */
 uint64_t*
-SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData );
+SCOREP_Metric_read( SCOREP_Location* locationData );
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between

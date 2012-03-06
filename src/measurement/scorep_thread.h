@@ -49,10 +49,10 @@ SCOREP_Thread_Initialize();
 /**
  *
  */
-SCOREP_Thread_LocationData*
-SCOREP_CreateLocation( SCOREP_Thread_LocationData* parent,
-                       SCOREP_LocationType         type,
-                       const char*                 name );
+SCOREP_Location*
+SCOREP_CreateLocation( SCOREP_Location*    parent,
+                       SCOREP_LocationType type,
+                       const char*         name );
 
 
 /**
@@ -97,26 +97,26 @@ SCOREP_Thread_GetLocationLocalMemoryPageManagers();
 
 
 SCOREP_Profile_LocationData*
-SCOREP_Thread_GetProfileLocationData( SCOREP_Thread_LocationData* locationData );
+SCOREP_Thread_GetProfileLocationData( SCOREP_Location* locationData );
 
 
 SCOREP_Trace_LocationData*
-SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData );
+SCOREP_Thread_GetTraceLocationData( SCOREP_Location* locationData );
 
 
 uint64_t
-SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData );
+SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData );
 
 
 SCOREP_LocationHandle
-SCOREP_Thread_GetLocationHandle( SCOREP_Thread_LocationData* locationData );
+SCOREP_Thread_GetLocationHandle( SCOREP_Location* locationData );
 
 uint64_t
-SCOREP_Thread_GetLastTimestamp( SCOREP_Thread_LocationData* locationData );
+SCOREP_Thread_GetLastTimestamp( SCOREP_Location* locationData );
 
 void
-SCOREP_Thread_SetLastTimestamp( SCOREP_Thread_LocationData* locationData,
-                                int64_t                     timestamp );
+SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData,
+                                int64_t          timestamp );
 
 
 uint32_t

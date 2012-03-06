@@ -28,14 +28,14 @@
 #include <assert.h>
 
 scorep_profile_node*
-scorep_profile_get_current_node( SCOREP_Thread_LocationData* thread )
+scorep_profile_get_current_node( SCOREP_Location* thread )
 {
     return SCOREP_Thread_GetProfileLocationData( thread )->current_task_node;
 }
 
 void
-scorep_profile_set_current_node( SCOREP_Thread_LocationData* thread,
-                                 scorep_profile_node*        node )
+scorep_profile_set_current_node( SCOREP_Location*     thread,
+                                 scorep_profile_node* node )
 {
     SCOREP_Thread_GetProfileLocationData( thread )->current_task_node = node;
 }

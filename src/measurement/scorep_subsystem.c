@@ -136,7 +136,7 @@ scorep_subsystems_initialize_location( void )
 
 
 void
-scorep_subsystems_finalize_location( SCOREP_Thread_LocationData* locationData )
+scorep_subsystems_finalize_location( SCOREP_Location* locationData )
 {
     for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {

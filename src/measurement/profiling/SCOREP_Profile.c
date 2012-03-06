@@ -220,10 +220,10 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
        only when we are outside of a parallel region. Thus, we only exit
        regions on the main location.
      */
-    uint64_t                    exit_time = SCOREP_GetClockTicks();
-    SCOREP_Thread_LocationData* thread    = SCOREP_Thread_GetLocationData();
-    scorep_profile_node*        node      = NULL;
-    uint64_t*                   metrics   = NULL;
+    uint64_t             exit_time = SCOREP_GetClockTicks();
+    SCOREP_Location*     thread    = SCOREP_Thread_GetLocationData();
+    scorep_profile_node* node      = NULL;
+    uint64_t*            metrics   = NULL;
 
     if ( thread != NULL )
     {
@@ -326,11 +326,11 @@ SCOREP_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
 *****************************************************************************************/
 
 void
-SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
-                      SCOREP_RegionHandle         region,
-                      SCOREP_RegionType           type,
-                      uint64_t                    timestamp,
-                      uint64_t*                   metrics )
+SCOREP_Profile_Enter( SCOREP_Location*    thread,
+                      SCOREP_RegionHandle region,
+                      SCOREP_RegionType   type,
+                      uint64_t            timestamp,
+                      uint64_t*           metrics )
 {
     //printf( "%u: Enter %s\n", SCOREP_Thread_GetLocationId( thread ), SCOREP_Region_GetName( region ) );
     scorep_profile_node* node = NULL;
@@ -377,10 +377,10 @@ SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
 
 
 void
-SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
-                     SCOREP_RegionHandle         region,
-                     uint64_t                    timestamp,
-                     uint64_t*                   metrics )
+SCOREP_Profile_Exit( SCOREP_Location*    thread,
+                     SCOREP_RegionHandle region,
+                     uint64_t            timestamp,
+                     uint64_t*           metrics )
 {
     //printf( "%u: Exit %s\n", SCOREP_Thread_GetLocationId( thread ), SCOREP_Region_GetName( region ) );
     int                          i;
@@ -412,9 +412,9 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
-                               SCOREP_MetricHandle         metric,
-                               uint64_t                    value )
+SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
+                               SCOREP_MetricHandle metric,
+                               uint64_t            value )
 {
     scorep_profile_node*              node     = NULL;
     scorep_profile_sparse_metric_int* current  = NULL;
@@ -439,9 +439,9 @@ SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_TriggerDouble( SCOREP_Thread_LocationData* thread,
-                              SCOREP_MetricHandle         metric,
-                              double                      value )
+SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
+                              SCOREP_MetricHandle metric,
+                              double              value )
 {
     scorep_profile_node*                 node     = NULL;
     scorep_profile_sparse_metric_double* current  = NULL;
@@ -466,9 +466,9 @@ SCOREP_Profile_TriggerDouble( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_ParameterString( SCOREP_Thread_LocationData* thread,
-                                SCOREP_ParameterHandle      param,
-                                SCOREP_StringHandle         string )
+SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
+                                SCOREP_ParameterHandle param,
+                                SCOREP_StringHandle    string )
 {
     scorep_profile_node*       node = NULL;
     scorep_profile_type_data_t node_data;
@@ -513,9 +513,9 @@ SCOREP_Profile_ParameterString( SCOREP_Thread_LocationData* thread,
 }
 
 void
-SCOREP_Profile_ParameterInteger( SCOREP_Thread_LocationData* thread,
-                                 SCOREP_ParameterHandle      param,
-                                 int64_t                     value )
+SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
+                                 SCOREP_ParameterHandle param,
+                                 int64_t                value )
 {
     scorep_profile_node*       node = NULL;
     scorep_profile_type_data_t node_data;
@@ -584,14 +584,14 @@ SCOREP_Profile_ParameterInteger( SCOREP_Thread_LocationData* thread,
 *****************************************************************************************/
 
 void
-SCOREP_Profile_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
-                                 SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Profile_OnThreadCreation( SCOREP_Location* locationData,
+                                 SCOREP_Location* parentLocationData )
 {
 }
 
 void
-SCOREP_Profile_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData )
 {
     SCOREP_Profile_LocationData* thread_data    = NULL;
     SCOREP_Profile_LocationData* parent_data    = NULL;
@@ -671,8 +671,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
 
 
 void
-SCOREP_Profile_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
-                                    SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Profile_OnThreadDectivation( SCOREP_Location* locationData,
+                                    SCOREP_Location* parentLocationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
 
@@ -688,8 +688,8 @@ SCOREP_Profile_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
 
 
 void
-SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData )
+SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData )
 {
     SCOREP_Profile_LocationData* parent_data = NULL;
     SCOREP_Profile_LocationData* thread_data = NULL;
@@ -756,8 +756,8 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
 }
 
 void
-SCOREP_Profile_OnFork( SCOREP_Thread_LocationData* threadData,
-                       size_t                      maxChildThreads )
+SCOREP_Profile_OnFork( SCOREP_Location* threadData,
+                       size_t           maxChildThreads )
 {
     scorep_profile_node*         fork_node   = NULL;
     SCOREP_Profile_LocationData* thread_data = NULL;

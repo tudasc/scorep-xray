@@ -110,10 +110,10 @@ SCOREP_ExitRegion
 void
 SCOREP_Location_ExitRegion
 (
-    SCOREP_Thread_LocationData* location,
-    uint64_t                    timestamp,
-    SCOREP_RegionHandle         regionHandle,
-    uint64_t*                   metricValues
+    SCOREP_Location*    location,
+    uint64_t            timestamp,
+    SCOREP_RegionHandle regionHandle,
+    uint64_t*           metricValues
 );
 
 
@@ -133,10 +133,10 @@ SCOREP_Location_ExitRegion
 void
 SCOREP_Location_EnterRegion
 (
-    SCOREP_Thread_LocationData* location,
-    uint64_t                    timestamp,
-    SCOREP_RegionHandle         regionHandle,
-    uint64_t*                   metricValues
+    SCOREP_Location*    location,
+    uint64_t            timestamp,
+    SCOREP_RegionHandle regionHandle,
+    uint64_t*           metricValues
 );
 
 

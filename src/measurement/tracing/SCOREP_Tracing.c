@@ -329,8 +329,8 @@ SCOREP_Tracing_GetEventWriter( void )
 }
 
 static void
-scorep_trace_finalize_event_writer_cb( SCOREP_Thread_LocationData* locationData,
-                                       void*                       userData )
+scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
+                                       void*            userData )
 {
     SCOREP_LocationHandle location_handle =
         SCOREP_Thread_GetLocationHandle( locationData );

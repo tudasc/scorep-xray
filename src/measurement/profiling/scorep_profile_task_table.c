@@ -308,7 +308,7 @@ scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_task_parallel_exit( SCOREP_Thread_LocationData* thread )
+scorep_profile_task_parallel_exit( SCOREP_Location* thread )
 {
     SCOREP_Profile_LocationData* location =
         SCOREP_Thread_GetProfileLocationData( thread );

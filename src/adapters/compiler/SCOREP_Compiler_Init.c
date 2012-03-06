@@ -97,7 +97,7 @@ scorep_compiler_init_location();
    compiler adapter implementation.
  */
 extern void
-scorep_compiler_final_location( SCOREP_Thread_LocationData* location );
+scorep_compiler_final_location( SCOREP_Location* location );
 
 /**
    The adapter finalize function is compiler specific. Thus it is contained in each

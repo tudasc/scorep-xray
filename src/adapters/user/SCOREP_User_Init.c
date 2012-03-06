@@ -80,7 +80,7 @@ scorep_user_init_location()
 /** Finalizes the location specific data of the user adapter.
  */
 static void
-scorep_user_final_location( SCOREP_Thread_LocationData* locationData )
+scorep_user_final_location( SCOREP_Location* locationData )
 {
 }
 

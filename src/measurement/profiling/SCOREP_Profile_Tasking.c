@@ -194,19 +194,19 @@ scorep_profile_exit_task_pointer( SCOREP_Profile_LocationData* location,
 ****************************************************************************************/
 
 void
-SCOREP_Profile_TaskCreate( SCOREP_Thread_LocationData* location,
-                           uint64_t                    timestamp,
-                           uint64_t                    taskId )
+SCOREP_Profile_TaskCreate( SCOREP_Location* location,
+                           uint64_t         timestamp,
+                           uint64_t         taskId )
 {
 }
 
 
 void
-SCOREP_Profile_TaskBegin( SCOREP_Thread_LocationData* thread,
-                          SCOREP_RegionHandle         regionHandle,
-                          uint64_t                    taskId,
-                          uint64_t                    timestamp,
-                          uint64_t*                   metric_values )
+SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
+                          SCOREP_RegionHandle regionHandle,
+                          uint64_t            taskId,
+                          uint64_t            timestamp,
+                          uint64_t*           metric_values )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -229,10 +229,10 @@ SCOREP_Profile_TaskBegin( SCOREP_Thread_LocationData* thread,
 
 
 void
-SCOREP_Profile_TaskSwitch( SCOREP_Thread_LocationData* thread,
-                           uint64_t                    taskId,
-                           uint64_t                    timestamp,
-                           uint64_t*                   metric_values )
+SCOREP_Profile_TaskSwitch( SCOREP_Location* thread,
+                           uint64_t         taskId,
+                           uint64_t         timestamp,
+                           uint64_t*        metric_values )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -268,11 +268,11 @@ SCOREP_Profile_TaskSwitch( SCOREP_Thread_LocationData* thread,
 
 
 void
-SCOREP_Profile_TaskEnd( SCOREP_Thread_LocationData* thread,
-                        SCOREP_RegionHandle         regionHandle,
-                        uint64_t                    taskId,
-                        uint64_t                    timestamp,
-                        uint64_t*                   metric_values )
+SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
+                        SCOREP_RegionHandle regionHandle,
+                        uint64_t            taskId,
+                        uint64_t            timestamp,
+                        uint64_t*           metric_values )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 

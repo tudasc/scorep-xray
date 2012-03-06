@@ -52,7 +52,7 @@ void
 scorep_subsystems_initialize_location( void );
 
 void
-scorep_subsystems_finalize_location( SCOREP_Thread_LocationData* locationData );
+scorep_subsystems_finalize_location( SCOREP_Location* locationData );
 
 
 #endif /* SCOREP_INTERNAL_SUBSYSTEM_H */

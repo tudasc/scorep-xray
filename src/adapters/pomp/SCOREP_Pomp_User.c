@@ -192,7 +192,7 @@ scorep_pomp_init_location()
 /** Allows finaltialization of location specific data. Nothing done inside this funcion.
  */
 static void
-scorep_pomp_final_location( SCOREP_Thread_LocationData* locationData )
+scorep_pomp_final_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_pomp_final_location\n" );

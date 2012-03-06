@@ -74,25 +74,25 @@ typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 
 
 /* *INDENT-OFF* */
-static SCOREP_Thread_LocationData* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
+static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
-static void scorep_thread_call_externals_on_new_location(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent, bool isMainLocation );
-static void scorep_thread_call_externals_on_new_thread(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
-static void scorep_thread_call_externals_on_thread_activation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
-static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent);
+static void scorep_thread_call_externals_on_new_location(SCOREP_Location* locationData, SCOREP_Location* parent, bool isMainLocation );
+static void scorep_thread_call_externals_on_new_thread(SCOREP_Location* locationData, SCOREP_Location* parent);
+static void scorep_thread_call_externals_on_thread_activation(SCOREP_Location* locationData, SCOREP_Location* parent);
+static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
-static void scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData, SCOREP_Thread_LocationData* parent );
+static void scorep_defer_location_initialization( SCOREP_Location* locationData, SCOREP_Location* parent );
 /* *INDENT-ON* */
 
 
 typedef struct scorep_deferred_location scorep_deferred_location;
 struct scorep_deferred_location
 {
-    SCOREP_Thread_LocationData* location;
-    SCOREP_Thread_LocationData* parent;
-    scorep_deferred_location*   next;
+    SCOREP_Location*          location;
+    SCOREP_Location*          parent;
+    scorep_deferred_location* next;
 };
 
 static scorep_deferred_location*  scorep_deferred_locations_head;
@@ -105,7 +105,7 @@ struct SCOREP_Thread_ThreadPrivateData
     SCOREP_Thread_ThreadPrivateData** children;
     uint32_t                          n_children;
     bool                              is_active;
-    SCOREP_Thread_LocationData*       location_data;
+    SCOREP_Location*                  location_data;
 };
 
 
@@ -114,7 +114,7 @@ struct SCOREP_Thread_ThreadPrivateData
 
 // locations live inside SCOREP_Thread_ThreadPrivateData, may be referenced by
 // multiple ones.
-struct SCOREP_Thread_LocationData
+struct SCOREP_Location
 {
     uint32_t                       local_id;    // process local id, 0, 1, ...
     uint64_t                       location_id; // global id
@@ -126,15 +126,15 @@ struct SCOREP_Thread_LocationData
     SCOREP_Profile_LocationData*   profile_data;
     SCOREP_Trace_LocationData*     trace_data;
 
-    SCOREP_Thread_LocationData*    next; // store location objects in list for easy cleanup
+    SCOREP_Location*               next; // store location objects in list for easy cleanup
 
     /** Flexible array member with length scorep_subsystems_get_number() */
     void* per_subsystem_data[];
 };
-static struct SCOREP_Thread_LocationData*      location_list_head;
-static struct SCOREP_Thread_LocationData**     location_list_tail = &location_list_head;
+static struct SCOREP_Location*                 location_list_head;
+static struct SCOREP_Location**                location_list_tail = &location_list_head;
 static struct SCOREP_Thread_ThreadPrivateData* initial_thread;
-static struct SCOREP_Thread_LocationData*      initial_location;
+static struct SCOREP_Location*                 initial_location;
 static uint32_t                                location_counter;
 
 
@@ -166,10 +166,10 @@ SCOREP_Thread_Initialize()
 }
 
 
-SCOREP_Thread_LocationData*
-SCOREP_CreateLocation( SCOREP_Thread_LocationData* parent,
-                       SCOREP_LocationType         type,
-                       const char*                 name )
+SCOREP_Location*
+SCOREP_CreateLocation( SCOREP_Location*    parent,
+                       SCOREP_LocationType type,
+                       const char*         name )
 {
     if ( type == SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
@@ -194,7 +194,7 @@ SCOREP_CreateLocation( SCOREP_Thread_LocationData* parent,
      * is needed.
      */
 
-    SCOREP_Thread_LocationData* new_location = scorep_thread_create_location_data_for( NULL );
+    SCOREP_Location* new_location = scorep_thread_create_location_data_for( NULL );
 
     new_location->type = type;
 
@@ -224,8 +224,8 @@ scorep_thread_update_tpd( SCOREP_Thread_ThreadPrivateData* newTPD )
 
 
 void
-scorep_thread_call_externals_on_new_thread( SCOREP_Thread_LocationData* locationData,
-                                            SCOREP_Thread_LocationData* parent )
+scorep_thread_call_externals_on_new_thread( SCOREP_Location* locationData,
+                                            SCOREP_Location* parent )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -236,9 +236,9 @@ scorep_thread_call_externals_on_new_thread( SCOREP_Thread_LocationData* location
 
 
 void
-scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locationData,
-                                              SCOREP_Thread_LocationData* parent,
-                                              bool                        isMainLocation )
+scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
+                                              SCOREP_Location* parent,
+                                              bool             isMainLocation )
 {
     // Where to do the locking? Well, at the moment we do the locking
     // in SCOREP_Profile_OnLocationCreation, SCOREP_Tracing_OnLocationCreation
@@ -275,8 +275,8 @@ scorep_thread_call_externals_on_new_location( SCOREP_Thread_LocationData* locati
 }
 
 void
-scorep_thread_call_externals_on_thread_activation( SCOREP_Thread_LocationData* locationData,
-                                                   SCOREP_Thread_LocationData* parent )
+scorep_thread_call_externals_on_thread_activation( SCOREP_Location* locationData,
+                                                   SCOREP_Location* parent )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -286,11 +286,11 @@ scorep_thread_call_externals_on_thread_activation( SCOREP_Thread_LocationData* l
 }
 
 
-SCOREP_Thread_LocationData*
+SCOREP_Location*
 scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
 {
-    SCOREP_Thread_LocationData* new_location;
-    size_t                      total_memory =
+    SCOREP_Location* new_location;
+    size_t           total_memory =
         sizeof( *new_location ) + ( sizeof( *new_location->per_subsystem_data )
                                     * scorep_subsystems_get_number() );
     // need synchronized malloc here
@@ -413,10 +413,10 @@ SCOREP_Thread_FinalizeLocations()
     assert( location_counter > 0 );
     assert( POMP_TPD_MANGLED != 0 );
 
-    SCOREP_Thread_LocationData* location_data = location_list_head;
+    SCOREP_Location* location_data = location_list_head;
     while ( location_data )
     {
-        SCOREP_Thread_LocationData* tmp = location_data->next;
+        SCOREP_Location* tmp = location_data->next;
 
         scorep_subsystems_finalize_location( location_data );
         SCOREP_Tracing_DeleteLocationData( location_data->trace_data );
@@ -503,8 +503,8 @@ SCOREP_Thread_OnThreadJoin()
 
 
 void
-scorep_thread_call_externals_on_thread_deactivation( SCOREP_Thread_LocationData* locationData,
-                                                     SCOREP_Thread_LocationData* parent )
+scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationData,
+                                                     SCOREP_Location* parent )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -514,7 +514,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Thread_LocationData*
 }
 
 
-SCOREP_Thread_LocationData*
+SCOREP_Location*
 SCOREP_Thread_GetLocationData()
 {
     if ( TPD->is_active )
@@ -586,22 +586,22 @@ SCOREP_Thread_GetLocationLocalMemoryPageManagers()
 
 
 SCOREP_Profile_LocationData*
-SCOREP_Thread_GetProfileLocationData( SCOREP_Thread_LocationData* locationData )
+SCOREP_Thread_GetProfileLocationData( SCOREP_Location* locationData )
 {
     return locationData->profile_data;
 }
 
 
 SCOREP_Trace_LocationData*
-SCOREP_Thread_GetTraceLocationData( SCOREP_Thread_LocationData* locationData )
+SCOREP_Thread_GetTraceLocationData( SCOREP_Location* locationData )
 {
     return locationData->trace_data;
 }
 
 
 void*
-SCOREP_Thread_GetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
-                                        size_t                      subsystem_id )
+SCOREP_Thread_GetSubsystemLocationData( SCOREP_Location* locationData,
+                                        size_t           subsystem_id )
 {
     assert( subsystem_id < scorep_subsystems_get_number() );
 
@@ -609,9 +609,9 @@ SCOREP_Thread_GetSubsystemLocationData( SCOREP_Thread_LocationData* locationData
 }
 
 void
-SCOREP_Thread_SetSubsystemLocationData( SCOREP_Thread_LocationData* locationData,
-                                        size_t                      subsystem_id,
-                                        void*                       subsystem_data )
+SCOREP_Thread_SetSubsystemLocationData( SCOREP_Location* locationData,
+                                        size_t           subsystem_id,
+                                        void*            subsystem_data )
 {
     assert( subsystem_id < scorep_subsystems_get_number() );
 
@@ -619,14 +619,14 @@ SCOREP_Thread_SetSubsystemLocationData( SCOREP_Thread_LocationData* locationData
 }
 
 uint32_t
-SCOREP_Thread_GetLocationId( SCOREP_Thread_LocationData* locationData )
+SCOREP_Thread_GetLocationId( SCOREP_Location* locationData )
 {
     return locationData->local_id;
 }
 
 
 uint64_t
-SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData )
+SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
 {
     assert( SCOREP_Mpi_IsInitialized() );
 
@@ -646,21 +646,21 @@ SCOREP_Thread_GetGlobalLocationId( SCOREP_Thread_LocationData* locationData )
 
 
 SCOREP_LocationHandle
-SCOREP_Thread_GetLocationHandle( SCOREP_Thread_LocationData* locationData )
+SCOREP_Thread_GetLocationHandle( SCOREP_Location* locationData )
 {
     return locationData->location_handle;
 }
 
 
 uint64_t
-SCOREP_Thread_GetLastTimestamp( SCOREP_Thread_LocationData* locationData )
+SCOREP_Thread_GetLastTimestamp( SCOREP_Location* locationData )
 {
     return locationData->last_timestamp;
 }
 
 
 void
-SCOREP_Thread_SetLastTimestamp( SCOREP_Thread_LocationData* locationData, int64_t timestamp )
+SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData, int64_t timestamp )
 {
     locationData->last_timestamp = timestamp;
 }
@@ -680,8 +680,8 @@ SCOREP_Thread_GetNumberOfLocations()
 
 
 void
-scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData,
-                                      SCOREP_Thread_LocationData* parent )
+scorep_defer_location_initialization( SCOREP_Location* locationData,
+                                      SCOREP_Location* parent )
 {
     scorep_deferred_location* deferred_location = SCOREP_Memory_AllocForMisc( sizeof( scorep_deferred_location ) );
     assert( deferred_location );
@@ -700,7 +700,7 @@ scorep_defer_location_initialization( SCOREP_Thread_LocationData* locationData,
 void
 SCOREP_ProcessDeferredLocations()
 {
-    SCOREP_Thread_LocationData* current_location = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* current_location = SCOREP_Thread_GetLocationData();
 
     SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
     {
@@ -709,7 +709,7 @@ SCOREP_ProcessDeferredLocations()
 
         while ( deferred_location )
         {
-            SCOREP_Thread_LocationData* location = deferred_location->location;
+            SCOREP_Location* location = deferred_location->location;
             if ( location == current_location )
             {
                 current_location_in_deferred_locations = true;
@@ -732,8 +732,8 @@ SCOREP_ProcessDeferredLocations()
         deferred_location = scorep_deferred_locations_head;
         while ( deferred_location )
         {
-            SCOREP_Thread_LocationData* location = deferred_location->location;
-            SCOREP_Thread_LocationData* parent   = deferred_location->parent;
+            SCOREP_Location* location = deferred_location->location;
+            SCOREP_Location* parent   = deferred_location->parent;
             if ( parent )
             {
                 SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent =
@@ -750,13 +750,13 @@ SCOREP_ProcessDeferredLocations()
 }
 
 void
-SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Thread_LocationData*,
+SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Location*,
                                                void* ),
                                void* data )
 {
     assert( cb );
 
-    for ( SCOREP_Thread_LocationData* location_data = location_list_head;
+    for ( SCOREP_Location* location_data = location_list_head;
           location_data;
           location_data = location_data->next )
     {

@@ -242,8 +242,8 @@ scorep_metric_finalize_service()
 }
 
 static void
-initialize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
-                               void*                       data )
+initialize_location_metric_cb( SCOREP_Location* locationData,
+                               void*            data )
 {
     /* Call only, if previously initialized */
     if ( scorep_metric_management_initialized )
@@ -293,7 +293,7 @@ static SCOREP_Error_Code
 scorep_metric_initialize_location()
 {
     /* Get the thread local data */
-    SCOREP_Thread_LocationData* thread_data = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* thread_data = SCOREP_Thread_GetLocationData();
     SCOREP_ASSERT( thread_data != NULL );
 
     SCOREP_Metric_LocationData* metric_data =
@@ -309,8 +309,8 @@ scorep_metric_initialize_location()
 }
 
 static void
-finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
-                             void*                       data )
+finalize_location_metric_cb( SCOREP_Location* locationData,
+                             void*            data )
 {
     /* Call only, if previously initialized */
     if ( scorep_metric_management_initialized )
@@ -338,7 +338,7 @@ finalize_location_metric_cb( SCOREP_Thread_LocationData* locationData,
  *  @param location Reference to location that will finalize its metric related data structures.
  */
 static void
-scorep_metric_finalize_location( SCOREP_Thread_LocationData* locationData )
+scorep_metric_finalize_location( SCOREP_Location* locationData )
 {
     finalize_location_metric_cb( locationData, NULL );
 }
@@ -354,7 +354,7 @@ scorep_metric_finalize_location( SCOREP_Thread_LocationData* locationData )
  *          or NULL if we don't have metrics to read from.
  */
 uint64_t*
-SCOREP_Metric_read( SCOREP_Thread_LocationData* locationData )
+SCOREP_Metric_read( SCOREP_Location* locationData )
 {
     /* Call only, if previously initialized, and we have at least one metric
      * to read

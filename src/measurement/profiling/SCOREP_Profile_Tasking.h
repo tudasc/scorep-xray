@@ -36,9 +36,9 @@
    @param timestamp    Timestamp of this event.
  */
 void
-SCOREP_Profile_TaskCreate( SCOREP_Thread_LocationData* location,
-                           uint64_t                    timestamp,
-                           uint64_t                    taskId );
+SCOREP_Profile_TaskCreate( SCOREP_Location* location,
+                           uint64_t         timestamp,
+                           uint64_t         taskId );
 
 /**
    Implements the handling of a task switch event.
@@ -48,10 +48,10 @@ SCOREP_Profile_TaskCreate( SCOREP_Thread_LocationData* location,
    @param metric_values Array of the dense metric values.
  */
 void
-SCOREP_Profile_TaskSwitch( SCOREP_Thread_LocationData* location,
-                           uint64_t                    taskId,
-                           uint64_t                    timestamp,
-                           uint64_t*                   metric_values );
+SCOREP_Profile_TaskSwitch( SCOREP_Location* location,
+                           uint64_t         taskId,
+                           uint64_t         timestamp,
+                           uint64_t*        metric_values );
 
 /**
    Implements the handling of a task begin event.
@@ -62,11 +62,11 @@ SCOREP_Profile_TaskSwitch( SCOREP_Thread_LocationData* location,
    @param metric_values Array of the dense metric values.
  */
 void
-SCOREP_Profile_TaskBegin( SCOREP_Thread_LocationData* location,
-                          SCOREP_RegionHandle         region,
-                          uint64_t                    taskId,
-                          uint64_t                    timestamp,
-                          uint64_t*                   metric_values );
+SCOREP_Profile_TaskBegin( SCOREP_Location*    location,
+                          SCOREP_RegionHandle region,
+                          uint64_t            taskId,
+                          uint64_t            timestamp,
+                          uint64_t*           metric_values );
 
 /**
    Implements the handling of a task end event.
@@ -77,10 +77,10 @@ SCOREP_Profile_TaskBegin( SCOREP_Thread_LocationData* location,
    @param metric_values Array of the dense metric values.
  */
 void
-SCOREP_Profile_TaskEnd( SCOREP_Thread_LocationData* location,
-                        SCOREP_RegionHandle         region,
-                        uint64_t                    taskId,
-                        uint64_t                    timestamp,
-                        uint64_t*                   metric_values );
+SCOREP_Profile_TaskEnd( SCOREP_Location*    location,
+                        SCOREP_RegionHandle region,
+                        uint64_t            taskId,
+                        uint64_t            timestamp,
+                        uint64_t*           metric_values );
 
 #endif /* SCOREP_PROFILING_TASKING */

@@ -171,11 +171,11 @@ SCOREP_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
                     at the @ref SCOREP_Profile_Initialize call.
  */
 void
-SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
-                      SCOREP_RegionHandle         region,
-                      SCOREP_RegionType           type,
-                      uint64_t                    timestamp,
-                      uint64_t*                   metrics );
+SCOREP_Profile_Enter( SCOREP_Location*    thread,
+                      SCOREP_RegionHandle region,
+                      SCOREP_RegionType   type,
+                      uint64_t            timestamp,
+                      uint64_t*           metrics );
 
 /**
    Called on exit events to update the profile accoringly.
@@ -188,10 +188,10 @@ SCOREP_Profile_Enter( SCOREP_Thread_LocationData* thread,
                     at the @ref SCOREP_Profile_Initialize call.
  */
 void
-SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
-                     SCOREP_RegionHandle         region,
-                     uint64_t                    timestamp,
-                     uint64_t*                   metrics );
+SCOREP_Profile_Exit( SCOREP_Location*    thread,
+                     SCOREP_RegionHandle region,
+                     uint64_t            timestamp,
+                     uint64_t*           metrics );
 
 /**
    Called when a user metric / atomic / context event for integer values was triggered.
@@ -201,9 +201,9 @@ SCOREP_Profile_Exit( SCOREP_Thread_LocationData* thread,
    @param value  Sample for the metric.
  */
 void
-SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
-                               SCOREP_MetricHandle         metric,
-                               uint64_t                    value );
+SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
+                               SCOREP_MetricHandle metric,
+                               uint64_t            value );
 
 /**
    Called when a user metric / atomic / context event for double values was triggered.
@@ -213,9 +213,9 @@ SCOREP_Profile_TriggerInteger( SCOREP_Thread_LocationData* thread,
    @param value  Sample for the metric.
  */
 void
-SCOREP_Profile_TriggerDouble( SCOREP_Thread_LocationData* thread,
-                              SCOREP_MetricHandle         metric,
-                              double                      value );
+SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
+                              SCOREP_MetricHandle metric,
+                              double              value );
 
 /**
    Called when a string parameter was triggered
@@ -225,9 +225,9 @@ SCOREP_Profile_TriggerDouble( SCOREP_Thread_LocationData* thread,
    @param string Handle of the parameter string value.
  */
 void
-SCOREP_Profile_ParameterString( SCOREP_Thread_LocationData* thread,
-                                SCOREP_ParameterHandle      param,
-                                SCOREP_StringHandle         string );
+SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
+                                SCOREP_ParameterHandle param,
+                                SCOREP_StringHandle    string );
 
 /**
    Called when a integer parameter was triggered
@@ -237,9 +237,9 @@ SCOREP_Profile_ParameterString( SCOREP_Thread_LocationData* thread,
    @param value  The parameter integer value.
  */
 void
-SCOREP_Profile_ParameterInteger( SCOREP_Thread_LocationData* thread,
-                                 SCOREP_ParameterHandle      param,
-                                 int64_t                     value );
+SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
+                                 SCOREP_ParameterHandle param,
+                                 int64_t                value );
 
 /* --------------------------------------------------------------------- Thread Events */
 
@@ -269,8 +269,8 @@ SCOREP_Profile_DeleteLocationData( SCOREP_Profile_LocationData* profileLocationD
    @param  maxChildThreads Not used. Uppe bound of the number of created threads.
  */
 void
-SCOREP_Profile_OnFork( SCOREP_Thread_LocationData* threadData,
-                       size_t                      maxChildThreads );
+SCOREP_Profile_OnFork( SCOREP_Location* threadData,
+                       size_t           maxChildThreads );
 
 /**
  * Triggered on thread creation, i.e. when a thread is encountered the first
@@ -281,8 +281,8 @@ SCOREP_Profile_OnFork( SCOREP_Thread_LocationData* threadData,
  * locationData.
  */
 void
-SCOREP_Profile_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
-                                 SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Profile_OnThreadCreation( SCOREP_Location* locationData,
+                                 SCOREP_Location* parentLocationData );
 
 /**
  * Triggered at the start of every thread/parallel region. Always triggered,
@@ -296,8 +296,8 @@ SCOREP_Profile_OnThreadCreation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Profile_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData );
 
 
 /**
@@ -310,8 +310,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Profile_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
-                                    SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Profile_OnThreadDectivation( SCOREP_Location* locationData,
+                                    SCOREP_Location* parentLocationData );
 
 
 /**
@@ -323,8 +323,8 @@ SCOREP_Profile_OnThreadDectivation( SCOREP_Thread_LocationData* locationData,
  * locationData.
  */
 void
-SCOREP_Profile_OnLocationCreation( SCOREP_Thread_LocationData* locationData,
-                                   SCOREP_Thread_LocationData* parentLocationData );
+SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
+                                   SCOREP_Location* parentLocationData );
 
 
 #endif // SCOREP_PROFILE_H

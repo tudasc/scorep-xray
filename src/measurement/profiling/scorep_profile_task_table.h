@@ -133,7 +133,7 @@ scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
    @param thread Location data of the current location.
  */
 void
-scorep_profile_task_parallel_exit( SCOREP_Thread_LocationData* thread );
+scorep_profile_task_parallel_exit( SCOREP_Location* thread );
 
 /**
    @def SCOREP_PROFILE_IMPLICIT_TASK_ID

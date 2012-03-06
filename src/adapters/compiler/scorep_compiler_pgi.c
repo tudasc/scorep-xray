@@ -136,7 +136,7 @@ scorep_compiler_get_location_id()
     }
 
     /* Else get the thread id from the measurement system */
-    SCOREP_Thread_LocationData* data = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* data = SCOREP_Thread_GetLocationData();
     SCOREP_ASSERT( data != NULL );
     return SCOREP_Thread_GetLocationId( data );
 }
@@ -231,7 +231,7 @@ scorep_compiler_init_location()
 
 /* Location finalization */
 void
-scorep_compiler_final_location( SCOREP_Thread_LocationData* locationData )
+scorep_compiler_final_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter final location!" );
 }
