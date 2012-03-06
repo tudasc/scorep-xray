@@ -334,7 +334,7 @@ SCOREP_DefineLocation( uint64_t              globalLocationId,
 {
     SCOREP_Definitions_Lock();
 
-    SCOREP_SourceFileHandle new_handle = scorep_location_definition_define(
+    SCOREP_LocationHandle new_handle = scorep_location_definition_define(
         &scorep_local_definition_manager,
         globalLocationId,
         parent,
