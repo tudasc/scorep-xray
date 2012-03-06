@@ -25,7 +25,7 @@ make scorep-config-tool-local
 
 # Execute test without OpenMP and compiler instrumentation (only user)
 echo "/* Dummy */" > config.h
-./scorep --verbosity=1 --config=scorep_config.dat --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
+./scorep -v --config=scorep_config.dat --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
     rm -f config.h
     exit 1
@@ -42,7 +42,7 @@ exit 0
 
 # Execute test with OpenMP compiler and user instrumentation.
 echo "/* Dummy */" > config.h
-./scorep --verbosity=1 --config=scorep_config.dat --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
+./scorep -v --config=scorep_config.dat --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
     rm -f config.h
     exit 1

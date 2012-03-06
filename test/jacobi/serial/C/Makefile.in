@@ -2,8 +2,8 @@
 # General Settings
 #------------------------------------------------------------------------------
 
-@SCOREP_COMPILER_SUN_FALSE@PREP = @prefix@/bin/scorep --verbosity=2
-@SCOREP_COMPILER_SUN_TRUE@PREP = @prefix@/bin/scorep --verbosity=2 --nocompiler
+@SCOREP_COMPILER_SUN_FALSE@PREP = @prefix@/bin/scorep -v
+@SCOREP_COMPILER_SUN_TRUE@PREP = @prefix@/bin/scorep -v --nocompiler
 
 CC = $(PREP) @CC@
 CFLAGS = @CFLAGS@

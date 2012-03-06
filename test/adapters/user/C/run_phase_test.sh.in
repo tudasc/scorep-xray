@@ -46,7 +46,7 @@ cp  @abs_srcdir@/scorep_phase_test.c scorep_phase_test.c
 # build instrumented executable
 ./scorep $extra_flag \
          --user \
-         --verbosity=1 \
+         -v \
          --config=scorep_config.dat \
         @CC@ -I. -o scorep_phase_test scorep_phase_test.c @OPENMP_CFLAGS@
 
