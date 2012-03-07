@@ -42,23 +42,13 @@ static bool scorep_env_core_environment_variables_initialized = false;
 // some config variables.
 static bool     scorep_env_verbose;
 static bool     scorep_env_tracing;
+static bool     scorep_env_tracing_use_sion;
+static bool     scorep_env_tracing_compress;
 static bool     scorep_env_profiling;
 static uint64_t scorep_env_total_memory;
 static uint64_t scorep_env_page_size;
-/* Old config variable to enable libsion as OTF2 substrate.
- * Should we keep it for backward compatibility or do we
- * want to remove it? */
-static bool scorep_env_use_sion_substrate;
-/* New config variable to enable libsion as OTF2 substrate */
-static bool scorep_env_tracing_use_sion;
-/* Old config variable to enable trace compression with libz in OTF2.
- * Should we keep it for backward compatibility or do we
- * want to remove it? */
-static bool scorep_env_compress_traces;
-/* New config variable to enable trace compression with libz in OTF2. */
-static bool  scorep_env_tracing_compress;
-static char* scorep_env_experiment_directory;
-static bool  scorep_env_overwrite_experiment_directory;
+static char*    scorep_env_experiment_directory;
+static bool     scorep_env_overwrite_experiment_directory;
 
 /** @brief Measurement system configure variables */
 SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
@@ -108,15 +98,6 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "TOTAL_MEMORY will be split up into pages of size PAGE_SIZE."
     },
     {
-        "use_sion_substrate",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_use_sion_substrate,
-        NULL,
-        "false",
-        "Whether or not to use libsion as OTF2 substrate.",
-        "Whether or not to use libsion as OTF2 substrate."
-    },
-    {
         "tracing_use_sion",
         SCOREP_CONFIG_TYPE_BOOL,
         &scorep_env_tracing_use_sion,
@@ -124,15 +105,6 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "false",
         "Whether or not to use libsion as OTF2 substrate.",
         "Whether or not to use libsion as OTF2 substrate."
-    },
-    {
-        "compress_traces",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_compress_traces,
-        NULL,
-        "false",
-        "Whether or not to compress traces with libz.",
-        "Whether or not to compress traces with libz."
     },
     {
         "tracing_compress",
@@ -263,14 +235,14 @@ bool
 SCOREP_Env_UseSionSubstrate()
 {
     assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_use_sion_substrate || scorep_env_tracing_use_sion;
+    return scorep_env_tracing_use_sion;
 }
 
 bool
 SCOREP_Env_CompressTraces()
 {
     assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_compress_traces || scorep_env_tracing_compress;
+    return scorep_env_tracing_compress;
 }
 
 const char*

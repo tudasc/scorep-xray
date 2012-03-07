@@ -689,7 +689,7 @@ or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffe
   </dl>
  </dd>
 
- <dt><tt>SCOREP_COMPRESS_TRACES</tt></dt>
+ <dt><tt>SCOREP_TRACING_COMPRESS</tt></dt>
  <dd>Whether or not to compress traces with libz<br>
   <dl>
      <dt>Type:</dt><dd>Boolean</dd>
