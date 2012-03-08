@@ -21,6 +21,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "SCOREP_Types.h"
 
 /**
  * @file       SCOREP_Thread_Types.h
@@ -51,6 +52,15 @@ SCOREP_Thread_GetLocationData();
  */
 uint32_t
 SCOREP_Thread_GetLocationId( SCOREP_Location* locationData );
+
+
+/**
+ *  Returns the type of the location.
+ *
+ * @return
+ */
+SCOREP_LocationType
+SCOREP_Thread_GetLocationType( SCOREP_Location* locationData );
 
 
 void*

@@ -115,19 +115,22 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 void
 SCOREP_Location_EnterRegion( SCOREP_Location*    location,
                              uint64_t            timestamp,
-                             SCOREP_RegionHandle regionHandle,
-                             uint64_t*           metricValues )
+                             SCOREP_RegionHandle regionHandle )
 {
+    SCOREP_BUG_ON( !location && SCOREP_Thread_GetLocationType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
+                   "SCOREP_Location_EnterRegion() must not be used for CPU thread locations." );
+
     if ( !location )
     {
         location = SCOREP_Thread_GetLocationData();
     }
-    if ( timestamp == SCOREP_INVALID_TIMESTAMP )
-    {
-        timestamp = scorep_get_timestamp( location );
-    }
 
-    scorep_enter_region( timestamp, regionHandle, metricValues, location );
+    SCOREP_BUG_ON( timestamp < scorep_get_timestamp( location ),
+                   "Invalid event order." );
+
+    uint64_t* metric_values = SCOREP_Metric_read( location );
+
+    scorep_enter_region( timestamp, regionHandle, metric_values, location );
 }
 
 
@@ -186,19 +189,22 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 void
 SCOREP_Location_ExitRegion( SCOREP_Location*    location,
                             uint64_t            timestamp,
-                            SCOREP_RegionHandle regionHandle,
-                            uint64_t*           metricValues )
+                            SCOREP_RegionHandle regionHandle )
 {
+    SCOREP_BUG_ON( !location && SCOREP_Thread_GetLocationType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
+                   "SCOREP_Location_ExitRegion() must not be used for CPU thread locations." );
+
     if ( !location )
     {
         location = SCOREP_Thread_GetLocationData();
     }
-    if ( timestamp == SCOREP_INVALID_TIMESTAMP )
-    {
-        timestamp = scorep_get_timestamp( location );
-    }
 
-    scorep_exit_region( timestamp, regionHandle, metricValues, location );
+    SCOREP_BUG_ON( timestamp < scorep_get_timestamp( location ),
+                   "Invalid event order." );
+
+    uint64_t* metric_values = SCOREP_Metric_read( location );
+
+    scorep_exit_region( timestamp, regionHandle, metric_values, location );
 }
 
 

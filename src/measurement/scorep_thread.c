@@ -621,6 +621,11 @@ SCOREP_Thread_GetLocationId( SCOREP_Location* locationData )
     return locationData->local_id;
 }
 
+SCOREP_LocationType
+SCOREP_Thread_GetLocationType( SCOREP_Location* locationData )
+{
+    return locationData->type;
+}
 
 uint64_t
 SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )

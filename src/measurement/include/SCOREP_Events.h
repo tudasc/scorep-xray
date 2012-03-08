@@ -102,18 +102,17 @@ SCOREP_ExitRegion
  * of using the current CPU thread/time/metrics.
  *
  * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
  * @param timestamp    Time that this event happened at.
  *                     Needs to be monotonic increasing for each location.
  * @param regionHandle The corresponding region for the exit event.
- * @param metricValues Custom metric values for this event.
  */
 void
 SCOREP_Location_ExitRegion
 (
     SCOREP_Location*    location,
     uint64_t            timestamp,
-    SCOREP_RegionHandle regionHandle,
-    uint64_t*           metricValues
+    SCOREP_RegionHandle regionHandle
 );
 
 
@@ -125,18 +124,17 @@ SCOREP_Location_ExitRegion
  * of using the current CPU thread/time/metrics
  *
  * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
  * @param timestamp    Time that this event happened at.
  *                     Needs to be monotonic increasing for each location.
- * @param regionHandle The corresponding region for the enter event.
- * @param metriValues  Custom metric values for this event
+ * @param regionHandle The corresponding region for the enter event
  */
 void
 SCOREP_Location_EnterRegion
 (
     SCOREP_Location*    location,
     uint64_t            timestamp,
-    SCOREP_RegionHandle regionHandle,
-    uint64_t*           metricValues
+    SCOREP_RegionHandle regionHandle
 );
 
 
