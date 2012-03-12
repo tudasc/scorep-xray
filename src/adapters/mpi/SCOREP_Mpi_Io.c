@@ -56,7 +56,7 @@
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_close call with enter and exit events.
  */
 int
 MPI_File_close( MPI_File* fh )
@@ -90,7 +90,7 @@ MPI_File_close( MPI_File* fh )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_delete call with enter and exit events.
  */
 int
 MPI_File_delete( char* filename, MPI_Info info )
@@ -124,7 +124,7 @@ MPI_File_delete( char* filename, MPI_Info info )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_amode call with enter and exit events.
  */
 int
 MPI_File_get_amode( MPI_File fh, int* amode )
@@ -158,7 +158,7 @@ MPI_File_get_amode( MPI_File fh, int* amode )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_atomicity call with enter and exit events.
  */
 int
 MPI_File_get_atomicity( MPI_File fh, int* flag )
@@ -192,7 +192,7 @@ MPI_File_get_atomicity( MPI_File fh, int* flag )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_byte_offset call with enter and exit events.
  */
 int
 MPI_File_get_byte_offset( MPI_File fh, MPI_Offset offset, MPI_Offset* disp )
@@ -226,7 +226,7 @@ MPI_File_get_byte_offset( MPI_File fh, MPI_Offset offset, MPI_Offset* disp )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_group call with enter and exit events.
  */
 int
 MPI_File_get_group( MPI_File fh, MPI_Group* group )
@@ -260,7 +260,7 @@ MPI_File_get_group( MPI_File fh, MPI_Group* group )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_info call with enter and exit events.
  */
 int
 MPI_File_get_info( MPI_File fh, MPI_Info* info_used )
@@ -294,7 +294,7 @@ MPI_File_get_info( MPI_File fh, MPI_Info* info_used )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_position call with enter and exit events.
  */
 int
 MPI_File_get_position( MPI_File fh, MPI_Offset* offset )
@@ -328,7 +328,7 @@ MPI_File_get_position( MPI_File fh, MPI_Offset* offset )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_position_shared call with enter and exit events.
  */
 int
 MPI_File_get_position_shared( MPI_File fh, MPI_Offset* offset )
@@ -362,7 +362,7 @@ MPI_File_get_position_shared( MPI_File fh, MPI_Offset* offset )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_size call with enter and exit events.
  */
 int
 MPI_File_get_size( MPI_File fh, MPI_Offset* size )
@@ -396,7 +396,7 @@ MPI_File_get_size( MPI_File fh, MPI_Offset* size )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_type_extent call with enter and exit events.
  */
 int
 MPI_File_get_type_extent( MPI_File fh, MPI_Datatype datatype, MPI_Aint* extent )
@@ -430,7 +430,7 @@ MPI_File_get_type_extent( MPI_File fh, MPI_Datatype datatype, MPI_Aint* extent )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_view call with enter and exit events.
  */
 int
 MPI_File_get_view( MPI_File fh, MPI_Offset* disp, MPI_Datatype* etype, MPI_Datatype* filetype, char* datarep )
@@ -464,7 +464,7 @@ MPI_File_get_view( MPI_File fh, MPI_Offset* disp, MPI_Datatype* etype, MPI_Datat
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_open call with enter and exit events.
  */
 int
 MPI_File_open( MPI_Comm comm, char* filename, int amode, MPI_Info info, MPI_File* fh )
@@ -498,7 +498,7 @@ MPI_File_open( MPI_Comm comm, char* filename, int amode, MPI_Info info, MPI_File
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_seek call with enter and exit events.
  */
 int
 MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence )
@@ -532,7 +532,7 @@ MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_seek_shared call with enter and exit events.
  */
 int
 MPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence )
@@ -566,7 +566,7 @@ MPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_set_atomicity call with enter and exit events.
  */
 int
 MPI_File_set_atomicity( MPI_File fh, int flag )
@@ -600,7 +600,7 @@ MPI_File_set_atomicity( MPI_File fh, int flag )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_set_info call with enter and exit events.
  */
 int
 MPI_File_set_info( MPI_File fh, MPI_Info info )
@@ -634,7 +634,7 @@ MPI_File_set_info( MPI_File fh, MPI_Info info )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_set_size call with enter and exit events.
  */
 int
 MPI_File_set_size( MPI_File fh, MPI_Offset size )
@@ -668,7 +668,7 @@ MPI_File_set_size( MPI_File fh, MPI_Offset size )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_set_view call with enter and exit events.
  */
 int
 MPI_File_set_view( MPI_File fh, MPI_Offset disp, MPI_Datatype etype, MPI_Datatype filetype, char* datarep, MPI_Info info )
@@ -702,7 +702,7 @@ MPI_File_set_view( MPI_File fh, MPI_Offset disp, MPI_Datatype etype, MPI_Datatyp
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_sync call with enter and exit events.
  */
 int
 MPI_File_sync( MPI_File fh )
@@ -736,7 +736,7 @@ MPI_File_sync( MPI_File fh )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Register_datarep call with enter and exit events.
  */
 int
 MPI_Register_datarep( char* datarep, MPI_Datarep_conversion_function* read_conversion_fn, MPI_Datarep_conversion_function* write_conversion_fn, MPI_Datarep_extent_function* dtype_file_extent_fn, void* extra_state )
@@ -785,7 +785,7 @@ MPI_Register_datarep( char* datarep, MPI_Datarep_conversion_function* read_conve
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_iread call with enter and exit events.
  */
 int
 MPI_File_iread( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
@@ -819,7 +819,7 @@ MPI_File_iread( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Re
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_iread_at call with enter and exit events.
  */
 int
 MPI_File_iread_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
@@ -853,7 +853,7 @@ MPI_File_iread_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_iread_shared call with enter and exit events.
  */
 int
 MPI_File_iread_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
@@ -887,7 +887,7 @@ MPI_File_iread_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_iwrite call with enter and exit events.
  */
 int
 MPI_File_iwrite( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
@@ -921,7 +921,7 @@ MPI_File_iwrite( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_R
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_iwrite_at call with enter and exit events.
  */
 int
 MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
@@ -955,7 +955,7 @@ MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Da
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_iwrite_shared call with enter and exit events.
  */
 int
 MPI_File_iwrite_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
@@ -992,7 +992,7 @@ MPI_File_iwrite_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read call with enter and exit events.
  */
 int
 MPI_File_read( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1026,7 +1026,7 @@ MPI_File_read( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Sta
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_all call with enter and exit events.
  */
 int
 MPI_File_read_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1060,7 +1060,7 @@ MPI_File_read_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_all_begin call with enter and exit events.
  */
 int
 MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatype )
@@ -1094,7 +1094,7 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_all_end call with enter and exit events.
  */
 int
 MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
@@ -1128,7 +1128,7 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_at call with enter and exit events.
  */
 int
 MPI_File_read_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1162,7 +1162,7 @@ MPI_File_read_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Data
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_at_all call with enter and exit events.
  */
 int
 MPI_File_read_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1196,7 +1196,7 @@ MPI_File_read_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_at_all_begin call with enter and exit events.
  */
 int
 MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype )
@@ -1230,7 +1230,7 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_at_all_end call with enter and exit events.
  */
 int
 MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
@@ -1264,7 +1264,7 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_ordered call with enter and exit events.
  */
 int
 MPI_File_read_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1298,7 +1298,7 @@ MPI_File_read_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_ordered_begin call with enter and exit events.
  */
 int
 MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatype )
@@ -1332,7 +1332,7 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_ordered_end call with enter and exit events.
  */
 int
 MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
@@ -1366,7 +1366,7 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_read_shared call with enter and exit events.
  */
 int
 MPI_File_read_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1400,7 +1400,7 @@ MPI_File_read_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, 
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write call with enter and exit events.
  */
 int
 MPI_File_write( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1434,7 +1434,7 @@ MPI_File_write( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_St
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_all call with enter and exit events.
  */
 int
 MPI_File_write_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1468,7 +1468,7 @@ MPI_File_write_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MP
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_all_begin call with enter and exit events.
  */
 int
 MPI_File_write_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatype )
@@ -1502,7 +1502,7 @@ MPI_File_write_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype dataty
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_all_end call with enter and exit events.
  */
 int
 MPI_File_write_all_end( MPI_File fh, void* buf, MPI_Status* status )
@@ -1536,7 +1536,7 @@ MPI_File_write_all_end( MPI_File fh, void* buf, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_at call with enter and exit events.
  */
 int
 MPI_File_write_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1570,7 +1570,7 @@ MPI_File_write_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_at_all call with enter and exit events.
  */
 int
 MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1604,7 +1604,7 @@ MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_at_all_begin call with enter and exit events.
  */
 int
 MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype )
@@ -1638,7 +1638,7 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int coun
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_at_all_end call with enter and exit events.
  */
 int
 MPI_File_write_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
@@ -1672,7 +1672,7 @@ MPI_File_write_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_ordered call with enter and exit events.
  */
 int
 MPI_File_write_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1706,7 +1706,7 @@ MPI_File_write_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_ordered_begin call with enter and exit events.
  */
 int
 MPI_File_write_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatype )
@@ -1740,7 +1740,7 @@ MPI_File_write_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype da
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_ordered_end call with enter and exit events.
  */
 int
 MPI_File_write_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
@@ -1774,7 +1774,7 @@ MPI_File_write_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup io
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_write_shared call with enter and exit events.
  */
 int
 MPI_File_write_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
@@ -1815,7 +1815,7 @@ MPI_File_write_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
  * @note Introduced with MPI-2
  * @ingroup io_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_call_errhandler call with enter and exit events.
  */
 int
 MPI_File_call_errhandler( MPI_File fh, int errorcode )
@@ -1849,7 +1849,7 @@ MPI_File_call_errhandler( MPI_File fh, int errorcode )
  * @note Introduced with MPI-2
  * @ingroup io_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_create_errhandler call with enter and exit events.
  */
 int
 MPI_File_create_errhandler( MPI_File_errhandler_fn* function, MPI_Errhandler* errhandler )
@@ -1883,7 +1883,7 @@ MPI_File_create_errhandler( MPI_File_errhandler_fn* function, MPI_Errhandler* er
  * @note Introduced with MPI-2
  * @ingroup io_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_get_errhandler call with enter and exit events.
  */
 int
 MPI_File_get_errhandler( MPI_File file, MPI_Errhandler* errhandler )
@@ -1917,7 +1917,7 @@ MPI_File_get_errhandler( MPI_File file, MPI_Errhandler* errhandler )
  * @note Introduced with MPI-2
  * @ingroup io_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_File_set_errhandler call with enter and exit events.
  */
 int
 MPI_File_set_errhandler( MPI_File file, MPI_Errhandler errhandler )

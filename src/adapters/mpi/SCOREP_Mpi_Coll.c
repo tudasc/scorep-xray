@@ -1311,7 +1311,7 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
  * @note Introduced with MPI-2
  * @ingroup coll
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Reduce_local call with enter and exit events.
  */
 int
 MPI_Reduce_local( void* inbuf, void* inoutbuf, int count, MPI_Datatype datatype, MPI_Op op )

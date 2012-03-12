@@ -272,7 +272,7 @@ MPI_Finalize()
  * @note Introduced with MPI-2
  * @ingroup env
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Is_thread_main call with enter and exit events.
  */
 int
 MPI_Is_thread_main( int* flag )
@@ -306,7 +306,7 @@ MPI_Is_thread_main( int* flag )
  * @note Introduced with MPI-2
  * @ingroup env
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Query_thread call with enter and exit events.
  */
 int
 MPI_Query_thread( int* provided )
@@ -341,7 +341,7 @@ MPI_Query_thread( int* provided )
  * @note Introduced with MPI-2
  * @ingroup env
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Finalized call with enter and exit events.
  */
 int
 MPI_Finalized( int* flag )
@@ -375,7 +375,7 @@ MPI_Finalized( int* flag )
  * @note Introduced with MPI-1
  * @ingroup env
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Initialized call with enter and exit events.
  */
 int
 MPI_Initialized( int* flag )

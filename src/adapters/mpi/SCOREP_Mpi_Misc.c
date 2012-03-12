@@ -57,7 +57,7 @@
  * @note Introduced with MPI-1
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Address call with enter and exit events.
  */
 int
 MPI_Address( void* location, MPI_Aint* address )
@@ -91,7 +91,7 @@ MPI_Address( void* location, MPI_Aint* address )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Alloc_mem call with enter and exit events.
  */
 int
 MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
@@ -125,7 +125,7 @@ MPI_Alloc_mem( MPI_Aint size, MPI_Info info, void* baseptr )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Free_mem call with enter and exit events.
  */
 int
 MPI_Free_mem( void* base )
@@ -159,7 +159,7 @@ MPI_Free_mem( void* base )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Get_address call with enter and exit events.
  */
 int
 MPI_Get_address( void* location, MPI_Aint* address )
@@ -193,7 +193,7 @@ MPI_Get_address( void* location, MPI_Aint* address )
  * @note Introduced with MPI-1
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Get_version call with enter and exit events.
  */
 int
 MPI_Get_version( int* version, int* subversion )
@@ -227,7 +227,7 @@ MPI_Get_version( int* version, int* subversion )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Op_commutative call with enter and exit events.
  */
 int
 MPI_Op_commutative( MPI_Op op, int* commute )
@@ -261,7 +261,7 @@ MPI_Op_commutative( MPI_Op op, int* commute )
  * @note Introduced with MPI-1
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Op_create call with enter and exit events.
  */
 int
 MPI_Op_create( MPI_User_function* function, int commute, MPI_Op* op )
@@ -295,7 +295,7 @@ MPI_Op_create( MPI_User_function* function, int commute, MPI_Op* op )
  * @note Introduced with MPI-1
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Op_free call with enter and exit events.
  */
 int
 MPI_Op_free( MPI_Op* op )
@@ -329,7 +329,7 @@ MPI_Op_free( MPI_Op* op )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Request_get_status call with enter and exit events.
  */
 int
 MPI_Request_get_status( MPI_Request request, int* flag, MPI_Status* status )
@@ -364,7 +364,7 @@ MPI_Request_get_status( MPI_Request request, int* flag, MPI_Status* status )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_c2f call with enter and exit events.
  */
 MPI_Fint
 MPI_Info_c2f( MPI_Info info )
@@ -398,7 +398,7 @@ MPI_Info_c2f( MPI_Info info )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_create call with enter and exit events.
  */
 int
 MPI_Info_create( MPI_Info* info )
@@ -432,7 +432,7 @@ MPI_Info_create( MPI_Info* info )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_dup call with enter and exit events.
  */
 int
 MPI_Info_dup( MPI_Info info, MPI_Info* newinfo )
@@ -466,7 +466,7 @@ MPI_Info_dup( MPI_Info info, MPI_Info* newinfo )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_f2c call with enter and exit events.
  */
 MPI_Info
 MPI_Info_f2c( MPI_Fint info )
@@ -500,7 +500,7 @@ MPI_Info_f2c( MPI_Fint info )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_free call with enter and exit events.
  */
 int
 MPI_Info_free( MPI_Info* info )
@@ -536,7 +536,7 @@ MPI_Info_free( MPI_Info* info )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_delete call with enter and exit events.
  */
 int
 MPI_Info_delete( MPI_Info info, char* key )
@@ -572,7 +572,7 @@ MPI_Info_delete( MPI_Info info, char* key )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_get call with enter and exit events.
  */
 int
 MPI_Info_get( MPI_Info info, char* key, int valuelen, char* value, int* flag )
@@ -608,7 +608,7 @@ MPI_Info_get( MPI_Info info, char* key, int valuelen, char* value, int* flag )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_get_valuelen call with enter and exit events.
  */
 int
 MPI_Info_get_valuelen( MPI_Info info, char* key, int* valuelen, int* flag )
@@ -644,7 +644,7 @@ MPI_Info_get_valuelen( MPI_Info info, char* key, int* valuelen, int* flag )
  * @note Introduced with MPI-2
  * @ingroup misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Info_set call with enter and exit events.
  */
 int
 MPI_Info_set( MPI_Info info, char* key, char* value )

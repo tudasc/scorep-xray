@@ -416,7 +416,7 @@ MPI_Recv( void* buf,
  * @note Introduced with MPI-1
  * @ingroup p2p
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Probe call with enter and exit events.
  */
 int
 MPI_Probe( int source, int tag, MPI_Comm comm, MPI_Status* status )
@@ -926,7 +926,7 @@ MPI_Irecv( void*        buf,
  * @note Introduced with MPI-1
  * @ingroup p2p
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Iprobe call with enter and exit events.
  */
 int
 MPI_Iprobe( int source, int tag, MPI_Comm comm, int* flag, MPI_Status* status )
@@ -2188,7 +2188,7 @@ MPI_Cancel( MPI_Request* request )
  * @note Introduced with MPI-1
  * @ingroup p2p
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Test_cancelled call with enter and exit events.
  */
 int
 MPI_Test_cancelled( MPI_Status* status, int* flag )
@@ -2229,7 +2229,7 @@ MPI_Test_cancelled( MPI_Status* status, int* flag )
  * @note Introduced with MPI-1
  * @ingroup p2p
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Buffer_attach call with enter and exit events.
  */
 int
 MPI_Buffer_attach( void* buffer, int size )
@@ -2263,7 +2263,7 @@ MPI_Buffer_attach( void* buffer, int size )
  * @note Introduced with MPI-1
  * @ingroup p2p
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Buffer_detach call with enter and exit events.
  */
 int
 MPI_Buffer_detach( void* buffer, int* size )

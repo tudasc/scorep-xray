@@ -46,121 +46,121 @@
 /* uppercase defines */
 /** @def MPI_Cart_coords_U
     Exchange MPI_Cart_coords_U by MPI_CART_COORDS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_coords.
  */
 #define MPI_Cart_coords_U MPI_CART_COORDS
 
 /** @def MPI_Cart_create_U
     Exchange MPI_Cart_create_U by MPI_CART_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_create.
  */
 #define MPI_Cart_create_U MPI_CART_CREATE
 
 /** @def MPI_Cart_get_U
     Exchange MPI_Cart_get_U by MPI_CART_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_get.
  */
 #define MPI_Cart_get_U MPI_CART_GET
 
 /** @def MPI_Cart_map_U
     Exchange MPI_Cart_map_U by MPI_CART_MAP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_map.
  */
 #define MPI_Cart_map_U MPI_CART_MAP
 
 /** @def MPI_Cart_rank_U
     Exchange MPI_Cart_rank_U by MPI_CART_RANK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_rank.
  */
 #define MPI_Cart_rank_U MPI_CART_RANK
 
 /** @def MPI_Cart_shift_U
     Exchange MPI_Cart_shift_U by MPI_CART_SHIFT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_shift.
  */
 #define MPI_Cart_shift_U MPI_CART_SHIFT
 
 /** @def MPI_Cart_sub_U
     Exchange MPI_Cart_sub_U by MPI_CART_SUB.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_sub.
  */
 #define MPI_Cart_sub_U MPI_CART_SUB
 
 /** @def MPI_Cartdim_get_U
     Exchange MPI_Cartdim_get_U by MPI_CARTDIM_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cartdim_get.
  */
 #define MPI_Cartdim_get_U MPI_CARTDIM_GET
 
 /** @def MPI_Dims_create_U
     Exchange MPI_Dims_create_U by MPI_DIMS_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dims_create.
  */
 #define MPI_Dims_create_U MPI_DIMS_CREATE
 
 /** @def MPI_Dist_graph_create_U
     Exchange MPI_Dist_graph_create_U by MPI_DIST_GRAPH_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_create.
  */
 #define MPI_Dist_graph_create_U MPI_DIST_GRAPH_CREATE
 
 /** @def MPI_Dist_graph_create_adjacent_U
     Exchange MPI_Dist_graph_create_adjacent_U by MPI_DIST_GRAPH_CREATE_ADJACENT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_create_adjacent.
  */
 #define MPI_Dist_graph_create_adjacent_U MPI_DIST_GRAPH_CREATE_ADJACENT
 
 /** @def MPI_Dist_graph_neighbors_U
     Exchange MPI_Dist_graph_neighbors_U by MPI_DIST_GRAPH_NEIGHBORS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_neighbors.
  */
 #define MPI_Dist_graph_neighbors_U MPI_DIST_GRAPH_NEIGHBORS
 
 /** @def MPI_Dist_graph_neighbors_count_U
     Exchange MPI_Dist_graph_neighbors_count_U by MPI_DIST_GRAPH_NEIGHBORS_COUNT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_neighbors_count.
  */
 #define MPI_Dist_graph_neighbors_count_U MPI_DIST_GRAPH_NEIGHBORS_COUNT
 
 /** @def MPI_Graph_create_U
     Exchange MPI_Graph_create_U by MPI_GRAPH_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_create.
  */
 #define MPI_Graph_create_U MPI_GRAPH_CREATE
 
 /** @def MPI_Graph_get_U
     Exchange MPI_Graph_get_U by MPI_GRAPH_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_get.
  */
 #define MPI_Graph_get_U MPI_GRAPH_GET
 
 /** @def MPI_Graph_map_U
     Exchange MPI_Graph_map_U by MPI_GRAPH_MAP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_map.
  */
 #define MPI_Graph_map_U MPI_GRAPH_MAP
 
 /** @def MPI_Graph_neighbors_U
     Exchange MPI_Graph_neighbors_U by MPI_GRAPH_NEIGHBORS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_neighbors.
  */
 #define MPI_Graph_neighbors_U MPI_GRAPH_NEIGHBORS
 
 /** @def MPI_Graph_neighbors_count_U
     Exchange MPI_Graph_neighbors_count_U by MPI_GRAPH_NEIGHBORS_COUNT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_neighbors_count.
  */
 #define MPI_Graph_neighbors_count_U MPI_GRAPH_NEIGHBORS_COUNT
 
 /** @def MPI_Graphdims_get_U
     Exchange MPI_Graphdims_get_U by MPI_GRAPHDIMS_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graphdims_get.
  */
 #define MPI_Graphdims_get_U MPI_GRAPHDIMS_GET
 
 /** @def MPI_Topo_test_U
     Exchange MPI_Topo_test_U by MPI_TOPO_TEST.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Topo_test.
  */
 #define MPI_Topo_test_U MPI_TOPO_TEST
 
@@ -168,121 +168,121 @@
 /* lowercase defines */
 /** @def MPI_Cart_coords_L
     Exchanges MPI_Cart_coords_L by mpi_cart_coords.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_coords.
  */
 #define MPI_Cart_coords_L mpi_cart_coords
 
 /** @def MPI_Cart_create_L
     Exchanges MPI_Cart_create_L by mpi_cart_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_create.
  */
 #define MPI_Cart_create_L mpi_cart_create
 
 /** @def MPI_Cart_get_L
     Exchanges MPI_Cart_get_L by mpi_cart_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_get.
  */
 #define MPI_Cart_get_L mpi_cart_get
 
 /** @def MPI_Cart_map_L
     Exchanges MPI_Cart_map_L by mpi_cart_map.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_map.
  */
 #define MPI_Cart_map_L mpi_cart_map
 
 /** @def MPI_Cart_rank_L
     Exchanges MPI_Cart_rank_L by mpi_cart_rank.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_rank.
  */
 #define MPI_Cart_rank_L mpi_cart_rank
 
 /** @def MPI_Cart_shift_L
     Exchanges MPI_Cart_shift_L by mpi_cart_shift.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_shift.
  */
 #define MPI_Cart_shift_L mpi_cart_shift
 
 /** @def MPI_Cart_sub_L
     Exchanges MPI_Cart_sub_L by mpi_cart_sub.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cart_sub.
  */
 #define MPI_Cart_sub_L mpi_cart_sub
 
 /** @def MPI_Cartdim_get_L
     Exchanges MPI_Cartdim_get_L by mpi_cartdim_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cartdim_get.
  */
 #define MPI_Cartdim_get_L mpi_cartdim_get
 
 /** @def MPI_Dims_create_L
     Exchanges MPI_Dims_create_L by mpi_dims_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dims_create.
  */
 #define MPI_Dims_create_L mpi_dims_create
 
 /** @def MPI_Dist_graph_create_L
     Exchanges MPI_Dist_graph_create_L by mpi_dist_graph_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_create.
  */
 #define MPI_Dist_graph_create_L mpi_dist_graph_create
 
 /** @def MPI_Dist_graph_create_adjacent_L
     Exchanges MPI_Dist_graph_create_adjacent_L by mpi_dist_graph_create_adjacent.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_create_adjacent.
  */
 #define MPI_Dist_graph_create_adjacent_L mpi_dist_graph_create_adjacent
 
 /** @def MPI_Dist_graph_neighbors_L
     Exchanges MPI_Dist_graph_neighbors_L by mpi_dist_graph_neighbors.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_neighbors.
  */
 #define MPI_Dist_graph_neighbors_L mpi_dist_graph_neighbors
 
 /** @def MPI_Dist_graph_neighbors_count_L
     Exchanges MPI_Dist_graph_neighbors_count_L by mpi_dist_graph_neighbors_count.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Dist_graph_neighbors_count.
  */
 #define MPI_Dist_graph_neighbors_count_L mpi_dist_graph_neighbors_count
 
 /** @def MPI_Graph_create_L
     Exchanges MPI_Graph_create_L by mpi_graph_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_create.
  */
 #define MPI_Graph_create_L mpi_graph_create
 
 /** @def MPI_Graph_get_L
     Exchanges MPI_Graph_get_L by mpi_graph_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_get.
  */
 #define MPI_Graph_get_L mpi_graph_get
 
 /** @def MPI_Graph_map_L
     Exchanges MPI_Graph_map_L by mpi_graph_map.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_map.
  */
 #define MPI_Graph_map_L mpi_graph_map
 
 /** @def MPI_Graph_neighbors_L
     Exchanges MPI_Graph_neighbors_L by mpi_graph_neighbors.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_neighbors.
  */
 #define MPI_Graph_neighbors_L mpi_graph_neighbors
 
 /** @def MPI_Graph_neighbors_count_L
     Exchanges MPI_Graph_neighbors_count_L by mpi_graph_neighbors_count.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graph_neighbors_count.
  */
 #define MPI_Graph_neighbors_count_L mpi_graph_neighbors_count
 
 /** @def MPI_Graphdims_get_L
     Exchanges MPI_Graphdims_get_L by mpi_graphdims_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Graphdims_get.
  */
 #define MPI_Graphdims_get_L mpi_graphdims_get
 
 /** @def MPI_Topo_test_L
     Exchanges MPI_Topo_test_L by mpi_topo_test.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Topo_test.
  */
 #define MPI_Topo_test_L mpi_topo_test
 

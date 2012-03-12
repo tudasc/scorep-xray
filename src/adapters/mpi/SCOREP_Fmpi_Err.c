@@ -46,55 +46,55 @@
 /* uppercase defines */
 /** @def MPI_Add_error_class_U
     Exchange MPI_Add_error_class_U by MPI_ADD_ERROR_CLASS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Add_error_class.
  */
 #define MPI_Add_error_class_U MPI_ADD_ERROR_CLASS
 
 /** @def MPI_Add_error_code_U
     Exchange MPI_Add_error_code_U by MPI_ADD_ERROR_CODE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Add_error_code.
  */
 #define MPI_Add_error_code_U MPI_ADD_ERROR_CODE
 
 /** @def MPI_Add_error_string_U
     Exchange MPI_Add_error_string_U by MPI_ADD_ERROR_STRING.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Add_error_string.
  */
 #define MPI_Add_error_string_U MPI_ADD_ERROR_STRING
 
 /** @def MPI_Errhandler_create_U
     Exchange MPI_Errhandler_create_U by MPI_ERRHANDLER_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_create.
  */
 #define MPI_Errhandler_create_U MPI_ERRHANDLER_CREATE
 
 /** @def MPI_Errhandler_free_U
     Exchange MPI_Errhandler_free_U by MPI_ERRHANDLER_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_free.
  */
 #define MPI_Errhandler_free_U MPI_ERRHANDLER_FREE
 
 /** @def MPI_Errhandler_get_U
     Exchange MPI_Errhandler_get_U by MPI_ERRHANDLER_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_get.
  */
 #define MPI_Errhandler_get_U MPI_ERRHANDLER_GET
 
 /** @def MPI_Errhandler_set_U
     Exchange MPI_Errhandler_set_U by MPI_ERRHANDLER_SET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_set.
  */
 #define MPI_Errhandler_set_U MPI_ERRHANDLER_SET
 
 /** @def MPI_Error_class_U
     Exchange MPI_Error_class_U by MPI_ERROR_CLASS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Error_class.
  */
 #define MPI_Error_class_U MPI_ERROR_CLASS
 
 /** @def MPI_Error_string_U
     Exchange MPI_Error_string_U by MPI_ERROR_STRING.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Error_string.
  */
 #define MPI_Error_string_U MPI_ERROR_STRING
 
@@ -102,55 +102,55 @@
 /* lowercase defines */
 /** @def MPI_Add_error_class_L
     Exchanges MPI_Add_error_class_L by mpi_add_error_class.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Add_error_class.
  */
 #define MPI_Add_error_class_L mpi_add_error_class
 
 /** @def MPI_Add_error_code_L
     Exchanges MPI_Add_error_code_L by mpi_add_error_code.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Add_error_code.
  */
 #define MPI_Add_error_code_L mpi_add_error_code
 
 /** @def MPI_Add_error_string_L
     Exchanges MPI_Add_error_string_L by mpi_add_error_string.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Add_error_string.
  */
 #define MPI_Add_error_string_L mpi_add_error_string
 
 /** @def MPI_Errhandler_create_L
     Exchanges MPI_Errhandler_create_L by mpi_errhandler_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_create.
  */
 #define MPI_Errhandler_create_L mpi_errhandler_create
 
 /** @def MPI_Errhandler_free_L
     Exchanges MPI_Errhandler_free_L by mpi_errhandler_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_free.
  */
 #define MPI_Errhandler_free_L mpi_errhandler_free
 
 /** @def MPI_Errhandler_get_L
     Exchanges MPI_Errhandler_get_L by mpi_errhandler_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_get.
  */
 #define MPI_Errhandler_get_L mpi_errhandler_get
 
 /** @def MPI_Errhandler_set_L
     Exchanges MPI_Errhandler_set_L by mpi_errhandler_set.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Errhandler_set.
  */
 #define MPI_Errhandler_set_L mpi_errhandler_set
 
 /** @def MPI_Error_class_L
     Exchanges MPI_Error_class_L by mpi_error_class.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Error_class.
  */
 #define MPI_Error_class_L mpi_error_class
 
 /** @def MPI_Error_string_L
     Exchanges MPI_Error_string_L by mpi_error_string.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Error_string.
  */
 #define MPI_Error_string_L mpi_error_string
 

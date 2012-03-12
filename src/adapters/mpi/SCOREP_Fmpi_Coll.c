@@ -46,109 +46,109 @@
 /* uppercase defines */
 /** @def MPI_Allgather_U
     Exchange MPI_Allgather_U by MPI_ALLGATHER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Allgather.
  */
 #define MPI_Allgather_U MPI_ALLGATHER
 
 /** @def MPI_Allgatherv_U
     Exchange MPI_Allgatherv_U by MPI_ALLGATHERV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Allgatherv.
  */
 #define MPI_Allgatherv_U MPI_ALLGATHERV
 
 /** @def MPI_Allreduce_U
     Exchange MPI_Allreduce_U by MPI_ALLREDUCE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Allreduce.
  */
 #define MPI_Allreduce_U MPI_ALLREDUCE
 
 /** @def MPI_Alltoall_U
     Exchange MPI_Alltoall_U by MPI_ALLTOALL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alltoall.
  */
 #define MPI_Alltoall_U MPI_ALLTOALL
 
 /** @def MPI_Alltoallv_U
     Exchange MPI_Alltoallv_U by MPI_ALLTOALLV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alltoallv.
  */
 #define MPI_Alltoallv_U MPI_ALLTOALLV
 
 /** @def MPI_Alltoallw_U
     Exchange MPI_Alltoallw_U by MPI_ALLTOALLW.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alltoallw.
  */
 #define MPI_Alltoallw_U MPI_ALLTOALLW
 
 /** @def MPI_Barrier_U
     Exchange MPI_Barrier_U by MPI_BARRIER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Barrier.
  */
 #define MPI_Barrier_U MPI_BARRIER
 
 /** @def MPI_Bcast_U
     Exchange MPI_Bcast_U by MPI_BCAST.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Bcast.
  */
 #define MPI_Bcast_U MPI_BCAST
 
 /** @def MPI_Exscan_U
     Exchange MPI_Exscan_U by MPI_EXSCAN.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Exscan.
  */
 #define MPI_Exscan_U MPI_EXSCAN
 
 /** @def MPI_Gather_U
     Exchange MPI_Gather_U by MPI_GATHER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Gather.
  */
 #define MPI_Gather_U MPI_GATHER
 
 /** @def MPI_Gatherv_U
     Exchange MPI_Gatherv_U by MPI_GATHERV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Gatherv.
  */
 #define MPI_Gatherv_U MPI_GATHERV
 
 /** @def MPI_Reduce_U
     Exchange MPI_Reduce_U by MPI_REDUCE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce.
  */
 #define MPI_Reduce_U MPI_REDUCE
 
 /** @def MPI_Reduce_local_U
     Exchange MPI_Reduce_local_U by MPI_REDUCE_LOCAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce_local.
  */
 #define MPI_Reduce_local_U MPI_REDUCE_LOCAL
 
 /** @def MPI_Reduce_scatter_U
     Exchange MPI_Reduce_scatter_U by MPI_REDUCE_SCATTER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce_scatter.
  */
 #define MPI_Reduce_scatter_U MPI_REDUCE_SCATTER
 
 /** @def MPI_Reduce_scatter_block_U
     Exchange MPI_Reduce_scatter_block_U by MPI_REDUCE_SCATTER_BLOCK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce_scatter_block.
  */
 #define MPI_Reduce_scatter_block_U MPI_REDUCE_SCATTER_BLOCK
 
 /** @def MPI_Scan_U
     Exchange MPI_Scan_U by MPI_SCAN.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Scan.
  */
 #define MPI_Scan_U MPI_SCAN
 
 /** @def MPI_Scatter_U
     Exchange MPI_Scatter_U by MPI_SCATTER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Scatter.
  */
 #define MPI_Scatter_U MPI_SCATTER
 
 /** @def MPI_Scatterv_U
     Exchange MPI_Scatterv_U by MPI_SCATTERV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Scatterv.
  */
 #define MPI_Scatterv_U MPI_SCATTERV
 
@@ -156,109 +156,109 @@
 /* lowercase defines */
 /** @def MPI_Allgather_L
     Exchanges MPI_Allgather_L by mpi_allgather.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Allgather.
  */
 #define MPI_Allgather_L mpi_allgather
 
 /** @def MPI_Allgatherv_L
     Exchanges MPI_Allgatherv_L by mpi_allgatherv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Allgatherv.
  */
 #define MPI_Allgatherv_L mpi_allgatherv
 
 /** @def MPI_Allreduce_L
     Exchanges MPI_Allreduce_L by mpi_allreduce.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Allreduce.
  */
 #define MPI_Allreduce_L mpi_allreduce
 
 /** @def MPI_Alltoall_L
     Exchanges MPI_Alltoall_L by mpi_alltoall.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alltoall.
  */
 #define MPI_Alltoall_L mpi_alltoall
 
 /** @def MPI_Alltoallv_L
     Exchanges MPI_Alltoallv_L by mpi_alltoallv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alltoallv.
  */
 #define MPI_Alltoallv_L mpi_alltoallv
 
 /** @def MPI_Alltoallw_L
     Exchanges MPI_Alltoallw_L by mpi_alltoallw.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alltoallw.
  */
 #define MPI_Alltoallw_L mpi_alltoallw
 
 /** @def MPI_Barrier_L
     Exchanges MPI_Barrier_L by mpi_barrier.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Barrier.
  */
 #define MPI_Barrier_L mpi_barrier
 
 /** @def MPI_Bcast_L
     Exchanges MPI_Bcast_L by mpi_bcast.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Bcast.
  */
 #define MPI_Bcast_L mpi_bcast
 
 /** @def MPI_Exscan_L
     Exchanges MPI_Exscan_L by mpi_exscan.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Exscan.
  */
 #define MPI_Exscan_L mpi_exscan
 
 /** @def MPI_Gather_L
     Exchanges MPI_Gather_L by mpi_gather.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Gather.
  */
 #define MPI_Gather_L mpi_gather
 
 /** @def MPI_Gatherv_L
     Exchanges MPI_Gatherv_L by mpi_gatherv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Gatherv.
  */
 #define MPI_Gatherv_L mpi_gatherv
 
 /** @def MPI_Reduce_L
     Exchanges MPI_Reduce_L by mpi_reduce.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce.
  */
 #define MPI_Reduce_L mpi_reduce
 
 /** @def MPI_Reduce_local_L
     Exchanges MPI_Reduce_local_L by mpi_reduce_local.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce_local.
  */
 #define MPI_Reduce_local_L mpi_reduce_local
 
 /** @def MPI_Reduce_scatter_L
     Exchanges MPI_Reduce_scatter_L by mpi_reduce_scatter.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce_scatter.
  */
 #define MPI_Reduce_scatter_L mpi_reduce_scatter
 
 /** @def MPI_Reduce_scatter_block_L
     Exchanges MPI_Reduce_scatter_block_L by mpi_reduce_scatter_block.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Reduce_scatter_block.
  */
 #define MPI_Reduce_scatter_block_L mpi_reduce_scatter_block
 
 /** @def MPI_Scan_L
     Exchanges MPI_Scan_L by mpi_scan.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Scan.
  */
 #define MPI_Scan_L mpi_scan
 
 /** @def MPI_Scatter_L
     Exchanges MPI_Scatter_L by mpi_scatter.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Scatter.
  */
 #define MPI_Scatter_L mpi_scatter
 
 /** @def MPI_Scatterv_L
     Exchanges MPI_Scatterv_L by mpi_scatterv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Scatterv.
  */
 #define MPI_Scatterv_L mpi_scatterv
 

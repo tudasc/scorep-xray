@@ -277,7 +277,7 @@ MPI_Comm_disconnect( MPI_Comm* comm )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_get_parent call with enter and exit events.
  */
 int
 MPI_Comm_get_parent( MPI_Comm* parent )
@@ -312,7 +312,7 @@ MPI_Comm_get_parent( MPI_Comm* parent )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Lookup_name call with enter and exit events.
  */
 int
 MPI_Lookup_name( char* service_name, MPI_Info info, char* port_name )
@@ -346,7 +346,7 @@ MPI_Lookup_name( char* service_name, MPI_Info info, char* port_name )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Publish_name call with enter and exit events.
  */
 int
 MPI_Publish_name( char* service_name, MPI_Info info, char* port_name )
@@ -380,7 +380,7 @@ MPI_Publish_name( char* service_name, MPI_Info info, char* port_name )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Unpublish_name call with enter and exit events.
  */
 int
 MPI_Unpublish_name( char* service_name, MPI_Info info, char* port_name )
@@ -415,7 +415,7 @@ MPI_Unpublish_name( char* service_name, MPI_Info info, char* port_name )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Close_port call with enter and exit events.
  */
 int
 MPI_Close_port( char* port_name )
@@ -449,7 +449,7 @@ MPI_Close_port( char* port_name )
  * @note Introduced with MPI-2
  * @ingroup spawn
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Open_port call with enter and exit events.
  */
 int
 MPI_Open_port( MPI_Info info, char* port_name )

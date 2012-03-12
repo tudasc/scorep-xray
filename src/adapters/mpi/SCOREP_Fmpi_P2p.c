@@ -47,205 +47,205 @@
 /* uppercase defines */
 /** @def MPI_Bsend_U
     Exchange MPI_Bsend_U by MPI_BSEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Bsend.
  */
 #define MPI_Bsend_U MPI_BSEND
 
 /** @def MPI_Bsend_init_U
     Exchange MPI_Bsend_init_U by MPI_BSEND_INIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Bsend_init.
  */
 #define MPI_Bsend_init_U MPI_BSEND_INIT
 
 /** @def MPI_Buffer_attach_U
     Exchange MPI_Buffer_attach_U by MPI_BUFFER_ATTACH.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Buffer_attach.
  */
 #define MPI_Buffer_attach_U MPI_BUFFER_ATTACH
 
 /** @def MPI_Buffer_detach_U
     Exchange MPI_Buffer_detach_U by MPI_BUFFER_DETACH.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Buffer_detach.
  */
 #define MPI_Buffer_detach_U MPI_BUFFER_DETACH
 
 /** @def MPI_Cancel_U
     Exchange MPI_Cancel_U by MPI_CANCEL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cancel.
  */
 #define MPI_Cancel_U MPI_CANCEL
 
 /** @def MPI_Ibsend_U
     Exchange MPI_Ibsend_U by MPI_IBSEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Ibsend.
  */
 #define MPI_Ibsend_U MPI_IBSEND
 
 /** @def MPI_Iprobe_U
     Exchange MPI_Iprobe_U by MPI_IPROBE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Iprobe.
  */
 #define MPI_Iprobe_U MPI_IPROBE
 
 /** @def MPI_Irecv_U
     Exchange MPI_Irecv_U by MPI_IRECV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Irecv.
  */
 #define MPI_Irecv_U MPI_IRECV
 
 /** @def MPI_Irsend_U
     Exchange MPI_Irsend_U by MPI_IRSEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Irsend.
  */
 #define MPI_Irsend_U MPI_IRSEND
 
 /** @def MPI_Isend_U
     Exchange MPI_Isend_U by MPI_ISEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Isend.
  */
 #define MPI_Isend_U MPI_ISEND
 
 /** @def MPI_Issend_U
     Exchange MPI_Issend_U by MPI_ISSEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Issend.
  */
 #define MPI_Issend_U MPI_ISSEND
 
 /** @def MPI_Probe_U
     Exchange MPI_Probe_U by MPI_PROBE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Probe.
  */
 #define MPI_Probe_U MPI_PROBE
 
 /** @def MPI_Recv_U
     Exchange MPI_Recv_U by MPI_RECV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Recv.
  */
 #define MPI_Recv_U MPI_RECV
 
 /** @def MPI_Recv_init_U
     Exchange MPI_Recv_init_U by MPI_RECV_INIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Recv_init.
  */
 #define MPI_Recv_init_U MPI_RECV_INIT
 
 /** @def MPI_Request_free_U
     Exchange MPI_Request_free_U by MPI_REQUEST_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Request_free.
  */
 #define MPI_Request_free_U MPI_REQUEST_FREE
 
 /** @def MPI_Rsend_U
     Exchange MPI_Rsend_U by MPI_RSEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Rsend.
  */
 #define MPI_Rsend_U MPI_RSEND
 
 /** @def MPI_Rsend_init_U
     Exchange MPI_Rsend_init_U by MPI_RSEND_INIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Rsend_init.
  */
 #define MPI_Rsend_init_U MPI_RSEND_INIT
 
 /** @def MPI_Send_U
     Exchange MPI_Send_U by MPI_SEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Send.
  */
 #define MPI_Send_U MPI_SEND
 
 /** @def MPI_Send_init_U
     Exchange MPI_Send_init_U by MPI_SEND_INIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Send_init.
  */
 #define MPI_Send_init_U MPI_SEND_INIT
 
 /** @def MPI_Sendrecv_U
     Exchange MPI_Sendrecv_U by MPI_SENDRECV.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Sendrecv.
  */
 #define MPI_Sendrecv_U MPI_SENDRECV
 
 /** @def MPI_Sendrecv_replace_U
     Exchange MPI_Sendrecv_replace_U by MPI_SENDRECV_REPLACE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Sendrecv_replace.
  */
 #define MPI_Sendrecv_replace_U MPI_SENDRECV_REPLACE
 
 /** @def MPI_Ssend_U
     Exchange MPI_Ssend_U by MPI_SSEND.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Ssend.
  */
 #define MPI_Ssend_U MPI_SSEND
 
 /** @def MPI_Ssend_init_U
     Exchange MPI_Ssend_init_U by MPI_SSEND_INIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Ssend_init.
  */
 #define MPI_Ssend_init_U MPI_SSEND_INIT
 
 /** @def MPI_Start_U
     Exchange MPI_Start_U by MPI_START.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Start.
  */
 #define MPI_Start_U MPI_START
 
 /** @def MPI_Startall_U
     Exchange MPI_Startall_U by MPI_STARTALL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Startall.
  */
 #define MPI_Startall_U MPI_STARTALL
 
 /** @def MPI_Test_U
     Exchange MPI_Test_U by MPI_TEST.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Test.
  */
 #define MPI_Test_U MPI_TEST
 
 /** @def MPI_Test_cancelled_U
     Exchange MPI_Test_cancelled_U by MPI_TEST_CANCELLED.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Test_cancelled.
  */
 #define MPI_Test_cancelled_U MPI_TEST_CANCELLED
 
 /** @def MPI_Testall_U
     Exchange MPI_Testall_U by MPI_TESTALL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Testall.
  */
 #define MPI_Testall_U MPI_TESTALL
 
 /** @def MPI_Testany_U
     Exchange MPI_Testany_U by MPI_TESTANY.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Testany.
  */
 #define MPI_Testany_U MPI_TESTANY
 
 /** @def MPI_Testsome_U
     Exchange MPI_Testsome_U by MPI_TESTSOME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Testsome.
  */
 #define MPI_Testsome_U MPI_TESTSOME
 
 /** @def MPI_Wait_U
     Exchange MPI_Wait_U by MPI_WAIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Wait.
  */
 #define MPI_Wait_U MPI_WAIT
 
 /** @def MPI_Waitall_U
     Exchange MPI_Waitall_U by MPI_WAITALL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Waitall.
  */
 #define MPI_Waitall_U MPI_WAITALL
 
 /** @def MPI_Waitany_U
     Exchange MPI_Waitany_U by MPI_WAITANY.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Waitany.
  */
 #define MPI_Waitany_U MPI_WAITANY
 
 /** @def MPI_Waitsome_U
     Exchange MPI_Waitsome_U by MPI_WAITSOME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Waitsome.
  */
 #define MPI_Waitsome_U MPI_WAITSOME
 
@@ -253,205 +253,205 @@
 /* lowercase defines */
 /** @def MPI_Bsend_L
     Exchanges MPI_Bsend_L by mpi_bsend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Bsend.
  */
 #define MPI_Bsend_L mpi_bsend
 
 /** @def MPI_Bsend_init_L
     Exchanges MPI_Bsend_init_L by mpi_bsend_init.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Bsend_init.
  */
 #define MPI_Bsend_init_L mpi_bsend_init
 
 /** @def MPI_Buffer_attach_L
     Exchanges MPI_Buffer_attach_L by mpi_buffer_attach.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Buffer_attach.
  */
 #define MPI_Buffer_attach_L mpi_buffer_attach
 
 /** @def MPI_Buffer_detach_L
     Exchanges MPI_Buffer_detach_L by mpi_buffer_detach.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Buffer_detach.
  */
 #define MPI_Buffer_detach_L mpi_buffer_detach
 
 /** @def MPI_Cancel_L
     Exchanges MPI_Cancel_L by mpi_cancel.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Cancel.
  */
 #define MPI_Cancel_L mpi_cancel
 
 /** @def MPI_Ibsend_L
     Exchanges MPI_Ibsend_L by mpi_ibsend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Ibsend.
  */
 #define MPI_Ibsend_L mpi_ibsend
 
 /** @def MPI_Iprobe_L
     Exchanges MPI_Iprobe_L by mpi_iprobe.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Iprobe.
  */
 #define MPI_Iprobe_L mpi_iprobe
 
 /** @def MPI_Irecv_L
     Exchanges MPI_Irecv_L by mpi_irecv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Irecv.
  */
 #define MPI_Irecv_L mpi_irecv
 
 /** @def MPI_Irsend_L
     Exchanges MPI_Irsend_L by mpi_irsend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Irsend.
  */
 #define MPI_Irsend_L mpi_irsend
 
 /** @def MPI_Isend_L
     Exchanges MPI_Isend_L by mpi_isend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Isend.
  */
 #define MPI_Isend_L mpi_isend
 
 /** @def MPI_Issend_L
     Exchanges MPI_Issend_L by mpi_issend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Issend.
  */
 #define MPI_Issend_L mpi_issend
 
 /** @def MPI_Probe_L
     Exchanges MPI_Probe_L by mpi_probe.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Probe.
  */
 #define MPI_Probe_L mpi_probe
 
 /** @def MPI_Recv_L
     Exchanges MPI_Recv_L by mpi_recv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Recv.
  */
 #define MPI_Recv_L mpi_recv
 
 /** @def MPI_Recv_init_L
     Exchanges MPI_Recv_init_L by mpi_recv_init.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Recv_init.
  */
 #define MPI_Recv_init_L mpi_recv_init
 
 /** @def MPI_Request_free_L
     Exchanges MPI_Request_free_L by mpi_request_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Request_free.
  */
 #define MPI_Request_free_L mpi_request_free
 
 /** @def MPI_Rsend_L
     Exchanges MPI_Rsend_L by mpi_rsend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Rsend.
  */
 #define MPI_Rsend_L mpi_rsend
 
 /** @def MPI_Rsend_init_L
     Exchanges MPI_Rsend_init_L by mpi_rsend_init.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Rsend_init.
  */
 #define MPI_Rsend_init_L mpi_rsend_init
 
 /** @def MPI_Send_L
     Exchanges MPI_Send_L by mpi_send.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Send.
  */
 #define MPI_Send_L mpi_send
 
 /** @def MPI_Send_init_L
     Exchanges MPI_Send_init_L by mpi_send_init.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Send_init.
  */
 #define MPI_Send_init_L mpi_send_init
 
 /** @def MPI_Sendrecv_L
     Exchanges MPI_Sendrecv_L by mpi_sendrecv.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Sendrecv.
  */
 #define MPI_Sendrecv_L mpi_sendrecv
 
 /** @def MPI_Sendrecv_replace_L
     Exchanges MPI_Sendrecv_replace_L by mpi_sendrecv_replace.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Sendrecv_replace.
  */
 #define MPI_Sendrecv_replace_L mpi_sendrecv_replace
 
 /** @def MPI_Ssend_L
     Exchanges MPI_Ssend_L by mpi_ssend.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Ssend.
  */
 #define MPI_Ssend_L mpi_ssend
 
 /** @def MPI_Ssend_init_L
     Exchanges MPI_Ssend_init_L by mpi_ssend_init.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Ssend_init.
  */
 #define MPI_Ssend_init_L mpi_ssend_init
 
 /** @def MPI_Start_L
     Exchanges MPI_Start_L by mpi_start.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Start.
  */
 #define MPI_Start_L mpi_start
 
 /** @def MPI_Startall_L
     Exchanges MPI_Startall_L by mpi_startall.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Startall.
  */
 #define MPI_Startall_L mpi_startall
 
 /** @def MPI_Test_L
     Exchanges MPI_Test_L by mpi_test.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Test.
  */
 #define MPI_Test_L mpi_test
 
 /** @def MPI_Test_cancelled_L
     Exchanges MPI_Test_cancelled_L by mpi_test_cancelled.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Test_cancelled.
  */
 #define MPI_Test_cancelled_L mpi_test_cancelled
 
 /** @def MPI_Testall_L
     Exchanges MPI_Testall_L by mpi_testall.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Testall.
  */
 #define MPI_Testall_L mpi_testall
 
 /** @def MPI_Testany_L
     Exchanges MPI_Testany_L by mpi_testany.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Testany.
  */
 #define MPI_Testany_L mpi_testany
 
 /** @def MPI_Testsome_L
     Exchanges MPI_Testsome_L by mpi_testsome.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Testsome.
  */
 #define MPI_Testsome_L mpi_testsome
 
 /** @def MPI_Wait_L
     Exchanges MPI_Wait_L by mpi_wait.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Wait.
  */
 #define MPI_Wait_L mpi_wait
 
 /** @def MPI_Waitall_L
     Exchanges MPI_Waitall_L by mpi_waitall.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Waitall.
  */
 #define MPI_Waitall_L mpi_waitall
 
 /** @def MPI_Waitany_L
     Exchanges MPI_Waitany_L by mpi_waitany.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Waitany.
  */
 #define MPI_Waitany_L mpi_waitany
 
 /** @def MPI_Waitsome_L
     Exchanges MPI_Waitsome_L by mpi_waitsome.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Waitsome.
  */
 #define MPI_Waitsome_L mpi_waitsome
 

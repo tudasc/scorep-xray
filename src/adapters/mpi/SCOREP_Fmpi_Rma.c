@@ -47,153 +47,153 @@
 /* uppercase defines */
 /** @def MPI_Accumulate_U
     Exchange MPI_Accumulate_U by MPI_ACCUMULATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Accumulate.
  */
 #define MPI_Accumulate_U MPI_ACCUMULATE
 
 /** @def MPI_Get_U
     Exchange MPI_Get_U by MPI_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Get.
  */
 #define MPI_Get_U MPI_GET
 
 /** @def MPI_Put_U
     Exchange MPI_Put_U by MPI_PUT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Put.
  */
 #define MPI_Put_U MPI_PUT
 
 /** @def MPI_Win_complete_U
     Exchange MPI_Win_complete_U by MPI_WIN_COMPLETE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_complete.
  */
 #define MPI_Win_complete_U MPI_WIN_COMPLETE
 
 /** @def MPI_Win_create_U
     Exchange MPI_Win_create_U by MPI_WIN_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_create.
  */
 #define MPI_Win_create_U MPI_WIN_CREATE
 
 /** @def MPI_Win_fence_U
     Exchange MPI_Win_fence_U by MPI_WIN_FENCE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_fence.
  */
 #define MPI_Win_fence_U MPI_WIN_FENCE
 
 /** @def MPI_Win_free_U
     Exchange MPI_Win_free_U by MPI_WIN_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_free.
  */
 #define MPI_Win_free_U MPI_WIN_FREE
 
 /** @def MPI_Win_get_group_U
     Exchange MPI_Win_get_group_U by MPI_WIN_GET_GROUP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_group.
  */
 #define MPI_Win_get_group_U MPI_WIN_GET_GROUP
 
 /** @def MPI_Win_lock_U
     Exchange MPI_Win_lock_U by MPI_WIN_LOCK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_lock.
  */
 #define MPI_Win_lock_U MPI_WIN_LOCK
 
 /** @def MPI_Win_post_U
     Exchange MPI_Win_post_U by MPI_WIN_POST.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_post.
  */
 #define MPI_Win_post_U MPI_WIN_POST
 
 /** @def MPI_Win_start_U
     Exchange MPI_Win_start_U by MPI_WIN_START.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_start.
  */
 #define MPI_Win_start_U MPI_WIN_START
 
 /** @def MPI_Win_test_U
     Exchange MPI_Win_test_U by MPI_WIN_TEST.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_test.
  */
 #define MPI_Win_test_U MPI_WIN_TEST
 
 /** @def MPI_Win_unlock_U
     Exchange MPI_Win_unlock_U by MPI_WIN_UNLOCK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_unlock.
  */
 #define MPI_Win_unlock_U MPI_WIN_UNLOCK
 
 /** @def MPI_Win_wait_U
     Exchange MPI_Win_wait_U by MPI_WIN_WAIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_wait.
  */
 #define MPI_Win_wait_U MPI_WIN_WAIT
 
 
 /** @def MPI_Win_call_errhandler_U
     Exchange MPI_Win_call_errhandler_U by MPI_WIN_CALL_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_call_errhandler.
  */
 #define MPI_Win_call_errhandler_U MPI_WIN_CALL_ERRHANDLER
 
 /** @def MPI_Win_create_errhandler_U
     Exchange MPI_Win_create_errhandler_U by MPI_WIN_CREATE_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_create_errhandler.
  */
 #define MPI_Win_create_errhandler_U MPI_WIN_CREATE_ERRHANDLER
 
 /** @def MPI_Win_get_errhandler_U
     Exchange MPI_Win_get_errhandler_U by MPI_WIN_GET_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_errhandler.
  */
 #define MPI_Win_get_errhandler_U MPI_WIN_GET_ERRHANDLER
 
 /** @def MPI_Win_set_errhandler_U
     Exchange MPI_Win_set_errhandler_U by MPI_WIN_SET_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_set_errhandler.
  */
 #define MPI_Win_set_errhandler_U MPI_WIN_SET_ERRHANDLER
 
 
 /** @def MPI_Win_create_keyval_U
     Exchange MPI_Win_create_keyval_U by MPI_WIN_CREATE_KEYVAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_create_keyval.
  */
 #define MPI_Win_create_keyval_U MPI_WIN_CREATE_KEYVAL
 
 /** @def MPI_Win_delete_attr_U
     Exchange MPI_Win_delete_attr_U by MPI_WIN_DELETE_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_delete_attr.
  */
 #define MPI_Win_delete_attr_U MPI_WIN_DELETE_ATTR
 
 /** @def MPI_Win_free_keyval_U
     Exchange MPI_Win_free_keyval_U by MPI_WIN_FREE_KEYVAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_free_keyval.
  */
 #define MPI_Win_free_keyval_U MPI_WIN_FREE_KEYVAL
 
 /** @def MPI_Win_get_attr_U
     Exchange MPI_Win_get_attr_U by MPI_WIN_GET_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_attr.
  */
 #define MPI_Win_get_attr_U MPI_WIN_GET_ATTR
 
 /** @def MPI_Win_get_name_U
     Exchange MPI_Win_get_name_U by MPI_WIN_GET_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_name.
  */
 #define MPI_Win_get_name_U MPI_WIN_GET_NAME
 
 /** @def MPI_Win_set_attr_U
     Exchange MPI_Win_set_attr_U by MPI_WIN_SET_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_set_attr.
  */
 #define MPI_Win_set_attr_U MPI_WIN_SET_ATTR
 
 /** @def MPI_Win_set_name_U
     Exchange MPI_Win_set_name_U by MPI_WIN_SET_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_set_name.
  */
 #define MPI_Win_set_name_U MPI_WIN_SET_NAME
 
@@ -202,153 +202,153 @@
 /* lowercase defines */
 /** @def MPI_Accumulate_L
     Exchanges MPI_Accumulate_L by mpi_accumulate.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Accumulate.
  */
 #define MPI_Accumulate_L mpi_accumulate
 
 /** @def MPI_Get_L
     Exchanges MPI_Get_L by mpi_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Get.
  */
 #define MPI_Get_L mpi_get
 
 /** @def MPI_Put_L
     Exchanges MPI_Put_L by mpi_put.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Put.
  */
 #define MPI_Put_L mpi_put
 
 /** @def MPI_Win_complete_L
     Exchanges MPI_Win_complete_L by mpi_win_complete.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_complete.
  */
 #define MPI_Win_complete_L mpi_win_complete
 
 /** @def MPI_Win_create_L
     Exchanges MPI_Win_create_L by mpi_win_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_create.
  */
 #define MPI_Win_create_L mpi_win_create
 
 /** @def MPI_Win_fence_L
     Exchanges MPI_Win_fence_L by mpi_win_fence.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_fence.
  */
 #define MPI_Win_fence_L mpi_win_fence
 
 /** @def MPI_Win_free_L
     Exchanges MPI_Win_free_L by mpi_win_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_free.
  */
 #define MPI_Win_free_L mpi_win_free
 
 /** @def MPI_Win_get_group_L
     Exchanges MPI_Win_get_group_L by mpi_win_get_group.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_group.
  */
 #define MPI_Win_get_group_L mpi_win_get_group
 
 /** @def MPI_Win_lock_L
     Exchanges MPI_Win_lock_L by mpi_win_lock.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_lock.
  */
 #define MPI_Win_lock_L mpi_win_lock
 
 /** @def MPI_Win_post_L
     Exchanges MPI_Win_post_L by mpi_win_post.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_post.
  */
 #define MPI_Win_post_L mpi_win_post
 
 /** @def MPI_Win_start_L
     Exchanges MPI_Win_start_L by mpi_win_start.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_start.
  */
 #define MPI_Win_start_L mpi_win_start
 
 /** @def MPI_Win_test_L
     Exchanges MPI_Win_test_L by mpi_win_test.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_test.
  */
 #define MPI_Win_test_L mpi_win_test
 
 /** @def MPI_Win_unlock_L
     Exchanges MPI_Win_unlock_L by mpi_win_unlock.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_unlock.
  */
 #define MPI_Win_unlock_L mpi_win_unlock
 
 /** @def MPI_Win_wait_L
     Exchanges MPI_Win_wait_L by mpi_win_wait.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_wait.
  */
 #define MPI_Win_wait_L mpi_win_wait
 
 
 /** @def MPI_Win_call_errhandler_L
     Exchanges MPI_Win_call_errhandler_L by mpi_win_call_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_call_errhandler.
  */
 #define MPI_Win_call_errhandler_L mpi_win_call_errhandler
 
 /** @def MPI_Win_create_errhandler_L
     Exchanges MPI_Win_create_errhandler_L by mpi_win_create_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_create_errhandler.
  */
 #define MPI_Win_create_errhandler_L mpi_win_create_errhandler
 
 /** @def MPI_Win_get_errhandler_L
     Exchanges MPI_Win_get_errhandler_L by mpi_win_get_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_errhandler.
  */
 #define MPI_Win_get_errhandler_L mpi_win_get_errhandler
 
 /** @def MPI_Win_set_errhandler_L
     Exchanges MPI_Win_set_errhandler_L by mpi_win_set_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_set_errhandler.
  */
 #define MPI_Win_set_errhandler_L mpi_win_set_errhandler
 
 
 /** @def MPI_Win_create_keyval_L
     Exchanges MPI_Win_create_keyval_L by mpi_win_create_keyval.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_create_keyval.
  */
 #define MPI_Win_create_keyval_L mpi_win_create_keyval
 
 /** @def MPI_Win_delete_attr_L
     Exchanges MPI_Win_delete_attr_L by mpi_win_delete_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_delete_attr.
  */
 #define MPI_Win_delete_attr_L mpi_win_delete_attr
 
 /** @def MPI_Win_free_keyval_L
     Exchanges MPI_Win_free_keyval_L by mpi_win_free_keyval.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_free_keyval.
  */
 #define MPI_Win_free_keyval_L mpi_win_free_keyval
 
 /** @def MPI_Win_get_attr_L
     Exchanges MPI_Win_get_attr_L by mpi_win_get_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_attr.
  */
 #define MPI_Win_get_attr_L mpi_win_get_attr
 
 /** @def MPI_Win_get_name_L
     Exchanges MPI_Win_get_name_L by mpi_win_get_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_get_name.
  */
 #define MPI_Win_get_name_L mpi_win_get_name
 
 /** @def MPI_Win_set_attr_L
     Exchanges MPI_Win_set_attr_L by mpi_win_set_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_set_attr.
  */
 #define MPI_Win_set_attr_L mpi_win_set_attr
 
 /** @def MPI_Win_set_name_L
     Exchanges MPI_Win_set_name_L by mpi_win_set_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Win_set_name.
  */
 #define MPI_Win_set_name_L mpi_win_set_name
 

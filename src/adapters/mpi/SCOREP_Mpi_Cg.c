@@ -668,7 +668,7 @@ MPI_Group_free( MPI_Group* group )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_compare call with enter and exit events.
  */
 int
 MPI_Comm_compare( MPI_Comm comm1, MPI_Comm comm2, int* result )
@@ -702,7 +702,7 @@ MPI_Comm_compare( MPI_Comm comm1, MPI_Comm comm2, int* result )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_rank call with enter and exit events.
  */
 int
 MPI_Comm_rank( MPI_Comm comm, int* rank )
@@ -736,7 +736,7 @@ MPI_Comm_rank( MPI_Comm comm, int* rank )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_size call with enter and exit events.
  */
 int
 MPI_Comm_size( MPI_Comm comm, int* size )
@@ -770,7 +770,7 @@ MPI_Comm_size( MPI_Comm comm, int* size )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_test_inter call with enter and exit events.
  */
 int
 MPI_Comm_test_inter( MPI_Comm comm, int* flag )
@@ -804,7 +804,7 @@ MPI_Comm_test_inter( MPI_Comm comm, int* flag )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Group_compare call with enter and exit events.
  */
 int
 MPI_Group_compare( MPI_Group group1, MPI_Group group2, int* result )
@@ -838,7 +838,7 @@ MPI_Group_compare( MPI_Group group1, MPI_Group group2, int* result )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Group_rank call with enter and exit events.
  */
 int
 MPI_Group_rank( MPI_Group group, int* rank )
@@ -872,7 +872,7 @@ MPI_Group_rank( MPI_Group group, int* rank )
  * @note Introduced with MPI-1
  * @ingroup cg
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Group_size call with enter and exit events.
  */
 int
 MPI_Group_size( MPI_Group group, int* size )
@@ -913,7 +913,7 @@ MPI_Group_size( MPI_Group group, int* size )
  * @note Introduced with MPI-2
  * @ingroup cg_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_call_errhandler call with enter and exit events.
  */
 int
 MPI_Comm_call_errhandler( MPI_Comm comm, int errorcode )
@@ -947,7 +947,7 @@ MPI_Comm_call_errhandler( MPI_Comm comm, int errorcode )
  * @note Introduced with MPI-2
  * @ingroup cg_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_create_errhandler call with enter and exit events.
  */
 int
 MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function, MPI_Errhandler* errhandler )
@@ -981,7 +981,7 @@ MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function, MPI_Errhandler* er
  * @note Introduced with MPI-2
  * @ingroup cg_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_get_errhandler call with enter and exit events.
  */
 int
 MPI_Comm_get_errhandler( MPI_Comm comm, MPI_Errhandler* errhandler )
@@ -1015,7 +1015,7 @@ MPI_Comm_get_errhandler( MPI_Comm comm, MPI_Errhandler* errhandler )
  * @note Introduced with MPI-2
  * @ingroup cg_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_set_errhandler call with enter and exit events.
  */
 int
 MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
@@ -1056,7 +1056,7 @@ MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
  * @note Introduced with MPI-1
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Attr_delete call with enter and exit events.
  */
 int
 MPI_Attr_delete( MPI_Comm comm, int keyval )
@@ -1090,7 +1090,7 @@ MPI_Attr_delete( MPI_Comm comm, int keyval )
  * @note Introduced with MPI-1
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Attr_get call with enter and exit events.
  */
 int
 MPI_Attr_get( MPI_Comm comm, int keyval, void* attribute_val, int* flag )
@@ -1124,7 +1124,7 @@ MPI_Attr_get( MPI_Comm comm, int keyval, void* attribute_val, int* flag )
  * @note Introduced with MPI-1
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Attr_put call with enter and exit events.
  */
 int
 MPI_Attr_put( MPI_Comm comm, int keyval, void* attribute_val )
@@ -1158,7 +1158,7 @@ MPI_Attr_put( MPI_Comm comm, int keyval, void* attribute_val )
  * @note Introduced with MPI-2
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_create_keyval call with enter and exit events.
  */
 int
 MPI_Comm_create_keyval( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm_delete_attr_function* comm_delete_attr_fn, int* comm_keyval, void* extra_state )
@@ -1192,7 +1192,7 @@ MPI_Comm_create_keyval( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm
  * @note Introduced with MPI-2
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_delete_attr call with enter and exit events.
  */
 int
 MPI_Comm_delete_attr( MPI_Comm comm, int comm_keyval )
@@ -1226,7 +1226,7 @@ MPI_Comm_delete_attr( MPI_Comm comm, int comm_keyval )
  * @note Introduced with MPI-2
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_free_keyval call with enter and exit events.
  */
 int
 MPI_Comm_free_keyval( int* comm_keyval )
@@ -1260,7 +1260,7 @@ MPI_Comm_free_keyval( int* comm_keyval )
  * @note Introduced with MPI-2
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_get_attr call with enter and exit events.
  */
 int
 MPI_Comm_get_attr( MPI_Comm comm, int comm_keyval, void* attribute_val, int* flag )
@@ -1294,7 +1294,7 @@ MPI_Comm_get_attr( MPI_Comm comm, int comm_keyval, void* attribute_val, int* fla
  * @note Introduced with MPI-2
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_get_name call with enter and exit events.
  */
 int
 MPI_Comm_get_name( MPI_Comm comm, char* comm_name, int* resultlen )
@@ -1328,7 +1328,7 @@ MPI_Comm_get_name( MPI_Comm comm, char* comm_name, int* resultlen )
  * @note Introduced with MPI-2
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Comm_set_attr call with enter and exit events.
  */
 int
 MPI_Comm_set_attr( MPI_Comm comm, int comm_keyval, void* attribute_val )
@@ -1396,7 +1396,7 @@ MPI_Comm_set_name( MPI_Comm comm, char* comm_name )
  * @note Introduced with MPI-1
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Keyval_create call with enter and exit events.
  */
 int
 MPI_Keyval_create( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, int* keyval, void* extra_state )
@@ -1430,7 +1430,7 @@ MPI_Keyval_create( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, i
  * @note Introduced with MPI-1
  * @ingroup cg_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Keyval_free call with enter and exit events.
  */
 int
 MPI_Keyval_free( int* keyval )

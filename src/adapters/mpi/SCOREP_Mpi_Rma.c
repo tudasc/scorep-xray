@@ -703,7 +703,7 @@ MPI_Win_get_group( MPI_Win win, MPI_Group* group )
  * @note Introduced with MPI-2
  * @ingroup rma_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_call_errhandler call with enter and exit events.
  */
 int
 MPI_Win_call_errhandler( MPI_Win win, int errorcode )
@@ -737,7 +737,7 @@ MPI_Win_call_errhandler( MPI_Win win, int errorcode )
  * @note Introduced with MPI-2
  * @ingroup rma_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_create_errhandler call with enter and exit events.
  */
 int
 MPI_Win_create_errhandler( MPI_Win_errhandler_fn* function, MPI_Errhandler* errhandler )
@@ -771,7 +771,7 @@ MPI_Win_create_errhandler( MPI_Win_errhandler_fn* function, MPI_Errhandler* errh
  * @note Introduced with MPI-2
  * @ingroup rma_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_get_errhandler call with enter and exit events.
  */
 int
 MPI_Win_get_errhandler( MPI_Win win, MPI_Errhandler* errhandler )
@@ -805,7 +805,7 @@ MPI_Win_get_errhandler( MPI_Win win, MPI_Errhandler* errhandler )
  * @note Introduced with MPI-2
  * @ingroup rma_err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_set_errhandler call with enter and exit events.
  */
 int
 MPI_Win_set_errhandler( MPI_Win win, MPI_Errhandler errhandler )
@@ -845,7 +845,7 @@ MPI_Win_set_errhandler( MPI_Win win, MPI_Errhandler errhandler )
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_create_keyval call with enter and exit events.
  */
 int
 MPI_Win_create_keyval( MPI_Win_copy_attr_function* win_copy_attr_fn, MPI_Win_delete_attr_function* win_delete_attr_fn, int* win_keyval, void* extra_state )
@@ -879,7 +879,7 @@ MPI_Win_create_keyval( MPI_Win_copy_attr_function* win_copy_attr_fn, MPI_Win_del
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_delete_attr call with enter and exit events.
  */
 int
 MPI_Win_delete_attr( MPI_Win win, int win_keyval )
@@ -913,7 +913,7 @@ MPI_Win_delete_attr( MPI_Win win, int win_keyval )
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_free_keyval call with enter and exit events.
  */
 int
 MPI_Win_free_keyval( int* win_keyval )
@@ -947,7 +947,7 @@ MPI_Win_free_keyval( int* win_keyval )
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_get_attr call with enter and exit events.
  */
 int
 MPI_Win_get_attr( MPI_Win win, int win_keyval, void* attribute_val, int* flag )
@@ -981,7 +981,7 @@ MPI_Win_get_attr( MPI_Win win, int win_keyval, void* attribute_val, int* flag )
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_get_name call with enter and exit events.
  */
 int
 MPI_Win_get_name( MPI_Win win, char* win_name, int* resultlen )
@@ -1015,7 +1015,7 @@ MPI_Win_get_name( MPI_Win win, char* win_name, int* resultlen )
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_set_attr call with enter and exit events.
  */
 int
 MPI_Win_set_attr( MPI_Win win, int win_keyval, void* attribute_val )
@@ -1049,7 +1049,7 @@ MPI_Win_set_attr( MPI_Win win, int win_keyval, void* attribute_val )
  * @note Introduced with MPI-2
  * @ingroup rma_ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_set_name call with enter and exit events.
  */
 int
 MPI_Win_set_name( MPI_Win win, char* win_name )
@@ -1089,7 +1089,7 @@ MPI_Win_set_name( MPI_Win win, char* win_name )
  * @note Introduced with MPI-2
  * @ingroup rma_misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_c2f call with enter and exit events.
  */
 MPI_Fint
 MPI_Win_c2f( MPI_Win win )
@@ -1123,7 +1123,7 @@ MPI_Win_c2f( MPI_Win win )
  * @note Introduced with MPI-2
  * @ingroup rma_misc
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Win_f2c call with enter and exit events.
  */
 MPI_Win
 MPI_Win_f2c( MPI_Fint win )

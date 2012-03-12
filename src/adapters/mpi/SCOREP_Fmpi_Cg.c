@@ -48,249 +48,249 @@
  * @{*/
 /** @def MPI_Comm_compare_U
     Exchange MPI_Comm_compare_U by MPI_COMM_COMPARE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_compare.
  */
 #define MPI_Comm_compare_U MPI_COMM_COMPARE
 
 /** @def MPI_Comm_create_U
     Exchange MPI_Comm_create_U by MPI_COMM_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_create.
  */
 #define MPI_Comm_create_U MPI_COMM_CREATE
 
 /** @def MPI_Comm_dup_U
     Exchange MPI_Comm_dup_U by MPI_COMM_DUP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_dup.
  */
 #define MPI_Comm_dup_U MPI_COMM_DUP
 
 /** @def MPI_Comm_free_U
     Exchange MPI_Comm_free_U by MPI_COMM_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_free.
  */
 #define MPI_Comm_free_U MPI_COMM_FREE
 
 /** @def MPI_Comm_group_U
     Exchange MPI_Comm_group_U by MPI_COMM_GROUP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_group.
  */
 #define MPI_Comm_group_U MPI_COMM_GROUP
 
 /** @def MPI_Comm_rank_U
     Exchange MPI_Comm_rank_U by MPI_COMM_RANK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_rank.
  */
 #define MPI_Comm_rank_U MPI_COMM_RANK
 
 /** @def MPI_Comm_remote_group_U
     Exchange MPI_Comm_remote_group_U by MPI_COMM_REMOTE_GROUP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_remote_group.
  */
 #define MPI_Comm_remote_group_U MPI_COMM_REMOTE_GROUP
 
 /** @def MPI_Comm_remote_size_U
     Exchange MPI_Comm_remote_size_U by MPI_COMM_REMOTE_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_remote_size.
  */
 #define MPI_Comm_remote_size_U MPI_COMM_REMOTE_SIZE
 
 /** @def MPI_Comm_size_U
     Exchange MPI_Comm_size_U by MPI_COMM_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_size.
  */
 #define MPI_Comm_size_U MPI_COMM_SIZE
 
 /** @def MPI_Comm_split_U
     Exchange MPI_Comm_split_U by MPI_COMM_SPLIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_split.
  */
 #define MPI_Comm_split_U MPI_COMM_SPLIT
 
 /** @def MPI_Comm_test_inter_U
     Exchange MPI_Comm_test_inter_U by MPI_COMM_TEST_INTER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_test_inter.
  */
 #define MPI_Comm_test_inter_U MPI_COMM_TEST_INTER
 
 /** @def MPI_Group_compare_U
     Exchange MPI_Group_compare_U by MPI_GROUP_COMPARE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_compare.
  */
 #define MPI_Group_compare_U MPI_GROUP_COMPARE
 
 /** @def MPI_Group_difference_U
     Exchange MPI_Group_difference_U by MPI_GROUP_DIFFERENCE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_difference.
  */
 #define MPI_Group_difference_U MPI_GROUP_DIFFERENCE
 
 /** @def MPI_Group_excl_U
     Exchange MPI_Group_excl_U by MPI_GROUP_EXCL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_excl.
  */
 #define MPI_Group_excl_U MPI_GROUP_EXCL
 
 /** @def MPI_Group_free_U
     Exchange MPI_Group_free_U by MPI_GROUP_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_free.
  */
 #define MPI_Group_free_U MPI_GROUP_FREE
 
 /** @def MPI_Group_incl_U
     Exchange MPI_Group_incl_U by MPI_GROUP_INCL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_incl.
  */
 #define MPI_Group_incl_U MPI_GROUP_INCL
 
 /** @def MPI_Group_intersection_U
     Exchange MPI_Group_intersection_U by MPI_GROUP_INTERSECTION.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_intersection.
  */
 #define MPI_Group_intersection_U MPI_GROUP_INTERSECTION
 
 /** @def MPI_Group_range_excl_U
     Exchange MPI_Group_range_excl_U by MPI_GROUP_RANGE_EXCL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_range_excl.
  */
 #define MPI_Group_range_excl_U MPI_GROUP_RANGE_EXCL
 
 /** @def MPI_Group_range_incl_U
     Exchange MPI_Group_range_incl_U by MPI_GROUP_RANGE_INCL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_range_incl.
  */
 #define MPI_Group_range_incl_U MPI_GROUP_RANGE_INCL
 
 /** @def MPI_Group_rank_U
     Exchange MPI_Group_rank_U by MPI_GROUP_RANK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_rank.
  */
 #define MPI_Group_rank_U MPI_GROUP_RANK
 
 /** @def MPI_Group_size_U
     Exchange MPI_Group_size_U by MPI_GROUP_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_size.
  */
 #define MPI_Group_size_U MPI_GROUP_SIZE
 
 /** @def MPI_Group_translate_ranks_U
     Exchange MPI_Group_translate_ranks_U by MPI_GROUP_TRANSLATE_RANKS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_translate_ranks.
  */
 #define MPI_Group_translate_ranks_U MPI_GROUP_TRANSLATE_RANKS
 
 /** @def MPI_Group_union_U
     Exchange MPI_Group_union_U by MPI_GROUP_UNION.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_union.
  */
 #define MPI_Group_union_U MPI_GROUP_UNION
 
 /** @def MPI_Intercomm_create_U
     Exchange MPI_Intercomm_create_U by MPI_INTERCOMM_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Intercomm_create.
  */
 #define MPI_Intercomm_create_U MPI_INTERCOMM_CREATE
 
 /** @def MPI_Intercomm_merge_U
     Exchange MPI_Intercomm_merge_U by MPI_INTERCOMM_MERGE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Intercomm_merge.
  */
 #define MPI_Intercomm_merge_U MPI_INTERCOMM_MERGE
 
 
 /** @def MPI_Comm_call_errhandler_U
     Exchange MPI_Comm_call_errhandler_U by MPI_COMM_CALL_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_call_errhandler.
  */
 #define MPI_Comm_call_errhandler_U MPI_COMM_CALL_ERRHANDLER
 
 /** @def MPI_Comm_create_errhandler_U
     Exchange MPI_Comm_create_errhandler_U by MPI_COMM_CREATE_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_create_errhandler.
  */
 #define MPI_Comm_create_errhandler_U MPI_COMM_CREATE_ERRHANDLER
 
 /** @def MPI_Comm_get_errhandler_U
     Exchange MPI_Comm_get_errhandler_U by MPI_COMM_GET_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_errhandler.
  */
 #define MPI_Comm_get_errhandler_U MPI_COMM_GET_ERRHANDLER
 
 /** @def MPI_Comm_set_errhandler_U
     Exchange MPI_Comm_set_errhandler_U by MPI_COMM_SET_ERRHANDLER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_set_errhandler.
  */
 #define MPI_Comm_set_errhandler_U MPI_COMM_SET_ERRHANDLER
 
 
 /** @def MPI_Attr_delete_U
     Exchange MPI_Attr_delete_U by MPI_ATTR_DELETE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Attr_delete.
  */
 #define MPI_Attr_delete_U MPI_ATTR_DELETE
 
 /** @def MPI_Attr_get_U
     Exchange MPI_Attr_get_U by MPI_ATTR_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Attr_get.
  */
 #define MPI_Attr_get_U MPI_ATTR_GET
 
 /** @def MPI_Attr_put_U
     Exchange MPI_Attr_put_U by MPI_ATTR_PUT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Attr_put.
  */
 #define MPI_Attr_put_U MPI_ATTR_PUT
 
 /** @def MPI_Comm_create_keyval_U
     Exchange MPI_Comm_create_keyval_U by MPI_COMM_CREATE_KEYVAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_create_keyval.
  */
 #define MPI_Comm_create_keyval_U MPI_COMM_CREATE_KEYVAL
 
 /** @def MPI_Comm_delete_attr_U
     Exchange MPI_Comm_delete_attr_U by MPI_COMM_DELETE_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_delete_attr.
  */
 #define MPI_Comm_delete_attr_U MPI_COMM_DELETE_ATTR
 
 /** @def MPI_Comm_free_keyval_U
     Exchange MPI_Comm_free_keyval_U by MPI_COMM_FREE_KEYVAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_free_keyval.
  */
 #define MPI_Comm_free_keyval_U MPI_COMM_FREE_KEYVAL
 
 /** @def MPI_Comm_get_attr_U
     Exchange MPI_Comm_get_attr_U by MPI_COMM_GET_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_attr.
  */
 #define MPI_Comm_get_attr_U MPI_COMM_GET_ATTR
 
 /** @def MPI_Comm_get_name_U
     Exchange MPI_Comm_get_name_U by MPI_COMM_GET_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_name.
  */
 #define MPI_Comm_get_name_U MPI_COMM_GET_NAME
 
 /** @def MPI_Comm_set_attr_U
     Exchange MPI_Comm_set_attr_U by MPI_COMM_SET_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_set_attr.
  */
 #define MPI_Comm_set_attr_U MPI_COMM_SET_ATTR
 
 /** @def MPI_Comm_set_name_U
     Exchange MPI_Comm_set_name_U by MPI_COMM_SET_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_set_name.
  */
 #define MPI_Comm_set_name_U MPI_COMM_SET_NAME
 
 /** @def MPI_Keyval_create_U
     Exchange MPI_Keyval_create_U by MPI_KEYVAL_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Keyval_create.
  */
 #define MPI_Keyval_create_U MPI_KEYVAL_CREATE
 
 /** @def MPI_Keyval_free_U
     Exchange MPI_Keyval_free_U by MPI_KEYVAL_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Keyval_free.
  */
 #define MPI_Keyval_free_U MPI_KEYVAL_FREE
 
@@ -303,249 +303,249 @@
  */
 /** @def MPI_Comm_compare_L
     Exchanges MPI_Comm_compare_L by mpi_comm_compare.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_compare.
  */
 #define MPI_Comm_compare_L mpi_comm_compare
 
 /** @def MPI_Comm_create_L
     Exchanges MPI_Comm_create_L by mpi_comm_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_create.
  */
 #define MPI_Comm_create_L mpi_comm_create
 
 /** @def MPI_Comm_dup_L
     Exchanges MPI_Comm_dup_L by mpi_comm_dup.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_dup.
  */
 #define MPI_Comm_dup_L mpi_comm_dup
 
 /** @def MPI_Comm_free_L
     Exchanges MPI_Comm_free_L by mpi_comm_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_free.
  */
 #define MPI_Comm_free_L mpi_comm_free
 
 /** @def MPI_Comm_group_L
     Exchanges MPI_Comm_group_L by mpi_comm_group.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_group.
  */
 #define MPI_Comm_group_L mpi_comm_group
 
 /** @def MPI_Comm_rank_L
     Exchanges MPI_Comm_rank_L by mpi_comm_rank.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_rank.
  */
 #define MPI_Comm_rank_L mpi_comm_rank
 
 /** @def MPI_Comm_remote_group_L
     Exchanges MPI_Comm_remote_group_L by mpi_comm_remote_group.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_remote_group.
  */
 #define MPI_Comm_remote_group_L mpi_comm_remote_group
 
 /** @def MPI_Comm_remote_size_L
     Exchanges MPI_Comm_remote_size_L by mpi_comm_remote_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_remote_size.
  */
 #define MPI_Comm_remote_size_L mpi_comm_remote_size
 
 /** @def MPI_Comm_size_L
     Exchanges MPI_Comm_size_L by mpi_comm_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_size.
  */
 #define MPI_Comm_size_L mpi_comm_size
 
 /** @def MPI_Comm_split_L
     Exchanges MPI_Comm_split_L by mpi_comm_split.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_split.
  */
 #define MPI_Comm_split_L mpi_comm_split
 
 /** @def MPI_Comm_test_inter_L
     Exchanges MPI_Comm_test_inter_L by mpi_comm_test_inter.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_test_inter.
  */
 #define MPI_Comm_test_inter_L mpi_comm_test_inter
 
 /** @def MPI_Group_compare_L
     Exchanges MPI_Group_compare_L by mpi_group_compare.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_compare.
  */
 #define MPI_Group_compare_L mpi_group_compare
 
 /** @def MPI_Group_difference_L
     Exchanges MPI_Group_difference_L by mpi_group_difference.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_difference.
  */
 #define MPI_Group_difference_L mpi_group_difference
 
 /** @def MPI_Group_excl_L
     Exchanges MPI_Group_excl_L by mpi_group_excl.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_excl.
  */
 #define MPI_Group_excl_L mpi_group_excl
 
 /** @def MPI_Group_free_L
     Exchanges MPI_Group_free_L by mpi_group_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_free.
  */
 #define MPI_Group_free_L mpi_group_free
 
 /** @def MPI_Group_incl_L
     Exchanges MPI_Group_incl_L by mpi_group_incl.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_incl.
  */
 #define MPI_Group_incl_L mpi_group_incl
 
 /** @def MPI_Group_intersection_L
     Exchanges MPI_Group_intersection_L by mpi_group_intersection.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_intersection.
  */
 #define MPI_Group_intersection_L mpi_group_intersection
 
 /** @def MPI_Group_range_excl_L
     Exchanges MPI_Group_range_excl_L by mpi_group_range_excl.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_range_excl.
  */
 #define MPI_Group_range_excl_L mpi_group_range_excl
 
 /** @def MPI_Group_range_incl_L
     Exchanges MPI_Group_range_incl_L by mpi_group_range_incl.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_range_incl.
  */
 #define MPI_Group_range_incl_L mpi_group_range_incl
 
 /** @def MPI_Group_rank_L
     Exchanges MPI_Group_rank_L by mpi_group_rank.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_rank.
  */
 #define MPI_Group_rank_L mpi_group_rank
 
 /** @def MPI_Group_size_L
     Exchanges MPI_Group_size_L by mpi_group_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_size.
  */
 #define MPI_Group_size_L mpi_group_size
 
 /** @def MPI_Group_translate_ranks_L
     Exchanges MPI_Group_translate_ranks_L by mpi_group_translate_ranks.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_translate_ranks.
  */
 #define MPI_Group_translate_ranks_L mpi_group_translate_ranks
 
 /** @def MPI_Group_union_L
     Exchanges MPI_Group_union_L by mpi_group_union.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Group_union.
  */
 #define MPI_Group_union_L mpi_group_union
 
 /** @def MPI_Intercomm_create_L
     Exchanges MPI_Intercomm_create_L by mpi_intercomm_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Intercomm_create.
  */
 #define MPI_Intercomm_create_L mpi_intercomm_create
 
 /** @def MPI_Intercomm_merge_L
     Exchanges MPI_Intercomm_merge_L by mpi_intercomm_merge.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Intercomm_merge.
  */
 #define MPI_Intercomm_merge_L mpi_intercomm_merge
 
 
 /** @def MPI_Comm_call_errhandler_L
     Exchanges MPI_Comm_call_errhandler_L by mpi_comm_call_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_call_errhandler.
  */
 #define MPI_Comm_call_errhandler_L mpi_comm_call_errhandler
 
 /** @def MPI_Comm_create_errhandler_L
     Exchanges MPI_Comm_create_errhandler_L by mpi_comm_create_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_create_errhandler.
  */
 #define MPI_Comm_create_errhandler_L mpi_comm_create_errhandler
 
 /** @def MPI_Comm_get_errhandler_L
     Exchanges MPI_Comm_get_errhandler_L by mpi_comm_get_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_errhandler.
  */
 #define MPI_Comm_get_errhandler_L mpi_comm_get_errhandler
 
 /** @def MPI_Comm_set_errhandler_L
     Exchanges MPI_Comm_set_errhandler_L by mpi_comm_set_errhandler.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_set_errhandler.
  */
 #define MPI_Comm_set_errhandler_L mpi_comm_set_errhandler
 
 
 /** @def MPI_Attr_delete_L
     Exchanges MPI_Attr_delete_L by mpi_attr_delete.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Attr_delete.
  */
 #define MPI_Attr_delete_L mpi_attr_delete
 
 /** @def MPI_Attr_get_L
     Exchanges MPI_Attr_get_L by mpi_attr_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Attr_get.
  */
 #define MPI_Attr_get_L mpi_attr_get
 
 /** @def MPI_Attr_put_L
     Exchanges MPI_Attr_put_L by mpi_attr_put.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Attr_put.
  */
 #define MPI_Attr_put_L mpi_attr_put
 
 /** @def MPI_Comm_create_keyval_L
     Exchanges MPI_Comm_create_keyval_L by mpi_comm_create_keyval.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_create_keyval.
  */
 #define MPI_Comm_create_keyval_L mpi_comm_create_keyval
 
 /** @def MPI_Comm_delete_attr_L
     Exchanges MPI_Comm_delete_attr_L by mpi_comm_delete_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_delete_attr.
  */
 #define MPI_Comm_delete_attr_L mpi_comm_delete_attr
 
 /** @def MPI_Comm_free_keyval_L
     Exchanges MPI_Comm_free_keyval_L by mpi_comm_free_keyval.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_free_keyval.
  */
 #define MPI_Comm_free_keyval_L mpi_comm_free_keyval
 
 /** @def MPI_Comm_get_attr_L
     Exchanges MPI_Comm_get_attr_L by mpi_comm_get_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_attr.
  */
 #define MPI_Comm_get_attr_L mpi_comm_get_attr
 
 /** @def MPI_Comm_get_name_L
     Exchanges MPI_Comm_get_name_L by mpi_comm_get_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_name.
  */
 #define MPI_Comm_get_name_L mpi_comm_get_name
 
 /** @def MPI_Comm_set_attr_L
     Exchanges MPI_Comm_set_attr_L by mpi_comm_set_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_set_attr.
  */
 #define MPI_Comm_set_attr_L mpi_comm_set_attr
 
 /** @def MPI_Comm_set_name_L
     Exchanges MPI_Comm_set_name_L by mpi_comm_set_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_set_name.
  */
 #define MPI_Comm_set_name_L mpi_comm_set_name
 
 /** @def MPI_Keyval_create_L
     Exchanges MPI_Keyval_create_L by mpi_keyval_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Keyval_create.
  */
 #define MPI_Keyval_create_L mpi_keyval_create
 
 /** @def MPI_Keyval_free_L
     Exchanges MPI_Keyval_free_L by mpi_keyval_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Keyval_free.
  */
 #define MPI_Keyval_free_L mpi_keyval_free
 

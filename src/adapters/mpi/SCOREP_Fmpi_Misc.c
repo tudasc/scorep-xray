@@ -48,109 +48,109 @@
 /* uppercase defines */
 /** @def MPI_Address_U
     Exchange MPI_Address_U by MPI_ADDRESS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Address.
  */
 #define MPI_Address_U MPI_ADDRESS
 
 /** @def MPI_Alloc_mem_U
     Exchange MPI_Alloc_mem_U by MPI_ALLOC_MEM.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alloc_mem.
  */
 #define MPI_Alloc_mem_U MPI_ALLOC_MEM
 
 /** @def MPI_Free_mem_U
     Exchange MPI_Free_mem_U by MPI_FREE_MEM.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Free_mem.
  */
 #define MPI_Free_mem_U MPI_FREE_MEM
 
 /** @def MPI_Get_address_U
     Exchange MPI_Get_address_U by MPI_GET_ADDRESS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Get_address.
  */
 #define MPI_Get_address_U MPI_GET_ADDRESS
 
 /** @def MPI_Get_version_U
     Exchange MPI_Get_version_U by MPI_GET_VERSION.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Get_version.
  */
 #define MPI_Get_version_U MPI_GET_VERSION
 
 /** @def MPI_Info_create_U
     Exchange MPI_Info_create_U by MPI_INFO_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_create.
  */
 #define MPI_Info_create_U MPI_INFO_CREATE
 
 /** @def MPI_Info_delete_U
     Exchange MPI_Info_delete_U by MPI_INFO_DELETE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_delete.
  */
 #define MPI_Info_delete_U MPI_INFO_DELETE
 
 /** @def MPI_Info_dup_U
     Exchange MPI_Info_dup_U by MPI_INFO_DUP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_dup.
  */
 #define MPI_Info_dup_U MPI_INFO_DUP
 
 /** @def MPI_Info_free_U
     Exchange MPI_Info_free_U by MPI_INFO_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_free.
  */
 #define MPI_Info_free_U MPI_INFO_FREE
 
 /** @def MPI_Info_get_U
     Exchange MPI_Info_get_U by MPI_INFO_GET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get.
  */
 #define MPI_Info_get_U MPI_INFO_GET
 
 /** @def MPI_Info_get_nkeys_U
     Exchange MPI_Info_get_nkeys_U by MPI_INFO_GET_NKEYS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get_nkeys.
  */
 #define MPI_Info_get_nkeys_U MPI_INFO_GET_NKEYS
 
 /** @def MPI_Info_get_nthkey_U
     Exchange MPI_Info_get_nthkey_U by MPI_INFO_GET_NTHKEY.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get_nthkey.
  */
 #define MPI_Info_get_nthkey_U MPI_INFO_GET_NTHKEY
 
 /** @def MPI_Info_get_valuelen_U
     Exchange MPI_Info_get_valuelen_U by MPI_INFO_GET_VALUELEN.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get_valuelen.
  */
 #define MPI_Info_get_valuelen_U MPI_INFO_GET_VALUELEN
 
 /** @def MPI_Info_set_U
     Exchange MPI_Info_set_U by MPI_INFO_SET.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_set.
  */
 #define MPI_Info_set_U MPI_INFO_SET
 
 /** @def MPI_Op_commutative_U
     Exchange MPI_Op_commutative_U by MPI_OP_COMMUTATIVE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Op_commutative.
  */
 #define MPI_Op_commutative_U MPI_OP_COMMUTATIVE
 
 /** @def MPI_Op_create_U
     Exchange MPI_Op_create_U by MPI_OP_CREATE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Op_create.
  */
 #define MPI_Op_create_U MPI_OP_CREATE
 
 /** @def MPI_Op_free_U
     Exchange MPI_Op_free_U by MPI_OP_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Op_free.
  */
 #define MPI_Op_free_U MPI_OP_FREE
 
 /** @def MPI_Request_get_status_U
     Exchange MPI_Request_get_status_U by MPI_REQUEST_GET_STATUS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Request_get_status.
  */
 #define MPI_Request_get_status_U MPI_REQUEST_GET_STATUS
 
@@ -158,109 +158,109 @@
 /* lowercase defines */
 /** @def MPI_Address_L
     Exchanges MPI_Address_L by mpi_address.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Address.
  */
 #define MPI_Address_L mpi_address
 
 /** @def MPI_Alloc_mem_L
     Exchanges MPI_Alloc_mem_L by mpi_alloc_mem.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Alloc_mem.
  */
 #define MPI_Alloc_mem_L mpi_alloc_mem
 
 /** @def MPI_Free_mem_L
     Exchanges MPI_Free_mem_L by mpi_free_mem.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Free_mem.
  */
 #define MPI_Free_mem_L mpi_free_mem
 
 /** @def MPI_Get_address_L
     Exchanges MPI_Get_address_L by mpi_get_address.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Get_address.
  */
 #define MPI_Get_address_L mpi_get_address
 
 /** @def MPI_Get_version_L
     Exchanges MPI_Get_version_L by mpi_get_version.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Get_version.
  */
 #define MPI_Get_version_L mpi_get_version
 
 /** @def MPI_Info_create_L
     Exchanges MPI_Info_create_L by mpi_info_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_create.
  */
 #define MPI_Info_create_L mpi_info_create
 
 /** @def MPI_Info_delete_L
     Exchanges MPI_Info_delete_L by mpi_info_delete.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_delete.
  */
 #define MPI_Info_delete_L mpi_info_delete
 
 /** @def MPI_Info_dup_L
     Exchanges MPI_Info_dup_L by mpi_info_dup.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_dup.
  */
 #define MPI_Info_dup_L mpi_info_dup
 
 /** @def MPI_Info_free_L
     Exchanges MPI_Info_free_L by mpi_info_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_free.
  */
 #define MPI_Info_free_L mpi_info_free
 
 /** @def MPI_Info_get_L
     Exchanges MPI_Info_get_L by mpi_info_get.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get.
  */
 #define MPI_Info_get_L mpi_info_get
 
 /** @def MPI_Info_get_nkeys_L
     Exchanges MPI_Info_get_nkeys_L by mpi_info_get_nkeys.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get_nkeys.
  */
 #define MPI_Info_get_nkeys_L mpi_info_get_nkeys
 
 /** @def MPI_Info_get_nthkey_L
     Exchanges MPI_Info_get_nthkey_L by mpi_info_get_nthkey.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get_nthkey.
  */
 #define MPI_Info_get_nthkey_L mpi_info_get_nthkey
 
 /** @def MPI_Info_get_valuelen_L
     Exchanges MPI_Info_get_valuelen_L by mpi_info_get_valuelen.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_get_valuelen.
  */
 #define MPI_Info_get_valuelen_L mpi_info_get_valuelen
 
 /** @def MPI_Info_set_L
     Exchanges MPI_Info_set_L by mpi_info_set.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Info_set.
  */
 #define MPI_Info_set_L mpi_info_set
 
 /** @def MPI_Op_commutative_L
     Exchanges MPI_Op_commutative_L by mpi_op_commutative.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Op_commutative.
  */
 #define MPI_Op_commutative_L mpi_op_commutative
 
 /** @def MPI_Op_create_L
     Exchanges MPI_Op_create_L by mpi_op_create.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Op_create.
  */
 #define MPI_Op_create_L mpi_op_create
 
 /** @def MPI_Op_free_L
     Exchanges MPI_Op_free_L by mpi_op_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Op_free.
  */
 #define MPI_Op_free_L mpi_op_free
 
 /** @def MPI_Request_get_status_L
     Exchanges MPI_Request_get_status_L by mpi_request_get_status.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Request_get_status.
  */
 #define MPI_Request_get_status_L mpi_request_get_status
 

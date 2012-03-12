@@ -48,73 +48,73 @@
 /* uppercase defines */
 /** @def MPI_Close_port_U
     Exchange MPI_Close_port_U by MPI_CLOSE_PORT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Close_port.
  */
 #define MPI_Close_port_U MPI_CLOSE_PORT
 
 /** @def MPI_Comm_accept_U
     Exchange MPI_Comm_accept_U by MPI_COMM_ACCEPT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_accept.
  */
 #define MPI_Comm_accept_U MPI_COMM_ACCEPT
 
 /** @def MPI_Comm_connect_U
     Exchange MPI_Comm_connect_U by MPI_COMM_CONNECT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_connect.
  */
 #define MPI_Comm_connect_U MPI_COMM_CONNECT
 
 /** @def MPI_Comm_disconnect_U
     Exchange MPI_Comm_disconnect_U by MPI_COMM_DISCONNECT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_disconnect.
  */
 #define MPI_Comm_disconnect_U MPI_COMM_DISCONNECT
 
 /** @def MPI_Comm_get_parent_U
     Exchange MPI_Comm_get_parent_U by MPI_COMM_GET_PARENT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_parent.
  */
 #define MPI_Comm_get_parent_U MPI_COMM_GET_PARENT
 
 /** @def MPI_Comm_join_U
     Exchange MPI_Comm_join_U by MPI_COMM_JOIN.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_join.
  */
 #define MPI_Comm_join_U MPI_COMM_JOIN
 
 /** @def MPI_Comm_spawn_U
     Exchange MPI_Comm_spawn_U by MPI_COMM_SPAWN.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_spawn.
  */
 #define MPI_Comm_spawn_U MPI_COMM_SPAWN
 
 /** @def MPI_Comm_spawn_multiple_U
     Exchange MPI_Comm_spawn_multiple_U by MPI_COMM_SPAWN_MULTIPLE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_spawn_multiple.
  */
 #define MPI_Comm_spawn_multiple_U MPI_COMM_SPAWN_MULTIPLE
 
 /** @def MPI_Lookup_name_U
     Exchange MPI_Lookup_name_U by MPI_LOOKUP_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Lookup_name.
  */
 #define MPI_Lookup_name_U MPI_LOOKUP_NAME
 
 /** @def MPI_Open_port_U
     Exchange MPI_Open_port_U by MPI_OPEN_PORT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Open_port.
  */
 #define MPI_Open_port_U MPI_OPEN_PORT
 
 /** @def MPI_Publish_name_U
     Exchange MPI_Publish_name_U by MPI_PUBLISH_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Publish_name.
  */
 #define MPI_Publish_name_U MPI_PUBLISH_NAME
 
 /** @def MPI_Unpublish_name_U
     Exchange MPI_Unpublish_name_U by MPI_UNPUBLISH_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Unpublish_name.
  */
 #define MPI_Unpublish_name_U MPI_UNPUBLISH_NAME
 
@@ -122,73 +122,73 @@
 /* lowercase defines */
 /** @def MPI_Close_port_L
     Exchanges MPI_Close_port_L by mpi_close_port.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Close_port.
  */
 #define MPI_Close_port_L mpi_close_port
 
 /** @def MPI_Comm_accept_L
     Exchanges MPI_Comm_accept_L by mpi_comm_accept.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_accept.
  */
 #define MPI_Comm_accept_L mpi_comm_accept
 
 /** @def MPI_Comm_connect_L
     Exchanges MPI_Comm_connect_L by mpi_comm_connect.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_connect.
  */
 #define MPI_Comm_connect_L mpi_comm_connect
 
 /** @def MPI_Comm_disconnect_L
     Exchanges MPI_Comm_disconnect_L by mpi_comm_disconnect.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_disconnect.
  */
 #define MPI_Comm_disconnect_L mpi_comm_disconnect
 
 /** @def MPI_Comm_get_parent_L
     Exchanges MPI_Comm_get_parent_L by mpi_comm_get_parent.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_get_parent.
  */
 #define MPI_Comm_get_parent_L mpi_comm_get_parent
 
 /** @def MPI_Comm_join_L
     Exchanges MPI_Comm_join_L by mpi_comm_join.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_join.
  */
 #define MPI_Comm_join_L mpi_comm_join
 
 /** @def MPI_Comm_spawn_L
     Exchanges MPI_Comm_spawn_L by mpi_comm_spawn.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_spawn.
  */
 #define MPI_Comm_spawn_L mpi_comm_spawn
 
 /** @def MPI_Comm_spawn_multiple_L
     Exchanges MPI_Comm_spawn_multiple_L by mpi_comm_spawn_multiple.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Comm_spawn_multiple.
  */
 #define MPI_Comm_spawn_multiple_L mpi_comm_spawn_multiple
 
 /** @def MPI_Lookup_name_L
     Exchanges MPI_Lookup_name_L by mpi_lookup_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Lookup_name.
  */
 #define MPI_Lookup_name_L mpi_lookup_name
 
 /** @def MPI_Open_port_L
     Exchanges MPI_Open_port_L by mpi_open_port.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Open_port.
  */
 #define MPI_Open_port_L mpi_open_port
 
 /** @def MPI_Publish_name_L
     Exchanges MPI_Publish_name_L by mpi_publish_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Publish_name.
  */
 #define MPI_Publish_name_L mpi_publish_name
 
 /** @def MPI_Unpublish_name_L
     Exchanges MPI_Unpublish_name_L by mpi_unpublish_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Unpublish_name.
  */
 #define MPI_Unpublish_name_L mpi_unpublish_name
 

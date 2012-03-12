@@ -93,7 +93,7 @@ MPI_Abort( MPI_Comm comm,
  * @note Introduced with MPI-2
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Grequest_complete call with enter and exit events.
  */
 int
 MPI_Grequest_complete( MPI_Request request )
@@ -128,7 +128,7 @@ MPI_Grequest_complete( MPI_Request request )
  * @note Introduced with MPI-1
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Get_count call with enter and exit events.
  */
 int
 MPI_Get_count( MPI_Status* status, MPI_Datatype datatype, int* count )
@@ -162,7 +162,7 @@ MPI_Get_count( MPI_Status* status, MPI_Datatype datatype, int* count )
  * @note Introduced with MPI-1
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Get_elements call with enter and exit events.
  */
 int
 MPI_Get_elements( MPI_Status* status, MPI_Datatype datatype, int* count )
@@ -196,7 +196,7 @@ MPI_Get_elements( MPI_Status* status, MPI_Datatype datatype, int* count )
  * @note Introduced with MPI-1
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Get_processor_name call with enter and exit events.
  */
 int
 MPI_Get_processor_name( char* name, int* resultlen )
@@ -230,7 +230,7 @@ MPI_Get_processor_name( char* name, int* resultlen )
  * @note Introduced with MPI-2
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Grequest_start call with enter and exit events.
  */
 int
 MPI_Grequest_start( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_function* free_fn, MPI_Grequest_cancel_function* cancel_fn, void* extra_state, MPI_Request* request )
@@ -264,7 +264,7 @@ MPI_Grequest_start( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_fun
  * @note Introduced with MPI-2
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Status_set_cancelled call with enter and exit events.
  */
 int
 MPI_Status_set_cancelled( MPI_Status* status, int flag )
@@ -298,7 +298,7 @@ MPI_Status_set_cancelled( MPI_Status* status, int flag )
  * @note Introduced with MPI-2
  * @ingroup ext
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Status_set_elements call with enter and exit events.
  */
 int
 MPI_Status_set_elements( MPI_Status* status, MPI_Datatype datatype, int count )

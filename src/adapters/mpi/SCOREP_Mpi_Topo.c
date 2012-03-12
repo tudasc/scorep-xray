@@ -320,7 +320,7 @@ MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, int sources[], 
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Cart_coords call with enter and exit events.
  */
 int
 MPI_Cart_coords( MPI_Comm comm, int rank, int maxdims, int* coords )
@@ -354,7 +354,7 @@ MPI_Cart_coords( MPI_Comm comm, int rank, int maxdims, int* coords )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Cart_get call with enter and exit events.
  */
 int
 MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
@@ -388,7 +388,7 @@ MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Cart_map call with enter and exit events.
  */
 int
 MPI_Cart_map( MPI_Comm comm, int ndims, int* dims, int* periods, int* newrank )
@@ -422,7 +422,7 @@ MPI_Cart_map( MPI_Comm comm, int ndims, int* dims, int* periods, int* newrank )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Cart_rank call with enter and exit events.
  */
 int
 MPI_Cart_rank( MPI_Comm comm, int* coords, int* rank )
@@ -456,7 +456,7 @@ MPI_Cart_rank( MPI_Comm comm, int* coords, int* rank )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Cart_shift call with enter and exit events.
  */
 int
 MPI_Cart_shift( MPI_Comm comm, int direction, int disp, int* rank_source, int* rank_dest )
@@ -490,7 +490,7 @@ MPI_Cart_shift( MPI_Comm comm, int direction, int disp, int* rank_source, int* r
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Cartdim_get call with enter and exit events.
  */
 int
 MPI_Cartdim_get( MPI_Comm comm, int* ndims )
@@ -524,7 +524,7 @@ MPI_Cartdim_get( MPI_Comm comm, int* ndims )
  * @note Introduced with MPI-2
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Dist_graph_neighbors call with enter and exit events.
  */
 int
 MPI_Dist_graph_neighbors( MPI_Comm comm, int maxindegree, int sources[], int sourceweights[], int maxoutdegree, int destinations[], int destweights[] )
@@ -558,7 +558,7 @@ MPI_Dist_graph_neighbors( MPI_Comm comm, int maxindegree, int sources[], int sou
  * @note Introduced with MPI-2
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Dist_graph_neighbors_count call with enter and exit events.
  */
 int
 MPI_Dist_graph_neighbors_count( MPI_Comm comm, int* indegree, int* outdegree, int* weighted )
@@ -592,7 +592,7 @@ MPI_Dist_graph_neighbors_count( MPI_Comm comm, int* indegree, int* outdegree, in
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Graph_get call with enter and exit events.
  */
 int
 MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges )
@@ -626,7 +626,7 @@ MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Graph_map call with enter and exit events.
  */
 int
 MPI_Graph_map( MPI_Comm comm, int nnodes, int* index, int* edges, int* newrank )
@@ -660,7 +660,7 @@ MPI_Graph_map( MPI_Comm comm, int nnodes, int* index, int* edges, int* newrank )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Graph_neighbors call with enter and exit events.
  */
 int
 MPI_Graph_neighbors( MPI_Comm comm, int rank, int maxneighbors, int* neighbors )
@@ -694,7 +694,7 @@ MPI_Graph_neighbors( MPI_Comm comm, int rank, int maxneighbors, int* neighbors )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Graph_neighbors_count call with enter and exit events.
  */
 int
 MPI_Graph_neighbors_count( MPI_Comm comm, int rank, int* nneighbors )
@@ -728,7 +728,7 @@ MPI_Graph_neighbors_count( MPI_Comm comm, int rank, int* nneighbors )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Graphdims_get call with enter and exit events.
  */
 int
 MPI_Graphdims_get( MPI_Comm comm, int* nnodes, int* nedges )
@@ -762,7 +762,7 @@ MPI_Graphdims_get( MPI_Comm comm, int* nnodes, int* nedges )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Topo_test call with enter and exit events.
  */
 int
 MPI_Topo_test( MPI_Comm comm, int* status )
@@ -796,7 +796,7 @@ MPI_Topo_test( MPI_Comm comm, int* status )
  * @note Introduced with MPI-1
  * @ingroup topo
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Dims_create call with enter and exit events.
  */
 int
 MPI_Dims_create( int nnodes, int ndims, int* dims )

@@ -56,7 +56,7 @@
  * @note Introduced with MPI-2
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Add_error_class call with enter and exit events.
  */
 int
 MPI_Add_error_class( int* errorclass )
@@ -90,7 +90,7 @@ MPI_Add_error_class( int* errorclass )
  * @note Introduced with MPI-2
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Add_error_code call with enter and exit events.
  */
 int
 MPI_Add_error_code( int errorclass, int* errorcode )
@@ -124,7 +124,7 @@ MPI_Add_error_code( int errorclass, int* errorcode )
  * @note Introduced with MPI-2
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Add_error_string call with enter and exit events.
  */
 int
 MPI_Add_error_string( int errorcode, char* string )
@@ -158,7 +158,7 @@ MPI_Add_error_string( int errorcode, char* string )
  * @note Introduced with MPI-1
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Errhandler_create call with enter and exit events.
  */
 int
 MPI_Errhandler_create( MPI_Handler_function* function, MPI_Errhandler* errhandler )
@@ -192,7 +192,7 @@ MPI_Errhandler_create( MPI_Handler_function* function, MPI_Errhandler* errhandle
  * @note Introduced with MPI-1
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Errhandler_free call with enter and exit events.
  */
 int
 MPI_Errhandler_free( MPI_Errhandler* errhandler )
@@ -226,7 +226,7 @@ MPI_Errhandler_free( MPI_Errhandler* errhandler )
  * @note Introduced with MPI-1
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Errhandler_get call with enter and exit events.
  */
 int
 MPI_Errhandler_get( MPI_Comm comm, MPI_Errhandler* errhandler )
@@ -260,7 +260,7 @@ MPI_Errhandler_get( MPI_Comm comm, MPI_Errhandler* errhandler )
  * @note Introduced with MPI-1
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Errhandler_set call with enter and exit events.
  */
 int
 MPI_Errhandler_set( MPI_Comm comm, MPI_Errhandler errhandler )
@@ -294,7 +294,7 @@ MPI_Errhandler_set( MPI_Comm comm, MPI_Errhandler errhandler )
  * @note Introduced with MPI-1
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Error_class call with enter and exit events.
  */
 int
 MPI_Error_class( int errorcode, int* errorclass )
@@ -328,7 +328,7 @@ MPI_Error_class( int errorcode, int* errorclass )
  * @note Introduced with MPI-1
  * @ingroup err
  * Triggers an enter and exit event.
- * It wraps the me) call with enter and exit events.
+ * It wraps the MPI_Error_string call with enter and exit events.
  */
 int
 MPI_Error_string( int errorcode, char* string, int* resultlen )

@@ -7,7 +7,7 @@ ${guard:start}
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
  * Triggers an enter and exit event.
- * It wraps the $(name) call with enter and exit events.
+ * It wraps the ${name} call with enter and exit events.
  */
 ${proto:c} 
 {

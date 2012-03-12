@@ -46,254 +46,254 @@
 /* uppercase defines */
 /** @def MPI_Pack_U
     Exchange MPI_Pack_U by MPI_PACK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack.
  */
 #define MPI_Pack_U MPI_PACK
 
 /** @def MPI_Pack_external_U
     Exchange MPI_Pack_external_U by MPI_PACK_EXTERNAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack_external.
  */
 #define MPI_Pack_external_U MPI_PACK_EXTERNAL
 
 /** @def MPI_Pack_external_size_U
     Exchange MPI_Pack_external_size_U by MPI_PACK_EXTERNAL_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack_external_size.
  */
 #define MPI_Pack_external_size_U MPI_PACK_EXTERNAL_SIZE
 
 /** @def MPI_Pack_size_U
     Exchange MPI_Pack_size_U by MPI_PACK_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack_size.
  */
 #define MPI_Pack_size_U MPI_PACK_SIZE
 
 /** @def MPI_Sizeof_U
     Exchange MPI_Sizeof_U by MPI_SIZEOF.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Sizeof.
  */
 #define MPI_Sizeof_U MPI_SIZEOF
 
 /** @def MPI_Type_commit_U
     Exchange MPI_Type_commit_U by MPI_TYPE_COMMIT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_commit.
  */
 #define MPI_Type_commit_U MPI_TYPE_COMMIT
 
 /** @def MPI_Type_contiguous_U
     Exchange MPI_Type_contiguous_U by MPI_TYPE_CONTIGUOUS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_contiguous.
  */
 #define MPI_Type_contiguous_U MPI_TYPE_CONTIGUOUS
 
 /** @def MPI_Type_create_darray_U
     Exchange MPI_Type_create_darray_U by MPI_TYPE_CREATE_DARRAY.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_darray.
  */
 #define MPI_Type_create_darray_U MPI_TYPE_CREATE_DARRAY
 
 /** @def MPI_Type_create_f90_complex_U
     Exchange MPI_Type_create_f90_complex_U by MPI_TYPE_CREATE_F90_COMPLEX.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_f90_complex.
  */
 #define MPI_Type_create_f90_complex_U MPI_TYPE_CREATE_F90_COMPLEX
 
 /** @def MPI_Type_create_f90_integer_U
     Exchange MPI_Type_create_f90_integer_U by MPI_TYPE_CREATE_F90_INTEGER.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_f90_integer.
  */
 #define MPI_Type_create_f90_integer_U MPI_TYPE_CREATE_F90_INTEGER
 
 /** @def MPI_Type_create_f90_real_U
     Exchange MPI_Type_create_f90_real_U by MPI_TYPE_CREATE_F90_REAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_f90_real.
  */
 #define MPI_Type_create_f90_real_U MPI_TYPE_CREATE_F90_REAL
 
 /** @def MPI_Type_create_hindexed_U
     Exchange MPI_Type_create_hindexed_U by MPI_TYPE_CREATE_HINDEXED.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_hindexed.
  */
 #define MPI_Type_create_hindexed_U MPI_TYPE_CREATE_HINDEXED
 
 /** @def MPI_Type_create_hvector_U
     Exchange MPI_Type_create_hvector_U by MPI_TYPE_CREATE_HVECTOR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_hvector.
  */
 #define MPI_Type_create_hvector_U MPI_TYPE_CREATE_HVECTOR
 
 /** @def MPI_Type_create_indexed_block_U
     Exchange MPI_Type_create_indexed_block_U by MPI_TYPE_CREATE_INDEXED_BLOCK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_indexed_block.
  */
 #define MPI_Type_create_indexed_block_U MPI_TYPE_CREATE_INDEXED_BLOCK
 
 /** @def MPI_Type_create_resized_U
     Exchange MPI_Type_create_resized_U by MPI_TYPE_CREATE_RESIZED.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_resized.
  */
 #define MPI_Type_create_resized_U MPI_TYPE_CREATE_RESIZED
 
 /** @def MPI_Type_create_struct_U
     Exchange MPI_Type_create_struct_U by MPI_TYPE_CREATE_STRUCT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_struct.
  */
 #define MPI_Type_create_struct_U MPI_TYPE_CREATE_STRUCT
 
 /** @def MPI_Type_create_subarray_U
     Exchange MPI_Type_create_subarray_U by MPI_TYPE_CREATE_SUBARRAY.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_subarray.
  */
 #define MPI_Type_create_subarray_U MPI_TYPE_CREATE_SUBARRAY
 
 /** @def MPI_Type_dup_U
     Exchange MPI_Type_dup_U by MPI_TYPE_DUP.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_dup.
  */
 #define MPI_Type_dup_U MPI_TYPE_DUP
 
 /** @def MPI_Type_extent_U
     Exchange MPI_Type_extent_U by MPI_TYPE_EXTENT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_extent.
  */
 #define MPI_Type_extent_U MPI_TYPE_EXTENT
 
 /** @def MPI_Type_free_U
     Exchange MPI_Type_free_U by MPI_TYPE_FREE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_free.
  */
 #define MPI_Type_free_U MPI_TYPE_FREE
 
 /** @def MPI_Type_get_contents_U
     Exchange MPI_Type_get_contents_U by MPI_TYPE_GET_CONTENTS.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_contents.
  */
 #define MPI_Type_get_contents_U MPI_TYPE_GET_CONTENTS
 
 /** @def MPI_Type_get_envelope_U
     Exchange MPI_Type_get_envelope_U by MPI_TYPE_GET_ENVELOPE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_envelope.
  */
 #define MPI_Type_get_envelope_U MPI_TYPE_GET_ENVELOPE
 
 /** @def MPI_Type_get_extent_U
     Exchange MPI_Type_get_extent_U by MPI_TYPE_GET_EXTENT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_extent.
  */
 #define MPI_Type_get_extent_U MPI_TYPE_GET_EXTENT
 
 /** @def MPI_Type_get_true_extent_U
     Exchange MPI_Type_get_true_extent_U by MPI_TYPE_GET_TRUE_EXTENT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_true_extent.
  */
 #define MPI_Type_get_true_extent_U MPI_TYPE_GET_TRUE_EXTENT
 
 /** @def MPI_Type_hindexed_U
     Exchange MPI_Type_hindexed_U by MPI_TYPE_HINDEXED.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_hindexed.
  */
 #define MPI_Type_hindexed_U MPI_TYPE_HINDEXED
 
 /** @def MPI_Type_hvector_U
     Exchange MPI_Type_hvector_U by MPI_TYPE_HVECTOR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_hvector.
  */
 #define MPI_Type_hvector_U MPI_TYPE_HVECTOR
 
 /** @def MPI_Type_indexed_U
     Exchange MPI_Type_indexed_U by MPI_TYPE_INDEXED.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_indexed.
  */
 #define MPI_Type_indexed_U MPI_TYPE_INDEXED
 
 /** @def MPI_Type_lb_U
     Exchange MPI_Type_lb_U by MPI_TYPE_LB.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_lb.
  */
 #define MPI_Type_lb_U MPI_TYPE_LB
 
 /** @def MPI_Type_match_size_U
     Exchange MPI_Type_match_size_U by MPI_TYPE_MATCH_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_match_size.
  */
 #define MPI_Type_match_size_U MPI_TYPE_MATCH_SIZE
 
 /** @def MPI_Type_size_U
     Exchange MPI_Type_size_U by MPI_TYPE_SIZE.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_size.
  */
 #define MPI_Type_size_U MPI_TYPE_SIZE
 
 /** @def MPI_Type_struct_U
     Exchange MPI_Type_struct_U by MPI_TYPE_STRUCT.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_struct.
  */
 #define MPI_Type_struct_U MPI_TYPE_STRUCT
 
 /** @def MPI_Type_ub_U
     Exchange MPI_Type_ub_U by MPI_TYPE_UB.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_ub.
  */
 #define MPI_Type_ub_U MPI_TYPE_UB
 
 /** @def MPI_Type_vector_U
     Exchange MPI_Type_vector_U by MPI_TYPE_VECTOR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_vector.
  */
 #define MPI_Type_vector_U MPI_TYPE_VECTOR
 
 /** @def MPI_Unpack_U
     Exchange MPI_Unpack_U by MPI_UNPACK.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Unpack.
  */
 #define MPI_Unpack_U MPI_UNPACK
 
 /** @def MPI_Unpack_external_U
     Exchange MPI_Unpack_external_U by MPI_UNPACK_EXTERNAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Unpack_external.
  */
 #define MPI_Unpack_external_U MPI_UNPACK_EXTERNAL
 
 
 /** @def MPI_Type_create_keyval_U
     Exchange MPI_Type_create_keyval_U by MPI_TYPE_CREATE_KEYVAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_keyval.
  */
 #define MPI_Type_create_keyval_U MPI_TYPE_CREATE_KEYVAL
 
 /** @def MPI_Type_delete_attr_U
     Exchange MPI_Type_delete_attr_U by MPI_TYPE_DELETE_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_delete_attr.
  */
 #define MPI_Type_delete_attr_U MPI_TYPE_DELETE_ATTR
 
 /** @def MPI_Type_free_keyval_U
     Exchange MPI_Type_free_keyval_U by MPI_TYPE_FREE_KEYVAL.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_free_keyval.
  */
 #define MPI_Type_free_keyval_U MPI_TYPE_FREE_KEYVAL
 
 /** @def MPI_Type_get_attr_U
     Exchange MPI_Type_get_attr_U by MPI_TYPE_GET_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_attr.
  */
 #define MPI_Type_get_attr_U MPI_TYPE_GET_ATTR
 
 /** @def MPI_Type_get_name_U
     Exchange MPI_Type_get_name_U by MPI_TYPE_GET_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_name.
  */
 #define MPI_Type_get_name_U MPI_TYPE_GET_NAME
 
 /** @def MPI_Type_set_attr_U
     Exchange MPI_Type_set_attr_U by MPI_TYPE_SET_ATTR.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_set_attr.
  */
 #define MPI_Type_set_attr_U MPI_TYPE_SET_ATTR
 
 /** @def MPI_Type_set_name_U
     Exchange MPI_Type_set_name_U by MPI_TYPE_SET_NAME.
-    It is used for the Fortran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_set_name.
  */
 #define MPI_Type_set_name_U MPI_TYPE_SET_NAME
 
@@ -302,254 +302,254 @@
 /* lowercase defines */
 /** @def MPI_Pack_L
     Exchanges MPI_Pack_L by mpi_pack.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack.
  */
 #define MPI_Pack_L mpi_pack
 
 /** @def MPI_Pack_external_L
     Exchanges MPI_Pack_external_L by mpi_pack_external.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack_external.
  */
 #define MPI_Pack_external_L mpi_pack_external
 
 /** @def MPI_Pack_external_size_L
     Exchanges MPI_Pack_external_size_L by mpi_pack_external_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack_external_size.
  */
 #define MPI_Pack_external_size_L mpi_pack_external_size
 
 /** @def MPI_Pack_size_L
     Exchanges MPI_Pack_size_L by mpi_pack_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Pack_size.
  */
 #define MPI_Pack_size_L mpi_pack_size
 
 /** @def MPI_Sizeof_L
     Exchanges MPI_Sizeof_L by mpi_sizeof.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Sizeof.
  */
 #define MPI_Sizeof_L mpi_sizeof
 
 /** @def MPI_Type_commit_L
     Exchanges MPI_Type_commit_L by mpi_type_commit.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_commit.
  */
 #define MPI_Type_commit_L mpi_type_commit
 
 /** @def MPI_Type_contiguous_L
     Exchanges MPI_Type_contiguous_L by mpi_type_contiguous.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_contiguous.
  */
 #define MPI_Type_contiguous_L mpi_type_contiguous
 
 /** @def MPI_Type_create_darray_L
     Exchanges MPI_Type_create_darray_L by mpi_type_create_darray.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_darray.
  */
 #define MPI_Type_create_darray_L mpi_type_create_darray
 
 /** @def MPI_Type_create_f90_complex_L
     Exchanges MPI_Type_create_f90_complex_L by mpi_type_create_f90_complex.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_f90_complex.
  */
 #define MPI_Type_create_f90_complex_L mpi_type_create_f90_complex
 
 /** @def MPI_Type_create_f90_integer_L
     Exchanges MPI_Type_create_f90_integer_L by mpi_type_create_f90_integer.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_f90_integer.
  */
 #define MPI_Type_create_f90_integer_L mpi_type_create_f90_integer
 
 /** @def MPI_Type_create_f90_real_L
     Exchanges MPI_Type_create_f90_real_L by mpi_type_create_f90_real.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_f90_real.
  */
 #define MPI_Type_create_f90_real_L mpi_type_create_f90_real
 
 /** @def MPI_Type_create_hindexed_L
     Exchanges MPI_Type_create_hindexed_L by mpi_type_create_hindexed.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_hindexed.
  */
 #define MPI_Type_create_hindexed_L mpi_type_create_hindexed
 
 /** @def MPI_Type_create_hvector_L
     Exchanges MPI_Type_create_hvector_L by mpi_type_create_hvector.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_hvector.
  */
 #define MPI_Type_create_hvector_L mpi_type_create_hvector
 
 /** @def MPI_Type_create_indexed_block_L
     Exchanges MPI_Type_create_indexed_block_L by mpi_type_create_indexed_block.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_indexed_block.
  */
 #define MPI_Type_create_indexed_block_L mpi_type_create_indexed_block
 
 /** @def MPI_Type_create_resized_L
     Exchanges MPI_Type_create_resized_L by mpi_type_create_resized.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_resized.
  */
 #define MPI_Type_create_resized_L mpi_type_create_resized
 
 /** @def MPI_Type_create_struct_L
     Exchanges MPI_Type_create_struct_L by mpi_type_create_struct.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_struct.
  */
 #define MPI_Type_create_struct_L mpi_type_create_struct
 
 /** @def MPI_Type_create_subarray_L
     Exchanges MPI_Type_create_subarray_L by mpi_type_create_subarray.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_subarray.
  */
 #define MPI_Type_create_subarray_L mpi_type_create_subarray
 
 /** @def MPI_Type_dup_L
     Exchanges MPI_Type_dup_L by mpi_type_dup.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_dup.
  */
 #define MPI_Type_dup_L mpi_type_dup
 
 /** @def MPI_Type_extent_L
     Exchanges MPI_Type_extent_L by mpi_type_extent.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_extent.
  */
 #define MPI_Type_extent_L mpi_type_extent
 
 /** @def MPI_Type_free_L
     Exchanges MPI_Type_free_L by mpi_type_free.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_free.
  */
 #define MPI_Type_free_L mpi_type_free
 
 /** @def MPI_Type_get_contents_L
     Exchanges MPI_Type_get_contents_L by mpi_type_get_contents.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_contents.
  */
 #define MPI_Type_get_contents_L mpi_type_get_contents
 
 /** @def MPI_Type_get_envelope_L
     Exchanges MPI_Type_get_envelope_L by mpi_type_get_envelope.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_envelope.
  */
 #define MPI_Type_get_envelope_L mpi_type_get_envelope
 
 /** @def MPI_Type_get_extent_L
     Exchanges MPI_Type_get_extent_L by mpi_type_get_extent.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_extent.
  */
 #define MPI_Type_get_extent_L mpi_type_get_extent
 
 /** @def MPI_Type_get_true_extent_L
     Exchanges MPI_Type_get_true_extent_L by mpi_type_get_true_extent.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_true_extent.
  */
 #define MPI_Type_get_true_extent_L mpi_type_get_true_extent
 
 /** @def MPI_Type_hindexed_L
     Exchanges MPI_Type_hindexed_L by mpi_type_hindexed.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_hindexed.
  */
 #define MPI_Type_hindexed_L mpi_type_hindexed
 
 /** @def MPI_Type_hvector_L
     Exchanges MPI_Type_hvector_L by mpi_type_hvector.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_hvector.
  */
 #define MPI_Type_hvector_L mpi_type_hvector
 
 /** @def MPI_Type_indexed_L
     Exchanges MPI_Type_indexed_L by mpi_type_indexed.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_indexed.
  */
 #define MPI_Type_indexed_L mpi_type_indexed
 
 /** @def MPI_Type_lb_L
     Exchanges MPI_Type_lb_L by mpi_type_lb.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_lb.
  */
 #define MPI_Type_lb_L mpi_type_lb
 
 /** @def MPI_Type_match_size_L
     Exchanges MPI_Type_match_size_L by mpi_type_match_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_match_size.
  */
 #define MPI_Type_match_size_L mpi_type_match_size
 
 /** @def MPI_Type_size_L
     Exchanges MPI_Type_size_L by mpi_type_size.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_size.
  */
 #define MPI_Type_size_L mpi_type_size
 
 /** @def MPI_Type_struct_L
     Exchanges MPI_Type_struct_L by mpi_type_struct.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_struct.
  */
 #define MPI_Type_struct_L mpi_type_struct
 
 /** @def MPI_Type_ub_L
     Exchanges MPI_Type_ub_L by mpi_type_ub.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_ub.
  */
 #define MPI_Type_ub_L mpi_type_ub
 
 /** @def MPI_Type_vector_L
     Exchanges MPI_Type_vector_L by mpi_type_vector.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_vector.
  */
 #define MPI_Type_vector_L mpi_type_vector
 
 /** @def MPI_Unpack_L
     Exchanges MPI_Unpack_L by mpi_unpack.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Unpack.
  */
 #define MPI_Unpack_L mpi_unpack
 
 /** @def MPI_Unpack_external_L
     Exchanges MPI_Unpack_external_L by mpi_unpack_external.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Unpack_external.
  */
 #define MPI_Unpack_external_L mpi_unpack_external
 
 
 /** @def MPI_Type_create_keyval_L
     Exchanges MPI_Type_create_keyval_L by mpi_type_create_keyval.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_create_keyval.
  */
 #define MPI_Type_create_keyval_L mpi_type_create_keyval
 
 /** @def MPI_Type_delete_attr_L
     Exchanges MPI_Type_delete_attr_L by mpi_type_delete_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_delete_attr.
  */
 #define MPI_Type_delete_attr_L mpi_type_delete_attr
 
 /** @def MPI_Type_free_keyval_L
     Exchanges MPI_Type_free_keyval_L by mpi_type_free_keyval.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_free_keyval.
  */
 #define MPI_Type_free_keyval_L mpi_type_free_keyval
 
 /** @def MPI_Type_get_attr_L
     Exchanges MPI_Type_get_attr_L by mpi_type_get_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_attr.
  */
 #define MPI_Type_get_attr_L mpi_type_get_attr
 
 /** @def MPI_Type_get_name_L
     Exchanges MPI_Type_get_name_L by mpi_type_get_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_get_name.
  */
 #define MPI_Type_get_name_L mpi_type_get_name
 
 /** @def MPI_Type_set_attr_L
     Exchanges MPI_Type_set_attr_L by mpi_type_set_attr.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_set_attr.
  */
 #define MPI_Type_set_attr_L mpi_type_set_attr
 
 /** @def MPI_Type_set_name_L
     Exchanges MPI_Type_set_name_L by mpi_type_set_name.
-    It is used for the Forran wrappers of me).
+    It is used for the Fortran wrappers of MPI_Type_set_name.
  */
 #define MPI_Type_set_name_L mpi_type_set_name
 
