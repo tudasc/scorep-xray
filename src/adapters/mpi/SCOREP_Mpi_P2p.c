@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -107,7 +107,7 @@ scorep_mpi_get_status_array( int size )
 int
 MPI_Bsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-    int      return_val;
+    int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
   #endif
@@ -167,7 +167,7 @@ MPI_Bsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_C
 int
 MPI_Rsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-    int      return_val;
+    int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
   #endif
@@ -227,7 +227,7 @@ MPI_Rsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_C
 int
 MPI_Send( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-    int      return_val;
+    int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
   #endif
@@ -287,7 +287,7 @@ MPI_Send( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Co
 int
 MPI_Ssend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-    int      return_val;
+    int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
   #endif
@@ -1976,7 +1976,7 @@ MPI_Startall( int          count,
 
     if ( event_gen_active )
     {
-        MPI_Request*        request;
+        MPI_Request* request;
 
         scorep_mpi_request* req;
 

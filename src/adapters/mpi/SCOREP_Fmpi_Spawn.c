@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -267,11 +267,13 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
         c_array_of_argv = MPI_ARGVS_NULL;
     }
     else
-    {   /*
+    {
+        /*
          * we need to convert Fortran argument list to C
          * NOTE: Argument list is a column-major 2D Fortran array with fixed
          *       width entries.
          */
+
         /* allocate and fill local array_of_argv */
         c_array_of_argv = ( char*** )malloc( array_size * sizeof( char** ) );
         if ( !c_array_of_argv )
@@ -821,11 +823,13 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
         c_array_of_argv = MPI_ARGVS_NULL;
     }
     else
-    {   /*
+    {
+        /*
          * we need to convert Fortran argument list to C
          * NOTE: Argument list is a column-major 2D Fortran array with fixed
          *       width entries.
          */
+
         /* allocate and fill local array_of_argv */
         c_array_of_argv = ( char*** )malloc( array_size * sizeof( char** ) );
         if ( !c_array_of_argv )
