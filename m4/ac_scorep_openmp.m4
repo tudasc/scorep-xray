@@ -35,8 +35,8 @@ AM_CONDITIONAL([OPENMP_SUPPORTED],
 
 if test "x${enable_openmp}" != "xno"; then
   if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
-    AC_MSG_WARN([no suitbale OpenMP compilers found. SCOREP OpenMP and hybrid libraries will not be build.])
-    AC_SCOREP_SUMMARY([OpenMP support], [no, no suitbale compilers found])
+    AC_MSG_WARN([no suitable OpenMP compilers found. SCOREP OpenMP and hybrid libraries will not be build.])
+    AC_SCOREP_SUMMARY([OpenMP support], [no, no suitable compilers found])
   else
     AC_SCOREP_SUMMARY([OpenMP support], [yes, using ${ac_cv_prog_c_openmp}])
   fi
