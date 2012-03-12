@@ -44,7 +44,7 @@ doc: all-files $(DOXYGEN_CONF)
 	$(DOXYGEN) $(DOXYGEN_OPTS) $(DOXYGEN_CONF)
 
 wrapgen : SCOREP_Wrapgen.o $(MODS)
-	$(CXX) $(CXXFLAGS) $(LIBS) $(MODS) SCOREP_Wrapgen.o -o $@
+	$(CXX) $(CXXFLAGS) $(MODS) SCOREP_Wrapgen.o $(LIBS) -o $@
 
 SCOREP_Wrapgen_Funcparam.o : SCOREP_Wrapgen_Funcparam.h SCOREP_Wrapgen_Funcparam.cpp 
 	$(CXX) $(CXXFLAGS) -Wall -c $*.cpp
@@ -78,18 +78,18 @@ clean-files:
 	if [ -d $(MPI_OUTPUTDIR) ] && [ -z `ls $(MPI_OUTPUTDIR)` ]; then (rmdir $(MPI_OUTPUTDIR)) fi
 
 install-files: all-files
-	(cd $(MPI_OUTPUTDIR) && $(INSTALL) -m 644 $(MPI_FILES) $(MPI_INSTALLDIR))
-	(cd $(DOC_OUTPUTDIR) && $(INSTALL) -m 644 $(DOC_FILES) $(DOC_INSTALLDIR))
+	@(cd $(MPI_OUTPUTDIR) && $(INSTALL) -m 644 $(MPI_FILES) $(MPI_INSTALLDIR))
+	@(cd $(DOC_OUTPUTDIR) && $(INSTALL) -m 644 $(DOC_FILES) $(DOC_INSTALLDIR))
 
 # Auto-gerenation targets for MPI wrappers
 
 $(MPI_OUTPUTDIR)/SCOREP_%: $(MPI_PROTOTYPES) $(MPI_TMPL_DIR)/SCOREP_%.tmpl $(MPI_TMPL_DIR)/*.w
-	if [ ! -d $(MPI_OUTPUTDIR) ]; then mkdir -p $(MPI_OUTPUTDIR); fi
-	$(WRAPGEN) $(WFLAGS) $(MPI_TMPL_DIR)/$(notdir $@).tmpl > $@
+	@if [ ! -d $(MPI_OUTPUTDIR) ]; then mkdir -p $(MPI_OUTPUTDIR); fi
+	@echo "  GEN   " $@; $(WRAPGEN) $(WFLAGS) $(MPI_TMPL_DIR)/$(notdir $@).tmpl > $@
 
 $(DOC_OUTPUTDIR)/%: $(MPI_PROTOTYPES) $(DOC_TMPL_DIR)/%.tmpl $(DOC_TMPL_DIR)/*.w
-	if [ ! -d $(DOC_OUTPUTDIR) ]; then mkdir -p $(DOC_OUTPUTDIR); fi
-	$(WRAPGEN) -p $(MPI_PROTOTYPES) $(DOC_TMPL_DIR)/$(notdir $@).tmpl > $@
+	@if [ ! -d $(DOC_OUTPUTDIR) ]; then mkdir -p $(DOC_OUTPUTDIR); fi
+	@echo "  GEN   " $@; $(WRAPGEN) -p $(MPI_PROTOTYPES) $(DOC_TMPL_DIR)/$(notdir $@).tmpl > $@
 
 
 # Targets for Prototype generator from header files
@@ -98,4 +98,4 @@ SCOREP_Wrapgen_HeaderParser.o: SCOREP_Wrapgen_HeaderParser.cpp
 	$(CXX) $(CXXFLAGS) SCOREP_Wrapgen_HeaderParser.cpp  -c -o SCOREP_Wrapgen_HeaderParser.o
 
 protogen: SCOREP_Wrapgen_HeaderParser.o $(MODS)
-	$(CXX) $(CXXFLAGS) $(LIBS) $(MODS) SCOREP_Wrapgen_HeaderParser.o -o protogen
+	$(CXX) $(CXXFLAGS) $(MODS) SCOREP_Wrapgen_HeaderParser.o $(LIBS) -o protogen
