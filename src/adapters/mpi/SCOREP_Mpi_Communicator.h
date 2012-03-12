@@ -248,6 +248,16 @@ scorep_mpi_comm_handle( MPI_Comm comm );
 
 /**
  * @internal
+ * @brief  Sets the name of the communicator.
+ * @param  comm MPI communicator
+ * @param  name The name for the MPI communicator
+ */
+extern void
+scorep_mpi_comm_set_name( MPI_Comm    comm,
+                          const char* name );
+
+/**
+ * @internal
  * Translate a rank within a given communicator to its global rank in
  * \a MPI_COMM_WORLD.
  * @param  rank Local rank to be translated.

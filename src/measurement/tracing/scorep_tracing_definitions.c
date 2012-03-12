@@ -286,8 +286,8 @@ scorep_write_communicator_definitions( void*                     writerHandle,
         SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
             writerHandle,
             definition->sequence_number,
-            0, /* ID of empty string as name */
-            SCOREP_HANDLE_TO_ID( definition->group, Group, definitionManager->page_manager ),
+            definition->name_id, /* already the global ID */
+            SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
             OTF2_UNDEFINED_UINT32 /* undefined parent ID */ );
 
         if ( status != SCOREP_SUCCESS )

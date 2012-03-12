@@ -777,6 +777,34 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
     return new_handle;
 }
 
+void
+SCOREP_LocalMPICommunicatorSetName(
+    SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
+    const char*                       name )
+{
+    SCOREP_BUG_ON( localMPICommHandle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
+                   "Invalid MPI_Comm handle as argument" );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_LocalMPICommunicator_Definition* definition = SCOREP_HANDLE_DEREF(
+        localMPICommHandle,
+        LocalMPICommunicator,
+        scorep_local_definition_manager.page_manager );
+
+    if ( definition->name_handle == SCOREP_INVALID_STRING
+         && definition->local_rank == 0
+         && !definition->is_self_like )
+    {
+        definition->name_handle = scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            name ? name : "" );
+    }
+
+    SCOREP_Definitions_Unlock();
+}
+
+
 static SCOREP_LocalMPICommunicatorHandle
 scorep_local_mpi_communicator_definitions_define(
     SCOREP_DefinitionManager* definition_manager,
@@ -795,6 +823,7 @@ scorep_local_mpi_communicator_definitions_define(
     new_definition->local_rank       = localRank;
     new_definition->global_root_rank = globalRootRank;
     new_definition->root_id          = id;
+    new_definition->name_handle      = SCOREP_INVALID_STRING;
 
     /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator,
@@ -818,7 +847,8 @@ scorep_mpi_communicator_definitions_equal(
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle )
+SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle,
+                                     uint32_t           unified_name_id )
 {
     SCOREP_MPICommunicator_Definition* new_definition     = NULL;
     SCOREP_MPICommunicatorHandle       new_handle         = SCOREP_INVALID_MPI_COMMUNICATOR;
@@ -833,7 +863,8 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle )
     SCOREP_DEFINITION_ALLOC( MPICommunicator );
 
     // Init new_definition
-    new_definition->group = group_handle;
+    new_definition->group_handle = group_handle;
+    new_definition->name_id      = unified_name_id;
 
     /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator,

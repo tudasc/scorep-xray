@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -842,6 +842,20 @@ scorep_mpi_comm_handle( MPI_Comm comm )
                           "not tracked. Please contact the Score-P support team." );
             return SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
         }
+    }
+}
+
+void
+scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
+{
+    if ( name )
+    {
+        /*
+         * Does set the name only the first time,
+         * only on rank zero in the communicator and
+         * only on non-SELF-like communicators
+         */
+        SCOREP_LocalMPICommunicatorSetName( SCOREP_MPI_COMM_HANDLE( comm ), name );
     }
 }
 
