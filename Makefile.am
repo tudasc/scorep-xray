@@ -11,6 +11,7 @@ SUBDIRS = $(subdirs) $(subdirs_custom)
 ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4
 
 include vendor/common/build-config/Makefile.inc.am
+include vendor/common/build-config/platforms.am
 
 ## Still, sometimes there are files that must be distributed, but which are not
 ## covered in the automatic rules. These files should be listed in the 
