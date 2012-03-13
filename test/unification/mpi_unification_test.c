@@ -229,7 +229,7 @@ main( int argc, char* argv[] )
             {
                 fprintf( result, "uc: %u ug:%u\n",
                          definition->sequence_number,
-                         SCOREP_HANDLE_TO_ID( definition->group,
+                         SCOREP_HANDLE_TO_ID( definition->group_handle,
                                               Group,
                                               scorep_unified_definition_manager->page_manager ) );
                 fflush( result );
