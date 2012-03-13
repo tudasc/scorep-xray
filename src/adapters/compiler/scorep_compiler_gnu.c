@@ -90,6 +90,14 @@ __cyg_profile_func_enter( void* func,
         SCOREP_InitMeasurement();
     }
 
+    /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
+       Thus, thumb code address differ from the real function address that we
+       get from libbfd or nm by 1 */
+#if HAVE( PLATFORM_ARM )
+    /* Clear least significant bit */
+    func = ( void* )( ( ( long )func | 1 ) - 1 );
+#endif
+
     if ( ( hash_node = scorep_compiler_hash_get( ( long )func ) ) )
     {
         if ( hash_node->region_handle == SCOREP_INVALID_REGION )
@@ -123,6 +131,14 @@ __cyg_profile_func_exit( void* func,
     {
         return;
     }
+
+    /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
+       Thus, thumb code address differ from the real function address that we
+       get from libbfd or nm by 1 */
+#if HAVE( PLATFORM_ARM )
+    /* Clear least significant bit */
+    func = ( void* )( ( ( long )func | 1 ) - 1 );
+#endif
 
     scorep_compiler_hash_node* hash_node;
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
