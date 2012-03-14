@@ -57,7 +57,7 @@ struct SCOREP_Profile_LocationData
 
     scorep_profile_node*                 current_task_node;     /**< Callpath node of the current task */
     scorep_profile_task_table*           tasks;                 /**< Hashtable to track task instances */
-    uint64_t                             current_task_id;       /**< ID of the current task */
+    scorep_profile_task*                 current_task;          /**< Current task instance */
 };
 
 /* **************************************************************************************

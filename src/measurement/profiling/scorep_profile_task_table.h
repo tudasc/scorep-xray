@@ -36,9 +36,20 @@
 typedef struct scorep_profile_task_table scorep_profile_task_table;
 
 /**
-   The data type to indentify task instances.
+   Type of task identifiers
  */
-typedef uint64_t scorep_profile_task_t;
+typedef uint64_t scorep_profile_task_id;
+
+/**
+   Task instance related data.
+ */
+typedef struct scorep_profile_task_struct
+{
+    struct scorep_profile_task_struct* next;
+    scorep_profile_task_id             task_id;
+    scorep_profile_node*               current_node;
+    uint32_t                           depth;
+} scorep_profile_task;
 
 /**
    Returns whether the measured program used tasks. This function does return a
@@ -68,34 +79,11 @@ scorep_profile_task_finalize( SCOREP_Profile_LocationData* location );
    @param task_id    The task instance of the new task.
    @param task_root  Pointer to the profile node, where the task starts.
  */
-void
+scorep_profile_task*
 scorep_profile_create_task( SCOREP_Profile_LocationData* location,
-                            scorep_profile_task_t        task_id,
+                            scorep_profile_task_id       task_id,
                             scorep_profile_node*         task_root );
 
-#if 0
-/**
-   Returns the current position in the profile tree for a given task.
-   @param location The current location
-   @param task_id  The id of the task instance
- */
-scorep_profile_node*
-scorep_profile_get_task_node( SCOREP_Profile_LocationData* location,
-                              scorep_profile_task_t        task_id );
-
-/**
-   Sets the current position in the profile tree for a given task.
-   @param location The current location
-   @param task_id  The id of the task instance
-   @param node     The current position of the task in the tree
- */
-
-void
-scorep_profile_set_task_node( SCOREP_Profile_LocationData* location,
-                              scorep_profile_task_t        task_id,
-                              scorep_profile_node*         node );
-
-#endif
 /**
    Removes a task from the internal tasking data structures.
    @param tasks    The task table of the location.
@@ -103,7 +91,16 @@ scorep_profile_set_task_node( SCOREP_Profile_LocationData* location,
  */
 void
 scorep_profile_remove_task( scorep_profile_task_table* tasks,
-                            scorep_profile_task_t      task_id );
+                            scorep_profile_task_id     task_id );
+
+/**
+   Returns the task data for task instance @a task_id.
+   @param table    The task table of the location.
+   @param task_id  The task instance that is to be looked up.
+ */
+scorep_profile_task*
+scorep_profile_task_find( scorep_profile_task_table* table,
+                          scorep_profile_task_id     task_id );
 
 /**
    Stores the depth of the current task. Needed before a task switch to maintain
@@ -126,7 +123,7 @@ scorep_profile_restore_task( SCOREP_Profile_LocationData* location );
  */
 bool
 scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
-                                 scorep_profile_task_t        task_id );
+                                 scorep_profile_task*         task );
 
 /**
    Updates tasks statistics at an exit of the parallel region.
@@ -139,7 +136,13 @@ scorep_profile_task_parallel_exit( SCOREP_Location* thread );
    @def SCOREP_PROFILE_IMPLICIT_TASK_ID
    In the current POMP2 adapter, implicit tasks have always the task ID 0.
  */
-#define SCOREP_PROFILE_IMPLICIT_TASK_ID ( ( scorep_profile_task_t )0 )
+#define SCOREP_PROFILE_IMPLICIT_TASK_ID ( ( scorep_profile_task_id )0 )
+
+/**
+   @def SCOREP_PROFILE_IMPLICIT_TASK_ID
+   The implicit task.
+ */
+#define SCOREP_PROFILE_IMPLICIT_TASK NULL
 
 
 #endif // SCOREP_PROFILE_TASK_TABLE_H

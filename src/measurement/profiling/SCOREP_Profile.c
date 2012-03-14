@@ -190,7 +190,7 @@ SCOREP_Profile_CreateLocationData()
     data->free_int_metrics      = NULL;
     data->free_double_metrics   = NULL;
     data->current_task_node     = NULL;
-    data->current_task_id       = 0;
+    data->current_task          = SCOREP_PROFILE_IMPLICIT_TASK;
 
     /* Initialize locations task instance table */
     scorep_profile_task_initialize( data );
