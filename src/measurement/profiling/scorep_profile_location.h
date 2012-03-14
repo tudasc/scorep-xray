@@ -14,8 +14,8 @@
  *
  */
 
-#ifndef SCOREP_PROFILE_TYPES_H
-#define SCOREP_PROFILE_TYPES_H
+#ifndef SCOREP_PROFILE_LOCATION_H
+#define SCOREP_PROFILE_LOCATION_H
 
 /**
  * @file        scorep_profile_location.h
@@ -24,7 +24,6 @@
  * @brief Contains type definition and functions for profile location data.
  *
  */
-
 
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
@@ -65,6 +64,19 @@ struct SCOREP_Profile_LocationData
 ****************************************************************************************/
 
 /**
+   Creates a new locationd data structure.
+ */
+SCOREP_Profile_LocationData*
+scorep_profile_create_location_data();
+
+/**
+   Deletes a location data structure.
+   @param location Location that is deleted.
+ */
+void
+scorep_profile_delete_location_data( SCOREP_Profile_LocationData* location );
+
+/**
    Returns the current node for a thread
  */
 scorep_profile_node*
@@ -77,4 +89,4 @@ void
 scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
                                  scorep_profile_node*         node );
 
-#endif // SCOREP_PROFILE_TYPES_H
+#endif // SCOREP_PROFILE_LOCATION_H

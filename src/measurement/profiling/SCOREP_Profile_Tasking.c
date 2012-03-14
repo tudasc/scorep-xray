@@ -275,7 +275,7 @@ SCOREP_Profile_TaskSwitch( SCOREP_Location* thread,
     SCOREP_Profile_LocationData* location =
         SCOREP_Thread_GetProfileLocationData( thread );
 
-    scorep_profile_task* task = scorep_profile_task_find( location->tasks, taskId );
+    scorep_profile_task* task = scorep_profile_task_find( location, taskId );
 
     scorep_profile_task_switch( location, task, timestamp, metric_values );
 }
@@ -319,5 +319,5 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
     }
 
     /* Delete task entry from hastable */
-    scorep_profile_remove_task( location->tasks, taskId );
+    scorep_profile_remove_task( location, taskId );
 }

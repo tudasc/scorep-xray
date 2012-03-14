@@ -36,6 +36,7 @@
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
 #include <scorep_profile_task_table.h>
+#include <scorep_profile_event_base.h>
 
 /* **************************************************************************************
    Internal data table
@@ -44,11 +45,6 @@
 SCOREP_MetricHandle scorep_profile_active_task_metric = SCOREP_INVALID_METRIC;
 
 static int32_t scorep_profile_has_tasks_flag = 0;
-
-/**
-   Define name for the task table entry
- */
-typedef struct scorep_profile_task_table_entry scorep_profile_task_table_entry;
 
 /**
    Hash table for active tasks.
@@ -113,9 +109,11 @@ scorep_profile_task_insert( scorep_profile_task_table* table,
 ****************************************************************************************/
 
 scorep_profile_task*
-scorep_profile_task_find( scorep_profile_task_table* table,
-                          scorep_profile_task_id     task_id )
+scorep_profile_task_find( SCOREP_Profile_LocationData* location,
+                          scorep_profile_task_id       task_id )
 {
+    scorep_profile_task_table* table = location->tasks;
+
     if ( task_id == SCOREP_PROFILE_IMPLICIT_TASK_ID )
     {
         return NULL;
@@ -137,9 +135,11 @@ scorep_profile_task_find( scorep_profile_task_table* table,
 }
 
 void
-scorep_profile_remove_task( scorep_profile_task_table* table,
-                            scorep_profile_task_id     task_id )
+scorep_profile_remove_task( SCOREP_Profile_LocationData* location,
+                            scorep_profile_task_id       task_id )
 {
+    scorep_profile_task_table* table = location->tasks;
+
     uint64_t hash = SCOREP_Hashtab_HashInt64( &task_id ) % table->size;
 
     /* Find and remove entry */
@@ -196,7 +196,7 @@ scorep_profile_task_initialize( SCOREP_Profile_LocationData* location )
     }
 
     scorep_profile_task** items = ( scorep_profile_task** )
-                                  SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_task_table_entry* ) *
+                                  SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_task* ) *
                                                                  scorep_profile.task_table_size );
 
     if ( items == NULL )
@@ -307,16 +307,15 @@ scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_task_parallel_exit( SCOREP_Location* thread )
+scorep_profile_task_parallel_exit( SCOREP_Profile_LocationData* location )
 {
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
-
     if ( location->tasks->max_tasks > 0 )
     {
-        SCOREP_Profile_TriggerDouble( thread,
-                                      scorep_profile_active_task_metric,
-                                      location->tasks->max_tasks );
+        scorep_profile_trigger_double( location,
+                                       scorep_profile_active_task_metric,
+                                       location->tasks->max_tasks,
+                                       scorep_profile_get_current_node( location ) );
+
         location->tasks->max_tasks    = 0;
         scorep_profile_has_tasks_flag = 1;
     }

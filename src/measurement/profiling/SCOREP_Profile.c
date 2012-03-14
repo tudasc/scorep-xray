@@ -166,49 +166,17 @@ SCOREP_Profile_Finalize()
     SCOREP_Memory_FreeProfileMem();
 }
 
-/* Allocate and initialize a valid SCOREP_Profile_LocationData object. */
 SCOREP_Profile_LocationData*
 SCOREP_Profile_CreateLocationData()
 {
-    /* Create location data structure.
-     * The location data structure must not be deleted when the profile is reset
-     * in a persicope phase. Thus the memory is not allocated from the profile
-     * memory pages.
-     */
-    SCOREP_Profile_LocationData* data
-        = SCOREP_Memory_AllocForMisc( sizeof( SCOREP_Profile_LocationData ) );
-
-    /* Set default values. */
-    data->current_implicit_node = NULL;
-    data->root_node             = NULL;
-    data->fork_node             = NULL;
-    data->creation_node         = NULL;
-    data->current_depth         = 0;
-    data->implicit_depth        = 0;
-    data->fork_depth            = 0;
-    data->free_nodes            = NULL;
-    data->free_int_metrics      = NULL;
-    data->free_double_metrics   = NULL;
-    data->current_task_node     = NULL;
-    data->current_task          = SCOREP_PROFILE_IMPLICIT_TASK;
-
-    /* Initialize locations task instance table */
-    scorep_profile_task_initialize( data );
-
-    return data;
+    return scorep_profile_create_location_data();
 }
 
 
 void
 SCOREP_Profile_DeleteLocationData( SCOREP_Profile_LocationData* profileLocationData )
 {
-    if ( profileLocationData == NULL )
-    {
-        return;
-    }
-
-    /* Finlaize locations task instance table */
-    scorep_profile_task_finalize( profileLocationData );
+    scorep_profile_delete_location_data( profileLocationData );
 }
 
 void
@@ -392,15 +360,15 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
                          "Exit event of profiling system called" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+    location = SCOREP_Thread_GetProfileLocationData( thread );
 
     /* Store task metrics if we leave a parallel region */
     if ( SCOREP_Region_GetType( region ) == SCOREP_REGION_OMP_PARALLEL )
     {
-        scorep_profile_task_parallel_exit( thread );
+        scorep_profile_task_parallel_exit( location );
     }
 
     /* Get current node */
-    location = SCOREP_Thread_GetProfileLocationData( thread );
     SCOREP_ASSERT( location != NULL );
 
     node = scorep_profile_get_current_node( location );

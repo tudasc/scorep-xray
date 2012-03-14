@@ -91,8 +91,8 @@ scorep_profile_create_task( SCOREP_Profile_LocationData* location,
    @param task_id  The task instance that is to be removed.
  */
 void
-scorep_profile_remove_task( scorep_profile_task_table* tasks,
-                            scorep_profile_task_id     task_id );
+scorep_profile_remove_task( SCOREP_Profile_LocationData* location,
+                            scorep_profile_task_id       task_id );
 
 /**
    Returns the task data for task instance @a task_id.
@@ -100,8 +100,8 @@ scorep_profile_remove_task( scorep_profile_task_table* tasks,
    @param task_id  The task instance that is to be looked up.
  */
 scorep_profile_task*
-scorep_profile_task_find( scorep_profile_task_table* table,
-                          scorep_profile_task_id     task_id );
+scorep_profile_task_find( SCOREP_Profile_LocationData* location,
+                          scorep_profile_task_id       task_id );
 
 /**
    Stores the depth of the current task. Needed before a task switch to maintain
@@ -131,7 +131,7 @@ scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
    @param thread Location data of the current location.
  */
 void
-scorep_profile_task_parallel_exit( SCOREP_Location* thread );
+scorep_profile_task_parallel_exit( SCOREP_Profile_LocationData* location );
 
 /**
    @def SCOREP_PROFILE_IMPLICIT_TASK_ID
