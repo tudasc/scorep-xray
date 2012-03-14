@@ -125,7 +125,7 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
         location = SCOREP_Thread_GetLocationData();
     }
 
-    SCOREP_BUG_ON( timestamp < scorep_get_timestamp( location ),
+    SCOREP_BUG_ON( timestamp < SCOREP_Thread_GetLastTimestamp( location ),
                    "Invalid event order." );
 
     uint64_t* metric_values = SCOREP_Metric_read( location );
@@ -199,7 +199,7 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
         location = SCOREP_Thread_GetLocationData();
     }
 
-    SCOREP_BUG_ON( timestamp < scorep_get_timestamp( location ),
+    SCOREP_BUG_ON( timestamp < SCOREP_Thread_GetLastTimestamp( location ),
                    "Invalid event order." );
 
     uint64_t* metric_values = SCOREP_Metric_read( location );
