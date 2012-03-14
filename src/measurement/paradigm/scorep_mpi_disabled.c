@@ -121,7 +121,8 @@ static int scorep_mpi_datatype_size[] =
     4, /* MPI_INT */
     4, /* MPI_UNSINGED */
     8, /* MPI_LONG_LONG */
-    8  /* MPI_DOUBLE */
+    8, /* MPI_DOUBLE */
+    8  /* MPI_UNSIGNED_LONG_LONG */
 };
 
 int
