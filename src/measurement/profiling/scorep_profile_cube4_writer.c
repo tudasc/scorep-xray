@@ -208,11 +208,7 @@ scorep_profile_get_sum_time_value( scorep_profile_node* node, void* data )
 static double
 scorep_profile_get_max_time_value( scorep_profile_node* node, void* data )
 {
-    if ( node->count == 0 )
-    {
-        return 0;
-    }
-    return ( ( double )node->inclusive_time.max ) * 1000000.0 / ( ( double )SCOREP_GetClockResolution() );
+    return ( ( double )node->inclusive_time.max ) / ( ( double )SCOREP_GetClockResolution() );
 }
 
 /**
@@ -225,31 +221,8 @@ scorep_profile_get_max_time_value( scorep_profile_node* node, void* data )
 static double
 scorep_profile_get_min_time_value( scorep_profile_node* node, void* data )
 {
-    if ( node->count == 0 )
-    {
-        return 0;
-    }
-    return ( ( double )node->inclusive_time.min ) * 1000000.0 / ( ( double )SCOREP_GetClockResolution() );
+    return ( ( double )node->inclusive_time.min ) / ( ( double )SCOREP_GetClockResolution() );
 }
-
-/**
-   Returns the sum of implicit runtime for @a node.
-   This functions are given to scorep_profile_write_cube_metric.
-   @param node Pointer to a node which should return the metric value.
-   @param data Ignored.
-   @returns the implicit runtime of @a node.
- */
-static double
-scorep_profile_get_mean_time_value( scorep_profile_node* node, void* data )
-{
-    if ( node->count == 0 )
-    {
-        return 0;
-    }
-    return ( ( double )node->inclusive_time.sum ) * 1000000.0 / ( ( double )SCOREP_GetClockResolution() ) / ( ( double )node->count );
-}
-
-
 
 /**
    Returns the number of visits for @a node.
@@ -796,10 +769,6 @@ scorep_profile_write_cube4()
 
     scorep_profile_write_cube_doubles( &write_set, scorep_get_min_time_handle(),
                                        &scorep_profile_get_min_time_value, NULL );
-
-    scorep_profile_write_cube_doubles( &write_set, scorep_get_mean_time_handle(),
-                                       &scorep_profile_get_mean_time_value, NULL );
-
 
     /* Write visits */
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing visits" );

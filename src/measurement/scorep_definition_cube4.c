@@ -45,7 +45,6 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 static cube_metric* time_sum_handle;
 static cube_metric* time_max_handle;
 static cube_metric* time_min_handle;
-static cube_metric* time_mean_handle;
 static cube_metric* visits_handle;
 
 /**
@@ -417,12 +416,6 @@ scorep_get_min_time_handle()
     return time_min_handle;
 }
 
-cube_metric*
-scorep_get_mean_time_handle()
-{
-    return time_mean_handle;
-}
-
 /* ****************************************************************************
  * Internal definition writer functions
  *****************************************************************************/
@@ -460,11 +453,6 @@ scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
                                     "MAXDOUBLE", "usec", "",
                                     "", "Maximum inclusive CPU allocation time",
                                     NULL, CUBE_METRIC_EXCLUSIVE );
-
-    time_mean_handle = cube_def_met( my_cube, "Mean Inclusive Time", "mean_time",
-                                     "MAXDOUBLE", "usec", "",
-                                     "", "Mean inclusive CPU allocation time",
-                                     NULL, CUBE_METRIC_EXCLUSIVE );
 
     SCOREP_Metric_Definition* metric_definition;
     char*                     metric_name;

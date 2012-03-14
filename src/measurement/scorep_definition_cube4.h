@@ -224,10 +224,4 @@ scorep_get_max_time_handle();
 cube_metric*
 scorep_get_min_time_handle();
 
-/**
-   Returns the handle used for metric 'inclusive time mean'.
- */
-cube_metric*
-scorep_get_mean_time_handle();
-
 #endif /* SCOREP_DEFINITION_CUBE4_H */
