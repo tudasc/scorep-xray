@@ -445,12 +445,12 @@ scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
                                     "Total CPU allocation time", NULL, CUBE_METRIC_INCLUSIVE );
 
     time_min_handle = cube_def_met( my_cube, "Minimum Inclusive Time", "min_time",
-                                    "MINDOUBLE", "usec", "",
+                                    "MINDOUBLE", "sec", "",
                                     "", "Minimum inclusive CPU allocation time",
                                     NULL, CUBE_METRIC_EXCLUSIVE );
 
     time_max_handle = cube_def_met( my_cube, "Maximum Inclusive Time", "max_time",
-                                    "MAXDOUBLE", "usec", "",
+                                    "MAXDOUBLE", "sec", "",
                                     "", "Maximum inclusive CPU allocation time",
                                     NULL, CUBE_METRIC_EXCLUSIVE );
 
