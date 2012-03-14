@@ -91,6 +91,7 @@ scorep_profile_task_insert( scorep_profile_task_table* table,
     /* Initialize entry */
     new_entry->task_id      = task_id;
     new_entry->current_node = current_node;
+    new_entry->root_node    = current_node;
     new_entry->depth        = depth;
 
     /* Insert entry in table */

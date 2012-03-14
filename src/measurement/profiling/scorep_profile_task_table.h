@@ -48,6 +48,7 @@ typedef struct scorep_profile_task_struct
     struct scorep_profile_task_struct* next;
     scorep_profile_task_id             task_id;
     scorep_profile_node*               current_node;
+    scorep_profile_node*               root_node;
     uint32_t                           depth;
 } scorep_profile_task;
 

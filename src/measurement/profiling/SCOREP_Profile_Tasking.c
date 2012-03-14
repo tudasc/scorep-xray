@@ -119,25 +119,21 @@ scorep_profile_create_task_root( SCOREP_Profile_LocationData* location,
 
 static void
 scorep_profile_enter_task_pointer( SCOREP_Profile_LocationData* location,
-                                   scorep_profile_node*         task_node,
+                                   scorep_profile_task*         task,
                                    uint64_t                     timestamp,
                                    uint64_t*                    metric_values )
 {
     SCOREP_RegionHandle region = SCOREP_INVALID_REGION;
 
     /* The pointer region enter must be performed with the depth information of the
-       implicit task. The implicit task never ececutes this function. Thus, we
+       implicit task. The implicit task never executes this function. Thus, we
        temporarily set the location depth information to the depth of the
        implicit task */
     uint32_t task_depth = location->current_depth;
     location->current_depth = location->implicit_depth;
 
     /* Determine the region handle of the tasks root region */
-    scorep_profile_node* node = task_node;
-    while ( node->parent != NULL )
-    {
-        node = node->parent;
-    }
+    scorep_profile_node* node = task->root_node;
     region = scorep_profile_type_get_region_handle( node->type_specific_data );
     assert( region != SCOREP_INVALID_REGION );
     assert( location->current_implicit_node != NULL );
@@ -220,7 +216,7 @@ scorep_profile_task_switch( SCOREP_Profile_LocationData* location,
                                          timestamp,
                                          metric_values );
 
-        scorep_profile_enter_task_pointer( location, current,
+        scorep_profile_enter_task_pointer( location, task,
                                            timestamp, metric_values );
     }
 }
@@ -298,9 +294,9 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
         SCOREP_Thread_GetProfileLocationData( thread );
 
     /* Remember some data before it has changed */
-    scorep_profile_node* root_node = location->root_node;
-    scorep_profile_node* task_node = location->current_task_node;
     scorep_profile_task* task      = location->current_task;
+    scorep_profile_node* task_node = location->current_task_node;
+    scorep_profile_node* root_node = location->root_node;
 
     /* Exit task region and switch control to implicit task to ensure that the
        current task is always valid */
@@ -311,19 +307,15 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
                                 metric_values );
 
     /* Merge subtree and release unnecessary node records */
-    while ( task_node->parent != NULL )
-    {
-        task_node = task_node->parent;
-    }
-    scorep_profile_node* match = scorep_profile_find_child( root_node, task_node );
+    scorep_profile_node* match = scorep_profile_find_child( root_node, task->root_node );
 
     if ( match == NULL )
     {
-        scorep_profile_add_child( root_node, task_node );
+        scorep_profile_add_child( root_node, task->root_node );
     }
     else
     {
-        scorep_profile_merge_subtree( location, match, task_node );
+        scorep_profile_merge_subtree( location, match, task->root_node );
     }
 
     /* Delete task entry from hastable */
