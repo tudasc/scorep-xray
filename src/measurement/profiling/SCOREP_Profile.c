@@ -229,7 +229,7 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
     {
         do
         {
-            node = scorep_profile_get_current_node( thread );
+            node = scorep_profile_get_current_node( SCOREP_Thread_GetProfileLocationData( thread ) );
             while ( ( node != NULL ) &&
                     ( node->node_type != scorep_profile_node_regular_region ) &&
                     ( node->node_type != scorep_profile_node_collapse ) )
@@ -346,7 +346,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
     location->current_depth++;
 
     /* Enter on current position */
-    scorep_profile_node* current_node = scorep_profile_get_current_node( thread );
+    scorep_profile_node* current_node = scorep_profile_get_current_node( location );
     node = scorep_profile_enter( location,
                                  current_node,
                                  region,
@@ -356,7 +356,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
     assert( node != NULL );
 
     /* Update current node pointer */
-    scorep_profile_set_current_node( thread, node );
+    scorep_profile_set_current_node( location, node );
 
     /* If dynamic region call trigger parameter */
     switch ( type )
@@ -403,12 +403,12 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     location = SCOREP_Thread_GetProfileLocationData( thread );
     SCOREP_ASSERT( location != NULL );
 
-    node = scorep_profile_get_current_node( thread );
+    node = scorep_profile_get_current_node( location );
     assert( node != NULL );
     parent = scorep_profile_exit( location, node, region, timestamp, metrics );
 
     /* Update current node */
-    scorep_profile_set_current_node( thread, parent );
+    scorep_profile_set_current_node( location, parent );
 }
 
 void
@@ -423,8 +423,10 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
+    location = SCOREP_Thread_GetProfileLocationData( thread );
+
     /* Validity check */
-    node = scorep_profile_get_current_node( thread );
+    node = scorep_profile_get_current_node( location );
     if ( node == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
@@ -432,8 +434,6 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
         SCOREP_PROFILE_STOP;
         return;
     }
-
-    location = SCOREP_Thread_GetProfileLocationData( thread );
 
     scorep_profile_trigger_int64( location, metric, value, node );
 }
@@ -450,8 +450,10 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
+    location = SCOREP_Thread_GetProfileLocationData( thread );
+
     /* Validity check */
-    node = scorep_profile_get_current_node( thread );
+    node = scorep_profile_get_current_node( location );
     if ( node == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
@@ -459,8 +461,6 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
         SCOREP_PROFILE_STOP;
         return;
     }
-
-    location = SCOREP_Thread_GetProfileLocationData( thread );
 
     scorep_profile_trigger_double( location, metric, value, node );
 }
@@ -492,7 +492,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
 
     /* Get new callpath node */
     node = scorep_profile_find_create_child( location,
-                                             scorep_profile_get_current_node( thread ),
+                                             scorep_profile_get_current_node( location ),
                                              scorep_profile_node_parameter_string,
                                              node_data, -1 );
 
@@ -509,7 +509,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
     scorep_profile_setup_start_from_parent( node );
 
     /* Update current node pointer */
-    scorep_profile_set_current_node( thread, node );
+    scorep_profile_set_current_node( location, node );
 }
 
 void
@@ -543,11 +543,11 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     /* Get new callpath node */
     /* If this parameter is the "instance" type, we will always create a new
      * node */
+    scorep_profile_node* parent = scorep_profile_get_current_node( location );
     if ( param == scorep_profile_param_instance )
     {
-        scorep_profile_node* parent = scorep_profile_get_current_node( thread );
         node = scorep_profile_create_node( location,
-                                           scorep_profile_get_current_node( thread ),
+                                           parent,
                                            scorep_profile_node_parameter_integer,
                                            node_data,
                                            -1 );
@@ -557,11 +557,10 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     else
     {
         node = scorep_profile_find_create_child( location,
-                                                 scorep_profile_get_current_node( thread ),
+                                                 parent,
                                                  scorep_profile_node_parameter_integer,
                                                  node_data, -1 );
     }
-    //param.name_handle = node->parent->string_data + " [" + node->parent->count + "]"
 
     /* Disable profiling if node creation failed */
     if ( node == NULL )
@@ -576,7 +575,7 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     scorep_profile_setup_start_from_parent( node );
 
     /* Update current node pointer */
-    scorep_profile_set_current_node( thread, node );
+    scorep_profile_set_current_node( location, node );
 }
 
 /* ***************************************************************************************
@@ -666,7 +665,7 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
 
     /* Now node points to the starting point of the thread.
        Make it the current node of the thread. */
-    scorep_profile_set_current_node( locationData, node );
+    scorep_profile_set_current_node( thread_data, node );
 }
 
 
@@ -683,7 +682,8 @@ SCOREP_Profile_OnThreadDectivation( SCOREP_Location* locationData,
     }
 
     /* Remove the current node. */
-    scorep_profile_set_current_node( locationData, NULL );
+    scorep_profile_set_current_node( SCOREP_Thread_GetProfileLocationData( locationData ),
+                                     NULL );
 }
 
 
@@ -759,13 +759,14 @@ void
 SCOREP_Profile_OnFork( SCOREP_Location* threadData,
                        size_t           maxChildThreads )
 {
-    scorep_profile_node*         fork_node   = NULL;
-    SCOREP_Profile_LocationData* thread_data = NULL;
+    scorep_profile_node*         fork_node = NULL;
+    SCOREP_Profile_LocationData* location  = NULL;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    fork_node = scorep_profile_get_current_node( threadData );
+    location  = SCOREP_Thread_GetProfileLocationData( threadData );
+    fork_node = scorep_profile_get_current_node( location );
 
     /* In case the fork node is a thread start node, this thread started at the same
        node like its parent thread. Thus, transfer the pointer. */
@@ -775,7 +776,6 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
     }
 
     /* Store current fork node */
-    thread_data             = SCOREP_Thread_GetProfileLocationData( threadData );
-    thread_data->fork_node  = fork_node;
-    thread_data->fork_depth = thread_data->current_depth;
+    location->fork_node  = fork_node;
+    location->fork_depth = location->current_depth;
 }

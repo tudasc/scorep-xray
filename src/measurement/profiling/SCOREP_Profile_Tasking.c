@@ -200,7 +200,7 @@ scorep_profile_task_switch( SCOREP_Profile_LocationData* location,
     if ( !scorep_profile_is_implicit_task( location, location->current_task ) )
     {
         scorep_profile_exit_task_pointer( location, timestamp, metric_values );
-        scorep_profile_update_on_suspend( location->current_task_node,
+        scorep_profile_update_on_suspend( scorep_profile_get_current_node( location ),
                                           timestamp,
                                           metric_values );
     }
@@ -211,7 +211,7 @@ scorep_profile_task_switch( SCOREP_Profile_LocationData* location,
 
     if ( !scorep_profile_is_implicit_task( location, task ) )
     {
-        scorep_profile_node* current = location->current_task_node;
+        scorep_profile_node* current = scorep_profile_get_current_node( location );
         scorep_profile_update_on_resume( current,
                                          timestamp,
                                          metric_values );

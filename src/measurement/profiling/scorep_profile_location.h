@@ -68,13 +68,13 @@ struct SCOREP_Profile_LocationData
    Returns the current node for a thread
  */
 scorep_profile_node*
-scorep_profile_get_current_node( SCOREP_Location* thread );
+scorep_profile_get_current_node( SCOREP_Profile_LocationData* location );
 
 /**
    Sets the current node for a thread
  */
 void
-scorep_profile_set_current_node( SCOREP_Location*     thread,
-                                 scorep_profile_node* node );
+scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
+                                 scorep_profile_node*         node );
 
 #endif // SCOREP_PROFILE_TYPES_H
