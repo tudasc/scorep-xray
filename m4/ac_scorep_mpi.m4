@@ -55,6 +55,8 @@
 #   exception to the GPL to apply to your modified version as well.
 
 
+dnl ----------------------------------------------------------------------------
+
 AC_DEFUN([AC_SCOREP_MPI_WORKING], [
 if test x = x"$MPILIBS"; then
 	AC_LANG_CASE([C], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
@@ -123,6 +125,10 @@ else
         :
 fi
 ])
+
+
+dnl ----------------------------------------------------------------------------
+
 
 AC_DEFUN([AC_SCOREP_MPI_FORTRAN_CONSTANTS], [
 AC_LANG_PUSH(Fortran)
@@ -194,6 +200,9 @@ AC_COMPILE_IFELSE([
 
 AC_LANG_POP(Fortran)
 ]) # AC_DEFUN
+
+
+dnl ----------------------------------------------------------------------------
 
 
 AC_DEFUN([AC_SCOREP_MPI_INFO_COMPLIANT], [
@@ -336,7 +345,11 @@ AC_DEFUN([AC_SCOREP_MPI_INFO_COMPLIANT], [
 ]) # AC_DEFUN(AC_SCOREP_MPI_INFO_COMPLIANT)
 
 
+dnl ----------------------------------------------------------------------------
+
+
 AC_DEFUN([AC_SCOREP_MPI], [
+AC_REQUIRE([_AC_SCOREP_PDT_MPI_INSTRUMENTATION])
 
 if test "x${scorep_mpi_c_supported}" = "xyes"; then
   if test "x${scorep_mpi_f77_supported}" = "xyes" -o "x${scorep_mpi_f90_supported}" = "xyes"; then
@@ -436,4 +449,42 @@ AC_SCOREP_MPI_FORTRAN_CONSTANTS
 AC_SCOREP_MPI_INFO_COMPLIANT
 
 fi # if test "x${scorep_mpi_supported}" = "xyes"
+])
+
+
+dnl ----------------------------------------------------------------------------
+
+
+AC_DEFUN([_AC_SCOREP_MPI_INCLUDE], [
+ac_scorep_have_mpi_include="no"
+AC_LANG_PUSH([C])
+AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [])],
+                  [grep '/mpi.h"' conftest.i > conftest_mpi_includes
+                   AS_IF([test $? -eq 0], 
+                         [scorep_mpi_include=`cat conftest_mpi_includes | grep '/mpi.h"' | \
+                          head -1 | sed -e 's#^.* "##' -e 's#/mpi.h".*##'`
+                          ac_scorep_have_mpi_include="yes"],
+                         [])
+                   rm -f conftest_mpi_includes],
+                  [])
+AC_LANG_POP([C])
+
+AS_IF([test "x${ac_scorep_have_mpi_include}" = "xyes"],
+      [AC_SUBST([SCOREP_MPI_INCLUDE], [${scorep_mpi_include}])],
+      [])
+])
+
+
+dnl ----------------------------------------------------------------------------
+
+
+AC_DEFUN([_AC_SCOREP_PDT_MPI_INSTRUMENTATION], [
+AC_REQUIRE([_AC_SCOREP_MPI_INCLUDE])
+
+AS_IF([test "x${ac_scorep_have_mpi_include}" = "xyes"],
+      [AC_SUBST([SCOREP_HAVE_PDT_MPI_INSTRUMENTATION], [1])
+       AC_SCOREP_SUMMARY([PDT MPI instrumentation], [yes])],
+      [AC_SUBST([SCOREP_HAVE_PDT_MPI_INSTRUMENTATION], [0])
+       AC_MSG_WARN([cannot determine mpi.h include path. PDT MPI instrumentation will be disabled.])
+       AC_SCOREP_SUMMARY([PDT MPI instrumentation], [no, mpi.h include path could not be determined.])])
 ])
