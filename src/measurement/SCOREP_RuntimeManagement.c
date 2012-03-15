@@ -237,8 +237,8 @@ scorep_profile_initialize()
     }
     SCOREP_Profile_Initialize( number_of_metrics, metrics );
 
-    SCOREP_Profile_OnLocationCreation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_new_location
-    SCOREP_Profile_OnThreadActivation( SCOREP_Thread_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_thread_activation
+    SCOREP_Profile_OnLocationCreation( SCOREP_Location_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_new_location
+    SCOREP_Profile_OnThreadActivation( SCOREP_Location_GetLocationData(), NULL ); // called also from scorep_thread_call_externals_on_thread_activation
 }
 
 
@@ -335,7 +335,7 @@ SCOREP_FinalizeMeasurementMPI()
 void
 SCOREP_EnableRecording()
 {
-    SCOREP_Location* location = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* location = SCOREP_Location_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )
@@ -364,7 +364,7 @@ SCOREP_EnableRecording()
 void
 SCOREP_DisableRecording()
 {
-    SCOREP_Location* location = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* location = SCOREP_Location_GetLocationData();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )

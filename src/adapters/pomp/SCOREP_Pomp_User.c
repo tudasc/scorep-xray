@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Events.h"

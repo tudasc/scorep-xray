@@ -25,7 +25,7 @@
 
 #include <config.h>
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include "SCOREP_Mpi_Init.h"
 #include "SCOREP_Mpi_Reg.h"
 #include "SCOREP_Config.h"

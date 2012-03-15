@@ -44,7 +44,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
 

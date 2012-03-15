@@ -31,7 +31,7 @@
 
 #include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Profile.h>
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -98,12 +98,6 @@ SCOREP_Thread_GetTraceLocationData( SCOREP_Location* locationData );
 uint64_t
 SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData );
 
-
-SCOREP_LocationHandle
-SCOREP_Thread_GetLocationHandle( SCOREP_Location* locationData );
-
-uint64_t
-SCOREP_Thread_GetLastTimestamp( SCOREP_Location* locationData );
 
 void
 SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData,

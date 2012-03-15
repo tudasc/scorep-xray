@@ -29,7 +29,7 @@
 #include <unistd.h>
 
 #include <SCOREP_Types.h>
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>

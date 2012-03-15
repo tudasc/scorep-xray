@@ -169,9 +169,9 @@ SCOREP_Thread_Initialize()
 
 
 SCOREP_Location*
-SCOREP_CreateLocation( SCOREP_Location*    parent,
-                       SCOREP_LocationType type,
-                       const char*         name )
+SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
+                                            SCOREP_LocationType type,
+                                            const char*         name )
 {
     /*
      * At the moment this function just supports creation of non-CPU
@@ -182,7 +182,7 @@ SCOREP_CreateLocation( SCOREP_Location*    parent,
 
     if ( parent == NULL )
     {
-        parent = SCOREP_Thread_GetLocationData();
+        parent = SCOREP_Location_GetLocationData();
     }
 
     /*
@@ -204,6 +204,49 @@ SCOREP_CreateLocation( SCOREP_Location*    parent,
                                                        parent );
 
     return new_location;
+}
+
+uint32_t
+SCOREP_Location_GetLocationId( SCOREP_Location* locationData )
+{
+    return locationData->local_id;
+}
+
+SCOREP_LocationType
+SCOREP_Location_GetLocationType( SCOREP_Location* locationData )
+{
+    return locationData->type;
+}
+
+void*
+SCOREP_Location_GetSubsystemLocationData( SCOREP_Location* locationData,
+                                          size_t           subsystem_id )
+{
+    assert( subsystem_id < scorep_subsystems_get_number() );
+
+    return locationData->per_subsystem_data[ subsystem_id ];
+}
+
+void
+SCOREP_Location_SetSubsystemLocationData( SCOREP_Location* locationData,
+                                          size_t           subsystem_id,
+                                          void*            subsystem_data )
+{
+    assert( subsystem_id < scorep_subsystems_get_number() );
+
+    locationData->per_subsystem_data[ subsystem_id ] = subsystem_data;
+}
+
+SCOREP_LocationHandle
+SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData )
+{
+    return locationData->location_handle;
+}
+
+uint64_t
+SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData )
+{
+    return locationData->last_timestamp;
 }
 
 
@@ -304,7 +347,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
         assert( new_location->page_managers );
         scorep_thread_update_tpd( tpd );                                  // from here on clients can use
-                                                                          // SCOREP_Thread_GetLocationData, i.e. TPD
+                                                                          // SCOREP_Location_GetLocationData, i.e. TPD
     }
     else
     {
@@ -512,7 +555,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationDa
 
 
 SCOREP_Location*
-SCOREP_Thread_GetLocationData()
+SCOREP_Location_GetLocationData()
 {
     if ( TPD->is_active )
     {
@@ -578,7 +621,7 @@ SCOREP_Thread_GetLocationData()
 SCOREP_Allocator_PageManager**
 SCOREP_Thread_GetLocationLocalMemoryPageManagers()
 {
-    return SCOREP_Thread_GetLocationData()->page_managers;
+    return SCOREP_Location_GetLocationData()->page_managers;
 }
 
 
@@ -595,38 +638,6 @@ SCOREP_Thread_GetTraceLocationData( SCOREP_Location* locationData )
     return locationData->trace_data;
 }
 
-
-void*
-SCOREP_Thread_GetSubsystemLocationData( SCOREP_Location* locationData,
-                                        size_t           subsystem_id )
-{
-    assert( subsystem_id < scorep_subsystems_get_number() );
-
-    return locationData->per_subsystem_data[ subsystem_id ];
-}
-
-void
-SCOREP_Thread_SetSubsystemLocationData( SCOREP_Location* locationData,
-                                        size_t           subsystem_id,
-                                        void*            subsystem_data )
-{
-    assert( subsystem_id < scorep_subsystems_get_number() );
-
-    locationData->per_subsystem_data[ subsystem_id ] = subsystem_data;
-}
-
-uint32_t
-SCOREP_Thread_GetLocationId( SCOREP_Location* locationData )
-{
-    return locationData->local_id;
-}
-
-SCOREP_LocationType
-SCOREP_Thread_GetLocationType( SCOREP_Location* locationData )
-{
-    return locationData->type;
-}
-
 uint64_t
 SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
 {
@@ -634,7 +645,7 @@ SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
 
     if ( locationData->location_id == INVALID_LOCATION_DEFINITION_ID )
     {
-        uint64_t local_location_id = SCOREP_Thread_GetLocationId( locationData );
+        uint64_t local_location_id = SCOREP_Location_GetLocationId( locationData );
         uint64_t rank              = SCOREP_Mpi_GetRank();
 
         assert( rank >> 32 == 0 );
@@ -647,22 +658,9 @@ SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
 }
 
 
-SCOREP_LocationHandle
-SCOREP_Thread_GetLocationHandle( SCOREP_Location* locationData )
-{
-    return locationData->location_handle;
-}
-
-
-uint64_t
-SCOREP_Thread_GetLastTimestamp( SCOREP_Location* locationData )
-{
-    return locationData->last_timestamp;
-}
-
-
 void
-SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData, int64_t timestamp )
+SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData,
+                                int64_t          timestamp )
 {
     locationData->last_timestamp = timestamp;
 }
@@ -702,7 +700,7 @@ scorep_defer_location_initialization( SCOREP_Location* locationData,
 void
 SCOREP_ProcessDeferredLocations()
 {
-    SCOREP_Location* current_location = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* current_location = SCOREP_Location_GetLocationData();
 
     SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
     {
@@ -752,9 +750,9 @@ SCOREP_ProcessDeferredLocations()
 }
 
 void
-SCOREP_Thread_ForAllLocations( void  ( * cb )( SCOREP_Location*,
-                                               void* ),
-                               void* data )
+SCOREP_Location_ForAllLocations( void  ( * cb )( SCOREP_Location*,
+                                                 void* ),
+                                 void* data )
 {
     assert( cb );
 

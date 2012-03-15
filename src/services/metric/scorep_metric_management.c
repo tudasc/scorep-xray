@@ -39,7 +39,7 @@
 /* Include to write definitions */
 #include "SCOREP_Definitions.h"
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 
 /* Include header files of supported metric sources */
 #if HAVE( PAPI )
@@ -249,7 +249,7 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
     if ( scorep_metric_management_initialized )
     {
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemLocationData(
             locationData,
             scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
@@ -293,15 +293,15 @@ static SCOREP_Error_Code
 scorep_metric_initialize_location()
 {
     /* Get the thread local data */
-    SCOREP_Location* thread_data = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* thread_data = SCOREP_Location_GetLocationData();
     SCOREP_ASSERT( thread_data != NULL );
 
     SCOREP_Metric_LocationData* metric_data =
         SCOREP_Memory_AllocForMisc( sizeof( *metric_data ) );
 
-    SCOREP_Thread_SetSubsystemLocationData( thread_data,
-                                            scorep_metric_subsystem_id,
-                                            metric_data );
+    SCOREP_Location_SetSubsystemLocationData( thread_data,
+                                              scorep_metric_subsystem_id,
+                                              metric_data );
 
     initialize_location_metric_cb( thread_data, NULL );
 
@@ -321,7 +321,7 @@ finalize_location_metric_cb( SCOREP_Location* locationData,
         }
 
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemLocationData(
             locationData,
             scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
@@ -366,7 +366,7 @@ SCOREP_Metric_read( SCOREP_Location* locationData )
     }
 
     /* Get the thread local data related to metrics */
-    SCOREP_Metric_LocationData* metric_data = SCOREP_Thread_GetSubsystemLocationData(
+    SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemLocationData(
         locationData,
         scorep_metric_subsystem_id );
     SCOREP_ASSERT( metric_data != NULL );
@@ -408,7 +408,7 @@ SCOREP_Metric_reinitialize()
     }
 
     /* Finalize each location (frees internal buffers) */
-    SCOREP_Thread_ForAllLocations( finalize_location_metric_cb, NULL );
+    SCOREP_Location_ForAllLocations( finalize_location_metric_cb, NULL );
 
     /* Finalize metric service */
     scorep_metric_finalize_service();
@@ -417,7 +417,7 @@ SCOREP_Metric_reinitialize()
     scorep_metric_initialize_service();
 
     /* Reinitialize each location */
-    SCOREP_Thread_ForAllLocations( initialize_location_metric_cb, NULL );
+    SCOREP_Location_ForAllLocations( initialize_location_metric_cb, NULL );
 
     return SCOREP_SUCCESS;
 }

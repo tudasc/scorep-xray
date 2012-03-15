@@ -27,7 +27,7 @@ check_PROGRAMS += self_contained_scorep_subsystem_c          \
                   self_contained_scorep_memory_c             \
                   self_contained_scorep_public_types_c       \
                   self_contained_scorep_runtime_management_c \
-                  self_contained_scorep_thread_types_c       \
+                  self_contained_scorep_location_c           \
                   self_contained_scorep_types_c              \
                   definitions_test_c                         \
                   string_duplicates_c
@@ -59,8 +59,8 @@ self_contained_scorep_public_types_c_CPPFLAGS = $(self_contained_cppflags)
 self_contained_scorep_runtime_management_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_runtime_management.c
 self_contained_scorep_runtime_management_c_CPPFLAGS = $(self_contained_cppflags)
 
-self_contained_scorep_thread_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_thread_types.c
-self_contained_scorep_thread_types_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_location_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_location.c
+self_contained_scorep_location_c_CPPFLAGS = $(self_contained_cppflags)
 
 self_contained_scorep_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_types.c
 self_contained_scorep_types_c_CPPFLAGS = $(self_contained_cppflags)

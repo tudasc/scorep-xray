@@ -31,7 +31,7 @@
 
 #include "SCOREP_Compiler_Init.h"
 #include "SCOREP_Types.h"
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include "SCOREP_Config.h"
 #include "scorep_utility/SCOREP_Error.h"
 #include <scorep_utility/SCOREP_Utils.h>

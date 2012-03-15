@@ -27,7 +27,7 @@
  *
  */
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include <stdbool.h>
 
 

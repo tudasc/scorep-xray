@@ -32,7 +32,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Thread_Types.h      \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Location.h      \
     $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \

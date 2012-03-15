@@ -29,7 +29,7 @@
  */
 
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include <SCOREP_Subsystem.h>
 
 

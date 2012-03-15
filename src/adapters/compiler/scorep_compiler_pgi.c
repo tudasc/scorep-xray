@@ -28,12 +28,12 @@
 #include <config.h>
 #include <stdio.h>
 #include <scorep_utility/SCOREP_Utils.h>
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location_Types.h>
 #include <scorep_compiler_data.h>
 #include <SCOREP_Compiler_Init.h>
 #include <SCOREP_Filter.h>
@@ -136,9 +136,9 @@ scorep_compiler_get_location_id()
     }
 
     /* Else get the thread id from the measurement system */
-    SCOREP_Location* data = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* data = SCOREP_Location_GetLocationData();
     SCOREP_ASSERT( data != NULL );
-    return SCOREP_Thread_GetLocationId( data );
+    return SCOREP_Location_GetLocationId( data );
 }
 
 inline scorep_compiler_location_data*

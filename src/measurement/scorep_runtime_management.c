@@ -35,7 +35,7 @@
 #include "scorep_thread.h"
 #include "scorep_definition_structs.h"
 #include "scorep_definition_macros.h"
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 #include "scorep_environment.h"
 
 #include <stdio.h>

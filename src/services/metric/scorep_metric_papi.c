@@ -35,7 +35,7 @@
 #include <scorep_utility/SCOREP_Utils.h>
 
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 
 
 #if defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) && !defined( C99 )
@@ -221,10 +221,10 @@ unsigned long
 scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
-    SCOREP_Location* data = SCOREP_Thread_GetLocationData();
+    SCOREP_Location* data = SCOREP_Location_GetLocationData();
     SCOREP_ASSERT( data != NULL );
 
-    return SCOREP_Thread_GetLocationId( data );
+    return SCOREP_Location_GetLocationId( data );
 }
 
 

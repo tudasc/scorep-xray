@@ -35,7 +35,7 @@
 #include <scorep_utility/SCOREP_Error.h>
 
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 
 
 #include "scorep_subsystem.h"

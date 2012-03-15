@@ -16,7 +16,7 @@
 
 
 /**
- * @file       self_contained_scorep_thread_types.c
+ * @file       self_contained_scorep_location.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -27,7 +27,7 @@
 
 #include <config.h>
 
-#include <SCOREP_Thread_Types.h>
+#include <SCOREP_Location.h>
 
 int
 main()

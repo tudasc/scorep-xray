@@ -333,7 +333,7 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
                                        void*            userData )
 {
     SCOREP_LocationHandle location_handle =
-        SCOREP_Thread_GetLocationHandle( locationData );
+        SCOREP_Location_GetLocationHandle( locationData );
     SCOREP_Location_Definition* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
 
@@ -366,8 +366,8 @@ SCOREP_Tracing_FinalizeEventWriters( void )
 
     assert( scorep_otf2_archive );
 
-    SCOREP_Thread_ForAllLocations( scorep_trace_finalize_event_writer_cb,
-                                   NULL );
+    SCOREP_Location_ForAllLocations( scorep_trace_finalize_event_writer_cb,
+                                     NULL );
 }
 
 
