@@ -349,6 +349,21 @@ SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
                                 SCOREP_AnyHandle         scopeHandle );
 
 /**
+ * A SCOREP_SamplingSetHandle can refer to a normal sampling set or a scoped
+ * one. A scoped sampling set contains a reference to the underlying sampling
+ * set, which contains all metric members needed to record their values.
+ *
+ * This function handles differences between normal and scoped sampling sets and
+ * returns always a handle of a sampling set.
+ *
+ * @param samplingSet   Handle of a normal or scoped sampling set.
+ *
+ * @return Returns handle of a normal sampling set.
+ */
+SCOREP_SamplingSetHandle
+SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet );
+
+/**
  * Associate a name with a process unique I/O file group handle.
  *
  * @param name A meaningfule name of the I/O file group.

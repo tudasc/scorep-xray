@@ -1483,6 +1483,24 @@ SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
 }
 
 
+SCOREP_SamplingSetHandle
+SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
+{
+    SCOREP_SamplingSet_Definition* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSet_Definition* scoped_sampling_set
+            = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, ScopedSamplingSet );
+
+        return scoped_sampling_set->sampling_set_handle;
+    }
+
+    return samplingSet;
+}
+
+
 void
 SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* definition,
                                            SCOREP_Allocator_PageManager*  handlesPageManager )
