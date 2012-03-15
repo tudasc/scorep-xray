@@ -90,6 +90,8 @@ $(CONFIG_HEADER_MPI):
 	    echo "#define SCOREP_MPICC             \"$(CC)\"";\
 	    echo "#define SCOREP_MPICXX            \"$(CXX)\"";\
 	    echo "#define SCOREP_MPIFC             \"$(FC)\"";\
+	    echo "#define SCOREP_HAVE_PDT_MPI_INSTRUMENTATION $(SCOREP_HAVE_PDT_MPI_INSTRUMENTATION)";\
+	    echo "#define SCOREP_MPI_INCLUDE       \"$(SCOREP_MPI_INCLUDE)\"";\
 	) >$@
 
 

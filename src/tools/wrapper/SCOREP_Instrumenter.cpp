@@ -35,6 +35,7 @@
 
 #include "SCOREP_Instrumenter.hpp"
 #include "scorep_config_tool_backend.h"
+#include "scorep_config_tool_mpi.h"
 
 
 void
@@ -365,6 +366,14 @@ SCOREP_Instrumenter::PrintParameter()
     if ( mpi_instrumentation == enabled )
     {
         std::cout << " mpi";
+    }
+    if ( pdt_instrumentation == enabled )
+    {
+        std::cout << " pdt";
+    }
+    if ( cobi_instrumentation == enabled )
+    {
+        std::cout << " cobi";
     }
 
     std::cout << std::endl << "Linked SCOREP library type: ";
@@ -723,7 +732,7 @@ SCOREP_Instrumenter::check_parameter()
 
     if ( compiler_name == "" )
     {
-        std::cout << "ERROR: Could not identify compiler name." << std::endl;
+        std::cerr << "ERROR: Could not identify compiler name." << std::endl;
         abort();
     }
     /*
@@ -735,7 +744,19 @@ SCOREP_Instrumenter::check_parameter()
      */
     if ( input_files == "" || input_file_number < 1 )
     {
-        std::cout << "WARNING: Found no input files." << std::endl;
+        std::cerr << "WARNING: Found no input files." << std::endl;
+    }
+
+    /* If we want to instrument mpi applications with PDT we need to pass the
+       include path to mpi.h to PDT. Thus, we can onyl support this compbination
+       if we have this information. */
+    if ( ( pdt_instrumentation == enabled ) &&
+         ( is_mpi_application == enabled ) &&
+         !SCOREP_HAVE_PDT_MPI_INSTRUMENTATION )
+    {
+        std::cerr << "Error: Your installation does not support PDT instrumentation for "
+                  << "MPI applications." << std::endl;
+        abort();
     }
 }
 
@@ -1339,6 +1360,11 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
         command = pdt_bin_path + "/cxxparse " + source_file;
     }
     command += define_flags + include_flags + " " + scorep_include_path;
+
+    if ( is_mpi_application == enabled )
+    {
+        command += " -I" SCOREP_MPI_INCLUDE;
+    }
 
     if ( verbosity >= 1 )
     {
