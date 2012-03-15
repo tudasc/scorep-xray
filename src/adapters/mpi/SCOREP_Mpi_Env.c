@@ -238,6 +238,9 @@ MPI_Finalize()
         SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZE ] );
     }
 
+    /* Be so kind and name the MPI_COMM_WORLD, if the user didn't do so already */
+    scorep_mpi_comm_set_name( MPI_COMM_WORLD, "MPI_COMM_WORLD" );
+
     /* finalize MPI event handling */
     SCOREP_FinalizeMeasurementMPI();
   #if !defined( SCOREP_MPI_NO_HOOKS )
