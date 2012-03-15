@@ -204,6 +204,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( SamplingSet )
  */
 SCOREP_DEFINE_DEFINITION_TYPE( ScopedSamplingSet )
 {
+    // Don't use ScopedSamplingSet here, there is no handle for this definition
     SCOREP_DEFINE_DEFINITION_HEADER( SamplingSet );
 
     // order is important

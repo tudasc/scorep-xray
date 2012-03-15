@@ -1492,7 +1492,7 @@ SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
     if ( sampling_set->is_scoped )
     {
         SCOREP_ScopedSamplingSet_Definition* scoped_sampling_set
-            = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, ScopedSamplingSet );
+            = ( SCOREP_ScopedSamplingSet_Definition* )sampling_set;
 
         return scoped_sampling_set->sampling_set_handle;
     }
