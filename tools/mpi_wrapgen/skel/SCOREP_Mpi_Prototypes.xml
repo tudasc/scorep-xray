@@ -732,9 +732,9 @@
 </prototype>
 
 <prototype name="MPI_Cart_sub" rtype="int" group="topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
     <param access="i" type="int*" name="remain_dims" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
@@ -753,8 +753,8 @@
     <param access="i" type="char*" name="port_name" />
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.0" />
 </prototype>
 
@@ -780,15 +780,15 @@
     <param access="i" type="char*" name="port_name" />
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_create" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
     <param access="i" type="MPI_Group" name="group" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
@@ -818,8 +818,8 @@
 </prototype>
 
 <prototype name="MPI_Comm_dup" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
@@ -872,7 +872,7 @@
 
 <prototype name="MPI_Comm_join" rtype="int" group="spawn" guard="spawn,extra" >
     <param access="i" type="int" name="fd" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.0" />
 </prototype>
 
@@ -925,8 +925,8 @@
     <param access="i" type="int" name="maxprocs" />
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <param access="o" type="int" name="array_of_errcodes" suffix="[]" />
     <version id="2.0" />
 </prototype>
@@ -938,17 +938,17 @@
     <param access="i" type="int" name="array_of_maxprocs" suffix="[]" />
     <param access="i" type="MPI_Info" name="array_of_info" suffix="[]" />
     <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <param access="o" type="int" name="array_of_errcodes" suffix="[]" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_split" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
     <param access="i" type="int" name="color" />
     <param access="i" type="int" name="key" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
@@ -966,7 +966,7 @@
 </prototype>
 
 <prototype name="MPI_Dist_graph_create" rtype="int" group="topo" guard="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" />
+    <param access="i" type="MPI_Comm" name="comm_old" special="commparent" />
     <param access="i" type="int" name="n" />
     <param access="i" type="int" name="sources" suffix="[]" />
     <param access="i" type="int" name="degrees" suffix="[]" />
@@ -974,7 +974,7 @@
     <param access="i" type="int" name="weights" suffix="[]" />
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.2" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_UNWEIGHTED)
@@ -995,7 +995,7 @@
 </prototype>
 
 <prototype name="MPI_Dist_graph_create_adjacent" rtype="int" group="topo" guard="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" />
+    <param access="i" type="MPI_Comm" name="comm_old" special="commparent" />
     <param access="i" type="int" name="indegree" />
     <param access="i" type="int" name="sources" suffix="[]" />
     <param access="i" type="int" name="sourceweights" suffix="[]" />
@@ -1004,7 +1004,7 @@
     <param access="i" type="int" name="destweights" suffix="[]" />
     <param access="i" type="MPI_Info" name="info" />
     <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.2" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_UNWEIGHTED)
@@ -2589,12 +2589,12 @@
 </prototype>
 
 <prototype name="MPI_Graph_create" rtype="int" group="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" />
+    <param access="i" type="MPI_Comm" name="comm_old" special="commparent" />
     <param access="i" type="int" name="nnodes" />
     <param access="i" type="int*" name="index" />
     <param access="i" type="int*" name="edges" />
     <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
@@ -2869,14 +2869,14 @@
     <param access="i" type="MPI_Comm" name="peer_comm" />
     <param access="i" type="int" name="remote_leader" />
     <param access="i" type="int" name="tag" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Intercomm_merge" rtype="int" group="cg" >
     <param access="i" type="MPI_Comm" name="intercomm" />
     <param access="i" type="int" name="high" />
-    <param access="o" type="MPI_Comm*" name="newcomm" />
+    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 

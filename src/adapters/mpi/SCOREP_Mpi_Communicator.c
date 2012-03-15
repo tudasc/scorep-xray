@@ -548,7 +548,8 @@ scorep_mpi_setup_world()
     scorep_mpi_world.handle =
         SCOREP_DefineLocalMPICommunicator( scorep_mpi_world.size,
                                            scorep_mpi_my_global_rank,
-                                           0, 0 );
+                                           0, 0,
+                                           SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR );
     if ( scorep_mpi_my_global_rank == 0 )
     {
         if ( scorep_mpi_world.size > 1 )
@@ -600,7 +601,7 @@ scorep_mpi_comm_init()
         scorep_mpi_comm_initialized = 1;
 
         /* create MPI_COMM_SELF definition */
-        scorep_mpi_comm_create( MPI_COMM_SELF );
+        scorep_mpi_comm_create( MPI_COMM_SELF, MPI_COMM_NULL );
     }
     else
     {
@@ -687,7 +688,7 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
 }
 
 void
-scorep_mpi_comm_create( MPI_Comm comm )
+scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
 {
     SCOREP_CommunicatorId             id;         /* identifier unique to root */
     SCOREP_MpiRank                    root;       /* global rank of rank 0 */
@@ -737,8 +738,20 @@ scorep_mpi_comm_create( MPI_Comm comm )
     /* determine id and root for communicator definition */
     scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
 
+    SCOREP_LocalMPICommunicatorHandle parent_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+    int                               inter;
+    PMPI_Comm_test_inter( comm, &inter );
+    if ( !inter && parent_comm != MPI_COMM_NULL )
+    {
+        parent_handle = SCOREP_MPI_COMM_HANDLE( parent_comm );
+    }
+
     /* create definition in measurement system */
-    handle = SCOREP_DefineLocalMPICommunicator( size, local_rank, root, id );
+    handle = SCOREP_DefineLocalMPICommunicator( size,
+                                                local_rank,
+                                                root,
+                                                id,
+                                                parent_handle );
 
     /* enter comm in scorep_mpi_comms[] array */
     scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;

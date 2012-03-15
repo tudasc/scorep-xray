@@ -73,7 +73,7 @@ MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
     return_val = PMPI_Comm_create( comm, group, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -110,7 +110,7 @@ MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
     return_val = PMPI_Comm_dup( comm, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -147,7 +147,7 @@ MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
     return_val = PMPI_Comm_split( comm, color, key, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -184,7 +184,7 @@ MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm,
     return_val = PMPI_Intercomm_create( local_comm, local_leader, peer_comm, remote_leader, tag, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
     }
 
     if ( event_gen_active )
@@ -221,7 +221,7 @@ MPI_Intercomm_merge( MPI_Comm intercomm, int high, MPI_Comm* newcomm )
     return_val = PMPI_Intercomm_merge( intercomm, high, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
     }
 
     if ( event_gen_active )

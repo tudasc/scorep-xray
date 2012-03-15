@@ -92,7 +92,7 @@ MPI_Cart_create( MPI_Comm  comm_old,
         uint32_t*                         ucoordv;
 
         /* register the new topology communicator */
-        scorep_mpi_comm_create( *comm_cart );
+        scorep_mpi_comm_create( *comm_cart, comm_old );
 
         /* get the internal comminicator id for the communicator of the new topology */
         cid = scorep_mpi_comm_handle( *comm_cart );
@@ -187,7 +187,7 @@ MPI_Cart_sub( MPI_Comm comm, int* remain_dims, MPI_Comm* newcomm )
     return_val = PMPI_Cart_sub( comm, remain_dims, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -224,7 +224,7 @@ MPI_Graph_create( MPI_Comm comm_old, int nnodes, int* index, int* edges, int reo
     return_val = PMPI_Graph_create( comm_old, nnodes, index, edges, reorder, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm_old );
     }
 
     if ( event_gen_active )
@@ -262,7 +262,7 @@ MPI_Dist_graph_create( MPI_Comm comm_old, int n, int sources[], int degrees[], i
     return_val = PMPI_Dist_graph_create( comm_old, n, sources, degrees, destinations, weights, info, reorder, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm_old );
     }
 
     if ( event_gen_active )
@@ -299,7 +299,7 @@ MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, int sources[], 
     return_val = PMPI_Dist_graph_create_adjacent( comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm_old );
     }
 
     if ( event_gen_active )

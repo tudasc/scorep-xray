@@ -21,9 +21,9 @@ ${proto:c}
     }
 
     return_val = ${call:pmpi};
-    if (*newcomm != MPI_COMM_NULL)
+    if (*${comm:new} != MPI_COMM_NULL)
     {
-        scorep_mpi_comm_create(*newcomm);
+        scorep_mpi_comm_create(*${comm:new}, ${comm:parent});
     }
 
     if (event_gen_active)

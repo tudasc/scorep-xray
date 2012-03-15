@@ -226,7 +226,8 @@ scorep_mpi_winacc_get_gid( MPI_Win          win,
  * @param comm MPI communicator handle.
  */
 extern void
-scorep_mpi_comm_create( MPI_Comm comm );
+scorep_mpi_comm_create( MPI_Comm comm,
+                        MPI_Comm parent_comm );
 
 /**
  * @internal

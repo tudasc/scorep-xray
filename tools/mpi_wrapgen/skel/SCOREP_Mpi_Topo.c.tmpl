@@ -58,7 +58,7 @@ int MPI_Cart_create(MPI_Comm  comm_old,
     uint32_t* ucoordv;
 
     /* register the new topology communicator */
-    scorep_mpi_comm_create(*comm_cart);
+    scorep_mpi_comm_create(*comm_cart, comm_old);
   
     /* get the internal comminicator id for the communicator of the new topology */
     cid = scorep_mpi_comm_handle(*comm_cart);

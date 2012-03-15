@@ -31,7 +31,8 @@ libscorep_tracing_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
-    -I$(INC_ROOT)src/measurement/profiling
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/utils/include
 
 libscorep_tracing_la_SOURCES = \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_internal.h \

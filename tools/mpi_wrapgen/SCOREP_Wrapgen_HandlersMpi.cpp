@@ -51,6 +51,9 @@ using std::string;
 #include "SCOREP_Wrapgen_HandlersMpiDatatypes.h"
 #include "SCOREP_Wrapgen_Util.h"
 
+#include <cstdlib>
+#include <iostream>
+
 using namespace SCOREP::Wrapgen;
 using namespace SCOREP::Wrapgen::handler;
 using namespace SCOREP::Wrapgen::handler::mpi;
@@ -132,6 +135,8 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     func_handlers[ "guard:end" ]        = handler::mpi::guard_end;
     func_handlers[ "guard:hooks" ]      = handler::mpi::guard_hooks;
     func_handlers[ "check:hooks" ]      = handler::mpi::check_hooks;
+    func_handlers[ "comm:new" ]         = handler::mpi::comm_new;
+    func_handlers[ "comm:parent" ]      = handler::mpi::comm_parent;
 
     /** - Fortran<->C conversion types */
     f2c_types[ "MPI_Status" ]   = "PMPI_Status";
@@ -1251,4 +1256,65 @@ SCOREP::Wrapgen::handler::mpi::guard_end
 )
 {
     return "#endif";
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::comm_new
+(
+    const Func& func
+)
+{
+    for ( size_t i = 0; i < func.get_param_count(); ++i )
+    {
+        const Funcparam& arg = func.get_param( i );
+        if ( arg.has_special_tag( "commnew" ) )
+        {
+            return arg.get_name();
+        }
+    }
+    std::cerr << "ERROR: Requesting a new communicator argument from function '"
+              << func.get_name() << "' which does not have one."  << std::endl;
+    exit( EXIT_FAILURE );
+    return "";
+}
+
+string
+SCOREP::Wrapgen::handler::mpi::comm_parent
+(
+    const Func& func
+)
+{
+    int comm_new_arg_index    = -1;
+    int comm_parent_arg_index = -1;
+    for ( size_t i = 0; i < func.get_param_count(); ++i )
+    {
+        const Funcparam& arg = func.get_param( i );
+        if ( arg.has_special_tag( "commnew" ) )
+        {
+            comm_new_arg_index = i;
+        }
+        if ( arg.has_special_tag( "commparent" ) )
+        {
+            comm_parent_arg_index = i;
+        }
+    }
+    if ( comm_new_arg_index < 0 )
+    {
+        std::cerr << "ERROR: Requesting a parent communicator argument from function '"
+                  << func.get_name() << "' which does not have a new communicator."  << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    if ( comm_new_arg_index == comm_parent_arg_index )
+    {
+        std::cerr << "ERROR: The new and parent communicator argument from function '"
+                  << func.get_name() << "' are the same arguments."  << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    if ( comm_parent_arg_index >= 0 )
+    {
+        return func.get_param( comm_parent_arg_index ).get_name();
+    }
+
+    // Use MPI_COMM_NULL, if no parent communicator is available
+    return "MPI_COMM_NULL";
 }

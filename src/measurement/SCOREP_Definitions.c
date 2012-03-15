@@ -715,11 +715,12 @@ uint32_t scorep_number_of_root_comms = 0;
 
 static SCOREP_LocalMPICommunicatorHandle
 scorep_local_mpi_communicator_definitions_define(
-    SCOREP_DefinitionManager* definition_manager,
-    bool                      isSelfLike,
-    uint32_t                  localRank,
-    uint32_t                  globalRootRank,
-    uint32_t                  id );
+    SCOREP_DefinitionManager*         definition_manager,
+    bool                              isSelfLike,
+    uint32_t                          localRank,
+    uint32_t                          globalRootRank,
+    uint32_t                          id,
+    SCOREP_LocalMPICommunicatorHandle parentComm );
 
 static bool
 scorep_local_mpi_communicator_definitions_equal(
@@ -730,10 +731,11 @@ scorep_local_mpi_communicator_definitions_equal(
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_LocalMPICommunicatorHandle
-SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
-                                   uint32_t localRank,
-                                   uint32_t globalRootRank,
-                                   uint32_t id )
+SCOREP_DefineLocalMPICommunicator( uint32_t                          numberOfRanks,
+                                   uint32_t                          localRank,
+                                   uint32_t                          globalRootRank,
+                                   uint32_t                          id,
+                                   SCOREP_LocalMPICommunicatorHandle parentComm )
 {
     SCOREP_LocalMPICommunicatorHandle new_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
@@ -754,7 +756,8 @@ SCOREP_DefineLocalMPICommunicator( uint32_t numberOfRanks,
         numberOfRanks == 1,
         localRank,
         globalRootRank,
-        id );
+        id,
+        parentComm );
 
     /*
      * Count the number of comm self instances and communicators where this
@@ -807,11 +810,12 @@ SCOREP_LocalMPICommunicatorSetName(
 
 static SCOREP_LocalMPICommunicatorHandle
 scorep_local_mpi_communicator_definitions_define(
-    SCOREP_DefinitionManager* definition_manager,
-    bool                      isSelfLike,
-    uint32_t                  localRank,
-    uint32_t                  globalRootRank,
-    uint32_t                  id )
+    SCOREP_DefinitionManager*         definition_manager,
+    bool                              isSelfLike,
+    uint32_t                          localRank,
+    uint32_t                          globalRootRank,
+    uint32_t                          id,
+    SCOREP_LocalMPICommunicatorHandle parentComm )
 {
     SCOREP_LocalMPICommunicator_Definition* new_definition = NULL;
     SCOREP_LocalMPICommunicatorHandle       new_handle     = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
@@ -824,6 +828,7 @@ scorep_local_mpi_communicator_definitions_define(
     new_definition->global_root_rank = globalRootRank;
     new_definition->root_id          = id;
     new_definition->name_handle      = SCOREP_INVALID_STRING;
+    new_definition->parent_handle    = parentComm;
 
     /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator,
@@ -848,7 +853,8 @@ scorep_mpi_communicator_definitions_equal(
  */
 SCOREP_MPICommunicatorHandle
 SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle,
-                                     uint32_t           unified_name_id )
+                                     uint32_t           unified_name_id,
+                                     uint32_t           unified_parent_id )
 {
     SCOREP_MPICommunicator_Definition* new_definition     = NULL;
     SCOREP_MPICommunicatorHandle       new_handle         = SCOREP_INVALID_MPI_COMMUNICATOR;
@@ -865,6 +871,7 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle,
     // Init new_definition
     new_definition->group_handle = group_handle;
     new_definition->name_id      = unified_name_id;
+    new_definition->parent_id    = unified_parent_id;
 
     /* Does return */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator,

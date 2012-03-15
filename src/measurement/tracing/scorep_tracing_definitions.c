@@ -51,6 +51,7 @@
 #include <scorep_definitions.h>
 #include <scorep_definition_structs.h>
 #include <scorep_definition_macros.h>
+#include <SCOREP_Bitstring.h>
 
 
 #include "scorep_tracing_types.h"
@@ -280,15 +281,92 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                        SCOREP_DefinitionManager* definitionManager )
 {
     assert( writerHandle );
+    uint32_t done_size = SCOREP_Bitstring_GetByteSize( definitionManager->mpi_communicator_definition_counter );
+    uint8_t* done      = calloc( done_size, sizeof( *done ) );
+    assert( done );
 
+    /* First round, write root comms, but not self-like (SCOREP_GROUP_COMM_SELF) */
+    uint32_t togo = 0;
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
+        SCOREP_Group_Definition* group =
+            SCOREP_HANDLE_DEREF( definition->group_handle, Group, definitionManager->page_manager );
+        if ( group->group_type == SCOREP_GROUP_COMM_SELF )
+        {
+            continue;
+        }
+
+        if ( definition->parent_id == UINT32_MAX )
+        {
+            SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
+                writerHandle,
+                definition->sequence_number,
+                definition->name_id, /* already the global ID */
+                SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
+                definition->parent_id /* already the global ID */ );
+
+            SCOREP_Bitstring_Set( done, definition->sequence_number );
+
+            if ( status != SCOREP_SUCCESS )
+            {
+                scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
+            }
+        }
+        else
+        {
+            togo++;
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+
+    /* Round two, write all remaining non-self-like comms in topological order */
+    while ( togo > 0 )
+    {
+        SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
+        {
+            SCOREP_Group_Definition* group =
+                SCOREP_HANDLE_DEREF( definition->group_handle, Group, definitionManager->page_manager );
+            if ( group->group_type == SCOREP_GROUP_COMM_SELF
+                 || SCOREP_Bitstring_IsSet( done, definition->sequence_number )
+                 || !SCOREP_Bitstring_IsSet( done, definition->parent_id ) )
+            {
+                continue;
+            }
+
+            SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
+                writerHandle,
+                definition->sequence_number,
+                definition->name_id, /* already the global ID */
+                SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
+                definition->parent_id /* already the global ID */ );
+
+            togo--;
+            SCOREP_Bitstring_Set( done, definition->sequence_number );
+
+            if ( status != SCOREP_SUCCESS )
+            {
+                scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
+            }
+        }
+        SCOREP_DEFINITION_FOREACH_WHILE();
+    }
+
+    /* Round three, write all self-like comms */
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
+    {
+        SCOREP_Group_Definition* group =
+            SCOREP_HANDLE_DEREF( definition->group_handle, Group, definitionManager->page_manager );
+        if ( group->group_type != SCOREP_GROUP_COMM_SELF )
+        {
+            continue;
+        }
+
         SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
             writerHandle,
             definition->sequence_number,
             definition->name_id, /* already the global ID */
             SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
-            OTF2_UNDEFINED_UINT32 /* undefined parent ID */ );
+            definition->parent_id /* already the global ID */ );
 
         if ( status != SCOREP_SUCCESS )
         {
@@ -296,6 +374,8 @@ scorep_write_communicator_definitions( void*                     writerHandle,
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
+
+    free( done );
 }
 
 

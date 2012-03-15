@@ -358,6 +358,18 @@ multiplicity
     const SCOREP::Wrapgen::Func& func
 );
 
+std::string
+comm_new
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
+std::string
+comm_parent
+(
+    const SCOREP::Wrapgen::Func& func
+);
+
 /**
  * @}
  */

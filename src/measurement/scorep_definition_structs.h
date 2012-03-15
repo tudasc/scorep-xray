@@ -128,11 +128,12 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocalMPICommunicator )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( LocalMPICommunicator );
 
-    bool                is_self_like;
-    uint32_t            local_rank;
-    uint32_t            global_root_rank;
-    uint32_t            root_id;
-    SCOREP_StringHandle name_handle;
+    bool                              is_self_like;
+    uint32_t                          local_rank;
+    uint32_t                          global_root_rank;
+    uint32_t                          root_id;
+    SCOREP_StringHandle               name_handle;
+    SCOREP_LocalMPICommunicatorHandle parent_handle;
 };
 
 SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
@@ -141,6 +142,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
 
     SCOREP_GroupHandle group_handle;
     uint32_t           name_id;
+    uint32_t           parent_id;
 };
 
 SCOREP_DEFINE_DEFINITION_TYPE( MPIWindow )

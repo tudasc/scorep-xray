@@ -74,7 +74,7 @@ MPI_Comm_accept( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Co
     return_val = PMPI_Comm_accept( port_name, info, root, comm, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -111,7 +111,7 @@ MPI_Comm_connect( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_C
     return_val = PMPI_Comm_connect( port_name, info, root, comm, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -148,7 +148,7 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
     return_val = PMPI_Comm_join( fd, newcomm );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
     }
 
     if ( event_gen_active )
@@ -185,7 +185,7 @@ MPI_Comm_spawn( char* command, char* argv[], int maxprocs, MPI_Info info, int ro
     return_val = PMPI_Comm_spawn( command, argv, maxprocs, info, root, comm, newcomm, array_of_errcodes );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
@@ -222,7 +222,7 @@ MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_a
     return_val = PMPI_Comm_spawn_multiple( count, array_of_commands, array_of_argv, array_of_maxprocs, array_of_info, root, comm, newcomm, array_of_errcodes );
     if ( *newcomm != MPI_COMM_NULL )
     {
-        scorep_mpi_comm_create( *newcomm );
+        scorep_mpi_comm_create( *newcomm, comm );
     }
 
     if ( event_gen_active )
