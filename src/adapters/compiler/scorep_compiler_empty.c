@@ -27,7 +27,7 @@
  */
 
 #include <config.h>
-#include <SCOREP_Location_Types.h>
+#include <SCOREP_Location.h>
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_utility/SCOREP_Utils.h>
 
