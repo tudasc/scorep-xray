@@ -37,6 +37,21 @@ typedef struct SCOREP_Location SCOREP_Location;
 
 
 /**
+ * This function can be used by subsystems to create new locations.
+ *
+ * @param parent            Handle of parent location.
+ * @param type              Type of new location.
+ * @param name              Name of new location.
+ *
+ * @return Returns handle for new location.
+ */
+SCOREP_Location*
+SCOREP_CreateLocation( SCOREP_Location*    parent,
+                       SCOREP_LocationType type,
+                       const char*         name );
+
+
+/**
  *
  *
  * @return

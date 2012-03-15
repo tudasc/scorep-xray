@@ -47,15 +47,6 @@ SCOREP_Thread_Initialize();
 
 
 /**
- *
- */
-SCOREP_Location*
-SCOREP_CreateLocation( SCOREP_Location*    parent,
-                       SCOREP_LocationType type,
-                       const char*         name );
-
-
-/**
  * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up thread
  * private data structures. Who clears memory and when?
  *
