@@ -1,3 +1,4 @@
+
 ## -*- mode: autoconf -*-
 
 ## 
@@ -66,22 +67,15 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
                    [],
                    [with_$1_lib="${$1_NAME[]_LIB:-yes}"])
 
-       # sanity check
-       AS_IF([   (test "x${with_$1_include}" != "xno" && test "x${with_$1_lib}"  = "xno") \
-              || (test "x${with_$1_include}"  = "xno" && test "x${with_$1_lib}" != "xno")], 
-             [AC_MSG_ERROR([invalid combination of --with-$1-include and --with-$1-lib options.])])],
+       _AC_SCOREP_GENERIC_LIB_SANITY_CHECK([$1], [], [])],
 
       # else (--with-$1 set, i.e. (no|yes|path))
-      [AS_IF([test "x${with_$1}" = "xyes"], [with_$1_include="yes"; with_$1_lib="yes"],
-             [test "x${with_$1}" = "xno"],  [with_$1_include="no";  with_$1_lib="no"],
-             [with_$1_include="${with_$1}/include"; with_$1_lib="${with_$1}/lib"])])
-
+      [_AC_SCOREP_GENERIC_LIB_TOPLEVEL_GIVEN([$1], [])])
 
 echo "with_$1_include = ${with_[$1]_include}"
 echo "with_$1_lib     = ${with_$1_lib}"
 
 _AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2])
-
 ])
 
 
@@ -133,23 +127,16 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
                    [],
                    [with_$1_lib="${$1_NAME[]_LIB:-yes}"])
 
-       # sanity check
-       AS_IF([   (test "x${with_$1_include}" != "xno" && test "x${with_$1_lib}"  = "xno") \
-              || (test "x${with_$1_include}"  = "xno" && test "x${with_$1_lib}" != "xno")], 
-             [AC_MSG_ERROR([invalid combination of --with-$1-include and --with-$1-lib options.])])],
+       _AC_SCOREP_GENERIC_LIB_SANITY_CHECK([$1], [], [])],
 
       # else (--with-$1 set, i.e. (no|yes|path))
-      [AS_IF([test "x${with_$1}" = "xyes"], [with_$1_include="yes"; with_$1_lib="yes"],
-             [test "x${with_$1}" = "xno"],  [with_$1_include="no";  with_$1_lib="no"],
-             [with_$1_include="${with_$1}/include"; with_$1_lib="${with_$1}/lib"])])
-
+      [_AC_SCOREP_GENERIC_LIB_TOPLEVEL_GIVEN([$1], [])])
 
 echo "with_$1_include = ${with_[$1]_include}"
 echo "with_$1_lib     = ${with_$1_lib}"
 ],
 # else cross compiling
 [
-
 AC_ARG_WITH([backend-$1], 
             [AS_HELP_STRING([--with-backend-$1=<Path to backend $1 installation>], 
                             [On cross-compile systems: if you want to
@@ -183,27 +170,19 @@ AS_IF([test "x${with_backend_$1}" = "xnot_set"],
                           [AC_MSG_ERROR([invalid value 'yes' to --with-backend-$1-lib, specify a path instead.])])],
                    [with_backend_$1_lib="${$1_BACKEND_NAME[]_LIB:-no}"])
 
-       # sanity check
-       AS_IF([   (test "x${with_backend_$1_include}" != "xno" && test "x${with_backend_$1_lib}"  = "xno") \
-              || (test "x${with_backend_$1_include}"  = "xno" && test "x${with_backend_$1_lib}" != "xno")], 
-             [AC_MSG_ERROR([invalid combination of --with-backend-$1-include and --with-backend-$1-lib options.])])],
+       _AC_SCOREP_GENERIC_LIB_SANITY_CHECK([$1], [backend-], [backend_])],
 
       # else (--with-backend-$1 set, i.e. (no|yes|path))
-      [AS_IF([test "x${with_backend_$1}" = "xyes"], [with_backend_$1_include="yes"; with_backend_$1_lib="yes"],
-             [test "x${with_backend_$1}" = "xno"],  [with_backend_$1_include="no";  with_backend_$1_lib="no"],
-             [with_backend_$1_include="${with_backend_$1}/include"; with_backend_$1_lib="${with_backend_$1}/lib"])])
-
+      [_AC_SCOREP_GENERIC_LIB_TOPLEVEL_GIVEN([$1], [backend_])])
 
 echo "with_backend_$1_include = ${with_[backend_$1]_include}"
 echo "with_backend_$1_lib     = ${with_backend_$1_lib}"
 
-
-])
-
-
+with_$1_include=${with_backend_$1_include}
+with_$1_lib=${with_backend_$1_lib}
+]) # cross compiling
 
 _AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2])
-
 ])
 
 dnl ------------------------------------------------------------------
@@ -215,8 +194,48 @@ dnl ])
 
 dnl ------------------------------------------------------------------
 
+AC_DEFUN([_AC_SCOREP_GENERIC_LIB_SANITY_CHECK], [
+dnl $1: library name
+dnl $2: "backend_" or ""
+dnl $3: "backend-" or ""
+AS_IF([   (test "x${with_$2[]$1_include}" != "xno" && test "x${with_$2[]$1_lib}"  = "xno") \
+       || (test "x${with_$2[]$1_include}"  = "xno" && test "x${with_$2[]$1_lib}" != "xno")],
+      [AC_MSG_ERROR([invalid combination of options --with-$3[]$1-include and --with-$3[]$1-lib.])])
+])
+
+dnl ------------------------------------------------------------------
+
+AC_DEFUN([_AC_SCOREP_GENERIC_LIB_TOPLEVEL_GIVEN], [
+dnl $1: library name
+dnl $2: "backend_" or ""
+AS_IF([test "x${with_$2[]$1}" = "xyes"], [with_$2[]$1_include="yes"; with_$2[]$1_lib="yes"],
+      [test "x${with_$2[]$1}" = "xno"],  [with_$2[]$1_include="no";  with_$2[]$1_lib="no"],
+      [with_$2[]$1_include="${with_$2[]$1}/include"; with_$2[]$1_lib="${with_$2[]$1}/lib"])
+])
+
+dnl ------------------------------------------------------------------
+
 AC_DEFUN([_AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK], [
 AC_LANG_PUSH([C])
+dnl uses from caller:
+dnl - $1
+dnl - $1_NAME
+dnl - with_$1_include
+dnl - with_$1_lib
+dnl sets:
+dnl - with_$1_include_checks_successful
+dnl - with_$1_cppflags
+dnl - with_$1_lib_checks_successful="unknown"
+dnl - with_$1_ldflags=""
+dnl - with_$1_lib
+dnl - HAVE_[]$1_NAME automake conditional 
+dnl - HAVE_[]$1_NAME preprocessor define
+dnl - $1_NAME[]_CPPFLAGS ac_subst
+dnl - $1_NAME[]_LDFLAGS ac_subst
+dnl - $1_NAME[]_LIBS ac_subst
+
+echo "with_$1_include = ${with_[$1]_include}"
+echo "with_$1_lib     = ${with_$1_lib}"
 
 # check header files
 with_$1_include_checks_successful="yes"
@@ -227,12 +246,11 @@ AS_IF([test "x${with_$1_include}" != "xno"],
              [with_$1_cppflags="-I${with_$1_include}"
               CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"])
        echo "CPPFLAGS $CPPFLAGS"
-       m4_foreach([header_file], m4_dquote($2), 
-                  [AS_IF([test "x${with_$1_include_checks_successful}" = "xyes"],
-                          dnl do not quote header_file
-                         [AC_CHECK_HEADER(header_file, [], [with_$1_include_checks_successful="no"])])
-                  ])dnl don't remove newline
-       CPPFLAGS="${cpp_flags_save_$1}"])
+       AC_CHECK_HEADERS([$2], [], [with_$1_include_checks_successful="no"])
+       CPPFLAGS="${cpp_flags_save_$1}"],
+      [with_$1_include_checks_successful="no"])
+
+echo "with_$1_include_checks_successful $with_$1_include_checks_successful"
 
 # check libs
 with_$1_lib_checks_successful="unknown"
@@ -252,16 +270,18 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
        
        m4_expand(AC_SCOREP_[]$1_NAME[]_LIB_CHECK([$1], [$2])) dnl specific library check, to be impemented elsewhere
 
-       AS_IF([(test "x${with_$1_lib_checks_successful}" != "xyes" &&  \
-               test "x${with_$1_lib_checks_successful}" != "xno")  || \
+       AS_IF([(test "x${with_$1_lib_checks_successful}" != "xyes" && \
+               test "x${with_$1_lib_checks_successful}" != "xno") || \
               test "x${with_$1_libs}" = "xunknown"],
              [m4_pattern_allow(AC_SCOREP_[]$1_NAME[]_LIB_CHECK) dnl otherwise following error message fails.
               AC_MSG_ERROR([implementation of AC_SCOREP_[]$1_NAME[]_LIB_CHECK does not provide required output.])])
 
        CPPFLAGS="${cpp_flags_save_$1}"
        LIBS="${libs_save_$1}"
-       LDFLAGS="$ld_flags_save_$1"
-      ])
+       LDFLAGS="$ld_flags_save_$1"],
+      [with_$1_lib_checks_successful="no"])
+
+echo "with_$1_lib_checks_successful $with_$1_lib_checks_successful"
 
 AC_LANG_POP([C])
 
