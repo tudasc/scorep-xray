@@ -198,8 +198,8 @@ scorep_tracing_metric_value_type_to_otf2( SCOREP_MetricValueType valueType )
     case SCOREP_METRIC_VALUE_ ## SCOREP: \
         return OTF2_ ## OTF2
 
-        case_return( INT64,  INT64_T );
-        case_return( UINT64, UINT64_T );
+        case_return( INT64,  INT64 );
+        case_return( UINT64, UINT64 );
         case_return( DOUBLE, DOUBLE );
 
 #undef case_return
