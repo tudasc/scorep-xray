@@ -161,7 +161,7 @@ AC_F77_WRAPPERS
 AC_FC_WRAPPERS
 
 
-AC_SCOREP_ONLINE_ACCESS_HEADERS
+AC_SCOREP_ONLINE_ACCESS
 
 ## trunc and ceil needed by the cube4 writer
 AC_SEARCH_LIBS([trunc], [m])

@@ -1,4 +1,4 @@
-if HAVE_ONLINE_ACCESS_HEADERS
+if HAVE_ONLINE_ACCESS
 
 check_PROGRAMS += oa_f_test
 
@@ -35,4 +35,4 @@ EXTRA_DIST       += \
 
 TESTS_SERIAL += $(srcdir)/../test/OA/serial/Fortran/run_oa_f_test.sh
 
-endif #if HAVE_ONLINE_ACCESS_HEADERS
+endif #if HAVE_ONLINE_ACCESS

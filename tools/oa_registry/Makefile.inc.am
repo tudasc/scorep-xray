@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-if HAVE_ONLINE_ACCESS_HEADERS
+if HAVE_ONLINE_ACCESS
 
 bin_PROGRAMS += online-access-registry
 
@@ -26,4 +26,4 @@ online_access_registry_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la
 EXTRA_DIST +=$(SRC_ROOT)/tools/oa_registry/scenario_mpi
 EXTRA_DIST +=$(SRC_ROOT)/tools/oa_registry/scenario_serial
 
-endif #if HAVE_ONLINE_ACCESS_HEADERS
+endif #if HAVE_ONLINE_ACCESS

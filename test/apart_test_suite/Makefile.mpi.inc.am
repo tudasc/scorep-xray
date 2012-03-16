@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012, 
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -30,7 +30,7 @@ if MPI_SUPPORTED
 
 ## Apart Test Suite to run with Online Access mode
 
-if HAVE_ONLINE_ACCESS_HEADERS
+if HAVE_ONLINE_ACCESS
 
 check_PROGRAMS                  += mpi_patt_all_test_f90_with_oa
 mpi_patt_all_test_f90_with_oa_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/calibrate.f90 \
@@ -62,7 +62,7 @@ EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test
 
 CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod
 
-endif #if HAVE_ONLINE_ACCESS_HEADERS
+endif #if HAVE_ONLINE_ACCESS
 
 ## Apart Test Suite to run without Online Access mode
 

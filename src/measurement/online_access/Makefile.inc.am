@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-if HAVE_ONLINE_ACCESS_HEADERS
+if HAVE_ONLINE_ACCESS
 
 EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.l \
 			$(SRC_ROOT)src/measurement/online_access/lex.l
@@ -120,7 +120,7 @@ libscorep_oa_serial_la_LIBADD =               	\
     libscorep_oa_fortran_sub4.la				\
     libscorep_oa_parser.la
 
-else #if HAVE_ONLINE_ACCESS_HEADERS
+else #if HAVE_ONLINE_ACCESS
 
 SCOREP_OA_FORTRAN_SOURCES =  										\
 	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_DummyF.c
@@ -179,6 +179,6 @@ libscorep_oa_serial_la_LIBADD =             \
     libscorep_oa_fortran_sub3.la        	\
     libscorep_oa_fortran_sub4.la
 
-endif #if HAVE_ONLINE_ACCESS_HEADERS
+endif #if HAVE_ONLINE_ACCESS
 
 
