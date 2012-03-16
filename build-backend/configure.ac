@@ -5,6 +5,8 @@ AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/
 
 AC_SCOREP_SUMMARY_INIT([Score-P backend configuration summary])
 
+AC_DEFUN([AC_SCOREP_BACKEND], [])
+
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])

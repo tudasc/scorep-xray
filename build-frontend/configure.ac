@@ -3,6 +3,8 @@ AC_INIT([scorep], m4_esyscmd([../vendor/common/build-config/generate-package-ver
 
 AC_SCOREP_SUMMARY_INIT([Score-P frontend configuration summary])
 
+AC_DEFUN([AC_SCOREP_FRONTEND], [])
+
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 

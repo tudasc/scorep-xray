@@ -8,6 +8,8 @@ if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compili
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
 
+AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
+
 cross_compiling=${ac_scorep_cross_compiling}
 
 ac_scorep_backend=yes
