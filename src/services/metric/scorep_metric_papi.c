@@ -188,8 +188,8 @@ scorep_metric_papi_error( int   errcode,
 
 
 /* *********************************************************************
-* Global variables
-***********************************************************************/
+ * Global variables
+ **********************************************************************/
 
 /**
  * This vector contains specification data of used metrics.
@@ -221,7 +221,7 @@ unsigned long
 scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
-    SCOREP_Location* data = SCOREP_Location_GetLocationData();
+    SCOREP_Location* data = SCOREP_Location_GetCurrentCPUThreadData();
     SCOREP_ASSERT( data != NULL );
 
     return SCOREP_Location_GetLocationId( data );

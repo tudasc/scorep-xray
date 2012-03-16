@@ -58,8 +58,7 @@ SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
  * @return
  */
 SCOREP_Location*
-SCOREP_Location_GetLocationData();
-
+SCOREP_Location_GetCurrentCPUThreadData();
 
 /**
  *  Returns the local id of the location (ie. thread id).

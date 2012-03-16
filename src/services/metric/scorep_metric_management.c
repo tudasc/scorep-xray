@@ -293,7 +293,7 @@ static SCOREP_Error_Code
 scorep_metric_initialize_location()
 {
     /* Get the thread local data */
-    SCOREP_Location* thread_data = SCOREP_Location_GetLocationData();
+    SCOREP_Location* thread_data = SCOREP_Location_GetCurrentCPUThreadData();
     SCOREP_ASSERT( thread_data != NULL );
 
     SCOREP_Metric_LocationData* metric_data =

@@ -182,7 +182,7 @@ SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
 
     if ( parent == NULL )
     {
-        parent = SCOREP_Location_GetLocationData();
+        parent = SCOREP_Location_GetCurrentCPUThreadData();
     }
 
     /*
@@ -347,7 +347,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
         assert( new_location->page_managers );
         scorep_thread_update_tpd( tpd );                                  // from here on clients can use
-                                                                          // SCOREP_Location_GetLocationData, i.e. TPD
+                                                                          // SCOREP_Location_GetCurrentCPUThreadData, i.e. TPD
     }
     else
     {
@@ -555,7 +555,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationDa
 
 
 SCOREP_Location*
-SCOREP_Location_GetLocationData()
+SCOREP_Location_GetCurrentCPUThreadData()
 {
     if ( TPD->is_active )
     {
@@ -621,7 +621,7 @@ SCOREP_Location_GetLocationData()
 SCOREP_Allocator_PageManager**
 SCOREP_Thread_GetLocationLocalMemoryPageManagers()
 {
-    return SCOREP_Location_GetLocationData()->page_managers;
+    return SCOREP_Location_GetCurrentCPUThreadData()->page_managers;
 }
 
 
@@ -700,7 +700,7 @@ scorep_defer_location_initialization( SCOREP_Location* locationData,
 void
 SCOREP_ProcessDeferredLocations()
 {
-    SCOREP_Location* current_location = SCOREP_Location_GetLocationData();
+    SCOREP_Location* current_location = SCOREP_Location_GetCurrentCPUThreadData();
 
     SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
     {

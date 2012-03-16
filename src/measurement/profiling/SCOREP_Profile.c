@@ -189,7 +189,7 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
        regions on the main location.
      */
     uint64_t             exit_time = SCOREP_GetClockTicks();
-    SCOREP_Location*     thread    = SCOREP_Location_GetLocationData();
+    SCOREP_Location*     thread    = SCOREP_Location_GetCurrentCPUThreadData();
     scorep_profile_node* node      = NULL;
     uint64_t*            metrics   = NULL;
 
