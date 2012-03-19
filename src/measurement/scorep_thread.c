@@ -169,9 +169,9 @@ SCOREP_Thread_Initialize()
 
 
 SCOREP_Location*
-SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
-                                            SCOREP_LocationType type,
-                                            const char*         name )
+SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
+                                      SCOREP_LocationType type,
+                                      const char*         name )
 {
     /*
      * At the moment this function just supports creation of non-CPU
@@ -182,7 +182,7 @@ SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
 
     if ( parent == NULL )
     {
-        parent = SCOREP_Location_GetCurrentCPUThreadData();
+        parent = SCOREP_Location_GetCurrentCPULocation();
     }
 
     /*
@@ -207,20 +207,20 @@ SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
 }
 
 uint32_t
-SCOREP_Location_GetLocationId( SCOREP_Location* locationData )
+SCOREP_Location_GetId( SCOREP_Location* locationData )
 {
     return locationData->local_id;
 }
 
 SCOREP_LocationType
-SCOREP_Location_GetLocationType( SCOREP_Location* locationData )
+SCOREP_Location_GetType( SCOREP_Location* locationData )
 {
     return locationData->type;
 }
 
 void*
-SCOREP_Location_GetSubsystemLocationData( SCOREP_Location* locationData,
-                                          size_t           subsystem_id )
+SCOREP_Location_GetSubsystemData( SCOREP_Location* locationData,
+                                  size_t           subsystem_id )
 {
     assert( subsystem_id < scorep_subsystems_get_number() );
 
@@ -228,9 +228,9 @@ SCOREP_Location_GetSubsystemLocationData( SCOREP_Location* locationData,
 }
 
 void
-SCOREP_Location_SetSubsystemLocationData( SCOREP_Location* locationData,
-                                          size_t           subsystem_id,
-                                          void*            subsystem_data )
+SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
+                                  size_t           subsystem_id,
+                                  void*            subsystem_data )
 {
     assert( subsystem_id < scorep_subsystems_get_number() );
 
@@ -347,7 +347,7 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
         assert( new_location->page_managers );
         scorep_thread_update_tpd( tpd );                                  // from here on clients can use
-                                                                          // SCOREP_Location_GetCurrentCPUThreadData, i.e. TPD
+                                                                          // SCOREP_Location_GetCurrentCPULocation, i.e. TPD
     }
     else
     {
@@ -555,7 +555,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationDa
 
 
 SCOREP_Location*
-SCOREP_Location_GetCurrentCPUThreadData()
+SCOREP_Location_GetCurrentCPULocation()
 {
     if ( TPD->is_active )
     {
@@ -621,7 +621,7 @@ SCOREP_Location_GetCurrentCPUThreadData()
 SCOREP_Allocator_PageManager**
 SCOREP_Thread_GetLocationLocalMemoryPageManagers()
 {
-    return SCOREP_Location_GetCurrentCPUThreadData()->page_managers;
+    return SCOREP_Location_GetCurrentCPULocation()->page_managers;
 }
 
 
@@ -645,7 +645,7 @@ SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
 
     if ( locationData->location_id == INVALID_LOCATION_DEFINITION_ID )
     {
-        uint64_t local_location_id = SCOREP_Location_GetLocationId( locationData );
+        uint64_t local_location_id = SCOREP_Location_GetId( locationData );
         uint64_t rank              = SCOREP_Mpi_GetRank();
 
         assert( rank >> 32 == 0 );
@@ -700,7 +700,7 @@ scorep_defer_location_initialization( SCOREP_Location* locationData,
 void
 SCOREP_ProcessDeferredLocations()
 {
-    SCOREP_Location* current_location = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* current_location = SCOREP_Location_GetCurrentCPULocation();
 
     SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
     {
@@ -750,9 +750,9 @@ SCOREP_ProcessDeferredLocations()
 }
 
 void
-SCOREP_Location_ForAllLocations( void  ( * cb )( SCOREP_Location*,
-                                                 void* ),
-                                 void* data )
+SCOREP_Location_ForAll( void  ( * cb )( SCOREP_Location*,
+                                        void* ),
+                        void* data )
 {
     assert( cb );
 

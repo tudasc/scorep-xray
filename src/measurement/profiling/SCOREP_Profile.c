@@ -303,7 +303,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
                       uint64_t            timestamp,
                       uint64_t*           metrics )
 {
-    //printf( "%u: Enter %s\n", SCOREP_Location_GetLocationId( thread ), SCOREP_Region_GetName( region ) );
+    //printf( "%u: Enter %s\n", SCOREP_Location_GetId( thread ), SCOREP_Region_GetName( region ) );
     scorep_profile_node* node = NULL;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
@@ -353,7 +353,7 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
                      uint64_t            timestamp,
                      uint64_t*           metrics )
 {
-    //printf( "%u: Exit %s\n", SCOREP_Location_GetLocationId( thread ), SCOREP_Region_GetName( region ) );
+    //printf( "%u: Exit %s\n", SCOREP_Location_GetId( thread ), SCOREP_Region_GetName( region ) );
     int                          i;
     scorep_profile_node*         node   = NULL;
     scorep_profile_node*         parent = NULL;
@@ -674,7 +674,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
 
     /* Initialize type specific data structure */
     thread_data = SCOREP_Thread_GetProfileLocationData( locationData );
-    thread_id   = SCOREP_Location_GetLocationId( locationData );
+    thread_id   = SCOREP_Location_GetId( locationData );
     SCOREP_ASSERT( thread_data != NULL );
 
     scorep_profile_type_set_location_data( &node_data, thread_data );

@@ -366,8 +366,8 @@ SCOREP_Tracing_FinalizeEventWriters( void )
 
     assert( scorep_otf2_archive );
 
-    SCOREP_Location_ForAllLocations( scorep_trace_finalize_event_writer_cb,
-                                     NULL );
+    SCOREP_Location_ForAll( scorep_trace_finalize_event_writer_cb,
+                            NULL );
 }
 
 

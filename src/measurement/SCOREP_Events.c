@@ -101,7 +101,7 @@ scorep_enter_region( uint64_t            timestamp,
 void
 SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_read( location );
 
@@ -117,12 +117,12 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
                              uint64_t            timestamp,
                              SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_BUG_ON( !location && SCOREP_Location_GetLocationType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
+    SCOREP_BUG_ON( !location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
                    "SCOREP_Location_EnterRegion() must not be used for CPU thread locations." );
 
     if ( !location )
     {
-        location = SCOREP_Location_GetCurrentCPUThreadData();
+        location = SCOREP_Location_GetCurrentCPULocation();
     }
 
     SCOREP_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
@@ -179,7 +179,7 @@ scorep_exit_region( uint64_t            timestamp,
 void
 SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_read( location );
 
@@ -191,12 +191,12 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
                             uint64_t            timestamp,
                             SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_BUG_ON( !location && SCOREP_Location_GetLocationType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
+    SCOREP_BUG_ON( !location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
                    "SCOREP_Location_ExitRegion() must not be used for CPU thread locations." );
 
     if ( !location )
     {
-        location = SCOREP_Location_GetCurrentCPUThreadData();
+        location = SCOREP_Location_GetCurrentCPULocation();
     }
 
     SCOREP_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
@@ -220,7 +220,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
     SCOREP_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiSend" );
 
 
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -263,7 +263,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
     SCOREP_BUG_ON( sourceRank < 0, "Invalid rank passed to SCOREP_MpiRecv" );
 
 
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -299,7 +299,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
 uint64_t
 SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_read( location );
 
@@ -335,7 +335,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
     SCOREP_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
                    "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
 
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_read( location );
 
@@ -365,7 +365,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
 void
 SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -386,7 +386,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 void
 SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -407,7 +407,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 void
 SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -428,7 +428,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 void
 SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -456,7 +456,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
     SCOREP_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiIsend\n" );
 
 
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -488,7 +488,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
     SCOREP_BUG_ON( sourceRank < 0,  "Invalid rank passed to SCOREP_MpiIrecv\n" );
 
 
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -516,7 +516,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 void
 SCOREP_OmpFork( uint32_t nRequestedThreads )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -544,7 +544,7 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
 void
 SCOREP_OmpJoin( void )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
@@ -589,7 +589,7 @@ void
 SCOREP_OmpAcquireLock( uint32_t lockId,
                        uint32_t acquisitionOrder )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );            // use the timestamp from the associated enter
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
@@ -616,7 +616,7 @@ void
 SCOREP_OmpReleaseLock( uint32_t lockId,
                        uint32_t acquisitionOrder )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );            // use the timestamp from the associated enter
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
@@ -638,7 +638,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
 void
 SCOREP_OmpTaskCreate( uint64_t taskId )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     if ( scorep_tracing_consume_event() )
@@ -657,7 +657,7 @@ SCOREP_OmpTaskCreate( uint64_t taskId )
 void
 SCOREP_OmpTaskSwitch( uint64_t taskId )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     if ( scorep_tracing_consume_event() )
@@ -679,7 +679,7 @@ void
 SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
                      uint64_t            taskId )
 {
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_read( location );
 
@@ -711,7 +711,7 @@ void
 SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
                    uint64_t            taskId )
 {
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_read( location );
 
@@ -746,7 +746,7 @@ SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
 void
 SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
                        )
 
@@ -779,7 +779,7 @@ void
 SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
                             int64_t                  value )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -820,7 +820,7 @@ void
 SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
                              uint64_t                 value )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -854,7 +854,7 @@ void
 SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
                              double                   value )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -894,7 +894,7 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
 void
 SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
@@ -917,7 +917,7 @@ void
 SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
                               int64_t                value )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -946,7 +946,7 @@ void
 SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
                                uint64_t               value )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -976,7 +976,7 @@ void
 SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                const char*            value )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -1006,5 +1006,5 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 uint64_t
 SCOREP_GetLastTimeStamp()
 {
-    return SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPUThreadData() );
+    return SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
 }

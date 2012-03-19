@@ -47,9 +47,9 @@ typedef struct SCOREP_Location SCOREP_Location;
  * @return Returns handle for new location.
  */
 SCOREP_Location*
-SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
-                                            SCOREP_LocationType type,
-                                            const char*         name );
+SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
+                                      SCOREP_LocationType type,
+                                      const char*         name );
 
 
 /**
@@ -58,7 +58,7 @@ SCOREP_Location_CreateNonCPUThreadLocation( SCOREP_Location*    parent,
  * @return
  */
 SCOREP_Location*
-SCOREP_Location_GetCurrentCPUThreadData();
+SCOREP_Location_GetCurrentCPULocation();
 
 /**
  *  Returns the local id of the location (ie. thread id).
@@ -66,7 +66,7 @@ SCOREP_Location_GetCurrentCPUThreadData();
  * @return
  */
 uint32_t
-SCOREP_Location_GetLocationId( SCOREP_Location* locationData );
+SCOREP_Location_GetId( SCOREP_Location* locationData );
 
 
 /**
@@ -75,24 +75,24 @@ SCOREP_Location_GetLocationId( SCOREP_Location* locationData );
  * @return
  */
 SCOREP_LocationType
-SCOREP_Location_GetLocationType( SCOREP_Location* locationData );
+SCOREP_Location_GetType( SCOREP_Location* locationData );
 
 
 void*
-SCOREP_Location_GetSubsystemLocationData( SCOREP_Location* locationData,
-                                          size_t           subsystem_id );
+SCOREP_Location_GetSubsystemData( SCOREP_Location* locationData,
+                                  size_t           subsystem_id );
 
 
 void
-SCOREP_Location_SetSubsystemLocationData( SCOREP_Location* locationData,
-                                          size_t           subsystem_id,
-                                          void*            subsystem_data );
+SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
+                                  size_t           subsystem_id,
+                                  void*            subsystem_data );
 
 
 void
-SCOREP_Location_ForAllLocations( void ( * cb )( SCOREP_Location*,
-                                                void* ),
-                                 void* data );
+SCOREP_Location_ForAll( void ( * cb )( SCOREP_Location*,
+                                       void* ),
+                        void* data );
 
 
 SCOREP_LocationHandle

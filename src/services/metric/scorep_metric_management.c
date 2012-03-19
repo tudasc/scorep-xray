@@ -249,7 +249,7 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
     if ( scorep_metric_management_initialized )
     {
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemLocationData(
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
             locationData,
             scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
@@ -297,9 +297,9 @@ scorep_metric_initialize_location( SCOREP_Location* locationData )
     SCOREP_Metric_LocationData* metric_data =
         SCOREP_Memory_AllocForMisc( sizeof( *metric_data ) );
 
-    SCOREP_Location_SetSubsystemLocationData( locationData,
-                                              scorep_metric_subsystem_id,
-                                              metric_data );
+    SCOREP_Location_SetSubsystemData( locationData,
+                                      scorep_metric_subsystem_id,
+                                      metric_data );
 
     initialize_location_metric_cb( locationData, NULL );
 
@@ -319,7 +319,7 @@ finalize_location_metric_cb( SCOREP_Location* locationData,
         }
 
         /* Get the thread local data related to metrics */
-        SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemLocationData(
+        SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
             locationData,
             scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
@@ -364,7 +364,7 @@ SCOREP_Metric_read( SCOREP_Location* locationData )
     }
 
     /* Get the thread local data related to metrics */
-    SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemLocationData(
+    SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
         locationData,
         scorep_metric_subsystem_id );
     SCOREP_ASSERT( metric_data != NULL );
@@ -406,7 +406,7 @@ SCOREP_Metric_reinitialize()
     }
 
     /* Finalize each location (frees internal buffers) */
-    SCOREP_Location_ForAllLocations( finalize_location_metric_cb, NULL );
+    SCOREP_Location_ForAll( finalize_location_metric_cb, NULL );
 
     /* Finalize metric service */
     scorep_metric_finalize_service();
@@ -415,7 +415,7 @@ SCOREP_Metric_reinitialize()
     scorep_metric_initialize_service();
 
     /* Reinitialize each location */
-    SCOREP_Location_ForAllLocations( initialize_location_metric_cb, NULL );
+    SCOREP_Location_ForAll( initialize_location_metric_cb, NULL );
 
     return SCOREP_SUCCESS;
 }

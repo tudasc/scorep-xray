@@ -135,9 +135,9 @@ scorep_compiler_get_location_id()
     }
 
     /* Else get the thread id from the measurement system */
-    SCOREP_Location* data = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_ASSERT( data != NULL );
-    return SCOREP_Location_GetLocationId( data );
+    return SCOREP_Location_GetId( data );
 }
 
 inline scorep_compiler_location_data*

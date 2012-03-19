@@ -221,10 +221,10 @@ unsigned long
 scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
-    SCOREP_Location* data = SCOREP_Location_GetCurrentCPUThreadData();
+    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_ASSERT( data != NULL );
 
-    return SCOREP_Location_GetLocationId( data );
+    return SCOREP_Location_GetId( data );
 }
 
 
