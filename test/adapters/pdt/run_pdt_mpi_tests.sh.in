@@ -32,13 +32,6 @@ echo "==================="
 echo $PWD/run_pdt_mpi_tests.sh
 echo "==================="
 
-# Setup test environment
-if [ -d ../build-frontend ]; then
-  cd ../build-frontend
-else
-  cd ../build-backend
-fi
-
 make scorep-config-tool-local
 . ./scorep_config.dat
 touch config.h
