@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       run_pdt_backend_tests.sh
+## file       run_pdt_fortran_tests.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 SCOREP=./scorep
@@ -23,15 +23,14 @@ SCOREP=./scorep
 cleanup()
 {
 rm -f  config.h \
-       pdt_serial_c.o \
-       pdt_serial_cxx.o
+       pdt_serial_f90.o
 rm -rf scorep-measurement-tmp
 }
 
 trap cleanup EXIT
 
 echo "==================="
-echo $PWD/run_pdt_backend_tests.sh
+echo $PWD/run_pdt_fortran_tests.sh
 echo "==================="
 
 # Setup test environment
@@ -39,16 +38,9 @@ make scorep-config-tool-local
 . ./scorep_config.dat
 touch config.h
 
-# C
+#Fortran
 $SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
-         @CC@ -I. @abs_srcdir@/C/pdt_serial_test.c -c -o pdt_serial_c.o
-if [ $? -ne 0 ]; then
-    exit 1
-fi
-
-# C++
-$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
-         @CXX@ -I. @abs_srcdir@/C++/pdt_serial_test.cxx -c -o pdt_serial_cxx.o
+         gfortran -I. /private/source/silc/silc-root/trunk/gcc-mpich2/build-backend/../../build-backend/../test/adapters/pdt/Fortran/pdt_serial_test.F90 -c -o pdt_serial_f90.o
 if [ $? -ne 0 ]; then
     exit 1
 fi
