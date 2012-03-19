@@ -15,49 +15,35 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       run_phase_test.sh
+## file       run_pdt_backend_tests.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+SCOREP=./scorep
 
 cleanup()
 {
 rm -f  config.h \
-       scorep_phase_test.pomp_init.c \
-       scorep_phase_test.opari.c \
-       scorep_phase_test.c.opari.inc \
-       scorep_phase_test.c \
-       scorep_phase_test 
-
+       pdt_serial_test.o
 rm -rf scorep-measurement-tmp
 }
+
 trap cleanup EXIT
 
 echo "==================="
-echo $PWD/run_phase_test.sh
+echo $PWD/run_pdt_backend_tests.sh
 echo "==================="
 
 # Setup test environment
 make scorep-config-tool-local
 . ./scorep_config.dat
 touch config.h
-cp  @abs_srcdir@/scorep_phase_test.c scorep_phase_test.c
-@SCOREP_COMPILER_SUN_FALSE@extra_flag=""
-@SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
 
-# build instrumented executable
-./scorep $extra_flag \
-         --user \
-         -v \
-         --config=scorep_config.dat \
-        @CC@ -I. -o scorep_phase_test scorep_phase_test.c @OPENMP_CFLAGS@
-
-if [ ! -e scorep_phase_test ]; then
-    exit 1
-fi
-
-# execute
-SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./scorep_phase_test
+# C
+$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
+         @CC@ -I. @abs_srcdir@/C/pdt_serial_test.c -c -o pdt_serial_test.o
 if [ $? -ne 0 ]; then
     exit 1
 fi
+
 
 exit 0

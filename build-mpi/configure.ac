@@ -230,5 +230,6 @@ AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/hybrid/C/Makefile])
 AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
-
+AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_mpi_tests.sh], \
+                [chmod +x ../test/adapters/pdt/run_pdt_mpi_tests.sh])
 AC_OUTPUT

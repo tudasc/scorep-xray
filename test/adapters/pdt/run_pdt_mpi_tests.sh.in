@@ -1,0 +1,54 @@
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       run_pdt_mpi_tests.sh
+## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+SCOREP=./scorep
+
+cleanup()
+{
+rm -f  config.h \
+       pdt_mpi_test.o
+rm -rf scorep-measurement-tmp
+}
+
+trap cleanup EXIT
+
+if [ ! @SCOREP_HAVE_PDT_MPI_INSTRUMENTATION@ ]; then
+   exit 0
+fi
+
+echo "==================="
+echo $PWD/run_pdt_mpi_tests.sh
+echo "==================="
+
+# Setup test environment
+if [ -d ../build-frontend ]; then
+  cd ../build-frontend
+else
+  cd ../build-backend
+fi
+
+make scorep-config-tool-local
+. ./scorep_config.dat
+touch config.h
+
+# C
+$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
+         @CC@ -I. @abs_srcdir@/C/pdt_mpi_test.c -c -o pdt_mpi_test.o
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+
+exit 0
