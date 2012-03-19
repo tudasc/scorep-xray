@@ -192,7 +192,7 @@ scorep_compiler_init_adapter()
 }
 
 SCOREP_Error_Code
-scorep_compiler_init_location()
+scorep_compiler_init_location( SCOREP_Location* location )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace Compiler adapter init location!" );
     return SCOREP_SUCCESS;

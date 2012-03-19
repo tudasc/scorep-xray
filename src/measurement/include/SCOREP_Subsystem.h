@@ -92,7 +92,7 @@ typedef struct SCOREP_Subsystem
      * Callback to register a location to the subsystem.
      *
      */
-    SCOREP_Error_Code ( * subsystem_init_location )( void );
+    SCOREP_Error_Code ( * subsystem_init_location )( struct SCOREP_Location* );
 
     /**
      * Finalizes the per-location data from this subsystem.

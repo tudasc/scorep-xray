@@ -49,7 +49,7 @@ void
 scorep_subsystems_finalize( void );
 
 void
-scorep_subsystems_initialize_location( void );
+scorep_subsystems_initialize_location( SCOREP_Location* locationData );
 
 void
 scorep_subsystems_finalize_location( SCOREP_Location* locationData );

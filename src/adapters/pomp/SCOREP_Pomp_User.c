@@ -182,7 +182,7 @@ scorep_pomp_init()
 
 /** Allows initialization of location specific data. Nothing done inside this funcion. */
 static SCOREP_Error_Code
-scorep_pomp_init_location()
+scorep_pomp_init_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_pomp_init_location\n" );

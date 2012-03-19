@@ -72,7 +72,7 @@ scorep_user_init()
 
 /** Initializes the location specific data of the user adapter */
 static SCOREP_Error_Code
-scorep_user_init_location()
+scorep_user_init_location( SCOREP_Location* locationData )
 {
     return SCOREP_SUCCESS;
 }

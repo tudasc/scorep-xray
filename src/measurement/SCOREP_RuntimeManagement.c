@@ -169,7 +169,7 @@ SCOREP_InitMeasurement()
     SCOREP_Filter_Initialize();
 
     scorep_subsystems_initialize();
-    scorep_subsystems_initialize_location(); // not sure if this should be triggered by thread management
+    scorep_subsystems_initialize_location( SCOREP_Location_GetCurrentCPUThreadData() ); // not sure if this should be triggered by thread management
 
     scorep_profile_initialize();
 

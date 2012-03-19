@@ -370,7 +370,7 @@ scorep_mpi_init_adapter()
    for the initialization process of the MPI adapter.
  */
 static SCOREP_Error_Code
-scorep_mpi_init_location()
+scorep_mpi_init_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "In scorep_mpi_init_location\n" );

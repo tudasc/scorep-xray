@@ -90,7 +90,7 @@ scorep_compiler_init_adapter();
    compiler adapter implementation.
  */
 extern SCOREP_Error_Code
-scorep_compiler_init_location();
+scorep_compiler_init_location( SCOREP_Location* location );
 
 /**
    The location finalize function is compiler specific. Thus it is contained in each

@@ -107,7 +107,7 @@ scorep_subsystems_initialize( void )
  * Initialize subsystems for existing locations.
  */
 void
-scorep_subsystems_initialize_location( void )
+scorep_subsystems_initialize_location( SCOREP_Location* locationData )
 {
     SCOREP_Error_Code error;
     /* create location */
@@ -117,7 +117,7 @@ scorep_subsystems_initialize_location( void )
     {
         if ( scorep_subsystems[ i ]->subsystem_init_location )
         {
-            error = scorep_subsystems[ i ]->subsystem_init_location();
+            error = scorep_subsystems[ i ]->subsystem_init_location( locationData );
         }
 
         if ( SCOREP_SUCCESS != error )

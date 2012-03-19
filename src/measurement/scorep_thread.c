@@ -310,7 +310,7 @@ scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
      * as we need an already initialized metric subsystem at this point. */
     if ( isMainLocation == false )
     {
-        scorep_subsystems_initialize_location();
+        scorep_subsystems_initialize_location( locationData );
     }
 }
 

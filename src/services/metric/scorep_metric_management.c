@@ -290,20 +290,18 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
  *          otherwise an error code will be reported.
  */
 static SCOREP_Error_Code
-scorep_metric_initialize_location()
+scorep_metric_initialize_location( SCOREP_Location* locationData )
 {
-    /* Get the thread local data */
-    SCOREP_Location* thread_data = SCOREP_Location_GetCurrentCPUThreadData();
-    SCOREP_ASSERT( thread_data != NULL );
+    SCOREP_ASSERT( locationData != NULL );
 
     SCOREP_Metric_LocationData* metric_data =
         SCOREP_Memory_AllocForMisc( sizeof( *metric_data ) );
 
-    SCOREP_Location_SetSubsystemLocationData( thread_data,
+    SCOREP_Location_SetSubsystemLocationData( locationData,
                                               scorep_metric_subsystem_id,
                                               metric_data );
 
-    initialize_location_metric_cb( thread_data, NULL );
+    initialize_location_metric_cb( locationData, NULL );
 
     return SCOREP_SUCCESS;
 }
