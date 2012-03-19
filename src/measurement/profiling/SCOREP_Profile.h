@@ -127,7 +127,8 @@ SCOREP_Profile_Finalize();
    unification in order to register callpathe sto be unified.
  */
 void
-SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags );
+SCOREP_Profile_Process( SCOREP_Location*              location,
+                        SCOREP_Profile_ProcessingFlag processFlags );
 
 /**
    Writes the Profile. The output format can be set via environment variable

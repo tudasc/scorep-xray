@@ -445,7 +445,8 @@ scorep_finalize( void )
     // order is important
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Process( SCOREP_Profile_ProcessDefault );
+        SCOREP_Profile_Process( SCOREP_Location_GetCurrentCPUThreadData(),
+                                SCOREP_Profile_ProcessDefault );
     }
 
     SCOREP_TIME( SCOREP_DefineSystemTree );

@@ -43,6 +43,8 @@
 #include <scorep_profile_event_base.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
+#include <SCOREP_Location.h>
+#include "SCOREP_Metric_Management.h"
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -180,7 +182,8 @@ SCOREP_Profile_DeleteLocationData( SCOREP_Profile_LocationData* profileLocationD
 }
 
 void
-SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
+SCOREP_Profile_Process( SCOREP_Location*              location,
+                        SCOREP_Profile_ProcessingFlag processFlags )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -189,15 +192,14 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
        regions on the main location.
      */
     uint64_t             exit_time = SCOREP_GetClockTicks();
-    SCOREP_Location*     thread    = SCOREP_Location_GetCurrentCPUThreadData();
     scorep_profile_node* node      = NULL;
-    uint64_t*            metrics   = NULL;
+    uint64_t*            metrics   = SCOREP_Metric_read( location );
 
-    if ( thread != NULL )
+    if ( location != NULL )
     {
         do
         {
-            node = scorep_profile_get_current_node( SCOREP_Thread_GetProfileLocationData( thread ) );
+            node = scorep_profile_get_current_node( SCOREP_Thread_GetProfileLocationData( location ) );
             while ( ( node != NULL ) &&
                     ( node->node_type != scorep_profile_node_regular_region ) &&
                     ( node->node_type != scorep_profile_node_collapse ) )
@@ -215,12 +217,13 @@ SCOREP_Profile_Process( SCOREP_Profile_ProcessingFlag processFlags )
                     scorep_profile_type_get_region_handle( node->type_specific_data );
                 fprintf( stderr, "Warning: Force exit for region %s\n",
                          SCOREP_Region_GetName( region ) );
-                SCOREP_Profile_Exit( thread, region, exit_time, metrics );
+                SCOREP_Profile_Exit( location, region, exit_time, metrics );
             }
             else if ( node->node_type == scorep_profile_node_collapse )
             {
                 fprintf( stderr, "Warning: Force exit from collapsed node\n" );
-                SCOREP_Profile_Exit( thread, SCOREP_INVALID_REGION, exit_time, metrics );
+                SCOREP_Profile_Exit( location, SCOREP_INVALID_REGION,
+                                     exit_time, metrics );
             }
             else
             {
