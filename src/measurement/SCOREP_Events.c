@@ -53,7 +53,7 @@ static uint64_t
 scorep_get_timestamp( SCOREP_Location* location )
 {
     uint64_t timestamp = SCOREP_GetClockTicks();
-    SCOREP_Thread_SetLastTimestamp( location, timestamp );
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
     return timestamp;
 }
 

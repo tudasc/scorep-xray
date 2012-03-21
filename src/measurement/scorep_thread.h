@@ -56,16 +56,6 @@ SCOREP_Thread_Finalize();
 
 
 /**
- * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up
- * locations data structures.
- *
- * Must be called before SCOREP_Thread_Finalize().
- */
-void
-SCOREP_Thread_FinalizeLocations();
-
-
-/**
  * Call from SCOREP_OmpFork(). Update thread local data structures at the start of
  * a parallel region.
  *
@@ -83,33 +73,39 @@ void
 SCOREP_Thread_OnThreadJoin();
 
 
+/**
+ * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up
+ * locations data structures.
+ *
+ * Must be called before SCOREP_Thread_Finalize().
+ */
+void
+SCOREP_Location_Finalize();
+
+
 SCOREP_Allocator_PageManager**
-SCOREP_Thread_GetLocationLocalMemoryPageManagers();
+SCOREP_Location_GetMemoryPageManagers( SCOREP_Location* locationData );
 
 
 SCOREP_Profile_LocationData*
-SCOREP_Thread_GetProfileLocationData( SCOREP_Location* locationData );
+SCOREP_Location_GetProfileData( SCOREP_Location* locationData );
 
 
 SCOREP_Trace_LocationData*
-SCOREP_Thread_GetTraceLocationData( SCOREP_Location* locationData );
+SCOREP_Location_GetTraceData( SCOREP_Location* locationData );
 
 
 uint64_t
-SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData );
+SCOREP_Location_GetGlobalId( SCOREP_Location* locationData );
 
 
 void
-SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData,
-                                int64_t          timestamp );
-
-
-uint32_t
-SCOREP_Thread_GetNumberOfLocations();
+SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
+                                  int64_t          timestamp );
 
 
 void
-SCOREP_ProcessDeferredLocations();
+SCOREP_Location_ProcessDeferredOnes();
 
 
 #endif /* SCOREP_INTERNAL_THREAD_H */

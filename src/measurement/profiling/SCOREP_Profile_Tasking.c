@@ -244,7 +244,7 @@ SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
 
     /* Create new task entry */
     SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
+        SCOREP_Location_GetProfileData( thread );
 
     scorep_profile_type_data_t specific_data;
     scorep_profile_type_set_region_handle( &specific_data, regionHandle );
@@ -273,7 +273,7 @@ SCOREP_Profile_TaskSwitch( SCOREP_Location* thread,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
+        SCOREP_Location_GetProfileData( thread );
 
     scorep_profile_task* task = scorep_profile_task_find( location, taskId );
 
@@ -291,7 +291,7 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
+        SCOREP_Location_GetProfileData( thread );
 
     /* Remember some data before it has changed */
     scorep_profile_task* task      = location->current_task;

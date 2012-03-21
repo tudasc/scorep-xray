@@ -199,7 +199,7 @@ SCOREP_Profile_Process( SCOREP_Location*              location,
     {
         do
         {
-            node = scorep_profile_get_current_node( SCOREP_Thread_GetProfileLocationData( location ) );
+            node = scorep_profile_get_current_node( SCOREP_Location_GetProfileData( location ) );
             while ( ( node != NULL ) &&
                     ( node->node_type != scorep_profile_node_regular_region ) &&
                     ( node->node_type != scorep_profile_node_collapse ) )
@@ -313,7 +313,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
 
     /* Check wether we excced the depth */
     SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
+        SCOREP_Location_GetProfileData( thread );
     location->current_depth++;
 
     /* Enter on current position */
@@ -363,7 +363,7 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
                          "Exit event of profiling system called" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
-    location = SCOREP_Thread_GetProfileLocationData( thread );
+    location = SCOREP_Location_GetProfileData( thread );
 
     /* Store task metrics if we leave a parallel region */
     if ( SCOREP_Region_GetType( region ) == SCOREP_REGION_OMP_PARALLEL )
@@ -394,7 +394,7 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    location = SCOREP_Thread_GetProfileLocationData( thread );
+    location = SCOREP_Location_GetProfileData( thread );
 
     /* Validity check */
     node = scorep_profile_get_current_node( location );
@@ -421,7 +421,7 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    location = SCOREP_Thread_GetProfileLocationData( thread );
+    location = SCOREP_Location_GetProfileData( thread );
 
     /* Validity check */
     node = scorep_profile_get_current_node( location );
@@ -450,7 +450,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
        Do not even increase the depth level, because we do not know how many parameters
        were entered on an exit event. */
     SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
+        SCOREP_Location_GetProfileData( thread );
     if ( location->current_depth >= scorep_profile.max_callpath_depth )
     {
         return;
@@ -497,7 +497,7 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
        Do not even increase the depth level, because we do not know how many parameters
        were entered on an exit event. */
     SCOREP_Profile_LocationData* location =
-        SCOREP_Thread_GetProfileLocationData( thread );
+        SCOREP_Location_GetProfileData( thread );
 
     if ( location->current_depth >= scorep_profile.max_callpath_depth )
     {
@@ -581,7 +581,7 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
     }
 
     /* Get root node of the thread */
-    thread_data = SCOREP_Thread_GetProfileLocationData( locationData );
+    thread_data = SCOREP_Location_GetProfileData( locationData );
     if ( thread_data == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
@@ -595,7 +595,7 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
     /* Find creation point if available */
     if ( parentLocationData != NULL )
     {
-        parent_data = SCOREP_Thread_GetProfileLocationData( parentLocationData );
+        parent_data = SCOREP_Location_GetProfileData( parentLocationData );
         if ( parent_data != NULL )
         {
             creation_point = parent_data->fork_node;
@@ -653,7 +653,7 @@ SCOREP_Profile_OnThreadDectivation( SCOREP_Location* locationData,
     }
 
     /* Remove the current node. */
-    scorep_profile_set_current_node( SCOREP_Thread_GetProfileLocationData( locationData ),
+    scorep_profile_set_current_node( SCOREP_Location_GetProfileData( locationData ),
                                      NULL );
 }
 
@@ -673,7 +673,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
 
     /* Initialize type specific data structure */
-    thread_data = SCOREP_Thread_GetProfileLocationData( locationData );
+    thread_data = SCOREP_Location_GetProfileData( locationData );
     thread_id   = SCOREP_Location_GetId( locationData );
     SCOREP_ASSERT( thread_data != NULL );
 
@@ -700,7 +700,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
 
     if ( parentLocationData != NULL )
     {
-        parent_data                = SCOREP_Thread_GetProfileLocationData( parentLocationData );
+        parent_data                = SCOREP_Location_GetProfileData( parentLocationData );
         thread_data->creation_node = parent_data->fork_node;
         thread_data->current_depth = parent_data->fork_depth;
     }
@@ -736,7 +736,7 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    location  = SCOREP_Thread_GetProfileLocationData( threadData );
+    location  = SCOREP_Location_GetProfileData( threadData );
     fork_node = scorep_profile_get_current_node( location );
 
     /* In case the fork node is a thread start node, this thread started at the same

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -49,7 +49,7 @@ static SCOREP_Mutex memory_lock;
 static SCOREP_Allocator_Allocator* scorep_memory_allocator = 0;
 static uint64_t                    scorep_memory_total_memory;
 
-static bool                        scorep_memory_is_initialized = false;
+static bool scorep_memory_is_initialized = false;
 
 //static SCOREP_Allocator_PageManager* scorep_local_movable_page_manager = 0;
 SCOREP_Allocator_PageManager* scorep_local_movable_page_manager  = 0;
@@ -220,7 +220,7 @@ SCOREP_Memory_AllocForProfile( size_t size  )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ], size );
+        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ profile_pages ], size );
     if ( !mem )
     {
         /* aborts */
@@ -235,7 +235,7 @@ SCOREP_Memory_FreeProfileMem()
 {
     // print mem usage statistics
     SCOREP_Allocator_Free(
-        SCOREP_Thread_GetLocationLocalMemoryPageManagers()[ profile_pages ] );
+        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ profile_pages ] );
 }
 
 
@@ -250,7 +250,7 @@ SCOREP_Memory_AllocForMisc( size_t size  )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ], size );
+        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ misc_pages ], size );
     if ( !mem )
     {
         /* aborts */
@@ -265,7 +265,7 @@ SCOREP_Memory_FreeMiscMem()
 {
     // print mem usage statistics
     SCOREP_Allocator_Free(
-        SCOREP_Thread_GetLocationLocalMemoryPageManagers()[ misc_pages ] );
+        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ misc_pages ] );
 }
 
 

@@ -338,7 +338,7 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
 
     SCOREP_Trace_LocationData* trace_data =
-        SCOREP_Thread_GetTraceLocationData( locationData );
+        SCOREP_Location_GetTraceData( locationData );
 
     assert( trace_data->otf_writer );
 

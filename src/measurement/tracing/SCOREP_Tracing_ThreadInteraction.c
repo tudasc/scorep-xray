@@ -102,7 +102,7 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
         return;
     }
 
-    SCOREP_Trace_LocationData* trace_data = SCOREP_Thread_GetTraceLocationData( locationData );
+    SCOREP_Trace_LocationData* trace_data = SCOREP_Location_GetTraceData( locationData );
 
     SCOREP_Tracing_LockArchive();
     {
@@ -132,9 +132,9 @@ SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
         return;
     }
 
-    SCOREP_Trace_LocationData* trace_data = SCOREP_Thread_GetTraceLocationData( threadLocationData );
+    SCOREP_Trace_LocationData* trace_data = SCOREP_Location_GetTraceData( threadLocationData );
     //assert( threadLocationData->location_id == UINT64_MAX );
-    uint64_t location_id = SCOREP_Thread_GetGlobalLocationId( threadLocationData );
+    uint64_t location_id = SCOREP_Location_GetGlobalId( threadLocationData );
 
     SCOREP_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
                                                             location_id );

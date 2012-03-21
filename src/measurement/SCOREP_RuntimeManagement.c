@@ -292,7 +292,7 @@ SCOREP_InitMeasurementMPI( int rank )
 
     SCOREP_Mpi_SetRankTo( rank );
     SCOREP_CreateExperimentDir();
-    SCOREP_ProcessDeferredLocations();
+    SCOREP_Location_ProcessDeferredOnes();
     SCOREP_SynchronizeClocks();
     scorep_set_otf2_archive_master_slave();
 
@@ -456,7 +456,7 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Definitions_Finalize );
     SCOREP_TIME( scorep_otf2_finalize );
 
-    SCOREP_TIME( SCOREP_Thread_FinalizeLocations );
+    SCOREP_TIME( SCOREP_Location_Finalize );
 
     SCOREP_TIME( scorep_subsystems_finalize );  // Disables all adapters
 

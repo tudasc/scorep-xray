@@ -298,7 +298,7 @@ scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
     }
     else
     {
-        SCOREP_Thread_GetGlobalLocationId( locationData );
+        SCOREP_Location_GetGlobalId( locationData );
         locationData->location_handle = SCOREP_DefineLocation(
             locationData->location_id,
             locationData->type,
@@ -445,7 +445,7 @@ scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivat
 
 
 void
-SCOREP_Thread_FinalizeLocations()
+SCOREP_Location_Finalize()
 {
     assert( !omp_in_parallel() );
     assert( initial_thread != 0 );
@@ -619,27 +619,27 @@ SCOREP_Location_GetCurrentCPULocation()
 
 
 SCOREP_Allocator_PageManager**
-SCOREP_Thread_GetLocationLocalMemoryPageManagers()
+SCOREP_Location_GetMemoryPageManagers( SCOREP_Location* locationData )
 {
-    return SCOREP_Location_GetCurrentCPULocation()->page_managers;
+    return locationData->page_managers;
 }
 
 
 SCOREP_Profile_LocationData*
-SCOREP_Thread_GetProfileLocationData( SCOREP_Location* locationData )
+SCOREP_Location_GetProfileData( SCOREP_Location* locationData )
 {
     return locationData->profile_data;
 }
 
 
 SCOREP_Trace_LocationData*
-SCOREP_Thread_GetTraceLocationData( SCOREP_Location* locationData )
+SCOREP_Location_GetTraceData( SCOREP_Location* locationData )
 {
     return locationData->trace_data;
 }
 
 uint64_t
-SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
+SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
 {
     assert( SCOREP_Mpi_IsInitialized() );
 
@@ -659,23 +659,10 @@ SCOREP_Thread_GetGlobalLocationId( SCOREP_Location* locationData )
 
 
 void
-SCOREP_Thread_SetLastTimestamp( SCOREP_Location* locationData,
-                                int64_t          timestamp )
+SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
+                                  int64_t          timestamp )
 {
     locationData->last_timestamp = timestamp;
-}
-
-
-uint32_t
-SCOREP_Thread_GetNumberOfLocations()
-{
-    assert( location_counter > 0 );
-    uint32_t n_locations = 0;
-    SCOREP_PRAGMA_OMP( critical( new_location ) )
-    {
-        n_locations = location_counter;
-    }
-    return n_locations;
 }
 
 
@@ -698,7 +685,7 @@ scorep_defer_location_initialization( SCOREP_Location* locationData,
 
 
 void
-SCOREP_ProcessDeferredLocations()
+SCOREP_Location_ProcessDeferredOnes()
 {
     SCOREP_Location* current_location = SCOREP_Location_GetCurrentCPULocation();
 
@@ -716,7 +703,7 @@ SCOREP_ProcessDeferredLocations()
             }
 
             /* Ensure that the location id is available */
-            SCOREP_Thread_GetGlobalLocationId( location );
+            SCOREP_Location_GetGlobalId( location );
 
             SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->global_location_id =
                 location->location_id;
