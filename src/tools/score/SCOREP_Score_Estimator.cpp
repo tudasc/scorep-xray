@@ -30,6 +30,89 @@
 
 using namespace std;
 
+/* **************************************************************************************
+                                                                       internal functions
+****************************************************************************************/
+
+static void
+scorep_score_swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
+{
+    SCOREP_Score_Group* helper = items[ pos1 ];
+    items[ pos1 ] = items[ pos2 ];
+    items[ pos2 ] = helper;
+}
+
+static void
+scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
+{
+    if ( size < 2 )
+    {
+        return;
+    }
+    if ( size == 2 )
+    {
+        if ( items[ 0 ]->GetMaxTBC() < items[ 1 ]->GetMaxTBC() )
+        {
+            scorep_score_swap( items, 0, 1 );
+        }
+        return;
+    }
+
+    uint64_t beg       = 0;
+    uint64_t end       = size - 1;
+    uint64_t pos       = size / 2;
+    uint64_t threshold = items[ pos ]->GetMaxTBC();
+
+    while ( beg < end )
+    {
+        while ( ( beg < end ) &&
+                ( items[ beg ]->GetMaxTBC() > threshold ) )
+        {
+            beg++;
+        }
+
+        while ( ( beg < end ) &&
+                ( items[ end ]->GetMaxTBC() <= threshold ) )
+        {
+            end--;
+        }
+        if ( beg < end )
+        {
+            scorep_score_swap( items, beg, end );
+
+            // Maintain position of our threshold item
+            // Needed for special handling of equal values
+            if ( beg == pos )
+            {
+                pos = end;
+            }
+            else if ( end == pos )
+            {
+                pos = beg;
+            }
+        }
+    }
+
+    // Special handling if we have many entries with the same value
+    // Otherwise,lots of equal values might lead to infinite recursion.
+    if ( items[ end ]->GetMaxTBC() < threshold )
+    {
+        scorep_score_swap( items, end, pos );
+    }
+    while ( ( end < size ) &&
+            ( items[ end ]->GetMaxTBC() == threshold ) )
+    {
+        end++;
+    }
+
+    scorep_score_quicksort( items, beg );
+    scorep_score_quicksort( &items[ end ], size - end );
+}
+
+/* **************************************************************************************
+                                                             class SCOREP_Score_Estimator
+****************************************************************************************/
+
 SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
 {
     m_profile     = profile;
@@ -121,6 +204,8 @@ SCOREP_Score_Estimator::PrintGroups()
          << " or reduce requirements using file listing names of USR regions to be filtered.)"
          << endl << endl;
 
+    scorep_score_quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
+
     cout << "flt type         max_tbc         time      \% region" << endl;
     for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
@@ -131,6 +216,8 @@ SCOREP_Score_Estimator::PrintGroups()
 void
 SCOREP_Score_Estimator::PrintRegions()
 {
+    scorep_score_quicksort( m_regions, m_region_num );
+
     double total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
     cout << endl;
     for ( int i = 0; i < m_region_num; i++ )
