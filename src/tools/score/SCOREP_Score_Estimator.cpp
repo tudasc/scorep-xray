@@ -32,9 +32,9 @@ using namespace std;
 
 SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
 {
-    m_profile = profile;
-    m_regions = profile->GetNumberOfRegions();
-    m_threads = profile->GetNumberOfThreads();
+    m_profile   = profile;
+    m_regions   = profile->GetNumberOfRegions();
+    m_processes = profile->GetNumberOfProcesses();
 
     m_timestamp = 8;
     m_dense     = calculate_dense_metric();
@@ -45,7 +45,7 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
     m_groups = ( SCOREP_Score_Group** )malloc( SCOREP_SCORE_GROUP_NUM * sizeof( SCOREP_Score_Group* ) );
     for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
     {
-        m_groups[ i ] = new SCOREP_Score_Group( ( SCOREP_Score_GroupId )i, m_threads );
+        m_groups[ i ] = new SCOREP_Score_Group( ( SCOREP_Score_GroupId )i, m_processes );
     }
 }
 
@@ -65,10 +65,11 @@ SCOREP_Score_Estimator::CalculateGroups()
     {
         SCOREP_Score_GroupId group = m_profile->GetGroup( region );
 
-        for ( uint64_t thread = 0; thread < m_threads; thread++ )
+        for ( uint64_t process = 0; process < m_processes; process++ )
         {
             uint64_t tbc    = 0;
-            uint64_t visits = m_profile->GetVisits( region, thread );
+            uint64_t visits = m_profile->GetVisits( region, process );
+            double   time   = m_profile->GetTime( region, process );
 
             if ( visits == 0 )
             {
@@ -80,8 +81,8 @@ SCOREP_Score_Estimator::CalculateGroups()
                 tbc += visits * ( m_enter + m_exit );
             }
 
-            m_groups[ group ]->AddRegion( tbc, m_profile->GetTime( region, thread ), thread );
-            m_groups[ SCOREP_SCORE_GROUP_ALL ]->AddRegion( tbc, m_profile->GetTime( region, thread ), thread );
+            m_groups[ group ]->AddRegion( tbc, time, process );
+            m_groups[ SCOREP_SCORE_GROUP_ALL ]->AddRegion( tbc, time, process );
         }
     }
 }
@@ -89,9 +90,20 @@ SCOREP_Score_Estimator::CalculateGroups()
 void
 SCOREP_Score_Estimator::Print()
 {
-    double total_time = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetTotalTime();
+    double   total_time = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetTotalTime();
+    uint64_t max_tbc    = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetMaxTBC();
+    uint64_t total_tbc  = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetTotalTBC();
 
-    cout << "flt \t type \t max_tbc \t time \t \% \t region" << endl;
+    cout << endl;
+    cout << "Estimated aggregate size of event trace (total_tbc):       "
+         << total_tbc << " bytes" << endl;
+    cout << "Estimated requirements for largest trace buffer (max_tbc): "
+         << max_tbc << " bytes" << endl;
+    cout << "(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes\n"
+         << " or reduce requirements using file listing names of USR regions to be filtered.)"
+         << endl << endl;
+
+    cout << "flt type         max_tbc         time      \% region" << endl;
     for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
     {
         m_groups[ i ]->Print( total_time );

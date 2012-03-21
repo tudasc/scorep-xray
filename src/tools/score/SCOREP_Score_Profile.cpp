@@ -39,8 +39,8 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cube_file )
     m_visits = m_cube->get_met( "visits" );
     m_time   = m_cube->get_met( "time" );
 
-    m_threads = m_cube->get_thrdv();
-    m_regions = m_cube->get_regv();
+    m_processes = m_cube->get_procv();
+    m_regions   = m_cube->get_regv();
 }
 
 SCOREP_Score_Profile::~SCOREP_Score_Profile()
@@ -49,11 +49,11 @@ SCOREP_Score_Profile::~SCOREP_Score_Profile()
 }
 
 double
-SCOREP_Score_Profile::GetTime( uint64_t region, uint64_t thread )
+SCOREP_Score_Profile::GetTime( uint64_t region, uint64_t process )
 {
     return m_cube->get_sev( m_time, CUBE_CALCULATE_EXCLUSIVE,
                             m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                            m_threads[ thread ], CUBE_CALCULATE_INCLUSIVE  );
+                            m_processes[ process ], CUBE_CALCULATE_INCLUSIVE  );
 }
 
 double
@@ -64,11 +64,11 @@ SCOREP_Score_Profile::GetTotalTime( uint64_t region )
 }
 
 uint64_t
-SCOREP_Score_Profile::GetVisits( uint64_t region, uint64_t thread )
+SCOREP_Score_Profile::GetVisits( uint64_t region, uint64_t process )
 {
     return m_cube->get_sev( m_visits, CUBE_CALCULATE_EXCLUSIVE,
                             m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                            m_threads[ thread ], CUBE_CALCULATE_INCLUSIVE ) + 0.5;
+                            m_processes[ process ], CUBE_CALCULATE_INCLUSIVE ) + 0.5;
 }
 
 uint64_t
@@ -82,12 +82,12 @@ uint64_t
 SCOREP_Score_Profile::GetMaxVisits( uint64_t region )
 {
     uint64_t max = 0;
-    uint64_t thread;
+    uint64_t process;
     uint64_t value;
 
-    for ( thread = 0; thread < GetNumberOfThreads(); thread++ )
+    for ( process = 0; process < GetNumberOfProcesses(); process++ )
     {
-        value = GetVisits( region, thread );
+        value = GetVisits( region, process );
         max   = value > max ? value : max;
     }
     return max;
@@ -106,9 +106,9 @@ SCOREP_Score_Profile::GetNumberOfRegions()
 }
 
 uint64_t
-SCOREP_Score_Profile::GetNumberOfThreads()
+SCOREP_Score_Profile::GetNumberOfProcesses()
 {
-    return m_threads.size();
+    return m_processes.size();
 }
 
 uint64_t
@@ -120,7 +120,7 @@ SCOREP_Score_Profile::GetNumberOfMetrics()
 void
 SCOREP_Score_Profile::Print()
 {
-    uint64_t region, thread;
+    uint64_t region, process;
 
     cout << "group \t max visits \t total visits \t total time \t region" << endl;
     for ( region = 0; region < GetNumberOfRegions(); region++ )

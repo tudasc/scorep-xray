@@ -41,11 +41,11 @@ public:
 
     uint64_t
     GetVisits( uint64_t region,
-               uint64_t thread );
+               uint64_t process );
 
     double
     GetTime( uint64_t region,
-             uint64_t thread );
+             uint64_t process );
 
     uint64_t
     GetTotalVisits( uint64_t region );
@@ -60,7 +60,7 @@ public:
     GetNumberOfRegions();
 
     uint64_t
-    GetNumberOfThreads();
+    GetNumberOfProcesses();
 
     uint64_t
     GetNumberOfMetrics();
@@ -78,11 +78,11 @@ public:
     HasParameter( uint64_t region );
 
 private:
-    cube::Cube*                m_cube;
-    cube::Metric*              m_visits;
-    cube::Metric*              m_time;
-    std::vector<cube::Thread*> m_threads;
-    std::vector<cube::Region*> m_regions;
+    cube::Cube*                 m_cube;
+    cube::Metric*               m_visits;
+    cube::Metric*               m_time;
+    std::vector<cube::Process*> m_processes;
+    std::vector<cube::Region*>  m_regions;
 };
 
 

@@ -62,7 +62,7 @@ private:
 
     // Number of definitions
     uint64_t m_regions;
-    uint64_t m_threads;
+    uint64_t m_processes;
 
     // Size of events
     uint32_t m_timestamp;

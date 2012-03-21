@@ -33,14 +33,14 @@ class SCOREP_Score_Group
 {
 public:
     SCOREP_Score_Group( SCOREP_Score_GroupId group,
-                        uint64_t             threads );
+                        uint64_t             processes );
     virtual
     ~SCOREP_Score_Group();
 
     void
     AddRegion( uint64_t tbc,
                double   time,
-               uint64_t thread );
+               uint64_t process );
 
     void
     Print( double total_time );
@@ -48,16 +48,19 @@ public:
     double
     GetTotalTime();
 
+    uint64_t
+    GetMaxTBC();
+
+    uint64_t
+    GetTotalTBC();
+
 protected:
     std::string
     get_group_name();
 
-    uint64_t
-    get_max_tbc();
-
 private:
     SCOREP_Score_GroupId m_group_id;
-    uint64_t             m_threads;
+    uint64_t             m_processes;
     uint64_t*            m_max_tbc;
     uint64_t             m_total_tbc;
     double               m_total_time;
