@@ -26,6 +26,7 @@
 #define SCOREP_SCORE_ESTIMATOR_H
 
 #include <SCOREP_Score_Profile.hpp>
+#include <SCOREP_Score_Group.hpp>
 
 class SCOREP_Score_Estimator
 {
@@ -33,6 +34,12 @@ public:
     SCOREP_Score_Estimator( SCOREP_Score_Profile* profile );
     virtual
     ~SCOREP_Score_Estimator();
+
+    void
+    CalculateGroups();
+
+    void
+    Print();
 
     void
     DumpEventSizes();
@@ -51,9 +58,11 @@ private:
 
 private:
     SCOREP_Score_Profile* m_profile;
+    SCOREP_Score_Group**  m_groups;
 
     // Number of definitions
     uint64_t m_regions;
+    uint64_t m_threads;
 
     // Size of events
     uint32_t m_timestamp;

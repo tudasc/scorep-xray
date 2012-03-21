@@ -27,6 +27,7 @@
 
 #include <string>
 #include <Cube.h>
+#include <SCOREP_Score_Types.hpp>
 
 class SCOREP_Score_Profile
 {
@@ -41,6 +42,10 @@ public:
     uint64_t
     GetVisits( uint64_t region,
                uint64_t thread );
+
+    double
+    GetTime( uint64_t region,
+             uint64_t thread );
 
     uint64_t
     GetTotalVisits( uint64_t region );
@@ -62,6 +67,15 @@ public:
 
     void
     Print();
+
+    SCOREP_Score_GroupId
+    GetGroup( uint64_t region );
+
+    bool
+    HasEnterExit( uint64_t region );
+
+    bool
+    HasParameter( uint64_t region );
 
 private:
     cube::Cube*                m_cube;

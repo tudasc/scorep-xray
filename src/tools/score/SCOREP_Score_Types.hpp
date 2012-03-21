@@ -15,26 +15,23 @@
  */
 
 /**
- * @status     alpha
- * @file       score.cxx
+ * @file       SCOREP_Score_Types.hpp
  * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
- * @brief      Implements the main function of the scorep-score tool.
+ * @brief      Defines types for the score tool.
  */
 
+#ifndef SCOREP_SCORE_TYPES_H
+#define SCOREP_SCORE_TYPES_H
 
-#include <config.h>
-#include <SCOREP_Score_Profile.hpp>
-#include <SCOREP_Score_Estimator.hpp>
-
-int
-main( int argc, char** argv )
+typedef enum
 {
-    SCOREP_Score_Profile profile( argv[ 1 ] );
-    profile.Print();
+    SCOREP_SCORE_GROUP_ALL = 0,
+    SCOREP_SCORE_GROUP_USR = 1,
+    SCOREP_SCORE_GROUP_MPI = 2,
+    SCOREP_SCORE_GROUP_OMP = 3,
 
-    SCOREP_Score_Estimator estimator( &profile );
-    estimator.DumpEventSizes();
+    SCOREP_SCORE_GROUP_NUM // Must stay the last entry
+} SCOREP_Score_GroupId;
 
-    return 0;
-}
+#endif // SCOREP_SCORE_TYPES_H

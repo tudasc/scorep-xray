@@ -26,6 +26,7 @@
 #include <config.h>
 #include <math.h>
 #include <SCOREP_Score_Estimator.hpp>
+#include <SCOREP_Score_Types.hpp>
 
 using namespace std;
 
@@ -33,16 +34,68 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
 {
     m_profile = profile;
     m_regions = profile->GetNumberOfRegions();
+    m_threads = profile->GetNumberOfThreads();
 
     m_timestamp = 8;
     m_dense     = calculate_dense_metric();
 
     m_enter = calculate_enter();
     m_exit  = calculate_exit();
+
+    m_groups = ( SCOREP_Score_Group** )malloc( SCOREP_SCORE_GROUP_NUM * sizeof( SCOREP_Score_Group* ) );
+    for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
+    {
+        m_groups[ i ] = new SCOREP_Score_Group( ( SCOREP_Score_GroupId )i, m_threads );
+    }
 }
 
 SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
 {
+    for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
+    {
+        delete ( m_groups[ i ] );
+    }
+    free( m_groups );
+}
+
+void
+SCOREP_Score_Estimator::CalculateGroups()
+{
+    for ( uint64_t region = 0; region < m_regions; region++ )
+    {
+        SCOREP_Score_GroupId group = m_profile->GetGroup( region );
+
+        for ( uint64_t thread = 0; thread < m_threads; thread++ )
+        {
+            uint64_t tbc    = 0;
+            uint64_t visits = m_profile->GetVisits( region, thread );
+
+            if ( visits == 0 )
+            {
+                continue;
+            }
+
+            if ( m_profile->HasEnterExit( region ) )
+            {
+                tbc += visits * ( m_enter + m_exit );
+            }
+
+            m_groups[ group ]->AddRegion( tbc, m_profile->GetTime( region, thread ), thread );
+            m_groups[ SCOREP_SCORE_GROUP_ALL ]->AddRegion( tbc, m_profile->GetTime( region, thread ), thread );
+        }
+    }
+}
+
+void
+SCOREP_Score_Estimator::Print()
+{
+    double total_time = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetTotalTime();
+
+    cout << "flt \t type \t max_tbc \t time \t \% \t region" << endl;
+    for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
+    {
+        m_groups[ i ]->Print( total_time );
+    }
 }
 
 void

@@ -49,6 +49,14 @@ SCOREP_Score_Profile::~SCOREP_Score_Profile()
 }
 
 double
+SCOREP_Score_Profile::GetTime( uint64_t region, uint64_t thread )
+{
+    return m_cube->get_sev( m_time, CUBE_CALCULATE_EXCLUSIVE,
+                            m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
+                            m_threads[ thread ], CUBE_CALCULATE_INCLUSIVE  );
+}
+
+double
 SCOREP_Score_Profile::GetTotalTime( uint64_t region )
 {
     return m_cube->get_sev( m_time, CUBE_CALCULATE_EXCLUSIVE,
@@ -114,13 +122,58 @@ SCOREP_Score_Profile::Print()
 {
     uint64_t region, thread;
 
-    cout << "Region \t max visits \t total visits \t total time" << endl;
+    cout << "group \t max visits \t total visits \t total time \t region" << endl;
     for ( region = 0; region < GetNumberOfRegions(); region++ )
     {
-        cout << GetRegionName( region );
+        cout << GetGroup( region );
         cout << "\t" << GetMaxVisits( region );
         cout << "\t" << GetTotalVisits( region );
         cout << "\t" << GetTotalTime( region );
+        cout << "\t" << GetRegionName( region );
         cout << endl;
     }
+}
+
+SCOREP_Score_GroupId
+SCOREP_Score_Profile::GetGroup( uint64_t region )
+{
+    string name = GetRegionName( region );
+    if ( name.substr( 0, 4 ) == "MPI_" )
+    {
+        return SCOREP_SCORE_GROUP_MPI;
+    }
+    if ( name.substr( 0, 6 ) == "!$omp " )
+    {
+        return SCOREP_SCORE_GROUP_OMP;
+    }
+    else
+    {
+        return SCOREP_SCORE_GROUP_USR;
+    }
+}
+
+bool
+SCOREP_Score_Profile::HasEnterExit( uint64_t region )
+{
+    string name = GetRegionName( region );
+    if ( name.find( '=', 0 ) == string::npos )
+    {
+        return true;
+    }
+    return false; // Is a parameter region which has no enter/exit
+}
+
+bool
+SCOREP_Score_Profile::HasParameter( uint64_t region )
+{
+    string name = GetRegionName( region );
+    if ( name.find( '=', 0 ) == string::npos )
+    {
+        return false;
+    }
+    if ( name.substr( 0, 9 ) == "instance=" )
+    {
+        return false;                                        // Dynamic region
+    }
+    return true;
 }
