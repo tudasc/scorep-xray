@@ -68,7 +68,7 @@ public:
     void
     Print();
 
-    SCOREP_Score_GroupId
+    SCOREP_Score_Type
     GetGroup( uint64_t region );
 
     bool

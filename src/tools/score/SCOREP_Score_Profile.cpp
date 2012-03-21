@@ -134,21 +134,21 @@ SCOREP_Score_Profile::Print()
     }
 }
 
-SCOREP_Score_GroupId
+SCOREP_Score_Type
 SCOREP_Score_Profile::GetGroup( uint64_t region )
 {
     string name = GetRegionName( region );
     if ( name.substr( 0, 4 ) == "MPI_" )
     {
-        return SCOREP_SCORE_GROUP_MPI;
+        return SCOREP_SCORE_TYPE_COM;
     }
     if ( name.substr( 0, 6 ) == "!$omp " )
     {
-        return SCOREP_SCORE_GROUP_OMP;
+        return SCOREP_SCORE_TYPE_OMP;
     }
     else
     {
-        return SCOREP_SCORE_GROUP_USR;
+        return SCOREP_SCORE_TYPE_USR;
     }
 }
 

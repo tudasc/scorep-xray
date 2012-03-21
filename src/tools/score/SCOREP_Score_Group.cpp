@@ -28,17 +28,20 @@
 #include <iostream>
 #include <iomanip>
 #include <SCOREP_Score_Group.hpp>
+#include <SCOREP_Score_Types.hpp>
 
 using namespace std;
 
-SCOREP_Score_Group::SCOREP_Score_Group( SCOREP_Score_GroupId group,
-                                        uint64_t             processes )
+SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
+                                        uint64_t processes,
+                                        string   name )
 {
-    m_group_id   = group;
+    m_type       = type;
     m_processes  = processes;
     m_max_tbc    = ( uint64_t* )calloc( processes, sizeof( uint64_t ) );
     m_total_tbc  = 0;
     m_total_time = 0;
+    m_name       = name;
 }
 
 
@@ -64,11 +67,11 @@ SCOREP_Score_Group::Print( double total_time )
     if ( m_total_tbc > 0 )
     {
         cout << "  " << right
-             << setw( 6 ) << get_group_name()
+             << setw( 6 ) << SCOREP_Score_GetTypeName( m_type )
              << setw( 16 ) << GetMaxTBC()
              << setw( 13 ) << setprecision( 2 ) << m_total_time
              << setw( 7 )  << setprecision( 1 ) << 100 / total_time * m_total_time
-             << left << " " << get_group_name() << endl;
+             << left << " " << m_name << endl;
     }
 }
 
@@ -93,21 +96,4 @@ uint64_t
 SCOREP_Score_Group::GetTotalTBC()
 {
     return m_total_tbc;
-}
-
-string
-SCOREP_Score_Group::get_group_name()
-{
-    switch ( m_group_id )
-    {
-        case SCOREP_SCORE_GROUP_ALL:
-            return "ALL";
-        case SCOREP_SCORE_GROUP_USR:
-            return "USR";
-        case SCOREP_SCORE_GROUP_MPI:
-            return "MPI";
-        case SCOREP_SCORE_GROUP_OMP:
-            return "OMP";
-    }
-    return "UNKNOWN";
 }

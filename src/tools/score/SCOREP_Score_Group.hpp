@@ -32,8 +32,9 @@
 class SCOREP_Score_Group
 {
 public:
-    SCOREP_Score_Group( SCOREP_Score_GroupId group,
-                        uint64_t             processes );
+    SCOREP_Score_Group( uint64_t    type,
+                        uint64_t    processes,
+                        std::string name );
     virtual
     ~SCOREP_Score_Group();
 
@@ -54,16 +55,13 @@ public:
     uint64_t
     GetTotalTBC();
 
-protected:
-    std::string
-    get_group_name();
-
 private:
-    SCOREP_Score_GroupId m_group_id;
-    uint64_t             m_processes;
-    uint64_t*            m_max_tbc;
-    uint64_t             m_total_tbc;
-    double               m_total_time;
+    uint64_t    m_type;
+    uint64_t    m_processes;
+    uint64_t*   m_max_tbc;
+    uint64_t    m_total_tbc;
+    double      m_total_time;
+    std::string m_name;
 };
 
 #endif

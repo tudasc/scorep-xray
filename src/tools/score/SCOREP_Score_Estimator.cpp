@@ -32,9 +32,9 @@ using namespace std;
 
 SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
 {
-    m_profile   = profile;
-    m_regions   = profile->GetNumberOfRegions();
-    m_processes = profile->GetNumberOfProcesses();
+    m_profile     = profile;
+    m_region_num  = profile->GetNumberOfRegions();
+    m_process_num = profile->GetNumberOfProcesses();
 
     m_timestamp = 8;
     m_dense     = calculate_dense_metric();
@@ -42,16 +42,18 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
     m_enter = calculate_enter();
     m_exit  = calculate_exit();
 
-    m_groups = ( SCOREP_Score_Group** )malloc( SCOREP_SCORE_GROUP_NUM * sizeof( SCOREP_Score_Group* ) );
-    for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
+    m_regions = NULL;
+    m_groups  = ( SCOREP_Score_Group** )malloc( SCOREP_SCORE_TYPE_NUM * sizeof( SCOREP_Score_Group* ) );
+    for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        m_groups[ i ] = new SCOREP_Score_Group( ( SCOREP_Score_GroupId )i, m_processes );
+        m_groups[ i ] = new SCOREP_Score_Group( i, m_process_num,
+                                                SCOREP_Score_GetTypeName( i ) );
     }
 }
 
 SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
 {
-    for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
+    for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
         delete ( m_groups[ i ] );
     }
@@ -59,13 +61,24 @@ SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
 }
 
 void
-SCOREP_Score_Estimator::CalculateGroups()
+SCOREP_Score_Estimator::Calculate( bool show_regions )
 {
-    for ( uint64_t region = 0; region < m_regions; region++ )
+    if ( show_regions )
     {
-        SCOREP_Score_GroupId group = m_profile->GetGroup( region );
+        m_regions = ( SCOREP_Score_Group** )malloc( m_region_num * sizeof( SCOREP_Score_Group* ) );
+        for ( uint64_t region = 0; region < m_region_num; region++ )
+        {
+            m_regions[ region ] = new SCOREP_Score_Group( m_profile->GetGroup( region ),
+                                                          m_process_num,
+                                                          m_profile->GetRegionName( region ) );
+        }
+    }
 
-        for ( uint64_t process = 0; process < m_processes; process++ )
+    for ( uint64_t region = 0; region < m_region_num; region++ )
+    {
+        uint64_t group = m_profile->GetGroup( region );
+
+        for ( uint64_t process = 0; process < m_process_num; process++ )
         {
             uint64_t tbc    = 0;
             uint64_t visits = m_profile->GetVisits( region, process );
@@ -82,17 +95,22 @@ SCOREP_Score_Estimator::CalculateGroups()
             }
 
             m_groups[ group ]->AddRegion( tbc, time, process );
-            m_groups[ SCOREP_SCORE_GROUP_ALL ]->AddRegion( tbc, time, process );
+            m_groups[ SCOREP_SCORE_TYPE_ALL ]->AddRegion( tbc, time, process );
+
+            if ( show_regions )
+            {
+                m_regions[ region ]->AddRegion( tbc, time, process );
+            }
         }
     }
 }
 
 void
-SCOREP_Score_Estimator::Print()
+SCOREP_Score_Estimator::PrintGroups()
 {
-    double   total_time = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetTotalTime();
-    uint64_t max_tbc    = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetMaxTBC();
-    uint64_t total_tbc  = m_groups[ SCOREP_SCORE_GROUP_ALL ]->GetTotalTBC();
+    double   total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
+    uint64_t max_tbc    = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetMaxTBC();
+    uint64_t total_tbc  = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTBC();
 
     cout << endl;
     cout << "Estimated aggregate size of event trace (total_tbc):       "
@@ -104,9 +122,20 @@ SCOREP_Score_Estimator::Print()
          << endl << endl;
 
     cout << "flt type         max_tbc         time      \% region" << endl;
-    for ( int i = 0; i < SCOREP_SCORE_GROUP_NUM; i++ )
+    for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
         m_groups[ i ]->Print( total_time );
+    }
+}
+
+void
+SCOREP_Score_Estimator::PrintRegions()
+{
+    double total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
+    cout << endl;
+    for ( int i = 0; i < m_region_num; i++ )
+    {
+        m_regions[ i ]->Print( total_time );
     }
 }
 
@@ -121,17 +150,17 @@ SCOREP_Score_Estimator::DumpEventSizes()
 uint32_t
 SCOREP_Score_Estimator::calculate_enter()
 {
-    return m_timestamp +                      // timestamp
-           get_compressed_size( m_regions ) + // region handle
-           m_dense;                           // metrics
+    return m_timestamp +                         // timestamp
+           get_compressed_size( m_region_num ) + // region handle
+           m_dense;                              // metrics
 }
 
 uint32_t
 SCOREP_Score_Estimator::calculate_exit()
 {
-    return m_timestamp +                      // timestamp
-           get_compressed_size( m_regions ) + // region handle
-           m_dense;                           // metrics
+    return m_timestamp +                         // timestamp
+           get_compressed_size( m_region_num ) + // region handle
+           m_dense;                              // metrics
 }
 
 uint32_t

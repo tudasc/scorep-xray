@@ -36,10 +36,11 @@ public:
     ~SCOREP_Score_Estimator();
 
     void
-    CalculateGroups();
-
+    Calculate( bool show_regions );
     void
-    Print();
+    PrintGroups();
+    void
+    PrintRegions();
 
     void
     DumpEventSizes();
@@ -59,10 +60,11 @@ private:
 private:
     SCOREP_Score_Profile* m_profile;
     SCOREP_Score_Group**  m_groups;
+    SCOREP_Score_Group**  m_regions;
 
     // Number of definitions
-    uint64_t m_regions;
-    uint64_t m_processes;
+    uint64_t m_region_num;
+    uint64_t m_process_num;
 
     // Size of events
     uint32_t m_timestamp;

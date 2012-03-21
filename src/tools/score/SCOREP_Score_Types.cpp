@@ -15,35 +15,29 @@
  */
 
 /**
+ * @status     alpha
  * @file       SCOREP_Score_Types.hpp
  * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
- * @brief      Defines types for the score tool.
+ * @brief      Implements conversion for types for the score tool.
  */
 
-#ifndef SCOREP_SCORE_TYPES_H
-#define SCOREP_SCORE_TYPES_H
+#include <config.h>
+#include <SCOREP_Score_Types.hpp>
 
-#include <string>
-#include <stdint.h>
+using namespace std;
 
-#define SCOREP_SCORE_TYPES \
-    SCOREP_SCORE_TYPE( ALL ) \
-    SCOREP_SCORE_TYPE( USR ) \
-    SCOREP_SCORE_TYPE( COM ) \
-    SCOREP_SCORE_TYPE( OMP )
-
-typedef enum
+static string scorep_score_type_names[] =
 {
-    #define SCOREP_SCORE_TYPE( type ) SCOREP_SCORE_TYPE_ ## type,
+     #define SCOREP_SCORE_TYPE( type ) #type,
     SCOREP_SCORE_TYPES
-    #undef SCOREP_SCORE_TYPE
-} SCOREP_Score_Type;
+     #undef SCOREP_SCORE_TYPE
+};
 
-extern const uint64_t SCOREP_SCORE_TYPE_NUM;
+const uint64_t SCOREP_SCORE_TYPE_NUM = sizeof( scorep_score_type_names ) / sizeof( string );
 
-std::string
-SCOREP_Score_GetTypeName( uint64_t type );
-
-
-#endif // SCOREP_SCORE_TYPES_H
+string
+SCOREP_Score_GetTypeName( uint64_t type )
+{
+    return scorep_score_type_names[ type ];
+}
