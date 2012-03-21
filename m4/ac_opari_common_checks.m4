@@ -117,7 +117,7 @@ AM_CONDITIONAL([OPENMP_SUPPORTED],
                [test "x${ac_cv_prog_c_openmp}" != "xunsupported" && test "x${enable_openmp}" != "xno"])
 
 if test "x${ac_cv_prog_c_openmp}" = "xunsupported"; then
-    AC_MSG_WARN([no suitbale OpenMP compilers found. POMP2 dummy lib will not be build.])
+    AC_MSG_WARN([no suitable OpenMP compilers found. POMP2 dummy lib will not be build.])
 else
     AC_LANG_PUSH([C++])
     AC_OPENMP
