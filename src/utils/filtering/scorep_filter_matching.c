@@ -31,9 +31,9 @@
 #include <config.h>
 #include <fnmatch.h>
 #include <ctype.h>
+#include <malloc.h>
 
 #include <scorep_utility/SCOREP_Utils.h>
-#include <SCOREP_Memory.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
 
@@ -81,7 +81,7 @@ scorep_filter_rule_t* scorep_filter_function_rules_head = NULL;
  */
 scorep_filter_rule_t* scorep_filter_function_rules_tail = NULL;
 
-bool                  scorep_filter_is_enabled = false;
+bool scorep_filter_is_enabled = false;
 
 /* **************************************************************************************
    Rule representation manipulation functions
@@ -101,8 +101,7 @@ scorep_filter_mangle_pattern( const char* pattern )
 {
     size_t i;
     size_t len    = strlen( pattern );
-    char*  result = ( char* )SCOREP_Memory_AllocForMisc( len + 2 );
-    strcpy( result, pattern );
+    char*  result = SCOREP_CStr_dup( pattern );
 
     /* Put everything to lower or upper case */
     char* test_case = STR( FC_FUNC( x, X ) );
@@ -139,12 +138,11 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 
     /* Create new rule entry */
     scorep_filter_rule_t* new_rule = ( scorep_filter_rule_t* )
-                                     SCOREP_Memory_AllocForMisc( sizeof( scorep_filter_rule_t ) );
+                                     malloc( sizeof( scorep_filter_rule_t ) );
 
     if ( new_rule == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocate memory for filter rule." );
+        SCOREP_ERROR_POSIX( "Failed to allocate memory for filter rule." );
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
@@ -177,12 +175,11 @@ scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fort
 
     /* Create new rule entry */
     scorep_filter_rule_t* new_rule = ( scorep_filter_rule_t* )
-                                     SCOREP_Memory_AllocForMisc( sizeof( scorep_filter_rule_t ) );
+                                     malloc( sizeof( scorep_filter_rule_t ) );
 
     if ( new_rule == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocate memory for filter rule." );
+        SCOREP_ERROR_POSIX( "Failed to allocate memory for filter rule." );
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
@@ -213,26 +210,28 @@ scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fort
 }
 
 void
-scorep_filter_free_rules()
+SCOREP_Filter_FreeRules()
 {
-    /* Free function rules.
-       Only the strings are allocated via malloc.
-       The struct itself is free if the memory management is finalized. */
+    /* Free function rules. */
     scorep_filter_rule_t* current_rule = scorep_filter_function_rules_head;
+    scorep_filter_rule_t* deleted_rule;
     while ( current_rule != NULL )
     {
         free( current_rule->pattern );
+        free( current_rule->pattern2 );
+        deleted_rule = current_rule;
         current_rule = current_rule->next;
+        free( deleted_rule );
     }
 
-    /* Free file rules.
-       Only the strings are allocated via malloc.
-       The struct itself is free if the memory management is finalized. */
+    /* Free file rules. */
     current_rule = scorep_filter_file_rules_head;
     while ( current_rule != NULL )
     {
         free( current_rule->pattern );
+        deleted_rule = current_rule;
         current_rule = current_rule->next;
+        free( deleted_rule );
     }
 }
 

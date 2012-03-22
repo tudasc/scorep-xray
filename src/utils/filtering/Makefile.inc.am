@@ -2,7 +2,7 @@
 
 # This file is part of the Score-P software (http://www.score-p.org)
 #
-# Copyright (c) 2009-2011,
+# Copyright (c) 2009-2012,
 #    RWTH Aachen University, Germany
 #    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 #    Technische Universitaet Dresden, Germany
@@ -13,17 +13,17 @@
 #
 # See the COPYING file in the package base directory for details.
 
-## file       src/utils/Makefile.inc.am
+## file       src/utils/filtering/Makefile.inc.am
 
-noinst_LTLIBRARIES += libscorep_utils.la
+noinst_LTLIBRARIES += libscorep_filter.la
 
-libscorep_utils_la_SOURCES = \
-    $(SRC_ROOT)src/utils/bitstring/SCOREP_Bitstring.c       \
-    $(SRC_ROOT)src/utils/include/SCOREP_Bitstring.h
+libscorep_filter_la_SOURCES = \
+    $(SRC_ROOT)src/utils/include/SCOREP_Filter.h            \
+    $(SRC_ROOT)src/utils/filtering/scorep_filter_parser.c   \
+    $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.h \
+    $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.c
 
-libscorep_utils_la_CPPFLAGS = \
+libscorep_filter_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
-    -I$(INC_ROOT)src/utils/include
-
-
-
+    -I$(INC_ROOT)src/utils/include \
+    -I$(INC_ROOT)src/utils/filtering

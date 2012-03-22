@@ -10,6 +10,7 @@ SCOREP_USER_FORTRAN_FLAGS =                     \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
+    -I$(INC_ROOT)src/utils/include              \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/filtering      \
     -I$(PUBLIC_INC_DIR)                         \
@@ -35,6 +36,7 @@ SCOREP_USER_C_FLAGS =                           \
     $(AM_CPPFLAGS)                              \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/adapters/user              \
+    -I$(INC_ROOT)src/utils/include              \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/filtering      \
     -I$(PUBLIC_INC_DIR)                         \

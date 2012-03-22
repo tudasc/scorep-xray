@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,25 +14,20 @@
  *
  */
 
-#ifndef SCOREP_FILTER_H
-#define SCOREP_FILTER_H
+#ifndef SCOREP_FILTER_INIT_H
+#define SCOREP_FILTER_INIT_H
 
 /**
- * @file       SCOREP_Filter.h
+ * @file       SCOREP_Filter_Init.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status alpha
  *
- * The interface to the filtering system.  The file that contains the filter
- * definitions can be set via the envirionment variable
- * SCOREP_FILTERING_FILE. If no file is specified or the given file is not
- * found, filtering is disabled.
+ * Implements the filter initialization interface for the filtering system.
  */
 
-#include <scorep_utility/SCOREP_Error.h>
-
 /**
-   Initializes the filterign system and parses the configuration file.
+   Initializes the filtering system and parses the configuration file.
  */
 void
 SCOREP_Filter_Initialize();
@@ -43,21 +38,10 @@ SCOREP_Filter_Initialize();
 SCOREP_Error_Code
 SCOREP_Filter_Register();
 
+/**
+   Finalizes the filtering system and frees all memory.
+ */
 void
 SCOREP_Filter_Finalize();
 
-void
-SCOREP_Filter_Enable();
-
-void
-SCOREP_Filter_Disable();
-
-bool
-SCOREP_Filter_IsEnabled();
-
-bool
-SCOREP_Filter_Match( const char* file_name,
-                     const char* function_name,
-                     bool        use_fortran );
-
-#endif // SCOREP_FILTER_H
+#endif

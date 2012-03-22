@@ -1,4 +1,5 @@
 ## -*- mode: makefile -*-
+include ../src/utils/filtering/Makefile.inc.am
 
 ## include tests
 #include ../test/exception/Makefile.inc.am

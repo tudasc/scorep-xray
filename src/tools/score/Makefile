@@ -1,8 +1,12 @@
 CXX = g++
 
-INC = -I/home/zam/lorenz/local/cube4/trunk/include/cube -I.
+UTIL_INC = -I../../../vendor/otf2/vendor/utility/include
+UTIL_LIB = -L../../../gcc-mpich2/vendor/otf2/vendor/utility/build-backend/.libs \
+           -lscorep_utilities
 
-LIBS = -L/home/zam/lorenz/local/cube4/trunk/lib -lcube4 -lz -lm
+INC = -I/home/zam/lorenz/local/cube4/trunk/include/cube -I. $(UTIL_INC)
+
+LIBS = -L/home/zam/lorenz/local/cube4/trunk/lib -lcube4 -lz -lm $(UTIL_LIB)
 
 OBJS = SCOREP_Score_Profile.o \
        scorep_score.o \
@@ -10,8 +14,12 @@ OBJS = SCOREP_Score_Profile.o \
        SCOREP_Score_Group.o \
        SCOREP_Score_Types.o
 
+UTIL_INC = -I../../../vendor/otf2/vendor/utility/include
+UTIL_LIB = -L../../../gcc-mpich2/vendor/otf2/vendor/utility/build-backend/.libs \
+           -lscorep_utilities
+
 all: $(OBJS)
 	$(CXX) -o scorep-score $(OBJS) $(LIBS)
 
-%.o: %.cpp Makefile
+%.o: %.cpp *.hpp Makefile
 	$(CXX) -c $(INC) $<

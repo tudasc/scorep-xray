@@ -31,6 +31,7 @@
     SCOREP_SCORE_TYPE( ALL ) \
     SCOREP_SCORE_TYPE( USR ) \
     SCOREP_SCORE_TYPE( COM ) \
+    SCOREP_SCORE_TYPE( MPI ) \
     SCOREP_SCORE_TYPE( OMP )
 
 typedef enum

@@ -140,7 +140,7 @@ SCOREP_Score_Profile::GetGroup( uint64_t region )
     string name = GetRegionName( region );
     if ( name.substr( 0, 4 ) == "MPI_" )
     {
-        return SCOREP_SCORE_TYPE_COM;
+        return SCOREP_SCORE_TYPE_MPI;
     }
     if ( name.substr( 0, 6 ) == "!$omp " )
     {

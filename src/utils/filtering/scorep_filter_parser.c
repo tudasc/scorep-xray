@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -27,7 +27,6 @@
 #include <config.h>
 
 #include <scorep_utility/SCOREP_Utils.h>
-#include <SCOREP_Config.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
 
@@ -98,27 +97,6 @@ typedef int scorep_filter_parse_modes;
 #define SCOREP_FILTER_MODE_BASE( mode ) \
     ( mode & SCOREP_FILTER_PARSE_BASE )
 
-/**
- * Contains the file name of the filter file. The value is set in the configuration
- * system through the variable SCOREP_FILTERING_FILE
- */
-static char* scorep_filter_file_name = NULL;
-
-/**
-   Array of configuration variables for filtering tracing.
- */
-SCOREP_ConfigVariable scorep_filter_configs[] = {
-    {
-        "file",
-        SCOREP_CONFIG_TYPE_STRING,
-        &scorep_filter_file_name,
-        NULL,
-        "",
-        "A file name which contain the filter rules",
-        ""
-    },
-    SCOREP_CONFIG_TERMINATOR
-};
 
 /* **************************************************************************************
    Local helper functions
@@ -301,27 +279,36 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
  * @returns SCOREP_SUCCESS if the file was successfully parsed. Else an error code is
  *          returned.
  */
-static SCOREP_Error_Code
-scorep_filter_parse_file( FILE* file )
+SCOREP_Error_Code
+SCOREP_Filter_ParseFile( char* file_name )
 {
-    size_t                    buffer_size  = 0;
-    char*                     buffer       = NULL;
-    size_t                    pos          = 0;
-    size_t                    length       = 0;
-    size_t                    token_start  = 0;
-    scorep_filter_parse_modes mode         = SCOREP_FILTER_PARSE_START;
-    SCOREP_Error_Code         return_value = SCOREP_SUCCESS;
+    FILE*                     filter_file = NULL;
+    size_t                    buffer_size = 0;
+    char*                     buffer      = NULL;
+    size_t                    pos         = 0;
+    size_t                    length      = 0;
+    size_t                    token_start = 0;
+    scorep_filter_parse_modes mode        = SCOREP_FILTER_PARSE_START;
+    SCOREP_Error_Code         err         = SCOREP_SUCCESS;
 
     /* Validity assertions */
-    assert( file );
+    assert( file_name );
+
+    /* Open configuration file */
+    filter_file = fopen( file_name, "r" );
+    if ( filter_file == NULL )
+    {
+        SCOREP_ERROR_POSIX(  "Unable to open filter specification file" );
+        return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
+    }
 
     /* Read file line by line */
-    while ( !feof( file ) )
+    while ( !feof( filter_file ) )
     {
-        SCOREP_Error_Code err = SCOREP_IO_GetLine( &buffer, &buffer_size, file );
+        err = SCOREP_IO_GetLine( &buffer, &buffer_size, filter_file );
         if ( ( err != SCOREP_SUCCESS ) && ( err != SCOREP_ERROR_END_OF_BUFFER ) )
         {
-            return err;
+            goto cleanup;
         }
         length = strlen( buffer );
         if ( length == 0 )
@@ -352,8 +339,8 @@ scorep_filter_parse_file( FILE* file )
         {
             SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
                           "Escaping line breaks is not supported." );
-            free( buffer );
-            return SCOREP_ERROR_PARSE_SYNTAX;
+            err = SCOREP_ERROR_PARSE_SYNTAX;
+            goto cleanup;
         }
 
         /* Tokenize:
@@ -370,12 +357,11 @@ scorep_filter_parse_file( FILE* file )
                    ( ( pos > 0 ) && ( buffer[ pos - 1 ] != '\\' ) ) ) ) // Check if whitespace is escaped
             {
                 buffer[ pos ] = '\0';
-                return_value  = scorep_filter_process_token( &buffer[ token_start ],
+                err           = scorep_filter_process_token( &buffer[ token_start ],
                                                              &mode );
-                if ( return_value != SCOREP_SUCCESS )
+                if ( err != SCOREP_SUCCESS )
                 {
-                    free( buffer );
-                    return return_value;
+                    goto cleanup;
                 }
                 token_start = pos + 1;
             }
@@ -383,13 +369,18 @@ scorep_filter_parse_file( FILE* file )
         }
     }
 
+cleanup:
+    if ( filter_file )
+    {
+        fclose( filter_file );
+    }
     free( buffer );
     return SCOREP_SUCCESS;
 }
 
 
 /* **************************************************************************************
-   Initialization of selective tracing
+   Initialization of filtering system
 ****************************************************************************************/
 
 void
@@ -408,72 +399,4 @@ bool
 SCOREP_Filter_IsEnabled()
 {
     return scorep_filter_is_enabled;
-}
-
-/**
-   Initializes the filterign system and parses the configuration file.
- */
-void
-SCOREP_Filter_Initialize()
-{
-    FILE* filter_file = NULL;
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Initialize selective tracing" );
-
-    /* Check whether a configuraion file name was specified */
-    if ( scorep_filter_file_name == NULL || *scorep_filter_file_name == '\0' )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "No configuration file for filtering specified.\n"
-                             "Disable filtering." );
-        return;
-    }
-
-    /* Open configuration file */
-    filter_file = fopen( scorep_filter_file_name, "r" );
-    if ( filter_file == NULL )
-    {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "Unable to open configuration file for filtering.\n"
-                             "Disable filtering." );
-        return;
-    }
-
-    /* Parse configuration file */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Reading filter configuration file %s.",
-                         scorep_filter_file_name );
-
-    SCOREP_Error_Code err = scorep_filter_parse_file( filter_file );
-    if ( err != SCOREP_SUCCESS )
-    {
-        SCOREP_ERROR( err,
-                      "Error while parsing filter file.\n"
-                      "Disable filtering." );
-        fclose( filter_file );
-        return;
-    }
-
-    SCOREP_Filter_Enable();
-
-    /* Clean up */
-    fclose( filter_file );
-}
-
-/**
-   Registers the config variables for filtering.
- */
-SCOREP_Error_Code
-SCOREP_Filter_Register()
-{
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Register config variables for filtering system" );
-    return SCOREP_ConfigRegister( "filtering", scorep_filter_configs );
-}
-
-void
-SCOREP_Filter_Finalize()
-{
-    scorep_filter_free_rules();
 }

@@ -61,6 +61,7 @@ libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
     $(AM_CPPFLAGS)                                        \
     -I$(INC_ROOT)src/adapters/include                     \
     -I$(INC_ROOT)src/adapters/pomp                        \
+    -I$(INC_ROOT)src/utils/include                        \
     -I$(INC_ROOT)src/measurement/include                  \
     -I$(INC_ROOT)src/measurement/filtering                \
     -I$(PUBLIC_INC_DIR)                                   \
@@ -134,6 +135,7 @@ libscorep_adapter_pomp_omp_la_CPPFLAGS =                  \
     $(AM_CPPFLAGS)                                        \
     -I$(INC_ROOT)src/adapters/include                     \
     -I$(INC_ROOT)src/adapters/pomp                        \
+    -I$(INC_ROOT)src/utils/include                        \
     -I$(INC_ROOT)src/measurement/include                  \
     -I$(INC_ROOT)src/measurement/filtering                \
     -I$(PUBLIC_INC_DIR)                                   \
