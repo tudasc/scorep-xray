@@ -169,15 +169,14 @@ AC_MSG_RESULT([$scorep_timer_gettimeofday_available])
 AC_DEFUN([SCOREP_TIMER_INTEL_MMTIMER_AVAILABLE],[
 scorep_timer_intel_mmtimer_available="no"
 # cannot check for file existence when cross compiling
-if test "x${cross_compiling}" = "xno"; then
-    mmtimer_header_available="no"
-    AC_CHECK_HEADERS([mmtimer.h], [mmtimer_header_available="yes"],
-        [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes"],
-            [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes"])])])
-    if test "x${mmtimer_header_available}" = "xyes"; then
-        AC_CHECK_FILE([/dev/mmtimer], [scorep_timer_intel_mmtimer_available="yes"])
-    fi
-fi
+AS_IF([test "x${cross_compiling}" = "xno"],
+      [mmtimer_header_available="no"
+       AC_CHECK_HEADERS([mmtimer.h], [mmtimer_header_available="yes"],
+                        [AC_CHECK_HEADERS([linux/mmtimer.h], [mmtimer_header_available="yes"],
+                                          [AC_CHECK_HEADERS([sn/mmtimer.h], [mmtimer_header_available="yes"])])])
+       AS_IF([test "x${mmtimer_header_available}" = "xyes"],
+             [AS_IF([test -r /dev/mmtimer], [scorep_timer_intel_mmtimer_available="yes"])])])
+
 AC_MSG_CHECKING([for intel_mmtimer timer])
 AC_MSG_RESULT([$scorep_timer_intel_mmtimer_available])
 ])
