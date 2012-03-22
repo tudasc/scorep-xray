@@ -38,7 +38,7 @@ libscorep_adapter_compiler_la_SOURCES = \
 
 if SCOREP_COMPILER_INTEL
 if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 endif
 if HAVE_DEMANGLE
 libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
@@ -78,7 +78,7 @@ endif
 
 if SCOREP_COMPILER_GNU
 if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 endif
 if HAVE_DEMANGLE
 libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
