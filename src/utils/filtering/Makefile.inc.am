@@ -24,6 +24,8 @@ libscorep_filter_la_SOURCES = \
     $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.c
 
 libscorep_filter_la_CPPFLAGS = \
-    $(common_libscorep_cppflags) \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_UTIL) \
     -I$(INC_ROOT)src/utils/include \
     -I$(INC_ROOT)src/utils/filtering
