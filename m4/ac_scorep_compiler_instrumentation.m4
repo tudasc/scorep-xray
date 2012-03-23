@@ -34,9 +34,11 @@ AS_IF([test "x${scorep_compiler_gnu}" = "xyes" || test "x${scorep_compiler_intel
                      AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
                      result="no, neither libbfd nor nm are available."],
                     [result="yes, using nm"])])],
-      [test "x${scorep_compiler_sun}" = "xyes"],
-      [result="partially, studio compiler supports just Fortran"],
-      [result="yes"])
+      [# non-gnu, non-intel compilers
+       AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
+       AS_IF([test "x${scorep_compiler_sun}" = "xyes"],
+             [result="partially, studio compiler supports just Fortran"],
+             [result="yes"])])
 
 AC_SCOREP_SUMMARY([compiler instrumentation], [${result}])
 
