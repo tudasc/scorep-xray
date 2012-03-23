@@ -34,8 +34,9 @@ print_help()
 {
     cout << "Usage: scorep-score <profile> [options]" << endl;
     cout << "Options:\n"
-         << " -r   Show all regions.\n"
-         << " -h   Show this help and exit.\n"
+         << " -r          Show all regions.\n"
+         << " -h          Show this help and exit.\n"
+         << " -f <filter> Shows the result with the filter applied.\n"
          << endl;
 }
 
@@ -43,6 +44,7 @@ int
 main( int argc, char** argv )
 {
     string file_name;
+    string filter_file;
     bool   show_regions = false;
 
     //--------------------------------------- Parameter options parsing
@@ -52,23 +54,35 @@ main( int argc, char** argv )
         // Options start with a dash
         if ( argv[ i ][ 0 ] == '-' )
         {
-            for ( int j = 1; argv[ i ][ j ] != '\0'; j++ )
+            if ( argv[ i ][ 1 ] == 'r' )
             {
-                if ( argv[ i ][ j ] == 'r' )
+                show_regions = true;
+            }
+            else if ( argv[ i ][ 1 ] == 'h' )
+            {
+                print_help();
+                exit( EXIT_SUCCESS );
+            }
+            else if ( argv[ i ][ 1 ] == 'f' )
+            {
+                if ( i + 1 < argc )
                 {
-                    show_regions = true;
-                }
-                else if ( argv[ i ][ j ] == 'h' )
-                {
-                    print_help();
-                    exit( EXIT_SUCCESS );
+                    filter_file = argv[ i ];
+                    i++;
+                    break;
                 }
                 else
                 {
-                    cerr << "ERROR: Unknown argment -" << argv[ i ][ j ] << "." << endl;
+                    cerr << "ERROR: No filter file specified." << endl;
                     print_help();
                     exit( EXIT_FAILURE );
                 }
+            }
+            else
+            {
+                cerr << "ERROR: Unknown argment -" << argv[ i ][ 1 ] << "." << endl;
+                print_help();
+                exit( EXIT_FAILURE );
             }
         }
 
@@ -102,6 +116,10 @@ main( int argc, char** argv )
 
     SCOREP_Score_Estimator estimator( profile );
 
+    if ( filter_file != "" )
+    {
+        estimator.InitializeFilter( filter_file );
+    }
     estimator.Calculate( show_regions );
     estimator.PrintGroups();
 

@@ -32,6 +32,11 @@
 
 using namespace std;
 
+#define SCOREP_SCORE_FILTER_UNSPECIFIED 0
+#define SCOREP_SCORE_FILTER_YES         1
+#define SCOREP_SCORE_FILTER_NO          2
+#define SCOREP_SCORE_FILTER_POSSIBLE    3
+
 SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
                                         uint64_t processes,
                                         string   name )
@@ -42,6 +47,7 @@ SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
     m_total_tbc  = 0;
     m_total_time = 0;
     m_name       = name;
+    m_filter     = SCOREP_SCORE_FILTER_UNSPECIFIED;
 }
 
 
@@ -96,4 +102,10 @@ uint64_t
 SCOREP_Score_Group::GetTotalTBC()
 {
     return m_total_tbc;
+}
+
+void
+SCOREP_Score_Group::DoFilter( bool filter )
+{
+    m_filter = filter ? SCOREP_SCORE_FILTER_YES : SCOREP_SCORE_FILTER_NO;
 }

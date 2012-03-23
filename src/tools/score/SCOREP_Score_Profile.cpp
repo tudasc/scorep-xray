@@ -99,6 +99,12 @@ SCOREP_Score_Profile::GetRegionName( uint64_t region )
     return m_regions[ region ]->get_name();
 }
 
+string
+SCOREP_Score_Profile::GetFileName( uint64_t region )
+{
+    return m_regions[ region ]->get_mod();
+}
+
 uint64_t
 SCOREP_Score_Profile::GetNumberOfRegions()
 {

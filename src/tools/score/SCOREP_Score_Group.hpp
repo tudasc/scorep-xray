@@ -55,6 +55,9 @@ public:
     uint64_t
     GetTotalTBC();
 
+    void
+    DoFilter( bool filter );
+
 private:
     uint64_t    m_type;
     uint64_t    m_processes;
@@ -62,6 +65,7 @@ private:
     uint64_t    m_total_tbc;
     double      m_total_time;
     std::string m_name;
+    uint8_t     m_filter;
 };
 
 #endif

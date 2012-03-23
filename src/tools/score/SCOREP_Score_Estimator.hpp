@@ -43,9 +43,19 @@ public:
     PrintRegions();
 
     void
+    InitializeFilter( std::string filter_file );
+
+    void
     DumpEventSizes();
 
 private:
+    void
+    initialize_regions();
+
+    void
+    delete_groups( SCOREP_Score_Group** groups,
+                   uint64_t             num );
+
     uint32_t
     get_compressed_size( uint64_t max_value );
 
@@ -58,9 +68,12 @@ private:
     calculate_exit();
 
 private:
+    bool m_has_filter;
+
     SCOREP_Score_Profile* m_profile;
     SCOREP_Score_Group**  m_groups;
     SCOREP_Score_Group**  m_regions;
+    SCOREP_Score_Group**  m_filtered;
 
     // Number of definitions
     uint64_t m_region_num;

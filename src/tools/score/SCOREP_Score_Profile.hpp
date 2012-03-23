@@ -56,6 +56,9 @@ public:
     std::string
     GetRegionName( uint64_t region );
 
+    std::string
+    GetFileName( uint64_t region );
+
     uint64_t
     GetNumberOfRegions();
 
