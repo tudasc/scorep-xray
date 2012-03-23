@@ -21,6 +21,39 @@
 ##      a C++ representation of the library dependencies and write it
 ##      to scorep_library_dependencies.cpp in the current working
 ##      directory. To be used with the <component>-config tools.
+##
+##      Assumes that teh client provide std::vector<std::string> libs,
+##      ldflags, rpaths, dependency_las and a std::map<std::string,
+##      la_object> la_objects. The vectors are temporary, the map will
+##      contain the entire information indexed by the library name.The
+##      la_object ctor signature is
+##      la_object(std::string lib_name,
+##                std::string build_dir,
+##                std::string install_dir,
+##                std::vector<std::string> libs,
+##                std::vector<std::string> ldflags,
+##                std::vector<std::string> rpaths,
+##                std::vector<std::string> dependency_las)
+##      e.g.:
+##      libs.clear();
+##      ldflags.clear();
+##      rpaths.clear();
+##      dependency_las.clear();
+##      libs.push_back( "-lbfd" );
+##      libs.push_back( "-lpapi" );
+##      libs.push_back( "-lm" );
+##      ldflags.push_back( "-L/opt/packages/papi/4.1.2.1/lib" );
+##      if ( la_objects.find( "libscorep_mpi" ) != la_objects.end() ) 
+##      {
+##          la_objects[ "libscorep_mpi" ] =
+##              la_object( "libscorep_mpi",
+##                         "/home/roessel/silc/build/trunk/gcc_openmpi_static_x86-32/build-backend",
+##                         "/home/roessel/silc/build/trunk/gcc_openmpi_static_x86-32/install/lib",
+##                         libs,
+##                         ldflags,
+##                         rpaths,
+##                         dependency_las );
+##       }
 
 #set -x
 set -e
