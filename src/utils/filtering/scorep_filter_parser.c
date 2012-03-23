@@ -280,7 +280,7 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
  *          returned.
  */
 SCOREP_Error_Code
-SCOREP_Filter_ParseFile( char* file_name )
+SCOREP_Filter_ParseFile( const char* file_name )
 {
     FILE*                     filter_file = NULL;
     size_t                    buffer_size = 0;
@@ -368,6 +368,7 @@ SCOREP_Filter_ParseFile( char* file_name )
             pos++;
         }
     }
+    err = SCOREP_SUCCESS;
 
 cleanup:
     if ( filter_file )
@@ -375,7 +376,7 @@ cleanup:
         fclose( filter_file );
     }
     free( buffer );
-    return SCOREP_SUCCESS;
+    return err;
 }
 
 

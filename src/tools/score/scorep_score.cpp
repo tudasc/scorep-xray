@@ -67,7 +67,7 @@ main( int argc, char** argv )
             {
                 if ( i + 1 < argc )
                 {
-                    filter_file = argv[ i ];
+                    filter_file = argv[ i + 1 ];
                     i++;
                     break;
                 }

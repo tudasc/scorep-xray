@@ -56,7 +56,7 @@ typedef struct scorep_filter_rule_struct scorep_filter_rule_t;
 struct scorep_filter_rule_struct
 {
     char*                 pattern;    /**< Pointer to the pattern string */
-    const char*           pattern2;   /**< Pointer to the mangled pattern string */
+    char*                 pattern2;   /**< Pointer to the mangled pattern string */
     bool                  is_exclude; /**< True if it is a exclude rule, false else */
     scorep_filter_rule_t* next;       /**< Next filter rule */
 };
@@ -96,7 +96,7 @@ bool scorep_filter_is_enabled = false;
  *          a Score-P Misc page. Thus it is automatically freed at memory management
             finalization.
  */
-static const char*
+static char*
 scorep_filter_mangle_pattern( const char* pattern )
 {
     size_t i;

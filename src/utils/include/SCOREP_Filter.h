@@ -31,8 +31,12 @@
 
 #include <scorep_utility/SCOREP_Error.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 SCOREP_Error_Code
-SCOREP_Filter_ParseFile( char* file_name );
+SCOREP_Filter_ParseFile( const char* file_name );
 
 void
 SCOREP_Filter_FreeRules();
@@ -50,5 +54,9 @@ bool
 SCOREP_Filter_Match( const char* file_name,
                      const char* function_name,
                      bool        use_fortran );
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif // SCOREP_FILTER_H

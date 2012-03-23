@@ -9,7 +9,7 @@ FILTER_LIB = -L../../../gcc-mpich2/build-backend/.libs -lscorep_filter
 
 INC = -I/home/zam/lorenz/local/cube4/trunk/include/cube -I. $(UTIL_INC) $(FILTER_INC)
 
-LIBS = -L/home/zam/lorenz/local/cube4/trunk/lib -lcube4 -lz -lm $(UTIL_LIB) $(FILTER_LIB)
+LIBS = -L/home/zam/lorenz/local/cube4/trunk/lib $(FILTER_LIB) $(UTIL_LIB) -lcube4 -lz -lm
 
 OBJS = SCOREP_Score_Profile.o \
        scorep_score.o \
