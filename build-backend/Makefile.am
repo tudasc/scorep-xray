@@ -152,6 +152,7 @@ $(builddir)/scorep_config.dat:
 	    echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
 	    echo LIBDIR=\"$(PWD)/.libs\"; \
 	    echo LIBS=\"$(LIBS)\"; \
+	    echo LIBDIR=\"$(LIBBFD_LDFLAGS)\"; \
 	    echo LIBDIR=\"$(CUBE_LIB_PATH)\"; \
 	    echo LIBDIR=\"$(TIMER_LIBDIR)\"; \
 	    echo LIBDIR=\"$(SCOREP_PAPI_LIBDIR)\"; \
@@ -161,7 +162,7 @@ $(builddir)/scorep_config.dat:
 	    echo SRC_ROOT=\"$(abs_top_srcdir)/..\"; \
 	    echo CC=\"$(CC)\"; \
 	    echo CXX=\"$(CXX)\"; \
-	    echo LIBS=\"$(LIBBFD)\"; \
+	    echo LIBS=\"$(LIBBFD_LIBS)\"; \
 	    echo LIBS=\"$(CUBE_LIBS)\"; \
 	    echo LIBS=\"$(TIMER_LIB)\"; \
 	    echo LIBS=\"$(SCOREP_PAPI_LIBS)\"; \
@@ -182,8 +183,8 @@ $(CONFIG_HEADER_BACKEND):
 	    echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""; \
 	    echo "#define SCOREP_PREFIX  \"$(prefix)\""; \
 	    echo "#define SCOREP_DATADIR \"$(datadir)\""; \
-	    echo "#define SCOREP_LIBDIR  \"$(libdir)\""; \
-	    echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD) $(CUBE_LIBS) $(TIMER_LIB)\""; \
+	    echo "#define SCOREP_LIBDIR  \"$(libdir) $(LIBBFD_LDFLAGS)\""; \
+	    echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD_LIBS) $(CUBE_LIBS) $(TIMER_LIB)\""; \
 	    echo "#define CUBE_LIBDIR    \"$(CUBE_LIB_PATH)\""; \
 	    echo "#define TIMER_LIBDIR   \"$(TIMER_LIBDIR)\""; \
 	    echo "#define PAPI_LIBS      \"$(SCOREP_PAPI_LIBS)\""; \
