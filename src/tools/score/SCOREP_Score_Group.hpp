@@ -56,16 +56,16 @@ public:
     GetTotalTBC();
 
     void
-    DoFilter( bool filter );
+    DoFilter( SCOREP_Score_FilterState state );
 
 private:
-    uint64_t    m_type;
-    uint64_t    m_processes;
-    uint64_t*   m_max_tbc;
-    uint64_t    m_total_tbc;
-    double      m_total_time;
-    std::string m_name;
-    uint8_t     m_filter;
+    uint64_t                 m_type;
+    uint64_t                 m_processes;
+    uint64_t*                m_max_tbc;
+    uint64_t                 m_total_tbc;
+    double                   m_total_time;
+    std::string              m_name;
+    SCOREP_Score_FilterState m_filter;
 };
 
 #endif

@@ -32,11 +32,6 @@
 
 using namespace std;
 
-#define SCOREP_SCORE_FILTER_UNSPECIFIED 0
-#define SCOREP_SCORE_FILTER_YES         1
-#define SCOREP_SCORE_FILTER_NO          2
-#define SCOREP_SCORE_FILTER_POSSIBLE    3
-
 SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
                                         uint64_t processes,
                                         string   name )
@@ -72,7 +67,7 @@ SCOREP_Score_Group::Print( double total_time )
 
     if ( m_total_tbc > 0 )
     {
-        cout << "  " << right
+        cout << " " << SCOREP_Score_GetFilterSymbol( m_filter ) << right
              << setw( 6 ) << SCOREP_Score_GetTypeName( m_type )
              << setw( 16 ) << GetMaxTBC()
              << setw( 13 ) << setprecision( 2 ) << m_total_time
@@ -105,7 +100,7 @@ SCOREP_Score_Group::GetTotalTBC()
 }
 
 void
-SCOREP_Score_Group::DoFilter( bool filter )
+SCOREP_Score_Group::DoFilter( SCOREP_Score_FilterState state )
 {
-    m_filter = filter ? SCOREP_SCORE_FILTER_YES : SCOREP_SCORE_FILTER_NO;
+    m_filter = state;
 }

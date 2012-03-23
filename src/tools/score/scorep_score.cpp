@@ -69,7 +69,6 @@ main( int argc, char** argv )
                 {
                     filter_file = argv[ i + 1 ];
                     i++;
-                    break;
                 }
                 else
                 {

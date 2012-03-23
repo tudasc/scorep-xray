@@ -368,6 +368,8 @@ SCOREP_Filter_ParseFile( const char* file_name )
             pos++;
         }
     }
+
+    SCOREP_Filter_Enable();
     err = SCOREP_SUCCESS;
 
 cleanup:

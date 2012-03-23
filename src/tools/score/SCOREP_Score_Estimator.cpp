@@ -177,6 +177,7 @@ SCOREP_Score_Estimator::initialize_regions()
 void
 SCOREP_Score_Estimator::InitializeFilter( string filter_file )
 {
+    /* Initialize filter component */
     SCOREP_Error_Code err = SCOREP_SUCCESS;
     err = SCOREP_Filter_ParseFile( filter_file.c_str() );
 
@@ -186,6 +187,7 @@ SCOREP_Score_Estimator::InitializeFilter( string filter_file )
         exit( EXIT_FAILURE );
     }
 
+    /* Initialize filter groups */
     m_filtered = ( SCOREP_Score_Group** )
                  malloc( SCOREP_SCORE_TYPE_NUM * sizeof( SCOREP_Score_Group* ) );
 
@@ -194,13 +196,30 @@ SCOREP_Score_Estimator::InitializeFilter( string filter_file )
         string name = SCOREP_Score_GetTypeName( i );
         if ( i != SCOREP_SCORE_TYPE_FLT )
         {
-            name += " - FLT";
+            name += "-FLT";
         }
 
         m_filtered[ i ] = new SCOREP_Score_Group( i, m_process_num, name );
+        m_filtered[ i ]->DoFilter( SCOREP_Score_GetFilterState( i ) );
+    }
+
+    /* Update regular groups */
+    for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
+    {
+        m_groups[ i ]->DoFilter( SCOREP_SCORE_FILTER_NO );
     }
 
     m_has_filter = true;
+}
+
+bool
+SCOREP_Score_Estimator::match_filter( uint64_t region )
+{
+    bool do_filter = SCOREP_Filter_Match( m_profile->GetFileName( region ).c_str(),
+                                          m_profile->GetRegionName( region ).c_str(),
+                                          false );
+    return do_filter &&
+           SCOREP_Score_GetFilterState( m_profile->GetGroup( region ) ) != SCOREP_SCORE_FILTER_NO;
 }
 
 void
@@ -241,12 +260,14 @@ SCOREP_Score_Estimator::Calculate( bool show_regions )
 
             if ( m_has_filter )
             {
-                bool do_filter
-                    = SCOREP_Filter_Match( m_profile->GetFileName( region ).c_str(),
-                                           m_profile->GetRegionName( region ).c_str(),
-                                           false );
-                m_regions[ region ]->DoFilter( do_filter );
-                if ( do_filter )
+                bool do_filter = match_filter( region );
+                if ( show_regions )
+                {
+                    m_regions[ region ]->DoFilter( do_filter ?
+                                                   SCOREP_SCORE_FILTER_YES :
+                                                   SCOREP_SCORE_FILTER_NO );
+                }
+                if ( !do_filter )
                 {
                     m_filtered[ group ]->AddRegion( tbc, time, process );
                     m_filtered[ SCOREP_SCORE_TYPE_ALL ]->AddRegion( tbc, time, process );
@@ -282,6 +303,17 @@ SCOREP_Score_Estimator::PrintGroups()
     for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
         m_groups[ i ]->Print( total_time );
+    }
+
+    if ( m_has_filter )
+    {
+        scorep_score_quicksort( &m_filtered[ 1 ], SCOREP_SCORE_TYPE_NUM - 1 );
+
+        cout << endl;
+        for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
+        {
+            m_filtered[ i ]->Print( total_time );
+        }
     }
 }
 

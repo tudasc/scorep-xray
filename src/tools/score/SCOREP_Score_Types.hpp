@@ -28,24 +28,43 @@
 #include <stdint.h>
 
 #define SCOREP_SCORE_TYPES \
-    SCOREP_SCORE_TYPE( ALL ) \
-    SCOREP_SCORE_TYPE( USR ) \
-    SCOREP_SCORE_TYPE( COM ) \
-    SCOREP_SCORE_TYPE( MPI ) \
-    SCOREP_SCORE_TYPE( OMP ) \
-    SCOREP_SCORE_TYPE( FLT )
+    SCOREP_SCORE_TYPE( FLT, YES )      \
+    SCOREP_SCORE_TYPE( ALL, POSSIBLE ) \
+    SCOREP_SCORE_TYPE( USR, POSSIBLE ) \
+    SCOREP_SCORE_TYPE( COM, POSSIBLE ) \
+    SCOREP_SCORE_TYPE( MPI, NO )       \
+    SCOREP_SCORE_TYPE( OMP, NO )
+
+#define SCOREP_SCORE_FILTER_STATES \
+    SCOREP_SCORE_FILTER_STATE( UNSPECIFIED, ' ' ) \
+    SCOREP_SCORE_FILTER_STATE( YES,         '+' ) \
+    SCOREP_SCORE_FILTER_STATE( NO,          '-' ) \
+    SCOREP_SCORE_FILTER_STATE( POSSIBLE,    '*' ) \
 
 typedef enum
 {
-    #define SCOREP_SCORE_TYPE( type ) SCOREP_SCORE_TYPE_ ## type,
+    #define SCOREP_SCORE_TYPE( type, flt ) SCOREP_SCORE_TYPE_ ## type,
     SCOREP_SCORE_TYPES
     #undef SCOREP_SCORE_TYPE
 } SCOREP_Score_Type;
 
 extern const uint64_t SCOREP_SCORE_TYPE_NUM;
 
+typedef enum
+{
+    #define SCOREP_SCORE_FILTER_STATE( state, symbol ) SCOREP_SCORE_FILTER_ ## state,
+    SCOREP_SCORE_FILTER_STATES
+    #undef SCOREP_SCORE_FILTER_STATE
+} SCOREP_Score_FilterState;
+
+
 std::string
 SCOREP_Score_GetTypeName( uint64_t type );
 
+SCOREP_Score_FilterState
+SCOREP_Score_GetFilterState( uint64_t type );
+
+char
+SCOREP_Score_GetFilterSymbol( SCOREP_Score_FilterState state );
 
 #endif // SCOREP_SCORE_TYPES_H

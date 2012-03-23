@@ -49,6 +49,9 @@ public:
     DumpEventSizes();
 
 private:
+    bool
+    match_filter( uint64_t region );
+
     void
     initialize_regions();
 

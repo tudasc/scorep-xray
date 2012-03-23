@@ -86,8 +86,6 @@ SCOREP_Filter_Initialize()
                       "Disable filtering." );
         return;
     }
-
-    SCOREP_Filter_Enable();
 }
 
 SCOREP_Error_Code

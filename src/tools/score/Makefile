@@ -21,4 +21,4 @@ all: $(OBJS)
 	$(CXX) -o scorep-score $(OBJS) $(LIBS)
 
 %.o: %.cpp *.hpp Makefile
-	$(CXX) -c $(INC) $<
+	$(CXX) -c -g $(INC) $<
