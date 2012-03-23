@@ -1,0 +1,129 @@
+#!/bin/sh
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file generate_library_dependencies.sh
+##      Parse all *.la files in the current working directory and
+##      recursively the *.la files listed in dependency_libs. Generate
+##      a C++ representation of the library dependencies and write it
+##      to scorep_library_dependencies.cpp in the current working
+##      directory. To be used with the <component>-config tools.
+
+#set -x
+set -e
+
+parse_la () 
+{
+    la_file="$1"
+    output_file="$2"
+
+    lib_name=`basename $la_file`
+    lib_name=${lib_name%.la}
+
+    # change to .la directory
+    old_pwd=`pwd`
+    build_dir=`dirname $la_file`
+    cd "${build_dir}"
+
+    # extract information form .la"s libdir (=install_dir)
+    # later, use @EGREP@
+    eval `grep -E "^libdir=" "${la_file}"`
+    install_dir="${libdir}"
+
+    # ignore conveniece libraries
+    if test "x${libdir}" = "x"; then
+        return
+    fi
+
+    # extract information form .la"s dependency_libs
+    eval `grep -E "^dependency_libs=" "${la_file}"`
+    # use @AWK@
+    save_ifs="${IFS}"
+    IFS=${awk_ifs}
+    eval `echo ${dependency_libs} | awk '
+    {
+        for (i=1; i<= NF; i++) 
+        { 
+            if      (index($i, "-L") == 1) {ldflags = ldflags $i ":"} 
+            else if (index($i, "-R") == 1) {rpath = rpath $i ":"}
+            else if (index($i, "-l") == 1) {libs = libs $i ":"}  
+            else                           {dependency_la = dependency_la $i ":"} 
+        }
+    }
+    END {
+        gsub(/:$/, "", ldflags)
+        gsub(/:$/, "", rpath)
+        gsub(/:$/, "", libs)
+        gsub(/:$/, "", dependency_la)
+        print "ldflags=\"" ldflags "\"; " "rpath=\"" rpath "\"; " "libs=\"" libs "\"; " "dependency_la=\"" dependency_la "\""
+    }'`
+    IFS="${save_ifs}"
+
+    # generate output
+    echo "    libs.clear();"           >> ${output_file}
+    echo "    ldflags.clear();"        >> ${output_file}
+    echo "    rpaths.clear();"         >> ${output_file}
+    echo "    dependency_las.clear();" >> ${output_file}
+
+    save_ifs="${IFS}"
+    IFS=":"
+
+    for i in ${libs}; do
+        echo "    libs.push_back( \"${i}\" );"    >> ${output_file}
+    done
+
+    for i in ${ldflags}; do
+        echo "    ldflags.push_back( \"${i}\" );" >> ${output_file}
+    done
+
+    for i in ${rpath}; do
+        echo "    rpaths.push_back( \"${i}\" );"  >> ${output_file}
+    done
+
+    for i in ${dependency_la}; do
+        dependency_la_name=`basename ${i}`
+        dependency_la_name=${dependency_la_name%.la}
+    done
+
+    echo "    if ( la_objects.find( \"${lib_name}\" ) != la_objects.end() ) " >> ${output_file}
+    echo "    {"                                                              >> ${output_file}
+    echo "        la_objects[ \"${lib_name}\" ] ="                            >> ${output_file}
+    echo "            la_object( \"${lib_name}\","                            >> ${output_file}
+    echo "                       \"${build_dir}\","                           >> ${output_file}
+    echo "                       \"${install_dir}\","                         >> ${output_file}
+    echo "                       libs,"                                       >> ${output_file}
+    echo "                       ldflags,"                                    >> ${output_file}
+    echo "                       rpaths,"                                     >> ${output_file}
+    echo "                       dependency_las );"                           >> ${output_file}
+    echo "    }" >> ${output_file}
+    echo  >> ${output_file}
+
+    # call dependency_las recursively
+    for i in ${dependency_la}; do
+         parse_la ${i} $2
+    done
+
+    IFS="${save_ifs}"
+    cd "${old_pwd}"
+}
+
+
+awk_ifs="${IFS}"
+start_wd=`pwd`
+rm -f ${start_wd}/scorep_library_dependencies.cpp
+for i in *.la; do
+    parse_la ${start_wd}/${i} ${start_wd}/scorep_library_dependencies.cpp
+done
