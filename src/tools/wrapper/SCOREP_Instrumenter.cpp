@@ -1384,7 +1384,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     command = pdt_bin_path + "/tau_instrumentor "
               + pdb_file + " "
               + source_file
-              + compiler_flags + define_flags
+              + include_flags + define_flags
               + " -o " + modified_file
               + " -spec " + pdt_config_file;
 

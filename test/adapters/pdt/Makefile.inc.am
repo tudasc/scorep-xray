@@ -10,8 +10,8 @@ TESTS_SERIAL += \
     ./../test/adapters/pdt/run_pdt_serial_tests.sh \
     ./../test/adapters/pdt/run_pdt_mpi_tests.sh
 
-#if ! SCOREP_COMPILER_PGI
-#TESTS_SERIAL += ./../test/adapters/pdt/run_pdt_fortran_tests.sh
-#endif
+if ! SCOREP_COMPILER_PGI
+TESTS_SERIAL += ./../test/adapters/pdt/run_pdt_fortran_tests.sh
+endif
 
 endif
