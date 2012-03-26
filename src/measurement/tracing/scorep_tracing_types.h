@@ -121,7 +121,7 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
     {
 #define case_return( SCOREP, OTF2 ) \
     case SCOREP_GROUP_ ## SCOREP: \
-        return OTF2_GROUPTYPE_ ## OTF2
+        return OTF2_GROUP_TYPE_ ## OTF2
 
         case_return( UNKNOWN,       UNKNOWN );
         case_return( LOCATIONS,     LOCATIONS );
