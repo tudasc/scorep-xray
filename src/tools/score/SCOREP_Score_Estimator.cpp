@@ -114,8 +114,10 @@ scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
                                                              class SCOREP_Score_Estimator
 ****************************************************************************************/
 
-SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile )
+SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
+                                                uint32_t              dense_num )
 {
+    m_dense_num   = dense_num;
     m_profile     = profile;
     m_region_num  = profile->GetNumberOfRegions();
     m_process_num = profile->GetNumberOfProcesses();
@@ -369,16 +371,14 @@ uint32_t
 SCOREP_Score_Estimator::calculate_dense_metric()
 {
     // How to determine the number of dense metricss ?
-    uint32_t number = 0;
-
-    if ( number == 0 )
+    if ( m_dense_num == 0 )
     {
         return 0;
     }
-    return get_compressed_size( m_profile->GetNumberOfMetrics() ) + // handle
-           1 +                                                      // number
-           number +                                                 // type ids
-           number * 8;                                              // values
+    return get_compressed_size( m_profile->GetNumberOfMetrics() + m_dense_num ) // handle
+           + 1                                                                  // number
+           + m_dense_num                                                        // type ids
+           + m_dense_num * 8;                                                   // values
 }
 
 uint32_t

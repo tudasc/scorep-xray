@@ -31,7 +31,8 @@
 class SCOREP_Score_Estimator
 {
 public:
-    SCOREP_Score_Estimator( SCOREP_Score_Profile* profile );
+    SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
+                            uint32_t              dense_num );
     virtual
     ~SCOREP_Score_Estimator();
 
@@ -81,6 +82,7 @@ private:
     // Number of definitions
     uint64_t m_region_num;
     uint64_t m_process_num;
+    uint32_t m_dense_num;
 
     // Size of events
     uint32_t m_timestamp;

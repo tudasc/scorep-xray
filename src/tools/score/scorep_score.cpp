@@ -37,15 +37,21 @@ print_help()
          << " -r          Show all regions.\n"
          << " -h          Show this help and exit.\n"
          << " -f <filter> Shows the result with the filter applied.\n"
+         << " -c <num>    Specifes the number of hardware counters that shall be measured.\n"
+         << "             By default, this value is 0, which means that only a timestamp\n"
+         << "             is measured on each event. If you plan to record hardware counters\n"
+         << "             specify the number of hardware counters. Otherwise, scorep-score\n"
+         << "             may underestimate the required space."
          << endl;
 }
 
 int
 main( int argc, char** argv )
 {
-    string file_name;
-    string filter_file;
-    bool   show_regions = false;
+    string  file_name;
+    string  filter_file;
+    int32_t dense_num    = 0;
+    bool    show_regions = false;
 
     //--------------------------------------- Parameter options parsing
 
@@ -77,6 +83,20 @@ main( int argc, char** argv )
                     exit( EXIT_FAILURE );
                 }
             }
+            else if ( argv[ i ][ 1 ] == 'c' )
+            {
+                if ( i + 1 < argc )
+                {
+                    dense_num = atoi( argv[ i + 1 ] );
+                    i++;
+                }
+                else
+                {
+                    cerr << "ERROR: No filter file specified." << endl;
+                    print_help();
+                    exit( EXIT_FAILURE );
+                }
+            }
             else
             {
                 cerr << "ERROR: Unknown argment -" << argv[ i ][ 1 ] << "." << endl;
@@ -99,6 +119,14 @@ main( int argc, char** argv )
         exit( EXIT_FAILURE );
     }
 
+    //-------------------------------------- Sanity checks
+    if ( dense_num < 0 )
+    {
+        cerr << "ERROR: The number of hardware counters can not be less than zero." << endl;
+        print_help();
+        exit( EXIT_FAILURE );
+    }
+
     //-------------------------------------- Scoreing
 
     SCOREP_Score_Profile* profile;
@@ -113,7 +141,7 @@ main( int argc, char** argv )
         exit( EXIT_FAILURE );
     }
 
-    SCOREP_Score_Estimator estimator( profile );
+    SCOREP_Score_Estimator estimator( profile, dense_num );
 
     if ( filter_file != "" )
     {
