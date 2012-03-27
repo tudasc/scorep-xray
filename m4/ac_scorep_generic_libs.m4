@@ -25,6 +25,7 @@ dnl ------------------------------------------------------------------
 dnl $1: name of the library on the filesystem, without the extension, 
 dnl     used for searching the file if a path is given
 dnl $2: whitespace separated list of headers
+dnl $3: extra cppflags, e.g. -D_XOPEN_SOURCE=500
 AC_DEFUN([AC_SCOREP_FRONTEND_LIB], [
 
 m4_ifdef([AC_SCOREP_BACKEND], 
@@ -52,7 +53,7 @@ AC_ARG_WITH([$1],
                              options directly.])],
             [],
             [with_$1="not_set"])
-echo "with_$1 = $with_$1"
+#echo "with_$1 = $with_$1"
 
 AS_IF([test "x${with_$1}" = "xnot_set"], 
       #then
@@ -71,10 +72,10 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
       # else (--with-$1 set, i.e. (no|yes|path))
       [_AC_SCOREP_GENERIC_LIB_TOPLEVEL_GIVEN([$1], [])])
 
-echo "with_$1_include = ${with_[$1]_include}"
-echo "with_$1_lib     = ${with_$1_lib}"
+#echo "with_$1_include = ${with_[$1]_include}"
+#echo "with_$1_lib     = ${with_$1_lib}"
 
-_AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2])
+_AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2], [$3])
 ])
 
 
@@ -83,6 +84,7 @@ dnl ------------------------------------------------------------------
 dnl $1: name of the library on the filesystem, without the extension, 
 dnl     used for searching the file if a path is given
 dnl $2: whitespace separated list of headers
+dnl $3: extra cppflags, e.g. -D_XOPEN_SOURCE=500
 AC_DEFUN([AC_SCOREP_BACKEND_LIB], [
 
 m4_ifdef([AC_SCOREP_FRONTEND], 
@@ -114,7 +116,7 @@ AC_ARG_WITH([$1],
                           [AC_MSG_ERROR([in cross-compile mode, invalid value 'yes' to --with-$1, specify a path instead.])])])],
             [with_$1="not_set"])
 
-echo "with_$1 = $with_$1"
+#echo "with_$1 = $with_$1"
 
 AS_IF([test "x${with_$1}" = "xnot_set"], 
       [AC_ARG_WITH([$1-include],
@@ -145,10 +147,10 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" && test "x${with_$1_include}" = "xno" && test "x${with_$1_lib}"  = "xno"],
       [AC_MSG_WARN([In cross-compile mode, you need to provide a path to --with-$1 (or --with-$1-include and --with-$1-lib, respectively) in order to activate $1 support.])])
 
-echo "with_$1_include = ${with_[$1]_include}"
-echo "with_$1_lib     = ${with_$1_lib}"
+#echo "with_$1_include = ${with_[$1]_include}"
+#echo "with_$1_lib     = ${with_$1_lib}"
 
-_AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2])
+_AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2], [$3])
 
 ])
 
@@ -221,6 +223,7 @@ AC_DEFUN([_AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK], [
 AC_LANG_PUSH([C])
 dnl $1: libname
 dnl $2: white space separated list of headers
+dnl $3: extra cppflags, e.g. -D_XOPEN_SOURCE=500
 dnl uses from caller:
 dnl - $1
 dnl - $1_NAME
@@ -239,8 +242,8 @@ dnl - $1_NAME[]_LDFLAGS ac_subst
 dnl - $1_NAME[]_LIBS ac_subst
 dnl does LIB save and reset automatically
 
-echo "with_$1_include = ${with_[$1]_include}"
-echo "with_$1_lib     = ${with_$1_lib}"
+#echo "with_$1_include = ${with_[$1]_include}"
+#echo "with_$1_lib     = ${with_$1_lib}"
 
 $1_dirs_exist="yes"
 AS_IF([test "x${with_$1_include}" != "xno" && test "x${with_$1_include}" != "xyes" && test ! -d ${with_$1_include}], 
@@ -249,7 +252,7 @@ AS_IF([test "x${with_$1_include}" != "xno" && test "x${with_$1_include}" != "xye
 AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_lib}" != "xyes" && test ! -d ${with_$1_lib}], 
       [$1_dirs_exist="no"
        AC_MSG_WARN([Provided $1 lib directory ${with_$1_lib} does not exist.])])
-echo "$1_dirs_exist ${$1_dirs_exist}"
+#echo "$1_dirs_exist ${$1_dirs_exist}"
 
 
 AS_IF([test "x${$1_dirs_exist}" = "xno"], 
@@ -261,18 +264,19 @@ with_$1_include_checks_successful="yes"
 with_$1_cppflags=""
 AS_IF([test "x${with_$1_include}" != "xno"], 
       [cpp_flags_save_$1="${CPPFLAGS}"
+       with_$1_cppflags="$3"
        AS_IF([test "x${with_$1_include}" != "xyes"], 
-             [with_$1_cppflags="-I${with_$1_include}"
-              CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"
+             [with_$1_cppflags="${with_$1_cppflags} -I${with_$1_include}"
               _AC_SCOREP_ALL_FILES_EXIST([$2], [${with_$1_include}], [with_$1_include_checks_successful])
              ])
-       echo "CPPFLAGS $CPPFLAGS"
+       #echo "CPPFLAGS $CPPFLAGS"
        AS_IF([test "x${with_$1_include_checks_successful}" = "xyes"], 
-             [AC_CHECK_HEADERS([$2], [], [with_$1_include_checks_successful="no"])])
+             [CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"
+              AC_CHECK_HEADERS([$2], [], [with_$1_include_checks_successful="no"])])
        CPPFLAGS="${cpp_flags_save_$1}"],
       [with_$1_include_checks_successful="no"])
 
-echo "with_$1_include_checks_successful $with_$1_include_checks_successful"
+#echo "with_$1_include_checks_successful $with_$1_include_checks_successful"
 
 # check libs
 with_$1_lib_checks_successful="unknown"
@@ -284,14 +288,14 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
        cpp_flags_save_$1="${CPPFLAGS}"
        AS_IF([test "x${with_$1_lib}" != "xyes"], 
              [with_$1_ldflags="-L${with_$1_lib}"
-              LDFLAGS="${with_$1_ldflags} ${LDFLAGS}"
-              CPPFLAGS="-I${with_$1_include} ${CPPFLAGS}"
               _AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${with_$1_lib}], [with_$1_lib_checks_successful])])
-       echo "CPPFLAGS $CPPFLAGS"
-       echo "LDFLAGS $LDFLAGS"
 
        AS_IF([test "x${with_$1_lib_checks_successful}" = "xunknown"], 
-             [m4_expand(_AC_SCOREP_[]$1_NAME[]_LIB_CHECK([$1], [$2]))]) dnl specific library check, to be impemented elsewhere
+             [CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"
+              LDFLAGS="${with_$1_ldflags} ${LDFLAGS}"
+              #echo "CPPFLAGS $CPPFLAGS"
+              #echo "LDFLAGS $LDFLAGS"
+              m4_expand(_AC_SCOREP_[]$1_NAME[]_LIB_CHECK([$1], [$2]))]) dnl specific library check, to be impemented elsewhere
 
        AS_IF([(test "x${with_$1_lib_checks_successful}" != "xyes" && \
                test "x${with_$1_lib_checks_successful}" != "xno") || \
@@ -307,7 +311,7 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
 AC_LANG_POP([C])
 ])
 
-echo "with_$1_lib_checks_successful $with_$1_lib_checks_successful"
+#echo "with_$1_lib_checks_successful $with_$1_lib_checks_successful"
 
 # generating output
 AS_IF([test "x${with_$1_include_checks_successful}" = "xyes" && \
