@@ -96,7 +96,7 @@ scorep_write_string_definitions( void*                     writerHandle,
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_String_Definition" );
+            scorep_handle_definition_writing_error( status, "String" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -137,7 +137,7 @@ scorep_write_location_definitions(
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_Location_Definition" );
+            scorep_handle_definition_writing_error( status, "Location" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -173,7 +173,7 @@ scorep_write_location_group_definitions(
             SCOREP_HANDLE_TO_ID( definition->parent, SystemTreeNode, definitionManager->page_manager ) );
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_LocationGroup_Definition" );
+            scorep_handle_definition_writing_error( status, "LocationGroup" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -218,7 +218,7 @@ scorep_write_system_tree_node_definitions(
             parent );
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_SystemTreeNode_Definition" );
+            scorep_handle_definition_writing_error( status, "SystemTreeNode" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -270,7 +270,7 @@ scorep_write_region_definitions( void*                     writerHandle,
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_Region_Definition" );
+            scorep_handle_definition_writing_error( status, "Region" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -281,84 +281,15 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                        SCOREP_DefinitionManager* definitionManager )
 {
     assert( writerHandle );
-    uint32_t done_size = SCOREP_Bitstring_GetByteSize( definitionManager->mpi_communicator_definition_counter );
-    uint8_t* done      = calloc( done_size, sizeof( *done ) );
-    assert( done );
 
-    /* First round, write root comms, but not self-like (SCOREP_GROUP_COMM_SELF) */
-    uint32_t togo = 0;
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
-        SCOREP_Group_Definition* group =
-            SCOREP_HANDLE_DEREF( definition->group_handle, Group, definitionManager->page_manager );
-        if ( group->group_type == SCOREP_GROUP_COMM_SELF )
+        uint32_t comm_parent_id = OTF2_UNDEFINED_UINT32;
+        if ( definition->parent_handle != SCOREP_INVALID_CALLPATH )
         {
-            continue;
-        }
-
-        if ( definition->parent_id == UINT32_MAX )
-        {
-            SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
-                writerHandle,
-                definition->sequence_number,
-                definition->name_id, /* already the global ID */
-                SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
-                definition->parent_id /* already the global ID */ );
-
-            SCOREP_Bitstring_Set( done, definition->sequence_number );
-
-            if ( status != SCOREP_SUCCESS )
-            {
-                scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
-            }
-        }
-        else
-        {
-            togo++;
-        }
-    }
-    SCOREP_DEFINITION_FOREACH_WHILE();
-
-    /* Round two, write all remaining non-self-like comms in topological order */
-    while ( togo > 0 )
-    {
-        SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
-        {
-            SCOREP_Group_Definition* group =
-                SCOREP_HANDLE_DEREF( definition->group_handle, Group, definitionManager->page_manager );
-            if ( group->group_type == SCOREP_GROUP_COMM_SELF
-                 || SCOREP_Bitstring_IsSet( done, definition->sequence_number )
-                 || !SCOREP_Bitstring_IsSet( done, definition->parent_id ) )
-            {
-                continue;
-            }
-
-            SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
-                writerHandle,
-                definition->sequence_number,
-                definition->name_id, /* already the global ID */
-                SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
-                definition->parent_id /* already the global ID */ );
-
-            togo--;
-            SCOREP_Bitstring_Set( done, definition->sequence_number );
-
-            if ( status != SCOREP_SUCCESS )
-            {
-                scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
-            }
-        }
-        SCOREP_DEFINITION_FOREACH_WHILE();
-    }
-
-    /* Round three, write all self-like comms */
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
-    {
-        SCOREP_Group_Definition* group =
-            SCOREP_HANDLE_DEREF( definition->group_handle, Group, definitionManager->page_manager );
-        if ( group->group_type != SCOREP_GROUP_COMM_SELF )
-        {
-            continue;
+            comm_parent_id = SCOREP_HANDLE_TO_ID( definition->parent_handle,
+                                                  MPICommunicator,
+                                                  definitionManager->page_manager );
         }
 
         SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
@@ -366,16 +297,13 @@ scorep_write_communicator_definitions( void*                     writerHandle,
             definition->sequence_number,
             definition->name_id, /* already the global ID */
             SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
-            definition->parent_id /* already the global ID */ );
-
+            comm_parent_id );
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_Communicator_Definition" );
+            scorep_handle_definition_writing_error( status, "MPICommunicator" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
-
-    free( done );
 }
 
 
@@ -413,7 +341,7 @@ scorep_write_group_definitions( void*                     writerHandle,
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_Group_Definition" );
+            scorep_handle_definition_writing_error( status, "Group" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -463,7 +391,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_Metric_Definition" );
+            scorep_handle_definition_writing_error( status, "Metric" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -573,7 +501,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
         }
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_SamplingSet_Definition" );
+            scorep_handle_definition_writing_error( status, "SamplingSet" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -611,7 +539,7 @@ scorep_write_parameter_definitions( void*                     writerHandle,
 
         if ( status != SCOREP_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "SCOREP_Parameter_Definition" );
+            scorep_handle_definition_writing_error( status, "Parameter" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -660,7 +588,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
 
             if ( status != SCOREP_SUCCESS )
             {
-                scorep_handle_definition_writing_error( status, "SCOREP_Callpath_Definition" );
+                scorep_handle_definition_writing_error( status, "Callpath" );
             }
         }
     }

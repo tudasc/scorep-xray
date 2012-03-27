@@ -750,6 +750,8 @@ scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
        Every process calculates its own mappings from the offsets. */
     SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,
                                  &scorep_local_definition_manager );
+    uint32_t* local_mpi_communicator_mappings =
+        scorep_local_definition_manager.mappings->local_mpi_communicator_mappings;
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
                                   LocalMPICommunicator,
                                   local_mpi_communicator )
@@ -764,8 +766,7 @@ scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
             global_comm_id += total_number_of_root_comms;
             assert( definition->global_root_rank == rank );
         }
-        scorep_local_definition_manager.mappings
-        ->local_mpi_communicator_mappings[ definition->sequence_number ]
+        local_mpi_communicator_mappings[ definition->sequence_number ]
             = global_comm_id;
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -792,15 +793,18 @@ scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
  *         this communicator.
  */
 static int
-scorep_unify_mpi_is_this_rank_in_communicator( uint32_t  global_comm_id,
-                                               uint32_t* global_aux_ids )
+scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id,
+                                               int32_t* global_aux_ids )
 {
+    uint32_t* string_mappings =
+        scorep_local_definition_manager.mappings->string_mappings;
+    uint32_t* local_mpi_communicator_mappings =
+        scorep_local_definition_manager.mappings->local_mpi_communicator_mappings;
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
                                   LocalMPICommunicator,
                                   local_mpi_communicator )
     {
         if ( global_comm_id ==
-             scorep_local_definition_manager.mappings->
              local_mpi_communicator_mappings[ definition->sequence_number ] )
         {
             if ( definition->local_rank == 0 )
@@ -808,8 +812,8 @@ scorep_unify_mpi_is_this_rank_in_communicator( uint32_t  global_comm_id,
                 /*
                  * If this comm does still not have a name (Ie. its
                  * SCOREP_INVALID_STRING), assign it the empty string,
-                 * which has global id 0, and *global_name_id is already
-                 * initialized with 0
+                 * which has global id 0, and global_aux_ids[ 0 ] is already
+                 * initialized with 0.
                  */
                 if ( definition->name_handle != SCOREP_INVALID_STRING )
                 {
@@ -817,8 +821,7 @@ scorep_unify_mpi_is_this_rank_in_communicator( uint32_t  global_comm_id,
                         definition->name_handle,
                         String,
                         scorep_local_definition_manager.page_manager );
-                    global_aux_ids[ 0 ] = scorep_local_definition_manager.mappings
-                                          ->string_mappings[ name_definition->sequence_number ];
+                    global_aux_ids[ 0 ] = string_mappings[ name_definition->sequence_number ];
                 }
                 if ( definition->parent_handle != SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR )
                 {
@@ -826,8 +829,8 @@ scorep_unify_mpi_is_this_rank_in_communicator( uint32_t  global_comm_id,
                         definition->parent_handle,
                         LocalMPICommunicator,
                         scorep_local_definition_manager.page_manager );
-                    global_aux_ids[ 1 ] = scorep_local_definition_manager.mappings
-                                          ->local_mpi_communicator_mappings[ parent_definition->sequence_number ];
+                    global_aux_ids[ 1 ] =
+                        local_mpi_communicator_mappings[ parent_definition->sequence_number ];
                 }
             }
             return definition->local_rank;
@@ -848,6 +851,16 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
     int32_t* ranks_in_group = NULL;  // Vector for the MPI group
                                      // (only significant in root)
 
+    struct comm_defintion
+    {
+        SCOREP_MPICommunicatorHandle handle;
+        SCOREP_GroupHandle           group;
+        int32_t                      comm_name;
+        int32_t                      comm_parent;
+    }* comm_defintions = NULL;
+
+    uint32_t* topo_comm_mapping = NULL;
+
     if ( rank == 0 )
     {
         /* Allocate memory for the arrays. */
@@ -859,7 +872,13 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
         assert( ranks_in_group );
 
         assert( scorep_unified_definition_manager->mpi_communicator_definition_counter == 0 );
+
+        comm_defintions = calloc( total_number_of_root_comms, sizeof( *comm_defintions ) );
+        assert( comm_defintions );
     }
+
+    topo_comm_mapping = calloc( total_number_of_root_comms, sizeof( *topo_comm_mapping ) );
+    assert( topo_comm_mapping );
 
     /*
      * Iterate over all communicators and create the corresponding MPI group
@@ -879,10 +898,10 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
          * properties in global_aux_ids, which I will than send to the global
          * root.
          * [0] is the communicator's name (default "" => 0)
-         * [1] the parent of this communicator (default no parent => UINT32_MAX)
+         * [1] the parent of this communicator (default no parent => -1)
          */
-        uint32_t global_aux_ids[ 2 ] = { 0, UINT32_MAX };
-        int32_t  my_rank_in_comm     =
+        int32_t global_aux_ids[ 2 ] = { 0, -1 };
+        int32_t my_rank_in_comm     =
             scorep_unify_mpi_is_this_rank_in_communicator( global_comm_id,
                                                            global_aux_ids );
 
@@ -907,7 +926,7 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
                     if ( i > 0 && ranks_in_comm[ i ] == 0 )
                     {
                         SCOREP_Mpi_Recv( global_aux_ids,
-                                         2, SCOREP_MPI_UNSIGNED,
+                                         2, SCOREP_MPI_INT,
                                          i, SCOREP_MPI_STATUS_IGNORE );
                     }
 
@@ -917,17 +936,15 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
             }
 
             /* Define the MPI group */
-            SCOREP_GroupHandle group =
+            comm_defintions[ global_comm_id ].handle =
+                SCOREP_INVALID_MPI_COMMUNICATOR;
+
+            comm_defintions[ global_comm_id ].group =
                 SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_GROUP,
                                               size, ranks_in_group );
 
-            /* Define the global MPI communicator with this group */
-            SCOREP_MPICommunicatorHandle handle =
-                SCOREP_DefineUnifiedMPICommunicator( group,
-                                                     global_aux_ids[ 0 ],
-                                                     global_aux_ids[ 1 ] );
-            assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, MPICommunicator ) ==
-                    global_comm_id );
+            comm_defintions[ global_comm_id ].comm_name   = global_aux_ids[ 0 ];
+            comm_defintions[ global_comm_id ].comm_parent = global_aux_ids[ 1 ];
         }
         else if ( my_rank_in_comm == 0 )
         {
@@ -936,8 +953,83 @@ scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
         }
     }
 
+    /*
+     * Define the communicators in a topological order based on the parent
+     * relation and maintain a mapping from the previously assigned global ids
+     * to the new ids.
+     */
+    if ( rank == 0 )
+    {
+        uint32_t global_comm_id = 0;
+        while ( global_comm_id < total_number_of_root_comms )
+        {
+            for ( uint32_t i = 0; i < total_number_of_root_comms; i++ )
+            {
+                if ( comm_defintions[ i ].handle != SCOREP_INVALID_MPI_COMMUNICATOR )
+                {
+                    // already defined
+                    continue;
+                }
+
+                if ( comm_defintions[ i ].comm_parent != -1
+                     && comm_defintions[ comm_defintions[ i ].comm_parent ].handle
+                     == SCOREP_INVALID_MPI_COMMUNICATOR )
+                {
+                    // parent not defined
+                    continue;
+                }
+
+                SCOREP_MPICommunicatorHandle comm_parent_handle =
+                    SCOREP_INVALID_MPI_COMMUNICATOR;
+
+                if ( comm_defintions[ i ].comm_parent != -1 )
+                {
+                    comm_parent_handle =
+                        comm_defintions[ comm_defintions[ i ].comm_parent ].handle;
+                }
+
+                /* Define the global MPI communicator with this group */
+                comm_defintions[ i ].handle = SCOREP_DefineUnifiedMPICommunicator(
+                    comm_defintions[ i ].group,
+                    comm_defintions[ i ].comm_name,
+                    comm_parent_handle );
+                assert( SCOREP_UNIFIED_HANDLE_TO_ID(
+                            comm_defintions[ i ].handle, MPICommunicator ) ==
+                        global_comm_id );
+
+                topo_comm_mapping[ i ] = global_comm_id++;
+            }
+        }
+    }
+
+    /* Broadcast the new global ids to all ranks */
+    SCOREP_Mpi_Bcast(
+        topo_comm_mapping,
+        total_number_of_root_comms,
+        SCOREP_MPI_UNSIGNED,
+        0 );
+
+    /* Apply new ids to all communicators */
+    uint32_t* local_mpi_communicator_mappings =
+        scorep_local_definition_manager.mappings->local_mpi_communicator_mappings;
+    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
+                                  LocalMPICommunicator,
+                                  local_mpi_communicator )
+    {
+        if ( !definition->is_self_like )
+        {
+            uint32_t old_global_comm_id =
+                local_mpi_communicator_mappings[ definition->sequence_number ];
+            local_mpi_communicator_mappings[ definition->sequence_number ] =
+                topo_comm_mapping[ old_global_comm_id ];
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+
     free( ranks_in_group );
     free( ranks_in_comm );
+    free( comm_defintions );
+    free( topo_comm_mapping );
 }
 
 void
@@ -968,7 +1060,10 @@ scorep_unify_mpi_communicators_define_self_likes( uint32_t comm_world_size,
         for ( uint32_t i = 0; i < max_number_of_self_ids; i++ )
         {
             SCOREP_MPICommunicatorHandle handle =
-                SCOREP_DefineUnifiedMPICommunicator( self, 0, UINT32_MAX );
+                SCOREP_DefineUnifiedMPICommunicator(
+                    self,
+                    0,
+                    SCOREP_INVALID_MPI_COMMUNICATOR );
             assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, MPICommunicator ) ==
                     number_of_comms + i );
         }

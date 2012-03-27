@@ -140,9 +140,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( MPICommunicator );
 
-    SCOREP_GroupHandle group_handle;
-    uint32_t           name_id;
-    uint32_t           parent_id;
+    SCOREP_GroupHandle           group_handle;
+    uint32_t                     name_id;
+    SCOREP_MPICommunicatorHandle parent_handle;
 };
 
 SCOREP_DEFINE_DEFINITION_TYPE( MPIWindow )

@@ -215,9 +215,9 @@ SCOREP_LocalMPICommunicatorSetName(
 
 
 SCOREP_MPICommunicatorHandle
-SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle group_handle,
-                                     uint32_t           name_id,
-                                     uint32_t           unified_parent_id );
+SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
+                                     uint32_t                     name_id,
+                                     SCOREP_MPICommunicatorHandle unified_parent_handle );
 
 
 /**
