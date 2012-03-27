@@ -33,6 +33,10 @@
 #include <scorep_utility/SCOREP_Error.h>
 
 
+SCOREP_Error_Code
+SCOREP_Tracing_Register( void );
+
+
 void
 SCOREP_Tracing_Initialize( void );
 

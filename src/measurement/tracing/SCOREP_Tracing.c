@@ -41,6 +41,7 @@
 #include <scorep_utility/SCOREP_Debug.h>
 
 
+#include <SCOREP_Config.h>
 #include <scorep_status.h>
 #include <scorep_environment.h>
 #include <scorep_runtime_management.h>
@@ -73,11 +74,49 @@ static SCOREP_Mutex  scorep_otf2_archive_lock;
     size equal the memory page size (scorep_env_page_size)? */
 #define SCOREP_TRACING_CHUNK_SIZE ( 1024 * 1024 )
 
+bool        scorep_tracing_use_sion;
+static bool scorep_tracing_compress;
+
+/** @brief Measurement system configure variables */
+static SCOREP_ConfigVariable scorep_tracing_config_variables[] = {
+    {
+        "use_sion",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_tracing_use_sion,
+        NULL,
+        "false",
+        "Whether or not to use libsion as OTF2 substrate.",
+        "Whether or not to use libsion as OTF2 substrate."
+    },
+    {
+        "compress",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_tracing_compress,
+        NULL,
+        "false",
+        "Whether or not to compress traces with libz.",
+        "Whether or not to compress traces with libz."
+    },
+    SCOREP_CONFIG_TERMINATOR
+};
+
+SCOREP_Error_Code
+SCOREP_Tracing_Register( void )
+{
+    SCOREP_Error_Code ret;
+    ret = SCOREP_ConfigRegister( "tracing", scorep_tracing_config_variables );
+    if ( SCOREP_SUCCESS != ret )
+    {
+        SCOREP_ERROR( ret, "Can't register tracing config variables" );
+    }
+
+    return ret;
+}
 
 static OTF2_Compression
 scorep_tracing_get_compression()
 {
-    if ( SCOREP_Env_CompressTraces() )
+    if ( scorep_tracing_compress )
     {
         return OTF2_COMPRESSION_ZLIB;
     }

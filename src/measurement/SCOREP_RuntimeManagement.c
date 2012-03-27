@@ -131,6 +131,7 @@ SCOREP_InitMeasurement()
     SCOREP_Filter_Register();
     scorep_subsystems_register();
     SCOREP_Profile_Register();
+    SCOREP_Tracing_Register();
     SCOREP_OA_Register();
 
     /* Parse the environment */

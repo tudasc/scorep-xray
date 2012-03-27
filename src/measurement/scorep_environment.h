@@ -60,12 +60,6 @@ uint64_t
 SCOREP_Env_GetPageSize();
 
 
-bool
-SCOREP_Env_UseSionSubstrate();
-
-bool
-SCOREP_Env_CompressTraces();
-
 const char*
 SCOREP_Env_ExperimentDirectory();
 

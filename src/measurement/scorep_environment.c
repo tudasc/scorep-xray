@@ -42,8 +42,6 @@ static bool scorep_env_core_environment_variables_initialized = false;
 // some config variables.
 static bool     scorep_env_verbose;
 static bool     scorep_env_tracing;
-static bool     scorep_env_tracing_use_sion;
-static bool     scorep_env_tracing_compress;
 static bool     scorep_env_profiling;
 static uint64_t scorep_env_total_memory;
 static uint64_t scorep_env_page_size;
@@ -51,7 +49,7 @@ static char*    scorep_env_experiment_directory;
 static bool     scorep_env_overwrite_experiment_directory;
 
 /** @brief Measurement system configure variables */
-SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
+static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
     {
         "enable_profiling",
         SCOREP_CONFIG_TYPE_BOOL,
@@ -96,24 +94,6 @@ SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "8k", // with 1200k total memory this means 150 pages
         "memory page size in bytes",
         "TOTAL_MEMORY will be split up into pages of size PAGE_SIZE."
-    },
-    {
-        "tracing_use_sion",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_tracing_use_sion,
-        NULL,
-        "false",
-        "Whether or not to use libsion as OTF2 substrate.",
-        "Whether or not to use libsion as OTF2 substrate."
-    },
-    {
-        "tracing_compress",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_tracing_compress,
-        NULL,
-        "false",
-        "Whether or not to compress traces with libz.",
-        "Whether or not to compress traces with libz."
     },
     {
         "experiment_directory",
@@ -230,20 +210,6 @@ SCOREP_Env_GetPageSize()
     return scorep_env_page_size;
 }
 
-
-bool
-SCOREP_Env_UseSionSubstrate()
-{
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_tracing_use_sion;
-}
-
-bool
-SCOREP_Env_CompressTraces()
-{
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_tracing_compress;
-}
 
 const char*
 SCOREP_Env_ExperimentDirectory()

@@ -41,6 +41,7 @@
 #include <scorep_environment.h>
 #include <scorep_mpi.h>
 #include <tracing/SCOREP_Tracing.h>
+#include <tracing/scorep_tracing_internal.h>
 
 
 static int
@@ -103,7 +104,7 @@ scorep_tracing_register_sion_callbacks( OTF2_Archive* archive )
 {
     assert( archive );
 
-    if ( SCOREP_Env_UseSionSubstrate() )
+    if ( scorep_tracing_use_sion )
     {
         SCOREP_Error_Code status = OTF2_Archive_SetFileSionCallbacks(
             archive,
@@ -118,7 +119,7 @@ OTF2_FileSubstrate
 scorep_tracing_get_file_substrate()
 {
     OTF2_FileSubstrate substrate = OTF2_SUBSTRATE_POSIX;
-    if ( SCOREP_Env_UseSionSubstrate() )
+    if ( scorep_tracing_use_sion )
     {
         substrate = OTF2_SUBSTRATE_SION;
     }
