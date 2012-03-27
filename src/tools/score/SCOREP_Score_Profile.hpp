@@ -81,11 +81,20 @@ public:
     HasParameter( uint64_t region );
 
 private:
+    bool
+    calculate_calltree_types( const std::vector<cube::Cnode*>* cnodes,
+                              cube::Cnode*                     node );
+
+    SCOREP_Score_Type
+    get_definition_type( uint64_t region );
+
+private:
     cube::Cube*                 m_cube;
     cube::Metric*               m_visits;
     cube::Metric*               m_time;
     std::vector<cube::Process*> m_processes;
     std::vector<cube::Region*>  m_regions;
+    SCOREP_Score_Type*          m_region_types;
 };
 
 
