@@ -111,6 +111,8 @@ AC_SCOREP_LIBSION([MPI])
 AC_SCOREP_LIBSION([MPI_OMP])
 AC_SCOREP_LIBPAPI
 AC_SCOREP_RUSAGE
+AC_SCOREP_SAMPLING
+AC_SCOREP_LIBUNWIND
 
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI
