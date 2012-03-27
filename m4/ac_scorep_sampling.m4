@@ -20,9 +20,7 @@
 
 
 AC_DEFUN([AC_SCOREP_LIBUNWIND], [
-
-AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h])
-
+AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h], [-D_XOPEN_SOURCE=500])
 ])
 
 dnl ----------------------------------------------------------------------------
@@ -69,15 +67,18 @@ AC_CHECK_FUNCS([mprotect posix_memalign sigaction],
                [],
                [has_sampling_functions="no"])
 
-AC_CHECK_MEMBER([struct sigaction.sa_handler], 
-                [has_sampling_sigaction_sa_handler="yes"],
-                [has_sampling_sigaction_sa_handler="no"],
-                [[#include <signal.h>]])
-
 AC_CHECK_TYPE([sig_atomic_t], 
               [has_sampling_sig_atomic_t="yes"], 
               [has_sampling_sig_atomic_t="no"], 
               [[#include <signal.h>]])
+
+cppflags_save=${CPPFLAGS}
+sampling_cppflags="-D_XOPEN_SOURCE=500"
+CPPFLAGS="${sampling_cppflags} ${CPPFLAGS}"
+AC_CHECK_MEMBER([struct sigaction.sa_handler], 
+                [has_sampling_sigaction_sa_handler="yes"],
+                [has_sampling_sigaction_sa_handler="no"],
+                [[#include <signal.h>]])
 
 AC_CHECK_MEMBER([struct sigaction.sa_sigaction], 
                 [has_sampling_sigaction_sa_sigaction="yes"],
@@ -88,23 +89,26 @@ AC_CHECK_TYPE([siginfo_t],
               [has_sampling_siginfo_t="yes"], 
               [has_sampling_siginfo_t="no"], 
               [[#include <signal.h>]])
+CPPFLAGS="${cppflags_save}"
 
 AC_LANG_POP([C])
 
 # generating output
 AS_IF([   test "x${has_sampling_headers}" = "xyes"              \
        && test "x${has_sampling_functions}" = "xyes"            \
-       && test "x${has_sampling_sigaction_sa_handler}" = "xyes" \
-       && test "x${has_sampling_sig_atomic_t}" = "xyes"], 
+       && test "x${has_sampling_sig_atomic_t}" = "xyes"         \
+       && test "x${has_sampling_sigaction_sa_handler}" = "xyes"],
       [has_sampling="yes"
-       sampling_summary="yes"
+       sampling_summary="yes, using ${sampling_cppflags}"
+       AC_SUBST([SAMPLING_CPPFLAGS], ["${sampling_cppflags}"])
        AS_IF([   test "x${has_sampling_sigaction_sa_sigaction}" = "xyes" \
               && test "x${has_sampling_siginfo_t}" = "xyes"], 
              [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1], 
-                        [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])])
-              sampling_summary="yes, using sa_sigaction"],
+                        [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])
+              sampling_summary="yes, using ${sampling_cppflags} and sa_sigaction"])],
       [has_sampling="no"
-       sampling_summary="no"])
+       sampling_summary="no"
+       AC_SUBST([SAMPLING_CPPFLAGS], [""])])
 
 AM_CONDITIONAL([HAVE_SAMPLING], [test "x${has_sampling}" = "xyes"])
 
