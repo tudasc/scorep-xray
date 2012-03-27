@@ -40,7 +40,7 @@ touch config.h
 
 #Fortran
 $SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
-         @FC@ -I. /private/source/silc/silc-root/trunk/gcc-mpich2/build-backend/../../build-backend/../test/adapters/pdt/Fortran/pdt_serial_test.F90 -c -o pdt_serial_f90.o
+         @FC@ -I. @abs_srcdir@/Fortran/pdt_serial_test.F90 -c -o pdt_serial_f90.o
 if [ $? -ne 0 ]; then
     exit 1
 fi
