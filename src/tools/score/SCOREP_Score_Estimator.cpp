@@ -285,8 +285,19 @@ void
 SCOREP_Score_Estimator::PrintGroups()
 {
     double   total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
-    uint64_t max_tbc    = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetMaxTBC();
-    uint64_t total_tbc  = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTBC();
+    uint64_t max_tbc;
+    uint64_t total_tbc;
+
+    if ( m_has_filter )
+    {
+        max_tbc   = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->GetMaxTBC();
+        total_tbc = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTBC();
+    }
+    else
+    {
+        max_tbc   = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetMaxTBC();
+        total_tbc = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTBC();
+    }
 
     cout << endl;
     cout << "Estimated aggregate size of event trace (total_tbc):       "
