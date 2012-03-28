@@ -81,25 +81,23 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     ()
 {
     /** - Collective class macros */
-    comm_multiplicity[ "MPI_Allgather" ]      = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Allgatherv" ]     = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Allreduce" ]      = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Alltoall" ]       = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Alltoallv" ]      = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Barrier" ]        = "_COLL_BARRIER";
-    comm_multiplicity[ "MPI_Bcast" ]          = "_COLL_ONE2ALL";
-    comm_multiplicity[ "MPI_Gather" ]         = "_COLL_ALL2ONE";
-    comm_multiplicity[ "MPI_Gatherv" ]        = "_COLL_ALL2ONE";
-    comm_multiplicity[ "MPI_Reduce" ]         = "_COLL_ALL2ONE";
-    comm_multiplicity[ "MPI_Reduce_scatter" ] = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Scan" ]           = "_COLL_OTHER";
-    comm_multiplicity[ "MPI_Scatter" ]        = "_COLL_ONE2ALL";
-    comm_multiplicity[ "MPI_Scatterv" ]       = "_COLL_ONE2ALL";
-    comm_multiplicity[ "MPI_Win_create" ]     = "_COLL_BARRIER";
-    comm_multiplicity[ "MPI_Win_fence" ]      = "_COLL_BARRIER";
-    comm_multiplicity[ "MPI_Win_free" ]       = "_COLL_BARRIER";
-    comm_multiplicity[ "MPI_Alltoallw" ]      = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Exscan" ]         = "_COLL_OTHER";
+    comm_multiplicity[ "MPI_Allgather" ]            = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Allgatherv" ]           = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Allreduce" ]            = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Alltoall" ]             = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Alltoallv" ]            = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Barrier" ]              = "_COLL_BARRIER";
+    comm_multiplicity[ "MPI_Bcast" ]                = "_COLL_ONE2ALL";
+    comm_multiplicity[ "MPI_Gather" ]               = "_COLL_ALL2ONE";
+    comm_multiplicity[ "MPI_Gatherv" ]              = "_COLL_ALL2ONE";
+    comm_multiplicity[ "MPI_Reduce" ]               = "_COLL_ALL2ONE";
+    comm_multiplicity[ "MPI_Reduce_scatter" ]       = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Reduce_scatter_block" ] = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Scan" ]                 = "_COLL_OTHER";
+    comm_multiplicity[ "MPI_Scatter" ]              = "_COLL_ONE2ALL";
+    comm_multiplicity[ "MPI_Scatterv" ]             = "_COLL_ONE2ALL";
+    comm_multiplicity[ "MPI_Alltoallw" ]            = "_COLL_ALL2ALL";
+    comm_multiplicity[ "MPI_Exscan" ]               = "_COLL_OTHER";
 
     /** - Func-object template handlers */
     func_handlers[ "call:f2c_c2f" ]     = handler::mpi::call_f2c_c2f;

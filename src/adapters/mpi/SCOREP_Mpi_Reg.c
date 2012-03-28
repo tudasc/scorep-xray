@@ -1614,7 +1614,7 @@ scorep_mpi_register_regions()
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_COLL )
     {
         scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ] =
-            SCOREP_DefineRegion( "MPI_Reduce_scatter_block", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI );
+            SCOREP_DefineRegion( "MPI_Reduce_scatter_block", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI_COLL_ALL2ALL );
     }
 #endif
 #if HAVE( DECL_PMPI_REGISTER_DATAREP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Register_datarep )
@@ -2153,7 +2153,7 @@ scorep_mpi_register_regions()
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA )
     {
         scorep_mpi_regid[ SCOREP__MPI_WIN_CREATE ] =
-            SCOREP_DefineRegion( "MPI_Win_create", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI_COLL_BARRIER );
+            SCOREP_DefineRegion( "MPI_Win_create", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI );
     }
 #endif
 #if HAVE( DECL_PMPI_WIN_CREATE_ERRHANDLER ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Win_create_errhandler )
@@ -2188,14 +2188,14 @@ scorep_mpi_register_regions()
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA )
     {
         scorep_mpi_regid[ SCOREP__MPI_WIN_FENCE ] =
-            SCOREP_DefineRegion( "MPI_Win_fence", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI_COLL_BARRIER );
+            SCOREP_DefineRegion( "MPI_Win_fence", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI );
     }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_free )
     if ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_RMA )
     {
         scorep_mpi_regid[ SCOREP__MPI_WIN_FREE ] =
-            SCOREP_DefineRegion( "MPI_Win_free", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI_COLL_BARRIER );
+            SCOREP_DefineRegion( "MPI_Win_free", file_id, SCOREP_INVALID_LINE_NO, SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_MPI );
     }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_free_keyval )
