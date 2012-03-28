@@ -26,6 +26,7 @@
 #include <config.h>
 #include <assert.h>
 #include <SCOREP_Score_Profile.hpp>
+#include <SCOREP_Score_EventList.hpp>
 #include <Cube.h>
 #include <CubeTypes.h>
 
@@ -236,4 +237,106 @@ SCOREP_Score_Profile::HasParameter( uint64_t region )
         return false;                                        // Dynamic region
     }
     return true;
+}
+
+#define SCOREP_SCORE_EVENT( name ) if ( name == GetRegionName( region ) ) { return true; }
+
+bool
+SCOREP_Score_Profile::HasSend( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_SEND
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasIsend( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_ISEND
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasIsendComplete( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_ISENDCOMPLETE
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasIrecvRequest( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_IRECVREQUEST
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasRecv( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_RECV
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasIrecv( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_IRECV
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasCollective( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_COLLECTIVE
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasFork( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_FORK
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasJoin( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_JOIN
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasAcquireLock( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_ACQUIRELOCK
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasReleaseLock( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_RELEASELOCK
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasTaskCreateComplete( uint64_t region )
+{
+    // the tailing space in the name should exclude taskwait regions
+    if ( "!$omp task " == GetRegionName( region ).substr( 0, 11 ) )
+    {
+        return true;
+    }
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasTaskSwitch( uint64_t region )
+{
+    // Should include taskwaits and task regions
+    // create task regions are not counted.
+    if ( "!$omp task" == GetRegionName( region ).substr( 0, 10 ) )
+    {
+        return true;
+    }
+    return false;
 }

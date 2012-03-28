@@ -63,13 +63,11 @@ private:
     uint32_t
     get_compressed_size( uint64_t max_value );
 
-    // Calculate event sizes
-    uint32_t
-    calculate_dense_metric();
-    uint32_t
-    calculate_enter();
-    uint32_t
-    calculate_exit();
+    void
+    calculate_event_sizes();
+
+    void
+    add_header_size( uint32_t* size );
 
 private:
     bool m_has_filter;
@@ -89,6 +87,22 @@ private:
     uint32_t m_dense;
     uint32_t m_enter;
     uint32_t m_exit;
+
+    uint32_t m_send;
+    uint32_t m_isend;
+    uint32_t m_isend_complete;
+    uint32_t m_irecv_request;
+    uint32_t m_recv;
+    uint32_t m_irecv;
+    uint32_t m_collective;
+    uint32_t m_fork;
+    uint32_t m_join;
+    uint32_t m_acquire_lock;
+    uint32_t m_release_lock;
+    uint32_t m_task_create;
+    uint32_t m_task_switch;
+    uint32_t m_task_complete;
+    uint32_t m_parameter;
 };
 
 

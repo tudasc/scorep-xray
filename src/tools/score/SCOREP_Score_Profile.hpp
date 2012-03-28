@@ -80,6 +80,45 @@ public:
     bool
     HasParameter( uint64_t region );
 
+    bool
+    HasSend( uint64_t region );
+
+    bool
+    HasIsend( uint64_t region );
+
+    bool
+    HasIsendComplete( uint64_t region );
+
+    bool
+    HasIrecvRequest( uint64_t region );
+
+    bool
+    HasRecv( uint64_t region );
+
+    bool
+    HasIrecv( uint64_t region );
+
+    bool
+    HasCollective( uint64_t region );
+
+    bool
+    HasFork( uint64_t region );
+
+    bool
+    HasJoin( uint64_t region );
+
+    bool
+    HasAcquireLock( uint64_t region );
+
+    bool
+    HasReleaseLock( uint64_t region );
+
+    bool
+    HasTaskCreateComplete( uint64_t region );
+
+    bool
+    HasTaskSwitch( uint64_t region );
+
 private:
     bool
     calculate_calltree_types( const std::vector<cube::Cnode*>* cnodes,

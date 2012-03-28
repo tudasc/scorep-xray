@@ -124,10 +124,7 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
 
     m_has_filter = false;
     m_timestamp  = 8;
-    m_dense      = calculate_dense_metric();
-
-    m_enter = calculate_enter();
-    m_exit  = calculate_exit();
+    calculate_event_sizes();
 
     m_filtered = NULL;
     m_regions  = NULL;
@@ -247,10 +244,85 @@ SCOREP_Score_Estimator::Calculate( bool show_regions )
                 continue;
             }
 
+            // Consider effects of enter/exit events
             if ( m_profile->HasEnterExit( region ) )
             {
-                tbc += visits * ( m_enter + m_exit );
+                tbc += m_enter + m_exit;
             }
+
+            // Calculate sizes of additional events
+            if ( m_profile->HasParameter(  region ) )
+            {
+                tbc += m_parameter;
+            }
+
+            if ( m_profile->HasSend(  region ) )
+            {
+                tbc += m_send;
+            }
+
+            if ( m_profile->HasIsend(  region ) )
+            {
+                tbc += m_isend;
+            }
+
+            if ( m_profile->HasIsendComplete(  region ) )
+            {
+                tbc += m_isend_complete;
+            }
+
+            if ( m_profile->HasIrecvRequest(  region ) )
+            {
+                tbc += m_irecv_request;
+            }
+
+            if ( m_profile->HasRecv(  region ) )
+            {
+                tbc += m_recv;
+            }
+
+            if ( m_profile->HasIrecv(  region ) )
+            {
+                tbc += m_irecv;
+            }
+
+            if ( m_profile->HasCollective(  region ) )
+            {
+                tbc += m_collective;
+            }
+
+            if ( m_profile->HasFork(  region ) )
+            {
+                tbc += m_fork;
+            }
+
+            if ( m_profile->HasJoin(  region ) )
+            {
+                tbc += m_join;
+            }
+
+            if ( m_profile->HasAcquireLock(  region ) )
+            {
+                tbc += m_acquire_lock;
+            }
+
+            if ( m_profile->HasReleaseLock(  region ) )
+            {
+                tbc += m_release_lock;
+            }
+
+            if ( m_profile->HasTaskCreateComplete(  region ) )
+            {
+                tbc += m_task_create + m_task_complete;
+            }
+
+            if ( m_profile->HasTaskSwitch(  region ) )
+            {
+                tbc += m_task_switch;
+            }
+
+            // Consider number of visits
+            tbc *= visits;
 
             m_groups[ group ]->AddRegion( tbc, time, process );
             m_groups[ SCOREP_SCORE_TYPE_ALL ]->AddRegion( tbc, time, process );
@@ -352,38 +424,96 @@ SCOREP_Score_Estimator::DumpEventSizes()
 }
 
 uint32_t
-SCOREP_Score_Estimator::calculate_enter()
-{
-    return m_timestamp +                         // timestamp
-           get_compressed_size( m_region_num ) + // region handle
-           m_dense;                              // metrics
-}
-
-uint32_t
-SCOREP_Score_Estimator::calculate_exit()
-{
-    return m_timestamp +                         // timestamp
-           get_compressed_size( m_region_num ) + // region handle
-           m_dense;                              // metrics
-}
-
-uint32_t
-SCOREP_Score_Estimator::calculate_dense_metric()
-{
-    // How to determine the number of dense metricss ?
-    if ( m_dense_num == 0 )
-    {
-        return 0;
-    }
-    return get_compressed_size( m_profile->GetNumberOfMetrics() + m_dense_num ) // handle
-           + 1                                                                  // number
-           + m_dense_num                                                        // type ids
-           + m_dense_num * 8;                                                   // values
-}
-
-uint32_t
 SCOREP_Score_Estimator::get_compressed_size( uint64_t max_value )
 {
     return ( uint32_t )1 +                  // Number of leading zeros
            ceil( log10( max_value ) );      // Number
+}
+
+void
+SCOREP_Score_Estimator::add_header_size( uint32_t* size )
+{
+    *size += 1 + get_compressed_size( *size );
+}
+
+void
+SCOREP_Score_Estimator::calculate_event_sizes()
+{
+    if ( m_dense_num == 0 )
+    {
+        m_dense = 0;
+    }
+    else
+    {
+        m_dense = get_compressed_size( m_profile->GetNumberOfMetrics() +
+                                       m_dense_num ) // handle
+                  + 1                                // number
+                  + m_dense_num                      // type ids
+                  + m_dense_num * 8;                 // values
+    }
+
+    m_enter = m_timestamp +                         // timestamp
+              get_compressed_size( m_region_num ) + // region handle
+              m_dense;                              // metrics
+
+    m_exit = m_timestamp +                          // timestamp
+             get_compressed_size( m_region_num ) +  // region handle
+             m_dense;                               // metrics
+
+
+    m_send = get_compressed_size( m_process_num ) +       // receiver
+             4 +                                          // communicator
+             4 +                                          // tag
+             8;                                           // message length
+
+    m_isend = m_send + 8;                                 // additional request id
+
+    m_isend_complete = 8;                                 // request id
+
+    m_irecv_request = 8;                                  // request id
+
+    m_recv = get_compressed_size( m_process_num ) +       // receiver
+             4 +                                          // communicator
+             4 +                                          // tag
+             8;                                           // message length
+
+    m_irecv = m_recv + 8;                                 // additional request id
+
+    m_collective = 4 +                                    // collective type
+                   4 +                                    // communicator
+                   get_compressed_size( m_process_num ) + // root
+                   8 +                                    // sent bytes
+                   8 +                                    // received bytes
+                   1;                                     // collective begin
+
+    m_fork = 4;                                           // number of requested threads
+
+    m_join = 1;                                           // only message type
+
+    m_acquire_lock = 4 +                                  // lock id
+                     4;                                   // acquisition order
+
+    m_release_lock = m_acquire_lock;
+
+    m_task_create   = 8; // task id
+    m_task_switch   = 8; // task id
+    m_task_complete = 8; // task id
+
+    m_parameter = 4 +    // parameter id
+                  8;     //value
+
+    add_header_size( &m_send );
+    add_header_size( &m_isend );
+    add_header_size( &m_isend_complete );
+    add_header_size( &m_irecv_request );
+    add_header_size( &m_recv );
+    add_header_size( &m_irecv );
+    add_header_size( &m_collective );
+    add_header_size( &m_fork );
+    add_header_size( &m_acquire_lock );
+    add_header_size( &m_release_lock );
+    add_header_size( &m_task_create );
+    add_header_size( &m_task_switch );
+    add_header_size( &m_task_complete );
+    add_header_size( &m_parameter );
 }
