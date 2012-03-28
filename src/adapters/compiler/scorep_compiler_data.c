@@ -71,7 +71,8 @@ void
 scorep_compiler_init_file_table()
 {
     SCOREP_MutexCreate( &scorep_compiler_file_table_mutex );
-    scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
+    scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( SCOREP_COMPILER_FILE_SLOTS,
+                                                            &SCOREP_Hashtab_HashString,
                                                             &SCOREP_Hashtab_CompareStrings );
 }
 
