@@ -187,7 +187,7 @@ SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                              const char*                 klass );
 
 SCOREP_LocationGroupHandle
-SCOREP_DefineLocationGroup( uint64_t                    globalLocationGroupId,
+SCOREP_DefineLocationGroup( uint32_t                    globalLocationGroupId,
                             SCOREP_SystemTreeNodeHandle parent,
                             const char*                 name );
 
