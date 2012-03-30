@@ -49,6 +49,7 @@ typedef enum /* SCOREP_Pomp_RegionType */
     SCOREP_Pomp_Flush,
     SCOREP_Pomp_For,
     SCOREP_Pomp_Master,
+    SCOREP_Pomp_Ordered,
     SCOREP_Pomp_Parallel,
     SCOREP_Pomp_ParallelDo,
     SCOREP_Pomp_ParallelFor,

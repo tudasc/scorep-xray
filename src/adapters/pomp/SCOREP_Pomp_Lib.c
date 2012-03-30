@@ -486,7 +486,7 @@ POMP2_Ordered_exit( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ExitRegion( region->innerBlock );
+        SCOREP_ExitRegion( region->outerBlock );
     }
 }
 

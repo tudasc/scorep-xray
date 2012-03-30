@@ -119,6 +119,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
   { "flush",             SCOREP_Pomp_Flush               , SCOREP_REGION_OMP_FLUSH,       SCOREP_REGION_OMP_FLUSH           },
   { "for",               SCOREP_Pomp_For                 , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
   { "master",            SCOREP_Pomp_Master              , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_OMP_MASTER          },
+  { "ordered",           SCOREP_Pomp_Ordered             , SCOREP_REGION_OMP_ORDERED,     SCOREP_REGION_OMP_ORDERED         },
   { "parallel",          SCOREP_Pomp_Parallel            , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_UNKNOWN             },
   { "paralleldo",        SCOREP_Pomp_ParallelDo          , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
   { "parallelfor",       SCOREP_Pomp_ParallelFor         , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
@@ -134,7 +135,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
 /* *INDENT-ON* */
 
 /** Number of entries in scorep_pomp_region_type_map */
-const size_t scorep_pomp_region_type_map_size = 18;
+const size_t scorep_pomp_region_type_map_size = 19;
 
 /* **************************************************************************************
  *                                                                    Init/free functions
@@ -364,6 +365,7 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
             region->regionType = SCOREP_Pomp_Master;
             break;
         case POMP2_Ordered:
+            region->regionType = SCOREP_Pomp_Ordered;
             break;
         case POMP2_Parallel:
             region->regionType = SCOREP_Pomp_Parallel;
