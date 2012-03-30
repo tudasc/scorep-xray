@@ -132,7 +132,7 @@ parse_la ()
         echo "    dependency_las.push_back( \"${dependency_la_name}\" );"     >> ${output_file}
     done
 
-    echo "    if ( la_objects.find( \"${lib_name}\" ) != la_objects.end() ) " >> ${output_file}
+    echo "    if ( la_objects.find( \"${lib_name}\" ) == la_objects.end() ) " >> ${output_file}
     echo "    {"                                                              >> ${output_file}
     echo "        la_objects[ \"${lib_name}\" ] ="                            >> ${output_file}
     echo "            la_object( \"${lib_name}\","                            >> ${output_file}
