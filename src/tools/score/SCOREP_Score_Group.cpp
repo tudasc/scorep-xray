@@ -52,15 +52,15 @@ SCOREP_Score_Group::~SCOREP_Score_Group()
 }
 
 void
-SCOREP_Score_Group::AddRegion( uint64_t tbc, double time, uint64_t process )
+SCOREP_Score_Group::AddRegion( uint64_t byteCount, double time, uint64_t process )
 {
-    m_total_tbc          += tbc;
-    m_max_tbc[ process ] += tbc;
+    m_total_tbc          += byteCount;
+    m_max_tbc[ process ] += byteCount;
     m_total_time         += time;
 }
 
 void
-SCOREP_Score_Group::Print( double total_time )
+SCOREP_Score_Group::Print( double totalTime )
 {
     cout.setf( ios::fixed, ios::floatfield );
     cout.setf( ios::showpoint );
@@ -71,7 +71,7 @@ SCOREP_Score_Group::Print( double total_time )
              << setw( 6 ) << SCOREP_Score_GetTypeName( m_type )
              << setw( 16 ) << GetMaxTBC()
              << setw( 13 ) << setprecision( 2 ) << m_total_time
-             << setw( 7 )  << setprecision( 1 ) << 100 / total_time * m_total_time
+             << setw( 7 )  << setprecision( 1 ) << 100 / totalTime * m_total_time
              << left << " " << m_name << endl;
     }
 }

@@ -32,7 +32,7 @@
 class SCOREP_Score_Profile
 {
 public:
-    SCOREP_Score_Profile( std::string cube_file );
+    SCOREP_Score_Profile( std::string cubeFile );
     virtual
     ~SCOREP_Score_Profile();
 

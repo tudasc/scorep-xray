@@ -33,10 +33,10 @@
 using namespace std;
 using namespace cube;
 
-SCOREP_Score_Profile::SCOREP_Score_Profile( string cube_file )
+SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
 {
     m_cube = new Cube();
-    m_cube->openCubeReport( cube_file );
+    m_cube->openCubeReport( cubeFile );
 
     m_visits = m_cube->get_met( "visits" );
     m_time   = m_cube->get_met( "time" );

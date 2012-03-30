@@ -32,19 +32,19 @@ class SCOREP_Score_Estimator
 {
 public:
     SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                            uint32_t              dense_num );
+                            uint32_t              denseBum );
     virtual
     ~SCOREP_Score_Estimator();
 
     void
-    Calculate( bool show_regions );
+    Calculate( bool showRegions );
     void
     PrintGroups();
     void
     PrintRegions();
 
     void
-    InitializeFilter( std::string filter_file );
+    InitializeFilter( std::string filterFile );
 
     void
     DumpEventSizes();

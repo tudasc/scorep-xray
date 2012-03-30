@@ -36,7 +36,7 @@ using namespace std;
 ****************************************************************************************/
 
 static void
-scorep_score_swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
+swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
 {
     SCOREP_Score_Group* helper = items[ pos1 ];
     items[ pos1 ] = items[ pos2 ];
@@ -44,7 +44,7 @@ scorep_score_swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
 }
 
 static void
-scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
+quicksort( SCOREP_Score_Group** items, uint64_t size )
 {
     if ( size < 2 )
     {
@@ -54,7 +54,7 @@ scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
     {
         if ( items[ 0 ]->GetMaxTBC() < items[ 1 ]->GetMaxTBC() )
         {
-            scorep_score_swap( items, 0, 1 );
+            swap( items, 0, 1 );
         }
         return;
     }
@@ -79,7 +79,7 @@ scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
         }
         if ( beg < end )
         {
-            scorep_score_swap( items, beg, end );
+            swap( items, beg, end );
 
             // Maintain position of our threshold item
             // Needed for special handling of equal values
@@ -98,7 +98,7 @@ scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
     // Otherwise,lots of equal values might lead to infinite recursion.
     if ( items[ end ]->GetMaxTBC() < threshold )
     {
-        scorep_score_swap( items, end, pos );
+        swap( items, end, pos );
     }
     while ( ( end < size ) &&
             ( items[ end ]->GetMaxTBC() == threshold ) )
@@ -106,8 +106,8 @@ scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
         end++;
     }
 
-    scorep_score_quicksort( items, beg );
-    scorep_score_quicksort( &items[ end ], size - end );
+    quicksort( items, beg );
+    quicksort( &items[ end ], size - end );
 }
 
 /* **************************************************************************************
@@ -115,9 +115,9 @@ scorep_score_quicksort( SCOREP_Score_Group** items, uint64_t size )
 ****************************************************************************************/
 
 SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                                                uint32_t              dense_num )
+                                                uint32_t              denseNum )
 {
-    m_dense_num   = dense_num;
+    m_dense_num   = denseNum;
     m_profile     = profile;
     m_region_num  = profile->GetNumberOfRegions();
     m_process_num = profile->GetNumberOfProcesses();
@@ -174,15 +174,15 @@ SCOREP_Score_Estimator::initialize_regions()
 }
 
 void
-SCOREP_Score_Estimator::InitializeFilter( string filter_file )
+SCOREP_Score_Estimator::InitializeFilter( string filterFile )
 {
     /* Initialize filter component */
     SCOREP_Error_Code err = SCOREP_SUCCESS;
-    err = SCOREP_Filter_ParseFile( filter_file.c_str() );
+    err = SCOREP_Filter_ParseFile( filterFile.c_str() );
 
     if ( err != SCOREP_SUCCESS )
     {
-        cerr << "ERROR:Failed to open '" << filter_file << "'." << endl;
+        cerr << "ERROR:Failed to open '" << filterFile << "'." << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -222,9 +222,9 @@ SCOREP_Score_Estimator::match_filter( uint64_t region )
 }
 
 void
-SCOREP_Score_Estimator::Calculate( bool show_regions )
+SCOREP_Score_Estimator::Calculate( bool showRegions )
 {
-    if ( show_regions )
+    if ( showRegions )
     {
         initialize_regions();
     }
@@ -327,7 +327,7 @@ SCOREP_Score_Estimator::Calculate( bool show_regions )
             m_groups[ group ]->AddRegion( tbc, time, process );
             m_groups[ SCOREP_SCORE_TYPE_ALL ]->AddRegion( tbc, time, process );
 
-            if ( show_regions )
+            if ( showRegions )
             {
                 m_regions[ region ]->AddRegion( tbc, time, process );
             }
@@ -335,7 +335,7 @@ SCOREP_Score_Estimator::Calculate( bool show_regions )
             if ( m_has_filter )
             {
                 bool do_filter = match_filter( region );
-                if ( show_regions )
+                if ( showRegions )
                 {
                     m_regions[ region ]->DoFilter( do_filter ?
                                                    SCOREP_SCORE_FILTER_YES :
@@ -382,7 +382,7 @@ SCOREP_Score_Estimator::PrintGroups()
          << " or reduce requirements using file listing names of USR regions to be filtered.)"
          << endl << endl;
 
-    scorep_score_quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
+    quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
     cout << "flt type         max_tbc         time      \% region" << endl;
     for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
@@ -392,7 +392,7 @@ SCOREP_Score_Estimator::PrintGroups()
 
     if ( m_has_filter )
     {
-        scorep_score_quicksort( &m_filtered[ 1 ], SCOREP_SCORE_TYPE_NUM - 1 );
+        quicksort( &m_filtered[ 1 ], SCOREP_SCORE_TYPE_NUM - 1 );
 
         cout << endl;
         for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
@@ -405,7 +405,7 @@ SCOREP_Score_Estimator::PrintGroups()
 void
 SCOREP_Score_Estimator::PrintRegions()
 {
-    scorep_score_quicksort( m_regions, m_region_num );
+    quicksort( m_regions, m_region_num );
 
     double total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
     cout << endl;

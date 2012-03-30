@@ -39,12 +39,12 @@ public:
     ~SCOREP_Score_Group();
 
     void
-    AddRegion( uint64_t tbc,
+    AddRegion( uint64_t bytesCount,
                double   time,
                uint64_t process );
 
     void
-    Print( double total_time );
+    Print( double totalTime );
 
     double
     GetTotalTime();
