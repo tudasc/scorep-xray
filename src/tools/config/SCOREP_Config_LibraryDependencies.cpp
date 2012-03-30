@@ -61,10 +61,11 @@ remove_double_entries( const vector<string> input )
         }
     }
 
-    vector<string> output;
-    for ( i = inverse.rbegin(); i < inverse.rend(); i++ )
+    vector<string>::reverse_iterator j;
+    vector<string>                   output;
+    for ( j = inverse.rbegin(); j < inverse.rend(); j++ )
     {
-        output.push_back( *i );
+        output.push_back( *j );
     }
     return output;
 }
