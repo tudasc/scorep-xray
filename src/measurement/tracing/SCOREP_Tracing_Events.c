@@ -75,6 +75,14 @@ SCOREP_Tracing_Metric( SCOREP_Location*         location,
 
     SCOREP_SamplingSet_Definition* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+    uint32_t sequence_number = sampling_set->sequence_number;
+    if ( sampling_set->is_scoped )
+    {
+        SCOREP_ScopedSamplingSet_Definition* scoped_sampling_set =
+            ( SCOREP_ScopedSamplingSet_Definition* )sampling_set;
+        sampling_set = SCOREP_LOCAL_HANDLE_DEREF( scoped_sampling_set->sampling_set_handle,
+                                                  SamplingSet );
+    }
 
     OTF2_TypeID value_types[ sampling_set->number_of_metrics ];
     for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
@@ -89,7 +97,7 @@ SCOREP_Tracing_Metric( SCOREP_Location*         location,
     OTF2_EvtWriter_Metric( evt_writer,
                            NULL,
                            timestamp,
-                           sampling_set->sequence_number,
+                           sequence_number,
                            sampling_set->number_of_metrics,
                            value_types,
                            ( const OTF2_MetricValue* )metricValues );
