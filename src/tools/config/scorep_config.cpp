@@ -30,6 +30,7 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config.hpp>
+#include <SCOREP_Config_LibraryDependencies.hpp>
 
 #define MODE_SEQ 0
 #define MODE_OMP 1
@@ -89,21 +90,23 @@ int
 main( int    argc,
       char** argv )
 {
-    int               i;
+    int i;
     /* set default mode to mpi */
-    int               mode     = MODE_MPI;
-    int               action   = 0;
-    int               ret      = EXIT_SUCCESS;
-    bool              user     = false;
-    bool              compiler = true;
-    bool              fortran  = false;
+    int  mode     = MODE_MPI;
+    int  action   = 0;
+    int  ret      = EXIT_SUCCESS;
+    bool user     = false;
+    bool compiler = true;
+    bool fortran  = false;
+    bool install  = true;
 
     const std::string scorep_libs[ 4 ] = { "scorep_serial",
                                            "scorep_omp",
                                            "scorep_mpi",
                                            "scorep_mpi_omp" };
 
-    SCOREP_Config     app( argv[ 0 ] );
+    SCOREP_Config                     app( argv[ 0 ] );
+    SCOREP_Config_LibraryDependencies deps;
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
@@ -205,6 +208,10 @@ main( int    argc,
         {
             fortran = true;
         }
+        else if ( strcmp( argv[ i ], "--build-check" ) == 0 )
+        {
+            install = false;
+        }
 
         else
         {
@@ -297,35 +304,16 @@ main( int    argc,
     }
     else
     {
+        std::vector<std::string> libs;
+        libs.push_back( "lib" + scorep_libs[ mode ] );
+
         switch ( action )
         {
             case ACTION_LIBS:
-                /** Create lib info */
-                app.AddLib( "-l" + scorep_libs[ mode ] );
-                app.AddLib( SCOREP_LIBS );
-                app.AddLibDir( SCOREP_LIBDIR );
-                app.AddLibDir( CUBE_LIBDIR );
-                app.AddLibDir( TIMER_LIBDIR );
-                #if HAVE( PAPI )
-                app.AddLibDir( PAPI_LIBDIR );
-                app.AddLib( PAPI_LIBS );
-                #endif
-                if ( ( mode == MODE_MPI ) || ( mode == MODE_HYB ) )
-                {
-                    app.str_libdir += " " SCOREP_MPI_SION_LDFLAGS;
-                    app.AddLib( SCOREP_MPI_SION_LIBS );
-                }
-                else
-                {
-                    app.str_libdir += " " SCOREP_BACKEND_SION_LDFLAGS;
-                    app.AddLib( SCOREP_BACKEND_SION_LIBS );
-                }
-
-                std::cout << app.str_libdir << " " << app.str_libs << " ";
+                std::cout << deps.GetLDFlags( libs, install );
+                std::cout << deps.GetRpathFlags( libs, install );
+                std::cout << deps.GetLibraries( libs );
                 std::cout.flush();
-
-                app.str_otf2_config += " --libs";
-                ret                  = system( app.str_otf2_config.c_str() );
                 break;
 
             case ACTION_CFLAGS:
