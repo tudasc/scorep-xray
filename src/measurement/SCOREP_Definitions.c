@@ -219,7 +219,7 @@ scorep_source_file_definitions_equal( const SCOREP_SourceFile_Definition* existi
 
 static SCOREP_LocationGroupHandle
 scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_manager,
-                                         uint64_t                    globalLocationGroupId,
+                                         uint32_t                    globalLocationGroupId,
                                          SCOREP_SystemTreeNodeHandle parent,
                                          SCOREP_StringHandle         nameHandle,
                                          SCOREP_LocationGroupType    locationType );
@@ -230,7 +230,7 @@ scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_
  * @in internal
  */
 SCOREP_LocationGroupHandle
-SCOREP_DefineLocationGroup( uint64_t                    globalLocationGroupId,
+SCOREP_DefineLocationGroup( uint32_t                    globalLocationGroupId,
                             SCOREP_SystemTreeNodeHandle parent,
                             const char*                 name )
 {
@@ -286,7 +286,7 @@ scorep_location_group_definitions_equal( const SCOREP_LocationGroup_Definition* 
 
 SCOREP_LocationGroupHandle
 scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_manager,
-                                         uint64_t                    globalLocationGroupId,
+                                         uint32_t                    globalLocationGroupId,
                                          SCOREP_SystemTreeNodeHandle parent,
                                          SCOREP_StringHandle         nameHandle,
                                          SCOREP_LocationGroupType    locationGroupType )
