@@ -213,3 +213,6 @@ else
 installcheck-local:
 	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
 endif
+
+scorep_library_dependencies.cpp: $(lib_LTLIBRARIES)
+	../vendor/common/build-config/generate-library-dependencies.sh

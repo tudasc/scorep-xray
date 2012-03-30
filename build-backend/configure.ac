@@ -196,5 +196,6 @@ AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_serial_tests.sh], \
                 [chmod +x ../test/adapters/pdt/run_pdt_serial_tests.sh])
 AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_fortran_tests.sh], \
                 [chmod +x ../test/adapters/pdt/run_pdt_fortran_tests.sh])
-
+AC_CONFIG_FILES([../vendor/common/build-config/generate-library-dependencies.sh], \
+                [chmod +x ../vendor/common/build-config/generate-library-dependencies.sh])
 AC_OUTPUT

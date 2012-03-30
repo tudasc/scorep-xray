@@ -32,7 +32,8 @@ scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
 scorep_config_LDADD = $(LIB_DIR_UTIL)libscorep_parser_tools.la \
 		    $(LIB_DIR_UTIL)libscorep_utilities.la
 
-BUILT_SOURCES += create-config-tool-headers
+BUILT_SOURCES += create-config-tool-headers \
+	scorep_library_dependencies.cpp
 
 ## Get the config tool values from the backend and mpi Makefiles
 create-config-tool-headers:
