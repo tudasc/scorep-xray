@@ -289,7 +289,7 @@ scorep_tracing_parameter_type_to_otf2( SCOREP_ParameterType scorepType )
 }
 
 
-static inline OTF2_Mpi_CollectiveType
+static inline OTF2_MpiCollectiveType
 scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
 {
     switch ( scorep_type )
