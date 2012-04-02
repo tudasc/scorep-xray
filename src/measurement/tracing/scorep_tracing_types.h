@@ -127,7 +127,7 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
         case_return( LOCATIONS,     LOCATIONS );
         case_return( REGIONS,       REGIONS );
         case_return( METRIC,        METRIC );
-        case_return( COMM_SELF,     COMMUNICATOR_SELF );
+        case_return( COMM_SELF,     MPI_COMM_SELF );
         case_return( MPI_GROUP,     MPI_GROUP );
         case_return( MPI_LOCATIONS, MPI_LOCATIONS );
 

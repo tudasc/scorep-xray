@@ -605,7 +605,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     if ( SCOREP_Mpi_HasMpi() )
     {
         SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( local_mpi_communicator,
-                                                 MPI_COMMUNICATOR,
+                                                 MPI_COMM,
                                                  localDefinitionWriter );
     }
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( sampling_set, METRIC, localDefinitionWriter );
