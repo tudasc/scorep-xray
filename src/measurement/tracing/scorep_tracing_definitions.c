@@ -361,7 +361,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
                                                          uint32_t,
                                                          OTF2_MetricType,
                                                          OTF2_MetricMode,
-                                                         OTF2_TypeID,
+                                                         OTF2_Type,
                                                          OTF2_MetricBase,
                                                          int64_t,
                                                          uint32_t );

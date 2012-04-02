@@ -84,7 +84,7 @@ SCOREP_Tracing_Metric( SCOREP_Location*         location,
                                                   SamplingSet );
     }
 
-    OTF2_TypeID value_types[ sampling_set->number_of_metrics ];
+    OTF2_Type value_types[ sampling_set->number_of_metrics ];
     for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
     {
         SCOREP_MetricHandle       metric_handle = sampling_set->metric_handles[ i ];
