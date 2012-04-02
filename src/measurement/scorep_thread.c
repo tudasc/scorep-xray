@@ -126,7 +126,7 @@ struct SCOREP_Location
     SCOREP_LocationHandle          location_handle;
 
     SCOREP_Profile_LocationData*   profile_data;
-    SCOREP_Trace_LocationData*     trace_data;
+    SCOREP_TracingData*            tracing_data;
 
     SCOREP_Location*               next; // store location objects in list for easy cleanup
 
@@ -364,11 +364,11 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         assert( new_location->profile_data );
     }
 
-    new_location->trace_data = 0;
+    new_location->tracing_data = 0;
     if ( SCOREP_IsTracingEnabled() )
     {
-        new_location->trace_data = SCOREP_Tracing_CreateLocationData();
-        assert( new_location->trace_data );
+        new_location->tracing_data = SCOREP_Tracing_CreateLocationData();
+        assert( new_location->tracing_data );
     }
 
     SCOREP_PRAGMA_OMP( critical( new_location ) )
@@ -459,7 +459,7 @@ SCOREP_Location_Finalize()
         SCOREP_Location* tmp = location_data->next;
 
         scorep_subsystems_finalize_location( location_data );
-        SCOREP_Tracing_DeleteLocationData( location_data->trace_data );
+        SCOREP_Tracing_DeleteLocationData( location_data->tracing_data );
         SCOREP_Profile_DeleteLocationData( location_data->profile_data );
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
         free( location_data );
@@ -632,10 +632,10 @@ SCOREP_Location_GetProfileData( SCOREP_Location* locationData )
 }
 
 
-SCOREP_Trace_LocationData*
-SCOREP_Location_GetTraceData( SCOREP_Location* locationData )
+SCOREP_TracingData*
+SCOREP_Location_GetTracingData( SCOREP_Location* locationData )
 {
-    return locationData->trace_data;
+    return locationData->tracing_data;
 }
 
 uint64_t

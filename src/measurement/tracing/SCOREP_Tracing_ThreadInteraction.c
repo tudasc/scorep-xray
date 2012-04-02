@@ -46,10 +46,10 @@
 #include "SCOREP_Tracing.h"
 
 
-SCOREP_Trace_LocationData*
+SCOREP_TracingData*
 SCOREP_Tracing_CreateLocationData()
 {
-    SCOREP_Trace_LocationData* new_data
+    SCOREP_TracingData* new_data
         = SCOREP_Memory_AllocForMisc( sizeof( *new_data ) );
 
     new_data->otf_writer = 0;
@@ -59,7 +59,7 @@ SCOREP_Tracing_CreateLocationData()
 
 
 void
-SCOREP_Tracing_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData )
+SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData )
 {
     if ( traceLocationData && traceLocationData->otf_writer )
     {
@@ -102,12 +102,12 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
         return;
     }
 
-    SCOREP_Trace_LocationData* trace_data = SCOREP_Location_GetTraceData( locationData );
+    SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( locationData );
 
     SCOREP_Tracing_LockArchive();
     {
         /* SCOREP_Tracing_GetEventWriter() aborts on error */
-        trace_data->otf_writer = SCOREP_Tracing_GetEventWriter();
+        tracing_data->otf_writer = SCOREP_Tracing_GetEventWriter();
     }
     SCOREP_Tracing_UnlockArchive();
 
@@ -132,11 +132,11 @@ SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
         return;
     }
 
-    SCOREP_Trace_LocationData* trace_data = SCOREP_Location_GetTraceData( threadLocationData );
+    SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( threadLocationData );
     //assert( threadLocationData->location_id == UINT64_MAX );
     uint64_t location_id = SCOREP_Location_GetGlobalId( threadLocationData );
 
-    SCOREP_Error_Code error = OTF2_EvtWriter_SetLocationID( trace_data->otf_writer,
+    SCOREP_Error_Code error = OTF2_EvtWriter_SetLocationID( tracing_data->otf_writer,
                                                             location_id );
     if ( SCOREP_SUCCESS != error )
     {

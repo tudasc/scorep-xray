@@ -91,8 +91,8 @@ SCOREP_Profile_LocationData*
 SCOREP_Location_GetProfileData( SCOREP_Location* locationData );
 
 
-SCOREP_Trace_LocationData*
-SCOREP_Location_GetTraceData( SCOREP_Location* locationData );
+SCOREP_TracingData*
+SCOREP_Location_GetTracingData( SCOREP_Location* locationData );
 
 
 uint64_t

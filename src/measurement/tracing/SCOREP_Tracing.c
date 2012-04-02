@@ -376,13 +376,13 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
     SCOREP_Location_Definition* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
 
-    SCOREP_Trace_LocationData* trace_data =
-        SCOREP_Location_GetTraceData( locationData );
+    SCOREP_TracingData* tracing_data =
+        SCOREP_Location_GetTracingData( locationData );
 
-    assert( trace_data->otf_writer );
+    assert( tracing_data->otf_writer );
 
     uint64_t number_of_events;
-    OTF2_EvtWriter_GetNumberOfEvents( trace_data->otf_writer,
+    OTF2_EvtWriter_GetNumberOfEvents( tracing_data->otf_writer,
                                       &number_of_events );
 
     /* update number of events */
@@ -390,8 +390,8 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
 
     /* close the event writer */
     OTF2_Archive_CloseEvtWriter( scorep_otf2_archive,
-                                 trace_data->otf_writer );
-    trace_data->otf_writer = NULL;
+                                 tracing_data->otf_writer );
+    tracing_data->otf_writer = NULL;
 }
 
 

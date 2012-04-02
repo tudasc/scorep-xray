@@ -29,15 +29,15 @@
 #include <SCOREP_Location.h>
 
 
-typedef struct SCOREP_Trace_LocationData SCOREP_Trace_LocationData;
+typedef struct SCOREP_TracingData SCOREP_TracingData;
 
 
 /**
- * Allocate a valid SCOREP_Trace_LocationData object, initialize it in
+ * Allocate a valid SCOREP_TracingData object, initialize it in
  * SCOREP_Tracing_OnLocationCreation().
  *
  */
-SCOREP_Trace_LocationData*
+SCOREP_TracingData*
 SCOREP_Tracing_CreateLocationData();
 
 
@@ -48,7 +48,7 @@ SCOREP_Tracing_CreateLocationData();
  * @param traceLocationData The object to be deleted
  */
 void
-SCOREP_Tracing_DeleteLocationData( SCOREP_Trace_LocationData* traceLocationData );
+SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData );
 
 
 /**

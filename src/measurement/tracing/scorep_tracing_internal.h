@@ -26,7 +26,7 @@
  */
 
 
-struct SCOREP_Trace_LocationData
+struct SCOREP_TracingData
 {
     OTF2_EvtWriter* otf_writer;
 };
