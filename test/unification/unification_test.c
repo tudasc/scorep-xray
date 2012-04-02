@@ -56,9 +56,6 @@ void init_definition_manager(CuTest* tc, SCOREP_DefinitionManager** manager, boo
 // void CuAssertPtrEquals(CuTest* tc, void* expected, void* actual);
 // void CuAssertPtrNotNull(CuTest* tc, void* pointer);
 
-//extern SCOREP_Allocator_PageManager* scorep_local_movable_page_manager;
-//extern SCOREP_Allocator_PageManager* scorep_remote_movable_page_manager;
-
 void
 test_1( CuTest* tc )
 {

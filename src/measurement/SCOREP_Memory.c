@@ -51,24 +51,7 @@ static uint64_t                    scorep_memory_total_memory;
 
 static bool scorep_memory_is_initialized = false;
 
-//static SCOREP_Allocator_PageManager* scorep_local_movable_page_manager = 0;
-SCOREP_Allocator_PageManager* scorep_local_movable_page_manager  = 0;
-SCOREP_Allocator_PageManager* scorep_remote_movable_page_manager = 0;
-
-/// @todo croessel will be initialized when pages are moved via MPI or by offline unification
-static SCOREP_Allocator_PageManager* scorep_remote_memory_definition_pagemanager = 0;
-
-enum scorep_memory_page_type
-{
-    profile_pages = 0,  // separate because we might clear them for periscope from time to time
-    //adapter_pages, // do we need extra pages for adapters or shall they use the subsequent two?
-    //multithreaded_misc_pages,
-    //singlethreaded_misc_pages,
-    misc_pages,
-    //definitions_pages, we need only one page manager for definition as they are collected by process
-    number_of_page_types
-};
-
+static SCOREP_Allocator_PageManager* scorep_definitions_page_manager;
 
 void
 SCOREP_Memory_Initialize( size_t totalMemory,
@@ -99,15 +82,13 @@ SCOREP_Memory_Initialize( size_t totalMemory,
         assert( false );
     }
 
-    assert( scorep_local_movable_page_manager == 0 );
-    scorep_local_movable_page_manager = SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
-    if ( !scorep_local_movable_page_manager )
+    assert( scorep_definitions_page_manager == 0 );
+    scorep_definitions_page_manager = SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
+    if ( !scorep_definitions_page_manager )
     {
         SCOREP_MutexDestroy( &memory_lock );
         scorep_memory_is_initialized = false;
-        SCOREP_ERROR( SCOREP_ERROR_MEMORY_OUT_OF_PAGES,
-                      "Can't create new page manager due to lack of free pages." );
-        assert( false );
+        SCOREP_Memory_HandleOutOfMemory();
     }
 
     scorep_memory_total_memory = totalMemory;
@@ -123,7 +104,7 @@ SCOREP_Memory_Finalize()
     }
     scorep_memory_is_initialized = false;
 
-    assert( scorep_local_movable_page_manager );
+    assert( scorep_definitions_page_manager );
 #if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
     // Do nothing here. Intel OpenMP RTL shuts down at the end of main
     // function, so omp_set/unset_lock, which is called after the end
@@ -131,9 +112,9 @@ SCOREP_Memory_Finalize()
     // problem will be fixed in  Intel Compiler 11.1 update 6.
     // See http://software.intel.com/en-us/forums/showpost.php?p=110592
 #else
-    SCOREP_Allocator_DeletePageManager( scorep_local_movable_page_manager );
+    SCOREP_Allocator_DeletePageManager( scorep_definitions_page_manager );
 #endif
-    scorep_local_movable_page_manager = 0;
+    scorep_definitions_page_manager = 0;
 
     assert( scorep_memory_allocator );
     SCOREP_Allocator_DeleteAllocator( scorep_memory_allocator );
@@ -151,39 +132,25 @@ SCOREP_Memory_HandleOutOfMemory( void )
     assert( false );
 }
 
-SCOREP_Allocator_PageManager**
-SCOREP_Memory_CreatePageManagers()
+void
+SCOREP_Memory_CreatePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 {
-    SCOREP_Allocator_PageManager** array =
-        malloc( number_of_page_types * sizeof( SCOREP_Allocator_PageManager* ) );
-    assert( array );
-    for ( int i = 0; i < number_of_page_types; ++i )
+    for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES; ++i )
     {
-        if ( i == profile_pages && !SCOREP_IsProfilingEnabled() )
+        if ( ( i == SCOREP_MEMORY_TYPE_PROFILING && !SCOREP_IsProfilingEnabled() )
+             || ( i == SCOREP_MEMORY_TYPE_TRACING && !SCOREP_IsTracingEnabled() ) )
         {
-            array[ i ] = 0;
+            pageManagers[ i ] = 0;
             continue;
         }
-        array[ i ] = SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
-        if ( !array[ i ] )
+        pageManagers[ i ] =
+            SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
+        if ( !pageManagers[ i ] )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEMORY_OUT_OF_PAGES,
-                          "Can't create new page manager due to lack of free pages." );
-            assert( 0 );
+            /* aborts */
+            SCOREP_Memory_HandleOutOfMemory();
         }
     }
-    return array;
-}
-
-
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreatePageManager( void )
-{
-    SCOREP_Allocator_PageManager* page_manager =
-        SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
-    assert( page_manager );
-
-    return page_manager;
 }
 
 
@@ -191,7 +158,7 @@ void
 SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 {
     // is there a need to free pages before deleting them?
-    for ( int i = 0; i < number_of_page_types; ++i )
+    for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES; ++i )
     {
         if ( pageManagers[ i ] )
         {
@@ -206,12 +173,11 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 #endif
         }
     }
-    free( pageManagers );
 }
 
 
 void*
-SCOREP_Memory_AllocForProfile( size_t size  )
+SCOREP_Memory_AllocForMisc( size_t size )
 {
     // collect statistics
     if ( size == 0 )
@@ -220,37 +186,10 @@ SCOREP_Memory_AllocForProfile( size_t size  )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ profile_pages ], size );
-    if ( !mem )
-    {
-        /* aborts */
-        SCOREP_Memory_HandleOutOfMemory();
-    }
-    return mem;
-}
-
-
-void
-SCOREP_Memory_FreeProfileMem()
-{
-    // print mem usage statistics
-    SCOREP_Allocator_Free(
-        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ profile_pages ] );
-}
-
-
-
-void*
-SCOREP_Memory_AllocForMisc( size_t size  )
-{
-    // collect statistics
-    if ( size == 0 )
-    {
-        return NULL;
-    }
-
-    void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ misc_pages ], size );
+        SCOREP_Location_GetMemoryPageManager(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_MEMORY_TYPE_MISC ),
+        size );
     if ( !mem )
     {
         /* aborts */
@@ -265,7 +204,75 @@ SCOREP_Memory_FreeMiscMem()
 {
     // print mem usage statistics
     SCOREP_Allocator_Free(
-        SCOREP_Location_GetMemoryPageManagers( SCOREP_Location_GetCurrentCPULocation() )[ misc_pages ] );
+        SCOREP_Location_GetMemoryPageManager(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_MEMORY_TYPE_MISC ) );
+}
+
+
+void*
+SCOREP_Memory_AllocForProfile( size_t size )
+{
+    // collect statistics
+    if ( size == 0 )
+    {
+        return NULL;
+    }
+
+    void* mem = SCOREP_Allocator_Alloc(
+        SCOREP_Location_GetMemoryPageManager(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_MEMORY_TYPE_PROFILING ),
+        size );
+    if ( !mem )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+    return mem;
+}
+
+
+void
+SCOREP_Memory_FreeProfileMem()
+{
+    // print mem usage statistics
+    SCOREP_Allocator_Free(
+        SCOREP_Location_GetMemoryPageManager(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_MEMORY_TYPE_PROFILING ) );
+}
+
+
+void*
+SCOREP_Memory_AllocForTracing( size_t size )
+{
+    // collect statistics
+    if ( size == 0 )
+    {
+        return NULL;
+    }
+
+    void* mem = SCOREP_Allocator_Alloc(
+        SCOREP_Location_GetMemoryPageManager(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_MEMORY_TYPE_TRACING ),
+        size );
+
+    /* Do not handle out of memory, OTF2 will flush and free pages */
+
+    return mem;
+}
+
+
+void
+SCOREP_Memory_FreeTracingMem()
+{
+    // print mem usage statistics
+    SCOREP_Allocator_Free(
+        SCOREP_Location_GetMemoryPageManager(
+            SCOREP_Location_GetCurrentCPULocation(),
+            SCOREP_MEMORY_TYPE_TRACING ) );
 }
 
 
@@ -275,11 +282,11 @@ SCOREP_Memory_AllocForDefinitions( size_t size )
     // collect statistics
     if ( size == 0 )
     {
-        return 0;
+        return SCOREP_MOVABLE_NULL;
     }
 
     SCOREP_Allocator_MovableMemory mem =
-        SCOREP_Allocator_AllocMovable( scorep_local_movable_page_manager, size );
+        SCOREP_Allocator_AllocMovable( scorep_definitions_page_manager, size );
     if ( mem == SCOREP_MOVABLE_NULL )
     {
         /* aborts */
@@ -293,7 +300,7 @@ void
 SCOREP_Memory_FreeDefinitionMem()
 {
     // print mem usage statistics
-    SCOREP_Allocator_Free( scorep_local_movable_page_manager );
+    SCOREP_Allocator_Free( scorep_definitions_page_manager );
 }
 
 
@@ -307,15 +314,6 @@ SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movabl
 }
 
 
-//void*
-//SCOREP_Memory_GetAddressFromMovedMemory( SCOREP_Allocator_MovableMemory movedMemory )
-//{
-//    return SCOREP_Allocator_GetAddressFromMovedMemory(
-//               scorep_remote_memory_definition_pagemanager,
-//               movedMemory );
-//}
-
-
 SCOREP_Allocator_PageManager*
 SCOREP_Memory_CreateMovedPagedMemory( void )
 {
@@ -326,21 +324,5 @@ SCOREP_Allocator_PageManager*
 SCOREP_Memory_GetLocalDefinitionPageManager()
 {
     assert( scorep_memory_is_initialized );
-    return scorep_local_movable_page_manager;
-}
-
-
-void
-SCOREP_Memory_SetRemoteDefinitionPageManager( SCOREP_Allocator_PageManager* pageManager )
-{
-    assert( scorep_memory_is_initialized );
-    scorep_remote_movable_page_manager = pageManager;
-}
-
-
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_GetRemoteDefinitionPageManager()
-{
-    assert( scorep_memory_is_initialized );
-    return scorep_remote_movable_page_manager;
+    return scorep_definitions_page_manager;
 }

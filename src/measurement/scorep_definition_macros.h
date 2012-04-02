@@ -49,12 +49,6 @@
                                  SCOREP_Memory_GetLocalDefinitionPageManager(), \
                                  targetType )
 
-#define SCOREP_MEMORY_DEREF_REMOTE( remoteMemory, targetType ) \
-    SCOREP_MEMORY_DEREF_MOVABLE( localMemory, \
-                                 SCOREP_Memory_GetRemoteDefinitionPageManager(), \
-                                 targetType )
-
-
 /**
  *  Dereferences a moveable memory pointer to the definition struct.
  *
@@ -73,11 +67,6 @@
     SCOREP_HANDLE_DEREF( handle, \
                          Type, \
                          SCOREP_Memory_GetLocalDefinitionPageManager() )
-
-#define SCOREP_REMOTE_HANDLE_DEREF( handle, Type ) \
-    SCOREP_HANDLE_DEREF( handle, \
-                         Type, \
-                         SCOREP_Memory_GetRemoteDefinitionPageManager() )
 
 
 /**
@@ -152,9 +141,6 @@
 #define SCOREP_UNIFIED_HANDLE_TO_ID( handle, Type ) \
     ( SCOREP_UNIFIED_HANDLE_DEREF( handle, Type )->sequence_number )
 
-#define SCOREP_REMOTE_HANDLE_TO_ID( handle, Type ) \
-    ( SCOREP_REMOTE_HANDLE_DEREF( handle, Type )->sequence_number )
-
 
 /**
  *  Extracts the hash value out of an handle pointer.
@@ -169,9 +155,6 @@
 
 #define SCOREP_GET_HASH_OF_UNIFIED_HANDLE( handle, Type ) \
     ( SCOREP_UNIFIED_HANDLE_DEREF( handle, Type )->hash_value )
-
-#define SCOREP_GET_HASH_OF_REMOTE_HANDLE( handle, Type ) \
-    ( SCOREP_REMOTE_HANDLE_DEREF( handle, Type )->hash_value )
 
 
 /**

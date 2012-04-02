@@ -37,6 +37,24 @@
 
 
 /**
+ * Types of memory pages a location has.
+ *
+ */
+typedef enum SCOREP_MemoryType
+{
+    SCOREP_MEMORY_TYPE_MISC = 0,
+
+    /** separate because we might clear them for periscope from time to time */
+    SCOREP_MEMORY_TYPE_PROFILING,
+
+    /** For the OTF2 chunks, will be cleared after a flush */
+    SCOREP_MEMORY_TYPE_TRACING,
+
+    SCOREP_NUMBER_OF_MEMORY_TYPES
+} SCOREP_MemoryType;
+
+
+/**
  * Initialize the memory system for the measurement core, the adapters and the
  * online interface, i.e. everything except otf2.
  *
@@ -65,17 +83,17 @@ SCOREP_Memory_Finalize();
 /**
  * If we encounter a new thread, we need to add page managers for all page
  * types to the newly created thread local data structures. But only here we
- * know how many and from which allocator.
+ * know how many and from which allocator. The page manager array needs to have
+ * a length of SCOREP_NUMBER_OF_MEMORY_TYPES.
+ *
+ * Aborts, if creation fails.
  *
  * @see SCOREP_Thread.h
  *
  * @return
  */
-SCOREP_Allocator_PageManager**
-SCOREP_Memory_CreatePageManagers();
-
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_CreatePageManager();
+void
+SCOREP_Memory_CreatePageManagers( SCOREP_Allocator_PageManager** pageManagers );
 
 
 void
@@ -103,6 +121,32 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );
 /*@{*/
 
 /**
+ * The malloc function for miscellaneous data. It reserves a
+ * contiguous memory block whose size in bytes it at least @a size. The
+ * contents of the memory block is undetermined.
+ *
+ * @param size The size of the requested memory block in bytes. @a size == 0
+ * leads to undefined behaviour.
+ *
+ * @return The address of the first byte in the memory block allocated, or
+ *         aborts if the request could not handled.
+ *
+ * @see SCOREP_Memory_FreeMiscMem()
+ */
+void*
+SCOREP_Memory_AllocForMisc( size_t size );
+
+
+/**
+ * Release the entire allocated memory for miscellaneous stuff.
+ *
+ * @see SCOREP_Memory_AllocForMisc()
+ */
+void
+SCOREP_Memory_FreeMiscMem();
+
+
+/**
  * The malloc function for runtime summarization data (e.g. calltree nodes
  * etc.). It reserves a contiguous memory block whose size in bytes it at
  * least @a size. The contents of the memory block is undetermined.
@@ -110,13 +154,13 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
  *
- * @return The address of the first byte in the memory block allocated, or a
- * null pointer if the memory requested is not available.
+ * @return The address of the first byte in the memory block allocated, or
+ *         aborts if the request could not handled.
  *
  * @see SCOREP_Memory_FreeSummaryMem()
  */
 void*
-SCOREP_Memory_AllocForProfile( size_t size  );
+SCOREP_Memory_AllocForProfile( size_t size );
 
 
 /**
@@ -129,29 +173,26 @@ SCOREP_Memory_FreeProfileMem();
 
 
 /**
- * The malloc function for miscellaneous data. It reserves a
- * contiguous memory block whose size in bytes it at least @a size. The
- * contents of the memory block is undetermined.
+ * The malloc function for tracing data ie trace buffers.
  *
- * @param size The size of the requested memory block in bytes. @a size == 0
- * leads to undefined behaviour.
+ * @param size The size of the requested memory block in bytes.
  *
  * @return The address of the first byte in the memory block allocated, or a
- * null pointer if the memory requested is not available.
+ * null pointer if the requested memory is not available.
  *
- * @see SCOREP_Memory_FreeMiscMem()
+ * @see SCOREP_Memory_FreeTracingMem()
  */
 void*
-SCOREP_Memory_AllocForMisc( size_t size  );
+SCOREP_Memory_AllocForTracing( size_t size );
 
 
 /**
- * Release the entire allocated memory for miscellaneous stuff.
+ * Release the entire allocated memory for tracing stuff.
  *
- * @see SCOREP_Memory_AllocForMisc()
+ * @see SCOREP_Memory_AllocForTracing()
  */
 void
-SCOREP_Memory_FreeMiscMem();
+SCOREP_Memory_FreeTracingMem();
 
 
 /**
@@ -186,16 +227,8 @@ void*
 SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movableMemory,
                                            SCOREP_Allocator_PageManager*  movablePageManager );
 
-void
-SCOREP_Memory_SetRemoteDefinitionPageManager( SCOREP_Allocator_PageManager* remoteMovablePageManager );
-
-
 SCOREP_Allocator_PageManager*
 SCOREP_Memory_CreateMovedPagedMemory( void );
-
-
-SCOREP_Allocator_PageManager*
-SCOREP_Memory_GetRemoteDefinitionPageManager();
 
 
 SCOREP_Allocator_PageManager*

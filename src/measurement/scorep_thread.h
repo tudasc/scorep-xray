@@ -30,6 +30,7 @@
 
 
 #include <scorep_utility/SCOREP_Allocator.h>
+#include <SCOREP_Memory.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Location.h>
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
@@ -83,8 +84,9 @@ void
 SCOREP_Location_Finalize();
 
 
-SCOREP_Allocator_PageManager**
-SCOREP_Location_GetMemoryPageManagers( SCOREP_Location* locationData );
+SCOREP_Allocator_PageManager*
+SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
+                                      SCOREP_MemoryType type );
 
 
 SCOREP_Profile_LocationData*

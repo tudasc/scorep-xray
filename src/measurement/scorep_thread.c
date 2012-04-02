@@ -118,17 +118,17 @@ struct SCOREP_Thread_ThreadPrivateData
 // multiple ones.
 struct SCOREP_Location
 {
-    uint32_t                       local_id;    // process local id, 0, 1, ...
-    uint64_t                       location_id; // global id
-    uint64_t                       last_timestamp;
-    SCOREP_LocationType            type;
-    SCOREP_Allocator_PageManager** page_managers;
-    SCOREP_LocationHandle          location_handle;
+    uint32_t                      local_id;    // process local id, 0, 1, ...
+    uint64_t                      location_id; // global id
+    uint64_t                      last_timestamp;
+    SCOREP_LocationType           type;
+    SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
+    SCOREP_LocationHandle         location_handle;
 
-    SCOREP_Profile_LocationData*   profile_data;
-    SCOREP_TracingData*            tracing_data;
+    SCOREP_Profile_LocationData*  profile_data;
+    SCOREP_TracingData*           tracing_data;
 
-    SCOREP_Location*               next; // store location objects in list for easy cleanup
+    SCOREP_Location*              next;  // store location objects in list for easy cleanup
 
     /** Flexible array member with length scorep_subsystems_get_number() */
     void* per_subsystem_data[];
@@ -342,16 +342,19 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         assert( tpd->location_data == 0 );
         tpd->location_data = new_location;
 
-        scorep_thread_update_tpd( 0 );                                    // to make sure that we don't access
-                                                                          // TPD during page manager creation
-        new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
-        assert( new_location->page_managers );
-        scorep_thread_update_tpd( tpd );                                  // from here on clients can use
-                                                                          // SCOREP_Location_GetCurrentCPULocation, i.e. TPD
+        // To make sure that we don't access TPD during page manager creation
+        scorep_thread_update_tpd( 0 );
+        // Locking here?
+        SCOREP_Memory_CreatePageManagers( new_location->page_managers );
+
+        // From here on clients can use
+        // SCOREP_Location_GetCurrentCPULocation, i.e. TPD
+        scorep_thread_update_tpd( tpd );
     }
     else
     {
-        new_location->page_managers = SCOREP_Memory_CreatePageManagers(); // locking here?
+        // Locking here?
+        SCOREP_Memory_CreatePageManagers( new_location->page_managers );
     }
 
     new_location->type        = SCOREP_LOCATION_TYPE_CPU_THREAD;
@@ -618,10 +621,13 @@ SCOREP_Location_GetCurrentCPULocation()
 }
 
 
-SCOREP_Allocator_PageManager**
-SCOREP_Location_GetMemoryPageManagers( SCOREP_Location* locationData )
+SCOREP_Allocator_PageManager*
+SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
+                                      SCOREP_MemoryType type )
 {
-    return locationData->page_managers;
+    SCOREP_BUG_ON( 0 > type || type >= SCOREP_NUMBER_OF_MEMORY_TYPES,
+                   "Invalid memory type given." );
+    return locationData->page_managers[ type ];
 }
 
 
