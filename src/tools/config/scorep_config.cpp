@@ -304,7 +304,7 @@ main( int    argc,
     }
     else
     {
-        std::vector<std::string> libs;
+        std::deque<std::string> libs;
         libs.push_back( "lib" + scorep_libs[ mode ] );
 
         switch ( action )
