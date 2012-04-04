@@ -5,16 +5,21 @@ scorep <options> <orginal command>
 Common options are:
   --help, -h      Show help output. Does not execute any other command.
   --config=<file> Specifies file for the instrumentation configuration.
-  --verbosity=<value> Specifies the verbosity level. The following
+  -v, --verbose[=<value>] Specifies the verbosity level. The following
                   levels are available:
-                  0 = No output (default)
-                  1 = Executed commands are displayed
+                  0 = No output
+                  1 = Executed commands are displayed (default if no
+                      value is specified)
                   2 = Detailed information is displayed
   --dry-run       Only displays the executed commands. It does not
                   execute any command.
-  --compiler      Enables compiler instrumentation Is enabled by default.
+  --keep-files    Do not delete temporarily created files after successfull
+                  instrumentation. By default, temporary files are deleted
+                  if no error occures during instrumentation.
+  --version       Prints the Score-P version and exits.
+  --compiler      Enables compiler instrumentation. Is enabled by default.
   --nocompiler    Disables compiler instrumentation.
-  --mpi           Enables mpi wrapper. Is enabled by default if it is a
+  --mpi           Enables mpi wrapper. They are enabled by default if it is an
                   mpi program.
   --nompi         Disables mpi wrappers. They are disabled by default if
                   it is no mpi program.
@@ -24,14 +29,18 @@ Common options are:
                   if it is no OpenMP program.
   --user          Enables manual user instrumentation.
   --nouser        Disables manual user instrumentation. Is disabled by default.
-  --pdt           Enables source code instrumentation with pdt using
+  --pdt           Enables source code instrumentation with PDT using
                   the TAU instrumentor.
                   It will automatically enable the user instrumentation
                   and disable compiler instrumentation.
-  --nopdt         Disables the source code instrumentation with pdt.
+  --nopdt         Disables the source code instrumentation with PDT.
                   It is disabled by default.
-  --openmp_support Enables OpenMP support. Needed if the instrumentation
-                  does not coorectly identify your application as OpenMP
+  --cobi          Enables binary instrumentation with Cobi.
+                  Disables compiler instrumentation.
+  --nocobi        Disables the binary instrumentation with Cobi.
+                  It is disabled by default.
+  --openmp        Enables OpenMP support. Needed if the instrumentation
+                  does not correctly identify your application as OpenMP
                   program.
-  --noopenmp_support Disables OpenMP support.
+  --noopenmp      Disables OpenMP support.
 
