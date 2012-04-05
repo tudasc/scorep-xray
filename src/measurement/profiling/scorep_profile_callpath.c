@@ -45,13 +45,71 @@
 #include <scorep_profile_location.h>
 
 /**
+   Sorts the children of a node according to thair first entry.
+ */
+static void
+sort_children( scorep_profile_node* parent )
+{
+    scorep_profile_node* child      = parent->first_child;
+    scorep_profile_node* last_child = NULL;
+    while ( child != NULL )
+    {
+        scorep_profile_node*  current      = parent->first_child;
+        scorep_profile_node** last_pointer = &parent->first_child;
+        bool                  update       = true;
+        while ( current != child )
+        {
+            if ( current->first_enter_time > child->first_enter_time )
+            {
+                scorep_profile_node* next_child = child->next_sibling;
+                *last_pointer            = child;
+                child->next_sibling      = current;
+                last_child->next_sibling = next_child;
+                child                    = next_child;
+                update                   = false;
+                break;
+            }
+            last_pointer = &current->next_sibling;
+            current      = current->next_sibling;
+        }
+        if ( update )
+        {
+            last_child = child;
+            child      = child->next_sibling;
+        }
+    }
+}
+
+static void
+sort_subtree( scorep_profile_node* parent )
+{
+    sort_children( parent );
+    scorep_profile_node* child = parent->first_child;
+    while ( child != NULL )
+    {
+        sort_subtree( child );
+        child = child->next_sibling;
+    }
+}
+
+static void
+sort_tree()
+{
+    scorep_profile_node* root = scorep_profile.first_root_node;
+    while ( root != NULL )
+    {
+        sort_subtree( root );
+        root = root->next_sibling;
+    }
+}
+
+/**
    Assignes a callpath to a node, if it has none so far. It is used by a
    @ref scorep_profile_for_all traversal, thus it has to fit the
    @ref scorep_profile_process_func_t.
  */
-void
-scorep_profile_assign_callpath( scorep_profile_node* current,
-                                void*                param )
+static void
+assign_callpath( scorep_profile_node* current, void* param )
 {
     SCOREP_CallpathHandle parent_path = SCOREP_INVALID_CALLPATH;
 
@@ -119,6 +177,8 @@ scorep_profile_assign_callpath_to_master()
 {
     scorep_profile_node* master = scorep_profile.first_root_node;
 
+    //sort_tree();
+
     /* Check consistency */
     if ( master == NULL )
     {
@@ -135,7 +195,7 @@ scorep_profile_assign_callpath_to_master()
     }
 
     /* Process subtree */
-    scorep_profile_for_all( master, scorep_profile_assign_callpath, NULL );
+    scorep_profile_for_all( master, assign_callpath, NULL );
 }
 
 /**
@@ -160,7 +220,7 @@ scorep_profile_match_callpath( SCOREP_Profile_LocationData* location,
     /* Make sure the mathcing node has a callpath assigned */
     if ( match->callpath_handle == SCOREP_INVALID_CALLPATH )
     {
-        scorep_profile_assign_callpath( match, NULL );
+        assign_callpath( match, NULL );
     }
 
     /* Copy callpath handle */
