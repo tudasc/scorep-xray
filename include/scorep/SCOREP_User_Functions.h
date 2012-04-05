@@ -32,7 +32,9 @@
 
 #include <scorep/SCOREP_User_Types.h>
 #include <scorep/SCOREP_User_Variables.h>
+#ifndef __cplusplus
 #include <stdbool.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
