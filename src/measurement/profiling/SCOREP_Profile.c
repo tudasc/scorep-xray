@@ -60,7 +60,7 @@ static SCOREP_Mutex scorep_profile_location_mutex;
 *****************************************************************************************/
 
 static inline void
-scorep_profile_setup_start_from_parent( scorep_profile_node* node )
+setup_start_from_parent( scorep_profile_node* node )
 {
     scorep_profile_node* parent = node->parent;
     int                  i;
@@ -477,7 +477,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
     }
 
     /* Store start values for dense metrics */
-    scorep_profile_setup_start_from_parent( node );
+    setup_start_from_parent( node );
 
     /* Update current node pointer */
     scorep_profile_set_current_node( location, node );
@@ -543,7 +543,7 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     }
 
     /* Store start values for dense metrics */
-    scorep_profile_setup_start_from_parent( node );
+    setup_start_from_parent( node );
 
     /* Update current node pointer */
     scorep_profile_set_current_node( location, node );

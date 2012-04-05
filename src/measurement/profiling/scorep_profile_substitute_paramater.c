@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_callpath.c
+ * @file scorep_profile_substitute_parameter.c
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
@@ -50,8 +50,8 @@ static SCOREP_Hashtab* scorep_profile_name_table = NULL;
    Deletes one hash table entry
    @param entry Pointer to the entry to be deleted.
  */
-void
-scorep_profile_delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
+static void
+delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
 {
     SCOREP_ASSERT( entry );
 
@@ -62,8 +62,8 @@ scorep_profile_delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
 /**
    Initialize the name table
  */
-void
-scorep_profile_init_name_table()
+static void
+init_name_table()
 {
     scorep_profile_name_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                            &SCOREP_Hashtab_CompareStrings );
@@ -72,10 +72,10 @@ scorep_profile_init_name_table()
 /**
    Finalize the file table
  */
-void
-scorep_profile_finalize_name_table()
+static void
+finalize_name_table()
 {
-    SCOREP_Hashtab_Foreach( scorep_profile_name_table, &scorep_profile_delete_name_table_entry );
+    SCOREP_Hashtab_Foreach( scorep_profile_name_table, &delete_name_table_entry );
     SCOREP_Hashtab_Free( scorep_profile_name_table );
     scorep_profile_name_table = NULL;
 }
@@ -93,8 +93,8 @@ scorep_profile_finalize_name_table()
     @param region A string containing a region name.
  */
 static void
-scorep_profile_substitute_parameter_data( scorep_profile_node* node,
-                                          char*                region )
+substitute_parameter_data( scorep_profile_node* node,
+                           char*                region )
 {
     size_t                index;
     SCOREP_Hashtab_Entry* entry  = NULL;
@@ -142,8 +142,8 @@ scorep_profile_substitute_parameter_data( scorep_profile_node* node,
    @param param unused.
  */
 static void
-scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
-                                             void*                param )
+substitute_parameter_in_node( scorep_profile_node* node,
+                              void*                param )
 {
     SCOREP_RegionHandle handle = scorep_profile_type_get_region_handle( node->type_specific_data );
 
@@ -172,7 +172,7 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
         }
 
         /* Register region and modify node data */
-        scorep_profile_substitute_parameter_data( node, region_name );
+        substitute_parameter_data( node, region_name );
 
         /* Clean up */
         free( region_name );
@@ -192,7 +192,7 @@ scorep_profile_substitute_parameter_in_node( scorep_profile_node* node,
         sprintf( region_name, "%s=%s", name, value );
 
         /* Register region and modify node data */
-        scorep_profile_substitute_parameter_data( node, region_name );
+        substitute_parameter_data( node, region_name );
 
         /* Clean up */
         free( region_name );
@@ -212,13 +212,13 @@ scorep_profile_substitute_parameter()
 {
     scorep_profile_node* node = scorep_profile.first_root_node;
 
-    scorep_profile_init_name_table();
+    init_name_table();
 
     while ( node != NULL )
     {
-        scorep_profile_for_all( node, scorep_profile_substitute_parameter_in_node, NULL );
+        scorep_profile_for_all( node, substitute_parameter_in_node, NULL );
         node = node->next_sibling;
     }
 
-    scorep_profile_finalize_name_table();
+    finalize_name_table();
 }

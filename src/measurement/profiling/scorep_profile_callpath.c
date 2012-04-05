@@ -170,6 +170,43 @@ assign_callpath( scorep_profile_node* current, void* param )
 }
 
 /**
+   Matches a node to one of the child nodes of a given master. If the master does not
+   have a matching child, a matching child for the master is created.
+   Recursively, it processes all children of @a current.
+ */
+static void
+match_callpath( SCOREP_Profile_LocationData* location,
+                scorep_profile_node*         master,
+                scorep_profile_node*         current )
+{
+    scorep_profile_node* child = NULL;
+
+    /* Find a matching node in the master thread */
+    scorep_profile_node* match =
+        scorep_profile_find_create_child( location,                                                                                 master,
+                                          current->node_type,
+                                          current->type_specific_data,
+                                          current->first_enter_time );
+
+    /* Make sure the mathcing node has a callpath assigned */
+    if ( match->callpath_handle == SCOREP_INVALID_CALLPATH )
+    {
+        assign_callpath( match, NULL );
+    }
+
+    /* Copy callpath handle */
+    current->callpath_handle = match->callpath_handle;
+
+    /* Process children */
+    child = current->first_child;
+    while ( child != NULL )
+    {
+        match_callpath( location, match, child );
+        child = child->next_sibling;
+    }
+}
+
+/**
    Walks through the master thread and assigns new callpath ids.
  */
 void
@@ -199,43 +236,6 @@ scorep_profile_assign_callpath_to_master()
 }
 
 /**
-   Matches a node to one of the child nodes of a given master. If the master does not
-   have a matching child, a matching child for the master is created.
-   Recursively, it processes all children of @a current.
- */
-void
-scorep_profile_match_callpath( SCOREP_Profile_LocationData* location,
-                               scorep_profile_node*         master,
-                               scorep_profile_node*         current )
-{
-    scorep_profile_node* child = NULL;
-
-    /* Find a matching node in the master thread */
-    scorep_profile_node* match =
-        scorep_profile_find_create_child( location,                                                                                 master,
-                                          current->node_type,
-                                          current->type_specific_data,
-                                          current->first_enter_time );
-
-    /* Make sure the mathcing node has a callpath assigned */
-    if ( match->callpath_handle == SCOREP_INVALID_CALLPATH )
-    {
-        assign_callpath( match, NULL );
-    }
-
-    /* Copy callpath handle */
-    current->callpath_handle = match->callpath_handle;
-
-    /* Process children */
-    child = current->first_child;
-    while ( child != NULL )
-    {
-        scorep_profile_match_callpath( location, match, child );
-        child = child->next_sibling;
-    }
-}
-
-/**
    Traverses all threads and matches their callpathes to the master thread.
  */
 void
@@ -262,7 +262,7 @@ scorep_profile_assign_callpath_to_workers()
         while ( child != NULL )
         {
             /* match callpath */
-            scorep_profile_match_callpath( location, master, child );
+            match_callpath( location, master, child );
 
             child = child->next_sibling;
         }

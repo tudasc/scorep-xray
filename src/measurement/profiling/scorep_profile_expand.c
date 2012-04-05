@@ -44,11 +44,11 @@
    @param source Pointer to a node from which the dense metrics are added to the
                  found or created node.
  */
-scorep_profile_node*
-scorep_profile_merge_child( SCOREP_Profile_LocationData* location,
-                            scorep_profile_node*         parent,
-                            scorep_profile_node*         type,
-                            scorep_profile_node*         source )
+static scorep_profile_node*
+merge_child( SCOREP_Profile_LocationData* location,
+             scorep_profile_node*         parent,
+             scorep_profile_node*         type,
+             scorep_profile_node*         source )
 {
     /* Search matching node */
     SCOREP_ASSERT( parent != NULL );
@@ -74,11 +74,11 @@ scorep_profile_merge_child( SCOREP_Profile_LocationData* location,
    @param data_source Pointer to a node from which the dense metrics are added to the
           nodes on the newly created callpath.
  */
-scorep_profile_node*
-scorep_profile_add_callpath( SCOREP_Profile_LocationData* location,
-                             scorep_profile_node*         destination_root,
-                             scorep_profile_node*         callpath_leaf,
-                             scorep_profile_node*         data_source )
+static scorep_profile_node*
+add_callpath( SCOREP_Profile_LocationData* location,
+              scorep_profile_node*         destination_root,
+              scorep_profile_node*         callpath_leaf,
+              scorep_profile_node*         data_source )
 {
     scorep_profile_node* parent = callpath_leaf->parent;
 
@@ -87,23 +87,23 @@ scorep_profile_add_callpath( SCOREP_Profile_LocationData* location,
          ( ( parent->node_type == scorep_profile_node_thread_root ) ||
            ( parent->node_type == scorep_profile_node_thread_start ) ) )
     {
-        return scorep_profile_merge_child( location, destination_root,
-                                           callpath_leaf, data_source );
+        return merge_child( location, destination_root,
+                            callpath_leaf, data_source );
     }
 
     /* Else reconstruct the new callpath */
-    parent = scorep_profile_add_callpath( location, destination_root,
-                                          callpath_leaf->parent,
-                                          data_source );
-    return scorep_profile_merge_child( location, parent, callpath_leaf, data_source );
+    parent = add_callpath( location, destination_root,
+                           callpath_leaf->parent,
+                           data_source );
+    return merge_child( location, parent, callpath_leaf, data_source );
 }
 
 /**
    Calculates the implicit metrics of parent from all its children.
    @param parent Pointer to a node which implcit (dense) metrics are calculated.
  */
-void
-scorep_profile_sum_children( scorep_profile_node* parent )
+static void
+sum_children( scorep_profile_node* parent )
 {
     scorep_profile_node* child = NULL;
 
@@ -133,9 +133,9 @@ scorep_profile_sum_children( scorep_profile_node* parent )
            creation point. The creation point should be stored in its type dependent
            data.
  */
-void
-scorep_profile_expand_thread_start( SCOREP_Profile_LocationData* location,
-                                    scorep_profile_node*         thread_start )
+static void
+expand_thread_start( SCOREP_Profile_LocationData* location,
+                     scorep_profile_node*         thread_start )
 {
     scorep_profile_node* creation_point = NULL;
     scorep_profile_node* thread_root    = NULL;
@@ -168,12 +168,12 @@ scorep_profile_expand_thread_start( SCOREP_Profile_LocationData* location,
     else
     {
         /* Sum up child statistics */
-        scorep_profile_sum_children( thread_start );
+        sum_children( thread_start );
 
         /* Add callpath */
-        creation_point = scorep_profile_add_callpath( location, thread_root,
-                                                      creation_point,
-                                                      thread_start );
+        creation_point = add_callpath( location, thread_root,
+                                       creation_point,
+                                       thread_start );
 
         /* Move the subforest to the inserted callpath: */
         scorep_profile_move_children( creation_point, thread_start );
@@ -185,8 +185,8 @@ scorep_profile_expand_thread_start( SCOREP_Profile_LocationData* location,
    @param thread_root Pointer to a thread node whose children of type
           @ref scorep_profile_node_thread_start are expanded.
  */
-void
-scorep_profile_expand_thread_root( scorep_profile_node* thread_root )
+static void
+expand_thread_root( scorep_profile_node* thread_root )
 {
     /* Expand the start nodes */
     scorep_profile_node*         thread_start = thread_root->first_child;
@@ -201,7 +201,7 @@ scorep_profile_expand_thread_root( scorep_profile_node* thread_root )
         /* Expand thread_start node */
         if ( thread_start->node_type == scorep_profile_node_thread_start )
         {
-            scorep_profile_expand_thread_start( location, thread_start );
+            expand_thread_start( location, thread_start );
         }
 
         /* Go to next node */
@@ -209,7 +209,7 @@ scorep_profile_expand_thread_root( scorep_profile_node* thread_root )
     }
 
     /* Calculate thread statistics */
-    scorep_profile_sum_children( thread_root );
+    sum_children( thread_root );
 }
 
 /**
@@ -226,7 +226,7 @@ scorep_profile_expand_threads()
     {
         if ( thread_root->node_type == scorep_profile_node_thread_root )
         {
-            scorep_profile_expand_thread_root( thread_root );
+            expand_thread_root( thread_root );
         }
         thread_root = thread_root->next_sibling;
     }

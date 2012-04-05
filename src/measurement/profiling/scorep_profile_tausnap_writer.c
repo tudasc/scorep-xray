@@ -44,10 +44,10 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 /* Forward declaration */
 static void
-scorep_profile_write_node_tau( scorep_profile_node* node,
-                               char*                parentpath,
-                               FILE*                file,
-                               uint64_t*            callpath_counter );
+write_node_tau( scorep_profile_node* node,
+                char*                parentpath,
+                FILE*                file,
+                uint64_t*            callpath_counter );
 
 /**
    Helper function for the profile writer in TAU snapshot format.
@@ -62,9 +62,9 @@ scorep_profile_write_node_tau( scorep_profile_node* node,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_tausnap_def( char*     path,
-                                  FILE*     file,
-                                  uint64_t* callpath_counter )
+write_tausnap_def( char*     path,
+                   FILE*     file,
+                   uint64_t* callpath_counter )
 {
     fprintf( file,
              "<event id=\"%" PRIu64 "\"><name>%s</name></event>\n",
@@ -88,10 +88,10 @@ scorep_profile_write_tausnap_def( char*     path,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_region_tau( scorep_profile_node* node,
-                                 char*                parentpath,
-                                 FILE*                file,
-                                 uint64_t*            callpath_counter )
+write_region_tau( scorep_profile_node* node,
+                  char*                parentpath,
+                  FILE*                file,
+                  uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
     const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
@@ -113,7 +113,7 @@ scorep_profile_write_region_tau( scorep_profile_node* node,
     /* write definition */
     if ( SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
-        scorep_profile_write_tausnap_def( path, file, callpath_counter );
+        write_tausnap_def( path, file, callpath_counter );
     }
 
     if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
@@ -122,7 +122,7 @@ scorep_profile_write_region_tau( scorep_profile_node* node,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            scorep_profile_write_node_tau( child, path, file, callpath_counter );
+            write_node_tau( child, path, file, callpath_counter );
             child = child->next_sibling;
         }
     }
@@ -142,10 +142,10 @@ scorep_profile_write_region_tau( scorep_profile_node* node,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_paramstring_tau( scorep_profile_node* node,
-                                      char*                parentpath,
-                                      FILE*                file,
-                                      uint64_t*            callpath_counter )
+write_paramstring_tau( scorep_profile_node* node,
+                       char*                parentpath,
+                       FILE*                file,
+                       uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
     char*       path;
@@ -159,13 +159,13 @@ scorep_profile_write_paramstring_tau( scorep_profile_node* node,
     sprintf( path, "%s (%s = %s)", parentpath, param_name, param_value );
 
     /* write definition */
-    scorep_profile_write_tausnap_def( path, file, callpath_counter );
+    write_tausnap_def( path, file, callpath_counter );
 
     /* invoke children */
     scorep_profile_node* child = node->first_child;
     while ( child != NULL )
     {
-        scorep_profile_write_node_tau( child, path, file, callpath_counter );
+        write_node_tau( child, path, file, callpath_counter );
         child = child->next_sibling;
     }
 }
@@ -184,10 +184,10 @@ scorep_profile_write_paramstring_tau( scorep_profile_node* node,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_paramint_tau( scorep_profile_node* node,
-                                   char*                parentpath,
-                                   FILE*                file,
-                                   uint64_t*            callpath_counter )
+write_paramint_tau( scorep_profile_node* node,
+                    char*                parentpath,
+                    FILE*                file,
+                    uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
     char*                  path;
@@ -226,13 +226,13 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
         }
     }
     /* write definition */
-    scorep_profile_write_tausnap_def( path, file, callpath_counter );
+    write_tausnap_def( path, file, callpath_counter );
 
     /* invoke children */
     scorep_profile_node* child = node->first_child;
     while ( child != NULL )
     {
-        scorep_profile_write_node_tau( child, path, file, callpath_counter );
+        write_node_tau( child, path, file, callpath_counter );
         child = child->next_sibling;
     }
 }
@@ -252,10 +252,10 @@ scorep_profile_write_paramint_tau( scorep_profile_node* node,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_node_tau( scorep_profile_node* node,
-                               char*                parentpath,
-                               FILE*                file,
-                               uint64_t*            callpath_counter )
+write_node_tau( scorep_profile_node* node,
+                char*                parentpath,
+                FILE*                file,
+                uint64_t*            callpath_counter )
 {
     if ( node == NULL )
     {
@@ -265,15 +265,15 @@ scorep_profile_write_node_tau( scorep_profile_node* node,
     switch ( node->node_type )
     {
         case scorep_profile_node_regular_region:
-            scorep_profile_write_region_tau( node, parentpath, file, callpath_counter );
+            write_region_tau( node, parentpath, file, callpath_counter );
             break;
 
         case scorep_profile_node_parameter_string:
-            scorep_profile_write_paramstring_tau( node, parentpath, file, callpath_counter );
+            write_paramstring_tau( node, parentpath, file, callpath_counter );
             break;
 
         case scorep_profile_node_parameter_integer:
-            scorep_profile_write_paramint_tau( node, parentpath, file, callpath_counter );
+            write_paramint_tau( node, parentpath, file, callpath_counter );
             break;
 
         default:
@@ -299,10 +299,10 @@ scorep_profile_write_node_tau( scorep_profile_node* node,
                            number of processed callpathes.
  */
 static void
-scorep_profile_write_data_tau( scorep_profile_node*      node,
-                               FILE*                     file,
-                               uint64_t*                 callpath_counter,
-                               SCOREP_DefinitionManager* manager )
+write_data_tau( scorep_profile_node*      node,
+                FILE*                     file,
+                uint64_t*                 callpath_counter,
+                SCOREP_DefinitionManager* manager )
 
 {
     uint64_t tps = SCOREP_GetClockResolution();
@@ -326,7 +326,7 @@ scorep_profile_write_data_tau( scorep_profile_node*      node,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            scorep_profile_write_data_tau( child, file, callpath_counter, manager );
+            write_data_tau( child, file, callpath_counter, manager );
             child = child->next_sibling;
         }
     }
@@ -352,10 +352,10 @@ item* curr, * head, * tail;
  */
 
 static void
-scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
-                                     FILE*                     file,
-                                     uint64_t*                 callpath_counter,
-                                     SCOREP_DefinitionManager* manager )
+write_atomicdata_tau( scorep_profile_node*      node,
+                      FILE*                     file,
+                      uint64_t*                 callpath_counter,
+                      SCOREP_DefinitionManager* manager )
 {
     scorep_profile_sparse_metric_double* metric = node->first_double_sparse;
 
@@ -389,7 +389,7 @@ scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            scorep_profile_write_atomicdata_tau( child, file, callpath_counter, manager );
+            write_atomicdata_tau( child, file, callpath_counter, manager );
             child = child->next_sibling;
         }
     }
@@ -402,10 +402,10 @@ scorep_profile_write_atomicdata_tau( scorep_profile_node*      node,
  */
 
 static void
-scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
-                                                char*                     parentpath,
-                                                FILE*                     file,
-                                                SCOREP_DefinitionManager* manager )
+write_userevent_data_metric_tau( scorep_profile_node*      node,
+                                 char*                     parentpath,
+                                 FILE*                     file,
+                                 SCOREP_DefinitionManager* manager )
 
 {
     scorep_profile_sparse_metric_double* metric = node->first_double_sparse;
@@ -498,7 +498,7 @@ scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
         }
         while ( child != NULL )
         {
-            scorep_profile_write_userevent_data_metric_tau( child, parentpath, file,  manager );
+            write_userevent_data_metric_tau( child, parentpath, file,  manager );
             child = child->next_sibling;
         }
     }
@@ -513,10 +513,10 @@ scorep_profile_write_userevent_data_metric_tau( scorep_profile_node*      node,
  */
 
 static void
-scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
-                                         uint64_t                  threadnum,
-                                         FILE*                     file,
-                                         SCOREP_DefinitionManager* manager )
+write_userevent_data_tau( scorep_profile_node*      child,
+                          uint64_t                  threadnum,
+                          FILE*                     file,
+                          SCOREP_DefinitionManager* manager )
 {
     head = NULL;
     tail = NULL;
@@ -546,7 +546,7 @@ scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
 
 
             parentpath = path;
-            scorep_profile_write_userevent_data_metric_tau( child, path, file, manager );
+            write_userevent_data_metric_tau( child, path, file, manager );
             child = child->next_sibling;
         }
         child = node->first_child;
@@ -566,10 +566,10 @@ scorep_profile_write_userevent_data_tau( scorep_profile_node*      child,
    @param file      A pointer to an open file to which the data is written.
  */
 static void
-scorep_profile_write_thread_tau( scorep_profile_node*      node,
-                                 uint64_t                  threadnum,
-                                 FILE*                     file,
-                                 SCOREP_DefinitionManager* manager )
+write_thread_tau( scorep_profile_node*      node,
+                  uint64_t                  threadnum,
+                  FILE*                     file,
+                  SCOREP_DefinitionManager* manager )
 {
     /* The counter is used to enumerate the callpathes and
        serves as an unique id to map callpath definitions
@@ -596,7 +596,7 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
 
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
              SCOREP_Mpi_GetRank(), threadnum );
-    scorep_profile_write_userevent_data_tau( child, threadnum, file,  manager );
+    write_userevent_data_tau( child, threadnum, file,  manager );
 
     fprintf( file, "</definitions>\n\n" );
 
@@ -607,7 +607,7 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
 
     while ( child != NULL )
     {
-        scorep_profile_write_node_tau( child, NULL, file, &callpath_counter );
+        write_node_tau( child, NULL, file, &callpath_counter );
         child = child->next_sibling;
     }
     fprintf( file, "</definitions>\n\n" );
@@ -622,7 +622,7 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
     callpath_counter = 0;
     while ( child != NULL )
     {
-        scorep_profile_write_data_tau( child, file, &callpath_counter, manager );
+        write_data_tau( child, file, &callpath_counter, manager );
         child = child->next_sibling;
     }
     fprintf( file, "</interval_data>\n" );
@@ -637,7 +637,7 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
 
     while ( child != NULL )
     {
-        scorep_profile_write_atomicdata_tau( child, file, &callpath_counter, manager );
+        write_atomicdata_tau( child, file, &callpath_counter, manager );
         child = child->next_sibling;
     }
     fprintf( file, "</atomic_data>\n" );
@@ -646,15 +646,17 @@ scorep_profile_write_thread_tau( scorep_profile_node*      node,
 }
 
 /**
-   Adds nodes to the callpath, as siblings of the root, to represent the nodes of the callgraph.
-   It also adds "dummy" nodes as children to these nodes.  The dummy nodes are used to correctly calculate
-   exclusive time and child counts. This function is a processing function for a scorep_profile_for_all call.
+   Adds nodes to the callpath, as siblings of the root, to represent the nodes of
+   the callgraph. It also adds "dummy" nodes as children to these nodes.
+   The dummy nodes are used to correctly calculate
+   exclusive time and child counts. This function is a processing function
+   for a scorep_profile_for_all call.
    @param node  Pointer to the current profile node.
    @param param Pointer to the list of added nodes.
  */
 static void
-scorep_profile_write_tau_merge_callpath_nodes( scorep_profile_node* node,
-                                               void*                param )
+write_tau_merge_callpath_nodes( scorep_profile_node* node,
+                                void*                param )
 {
     scorep_profile_node*         parent   = ( scorep_profile_node* )param;
     scorep_profile_node*         list     = parent;
@@ -713,11 +715,11 @@ scorep_profile_write_tau_merge_callpath_nodes( scorep_profile_node* node,
 /* Adds nodes to the callpath for the TAU snapshot profile.
  * @param node Pointer to the root of the callpath.
  */
-void
-scorep_profile_write_tau_add_callpath_nodes( scorep_profile_node* node )
+static void
+write_tau_add_callpath_nodes( scorep_profile_node* node )
 {
     scorep_profile_for_all( node,
-                            scorep_profile_write_tau_merge_callpath_nodes,
+                            write_tau_merge_callpath_nodes,
                             node );
 }
 
@@ -766,7 +768,7 @@ scorep_profile_write_tau_snapshot()
 
     /*Add the summary nodes to the calltree*/
     scorep_profile_node* root = scorep_profile.first_root_node;
-    scorep_profile_write_tau_add_callpath_nodes( root->first_child );
+    write_tau_add_callpath_nodes( root->first_child );
 
     /* Write starting tag */
     fprintf( file, "<profile_xml>\n" );
@@ -774,7 +776,7 @@ scorep_profile_write_tau_snapshot()
     /* Write thread data */
     while ( thread != NULL )
     {
-        scorep_profile_write_thread_tau( thread, threadnum, file, manager );
+        write_thread_tau( thread, threadnum, file, manager );
         thread = thread->next_sibling;
         threadnum++;
     }

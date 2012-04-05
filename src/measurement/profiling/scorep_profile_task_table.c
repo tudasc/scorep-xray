@@ -59,10 +59,10 @@ struct scorep_profile_task_table
 };
 
 static scorep_profile_task*
-scorep_profile_task_insert( scorep_profile_task_table* table,
-                            scorep_profile_task_id     task_id,
-                            scorep_profile_node*       current_node,
-                            uint32_t                   depth )
+insert_task( scorep_profile_task_table* table,
+             scorep_profile_task_id     task_id,
+             scorep_profile_node*       current_node,
+             uint32_t                   depth )
 {
     /* Try to recycle older entry or allocate new memory */
     scorep_profile_task* new_entry = NULL;
@@ -247,7 +247,7 @@ scorep_profile_create_task( SCOREP_Profile_LocationData* location,
                             scorep_profile_task_id       task_id,
                             scorep_profile_node*         task_root )
 {
-    return scorep_profile_task_insert( location->tasks, task_id, task_root, 1 );
+    return insert_task( location->tasks, task_id, task_root, 1 );
 }
 
 void

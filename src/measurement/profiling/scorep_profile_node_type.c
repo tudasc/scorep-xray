@@ -84,20 +84,20 @@
 *****************************************************************************************/
 
 static void
-scorep_profile_copy_flat( scorep_profile_type_data_t* destination,
-                          scorep_profile_type_data_t  source );
+copy_flat( scorep_profile_type_data_t* destination,
+           scorep_profile_type_data_t  source );
 
 static bool
-scorep_profile_compare_only_handle( scorep_profile_type_data_t data1,
-                                    scorep_profile_type_data_t data2 );
+compare_only_handle( scorep_profile_type_data_t data1,
+                     scorep_profile_type_data_t data2 );
 
 static bool
-scorep_profile_compare_only_value( scorep_profile_type_data_t data1,
-                                   scorep_profile_type_data_t data2 );
+compare_only_value( scorep_profile_type_data_t data1,
+                    scorep_profile_type_data_t data2 );
 
 static bool
-scorep_profile_compare_both_entries( scorep_profile_type_data_t data1,
-                                     scorep_profile_type_data_t data2 );
+compare_both_entries( scorep_profile_type_data_t data1,
+                      scorep_profile_type_data_t data2 );
 
 
 /* ***************************************************************************************
@@ -124,13 +124,13 @@ typedef struct
   same order like in @a scorep_profile_node_type.
  */
 scorep_profile_type_data_func_t scorep_profile_type_data_funcs[] = {
-  { &scorep_profile_compare_only_handle,  &scorep_profile_copy_flat }, /* Regular region */
-  { &scorep_profile_compare_both_entries, &scorep_profile_copy_flat }, /* Parameter string */
-  { &scorep_profile_compare_both_entries, &scorep_profile_copy_flat }, /* Parameter integer */
-  { &scorep_profile_compare_only_value,   &scorep_profile_copy_flat }, /* Thread root */
-  { &scorep_profile_compare_only_handle,  &scorep_profile_copy_flat }, /* Thread start */
-  { &scorep_profile_compare_only_value,   &scorep_profile_copy_flat }, /* Collapse */
-  { &scorep_profile_compare_only_handle,  &scorep_profile_copy_flat }, /* Task root */
+  { &compare_only_handle,  &copy_flat }, /* Regular region */
+  { &compare_both_entries, &copy_flat }, /* Parameter string */
+  { &compare_both_entries, &copy_flat }, /* Parameter integer */
+  { &compare_only_value,   &copy_flat }, /* Thread root */
+  { &compare_only_handle,  &copy_flat }, /* Thread start */
+  { &compare_only_value,   &copy_flat }, /* Collapse */
+  { &compare_only_handle,  &copy_flat }, /* Task root */
 };
 
 /* *INDENT-ON* */
@@ -140,30 +140,30 @@ scorep_profile_type_data_func_t scorep_profile_type_data_funcs[] = {
 *****************************************************************************************/
 
 static void
-scorep_profile_copy_flat( scorep_profile_type_data_t* destination,
-                          scorep_profile_type_data_t  source )
+copy_flat( scorep_profile_type_data_t* destination,
+           scorep_profile_type_data_t  source )
 {
     destination->handle = source.handle;
     destination->value  = source.value;
 }
 
 static bool
-scorep_profile_compare_only_handle( scorep_profile_type_data_t data1,
-                                    scorep_profile_type_data_t data2 )
+compare_only_handle( scorep_profile_type_data_t data1,
+                     scorep_profile_type_data_t data2 )
 {
     return data1.handle == data2.handle;
 }
 
 static bool
-scorep_profile_compare_only_value( scorep_profile_type_data_t data1,
-                                   scorep_profile_type_data_t data2 )
+compare_only_value( scorep_profile_type_data_t data1,
+                    scorep_profile_type_data_t data2 )
 {
     return data1.value == data2.value;
 }
 
 static bool
-scorep_profile_compare_both_entries( scorep_profile_type_data_t data1,
-                                     scorep_profile_type_data_t data2 )
+compare_both_entries( scorep_profile_type_data_t data1,
+                      scorep_profile_type_data_t data2 )
 {
     return ( data1.handle == data2.handle ) &&
            ( data1.value  == data2.value );

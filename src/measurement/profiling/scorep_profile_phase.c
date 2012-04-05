@@ -41,9 +41,9 @@
    Removes a phase from its current position and insert it at the thread root level
  */
 static void
-scorep_profile_setup_phase( SCOREP_Profile_LocationData* location,
-                            scorep_profile_node*         thread_root,
-                            scorep_profile_node*         phase )
+setup_phase( SCOREP_Profile_LocationData* location,
+             scorep_profile_node*         thread_root,
+             scorep_profile_node*         phase )
 {
     assert( thread_root );
     assert( phase );
@@ -72,7 +72,7 @@ scorep_profile_setup_phase( SCOREP_Profile_LocationData* location,
    Returns true if a node represents a region that is a phase
  */
 static bool
-scorep_profile_node_is_phase( scorep_profile_node* node )
+is_phase( scorep_profile_node* node )
 {
     if ( node->node_type != scorep_profile_node_regular_region )
     {
@@ -95,9 +95,9 @@ scorep_profile_node_is_phase( scorep_profile_node* node )
    they are moved to the thread_root.
  */
 static void
-scorep_profile_search_subtree_for_phases( SCOREP_Profile_LocationData* location,
-                                          scorep_profile_node*         thread_root,
-                                          scorep_profile_node*         subtree_root )
+search_subtree_for_phases( SCOREP_Profile_LocationData* location,
+                           scorep_profile_node*         thread_root,
+                           scorep_profile_node*         subtree_root )
 {
     assert( subtree_root );
     assert( thread_root );
@@ -112,12 +112,12 @@ scorep_profile_search_subtree_for_phases( SCOREP_Profile_LocationData* location,
 
         /* We need to remove all phases that are in the child's subtree, before we can
            deal with the child, else nested phases cause errors. */
-        scorep_profile_search_subtree_for_phases( location, thread_root, child );
+        search_subtree_for_phases( location, thread_root, child );
 
         /* Here we know that no phases are left in the subtree of child */
-        if ( scorep_profile_node_is_phase( child ) )
+        if ( is_phase( child ) )
         {
-            scorep_profile_setup_phase( location, thread_root, child );
+            setup_phase( location, thread_root, child );
         }
 
         child = next;
@@ -142,7 +142,7 @@ scorep_profile_process_phases()
         while ( child != NULL )
         {
             location = scorep_profile_type_get_location_data( thread_root->type_specific_data );
-            scorep_profile_search_subtree_for_phases( location, thread_root, child );
+            search_subtree_for_phases( location, thread_root, child );
             child = child->next_sibling;
         }
         thread_root = thread_root->next_sibling;

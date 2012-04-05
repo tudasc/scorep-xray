@@ -71,8 +71,8 @@ typedef struct scorep_cube_system_node
             Node is found, ir returns NULL.
  */
 static scorep_cube_system_node*
-scorep_cube_find_system_node( scorep_cube_system_node* system_tree, uint32_t size,
-                              SCOREP_SystemTreeNodeHandle node )
+find_system_node( scorep_cube_system_node* system_tree, uint32_t size,
+                  SCOREP_SystemTreeNodeHandle node )
 {
     for ( uint32_t i = 0; i < size; i++ )
     {
@@ -91,7 +91,7 @@ scorep_cube_find_system_node( scorep_cube_system_node* system_tree, uint32_t siz
             @a node, it returns NULL.
  */
 static cube_machine*
-scorep_cube_get_mach( scorep_cube_system_node* node )
+get_cube_machine( scorep_cube_system_node* node )
 {
     assert( node );
 
@@ -105,7 +105,7 @@ scorep_cube_get_mach( scorep_cube_system_node* node )
     {
         return NULL;
     }
-    return scorep_cube_get_mach( node->parent );
+    return get_cube_machine( node->parent );
 }
 
 /**
@@ -119,22 +119,22 @@ scorep_cube_get_mach( scorep_cube_system_node* node )
    @returns A pointer to the Cube node definition.
  */
 static cube_node*
-scorep_cube_get_node(  cube_t* my_cube,
-                       scorep_cube_system_node* system_tree,
-                       SCOREP_SystemTreeNodeHandle node, uint32_t size )
+get_cube_node(  cube_t* my_cube,
+                scorep_cube_system_node* system_tree,
+                SCOREP_SystemTreeNodeHandle node, uint32_t size )
 {
     /* Need a default node, in cases a system tree implmentation does provide no node
        definition. However, Cube insists of a node definition. */
     static cube_node*        default_node = NULL;
     scorep_cube_system_node* scorep_node  =
-        scorep_cube_find_system_node( system_tree, size, node );
+        find_system_node( system_tree, size, node );
 
     if ( scorep_node == NULL )
     {
         if ( default_node == NULL )
         {
             default_node = cube_def_node( my_cube, "default node",
-                                          scorep_cube_get_mach( &system_tree[ 0 ] ) );
+                                          get_cube_machine( &system_tree[ 0 ] ) );
         }
         return default_node;
     }
@@ -203,7 +203,8 @@ scorep_cube4_create_definitions_map()
     scorep_cube4_definitions_map* map = NULL;
 
     /* Allocate memory for the struct */
-    map = ( scorep_cube4_definitions_map* )malloc( sizeof( scorep_cube4_definitions_map ) );
+    map = ( scorep_cube4_definitions_map* )
+          malloc( sizeof( scorep_cube4_definitions_map ) );
     if ( map == NULL )
     {
         SCOREP_ERROR_POSIX( "Unable to create mapping struct" );
@@ -289,10 +290,10 @@ scorep_cube4_delete_definitions_map( scorep_cube4_definitions_map* map )
 /* ****************************************************************************
  * Add entries
  *****************************************************************************/
-void
-scorep_cube4_add_region_mapping( scorep_cube4_definitions_map* map,
-                                 cube_region*                  cube_handle,
-                                 SCOREP_RegionHandle           scorep_handle )
+static void
+add_region_mapping( scorep_cube4_definitions_map* map,
+                    cube_region*                  cube_handle,
+                    SCOREP_RegionHandle           scorep_handle )
 {
     /* Create copy of the SCOREP region handle on the heap */
     SCOREP_RegionHandle* scorep_copy = malloc( sizeof( SCOREP_RegionHandle ) );
@@ -305,10 +306,10 @@ scorep_cube4_add_region_mapping( scorep_cube4_definitions_map* map,
                            scorep_copy, NULL );
 }
 
-void
-scorep_cube4_add_callpath_mapping( scorep_cube4_definitions_map* map,
-                                   cube_cnode*                   cube_handle,
-                                   SCOREP_CallpathHandle         scorep_handle )
+static void
+add_callpath_mapping( scorep_cube4_definitions_map* map,
+                      cube_cnode*                   cube_handle,
+                      SCOREP_CallpathHandle         scorep_handle )
 {
     /* Create copy of the SCOREP region handle on the heap */
     SCOREP_CallpathHandle* scorep_copy = malloc( sizeof( SCOREP_CallpathHandle ) );
@@ -321,10 +322,10 @@ scorep_cube4_add_callpath_mapping( scorep_cube4_definitions_map* map,
                            scorep_copy, NULL );
 }
 
-void
-scorep_cube4_add_metric_mapping( scorep_cube4_definitions_map* map,
-                                 cube_metric*                  cube_handle,
-                                 SCOREP_MetricHandle           scorep_handle )
+static void
+add_metric_mapping( scorep_cube4_definitions_map* map,
+                    cube_metric*                  cube_handle,
+                    SCOREP_MetricHandle           scorep_handle )
 {
     /* Create copy of the SCOREP region handle on the heap */
     SCOREP_MetricHandle* scorep_copy = malloc( sizeof( SCOREP_MetricHandle ) );
@@ -428,10 +429,10 @@ scorep_get_min_time_handle()
    @param map     Pointer to mapping instance to map Score-P und Cube definitions.
  */
 static void
-scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
-                                          SCOREP_DefinitionManager*     manager,
-                                          scorep_cube4_definitions_map* map,
-                                          bool                          write_task_metrics )
+write_metric_definitions( cube_t*                       my_cube,
+                          SCOREP_DefinitionManager*     manager,
+                          scorep_cube4_definitions_map* map,
+                          bool                          write_task_metrics )
 {
     cube_metric* cube_handle;
 
@@ -442,7 +443,8 @@ scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
 
     time_sum_handle = cube_def_met( my_cube, "Time", "time", "DOUBLE", "sec", "",
                                     "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
-                                    "Total CPU allocation time", NULL, CUBE_METRIC_INCLUSIVE );
+                                    "Total CPU allocation time", NULL,
+                                    CUBE_METRIC_INCLUSIVE );
 
     time_min_handle = cube_def_met( my_cube, "Minimum Inclusive Time", "min_time",
                                     "MINDOUBLE", "sec", "",
@@ -523,7 +525,7 @@ scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
                                         metric_unit, "", "", metric_description, NULL,
                                         cube_metric_type );
 
-            scorep_cube4_add_metric_mapping( map, cube_handle, handle );
+            add_metric_mapping( map, cube_handle, handle );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -537,9 +539,9 @@ scorep_write_metric_definitions_to_cube4( cube_t*                       my_cube,
    @param map     Pointer to mapping instance to map Score-P und Cube definitions.
  */
 static void
-scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
-                                          SCOREP_DefinitionManager*     manager,
-                                          scorep_cube4_definitions_map* map )
+write_region_definitions( cube_t*                       my_cube,
+                          SCOREP_DefinitionManager*     manager,
+                          scorep_cube4_definitions_map* map )
 {
     SCOREP_DEFINITION_FOREACH_DO( manager, Region, region )
     {
@@ -550,7 +552,8 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
         const char* file_name = "";
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
-            file_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->file_name_handle, String )->string_data;
+            file_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->file_name_handle,
+                                                     String )->string_data;
         }
 
         /* Register region to cube */
@@ -563,7 +566,7 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
                                                     file_name );
 
         /* Create entry in mapping table */
-        scorep_cube4_add_region_mapping( map, cube_handle, handle );
+        add_region_mapping( map, cube_handle, handle );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -576,9 +579,9 @@ scorep_write_region_definitions_to_cube4( cube_t*                       my_cube,
    @param map     Pointer to mapping instance to map Score-P und Cube definitions.
  */
 static void
-scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cube,
-                                            SCOREP_DefinitionManager*     manager,
-                                            scorep_cube4_definitions_map* map )
+write_callpath_definitions( cube_t*                       my_cube,
+                            SCOREP_DefinitionManager*     manager,
+                            scorep_cube4_definitions_map* map )
 {
     cube_cnode*           cnode  = NULL;
     cube_region*          region = NULL;
@@ -602,7 +605,7 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
         cnode = cube_def_cnode( my_cube, region, parent );
 
         /* Create entry in mapping table */
-        scorep_cube4_add_callpath_mapping( map, cnode, handle );
+        add_callpath_mapping( map, cnode, handle );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 }
@@ -620,8 +623,8 @@ scorep_write_callpath_definitions_to_cube4( cube_t*                       my_cub
             must be freed by the caller of this function.
  */
 static scorep_cube_system_node*
-scorep_write_cube_system_tree( cube_t*                   my_cube,
-                               SCOREP_DefinitionManager* manager )
+write_system_tree( cube_t*                   my_cube,
+                   SCOREP_DefinitionManager* manager )
 {
     uint32_t                 end         = 0;
     uint32_t                 nodes       = manager->system_tree_node_definition_counter;
@@ -646,8 +649,8 @@ scorep_write_cube_system_tree( cube_t*                   my_cube,
         system_tree[ end ].scorep_node     = handle;
         system_tree[ end ].my_cube_machine = NULL;
         system_tree[ end ].my_cube_node    = NULL;
-        system_tree[ end ].parent          = scorep_cube_find_system_node( system_tree, end,
-                                                                           definition->parent_handle );
+        system_tree[ end ].parent          = find_system_node( system_tree, end,
+                                                               definition->parent_handle );
 
         /* Register nodes to cube on machine and node level, because Cube has still
            a fixed system tree hiarachy */
@@ -659,7 +662,7 @@ scorep_write_cube_system_tree( cube_t*                   my_cube,
                   ( strcmp( "nodecard", class ) == 0 ) )
         {
             system_tree[ end ].my_cube_node = cube_def_node( my_cube, name,
-                                                             scorep_cube_get_mach( &system_tree[ end ] ) );
+                                                             get_cube_machine( &system_tree[ end ] ) );
         }
 
         end++;
@@ -679,25 +682,24 @@ scorep_write_cube_system_tree( cube_t*                   my_cube,
                   @a ranks.
  */
 static void
-scorep_write_location_definitions_to_cube4( cube_t*                   my_cube,
-                                            SCOREP_DefinitionManager* manager,
-                                            uint32_t                  ranks,
-                                            int*                      threads )
+write_location_definitions( cube_t*                   my_cube,
+                            SCOREP_DefinitionManager* manager,
+                            uint32_t                  ranks,
+                            int*                      threads )
 {
     char          name[ 32 ];
     cube_process* process = NULL;
     cube_thread*  thread  = NULL;
     int           index   = 0;
 
-    scorep_cube_system_node* system_tree = scorep_write_cube_system_tree( my_cube,
-                                                                          manager );
+    scorep_cube_system_node* system_tree = write_system_tree( my_cube, manager );
     assert( system_tree );
 
     SCOREP_DEFINITION_FOREACH_DO( manager, LocationGroup, location_group )
     {
         uint32_t   rank = definition->global_location_group_id;
-        cube_node* node = scorep_cube_get_node( my_cube, system_tree, definition->parent,
-                                                manager->system_tree_node_definition_counter );
+        cube_node* node = get_cube_node( my_cube, system_tree, definition->parent,
+                                         manager->system_tree_node_definition_counter );
 
         sprintf( name, "rank %u", rank );
         process = cube_def_proc( my_cube, name, rank, node );
@@ -735,8 +737,8 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     }
     assert( scorep_unified_definition_manager );
 
-    scorep_write_metric_definitions_to_cube4( my_cube, manager, map, write_task_metrics );
-    scorep_write_region_definitions_to_cube4( my_cube, manager, map );
-    scorep_write_callpath_definitions_to_cube4( my_cube, manager, map );
-    scorep_write_location_definitions_to_cube4( my_cube, manager, ranks, threads );
+    write_metric_definitions( my_cube, manager, map, write_task_metrics );
+    write_region_definitions( my_cube, manager, map );
+    write_callpath_definitions( my_cube, manager, map );
+    write_location_definitions( my_cube, manager, ranks, threads );
 }

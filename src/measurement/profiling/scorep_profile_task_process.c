@@ -39,11 +39,9 @@
 #include <scorep_profile_node.h>
 
 
-
-
-void
-scorep_profile_visit_to_switches( scorep_profile_node* node,
-                                  void*                param )
+static void
+visit_to_switches( scorep_profile_node* node,
+                   void*                param )
 {
     if ( node->node_type != scorep_profile_node_regular_region  )
     {
@@ -80,10 +78,10 @@ scorep_profile_visit_to_switches( scorep_profile_node* node,
     node->count = 0;
 }
 
-scorep_profile_node*
-scorep_profile_chroot_tasks( SCOREP_Profile_LocationData* location,
-                             scorep_profile_node*         task_root,
-                             scorep_profile_node*         task )
+static scorep_profile_node*
+chroot_tasks( SCOREP_Profile_LocationData* location,
+              scorep_profile_node*         task_root,
+              scorep_profile_node*         task )
 {
     /* Register the region handle on first visist */
     static SCOREP_RegionHandle root_region = SCOREP_INVALID_REGION;
@@ -140,14 +138,14 @@ scorep_profile_process_tasks()
             {
                 /*
                    scorep_profile_for_all( node,
-                                        scorep_profile_visit_to_switches,
+                                        visit_to_switches,
                                         location );
                  */
             }
             /* Else move the task tree to a common root */
             else
             {
-                task_root = scorep_profile_chroot_tasks( location, task_root, node );
+                task_root = chroot_tasks( location, task_root, node );
             }
 
             node = next;

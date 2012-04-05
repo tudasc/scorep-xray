@@ -116,8 +116,8 @@ static scorep_cube4_definitions_map* scorep_map;
                 the unified definitions.
  */
 static void
-scorep_cube4_make_callpath_mapping( scorep_profile_node* node,
-                                    void*                param )
+make_callpath_mapping( scorep_profile_node* node,
+                       void*                param )
 {
     /* Check whether this node has a callpath handle assigned. Thread nodes have none */
     if ( !node->callpath_handle )
@@ -138,7 +138,7 @@ scorep_cube4_make_callpath_mapping( scorep_profile_node* node,
    @param metric_number Number of unified definitions.
  */
 static SCOREP_MetricHandle*
-scorep_cube4_make_metric_mapping( uint32_t metric_number )
+make_metric_mapping( uint32_t metric_number )
 {
     uint32_t             i;
     SCOREP_MetricHandle* map = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
@@ -165,7 +165,7 @@ scorep_cube4_make_metric_mapping( uint32_t metric_number )
    global sequence numbers define the order in which the metrics are written.
  */
 static SCOREP_MetricHandle*
-scorep_cube4_make_unified_mapping()
+make_unified_mapping()
 {
     uint32_t             i             = 0;
     uint32_t             metric_number = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
@@ -193,7 +193,7 @@ scorep_cube4_make_unified_mapping()
    @returns the implicit runtime of @a node.
  */
 static double
-scorep_profile_get_sum_time_value( scorep_profile_node* node, void* data )
+get_sum_time_value( scorep_profile_node* node, void* data )
 {
     return ( ( double )node->inclusive_time.sum ) / ( ( double )SCOREP_GetClockResolution() );
 }
@@ -206,7 +206,7 @@ scorep_profile_get_sum_time_value( scorep_profile_node* node, void* data )
    @returns the implicit runtime of @a node.
  */
 static double
-scorep_profile_get_max_time_value( scorep_profile_node* node, void* data )
+get_max_time_value( scorep_profile_node* node, void* data )
 {
     return ( ( double )node->inclusive_time.max ) / ( ( double )SCOREP_GetClockResolution() );
 }
@@ -219,7 +219,7 @@ scorep_profile_get_max_time_value( scorep_profile_node* node, void* data )
    @returns the implicit runtime of @a node.
  */
 static double
-scorep_profile_get_min_time_value( scorep_profile_node* node, void* data )
+get_min_time_value( scorep_profile_node* node, void* data )
 {
     return ( ( double )node->inclusive_time.min ) / ( ( double )SCOREP_GetClockResolution() );
 }
@@ -232,7 +232,7 @@ scorep_profile_get_min_time_value( scorep_profile_node* node, void* data )
    @returns the number of visits of @a node.
  */
 static uint64_t
-scorep_profile_get_visits_value( scorep_profile_node* node, void* data )
+get_visits_value( scorep_profile_node* node, void* data )
 {
     return node->count;
 }
@@ -248,7 +248,7 @@ scorep_profile_get_visits_value( scorep_profile_node* node, void* data )
    @returns the number of visits of @a node.
  */
 static uint64_t
-scorep_profile_get_metrics_value_from_array( scorep_profile_node* node, void* index )
+get_metrics_value_from_array( scorep_profile_node* node, void* index )
 {
     return node->dense_metrics[ *( uint8_t* )index ].sum;
 }
@@ -262,7 +262,7 @@ scorep_profile_get_metrics_value_from_array( scorep_profile_node* node, void* in
             Otherwise 0 is returned.
  */
 static uint64_t
-scorep_profile_get_sparse_uint64_value( scorep_profile_node* node, void* data )
+get_sparse_uint64_value( scorep_profile_node* node, void* data )
 {
     SCOREP_MetricHandle               metric  = *( SCOREP_MetricHandle* )data;
     scorep_profile_sparse_metric_int* current = node->first_int_sparse;
@@ -300,7 +300,7 @@ scorep_profile_get_sparse_uint64_value( scorep_profile_node* node, void* data )
             Otherwise 0 is returned.
  */
 static double
-scorep_profile_get_sparse_double_value( scorep_profile_node* node, void* data )
+get_sparse_double_value( scorep_profile_node* node, void* data )
 {
     SCOREP_MetricHandle                  metric  = *( SCOREP_MetricHandle* )data;
     scorep_profile_sparse_metric_double* current = node->first_double_sparse;
@@ -331,14 +331,14 @@ scorep_profile_get_sparse_double_value( scorep_profile_node* node, void* data )
 
 /**
    Returns a truth value whether a sparse double metric value exists in  @a node.
-   This functions are given to scorep_profile_set_bitstring_for_metric.
+   This functions are given to set_bitstring_for_metric.
    @param node  Pointer to a node which should return the metric value.
    @param data  Pointer to a metric handle specifying the desired metric.
    @returns the value of the specified metric if it has an entry in the node.
             Otherwise 0 is returned.
  */
 static uint64_t
-scorep_profile_has_sparse_double_value( scorep_profile_node* node, void* data )
+has_sparse_double_value( scorep_profile_node* node, void* data )
 {
     SCOREP_MetricHandle metric = *( SCOREP_MetricHandle* )data;
     if ( SCOREP_Metric_GetProfilingType( metric ) == SCOREP_METRIC_PROFILING_TYPE_MAX )
@@ -346,11 +346,11 @@ scorep_profile_has_sparse_double_value( scorep_profile_node* node, void* data )
         return 1;
     }
 
-    return ( uint64_t )( scorep_profile_get_sparse_double_value( node, data ) == 0 ? 0 : 1 );
+    return ( uint64_t )( get_sparse_double_value( node, data ) == 0 ? 0 : 1 );
 }
 
-void
-scorep_profile_set_bitstring_for_metric(
+static void
+set_bitstring_for_metric(
     scorep_cube_writing_data*      write_set,
     scorep_profile_get_uint64_func get_value,
     void*                          func_data )
@@ -383,12 +383,13 @@ scorep_profile_set_bitstring_for_metric(
     free( bits );
 }
 
-/* We must ensure that all ranks paricipate in collective operations. Thus, this
-   function is a placeholder for @a scorep_profile_set_bitstring_for_metric in case
+/**
+   We must ensure that all ranks participate in collective operations. Thus, this
+   function is a placeholder for @a set_bitstring_for_metric in case
    a metric is not defined on this rank
  */
-void
-scorep_profile_set_bitstring_for_unknown_metric( scorep_cube_writing_data* write_set )
+static void
+set_bitstring_for_unknown_metric( scorep_cube_writing_data* write_set )
 {
     /* Create empty bitstring */
     uint8_t* bits = malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
@@ -410,11 +411,11 @@ scorep_profile_set_bitstring_for_unknown_metric( scorep_cube_writing_data* write
  */
 #define SCOREP_PROFILE_WRITE_CUBE_METRIC( type, TYPE, cube_type )	                \
 static void                                                                             \
-scorep_profile_write_cube_##cube_type(                                                  \
-                                   scorep_cube_writing_data*                 write_set, \
-                                   cube_metric*                              metric,    \
-                                   scorep_profile_get_ ## cube_type ## _func get_value, \
-                                   void*                                     func_data) \
+write_cube_##cube_type(                                                                 \
+                        scorep_cube_writing_data*                 write_set,            \
+                        cube_metric*                              metric,               \
+                        scorep_profile_get_ ## cube_type ## _func get_value,            \
+                        void*                                     func_data)            \
 {                                                                                       \
     scorep_profile_node* node          = NULL;                                          \
     cube_cnode*          cnode         = NULL;                                          \
@@ -483,7 +484,7 @@ scorep_profile_write_cube_##cube_type(                                          
 /* *INDENT-ON* */
 
 /**
-   @function scorep_profile_write_cube_uint64
+   @function write_cube_uint64
    Writes data for the metric @a metric to a cube object.
    @param write_set       Structure containing write data.
    @param metric          The cube metric handle for the written metric.
@@ -494,7 +495,7 @@ scorep_profile_write_cube_##cube_type(                                          
 SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, LONG_LONG, uint64 )
 
 /**
-   @function scorep_profile_write_cube_double
+   @function write_cube_double
    Writes data for the metric @a metric to a cube object.
    @param write_set       Structure containing write data.
    @param metric          The cube metric handle for the written metric.
@@ -510,8 +511,8 @@ SCOREP_PROFILE_WRITE_CUBE_METRIC( double, DOUBLE, doubles )
    @param metric          Metric handle that is goinf to be written.
  */
 static bool
-scorep_profile_check_if_metric_shall_be_written( scorep_cube_writing_data* write_set,
-                                                 SCOREP_MetricHandle       metric )
+check_if_metric_shall_be_written( scorep_cube_writing_data* write_set,
+                                  SCOREP_MetricHandle       metric )
 {
     return ( metric != SCOREP_PROFILE_DENSE_METRIC ) &&
            ( metric != scorep_profile_active_task_metric ||
@@ -523,7 +524,7 @@ scorep_profile_check_if_metric_shall_be_written( scorep_cube_writing_data* write
 *******************************************************************************/
 
 static void
-scorep_profile_delete_cube_writing_data( scorep_cube_writing_data* write_set )
+delete_cube_writing_data( scorep_cube_writing_data* write_set )
 {
     if ( write_set == NULL )
     {
@@ -555,7 +556,7 @@ scorep_profile_delete_cube_writing_data( scorep_cube_writing_data* write_set )
 }
 
 static bool
-scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
+init_cube_writing_data( scorep_cube_writing_data* write_set )
 {
     /* Set all pointers to zero.
        If an malloc fails, we know how many can bee freed */
@@ -627,7 +628,7 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
                       "Failed to allocate memory for definition mapping\n"
                       "Failed to write Cube 4 profile" );
 
-        scorep_profile_delete_cube_writing_data( write_set );
+        delete_cube_writing_data( write_set );
         return false;
     }
 
@@ -646,7 +647,7 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
         {
             SCOREP_ERROR_POSIX( "Failed to allocate memory for filename.\n"
                                 "Failed to write Cube 4 profile" );
-            scorep_profile_delete_cube_writing_data( write_set );
+            delete_cube_writing_data( write_set );
             return false;
         }
         sprintf( filename, "%s/%s", dirname, scorep_profile.basename );
@@ -682,7 +683,7 @@ scorep_profile_init_cube_writing_data( scorep_cube_writing_data* write_set )
 }
 
 static void
-scorep_profile_add_mapping_to_cube_writing_data( scorep_cube_writing_data* write_set )
+add_mapping_to_cube_writing_data( scorep_cube_writing_data* write_set )
 {
     /* Map global sequence numbers to profile nodes */
     write_set->id_2_node = calloc( write_set->callpath_number * write_set->local_threads,
@@ -692,18 +693,18 @@ scorep_profile_add_mapping_to_cube_writing_data( scorep_cube_writing_data* write
     for ( uint64_t i = 0; node != NULL; node = node->next_sibling )
     {
         scorep_profile_for_all( node,
-                                scorep_cube4_make_callpath_mapping,
+                                make_callpath_mapping,
                                 &write_set->id_2_node[ i ] );
         i += write_set->callpath_number;
     }
 
     /* Mapping from global sequence number to local metric handle. Defines
        order of writing metrics */
-    write_set->metric_map = scorep_cube4_make_metric_mapping( write_set->num_unified );
+    write_set->metric_map = make_metric_mapping( write_set->num_unified );
 
     if ( write_set->my_rank == 0 )
     {
-        write_set->unified_map = scorep_cube4_make_unified_mapping();
+        write_set->unified_map = make_unified_mapping();
     }
 }
 
@@ -728,7 +729,7 @@ scorep_profile_write_cube4()
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
 
-    if ( !scorep_profile_init_cube_writing_data( &write_set ) )
+    if ( !init_cube_writing_data( &write_set ) )
     {
         return;
     }
@@ -753,27 +754,27 @@ scorep_profile_write_cube4()
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
-    scorep_profile_add_mapping_to_cube_writing_data( &write_set );
+    add_mapping_to_cube_writing_data( &write_set );
 
     /* -------------------------------- dense metrics */
 
     /* Write implicit time */
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
 
-    scorep_profile_write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
-                                       &scorep_profile_get_sum_time_value, NULL );
+    write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
+                        &get_sum_time_value, NULL );
 
 
-    scorep_profile_write_cube_doubles( &write_set, scorep_get_max_time_handle(),
-                                       &scorep_profile_get_max_time_value, NULL );
+    write_cube_doubles( &write_set, scorep_get_max_time_handle(),
+                        &get_max_time_value, NULL );
 
-    scorep_profile_write_cube_doubles( &write_set, scorep_get_min_time_handle(),
-                                       &scorep_profile_get_min_time_value, NULL );
+    write_cube_doubles( &write_set, scorep_get_min_time_handle(),
+                        &get_min_time_value, NULL );
 
     /* Write visits */
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing visits" );
-    scorep_profile_write_cube_uint64( &write_set, scorep_get_visits_handle(),
-                                      &scorep_profile_get_visits_value, NULL );
+    write_cube_uint64( &write_set, scorep_get_visits_handle(),
+                       &get_visits_value, NULL );
 
     /* Write additional dense metrics (e.g. hardware counters) */
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
@@ -797,8 +798,8 @@ scorep_profile_write_cube4()
             write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
-        scorep_profile_write_cube_uint64( &write_set, metric,
-                                          &scorep_profile_get_metrics_value_from_array, &i );
+        write_cube_uint64( &write_set, metric,
+                           &get_metrics_value_from_array, &i );
     }
 
     /* -------------------------------- sparse metrics */
@@ -812,8 +813,8 @@ scorep_profile_write_cube4()
 
         for ( uint32_t i = 0; i < write_set.num_unified; i++ )
         {
-            if ( !scorep_profile_check_if_metric_shall_be_written( &write_set,
-                                                                   write_set.metric_map[ i ] ) )
+            if ( !check_if_metric_shall_be_written( &write_set,
+                                                    write_set.metric_map[ i ] ) )
             {
                 continue;
             }
@@ -826,11 +827,11 @@ scorep_profile_write_cube4()
 
             if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )
             {
-                scorep_profile_set_bitstring_for_unknown_metric( &write_set );
-                scorep_profile_write_cube_doubles( &write_set,
-                                                   metric,
-                                                   &scorep_profile_get_sparse_double_value,
-                                                   &write_set.metric_map[ i ] );
+                set_bitstring_for_unknown_metric( &write_set );
+                write_cube_doubles( &write_set,
+                                    metric,
+                                    &get_sparse_double_value,
+                                    &write_set.metric_map[ i ] );
                 continue;
             }
 
@@ -838,23 +839,23 @@ scorep_profile_write_cube4()
             {
                 case SCOREP_METRIC_VALUE_INT64:
                 case SCOREP_METRIC_VALUE_UINT64:
-                    scorep_profile_set_bitstring_for_metric( &write_set,
-                                                             &scorep_profile_get_sparse_uint64_value,
-                                                             &write_set.metric_map[ i ] );
-                    scorep_profile_write_cube_uint64( &write_set,
-                                                      metric,
-                                                      &scorep_profile_get_sparse_uint64_value,
-                                                      &write_set.metric_map[ i ] );
+                    set_bitstring_for_metric( &write_set,
+                                              &get_sparse_uint64_value,
+                                              &write_set.metric_map[ i ] );
+                    write_cube_uint64( &write_set,
+                                       metric,
+                                       &get_sparse_uint64_value,
+                                       &write_set.metric_map[ i ] );
 
                     break;
                 case SCOREP_METRIC_VALUE_DOUBLE:
-                    scorep_profile_set_bitstring_for_metric( &write_set,
-                                                             &scorep_profile_has_sparse_double_value,
-                                                             &write_set.metric_map[ i ] );
-                    scorep_profile_write_cube_doubles( &write_set,
-                                                       metric,
-                                                       &scorep_profile_get_sparse_double_value,
-                                                       &write_set.metric_map[ i ] );
+                    set_bitstring_for_metric( &write_set,
+                                              &has_sparse_double_value,
+                                              &write_set.metric_map[ i ] );
+                    write_cube_doubles( &write_set,
+                                        metric,
+                                        &get_sparse_double_value,
+                                        &write_set.metric_map[ i ] );
 
                     break;
                 default:
@@ -870,5 +871,5 @@ scorep_profile_write_cube4()
     /* Clean up */
     //cleanup:
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Clean up" );
-    scorep_profile_delete_cube_writing_data( &write_set );
+    delete_cube_writing_data( &write_set );
 }
