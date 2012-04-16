@@ -175,7 +175,6 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     SCOREP_RegionType type_outer  = SCOREP_REGION_UNKNOWN;
     SCOREP_RegionType type_inner  = SCOREP_REGION_UNKNOWN;
     int32_t           start, end;
-    static uint32_t   task_counter = 0; /* Used to assign unique names to each task region */
 
     /* Assume that all regions from one file are registered in a row.
        Thus, remember the last file handle and reuse it if the next region stems
@@ -191,6 +190,11 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         last_file      = SCOREP_DefineSourceFile( last_file_name );
     }
 
+    /* Construct file:lno string */
+    const char* basename    = SCOREP_IO_GetWithoutPath( region->startFileName );
+    char*       source_name = ( char* )malloc( strlen( basename ) + 12 );
+    sprintf( source_name, "@%s:%" PRIi32, basename, region->startLine1 );
+
     /* Determine name */
     if ( region->name == 0 )
     {
@@ -203,16 +207,14 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 
     if ( region->regionType == SCOREP_Pomp_Task )
     {
-        region_name = ( char* )malloc( 19 + 10 );
-        sprintf( region_name, "!$omp create task %" PRIu32, task_counter );
+        region_name = ( char* )malloc( 19 + strlen( source_name ) );
+        sprintf( region_name, "!$omp create task %s", source_name );
     }
     else if ( region->regionType != SCOREP_Pomp_UserRegion )
     {
-        int length = strlen( name ) + 7;
+        int length = strlen( name ) + 7 + strlen( source_name ) + 1;
         region_name = ( char* )malloc( length );
-        strcpy( region_name, "!$omp " );
-        strcpy( &region_name[ 6 ], name );
-        region_name[ length - 1 ] = '\0';
+        sprintf( region_name, "!$omp %s %s", name, source_name );
     }
     else
     {
@@ -224,6 +226,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
          SCOREP_Filter_Match( region->startFileName, region_name, false ) )
     {
         region->innerBlock = SCOREP_INVALID_REGION;
+        free( source_name );
         free( region_name );
         return;
     }
@@ -269,8 +272,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 
     if ( region->regionType == SCOREP_Pomp_Task )
     {
-        sprintf( region_name, "!$omp task %" PRIu32, task_counter );
-        task_counter++;
+        sprintf( region_name, "!$omp task %s", source_name );
     }
 
     if ( type_inner != SCOREP_REGION_UNKNOWN )
@@ -283,6 +285,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                                                   type_inner );
     }
 
+    free( source_name );
     free( region_name );
 
 #ifdef _OPENMP
