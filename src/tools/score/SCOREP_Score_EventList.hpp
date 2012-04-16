@@ -91,6 +91,14 @@
 #define SCOREP_SCORE_EVENT_JOIN \
     SCOREP_SCORE_EVENT( "!$omp parallel" )
 
+#define SCOREP_SCORE_EVENT_TASK_CREATE \
+    SCOREP_SCORE_EVENT( "!$omp task " )
+
+// Should include taskwaits and task regions
+// create task regions are not counted.
+#define SCOREP_SCORE_EVENT_TASK_SWITCH \
+    SCOREP_SCORE_EVENT( "!$omp task" )
+
 #define SCOREP_SCORE_EVENT_ACQUIRELOCK \
     SCOREP_SCORE_EVENT( "omp_set_lock" ) \
     SCOREP_SCORE_EVENT( "omp_set_nest_lock" )

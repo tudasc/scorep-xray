@@ -239,6 +239,7 @@ SCOREP_Score_Profile::HasParameter( uint64_t region )
     return true;
 }
 
+// Requires exact name matching
 #define SCOREP_SCORE_EVENT( name ) if ( name == GetRegionName( region ) ) { return true; }
 
 bool
@@ -291,6 +292,27 @@ SCOREP_Score_Profile::HasCollective( uint64_t region )
 }
 
 bool
+SCOREP_Score_Profile::HasAcquireLock( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_ACQUIRELOCK
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasReleaseLock( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_RELEASELOCK
+    return false;
+}
+
+#undef SCOREP_SCORE_EVENT
+
+// Requires prefix matching
+#define SCOREP_SCORE_EVENT( name )                                     \
+    if ( name == GetRegionName( region ).substr( 0, strlen( name ) ) ) \
+    { return true; }
+
+bool
 SCOREP_Score_Profile::HasFork( uint64_t region )
 {
     SCOREP_SCORE_EVENT_FORK
@@ -305,38 +327,15 @@ SCOREP_Score_Profile::HasJoin( uint64_t region )
 }
 
 bool
-SCOREP_Score_Profile::HasAcquireLock( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_ACQUIRELOCK
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasReleaseLock( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_RELEASELOCK
-    return false;
-}
-
-bool
 SCOREP_Score_Profile::HasTaskCreateComplete( uint64_t region )
 {
-    // the tailing space in the name should exclude taskwait regions
-    if ( "!$omp task " == GetRegionName( region ).substr( 0, 11 ) )
-    {
-        return true;
-    }
+    SCOREP_SCORE_EVENT_TASK_CREATE
     return false;
 }
 
 bool
 SCOREP_Score_Profile::HasTaskSwitch( uint64_t region )
 {
-    // Should include taskwaits and task regions
-    // create task regions are not counted.
-    if ( "!$omp task" == GetRegionName( region ).substr( 0, 10 ) )
-    {
-        return true;
-    }
+    SCOREP_SCORE_EVENT_TASK_SWITCH
     return false;
 }
