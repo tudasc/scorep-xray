@@ -54,6 +54,8 @@ AC_DEFUN([AC_SCOREP_REVISION],
              m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION "echo \$minor"]))
     AC_SUBST([PACKAGE_BUGFIX],
              m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION "echo \$bugfix"]))
+    AC_SUBST([PACKAGE_SUFFIX],
+             m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION "echo \$suffix"]))
 
     AC_SUBST([LIBRARY_CURRENT],
              m4_esyscmd([vendor/common/build-config/generate-library-version.sh build-config/VERSION "echo \$current"]))
