@@ -76,40 +76,41 @@ enum scorep_mpi_groups {
     SCOREP_MPI_ENABLED_XNONBLOCK =  8192,
     SCOREP_MPI_ENABLED_XREQTEST  = 16384,
     /* derived groups, which are a combination of existing groups */
-    SCOREP_MPI_ENABLED_CG_ERR    =  SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_ERR,
-    SCOREP_MPI_ENABLED_CG_EXT    =  SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_EXT,
-    SCOREP_MPI_ENABLED_CG_MISC   =  SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_MISC,
-    SCOREP_MPI_ENABLED_IO_ERR    =  SCOREP_MPI_ENABLED_IO    | SCOREP_MPI_ENABLED_ERR,
-    SCOREP_MPI_ENABLED_IO_MISC   =  SCOREP_MPI_ENABLED_IO    | SCOREP_MPI_ENABLED_MISC,
-    SCOREP_MPI_ENABLED_RMA_ERR   =  SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_ERR,
-    SCOREP_MPI_ENABLED_RMA_EXT   =  SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_EXT,
-    SCOREP_MPI_ENABLED_RMA_MISC  =  SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_MISC,
-    SCOREP_MPI_ENABLED_TYPE_EXT  =  SCOREP_MPI_ENABLED_TYPE  | SCOREP_MPI_ENABLED_EXT,
-    SCOREP_MPI_ENABLED_TYPE_MISC =  SCOREP_MPI_ENABLED_TYPE  | SCOREP_MPI_ENABLED_MISC,
+    SCOREP_MPI_ENABLED_CG_ERR    = SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_ERR,
+    SCOREP_MPI_ENABLED_CG_EXT    = SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_EXT,
+    SCOREP_MPI_ENABLED_CG_MISC   = SCOREP_MPI_ENABLED_CG    | SCOREP_MPI_ENABLED_MISC,
+    SCOREP_MPI_ENABLED_IO_ERR    = SCOREP_MPI_ENABLED_IO    | SCOREP_MPI_ENABLED_ERR,
+    SCOREP_MPI_ENABLED_IO_MISC   = SCOREP_MPI_ENABLED_IO    | SCOREP_MPI_ENABLED_MISC,
+    SCOREP_MPI_ENABLED_RMA_ERR   = SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_ERR,
+    SCOREP_MPI_ENABLED_RMA_EXT   = SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_EXT,
+    SCOREP_MPI_ENABLED_RMA_MISC  = SCOREP_MPI_ENABLED_RMA   | SCOREP_MPI_ENABLED_MISC,
+    SCOREP_MPI_ENABLED_TYPE_EXT  = SCOREP_MPI_ENABLED_TYPE  | SCOREP_MPI_ENABLED_EXT,
+    SCOREP_MPI_ENABLED_TYPE_MISC = SCOREP_MPI_ENABLED_TYPE  | SCOREP_MPI_ENABLED_MISC,
     /* NOTE: ALL should comprise all pure groups */
-    SCOREP_MPI_ENABLED_ALL       =  SCOREP_MPI_ENABLED_CG    |
-                                  SCOREP_MPI_ENABLED_COLL  |
-                                  SCOREP_MPI_ENABLED_ENV   |
-                                  SCOREP_MPI_ENABLED_ERR   |
-                                  SCOREP_MPI_ENABLED_EXT   |
-                                  SCOREP_MPI_ENABLED_IO    |
-                                  SCOREP_MPI_ENABLED_MISC  |
-                                  SCOREP_MPI_ENABLED_P2P   |
-                                  SCOREP_MPI_ENABLED_RMA   |
-                                  SCOREP_MPI_ENABLED_SPAWN |
-                                  SCOREP_MPI_ENABLED_TOPO  |
-                                  SCOREP_MPI_ENABLED_TYPE  |
-                                  SCOREP_MPI_ENABLED_PERF  |
-                                  SCOREP_MPI_ENABLED_XNONBLOCK, 
-    /* NOTE: DEFAULT should reflect the default set in 'epk_conf.c' */
-    SCOREP_MPI_ENABLED_DEFAULT   =  SCOREP_MPI_ENABLED_CG    |
-                                  SCOREP_MPI_ENABLED_COLL  |
-                                  SCOREP_MPI_ENABLED_ENV   |
-                                  SCOREP_MPI_ENABLED_IO    |
-                                  SCOREP_MPI_ENABLED_P2P   |
-                                  SCOREP_MPI_ENABLED_RMA   |
-                                  SCOREP_MPI_ENABLED_TOPO  |
-                                  SCOREP_MPI_ENABLED_XNONBLOCK
+    SCOREP_MPI_ENABLED_ALL       = SCOREP_MPI_ENABLED_CG        |
+                                   SCOREP_MPI_ENABLED_COLL      |
+                                   SCOREP_MPI_ENABLED_ENV       |
+                                   SCOREP_MPI_ENABLED_ERR       |
+                                   SCOREP_MPI_ENABLED_EXT       |
+                                   SCOREP_MPI_ENABLED_IO        |
+                                   SCOREP_MPI_ENABLED_MISC      |
+                                   SCOREP_MPI_ENABLED_P2P       |
+                                   SCOREP_MPI_ENABLED_RMA       |
+                                   SCOREP_MPI_ENABLED_SPAWN     |
+                                   SCOREP_MPI_ENABLED_TOPO      |
+                                   SCOREP_MPI_ENABLED_TYPE      |
+                                   SCOREP_MPI_ENABLED_PERF      |
+                                   SCOREP_MPI_ENABLED_XNONBLOCK |
+                                   SCOREP_MPI_ENABLED_XREQTEST, 
+    /* NOTE: DEFAULT should reflect the default set */
+    SCOREP_MPI_ENABLED_DEFAULT   = SCOREP_MPI_ENABLED_CG    |
+                                   SCOREP_MPI_ENABLED_COLL  |
+                                   SCOREP_MPI_ENABLED_ENV   |
+                                   SCOREP_MPI_ENABLED_IO    |
+                                   SCOREP_MPI_ENABLED_P2P   |
+                                   SCOREP_MPI_ENABLED_RMA   |
+                                   SCOREP_MPI_ENABLED_TOPO  |
+                                   SCOREP_MPI_ENABLED_XNONBLOCK
 };                                                     
                                                        
 /** Bit vector for runtime measurement wrapper enabling/disabling */
