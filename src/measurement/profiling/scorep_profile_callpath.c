@@ -214,7 +214,7 @@ scorep_profile_assign_callpath_to_master()
 {
     scorep_profile_node* master = scorep_profile.first_root_node;
 
-    //sort_tree();
+    sort_tree();
 
     /* Check consistency */
     if ( master == NULL )
