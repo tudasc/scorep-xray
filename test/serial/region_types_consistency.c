@@ -26,6 +26,7 @@
 #include <config.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <scorep_types.h>
 
 #include <string.h>
@@ -35,6 +36,10 @@
 int
 main()
 {
+    /* The studio compiler does not instrument C functions. Thus, we must initialize the
+       measurement manually. */
+    SCOREP_InitMeasurement();
+
     for ( SCOREP_RegionType t = 1; t < SCOREP_INVALID_REGION_TYPE; t++ )
     {
         const char* name = scorep_region_type_to_string( t );
