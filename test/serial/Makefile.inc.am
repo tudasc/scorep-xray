@@ -53,3 +53,18 @@ endif
 
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_ack_test.sh
 EXTRA_DIST   += $(SRC_ROOT)test/serial/run_serial_ack_test.sh
+
+
+check_PROGRAMS += region_types_consistency_check
+region_types_consistency_check_SOURCES = \
+    $(SRC_ROOT)test/serial/region_types_consistency.c
+region_types_consistency_check_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    @COMPILER_INSTRUMENTATION_CPPFLAGS@ \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(PUBLIC_INC_DIR) -I$(INC_DIR_UTIL)
+region_types_consistency_check_LDADD = $(LIB_ROOT)libscorep_serial.la
+
+EXTRA_DIST   += $(SRC_ROOT)test/serial/run_region_types_consistency_check.sh
+TESTS_SERIAL += $(srcdir)/../test/serial/run_region_types_consistency_check.sh
