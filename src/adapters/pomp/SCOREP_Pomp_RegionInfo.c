@@ -120,7 +120,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
   { "flush",             "",                SCOREP_Pomp_Flush               , SCOREP_REGION_OMP_FLUSH,       SCOREP_REGION_UNKNOWN             },
   { "for",               "",                SCOREP_Pomp_For                 , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
   { "master",            "master",          SCOREP_Pomp_Master              , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_OMP_MASTER          },
-  { "ordered",           "ordered sblock",  SCOREP_Pomp_Ordered             , SCOREP_REGION_OMP_ORDERED,     SCOREP_REGION_OMP_ORDERED         },
+  { "ordered",           "ordered sblock",  SCOREP_Pomp_Ordered             , SCOREP_REGION_OMP_ORDERED,     SCOREP_REGION_OMP_ORDERED_SBLOCK  },
   { "parallel",          "",                SCOREP_Pomp_Parallel            , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_UNKNOWN             },
   { "paralleldo",        "",                SCOREP_Pomp_ParallelDo          , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
   { "parallelfor",       "",                SCOREP_Pomp_ParallelFor         , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },

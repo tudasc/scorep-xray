@@ -100,6 +100,8 @@ scorep_tracing_region_type_to_otf2( SCOREP_RegionType scorepType )
         case_return( OMP_TASK,             OMP_TASK );
         case_return( OMP_TASKWAIT,         OMP_TASK_WAIT );
         case_return( OMP_TASK_CREATE,      OMP_TASK_CREATE );
+        case_return( OMP_ORDERED,          OMP_ORDERED );
+        case_return( OMP_ORDERED_SBLOCK,   OMP_ORDERED_SBLOCK );
         case_return( PHASE,                PHASE );
         case_return( DYNAMIC,              DYNAMIC );
         case_return( DYNAMIC_PHASE,        DYNAMIC_PHASE );
