@@ -1509,7 +1509,13 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
     }
     if ( !is_dry_run )
     {
-        return system( command.c_str() );
+        int return_value = system( command.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "Failed to invoke cobi." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+        return return_value;
     }
 
     temp_files += " " + orig_name;
