@@ -1,0 +1,104 @@
+#!/bin/sh
+
+## -*- mode: sh -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/installcheck/instrumenter-configurations.sh.in
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+comp_arg=""
+pomp_user_arg=""
+pdt_arg=""
+cobi_arg=""
+omp_arg=""
+mpi_arg=""
+
+file_prefix="../installcheck/configurations_"
+
+# nompi: meaning unclear. we might implement is as "without mpi
+# wrapping except for init/finalize". Still it makes no sense for
+# non-mpi sources.
+
+# noompenmp: if we model it like nompi, then we need to intercept just
+# the fork/join/thread_begin/therad_end. Everything else gets ignored.
+
+# pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented 
+
+
+cd @abs_top_builddir@
+
+# remove files from previous invocation
+for paradigm in serial omp mpi mpi_omp; do
+    rm -f ${file_prefix}${paradigm}
+done
+
+# create possible configurations, one file per paradigm
+for user_arg in user nouser; do
+@HAVE_COMPILER_INSTRUMENTATION_TRUE@    for comp_arg in compiler nocompiler; do
+        for pomp_user_arg in opari noopari; do
+@HAVE_PDT_TRUE@            for pdt_arg in pdt nopdt; do
+@HAVE_PDT_TRUE@                # pdt is supposed to deactivate compiler
+@HAVE_PDT_TRUE@                if test $PDT = "pdt" && test $COMP = "compiler"; then
+@HAVE_PDT_TRUE@                    continue
+@HAVE_PDT_TRUE@                fi  
+@HAVE_COBI_TRUE@                for cobi_arg in cobi nocobi; do
+@HAVE_COBI_TRUE@                    # cobi is supposed to deactivate compiler
+@HAVE_COBI_TRUE@                    if test $cobi_arg = "cobi" && test $comp_arg = "compiler"; then
+@HAVE_COBI_TRUE@                        continue
+@HAVE_COBI_TRUE@                    fi
+
+                    # --- output per paradigm begins --- #
+
+                    # serial ----------------------------#
+                    echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
+
+                    # omp -------------------------------#
+@OPENMP_SUPPORTED_TRUE@                    for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
+@OPENMP_SUPPORTED_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
+@OPENMP_SUPPORTED_TRUE@                    done
+
+                    # mpi -------------------------------#
+@MPI_SUPPORTED_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
+@MPI_SUPPORTED_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg" >> ${file_prefix}mpi
+@MPI_SUPPORTED_TRUE@                    done
+
+                    # mpi_omp ---------------------------#
+@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
+@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                        for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
+@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg $omp_arg" >> ${file_prefix}mpi_omp
+@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                        done                    
+@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                    done
+
+                    # cuda ------------------------------#
+
+                    # cuda_mpi --------------------------#
+
+                    # ...  ------------------------------#
+
+                    # --- output per paradigm ends --- #
+
+@HAVE_COBI_TRUE@                done
+@HAVE_PDT_TRUE@            done
+        done
+@HAVE_COMPILER_INSTRUMENTATION_TRUE@    done
+done
+
+# Notify about created files
+echo "  GEN    ${file_prefix}serial"
+@OPENMP_SUPPORTED_TRUE@echo "  GEN    ${file_prefix}omp"
+@MPI_SUPPORTED_TRUE@echo "  GEN    ${file_prefix}mpi"
+@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@echo "  GEN    ${file_prefix}mpi_omp"

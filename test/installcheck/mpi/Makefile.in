@@ -1,0 +1,36 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/installcheck/serial/mpi/Makefile.in
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+CC  = @MPICC@
+CXX = @MPICXX@
+F77 = @MPIF77@
+FC  = @MPIFC@
+
+# -Ox does not work for all compilers. Use AM_CONDITIONAL here?
+CFLAGS   = -O3
+CXXFLAGS = -O3
+F77FLAGS = -O3
+FCFLAGS  = -O3
+
+PARADIGM   = mpi
+CODES      = jacobi
+LANGUAGES  = cc cxx fc
+
+include  @abs_top_builddir@/../installcheck/Makefile.common
