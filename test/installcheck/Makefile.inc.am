@@ -1,0 +1,71 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/installcheck/Makefile.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+INSTALLCHECK_DIR = $(SRC_ROOT)test/installcheck
+
+EXTRA_DIST += \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cc/Makefile \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cc/jacobi.c \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cc/jacobi.h \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cc/main.c \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/fc/Makefile \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/fc/VariableDef.f90 \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/fc/main.F90 \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/fc/jacobi.F90 \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cxx/Makefile \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cxx/main.cpp \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cxx/jacobi.h \
+    $(INSTALLCHECK_DIR)/mpi/src/jacobi/cxx/jacobi.cpp \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cc/Makefile \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cc/jacobi.c \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cc/jacobi.h \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cc/main.c \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/fc/Makefile \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/fc/VariableDef.f90 \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/fc/main.F90 \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/fc/jacobi.F90 \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cxx/Makefile \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cxx/main.cpp \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cxx/jacobi.h \
+    $(INSTALLCHECK_DIR)/omp/src/jacobi/cxx/jacobi.cpp \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cc/Makefile \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cc/jacobi.c \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cc/jacobi.h \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cc/main.c \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/fc/Makefile \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/fc/VariableDef.f90 \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/fc/main.F90 \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/fc/jacobi.F90 \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cxx/Makefile \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cxx/main.cpp \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cxx/jacobi.h \
+    $(INSTALLCHECK_DIR)/mpi_omp/src/jacobi/cxx/jacobi.cpp \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cc/Makefile \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cc/jacobi.c \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cc/jacobi.h \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cc/main.c \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/fc/Makefile \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/fc/VariableDef.f90 \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/fc/main.F90 \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/fc/jacobi.F90 \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/Makefile \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/main.cpp \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/jacobi.h \
+    $(INSTALLCHECK_DIR)/serial/src/jacobi/cxx/jacobi.cpp

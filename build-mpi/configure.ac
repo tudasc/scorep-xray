@@ -229,9 +229,12 @@ AC_SCOREP_MPI_PROFILING_HEADERS
 AC_CONFIG_FILES([Makefile \
                  run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
-                 ../test/jacobi/hybrid/C/Makefile])
+                 ../test/jacobi/hybrid/C/Makefile \
+                 ../installcheck/mpi/Makefile:../test/installcheck/mpi/Makefile.in
+                 ../installcheck/mpi_omp/Makefile:../test/installcheck/mpi_omp/Makefile.in])
 AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
 AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_mpi_tests.sh], \
                 [chmod +x ../test/adapters/pdt/run_pdt_mpi_tests.sh])
+
 AC_OUTPUT

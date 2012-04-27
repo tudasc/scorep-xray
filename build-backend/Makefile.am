@@ -72,7 +72,7 @@ LIB_DIR_SCOREP = ./
 ## Here the MPI convenience libraries are build
 LIB_DIR_SCOREP_MPI = ../build-mpi/
 
-clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests
+clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests clean-local-instrumenter-checks
 	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h 
 
 clean-local-scorep-experiment-dirs:
@@ -215,6 +215,34 @@ else
 installcheck-local:
 	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
 endif
+
+
+PARADIGMS = serial
+
+# component separation will provide the HAVE_OPARI2 conditional
+#if HAVE_OPARI2
+if OPENMP_SUPPORTED
+PARADIGMS += omp
+endif
+#endif
+
+instrumenter-checks: $(instrumenter_configuration_files)
+	@for paradigm in $(PARADIGMS); do \
+            $(MAKE) -C ../installcheck/$$paradigm instrument-configurations || exit 1; \
+        done
+
+instrumenter_configuration_files = ../installcheck/configurations_serial ../installcheck/configurations_omp
+
+$(instrumenter_configuration_files):
+	@../installcheck/instrumenter-configurations.sh
+
+clean-local-instrumenter-checks:
+	@rm -f $(instrumenter_configuration_files)
+	@for paradigm in $(PARADIGMS); do \
+            rm -f ../installcheck/bin/*-$${paradigm}-*; \
+            rm -rf ../installcheck/$$paradigm/build; \
+        done
+
 
 scorep_library_dependencies.cpp: $(lib_LTLIBRARIES)
 	../vendor/common/build-config/generate-library-dependencies.sh

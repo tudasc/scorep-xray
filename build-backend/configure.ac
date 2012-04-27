@@ -185,7 +185,10 @@ AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
 
 AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/serial/C/Makefile \
-                 ../test/jacobi/OpenMP/C/Makefile ])
+                 ../test/jacobi/OpenMP/C/Makefile
+                 ../installcheck/Makefile.common:../test/installcheck/Makefile.common.in
+                 ../installcheck/serial/Makefile:../test/installcheck/serial/Makefile.in
+                 ../installcheck/omp/Makefile:../test/installcheck/omp/Makefile.in])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
 AC_CONFIG_FILES([../test/omp_tasks/run_fibonacci_test.sh], \
@@ -198,4 +201,6 @@ AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_fortran_tests.sh], \
                 [chmod +x ../test/adapters/pdt/run_pdt_fortran_tests.sh])
 AC_CONFIG_FILES([../vendor/common/build-config/generate-library-dependencies.sh], \
                 [chmod +x ../vendor/common/build-config/generate-library-dependencies.sh])
+AC_CONFIG_FILES([../installcheck/instrumenter-configurations.sh:../test/installcheck/instrumenter-configurations.sh.in],
+                [chmod +x ../installcheck/instrumenter-configurations.sh])
 AC_OUTPUT

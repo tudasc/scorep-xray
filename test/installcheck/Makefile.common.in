@@ -47,7 +47,7 @@ instrument-configurations: $(PREPS_FILE) $(SRCDIR) $(BINDIR)
                 mkdir -p "$$obj_dir"; \
                 echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                 $(MAKE) -C $(SRCDIR)/$$code/$$language \
-                    PREP="@prefix@/bin/scorep --verbose=1" \
+                    PREP="@prefix@/bin/scorep" \
                     SUFFIX=$$suffix \
                     OBJDIR="$$obj_dir" \
                     BINDIR=$(BINDIR) \
@@ -56,7 +56,7 @@ instrument-configurations: $(PREPS_FILE) $(SRCDIR) $(BINDIR)
                     INCDIR=$(INCDIR) \
                     $$code || exit 1; \
                 while read line; do \
-                    prep=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print "@prefix@/bin/scorep --verbose=1" options}'`; \
+                    prep=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print "@prefix@/bin/scorep" options}'`; \
                     suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {suffix = suffix "_" $$i} } END{print suffix}'`; \
                     obj_dir="`pwd`/build/$$code/$$language/$$suffix"; \
                     mkdir -p "$$obj_dir"; \

@@ -73,7 +73,7 @@ BUILD_DIR=build-backend
 ## Here all libscorep_*.la are build
 LIB_DIR_SCOREP = ../build-backend/
 
-clean-local:
+clean-local: clean-local-instrumenter-checks
 	rm -f scorep_mpi_omp_tests  scorep_mpi_tests lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
 distclean-local:
@@ -107,3 +107,28 @@ endif
 else
 installcheck-local:
 endif
+
+
+if MPI_SUPPORTED
+PARADIGMS = mpi
+if OPENMP_SUPPORTED
+PARADIGMS += mpi_omp
+endif
+endif
+
+instrumenter-checks: $(instrumenter_configuration_files)
+	@for paradigm in $(PARADIGMS); do \
+            $(MAKE) -C ../installcheck/$$paradigm instrument-configurations || exit 1; \
+        done
+
+instrumenter_configuration_files = ../installcheck/configurations_mpi ../installcheck/configurations_mpi_omp
+
+$(instrumenter_configuration_files):
+	@../installcheck/instrumenter-configurations.sh
+
+clean-local-instrumenter-checks:
+	@rm -f $(instrumenter_configuration_files)
+	@for paradigm in $(PARADIGMS); do \
+            rm -f ../installcheck/bin/*-$${paradigm}-*; \
+            rm -rf ../installcheck/$$paradigm/build; \
+        done
