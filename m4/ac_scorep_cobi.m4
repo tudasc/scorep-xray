@@ -30,32 +30,24 @@ AC_ARG_WITH([cobi],
             # action-if-not-given
             [scorep_with_cobi="no"])
 
+have_cobi="no"
+AS_IF([test "x${scorep_with_cobi}" != "xno"],
+      [AS_IF([test "x${enable_shared}" = "xno"],
+             [AC_MSG_CHECKING([for cobi])
+              AC_MSG_RESULT([prerequisites missing])
+              AC_MSG_ERROR([Cobi support requires building shared libraries. Use --enable-shared to build shared libraries or omit the --with-cobi option.])])
 
-if test "x${scorep_with_cobi}" != "xno"; then
-
-    if test "x${enable_shared}" = "xno"; then
-        AC_MSG_CHECKING([for cobi])
-        AC_MSG_RESULT([prerequisites missing])
-        AC_MSG_ERROR([Cobi support requires building shared libraries. Use --enable-shared to build shared libraries or omit the --with-cobi option.])
-    fi
-
-    if test "x${scorep_with_cobi}" = "xyes"; then
-        AC_CHECK_PROG([COBI], [cobi], [`which cobi`], ["no"])
-    else
-        AC_CHECK_PROG([COBI], [cobi], [${scorep_with_cobi}/cobi], ["no"], [${scorep_with_cobi}])
-    fi
-
-fi
-
+       AS_IF([test "x${scorep_with_cobi}" = "xyes"],
+             [AC_CHECK_PROG([COBI], [cobi], [`which cobi`], ["no"])],
+             [AC_CHECK_PROG([COBI], [cobi], [${scorep_with_cobi}/cobi], ["no"], [${scorep_with_cobi}])])
+       have_cobi="${COBI}"])
 
 # The output of this macro
-AM_CONDITIONAL([HAVE_COBI], [test "x${COBI}" != "xno"])
+AM_CONDITIONAL([HAVE_COBI], [test "x${have_cobi}" != "xno"])
 
-if test "x${COBI}" != "xno"; then
-    AC_DEFINE([HAVE_COBI], [1], [Defined if configured to use Cobi.])
-else
-    AC_DEFINE([HAVE_COBI], [0], [Defined if configured to use Cobi.])
-fi
-AC_DEFINE_UNQUOTED([SCOREP_COBI_PATH], ["${COBI}"], [Defines path to Cobi.])
+AS_IF([test "x${have_cobi}" != "xno"],
+      [AC_DEFINE([HAVE_COBI], [1], [Defined if configured to use Cobi.])
+       AC_DEFINE_UNQUOTED([SCOREP_COBI_PATH], ["${COBI}"], [Defines path to Cobi.])],
+      [AC_DEFINE([HAVE_COBI], [0], [Defined if configured to use Cobi.])])
 
 ])
