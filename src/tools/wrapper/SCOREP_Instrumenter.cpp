@@ -183,7 +183,11 @@ SCOREP_Instrumenter::Run()
                     /* Make sure, it has full path => Some compilers and
                        user instrumentation use the file name given to the compiler.
                        Thus, if we make all file names have full pathes, we get a
-                       consistent input. */
+                       consistent input.
+                       However, temporary files are without pathes. Thus, if a source
+                       code instrumenter does not insert line directives, the result
+                       may not contain path information anymore.
+                     */
                     char* simplified = SCOREP_IO_JoinPath( 2, cwd, current_file.c_str() );
                     if ( simplified )
                     {
@@ -203,14 +207,15 @@ SCOREP_Instrumenter::Run()
                             SCOREP_IO_GetWithoutPath( current_file.c_str() ) ) + ".o";
                     }
 
-                    // If compiling and linking is performed in one step. The compiler leave no object file.
+                    // If compiling and linking is performed in one step.
+                    // The compiler leave no object file.
                     // Thus, we delete the object file, too.
                     if ( is_linking )
                     {
                         temp_files += " " + object_file;
                     }
 
-                    // Perform PDT instrumentaion
+                    // Perform PDT instrumentation
                     #ifdef HAVE_PDT
                     if ( pdt_instrumentation == enabled )
                     {
@@ -1314,9 +1319,9 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
         std::transform( extension.begin(), extension.end(), extension.begin(), ::toupper );
     }
 
-    std::string modified_file = get_basename( source_file )
-                                + ".opari"
-                                + extension;
+    std::string modified_file = remove_path( get_basename( source_file )
+                                             + ".opari"
+                                             + extension );
 
     invoke_opari( source_file, modified_file );
     temp_files += " " + modified_file + " " + source_file + ".opari.inc";
@@ -1341,10 +1346,11 @@ std::string
 SCOREP_Instrumenter::instrument_pdt( std::string source_file )
 {
     std::string extension     = get_extension( source_file );
-    std::string modified_file = get_basename( source_file ) + "_pdt" + extension;
-    std::string pdb_file      = remove_path( get_basename( source_file ) + ".pdb" );
-    std::string command       = "";
-    int         return_value  = 0;
+    std::string modified_file = remove_path( get_basename( source_file ) +
+                                             "_pdt" + extension );
+    std::string pdb_file     = remove_path( get_basename( source_file ) + ".pdb" );
+    std::string command      = "";
+    int         return_value = 0;
 
     // Create database file
     if ( is_c_file( source_file ) )
