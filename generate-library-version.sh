@@ -24,7 +24,7 @@ trap atexit_error EXIT
 
 errormsg="$(printf "Malformed VERSION file: %s" "$1")"
 set -e
-eval "$(sed -n -e 's/library\.// p' "$1")"
+eval "$(sed -n -e 's/^library\.// p' "$1")"
 errormsg=
 
 if test -z "$format"
