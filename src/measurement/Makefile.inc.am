@@ -112,10 +112,10 @@ libscorep_paradigm_non_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 noinst_LTLIBRARIES += libscorep_sion_serial.la 
 #if HAVE_SION_SERIAL
 #libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
-#libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+#libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
 #else
 libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 #endif
 
 
@@ -124,10 +124,10 @@ libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement 
 noinst_LTLIBRARIES += libscorep_sion_omp.la 
 #if HAVE_SION_OMP
 #libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c
-#libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+#libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
 #libscorep_sion_omp_la_LDFLAGS  = $(SCOREP_SION_OMP_LDFLAGS)
 #libscorep_sion_omp_la_LIBADD   = $(SCOREP_SION_OMP_LIBS)
 #else
 libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 #endif

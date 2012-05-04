@@ -41,12 +41,12 @@ libscorep_paradigm_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
 noinst_LTLIBRARIES += libscorep_sion_mpi.la
 if HAVE_SION_MPI
 libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi.c
-libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_MPI_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_MPI_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
 libscorep_sion_mpi_la_LDFLAGS  = $(SCOREP_SION_MPI_LDFLAGS)
 libscorep_sion_mpi_la_LIBADD   = $(SCOREP_SION_MPI_LIBS)
 else
 libscorep_sion_mpi_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_mpi_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 endif
 
 
@@ -56,12 +56,12 @@ noinst_LTLIBRARIES += libscorep_sion_mpi_omp.la
 # disabled, as long as we havn't integrated SION hybrid support into Score-P
 #if HAVE_SION_MPI_OMP
 #libscorep_sion_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi_omp.c
-#libscorep_sion_mpi_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_MPI_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+#libscorep_sion_mpi_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_MPI_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
 #libscorep_sion_mpi_omp_la_LDFLAGS  = $(SCOREP_SION_MPI_OMP_LDFLAGS)
 #libscorep_sion_mpi_omp_la_LIBADD   = $(SCOREP_SION_MPI_OMP_LIBS)
 #else
 libscorep_sion_mpi_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_mpi_omp_la_CPPFLAGS  = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
+libscorep_sion_mpi_omp_la_CPPFLAGS  = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement -I$(INC_DIR_OTF2) -I$(INC_DIR_UTIL)
 #endif
 
 
@@ -69,6 +69,6 @@ libscorep_sion_mpi_omp_la_CPPFLAGS  = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measuremen
 noinst_PROGRAMS += otf2_speed_test
 otf2_speed_test_SOURCES = \
     $(SRC_ROOT)vendor/otf2/src/tools/otf2_speed_test/otf2_speed_test.c
-otf2_speed_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) -I$(BUILD_INC_DIR_OTF2) -I$(INC_DIR_OTF2)
+otf2_speed_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) -I$(INC_DIR_OTF2)
 otf2_speed_test_LDADD = $(MPILIBS) $(LIB_DIR_UTIL)libscorep_utilities.la $(LIB_DIR_OTF2)libotf2.la
 endif
