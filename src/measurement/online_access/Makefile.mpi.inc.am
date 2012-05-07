@@ -19,7 +19,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-
+if MPI_SUPPORTED
 if HAVE_ONLINE_ACCESS
 
 EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.l \
@@ -184,5 +184,6 @@ libscorep_oa_mpi_la_LIBADD =                \
     libscorep_oa_fortran_sub4.la
 
 endif #if HAVE_ONLINE_ACCESS
+endif #if MPI_SUPPORTED
 
 

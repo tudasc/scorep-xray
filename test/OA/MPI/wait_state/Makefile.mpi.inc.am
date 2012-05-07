@@ -1,5 +1,5 @@
 ## -*- mode: makefile -*-
-
+if MPI_SUPPORTED
 check_PROGRAMS += mpi_nonblocking_wait_states
 
 mpi_nonblocking_wait_states_SOURCES =                                       \
@@ -19,4 +19,5 @@ mpi_nonblocking_wait_states_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS)
 endif
 
 TESTS_MPI += mpi_nonblocking_wait_states
+endif #if MPI_SUPPORTED
 
