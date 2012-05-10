@@ -193,7 +193,7 @@ test_define_string( CuTest*     tc,
     SCOREP_String_Definition* new_definition = NULL;
     SCOREP_StringHandle       new_handle     = SCOREP_INVALID_STRING;
 
-    uint32_t                  string_length = strlen( str );
+    uint32_t string_length = strlen( str );
     TEST_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,
                                               string,
                                               char,
@@ -203,7 +203,7 @@ test_define_string( CuTest*     tc,
     CuAssertTrue( tc, new_handle != SCOREP_INVALID_STRING );
 
     new_definition->string_length = string_length;
-    strcpy( new_definition->string_data, str );
+    memcpy( new_definition->string_data, str, string_length + 1 );
 
     return new_handle;
 }
@@ -212,8 +212,8 @@ test_define_string( CuTest*     tc,
 static void
 allocator_initialize( CuTest* tc )
 {
-    int total_mem = 1024;
-    int page_size = 64; // that makes two strings of length 3 per page
+    int total_mem = 1024 * 16;
+    int page_size = 1024;
     allocator = SCOREP_Allocator_CreateAllocator( total_mem, page_size, 0, 0, 0 );
     CuAssertPtrNotNull( tc, allocator );
     page_manager = SCOREP_Allocator_CreatePageManager( allocator );
