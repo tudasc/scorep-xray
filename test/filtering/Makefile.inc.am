@@ -58,5 +58,6 @@ endif
 EXTRA_DIST += \
      $(SRC_ROOT)test/filtering/filter.cfg         \
      $(SRC_ROOT)test/filtering/filter_f.cfg       \
+     $(SRC_ROOT)test/filtering/filter_f.gdb       \
      $(SRC_ROOT)test/filtering/run_filter_test.sh \
      $(SRC_ROOT)test/filtering/run_filter_f_test.sh

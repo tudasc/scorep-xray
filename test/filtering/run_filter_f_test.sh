@@ -31,7 +31,11 @@ rm -rf $RESULT_DIR
 #-------------------------------------------------------------
 
 # Execute filter test
-SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg ./filter_f_test
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
+SCOREP_ENABLE_PROFILING=false \
+SCOREP_ENABLE_TRACING=true \
+SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg \
+gdb -batch -x $SRC_ROOT/test/filtering/filter_f.gdb ./filter_f_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp start_ls.log
     exit 1
