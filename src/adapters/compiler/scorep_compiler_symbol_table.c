@@ -134,7 +134,7 @@ scorep_compiler_get_exe( char   path[],
      */
 
     /* try to get the path via environment variable */
-    if ( scorep_compiler_executable )
+    if ( strlen( scorep_compiler_executable ) > 0 )
     {
         char*  exepath   = scorep_compiler_executable;
         size_t exelength = strlen( exepath );
