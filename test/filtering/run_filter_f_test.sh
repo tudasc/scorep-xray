@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
