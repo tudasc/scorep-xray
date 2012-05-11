@@ -133,6 +133,24 @@ scorep_compiler_get_exe( char   path[],
        }
      */
 
+    /* try to get the path via environment variable */
+    if ( scorep_compiler_executable )
+    {
+        char*  exepath   = scorep_compiler_executable;
+        size_t exelength = strlen( exepath );
+        if ( exelength > length )
+        {
+            /* If path is too long for buffer, truncate the head.
+               add one charakter for the terminating 0.           */
+            exepath   = scorep_compiler_executable + exelength - length + 1;
+            exelength = length;
+        }
+        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
+
+        strncpy( path, exepath, exelength );
+        return true;
+    }
+
     /* Second trial */
     pid = getpid();
     sprintf( path, "/proc/%d/exe", pid );
@@ -149,35 +167,12 @@ scorep_compiler_get_exe( char   path[],
     {
         return true;
     }
-    else
-    {
-        /* try to get the path via environment variable */
-        if ( scorep_compiler_executable == NULL )
-        {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                                 "Meanwhile, you have to set the configuration variable"
-                                 "'executable' to your local executable." );
-            SCOREP_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
-            return false;
-            /* we should abort here */
-        }
-        else
-        {
-            char*  exepath   = scorep_compiler_executable;
-            size_t exelength = strlen( exepath );
-            if ( exelength > length )
-            {
-                /* If path is too long for buffer, truncate the head.
-                   add one charakter for the terminating 0.           */
-                exepath   = scorep_compiler_executable + exelength - length + 1;
-                exelength = length;
-            }
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
 
-            strncpy( path, exepath, exelength );
-            return true;
-        }
-    }
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                         "Meanwhile, you have to set the configuration variable"
+                         "'executable' to your local executable." );
+    SCOREP_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
+    return false;
 }
 
 void
@@ -453,10 +448,10 @@ scorep_compiler_get_sym_tab( void )
      */
     int32_t region_counter = 1;
 #endif /* INTEL_COMPILER */
-    FILE*   nmfile;
-    char    line[ 1024 ];
-    char    path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
-    char    nmfilename[ 64 ];
+    FILE* nmfile;
+    char  line[ 1024 ];
+    char  path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
+    char  nmfilename[ 64 ];
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
 
@@ -480,10 +475,10 @@ scorep_compiler_get_sym_tab( void )
     /* read lines */
     while ( fgets( line, sizeof( line ) - 1, nmfile ) )
     {
-        char*        col;
-        char         delim[ 2 ] = " ";
-        int          col_num    = 0;
-        int          length     = 0;
+        char* col;
+        char  delim[ 2 ] = " ";
+        int   col_num    = 0;
+        int   length     = 0;
 
         long         addr     = -1;
         char*        filename = NULL;

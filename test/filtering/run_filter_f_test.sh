@@ -32,6 +32,7 @@ rm -rf $RESULT_DIR
 
 # Execute filter test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
+SCOREP_EXECUTABLE=$PWD/filter_f_test \
 SCOREP_ENABLE_PROFILING=false \
 SCOREP_ENABLE_TRACING=true \
 SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg \
