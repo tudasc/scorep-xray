@@ -18,6 +18,8 @@
 ## file       run_filter_test.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
+cwd=$(pwd)
+
 # Get SRC_ROOT and OTF2_PRINT
 make clean-local-scorep-config-tool
 make scorep-config-tool-local
@@ -32,7 +34,7 @@ rm -rf $RESULT_DIR
 
 # Execute filter test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
-SCOREP_EXECUTABLE=$PWD/filter_f_test \
+SCOREP_EXECUTABLE="$cwd/filter_f_test" \
 SCOREP_ENABLE_PROFILING=false \
 SCOREP_ENABLE_TRACING=true \
 SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg \
