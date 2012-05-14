@@ -133,24 +133,6 @@ scorep_compiler_get_exe( char   path[],
        }
      */
 
-    /* try to get the path via environment variable */
-    if ( strlen( scorep_compiler_executable ) > 0 )
-    {
-        char*  exepath   = scorep_compiler_executable;
-        size_t exelength = strlen( exepath );
-        if ( exelength > length )
-        {
-            /* If path is too long for buffer, truncate the head.
-               add one charakter for the terminating 0.           */
-            exepath   = scorep_compiler_executable + exelength - length + 1;
-            exelength = length;
-        }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
-
-        strncpy( path, exepath, exelength );
-        return true;
-    }
-
     /* Second trial */
     pid = getpid();
     sprintf( path, "/proc/%d/exe", pid );
@@ -167,12 +149,35 @@ scorep_compiler_get_exe( char   path[],
     {
         return true;
     }
+    else
+    {
+        /* try to get the path via environment variable */
+        if ( scorep_compiler_executable == NULL )
+        {
+            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                                 "Meanwhile, you have to set the configuration variable"
+                                 "'executable' to your local executable." );
+            SCOREP_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
+            return false;
+            /* we should abort here */
+        }
+        else
+        {
+            char*  exepath   = scorep_compiler_executable;
+            size_t exelength = strlen( exepath );
+            if ( exelength > length )
+            {
+                /* If path is too long for buffer, truncate the head.
+                   add one charakter for the terminating 0.           */
+                exepath   = scorep_compiler_executable + exelength - length + 1;
+                exelength = length;
+            }
+            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                         "Meanwhile, you have to set the configuration variable"
-                         "'executable' to your local executable." );
-    SCOREP_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
-    return false;
+            strncpy( path, exepath, exelength );
+            return true;
+        }
+    }
 }
 
 void
