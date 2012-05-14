@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
@@ -17,6 +17,8 @@
 
 ## file       run_filter_test.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+
+set -x
 
 cwd=$(pwd)
 
@@ -38,7 +40,7 @@ SCOREP_EXECUTABLE="$cwd/filter_f_test" \
 SCOREP_ENABLE_PROFILING=false \
 SCOREP_ENABLE_TRACING=true \
 SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter_f.cfg \
-gdb -batch -x $SRC_ROOT/test/filtering/filter_f.gdb ./filter_f_test
+gdb --nx --batch -ex run -ex bt -ex continue -ex quit ./filter_f_test
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp start_ls.log
     exit 1
