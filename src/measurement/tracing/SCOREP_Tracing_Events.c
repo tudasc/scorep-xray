@@ -111,6 +111,8 @@ SCOREP_Tracing_Enter( SCOREP_Location*    location,
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
+    fprintf( stderr, "%s: %u\n", __func__, regionHandle );
+
     OTF2_EvtWriter_Enter( evt_writer,
                           NULL,
                           timestamp,
