@@ -517,6 +517,18 @@ OTF2_IRecvRequest event. On request completion an OTF2_IRecv event is recorded.
 In both cases the group <tt>P2P</tt> must be enabled. Otherwise @scorep records no 
 events for peer-to-peer communication functions.
 
+@section mpi_comm_name Recording MPI communicator names
+@seclabel{mpi_comm_name}
+
+The measurement system tracks also the names of MPI communicators to easily
+identify them later in the analysis. This is done via the
+<tt>MPI_Comm_set_name</tt> call. But there are some restrictions. First, the
+name of a communicator is only recorded at the first call to <tt>MPI_Comm_set_name</tt>
+for this communicator. Later calls are ignored. Also this call is only
+honored when the call was made from the rank which is rank 0 in this communicator.
+Other calls from other ranks are ignored. And lastly the name will also be not
+recorded if the communicator has only one member.
+
 
 @section perf_counters Recording Performance Metrics
 @seclabel{perf_metrics}
