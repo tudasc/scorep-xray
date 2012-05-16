@@ -100,8 +100,10 @@ static char*
 scorep_filter_mangle_pattern( const char* pattern )
 {
     size_t i;
-    size_t len    = strlen( pattern );
-    char*  result = SCOREP_CStr_dup( pattern );
+    size_t len = strlen( pattern );
+    /* Cannot use strdup here because we eventually append an underscore */
+    char* result = ( char* )malloc( len + 2 );
+    strcpy( result, pattern );
 
     /* Put everything to lower or upper case */
     char* test_case = STR( FC_FUNC( x, X ) );
