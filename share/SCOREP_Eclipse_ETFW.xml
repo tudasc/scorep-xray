@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toolset.01>
+<tool name="Vampir">
+        <compile>
+                <allcompilers command="scorep --instrument" group="scorep"/>
+        </compile>
+        <analyze foralllike="traces.otf2" depth="1">
+		<utility type="view" command="vampir" group="vampir">
+                        <argument value="%%FILE%%"/>
+                </utility>
+        </analyze>
+</tool>
+<tool name="Cube4">
+        <compile>
+                <allcompilers command="scorep --instrument" group="scorep"/>
+        </compile>
+        <analyze foralllike="profile.cubex" depth="1">
+		<utility type="view" command="cube4" group="cube4">
+                        <argument value="%%FILE%%"/>
+                </utility>
+        </analyze>
+</tool>
+<tool name="ScoreP-TAU">
+        <compile>
+                <allcompilers command="scorep --instrument" group="scorep"/>
+        </compile>
+<execute>
+        <global name="SCORPEnvironment">
+              <envvar flag="SCOREP_PROFILE_FORMAT" value="TAU_SNAPSHOT"/>
+      </global>
+    </execute>
+        <analyze>
+		<utility command="process-TAU-data" group="internal"/>
+        </analyze>
+</tool>
+</toolset.01>
