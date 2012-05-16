@@ -46,12 +46,6 @@
 #ifndef _SCOREP_MPIWRAP_REG_H
 #define _SCOREP_MPIWRAP_REG_H
 
-#ifdef __cplusplus
-#   define EXTERN extern "C" /**< External C definition*/
-#else
-#   define EXTERN extern     /**< External definition */
-#endif
-
 #include "SCOREP_Definitions.h"
 
 /*
@@ -148,7 +142,7 @@ enum scorep_mpi_groups
 };
 
 /** Bit vector for runtime measurement wrapper enabling/disabling */
-EXTERN uint64_t scorep_mpi_enabled;
+extern uint64_t scorep_mpi_enabled;
 
 /** SCOREP region ID for MPI_Abort */
 #define SCOREP__MPI_ABORT                              0
@@ -781,25 +775,25 @@ EXTERN uint64_t scorep_mpi_enabled;
 #define SCOREP_PARALLEL__MPI           SCOREP__MPI_NUMFUNCS
 
 /** Region IDs of MPI functions */
-EXTERN SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
+extern SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
 
 /**
  * Register MPI functions and initialize data structures
  */
-EXTERN void
+void
 scorep_mpi_register_regions();
 
-EXTERN uint8_t
+uint8_t
 scorep_is_mpi_collective( const char* str );
-EXTERN uint8_t
+uint8_t
 scorep_is_mpi_point2point( const char* str );
-EXTERN uint8_t
+uint8_t
 scorep_mpi_eventtype( const char* str );
 
 /**
  * Enable measurement for specific subgroups of MPI functions
  */
-EXTERN void
+void
 scorep_mpi_enable_init();
 
 #endif
