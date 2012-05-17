@@ -639,7 +639,7 @@ void
 SCOREP_OmpTaskCreate( uint64_t taskId )
 {
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = scorep_get_timestamp( location );
+    uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );
 
     if ( scorep_tracing_consume_event() )
     {
