@@ -3,6 +3,7 @@
 include ../src/tools/wrapper/Makefile.inc.am
 include ../src/tools/config/Makefile.inc.am
 include ../tools/oa_registry/Makefile.inc.am
+include ../src/tools/score/Makefile.inc.am
 
 #include ../test/...
 include ../test/adapters/pdt/Makefile.inc.am
