@@ -206,7 +206,7 @@ __VT_IntelEntry( char*     str,
                 /* -- region entered the first time, register region -- */
                 scorep_compiler_register_region( hash_node );
             }
-            *id = new_id;
+            *id = hash_node->region_handle;
         }
         else
         {
@@ -214,20 +214,14 @@ __VT_IntelEntry( char*     str,
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
-    else if ( *id != SCOREP_COMPILER_FILTER_ID )
-    {
-        hash_node = scorep_compiler_hash_get( *id );
-    }
 
     /* Enter event */
-    if ( hash_node != NULL )
+    if ( *id != SCOREP_COMPILER_FILTER_ID )
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                              "enter the region with handle %i ",
                              hash_node->region_handle );
-        uint32_t page_id = hash_node->region_handle >> 32;
-        assert( page_id != 0 );
-        SCOREP_EnterRegion( hash_node->region_handle );
+        SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * id );
     }
 
     /* Set exit id */
@@ -264,13 +258,7 @@ __VT_IntelExit( uint32_t* id2 )
     }
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
-
-    if ( hash_node = scorep_compiler_hash_get( *id2 ) )
-    {
-        uint32_t page_id = hash_node->region_handle >> 32;
-        assert( page_id != 0 );
-        SCOREP_ExitRegion( hash_node->region_handle );
-    }
+    SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
 void
@@ -300,13 +288,7 @@ __VT_IntelCatch( uint32_t* id2 )
     }
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Catch in region." );
-
-    if ( hash_node = scorep_compiler_hash_get( *id2 ) )
-    {
-        uint32_t page_id = hash_node->region_handle >> 32;
-        assert( page_id != 0 );
-        SCOREP_ExitRegion( hash_node->region_handle );
-    }
+    SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
 void
@@ -332,13 +314,7 @@ __VT_IntelCheck( uint32_t* id2 )
     }
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Check in region. Try " );
-
-    if ( hash_node = scorep_compiler_hash_get( *id2 ) )
-    {
-        uint32_t page_id = hash_node->region_handle >> 32;
-        assert( page_id != 0 );
-        SCOREP_ExitRegion( hash_node->region_handle );
-    }
+    SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
 void
