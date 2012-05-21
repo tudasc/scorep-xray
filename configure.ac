@@ -1,7 +1,7 @@
 AC_PREREQ([2.68])
 AC_INIT([Score-P], m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION]), [scorep-bugs@groups.tu-dresden.de], [scorep])
 
-AC_SCOREP_SUMMARY_INIT([Score-P configuration summary])
+AC_SCOREP_SUMMARY_INIT
 
 AC_SCOREP_REVISION
 

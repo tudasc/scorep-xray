@@ -68,6 +68,7 @@ install-data-local: doxygen-user-install
 	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
 	$(INSTALL_DATA) $(DOC_SRC_DIR)/profile/scorep_metrics.html \
                         $(DESTDIR)$(docdir)/profile/scorep_metrics-$(PACKAGE_VERSION).html
+	$(INSTALL_DATA) @PACKAGE@.summary $(DESTDIR)$(datadir)/@PACKAGE@/@PACKAGE@.summary
 
 uninstall-hook: common-uninstall
 

@@ -3,7 +3,7 @@ AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-ve
 
 AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
 
-AC_SCOREP_SUMMARY_INIT([Score-P backend configuration summary])
+AC_SCOREP_SUMMARY_INIT([backend])
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
 
