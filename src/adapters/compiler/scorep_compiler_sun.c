@@ -82,7 +82,11 @@ scorep_compiler_register_region( char* region_name )
     SCOREP_RegionHandle handle = SCOREP_FILTERED_REGION;
 
     /* register region with Score-P and store region identifier */
-    if ( !SCOREP_Filter_Match( NULL, region_name, true ) )
+    if ( ( strchr( region_name, '$' ) == NULL ) &&     /* SUN OMP runtime functions */
+         ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
+         ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
+         ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
+         ( !SCOREP_Filter_Match( NULL, region_name, true ) ) )
     {
         handle = SCOREP_DefineRegion( region_name,
                                       SCOREP_INVALID_SOURCE_FILE,
@@ -109,12 +113,6 @@ phat_enter( char* name,
             return;
         }
         SCOREP_InitMeasurement();
-    }
-
-    /* ignore SUN OMP runtime functions */
-    if ( strchr( name, '$' ) != NULL )
-    {
-        return;
     }
 
     if ( *id == SCOREP_SUN_INVALID_REGION )
