@@ -10,6 +10,10 @@ fi
 
 AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
 
+_AC_SRCDIRS([.])
+AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
+AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
+
 cross_compiling=${ac_scorep_cross_compiling}
 
 ac_scorep_backend=yes

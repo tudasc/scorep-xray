@@ -38,9 +38,10 @@ extern CuTest* the_test;
 
 
 int64_t
-cutest_scorep_error_callback( const char*             function,
+cutest_scorep_error_callback( const char*             package,
                               const char*             file,
                               const uint64_t          line,
+                              const char*             function,
                               const SCOREP_Error_Code errorCode,
                               const char*             msgFormatString,
                               va_list                 va );

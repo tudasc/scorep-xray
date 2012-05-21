@@ -5,6 +5,10 @@ AC_SCOREP_SUMMARY_INIT([Score-P frontend configuration summary])
 
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
 
+_AC_SRCDIRS([.])
+AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
+AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
+
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 
