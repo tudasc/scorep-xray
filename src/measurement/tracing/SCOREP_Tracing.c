@@ -292,7 +292,7 @@ SCOREP_Tracing_Initialize( void )
     scorep_tracing_register_sion_callbacks( scorep_otf2_archive );
     scorep_tracing_register_memory_callbacks( scorep_otf2_archive );
 
-    OTF2_Archive_SetCreator( scorep_otf2_archive, "Score-P " PACKAGE_VERSION );
+    OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
 
     SCOREP_MutexCreate( &scorep_otf2_archive_lock );
 }
