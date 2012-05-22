@@ -63,7 +63,8 @@ private:
         unknown_language,
         c_language,
         cpp_language,
-        fortran_language
+        fortran_language,
+        cuda_language
     } source_language_t;
 
     /**
@@ -415,6 +416,13 @@ private:
     bool
     is_cpp_file( std::string filename );
 
+    /** Checks whether a file is a CUDA source file.
+        @param filename A file name.
+        @returns true if the file extension indicates CUDA source file.
+     */
+    bool
+    is_cuda_file( std::string filename );
+
     /** Checks whether a file is an object file.
         @param filename A file name.
         @returns true if the file extension indicates an object file.
@@ -501,6 +509,11 @@ private:
        Specifies whether it is an OpenMP application.
      */
     instrumentation_usage_t is_openmp_application;
+
+    /**
+       Specifies whether it is an CUDA application.
+     */
+    instrumentation_usage_t is_cuda_application;
 
     /* --------------------------------------------
        Work mode information

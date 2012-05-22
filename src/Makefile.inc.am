@@ -26,6 +26,7 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_adapter_compiler.la         \
                 libscorep_adapter_user.la             \
                 libscorep_adapter_tau.la              \
+		libscorep_adapter_cuda.la             \
                 libscorep_cube_writer.la              \
                 libscorep_profile.la                  \
                 libscorep_tracing.la                  \

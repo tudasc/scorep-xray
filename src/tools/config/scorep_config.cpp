@@ -84,7 +84,20 @@
     "   --compiler|--nocompiler\n" \
     "            Specifies whether compiler instrumentation is used. On default\n" \
     "            compiler instrumentation is enabled.\n\n" \
-    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n\n"
+    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n\n" \
+    "   --cuda   Specifies that the required flags are for the CUDA compiler.\n\n"
+
+
+std::string
+prepare_string( std::string str );
+
+std::string
+remove_multiple_whitespaces( std::string str );
+
+std::string
+replace_all( std::string &pattern,
+             std::string &replacement,
+             std::string  original );
 
 int
 main( int    argc,
@@ -98,6 +111,7 @@ main( int    argc,
     bool user     = false;
     bool compiler = true;
     bool fortran  = false;
+    bool cuda     = false;
     bool install  = true;
 
     const std::string scorep_libs[ 4 ] = { "scorep_serial",
@@ -208,6 +222,10 @@ main( int    argc,
         {
             fortran = true;
         }
+        else if ( strcmp( argv[ i ], "--cuda" ) == 0 )
+        {
+            cuda = true;
+        }
         else if ( strcmp( argv[ i ], "--build-check" ) == 0 )
         {
             install = false;
@@ -221,6 +239,7 @@ main( int    argc,
     }
 
     /* print data in case a config file was specified */
+    std::string str;
     if ( app.IsConfigFileSet() )
     {
         if ( app.ParseConfigFile( argv[ 0 ] ) != SCOREP_SUCCESS )
@@ -232,36 +251,58 @@ main( int    argc,
         switch ( action )
         {
             case ACTION_LIBS:
-                std::cout << app.str_libdir << " -l" << scorep_libs[ mode ] << app.str_libs;
+                str = app.str_libdir + " -l" + scorep_libs[ mode ] + app.str_libs;
+                if ( cuda )
+                {
+                    str                  = " -Xlinker " + prepare_string( str );
+                    app.str_otf2_config += " --cuda";
+                }
+                std::cout << str;
                 std::cout.flush();
+
                 app.str_otf2_config += " --libs";
                 ret                  = system( app.str_otf2_config.c_str() );
+
                 break;
 
             case ACTION_CFLAGS:
                 if ( compiler )
                 {
-                    std::cout << app.str_flags;
+                    str += app.str_flags;
                 }
                 if ( user )
                 {
                     if ( fortran )
                     {
                        #ifdef SCOREP_COMPILER_IBM
-                        std::cout << " -WF,-DSCOREP_USER_ENABLE ";
+                        str += " -WF,-DSCOREP_USER_ENABLE ";
                        #else
-                        std::cout << " -DSCOREP_USER_ENABLE ";
+                        str += " -DSCOREP_USER_ENABLE ";
                        #endif // SCOREP_COMPILER_IBM
                     }
                     else
                     {
-                        std::cout << " -DSCOREP_USER_ENABLE ";
+                        str += " -DSCOREP_USER_ENABLE ";
                     }
                 }
+
+                if ( cuda )
+                {
+                    str = " -Xcompiler " + prepare_string( str );
+                }
+                std::cout << str;
+
             // Append the include directories, too
 
             case ACTION_INCDIR:
-                std::cout << app.str_incdir;
+                str += app.str_incdir;
+                if ( cuda )
+                {
+                    str = " -Xcompiler " + prepare_string( str );
+                    //app.str_otf2_config += " --cuda";
+                }
+
+                std::cout << str;
                 std::cout.flush();
                 //app.str_otf2_config += " --cflags";
                 //ret                  = system( app.str_otf2_config.c_str() );
@@ -311,6 +352,8 @@ main( int    argc,
         {
             case ACTION_LIBS:
                 std::cout << deps.GetLDFlags( libs, install );
+                str = deps.GetRpathFlags( libs, install );
+                std::cout << " -Xlinker " << prepare_string( str );
                 std::cout << deps.GetRpathFlags( libs, install );
                 std::cout << deps.GetLibraries( libs );
                 std::cout.flush();
@@ -319,28 +362,39 @@ main( int    argc,
             case ACTION_CFLAGS:
                 if ( compiler )
                 {
-                    std::cout << SCOREP_CFLAGS;
+                    str += SCOREP_CFLAGS;
                 }
                 if ( user )
                 {
                     if ( fortran )
                     {
                        #ifdef SCOREP_COMPILER_IBM
-                        std::cout << " -WF,-DSCOREP_USER_ENABLE ";
+                        str += " -WF,-DSCOREP_USER_ENABLE ";
                        #else
-                        std::cout << " -DSCOREP_USER_ENABLE ";
+                        str += " -DSCOREP_USER_ENABLE ";
                        #endif // SCOREP_COMPILER_IBM
                     }
                     else
                     {
-                        std::cout << " -DSCOREP_USER_ENABLE ";
+                        str += " -DSCOREP_USER_ENABLE ";
                     }
+                }
+
+                if ( cuda )
+                {
+                    str = " -Xcompiler " + prepare_string( str );
                 }
             // Append the include directories, too
 
             case ACTION_INCDIR:
-                std::cout << "-I" SCOREP_PREFIX "/include -I"
-                SCOREP_PREFIX "/include/scorep ";
+                str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
+
+                if ( cuda )
+                {
+                    str = " -Xcompiler " + prepare_string( str );
+                }
+
+                std::cout << str;
                 std::cout.flush();
                 break;
 
@@ -499,4 +553,100 @@ SCOREP_Config::AddLib( std::string lib )
             this->str_libs += " " + lib;
         }
     }
+}
+
+/** Make string with compiler or linker flags compatible to CUDA
+ *  compiler requirements.
+ *
+ *  @param str              String to be processed.
+ *
+ *  @return Returns string with compiler or linker flags that can be
+ *          passes to CUDA compiler.
+ */
+std::string
+prepare_string( std::string str )
+{
+    std::string pattern1 = " ";
+    std::string replace1 = ",";
+    std::string pattern2 = PASS_LINKER_FLAG_THROUGH_COMPILER;
+    std::string replace2 = "";
+
+    str = remove_multiple_whitespaces( str );
+    /* Replace all white-spaces by comma */
+    str = replace_all( pattern1, replace1, str );
+    /* Replace flag for passing arguments to linker through compiler
+     * (flags not needed because we use '-Xlinker' to specify linker
+     * flags when using CUDA compiler */
+    if ( pattern2.length() != 0 )
+    {
+        str = replace_all( pattern2, replace2, str );
+    }
+
+    return str;
+}
+
+/** Trim  and replace multiple white-spaces in @ str by a single one.
+ *
+ *  @param str              String to be processed.
+ *
+ *  @return Returns string where all multiple white-spaces are replaced
+ *          by a single one.
+ */
+std::string
+remove_multiple_whitespaces( std::string str )
+{
+    std::string            search = "  "; // this string contains 2 spaces
+    std::string::size_type pos;
+
+    /* Trim */
+    pos = str.find_last_not_of( ' ' );
+    if ( pos != std::string::npos )
+    {
+        str.erase( pos + 1 );
+        pos = str.find_first_not_of( ' ' );
+        if ( pos != std::string::npos )
+        {
+            str.erase( 0, pos );
+        }
+    }
+    else
+    {
+        str.erase( str.begin(), str.end() );
+    }
+
+    /* Remove multiple white-spaces */
+    while ( ( pos = str.find( search ) ) != std::string::npos )
+    {
+        /* remove 1 character from the string at index */
+        str.erase( pos, 1 );
+    }
+
+    return str;
+}
+
+/** Replace all occurrences of @ pattern in string @ original by
+ *  @ replacement.
+ *
+ *  @param pattern          String that should be replaced.
+ *  @param replacement      Replacement for @ pattern.
+ *  @param original         Input string.
+ *
+ *  @return Returns a string where all occurrences of @ pattern are
+ *          replaced by @ replacement.
+ */
+std::string
+replace_all( std::string &pattern,
+             std::string &replacement,
+             std::string  original )
+{
+    std::string::size_type pos            = original.find( pattern, 0 );
+    int                    pattern_length = pattern.length();
+
+    while ( pos != std::string::npos )
+    {
+        original.replace( pos, pattern_length, replacement );
+        pos = original.find( pattern, 0 );
+    }
+
+    return original;
 }

@@ -600,6 +600,31 @@ SCOREP_METRIC_RUSAGE_SEP=:
 </pre>
 This indicates that counter names in the list are separated by colons.
 
+@section cuda_adapter CUDA Performance Measurement
+@seclabel{cuda_adapter}
+
+If @scorep has been built with CUDA support it is capable of recording CUDA API function calls and GPU activities. The measurement is based on NVIDIA's <b>CU</b>DA <b>P</b>rofiling and <b>T</b>ool <b>I</b>nterface (CUPTI), which is an integral part of the CUDA Toolkit since version 4.1.
+
+Setting the environment variable <tt>SCOREP_CUDA_ENABLE</tt> to <tt>yes</tt> enables CUDA measurement. 
+To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
+
+@code
+runtime = CUDA runtime API
+driver  = CUDA driver API
+kernel  = CUDA kernels
+idle    = GPU compute idle time
+yes/DEFAULT/1 = "runtime,kernel"
+no = disable CUDA measurement (same as unset SCOREP_CUDA_ENABLE)
+@endcode
+
+@note @scorep supports CUDA monitoring since CUDA toolkit version 4.1. Make sure that the @scorep installation has configured CUDA support. The configure summary should contain the line: 
+<pre>CUDA support: yes</pre>
+If not, for most systems it is sufficient to specify the CUDA toolkit directory at @scorep configuration time: 
+<pre> --with-cuda=<path-to-cuda-toolkit-directory></pre>
+Otherwise check the configure help output to specify the location of the CUDA toolkit and CUPTI libraries and include files: 
+<pre> ./configure --help=recursive | grep -E "(cuda|cupti)"</pre>
+
+
 @section online_access_measurement Online Access interface
 @seclabel{online_access_measurement}
 

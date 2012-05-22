@@ -1,0 +1,52 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       /scorep/src/adapters/cuda/Makefile.inc.am
+## maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
+
+if HAVE_CUPTI
+
+noinst_LTLIBRARIES += libscorep_adapter_cuda.la
+
+libscorep_adapter_cuda_la_SOURCES  = \
+    $(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_Init.c \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cuda.c \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cuda.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.c \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.c \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.h
+
+libscorep_adapter_cuda_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                \
+    -I$(PUBLIC_INC_DIR)           \
+    -I$(INC_DIR_UTIL)             \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/adapters/include \
+    -I$(INC_ROOT)src/services/include \
+    -I$(SCOREP_CUPTI_INCDIR) \
+    -I$(SCOREP_CUDA_INCDIR)
+
+libscorep_adapter_cuda_la_LIBADD = $(SCOREP_CUPTI_LDFLAGS) $(SCOREP_CUPTI_LIBS) \
+				   $(SCOREP_CUDA_LDFLAGS) $(SCOREP_CUDA_LIBS)
+
+libscorep_cupti_la_CPPFLAGS = $(libscorep_adapter_cuda_la_CPPFLAGS) \
+    @SCOREP_CUPTI_CPPFLAGS@ @SCOREP_CUDA_CPPFLAGS@
+                              
+endif

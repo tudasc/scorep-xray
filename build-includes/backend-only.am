@@ -11,6 +11,7 @@ include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/pomp/Makefile.inc.am
 include ../src/adapters/tau/Makefile.inc.am
+include ../src/adapters/cuda/Makefile.inc.am
 include ../src/services/metric/Makefile.inc.am
 include ../src/services/platform/Makefile.inc.am
 include ../src/services/timer/Makefile.inc.am
@@ -33,6 +34,7 @@ include ../test/adapters/user/C/Makefile.inc.am
 include ../test/adapters/user/C++/Makefile.inc.am
 include ../test/adapters/user/Fortran/Makefile.inc.am 
 include ../test/adapters/compiler/Makefile.inc.am
+include ../test/adapters/cuda/Makefile.inc.am
 include ../test/adapters/tau/Makefile.inc.am
 include ../test/adapters/pomp/Makefile.inc.am
 include ../test/serial/Makefile.inc.am

@@ -72,7 +72,7 @@ remove_double_entries( const deque<string> input )
 }
 
 /**
- * Converts deque of strings into a string where all intries are space separated.
+ * Converts deque of strings into a string where all entries are space separated.
  */
 static string
 deque_to_string( const deque<string> input )

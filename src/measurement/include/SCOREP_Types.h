@@ -190,6 +190,7 @@ typedef enum SCOREP_AdapterType
     SCOREP_ADAPTER_MPI,
     SCOREP_ADAPTER_POMP,
     SCOREP_ADAPTER_PTHREAD,
+    SCOREP_ADAPTER_CUDA,
 
     SCOREP_INVALID_ADAPTER_TYPE /**< For internal use only. */
 } SCOREP_AdapterType;

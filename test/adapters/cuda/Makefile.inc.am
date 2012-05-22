@@ -1,0 +1,18 @@
+if HAVE_CUPTI
+
+#check_PROGRAMS += cuda_test
+
+#cuda_test_SOURCES = \
+#	$(SRC_ROOT)/test/adapters/cuda/cuda_test.cu 
+
+#cuda_test_CPPFLAGS = $(AM_CPPFLAGS) \
+#    -I$(SCOREP_CUPTI_INCDIR)        \
+#    -I$(SCOREP_CUDA_INCDIR)
+
+#cuda_test_LDADD = \
+#    $(LIB_ROOT)libscorep_serial.la
+
+TESTS_SERIAL += \
+   $(SRC_ROOT)/test/adapters/cuda/run_cuda_test.sh
+
+endif

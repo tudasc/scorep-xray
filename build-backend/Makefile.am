@@ -176,6 +176,7 @@ $(builddir)/scorep_config.dat:
 	    echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
 	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-print\"; \
 	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_LOCAL_DIR)\"; \
+	    echo PASS_LINKER_FLAG_THROUGH_COMPILER=\"$(PASS_LINKER_FLAG_THROUGH_COMPILER)\"; \
 	) >$@
 
 ## Provide the scorep-config build with information from this backend Makefile.
@@ -204,6 +205,7 @@ $(CONFIG_HEADER_BACKEND):
 	    echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
 	    echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
 	    echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
+	    echo "#define PASS_LINKER_FLAG_THROUGH_COMPILER \"$(PASS_LINKER_FLAG_THROUGH_COMPILER)\""; \
 	) >$@
 
 

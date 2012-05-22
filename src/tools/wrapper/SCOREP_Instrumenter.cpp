@@ -41,6 +41,14 @@
 void
 print_help();
 
+std::string
+remove_multiple_whitespaces( std::string str );
+
+std::string
+replace_all( std::string &pattern,
+             std::string &replacement,
+             std::string  original );
+
 /* ****************************************************************************
    Compiler specific defines
 ******************************************************************************/
@@ -79,6 +87,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
 
     is_mpi_application    = detect;
     is_openmp_application = detect;
+    is_cuda_application   = detect;
 
     is_compiling = true; // Opposite recognized if no source files in input
     is_linking   = true; // Opposite recognized on existence of -c flag
@@ -566,6 +575,11 @@ SCOREP_Instrumenter::parse_command( std::string arg )
         {
             language = cpp_language;
         }
+        else if ( is_cuda_file( arg ) )
+        {
+            language            = cuda_language;
+            is_cuda_application = enabled;
+        }
         else if ( is_fortran_file( arg ) )
         {
             language = fortran_language;
@@ -1005,10 +1019,26 @@ SCOREP_Instrumenter::is_cpp_file( std::string filename )
 }
 
 bool
+SCOREP_Instrumenter::is_cuda_file( std::string filename )
+{
+    std::string extension = get_extension( filename );
+    if ( extension == "" )
+    {
+        return false;
+    }
+    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
+    SCOREP_CHECK_EXT( ".cu" );
+    SCOREP_CHECK_EXT( ".CU" );
+    #undef SCOREP_CHECK_EXT
+    return false;
+}
+
+bool
 SCOREP_Instrumenter::is_source_file( std::string filename )
 {
     return is_c_file( filename ) ||
            is_cpp_file( filename ) ||
+           is_cuda_file( filename ) ||
            is_fortran_file( filename );
 }
 
@@ -1118,6 +1148,11 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
         mode = " --omp";
     }
 
+    if ( is_cuda_application == enabled )
+    {
+        mode += " --cuda";
+    }
+
     // Generate calls
     scorep_include_path = "`" + scorep_config + mode + " --inc` ";
     scorep_libs         = "`" + scorep_config + mode + " --libs` ";
@@ -1136,7 +1171,20 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
 void
 SCOREP_Instrumenter::prepare_compiler()
 {
-    compiler_flags += " -g " + compiler_instrumentation_flags;
+    if ( is_cuda_application == enabled )
+    {
+        std::string str     = "-g " + compiler_instrumentation_flags;
+        std::string pattern = " ";
+        std::string replace = ",";
+        str             = remove_multiple_whitespaces( str );
+        str             = replace_all( pattern, replace, str );
+        compiler_flags += " -Xcompiler " + str;
+    }
+    else
+    {
+        // Add debug flag
+        compiler_flags += " -g " + compiler_instrumentation_flags;
+    }
 
     /* The sun compiler can only instrument Fortran files. Thus, any C/C++ files
        are not instrumented. To avoid user confusion, the instrumneter aborts in
@@ -1527,4 +1575,70 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
     temp_files += " " + orig_name;
 
     return EXIT_SUCCESS;
+}
+
+/** Trim  and replace multiple white-spaces in @ str by a single one.
+ *
+ *  @param str              String to be processed.
+ *
+ *  @return Returns string where all multiple white-spaces are replaced
+ *          by a single one.
+ */
+std::string
+remove_multiple_whitespaces( std::string str )
+{
+    std::string            search = "  "; // this string contains 2 spaces
+    std::string::size_type pos;
+
+    /* Trim */
+    pos = str.find_last_not_of( ' ' );
+    if ( pos != std::string::npos )
+    {
+        str.erase( pos + 1 );
+        pos = str.find_first_not_of( ' ' );
+        if ( pos != std::string::npos )
+        {
+            str.erase( 0, pos );
+        }
+    }
+    else
+    {
+        str.erase( str.begin(), str.end() );
+    }
+
+    /* Remove multiple white-spaces */
+    while ( ( pos = str.find( search ) ) != std::string::npos )
+    {
+        /* remove 1 character from the string at index */
+        str.erase( pos, 1 );
+    }
+
+    return str;
+}
+
+/** Replace all occurrences of @ pattern in string @ original by
+ *  @ replacement.
+ *
+ *  @param pattern          String that should be replaced.
+ *  @param replacement      Replacement for @ pattern.
+ *  @param original         Input string.
+ *
+ *  @return Returns a string where all occurrences of @ pattern are
+ *          replaced by @ replacement.
+ */
+std::string
+replace_all( std::string &pattern,
+             std::string &replacement,
+             std::string  original )
+{
+    std::string::size_type pos            = original.find( pattern, 0 );
+    int                    pattern_length = pattern.length();
+
+    while ( pos != std::string::npos )
+    {
+        original.replace( pos, pattern_length, replacement );
+        pos = original.find( pattern, 0 );
+    }
+
+    return original;
 }
