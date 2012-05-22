@@ -159,6 +159,19 @@ AC_COMPILE_IFELSE([
 ], [AC_MSG_RESULT(no)]
 ) # AC_COMPILE_IF_ELSE
 
+AC_MSG_CHECKING([for MPI_ROOT])
+AC_COMPILE_IFELSE([
+      PROGRAM test
+      IMPLICIT NONE
+      INCLUDE  'mpif.h'
+      integer :: i
+      i = MPI_ROOT
+      END PROGRAM test
+], [AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_MPI_ROOT, 1, [Fortran MPI defines MPI_ROOT])
+], [AC_MSG_RESULT(no)]
+) # AC_COMPILE_IF_ELSE
+
 AC_MSG_CHECKING([for MPI_STATUS_IGNORE])
 AC_COMPILE_IFELSE([
       PROGRAM test
