@@ -168,6 +168,30 @@ Optional Packages:
   --with-papi-lib=<path-to-libpapi.*>
                           If libpapi.* is not installed in the default
                           location, specify the dirname where it can be found.
+  --with-cuda=<path-to-cuda-toolkit-directory>
+                          If CUDA toolkit is not installed in the default
+                          location, specify the directory where it can be
+                          found.
+  --with-cuda-include=<path-to-cuda-toolkit-include-directory>
+                          If the CUDA headers are not installed in the default
+                          location ($CUDA_ROOT/include), specify the directory
+                          where it can be found.
+  --with-cuda-lib=<path-to-cuda-toolkit-library-directory>
+                          If libcudart.* is not installed in the default
+                          location ($CUDA_ROOT/lib64), specify the directory
+                          where it can be found.
+  --with-cupti=<path-to-cupti-directory>
+                          If CUPTI is not installed in the default location
+                          (<path-to-cuda-directory>/extras/CUPTI), specify the
+                          directory where it can be found.
+  --with-cupti-include=<path-to-cupti-include-directory>
+                          If cupti.h is not installed in the default location
+                          (<path-to-cupti-directory>/include), specify the
+                          directory name where it can be found.
+  --with-cupti-lib=<path-to-libcupti.*>
+                          If libcupti.* is not installed in the default
+                          location (<path-to-cupti-directory>/lib64), specify
+                          the directory name where it can be found.
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
