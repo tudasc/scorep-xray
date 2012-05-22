@@ -36,8 +36,8 @@ all:
 # Dependencies
 #------------------------------------------------------------------------------
 
-$(OBJDIR)/jacobi.o: jacobi.cpp jacobi.h
-$(OBJDIR)/main.o: main.cpp jacobi.h
+$(OBJDIR)/jacobi.o: $(SRCDIR)/jacobi.cpp $(SRCDIR)/jacobi.h
+$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(SRCDIR)/jacobi.h
 
 
 #------------------------------------------------------------------------------

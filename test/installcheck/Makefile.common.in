@@ -24,11 +24,11 @@ all:
 # Common settings
 #------------------------------------------------------------------------------
 
-BINDIR     = @abs_top_builddir@/../installcheck/bin
-INCDIR     = @abs_top_builddir@/../installcheck/$(PARADIGM)
-SRCDIR     = @abs_top_srcdir@/../test/installcheck/$(PARADIGM)/src
-PREPS_FILE = @abs_top_builddir@/../installcheck/configurations_$(PARADIGM)
-EXE        = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANG)$(SUFFIX)
+BINDIR          = @abs_top_builddir@/../installcheck/bin
+INCDIR          = @abs_top_builddir@/../installcheck/$(PARADIGM)
+PARADIGM_SRCDIR = @abs_top_srcdir@/../test/installcheck/$(PARADIGM)/src
+PREPS_FILE      = @abs_top_builddir@/../installcheck/configurations_$(PARADIGM)
+EXE             = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANG)$(SUFFIX)
 
 #------------------------------------------------------------------------------
 # Instrument possible configurations: copy sources from SRC_ORIG to
@@ -39,20 +39,22 @@ EXE        = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANG)$(SUFFIX)
 # below. Instrumented apps can be found in BINDIR.
 #------------------------------------------------------------------------------
 
-instrument-configurations: $(PREPS_FILE) $(SRCDIR) $(BINDIR)
+instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
 	@for code in $(CODES); do \
             for language in $(LANGUAGES); do \
                 suffix="_default"; \
                 obj_dir="`pwd`/build/$$code/$$language/$$suffix"; \
                 mkdir -p "$$obj_dir"; \
+                cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
                 echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
-                $(MAKE) -C $(SRCDIR)/$$code/$$language \
+                $(MAKE) -C $$obj_dir \
                     PREP="@prefix@/bin/scorep" \
                     SUFFIX=$$suffix \
                     OBJDIR="$$obj_dir" \
                     BINDIR=$(BINDIR) \
                     CODE=$$code \
                     LANG=$$language \
+                    SRCDIR=$(PARADIGM_SRCDIR)/$$code/$$language \
                     INCDIR=$(INCDIR) \
                     $$code || exit 1; \
                 while read line; do \
@@ -60,14 +62,16 @@ instrument-configurations: $(PREPS_FILE) $(SRCDIR) $(BINDIR)
                     suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {suffix = suffix "_" $$i} } END{print suffix}'`; \
                     obj_dir="`pwd`/build/$$code/$$language/$$suffix"; \
                     mkdir -p "$$obj_dir"; \
-                echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
-                    $(MAKE) -C $(SRCDIR)/$$code/$$language \
+                    cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
+                    echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
+                    $(MAKE) -C $$obj_dir \
                         PREP="$$prep" \
                         SUFFIX=$$suffix \
                         OBJDIR="$$obj_dir" \
                         BINDIR=$(BINDIR) \
                         CODE=$$code \
                         LANG=$$language \
+                        SRCDIR=$(PARADIGM_SRCDIR)/$$code/$$language \
                         INCDIR=$(INCDIR) \
                         $$code || exit 1; \
                 done < $(PREPS_FILE); \
@@ -100,19 +104,19 @@ $(BINDIR)/$(CODE)-$(PARADIGM)-f77$(SUFFIX): $(OBJECTS)
 $(BINDIR)/$(CODE)-$(PARADIGM)-fc$(SUFFIX): $(OBJECTS)
 	$(PREP) $(FC) $(FCFLAGS) -o $@ $(OBJECTS) $(LIBS)
 
-$(OBJDIR)/%.o: %.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(PREP) $(CC) $(CFLAGS) -o $@ -c $< 
 
-$(OBJDIR)/%.o: %.cpp
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(PREP) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: %.f77
+$(OBJDIR)/%.o: $(SRCDIR)/%.f77
 	$(PREP) $(F77) $(F77FLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: %.f90
+$(OBJDIR)/%.o: $(SRCDIR)/%.f90
 	$(PREP) $(FC) $(FCFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: %.F90
+$(OBJDIR)/%.o: $(SRCDIR)/%.F90
 	$(PREP) $(FC) $(FCFLAGS) -o $@ -c $<
 
 clean:

@@ -37,9 +37,9 @@ all:
 # Dependencies
 #------------------------------------------------------------------------------
 
-$(OBJDIR)/jacobi.o: jacobi.F90
-$(OBJDIR)/main.o: main.F90
-$(OBJDIR)/VariableDef.o: VariableDef.f90
+$(OBJDIR)/jacobi.o: $(SRCDIR)/jacobi.F90
+$(OBJDIR)/main.o: $(SRCDIR)/main.F90
+$(OBJDIR)/VariableDef.o: $(SRCDIR)/VariableDef.f90
 
 
 #------------------------------------------------------------------------------
