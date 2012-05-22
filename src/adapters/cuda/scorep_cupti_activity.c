@@ -532,7 +532,7 @@ sp_cuptiact_createStream( sp_cuptiact_ctx_t* spCtx,
 
         spStrm->spLoc = SCOREP_Location_CreateNonCPULocation( spCtx->sphostLoc,
                                                               SCOREP_LOCATION_TYPE_GPU, thread_name );
-        SCOREP_Thread_SetLastTimestamp( spStrm->spLoc, scorep_cuda_init_timestamp );
+        //SCOREP_Thread_SetLastTimestamp( spStrm->spLoc, scorep_cuda_init_timestamp );
     }
 
     /* if first stream created for this device, make it the default stream */
