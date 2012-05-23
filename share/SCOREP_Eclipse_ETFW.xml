@@ -12,14 +12,14 @@
 </tool>
 <tool name="Scalasca">
     <compile>
-        <allcompilers command="scorep" group="scorep"/>
+        <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
     <execute>
         <global name="SCORPEnvironment">
             <envvar flag="SCOREP_ENABLE_TRACING" value="true"/>
         </global>
     </execute>
-        <analyze foralllike="traces.otf2" depth="1">
+        <analyze foralllike="traces.elg" depth="1">
 	    <utility type="view" command="scalasca --examine" group="cube">
                 <argument value="%%FILE%%"/>
             </utility>
@@ -27,15 +27,17 @@
 </tool>
 <tool name="ScoreP-TAU">
     <compile>
-        <allcompilers command="scorep --instrument" group="scorep"/>
+        <allcompilers command="scorep" group="scorep"/>
     </compile>
     <execute>
         <global name="SCORPEnvironment">
-            <envvar flag="SCOREP_PROFILE_FORMAT" value="TAU_SNAPSHOT"/>
+            <!-- envvar flag="SCOREP_PROFILING_FORMAT" value="TAU_SNAPSHOT"/ -->
         </global>
     </execute>
-    <analyze>
-        <utility command="process-TAU-data" group="internal"/>
+    <analyze foralllike="profile.cubex" depth="1">
+        <utility command="paraprof" group="tau">
+                <argument value="%%FILE%%"/>
+        </utility>
     </analyze>
 </tool>
 </toolset.01>
