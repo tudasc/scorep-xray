@@ -13,11 +13,7 @@ scorep_score_SOURCES = \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Group.cpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Group.hpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.cpp \
-    $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.hpp \
-    $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.c \
-    $(SRC_ROOT)src/utils/filtering/scorep_filter_matching.h \
-    $(SRC_ROOT)src/utils/filtering/scorep_filter_parser.c \
-    $(SRC_ROOT)src/utils/include/SCOREP_Filter.h
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.hpp
 
 scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
@@ -27,6 +23,8 @@ scorep_score_CPPFLAGS = \
     -I$(INC_ROOT)src/utils/filtering
 
 scorep_score_LDFLAGS = -L$(CUBE_FRONTEND_LIB_PATH)
-scorep_score_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la $(CUBE_FRONTEND_LIBS)
+scorep_score_LDADD = $(CUBE_FRONTEND_LIBS) \
+    libscorep_filter.la \
+    $(LIB_DIR_UTIL)libscorep_utilities.la
 
 endif
