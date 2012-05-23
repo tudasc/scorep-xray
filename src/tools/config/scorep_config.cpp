@@ -353,8 +353,11 @@ main( int    argc,
             case ACTION_LIBS:
                 std::cout << deps.GetLDFlags( libs, install );
                 str = deps.GetRpathFlags( libs, install );
-                std::cout << " -Xlinker " << prepare_string( str );
-                std::cout << deps.GetRpathFlags( libs, install );
+                if ( cuda )
+                {
+                    str = " -Xlinker " + prepare_string( str );
+                }
+                std::cout << str;
                 std::cout << deps.GetLibraries( libs );
                 std::cout.flush();
                 break;
