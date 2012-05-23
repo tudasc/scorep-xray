@@ -41,13 +41,16 @@
 void
 print_help();
 
-std::string
+static std::string
 remove_multiple_whitespaces( std::string str );
 
-std::string
+static std::string
 replace_all( std::string &pattern,
              std::string &replacement,
              std::string  original );
+
+static std::string
+extract_path( std::string filename );
 
 /* ****************************************************************************
    Compiler specific defines
@@ -215,6 +218,12 @@ SCOREP_Instrumenter::Run()
                         object_file = get_basename(
                             SCOREP_IO_GetWithoutPath( current_file.c_str() ) ) + ".o";
                     }
+
+                    /* If we create modified source, we must add the original source
+                       directory to the include dirs, because local files may be
+                       included
+                     */
+                    compiler_flags += " -I" + extract_path( current_file );
 
                     // If compiling and linking is performed in one step.
                     // The compiler leave no object file.
@@ -1584,7 +1593,7 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
  *  @return Returns string where all multiple white-spaces are replaced
  *          by a single one.
  */
-std::string
+static std::string
 remove_multiple_whitespaces( std::string str )
 {
     std::string            search = "  "; // this string contains 2 spaces
@@ -1626,7 +1635,7 @@ remove_multiple_whitespaces( std::string str )
  *  @return Returns a string where all occurrences of @ pattern are
  *          replaced by @ replacement.
  */
-std::string
+static std::string
 replace_all( std::string &pattern,
              std::string &replacement,
              std::string  original )
@@ -1641,4 +1650,23 @@ replace_all( std::string &pattern,
     }
 
     return original;
+}
+
+/**
+ * Returns the path contained in @ filename
+ * @param filename a file name with a full path
+ */
+static std::string
+extract_path( std::string filename )
+{
+    size_t pos = filename.find_last_of( '/' );
+    if ( pos == 0 )
+    {
+        return "/";
+    }
+    if ( pos != std::string::npos )
+    {
+        return filename.substr( 0, pos );
+    }
+    return "";
 }
