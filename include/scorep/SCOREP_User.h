@@ -630,7 +630,7 @@
 #define SCOREP_USER_REGION_DEFINE( handle ) \
     static SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
 
-#define SCOREP_USER_REGION_ENTER( handle ) SCOREP_User_RegionEnter( &handle );
+#define SCOREP_USER_REGION_ENTER( handle ) SCOREP_User_RegionEnter( handle );
 
 #define SCOREP_USER_REGION_BEGIN( handle, name, type ) SCOREP_User_RegionBegin( \
         &handle, &SCOREP_User_LastFileName, &SCOREP_User_LastFileHandle, name, \

@@ -69,4 +69,9 @@ main( int   argc,
         SCOREP_RECORDING_ON();
         return 0;
     }
+
+    SCOREP_USER_REGION_DEFINE( my_region );
+    SCOREP_USER_REGION_INIT( my_region, "my region", SCOREP_USER_REGION_TYPE_COMMON );
+    SCOREP_USER_REGION_ENTER(  my_region );
+    SCOREP_USER_REGION_END( my_region );
 }
