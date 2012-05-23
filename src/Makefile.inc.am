@@ -26,7 +26,6 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_adapter_compiler.la         \
                 libscorep_adapter_user.la             \
                 libscorep_adapter_tau.la              \
-		libscorep_adapter_cuda.la             \
                 libscorep_cube_writer.la              \
                 libscorep_profile.la                  \
                 libscorep_tracing.la                  \
@@ -39,6 +38,10 @@ common_libadd = libscorep_measurement.la              \
                 @LIBBFD_LIBS@                         \
                 @TIMER_LIB@                           \
                 @SCOREP_PAPI_LIBS@
+
+if HAVE_CUPTI
+common_libadd += libscorep_adapter_cuda.la
+endif
 
 common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(INC_ROOT)src/adapters/include    \

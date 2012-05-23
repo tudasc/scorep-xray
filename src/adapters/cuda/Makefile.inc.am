@@ -46,5 +46,5 @@ libscorep_adapter_cuda_la_LIBADD = $(SCOREP_CUPTI_LDFLAGS) $(SCOREP_CUPTI_LIBS) 
 
 libscorep_cupti_la_CPPFLAGS = $(libscorep_adapter_cuda_la_CPPFLAGS) \
     @SCOREP_CUPTI_CPPFLAGS@ @SCOREP_CUDA_CPPFLAGS@
-                              
+
 endif
