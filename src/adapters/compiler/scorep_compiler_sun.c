@@ -83,9 +83,9 @@ scorep_compiler_register_region( char* region_name )
 
     /* register region with Score-P and store region identifier */
     if ( ( strchr( region_name, '$' ) == NULL ) &&     /* SUN OMP runtime functions */
-         ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-         ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
-         ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
+         ( strncmp( region_name, "pomp_init_regions", 17 ) != 0 ) &&
+         ( strncmp( region_name, "POMP_Init_regions", 17 ) != 0 ) &&
+         ( strncmp( region_name, "POMP_INIT_REGIONS", 17 ) != 0 ) &&
          ( !SCOREP_Filter_Match( NULL, region_name, true ) ) )
     {
         handle = SCOREP_DefineRegion( region_name,
