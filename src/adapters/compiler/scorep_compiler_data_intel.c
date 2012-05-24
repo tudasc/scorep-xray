@@ -16,11 +16,10 @@
 
 /**
  * @status     alpha
- * @file       scorep_compiler_data.c
+ * @file       scorep_compiler_data_intel.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @brief Implementation of helper functions which are common for all compiler
- *        adapters.
+ * @brief Implementation of helper functions for managing region data.
  */
 
 #include <config.h>
@@ -31,7 +30,7 @@
 #include <SCOREP_Mutex.h>
 #include <scorep_utility/SCOREP_Utils.h>
 
-#include <scorep_compiler_data.h>
+#include <scorep_compiler_data_intel.h>
 
 /**
    A hash table which stores information about regions under their name as
@@ -146,11 +145,25 @@ scorep_compiler_hash_init()
     }
 }
 
-/* Get hash table entry for given ID. */
+/* Get hash table entry for given name. */
 scorep_compiler_hash_node*
-scorep_compiler_hash_get( uint64_t key )
+scorep_compiler_hash_get( char* region_name )
 {
-    uint64_t hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
+    char* name;
+    /* Tne intel compiler prepends the filename to the function name.
+       -> Need to remove the file name. */
+    name = region_name;
+    while ( *name != '\0' )
+    {
+        if ( *name == ':' )
+        {
+            region_name = name + 1;
+            break;
+        }
+        name++;
+    }
+
+    uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
@@ -161,7 +174,7 @@ scorep_compiler_hash_get( uint64_t key )
      */
     while ( curr )
     {
-        if ( curr->key == key )
+        if ( strcmp( curr->region_name, region_name )  == 0 )
         {
             return curr;
         }
@@ -169,7 +182,6 @@ scorep_compiler_hash_get( uint64_t key )
     }
     return NULL;
 }
-
 
 /* Stores function name under hash code */
 scorep_compiler_hash_node*
@@ -181,11 +193,38 @@ scorep_compiler_hash_put
     SCOREP_LineNo line_no_begin
 )
 {
-    uint64_t                   hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
+    /* ifort constructs function names like <module>_mp_<function>,
+             while __VT_Entry gets something like <module>.<function>                                                                  => replace _mp_ with a dot. */
+    char* name = SCOREP_CStr_dup( region_name );
+    for ( int i = 1; i + 5 < strlen( name ); i++ )
+    {
+        if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
+        {
+            name[ i ] = '.';
+            for ( int j = i + 1; j <= strlen( name ) - 2; j++ )
+            {
+                name[ j ] = name[ j + 3 ];
+            }
+            break;
+        }
+    }
+
+    /* icpc appends the signature of the function. Unfortunately,
+             __VT_Entry gives a string without signature.                                                                              => cut off signature  */
+    for ( int i = 1; i + 1 < strlen( name ); i++ )
+    {
+        if ( name[ i ] == '(' )
+        {
+            name[ i ] = '\0';
+            break;
+        }
+    }
+
+    uint64_t                   hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
     add->key           = key;
-    add->region_name   = SCOREP_CStr_dup( region_name );
+    add->region_name   = SCOREP_CStr_dup( name );
     add->file_name     = SCOREP_CStr_dup( file_name );
     add->line_no_begin = line_no_begin;
     add->line_no_end   = SCOREP_INVALID_LINE_NO;
@@ -195,6 +234,8 @@ scorep_compiler_hash_put
      */
     add->next                      = region_hash_table[ hash_code ];
     region_hash_table[ hash_code ] = add;
+
+    free( name );
     return add;
 }
 

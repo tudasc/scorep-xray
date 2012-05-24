@@ -37,7 +37,7 @@
 #include <SCOREP_Mutex.h>
 
 #include <SCOREP_Compiler_Init.h>
-#include <scorep_compiler_data.h>
+#include <scorep_compiler_data_intel.h>
 #include <scorep_compiler_symbol_table.h>
 
 /**
@@ -57,107 +57,9 @@ static int scorep_compiler_initialize = 1;
 static int scorep_compiler_finalized = 0;
 
 /**
- * Hashtable to map region name to region id.
- */
-static SCOREP_Hashtab* scorep_compiler_name_table = NULL;
-
-/**
  * Mutex for exclusive access to the region hash table.
  */
 static SCOREP_Mutex scorep_compiler_region_mutex;
-
-/* ***************************************************************************************
-   Hashtable functions to map names to id.
-*****************************************************************************************/
-
-/**
- * Initialize name table
- */
-static void
-scorep_compiler_init_name_table()
-{
-    scorep_compiler_name_table = SCOREP_Hashtab_CreateSize( 1024, &SCOREP_Hashtab_HashString,
-                                                            &SCOREP_Hashtab_CompareStrings );
-}
-
-/**
-   Deletes one name table entry.
-   @param entry Pointer to the entry to be deleted.
- */
-static void
-scorep_compiler_delete_name_entry( SCOREP_Hashtab_Entry* entry )
-{
-    SCOREP_ASSERT( entry );
-
-    free( ( int32_t* )entry->value );
-    free( ( char* )entry->key );
-}
-
-/* Finalize the name table */
-void
-scorep_compiler_final_name_table()
-{
-    SCOREP_Hashtab_Foreach( scorep_compiler_name_table, &scorep_compiler_delete_name_entry );
-    SCOREP_Hashtab_Free( scorep_compiler_name_table );
-    scorep_compiler_name_table = NULL;
-}
-
-/* Returns the id for a given region name. */
-int32_t
-scorep_compiler_get_id_from_name( const char* name )
-{
-    SCOREP_Hashtab_Entry* entry = NULL;
-    const char*           region_name;
-    /* Check input */
-    if ( name == NULL )
-    {
-        return 0;
-    }
-
-    /* Tne intel compiler prepends the filename to the function name.
-       -> Need to remove the file name. */
-    region_name = name;
-    while ( *name != '\0' )
-    {
-        if ( *name == ':' )
-        {
-            region_name = name + 1;
-            break;
-        }
-        name++;
-    }
-
-    /* Look up in hash table */
-    entry = SCOREP_Hashtab_Find( scorep_compiler_name_table, region_name, NULL );
-
-    /* If not found, unknown region */
-    if ( !entry )
-    {
-        return 0;
-    }
-
-    return *( int32_t* )entry->value;
-}
-
-/**
- * Adds an entry to the name table
- */
-void
-scorep_compiler_name_add( const char* name,
-                          int32_t     id )
-{
-    /* Reserve own storage for region name */
-    char* region_name = ( char* )malloc( ( strlen( name ) + 1 ) * sizeof( char ) );
-    strcpy( region_name, name );
-
-    /* Reserve storage for id */
-    int32_t* id_copy = malloc( sizeof( int32_t ) );
-    *id_copy = id;
-
-    /* Store handle in hashtable */
-    SCOREP_Hashtab_Insert( scorep_compiler_name_table, ( void* )region_name,
-                           id_copy, NULL );
-}
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
@@ -197,9 +99,8 @@ __VT_IntelEntry( char*     str,
     if ( *id == 0 )
     {
         SCOREP_MutexLock( scorep_compiler_region_mutex );
-        uint32_t new_id = scorep_compiler_get_id_from_name( str );
 
-        if ( hash_node = scorep_compiler_hash_get( new_id ) )
+        if ( hash_node = scorep_compiler_hash_get( str ) )
         {
             if ( hash_node->region_handle == SCOREP_INVALID_REGION )
             {
@@ -340,7 +241,6 @@ scorep_compiler_init_adapter()
 
         /* Initialize hash tables */
         scorep_compiler_hash_init();
-        scorep_compiler_init_name_table();
 
         /* call function to calculate symbol table */
         scorep_compiler_get_sym_tab();
@@ -378,7 +278,6 @@ scorep_compiler_finalize()
     {
         /* Delete hash table */
         scorep_compiler_hash_free();
-        scorep_compiler_final_name_table();
 
         /* Set initialization flag */
         scorep_compiler_initialize = 1;

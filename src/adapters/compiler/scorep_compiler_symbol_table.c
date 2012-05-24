@@ -63,12 +63,6 @@
 
 extern char* scorep_compiler_executable;
 
-#ifdef INTEL_COMPILER
-extern void
-scorep_compiler_name_add( const char* name,
-                          int32_t     id );
-
-#endif /* INTEL_COMPILER */
 
 /* ***************************************************************************************
    Demangling declarations
@@ -202,50 +196,7 @@ scorep_compiler_process_symbol( long         addr,
          ( strncmp( funcname, "cube_", 5 ) != 0 ) &&
          ( !SCOREP_Filter_Match( filename, funcname, true ) ) )
     {
-#ifdef INTEL_COMPILER
-        /* Counter for the last assigned region id.
-           When using the Intel VT_ instrumentation, the functions provide a 32 bit storage.
-           Thus, addresses may not fit, thus, we provide an other id as key.
-         */
-        static int32_t region_counter = 1;
-
-        /* ifort constructs function names like <module>_mp_<function>,
-           while __VT_Entry gets something like <module>.<function>
-           => replace _mp_ with a dot. */
-        char* name = SCOREP_CStr_dup( funcname );
-        for ( int i = 1; i + 5 < strlen( name ); i++ )
-        {
-            if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
-            {
-                name[ i ] = '.';
-                for ( int j = i + 1; j <= strlen( name ) - 2; j++ )
-                {
-                    name[ j ] = name[ j + 3 ];
-                }
-                break;
-            }
-        }
-
-        /* icpc appends the signature of the function. Unfortunately,
-           __VT_Entry gives a string without signature.
-           => cut off signature  */
-        for ( int i = 1; i + 1 < strlen( name ); i++ )
-        {
-            if ( name[ i ] == '(' )
-            {
-                name[ i ] = '\0';
-                break;
-            }
-        }
-
-        /* Store new symbol in hash table */
-        scorep_compiler_hash_put( region_counter, name, filename, lno );
-        scorep_compiler_name_add( name, region_counter );
-        region_counter++;
-        free( name );
-#else
         scorep_compiler_hash_put( addr, funcname, filename, lno );
-#endif      /* INTEL_COMPILER */
     }
 }
 
