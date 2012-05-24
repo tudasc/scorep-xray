@@ -1381,7 +1381,7 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
                                              + extension );
 
     invoke_opari( source_file, modified_file );
-    temp_files += " " + modified_file + " " + source_file + ".opari.inc";
+    temp_files += " " + modified_file + " " + remove_path( source_file + ".opari.inc" );
     return modified_file;
 }
 
