@@ -29,10 +29,8 @@ noinst_LTLIBRARIES += libscorep_adapter_compiler.la
 
 libscorep_adapter_compiler_la_SOURCES = \
         $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
-	$(SRC_ROOT)src/adapters/include/SCOREP_Compiler_Init.h \
-	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
-	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c
-
+	$(SRC_ROOT)src/adapters/include/SCOREP_Compiler_Init.h  \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 
 # intel specific settings
 
@@ -57,6 +55,7 @@ endif
 libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
 endif 
 
@@ -64,6 +63,7 @@ endif
 
 if SCOREP_COMPILER_IBM
 libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
 endif
 
@@ -71,6 +71,7 @@ endif
 
 if SCOREP_COMPILER_PGI
 libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
 endif
 
@@ -96,6 +97,7 @@ endif
 libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
 endif
 
@@ -103,6 +105,7 @@ endif
 
 if SCOREP_COMPILER_SX
 libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c   \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
 endif
@@ -111,6 +114,7 @@ endif
 
 if SCOREP_COMPILER_SUN
  libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
 endif
 
