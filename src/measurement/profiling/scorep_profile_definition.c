@@ -209,9 +209,7 @@ scorep_profile_dump_subtree( scorep_profile_node* node,
         "paramater string",
         "parameter integer",
         "thread root",
-        "thread start",
-        "collapse",
-        "task root"
+        "thread start"
     };
 
     if ( node == NULL )
@@ -224,15 +222,10 @@ scorep_profile_dump_subtree( scorep_profile_node* node,
     {
         printf( "| " );
     }
-    printf( "+ type: %s; count: %llu; time: %llu", type_name_map[ node->node_type ], node->count, node->inclusive_time.sum );
+    printf( "+ type: %s", type_name_map[ node->node_type ] );
     if ( node->node_type == scorep_profile_node_regular_region )
     {
-        printf( "  name: %s, metrics: ", SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
-        int i;
-        for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
-        {
-            printf( "%llu, ", node->dense_metrics[ i ].sum );
-        }
+        printf( "  name: %s", SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
     }
     printf( "\n" );
     if ( node->first_child != NULL )

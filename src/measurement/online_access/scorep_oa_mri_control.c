@@ -179,9 +179,6 @@ scorep_oa_mri_return_summary_data
     /** Initialize OA Consumer interface and index Profile data */
     SCOREP_OAConsumer_Initialize( phase_handle );
 
-    SCOREP_OA_CallPathCounterDef* metric_def = ( SCOREP_OA_CallPathCounterDef* )SCOREP_OAConsumer_GetData(
-        COUNTER_DEFINITIONS );
-
     /** Get number of merged regions definitions*/
     int region_defs_size = ( int )SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
     /** Generate merged regions definitions buffer*/
@@ -202,6 +199,7 @@ scorep_oa_mri_return_summary_data
     //printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
     scorep_oa_connection_send_string( connection, "FLAT_PROFILE\n" );
     scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
+
 
     /** Dissmiss the data*/
     SCOREP_OAConsumer_DismissData();
