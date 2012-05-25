@@ -83,7 +83,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
                         echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         $(MAKE) -C $$obj_dir \
-                            PREP="@prefix@/bin/scorep" \
+                            PREP="$$prep" \
                             SUFFIX="$$suffix" \
                             OBJDIR="$$obj_dir" \
                             BINDIR="$(BINDIR)" \
