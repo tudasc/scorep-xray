@@ -293,15 +293,7 @@ main( int    argc,
                 }
                 #endif
 
-                if ( cuda )
-                {
-                    str = "-Xcompiler " + prepare_string( str ) + " ";
-                }
-
-                std::cout << str;
-
             // Append the include directories, too
-
             case ACTION_INCDIR:
                 str += app.str_incdir;
                 if ( cuda )
@@ -397,11 +389,6 @@ main( int    argc,
                     str += "-WF,-qlanglvl=classic ";
                 }
                 #endif
-
-                if ( cuda )
-                {
-                    str = "-Xcompiler " + prepare_string( str ) + " ";
-                }
 
             // Append the include directories, too
             case ACTION_INCDIR:
