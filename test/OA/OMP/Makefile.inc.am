@@ -1,0 +1,34 @@
+if OPENMP_SUPPORTED
+if HAVE_ONLINE_ACCESS
+
+check_PROGRAMS += oa_omp_test
+
+# do not instrument the OPARI2 generated POMP code
+noinst_LTLIBRARIES          += liboa_omp_test_pomp.la
+liboa_omp_test_pomp_la_SOURCES  = $(SRC_ROOT)test/OA/OMP/pomp.c
+liboa_omp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
+
+oa_omp_test_SOURCES  = $(SRC_ROOT)test/OA/OMP/oa_omp_test.mod.c       \
+                    	$(SRC_ROOT)test/OA/OMP/oa_omp_test.c.opari.inc
+oa_omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+oa_omp_test_CPPFLAGS = $(AM_CPPFLAGS) 							\
+						-I$(INC_DIR_OPARI2) 					\
+						@COMPILER_INSTRUMENTATION_CPPFLAGS@ 	\
+						-I$(INC_ROOT)src/adapters/include       \
+    					-I$(INC_ROOT)include/scorep				\
+    					-I$(INC_ROOT)src/measurement/include    \
+    					-I$(PUBLIC_INC_DIR)                     \
+   						-I$(INC_DIR_UTIL)                       \
+   						-DSCOREP_USER_ENABLE
+						
+oa_omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)liboa_omp_test_pomp.la
+
+if HAVE_PAPI
+oa_omp_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+endif
+
+TESTS_OMP += $(srcdir)/../test/OA/OMP/run_oa_omp_test.sh
+EXTRA_DIST       += $(SRC_ROOT)test/OA/OMP/run_oa_omp_test.sh
+
+endif #if HAVE_ONLINE_ACCESS
+endif #if OPENMP_SUPPORTED
