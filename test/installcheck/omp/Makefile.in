@@ -1,5 +1,7 @@
 ## -*- mode: makefile -*-
 
+## @configure_input@
+
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##

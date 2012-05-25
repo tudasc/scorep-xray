@@ -97,11 +97,11 @@ $(CONFIG_HEADER_MPI):
 
 if MPI_SUPPORTED
 if OPENMP_SUPPORTED
-installcheck-local:
+installcheck-local: instrumenter-checks
 	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
 	@$(am__cd) ../test/jacobi/hybrid/C && $(MAKE) $(AM_MAKEFLAGS)
 else
-installcheck-local:
+installcheck-local: instrumenter-checks
 	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
 endif
 else

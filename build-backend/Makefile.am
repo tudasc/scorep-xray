@@ -210,11 +210,11 @@ $(CONFIG_HEADER_BACKEND):
 
 
 if OPENMP_SUPPORTED
-installcheck-local:
+installcheck-local: instrumenter-checks
 	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
 	@$(am__cd) ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)
 else
-installcheck-local:
+installcheck-local: instrumenter-checks
 	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
 endif
 
