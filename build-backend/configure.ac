@@ -194,7 +194,8 @@ AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
 AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/serial/C/Makefile \
                  ../test/jacobi/OpenMP/C/Makefile
-                 ../installcheck/Makefile.common:../test/installcheck/Makefile.common.in
+                 ../installcheck/Makefile.common_rules:../test/installcheck/Makefile.common_rules.in
+                 ../installcheck/Makefile.instrument_configurations:../test/installcheck/Makefile.instrument_configurations.in
                  ../installcheck/serial/Makefile:../test/installcheck/serial/Makefile.in
                  ../installcheck/omp/Makefile:../test/installcheck/omp/Makefile.in])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \

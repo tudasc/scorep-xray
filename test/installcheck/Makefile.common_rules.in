@@ -1,0 +1,66 @@
+## -*- mode: makefile -*-
+
+## @configure_input@
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012, 
+##    RWTH Aachen, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/installcheck/Makefile.common_rules.in
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+all:
+
+#------------------------------------------------------------------------------
+# Common rules to instrument codes using the instrumenter-checks rule
+#------------------------------------------------------------------------------
+
+EXE = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANG)$(SUFFIX)
+
+all:
+
+$(CODE): $(EXE)
+
+$(BINDIR)/$(CODE)-$(PARADIGM)-cc$(SUFFIX): $(OBJECTS)
+	$(PREP) $(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LIBS)
+
+$(BINDIR)/$(CODE)-$(PARADIGM)-cxx$(SUFFIX): $(OBJECTS)
+	$(PREP) $(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBS)
+
+$(BINDIR)/$(CODE)-$(PARADIGM)-f77$(SUFFIX): $(OBJECTS)
+	$(PREP) $(F77) $(F77FLAGS) -o $@ $(OBJECTS) $(LIBS)
+
+$(BINDIR)/$(CODE)-$(PARADIGM)-fc$(SUFFIX): $(OBJECTS)
+	$(PREP) $(FC) $(FCFLAGS) -o $@ $(OBJECTS) $(LIBS)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(PREP) $(CC) $(CFLAGS) -o $@ -c $< 
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(PREP) $(CXX) $(CXXFLAGS) -o $@ -c $<
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.f77
+	$(PREP) $(F77) $(F77FLAGS) -o $@ -c $<
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.f90
+	$(PREP) $(FC) $(FCFLAGS) -o $@ -c $<
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.F90
+	$(PREP) $(FC) $(FCFLAGS) -o $@ -c $<
+
+clean:
+	rm -f $(EXE) $(OBJECTS)
+
+.PHONY: $(CODE) clean
+

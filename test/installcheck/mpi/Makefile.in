@@ -35,4 +35,4 @@ PARADIGM   = mpi
 CODES      = jacobi
 LANGUAGES  = cc cxx fc
 
-include  @abs_top_builddir@/../installcheck/Makefile.common
+include  @abs_top_builddir@/../installcheck/Makefile.instrument_configurations
