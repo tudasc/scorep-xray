@@ -275,21 +275,29 @@ main( int    argc,
                     if ( fortran )
                     {
                        #ifdef SCOREP_COMPILER_IBM
-                        str += " -WF,-DSCOREP_USER_ENABLE ";
+                        str += "-WF,-DSCOREP_USER_ENABLE ";
                        #else
-                        str += " -DSCOREP_USER_ENABLE ";
+                        str += "-DSCOREP_USER_ENABLE ";
                        #endif // SCOREP_COMPILER_IBM
                     }
                     else
                     {
-                        str += " -DSCOREP_USER_ENABLE ";
+                        str += "-DSCOREP_USER_ENABLE ";
                     }
                 }
 
+                #ifdef SCOREP_COMPILER_IBM
+                if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
+                {
+                    str += "-WF,-qlanglvl=classic ";
+                }
+                #endif
+
                 if ( cuda )
                 {
-                    str = " -Xcompiler " + prepare_string( str );
+                    str = "-Xcompiler " + prepare_string( str ) + " ";
                 }
+
                 std::cout << str;
 
             // Append the include directories, too
@@ -372,23 +380,30 @@ main( int    argc,
                     if ( fortran )
                     {
                        #ifdef SCOREP_COMPILER_IBM
-                        str += " -WF,-DSCOREP_USER_ENABLE ";
+                        str += "-WF,-DSCOREP_USER_ENABLE ";
                        #else
-                        str += " -DSCOREP_USER_ENABLE ";
+                        str += "-DSCOREP_USER_ENABLE ";
                        #endif // SCOREP_COMPILER_IBM
                     }
                     else
                     {
-                        str += " -DSCOREP_USER_ENABLE ";
+                        str += "-DSCOREP_USER_ENABLE ";
                     }
                 }
 
+                #ifdef SCOREP_COMPILER_IBM
+                if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
+                {
+                    str += "-WF,-qlanglvl=classic ";
+                }
+                #endif
+
                 if ( cuda )
                 {
-                    str = " -Xcompiler " + prepare_string( str );
+                    str = "-Xcompiler " + prepare_string( str ) + " ";
                 }
-            // Append the include directories, too
 
+            // Append the include directories, too
             case ACTION_INCDIR:
                 str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
 

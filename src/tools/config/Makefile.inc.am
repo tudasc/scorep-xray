@@ -32,6 +32,38 @@ scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
                          -I$(INC_ROOT)src/tools/config \
                          -I../build-backend
 
+if HAVE_PDT
+scorep_config_CPPFLAGS += -DHAVE_PDT=1
+endif
+
+if SCOREP_COMPILER_INTEL
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_INTEL=1
+endif
+
+if SCOREP_COMPILER_SUN
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_SUN=1
+endif
+
+if SCOREP_COMPILER_IBM
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_IBM=1
+endif
+
+if SCOREP_COMPILER_PGI
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
+endif
+
+if SCOREP_COMPILER_GNU
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_GNU=1
+endif
+
+if SCOREP_COMPILER_SX
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_SX=1
+endif
+
+if SCOREP_COMPILER_CRAY
+scorep_config_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
+endif
+
 scorep_config_LDADD = $(LIB_DIR_UTIL)libscorep_parser_tools.la \
 		    $(LIB_DIR_UTIL)libscorep_utilities.la
 
