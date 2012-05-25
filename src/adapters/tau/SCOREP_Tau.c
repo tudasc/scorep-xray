@@ -219,8 +219,15 @@ SCOREP_Tau_TriggerMetricDouble
 {
     SCOREP_User_TriggerMetricDouble( ( SCOREP_SamplingSetHandle )metricHandle, value );
 }
-
-
+void
+SCOREP_Tau_Parameter_INT64(
+    SCOREP_Tau_ParamHandle* paramHandle,
+    const char*             name,
+    int64_t                 value
+    )
+{
+    SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )paramHandle, name, value );
+}
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
 /** @} */

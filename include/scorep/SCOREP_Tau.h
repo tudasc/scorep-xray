@@ -275,6 +275,7 @@ SCOREP_Tau_RegisterExitCallback(
 #define SCOREP_Tau_MetricHandle            SCOREP_SamplingSetHandle
 #define SCOREP_TAU_INIT_METRIC_HANDLE   SCOREP_INVALID_SAMPLING_SET
 
+
 void
 SCOREP_Tau_Metric
 (
@@ -304,6 +305,19 @@ SCOREP_Tau_TriggerMetricDouble
     SCOREP_Tau_MetricHandle metricHandle,
     double                  value
 );
+
+#define SCOREP_Tau_ParamHandle           SCOREP_User_ParameterHandle
+#define SCOREP_TAU_INIT_PARAM_HANDLE           SCOREP_USER_INVALID_PARAMETER
+void
+SCOREP_Tau_Parameter_INT64(
+    SCOREP_Tau_ParamHandle* paramHandle,
+    const char*             name,
+    int64_t                 value
+    );
+
+//#define SCOREP_TAU_STATIC_PHASE   SCOREP_USER_REGION_TYPE_PHASE
+//#define SCOREP_TAU_DYNAMIC_PHASE  SCOREP_USER_REGION_TYPE_DYNAMIC
+
 
 #ifdef __cplusplus
 } /* extern C */
