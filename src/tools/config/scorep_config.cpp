@@ -268,7 +268,7 @@ main( int    argc,
             case ACTION_CFLAGS:
                 if ( compiler )
                 {
-                    str += app.str_flags;
+                    str += "-g " + app.str_flags;
                 }
                 if ( user )
                 {
@@ -365,7 +365,7 @@ main( int    argc,
             case ACTION_CFLAGS:
                 if ( compiler )
                 {
-                    str += SCOREP_CFLAGS;
+                    str += "-g " SCOREP_CFLAGS;
                 }
                 if ( user )
                 {

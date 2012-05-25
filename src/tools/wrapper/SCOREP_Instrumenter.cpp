@@ -95,14 +95,14 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     is_compiling = true; // Opposite recognized if no source files in input
     is_linking   = true; // Opposite recognized on existence of -c flag
 
-    scorep_include_path = "";
-    scorep_libs         = "";
-    pdt_bin_path        = PDT;
-    pdt_config_file     = PDT_CONFIG;
-    input_file_number   = 0;
-    define_flags        = "";
-    include_flags       = "";
-    temp_files          = "";
+    scorep_flags      = "";
+    scorep_libs       = "";
+    pdt_bin_path      = PDT;
+    pdt_config_file   = PDT_CONFIG;
+    input_file_number = 0;
+    define_flags      = "";
+    include_flags     = "";
+    temp_files        = "";
 
     compiler_instrumentation_flags = SCOREP_CFLAGS;
     c_compiler                     = SCOREP_CC;
@@ -146,10 +146,6 @@ SCOREP_Instrumenter::Run()
        find the initialzation routines, compiling and linking must be splitted
        if Opari or PDT instrumentation is used.
      */
-    if ( user_instrumentation == enabled )
-    {
-        prepare_user();
-    }
     if ( compiler_instrumentation == enabled )
     {
         prepare_compiler();
@@ -1162,12 +1158,22 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
         mode += " --cuda";
     }
 
+    if ( compiler_instrumentation == disabled )
+    {
+        mode += " --nocompiler";
+    }
+
+    if ( user_instrumentation == enabled )
+    {
+        mode += " --user";
+    }
+
     // Generate calls
-    scorep_include_path = "`" + scorep_config + mode + " --inc` ";
-    scorep_libs         = "`" + scorep_config + mode + " --libs` ";
+    scorep_flags = "`" + scorep_config + mode + " --cflags` ";
+    scorep_libs  = "`" + scorep_config + mode + " --libs` ";
     if ( opari_instrumentation == enabled )
     {
-        scorep_include_path += "`" + opari_config + " --cflags` ";
+        scorep_flags += "`" + opari_config + " --cflags` ";
     }
 
     // Handle manual -lmpi flag
@@ -1180,24 +1186,9 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
 void
 SCOREP_Instrumenter::prepare_compiler()
 {
-    if ( is_cuda_application == enabled )
-    {
-        std::string str     = "-g " + compiler_instrumentation_flags;
-        std::string pattern = " ";
-        std::string replace = ",";
-        str             = remove_multiple_whitespaces( str );
-        str             = replace_all( pattern, replace, str );
-        compiler_flags += " -Xcompiler " + str;
-    }
-    else
-    {
-        // Add debug flag
-        compiler_flags += " -g " + compiler_instrumentation_flags;
-    }
-
     /* The sun compiler can only instrument Fortran files. Thus, any C/C++ files
        are not instrumented. To avoid user confusion, the instrumneter aborts in
-       case a C/C++ file should be compiler instumented.
+       case a C/C++ file should be compiler instrumented.
      */
 #ifdef SCOREP_COMPILER_SUN
     if ( is_compiling )
@@ -1227,20 +1218,6 @@ SCOREP_Instrumenter::prepare_compiler()
         }
     }
 #endif // SCOREP_COMPILER_SUN
-}
-
-void
-SCOREP_Instrumenter::prepare_user()
-{
-    #ifdef SCOREP_COMPILER_IBM
-    if ( language == fortran_language )
-    {
-        define_flags += " -WF,-DSCOREP_USER_ENABLE=1";
-        return;
-    }
-    #endif // SCOREP_COMPILER_IBM
-
-    define_flags += " -DSCOREP_USER_ENABLE=1";
 }
 
 void
@@ -1341,7 +1318,7 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
 
     /* Construct command */
     std::string command = compiler_name + " "
-                          + scorep_include_path
+                          + scorep_flags
                           + " -c " + input_file
                           + compiler_flags + define_flags
                           + " -o " + output_file;
@@ -1422,7 +1399,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     {
         command = pdt_bin_path + "/cxxparse " + source_file;
     }
-    command += define_flags + include_flags + " " + scorep_include_path;
+    command += define_flags + include_flags + " " + scorep_flags;
 
     if ( is_mpi_application == enabled )
     {

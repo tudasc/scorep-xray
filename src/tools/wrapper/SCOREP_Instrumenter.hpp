@@ -273,13 +273,6 @@ private:
     prepare_compiler();
 
     /**
-       Performs necessary modifications to the command for enabling
-       manual user instrumentation.
-     */
-    void
-    prepare_user();
-
-    /**
        Instruments @a source_file with the Tau instrumentor.
        @param source_file File name of the source file, that is instrumented.
        @returns the file name of the instrumented source file.
@@ -537,7 +530,7 @@ private:
     std::string compiler_name;
 
     /**
-       all compiler/linker flags, includeing the include path flags and defines.
+       all compiler/linker flags, except defines.
      */
     std::string compiler_flags;
 
@@ -593,9 +586,9 @@ private:
     std::string openmp_cflags;
 
     /**
-       Stores include path of SCOREP header files
+       Stores additional Score-P flags
      */
-    std::string scorep_include_path;
+    std::string scorep_flags;
 
     /**
        Stores SCOREP library linking flags
