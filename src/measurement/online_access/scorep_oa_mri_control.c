@@ -48,9 +48,9 @@
 
 static scorep_oa_mri_app_control_type appl_control = SCOREP_OA_MRI_STATUS_UNDEFINED;
 
-static int32_t                        scorep_phase_fileid, scorep_phase_rfl;
+static int32_t scorep_phase_fileid, scorep_phase_rfl;
 
-static SCOREP_RegionHandle            phase_handle = SCOREP_INVALID_REGION;
+static SCOREP_RegionHandle phase_handle = SCOREP_INVALID_REGION;
 
 typedef struct Measurement
 {
@@ -179,8 +179,11 @@ scorep_oa_mri_return_summary_data
     /** Initialize OA Consumer interface and index Profile data */
     SCOREP_OAConsumer_Initialize( phase_handle );
 
+    SCOREP_OA_CallPathCounterDef* metric_def = ( SCOREP_OA_CallPathCounterDef* )SCOREP_OAConsumer_GetData(
+        COUNTER_DEFINITIONS );
+
     /** Get number of merged regions definitions*/
-    int                          region_defs_size = ( int )SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
+    int region_defs_size = ( int )SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
     /** Generate merged regions definitions buffer*/
     SCOREP_OA_CallPathRegionDef* region_defs = ( SCOREP_OA_CallPathRegionDef* )SCOREP_OAConsumer_GetData(
         MERGED_REGION_DEFINITIONS );
@@ -191,7 +194,7 @@ scorep_oa_mri_return_summary_data
     scorep_oa_connection_send_data( connection, region_defs, region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
 
     /** Get number of static profile records*/
-    int                               static_profile_size = ( int )SCOREP_OAConsumer_GetDataSize( FLAT_PROFILE );
+    int static_profile_size = ( int )SCOREP_OAConsumer_GetDataSize( FLAT_PROFILE );
     /** Get static profile buffer*/
     SCOREP_OA_FlatProfileMeasurement* static_profile = ( SCOREP_OA_FlatProfileMeasurement* )SCOREP_OAConsumer_GetData(
         FLAT_PROFILE );
@@ -199,7 +202,6 @@ scorep_oa_mri_return_summary_data
     //printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
     scorep_oa_connection_send_string( connection, "FLAT_PROFILE\n" );
     scorep_oa_connection_send_data( connection, static_profile, static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
-
 
     /** Dissmiss the data*/
     SCOREP_OAConsumer_DismissData();
@@ -227,7 +229,7 @@ scorep_oa_mri_parse
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     SCOREP_Error_Code return_status = SCOREP_SUCCESS;
 
-    YY_BUFFER_STATE   my_string_buffer;
+    YY_BUFFER_STATE my_string_buffer;
 
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
     my_string_buffer = yy_scan_string( buffer );
