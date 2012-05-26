@@ -103,6 +103,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter()
     define_flags      = "";
     include_flags     = "";
     temp_files        = "";
+    scorep_bin        = "";
 
     compiler_instrumentation_flags = SCOREP_CFLAGS;
     c_compiler                     = SCOREP_CC;
@@ -138,14 +139,8 @@ SCOREP_Instrumenter::Run()
         PrintParameter();
     }
 
-    /* First user and compiler instrumentation,  because we want to have
-       the user instrumentation effects already present when we compile
-       opari instrumented sources in the preparation step. The sources
-       are already compiled in the preparation step if compiling and
-       linking was done by the same user command. Because we must
-       find the initialzation routines, compiling and linking must be splitted
-       if Opari or PDT instrumentation is used.
-     */
+    /* Because the sun compiler can only instrument Fortran files, check
+       whether all source files can be instrumented */
     if ( compiler_instrumentation == enabled )
     {
         prepare_compiler();
@@ -214,6 +209,10 @@ SCOREP_Instrumenter::Run()
                         object_file = get_basename(
                             SCOREP_IO_GetWithoutPath( current_file.c_str() ) ) + ".o";
                     }
+                    /* Setup the config tool calls for the new input file. This will already
+                       setup the compiler and user instrumentation if desired
+                     */
+                    prepare_config_tool_calls( current_file );
 
                     /* If we create modified source, we must add the original source
                        directory to the include dirs, because local files may be
@@ -361,7 +360,7 @@ SCOREP_Instrumenter::ParseCmdLine( int    argc,
     }
 
     check_parameter();
-    prepare_config_tool_calls( argv[ 0 ] );
+    scorep_bin = argv[ 0 ];
 
     return ret_val;
 }
@@ -1122,12 +1121,12 @@ SCOREP_Instrumenter::clean_temp_files()
    Compilation
 ******************************************************************************/
 void
-SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
+SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
 {
     std::string mode = " --seq";
     if ( scorep_config == "" )
     {
-        char* path = SCOREP_GetExecutablePath( arg.c_str() );
+        char* path = SCOREP_GetExecutablePath( scorep_bin.c_str() );
 
         // Determine config tool path
         if ( path != NULL )
@@ -1166,6 +1165,11 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string arg )
     if ( user_instrumentation == enabled )
     {
         mode += " --user";
+    }
+
+    if ( is_fortran_file( input_file ) )
+    {
+        mode += " --fortran";
     }
 
     // Generate calls

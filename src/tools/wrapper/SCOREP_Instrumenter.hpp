@@ -298,10 +298,10 @@ private:
 
     /**
        Constructs calls to the config tools.
-       @param arg Needs argv[0] as input.
+       @param input_file The input file for which the calls are generated.
      */
     void
-    prepare_config_tool_calls( std::string arg );
+    prepare_config_tool_calls( std::string input_file );
 
     /**
        Tries to open a configuration file for instrumentation.
@@ -571,6 +571,11 @@ private:
        True, if -lmpi was specified.
      */
     bool lmpi_set;
+
+    /**
+         The argv[0] value , to get the own binary
+     */
+    std::string scorep_bin;
 
     /* --------------------------------------------
        Config file data
