@@ -119,7 +119,11 @@ main( int   argc,
     {
         SCOREP_Instrumenter app;
         app.ParseCmdLine( argc, argv );
-        return app.Run();
+        if ( app.Run() == EXIT_SUCCESS )
+        {
+            return EXIT_SUCCESS;
+        }
+        return EXIT_FAILURE;
     }
     else
     {
