@@ -29,7 +29,6 @@
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
-#include <scorep_utility/SCOREP_Utils.h>
 
 #include <scorep_compiler_data.h>
 

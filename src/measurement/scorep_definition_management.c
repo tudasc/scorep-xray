@@ -42,7 +42,6 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include <scorep_utility/SCOREP_Debug.h>
 #include "scorep_mpi.h"
 #include "scorep_status.h"
 #include <jenkins_hash.h>

@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <mpi.h>
 
-#include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Mpi.h>
@@ -42,18 +41,18 @@
 #include "scorep_mpiprofile.h"
 
 
-static int64_t      lateThreshold;
-int                 myrank;
-static int          numprocs;
-static int          mpiprofiling_initialized = 0;
-static int          metrics_initialized      = 0;
+static int64_t lateThreshold;
+int            myrank;
+static int     numprocs;
+static int     mpiprofiling_initialized = 0;
+static int     metrics_initialized      = 0;
 
-static void*        mpi_profiling_remote_time_packs;
-static void*        mpi_profiling_local_time_pack;
-static void*        mpi_profiling_remote_time_pack;
-static int          remote_time_packs_in_use = 0;
-static int          local_time_pack_in_use   = 0;
-static int          remote_time_pack_in_use  = 0;
+static void* mpi_profiling_remote_time_packs;
+static void* mpi_profiling_local_time_pack;
+static void* mpi_profiling_remote_time_pack;
+static int   remote_time_packs_in_use = 0;
+static int   local_time_pack_in_use   = 0;
+static int   remote_time_pack_in_use  = 0;
 
 static void**       send_timepack_pool = 0;
 static MPI_Request* timepack_requests  = 0;

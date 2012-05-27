@@ -31,7 +31,6 @@
 #include <stdio.h>
 
 
-#include <scorep_utility/SCOREP_Error.h>
 #include <scorep_utility/SCOREP_Debug.h>
 
 

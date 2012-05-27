@@ -28,7 +28,6 @@
 #include <stddef.h>
 
 #include "SCOREP_Memory.h"
-#include "scorep_utility/SCOREP_Utils.h"
 
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"

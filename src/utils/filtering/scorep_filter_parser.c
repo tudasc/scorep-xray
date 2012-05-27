@@ -26,9 +26,14 @@
 
 #include <config.h>
 
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_IO.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
+
+#include <stdio.h>
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* **************************************************************************************
    Variable and type definitions

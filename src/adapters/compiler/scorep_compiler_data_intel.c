@@ -28,7 +28,8 @@
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep_utility/SCOREP_Hashtab.h>
 
 #include <scorep_compiler_data_intel.h>
 

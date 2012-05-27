@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Error.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_thread.h>
 #include <scorep_profile_definition.h>

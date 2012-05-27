@@ -45,6 +45,8 @@
 #include <config.h>
 #include "SCOREP_Fmpi.h"
 
+#include <scorep_utility/SCOREP_Error.h>
+
 /* uppercase defines */
 /** @def MPI_Close_port_U
     Exchange MPI_Close_port_U by MPI_CLOSE_PORT.

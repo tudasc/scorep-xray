@@ -29,7 +29,6 @@
 #include <config.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Compiler_Init.h>
-#include <scorep_utility/SCOREP_Utils.h>
 
 SCOREP_Error_Code
 scorep_compiler_init_adapter()

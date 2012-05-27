@@ -45,6 +45,8 @@
 #include <config.h>
 #include "SCOREP_Fmpi.h"
 
+#include <scorep_utility/SCOREP_Debug.h>
+
 /* uppercase defines */
 /** @def MPI_Address_U
     Exchange MPI_Address_U by MPI_ADDRESS.

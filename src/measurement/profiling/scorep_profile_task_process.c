@@ -30,7 +30,6 @@
 
 #include <config.h>
 
-#include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Definitions.h>
 
 #include <scorep_profile_definition.h>

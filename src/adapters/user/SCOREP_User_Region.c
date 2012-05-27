@@ -31,8 +31,12 @@
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Filter.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Hashtab.h>
+#include <scorep_utility/SCOREP_CStr.h>
+#include <scorep_utility/SCOREP_IO.h>
 #include "scorep_selective_region.h"
+
+#include <stdlib.h>
 
 #define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 

@@ -50,7 +50,6 @@
 #endif /* HAVE_LIBBFD / HAVE_NM */
 
 #include <SCOREP_Types.h>
-#include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>

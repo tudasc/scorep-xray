@@ -29,8 +29,8 @@
  */
 
 
-#include "scorep_utility/SCOREP_Utils.h"
-
+#include <stdlib.h>
+#include <stdint.h>
 #include <scorep_oa_registry_protocol.h>
 
 #define BUFSIZE 512

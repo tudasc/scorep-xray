@@ -30,10 +30,6 @@
 
 #include <stdint.h>
 
-
-#include <scorep_utility/SCOREP_Allocator.h>
-
-
 #include <scorep/SCOREP_PublicTypes.h>
 
 

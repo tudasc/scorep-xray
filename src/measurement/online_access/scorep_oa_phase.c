@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "SCOREP_Types.h"
 

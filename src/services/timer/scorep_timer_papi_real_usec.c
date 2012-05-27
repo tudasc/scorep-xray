@@ -28,7 +28,7 @@
 
 #include <config.h>
 #include "SCOREP_Timing.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <scorep_utility/SCOREP_Error.h>
 
 #include <assert.h>
 #include <stdbool.h>

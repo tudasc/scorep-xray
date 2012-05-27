@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "scorep_utility/SCOREP_Utils.h"
+#include <scorep_utility/SCOREP_Error.h>
 
 #define MMTIMER_FULLNAME "/dev/mmtimer"
 

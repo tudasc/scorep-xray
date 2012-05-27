@@ -24,7 +24,6 @@
 
 #include <config.h>
 
-#include "scorep_utility/SCOREP_Utils.h"
 #include "scorep_oa_connection.h"
 #include "scorep_oa_sockets.h"
 

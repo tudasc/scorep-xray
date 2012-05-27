@@ -29,7 +29,6 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Types.h>
-#include <scorep_utility/SCOREP_Utils.h>
 
 #define SCOREP_PARAMETER_TO_USER( handle ) ( ( uint64_t )( handle ) )
 #define SCOREP_PARAMETER_FROM_USER( handle ) ( ( SCOREP_ParameterHandle )( handle ) )

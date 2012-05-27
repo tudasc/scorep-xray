@@ -25,7 +25,10 @@
 
 #include <config.h>
 
+#include <stdlib.h>
 #include <string.h>
+
+#include <scorep_utility/SCOREP_IO.h>
 
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>

@@ -26,11 +26,11 @@
 
 #include <config.h>
 #include <stddef.h>
+#include <assert.h>
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Utils.h>
 
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>

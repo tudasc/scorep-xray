@@ -26,7 +26,6 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Mutex.h>
 #include "scorep_thread.h"
 #include "scorep_status.h"

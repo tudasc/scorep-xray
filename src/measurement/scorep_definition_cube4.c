@@ -25,6 +25,7 @@
 
 #include <config.h>
 #include <inttypes.h>
+#include <assert.h>
 #include "scorep_definition_cube4.h"
 
 #include <SCOREP_Memory.h>
@@ -33,6 +34,9 @@
 #include "scorep_types.h"
 #include "scorep_definitions.h"
 #include <cubew_services.h>
+
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep_utility/SCOREP_Error.h>
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;

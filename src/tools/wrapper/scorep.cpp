@@ -23,8 +23,8 @@
 #include <config.h>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
-#include <scorep_utility/SCOREP_Utils.h>
 #include "SCOREP_Instrumenter.hpp"
 #include "SCOREP_Measurement.hpp"
 

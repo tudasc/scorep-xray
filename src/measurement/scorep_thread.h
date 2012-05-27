@@ -29,7 +29,6 @@
  */
 
 
-#include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Location.h>

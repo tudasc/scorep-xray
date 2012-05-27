@@ -26,10 +26,14 @@
 #include <config.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
 #include <sys/stat.h>
 
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep_utility/SCOREP_Error.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 

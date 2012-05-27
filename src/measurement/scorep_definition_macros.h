@@ -25,7 +25,6 @@
  */
 
 
-#include <scorep_utility/SCOREP_Allocator.h>
 #include <SCOREP_Memory.h>
 #include <stdint.h>
 

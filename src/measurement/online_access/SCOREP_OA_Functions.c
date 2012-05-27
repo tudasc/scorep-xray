@@ -29,7 +29,7 @@
 #include "SCOREP_OA_Functions.h"
 #include "SCOREP_OA_Init.h"
 #include "SCOREP_Types.h"
-#include "scorep_utility/SCOREP_Utils.h"
+#include <scorep_utility/SCOREP_Debug.h>
 
 #include "scorep_oa_phase.h"
 #include "scorep_status.h"

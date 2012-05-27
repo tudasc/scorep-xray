@@ -25,9 +25,11 @@
 #include <config.h>
 
 #include <scorep_selective_region.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Error.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_RuntimeManagement.h>
+
+#include <assert.h>
 
 SCOREP_User_RegionHandle
 scorep_user_create_region( const char* name )

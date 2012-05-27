@@ -28,13 +28,13 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "SCOREP_Types.h"
 #include <SCOREP_Location.h>
 #include "SCOREP_Config.h"
-#include "scorep_utility/SCOREP_Error.h"
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Debug.h>
 
 /**
    Contains the name of the executable.

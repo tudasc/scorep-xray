@@ -28,7 +28,7 @@
 #include <config.h>
 
 #include "SCOREP_MPIHooks.h"
-#include "scorep_utility/SCOREP_Debug.h"
+#include <scorep_utility/SCOREP_Debug.h>
 #include "scorep_mpiprofile.h"
 
 #include <stdlib.h>
@@ -1004,7 +1004,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete
         if ( global_source != MPI_PROC_NULL )
         {
             /* Get buffer for receiving remote timepack */
-            void*      remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
+            void* remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
 
             MPI_Status s;
             /* Receive remote timepack */
@@ -1103,9 +1103,9 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
         if ( global_source != MPI_PROC_NULL )
         {
             /* Get buffer initialized with local timepack */
-            void*      localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
+            void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
             /* Get buffer for receiving remote timepack */
-            void*      remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
+            void* remoteTimePack = scorep_mpiprofile_get_remote_time_pack();
 
             MPI_Status s;
             /* Receive remote timepack */

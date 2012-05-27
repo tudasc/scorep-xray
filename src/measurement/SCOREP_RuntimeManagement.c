@@ -39,7 +39,6 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include <scorep_utility/SCOREP_Error.h>
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>

@@ -30,9 +30,6 @@
 #include <stdbool.h>
 
 
-#include <scorep_utility/SCOREP_Error.h>
-
-
 SCOREP_Error_Code
 SCOREP_Tracing_Register( void );
 

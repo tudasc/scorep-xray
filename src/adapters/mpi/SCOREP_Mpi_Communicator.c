@@ -28,10 +28,10 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <assert.h>
 
 #include "SCOREP_Mpi.h"
 #include "SCOREP_Mpi_Communicator.h"
-#include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>

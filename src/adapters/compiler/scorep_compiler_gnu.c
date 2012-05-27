@@ -31,7 +31,6 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Location.h>
-#include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>

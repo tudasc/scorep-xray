@@ -27,7 +27,6 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
 
-#include "scorep_utility/SCOREP_Utils.h"
 #include "SCOREP_Types.h"
 #include "SCOREP_OA_Init.h"
 

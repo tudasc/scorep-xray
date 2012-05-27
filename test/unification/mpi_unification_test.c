@@ -36,8 +36,6 @@
 
 #include <mpi.h>
 
-#include <scorep_utility/SCOREP_Error_Codes.h>
-
 #include <SCOREP_Types.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Memory.h>

@@ -30,7 +30,7 @@
 #include "SCOREP_Config.h"
 #include "SCOREP_Definitions.h"
 
-#include "scorep_utility/SCOREP_Utils.h"
+#include <scorep_utility/SCOREP_IO.h>
 #include "scorep_profile_definition.h"
 #include "scorep_profile_location.h"
 #include "scorep_profile_node.h"
@@ -41,7 +41,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
-
+#include <stdlib.h>
 
 typedef struct
 {

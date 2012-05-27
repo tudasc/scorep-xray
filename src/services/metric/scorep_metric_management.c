@@ -25,6 +25,8 @@
 
 #include <config.h>
 
+#include <SCOREP_Metric_Management.h>
+
 #include <stdlib.h>
 #include <assert.h>
 
@@ -38,8 +40,6 @@
 #include "SCOREP_Metric_Source.h"
 /* Include to write definitions */
 #include "SCOREP_Definitions.h"
-
-#include <SCOREP_Location.h>
 
 /* Include header files of supported metric sources */
 #if HAVE( PAPI )

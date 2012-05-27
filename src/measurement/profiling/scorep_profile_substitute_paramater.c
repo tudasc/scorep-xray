@@ -29,8 +29,10 @@
 
 #include <config.h>
 #include <inttypes.h>
+#include <string.h>
+#include <stdlib.h>
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
 

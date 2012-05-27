@@ -17,6 +17,8 @@
 #include <config.h>
 #include "SCOREP_Measurement.hpp"
 
+#include <stdlib.h>
+
 /**
  * @status alpha
  * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>

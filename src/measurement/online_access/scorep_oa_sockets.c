@@ -25,7 +25,9 @@
 
 #include <config.h>
 
-#include "scorep_utility/SCOREP_Utils.h"
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep_utility/SCOREP_CStr.h>
+#include <scorep_utility/SCOREP_IO.h>
 #include "scorep_oa_sockets.h"
 
 
@@ -41,7 +43,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
+#include <errno.h>
 
 static int   read_cnt;
 static char* read_ptr;
@@ -608,7 +610,7 @@ scorep_oa_sockets_server_accept_client
     int sock
 )
 {
-    int                newsock;
+    int newsock;
 
     struct sockaddr_in client_addr;       /* client's address information */
 

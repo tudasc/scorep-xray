@@ -26,7 +26,6 @@
 
 #include <config.h>
 #include <SCOREP_Profile_Tasking.h>
-#include <scorep_utility/SCOREP_Utils.h>
 #include <scorep_thread.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_profile_definition.h>
@@ -34,6 +33,7 @@
 #include <scorep_profile_task_table.h>
 #include <scorep_profile_event_base.h>
 #include <inttypes.h>
+#include <assert.h>
 
 /* **************************************************************************************
    Local helper functions

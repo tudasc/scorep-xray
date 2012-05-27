@@ -14,16 +14,6 @@
  *
  */
 
-#include <config.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <strings.h>
-#include <ctype.h>
-#include <inttypes.h>
-
-
 /**
  * @file        SCOREP_Config.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
@@ -34,12 +24,22 @@
  *
  */
 
+#include <config.h>
 
-#include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Config.h>
 
-#include <scorep_utility/SCOREP_Utils.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <strings.h>
+#include <ctype.h>
+#include <inttypes.h>
+#include <assert.h>
 
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep_utility/SCOREP_Hashtab.h>
+#include <scorep_utility/SCOREP_CStr.h>
 #include "scorep_types.h"
 
 static SCOREP_Hashtab* scorep_config_name_spaces = NULL;
@@ -348,8 +348,8 @@ SCOREP_ConfigApplyEnv( void )
     {
         struct scorep_config_name_space* name_space = name_space_entry->value;
 
-        SCOREP_Hashtab_Iterator*         variable_iter;
-        SCOREP_Hashtab_Entry*            variable_entry;
+        SCOREP_Hashtab_Iterator* variable_iter;
+        SCOREP_Hashtab_Entry*    variable_entry;
 
         variable_iter = SCOREP_Hashtab_IteratorCreate( name_space->variables );
         for ( variable_entry = SCOREP_Hashtab_IteratorFirst( variable_iter );
@@ -358,7 +358,7 @@ SCOREP_ConfigApplyEnv( void )
         {
             struct scorep_config_variable* variable = variable_entry->value;
 
-            const char*                    environment_variable_value =
+            const char* environment_variable_value =
                 getenv( variable->env_var_name );
             if ( environment_variable_value )
             {
@@ -417,8 +417,8 @@ SCOREP_ConfigDump( FILE* dumpFile )
     {
         struct scorep_config_name_space* name_space = name_space_entry->value;
 
-        SCOREP_Hashtab_Iterator*         variable_iter;
-        SCOREP_Hashtab_Entry*            variable_entry;
+        SCOREP_Hashtab_Iterator* variable_iter;
+        SCOREP_Hashtab_Entry*    variable_entry;
 
         variable_iter = SCOREP_Hashtab_IteratorCreate( name_space->variables );
         for ( variable_entry = SCOREP_Hashtab_IteratorFirst( variable_iter );
@@ -1012,9 +1012,9 @@ parse_bitset( const char*                 value,
 static inline char*
 single_quote_string( const char* str )
 {
-    size_t      length = strlen( str );
+    size_t length = strlen( str );
     /* original length plus two ' */
-    size_t      new_length = length + 2;
+    size_t new_length = length + 2;
 
     const char* string_it = str;
     while ( *string_it )

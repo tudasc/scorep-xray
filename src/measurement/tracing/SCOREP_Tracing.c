@@ -37,7 +37,6 @@
 #include <otf2/otf2.h>
 
 
-#include <scorep_utility/SCOREP_Error.h>
 #include <scorep_utility/SCOREP_Debug.h>
 
 

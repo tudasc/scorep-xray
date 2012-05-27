@@ -33,7 +33,6 @@
 
 #include <scorep_definitions.h>
 #include <scorep_definition_structs.h>
-#include <scorep_utility/SCOREP_Allocator.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */

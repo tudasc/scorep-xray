@@ -30,10 +30,10 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
-#include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Fortran_Wrapper.h>
 
 #include <string.h>
+#include <stdlib.h>
 
 #define SCOREP_F_ParameterInt64_U SCOREP_F_PARAMETERINT64
 #define SCOREP_F_ParameterUint64_U SCOREP_F_PARAMETERUINT64

@@ -30,8 +30,10 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Types.h>
-#include <scorep_utility/SCOREP_Utils.h>
 #include <SCOREP_Fortran_Wrapper.h>
+
+#include <stdlib.h>
+#include <string.h>
 
 #define SCOREP_F_InitMetric_L      scorep_f_initmetric
 #define SCOREP_F_InitMetric_U      SCOREP_F_INITMETRIC

@@ -34,7 +34,6 @@
 #include "scorep_oa_mri_control.h"
 #include "scorep_oa_connection.h"
 #include "SCOREP_OA_Init.h"
-#include "scorep_utility/SCOREP_Utils.h"
 #include <stdio.h>
 
 void yyerror(char *s);

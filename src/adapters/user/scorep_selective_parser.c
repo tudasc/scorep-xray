@@ -32,7 +32,9 @@
 //#include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <scorep_utility/SCOREP_Utils.h>
+#include <scorep_utility/SCOREP_CStr.h>
+#include <scorep_utility/SCOREP_Debug.h>
+#include <scorep_utility/SCOREP_IO.h>
 #include <scorep_selective_region.h>
 
 
