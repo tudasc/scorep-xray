@@ -99,4 +99,18 @@ AC_SCOREP_DEBUG_OPTION
 AC_SCOREP_ON_DEBUG_OPTION
 AC_CUTEST_COLOR_TESTS
 AC_SCOREP_DEFINE_REVISIONS
+
+AC_CHECK_SIZEOF([void *])
+AC_CHECK_SIZEOF([double])
+if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
+    AC_DEFINE_UNQUOTED(
+        [SCOREP_ALLOCATOR_ALIGNMENT], 
+        [$ac_cv_sizeof_void_p], 
+        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
+else
+    AC_DEFINE_UNQUOTED(
+        [SCOREP_ALLOCATOR_ALIGNMENT], 
+        [$ac_cv_sizeof_double], 
+        [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
+fi
 ])
