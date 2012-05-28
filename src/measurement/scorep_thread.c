@@ -30,7 +30,7 @@
 #include <scorep_definitions.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
-#include <scorep_utility/SCOREP_Omp.h>
+#include <SCOREP_Omp.h>
 #include <scorep_mpi.h>
 #include <assert.h>
 #include <stdbool.h>

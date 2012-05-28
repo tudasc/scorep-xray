@@ -67,7 +67,7 @@ libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/cube_writer \
-    -I$(INC_ROOT)src/utils/include
+    -I$(INC_DIR_UTIL_INTERNAL)
 
 ## paradigm omp
 
@@ -81,8 +81,9 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
 libscorep_paradigm_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags) \
-    -I$(INC_ROOT)src/services/metric
+    $(common_libscorep_cppflags)     \
+    -I$(INC_ROOT)src/services/metric \
+    -I$(INC_DIR_UTIL_INTERNAL)
 endif
 
 ##paradigm non omp
@@ -94,9 +95,9 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c
 libscorep_paradigm_non_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags) \
-    -I$(INC_ROOT)src/services/metric
-
+    $(common_libscorep_cppflags)         \
+    -I$(INC_ROOT)src/services/metric     \
+    -I$(INC_DIR_UTIL_INTERNAL)
 ## paradigm non mpi
 
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
@@ -104,8 +105,9 @@ libscorep_paradigm_non_mpi_la_SOURCES  =                            \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_disabled.c       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_disabled.c
-libscorep_paradigm_non_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
-
+libscorep_paradigm_non_mpi_la_CPPFLAGS = \
+    $(common_libscorep_cppflags)         \
+    -I$(INC_DIR_UTIL_INTERNAL)
 
 ## sion-serial
 

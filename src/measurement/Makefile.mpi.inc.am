@@ -33,7 +33,9 @@ libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c  \
     $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_enabled.c
-libscorep_paradigm_mpi_la_CPPFLAGS = $(common_libscorep_cppflags)
+libscorep_paradigm_mpi_la_CPPFLAGS = \
+    $(common_libscorep_cppflags) \
+    -I$(INC_DIR_UTIL_INTERNAL)
 
 
 ## sion-mpi

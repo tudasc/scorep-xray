@@ -35,6 +35,7 @@ check_PROGRAMS += self_contained_scorep_subsystem_c          \
 self_contained_cppflags = \
     $(AM_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_UTIL_INTERNAL) \
     -I$(INC_DIR_UTIL) \
     -I$(PUBLIC_INC_DIR)
 
@@ -72,6 +73,7 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_ROOT)src/measurement \
                               -I$(INC_ROOT)src/measurement/include \
                               -I$(PUBLIC_INC_DIR) \
+                              -I$(INC_DIR_UTIL_INTERNAL) \
                               -I$(INC_DIR_UTIL) \
                               -I$(INC_DIR_VENDOR_HASH)
 definitions_test_c_LDADD = libscorep_serial.la
@@ -88,6 +90,7 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_ROOT)src/measurement \
                                -I$(INC_ROOT)src/measurement/include \
                                -I$(PUBLIC_INC_DIR) \
+                               -I$(INC_DIR_UTIL_INTERNAL) \
                                -I$(INC_DIR_UTIL) \
                                -I$(INC_DIR_VENDOR_HASH)
 string_duplicates_c_LDADD    = libscorep_serial.la

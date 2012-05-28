@@ -28,6 +28,8 @@ include ../vendor/common/build-config/common.am
 ## installed. Use e.g. with the primary nobase_include_HEADERS
 PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 
+INC_DIR_UTIL_INTERNAL = $(INC_ROOT)src/utils/include
+
 ## Path to the public headers and the libraries of the utility and
 ## otf2 component. These variables need to be overriden when
 ## configuring using the --with-(utility|otf2) options (to be done)
@@ -39,8 +41,9 @@ LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
 
 INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
 
-##  Where to find the Jenkins' hash headers.
-INC_DIR_VENDOR_HASH = $(srcdir)/../vendor/hash
+##  Where to find the Jenkins' hash and valgrind headers.
+INC_DIR_VENDOR_HASH     = $(INC_ROOT)vendor/hash
+INC_DIR_VENDOR_VALGRIND = $(INC_ROOT)vendor/valgrind/include
 
 
 SCOREP_MPI_OMP_TESTS =
@@ -54,18 +57,3 @@ CONFIG_HEADER_MPI      = $(SRC_ROOT)src/scorep_config_tool_mpi.h
 CONFIG_HEADER_FRONTEND = $(SRC_ROOT)src/scorep_config_tool_frontend.h
 
 CLEANFILES += $(CONFIG_HEADER_BACKEND) $(CONFIG_HEADER_MPI) $(CONFIG_HEADER_FRONTEND)
-
-
-## Copy SCOREP_Allocator_PublicTypes.h from utility to Score-P. We need this
-## public types to get installed, but as the utilities will be converted into
-## a convenience library, and will therefore not be installed any longer,
-## copying the file seems to be the easiest way; it also incurs no additional
-## maintenance burden. SCOREP_Allocator_PublicTypes.h is required by
-## build-backend and build-mpi, therefore we place the target here, knowing
-## that the rule gets executed three times.
-scorep_allocator_public_types  = $(INC_ROOT)include/scorep/SCOREP_Allocator_PublicTypes.h
-utility_allocator_public_types = $(INC_DIR_UTIL)/scorep_utility/SCOREP_Allocator_PublicTypes.h
-BUILT_SOURCES += $(scorep_allocator_public_types)
-CLEANFILES    += $(scorep_allocator_public_types)
-$(scorep_allocator_public_types): $(utility_allocator_public_types)
-	cp $(utility_allocator_public_types) $(scorep_allocator_public_types)

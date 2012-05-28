@@ -33,6 +33,8 @@
 #include <cubew_cube.h>
 #include <SCOREP_Definitions.h>
 
+#include <stdbool.h>
+
 /**
    Contains the mapping structs for Cube 4 handles to SCOREP handles.
  */

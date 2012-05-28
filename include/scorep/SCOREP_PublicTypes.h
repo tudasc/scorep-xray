@@ -18,12 +18,25 @@
 #define SCOREP_PUBLICTYPES_H
 
 #include <stdint.h>
-#include <scorep/SCOREP_Allocator_PublicTypes.h>
 
 
 /** ingroup SCOREP_Types
     @{
  */
+
+/**
+ * Opaque handle to memory that can be easily moved between
+ * processes. Used for definitions as the have to be moved during
+ * unification.
+ */
+typedef uint32_t SCOREP_Allocator_MovableMemory;
+
+/**
+ * Symbolic constant representing an invalid or NULL handle of type
+ * SCOREP_Allocator_MovableMemory.
+ *
+ */
+#define SCOREP_MOVABLE_NULL 0
 
 /**
  * Type of a opaque handle to any definition.

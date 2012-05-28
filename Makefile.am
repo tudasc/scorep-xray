@@ -25,7 +25,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/src/config-custom.h                              \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in             \
               $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in      \
-              $(srcdir)/doc/profile/scorep_metrics.html
+              $(srcdir)/doc/profile/scorep_metrics.html                  \
+              $(srcdir)/src/utils/include/SCOREP_Omp.h
 
 
 if ! CROSS_BUILD

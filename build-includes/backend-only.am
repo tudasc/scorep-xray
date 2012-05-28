@@ -19,7 +19,8 @@ include ../vendor/hash/Makefile.inc.am
 include ../include/scorep/Makefile.inc.am
 include ../src/tools/wrapper/Makefile-backend.inc.am
 include ../src/measurement/online_access/Makefile.inc.am
-include ../src/utils/Makefile.inc.am
+include ../src/utils/bitstring/Makefile.inc.am
+include ../src/utils/memory/Makefile.inc.am
 
 
 ## include tests
@@ -47,3 +48,4 @@ include ../test/profiling/Makefile.inc.am
 include ../test/OA/serial/Fortran/Makefile.inc.am
 include ../test/OA/serial/C/Makefile.inc.am
 include ../test/installcheck/Makefile.inc.am
+include ../test/memory/Makefile.inc.am

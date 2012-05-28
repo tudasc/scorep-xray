@@ -32,6 +32,7 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_platform.la                 \
                 libscorep_utils.la                    \
                 libscorep_filter.la                   \
+                libscorep_allocator.la                \
                 $(LIB_DIR_OTF2)libotf2.la             \
                 $(LIB_DIR_UTIL)libscorep_utilities.la \
                 libjenkins_hash.la                    \

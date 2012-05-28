@@ -32,7 +32,7 @@
  */
 
 
-#include <scorep_utility/SCOREP_Allocator.h>
+#include <SCOREP_Allocator.h>
 #include <stddef.h>
 
 
