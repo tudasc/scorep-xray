@@ -28,35 +28,37 @@ all:
 
 EXE = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANG)$(SUFFIX)
 
+TOOLS = @prefix@/bin/scorep @prefix@/bin/scorep-config
+
 all:
 
 $(CODE): $(EXE)
 
-$(BINDIR)/$(CODE)-$(PARADIGM)-cc$(SUFFIX): $(OBJECTS)
+$(BINDIR)/$(CODE)-$(PARADIGM)-cc$(SUFFIX): $(OBJECTS) $(TOOLS)
 	$(PREP) $(CC) $(CFLAGS) -o $@ $(OBJECTS) $(LIBS)
 
-$(BINDIR)/$(CODE)-$(PARADIGM)-cxx$(SUFFIX): $(OBJECTS)
+$(BINDIR)/$(CODE)-$(PARADIGM)-cxx$(SUFFIX): $(OBJECTS) $(TOOLS)
 	$(PREP) $(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBS)
 
-$(BINDIR)/$(CODE)-$(PARADIGM)-f77$(SUFFIX): $(OBJECTS)
+$(BINDIR)/$(CODE)-$(PARADIGM)-f77$(SUFFIX): $(OBJECTS) $(TOOLS)
 	$(PREP) $(F77) $(F77FLAGS) -o $@ $(OBJECTS) $(LIBS)
 
-$(BINDIR)/$(CODE)-$(PARADIGM)-fc$(SUFFIX): $(OBJECTS)
+$(BINDIR)/$(CODE)-$(PARADIGM)-fc$(SUFFIX): $(OBJECTS) $(TOOLS)
 	$(PREP) $(FC) $(FCFLAGS) -o $@ $(OBJECTS) $(LIBS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(TOOLS)
 	$(PREP) $(CC) $(CFLAGS) -o $@ -c $< 
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(TOOLS)
 	$(PREP) $(CXX) $(CXXFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.f77
+$(OBJDIR)/%.o: $(SRCDIR)/%.f77 $(TOOLS)
 	$(PREP) $(F77) $(F77FLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.f90
+$(OBJDIR)/%.o: $(SRCDIR)/%.f90 $(TOOLS)
 	$(PREP) $(FC) $(FCFLAGS) -o $@ -c $<
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.F90
+$(OBJDIR)/%.o: $(SRCDIR)/%.F90 $(TOOLS)
 	$(PREP) $(FC) $(FCFLAGS) -o $@ -c $<
 
 clean:
