@@ -688,12 +688,14 @@ write_tau_merge_callpath_nodes( scorep_profile_node* node,
         {
             //if we reached the end of the list without finding the node, add a new one
             scorep_profile_node* copy = scorep_profile_copy_node( location, node );
+            copy->next_sibling = NULL;
             list->next_sibling = copy;
 
             //need to collect exclusive time and child calls so that the information can be printed correctly
             scorep_profile_node* dummy = scorep_profile_copy_node( location, copy );
             dummy->inclusive_time.sum = copy->inclusive_time.sum  - scorep_profile_get_exclusive_time( node );
             dummy->count              = scorep_profile_get_number_of_child_calls( node );
+            dummy->next_sibling       = NULL;
             copy->first_child         = dummy;
             dummy->callpath_handle    = SCOREP_INVALID_CALLPATH;
             break;
@@ -720,11 +722,35 @@ write_tau_merge_callpath_nodes( scorep_profile_node* node,
  * @param node Pointer to the root of the callpath.
  */
 static void
-write_tau_add_callpath_nodes( scorep_profile_node* node )
+write_tau_add_callpath_nodes( scorep_profile_node* parent )
 {
+    scorep_profile_node* node = parent->first_child;
+
+    //Have to count the siblings because the merged callpath nodes are added as siblings
+    //and we don't want to merge the merged callpathn nodes
+    //but we do want to merge the phases
+    int sibling_count = 0;
+    while ( node->next_sibling != NULL )
+    {
+        sibling_count++;
+        node = node->next_sibling;
+    }
+
+
+    node = parent->first_child;
     scorep_profile_for_all( node,
                             write_tau_merge_callpath_nodes,
                             node );
+
+    while ( sibling_count > 0 )
+    {
+        //if there are phases they will be here so merge them
+        node = node->next_sibling;
+        scorep_profile_for_all( node,
+                                write_tau_merge_callpath_nodes,
+                                node );
+        sibling_count--;
+    }
 }
 
 /* rImplemetatio  of the top function for writing a TAU snapshot profile.
@@ -769,10 +795,9 @@ scorep_profile_write_tau_snapshot()
         SCOREP_ERROR_POSIX( "Failed to write profile. Unable to open file" );
         return;
     }
-
     /*Add the summary nodes to the calltree*/
     scorep_profile_node* root = scorep_profile.first_root_node;
-    write_tau_add_callpath_nodes( root->first_child );
+    write_tau_add_callpath_nodes( root );
 
     /* Write starting tag */
     fprintf( file, "<profile_xml>\n" );
