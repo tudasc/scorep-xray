@@ -164,4 +164,5 @@ libscorep_adapter_compiler_all_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c

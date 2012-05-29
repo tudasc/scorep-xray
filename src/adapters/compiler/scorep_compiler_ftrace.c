@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include <scorep_utility/SCOREP_Debug.h>
 #include <SCOREP_Location.h>
@@ -34,6 +35,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Filter.h>
 
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
@@ -97,10 +99,10 @@ _ftrace_enter2_()
 
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) )
     {
-        if ( hash_node->reghandle == SCOREP_INVALID_REGION )
+        if ( hash_node->region_handle == SCOREP_INVALID_REGION )
         {
             SCOREP_MutexLock( scorep_compiler_region_mutex );
-            if ( hash_node->reghandle == SCOREP_INVALID_REGION )
+            if ( hash_node->region_handle == SCOREP_INVALID_REGION )
             {
                 /* Check for filtered regions */
                 if ( ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
@@ -108,20 +110,20 @@ _ftrace_enter2_()
                      ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
                      SCOREP_Filter_Match( NULL, region_name, true ) )
                 {
-                    hash_node->reghandle = SCOREP_FILTERED_REGION;
+                    hash_node->region_handle = SCOREP_FILTERED_REGION;
                 }
 
                 /* Region entered the first time, register region */
                 else
                 {
                     scorep_compiler_register_region( hash_node );
-                    assert( hash_node->reghandle != SCOREP_FILTERED_REGION );
-                    assert( hash_node->reghandle != SCOREP_INVALID_REGION );
+                    assert( hash_node->region_handle != SCOREP_FILTERED_REGION );
+                    assert( hash_node->region_handle != SCOREP_INVALID_REGION );
                 }
             }
             SCOREP_MutexUnlock( scorep_compiler_region_mutex );
         }
-        if ( hash_node->reghandle != SCOREP_FILTERED_REGION )
+        if ( hash_node->region_handle != SCOREP_FILTERED_REGION )
         {
             SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                                  "enter the region with handle %i",
@@ -145,13 +147,13 @@ _ftrace_exit2_()
         return;
     }
 
-    char*                      region_name = scorep_ftrace_getname();
-    long                       key         = ( long )region_name;
-    scorep_compiler_hash_node* hash_node;
+    char* region_name = scorep_ftrace_getname();
+    long  key         = ( long )region_name;
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 %i", key );
-    if ( hash_node = scorep_compiler_hash_get( key ) )
+    scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( key );
+    if ( hash_node )
     {
         if ( hash_node->region_handle != SCOREP_FILTERED_REGION )
         {
