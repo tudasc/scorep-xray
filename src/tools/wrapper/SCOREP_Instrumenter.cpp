@@ -264,6 +264,8 @@ SCOREP_Instrumenter::Run()
 
     if ( is_linking )
     {
+        prepare_config_tool_calls( "" );
+
         // Perform Opari instrumentation
         if ( opari_instrumentation == enabled )
         {
