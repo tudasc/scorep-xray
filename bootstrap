@@ -34,6 +34,9 @@ build-frontend/configure: build-backend/configure
 
 build-mpi/configure: build-backend/configure
 	$(AUTORECONF) $(AUTORECONFFLAGS) build-mpi
+	@sed -e 's/_0 = @echo "  /&MPI/g' build-mpi/Makefile.in >build-mpi/Makefile.in.mpi \
+	 && mv build-mpi/Makefile.in.mpi build-mpi/Makefile.in \
+	 || rm build-mpi/Makefile.in.mpi
 
 clean: clean-local
 	@$(MAKE) -C vendor/opari2 -f bootstrap clean
