@@ -36,6 +36,9 @@
 #include <scorep_compiler_data.h>
 #include <SCOREP_Compiler_Init.h>
 #include <SCOREP_Filter.h>
+#include <SCOREP_Memory.h>
+
+
 
 /* **************************************************************************************
  * Typedefs and global variables
@@ -64,39 +67,35 @@ struct s1
     char*      region_name;
 };
 
+
+extern size_t scorep_compiler_subsystem_id;
+
+
+/**
+    Defines the maximum size of a callstack.
+ */
+#define CALLSTACK_MAX 30
+
 /**
    Contains the callstack data for each location.
  */
 typedef struct
 {
     /**
-        Pointer to the current callstack position. Because it is needed for
-        each thread, it is made thread private.
+        Pointer to the callstack starting position.
      */
-    SCOREP_RegionHandle* callstack_top;
+    SCOREP_RegionHandle callstack_base[ CALLSTACK_MAX ];
 
     /**
-        Pointer to the callstack starting position. Because it is needed for
-        each thread, it is made thread private.
-     */
-    SCOREP_RegionHandle* callstack_base;
-
-    /**
-        Counts the current level of nesting. Because it is needed for each
-        thread, it is made thread private.
+        Counts the current level of nesting.
      */
     uint32_t callstack_count;
 
     /**
-       Location ID
+        Current callstack position.
      */
-    uint32_t location_id;
-} scorep_compiler_location_data;
-
-/**
-    Defines the maximum size of a callstack.
- */
-static const uint32_t scorep_compiler_callstack_max = 30;
+    uint32_t callstack_top;
+} pgi_location_data;
 
 /**
  * static variable to control initialize status of adapter
@@ -109,11 +108,6 @@ static int scorep_compiler_initialize = 1;
 static int scorep_compiler_finalized = 0;
 
 /**
-    Hash table for mapping location id to the location's callstack.
- */
-SCOREP_Hashtab* scorep_compiler_location_table = NULL;
-
-/**
  * Mutex for exclusive access to the region hash table.
  */
 static SCOREP_Mutex scorep_compiler_region_mutex;
@@ -123,89 +117,35 @@ static SCOREP_Mutex scorep_compiler_region_mutex;
  * location table access
  ***************************************************************************************/
 
-static inline scorep_compiler_location_data*
-scorep_compiler_get_location_data( SCOREP_Location* data )
+static inline pgi_location_data*
+scorep_compiler_get_location_data( SCOREP_Location* locationData )
 {
-    uint32_t              location_id = SCOREP_Location_GetId( data );
-    SCOREP_Hashtab_Entry* entry       = SCOREP_Hashtab_Find( scorep_compiler_location_table,
-                                                             &location_id,
-                                                             NULL );
-    if ( !entry )
-    {
-        return NULL;
-    }
-    else
-    {
-        return ( scorep_compiler_location_data* )entry->value;
-    }
+    pgi_location_data* pgi_data = SCOREP_Location_GetSubsystemData(
+        locationData,
+        scorep_compiler_subsystem_id );
+
+    return pgi_data;
 }
 
 /* **************************************************************************************
  * Initialization / Finalization
  ***************************************************************************************/
 
-/* Creates the callstack array for a new thread. */
-scorep_compiler_location_data*
-scorep_compiler_create_location_data( uint32_t id )
-{
-    /* Create location struct */
-    scorep_compiler_location_data* data = malloc( sizeof( *data ) );
-
-    /* Allocate memory for region handle stack */
-    data->callstack_base = ( SCOREP_RegionHandle* )
-                           malloc( scorep_compiler_callstack_max *
-                                   sizeof( SCOREP_RegionHandle ) );
-    data->callstack_top   = data->callstack_base;
-    data->callstack_count = 0;
-    data->location_id     = id;
-
-    return data;
-}
-
-/**
-   Deletes one file table entry.#
-   @param entry Pointer to the entry to be deleted.
- */
-void
-scorep_compiler_delete_location_entry( SCOREP_Hashtab_Entry* entry )
-{
-    SCOREP_ASSERT( entry );
-    scorep_compiler_location_data* data =  ( scorep_compiler_location_data* )entry->value;
-    free( data->callstack_base );
-    free( data );
-}
-
-/* Initialize the location table */
-void
-scorep_compiler_init_location_table()
-{
-    scorep_compiler_location_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashInt32,
-                                                                &SCOREP_Hashtab_CompareInt32 );
-}
-
-/* Finalize the location table */
-void
-scorep_compiler_finalize_location_table()
-{
-    SCOREP_Hashtab_Foreach( scorep_compiler_location_table,
-                            &scorep_compiler_delete_location_entry );
-    SCOREP_Hashtab_Free( scorep_compiler_location_table );
-    scorep_compiler_location_table = NULL;
-}
-
 /* Location initialization */
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
+    /* Create location struct */
+    pgi_location_data* pgi_data = SCOREP_Location_AllocForMisc( locationData,
+                                                                sizeof( *pgi_data ) );
 
-    uint32_t                       location_id = SCOREP_Location_GetId( locationData );
-    scorep_compiler_location_data* data        = scorep_compiler_create_location_data( location_id );
+    pgi_data->callstack_top   = 0;
+    pgi_data->callstack_count = 0;
 
-    SCOREP_MutexLock( scorep_compiler_region_mutex );
-    SCOREP_Hashtab_Insert( scorep_compiler_location_table, &data->location_id,
-                           data, NULL );
-    SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+    SCOREP_Location_SetSubsystemData( locationData,
+                                      scorep_compiler_subsystem_id,
+                                      pgi_data );
 
     return SCOREP_SUCCESS;
 }
@@ -228,9 +168,6 @@ scorep_compiler_init_adapter()
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 
-        /* Initialize location table */
-        scorep_compiler_init_location_table();
-
         /* Initialize file table */
         scorep_compiler_init_file_table();
 
@@ -250,9 +187,6 @@ scorep_compiler_finalize()
     {
         /* Finalize file table */
         scorep_compiler_finalize_file_table();
-
-        /* Finalize location table */
-        scorep_compiler_finalize_location_table();
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
@@ -327,11 +261,11 @@ ___rouent2( struct s1* p )
 
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_ASSERT( data != NULL );
-    scorep_compiler_location_data* location_data = scorep_compiler_get_location_data( data );
-    if ( location_data == NULL )
+    pgi_location_data* pgi_data = scorep_compiler_get_location_data( data );
+    if ( pgi_data == NULL )
     {
         scorep_compiler_init_location( data );
-        location_data = scorep_compiler_get_location_data( data );
+        pgi_data = scorep_compiler_get_location_data( data );
     }
 
     /* Register new regions */
@@ -339,37 +273,38 @@ ___rouent2( struct s1* p )
     {
         /* get file id belonging to file name */
         SCOREP_MutexLock( scorep_compiler_region_mutex );
-        SCOREP_IO_SimplifyPath( p->file_name );
-        *file = scorep_compiler_get_file( p->file_name );
-        if ( ( !p->isseen ) &&
-             ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
-             ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
-             ( strncmp( p->region_name, "pomp", 4 ) != 0 ) &&
-             ( !SCOREP_Filter_Match( p->file_name, p->region_name, false ) ) )
+        if ( !p->isseen )
         {
-            *region = SCOREP_DefineRegion( p->region_name,
-                                           *file,
-                                           p->lineno,
-                                           SCOREP_INVALID_LINE_NO,
-                                           SCOREP_ADAPTER_COMPILER,
-                                           SCOREP_REGION_FUNCTION
-                                           );
+            p->isseen = 1;
+            SCOREP_IO_SimplifyPath( p->file_name );
+
+            *file = scorep_compiler_get_file( p->file_name );
+            if ( ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
+                 ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
+                 ( strncmp( p->region_name, "pomp", 4 ) != 0 ) &&
+                 ( !SCOREP_Filter_Match( p->file_name, p->region_name, false ) ) )
+            {
+                *region = SCOREP_DefineRegion( p->region_name,
+                                               *file,
+                                               p->lineno,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_ADAPTER_COMPILER,
+                                               SCOREP_REGION_FUNCTION );
+            }
+            else
+            {
+                *region = SCOREP_INVALID_REGION;
+            }
         }
-        else if ( !p->isseen )
-        {
-            *region = SCOREP_INVALID_REGION;
-        }
-        p->isseen = 1;
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
     /* Check callstack */
-    location_data->callstack_count++;
-    if ( location_data->callstack_count < scorep_compiler_callstack_max )
+    if ( pgi_data->callstack_count < CALLSTACK_MAX )
     {
         /* Update callstack */
-        *location_data->callstack_top = *region;
-        location_data->callstack_top++;
+        pgi_data->callstack_base[ pgi_data->callstack_top ] = *region;
+        pgi_data->callstack_top++;
 
         /* Enter event */
         if ( *region != SCOREP_INVALID_REGION )
@@ -377,6 +312,7 @@ ___rouent2( struct s1* p )
             SCOREP_EnterRegion( *region );
         }
     }
+    pgi_data->callstack_count++;
 }
 
 #pragma save_all_regs
@@ -415,25 +351,26 @@ ___rouret2( void )
 
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_ASSERT( data != NULL );
-    scorep_compiler_location_data* location_data = scorep_compiler_get_location_data( data );
+    pgi_location_data* location_data = scorep_compiler_get_location_data( data );
     if ( location_data == NULL )
     {
         return;
     }
-    if ( location_data->callstack_count < scorep_compiler_callstack_max )
+
+    location_data->callstack_count--;
+    if ( location_data->callstack_count < CALLSTACK_MAX )
     {
         location_data->callstack_top--;
+        SCOREP_RegionHandle region_handle = location_data->callstack_base[ location_data->callstack_top ];
 
         /* Check whether the top element of the callstack has a valid region handle.
            If the region is filtered the top pointer is SCOREP_INVALID_REGION.
          */
-        if ( *location_data->callstack_top != SCOREP_INVALID_REGION )
+        if ( region_handle != SCOREP_INVALID_REGION )
         {
-            SCOREP_ExitRegion( *location_data->callstack_top );
+            SCOREP_ExitRegion( region_handle );
         }
     }
-
-    location_data->callstack_count--;
 }
 
 #pragma save_all_regs
