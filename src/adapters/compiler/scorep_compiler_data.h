@@ -127,7 +127,7 @@ scorep_compiler_init_file_table();
    Finalize the file table
  */
 void
-scorep_compiler_final_file_table();
+scorep_compiler_finalize_file_table();
 
 /**
    Returns the file handle for a given file name. It searches in the hash table if the

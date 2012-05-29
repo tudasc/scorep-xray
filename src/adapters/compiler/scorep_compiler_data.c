@@ -77,7 +77,7 @@ scorep_compiler_init_file_table()
 
 /* Finalize the file table */
 void
-scorep_compiler_final_file_table()
+scorep_compiler_finalize_file_table()
 {
     SCOREP_Hashtab_Foreach( scorep_compiler_file_table, &scorep_compiler_delete_file_entry );
     SCOREP_Hashtab_Free( scorep_compiler_file_table );
@@ -228,7 +228,7 @@ scorep_compiler_hash_free()
         }
     }
 
-    scorep_compiler_final_file_table();
+    scorep_compiler_finalize_file_table();
 }
 
 /* Register a new region to the measuremnt system */

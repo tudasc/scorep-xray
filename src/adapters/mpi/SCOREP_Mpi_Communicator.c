@@ -359,7 +359,7 @@ scorep_mpi_win_init()
 }
 
 void
-scorep_mpi_win_final()
+scorep_mpi_win_finalize()
 {
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexDestroy( &scorep_mpi_window_mutex );

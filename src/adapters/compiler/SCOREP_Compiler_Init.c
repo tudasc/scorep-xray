@@ -97,7 +97,7 @@ scorep_compiler_init_location( SCOREP_Location* location );
    compiler adapter implementation.
  */
 extern void
-scorep_compiler_final_location( SCOREP_Location* location );
+scorep_compiler_finalize_location( SCOREP_Location* location );
 
 /**
    The adapter finalize function is compiler specific. Thus it is contained in each
@@ -125,7 +125,7 @@ const SCOREP_Subsystem SCOREP_Compiler_Adapter =
     &scorep_compiler_register,
     &scorep_compiler_init_adapter,
     &scorep_compiler_init_location,
-    &scorep_compiler_final_location,
+    &scorep_compiler_finalize_location,
     &scorep_compiler_finalize,
     &scorep_compiler_deregister
 };

@@ -203,7 +203,7 @@ scorep_compiler_init_location_table()
 
 /* Finalize the location table */
 void
-scorep_compiler_final_location_table()
+scorep_compiler_finalize_location_table()
 {
     SCOREP_Hashtab_Foreach( scorep_compiler_location_table,
                             &scorep_compiler_delete_location_entry );
@@ -230,9 +230,9 @@ scorep_compiler_init_location()
 
 /* Location finalization */
 void
-scorep_compiler_final_location( SCOREP_Location* locationData )
+scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter final location!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter finalize location!" );
 }
 
 /* Adapter initialization */
@@ -267,10 +267,10 @@ scorep_compiler_finalize()
     if ( !scorep_compiler_initialize )
     {
         /* Finalize file table */
-        scorep_compiler_final_file_table();
+        scorep_compiler_finalize_file_table();
 
         /* Finalize location table */
-        scorep_compiler_final_location_table();
+        scorep_compiler_finalize_location_table();
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

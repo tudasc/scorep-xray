@@ -259,9 +259,9 @@ scorep_compiler_init_location( SCOREP_Location* location )
 
 /* Location finalization */
 void
-scorep_compiler_final_location( SCOREP_Location* locationData )
+scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter final location!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter finalize location!" );
 }
 
 /* Adapter finalization */

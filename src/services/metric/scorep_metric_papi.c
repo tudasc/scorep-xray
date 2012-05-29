@@ -800,7 +800,7 @@ scorep_metric_papi_finalize_location( SCOREP_Metric_EventSet* eventSet )
     /* Ignore return value */
     ( void )PAPI_unregister_thread();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source final location!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source finalize location!" );
 }
 
 /** @brief Reads values of counters relative to the time of scorep_metric_papi_open().

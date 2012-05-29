@@ -166,7 +166,7 @@ scorep_compiler_init_adapter()
 }
 
 SCOREP_Error_Code
-scorep_compiler_init_location( SCOREP_Location* location )
+scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );
     return SCOREP_SUCCESS;
@@ -174,9 +174,9 @@ scorep_compiler_init_location( SCOREP_Location* location )
 
 /* Location finalization */
 void
-scorep_compiler_final_location( void* locationData )
+scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter final location!" );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter finalize location!" );
 }
 
 int

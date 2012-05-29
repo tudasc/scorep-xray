@@ -64,7 +64,7 @@ scorep_user_init()
 
         scorep_selective_init();
         scorep_user_init_regions();
-        scorep_user_init_metric();
+        scorep_user_init_metrics();
     }
     return SCOREP_SUCCESS;
 }
@@ -79,7 +79,7 @@ scorep_user_init_location( SCOREP_Location* locationData )
 /** Finalizes the location specific data of the user adapter.
  */
 static void
-scorep_user_final_location( SCOREP_Location* locationData )
+scorep_user_finalize_location( SCOREP_Location* locationData )
 {
 }
 
@@ -92,8 +92,8 @@ scorep_user_finalize()
     {
         /*  Set the intialization flag to indicate that the adapter is finalized */
         scorep_user_is_initialized = 2;
-        scorep_user_final_metric();
-        scorep_user_final_regions();
+        scorep_user_finalize_metrics();
+        scorep_user_finalize_regions();
     }
     scorep_selective_finalize();
 }
@@ -111,7 +111,7 @@ const SCOREP_Subsystem SCOREP_User_Adapter =
     &scorep_user_register,
     &scorep_user_init,
     &scorep_user_init_location,
-    &scorep_user_final_location,
+    &scorep_user_finalize_location,
     &scorep_user_finalize,
     &scorep_user_deregister
 };

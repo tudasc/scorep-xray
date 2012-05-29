@@ -140,7 +140,7 @@ scorep_mpi_win_init();
  * Finalizes the window handling specific data structures.
  */
 extern void
-scorep_mpi_win_final();
+scorep_mpi_win_finalize();
 
 #ifndef SCOREP_MPI_NO_RMA
 

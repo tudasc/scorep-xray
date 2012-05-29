@@ -28,13 +28,13 @@ void
 scorep_user_init_regions();
 
 void
-scorep_user_final_regions();
+scorep_user_finalize_regions();
 
 void
-scorep_user_init_metric();
+scorep_user_init_metrics();
 
 void
-scorep_user_final_metric();
+scorep_user_finalize_metrics();
 
 void
 scorep_selective_init();

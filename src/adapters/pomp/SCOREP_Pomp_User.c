@@ -192,22 +192,22 @@ scorep_pomp_init_location( SCOREP_Location* locationData )
 /** Allows finaltialization of location specific data. Nothing done inside this funcion.
  */
 static void
-scorep_pomp_final_location( SCOREP_Location* locationData )
+scorep_pomp_finalize_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_final_location\n" );
+                         "In scorep_pomp_finalize_location\n" );
 }
 
 /** Adapter finalialization function.
  */
 static void
-scorep_pomp_final()
+scorep_pomp_finalize()
 {
     size_t       i;
     const size_t nRegions = POMP2_Get_num_regions();
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_final\n" );
+                         "In scorep_pomp_finalize\n" );
 
     if ( scorep_pomp_is_finalized || !scorep_pomp_is_initialized )
     {
@@ -246,8 +246,8 @@ const SCOREP_Subsystem SCOREP_Pomp_Adapter =
     &scorep_pomp_register,
     &scorep_pomp_init,
     &scorep_pomp_init_location,
-    &scorep_pomp_final_location,
-    &scorep_pomp_final,
+    &scorep_pomp_finalize_location,
+    &scorep_pomp_finalize,
     &scorep_pomp_deregister
 };
 

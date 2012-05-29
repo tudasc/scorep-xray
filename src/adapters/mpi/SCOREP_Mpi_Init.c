@@ -382,10 +382,10 @@ scorep_mpi_init_location( SCOREP_Location* locationData )
    struct for the initialization process of the MPI adapter.
  */
 static void
-scorep_mpi_final_location( SCOREP_Location* locationData )
+scorep_mpi_finalize_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_final_location\n" );
+                         "In scorep_mpi_finalize_location\n" );
 }
 
 /**
@@ -403,7 +403,7 @@ scorep_mpi_finalize()
     scorep_mpi_enabled = 0;
 
     /* Finalize sub-systems */
-    scorep_mpi_win_final();
+    scorep_mpi_win_finalize();
     scorep_mpi_request_finalize();
     scorep_mpi_comm_finalize();
 
@@ -447,7 +447,7 @@ const SCOREP_Subsystem SCOREP_Mpi_Adapter =
     &scorep_mpi_register,
     &scorep_mpi_init_adapter,
     &scorep_mpi_init_location,
-    &scorep_mpi_final_location,
+    &scorep_mpi_finalize_location,
     &scorep_mpi_finalize,
     &scorep_mpi_deregister
 };

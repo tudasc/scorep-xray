@@ -77,7 +77,7 @@ scorep_user_init_regions()
 }
 
 void
-scorep_user_final_regions()
+scorep_user_finalize_regions()
 {
     /* the value entry is stored in a structure that is allocated with the scorep
        memory management system. Thus, it must not free the value. */
