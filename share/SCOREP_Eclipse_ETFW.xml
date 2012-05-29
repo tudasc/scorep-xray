@@ -16,11 +16,14 @@
     </compile>
     <execute>
         <global name="SCORPEnvironment">
-            <envvar flag="SCOREP_ENABLE_TRACING" value="true"/>
+            <envvar flag="SCAN_OVERWRITE" value="1"/>
+            <envvar flag="EPK_SUMMARY" value="0"/>
+            <envvar flag="EPK_TRACE" value="1"/>
         </global>
     </execute>
-        <analyze foralllike="traces.elg" depth="1">
-	    <utility type="view" command="scalasca --examine" group="cube">
+        <analyze foralllike="epik.esd" depth="1">
+	    <utility type="view" command="scalasca" group="cube">
+                <argument value="--analyze"/>
                 <argument value="%%FILE%%"/>
             </utility>
         </analyze>
@@ -34,7 +37,7 @@
             <!-- envvar flag="SCOREP_PROFILING_FORMAT" value="TAU_SNAPSHOT"/ -->
         </global>
     </execute>
-    <analyze foralllike="profile.cubex" depth="1">
+    <analyze foralllike="profile.cubex" depth="2">
         <utility command="paraprof" group="tau">
                 <argument value="%%FILE%%"/>
         </utility>
