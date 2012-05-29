@@ -1,6 +1,6 @@
 ## build dummy library
 if SCOREP_COMPILER_INTEL
 lib_LTLIBRARIES           += libVT.la
-libVT_la_SOURCES = $(SRC_ROOT)src/tools/wrapper/scorep_vt_dummy.c
+libVT_la_SOURCES = $(SRC_ROOT)src/tools/instrumenter/scorep_vt_dummy.c
 libVT_la_CPPFLAGS = $(AM_CPPFLAGS)
 endif

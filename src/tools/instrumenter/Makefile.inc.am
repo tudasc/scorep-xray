@@ -3,13 +3,13 @@
 bin_PROGRAMS += scorep
 
 scorep_SOURCES = \
-    $(SRC_ROOT)src/tools/wrapper/scorep.cpp                 \
-    $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.cpp    \
-    $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.hpp
+    $(SRC_ROOT)src/tools/instrumenter/scorep.cpp              \
+    $(SRC_ROOT)src/tools/instrumenter/SCOREP_Instrumenter.cpp \
+    $(SRC_ROOT)src/tools/instrumenter/SCOREP_Instrumenter.hpp
 
-scorep_CPPFLAGS = $(AM_CPPFLAGS)      \
-    -I$(SRC_ROOT)src/tools/wrapper  \
-    -I$(INC_DIR_UTIL)               \
+scorep_CPPFLAGS = $(AM_CPPFLAGS)        \
+    -I$(SRC_ROOT)src/tools/instrumenter \
+    -I$(INC_DIR_UTIL)                   \
     -I$(SRC_ROOT)vendor/otf2/vendor/utility/src/parser
 
 if HAVE_PDT
