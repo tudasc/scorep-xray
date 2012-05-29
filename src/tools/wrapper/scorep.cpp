@@ -26,7 +26,6 @@
 #include <cstdlib>
 
 #include "SCOREP_Instrumenter.hpp"
-#include "SCOREP_Measurement.hpp"
 
 /**
    Contains the name of the tool for help output

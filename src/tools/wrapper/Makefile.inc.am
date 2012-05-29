@@ -5,9 +5,7 @@ bin_PROGRAMS += scorep
 scorep_SOURCES = \
     $(SRC_ROOT)src/tools/wrapper/scorep.cpp                 \
     $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.cpp    \
-    $(SRC_ROOT)src/tools/wrapper/SCOREP_Measurement.cpp     \
-    $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.hpp    \
-    $(SRC_ROOT)src/tools/wrapper/SCOREP_Measurement.hpp
+    $(SRC_ROOT)src/tools/wrapper/SCOREP_Instrumenter.hpp
 
 scorep_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(SRC_ROOT)src/tools/wrapper  \
