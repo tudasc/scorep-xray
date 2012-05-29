@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -360,83 +360,6 @@ private:
     compile_source_file( std::string input_file,
                          std::string
                          output_file );
-
-    /**
-        Retrieves the extension from a filename.
-        @param filename  A filename
-        @retuns the extension including the dot. If no extension is given
-                (no dot appears in the filename) an empty string is returned.
-     */
-    std::string
-    get_extension( std::string filename );
-
-    /**
-       Retrieves the basename from a filename. It removes the extension
-       including the last dot from a filename.
-       @param filename  A filename
-       @retuns the basename. If no extension is given
-               (no dot appears in the filename) the whole filename is returned.
-     */
-    std::string
-    get_basename( std::string filename );
-
-    /** Checks whether a file is a source file.
-        @param filename A file name.
-        @returns true if the file extension indicates a C/C++ or Fortran source
-                 file.
-     */
-    bool
-    is_source_file( std::string filename );
-
-    /** Checks whether a file is a Fortran source file.
-        @param filename A file name.
-        @returns true if the file extension indicates Fortran source file.
-     */
-    bool
-    is_fortran_file( std::string filename );
-
-    /** Checks whether a file is a C source file.
-        @param filename A file name.
-        @returns true if the file extension indicates C source file.
-     */
-    bool
-    is_c_file( std::string filename );
-
-    /** Checks whether a file is a C++ source file.
-        @param filename A file name.
-        @returns true if the file extension indicates C++ source file.
-     */
-    bool
-    is_cpp_file( std::string filename );
-
-    /** Checks whether a file is a CUDA source file.
-        @param filename A file name.
-        @returns true if the file extension indicates CUDA source file.
-     */
-    bool
-    is_cuda_file( std::string filename );
-
-    /** Checks whether a file is an object file.
-        @param filename A file name.
-        @returns true if the file extension indicates an object file.
-     */
-    bool
-    is_object_file( std::string filename );
-
-    /** Checks whether a file is a library.
-        @param filename A file name.
-        @returns true if the file extension indicates an object file.
-     */
-    bool
-    is_library( std::string filename );
-
-    /**
-       Removes everything before the first slash from @a full_path.
-       @param a file with its full path.
-       @returns The filename without its path.
-     */
-    std::string
-    remove_path( std::string full_path );
 
     /**
        Invoke the binary instrumenter Cobi. Instruments the binary @a orig_name. The

@@ -32,24 +32,13 @@
 
 #include <scorep_utility/SCOREP_IO.h>
 
-#include "SCOREP_Instrumenter.hpp"
-#include "scorep_config_tool_backend.h"
-#include "scorep_config_tool_mpi.h"
-
+#include <SCOREP_Instrumenter.hpp>
+#include <scorep_config_tool_backend.h>
+#include <scorep_config_tool_mpi.h>
+#include <scorep_instrumenter_utils.hpp>
 
 void
 print_help();
-
-static std::string
-remove_multiple_whitespaces( std::string str );
-
-static std::string
-replace_all( std::string &pattern,
-             std::string &replacement,
-             std::string  original );
-
-static std::string
-extract_path( std::string filename );
 
 /* ****************************************************************************
    Compiler specific defines
@@ -205,8 +194,8 @@ SCOREP_Instrumenter::Run()
                     }
                     else
                     {
-                        object_file = get_basename(
-                            SCOREP_IO_GetWithoutPath( current_file.c_str() ) ) + ".o";
+                        object_file = remove_extension(
+                            remove_path( current_file ) ) + ".o";
                     }
                     /* Setup the config tool calls for the new input file. This will already
                        setup the compiler and user instrumentation if desired
@@ -935,162 +924,6 @@ SCOREP_Instrumenter::SetValue( std::string key,
 }
 
 /* ****************************************************************************
-   Helper functions for file name manipulation and analysis
-******************************************************************************/
-
-std::string
-SCOREP_Instrumenter::get_extension( std::string filename )
-{
-    int pos = filename.rfind( "." );
-    if ( pos == std::string::npos )
-    {
-        return "";
-    }
-    return filename.substr( pos );
-}
-
-std::string
-SCOREP_Instrumenter::get_basename( std::string filename )
-{
-    int pos = filename.rfind( "." );
-    if ( pos == std::string::npos )
-    {
-        return filename;
-    }
-    return filename.substr( 0, pos );
-}
-
-bool
-SCOREP_Instrumenter::is_fortran_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".f" );
-    SCOREP_CHECK_EXT( ".F" );
-    SCOREP_CHECK_EXT( ".f90" );
-    SCOREP_CHECK_EXT( ".F90" );
-    SCOREP_CHECK_EXT( ".fpp" );
-    SCOREP_CHECK_EXT( ".FPP" );
-    SCOREP_CHECK_EXT( ".For" );
-    SCOREP_CHECK_EXT( ".FOR" );
-    SCOREP_CHECK_EXT( ".Ftn" );
-    SCOREP_CHECK_EXT( ".FTN" );
-    SCOREP_CHECK_EXT( ".f95" );
-    SCOREP_CHECK_EXT( ".F95" );
-    SCOREP_CHECK_EXT( ".f03" );
-    SCOREP_CHECK_EXT( ".F03" );
-    SCOREP_CHECK_EXT( ".f08" );
-    SCOREP_CHECK_EXT( ".F08" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_c_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".c" );
-    SCOREP_CHECK_EXT( ".C" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_cpp_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".cpp" );
-    SCOREP_CHECK_EXT( ".CPP" );
-    SCOREP_CHECK_EXT( ".cxx" );
-    SCOREP_CHECK_EXT( ".CXX" );
-    SCOREP_CHECK_EXT( ".cc" );
-    SCOREP_CHECK_EXT( ".CC" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_cuda_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    #define SCOREP_CHECK_EXT( ext ) if ( extension == ext ) return true
-    SCOREP_CHECK_EXT( ".cu" );
-    SCOREP_CHECK_EXT( ".CU" );
-    #undef SCOREP_CHECK_EXT
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_source_file( std::string filename )
-{
-    return is_c_file( filename ) ||
-           is_cpp_file( filename ) ||
-           is_cuda_file( filename ) ||
-           is_fortran_file( filename );
-}
-
-bool
-SCOREP_Instrumenter::is_object_file( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    if ( extension == ".o" )
-    {
-        return true;
-    }
-    return false;
-}
-
-bool
-SCOREP_Instrumenter::is_library( std::string filename )
-{
-    std::string extension = get_extension( filename );
-    if ( extension == "" )
-    {
-        return false;
-    }
-    if ( extension == ".a" )
-    {
-        return true;
-    }
-    if ( extension == ".so" )
-    {
-        return true;
-    }
-    if ( extension.find( ".a." ) != std::string::npos )
-    {
-        return true;
-    }
-    if ( extension.find( ".so." ) != std::string::npos )
-    {
-        return true;
-    }
-    return false;
-}
-
-
-/* ****************************************************************************
    Cleanup
 ******************************************************************************/
 void
@@ -1358,7 +1191,7 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
         std::transform( extension.begin(), extension.end(), extension.begin(), ::toupper );
     }
 
-    std::string modified_file = remove_path( get_basename( source_file )
+    std::string modified_file = remove_path( remove_extension( source_file )
                                              + ".opari"
                                              + extension );
 
@@ -1368,26 +1201,12 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
 }
 
 std::string
-SCOREP_Instrumenter::remove_path( std::string full_path )
-{
-    size_t pos = full_path.rfind( "/" );
-    if ( pos == std::string::npos )
-    {
-        return full_path;
-    }
-    else
-    {
-        return full_path.substr( pos + 1, std::string::npos );
-    }
-}
-
-std::string
 SCOREP_Instrumenter::instrument_pdt( std::string source_file )
 {
     std::string extension     = get_extension( source_file );
-    std::string modified_file = remove_path( get_basename( source_file ) +
+    std::string modified_file = remove_path( remove_extension( source_file ) +
                                              "_pdt" + extension );
-    std::string pdb_file     = remove_path( get_basename( source_file ) + ".pdb" );
+    std::string pdb_file     = remove_path( remove_extension( source_file ) + ".pdb" );
     std::string command      = "";
     int         return_value = 0;
 
@@ -1566,89 +1385,4 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name )
     temp_files += " " + orig_name;
 
     return EXIT_SUCCESS;
-}
-
-/** Trim  and replace multiple white-spaces in @ str by a single one.
- *
- *  @param str              String to be processed.
- *
- *  @return Returns string where all multiple white-spaces are replaced
- *          by a single one.
- */
-static std::string
-remove_multiple_whitespaces( std::string str )
-{
-    std::string            search = "  "; // this string contains 2 spaces
-    std::string::size_type pos;
-
-    /* Trim */
-    pos = str.find_last_not_of( ' ' );
-    if ( pos != std::string::npos )
-    {
-        str.erase( pos + 1 );
-        pos = str.find_first_not_of( ' ' );
-        if ( pos != std::string::npos )
-        {
-            str.erase( 0, pos );
-        }
-    }
-    else
-    {
-        str.erase( str.begin(), str.end() );
-    }
-
-    /* Remove multiple white-spaces */
-    while ( ( pos = str.find( search ) ) != std::string::npos )
-    {
-        /* remove 1 character from the string at index */
-        str.erase( pos, 1 );
-    }
-
-    return str;
-}
-
-/** Replace all occurrences of @ pattern in string @ original by
- *  @ replacement.
- *
- *  @param pattern          String that should be replaced.
- *  @param replacement      Replacement for @ pattern.
- *  @param original         Input string.
- *
- *  @return Returns a string where all occurrences of @ pattern are
- *          replaced by @ replacement.
- */
-static std::string
-replace_all( std::string &pattern,
-             std::string &replacement,
-             std::string  original )
-{
-    std::string::size_type pos            = original.find( pattern, 0 );
-    int                    pattern_length = pattern.length();
-
-    while ( pos != std::string::npos )
-    {
-        original.replace( pos, pattern_length, replacement );
-        pos = original.find( pattern, 0 );
-    }
-
-    return original;
-}
-
-/**
- * Returns the path contained in @ filename
- * @param filename a file name with a full path
- */
-static std::string
-extract_path( std::string filename )
-{
-    size_t pos = filename.find_last_of( '/' );
-    if ( pos == 0 )
-    {
-        return "/";
-    }
-    if ( pos != std::string::npos )
-    {
-        return filename.substr( 0, pos );
-    }
-    return "";
 }
