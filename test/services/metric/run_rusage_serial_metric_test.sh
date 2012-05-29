@@ -26,8 +26,9 @@ make scorep-config-tool-local
 TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 
 # Set up directory that will contain experiment results
-RESULT_DIR=$(pwd)/scorep-serial-rusage-metric-test-dir
+RESULT_DIR=scorep-serial-rusage-metric-test-dir
 rm -rf $RESULT_DIR
+echo $RESULT_DIR
 
 # Run test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_METRIC_RUSAGE_SEP=, SCOREP_METRIC_RUSAGE=ru_utime,ru_stime ./jacobi_serial_c_metric_test

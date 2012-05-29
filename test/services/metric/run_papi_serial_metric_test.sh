@@ -26,7 +26,7 @@ make scorep-config-tool-local
 TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 
 # Set up directory that will contain experiment results
-RESULT_DIR=$PWD/scorep-serial-papi-metric-test-dir
+RESULT_DIR=scorep-serial-papi-metric-test-dir
 rm -rf $RESULT_DIR
 
 # Run test
