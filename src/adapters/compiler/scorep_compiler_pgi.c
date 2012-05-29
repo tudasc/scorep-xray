@@ -123,27 +123,10 @@ static SCOREP_Mutex scorep_compiler_region_mutex;
  * location table access
  ***************************************************************************************/
 
-static inline uint32_t
-scorep_compiler_get_location_id()
-{
-    /* If the measurement system is not yet initialized or already finalized, it can only
-       be the master thread
-     */
-    if ( scorep_compiler_initialize )
-    {
-        return 0;
-    }
-
-    /* Else get the thread id from the measurement system */
-    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_ASSERT( data != NULL );
-    return SCOREP_Location_GetId( data );
-}
-
 static inline scorep_compiler_location_data*
-scorep_compiler_get_location_data()
+scorep_compiler_get_location_data( SCOREP_Location* data )
 {
-    uint32_t              location_id = scorep_compiler_get_location_id();
+    uint32_t              location_id = SCOREP_Location_GetId( data );
     SCOREP_Hashtab_Entry* entry       = SCOREP_Hashtab_Find( scorep_compiler_location_table,
                                                              &location_id,
                                                              NULL );
@@ -166,8 +149,7 @@ scorep_compiler_location_data*
 scorep_compiler_create_location_data( uint32_t id )
 {
     /* Create location struct */
-    scorep_compiler_location_data* data = NULL;
-    data = ( scorep_compiler_location_data* )malloc( sizeof( scorep_compiler_location_data ) );
+    scorep_compiler_location_data* data = malloc( sizeof( *data ) );
 
     /* Allocate memory for region handle stack */
     data->callstack_base = ( SCOREP_RegionHandle* )
@@ -213,11 +195,11 @@ scorep_compiler_finalize_location_table()
 
 /* Location initialization */
 SCOREP_Error_Code
-scorep_compiler_init_location()
+scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
 
-    uint32_t                       location_id = scorep_compiler_get_location_id();
+    uint32_t                       location_id = SCOREP_Location_GetId( locationData );
     scorep_compiler_location_data* data        = scorep_compiler_create_location_data( location_id );
 
     SCOREP_MutexLock( scorep_compiler_region_mutex );
@@ -342,11 +324,14 @@ ___rouent2( struct s1* p )
 
         SCOREP_InitMeasurement();
     }
-    scorep_compiler_location_data* location_data = scorep_compiler_get_location_data();
+
+    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_ASSERT( data != NULL );
+    scorep_compiler_location_data* location_data = scorep_compiler_get_location_data( data );
     if ( location_data == NULL )
     {
-        scorep_compiler_init_location();
-        location_data = scorep_compiler_get_location_data();
+        scorep_compiler_init_location( data );
+        location_data = scorep_compiler_get_location_data( data );
     }
 
     /* Register new regions */
@@ -428,7 +413,9 @@ ___rouret2( void )
         return;
     }
 
-    scorep_compiler_location_data* location_data = scorep_compiler_get_location_data();
+    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_ASSERT( data != NULL );
+    scorep_compiler_location_data* location_data = scorep_compiler_get_location_data( data );
     if ( location_data == NULL )
     {
         return;
