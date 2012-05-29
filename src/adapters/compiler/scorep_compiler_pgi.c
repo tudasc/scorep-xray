@@ -123,7 +123,7 @@ static SCOREP_Mutex scorep_compiler_region_mutex;
  * location table access
  ***************************************************************************************/
 
-inline uint32_t
+static inline uint32_t
 scorep_compiler_get_location_id()
 {
     /* If the measurement system is not yet initialized or already finalized, it can only
@@ -140,7 +140,7 @@ scorep_compiler_get_location_id()
     return SCOREP_Location_GetId( data );
 }
 
-inline scorep_compiler_location_data*
+static inline scorep_compiler_location_data*
 scorep_compiler_get_location_data()
 {
     uint32_t              location_id = scorep_compiler_get_location_id();
