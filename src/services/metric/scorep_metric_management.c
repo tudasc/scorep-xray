@@ -295,7 +295,8 @@ scorep_metric_initialize_location( SCOREP_Location* locationData )
     SCOREP_ASSERT( locationData != NULL );
 
     SCOREP_Metric_LocationData* metric_data =
-        SCOREP_Memory_AllocForMisc( sizeof( *metric_data ) );
+        SCOREP_Location_AllocForMisc( locationData,
+                                      sizeof( *metric_data ) );
 
     SCOREP_Location_SetSubsystemData( locationData,
                                       scorep_metric_subsystem_id,

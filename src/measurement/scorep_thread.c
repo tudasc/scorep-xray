@@ -363,14 +363,14 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
     new_location->profile_data = 0;
     if ( SCOREP_IsProfilingEnabled() )
     {
-        new_location->profile_data = SCOREP_Profile_CreateLocationData();
+        new_location->profile_data = SCOREP_Profile_CreateLocationData( new_location );
         assert( new_location->profile_data );
     }
 
     new_location->tracing_data = 0;
     if ( SCOREP_IsTracingEnabled() )
     {
-        new_location->tracing_data = SCOREP_Tracing_CreateLocationData();
+        new_location->tracing_data = SCOREP_Tracing_CreateLocationData( new_location );
         assert( new_location->tracing_data );
     }
 

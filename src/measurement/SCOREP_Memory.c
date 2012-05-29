@@ -176,7 +176,7 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 
 
 void*
-SCOREP_Memory_AllocForMisc( size_t size )
+SCOREP_Location_AllocForMisc( SCOREP_Location* locationData, size_t size )
 {
     // collect statistics
     if ( size == 0 )
@@ -185,9 +185,8 @@ SCOREP_Memory_AllocForMisc( size_t size )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManager(
-            SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_MEMORY_TYPE_MISC ),
+        SCOREP_Location_GetMemoryPageManager( locationData,
+                                              SCOREP_MEMORY_TYPE_MISC ),
         size );
     if ( !mem )
     {
@@ -195,6 +194,14 @@ SCOREP_Memory_AllocForMisc( size_t size )
         SCOREP_Memory_HandleOutOfMemory();
     }
     return mem;
+}
+
+
+void*
+SCOREP_Memory_AllocForMisc( size_t size )
+{
+    return SCOREP_Location_AllocForMisc( SCOREP_Location_GetCurrentCPULocation(),
+                                         size );
 }
 
 
@@ -210,7 +217,7 @@ SCOREP_Memory_FreeMiscMem()
 
 
 void*
-SCOREP_Memory_AllocForProfile( size_t size )
+SCOREP_Location_AllocForProfile( SCOREP_Location* locationData, size_t size )
 {
     // collect statistics
     if ( size == 0 )
@@ -219,9 +226,8 @@ SCOREP_Memory_AllocForProfile( size_t size )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManager(
-            SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_MEMORY_TYPE_PROFILING ),
+        SCOREP_Location_GetMemoryPageManager( locationData,
+                                              SCOREP_MEMORY_TYPE_PROFILING ),
         size );
     if ( !mem )
     {
@@ -229,6 +235,13 @@ SCOREP_Memory_AllocForProfile( size_t size )
         SCOREP_Memory_HandleOutOfMemory();
     }
     return mem;
+}
+
+void*
+SCOREP_Memory_AllocForProfile( size_t size )
+{
+    return SCOREP_Location_AllocForProfile( SCOREP_Location_GetCurrentCPULocation(),
+                                            size );
 }
 
 

@@ -65,7 +65,8 @@ scorep_profile_has_tasks();
    @param location The location structure of the location which is initialized.
  */
 void
-scorep_profile_task_initialize( SCOREP_Profile_LocationData* location );
+scorep_profile_task_initialize( SCOREP_Location*             locationData,
+                                SCOREP_Profile_LocationData* location );
 
 /**
    Finalizes the tasking data structures for a location.

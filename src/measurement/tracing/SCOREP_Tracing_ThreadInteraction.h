@@ -38,7 +38,7 @@ typedef struct SCOREP_TracingData SCOREP_TracingData;
  *
  */
 SCOREP_TracingData*
-SCOREP_Tracing_CreateLocationData();
+SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData );
 
 
 /**

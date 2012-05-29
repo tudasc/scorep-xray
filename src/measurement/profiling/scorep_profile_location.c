@@ -42,7 +42,7 @@ scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
 }
 
 SCOREP_Profile_LocationData*
-scorep_profile_create_location_data()
+scorep_profile_create_location_data( SCOREP_Location* locationData )
 {
     /* Create location data structure.
      * The location data structure must not be deleted when the profile is reset
@@ -50,7 +50,7 @@ scorep_profile_create_location_data()
      * memory pages.
      */
     SCOREP_Profile_LocationData* location
-        = SCOREP_Memory_AllocForMisc( sizeof( SCOREP_Profile_LocationData ) );
+        = SCOREP_Location_AllocForMisc( locationData, sizeof( *location ) );
 
     /* Set default values. */
     location->current_implicit_node = NULL;
@@ -67,7 +67,7 @@ scorep_profile_create_location_data()
     location->current_task          = SCOREP_PROFILE_IMPLICIT_TASK;
 
     /* Initialize locations task instance table */
-    scorep_profile_task_initialize( location );
+    scorep_profile_task_initialize( locationData, location );
 
     return location;
 }

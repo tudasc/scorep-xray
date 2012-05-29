@@ -249,7 +249,7 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
  *
  */
 SCOREP_Profile_LocationData*
-SCOREP_Profile_CreateLocationData();
+SCOREP_Profile_CreateLocationData( SCOREP_Location* locationData );
 
 
 /**

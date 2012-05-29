@@ -170,9 +170,9 @@ SCOREP_Profile_Finalize()
 }
 
 SCOREP_Profile_LocationData*
-SCOREP_Profile_CreateLocationData()
+SCOREP_Profile_CreateLocationData( SCOREP_Location* locationData )
 {
-    return scorep_profile_create_location_data();
+    return scorep_profile_create_location_data( locationData );
 }
 
 

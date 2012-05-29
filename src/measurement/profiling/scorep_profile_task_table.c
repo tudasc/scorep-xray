@@ -51,11 +51,11 @@ static int32_t scorep_profile_has_tasks_flag = 0;
  */
 struct scorep_profile_task_table
 {
-    scorep_profile_task** items;
-    uint64_t              size;
-    scorep_profile_task*  free_entries;
-    uint64_t              fill_level;
-    uint64_t              max_tasks;
+    uint64_t             size;
+    scorep_profile_task* free_entries;
+    uint64_t             fill_level;
+    uint64_t             max_tasks;
+    scorep_profile_task* items[];
 };
 
 static scorep_profile_task*
@@ -175,18 +175,9 @@ scorep_profile_remove_task( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_task_initialize( SCOREP_Profile_LocationData* location )
+scorep_profile_task_initialize( SCOREP_Location*             locationData,
+                                SCOREP_Profile_LocationData* location )
 {
-    location->tasks = ( scorep_profile_task_table* )
-                      SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_task_table ) );
-    if ( location->tasks == NULL )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to allocate memory for task table." );
-        SCOREP_PROFILE_STOP;
-        return;
-    }
-
     /* The task table must have at least one bin, else we need a lot of extra checks for
        this special case, or the program seg faults when a task occur.
      */
@@ -195,25 +186,13 @@ scorep_profile_task_initialize( SCOREP_Profile_LocationData* location )
         scorep_profile.task_table_size = 1;
     }
 
-    scorep_profile_task** items = ( scorep_profile_task** )
-                                  SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_task* ) *
-                                                                 scorep_profile.task_table_size );
-
-    if ( items == NULL )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to allocate memory for task table." );
-        SCOREP_PROFILE_STOP;
-        return;
-    }
-
-    for ( int32_t i = 0; i < scorep_profile.task_table_size; i++ )
-    {
-        items[ i ] = NULL;
-    }
+    size_t task_table_size = sizeof( scorep_profile_task* ) * scorep_profile.task_table_size;
+    location->tasks = SCOREP_Location_AllocForProfile(
+        locationData,
+        sizeof( *location->tasks ) + task_table_size );
+    memset( location->tasks->items, 0, task_table_size );
 
     location->tasks->size         = scorep_profile.task_table_size;
-    location->tasks->items        = items;
     location->tasks->free_entries = NULL;
     location->tasks->fill_level   = 0;
     location->tasks->max_tasks    = 0;

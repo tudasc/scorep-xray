@@ -36,6 +36,9 @@
 #include <stddef.h>
 
 
+#include <SCOREP_Location.h>
+
+
 /**
  * Types of memory pages a location has.
  *
@@ -125,6 +128,9 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );
  * contiguous memory block whose size in bytes it at least @a size. The
  * contents of the memory block is undetermined.
  *
+ * @note @a SCOREP_Location_AllocForMisc is not thread safe. This function is
+ *       only useful when called in a init_location susbsytem callback.
+ *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
  *
@@ -132,9 +138,19 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );
  *         aborts if the request could not handled.
  *
  * @see SCOREP_Memory_FreeMiscMem()
+ *
+ * @{
  */
 void*
 SCOREP_Memory_AllocForMisc( size_t size );
+
+void*
+SCOREP_Location_AllocForMisc( SCOREP_Location* locationData,
+                              size_t           size );
+
+/**
+ * @}
+ */
 
 
 /**
@@ -158,10 +174,19 @@ SCOREP_Memory_FreeMiscMem();
  *         aborts if the request could not handled.
  *
  * @see SCOREP_Memory_FreeSummaryMem()
+ *
+ * @{
  */
 void*
 SCOREP_Memory_AllocForProfile( size_t size );
 
+void*
+SCOREP_Location_AllocForProfile( SCOREP_Location* locationData,
+                                 size_t           size );
+
+/**
+ * @}
+ */
 
 /**
  * Release the entire allocated runtime summarization data memory.

@@ -47,10 +47,10 @@
 
 
 SCOREP_TracingData*
-SCOREP_Tracing_CreateLocationData()
+SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData )
 {
     SCOREP_TracingData* new_data
-        = SCOREP_Memory_AllocForMisc( sizeof( *new_data ) );
+        = SCOREP_Location_AllocForMisc( locationData, sizeof( *new_data ) );
 
     new_data->otf_writer = 0;
 

@@ -67,7 +67,7 @@ struct SCOREP_Profile_LocationData
    Creates a new locationd data structure.
  */
 SCOREP_Profile_LocationData*
-scorep_profile_create_location_data();
+scorep_profile_create_location_data( SCOREP_Location* locationData );
 
 /**
    Deletes a location data structure.
