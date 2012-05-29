@@ -26,8 +26,6 @@
 
 #include <config.h>
 
-#include <SCOREP_Config.h>
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -36,6 +34,8 @@
 #include <ctype.h>
 #include <inttypes.h>
 #include <assert.h>
+
+#include <SCOREP_Config.h>
 
 #include <scorep_utility/SCOREP_Debug.h>
 #include <scorep_utility/SCOREP_Hashtab.h>
