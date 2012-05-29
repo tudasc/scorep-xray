@@ -27,7 +27,12 @@
  */
 
 #include <config.h>
+
+#include <scorep_utility/SCOREP_Error.h>
+#include <scorep_utility/SCOREP_Debug.h>
+
 #include <SCOREP_Location.h>
+
 #include <SCOREP_Compiler_Init.h>
 
 SCOREP_Error_Code

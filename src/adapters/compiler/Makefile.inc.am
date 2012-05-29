@@ -19,6 +19,7 @@
 
 libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
     -I$(INC_DIR_UTIL)                                        \
+    -I$(INC_DIR_UTIL_INTERNAL)                               \
     -I$(PUBLIC_INC_DIR)                                      \
     -I$(INC_ROOT)src/adapters/compiler                       \
     -I$(INC_ROOT)src/adapters/include                        \
@@ -145,3 +146,22 @@ endif
 endif
 endif
 endif
+
+noinst_LTLIBRARIES += libscorep_adapter_compiler_all.la
+
+libscorep_adapter_compiler_all_la_CPPFLAGS = $(AM_CPPFLAGS) \
+    -I$(INC_DIR_UTIL)                                        \
+    -I$(INC_DIR_UTIL_INTERNAL)                               \
+    -I$(PUBLIC_INC_DIR)                                      \
+    -I$(INC_ROOT)src/adapters/compiler                       \
+    -I$(INC_ROOT)src/adapters/include                        \
+    -I$(INC_ROOT)src/utils/include                           \
+    -I$(INC_ROOT)src/measurement/include
+
+libscorep_adapter_compiler_all_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c

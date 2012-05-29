@@ -1,0 +1,29 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012,
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       src/utils/vector/Makefile.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+noinst_LTLIBRARIES += libscorep_vector.la
+libscorep_vector_la_SOURCES = \
+    $(SRC_ROOT)src/utils/include/SCOREP_Vector.h \
+    $(SRC_ROOT)src/utils/vector/SCOREP_Vector.c
+libscorep_vector_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_UTIL) \
+    -I$(INC_DIR_UTIL_INTERNAL)

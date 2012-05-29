@@ -15,13 +15,13 @@
 
 ## file       src/utils/Makefile.inc.am
 
-noinst_LTLIBRARIES += libscorep_utils.la
+noinst_LTLIBRARIES += libscorep_bitstring.la
 
-libscorep_utils_la_SOURCES = \
+libscorep_bitstring_la_SOURCES = \
     $(SRC_ROOT)src/utils/bitstring/SCOREP_Bitstring.c       \
     $(SRC_ROOT)src/utils/include/SCOREP_Bitstring.h
 
-libscorep_utils_la_CPPFLAGS = \
+libscorep_bitstring_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/utils/include
 

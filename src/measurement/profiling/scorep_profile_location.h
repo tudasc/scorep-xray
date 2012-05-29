@@ -27,7 +27,7 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
-#include <scorep_utility/SCOREP_Hashtab.h>
+#include <SCOREP_Hashtab.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <scorep_profile_definition.h>

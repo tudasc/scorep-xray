@@ -21,6 +21,8 @@ include ../src/tools/wrapper/Makefile-backend.inc.am
 include ../src/measurement/online_access/Makefile.inc.am
 include ../src/utils/bitstring/Makefile.inc.am
 include ../src/utils/memory/Makefile.inc.am
+include ../src/utils/vector/Makefile.inc.am
+include ../src/utils/hashtab/Makefile.inc.am
 
 
 ## include tests
@@ -49,3 +51,5 @@ include ../test/OA/serial/Fortran/Makefile.inc.am
 include ../test/OA/serial/C/Makefile.inc.am
 include ../test/installcheck/Makefile.inc.am
 include ../test/memory/Makefile.inc.am
+include ../test/vector/Makefile.inc.am
+include ../test/hashtab/Makefile.inc.am

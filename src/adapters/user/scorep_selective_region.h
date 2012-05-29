@@ -35,7 +35,7 @@
 
 #include <stdbool.h>
 #include <scorep/SCOREP_User_Types.h>
-#include <scorep_utility/SCOREP_Vector.h>
+#include <SCOREP_Vector.h>
 
 /* **************************************************************************************
    Type definitions

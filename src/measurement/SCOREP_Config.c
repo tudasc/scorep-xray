@@ -37,9 +37,12 @@
 
 #include <SCOREP_Config.h>
 
+#include <scorep_utility/SCOREP_Error.h>
 #include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Hashtab.h>
 #include <scorep_utility/SCOREP_CStr.h>
+
+#include <SCOREP_Hashtab.h>
+
 #include "scorep_types.h"
 
 static SCOREP_Hashtab* scorep_config_name_spaces = NULL;

@@ -1,0 +1,32 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012,
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       src/utils/hashtab/Makefile.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+noinst_LTLIBRARIES += libscorep_hashtab.la
+libscorep_hashtab_la_SOURCES = \
+    $(SRC_ROOT)src/utils/include/SCOREP_Hashtab.h \
+    $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab.c \
+    $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab_CompareFuncs.c \
+    $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab_Extensions.c \
+    $(SRC_ROOT)src/utils/hashtab/SCOREP_Hashtab_HashFuncs.c
+libscorep_hashtab_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_UTIL) \
+    -I$(INC_DIR_UTIL_INTERNAL)

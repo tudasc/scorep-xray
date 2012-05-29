@@ -27,7 +27,7 @@
  * format.
  */
 
-#include <scorep_utility/SCOREP_Hashtab.h>
+#include <SCOREP_Hashtab.h>
 
 #include <cubew_cubew.h>
 #include <cubew_cube.h>

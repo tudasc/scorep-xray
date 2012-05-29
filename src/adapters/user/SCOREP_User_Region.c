@@ -31,7 +31,7 @@
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Filter.h>
-#include <scorep_utility/SCOREP_Hashtab.h>
+#include <SCOREP_Hashtab.h>
 #include <scorep_utility/SCOREP_CStr.h>
 #include <scorep_utility/SCOREP_IO.h>
 #include "scorep_selective_region.h"
