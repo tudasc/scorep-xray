@@ -100,7 +100,8 @@ __VT_IntelEntry( char*     str,
     {
         SCOREP_MutexLock( scorep_compiler_region_mutex );
 
-        if ( hash_node = scorep_compiler_hash_get( str ) )
+        hash_node = scorep_compiler_hash_get( str );
+        if ( hash_node )
         {
             if ( hash_node->region_handle == SCOREP_INVALID_REGION )
             {
@@ -145,8 +146,6 @@ VT_IntelEntry( char*     str,
 void
 __VT_IntelExit( uint32_t* id2 )
 {
-    scorep_compiler_hash_node* hash_node;
-
     if ( scorep_compiler_finalized )
     {
         return;
@@ -175,8 +174,6 @@ VT_IntelExit( uint32_t* id2 )
 void
 __VT_IntelCatch( uint32_t* id2 )
 {
-    scorep_compiler_hash_node* hash_node;
-
     if ( scorep_compiler_finalized )
     {
         return;
@@ -201,8 +198,6 @@ VT_IntelCatch( uint32_t* id2 )
 void
 __VT_IntelCheck( uint32_t* id2 )
 {
-    scorep_compiler_hash_node* hash_node;
-
     if ( scorep_compiler_finalized )
     {
         return;
