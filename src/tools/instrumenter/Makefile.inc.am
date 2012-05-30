@@ -45,6 +45,8 @@ if SCOREP_COMPILER_CRAY
 scorep_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
 endif
 
+scorep_LDFLAGS = $(OPENMP_CFLAGS)
+
 scorep_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la    \
              $(LIB_DIR_UTIL)libscorep_parser_tools.la
 
