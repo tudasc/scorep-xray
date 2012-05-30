@@ -43,10 +43,6 @@ libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
 ##libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 
 
 
-libscorep_adapter_mpi_c_wrapper_la_LIBADD =   \
-    $(LIB_DIR_UTIL)libscorep_utilities.la
-
-
 SCOREP_MPI_FORTRAN_SOURCES =                                 \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Cg.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Coll.c           \

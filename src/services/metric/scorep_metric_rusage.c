@@ -132,17 +132,17 @@ typedef struct scorep_rusage_metric_struct
 static int scorep_metric_rusage_initialize = 1;
 
 /** Contains the name of requested metrics. */
-char* scorep_metrics_rusage = NULL;
+static char* scorep_metrics_rusage = NULL;
 
 /** Contains the separator of metric names. */
-char* scorep_metrics_rusage_separator = NULL;
+static char* scorep_metrics_rusage_separator = NULL;
 
 /** Configuration variables for the resource usage metric source.
  *  Current configuration variables are:
  *  @li @c SCOREP_METRIC_RUSAGE list of requested metric names.
  *  @li @c SCOREP_METRIC_RUSAGE_SEP character that separates single metric names.
  */
-SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
+static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
     {
         "rusage",
         SCOREP_CONFIG_TYPE_STRING,
@@ -225,7 +225,7 @@ static int32_t number_of_metrics = 0;
  *         called before other functions depending on this metric source are
  *         used by the measurement system.
  */
-void
+static void
 scorep_metric_rusage_open()
 {
     /** Content of environment variable SCOREP_METRIC_RUSAGE */
@@ -320,7 +320,7 @@ scorep_metric_rusage_open()
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_metric_rusage_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register rusage metric source!" );
@@ -330,7 +330,7 @@ scorep_metric_rusage_register()
 
 /** @brief Called on deregistration of the metric source.
  */
-void
+static void
 scorep_metric_rusage_deregister()
 {
     free( scorep_metrics_rusage );
@@ -342,7 +342,7 @@ scorep_metric_rusage_deregister()
  *
  *  @return Returns the number of used metrics.
  */
-uint32_t
+static uint32_t
 scorep_metric_rusage_initialize_source()
 {
     if ( scorep_metric_rusage_initialize )
@@ -365,7 +365,7 @@ scorep_metric_rusage_initialize_source()
 
 /** @brief Metric source finalization.
  */
-void
+static void
 scorep_metric_rusage_finalize_source()
 {
     /* Call only, if previously initialized */
@@ -389,7 +389,7 @@ scorep_metric_rusage_finalize_source()
  *
  *  @return Returns a reference to management data used to handle set of active metrics.
  */
-SCOREP_Metric_EventSet*
+static SCOREP_Metric_EventSet*
 scorep_metric_rusage_initialize_location()
 {
     SCOREP_Metric_EventSet* event_set = malloc( sizeof( struct SCOREP_Metric_EventSet ) );
@@ -404,7 +404,7 @@ scorep_metric_rusage_initialize_location()
  *
  *  @param eventSet  Reference to active set of metrics.
  */
-void
+static void
 scorep_metric_rusage_finalize_location( SCOREP_Metric_EventSet* eventSet )
 {
     free( eventSet );
@@ -417,7 +417,7 @@ scorep_metric_rusage_finalize_location( SCOREP_Metric_EventSet* eventSet )
  *  @param eventSet  Reference to active set of metrics.
  *  @param values    Reference to array that will be filled with values from active metrics.
  */
-void
+static void
 scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
                            uint64_t*               values )
 {
@@ -509,7 +509,7 @@ scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
  *
  *  @return Returns number of active metrics.
  */
-int32_t
+static int32_t
 scorep_metric_rusage_get_number_of_metrics()
 {
     return number_of_metrics;
@@ -521,7 +521,7 @@ scorep_metric_rusage_get_number_of_metrics()
  *
  *  @return Returns name of requested metric.
  */
-const char*
+static const char*
 scorep_metric_rusage_get_metric_name( uint32_t metricIndex )
 {
     if ( metricIndex < number_of_metrics )
@@ -540,7 +540,7 @@ scorep_metric_rusage_get_metric_name( uint32_t metricIndex )
  *
  *  @return Returns description of requested metric.
  */
-const char*
+static const char*
 scorep_metric_rusage_get_metric_description( uint32_t metricIndex )
 {
     if ( metricIndex < number_of_metrics )
@@ -559,7 +559,7 @@ scorep_metric_rusage_get_metric_description( uint32_t metricIndex )
  *
  *  @return Returns unit of requested metric.
  */
-const char*
+static const char*
 scorep_metric_rusage_get_metric_unit( uint32_t metricIndex )
 {
     if ( metricIndex < number_of_metrics )
@@ -578,7 +578,7 @@ scorep_metric_rusage_get_metric_unit( uint32_t metricIndex )
  *
  *  @return Returns properties of requested metric.
  */
-SCOREP_Metric_Properties
+static SCOREP_Metric_Properties
 scorep_metric_rusage_get_metric_properties( uint32_t metricIndex )
 {
     SCOREP_Metric_Properties props;
@@ -617,7 +617,7 @@ scorep_metric_rusage_get_metric_properties( uint32_t metricIndex )
  *
  *  @return Returns recent clock rate.
  */
-uint64_t
+static uint64_t
 scorep_metric_rusage_clock_rate()
 {
     // Resource usage counters don't provide a clock source.

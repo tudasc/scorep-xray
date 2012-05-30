@@ -127,10 +127,10 @@ struct SCOREP_Metric_EventSet
 };
 
 /** Contains the name of requested metrics. */
-char* scorep_metrics_papi = NULL;
+static char* scorep_metrics_papi = NULL;
 
 /** Contains the separator of metric names. */
-char* scorep_metrics_papi_separator = NULL;
+static char* scorep_metrics_papi_separator = NULL;
 
 /**
  *  Configuration variables for the metric adapter.
@@ -138,7 +138,7 @@ char* scorep_metrics_papi_separator = NULL;
  *  @li @c SCOREP_METRIC_PAPI list of requested metric names.
  *  @li @c SCOREP_METRIC_PAPI_SEP character that separates single metric names.
  */
-SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
+static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
     {
         "papi",
         SCOREP_CONFIG_TYPE_STRING,
@@ -218,6 +218,7 @@ static int scorep_metric_papi_initialize = 1;
  *  @return It returns the identifier of recent location.
  */
 unsigned long
+static
 scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
@@ -702,7 +703,7 @@ scorep_metric_papi_test()
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-SCOREP_Error_Code
+static SCOREP_Error_Code
 scorep_metric_papi_register()
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register PAPI metric source!" );
@@ -713,7 +714,7 @@ scorep_metric_papi_register()
 /** @brief Called on deregistration of the metric adapter. Currently, no action is performed
  *         on deregistration.
  */
-void
+static void
 scorep_metric_papi_deregister()
 {
     free( scorep_metrics_papi );
@@ -725,7 +726,7 @@ scorep_metric_papi_deregister()
  *
  *  @return It returns the number of recently used metrics.
  */
-uint32_t
+static uint32_t
 scorep_metric_papi_initialize_source()
 {
     if ( scorep_metric_papi_initialize )
@@ -746,7 +747,7 @@ scorep_metric_papi_initialize_source()
 
 /** @brief Adapter finalization.
  */
-void
+static void
 scorep_metric_papi_finalize_source()
 {
     /* Call only, if previously initialized */
@@ -764,7 +765,7 @@ scorep_metric_papi_finalize_source()
  *
  *  @return It returns the event set used by this location.
  */
-SCOREP_Metric_EventSet*
+static SCOREP_Metric_EventSet*
 scorep_metric_papi_initialize_location()
 {
     if ( number_of_metrics == 0 )
@@ -787,7 +788,7 @@ scorep_metric_papi_initialize_location()
  *
  *  @param eventSet Event set to close.
  */
-void
+static void
 scorep_metric_papi_finalize_location( SCOREP_Metric_EventSet* eventSet )
 {
     if ( number_of_metrics == 0 )
@@ -809,7 +810,7 @@ scorep_metric_papi_finalize_location( SCOREP_Metric_EventSet* eventSet )
  *                  that should be measured.
  *  @param values   An array, to which the counter values are written.
  */
-void
+static void
 scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
                          uint64_t*               values )
 {
@@ -854,7 +855,7 @@ scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
  *
  *  @return It returns the number of recently used metrics.
  */
-int32_t
+static int32_t
 scorep_metric_papi_get_number_of_metrics()
 {
     return number_of_metrics;
@@ -866,7 +867,7 @@ scorep_metric_papi_get_number_of_metrics()
  *
  *  @return Returns the name of requested metric.
  */
-const char*
+static const char*
 scorep_metric_papi_get_metric_name( uint32_t metricIndex )
 {
     if ( metricIndex < number_of_metrics )
@@ -886,7 +887,7 @@ scorep_metric_papi_get_metric_name( uint32_t metricIndex )
  *
  *  @return Returns a description of the unit of requested metric.
  */
-const char*
+static const char*
 scorep_metric_papi_get_metric_description( uint32_t metricIndex )
 {
     if ( metricIndex < number_of_metrics )
@@ -905,7 +906,7 @@ scorep_metric_papi_get_metric_description( uint32_t metricIndex )
  *
  *  @return Returns a string containing a representation of the unit of requested metric.
  */
-const char*
+static const char*
 scorep_metric_papi_get_metric_unit( uint32_t metricIndex )
 {
     if ( metricIndex < number_of_metrics )
@@ -924,7 +925,7 @@ scorep_metric_papi_get_metric_unit( uint32_t metricIndex )
  *
  *  @return It returns property settings of requested metrics.
  */
-SCOREP_Metric_Properties
+static SCOREP_Metric_Properties
 scorep_metric_papi_get_metric_properties( uint32_t metricIndex )
 {
     SCOREP_Metric_Properties props;
@@ -964,7 +965,7 @@ scorep_metric_papi_get_metric_properties( uint32_t metricIndex )
  *
  *  @return It returns the clock rate.
  */
-uint64_t
+static uint64_t
 scorep_metric_papi_clock_rate()
 {
     double hertz = 0;
