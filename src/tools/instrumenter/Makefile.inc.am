@@ -9,7 +9,7 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.cpp \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.hpp
 
-scorep_CPPFLAGS = $(AM_CPPFLAGS)        \
+scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) \
     -I$(INC_ROOT)src/tools/instrumenter \
     -I$(INC_DIR_UTIL)
 

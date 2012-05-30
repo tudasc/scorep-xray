@@ -26,6 +26,7 @@
 #include <string>
 #include <fstream>
 #include <istream>
+#include <sstream>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -256,7 +257,7 @@ SCOREP_Instrumenter::Run()
         prepare_config_tool_calls( "" );
 
         // Perform Opari instrumentation
-        if ( opari_instrumentation == enabled )
+        if ( opari_instrumentation == enabled || is_openmp_application == enabled )
         {
             prepare_opari_linking();
         }
@@ -463,10 +464,10 @@ SCOREP_Instrumenter::parse_parameter( std::string arg )
     else if ( arg == "--noopari" )
     {
         opari_instrumentation = disabled;
-        if ( is_openmp_application == detect )
-        {
-            is_openmp_application = disabled;
-        }
+        //if ( is_openmp_application == detect )
+        //{
+        //    is_openmp_application = disabled;
+        //}
         return scorep_parse_mode_param;
     }
     else if ( arg == "--user" )
@@ -1006,6 +1007,12 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
         mode += " --fortran";
     }
 
+    /*    if ( opari_instrumentation == enabled )
+       {mode += " --opari";}
+       else
+       {mode += " --noopari";}
+     */
+
     // Generate calls
     scorep_flags = "`" + scorep_config + mode + " --cflags` ";
     scorep_libs  = "`" + scorep_config + mode + " --libs` ";
@@ -1206,37 +1213,45 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     std::string extension     = get_extension( source_file );
     std::string modified_file = remove_path( remove_extension( source_file ) +
                                              "_pdt" + extension );
-    std::string pdb_file     = remove_path( remove_extension( source_file ) + ".pdb" );
-    std::string command      = "";
-    int         return_value = 0;
+    std::string       pdb_file = remove_path( remove_extension( source_file ) + ".pdb" );
+    std::stringstream command;
+    int               return_value = 0;
 
     // Create database file
     if ( is_c_file( source_file ) )
     {
-        command = pdt_bin_path + "/cparse " + source_file;
+        command << pdt_bin_path << "/cparse " << source_file;
     }
     else if ( is_fortran_file( source_file ) )
     {
-        command = pdt_bin_path + "/gfparse " + source_file;
+        command << pdt_bin_path << "/gfparse " << source_file;
     }
     else
     {
-        command = pdt_bin_path + "/cxxparse " + source_file;
+        command << pdt_bin_path << "/cxxparse " << source_file;
     }
-    command += define_flags + include_flags + " " + scorep_flags;
+    command << define_flags << include_flags;
+#ifdef _OPENMP
+    if ( is_openmp_application == enabled )
+    {
+        command << " -D_OPENMP=";
+        command << _OPENMP;
+    }
+#endif
+    command << " " << scorep_flags;
 
     if ( is_mpi_application == enabled )
     {
-        command += " -I" SCOREP_MPI_INCLUDE;
+        command << " -I" SCOREP_MPI_INCLUDE;
     }
 
     if ( verbosity >= 1 )
     {
-        std::cout << command << std::endl;
+        std::cout << command.str() << std::endl;
     }
     if ( !is_dry_run )
     {
-        return_value = system( command.c_str() );
+        return_value = system( command.str().c_str() );
         if ( return_value != 0 )
         {
             std::cerr << "Failed to create PDT database file." << std::endl;
@@ -1245,25 +1260,33 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     }
 
     // instrument source
-    command = pdt_bin_path + "/tau_instrumentor "
-              + pdb_file + " "
-              + source_file
-              + include_flags + define_flags
-              + " -o " + modified_file
-              + " -spec " + pdt_config_file;
-
+    command.str( "" );
+    command << pdt_bin_path << "/tau_instrumentor "
+            << pdb_file << " "
+            << source_file
+            << include_flags << define_flags;
+#ifdef _OPENMP
     if ( is_openmp_application == enabled )
     {
-        command += " -D_OPENMP";
+        command << " -D_OPENMP=";
+        command <<  _OPENMP;
+    }
+#endif
+    command << " -o " << modified_file
+            << " -spec " << pdt_config_file;
+
+    if ( is_mpi_application == enabled )
+    {
+        command << " -I" SCOREP_MPI_INCLUDE;
     }
 
     if ( verbosity >= 1 )
     {
-        std::cout << command << std::endl;
+        std::cout << command.str() << std::endl;
     }
     if ( !is_dry_run )
     {
-        return_value = system( command.c_str() );
+        return_value = system( command.str().c_str() );
         if ( return_value != 0 )
         {
             std::cerr << "PDT instrumentation failed." << std::endl;
