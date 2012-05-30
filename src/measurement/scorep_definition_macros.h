@@ -416,7 +416,7 @@
 #define HASH_ADD_HANDLE( definition, handle_member, Type ) \
     do \
     { \
-        ( definition )->hash_value = hashword( \
+        ( definition )->hash_value = jenkins_hashword( \
             &SCOREP_GET_HASH_OF_LOCAL_HANDLE( ( definition )->handle_member, \
                                               Type ), \
             1, \
