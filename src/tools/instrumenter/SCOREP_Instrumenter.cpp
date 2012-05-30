@@ -217,6 +217,11 @@ SCOREP_Instrumenter::Run()
                         temp_files += " " + object_file;
                     }
 
+                    // Perform Opari instrumentation                                                                                         if ( opari_instrumentation == enabled )
+                    {
+                        current_file = instrument_opari( current_file );
+                    }
+
                     // Perform PDT instrumentation
                     #ifdef HAVE_PDT
                     if ( pdt_instrumentation == enabled )
@@ -224,12 +229,6 @@ SCOREP_Instrumenter::Run()
                         current_file = instrument_pdt( current_file );
                     }
                     #endif
-
-                    // Perform Opari instrumentation
-                    if ( opari_instrumentation == enabled )
-                    {
-                        current_file = instrument_opari( current_file );
-                    }
 
                     // Compile instrumented file
                     compile_source_file( current_file, object_file );
@@ -1230,7 +1229,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     {
         command << pdt_bin_path << "/cxxparse " << source_file;
     }
-    command << define_flags << include_flags;
+    command << define_flags << compiler_flags;
 #ifdef _OPENMP
     if ( is_openmp_application == enabled )
     {
@@ -1264,7 +1263,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     command << pdt_bin_path << "/tau_instrumentor "
             << pdb_file << " "
             << source_file
-            << include_flags << define_flags;
+            << compiler_flags << define_flags;
 #ifdef _OPENMP
     if ( is_openmp_application == enabled )
     {
