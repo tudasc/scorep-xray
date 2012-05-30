@@ -27,7 +27,9 @@
 
 
 #include <config.h>
+#include <scorep_profile_task_table.h>
 #include <stdlib.h>
+#include <string.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Memory.h>
 #include <scorep_utility/SCOREP_Error.h>
@@ -35,7 +37,6 @@
 #include <scorep_thread.h>
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
-#include <scorep_profile_task_table.h>
 #include <scorep_profile_event_base.h>
 
 /* **************************************************************************************

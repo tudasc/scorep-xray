@@ -56,25 +56,6 @@
 typedef struct SCOREP_Profile_LocationData SCOREP_Profile_LocationData;
 
 /**
-   The enumeration type for the post processing flag. The postprecessing flag
-   is a bitvector which allows to specify which steps the post-processing
-   in function @ref SCOREP_Profile_Process are perfomed.
-   Each bit corresponds to one possible step. Nevertheless, some steps have others
-   as prerequiste, and enable them if they are chosen.
-   Thus, combine steps with the bitwise or opeator '|' and not with '+'.
- */
-typedef enum
-{
-    SCOREP_Profile_ProcessNone     = 0,
-    SCOREP_Profile_ProcessThreads  = 1,
-    SCOREP_Profile_ProcessCallpath = 3, /* Threadprocessing is a prerequisiste */
-    SCOREP_Profile_ParamToRegion   = 4,
-    SCOREP_Profile_Phase           = 8,
-
-    SCOREP_Profile_ProcessDefault  = 15
-} SCOREP_Profile_ProcessingFlag;
-
-/**
    The type for specifing the output format of the profile.
  */
 typedef enum
@@ -127,8 +108,7 @@ SCOREP_Profile_Finalize();
    unification in order to register callpathe sto be unified.
  */
 void
-SCOREP_Profile_Process( SCOREP_Location*              location,
-                        SCOREP_Profile_ProcessingFlag processFlags );
+SCOREP_Profile_Process( SCOREP_Location* location );
 
 /**
    Writes the Profile. The output format can be set via environment variable

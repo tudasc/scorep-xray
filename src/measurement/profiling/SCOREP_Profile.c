@@ -183,8 +183,7 @@ SCOREP_Profile_DeleteLocationData( SCOREP_Profile_LocationData* profileLocationD
 }
 
 void
-SCOREP_Profile_Process( SCOREP_Location*              location,
-                        SCOREP_Profile_ProcessingFlag processFlags )
+SCOREP_Profile_Process( SCOREP_Location* location )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -238,31 +237,22 @@ SCOREP_Profile_Process( SCOREP_Location*              location,
     scorep_profile_process_collapse();
 
     /* Substitute parameter entries by regions */
-    if ( processFlags & SCOREP_Profile_ParamToRegion )
+    if ( scorep_profile.output_format != SCOREP_Profile_OutputTauSnapshot )
     {
         scorep_profile_substitute_parameter();
     }
 
     /* Thread start node expansion */
-    if ( processFlags & SCOREP_Profile_ProcessThreads )
-    {
-        scorep_profile_expand_threads();
-    }
+    scorep_profile_expand_threads();
     scorep_profile_sort_threads();
     scorep_profile_process_tasks();
 
     /* Make phases to the root of separate trees */
-    if ( processFlags & SCOREP_Profile_Phase )
-    {
-        scorep_profile_process_phases();
-    }
+    scorep_profile_process_phases();
 
     /* Register callpath and assign callpath handles to every node */
-    if ( processFlags & SCOREP_Profile_ProcessCallpath )
-    {
-        scorep_profile_assign_callpath_to_master();
-        scorep_profile_assign_callpath_to_workers();
-    }
+    scorep_profile_assign_callpath_to_master();
+    scorep_profile_assign_callpath_to_workers();
 }
 
 void

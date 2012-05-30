@@ -26,6 +26,9 @@
  *
  */
 
+#include <stdint.h>
+#include <scorep_profile_node.h>
+
 /**
    We need to map task ids to their task data. Thus, we use a hash table. Because, the
    table access is a majot source of runtime overhead, we implement out own table. The
