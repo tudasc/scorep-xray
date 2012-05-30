@@ -11,8 +11,7 @@ scorep_SOURCES = \
 
 scorep_CPPFLAGS = $(AM_CPPFLAGS)        \
     -I$(INC_ROOT)src/tools/instrumenter \
-    -I$(INC_DIR_UTIL)                   \
-    -I$(INC_ROOT)vendor/otf2/vendor/utility/src/parser
+    -I$(INC_DIR_UTIL)
 
 if HAVE_PDT
 scorep_CPPFLAGS += -DHAVE_PDT=1
