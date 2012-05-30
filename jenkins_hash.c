@@ -807,10 +807,10 @@ void driver2()
 	    /* have a and b be two keys differing in only one bit */
 	    a[i] ^= (k<<j);
 	    a[i] ^= (k>>(8-j));
-	     c[0] = hashlittle(a, hlen, m);
+	     c[0] = jenkins_hashlittle(a, hlen, m);
 	    b[i] ^= ((k+1)<<j);
 	    b[i] ^= ((k+1)>>(8-j));
-	     d[0] = hashlittle(b, hlen, m);
+	     d[0] = jenkins_hashlittle(b, hlen, m);
 	    /* check every bit is 1, 0, set, and not set at least once */
 	    for (l=0; l<HASHSTATE; ++l)
 	    {
