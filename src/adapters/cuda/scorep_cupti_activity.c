@@ -32,6 +32,7 @@
 
 #include <scorep_utility/SCOREP_Debug.h>
 #include <scorep_utility/SCOREP_Error.h>
+#include <scorep_utility/SCOREP_CStr.h>
 
 #include "SCOREP_Location.h"
 #include <SCOREP_Timing.h>
@@ -39,14 +40,14 @@
 #include "scorep_cuda.h"
 #include "scorep_cupti_activity.h"
 
-#if defined( HAVE_DEMANGLE )
-#include <demangle.h>
-#define sp_cuptiact_demangleKernel( mangled ) \
+/*#if defined( HAVE_DEMANGLE )
+   #include <demangle.h>
+   #define demangleCudaKernel( mangled ) \
     cplus_demangle( mangled, 0 )
-#else
-#define sp_cuptiact_demangleKernel( mangled ) \
+ #else*/
+#define demangleCudaKernel( mangled ) \
     mangled
-#endif
+/*#endif*/
 
 /* reduce buffer size for alignment, if necessary */
 #define SP_CUPTIACT_ALIGN_BUFFER( buffer, align ) \
@@ -804,7 +805,7 @@ sp_cuptiact_writeKernelRecord( CUpti_ActivityKernel* kernel,
     }
     else
     {
-        char* knName =  sp_cuptiact_demangleKernel( kernel->name );
+        const char* knName =  demangleCudaKernel( kernel->name );
 
         if ( knName == NULL )
         {
