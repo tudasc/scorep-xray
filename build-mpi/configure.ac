@@ -10,10 +10,6 @@ fi
 
 AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
 
-_AC_SRCDIRS([.])
-AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
-AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
-
 cross_compiling=${ac_scorep_cross_compiling}
 
 ac_scorep_backend=yes
@@ -101,6 +97,8 @@ AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
+
+AC_COMMON_PACKAGE
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])

@@ -5,10 +5,6 @@ AC_SCOREP_SUMMARY_INIT([frontend])
 
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
 
-_AC_SRCDIRS([.])
-AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
-AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
-
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 
@@ -46,6 +42,8 @@ AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
+
+AC_COMMON_PACKAGE
 
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
 AC_SCOREP_PLATFORM_SETTINGS   

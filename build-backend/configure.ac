@@ -7,10 +7,6 @@ AC_SCOREP_SUMMARY_INIT([backend])
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
 
-_AC_SRCDIRS([.])
-AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
-AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
-
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
@@ -39,6 +35,8 @@ AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
+
+AC_COMMON_PACKAGE
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
