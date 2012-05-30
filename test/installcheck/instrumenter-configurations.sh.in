@@ -54,11 +54,11 @@ for user_arg in user nouser; do
 @SCOREP_COMPILER_SUN_TRUE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@    for comp_arg in nocompiler; do
 
         for pomp_user_arg in opari noopari; do
-#@HAVE_PDT_TRUE@            for pdt_arg in pdt nopdt; do
-#@HAVE_PDT_TRUE@                # pdt is supposed to deactivate compiler
-#@HAVE_PDT_TRUE@                if test "$pdt_arg" = "pdt" && test "$comp_arg" = "compiler"; then
-#@HAVE_PDT_TRUE@                    continue
-#@HAVE_PDT_TRUE@                fi  
+@HAVE_PDT_TRUE@            for pdt_arg in pdt nopdt; do
+@HAVE_PDT_TRUE@                # pdt is supposed to deactivate compiler
+@HAVE_PDT_TRUE@                if test "$pdt_arg" = "pdt" && test "$comp_arg" = "compiler"; then
+@HAVE_PDT_TRUE@                    continue
+@HAVE_PDT_TRUE@                fi  
 @HAVE_COBI_TRUE@                for cobi_arg in cobi nocobi; do
 @HAVE_COBI_TRUE@                    # cobi is supposed to deactivate compiler
 @HAVE_COBI_TRUE@                    if test "$cobi_arg" = "cobi" && test "$comp_arg" = "compiler"; then
@@ -96,7 +96,7 @@ for user_arg in user nouser; do
                     # --- output per paradigm ends --- #
 
 @HAVE_COBI_TRUE@                done
-#@HAVE_PDT_TRUE@            done
+@HAVE_PDT_TRUE@            done
         done
 @HAVE_COMPILER_INSTRUMENTATION_TRUE@    done
 done
