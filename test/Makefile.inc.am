@@ -7,8 +7,3 @@ hello_functions_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_DIR_UTIL)
-
-check_PROGRAMS += test_jenkins_hash
-test_jenkins_hash_SOURCES = $(SRC_ROOT)/vendor/hash/jenkins_hash.c
-test_jenkins_hash_CPPFLAGS = $(AM_CPPFLAGS) \
-                             -DSELF_TEST

@@ -29,7 +29,7 @@ unification_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
                             -I$(PUBLIC_INC_DIR)                  \
                             -I$(INC_ROOT)src/measurement/include \
                             -I$(INC_ROOT)src/measurement         \
-                            -I$(INC_ROOT)vendor/hash             \
+                            -I$(INC_ROOT)vendor/common/hash      \
                             -I$(INC_ROOT)vendor/common/cutest    \
                             -I$(INC_DIR_UTIL_INTERNAL)           \
                             -I$(INC_DIR_UTIL)

@@ -381,9 +381,10 @@
 #define HASH_ADD_POD( definition, pod_member ) \
     do \
     { \
-        ( definition )->hash_value = hash( &( definition )->pod_member, \
-                                           sizeof( ( definition )->pod_member ), \
-                                           ( definition )->hash_value ); \
+        ( definition )->hash_value = jenkins_hash( \
+            &( definition )->pod_member, \
+            sizeof( ( definition )->pod_member ), \
+            ( definition )->hash_value ); \
     } \
     while ( 0 )
 
@@ -398,7 +399,7 @@
 #define HASH_ADD_ARRAY( definition, array_member, number_member ) \
     do \
     { \
-        ( definition )->hash_value = hash( \
+        ( definition )->hash_value = jenkins_hash( \
             ( definition )->array_member, \
             sizeof( ( definition )->array_member[ 0 ] ) \
             * ( definition )->number_member, \

@@ -124,7 +124,7 @@ scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
      */
     memcpy( new_definition->string_data, str, string_length + 1 );
     new_definition->string_length = string_length;
-    new_definition->hash_value    = hash( str, string_length, 0 );
+    new_definition->hash_value    = jenkins_hash( str, string_length, 0 );
 
     /*
      * 3) search in existing definitions and return found

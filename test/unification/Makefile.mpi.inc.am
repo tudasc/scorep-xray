@@ -29,7 +29,7 @@ mpi_unification_test_CPPFLAGS  = $(AM_CPPFLAGS) \
                                 -I$(INC_ROOT)src/measurement/include \
                                 -I$(INC_ROOT)src/services/include \
                                 -I$(INC_ROOT)src/measurement \
-                                -I$(INC_ROOT)vendor/hash \
+                                -I$(INC_ROOT)vendor/common/hash \
                                 -I$(INC_DIR_UTIL) \
                                 -I$(INC_DIR_UTIL_INTERNAL)
 mpi_unification_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_mpi.la
