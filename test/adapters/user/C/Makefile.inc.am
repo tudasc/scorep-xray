@@ -16,9 +16,7 @@ user_c_test_CPPFLAGS = $(AM_CPPFLAGS)       \
 
 user_c_test_LDADD =                         \
     $(LIB_ROOT)libscorep_serial.la          \
-    $(LIB_ROOT)libscorep_pomp_dummy.la      \
-    $(LIB_DIR_OTF2)libotf2.la               \
-    $(LIB_DIR_UTIL)libscorep_utilities.la
+    $(LIB_ROOT)libscorep_pomp_dummy.la
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/scorep_phase_test.c \
@@ -38,9 +36,7 @@ selective_test_CPPFLAGS = $(AM_CPPFLAGS)    \
     -DSCOREP_USER_ENABLE
 
 selective_test_LDADD =                      \
-    $(LIB_ROOT)libscorep_serial.la          \
-    $(LIB_DIR_OTF2)libotf2.la               \
-    $(LIB_DIR_UTIL)libscorep_utilities.la
+    $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
 selective_test_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
