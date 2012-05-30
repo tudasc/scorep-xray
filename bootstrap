@@ -34,8 +34,7 @@ build-frontend/configure: build-backend/configure
 
 build-mpi/configure: build-backend/configure
 	$(AUTORECONF) $(AUTORECONFFLAGS) build-mpi
-	@sed -e 's/\(_0 = @echo "  \)\(PPFC\|CC\|CXX\|F77\|FC\)/\1MPI\2/g' \
-	     -e 's/\(_0 = @echo "  \)\(YACC\|GEN\|LEX\)/\1   \2/g' \
+	@sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&   /; t; s/_0 = @echo "  /&MPI/' \
 	 build-mpi/Makefile.in >build-mpi/Makefile.in.mpi \
 	 && mv build-mpi/Makefile.in.mpi build-mpi/Makefile.in \
 	 || rm build-mpi/Makefile.in.mpi
