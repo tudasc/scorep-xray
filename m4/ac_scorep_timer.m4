@@ -41,6 +41,11 @@ AC_MSG_RESULT([$scorep_timer_bgp_get_timebase_available])
 AC_DEFUN([SCOREP_TIMER_CLOCK_GETTIME_AVAILABLE],[
 scorep_timer_clock_gettime_available="no"
 
+AH_TEMPLATE([HAVE_CLOCK_GETTIME],
+            [Define to 1 if the clock_gettime() function is available.])
+AH_TEMPLATE([_POSIX_C_SOURCE],
+            [Define Feature Test Macro for clock_gettime().])
+
 scorep_timer_save_LIBS="$LIBS"
 AC_SEARCH_LIBS([clock_gettime], [rt], [scorep_timer_have_librt="yes"])
 LIBS="$scorep_timer_save_LIBS"
@@ -49,12 +54,18 @@ if test "x${scorep_timer_have_librt}" = "xyes"; then
     scorep_timer_librt="$ac_cv_search_clock_gettime"
 
     AC_MSG_CHECKING([for clock_gettime timer])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#define _POSIX_C_SOURCE 199309L
-#include <time.h>]],
-                                       [[struct timespec tp;
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#define _POSIX_C_SOURCE 199309L
+#include <time.h>
+                                       ]], [[
+struct timespec tp;
 clock_getres(  CLOCK_REALTIME, &tp );
-clock_gettime( CLOCK_REALTIME, &tp );]])],
-                      [scorep_timer_clock_gettime_available="yes"], [])
+clock_gettime( CLOCK_REALTIME, &tp );
+                                       ]])], [
+scorep_timer_clock_gettime_available="yes"
+AC_DEFINE([HAVE_CLOCK_GETTIME])
+AC_DEFINE([_POSIX_C_SOURCE], [199309L])
+                                       ], [])
     AC_MSG_RESULT([$scorep_timer_clock_gettime_available])
 fi
 ])
@@ -112,7 +123,7 @@ AS_CASE([$host_cpu],
 AC_MSG_RESULT([$scorep_timer_cycle_counter_tsc_available])
 
 AH_TEMPLATE([HAVE_USLEEP],
-            [Define to 1 if the usleep function is available.])
+            [Define to 1 if the usleep() function is available.])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>]],
                                    [[useconds_t secs = 100; usleep(secs);]])],
                   [AC_DEFINE([HAVE_USLEEP])], [])
@@ -156,11 +167,16 @@ AC_MSG_RESULT([$scorep_timer_sun_gethrtime_available])
 AC_DEFUN([SCOREP_TIMER_GETTIMEOFDAY_AVAILABLE],[
 scorep_timer_gettimeofday_available="no"
 AH_TEMPLATE([HAVE_GETTIMEOFDAY],
-            [Define to 1 if the gettimeofday function is available.])
+            [Define to 1 if the gettimeofday() function is available.])
 AC_MSG_CHECKING([for gettimeofday timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/time.h>]],
-                                [[struct timeval tp; gettimeofday( &tp, 0 );]])], 
-               [scorep_timer_gettimeofday_available="yes"; AC_DEFINE([HAVE_GETTIMEOFDAY])], [])
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <sys/time.h>
+                                ]], [[
+struct timeval tp; gettimeofday( &tp, 0 );
+                                ]])], [
+scorep_timer_gettimeofday_available="yes"
+AC_DEFINE([HAVE_GETTIMEOFDAY])
+                                ], [])
 AC_MSG_RESULT([$scorep_timer_gettimeofday_available])
 ])
 
