@@ -43,8 +43,8 @@ scorep_timer_clock_gettime_available="no"
 
 AH_TEMPLATE([HAVE_CLOCK_GETTIME],
             [Define to 1 if the clock_gettime() function is available.])
-AH_TEMPLATE([_POSIX_C_SOURCE],
-            [Define Feature Test Macro for clock_gettime().])
+AH_TEMPLATE([SCOREP_MIN_POSIX_C_SOURCE],
+            [Define to the minimum])
 
 scorep_timer_save_LIBS="$LIBS"
 AC_SEARCH_LIBS([clock_gettime], [rt], [scorep_timer_have_librt="yes"])
@@ -64,7 +64,7 @@ clock_gettime( CLOCK_REALTIME, &tp );
                                        ]])], [
 scorep_timer_clock_gettime_available="yes"
 AC_DEFINE([HAVE_CLOCK_GETTIME])
-AC_DEFINE([_POSIX_C_SOURCE], [199309L])
+AC_DEFINE([SCOREP_MIN_POSIX_C_SOURCE], [199309L])
                                        ], [])
     AC_MSG_RESULT([$scorep_timer_clock_gettime_available])
 fi
