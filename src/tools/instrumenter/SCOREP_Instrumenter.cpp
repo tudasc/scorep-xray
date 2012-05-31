@@ -208,6 +208,7 @@ SCOREP_Instrumenter::Run()
                        included
                      */
                     compiler_flags += " -I" + extract_path( current_file );
+                    include_flags  += " -I" + extract_path( current_file );
 
                     // If compiling and linking is performed in one step.
                     // The compiler leave no object file.
@@ -1229,7 +1230,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     {
         command << pdt_bin_path << "/cxxparse " << source_file;
     }
-    command << define_flags << compiler_flags;
+    command << define_flags << include_flags;
 #ifdef _OPENMP
     if ( is_openmp_application == enabled )
     {
@@ -1263,7 +1264,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     command << pdt_bin_path << "/tau_instrumentor "
             << pdb_file << " "
             << source_file
-            << compiler_flags << define_flags;
+            << include_flags << define_flags;
 #ifdef _OPENMP
     if ( is_openmp_application == enabled )
     {
