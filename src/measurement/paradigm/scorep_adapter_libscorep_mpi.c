@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -34,6 +34,7 @@
 #include <SCOREP_Pomp_Init.h>
 #include <SCOREP_Mpi_Init.h>
 #include <SCOREP_Metric.h>
+#include <SCOREP_Cuda_Init.h>
 
 /**
  * List of adapters.
@@ -43,7 +44,8 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_User_Adapter,
     &SCOREP_Pomp_Adapter,
     &SCOREP_Mpi_Adapter,
-    &SCOREP_Metric_Service
+    &SCOREP_Metric_Service,
+    &SCOREP_Cuda_Adapter
 };
 
 

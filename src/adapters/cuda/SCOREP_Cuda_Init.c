@@ -69,7 +69,7 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         SCOREP_CONFIG_TYPE_BITSET, /* type */
         &scorep_cuda_features,     /* pointer to target variable */
         ( void* )scorep_cuda_enable_groups,
-        "DEFAULT",                 /* default value */
+        "no",                      /* default value */
         "CUDA measurement features.",
         "Sets the CUDA measurement mode to capture:\n"
         "runtime: CUDA runtime API\n"
