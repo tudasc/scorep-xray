@@ -292,7 +292,7 @@ main( int    argc,
                 #ifdef SCOREP_COMPILER_IBM
                 if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
                 {
-                    str += "-WF,-qlanglvl=classic ";
+                    str += "-d -WF,-qlanglvl=classic ";
                 }
                 #endif
 
@@ -389,7 +389,7 @@ main( int    argc,
                 #ifdef SCOREP_COMPILER_IBM
                 if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
                 {
-                    str += "-WF,-qlanglvl=classic ";
+                    str += "-d -WF,-qlanglvl=classic ";
                 }
                 #endif
 
