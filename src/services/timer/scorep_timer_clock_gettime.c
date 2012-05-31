@@ -25,7 +25,6 @@
  * clock_gettime timer. Needs librt.
  */
 
-#define _POSIX_C_SOURCE 199309L
 #include <config.h>
 #include "SCOREP_Timing.h"
 
