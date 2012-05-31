@@ -26,6 +26,16 @@
  */
 
 #include <config.h>
+
+#ifdef _POSIX_C_SOURCE
+#  if _POSIX_C_SOURCE < 199309L
+#    undef _POSIX_C_SOURCE
+#    define _POSIX_C_SOURCE 199309L
+#  endif
+#else
+#  define _POSIX_C_SOURCE 199309L
+#endif
+
 #include "SCOREP_Timing.h"
 
 #include <assert.h>
