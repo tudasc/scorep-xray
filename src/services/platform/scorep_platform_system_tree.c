@@ -76,9 +76,11 @@ scorep_platform_system_tree_create_element( const char* node_class,
         return NULL;
     }
 
+    bool use_vl = true;
     if ( node_name_len == 0 )
     {
         node_name_len = strlen( node_name_fmt ) + 1;
+        use_vl        = false;
     }
 
     name_offset  = sizeof( *new_element );
@@ -97,7 +99,16 @@ scorep_platform_system_tree_create_element( const char* node_class,
     new_element->node_class = ( char* )new_element + class_offset;
 
     /* set node name */
-    vsnprintf( new_element->node_name, node_name_len, node_name_fmt, vl );
+    if ( use_vl )
+    {
+        /* The caller provided a format string suitable for snprintf */
+        vsnprintf( new_element->node_name, node_name_len, node_name_fmt, vl );
+    }
+    else
+    {
+        /* The caller proviede a fixed string */
+        memcpy( new_element->node_name, node_name_fmt, node_name_len );
+    }
 
     /* set class name */
     memcpy( new_element->node_class, node_class, class_len );
