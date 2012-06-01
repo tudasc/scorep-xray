@@ -29,6 +29,10 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /**
  * Contains one element of the system tree path. Used to specifiy a path in the
@@ -75,5 +79,8 @@ SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path );
 #define SCOREP_PLATFORM_SYSTEM_TREE_FORALL( _path, _node ) \
     for ( _node = _path; _node; _node = _node->next )
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SCOREP_PLATFORM_H */

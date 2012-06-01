@@ -1,0 +1,16 @@
+## -*- mode: makefile -*-
+
+bin_PROGRAMS += scorep-info
+
+scorep_info_SOURCES = \
+    $(SRC_ROOT)src/tools/info/scorep_info.cpp
+
+scorep_info_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_UTIL) \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_ROOT)src/tools/info
+
+scorep_info_LDADD = \
+    $(LIB_DIR)libscorep_platform.la \
+    $(LIB_DIR_UTIL)libscorep_utilities.la
