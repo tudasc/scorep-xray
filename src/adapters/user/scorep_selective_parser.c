@@ -342,6 +342,8 @@ scorep_selective_parse_file( FILE* file )
         //*buffer = '\0';
     }
 
+    /* We do not want the EOF error, but a success when we reached the end of the file */
+    err = SCOREP_SUCCESS;
 
     /* Clean up */
 cleanup:
