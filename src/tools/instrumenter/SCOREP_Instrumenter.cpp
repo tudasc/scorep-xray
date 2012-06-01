@@ -1211,7 +1211,11 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
 std::string
 SCOREP_Instrumenter::instrument_pdt( std::string source_file )
 {
-    std::string extension     = get_extension( source_file );
+    std::string extension = get_extension( source_file );
+    if ( is_fortran_file( source_file ) )
+    {
+        std::transform( extension.begin(), extension.end(), extension.begin(), ::toupper );
+    }
     std::string modified_file = remove_path( remove_extension( source_file ) +
                                              "_pdt" + extension );
     std::string       pdb_file = remove_path( remove_extension( source_file ) + ".pdb" );
