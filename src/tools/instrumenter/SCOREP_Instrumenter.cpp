@@ -218,7 +218,8 @@ SCOREP_Instrumenter::Run()
                         temp_files += " " + object_file;
                     }
 
-                    // Perform Opari instrumentation                                                                                         if ( opari_instrumentation == enabled )
+                    // Perform Opari instrumentation
+                    if ( opari_instrumentation == enabled )
                     {
                         current_file = instrument_opari( current_file );
                     }
