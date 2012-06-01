@@ -24,6 +24,9 @@ program MAIN
     !       : f(n,m) - Right hand side function                            *
     !***********************************************************************
   
+#ifdef XLF
+    use xlfutility
+#endif
     use VariableDef
     use JacobiMod
     implicit none
@@ -210,7 +213,11 @@ subroutine CheckError(myData)
 end subroutine CheckError
 
 double precision function get_wtime()
-    real, dimension(2) :: tarray
-    get_wtime = dtime(tarray)
+    integer :: count
+    integer :: rate
+    integer :: max
+
+    call system_clock( count, rate, max )
+    get_wtime = count / rate
     return
 end function get_wtime
