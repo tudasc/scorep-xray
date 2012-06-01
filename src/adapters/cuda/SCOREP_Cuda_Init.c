@@ -42,7 +42,7 @@ uint64_t scorep_cuda_features = 0;
 uint64_t scorep_cuda_init_timestamp = 0;
 
 /*
- * Mapping of user options for CUDA tracing to internal representation
+ * Mapping of options for CUDA measurement to internal representation
  * (bit mask).
  */
 static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
@@ -84,8 +84,8 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
     SCOREP_CONFIG_TERMINATOR
 };
 
-/** Registers the required configuration variables of the user adapter
-    to the measurement system. Currently, it registers no variables.
+/** Registers the required configuration variables of the CUDA adapter
+    to the measurement system.
  */
 SCOREP_Error_Code
 scorep_cuda_register()
@@ -96,7 +96,7 @@ scorep_cuda_register()
     return SCOREP_ConfigRegister( "cuda", scorep_cuda_configs );
 }
 
-/** De-registers the user adapter. */
+/** De-registers the CUDA adapter. */
 void
 scorep_cuda_deregister()
 {
@@ -113,7 +113,7 @@ scorep_cuda_finalize_callback( void )
     return 0;
 }
 
-/** Initializes the user adapter. */
+/** Initializes the CUDA adapter. */
 SCOREP_Error_Code
 scorep_cuda_init()
 {
@@ -132,20 +132,20 @@ scorep_cuda_init()
     return SCOREP_SUCCESS;
 }
 
-/** Initializes the location specific data of the user adapter */
+/** Initializes the location specific data of the CUDA adapter */
 SCOREP_Error_Code
 scorep_cuda_init_location()
 {
     return SCOREP_SUCCESS;
 }
 
-/** Finalizes the location specific data of the user adapter. */
+/** Finalizes the location specific data of the CUDA adapter. */
 void
 scorep_cuda_final_location( SCOREP_Location* location )
 {
 }
 
-/** Finalizes the user adapter. */
+/** Finalizes the CUDA adapter. */
 void
 scorep_cuda_finalize()
 {
