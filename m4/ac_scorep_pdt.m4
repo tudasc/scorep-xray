@@ -39,6 +39,13 @@ for pdt_prog in cparse cxxparse gfparse tau_instrumentor; do
     AS_UNSET([ac_cv_path_have_pdt])
 done
 
+## Temporarily disable PDT on BlueGene systems until PDT bug is fixed,
+## see scorep:ticket:508
+AS_IF([test "x${ac_scorep_platform}" = "xbgp"], 
+      [have_pdt="no"
+       AC_MSG_WARN([PDT on BlueGene platforms currently not supported.])
+       AC_SCOREP_SUMMARY([PDT support], [on BlueGene platforms currently not available.])])
+
 ## Create output
 AC_SUBST([PDT_PATH], ["${real_pdt_path}"])
 AM_CONDITIONAL([HAVE_PDT], [test "x${have_pdt}" != "xno"])
