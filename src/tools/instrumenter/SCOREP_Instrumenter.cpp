@@ -270,28 +270,28 @@ SCOREP_Instrumenter::Run()
             fprintf( stderr, "SCOREP: Error while linking\n" );
             return ret_val;
         }
-    }
 
-    #if HAVE( COBI )
-    if ( cobi_instrumentation == enabled )
-    {
-        std::string orig_name = output_name + ".orig";
-        if ( verbosity >= 1 )
+        #if HAVE( COBI )
+        if ( cobi_instrumentation == enabled )
         {
-            std::cout << "mv " << output_name << " " << orig_name << std::endl;
-        }
-        if ( !is_dry_run )
-        {
-            if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
+            std::string orig_name = output_name + ".orig";
+            if ( verbosity >= 1 )
             {
-                SCOREP_ERROR_POSIX( "Failed to rename binary" );
-                return EXIT_FAILURE;
+                std::cout << "mv " << output_name << " " << orig_name << std::endl;
             }
-        }
+            if ( !is_dry_run )
+            {
+                if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
+                {
+                    SCOREP_ERROR_POSIX( "Failed to rename binary" );
+                    return EXIT_FAILURE;
+                }
+            }
 
-        return invoke_cobi( orig_name );
+            return invoke_cobi( orig_name );
+        }
+        #endif
     }
-    #endif
 
     clean_temp_files();
 
