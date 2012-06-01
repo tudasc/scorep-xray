@@ -24,9 +24,6 @@ program MAIN
     !       : f(n,m) - Right hand side function                            *
     !***********************************************************************
   
-#ifdef XLF
-    use xlfutility
-#endif
     use VariableDef
     use JacobiMod
     implicit none
