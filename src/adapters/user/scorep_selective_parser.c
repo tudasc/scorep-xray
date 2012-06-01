@@ -266,8 +266,9 @@ scorep_selective_add( const char* name,
 static SCOREP_Error_Code
 scorep_selective_parse_file( FILE* file )
 {
-    size_t buffer_size = 0;
-    char*  buffer      = NULL;
+    size_t            buffer_size = 0;
+    char*             buffer      = NULL;
+    SCOREP_Error_Code err         = SCOREP_SUCCESS;
 
     /* Validity assertions */
     assert( file );
@@ -275,10 +276,10 @@ scorep_selective_parse_file( FILE* file )
     /* Read file line by line */
     while ( !feof( file ) )
     {
-        SCOREP_Error_Code err = SCOREP_IO_GetLine( &buffer, &buffer_size, file );
+        err = SCOREP_IO_GetLine( &buffer, &buffer_size, file );
         if ( ( err != SCOREP_SUCCESS ) && ( err != SCOREP_ERROR_END_OF_BUFFER ) )
         {
-            return err;
+            goto cleanup;
         }
 
         /* Process line */
@@ -343,8 +344,9 @@ scorep_selective_parse_file( FILE* file )
 
 
     /* Clean up */
+cleanup:
     free( buffer );
-    return SCOREP_SUCCESS;
+    return err;
 }
 
 /* **************************************************************************************
