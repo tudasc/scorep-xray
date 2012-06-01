@@ -24,6 +24,7 @@
             <!-- Possibility to exclude a function set, we exclude here all
                  functions that share exit ot entry points -->         
 	    <property name="hasoverlay" />
+	    <functionnames match="prefix">POMP2_Init_regions</functionnames>
 	</or>
 </adapterfilter>
 
@@ -37,7 +38,7 @@
 <code name="functions">
 
         <!-- A 8 byte opaque variable to store a region handle. -->
-	<variables><var name="regionid" size="8" type="void*" /></variables>
+	<variables><var name="regionid" size="4" type="int32_t" /></variables>
 
         <!-- Code executed once for every function at initialization.
              Assigns the region handle -->
