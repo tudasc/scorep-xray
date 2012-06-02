@@ -31,6 +31,7 @@
 /******************************************************************************/
 %{
 
+#include <config.h>
 #include "scorep_oa_mri_control.h"
 #include "scorep_oa_connection.h"
 #include "SCOREP_OA_Init.h"
