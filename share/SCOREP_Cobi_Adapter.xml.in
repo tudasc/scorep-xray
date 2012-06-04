@@ -25,6 +25,12 @@
                  functions that share exit ot entry points -->         
 	    <property name="hasoverlay" />
 	    <functionnames match="prefix">POMP2_Init_regions</functionnames>
+            <functionnames match="regex">[A-Z|a-z|_|0-9]*._omp_fn.[0-9]</functionnames>
+	    <functionnames>POMP2_Get_num_regions
+                           POMP2_Get_opari2_version
+                           POMP2_Get_required_pomp2_library_version_age
+                           POMP2_Get_required_pomp2_library_version_current
+                           POMP2_Get_required_pomp2_library_version_revision</functionnames>
 	</or>
 </adapterfilter>
 
