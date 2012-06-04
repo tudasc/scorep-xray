@@ -384,7 +384,7 @@ SCOREP_Score_Estimator::PrintGroups()
 
     quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
-    cout << "flt type         max_tbc         time      \% region" << endl;
+    cout << "flt type         max_tbc         time      % region" << endl;
     for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
         m_groups[ i ]->Print( total_time );
