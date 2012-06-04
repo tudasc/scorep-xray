@@ -109,27 +109,16 @@ extern int32_t scorep_my_status_array_size;
 extern MPI_Status*
 scorep_get_status_array( int32_t size );
 
-/** Flag to indicate whether event generation is turned on or off. If it is set to 0,
-    events are generated. If it is set to non-zero, no events are generated.
- */
-extern int32_t scorep_mpi_nogen;
-
 /** Flag to indicate whether MPI Profiling hooks are turned on or off.
  */
 extern bool scorep_hooks_on;
 
-extern int  scorep_mpi_status_size;
-
-/** @def SCOREP_MPI_IS_EVENT_GEN_ON
-    Check whether event generation is turned on. Returns the inverse value of
-    scorep_mpi_nogen
- */
-#define SCOREP_MPI_IS_EVENT_GEN_ON            ( !scorep_mpi_nogen )
+extern int scorep_mpi_status_size;
 
 /** @def SCOREP_MPI_IS_EVENT_GEN_ON_FOR
     Check whether event generation is turned on for a specific group.
  */
-#define SCOREP_MPI_IS_EVENT_GEN_ON_FOR( group ) ( ( !scorep_mpi_nogen ) && \
+#define SCOREP_MPI_IS_EVENT_GEN_ON_FOR( group ) ( ( scorep_mpi_generate_events ) && \
                                                   ( scorep_mpi_enabled & group ) )
 
 /**
@@ -139,18 +128,6 @@ extern int  scorep_mpi_status_size;
  */
 #define SCOREP_MPI_DISABLE_GROUP( group ) \
     ( scorep_mpi_enabled = scorep_mpi_enabled & ( ~( group ) ) )
-
-
-/** @def SCOREP_MPI_EVENT_GEN_OFF
-    Turn off event generation for MPI adapter. It is used inside the wrappers, to avoid
-    events from function calls, called by other MPI functions.
- */
-#define SCOREP_MPI_EVENT_GEN_OFF()            scorep_mpi_nogen = 1
-
-/** SCOREP_MPI_EVENT_GEN_ON
-    Turn on event generation for MPI wrappers.
- */
-#define SCOREP_MPI_EVENT_GEN_ON()             scorep_mpi_nogen = 0
 
 /** @def SCOREP_IS_MPI_HOOKS_ON
     Check whether MPI profiling hooks are enabled globally.

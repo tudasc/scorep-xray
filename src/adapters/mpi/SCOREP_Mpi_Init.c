@@ -453,10 +453,11 @@ const SCOREP_Subsystem SCOREP_Mpi_Adapter =
 };
 
 /**
-   Flag to indicate whether event generation is turned on or off. If it is set to 0,
-   events are generated. If it is set to non-zero, no events are generated.
+   Flag to indicate whether event generation is turned on or off. If
+   it is set to 0, events are generated. If it is set to non-zero, no
+   events are generated.
  */
-int32_t scorep_mpi_nogen = 0;
+bool scorep_mpi_generate_events = true;
 
 /**
    Array of MPI status. It it used to track

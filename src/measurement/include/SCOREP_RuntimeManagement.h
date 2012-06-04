@@ -180,6 +180,34 @@ typedef int ( *SCOREP_ExitCallback )( void );
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
 
+
+/** Flag to indicate whether MPI event generation is turned on or off.
+ */
+extern bool scorep_mpi_generate_events;
+
+
+/** @def SCOREP_MPI_IS_EVENT_GEN_ON
+    Check whether event generation is turned on.
+ */
+#define SCOREP_MPI_IS_EVENT_GEN_ON ( scorep_mpi_generate_events )
+
+
+/** @def SCOREP_MPI_EVENT_GEN_OFF
+    Turn off event generation for MPI adapter. It is used inside the
+    wrappers and the measurement core to avoid events from MPI
+    function calls, e.g., MPI calls internal to MPI itself or SIONlibs
+    paropen/close.
+ */
+#define SCOREP_MPI_EVENT_GEN_OFF() scorep_mpi_generate_events = false
+
+
+/** SCOREP_MPI_EVENT_GEN_ON
+    Turn on event generation for MPI wrappers. See
+    SCOREP_MPI_EVENT_GEN_OFF().
+ */
+#define SCOREP_MPI_EVENT_GEN_ON()  scorep_mpi_generate_events = true
+
+
 /*@}*/
 
 

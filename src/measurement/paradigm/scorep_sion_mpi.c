@@ -42,7 +42,7 @@
 #include <scorep_mpi.h>
 #include <tracing/SCOREP_Tracing.h>
 #include <tracing/scorep_tracing_internal.h>
-
+#include <SCOREP_RuntimeManagement.h>
 
 static int
 scorep_sion_open( void*          userData,
@@ -63,9 +63,8 @@ scorep_sion_open( void*          userData,
     char*       new_file_name = NULL;
     MPI_Comm    comm_world    = MPI_COMM_WORLD;
     int         global_rank   = SCOREP_Mpi_GetRank();
-
-
-    int sion_file_handle = sion_paropen_mpi( fileName,
+    SCOREP_MPI_EVENT_GEN_OFF();
+    int sion_file_handle = sion_paropen_mpi( ( char* )fileName,
                                              file_mode,
                                              &number_of_sion_files,
                                              comm_world,
@@ -75,6 +74,7 @@ scorep_sion_open( void*          userData,
                                              &global_rank,
                                              filePointer,
                                              &new_file_name );
+    SCOREP_MPI_EVENT_GEN_ON();
     assert( sion_file_handle != -1 );
     return sion_file_handle;
 }
@@ -86,7 +86,9 @@ scorep_sion_close( void*         userData,
                    uint64_t      locationId,
                    int           sionFileHandle )
 {
+    SCOREP_MPI_EVENT_GEN_OFF();
     int close_status = sion_parclose_mpi( sionFileHandle );
+    SCOREP_MPI_EVENT_GEN_ON();
     assert( close_status == 1 );
     return close_status;
 }
