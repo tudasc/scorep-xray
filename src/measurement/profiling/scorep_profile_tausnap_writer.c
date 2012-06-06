@@ -158,8 +158,7 @@ write_paramstring_tau( scorep_profile_node* node,
     if ( parentpath == NULL )
     {
         const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
-        parentpath = ( char* )malloc( strlen( parentname ) );
-        sprintf( parentpath, parentname );
+        parentpath = SCOREP_CStr_dup( parentname );
     }
     /* Length is "<path> (<name> = <value>)" plus terminating '\0' */
     int length = strlen( parentpath ) + strlen( param_name ) + 24 + strlen( param_value ) + 1;
@@ -209,8 +208,7 @@ write_paramint_tau( scorep_profile_node* node,
     if ( parentpath == NULL )
     {
         const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
-        parentpath = ( char* )malloc( strlen( parentname ) );
-        sprintf( parentpath, parentname );
+        parentpath = SCOREP_CStr_dup( parentname );
     }
     if ( param == scorep_profile_param_instance )
     {
