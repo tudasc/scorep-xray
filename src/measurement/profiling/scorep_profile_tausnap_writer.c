@@ -155,22 +155,30 @@ write_paramstring_tau( scorep_profile_node* node,
     char*       path;
     const char* param_name  = SCOREP_Parameter_GetName( node->type_specific_data.handle );
     const char* param_value = SCOREP_String_Get( node->type_specific_data.value );
-
+    if ( parentpath == NULL )
+    {
+        const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
+        parentpath = ( char* )malloc( strlen( parentname ) );
+        sprintf( parentpath, parentname );
+    }
     /* Length is "<path> (<name> = <value>)" plus terminating '\0' */
-    int length = strlen( parentpath ) + strlen( param_name ) + 6 + strlen( param_value ) + 1;
+    int length = strlen( parentpath ) + strlen( param_name ) + 24 + strlen( param_value ) + 1;
     path = ( char* )malloc( length );
-
-    sprintf( path, "%s (%s = %s)", parentpath, param_name, param_value );
+// [ &lt;%s&gt; = &lt;%" PRIi64 "&gt; ]
+    sprintf( path, "%s [ &lt;%s&gt; = &lt;%s&gt; ]", parentpath, param_name, param_value );
 
     /* write definition */
     write_tausnap_def( path, file, callpath_counter );
 
-    /* invoke children */
-    scorep_profile_node* child = node->first_child;
-    while ( child != NULL )
+    if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
     {
-        write_node_tau( child, path, file, callpath_counter );
-        child = child->next_sibling;
+        /* invoke children */
+        scorep_profile_node* child = node->first_child;
+        while ( child != NULL )
+        {
+            write_node_tau( child, path, file, callpath_counter );
+            child = child->next_sibling;
+        }
     }
 }
 
@@ -198,7 +206,12 @@ write_paramint_tau( scorep_profile_node* node,
     SCOREP_ParameterHandle param =
         scorep_profile_type_get_parameter_handle( node->type_specific_data );
     const char* param_name = SCOREP_Parameter_GetName( param );
-
+    if ( parentpath == NULL )
+    {
+        const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
+        parentpath = ( char* )malloc( strlen( parentname ) );
+        sprintf( parentpath, parentname );
+    }
     if ( param == scorep_profile_param_instance )
     {
         /* 12 digit max data length. */
@@ -215,16 +228,16 @@ write_paramint_tau( scorep_profile_node* node,
                      21 + 6 + 1;
         SCOREP_ParameterType type = SCOREP_Parameter_GetType( param );
         path = ( char* )malloc( length );
-
+//![CDATA[int f2(int) [{simpleTau.cpp} {5,1}-{10,1}]   [ <y> = <2> ]]]
         if ( type == SCOREP_PARAMETER_INT64 )
         {
-            sprintf( path, "%s (%s = %" PRIi64 ")", parentpath,
+            sprintf( path, "%s [ &lt;%s&gt; = &lt;%" PRIi64 "&gt; ]", parentpath,
                      param_name,
                      scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
         else
         {
-            sprintf( path, "%s (%s = %" PRIu64 ")", parentpath,
+            sprintf( path, "%s [ &lt;%s&gt; = &lt;%" PRIi64 "&gt; ]", parentpath,
                      param_name,
                      scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
@@ -233,11 +246,14 @@ write_paramint_tau( scorep_profile_node* node,
     write_tausnap_def( path, file, callpath_counter );
 
     /* invoke children */
-    scorep_profile_node* child = node->first_child;
-    while ( child != NULL )
+    if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
     {
-        write_node_tau( child, path, file, callpath_counter );
-        child = child->next_sibling;
+        scorep_profile_node* child = node->first_child;
+        while ( child != NULL )
+        {
+            write_node_tau( child, path, file, callpath_counter );
+            child = child->next_sibling;
+        }
     }
 }
 
@@ -265,7 +281,6 @@ write_node_tau( scorep_profile_node* node,
     {
         return;
     }
-
     switch ( node->node_type )
     {
         case scorep_profile_node_regular_region:
@@ -335,14 +350,13 @@ write_data_tau( scorep_profile_node*      node,
         }
     }
 }
-
-
 struct list_el
 {
     int             val;
     int             index;
     struct list_el* next;
 };
+
 
 typedef struct list_el item;
 item* curr, * head, * tail;
@@ -673,12 +687,12 @@ write_tau_merge_callpath_nodes( scorep_profile_node* node,
     {
         return;
     }
-
     bool same = false;
 
     while ( list != NULL )
     {
         same = scorep_profile_compare_nodes( list, node );
+
         if ( same )
         {
             //If the node is found in the list, break and merge the nodes
@@ -690,6 +704,8 @@ write_tau_merge_callpath_nodes( scorep_profile_node* node,
             scorep_profile_node* copy = scorep_profile_copy_node( location, node );
             copy->next_sibling = NULL;
             list->next_sibling = copy;
+            //Need the parent to properly name parameter regions.
+            copy->parent = node->parent;
 
             //need to collect exclusive time and child calls so that the information can be printed correctly
             scorep_profile_node* dummy = scorep_profile_copy_node( location, copy );
@@ -741,7 +757,6 @@ write_tau_add_callpath_nodes( scorep_profile_node* parent )
     scorep_profile_for_all( node,
                             write_tau_merge_callpath_nodes,
                             node );
-
     while ( sibling_count > 0 )
     {
         //if there are phases they will be here so merge them
