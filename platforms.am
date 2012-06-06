@@ -39,6 +39,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pgi  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-studio  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-altix  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-backend-arm  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-bgl  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-bgp  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-crayx1  \
@@ -51,6 +52,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-sun  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-user-provided  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-altix  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-frontend-arm  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-bgl  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-bgp  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-crayx1  \
@@ -63,6 +65,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-sun  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-user-provided  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-altix  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-arm  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-bgl  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-bgp  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-crayx1  \
