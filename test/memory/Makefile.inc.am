@@ -22,7 +22,9 @@ check_PROGRAMS += allocator_test
 allocator_test_SOURCES = $(SRC_ROOT)test/memory/scorep_allocator_test.c \
                          $(SRC_ROOT)vendor/common/cutest/CuTest.c            \
                          $(SRC_ROOT)vendor/common/cutest/CuTest.h
-allocator_test_LDADD = libscorep_allocator.la
+allocator_test_LDADD = \
+    libscorep_allocator.la \
+    $(LIB_DIR_UTIL)libscorep_utilities.la
 allocator_test_CPPFLAGS = $(AM_CPPFLAGS) \
                           -I$(PUBLIC_INC_DIR) \
                           -I$(INC_ROOT)vendor/common/cutest \
