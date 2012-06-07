@@ -32,6 +32,7 @@
 #include <stdlib.h>
 
 #include <SCOREP_IO.h>
+#include <SCOREP_Error.h>
 
 #include <SCOREP_Instrumenter.hpp>
 #include <scorep_config_tool_backend.h>
