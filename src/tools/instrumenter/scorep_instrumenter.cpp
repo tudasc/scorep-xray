@@ -335,7 +335,7 @@ SCOREP_Instrumenter::prepare_compiler()
        aborts in case a C/C++ file should be compiler instrumented.
      */
 #ifdef SCOREP_COMPILER_SUN
-    if ( is_compiling )
+    if ( m_command_line->isCompiling() )
     {
         std::string current_file = "";
         std::string extension    = "";
