@@ -100,6 +100,8 @@ AC_SCOREP_DEBUG_OPTION
 AC_SCOREP_ON_DEBUG_OPTION
 AC_CUTEST_COLOR_TESTS
 AC_SEARCH_LIBS([rint], [m])
+AC_SCOREP_POSIX_FUNCTIONS
+AC_SCOREP_DEFINE_REVISIONS
 
 AC_CONFIG_FILES([
     run_otf2_buffer_test.sh:../test/OTF2_Buffer_test/run_otf2_buffer_test.sh.in
@@ -107,7 +109,6 @@ AC_CONFIG_FILES([
     chmod u+x run_otf2_buffer_test.sh
 ])
 
-AC_SCOREP_DEFINE_REVISIONS
 
 AC_OTF2_ENTROPY_SOURCES
 ])
