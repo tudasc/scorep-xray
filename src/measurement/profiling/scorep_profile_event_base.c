@@ -26,7 +26,7 @@
 
 #include <config.h>
 
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Error.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
 

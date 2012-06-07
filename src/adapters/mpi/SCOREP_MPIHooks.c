@@ -28,7 +28,7 @@
 #include <config.h>
 
 #include "SCOREP_MPIHooks.h"
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 #include "scorep_mpiprofile.h"
 
 #include <stdlib.h>

@@ -30,8 +30,8 @@
 #include <unistd.h>
 
 
-#include <scorep_utility/SCOREP_Error.h>
-#include <scorep_utility/SCOREP_IO.h>
+#include <SCOREP_Error.h>
+#include <SCOREP_IO.h>
 
 
 #include <SCOREP_Platform.h>

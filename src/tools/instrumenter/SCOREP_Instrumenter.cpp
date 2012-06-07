@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <scorep_utility/SCOREP_IO.h>
+#include <SCOREP_IO.h>
 
 #include <SCOREP_Instrumenter.hpp>
 #include <scorep_config_tool_backend.h>

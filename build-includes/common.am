@@ -36,8 +36,7 @@ INC_DIR_UTIL_INTERNAL = $(INC_ROOT)src/utils/include
 INC_DIR_OTF2 = $(INC_ROOT)vendor/otf2/include
 LIB_DIR_OTF2 = ../vendor/otf2/$(BUILD_DIR)/
 
-INC_DIR_UTIL = $(INC_ROOT)vendor/otf2/vendor/utility/include
-LIB_DIR_UTIL = ../vendor/otf2/vendor/utility/$(BUILD_DIR)/
+INC_DIR_UTIL = $(INC_ROOT)vendor/common/src/utils/include
 
 INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
 

@@ -29,7 +29,7 @@
  */
 
 
-#include <scorep_utility/SCOREP_Error_Codes.h>
+#include <SCOREP_Error_Codes.h>
 #include "SCOREP_Types.h"
 
 typedef enum

@@ -35,8 +35,8 @@
 #include "scorep_definitions.h"
 #include <cubew_services.h>
 
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error.h>
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;

@@ -24,7 +24,7 @@
 #include <iostream>
 #include <string>
 
-#include <scorep_utility/SCOREP_ParserBase.hpp>
+#include <SCOREP_ParserBase.hpp>
 
 class SCOREP_Config : public SCOREP_ParserBase
 {

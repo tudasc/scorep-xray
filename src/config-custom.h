@@ -55,5 +55,8 @@
     #define SAMPLING_GUARD_OFF
 #endif
 
+/* Macros used by utilities under vendor/common */
+#define PACKAGE_SCOREP
+#define MANGLE_NAME( name ) SCOREP_ ## name
 
 #endif /* CONFIG_CUSTOM_H */

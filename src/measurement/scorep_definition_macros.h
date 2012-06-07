@@ -530,11 +530,11 @@
             /* map can be NULL if the mapping is the identity */ \
             if ( map ) \
             { \
-                SCOREP_Error_Code status = OTF2_DefWriter_WriteMappingTable( \
+                OTF2_Error_Code status = OTF2_DefWriter_WriteMappingTable( \
                     definition_writer, \
                     OTF2_MAPPING_ ## TYPE, \
                     map ); \
-                assert( status == SCOREP_SUCCESS ); \
+                assert( status == OTF2_SUCCESS ); \
                 OTF2_IdMap_Free( map ); \
             } \
         } \

@@ -31,7 +31,7 @@
 #include "SCOREP_Types.h"
 #include "SCOREP_Cuda_Init.h"
 
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 #include <SCOREP_Timing.h>
 
 #include "scorep_cuda.h"

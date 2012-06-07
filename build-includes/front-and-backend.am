@@ -1,7 +1,16 @@
 ## -*- mode: makefile -*-
 include ../src/utils/filtering/Makefile.inc.am
+include ../vendor/common/src/utils/cstr/Makefile.inc.am_
+include ../vendor/common/src/utils/io/Makefile.inc.am_
+include ../vendor/common/src/utils/exception/Makefile.inc.am_
+include ../vendor/common/src/utils/Makefile.inc.am
 
 ## include tests
 #include ../test/exception/Makefile.inc.am
 #include ../test/priority_queue/Makefile.inc.am
 #include ../test/vector/Makefile.inc.am
+
+# the following two use SCOREP_TESTS which is TESTS_SERIAL in scorep
+# but build in otf2 where SCOREP_TESTS exists
+#include ../vendor/common/test/utils/io/Makefile.inc.am
+#include ../vendor/common/test/utils/exception/Makefile.inc.am

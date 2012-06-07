@@ -37,7 +37,8 @@
 #include <otf2/otf2.h>
 
 
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error_Codes.h>
 
 
 #include <SCOREP_Config.h>
@@ -205,11 +206,11 @@ static OTF2_FlushCallbacks flush_callbacks =
 static void
 scorep_tracing_register_flush_callbacks( OTF2_Archive* archive )
 {
-    SCOREP_Error_Code status =
+    OTF2_Error_Code status =
         OTF2_Archive_SetFlushCallbacks( archive,
                                         &flush_callbacks,
                                         NULL );
-    assert( status == SCOREP_SUCCESS );
+    assert( status == OTF2_SUCCESS );
 }
 
 
@@ -260,11 +261,11 @@ static OTF2_MemoryCallbacks scorep_tracing_chunk_callbacks =
 static void
 scorep_tracing_register_memory_callbacks( OTF2_Archive* archive )
 {
-    SCOREP_Error_Code status =
+    OTF2_Error_Code status =
         OTF2_Archive_SetMemoryCallbacks( archive,
                                          &scorep_tracing_chunk_callbacks,
                                          NULL );
-    assert( status == SCOREP_SUCCESS );
+    assert( status == OTF2_SUCCESS );
 }
 
 
@@ -324,7 +325,7 @@ SCOREP_Tracing_UnlockArchive( void )
 }
 
 
-SCOREP_Error_Code
+void
 SCOREP_Tracing_SetIsMaster( bool isMaster )
 {
     // call this function only once
@@ -332,8 +333,13 @@ SCOREP_Tracing_SetIsMaster( bool isMaster )
     assert( !master_mode_set );
     master_mode_set = 1;
 
-    return OTF2_Archive_SetMasterSlaveMode( scorep_otf2_archive,
-                                            isMaster ? OTF2_MASTER : OTF2_SLAVE );
+    OTF2_Error_Code err =
+        OTF2_Archive_SetMasterSlaveMode( scorep_otf2_archive,
+                                         isMaster ? OTF2_MASTER : OTF2_SLAVE );
+    if ( err != OTF2_SUCCESS )
+    {
+        _Exit( EXIT_FAILURE );
+    }
 }
 
 OTF2_EvtWriter*

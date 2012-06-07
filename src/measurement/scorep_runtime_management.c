@@ -27,7 +27,7 @@
 #include "scorep_runtime_management.h"
 
 #include <SCOREP_Timing.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Error.h>
 #include <scorep_openmp.h>
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"

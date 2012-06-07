@@ -26,7 +26,7 @@
 
 #include <config.h>
 
-#include <scorep_utility/SCOREP_IO.h>
+#include <SCOREP_IO.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
 

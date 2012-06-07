@@ -29,7 +29,7 @@
  * found, filtering is disabled.
  */
 
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Error.h>
 
 #include <stdbool.h>
 

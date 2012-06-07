@@ -29,7 +29,7 @@
 #include <config.h>
 #include "SCOREP_Timing.h"
 
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Error.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -51,7 +51,7 @@ typedef long useconds_t;
  * do frequency measurement instead of reading /proc/cpuinfo */
 static uint64_t scorep_ticks_per_sec = 0;
 
-static bool     isInitialized = false;
+static bool isInitialized = false;
 
 static uint64_t
 scorep_get_cylce_counter_frequency( useconds_t usleep_time );

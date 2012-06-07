@@ -28,6 +28,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <SCOREP_Error_Codes.h>
 
 
 SCOREP_Error_Code
@@ -45,7 +46,7 @@ SCOREP_Tracing_Finalize( void );
 /**
  * Signals, that this process is the master for the OTF2 archive.
  */
-SCOREP_Error_Code
+void
 SCOREP_Tracing_SetIsMaster( bool isMaster );
 
 

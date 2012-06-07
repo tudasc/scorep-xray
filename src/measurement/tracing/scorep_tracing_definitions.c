@@ -38,7 +38,7 @@
 #include <otf2/otf2.h>
 
 
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 
 
 #include <scorep/SCOREP_PublicTypes.h>
@@ -51,7 +51,7 @@
 #include <scorep_definition_structs.h>
 #include <scorep_definition_macros.h>
 #include <SCOREP_Bitstring.h>
-
+#include <SCOREP_Error_Codes.h>
 
 #include "scorep_tracing_types.h"
 
@@ -74,9 +74,9 @@ scorep_write_string_definitions( void*                     writerHandle,
                                  bool                      isGlobal )
 {
     assert( writerHandle );
-    typedef SCOREP_Error_Code ( *def_string_pointer_t )( void*,
-                                                         uint32_t,
-                                                         char* );
+    typedef OTF2_Error_Code ( *def_string_pointer_t )( void*,
+                                                       uint32_t,
+                                                       char* );
     def_string_pointer_t defString = ( def_string_pointer_t )
                                      OTF2_DefWriter_WriteString;
 
@@ -88,12 +88,12 @@ scorep_write_string_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, String, string )
     {
-        SCOREP_Error_Code status = defString(
+        OTF2_Error_Code status = defString(
             writerHandle,
             definition->sequence_number,
             definition->string_data );
 
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "String" );
         }
@@ -109,12 +109,12 @@ scorep_write_location_definitions(
     bool                      isGlobal )
 {
     assert( writerHandle );
-    typedef SCOREP_Error_Code ( *def_location_pointer_t )( void*,
-                                                           uint64_t,
-                                                           uint32_t,
-                                                           OTF2_LocationType,
-                                                           uint64_t,
-                                                           uint32_t );
+    typedef OTF2_Error_Code ( *def_location_pointer_t )( void*,
+                                                         uint64_t,
+                                                         uint32_t,
+                                                         OTF2_LocationType,
+                                                         uint64_t,
+                                                         uint32_t );
     def_location_pointer_t defLocation = ( def_location_pointer_t )
                                          OTF2_DefWriter_WriteLocation;
 
@@ -126,7 +126,7 @@ scorep_write_location_definitions(
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Location, location )
     {
-        SCOREP_Error_Code status = defLocation(
+        OTF2_Error_Code status = defLocation(
             writerHandle,
             definition->global_location_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
@@ -134,7 +134,7 @@ scorep_write_location_definitions(
             definition->number_of_events,
             definition->location_group_id );
 
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Location" );
         }
@@ -149,11 +149,11 @@ scorep_write_location_group_definitions(
     bool                      isGlobal )
 {
     assert( writerHandle );
-    typedef SCOREP_Error_Code ( *def_location_group_pointer_t )( void*,
-                                                                 uint32_t,
-                                                                 uint32_t,
-                                                                 OTF2_LocationGroupType,
-                                                                 uint32_t );
+    typedef OTF2_Error_Code ( *def_location_group_pointer_t )( void*,
+                                                               uint32_t,
+                                                               uint32_t,
+                                                               OTF2_LocationGroupType,
+                                                               uint32_t );
     def_location_group_pointer_t defLocationGroup =
         ( def_location_group_pointer_t )OTF2_DefWriter_WriteLocationGroup;
     if ( isGlobal )
@@ -164,13 +164,13 @@ scorep_write_location_group_definitions(
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocationGroup, location_group )
     {
-        SCOREP_Error_Code status = defLocationGroup(
+        OTF2_Error_Code status = defLocationGroup(
             writerHandle,
             definition->global_location_group_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_group_type_to_otf2( definition->location_group_type ),
             SCOREP_HANDLE_TO_ID( definition->parent, SystemTreeNode, definitionManager->page_manager ) );
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "LocationGroup" );
         }
@@ -185,11 +185,11 @@ scorep_write_system_tree_node_definitions(
     bool                      isGlobal )
 {
     assert( writerHandle );
-    typedef SCOREP_Error_Code ( *def_system_tree_node_pointer_t )( void*,
-                                                                   uint32_t,
-                                                                   uint32_t,
-                                                                   uint32_t,
-                                                                   uint32_t );
+    typedef OTF2_Error_Code ( *def_system_tree_node_pointer_t )( void*,
+                                                                 uint32_t,
+                                                                 uint32_t,
+                                                                 uint32_t,
+                                                                 uint32_t );
     def_system_tree_node_pointer_t defSystemTreeNode =
         ( def_system_tree_node_pointer_t )OTF2_DefWriter_WriteSystemTreeNode;
     if ( isGlobal )
@@ -209,13 +209,13 @@ scorep_write_system_tree_node_definitions(
         }
 
         /* Write definition */
-        SCOREP_Error_Code status = defSystemTreeNode(
+        OTF2_Error_Code status = defSystemTreeNode(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             SCOREP_HANDLE_TO_ID( definition->class_handle, String, definitionManager->page_manager ),
             parent );
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SystemTreeNode" );
         }
@@ -230,14 +230,14 @@ scorep_write_region_definitions( void*                     writerHandle,
                                  bool                      isGlobal )
 {
     assert( writerHandle );
-    typedef SCOREP_Error_Code ( *def_region_pointer_t )( void*,
-                                                         uint32_t,
-                                                         uint32_t,
-                                                         uint32_t,
-                                                         OTF2_RegionType,
-                                                         uint32_t,
-                                                         uint32_t,
-                                                         uint32_t );
+    typedef OTF2_Error_Code ( *def_region_pointer_t )( void*,
+                                                       uint32_t,
+                                                       uint32_t,
+                                                       uint32_t,
+                                                       OTF2_RegionType,
+                                                       uint32_t,
+                                                       uint32_t,
+                                                       uint32_t );
 
     def_region_pointer_t defRegion = ( def_region_pointer_t )
                                      OTF2_DefWriter_WriteRegion;
@@ -257,7 +257,7 @@ scorep_write_region_definitions( void*                     writerHandle,
                 definitionManager->page_manager );
         }
 
-        SCOREP_Error_Code status = defRegion(
+        OTF2_Error_Code status = defRegion(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
@@ -267,7 +267,7 @@ scorep_write_region_definitions( void*                     writerHandle,
             definition->begin_line,
             definition->end_line );
 
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Region" );
         }
@@ -291,13 +291,13 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                                   definitionManager->page_manager );
         }
 
-        SCOREP_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
+        OTF2_Error_Code status = OTF2_GlobalDefWriter_WriteMpiComm(
             writerHandle,
             definition->sequence_number,
             definition->name_id, /* already the global ID */
             SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
             comm_parent_id );
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "MPICommunicator" );
         }
@@ -314,12 +314,12 @@ scorep_write_group_definitions( void*                     writerHandle,
     assert( writerHandle );
 
 
-    typedef SCOREP_Error_Code ( *def_group_pointer_t )( void*,
-                                                        uint32_t,
-                                                        uint32_t,
-                                                        OTF2_GroupType,
-                                                        uint32_t,
-                                                        const uint64_t* );
+    typedef OTF2_Error_Code ( *def_group_pointer_t )( void*,
+                                                      uint32_t,
+                                                      uint32_t,
+                                                      OTF2_GroupType,
+                                                      uint32_t,
+                                                      const uint64_t* );
 
     def_group_pointer_t defGroup = ( def_group_pointer_t )
                                    OTF2_DefWriter_WriteGroup;
@@ -330,7 +330,7 @@ scorep_write_group_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Group, group )
     {
-        SCOREP_Error_Code status = defGroup(
+        OTF2_Error_Code status = defGroup(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
@@ -338,7 +338,7 @@ scorep_write_group_definitions( void*                     writerHandle,
             definition->number_of_members,
             definition->members );
 
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Group" );
         }
@@ -354,16 +354,16 @@ scorep_write_metric_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
 
-    typedef SCOREP_Error_Code ( *def_metric_pointer_t )( void*,
-                                                         uint32_t,
-                                                         uint32_t,
-                                                         uint32_t,
-                                                         OTF2_MetricType,
-                                                         OTF2_MetricMode,
-                                                         OTF2_Type,
-                                                         OTF2_MetricBase,
-                                                         int64_t,
-                                                         uint32_t );
+    typedef OTF2_Error_Code ( *def_metric_pointer_t )( void*,
+                                                       uint32_t,
+                                                       uint32_t,
+                                                       uint32_t,
+                                                       OTF2_MetricType,
+                                                       OTF2_MetricMode,
+                                                       OTF2_Type,
+                                                       OTF2_MetricBase,
+                                                       int64_t,
+                                                       uint32_t );
     def_metric_pointer_t defMetricMember = ( def_metric_pointer_t )
                                            OTF2_DefWriter_WriteMetricMember;
     if ( isGlobal )
@@ -376,7 +376,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
                                   Metric,
                                   metric )
     {
-        SCOREP_Error_Code status = defMetricMember(
+        OTF2_Error_Code status = defMetricMember(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
@@ -388,7 +388,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
             definition->exponent,
             SCOREP_HANDLE_TO_ID( definition->unit_handle, String, definitionManager->page_manager ) );
 
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Metric" );
         }
@@ -404,20 +404,20 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
 
-    typedef SCOREP_Error_Code ( *def_metric_class_pointer_t )( void*,
-                                                               uint32_t,
-                                                               uint8_t,
-                                                               const uint32_t*,
-                                                               OTF2_MetricOccurrence );
+    typedef OTF2_Error_Code ( *def_metric_class_pointer_t )( void*,
+                                                             uint32_t,
+                                                             uint8_t,
+                                                             const uint32_t*,
+                                                             OTF2_MetricOccurrence );
     def_metric_class_pointer_t defMetricClass = ( def_metric_class_pointer_t )
                                                 OTF2_DefWriter_WriteMetricClass;
 
-    typedef SCOREP_Error_Code ( *def_metric_instance_pointer_t )( void*,
-                                                                  uint32_t,
-                                                                  uint32_t,
-                                                                  uint64_t,
-                                                                  OTF2_MetricScope,
-                                                                  uint64_t );
+    typedef OTF2_Error_Code ( *def_metric_instance_pointer_t )( void*,
+                                                                uint32_t,
+                                                                uint32_t,
+                                                                uint64_t,
+                                                                OTF2_MetricScope,
+                                                                uint64_t );
     def_metric_instance_pointer_t defMetricInstance = ( def_metric_instance_pointer_t )
                                                       OTF2_DefWriter_WriteMetricInstance;
     if ( isGlobal )
@@ -432,7 +432,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                                   SamplingSet,
                                   sampling_set )
     {
-        SCOREP_Error_Code status;
+        OTF2_Error_Code status;
 
         if ( !definition->is_scoped )
         {
@@ -498,7 +498,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                     scoped_definition->scope_type ),
                 scope );
         }
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "SamplingSet" );
         }
@@ -514,10 +514,10 @@ scorep_write_parameter_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
 
-    typedef  SCOREP_Error_Code ( *def_parameter_pointer_t )( void*,
-                                                             uint32_t,
-                                                             uint32_t,
-                                                             uint8_t );
+    typedef  OTF2_Error_Code ( *def_parameter_pointer_t )( void*,
+                                                           uint32_t,
+                                                           uint32_t,
+                                                           uint8_t );
     def_parameter_pointer_t defParameter = ( def_parameter_pointer_t )
                                            OTF2_DefWriter_WriteParameter;
     if ( isGlobal )
@@ -530,13 +530,13 @@ scorep_write_parameter_definitions( void*                     writerHandle,
                                   Parameter,
                                   parameter )
     {
-        SCOREP_Error_Code status = defParameter(
+        OTF2_Error_Code status = defParameter(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_parameter_type_to_otf2( definition->parameter_type ) );
 
-        if ( status != SCOREP_SUCCESS )
+        if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "Parameter" );
         }
@@ -552,10 +552,10 @@ scorep_write_callpath_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
 
-    typedef  SCOREP_Error_Code ( *def_callpath_pointer_t )( void*,
-                                                            uint32_t,
-                                                            uint32_t,
-                                                            uint32_t );
+    typedef  OTF2_Error_Code ( *def_callpath_pointer_t )( void*,
+                                                          uint32_t,
+                                                          uint32_t,
+                                                          uint32_t );
     def_callpath_pointer_t defCallpath = ( def_callpath_pointer_t )
                                          OTF2_DefWriter_WriteCallpath;
     if ( isGlobal )
@@ -577,7 +577,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                                                                        Callpath,
                                                                        definitionManager->page_manager );
             }
-            SCOREP_Error_Code status = defCallpath(
+            OTF2_Error_Code status = defCallpath(
                 writerHandle,
                 definition->sequence_number,
                 parent_callpath_sequence_number,
@@ -585,7 +585,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                                      Region,
                                      definitionManager->page_manager ) );
 
-            if ( status != SCOREP_SUCCESS )
+            if ( status != OTF2_SUCCESS )
             {
                 scorep_handle_definition_writing_error( status, "Callpath" );
             }
@@ -621,12 +621,12 @@ scorep_tracing_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
           clock_offset;
           clock_offset = clock_offset->next )
     {
-        SCOREP_Error_Code status = OTF2_DefWriter_WriteClockOffset(
+        OTF2_Error_Code status = OTF2_DefWriter_WriteClockOffset(
             localDefinitionWriter,
             clock_offset->time,
             clock_offset->offset,
             clock_offset->stddev );
-        assert( status == SCOREP_SUCCESS );
+        assert( status == OTF2_SUCCESS );
     }
 }
 

@@ -39,7 +39,7 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Metric_Management.h>
@@ -247,12 +247,7 @@ scorep_set_otf2_archive_master_slave()
 {
     if ( SCOREP_IsTracingEnabled() )
     {
-        SCOREP_Error_Code status =
-            SCOREP_Tracing_SetIsMaster( SCOREP_Mpi_GetRank() == 0 );
-        if ( SCOREP_SUCCESS != status )
-        {
-            _Exit( EXIT_FAILURE );
-        }
+        SCOREP_Tracing_SetIsMaster( SCOREP_Mpi_GetRank() == 0 );
     }
 }
 

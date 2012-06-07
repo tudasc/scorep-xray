@@ -27,7 +27,7 @@
 #include <config.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Filter.h>
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 
 /* **************************************************************************************
    Variable and type definitions

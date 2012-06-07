@@ -34,7 +34,7 @@
 #include "SCOREP_Types.h"
 #include <SCOREP_Location.h>
 #include "SCOREP_Config.h"
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 
 /**
    Contains the name of the executable.

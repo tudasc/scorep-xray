@@ -31,9 +31,9 @@
 #include <string.h>
 #include "SCOREP_Config.h"
 #include <SCOREP_RuntimeManagement.h>
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Error.h>
-#include <scorep_utility/SCOREP_CStr.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error.h>
+#include <SCOREP_CStr.h>
 
 #include <SCOREP_Location.h>
 

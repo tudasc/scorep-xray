@@ -32,11 +32,11 @@
 //#include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <scorep_utility/SCOREP_CStr.h>
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_IO.h>
+#include <SCOREP_CStr.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_IO.h>
 #include <scorep_selective_region.h>
-
+#include <SCOREP_Error.h>
 
 /* **************************************************************************************
    Variable definitions

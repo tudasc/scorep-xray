@@ -33,7 +33,7 @@
 #include <SCOREP_Config.h>
 #include <assert.h>
 #include <stdio.h>
-
+#include <SCOREP_Error.h>
 
 static bool scorep_env_core_environment_variables_initialized = false;
 

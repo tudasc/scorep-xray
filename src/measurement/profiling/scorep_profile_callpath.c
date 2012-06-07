@@ -38,8 +38,8 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error.h>
 
 #include <scorep_profile_definition.h>
 #include <scorep_definitions.h>

@@ -47,8 +47,8 @@ endif
 
 scorep_LDFLAGS = $(OPENMP_CFLAGS)
 
-scorep_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la    \
-             $(LIB_DIR_UTIL)libscorep_parser_tools.la
+scorep_LDADD = libscorep_utilities.la    \
+             libscorep_parser_tools.la
 
 EXTRA_DIST += \
      $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf \

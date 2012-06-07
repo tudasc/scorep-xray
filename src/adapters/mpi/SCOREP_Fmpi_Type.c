@@ -43,8 +43,8 @@
 #include <config.h>
 #include "SCOREP_Fmpi.h"
 
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error.h>
 
 /* uppercase defines */
 /** @def MPI_Pack_U

@@ -32,10 +32,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_IO.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_IO.h>
 #include <SCOREP_Hashtab.h>
-#include <scorep_utility/SCOREP_CStr.h>
+#include <SCOREP_CStr.h>
 #include <SCOREP_Types.h>
 
 /**

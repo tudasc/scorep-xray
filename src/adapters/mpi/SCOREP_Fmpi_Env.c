@@ -44,7 +44,7 @@
 #include "SCOREP_Fmpi.h"
 
 #include <stdlib.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Error.h>
 
 /* uppercase defines */
 /** @def MPI_Finalize_U

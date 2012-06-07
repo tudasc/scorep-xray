@@ -30,7 +30,7 @@
 #include <limits.h>
 #include <inttypes.h>
 #include <CuTest.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Error.h>
 #include "error_callback.h"
 
 

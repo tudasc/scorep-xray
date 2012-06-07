@@ -25,6 +25,6 @@ scorep_score_CPPFLAGS = \
 scorep_score_LDFLAGS = -L$(CUBE_FRONTEND_LIB_PATH)
 scorep_score_LDADD = $(CUBE_FRONTEND_LIBS) \
     libscorep_filter.la \
-    $(LIB_DIR_UTIL)libscorep_utilities.la
+    libscorep_utilities.la
 
 endif

@@ -145,7 +145,7 @@ enum yytokentype
 #include "scorep_oa_mri_control.h"
 #include "scorep_oa_connection.h"
 #include "SCOREP_OA_Init.h"
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 #include <stdio.h>
 
 void

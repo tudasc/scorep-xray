@@ -36,6 +36,7 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_vector.la                   \
                 libscorep_hashtab.la                  \
                 $(LIB_DIR_OTF2)libotf2.la             \
+                libscorep_utilities.la                \
                 libjenkins_hash.la                    \
                 @LIBBFD_LIBS@                         \
                 @TIMER_LIB@                           \

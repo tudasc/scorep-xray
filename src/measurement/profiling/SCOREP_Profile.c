@@ -26,7 +26,7 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Mutex.h>

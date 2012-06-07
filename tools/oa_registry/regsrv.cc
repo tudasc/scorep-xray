@@ -34,7 +34,7 @@
 #include <inttypes.h>
 
 
-#include <scorep_utility/SCOREP_IO.h>
+#include <SCOREP_IO.h>
 #include "regsrv.h"
 #include "regsrv_client.h"
 #include "regsrv_sockets.h"

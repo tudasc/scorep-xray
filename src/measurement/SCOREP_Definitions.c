@@ -38,7 +38,7 @@
 #include <sys/stat.h>
 
 
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 
 
 #include <jenkins_hash.h>

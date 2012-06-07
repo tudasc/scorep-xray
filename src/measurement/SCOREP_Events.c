@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 #include <SCOREP_Timing.h>
 #include <scorep_openmp.h>
 #include <tracing/SCOREP_Tracing_Events.h>

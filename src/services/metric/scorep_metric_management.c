@@ -32,7 +32,7 @@
 
 #include "SCOREP_Config.h"
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Debug.h>
+#include <SCOREP_Debug.h>
 
 /* Include to implement metric service */
 #include "SCOREP_Metric.h"

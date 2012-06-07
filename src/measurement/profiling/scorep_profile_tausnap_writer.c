@@ -32,8 +32,8 @@
 #include <sys/stat.h>
 
 #include <SCOREP_Memory.h>
-#include <scorep_utility/SCOREP_Debug.h>
-#include <scorep_utility/SCOREP_Error.h>
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 
