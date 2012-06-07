@@ -1,0 +1,26 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+lib_LTLIBRARIES += libscorep_parser_tools.la
+
+libscorep_parser_tools_la_SOURCES = \
+    $(SRC_ROOT)vendor/common/src/utils/parser/SCOREP_ParserBase.cpp \
+    $(SRC_ROOT)vendor/common/src/utils/include/SCOREP_ParserBase.hpp
+
+libscorep_parser_tools_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL)
+
+

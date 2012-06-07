@@ -1,0 +1,9 @@
+## -*- mode: makefile -*-
+
+noinst_LTLIBRARIES += libscorep_utilities.la
+libscorep_utilities_la_SOURCES = 
+libscorep_utilities_la_LDFLAGS =
+libscorep_utilities_la_LIBADD = \
+    libscorep_cstr.la           \
+    libscorep_exception.la      \
+    libscorep_io.la
