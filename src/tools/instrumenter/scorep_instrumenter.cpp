@@ -230,7 +230,7 @@ SCOREP_Instrumenter::Run()
         link_step();
 
         #if HAVE( COBI )
-        if ( m_command_line->isCobiInstrumentating() )
+        if ( m_command_line->isCobiInstrumenting() )
         {
             std::string orig_name = output_name + ".orig";
             if ( m_command_line->getVerbosity() >= 1 )
