@@ -21,11 +21,11 @@
  * .
  */
 #include <config.h>
+#include <scorep_instrumenter.hpp>
+
 #include <iostream>
 #include <string>
 #include <cstdlib>
-
-#include "SCOREP_Instrumenter.hpp"
 
 /**
    Contains the name of the tool for help output
@@ -116,8 +116,11 @@ main( int   argc,
 {
     if ( argc > 1 )
     {
-        SCOREP_Instrumenter app;
-        app.ParseCmdLine( argc, argv );
+        SCOREP_Instrumenter_InstallData install_data;
+        SCOREP_Instrumenter_CmdLine     command_line( &install_data );
+        command_line.ParseCmdLine( argc, argv );
+
+        SCOREP_Instrumenter app( &install_data, &command_line );
         if ( app.Run() == EXIT_SUCCESS )
         {
             return EXIT_SUCCESS;
