@@ -296,7 +296,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
         mode += " --cuda";
     }
 
-    if ( m_command_line->isCompilerInstrumenting() )
+    if ( !m_command_line->isCompilerInstrumenting() )
     {
         mode += " --nocompiler";
     }
