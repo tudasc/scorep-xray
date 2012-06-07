@@ -1,8 +1,8 @@
 ## -*- mode: makefile -*-
 include ../src/utils/filtering/Makefile.inc.am
-include ../vendor/common/src/utils/cstr/Makefile.inc.am_
-include ../vendor/common/src/utils/io/Makefile.inc.am_
-include ../vendor/common/src/utils/exception/Makefile.inc.am_
+include ../vendor/common/src/utils/cstr/Makefile.inc.am
+include ../vendor/common/src/utils/io/Makefile.inc.am
+include ../vendor/common/src/utils/exception/Makefile.inc.am
 include ../vendor/common/src/utils/Makefile.inc.am
 
 ## include tests
