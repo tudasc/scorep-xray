@@ -226,13 +226,8 @@ SCOREP_Instrumenter::Run()
             prepare_opari_linking();
         }
 
-        ret_val = link_step();
-
-        if ( ret_val != EXIT_SUCCESS )
-        {
-            std::cerr << "SCOREP: Error while linking" << std::endl;
-            return ret_val;
-        }
+        // ----------------------- Link step
+        link_step();
 
         #if HAVE( COBI )
         if ( m_command_line->isCobiInstrumentating() )
@@ -565,7 +560,7 @@ SCOREP_Instrumenter::prepare_opari_linking()
     m_input_files += " " + init_object;
 }
 
-int
+void
 SCOREP_Instrumenter::link_step()
 {
     std::string command = m_command_line->getCompilerName()

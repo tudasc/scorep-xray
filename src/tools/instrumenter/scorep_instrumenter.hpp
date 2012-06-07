@@ -66,10 +66,9 @@ public:
 private:
 
     /**
-       Executes the linking command.
-       @returns the return value from the executed command.
+       Executes the linking command. Aborts if an error occurs.
      */
-    int
+    void
     link_step();
 
     /**
