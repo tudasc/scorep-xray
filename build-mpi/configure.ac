@@ -230,8 +230,11 @@ AC_SCOREP_ONLINE_ACCESS
 AC_SCOREP_MPI_PROFILING_HEADERS
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
 
-AC_CONFIG_FILES([Makefile \
-                 run_otf2_speed_test.sh \
+AC_CONFIG_FILES([Makefile], [
+sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&   /; t; s/_0 = @echo "  /&MPI/' \
+Makefile >Makefile.mpi && mv -f Makefile.mpi Makefile || rm Makefile.mpi
+])
+AC_CONFIG_FILES([run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
                  ../test/jacobi/hybrid/C/Makefile \
                  ../installcheck/mpi/Makefile:../test/installcheck/mpi/Makefile.in
