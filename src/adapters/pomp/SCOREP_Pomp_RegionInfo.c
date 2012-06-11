@@ -93,7 +93,8 @@ static const scorep_pomp_token_map_entry scorep_pomp_token_map[] =
 };
 
 /** Number of entries in @ref scorep_pomp_token_map */
-const size_t scorep_pomp_token_map_size = 6;
+const size_t scorep_pomp_token_map_size =
+    sizeof( scorep_pomp_token_map ) / sizeof( scorep_pomp_token_map_entry );
 
 /** Contains the data for one region type */
 typedef struct
@@ -137,7 +138,8 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
 /* *INDENT-ON* */
 
 /** Number of entries in scorep_pomp_region_type_map */
-const size_t scorep_pomp_region_type_map_size = 19;
+const size_t scorep_pomp_region_type_map_size =
+    sizeof( scorep_pomp_region_type_map ) / sizeof( scorep_pomp_region_type_map_entry );
 
 /* **************************************************************************************
  *                                                                    Init/free functions
