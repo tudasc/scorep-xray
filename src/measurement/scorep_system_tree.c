@@ -70,10 +70,6 @@ SCOREP_DefineSystemTree()
         sprintf( name, "MPI Rank %d", rank );
         location_group_id = rank;
     }
-    else if ( scorep_local_definition_manager.location_definition_counter > 1 )
-    {
-        strcpy( name, "OpenMP Process" );
-    }
     else
     {
         strcpy( name, "Process" );
