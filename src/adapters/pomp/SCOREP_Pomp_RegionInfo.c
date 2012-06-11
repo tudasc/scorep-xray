@@ -185,6 +185,16 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     static char*                   last_file_name = 0;
     static SCOREP_SourceFileHandle last_file      = SCOREP_INVALID_SOURCE_FILE;
 
+    /* Consistency checks */
+    if ( ( 0 > region->regionType ) ||
+         ( region->regionType > scorep_pomp_region_type_map_size ) )
+    {
+        SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                      "Region type %d not found in region type table.\n",
+                      region->regionType );
+        exit( EXIT_FAILURE );
+    }
+
     /* Evtl. register new source file */
     if ( ( last_file == SCOREP_INVALID_SOURCE_FILE ) ||
          ( strcmp( last_file_name, region->startFileName ) != 0 ) )
