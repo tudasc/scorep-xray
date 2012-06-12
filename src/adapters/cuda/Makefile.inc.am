@@ -40,13 +40,13 @@ libscorep_adapter_cuda_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/adapters/include \
     -I$(INC_ROOT)src/services/include \
-    -I$(SCOREP_CUPTI_INCDIR) \
-    -I$(SCOREP_CUDA_INCDIR)
+    -I$(SCOREP_LIBCUPTI_INCDIR) \
+    -I$(SCOREP_LIBCUDA_INCDIR)
 
-libscorep_adapter_cuda_la_LIBADD = $(SCOREP_CUPTI_LDFLAGS) $(SCOREP_CUPTI_LIBS) \
-				   $(SCOREP_CUDA_LDFLAGS) $(SCOREP_CUDA_LIBS)
+libscorep_adapter_cuda_la_LIBADD = $(SCOREP_LIBCUPTI_LDFLAGS) $(SCOREP_LIBCUPTI_LIBS) \
+				   $(SCOREP_LIBCUDA_LDFLAGS) $(SCOREP_LIBCUDA_LIBS)
 
 libscorep_cupti_la_CPPFLAGS = $(libscorep_adapter_cuda_la_CPPFLAGS) \
-    @SCOREP_CUPTI_CPPFLAGS@ @SCOREP_CUDA_CPPFLAGS@
+    @SCOREP_LIBCUPTI_CPPFLAGS@ @SCOREP_LIBCUDA_CPPFLAGS@
 
 endif

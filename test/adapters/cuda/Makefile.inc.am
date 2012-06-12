@@ -6,8 +6,8 @@ if HAVE_CUPTI
 #	$(SRC_ROOT)/test/adapters/cuda/cuda_test.cu 
 
 #cuda_test_CPPFLAGS = $(AM_CPPFLAGS) \
-#    -I$(SCOREP_CUPTI_INCDIR)        \
-#    -I$(SCOREP_CUDA_INCDIR)
+#    -I$(SCOREP_LIBCUPTI_INCDIR)        \
+#    -I$(SCOREP_LIBCUDA_INCDIR)
 
 #cuda_test_LDADD = \
 #    $(LIB_ROOT)libscorep_serial.la
