@@ -118,7 +118,7 @@ MANGLE_NAME( Debug_Printf )
     uint64_t kind = bitMask & ( MANGLE_NAME( DEBUG_FUNCTION_ENTRY ) | MANGLE_NAME( DEBUG_FUNCTION_EXIT ) );
     bitMask &= ~( MANGLE_NAME( DEBUG_FUNCTION_ENTRY ) | MANGLE_NAME( DEBUG_FUNCTION_EXIT ) );
 
-    if ( ( debugLevel & bitMask ) != bitMask )
+    if ( debugLevel == 0 || ( debugLevel & bitMask ) != bitMask )
     {
         return;
     }
