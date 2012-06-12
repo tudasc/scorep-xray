@@ -50,9 +50,6 @@ typedef enum SCOREP_MemoryType
     /** separate because we might clear them for periscope from time to time */
     SCOREP_MEMORY_TYPE_PROFILING,
 
-    /** For the OTF2 chunks, will be cleared after a flush */
-    SCOREP_MEMORY_TYPE_TRACING,
-
     SCOREP_NUMBER_OF_MEMORY_TYPES
 } SCOREP_MemoryType;
 
@@ -81,6 +78,13 @@ SCOREP_Memory_HandleOutOfMemory( void );
  */
 void
 SCOREP_Memory_Finalize();
+
+
+/**
+ * Creates a page manager for the tracing event writer.
+ */
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreateTracingPageManager( void );
 
 
 /**
@@ -195,29 +199,6 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* locationData,
  */
 void
 SCOREP_Memory_FreeProfileMem();
-
-
-/**
- * The malloc function for tracing data ie trace buffers.
- *
- * @param size The size of the requested memory block in bytes.
- *
- * @return The address of the first byte in the memory block allocated, or a
- * null pointer if the requested memory is not available.
- *
- * @see SCOREP_Memory_FreeTracingMem()
- */
-void*
-SCOREP_Memory_AllocForTracing( size_t size );
-
-
-/**
- * Release the entire allocated memory for tracing stuff.
- *
- * @see SCOREP_Memory_AllocForTracing()
- */
-void
-SCOREP_Memory_FreeTracingMem();
 
 
 /**

@@ -221,10 +221,17 @@ scorep_tracing_chunk_allocate( void*         userData,
                                void**        perBufferData,
                                uint64_t      chunkSize )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY,
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "%" PRIu64, chunkSize );
 
-    void* chunk = SCOREP_Memory_AllocForTracing( chunkSize );
+    if ( !*perBufferData )
+    {
+        /* This manager has a pre-allocated page, which is much smaller
+           than the chunksize, which is wasted now */
+        *perBufferData = SCOREP_Memory_CreateTracingPageManager();
+    }
+
+    void* chunk = SCOREP_Allocator_Alloc( *perBufferData, chunkSize );
 
     /* ignore allocation failures, OTF2 will flush and free chunks */
 
@@ -239,14 +246,22 @@ scorep_tracing_chunk_free_all( void*         userData,
                                void**        perBufferData,
                                bool          final )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY,
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "%s", final ? "final" : "intermediate" );
 
-    /* drop all used pages */
-    /* But not while in finalize, current location is not available */
-    if ( !final )
+    /* maybe we were called without one allocate */
+    if ( !*perBufferData )
     {
-        SCOREP_Memory_FreeTracingMem();
+        return;
+    }
+
+    /* drop all used pages */
+    SCOREP_Allocator_Free( *perBufferData );
+
+    if ( final )
+    {
+        /* drop also the page manager */
+        SCOREP_Allocator_DeletePageManager( *perBufferData );
     }
 }
 

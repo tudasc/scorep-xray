@@ -131,13 +131,26 @@ SCOREP_Memory_HandleOutOfMemory( void )
     assert( false );
 }
 
+SCOREP_Allocator_PageManager*
+SCOREP_Memory_CreateTracingPageManager( void )
+{
+    SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Allocator_CreatePageManager( scorep_memory_allocator );
+    if ( !page_manager )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+    return page_manager;
+}
+
+
 void
 SCOREP_Memory_CreatePageManagers( SCOREP_Allocator_PageManager** pageManagers )
 {
     for ( int i = 0; i < SCOREP_NUMBER_OF_MEMORY_TYPES; ++i )
     {
-        if ( ( i == SCOREP_MEMORY_TYPE_PROFILING && !SCOREP_IsProfilingEnabled() )
-             || ( i == SCOREP_MEMORY_TYPE_TRACING && !SCOREP_IsTracingEnabled() ) )
+        if ( i == SCOREP_MEMORY_TYPE_PROFILING && !SCOREP_IsProfilingEnabled() )
         {
             pageManagers[ i ] = 0;
             continue;
@@ -253,38 +266,6 @@ SCOREP_Memory_FreeProfileMem()
         SCOREP_Location_GetMemoryPageManager(
             SCOREP_Location_GetCurrentCPULocation(),
             SCOREP_MEMORY_TYPE_PROFILING ) );
-}
-
-
-void*
-SCOREP_Memory_AllocForTracing( size_t size )
-{
-    // collect statistics
-    if ( size == 0 )
-    {
-        return NULL;
-    }
-
-    void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManager(
-            SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_MEMORY_TYPE_TRACING ),
-        size );
-
-    /* Do not handle out of memory, OTF2 will flush and free pages */
-
-    return mem;
-}
-
-
-void
-SCOREP_Memory_FreeTracingMem()
-{
-    // print mem usage statistics
-    SCOREP_Allocator_Free(
-        SCOREP_Location_GetMemoryPageManager(
-            SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_MEMORY_TYPE_TRACING ) );
 }
 
 
