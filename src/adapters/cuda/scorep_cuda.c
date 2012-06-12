@@ -34,7 +34,9 @@ bool scorep_cuda_record_idle = false;
 bool scorep_cuda_record_memcpy = false;
 
 void
-scorep_cuda_handle_cupti_error( CUptiResult err, const char* file, const int line )
+scorep_cuda_handle_cupti_error( CUptiResult err,
+                                const char* file,
+                                const int   line )
 {
     const char* errstr;
 
