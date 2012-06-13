@@ -25,8 +25,8 @@ AC_REQUIRE([AC_SCOREP_CUDA])
 
 AS_IF([test "x$scorep_have_libcuda" = "xyes"],
       [AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcuda_cppflags}])
-       AS_IF([test "$x{scorep_have_libcupti}" = "xyes"],
-             [AM_CONDITIONAL([HAVE_CUPTI], [test "$x{scorep_have_libcupti}" = "xyes"])],
+       AS_IF([test "x${scorep_have_libcupti}" = "xyes"],
+             [AM_CONDITIONAL([HAVE_CUPTI], [test "x${scorep_have_libcupti}" = "xyes"])],
              [AM_CONDITIONAL([HAVE_CUPTI], [test 1 -eq 0])
               AM_CONDITIONAL([HAVE_LIBCUPTI], [test 1 -eq 0]) ])],
       [AM_CONDITIONAL([HAVE_CUPTI], [test 1 -eq 0])
@@ -48,7 +48,7 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
                      scorep_cupti_error="yes" ])])
                      
 dnl check the version of CUPTI
-AS_IF([test "$xscorep_cupti_error" = "xno"],
+AS_IF([test "x$scorep_cupti_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cupti.h"]],
         [[
 #ifndef CUPTI_API_VERSION
