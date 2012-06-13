@@ -51,7 +51,7 @@
     ( SCOREP_CUDA_RECORD_RUNTIME_API | SCOREP_CUDA_RECORD_KERNEL | \
       SCOREP_CUDA_RECORD_MEMCPY )
 
-#define SCOREP_CUDRV_CALL( _err ) \
+#define SCOREP_CUDA_DRIVER_CALL( _err ) \
     if ( _err != CUDA_SUCCESS ) { \
         SCOREP_ERROR( SCOREP_WARNING, \
                       "[CUDA] Error %d in %s:%lu", __FILE__, __LINE__, _err ); \

@@ -660,7 +660,7 @@ scorep_cupti_activity_create_context( uint32_t  contextId,
 
     if ( cudaContext == NULL )
     {
-        SCOREP_CUDRV_CALL( cuCtxGetCurrent( &cudaContext ) );
+        SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cudaContext ) );
     }
     context->cuda_context = cudaContext;
 

@@ -301,7 +301,7 @@ scorep_cupti_set_callback( CUpti_CallbackFunc   callback,
     {
         initflag = 0;
 
-        SCOREP_CUDRV_CALL( cuInit( 0 ) );
+        SCOREP_CUDA_DRIVER_CALL( cuInit( 0 ) );
 
         /* only one subscriber allowed at a time */
         cupti_error = cuptiSubscribe( &scorep_cupti_callbacks_subscriber, callback, NULL );
