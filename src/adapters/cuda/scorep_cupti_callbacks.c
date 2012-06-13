@@ -34,154 +34,153 @@
 #include "scorep_cupti_activity.h"
 
 /* initialization and finalization flags */
-static bool sp_cupticb_initialized = false;
-static bool sp_cupticb_finalized   = false;
+static bool scorep_cupti_callbacks_initialized = false;
+static bool scorep_cupti_callbacks_finalized   = false;
 
 /* flag: Recording of CUDA runtime API functions enabled? */
-static bool sp_cupticb_record_cudart = false;
+static bool scorep_cupti_callbacks_record_cudart = false;
 
 /* flag: Recording of CUDA driver API functions enabled? */
-static bool sp_cupticb_record_cudrv = false;
+static bool scorep_cupti_callbacks_record_cuda_driver = false;
 
 /* global subscriber handle */
-static CUpti_SubscriberHandle sp_cupticb_subscriber;
+static CUpti_SubscriberHandle scorep_cupti_callbacks_subscriber;
 
 /* CUDA runtime and driver API source file handle (function group description) */
-static SCOREP_SourceFileHandle cudartFileHandle = SCOREP_INVALID_SOURCE_FILE;
-static SCOREP_SourceFileHandle cudrvFileHandle  = SCOREP_INVALID_SOURCE_FILE;
+static SCOREP_SourceFileHandle cuda_runtime_file_handle = SCOREP_INVALID_SOURCE_FILE;
+static SCOREP_SourceFileHandle cuda_driver_file_handle  = SCOREP_INVALID_SOURCE_FILE;
 
 /****************** Some internal function declarations ***********************/
 static void
-sp_cupti_set_callback( CUpti_CallbackFunc   callback,
-                       CUpti_CallbackDomain domain,
-                       CUpti_CallbackId     cbid );
+scorep_cupti_set_callback( CUpti_CallbackFunc   callback,
+                           CUpti_CallbackDomain domain,
+                           CUpti_CallbackId     callbackId );
 
 void CUPTIAPI
-sp_cupticb_all( void*,
-                CUpti_CallbackDomain,
-                CUpti_CallbackId,
-                const void* );
+scorep_cupti_callback_all( void*                userdata,
+                           CUpti_CallbackDomain domain,
+                           CUpti_CallbackId     callbackId,
+                           const void*          callbackInfo );
 
-void ( * sp_cupticb_all_ptr )( void*,
-                               CUpti_CallbackDomain,
-                               CUpti_CallbackId,
-                               const void* )
-    = sp_cupticb_all;
+void ( * scorep_cupti_callback_all_ptr )( void*                userdata,
+                                          CUpti_CallbackDomain domain,
+                                          CUpti_CallbackId     callbackId,
+                                          const void*          callbackInfo )
+    = scorep_cupti_callback_all;
 
 void CUPTIAPI
-sp_cupticb_cudart( CUpti_CallbackId,
-                   const CUpti_CallbackData* );
+scorep_cupti_callback_cuda_runtime( CUpti_CallbackId          callbackId,
+                                    const CUpti_CallbackData* callbackInfo );
 
 void
-sp_cupticb_driverAPI( CUpti_CallbackId,
-                      const CUpti_CallbackData* );
+scorep_cupti_callback_driver_api( CUpti_CallbackId          callbackId,
+                                  const CUpti_CallbackData* callbackInfo );
 
 void
-sp_cupticb_resource( CUpti_CallbackId,
-                     const CUpti_ResourceData* );
+scorep_cupti_callback_resource( CUpti_CallbackId          callbackId,
+                                const CUpti_ResourceData* callbackInfo );
 
 void
-sp_cupticb_sync( CUpti_CallbackId,
-                 const CUpti_SynchronizeData* );
+scorep_cupti_callback_sync( CUpti_CallbackId             callbackId,
+                            const CUpti_SynchronizeData* callbackInfo );
 
 /******************************************************************************/
 
 /************************** CUDA function table *******************************/
-#define SP_CUPTICB_CUDA_API_FUNC_MAX 1024
-static SCOREP_RegionHandle sp_cupticb_cudaFuncTab[ SP_CUPTICB_CUDA_API_FUNC_MAX ];
+#define CUPTI_CALLBACKS_CUDA_API_FUNC_MAX 1024
+static SCOREP_RegionHandle scorep_cupti_callbacks_cuda_function_table[ CUPTI_CALLBACKS_CUDA_API_FUNC_MAX ];
 
-/*
+/**
  * This is a pseudo hash function for CUPTI callbacks. No real hash is needed,
  * as the callback IDs are 3-digit integer values, which can be stored directly
  * in an array.
  *
- * @param domain the CUPTI callback domain
- * @param cid the CUPTI callback ID
+ * @param domain            CUPTI callback domain.
+ * @param callbackId        CUPTI callback ID.
  *
- * @return the position in the hash table (index)
+ * @return Return the position in the hash table (index).
  */
 static uint32_t
-sp_cupticb_cudaApiHashFunc( CUpti_CallbackDomain domain,
-                            CUpti_CallbackId     cid )
+cuda_api_function_hash( CUpti_CallbackDomain domain,
+                        CUpti_CallbackId     callbackId )
 {
-    uint32_t idx = 0;
+    uint32_t index = 0;
 
     /* Use an offset for the driver API functions, if CUDA runtime and driver
        API recording is enabled (uncommon case) */
-    if ( sp_cupticb_record_cudrv && sp_cupticb_record_cudart )
+    if ( scorep_cupti_callbacks_record_cuda_driver && scorep_cupti_callbacks_record_cudart )
     {
         uint16_t offset = 0;
 
         if ( domain == CUPTI_CB_DOMAIN_DRIVER_API )
         {
-            offset = SP_CUPTICB_CUDA_API_FUNC_MAX / 2;
+            offset = CUPTI_CALLBACKS_CUDA_API_FUNC_MAX / 2;
         }
 
-        idx = offset + ( uint32_t )cid;
+        index = offset + ( uint32_t )callbackId;
 
         if ( ( domain == CUPTI_CB_DOMAIN_RUNTIME_API ) &&
-             ( idx >= SP_CUPTICB_CUDA_API_FUNC_MAX - offset ) )
+             ( index >= CUPTI_CALLBACKS_CUDA_API_FUNC_MAX - offset ) )
         {
-            idx = 0;
+            index = 0;
 
             SCOREP_ERROR( SCOREP_WARNING,
                           "[CUPTI Callbacks] Hash table for CUDA runtime API "
-                          "function %d is to small!", cid );
+                          "function %d is to small!", callbackId );
         }
     }
     else
     {
-        idx = ( uint32_t )cid;
+        index = ( uint32_t )callbackId;
     }
 
-    if ( idx >= SP_CUPTICB_CUDA_API_FUNC_MAX )
+    if ( index >= CUPTI_CALLBACKS_CUDA_API_FUNC_MAX )
     {
-        idx = 0;
+        index = 0;
 
         SCOREP_ERROR( SCOREP_WARNING,
                       "[CUPTI Callbacks] Hash table for CUDA API "
-                      "function %d is to small!", cid );
+                      "function %d is to small!", callbackId );
     }
 
-    return ( uint32_t )idx;
+    return ( uint32_t )index;
 }
 
-/*
- * Store a CUPTI callback together with a ScoreP region handle.
+/**
+ * Store a CUPTI callback together with a Score-P region handle.
  *
- * @param domain the CUPTI callback domain
- * @param cid the CUPTI callback ID
- * @param rid the ScoreP region handle
+ * @param domain            CUPTI callback domain.
+ * @param callbackId        CUPTI callback ID.
+ * @param region          Score-P region handle.
  */
 static void
-sp_cupticb_cudaApiFuncPut( CUpti_CallbackDomain domain,
-                           CUpti_CallbackId     cid,
-                           SCOREP_RegionHandle  rid )
+cuda_api_function_put( CUpti_CallbackDomain domain,
+                       CUpti_CallbackId     callbackId,
+                       SCOREP_RegionHandle  region )
 {
-    sp_cupticb_cudaFuncTab[ sp_cupticb_cudaApiHashFunc( domain, cid ) ] = rid;
+    scorep_cupti_callbacks_cuda_function_table[ cuda_api_function_hash( domain, callbackId ) ] = region;
 }
 
-/*
- * Retrieve the ScoreP region handle of a CUPTI callback.
+/**
+ * Retrieve the Score-P region handle of a CUPTI callback.
  *
- * @param domain the CUPTI callback domain
- * @param cid the CUPTI callback ID
+ * @param domain            CUPTI callback domain.
+ * @param callbackId        CUPTI callback ID.
  *
- * @return the corresponding ScoreP region handle
+ * @return Return corresponding Score-P region handle.
  */
 static SCOREP_RegionHandle
-sp_cupticb_cudaApiFuncGet(
-    CUpti_CallbackDomain domain,
-    CUpti_CallbackId     cid )
+cuda_api_function_get( CUpti_CallbackDomain domain,
+                       CUpti_CallbackId     callbackId )
 {
-    return sp_cupticb_cudaFuncTab[ sp_cupticb_cudaApiHashFunc( domain, cid ) ];
+    return scorep_cupti_callbacks_cuda_function_table[ cuda_api_function_hash( domain, callbackId ) ];
 }
 /******************************************************************************/
 
 void
 scorep_cupti_callbacks_init()
 {
-    if ( !sp_cupticb_initialized )
+    if ( !scorep_cupti_callbacks_initialized )
     {
         SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                  "[CUPTI Callbacks] Initializing ... \n" );
@@ -190,14 +189,14 @@ scorep_cupti_callbacks_init()
         if ( ( scorep_cuda_features & SCOREP_CUDA_RECORD_RUNTIME_API )
              == SCOREP_CUDA_RECORD_RUNTIME_API )
         {
-            sp_cupticb_record_cudart = true;
+            scorep_cupti_callbacks_record_cudart = true;
         }
 
         /* check for CUDA runtime API tracing */
         if ( ( scorep_cuda_features & SCOREP_CUDA_RECORD_DRIVER_API )
              == SCOREP_CUDA_RECORD_DRIVER_API )
         {
-            sp_cupticb_record_cudrv = true;
+            scorep_cupti_callbacks_record_cuda_driver = true;
         }
 
         /* check for CUDA kernel tracing */
@@ -224,49 +223,49 @@ scorep_cupti_callbacks_init()
 
         if ( scorep_cuda_record_kernels > 0 || scorep_cuda_record_memcpy )
         {
-            sp_cupti_set_callback( sp_cupticb_all_ptr,
-                                   CUPTI_CB_DOMAIN_RESOURCE,
-                                   CUPTI_RUNTIME_TRACE_CBID_INVALID );
+            scorep_cupti_set_callback( scorep_cupti_callback_all_ptr,
+                                       CUPTI_CB_DOMAIN_RESOURCE,
+                                       CUPTI_RUNTIME_TRACE_CBID_INVALID );
 
-            sp_cupti_set_callback( sp_cupticb_all_ptr,
-                                   CUPTI_CB_DOMAIN_SYNCHRONIZE,
-                                   CUPTI_RUNTIME_TRACE_CBID_INVALID );
+            scorep_cupti_set_callback( scorep_cupti_callback_all_ptr,
+                                       CUPTI_CB_DOMAIN_SYNCHRONIZE,
+                                       CUPTI_RUNTIME_TRACE_CBID_INVALID );
 
             scorep_cupti_activity_init();
         }
 
-        if ( sp_cupticb_record_cudart )
+        if ( scorep_cupti_callbacks_record_cudart )
         {
-            cudartFileHandle = SCOREP_DefineSourceFile( "CUDART" );
+            cuda_runtime_file_handle = SCOREP_DefineSourceFile( "CUDART" );
 
-            sp_cupti_set_callback( sp_cupticb_all_ptr,
-                                   CUPTI_CB_DOMAIN_RUNTIME_API,
-                                   CUPTI_RUNTIME_TRACE_CBID_INVALID );
+            scorep_cupti_set_callback( scorep_cupti_callback_all_ptr,
+                                       CUPTI_CB_DOMAIN_RUNTIME_API,
+                                       CUPTI_RUNTIME_TRACE_CBID_INVALID );
         }
 
-        if ( sp_cupticb_record_cudrv )
+        if ( scorep_cupti_callbacks_record_cuda_driver )
         {
-            cudrvFileHandle = SCOREP_DefineSourceFile( "CUDRV" );
+            cuda_driver_file_handle = SCOREP_DefineSourceFile( "CUDRV" );
 
-            sp_cupti_set_callback( sp_cupticb_all_ptr,
-                                   CUPTI_CB_DOMAIN_DRIVER_API,
-                                   CUPTI_DRIVER_TRACE_CBID_INVALID );
+            scorep_cupti_set_callback( scorep_cupti_callback_all_ptr,
+                                       CUPTI_CB_DOMAIN_DRIVER_API,
+                                       CUPTI_DRIVER_TRACE_CBID_INVALID );
         }
 
         /* reset the hash table for CUDA API functions */
-        memset( sp_cupticb_cudaFuncTab, SCOREP_INVALID_REGION,
-                SP_CUPTICB_CUDA_API_FUNC_MAX * sizeof( uint32_t ) );
+        memset( scorep_cupti_callbacks_cuda_function_table, SCOREP_INVALID_REGION,
+                CUPTI_CALLBACKS_CUDA_API_FUNC_MAX * sizeof( uint32_t ) );
 
         atexit( scorep_cupti_callbacks_finalize );
 
-        sp_cupticb_initialized = true;
+        scorep_cupti_callbacks_initialized = true;
     }
 }
 
 void
 scorep_cupti_callbacks_finalize()
 {
-    if ( !sp_cupticb_finalized && sp_cupticb_initialized )
+    if ( !scorep_cupti_callbacks_finalized && scorep_cupti_callbacks_initialized )
     {
         SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                  "[CUPTI Callbacks] Finalizing ... \n" );
@@ -276,25 +275,26 @@ scorep_cupti_callbacks_finalize()
             scorep_cupti_activity_finalize();
         }
 
-        sp_cupticb_finalized = true;
+        scorep_cupti_callbacks_finalized = true;
     }
 }
 
-/*
+/**
  * Set a CUPTI callback function for a specific CUDA runtime or driver function
  * or for a whole domain (runtime or driver API)
  *
- * @param callback the callback function
- * @param domain The domain of the callback
- * @param cbid The ID of the API function associated with this callback, if it
- *             is not valid, the whole domain will be enabled
+ * @param callback          Callback function.
+ * @param domain            Domain of the callback.
+ * @param callbackId        ID of the API function associated with this
+ *                          callback. If it is not valid, the whole
+ *                          domain will be enabled.
  */
 static void
-sp_cupti_set_callback( CUpti_CallbackFunc   callback,
-                       CUpti_CallbackDomain domain,
-                       CUpti_CallbackId     cbid )
+scorep_cupti_set_callback( CUpti_CallbackFunc   callback,
+                           CUpti_CallbackDomain domain,
+                           CUpti_CallbackId     callbackId )
 {
-    CUptiResult    cuptiErr;
+    CUptiResult    cupti_error;
     static uint8_t initflag = 1;
 
     if ( initflag )
@@ -304,209 +304,209 @@ sp_cupti_set_callback( CUpti_CallbackFunc   callback,
         SCOREP_CUDRV_CALL( cuInit( 0 ) );
 
         /* only one subscriber allowed at a time */
-        cuptiErr = cuptiSubscribe( &sp_cupticb_subscriber, callback, NULL );
-        SCOREP_CUPTI_CALL( cuptiErr );
+        cupti_error = cuptiSubscribe( &scorep_cupti_callbacks_subscriber, callback, NULL );
+        SCOREP_CUPTI_CALL( cupti_error );
     }
 
     if ( CUPTI_CB_DOMAIN_INVALID == domain )
     {
-        cuptiEnableAllDomains( 1, sp_cupticb_subscriber );
+        cuptiEnableAllDomains( 1, scorep_cupti_callbacks_subscriber );
     }
     else
     {
-        if ( ( cbid == CUPTI_RUNTIME_TRACE_CBID_INVALID ) ||
-             ( cbid == CUPTI_DRIVER_TRACE_CBID_INVALID ) )
+        if ( ( callbackId == CUPTI_RUNTIME_TRACE_CBID_INVALID ) ||
+             ( callbackId == CUPTI_DRIVER_TRACE_CBID_INVALID ) )
         {
-            cuptiErr = cuptiEnableDomain( 1, sp_cupticb_subscriber, domain );
-            SCOREP_CUPTI_CALL( cuptiErr );
+            cupti_error = cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber, domain );
+            SCOREP_CUPTI_CALL( cupti_error );
         }
         else
         {
-            cuptiErr = cuptiEnableCallback( 1, sp_cupticb_subscriber, domain, cbid );
-            SCOREP_CUPTI_CALL( cuptiErr );
+            cupti_error = cuptiEnableCallback( 1, scorep_cupti_callbacks_subscriber, domain, callbackId );
+            SCOREP_CUPTI_CALL( cupti_error );
         }
     }
 }
 
-/*
+/**
  * This function chooses the callback handling depending on the CUPTI domain.
  *
- * @param userdata not needed/used
- * @param domain the callback domain (runtime or driver API)
- * @param cbid the ID of the callback function in the given domain
- * @param cbInfo information about the callback
+ * @param userdata          Not needed/used.
+ * @param domain            Callback domain (runtime or driver API).
+ * @param callbackId        ID of the callback function in the given domain
+ * @param callbackInfo      Information about the callback.
  */
 void CUPTIAPI
-sp_cupticb_all( void*                userdata,
-                CUpti_CallbackDomain domain,
-                CUpti_CallbackId     cbid,
-                const void*          cbInfo )
+scorep_cupti_callback_all( void*                userdata,
+                           CUpti_CallbackDomain domain,
+                           CUpti_CallbackId     callbackId,
+                           const void*          callbackInfo )
 {
     if ( CUPTI_CB_DOMAIN_RUNTIME_API == domain )
     {
-        sp_cupticb_cudart( cbid, ( CUpti_CallbackData* )cbInfo );
+        scorep_cupti_callback_cuda_runtime( callbackId, ( CUpti_CallbackData* )callbackInfo );
     }
 
     if ( CUPTI_CB_DOMAIN_DRIVER_API == domain )
     {
-        sp_cupticb_driverAPI( cbid, ( CUpti_CallbackData* )cbInfo );
+        scorep_cupti_callback_driver_api( callbackId, ( CUpti_CallbackData* )callbackInfo );
     }
 
     if ( CUPTI_CB_DOMAIN_RESOURCE == domain )
     {
-        sp_cupticb_resource( cbid, ( CUpti_ResourceData* )cbInfo );
+        scorep_cupti_callback_resource( callbackId, ( CUpti_ResourceData* )callbackInfo );
     }
 
     if ( CUPTI_CB_DOMAIN_SYNCHRONIZE == domain )
     {
-        sp_cupticb_sync( cbid, ( CUpti_SynchronizeData* )cbInfo );
+        scorep_cupti_callback_sync( callbackId, ( CUpti_SynchronizeData* )callbackInfo );
     }
 }
 
-/*
+/**
  * This callback function is used to record the CUDA runtime API.
  *
- * @param cbid the ID of the callback function in the given domain
- * @param cbInfo information about the callback
+ * @param callbackId        ID of the callback function in the given domain.
+ * @param callbackInfo      Information about the callback.
  */
 void CUPTIAPI
-sp_cupticb_cudart( CUpti_CallbackId          cbid,
-                   const CUpti_CallbackData* cbInfo )
+scorep_cupti_callback_cuda_runtime( CUpti_CallbackId          callbackId,
+                                    const CUpti_CallbackData* callbackInfo )
 {
-    SCOREP_RegionHandle sp_region_handle        = SCOREP_INVALID_REGION;
-    SCOREP_RegionHandle sp_region_handle_stored = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle        = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle_stored = SCOREP_INVALID_REGION;
 
-    if ( cbid == CUPTI_RUNTIME_TRACE_CBID_INVALID )
+    if ( callbackId == CUPTI_RUNTIME_TRACE_CBID_INVALID )
     {
         return;
     }
 
     /* get the region handle for the API function */
-    sp_region_handle_stored =
-        sp_cupticb_cudaApiFuncGet( CUPTI_CB_DOMAIN_RUNTIME_API, cbid );
-    if ( sp_region_handle_stored != SCOREP_INVALID_REGION )
+    region_handle_stored =
+        cuda_api_function_get( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId );
+    if ( region_handle_stored != SCOREP_INVALID_REGION )
     {
-        sp_region_handle = sp_region_handle_stored;
+        region_handle = region_handle_stored;
     }
     else
     {
         /* replace SCOREP_REGION_FUNCTION with "CUDART_API" */
-        sp_region_handle = SCOREP_DefineRegion( cbInfo->functionName, cudartFileHandle,
-                                                0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, cuda_runtime_file_handle,
+                                             0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
-        sp_cupticb_cudaApiFuncPut( CUPTI_CB_DOMAIN_RUNTIME_API, cbid, sp_region_handle );
+        cuda_api_function_put( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId, region_handle );
     }
 
     /*********** write enter and exit records for CUDA runtime API **************/
-    if ( cbInfo->callbackSite == CUPTI_API_ENTER )
+    if ( callbackInfo->callbackSite == CUPTI_API_ENTER )
     {
-        SCOREP_EnterRegion( sp_region_handle );
+        SCOREP_EnterRegion( region_handle );
     }
 
-    if ( cbInfo->callbackSite == CUPTI_API_EXIT )
+    if ( callbackInfo->callbackSite == CUPTI_API_EXIT )
     {
-        SCOREP_ExitRegion( sp_region_handle );
+        SCOREP_ExitRegion( region_handle );
     }
 }
 
-/*
+/**
  * This callback function is used to record the CUDA driver API.
  *
- * @param cbid the ID of the callback function in the given domain
- * @param cbInfo information about the callback
+ * @param callbackId        ID of the callback function in the given domain.
+ * @param callbackInfo      Information about the callback.
  */
 void CUPTIAPI
-sp_cupticb_driverAPI( CUpti_CallbackId          cbid,
-                      const CUpti_CallbackData* cbInfo )
+scorep_cupti_callback_driver_api( CUpti_CallbackId          callbackId,
+                                  const CUpti_CallbackData* callbackInfo )
 {
-    SCOREP_RegionHandle sp_region_handle        = SCOREP_INVALID_REGION;
-    SCOREP_RegionHandle sp_region_handle_stored = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle        = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle_stored = SCOREP_INVALID_REGION;
 
-    if ( cbid == CUPTI_DRIVER_TRACE_CBID_INVALID )
+    if ( callbackId == CUPTI_DRIVER_TRACE_CBID_INVALID )
     {
         return;
     }
 
-    if ( !sp_cupticb_record_cudrv )
+    if ( !scorep_cupti_callbacks_record_cuda_driver )
     {
         return;
     }
 
     /* get the Score-P region handle for the API function */
-    sp_region_handle_stored =
-        sp_cupticb_cudaApiFuncGet( CUPTI_CB_DOMAIN_DRIVER_API, cbid );
-    if ( sp_region_handle_stored != SCOREP_INVALID_REGION )
+    region_handle_stored =
+        cuda_api_function_get( CUPTI_CB_DOMAIN_DRIVER_API, callbackId );
+    if ( region_handle_stored != SCOREP_INVALID_REGION )
     {
-        sp_region_handle = sp_region_handle_stored;
+        region_handle = region_handle_stored;
     }
     else
     {
         /* replace SCOREP_REGION_FUNCTION with "CUDRV_API" */
-        sp_region_handle = SCOREP_DefineRegion( cbInfo->functionName, cudrvFileHandle,
-                                                0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, cuda_driver_file_handle,
+                                             0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
-        sp_cupticb_cudaApiFuncPut( CUPTI_CB_DOMAIN_DRIVER_API, cbid, sp_region_handle );
+        cuda_api_function_put( CUPTI_CB_DOMAIN_DRIVER_API, callbackId, region_handle );
     }
 
     /*********** write enter and exit records for CUDA runtime API **************/
-    if ( cbInfo->callbackSite == CUPTI_API_ENTER )
+    if ( callbackInfo->callbackSite == CUPTI_API_ENTER )
     {
-        SCOREP_EnterRegion( sp_region_handle );
+        SCOREP_EnterRegion( region_handle );
     }
 
-    if ( cbInfo->callbackSite == CUPTI_API_EXIT )
+    if ( callbackInfo->callbackSite == CUPTI_API_EXIT )
     {
-        SCOREP_ExitRegion( sp_region_handle );
+        SCOREP_ExitRegion( region_handle );
     }
 }
 
-/*
+/**
  * This callback function is used to handle synchronization calls.
  *
- * @param cbid the ID of the callback function in the given domain
+ * @param callbackId the ID of the callback function in the given domain
  * @param syncData synchronization data (CUDA context, CUDA stream)
  */
 void
-sp_cupticb_sync( CUpti_CallbackId             cbid,
-                 const CUpti_SynchronizeData* syncData )
+scorep_cupti_callback_sync( CUpti_CallbackId             callbackId,
+                            const CUpti_SynchronizeData* syncData )
 {
-    if ( CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZED == cbid )
+    if ( CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZED == callbackId )
     {
         SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                  "[CUPTI Callbacks] Synchronize called" );
 
-        scorep_cuptiact_flushCtxActivities( syncData->context );
+        scorep_cupti_activity_flush_context_activities( syncData->context );
     }
 }
 
-/*
+/**
  * This callback function is used to handle resource usage.
  *
- * @param cbid the ID of the callback function in the given domain
- * @param resData resource information (CUDA context, CUDA stream)
+ * @param callbackId        ID of the callback function in the given domain.
+ * @param resourceData      Resource information (CUDA context, CUDA stream).
  */
 void
-sp_cupticb_resource( CUpti_CallbackId          cbid,
-                     const CUpti_ResourceData* resData )
+scorep_cupti_callback_resource( CUpti_CallbackId          callbackId,
+                                const CUpti_ResourceData* resourceData )
 {
-    switch ( cbid )
+    switch ( callbackId )
     {
         /********************** CUDA memory allocation ******************************/
         case CUPTI_CBID_RESOURCE_CONTEXT_CREATED:
         {
             SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                      "[CUPTI Callbacks] Creating context %d \n",
-                                     resData->context );
-            if ( sp_cupticb_record_cudrv )
+                                     resourceData->context );
+            if ( scorep_cupti_callbacks_record_cuda_driver )
             {
-                cuptiEnableDomain( 0, sp_cupticb_subscriber, CUPTI_CB_DOMAIN_DRIVER_API );
+                cuptiEnableDomain( 0, scorep_cupti_callbacks_subscriber, CUPTI_CB_DOMAIN_DRIVER_API );
             }
 
-            scorep_cuptiact_addContext( resData->context, ( CUdevice ) - 1 );
+            scorep_cupti_activity_add_context( resourceData->context, ( CUdevice ) - 1 );
 
-            if ( sp_cupticb_record_cudrv )
+            if ( scorep_cupti_callbacks_record_cuda_driver )
             {
-                cuptiEnableDomain( 1, sp_cupticb_subscriber, CUPTI_CB_DOMAIN_DRIVER_API );
+                cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber, CUPTI_CB_DOMAIN_DRIVER_API );
             }
 
             break;
@@ -516,7 +516,7 @@ sp_cupticb_resource( CUpti_CallbackId          cbid,
         {
             SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                      "[CUPTI Callbacks] Destroying context" );
-            scorep_cuptiact_flushCtxActivities( resData->context );
+            scorep_cupti_activity_flush_context_activities( resourceData->context );
 
             break;
         }

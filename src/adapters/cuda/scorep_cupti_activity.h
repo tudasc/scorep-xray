@@ -15,7 +15,7 @@
  */
 
 /**
- *  @status     beta
+ *  @status     alpha
  *  @file       scorep_cupti_activity.h
  *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
@@ -25,28 +25,29 @@
 #ifndef SCOREP_CUPTI_ACTIVITY_H
 #define SCOREP_CUPTI_ACTIVITY_H
 
-/*
- * Initialize the ScoreP CUPTI Activity implementation.
+/**
+ * Initialize the Score-P CUPTI Activity implementation.
  */
 extern void
 scorep_cupti_activity_init( void );
 
-/*
- * Finalize the ScoreP CUPTI Activity implementation.
+/**
+ * Finalize the Score-P CUPTI Activity implementation.
  */
 extern void
 scorep_cupti_activity_finalize( void );
 
-/*
+/**
  * Create and add a new context to list of contexts.
  *
- * @param cuCtx the CUDA context, specifying the queue
+ * @param cudaContext       CUDA context specifying the queue.
+ * @param cudaDevice        CUDA device handle.
  */
 extern void
-scorep_cuptiact_addContext( CUcontext cuCtx,
-                            CUdevice  cuDev );
+scorep_cupti_activity_add_context( CUcontext cudaContext,
+                                   CUdevice  cudaDevice );
 
-/*
+/**
  * Handle activities buffered by CUPTI.
  *
  * NVIDIA:
@@ -65,9 +66,9 @@ scorep_cuptiact_addContext( CUcontext cuCtx,
  * activity records associated with the stream. A buffer is enqueued
  * in a stream queue by specifying a context and a non-zero stream ID."
  *
- * @param cuCtx CUDA context, NULL to handle globally buffered activities
+ * @param cudaContext       CUDA context, NULL to handle globally buffered activities
  */
 extern void
-scorep_cuptiact_flushCtxActivities( CUcontext cuCtx );
+scorep_cupti_activity_flush_context_activities( CUcontext cudaContext );
 
 #endif  /* SCOREP_CUPTI_ACTIVITY_H */

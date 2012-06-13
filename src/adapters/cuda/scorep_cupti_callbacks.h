@@ -15,7 +15,7 @@
  */
 
 /**
- *  @status     beta
+ *  @status     alpha
  *  @file       scorep_cupti_callbacks.h
  *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
@@ -26,13 +26,13 @@
 #ifndef SCOREP_CUPTI_CALLBACKS_H
 #define SCOREP_CUPTI_CALLBACKS_H
 
-/*
+/**
  * Initialize the ScoreP CUPTI callbacks implementation.
  */
 extern void
 scorep_cupti_callbacks_init( void );
 
-/*
+/**
  * Finalize the ScoreP CUPTI callbacks implementation.
  */
 extern void

@@ -42,147 +42,147 @@
 
 /*#if defined( HAVE_DEMANGLE )
    #include <demangle.h>
-   #define demangleCudaKernel( mangled ) \
+   #define SCOREP_DEMANGLE_CUDA_KERNEL( mangled ) \
     cplus_demangle( mangled, 0 )
  #else*/
-#define demangleCudaKernel( mangled ) \
+#define SCOREP_DEMANGLE_CUDA_KERNEL( mangled ) \
     mangled
 /*#endif*/
 
 /* reduce buffer size for alignment, if necessary */
-#define SP_CUPTIACT_ALIGN_BUFFER( buffer, align ) \
+#define SCOREP_CUPTI_ACTIVITY_ALIGN_BUFFER( buffer, align ) \
     ( ( ( uintptr_t )( buffer ) & ( ( align ) - 1 ) ) ? \
       ( ( buffer ) - ( ( uintptr_t )( buffer ) & ( ( align ) - 1 ) ) ) : ( buffer ) )
 
 /* the default buffer size for the CUPTI activity buffer */
-#define SP_CUPTIACT_DEFAULT_BSIZE 65536
+#define SCOREP_CUPTI_ACTIVITY_DEFAULT_BUFFER_SIZE 65536
 
 /* the default size for the CUDA kernel name hash table */
-#define SP_CUPTIACT_HASHTABLE_SIZE 1024
+#define SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE 1024
 
 /*
  * The key of the hash node is a string, the value the corresponding region handle.
  * It is used to store region names with its corresponding region handles.
  */
-typedef struct sp_cuptiact_hnString_st
+typedef struct scorep_cupti_activity_hash_node_string_struct
 {
-    char*                           sname;        /**< name of the symbol */
-    SCOREP_RegionHandle             regionHandle; /**< associated region handle */
-    struct sp_cuptiact_hnString_st* next;         /**< bucket for collision */
-} sp_cuptiact_hn_string_t;
+    char*                                                 name;   /**< name of the symbol */
+    SCOREP_RegionHandle                                   region; /**< associated region handle */
+    struct scorep_cupti_activity_hash_node_string_struct* next;   /**< bucket for collision */
+} scorep_cupti_activity_hash_node_string;
 
 /*
- * ScoreP CUPTI activity synchronization structure
+ * Score-P CUPTI activity synchronization structure
  */
-typedef struct
+typedef struct scorep_cupti_activity_sync_struct
 {
-    uint64_t hostStart; /**< host measurement interval start timestamp */
-    uint64_t hostStop;  /**< host measurement interval stop timestamp */
-    uint64_t gpuStart;  /**< gpu measurement interval start timestamp */
-    double   factor;    /**< synchronization factor for time interval */
-}sp_cuptiact_sync_t;
+    uint64_t host_start; /**< host measurement interval start timestamp */
+    uint64_t host_stop;  /**< host measurement interval stop timestamp */
+    uint64_t gpu_start;  /**< gpu measurement interval start timestamp */
+    double   factor;     /**< synchronization factor for time interval */
+}scorep_cupti_activity_sync;
 
 /*
- * The ScoreP CUPTI activity stream stores the CUPTI stream ID and the
+ * The Score-P CUPTI activity stream stores the CUPTI stream ID and the
  * corresponding SCOREP location. The timestamp is used to ensure writing of
  * events with increasing timestamps.
  */
-typedef struct spcuptiactstrm_st
+typedef struct scorep_cupti_activity_stream_struct
 {
-    uint32_t                  strmID;     /**< the CUDA stream */
-    SCOREP_Location*          spLoc;      /**< ScoreP location for this stream (unique) */
-    uint64_t                  spLastTime; /**< last written ScoreP timestamp */
-    struct spcuptiactstrm_st* next;
-}sp_cuptiact_strm_t;
+    uint32_t                                    stream_id;             /**< the CUDA stream */
+    SCOREP_Location*                            scorep_location;       /**< Score-P location for this stream (unique) */
+    uint64_t                                    scorep_last_timestamp; /**< last written Score-P timestamp */
+    struct scorep_cupti_activity_stream_struct* next;
+}scorep_cupti_activity_stream;
 
 /*
- * The ScoreP CUPTI activity context bundles everything, which is correlated to
+ * The Score-P CUPTI activity context bundles everything, which is correlated to
  * a CUDA context, together. The are stored in a global linked list. This is
  * efficient enough, as typical CUDA applications are working with one to four
  * CUDA contexts per (MPI) process, depending on the number of available CUDA
  * devices per node.
  */
-typedef struct spcuptiactctx_st
+typedef struct scorep_cupti_activity_context_struct
 {
-    uint32_t                 ctxID;         /**< context ID */
-    CUcontext                cuCtx;         /**< CUDA context handle */
-    uint32_t                 devID;         /**< device ID */
-    CUdevice                 cuDev;         /**< CUDA device handle */
-    SCOREP_Location*         sphostLoc;     /**< ScoreP context host location */
-    sp_cuptiact_strm_t*      strmList;      /**< list of streams */
-    uint32_t                 defaultStrmID; /**< CUPTI stream ID of default stream */
-    sp_cuptiact_sync_t       sync;          /**< store synchronization information */
-    uint8_t*                 buffer;        /**< CUPTI activity buffer pointer */
-    uint64_t                 spLastGPUTime; /**< last written ScoreP timestamp in this context */
-    uint8_t                  gpuIdleOn;     /**< has idle region enter been written last */
-    struct spcuptiactctx_st* next;
-}sp_cuptiact_ctx_t;
+    uint32_t                                     context_id;                /**< context ID */
+    CUcontext                                    cuda_context;              /**< CUDA context handle */
+    uint32_t                                     device_id;                 /**< device ID */
+    CUdevice                                     cuda_device;               /**< CUDA device handle */
+    SCOREP_Location*                             scorep_host_location;      /**< Score-P context host location */
+    scorep_cupti_activity_stream*                stream_list;               /**< list of streams */
+    uint32_t                                     default_stream_id;         /**< CUPTI stream ID of default stream */
+    scorep_cupti_activity_sync                   sync;                      /**< store synchronization information */
+    uint8_t*                                     buffer;                    /**< CUPTI activity buffer pointer */
+    uint64_t                                     scorep_last_gpu_timestamp; /**< last written Score-P timestamp in this context */
+    uint8_t                                      gpu_idle_on;               /**< has idle region enter been written last */
+    struct scorep_cupti_activity_context_struct* next;
+}scorep_cupti_activity_context;
 
 
 /* initialization and finalization flags */
-static bool sp_cuptiact_initialized = false;
-static bool sp_cuptiact_finalized   = false;
+static bool scorep_cupti_activity_initialized = false;
+static bool scorep_cupti_activity_finalized   = false;
 
 /* thread (un)locking macros */
-static SCOREP_Mutex cuptiactMutex = NULL;
-# define SP_CUPTIACT_LOCK() SCOREP_MutexLock( cuptiactMutex )
-# define SP_CUPTIACT_UNLOCK() SCOREP_MutexUnlock( cuptiactMutex )
+static SCOREP_Mutex cupti_activity_mutex = NULL;
+# define SCOREP_CUPTI_ACTIVITY_LOCK() SCOREP_MutexLock( cupti_activity_mutex )
+# define SCOREP_CUPTI_ACTIVITY_UNLOCK() SCOREP_MutexUnlock( cupti_activity_mutex )
 
 /* size of the activity buffer */
-static size_t sp_cuptiact_bufSize = SP_CUPTIACT_DEFAULT_BSIZE;
+static size_t scorep_cupti_activity_buffer_size = SCOREP_CUPTI_ACTIVITY_DEFAULT_BUFFER_SIZE;
 
 /* hash table for CUDA kernels */
-static sp_cuptiact_hn_string_t* sp_cuptiact_string_htab[ SP_CUPTIACT_HASHTABLE_SIZE ];
+static scorep_cupti_activity_hash_node_string* scorep_cupti_activity_string_hashtab[ SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE ];
 
 /* head of the Score-P CUPTI activity context list */
-static sp_cuptiact_ctx_t* sp_cuptiact_ctxList = NULL;
+static scorep_cupti_activity_context* scorep_cupti_activity_context_list = NULL;
 
 /* handle for kernel regions */
-static SCOREP_SourceFileHandle sp_kernelFileHandle = SCOREP_INVALID_SOURCE_FILE;
+static SCOREP_SourceFileHandle scorep_kernel_file_handle = SCOREP_INVALID_SOURCE_FILE;
 
 /* handle CUDA idle regions */
-SCOREP_RegionHandle sp_cudaIdleRegionHandle = SCOREP_INVALID_REGION;
+SCOREP_RegionHandle scorep_cuda_idle_region_handle = SCOREP_INVALID_REGION;
 
-/* handle for ScoreP flush CUPTI buffer regions */
-SCOREP_RegionHandle sp_flushCuptiActBufRegionHandle = SCOREP_INVALID_REGION;
+/* handle for Score-P flush CUPTI buffer regions */
+SCOREP_RegionHandle scorep_flush_cupti_activity_buffer_region_handle = SCOREP_INVALID_REGION;
 
 /***************** internal function declarations *****************************/
 
 static uint8_t*
-sp_cuptiact_queueNewBuffer( CUcontext cuCtx );
+scorep_cupti_activity_queue_new_buffer( CUcontext cudaContext );
 
-static sp_cuptiact_ctx_t*
-sp_cuptiact_createContext( uint32_t  ctxID,
-                           CUcontext cuCtx,
-                           uint32_t  devID );
-
-static void
-sp_cuptiact_destroyContext( sp_cuptiact_ctx_t* vtCtx );
-
-static sp_cuptiact_ctx_t*
-sp_cuptiact_getCtx( CUcontext cuCtx );
+static scorep_cupti_activity_context*
+scorep_cupti_activity_create_context( uint32_t  contextId,
+                                      CUcontext cudaContext,
+                                      uint32_t  deviceId );
 
 static void
-sp_cuptiact_writeRecord( CUpti_Activity*    record,
-                         sp_cuptiact_ctx_t* vtCtx );
+scorep_cupti_activity_destroy_context( scorep_cupti_activity_context* context );
+
+static scorep_cupti_activity_context*
+scorep_cupti_activity_get_context( CUcontext cudaContext );
 
 static void
-sp_cuptiact_writeMemcpyRecord( CUpti_ActivityMemcpy* mcpy,
-                               sp_cuptiact_ctx_t*    vtCtx );
+scorep_cupti_activity_write_record( CUpti_Activity*                record,
+                                    scorep_cupti_activity_context* context );
 
 static void
-sp_cuptiact_writeKernelRecord( CUpti_ActivityKernel* kernel,
-                               sp_cuptiact_ctx_t*    vtCtx );
+scorep_cupti_activity_write_memcpy_record( CUpti_ActivityMemcpy*          mcpy,
+                                           scorep_cupti_activity_context* context );
+
+static void
+scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel,
+                                           scorep_cupti_activity_context* context );
 
 static void*
-sp_cuptiact_stringHashPut( const char*         n,
-                           SCOREP_RegionHandle rh );
+scorep_cupti_activity_string_hash_put( const char*         name,
+                                       SCOREP_RegionHandle region );
 
 static void*
-sp_cuptiact_stringHashGet( const char* n );
+scorep_cupti_activity_string_hash_get( const char* name );
 
 static void
-sp_cuptiact_stringhashClear( void );
+scorep_cupti_activity_string_hash_clear( void );
 
 /******************************************************************************/
 
@@ -206,18 +206,20 @@ sp_cuptiact_stringhashClear( void );
     return hash;
    }*/
 
-/*
+/** @brief
  * SDBM hash function. (better than DJB2 for table size 2^10)
  *
- * @param s pointer to a string to be hashed
+ * @param str               Pointer to a string to be hashed
+ *
+ * @return Returns hash code of @ str.
  */
 static unsigned int
-hashStringSDBM( const char* s )
+hash_string( const char* str )
 {
     unsigned int hash = 0;
     int          c;
 
-    while ( ( c = *s++ ) )
+    while ( ( c = *str++ ) )
     {
         hash = c + ( hash << 6 ) + ( hash << 16 ) - hash;
     }
@@ -228,13 +230,13 @@ hashStringSDBM( const char* s )
 void
 scorep_cupti_activity_init()
 {
-    if ( !sp_cuptiact_initialized )
+    if ( !scorep_cupti_activity_initialized )
     {
         /* TODO: is it possible to lock this mutex creation */
-        SCOREP_MutexCreate( &cuptiactMutex );
+        SCOREP_MutexCreate( &cupti_activity_mutex );
 
-        SP_CUPTIACT_LOCK();
-        if ( !sp_cuptiact_initialized )
+        SCOREP_CUPTI_ACTIVITY_LOCK();
+        if ( !scorep_cupti_activity_initialized )
         {
             SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                      "[CUPTI Activity] Initializing ... \n" );
@@ -246,20 +248,22 @@ scorep_cupti_activity_init()
                 SCOREP_CUPTI_CALL( cuptiActivityEnable( CUPTI_ACTIVITY_KIND_KERNEL ) );
 
                 /* create a region handle for CUDA idle */
-                sp_kernelFileHandle = SCOREP_DefineSourceFile( "CUDA_KERNEL" );
+                scorep_kernel_file_handle = SCOREP_DefineSourceFile( "CUDA_KERNEL" );
 
                 /* create a region handle for CUDA idle */
                 if ( scorep_cuda_record_idle )
                 {
-                    SCOREP_SourceFileHandle cudaIdleFileHandle =
+                    SCOREP_SourceFileHandle cuda_idle_file_handle =
                         SCOREP_DefineSourceFile( "CUDA_IDLE" );
 
                     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                              "[CUPTI Activity] Idle enabled ... \n" );
 
-                    sp_cudaIdleRegionHandle = SCOREP_DefineRegion(
-                        "compute_idle", cudaIdleFileHandle,
-                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+                    scorep_cuda_idle_region_handle =
+                        SCOREP_DefineRegion( "compute_idle",
+                                             cuda_idle_file_handle,
+                                             0, 0, SCOREP_ADAPTER_CUDA,
+                                             SCOREP_REGION_FUNCTION );
                 }
             }
 
@@ -272,16 +276,18 @@ scorep_cupti_activity_init()
 
             /* create the CUPTI activity buffer flush region handle */
             {
-                SCOREP_SourceFileHandle cuptiBufFlushFileHandle =
+                SCOREP_SourceFileHandle cupti_buffer_flush_file_handle =
                     SCOREP_DefineSourceFile( "SCOREP_CUDA" );
 
-                sp_flushCuptiActBufRegionHandle = SCOREP_DefineRegion(
-                    "flush_cupti_activity_buffer", cuptiBufFlushFileHandle,
-                    0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+                scorep_flush_cupti_activity_buffer_region_handle =
+                    SCOREP_DefineRegion( "flush_cupti_activity_buffer",
+                                         cupti_buffer_flush_file_handle,
+                                         0, 0, SCOREP_ADAPTER_CUDA,
+                                         SCOREP_REGION_FUNCTION );
             }
 
-            sp_cuptiact_initialized = true;
-            SP_CUPTIACT_UNLOCK();
+            scorep_cupti_activity_initialized = true;
+            SCOREP_CUPTI_ACTIVITY_UNLOCK();
         }
     }
 }
@@ -289,71 +295,72 @@ scorep_cupti_activity_init()
 void
 scorep_cupti_activity_finalize()
 {
-    if ( !sp_cuptiact_finalized && sp_cuptiact_initialized )
+    if ( !scorep_cupti_activity_finalized && scorep_cupti_activity_initialized )
     {
-        SP_CUPTIACT_LOCK();
-        if ( !sp_cuptiact_finalized && sp_cuptiact_initialized )
+        SCOREP_CUPTI_ACTIVITY_LOCK();
+        if ( !scorep_cupti_activity_finalized && scorep_cupti_activity_initialized )
         {
             SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
                                      "[CUPTI Activity] Finalizing ... \n" );
 
-            sp_cuptiact_finalized = true;
-            SP_CUPTIACT_UNLOCK();
+            scorep_cupti_activity_finalized = true;
+            SCOREP_CUPTI_ACTIVITY_UNLOCK();
 
-            while ( sp_cuptiact_ctxList != NULL )
+            while ( scorep_cupti_activity_context_list != NULL )
             {
-                sp_cuptiact_ctx_t* spCtx = sp_cuptiact_ctxList;
+                scorep_cupti_activity_context* context = scorep_cupti_activity_context_list;
 
                 /* write buffered activities, which have not been dumped yet */
-                scorep_cuptiact_flushCtxActivities( spCtx->cuCtx );
+                scorep_cupti_activity_flush_context_activities( context->cuda_context );
 
                 /* set pointer to next context before freeing current one */
-                sp_cuptiact_ctxList = sp_cuptiact_ctxList->next;
+                scorep_cupti_activity_context_list = scorep_cupti_activity_context_list->next;
 
                 /* free the context */
-                sp_cuptiact_destroyContext( spCtx );
+                scorep_cupti_activity_destroy_context( context );
             }
 
-            sp_cuptiact_stringhashClear();
-            SCOREP_MutexDestroy( &cuptiactMutex );
+            scorep_cupti_activity_string_hash_clear();
+            SCOREP_MutexDestroy( &cupti_activity_mutex );
         }
     }
 }
 
 void
-scorep_cuptiact_addContext( CUcontext cuCtx, CUdevice cuDev )
+scorep_cupti_activity_add_context( CUcontext cudaContext,
+                                   CUdevice  cudaDevice )
 {
-    sp_cuptiact_ctx_t* spCtx = NULL;
+    scorep_cupti_activity_context* context = NULL;
 
-    if ( sp_cuptiact_getCtx( cuCtx ) != NULL )
+    if ( scorep_cupti_activity_get_context( cudaContext ) != NULL )
     {
         return;
     }
 
-    spCtx = sp_cuptiact_createContext( ( uint32_t )-1, cuCtx, ( uint32_t )cuDev );
+    context = scorep_cupti_activity_create_context( ( uint32_t )-1, cudaContext, ( uint32_t )cudaDevice );
 
     /* prepend context */
-    SP_CUPTIACT_LOCK();
-    spCtx->next         = sp_cuptiact_ctxList;
-    sp_cuptiact_ctxList = spCtx;
-    SP_CUPTIACT_UNLOCK();
+    SCOREP_CUPTI_ACTIVITY_LOCK();
+    context->next                      = scorep_cupti_activity_context_list;
+    scorep_cupti_activity_context_list = context;
+    SCOREP_CUPTI_ACTIVITY_UNLOCK();
 
     /* queue new buffer to context to record activities*/
-    spCtx->buffer = sp_cuptiact_queueNewBuffer( cuCtx );
+    context->buffer = scorep_cupti_activity_queue_new_buffer( cudaContext );
 }
 
 void
-scorep_cuptiact_flushCtxActivities( CUcontext cuCtx )
+scorep_cupti_activity_flush_context_activities( CUcontext cudaContext )
 {
-    CUptiResult        status;
-    uint8_t*           buffer = NULL;
-    size_t             bufSize;
-    CUpti_Activity*    record = NULL;
-    sp_cuptiact_ctx_t* spCtx  = NULL;
-    uint64_t           hostStop, gpuStop;
+    CUptiResult                    status;
+    uint8_t*                       buffer = NULL;
+    size_t                         buffer_size;
+    CUpti_Activity*                record  = NULL;
+    scorep_cupti_activity_context* context = NULL;
+    uint64_t                       host_stop, gpu_stop;
 
     /* check if the buffer contains records */
-    status = cuptiActivityQueryBuffer( cuCtx, 0, &bufSize );
+    status = cuptiActivityQueryBuffer( cudaContext, 0, &buffer_size );
     if ( status != CUPTI_SUCCESS )
     {
         if ( CUPTI_ERROR_QUEUE_EMPTY == status ||
@@ -363,50 +370,47 @@ scorep_cuptiact_flushCtxActivities( CUcontext cuCtx )
         }
     }
 
-    SCOREP_EnterRegion( sp_flushCuptiActBufRegionHandle );
+    SCOREP_EnterRegion( scorep_flush_cupti_activity_buffer_region_handle );
 
     /* get the corresponding Score-P CUPTI activity context */
-    spCtx = sp_cuptiact_getCtx( cuCtx );
-    if ( spCtx == NULL )
+    context = scorep_cupti_activity_get_context( cudaContext );
+    if ( context == NULL )
     {
         SCOREP_ERROR( SCOREP_WARNING, "[CUPTI Activity] Context not found!\n" );
 
-        SCOREP_ExitRegion( sp_flushCuptiActBufRegionHandle );
+        SCOREP_ExitRegion( scorep_flush_cupti_activity_buffer_region_handle );
 
         return;
     }
 
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                             "[CUPTI Activity] Handle context %d activities\n", cuCtx );
+                             "[CUPTI Activity] Handle context %d activities\n", cudaContext );
 
     /* lock the whole buffer flush */
-    SP_CUPTIACT_LOCK();
+    SCOREP_CUPTI_ACTIVITY_LOCK();
 
     /* dump the contents of the global queue */
-    SCOREP_CUPTI_CALL( cuptiActivityDequeueBuffer( cuCtx, 0, &buffer, &bufSize ) );
+    SCOREP_CUPTI_CALL( cuptiActivityDequeueBuffer( cudaContext, 0, &buffer, &buffer_size ) );
 
     /*
      * Get time synchronization factor between host and GPU time for measured
      * period
      */
     {
-        SCOREP_CUPTI_CALL( cuptiGetTimestamp( &gpuStop ) );
-        hostStop             = SCOREP_GetClockTicks();
-        spCtx->sync.hostStop = hostStop;
+        SCOREP_CUPTI_CALL( cuptiGetTimestamp( &gpu_stop ) );
+        host_stop               = SCOREP_GetClockTicks();
+        context->sync.host_stop = host_stop;
 
-        spCtx->sync.factor = ( double )( hostStop - spCtx->sync.hostStart )
-                             / ( double )( gpuStop - spCtx->sync.gpuStart );
+        context->sync.factor = ( double )( host_stop - context->sync.host_start )
+                               / ( double )( gpu_stop - context->sync.gpu_start );
     }
-
-    /*vt_cntl_msg(1, "hostStop: %llu , gpuStop: %llu", hostStopTS, gpuStopTS);
-       vt_cntl_msg(1, "factor: %lf", syncFactor);*/
 
     do
     {
-        status = cuptiActivityGetNextRecord( buffer, bufSize, &record );
+        status = cuptiActivityGetNextRecord( buffer, buffer_size, &record );
         if ( status == CUPTI_SUCCESS )
         {
-            sp_cuptiact_writeRecord( record, spCtx );
+            scorep_cupti_activity_write_record( record, context );
         }
         else if ( status == CUPTI_ERROR_MAX_LIMIT_REACHED )
         {
@@ -423,99 +427,101 @@ scorep_cuptiact_flushCtxActivities( CUcontext cuCtx )
     {
         size_t dropped;
 
-        SCOREP_CUPTI_CALL( cuptiActivityGetNumDroppedRecords( cuCtx, 0, &dropped ) );
+        SCOREP_CUPTI_CALL( cuptiActivityGetNumDroppedRecords( cudaContext, 0, &dropped ) );
         if ( dropped != 0 )
         {
             SCOREP_ERROR( SCOREP_WARNING,
                           "[CUPTI Activity] Dropped %u records. Current buffer size: %llu \n"
                           "To avoid dropping of records increase the buffer size!\n"
                           "Proposed minimum SCOREP_CUDA_BUFFER=%llu",
-                          ( unsigned int )dropped, sp_cuptiact_bufSize,
-                          sp_cuptiact_bufSize + dropped / 2 *
+                          ( unsigned int )dropped, scorep_cupti_activity_buffer_size,
+                          scorep_cupti_activity_buffer_size + dropped / 2 *
                           ( sizeof( CUpti_ActivityKernel ) + sizeof( CUpti_ActivityMemcpy ) ) );
         }
     }
 
     /* enter GPU idle region after last kernel, if exited before */
-    if ( spCtx->gpuIdleOn == 0 )
+    if ( context->gpu_idle_on == 0 )
     {
-        SCOREP_Location_EnterRegion( spCtx->strmList->spLoc,
-                                     spCtx->spLastGPUTime,
-                                     sp_cudaIdleRegionHandle );
-        spCtx->gpuIdleOn = 1;
+        SCOREP_Location_EnterRegion( context->stream_list->scorep_location,
+                                     context->scorep_last_gpu_timestamp,
+                                     scorep_cuda_idle_region_handle );
+        context->gpu_idle_on = 1;
     }
 
     /* enqueue buffer again */
-    SCOREP_CUPTI_CALL( cuptiActivityEnqueueBuffer( cuCtx, 0, buffer,
-                                                   sp_cuptiact_bufSize ) );
+    SCOREP_CUPTI_CALL( cuptiActivityEnqueueBuffer( cudaContext, 0, buffer,
+                                                   scorep_cupti_activity_buffer_size ) );
 
 
     /* set new synchronization point */
-    spCtx->sync.hostStart = hostStop;
-    spCtx->sync.gpuStart  = gpuStop;
+    context->sync.host_start = host_stop;
+    context->sync.gpu_start  = gpu_stop;
 
-    SP_CUPTIACT_UNLOCK();
+    SCOREP_CUPTI_ACTIVITY_UNLOCK();
 
-    SCOREP_ExitRegion( sp_flushCuptiActBufRegionHandle );
+    SCOREP_ExitRegion( scorep_flush_cupti_activity_buffer_region_handle );
 }
 
 /******************************************************************************/
 /***************** internal function implementations **************************/
 
-/*
+/** @brief
  * Allocate a new buffer and add it to the queue specified by a CUDA context.
  *
- * @param cuCtx the CUDA context, specifying the queue
+ * @param cudaContext       CUDA context specifying the queue.
+ *
+ * @return Return pointer to buffer.
  */
 static uint8_t*
-sp_cuptiact_queueNewBuffer( CUcontext cuCtx )
+scorep_cupti_activity_queue_new_buffer( CUcontext cudaContext )
 {
-    uint8_t* buffer = ( uint8_t* )malloc( sp_cuptiact_bufSize );
+    uint8_t* buffer = ( uint8_t* )malloc( scorep_cupti_activity_buffer_size );
 
-    SCOREP_CUPTI_CALL( cuptiActivityEnqueueBuffer( cuCtx, 0, SP_CUPTIACT_ALIGN_BUFFER( buffer, 8 ),
-                                                   sp_cuptiact_bufSize ) );
+    SCOREP_CUPTI_CALL( cuptiActivityEnqueueBuffer( cudaContext, 0, SCOREP_CUPTI_ACTIVITY_ALIGN_BUFFER( buffer, 8 ),
+                                                   scorep_cupti_activity_buffer_size ) );
 
     return buffer;
 }
 
-/*
- * Create a ScoreP CUPTI Activity stream.
+/** @brief
+ * Create a Score-P CUPTI Activity stream.
  *
- * @param spCtx pointer to the ScoreP CUPTI activity context, the stream
- * is created in
- * @param strmID ID of the CUDA stream
+ * @param context           Pointer to the Score-P CUPTI activity context,
+ *                          the stream is created in.
+ * @param streamId          ID of the CUDA stream.
  *
- * @return pointer to created ScoreP CUPTI Activity stream
+ * @return Return pointer to created Score-P CUPTI Activity stream.
  */
-static sp_cuptiact_strm_t*
-sp_cuptiact_createStream( sp_cuptiact_ctx_t* spCtx,
-                          uint32_t           strmID )
+static scorep_cupti_activity_stream*
+scorep_cupti_activity_create_stream( scorep_cupti_activity_context* context,
+                                     uint32_t                       streamId )
 {
-    sp_cuptiact_strm_t* spStrm = NULL;
+    scorep_cupti_activity_stream* stream = NULL;
 
-    spStrm = ( sp_cuptiact_strm_t* )SCOREP_Memory_AllocForMisc( sizeof( sp_cuptiact_strm_t ) );
-    if ( spStrm == NULL )
+    stream = ( scorep_cupti_activity_stream* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_activity_stream ) );
+    if ( stream == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
                       "[CUPTI Activity] Could not allocate memory for stream!" );
     }
-    spStrm->strmID     = strmID;
-    spStrm->spLastTime = scorep_cuda_init_timestamp;
-    spStrm->next       = NULL;
+    stream->stream_id             = streamId;
+    stream->scorep_last_timestamp = scorep_cuda_init_timestamp;
+    stream->next                  = NULL;
 
     /* if no valid stream ID is given, create default stream 0 */
-    if ( ( uint32_t )-1 == strmID )
+    if ( ( uint32_t )-1 == streamId )
     {
-        strmID = 0;
+        streamId = 0;
     }
 
     {
         char thread_name[ 16 ];
 
         /* create GPU location */
-        if ( spCtx->devID == SCOREP_CUDA_NO_ID )
+        if ( context->device_id == SCOREP_CUDA_NO_ID )
         {
-            if ( -1 == snprintf( thread_name, 15, "CUDA[?:%d]", strmID ) )
+            if ( -1 == snprintf( thread_name, 15, "CUDA[?:%d]", streamId ) )
             {
                 SCOREP_ERROR( SCOREP_WARNING,
                               "Could not create thread name for CUDA thread!" );
@@ -523,67 +529,67 @@ sp_cuptiact_createStream( sp_cuptiact_ctx_t* spCtx,
         }
         else
         {
-            if ( -1 == snprintf( thread_name, 15, "CUDA[%d:%d]", spCtx->devID, strmID ) )
+            if ( -1 == snprintf( thread_name, 15, "CUDA[%d:%d]", context->device_id, streamId ) )
             {
                 SCOREP_ERROR( SCOREP_WARNING,
                               "Could not create thread name for CUDA thread!" );
             }
         }
 
-        spStrm->spLoc = SCOREP_Location_CreateNonCPULocation( spCtx->sphostLoc,
-                                                              SCOREP_LOCATION_TYPE_GPU, thread_name );
-        //SCOREP_Thread_SetLastTimestamp( spStrm->spLoc, scorep_cuda_init_timestamp );
+        stream->scorep_location = SCOREP_Location_CreateNonCPULocation( context->scorep_host_location,
+                                                                        SCOREP_LOCATION_TYPE_GPU, thread_name );
+        //SCOREP_Thread_SetLastTimestamp( stream->scorep_location, scorep_cuda_init_timestamp );
     }
 
     /* if first stream created for this device, make it the default stream */
-    if ( spCtx->strmList == NULL )
+    if ( context->stream_list == NULL )
     {
         /* write enter event for GPU_IDLE on first stream */
         if ( scorep_cuda_record_idle )
         {
-            SCOREP_Location_EnterRegion( spStrm->spLoc,
+            SCOREP_Location_EnterRegion( stream->scorep_location,
                                          scorep_cuda_init_timestamp,
-                                         sp_cudaIdleRegionHandle );
-            spCtx->gpuIdleOn = 1;
+                                         scorep_cuda_idle_region_handle );
+            context->gpu_idle_on = 1;
         }
     }
 
-    return spStrm;
+    return stream;
 }
 
-/*
- * Check for a ScoreP activity stream by stream ID. If it does not exist,
+/** @brief
+ * Check for a Score-P activity stream by stream ID. If it does not exist,
  * create it.
  *
- * @param spCtx pointer to the ScoreP CUPTI activity context
- * @param strmID the CUDA stream ID provided by CUPTI callback API
+ * @param context           Pointer to the Score-P CUPTI activity context.
+ * @param streamId          CUDA stream ID provided by CUPTI callback API.
  *
- * @return the ScoreP CUDA stream
+ * @return Return the Score-P CUDA stream.
  */
-static sp_cuptiact_strm_t*
-sp_cuptiact_checkStream( sp_cuptiact_ctx_t* spCtx,
-                         uint32_t           strmID )
+static scorep_cupti_activity_stream*
+scorep_cupti_activity_check_stream( scorep_cupti_activity_context* context,
+                                    uint32_t                       streamId )
 {
-    sp_cuptiact_strm_t* currStrm = NULL;
-    sp_cuptiact_strm_t* lastStrm = NULL;
+    scorep_cupti_activity_stream* current_stream = NULL;
+    scorep_cupti_activity_stream* last_stream    = NULL;
 
-    if ( spCtx == NULL )
+    if ( context == NULL )
     {
         SCOREP_ERROR( SCOREP_WARNING, "[CUPTI Activity] No context given!" );
         return NULL;
     }
 
     /* lookup stream */
-    currStrm = spCtx->strmList;
-    lastStrm = spCtx->strmList;
-    while ( currStrm != NULL )
+    current_stream = context->stream_list;
+    last_stream    = context->stream_list;
+    while ( current_stream != NULL )
     {
-        if ( currStrm->strmID == strmID )
+        if ( current_stream->stream_id == streamId )
         {
-            return currStrm;
+            return current_stream;
         }
-        lastStrm = currStrm;
-        currStrm = currStrm->next;
+        last_stream    = current_stream;
+        current_stream = current_stream->next;
     }
 
     /*
@@ -591,184 +597,184 @@ sp_cuptiact_checkStream( sp_cuptiact_ctx_t* spCtx,
      * stream and GPU idle and memory copy tracing is enabled, then create
      * a default stream.
      */
-    if ( spCtx->strmList == NULL && strmID != spCtx->defaultStrmID &&
+    if ( context->stream_list == NULL && streamId != context->default_stream_id &&
          scorep_cuda_record_idle && scorep_cuda_record_memcpy )
     {
-        spCtx->strmList = sp_cuptiact_createStream( spCtx, spCtx->defaultStrmID );
-        lastStrm        = spCtx->strmList;
+        context->stream_list = scorep_cupti_activity_create_stream( context, context->default_stream_id );
+        last_stream          = context->stream_list;
     }
 
-    currStrm = sp_cuptiact_createStream( spCtx, strmID );
+    current_stream = scorep_cupti_activity_create_stream( context, streamId );
 
     /* append */
-    if ( NULL != lastStrm )
+    if ( NULL != last_stream )
     {
-        lastStrm->next = currStrm;
+        last_stream->next = current_stream;
     }
     else
     {
-        spCtx->strmList = currStrm;
+        context->stream_list = current_stream;
     }
 
-    return currStrm;
+    return current_stream;
 }
 
-/*
- * Create a ScoreP CUPTI Activity context.
+/** @brief
+ * Create a Score-P CUPTI Activity context.
  *
- * @param ctxID ID of the CUDA context
- * @param cuCtx the CUDA context
- * @param devID ID of the CUDA device
+ * @param contextId         ID of the CUDA context.
+ * @param cudaContext       CUDA context.
+ * @param deviceId          ID of the CUDA device.
  *
- * @return pointer to created ScoreP CUPTI Activity context
+ * @return Return pointer to created Score-P CUPTI Activity context.
  */
-static sp_cuptiact_ctx_t*
-sp_cuptiact_createContext( uint32_t  ctxID,
-                           CUcontext cuCtx,
-                           uint32_t  devID )
+static scorep_cupti_activity_context*
+scorep_cupti_activity_create_context( uint32_t  contextId,
+                                      CUcontext cudaContext,
+                                      uint32_t  deviceId )
 {
-    sp_cuptiact_ctx_t* spCtx = NULL;
+    scorep_cupti_activity_context* context = NULL;
 
     /* create new context, as it is not listed */
-    spCtx = ( sp_cuptiact_ctx_t* )malloc( sizeof( sp_cuptiact_ctx_t ) );
-    if ( spCtx == NULL )
+    context = ( scorep_cupti_activity_context* )malloc( sizeof( scorep_cupti_activity_context ) );
+    if ( context == NULL )
     {
         SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
                       "[CUPTI Activity] Could not allocate memory for context!" );
     }
-    spCtx->ctxID         = ctxID;
-    spCtx->next          = NULL;
-    spCtx->strmList      = NULL;
-    spCtx->buffer        = NULL;
-    spCtx->spLastGPUTime = scorep_cuda_init_timestamp;
-    spCtx->gpuIdleOn     = 1;
+    context->context_id                = contextId;
+    context->next                      = NULL;
+    context->stream_list               = NULL;
+    context->buffer                    = NULL;
+    context->scorep_last_gpu_timestamp = scorep_cuda_init_timestamp;
+    context->gpu_idle_on               = 1;
 
     /*
      * Get time synchronization factor between host and GPU time for measurement
      * interval
      */
-    SCOREP_CUPTI_CALL( cuptiGetTimestamp( &( spCtx->sync.gpuStart ) ) );
-    spCtx->sync.hostStart = SCOREP_GetClockTicks();
+    SCOREP_CUPTI_CALL( cuptiGetTimestamp( &( context->sync.gpu_start ) ) );
+    context->sync.host_start = SCOREP_GetClockTicks();
 
-    spCtx->sphostLoc = SCOREP_Location_GetCurrentCPULocation();
+    context->scorep_host_location = SCOREP_Location_GetCurrentCPULocation();
 
-    if ( cuCtx == NULL )
+    if ( cudaContext == NULL )
     {
-        SCOREP_CUDRV_CALL( cuCtxGetCurrent( &cuCtx ) );
+        SCOREP_CUDRV_CALL( cuCtxGetCurrent( &cudaContext ) );
     }
-    spCtx->cuCtx = cuCtx;
+    context->cuda_context = cudaContext;
 
     /* set default CUPTI stream ID (needed for memory usage and idle tracing) */
-    SCOREP_CUPTI_CALL( cuptiGetStreamId( spCtx->cuCtx, NULL, &( spCtx->defaultStrmID ) ) );
+    SCOREP_CUPTI_CALL( cuptiGetStreamId( context->cuda_context, NULL, &( context->default_stream_id ) ) );
 
-    if ( devID == ( uint32_t )-1 )
+    if ( deviceId == ( uint32_t )-1 )
     {
-        CUdevice cuDev;
+        CUdevice cudaDevice;
 
-        /* driver API prog: correct cuDev, but result is 201 (invalid context) */
-        if ( CUDA_SUCCESS != cuCtxGetDevice( &cuDev ) )
+        /* driver API prog: correct cudaDevice, but result is 201 (invalid context) */
+        if ( CUDA_SUCCESS != cuCtxGetDevice( &cudaDevice ) )
         {
-            devID = SCOREP_CUDA_NO_ID;
+            deviceId = SCOREP_CUDA_NO_ID;
         }
         else
         {
-            devID = ( uint32_t )cuDev;
+            deviceId = ( uint32_t )cudaDevice;
         }
     }
 
-    spCtx->devID = devID;
-    spCtx->cuDev = devID;
+    context->device_id   = deviceId;
+    context->cuda_device = deviceId;
 
-    return spCtx;
+    return context;
 }
 
-/*
+/** @brief
  * Destroy a Score-P CUPTI Activity context.
  *
- * @param spCtx pointer to the ScoreP CUPTI Activity context
+ * @param context           Pointer to the Score-P CUPTI Activity context.
  */
 static void
-sp_cuptiact_destroyContext( sp_cuptiact_ctx_t* spCtx )
+scorep_cupti_activity_destroy_context( scorep_cupti_activity_context* context )
 {
     /* write exit event for GPU idle time */
-    if ( scorep_cuda_record_idle && spCtx->gpuIdleOn == 1 )
+    if ( scorep_cuda_record_idle && context->gpu_idle_on == 1 )
     {
         uint64_t idle_end = SCOREP_GetClockTicks();
-        SCOREP_Location_ExitRegion( spCtx->strmList->spLoc, idle_end,
-                                    sp_cudaIdleRegionHandle );
+        SCOREP_Location_ExitRegion( context->stream_list->scorep_location, idle_end,
+                                    scorep_cuda_idle_region_handle );
     }
 
     /* cleanup stream list (not needed due to SCOREP_Memory_AllocForMisc())
-       while ( spCtx->strmList != NULL )
+       while ( context->stream_list != NULL )
        {
-        sp_cuptiact_strm_t* spStrm = spCtx->strmList;
+        scorep_cupti_activity_stream* stream = context->stream_list;
 
-        spCtx->strmList = spCtx->strmList->next;
+        context->stream_list = context->stream_list->next;
 
-        free( spStrm );
-        spStrm = NULL;
+        free( stream );
+        stream = NULL;
        }*/
 
     /* free activity buffer */
-    if ( spCtx->buffer != NULL )
+    if ( context->buffer != NULL )
     {
-        free( spCtx->buffer );
+        free( context->buffer );
     }
 
     /* free the memory allocated for the Score-P CUPTI activity context */
-    free( spCtx );
+    free( context );
 }
 
-/*
- * Get a ScoreP CUPTI Activity context by CUDA context
+/** @brief
+ * Get a Score-P CUPTI Activity context by CUDA context.
  *
- * @param cuCtx the CUDA context
+ * @param cudaContext       CUDA context.
  *
- * @return ScoreP CUPTI Activity context
+ * @return Return Score-P CUPTI Activity context.
  */
-static sp_cuptiact_ctx_t*
-sp_cuptiact_getCtx( CUcontext cuCtx )
+static scorep_cupti_activity_context*
+scorep_cupti_activity_get_context( CUcontext cudaContext )
 {
-    sp_cuptiact_ctx_t* spCtx = NULL;
+    scorep_cupti_activity_context* context = NULL;
 
     /* lookup context */
-    SP_CUPTIACT_LOCK();
-    spCtx = sp_cuptiact_ctxList;
-    while ( spCtx != NULL )
+    SCOREP_CUPTI_ACTIVITY_LOCK();
+    context = scorep_cupti_activity_context_list;
+    while ( context != NULL )
     {
-        if ( spCtx->cuCtx == cuCtx )
+        if ( context->cuda_context == cudaContext )
         {
-            SP_CUPTIACT_UNLOCK();
-            return spCtx;
+            SCOREP_CUPTI_ACTIVITY_UNLOCK();
+            return context;
         }
-        spCtx = spCtx->next;
+        context = context->next;
     }
-    SP_CUPTIACT_UNLOCK();
+    SCOREP_CUPTI_ACTIVITY_UNLOCK();
 
     return NULL;
 }
 
-/*
+/** @brief
  * Select record type and call respective function.
  *
- * @param record pointer to the basic CUPTI activity record
- * @param spCtx the Score-P CUPTI activity context
+ * @param record            Pointer to the basic CUPTI activity record.
+ * @param context           Score-P CUPTI activity context.
  */
 static void
-sp_cuptiact_writeRecord( CUpti_Activity*    record,
-                         sp_cuptiact_ctx_t* spCtx )
+scorep_cupti_activity_write_record( CUpti_Activity*                record,
+                                    scorep_cupti_activity_context* context )
 {
     switch ( record->kind )
     {
         case CUPTI_ACTIVITY_KIND_KERNEL:
         {
-            sp_cuptiact_writeKernelRecord( ( CUpti_ActivityKernel* )record, spCtx );
+            scorep_cupti_activity_write_kernel_record( ( CUpti_ActivityKernel* )record, context );
             break;
         }
 
         case CUPTI_ACTIVITY_KIND_MEMCPY:
         {
-            sp_cuptiact_writeMemcpyRecord( ( CUpti_ActivityMemcpy* )record, spCtx );
+            scorep_cupti_activity_write_memcpy_record( ( CUpti_ActivityMemcpy* )record, context );
             break;
         }
         default:
@@ -778,57 +784,57 @@ sp_cuptiact_writeRecord( CUpti_Activity*    record,
     }
 }
 
-/*
- * Use the CUPTI activity kernel record to write the corresponding ScoreP
+/** @brief
+ * Use the CUPTI activity kernel record to write the corresponding Score-P
  * events.
  *
- * @param kernel the CUPTI activity kernel record
- * @param spCtx the ScoreP CUPTI activity context
+ * @param kernel            CUPTI activity kernel record.
+ * @param context           Score-P CUPTI activity context.
  */
 static void
-sp_cuptiact_writeKernelRecord( CUpti_ActivityKernel* kernel,
-                               sp_cuptiact_ctx_t*    spCtx )
+scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel,
+                                           scorep_cupti_activity_context* context )
 {
     /* get Score-P thread ID for the kernel's stream */
-    sp_cuptiact_strm_t* spStrm         = sp_cuptiact_checkStream( spCtx, kernel->streamId );
-    SCOREP_Location*    strmLoc        = spStrm->spLoc;
-    SCOREP_RegionHandle knRegionHandle = SCOREP_INVALID_REGION;
+    scorep_cupti_activity_stream* stream          = scorep_cupti_activity_check_stream( context, kernel->streamId );
+    SCOREP_Location*              stream_location = stream->scorep_location;
+    SCOREP_RegionHandle           kernel_region   = SCOREP_INVALID_REGION;
 
-    /* get the ScoreP region handle for the kernel */
-    sp_cuptiact_hn_string_t* knHn = sp_cuptiact_stringHashGet( kernel->name );
-    if ( knHn != NULL )
+    /* get the Score-P region handle for the kernel */
+    scorep_cupti_activity_hash_node_string* kernel_hash_node = scorep_cupti_activity_string_hash_get( kernel->name );
+    if ( kernel_hash_node != NULL )
     {
-        knRegionHandle = knHn->regionHandle;
+        kernel_region = kernel_hash_node->region;
 
         /*SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
-                                 "Get kernel: '%s' \n", knHn->sname );*/
+                                 "Get kernel: '%s' \n", kernel_hash_node->name );*/
     }
     else
     {
-        const char* knName =  demangleCudaKernel( kernel->name );
+        const char* kernel_name =  SCOREP_DEMANGLE_CUDA_KERNEL( kernel->name );
 
-        if ( knName == NULL )
+        if ( kernel_name == NULL )
         {
             SCOREP_ERROR( SCOREP_WARNING, "[CUPTI Activity] Kernel name missing!" );
         }
 
         /*SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
-                                 "Define kernel: '%s' \n", knName );*/
+                                 "Define kernel: '%s' \n", kernel_name );*/
 
-        knRegionHandle = SCOREP_DefineRegion( knName, sp_kernelFileHandle,
-                                              0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+        kernel_region = SCOREP_DefineRegion( kernel_name, scorep_kernel_file_handle,
+                                             0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
-        knHn = sp_cuptiact_stringHashPut( kernel->name, knRegionHandle );
+        kernel_hash_node = scorep_cupti_activity_string_hash_put( kernel->name, kernel_region );
     }
 
     /* write events */
     {
-        uint64_t start = spCtx->sync.hostStart
-                         + ( kernel->start - spCtx->sync.gpuStart ) * spCtx->sync.factor;
-        uint64_t stop = start + ( kernel->end - kernel->start ) * spCtx->sync.factor;
+        uint64_t start = context->sync.host_start
+                         + ( kernel->start - context->sync.gpu_start ) * context->sync.factor;
+        uint64_t stop = start + ( kernel->end - kernel->start ) * context->sync.factor;
 
         /* if current activity's start time is before last written timestamp */
-        if ( start < spStrm->spLastTime )
+        if ( start < stream->scorep_last_timestamp )
         {
             SCOREP_WARN_ONCE( "[CUPTI Activity] "
                               "Kernel: start time < last written timestamp!" );
@@ -844,7 +850,7 @@ sp_cuptiact_writeKernelRecord( CUpti_ActivityKernel* kernel,
         }
 
         /* check if synchronization stop time is before kernel stop time */
-        if ( spCtx->sync.hostStop < stop )
+        if ( context->sync.host_stop < stop )
         {
             SCOREP_WARN_ONCE( "[CUPTI Activity] "
                               "Kernel: sync stop time < stop time!" );
@@ -852,33 +858,33 @@ sp_cuptiact_writeKernelRecord( CUpti_ActivityKernel* kernel,
         }
 
         /* set the last Score-P timestamp, written in this stream */
-        spStrm->spLastTime = stop;
+        stream->scorep_last_timestamp = stop;
 
         /* GPU idle time will be written to first CUDA stream in list */
         if ( scorep_cuda_record_idle )
         {
-            if ( spCtx->gpuIdleOn )
+            if ( context->gpu_idle_on )
             {
-                SCOREP_Location_ExitRegion( spCtx->strmList->spLoc, start,
-                                            sp_cudaIdleRegionHandle );
-                spCtx->gpuIdleOn = 0;
+                SCOREP_Location_ExitRegion( context->stream_list->scorep_location, start,
+                                            scorep_cuda_idle_region_handle );
+                context->gpu_idle_on = 0;
             }
-            else if ( start > spCtx->spLastGPUTime )
+            else if ( start > context->scorep_last_gpu_timestamp )
             {
                 /* idle is off and kernels are consecutive */
-                SCOREP_Location_EnterRegion( spCtx->strmList->spLoc,
-                                             spCtx->spLastGPUTime,
-                                             sp_cudaIdleRegionHandle );
-                SCOREP_Location_ExitRegion( spCtx->strmList->spLoc, start, sp_cudaIdleRegionHandle );
+                SCOREP_Location_EnterRegion( context->stream_list->scorep_location,
+                                             context->scorep_last_gpu_timestamp,
+                                             scorep_cuda_idle_region_handle );
+                SCOREP_Location_ExitRegion( context->stream_list->scorep_location, start, scorep_cuda_idle_region_handle );
             }
         }
 
-        SCOREP_Location_EnterRegion( strmLoc, start, knRegionHandle );
-        SCOREP_Location_ExitRegion( strmLoc, stop, knRegionHandle );
+        SCOREP_Location_EnterRegion( stream_location, start, kernel_region );
+        SCOREP_Location_ExitRegion( stream_location, stop, kernel_region );
 
-        if ( spCtx->spLastGPUTime < stop )
+        if ( context->scorep_last_gpu_timestamp < stop )
         {
-            spCtx->spLastGPUTime = stop;
+            context->scorep_last_gpu_timestamp = stop;
         }
     }
 
@@ -895,38 +901,38 @@ sp_cuptiact_writeKernelRecord( CUpti_ActivityKernel* kernel,
                              kernel->staticSharedMemory, kernel->dynamicSharedMemory );*/
 }
 
-/*
+/** @brief
  * Use the CUPTI activity memory copy record to write the corresponding
  * Score-P events.
  *
- * @param mcpy the CUPTI activity memory copy record
- * @param spCtx the Score-P CUPTI activity context
+ * @param mcpy              CUPTI activity memory copy record.
+ * @param context           Score-P CUPTI activity context.
  */
 static void
-sp_cuptiact_writeMemcpyRecord( CUpti_ActivityMemcpy* mcpy,
-                               sp_cuptiact_ctx_t*    spCtx )
+scorep_cupti_activity_write_memcpy_record( CUpti_ActivityMemcpy*          mcpy,
+                                           scorep_cupti_activity_context* context )
 {
     /*vt_gpu_copy_kind_t kind = VT_GPU_COPYDIRECTION_UNKNOWN;*/
 
-    SCOREP_Location*    strmLoc = NULL;
-    uint64_t            start, stop;
-    sp_cuptiact_strm_t* spStrm = NULL;
+    SCOREP_Location*              stream_location = NULL;
+    uint64_t                      start, stop;
+    scorep_cupti_activity_stream* stream = NULL;
 
     if ( mcpy->copyKind == CUPTI_ACTIVITY_MEMCPY_KIND_DTOD )
     {
         return;
     }
 
-    start = spCtx->sync.hostStart
-            + ( mcpy->start - spCtx->sync.gpuStart ) * spCtx->sync.factor;
-    stop = start + ( mcpy->end - mcpy->start ) * spCtx->sync.factor;
+    start = context->sync.host_start
+            + ( mcpy->start - context->sync.gpu_start ) * context->sync.factor;
+    stop = start + ( mcpy->end - mcpy->start ) * context->sync.factor;
 
-    /* get ScoreP location for the kernel's stream */
-    spStrm  = sp_cuptiact_checkStream( spCtx, mcpy->streamId );
-    strmLoc = spStrm->spLoc;
+    /* get Score-P location for the kernel's stream */
+    stream          = scorep_cupti_activity_check_stream( context, mcpy->streamId );
+    stream_location = stream->scorep_location;
 
     /* if current activity's start time is before last written timestamp */
-    if ( start < spStrm->spLastTime )
+    if ( start < stream->scorep_last_timestamp )
     {
         SCOREP_WARN_ONCE( "[CUPTI Activity] Memcpy: start time < last written timestamp!" );
         return;
@@ -940,14 +946,14 @@ sp_cuptiact_writeMemcpyRecord( CUpti_ActivityMemcpy* mcpy,
     }
 
     /* check if synchronization stop time is before kernel stop time */
-    if ( spCtx->sync.hostStop < stop )
+    if ( context->sync.host_stop < stop )
     {
         SCOREP_WARN_ONCE( "[CUPTI Activity] Memcpy: sync stop time < stop time!" );
         return;
     }
 
     /* set the last Score-P timestamp, written in this stream */
-    spStrm->spLastTime = stop;
+    stream->scorep_last_timestamp = stop;
 
     /* check copy direction */
     if ( mcpy->srcKind == CUPTI_ACTIVITY_MEMORY_KIND_DEVICE )
@@ -973,15 +979,15 @@ sp_cuptiact_writeMemcpyRecord( CUpti_ActivityMemcpy* mcpy,
         }
     }
 
-    if ( spCtx->gpuIdleOn == 0 && mcpy->streamId == spCtx->defaultStrmID )
+    if ( context->gpu_idle_on == 0 && mcpy->streamId == context->default_stream_id )
     {
-        SCOREP_Location_EnterRegion( spCtx->strmList->spLoc,
-                                     spCtx->spLastGPUTime,
-                                     sp_cudaIdleRegionHandle );
-        spCtx->gpuIdleOn = 1;
+        SCOREP_Location_EnterRegion( context->stream_list->scorep_location,
+                                     context->scorep_last_gpu_timestamp,
+                                     scorep_cuda_idle_region_handle );
+        context->gpu_idle_on = 1;
     }
 
-    /* TODO: write the ScoreP communication events
+    /* TODO: write the Score-P communication events
        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
                              "MEMCPY %llu -> %llu[%llu ns] device %u, context %u, stream %u, "
                              "correlation %u/r%u \n",
@@ -991,46 +997,48 @@ sp_cuptiact_writeMemcpyRecord( CUpti_ActivityMemcpy* mcpy,
                              mcpy->correlationId, mcpy->runtimeCorrelationId );*/
 }
 
-/*
+/** @brief
  * Puts a string into the CUPTI activity hash table
  *
- * @param n pointer to a string to be stored in the hash table
+ * @param name              Pointer to a string to be stored in the hash table.
+ * @param region            Region handle.
  *
- * @return pointer to the created hash node
+ * @return Return pointer to the created hash node.
  */
 static void*
-sp_cuptiact_stringHashPut( const char* n, SCOREP_RegionHandle rh )
+scorep_cupti_activity_string_hash_put( const char*         name,
+                                       SCOREP_RegionHandle region )
 {
-    uint32_t id = ( uint32_t )hashStringSDBM( n ) % SP_CUPTIACT_HASHTABLE_SIZE;
+    uint32_t id = ( uint32_t )hash_string( name ) % SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE;
 
-    sp_cuptiact_hn_string_t* add =
-        ( sp_cuptiact_hn_string_t* )SCOREP_Memory_AllocForMisc( sizeof( sp_cuptiact_hn_string_t ) );
+    scorep_cupti_activity_hash_node_string* add =
+        ( scorep_cupti_activity_hash_node_string* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_activity_hash_node_string ) );
 
-    add->sname                    = SCOREP_CStr_dup( n ); /* does an implicit malloc */
-    add->regionHandle             = rh;
-    add->next                     = sp_cuptiact_string_htab[ id ];
-    sp_cuptiact_string_htab[ id ] = add;
+    add->name                                  = SCOREP_CStr_dup( name ); /* does an implicit malloc */
+    add->region                                = region;
+    add->next                                  = scorep_cupti_activity_string_hashtab[ id ];
+    scorep_cupti_activity_string_hashtab[ id ] = add;
 
     return add;
 }
 
-/*
+/** @brief
  * Get a string from the CUPTI Activity hash table
  *
- * @param n pointer to a string to be retrieved from the hash table
+ * @param name              Pointer to a string to be retrieved from the hash table.
  *
- * @return pointer to the retrieved hash node
+ * @return Return pointer to the retrieved hash node.
  */
 static void*
-sp_cuptiact_stringHashGet( const char* n )
+scorep_cupti_activity_string_hash_get( const char* name )
 {
-    uint32_t id = ( uint32_t )hashStringSDBM( n )  % SP_CUPTIACT_HASHTABLE_SIZE;
+    uint32_t id = ( uint32_t )hash_string( name )  % SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE;
 
-    sp_cuptiact_hn_string_t* curr = sp_cuptiact_string_htab[ id ];
+    scorep_cupti_activity_hash_node_string* curr = scorep_cupti_activity_string_hashtab[ id ];
 
     while ( curr )
     {
-        if ( strcmp( curr->sname, n ) == 0 )
+        if ( strcmp( curr->name, name ) == 0 )
         {
             return curr;
         }
@@ -1041,23 +1049,23 @@ sp_cuptiact_stringHashGet( const char* n )
     return NULL;
 }
 
-/*
+/** @brief
  * Clear the CUPTI Activity hash table (free allocated memory).
  */
 static void
-sp_cuptiact_stringhashClear()
+scorep_cupti_activity_string_hash_clear()
 {
-    int                      i;
-    sp_cuptiact_hn_string_t* tmp_node;
+    int                                     i;
+    scorep_cupti_activity_hash_node_string* tmp_node;
 
-    for ( i = 0; i < SP_CUPTIACT_HASHTABLE_SIZE; i++ )
+    for ( i = 0; i < SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE; i++ )
     {
-        while ( sp_cuptiact_string_htab[ i ] )
+        while ( scorep_cupti_activity_string_hashtab[ i ] )
         {
-            tmp_node = sp_cuptiact_string_htab[ i ]->next;
-            free( sp_cuptiact_string_htab[ i ]->sname );
-            //free( sp_cuptiact_string_htab[ i ] );
-            sp_cuptiact_string_htab[ i ] = tmp_node;
+            tmp_node = scorep_cupti_activity_string_hashtab[ i ]->next;
+            free( scorep_cupti_activity_string_hashtab[ i ]->name );
+            //free( scorep_cupti_activity_string_hashtab[ i ] );
+            scorep_cupti_activity_string_hashtab[ i ] = tmp_node;
         }
     }
 }
