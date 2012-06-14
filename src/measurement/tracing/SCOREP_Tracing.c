@@ -221,7 +221,7 @@ scorep_tracing_chunk_allocate( void*         userData,
                                void**        perBufferData,
                                uint64_t      chunkSize )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "%" PRIu64, chunkSize );
 
     if ( !*perBufferData )
