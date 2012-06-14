@@ -66,8 +66,13 @@ debug_init()
         initFlag = 1;
 
         const char* debug_level_string;
-        debug_level_string = getenv( "MANGLE_NAME( DEBUG )" );
-
+        #if defined( PACKAGE_SCOREP )
+        debug_level_string = getenv( "SCOREP_DEBUG" );
+        #elif defined( PACKAGE_OTF2 )
+        debug_level_string = getenv( "OTF2_DEBUG" );
+        #else
+        #error Unsupported package.
+        #endif
         if ( debug_level_string )
         {
             debugLevel = atoi( debug_level_string );
@@ -83,7 +88,7 @@ debug_init()
                 stderr,
                 "WARNING : you have compiled the binary with debugging " \
                 "support (you can set the level with the environment " \
-                "variable MANGLE_NAME( DEBUG ))\n" );
+                "variable SCOREP_DEBUG or OTF2_DEBUG)\n" );
         }
         else
         {
