@@ -85,6 +85,8 @@ dnl $1: name of the library on the filesystem, without the extension,
 dnl     used for searching the file if a path is given
 dnl $2: whitespace separated list of headers
 dnl $3: extra cppflags, e.g. -D_XOPEN_SOURCE=500
+dnl $4: --with-$1 parameter if available, e.g. by a previous check. 
+dnl     Think about cuda that provides  --with-cupti=<cuda>/extras/CUPTI
 AC_DEFUN([AC_SCOREP_BACKEND_LIB], [
 
 m4_ifdef([AC_SCOREP_FRONTEND], 
@@ -114,7 +116,13 @@ AC_ARG_WITH([$1],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], 
                    [AS_IF([test "x${withval}" = "xyes"], 
                           [AC_MSG_ERROR([in cross-compile mode, invalid value 'yes' to --with-$1, specify a path instead.])])])],
-            [with_$1="not_set"])
+            [m4_ifval([$4],
+                           # use value provided in macro invocation (if set) if
+                           # user doesn't provide anything via the commandline
+                           [AS_IF([test -n "$[]$4"],
+                                  [with_$1="$[]$4"],
+                                  [with_$1="not_set"])],
+                           [with_$1="not_set"])])
 
 #echo "with_$1 = $with_$1"
 
@@ -180,7 +188,10 @@ dnl $2: "backend_" or ""
 dnl sets with_[$2_]$1_include and with_[$2_]$1_lib to (yes|no|path/(include|lib)))
 AS_IF([test "x${with_$2[]$1}" = "xyes"], [with_$2[]$1_include="yes"; with_$2[]$1_lib="yes"],
       [test "x${with_$2[]$1}" = "xno"],  [with_$2[]$1_include="no";  with_$2[]$1_lib="no"],
-      [with_$2[]$1_include="${with_$2[]$1}/include"; with_$2[]$1_lib="${with_$2[]$1}/lib"])
+      [with_$2[]$1_include="${with_$2[]$1}/include"
+       AS_IF([test "x${build_cpu}" = "xx86_64"],
+             [with_$2[]$1_lib="${with_$2[]$1}/lib64"],
+             [with_$2[]$1_lib="${with_$2[]$1}/lib"])])
 ])
 
 

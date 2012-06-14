@@ -24,7 +24,15 @@ AC_DEFUN([AC_SCOREP_CUPTI], [
 AC_REQUIRE([AC_SCOREP_CUDA])
 
 AS_IF([test "x$scorep_have_libcuda" = "xyes"],
-      [AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcuda_cppflags}])
+      [AS_UNSET([cupti_root])
+       AS_IF([test -n ${with_libcuda}],
+             [AS_IF([test "x${with_libcuda}" != "xyes"],
+                    [AS_IF([test "x${with_libcuda}" != "xnot_set"],
+                           [cupti_root=${with_libcuda}/extras/CUPTI],
+                           [])],
+                    [])],
+             [])
+       AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcuda_cppflags}], [cupti_root])
        AS_IF([test "x${scorep_have_libcupti}" = "xyes"],
              [AM_CONDITIONAL([HAVE_CUPTI], [test "x${scorep_have_libcupti}" = "xyes"])],
              [AM_CONDITIONAL([HAVE_CUPTI], [test 1 -eq 0])
