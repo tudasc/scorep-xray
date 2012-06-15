@@ -246,7 +246,7 @@ scorep_tracing_chunk_free_all( void*         userData,
                                void**        perBufferData,
                                bool          final )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
                          "%s", final ? "final" : "intermediate" );
 
     /* maybe we were called without one allocate */
