@@ -119,6 +119,7 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
         scorep_profile_param_instance =
             SCOREP_DefineParameter( "instance", SCOREP_PARAMETER_INT64 );
     }
+    assert( scorep_profile_param_instance );
 }
 
 void

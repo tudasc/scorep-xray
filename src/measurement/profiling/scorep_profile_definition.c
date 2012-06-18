@@ -138,11 +138,6 @@ scorep_profile_init_definition( uint32_t             num_dense_metrics,
                                 SCOREP_MetricHandle* metrics )
 {
     int i;
-    /* On reinitialization of the profile during a phase, do not overwrite the pointer to
-     * exiting root nodes.
-     */
-
-    scorep_profile.reinitialize   = true;
     scorep_profile.is_initialized = true;
 
     /* Store configuration */
@@ -163,6 +158,7 @@ void
 scorep_profile_delete_definition()
 {
     scorep_profile.is_initialized = false;
+    scorep_profile.reinitialize   = true;
 
     /* Do not reset first_root_node, because in Periscope phases the list of root nodes
        stay alive.
