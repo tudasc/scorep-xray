@@ -41,20 +41,6 @@
 #define HAVE( H ) ( defined( HAVE_##H ) && HAVE_##H )
 
 
-/* Macros relevant for sampling. Will be ignored in non-sampling
- * mode. To compile in sampling mode, add -DHAVE_SCOREP_SAMPLING
- * to your target's CPPFLAGS. */
-#ifdef HAVE_SCOREP_SAMPLING
-    #define SAMPLING_GUARD_INCLUDE #include < SCOREP_RuntimeManagement.h >
-    #define SAMPLING_GUARD_ON SCOREP_SamplingGuardOn( NULL );
-    #define SAMPLING_GUARD_OFF SCOREP_SamplingGuardOff( NULL );
-#else
-    #undef HAVE_SAMPLING_SIGACTION
-    #define SAMPLING_GUARD_INCLUDE
-    #define SAMPLING_GUARD_ON
-    #define SAMPLING_GUARD_OFF
-#endif
-
 /* Macros used by utilities under vendor/common */
 #define PACKAGE_SCOREP
 #define MANGLE_NAME( name ) SCOREP_ ## name
