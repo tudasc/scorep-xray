@@ -24,6 +24,8 @@
 #include <iostream>
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
+
 using namespace std;
 
 #define U( j, i ) afU[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
@@ -38,6 +40,9 @@ Jacobi( JacobiData &data )
     double* afU, * afF;
     afU = data.afU;
     afF = data.afF;
+
+    SCOREP_USER_REGION_DEFINE( scorep_iteration );
+
     double* uold = new double[ data.iCols * data.iRows ];
 
     if ( uold )
@@ -49,6 +54,9 @@ Jacobi( JacobiData &data )
 
         while ( data.iIterCount < data.iIterMax && residual > data.fTolerance )
         {
+            SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
+                                      SCOREP_USER_REGION_TYPE_DYNAMIC );
+
             residual = 0.0;
 
             /* copy new solution into old */
@@ -82,6 +90,8 @@ Jacobi( JacobiData &data )
             /* error check */
             data.iIterCount++;
             residual = sqrt( residual ) / ( data.iCols * data.iRows );
+
+            SCOREP_USER_REGION_END( scorep_iteration );
         } /* while */
 
         data.fResidual = residual;
