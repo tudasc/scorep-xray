@@ -536,6 +536,7 @@ delete_cube_writing_data( scorep_cube_writing_data* write_set )
     free( write_set->threads_per_rank );
     free( write_set->metric_map );
     free( write_set->bit_vector );
+    free( write_set->unified_map );
     if ( write_set->cube_writer )
     {
         cubew_finalize( write_set->cube_writer );
@@ -569,6 +570,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     write_set->offsets_per_rank = NULL;
     write_set->metric_map       = NULL;
     write_set->bit_vector       = NULL;
+    write_set->unified_map      = NULL;
 
     /* ------------------------------------ Start initializing */
 
