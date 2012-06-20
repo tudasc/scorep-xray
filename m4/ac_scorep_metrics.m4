@@ -64,16 +64,25 @@ AC_ARG_WITH([papi-lib],
 AC_LANG_PUSH([C])
 ldflags_save="$LDFLAGS"
 LDFLAGS="-L$scorep_papi_lib_dir $LDFLAGS"
+# To use PAPI on IBM systems you have to link to
+# their performance monitor library (-lpmapi)
+if test "x${ac_scorep_platform}" = "xibm"; then
+    scorep_papi_additional_libs="-lpmapi"
+else
+    scorep_papi_additional_libs=""
+fi
 scorep_papi_lib_name="papi"
 AC_CHECK_LIB([$scorep_papi_lib_name], [PAPI_library_init],
-             [scorep_papi_library="yes"], # action-if-found
-             [scorep_papi_library="no"]   # action-if-not-found
+             [scorep_papi_library="yes"],  # action-if-found
+             [scorep_papi_library="no"],
+             [$scorep_papi_additional_libs]
 )
 if test "x${scorep_papi_library}" = "xno"; then
     scorep_papi_lib_name="papi64"
     AC_CHECK_LIB([$scorep_papi_lib_name], [PAPI_library_init],
-                 [scorep_papi_library="yes"], # action-if-found
-                 [scorep_papi_library="no"]   # action-if-not-found
+                 [scorep_papi_library="yes"],  # action-if-found
+                 [scorep_papi_library="no"],
+                 [$scorep_papi_additional_libs]
     )
 fi
 LDFLAGS="$ldflags_save"
