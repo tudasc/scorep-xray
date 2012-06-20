@@ -35,6 +35,9 @@
 void
 SCOREP_Status_Initialize();
 
+// different impl for MPI and non-MPI
+void
+SCOREP_Status_Finalize();
 
 bool
 SCOREP_IsTracingEnabled();

@@ -54,6 +54,12 @@ SCOREP_Status_Initialize()
     // it is too early to call PMPI from here.
 }
 
+void
+SCOREP_Status_Finalize()
+{
+    /* Free duplicated communicator */
+    PMPI_Comm_free( &scorep_mpi_comm_world );
+}
 
 bool
 scorep_create_experiment_dir( void ( * createDir )( void ) )

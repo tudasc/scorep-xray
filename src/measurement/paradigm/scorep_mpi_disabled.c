@@ -54,6 +54,10 @@ SCOREP_Status_Initialize()
     scorep_status_initialize_non_mpi();
 }
 
+void
+SCOREP_Status_Finalize()
+{
+}
 
 bool
 scorep_create_experiment_dir( void ( * createDir )( void ) )
