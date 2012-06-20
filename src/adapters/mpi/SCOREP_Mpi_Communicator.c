@@ -624,6 +624,9 @@ scorep_mpi_comm_finalize()
     free( scorep_mpi_world.ranks );
     free( scorep_mpi_ranks );
 
+    /* free created MPI data types */
+    PMPI_Type_free( &scorep_mpi_id_root_type );
+
     SCOREP_MutexDestroy( &scorep_mpi_communicator_mutex );
 }
 
