@@ -68,7 +68,14 @@ scorep_papi_lib_name="papi"
 AC_CHECK_LIB([$scorep_papi_lib_name], [PAPI_library_init],
              [scorep_papi_library="yes"], # action-if-found
              [scorep_papi_library="no"]   # action-if-not-found
-) 
+)
+if test "x${scorep_papi_library}" = "xno"; then
+    scorep_papi_lib_name="papi64"
+    AC_CHECK_LIB([$scorep_papi_lib_name], [PAPI_library_init],
+                 [scorep_papi_library="yes"], # action-if-found
+                 [scorep_papi_library="no"]   # action-if-not-found
+    )
+fi
 LDFLAGS="$ldflags_save"
 AC_LANG_POP([C])
 
