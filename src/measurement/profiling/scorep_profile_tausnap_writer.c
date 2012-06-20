@@ -302,6 +302,64 @@ write_node_tau( scorep_profile_node* node,
 }
 
 
+static uint64_t
+get_metrics_sum_from_array( scorep_profile_node* node, int index )
+{
+    return node->dense_metrics[ index ].sum;
+}
+
+static uint64_t
+get_metrics_start_from_array( scorep_profile_node* node, int index )
+{
+    return node->dense_metrics[ index ].start_value;
+}
+
+static void
+write_metric_data_tau( scorep_profile_node*      node,
+                       FILE*                     file,
+                       SCOREP_DefinitionManager* manager )
+{
+    for ( int i = 0; i  < scorep_profile.num_of_dense_metrics; i++ )
+    {
+        fprintf( file,
+                 " %" PRIu64 " %" PRIu64,
+                 get_metrics_sum_from_array( node,  i ),
+                 get_metrics_start_from_array( node, i ) );
+    }
+}
+
+static void
+write_metrics_tau( scorep_profile_node*      node,
+                   FILE*                     file,
+                   SCOREP_DefinitionManager* manager )
+{
+    SCOREP_Metric_Definition* metric_definition;
+    char*                     metric_name;
+    char*                     metric_unit;
+    char*                     metric_description;
+    int                       i = 1;
+
+    SCOREP_DEFINITION_FOREACH_DO( manager, Metric, metric )
+    {
+        /* Only want to write dense metrics here*/
+        if ( definition->source_type == SCOREP_METRIC_SOURCE_TYPE_PAPI )
+        {
+            metric_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                       String )->string_data;
+            metric_unit = SCOREP_UNIFIED_HANDLE_DEREF( definition->unit_handle,
+                                                       String )->string_data;
+            metric_description = SCOREP_UNIFIED_HANDLE_DEREF( definition->description_handle,
+                                                              String )->string_data;
+
+            fprintf( file, "<metric id=\"%d\"><name>%s</name>\n", i, metric_name );
+            fprintf( file, "<units>%s</units>\n", metric_unit );
+            fprintf( file, "</metric>\n" );
+            i++;
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
 
 /**
    Helper function for the profile writer in TAU snapshot format.
@@ -331,11 +389,13 @@ write_data_tau( scorep_profile_node*      node,
     if ( node->node_type != scorep_profile_node_regular_region || SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
         fprintf( file,
-                 "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 "\n",
+                 "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64,
                  *callpath_counter, node->count,
                  scorep_profile_get_number_of_child_calls( node ),
                  ( scorep_profile_get_exclusive_time( node ) * 1000000 / tps ),
                  ( node->inclusive_time.sum * 1000000 / tps ) );
+        write_metric_data_tau( node, file, manager );
+        fprintf( file, "\n" );
         ( *callpath_counter )++;
     }
     if ( node->callpath_handle != SCOREP_INVALID_CALLPATH )
@@ -606,6 +666,7 @@ write_thread_tau( scorep_profile_node*      node,
     fprintf( file, "<metric id=\"0\"><name>TIME</name>\n" );
     fprintf( file, "<units>ms</units>\n" );
     fprintf( file, "</metric>\n" );
+    write_metrics_tau( node, file, manager );
     fprintf( file, "</definitions>\n\n" );
 
 
@@ -634,7 +695,12 @@ write_thread_tau( scorep_profile_node*      node,
     fprintf( file, "<profile thread=\"%d.0.%" PRIu64 ".0\">\n",
              SCOREP_Mpi_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
-    fprintf( file, "<interval_data metrics=\"0\">\n" );
+    fprintf( file, "<interval_data metrics=\"0" );
+    for ( int i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+    {
+        fprintf( file, " %d", i + 1 );
+    }
+    fprintf( file, "\">\n" );
     child            = node->first_child;
     callpath_counter = 0;
     while ( child != NULL )
