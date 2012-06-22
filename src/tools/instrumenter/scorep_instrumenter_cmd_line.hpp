@@ -70,6 +70,7 @@ private:
     {
         scorep_parse_mode_param,
         scorep_parse_mode_command,
+        scorep_parse_mode_option_part,
         scorep_parse_mode_output,
         scorep_parse_mode_library,
         scorep_parse_mode_define,
@@ -183,6 +184,14 @@ private:
      */
     scorep_parse_mode_t
     parse_command( std::string arg );
+
+    /**
+       Evaluates one parameter when in option_part mode.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_option_part( std::string arg );
 
     /**
        Evaluates one parameter when in parameter mode.

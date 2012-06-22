@@ -97,6 +97,9 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
             case scorep_parse_mode_command:
                 mode = parse_command( argv[ i ] );
                 break;
+            case scorep_parse_mode_option_part:
+                mode = parse_option_part( argv[ i ] );
+                break;
             case scorep_parse_mode_output:
                 mode = parse_output( argv[ i ] );
                 break;
@@ -532,6 +535,17 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
     {
         return scorep_parse_mode_output;
     }
+    else if ( arg == "-MF" )
+    {
+        m_compiler_flags += " " + arg;
+        return scorep_parse_mode_option_part;
+    }
+    else if ( arg == "-MT" )
+    {
+        m_compiler_flags += " " + arg;
+        return scorep_parse_mode_option_part;
+    }
+
     /* Check for OpenMP flags. The compiler's OpenMP flag is detected during
        configure time. Unfortunately, newer intel compiler versions support
        the gnu-like -fopenmp in addition. In this case the configure test
@@ -569,6 +583,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
     }
 
     /* In any case that not yet returned, save the flag */
+    m_compiler_flags += " " + arg;
+    return scorep_parse_mode_command;
+}
+
+SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
+SCOREP_Instrumenter_CmdLine::parse_option_part( std::string arg )
+{
     m_compiler_flags += " " + arg;
     return scorep_parse_mode_command;
 }
