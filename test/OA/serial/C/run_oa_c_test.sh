@@ -34,9 +34,10 @@ SCENARIO_FILE=scenario_serial
 cleanup()
 {
     trap "dummy" ALRM               					#reset handler to dummy
-    echo cleaning $1 $2 $3
-    kill -ALRM $3								#stop timer subshell if running
-   # wait $3
+    #echo cleaning $TIMER_PID $1 $2
+    kill -ALRM $TIMER_PID 								#stop timer subshell if running
+    wait $TIMER_PID
+    
     trap - ALRM               							#reset handler to default
     
 	if [ $1 -ne 0 -o $2 -ne 0 ]; then
@@ -62,19 +63,18 @@ dummy=
 #clean experimental folder
 clean_scorep()
 {
-	rm -f config.h scorep_config.dat command_file	
+	rm -f config.h scorep_config.dat	
 }
 
 #clean experiment folder in case of failure
 clean_scorep_crash(){
-	rm -rf scorep-measurement-tmp start_ls.log command_file
+	rm -rf scorep-measurement-tmp start_ls.log
 }
 
 #kill sleep in the timer
 cleanup_timer()
 {
-	echo killing timer_sleep
-	kill -9 $1
+	kill $1
 }
 
 #timeout function
@@ -82,7 +82,6 @@ watchit()
 {
     sleep $1 & 
     SLEEP_PID=$!
-    echo timer_sleep=$SLEEP_PID
     trap "cleanup_timer $SLEEP_PID" ALRM	#clean sleep in case of finish before the timeout
     wait $SLEEP_PID
     kill -ALRM $$
@@ -93,9 +92,6 @@ watchit $TIMEOUT &					 #start the timeout of 100 sec.
 TIMER_PID=$!       
 
 ###########################################################Starting tests###################################################
-#create GDB batch mode command file
-echo -e "run\nbt\nquit" > command_file
-
 #get hostname and pick random port for periscope emulator
 REG_HOST=`hostname`
 REG_PORT=$((40000+$RANDOM%10000))
@@ -113,21 +109,20 @@ BASE_PORT=$(($REG_PORT+1))
 echo Starting $TEST_NAME with Periscope Emulator on $REG_HOST:$REG_PORT	
 
 #start periscope emulator 
-./online-access-registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE  &
+./online-access-registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE >/dev/null &
 REGSRV_PID=$!
 
 #start online access test
-SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST gdb --command command_file --batch ./$TEST_NAME & 
+SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./$TEST_NAME >/dev/null & 
 TEST_PID=$!
 
-echo registry=$REGSRV_PID application=$TEST_PID timer=$TIMER_PID
+#echo registry $REGSRV_PID application $TEST_PID
 ############################################################################################################################
 
 trap "cleanup $REGSRV_PID $TEST_PID $TIMER_PID" ALRM INT    #cleanup in case of timeout
 
 ###########################################################Waiting tests####################################################
 #echo wait_test PIDS: $REGSRV_PID $TEST_PID
-
 #wait for periscope emulator to finish
 wait $REGSRV_PID
 REG_RETURN=$?
