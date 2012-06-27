@@ -29,6 +29,9 @@ EXTRA_DIST += $(srcdir)/vendor/common/cutest/CuTest.c \
 DISTCLEANFILES += $(builddir)/config.summary
 DISTCLEANFILES += $(builddir)/@PACKAGE@.summary
 
+CONFIG_STATUS_DEPENDENCIES = $(srcdir)/build-config/VERSION
+CONFIGURE_DEPENDENCIES = $(srcdir)/build-config/VERSION
+
 prohibit-svn-files-in-dist:
 	@find $(top_distdir) -type d | grep "\.svn"; \
 	if [ $$? -eq 0 ]; then \
