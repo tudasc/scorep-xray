@@ -19,9 +19,9 @@
 ## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 # Get SRC_ROOT
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
+make clean-local-scorep-config-tool >/dev/null
+make scorep-config-tool-local >/dev/null
+. ./scorep_config.dat >/dev/null
 
 REGSRV_PID=
 TEST_PID=
@@ -34,15 +34,14 @@ SCENARIO_FILE=scenario_serial
 cleanup()
 {
     trap "dummy" ALRM               					#reset handler to dummy
-    #echo cleaning $TIMER_PID $1 $2
-    kill -ALRM $TIMER_PID 								#stop timer subshell if running
-    wait $TIMER_PID
-    
-    trap - ALRM               							#reset handler to default
+    echo PIDs to kill: $1 $2 $3
+    kill -ALRM $3								#stop timer subshell if running
+#   wait $3
+#   trap - ALRM               							#reset handler to default
     
 	if [ $1 -ne 0 -o $2 -ne 0 ]; then
-    	echo Test failed due to timeout \($TIMEOUT sec\). Killing periscope\(pid $1\) and $TEST_NAME\(pid $2\)
-    	echo $TEST_NAME FAILED! $TEST_ID
+    	echo Test failed due to timeout \($TIMEOUT sec\). Killing periscope\(pid $1\) and $TEST_NAME\(pid $2\) 1>&2
+    	echo $TEST_NAME FAILED! $TEST_ID 1>&2
     	
     	clean_scorep_crash
     	clean_scorep
@@ -63,18 +62,18 @@ dummy=
 #clean experimental folder
 clean_scorep()
 {
-	rm -f config.h scorep_config.dat	
+	rm -f config.h scorep_config.dat 	
 }
 
 #clean experiment folder in case of failure
 clean_scorep_crash(){
-	rm -rf scorep-measurement-tmp start_ls.log
+	rm -rf scorep-measurement-tmp start_ls.log 
 }
 
 #kill sleep in the timer
 cleanup_timer()
 {
-	kill $1
+	kill -9 $1
 }
 
 #timeout function
@@ -82,6 +81,7 @@ watchit()
 {
     sleep $1 & 
     SLEEP_PID=$!
+    echo Starting watchdog timer \(PID: $SLEEP_PID\)
     trap "cleanup_timer $SLEEP_PID" ALRM	#clean sleep in case of finish before the timeout
     wait $SLEEP_PID
     kill -ALRM $$
@@ -92,6 +92,7 @@ watchit $TIMEOUT &					 #start the timeout of 100 sec.
 TIMER_PID=$!       
 
 ###########################################################Starting tests###################################################
+
 #get hostname and pick random port for periscope emulator
 REG_HOST=`hostname`
 REG_PORT=$((40000+$RANDOM%10000))
@@ -108,27 +109,29 @@ done
 BASE_PORT=$(($REG_PORT+1))
 echo Starting $TEST_NAME with Periscope Emulator on $REG_HOST:$REG_PORT	
 
-#start periscope emulator
-./online-access-registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE  >/dev/null &
+#start periscope emulator 
+./online-access-registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE  &
 REGSRV_PID=$!
 
 #start online access test
-SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./$TEST_NAME >/dev/null & 
+SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./libtool --verbose --mode=execute gdb --nx --batch -ex run -ex bt -ex continue -ex quit ./$TEST_NAME & 
+#SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./$TEST_NAME & 
 TEST_PID=$!
 
-#echo registry $REGSRV_PID application $TEST_PID
+echo Test started: periscope \($REGSRV_PID\), application \($TEST_PID\), watchdog timer \($TIMER_PID\)
 ############################################################################################################################
 
 trap "cleanup $REGSRV_PID $TEST_PID $TIMER_PID" ALRM INT    #cleanup in case of timeout
 
 ###########################################################Waiting tests####################################################
 #echo wait_test PIDS: $REGSRV_PID $TEST_PID
+
 #wait for periscope emulator to finish
 wait $REGSRV_PID
 REG_RETURN=$?
 if [ $REG_RETURN -ne 0 ]; then
     kill -9 $TEST_PID
-    echo FAILED registry 
+    echo periscope FAILED! 1>&2
     RETURN_VALUE=$REG_RETURN
 fi
 
@@ -137,7 +140,7 @@ wait $TEST_PID
 TEST_RETURN=$?
 if [ $TEST_RETURN -ne 0 ]; then
     if [ $REG_RETURN -eq 0 ]; then
-    	echo FAILED application
+    	echo application FAILED! 1>&2
     fi 
     RETURN_VALUE=$TEST_RETURN
 fi
