@@ -31,12 +31,9 @@
 #define MAX_REGION_NAME_LENGTH                          150
 #define MAX_FILE_NAME_LENGTH                            150
 
-typedef struct SCOREP_OA_Key_struct
-{
-    uint32_t parent_region_id;
-    uint32_t region_id;
-    uint32_t metric_id;
-}SCOREP_OA_Key;
+#define SCOREP_OA_COUNTER_TIME                  0
+
+
 
 typedef struct SCOREP_OA_CallPathContext_struct
 {
@@ -100,10 +97,6 @@ typedef struct SCOREP_OA_ProfileSummary_struct
     uint32_t                          static_measurement_size;
 } SCOREP_OA_CallPathSummary;
 
-#define SCOREP_OA_COUNTER_UNDEFINED                     0
-#define SCOREP_OA_COUNTER_TIME                  1
-#define SCOREP_OA_COUNTER_LATE                  2
-
 typedef enum SCOREP_OAConsumer_DataTypes
 {
     FLAT_PROFILE = 0,
@@ -111,14 +104,10 @@ typedef enum SCOREP_OAConsumer_DataTypes
     REGION_DEFINITIONS,
     COUNTER_DEFINITIONS,
     CALLPATH_PROFILE_CONTEXTS,
-    CALLPATH_PROFILE_MEASUREMENTS
+    CALLPATH_PROFILE_MEASUREMENTS,
+    NUMBER_OF_THREADS
 } SCOREP_OAConsumer_DataTypes;
 
-
-/*SCOREP_OA_CallPathSummary*
-   SCOREP_Profile_GetSummary
-   (
-   );*/
 
 void
 SCOREP_OAConsumer_Initialize
@@ -142,5 +131,6 @@ SCOREP_OAConsumer_GetDataSize
 (
     SCOREP_OAConsumer_DataTypes data_type
 );
+
 
 #endif // SCOREP_PROFILE_OACONSUMER_H
