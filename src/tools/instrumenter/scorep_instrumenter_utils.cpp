@@ -90,7 +90,7 @@ extract_path( std::string filename )
     {
         return filename.substr( 0, pos );
     }
-    return "";
+    return ".";
 }
 
 std::string
