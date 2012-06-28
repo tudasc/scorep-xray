@@ -99,7 +99,7 @@ AC_MSG_RESULT([$scorep_have_papi])
 if test "x${scorep_have_papi}" = "xyes"; then
     AC_DEFINE([HAVE_PAPI], [1],     [Defined if libpapi is available.])
     AC_SUBST([SCOREP_PAPI_LDFLAGS], [-L${scorep_papi_lib_dir}])
-    AC_SUBST([SCOREP_PAPI_LIBS],    [-l${scorep_papi_lib_name} ${scorep_papi_additional_libs}])
+    AC_SUBST([SCOREP_PAPI_LIBS],    ["-l${scorep_papi_lib_name} ${scorep_papi_additional_libs}"])
 else
     AC_SUBST([SCOREP_PAPI_LDFLAGS], [""])
     AC_SUBST([SCOREP_PAPI_LIBS],    [""])
