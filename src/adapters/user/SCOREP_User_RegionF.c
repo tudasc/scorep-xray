@@ -94,11 +94,9 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
                        int                          nameLen,
                        int                          fileNameLen )
 {
-    char*                    name;
-    char*                    fileName;
-    SCOREP_Hashtab_Entry*    entry;
-    size_t                   index;
-    SCOREP_SourceFileHandle* fileHandle;
+    char*                   name;
+    char*                   fileName;
+    SCOREP_SourceFileHandle fileHandle;
 
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -113,34 +111,9 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
     fileName[ fileNameLen ] = '\0';
     SCOREP_IO_SimplifyPath( fileName );
 
-    /* Lock file definition */
-    SCOREP_MutexLock( scorep_user_file_table_mutex );
-
-    /* Search for source file handle */
-    entry = SCOREP_Hashtab_Find( scorep_user_file_table, fileName, &index );
-
-    /*  If not found register new file */
-    if ( !entry )
-    {
-        /* Register file to measurement system */
-        fileHandle  = malloc( sizeof( SCOREP_SourceFileHandle ) );
-        *fileHandle = SCOREP_DefineSourceFile( fileName );
-
-        /* Store handle in hashtable */
-        SCOREP_Hashtab_Insert( scorep_user_file_table,
-                               ( void* )fileName,
-                               fileHandle,
-                               &index );
-    }
-    else
-    {
-        /* If found the reserved space for the file name should be freed */
-        free( fileName );
-
-        fileHandle = ( SCOREP_SourceFileHandle* )entry->value;
-    }
-    /* Unlock file definition */
-    SCOREP_MutexUnlock( scorep_user_file_table_mutex );
+    /* Get source file handle.
+       The definitions check for double double entries. */
+    fileHandle = SCOREP_DefineSourceFile( fileName );
 
     /* Lock region definition */
     SCOREP_MutexLock( scorep_user_region_mutex );
@@ -168,7 +141,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
             if ( region != SCOREP_USER_INVALID_REGION )
             {
                 region->handle = SCOREP_DefineRegion( name,
-                                                      *fileHandle,
+                                                      fileHandle,
                                                       *lineNo,
                                                       SCOREP_INVALID_LINE_NO,
                                                       SCOREP_ADAPTER_USER,
@@ -185,6 +158,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* handle,
 
     /* Cleanup */
     free( name );
+    free( fileName );
 }
 
 void

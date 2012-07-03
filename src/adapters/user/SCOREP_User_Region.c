@@ -41,12 +41,6 @@
 #define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 
 /**
-    @internal
-    Hash table for mapping source file names to SCOREP file handles.
- */
-SCOREP_Hashtab* scorep_user_file_table = NULL;
-
-/**
    Mutex for @ref scorep_user_file_table.
  */
 SCOREP_Mutex scorep_user_file_table_mutex;
@@ -70,8 +64,6 @@ scorep_user_init_regions()
 {
     SCOREP_MutexCreate( &scorep_user_region_mutex );
     SCOREP_MutexCreate( &scorep_user_file_table_mutex );
-    scorep_user_file_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
-                                                        &SCOREP_Hashtab_CompareStrings );
     scorep_user_region_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                           &SCOREP_Hashtab_CompareStrings );
 }
@@ -85,12 +77,7 @@ scorep_user_finalize_regions()
                             &SCOREP_Hashtab_DeleteFree,
                             &SCOREP_Hashtab_DeleteNone );
 
-    SCOREP_Hashtab_FreeAll( scorep_user_file_table,
-                            &SCOREP_Hashtab_DeleteNone,
-                            &SCOREP_Hashtab_DeleteFree );
-
     scorep_user_region_table = NULL;
-    scorep_user_file_table   = NULL;
     SCOREP_MutexDestroy( &scorep_user_file_table_mutex );
     SCOREP_MutexDestroy( &scorep_user_region_mutex );
 }
@@ -100,12 +87,10 @@ scorep_user_get_file( const char*              file,
                       const char**             lastFileName,
                       SCOREP_SourceFileHandle* lastFile )
 {
-    size_t index;
-
     /* Hashtable access must be emutual exclusive */
     SCOREP_MutexLock( scorep_user_file_table_mutex );
 
-    /* In most cases, it is expected that in most cases no regions are in included
+    /* In most cases, it is expected that no regions are in included
        files. If the compiler inserts always the same string adress for file names,
        one static variable in a source file can remember the last used filename from
        a source file and sting comparisons can be avoided.
@@ -119,37 +104,21 @@ scorep_user_get_file( const char*              file,
         return *lastFile;
     }
 
-    /* Else store file name as last searched for and search in the hashtable */
+    /* Store file name as last searched for and return new file handle.
+       The definitions hash entries and donot allow double entries.
+       In the definitions we want to have simplified file names. */
+    char* file_name = SCOREP_CStr_dup( file );
+    SCOREP_IO_SimplifyPath( file_name );
+    SCOREP_SourceFileHandle handle = SCOREP_DefineSourceFile( file_name );
+    free( file_name );
+
+    /* Cache last used file information */
+    *lastFile     = handle;
     *lastFileName = file;
-    SCOREP_Hashtab_Entry* entry = SCOREP_Hashtab_Find( scorep_user_file_table, file, &index );
 
-    /* If not found register new file */
-    if ( !entry )
-    {
-        /* Reserve own storage for file name */
-        char* file_name = SCOREP_CStr_dup( file );
-        SCOREP_IO_SimplifyPath( file_name );
-
-        /* Register file to measurement system */
-        SCOREP_SourceFileHandle* handle = malloc( sizeof( SCOREP_SourceFileHandle ) );
-        *handle = SCOREP_DefineSourceFile( file_name );
-        free( file_name );
-        file_name = NULL;
-
-        /* Store handle in hashtable */
-        SCOREP_Hashtab_Insert( scorep_user_file_table, ( void* )file, handle, &index );
-
-        *lastFile = *handle;
-    }
-
-    else
-    {
-        /* Else store last used handle */
-        *lastFile = *( SCOREP_SourceFileHandle* )entry->value;
-    }
-
+    /* CLean up */
     SCOREP_MutexUnlock( scorep_user_file_table_mutex );
-    return *lastFile;
+    return handle;
 }
 
 
