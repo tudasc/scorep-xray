@@ -101,7 +101,7 @@ SCOREP_OA_Init
     {
         /* Set the intialization flag to indicate that the adapter is initialized */
         scorep_oa_is_initialized = 1;
-        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION, 0, 0 );
+        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION );
         connection = scorep_oa_connection_connect();
         scorep_oa_mri_receive_and_process_requests( connection );
         return 1;

@@ -258,6 +258,30 @@ scorep_oa_sockets_registry_create_entry
 }
 
 int
+scorep_oa_sockets_registry_delete_entry
+(
+    registry* reg,
+    int       entid
+)
+{
+    char buf[ BUFSIZE ];
+    int  id;
+    int  n = 0;
+
+    sprintf( buf, "%s %d\n", CMD_DELETE, entid );
+    scorep_oa_sockets_write_line( reg->sock_, buf );
+
+    scorep_oa_sockets_read_line( reg->sock_, buf, BUFSIZE );
+    n = sscanf( buf, MSG_DELETE_SUCCESS, &id );
+
+    if ( n < 1 )
+    {
+        return 0;
+    }
+    return id;
+}
+
+int
 scorep_oa_sockets_client_connect_retry
 (
     char* hostname,

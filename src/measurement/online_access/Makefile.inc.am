@@ -87,7 +87,8 @@ OA_SERIAL_FLAGS =                                 					\
     -I$(INC_ROOT)src/measurement/               					\
     -I$(INC_ROOT)src/adapters/mpi									\
     -I$(INC_ROOT)src/adapters/user               					\
-    -I$(INC_ROOT)include/scorep           					\
+    -I$(INC_ROOT)include/scorep           							\
+    -I$(INC_ROOT)src/services/include								\
     -I$(PUBLIC_INC_DIR)                         					\
     -I$(INC_DIR_UTIL) \
     -I$(INC_DIR_UTIL_INTERNAL)												
@@ -107,7 +108,10 @@ libscorep_oa_serial_la_SOURCES =                                  		\
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c				\
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h				\
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h			\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.c					\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.h					\
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_PeriscopeMetrics.h
 
 libscorep_oa_serial_la_SOURCES +=										\
 	$(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c         			\

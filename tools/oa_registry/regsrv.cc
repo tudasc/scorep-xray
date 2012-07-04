@@ -333,6 +333,7 @@ int RegServ::execute_test(const char* scenario_file)
 	for( it=reg_data_.begin(); it!=reg_data_.end(); it++ )
 	{
 			close(it->second->test_comm_sock);
+			delete it->second;
 	}
 	printf("Periscope Emulator: test successfully completed!\n");
 	return 0;

@@ -116,6 +116,7 @@ REGSRV_PID=$!
 #start online access test
 SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./libtool --verbose --mode=execute gdb --nx --batch -ex run -ex bt -ex continue -ex quit ./$TEST_NAME & 
 #SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./$TEST_NAME & 
+#SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./libtool --verbose --mode=execute valgrind  --tool=memcheck --leak-check=full ./$TEST_NAME &
 TEST_PID=$!
 
 echo Test started: periscope \($REGSRV_PID\), application \($TEST_PID\), watchdog timer \($TIMER_PID\)
@@ -154,7 +155,7 @@ if [ $RETURN_VALUE -eq 0 ]; then
 	echo $TEST_NAME successful.
 else
 	clean_scorep_crash
-	echo $TEST_NAME FAILED! 
+	echo $TEST_NAME FAILED! 1>&2
 fi 
 
 

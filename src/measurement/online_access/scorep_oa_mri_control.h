@@ -32,6 +32,9 @@
 #include <SCOREP_Error_Codes.h>
 #include "SCOREP_Types.h"
 
+/**
+ * Enum specifing possible execution control statuses of the application
+ */
 typedef enum
 {
     SCOREP_OA_MRI_STATUS_UNDEFINED,
@@ -46,89 +49,117 @@ typedef enum
     SCOREP_OA_MRI_EXEC_REQUEST_RUN_TO_END
 } scorep_oa_mri_app_control_type;
 
-typedef enum
-{
-    SCOREP_OA_MRI_SYMBOLS_REGIONS,
-    SCOREP_OA_MRI_SYMBOLS_METRICS,
-    SCOREP_OA_MRI_CONTEXTS,
-    SCOREP_OA_MRI_MEASUREMENTS_ALL,
-    SCOREP_OA_MRI_MEASUREMENTS_MPI,
-    SCOREP_OA_MRI_MEASUREMENTS_COUNTER
-} scorep_oa_mri_measurement_return_header_type;
-
-SCOREP_Error_Code
+/**
+ * Listens for the MRI commands from external tol on the specified connection
+ *
+ * @param connection a connection handler to listen for MRI commands
+ */
+void
 scorep_oa_mri_receive_and_process_requests
 (
     int connection
 );
 
+/*----------------------------------------------------------------------------------------
+   Getters
+   -------------------------------------------------------------------------------------*/
+
+
+/**
+ * Returns current application execution control status
+ */
+scorep_oa_mri_app_control_type
+scorep_oa_mri_get_appl_control
+(
+);
+
+/*----------------------------------------------------------------------------------------
+   Configuration of execution control
+   -------------------------------------------------------------------------------------*/
+/**
+ * Sets application execution control status
+ *
+ * @param command new execution control status
+ */
 void
 scorep_oa_mri_set_appl_control
 (
-    scorep_oa_mri_app_control_type command,
-    uint8_t                        file_id,
-    uint8_t                        region_line
+    scorep_oa_mri_app_control_type command
 );
 
+/**
+ * Sets Online Access phase
+ *
+ * @param handle a region handle to set as OA phase
+ */
 void
 scorep_oa_mri_set_phase
 (
     SCOREP_RegionHandle handle
 );
 
-scorep_oa_mri_app_control_type
-scorep_oa_mri_get_appl_control
-(
-);
-
-char*
-scorep_oa_mri_get_appl_control_string
-(
-);
-
-void
-scorep_oa_mri_return_summary_data
-(
-);
-
+/*----------------------------------------------------------------------------------------
+   Configuration of measurements
+   -------------------------------------------------------------------------------------*/
+/**
+ * Empty operation
+ */
 void
 scorep_oa_mri_noop
 (
 );
 
-SCOREP_Error_Code
-scorep_oa_mri_parse
-(
-    char* buffer
-);
-
-int
-yyparse
-(
-    void
-);
-
+/**
+ * Enable/Disable MPI profiling
+ *
+ * @param value MPI profiling status (0 - OFF, 1 - ON)
+ */
 void
 scorep_oa_mri_set_mpiprofiling
 (
     int value
 );
 
-
+/**
+ * Adds a metric to the Score-P measurement configuration requests
+ *
+ * @param metric_code Persicope metric code to add
+ */
 void
-scorep_oa_mri_set_profiling
+scorep_oa_mri_add_metric
 (
-    int value
+    int metric_code
 );
 
+/**
+ * Initializes metric request handling module
+ */
 void
-scorep_oa_mri_setphase
+scorep_oa_mri_begin_request
 (
-    int32_t file_id,
-    int32_t rfl
 );
 
+/**
+ * Submits metric requests to measurement core
+ */
+void
+scorep_oa_mri_end_request
+(
+);
 
+/*----------------------------------------------------------------------------------------
+   Retrieval of measurements
+   -------------------------------------------------------------------------------------*/
 
+/**
+ * Returns requested measurements to the exeternal tool
+ *
+ * @param connection a connection handle to send measurements over
+ */
+void
+scorep_oa_mri_return_summary_data
+(
+    int connection
+);
 
 #endif /* SCOREP_OA_MRI_CONTROL_H */

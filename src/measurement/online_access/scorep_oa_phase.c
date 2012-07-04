@@ -48,7 +48,7 @@ scorep_oa_phase_enter
 
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING )
     {
-        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_BEGINNING, 0, 0 );
+        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_BEGINNING );
         scorep_oa_mri_set_phase( ms_handle );
         scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
         scorep_oa_mri_receive_and_process_requests( connection );
@@ -72,7 +72,7 @@ scorep_oa_phase_exit
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_END )
     {
         scorep_oa_mri_set_phase( ms_handle );
-        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_END, 0, 0 );
+        scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_END );
         scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
         scorep_oa_mri_receive_and_process_requests( connection );
     }
