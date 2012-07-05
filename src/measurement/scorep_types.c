@@ -373,3 +373,25 @@ scorep_config_type_to_string
             return "unknown";
     }
 }
+
+/**
+ * Converts a SCOREP_LocationType into a string.
+ */
+const char*
+scorep_location_type_to_string
+(
+    SCOREP_LocationType locationType
+)
+{
+    switch ( locationType )
+    {
+        case SCOREP_LOCATION_TYPE_CPU_THREAD:
+            return "CPU thread";
+        case SCOREP_LOCATION_TYPE_GPU:
+            return "GPU";
+        case SCOREP_LOCATION_TYPE_METRIC:
+            return "metric location";
+        default:
+            return "unknown";
+    }
+}

@@ -52,7 +52,7 @@ static cube_metric* time_min_handle;
 static cube_metric* visits_handle;
 
 /**
-   Node type definition for temporary internal system tree structure cor Cube definition
+   Node type definition for temporary internal system tree structure for Cube definition
    writing. It is needed to map Score-P and Cube system tree definitions.
  */
 typedef struct scorep_cube_system_node
@@ -641,8 +641,6 @@ write_system_tree( cube_t*                   my_cube,
         return NULL;
     }
 
-    /* The node for rank i is at position i in the system tree array. Inner nodes
-       follow afterwards. */
     SCOREP_DEFINITION_FOREACH_DO( manager, SystemTreeNode, system_tree_node )
     {
         const char* class = SCOREP_UNIFIED_HANDLE_DEREF( definition->class_handle,
@@ -675,6 +673,29 @@ write_system_tree( cube_t*                   my_cube,
     return system_tree;
 }
 
+static void
+write_locations_for_group( cube_t*                   my_cube,
+                           SCOREP_DefinitionManager* manager,
+                           uint32_t                  parent_id,
+                           cube_process*             process )
+{
+    char            name[ 32 ];
+    static uint32_t index = 0;
+
+    SCOREP_DEFINITION_FOREACH_DO( manager, Location, location )
+    {
+        if ( definition->location_group_id == parent_id )
+        {
+            sprintf( name, "%s %" PRIu64,
+                     scorep_location_type_to_string( definition->location_type ),
+                     definition->global_location_id >> 32 );
+            cube_def_thrd( my_cube, name, index, process );
+            index++;
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
 /**
    Writes location and location group  definitions to Cube.
    @param my_cube Pointer to Cube instance.
@@ -687,14 +708,10 @@ write_system_tree( cube_t*                   my_cube,
  */
 static void
 write_location_definitions( cube_t*                   my_cube,
-                            SCOREP_DefinitionManager* manager,
-                            uint32_t                  ranks,
-                            int*                      threads )
+                            SCOREP_DefinitionManager* manager )
 {
-    char          name[ 32 ];
     cube_process* process = NULL;
     cube_thread*  thread  = NULL;
-    int           index   = 0;
 
     scorep_cube_system_node* system_tree = write_system_tree( my_cube, manager );
     assert( system_tree );
@@ -705,15 +722,14 @@ write_location_definitions( cube_t*                   my_cube,
         cube_node* node = get_cube_node( my_cube, system_tree, definition->parent,
                                          manager->system_tree_node_definition_counter );
 
-        sprintf( name, "rank %u", rank );
-        process = cube_def_proc( my_cube, name, rank, node );
+        const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                        String )->string_data;
 
-        for ( uint32_t loc = 0; loc < threads[ rank ]; loc++ )
-        {
-            sprintf( name, "thread %" PRIu32, loc ),
-            thread = cube_def_thrd( my_cube, name, index, process );
-            index++;
-        }
+        process = cube_def_proc( my_cube, name, rank, node );
+        write_locations_for_group( my_cube,
+                                   manager,
+                                   definition->global_location_group_id,
+                                   process );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 
@@ -726,8 +742,6 @@ write_location_definitions( cube_t*                   my_cube,
 void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
-                                   uint32_t                      ranks,
-                                   int*                          threads,
                                    bool                          write_task_metrics )
 {
     /* The unification is always processed, even in serial case. Thus, we have
@@ -744,5 +758,5 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     write_metric_definitions( my_cube, manager, map, write_task_metrics );
     write_region_definitions( my_cube, manager, map );
     write_callpath_definitions( my_cube, manager, map );
-    write_location_definitions( my_cube, manager, ranks, threads );
+    write_location_definitions( my_cube, manager );
 }

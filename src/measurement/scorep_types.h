@@ -302,5 +302,19 @@ scorep_config_type_to_string
     SCOREP_ConfigType configType
 );
 
+/**
+ * Converts a SCOREP_LocationType into a string.
+ *
+ * @param locationType    The config type which should be expressed as a string.
+ *
+ * @return                A string representation of @a locationType.
+ */
+extern const char*
+scorep_location_type_to_string
+(
+    SCOREP_LocationType locationType
+);
+
+
 
 #endif /* SCOREP_INTERNAL_TYPES_H */
