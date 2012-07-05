@@ -368,7 +368,7 @@ main( int    argc,
             case ACTION_CFLAGS:
                 if ( compiler )
                 {
-                    str += "-g " SCOREP_CFLAGS;
+                    str += "-g " SCOREP_CFLAGS " ";
                 }
                 if ( user )
                 {
