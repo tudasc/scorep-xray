@@ -551,7 +551,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationDa
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_OnThreadDectivation( locationData, parent );
+        SCOREP_Profile_OnThreadDeactivation( locationData, parent );
     }
     SCOREP_Tracing_OnThreadDectivation( locationData, parent );
 }

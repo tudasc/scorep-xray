@@ -330,7 +330,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
         case SCOREP_REGION_DYNAMIC_FUNCTION:
         case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
 
-            /* For Dynamic Regions we use a special "instance" paramter defined
+            /* For Dynamic Regions we use a special "instance" parameter defined
              * during initialization */
             SCOREP_Profile_ParameterInteger( thread,
                                              scorep_profile_param_instance,
@@ -633,8 +633,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
 
 
 void
-SCOREP_Profile_OnThreadDectivation( SCOREP_Location* locationData,
-                                    SCOREP_Location* parentLocationData )
+SCOREP_Profile_OnThreadDeactivation( SCOREP_Location* locationData,
+                                     SCOREP_Location* parentLocationData )
 {
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
 

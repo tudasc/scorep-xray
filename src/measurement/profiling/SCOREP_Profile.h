@@ -291,8 +291,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
  * locationData.
  */
 void
-SCOREP_Profile_OnThreadDectivation( SCOREP_Location* locationData,
-                                    SCOREP_Location* parentLocationData );
+SCOREP_Profile_OnThreadDeactivation( SCOREP_Location* locationData,
+                                     SCOREP_Location* parentLocationData );
 
 
 /**
