@@ -136,7 +136,7 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
         child = child->next_sibling;
     }
 
-    /* Extact sparse integer metric chain */
+    /* Extract sparse integer metric chain */
     scorep_profile_sparse_metric_int* last_int_metric = root->first_int_sparse;
     if ( last_int_metric != NULL )
     {
@@ -148,7 +148,7 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
         location->free_int_metrics   = root->first_int_sparse;
     }
 
-    /* Extact sparse double metric chain */
+    /* Extract sparse double metric chain */
     scorep_profile_sparse_metric_double* last_double_metric = root->first_double_sparse;
     if ( last_double_metric != NULL )
     {
@@ -188,8 +188,8 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
 
 
     /* Reserve space for the node record and dense metrics.
-     *  Thread root nodes must not be deleted in Persicope phases, while all other
-     *  nodes are. The profile memory pages are deleted in Persicope phases.
+     *  Thread root nodes must not be deleted in Periscope phases, while all other
+     *  nodes are. The profile memory pages are deleted in Periscope phases.
      *  Thus, space for thread root nodes must not be allocated
      *  from profile memory.
      */

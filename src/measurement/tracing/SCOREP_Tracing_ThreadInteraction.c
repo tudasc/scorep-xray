@@ -86,8 +86,8 @@ SCOREP_Tracing_OnThreadActivation( SCOREP_Location* locationData,
 
 
 void
-SCOREP_Tracing_OnThreadDectivation( SCOREP_Location* locationData,
-                                    SCOREP_Location* parentLocationData )
+SCOREP_Tracing_OnThreadDeactivation( SCOREP_Location* locationData,
+                                     SCOREP_Location* parentLocationData )
 {
     return;
 }

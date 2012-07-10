@@ -65,14 +65,14 @@ typedef enum
 /**
    Contains all data for one profile node. Each instance represents a region, or a
    parameter, or other callpath relevant object. The children of a node represent regions,
-   paramaters called by this region. A callpath is defined by the path from the
-   too to a node. Thus, each node also identies an unique callpath and stored the
+   parameters called by this region. A callpath is defined by the path from the
+   root to a node. Thus, each node also identifies an unique callpath and stored the
    statistics recorded for this callpath.
    The children of a node are stored as single linked list, where @a first_child points to
    the first child of a node and @a next_sibling points to the next sibling, which is the
    next child of the parent.
    Nodes can be of different type, which receive different treatment. The type of the node
-   is stored in @a node_type, depending on the type it is possible to store differnt data
+   is stored in @a node_type, depending on the type it is possible to store different data
    with this node in @a type_specific_data.
 
    Here is a list which data this field contains:
@@ -189,11 +189,11 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
 /**
    Find or create a child node of @a parent of a specified type. If parent has a child
    which matches @a type this node is returned. Else it creates a node of @a node_type
-   and the type specific datarics and adds it to the children of @a parent.
+   and the type specific data and adds it to the children of @a parent.
    @param location  Pointer to the location data.
    @param parent    Pointer to a node which children are searched.
    @param node_type The node type of the searched or created node.
-   @param specific  The type sepcific data of the searched or created node.
+   @param specific  The type specific data of the searched or created node.
    @param timestamp Timestamp for the first enter time in case a new node is created.
    @returns The matching node from the children of @a parent. This might be a newly
             created node.
@@ -234,7 +234,7 @@ scorep_profile_find_child( scorep_profile_node* parent,
                            scorep_profile_node* type );
 
 /**
-   Checks wether two nodes represent the same object (region, parameter, thread, ...).
+   Checks whether two nodes represent the same object (region, parameter, thread, ...).
    It does only compare node type and type dependent data. The statistics are not
    compared.
    @param node1 The node that is compared to @a node2
@@ -260,7 +260,7 @@ scorep_profile_move_children(  scorep_profile_node* destination,
                                scorep_profile_node* source );
 
 /**
-   Removes the node from the profile sructure. The whole subtree rooted in
+   Removes the node from the profile structure. The whole subtree rooted in
    @a node is removed.
    @param node A pointer to a node which is to be removed from the profile. It
                must not be NULL.
@@ -456,7 +456,7 @@ SCOREP_Profile_LocationData*
 scorep_profile_type_get_location_data( scorep_profile_type_data_t data );
 
 /**
-   Retrives the depth from the type specific data of a collapse node.
+   Retrieves the depth from the type specific data of a collapse node.
  */
 uint64_t
 scorep_profile_type_get_depth( scorep_profile_type_data_t data );
@@ -469,7 +469,7 @@ scorep_profile_type_set_depth( scorep_profile_type_data_t* data,
                                uint64_t                    depth );
 
 /**
-   Retrives the integer value from the type specific data of a parameter integer  node.
+   Retrieves the integer value from the type specific data of a parameter integer  node.
  */
 uint64_t
 scorep_profile_type_get_int_value( scorep_profile_type_data_t data );
@@ -484,8 +484,8 @@ scorep_profile_type_set_int_value( scorep_profile_type_data_t* data,
 /**
    Compares the type dependent data. Both objects are assumed to be of the same type
    @a type.
-   @param data1 The data whch is compared to @a data2.
-   @param data2 The data whch is compared to @a data1.
+   @param data1 The data which is compared to @a data2.
+   @param data2 The data which is compared to @a data1.
    @param type  Specifies the node type to which @a data1 and @a data2 belong.
    @return true, if @a data1 equals @a data2.
  */

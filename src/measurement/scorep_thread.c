@@ -553,7 +553,7 @@ scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationDa
     {
         SCOREP_Profile_OnThreadDeactivation( locationData, parent );
     }
-    SCOREP_Tracing_OnThreadDectivation( locationData, parent );
+    SCOREP_Tracing_OnThreadDeactivation( locationData, parent );
 }
 
 
