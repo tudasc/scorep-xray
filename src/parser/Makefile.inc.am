@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-lib_LTLIBRARIES += libscorep_parser_tools.la
+noinst_LTLIBRARIES += libscorep_parser_tools.la
 
 libscorep_parser_tools_la_SOURCES = \
     $(SRC_ROOT)vendor/common/src/utils/parser/SCOREP_ParserBase.cpp \
