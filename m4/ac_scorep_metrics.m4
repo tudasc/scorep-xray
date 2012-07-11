@@ -110,11 +110,8 @@ AC_SUBST([SCOREP_PAPI_LIBDIR],      [$scorep_papi_lib_dir])
 AC_SCOREP_SUMMARY([PAPI support],   [${scorep_have_papi}])
 AS_IF([test "x${scorep_have_papi}" = "xyes"], [
     AC_SCOREP_SUMMARY_VERBOSE([PAPI include directory], [$scorep_papi_inc_dir])
-    AC_SCOREP_SUMMARY_VERBOSE([PAPI library directory], [$scorep_papi_lib_dir])    
-    AS_IF([test "x"${scorep_papi_additional_libs} = "x"],
-          [AC_SCOREP_SUMMARY_VERBOSE([PAPI linker flags], [-l${scorep_papi_lib_name}])],
-          [AC_SCOREP_SUMMARY_VERBOSE([PAPI linker flags], [-l${scorep_papi_lib_name} ${scorep_papi_additional_libs}])])
-    ])
+    AC_SCOREP_SUMMARY_VERBOSE([PAPI library directory], [$scorep_papi_lib_dir])
+    AC_SCOREP_SUMMARY_VERBOSE([PAPI libraries],         [-l${scorep_papi_lib_name} ${scorep_papi_additional_libs}])
 ])
 ])
 
