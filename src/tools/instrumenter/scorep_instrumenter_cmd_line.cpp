@@ -74,7 +74,8 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
 SCOREP_Instrumenter_CmdLine::~SCOREP_Instrumenter_CmdLine()
 {
 }
-SCOREP_Error_Code
+
+void
 SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
                                            char** argv )
 {
@@ -84,8 +85,7 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
        are parsed, before the command options are parsed. Thus we must detect
        the point where the mode has changed to scorep_parse_mode_command.
      */
-    bool              is_config_file_read = false;
-    SCOREP_Error_Code ret_val;
+    bool is_config_file_read = false;
 
     for ( int i = 1; i < argc; i++ )
     {
@@ -123,8 +123,6 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
     {
         print_parameter();
     }
-
-    return ret_val;
 }
 
 bool
@@ -707,6 +705,12 @@ SCOREP_Instrumenter_CmdLine::check_parameter()
                   << "MPI applications." << std::endl;
         abort();
     }
+
+    /* To avoid remarks from the compiler about VT_ROOT' environment variable not set
+       we set those variables to harmless values when using intel compilers. */
+    #ifdef SCOREP_COMPILER_INTEL
+    m_compiler_name = "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" " + m_compiler_name;
+    #endif
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t

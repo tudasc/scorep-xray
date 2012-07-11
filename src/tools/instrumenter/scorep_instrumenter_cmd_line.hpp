@@ -103,7 +103,7 @@ public:
        @return SCOREP_SUCCESS if the parsing was successful. Else an error
                code is returned.
      */
-    virtual SCOREP_Error_Code
+    virtual void
     ParseCmdLine( int    argc,
                   char** argv );
 
