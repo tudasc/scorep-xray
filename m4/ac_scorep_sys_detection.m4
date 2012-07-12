@@ -25,6 +25,8 @@ AC_DEFUN([_AC_SCOREP_DETECT_LINUX_PLATFORMS],
                           [ac_scorep_platform="altix";    ac_scorep_cross_compiling="no"],
                       [test "x${build_cpu}" = "xpowerpc64" -a -d /bgl/BlueLight],   
                           [ac_scorep_platform="bgl";      ac_scorep_cross_compiling="yes"],
+                      [test "x${build_cpu}" = "xpowerpc64" -a -d /bgsys/drivers/ppcfloor/hwi],           
+                          [ac_scorep_platform="bgq";      ac_scorep_cross_compiling="yes"],
                       [test "x${build_cpu}" = "xpowerpc64" -a -d /bgsys],           
                           [ac_scorep_platform="bgp";      ac_scorep_cross_compiling="yes"],
                       [test "x${build_cpu}" = "xx86_64"    -a -d /opt/cray/xt-asyncpe],     
@@ -151,6 +153,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_ALTIX],    [test "x${ac_scorep_platform}" = "xaltix"])
     AM_CONDITIONAL([PLATFORM_POWER6],   [test "x${ac_scorep_platform}" = "xibm" -a "x${build_cpu}" = "xpowerpc"])
     AM_CONDITIONAL([PLATFORM_BGL],      [test "x${ac_scorep_platform}" = "xbgl"])
+    AM_CONDITIONAL([PLATFORM_BGQ],      [test "x${ac_scorep_platform}" = "xbgq"])
     AM_CONDITIONAL([PLATFORM_BGP],      [test "x${ac_scorep_platform}" = "xbgp"])
     AM_CONDITIONAL([PLATFORM_CRAYXT],   [test "x${ac_scorep_platform}" = "xcrayxt"])
     AM_CONDITIONAL([PLATFORM_SICORTEX], [test "x${ac_scorep_platform}" = "xsicortex"])

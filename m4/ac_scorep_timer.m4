@@ -18,6 +18,33 @@
 
 ## individual timer tests
 
+AC_DEFUN([SCOREP_TIMER_BGQ_MFTB_AVAILABLE],[
+scorep_timer_bgq_mftb_available="no"
+AC_MSG_CHECKING([for bgq_mftb timer])
+scorep_timer_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS -I/bgsys/drivers/ppcfloor"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+[[
+/* DEFAULT_FREQ_MHZ in firmware/include/personality.h
+ * __mftb is build-in, see
+ * http://publib.boulder.ibm.com/infocenter/comphelp/v101v121/index.jsp?topic=/com.ibm.xlcpp101.aix.doc/compiler_ref/bif_mftb.html
+ */
+#include <firmware/include/personality.h>
+#ifndef DEFAULT_FREQ_MHZ
+#error "DEFAULT_FREQ_MHZ not defined. Check your includes."
+#endif
+]], [[
+double clockspeed      = 1.0e-6 / DEFAULT_FREQ_MHZ;
+double time_in_seconds = ( __mftb() * clockspeed );
+]])],
+                  [scorep_timer_bgq_mftb_available="yes"], 
+                  [])
+CPPFLAGS="$scorep_timer_save_CPPFLAGS"
+AC_MSG_RESULT([$scorep_timer_bgq_get_timebase_available])
+])
+
+###############################################################################
+
 AC_DEFUN([SCOREP_TIMER_BGP_GET_TIMEBASE_AVAILABLE],[
 scorep_timer_bgp_get_timebase_available="no"
 AC_MSG_CHECKING([for bgp_get_timebase timer])
@@ -337,6 +364,7 @@ AS_IF([test "x${scorep_user_timer_given}" = "xno"], [
                                  SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]))],
             ["bgl"],      [AS_IF(SCOREP_TIMER_USE_IF_AVAILABLE([bgl_rts_get_timebase]))],
             ["bgp"],      [AS_IF(SCOREP_TIMER_USE_IF_AVAILABLE([bgp_get_timebase]))],
+            ["bgq"],      [AS_IF(SCOREP_TIMER_USE_IF_AVAILABLE([bgq_mftb]))],
             ["crayxt"],   [AS_IF(SCOREP_TIMER_USE_IF_AVAILABLE([cray_dclock]),
                                  SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_itc]),
                                  SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_tsc]),
@@ -389,6 +417,7 @@ AC_ARG_ENABLE([timer-$1],
 AC_DEFUN([SCOREP_TIMER_ENABLE_SPECIFIC], [
 
 SCOREP_TIMER_ARG_ENABLE([bgl_rts_get_timebase])
+SCOREP_TIMER_ARG_ENABLE([bgq_mftb])
 SCOREP_TIMER_ARG_ENABLE([bgp_get_timebase])
 SCOREP_TIMER_ARG_ENABLE([clock_gettime])
 SCOREP_TIMER_ARG_ENABLE([cray_dclock])
@@ -413,6 +442,7 @@ AC_DEFUN([SCOREP_TIMER], [
 # init all timers to "no". then evaluate user arguments and availability 
 # and set one of them to "yes"
 scorep_timer_bgl_rts_get_timebase="no"
+scorep_timer_bgq_mftb="no"
 scorep_timer_bgp_get_timebase="no"
 scorep_timer_clock_gettime="no"
 scorep_timer_cray_dclock="no"
@@ -431,6 +461,7 @@ scorep_timer_sun_gethrtime="no"
 
 AC_LANG_PUSH([C])
 SCOREP_TIMER_BGL_RTS_GET_TIMEBASE_AVAILABLE
+SCOREP_TIMER_BGQ_MFTB_AVAILABLE
 SCOREP_TIMER_BGP_GET_TIMEBASE_AVAILABLE
 SCOREP_TIMER_CLOCK_GETTIME_AVAILABLE
 SCOREP_TIMER_CRAY_DCLOCK_AVAILABLE
@@ -461,6 +492,7 @@ AS_IF([test "x${scorep_user_timer_given}" = "xno" && test "x${scorep_timer_given
 
 
 AM_CONDITIONAL([SCOREP_TIMER_BGL_RTS_GET_TIMEBASE], [test "x${scorep_timer_bgl_rts_get_timebase}" = "xyes"])
+AM_CONDITIONAL([SCOREP_TIMER_BGQ_MFTB],             [test "x${scorep_timer_bgq_mftb}"             = "xyes"])
 AM_CONDITIONAL([SCOREP_TIMER_BGP_GET_TIMEBASE],     [test "x${scorep_timer_bgp_get_timebase}"     = "xyes"])
 AM_CONDITIONAL([SCOREP_TIMER_CLOCK_GETTIME],        [test "x${scorep_timer_clock_gettime}"        = "xyes"])
 AM_CONDITIONAL([SCOREP_TIMER_CRAY_DCLOCK],          [test "x${scorep_timer_cray_dclock}"          = "xyes"])
