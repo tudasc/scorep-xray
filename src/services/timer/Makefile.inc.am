@@ -26,6 +26,11 @@ libscorep_timer_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
 libscorep_timer_la_LDFLAGS = -L$(TIMER_LIBDIR)
 endif
 
+if SCOREP_TIMER_BGQ_MFTB
+libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_bgq_mftb.c
+libscorep_timer_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor
+endif
+
 if SCOREP_TIMER_CLOCK_GETTIME    
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_clock_gettime.c
 endif
