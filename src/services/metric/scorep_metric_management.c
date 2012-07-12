@@ -314,16 +314,16 @@ finalize_location_metric_cb( SCOREP_Location* locationData,
     /* Call only, if previously initialized */
     if ( scorep_metric_management_initialized )
     {
-        for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
-        {
-            scorep_metric_sources[ i ]->metric_source_finalize_location( NULL );
-        }
-
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
             locationData,
             scorep_metric_subsystem_id );
         SCOREP_ASSERT( metric_data != NULL );
+
+        for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
+        {
+            scorep_metric_sources[ source_index ]->metric_source_finalize_location( metric_data->event_set[ source_index ] );
+        }
 
         free( metric_data->event_set );
         free( metric_data->values );
