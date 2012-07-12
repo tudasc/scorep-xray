@@ -170,7 +170,11 @@ scorep_metric_initialize_service()
             metric_sources_management_data.overall_number_of_metrics += metric_sources_management_data.number_of_metrics_vector[ i ];
         }
 
+        /* Set some initial values */
         sampling_set_handle = SCOREP_INVALID_SAMPLING_SET;
+        all_metric_handles  = NULL;
+
+        /* Process current metric specifications */
         if ( metric_sources_management_data.overall_number_of_metrics != 0 )
         {
             /* Now we know how many metrics are used, so we can allocate memory to store their handles */
@@ -278,6 +282,10 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
             /* Allocate thread local result buffer */
             metric_data->values = malloc( metric_sources_management_data.overall_number_of_metrics * sizeof( uint64_t ) );
             SCOREP_ASSERT( metric_data->values );
+        }
+        else
+        {
+            metric_data->values = NULL;
         }
 
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has initialized location." );
@@ -399,18 +407,20 @@ SCOREP_Metric_reinitialize()
 {
     SCOREP_Error_Code return_value;
 
-    /* Read environment variables to get their recent values. In the usual case the names of recorded metrics will have changed. */
-    return_value = SCOREP_ConfigApplyEnv();
-    if ( return_value != SCOREP_SUCCESS )
-    {
-        return return_value;
-    }
-
     /* Finalize each location (frees internal buffers) */
     SCOREP_Location_ForAll( finalize_location_metric_cb, NULL );
 
     /* Finalize metric service */
     scorep_metric_finalize_service();
+
+    /* Read environment variables to get their recent values.
+     * In the usual case the names of recorded metrics will
+     * have changed. */
+    return_value = SCOREP_ConfigApplyEnv();
+    if ( return_value != SCOREP_SUCCESS )
+    {
+        return return_value;
+    }
 
     /* Reinitialize metric service */
     scorep_metric_initialize_service();
