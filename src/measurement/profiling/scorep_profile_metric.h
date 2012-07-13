@@ -99,6 +99,15 @@ void
 scorep_profile_init_dense_metric( scorep_profile_dense_metric* metric );
 
 /**
+ *  Initializes the array of dense metrics.
+ *  @param metric pointer to the dense metric instance which should be initialized.
+ *  @param number Number of dense metrics.
+ */
+void
+scorep_profile_init_dense_metric_array( scorep_profile_dense_metric* metric,
+                                        uint32_t                     number );
+
+/**
  *  Updates the statistics of one dense metric on an exit event. It assumes that the start
  *  value of the counter is already stored @a metric->start_value. The difference between
  *  @a end_value and @a metric->start_value is added to the recoreded statistics.

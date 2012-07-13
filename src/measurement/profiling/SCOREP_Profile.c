@@ -34,6 +34,7 @@
 #include <scorep_thread.h>
 #include <inttypes.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>
@@ -119,6 +120,31 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
         scorep_profile_param_instance =
             SCOREP_DefineParameter( "instance", SCOREP_PARAMETER_INT64 );
     }
+    else
+    {
+        /* Reallocate space for dense metrics on root nodes */
+        uint32_t size = numDenseMetrics * sizeof( scorep_profile_dense_metric );
+
+        scorep_profile_node* current = scorep_profile.first_root_node;
+        while ( current != NULL )
+        {
+            current->dense_metrics = ( scorep_profile_dense_metric* )
+                                     SCOREP_Memory_AllocForProfile( size );
+
+            if ( !current->dense_metrics )
+            {
+                SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
+                              "Unable to allocate memory for dense metrics of "
+                              "location root" );
+                exit( EXIT_FAILURE );
+            }
+            scorep_profile_init_dense_metric( &current->inclusive_time );
+            scorep_profile_init_dense_metric_array( current->dense_metrics,
+                                                    numDenseMetrics );
+
+            current = current->next_sibling;
+        }
+    }
     assert( scorep_profile_param_instance );
 }
 
@@ -133,13 +159,18 @@ SCOREP_Profile_Finalize()
 
     /* Update all root nodes which survive a finalize, because locations are not
        reinitialized. Assume that the siblings of scorep_profile.first_root_node
-       ar all of type scorep_profile_node_thread_root. */
+       are all of type scorep_profile_node_thread_root. */
     while ( current != NULL )
     {
         if ( current->node_type == scorep_profile_node_thread_root )
         {
             /* Cut off children */
             current->first_child = NULL;
+
+            /* Metrics are freed, too */
+            current->dense_metrics       = NULL;
+            current->first_double_sparse = NULL;
+            current->first_int_sparse    = NULL;
 
             /* Reset thread local storage */
             thread_data                        = scorep_profile_type_get_location_data( current->type_specific_data );

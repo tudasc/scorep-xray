@@ -48,6 +48,17 @@ scorep_profile_init_dense_metric( scorep_profile_dense_metric* metric )
     metric->intermediate_sum = 0;
 }
 
+/* Initializes an array of dense metrics */
+void
+scorep_profile_init_dense_metric_array( scorep_profile_dense_metric* metric,
+                                        uint32_t                     number )
+{
+    for ( uint32_t i = 0; i < number; i++ )
+    {
+        scorep_profile_init_dense_metric( &metric[ i ] );
+    }
+}
+
 /* Updates the statistics of one dense metric on an exit event. */
 void
 scorep_profile_update_dense_metric( scorep_profile_dense_metric* metric,

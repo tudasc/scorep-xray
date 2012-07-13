@@ -49,7 +49,6 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
                             scorep_profile_type_data_t   data,
                             uint64_t                     timestamp )
 {
-    int                  i;
     scorep_profile_node* node = scorep_profile_alloc_node( location, type );
     if ( node == NULL )
     {
@@ -71,10 +70,8 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
 
     /* Initialize dense metric values */
     scorep_profile_init_dense_metric( &node->inclusive_time );
-    for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
-    {
-        scorep_profile_init_dense_metric( &node->dense_metrics[ i ] );
-    }
+    scorep_profile_init_dense_metric_array( node->dense_metrics,
+                                            scorep_profile.num_of_dense_metrics );
 
     return node;
 }
@@ -209,19 +206,16 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
         return NULL;
     }
 
-    /* Reserve space for dense metrics */
+    /* Reserve space for dense metrics,
+       Since the metric number may vary on reinitialization, allocate it
+       also for root nodes from profile memory which get freed on
+       finalization and reallocate the memory for root nodes on
+       reinitialization
+     */
     if ( scorep_profile.num_of_dense_metrics > 0 )
     {
-        if ( type == scorep_profile_node_thread_root )
-        {
-            new_node->dense_metrics = ( scorep_profile_dense_metric* )
-                                      SCOREP_Memory_AllocForMisc( size );
-        }
-        else
-        {
-            new_node->dense_metrics = ( scorep_profile_dense_metric* )
-                                      SCOREP_Memory_AllocForProfile( size );
-        }
+        new_node->dense_metrics = ( scorep_profile_dense_metric* )
+                                  SCOREP_Memory_AllocForProfile( size );
         if ( !new_node->dense_metrics )
         {
             SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
