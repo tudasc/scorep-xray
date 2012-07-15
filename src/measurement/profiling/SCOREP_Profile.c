@@ -120,7 +120,7 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
         scorep_profile_param_instance =
             SCOREP_DefineParameter( "instance", SCOREP_PARAMETER_INT64 );
     }
-    else
+    else if ( numDenseMetrics > 0 )
     {
         /* Reallocate space for dense metrics on root nodes */
         uint32_t size = numDenseMetrics * sizeof( scorep_profile_dense_metric );
