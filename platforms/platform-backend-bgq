@@ -4,8 +4,8 @@ F77=bgxlf_r
 FC=bgxlf_r
 
 #CPPFLAGS=
-CFLAGS=
-CXXFLAGS=-O3 -qminialtoc
+CFLAGS=-O3 -qstrict
+CXXFLAGS=-O3 -qstrict -qminimaltoc
 FFLAGS=-O3 -qstrict -qsuppress=cmpmsg
 FCFLAGS=-O3 -qstrict -qfree=f90 -qsuffix=f=f90 -qsuppress=cmpmsg
 LDFLAGS=-O3 -qstrict
