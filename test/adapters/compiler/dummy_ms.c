@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -63,24 +63,19 @@ SCOREP_UnlockRegionDefinition()
 }
 
 SCOREP_SourceFileHandle
-SCOREP_DefineSourceFile
-(
-    const char* fileName
-)
+SCOREP_DefineSourceFile( const char* fileName )
 {
     return ( SCOREP_SourceFileHandle )1;
 }
 
 SCOREP_RegionHandle
-SCOREP_DefineRegion
-(
-    const char*             regionName,
-    SCOREP_SourceFileHandle fileHandle,
-    SCOREP_LineNo           beginLine,
-    SCOREP_LineNo           endLine,
-    SCOREP_AdapterType      adapter,
-    SCOREP_RegionType       regionType
-)
+SCOREP_DefineRegion( const char*             regionNameDemangled,
+                     const char*             regionNameMangled,
+                     SCOREP_SourceFileHandle fileHandle,
+                     SCOREP_LineNo           beginLine,
+                     SCOREP_LineNo           endLine,
+                     SCOREP_AdapterType      adapter,
+                     SCOREP_RegionType       regionType )
 {
     return ( SCOREP_RegionHandle )1;
 }
@@ -94,30 +89,21 @@ SCOREP_InitMeasurement( void )
 }
 
 SCOREP_Error_Code
-SCOREP_ConfigRegister
-(
-    const char*            nameSpace,
-    SCOREP_ConfigVariable* variables
-)
+SCOREP_ConfigRegister( const char*            nameSpace,
+                       SCOREP_ConfigVariable* variables )
 {
     return SCOREP_SUCCESS;
 }
 
 void
-SCOREP_EnterRegion
-(
-    SCOREP_RegionHandle regionHandle
-)
+SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 {
     printf( "Enter Region\n" );
     test = 1;
 }
 
 void
-SCOREP_ExitRegion
-(
-    SCOREP_RegionHandle regionHandle
-)
+SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 {
     printf( "Exit Region\n" );
     if ( test == 1 )

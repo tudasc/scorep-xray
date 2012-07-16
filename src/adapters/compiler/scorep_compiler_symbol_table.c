@@ -171,31 +171,32 @@ scorep_compiler_process_symbol( long         addr,
         SCOREP_IO_SimplifyPath( ( char* )filename );
     }
 
+    const char* funcname_demangled = funcname;
 #ifdef GNU_DEMANGLE
     /* use demangled name if possible */
-    char* dem_name = 0;
     if ( scorep_compiler_demangle_style >= 0 )
     {
-        dem_name = cplus_demangle( funcname,
-                                   scorep_compiler_demangle_style );
-        if ( dem_name != NULL )
+        funcname_demangled = cplus_demangle( funcname,
+                                             scorep_compiler_demangle_style );
+
+        if ( funcname_demangled == NULL )
         {
-            funcname = dem_name;
+            funcname_demangled = funcname;
         }
     }
 #endif  /* GNU_DEMANGLE */
 
-    if ( ( strncmp( funcname, "POMP", 4 ) != 0 ) &&
-         ( strncmp( funcname, "Pomp", 4 ) != 0 ) &&
-         ( strncmp( funcname, "pomp", 4 ) != 0 ) &&
-         ( strncmp( funcname, "SCOREP_", 7 ) != 0 ) &&
-         ( strncmp( funcname, "scorep_", 7 ) != 0 ) &&
-         ( strncmp( funcname, "OTF2_", 5 ) != 0 ) &&
-         ( strncmp( funcname, "otf2_", 5 ) != 0 ) &&
-         ( strncmp( funcname, "cube_", 5 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( filename, funcname, true ) ) )
+    if ( ( strncmp( funcname_demangled, "POMP", 4 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "Pomp", 4 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "pomp", 4 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "SCOREP_", 7 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "scorep_", 7 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
+         ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
+         ( !SCOREP_Filter_Match( filename, funcname_demangled, true ) ) )
     {
-        scorep_compiler_hash_put( addr, funcname, filename, lno );
+        scorep_compiler_hash_put( addr, funcname, funcname_demangled, filename, lno );
     }
 }
 

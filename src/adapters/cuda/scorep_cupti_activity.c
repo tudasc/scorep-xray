@@ -261,6 +261,7 @@ scorep_cupti_activity_init()
 
                     scorep_cuda_idle_region_handle =
                         SCOREP_DefineRegion( "compute_idle",
+                                             NULL,
                                              cuda_idle_file_handle,
                                              0, 0, SCOREP_ADAPTER_CUDA,
                                              SCOREP_REGION_FUNCTION );
@@ -281,6 +282,7 @@ scorep_cupti_activity_init()
 
                 scorep_flush_cupti_activity_buffer_region_handle =
                     SCOREP_DefineRegion( "flush_cupti_activity_buffer",
+                                         NULL,
                                          cupti_buffer_flush_file_handle,
                                          0, 0, SCOREP_ADAPTER_CUDA,
                                          SCOREP_REGION_FUNCTION );
@@ -821,7 +823,7 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
         /*SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
                                  "Define kernel: '%s' \n", kernel_name );*/
 
-        kernel_region = SCOREP_DefineRegion( kernel_name, scorep_kernel_file_handle,
+        kernel_region = SCOREP_DefineRegion( kernel_name, NULL, scorep_kernel_file_handle,
                                              0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
         kernel_hash_node = scorep_cupti_activity_string_hash_put( kernel->name, kernel_region );

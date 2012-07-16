@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -141,6 +141,7 @@ main( int argc, char* argv[] )
     sprintf( rank_buffer, "Rank %d", rank );
 
     SCOREP_DefineRegion( rank_buffer,
+                         NULL,
                          0, //SCOREP_DefineSourceFile( __FILE__ ),
                          51,
                          80,
@@ -148,6 +149,7 @@ main( int argc, char* argv[] )
                          SCOREP_REGION_FUNCTION );
 
     SCOREP_DefineRegion( rank_buffer,
+                         NULL,
                          0, //SCOREP_DefineSourceFile( __FILE__ ),
                          51,
                          80,

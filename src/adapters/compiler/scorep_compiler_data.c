@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -172,23 +172,22 @@ scorep_compiler_hash_get( uint64_t key )
 
 /* Stores function name under hash code */
 scorep_compiler_hash_node*
-scorep_compiler_hash_put
-(
-    uint64_t      key,
-    const char*   region_name,
-    const char*   file_name,
-    SCOREP_LineNo line_no_begin
-)
+scorep_compiler_hash_put( uint64_t      key,
+                          const char*   region_name_mangled,
+                          const char*   region_name_demangled,
+                          const char*   file_name,
+                          SCOREP_LineNo line_no_begin )
 {
     uint64_t                   hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
-    add->key           = key;
-    add->region_name   = SCOREP_CStr_dup( region_name );
-    add->file_name     = SCOREP_CStr_dup( file_name );
-    add->line_no_begin = line_no_begin;
-    add->line_no_end   = SCOREP_INVALID_LINE_NO;
-    add->region_handle = SCOREP_INVALID_REGION;
+    add->key                   = key;
+    add->region_name_mangled   = SCOREP_CStr_dup( region_name_mangled );
+    add->region_name_demangled = SCOREP_CStr_dup( region_name_demangled );
+    add->file_name             = SCOREP_CStr_dup( file_name );
+    add->line_no_begin         = line_no_begin;
+    add->line_no_end           = SCOREP_INVALID_LINE_NO;
+    add->region_handle         = SCOREP_INVALID_REGION;
     /* Inserting elements at the head allows parallel calls to
        @ref scorep_compiler_hash_get
      */
@@ -213,9 +212,13 @@ scorep_compiler_hash_free()
             while ( cur != NULL )
             {
                 next = cur->next;
-                if ( cur->region_name != NULL )
+                if ( cur->region_name_mangled != NULL )
                 {
-                    free( cur->region_name );
+                    free( cur->region_name_mangled );
+                }
+                if ( cur->region_name_demangled != NULL )
+                {
+                    free( cur->region_name_demangled );
                 }
                 if ( cur->file_name != NULL )
                 {
@@ -233,22 +236,19 @@ scorep_compiler_hash_free()
 
 /* Register a new region to the measuremnt system */
 void
-scorep_compiler_register_region
-(
-    scorep_compiler_hash_node* node
-)
+scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {
     SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( node->file_name );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
 
-    node->region_handle = SCOREP_DefineRegion( node->region_name,
+    node->region_handle = SCOREP_DefineRegion( node->region_name_demangled,
+                                               node->region_name_mangled,
                                                file_handle,
                                                node->line_no_begin,
                                                node->line_no_end,
                                                SCOREP_ADAPTER_COMPILER,
-                                               SCOREP_REGION_FUNCTION
-                                               );
+                                               SCOREP_REGION_FUNCTION );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
 }

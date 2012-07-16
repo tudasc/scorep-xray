@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -173,16 +173,13 @@ scorep_user_to_scorep_region_type( const SCOREP_User_RegionType user_type )
 }
 
 void
-SCOREP_User_RegionBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-)
+SCOREP_User_RegionBegin( SCOREP_User_RegionHandle*    handle,
+                         const char**                 lastFileName,
+                         SCOREP_SourceFileHandle*     lastFile,
+                         const char*                  name,
+                         const SCOREP_User_RegionType regionType,
+                         const char*                  fileName,
+                         const uint32_t               lineNo )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED;
 
@@ -199,10 +196,7 @@ SCOREP_User_RegionBegin
 
 
 void
-SCOREP_User_RegionEnd
-(
-    const SCOREP_User_RegionHandle handle
-)
+SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED
 
@@ -216,16 +210,13 @@ SCOREP_User_RegionEnd
 }
 
 void
-SCOREP_User_RegionInit
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-)
+SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
+                        const char**                 lastFileName,
+                        SCOREP_SourceFileHandle*     lastFile,
+                        const char*                  name,
+                        const SCOREP_User_RegionType regionType,
+                        const char*                  fileName,
+                        const uint32_t               lineNo )
 {
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -265,6 +256,7 @@ SCOREP_User_RegionInit
              ( new_handle != SCOREP_FILTERED_USER_REGION ) )
         {
             new_handle->handle = SCOREP_DefineRegion( name,
+                                                      NULL,
                                                       file,
                                                       lineNo,
                                                       SCOREP_INVALID_LINE_NO,
@@ -278,10 +270,7 @@ SCOREP_User_RegionInit
 }
 
 void
-SCOREP_User_RegionEnter
-(
-    const SCOREP_User_RegionHandle handle
-)
+SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle )
 {
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;

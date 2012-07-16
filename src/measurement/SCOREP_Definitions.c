@@ -142,7 +142,8 @@ scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
 
 
 /* *INDENT-OFF* */
-static bool scorep_source_file_definitions_equal( const SCOREP_SourceFile_Definition* existingDefinition, const SCOREP_SourceFile_Definition* newDefinition );
+static bool scorep_source_file_definitions_equal( const SCOREP_SourceFile_Definition* existingDefinition,
+                                                  const SCOREP_SourceFile_Definition* newDefinition );
 /* *INDENT-ON* */
 
 
@@ -528,6 +529,7 @@ scorep_system_tree_node_definition_define( SCOREP_DefinitionManager*   definitio
 static SCOREP_RegionHandle
 scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
                                  SCOREP_StringHandle       regionNameHandle,
+                                 SCOREP_StringHandle       regionCanonicalNameHandle,
                                  SCOREP_StringHandle       descriptionNameHandle,
                                  SCOREP_StringHandle       fileNameHandle,
                                  SCOREP_LineNo             beginLine,
@@ -541,6 +543,7 @@ static void
 scorep_region_definition_initialize( SCOREP_Region_Definition* definition,
                                      SCOREP_DefinitionManager* definition_manager,
                                      SCOREP_StringHandle       regionNameHandle,
+                                     SCOREP_StringHandle       regionCanonicalNameHandle,
                                      SCOREP_StringHandle       descriptionNameHandle,
                                      SCOREP_StringHandle       fileNameHandle,
                                      SCOREP_LineNo             beginLine,
@@ -549,12 +552,14 @@ scorep_region_definition_initialize( SCOREP_Region_Definition* definition,
                                      SCOREP_RegionType         regionType );
 
 /* *INDENT-OFF* */
-static bool scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinition, const SCOREP_Region_Definition* newDefinition );
+static bool scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinition,
+                                             const SCOREP_Region_Definition* newDefinition );
 /* *INDENT-ON* */
 
 
 SCOREP_RegionHandle
 SCOREP_DefineRegion( const char*             regionName,
+                     const char*             regionCanonicalName,
                      SCOREP_SourceFileHandle fileHandle,
                      SCOREP_LineNo           beginLine,
                      SCOREP_LineNo           endLine,
@@ -575,8 +580,14 @@ SCOREP_DefineRegion( const char*             regionName,
 
     SCOREP_RegionHandle new_handle = scorep_region_definition_define(
         &scorep_local_definition_manager,
+        /* region name (use it for demangled name) */
         scorep_string_definition_define(
             &scorep_local_definition_manager,
+            regionName ? regionName : "<unknown region>" ),
+        /* canonical region name (use it for mangled name) */
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            regionCanonicalName ? regionCanonicalName :
             regionName ? regionName : "<unknown region>" ),
         /* description currently not used */
         scorep_string_definition_define(
@@ -616,6 +627,7 @@ SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
     definition->unified = scorep_region_definition_define(
         scorep_unified_definition_manager,
         SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED( definition->canonical_name_handle, String, handlesPageManager ),
         SCOREP_HANDLE_GET_UNIFIED( definition->description_handle, String, handlesPageManager ),
         unified_file_name_handle,
         definition->begin_line,
@@ -628,6 +640,7 @@ SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
 SCOREP_RegionHandle
 scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
                                  SCOREP_StringHandle       regionNameHandle,
+                                 SCOREP_StringHandle       regionCanonicalNameHandle,
                                  SCOREP_StringHandle       descriptionNameHandle,
                                  SCOREP_StringHandle       fileNameHandle,
                                  SCOREP_LineNo             beginLine,
@@ -644,6 +657,7 @@ scorep_region_definition_define( SCOREP_DefinitionManager* definition_manager,
     scorep_region_definition_initialize( new_definition,
                                          definition_manager,
                                          regionNameHandle,
+                                         regionCanonicalNameHandle,
                                          descriptionNameHandle,
                                          fileNameHandle,
                                          beginLine,
@@ -660,6 +674,7 @@ void
 scorep_region_definition_initialize( SCOREP_Region_Definition* definition,
                                      SCOREP_DefinitionManager* definition_manager,
                                      SCOREP_StringHandle       regionNameHandle,
+                                     SCOREP_StringHandle       regionCanonicalNameHandle,
                                      SCOREP_StringHandle       descriptionNameHandle,
                                      SCOREP_StringHandle       fileNameHandle,
                                      SCOREP_LineNo             beginLine,
@@ -669,6 +684,9 @@ scorep_region_definition_initialize( SCOREP_Region_Definition* definition,
 {
     definition->name_handle = regionNameHandle;
     HASH_ADD_HANDLE( definition, name_handle, String );
+
+    definition->canonical_name_handle = regionCanonicalNameHandle;
+    HASH_ADD_HANDLE( definition, canonical_name_handle, String );
 
     definition->description_handle = descriptionNameHandle;
     HASH_ADD_HANDLE( definition, description_handle, String );
@@ -695,14 +713,15 @@ bool
 scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinition,
                                  const SCOREP_Region_Definition* newDefinition )
 {
-    return existingDefinition->hash_value         == newDefinition->hash_value &&
-           existingDefinition->name_handle        == newDefinition->name_handle &&
-           existingDefinition->description_handle == newDefinition->description_handle &&
-           existingDefinition->region_type        == newDefinition->region_type &&
-           existingDefinition->file_name_handle   == newDefinition->file_name_handle &&
-           existingDefinition->begin_line         == newDefinition->begin_line &&
-           existingDefinition->end_line           == newDefinition->end_line &&
-           existingDefinition->adapter_type       == newDefinition->adapter_type;
+    return existingDefinition->hash_value            == newDefinition->hash_value &&
+           existingDefinition->name_handle           == newDefinition->name_handle &&
+           existingDefinition->canonical_name_handle == newDefinition->canonical_name_handle &&
+           existingDefinition->description_handle    == newDefinition->description_handle &&
+           existingDefinition->region_type           == newDefinition->region_type &&
+           existingDefinition->file_name_handle      == newDefinition->file_name_handle &&
+           existingDefinition->begin_line            == newDefinition->begin_line &&
+           existingDefinition->end_line              == newDefinition->end_line &&
+           existingDefinition->adapter_type          == newDefinition->adapter_type;
 }
 
 
@@ -714,18 +733,16 @@ uint32_t scorep_number_of_self_comms = 0;
 uint32_t scorep_number_of_root_comms = 0;
 
 static SCOREP_LocalMPICommunicatorHandle
-scorep_local_mpi_communicator_definitions_define(
-    SCOREP_DefinitionManager*         definition_manager,
-    bool                              isSelfLike,
-    uint32_t                          localRank,
-    uint32_t                          globalRootRank,
-    uint32_t                          id,
-    SCOREP_LocalMPICommunicatorHandle parentComm );
+scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*         definition_manager,
+                                                  bool                              isSelfLike,
+                                                  uint32_t                          localRank,
+                                                  uint32_t                          globalRootRank,
+                                                  uint32_t                          id,
+                                                  SCOREP_LocalMPICommunicatorHandle parentComm );
 
 static bool
-scorep_local_mpi_communicator_definitions_equal(
-    const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
-    const SCOREP_LocalMPICommunicator_Definition* newDefinition );
+scorep_local_mpi_communicator_definitions_equal( const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
+                                                 const SCOREP_LocalMPICommunicator_Definition* newDefinition );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
@@ -781,9 +798,8 @@ SCOREP_DefineLocalMPICommunicator( uint32_t                          numberOfRan
 }
 
 void
-SCOREP_LocalMPICommunicatorSetName(
-    SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
-    const char*                       name )
+SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
+                                    const char*                       name )
 {
     SCOREP_BUG_ON( localMPICommHandle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
                    "Invalid MPI_Comm handle as argument" );
@@ -809,13 +825,12 @@ SCOREP_LocalMPICommunicatorSetName(
 
 
 static SCOREP_LocalMPICommunicatorHandle
-scorep_local_mpi_communicator_definitions_define(
-    SCOREP_DefinitionManager*         definition_manager,
-    bool                              isSelfLike,
-    uint32_t                          localRank,
-    uint32_t                          globalRootRank,
-    uint32_t                          id,
-    SCOREP_LocalMPICommunicatorHandle parentComm )
+scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*         definition_manager,
+                                                  bool                              isSelfLike,
+                                                  uint32_t                          localRank,
+                                                  uint32_t                          globalRootRank,
+                                                  uint32_t                          id,
+                                                  SCOREP_LocalMPICommunicatorHandle parentComm )
 {
     SCOREP_LocalMPICommunicator_Definition* new_definition = NULL;
     SCOREP_LocalMPICommunicatorHandle       new_handle     = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
@@ -836,17 +851,15 @@ scorep_local_mpi_communicator_definitions_define(
 }
 
 bool
-scorep_local_mpi_communicator_definitions_equal(
-    const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
-    const SCOREP_LocalMPICommunicator_Definition* newDefinition )
+scorep_local_mpi_communicator_definitions_equal( const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
+                                                 const SCOREP_LocalMPICommunicator_Definition* newDefinition )
 {
     return false;
 }
 
 static bool
-scorep_mpi_communicator_definitions_equal(
-    const SCOREP_MPICommunicator_Definition* existingDefinition,
-    const SCOREP_MPICommunicator_Definition* newDefinition );
+scorep_mpi_communicator_definitions_equal( const SCOREP_MPICommunicator_Definition* existingDefinition,
+                                           const SCOREP_MPICommunicator_Definition* newDefinition );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
@@ -879,9 +892,8 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
 }
 
 bool
-scorep_mpi_communicator_definitions_equal(
-    const SCOREP_MPICommunicator_Definition* existingDefinition,
-    const SCOREP_MPICommunicator_Definition* newDefinition )
+scorep_mpi_communicator_definitions_equal( const SCOREP_MPICommunicator_Definition* existingDefinition,
+                                           const SCOREP_MPICommunicator_Definition* newDefinition )
 {
     return false;
 }
@@ -1203,31 +1215,29 @@ SCOREP_DefineMPICartesianCoords(
 
 
 static SCOREP_MetricHandle
-scorep_metric_definition_define(
-    SCOREP_DefinitionManager*  definition_manager,
-    SCOREP_StringHandle        metricNameHandle,
-    SCOREP_StringHandle        descriptionNameHandle,
-    SCOREP_MetricSourceType    sourceType,
-    SCOREP_MetricMode          mode,
-    SCOREP_MetricValueType     valueType,
-    SCOREP_MetricBase          base,
-    int64_t                    exponent,
-    SCOREP_StringHandle        unitNameHandle,
-    SCOREP_MetricProfilingType profilingType );
+scorep_metric_definition_define( SCOREP_DefinitionManager*  definition_manager,
+                                 SCOREP_StringHandle        metricNameHandle,
+                                 SCOREP_StringHandle        descriptionNameHandle,
+                                 SCOREP_MetricSourceType    sourceType,
+                                 SCOREP_MetricMode          mode,
+                                 SCOREP_MetricValueType     valueType,
+                                 SCOREP_MetricBase          base,
+                                 int64_t                    exponent,
+                                 SCOREP_StringHandle        unitNameHandle,
+                                 SCOREP_MetricProfilingType profilingType );
 
 static void
-scorep_metric_definition_initialize(
-    SCOREP_Metric_Definition*  definition,
-    SCOREP_DefinitionManager*  definition_manager,
-    SCOREP_StringHandle        metricNameHandle,
-    SCOREP_StringHandle        descriptionNameHandle,
-    SCOREP_MetricSourceType    sourceType,
-    SCOREP_MetricMode          mode,
-    SCOREP_MetricValueType     valueType,
-    SCOREP_MetricBase          base,
-    int64_t                    exponent,
-    SCOREP_StringHandle        unitNameHandle,
-    SCOREP_MetricProfilingType profilingType );
+scorep_metric_definition_initialize( SCOREP_Metric_Definition*  definition,
+                                     SCOREP_DefinitionManager*  definition_manager,
+                                     SCOREP_StringHandle        metricNameHandle,
+                                     SCOREP_StringHandle        descriptionNameHandle,
+                                     SCOREP_MetricSourceType    sourceType,
+                                     SCOREP_MetricMode          mode,
+                                     SCOREP_MetricValueType     valueType,
+                                     SCOREP_MetricBase          base,
+                                     int64_t                    exponent,
+                                     SCOREP_StringHandle        unitNameHandle,
+                                     SCOREP_MetricProfilingType profilingType );
 
 static bool
 scorep_metric_definitions_equal( const SCOREP_Metric_Definition* existingDefinition,
@@ -1339,18 +1349,17 @@ scorep_metric_definition_define( SCOREP_DefinitionManager*  definition_manager,
 
 
 void
-scorep_metric_definition_initialize(
-    SCOREP_Metric_Definition*  definition,
-    SCOREP_DefinitionManager*  definition_manager,
-    SCOREP_StringHandle        metricNameHandle,
-    SCOREP_StringHandle        descriptionNameHandle,
-    SCOREP_MetricSourceType    sourceType,
-    SCOREP_MetricMode          mode,
-    SCOREP_MetricValueType     valueType,
-    SCOREP_MetricBase          base,
-    int64_t                    exponent,
-    SCOREP_StringHandle        unitNameHandle,
-    SCOREP_MetricProfilingType profilingType )
+scorep_metric_definition_initialize( SCOREP_Metric_Definition*  definition,
+                                     SCOREP_DefinitionManager*  definition_manager,
+                                     SCOREP_StringHandle        metricNameHandle,
+                                     SCOREP_StringHandle        descriptionNameHandle,
+                                     SCOREP_MetricSourceType    sourceType,
+                                     SCOREP_MetricMode          mode,
+                                     SCOREP_MetricValueType     valueType,
+                                     SCOREP_MetricBase          base,
+                                     int64_t                    exponent,
+                                     SCOREP_StringHandle        unitNameHandle,
+                                     SCOREP_MetricProfilingType profilingType )
 {
     definition->name_handle = metricNameHandle;
     HASH_ADD_HANDLE( definition, name_handle, String );
@@ -1403,38 +1412,34 @@ scorep_metric_definitions_equal( const SCOREP_Metric_Definition* existingDefinit
 
 
 static SCOREP_SamplingSetHandle
-scorep_sampling_set_definition_define(
-    SCOREP_DefinitionManager*     definition_manager,
-    uint8_t                       numberOfMetrics,
-    const SCOREP_MetricHandle*    metrics,
-    SCOREP_MetricOccurrence       occurrence,
-    SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_sampling_set_definition_define( SCOREP_DefinitionManager*     definition_manager,
+                                       uint8_t                       numberOfMetrics,
+                                       const SCOREP_MetricHandle*    metrics,
+                                       SCOREP_MetricOccurrence       occurrence,
+                                       SCOREP_Allocator_PageManager* handlesPageManager );
 
 static void
-scorep_sampling_set_definition_initialize(
-    SCOREP_SamplingSet_Definition* definition,
-    SCOREP_DefinitionManager*      definition_manager,
-    uint8_t                        numberOfMetrics,
-    const SCOREP_MetricHandle*     metrics,
-    SCOREP_MetricOccurrence        occurrence,
-    SCOREP_Allocator_PageManager*  handlesPageManager );
+scorep_sampling_set_definition_initialize( SCOREP_SamplingSet_Definition* definition,
+                                           SCOREP_DefinitionManager*      definition_manager,
+                                           uint8_t                        numberOfMetrics,
+                                           const SCOREP_MetricHandle*     metrics,
+                                           SCOREP_MetricOccurrence        occurrence,
+                                           SCOREP_Allocator_PageManager*  handlesPageManager );
 
 static SCOREP_SamplingSetHandle
-scorep_scoped_sampling_set_definition_define(
-    SCOREP_DefinitionManager* definition_manager,
-    SCOREP_SamplingSetHandle  samplingSet,
-    SCOREP_LocationHandle     recorderHandle,
-    SCOREP_MetricScope        scopeType,
-    SCOREP_AnyHandle          scopeHandle );
+scorep_scoped_sampling_set_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                              SCOREP_SamplingSetHandle  samplingSet,
+                                              SCOREP_LocationHandle     recorderHandle,
+                                              SCOREP_MetricScope        scopeType,
+                                              SCOREP_AnyHandle          scopeHandle );
 
 static void
-scorep_scoped_sampling_set_definition_initialize(
-    SCOREP_ScopedSamplingSet_Definition* definition,
-    SCOREP_DefinitionManager*            definition_manager,
-    SCOREP_SamplingSetHandle             samplingSet,
-    SCOREP_LocationHandle                recorderHandle,
-    SCOREP_MetricScope                   scopeType,
-    SCOREP_AnyHandle                     scopeHandle );
+scorep_scoped_sampling_set_definition_initialize( SCOREP_ScopedSamplingSet_Definition* definition,
+                                                  SCOREP_DefinitionManager*            definition_manager,
+                                                  SCOREP_SamplingSetHandle             samplingSet,
+                                                  SCOREP_LocationHandle                recorderHandle,
+                                                  SCOREP_MetricScope                   scopeType,
+                                                  SCOREP_AnyHandle                     scopeHandle );
 
 
 bool
@@ -1551,12 +1556,11 @@ SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* defini
 
 
 SCOREP_SamplingSetHandle
-scorep_sampling_set_definition_define(
-    SCOREP_DefinitionManager*     definition_manager,
-    uint8_t                       numberOfMetrics,
-    const SCOREP_MetricHandle*    metrics,
-    SCOREP_MetricOccurrence       occurrence,
-    SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_sampling_set_definition_define( SCOREP_DefinitionManager*     definition_manager,
+                                       uint8_t                       numberOfMetrics,
+                                       const SCOREP_MetricHandle*    metrics,
+                                       SCOREP_MetricOccurrence       occurrence,
+                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition_manager );
 
@@ -1580,13 +1584,12 @@ scorep_sampling_set_definition_define(
 
 
 void
-scorep_sampling_set_definition_initialize(
-    SCOREP_SamplingSet_Definition* definition,
-    SCOREP_DefinitionManager*      definition_manager,
-    uint8_t                        numberOfMetrics,
-    const SCOREP_MetricHandle*     metrics,
-    SCOREP_MetricOccurrence        occurrence,
-    SCOREP_Allocator_PageManager*  handlesPageManager )
+scorep_sampling_set_definition_initialize( SCOREP_SamplingSet_Definition* definition,
+                                           SCOREP_DefinitionManager*      definition_manager,
+                                           uint8_t                        numberOfMetrics,
+                                           const SCOREP_MetricHandle*     metrics,
+                                           SCOREP_MetricOccurrence        occurrence,
+                                           SCOREP_Allocator_PageManager*  handlesPageManager )
 {
     definition->is_scoped = false;
     HASH_ADD_POD( definition, is_scoped );
@@ -1625,12 +1628,11 @@ scorep_sampling_set_definition_initialize(
 
 
 SCOREP_SamplingSetHandle
-scorep_scoped_sampling_set_definition_define(
-    SCOREP_DefinitionManager* definition_manager,
-    SCOREP_SamplingSetHandle  samplingSet,
-    SCOREP_LocationHandle     recorderHandle,
-    SCOREP_MetricScope        scopeType,
-    SCOREP_AnyHandle          scopeHandle )
+scorep_scoped_sampling_set_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                              SCOREP_SamplingSetHandle  samplingSet,
+                                              SCOREP_LocationHandle     recorderHandle,
+                                              SCOREP_MetricScope        scopeType,
+                                              SCOREP_AnyHandle          scopeHandle )
 {
     assert( definition_manager );
 
@@ -1662,13 +1664,12 @@ scorep_scoped_sampling_set_definition_define(
 
 
 void
-scorep_scoped_sampling_set_definition_initialize(
-    SCOREP_ScopedSamplingSet_Definition* definition,
-    SCOREP_DefinitionManager*            definition_manager,
-    SCOREP_SamplingSetHandle             samplingSet,
-    SCOREP_LocationHandle                recorderHandle,
-    SCOREP_MetricScope                   scopeType,
-    SCOREP_AnyHandle                     scopeHandle )
+scorep_scoped_sampling_set_definition_initialize( SCOREP_ScopedSamplingSet_Definition* definition,
+                                                  SCOREP_DefinitionManager*            definition_manager,
+                                                  SCOREP_SamplingSetHandle             samplingSet,
+                                                  SCOREP_LocationHandle                recorderHandle,
+                                                  SCOREP_MetricScope                   scopeType,
+                                                  SCOREP_AnyHandle                     scopeHandle )
 {
     definition->is_scoped = true;
     HASH_ADD_POD( definition, is_scoped );
@@ -2351,6 +2352,22 @@ SCOREP_Region_GetName( SCOREP_RegionHandle handle )
     SCOREP_Region_Definition* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
     return SCOREP_LOCAL_HANDLE_DEREF( region->name_handle, String )->string_data;
+}
+
+
+/**
+ * Gets read-only access to the canonical name of the region.
+ *
+ * @param handle A handle to the region.
+ *
+ * @return region name.
+ */
+const char*
+SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle )
+{
+    SCOREP_Region_Definition* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
+
+    return SCOREP_LOCAL_HANDLE_DEREF( region->canonical_name_handle, String )->string_data;
 }
 
 

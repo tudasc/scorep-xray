@@ -391,7 +391,7 @@ scorep_cupti_callback_cuda_runtime( CUpti_CallbackId          callbackId,
     else
     {
         /* replace SCOREP_REGION_FUNCTION with "CUDART_API" */
-        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, cuda_runtime_file_handle,
+        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, NULL, cuda_runtime_file_handle,
                                              0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
         cuda_api_function_put( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId, region_handle );
@@ -442,7 +442,7 @@ scorep_cupti_callback_driver_api( CUpti_CallbackId          callbackId,
     else
     {
         /* replace SCOREP_REGION_FUNCTION with "CUDRV_API" */
-        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, cuda_driver_file_handle,
+        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, NULL, cuda_driver_file_handle,
                                              0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
         cuda_api_function_put( CUPTI_CB_DOMAIN_DRIVER_API, callbackId, region_handle );

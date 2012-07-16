@@ -237,6 +237,7 @@ scorep_write_region_definitions( void*                     writerHandle,
                                                        OTF2_RegionType,
                                                        uint32_t,
                                                        uint32_t,
+                                                       uint32_t,
                                                        uint32_t );
 
     def_region_pointer_t defRegion = ( def_region_pointer_t )
@@ -265,7 +266,8 @@ scorep_write_region_definitions( void*                     writerHandle,
             scorep_tracing_region_type_to_otf2( definition->region_type ),
             source_file_id,
             definition->begin_line,
-            definition->end_line );
+            definition->end_line,
+            SCOREP_HANDLE_TO_ID( definition->canonical_name_handle, String, definitionManager->page_manager ) );
 
         if ( status != OTF2_SUCCESS )
         {

@@ -51,6 +51,7 @@ main()
             abort();
         }
         SCOREP_DefineRegion( name,
+                             NULL,
                              SCOREP_INVALID_SOURCE_FILE,
                              0, 0,
                              SCOREP_ADAPTER_USER,

@@ -94,7 +94,7 @@ _ftrace_enter2_()
 
     if ( !hash_node )
     {
-        scorep_compiler_hash_put( ( long )region_name, region_name, "", name_len );
+        scorep_compiler_hash_put( ( long )region_name, region_name, region_name, "", name_len );
     }
 
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) )

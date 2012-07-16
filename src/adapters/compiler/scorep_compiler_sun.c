@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -89,6 +89,7 @@ scorep_compiler_register_region( char* region_name )
          ( !SCOREP_Filter_Match( NULL, region_name, true ) ) )
     {
         handle = SCOREP_DefineRegion( region_name,
+                                      NULL,
                                       SCOREP_INVALID_SOURCE_FILE,
                                       SCOREP_INVALID_LINE_NO,
                                       SCOREP_INVALID_LINE_NO,

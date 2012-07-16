@@ -79,10 +79,7 @@
  *
  */
 SCOREP_SourceFileHandle
-SCOREP_DefineSourceFile
-(
-    const char* fileName
-);
+SCOREP_DefineSourceFile( const char* fileName );
 
 
 
@@ -91,6 +88,10 @@ SCOREP_DefineSourceFile
  *
  * @param regionName A meaningful name for the region, e.g. a function
  * name. The string will be copied.
+ *
+ * @param regionCanonicalName An canonical name for the region, e.g. a mangled
+ * name. The string will be copied. If this parameter is @code{NULL},
+ * content of @a regionName will be used.
  *
  * @param fileHandle A previously defined SCOREP_SourceFileHandle or
  * SCOREP_INVALID_SOURCE_FILE.
@@ -130,15 +131,13 @@ SCOREP_DefineSourceFile
  *
  */
 SCOREP_RegionHandle
-SCOREP_DefineRegion
-(
-    const char*             regionName,
-    SCOREP_SourceFileHandle fileHandle,
-    SCOREP_LineNo           beginLine,
-    SCOREP_LineNo           endLine,
-    SCOREP_AdapterType      adapter,
-    SCOREP_RegionType       regionType
-);
+SCOREP_DefineRegion( const char*             regionName,
+                     const char*             regionCanonicalName,
+                     SCOREP_SourceFileHandle fileHandle,
+                     SCOREP_LineNo           beginLine,
+                     SCOREP_LineNo           endLine,
+                     SCOREP_AdapterType      adapter,
+                     SCOREP_RegionType       regionType );
 
 
 
@@ -150,6 +149,9 @@ SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle );
 
 const char*
 SCOREP_Region_GetName( SCOREP_RegionHandle handle );
+
+const char*
+SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle );
 
 const char*
 SCOREP_Region_GetFileName( SCOREP_RegionHandle handle );
@@ -209,9 +211,8 @@ SCOREP_DefineLocalMPICommunicator( uint32_t                          numberOfRan
                                    SCOREP_LocalMPICommunicatorHandle parentComm );
 
 void
-SCOREP_LocalMPICommunicatorSetName(
-    SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
-    const char*                       name );
+SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
+                                    const char*                       name );
 
 
 SCOREP_MPICommunicatorHandle
@@ -261,12 +262,11 @@ SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle );
  *
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology(
-    const char*                       topologyName,
-    SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-    uint32_t                          nDimensions,
-    const uint32_t                    nProcessesPerDimension[],
-    const uint8_t                     periodicityPerDimension[] );
+SCOREP_DefineMPICartesianTopology( const char*                       topologyName,
+                                   SCOREP_LocalMPICommunicatorHandle communicatorHandle,
+                                   uint32_t                          nDimensions,
+                                   const uint32_t                    nProcessesPerDimension[],
+                                   const uint8_t                     periodicityPerDimension[] );
 
 
 /**
@@ -282,12 +282,9 @@ SCOREP_DefineMPICartesianTopology(
  *
  */
 void
-SCOREP_DefineMPICartesianCoords
-(
-    SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
-    uint32_t                          nCoords,
-    const uint32_t                    coordsOfCurrentRank[]
-);
+SCOREP_DefineMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
+                                 uint32_t                          nCoords,
+                                 const uint32_t                    coordsOfCurrentRank[] );
 
 
 /**
@@ -376,10 +373,7 @@ SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet );
  * @planned To be implemented in milestone 2
  */
 SCOREP_IOFileGroupHandle
-SCOREP_DefineIOFileGroup
-(
-    const char* name
-);
+SCOREP_DefineIOFileGroup( const char* name );
 
 
 /**
@@ -395,11 +389,8 @@ SCOREP_DefineIOFileGroup
  * @planned To be implemented in milestone 2
  */
 SCOREP_IOFileHandle
-SCOREP_DefineIOFile
-(
-    const char*              name,
-    SCOREP_IOFileGroupHandle ioFileGroup
-);
+SCOREP_DefineIOFile( const char*              name,
+                     SCOREP_IOFileGroupHandle ioFileGroup );
 
 
 /**
@@ -413,10 +404,7 @@ SCOREP_DefineIOFile
  * @planned To be implemented in milestone 2
  */
 SCOREP_MarkerGroupHandle
-SCOREP_DefineMarkerGroup
-(
-    const char* name
-);
+SCOREP_DefineMarkerGroup( const char* name );
 
 
 /**
@@ -432,11 +420,8 @@ SCOREP_DefineMarkerGroup
  * @planned To be implemented in milestone 2
  */
 SCOREP_MarkerHandle
-SCOREP_DefineMarker
-(
-    const char*              name,
-    SCOREP_MarkerGroupHandle markerGroup
-);
+SCOREP_DefineMarker( const char*              name,
+                     SCOREP_MarkerGroupHandle markerGroup );
 
 
 /**
@@ -453,11 +438,8 @@ SCOREP_DefineMarker
  *
  */
 SCOREP_ParameterHandle
-SCOREP_DefineParameter
-(
-    const char*          name,
-    SCOREP_ParameterType type
-);
+SCOREP_DefineParameter( const char*          name,
+                        SCOREP_ParameterType type );
 
 /**
  * Returns the sequence number of the unified definitions for a local callpath handle from

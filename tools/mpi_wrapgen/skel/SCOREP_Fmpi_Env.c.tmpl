@@ -3,13 +3,15 @@
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    MPI_Wrapper
- * 
+ *
  * @brief Fortran interface wrappers for environmental management
  */
 
 #include <config.h>
-#include <stdlib.h>
 #include "SCOREP_Fmpi.h"
+
+#include <stdlib.h>
+#include <SCOREP_Error.h>
 
 /* uppercase defines */
 #pragma wrapgen multiple restrict(genv) skel/SCOREP_Fmpi_DefineU.w

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -63,6 +63,7 @@ scorep_profile_process_collapse()
              scorep_profile.max_callpath_depth, scorep_profile.reached_depth );
 
     scorep_profile_collapse_region = SCOREP_DefineRegion( "COLLAPSE",
+                                                          NULL,
                                                           SCOREP_INVALID_SOURCE_FILE,
                                                           0,
                                                           0,

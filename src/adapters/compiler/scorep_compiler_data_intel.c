@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -151,7 +151,7 @@ scorep_compiler_hash_node*
 scorep_compiler_hash_get( char* region_name )
 {
     char* name;
-    /* Tne intel compiler prepends the filename to the function name.
+    /* The intel compiler prepends the filename to the function name.
        -> Need to remove the file name. */
     name = region_name;
     while ( *name != '\0' )
@@ -169,7 +169,7 @@ scorep_compiler_hash_get( char* region_name )
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
     scorep_compiler_hash_node* curr = region_hash_table[ hash_code ];
-    /* The tail after curr will never change because, new elements are instered before
+    /* The tail after curr will never change because, new elements are inserted before
        curr. Thus, it allows a parallel @ref scorep_compiler_hash_put which can only
        insert a new element before curr.
      */
@@ -186,16 +186,15 @@ scorep_compiler_hash_get( char* region_name )
 
 /* Stores function name under hash code */
 scorep_compiler_hash_node*
-scorep_compiler_hash_put
-(
-    uint64_t      key,
-    const char*   region_name,
-    const char*   file_name,
-    SCOREP_LineNo line_no_begin
-)
+scorep_compiler_hash_put( uint64_t      key,
+                          const char*   region_name_mangled,
+                          const char*   region_name_demangled,
+                          const char*   file_name,
+                          SCOREP_LineNo line_no_begin )
 {
     /* ifort constructs function names like <module>_mp_<function>,
-             while __VT_Entry gets something like <module>.<function>                                                                  => replace _mp_ with a dot. */
+     * while __VT_Entry gets something like <module>.<function>
+     * => replace _mp_ with a dot. */
     char* name = SCOREP_CStr_dup( region_name );
     for ( int i = 1; i + 5 < strlen( name ); i++ )
     {
@@ -211,7 +210,8 @@ scorep_compiler_hash_put
     }
 
     /* icpc appends the signature of the function. Unfortunately,
-             __VT_Entry gives a string without signature.                                                                              => cut off signature  */
+     * __VT_Entry gives a string without signature.
+     * => cut off signature  */
     for ( int i = 1; i + 1 < strlen( name ); i++ )
     {
         if ( name[ i ] == '(' )
@@ -224,14 +224,15 @@ scorep_compiler_hash_put
     uint64_t                   hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
-    add->key           = key;
-    add->region_name   = SCOREP_CStr_dup( name );
-    add->file_name     = SCOREP_CStr_dup( file_name );
-    add->line_no_begin = line_no_begin;
-    add->line_no_end   = SCOREP_INVALID_LINE_NO;
-    add->region_handle = SCOREP_INVALID_REGION;
+    add->key                     = key;
+    add->region_name             = SCOREP_CStr_dup( name );
+    add->alternative_region_name = SCOREP_CStr_dup( region_name );
+    add->file_name               = SCOREP_CStr_dup( file_name );
+    add->line_no_begin           = line_no_begin;
+    add->line_no_end             = SCOREP_INVALID_LINE_NO;
+    add->region_handle           = SCOREP_INVALID_REGION;
     /* Inserting elements at the head allows parallel calls to
-       @ref scorep_compiler_hash_get
+     * @ref scorep_compiler_hash_get
      */
     add->next                      = region_hash_table[ hash_code ];
     region_hash_table[ hash_code ] = add;
@@ -260,6 +261,10 @@ scorep_compiler_hash_free()
                 {
                     free( cur->region_name );
                 }
+                if ( cur->alternative_region_name != NULL )
+                {
+                    free( cur->alternative_region_name );
+                }
                 if ( cur->file_name != NULL )
                 {
                     free( cur->file_name );
@@ -276,22 +281,19 @@ scorep_compiler_hash_free()
 
 /* Register a new region to the measuremnt system */
 void
-scorep_compiler_register_region
-(
-    scorep_compiler_hash_node* node
-)
+scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {
     SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( node->file_name );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name );
 
-    node->region_handle = SCOREP_DefineRegion( node->region_name,
+    node->region_handle = SCOREP_DefineRegion( node->region_name_demangled,
+                                               node->region_name_mangled,
                                                file_handle,
                                                node->line_no_begin,
                                                node->line_no_end,
                                                SCOREP_ADAPTER_COMPILER,
-                                               SCOREP_REGION_FUNCTION
-                                               );
+                                               SCOREP_REGION_FUNCTION );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name );
 }

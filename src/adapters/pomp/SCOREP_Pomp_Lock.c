@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -45,7 +45,7 @@ static struct scorep_pomp_lock_block* scorep_pomp_lock_last_block = 0;
 static struct SCOREP_PompLock*        scorep_pomp_last_lock       = 0;
 static int                            scorep_pomp_last_index      = SCOREP_POMP_LOCKBLOCK_SIZE;
 
-static SCOREP_Pomp_LockHandleType     scorep_pomp_current_lock_handle = 0;
+static SCOREP_Pomp_LockHandleType scorep_pomp_current_lock_handle = 0;
 
 /** List of registered omp function names. They must be in the same order as the
     corresponding SCOREP_Pomp_Region_Index.
@@ -71,6 +71,7 @@ scorep_pomp_register_lock_regions()
     for ( i = 0; i < SCOREP_POMP_REGION_NUM; i++ )
     {
         scorep_pomp_regid[ i ] = SCOREP_DefineRegion( scorep_pomp_region_names[ i ],
+                                                      NULL,
                                                       scorep_pomp_file_handle,
                                                       SCOREP_INVALID_LINE_NO,
                                                       SCOREP_INVALID_LINE_NO,

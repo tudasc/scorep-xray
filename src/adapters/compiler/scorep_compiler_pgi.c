@@ -285,6 +285,7 @@ ___rouent2( struct s1* p )
                  ( !SCOREP_Filter_Match( p->file_name, p->region_name, false ) ) )
             {
                 *region = SCOREP_DefineRegion( p->region_name,
+                                               NULL,
                                                *file,
                                                p->lineno,
                                                SCOREP_INVALID_LINE_NO,

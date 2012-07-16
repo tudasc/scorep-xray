@@ -87,6 +87,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     if ( root_region == SCOREP_INVALID_REGION )
     {
         root_region = SCOREP_DefineRegion( "task_root",
+                                           NULL,
                                            SCOREP_INVALID_SOURCE_FILE,
                                            SCOREP_INVALID_LINE_NO,
                                            SCOREP_INVALID_LINE_NO,

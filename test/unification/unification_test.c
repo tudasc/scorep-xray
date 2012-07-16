@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -120,7 +120,8 @@ test_1( CuTest* tc )
 //SCOREP_RegionHandle
 //SCOREP_DefineRegion
 //(
-//    const char*             regionName,
+//    const char*             regionNameDemangled,
+//    const char*             regionNameMangled,
 //    SCOREP_SourceFileHandle fileHandle,
 //    SCOREP_LineNo           beginLine,
 //    SCOREP_LineNo           endLine,

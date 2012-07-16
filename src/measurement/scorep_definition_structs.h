@@ -97,13 +97,15 @@ SCOREP_DEFINE_DEFINITION_TYPE( Region )
     SCOREP_DEFINE_DEFINITION_HEADER( Region );
 
     // Add SCOREP_Region stuff from here on.
-    SCOREP_StringHandle name_handle;
-    SCOREP_StringHandle description_handle;                  // currently not used
+    SCOREP_StringHandle name_handle;            // This field contains demangled region name
+                                                // (if available, otherwise mangled region name)
+    SCOREP_StringHandle canonical_name_handle;  // This field always contains mangled region name
+    SCOREP_StringHandle description_handle;     // Currently not used
     SCOREP_RegionType   region_type;
     SCOREP_StringHandle file_name_handle;
     SCOREP_LineNo       begin_line;
     SCOREP_LineNo       end_line;
-    SCOREP_AdapterType  adapter_type;                        // Used by Cube 4
+    SCOREP_AdapterType  adapter_type;           // Used by Cube 4
 };
 
 

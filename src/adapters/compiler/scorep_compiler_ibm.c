@@ -103,6 +103,7 @@ __func_trace_enter( char* region_name,
             SCOREP_IO_SimplifyPath( file );
             hash_node = scorep_compiler_hash_put( ( long )region_name,
                                                   region_name,
+                                                  region_name,
                                                   file, line_no );
             SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                                  " number %ld and put name -- %s -- to list",

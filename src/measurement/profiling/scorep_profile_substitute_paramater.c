@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -116,6 +116,7 @@ substitute_parameter_data( scorep_profile_node* node,
         /* Register region to measurement system */
         handle  = malloc( sizeof( SCOREP_RegionHandle ) );
         *handle = SCOREP_DefineRegion( region_name,
+                                       NULL,
                                        SCOREP_INVALID_SOURCE_FILE,
                                        SCOREP_INVALID_LINE_NO,
                                        SCOREP_INVALID_LINE_NO,

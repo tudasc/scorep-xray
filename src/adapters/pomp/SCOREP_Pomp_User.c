@@ -160,6 +160,7 @@ scorep_pomp_init()
 #ifdef _OPENMP
         scorep_pomp_implicit_barrier_region =
             SCOREP_DefineRegion( "!$omp implicit barrier",
+                                 NULL,
                                  scorep_pomp_file_handle,
                                  SCOREP_INVALID_LINE_NO,
                                  SCOREP_INVALID_LINE_NO,

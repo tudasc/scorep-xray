@@ -104,7 +104,7 @@ void scorep_mpi_register_regions()
   /* Artificial root for MPI-only experiments when no user-code
    * instrumenation is available */
   scorep_mpi_regid[SCOREP_PARALLEL__MPI] =
-      SCOREP_DefineRegion("PARALLEL", SCOREP_INVALID_SOURCE_FILE, SCOREP_INVALID_LINE_NO, 
+      SCOREP_DefineRegion("PARALLEL", NULL, SCOREP_INVALID_SOURCE_FILE, SCOREP_INVALID_LINE_NO, 
                         SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_UNKNOWN);
 }
 

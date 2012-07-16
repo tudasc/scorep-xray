@@ -128,7 +128,7 @@ SCOREP_ConfigVariable scorep_profile_configs[] = {
 };
 
 /*----------------------------------------------------------------------------------------
-   Constructors / destriuctors
+   Constructors / destructors
    -------------------------------------------------------------------------------------*/
 
 /** Initializes the profile definition struct

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -232,6 +232,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         sprintf( parallel_name, "!$omp parallel %s", source_name );
 
         region->innerParallel = SCOREP_DefineRegion( parallel_name,
+                                                     NULL,
                                                      last_file,
                                                      region->startLine1,
                                                      region->endLine2,
@@ -261,6 +262,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         }
 
         region->outerBlock = SCOREP_DefineRegion( region_name,
+                                                  NULL,
                                                   last_file,
                                                   start,
                                                   end,
@@ -286,6 +288,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         sprintf( region_name, "!$omp %s %s", type_name, source_name );
 
         region->innerBlock = SCOREP_DefineRegion( region_name,
+                                                  NULL,
                                                   last_file,
                                                   region->startLine2,
                                                   region->endLine1,

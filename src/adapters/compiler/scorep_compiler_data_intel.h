@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -48,19 +48,20 @@
  * @brief Hash table to map function addresses to region identifier
  * identifier is called region handle
  *
- * @param key           hash key (address of function)
- * @param region_name   associated function name
- * @param file_name     file name
- * @param line_no_begin line number of begin of function
-
- * @param line_no_end   line number of end of function
- * @param region_handle region identifier
- * @param next          pointer to next element with the same hash value.
+ * @param key                   hash key (address of function)
+ * @param region_name_mangled   associated function name (use it for mangled name)
+ * @param region_name_demangled associated function name (use it for demangled name)
+ * @param file_name             file name
+ * @param line_no_begin         line number of begin of function
+ * @param line_no_end           line number of end of function
+ * @param region_handle         region identifier
+ * @param next                  pointer to next element with the same hash value.
  */
 typedef struct scorep_compiler_hash_node
 {
     uint64_t                          key;
-    char*                             region_name;
+    char*                             region_name_mangled;
+    char*                             region_name_demangled;
     char*                             file_name;
     SCOREP_LineNo                     line_no_begin;
     SCOREP_LineNo                     line_no_end;
@@ -82,15 +83,17 @@ scorep_compiler_hash_get( char* region_name );
 
 /**
    Creates a new entry for the region hashtable with the given values.
-   @param key           The key under which the new entry is stored.
-   @param region_name   The name of the region.
-   @param file_name     The name of the source file of the registered region.
-   @param line_no_begin The source code line number where the region starts.
+   @param key                   The key under which the new entry is stored.
+   @param region_name_mangled   The mangled name of the region.
+   @param region_name_demangled The demangled name of the region.
+   @param file_name             The name of the source file of the registered region.
+   @param line_no_begin         The source code line number where the region starts.
    @returns a pointer to the newly created hash node.
  */
 extern scorep_compiler_hash_node*
 scorep_compiler_hash_put( uint64_t      key,
-                          const char*   region_name,
+                          const char*   region_name_mangled,
+                          const char*   region_name_demangled,
                           const char*   file_name,
                           SCOREP_LineNo line_no_begin );
 

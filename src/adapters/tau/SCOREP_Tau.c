@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -40,24 +40,19 @@ extern void
 SCOREP_RegisterExitCallback( SCOREP_Tau_ExitCallback );
 
 extern SCOREP_RegionHandle
-SCOREP_DefineRegion(
-    const char*             regionName,
-    SCOREP_SourceFileHandle fileHandle,
-    SCOREP_LineNo           beginLine,
-    SCOREP_LineNo           endLine,
-    SCOREP_AdapterType      adapter,
-    SCOREP_RegionType       regionType
-    );
+SCOREP_DefineRegion( const char*             regionName,
+                     const char*             regionCanonicalName,
+                     SCOREP_SourceFileHandle fileHandle,
+                     SCOREP_LineNo           beginLine,
+                     SCOREP_LineNo           endLine,
+                     SCOREP_AdapterType      adapter,
+                     SCOREP_RegionType       regionType );
 
 extern void
-SCOREP_EnterRegion(
-    SCOREP_RegionHandle regionHandle
-    );
+SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
 
 extern void
-SCOREP_ExitRegion(
-    SCOREP_Tau_RegionHandle regionHandle
-    );
+SCOREP_ExitRegion( SCOREP_Tau_RegionHandle regionHandle );
 
 
 
@@ -152,16 +147,14 @@ SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback callback )
  */
 
 SCOREP_Tau_RegionHandle
-SCOREP_Tau_DefineRegion(
-    const char*                 regionName,
-    SCOREP_Tau_SourceFileHandle fileHandle,
-    SCOREP_Tau_LineNo           beginLine,
-    SCOREP_Tau_LineNo           endLine,
-    SCOREP_Tau_AdapterType      adapter,
-    SCOREP_Tau_RegionType       regionType
-    )
+SCOREP_Tau_DefineRegion( const char*                 regionName,
+                         SCOREP_Tau_SourceFileHandle fileHandle,
+                         SCOREP_Tau_LineNo           beginLine,
+                         SCOREP_Tau_LineNo           endLine,
+                         SCOREP_Tau_AdapterType      adapter,
+                         SCOREP_Tau_RegionType       regionType )
 {
-    return ( SCOREP_Tau_RegionHandle )SCOREP_DefineRegion( regionName, fileHandle,
+    return ( SCOREP_Tau_RegionHandle )SCOREP_DefineRegion( regionName, NULL, fileHandle,
                                                            beginLine, endLine, adapter, regionType );
 }
 
@@ -191,7 +184,6 @@ SCOREP_Tau_ExitRegion( SCOREP_Tau_RegionHandle regionHandle )
 
 void
 SCOREP_Tau_Metric( SCOREP_Tau_MetricHandle* metricHandle )
-
 {
     metricHandle = SCOREP_INVALID_SAMPLING_SET;
 }
@@ -200,31 +192,25 @@ SCOREP_Tau_Metric( SCOREP_Tau_MetricHandle* metricHandle )
 
 
 void
-SCOREP_Tau_InitMetric
-(
-    SCOREP_Tau_MetricHandle* metricHandle,
-    const char*              name,
-    const char*              unit
-)
+SCOREP_Tau_InitMetric( SCOREP_Tau_MetricHandle* metricHandle,
+                       const char*              name,
+                       const char*              unit )
 {
     SCOREP_User_InitMetric( ( SCOREP_SamplingSetHandle* )metricHandle, name, unit,
                             SCOREP_USER_METRIC_TYPE_DOUBLE,  SCOREP_USER_METRIC_CONTEXT_GLOBAL );
 }
+
 void
-SCOREP_Tau_TriggerMetricDouble
-(
-    SCOREP_Tau_MetricHandle metricHandle,
-    double                  value
-)
+SCOREP_Tau_TriggerMetricDouble( SCOREP_Tau_MetricHandle metricHandle,
+                                double                  value )
 {
     SCOREP_User_TriggerMetricDouble( ( SCOREP_SamplingSetHandle )metricHandle, value );
 }
+
 void
-SCOREP_Tau_Parameter_INT64(
-    SCOREP_Tau_ParamHandle* paramHandle,
-    const char*             name,
-    int64_t                 value
-    )
+SCOREP_Tau_Parameter_INT64( SCOREP_Tau_ParamHandle* paramHandle,
+                            const char*             name,
+                            int64_t                 value )
 {
     SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )paramHandle, name, value );
 }
