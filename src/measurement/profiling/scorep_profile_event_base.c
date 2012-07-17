@@ -123,10 +123,10 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
 
     /* If we are in a collapse node, check whether the current depth is still
        larger than the creation depth of the collapse node */
-    location->current_depth--;
     if ( ( node->node_type == scorep_profile_node_collapse ) &&
-         ( location->current_depth >= scorep_profile_type_get_depth( node->type_specific_data ) ) )
+         ( location->current_depth > scorep_profile_type_get_depth( node->type_specific_data ) ) )
     {
+        location->current_depth--;
         return node;
     }
 
@@ -136,6 +136,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     parent = node;
     do
     {
+        location->current_depth--;
         node = parent;
 
         /* Update metrics */
