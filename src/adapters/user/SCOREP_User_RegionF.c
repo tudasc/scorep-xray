@@ -199,5 +199,13 @@ void
 FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* regionHandle )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED;
+    if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
+    {
+        fprintf( stderr,
+                 "ERROR: Enter for uninitialized region handle.\n"
+                 "Use SCOREP_USER_BEGIN instead of SCOREP_USER_ENTER "
+                 "to ensure that handles are initialized.\n" );
+        abort();
+    }
     SCOREP_User_RegionEnter( SCOREP_F2C_REGION( *regionHandle ) );
 }
