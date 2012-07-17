@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <toolset.01>
-<tool name="Score-P">
+<tool name="Score-P profile">
     <compile>
         <allcompilers command="scorep" group="scorep"/>
     </compile>
     <analyze foralllike="profile.cubex" depth="1">
-        <utility type="view" command="cube" group="cube">
+        <utility type="view" command="cube" group="cube" visualizer="true">
             <argument value="%%FILE%%"/>
         </utility>
     </analyze>
 </tool>
-<tool name="Scalasca">
+<tool name="Scalasca-MPI">
     <compile>
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
@@ -21,11 +21,53 @@
             <envvar flag="EPK_TRACE" value="1"/>
         </global>
     </execute>
-        <analyze foralllike="epik.esd" depth="1">
-	    <utility type="view" command="scalasca" group="cube">
-                <argument value="--analyze"/>
-                <argument value="%%FILE%%"/>
-            </utility>
+    <execute replace_execution="true">
+	    <utility command="scout.mpi" group="cube"/>
+    </execute>
+        <analyze foralllike="scout.cube" depth="1">
+	    <utility type="view" command="cube3" group="cube" visualizer="true">
+		<argument value="%%FILE%%"/>
+	    </utility>
+        </analyze>
+</tool>
+<tool name="Scalasca-OMP">
+    <compile>
+        <allcompilers command="scalasca --instrument" group="scalasca"/>
+    </compile>
+    <execute>
+        <global name="SCORPEnvironment">
+            <envvar flag="SCAN_OVERWRITE" value="1"/>
+            <envvar flag="EPK_SUMMARY" value="0"/>
+            <envvar flag="EPK_TRACE" value="1"/>
+        </global>
+    </execute>
+    <execute replace_execution="true">
+	    <utility command="scout.omp" group="cube"/>
+    </execute>
+        <analyze foralllike="scout.cube" depth="1">
+	    <utility type="view" command="cube3" group="cube" visualizer="true">
+		<argument value="%%FILE%%"/>
+	    </utility>
+        </analyze>
+</tool>
+<tool name="Scalasca-hybrid">
+    <compile>
+        <allcompilers command="scalasca --instrument" group="scalasca"/>
+    </compile>
+    <execute>
+        <global name="SCORPEnvironment">
+            <envvar flag="SCAN_OVERWRITE" value="1"/>
+            <envvar flag="EPK_SUMMARY" value="0"/>
+            <envvar flag="EPK_TRACE" value="1"/>
+        </global>
+    </execute>
+    <execute replace_execution="true">
+	    <utility command="scout.hyb" group="cube"/>
+    </execute>
+        <analyze foralllike="scout.cube" depth="1">
+	    <utility type="view" command="cube3" group="cube" visualizer="true">
+		<argument value="%%FILE%%"/>
+	    </utility>
         </analyze>
 </tool>
 <tool name="ScoreP-TAU">
@@ -37,8 +79,8 @@
             <!-- envvar flag="SCOREP_PROFILING_FORMAT" value="TAU_SNAPSHOT"/ -->
         </global>
     </execute>
-    <analyze foralllike="profile.cubex" depth="2">
-        <utility command="paraprof" group="tau">
+    <analyze foralllike="profile.cubex" depth="1">
+        <utility command="paraprof" group="tau" visualizer="true">
                 <argument value="%%FILE%%"/>
         </utility>
     </analyze>
