@@ -93,7 +93,7 @@ __VT_IntelEntry( char*     str,
         SCOREP_InitMeasurement();
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " function id: %d ", *id );
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " function id: %u ", *id );
 
     /* Register new region if unknown */
     if ( *id == 0 )
@@ -121,8 +121,7 @@ __VT_IntelEntry( char*     str,
     if ( *id != SCOREP_COMPILER_FILTER_ID )
     {
         SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "enter the region with handle %i ",
-                             hash_node->region_handle );
+                             "enter the region with id %u ", *id );
         SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * id );
     }
 
