@@ -34,17 +34,20 @@ private:
 
 public:
 
-    std::string str_cc;
-    std::string str_cxx;
-    std::string str_fc;
-    std::string str_mpicc;
-    std::string str_mpicxx;
-    std::string str_mpifc;
-    std::string str_libs;
-    std::string str_flags;
-    std::string str_libdir;
-    std::string str_incdir;
-    std::string str_otf2_config;
+    std::string m_cc;
+    std::string m_cxx;
+    std::string m_fc;
+    std::string m_mpicc;
+    std::string m_mpicxx;
+    std::string m_mpifc;
+    std::string m_libs;
+    std::string m_flags;
+    std::string m_libdir;
+    std::string m_rpath;
+    std::string m_rpath_head;
+    std::string m_rpath_delimiter;
+    std::string m_incdir;
+    std::string m_otf2_config;
 
     /** constructor and destructor */
     SCOREP_Config( char* arg0 );

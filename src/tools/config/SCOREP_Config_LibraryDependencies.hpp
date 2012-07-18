@@ -107,7 +107,9 @@ public:
     /**
      * Returns the string containing the library path flags for the @a input_libs and
      * its dependencies.
-     * @param input_libs  A list of library names.
+     * @param libs    A list of library names.
+     * @param install If true the install paths are used. If false the
+     *                build path are used.
      */
     std::string
     GetLDFlags( const std::deque<std::string> libs,
@@ -115,18 +117,27 @@ public:
 
     /**
      * Returns the string containing the rpath flags for the @a input_libs and
-     * its dependencies.
-     * @param input_libs  A list of library names.
+     * its dependencies. The string that is constructed can be customized for
+     * the use on different systems. E.g. specify an empty string as head and
+     * " -Wl,-rpath," as delimiter on most Linuy machines. On AIX, specify
+     * " -Wl,-lbibpath" and head and ":" as delimiter.
+     * @param libs      A list of library names.
+     * @param install   If true the install paths are used. If false the
+     *                  build path are used.
+     * @param head      A string that appears once at the beginning
+     * @param delimiter A string that separates the pathes.
      */
     std::string
     GetRpathFlags( const std::deque<std::string> libs,
-                   bool                          install );
+                   bool                          install,
+                   const std::string             head,
+                   const std::string             delimiter );
 
     // ------------------------------------- Protected functions
 protected:
     /**
      * Calculates the dependencies for a given set of libraries.
-     * @param input_libs  A list of library names.
+     * @param libs  A list of library names.
      */
     std::deque<std::string>
     get_dependencies( const std::deque<std::string> libs );

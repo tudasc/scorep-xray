@@ -75,13 +75,15 @@ remove_double_entries( const deque<string> input )
  * Converts deque of strings into a string where all entries are space separated.
  */
 static string
-deque_to_string( const deque<string> input )
+deque_to_string( const deque<string> input,
+                 const string        head,
+                 const string        delimiter )
 {
-    string                        output;
+    string                        output = head;
     deque<string>::const_iterator i;
     for ( i = input.begin(); i < input.end(); i++ )
     {
-        output += " " + *i;
+        output += delimiter + *i;
     }
     return output;
 }
@@ -163,7 +165,7 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
     }
     libs = remove_double_entries( libs );
 
-    return deque_to_string( libs );
+    return deque_to_string( libs, "", " " );
 }
 
 string
@@ -177,11 +179,11 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
         la_object obj = la_objects[ *i ];
         if ( install )
         {
-            flags.push_back( "-L" + obj.m_install_dir );
+            flags.push_back( obj.m_install_dir );
         }
         else
         {
-            flags.push_back( "-L" + obj.m_build_dir );
+            flags.push_back( obj.m_build_dir );
         }
         flags.insert( flags.end(),
                       obj.m_ldflags.begin(),
@@ -189,11 +191,11 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
     }
     flags = remove_double_entries( flags );
 
-    return deque_to_string( flags );
+    return deque_to_string( flags, "", " -L" );
 }
 
 string
-SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool install )
+SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool install, const string head, const string delimiter )
 {
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
@@ -203,11 +205,11 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
         la_object obj = la_objects[ *i ];
         if ( install )
         {
-            flags.push_back( "-Wl,-rpath," + obj.m_install_dir );
+            flags.push_back( obj.m_install_dir );
         }
         else
         {
-            flags.push_back( "-Wl,-rpath," + obj.m_build_dir );
+            flags.push_back( obj.m_build_dir );
         }
         flags.insert( flags.end(),
                       obj.m_rpath.begin(),
@@ -215,7 +217,7 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
     }
     flags = remove_double_entries( flags );
 
-    return deque_to_string( flags );
+    return deque_to_string( flags, head, delimiter );
 }
 
 deque<string>

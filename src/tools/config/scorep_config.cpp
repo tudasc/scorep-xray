@@ -254,24 +254,24 @@ main( int    argc,
         switch ( action )
         {
             case ACTION_LIBS:
-                str = app.str_libdir + " -l" + scorep_libs[ mode ] + app.str_libs;
+                str = app.m_libdir + app.m_rpath + " -l" + scorep_libs[ mode ] + app.m_libs;
                 if ( cuda )
                 {
-                    str                  = " -Xlinker " + prepare_string( str );
-                    app.str_otf2_config += " --cuda";
+                    str                = " -Xlinker " + prepare_string( str );
+                    app.m_otf2_config += " --cuda";
                 }
                 std::cout << str;
                 std::cout.flush();
 
-                app.str_otf2_config += " --libs";
-                ret                  = system( app.str_otf2_config.c_str() );
+                app.m_otf2_config += " --libs";
+                ret                = system( app.m_otf2_config.c_str() );
 
                 break;
 
             case ACTION_CFLAGS:
                 if ( compiler )
                 {
-                    str += "-g " + app.str_flags;
+                    str += "-g " + app.m_flags;
                 }
                 if ( user )
                 {
@@ -298,46 +298,46 @@ main( int    argc,
 
             // Append the include directories, too
             case ACTION_INCDIR:
-                str += app.str_incdir;
+                str += app.m_incdir;
                 if ( cuda )
                 {
                     str = " -Xcompiler " + prepare_string( str );
-                    //app.str_otf2_config += " --cuda";
+                    //app.m_otf2_config += " --cuda";
                 }
 
                 std::cout << str;
                 std::cout.flush();
-                //app.str_otf2_config += " --cflags";
-                //ret                  = system( app.str_otf2_config.c_str() );
+                //app.m_otf2_config += " --cflags";
+                //ret                  = system( app.m_otf2_config.c_str() );
                 break;
 
             case ACTION_CC:
-                std::cout << app.str_cc;
+                std::cout << app.m_cc;
                 std::cout.flush();
                 break;
 
             case ACTION_CXX:
-                std::cout << app.str_cxx;
+                std::cout << app.m_cxx;
                 std::cout.flush();
                 break;
 
             case ACTION_FC:
-                std::cout << app.str_fc;
+                std::cout << app.m_fc;
                 std::cout.flush();
                 break;
 
             case ACTION_MPICC:
-                std::cout << app.str_mpicc;
+                std::cout << app.m_mpicc;
                 std::cout.flush();
                 break;
 
             case ACTION_MPICXX:
-                std::cout << app.str_mpicxx;
+                std::cout << app.m_mpicxx;
                 std::cout.flush();
                 break;
 
             case ACTION_MPIFC:
-                std::cout << app.str_mpifc;
+                std::cout << app.m_mpifc;
                 std::cout.flush();
                 break;
 
@@ -355,7 +355,9 @@ main( int    argc,
         {
             case ACTION_LIBS:
                 std::cout << deps.GetLDFlags( libs, install );
-                str = deps.GetRpathFlags( libs, install );
+                str = deps.GetRpathFlags( libs, install,
+                                          app.m_rpath_head,
+                                          app.m_rpath_delimiter );
                 if ( cuda )
                 {
                     str = " -Xlinker " + prepare_string( str );
@@ -450,18 +452,34 @@ main( int    argc,
 SCOREP_Config::SCOREP_Config( char* arg0 )
 {
     char* path = SCOREP_GetExecutablePath( arg0 );
-    str_otf2_config = "otf2-config --backend";
+    m_otf2_config = "otf2-config --backend";
     if ( path != NULL )
     {
-        str_otf2_config = "/" + str_otf2_config;
-        str_otf2_config = path + str_otf2_config;
+        m_otf2_config = "/" + m_otf2_config;
+        m_otf2_config = path + m_otf2_config;
     }
-    str_cc     = SCOREP_CC;
-    str_cxx    = SCOREP_CXX;
-    str_fc     = SCOREP_FC;
-    str_mpicc  = SCOREP_MPICC;
-    str_mpicxx = SCOREP_MPICXX;
-    str_mpifc  = SCOREP_MPIFC;
+    m_cc     = SCOREP_CC;
+    m_cxx    = SCOREP_CXX;
+    m_fc     = SCOREP_FC;
+    m_mpicc  = SCOREP_MPICC;
+    m_mpicxx = SCOREP_MPICXX;
+    m_mpifc  = SCOREP_MPIFC;
+
+    std::string rpath_flag = LIBDIR_FLAG_CC;
+    size_t      pos        = rpath_flag.find_first_of( " :," );
+    rpath_flag.erase( pos );
+    bool is_aix = ( "" != LIBDIR_AIX_LIBPATH );
+    if ( is_aix )
+    {
+        m_rpath_head      = " " LIBDIR_FLAG_WL + rpath_flag;
+        m_rpath_delimiter = ":";
+    }
+    else
+    {
+        m_rpath_head      = "";
+        m_rpath_delimiter = " " LIBDIR_FLAG_WL + rpath_flag + ",";
+    }
+
     free( path );
 }
 
@@ -485,31 +503,31 @@ SCOREP_Config::SetValue( std::string key,
 {
     if ( key == "COMPILER_INSTRUMENTATION_CPPFLAGS" )
     {
-        this->str_flags += value + " ";
+        this->m_flags += value + " ";
     }
     else if ( key == "CC" && value != "" )
     {
-        this->str_cc = value;
+        this->m_cc = value;
     }
     else if ( key == "CXX" && value != "" )
     {
-        this->str_cxx = value;
+        this->m_cxx = value;
     }
     else if ( key == "FC" && value != "" )
     {
-        this->str_fc = value;
+        this->m_fc = value;
     }
     else if ( key == "MPICC" && value != "" )
     {
-        this->str_mpicc = value;
+        this->m_mpicc = value;
     }
     else if ( key == "MPICXX" && value != "" )
     {
-        this->str_mpicxx = value;
+        this->m_mpicxx = value;
     }
     else if ( key == "MPIFC" && value != "" )
     {
-        this->str_mpifc = value;
+        this->m_mpifc = value;
     }
     else if ( key == "PREFIX" && value != "" )
     {
@@ -518,7 +536,7 @@ SCOREP_Config::SetValue( std::string key,
     }
     else if ( key == "OTF2_CONFIG" && value != "" )
     {
-        this->str_otf2_config = value + " --backend";
+        this->m_otf2_config = value + " --backend";
     }
 }
 
@@ -527,9 +545,9 @@ SCOREP_Config::AddIncDir( std::string dir )
 {
     std::string incdir = "-I" + dir;
 
-    if ( std::string::npos == this->str_incdir.find( incdir ) )
+    if ( std::string::npos == this->m_incdir.find( incdir ) )
     {
-        this->str_incdir += " " + incdir;
+        this->m_incdir += " " + incdir;
     }
 }
 
@@ -538,15 +556,18 @@ SCOREP_Config::AddLibDir( std::string dir )
 {
     if ( dir != "" )
     {
-        std::string libdir = "-L" + dir;
+        std::string libdir = "-L" + dir + " ";
 
-        #ifdef SCOREP_SHARED_BUILD
-        libdir += " -Wl,-rpath," + dir;
-        #endif
-
-        if ( std::string::npos == this->str_libdir.find( libdir ) )
+        if ( std::string::npos == this->m_libdir.find( libdir ) )
         {
-            this->str_libdir += " " + libdir;
+            this->m_libdir += libdir;
+
+
+            if ( this->m_rpath == "" )
+            {
+                this->m_rpath = this->m_rpath_head;
+            }
+            this->m_rpath += this->m_rpath_delimiter + dir;
         }
     }
 }
@@ -556,9 +577,9 @@ SCOREP_Config::AddLib( std::string lib )
 {
     if ( lib != "" )
     {
-        if ( std::string::npos == this->str_libs.find( lib ) )
+        if ( std::string::npos == this->m_libs.find( lib ) )
         {
-            this->str_libs += " " + lib;
+            this->m_libs += " " + lib;
         }
     }
 }
@@ -576,7 +597,7 @@ prepare_string( std::string str )
 {
     std::string pattern1 = " ";
     std::string replace1 = ",";
-    std::string pattern2 = PASS_LINKER_FLAG_THROUGH_COMPILER;
+    std::string pattern2 = LIBDIR_FLAG_WL;
     std::string replace2 = "";
 
     str = remove_multiple_whitespaces( str );
