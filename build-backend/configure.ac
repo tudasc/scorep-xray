@@ -191,6 +191,19 @@ AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
 
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
 
+dnl Flag to hardcode libdir into a binary during linking, C version.
+AC_SUBST([HARDCODE_LIBDIR_FLAG_CC], [${hardcode_libdir_flag_spec}])
+dnl Flag to hardcode libdir into a binary during linking, C++ version.
+AC_SUBST([HARDCODE_LIBDIR_FLAG_CXX], [${hardcode_libdir_flag_spec_CXX}])
+dnl Flag to hardcode libdir into a binary during linking, F77 version.
+AC_SUBST([HARDCODE_LIBDIR_FLAG_F77], [${hardcode_libdir_flag_spec_F77}])
+dnl Flag to hardcode libdir into a binary during linking, Fortran version.
+AC_SUBST([HARDCODE_LIBDIR_FLAG_FC], [${hardcode_libdir_flag_spec_FC}])
+dnl The ${wl} part of the HARDCODE_LIBDIR_FLAG_* defines.
+AC_SUBST([HARDCODE_LIBDIR_WL], [${wl}])
+dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only available on AIX.
+AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
+
 AC_CONFIG_FILES([Makefile \
                  ../test/jacobi/serial/C/Makefile \
                  ../test/jacobi/OpenMP/C/Makefile
