@@ -159,7 +159,6 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" && test "x${with_$1_include
 #echo "with_$1_lib     = ${with_$1_lib}"
 
 _AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2], [$3])
-
 ])
 
 dnl ------------------------------------------------------------------
@@ -190,7 +189,9 @@ AS_IF([test "x${with_$2[]$1}" = "xyes"], [with_$2[]$1_include="yes"; with_$2[]$1
       [test "x${with_$2[]$1}" = "xno"],  [with_$2[]$1_include="no";  with_$2[]$1_lib="no"],
       [with_$2[]$1_include="${with_$2[]$1}/include"
        AS_IF([test "x${build_cpu}" = "xx86_64"],
-             [with_$2[]$1_lib="${with_$2[]$1}/lib64"],
+             [AS_IF([test -d "${with_$2[]$1}/lib64"], 
+                    [with_$2[]$1_lib="${with_$2[]$1}/lib64"], 
+                    [with_$2[]$1_lib="${with_$2[]$1}/lib"])],
              [with_$2[]$1_lib="${with_$2[]$1}/lib"])])
 ])
 
