@@ -205,7 +205,12 @@ $(CONFIG_HEADER_BACKEND):
 	    echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
 	    echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
 	    echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
-	    echo "#define PASS_LINKER_FLAG_THROUGH_COMPILER \"$(PASS_LINKER_FLAG_THROUGH_COMPILER)\""; \
+            echo "#define LIBDIR_FLAG_CC     \"$(HARDCODE_LIBDIR_FLAG_CC)\""; \
+            echo "#define LIBDIR_FLAG_CXX    \"$(HARDCODE_LIBDIR_FLAG_CXX)\""; \
+            echo "#define LIBDIR_FLAG_FC     \"$(HARDCODE_LIBDIR_FLAG_FC)\""; \
+	    echo "#define LIBDIR_FLAG_C77    \"$(HARDCODE_LIBDIR_FLAG_F77)\""; \
+	    echo "#define LIBDIR_FLAG_WL     \"$(HARDCODE_LIBDIR_WL)\""; \
+	    echo "#define LIBDIR_AIX_LIBPATH \"$(HARDCODE_LIBDIR_AIX_LIBPATH)\""; \
 	) >$@
 
 

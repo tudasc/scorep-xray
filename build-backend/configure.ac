@@ -67,8 +67,6 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_SCOREP_BUILD_MODE
 
-AC_SUBST([PASS_LINKER_FLAG_THROUGH_COMPILER], [$wl]) 
-
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"
 backend_lib_dir="/lib"
