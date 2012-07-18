@@ -131,13 +131,6 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
             current->dense_metrics = ( scorep_profile_dense_metric* )
                                      SCOREP_Memory_AllocForProfile( size );
 
-            if ( !current->dense_metrics )
-            {
-                SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
-                              "Unable to allocate memory for dense metrics of "
-                              "location root" );
-                exit( EXIT_FAILURE );
-            }
             scorep_profile_init_dense_metric( &current->inclusive_time );
             scorep_profile_init_dense_metric_array( current->dense_metrics,
                                                     numDenseMetrics );

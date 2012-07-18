@@ -200,11 +200,6 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
         new_node = ( scorep_profile_node* )
                    SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_node ) );
     }
-    if ( !new_node )
-    {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Unable to allocate memory for new node" );
-        return NULL;
-    }
 
     /* Reserve space for dense metrics,
        Since the metric number may vary on reinitialization, allocate it
@@ -216,12 +211,6 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     {
         new_node->dense_metrics = ( scorep_profile_dense_metric* )
                                   SCOREP_Memory_AllocForProfile( size );
-        if ( !new_node->dense_metrics )
-        {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
-                          "Unable to allocate memory for dense metrics" );
-            return NULL;
-        }
     }
     else
     {
