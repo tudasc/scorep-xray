@@ -43,6 +43,7 @@ metric_on_one_rank_only_test_CPPFLAGS = $(AM_CPPFLAGS) \
     -DSCOREP_USER_ENABLE
 metric_on_one_rank_only_test_LDADD =      \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
+metric_on_one_rank_only_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
 TESTS_MPI += metric_on_one_rank_only_test
 
 endif

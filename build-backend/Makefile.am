@@ -182,35 +182,35 @@ $(builddir)/scorep_config.dat:
 ## Provide the scorep-config build with information from this backend Makefile.
 $(CONFIG_HEADER_BACKEND):
 	$(AM_V_GEN)( \
-	    echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\""; \
-	    echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""; \
-	    echo "#define SCOREP_PREFIX  \"$(prefix)\""; \
-	    echo "#define SCOREP_DATADIR \"$(datadir)\""; \
-	    echo "#define SCOREP_LIBDIR  \"$(libdir) $(LIBBFD_LDFLAGS)\""; \
-	    echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD_LIBS) $(CUBE_LIBS) $(TIMER_LIB)\""; \
-	    echo "#define CUBE_LIBDIR    \"$(CUBE_LIB_PATH)\""; \
-	    echo "#define TIMER_LIBDIR   \"$(TIMER_LIBDIR)\""; \
-	    echo "#define PAPI_LIBS      \"$(SCOREP_PAPI_LIBS)\""; \
-	    echo "#define PAPI_LDFLAGS   \"$(SCOREP_PAPI_LDFLAGS)\""; \
-	    echo "#define PAPI_LIBDIR    \"$(SCOREP_PAPI_LIBDIR)\""; \
-	    echo "#define SCOREP_CC      \"$(CC)\""; \
-	    echo "#define SCOREP_CXX     \"$(CXX)\""; \
-	    echo "#define SCOREP_FC      \"$(FC)\""; \
-	    echo "#define OPARI          \"$(prefix)/bin/opari2\""; \
-	    echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2-config\""; \
-	    echo "#define PDT            \"$(PDT_PATH)\""; \
-	    echo "#define PDT_CONFIG     \"$(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf\""; \
-	    echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\""; \
-	    echo "#define COBI_CONFIG_DIR \"$(SCOREP_SHARE_INSTALL_DIR)\""; \
-	    echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
-	    echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
-	    echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
-            echo "#define LIBDIR_FLAG_CC     \"$(HARDCODE_LIBDIR_FLAG_CC)\""; \
-            echo "#define LIBDIR_FLAG_CXX    \"$(HARDCODE_LIBDIR_FLAG_CXX)\""; \
-            echo "#define LIBDIR_FLAG_FC     \"$(HARDCODE_LIBDIR_FLAG_FC)\""; \
-	    echo "#define LIBDIR_FLAG_C77    \"$(HARDCODE_LIBDIR_FLAG_F77)\""; \
-	    echo "#define LIBDIR_FLAG_WL     \"$(HARDCODE_LIBDIR_WL)\""; \
-	    echo "#define LIBDIR_AIX_LIBPATH \"$(HARDCODE_LIBDIR_AIX_LIBPATH)\""; \
+            echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\""; \
+            echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""; \
+            echo "#define SCOREP_PREFIX  \"$(prefix)\""; \
+            echo "#define SCOREP_DATADIR \"$(datadir)\""; \
+            echo "#define SCOREP_LIBDIR  \"$(libdir) $(LIBBFD_LDFLAGS)\""; \
+            echo "#define SCOREP_LIBS    \"$(LIBS) $(LIBBFD_LIBS) $(CUBE_LIBS) $(TIMER_LIB)\""; \
+            echo "#define CUBE_LIBDIR    \"$(CUBE_LIB_PATH)\""; \
+            echo "#define TIMER_LIBDIR   \"$(TIMER_LIBDIR)\""; \
+            echo "#define PAPI_LIBS      \"$(SCOREP_PAPI_LIBS)\""; \
+            echo "#define PAPI_LDFLAGS   \"$(SCOREP_PAPI_LDFLAGS)\""; \
+            echo "#define PAPI_LIBDIR    \"$(SCOREP_PAPI_LIBDIR)\""; \
+            echo "#define SCOREP_CC      \"$(CC)\""; \
+            echo "#define SCOREP_CXX     \"$(CXX)\""; \
+            echo "#define SCOREP_FC      \"$(FC)\""; \
+            echo "#define OPARI          \"$(prefix)/bin/opari2\""; \
+            echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2-config\""; \
+            echo "#define PDT            \"$(PDT_PATH)\""; \
+            echo "#define PDT_CONFIG     \"$(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf\""; \
+            echo "#define RPATH_FLAG     \"$(am_libscorep_serial_la_rpath)\""; \
+            echo "#define COBI_CONFIG_DIR \"$(SCOREP_SHARE_INSTALL_DIR)\""; \
+            echo "#define SCOREP_BACKEND_SION_LIBS     \"$(SCOREP_SION_SERIAL_LIBS)\""; \
+            echo "#define SCOREP_BACKEND_SION_LDFLAGS  \"$(SCOREP_SION_SERIAL_LDFLAGS)\""; \
+            echo "#define SCOREP_BACKEND_SION_CPPFLAGS \"$(SCOREP_SION_SERIAL_CPPFLAGS)\""; \
+            echo "#define LIBDIR_FLAG_CC"     '$(HARDCODE_LIBDIR_FLAG_CC)';     \
+            echo "#define LIBDIR_FLAG_CXX"    '$(HARDCODE_LIBDIR_FLAG_CXX)';    \
+            echo "#define LIBDIR_FLAG_FC"     '$(HARDCODE_LIBDIR_FLAG_FC)';     \
+            echo "#define LIBDIR_FLAG_F77"    '$(HARDCODE_LIBDIR_FLAG_F77)';    \
+            echo "#define LIBDIR_FLAG_WL"     '$(HARDCODE_LIBDIR_WL)';          \
+            echo "#define LIBDIR_AIX_LIBPATH" '$(HARDCODE_LIBDIR_AIX_LIBPATH)'; \
 	) >$@
 
 

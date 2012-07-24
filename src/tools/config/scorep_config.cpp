@@ -465,19 +465,49 @@ SCOREP_Config::SCOREP_Config( char* arg0 )
     m_mpicxx = SCOREP_MPICXX;
     m_mpifc  = SCOREP_MPIFC;
 
+    // Replace ${wl} by LIBDIR_FLAG_WL and erase everything from
+    // $libdir on in order to create m_rpath_head and
+    // m_rpath_delimiter. This will work for most and for the relevant
+    // (as we know in 2012-07) values of LIBDIR_FLAG_CC. Possible
+    // values are (see also ticket 530,
+    // https://silc.zih.tu-dresden.de/trac-silc/ticket/530):
+    // '+b $libdir'
+    // '-L$libdir'
+    // '-R$libdir'
+    // '-rpath $libdir'
+    // '${wl}-blibpath:$libdir:'"$aix_libpath"
+    // '${wl}+b ${wl}$libdir'
+    // '${wl}-R,$libdir'
+    // '${wl}-R $libdir:/usr/lib:/lib'
+    // '${wl}-rpath,$libdir'
+    // '${wl}--rpath ${wl}$libdir'
+    // '${wl}-rpath ${wl}$libdir'
+    // '${wl}-R $wl$libdir'
     std::string rpath_flag = LIBDIR_FLAG_CC;
-    size_t      pos        = rpath_flag.find_first_of( " :," );
-    rpath_flag.erase( pos );
+    size_t      index      = 0;
+    while ( true )
+    {
+        index = rpath_flag.find( "${wl}", index );
+        if ( index == std::string::npos )
+        {
+            break;
+        }
+        rpath_flag.replace( index, strlen( LIBDIR_FLAG_WL ) + 1, LIBDIR_FLAG_WL );
+        ++index;
+    }
+    index = rpath_flag.find( "$libdir", 0 );
+    rpath_flag.erase( index );
+
     bool is_aix = ( "" != LIBDIR_AIX_LIBPATH );
     if ( is_aix )
     {
-        m_rpath_head      = " " LIBDIR_FLAG_WL + rpath_flag;
+        m_rpath_head      = " " + rpath_flag;
         m_rpath_delimiter = ":";
     }
     else
     {
         m_rpath_head      = "";
-        m_rpath_delimiter = " " LIBDIR_FLAG_WL + rpath_flag + ",";
+        m_rpath_delimiter = " " + rpath_flag;
     }
 
     free( path );

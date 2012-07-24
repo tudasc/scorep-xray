@@ -34,6 +34,40 @@ using namespace std;
                                                                           local functions
 ****************************************************************************************/
 
+static inline string
+strip_leading_whitespace( string input )
+{
+    const char* pos = input.c_str();
+    while ( ( *pos != '\0' ) && ( ( *pos == ' ' ) || ( *pos == '\t' ) ) )
+    {
+        pos++;
+    }
+    return pos;
+}
+
+/**
+ * Strips the head and leading demiliter from a input string. Ignores leading whitespaces.
+ */
+static string
+strip_head( string input, string head, string delimiter )
+{
+    string output = strip_leading_whitespace( input );
+    head      = strip_leading_whitespace( head );
+    delimiter = strip_leading_whitespace( delimiter );
+
+    if ( output.compare( 0, head.length(), head ) == 0 )
+    {
+        output.erase( 0, head.length() );
+    }
+
+    output = strip_leading_whitespace( input );
+    if ( output.compare( 0, delimiter.length(), delimiter ) == 0 )
+    {
+        output.erase( 0, delimiter.length() );
+    }
+    return output;
+}
+
 /**
  * Checks whether @a input contains @a item.
  */
@@ -179,11 +213,11 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
         la_object obj = la_objects[ *i ];
         if ( install )
         {
-            flags.push_back( obj.m_install_dir );
+            flags.push_back( "-L" + obj.m_install_dir );
         }
         else
         {
-            flags.push_back( obj.m_build_dir );
+            flags.push_back( "-L" + obj.m_build_dir );
         }
         flags.insert( flags.end(),
                       obj.m_ldflags.begin(),
@@ -191,7 +225,7 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
     }
     flags = remove_double_entries( flags );
 
-    return deque_to_string( flags, "", " -L" );
+    return deque_to_string( flags, "", " " );
 }
 
 string
@@ -200,6 +234,7 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
     deque<string>::iterator i;
+    deque<string>::iterator j;
     for ( i = deps.begin(); i != deps.end(); i++ )
     {
         la_object obj = la_objects[ *i ];
@@ -211,9 +246,10 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
         {
             flags.push_back( obj.m_build_dir );
         }
-        flags.insert( flags.end(),
-                      obj.m_rpath.begin(),
-                      obj.m_rpath.end() );
+        for ( j = obj.m_rpath.begin(); j != obj.m_rpath.end(); j++ )
+        {
+            flags.push_back( strip_head( *j, head, delimiter ) );
+        }
     }
     flags = remove_double_entries( flags );
 
