@@ -37,7 +37,7 @@ test_scorep_config_bool_SOURCES  = $(SRC_ROOT)test/measurement/config/bool.c \
 test_scorep_config_bool_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_bool_LDADD    = $(test_scorep_config_ldadd)
 if HAVE_PAPI
-test_scorep_config_bool_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+test_scorep_config_bool_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 test_scorep_config_number_SOURCES  = $(SRC_ROOT)test/measurement/config/number.c \
@@ -46,7 +46,7 @@ test_scorep_config_number_SOURCES  = $(SRC_ROOT)test/measurement/config/number.c
 test_scorep_config_number_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_number_LDADD    = $(test_scorep_config_ldadd)
 if HAVE_PAPI
-test_scorep_config_number_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+test_scorep_config_number_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 test_scorep_config_size_SOURCES  = $(SRC_ROOT)test/measurement/config/size.c \
@@ -55,7 +55,7 @@ test_scorep_config_size_SOURCES  = $(SRC_ROOT)test/measurement/config/size.c \
 test_scorep_config_size_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_size_LDADD    = $(test_scorep_config_ldadd)
 if HAVE_PAPI
-test_scorep_config_size_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+test_scorep_config_size_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 test_scorep_config_string_SOURCES  = $(SRC_ROOT)test/measurement/config/string.c \
@@ -63,7 +63,7 @@ test_scorep_config_string_SOURCES  = $(SRC_ROOT)test/measurement/config/string.c
 test_scorep_config_string_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_string_LDADD    = $(test_scorep_config_ldadd)
 if HAVE_PAPI
-test_scorep_config_string_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+test_scorep_config_string_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 TESTS_SERIAL += test_scorep_config_bool \

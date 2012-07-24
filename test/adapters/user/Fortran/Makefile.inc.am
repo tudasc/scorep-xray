@@ -23,7 +23,7 @@ user_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_pomp_dummy.la
 
 if HAVE_PAPI
-user_f_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+user_f_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 TESTS_SERIAL += ./user_f_test

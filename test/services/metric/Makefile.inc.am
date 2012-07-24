@@ -30,7 +30,7 @@ endif
 
 if HAVE_PAPI
 TESTS_SERIAL += ./../test/services/metric/run_papi_serial_metric_test.sh
-jacobi_serial_c_metric_test_LDFLAGS   = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
+jacobi_serial_c_metric_test_LDFLAGS   = @SCOREP_PAPI_LDFLAGS@
 endif
 endif
 
@@ -81,7 +81,7 @@ endif
 
 if HAVE_PAPI
 TESTS_OMP  += ./../test/services/metric/run_papi_openmp_metric_test.sh
-jacobi_omp_c_metric_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -R$(SCOREP_PAPI_LIBDIR)
+jacobi_omp_c_metric_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 endif
 

@@ -78,7 +78,7 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_DIR_VENDOR_HASH)
 definitions_test_c_LDADD = libscorep_serial.la
 if HAVE_PAPI
-definitions_test_c_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+definitions_test_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 TESTS_SERIAL += definitions_test_c
@@ -95,7 +95,7 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_DIR_VENDOR_HASH)
 string_duplicates_c_LDADD    = libscorep_serial.la
 if HAVE_PAPI
-string_duplicates_c_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+string_duplicates_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 TESTS_SERIAL += string_duplicates_c

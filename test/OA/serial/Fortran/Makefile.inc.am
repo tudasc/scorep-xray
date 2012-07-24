@@ -25,7 +25,7 @@ oa_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_pomp_dummy.la
 
 if HAVE_PAPI
-oa_f_test_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+oa_f_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
 endif
 
 EXTRA_DIST       += \

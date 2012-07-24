@@ -39,7 +39,7 @@ selective_test_LDADD =                      \
     $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
-selective_test_LDFLAGS = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+selective_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
 endif
 
 EXTRA_DIST       += \

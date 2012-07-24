@@ -64,6 +64,5 @@ libscorep_metric_papi_la_SOURCES = \
     $(SRC_ROOT)src/services/metric/scorep_metric_papi.c \
     $(SRC_ROOT)src/services/metric/scorep_metric_papi.h
 
-libscorep_metric_la_LIBADD += libscorep_metric_papi.la \
-                              $(SCOREP_PAPI_LIBS)
+libscorep_metric_la_LIBADD += libscorep_metric_papi.la
 endif

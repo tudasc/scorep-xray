@@ -36,7 +36,7 @@ unification_test_CPPFLAGS = $(AM_CPPFLAGS)                       \
 unification_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
-unification_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+unification_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 TESTS_SERIAL += unification_test

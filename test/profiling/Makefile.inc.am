@@ -26,7 +26,7 @@ profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPP
 profile_depth_limit_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
-profile_depth_limit_test_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+profile_depth_limit_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 EXTRA_DIST          += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh

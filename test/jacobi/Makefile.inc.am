@@ -30,7 +30,7 @@ jacobi_serial_c_SOURCES  = $(jacobi_serial_c_sources)
 jacobi_serial_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_serial_c_LDADD    = $(LIB_ROOT)libscorep_serial.la
 if HAVE_PAPI
-jacobi_serial_c_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+jacobi_serial_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 check_PROGRAMS                         += jacobi_serial_c_uninstrumented
@@ -60,7 +60,7 @@ jacobi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_omp_c_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_c.la
 if HAVE_PAPI
-jacobi_omp_c_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+jacobi_omp_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 # for some unknown reason we need an extra -I for the SUN compiler in
@@ -90,7 +90,7 @@ jacobi_serial_cxx_SOURCES  = $(jacobi_serial_cxx_sources)
 jacobi_serial_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_serial_cxx_LDADD    = $(LIB_ROOT)libscorep_serial.la
 if HAVE_PAPI
-jacobi_serial_cxx_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+jacobi_serial_cxx_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 check_PROGRAMS                           += jacobi_serial_cxx_uninstrumented
@@ -118,7 +118,7 @@ jacobi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_omp_cxx_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_cxx.la
 if HAVE_PAPI
-jacobi_omp_cxx_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+jacobi_omp_cxx_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 check_PROGRAMS                        += jacobi_omp_cxx_uninstrumented
@@ -149,7 +149,7 @@ jacobi_serial_f90_SOURCES  = $(jacobi_serial_f90_sources)
 jacobi_serial_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_serial_f90_LDADD    = $(LIB_ROOT)libscorep_serial.la
 if HAVE_PAPI
-jacobi_serial_f90_LDFLAGS  = $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+jacobi_serial_f90_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
 endif
 
 check_PROGRAMS                           += jacobi_serial_f90_uninstrumented
@@ -188,7 +188,7 @@ jacobi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTR
 jacobi_omp_f90_LDADD    = $(LIB_ROOT)libscorep_omp.la libjacobi_pomp_f90.la
 jacobi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
 if HAVE_PAPI
-jacobi_omp_f90_LDFLAGS += $(SCOREP_PAPI_LDFLAGS) $(SCOREP_PAPI_LIBS) -Wl,-rpath,$(SCOREP_PAPI_LIBDIR)
+jacobi_omp_f90_LDFLAGS += @SCOREP_PAPI_LDFLAGS@
 endif
 
 check_PROGRAMS                        += jacobi_omp_f90_uninstrumented
