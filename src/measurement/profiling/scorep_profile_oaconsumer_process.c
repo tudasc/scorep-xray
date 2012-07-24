@@ -39,6 +39,7 @@
 #include "scorep_profile_node.h"
 #include "scorep_profile_metric.h"
 #include "scorep_definitions.h"
+#include "scorep_oa_request.h"
 #include "scorep_mpi.h"
 
 #include <stdio.h>
@@ -222,38 +223,41 @@ get_metric_definitions
     assert( shared_index->counter_definition_buffer );
 
     /** Insert manually execution time metric definition */
-    const char* time_name = "Execution time";
-    const char* time_unit = "usec";
-    strncpy(  shared_index->counter_definition_buffer[ 0 ].name,
-              time_name,
-              MAX_COUNTER_NAME_LENGTH );
-    strncpy( shared_index->counter_definition_buffer[ 0 ].unit,
-             time_unit,
-             MAX_COUNTER_UNIT_LENGTH );
-    shared_index->counter_definition_buffer[ 0 ].counter_id = 0;
-    shared_index->counter_definition_buffer[ 0 ].status     = 0;
+    MetricRequest* exec_time_request = SCOREP_OA_RequestGetExecutionTime();
+    if ( exec_time_request )
+    {
+        const char* time_unit = "usec";
+        strncpy(  shared_index->counter_definition_buffer[ exec_time_request->oa_index ].name,
+                  exec_time_request->metric_name,
+                  MAX_COUNTER_NAME_LENGTH );
+        strncpy( shared_index->counter_definition_buffer[ exec_time_request->oa_index ].unit,
+                 time_unit,
+                 MAX_COUNTER_UNIT_LENGTH );
+        shared_index->counter_definition_buffer[ exec_time_request->oa_index ].counter_id = exec_time_request->psc_index;
+        shared_index->counter_definition_buffer[ exec_time_request->oa_index ].status     = 0;
+    }
 
-    /**Copy Score-P registered counter definitions*/
+    /**Copy Score-P requested counter definitions*/
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
     {
-        uint32_t index = get_metric_definition_index( handle );
-        printf( "Indexing counter definition, index %d, ", index );
-        if ( definition->name_handle != SCOREP_INVALID_STRING )
+        MetricRequest* metric_request = SCOREP_OA_RequestGet( SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric ) );
+
+        if ( metric_request != NULL )
         {
-            shared_index->counter_definition_buffer[ index ].counter_id = index;
-            shared_index->counter_definition_buffer[ index ].status     = 0;
-            printf( "name %s\n", SCOREP_Metric_GetName( handle ) );
-            const char* name = SCOREP_Metric_GetName( handle );
-            strncpy(  shared_index->counter_definition_buffer[ index ].name,
-                      name,
+            shared_index->counter_definition_buffer[ metric_request->oa_index ].counter_id = metric_request->psc_index;
+            shared_index->counter_definition_buffer[ metric_request->oa_index ].status     = 0;
+
+            strncpy(  shared_index->counter_definition_buffer[ metric_request->oa_index ].name,
+                      metric_request->metric_name,
                       MAX_COUNTER_NAME_LENGTH );
-        }
-        if ( definition->unit_handle != SCOREP_INVALID_STRING )
-        {
-            const char* unit = SCOREP_LOCAL_HANDLE_DEREF( definition->unit_handle, String )->string_data;
-            strncpy( shared_index->counter_definition_buffer[ index ].unit,
-                     unit,
-                     MAX_COUNTER_UNIT_LENGTH );
+
+            if ( definition->unit_handle != SCOREP_INVALID_STRING )
+            {
+                const char* unit = SCOREP_LOCAL_HANDLE_DEREF( definition->unit_handle, String )->string_data;
+                strncpy( shared_index->counter_definition_buffer[ metric_request->oa_index ].unit,
+                         unit,
+                         MAX_COUNTER_UNIT_LENGTH );
+            }
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -270,13 +274,28 @@ get_metric_definitions
     return shared_index->counter_definition_buffer;
 }
 
-uint32_t
-get_metric_definition_index
+int32_t
+get_metric_request_index_pointer
 (
-    SCOREP_MetricHandle metric_handle
+    SCOREP_MetricHandle metric_handle,
+    uint32_t*           metric_index
 )
 {
-    return SCOREP_LOCAL_HANDLE_TO_ID( metric_handle, Metric ) + OACONSUMER_METRIC_DEFINITION_OFFSET;
+    //return  0;
+    if ( !metric_index )
+    {
+        return 0;
+    }
+    MetricRequest* metric_request = SCOREP_OA_RequestGet( SCOREP_LOCAL_HANDLE_TO_ID( metric_handle, Metric ) );
+    if ( metric_request )
+    {
+        ( *metric_index ) = ( uint32_t )metric_request->oa_index;
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 
@@ -286,14 +305,9 @@ scorep_oaconsumer_initialize_metric_def
     shared_index_type* shared_index
 )
 {
-    uint32_t metric_count = 0;
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
-    {
-        metric_count++;
-    }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    uint32_t metric_count = SCOREP_OA_GetNumberOfRequests();
 
-    shared_index->num_counter_definitions = metric_count + OACONSUMER_METRIC_DEFINITION_OFFSET;
+    shared_index->num_counter_definitions = metric_count;
 
     SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
     if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
@@ -303,7 +317,7 @@ scorep_oaconsumer_initialize_metric_def
     }
     else
     {
-        printf( "sampling_set_handle of the profile dense metric is not registered!\n" );
+        //printf( "sampling_set_handle of the profile dense metric is not registered!\n" );
         shared_index->dense_metrics_sampling_set = NULL;
     }
 }
@@ -405,22 +419,33 @@ scorep_oaconsumer_count_index
                                                                           region_key,
                                                                           shared_index->num_def_regions_merged );
 
-        /** Generate static measurement key for TIME and this region*/
-        SCOREP_OA_Key* static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
-                                                                                                SCOREP_OA_COUNTER_TIME );
+        SCOREP_OA_Key* static_meas_key = NULL;
 
-        /** Index Time static measurement key in hash table*/
-        shared_index->num_static_measurements = scorep_oa_index_data_key( thread_private_index->static_measurements_table,
-                                                                          static_meas_key,
-                                                                          shared_index->num_static_measurements );
-        free( static_meas_key );
+        /** Generate static measurement key for TIME and this region*/
+        MetricRequest* execution_time = SCOREP_OA_RequestGetExecutionTime();
+        if ( execution_time )
+        {
+            static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
+                                                                                     execution_time->oa_index );
+
+            /** Index Time static measurement key in hash table*/
+            shared_index->num_static_measurements = scorep_oa_index_data_key( thread_private_index->static_measurements_table,
+                                                                              static_meas_key,
+                                                                              shared_index->num_static_measurements );
+            free( static_meas_key );
+        }
 
         /** Index dense metrics */
         if ( shared_index->dense_metrics_sampling_set )
         {
             for ( i = 0; i < shared_index->dense_metrics_sampling_set->number_of_metrics; i++ )
             {
-                uint32_t metric_index = get_metric_definition_index( shared_index->dense_metrics_sampling_set->metric_handles[ i ] );
+                uint32_t metric_index;
+
+                if ( !get_metric_request_index_pointer( shared_index->dense_metrics_sampling_set->metric_handles[ i ], &metric_index ) )
+                {
+                    continue;
+                }
 
                 /** Generate static measurement key for TIME and this region*/
                 SCOREP_OA_Key* static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
@@ -439,16 +464,18 @@ scorep_oaconsumer_count_index
         while ( sparse_int != NULL )
         {
             /** Translate metric handle to OA metric definition index*/
-            uint32_t metric_index = get_metric_definition_index( sparse_int->metric );
-
-            /** Generate static measurement key for metric and this region*/
-            static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
-                                                                                      metric_index );
-            /** Index static measurement key in hash table*/
-            shared_index->num_static_measurements = scorep_oa_index_data_key( thread_private_index->static_measurements_table,
-                                                                              static_meas_key,
-                                                                              shared_index->num_static_measurements );
-            free( static_meas_key );
+            uint32_t metric_index;
+            if ( get_metric_request_index_pointer( sparse_int->metric, &metric_index ) )
+            {
+                /** Generate static measurement key for metric and this region*/
+                static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
+                                                                                          metric_index );
+                /** Index static measurement key in hash table*/
+                shared_index->num_static_measurements = scorep_oa_index_data_key( thread_private_index->static_measurements_table,
+                                                                                  static_meas_key,
+                                                                                  shared_index->num_static_measurements );
+                free( static_meas_key );
+            }
 
             sparse_int = sparse_int->next_metric;
         }
@@ -631,15 +658,22 @@ scorep_oaconsumer_copy_static_measurement
         /** Generate merged region definition key*/
         SCOREP_OA_Key* region_key = scorep_oaconsumer_generate_region_key( node );
 
-        /** Generate static measurement key for Time and this region*/
-        SCOREP_OA_Key* static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
-                                                                                                SCOREP_OA_COUNTER_TIME );
-        /** Update static measurement record which corresponds to the Time key */
-        update_static_measurement(      static_meas_key,
-                                        node->inclusive_time.sum,
-                                        node->count,
-                                        thread_private_index );
-        free( static_meas_key );
+
+        SCOREP_OA_Key* static_meas_key = NULL;
+
+        /** Generate static measurement key for TIME and this region*/
+        MetricRequest* execution_time = SCOREP_OA_RequestGetExecutionTime();
+        if ( execution_time )
+        {
+            static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
+                                                                                     SCOREP_OA_COUNTER_TIME );
+            /** Update static measurement record which corresponds to the Time key */
+            update_static_measurement(      static_meas_key,
+                                            node->inclusive_time.sum,
+                                            node->count,
+                                            thread_private_index );
+            free( static_meas_key );
+        }
 
         /** Copy dense metrics */
         if ( shared_index->dense_metrics_sampling_set )
@@ -647,7 +681,12 @@ scorep_oaconsumer_copy_static_measurement
             int i;
             for ( i = 0; i < shared_index->dense_metrics_sampling_set->number_of_metrics; i++ )
             {
-                uint32_t metric_index = get_metric_definition_index( shared_index->dense_metrics_sampling_set->metric_handles[ i ] );
+                uint32_t metric_index;
+
+                if ( !get_metric_request_index_pointer( shared_index->dense_metrics_sampling_set->metric_handles[ i ], &metric_index ) )
+                {
+                    continue;
+                }
 
                 /** Generate static measurement key for TIME and this region*/
                 SCOREP_OA_Key* static_meas_key = scorep_oaconsumer_generate_static_measurement_key(     region_key,
@@ -667,17 +706,19 @@ scorep_oaconsumer_copy_static_measurement
         while ( sparse_int != NULL )
         {
             /** Translate metric handle to OA metric definition index*/
-            uint32_t metric_index = get_metric_definition_index( sparse_int->metric );
+            uint32_t metric_index;
 
-            /** Generate static measurement key for metric and this region*/
-            static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
-                                                                                      metric_index );
-            update_static_measurement(      static_meas_key,
-                                            sparse_int->sum,
-                                            sparse_int->count,
-                                            thread_private_index );
-            free( static_meas_key );
-
+            if ( get_metric_request_index_pointer( sparse_int->metric, &metric_index ) )
+            {
+                /** Generate static measurement key for metric and this region*/
+                static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
+                                                                                          metric_index );
+                update_static_measurement(      static_meas_key,
+                                                sparse_int->sum,
+                                                sparse_int->count,
+                                                thread_private_index );
+                free( static_meas_key );
+            }
             sparse_int = sparse_int->next_metric;
         }
 

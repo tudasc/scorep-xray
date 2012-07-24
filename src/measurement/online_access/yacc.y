@@ -33,9 +33,12 @@
 
 #include <config.h>
 #include "scorep_oa_mri_control.h"
+#include "scorep_oa_request.h"
 #include "scorep_oa_connection.h"
 #include "SCOREP_OA_Init.h"
+#include <SCOREP_CStr.h>
 #include <stdio.h>
+#include <string.h>
 
 void yyerror(char *s);
 int yylex (void);
@@ -99,6 +102,12 @@ int yylex (void);
 %token T_SDDF_BUFFER_FLUSH_RATE
 %token T_MPI
 %token T_LOCAL
+%token T_METRIC
+%token T_PERISCOPE
+%token T_PAPI
+%token T_RUSAGE
+%token T_OTHER
+
 
 %start Command
 
@@ -132,10 +141,14 @@ NodeNrs          : T_ZAHL                        {SCOREP_DEBUG_PRINTF( SCOREP_DE
 GlobalRequestList : GlobalRequest ',' GlobalRequestList
                   | GlobalRequest
 
-
-GlobalRequest    : T_MPI {SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Global MPI request was received\n");scorep_oa_mri_set_mpiprofiling(1);}
-				 | T_ZAHL {scorep_oa_mri_add_metric($1);} 
-
+GlobalRequest    : T_MPI {scorep_oa_mri_set_mpiprofiling(1);SCOREP_OA_RequestsAddMetricByName(SCOREP_CStr_dup("late_send"),SCOREP_METRIC_SOURCE_MPI_PROFILING);SCOREP_OA_RequestsAddMetricByName(SCOREP_CStr_dup("late_receive"),SCOREP_METRIC_SOURCE_MPI_PROFILING);}
+				 | T_METRIC MetricSpecifier
+				 | T_EXECUTION_TIME {SCOREP_OA_RequestsAddMetricByName(SCOREP_CStr_dup("execution_time"),SCOREP_METRIC_TIMER);}
+				 
+MetricSpecifier	 : T_PERISCOPE T_ZAHL {SCOREP_OA_RequestsAddPeriscopeMetric($2);} 
+				 | T_PAPI T_STRING {SCOREP_OA_RequestsAddMetricByName($2,SCOREP_METRIC_SOURCE_PAPI);}
+				 | T_RUSAGE T_STRING {SCOREP_OA_RequestsAddMetricByName($2,SCOREP_METRIC_SOURCE_RUSAGE);}
+				 | T_OTHER T_STRING {SCOREP_OA_RequestsAddMetricByName($2,SCOREP_METRIC_OTHER);}
 
 RegionSpecifier  : '(' T_ZAHL ',' Regiontyp ',' T_ZAHL ')' {}
                  | '(' T_ZAHL ',' Regiontyp ',' '*'    ')' {}
@@ -157,6 +170,7 @@ LocalRequest     : T_EXECUTION_TIME     {}
 /******************************************************************************/
 /* Es folgt der C-Code                                                        */
 /******************************************************************************/
+#include <string.h>
 #include "lex.yy.c" 
 
 void yyerror(char *s)

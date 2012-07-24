@@ -108,6 +108,11 @@ scorep_mpiprofile_init_metrics
 );
 
 void
+scorep_mpiprofile_reinit_metrics
+(
+);
+
+void
 scorep_mpiprofile_finalize
 (
 );

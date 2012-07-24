@@ -113,6 +113,11 @@ Z             [Zz]
 <ZEILE>ENDREQUESTS             {return (T_ENDREQUESTS);}
 
 <ZEILE>"MPI"                	            {return (T_MPI);}
+<ZEILE>METRIC 								{return (T_METRIC);}
+<ZEILE>PERISCOPE							{return (T_PERISCOPE);}
+<ZEILE>PAPI									{return (T_PAPI);}
+<ZEILE>RUSAGE								{return (T_RUSAGE);}
+<ZEILE>OTHER								{return (T_OTHER);}
 
 <ZEILE>\*                                |
 <ZEILE>\(                                |
@@ -122,8 +127,15 @@ Z             [Zz]
 <ZEILE>\]                                {return (yytext[0]);}
 <ZEILE>[0-9]+                            {yylval.Zahl = atoi(yytext); return (T_ZAHL);}
 <ZEILE>\"[^ ";\t\n]+\"                   { 
-                                           //yytext[yyleng-1] = '\0';
-                                           //yylval.String = &(yytext[1]);
+                                           //yytext string size including trailing 0
+                                           int old_string_size= strlen(yytext) + 1;
+                                           //string to be returned equal to the yytext but remove ""
+                                           int new_string_size= old_string_size -2;
+                                           yylval.String = (char *) calloc(new_string_size ,sizeof(char));
+                                           int i;
+                                           for(i=1;i<old_string_size-2;i++)
+                                           		yylval.String[i-1]=yytext[i];
+                                           yylval.String[new_string_size-1]= '\0';
                                            return (T_STRING);
                                          }
 <ZEILE>[ \t]*                           {;}
@@ -131,7 +143,7 @@ Z             [Zz]
 
 {Return}                                 |
 .                                        {
-       printf ("Fehler: (%c)\n", yytext[0] ); return (yytext[0]);}
+       printf ("PARSING ERROR: (%c)\n", yytext[0] ); return (yytext[0]);}
 
 
 %%

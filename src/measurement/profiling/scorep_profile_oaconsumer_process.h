@@ -18,7 +18,7 @@
 #define SCOREP_OA_CONSUMER_PROCESS_H_
 
 /**
- * @file        SCOREP_Profile_OAConsumer.h
+ * @file        scorep_profile_oa_consumer_process.h
  * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief Helper functions for processing and transformation of profile for the needs of OA
@@ -180,12 +180,20 @@ get_metric_definitions
     thread_private_index_type** private_index_pointer_array
 );
 
-/** Returns metric definition index
+/**
+ * Stores the metric definition index specified with metric handle in to the provided address.
+ * Returns 1 on success, 0 if metric was not found among requests.
+ *
+ * @param metric_handle metric handle to of the metric which index is to be returned
+ * @param metric_index a pointer to the location where the index will be stored if found
+ *
+ * @return 1 if success, 0 otherwise
  */
-uint32_t
-get_metric_definition_index
+int32_t
+get_metric_request_index_pointer
 (
-    SCOREP_MetricHandle metric_handle
+    SCOREP_MetricHandle metric_handle,
+    uint32_t*           metric_index
 );
 
 /*----------------------------------------------------------------------------------------

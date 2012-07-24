@@ -69,6 +69,8 @@ SCOREP_OAConsumer_Initialize
 //		print_region_definitions();
 //	}
 
+    //   scorep_profile_dump_subtree( scorep_profile.first_root_node, 0 );
+
     /** Performs default profile call-tree transformation */
     SCOREP_Profile_Process( SCOREP_Location_GetCurrentCPULocation() );
 

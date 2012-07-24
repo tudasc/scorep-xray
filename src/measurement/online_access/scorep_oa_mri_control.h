@@ -121,14 +121,25 @@ scorep_oa_mri_set_mpiprofiling
 );
 
 /**
- * Adds a metric to the Score-P measurement configuration requests
+ * Adds a metric specified by Periscope code to the Score-P measurement configuration requests
  *
  * @param metric_code Persicope metric code to add
  */
 void
-scorep_oa_mri_add_metric
+scorep_oa_mri_add_metric_by_code
 (
     int metric_code
+);
+
+/**
+ * Adds a metric specified by name to the Score-P measurement configuration requests
+ *
+ * @param metric_code Persicope metric code to add
+ */
+void
+scorep_oa_mri_add_metric_by_name
+(
+    char* metric_name
 );
 
 /**

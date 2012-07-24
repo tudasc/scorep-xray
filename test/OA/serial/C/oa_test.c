@@ -32,11 +32,15 @@ main( int    argc,
         SCOREP_USER_REGION_DEFINE( mainRegion );
         SCOREP_USER_REGION_DEFINE( region1 );
         SCOREP_USER_REGION_DEFINE( region2 );
+        SCOREP_USER_METRIC_LOCAL( METRIC1 );
+        SCOREP_USER_METRIC_INIT( METRIC1, "METRIC1", "s", SCOREP_USER_METRIC_TYPE_INT64,
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
         SCOREP_USER_OA_PHASE_BEGIN( mainRegion, "mainRegion", SCOREP_USER_REGION_TYPE_COMMON);
         for(i=0;i<5;i++){
                 SCOREP_USER_REGION_BEGIN( region1, "region1", SCOREP_USER_REGION_TYPE_COMMON);
                 printf("OA_TEST_C: Inside Online Access phase, iteration %d\n",i);
                 SCOREP_USER_REGION_BEGIN( region2, "region2", SCOREP_USER_REGION_TYPE_COMMON);
+                SCOREP_USER_METRIC_INT64( METRIC1, 1001 );
                 SCOREP_USER_REGION_END(region2);
                 SCOREP_USER_REGION_END(region1);
         }

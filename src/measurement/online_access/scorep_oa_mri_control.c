@@ -166,25 +166,34 @@ scorep_oa_mri_set_mpiprofiling
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 #ifdef WITH_MPI
-    SCOREP_MPI_HOOKS_SET( value );
+    if ( value )
+    {
+        SCOREP_MPI_HOOKS_ON;
+        scorep_mpiprofile_reinit_metrics();
+    }
+    else
+    {
+        SCOREP_MPI_HOOKS_OFF;
+    }
 #else
     scorep_oa_connection_send_string( connection, "this is serial version of Score-P, no MPI available\n" );
 #endif
 }
 
 void
-scorep_oa_mri_add_metric
+scorep_oa_mri_add_metric_by_code
 (
     int metric_code
 )
 {
-    SCOREP_OA_RequestsAddMetric( ( uint32_t )metric_code );
+    SCOREP_OA_RequestsAddPeriscopeMetric( metric_code );
 }
 
 
 void
 scorep_oa_mri_begin_request
-    ()
+(
+)
 {
     SCOREP_OA_RequestBegin();
 }

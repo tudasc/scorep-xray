@@ -115,6 +115,18 @@ extern bool scorep_hooks_on;
 
 extern int scorep_mpi_status_size;
 
+/**
+ * Intialize MPI Profiling module
+ */
+extern void
+scorep_mpiprofile_init();
+
+/**
+ * Reinitialize MPI profiling metrics
+ */
+extern void
+scorep_mpiprofile_reinit_metrics();
+
 /** @def SCOREP_MPI_IS_EVENT_GEN_ON_FOR
     Check whether event generation is turned on for a specific group.
  */
@@ -137,20 +149,13 @@ extern int scorep_mpi_status_size;
 /** @def SCOREP_MPI_HOOKS_ON
     Turn on MPI Profiling hooks inside MPI adapter.
  */
-#define SCOREP_MPI_HOOKS_ON()                     scorep_hooks_on = true
+#define SCOREP_MPI_HOOKS_ON                     scorep_hooks_on = true
 
 /** @def SCOREP_MPI_HOOKS_OFF
     Turn off MPI Profiling hooks inside MPI adapter.
  */
-#define SCOREP_MPI_HOOKS_OFF()                    scorep_hooks_on = false
+#define SCOREP_MPI_HOOKS_OFF                   scorep_hooks_on = false
 
-#define SCOREP_MPI_HOOKS_SET( value )                     scorep_hooks_on = value
-
-/**
- * Intializa MPI Profiling module
- */
-extern void
-scorep_mpiprofile_init();
 
 
 /** @} */

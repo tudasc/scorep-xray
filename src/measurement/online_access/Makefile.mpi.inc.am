@@ -22,14 +22,14 @@
 if MPI_SUPPORTED
 if HAVE_ONLINE_ACCESS
 
-EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.l \
+EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.y \
 			$(SRC_ROOT)src/measurement/online_access/lex.l
 
 BUILT_SOURCES += lex.yy.c \
 					scanner.h
 
 scanner.h:
-	$(YACC) -d $(INC_ROOT)src/measurement/online_access/yacc.l
+	$(YACC) -d $(INC_ROOT)src/measurement/online_access/yacc.y
 lex.yy.c: scanner.h
 	$(LEX) --header=scanner.h $(INC_ROOT)src/measurement/online_access/lex.l
 
@@ -42,7 +42,7 @@ SCOREP_OA_FORTRAN_FLAGS =                     						\
     -I$(INC_ROOT)src/adapters/include           					\
     -I$(INC_ROOT)src/measurement/include        					\
     -I$(INC_ROOT)src/measurement                					\
-    -I$(INC_ROOT)include/scorep           					\
+    -I$(INC_ROOT)include/scorep           							\
     -I$(PUBLIC_INC_DIR)                         					\
     -I$(INC_DIR_UTIL) \
     -I$(INC_DIR_UTIL_INTERNAL)
@@ -92,8 +92,9 @@ OA_MPI_FLAGS =                                 						\
     -I$(INC_ROOT)include/scorep           							\
     -I$(INC_ROOT)src/services/include								\
     -I$(PUBLIC_INC_DIR)                         					\
-    -I$(INC_DIR_UTIL) \
-    -I$(INC_DIR_UTIL_INTERNAL)												\
+    -I$(INC_DIR_UTIL_INTERNAL)                  					\
+    -I$(INC_DIR_UTIL)                           					\
+    -I$(INC_DIR_VENDOR_HASH)										\
     -DWITH_MPI
 
 noinst_LTLIBRARIES += libscorep_oa_mpi_parser.la

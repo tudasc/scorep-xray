@@ -21,14 +21,14 @@
 
 if HAVE_ONLINE_ACCESS
 
-EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.l \
+EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.y \
 			$(SRC_ROOT)src/measurement/online_access/lex.l
 
 BUILT_SOURCES += lex.yy.c \
 					scanner.h
 
 scanner.h:
-	$(YACC) -d $(INC_ROOT)src/measurement/online_access/yacc.l
+	$(YACC) -d $(INC_ROOT)src/measurement/online_access/yacc.y
 lex.yy.c: scanner.h
 	$(LEX) --header=scanner.h $(INC_ROOT)src/measurement/online_access/lex.l
 
@@ -36,14 +36,20 @@ SCOREP_OA_FORTRAN_SOURCES =  										\
 	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_FunctionsF.c
 
 SCOREP_OA_FORTRAN_FLAGS =                     						\
-    $(AM_CPPFLAGS)                              					\
-    -I$(INC_ROOT)src/adapters/include           					\
-    -I$(INC_ROOT)src/measurement/include        					\
-    -I$(INC_ROOT)src/measurement                					\
-    -I$(INC_ROOT)include/scorep           					\
-    -I$(PUBLIC_INC_DIR)                         					\
-    -I$(INC_DIR_UTIL) \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/adapters/include           \
+    -I$(INC_ROOT)src/adapters/user              \
+    -I$(INC_ROOT)src/utils/include              \
+    -I$(INC_ROOT)src/measurement/profiling      \
+    -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_ROOT)src/services/include           \
+    -I$(INC_ROOT)src/measurement                \
+    -I$(INC_ROOT)src/measurement/cube_writer    \
+    -I$(INC_ROOT)include/scorep           		\
+    -I$(PUBLIC_INC_DIR)                         \
+    -I$(INC_DIR_UTIL_INTERNAL)                  \
+    -I$(INC_DIR_UTIL)                           \
+    -I$(INC_DIR_VENDOR_HASH)
 
 libscorep_oa_fortran_sub1_la_SOURCES =  	\
     $(SCOREP_OA_FORTRAN_SOURCES)
@@ -90,8 +96,10 @@ OA_SERIAL_FLAGS =                                 					\
     -I$(INC_ROOT)include/scorep           							\
     -I$(INC_ROOT)src/services/include								\
     -I$(PUBLIC_INC_DIR)                         					\
-    -I$(INC_DIR_UTIL) \
-    -I$(INC_DIR_UTIL_INTERNAL)												
+    -I$(INC_DIR_UTIL_INTERNAL)                  					\
+    -I$(INC_DIR_UTIL)                           					\
+    -I$(INC_DIR_VENDOR_HASH)	
+    
 
 noinst_LTLIBRARIES += libscorep_oa_parser.la
 libscorep_oa_parser_la_SOURCES = $(SRC_ROOT)src/measurement/online_access/yacc.y
