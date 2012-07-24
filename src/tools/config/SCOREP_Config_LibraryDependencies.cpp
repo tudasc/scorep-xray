@@ -41,7 +41,7 @@ static bool
 has_item( const deque<string> input, string item )
 {
     deque<string>::const_iterator i;
-    for ( i = input.begin(); i < input.end(); i++ )
+    for ( i = input.begin(); i != input.end(); i++ )
     {
         if ( *i == item )
         {
@@ -81,7 +81,7 @@ deque_to_string( const deque<string> input,
 {
     string                        output = head;
     deque<string>::const_iterator i;
-    for ( i = input.begin(); i < input.end(); i++ )
+    for ( i = input.begin(); i != input.end(); i++ )
     {
         output += delimiter + *i;
     }
@@ -155,7 +155,7 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
     deque<string>           deps = get_dependencies( input_libs );
     deque<string>           libs;
     deque<string>::iterator i;
-    for ( i = deps.begin(); i < deps.end(); i++ )
+    for ( i = deps.begin(); i != deps.end(); i++ )
     {
         la_object obj = la_objects[ *i ];
         libs.push_back( "-l" + obj.m_lib_name.substr( 3 ) );
@@ -174,7 +174,7 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
     deque<string>::iterator i;
-    for ( i = deps.begin(); i < deps.end(); i++ )
+    for ( i = deps.begin(); i != deps.end(); i++ )
     {
         la_object obj = la_objects[ *i ];
         if ( install )
@@ -200,7 +200,7 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
     deque<string>::iterator i;
-    for ( i = deps.begin(); i < deps.end(); i++ )
+    for ( i = deps.begin(); i != deps.end(); i++ )
     {
         la_object obj = la_objects[ *i ];
         if ( install )

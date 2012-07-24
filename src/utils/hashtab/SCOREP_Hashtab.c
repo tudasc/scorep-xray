@@ -86,6 +86,7 @@ SCOREP_Hashtab_CreateSize( size_t                         size,
     if ( !instance->table )
     {
         SCOREP_ERROR_POSIX();
+        free( instance );
         return NULL;
     }
 
