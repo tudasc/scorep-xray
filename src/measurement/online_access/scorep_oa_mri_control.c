@@ -26,6 +26,8 @@
 
 #include "scorep_oa_mri_control.h"
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <strings.h>
 #ifdef WITH_MPI
@@ -39,7 +41,6 @@
 #include <SCOREP_RuntimeManagement.h>
 
 #include "scorep_oa_connection.h"
-#include "scanner.h"
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
 #include "scorep_oa_request.h"
@@ -251,26 +252,4 @@ scorep_oa_mri_return_summary_data
     SCOREP_OAConsumer_DismissData();
 
     SCOREP_OA_RequestsDismiss();
-}
-
-SCOREP_Error_Code
-scorep_oa_mri_parse
-(
-    char* buffer
-)
-{
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
-    SCOREP_Error_Code return_status = SCOREP_SUCCESS;
-
-    YY_BUFFER_STATE my_string_buffer;
-
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
-    my_string_buffer = yy_scan_string( buffer );
-    if ( yyparse() != 0 )
-    {
-        return_status = SCOREP_ERROR_OA_PARSE_MRI;
-    }
-    yy_delete_buffer( my_string_buffer );
-
-    return return_status;
 }

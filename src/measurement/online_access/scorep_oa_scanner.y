@@ -15,7 +15,7 @@
  */
  
  /**
- * @file        yacc.l
+ * @file        src/measurement/online_access/scorep_oa_scanner.y
  * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
  * @brief   automatically generated file for the MRI string parser
@@ -171,7 +171,6 @@ LocalRequest     : T_EXECUTION_TIME     {}
 /* Es folgt der C-Code                                                        */
 /******************************************************************************/
 #include <string.h>
-#include "lex.yy.c" 
 
 void yyerror(char *s)
 {

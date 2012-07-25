@@ -15,180 +15,162 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+## file       src/measurement/online_access/Makefile.mpi.inc.am
+## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 
 if MPI_SUPPORTED
 if HAVE_ONLINE_ACCESS
 
-EXTRA_DIST +=$(SRC_ROOT)src/measurement/online_access/yacc.y \
-			$(SRC_ROOT)src/measurement/online_access/lex.l
+BUILT_SOURCES += scorep_oa_scanner.h
 
-BUILT_SOURCES += lex.yy.c \
-					scanner.h
+SCOREP_OA_FORTRAN_SOURCES = $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_FunctionsF.c
 
-scanner.h:
-	$(YACC) -d $(INC_ROOT)src/measurement/online_access/yacc.y
-lex.yy.c: scanner.h
-	$(LEX) --header=scanner.h $(INC_ROOT)src/measurement/online_access/lex.l
-
-
-SCOREP_OA_FORTRAN_SOURCES =  										\
-	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_FunctionsF.c
-
-SCOREP_OA_FORTRAN_FLAGS =                     						\
-    $(AM_CPPFLAGS)                              					\
-    -I$(INC_ROOT)src/adapters/include           					\
-    -I$(INC_ROOT)src/measurement/include        					\
-    -I$(INC_ROOT)src/measurement                					\
-    -I$(INC_ROOT)include/scorep           							\
-    -I$(PUBLIC_INC_DIR)                         					\
+SCOREP_OA_FORTRAN_FLAGS =                       \
+    $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/adapters/include           \
+    -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_ROOT)src/measurement                \
+    -I$(INC_ROOT)include/scorep                 \
+    -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL) \
     -I$(INC_DIR_UTIL_INTERNAL)
 
-libscorep_oa_fortran_sub1_la_SOURCES =  	\
+libscorep_oa_fortran_sub1_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub1_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB1              \
+libscorep_oa_fortran_sub1_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB1                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_fortran_sub2_la_SOURCES =  	\
+libscorep_oa_fortran_sub2_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub2_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB2              \
+libscorep_oa_fortran_sub2_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB2                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_fortran_sub3_la_SOURCES =  	\
+libscorep_oa_fortran_sub3_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub3_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB3              \
+libscorep_oa_fortran_sub3_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB3                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_fortran_sub4_la_SOURCES =  	\
+libscorep_oa_fortran_sub4_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub4_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB4              \
+libscorep_oa_fortran_sub4_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB4                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-noinst_LTLIBRARIES +=                      	\
-    libscorep_oa_fortran_sub1.la 			\
-    libscorep_oa_fortran_sub2.la 			\
-    libscorep_oa_fortran_sub3.la 			\
+noinst_LTLIBRARIES +=                           \
+    libscorep_oa_fortran_sub1.la                \
+    libscorep_oa_fortran_sub2.la                \
+    libscorep_oa_fortran_sub3.la                \
     libscorep_oa_fortran_sub4.la
 
-OA_MPI_FLAGS =                                 						\
-    $(AM_CPPFLAGS)                              					\
-    -I$(INC_ROOT)src/measurement/online_access        							\
-    -I$(INC_ROOT)src/measurement/profiling   						\
-    -I$(INC_ROOT)src/measurement/include        					\
-    -I$(INC_ROOT)src/measurement/               					\
-    -I$(INC_ROOT)src/adapters/mpi									\
-    -I$(INC_ROOT)src/adapters/user               					\
-    -I$(INC_ROOT)include/scorep           							\
-    -I$(INC_ROOT)src/services/include								\
-    -I$(PUBLIC_INC_DIR)                         					\
-    -I$(INC_DIR_UTIL_INTERNAL)                  					\
-    -I$(INC_DIR_UTIL)                           					\
-    -I$(INC_DIR_VENDOR_HASH)										\
+OA_MPI_FLAGS =                                  \
+    $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/measurement/online_access  \
+    -I$(INC_ROOT)src/measurement/profiling      \
+    -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_ROOT)src/measurement/               \
+    -I$(INC_ROOT)src/adapters/mpi               \
+    -I$(INC_ROOT)src/adapters/user              \
+    -I$(INC_ROOT)include/scorep                 \
+    -I$(INC_ROOT)src/services/include           \
+    -I$(PUBLIC_INC_DIR)                         \
+    -I$(INC_DIR_UTIL_INTERNAL)                  \
+    -I$(INC_DIR_UTIL)                           \
+    -I$(INC_DIR_VENDOR_HASH)                    \
     -DWITH_MPI
 
-noinst_LTLIBRARIES += libscorep_oa_mpi_parser.la
-libscorep_oa_mpi_parser_la_SOURCES = $(SRC_ROOT)src/measurement/online_access/yacc.y
-libscorep_oa_mpi_parser_la_CPPFLAGS = $(OA_MPI_FLAGS) -D_POSIX_SOURCE
-
 noinst_LTLIBRARIES += libscorep_oa_mpi.la
-libscorep_oa_mpi_la_SOURCES =                                  			\
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Functions.c            		\
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Init.h       				\
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Init.c       				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.h         			\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.c					\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c				\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h			\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.c					\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.h					\
-    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_PeriscopeMetrics.h			
+libscorep_oa_mpi_la_SOURCES =                                              \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_scanner.y           \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_parser.l            \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Functions.c         \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Init.h              \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Init.c              \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.h           \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_sockets.c           \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h        \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.c        \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.h       \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control.c       \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_registry_protocol.h \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.c           \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.h           \
+    $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_PeriscopeMetrics.h  \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c             \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h 
 
-libscorep_oa_mpi_la_SOURCES +=											\
-	$(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c         			\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h         			
+libscorep_oa_mpi_la_CPPFLAGS = $(OA_MPI_FLAGS) -D_POSIX_SOURCE
 
-libscorep_oa_mpi_la_CPPFLAGS = $(OA_MPI_FLAGS)
-
-libscorep_oa_mpi_la_LIBADD =                \
-    libscorep_oa_fortran_sub1.la        	\
-    libscorep_oa_fortran_sub2.la        	\
-    libscorep_oa_fortran_sub3.la        	\
-    libscorep_oa_fortran_sub4.la			\
-    libscorep_oa_mpi_parser.la
+libscorep_oa_mpi_la_LIBADD =                    \
+    libscorep_oa_fortran_sub1.la                \
+    libscorep_oa_fortran_sub2.la                \
+    libscorep_oa_fortran_sub3.la                \
+    libscorep_oa_fortran_sub4.la
 
 else #if HAVE_ONLINE_ACCESS
 
-SCOREP_OA_FORTRAN_SOURCES =  										\
-	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_DummyF.c
+SCOREP_OA_FORTRAN_SOURCES = $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_DummyF.c
 
-SCOREP_OA_FORTRAN_FLAGS =                     						\
-    $(AM_CPPFLAGS)                              					\
-    -I$(INC_ROOT)src/adapters/include           					\
-    -I$(INC_ROOT)src/measurement/include        					\
-    -I$(PUBLIC_INC_DIR)                         					\
+SCOREP_OA_FORTRAN_FLAGS =                       \
+    $(AM_CPPFLAGS)                              \
+    -I$(INC_ROOT)src/adapters/include           \
+    -I$(INC_ROOT)src/measurement/include        \
+    -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL) \
     -I$(INC_DIR_UTIL_INTERNAL)
 
-libscorep_oa_fortran_sub1_la_SOURCES =  	\
+libscorep_oa_fortran_sub1_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub1_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB1              \
+libscorep_oa_fortran_sub1_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB1                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_fortran_sub2_la_SOURCES =  	\
+libscorep_oa_fortran_sub2_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub2_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB2              \
+libscorep_oa_fortran_sub2_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB2                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_fortran_sub3_la_SOURCES =  	\
+libscorep_oa_fortran_sub3_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub3_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB3              \
+libscorep_oa_fortran_sub3_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB3                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_fortran_sub4_la_SOURCES =  	\
+libscorep_oa_fortran_sub4_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
 
-libscorep_oa_fortran_sub4_la_CPPFLAGS = 	\
-    -DFSUB=SCOREP_FORTRAN_SUB4              \
+libscorep_oa_fortran_sub4_la_CPPFLAGS =         \
+    -DFSUB=SCOREP_FORTRAN_SUB4                  \
     $(SCOREP_OA_FORTRAN_FLAGS)
 
-noinst_LTLIBRARIES +=                      	\
-    libscorep_oa_fortran_sub1.la 			\
-    libscorep_oa_fortran_sub2.la 			\
-    libscorep_oa_fortran_sub3.la 			\
+noinst_LTLIBRARIES +=                           \
+    libscorep_oa_fortran_sub1.la                \
+    libscorep_oa_fortran_sub2.la                \
+    libscorep_oa_fortran_sub3.la                \
     libscorep_oa_fortran_sub4.la
-    
+
 
 noinst_LTLIBRARIES += libscorep_oa_mpi.la
 
-libscorep_oa_mpi_la_SOURCES =				\
-	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Dummy.c
+libscorep_oa_mpi_la_SOURCES = $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_Dummy.c
 
 libscorep_oa_mpi_la_CPPFLAGS = $(SCOREP_OA_FORTRAN_FLAGS)
 
-libscorep_oa_mpi_la_LIBADD =                \
-    libscorep_oa_fortran_sub1.la        	\
-    libscorep_oa_fortran_sub2.la        	\
-    libscorep_oa_fortran_sub3.la        	\
+libscorep_oa_mpi_la_LIBADD =                    \
+    libscorep_oa_fortran_sub1.la                \
+    libscorep_oa_fortran_sub2.la                \
+    libscorep_oa_fortran_sub3.la                \
     libscorep_oa_fortran_sub4.la
 
 endif #if HAVE_ONLINE_ACCESS

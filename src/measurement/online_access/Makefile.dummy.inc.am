@@ -15,8 +15,8 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       Makefile.dummy.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+## file       src/measurement/online_access/Makefile.dummy.inc.am
+## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 SCOREP_OA_FORTRAN_SOURCES =  										\
 	$(SRC_ROOT)src/measurement/online_access/SCOREP_OA_DummyF.c

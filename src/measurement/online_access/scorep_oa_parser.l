@@ -15,7 +15,7 @@
  */
  
  /**
-  * @file        lex.l
+  * @file        src/measurement/online_access/scorep_oa_parser.l
   * @maintainer  Yury Olenyik <oleynik@in.tum.de>
   *
   * @brief   automatically generated file for the MRI string parser
@@ -23,7 +23,14 @@
   * @status alpha
   *
   */
- 
+
+%{
+#include <config.h>
+#include "scorep_oa_scanner.h"
+#include <SCOREP_Debug.h>
+#include <SCOREP_Error_Codes.h>
+%}
+
 /* *INDENT-OFF* */
 
 /******************************************************************************/
@@ -154,6 +161,40 @@ int yywrap ()
   return 1;
 }
 
+/* Prevent warnings from -Wmissing-prototypes.  */
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void *YYPARSE_PARAM);
+#else
+int yyparse ();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void);
+#else
+int yyparse ();
+#endif
+#endif /* ! YYPARSE_PARAM */
 
+SCOREP_Error_Code
+scorep_oa_mri_parse
+(
+    char* buffer
+)
+{
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    SCOREP_Error_Code return_status = SCOREP_SUCCESS;
 
+    YY_BUFFER_STATE my_string_buffer;
+
+    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
+    my_string_buffer = yy_scan_string( buffer );
+    if ( yyparse() != 0 )
+    {
+        return_status = SCOREP_ERROR_OA_PARSE_MRI;
+    }
+    yy_delete_buffer( my_string_buffer );
+
+    return return_status;
+}
 
