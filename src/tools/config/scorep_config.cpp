@@ -492,7 +492,7 @@ SCOREP_Config::SCOREP_Config( char* arg0 )
         {
             break;
         }
-        rpath_flag.replace( index, strlen( LIBDIR_FLAG_WL ) + 1, LIBDIR_FLAG_WL );
+        rpath_flag.replace( index, strlen( "${wl}" ), LIBDIR_FLAG_WL );
         ++index;
     }
     index = rpath_flag.find( "$libdir", 0 );
