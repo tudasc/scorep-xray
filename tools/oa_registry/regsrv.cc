@@ -47,7 +47,8 @@ using namespace std;
 
 #define MAX_REGION_NAME_LENGTH                          150
 #define MAX_FILE_NAME_LENGTH                            150
-
+#define MAX_COUNTER_NAME_LENGTH                         256
+#define MAX_COUNTER_UNIT_LENGTH                         10
 
 typedef struct SCOREP_OA_CallPathRegionDef_struct
 {
@@ -69,6 +70,14 @@ typedef struct SCOREP_OA_FlatProfileMeasurement_struct
 	uint32_t metric_id;
 	uint64_t int_val;
 }SCOREP_OA_FlatProfileMeasurement;
+
+typedef struct SCOREP_OA_CallPathCounterDef_struct
+{
+    uint32_t counter_id;
+    char     name[ MAX_COUNTER_NAME_LENGTH ];
+    char     unit[ MAX_COUNTER_UNIT_LENGTH ];
+    uint32_t status;
+}SCOREP_OA_CallPathCounterDef;
 
 int RegServ::open( int port )
 {
@@ -319,6 +328,65 @@ int RegServ::execute_test(const char* scenario_file)
 												recv_buffer[ i ].samples,
 												recv_buffer[ i ].metric_id,
 												recv_buffer[ i ].int_val
+												);
+					}
+
+					free(recv_buffer);
+				}
+
+
+				buf[ 0 ] = 0;
+				memset( buf, '\0', maxlen );
+				while ( (scorep_oa_sockets_read_line( it->second->test_comm_sock, buf, maxlen ) ) == 0 )
+				{
+				}
+				printf("Periscope Emulator: received from process %i: %s\n", it->second->pid, buf);
+
+				number=0;
+				nr = scorep_oa_sockets_blockread( it->second->test_comm_sock,
+														(char*)(&number),
+														sizeof(int));
+				if(nr!=sizeof(int))
+				{
+					fprintf(stderr,"Periscope Emulator: Couldn't receive number of records\n");
+					exit(1);
+				}
+
+				printf("Periscope Emulator: Expecting Metric definitions from process %i, size: %" PRId32 " entries of size %" PRIu64 "\n",
+						it->second->pid,
+						number,
+						(uint64_t)sizeof(SCOREP_OA_CallPathCounterDef));
+
+				if (number > 0)
+				{
+
+					SCOREP_OA_CallPathCounterDef* recv_buffer = (SCOREP_OA_CallPathCounterDef *)
+															calloc( number, sizeof(SCOREP_OA_CallPathCounterDef) );
+
+					if (!recv_buffer)
+					{
+						fprintf(stderr,"Periscope Emulator: Error allocating recv_buffer\n");
+						exit(1);
+					}
+					nr=scorep_oa_sockets_blockread( it->second->test_comm_sock,
+													(char*)(recv_buffer),
+													number*sizeof(SCOREP_OA_CallPathCounterDef));
+
+					if(nr!=number*sizeof(SCOREP_OA_CallPathCounterDef))
+					{
+						fprintf(stderr,"Periscope Emulator: Couldn't receive measurements buffer\n");
+						exit(1);
+					}
+
+					printf("Periscope Emulator: Got metric definitions from process %i:\n", it->second->pid);
+					int i;
+					for ( i = 0; i < number; i++ )
+					{
+						printf("record %d: \t| counter name=%s \t| unit=%s \t| status=%" PRIu32 "\n",
+												i,
+												recv_buffer[ i ].name,
+												recv_buffer[ i ].unit,
+												recv_buffer[ i ].status
 												);
 					}
 

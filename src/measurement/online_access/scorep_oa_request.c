@@ -245,8 +245,8 @@ SCOREP_OA_RequestsSubmit
     }
     SCOREP_Hashtab_IteratorFree( iter );
 
-    printf( "Requested PAPI metrics: %s\n", scorep_metrics_papi_mine );
-    printf( "Requested RUSAGE metrics: %s\n", scorep_metrics_rusage_mine );
+    //printf( "Requested PAPI metrics: %s\n", scorep_metrics_papi_mine );
+    //printf( "Requested RUSAGE metrics: %s\n", scorep_metrics_rusage_mine );
 
     /**
      * Export metric source configuration string to the corresponding environment variable
@@ -330,7 +330,7 @@ SCOREP_OA_RequestsSubmit
     SCOREP_Hashtab_FreeAll( requestsByName, &free, &free );
     requestsByName = NULL;
 
-    print_hash_table_request( requestsByID, "submitted requests" );
+    //print_hash_table_request( requestsByID, "submitted requests" );
 
     requestsStatus = SUBMITTED;
 }

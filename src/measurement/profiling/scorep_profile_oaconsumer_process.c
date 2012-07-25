@@ -261,16 +261,18 @@ get_metric_definitions
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
-
-    printf( "Metric definition buffer:\n" );
-    for ( i = 0; i < shared_index->num_counter_definitions; i++ )
+    if ( do_print_out )
     {
-        printf( "Metric definition %d, name: %s, unit: %s\n",
-                i,
-                shared_index->counter_definition_buffer[ i ].name,
-                shared_index->counter_definition_buffer[ i ].unit );
+        printf( "Metric definition buffer:\n" );
+        for ( i = 0; i < shared_index->num_counter_definitions; i++ )
+        {
+            printf( "Metric definition %d, id %d, name: %s, unit: %s\n",
+                    i,
+                    shared_index->counter_definition_buffer[ i ].counter_id,
+                    shared_index->counter_definition_buffer[ i ].name,
+                    shared_index->counter_definition_buffer[ i ].unit );
+        }
     }
-
     return shared_index->counter_definition_buffer;
 }
 

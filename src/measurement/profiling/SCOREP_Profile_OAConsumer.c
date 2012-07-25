@@ -74,12 +74,9 @@ SCOREP_OAConsumer_Initialize
     /** Performs default profile call-tree transformation */
     SCOREP_Profile_Process( SCOREP_Location_GetCurrentCPULocation() );
 
-    scorep_profile_dump_subtree( scorep_profile.first_root_node, 0 );
-
     thread_count = scorep_oaconsumer_get_number_of_roots();
 
     /** Allocate and initialize thread-shread index data structures */
-    //   thread_index_pointer_array[1]->phase_node=0;
     thread_index_pointer_array = scorep_oa_consumer_initialize_index( phase_handle );
 
     /** Loop over threads initializing thread-private index data structures*/
