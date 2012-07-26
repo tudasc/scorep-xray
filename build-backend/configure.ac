@@ -189,33 +189,29 @@ AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
 
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
 
-dnl Replace single $ in variables by $$ because of further usage in Makefile.
-scorep_libdir_flag_CC=`echo ${hardcode_libdir_flag_spec} | sed -e 's/\\$/\\$\\$/g'`
-scorep_libdir_flag_CXX=`echo ${hardcode_libdir_flag_spec_CXX} | sed -e 's/\\$/\\$\\$/g'`
-scorep_libdir_flag_F77=`echo ${hardcode_libdir_flag_spec_F77} | sed -e 's/\\$/\\$\\$/g'`
-scorep_libdir_flag_FC=`echo ${hardcode_libdir_flag_spec_FC} | sed -e 's/\\$/\\$\\$/g'`
-scorep_libdir_flag_AIX_LIBPATH=`echo ${aix_libpath} | sed -e 's/\\$/\\$\\$/g'`
-scorep_libdir_flag_WL=`echo ${wl} | sed -e 's/\\$/\\$\\$/g'`
 dnl Flag to hardcode libdir into a binary during linking, C version.
-AC_SUBST([HARDCODE_LIBDIR_FLAG_CC], [\"${scorep_libdir_flag_CC}\"])
+AC_SUBST([HARDCODE_LIBDIR_FLAG_CC], [${hardcode_libdir_flag_spec}])
 dnl Flag to hardcode libdir into a binary during linking, C++ version.
-AC_SUBST([HARDCODE_LIBDIR_FLAG_CXX], [\"${scorep_libdir_flag_CXX}\"])
+AC_SUBST([HARDCODE_LIBDIR_FLAG_CXX], [${hardcode_libdir_flag_spec_CXX}])
 dnl Flag to hardcode libdir into a binary during linking, F77 version.
-AC_SUBST([HARDCODE_LIBDIR_FLAG_F77], [\"${scorep_libdir_flag_F77}\"])
+AC_SUBST([HARDCODE_LIBDIR_FLAG_F77], [${hardcode_libdir_flag_spec_F77}])
 dnl Flag to hardcode libdir into a binary during linking, Fortran version.
-AC_SUBST([HARDCODE_LIBDIR_FLAG_FC], [\"${scorep_libdir_flag_FC}\"])
+AC_SUBST([HARDCODE_LIBDIR_FLAG_FC], [${hardcode_libdir_flag_spec_FC}])
 dnl The ${wl} part of the HARDCODE_LIBDIR_FLAG_* defines.
-AC_SUBST([HARDCODE_LIBDIR_WL], [\"${wl}\"])
+AC_SUBST([HARDCODE_LIBDIR_WL], [${wl}])
 dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only available on AIX.
-AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [\"${scorep_libdir_flag_AIX_LIBPATH}\"])
+AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
-AC_CONFIG_FILES([Makefile \
-                 ../test/jacobi/serial/C/Makefile \
+AC_SUBST([DATAROOTDIR_SCOREP], [`eval echo ${datarootdir}/${PACKAGE}`])
+
+AC_CONFIG_FILES([Makefile
+                 ../test/jacobi/serial/C/Makefile
                  ../test/jacobi/OpenMP/C/Makefile
                  ../installcheck/Makefile.common_rules:../test/installcheck/Makefile.common_rules.in
                  ../installcheck/Makefile.instrument_configurations:../test/installcheck/Makefile.instrument_configurations.in
                  ../installcheck/serial/Makefile:../test/installcheck/serial/Makefile.in
-                 ../installcheck/omp/Makefile:../test/installcheck/omp/Makefile.in])
+                 ../installcheck/omp/Makefile:../test/installcheck/omp/Makefile.in
+                 ../src/scorep_config_tool_backend.h:../src/tools/config/scorep_config_tool_backend.h.in])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
 AC_CONFIG_FILES([../test/omp_tasks/run_fibonacci_test.sh], \

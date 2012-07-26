@@ -238,7 +238,8 @@ AC_CONFIG_FILES([run_otf2_speed_test.sh \
                  ../test/jacobi/MPI/C/Makefile \
                  ../test/jacobi/hybrid/C/Makefile \
                  ../installcheck/mpi/Makefile:../test/installcheck/mpi/Makefile.in
-                 ../installcheck/mpi_omp/Makefile:../test/installcheck/mpi_omp/Makefile.in])
+                 ../installcheck/mpi_omp/Makefile:../test/installcheck/mpi_omp/Makefile.in
+                 ../src/scorep_config_tool_mpi.h:../src/tools/config/scorep_config_tool_mpi.h.in])
 AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
 AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_mpi_tests.sh], \

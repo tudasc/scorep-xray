@@ -81,16 +81,6 @@ distclean-local:
 	rm -rf ../test/jacobi/MPI
 	rm -rf ../test/jacobi/hybrid
 
-## Provide the scorep-config build with information from this mpi Makefile.
-$(CONFIG_HEADER_MPI):
-	$(AM_V_GEN)( \
-	    echo "#define SCOREP_MPICC             \"$(CC)\"";\
-	    echo "#define SCOREP_MPICXX            \"$(CXX)\"";\
-	    echo "#define SCOREP_MPIFC             \"$(FC)\"";\
-	    echo "#define SCOREP_HAVE_PDT_MPI_INSTRUMENTATION $(SCOREP_HAVE_PDT_MPI_INSTRUMENTATION)";\
-	    echo "#define SCOREP_MPI_INCLUDE       \"$(SCOREP_MPI_INCLUDE)\"";\
-	) >$@
-
 
 if MPI_SUPPORTED
 if OPENMP_SUPPORTED

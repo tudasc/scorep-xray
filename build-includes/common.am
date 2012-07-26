@@ -50,12 +50,5 @@ SCOREP_MPI_OMP_XFAIL_TESTS =
 SCOREP_MPI_TESTS =
 SCOREP_MPI_XFAIL_TESTS = 
 
-## Header files that get generated for building the *_config tools.
-CONFIG_HEADER_BACKEND  = $(SRC_ROOT)src/scorep_config_tool_backend.h
-CONFIG_HEADER_MPI      = $(SRC_ROOT)src/scorep_config_tool_mpi.h
-CONFIG_HEADER_FRONTEND = $(SRC_ROOT)src/scorep_config_tool_frontend.h
-
-CLEANFILES += $(CONFIG_HEADER_BACKEND) $(CONFIG_HEADER_MPI) $(CONFIG_HEADER_FRONTEND)
-
 # When $(YACC) is invoced, also create a header file.
 AM_YFLAGS = -d

@@ -67,10 +67,4 @@ endif
 scorep_config_LDADD = libscorep_parser_tools.la \
 		    libscorep_utilities.la
 
-BUILT_SOURCES += create-config-tool-headers \
-	scorep_library_dependencies.cpp
-
-## Get the config tool values from the backend and mpi Makefiles
-create-config-tool-headers:
-	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) $(CONFIG_HEADER_BACKEND)
-	@$(am__cd) ../build-mpi     && $(MAKE) $(AM_MAKEFLAGS) $(CONFIG_HEADER_MPI)
+BUILT_SOURCES += scorep_library_dependencies.cpp

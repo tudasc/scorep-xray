@@ -93,7 +93,8 @@ install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
 install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
 
-SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)$(datadir)/@PACKAGE@
+SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)@DATAROOTDIR_SCOREP@
+
 SCOREP_SHARE_LOCAL_DIR=$(PWD)/../share
 SCOREP_SHARE_GLOBAL_DIR=$(abs_top_srcdir)/../share
 SCOREP_PDT_CONFIG_INSTALL_TARGET = $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf
@@ -101,8 +102,7 @@ SCOREP_COBI_CONFIG_IN=$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Adapter.xml.in
 
 uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
 	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat \
-	     $(CONFIG_HEADER_BACKEND) \
-	     $(SCOREP_PDT_CONFIG_INSTALL_TARGET) 
+              $(SCOREP_PDT_CONFIG_INSTALL_TARGET) 
 	if [ -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml.in ]; then \
 	  rm -f  $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterSerial.xml \
 	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterOmp.xml \
@@ -177,28 +177,6 @@ $(builddir)/scorep_config.dat:
 	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-print\"; \
 	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_LOCAL_DIR)\"; \
 	    echo PASS_LINKER_FLAG_THROUGH_COMPILER=\"$(PASS_LINKER_FLAG_THROUGH_COMPILER)\"; \
-	) >$@
-
-## Provide the scorep-config build with information from this backend Makefile.
-$(CONFIG_HEADER_BACKEND):
-	$(AM_V_GEN)( \
-            echo "#define SCOREP_CFLAGS \"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\""; \
-            echo "#define SCOREP_OPENMP_CFLAGS \"$(OPENMP_CFLAGS)\""; \
-            echo "#define SCOREP_PREFIX  \"$(prefix)\""; \
-            echo "#define SCOREP_CC      \"$(CC)\""; \
-            echo "#define SCOREP_CXX     \"$(CXX)\""; \
-            echo "#define SCOREP_FC      \"$(FC)\""; \
-            echo "#define OPARI          \"$(prefix)/bin/opari2\""; \
-            echo "#define OPARI_CONFIG   \"$(prefix)/bin/opari2-config\""; \
-            echo "#define PDT            \"$(PDT_PATH)\""; \
-            echo "#define PDT_CONFIG     \"$(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Pdt_Instrumentation.conf\""; \
-            echo "#define COBI_CONFIG_DIR \"$(SCOREP_SHARE_INSTALL_DIR)\""; \
-            echo "#define LIBDIR_FLAG_CC"     '@HARDCODE_LIBDIR_FLAG_CC@';     \
-            echo "#define LIBDIR_FLAG_CXX"    '@HARDCODE_LIBDIR_FLAG_CXX@';    \
-            echo "#define LIBDIR_FLAG_FC"     '@HARDCODE_LIBDIR_FLAG_FC@';     \
-            echo "#define LIBDIR_FLAG_F77"    '@HARDCODE_LIBDIR_FLAG_F77@';    \
-            echo "#define LIBDIR_FLAG_WL"     '@HARDCODE_LIBDIR_WL@';          \
-            echo "#define LIBDIR_AIX_LIBPATH" '@HARDCODE_LIBDIR_AIX_LIBPATH@'; \
 	) >$@
 
 
