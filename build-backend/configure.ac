@@ -205,7 +205,7 @@ AC_SUBST([HARDCODE_LIBDIR_FLAG_F77], [\"${scorep_libdir_flag_F77}\"])
 dnl Flag to hardcode libdir into a binary during linking, Fortran version.
 AC_SUBST([HARDCODE_LIBDIR_FLAG_FC], [\"${scorep_libdir_flag_FC}\"])
 dnl The ${wl} part of the HARDCODE_LIBDIR_FLAG_* defines.
-AC_SUBST([HARDCODE_LIBDIR_WL], [\"${scorep_libdir_flag_WL}\"])
+AC_SUBST([HARDCODE_LIBDIR_WL], [\"${wl}\"])
 dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only available on AIX.
 AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [\"${scorep_libdir_flag_AIX_LIBPATH}\"])
 
