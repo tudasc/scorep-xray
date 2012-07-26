@@ -300,7 +300,7 @@ typedef enum PSC_MetricID
 typedef struct PSC_Event
 {
     PSC_MetricGroup      metricGroup;
-    const unsigned char* metricName;
+    const char* metricName;
     PSC_MetricID         metricID;
 } PSC_MetricType;
 

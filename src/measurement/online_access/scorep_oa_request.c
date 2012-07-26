@@ -251,6 +251,9 @@ SCOREP_OA_RequestsSubmit
     /**
      * Export metric source configuration string to the corresponding environment variable
      */
+    setenv( "SCOREP_METRIC_PAPI", scorep_metrics_papi_mine, 1 );
+    setenv( "SCOREP_METRIC_PAPI_SEP", ";", 1 );
+
     setenv( "SCOREP_METRIC_RUSAGE", scorep_metrics_rusage_mine, 1 );
     setenv( "SCOREP_METRIC_RUSAGE_SEP", ";", 1 );
 
