@@ -69,8 +69,8 @@ The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whe
   configurations!
 
 The <tt>scorep-config</tt> command can also be used to determine the right compiler
-flags for specifying the include directory of the <tt>SCOREP_User.h</tt> or
-<tt>SCOREP_User.inc</tt> header files when compiling without using the @scorep
+flags for specifying the include directory of the <tt>scorep/SCOREP_User.h</tt> or
+<tt>scorep/SCOREP_User.inc</tt> header files when compiling without using the @scorep
 instrumentor, necessary defines and compiler instrumentation flags:
 @verbatim
     scorep-config --cflags [--fortran] [--user] [--nocompiler]
@@ -236,7 +236,7 @@ programming language used.
 
 Fortran:
 @code
-    #include "SCOREP_User.inc"
+    #include "scorep/SCOREP_User.inc"
 
     subroutine foo
       SCOREP_USER_REGION_DEFINE( my_region_handle )
@@ -251,7 +251,7 @@ Fortran:
 
 C/C++:
 @code
-    #include <SCOREP_User.h>
+    #include <scorep/SCOREP_User.h>
 
     void foo()
     {
@@ -315,7 +315,7 @@ may not work with this macro.
 
 C/C++:
 @code
-    #include <SCOREP_User.h>
+    #include <scorep/SCOREP_User.h>
 
     void foo()
     {
@@ -390,7 +390,7 @@ parameters, <tt>SCOREP_USER_PARAMETER_UINT64</tt> for unsigned integer parameter
 
 C/C++:
 @code
-    #include <SCOREP_User.h>
+    #include <scorep/SCOREP_User.h>
 
     void foo(int64_t myint, uint64_t myuint, char *mystring)
     {
@@ -408,7 +408,7 @@ C/C++:
 
 Fortran:
 @code
-    #include "SCOREP_User.inc"
+    #include "scorep/SCOREP_User.inc"
 
     subroutine foo(i, s)
         integer :: i
@@ -495,7 +495,7 @@ programming language used.
 
 Fortran:
 @code
-    #include "SCOREP_User.inc"
+    #include "scorep/SCOREP_User.inc"
 
     subroutine foo
       SCOREP_USER_REGION_DEFINE( my_region_handle )
@@ -510,7 +510,7 @@ Fortran:
 
 C/C++:
 @code
-    #include <SCOREP_User.h>
+    #include <scorep/SCOREP_User.h>
 
     void foo()
     {

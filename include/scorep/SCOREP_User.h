@@ -50,14 +50,16 @@
     should be set through the instrumentation wrapper tool automatically if user
     manual instrumentation is enabled.
 
-    Every source file which is instrumented must include a header file with the
-    Score-P user instrumentation header. For C/C++ programs, the header file is
-    'SCOREP_User.h', for Fortran files, 'SCOREP_User.inc' must be included. Because the
-    Fortran compilers can not expand macros, the Fortran source code must be
-    preprocessed by a C or C++ preprocessor, to include the headers and expand the
-    macros. Which Fortran files are passed to the preprocessor depends on the suffix.
-    Usually, suffixes .f and .f90 are not preprocessed, .F and .F90 files are
-    preprocessed. However, this may depend on the used compiler.
+    Every source file which is instrumented must include a header file
+    with the Score-P user instrumentation header. For C/C++ programs,
+    the header file is 'scorep/SCOREP_User.h', for Fortran files,
+    'scorep/SCOREP_User.inc' must be included. Because the Fortran
+    compilers can not expand macros, the Fortran source code must be
+    preprocessed by a C or C++ preprocessor, to include the headers
+    and expand the macros. Which Fortran files are passed to the
+    preprocessor depends on the suffix.  Usually, suffixes .f and .f90
+    are not preprocessed, .F and .F90 files are preprocessed. However,
+    this may depend on the used compiler.
 
    @{
  */
