@@ -163,6 +163,9 @@ $(builddir)/scorep_config.dat:
             echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"; \
             echo PDT=\"$(PDT_PATH)\"; \
             echo PDT_CONFIG=\"$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Pdt_Instrumentation.conf\"; \
+            echo LIBDIR=\"$(SCOREP_PAPI_LIBDIR)\"; \
+            echo LIBS=\"$(SCOREP_PAPI_LIBS)\"; \
+            echo LIBS=\"$(LIBBFD_LIBS)\"; \
         ) >$@
 
 
