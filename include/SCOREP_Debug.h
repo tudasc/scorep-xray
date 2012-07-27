@@ -99,7 +99,6 @@ typedef enum
     MANGLE_NAME( DEBUG_TRACING )             = 1 << 18,
     MANGLE_NAME( DEBUG_MEMORY )              = 1 << 19,
     MANGLE_NAME( DEBUG_CUDA )                = 1 << 20,
-    MANGLE_NAME( DEBUG_MAQAO )               = 1 << 22,
 
     /* keep this last */
     MANGLE_NAME( DEBUG_DEPRECATED )          = 1 << 30
