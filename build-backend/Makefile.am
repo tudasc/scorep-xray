@@ -150,34 +150,20 @@ endif
 
 $(builddir)/scorep_config.dat: 
 	$(AM_V_GEN)( \
-	    echo COMPILER_INSTRUMENTATION_CPPFLAGS=\"$(COMPILER_INSTRUMENTATION_CPPFLAGS)\"; \
-	    echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
-	    echo LIBDIR=\"$(PWD)/.libs\"; \
-	    echo LIBS=\"$(LIBS)\"; \
-	    echo LIBDIR=\"$(LIBBFD_LDFLAGS)\"; \
-	    echo LIBDIR=\"$(CUBE_LIB_PATH)\"; \
-	    echo LIBDIR=\"$(TIMER_LIBDIR)\"; \
-	    echo LIBDIR=\"$(SCOREP_PAPI_LIBDIR)\"; \
-	    echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"; \
-	    echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)/scorep\"; \
-	    echo INCDIR=\"$(PWD)/$(INC_DIR_OPARI2)\"; \
-	    echo SRC_ROOT=\"$(abs_top_srcdir)/..\"; \
-	    echo CC=\"$(CC)\"; \
-	    echo CXX=\"$(CXX)\"; \
-	    echo LIBS=\"$(LIBBFD_LIBS)\"; \
-	    echo LIBS=\"$(CUBE_LIBS)\"; \
-	    echo LIBS=\"$(TIMER_LIB)\"; \
-	    echo LIBS=\"$(SCOREP_PAPI_LIBS)\"; \
-	    echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"; \
-	    echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"; \
-	    echo PDT=\"$(PDT_PATH)\"; \
-	    echo PDT_CONFIG=\"$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Pdt_Instrumentation.conf\"; \
-	    echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
-	    echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
-	    echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-print\"; \
-	    echo COBI_CONFIG_DIR=\"$(SCOREP_SHARE_LOCAL_DIR)\"; \
-	    echo PASS_LINKER_FLAG_THROUGH_COMPILER=\"$(PASS_LINKER_FLAG_THROUGH_COMPILER)\"; \
-	) >$@
+            echo LIBDIR=\"$(PWD)/.libs\"; \
+            echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"; \
+            echo SRC_ROOT=\"$(abs_top_srcdir)/..\"; \
+            echo CC=\"$(CC)\"; \
+            echo CXX=\"$(CXX)\"; \
+            echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
+            echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
+            echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
+            echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-print\"; \
+            echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"; \
+            echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"; \
+            echo PDT=\"$(PDT_PATH)\"; \
+            echo PDT_CONFIG=\"$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Pdt_Instrumentation.conf\"; \
+        ) >$@
 
 
 if OPENMP_SUPPORTED
