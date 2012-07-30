@@ -57,6 +57,7 @@ struct SCOREP_Profile_LocationData
     scorep_profile_node*                 current_task_node;     /**< Callpath node of the current task */
     scorep_profile_task_table*           tasks;                 /**< Hashtable to track task instances */
     scorep_profile_task*                 current_task;          /**< Current task instance */
+    SCOREP_Location*                     location_data;         /**< Pointer to the Score-P location */
 };
 
 /* **************************************************************************************
@@ -75,6 +76,23 @@ scorep_profile_create_location_data( SCOREP_Location* locationData );
  */
 void
 scorep_profile_delete_location_data( SCOREP_Profile_LocationData* location );
+
+/**
+   Finalizes a location data structure. Is called during profile finalization.
+   Keeps the data structure alive and allows reuse of it after a
+   reinitialization of the profile.
+   @param location Location that is finalized.
+ */
+void
+scorep_profile_finalize_location( SCOREP_Profile_LocationData* location );
+
+/**
+   Reinitializes a location data object after profile finalization and
+   reinitialization of the profile.
+   @param location Location that is reinitialized.
+ */
+void
+scorep_profile_reinitialize_location( SCOREP_Profile_LocationData* locationData );
 
 /**
    Returns the current node for a thread

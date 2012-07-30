@@ -120,7 +120,7 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
         scorep_profile_param_instance =
             SCOREP_DefineParameter( "instance", SCOREP_PARAMETER_INT64 );
     }
-    else if ( numDenseMetrics > 0 )
+    else
     {
         /* Reallocate space for dense metrics on root nodes */
         uint32_t size = numDenseMetrics * sizeof( scorep_profile_dense_metric );
@@ -128,13 +128,18 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
         scorep_profile_node* current = scorep_profile.first_root_node;
         while ( current != NULL )
         {
-            current->dense_metrics = ( scorep_profile_dense_metric* )
-                                     SCOREP_Memory_AllocForProfile( size );
+            SCOREP_Profile_LocationData* location =
+                scorep_profile_type_get_location_data( current->type_specific_data );
+            scorep_profile_reinitialize_location( location );
+            if ( numDenseMetrics > 0 )
+            {
+                current->dense_metrics = ( scorep_profile_dense_metric* )
+                                         SCOREP_Memory_AllocForProfile( size );
 
-            scorep_profile_init_dense_metric( &current->inclusive_time );
-            scorep_profile_init_dense_metric_array( current->dense_metrics,
-                                                    numDenseMetrics );
-
+                scorep_profile_init_dense_metric( &current->inclusive_time );
+                scorep_profile_init_dense_metric_array( current->dense_metrics,
+                                                        numDenseMetrics );
+            }
             current = current->next_sibling;
         }
     }
@@ -166,13 +171,8 @@ SCOREP_Profile_Finalize()
             current->first_int_sparse    = NULL;
 
             /* Reset thread local storage */
-            thread_data                        = scorep_profile_type_get_location_data( current->type_specific_data );
-            thread_data->current_task_node     = current;
-            thread_data->current_implicit_node = current;
-            thread_data->current_depth         = 0;
-            thread_data->implicit_depth        = 0;
-            thread_data->fork_node             = NULL;
-            scorep_profile_task_finalize( thread_data );
+            thread_data = scorep_profile_type_get_location_data( current->type_specific_data );
+            scorep_profile_finalize_location( thread_data );
         }
         else
         {
