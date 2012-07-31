@@ -68,9 +68,5 @@ endif
 
 TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
-if !SCOREP_COMPILER_SUN
-TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_inst.sh
-endif
-EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_inst.sh
 
 endif

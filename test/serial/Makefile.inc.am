@@ -33,11 +33,6 @@ EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test.sh
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_test_profile.sh
 EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test_profile.sh
 
-if !SCOREP_COMPILER_SUN
-TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_test_inst.sh
-endif
-EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test_inst.sh
-
 check_PROGRAMS += serial_ack_test
 
 serial_ack_test_SOURCES  = $(SRC_ROOT)test/serial/serial_ack_test.c
