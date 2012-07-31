@@ -161,7 +161,7 @@ AS_IF([test "x${scorep_rusage_thread}" = "xyes"],
 AM_CONDITIONAL([HAVE_GETRUSAGE], [test "x${scorep_getrusage}" = "xyes"])
 AC_SUBST([SCOREP_RUSAGE_CPPFLAGS], [$scorep_rusage_cppflags])
 AC_SCOREP_SUMMARY([getrusage support], [${scorep_getrusage}])
-AS_IF([test "x"${scorep_rusage_cppflags} = "x"],
+AS_IF([test "x${scorep_rusage_thread}" = "xno"],
       [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${scorep_rusage_thread}])],
       [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${scorep_rusage_thread}, using ${scorep_rusage_cppflags}])])
 ])
