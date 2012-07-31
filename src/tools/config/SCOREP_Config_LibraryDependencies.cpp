@@ -244,7 +244,7 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
         }
         else
         {
-            flags.push_back( obj.m_build_dir );
+            flags.push_back( obj.m_build_dir + "/.libs" );
         }
         for ( j = obj.m_rpath.begin(); j != obj.m_rpath.end(); j++ )
         {
