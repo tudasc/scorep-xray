@@ -114,4 +114,6 @@ else
         [$ac_cv_sizeof_double], 
         [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 fi
+
+AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS
 ])
