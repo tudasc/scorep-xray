@@ -434,6 +434,11 @@ scorep_mpi_deregister()
         PMPI_Finalized( &res );
         if ( !res )
         {
+            extern void
+            scorep_timing_reduce_runtime_management_timings();
+
+            scorep_timing_reduce_runtime_management_timings();
+
             PMPI_Finalize();
             SCOREP_OnPMPI_Finalize();
         }

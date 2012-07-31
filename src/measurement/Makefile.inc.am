@@ -61,7 +61,9 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
     $(SRC_ROOT)src/measurement/scorep_system_tree.c               \
     $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h     \
-    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c     \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.h \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.c
 
 libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \

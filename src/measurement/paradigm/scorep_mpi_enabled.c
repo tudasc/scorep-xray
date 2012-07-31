@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -30,6 +30,7 @@
 #include <SCOREP_Debug.h>
 #include <scorep_thread.h>
 #include <scorep_definitions.h>
+#include <scorep_runtime_management_timings.h>
 #include <mpi.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -282,4 +283,26 @@ SCOREP_Mpi_Send( void*               buf,
                       dest,
                       0,
                       scorep_mpi_comm_world );
+}
+
+
+void
+scorep_timing_reduce_runtime_management_timings()
+{
+    #if HAVE( SCOREP_RUNTIME_MANAGEMENT_TIMINGS )
+    PMPI_Reduce( scorep_timing_sendbuf_durations,
+                 scorep_timing_recvbuf_durations_max,
+                 scorep_timing_num_entries,
+                 MPI_DOUBLE,
+                 MPI_MAX,
+                 0,
+                 MPI_COMM_WORLD );
+    PMPI_Reduce( scorep_timing_sendbuf_durations,
+                 scorep_timing_recvbuf_durations_min,
+                 scorep_timing_num_entries,
+                 MPI_DOUBLE,
+                 MPI_MIN,
+                 0,
+                 MPI_COMM_WORLD );
+    #endif
 }
