@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <toolset.01>
-<tool name="Score-P profile">
+<tool name="ScoreP-profile">
     <compile>
         <allcompilers command="scorep" group="scorep"/>
     </compile>
@@ -14,7 +14,12 @@
     <compile>
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
-    <execute>
+    <execute replace_execution="true">
+	    <utility command="rm" group="command">
+	      <argument value="-rf epik_a"/>
+            </utility>
+    </execute>
+     <execute>
         <global name="SCORPEnvironment">
             <envvar flag="SCAN_OVERWRITE" value="1"/>
             <envvar flag="EPK_SUMMARY" value="0"/>
@@ -34,6 +39,11 @@
     <compile>
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
+    <execute replace_execution="true">
+	    <utility command="rm" group="command">
+	      <argument value="-rf epik_a"/>
+            </utility>
+    </execute>
     <execute>
         <global name="SCORPEnvironment">
             <envvar flag="SCAN_OVERWRITE" value="1"/>
@@ -54,6 +64,11 @@
     <compile>
         <allcompilers command="scalasca --instrument" group="scalasca"/>
     </compile>
+    <execute replace_execution="true">
+	    <utility command="rm" group="command">
+	      <argument value="-rf epik_a"/>
+            </utility>
+    </execute>
     <execute>
         <global name="SCORPEnvironment">
             <envvar flag="SCAN_OVERWRITE" value="1"/>
