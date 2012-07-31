@@ -2,13 +2,11 @@
 if HAVE_PDT
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/pdt/C/pdt_serial_test.c     \
-    $(SRC_ROOT)test/adapters/pdt/C/pdt_mpi_test.c        \
     $(SRC_ROOT)test/adapters/pdt/C++/pdt_serial_test.cxx \
     $(SRC_ROOT)test/adapters/pdt/Fortran/pdt_serial_test.F90
 
 TESTS_SERIAL += \
-    ./../test/adapters/pdt/run_pdt_serial_tests.sh \
-    ./../test/adapters/pdt/run_pdt_mpi_tests.sh
+    ./../test/adapters/pdt/run_pdt_serial_tests.sh
 
 if ! SCOREP_COMPILER_PGI
 TESTS_SERIAL += ./../test/adapters/pdt/run_pdt_fortran_tests.sh

@@ -23,7 +23,7 @@ make scorep-config-tool-local
 . ./scorep_config.dat
 
 echo "/* Dummy */" > config.h
-./scorep -v --config=scorep_config.dat $CC -I. -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
+./scorep -v --build-check $CC -I. -o serial_inst_test $SRC_ROOT/test/serial/serial_test.c
 if [ ! -e serial_inst_test ]; then
     rm -f config.h
     exit 1

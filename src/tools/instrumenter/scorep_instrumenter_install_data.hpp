@@ -132,9 +132,20 @@ public:
     std::string
     getPdtConfigFile();
 
-
+    /**
+       Reads configuration data from a config file
+     */
     SCOREP_Error_Code
     readConfigFile( std::string arg0 );
+
+    /**
+       Perfroms the changes on the install data retrieval if it is a build
+       check run, performed in the build directory instead of the install
+       directory.
+     */
+    void
+    setBuildCheck();
+
 
     /* ***************************************************** Private methods */
 private:

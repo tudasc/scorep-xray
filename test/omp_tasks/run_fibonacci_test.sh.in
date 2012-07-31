@@ -37,8 +37,6 @@ echo $PWD
 echo "==================="
 
 # Setup
-make scorep-config-tool-local
-. ./scorep_config.dat
 touch config.h
 cp  @abs_srcdir@/task_fibonacci.c task_fibonacci.c
 @SCOREP_COMPILER_SUN_FALSE@extra_flag=""
@@ -60,7 +58,7 @@ fi
          --noopari \
          --nocompiler \
          -v \
-         --config=scorep_config.dat \
+         --build-check \
          @CC@ -I. -o fib_main task_fibonacci.c @OPENMP_CFLAGS@
 
 if [ ! -e fib_main ]; then
@@ -71,7 +69,7 @@ fi
 ./scorep --user \
          --nocompiler \
          -v \
-         --config=scorep_config.dat \
+         --build-check \
          @CC@ -I. -o fib_pomp task_fibonacci.c @OPENMP_CFLAGS@
 
 if [ ! -e fib_pomp ]; then
@@ -81,7 +79,7 @@ fi
 # build with compiler and pomp instrumentation
 ./scorep $extra_flag \
          -v \
-         --config=scorep_config.dat \
+         --build-check \
          @CC@ -I. -o fib_full task_fibonacci.c @OPENMP_CFLAGS@
 
 if [ ! -e fib_full ]; then

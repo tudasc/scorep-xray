@@ -35,19 +35,17 @@ echo $PWD/run_pdt_backend_tests.sh
 echo "==================="
 
 # Setup test environment
-make scorep-config-tool-local
-. ./scorep_config.dat
 touch config.h
 
 # C
-$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
+$SCOREP  --pdt --nocompiler -v --build-check \
          @CC@ -I. @abs_srcdir@/C/pdt_serial_test.c -c -o pdt_serial_c.o
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
 # C++
-$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
+$SCOREP  --pdt --nocompiler -v --build-check \
          @CXX@ -I. @abs_srcdir@/C++/pdt_serial_test.cxx -c -o pdt_serial_cxx.o
 if [ $? -ne 0 ]; then
     exit 1

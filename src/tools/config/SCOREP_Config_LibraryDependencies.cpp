@@ -217,7 +217,7 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
         }
         else
         {
-            flags.push_back( "-L" + obj.m_build_dir );
+            flags.push_back( "-L" + obj.m_build_dir + "/.libs" );
         }
         flags.insert( flags.end(),
                       obj.m_ldflags.begin(),

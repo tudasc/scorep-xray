@@ -26,11 +26,25 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <SCOREP_IO.h>
+#include <SCOREP_CStr.h>
 
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
 
+
+/* ****************************************************************************
+   Helper functions
+******************************************************************************/
+static inline std::string
+simplify_path( std::string path )
+{
+    char* buffer = SCOREP_CStr_dup( path.c_str() );
+    SCOREP_IO_SimplifyPath( buffer );
+    std::string simple_path = buffer;
+    free( buffer );
+    return simple_path;
+}
 
 /* ****************************************************************************
    Main interface
@@ -155,6 +169,22 @@ SCOREP_Instrumenter_InstallData::readConfigFile( std::string arg0 )
     {
         return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
     }
+}
+
+void
+SCOREP_Instrumenter_InstallData::setBuildCheck()
+{
+    m_scorep_config = simplify_path( BUILD_DIR "/scorep-config" )
+                      + " --build-check";
+    m_opari_config = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2-config" )
+                     + " --build-check";
+    m_nm              = "`" + m_opari_config +  " --nm`";
+    m_awk             = "`" + m_opari_config +  " --awk-cmd`";
+    m_opari           = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2" );
+    m_opari_script    = "`" + m_opari_config + " --awk-script`";
+    m_grep            = "`" + m_opari_config + " --egrep`";
+    m_cobi_config_dir = simplify_path( BUILD_DIR "/../share" );
+    m_pdt_config_file = simplify_path( BUILD_PDT_CONFIG );
 }
 
 /* ****************************************************************************

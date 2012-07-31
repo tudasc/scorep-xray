@@ -34,12 +34,10 @@ echo $PWD/run_pdt_fortran_tests.sh
 echo "==================="
 
 # Setup test environment
-make scorep-config-tool-local
-. ./scorep_config.dat
 touch config.h
 
 #Fortran
-$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
+$SCOREP  --pdt --nocompiler -v --build-check \
          @FC@ -I. @abs_srcdir@/Fortran/pdt_serial_test.F90 -c -o pdt_serial_f90.o
 if [ $? -ne 0 ]; then
     exit 1

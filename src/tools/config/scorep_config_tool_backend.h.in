@@ -17,3 +17,6 @@
 #define LIBDIR_FLAG_F77      "@HARDCODE_LIBDIR_FLAG_F77@"
 #define LIBDIR_FLAG_WL       "@HARDCODE_LIBDIR_WL@"
 #define LIBDIR_AIX_LIBPATH   "@HARDCODE_LIBDIR_AIX_LIBPATH@"
+
+#define BUILD_SCOREP_PREFIX  "@abs_top_srcdir@/.." 
+#define BUILD_PDT_CONFIG     "@abs_top_srcdir@/../share/SCOREP_Pdt_Instrumentation.conf"

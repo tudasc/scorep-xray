@@ -66,9 +66,10 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_lmpi_set          = false;
 
     /* Instrumenter flags */
-    m_is_dry_run = false;
-    m_keep_files = false;
-    m_verbosity  = 0;
+    m_is_dry_run     = false;
+    m_keep_files     = false;
+    m_verbosity      = 0;
+    m_is_build_check = false;
 }
 
 SCOREP_Instrumenter_CmdLine::~SCOREP_Instrumenter_CmdLine()
@@ -257,6 +258,12 @@ SCOREP_Instrumenter_CmdLine::getVerbosity()
     return m_verbosity;
 }
 
+bool
+SCOREP_Instrumenter_CmdLine::isBuildCheck()
+{
+    return m_is_build_check;
+}
+
 /* ****************************************************************************
    private methods
 ******************************************************************************/
@@ -335,6 +342,13 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg == "--dry-run" )
     {
         m_is_dry_run = true;
+        return scorep_parse_mode_param;
+    }
+
+    else if ( arg == "--build-check" )
+    {
+        m_is_build_check = true;
+        m_install_data->setBuildCheck();
         return scorep_parse_mode_param;
     }
 

@@ -397,8 +397,14 @@ main( int    argc,
 
             // Append the include directories, too
             case ACTION_INCDIR:
-                str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
-
+                if ( install )
+                {
+                    str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
+                }
+                else
+                {
+                    str += "-I" BUILD_SCOREP_PREFIX "/include -I" BUILD_SCOREP_PREFIX "/include/scorep ";
+                }
                 if ( cuda )
                 {
                     str = " -Xcompiler " + prepare_string( str );

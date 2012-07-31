@@ -15,7 +15,8 @@ scorep_SOURCES = \
 
 scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) \
     -I$(INC_ROOT)src/tools/instrumenter \
-    -I$(INC_DIR_UTIL)
+    -I$(INC_DIR_UTIL) \
+    -DBUILD_DIR=\"`pwd`\"
 
 if HAVE_PDT
 scorep_CPPFLAGS += -DHAVE_PDT=1

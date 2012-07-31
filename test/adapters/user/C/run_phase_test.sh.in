@@ -36,18 +36,13 @@ echo $PWD/run_phase_test.sh
 echo "==================="
 
 # Setup test environment
-make scorep-config-tool-local
-. ./scorep_config.dat
 touch config.h
 cp  @abs_srcdir@/scorep_phase_test.c scorep_phase_test.c
 @SCOREP_COMPILER_SUN_FALSE@extra_flag=""
 @SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
 
 # build instrumented executable
-./scorep $extra_flag \
-         --user \
-         -v \
-         --config=scorep_config.dat \
+./scorep $extra_flag --user -v --build-check \
         @CC@ -I. -o scorep_phase_test scorep_phase_test.c @OPENMP_CFLAGS@
 
 if [ ! -e scorep_phase_test ]; then

@@ -32,12 +32,10 @@ echo "==================="
 echo $PWD/run_pdt_mpi_tests.sh
 echo "==================="
 
-make scorep-config-tool-local
-. ./scorep_config.dat
 touch config.h
 
 # C
-$SCOREP  --pdt --nocompiler -v --config=scorep_config.dat \
+$SCOREP  --pdt --nocompiler -v --build-check \
          @CC@ -I. @abs_srcdir@/C/pdt_mpi_test.c -c -o pdt_mpi_test.o
 if [ $? -ne 0 ]; then
     exit 1

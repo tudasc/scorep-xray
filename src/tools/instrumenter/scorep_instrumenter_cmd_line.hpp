@@ -151,6 +151,8 @@ public:
     hasKeepFiles();
     int
     getVerbosity();
+    bool
+    isBuildCheck();
 
     /* ***************************************************** Private methods */
 private:
@@ -386,6 +388,12 @@ private:
        </ul>
      */
     int m_verbosity;
+
+    /**
+       True, if this is a build check is run. Does not assume to use data
+       from an instrumented run, but from the build location.
+     */
+    bool m_is_build_check;
 };
 
 #endif

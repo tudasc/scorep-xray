@@ -30,7 +30,8 @@ scorep_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
 scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
                          -I$(INC_DIR_UTIL) \
                          -I$(INC_ROOT)src/tools/config \
-                         -I../build-backend
+                         -I../build-backend \
+                         -D"BUILD_DIR=\"`pwd`\""
 
 if HAVE_PDT
 scorep_config_CPPFLAGS += -DHAVE_PDT=1
