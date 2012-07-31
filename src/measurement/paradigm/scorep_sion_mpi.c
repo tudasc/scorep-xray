@@ -54,26 +54,41 @@ scorep_sion_open( void*          userData,
                   int*           fileSystemBlockSize,
                   FILE**         filePointer )
 {
-    int number_of_sion_files  = 1; /* on BlueGene one should increase this
-                                      number for applications using >16k
-                                      processes. Maybe this will be done
-                                      automagically by sion in upcoming
-                                      releases. */
-    const char* file_mode     = "wb";
-    char*       new_file_name = NULL;
-    MPI_Comm    comm_world    = MPI_COMM_WORLD;
-    int         global_rank   = SCOREP_Mpi_GetRank();
+    int         number_of_sion_files = 1; /* should be customizable via environment var */
+    const char* file_mode            = "bw";
+    char*       new_file_name        = NULL;
+    MPI_Comm    comm_world           = MPI_COMM_WORLD;
+    int         global_rank          = SCOREP_Mpi_GetRank();
     SCOREP_MPI_EVENT_GEN_OFF();
+
+    #if defined( __bgp__ )
+    /* MPIX_Pset_same_comm_create creates a communicator such that all
+       nodes in the same communicator are served by the same I/O node. For
+       each I/O node we will create one sion file that comprises the files
+       of all tasks of this communicator. To activate this, set
+       number_of_sion_files <= 0. */
+    MPI_Comm commSame;
+    MPIX_Pset_same_comm_create( &commSame );
+    number_of_sion_files = 0;
+    #endif
+
+    PMPI_Barrier( comm_world );
     int sion_file_handle = sion_paropen_mpi( ( char* )fileName,
                                              file_mode,
                                              &number_of_sion_files,
                                              comm_world,
+                                             #if defined( __bgp__ )
+                                             &commSame,
+                                             #else
                                              &comm_world,
+                                             #endif
                                              chunkSize,
                                              fileSystemBlockSize,
                                              &global_rank,
                                              filePointer,
                                              &new_file_name );
+    PMPI_Barrier( comm_world );
+
     SCOREP_MPI_EVENT_GEN_ON();
     assert( sion_file_handle != -1 );
     return sion_file_handle;
