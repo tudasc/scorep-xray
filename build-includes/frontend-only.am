@@ -7,4 +7,3 @@ include ../src/tools/score/Makefile.inc.am
 include ../vendor/common/src/utils/parser/Makefile.inc.am
 
 #include ../test/...
-include ../test/adapters/pdt/Makefile.inc.am

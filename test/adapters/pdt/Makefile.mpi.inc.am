@@ -1,8 +1,0 @@
-if HAVE_PDT
-EXTRA_DIST       += \
-    $(SRC_ROOT)test/adapters/pdt/C/pdt_mpi_test.c
-
-TESTS_MPI += \
-    ./../test/adapters/pdt/run_pdt_mpi_tests.sh
-
-endif

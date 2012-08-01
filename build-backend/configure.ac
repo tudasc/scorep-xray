@@ -218,10 +218,6 @@ AC_CONFIG_FILES([../test/omp_tasks/run_fibonacci_test.sh], \
                 [chmod +x ../test/omp_tasks/run_fibonacci_test.sh])
 AC_CONFIG_FILES([../test/omp_tasks/run_single_loop_test.sh], \
                 [chmod +x ../test/omp_tasks/run_single_loop_test.sh])
-AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_serial_tests.sh], \
-                [chmod +x ../test/adapters/pdt/run_pdt_serial_tests.sh])
-AC_CONFIG_FILES([../test/adapters/pdt/run_pdt_fortran_tests.sh], \
-                [chmod +x ../test/adapters/pdt/run_pdt_fortran_tests.sh])
 AC_CONFIG_FILES([../vendor/common/build-config/generate-library-dependencies.sh], \
                 [chmod +x ../vendor/common/build-config/generate-library-dependencies.sh])
 AC_CONFIG_FILES([../installcheck/instrumenter-configurations.sh:../test/installcheck/instrumenter-configurations.sh.in],
