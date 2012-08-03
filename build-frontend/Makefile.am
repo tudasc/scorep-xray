@@ -42,9 +42,6 @@ include ../build-includes/front-and-backend.am
 check-serial: check-run-serial
 check-omp:    check-run-omp
 
-## Convenience variable, used in common.am
-BUILD_DIR=build-frontend
-
 ## Here we create the Cobi config scripts.
 create-cobi-config-local:
 	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) create-cobi-config-local

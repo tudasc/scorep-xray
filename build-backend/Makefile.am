@@ -63,9 +63,6 @@ endif !BACKEND_TEST_RUNS
 endif !CROSS_BUILD
 
 
-## Convenience variable, used in common.am
-BUILD_DIR=build-backend
-
 ## Here all libscorep_*.la are build
 LIB_DIR_SCOREP = ./
 

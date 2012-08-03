@@ -56,6 +56,10 @@ AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
 AC_SCOREP_CUBE4_FRONTEND
 
+AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
+AC_SUBST([OTF2_LIBS],     ['-lotf2'])
+AC_SUBST([OTF2_LDFLAGS],  ['-L../vendor/otf2/build-backend'])
+
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
 

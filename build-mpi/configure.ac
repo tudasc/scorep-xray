@@ -117,6 +117,10 @@ AC_SCOREP_CUPTI
 AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
 
+AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
+AC_SUBST([OTF2_LIBS],     ['-lotf2'])
+AC_SUBST([OTF2_LDFLAGS],  ['-L../vendor/otf2/build-backend'])
+
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI
 # implementations.

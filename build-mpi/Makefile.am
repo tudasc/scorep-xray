@@ -61,15 +61,6 @@ endif !BACKEND_TEST_RUNS
 endif !CROSS_BUILD
 
 
-# I'm not sure if this is the way to go or if we need per 
-# target _LDADD = $(MPILIBS)
-#LIBS += $(MPILIBS)
-
-
-## Convenience variable, used in common.am. It is either build-backend
-## or build-frontend and used to refrence otf2 and utility variables.
-BUILD_DIR=build-backend
-
 ## Here all libscorep_*.la are build
 LIB_DIR_SCOREP = ../build-backend/
 
