@@ -29,7 +29,7 @@ dnl sub-configures.
 AC_DEFUN([AC_SCOREP_HAVE_CONFIG_TOOL], [
 
 AC_ARG_WITH([$1], 
-            [AS_HELP_STRING([--with-$1], [Path to $1-config if not already in $PATH.])], 
+            [AS_HELP_STRING([--with-$1], [Use an already installed $1. Provide path to $1-config if not already in $PATH.])], 
             [with_$1="${with_$1%/}"], 
             [with_$1="no"
              AC_SCOREP_SUMMARY([$1 support], [yes, using internal.])])
