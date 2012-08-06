@@ -122,11 +122,9 @@ scorep-config-tool-install:
 
 clean-local-scorep-config-tool:
 	rm -f $(builddir)/scorep_config.dat
-	@$(am__cd) ../vendor/otf2/build-backend && $(MAKE) $(AM_MAKEFLAGS) clean-local-otf2-config-tool
 	rm -f scorep_library_dependencies.cpp
 
 scorep-config-tool-local: $(builddir)/scorep_config.dat
-	@$(am__cd) ../vendor/otf2/build-backend && $(MAKE) $(AM_MAKEFLAGS) otf2-config-tool-local
 
 create-cobi-config-local:
 	@$(MKDIR_P) $(SCOREP_SHARE_LOCAL_DIR)
