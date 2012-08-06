@@ -245,6 +245,8 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
         else
         {
             flags.push_back( obj.m_build_dir + "/.libs" );
+            // to support pre-installed components we need to add m_build_dir too.
+            flags.push_back( obj.m_build_dir );
         }
         for ( j = obj.m_rpath.begin(); j != obj.m_rpath.end(); j++ )
         {
