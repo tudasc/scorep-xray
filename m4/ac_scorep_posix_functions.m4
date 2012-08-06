@@ -23,7 +23,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 
     AC_LANG_PUSH(C)
 
-    AC_CHECK_DECLS([gethostname, fseeko, getcwd], [], [], [[
+    AC_CHECK_DECLS([gethostname, fseeko, fseeko64, getcwd], [], [], [[
       #include <unistd.h>
       #include <stdio.h>
     ]])
@@ -60,6 +60,25 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             ])],
         [AC_MSG_RESULT(yes);
          AC_DEFINE(HAVE_FSEEKO, 1, [Can link a fseeko function])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_LINK_IF_ELSE
+
+    AC_MSG_CHECKING([for fseeko64])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdio.h>
+            #include <unistd.h>
+	    #include <fcntl.h>
+            int fseeko64(FILE *stream, off64_t offset, int whence);
+ 
+            int main()
+            {
+                FILE* stream;
+                return fseeko64(stream, 256lu, 0);
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_FSEEKO64, 1, [Can link a fseeko64 function])], 
         [AC_MSG_RESULT(no)]
     ) # AC_LINK_IF_ELSE
 
