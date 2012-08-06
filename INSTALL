@@ -151,6 +151,9 @@ Optional Packages:
   --with-mpi=(mpich2|impi|openmpi)
                           The mpi compiler suite to build this package with.
                           Needs to be in $PATH [mpich2].
+  --with-otf2=(yes|<otf2-bindir>)
+                          Use an already installed otf2. Provide path to
+                          otf2-config if not already in $PATH.
   --with-pdt=<path-to-binaries>
                           Specifies the path to the program database toolkit
                           (PDT) binaries, e.g., cparse.

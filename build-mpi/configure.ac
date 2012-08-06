@@ -13,11 +13,10 @@ AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
 cross_compiling=${ac_scorep_cross_compiling}
 
 ac_scorep_backend=yes
-if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    ac_scorep_frontend=no
-else
-    ac_scorep_frontend=yes
-fi
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [ac_scorep_frontend="no"
+       scorep_otf2_config_backend_arg="--backend"],
+      [ac_scorep_frontend="yes"])
 
 #if test "x${ac_scorep_platform}" = "xibm"; then
     cross_compiling=yes
@@ -117,9 +116,15 @@ AC_SCOREP_CUPTI
 AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
 
-AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
-AC_SUBST([OTF2_LIBS],     ['-lotf2'])
-AC_SUBST([OTF2_LDFLAGS],  ['-L../vendor/otf2/build-backend'])
+AS_IF([test -n "${scorep_otf2_bindir}"],
+      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cflags ${scorep_otf2_config_backend_arg}`"])
+       AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
+       AC_SUBST([OTF2_LDFLAGS],  [])
+       AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])],
+      [AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
+       AC_SUBST([OTF2_LIBS],     [-lotf2])
+       AC_SUBST([OTF2_LDFLAGS],  [-L../vendor/otf2/build-backend])
+       AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])])
 
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI

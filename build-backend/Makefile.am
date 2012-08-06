@@ -153,7 +153,7 @@ $(builddir)/scorep_config.dat:
             echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
             echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
             echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
-            echo OTF2_PRINT=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-print\"; \
+            echo OTF2_PRINT=\"@OTF2_BINDIR@/otf2-print\"; \
             echo OPARI=\"$(PWD)/../vendor/opari2/build-frontend/opari2\"; \
             echo OPARI_CONFIG=\"$(PWD)/../vendor/opari2/build-frontend/opari2-config --config=$(PWD)/../vendor/opari2/build-frontend/opari2_config.dat\"; \
             echo PDT=\"$(PDT_PATH)\"; \

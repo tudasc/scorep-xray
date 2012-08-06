@@ -13,12 +13,11 @@ if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compili
 fi
 cross_compiling=${ac_scorep_cross_compiling}
 
-ac_scorep_backend=yes
-if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    ac_scorep_frontend=no
-else
-    ac_scorep_frontend=yes
-fi
+ac_scorep_backend="yes"
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [ac_scorep_frontend="no"
+       scorep_otf2_config_backend_arg="--backend"],
+      [ac_scorep_frontend="yes"])
 
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
@@ -56,9 +55,15 @@ AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
 AC_SCOREP_CUBE4_FRONTEND
 
-AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
-AC_SUBST([OTF2_LIBS],     ['-lotf2'])
-AC_SUBST([OTF2_LDFLAGS],  ['-L../vendor/otf2/build-backend'])
+AS_IF([test -n "${scorep_otf2_bindir}"],
+      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cflags ${scorep_otf2_config_backend_arg}`"])
+       AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
+       AC_SUBST([OTF2_LDFLAGS],  [])
+       AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])],
+      [AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
+       AC_SUBST([OTF2_LIBS],     [-lotf2])
+       AC_SUBST([OTF2_LDFLAGS],  [-L../vendor/otf2/build-backend])
+       AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])])
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])
