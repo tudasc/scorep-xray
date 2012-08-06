@@ -52,7 +52,7 @@ AS_IF([test "x${with_$1}" != "xno"],
                            [scorep_$1_config_bin="${with_$1}/bin/$1-config"])])])
 
        AS_IF([test "x${scorep_have_$1_config}" = "xyes"], 
-             [scorep_$1_config_arg="scorep_$1_config=${scorep_$1_config_bin}"
+             [scorep_$1_config_arg="scorep_$1_bindir=`dirname ${scorep_$1_config_bin}`"
               # add version checking here. if successful:
               AC_SCOREP_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}.])],
              [AS_IF([test "x${with_$1}" = "xyes"],
