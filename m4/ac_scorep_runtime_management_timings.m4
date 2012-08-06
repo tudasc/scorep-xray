@@ -22,7 +22,7 @@
 AC_DEFUN([AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS], [
 
 AC_ARG_VAR([RUNTIME_MANAGEMENT_TIMINGS], 
-           [Wheter to activate time measurements for Score-P's SCOREP_InitMeasurement() and scorep_finalize() functions. Activation values are '1', 'yes', and 'true'. For developer use.])
+           [Whether to activate time measurements for Score-P's SCOREP_InitMeasurement() and scorep_finalize() functions. Activation values are '1', 'yes', and 'true'. For developer use.])
 
 AS_IF([test "x${RUNTIME_MANAGEMENT_TIMINGS}" = "x1"   ||
        test "x${RUNTIME_MANAGEMENT_TIMINGS}" = "xyes" ||
