@@ -48,6 +48,7 @@ include ../test/filtering/Makefile.inc.am
 include ../test/profiling/Makefile.inc.am
 include ../test/OA/serial/Fortran/Makefile.inc.am
 include ../test/OA/serial/C/Makefile.inc.am
+include ../test/OA/OMP/Makefile.inc.am
 include ../test/installcheck/Makefile.inc.am
 include ../test/memory/Makefile.inc.am
 include ../test/vector/Makefile.inc.am
