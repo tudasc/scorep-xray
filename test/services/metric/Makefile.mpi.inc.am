@@ -59,7 +59,7 @@ jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jac
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.mod.c         \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.c.opari.inc
 jacobi_mpi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly

@@ -37,7 +37,7 @@ check_PROGRAMS += mpi_omp_hello_world
 mpi_omp_hello_world_SOURCES  = $(SRC_ROOT)/test/mpi_omp/mpi_omp_hello_world.mod.c      \
                                $(SRC_ROOT)/test/mpi_omp/mpi_omp_hello_world.c.opari.inc
 mpi_omp_hello_world_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2)/opari2 @COMPILER_INSTRUMENTATION_CPPFLAGS@
+mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 mpi_omp_hello_world_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libmpi_omp_hello_world_pomp.la
 
 if HAVE_PAPI

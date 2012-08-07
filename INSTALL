@@ -154,6 +154,9 @@ Optional Packages:
   --with-otf2=(yes|<otf2-bindir>)
                           Use an already installed otf2. Provide path to
                           otf2-config if not already in $PATH.
+  --with-opari2=(yes|<opari2-bindir>)
+                          Use an already installed opari2. Provide path to
+                          opari2-config if not already in $PATH.
   --with-pdt=<path-to-binaries>
                           Specifies the path to the program database toolkit
                           (PDT) binaries, e.g., cparse.

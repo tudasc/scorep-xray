@@ -41,7 +41,7 @@ libomp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 omp_test_SOURCES  = $(SRC_ROOT)test/omp/omp_test.mod.c       \
                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-omp_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
 if HAVE_PAPI
@@ -59,7 +59,7 @@ check_PROGRAMS += internal_thread_handling
 internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling.c       \
                                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_OPARI2) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 internal_thread_handling_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
 if HAVE_PAPI

@@ -126,6 +126,19 @@ AS_IF([test -n "${scorep_otf2_bindir}"],
        AC_SUBST([OTF2_LDFLAGS],  [-L../vendor/otf2/build-backend])
        AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])])
 
+
+AS_IF([test -n "${scorep_opari2_bindir}"],
+      [#AC_SUBST([OPARI2_BINDIR],            ["${scorep_opari2_bindir}"])
+       #AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["${scorep_opari2_bindir}"])
+       AC_SUBST([OPARI2_CPPFLAGS],          ["`${scorep_opari2_bindir}/opari2-config --cflags`"])
+       #AC_SUBST([HAVE_EXTERNAL_OPARI2],     [1])
+      ],
+      [#AC_SUBST([OPARI2_BINDIR],            ["${prefix}/bin"])
+       #AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["../vendor/opari2/build-frontend"])
+       AC_SUBST([OPARI2_CPPFLAGS],          ['-I$(srcdir)/../vendor/opari2/include'])
+       #AC_SUBST([HAVE_EXTERNAL_OPARI2],     [0])
+      ])
+
 # we need an openmpi conditional because of a bug in the pgi-openmpi
 # configuration. We might extend this hack for other MPI
 # implementations.

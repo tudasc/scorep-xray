@@ -42,7 +42,7 @@ SCOREP_POMP_USER_FORTRAN_FLAGS =                          \
     $(AM_CPPFLAGS)                                        \
     -I$(INC_ROOT)src/adapters/include                     \
     -I$(PUBLIC_INC_DIR)                                   \
-    -I$(INC_DIR_OPARI2)                                   \
+    @OPARI2_CPPFLAGS@                                     \
     -I$(INC_DIR_UTIL)
 
 noinst_LTLIBRARIES +=                                     \
@@ -65,7 +65,7 @@ libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
     -I$(INC_ROOT)src/measurement/include                  \
     -I$(INC_ROOT)src/measurement/filtering                \
     -I$(PUBLIC_INC_DIR)                                   \
-    -I$(INC_DIR_OPARI2)                                   \
+    @OPARI2_CPPFLAGS@                                     \
     -I$(INC_DIR_POMP2_REGION_INFO)                        \
     -I$(INC_DIR_UTIL)
 libscorep_adapter_pomp_user_la_LIBADD =                   \
@@ -109,7 +109,7 @@ SCOREP_POMP_OMP_FORTRAN_FLAGS =                           \
     $(AM_CPPFLAGS)                                        \
     -I$(INC_ROOT)src/adapters/include                     \
     -I$(PUBLIC_INC_DIR)                                   \
-    -I$(INC_DIR_OPARI2)                                   \
+    @OPARI2_CPPFLAGS@                                     \
     -I$(INC_DIR_UTIL)                                     \
     -D_OPENMP
 
@@ -139,7 +139,7 @@ libscorep_adapter_pomp_omp_la_CPPFLAGS =                  \
     -I$(INC_ROOT)src/measurement/include                  \
     -I$(INC_ROOT)src/measurement/filtering                \
     -I$(PUBLIC_INC_DIR)                                   \
-    -I$(INC_DIR_OPARI2)                                   \
+    @OPARI2_CPPFLAGS@                                     \
     -I$(INC_DIR_POMP2_REGION_INFO)                        \
     -I$(INC_DIR_UTIL)
 libscorep_adapter_pomp_omp_la_LIBADD =                    \
