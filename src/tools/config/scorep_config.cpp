@@ -40,15 +40,16 @@
 #define MODE_MPI 2
 #define MODE_HYB 3
 
-#define ACTION_LIBS   1
-#define ACTION_CFLAGS 2
-#define ACTION_INCDIR 3
-#define ACTION_CC     4
-#define ACTION_CXX    5
-#define ACTION_FC     6
-#define ACTION_MPICC  7
-#define ACTION_MPICXX 8
-#define ACTION_MPIFC  9
+#define ACTION_LIBS    1
+#define ACTION_CFLAGS  2
+#define ACTION_INCDIR  3
+#define ACTION_LDFLAGS 4
+#define ACTION_CC      5
+#define ACTION_CXX     6
+#define ACTION_FC      7
+#define ACTION_MPICC   8
+#define ACTION_MPICXX  9
+#define ACTION_MPIFC  10
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
@@ -59,19 +60,20 @@
 #define HELPTEXT \
     "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
-    "   --cflags  prints additional compiler flags. They already contain the\n" \
-    "             include flags.\n" \
-    "   --inc     prints the include flags. They are already contained in the\n" \
-    "             output of the --cflags command\n" \
-    "   --libs    prints the required linker flags\n" \
-    "   --cc      prints the C compiler name\n" \
-    "   --cxx     prints the C++ compiler name\n" \
-    "   --fc      prints the Fortran compiler name\n" \
-    "   --mpicc   prints the MPI C compiler name\n" \
-    "   --mpicxx  prints the MPI C++ compiler name\n" \
-    "   --mpifc   prints the MPI Fortran compiler name\n" \
-    "   --help    prints this usage information\n" \
-    "   --version prints the version number of the scorep package\n" \
+    "   --cflags   prints additional compiler flags. They already contain the\n" \
+    "              include flags.\n" \
+    "   --cppflags prints the include flags. They are already contained in the\n" \
+    "              output of the --cflags command\n" \
+    "   --ldflags  prints the library path flags for the linker\n" \
+    "   --libs     prints the required linker flags\n" \
+    "   --cc       prints the C compiler name\n" \
+    "   --cxx      prints the C++ compiler name\n" \
+    "   --fc       prints the Fortran compiler name\n" \
+    "   --mpicc    prints the MPI C compiler name\n" \
+    "   --mpicxx   prints the MPI C++ compiler name\n" \
+    "   --mpifc    prints the MPI Fortran compiler name\n" \
+    "   --help     prints this usage information\n" \
+    "   --version  prints the version number of the scorep package\n" \
     "   --scorep-revision prints the revision number of the scorep package\n" \
     "   --common-revision prints the revision number of the common package\n\n" \
     "  Options:\n" \
@@ -177,7 +179,12 @@ main( int    argc,
         {
             action = ACTION_CFLAGS;
         }
-        else if ( strcmp( argv[ i ], "--inc" ) == 0 )
+        else if ( strcmp( argv[ i ], "--ldflags" ) == 0 )
+        {
+            action = ACTION_LDFLAGS;
+        }
+        else if ( ( strcmp( argv[ i ], "--inc" ) == 0 ) |
+                  ( strcmp( argv[ i ], "--cppflags" ) == 0 ) )
         {
             action = ACTION_INCDIR;
         }
@@ -253,8 +260,12 @@ main( int    argc,
 
         switch ( action )
         {
-            case ACTION_LIBS:
-                str = app.m_libdir + app.m_rpath + " -l" + scorep_libs[ mode ] + app.m_libs;
+            case ACTION_LDFLAGS:
+                str = app.m_libdir + app.m_rpath;
+                if ( action == ACTION_LIBS )
+                {
+                    str += " -l" + scorep_libs[ mode ] + app.m_libs;
+                }
                 if ( cuda )
                 {
                     str                = " -Xlinker " + prepare_string( str );
@@ -262,10 +273,21 @@ main( int    argc,
                 }
                 std::cout << str;
                 std::cout.flush();
+                str = app.m_otf2_config + " --ldflags";
+                ret = system( str.c_str() );
+                break;
 
-                app.m_otf2_config += " --libs";
-                ret                = system( app.m_otf2_config.c_str() );
-
+            case ACTION_LIBS:
+                str = " -l" + scorep_libs[ mode ] + app.m_libs;
+                if ( cuda )
+                {
+                    str                = " -Xlinker " + prepare_string( str );
+                    app.m_otf2_config += " --cuda";
+                }
+                std::cout << str;
+                std::cout.flush();
+                str = app.m_otf2_config + " --libs";
+                ret = system( str.c_str() );
                 break;
 
             case ACTION_CFLAGS:
@@ -353,7 +375,7 @@ main( int    argc,
 
         switch ( action )
         {
-            case ACTION_LIBS:
+            case ACTION_LDFLAGS:
                 std::cout << deps.GetLDFlags( libs, install );
                 str = deps.GetRpathFlags( libs, install,
                                           app.m_rpath_head,
@@ -363,6 +385,10 @@ main( int    argc,
                     str = " -Xlinker " + prepare_string( str );
                 }
                 std::cout << str;
+                std::cout.flush();
+                break;
+
+            case ACTION_LIBS:
                 std::cout << deps.GetLibraries( libs );
                 std::cout.flush();
                 break;
