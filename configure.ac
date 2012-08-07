@@ -68,11 +68,11 @@ AC_SCOREP_DEBUG_OPTION
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
 AC_SCOREP_HAVE_CONFIG_TOOL([otf2])
-#AC_SCOREP_HAVE_CONFIG_TOOL([opari2])
+AC_SCOREP_HAVE_CONFIG_TOOL([opari2])
 #AC_SCOREP_HAVE_CONFIG_TOOL([cube4])
 
 # handle external package's subdir configures
-AS_IF([test "xno" = "xno"],
+AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
       [AC_CONFIG_SUBDIR_CUSTOM([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])])
 
 AS_IF([test "x${scorep_have_otf2_config}" = "xno"],

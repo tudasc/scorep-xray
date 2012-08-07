@@ -6,8 +6,8 @@
 #define SCOREP_CC            "@CC@"
 #define SCOREP_CXX           "@CXX@"
 #define SCOREP_FC            "@FC@"
-#define OPARI                "@prefix@/bin/opari2"
-#define OPARI_CONFIG         "@prefix@/bin/opari2-config"
+#define OPARI                "@OPARI2_BINDIR@/opari2"
+#define OPARI_CONFIG         "@OPARI2_BINDIR@/opari2-config"
 #define PDT                  "@PDT_PATH@"
 #define PDT_CONFIG           "@DATAROOTDIR_SCOREP@/SCOREP_Pdt_Instrumentation.conf"
 #define COBI_CONFIG_DIR      "@DATAROOTDIR_SCOREP@"
@@ -20,3 +20,5 @@
 
 #define BUILD_SCOREP_PREFIX  "@abs_top_srcdir@/.." 
 #define BUILD_PDT_CONFIG     "@abs_top_srcdir@/../share/SCOREP_Pdt_Instrumentation.conf"
+
+#define HAVE_EXTERNAL_OPARI2 @HAVE_EXTERNAL_OPARI2@

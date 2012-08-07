@@ -176,11 +176,13 @@ SCOREP_Instrumenter_InstallData::setBuildCheck()
 {
     m_scorep_config = simplify_path( BUILD_DIR "/scorep-config" )
                       + " --build-check";
+    #if !HAVE( EXTERNAL_OPARI2 )
     m_opari_config = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2-config" )
                      + " --build-check";
+    m_opari = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2" );
+    #endif
     m_nm              = "`" + m_opari_config +  " --nm`";
     m_awk             = "`" + m_opari_config +  " --awk-cmd`";
-    m_opari           = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2" );
     m_opari_script    = "`" + m_opari_config + " --awk-script`";
     m_grep            = "`" + m_opari_config + " --egrep`";
     m_cobi_config_dir = simplify_path( BUILD_DIR "/../share" );
