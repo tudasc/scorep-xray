@@ -57,3 +57,8 @@ void
 SCOREP_OA_Register()
 {
 }
+
+void
+SCOREP_OA_Finalize()
+{
+}

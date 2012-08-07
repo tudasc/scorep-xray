@@ -411,6 +411,8 @@ scorep_finalize( void )
     }
     scorep_finalized = true;
 
+    SCOREP_OA_Finalize();
+
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
     SCOREP_TIME_START_TIMING( scorep_finalize );
 

@@ -117,21 +117,16 @@ SCOREP_OA_Initialized
     return scorep_oa_is_initialized;
 }
 
-int8_t
+void
 SCOREP_OA_Finalize
 (
 )
 {
     SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
-    if ( !SCOREP_IsOAEnabled() )
+    if ( scorep_oa_is_initialized
+         && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {
-        return 1;
+        scorep_oa_connection_send_string( connection, "SUSPENDEDATEND\n" );
+        //scorep_oa_mri_receive_and_process_requests( connection );
     }
-    if ( scorep_oa_is_initialized )
-    {
-        //scorep_oa_mri_send_app_status(SCOREP_OA_MRI_SUSPENDED_TERMINATION,0,0);
-
-        //scorep_oa_mri_send_data(SCOREP_OA_MRI_SYMBOLS,void*,count)
-    }
-    return 1;
 }

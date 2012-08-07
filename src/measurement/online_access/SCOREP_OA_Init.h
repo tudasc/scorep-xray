@@ -42,8 +42,8 @@ SCOREP_OA_Initialized
 (
 );
 
-int8_t
-SULC_OA_Finalize
+void
+SCOREP_OA_Finalize
 (
 );
 
