@@ -22,3 +22,5 @@
 #define BUILD_PDT_CONFIG     "@abs_top_srcdir@/../share/SCOREP_Pdt_Instrumentation.conf"
 
 #define HAVE_EXTERNAL_OPARI2 @HAVE_EXTERNAL_OPARI2@
+
+#define LIBRARY_INTERFACE_VERSION "@LIBRARY_INTERFACE_VERSION@"
