@@ -2,8 +2,8 @@
 #include <opari2/pomp2_lib.h>
 
 #include <stdint.h>
-extern int64_t __attribute__((aligned (16))) pomp_tpd_;
-#pragma omp threadprivate(pomp_tpd_)
+extern int64_t __attribute__((aligned (16))) FORTRAN_MANGLED(pomp_tpd);
+#pragma omp threadprivate(FORTRAN_MANGLED(pomp_tpd))
 #define POMP2_DLIST_00001 shared(pomp2_region_1)
 static POMP2_Region_handle pomp2_region_1 = NULL;
 static const char pomp2_ctc_1[] = "173*regionType=task*sscl=/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c:33:33*escl=/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c:36:36**";

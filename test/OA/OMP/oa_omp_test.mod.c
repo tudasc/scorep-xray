@@ -73,7 +73,7 @@ main( int    argc,
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_3, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_3 );
 #line 51 "/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c"
-        #pragma omp parallel POMP2_DLIST_00003 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(pomp_tpd_)
+        #pragma omp parallel POMP2_DLIST_00003 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
 {   POMP2_Parallel_begin( &pomp2_region_3 );
 #line 52 "/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c"
         {
@@ -98,7 +98,7 @@ main( int    argc,
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_4, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_4 );
 #line 61 "/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c"
-        #pragma omp parallel private(i) POMP2_DLIST_00004 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(pomp_tpd_)
+        #pragma omp parallel private(i) POMP2_DLIST_00004 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
 {   POMP2_Parallel_begin( &pomp2_region_4 );
 #line 62 "/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c"
         {
@@ -141,7 +141,7 @@ main( int    argc,
   POMP2_Task_handle pomp2_old_task;
   POMP2_Parallel_fork(&pomp2_region_6, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_6 );
 #line 77 "/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c"
-	    #pragma omp parallel POMP2_DLIST_00006 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(pomp_tpd_)
+	    #pragma omp parallel POMP2_DLIST_00006 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
 {   POMP2_Parallel_begin( &pomp2_region_6 );
 #line 78 "/home/oleynik/work/external_folder/trunk/test/OA/OMP/oa_omp_test.c"
 		{
