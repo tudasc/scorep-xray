@@ -61,7 +61,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             OBJDIR="$$obj_dir" \
                             BINDIR="$(BINDIR)" \
                             CODE="$$code" \
-                            LANG="$$language" \
+                            LANGUAGE="$$language" \
                             SRCDIR="$(PARADIGM_SRCDIR)/$$code/$$language" \
                             INCDIR="$(INCDIR)" \
                             PARADIGM="$(PARADIGM)" \
@@ -88,7 +88,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             OBJDIR="$$obj_dir" \
                             BINDIR="$(BINDIR)" \
                             CODE="$$code" \
-                            LANG="$$language" \
+                            LANGUAGE="$$language" \
                             SRCDIR="$(PARADIGM_SRCDIR)/$$code/$$language" \
                             INCDIR="$(INCDIR)" \
                             PARADIGM="$(PARADIGM)" \
