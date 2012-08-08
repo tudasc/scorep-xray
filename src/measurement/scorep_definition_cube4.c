@@ -648,7 +648,7 @@ write_system_tree( cube_t*                   my_cube,
         system_tree[ pos ].my_cube_machine = NULL;
         system_tree[ pos ].my_cube_node    = NULL;
         system_tree[ pos ].parent          = NULL;
-        if ( definition->parent_handle != NULL )
+        if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             system_tree[ pos ].parent = find_system_node( system_tree, nodes,
                                                           definition->parent_handle );
