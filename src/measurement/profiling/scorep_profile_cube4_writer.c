@@ -77,6 +77,8 @@ typedef struct
     uint8_t*                      bit_vector;       /**< Indicates callpath with values */
     int32_t                       has_tasks;        /**< Whether tasks occured */
     uint32_t                      num_unified;      /**< Number of unified metrics */
+    int32_t                       same_thread_num;  /**< Non-zero if same number of
+                                                         threads on all ranks */
 } scorep_cube_writing_data;
 
 
@@ -410,7 +412,7 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* write_set )
    @def SCOREP_PROFILE_WRITE_CUBE_METRIC
    Code to write metric values in cube format. Used to reduce code replication.
  */
-#define SCOREP_PROFILE_WRITE_CUBE_METRIC( type, TYPE, cube_type )	                \
+#define SCOREP_PROFILE_WRITE_CUBE_METRIC( type, TYPE, cube_type )                       \
 static void                                                                             \
 write_cube_##cube_type(                                                                 \
                         scorep_cube_writing_data*                 write_set,            \
@@ -462,11 +464,21 @@ write_cube_##cube_type(                                                         
                                                                                         \
         /* Collect data from all processes */                                           \
         SCOREP_Mpi_Barrier();                                                           \
-        SCOREP_Mpi_Gatherv( local_values, write_set->local_threads,                     \
-                            SCOREP_MPI_ ## TYPE,                                        \
-                            global_values, write_set->threads_per_rank,                 \
-                            write_set->offsets_per_rank,                                \
-                            SCOREP_MPI_ ## TYPE, 0 );                                   \
+        if ( write_set->same_thread_num )                                               \
+        {                                                                               \
+            SCOREP_Mpi_Gather ( local_values, write_set->local_threads,                 \
+                                SCOREP_MPI_ ## TYPE,                                    \
+                                global_values, write_set->local_threads,                \
+                                SCOREP_MPI_ ## TYPE, 0 );                               \
+        }                                                                               \
+        else                                                                            \
+        {                                                                               \
+            SCOREP_Mpi_Gatherv ( local_values, write_set->local_threads,                \
+                                 SCOREP_MPI_ ## TYPE,                                   \
+                                 global_values, write_set->threads_per_rank,            \
+                                 write_set->offsets_per_rank,                           \
+                                 SCOREP_MPI_ ## TYPE, 0 );                              \
+        }                                                                               \
                                                                                         \
         /* Write data for one callpath */                                               \
         if ( write_set->my_rank == 0 )                                                  \
@@ -505,6 +517,7 @@ SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, LONG_LONG, uint64 )
    @param func_data       Pointer to data that is passed to the @a get_value function
  */
 SCOREP_PROFILE_WRITE_CUBE_METRIC( double, DOUBLE, doubles )
+
 
 
 /**
@@ -615,6 +628,19 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
                        write_set->threads_per_rank, 1, SCOREP_MPI_INT, 0 );
     SCOREP_Mpi_Gather( &write_set->offset, 1, SCOREP_MPI_UNSIGNED,
                        write_set->offsets_per_rank, 1, SCOREP_MPI_INT, 0 );
+
+    /* Determine whether all ranks have the same number of threads */
+    int32_t same_thread_num = 1;
+    if ( ( write_set->my_rank != 0 ) &&
+         ( write_set->offset / write_set->my_rank != write_set->local_threads ) )
+    {
+        same_thread_num = 0;
+    }
+    SCOREP_Mpi_Allreduce( &same_thread_num,
+                          &write_set->same_thread_num,
+                          1,
+                          SCOREP_MPI_INT,
+                          SCOREP_MPI_BAND );
 
     /* Get number of unified metrics to every rank */
     if ( write_set->my_rank == 0 )
