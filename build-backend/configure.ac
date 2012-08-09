@@ -56,9 +56,9 @@ AC_SCOREP_LIBUNWIND
 AC_SCOREP_CUBE4_FRONTEND
 
 AS_IF([test -n "${scorep_otf2_bindir}"],
-      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cflags ${scorep_otf2_config_backend_arg}`"])
+      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
-       AC_SUBST([OTF2_LDFLAGS],  [])
+       AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])],
       [AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
        AC_SUBST([OTF2_LIBS],     [-lotf2])
