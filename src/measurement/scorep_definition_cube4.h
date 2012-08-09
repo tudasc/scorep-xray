@@ -62,6 +62,8 @@ typedef struct
 void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
+                                   uint32_t                      ranks,
+                                   int*                          offsets,
                                    bool                          write_task_metrics );
 
 /**
