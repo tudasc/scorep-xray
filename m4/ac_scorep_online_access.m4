@@ -52,6 +52,12 @@ AS_IF([test "x${ac_scorep_platform}" = "xbgp" || \
        test "x${ac_scorep_platform}" = "xbgl"], 
       [ac_scorep_have_online_access="no"], 
       [])
+      
+case ${build_os} in
+            aix*)
+                ac_scorep_have_online_access="no"
+            ;;
+esac
 
 AM_CONDITIONAL([HAVE_ONLINE_ACCESS], [test "x${ac_scorep_have_online_access}" = "xyes" ])
 
