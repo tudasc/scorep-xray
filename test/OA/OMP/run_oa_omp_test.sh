@@ -118,7 +118,7 @@ SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONL
 #SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./libtool --verbose --mode=execute valgrind  --tool=memcheck --leak-check=full ./$TEST_NAME &
 TEST_PID=$!
 
-#echo registry $REGSRV_PID application $TEST_PID
+#echo registry $REGSRV_PID application $TEST_PID 
 ############################################################################################################################
 
 trap "cleanup $REGSRV_PID $TEST_PID $TIMER_PID" ALRM INT    #cleanup in case of timeout
