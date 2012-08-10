@@ -45,7 +45,8 @@ get_extension( std::string filename );
 std::string
 remove_extension( std::string filename );
 
-/** Checks whether a file is a source file.
+/**
+    Checks whether a file is a source file.
     @param filename A file name.
     @returns true if the file extension indicates a C/C++ or Fortran source
              file.
@@ -53,42 +54,48 @@ remove_extension( std::string filename );
 bool
 is_source_file( std::string filename );
 
-/** Checks whether a file is a Fortran source file.
+/**
+    Checks whether a file is a Fortran source file.
     @param filename A file name.
     @returns true if the file extension indicates Fortran source file.
  */
 bool
 is_fortran_file( std::string filename );
 
-/** Checks whether a file is a C source file.
+/**
+    Checks whether a file is a C source file.
     @param filename A file name.
     @returns true if the file extension indicates C source file.
  */
 bool
 is_c_file( std::string filename );
 
-/** Checks whether a file is a C++ source file.
+/**
+    Checks whether a file is a C++ source file.
     @param filename A file name.
     @returns true if the file extension indicates C++ source file.
  */
 bool
 is_cpp_file( std::string filename );
 
-/** Checks whether a file is a CUDA source file.
+/**
+    Checks whether a file is a CUDA source file.
     @param filename A file name.
     @returns true if the file extension indicates CUDA source file.
  */
 bool
 is_cuda_file( std::string filename );
 
-/** Checks whether a file is an object file.
+/**
+    Checks whether a file is an object file.
     @param filename A file name.
     @returns true if the file extension indicates an object file.
  */
 bool
 is_object_file( std::string filename );
 
-/** Checks whether a file is a library.
+/**
+    Checks whether a file is a library.
     @param filename A file name.
     @returns true if the file extension indicates an object file.
  */
@@ -110,7 +117,8 @@ remove_path( std::string full_path );
 std::string
 extract_path( std::string filename );
 
-/** Trim  and replace multiple white-spaces in @ str by a single one.
+/**
+    Trim  and replace multiple white-spaces in @ str by a single one.
     @param str              String to be processed.
     @return Returns string where all multiple white-spaces are replaced
             by a single one.
@@ -118,7 +126,8 @@ extract_path( std::string filename );
 std::string
 remove_multiple_whitespaces( std::string str );
 
-/** Replace all occurrences of @ pattern in string @ original by
+/**
+    Replace all occurrences of @ pattern in string @ original by
     @ replacement.
     @param pattern          String that should be replaced.
     @param replacement      Replacement for @ pattern.
@@ -131,6 +140,27 @@ replace_all( std::string &pattern,
              std::string &replacement,
              std::string  original );
 
+/**
+   Tests whether a given file exists.
+   @param filename Name of the file, which existence is tested.
+   @return true, if the file exists
+ */
+bool
+exists_file( std::string filename );
+
+/**
+   Searches for a library in a list of path.
+   @param library   The name of the library to search. If it starts with '-l', it is
+                    replaced by 'lib'. A suffix is appended.
+   @param path_list A list of possible library direcories.
+   @param delimiter A string that is used to separate the pathes from @a path_list.
+   @return The full path of the library, including the library file name, if a matching
+           library was found. Otherwise it return an empty string.
+ */
+std::string
+find_library( std::string library,
+              std::string path_list,
+              std::string delimiter );
 
 
 

@@ -23,7 +23,7 @@
 #include <config.h>
 #include <scorep_instrumenter_utils.hpp>
 #include <string>
-
+#include <fstream>
 
 std::string
 remove_multiple_whitespaces( std::string str )
@@ -256,4 +256,43 @@ is_library( std::string filename )
         return true;
     }
     return false;
+}
+
+bool
+exists_file( std::string filename )
+{
+    std::ifstream ifile( filename.c_str() );
+    return ifile;
+}
+
+std::string
+find_library( std::string library, std::string path_list, std::string delimiter )
+{
+    size_t      cur_pos = 0;
+    size_t      old_pos = 0;
+    std::string current_path;
+
+    if ( library.substr( 0, 2 ) == "-l" )
+    {
+        library.replace( 0, 2, "lib" );
+    }
+    while ( cur_pos != std::string::npos )
+    {
+        cur_pos = path_list.find( delimiter, old_pos );
+        if ( old_pos < cur_pos ) // Discard trailing delimiter
+        {
+            current_path  = path_list.substr( old_pos, cur_pos - old_pos );
+            current_path += "/" + library;
+            if ( exists_file( current_path + ".so" ) )
+            {
+                return current_path + ".so";
+            }
+            if ( exists_file( current_path + ".a" ) )
+            {
+                return current_path + ".a";
+            }
+        }
+        old_pos = cur_pos + 1;
+    }
+    return "";
 }
