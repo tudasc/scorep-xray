@@ -69,7 +69,7 @@ AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
 AC_SCOREP_HAVE_CONFIG_TOOL([otf2])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2])
-#AC_SCOREP_HAVE_CONFIG_TOOL([cube4])
+AC_SCOREP_HAVE_CONFIG_TOOL([cube])
 
 # handle external package's subdir configures
 AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
@@ -80,10 +80,10 @@ AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
 
 # handle own package's subdir configures
 AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ${scorep_otf2_config_arg}])
-AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube4_config_arg}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} ${scorep_opari2_config_arg} ${scorep_cube4_config_arg}])
+    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} ${scorep_opari2_config_arg} ${scorep_cube_config_arg}])
 fi
 
 AC_CONFIG_FILES([Makefile])

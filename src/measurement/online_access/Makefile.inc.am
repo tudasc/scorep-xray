@@ -34,7 +34,6 @@ SCOREP_OA_FORTRAN_FLAGS =                       \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/services/include           \
     -I$(INC_ROOT)src/measurement                \
-    -I$(INC_ROOT)src/measurement/cube_writer    \
     -I$(INC_ROOT)include/scorep                 \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL_INTERNAL)                  \

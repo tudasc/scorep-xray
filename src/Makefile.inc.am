@@ -19,6 +19,7 @@
 ## author     Christian Roessel <c.roessel@fz-juelich.de>
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
+BUILT_SOURCES += @CUBE_WRITER_BUILT_SOURCES@
 
 common_libadd = libscorep_measurement.la              \
                 libscorep_timer.la                    \
@@ -26,7 +27,7 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_adapter_compiler.la         \
                 libscorep_adapter_user.la             \
                 libscorep_adapter_tau.la              \
-                libscorep_cube_writer.la              \
+                @CUBE_WRITER_LIBS@                    \
                 libscorep_profile.la                  \
                 libscorep_tracing.la                  \
                 libscorep_platform.la                 \
@@ -55,7 +56,10 @@ common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(INC_DIR_UTIL)
 
 common_ldflags  = -version-info @LIBRARY_INTERFACE_VERSION@
-common_ldflags += @LIBBFD_LDFLAGS@ @SCOREP_PAPI_LDFLAGS@ @OTF2_LDFLAGS@
+common_ldflags += @LIBBFD_LDFLAGS@      \
+                  @SCOREP_PAPI_LDFLAGS@ \
+                  @OTF2_LDFLAGS@        \
+                  @CUBE_WRITER_LDFLAGS@
 
 
 ## MPI

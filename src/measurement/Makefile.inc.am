@@ -68,7 +68,7 @@ libscorep_measurement_la_SOURCES =                                \
 libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/measurement/cube_writer \
+    @CUBE_WRITER_CPPFLAGS@ \
     -I$(INC_DIR_UTIL_INTERNAL)
 
 ## paradigm omp

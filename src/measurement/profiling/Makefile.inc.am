@@ -28,7 +28,7 @@ PROFILE_FLAGS =                                 \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/services/include           \
     -I$(INC_ROOT)src/measurement                \
-    -I$(INC_ROOT)src/measurement/cube_writer    \
+    @CUBE_WRITER_CPPFLAGS@                      \
     -I$(INC_ROOT)src/measurement/online_access  \
     -I$(PUBLIC_INC_DIR)                         \
     -I$(INC_DIR_UTIL_INTERNAL)                  \
