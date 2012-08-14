@@ -18,7 +18,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
        scorep_otf2_config_backend_arg="--backend"],
       [ac_scorep_frontend="yes"])
 
-#if test "x${ac_scorep_platform}" = "xibm"; then
+#if test "x${ac_scorep_platform}" = "xaix"; then
     cross_compiling=yes
     # on power6 systems with poe, e.g. JUMP, we cannot execute a MPI
     # program on the login node. By setting cross_compiling temporarily
