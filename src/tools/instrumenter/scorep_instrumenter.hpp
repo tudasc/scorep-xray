@@ -95,6 +95,12 @@ private:
     instrument_opari( std::string source_file );
 
     /**
+       Returns the list of full filenames for all libraries specified via -l flags.
+     */
+    std::string
+    get_library_files();
+
+    /**
        Performs the necessary actions for linking Opari instrumented object
        files and libraries. Thus, it runs the awk script on the objects,
        creates the POMP2_Init Function, and compiles it.

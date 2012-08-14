@@ -141,6 +141,10 @@ public:
     getOutputName();
     std::string
     getInputFiles();
+    std::string
+    getLibraries();
+    std::string
+    getLibDirs();
     int
     getInputFileNumber();
     bool
@@ -344,6 +348,16 @@ private:
        file name of the compiler/linker output
      */
     std::string m_output_name;
+
+    /**
+       library names
+     */
+    std::string m_libraries;
+
+    /**
+       libdirs
+     */
+    std::string m_libdirs;
 
     /**
        input file names. Need to be separated because OPARI may

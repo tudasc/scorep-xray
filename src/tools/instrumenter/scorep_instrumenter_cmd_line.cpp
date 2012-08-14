@@ -63,6 +63,8 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_output_name       = "";
     m_input_file_number = 0;
     m_input_files       = "";
+    m_libraries         = "";
+    m_libdirs           = "";
     m_lmpi_set          = false;
 
     /* Instrumenter flags */
@@ -220,6 +222,18 @@ std::string
 SCOREP_Instrumenter_CmdLine::getOutputName()
 {
     return m_output_name;
+}
+
+std::string
+SCOREP_Instrumenter_CmdLine::getLibraries()
+{
+    return m_libraries;
+}
+
+std::string
+SCOREP_Instrumenter_CmdLine::getLibDirs()
+{
+    return m_libdirs;
 }
 
 std::string
@@ -593,6 +607,14 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
         add_define( arg );
         return scorep_parse_mode_command;
     }
+    else if ( arg[ 1 ] == 'L' )
+    {
+        m_libdirs += " " + arg.substr( 2, std::string::npos );
+    }
+    else if ( arg[ 1 ] == 'l' )
+    {
+        m_libraries += " " + arg;
+    }
 
     /* In any case that not yet returned, save the flag */
     m_compiler_flags += " " + arg;
@@ -730,6 +752,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter()
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
 SCOREP_Instrumenter_CmdLine::parse_library( std::string arg )
 {
+    m_libraries += " -l" + arg;
     if ( arg == "mpi" )
     {
         m_lmpi_set = true;
@@ -770,5 +793,6 @@ SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
 SCOREP_Instrumenter_CmdLine::parse_libdir( std::string arg )
 {
     m_compiler_flags += " -L" + arg;
+    m_libdirs        += " " + arg;
     return scorep_parse_mode_command;
 }

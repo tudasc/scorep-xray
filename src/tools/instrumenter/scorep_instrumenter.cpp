@@ -527,6 +527,31 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
    Linking
 ******************************************************************************/
 
+std::string
+SCOREP_Instrumenter::get_library_files()
+{
+    std::string libraries   = m_command_line->getLibraries();
+    std::string libdirs     = m_command_line->getLibDirs();
+    std::string current_lib = "";
+    std::string lib_files   = "";
+    size_t      old_pos     = 0;
+    size_t      cur_pos     = 0;
+
+    while ( cur_pos != std::string::npos )
+    {
+        cur_pos = libraries.find( " ", old_pos );
+        if ( old_pos < cur_pos ) // Discard a blank
+        {
+            current_lib = libraries.substr( old_pos, cur_pos - old_pos );
+
+            lib_files += " " + find_library( current_lib, libdirs, " " );
+        }
+        // Setup for next file
+        old_pos = cur_pos + 1;
+    }
+    return lib_files;
+}
+
 void
 SCOREP_Instrumenter::prepare_opari_linking()
 {
@@ -553,6 +578,7 @@ SCOREP_Instrumenter::prepare_opari_linking()
         // Setup for next file
         old_pos = cur_pos + 1;
     }
+    object_files += get_library_files();
 
     // Create and compile the POMP2 init file.
     invoke_awk_script( object_files, init_source );
