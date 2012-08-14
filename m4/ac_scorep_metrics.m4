@@ -66,7 +66,7 @@ ldflags_save="$LDFLAGS"
 LDFLAGS="-L$scorep_papi_lib_dir $LDFLAGS"
 # To use PAPI on IBM systems you have to link to
 # their performance monitor library (-lpmapi)
-if test "x${ac_scorep_platform}" = "xibm"; then
+if test "x${ac_scorep_platform}" = "xaix"; then
     scorep_papi_additional_libs="-lpmapi"
 else
     scorep_papi_additional_libs=""

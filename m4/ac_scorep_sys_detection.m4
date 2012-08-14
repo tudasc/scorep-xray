@@ -21,18 +21,16 @@ AC_DEFUN([_AC_SCOREP_DETECT_LINUX_PLATFORMS],
     if test "x${ac_scorep_platform}" = "xunknown"; then
         case ${build_os} in
             linux*)
-                AS_IF([test "x${build_cpu}" = "xia64"      -a -f /etc/sgi-release], 
+                AS_IF([test "x${build_cpu}" = "xia64"      && test -f /etc/sgi-release], 
                           [ac_scorep_platform="altix";    ac_scorep_cross_compiling="no"],
-                      [test "x${build_cpu}" = "xpowerpc64" -a -d /bgl/BlueLight],   
+                      [test "x${build_cpu}" = "xpowerpc64" && test -d /bgl/BlueLight],   
                           [ac_scorep_platform="bgl";      ac_scorep_cross_compiling="yes"],
-                      [test "x${build_cpu}" = "xpowerpc64" -a -d /bgsys/drivers/ppcfloor/hwi],           
+                      [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys/drivers/ppcfloor/hwi],           
                           [ac_scorep_platform="bgq";      ac_scorep_cross_compiling="yes"],
-                      [test "x${build_cpu}" = "xpowerpc64" -a -d /bgsys],           
+                      [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],           
                           [ac_scorep_platform="bgp";      ac_scorep_cross_compiling="yes"],
-                      [test "x${build_cpu}" = "xx86_64"    -a -d /opt/cray/xt-asyncpe],     
+                      [test "x${build_cpu}" = "xx86_64"    && test -d /opt/cray/xt-asyncpe],     
                           [ac_scorep_platform="crayxt";   ac_scorep_cross_compiling="yes"],
-                      [test "x${build_cpu}" = "xmips64"    -a -d /opt/sicortex],    
-                          [ac_scorep_platform="sicortex"; ac_scorep_cross_compiling="yes"],
                       [test "x${build_cpu}" = "xarmv7l"],
                           [ac_scorep_platform="arm"; ac_scorep_cross_compiling="no"],
                       [ac_scorep_platform=linux]
@@ -48,7 +46,7 @@ AC_DEFUN([_AC_SCOREP_DETECT_NON_LINUX_PLATFORMS],
     if test "x${ac_scorep_platform}" = "xunknown"; then
         case ${build_os} in
             sunos* | solaris*)
-                ac_scorep_platform="sun"
+                ac_scorep_platform="solaris"
                 ac_scorep_cross_compiling="no"
                 ;;
             darwin*)
@@ -56,11 +54,7 @@ AC_DEFUN([_AC_SCOREP_DETECT_NON_LINUX_PLATFORMS],
                 ac_scorep_cross_compiling="no"
                 ;;
             aix*)
-                ac_scorep_platform="ibm"
-                ac_scorep_cross_compiling="no"
-                ;;
-            unicosmp*)
-                ac_scorep_platform="crayx1"
+                ac_scorep_platform="aix"
                 ac_scorep_cross_compiling="no"
                 ;;
             superux*)
@@ -72,10 +66,10 @@ AC_DEFUN([_AC_SCOREP_DETECT_NON_LINUX_PLATFORMS],
 ])
 
 # The purpose of platform detection is to provide reasonable default
-# compilers, mpi-implementations, OpenMP flags etc.  The user always has the
+# compilers, MPI implementations, OpenMP flags, etc.  The user always has the
 # possibility to override the defaults by setting environment variables, see
 # section "Some influential environment variables" in configure --help.  On
-# some systems there may be no reasonable defaults for the mpi-implementation,
+# some systems there may be no reasonable defaults for the MPI implementation,
 # so specify them using --with-mpi=... I think we need to specify one or more
 # paths too. Also, on some systems there are different compiler-suites available
 # which can be choosen via --with-compiler=(gnu?|intel|sun|ibm|...)
@@ -150,24 +144,22 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
 [
     AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
-    AM_CONDITIONAL([PLATFORM_ALTIX],    [test "x${ac_scorep_platform}" = "xaltix"])
-    AM_CONDITIONAL([PLATFORM_POWER6],   [test "x${ac_scorep_platform}" = "xibm" -a "x${build_cpu}" = "xpowerpc"])
-    AM_CONDITIONAL([PLATFORM_BGL],      [test "x${ac_scorep_platform}" = "xbgl"])
-    AM_CONDITIONAL([PLATFORM_BGP],      [test "x${ac_scorep_platform}" = "xbgp"])
-    AM_CONDITIONAL([PLATFORM_BGQ],      [test "x${ac_scorep_platform}" = "xbgq"])
-    AM_CONDITIONAL([PLATFORM_CRAYXT],   [test "x${ac_scorep_platform}" = "xcrayxt"])
-    AM_CONDITIONAL([PLATFORM_SICORTEX], [test "x${ac_scorep_platform}" = "xsicortex"])
-    AM_CONDITIONAL([PLATFORM_LINUX],    [test "x${ac_scorep_platform}" = "xlinux"])
-    AM_CONDITIONAL([PLATFORM_SUN],      [test "x${ac_scorep_platform}" = "xsun"])
-    AM_CONDITIONAL([PLATFORM_MAC],      [test "x${ac_scorep_platform}" = "xmac"])
-    AM_CONDITIONAL([PLATFORM_CRAYX1],   [test "x${ac_scorep_platform}" = "xcrayx1"])
-    AM_CONDITIONAL([PLATFORM_NECSX],    [test "x${ac_scorep_platform}" = "xnecsx"])
-    AM_CONDITIONAL([PLATFORM_ARM],      [test "x${ac_scorep_platform}" = "xarm"])
+    AM_CONDITIONAL([PLATFORM_ALTIX],   [test "x${ac_scorep_platform}" = "xaltix"])
+    AM_CONDITIONAL([PLATFORM_AIX],     [test "x${ac_scorep_platform}" = "xaix" && test "x${build_cpu}" = "xpowerpc"])
+    AM_CONDITIONAL([PLATFORM_BGL],     [test "x${ac_scorep_platform}" = "xbgl"])
+    AM_CONDITIONAL([PLATFORM_BGP],     [test "x${ac_scorep_platform}" = "xbgp"])
+    AM_CONDITIONAL([PLATFORM_BGQ],     [test "x${ac_scorep_platform}" = "xbgq"])
+    AM_CONDITIONAL([PLATFORM_CRAYXT],  [test "x${ac_scorep_platform}" = "xcrayxt"])
+    AM_CONDITIONAL([PLATFORM_LINUX],   [test "x${ac_scorep_platform}" = "xlinux"])
+    AM_CONDITIONAL([PLATFORM_SOLARIS], [test "x${ac_scorep_platform}" = "xsolaris"])
+    AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
+    AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
+    AM_CONDITIONAL([PLATFORM_ARM],     [test "x${ac_scorep_platform}" = "xarm"])
 
     AM_COND_IF([PLATFORM_ALTIX],
                [AC_DEFINE([HAVE_PLATFORM_ALTIX], [1], [Set if we are building for the ALTIX platform])])
-    AM_COND_IF([PLATFORM_POWER6],
-               [AC_DEFINE([HAVE_PLATFORM_POWER6], [1], [Set if we are building for the POWER6 platform])])
+    AM_COND_IF([PLATFORM_AIX],
+               [AC_DEFINE([HAVE_PLATFORM_AIX], [1], [Set if we are building for the AIX platform])])
     AM_COND_IF([PLATFORM_BGL],
                [AC_DEFINE([HAVE_PLATFORM_BGL], [1], [Set if we are building for the BG/L platform])])
     AM_COND_IF([PLATFORM_BGP],
@@ -176,16 +168,12 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
                [AC_DEFINE([HAVE_PLATFORM_BGQ], [1], [Set if we are building for the BG/Q platform])])
     AM_COND_IF([PLATFORM_CRAYXT],
                [AC_DEFINE([HAVE_PLATFORM_CRAYXT], [1], [Set if we are building for the Cray XT platform])])
-    AM_COND_IF([PLATFORM_SICORTEX],
-               [AC_DEFINE([HAVE_PLATFORM_SICORTEX], [1], [Set if we are building for the SiCortex platform])])
     AM_COND_IF([PLATFORM_LINUX],
                [AC_DEFINE([HAVE_PLATFORM_LINUX], [1], [Set if we are building for the Linux platform])])
-    AM_COND_IF([PLATFORM_SUN],
-               [AC_DEFINE([HAVE_PLATFORM_SUN], [1], [Set if we are building for the Sun platform])])
+    AM_COND_IF([PLATFORM_SOLARIS],
+               [AC_DEFINE([HAVE_PLATFORM_SOLARIS], [1], [Set if we are building for the Solaris platform])])
     AM_COND_IF([PLATFORM_MAC],
-               [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the Apple Mac platform])])
-    AM_COND_IF([PLATFORM_CRAYX1],
-               [AC_DEFINE([HAVE_PLATFORM_CRAYX1], [1], [Set if we are building for the Cray X1 platform])])
+               [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the Mac platform])])
     AM_COND_IF([PLATFORM_NECSX],
                [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
     AM_COND_IF([PLATFORM_ARM],
