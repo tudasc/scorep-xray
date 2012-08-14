@@ -273,20 +273,21 @@ AS_IF([test "x${$1_dirs_exist}" = "xno"],
 [
 # check header files
 with_$1_include_checks_successful="yes"
-with_$1_cppflags=""
-AS_IF([test "x${with_$1_include}" != "xno"], 
-      [cpp_flags_save_$1="${CPPFLAGS}"
-       with_$1_cppflags="$3"
-       AS_IF([test "x${with_$1_include}" != "xyes"], 
-             [with_$1_cppflags="${with_$1_cppflags} -I${with_$1_include}"
-              _AC_SCOREP_ALL_FILES_EXIST([$2], [${with_$1_include}], [with_$1_include_checks_successful])
-             ])
-       #echo "CPPFLAGS $CPPFLAGS"
-       AS_IF([test "x${with_$1_include_checks_successful}" = "xyes"], 
-             [CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"
-              AC_CHECK_HEADERS([$2], [], [with_$1_include_checks_successful="no"])])
-       CPPFLAGS="${cpp_flags_save_$1}"],
-      [with_$1_include_checks_successful="no"])
+m4_ifnblank($2, [
+    with_$1_cppflags=""
+    AS_IF([test "x${with_$1_include}" != "xno"], 
+          [cpp_flags_save_$1="${CPPFLAGS}"
+           with_$1_cppflags="$3"
+           AS_IF([test "x${with_$1_include}" != "xyes"], 
+                 [with_$1_cppflags="${with_$1_cppflags} -I${with_$1_include}"
+                  _AC_SCOREP_ALL_FILES_EXIST([$2], [${with_$1_include}], [with_$1_include_checks_successful])
+                 ])
+           #echo "CPPFLAGS $CPPFLAGS"
+           AS_IF([test "x${with_$1_include_checks_successful}" = "xyes"], 
+                 [CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"
+                  AC_CHECK_HEADERS([$2], [], [with_$1_include_checks_successful="no"])])
+           CPPFLAGS="${cpp_flags_save_$1}"],
+          [with_$1_include_checks_successful="no"])])
 
 #echo "with_$1_include_checks_successful $with_$1_include_checks_successful"
 
