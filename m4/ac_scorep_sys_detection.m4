@@ -153,8 +153,8 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_ALTIX],    [test "x${ac_scorep_platform}" = "xaltix"])
     AM_CONDITIONAL([PLATFORM_POWER6],   [test "x${ac_scorep_platform}" = "xibm" -a "x${build_cpu}" = "xpowerpc"])
     AM_CONDITIONAL([PLATFORM_BGL],      [test "x${ac_scorep_platform}" = "xbgl"])
-    AM_CONDITIONAL([PLATFORM_BGQ],      [test "x${ac_scorep_platform}" = "xbgq"])
     AM_CONDITIONAL([PLATFORM_BGP],      [test "x${ac_scorep_platform}" = "xbgp"])
+    AM_CONDITIONAL([PLATFORM_BGQ],      [test "x${ac_scorep_platform}" = "xbgq"])
     AM_CONDITIONAL([PLATFORM_CRAYXT],   [test "x${ac_scorep_platform}" = "xcrayxt"])
     AM_CONDITIONAL([PLATFORM_SICORTEX], [test "x${ac_scorep_platform}" = "xsicortex"])
     AM_CONDITIONAL([PLATFORM_LINUX],    [test "x${ac_scorep_platform}" = "xlinux"])
@@ -164,7 +164,30 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_NECSX],    [test "x${ac_scorep_platform}" = "xnecsx"])
     AM_CONDITIONAL([PLATFORM_ARM],      [test "x${ac_scorep_platform}" = "xarm"])
 
-    if test "x${ac_scorep_platform}" = "xarm"; then
-       AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for ARM platform])
-    fi
+    AM_COND_IF([PLATFORM_ALTIX],
+               [AC_DEFINE([HAVE_PLATFORM_ALTIX], [1], [Set if we are building for the ALTIX platform])])
+    AM_COND_IF([PLATFORM_POWER6],
+               [AC_DEFINE([HAVE_PLATFORM_POWER6], [1], [Set if we are building for the POWER6 platform])])
+    AM_COND_IF([PLATFORM_BGL],
+               [AC_DEFINE([HAVE_PLATFORM_BGL], [1], [Set if we are building for the BG/L platform])])
+    AM_COND_IF([PLATFORM_BGP],
+               [AC_DEFINE([HAVE_PLATFORM_BGP], [1], [Set if we are building for the BG/P platform])])
+    AM_COND_IF([PLATFORM_BGQ],
+               [AC_DEFINE([HAVE_PLATFORM_BGQ], [1], [Set if we are building for the BG/Q platform])])
+    AM_COND_IF([PLATFORM_CRAYXT],
+               [AC_DEFINE([HAVE_PLATFORM_CRAYXT], [1], [Set if we are building for the Cray XT platform])])
+    AM_COND_IF([PLATFORM_SICORTEX],
+               [AC_DEFINE([HAVE_PLATFORM_SICORTEX], [1], [Set if we are building for the SiCortex platform])])
+    AM_COND_IF([PLATFORM_LINUX],
+               [AC_DEFINE([HAVE_PLATFORM_LINUX], [1], [Set if we are building for the Linux platform])])
+    AM_COND_IF([PLATFORM_SUN],
+               [AC_DEFINE([HAVE_PLATFORM_SUN], [1], [Set if we are building for the Sun platform])])
+    AM_COND_IF([PLATFORM_MAC],
+               [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the Apple Mac platform])])
+    AM_COND_IF([PLATFORM_CRAYX1],
+               [AC_DEFINE([HAVE_PLATFORM_CRAYX1], [1], [Set if we are building for the Cray X1 platform])])
+    AM_COND_IF([PLATFORM_NECSX],
+               [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
+    AM_COND_IF([PLATFORM_ARM],
+               [AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for the ARM platform])])
 ])
