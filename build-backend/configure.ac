@@ -191,11 +191,19 @@ AC_PROG_FC_C_O
 ## AC_FC_MAIN are probably also necessary to link C/C++ with Fortran; see
 ## the autoconf manual.
 
-# Should not be needed as we link the libscorep_* libs with the fontran 
+# Should not be needed as we link the libscorep_* libs with the fortran 
 # compiler. Users of libscorep_* use the appropriate compiler anyhow.
-# Well , these macros are implicitly called by AC_F7*_WRAPPERS
-#AC_F77_LIBRARY_LDFLAGS
-#AC_FC_LIBRARY_LDFLAGS
+# Well , these macros are implicitly called by AC_F7*_WRAPPERS. On Cray
+# calls to AC_F7*_WRAPPERS prodoce linker errors that can be fixed by 
+# removing "-ltcmalloc_minimal" from FLIBS and FCLIBS BEFORE calling
+# AC_F7*_WRAPPERS macros. 
+AC_F77_LIBRARY_LDFLAGS
+AC_FC_LIBRARY_LDFLAGS
+AS_IF([test "x${ac_scorep_platform}" = "xcrayxt"],
+      [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g'`
+       FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
+AC_F77_WRAPPERS
+AC_FC_WRAPPERS
 
 AC_SCOREP_OPENMP
 AC_SCOREP_PDT
@@ -203,8 +211,6 @@ AC_SCOREP_COBI
 
 SCOREP_TIMER
 AC_SCOREP_COMPILER_INSTRUMENTATION
-AC_F77_WRAPPERS
-AC_FC_WRAPPERS
 
 
 AC_SCOREP_ONLINE_ACCESS
