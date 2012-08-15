@@ -26,10 +26,6 @@
 # Get SRC_ROOT and OTF2_PRINT
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 SRC_ROOT=../..
-## The correct way to access these variables would be:
-##make clean-local-scorep-config-tool
-##make scorep-config-tool-local
-##. ./scorep_config.dat
 
 MPIRUN=mpiexec
 

@@ -250,8 +250,16 @@ AC_CONFIG_FILES([Makefile
                  ../installcheck/serial/Makefile:../test/installcheck/serial/Makefile.in
                  ../installcheck/omp/Makefile:../test/installcheck/omp/Makefile.in
                  ../src/scorep_config_tool_backend.h:../src/tools/config/scorep_config_tool_backend.h.in])
+AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
+                [chmod +x ../test/adapters/cuda/run_cuda_test.sh])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
                 [chmod +x ../test/adapters/user/C/run_phase_test.sh])
+AC_CONFIG_FILES([../test/adapters/user/C/run_selective_test.sh], \
+                [chmod +x ../test/adapters/user/C/run_selective_test.sh])
+AC_CONFIG_FILES([../test/adapters/user/C++/run_user_cxx_test.sh], \
+                [chmod +x ../test/adapters/user/C++/run_user_cxx_test.sh])
+AC_CONFIG_FILES([../test/adapters/user/Fortran/run_selective_test.sh], \
+                [chmod +x ../test/adapters/user/Fortran/run_selective_test.sh])
 AC_CONFIG_FILES([../test/omp_tasks/run_fibonacci_test.sh], \
                 [chmod +x ../test/omp_tasks/run_fibonacci_test.sh])
 AC_CONFIG_FILES([../test/omp_tasks/run_single_loop_test.sh], \
@@ -260,4 +268,24 @@ AC_CONFIG_FILES([../vendor/common/build-config/generate-library-dependencies.sh]
                 [chmod +x ../vendor/common/build-config/generate-library-dependencies.sh])
 AC_CONFIG_FILES([../installcheck/instrumenter-configurations.sh:../test/installcheck/instrumenter-configurations.sh.in],
                 [chmod +x ../installcheck/instrumenter-configurations.sh])
+AC_CONFIG_FILES([../test/filtering/run_filter_test.sh], \
+                [chmod +x ../test/filtering/run_filter_test.sh])
+AC_CONFIG_FILES([../test/filtering/run_filter_f_test.sh], \
+                [chmod +x ../test/filtering/run_filter_f_test.sh])
+AC_CONFIG_FILES([../test/apart_test_suite/run_apart_test_suite_with_oa_test.sh], \
+                [chmod +x ../test/apart_test_suite/run_apart_test_suite_with_oa_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_rusage_serial_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_rusage_serial_metric_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_rusage_openmp_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_rusage_openmp_metric_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_papi_serial_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_papi_serial_metric_test.sh])
+AC_CONFIG_FILES([../test/services/metric/run_papi_openmp_metric_test.sh], \
+                [chmod +x ../test/services/metric/run_papi_openmp_metric_test.sh])
+AC_CONFIG_FILES([../test/OA/OMP/run_oa_omp_test.sh], \
+                [chmod +x ../test/OA/OMP/run_oa_omp_test.sh])
+AC_CONFIG_FILES([../test/OA/serial/C/run_oa_c_test.sh], \
+                [chmod +x ../test/OA/serial/C/run_oa_c_test.sh])
+AC_CONFIG_FILES([../test/OA/serial/Fortran/run_oa_f_test.sh], \
+                [chmod +x ../test/OA/serial/Fortran/run_oa_f_test.sh])
 AC_OUTPUT

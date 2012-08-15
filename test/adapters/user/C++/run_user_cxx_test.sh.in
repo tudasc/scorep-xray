@@ -18,42 +18,45 @@
 ## file       run_filter_test.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
-# Get SRC_ROOT and OTF2_PRINT
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
+cleanup()
+{
+   rm -f config.h user_cxx_test 
+   rm -rf scorep-measurement-tmp
+}
+trap cleanup EXIT
+
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+SRC_ROOT=@abs_top_srcdir@/..
+CXX=@CXX@
+OPENMP_CFLAGS=@OPENMP_CFLAGS@
 
 # Execute test without OpenMP and compiler instrumentation (only user)
 echo "/* Dummy */" > config.h
 ./scorep -v --build-check --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
-    rm -f config.h
+    echo "Failed to build user_cxx_test with user instrumention only"
     exit 1
 fi
 
 ./user_cxx_test
 if [ $? -ne 0 ]; then
-    rm -rf scorep-measurement-tmp config.h user_cxx_test
+    echo "Failed to run user_cxx_test with user instrumention only"
     exit 1
 fi
-rm -f config.h user_cxx_test
-
-exit 0
 
 # Execute test with OpenMP compiler and user instrumentation.
 echo "/* Dummy */" > config.h
 ./scorep -v --build-check --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
-    rm -f config.h
+    echo "Failed to build user_cxx_test with user and compiler instrumentation"
     exit 1
 fi
 
 ./user_cxx_test
 if [ $? -ne 0 ]; then
-    rm -rf scorep-measurement-tmp config.h user_cxx_test
+    echo "Failed to run user_cxx_test with user and compiler instrumentation"
     exit 1
 fi
-rm -f config.h user_cxx_test
 
 exit 0
 

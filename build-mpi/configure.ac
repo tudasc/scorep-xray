@@ -256,5 +256,7 @@ AC_CONFIG_FILES([run_otf2_speed_test.sh \
                  ../src/scorep_config_tool_mpi.h:../src/tools/config/scorep_config_tool_mpi.h.in])
 AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
+AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
+                [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
 
 AC_OUTPUT

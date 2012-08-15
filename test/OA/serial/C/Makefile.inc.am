@@ -22,8 +22,8 @@ oa_c_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
 endif
 
 EXTRA_DIST       += \
-    $(SRC_ROOT)/test/OA/serial/C/run_oa_c_test.sh
+    $(SRC_ROOT)/test/OA/serial/C/run_oa_c_test.sh.in
 
-TESTS_SERIAL += $(srcdir)/../test/OA/serial/C/run_oa_c_test.sh
+TESTS_SERIAL += ./../test/OA/serial/C/run_oa_c_test.sh
 
 endif #if HAVE_ONLINE_ACCESS

@@ -23,9 +23,7 @@ echo "===== CUDA Compile and Run Test ====="
 rm -f config.h cuda_test
 
 # Get SRC_ROOT
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
+SRC_ROOT=@abs_top_srcdir@/..
 
 echo "/* Dummy */" > config.h
 

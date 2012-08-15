@@ -18,18 +18,23 @@
 ## file       run_selective_test.sh
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
-# Get SRC_ROOT and OTF2_PRINT
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
 
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+SRC_ROOT=@abs_top_srcdir@/..
 RESULT_DIR=scorep-selective-test-dir
-rm -rf $RESULT_DIR
+
+cleanup()
+{
+    rm -rf scorep-measurement-tmp
+    rm -rf $RESULT_DIR
+    rm -f trace.txt
+}
+trap cleanup EXIT
 
 # Execute selective test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/C/selective.cfg ./selective_test
 if [ $? -ne 0 ]; then
-    rm -rf scorep-measurement-tmp start_ls.log
+    echo "selective_test exited with errors."
     exit 1
 fi
 
@@ -37,19 +42,16 @@ fi
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep '^\(ENTER\|LEAVE\) ' > trace.txt
 if [ x`grep -c loop trace.txt` = x16 ]; then
   if [ x`grep -c foo trace.txt` = x16 ]; then
-    rm -rf trace.txt $RESULT_DIR
     exit 0;
   else
     echo "Uncorrect number of events for 'foo'."
     echo "16 expected but `grep -c loop trace.txt` occured"
-    rm trace.txt
     exit 1
   fi
 fi
 
 echo "Uncorrect number of events for 'foo'."
 echo "16 expected but `grep -c loop trace.txt` occured"
-rm trace.txt
 exit 1
 
 

@@ -18,12 +18,9 @@
 ## file       run_rusage_serial_metric_test.sh
 ## maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
 
-# Get SRC_ROOT and OTF2_PRINT
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
 
-TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+TEST_DATA_DIR=@abs_top_srcdir@/../test/services/metric/data
 
 # Set up directory that will contain experiment results
 RESULT_DIR=$(pwd)/scorep-serial-rusage-metric-test-dir

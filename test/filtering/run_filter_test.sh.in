@@ -19,13 +19,18 @@
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 # Get SRC_ROOT and OTF2_PRINT
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
 
-
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+SRC_ROOT=@abs_top_srcdir@/..
 RESULT_DIR=scorep-filter-test-dir
-rm -rf $RESULT_DIR
+
+cleanup()
+{
+    rm -rf scorep-measurement-tmp
+    rm -rf $RESULT_DIR
+    rm -f trace.txt
+}
+trap cleanup EXIT
 
 #-------------------------------------------------------------
 #                                                C Filter test
@@ -34,11 +39,9 @@ rm -rf $RESULT_DIR
 # Execute filter test
 SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_FILTERING_FILE=$SRC_ROOT/test/filtering/filter.cfg ./filter_test
 if [ $? -ne 0 ]; then
-    rm -rf scorep-measurement-tmp start_ls.log
+    echo "Execution of filter_test returned with errors"
     exit 1
 fi
-
-$OTF2_PRINT -A $RESULT_DIR/traces.otf2
 
 # Check output
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep '^\(ENTER\|LEAVE\) ' > trace.txt
@@ -46,28 +49,23 @@ $OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep '^\(ENTER\|LEAVE\) ' > trace
 if [ "`grep filtered trace.txt`" ]; then
     echo "The following events should be filtered:"
     grep filtered trace.txt
-    rm trace.txt
     exit 1
 fi
 
 if [ "x`grep main trace.txt`" = "x" ]; then
     echo "The main function should not be filtered."
-    rm trace.txt
     exit 1
 fi
 
 if [ "x`grep filter_not1 trace.txt`" = "x" ]; then
     echo "The filter_not1 function should not be filtered."
-    rm trace.txt
     exit 1
 fi
 
 if [ "x`grep filter_not2 trace.txt`" = "x" ]; then
     echo "The filter_not2 function should not be filtered."
-    rm trace.txt
     exit 1
 fi
 
-rm -rf $RESULT_DIR
 exit 0
 

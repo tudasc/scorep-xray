@@ -121,10 +121,7 @@ scorep-config-tool-install:
 	sed 's!libscorep_mpi.so!$(libdir)/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
 
 clean-local-scorep-config-tool:
-	rm -f $(builddir)/scorep_config.dat
 	rm -f scorep_library_dependencies.cpp
-
-scorep-config-tool-local: $(builddir)/scorep_config.dat
 
 create-cobi-config-local:
 	@$(MKDIR_P) $(SCOREP_SHARE_LOCAL_DIR)
@@ -135,33 +132,6 @@ create-cobi-config-local:
 	@if [ ! -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Filter.xml ]; then \
 	 cp $(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_LOCAL_DIR)/; \
 	fi
-
-# determine build dir for config tool
-if CROSS_BUILD
-config_tool_build_dir = build-frontend
-else
-config_tool_build_dir = build-backend
-endif
-
-$(builddir)/scorep_config.dat: 
-	$(AM_V_GEN)( \
-            echo LIBDIR=\"$(PWD)/.libs\"; \
-            echo INCDIR=\"$(PWD)/$(PUBLIC_INC_DIR)\"; \
-            echo SRC_ROOT=\"$(abs_top_srcdir)/..\"; \
-            echo CC=\"$(CC)\"; \
-            echo CXX=\"$(CXX)\"; \
-            echo OPENMP_CFLAGS=\"$(OPENMP_CFLAGS)\"; \
-            echo SCOREP_CONFIG=\"$(PWD)/scorep-config --config=$(PWD)/scorep_config.dat\"; \
-            echo OTF2_CONFIG=\"$(PWD)/../vendor/otf2/$(config_tool_build_dir)/otf2-config --config=$(PWD)/../vendor/otf2/build-backend/otf2_config.dat\"; \
-            echo OTF2_PRINT=\"@OTF2_BINDIR@/otf2-print\"; \
-            echo OPARI=\"@OPARI2_MAKE_CHECK_BINDIR@/opari2\"; \
-            echo OPARI_CONFIG=\"@OPARI2_MAKE_CHECK_BINDIR@/opari2-config\"; \
-            echo PDT=\"$(PDT_PATH)\"; \
-            echo PDT_CONFIG=\"$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Pdt_Instrumentation.conf\"; \
-            echo LIBDIR=\"$(SCOREP_PAPI_LIBDIR)\"; \
-            echo LIBS=\"$(SCOREP_PAPI_LIBS)\"; \
-            echo LIBS=\"$(LIBBFD_LIBS)\"; \
-        ) >$@
 
 
 if OPENMP_SUPPORTED

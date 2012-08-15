@@ -2,9 +2,9 @@
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C++/user_test.cxx \
-    $(SRC_ROOT)test/adapters/user/C++/run_user_cxx_test.sh
+    $(SRC_ROOT)test/adapters/user/C++/run_user_cxx_test.sh.in
 
-TESTS_SERIAL += $(srcdir)/../test/adapters/user/C++/run_user_cxx_test.sh
+TESTS_SERIAL += ./../test/adapters/user/C++/run_user_cxx_test.sh
 
 
 

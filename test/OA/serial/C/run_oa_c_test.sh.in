@@ -15,23 +15,16 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       run_apart_test_suite_with_oa_test.sh
+## file       run_oa_c_test.sh
 ## maintainer Yury Oleynik <oleynik@in.tum.de>
 
-# Get SRC_ROOT
-cd ../build-backend
-make clean-local-scorep-config-tool
-make scorep-config-tool-local
-. ./scorep_config.dat
-cd ../build-mpi
-
+SRC_ROOT=@abs_top_srcdir@/..
 REGSRV_PID=
 TEST_PID=
-TEST_NAME=oa_c_test_mpi
+TEST_NAME=oa_c_test
 TIMEOUT=60
 RETURN_VALUE=0;
-MPIRUN_COMMAND="mpirun -np 2"
-SCENARIO_FILE=scenario_mpi
+SCENARIO_FILE=scenario_serial
 
 #cleanup the background processes when timeout happens
 cleanup()
@@ -65,7 +58,7 @@ dummy=
 #clean experimental folder
 clean_scorep()
 {
-	rm -f config.h scorep_config.dat 	
+	rm -f config.h 	
 }
 
 #clean experiment folder in case of failure
@@ -113,12 +106,13 @@ BASE_PORT=$(($REG_PORT+1))
 echo Starting $TEST_NAME with Periscope Emulator on $REG_HOST:$REG_PORT	
 
 #start periscope emulator 
-../build-backend/online-access-registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE  &
+./online-access-registry $REG_PORT test=$SRC_ROOT/tools/oa_registry/$SCENARIO_FILE  &
 REGSRV_PID=$!
 
 #start online access test
-#start online access test
-SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST $MPIRUN_COMMAND ./$TEST_NAME & 
+SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./libtool --verbose --mode=execute gdb --nx --batch -ex run -ex bt -ex continue -ex quit ./$TEST_NAME & 
+#SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./$TEST_NAME & 
+#SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST ./libtool --verbose --mode=execute valgrind  --tool=memcheck --leak-check=full ./$TEST_NAME &
 TEST_PID=$!
 
 echo Test started: periscope \($REGSRV_PID\), application \($TEST_PID\), watchdog timer \($TIMER_PID\)

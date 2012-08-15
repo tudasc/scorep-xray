@@ -12,7 +12,10 @@ if HAVE_CUPTI
 #cuda_test_LDADD = \
 #    $(LIB_ROOT)libscorep_serial.la
 
+EXTRA_DIST       += \
+    $(SRC_ROOT)test/adapters/cuda/run_cuda_test.sh.in
+
 TESTS_SERIAL += \
-   $(SRC_ROOT)/test/adapters/cuda/run_cuda_test.sh
+   ./../test/adapters/cuda/run_cuda_test.sh
 
 endif

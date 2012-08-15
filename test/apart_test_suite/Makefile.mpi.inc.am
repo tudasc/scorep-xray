@@ -58,7 +58,7 @@ if HAVE_PAPI
 mpi_patt_all_test_f90_with_oa_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@
 endif
 
-EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh
+EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh.in
 
 CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.mod
 
