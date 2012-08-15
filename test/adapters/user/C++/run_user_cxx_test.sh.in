@@ -34,27 +34,33 @@ OPENMP_CFLAGS=@OPENMP_CFLAGS@
 echo "/* Dummy */" > config.h
 ./scorep -v --build-check --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
-    echo "Failed to build user_cxx_test with user instrumention only"
+    echo "Failed to build serial user_cxx_test"
     exit 1
 fi
 
 ./user_cxx_test
 if [ $? -ne 0 ]; then
-    echo "Failed to run user_cxx_test with user instrumention only"
+    echo "Failed to run serial user_cxx_test"
     exit 1
 fi
+
+exit 0
+
+# Do not execute the OpenMP test, because the Studio compiler has not
+# initialized its OpenMP environment when executing the constructor of
+# a static object. 
 
 # Execute test with OpenMP compiler and user instrumentation.
 echo "/* Dummy */" > config.h
 ./scorep -v --build-check --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
 if [ ! -e user_cxx_test ]; then
-    echo "Failed to build user_cxx_test with user and compiler instrumentation"
+    echo "Failed to build user_cxx_test with OpenMP compiler"
     exit 1
 fi
 
 ./user_cxx_test
 if [ $? -ne 0 ]; then
-    echo "Failed to run user_cxx_test with user and compiler instrumentation"
+    echo "Failed to run user_cxx_test build with OpenMP compiler"
     exit 1
 fi
 
