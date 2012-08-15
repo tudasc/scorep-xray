@@ -194,7 +194,7 @@ AC_PROG_FC_C_O
 # Should not be needed as we link the libscorep_* libs with the fortran 
 # compiler. Users of libscorep_* use the appropriate compiler anyhow.
 # Well , these macros are implicitly called by AC_F7*_WRAPPERS. On Cray
-# calls to AC_F7*_WRAPPERS prodoce linker errors that can be fixed by 
+# calls to AC_F7*_WRAPPERS produce linker errors that can be fixed by 
 # removing "-ltcmalloc_minimal" from FLIBS and FCLIBS BEFORE calling
 # AC_F7*_WRAPPERS macros. 
 AC_F77_LIBRARY_LDFLAGS
