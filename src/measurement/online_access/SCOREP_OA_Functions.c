@@ -24,9 +24,11 @@
 
 #include <config.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <stdio.h>
 
 #include "scorep/SCOREP_User_Functions.h"
 #include "SCOREP_OA_Functions.h"
+#include "scorep_profile_definition.h"
 #include "SCOREP_OA_Init.h"
 #include "SCOREP_Types.h"
 #include <SCOREP_Debug.h>
@@ -58,6 +60,13 @@ SCOREP_OA_PhaseBegin
         return;
     }
 
+    if ( !scorep_profile.is_initialized )
+    {
+        printf( "[Score-P] Score-P Online Access works only in Profiling mode. Online Access will be deactivated.\n" );
+        scorep_oa_is_requested = false;
+        return;
+    }
+
     if ( !SCOREP_OA_Initialized() )
     {
         SCOREP_OA_Init();
@@ -83,6 +92,13 @@ SCOREP_OA_PhaseEnd
 
     if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {
+        return;
+    }
+
+    if ( !scorep_profile.is_initialized )
+    {
+        printf( "[Score-P] Score-P Online Access works only in Profiling mode. Online Access will be deactivated.\n" );
+        scorep_oa_is_requested = false;
         return;
     }
 

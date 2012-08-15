@@ -25,10 +25,12 @@
 #include <config.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Fortran_Wrapper.h>
+#include <stdio.h>
 
 #include "SCOREP_OA_Init.h"
 #include "scorep_oa_phase.h"
 #include "scorep_status.h"
+#include "scorep_profile_definition.h"
 
 #define SCOREP_F_OA_PhaseBegin_U SCOREP_F_OA_PHASEBEGIN
 #define SCOREP_F_OA_PhaseEnd_U SCOREP_F_OA_PHASEEND
@@ -76,6 +78,13 @@ FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
         return;
     }
 
+    if ( !scorep_profile.is_initialized )
+    {
+        printf( "[Score-P] Score-P Online Access works only in Profiling mode. Online Access will be deactivated.\n" );
+        scorep_oa_is_requested = false;
+        return;
+    }
+
     if ( !SCOREP_OA_Initialized() )
     {
         SCOREP_OA_Init();
@@ -92,6 +101,13 @@ FSUB( SCOREP_F_OA_PhaseEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
     if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {
+        return;
+    }
+
+    if ( !scorep_profile.is_initialized )
+    {
+        printf( "[Score-P] Score-P Online Access works only in Profiling mode. Online Access will be deactivated.\n" );
+        scorep_oa_is_requested = false;
         return;
     }
 
