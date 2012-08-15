@@ -41,6 +41,8 @@ libscorep_profile_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile.c                \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.h        \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.c        \
+    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.h      \
+    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.h         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.h           \

@@ -47,6 +47,7 @@
 #include <SCOREP_Timing.h>
 #include <scorep_openmp.h>
 #include <SCOREP_Profile.h>
+#include <SCOREP_Profile_MpiEvents.h>
 #include <tracing/SCOREP_Tracing.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Filter_Init.h>
@@ -295,6 +296,8 @@ SCOREP_InitMeasurementMPI( int rank )
     SCOREP_Location_ProcessDeferredOnes();
     SCOREP_SynchronizeClocks();
     scorep_set_otf2_archive_master_slave();
+
+    SCOREP_Profile_InitializeMpi();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is

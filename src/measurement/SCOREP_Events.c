@@ -37,6 +37,7 @@
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
+#include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
 
@@ -246,7 +247,11 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        /* No action necessary */
+        SCOREP_Profile_MpiSend( location,
+                                destinationRank,
+                                communicatorHandle,
+                                tag,
+                                bytesSent );
     }
 }
 
@@ -289,7 +294,11 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        /* No action necessary */
+        SCOREP_Profile_MpiRecv( location,
+                                sourceRank,
+                                communicatorHandle,
+                                tag,
+                                bytesReceived );
     }
 }
 
@@ -356,7 +365,12 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        /* No action necessary */
+        SCOREP_Profile_CollectiveEnd( location,
+                                      communicatorHandle,
+                                      rootRank,
+                                      collectiveType,
+                                      bytesSent,
+                                      bytesReceived );
     }
 
     scorep_exit_region( timestamp, regionHandle, metric_values, location );
@@ -474,7 +488,11 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        /* No action necessary */
+        SCOREP_Profile_MpiSend( location,
+                                destinationRank,
+                                communicatorHandle,
+                                tag,
+                                bytesSent );
     }
 }
 
@@ -506,7 +524,11 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        /* No action necessary */
+        SCOREP_Profile_MpiRecv( location,
+                                sourceRank,
+                                communicatorHandle,
+                                tag,
+                                bytesReceived );
     }
 }
 
