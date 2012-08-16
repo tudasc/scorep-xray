@@ -484,21 +484,21 @@ SCOREP_Metric_GetNumberOfUnifiedDefinitions();
 
 /**
  * Returns the value type of a metric.
- * @param handle to local meric definition.
+ * @param handle to local metric definition.
  */
 SCOREP_MetricValueType
 SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle );
 
 /**
  * Returns the name of a metric.
- * @param handle to local meric definition.
+ * @param handle to local metric definition.
  */
 const char*
 SCOREP_Metric_GetName( SCOREP_MetricHandle handle );
 
 /**
  * Returns the profiling type of a metric.
- * @param handle to local meric definition.
+ * @param handle to local metric definition.
  */
 SCOREP_MetricProfilingType
 SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle );
