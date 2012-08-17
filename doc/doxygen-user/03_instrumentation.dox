@@ -277,6 +277,17 @@ C++ only:
     }
 @endcode
 
+@note
+  When using Fortran, make sure the C preprocessor expands the macros. In most cases,
+  the fortran compiler invoke the C preprocessor if the source file suffix is in 
+  capital letters. However, some compilers provide extra flags to tell the compiler
+  to use a C preprocessor. 
+  Furthermore, it is important to use the C-like <tt>#include</tt> with 
+  the leading '#'-character to include the <tt>SCOREP_User.inc</tt> header file.
+  Otherwise, the inclusion may happen after the C preprocessor ran. As result 
+  the fortran compiler complains about unknown preprocessing directives. 
+
+
 Region handles (<tt>my_region_handle</tt>) should be registered in each annotated
 function/subroutine prologue before use within the associated body, and should
 not already be declared in the same program scope. 
