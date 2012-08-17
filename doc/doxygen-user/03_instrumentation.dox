@@ -1,4 +1,4 @@
-/** @page instrumentation Application instrumentation
+/** @page instrumentation Application Instrumentation
 @seclabel{instrumentation}
 
 @scorep provides several possibilities to instrument user application code.

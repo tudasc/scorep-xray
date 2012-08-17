@@ -1409,24 +1409,6 @@ MPI_Error_string,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>EXT</b> - 
-<b>Common external interfaces </b>
-</td></tr>
-<tr><td>
-MPI_Abort,
-MPI_Get_count,
-MPI_Get_elements,
-MPI_Get_processor_name,
-MPI_Grequest_complete,
-MPI_Grequest_start,
-MPI_Status_set_cancelled,
-MPI_Status_set_elements,
-MPI_Wtick,
-MPI_Wtime,
-</td></tr>
-</table>
-
-<table width="100%">
 <tr><td width="10%"><b>IO</b> - 
 <b>Parallel I/O</b>
 </td></tr>
@@ -1505,6 +1487,24 @@ MPI_File_set_errhandler,
 <tr><td>
 MPI_File_c2f,
 MPI_File_f2c,
+</td></tr>
+</table>
+
+<table width="100%">
+<tr><td width="10%"><b>EXT</b> - 
+<b>Common external interfaces </b>
+</td></tr>
+<tr><td>
+MPI_Abort,
+MPI_Get_count,
+MPI_Get_elements,
+MPI_Get_processor_name,
+MPI_Grequest_complete,
+MPI_Grequest_start,
+MPI_Status_set_cancelled,
+MPI_Status_set_elements,
+MPI_Wtick,
+MPI_Wtime,
 </td></tr>
 </table>
 

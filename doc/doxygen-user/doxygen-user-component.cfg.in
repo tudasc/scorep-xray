@@ -11,8 +11,7 @@ PROJECT_NAME           = "Score-P"
 INPUT                  = @abs_top_srcdir@/doc/doxygen-user \
                          doc/doxygen-user \
                          @abs_top_srcdir@/include/scorep/SCOREP_User.h \
-                         @abs_top_srcdir@/include/scorep/SCOREP_User_Types.h \
-                         @abs_top_srcdir@/vendor/opari2/include/opari2/pomp2_lib.h
+                         @abs_top_srcdir@/include/scorep/SCOREP_User_Types.h
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the stylesheet and background images according to

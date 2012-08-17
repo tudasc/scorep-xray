@@ -1,4 +1,4 @@
-/** @page measurement Application measurement
+/** @page measurement Application Measurement
 \seclabel{measurement}
 
 If an application was instrumented with @scorep, you will get an executable, which 
@@ -303,7 +303,7 @@ evaluating the expression. A Fortran rule would look like this:
       <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
       and <tt>FORTRAN</tt>) are case-sensitive.
 
-@section selective_tracing Selective tracing
+@subsection selective_tracing Selective tracing
 @seclabel{selective_tracing}
 
 @scorep experiments record by default all events during the whole execution run.
@@ -398,7 +398,7 @@ to the configuration file and run your instrumented application. If
 the whole application run will be recorded (no selective tracing will apply).
 
 
-@section mpi_groups Selection of MPI groups
+@subsection mpi_groups Selection of MPI groups
 @seclabel{mpi_groups}
 
 The Message Passing Interface (MPI) adapter of @scorep supports the tracing
