@@ -88,8 +88,8 @@ main( int   argc,
             SCOREP_Error_Code                      err = SCOREP_Platform_GetPathInSystemTree( &path );
             if ( err != SCOREP_SUCCESS )
             {
-                SCOREP_ERROR( err, "Can't get system tree information." );
-                return EXIT_SUCCESS;
+                std::cout << "Can't get system tree information." << std::endl;
+                return EXIT_FAILURE;
             }
             SCOREP_Platform_SystemTreePathElement* node;
             SCOREP_PLATFORM_SYSTEM_TREE_FORALL( path, node )
