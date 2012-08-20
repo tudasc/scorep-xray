@@ -30,6 +30,11 @@
 #include <SCOREP_Location.h>
 #include <SCOREP_DefinitionHandles.h>
 
+/**
+ * Initializes MPI Event specific data. Is called from MPI Initialize
+ */
+void
+SCOREP_Profile_InitializeMpi();
 
 /**
  * Process an MPI send event in the profile.
