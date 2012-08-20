@@ -1,3 +1,7 @@
+EXTRA_DIST       += \
+    $(SRC_ROOT)test/adapters/cuda/run_cuda_test.sh.in \
+    $(SRC_ROOT)test/adapters/cuda/cuda_test.cu 
+
 if HAVE_CUPTI
 
 #check_PROGRAMS += cuda_test
@@ -11,10 +15,6 @@ if HAVE_CUPTI
 
 #cuda_test_LDADD = \
 #    $(LIB_ROOT)libscorep_serial.la
-
-EXTRA_DIST       += \
-    $(SRC_ROOT)test/adapters/cuda/run_cuda_test.sh.in \
-    $(SRC_ROOT)test/adapters/cuda/cuda_test.cu 
 
 TESTS_SERIAL += \
    ./../test/adapters/cuda/run_cuda_test.sh
