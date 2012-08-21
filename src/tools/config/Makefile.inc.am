@@ -21,7 +21,6 @@
 bin_PROGRAMS += scorep-config
 
 scorep_config_SOURCES = $(SRC_ROOT)src/tools/config/scorep_config.cpp  \
-                      $(SRC_ROOT)src/tools/config/scorep_config.hpp    \
                       $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.cpp \
                       $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.hpp
 

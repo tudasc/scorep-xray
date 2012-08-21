@@ -27,12 +27,14 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <iostream>
 
 #include <SCOREP_IO.h>
 
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
-#include <scorep_config.hpp>
+//#include <scorep_config.hpp>
 #include <SCOREP_Config_LibraryDependencies.hpp>
 
 #define MODE_SEQ 0
@@ -80,9 +82,6 @@
     "   --seq|--omp|--mpi|--hyb\n" \
     "            specifys the mode: seqential, OpenMP, MPI, or hybrid (MPI + OpenMP)\n" \
     "            Takes effect only for the --libs command. The default mode is MPI.\n\n" \
-    "   --config=<config_file>\n" \
-    "            Allows to specify a configuration file which overrides the data\n" \
-    "            specified at build time of the tool.\n\n" \
     "   --user|--nouser\n" \
     "            Specifies whether manual user instrumentation is used. On default\n" \
     "            user instrumentation is disabled.\n\n" \
@@ -92,6 +91,9 @@
     "   --fortran   Specifies that the required flags are for the Fortran compiler.\n\n" \
     "   --cuda   Specifies that the required flags are for the CUDA compiler.\n\n"
 
+
+void
+get_rpath_struct_data();
 
 std::string
 prepare_string( std::string str );
@@ -103,6 +105,9 @@ std::string
 replace_all( std::string &pattern,
              std::string &replacement,
              std::string  original );
+
+std::string m_rpath_head      = "";
+std::string m_rpath_delimiter = "";
 
 int
 main( int    argc,
@@ -124,17 +129,12 @@ main( int    argc,
                                            "scorep_mpi",
                                            "scorep_mpi_omp" };
 
-    SCOREP_Config                     app( argv[ 0 ] );
     SCOREP_Config_LibraryDependencies deps;
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
     {
-        if ( app.CheckForCommonArg( argv[ i ] ) )
-        {
-            continue;
-        }
-        else if ( strcmp( argv[ i ], "--help" ) == 0 || strcmp( argv[ i ], "-h" ) == 0 )
+        if ( strcmp( argv[ i ], "--help" ) == 0 || strcmp( argv[ i ], "-h" ) == 0 )
         {
             std::cout << HELPTEXT << std::endl;
             return EXIT_SUCCESS;
@@ -248,232 +248,111 @@ main( int    argc,
         }
     }
 
-    /* print data in case a config file was specified */
+    std::deque<std::string> libs;
+    libs.push_back( "lib" + scorep_libs[ mode ] );
     std::string str;
-    if ( app.IsConfigFileSet() )
+
+    switch ( action )
     {
-        if ( app.ParseConfigFile( argv[ 0 ] ) != SCOREP_SUCCESS )
-        {
-            std::cerr << "Unable to open config file." << std::endl;
-            abort();
-        }
+        case ACTION_LDFLAGS:
+            get_rpath_struct_data();
+            std::cout << deps.GetLDFlags( libs, install );
+            str = deps.GetRpathFlags( libs, install,
+                                      m_rpath_head,
+                                      m_rpath_delimiter );
+            if ( cuda )
+            {
+                str = " -Xlinker " + prepare_string( str );
+            }
+            std::cout << str;
+            std::cout.flush();
+            break;
 
-        switch ( action )
-        {
-            case ACTION_LDFLAGS:
-                str = app.m_libdir + app.m_rpath;
-                if ( action == ACTION_LIBS )
-                {
-                    str += " -l" + scorep_libs[ mode ] + app.m_libs;
-                }
-                if ( cuda )
-                {
-                    str                = " -Xlinker " + prepare_string( str );
-                    app.m_otf2_config += " --cuda";
-                }
-                std::cout << str;
-                std::cout.flush();
-                str = app.m_otf2_config + " --ldflags";
-                ret = system( str.c_str() );
-                break;
+        case ACTION_LIBS:
+            std::cout << deps.GetLibraries( libs );
+            std::cout.flush();
+            break;
 
-            case ACTION_LIBS:
-                str = " -l" + scorep_libs[ mode ] + app.m_libs;
-                if ( cuda )
+        case ACTION_CFLAGS:
+            if ( compiler )
+            {
+                str += "-g " SCOREP_CFLAGS " ";
+            }
+            if ( user )
+            {
+                if ( fortran )
                 {
-                    str                = " -Xlinker " + prepare_string( str );
-                    app.m_otf2_config += " --cuda";
-                }
-                std::cout << str;
-                std::cout.flush();
-                str = app.m_otf2_config + " --libs";
-                ret = system( str.c_str() );
-                break;
-
-            case ACTION_CFLAGS:
-                if ( compiler )
-                {
-                    str += "-g " + app.m_flags;
-                }
-                if ( user )
-                {
-                    if ( fortran )
-                    {
                        #ifdef SCOREP_COMPILER_IBM
-                        str += "-WF,-DSCOREP_USER_ENABLE ";
+                    str += "-WF,-DSCOREP_USER_ENABLE ";
                        #else
-                        str += "-DSCOREP_USER_ENABLE ";
+                    str += "-DSCOREP_USER_ENABLE ";
                        #endif // SCOREP_COMPILER_IBM
-                    }
-                    else
-                    {
-                        str += "-DSCOREP_USER_ENABLE ";
-                    }
-                }
-
-                #ifdef SCOREP_COMPILER_IBM
-                if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
-                {
-                    str += "-d -WF,-qlanglvl=classic ";
-                }
-                #endif
-
-            // Append the include directories, too
-            case ACTION_INCDIR:
-                str += app.m_incdir;
-                if ( cuda )
-                {
-                    str = " -Xcompiler " + prepare_string( str );
-                    //app.m_otf2_config += " --cuda";
-                }
-
-                std::cout << str;
-                std::cout.flush();
-                //app.m_otf2_config += " --cflags";
-                //ret                  = system( app.m_otf2_config.c_str() );
-                break;
-
-            case ACTION_CC:
-                std::cout << app.m_cc;
-                std::cout.flush();
-                break;
-
-            case ACTION_CXX:
-                std::cout << app.m_cxx;
-                std::cout.flush();
-                break;
-
-            case ACTION_FC:
-                std::cout << app.m_fc;
-                std::cout.flush();
-                break;
-
-            case ACTION_MPICC:
-                std::cout << app.m_mpicc;
-                std::cout.flush();
-                break;
-
-            case ACTION_MPICXX:
-                std::cout << app.m_mpicxx;
-                std::cout.flush();
-                break;
-
-            case ACTION_MPIFC:
-                std::cout << app.m_mpifc;
-                std::cout.flush();
-                break;
-
-            default:
-                std::cout << SHORT_HELP << std::endl;
-                break;
-        }
-    }
-    else
-    {
-        std::deque<std::string> libs;
-        libs.push_back( "lib" + scorep_libs[ mode ] );
-
-        switch ( action )
-        {
-            case ACTION_LDFLAGS:
-                std::cout << deps.GetLDFlags( libs, install );
-                str = deps.GetRpathFlags( libs, install,
-                                          app.m_rpath_head,
-                                          app.m_rpath_delimiter );
-                if ( cuda )
-                {
-                    str = " -Xlinker " + prepare_string( str );
-                }
-                std::cout << str;
-                std::cout.flush();
-                break;
-
-            case ACTION_LIBS:
-                std::cout << deps.GetLibraries( libs );
-                std::cout.flush();
-                break;
-
-            case ACTION_CFLAGS:
-                if ( compiler )
-                {
-                    str += "-g " SCOREP_CFLAGS " ";
-                }
-                if ( user )
-                {
-                    if ( fortran )
-                    {
-                       #ifdef SCOREP_COMPILER_IBM
-                        str += "-WF,-DSCOREP_USER_ENABLE ";
-                       #else
-                        str += "-DSCOREP_USER_ENABLE ";
-                       #endif // SCOREP_COMPILER_IBM
-                    }
-                    else
-                    {
-                        str += "-DSCOREP_USER_ENABLE ";
-                    }
-                }
-
-                #ifdef SCOREP_COMPILER_IBM
-                if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
-                {
-                    str += "-d -WF,-qlanglvl=classic ";
-                }
-                #endif
-
-            // Append the include directories, too
-            case ACTION_INCDIR:
-                if ( install )
-                {
-                    str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
                 }
                 else
                 {
-                    str += "-I" BUILD_SCOREP_PREFIX "/include -I" BUILD_SCOREP_PREFIX "/include/scorep ";
+                    str += "-DSCOREP_USER_ENABLE ";
                 }
-                if ( cuda )
-                {
-                    str = " -Xcompiler " + prepare_string( str );
-                }
+            }
 
-                std::cout << str;
-                std::cout.flush();
-                break;
+                #ifdef SCOREP_COMPILER_IBM
+            if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
+            {
+                str += "-d -WF,-qlanglvl=classic ";
+            }
+                #endif
 
-            case ACTION_CC:
-                std::cout << SCOREP_CC;
-                std::cout.flush();
-                break;
+        // Append the include directories, too
+        case ACTION_INCDIR:
+            if ( install )
+            {
+                str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
+            }
+            else
+            {
+                str += "-I" BUILD_SCOREP_PREFIX "/include -I" BUILD_SCOREP_PREFIX "/include/scorep ";
+            }
+            if ( cuda )
+            {
+                str = " -Xcompiler " + prepare_string( str );
+            }
 
-            case ACTION_CXX:
-                std::cout << SCOREP_CXX;
-                std::cout.flush();
-                break;
+            std::cout << str;
+            std::cout.flush();
+            break;
 
-            case ACTION_FC:
-                std::cout << SCOREP_FC;
-                std::cout.flush();
-                break;
+        case ACTION_CC:
+            std::cout << SCOREP_CC;
+            std::cout.flush();
+            break;
 
-            case ACTION_MPICC:
-                std::cout << SCOREP_MPICC;
-                std::cout.flush();
-                break;
+        case ACTION_CXX:
+            std::cout << SCOREP_CXX;
+            std::cout.flush();
+            break;
 
-            case ACTION_MPICXX:
-                std::cout << SCOREP_MPICXX;
-                std::cout.flush();
-                break;
+        case ACTION_FC:
+            std::cout << SCOREP_FC;
+            std::cout.flush();
+            break;
 
-            case ACTION_MPIFC:
-                std::cout << SCOREP_MPIFC;
-                std::cout.flush();
-                break;
+        case ACTION_MPICC:
+            std::cout << SCOREP_MPICC;
+            std::cout.flush();
+            break;
 
-            default:
-                std::cout << SHORT_HELP << std::endl;
-                break;
-        }
+        case ACTION_MPICXX:
+            std::cout << SCOREP_MPICXX;
+            std::cout.flush();
+            break;
+
+        case ACTION_MPIFC:
+            std::cout << SCOREP_MPIFC;
+            std::cout.flush();
+            break;
+
+        default:
+            std::cout << SHORT_HELP << std::endl;
+            break;
     }
 
     return ret;
@@ -481,22 +360,9 @@ main( int    argc,
 
 
 /** constructor and destructor */
-SCOREP_Config::SCOREP_Config( char* arg0 )
+void
+get_rpath_struct_data()
 {
-    char* path = SCOREP_GetExecutablePath( arg0 );
-    m_otf2_config = "otf2-config --backend";
-    if ( path != NULL )
-    {
-        m_otf2_config = "/" + m_otf2_config;
-        m_otf2_config = path + m_otf2_config;
-    }
-    m_cc     = SCOREP_CC;
-    m_cxx    = SCOREP_CXX;
-    m_fc     = SCOREP_FC;
-    m_mpicc  = SCOREP_MPICC;
-    m_mpicxx = SCOREP_MPICXX;
-    m_mpifc  = SCOREP_MPIFC;
-
     // Replace ${wl} by LIBDIR_FLAG_WL and erase everything from
     // $libdir on in order to create m_rpath_head and
     // m_rpath_delimiter. This will work for most and for the relevant
@@ -540,109 +406,6 @@ SCOREP_Config::SCOREP_Config( char* arg0 )
     {
         m_rpath_head      = "";
         m_rpath_delimiter = " " + rpath_flag;
-    }
-
-    free( path );
-}
-
-SCOREP_Config::~SCOREP_Config()
-{
-}
-
-
-/** */
-SCOREP_Error_Code
-SCOREP_Config::ParseConfigFile( char* arg0 )
-{
-    std::string arg = std::string( arg0 );
-    return this->ReadConfigFile( arg );
-}
-
-/** callbacks */
-void
-SCOREP_Config::SetValue( std::string key,
-                         std::string value )
-{
-    if ( key == "COMPILER_INSTRUMENTATION_CPPFLAGS" )
-    {
-        this->m_flags += value + " ";
-    }
-    else if ( key == "CC" && value != "" )
-    {
-        this->m_cc = value;
-    }
-    else if ( key == "CXX" && value != "" )
-    {
-        this->m_cxx = value;
-    }
-    else if ( key == "FC" && value != "" )
-    {
-        this->m_fc = value;
-    }
-    else if ( key == "MPICC" && value != "" )
-    {
-        this->m_mpicc = value;
-    }
-    else if ( key == "MPICXX" && value != "" )
-    {
-        this->m_mpicxx = value;
-    }
-    else if ( key == "MPIFC" && value != "" )
-    {
-        this->m_mpifc = value;
-    }
-    else if ( key == "PREFIX" && value != "" )
-    {
-        AddIncDir( value + "/include/scorep" );
-        AddLibDir( value + "/lib" );
-    }
-    else if ( key == "OTF2_CONFIG" && value != "" )
-    {
-        this->m_otf2_config = value + " --backend";
-    }
-}
-
-void
-SCOREP_Config::AddIncDir( std::string dir )
-{
-    std::string incdir = "-I" + dir;
-
-    if ( std::string::npos == this->m_incdir.find( incdir ) )
-    {
-        this->m_incdir += " " + incdir;
-    }
-}
-
-void
-SCOREP_Config::AddLibDir( std::string dir )
-{
-    if ( dir != "" )
-    {
-        std::string libdir = "-L" + dir + " ";
-
-        if ( std::string::npos == this->m_libdir.find( libdir ) )
-        {
-            this->m_libdir += libdir;
-
-
-            if ( this->m_rpath == "" )
-            {
-                this->m_rpath = this->m_rpath_head;
-            }
-            this->m_rpath += this->m_rpath_delimiter + dir;
-        }
-    }
-}
-
-void
-SCOREP_Config::AddLib( std::string lib )
-{
-    if ( lib != "" )
-    {
-        if ( std::string::npos == this->m_libs.find( lib ) )
-        {
-            this->m_libs += " " + lib;
-        }
     }
 }
 
