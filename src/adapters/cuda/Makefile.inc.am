@@ -18,7 +18,7 @@
 ## file       /scorep/src/adapters/cuda/Makefile.inc.am
 ## maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
 
-if HAVE_CUPTI
+if HAVE_LIBCUPTI
 
 noinst_LTLIBRARIES += libscorep_adapter_cuda.la
 
