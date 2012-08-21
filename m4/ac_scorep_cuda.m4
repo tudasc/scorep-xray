@@ -78,11 +78,9 @@ AS_IF([test x"$scorep_cuda_error" = "xno"],
 
 dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
-    AC_SUBST([SCOREP_CUDA_ENABLE],  ["yes"])
     with_$1_lib_checks_successful="yes"
     with_$1_libs="-l${scorep_cuda_lib_name} -l${scorep_cudart_lib_name}"
 else
-    AC_SUBST([SCOREP_CUDA_ENABLE],  ["no"])
     with_$1_lib_checks_successful="no"
     with_$1_libs=""
 fi
