@@ -64,7 +64,6 @@ if SCOREP_COMPILER_CRAY
 scorep_config_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
 endif
 
-scorep_config_LDADD = libscorep_parser_tools.la \
-		    libscorep_utilities.la
+scorep_config_LDADD = libscorep_utilities.la
 
 BUILT_SOURCES += scorep_library_dependencies.cpp
