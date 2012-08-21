@@ -32,7 +32,8 @@ AS_IF([test "x$scorep_have_libcuda" = "xyes"],
                            [])],
                     [])],
              [])
-       AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcuda_cppflags}], [cupti_root])])
+       AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcuda_cppflags}], [cupti_root])],
+      [AM_CONDITIONAL([HAVE_LIBCUPTI], [test 1 -eq 0])])
 ])
 
 dnl ----------------------------------------------------------------------------
