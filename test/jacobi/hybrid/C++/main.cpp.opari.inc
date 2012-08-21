@@ -7,7 +7,7 @@ extern int64_t FORTRAN_MANGLED(pomp_tpd);
 static POMP2_Region_handle pomp2_region_1 = NULL;
 extern "C" 
 {
-void POMP2_Init_regions_1320063929619524_1()
+void POMP2_Init_reg_1320063929619524_1()
 {
     POMP2_Assign_handle( &pomp2_region_1, "222*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp:186:186*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp:201:201**" );
 }

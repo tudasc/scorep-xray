@@ -5,12 +5,12 @@ extern "C"
 #include <stddef.h>
 
 extern void
-POMP2_Init_regions_1320069835786106_1();
+POMP2_Init_reg_1320069835786106_1();
 
 void
 POMP2_Init_regions()
 {
-    POMP2_Init_regions_1320069835786106_1();
+    POMP2_Init_reg_1320069835786106_1();
 }
 
 size_t

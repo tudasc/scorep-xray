@@ -9,7 +9,7 @@ static POMP2_Region_handle pomp2_region_2 = NULL;
 static POMP2_Region_handle pomp2_region_3 = NULL;
 extern "C" 
 {
-void POMP2_Init_regions_1320065783274680_3()
+void POMP2_Init_reg_1320065783274680_3()
 {
     POMP2_Assign_handle( &pomp2_region_1, "219*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/jacobi.cpp:57:57*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/jacobi.cpp:87:87**" );
     POMP2_Assign_handle( &pomp2_region_2, "214*regionType=for*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/jacobi.cpp:59:59*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/jacobi.cpp:66:66**" );

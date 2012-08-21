@@ -275,7 +275,7 @@ end function get_wtime
          return
       end
 
-      subroutine POMP2_Init_regions_1320070039548462_1()
+      subroutine POMP2_Init_reg_1320070039548462_1()
          include 'main.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, &
      "229*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&

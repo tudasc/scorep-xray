@@ -152,7 +152,7 @@ end module JacobiMod
          return
       end
 
-      subroutine POMP2_Init_regions_1320070048701483_3()
+      subroutine POMP2_Init_reg_1320070048701483_3()
          include 'jacobi.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, &
      "227*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds53"//&

@@ -36,7 +36,7 @@ static const char pomp2_ctc_12[] = "195*regionType=sections*sscl=/home/oleynik/w
 #ifdef __cplusplus 
  extern "C" 
 #endif
-void POMP2_Init_regions_1344359699524161_12()
+void POMP2_Init_reg_1344359699524161_12()
 {
     POMP2_Assign_handle( &pomp2_region_1, pomp2_ctc_1 );
     POMP2_Assign_handle( &pomp2_region_2, pomp2_ctc_2 );

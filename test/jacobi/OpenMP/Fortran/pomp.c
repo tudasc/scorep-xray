@@ -7,15 +7,15 @@ extern "C"
 #include <stddef.h>
 
 extern void
-FORTRAN_MANGLED( pomp2_init_regions_1320070048701483_3 ) ();
+FORTRAN_MANGLED( pomp2_init_reg_1320070048701483_3 ) ();
 extern void
-FORTRAN_MANGLED( pomp2_init_regions_1320070039548462_1 ) ();
+FORTRAN_MANGLED( pomp2_init_reg_1320070039548462_1 ) ();
 
 void
 POMP2_Init_regions()
 {
-    FORTRAN_MANGLED( pomp2_init_regions_1320070048701483_3 ) ();
-    FORTRAN_MANGLED( pomp2_init_regions_1320070039548462_1 ) ();
+    FORTRAN_MANGLED( pomp2_init_reg_1320070048701483_3 ) ();
+    FORTRAN_MANGLED( pomp2_init_reg_1320070039548462_1 ) ();
 }
 
 size_t

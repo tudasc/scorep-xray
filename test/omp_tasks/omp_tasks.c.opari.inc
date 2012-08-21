@@ -11,7 +11,7 @@ static POMP2_Region_handle pomp2_region_2 = NULL;
 static POMP2_Region_handle pomp2_region_3 = NULL;
 static POMP2_Region_handle pomp2_region_4 = NULL;
 
-void POMP2_Init_regions_1318332431780061_4()
+void POMP2_Init_reg_1318332431780061_4()
 {
     POMP2_Assign_handle( &pomp2_region_1, "201*regionType=task*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:48:48*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:51:51**" );
     POMP2_Assign_handle( &pomp2_region_2, "203*regionType=taskwait*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:53:53*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp_tasks/omp_tasks.c:0:0**" );
