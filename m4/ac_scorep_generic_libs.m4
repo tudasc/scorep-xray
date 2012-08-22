@@ -119,8 +119,8 @@ AC_ARG_WITH([$1],
             [m4_ifval([$4],
                            # use value provided in macro invocation (if set) if
                            # user doesn't provide anything via the commandline
-                           [AS_IF([test -n "$[]$4"],
-                                  [with_$1="$[]$4"],
+                           [AS_IF([test -n "$4"],
+                                  [with_$1="$4"],
                                   [with_$1="not_set"])],
                            [with_$1="not_set"])])
 
@@ -300,7 +300,7 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
        libs_save_$1="${LIBS}"
        cpp_flags_save_$1="${CPPFLAGS}"
        AS_IF([test "x${with_$1_lib}" != "xyes"], 
-             [with_$1_ldflags="-L${with_$1_lib} -R${with_$1_lib}"
+             [with_$1_ldflags="-L${with_$1_lib}"
               _AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${with_$1_lib}], [with_$1_lib_checks_successful])
               AS_IF([test "x${with_$1_lib_checks_successful}" = "xno"],
                     [AC_MSG_ERROR([cannot find $1.a, $1.so, or $1.dylib])])])
