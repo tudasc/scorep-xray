@@ -468,7 +468,7 @@ SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
  * @param handle handle to local metric handle.
  */
 uint32_t
-SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle );
+SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_MetricHandle handle );
 
 /**
  * Returns the unified handle from a local handle.
