@@ -405,22 +405,11 @@ SCOREP_Metric_Read( SCOREP_Location* locationData )
 SCOREP_Error_Code
 SCOREP_Metric_Reinitialize()
 {
-    SCOREP_Error_Code return_value;
-
     /* Finalize each location (frees internal buffers) */
     SCOREP_Location_ForAll( finalize_location_metric_cb, NULL );
 
     /* Finalize metric service */
     scorep_metric_finalize_service();
-
-    /* Read environment variables to get their recent values.
-     * In the usual case the names of recorded metrics will
-     * have changed. */
-    return_value = SCOREP_ConfigApplyEnv();
-    if ( return_value != SCOREP_SUCCESS )
-    {
-        return return_value;
-    }
 
     /* Reinitialize metric service */
     scorep_metric_initialize_service();

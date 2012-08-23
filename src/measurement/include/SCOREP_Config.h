@@ -120,10 +120,44 @@ SCOREP_ConfigRegister( const char*            nameSpace,
                        SCOREP_ConfigVariable* variables );
 
 
+/**
+ * Evaluate all corresponding environment variables and assign the values to
+ * the config variables.
+ *
+ * This function can only be called once.
+ *
+ * @return Success or error code.
+ */
 SCOREP_Error_Code
 SCOREP_ConfigApplyEnv( void );
 
 
+/**
+ * Assign a value to a existing config variable.
+ *
+ * @param nameSpaceName  The name space where the variable lives in.
+ * @param variableName   The name of the vaariable.
+ * @param variableValue  The new value for the variable.
+ *
+ * @return Success or one of the following error codes:
+ *         @li @a SCOREP_ERROR_INDEX_OUT_OF_BOUNDS The given variable does not exist.
+ *         @li @a SCOREP_ERROR_PARSE_INVALID_VALUE The value could not be parsed.
+ */
+SCOREP_Error_Code
+SCOREP_ConfigSetValue( const char* nameSpaceName,
+                       const char* variableName,
+                       const char* variableValue );
+
+
+/**
+ * Dumps the current value of all config variables to the given file, one per line.
+ *
+ * The output is suitable for shell consumption.
+ *
+ * @param dumpFile An already opened I/O stream for writing.
+ *
+ * @return SCOREP_SUCCESS.
+ */
 SCOREP_Error_Code
 SCOREP_ConfigDump( FILE* dumpFile );
 

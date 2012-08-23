@@ -348,6 +348,10 @@ SCOREP_ConfigApplyEnv( void )
 {
     SCOREP_ASSERT( name_spaces );
 
+    static bool once_run;
+    SCOREP_BUG_ON( once_run, "SCOREP_ConfigApplyEnv() can only called once." );
+    once_run = true;
+
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                          "Apply environment to config variables" );
 
@@ -389,6 +393,46 @@ SCOREP_ConfigApplyEnv( void )
                                      "    Variable is unset" );
             }
         }
+    }
+
+    return SCOREP_SUCCESS;
+}
+
+
+SCOREP_Error_Code
+SCOREP_ConfigSetValue( const char* nameSpaceName,
+                       const char* variableName,
+                       const char* variableValue )
+{
+    size_t                           name_space_len = strlen( nameSpaceName );
+    struct scorep_config_name_space* name_space     =
+        get_name_space( nameSpaceName, name_space_len, false );
+    if ( !name_space )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                             "Unknown name space: %s::", nameSpaceName );
+    }
+
+    struct scorep_config_variable* variable =
+        get_variable( name_space, variableName, false );
+    if ( !variable )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                             "Unknown config variable: %s::%s",
+                             nameSpaceName, variableName );
+    }
+
+    bool successfully_parsed;
+    successfully_parsed = parse_value( variableValue,
+                                       variable->data.type,
+                                       variable->data.variableReference,
+                                       variable->data.variableContext );
+
+    if ( !successfully_parsed )
+    {
+        return SCOREP_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
+                             "Invalid value for config variable %s::%s: %s",
+                             nameSpaceName, variableName, variableValue );
     }
 
     return SCOREP_SUCCESS;

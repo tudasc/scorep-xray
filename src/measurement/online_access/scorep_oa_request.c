@@ -43,6 +43,7 @@
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Profile.h>
+#include <SCOREP_Config.h>
 #include <SCOREP_Debug.h>
 
 
@@ -102,11 +103,6 @@ int32_t phase_request_oa_index           = 0;
 MetricRequest* execution_time_request    = NULL;
 
 extern SCOREP_DefinitionManager scorep_local_definition_manager;
-
-extern int
-setenv( const char*,
-        const char*,
-        int );
 
 /** Prints call-tree profile
  */
@@ -249,13 +245,13 @@ SCOREP_OA_RequestsSubmit
     //printf( "Requested RUSAGE metrics: %s\n", scorep_metrics_rusage_mine );
 
     /**
-     * Export metric source configuration string to the corresponding environment variable
+     * Set metric source configuration string to the corresponding config variable
      */
-    setenv( "SCOREP_METRIC_PAPI", scorep_metrics_papi_mine, 1 );
-    setenv( "SCOREP_METRIC_PAPI_SEP", ";", 1 );
+    SCOREP_ConfigSetValue( "metric", "papi", scorep_metrics_papi_mine );
+    SCOREP_ConfigSetValue( "metric", "papi_sep", ";" );
 
-    setenv( "SCOREP_METRIC_RUSAGE", scorep_metrics_rusage_mine, 1 );
-    setenv( "SCOREP_METRIC_RUSAGE_SEP", ";", 1 );
+    SCOREP_ConfigSetValue( "metric", "rusage", scorep_metrics_rusage_mine );
+    SCOREP_ConfigSetValue( "metric", "rusage_sep", ";" );
 
     /** if PAPI config string is already allocated free it*/
     if ( scorep_metrics_papi_mine )
