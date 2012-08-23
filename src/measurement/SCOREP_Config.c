@@ -68,12 +68,17 @@ compare_name_space( const void* key,
 
 struct scorep_config_name_space
 {
-    const char*     name;
-    size_t          name_len;
-    SCOREP_Hashtab* variables;
+    const char*                      name;
+    size_t                           name_len;
+    SCOREP_Hashtab*                  variables;
+    struct scorep_config_variable*   variables_head;
+    struct scorep_config_variable**  variables_tail;
+    struct scorep_config_name_space* next;
 };
 
-static SCOREP_Hashtab* name_spaces;
+static SCOREP_Hashtab*                   name_spaces;
+static struct scorep_config_name_space*  name_spaces_head;
+static struct scorep_config_name_space** name_spaces_tail = &name_spaces_head;
 
 static void
 check_name( const char* name,
@@ -125,23 +130,22 @@ SCOREP_ConfigFini( void )
 {
     SCOREP_ASSERT( name_spaces );
 
-    SCOREP_Hashtab_Iterator* name_space_iter;
-    SCOREP_Hashtab_Entry*    name_space_entry;
-
-    /* Execute function for each entry */
-    name_space_iter = SCOREP_Hashtab_IteratorCreate( name_spaces );
-    for ( name_space_entry = SCOREP_Hashtab_IteratorFirst( name_space_iter );
-          name_space_entry;
-          name_space_entry = SCOREP_Hashtab_IteratorNext( name_space_iter ) )
+    struct scorep_config_name_space* name_space = name_spaces_head;
+    while ( name_space )
     {
-        struct scorep_config_name_space* name_space = name_space_entry->value;
+        struct scorep_config_name_space* next_name_space = name_space->next;
+        struct scorep_config_variable*   variable        = name_space->variables_head;
+        while ( variable )
+        {
+            struct scorep_config_variable* next_variable = variable->next;
+            free( variable );
+            variable = next_variable;
+        }
 
-        SCOREP_Hashtab_FreeAll( name_space->variables,
-                                SCOREP_Hashtab_DeleteNone,
-                                SCOREP_Hashtab_DeleteFree );
+        SCOREP_Hashtab_Free( name_space->variables );
         free( name_space );
+        name_space = next_name_space;
     }
-    SCOREP_Hashtab_IteratorFree( name_space_iter );
     SCOREP_Hashtab_Free( name_spaces );
     name_spaces = NULL;
 }
@@ -186,10 +190,18 @@ get_name_space( const char* name, size_t nameLen, bool create )
         hash_variable,
         compare_variable );
 
+    name_space->variables_head = NULL;
+    name_space->variables_tail = &name_space->variables_head;
+
     SCOREP_Hashtab_Insert( name_spaces,
                            name_space,
                            name_space,
                            &hashHint );
+
+    /* Maintain registration order */
+    name_space->next  = NULL;
+    *name_spaces_tail = name_space;
+    name_spaces_tail  = &name_space->next;
 
     return name_space;
 }
@@ -244,6 +256,11 @@ get_variable( struct scorep_config_name_space* nameSpace,
                            variable,
                            variable,
                            &hashHint );
+
+    /* Maintain registration order */
+    variable->next             = NULL;
+    *nameSpace->variables_tail = variable;
+    nameSpace->variables_tail  = &variable->next;
 
     return variable;
 }
@@ -334,29 +351,17 @@ SCOREP_ConfigApplyEnv( void )
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                          "Apply environment to config variables" );
 
-    SCOREP_Hashtab_Iterator* name_space_iter;
-    SCOREP_Hashtab_Entry*    name_space_entry;
-
-    /* Execute function for each entry */
-    name_space_iter = SCOREP_Hashtab_IteratorCreate( name_spaces );
-    for ( name_space_entry = SCOREP_Hashtab_IteratorFirst( name_space_iter );
-          name_space_entry;
-          name_space_entry = SCOREP_Hashtab_IteratorNext( name_space_iter ) )
+    for ( struct scorep_config_name_space* name_space = name_spaces_head;
+          name_space;
+          name_space = name_space->next )
     {
-        struct scorep_config_name_space* name_space = name_space_entry->value;
-
-        SCOREP_Hashtab_Iterator* variable_iter;
-        SCOREP_Hashtab_Entry*    variable_entry;
-
-        variable_iter = SCOREP_Hashtab_IteratorCreate( name_space->variables );
-        for ( variable_entry = SCOREP_Hashtab_IteratorFirst( variable_iter );
-              variable_entry;
-              variable_entry = SCOREP_Hashtab_IteratorNext( variable_iter ) )
+        for ( struct scorep_config_variable* variable = name_space->variables_head;
+              variable;
+              variable = variable->next )
         {
-            struct scorep_config_variable* variable = variable_entry->value;
-
             const char* environment_variable_value =
                 getenv( variable->env_var_name );
+
             if ( environment_variable_value )
             {
                 SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
@@ -371,9 +376,6 @@ SCOREP_ConfigApplyEnv( void )
 
                 if ( !successfully_parsed )
                 {
-                    SCOREP_Hashtab_IteratorFree( variable_iter );
-                    SCOREP_Hashtab_IteratorFree( name_space_iter );
-
                     return SCOREP_ERROR( SCOREP_ERROR_EINVAL,
                                          "Can't set variable '%s' to "
                                          "value `%s' from environment variable",
@@ -387,9 +389,7 @@ SCOREP_ConfigApplyEnv( void )
                                      "    Variable is unset" );
             }
         }
-        SCOREP_Hashtab_IteratorFree( variable_iter );
     }
-    SCOREP_Hashtab_IteratorFree( name_space_iter );
 
     return SCOREP_SUCCESS;
 }
@@ -403,36 +403,21 @@ SCOREP_ConfigDump( FILE* dumpFile )
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                          "Dump config variables to file" );
 
-    SCOREP_Hashtab_Iterator* name_space_iter;
-    SCOREP_Hashtab_Entry*    name_space_entry;
-
-    /* Execute function for each entry */
-    name_space_iter = SCOREP_Hashtab_IteratorCreate( name_spaces );
-    for ( name_space_entry = SCOREP_Hashtab_IteratorFirst( name_space_iter );
-          name_space_entry;
-          name_space_entry = SCOREP_Hashtab_IteratorNext( name_space_iter ) )
+    for ( struct scorep_config_name_space* name_space = name_spaces_head;
+          name_space;
+          name_space = name_space->next )
     {
-        struct scorep_config_name_space* name_space = name_space_entry->value;
-
-        SCOREP_Hashtab_Iterator* variable_iter;
-        SCOREP_Hashtab_Entry*    variable_entry;
-
-        variable_iter = SCOREP_Hashtab_IteratorCreate( name_space->variables );
-        for ( variable_entry = SCOREP_Hashtab_IteratorFirst( variable_iter );
-              variable_entry;
-              variable_entry = SCOREP_Hashtab_IteratorNext( variable_iter ) )
+        for ( struct scorep_config_variable* variable = name_space->variables_head;
+              variable;
+              variable = variable->next )
         {
-            struct scorep_config_variable* variable = variable_entry->value;
-
             dump_value( dumpFile,
                         variable->env_var_name,
                         variable->data.type,
                         variable->data.variableReference,
                         variable->data.variableContext );
         }
-        SCOREP_Hashtab_IteratorFree( variable_iter );
     }
-    SCOREP_Hashtab_IteratorFree( name_space_iter );
 
     return SCOREP_SUCCESS;
 }
