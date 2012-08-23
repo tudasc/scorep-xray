@@ -14,6 +14,9 @@
  *
  */
 
+#ifndef SCOREP_METRIC_MANAGEMENT_H
+#define SCOREP_METRIC_MANAGEMENT_H
+
 /**
  *  @status     alpha
  *  @file       SCOREP_Metric_Management.h
@@ -34,19 +37,18 @@
  *          or NULL if we don't have metrics to read from.
  */
 uint64_t*
-SCOREP_Metric_read( SCOREP_Location* locationData );
+SCOREP_Metric_Read( SCOREP_Location* locationData );
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between
  *          separate phases of program execution.
  */
 SCOREP_Error_Code
-SCOREP_Metric_reinitialize();
+SCOREP_Metric_Reinitialize();
 
 /** @brief  Returns the sampling set handle to the measurement system.
  */
 SCOREP_SamplingSetHandle
 SCOREP_Metric_GetSamplingSet();
 
-/* void
-   SCOREP_Metric_read( struct SCOREP_Metric_EventSet* eventSet, uint64_t values[] );*/
+#endif /* SCOREP_METRIC_MANAGEMENT_H */

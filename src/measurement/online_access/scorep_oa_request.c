@@ -269,7 +269,7 @@ SCOREP_OA_RequestsSubmit
     }
 
     /** Reinitialize metrics module */
-    SCOREP_Error_Code return_value = SCOREP_Metric_reinitialize();
+    SCOREP_Error_Code return_value = SCOREP_Metric_Reinitialize();
     assert( return_value == SCOREP_SUCCESS );
 
 

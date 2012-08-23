@@ -104,7 +104,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_read( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     scorep_enter_region( timestamp, regionHandle, metric_values, location );
 }
@@ -129,7 +129,7 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
     SCOREP_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
                    "Invalid event order." );
 
-    uint64_t* metric_values = SCOREP_Metric_read( location );
+    uint64_t* metric_values = SCOREP_Metric_Read( location );
 
     scorep_enter_region( timestamp, regionHandle, metric_values, location );
 }
@@ -182,7 +182,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_read( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     scorep_exit_region( timestamp, regionHandle, metric_values, location );
 }
@@ -203,7 +203,7 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
     SCOREP_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
                    "Invalid event order." );
 
-    uint64_t* metric_values = SCOREP_Metric_read( location );
+    uint64_t* metric_values = SCOREP_Metric_Read( location );
 
     scorep_exit_region( timestamp, regionHandle, metric_values, location );
 }
@@ -310,7 +310,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_read( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
@@ -346,7 +346,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
 
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_read( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
 
     SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -691,7 +691,7 @@ SCOREP_OmpTaskSwitch( uint64_t taskId )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        uint64_t* metric_values = SCOREP_Metric_read( location );
+        uint64_t* metric_values = SCOREP_Metric_Read( location );
         SCOREP_Profile_TaskSwitch( location, taskId, timestamp, metric_values );
     }
 }
@@ -703,7 +703,7 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_read( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -735,7 +735,7 @@ SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_read( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
     {

@@ -361,7 +361,7 @@ scorep_metric_finalize_location( SCOREP_Location* locationData )
  *          or NULL if we don't have metrics to read from.
  */
 uint64_t*
-SCOREP_Metric_read( SCOREP_Location* locationData )
+SCOREP_Metric_Read( SCOREP_Location* locationData )
 {
     /* Call only, if previously initialized, and we have at least one metric
      * to read
@@ -403,7 +403,7 @@ SCOREP_Metric_read( SCOREP_Location* locationData )
  *          otherwise an error code will be reported.
  */
 SCOREP_Error_Code
-SCOREP_Metric_reinitialize()
+SCOREP_Metric_Reinitialize()
 {
     SCOREP_Error_Code return_value;
 

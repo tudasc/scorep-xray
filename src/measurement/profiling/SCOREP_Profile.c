@@ -218,7 +218,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
      */
     uint64_t             exit_time = SCOREP_GetClockTicks();
     scorep_profile_node* node      = NULL;
-    uint64_t*            metrics   = SCOREP_Metric_read( location );
+    uint64_t*            metrics   = SCOREP_Metric_Read( location );
 
     if ( location != NULL )
     {
