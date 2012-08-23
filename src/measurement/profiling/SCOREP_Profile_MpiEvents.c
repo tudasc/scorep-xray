@@ -36,8 +36,8 @@ void
 SCOREP_Profile_InitializeMpi()
 {
     scorep_bytes_send_metric =
-        SCOREP_DefineMetric( "Bytes sent",
-                             "Number of bytes send",
+        SCOREP_DefineMetric( "bytes_sent",
+                             "Bytes sent",
                              SCOREP_METRIC_SOURCE_TYPE_OTHER,
                              SCOREP_METRIC_MODE_ABSOLUTE_POINT,
                              SCOREP_METRIC_VALUE_UINT64,
@@ -47,8 +47,8 @@ SCOREP_Profile_InitializeMpi()
                              SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
     scorep_bytes_recv_metric =
-        SCOREP_DefineMetric( "Bytes received",
-                             "Number of bytes received",
+        SCOREP_DefineMetric( "bytes_received",
+                             "Bytes received",
                              SCOREP_METRIC_SOURCE_TYPE_OTHER,
                              SCOREP_METRIC_MODE_ABSOLUTE_POINT,
                              SCOREP_METRIC_VALUE_UINT64,
