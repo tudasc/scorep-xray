@@ -72,6 +72,9 @@ noinst_PROGRAMS += otf2_speed_test
 otf2_speed_test_SOURCES = \
     $(SRC_ROOT)vendor/otf2/src/tools/otf2_speed_test/otf2_speed_test.c
 otf2_speed_test_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) @OTF2_CPPFLAGS@
-otf2_speed_test_LDADD = $(MPILIBS) @OTF2_LIBS@
+otf2_speed_test_LDADD = \
+    $(MPILIBS) \
+    ../build-backend/libscorep_utilities.la \
+    @OTF2_LIBS@
 otf2_speed_test_LDFLAGS = @OTF2_LDFLAGS@
 endif
