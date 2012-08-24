@@ -42,6 +42,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-arm  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-bgl  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-bgp  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-backend-bgq  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-crayxt  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-aix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-linux  \
@@ -53,6 +54,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-arm  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-bgl  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-bgp  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-frontend-bgq  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-crayxt  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-aix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-linux  \
@@ -64,6 +66,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-arm  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-bgl  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-bgp  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-bgq  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-crayxt  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-aix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-linux  \
