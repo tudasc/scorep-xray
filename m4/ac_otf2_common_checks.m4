@@ -108,6 +108,11 @@ AC_CONFIG_FILES([
 ], [
     chmod u+x run_otf2_buffer_test.sh
 ])
+AC_CONFIG_FILES([
+    run_otf2_integrity_test.sh:../test/OTF2_Integrity_test/run_otf2_integrity_test.sh.in
+], [
+    chmod u+x run_otf2_integrity_test.sh
+])
 
 
 AC_OTF2_ENTROPY_SOURCES
