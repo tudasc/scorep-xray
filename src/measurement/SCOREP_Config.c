@@ -412,6 +412,8 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
         return SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
                              "Unknown name space: %s::", nameSpaceName );
     }
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Using name space %s", name_space->name );
 
     struct scorep_config_variable* variable =
         get_variable( name_space, variableName, false );
@@ -421,6 +423,8 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
                              "Unknown config variable: %s::%s",
                              nameSpaceName, variableName );
     }
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                         "Using variable %s", variable->env_var_name );
 
     bool successfully_parsed;
     successfully_parsed = parse_value( variableValue,
