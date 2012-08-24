@@ -485,6 +485,9 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                                                  Group,
                                                  definitionManager->page_manager );
                     break;
+
+                default:
+                    SCOREP_BUG( "Invalid scoping type." );
             }
 
             status = defMetricInstance(
