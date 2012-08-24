@@ -331,16 +331,11 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
 static inline char*
 scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
 {
-    static char prop_name[ 50 ];
-
-    strcpy( prop_name, "OTF2::" );
-
     switch ( scorep_property )
     {
 #define case_return( name ) \
     case SCOREP_PROPERTY_## name: \
-        strcat( prop_name, #name ); \
-        return prop_name
+        return "OTF2::" #name
 
         case_return( MPI_COMMUNICATION_COMPLETE );
         case_return( OPENMP_EVENT_COMPLETE );
