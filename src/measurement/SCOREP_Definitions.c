@@ -2250,6 +2250,128 @@ scorep_callpath_definitions_equal( const SCOREP_Callpath_Definition* existingDef
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////
+// PropertyDefinitions /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+
+static SCOREP_PropertyHandle
+scorep_property_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                   SCOREP_Property           property,
+                                   bool                      value );
+
+
+static bool
+scorep_property_definitions_equal( const SCOREP_Property_Definition* existingDefinition,
+                                   const SCOREP_Property_Definition* newDefinition );
+
+
+/**
+ * Associate a name with a process unique property handle.
+ */
+SCOREP_PropertyHandle
+SCOREP_DefineProperty( SCOREP_Property property,
+                       bool            value )
+{
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
+                         "Define new property: %d", property );
+
+    SCOREP_BUG_ON( property >= SCOREP_PROPERTY_MAX, "Invalid property enum value" );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_PropertyHandle new_handle = scorep_property_definition_define(
+        &scorep_local_definition_manager,
+        property,
+        value );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+void
+SCOREP_CopyPropertyDefinitionToUnified( SCOREP_Property_Definition*   definition,
+                                        SCOREP_Allocator_PageManager* handlesPageManager )
+{
+    assert( !SCOREP_Omp_InParallel() );
+    assert( definition );
+    assert( handlesPageManager );
+
+    definition->unified = scorep_property_definition_define(
+        scorep_unified_definition_manager,
+        definition->property,
+        definition->value );
+}
+
+
+SCOREP_PropertyHandle
+scorep_property_definition_define( SCOREP_DefinitionManager* definition_manager,
+                                   SCOREP_Property           property,
+                                   bool                      value )
+{
+    assert( definition_manager );
+
+    SCOREP_Property_Definition* new_definition = NULL;
+    SCOREP_PropertyHandle       new_handle     = SCOREP_INVALID_PARAMETER;
+
+    SCOREP_DEFINITION_ALLOC( Property );
+    new_definition->property = property;
+    new_definition->value    = value;
+    HASH_ADD_POD( new_definition, property );
+
+    // modified SCOREP_DEFINITION_MANAGER_ADD_DEFINITION macro:
+
+    SCOREP_PropertyHandle* hash_table_bucket = 0;
+
+    if ( definition_manager->property_definition_hash_table )
+    {
+        hash_table_bucket = &definition_manager->property_definition_hash_table[
+            new_definition->hash_value & SCOREP_DEFINITION_HASH_TABLE_MASK ];
+        SCOREP_PropertyHandle hash_list_iterator = *hash_table_bucket;
+
+        while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
+        {
+            SCOREP_Property_Definition* existing_definition = SCOREP_LOCAL_HANDLE_DEREF(
+                hash_list_iterator, Property );
+            if ( scorep_property_definitions_equal( existing_definition, new_definition ) )
+            {
+                /* boolean AND operation for property values */
+
+                existing_definition->value = existing_definition->value && new_definition->value;
+
+                SCOREP_Allocator_RollbackAllocMovable(
+                    SCOREP_Memory_GetLocalDefinitionPageManager(),
+                    new_handle );
+                return hash_list_iterator;
+            }
+            hash_list_iterator = existing_definition->hash_next;
+        }
+        new_definition->hash_next = *hash_table_bucket;
+        *hash_table_bucket        = new_handle;
+    }
+
+    *( definition_manager->property_definition_tail_pointer ) =
+        new_handle;
+    definition_manager->property_definition_tail_pointer =
+        &new_definition->next;
+    new_definition->sequence_number =
+        definition_manager->property_definition_counter++;
+    return new_handle;
+}
+
+
+bool
+scorep_property_definitions_equal( const SCOREP_Property_Definition* existingDefinition,
+                                   const SCOREP_Property_Definition* newDefinition )
+{
+    return existingDefinition->hash_value == newDefinition->hash_value
+           && existingDefinition->property == newDefinition->property;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 // ClockOffset //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

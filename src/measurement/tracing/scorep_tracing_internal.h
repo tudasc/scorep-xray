@@ -26,9 +26,13 @@
  */
 
 
+#include "scorep_rewind_stack_management.h"
+
+
 struct SCOREP_TracingData
 {
-    OTF2_EvtWriter* otf_writer;
+    OTF2_EvtWriter*      otf_writer;
+    scorep_rewind_stack* rewind_stack;
 };
 
 

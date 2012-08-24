@@ -64,5 +64,7 @@ SCOREP_Tracing_FinalizeEventWriters( void );
 void
 SCOREP_Tracing_WriteDefinitions( void );
 
+void
+SCOREP_Tracing_WriteProperties();
 
 #endif /* SCOREP_TRACING_H */

@@ -644,6 +644,17 @@
 
 #define SCOREP_USER_REGION_END( handle ) SCOREP_User_RegionEnd( handle );
 
+#define SCOREP_USER_REWIND_DEFINE( handle ) \
+    static SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
+
+#define SCOREP_USER_REWIND_POINT( handle, name ) \
+    SCOREP_User_RewindRegionBegin( &handle, &SCOREP_User_LastFileName, \
+                                   &SCOREP_User_LastFileHandle, name, \
+                                   SCOREP_USER_REGION_TYPE_COMMON, __FILE__, __LINE__ );
+
+#define SCOREP_USER_REWIND_CHECK( handle, value ) \
+    SCOREP_User_RewindRegionEnd( handle, value );
+
 #define SCOREP_USER_FUNC_BEGIN() static SCOREP_User_RegionHandle        \
     scorep_user_func_handle =  SCOREP_USER_INVALID_REGION; \
     SCOREP_User_RegionBegin( &scorep_user_func_handle, &SCOREP_User_LastFileName, \

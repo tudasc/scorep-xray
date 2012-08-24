@@ -32,6 +32,7 @@
 
 
 #include <SCOREP_Debug.h>
+#include <SCOREP_Error.h>
 
 
 #include <otf2/otf2.h>
@@ -46,6 +47,9 @@
 
 #include "scorep_tracing_internal.h"
 #include "scorep_tracing_types.h"
+
+
+extern bool scorep_properties[ SCOREP_PROPERTY_MAX ];
 
 
 void
@@ -148,6 +152,8 @@ SCOREP_Tracing_MpiSend( SCOREP_Location*                  location,
                             SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                             tag,
                             bytesSent );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -168,6 +174,8 @@ SCOREP_Tracing_MpiRecv( SCOREP_Location*                  location,
                             SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
                             tag,
                             bytesSent );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -180,6 +188,7 @@ SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Location* location,
     OTF2_EvtWriter_MpiCollectiveBegin( evt_writer,
                                        NULL,
                                        timestamp );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -212,6 +221,8 @@ SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Location*                  location,
                                      root_rank,
                                      bytesSent,
                                      bytesReceived );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -226,6 +237,8 @@ SCOREP_Tracing_MpiIsendComplete( SCOREP_Location*    location,
                                      NULL,
                                      timestamp,
                                      requestId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -240,6 +253,7 @@ SCOREP_Tracing_MpiIrecvRequest( SCOREP_Location*    location,
                                     NULL,
                                     timestamp,
                                     requestId );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -254,6 +268,7 @@ SCOREP_Tracing_MpiRequestTested( SCOREP_Location*    location,
                                    NULL,
                                    timestamp,
                                    requestId );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -268,6 +283,7 @@ SCOREP_Tracing_MpiRequestCancelled( SCOREP_Location*    location,
                                         NULL,
                                         timestamp,
                                         requestId );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -290,6 +306,8 @@ SCOREP_Tracing_MpiIsend(  SCOREP_Location*                  location,
                              tag,
                              bytesSent,
                              requestId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -312,6 +330,8 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
                              tag,
                              bytesReceived,
                              requestId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
 }
 
 
@@ -326,6 +346,8 @@ SCOREP_Tracing_OmpFork( SCOREP_Location* location,
                             NULL,
                             timestamp,
                             nRequestedThreads );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 
@@ -338,6 +360,8 @@ SCOREP_Tracing_OmpJoin( SCOREP_Location* location,
     OTF2_EvtWriter_OmpJoin( evt_writer,
                             NULL,
                             timestamp );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 
@@ -354,6 +378,8 @@ SCOREP_Tracing_OmpAcquireLock( SCOREP_Location* location,
                                    timestamp,
                                    lockId,
                                    acquisitionOrder );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 
@@ -370,6 +396,8 @@ SCOREP_Tracing_OmpReleaseLock( SCOREP_Location* location,
                                    timestamp,
                                    lockId,
                                    acquisitionOrder );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 
@@ -384,6 +412,8 @@ SCOREP_Tracing_OmpTaskCreate( SCOREP_Location* location,
                                   NULL,
                                   timestamp,
                                   taskId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 void
@@ -397,6 +427,8 @@ SCOREP_Tracing_OmpTaskSwitch( SCOREP_Location* location,
                                   NULL,
                                   timestamp,
                                   taskId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 void
@@ -410,6 +442,8 @@ SCOREP_Tracing_OmpTaskComplete( SCOREP_Location* location,
                                     NULL,
                                     timestamp,
                                     taskId );
+
+    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
 }
 
 
@@ -457,4 +491,106 @@ SCOREP_Tracing_ParameterString( SCOREP_Location*       location,
                                     timestamp,
                                     SCOREP_LOCAL_HANDLE_TO_ID( parameterHandle, Parameter ),
                                     SCOREP_LOCAL_HANDLE_TO_ID( stringHandle, String ) );
+}
+
+
+void
+SCOREP_Tracing_StoreRewindPoint( SCOREP_Location*    location,
+                                 SCOREP_RegionHandle regionHandle,
+                                 uint64_t            timestamp )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    uint32_t region_id = SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region );
+
+    /* Save the current trace buffer state as a rewind point. */
+    OTF2_EvtWriter_StoreRewindPoint( evt_writer, region_id );
+
+    /* Push this rewind region on the stack to manage nested rewind points. */
+    scorep_rewind_stack_push( region_id, timestamp );
+}
+
+void
+SCOREP_Tracing_ClearRewindPoint( SCOREP_Location* location,
+                                 uint32_t         region_id )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ClearRewindPoint( evt_writer, region_id );
+}
+
+void
+SCOREP_Tracing_Rewind( SCOREP_Location* location,
+                       uint32_t         region_id )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_Rewind( evt_writer, region_id );
+}
+
+void
+SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
+                                 SCOREP_RegionHandle regionHandle,
+                                 uint64_t            leavetimestamp,
+                                 bool                do_rewind )
+{
+    uint64_t entertimestamp = 0;
+    uint32_t id             = 0;
+    uint32_t id_pop         = 0;
+    bool     paradigm_affected[ SCOREP_PARADIGM_MAX ];
+
+
+    id = SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region );
+
+    /* Search for the region id in the rewind stack, and print a warning when it is not found and leave function. */
+    if ( scorep_rewind_stack_find( id ) == false )
+    {
+        SCOREP_DEBUG_PRINTF( SCOREP_WARNING,
+                             "ID of rewind region is not in rewind stack, maybe there was a buffer flush or a programming error!" );
+        return;
+    }
+
+    /* Remove all rewind points from the stack and the buffer until the
+     * searched region id for the requested rewind is found.
+     * This ensures, that nested rewind regions could be managed without
+     * a leck in the needed memory. */
+    do
+    {
+        /* Remove from stack. */
+        scorep_rewind_stack_pop( &id_pop, &entertimestamp, paradigm_affected );
+
+        /* Remove nested rewind points from otf2 internal memory for rewind points. */
+        if ( id != id_pop )
+        {
+            SCOREP_Tracing_ClearRewindPoint( location, id_pop );
+        }
+    }
+    while ( id != id_pop );
+
+    /* If the trace should be rewinded to the requested rewind point. */
+    if ( do_rewind )
+    {
+        /* Rewind the trace buffer. */
+        SCOREP_Tracing_Rewind( location, id );
+
+        /* Write events in the trace to mark the deleted section */
+
+        SCOREP_Tracing_MeasurementOnOff( location, entertimestamp, false );
+
+        SCOREP_Tracing_MeasurementOnOff( location, leavetimestamp, true );
+
+        /* Did it affect MPI events? */
+        if ( paradigm_affected[ SCOREP_PARADIGM_MPI ] )
+        {
+            scorep_properties[ SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE ] = false;
+        }
+        /* Did it affect OMP events? */
+        if ( paradigm_affected[ SCOREP_PARADIGM_OPENMP ] )
+        {
+            scorep_properties[ SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE ] = false;
+        }
+    }
+
+    /* And remove the rewind point from otf2 internal memory. */
+    SCOREP_Tracing_ClearRewindPoint( location, id );
 }

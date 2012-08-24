@@ -91,6 +91,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Marker, marker )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Parameter, parameter )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Callpath, callpath )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Property, property )
 
     /** The pager manager where all definition objects resides */
     SCOREP_Allocator_PageManager* page_manager;
@@ -137,6 +138,11 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    manager,
 void
 SCOREP_Definitions_Write();
 
+void
+SCOREP_Properties_Finalize();
+
+void
+SCOREP_Properties_Write();
 
 SCOREP_StringHandle
 SCOREP_DefineString( const char* str );
@@ -239,6 +245,10 @@ SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
 void
 SCOREP_CopyParameterDefinitionToUnified( SCOREP_Parameter_Definition*  definition,
                                          SCOREP_Allocator_PageManager* handlesPageManager );
+
+void
+SCOREP_CopyPropertyDefinitionToUnified( SCOREP_Property_Definition*   definition,
+                                        SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 SCOREP_CallpathHandle

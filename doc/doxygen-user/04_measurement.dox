@@ -398,6 +398,50 @@ to the configuration file and run your instrumented application. If
 the whole application run will be recorded (no selective tracing will apply).
 
 
+@section rewind Trace Buffer Rewind
+
+Introducing a long-term event-trace recording mode, the trace
+buffer rewind feature allows to discard the preceding section of the event trace at certain control points
+or phase markers. The live decision whether to keep or discard a section can depend on the
+presence or absence of certain behaviour patterns as well as on similarity or difference
+with other sections.
+
+Based on user regions (see @secref{manual_instrumentation}), three macros are given which control the rewind. These are:
+
+@code
+SCOREP_USER_REWIND_DEFINE( regionHandle )          // to define a local region handle based on the function SCOREP_USER_REGION_DEFINE( ... )
+SCOREP_USER_REWIND_POINT( regionHandle, "name" )   // similar to SCOREP_USER_REGION_BEGIN( ... ) 
+SCOREP_USER_REWIND_CHECK( regionHandle, boolean )  // similar to SCOREP_USER_REGION_END( ... ) w/ additional parameter to control the rewind (yes or no) 
+@endcode
+
+The user has to specify whether or not a rewind is requested with a boolean variable in the SCOREP_USER_REWIND_CHECK function. 
+There are two different approaches what to do with the rewind region in the trace based on the boolean variable.
+If the boolean variable is true,
+the trace buffer will be reset to an old snapshot and after that rewind
+region enter and leave events will be written into the trace buffer to mark the presence
+of the trace buffer rewind. This rewind region then looks like a normal user-defined region
+in the trace. If the variable is false, than no events of the rewind region are written into 
+the trace, so that the trace buffer looks like the user never instrumented the code w/ rewind
+regions. Trace buffer 
+flushes have an impact on the rewind regions, i.e. if a flush occurs all previous stored
+rewind points (which are not "checked", i.e. the flush is in between the region) will be
+deleted and the SCOREP_USER_REWIND_CHECK function won't write the enter/leave events into the
+trace independently from the boolean variable. Wrong nested rewind regions are handled as follows:  
+
+@code
+SCOREP_USER_REWIND_POINT( point 1, ...);
+... do stuff ...
+SCOREP_USER_REWIND_POINT( point 2, ...);
+... do stuff ...
+SCOREP_USER_REWIND_CHECK( point 1, true );
+... do stuff ...
+SCOREP_USER_REWIND_CHECK( point 2, true );
+@endcode
+
+The check for point 2 would corrupt the trace buffer, so point 2 would be deleted and
+ignored in the second check.
+
+
 @subsection mpi_groups Selection of MPI groups
 @seclabel{mpi_groups}
 

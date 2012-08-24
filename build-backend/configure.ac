@@ -288,6 +288,8 @@ AC_CONFIG_FILES([../test/services/metric/run_papi_serial_metric_test.sh], \
                 [chmod +x ../test/services/metric/run_papi_serial_metric_test.sh])
 AC_CONFIG_FILES([../test/services/metric/run_papi_openmp_metric_test.sh], \
                 [chmod +x ../test/services/metric/run_papi_openmp_metric_test.sh])
+AC_CONFIG_FILES([../test/rewind/run_rewind_test.sh], \
+                [chmod +x ../test/rewind/run_rewind_test.sh])
 AC_CONFIG_FILES([../test/OA/OMP/run_oa_omp_test.sh], \
                 [chmod +x ../test/OA/OMP/run_oa_omp_test.sh])
 AC_CONFIG_FILES([../test/OA/serial/C/run_oa_c_test.sh], \

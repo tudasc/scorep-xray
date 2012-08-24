@@ -25,6 +25,7 @@
 #ifndef SCOREP_TRACING_INTERNAL_TYPES_H
 #define SCOREP_TRACING_INTERNAL_TYPES_H
 
+#include <string.h>
 
 static inline OTF2_LocationType
 scorep_tracing_location_type_to_otf2( SCOREP_LocationType scorepType )
@@ -320,6 +321,32 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
 
         default:
             SCOREP_BUG( "Invalid collective type" );
+            return 0;
+
+#undef case_return
+    }
+}
+
+
+static inline char*
+scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
+{
+    static char prop_name[ 50 ];
+
+    strcpy( prop_name, "OTF2::" );
+
+    switch ( scorep_property )
+    {
+#define case_return( name ) \
+    case SCOREP_PROPERTY_## name: \
+        strcat( prop_name, #name ); \
+        return prop_name
+
+        case_return( MPI_COMMUNICATION_COMPLETE );
+        case_return( OPENMP_EVENT_COMPLETE );
+
+        default:
+            SCOREP_BUG( "Invalid property enum value" );
             return 0;
 
 #undef case_return

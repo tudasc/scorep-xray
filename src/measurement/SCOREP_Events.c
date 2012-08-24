@@ -210,6 +210,54 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
 
 
 /**
+ * Generate a rewind region enter event in the measurement system.
+ */
+void
+SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle )
+{
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
+    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
+                       )
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
+                         scorep_region_to_string( stringBuffer,
+                                                  sizeof( stringBuffer ),
+                                                  "%x", regionHandle ) );
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_StoreRewindPoint( location, regionHandle, timestamp );
+    }
+}
+
+
+/**
+ * Generate a rewind region exit event in the measurement system.
+ */
+void
+SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
+{
+    SCOREP_Location* location       = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         leavetimestamp = scorep_get_timestamp( location );
+
+    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
+                       )
+
+    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
+                         scorep_region_to_string( stringBuffer,
+                                                  sizeof( stringBuffer ),
+                                                  "%x", regionHandle ) );
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_ExitRewindRegion( location, regionHandle, leavetimestamp, do_rewind );
+    }
+}
+
+
+/**
  * Process an mpi send event in the measurement system.
  */
 void

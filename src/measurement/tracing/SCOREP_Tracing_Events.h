@@ -206,5 +206,24 @@ SCOREP_Tracing_ParameterString( SCOREP_Location*       location,
                                 SCOREP_ParameterHandle parameterHandle,
                                 SCOREP_StringHandle    stringHandle );
 
+void
+SCOREP_Tracing_StoreRewindPoint( SCOREP_Location*    location,
+                                 SCOREP_RegionHandle regionHandle,
+                                 uint64_t            timestamp );
+
+void
+SCOREP_Tracing_ClearRewindPoint( SCOREP_Location* location,
+                                 uint32_t         region_id );
+
+void
+SCOREP_Tracing_Rewind( SCOREP_Location* location,
+                       uint32_t         region_id );
+
+void
+SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
+                                 SCOREP_RegionHandle regionHandle,
+                                 uint64_t            leavetimestamp,
+                                 bool                do_rewind );
+
 
 #endif /* SCOREP_TRACING_EVENTS_H */

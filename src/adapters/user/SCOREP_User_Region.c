@@ -283,3 +283,60 @@ SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle )
         SCOREP_EnterRegion( handle->handle );
     }
 }
+
+void
+SCOREP_User_RewindRegionBegin
+(
+    SCOREP_User_RegionHandle*    handle,
+    const char**                 lastFileName,
+    SCOREP_SourceFileHandle*     lastFile,
+    const char*                  name,
+    const SCOREP_User_RegionType regionType,
+    const char*                  fileName,
+    const uint32_t               lineNo
+)
+{
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Make sure that the rewind region is initialized */
+    if ( *handle == SCOREP_USER_INVALID_REGION )
+    {
+        SCOREP_User_RegionInit( handle, lastFileName, lastFile,
+                                name, regionType, fileName, lineNo );
+    }
+
+    /* Generate rewind point */
+    SCOREP_User_RewindRegionEnter( *handle );
+}
+
+void
+SCOREP_User_RewindRegionEnd
+(
+    const SCOREP_User_RegionHandle handle,
+    bool                           value
+)
+{
+    SCOREP_USER_ASSERT_NOT_FINALIZED
+
+    /* Make rewind and generate exit event for this region */
+    if ( ( handle != SCOREP_USER_INVALID_REGION ) &&
+         ( handle != SCOREP_FILTERED_USER_REGION ) )
+    {
+        SCOREP_ExitRewindRegion( handle->handle, value );
+        scorep_selective_check_exit( handle );
+    }
+}
+
+void
+SCOREP_User_RewindRegionEnter
+(
+    const SCOREP_User_RegionHandle handle
+)
+{
+    /* Check for intialization */
+    SCOREP_USER_ASSERT_INITIALIZED;
+
+    /* Generate rewind point and enter event for this region */
+    scorep_selective_check_enter( handle );
+    SCOREP_EnterRewindRegion( handle->handle );
+}

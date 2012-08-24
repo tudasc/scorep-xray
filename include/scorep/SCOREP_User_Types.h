@@ -110,7 +110,7 @@ typedef uint64_t SCOREP_User_ParameterHandle;
  */
 #define SCOREP_USER_REGION_TYPE_PHASE    8
 
-/**@}*/
+/** @} */
 
 /* **************************************************************************************
  * Defines for the data type of a user counter

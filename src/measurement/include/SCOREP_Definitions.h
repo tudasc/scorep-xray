@@ -32,6 +32,7 @@
 #include "SCOREP_Types.h"
 #include <scorep/SCOREP_PublicTypes.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 
 /**
@@ -440,6 +441,14 @@ SCOREP_DefineMarker( const char*              name,
 SCOREP_ParameterHandle
 SCOREP_DefineParameter( const char*          name,
                         SCOREP_ParameterType type );
+
+
+/**
+ * Associate a name with a process unique property handle.
+ */
+SCOREP_PropertyHandle
+SCOREP_DefineProperty( SCOREP_Property property,
+                       bool            value );
 
 /**
  * Returns the sequence number of the unified definitions for a local callpath handle from

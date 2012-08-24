@@ -40,5 +40,8 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter );
 void
 scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer );
 
+void
+scorep_tracing_set_properties( OTF2_Archive* scorep_otf2_archive );
+
 
 #endif /* SCOREP_TRACING_DEFINITIONS_H */

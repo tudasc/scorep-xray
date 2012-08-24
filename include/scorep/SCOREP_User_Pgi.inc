@@ -53,6 +53,9 @@
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
         SCOREP_USER_REGION_HANDLE handle
+        
+#define SCOREP_USER_REWIND_DEFINE( handle ) \
+        SCOREP_USER_REGION_HANDLE handle        
 
 #define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type ) \
 		call SCOREP_F_OA_PhaseBegin(handle,name,type,"",__LINE__) 
@@ -62,11 +65,16 @@
 
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )\
         call SCOREP_F_Begin(handle,name,type,"",__LINE__)
+        
+#define SCOREP_USER_REWIND_POINT( handle, name, type )\
+        call SCOREP_F_RewindBegin(handle,name,SCOREP_USER_REGION_TYPE_COMMON,"",__LINE__)        
 
 #define SCOREP_USER_REGION_INIT( handle, name, type )\
         call SCOREP_F_Init(handle,name,type,"",__LINE__)
 
 #define SCOREP_USER_REGION_END( handle ) call SCOREP_F_RegionEnd( handle )
+
+#define SCOREP_USER_REWIND_CHECK( handle, value ) call SCOREP_F_RewindRegionEnd( handle, value )
 
 #define SCOREP_USER_REGION_ENTER( handle ) call SCOREP_F_RegionEnter( handle )
 

@@ -42,13 +42,17 @@
 #include <scorep_selective_region.h>
 
 #define SCOREP_F_Begin_U SCOREP_F_BEGIN
+#define SCOREP_F_RewindBegin_U SCOREP_F_REWINDBEGIN
 #define SCOREP_F_Init_U SCOREP_F_INIT
 #define SCOREP_F_RegionEnd_U SCOREP_F_REGIONEND
+#define SCOREP_F_RewindRegionEnd_U SCOREP_F_REWINDREGIONEND
 #define SCOREP_F_RegionEnter_U SCOREP_F_REGIONENTER
 
 #define SCOREP_F_Begin_L scorep_f_begin
+#define SCOREP_F_RewindBegin_L scorep_f_rewindbegin
 #define SCOREP_F_Init_L scorep_f_init
 #define SCOREP_F_RegionEnd_L scorep_f_regionend
+#define SCOREP_F_RewindRegionEnd_L scorep_f_rewindregionend
 #define SCOREP_F_RegionEnter_L scorep_f_regionenter
 
 #define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
@@ -189,11 +193,40 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
 }
 
 void
+FSUB( SCOREP_F_RewindBegin )( SCOREP_Fortran_RegionHandle* handle,
+                              char*                        name_f,
+                              int32_t*                     type,
+                              char*                        fileName_f,
+                              int32_t*                     lineNo,
+                              int                          nameLen,
+                              int                          fileNameLen )
+{
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Make sure the handle is initialized */
+    FSUB( SCOREP_F_Init )( handle, name_f, type, fileName_f,
+                           lineNo, nameLen, fileNameLen );
+
+    /* Generate rewind point */
+    SCOREP_User_RewindRegionEnter( SCOREP_F2C_REGION( *handle ) );
+}
+
+void
 FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* regionHandle )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED;
     SCOREP_User_RegionEnd( SCOREP_F2C_REGION( *regionHandle ) );
 }
+
+
+void
+FSUB( SCOREP_F_RewindRegionEnd )( SCOREP_Fortran_RegionHandle* handle, int* value )
+{
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+    SCOREP_User_RewindRegionEnd( SCOREP_F2C_REGION( *handle ), *value == 1 );
+}
+
+
 
 void
 FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* regionHandle )

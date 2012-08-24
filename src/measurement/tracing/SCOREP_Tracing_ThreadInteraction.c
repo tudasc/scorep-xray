@@ -52,7 +52,8 @@ SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData )
     SCOREP_TracingData* new_data
         = SCOREP_Location_AllocForMisc( locationData, sizeof( *new_data ) );
 
-    new_data->otf_writer = 0;
+    new_data->otf_writer   = 0;
+    new_data->rewind_stack = 0;
 
     return new_data;
 }

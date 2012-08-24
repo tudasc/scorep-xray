@@ -680,3 +680,28 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
 }
+
+void
+scorep_tracing_set_properties( OTF2_Archive* scorep_otf2_archive )
+{
+    assert( scorep_unified_definition_manager );
+
+    /* set all defined properties*/
+
+    SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
+                                  Property,
+                                  property )
+    {
+        /* convert scorep property enum value to otf2 string */
+
+        char* property_name = scorep_tracing_property_to_otf2( definition->property );
+
+        /* set property */
+
+        OTF2_Archive_SetPropertyBool( scorep_otf2_archive,
+                                      property_name,
+                                      definition->value,
+                                      false );
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}

@@ -56,6 +56,7 @@ SCOREP_ClockOffset*       scorep_clock_offset_head          = NULL;
 SCOREP_ClockOffset**      scorep_clock_offset_tail          =
     &scorep_clock_offset_head;
 
+bool scorep_properties[ SCOREP_PROPERTY_MAX ];
 
 
 /* global definition lock */
@@ -89,6 +90,12 @@ SCOREP_Definitions_Initialize()
     SCOREP_InitializeDefinitionManager( &local_definition_manager,
                                         SCOREP_Memory_GetLocalDefinitionPageManager(),
                                         false );
+    /* initialize properties */
+
+    for ( int i = 0; i < SCOREP_PROPERTY_MAX; i++ )
+    {
+        scorep_properties[ i ] = true;
+    }
 }
 
 
@@ -134,6 +141,8 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( marker, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( parameter, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( callpath, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( property, *definitionManager );
+
 
     if ( allocHashTables )
     {
@@ -152,6 +161,7 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( marker, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( parameter, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( callpath, *definitionManager );
+        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( property, *definitionManager );
     }
 }
 
@@ -217,4 +227,30 @@ SCOREP_Definitions_Write()
     }
 
     /// @todo Daniel, what to do here for profiling?
+}
+
+void
+SCOREP_Properties_Finalize()
+{
+    if ( !scorep_definitions_initialized )
+    {
+        return;
+    }
+    for ( int i = 0; i < SCOREP_PROPERTY_MAX; i++ )
+    {
+        SCOREP_DefineProperty( i, scorep_properties[ i ] );
+    }
+}
+
+void
+SCOREP_Properties_Write()
+{
+    if ( !scorep_definitions_initialized || SCOREP_Mpi_GetRank() != 0 )
+    {
+        return;
+    }
+    if ( SCOREP_IsTracingEnabled() )
+    {
+        SCOREP_Tracing_WriteProperties();
+    }
 }

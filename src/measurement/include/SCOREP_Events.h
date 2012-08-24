@@ -34,6 +34,7 @@
 #include "SCOREP_Location.h"
 #include "SCOREP_DefinitionHandles.h"
 
+#include <stdbool.h>
 
 /**
  * @defgroup SCOREP_Events SCOREP Events
@@ -94,6 +95,32 @@ SCOREP_ExitRegion
 );
 
 
+
+
+/**
+ * Generate a rewind region enter event in the measurement system.
+ *
+ * @param regionHandle The corresponding rewind region for the enter event.
+ */
+void
+SCOREP_EnterRewindRegion
+(
+    SCOREP_RegionHandle regionHandle
+);
+
+/**
+ * Generate a rewind region exit event in the measurement system.
+ *
+ * @param regionHandle The corresponding rewind region for the exit event.
+ * @param value A boolean parameter, whether the trace buffer should be
+ *              rewinded (value = true) or not (value = false).
+ */
+void
+SCOREP_ExitRewindRegion
+(
+    SCOREP_RegionHandle regionHandle,
+    bool                value
+);
 
 
 /**

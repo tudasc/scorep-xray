@@ -615,6 +615,27 @@ typedef int32_t SCOREP_MpiRequestId;
 #define SCOREP_INVALID_ROOT_RANK -1
 
 
+/**
+ * List of known paradigms.
+ */
+typedef enum
+{
+    SCOREP_PARADIGM_MPI,
+    SCOREP_PARADIGM_OPENMP,
+    SCOREP_PARADIGM_MAX
+} SCOREP_Paradigm;
+
+
+/**
+ * List of known otf2-properties.
+ */
+typedef enum
+{
+    SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE,
+    SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE,
+    SCOREP_PROPERTY_MAX
+} SCOREP_Property;
+
 /*@}*/
 
 

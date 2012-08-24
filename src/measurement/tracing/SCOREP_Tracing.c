@@ -178,6 +178,9 @@ scorep_on_trace_pre_flush( void*         userData,
         do_flush = OTF2_FLUSH;
     }
 
+    /* Delete the whole rewind stack. */
+    scorep_rewind_stack_delete();
+
     return do_flush;
 }
 
@@ -467,4 +470,12 @@ SCOREP_Tracing_WriteDefinitions( void )
 
         /* There is no OTF2_Archive_CloseGlobalDefWriter in OTF2 */
     }
+}
+
+void
+SCOREP_Tracing_WriteProperties()
+{
+    assert( scorep_otf2_archive );
+
+    scorep_tracing_set_properties( scorep_otf2_archive );
 }

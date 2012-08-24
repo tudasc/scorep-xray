@@ -263,6 +263,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Parameter )
     SCOREP_ParameterType parameter_type;
 };
 
+
 SCOREP_DEFINE_DEFINITION_TYPE( Callpath )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( Callpath );
@@ -286,6 +287,16 @@ SCOREP_DEFINE_DEFINITION_TYPE( Callpath )
         SCOREP_StringHandle string_handle;
         int64_t             integer_value;
     } parameter_value;
+};
+
+
+SCOREP_DEFINE_DEFINITION_TYPE( Property )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( Property );
+
+    // Add SCOREP_Property stuff from here on.
+    SCOREP_Property property;
+    bool            value;
 };
 
 

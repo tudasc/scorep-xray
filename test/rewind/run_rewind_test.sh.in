@@ -1,0 +1,63 @@
+#!/bin/bash
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2011, 
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       test/rewind/run_rewind_test.sh
+## author     Andre Groetzsch <andre.groetzsch@tu-dresden.de>
+
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+
+RESULT_DIR=rewind-test-dir
+rm -rf $RESULT_DIR
+
+
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./rewind_test 
+
+$OTF2_PRINT $RESULT_DIR/traces.otf2 | grep -e foo -e MEASUREMENT_ON_OFF -e bar > trace.txt
+
+
+# rewind check true
+
+c=`grep -c foo trace.txt`
+if [ $c != 0 ]; then
+  echo "==ERROR== Uncorrect number of events for foo."
+  echo "0 expected but $c occured."
+  rm trace.txt
+  exit 1
+fi
+
+# rewind check false
+c=`grep -c bar trace.txt`
+if [ $c != 2 ]; then
+  echo "==ERROR== Uncorrect number of events for bar."
+  echo "2 expected but $c occured."
+  rm trace.txt
+  exit 1
+fi
+
+
+c=`grep -c MEASUREMENT_ON_OFF trace.txt`
+if [ $c != 4 ]; then
+  echo "==ERROR== Uncorrect number of events for MEASUREMENT_ON_OFF."
+  echo "4 expected but $c occured."
+  rm trace.txt
+  exit 1
+fi
+
+
+rm -rf trace.txt
+
+exit 0

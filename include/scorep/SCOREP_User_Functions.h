@@ -160,6 +160,71 @@ SCOREP_User_RegionEnter
 );
 
 /* **************************************************************************************
+ * Rewind region functions
+ * *************************************************************************************/
+
+/**
+    Generates an enter event for the specified rewind region. For detailed
+    description refer to SCOREP_User_RegionBegin.
+    @param handle     The handle for this region. It must be defined before.
+    @param lastFileName Pointer to the last source file name. In most cases, it is
+                      expected that in most cases no regions are in included
+                      files. If the compiler inserts always the same string adress
+                      for file names, one static variable in a source file
+                      (@ref scorep_user_last_file_name) can remember
+                      the last used filename from a source file and string comparisons
+                      can be avoided.
+                      Here the adress of @ref SCOREP_User_LastFileName should be provided.
+    @param lastFile   The handle for the last used source file. It is remembered in every
+                      source file in a static variable.
+                      Thus, in most cases string comparisons can be avoided.
+                      Here, the adress of @ref SCOREP_User_LastFileHandle should be
+                      provided.
+    @param name       The name of the region.
+    @param regionType The type of the region.
+    @param fileName   The filename of the source file which contains the instrumented
+                      region.
+    @param lineNo     The line number of the first source code line of the instrumented
+                      region.
+ */
+void
+SCOREP_User_RewindRegionBegin
+(
+    SCOREP_User_RegionHandle*    handle,
+    const char**                 lastFileName,
+    SCOREP_SourceFileHandle*     lastFile,
+    const char*                  name,
+    const SCOREP_User_RegionType regionType,
+    const char*                  fileName,
+    const uint32_t               lineNo
+);
+
+/**
+    Generates an exit event for the specified rewind region. For detailed
+    description refer to SCOREP_User_RegionEnd.
+    @param handle     The handle for this region. It must be defined before.
+    @param value      Boolean value, whether there should be an rewind to a
+                      prevous saved tracce buffer state.
+ */
+void
+SCOREP_User_RewindRegionEnd
+(
+    const SCOREP_User_RegionHandle handle,
+    const bool                     value
+);
+
+/**
+    Generates an enter event for the specified rewind region. For detailed
+    description refer to SCOREP_User_RegionEnter.
+    @param handle     The handle for this rewind region. It must be defined before.
+ */
+void
+SCOREP_User_RewindRegionEnter
+(
+    const SCOREP_User_RegionHandle handle
+);
+
+/* **************************************************************************************
  * Parameter functions
  * *************************************************************************************/
 

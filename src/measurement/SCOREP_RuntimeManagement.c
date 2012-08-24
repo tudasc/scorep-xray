@@ -445,7 +445,13 @@ scorep_finalize( void )
     }
 
     SCOREP_TIME( SCOREP_DefineSystemTree );
+
+    SCOREP_Properties_Finalize(); // before SCOREP_Unify
+
     SCOREP_TIME( SCOREP_Unify );
+
+    SCOREP_Properties_Write();
+
     SCOREP_TIME( scorep_profile_finalize );
     SCOREP_TIME( SCOREP_Definitions_Write );
     SCOREP_TIME( SCOREP_Definitions_Finalize );
