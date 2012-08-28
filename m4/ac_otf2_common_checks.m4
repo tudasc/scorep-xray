@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -116,4 +116,11 @@ AC_CONFIG_FILES([
 
 
 AC_OTF2_ENTROPY_SOURCES
+
+AC_SUBST([PACKAGE_ERROR_CODES_INCDIR], [../include])
+AC_DEFINE_UNQUOTED(
+    [PACKAGE_ERROR_CODES_HEADER],
+    [<otf2/OTF2_Error_Codes.h>],
+    [The #include argument used to include this packages error codes header.]
+)
 ])

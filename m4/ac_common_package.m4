@@ -17,15 +17,29 @@
 
 AC_DEFUN([AC_COMMON_PACKAGE], [
 AC_REQUIRE([AM_INIT_AUTOMAKE])
-_AC_SRCDIRS([.])
-AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
-AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
-AC_DEFINE_UNQUOTED(
-    [PACKAGE_SYM],
-    [$PACKAGE],
-    [The package name usable as a symbol.])
-AC_DEFINE_UNQUOTED(
-    [PACKAGE_SYM_CAPS],
-    $(echo "$PACKAGE" | LC_ALL=C tr '[a-z]' '[A-Z]'),
-    [The package name usable as a symbol in all caps.])
+
+pushdef([UP], translit([$1], [a-z], [A-Z]))dnl
+pushdef([DOWN], translit([$1], [A-Z], [a-z]))dnl
+
+m4_ifval([$2], [], [
+    _AC_SRCDIRS([.])
+    AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
+    AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
+
+    AC_DEFINE_UNQUOTED(
+        [PACKAGE_SYM],
+        DOWN,
+        [The package name usable as a symbol.])
+
+    AC_DEFINE_UNQUOTED(
+        [PACKAGE_SYM_CAPS],
+        UP,
+        [The package name usable as a symbol in all caps.])
+])
+
+AC_SUBST([PACKAGE_SYM], DOWN)
+AC_SUBST([PACKAGE_SYM_CAPS], UP)
+
+popdef([UP])
+popdef([DOWN])
 ])

@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -16,7 +16,7 @@
 ##
 
 
-AC_DEFUN([AH_SCOREP_CONFIG_HEADER_CUSTOM],
+AC_DEFUN([AH_SCOREP_CONFIG_HEADER],
 [
 ## Please note that text gets included "verbatim" to the template file, not to
 ## the resulting config header, so it can easily get mangled when the template
@@ -28,5 +28,7 @@ AC_DEFUN([AH_SCOREP_CONFIG_HEADER_CUSTOM],
 ##AH_TOP([text])
 
 ## Include text at the bottom of the header template file. 
-AH_BOTTOM([#include <config-custom.h>])
+AH_BOTTOM(
+[#include <config-common.h>
+#include <config-custom.h>])
 ])
