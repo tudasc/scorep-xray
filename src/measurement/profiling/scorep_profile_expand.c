@@ -30,7 +30,8 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
@@ -53,7 +54,7 @@ merge_child( SCOREP_Profile_LocationData* location,
              scorep_profile_node*         source )
 {
     /* Search matching node */
-    SCOREP_ASSERT( parent != NULL );
+    UTILS_ASSERT( parent != NULL );
     scorep_profile_node* child =
         scorep_profile_find_create_child( location,
                                           parent,
@@ -109,7 +110,7 @@ sum_children( scorep_profile_node* parent )
 {
     scorep_profile_node* child = NULL;
 
-    SCOREP_ASSERT( parent != NULL );
+    UTILS_ASSERT( parent != NULL );
 
     child = parent->first_child;
     if ( child == NULL )
@@ -144,11 +145,11 @@ expand_thread_start( SCOREP_Profile_LocationData* location,
     scorep_profile_node* last_child     = NULL;
 
     /* Assertions and setting of relatives */
-    SCOREP_ASSERT( thread_start != NULL );
-    SCOREP_ASSERT( thread_start->node_type == scorep_profile_node_thread_start );
+    UTILS_ASSERT( thread_start != NULL );
+    UTILS_ASSERT( thread_start->node_type == scorep_profile_node_thread_start );
     thread_root = thread_start->parent;
-    SCOREP_ASSERT( thread_root != NULL ); /* Thread activation without location creation */
-    SCOREP_ASSERT( thread_root->node_type == scorep_profile_node_thread_root );
+    UTILS_ASSERT( thread_root != NULL ); /* Thread activation without location creation */
+    UTILS_ASSERT( thread_root->node_type == scorep_profile_node_thread_root );
 
     creation_point = scorep_profile_type_get_fork_node( thread_start->type_specific_data );
 

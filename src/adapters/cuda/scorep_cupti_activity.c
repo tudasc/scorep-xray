@@ -30,9 +30,9 @@
 #include "SCOREP_Events.h"
 #include "SCOREP_Mutex.h"
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
-#include <SCOREP_CStr.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_CStr.h>
 
 #include "SCOREP_Location.h"
 #include <SCOREP_Timing.h>
@@ -238,8 +238,8 @@ scorep_cupti_activity_init()
         SCOREP_CUPTI_ACTIVITY_LOCK();
         if ( !scorep_cupti_activity_initialized )
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                     "[CUPTI Activity] Initializing ... \n" );
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Activity] Initializing ... \n" );
 
             /*** enable the activities ***/
             /* enable kernel tracing */
@@ -256,8 +256,8 @@ scorep_cupti_activity_init()
                     SCOREP_SourceFileHandle cuda_idle_file_handle =
                         SCOREP_DefineSourceFile( "CUDA_IDLE" );
 
-                    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                             "[CUPTI Activity] Idle enabled ... \n" );
+                    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                            "[CUPTI Activity] Idle enabled ... \n" );
 
                     scorep_cuda_idle_region_handle =
                         SCOREP_DefineRegion( "compute_idle",
@@ -302,8 +302,8 @@ scorep_cupti_activity_finalize()
         SCOREP_CUPTI_ACTIVITY_LOCK();
         if ( !scorep_cupti_activity_finalized && scorep_cupti_activity_initialized )
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                     "[CUPTI Activity] Finalizing ... \n" );
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Activity] Finalizing ... \n" );
 
             scorep_cupti_activity_finalized = true;
             SCOREP_CUPTI_ACTIVITY_UNLOCK();
@@ -378,15 +378,15 @@ scorep_cupti_activity_flush_context_activities( CUcontext cudaContext )
     context = scorep_cupti_activity_get_context( cudaContext );
     if ( context == NULL )
     {
-        SCOREP_ERROR( SCOREP_WARNING, "[CUPTI Activity] Context not found!\n" );
+        UTILS_WARNING( "[CUPTI Activity] Context not found!\n" );
 
         SCOREP_ExitRegion( scorep_flush_cupti_activity_buffer_region_handle );
 
         return;
     }
 
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                             "[CUPTI Activity] Handle context %d activities\n", cudaContext );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI Activity] Handle context %d activities\n", cudaContext );
 
     /* lock the whole buffer flush */
     SCOREP_CUPTI_ACTIVITY_LOCK();
@@ -432,13 +432,12 @@ scorep_cupti_activity_flush_context_activities( CUcontext cudaContext )
         SCOREP_CUPTI_CALL( cuptiActivityGetNumDroppedRecords( cudaContext, 0, &dropped ) );
         if ( dropped != 0 )
         {
-            SCOREP_ERROR( SCOREP_WARNING,
-                          "[CUPTI Activity] Dropped %u records. Current buffer size: %llu \n"
-                          "To avoid dropping of records increase the buffer size!\n"
-                          "Proposed minimum SCOREP_CUDA_BUFFER=%llu",
-                          ( unsigned int )dropped, scorep_cupti_activity_buffer_size,
-                          scorep_cupti_activity_buffer_size + dropped / 2 *
-                          ( sizeof( CUpti_ActivityKernel ) + sizeof( CUpti_ActivityMemcpy ) ) );
+            UTILS_WARNING( "[CUPTI Activity] Dropped %u records. Current buffer size: %llu \n"
+                           "To avoid dropping of records increase the buffer size!\n"
+                           "Proposed minimum SCOREP_CUDA_BUFFER=%llu",
+                           ( unsigned int )dropped, scorep_cupti_activity_buffer_size,
+                           scorep_cupti_activity_buffer_size + dropped / 2 *
+                           ( sizeof( CUpti_ActivityKernel ) + sizeof( CUpti_ActivityMemcpy ) ) );
         }
     }
 
@@ -504,8 +503,8 @@ scorep_cupti_activity_create_stream( scorep_cupti_activity_context* context,
     stream = ( scorep_cupti_activity_stream* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_activity_stream ) );
     if ( stream == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "[CUPTI Activity] Could not allocate memory for stream!" );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "[CUPTI Activity] Could not allocate memory for stream!" );
     }
     stream->stream_id             = streamId;
     stream->scorep_last_timestamp = scorep_cuda_init_timestamp;
@@ -525,16 +524,14 @@ scorep_cupti_activity_create_stream( scorep_cupti_activity_context* context,
         {
             if ( -1 == snprintf( thread_name, 15, "CUDA[?:%d]", streamId ) )
             {
-                SCOREP_ERROR( SCOREP_WARNING,
-                              "Could not create thread name for CUDA thread!" );
+                UTILS_WARNING( "Could not create thread name for CUDA thread!" );
             }
         }
         else
         {
             if ( -1 == snprintf( thread_name, 15, "CUDA[%d:%d]", context->device_id, streamId ) )
             {
-                SCOREP_ERROR( SCOREP_WARNING,
-                              "Could not create thread name for CUDA thread!" );
+                UTILS_WARNING( "Could not create thread name for CUDA thread!" );
             }
         }
 
@@ -577,7 +574,7 @@ scorep_cupti_activity_check_stream( scorep_cupti_activity_context* context,
 
     if ( context == NULL )
     {
-        SCOREP_ERROR( SCOREP_WARNING, "[CUPTI Activity] No context given!" );
+        UTILS_WARNING( "[CUPTI Activity] No context given!" );
         return NULL;
     }
 
@@ -641,8 +638,8 @@ scorep_cupti_activity_create_context( uint32_t  contextId,
     context = ( scorep_cupti_activity_context* )malloc( sizeof( scorep_cupti_activity_context ) );
     if ( context == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "[CUPTI Activity] Could not allocate memory for context!" );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "[CUPTI Activity] Could not allocate memory for context!" );
     }
     context->context_id                = contextId;
     context->next                      = NULL;
@@ -808,7 +805,7 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
     {
         kernel_region = kernel_hash_node->region;
 
-        /*SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
+        /*UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
                                  "Get kernel: '%s' \n", kernel_hash_node->name );*/
     }
     else
@@ -817,10 +814,10 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
 
         if ( kernel_name == NULL )
         {
-            SCOREP_ERROR( SCOREP_WARNING, "[CUPTI Activity] Kernel name missing!" );
+            UTILS_WARNING( "[CUPTI Activity] Kernel name missing!" );
         }
 
-        /*SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
+        /*UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
                                  "Define kernel: '%s' \n", kernel_name );*/
 
         kernel_region = SCOREP_DefineRegion( kernel_name, NULL, scorep_kernel_file_handle,
@@ -838,24 +835,24 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
         /* if current activity's start time is before last written timestamp */
         if ( start < stream->scorep_last_timestamp )
         {
-            SCOREP_WARN_ONCE( "[CUPTI Activity] "
-                              "Kernel: start time < last written timestamp!" );
+            UTILS_WARN_ONCE( "[CUPTI Activity] "
+                             "Kernel: start time < last written timestamp!" );
             return;
         }
 
         /* check if time between start and stop is increasing */
         if ( stop < start )
         {
-            SCOREP_WARN_ONCE( "[CUPTI Activity] "
-                              "Kernel: start time > stop time!" );
+            UTILS_WARN_ONCE( "[CUPTI Activity] "
+                             "Kernel: start time > stop time!" );
             return;
         }
 
         /* check if synchronization stop time is before kernel stop time */
         if ( context->sync.host_stop < stop )
         {
-            SCOREP_WARN_ONCE( "[CUPTI Activity] "
-                              "Kernel: sync stop time < stop time!" );
+            UTILS_WARN_ONCE( "[CUPTI Activity] "
+                             "Kernel: sync stop time < stop time!" );
             return;
         }
 
@@ -890,7 +887,7 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
         }
     }
 
-    /*SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
+    /*UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
                              "KERNEL '%s' [%llu ns] device %u, context %u, stream %u, "
                              "correlation %u/r%u\n"
                              "\t grid [%u,%u,%u], block [%u,%u,%u], "
@@ -936,21 +933,21 @@ scorep_cupti_activity_write_memcpy_record( CUpti_ActivityMemcpy*          mcpy,
     /* if current activity's start time is before last written timestamp */
     if ( start < stream->scorep_last_timestamp )
     {
-        SCOREP_WARN_ONCE( "[CUPTI Activity] Memcpy: start time < last written timestamp!" );
+        UTILS_WARN_ONCE( "[CUPTI Activity] Memcpy: start time < last written timestamp!" );
         return;
     }
 
     /* check if time between start and stop is increasing */
     if ( stop < start )
     {
-        SCOREP_WARN_ONCE( "[CUPTI Activity] Memcpy: start time > stop time!" );
+        UTILS_WARN_ONCE( "[CUPTI Activity] Memcpy: start time > stop time!" );
         return;
     }
 
     /* check if synchronization stop time is before kernel stop time */
     if ( context->sync.host_stop < stop )
     {
-        SCOREP_WARN_ONCE( "[CUPTI Activity] Memcpy: sync stop time < stop time!" );
+        UTILS_WARN_ONCE( "[CUPTI Activity] Memcpy: sync stop time < stop time!" );
         return;
     }
 
@@ -990,7 +987,7 @@ scorep_cupti_activity_write_memcpy_record( CUpti_ActivityMemcpy*          mcpy,
     }
 
     /* TODO: write the Score-P communication events
-       SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
+       UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] "
                              "MEMCPY %llu -> %llu[%llu ns] device %u, context %u, stream %u, "
                              "correlation %u/r%u \n",
                              mcpy->start, mcpy->end,
@@ -1016,7 +1013,7 @@ scorep_cupti_activity_string_hash_put( const char*         name,
     scorep_cupti_activity_hash_node_string* add =
         ( scorep_cupti_activity_hash_node_string* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_activity_hash_node_string ) );
 
-    add->name                                  = SCOREP_CStr_dup( name ); /* does an implicit malloc */
+    add->name                                  = UTILS_CStr_dup( name ); /* does an implicit malloc */
     add->region                                = region;
     add->next                                  = scorep_cupti_activity_string_hashtab[ id ];
     scorep_cupti_activity_string_hashtab[ id ] = add;

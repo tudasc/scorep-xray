@@ -31,8 +31,9 @@
 #include <inttypes.h>
 #include <string.h>
 #include <stdlib.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
 
@@ -55,7 +56,7 @@ static SCOREP_Hashtab* scorep_profile_name_table = NULL;
 static void
 delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
 {
-    SCOREP_ASSERT( entry );
+    UTILS_ASSERT( entry );
 
     free( ( SCOREP_RegionHandle* )entry->value );
     free( ( char* )entry->key );

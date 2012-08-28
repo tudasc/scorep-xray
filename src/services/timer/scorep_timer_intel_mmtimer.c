@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 #define MMTIMER_FULLNAME "/dev/mmtimer"
 
@@ -81,20 +81,20 @@ SCOREP_Timer_Initialize()
 
     if ( ( fd = open( MMTIMER_FULLNAME, O_RDONLY ) ) == -1 )
     {
-        SCOREP_ERROR_POSIX( "Failed to open " MMTIMER_FULLNAME );
+        UTILS_ERROR_POSIX( "Failed to open " MMTIMER_FULLNAME );
         _Exit( EXIT_FAILURE );
     }
 
     if ( ( offset = ioctl( fd, MMTIMER_GETOFFSET, 0 ) ) == -ENOSYS )
     {
-        SCOREP_ERROR_POSIX( "Cannot get mmtimer offset" );
+        UTILS_ERROR_POSIX( "Cannot get mmtimer offset" );
         _Exit( EXIT_FAILURE );
     }
 
     if ( ( mmdev_timer_addr = mmap( 0, sysconf( _SC_PAGESIZE ) /*getpagesize()*/, PROT_READ, MAP_SHARED, fd, 0 ) )
          == NULL )
     {
-        SCOREP_ERROR_POSIX( "Cannot mmap mmtimer" );
+        UTILS_ERROR_POSIX( "Cannot mmap mmtimer" );
         _Exit( EXIT_FAILURE );
     }
     mmdev_timer_addr += offset;

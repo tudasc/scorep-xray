@@ -438,7 +438,7 @@
 #define SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( definition_manager, Type, type ) \
     do \
     { \
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Copying %s to unified", #type ); \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Copying %s to unified", #type ); \
         SCOREP_DEFINITION_FOREACH_DO( definition_manager, Type, type ) \
         { \
             SCOREP_Copy ## Type ## DefinitionToUnified( definition, ( definition_manager )->page_manager ); \
@@ -456,7 +456,7 @@
 #define SCOREP_ALLOC_MAPPINGS_ARRAY( type, definition_manager ) \
     do \
     { \
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for %s", #type ); \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for %s", #type ); \
         ( definition_manager )->mappings->type ## _mappings = NULL; \
         if ( ( definition_manager )->type ## _definition_counter > 0 ) \
         { \
@@ -476,7 +476,7 @@
 #define SCOREP_FREE_MAPPINGS_ARRAY( type, definition_manager ) \
     do \
     { \
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Free mappings for %s", #type ); \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Free mappings for %s", #type ); \
         free( ( definition_manager )->mappings->type ## _mappings ); \
         ( definition_manager )->mappings->type ## _mappings = NULL; \
     } \
@@ -492,7 +492,7 @@
 #define SCOREP_ASSIGN_MAPPINGS( definition_manager, Type, type ) \
     do \
     { \
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mappings for %s", #Type ); \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mappings for %s", #Type ); \
         if ( ( definition_manager )->type ## _definition_counter > 0 ) \
         { \
             uint32_t type ## _sequence_number = 0; \
@@ -518,7 +518,7 @@
 #define SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( type, TYPE, definition_writer ) \
     do \
     { \
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Write mappings to OTF2 for %s", #type ); \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Write mappings to OTF2 for %s", #type ); \
         if ( scorep_local_definition_manager.mappings && \
              scorep_local_definition_manager.mappings->type ## _mappings && \
              scorep_local_definition_manager.type ## _definition_counter > 0 ) \

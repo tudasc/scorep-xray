@@ -29,7 +29,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_User_Init.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Mutex.h>
 
 /**
@@ -70,8 +70,7 @@ SCOREP_User_InitMetric
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SCOREP_INVALID_SAMPLING_SET )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_USER | SCOREP_DEBUG_WARNING,
-                             "Reinitializtaion of user metric not possible\n" );
+        UTILS_WARNING( "Reinitializtaion of user metric not possible" );
     }
     else
     {
@@ -88,8 +87,8 @@ SCOREP_User_InitMetric
                 value_type = SCOREP_METRIC_VALUE_DOUBLE;
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                              "Invalid metric type given." );
+                UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                             "Invalid metric type given." );
                 goto out;
         }
 

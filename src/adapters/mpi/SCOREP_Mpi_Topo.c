@@ -104,13 +104,13 @@ MPI_Cart_create( MPI_Comm  comm_old,
         udimv = calloc( ndims, sizeof( uint32_t ) );
         if ( !udimv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         uperiodv = calloc( ndims, sizeof( uint8_t ) );
         if ( !uperiodv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         for ( i = 0; i < ndims; i++ )
@@ -126,13 +126,13 @@ MPI_Cart_create( MPI_Comm  comm_old,
         coordv = calloc( ndims, sizeof( int ) );
         if ( !coordv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         ucoordv = calloc( ndims, sizeof( uint32_t ) );
         if ( !ucoordv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         /* get the coordinates of the calling process in coordv */

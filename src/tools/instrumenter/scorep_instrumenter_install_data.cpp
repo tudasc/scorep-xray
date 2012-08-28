@@ -25,8 +25,8 @@
 #include <scorep_instrumenter_utils.hpp>
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
-#include <SCOREP_IO.h>
-#include <SCOREP_CStr.h>
+#include <UTILS_IO.h>
+#include <UTILS_CStr.h>
 
 #include <iostream>
 #include <fstream>
@@ -39,8 +39,8 @@
 static inline std::string
 simplify_path( std::string path )
 {
-    char* buffer = SCOREP_CStr_dup( path.c_str() );
-    SCOREP_IO_SimplifyPath( buffer );
+    char* buffer = UTILS_CStr_dup( path.c_str() );
+    UTILS_IO_SimplifyPath( buffer );
     std::string simple_path = buffer;
     free( buffer );
     return simple_path;
@@ -245,7 +245,7 @@ SCOREP_Instrumenter_InstallData::set_pdt_path( std::string pdt )
 {
     if ( pdt == "yes" )
     {
-        char* path = SCOREP_GetExecutablePath( "tau_instrumentor" );
+        char* path = UTILS_GetExecutablePath( "tau_instrumentor" );
         if ( path != NULL )
         {
             m_pdt_bin_path = path;

@@ -28,8 +28,8 @@
 
 #include <config.h>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 #include <SCOREP_Location.h>
 
@@ -38,15 +38,15 @@
 SCOREP_Error_Code
 scorep_compiler_init_adapter()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                         "No compiler adapter available" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                        "No compiler adapter available" );
     return SCOREP_SUCCESS;
 }
 
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "No compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "No compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -54,7 +54,7 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "No compiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "No compiler adapter finalize location!" );
 }
 
 void

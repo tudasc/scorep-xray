@@ -27,7 +27,7 @@ scorep_config_SOURCES = $(SRC_ROOT)src/tools/config/scorep_config.cpp  \
 scorep_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
 
 scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
-                         -I$(INC_DIR_UTIL) \
+                         $(UTILS_CPPFLAGS) \
                          -I$(INC_ROOT)src/tools/config \
                          -I../build-backend \
                          -D"BUILD_DIR=\"`pwd`\""
@@ -64,6 +64,6 @@ if SCOREP_COMPILER_CRAY
 scorep_config_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
 endif
 
-scorep_config_LDADD = libscorep_utilities.la
+scorep_config_LDADD = libutils.la
 
 BUILT_SOURCES += scorep_library_dependencies.cpp

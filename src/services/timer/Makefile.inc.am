@@ -16,7 +16,10 @@
 
 noinst_LTLIBRARIES += libscorep_timer.la
 libscorep_timer_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-libscorep_timer_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/services/include
+libscorep_timer_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/services/include
 
 # compile just one of the following scorep_timer_*.c. The conditionals are set in 
 # build-config/m4/ac-scorep-timers.m4

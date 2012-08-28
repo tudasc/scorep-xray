@@ -33,7 +33,7 @@
 #include <SCOREP_Config.h>
 #include <assert.h>
 #include <stdio.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 static bool scorep_env_core_environment_variables_initialized = false;
 
@@ -153,7 +153,7 @@ SCOREP_Env_RegisterCoreEnvironmentVariables()
     error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
     if ( SCOREP_SUCCESS != error )
     {
-        SCOREP_ERROR( error, "Can't register core environment variables" );
+        UTILS_ERROR( error, "Can't register core environment variables" );
         _Exit( EXIT_FAILURE );
     }
 
@@ -161,7 +161,7 @@ SCOREP_Env_RegisterCoreEnvironmentVariables()
     error = SCOREP_ConfigRegister( "debug", scorep_debug_environment_variables );
     if ( SCOREP_SUCCESS != error )
     {
-        SCOREP_ERROR( error, "Can't register debug environment variables" );
+        UTILS_ERROR( error, "Can't register debug environment variables" );
         _Exit( EXIT_FAILURE );
     }
 #endif

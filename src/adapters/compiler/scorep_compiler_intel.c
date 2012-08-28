@@ -30,7 +30,7 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Location.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
@@ -75,7 +75,7 @@ __VT_IntelEntry( char*     str,
 {
     scorep_compiler_hash_node* hash_node = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call at function enter." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call at function enter." );
 
     /*
      * put hash table entries via mechanism for bfd symbol table
@@ -93,7 +93,7 @@ __VT_IntelEntry( char*     str,
         SCOREP_InitMeasurement();
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " function id: %u ", *id );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " function id: %u ", *id );
 
     /* Register new region if unknown */
     if ( *id == 0 )
@@ -120,8 +120,8 @@ __VT_IntelEntry( char*     str,
     /* Enter event */
     if ( *id != SCOREP_COMPILER_FILTER_ID )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "enter the region with id %u ", *id );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            "enter the region with id %u ", *id );
         SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * id );
     }
 
@@ -156,7 +156,7 @@ __VT_IntelExit( uint32_t* id2 )
         return;
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
@@ -184,7 +184,7 @@ __VT_IntelCatch( uint32_t* id2 )
         return;
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Catch in region." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Catch in region." );
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
@@ -208,7 +208,7 @@ __VT_IntelCheck( uint32_t* id2 )
         return;
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Check in region. Try " );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Check in region. Try " );
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
@@ -228,7 +228,7 @@ scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " initialize intel compiler adapter." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " initialize intel compiler adapter." );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -242,8 +242,8 @@ scorep_compiler_init_adapter()
         /* Set flag */
         scorep_compiler_initialize = 0;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             " initialization of intel compiler adapter done." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            " initialization of intel compiler adapter done." );
     }
 
     return SCOREP_SUCCESS;
@@ -252,7 +252,7 @@ scorep_compiler_init_adapter()
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* location )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -260,7 +260,7 @@ scorep_compiler_init_location( SCOREP_Location* location )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter finalize location!" );
 }
 
 /* Adapter finalization */
@@ -276,7 +276,7 @@ scorep_compiler_finalize()
         /* Set initialization flag */
         scorep_compiler_initialize = 1;
         scorep_compiler_finalized  = 1;
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

@@ -44,7 +44,7 @@ mpi_patt_all_test_f90_with_oa_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fort
 mpi_patt_all_test_f90_with_oa_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
-    -I$(INC_DIR_UTIL)
+    $(UTILS_CPPFLAGS)
 
 if SCOREP_COMPILER_IBM
 mpi_patt_all_test_f90_with_oa_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
@@ -78,7 +78,7 @@ mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/cali
 mpi_patt_all_test_f90_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
-    -I$(INC_DIR_UTIL)
+    $(UTILS_CPPFLAGS)
 
 mpi_patt_all_test_f90_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
 

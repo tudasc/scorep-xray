@@ -29,27 +29,20 @@
  */
 
 
-#ifdef _cplusplus
-extern "C" {
-#endif
+UTILS_BEGIN_C_DECLS
 
 
-extern CuTest* the_test;
+SCOREP_Error_Code
+cutest_scorep_error_callback( void*             userData,
+                              const char*       file,
+                              uint64_t          line,
+                              const char*       function,
+                              SCOREP_Error_Code errorCode,
+                              const char*       msgFormatString,
+                              va_list           va );
 
 
-int64_t
-cutest_scorep_error_callback( const char*             package,
-                              const char*             file,
-                              const uint64_t          line,
-                              const char*             function,
-                              const SCOREP_Error_Code errorCode,
-                              const char*             msgFormatString,
-                              va_list                 va );
-
-
-#ifdef _cplusplus
-}
-#endif
+UTILS_END_C_DECLS
 
 
 #endif /* SCOREP_TEST_MEASUREMENT_CONFIG_ERROR_CALLBACK */

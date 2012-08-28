@@ -33,7 +33,7 @@
 #include <stdarg.h>
 
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 
 #include <SCOREP_Platform.h>

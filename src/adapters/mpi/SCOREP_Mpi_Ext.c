@@ -62,8 +62,7 @@ MPI_Abort( MPI_Comm comm,
 {
     int return_val;
 
-    SCOREP_ERROR( SCOREP_WARNING,
-                  "Explicit MPI_Abort call abandoning the SCOREP measurement." );
+    UTILS_WARNING( "Explicit MPI_Abort call abandoning the SCOREP measurement." );
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {

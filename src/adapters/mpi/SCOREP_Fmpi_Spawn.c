@@ -45,7 +45,7 @@
 #include <config.h>
 #include "SCOREP_Fmpi.h"
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 /* uppercase defines */
 /** @def MPI_Close_port_U
@@ -237,7 +237,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
     c_array_of_commands = ( char** )malloc( *count * sizeof( char* ) );
     if ( !c_array_of_commands )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
     }
 
     for ( cur_cmd = 0; cur_cmd < *count; ++cur_cmd )
@@ -255,7 +255,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
         c_array_of_commands[ cur_cmd ] = ( char* )malloc( ( len + 1 ) * sizeof( char ) );
         if ( !( c_array_of_commands[ cur_cmd ] ) )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
         /* copy contents */
         strncpy( c_array_of_commands[ cur_cmd ], start_ptr, len );
@@ -280,7 +280,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
         c_array_of_argv = ( char*** )malloc( array_size * sizeof( char** ) );
         if ( !c_array_of_argv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         for ( cur_cmd = 0; cur_cmd < *count; ++cur_cmd )
@@ -321,7 +321,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
             c_array_of_argv[ cur_cmd ] = ( char** )malloc( ( arg_count + 1 ) * sizeof( char* ) );
             if ( !( c_array_of_argv[ cur_cmd ] ) )
             {
-                SCOREP_ERROR_POSIX();
+                UTILS_ERROR_POSIX();
             }
 
             /* allocate a single block with sufficient capacity to minimize
@@ -329,7 +329,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
             c_array_of_argv[ cur_cmd ][ 0 ] = ( char* )malloc( arg_size * sizeof( char ) );
             if ( !( c_array_of_argv[ cur_cmd ][ 0 ] ) )
             {
-                SCOREP_ERROR_POSIX();
+                UTILS_ERROR_POSIX();
             }
             /* set index to begining of the block */
             c_arg_ptr = c_array_of_argv[ cur_cmd ][ 0 ];
@@ -416,7 +416,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
     c_command = ( char* )malloc( ( command_len + 1 ) * sizeof( char ) );
     if ( !c_command )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
     }
 
     strncpy( c_command, command, command_len );
@@ -452,13 +452,13 @@ FSUB( MPI_Comm_spawn )( char*     command,
         c_argv = ( char** )malloc( ( arg_count + 1 ) * sizeof( char ) );
         if ( !c_argv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         c_argv[ 0 ] = ( char* )malloc( arg_size * sizeof( char ) );
         if ( !( c_argv[ 0 ] ) )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         c_arg_ptr = c_argv[ 0 ];
@@ -793,7 +793,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
     c_array_of_commands = ( char** )malloc( *count * sizeof( char* ) );
     if ( !c_array_of_commands )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
     }
 
     for ( cur_cmd = 0; cur_cmd < *count; ++cur_cmd )
@@ -811,7 +811,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
         c_array_of_commands[ cur_cmd ] = ( char* )malloc( ( len + 1 ) * sizeof( char ) );
         if ( !( c_array_of_commands[ cur_cmd ] ) )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
         /* copy contents */
         strncpy( c_array_of_commands[ cur_cmd ], start_ptr, len );
@@ -836,7 +836,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
         c_array_of_argv = ( char*** )malloc( array_size * sizeof( char** ) );
         if ( !c_array_of_argv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         for ( cur_cmd = 0; cur_cmd < *count; ++cur_cmd )
@@ -877,7 +877,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
             c_array_of_argv[ cur_cmd ] = ( char** )malloc( ( arg_count + 1 ) * sizeof( char* ) );
             if ( !( c_array_of_argv[ cur_cmd ] ) )
             {
-                SCOREP_ERROR_POSIX();
+                UTILS_ERROR_POSIX();
             }
 
             /* allocate a single block with sufficient capacity to minimize
@@ -885,7 +885,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
             c_array_of_argv[ cur_cmd ][ 0 ] = ( char* )malloc( arg_size * sizeof( char ) );
             if ( !( c_array_of_argv[ cur_cmd ][ 0 ] ) )
             {
-                SCOREP_ERROR_POSIX();
+                UTILS_ERROR_POSIX();
             }
             /* set index to begining of the block */
             c_arg_ptr = c_array_of_argv[ cur_cmd ][ 0 ];
@@ -922,7 +922,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
     c_array_of_info = ( MPI_Info* )malloc( *count * sizeof( MPI_Info ) );
     if ( !c_array_of_info )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
     }
     for ( cur_cmd = 0; cur_cmd < *count; ++cur_cmd )
     {
@@ -990,7 +990,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
     c_command = ( char* )malloc( ( command_len + 1 ) * sizeof( char ) );
     if ( !c_command )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
     }
 
     strncpy( c_command, command, command_len );
@@ -1026,7 +1026,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
         c_argv = ( char** )malloc( ( arg_count + 1 ) * sizeof( char ) );
         if ( !c_argv )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
 
         c_argv[ 0 ] = ( char* )malloc( arg_size * sizeof( char ) );

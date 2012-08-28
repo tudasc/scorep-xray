@@ -30,7 +30,7 @@
 #include "SCOREP_Config.h"
 #include "SCOREP_Definitions.h"
 
-#include <SCOREP_IO.h>
+#include <UTILS_IO.h>
 #include "scorep_profile_oaconsumer_process.h"
 #include "scorep_profile_definition.h"
 #include "scorep_profile_location.h"

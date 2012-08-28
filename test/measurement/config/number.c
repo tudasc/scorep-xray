@@ -34,6 +34,9 @@
 #include <inttypes.h>
 
 
+#include <UTILS_Error.h>
+
+
 #include <CuTest.h>
 
 
@@ -78,12 +81,13 @@ test_number( CuTest* tc )
 
 
 int
-main()
+main( int argc, char* argv[] )
 {
-    SCOREP_Error_CallbackPointer old_error_callback =
-        SCOREP_Error_RegisterCallback( cutest_scorep_error_callback );
+    CuTest* the_test = CuTestNew( "test", test_number );
 
-    the_test = CuTestNew( "test", test_number );
+    SCOREP_Error_RegisterCallback( cutest_scorep_error_callback,
+                                   the_test );
+
     CuTestRun( the_test );
     if ( the_test->message )
     {
@@ -91,8 +95,6 @@ main()
     }
     int failed = the_test->failed != 0;
     CuTestFree( the_test );
-
-    SCOREP_Error_RegisterCallback( old_error_callback );
 
     return failed;
 }

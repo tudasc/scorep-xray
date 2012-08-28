@@ -28,8 +28,8 @@
  * @status alpha
  */
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 extern int      connection;
 extern uint64_t silc_oa_port;

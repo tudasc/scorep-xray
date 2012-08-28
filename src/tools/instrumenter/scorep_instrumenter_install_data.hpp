@@ -25,7 +25,7 @@
 #ifndef SCOREP_INSTRUMENTER_INSTALL_CONFIG_H_
 #define SCOREP_INSTRUMENTER_INSTALL_CONFIG_H_
 
-#include <SCOREP_Error_Codes.h>
+#include <UTILS_Error.h>
 #include <string>
 
 /* ****************************************************************************

@@ -12,7 +12,7 @@ oa_c_test_mpi_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)include/scorep				\
     -I$(INC_ROOT)src/measurement/include    \
     -I$(PUBLIC_INC_DIR)                     \
-    -I$(INC_DIR_UTIL)                       \
+    $(UTILS_CPPFLAGS)                       \
     -DSCOREP_USER_ENABLE
 
 oa_c_test_mpi_LDADD =                        \

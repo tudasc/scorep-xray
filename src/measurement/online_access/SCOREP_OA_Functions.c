@@ -31,7 +31,8 @@
 #include "scorep_profile_definition.h"
 #include "SCOREP_OA_Init.h"
 #include "SCOREP_Types.h"
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include "scorep_oa_phase.h"
 #include "scorep_status.h"
@@ -48,7 +49,7 @@ SCOREP_OA_PhaseBegin
     const uint32_t               lineNo
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA );
 
     if ( !SCOREP_IsInitialized() )
     {
@@ -62,7 +63,7 @@ SCOREP_OA_PhaseBegin
 
     if ( !scorep_profile.is_initialized )
     {
-        printf( "[Score-P] Score-P Online Access works only in Profiling mode. Online Access will be deactivated.\n" );
+        UTILS_WARNING( "Online Access works only in Profiling mode. Online Access will be deactivated." );
         scorep_oa_is_requested = false;
         return;
     }
@@ -88,7 +89,7 @@ SCOREP_OA_PhaseEnd
     const SCOREP_User_RegionHandle handle
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
     if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {
@@ -97,7 +98,7 @@ SCOREP_OA_PhaseEnd
 
     if ( !scorep_profile.is_initialized )
     {
-        printf( "[Score-P] Score-P Online Access works only in Profiling mode. Online Access will be deactivated.\n" );
+        UTILS_WARNING( "Online Access works only in Profiling mode. Online Access will be deactivated." );
         scorep_oa_is_requested = false;
         return;
     }

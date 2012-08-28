@@ -331,12 +331,12 @@ scorep_mpi_win_init()
                                  ( sizeof( struct scorep_mpi_win_type ) * SCOREP_MPI_MAX_WIN );
         if ( scorep_mpi_windows == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                          "Failed to allocate memory for MPI window tracking.\n"
-                          "One-sided communication can not be recoreded.\n"
-                          "Space for %" PRIu64 " windows was requested.\n"
-                          "You can change this number via the environment variable "
-                          "SCOREP_MPI_MAX_WINDOWS.", SCOREP_MPI_MAX_WIN );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                         "Failed to allocate memory for MPI window tracking.\n"
+                         "One-sided communication can not be recoreded.\n"
+                         "Space for %" PRIu64 " windows was requested.\n"
+                         "You can change this number via the environment variable "
+                         "SCOREP_MPI_MAX_WINDOWS.", SCOREP_MPI_MAX_WIN );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
 
@@ -345,13 +345,13 @@ scorep_mpi_win_init()
 
         if ( scorep_mpi_winaccs == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                          "Failed to allocate memory for access epoch tracking.\n"
-                          "One-sided communication can not be recoreded.\n"
-                          "Space for %" PRIu64 " access epochs was requested.\n"
-                          "You can change this number via environment variable "
-                          "SCOREP_MPI_MAX_ACCESS_EPOCHS.",
-                          SCOREP_MPI_MAX_WINACC );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                         "Failed to allocate memory for access epoch tracking.\n"
+                         "One-sided communication can not be recoreded.\n"
+                         "Space for %" PRIu64 " access epochs was requested.\n"
+                         "You can change this number via environment variable "
+                         "SCOREP_MPI_MAX_ACCESS_EPOCHS.",
+                         SCOREP_MPI_MAX_WINACC );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
     }
@@ -404,7 +404,7 @@ scorep_mpi_win_id( MPI_Win win )
     else
     {
         SCOREP_MutexUnlock( scorep_mpi_window_mutex );
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW );
         return SCOREP_INVALID_MPI_WINDOW;
     }
 }
@@ -418,8 +418,8 @@ scorep_mpi_win_create( MPI_Win  win,
     SCOREP_MutexLock( scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
-                      "Hint: Increase SCOREP_MPI_MAX_WINDOWS configuration variable." );
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
+                     "Hint: Increase SCOREP_MPI_MAX_WINDOWS configuration variable." );
     }
 
     /* register mpi window definition */
@@ -459,12 +459,12 @@ scorep_mpi_win_free( MPI_Win win )
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
         }
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
     }
     SCOREP_MutexUnlock( scorep_mpi_window_mutex );
 }
@@ -577,22 +577,22 @@ scorep_mpi_comm_init()
 
         if ( scorep_mpi_comms == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                          "Failed to allocate memory for communicator tracking.\n"
-                          "Space for %" PRIu64 " communicators was requested.\n"
-                          "You can change this number via the environment variable "
-                          "SCOREP_MPI_MAX_COMMUNICATORS.", SCOREP_MPI_MAX_COMM );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                         "Failed to allocate memory for communicator tracking.\n"
+                         "Space for %" PRIu64 " communicators was requested.\n"
+                         "You can change this number via the environment variable "
+                         "SCOREP_MPI_MAX_COMMUNICATORS.", SCOREP_MPI_MAX_COMM );
         }
 
         scorep_mpi_groups = ( struct scorep_mpi_group_type* )SCOREP_Memory_AllocForMisc
                                 ( sizeof( struct scorep_mpi_group_type ) *  SCOREP_MPI_MAX_GROUP );
         if ( scorep_mpi_groups == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                          "Failed to allocate memory for MPI group tracking.\n"
-                          "Space for %" PRIu64 " groups was requested.\n"
-                          "You can change this number via the environment variable "
-                          "SCOREP_MPI_MAX_GROUPS.", SCOREP_MPI_MAX_GROUP );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                         "Failed to allocate memory for MPI group tracking.\n"
+                         "Space for %" PRIu64 " groups was requested.\n"
+                         "You can change this number via the environment variable "
+                         "SCOREP_MPI_MAX_GROUPS.", SCOREP_MPI_MAX_GROUP );
         }
 
         scorep_mpi_setup_world();
@@ -605,7 +605,7 @@ scorep_mpi_comm_init()
     }
     else
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_MPI, "Duplicate call to communicator initialization ignored!" );
+        UTILS_WARNING( "Duplicate call to communicator initialization ignored!" );
     }
 }
 
@@ -714,9 +714,8 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
     {
         if ( !scorep_mpi_comm_finalized )
         {
-            SCOREP_ERROR( SCOREP_WARNING,
-                          "Skipping attempt to create communicator "
-                          "outside init->finalize scope" );
+            UTILS_WARNING( "Skipping attempt to create communicator "
+                           "outside init->finalize scope" );
         }
         return;
     }
@@ -728,9 +727,9 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
     if ( scorep_mpi_last_comm >= SCOREP_MPI_MAX_COMM )
     {
         SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
-                      "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
-                      "configuration variable" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_COMMS,
+                     "Hint: Increase SCOREP_MPI_MAX_COMMUNICATORS "
+                     "configuration variable" );
         return;
     }
 
@@ -775,9 +774,8 @@ scorep_mpi_comm_free( MPI_Comm comm )
     /* check if comm handling is initialized (see scorep_mpi_comm_create comment) */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_ERROR( SCOREP_WARNING,
-                      "Skipping attempt to free communicator "
-                      "outside init->finalize scope" );
+        UTILS_WARNING( "Skipping attempt to free communicator "
+                       "outside init->finalize scope" );
         return;
     }
 
@@ -808,12 +806,12 @@ scorep_mpi_comm_free( MPI_Comm comm )
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_MPI_NO_COMM, "scorep_mpi_comm_free1 %s", message );
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM, "scorep_mpi_comm_free1 %s", message );
         }
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_COMM, "scorep_mpi_comm_free2 %s", message );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM, "scorep_mpi_comm_free2 %s", message );
     }
 
     /* Unlock communicator definition */
@@ -847,15 +845,14 @@ scorep_mpi_comm_handle( MPI_Comm comm )
 
         if ( comm == MPI_COMM_WORLD )
         {
-            SCOREP_ERROR( SCOREP_WARNING,
-                          "This function SHOULD NOT be called with MPI_COMM_WORLD" );
+            UTILS_WARNING( "This function SHOULD NOT be called with MPI_COMM_WORLD" );
             return SCOREP_MPI_COMM_WORLD_HANDLE;
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_MPI_NO_COMM,
-                          "You are using a communicator that was "
-                          "not tracked. Please contact the Score-P support team." );
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM,
+                         "You are using a communicator that was "
+                         "not tracked. Please contact the Score-P support team." );
             return SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
         }
     }
@@ -896,9 +893,8 @@ scorep_mpi_group_create( MPI_Group group )
      */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_ERROR( SCOREP_WARNING,
-                      "Skipping attempt to create group "
-                      "outside init->finalize scope" );
+        UTILS_WARNING( "Skipping attempt to create group "
+                       "outside init->finalize scope" );
         return;
     }
 
@@ -907,8 +903,8 @@ scorep_mpi_group_create( MPI_Group group )
 
     if ( scorep_mpi_last_group >= SCOREP_MPI_MAX_GROUP )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS,
-                      "Hint: Increase SCOREP_MPI_MAX_GROUPS configuration variable." );
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS,
+                     "Hint: Increase SCOREP_MPI_MAX_GROUPS configuration variable." );
         return;
     }
 
@@ -947,9 +943,8 @@ scorep_mpi_group_free( MPI_Group group )
      */
     if ( !scorep_mpi_comm_initialized )
     {
-        SCOREP_ERROR( SCOREP_WARNING,
-                      "Skipping attempt to free group "
-                      "outside init->finalize scope" );
+        UTILS_WARNING( "Skipping attempt to free group "
+                       "outside init->finalize scope" );
         return;
     }
 
@@ -981,12 +976,12 @@ scorep_mpi_group_free( MPI_Group group )
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
         }
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
     }
 
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
@@ -1011,7 +1006,7 @@ scorep_mpi_group_id( MPI_Group group )
     else
     {
         SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_GROUP, "" );
         return SCOREP_INVALID_MPI_GROUP;
     }
 }
@@ -1056,9 +1051,9 @@ scorep_mpi_winacc_start( MPI_Win          win,
 {
     if ( scorep_mpi_last_winacc >= SCOREP_MPI_MAX_WINACC )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINACCS,
-                      "Hint: Increase SCOREP_MPI_MAX_ACCESS_EPOCHS "
-                      "configuration variable." );
+        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINACCS,
+                     "Hint: Increase SCOREP_MPI_MAX_ACCESS_EPOCHS "
+                     "configuration variable." );
     }
 
     scorep_mpi_winaccs[ scorep_mpi_last_winacc ].win   = win;
@@ -1097,7 +1092,7 @@ scorep_mpi_winacc_end( MPI_Win          win,
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINACC, "" );
+            UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINACC, "" );
         }
     }
 }
@@ -1120,7 +1115,7 @@ scorep_mpi_winacc_get_gid( MPI_Win          win,
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_WINACC, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINACC, "" );
         return SCOREP_INVALID_MPI_GROUP;
     }
 }

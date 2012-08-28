@@ -25,7 +25,7 @@
 #include <config.h>
 
 #include <scorep_selective_region.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_RuntimeManagement.h>
 
@@ -38,8 +38,8 @@ scorep_user_create_region( const char* name )
                                  SCOREP_Memory_AllocForMisc( sizeof( SCOREP_User_Region ) );
     if ( region == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Unable to allocate memory for user region %s", name );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "Unable to allocate memory for user region %s", name );
         return NULL;
     }
 

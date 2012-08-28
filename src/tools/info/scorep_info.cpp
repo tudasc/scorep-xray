@@ -30,8 +30,7 @@
 #include <string>
 #include <cstdlib>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
 
 #include <SCOREP_Platform.h>
 

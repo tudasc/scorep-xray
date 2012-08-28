@@ -31,9 +31,9 @@
 #include <string.h>
 #include "SCOREP_Config.h"
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
-#include <SCOREP_CStr.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_CStr.h>
 
 #include <SCOREP_Location.h>
 
@@ -223,7 +223,7 @@ scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_ASSERT( data != NULL );
+    UTILS_ASSERT( data != NULL );
 
     return SCOREP_Location_GetId( data );
 }
@@ -254,7 +254,7 @@ scorep_metric_papi_open()
 
     /* Read environment variable "SCOREP_METRIC_PAPI". Return if
      * used and no PAPI timer used. */
-    env_metrics = SCOREP_CStr_dup( scorep_metrics_papi );
+    env_metrics = UTILS_CStr_dup( scorep_metrics_papi );
 
     /* Return if environment variable is empty */
     if ( strlen( env_metrics ) == 0 )
@@ -262,9 +262,9 @@ scorep_metric_papi_open()
         free( env_metrics );
         return;
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_PAPI=%s", env_metrics );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_PAPI=%s", env_metrics );
 
-    env_metrics_sep = SCOREP_CStr_dup( scorep_metrics_papi_separator );
+    env_metrics_sep = UTILS_CStr_dup( scorep_metrics_papi_separator );
 
     /* Initialize PAPI */
     retval = PAPI_library_init( PAPI_VER_CURRENT );
@@ -493,12 +493,12 @@ scorep_metric_papi_add( char* name,
 {
     if ( number_of_metrics >= SCOREP_METRIC_MAXNUM )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PAPI_INIT, "Number of counters exceeds Score-P allowed maximum of %d", SCOREP_METRIC_MAXNUM );
+        UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Number of counters exceeds Score-P allowed maximum of %d", SCOREP_METRIC_MAXNUM );
     }
     else
     {
         metricv[ number_of_metrics ]                   = ( scorep_papi_metric* )malloc( sizeof( scorep_papi_metric ) );
-        metricv[ number_of_metrics ]->name             = SCOREP_CStr_dup( name );
+        metricv[ number_of_metrics ]->name             = UTILS_CStr_dup( name );
         metricv[ number_of_metrics ]->description[ 0 ] = '\0';
         if ( isAbsolute )
         {
@@ -530,7 +530,7 @@ scorep_metric_papi_error( int   errcode,
         strncat( errstring, ": ", PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
         strncat( errstring, strerror( errno ), PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
     }
-    SCOREP_ERROR( SCOREP_ERROR_PAPI_INIT, "%s: %s (fatal)\n", note ? note : "PAPI", errstring );
+    UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "%s: %s (fatal)\n", note ? note : "PAPI", errstring );
 }
 
 /** @brief Prints a PAPI-specific warning message.
@@ -550,7 +550,7 @@ scorep_metric_papi_warning( int   errcode,
         strncat( errstring, ": ", PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
         strncat( errstring, strerror( errno ), PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
     }
-    SCOREP_ERROR( SCOREP_WARNING, "%s: %s (ignored)\n", note ? note : "PAPI", errstring );
+    UTILS_WARNING( "%s: %s (ignored)\n", note ? note : "PAPI", errstring );
 }
 
 /** @brief Prints metric descriptions.
@@ -670,7 +670,7 @@ scorep_metric_papi_test()
             scorep_metric_papi_error( retval, errstring );
         }
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event %s added to event set", metricv[ i ]->name );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event %s added to event set", metricv[ i ]->name );
     }
 
     /* For each used eventset */
@@ -690,7 +690,7 @@ scorep_metric_papi_test()
         free( event_set[ i ] );
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event set tested OK" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event set tested OK" );
 }
 
 
@@ -706,7 +706,7 @@ scorep_metric_papi_test()
 static SCOREP_Error_Code
 scorep_metric_papi_register()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register PAPI metric source!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register PAPI metric source!" );
 
     return SCOREP_ConfigRegister( "metric", scorep_metric_papi_configs );
 }
@@ -719,7 +719,7 @@ scorep_metric_papi_deregister()
 {
     free( scorep_metrics_papi );
     free( scorep_metrics_papi_separator );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source deregister!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source deregister!" );
 }
 
 /** @brief  Initializes the metric adapter.
@@ -731,7 +731,7 @@ scorep_metric_papi_initialize_source()
 {
     if ( scorep_metric_papi_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize PAPI metric source." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize PAPI metric source." );
 
         /* Initialize PAPI, determine number of specified metrics and set global variable */
         scorep_metric_papi_open();
@@ -739,7 +739,7 @@ scorep_metric_papi_initialize_source()
         /* Set flag */
         scorep_metric_papi_initialize = 0;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of PAPI metric source done." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of PAPI metric source done." );
     }
 
     return number_of_metrics;
@@ -757,7 +757,7 @@ scorep_metric_papi_finalize_source()
 
         /* Set initialization flag */
         scorep_metric_papi_initialize = 1;
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize PAPI metric source." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize PAPI metric source." );
     }
 }
 
@@ -779,7 +779,7 @@ scorep_metric_papi_initialize_location()
         scorep_metric_papi_error( retval, "PAPI_thread_init" );
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "PAPI thread support initialized" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "PAPI thread support initialized" );
 
     return scorep_metric_papi_create_event_set();
 }
@@ -801,7 +801,7 @@ scorep_metric_papi_finalize_location( SCOREP_Metric_EventSet* eventSet )
     /* Ignore return value */
     ( void )PAPI_unregister_thread();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source finalize location!" );
 }
 
 /** @brief Reads values of counters relative to the time of scorep_metric_papi_open().
@@ -986,10 +986,10 @@ scorep_metric_papi_clock_rate()
     hwinfo = PAPI_get_hardware_info();
     if ( hwinfo == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PAPI_INIT, "Failed to access PAPI hardware info\n" );
+        UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Failed to access PAPI hardware info\n" );
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Clock rate: %f MHz", hwinfo->mhz );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Clock rate: %f MHz", hwinfo->mhz );
 
     hertz = hwinfo->mhz * 1000000.0;
     #endif /* TIMER */

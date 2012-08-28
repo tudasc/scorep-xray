@@ -43,7 +43,7 @@
  */
 
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 /**
  * We use an opaque pointer type for the lock object.

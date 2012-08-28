@@ -71,7 +71,7 @@ __cyg_profile_func_enter( void* func,
 {
     scorep_compiler_hash_node* hash_node;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function enter." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function enter." );
 
     /*
      * put hash table entries via mechanism for bfd symbol table
@@ -109,9 +109,9 @@ __cyg_profile_func_enter( void* func,
             }
             SCOREP_MutexUnlock( scorep_compiler_region_mutex );
         }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "enter the region with address %p",
-                             func );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            "enter the region with address %p",
+                            func );
         SCOREP_EnterRegion( hash_node->region_handle );
     }
 }
@@ -140,12 +140,12 @@ __cyg_profile_func_exit( void* func,
 #endif
 
     scorep_compiler_hash_node* hash_node;
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
     if ( ( hash_node = scorep_compiler_hash_get( ( long )func ) ) )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "exit the region with address %p",
-                             func );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            "exit the region with address %p",
+                            func );
         SCOREP_ExitRegion( hash_node->region_handle );
     }
 }
@@ -159,7 +159,7 @@ scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize GNU compiler adapter." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize GNU compiler adapter." );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -173,8 +173,8 @@ scorep_compiler_init_adapter()
         /* Sez flag */
         scorep_compiler_initialize = 0;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             " inititialization of GNU compiler adapter done." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            " inititialization of GNU compiler adapter done." );
     }
 
     return SCOREP_SUCCESS;
@@ -183,7 +183,7 @@ scorep_compiler_init_adapter()
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "GNU compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "GNU compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -191,7 +191,7 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "GNU compiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "GNU compiler adapter finalize location!" );
 }
 
 /* Adapter finalization */
@@ -207,7 +207,7 @@ scorep_compiler_finalize()
         /* Set initialization flag */
         scorep_compiler_initialize = 1;
         scorep_compiler_finalized  = 1;
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize GNU compiler adapter." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize GNU compiler adapter." );
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

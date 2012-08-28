@@ -6,7 +6,7 @@ user_f_test_SOURCES =                                       \
 user_f_test_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
-    -I$(INC_DIR_UTIL)
+    $(UTILS_CPPFLAGS)
 
 if SCOREP_COMPILER_IBM
 user_f_test_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1

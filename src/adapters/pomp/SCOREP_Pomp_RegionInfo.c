@@ -36,8 +36,8 @@
 #include <inttypes.h>
 
 #include <SCOREP_Pomp_RegionInfo.h>
-#include <SCOREP_IO.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_IO.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Filter.h>
@@ -189,9 +189,9 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     if ( ( 0 > region->regionType ) ||
          ( region->regionType > scorep_pomp_region_type_map_size ) )
     {
-        SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
-                      "Region type %d not found in region type table.\n",
-                      region->regionType );
+        UTILS_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                     "Region type %d not found in region type table.",
+                     region->regionType );
         exit( EXIT_FAILURE );
     }
 
@@ -204,7 +204,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     }
 
     /* Construct file:lno string */
-    const char* basename    = SCOREP_IO_GetWithoutPath( region->startFileName );
+    const char* basename    = UTILS_IO_GetWithoutPath( region->startFileName );
     char*       source_name = ( char* )malloc( strlen( basename ) + 12 );
     sprintf( source_name, "@%s:%" PRIi32, basename, region->startLine1 );
 
@@ -320,7 +320,7 @@ void
 SCOREP_Pomp_ParseInitString( const char          initString[],
                              SCOREP_Pomp_Region* region )
 {
-    SCOREP_ASSERT( region );
+    UTILS_ASSERT( region );
     POMP2_Region_info regionInfo;
     ctcString2RegionInfo( initString, &regionInfo );
     scorep_pomp_init_region( region );
@@ -418,7 +418,7 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
             region->regionType = SCOREP_Pomp_Workshare;
             break;
         default:
-            SCOREP_ERROR( SCOREP_ERROR_POMP_UNKNOWN_REGION_TYPE, "%s", initString );
+            UTILS_ERROR( SCOREP_ERROR_POMP_UNKNOWN_REGION_TYPE, "%s", initString );
     }
     /*register handles*/
     scorep_pomp_register_region( region );

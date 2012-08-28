@@ -52,7 +52,8 @@ region_types_consistency_check_CPPFLAGS = \
     @COMPILER_INSTRUMENTATION_CPPFLAGS@ \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
-    -I$(PUBLIC_INC_DIR) -I$(INC_DIR_UTIL)
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS)
 region_types_consistency_check_LDADD   = $(LIB_ROOT)libscorep_serial.la
 region_types_consistency_check_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
 

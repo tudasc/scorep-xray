@@ -28,7 +28,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <SCOREP_Error_Codes.h>
+#include <UTILS_Error.h>
 
 
 SCOREP_Error_Code

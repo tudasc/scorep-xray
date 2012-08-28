@@ -31,7 +31,7 @@
 #include "SCOREP_Types.h"
 #include "SCOREP_Cuda_Init.h"
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Timing.h>
 
 #include "scorep_cuda.h"
@@ -90,8 +90,8 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
 SCOREP_Error_Code
 scorep_cuda_register()
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                             "[CUDA Adapter] Register environment variables.\n" );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUDA Adapter] Register environment variables.\n" );
 
     return SCOREP_ConfigRegister( "cuda", scorep_cuda_configs );
 }
@@ -105,8 +105,8 @@ scorep_cuda_deregister()
 static int
 scorep_cuda_finalize_callback( void )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                             "[CUDA Adapter] Register finalize callback\n" );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUDA Adapter] Register finalize callback\n" );
 
     scorep_cupti_callbacks_finalize();
 
@@ -117,8 +117,8 @@ scorep_cuda_finalize_callback( void )
 SCOREP_Error_Code
 scorep_cuda_init()
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                             "[CUDA Adapter] Selected options: %llu\n", scorep_cuda_features );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUDA Adapter] Selected options: %llu\n", scorep_cuda_features );
 
     if ( scorep_cuda_features > 0 )
     {

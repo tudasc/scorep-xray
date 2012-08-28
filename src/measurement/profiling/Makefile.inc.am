@@ -31,9 +31,8 @@ PROFILE_FLAGS =                                 \
     @CUBE_WRITER_CPPFLAGS@                      \
     -I$(INC_ROOT)src/measurement/online_access  \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(INC_DIR_UTIL_INTERNAL)                  \
-    -I$(INC_DIR_UTIL)                           \
-    -I$(INC_DIR_VENDOR_HASH)
+    $(UTILS_CPPFLAGS)                           \
+    -I$(INC_DIR_COMMON_HASH)
 
 noinst_LTLIBRARIES += libscorep_profile.la
 libscorep_profile_la_SOURCES =                                           \

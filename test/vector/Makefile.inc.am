@@ -22,11 +22,11 @@ check_PROGRAMS += vector_test
 vector_test_SOURCES = \
     $(SRC_ROOT)test/vector/vector_test.c
 vector_test_LDADD = \
-    libscorep_vector.la \
-    $(LIB_DIR_UTIL)libscorep_utilities.la
+    $(LIB_ROOT)libscorep_vector.la \
+    $(LIB_ROOT)libutils.la
 vector_test_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(UTILS_CPPFLAGS)
 
 TESTS_SERIAL += vector_test

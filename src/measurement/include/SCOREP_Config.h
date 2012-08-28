@@ -60,8 +60,8 @@
  */
 
 
+#include <UTILS_Error.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Error_Codes.h>
 #include <stddef.h>
 #include <stdbool.h>
 

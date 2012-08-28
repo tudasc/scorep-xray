@@ -34,6 +34,10 @@
 
 #include <stdio.h>
 
+
+#define SCOREP_DEBUG_MODULE_NAME MPI
+
+
 /**
  * @def SCOREP_FORTRAN_GET_MPI_STATUS_SIZE
  * Defines the Fortran mangled form of scorep_fortran_get_mpi_status_size.
@@ -324,8 +328,7 @@ static size_t scorep_mpi_subsystem_id;
 static SCOREP_Error_Code
 scorep_mpi_register( size_t subsystem_id )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_register\n" );
+    UTILS_DEBUG_ENTRY();
 
     scorep_mpi_subsystem_id = subsystem_id;
 
@@ -339,8 +342,7 @@ scorep_mpi_register( size_t subsystem_id )
 static SCOREP_Error_Code
 scorep_mpi_init_adapter()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_init_adapter\n" );
+    UTILS_DEBUG_ENTRY();
 
     /* Set Fortran constants */
     SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( &scorep_mpi_status_size );
@@ -372,8 +374,7 @@ scorep_mpi_init_adapter()
 static SCOREP_Error_Code
 scorep_mpi_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_init_location\n" );
+    UTILS_DEBUG_ENTRY();
     return SCOREP_SUCCESS;
 }
 
@@ -384,8 +385,7 @@ scorep_mpi_init_location( SCOREP_Location* locationData )
 static void
 scorep_mpi_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_finalize_location\n" );
+    UTILS_DEBUG_ENTRY();
 }
 
 /**
@@ -395,8 +395,7 @@ scorep_mpi_finalize_location( SCOREP_Location* locationData )
 static void
 scorep_mpi_finalize()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_finalize\n" );
+    UTILS_DEBUG_ENTRY();
 
     /* Prevent all further events */
     SCOREP_MPI_EVENT_GEN_OFF();
@@ -407,8 +406,7 @@ scorep_mpi_finalize()
     scorep_mpi_request_finalize();
     scorep_mpi_comm_finalize();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "End of scorep_mpi_finalize\n" );
+    UTILS_DEBUG_EXIT();
 }
 
 /**
@@ -420,8 +418,7 @@ scorep_mpi_deregister()
 {
     int res;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_mpi_deregister\n" );
+    UTILS_DEBUG_ENTRY();
 
     /* Finalize MPI.
        MPICH somehow creates some extra processes/threads. If PMPI_Finalize is called
@@ -490,7 +487,7 @@ scorep_get_status_array( int32_t size )
         scorep_my_status_array = malloc( size * sizeof( MPI_Status ) );
         if ( scorep_my_status_array == NULL )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
         scorep_my_status_array_size = size;
     }
@@ -501,7 +498,7 @@ scorep_get_status_array( int32_t size )
                                           size * sizeof( MPI_Status ) );
         if ( scorep_my_status_array == NULL )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
         }
         scorep_my_status_array_size = size;
     }

@@ -36,9 +36,9 @@ common_libadd = libscorep_measurement.la              \
                 libscorep_allocator.la                \
                 libscorep_vector.la                   \
                 libscorep_hashtab.la                  \
-                @OTF2_LIBS@                           \
-                libscorep_utilities.la                \
+                libutils.la                           \
                 libjenkins_hash.la                    \
+                @OTF2_LIBS@                           \
                 @LIBBFD_LIBS@                         \
                 @TIMER_LIB@                           \
                 @SCOREP_PAPI_LIBS@
@@ -53,12 +53,12 @@ common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(INC_ROOT)src/measurement/include \
                   -I$(INC_ROOT)src/measurement         \
                   -I$(PUBLIC_INC_DIR)                  \
-                  -I$(INC_DIR_UTIL)
+                  $(UTILS_CPPFLAGS)
 
 common_ldflags  = -version-info @LIBRARY_INTERFACE_VERSION@
-common_ldflags += @LIBBFD_LDFLAGS@      \
+common_ldflags += @OTF2_LDFLAGS@        \
+                  @LIBBFD_LDFLAGS@      \
                   @SCOREP_PAPI_LDFLAGS@ \
-                  @OTF2_LDFLAGS@        \
                   @CUBE_WRITER_LDFLAGS@
 
 

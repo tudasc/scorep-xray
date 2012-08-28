@@ -39,10 +39,10 @@ scorep_oa_phase_enter
     const SCOREP_User_RegionHandle handle
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
     assert( handle != SCOREP_USER_INVALID_REGION );
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %ld\n", handle->handle );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %ld\n", handle->handle );
 
     SCOREP_RegionHandle ms_handle = handle->handle;
 
@@ -53,7 +53,7 @@ scorep_oa_phase_enter
         scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
         scorep_oa_mri_receive_and_process_requests( connection );
     }
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __FUNCTION__ );
 }
 
 void
@@ -62,10 +62,10 @@ scorep_oa_phase_exit
     const SCOREP_User_RegionHandle handle
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
     assert( handle != SCOREP_USER_INVALID_REGION );
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %ld\n", handle->handle );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %ld\n", handle->handle );
 
     SCOREP_RegionHandle ms_handle = handle->handle;
 
@@ -76,5 +76,5 @@ scorep_oa_phase_exit
         scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
         scorep_oa_mri_receive_and_process_requests( connection );
     }
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __FUNCTION__ );
 }

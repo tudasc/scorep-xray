@@ -27,7 +27,9 @@
 #include <config.h>
 #include "scorep_mpi.h"
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+
+#include <UTILS_Debug.h>
 #include <scorep_thread.h>
 #include <scorep_definitions.h>
 #include <scorep_runtime_management_timings.h>
@@ -67,7 +69,7 @@ scorep_create_experiment_dir( void ( * createDir )( void ) )
 {
     if ( !SCOREP_Mpi_IsInitialized() )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "MPI not initialized, experiment directory creation deferred." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "MPI not initialized, experiment directory creation deferred." );
         return false;
     }
 
@@ -127,7 +129,7 @@ scorep_mpi_to_mpi_datatype( enum SCOREP_Mpi_Datatype scorep_datatype )
         SCOREP_MPI_DATATYPES
 #undef SCOREP_MPI_DATATYPE
         default:
-            SCOREP_BUG( "Unknown mpi datatype" );
+            UTILS_BUG( "Unknown mpi datatype" );
     }
 }
 

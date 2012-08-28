@@ -36,8 +36,8 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Filter.h>
 #include <SCOREP_Hashtab.h>
-#include <SCOREP_CStr.h>
-#include <SCOREP_IO.h>
+#include <UTILS_CStr.h>
+#include <UTILS_IO.h>
 #include <SCOREP_Fortran_Wrapper.h>
 #include <scorep_selective_region.h>
 
@@ -85,7 +85,7 @@ scorep_user_add_region( SCOREP_User_RegionHandle region_handle,
     assert( region_name );
 
     SCOREP_Hashtab_Insert( scorep_user_region_table,
-                           ( void* )SCOREP_CStr_dup( region_name ),
+                           ( void* )UTILS_CStr_dup( region_name ),
                            region_handle,
                            NULL );
 }
@@ -115,7 +115,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
     file_name = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
     strncpy( file_name, fileNameF, fileNameLen );
     file_name[ fileNameLen ] = '\0';
-    SCOREP_IO_SimplifyPath( file_name );
+    UTILS_IO_SimplifyPath( file_name );
 
     /* Get source file handle.
        The definitions check for double double entries. */

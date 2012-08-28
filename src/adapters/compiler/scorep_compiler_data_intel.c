@@ -28,7 +28,7 @@
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Hashtab.h>
 
 #include <scorep_compiler_data_intel.h>
@@ -60,7 +60,7 @@ SCOREP_Mutex scorep_compiler_file_table_mutex;
 static void
 scorep_compiler_delete_file_entry( SCOREP_Hashtab_Entry* entry )
 {
-    SCOREP_ASSERT( entry );
+    UTILS_ASSERT( entry );
 
     free( ( SCOREP_SourceFileHandle* )entry->value );
     free( ( char* )entry->key );
@@ -166,7 +166,7 @@ scorep_compiler_hash_get( char* region_name )
 
     uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
     scorep_compiler_hash_node* curr = region_hash_table[ hash_code ];
     /* The tail after curr will never change because, new elements are inserted before
@@ -195,7 +195,7 @@ scorep_compiler_hash_put( uint64_t      key,
     /* ifort constructs function names like <module>_mp_<function>,
      * while __VT_Entry gets something like <module>.<function>
      * => replace _mp_ with a dot. */
-    char* name = SCOREP_CStr_dup( region_name_mangled );
+    char* name = UTILS_CStr_dup( region_name_mangled );
     for ( int i = 1; i + 5 < strlen( name ); i++ )
     {
         if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
@@ -225,9 +225,9 @@ scorep_compiler_hash_put( uint64_t      key,
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
     add->key                   = key;
-    add->region_name_mangled   = SCOREP_CStr_dup( name );
-    add->region_name_demangled = SCOREP_CStr_dup( region_name_demangled );
-    add->file_name             = SCOREP_CStr_dup( file_name );
+    add->region_name_mangled   = UTILS_CStr_dup( name );
+    add->region_name_demangled = UTILS_CStr_dup( region_name_demangled );
+    add->file_name             = UTILS_CStr_dup( file_name );
     add->line_no_begin         = line_no_begin;
     add->line_no_end           = SCOREP_INVALID_LINE_NO;
     add->region_handle         = SCOREP_INVALID_REGION;
@@ -285,7 +285,7 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {
     SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( node->file_name );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
 
     node->region_handle = SCOREP_DefineRegion( node->region_name_demangled,
                                                node->region_name_mangled,
@@ -295,5 +295,5 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
                                                SCOREP_ADAPTER_COMPILER,
                                                SCOREP_REGION_FUNCTION );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
 }

@@ -23,9 +23,9 @@ noinst_LTLIBRARIES += libscorep_tracing.la
 
 libscorep_tracing_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
-    -I$(INC_DIR_UTIL) \
+    $(UTILS_CPPFLAGS) \
     @OTF2_CPPFLAGS@ \
-    -I$(INC_DIR_VENDOR_HASH) \
+    -I$(INC_DIR_COMMON_HASH) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/include \

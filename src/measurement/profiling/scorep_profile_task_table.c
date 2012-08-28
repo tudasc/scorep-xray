@@ -32,7 +32,7 @@
 #include <string.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_thread.h>
 #include <scorep_profile_definition.h>
@@ -79,8 +79,8 @@ insert_task( scorep_profile_task_table* table,
     }
     if ( new_entry == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to allocate memory for task instance tracking." );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Failed to allocate memory for task instance tracking." );
         SCOREP_PROFILE_STOP;
         return NULL;
     }
@@ -245,8 +245,8 @@ scorep_profile_store_task( SCOREP_Profile_LocationData* location )
     if ( current_task == NULL )
     {
         SCOREP_PROFILE_STOP;
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Encountered unknown task ID" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Encountered unknown task ID" );
         return;
     }
 
@@ -269,8 +269,8 @@ scorep_profile_restore_task( SCOREP_Profile_LocationData* location )
     if ( current_task == NULL )
     {
         SCOREP_PROFILE_STOP;
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Encountered unknown task ID" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Encountered unknown task ID" );
         return;
     }
 

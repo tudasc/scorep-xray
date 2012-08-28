@@ -29,8 +29,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_IO.h>
+#include <UTILS_Debug.h>
+#include <UTILS_IO.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
@@ -75,8 +75,8 @@ get_region_handle( char* region_name,
 {
     scorep_compiler_hash_node* hash_node;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                         " function name: %s %s", region_name, file_name );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                        " function name: %s %s", region_name, file_name );
 
     if ( scorep_compiler_initialize )
     {
@@ -93,15 +93,15 @@ get_region_handle( char* region_name,
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
-            char* file = SCOREP_CStr_dup( file_name );
-            SCOREP_IO_SimplifyPath( file );
+            char* file = UTILS_CStr_dup( file_name );
+            UTILS_IO_SimplifyPath( file );
             hash_node = scorep_compiler_hash_put( ( long )region_name,
                                                   region_name,
                                                   region_name,
                                                   file, line_no );
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                                 " number %ld and put name -- %s -- to list",
-                                 ( long )region_name, region_name );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                                " number %ld and put name -- %s -- to list",
+                                ( long )region_name, region_name );
 
             /* Check for filters:
                  1. In case OpenMP is used, the XL compiler creates some
@@ -207,7 +207,7 @@ __func_trace_exit( char* region_name,
     {
         return;
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
     if ( hash_node = scorep_compiler_hash_get( ( long )region_name ) )
     {
         /* Invalid handle marks filtered regions */
@@ -225,8 +225,8 @@ scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             " inititialize IBM xl compiler adapter!" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            " inititialize IBM xl compiler adapter!" );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -243,7 +243,7 @@ scorep_compiler_init_adapter()
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xl compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xl compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -251,7 +251,7 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xlcompiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xlcompiler adapter finalize location!" );
 }
 
 /* Finalize adapter */
@@ -261,7 +261,7 @@ scorep_compiler_finalize()
     /* call only, if previously initialized */
     if ( !scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize IBM xl compiler adapter!" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize IBM xl compiler adapter!" );
 
         /* Delete hash table */
         scorep_compiler_hash_free();

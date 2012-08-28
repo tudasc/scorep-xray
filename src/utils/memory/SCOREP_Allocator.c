@@ -29,7 +29,7 @@
 
 
 #include <SCOREP_Allocator.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include "scorep_allocator.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -392,12 +392,12 @@ SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
     already_used_pages++;
     size_t free_memory_in_last_page = ( already_used_pages << page_shift ) - maint_memory_needed;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "0: m%zu ps%u np%zu mm%zu fm%zu aup%zu puor%f",
-                         totalMemory, page_shift, n_pages,
-                         maint_memory_needed,
-                         free_memory_in_last_page,
-                         already_used_pages,
-                         ( double )( free_memory_in_last_page / union_size() ) / n_pages );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "0: m%zu ps%u np%zu mm%zu fm%zu aup%zu puor%f",
+                        totalMemory, page_shift, n_pages,
+                        maint_memory_needed,
+                        free_memory_in_last_page,
+                        already_used_pages,
+                        ( double )( free_memory_in_last_page / union_size() ) / n_pages );
 
     /* guaranty at least for .5% of the total number of pages pre-allocated page structs */
     while ( ( free_memory_in_last_page / union_size() ) < ( n_pages / 200 ) )
@@ -410,12 +410,12 @@ SCOREP_Allocator_CreateAllocator( size_t                       totalMemory,
         return 0;
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "1: m%zu ps%zu np%zu mm%zu fm%zu aup%zu puor%f",
-                         totalMemory, page_shift, n_pages,
-                         maint_memory_needed,
-                         free_memory_in_last_page,
-                         already_used_pages,
-                         ( double )( free_memory_in_last_page / union_size() ) / n_pages );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MEMORY, "1: m%zu ps%zu np%zu mm%zu fm%zu aup%zu puor%f",
+                        totalMemory, page_shift, n_pages,
+                        maint_memory_needed,
+                        free_memory_in_last_page,
+                        already_used_pages,
+                        ( double )( free_memory_in_last_page / union_size() ) / n_pages );
 
     SCOREP_Allocator_Allocator* allocator = calloc( 1, totalMemory );
     if ( !allocator )

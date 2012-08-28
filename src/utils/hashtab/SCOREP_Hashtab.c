@@ -28,8 +28,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 #include <SCOREP_Hashtab.h>
 
@@ -72,20 +72,20 @@ SCOREP_Hashtab_CreateSize( size_t                         size,
     SCOREP_Hashtab* instance;
 
     /* Validate arguments */
-    SCOREP_ASSERT( size > 0 && hashfunc && kcmpfunc );
+    UTILS_ASSERT( size > 0 && hashfunc && kcmpfunc );
 
     /* Create hash table data structure */
     instance = ( SCOREP_Hashtab* )malloc( sizeof( SCOREP_Hashtab ) );
     if ( !instance )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return NULL;
     }
 
     instance->table = ( scorep_hashtab_listitem** )calloc( size, sizeof( scorep_hashtab_listitem* ) );
     if ( !instance->table )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         free( instance );
         return NULL;
     }
@@ -106,7 +106,7 @@ SCOREP_Hashtab_Free( SCOREP_Hashtab* instance )
     size_t index;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Release data structure */
     for ( index = 0; index < instance->tabsize; ++index )
@@ -130,7 +130,7 @@ size_t
 SCOREP_Hashtab_Size( const SCOREP_Hashtab* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->size;
 }
@@ -139,7 +139,7 @@ int32_t
 SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->size == 0;
 }
@@ -158,7 +158,7 @@ SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
     size_t                   index;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && key );
+    UTILS_ASSERT( instance && key );
 
     /* Eventually calculate hash value */
     if ( hashValPtr )
@@ -175,7 +175,7 @@ SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
     item = ( scorep_hashtab_listitem* )malloc( sizeof( scorep_hashtab_listitem ) );
     if ( !item )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return;
     }
 
@@ -203,7 +203,7 @@ SCOREP_Hashtab_Remove( const SCOREP_Hashtab*         instance,
     size_t                   index;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && key );
+    UTILS_ASSERT( instance && key );
 
     /* Eventually calculate hash value */
     if ( hashValPtr )
@@ -257,7 +257,7 @@ SCOREP_Hashtab_Find( const SCOREP_Hashtab* instance,
     size_t                   index;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && key );
+    UTILS_ASSERT( instance && key );
 
     /* Calculate hash value */
     hashval = instance->hash( key );
@@ -291,7 +291,7 @@ SCOREP_Hashtab_Foreach( const SCOREP_Hashtab*          instance,
     SCOREP_Hashtab_Entry*    entry;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && procfunc );
+    UTILS_ASSERT( instance && procfunc );
 
     /* Execute function for each entry */
     iter  = SCOREP_Hashtab_IteratorCreate( instance );
@@ -330,13 +330,13 @@ SCOREP_Hashtab_IteratorCreate( const SCOREP_Hashtab* hashtab )
     SCOREP_Hashtab_Iterator* instance;
 
     /* Validate arguments */
-    SCOREP_ASSERT( hashtab );
+    UTILS_ASSERT( hashtab );
 
     /* Create iterator */
     instance = ( SCOREP_Hashtab_Iterator* )malloc( sizeof( SCOREP_Hashtab_Iterator ) );
     if ( !instance )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return NULL;
     }
 
@@ -352,7 +352,7 @@ void
 SCOREP_Hashtab_IteratorFree( SCOREP_Hashtab_Iterator* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Release iterator */
     free( instance );
@@ -365,7 +365,7 @@ SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_IteratorFirst( SCOREP_Hashtab_Iterator* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Hash table empty? */
     if ( 0 == instance->hashtab->size )
@@ -392,7 +392,7 @@ SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_IteratorNext( SCOREP_Hashtab_Iterator* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* No more entries? */
     if ( instance->item == NULL )

@@ -38,7 +38,8 @@
 #include <sys/stat.h>
 
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 
 #include <jenkins_hash.h>
@@ -53,6 +54,9 @@
 #include <scorep_types.h>
 
 
+#define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
+
+
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
@@ -65,8 +69,7 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 SCOREP_StringHandle
 SCOREP_DefineString( const char* str )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new string \"%s\":", str );
+    UTILS_DEBUG_ENTRY( "%s", str );
 
     SCOREP_Definitions_Lock();
 
@@ -153,8 +156,7 @@ static bool scorep_source_file_definitions_equal( const SCOREP_SourceFile_Defini
 SCOREP_SourceFileHandle
 SCOREP_DefineSourceFile( const char* fileName )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new source file: \"%s\"", fileName );
+    UTILS_DEBUG_ENTRY( "%s", fileName );
 
     SCOREP_Definitions_Lock();
 
@@ -434,9 +436,7 @@ SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                              const char*                 name,
                              const char*                 class )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new system tree node %s of class %s",
-                         name, class );
+    UTILS_DEBUG_ENTRY( "node %s, class %s", name, class );
 
     SCOREP_Definitions_Lock();
 
@@ -566,8 +566,7 @@ SCOREP_DefineRegion( const char*             regionName,
                      SCOREP_AdapterType      adapter,
                      SCOREP_RegionType       regionType )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new region: %s", regionName );
+    UTILS_DEBUG_ENTRY( "%s", regionName );
 
     /* resolve the file name early */
     SCOREP_StringHandle file_name_handle = SCOREP_INVALID_STRING;
@@ -756,15 +755,14 @@ SCOREP_DefineLocalMPICommunicator( uint32_t                          numberOfRan
 {
     SCOREP_LocalMPICommunicatorHandle new_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Local Rank %" PRIu32 ": Define local Communicator:"
-                         "  size: %" PRIu32
-                         "  root: %" PRIu32
-                         "  id: %" PRIu32,
-                         localRank,
-                         numberOfRanks,
-                         globalRootRank,
-                         id );
+    UTILS_DEBUG_ENTRY( "#%" PRIu32 ", "
+                       "local rank %" PRIu32 ", "
+                       "root: %" PRIu32 ", "
+                       "id: %" PRIu32,
+                       numberOfRanks,
+                       localRank,
+                       globalRootRank,
+                       id );
 
     SCOREP_Definitions_Lock();
 
@@ -801,8 +799,8 @@ void
 SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
                                     const char*                       name )
 {
-    SCOREP_BUG_ON( localMPICommHandle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
-                   "Invalid MPI_Comm handle as argument" );
+    UTILS_BUG_ON( localMPICommHandle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
+                  "Invalid MPI_Comm handle as argument" );
 
     SCOREP_Definitions_Lock();
 
@@ -869,15 +867,14 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
                                      uint32_t                     unified_name_id,
                                      SCOREP_MPICommunicatorHandle unified_parent_handle )
 {
+    UTILS_DEBUG_ENTRY();
+
     SCOREP_MPICommunicator_Definition* new_definition     = NULL;
     SCOREP_MPICommunicatorHandle       new_handle         = SCOREP_INVALID_MPI_COMMUNICATOR;
     SCOREP_DefinitionManager*          definition_manager = scorep_unified_definition_manager;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define unified Communicator" );
-
-    assert( !SCOREP_Omp_InParallel() );
-    assert( scorep_unified_definition_manager );
+    UTILS_ASSERT( !SCOREP_Omp_InParallel() );
+    UTILS_ASSERT( scorep_unified_definition_manager );
 
     SCOREP_DEFINITION_ALLOC( MPICommunicator );
 
@@ -930,8 +927,8 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
     SCOREP_Definitions_Lock();
 
     /* we should also be called only once */
-    SCOREP_BUG_ON( scorep_mpi_locations_defined == false,
-                   "Called before SCOREP_DefineMPILocations" );
+    UTILS_BUG_ON( scorep_mpi_locations_defined == false,
+                  "Called before SCOREP_DefineMPILocations" );
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
@@ -960,8 +957,8 @@ SCOREP_DefineMPILocations( int32_t        numberOfRanks,
 {
     SCOREP_Definitions_Lock();
 
-    SCOREP_BUG_ON( scorep_mpi_locations_defined == true,
-                   "We should be called only once" );
+    UTILS_BUG_ON( scorep_mpi_locations_defined == true,
+                  "We should be called only once" );
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
@@ -1094,7 +1091,7 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
 SCOREP_MPIWindowHandle
 SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Define new MPI Window:" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
@@ -1103,10 +1100,7 @@ SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle )
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "    Handle ID: %x", new_definition->sequence_number );
+    //UTILS_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1129,9 +1123,7 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
                                    const uint32_t                    nProcessesPerDimension[],
                                    const uint8_t                     periodicityPerDimension[] )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new MPI cartesian topology %s:",
-                         topologyName );
+    UTILS_DEBUG_ENTRY( "%s", topologyName );
 
     SCOREP_Definitions_Lock();
 
@@ -1140,24 +1132,17 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    //UTILS_NOT_YET_IMPLEMENTED();
 
 #ifdef SCOREP_DEBUG
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "    Handle ID:  %x", new_definition->sequence_number );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "    Dimensions: %u", nDimensions );
+    UTILS_DEBUG( "    Handle ID:  %x", new_definition->sequence_number );
+    UTILS_DEBUG( "    Dimensions: %u", nDimensions );
 
     for ( uint32_t i = 0; i < nDimensions; ++i )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                             "    Dimension %u:", i );
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                             "        #processes  %u:",
-                             nProcessesPerDimension[ i ] );
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                             "        periodicity %hhu:",
-                             periodicityPerDimension[ i ] );
+        UTILS_DEBUG( "    Dimension %u:", i );
+        UTILS_DEBUG( "        #processes  %u:", nProcessesPerDimension[ i ] );
+        UTILS_DEBUG( "        periodicity %hhu:", periodicityPerDimension[ i ] );
     }
 #endif
 
@@ -1182,8 +1167,7 @@ SCOREP_DefineMPICartesianCoords(
     uint32_t                          nCoords,
     const uint32_t                    coordsOfCurrentRank[] )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new MPI cartesian coordinates:" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
@@ -1192,19 +1176,19 @@ SCOREP_DefineMPICartesianCoords(
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    //UTILS_NOT_YET_IMPLEMENTED();
 
 #ifdef SCOREP_DEBUG
     char stringBuffer[ 16 ];
 
-    SCOREP_DEBUG_PREFIX( SCOREP_DEBUG_DEFINITIONS );
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "    Coordinates:" );
+    UTILS_DEBUG_PREFIX( SCOREP_DEBUG_DEFINITIONS );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "    Coordinates:" );
     for ( uint32_t i = 0; i < nCoords; ++i )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                                 " %u", coordsOfCurrentRank[ i ] );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS,
+                                " %u", coordsOfCurrentRank[ i ] );
     }
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "\n" );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "\n" );
 #endif
 }
 
@@ -1258,8 +1242,7 @@ SCOREP_DefineMetric( const char*                name,
                      const char*                unit,
                      SCOREP_MetricProfilingType profilingType )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new metric member: %s", name );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
 
@@ -1452,9 +1435,7 @@ SCOREP_DefineSamplingSet( uint8_t                    numberOfMetrics,
                           const SCOREP_MetricHandle* metrics,
                           SCOREP_MetricOccurrence    occurrence )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new sampling set with %hhu metrics",
-                         numberOfMetrics );
+    UTILS_DEBUG_ENTRY( "#%hhu metrics", numberOfMetrics );
 
     SCOREP_Definitions_Lock();
 
@@ -1477,8 +1458,7 @@ SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
                                 SCOREP_MetricScope       scopeType,
                                 SCOREP_AnyHandle         scopeHandle )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new scoped sampling set" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
@@ -1738,8 +1718,7 @@ scorep_sampling_set_definitions_equal( const SCOREP_SamplingSet_Definition* exis
 SCOREP_IOFileGroupHandle
 SCOREP_DefineIOFileGroup( const char* name )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new I/O file group: %s", name );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
 
@@ -1748,7 +1727,7 @@ SCOREP_DefineIOFileGroup( const char* name )
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    //UTILS_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1768,8 +1747,7 @@ SCOREP_IOFileHandle
 SCOREP_DefineIOFile( const char*              name,
                      SCOREP_IOFileGroupHandle ioFileGroup )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new I/O file: %s", name );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
 
@@ -1778,7 +1756,7 @@ SCOREP_DefineIOFile( const char*              name,
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    //UTILS_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1797,19 +1775,16 @@ SCOREP_DefineIOFile( const char*              name,
 SCOREP_MarkerGroupHandle
 SCOREP_DefineMarkerGroup( const char* name )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new marker group: %s", name );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "" );
 
     SCOREP_MarkerGroup_Definition* new_definition = NULL;
     SCOREP_MarkerGroupHandle       new_handle     = SCOREP_INVALID_MARKER_GROUP;
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    //UTILS_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1829,19 +1804,16 @@ SCOREP_MarkerHandle
 SCOREP_DefineMarker( const char*              name,
                      SCOREP_MarkerGroupHandle markerGroup )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new marker: %s", name );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "" );
 
     SCOREP_Marker_Definition* new_definition = NULL;
     SCOREP_MarkerHandle       new_handle     = SCOREP_INVALID_MARKER;
 
     // Init new_definition
     // see ticket:423
-    //SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    //UTILS_NOT_YET_IMPLEMENTED();
 
     SCOREP_Definitions_Unlock();
 
@@ -1872,8 +1844,7 @@ SCOREP_ParameterHandle
 SCOREP_DefineParameter( const char*          name,
                         SCOREP_ParameterType type )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new parameter: %s", name );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
 
@@ -1971,8 +1942,7 @@ SCOREP_CallpathHandle
 SCOREP_DefineCallpath( SCOREP_CallpathHandle parentCallpath,
                        SCOREP_RegionHandle   region )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new callpath" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
@@ -1996,8 +1966,7 @@ SCOREP_DefineCallpathParameterInteger( SCOREP_CallpathHandle  parentCallpath,
                                        SCOREP_ParameterHandle callpathParameter,
                                        int64_t                integerValue )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new integer callpath" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
@@ -2021,8 +1990,7 @@ SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parentCallpath,
                                       SCOREP_ParameterHandle callpathParameter,
                                       SCOREP_StringHandle    stringHandle )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new string callpath" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
@@ -2106,7 +2074,7 @@ SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition
             }
             else
             {
-                SCOREP_BUG( "Not a valid parameter type." );
+                UTILS_BUG( "Not a valid parameter type." );
             }
         }
     }
@@ -2210,7 +2178,7 @@ scorep_callpath_definition_initialize( SCOREP_Callpath_Definition* definition,
             }
             else
             {
-                SCOREP_BUG( "Not a valid parameter type." );
+                UTILS_BUG( "Not a valid parameter type." );
             }
         }
     }
@@ -2274,10 +2242,9 @@ SCOREP_PropertyHandle
 SCOREP_DefineProperty( SCOREP_Property property,
                        bool            value )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS,
-                         "Define new property: %d", property );
+    UTILS_DEBUG_ENTRY( "%d", property );
 
-    SCOREP_BUG_ON( property >= SCOREP_PROPERTY_MAX, "Invalid property enum value" );
+    UTILS_BUG_ON( property >= SCOREP_PROPERTY_MAX, "Invalid property enum value" );
 
     SCOREP_Definitions_Lock();
 
@@ -2296,9 +2263,9 @@ void
 SCOREP_CopyPropertyDefinitionToUnified( SCOREP_Property_Definition*   definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( !SCOREP_Omp_InParallel() );
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( !SCOREP_Omp_InParallel() );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     definition->unified = scorep_property_definition_define(
         scorep_unified_definition_manager,
@@ -2387,7 +2354,7 @@ SCOREP_AddClockOffset( uint64_t time,
 {
     extern SCOREP_ClockOffset** scorep_clock_offset_tail;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Add clock offset" );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 

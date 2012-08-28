@@ -124,9 +124,8 @@ cuda_api_function_hash( CUpti_CallbackDomain domain,
         {
             index = 0;
 
-            SCOREP_ERROR( SCOREP_WARNING,
-                          "[CUPTI Callbacks] Hash table for CUDA runtime API "
-                          "function %d is to small!", callbackId );
+            UTILS_WARNING( "[CUPTI Callbacks] Hash table for CUDA runtime API "
+                           "function %d is to small!", callbackId );
         }
     }
     else
@@ -138,9 +137,8 @@ cuda_api_function_hash( CUpti_CallbackDomain domain,
     {
         index = 0;
 
-        SCOREP_ERROR( SCOREP_WARNING,
-                      "[CUPTI Callbacks] Hash table for CUDA API "
-                      "function %d is to small!", callbackId );
+        UTILS_WARNING( "[CUPTI Callbacks] Hash table for CUDA API "
+                       "function %d is to small!", callbackId );
     }
 
     return ( uint32_t )index;
@@ -182,8 +180,8 @@ scorep_cupti_callbacks_init()
 {
     if ( !scorep_cupti_callbacks_initialized )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                 "[CUPTI Callbacks] Initializing ... \n" );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Initializing ... \n" );
 
         /* check for CUDA runtime API tracing */
         if ( ( scorep_cuda_features & SCOREP_CUDA_RECORD_RUNTIME_API )
@@ -267,8 +265,8 @@ scorep_cupti_callbacks_finalize()
 {
     if ( !scorep_cupti_callbacks_finalized && scorep_cupti_callbacks_initialized )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                 "[CUPTI Callbacks] Finalizing ... \n" );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Finalizing ... \n" );
 
         if ( scorep_cuda_record_kernels > 0 || scorep_cuda_record_memcpy )
         {
@@ -472,8 +470,8 @@ scorep_cupti_callback_sync( CUpti_CallbackId             callbackId,
 {
     if ( CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZED == callbackId )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                 "[CUPTI Callbacks] Synchronize called" );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Synchronize called" );
 
         scorep_cupti_activity_flush_context_activities( syncData->context );
     }
@@ -494,9 +492,9 @@ scorep_cupti_callback_resource( CUpti_CallbackId          callbackId,
         /********************** CUDA memory allocation ******************************/
         case CUPTI_CBID_RESOURCE_CONTEXT_CREATED:
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                     "[CUPTI Callbacks] Creating context %d \n",
-                                     resourceData->context );
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Callbacks] Creating context %d \n",
+                                    resourceData->context );
             if ( scorep_cupti_callbacks_record_cuda_driver )
             {
                 cuptiEnableDomain( 0, scorep_cupti_callbacks_subscriber, CUPTI_CB_DOMAIN_DRIVER_API );
@@ -514,8 +512,8 @@ scorep_cupti_callback_resource( CUpti_CallbackId          callbackId,
 
         case CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTING:
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                     "[CUPTI Callbacks] Destroying context" );
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Callbacks] Destroying context" );
             scorep_cupti_activity_flush_context_activities( resourceData->context );
 
             break;

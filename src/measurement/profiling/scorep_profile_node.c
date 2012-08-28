@@ -29,8 +29,8 @@
 #include <assert.h>
 
 #include <SCOREP_Memory.h>
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>
@@ -274,7 +274,7 @@ scorep_profile_move_children(  scorep_profile_node* destination,
 {
     scorep_profile_node* child = NULL;
 
-    SCOREP_ASSERT( source != NULL );
+    UTILS_ASSERT( source != NULL );
 
     /* If source has no child -> nothing to do */
     child = source->first_child;
@@ -331,7 +331,7 @@ scorep_profile_move_children(  scorep_profile_node* destination,
 void
 scorep_profile_remove_node( scorep_profile_node* node )
 {
-    SCOREP_ASSERT( node != NULL );
+    UTILS_ASSERT( node != NULL );
 
     scorep_profile_node* parent = node->parent;
     scorep_profile_node* before = NULL;
@@ -371,9 +371,9 @@ scorep_profile_remove_node( scorep_profile_node* node )
     /* Node is already removed */
     if ( before == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
-                             "Trying to remove a node which is not contained in the siblings "
-                             "list.\nMaybe an inconsistent profile." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
+                            "Trying to remove a node which is not contained in the siblings "
+                            "list.\nMaybe an inconsistent profile." );
         node->parent       = NULL;
         node->next_sibling = NULL;
         return;
@@ -438,7 +438,7 @@ scorep_profile_find_child( scorep_profile_node* parent,
                            scorep_profile_node* type )
 {
     /* Search matching node */
-    SCOREP_ASSERT( parent != NULL );
+    UTILS_ASSERT( parent != NULL );
     scorep_profile_node* child = parent->first_child;
     while ( ( child != NULL ) &&
             !scorep_profile_compare_nodes( child, type ) )
@@ -458,7 +458,7 @@ scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
                                   uint64_t                     timestamp )
 {
     /* Search matching node */
-    SCOREP_ASSERT( parent != NULL );
+    UTILS_ASSERT( parent != NULL );
     scorep_profile_node* child = parent->first_child;
     while ( ( child != NULL ) &&
             ( ( child->node_type != node_type ) ||

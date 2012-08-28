@@ -27,7 +27,7 @@
 
 #include <config.h>
 #include <stdio.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
@@ -135,7 +135,7 @@ scorep_compiler_get_location_data( SCOREP_Location* locationData )
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
     /* Create location struct */
     pgi_location_data* pgi_data = SCOREP_Location_AllocForMisc( locationData,
                                                                 sizeof( *pgi_data ) );
@@ -154,7 +154,7 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter finalize location!" );
 }
 
 /* Adapter initialization */
@@ -163,7 +163,7 @@ scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -193,7 +193,7 @@ scorep_compiler_finalize()
 
         scorep_compiler_initialize = 1;
         scorep_compiler_finalized  = 1;
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
     }
 }
 
@@ -208,7 +208,7 @@ scorep_compiler_finalize()
 void
 __rouinit()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI init routine" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI init routine" );
 
     if ( scorep_compiler_initialize )
     {
@@ -231,8 +231,8 @@ __rouinit()
 void
 __rouexit()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                         "Termination routine from PGI compiler instrumentation called" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                        "Termination routine from PGI compiler instrumentation called" );
 }
 
 /**
@@ -260,7 +260,7 @@ ___rouent2( struct s1* p )
     }
 
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_ASSERT( data != NULL );
+    UTILS_ASSERT( data != NULL );
     pgi_location_data* pgi_data = scorep_compiler_get_location_data( data );
     if ( pgi_data == NULL )
     {
@@ -276,7 +276,7 @@ ___rouent2( struct s1* p )
         if ( !p->isseen )
         {
             p->isseen = 1;
-            SCOREP_IO_SimplifyPath( p->file_name );
+            UTILS_IO_SimplifyPath( p->file_name );
 
             *file = scorep_compiler_get_file( p->file_name );
             if ( ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
@@ -351,7 +351,7 @@ ___rouret2( void )
     }
 
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_ASSERT( data != NULL );
+    UTILS_ASSERT( data != NULL );
     pgi_location_data* location_data = scorep_compiler_get_location_data( data );
     if ( location_data == NULL )
     {

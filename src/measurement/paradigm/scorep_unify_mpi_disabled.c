@@ -28,11 +28,12 @@
 #include <config.h>
 #include <stdlib.h>
 #include <scorep_unify.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 
 void
 SCOREP_Mpi_Unify()
 {
-    SCOREP_BUG( "SCOREP_Mpi_Unify() called in non-mpi build" );
+    UTILS_BUG( "SCOREP_Mpi_Unify() called in non-mpi build" );
 }

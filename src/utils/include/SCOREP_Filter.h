@@ -29,13 +29,13 @@
  * found, filtering is disabled.
  */
 
-#include <SCOREP_Error.h>
-
-#include <stdbool.h>
+#include <UTILS_Error.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#include <stdbool.h>
+#endif
+
+UTILS_BEGIN_C_DECLS
 
 SCOREP_Error_Code
 SCOREP_Filter_ParseFile( const char* file_name );
@@ -57,8 +57,6 @@ SCOREP_Filter_Match( const char* file_name,
                      const char* function_name,
                      bool        use_fortran );
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+UTILS_END_C_DECLS
 
 #endif // SCOREP_FILTER_H

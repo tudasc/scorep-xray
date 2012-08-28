@@ -29,7 +29,7 @@
  */
 
 
-#include <SCOREP_Error_Codes.h>
+#include <UTILS_Error.h>
 #include "SCOREP_Types.h"
 
 /**

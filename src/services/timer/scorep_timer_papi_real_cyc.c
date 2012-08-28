@@ -28,7 +28,7 @@
 
 #include <config.h>
 #include "SCOREP_Timing.h"
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 #include <assert.h>
 #include <stdbool.h>
@@ -56,7 +56,7 @@ SCOREP_Timer_Initialize()
         retval = PAPI_library_init( PAPI_VER_CURRENT );
         if ( retval != PAPI_VER_CURRENT && retval > 0 )
         {
-            SCOREP_ERROR( SCOREP_ERROR_PAPI_INIT, "" );
+            UTILS_ERROR( SCOREP_ERROR_PAPI_INIT );
             return;
         }
     }
@@ -64,7 +64,7 @@ SCOREP_Timer_Initialize()
     hwinfo = PAPI_get_hardware_info();
     if ( hwinfo == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PAPI_INIT, "Failed to access PAPI hardware info" );
+        UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Failed to access PAPI hardware info" );
     }
     clock_rate = hwinfo->mhz * 1000000;
 

@@ -42,5 +42,5 @@ scorep_cuda_handle_cupti_error( CUptiResult err,
 
     cuptiGetResultString( err, &errstr );
 
-    SCOREP_ERROR( SCOREP_WARNING, "[CUPTI] %s:%d:'%s'", file, line, errstr );
+    UTILS_WARNING( "[CUPTI] %s:%d:'%s'", file, line, errstr );
 }

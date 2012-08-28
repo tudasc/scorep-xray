@@ -87,7 +87,7 @@ AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_su
 
 
 AC_SCOREP_SVN_CONTROLLED
-AH_SCOREP_CONFIG_HEADER_CUSTOM
+AH_SCOREP_CONFIG_HEADER
 AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 
 
@@ -97,7 +97,7 @@ AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
-AC_COMMON_PACKAGE
+AC_COMMON_PACKAGE([scorep])
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
@@ -121,7 +121,7 @@ AS_IF([test -n "${scorep_otf2_bindir}"],
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])],
-      [AC_SUBST([OTF2_CPPFLAGS], ['-I$(srcdir)/../vendor/otf2/include'])
+      [AC_SUBST([OTF2_CPPFLAGS], ['-I../vendor/otf2/include -I$(srcdir)/../vendor/otf2/include'])
        AC_SUBST([OTF2_LIBS],     [-lotf2])
        AC_SUBST([OTF2_LDFLAGS],  [-L../vendor/otf2/build-backend])
        AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])])

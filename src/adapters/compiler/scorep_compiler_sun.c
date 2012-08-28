@@ -28,7 +28,7 @@
 #include <string.h>
 
 #include <SCOREP_Types.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
@@ -169,7 +169,7 @@ scorep_compiler_init_adapter()
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -177,7 +177,7 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter finalize location!" );
 }
 
 int

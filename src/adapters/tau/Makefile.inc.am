@@ -26,7 +26,7 @@ libscorep_adapter_tau_la_SOURCES  = \
 libscorep_adapter_tau_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                \
     -I$(PUBLIC_INC_DIR)           \
-    -I$(INC_DIR_UTIL)             \
+    $(UTILS_CPPFLAGS)             \
     -I$(INC_ROOT)src/measurement/include
 
 #libscorep_adapter_tau_la_LIBADD   = 

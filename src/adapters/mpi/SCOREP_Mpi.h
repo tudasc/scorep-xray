@@ -30,8 +30,8 @@
 #include "SCOREP_Mpi_Communicator.h"
 #include "SCOREP_Mpi_Reg.h"
 #include "SCOREP_Mpi_Request.h"
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>

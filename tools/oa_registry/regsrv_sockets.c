@@ -56,7 +56,7 @@ scorep_oa_sockets_server_startup_retry
     int                stat = -1;
     int                port;
     struct sockaddr_in my_addr;                 /* my address information */
-    ////SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    ////UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
 
     /**
      * create a new socket socket() returns positive interger on success
@@ -70,7 +70,7 @@ scorep_oa_sockets_server_startup_retry
         {
             if ( port + step > *init_port + retries * step )
             {
-                //SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::socket()\n" );
+                //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::socket()\n" );
             }
             stat = -1;
         }
@@ -80,7 +80,7 @@ scorep_oa_sockets_server_startup_retry
             {
                 if ( port + step > *init_port + retries * step )
                 {
-                    //SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::setsockopt()\n" );
+                    //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::setsockopt()\n" );
                 }
                 stat = -1;
             }
@@ -95,7 +95,7 @@ scorep_oa_sockets_server_startup_retry
                 {
                     if ( port + step > *init_port + retries * step )
                     {
-                        //SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::bind()\n" );
+                        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::bind()\n" );
                     }
                     stat = -1;
                 }
@@ -105,7 +105,7 @@ scorep_oa_sockets_server_startup_retry
                     {
                         if ( port + step > *init_port + retries * step )
                         {
-                            //SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::listen()\n" );
+                            //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_startup::listen()\n" );
                         }
                         stat = -1;
                     }
@@ -124,7 +124,7 @@ scorep_oa_sockets_server_startup_retry
     }
     else
     {
-        //SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d\n", __FUNCTION__, port );
+        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d\n", __FUNCTION__, port );
         *init_port = port;
         return sock;
     }
@@ -330,7 +330,7 @@ scorep_oa_sockets_server_accept_client
     int sock
 )
 {
-    int                newsock;
+    int newsock;
 
     struct sockaddr_in client_addr;       /* client's address information */
 
@@ -341,7 +341,7 @@ scorep_oa_sockets_server_accept_client
 
     if ( ( newsock = accept( sock, ( struct sockaddr* )&client_addr, &sin_size ) ) < 0 )
     {
-        //SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_accept_client::accept() error" );
+        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "socket_server_accept_client::accept() error" );
         return -1;
     }
 

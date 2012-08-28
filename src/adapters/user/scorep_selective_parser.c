@@ -32,11 +32,11 @@
 //#include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_CStr.h>
-#include <SCOREP_Debug.h>
-#include <SCOREP_IO.h>
+#include <UTILS_CStr.h>
+#include <UTILS_Debug.h>
+#include <UTILS_IO.h>
 #include <scorep_selective_region.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 /* **************************************************************************************
    Variable definitions
@@ -123,7 +123,7 @@ scorep_selective_compare_regions( const void* value,
 static SCOREP_Error_Code
 scorep_selective_init_region_list()
 {
-    scorep_selected_regions = SCOREP_Vector_Create( 4 );
+    scorep_selected_regions = SCOREP_Vector_CreateSize( 4 );
     if ( scorep_selected_regions == NULL )
     {
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
@@ -180,19 +180,19 @@ scorep_selective_insert_new_region( const char* region,
         ( scorep_selected_region* )malloc( sizeof( scorep_selected_region ) );
     if ( new_region == NULL )
     {
-        SCOREP_ERROR_POSIX( "Failed to allocate memory for new entry" );
+        UTILS_ERROR_POSIX( "Failed to allocate memory for new entry" );
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
     new_region->region_name = NULL;
     new_region->intervals   = NULL;
 
-    new_region->region_name = SCOREP_CStr_dup( region );
-    new_region->intervals   = SCOREP_Vector_Create( 1 );
+    new_region->region_name = UTILS_CStr_dup( region );
+    new_region->intervals   = SCOREP_Vector_CreateSize( 1 );
 
     if ( new_region->region_name == NULL || new_region->intervals == NULL )
     {
-        SCOREP_ERROR_POSIX( "Failed to allocate memory for new entry" );
+        UTILS_ERROR_POSIX( "Failed to allocate memory for new entry" );
         free( new_region->region_name );
         free( new_region->intervals );
         free( new_region );
@@ -218,8 +218,8 @@ scorep_selective_add( const char* name,
                       int         first,
                       int         last )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                         "Add traced region %s %d:%d\n", name, first, last );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                        "Add traced region %s %d:%d\n", name, first, last );
     assert( scorep_selected_regions != NULL );
 
     size_t                  index      = 0;
@@ -276,7 +276,7 @@ scorep_selective_parse_file( FILE* file )
     /* Read file line by line */
     while ( !feof( file ) )
     {
-        err = SCOREP_IO_GetLine( &buffer, &buffer_size, file );
+        err = UTILS_IO_GetLine( &buffer, &buffer_size, file );
         if ( ( err != SCOREP_SUCCESS ) && ( err != SCOREP_ERROR_END_OF_BUFFER ) )
         {
             goto cleanup;
@@ -310,10 +310,10 @@ scorep_selective_parse_file( FILE* file )
                 pos = strspn( interval, "0123456789:" );
                 if ( pos < strlen( interval ) )
                 {
-                    SCOREP_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
-                                  "Invalid interval in selective tracing configuration "
-                                  "file for region %s: '%s'. Ignore interval.",
-                                  region_name, interval );
+                    UTILS_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
+                                 "Invalid interval in selective tracing configuration "
+                                 "file for region %s: '%s'. Ignore interval.",
+                                 region_name, interval );
                 }
                 else
                 {
@@ -378,23 +378,23 @@ scorep_selective_init()
 {
     FILE* config_file = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                         "Initialize selective tracing" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                        "Initialize selective tracing" );
 
     /* Initialize data structures */
     if ( scorep_selective_init_region_list() != SCOREP_SUCCESS )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to create traced region list" );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "Failed to create traced region list" );
         return;
     }
 
     /* Check whether a configuraion file name was specified */
     if ( scorep_selective_file_name == NULL || *scorep_selective_file_name == '\0' )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                             "No configuration file for selective tracing specified.\n"
-                             "Disable selective tracing." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                            "No configuration file for selective tracing specified.\n"
+                            "Disable selective tracing." );
         return;
     }
 
@@ -402,23 +402,23 @@ scorep_selective_init()
     config_file = fopen( scorep_selective_file_name, "r" );
     if ( config_file == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                             "Unable to open configuration file for selective tracing.\n"
-                             "Disable selective tracing." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                            "Unable to open configuration file for selective tracing.\n"
+                            "Disable selective tracing." );
         return;
     }
 
     /* Parse configuration file */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                         "Reading selective tracing file %s.",
-                         scorep_selective_file_name );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                        "Reading selective tracing file %s.",
+                        scorep_selective_file_name );
 
     SCOREP_Error_Code err = scorep_selective_parse_file( config_file );
     if ( err != SCOREP_SUCCESS )
     {
-        SCOREP_ERROR( err,
-                      "Unable to read configration file for selective tracing.\n"
-                      "Disable selective tracing." );
+        UTILS_ERROR( err,
+                     "Unable to read configration file for selective tracing.\n"
+                     "Disable selective tracing." );
         fclose( config_file );
         return;
     }
@@ -436,8 +436,8 @@ scorep_selective_init()
 SCOREP_Error_Code
 scorep_selective_register()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                         "Register config variables for selective tracing" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
+                        "Register config variables for selective tracing" );
     return SCOREP_ConfigRegister( "selective", scorep_selective_configs );
 }
 

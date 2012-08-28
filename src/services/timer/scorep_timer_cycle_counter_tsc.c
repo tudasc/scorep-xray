@@ -29,7 +29,7 @@
 #include <config.h>
 #include "SCOREP_Timing.h"
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -85,7 +85,7 @@ scorep_get_frequency_from_proc_cpuinfo()
     FILE* cpuinfofp;
     if ( ( cpuinfofp = fopen( SCOREP_PROCDIR "cpuinfo", "r" ) ) == NULL )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         _Exit( EXIT_FAILURE );
     }
 

@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Timing.h>
 #include <scorep_openmp.h>
 #include <tracing/SCOREP_Tracing_Events.h>
@@ -67,13 +67,13 @@ scorep_enter_region( uint64_t            timestamp,
                      uint64_t*           metricValues,
                      SCOREP_Location*    location )
 {
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
+                        scorep_region_to_string( stringBuffer,
+                                                 sizeof( stringBuffer ),
+                                                 "%x", regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -118,16 +118,16 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
                              uint64_t            timestamp,
                              SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_BUG_ON( !location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
-                   "SCOREP_Location_EnterRegion() must not be used for CPU thread locations." );
+    UTILS_BUG_ON( !location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
+                  "SCOREP_Location_EnterRegion() must not be used for CPU thread locations." );
 
     if ( !location )
     {
         location = SCOREP_Location_GetCurrentCPULocation();
     }
 
-    SCOREP_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
-                   "Invalid event order." );
+    UTILS_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
+                  "Invalid event order." );
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
@@ -144,13 +144,13 @@ scorep_exit_region( uint64_t            timestamp,
                     uint64_t*           metricValues,
                     SCOREP_Location*    location )
 {
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
+                        scorep_region_to_string( stringBuffer,
+                                                 sizeof( stringBuffer ),
+                                                 "%x", regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -192,16 +192,16 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
                             uint64_t            timestamp,
                             SCOREP_RegionHandle regionHandle )
 {
-    SCOREP_BUG_ON( !location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
-                   "SCOREP_Location_ExitRegion() must not be used for CPU thread locations." );
+    UTILS_BUG_ON( !location && SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD,
+                  "SCOREP_Location_ExitRegion() must not be used for CPU thread locations." );
 
     if ( !location )
     {
         location = SCOREP_Location_GetCurrentCPULocation();
     }
 
-    SCOREP_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
-                   "Invalid event order." );
+    UTILS_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
+                  "Invalid event order." );
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
@@ -218,13 +218,13 @@ SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
+                        scorep_region_to_string( stringBuffer,
+                                                 sizeof( stringBuffer ),
+                                                 "%x", regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -242,13 +242,13 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
     SCOREP_Location* location       = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         leavetimestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
+                        scorep_region_to_string( stringBuffer,
+                                                 sizeof( stringBuffer ),
+                                                 "%x", regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -266,22 +266,22 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
                 uint32_t                          tag,
                 uint64_t                          bytesSent )
 {
-    SCOREP_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiSend" );
+    UTILS_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiSend" );
 
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%d Comm:%s Tag:%u Bytes:%llu",
-                         destinationRank,
-                         scorep_comm_to_string( stringBuffer,
-                                                sizeof( stringBuffer ),
-                                                "%x", communicatorHandle ),
-                         tag,
-                         ( unsigned long long )bytesSent );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%d Comm:%s Tag:%u Bytes:%llu",
+                        destinationRank,
+                        scorep_comm_to_string( stringBuffer,
+                                               sizeof( stringBuffer ),
+                                               "%x", communicatorHandle ),
+                        tag,
+                        ( unsigned long long )bytesSent );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -313,22 +313,22 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
                 uint32_t                          tag,
                 uint64_t                          bytesReceived )
 {
-    SCOREP_BUG_ON( sourceRank < 0, "Invalid rank passed to SCOREP_MpiRecv" );
+    UTILS_BUG_ON( sourceRank < 0, "Invalid rank passed to SCOREP_MpiRecv" );
 
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Src:%u Comm:%s Tag:%u Bytes:%llu",
-                         sourceRank,
-                         scorep_comm_to_string( stringBuffer,
-                                                sizeof( stringBuffer ),
-                                                "%x", communicatorHandle ),
-                         tag,
-                         ( unsigned long long )bytesReceived );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Src:%u Comm:%s Tag:%u Bytes:%llu",
+                        sourceRank,
+                        scorep_comm_to_string( stringBuffer,
+                                               sizeof( stringBuffer ),
+                                               "%x", communicatorHandle ),
+                        tag,
+                        ( unsigned long long )bytesReceived );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -360,7 +360,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     scorep_enter_region( timestamp, regionHandle, metric_values, location );
 
@@ -389,15 +389,15 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
                          uint64_t                          bytesSent,
                          uint64_t                          bytesReceived )
 {
-    SCOREP_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
-                   "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
+    UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
+                  "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
 
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
 
     if ( scorep_tracing_consume_event() )
@@ -430,7 +430,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -451,7 +451,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -472,7 +472,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -493,7 +493,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -515,13 +515,13 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
                   uint64_t                          bytesSent,
                   SCOREP_MpiRequestId               requestId )
 {
-    SCOREP_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiIsend\n" );
+    UTILS_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiIsend\n" );
 
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -551,13 +551,13 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
                  uint64_t                          bytesReceived,
                  SCOREP_MpiRequestId               requestId )
 {
-    SCOREP_BUG_ON( sourceRank < 0,  "Invalid rank passed to SCOREP_MpiIrecv\n" );
+    UTILS_BUG_ON( sourceRank < 0,  "Invalid rank passed to SCOREP_MpiIrecv\n" );
 
 
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -589,10 +589,10 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_Thread_OnThreadFork( nRequestedThreads );
 
@@ -617,10 +617,10 @@ SCOREP_OmpJoin( void )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_Thread_OnThreadJoin();
 
@@ -628,7 +628,7 @@ SCOREP_OmpJoin( void )
     {
         SCOREP_Tracing_OmpJoin( location,
                                 timestamp );
-        SCOREP_DEBUG_PRINTF( 0, "Only partially implemented." );
+        UTILS_DEBUG_PRINTF( 0, "Only partially implemented." );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -662,7 +662,7 @@ SCOREP_OmpAcquireLock( uint32_t lockId,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );            // use the timestamp from the associated enter
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -689,7 +689,7 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );            // use the timestamp from the associated enter
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -817,19 +817,19 @@ void
 SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_DEBUG_ONLY( char stringBuffer[ 16 ];
-                       )
+    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
+                      )
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                         scorep_region_to_string( stringBuffer,
-                                                  sizeof( stringBuffer ),
-                                                  "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
+                        scorep_region_to_string( stringBuffer,
+                                                 sizeof( stringBuffer ),
+                                                 "%x", regionHandle ) );
 
     /* DL: My proposal would be to call scorep_exit_region until we have
        a special event for exits on exceptions. However, for the profiling part
        no special event is planned, but I do not know about OTF2.
      */
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    UTILS_NOT_YET_IMPLEMENTED();
 
     if ( scorep_tracing_consume_event() )
     {
@@ -852,12 +852,12 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_SamplingSet_Definition* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
-                   "User sampling set with more than one metric" );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -893,12 +893,12 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_SamplingSet_Definition* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
-                   "User sampling set with more than one metric" );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -927,12 +927,12 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_SamplingSet_Definition* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    SCOREP_BUG_ON( sampling_set->number_of_metrics != 1,
-                   "User sampling set with more than one metric" );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -965,9 +965,9 @@ void
 SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_DEBUG_NOT_YET_IMPLEMENTED();
+    UTILS_NOT_YET_IMPLEMENTED();
 
     if ( scorep_tracing_consume_event() )
     {
@@ -990,7 +990,7 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -1019,7 +1019,7 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -1049,7 +1049,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_StringHandle string_handle = SCOREP_DefineString( value );
 

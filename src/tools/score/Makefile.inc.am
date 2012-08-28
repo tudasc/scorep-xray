@@ -17,7 +17,7 @@ scorep_score_SOURCES = \
 
 scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
-    -I$(INC_DIR_UTIL) \
+    $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/tools/score \
     -I$(INC_ROOT)src/utils/include \
     -I$(INC_ROOT)src/utils/filtering
@@ -25,6 +25,6 @@ scorep_score_CPPFLAGS = \
 scorep_score_LDFLAGS = -L$(CUBE_FRONTEND_LIB_PATH)
 scorep_score_LDADD = $(CUBE_FRONTEND_LIBS) \
     libscorep_filter.la \
-    libscorep_utilities.la
+    libutils.la
 
 endif

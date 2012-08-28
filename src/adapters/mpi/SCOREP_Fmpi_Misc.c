@@ -45,7 +45,7 @@
 #include <config.h>
 #include "SCOREP_Fmpi.h"
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 /* uppercase defines */
 /** @def MPI_Address_U
@@ -298,7 +298,7 @@ FSUB( MPI_Address )( void* location, int* address, int* ierr )
     *address = ( int )c_address;
     if ( *address != c_address )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Address\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Address\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif
@@ -662,7 +662,7 @@ FSUB( MPI_Address )( void* location, MPI_Fint* address, MPI_Fint* ierr )
     *address = ( MPI_Fint )c_address;
     if ( *address != c_address )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Address\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Address\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif

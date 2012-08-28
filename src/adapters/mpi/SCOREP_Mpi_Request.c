@@ -500,7 +500,7 @@ scorep_mpi_request_free( scorep_mpi_request* req )
     /* delete request by copying last request in place of req */
     if ( !hash_entry->lastreq )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MPI_NO_LAST_REQUEST, "" );
+        UTILS_ERROR( SCOREP_ERROR_MPI_NO_LAST_REQUEST );
     }
     *req                         = *( hash_entry->lastreq );
     hash_entry->lastreq->flags   = SCOREP_MPI_REQUEST_NONE;

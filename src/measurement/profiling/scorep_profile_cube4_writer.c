@@ -28,8 +28,8 @@
 #include <inttypes.h>
 
 #include <SCOREP_Memory.h>
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Bitstring.h>
@@ -362,7 +362,7 @@ set_bitstring_for_metric(
 
     /* Create empty bitstring */
     uint8_t* bits = malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
-    SCOREP_ASSERT( bits );
+    UTILS_ASSERT( bits );
     SCOREP_Bitstring_Clear( bits, write_set->callpath_number );
 
     /* Iterate over all unified callpathes */
@@ -396,7 +396,7 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* write_set )
 {
     /* Create empty bitstring */
     uint8_t* bits = malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
-    SCOREP_ASSERT( bits );
+    UTILS_ASSERT( bits );
     SCOREP_Bitstring_Clear( bits, write_set->callpath_number );
 
     SCOREP_Mpi_Allreduce( bits, write_set->bit_vector,
@@ -653,9 +653,9 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     write_set->map = scorep_cube4_create_definitions_map();
     if ( write_set->map == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                      "Failed to allocate memory for definition mapping\n"
-                      "Failed to write Cube 4 profile" );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "Failed to allocate memory for definition mapping\n"
+                     "Failed to write Cube 4 profile" );
 
         delete_cube_writing_data( write_set );
         return false;
@@ -674,8 +674,8 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
                                     + 1 );                            /* trailing '\0' */
         if ( filename == NULL )
         {
-            SCOREP_ERROR_POSIX( "Failed to allocate memory for filename.\n"
-                                "Failed to write Cube 4 profile" );
+            UTILS_ERROR_POSIX( "Failed to allocate memory for filename.\n"
+                               "Failed to write Cube 4 profile" );
             delete_cube_writing_data( write_set );
             return false;
         }
@@ -696,7 +696,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     /* Create bit_vector with all bits set. Used for dense metrics */
     write_set->bit_vector =
         ( uint8_t* )malloc( SCOREP_Bitstring_GetByteSize( write_set->callpath_number ) );
-    SCOREP_ASSERT( write_set->bit_vector );
+    UTILS_ASSERT( write_set->bit_vector );
     SCOREP_Bitstring_SetAll( write_set->bit_vector, write_set->callpath_number );
 
     /* Check whether tasks has been used somewhere */
@@ -751,12 +751,12 @@ scorep_profile_write_cube4()
     /* Data set for Cube write functions */
     scorep_cube_writing_data write_set;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
-                         "Writing profile in Cube 4 format ..." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
+                        "Writing profile in Cube 4 format ..." );
 
     /* -------------------------------- Initialization, header and definitions */
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
 
     if ( !init_cube_writing_data( &write_set ) )
     {
@@ -772,7 +772,7 @@ scorep_profile_write_cube4()
         cube_def_mirror( write_set.my_cube, "file://" DOCDIR "/profile/" );
 
         /* Write definitions to cube */
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing definitions" );
         scorep_write_definitions_to_cube4( write_set.my_cube,
                                            write_set.map,
                                            write_set.ranks_number,
@@ -782,13 +782,13 @@ scorep_profile_write_cube4()
 
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
     add_mapping_to_cube_writing_data( &write_set );
 
     /* -------------------------------- dense metrics */
 
     /* Write implicit time */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
 
     write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
                         &get_sum_time_value, NULL );
@@ -801,12 +801,12 @@ scorep_profile_write_cube4()
                         &get_min_time_value, NULL );
 
     /* Write visits */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing visits" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing visits" );
     write_cube_uint64( &write_set, scorep_get_visits_handle(),
                        &get_visits_value, NULL );
 
     /* Write additional dense metrics (e.g. hardware counters) */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
     for ( uint8_t i = 0; i  < scorep_profile.num_of_dense_metrics; i++ )
     {
         cube_metric* metric = NULL; /* Only used on rank 0 */
@@ -835,7 +835,7 @@ scorep_profile_write_cube4()
 
 
     /* Write sparse metrics (e.g. user metrics) */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing sparse metrics" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing sparse metrics" );
     if ( write_set.metric_map != NULL )
     {
         cube_metric* metric = NULL; /* Only used on rank 0 */
@@ -888,17 +888,17 @@ scorep_profile_write_cube4()
 
                     break;
                 default:
-                    SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                                  "Metric %s has unknown value type %d",
-                                  SCOREP_Metric_GetName( write_set.metric_map[ i ] ),
-                                  SCOREP_Metric_GetValueType( write_set.metric_map[ i ] ) );
+                    UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                                 "Metric %s has unknown value type %d",
+                                 SCOREP_Metric_GetName( write_set.metric_map[ i ] ),
+                                 SCOREP_Metric_GetValueType( write_set.metric_map[ i ] ) );
             }
         }
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile writing done" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile writing done" );
 
     /* Clean up */
     //cleanup:
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Clean up" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Clean up" );
     delete_cube_writing_data( &write_set );
 }

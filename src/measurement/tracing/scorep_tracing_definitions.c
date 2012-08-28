@@ -38,7 +38,10 @@
 #include <otf2/otf2.h>
 
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+
+
+#include <UTILS_Debug.h>
 
 
 #include <scorep/SCOREP_PublicTypes.h>
@@ -51,7 +54,7 @@
 #include <scorep_definition_structs.h>
 #include <scorep_definition_macros.h>
 #include <SCOREP_Bitstring.h>
-#include <SCOREP_Error_Codes.h>
+#include <UTILS_Error.h>
 
 #include "scorep_tracing_types.h"
 
@@ -61,8 +64,8 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 
 static void
-scorep_handle_definition_writing_error( SCOREP_Error_Code status,
-                                        const char*       definitionType )
+scorep_handle_definition_writing_error( OTF2_Error_Code status,
+                                        const char*     definitionType )
 {
     assert( false ); // implement me
 }
@@ -489,7 +492,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                     break;
 
                 default:
-                    SCOREP_BUG( "Invalid scoping type." );
+                    UTILS_BUG( "Invalid metric scope" );
             }
 
             status = defMetricInstance(

@@ -27,7 +27,7 @@
 %{
 #include <config.h>
 #include "scorep_oa_scanner.h"
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Error_Codes.h>
 %}
 
@@ -182,12 +182,12 @@ scorep_oa_mri_parse
     char* buffer
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     SCOREP_Error_Code return_status = SCOREP_SUCCESS;
 
     YY_BUFFER_STATE my_string_buffer;
 
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "parse_mri_cmd: %s", buffer );
     my_string_buffer = yy_scan_string( buffer );
     if ( yyparse() != 0 )
     {

@@ -27,7 +27,7 @@
 #include "scorep_runtime_management.h"
 
 #include <SCOREP_Timing.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 #include <scorep_openmp.h>
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"
@@ -167,8 +167,8 @@ scorep_create_directory( void )
             strcat( failed_experiment_dir_name, scorep_format_time( NULL ) );
             if ( rename( scorep_experiment_dir_name, failed_experiment_dir_name ) != 0 )
             {
-                SCOREP_ERROR_POSIX( "Can't rename experiment directory \"%s\" to \"%s\".",
-                                    scorep_experiment_dir_name, failed_experiment_dir_name );
+                UTILS_ERROR_POSIX( "Can't rename experiment directory \"%s\" to \"%s\".",
+                                   scorep_experiment_dir_name, failed_experiment_dir_name );
                 _Exit( EXIT_FAILURE );
             }
         }
@@ -180,9 +180,9 @@ scorep_create_directory( void )
              */
             if ( !SCOREP_Env_OverwriteExperimentDirectory() )
             {
-                SCOREP_ERROR( SCOREP_ERROR_EEXIST,
-                              "Experiment directory \"%s\" exists and overwriting is disabled.",
-                              scorep_experiment_dir_name );
+                UTILS_ERROR( SCOREP_ERROR_EEXIST,
+                             "Experiment directory \"%s\" exists and overwriting is disabled.",
+                             scorep_experiment_dir_name );
                 _Exit( EXIT_FAILURE );
             }
 
@@ -198,8 +198,8 @@ scorep_create_directory( void )
             strcat( old_experiment_dir_name_buf, local_time_buf );
             if ( rename( scorep_experiment_dir_name, old_experiment_dir_name_buf ) != 0 )
             {
-                SCOREP_ERROR_POSIX( "Can't rename old experiment directory \"%s\" to \"%s\".",
-                                    scorep_experiment_dir_name, old_experiment_dir_name_buf );
+                UTILS_ERROR_POSIX( "Can't rename old experiment directory \"%s\" to \"%s\".",
+                                   scorep_experiment_dir_name, old_experiment_dir_name_buf );
                 _Exit( EXIT_FAILURE );
             }
             if ( SCOREP_Env_RunVerbose() )
@@ -212,8 +212,8 @@ scorep_create_directory( void )
 
     if ( mkdir( scorep_experiment_dir_name, mode ) == -1 )
     {
-        SCOREP_ERROR_POSIX( "Can't create experiment directory \"%s\".",
-                            scorep_experiment_dir_name );
+        UTILS_ERROR_POSIX( "Can't create experiment directory \"%s\".",
+                           scorep_experiment_dir_name );
         _Exit( EXIT_FAILURE );
     }
 
@@ -251,8 +251,8 @@ SCOREP_RenameExperimentDir()
     strcat( new_experiment_dir_name, scorep_format_time( NULL ) );
     if ( rename( scorep_experiment_dir_name, new_experiment_dir_name ) != 0 )
     {
-        SCOREP_ERROR_POSIX( "Can't rename experiment directory from \"%s\" to \"%s\".",
-                            scorep_experiment_dir_name, new_experiment_dir_name );
+        UTILS_ERROR_POSIX( "Can't rename experiment directory from \"%s\" to \"%s\".",
+                           scorep_experiment_dir_name, new_experiment_dir_name );
         _Exit( EXIT_FAILURE );
     }
 

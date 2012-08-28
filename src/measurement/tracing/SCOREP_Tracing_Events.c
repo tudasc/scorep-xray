@@ -31,8 +31,10 @@
 #include <stdio.h>
 
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
+
+
+#include <UTILS_Debug.h>
 
 
 #include <otf2/otf2.h>
@@ -545,8 +547,8 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
     /* Search for the region id in the rewind stack, and print a warning when it is not found and leave function. */
     if ( scorep_rewind_stack_find( id ) == false )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_WARNING,
-                             "ID of rewind region is not in rewind stack, maybe there was a buffer flush or a programming error!" );
+        UTILS_WARNING( "ID of rewind region is not in rewind stack, maybe "
+                       "there was a buffer flush or a programming error!" );
         return;
     }
 

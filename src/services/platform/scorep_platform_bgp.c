@@ -28,7 +28,7 @@
 #include <config.h>
 
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 
 #include <SCOREP_Platform.h>
@@ -47,7 +47,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 {
     if ( !root )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
     *root = NULL;
     SCOREP_Platform_SystemTreePathElement** tail = root;
@@ -114,6 +114,6 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 fail:
     SCOREP_Platform_FreePath( *root );
 
-    return SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                         "Failed to build system tree path" );
+    return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                        "Failed to build system tree path" );
 }

@@ -57,7 +57,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     omp_lock_t** omp_lock = ( omp_lock_t** )scorepMutex;
@@ -65,7 +65,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
     *omp_lock = malloc( sizeof( **omp_lock ) );
     if ( !omp_lock )
     {
-        return SCOREP_ERROR_POSIX( "Can't allocate lock object" );
+        return UTILS_ERROR_POSIX( "Can't allocate lock object" );
     }
 
     /* this call does not give us a success status */
@@ -91,7 +91,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     omp_lock_t** omp_lock = ( omp_lock_t** )scorepMutex;
@@ -144,7 +144,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     omp_lock_t* omp_lock = ( omp_lock_t* )scorepMutex;
@@ -180,7 +180,7 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     omp_lock_t* omp_lock = ( omp_lock_t* )scorepMutex;

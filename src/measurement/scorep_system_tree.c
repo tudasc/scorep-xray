@@ -25,7 +25,7 @@
  */
 
 #include <config.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Platform.h>
 #include <scorep_definitions.h>
 #include <scorep_mpi.h>
@@ -43,7 +43,7 @@ SCOREP_DefineSystemTree()
     SCOREP_Error_Code                      err = SCOREP_Platform_GetPathInSystemTree( &path );
     if ( err != SCOREP_SUCCESS )
     {
-        SCOREP_ERROR( err, "Failed to obtain system tree information." );
+        UTILS_ERROR( err, "Failed to obtain system tree information." );
         return;
     }
 

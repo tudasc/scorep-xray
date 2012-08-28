@@ -28,7 +28,7 @@
 
 #include <string>
 #include <scorep_instrumenter_install_data.hpp>
-#include <SCOREP_Error_Codes.h>
+#include <UTILS_Error.h>
 
 /* ****************************************************************************
    class SCOREP_Instrumenter_CmdLine

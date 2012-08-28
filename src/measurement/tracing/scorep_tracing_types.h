@@ -25,7 +25,6 @@
 #ifndef SCOREP_TRACING_INTERNAL_TYPES_H
 #define SCOREP_TRACING_INTERNAL_TYPES_H
 
-#include <string.h>
 
 static inline OTF2_LocationType
 scorep_tracing_location_type_to_otf2( SCOREP_LocationType scorepType )
@@ -42,8 +41,10 @@ scorep_tracing_location_type_to_otf2( SCOREP_LocationType scorepType )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid location type" );
+            UTILS_BUG( "Invalid location type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -60,8 +61,10 @@ scorep_tracing_location_group_type_to_otf2( SCOREP_LocationGroupType scorepType 
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid location group type" );
+            UTILS_BUG( "Invalid location group type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 #if 0
@@ -113,8 +116,10 @@ scorep_tracing_region_type_to_otf2( SCOREP_RegionType scorepType )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid region type" );
+            UTILS_BUG( "Invalid region type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 #endif
@@ -138,8 +143,10 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid group type" );
+            UTILS_BUG( "Invalid group type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -160,8 +167,10 @@ scorep_tracing_metric_source_type_to_otf2( SCOREP_MetricSourceType sourceType )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid metric source type" );
+            UTILS_BUG( "Invalid metric source type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -189,8 +198,10 @@ scorep_tracing_metric_mode_to_otf2( SCOREP_MetricMode mode )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid metric mode" );
+            UTILS_BUG( "Invalid metric mode" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -209,8 +220,10 @@ scorep_tracing_metric_value_type_to_otf2( SCOREP_MetricValueType valueType )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid metric value type" );
+            UTILS_BUG( "Invalid metric value type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -228,8 +241,10 @@ scorep_tracing_metric_base_to_otf2( SCOREP_MetricBase base )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid metric base" );
+            UTILS_BUG( "Invalid metric base" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -248,8 +263,10 @@ scorep_tracing_metric_occurrence_to_otf2( SCOREP_MetricOccurrence occurrence )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid metric occurrence" );
+            UTILS_BUG( "Invalid metric occurrence" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -269,8 +286,10 @@ scorep_tracing_metric_scope_type_to_otf2( SCOREP_MetricScope scope )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid metric scope" );
+            UTILS_BUG( "Invalid metric scope" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -289,8 +308,10 @@ scorep_tracing_parameter_type_to_otf2( SCOREP_ParameterType scorepType )
 
 #undef case_return
         default:
-            SCOREP_BUG( "Invalid parameter type" );
+            UTILS_BUG( "Invalid parameter type" );
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -322,11 +343,12 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
         case_return( EXSCAN );
 
         default:
-            SCOREP_BUG( "Invalid collective type" );
-            return 0;
+            UTILS_BUG( "Invalid collective type" );
 
 #undef case_return
     }
+
+    return OTF2_UNDEFINED_TYPE;
 }
 
 
@@ -343,7 +365,7 @@ scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
         case_return( OPENMP_EVENT_COMPLETE );
 
         default:
-            SCOREP_BUG( "Invalid property enum value" );
+            UTILS_BUG( "Invalid property enum value" );
             return 0;
 
 #undef case_return

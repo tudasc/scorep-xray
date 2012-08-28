@@ -17,7 +17,7 @@
 noinst_LTLIBRARIES += libscorep_platform.la
 libscorep_platform_la_SOURCES = $(SRC_ROOT)src/services/include/SCOREP_Platform.h
 libscorep_platform_la_CPPFLAGS = $(AM_CPPFLAGS) \
-                                 -I$(INC_DIR_UTIL) \
+                                 $(UTILS_CPPFLAGS) \
                                  -I$(INC_ROOT)src/services/include
 
 libscorep_platform_la_SOURCES += \

@@ -35,8 +35,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include <SCOREP_CStr.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_CStr.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
 
@@ -147,11 +147,11 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 
     if ( new_rule == NULL )
     {
-        SCOREP_ERROR_POSIX( "Failed to allocate memory for filter rule." );
+        UTILS_ERROR_POSIX( "Failed to allocate memory for filter rule." );
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
-    new_rule->pattern    = SCOREP_CStr_dup( rule );
+    new_rule->pattern    = UTILS_CStr_dup( rule );
     new_rule->pattern2   = NULL;
     new_rule->is_exclude = is_exclude;
     new_rule->next       = NULL;
@@ -184,11 +184,11 @@ scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fort
 
     if ( new_rule == NULL )
     {
-        SCOREP_ERROR_POSIX( "Failed to allocate memory for filter rule." );
+        UTILS_ERROR_POSIX( "Failed to allocate memory for filter rule." );
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
-    new_rule->pattern = SCOREP_CStr_dup( rule );
+    new_rule->pattern = UTILS_CStr_dup( rule );
     if ( is_fortran )
     {
         new_rule->pattern2 = scorep_filter_mangle_pattern( new_rule->pattern );
@@ -258,10 +258,10 @@ scorep_filter_match_file( const char*           with_path,
     }
     else if ( error_value != FNM_NOMATCH )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                      "Error in pattern matching during evaluation of filter rules"
-                      "with file '%s' and pattern '%s'. Disable filtering",
-                      with_path, rule->pattern );
+        UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                     "Error in pattern matching during evaluation of filter rules"
+                     "with file '%s' and pattern '%s'. Disable filtering",
+                     with_path, rule->pattern );
         SCOREP_Filter_Disable();
         *error_code = SCOREP_ERROR_PROCESSED_WITH_FAULTS;
         return false;
@@ -292,10 +292,10 @@ scorep_filter_match_function( const char*           function_name,
     }
     else if ( error_value != FNM_NOMATCH )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                      "Error in pattern matching during evaluation of filter rules"
-                      "with file '%s' and pattern '%s'. Disable filtering",
-                      function_name, rule->pattern );
+        UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                     "Error in pattern matching during evaluation of filter rules"
+                     "with file '%s' and pattern '%s'. Disable filtering",
+                     function_name, rule->pattern );
         SCOREP_Filter_Disable();
         return false;
     }
@@ -350,8 +350,8 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
     /* If file is excluded, function can no longer be included. Thus, return. */
     if ( excluded )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
-                             "Filtered file %s\n", file_name );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
+                            "Filtered file %s\n", file_name );
         return true;
     }
 
@@ -394,8 +394,8 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
 
     if ( excluded )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
-                             "Filtered function %s\n", function_name );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
+                            "Filtered function %s\n", function_name );
     }
 
     return excluded;

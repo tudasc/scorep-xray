@@ -84,7 +84,7 @@ scorep_oa_mri_receive_and_process_requests
 {
     int  length, i;
     char buffer[ 2000 ];
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     buffer[ 0 ] = 0;
     memset( buffer, '\0', 2000 );
 
@@ -102,15 +102,15 @@ scorep_oa_mri_receive_and_process_requests
         {
             buffer[ i ] = toupper( buffer[ i ] );
         }
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Received from socket: %s", buffer );
 
         if ( scorep_oa_mri_parse( buffer ) != SCOREP_SUCCESS )
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "ERROR in parsing MRI command" );
         }
         if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
         {
-            SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Terminating application!" );
+            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Terminating application!" );
             SCOREP_FinalizeMeasurement();
             _Exit( EXIT_SUCCESS );
         }
@@ -118,7 +118,7 @@ scorep_oa_mri_receive_and_process_requests
 #ifdef WITH_MPI
     PMPI_Barrier( MPI_COMM_WORLD );
 #endif
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __FUNCTION__ );
 }
 
 scorep_oa_mri_app_control_type
@@ -126,7 +126,7 @@ scorep_oa_mri_get_appl_control
 (
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     return appl_control;
 }
 
@@ -136,9 +136,9 @@ scorep_oa_mri_set_appl_control
     scorep_oa_mri_app_control_type command
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
     appl_control = command;
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Execution control is SET TO: %d", ( int )command );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Execution control is SET TO: %d", ( int )command );
 }
 
 void
@@ -148,7 +148,7 @@ scorep_oa_mri_set_phase
 )
 {
     phase_handle = handle;
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Phase set to region (handle = %ld )\n", phase_handle );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Phase set to region (handle = %ld )\n", phase_handle );
 }
 
 void
@@ -156,7 +156,7 @@ scorep_oa_mri_noop
 (
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 }
 
 void
@@ -165,7 +165,7 @@ scorep_oa_mri_set_mpiprofiling
     int value
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 #ifdef WITH_MPI
     if ( value )
     {
@@ -213,7 +213,7 @@ scorep_oa_mri_return_summary_data
     int connection
 )
 {
-    SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
 
     /** Initialize OA Consumer interface and index Profile data */
     SCOREP_OAConsumer_Initialize( phase_handle );

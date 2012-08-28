@@ -35,7 +35,7 @@ self_contained_public_header_SCOREP_User_Variables_cpp \
 self_contained_public_header_SCOREP_Tau_c              \
 self_contained_public_header_SCOREP_Tau_cpp
 
-self_contained_public_headers_cppflags = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) -I$(INC_DIR_UTIL)
+self_contained_public_headers_cppflags = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) $(UTILS_CPPFLAGS)
 
 
 self_contained_public_header_pomp_lib_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_pomp_lib.c

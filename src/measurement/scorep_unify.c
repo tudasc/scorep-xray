@@ -38,7 +38,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */

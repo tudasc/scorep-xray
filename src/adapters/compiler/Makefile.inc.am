@@ -18,9 +18,8 @@
 # Common settings
 
 libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
-    -I$(INC_DIR_UTIL)                                        \
-    -I$(INC_DIR_UTIL_INTERNAL)                               \
     -I$(PUBLIC_INC_DIR)                                      \
+    $(UTILS_CPPFLAGS)                                        \
     -I$(INC_ROOT)src/adapters/compiler                       \
     -I$(INC_ROOT)src/adapters/include                        \
     -I$(INC_ROOT)src/utils/include                           \
@@ -149,10 +148,10 @@ endif
 
 noinst_LTLIBRARIES += libscorep_adapter_compiler_all.la
 
-libscorep_adapter_compiler_all_la_CPPFLAGS = $(AM_CPPFLAGS) \
-    -I$(INC_DIR_UTIL)                                        \
-    -I$(INC_DIR_UTIL_INTERNAL)                               \
+libscorep_adapter_compiler_all_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                                           \
     -I$(PUBLIC_INC_DIR)                                      \
+    $(UTILS_CPPFLAGS)                                        \
     -I$(INC_ROOT)src/adapters/compiler                       \
     -I$(INC_ROOT)src/adapters/include                        \
     -I$(INC_ROOT)src/utils/include                           \

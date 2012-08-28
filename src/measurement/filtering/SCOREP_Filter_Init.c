@@ -27,7 +27,7 @@
 #include <config.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Filter.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 /* **************************************************************************************
    Variable and type definitions
@@ -61,29 +61,29 @@ SCOREP_ConfigVariable scorep_filter_configs[] = {
 void
 SCOREP_Filter_Initialize()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Initialize selective tracing" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                        "Initialize selective tracing" );
 
     /* Check whether a configuraion file name was specified */
     if ( scorep_filter_file_name == NULL || *scorep_filter_file_name == '\0' )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "No configuration file for filtering specified.\n"
-                             "Disable filtering." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                            "No configuration file for filtering specified.\n"
+                            "Disable filtering." );
         return;
     }
 
     /* Parse configuration file */
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Reading filter configuration file %s.",
-                         scorep_filter_file_name );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                        "Reading filter configuration file %s.",
+                        scorep_filter_file_name );
 
     SCOREP_Error_Code err = SCOREP_Filter_ParseFile( scorep_filter_file_name );
     if ( err != SCOREP_SUCCESS )
     {
-        SCOREP_ERROR( err,
-                      "Error while parsing filter file.\n"
-                      "Disable filtering." );
+        UTILS_ERROR( err,
+                     "Error while parsing filter file.\n"
+                     "Disable filtering." );
         return;
     }
 }
@@ -91,8 +91,8 @@ SCOREP_Filter_Initialize()
 SCOREP_Error_Code
 SCOREP_Filter_Register()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Register config variables for filtering system" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
+                        "Register config variables for filtering system" );
     return SCOREP_ConfigRegister( "filtering", scorep_filter_configs );
 }
 

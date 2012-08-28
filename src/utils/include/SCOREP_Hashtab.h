@@ -31,11 +31,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#ifdef __cplusplus
-#  define EXTERN extern "C"
-#else
-#  define EXTERN extern
-#endif
+UTILS_BEGIN_C_DECLS
 
 /*--- Module documentation for the hash table -----------------------------*/
 /**
@@ -58,7 +54,7 @@
  * instance of either type @ref SCOREP_Hashtab or @ref SCOREP_Hashtab_Iterator as their first
  * argument, which is the object (i.e., the data structure) they operate on.
  *
- * @note This module uses the @c SCOREP_ASSERT() macro to check various conditions
+ * @note This module uses the @c UTILS_ASSERT() macro to check various conditions
  *       (especially the values of given parameters) at runtime, which can
  *       cause a performance penalty.
  *
@@ -140,7 +136,7 @@ typedef void ( *SCOREP_Hashtab_DeleteFunction )( void* item );
  *
  * @return Pointer to new instance
  */
-EXTERN SCOREP_Hashtab*
+SCOREP_Hashtab*
 SCOREP_Hashtab_CreateSize( size_t                         size,
                            SCOREP_Hashtab_HashFunction    hashfunc,
                            SCOREP_Hashtab_CompareFunction kcmpfunc );
@@ -155,7 +151,7 @@ SCOREP_Hashtab_CreateSize( size_t                         size,
  *
  * @param instance Object to be freed
  */
-EXTERN void
+void
 SCOREP_Hashtab_Free( SCOREP_Hashtab* instance );
 
 /* Size operations */
@@ -168,7 +164,7 @@ SCOREP_Hashtab_Free( SCOREP_Hashtab* instance );
  *
  * @return Number of elements stored
  */
-EXTERN size_t
+size_t
 SCOREP_Hashtab_Size( const SCOREP_Hashtab* instance );
 
 /**
@@ -178,7 +174,7 @@ SCOREP_Hashtab_Size( const SCOREP_Hashtab* instance );
  *
  * @return Non-zero value if instance if empty; zero otherwise
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance );
 
 /* Inserting & removing elements */
@@ -202,7 +198,7 @@ SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance );
  *                   by a call to @a SCOREP_Hashtab_Find() with the same key @a
  *                   key. (ignored if @c NULL)
  */
-EXTERN void
+void
 SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
                        void*           key,
                        void*           value,
@@ -229,7 +225,7 @@ SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
  * @return Pointer to hash table entry if matching item cound be found;
  *         @c NULL otherwise
  */
-EXTERN SCOREP_Hashtab_Entry*
+SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_Find( const SCOREP_Hashtab* instance,
                      const void*           key,
                      size_t*               hashValPtr );
@@ -241,7 +237,7 @@ SCOREP_Hashtab_Find( const SCOREP_Hashtab* instance,
  * @param instance Object whose entries should be processed
  * @param procfunc Unary processing function
  */
-EXTERN void
+void
 SCOREP_Hashtab_Foreach( const SCOREP_Hashtab*          instance,
                         SCOREP_Hashtab_ProcessFunction procfunc );
 
@@ -260,7 +256,7 @@ SCOREP_Hashtab_Foreach( const SCOREP_Hashtab*          instance,
  * @param deleteValue Function pointer to a function which deletes the value
  *                    objects.
  */
-EXTERN void
+void
 SCOREP_Hashtab_Remove( const SCOREP_Hashtab*         instance,
                        const void*                   key,
                        SCOREP_Hashtab_DeleteFunction deleteKey,
@@ -283,7 +279,7 @@ SCOREP_Hashtab_Remove( const SCOREP_Hashtab*         instance,
  *
  * @return Pointer to new instance
  */
-EXTERN SCOREP_Hashtab_Iterator*
+SCOREP_Hashtab_Iterator*
 SCOREP_Hashtab_IteratorCreate( const SCOREP_Hashtab* hashtab );
 
 /**
@@ -292,7 +288,7 @@ SCOREP_Hashtab_IteratorCreate( const SCOREP_Hashtab* hashtab );
  *
  * @param instance Object to be freed
  */
-EXTERN void
+void
 SCOREP_Hashtab_IteratorFree( SCOREP_Hashtab_Iterator* instance );
 
 /* Element access */
@@ -306,7 +302,7 @@ SCOREP_Hashtab_IteratorFree( SCOREP_Hashtab_Iterator* instance );
  *
  * @return Pointer to first entry of the hash table or @c NULL if empty
  */
-EXTERN SCOREP_Hashtab_Entry*
+SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_IteratorFirst( SCOREP_Hashtab_Iterator* instance );
 
 /**
@@ -318,7 +314,7 @@ SCOREP_Hashtab_IteratorFirst( SCOREP_Hashtab_Iterator* instance );
  *
  * @return Pointer to next entry of the hash table or @c NULL if unavailable
  */
-EXTERN SCOREP_Hashtab_Entry*
+SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_IteratorNext( SCOREP_Hashtab_Iterator* instance );
 
 /*
@@ -343,7 +339,7 @@ SCOREP_Hashtab_IteratorNext( SCOREP_Hashtab_Iterator* instance );
  *                    objects.
  */
 
-EXTERN void
+void
 SCOREP_Hashtab_FreeAll( SCOREP_Hashtab*               instance,
                         SCOREP_Hashtab_DeleteFunction deleteKey,
                         SCOREP_Hashtab_DeleteFunction deleteValue );
@@ -363,7 +359,7 @@ SCOREP_Hashtab_FreeAll( SCOREP_Hashtab*               instance,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareStrings( const void* key,
                                const void* item_key );
 
@@ -376,7 +372,7 @@ SCOREP_Hashtab_CompareStrings( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareInt8( const void* key,
                             const void* item_key );
 
@@ -389,7 +385,7 @@ SCOREP_Hashtab_CompareInt8( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareInt16( const void* key,
                              const void* item_key );
 
@@ -402,7 +398,7 @@ SCOREP_Hashtab_CompareInt16( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareInt32( const void* key,
                              const void* item_key );
 
@@ -415,7 +411,7 @@ SCOREP_Hashtab_CompareInt32( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareInt64( const void* key,
                              const void* item_key );
 
@@ -428,7 +424,7 @@ SCOREP_Hashtab_CompareInt64( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareUint32( const void* key,
                               const void* item_key );
 
@@ -441,7 +437,7 @@ SCOREP_Hashtab_CompareUint32( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_CompareUint64( const void* key,
                               const void* item_key );
 
@@ -453,7 +449,7 @@ SCOREP_Hashtab_CompareUint64( const void* key,
  * @return 0 if the given @a key equals the key of the current item (@a item_key)
  * or a non-zero value otherwise.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Hashtab_ComparePointer( const void* key,
                                const void* item_key );
 
@@ -470,7 +466,7 @@ SCOREP_Hashtab_ComparePointer( const void* key,
  * @param key A pointer to a NULL-terminated string which serves as key.
  * @return A hashvalue which is computed as sum of the letters of the string.
  */
-EXTERN size_t
+size_t
 SCOREP_Hashtab_HashString( const void* key );
 
 /**
@@ -479,7 +475,7 @@ SCOREP_Hashtab_HashString( const void* key );
  * @param key A pointer to a 64-bit integer.
  * @return The value of the key.
  */
-EXTERN size_t
+size_t
 SCOREP_Hashtab_HashInt64( const void* key );
 
 /**
@@ -488,7 +484,7 @@ SCOREP_Hashtab_HashInt64( const void* key );
  * @param key A pointer to a 32-bit integer.
  * @return The value of the key.
  */
-EXTERN size_t
+size_t
 SCOREP_Hashtab_HashInt32( const void* key );
 
 /**
@@ -498,7 +494,7 @@ SCOREP_Hashtab_HashInt32( const void* key );
  * @param key A pointer.
  * @return The value of the key.
  */
-EXTERN size_t
+size_t
 SCOREP_Hashtab_HashPointer( const void* key );
 
 /*
@@ -513,7 +509,7 @@ SCOREP_Hashtab_HashPointer( const void* key );
  *
  * @param item Pointer to the item which is freed.
  */
-EXTERN void
+void
 SCOREP_Hashtab_DeleteFree( void* item );
 
 /**
@@ -524,7 +520,7 @@ SCOREP_Hashtab_DeleteFree( void* item );
  *
  * @param item Pointer to the item which should not be freed.
  */
-EXTERN void
+void
 SCOREP_Hashtab_DeleteNone( void* item );
 
 /**
@@ -533,9 +529,11 @@ SCOREP_Hashtab_DeleteNone( void* item );
  *
  * @param item Pointer to the item which is freed.
  */
-EXTERN void
+void
 SCOREP_Hashtab_DeletePointer( void* item );
 
 /** @} */
+
+UTILS_END_C_DECLS
 
 #endif   /* !SCOREP_HASHTAB_H */

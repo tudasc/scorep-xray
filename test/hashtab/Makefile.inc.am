@@ -22,11 +22,11 @@ check_PROGRAMS += hashtab_test
 hashtab_test_SOURCES = \
     $(SRC_ROOT)test/hashtab/hashtab_test.c
 hashtab_test_LDADD = \
-    libscorep_hashtab.la \
-    $(LIB_DIR_UTIL)libscorep_utilities.la
+    $(LIB_ROOT)libscorep_hashtab.la \
+    $(LIB_ROOT)libutils.la
 hashtab_test_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(UTILS_CPPFLAGS)
 
 TESTS_SERIAL += hashtab_test

@@ -37,14 +37,14 @@
 #include <scorep_profile_definition.h>
 #include "scorep_definitions.h"
 
-#include <SCOREP_CStr.h>
+#include <UTILS_CStr.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_OA_PeriscopeMetrics.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Profile.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Config.h>
-#include <SCOREP_Debug.h>
 
 
 /** Helper function mapping Periscope metric groups to Score-P metric sources*/
@@ -341,7 +341,7 @@ scorep_oa_request_exec_time_submit
 {
     if ( execution_time_request )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Execution time requested second time during this session...\n" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Execution time requested second time during this session..." );
         return;
     }
     execution_time_request = calloc( 1, sizeof( MetricRequest ) );
@@ -350,7 +350,7 @@ scorep_oa_request_exec_time_submit
     execution_time_request->metric_source = SCOREP_METRIC_TIMER;
     execution_time_request->oa_index      = phase_request_oa_index++;
     execution_time_request->psc_index     = 0;
-    execution_time_request->metric_name   = SCOREP_CStr_dup( "execution_time" );
+    execution_time_request->metric_name   = UTILS_CStr_dup( "execution_time" );
 }
 
 void
@@ -370,7 +370,7 @@ scorep_oa_request_submit
     if ( ( int32_t )metric_id <= max_definition_id_previous_phase &&
          ( metric_source_type == SCOREP_METRIC_SOURCE_TYPE_PAPI || metric_source_type == SCOREP_METRIC_SOURCE_TYPE_RUSAGE ) )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Metric %d was defined in previous phase\n", metric_id );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Metric %d was defined in previous phase", metric_id );
         return;
     }
 
@@ -393,7 +393,7 @@ scorep_oa_request_submit
 
     if ( entry )
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Metric %s,%d was found among requests\n", metric_name, metric_id );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Metric %s,%d was found among requests", metric_name, metric_id );
 
         /** Create request key, which is the definition id of the metric*/
         int32_t* request_key = calloc( 1, sizeof( int32_t ) );
@@ -408,7 +408,7 @@ scorep_oa_request_submit
         request_value->metric_source = ( ( MetricRequest* )entry->value )->metric_source;
         request_value->psc_index     = ( ( MetricRequest* )entry->value )->psc_index;
         request_value->oa_index      = phase_request_oa_index++;
-        request_value->metric_name   = SCOREP_CStr_dup( metric_name );
+        request_value->metric_name   = UTILS_CStr_dup( metric_name );
 
         SCOREP_Hashtab_Insert(  requestsByID,
                                 ( void* )( request_key ),
@@ -417,7 +417,7 @@ scorep_oa_request_submit
     }
     else
     {
-        SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Metric %s,%d was NOT found among requests\n", metric_name, metric_id );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Metric %s,%d was NOT found among requests", metric_name, metric_id );
     }
 }
 
@@ -542,7 +542,7 @@ SCOREP_OA_RequestsAddPeriscopeMetric
             /** Check if the Periscope metric group is supported by Score-P */
             if ( get_scorep_metric_source( PSC_MetricList[ i ].metricGroup ) == SCOREP_METRIC_SOURCE_NOT_SUPPORTED )
             {
-                SCOREP_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Metric (%d) group %d is not supoorted!\n", PSC_MetricList[ i ].metricID, PSC_MetricList[ i ].metricGroup );
+                UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Metric (%d) group %d is not supoorted!", PSC_MetricList[ i ].metricID, PSC_MetricList[ i ].metricGroup );
                 break;
             }
 
@@ -557,7 +557,7 @@ SCOREP_OA_RequestsAddPeriscopeMetric
             if ( !entry )
             {
                 /** Create request key out of the name */
-                char* request_key = SCOREP_CStr_dup( PSC_MetricList[ i ].metricName );
+                char* request_key = UTILS_CStr_dup( PSC_MetricList[ i ].metricName );
                 assert( request_key );
 
                 /** Create value for the hash table entry. It carries the index of this metric in the Periscope metrics list*/

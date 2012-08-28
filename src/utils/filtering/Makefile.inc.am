@@ -26,6 +26,6 @@ libscorep_filter_la_SOURCES = \
 libscorep_filter_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_UTIL) \
+    $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/utils/include \
     -I$(INC_ROOT)src/utils/filtering

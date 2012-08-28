@@ -44,7 +44,7 @@
 #include "SCOREP_Fmpi.h"
 
 #include <stdlib.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 
 /* uppercase defines */
 /** @def MPI_Finalize_U
@@ -347,7 +347,7 @@ FSUB( MPI_Init_thread )( MPI_Fint* required,
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
-        SCOREP_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH, "" );
+        UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH );
     }
     *ierr = MPI_Init_thread( 0, ( char*** )0, *required, provided );
 }
@@ -365,7 +365,7 @@ FSUB( MPI_Init )( MPI_Fint* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
-        SCOREP_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH, "" );
+        UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH );
     }
     *ierr = MPI_Init( 0, ( char*** )0 );
 }

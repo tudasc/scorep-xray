@@ -7,14 +7,14 @@ scorep_info_SOURCES = \
 
 scorep_info_CPPFLAGS = \
     $(AM_CPPFLAGS) \
-    -I$(INC_DIR_UTIL) \
+    $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/tools/info
 
 scorep_info_LDADD = \
     $(LIB_DIR)libscorep_platform.la \
     @TIMER_LIB@ \
-    libscorep_utilities.la
+    libutils.la
 
 if SCOREP_TIMER_BGP_GET_TIMEBASE
 scorep_info_LDFLAGS = -L$(TIMER_LIBDIR)

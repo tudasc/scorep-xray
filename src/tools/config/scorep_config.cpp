@@ -30,7 +30,7 @@
 #include <string>
 #include <iostream>
 
-#include <SCOREP_IO.h>
+#include <UTILS_IO.h>
 
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>

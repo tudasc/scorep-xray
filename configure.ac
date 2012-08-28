@@ -26,6 +26,7 @@ AC_PREFIX_DEFAULT([/opt/scorep])
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
+AC_COMMON_PACKAGE([scorep], [subst-only])
 
 # don't detect and load defaults in nested configures (e.g. otf2)
 if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_provided}" = "xno"; then
@@ -86,8 +87,15 @@ if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} ${scorep_opari2_config_arg} ${scorep_cube_config_arg}])
 fi
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([
+    Makefile
+    src/config-common.h:vendor/common/build-config/config-common.h
+])
 
+# generate the Score-P error codes header
+AC_CONFIG_FILES(
+    [src/utils/include/SCOREP_Error_Codes.h:vendor/common/src/utils/exception/Error_Codes.tmpl.h],
+    [$srcdir/vendor/common/src/utils/exception/finalize_error_codes.sh SCOREP $srcdir/share/scorep.errors src/utils/include/SCOREP_Error_Codes.h src/utils/include/scorep_error_decls.gen.h])
 
 AC_OUTPUT
 

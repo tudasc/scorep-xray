@@ -68,7 +68,7 @@ scorep_mpi_get_status_array( int size )
         scorep_mpi_status_array = malloc( size * sizeof( MPI_Status ) );
         if ( scorep_mpi_status_array == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "" );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
             abort();
         }
         scorep_mpi_status_array_size = size;
@@ -80,7 +80,7 @@ scorep_mpi_get_status_array( int size )
         scorep_mpi_status_array = realloc( scorep_mpi_status_array, size * sizeof( MPI_Status ) );
         if ( scorep_mpi_status_array == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "" );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
             abort();
         }
         scorep_mpi_status_array_size = size;

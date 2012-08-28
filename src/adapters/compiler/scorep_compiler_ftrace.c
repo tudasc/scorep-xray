@@ -29,7 +29,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
@@ -89,8 +89,8 @@ _ftrace_enter2_()
         SCOREP_InitMeasurement();
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function name: %s", region_name );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function length: %i", name_len );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function name: %s", region_name );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function length: %i", name_len );
 
     if ( !hash_node )
     {
@@ -125,9 +125,9 @@ _ftrace_enter2_()
         }
         if ( hash_node->region_handle != SCOREP_FILTERED_REGION )
         {
-            SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                                 "enter the region with handle %i",
-                                 hash_node->region_handle );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                                "enter the region with handle %i",
+                                hash_node->region_handle );
             SCOREP_EnterRegion( hash_node->region_handle );
         }
     }
@@ -150,8 +150,8 @@ _ftrace_exit2_()
     char* region_name = scorep_ftrace_getname();
     long  key         = ( long )region_name;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 %i", key );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 %i", key );
     scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( key );
     if ( hash_node )
     {
@@ -169,7 +169,7 @@ _ftrace_exit2_()
 void
 _ftrace_stop2_()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace stop 2" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace stop 2" );
 }
 
 SCOREP_Error_Code
@@ -177,8 +177,8 @@ scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             " inititialize ftrace compiler adapter!" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            " inititialize ftrace compiler adapter!" );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -196,7 +196,7 @@ scorep_compiler_init_adapter()
 SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace Compiler adapter init location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace Compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -204,7 +204,7 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
 void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace compiler adapter finalize location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace compiler adapter finalize location!" );
 }
 
 void
@@ -218,7 +218,7 @@ scorep_compiler_finalize()
 
         scorep_compiler_initialize = 1;
         scorep_compiler_finalized  = 1;
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

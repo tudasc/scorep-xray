@@ -30,11 +30,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-#  define EXTERN extern "C"
-#else
-#  define EXTERN extern
-#endif
+UTILS_BEGIN_C_DECLS
 
 /*--- Module documentation for the vector ---------------------------------*/
 
@@ -52,7 +48,7 @@
  *  an instance of type @ref SCOREP_Vector as their first argument, which is the
  *  object (i.e., the data structure) they operate on.
  *
- *  @note This module uses the @ref SCOREP_ASSERT() macro to check various conditions
+ *  @note This module uses the @ref UTILS_ASSERT() macro to check various conditions
  *        (especially the values of given parameters) at runtime, which can
  *        cause a performance penalty.
  *
@@ -102,9 +98,8 @@ typedef void ( *SCOREP_Vector_ProcessingFunc )( void* item );
  *
  * @return Pointer to new instance or NULL if the memory could not be allocated.
  */
-EXTERN SCOREP_Vector*
-SCOREP_Vector_Create
-    ();
+SCOREP_Vector*
+SCOREP_Vector_Create( void );
 
 /**
  * Creates and returns an instance of SCOREP_Vector with the given initial
@@ -115,7 +110,7 @@ SCOREP_Vector_Create
  *
  * @return Pointer to new instance or NULL if the memory could not be allocated.
  */
-EXTERN SCOREP_Vector*
+SCOREP_Vector*
 SCOREP_Vector_CreateSize( size_t capacity );
 
 /**
@@ -128,7 +123,7 @@ SCOREP_Vector_CreateSize( size_t capacity );
  *
  * @param instance Object to be freed
  */
-EXTERN void
+void
 SCOREP_Vector_Free( SCOREP_Vector* instance );
 
 /*--- Size operations -----------------------------------------------------*/
@@ -141,7 +136,7 @@ SCOREP_Vector_Free( SCOREP_Vector* instance );
  *
  * @return Number of elements stored
  */
-EXTERN size_t
+size_t
 SCOREP_Vector_Size( const SCOREP_Vector* instance );
 
 /**
@@ -151,7 +146,7 @@ SCOREP_Vector_Size( const SCOREP_Vector* instance );
  *
  * @return Non-zero value if instance if empty; zero otherwise
  */
-EXTERN int
+int
 SCOREP_Vector_Empty( const SCOREP_Vector* instance );
 
 /*--- Capacity operations -------------------------------------------------*/
@@ -163,7 +158,7 @@ SCOREP_Vector_Empty( const SCOREP_Vector* instance );
  *
  * @return Current capacity
  */
-EXTERN size_t
+size_t
 SCOREP_Vector_Capacity( const SCOREP_Vector* instance );
 
 /**
@@ -181,7 +176,7 @@ SCOREP_Vector_Capacity( const SCOREP_Vector* instance );
  * @return Zero is returned in case that the allocation of memory failed. Else, a
  *         non-zero value is returned.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_Reserve( SCOREP_Vector* instance,
                        size_t         capacity );
 
@@ -200,7 +195,7 @@ SCOREP_Vector_Reserve( SCOREP_Vector* instance,
  * @return  Zero is returned in case that the allocation of memory failed. Else, a
  *          non-zero value is returned.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_Resize( SCOREP_Vector* instance,
                       size_t         size );
 
@@ -215,7 +210,7 @@ SCOREP_Vector_Resize( SCOREP_Vector* instance,
  *
  * @return Requested element
  */
-EXTERN void*
+void*
 SCOREP_Vector_At( const SCOREP_Vector* instance,
                   size_t               index );
 
@@ -226,7 +221,7 @@ SCOREP_Vector_At( const SCOREP_Vector* instance,
  * @param index    Index where the item should be stored
  * @param item     Item to be stored
  */
-EXTERN void
+void
 SCOREP_Vector_Set( SCOREP_Vector* instance,
                    size_t         index,
                    void*          item );
@@ -239,7 +234,7 @@ SCOREP_Vector_Set( SCOREP_Vector* instance,
  *
  * @return First element
  */
-EXTERN void*
+void*
 SCOREP_Vector_Front( const SCOREP_Vector* instance );
 
 /**
@@ -249,7 +244,7 @@ SCOREP_Vector_Front( const SCOREP_Vector* instance );
  *
  * @return Last element
  */
-EXTERN void*
+void*
 SCOREP_Vector_Back( const SCOREP_Vector* instance );
 
 /*--- Iterator functions --------------------------------------------------*/
@@ -262,7 +257,7 @@ SCOREP_Vector_Back( const SCOREP_Vector* instance );
  *
  * @return Iterator for first element
  */
-EXTERN void**
+void**
 SCOREP_Vector_Begin( const SCOREP_Vector* instance );
 
 /**
@@ -273,7 +268,7 @@ SCOREP_Vector_Begin( const SCOREP_Vector* instance );
  *
  * @return Iterator for the position after the last element
  */
-EXTERN void**
+void**
 SCOREP_Vector_End( const SCOREP_Vector* instance );
 
 /*--- Inserting & removing elements ---------------------------------------*/
@@ -290,7 +285,7 @@ SCOREP_Vector_End( const SCOREP_Vector* instance );
  * @return  Zero is returned in case that the allocation of memory failed. on Success, a
  *          non-zero value is returned.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_PushBack( SCOREP_Vector* instance,
                         void*          item );
 
@@ -300,7 +295,7 @@ SCOREP_Vector_PushBack( SCOREP_Vector* instance,
  *
  * @param instance Object from which the item should be removed
  */
-EXTERN void
+void
 SCOREP_Vector_PopBack( SCOREP_Vector* instance );
 
 /**
@@ -317,7 +312,7 @@ SCOREP_Vector_PopBack( SCOREP_Vector* instance );
  * @return  Zero is returned in case that the allocation of memory failed. on Success, a
  *          non-zero value is returned.
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_Insert( SCOREP_Vector* instance,
                       size_t         index,
                       void*          item );
@@ -330,7 +325,7 @@ SCOREP_Vector_Insert( SCOREP_Vector* instance,
  * @param instance Object from which the item should be removed
  * @param index    Index of item to remove
  */
-EXTERN void
+void
 SCOREP_Vector_Erase( SCOREP_Vector* instance,
                      size_t         index );
 
@@ -340,7 +335,7 @@ SCOREP_Vector_Erase( SCOREP_Vector* instance,
  *
  * @param instance Object to remove items from
  */
-EXTERN void
+void
 SCOREP_Vector_Clear( SCOREP_Vector* instance );
 
 /*--- Algorithms ----------------------------------------------------------*/
@@ -363,7 +358,7 @@ SCOREP_Vector_Clear( SCOREP_Vector* instance );
  *
  * @return Non-zero if matching item cound be found; zero otherwise
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_Find( const SCOREP_Vector*      instance,
                     const void*               value,
                     SCOREP_Vector_CompareFunc cmpfunc,
@@ -394,7 +389,7 @@ SCOREP_Vector_Find( const SCOREP_Vector*      instance,
  *
  * @return Non-zero if matching item cound be found; zero otherwise
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_LowerBound( const SCOREP_Vector*      instance,
                           const void*               value,
                           SCOREP_Vector_CompareFunc cmpfunc,
@@ -425,7 +420,7 @@ SCOREP_Vector_LowerBound( const SCOREP_Vector*      instance,
  *
  * @return Non-zero if matching item cound be found; zero otherwise
  */
-EXTERN int32_t
+int32_t
 SCOREP_Vector_UpperBound( const SCOREP_Vector*      instance,
                           const void*               value,
                           SCOREP_Vector_CompareFunc cmpfunc,
@@ -438,11 +433,12 @@ SCOREP_Vector_UpperBound( const SCOREP_Vector*      instance,
  * @param instance Object whose entries should be processed
  * @param procfunc Unary processing function
  */
-EXTERN void
+void
 SCOREP_Vector_Foreach( const SCOREP_Vector*         instance,
                        SCOREP_Vector_ProcessingFunc procfunc );
 
 /** @} */
 
+UTILS_END_C_DECLS
 
 #endif   /* !SCOREP_VECTOR_H */

@@ -28,5 +28,4 @@ libscorep_hashtab_la_SOURCES = \
 libscorep_hashtab_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_UTIL) \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(UTILS_CPPFLAGS)

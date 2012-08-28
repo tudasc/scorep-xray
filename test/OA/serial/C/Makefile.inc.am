@@ -10,7 +10,7 @@ oa_c_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@       \
     -I$(INC_ROOT)include/scorep				\
     -I$(INC_ROOT)src/measurement/include    \
     -I$(PUBLIC_INC_DIR)                     \
-    -I$(INC_DIR_UTIL)                       \
+    $(UTILS_CPPFLAGS)                       \
     -DSCOREP_USER_ENABLE
 
 oa_c_test_LDADD =                        \

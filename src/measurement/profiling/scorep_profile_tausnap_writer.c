@@ -32,9 +32,9 @@
 #include <sys/stat.h>
 
 #include <SCOREP_Memory.h>
-#include <SCOREP_CStr.h>
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_CStr.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 
@@ -159,7 +159,7 @@ write_paramstring_tau( scorep_profile_node* node,
     if ( parentpath == NULL )
     {
         const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
-        parentpath = SCOREP_CStr_dup( parentname );
+        parentpath = UTILS_CStr_dup( parentname );
     }
     /* Length is "<path> (<name> = <value>)" plus terminating '\0' */
     int length = strlen( parentpath ) + strlen( param_name ) + 24 + strlen( param_value ) + 1;
@@ -209,7 +209,7 @@ write_paramint_tau( scorep_profile_node* node,
     if ( parentpath == NULL )
     {
         const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
-        parentpath = SCOREP_CStr_dup( parentname );
+        parentpath = UTILS_CStr_dup( parentname );
     }
     if ( param == scorep_profile_param_instance )
     {
@@ -295,9 +295,9 @@ write_node_tau( scorep_profile_node* node,
             break;
 
         default:
-            SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                          "Node type %d encountered in subtree during writing",
-                          node->node_type );
+            UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                         "Node type %d encountered in subtree during writing",
+                         node->node_type );
     }
 }
 
@@ -653,7 +653,7 @@ write_thread_tau( scorep_profile_node*      node,
        to callpath values.*/
     uint64_t callpath_counter = 0;
 
-    SCOREP_ASSERT( node != NULL );
+    UTILS_ASSERT( node != NULL );
 
     /* Write thread definition */
     fprintf( file,
@@ -841,7 +841,7 @@ scorep_profile_write_tau_snapshot()
     uint64_t             threadnum = 0;
     scorep_profile_node* thread    = scorep_profile.first_root_node;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Write profile in TAU snapshot format" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Write profile in TAU snapshot format" );
     FILE* file;
     char  filename[ 600 ];
     char  dirname[ 500 ];
@@ -862,7 +862,7 @@ scorep_profile_write_tau_snapshot()
     {
         if ( errno != EEXIST )
         {
-            SCOREP_ERROR_POSIX( "Unable to create directory for snapshot profile" );
+            UTILS_ERROR_POSIX( "Unable to create directory for snapshot profile" );
             return;
         }
     }
@@ -872,7 +872,7 @@ scorep_profile_write_tau_snapshot()
     file = fopen( filename, "w" );
     if ( !file )
     {
-        SCOREP_ERROR_POSIX( "Failed to write profile. Unable to open file" );
+        UTILS_ERROR_POSIX( "Failed to write profile. Unable to open file" );
         return;
     }
     /*Add the summary nodes to the calltree*/

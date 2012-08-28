@@ -36,13 +36,15 @@
 
 #include <SCOREP_Config.h>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
-#include <SCOREP_CStr.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_CStr.h>
 
 #include <SCOREP_Hashtab.h>
 
 #include "scorep_types.h"
+
+#define SCOREP_DEBUG_MODULE_NAME CONFIG
 
 static size_t
 hash_variable( const void* key );
@@ -110,7 +112,7 @@ SCOREP_Error_Code
 SCOREP_ConfigInit( void )
 {
     /* prevent calling me twice */
-    SCOREP_ASSERT( !name_spaces );
+    UTILS_ASSERT( !name_spaces );
 
     name_spaces = SCOREP_Hashtab_CreateSize( 32,
                                              hash_name_space,
@@ -118,8 +120,8 @@ SCOREP_ConfigInit( void )
 
     if ( !name_spaces )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT,
-                             "Can't allocate hash table for config susbsystem" );
+        return UTILS_ERROR( SCOREP_ERROR_MEM_FAULT,
+                            "Can't allocate hash table for config susbsystem" );
     }
 
     return SCOREP_SUCCESS;
@@ -128,7 +130,7 @@ SCOREP_ConfigInit( void )
 void
 SCOREP_ConfigFini( void )
 {
-    SCOREP_ASSERT( name_spaces );
+    UTILS_ASSERT( name_spaces );
 
     struct scorep_config_name_space* name_space = name_spaces_head;
     while ( name_space )
@@ -176,7 +178,7 @@ get_name_space( const char* name, size_t nameLen, bool create )
     }
 
     name_space = calloc( 1, sizeof( *name_space ) + nameLen + 1 );
-    SCOREP_ASSERT( name_space );
+    UTILS_ASSERT( name_space );
 
     char* name_buffer = ( char* )name_space + sizeof( *name_space );
     memcpy( name_buffer, name, nameLen + 1 );
@@ -236,7 +238,7 @@ get_variable( struct scorep_config_name_space* nameSpace,
 
     size_t name_len = strlen( name );
     variable = calloc( 1, sizeof( *variable ) + name_len + 1 );
-    SCOREP_ASSERT( variable );
+    UTILS_ASSERT( variable );
 
     char* name_buffer = ( char* )variable + sizeof( *variable );
     memcpy( name_buffer, name, name_len + 1 );
@@ -270,16 +272,15 @@ SCOREP_Error_Code
 SCOREP_ConfigRegister( const char*            nameSpaceName,
                        SCOREP_ConfigVariable* variables )
 {
-    SCOREP_ASSERT( name_spaces );
-    SCOREP_ASSERT( nameSpaceName );
+    UTILS_ASSERT( name_spaces );
+    UTILS_ASSERT( nameSpaceName );
 
     size_t name_space_len = strlen( nameSpaceName );
-    SCOREP_BUG_ON( name_space_len > 32, "Name space is too long." );
+    UTILS_BUG_ON( name_space_len > 32, "Name space is too long." );
     check_name( nameSpaceName, name_space_len, true );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Register new variables in name space %s",
-                         nameSpaceName );
+    UTILS_DEBUG( "Register new variables in name space %s",
+                 nameSpaceName );
 
     struct scorep_config_name_space* name_space;
     name_space = get_name_space( nameSpaceName,
@@ -291,13 +292,13 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
         bool successfully_parsed;
 
         /* fail, if the programmer does not use the config system correctly */
-        SCOREP_BUG_ON( !variables->name, "Missing variable name." );
-        SCOREP_BUG_ON( !variables->variableReference, "Missing variable reference." );
-        SCOREP_BUG_ON( !variables->defaultValue, "Missing default value." );
+        UTILS_BUG_ON( !variables->name, "Missing variable name." );
+        UTILS_BUG_ON( !variables->variableReference, "Missing variable reference." );
+        UTILS_BUG_ON( !variables->defaultValue, "Missing default value." );
         /* the variableContext is checked in the parse_value function */
 
         size_t name_len = strlen( variables->name );
-        SCOREP_BUG_ON( name_len == 1 || name_len > 32, "Variable name too long." );
+        UTILS_BUG_ON( name_len == 1 || name_len > 32, "Variable name too long." );
         check_name( variables->name, name_len, false );
 
         struct scorep_config_variable* variable;
@@ -312,18 +313,14 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
         variable->data.shortHelp         = variables->shortHelp;
         variable->data.longHelp          = variables->longHelp;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "Variable:      %s%s%s",
-                             nameSpaceName,
-                             name_space_len ? "/" : "",
-                             variable->data.name );
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "  Type:        %s",
-                             scorep_config_type_to_string( variable->data.type ) );
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "  Default:     %s", variable->data.defaultValue );
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                             "  Description: %s", variable->data.shortHelp );
+        UTILS_DEBUG( "Variable:      %s%s%s",
+                     nameSpaceName,
+                     name_space_len ? "/" : "",
+                     variable->data.name );
+        UTILS_DEBUG( "  Type:        %s",
+                     scorep_config_type_to_string( variable->data.type ) );
+        UTILS_DEBUG( "  Default:     %s", variable->data.defaultValue );
+        UTILS_DEBUG( "  Description: %s", variable->data.shortHelp );
 
         /* set the variable to its default value */
         successfully_parsed = parse_value( variable->data.defaultValue,
@@ -333,8 +330,8 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
 
         /* This is actually not user input, but a programming error */
         /* therefore we can bug here */
-        SCOREP_BUG_ON( !successfully_parsed,
-                       "Default value could not be parsed." );
+        UTILS_BUG_ON( !successfully_parsed,
+                      "Default value could not be parsed." );
 
         variables++;
     }
@@ -346,14 +343,13 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
 SCOREP_Error_Code
 SCOREP_ConfigApplyEnv( void )
 {
-    SCOREP_ASSERT( name_spaces );
+    UTILS_ASSERT( name_spaces );
 
     static bool once_run;
-    SCOREP_BUG_ON( once_run, "SCOREP_ConfigApplyEnv() can only called once." );
+    UTILS_BUG_ON( once_run, "SCOREP_ConfigApplyEnv() can only be called once." );
     once_run = true;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Apply environment to config variables" );
+    UTILS_DEBUG( "Apply environment to config variables" );
 
     for ( struct scorep_config_name_space* name_space = name_spaces_head;
           name_space;
@@ -368,8 +364,7 @@ SCOREP_ConfigApplyEnv( void )
 
             if ( environment_variable_value )
             {
-                SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                     "Env value: %s", environment_variable_value );
+                UTILS_DEBUG( "Env value: %s", environment_variable_value );
 
                 /* set the variable to the value of the environment variable */
                 bool successfully_parsed;
@@ -380,17 +375,16 @@ SCOREP_ConfigApplyEnv( void )
 
                 if ( !successfully_parsed )
                 {
-                    return SCOREP_ERROR( SCOREP_ERROR_EINVAL,
-                                         "Can't set variable '%s' to "
-                                         "value `%s' from environment variable",
-                                         variable->env_var_name,
-                                         environment_variable_value );
+                    return UTILS_ERROR( SCOREP_ERROR_EINVAL,
+                                        "Can't set variable '%s' to "
+                                        "value `%s' from environment variable",
+                                        variable->env_var_name,
+                                        environment_variable_value );
                 }
             }
             else
             {
-                SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                                     "    Variable is unset" );
+                UTILS_DEBUG( "    Variable is unset" );
             }
         }
     }
@@ -409,22 +403,20 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
         get_name_space( nameSpaceName, name_space_len, false );
     if ( !name_space )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
-                             "Unknown name space: %s::", nameSpaceName );
+        return UTILS_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                            "Unknown name space: %s::", nameSpaceName );
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Using name space %s", name_space->name );
+    UTILS_DEBUG( "Using name space %s", name_space->name );
 
     struct scorep_config_variable* variable =
         get_variable( name_space, variableName, false );
     if ( !variable )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
-                             "Unknown config variable: %s::%s",
-                             nameSpaceName, variableName );
+        return UTILS_ERROR( SCOREP_ERROR_INDEX_OUT_OF_BOUNDS,
+                            "Unknown config variable: %s::%s",
+                            nameSpaceName, variableName );
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Using variable %s", variable->env_var_name );
+    UTILS_DEBUG( "Using variable %s", variable->env_var_name );
 
     bool successfully_parsed;
     successfully_parsed = parse_value( variableValue,
@@ -434,9 +426,9 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
 
     if ( !successfully_parsed )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
-                             "Invalid value for config variable %s::%s: %s",
-                             nameSpaceName, variableName, variableValue );
+        return UTILS_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
+                            "Invalid value for config variable %s::%s: %s",
+                            nameSpaceName, variableName, variableValue );
     }
 
     return SCOREP_SUCCESS;
@@ -446,10 +438,9 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
 SCOREP_Error_Code
 SCOREP_ConfigDump( FILE* dumpFile )
 {
-    SCOREP_ASSERT( dumpFile );
+    UTILS_ASSERT( dumpFile );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                         "Dump config variables to file" );
+    UTILS_DEBUG( "Dump config variables to file" );
 
     for ( struct scorep_config_name_space* name_space = name_spaces_head;
           name_space;
@@ -554,10 +545,7 @@ check_name( const char* name, size_t nameLen, bool isNameSpace )
     }
 
     /* first character needs to be in [a-z] */
-    if ( !isalpha( *str ) )
-    {
-        SCOREP_BUG( "Invalid first character in config entity name." );
-    }
+    UTILS_BUG_ON( !isalpha( *str ), "Invalid first character in config entity name." );
     str++;
 
     /* never allow underscores in name spaces */
@@ -566,8 +554,8 @@ check_name( const char* name, size_t nameLen, bool isNameSpace )
     {
         /* Do not allow an underscore for the last character */
         allow_underscore = allow_underscore && ( str < last );
-        SCOREP_BUG_ON( !isalnum( *str ) && ( !allow_underscore || *str != '_' ),
-                       "Invalid character in config entity name." );
+        UTILS_BUG_ON( !isalnum( *str ) && ( !allow_underscore || *str != '_' ),
+                      "Invalid character in config entity name." );
         str++;
     }
 }
@@ -616,11 +604,11 @@ parse_value( const char*       value,
             return parse_size( value, variableReference );
 
         case SCOREP_CONFIG_TYPE_SET:
-            SCOREP_BUG_ON( !variableContext, "Missing config variable context." );
+            UTILS_BUG_ON( !variableContext, "Missing config variable context." );
             return parse_set( value, variableReference, variableContext );
 
         case SCOREP_CONFIG_TYPE_BITSET:
-            SCOREP_BUG_ON( !variableContext, "Missing config variable context." );
+            UTILS_BUG_ON( !variableContext, "Missing config variable context." );
             return parse_bitset( value, variableReference, variableContext );
 
         case SCOREP_CONFIG_TYPE_STRING:
@@ -673,9 +661,9 @@ parse_uint64( const char*        numberString,
 {
     uint64_t number = 0;
 
-    SCOREP_ASSERT( numberString );
-    SCOREP_ASSERT( numberReference );
-    SCOREP_ASSERT( endPtr );
+    UTILS_ASSERT( numberString );
+    UTILS_ASSERT( numberReference );
+    UTILS_ASSERT( endPtr );
 
     /*
      * Ignore leading whitespace, but also ignore this whether we have consumed
@@ -724,11 +712,11 @@ parse_number( const char* value,
     parse_success = parse_uint64( value, numberReference, &value );
     if ( 0 != parse_success )
     {
-        SCOREP_ERROR( parse_success == ERANGE
-                      ? SCOREP_ERROR_ERANGE
-                      : SCOREP_ERROR_EINVAL,
-                      "Can't parse number in config value: `%s'",
-                      orig_value );
+        UTILS_ERROR( parse_success == ERANGE
+                     ? SCOREP_ERROR_ERANGE
+                     : SCOREP_ERROR_EINVAL,
+                     "Can't parse number in config value: `%s'",
+                     orig_value );
         return false;
     }
 
@@ -741,9 +729,9 @@ parse_number( const char* value,
     /* Have we consumed the complete string */
     if ( *value != '\0' )
     {
-        SCOREP_ERROR( SCOREP_ERROR_EINVAL,
-                      "Unrecognized characters after number `%s'",
-                      orig_value );
+        UTILS_ERROR( SCOREP_ERROR_EINVAL,
+                     "Unrecognized characters after number `%s'",
+                     orig_value );
         return false;
     }
 
@@ -762,11 +750,11 @@ parse_size( const char* value,
     parse_success = parse_uint64( value, sizeNumberReference, &value );
     if ( 0 != parse_success )
     {
-        SCOREP_ERROR( parse_success == ERANGE
-                      ? SCOREP_ERROR_ERANGE
-                      : SCOREP_ERROR_EINVAL,
-                      "Can't parse size in config value: `%s'",
-                      value );
+        UTILS_ERROR( parse_success == ERANGE
+                     ? SCOREP_ERROR_ERANGE
+                     : SCOREP_ERROR_EINVAL,
+                     "Can't parse size in config value: `%s'",
+                     value );
         return false;
     }
 
@@ -811,9 +799,9 @@ parse_size( const char* value,
             break;
 
         default:
-            SCOREP_ERROR( SCOREP_ERROR_EINVAL,
-                          "Invalid scale factor '%s' in config value `%s'",
-                          value, orig_value );
+            UTILS_ERROR( SCOREP_ERROR_EINVAL,
+                         "Invalid scale factor '%s' in config value `%s'",
+                         value, orig_value );
             return false;
     }
 
@@ -832,18 +820,18 @@ parse_size( const char* value,
     /* Have we consumed the complete string */
     if ( *value != '\0' )
     {
-        SCOREP_ERROR( SCOREP_ERROR_EINVAL,
-                      "Unrecognized characters `%s' after size in config value `%s'",
-                      value, orig_value );
+        UTILS_ERROR( SCOREP_ERROR_EINVAL,
+                     "Unrecognized characters `%s' after size in config value `%s'",
+                     value, orig_value );
         return false;
     }
 
     /* check for overflow */
     if ( ( *sizeNumberReference * scale_factor ) < *sizeNumberReference )
     {
-        SCOREP_ERROR( SCOREP_ERROR_EOVERFLOW,
-                      "Resulting value does not fit into variable: `%s'",
-                      value );
+        UTILS_ERROR( SCOREP_ERROR_EOVERFLOW,
+                     "Resulting value does not fit into variable: `%s'",
+                     value );
         return false;
     }
     *sizeNumberReference *= scale_factor;
@@ -858,10 +846,10 @@ parse_string( const char* value,
               char**      stringReference )
 {
     free( *stringReference );
-    *stringReference = SCOREP_CStr_dup( value );
+    *stringReference = UTILS_CStr_dup( value );
     if ( !*stringReference )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Can't duplicate string" );
+        UTILS_ERROR( SCOREP_ERROR_MEM_FAULT, "Can't duplicate string" );
         return false;
     }
 
@@ -929,7 +917,7 @@ parse_set( const char* value,
                                   ( strlen( value ) + 1 ) * sizeof( char ) );
     if ( !alloc_result )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return false;
     }
     *stringListReference = NULL;
@@ -982,7 +970,7 @@ parse_set( const char* value,
         }
         if ( acceptedValues && !*acceptedValue )
         {
-            fprintf( stderr, " value '%s' not in accepted set\n", entry );
+            UTILS_WARNING( "Value '%s' not in accepted set.", entry );
             continue;
         }
 
@@ -1008,7 +996,7 @@ parse_bitset( const char*                 value,
     char* value_copy = malloc( strlen( value ) + 1 );
     if ( !value_copy )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return false;
     }
     strcpy( value_copy, value );
@@ -1039,7 +1027,7 @@ parse_bitset( const char*                 value,
         }
         if ( !acceptedValue )
         {
-            fprintf( stderr, " value '%s' not in accepted set\n", entry );
+            UTILS_WARNING( "Value '%s' not in accepted set.", entry );
             continue;
         }
     }
@@ -1074,7 +1062,7 @@ single_quote_string( const char* str )
     char* new_string = calloc( new_length + 1, sizeof( char ) );
     if ( !new_string )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return NULL;
     }
 

@@ -39,7 +39,7 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Metric_Management.h>
@@ -66,6 +66,8 @@
 #include "scorep_system_tree.h"
 #include "scorep_clock_synchronization.h"
 #include "scorep_runtime_management_timings.h"
+
+#define SCOREP_DEBUG_MODULE_NAME CORE
 
 /** @brief Measurement system initialized? */
 static bool scorep_initialized = false;
@@ -100,7 +102,7 @@ static void scorep_dump_config( void );
 bool
 SCOREP_IsInitialized()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
+    UTILS_DEBUG_ENTRY();
 
     return scorep_initialized && !scorep_finalized;
 }
@@ -112,14 +114,14 @@ SCOREP_IsInitialized()
 void
 SCOREP_InitMeasurement()
 {
+    UTILS_DEBUG_ENTRY();
+
     if ( scorep_initialized )
     {
         return;
     }
 
     SCOREP_TIME_START_TIMING( SCOREP_InitMeasurement );
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the subsystem initialization.
@@ -195,7 +197,7 @@ scorep_initialization_sanity_checks()
 
     if ( SCOREP_Omp_InParallel() )
     {
-        SCOREP_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
+        UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
     }
 }
@@ -263,7 +265,8 @@ scorep_set_otf2_archive_master_slave()
 void
 SCOREP_FinalizeMeasurement()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
+    UTILS_DEBUG_ENTRY();
+
     SCOREP_FinalizeMeasurementMPI();
     scorep_finalize();
 }
@@ -275,12 +278,13 @@ SCOREP_FinalizeMeasurement()
 void
 SCOREP_InitMeasurementMPI( int rank )
 {
+    UTILS_DEBUG_ENTRY();
+
     SCOREP_TIME_START_TIMING( SCOREP_InitMeasurementMPI );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
 
     if ( SCOREP_Omp_InParallel() )
     {
-        SCOREP_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
+        UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
     }
 
@@ -340,9 +344,10 @@ SCOREP_FinalizeMeasurementMPI()
 void
 SCOREP_EnableRecording()
 {
+    UTILS_DEBUG_ENTRY();
+
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )
     {
         scorep_recording_enabled = true;
@@ -355,9 +360,9 @@ SCOREP_EnableRecording()
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_SWITCH_IN_PARALLEL,
-                      "Invalid request for enabling recording. "
-                      "Recording is not enabled" );
+        UTILS_ERROR( SCOREP_ERROR_SWITCH_IN_PARALLEL,
+                     "Invalid request for enabling recording. "
+                     "Recording is not enabled" );
         return;
     }
 }
@@ -369,9 +374,10 @@ SCOREP_EnableRecording()
 void
 SCOREP_DisableRecording()
 {
+    UTILS_DEBUG_ENTRY();
+
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
     if ( !SCOREP_Omp_InParallel() )
     {
         scorep_recording_enabled = false;
@@ -384,9 +390,9 @@ SCOREP_DisableRecording()
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_SWITCH_IN_PARALLEL,
-                      "Invalid request for disabling recording. "
-                      "Recording is not disabled" );
+        UTILS_ERROR( SCOREP_ERROR_SWITCH_IN_PARALLEL,
+                     "Invalid request for disabling recording. "
+                     "Recording is not disabled" );
         return;
     }
 }
@@ -398,7 +404,7 @@ SCOREP_DisableRecording()
 bool
 SCOREP_RecordingEnabled()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
+    UTILS_DEBUG_ENTRY();
 
     return scorep_recording_enabled;
 }
@@ -406,7 +412,7 @@ SCOREP_RecordingEnabled()
 static void
 scorep_finalize( void )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY, "" );
+    UTILS_DEBUG_ENTRY();
 
     if ( !scorep_initialized || scorep_finalized )
     {
@@ -525,9 +531,9 @@ scorep_dump_config( void )
     FILE* dump_file = fopen( dump_file_name, "w" );
     if ( !dump_file )
     {
-        SCOREP_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
-                      "Can't write config variables into `%s'",
-                      dump_file_name );
+        UTILS_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
+                     "Can't write config variables into `%s'",
+                     dump_file_name );
 
         free( dump_file_name );
         return;

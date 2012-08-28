@@ -21,7 +21,7 @@
 common_libscorep_cppflags = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
-    -I$(INC_DIR_UTIL) \
+    $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/paradigm  \
@@ -29,4 +29,4 @@ common_libscorep_cppflags = \
     -I$(INC_ROOT)src/measurement/filtering \
     -I$(INC_ROOT)src/measurement/online_access \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_DIR_VENDOR_HASH)
+    -I$(INC_DIR_COMMON_HASH)

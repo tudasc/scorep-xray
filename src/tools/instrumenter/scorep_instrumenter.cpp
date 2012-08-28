@@ -31,8 +31,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <SCOREP_IO.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
+#include <UTILS_IO.h>
 
 #include <scorep_instrumenter.hpp>
 #include <scorep_config_tool_backend.h>
@@ -107,7 +107,7 @@ SCOREP_Instrumenter::Run()
         std::string object_file  = "";
         size_t      old_pos      = 0;
         size_t      cur_pos      = 0;
-        char*       cwd          = SCOREP_IO_GetCwd( NULL, 0 );
+        char*       cwd          = UTILS_IO_GetCwd( NULL, 0 );
         char*       cwd_to_free  = cwd;
         if ( !cwd )
         {
@@ -139,10 +139,10 @@ SCOREP_Instrumenter::Run()
                        code instrumenter does not insert line directives, the result
                        may not contain path information anymore.
                      */
-                    char* simplified = SCOREP_IO_JoinPath( 2, cwd, current_file.c_str() );
+                    char* simplified = UTILS_IO_JoinPath( 2, cwd, current_file.c_str() );
                     if ( simplified )
                     {
-                        SCOREP_IO_SimplifyPath( simplified );
+                        UTILS_IO_SimplifyPath( simplified );
                         current_file = simplified;
                         free( simplified );
                     }
@@ -244,7 +244,7 @@ SCOREP_Instrumenter::Run()
             {
                 if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
                 {
-                    SCOREP_ERROR_POSIX( "Failed to rename binary" );
+                    UTILS_ERROR_POSIX( "Failed to rename binary" );
                     return EXIT_FAILURE;
                 }
             }

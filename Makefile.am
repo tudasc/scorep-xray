@@ -26,7 +26,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                     \
               $(srcdir)/doc/doxygen-user/scorep_usage.dox.in             \
               $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in      \
               $(srcdir)/doc/profile/scorep_metrics.html                  \
-              $(srcdir)/src/utils/include/SCOREP_Omp.h
+              $(srcdir)/src/utils/include/SCOREP_Omp.h                   \
+              $(srcdir)/share/scorep.errors
 
 
 if ! CROSS_BUILD
@@ -112,3 +113,14 @@ check-local:
 	@$(am__cd) build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi
 	@$(am__cd) build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp
 endif !CROSS_BUILD
+
+DISTCLEANFILES += \
+    src/utils/include/SCOREP_Error_Codes.h \
+    src/utils/include/scorep_error_decls.gen.h
+
+BUILT_SOURCES = \
+    src/utils/include/SCOREP_Error_Codes.h \
+    src/utils/include/scorep_error_decls.gen.h
+
+src/utils/include/SCOREP_Error_Codes.h: $(srcdir)/share/scorep.errors
+src/utils/include/scorep_error_decls.gen.h: $(srcdir)/share/scorep.errors

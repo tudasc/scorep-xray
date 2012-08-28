@@ -51,7 +51,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     /* mark this lock initialized */
@@ -70,7 +70,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     if ( *scorepMutex == NULL )
@@ -80,7 +80,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 
     if ( *scorepMutex != SCOREP_MUTEXT_MARKER )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
     }
 
     *scorepMutex = NULL;
@@ -98,12 +98,12 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     if ( scorepMutex != SCOREP_MUTEXT_MARKER )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
     }
 
     return SCOREP_SUCCESS;
@@ -119,12 +119,12 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
 
     if ( scorepMutex != SCOREP_MUTEXT_MARKER )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
     }
 
     return SCOREP_SUCCESS;

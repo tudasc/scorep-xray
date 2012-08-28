@@ -28,14 +28,15 @@ include ../vendor/common/build-config/common.am
 ## installed. Use e.g. with the primary nobase_include_HEADERS
 PUBLIC_INC_SRC = $(SRC_ROOT)include/scorep/
 
-INC_DIR_UTIL_INTERNAL = $(INC_ROOT)src/utils/include
-
-INC_DIR_UTIL = $(INC_ROOT)vendor/common/src/utils/include
+## Include flags for the headers of the utils component.
+UTILS_CPPFLAGS = \
+    -I../src/utils/include \
+    -I$(INC_ROOT)src/utils/include \
+    -I$(INC_DIR_COMMON_UTILS)
 
 INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
 
-##  Where to find the Jenkins' hash and valgrind headers.
-INC_DIR_VENDOR_HASH     = $(INC_ROOT)vendor/common/hash
+##  Where to find the valgrind headers.
 INC_DIR_VENDOR_VALGRIND = $(INC_ROOT)vendor/valgrind/include
 
 

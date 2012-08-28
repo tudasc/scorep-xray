@@ -35,8 +35,8 @@
 #include <sys/resource.h>
 
 #include "SCOREP_Config.h"
-#include <SCOREP_Debug.h>
-#include <SCOREP_CStr.h>
+#include <UTILS_Debug.h>
+#include <UTILS_CStr.h>
 
 #include "SCOREP_Metric_Source.h"
 
@@ -234,7 +234,7 @@ scorep_metric_rusage_open()
     char* token;
 
     /* Read content of environment variable "SCOREP_METRIC_RUSAGE" */
-    env_metrics = SCOREP_CStr_dup( scorep_metrics_rusage );
+    env_metrics = UTILS_CStr_dup( scorep_metrics_rusage );
 
     /* Return if environment variable is empty */
     if ( strlen( env_metrics ) == 0 )
@@ -242,7 +242,7 @@ scorep_metric_rusage_open()
         free( env_metrics );
         return;
     }
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_RUSAGE=%s", env_metrics );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_RUSAGE=%s", env_metrics );
 
     /* Convert RUSAGE's letters to lower case */
     token = env_metrics;
@@ -323,7 +323,7 @@ scorep_metric_rusage_open()
 static SCOREP_Error_Code
 scorep_metric_rusage_register()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register rusage metric source!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register rusage metric source!" );
 
     return SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );
 }
@@ -335,7 +335,7 @@ scorep_metric_rusage_deregister()
 {
     free( scorep_metrics_rusage );
     free( scorep_metrics_rusage_separator );
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " rusage metric source deregister!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " rusage metric source deregister!" );
 }
 
 /** @brief  Initialize this metric source.
@@ -347,7 +347,7 @@ scorep_metric_rusage_initialize_source()
 {
     if ( scorep_metric_rusage_initialize )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize rusage metric source source." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize rusage metric source source." );
 
         /* Read specified metric from respective environment variable.
          * After this call number_of_metrics will be set to the number of
@@ -357,7 +357,7 @@ scorep_metric_rusage_initialize_source()
         /* Set flag */
         scorep_metric_rusage_initialize = 0;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of rusage metric source done." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of rusage metric source done." );
     }
 
     return number_of_metrics;
@@ -381,7 +381,7 @@ scorep_metric_rusage_finalize_source()
 
         /* Set initialization flag */
         scorep_metric_rusage_initialize = 1;
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize rusage metric source." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize rusage metric source." );
     }
 }
 
@@ -395,7 +395,7 @@ scorep_metric_rusage_initialize_location()
     SCOREP_Metric_EventSet* event_set = malloc( sizeof( struct SCOREP_Metric_EventSet ) );
     assert( event_set );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source initialized location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source initialized location!" );
 
     return event_set;
 }
@@ -409,7 +409,7 @@ scorep_metric_rusage_finalize_location( SCOREP_Metric_EventSet* eventSet )
 {
     free( eventSet );
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source finalized location!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source finalized location!" );
 }
 
 /** @brief Reads values of all metrics in the active event set.

@@ -18,12 +18,11 @@
 # Common settings
 
 scorep_metric_common_cppflags = $(AM_CPPFLAGS) \
-    -I$(INC_DIR_UTIL)                          \
+    $(UTILS_CPPFLAGS)                          \
     -I$(PUBLIC_INC_DIR)                        \
     -I$(INC_ROOT)src/services/metric           \
     -I$(INC_ROOT)src/services/include          \
-    -I$(INC_ROOT)src/measurement/include       \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    -I$(INC_ROOT)src/measurement/include
 
 libscorep_metric_la_CPPFLAGS = $(scorep_metric_common_cppflags)
 

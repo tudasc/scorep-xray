@@ -43,7 +43,7 @@
 #include <scorep_definition_structs.h>
 #include <SCOREP_Definitions.h>
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 
 static void

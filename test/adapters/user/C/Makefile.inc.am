@@ -11,7 +11,7 @@ user_c_test_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(PUBLIC_INC_DIR)                     \
-    -I$(INC_DIR_UTIL)                       \
+    $(UTILS_CPPFLAGS)                       \
     -DSCOREP_USER_ENABLE
 
 user_c_test_LDADD =                         \
@@ -32,7 +32,7 @@ selective_test_SOURCES = $(SRC_ROOT)/test/adapters/user/C/selective_test.c
 
 selective_test_CPPFLAGS = $(AM_CPPFLAGS)    \
     -I$(PUBLIC_INC_DIR)                     \
-    -I$(INC_DIR_UTIL)                       \
+    $(UTILS_CPPFLAGS)                       \
     -DSCOREP_USER_ENABLE
 
 selective_test_LDADD =                      \

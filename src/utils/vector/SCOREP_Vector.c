@@ -27,8 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 #include <SCOREP_Vector.h>
 
@@ -57,7 +57,7 @@ struct SCOREP_Vector_Struct
 /* Construction & destruction */
 
 SCOREP_Vector*
-SCOREP_Vector_Create()
+SCOREP_Vector_Create( void )
 {
     SCOREP_Vector* instance;
 
@@ -65,7 +65,7 @@ SCOREP_Vector_Create()
     instance = ( SCOREP_Vector* )calloc( 1, sizeof( SCOREP_Vector ) );
     if ( !instance )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return NULL;
     }
 
@@ -99,7 +99,7 @@ void
 SCOREP_Vector_Free( SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Release data structure */
     free( instance->items );
@@ -112,7 +112,7 @@ size_t
 SCOREP_Vector_Size( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->size;
 }
@@ -121,7 +121,7 @@ int
 SCOREP_Vector_Empty( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->size == 0;
 }
@@ -133,7 +133,7 @@ size_t
 SCOREP_Vector_Capacity( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->capacity;
 }
@@ -145,7 +145,7 @@ SCOREP_Vector_Reserve( SCOREP_Vector* instance,
     void** newItems;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
     if ( capacity < instance->capacity )
     {
         return 1;
@@ -158,7 +158,7 @@ SCOREP_Vector_Reserve( SCOREP_Vector* instance,
     /* Handle failure in memory allocation */
     if ( !newItems )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
         return 0;
     }
 
@@ -177,7 +177,7 @@ SCOREP_Vector_Resize( SCOREP_Vector* instance,
     void** newItems;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
     if ( size < instance->size )
     {
         return 1;
@@ -195,7 +195,7 @@ SCOREP_Vector_Resize( SCOREP_Vector* instance,
         /* Handle failure in memory allocation */
         if ( !newItems )
         {
-            SCOREP_ERROR_POSIX();
+            UTILS_ERROR_POSIX();
             return 0;
         }
 
@@ -222,7 +222,7 @@ SCOREP_Vector_At( const SCOREP_Vector* instance,
                   size_t               index )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance && index < instance->size );
+    UTILS_ASSERT( instance && index < instance->size );
 
     return instance->items[ index ];
 }
@@ -233,7 +233,7 @@ SCOREP_Vector_Set( SCOREP_Vector* instance,
                    void*          item )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance && index < instance->size );
+    UTILS_ASSERT( instance && index < instance->size );
 
     instance->items[ index ] = item;
 }
@@ -242,7 +242,7 @@ void*
 SCOREP_Vector_Front( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance && instance->size > 0 );
+    UTILS_ASSERT( instance && instance->size > 0 );
 
     return instance->items[ 0 ];
 }
@@ -251,7 +251,7 @@ void*
 SCOREP_Vector_Back( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance && instance->size > 0 );
+    UTILS_ASSERT( instance && instance->size > 0 );
 
     return instance->items[ instance->size - 1 ];
 }
@@ -263,7 +263,7 @@ void**
 SCOREP_Vector_Begin( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->items;
 }
@@ -272,7 +272,7 @@ void**
 SCOREP_Vector_End( const SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     return instance->items + instance->size;
 }
@@ -285,7 +285,7 @@ SCOREP_Vector_PushBack( SCOREP_Vector* instance,
                         void*          item )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Eventually resize dynamic array */
     if ( instance->size == instance->capacity )
@@ -310,7 +310,7 @@ SCOREP_Vector_Insert( SCOREP_Vector* instance,
                       void*          item )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance && index <= instance->size );
+    UTILS_ASSERT( instance && index <= instance->size );
 
     /* Eventually resize dynamic array */
     if ( instance->size == instance->capacity )
@@ -336,7 +336,7 @@ void
 SCOREP_Vector_PopBack( SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Remove last item */
     instance->size--;
@@ -347,7 +347,7 @@ SCOREP_Vector_Erase( SCOREP_Vector* instance,
                      size_t         index )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance && index < instance->size );
+    UTILS_ASSERT( instance && index < instance->size );
 
     /* Remove element */
     instance->size--;
@@ -359,7 +359,7 @@ void
 SCOREP_Vector_Clear( SCOREP_Vector* instance )
 {
     /* Validate arguments */
-    SCOREP_ASSERT( instance );
+    UTILS_ASSERT( instance );
 
     /* Forget everything... */
     instance->size = 0;
@@ -377,7 +377,7 @@ SCOREP_Vector_Find( const SCOREP_Vector*      instance,
     size_t i;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && compareFunc );
+    UTILS_ASSERT( instance && compareFunc );
 
     /* Search item using comparison function */
     for ( i = 0; i < instance->size; ++i )
@@ -405,7 +405,7 @@ SCOREP_Vector_LowerBound( const SCOREP_Vector*      instance,
     size_t size;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && compareFunc );
+    UTILS_ASSERT( instance && compareFunc );
 
     /* Perform lower bound search */
     left = 0;
@@ -445,7 +445,7 @@ SCOREP_Vector_UpperBound( const SCOREP_Vector*      instance,
     size_t size;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && compareFunc );
+    UTILS_ASSERT( instance && compareFunc );
 
     /* Perform upper bound search */
     left = 0;
@@ -481,7 +481,7 @@ SCOREP_Vector_Foreach( const SCOREP_Vector*         instance,
     size_t index;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && procFunc );
+    UTILS_ASSERT( instance && procFunc );
 
     /* Execute function for each entry */
     for ( index = 0; index < instance->size; ++index )

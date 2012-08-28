@@ -15,7 +15,7 @@ scorep_SOURCES = \
 
 scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) \
     -I$(INC_ROOT)src/tools/instrumenter \
-    -I$(INC_DIR_UTIL) \
+    $(UTILS_CPPFLAGS) \
     -DBUILD_DIR=\"`pwd`\"
 
 if HAVE_PDT
@@ -52,12 +52,12 @@ endif
 
 scorep_LDFLAGS = $(OPENMP_CFLAGS)
 
-scorep_LDADD = libscorep_utilities.la
+scorep_LDADD = libutils.la
 
 EXTRA_DIST += \
-     $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf \
-     $(SRC_ROOT)share/SCOREP_Cobi_Adapter.xml.in      \
-     $(SRC_ROOT)share/SCOREP_Cobi_Filter.xml
+    $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf \
+    $(SRC_ROOT)share/SCOREP_Cobi_Adapter.xml.in      \
+    $(SRC_ROOT)share/SCOREP_Cobi_Filter.xml
 
 if HAVE_COBI
 BUILT_SOURCES += create-cobi-config-local

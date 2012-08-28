@@ -38,8 +38,8 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include <scorep_profile_definition.h>
 #include <scorep_definitions.h>
@@ -114,7 +114,7 @@ assign_callpath( scorep_profile_node* current, void* param )
 {
     SCOREP_CallpathHandle parent_path = SCOREP_INVALID_CALLPATH;
 
-    SCOREP_ASSERT( current != NULL );
+    UTILS_ASSERT( current != NULL );
 
     if ( current->callpath_handle == SCOREP_INVALID_CALLPATH )
     {
@@ -157,15 +157,15 @@ assign_callpath( scorep_profile_node* current, void* param )
                 /* Do no assign a callpath to the thread root node */
                 break;
             case scorep_profile_node_thread_start:
-                SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                              "Try to assign a callpath to a thread activation node. "
-                              "This means that this is not the master thread and the worker "
-                              "threads were not expanded before." );
+                UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                             "Try to assign a callpath to a thread activation node. "
+                             "This means that this is not the master thread and the worker "
+                             "threads were not expanded before." );
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                              "Callpath assignedment to node type %d not supported.",
-                              current->node_type );
+                UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                             "Callpath assignedment to node type %d not supported.",
+                             current->node_type );
         }
     }
 }
@@ -220,15 +220,13 @@ scorep_profile_assign_callpath_to_master()
     /* Check consistency */
     if ( master == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_PROFILE,
-                             "Try to assign callpathes to empty callpath." );
+        UTILS_WARNING( "Try to assign callpathes to empty callpath." );
         return;
     }
-    SCOREP_ASSERT( master->node_type == scorep_profile_node_thread_root );
+    UTILS_ASSERT( master->node_type == scorep_profile_node_thread_root );
     if ( master->first_child == NULL )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_WARNING | SCOREP_DEBUG_PROFILE,
-                             "Master thread contains no regions." );
+        UTILS_WARNING( "Master thread contains no regions." );
         return;
     }
 

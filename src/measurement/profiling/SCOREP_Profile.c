@@ -26,14 +26,13 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Mutex.h>
 
 #include <scorep_thread.h>
 #include <inttypes.h>
-#include <assert.h>
 #include <stdlib.h>
 
 #include <scorep_profile_node.h>
@@ -47,6 +46,8 @@
 #include <SCOREP_Timing.h>
 #include <SCOREP_Location.h>
 #include "SCOREP_Metric_Management.h"
+
+#define SCOREP_DEBUG_MODULE_NAME PROFILE
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -101,9 +102,7 @@ void
 SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
                            SCOREP_MetricHandle* metrics )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "Initialize profile with %d dense metrics",
-                         numDenseMetrics );
+    UTILS_DEBUG_ENTRY( "Number of dense metrics: %u", numDenseMetrics );
 
     if ( scorep_profile.is_initialized )
     {
@@ -143,17 +142,16 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
             current = current->next_sibling;
         }
     }
-    assert( scorep_profile_param_instance );
+    UTILS_ASSERT( scorep_profile_param_instance );
 }
 
 void
 SCOREP_Profile_Finalize()
 {
+    UTILS_DEBUG_ENTRY();
+
     scorep_profile_node*         current     = scorep_profile.first_root_node;
     SCOREP_Profile_LocationData* thread_data = NULL;
-
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "Delete profile definition." );
 
     /* Update all root nodes which survive a finalize, because locations are not
        reinitialized. Assume that the siblings of scorep_profile.first_root_node
@@ -176,8 +174,8 @@ SCOREP_Profile_Finalize()
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT, "Root node of wrong type %d",
-                          current->node_type );
+            UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT, "Root node of wrong type %d",
+                         current->node_type );
         }
 
         /* Process next */
@@ -297,7 +295,7 @@ SCOREP_Profile_Write()
     }
     else
     {
-        SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Unsupported profile format" );
+        UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Unsupported profile format" );
     }
 }
 
@@ -322,8 +320,8 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
     //printf( "%u: Enter %s\n", SCOREP_Location_GetId( thread ), SCOREP_Region_GetName( region ) );
     scorep_profile_node* node = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
-                         "Enter event of profiling system called" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
+                        "Enter event of profiling system called" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -340,7 +338,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
                                  type,
                                  timestamp,
                                  metrics );
-    assert( node != NULL );
+    UTILS_ASSERT( node != NULL );
 
     /* Update current node pointer */
     scorep_profile_set_current_node( location, node );
@@ -375,8 +373,8 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     scorep_profile_node*         parent = NULL;
     SCOREP_Profile_LocationData* location;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
-                         "Exit event of profiling system called" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
+                        "Exit event of profiling system called" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
     location = SCOREP_Location_GetProfileData( thread );
@@ -388,10 +386,10 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     }
 
     /* Get current node */
-    SCOREP_ASSERT( location != NULL );
+    UTILS_ASSERT( location != NULL );
 
     node = scorep_profile_get_current_node( location );
-    assert( node != NULL );
+    UTILS_ASSERT( node != NULL );
     parent = scorep_profile_exit( location, node, region, timestamp, metrics );
 
     /* Update current node */
@@ -416,8 +414,8 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
     node = scorep_profile_get_current_node( location );
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Metric triggered outside of a region." );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Metric triggered outside of a region." );
         SCOREP_PROFILE_STOP;
         return;
     }
@@ -443,8 +441,8 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
     node = scorep_profile_get_current_node( location );
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Metric triggered outside of a region." );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Metric triggered outside of a region." );
         SCOREP_PROFILE_STOP;
         return;
     }
@@ -486,8 +484,8 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to create location" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Failed to create location" );
         SCOREP_PROFILE_STOP;
         return;
     }
@@ -552,8 +550,8 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to create location" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Failed to create location" );
         SCOREP_PROFILE_STOP;
         return;
     }
@@ -585,10 +583,10 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
     scorep_profile_node*         node           = NULL;
     scorep_profile_node*         creation_point = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
-    SCOREP_ASSERT( locationData != NULL );
+    UTILS_ASSERT( locationData != NULL );
 
     /* If it is the same location as the parent, do not do anything */
     if ( locationData == parentLocationData )
@@ -600,13 +598,13 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
     thread_data = SCOREP_Location_GetProfileData( locationData );
     if ( thread_data == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Thread activated which was not created." );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Thread activated which was not created." );
         SCOREP_PROFILE_STOP;
         return;
     }
     root = thread_data->root_node;
-    SCOREP_ASSERT( root != NULL );
+    UTILS_ASSERT( root != NULL );
 
     /* Find creation point if available */
     if ( parentLocationData != NULL )
@@ -640,8 +638,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
         /* Disable profiling if node creation failed */
         if ( node == NULL )
         {
-            SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                          "Failed to create location" );
+            UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                         "Failed to create location" );
             SCOREP_PROFILE_STOP;
             return;
         }
@@ -660,7 +658,7 @@ void
 SCOREP_Profile_OnThreadDeactivation( SCOREP_Location* locationData,
                                      SCOREP_Location* parentLocationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
 
     /* If it is the same location as the parent, do not do anything */
     if ( locationData == parentLocationData )
@@ -686,12 +684,12 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
 
     /* Initialize type specific data structure */
     thread_data = SCOREP_Location_GetProfileData( locationData );
     thread_id   = SCOREP_Location_GetId( locationData );
-    SCOREP_ASSERT( thread_data != NULL );
+    UTILS_ASSERT( thread_data != NULL );
 
     scorep_profile_type_set_location_data( &node_data, thread_data );
     scorep_profile_type_set_int_value( &node_data, thread_id );
@@ -705,8 +703,8 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to create location" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Failed to create location" );
         SCOREP_PROFILE_STOP;
         return;
     }
@@ -725,7 +723,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     if ( parent_data == NULL )
     {
         /* It is the initial thread. Insert as first new root node. */
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
 
         SCOREP_MutexLock( scorep_profile_location_mutex );
         node->next_sibling             = scorep_profile.first_root_node;
@@ -749,7 +747,7 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
     scorep_profile_node*         fork_node = NULL;
     SCOREP_Profile_LocationData* location  = NULL;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     location  = SCOREP_Location_GetProfileData( threadData );

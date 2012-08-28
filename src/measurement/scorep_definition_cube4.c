@@ -35,8 +35,8 @@
 #include "scorep_definitions.h"
 #include <cubew_services.h>
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
@@ -176,12 +176,12 @@ get_cube_node(  cube_t* my_cube,
     }                                                                         \
     else                                                                      \
     {                                                                         \
-        SCOREP_ASSERT( false );                                               \
+        UTILS_ASSERT( false );                                               \
         goto cleanup;                                                         \
     }                                                                         \
     if ( map-> type ## _table_cube == NULL )                                  \
     {                                                                         \
-        SCOREP_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
+        UTILS_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
         goto cleanup;                                                         \
     }                                                                         \
     map-> type ## _table_scorep                                               \
@@ -190,7 +190,7 @@ get_cube_node(  cube_t* my_cube,
                                    &SCOREP_Hashtab_ComparePointer );          \
     if ( map-> type ## _table_scorep == NULL )                                \
     {                                                                         \
-        SCOREP_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
+        UTILS_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
         goto cleanup;                                                         \
     }
 /* *INDENT-ON* */
@@ -206,7 +206,7 @@ scorep_cube4_create_definitions_map()
           malloc( sizeof( scorep_cube4_definitions_map ) );
     if ( map == NULL )
     {
-        SCOREP_ERROR_POSIX( "Unable to create mapping struct" );
+        UTILS_ERROR_POSIX( "Unable to create mapping struct" );
         return NULL;
     }
 
@@ -485,9 +485,9 @@ write_metric_definitions( cube_t*                       my_cube,
                 data_type = "DOUBLE";
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                              "Metric '%s' has unknown value type.",
-                              metric_name );
+                UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                             "Metric '%s' has unknown value type.",
+                             metric_name );
                 continue;
         }
 
@@ -511,9 +511,9 @@ write_metric_definitions( cube_t*                       my_cube,
                 data_type        = "MAXDOUBLE";
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                              "Metric '%s' has unknown profiling type.",
-                              metric_name );
+                UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                             "Metric '%s' has unknown profiling type.",
+                             metric_name );
                 continue;
         }
 
@@ -631,7 +631,7 @@ write_system_tree( cube_t*                   my_cube,
 
     if ( system_tree == NULL )
     {
-        SCOREP_ERROR_POSIX( "Failed to allocate memory for system tree translation." );
+        UTILS_ERROR_POSIX( "Failed to allocate memory for system tree translation." );
         return NULL;
     }
 

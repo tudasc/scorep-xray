@@ -36,9 +36,8 @@ SCOREP_OA_FORTRAN_FLAGS =                       \
     -I$(INC_ROOT)src/measurement                \
     -I$(INC_ROOT)include/scorep                 \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(INC_DIR_UTIL_INTERNAL)                  \
-    -I$(INC_DIR_UTIL)                           \
-    -I$(INC_DIR_VENDOR_HASH)
+    $(UTILS_CPPFLAGS)                           \
+    -I$(INC_DIR_COMMON_HASH)
 
 libscorep_oa_fortran_sub1_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)
@@ -85,9 +84,8 @@ OA_SERIAL_FLAGS =                               \
     -I$(INC_ROOT)include/scorep                 \
     -I$(INC_ROOT)src/services/include           \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(INC_DIR_UTIL_INTERNAL)                  \
-    -I$(INC_DIR_UTIL)                           \
-    -I$(INC_DIR_VENDOR_HASH)    
+    $(UTILS_CPPFLAGS)                           \
+    -I$(INC_DIR_COMMON_HASH)
 
 noinst_LTLIBRARIES += libscorep_oa_serial.la
 libscorep_oa_serial_la_SOURCES =                                           \
@@ -107,7 +105,7 @@ libscorep_oa_serial_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_request.h           \
     $(SRC_ROOT)src/measurement/online_access/SCOREP_OA_PeriscopeMetrics.h  \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c             \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h        
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h
 
 libscorep_oa_serial_la_CPPFLAGS = $(OA_SERIAL_FLAGS) -D_POSIX_SOURCE
 
@@ -127,8 +125,8 @@ SCOREP_OA_FORTRAN_FLAGS =                       \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(INC_DIR_UTIL)                           \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH)
 
 libscorep_oa_fortran_sub1_la_SOURCES =          \
     $(SCOREP_OA_FORTRAN_SOURCES)

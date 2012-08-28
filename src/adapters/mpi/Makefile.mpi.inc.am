@@ -31,13 +31,12 @@ libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
 
 libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                          \
+    $(UTILS_CPPFLAGS)                       \
     -I$(INC_ROOT)src/adapters/mpi           \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \
     -I$(INC_ROOT)src/measurement/online_access         \
-    -I$(PUBLIC_INC_DIR)                     \
-    -I$(INC_DIR_UTIL_INTERNAL)              \
-    -I$(INC_DIR_UTIL)
+    -I$(PUBLIC_INC_DIR)
 
 ## Disable mpi profiling hooks
 ##libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 
@@ -67,7 +66,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub1_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
-    -I$(INC_DIR_UTIL)                                   \
+    $(UTILS_CPPFLAGS)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB1
 
 noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_wrapper_sub2.la
@@ -78,7 +77,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub2_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
-    -I$(INC_DIR_UTIL)                                   \
+    $(UTILS_CPPFLAGS)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB2
 
 
@@ -90,7 +89,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub3_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
-    -I$(INC_DIR_UTIL)                                   \
+    $(UTILS_CPPFLAGS)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB3
 
 
@@ -102,7 +101,7 @@ libscorep_adapter_mpi_fortran_wrapper_sub4_la_CPPFLAGS =  \
     -I$(INC_ROOT)src/adapters/include                   \
     -I$(INC_ROOT)src/measurement/online_access       				\
     -I$(PUBLIC_INC_DIR)                                 \
-    -I$(INC_DIR_UTIL)                                   \
+    $(UTILS_CPPFLAGS)                                   \
     -DFSUB=SCOREP_FORTRAN_SUB4
 
 noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_conv.la

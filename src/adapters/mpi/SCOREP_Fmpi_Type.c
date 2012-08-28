@@ -43,8 +43,8 @@
 #include <config.h>
 #include "SCOREP_Fmpi.h"
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 /* uppercase defines */
 /** @def MPI_Pack_U
@@ -841,7 +841,7 @@ FSUB( MPI_Type_extent )( MPI_Datatype* datatype, int* extent, int* ierr )
     *extent = ( int )c_extent;
     if ( *extent != c_extent )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif
@@ -993,7 +993,7 @@ FSUB( MPI_Type_lb )( MPI_Datatype* datatype, int* displacement, int* ierr )
     *displacement = ( int )c_displacement;
     if ( *displacement != c_displacement )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif
@@ -1071,7 +1071,7 @@ FSUB( MPI_Type_ub )( MPI_Datatype* datatype, int* displacement, int* ierr )
     *displacement = ( int )c_displacement;
     if ( *displacement != c_displacement )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif
@@ -1758,7 +1758,7 @@ FSUB( MPI_Type_extent )( MPI_Fint* datatype, MPI_Fint* extent, MPI_Fint* ierr )
     *extent = ( MPI_Fint )c_extent;
     if ( *extent != c_extent )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif
@@ -1918,7 +1918,7 @@ FSUB( MPI_Type_lb )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr 
     *displacement = ( MPI_Fint )c_displacement;
     if ( *displacement != c_displacement )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif
@@ -1985,7 +1985,7 @@ FSUB( MPI_Type_struct )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_F
     c_array_of_types = ( MPI_Datatype* )malloc( *count * sizeof( MPI_Datatype ) );
     if ( !c_array_of_types )
     {
-        SCOREP_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "" );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
         abort();
     }
     /* index variable i, is already defined by the implicit conversion done
@@ -2025,7 +2025,7 @@ FSUB( MPI_Type_ub )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr 
     *displacement = ( MPI_Fint )c_displacement;
     if ( *displacement != c_displacement )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
 }
 #endif

@@ -68,8 +68,7 @@ libscorep_measurement_la_SOURCES =                                \
 libscorep_measurement_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/services/include \
-    @CUBE_WRITER_CPPFLAGS@ \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    @CUBE_WRITER_CPPFLAGS@
 
 ## paradigm omp
 
@@ -84,8 +83,7 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c 
 libscorep_paradigm_omp_la_CPPFLAGS = \
     $(common_libscorep_cppflags)     \
-    -I$(INC_ROOT)src/services/metric \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    -I$(INC_ROOT)src/services/metric
 endif
 
 ##paradigm non omp
@@ -98,8 +96,7 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c 
 libscorep_paradigm_non_omp_la_CPPFLAGS = \
     $(common_libscorep_cppflags)         \
-    -I$(INC_ROOT)src/services/metric     \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    -I$(INC_ROOT)src/services/metric
 ## paradigm non mpi
 
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
@@ -108,30 +105,52 @@ libscorep_paradigm_non_mpi_la_SOURCES  =                            \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_disabled.c     
 libscorep_paradigm_non_mpi_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)         \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(common_libscorep_cppflags)
 
 ## sion-serial
 
-noinst_LTLIBRARIES += libscorep_sion_serial.la 
+noinst_LTLIBRARIES += libscorep_sion_serial.la
 #if HAVE_SION_SERIAL
-#libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
-#libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement @OTF2_CPPFLAGS@ -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
+#libscorep_sion_serial_la_SOURCES  = \
+#    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
+#libscorep_sion_serial_la_CPPFLAGS = \
+#    $(AM_CPPFLAGS) \
+#    -I$(INC_ROOT)src/measurement \
+#    $(UTILS_CPPFLAGS) \
+#    @OTF2_CPPFLAGS@
 #else
-libscorep_sion_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_serial_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement @OTF2_CPPFLAGS@ -I$(INC_DIR_UTIL)
+libscorep_sion_serial_la_SOURCES  = \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
+libscorep_sion_serial_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement \
+    $(UTILS_CPPFLAGS) \
+    @OTF2_CPPFLAGS@
 #endif
 
 
 ## sion-omp
 
-noinst_LTLIBRARIES += libscorep_sion_omp.la 
+noinst_LTLIBRARIES += libscorep_sion_omp.la
 #if HAVE_SION_OMP
-#libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c
-#libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) $(SCOREP_SION_OMP_CPPFLAGS) -I$(INC_ROOT)src/measurement @OTF2_CPPFLAGS@ -I$(INC_DIR_UTIL) -I$(INC_ROOT)src/measurement
-#libscorep_sion_omp_la_LDFLAGS  = $(SCOREP_SION_OMP_LDFLAGS)
-#libscorep_sion_omp_la_LIBADD   = $(SCOREP_SION_OMP_LIBS)
+#libscorep_sion_omp_la_SOURCES = \
+#    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c
+#libscorep_sion_omp_la_CPPFLAGS = \
+#    $(AM_CPPFLAGS) \
+#    $(SCOREP_SION_OMP_CPPFLAGS) \
+#    -I$(INC_ROOT)src/measurement \
+#    $(UTILS_CPPFLAGS) \
+#    @OTF2_CPPFLAGS@
+#libscorep_sion_omp_la_LDFLAGS  = \
+#    $(SCOREP_SION_OMP_LDFLAGS)
+#libscorep_sion_omp_la_LIBADD = \
+#    $(SCOREP_SION_OMP_LIBS)
 #else
-libscorep_sion_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_omp_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src/measurement @OTF2_CPPFLAGS@ -I$(INC_DIR_UTIL)
+libscorep_sion_omp_la_SOURCES  = \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
+libscorep_sion_omp_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement \
+    $(UTILS_CPPFLAGS) \
+    @OTF2_CPPFLAGS@
 #endif

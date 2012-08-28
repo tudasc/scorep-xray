@@ -37,8 +37,8 @@
 #include <otf2/otf2.h>
 
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error_Codes.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 
 #include <SCOREP_Config.h>
@@ -61,6 +61,7 @@
 #include "scorep_tracing_definitions.h"
 #include "scorep_tracing_file_substrate.h"
 
+#define SCOREP_DEBUG_MODULE_NAME TRACING
 
 static OTF2_Archive* scorep_otf2_archive;
 static SCOREP_Mutex  scorep_otf2_archive_lock;
@@ -107,7 +108,7 @@ SCOREP_Tracing_Register( void )
     ret = SCOREP_ConfigRegister( "tracing", scorep_tracing_config_variables );
     if ( SCOREP_SUCCESS != ret )
     {
-        SCOREP_ERROR( ret, "Can't register tracing config variables" );
+        UTILS_ERROR( ret, "Can't register tracing config variables" );
     }
 
     return ret;
@@ -140,14 +141,14 @@ scorep_on_trace_pre_flush( void*         userData,
         assert( false );
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_TRACING,
-                         "[%d]: %s flush on %s#%" PRIu64 "\n",
-                         SCOREP_Mpi_GetRank(),
-                         final ? "final" : "intermediate",
-                         fileType == OTF2_FILETYPE_ANCHOR ? "Anchor" :
-                         fileType == OTF2_FILETYPE_GLOBAL_DEFS ? "GlobalDef" :
-                         fileType == OTF2_FILETYPE_LOCAL_DEFS ? "Def" : "Evt",
-                         fileType == OTF2_FILETYPE_GLOBAL_DEFS ? 0 : locationId );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_TRACING,
+                        "[%d]: %s flush on %s#%" PRIu64 "\n",
+                        SCOREP_Mpi_GetRank(),
+                        final ? "final" : "intermediate",
+                        fileType == OTF2_FILETYPE_ANCHOR ? "Anchor" :
+                        fileType == OTF2_FILETYPE_GLOBAL_DEFS ? "GlobalDef" :
+                        fileType == OTF2_FILETYPE_LOCAL_DEFS ? "Def" : "Evt",
+                        fileType == OTF2_FILETYPE_GLOBAL_DEFS ? 0 : locationId );
 
     if ( fileType == OTF2_FILETYPE_EVENTS && !final )
     {
@@ -224,8 +225,7 @@ scorep_tracing_chunk_allocate( void*         userData,
                                void**        perBufferData,
                                uint64_t      chunkSize )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "%" PRIu64, chunkSize );
+    UTILS_DEBUG_ENTRY( "chunk size: %" PRIu64, chunkSize );
 
     if ( !*perBufferData )
     {
@@ -249,8 +249,7 @@ scorep_tracing_chunk_free_all( void*         userData,
                                void**        perBufferData,
                                bool          final )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_TRACING | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "%s", final ? "final" : "intermediate" );
+    UTILS_DEBUG_ENTRY( "%s", final ? "final" : "intermediate" );
 
     /* maybe we were called without one allocate */
     if ( !*perBufferData )

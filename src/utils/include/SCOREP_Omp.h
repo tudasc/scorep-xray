@@ -32,11 +32,9 @@
  *
  */
 
-#define SCOREP_PRAGMA_STR_( str ) #str
-#define SCOREP_PRAGMA_STR( str ) SCOREP_PRAGMA_STR_( str )
 // the following define is needed to please the PGI compiler
 #define PRAGMA_OP( x ) _Pragma( x )
-#define SCOREP_PRAGMA( pragma ) PRAGMA_OP( SCOREP_PRAGMA_STR( pragma ) )
+#define SCOREP_PRAGMA( pragma ) PRAGMA_OP( UTILS_STRINGIFY( pragma ) )
 
 #ifdef _OPENMP
 
@@ -45,10 +43,6 @@
     #define SCOREP_PRAGMA_OMP( omp_pragma ) SCOREP_PRAGMA( omp omp_pragma )
 
 #else
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
     #define omp_set_num_threads( n ) do { } while ( 0 )
     #define omp_get_num_threads() 1
@@ -77,10 +71,6 @@ extern "C" {
 // omp_get_wtime/wtick also need special treatment
 
     #define SCOREP_PRAGMA_OMP( omp_pragma )
-
-#ifdef __cplusplus
-} /* "C" */
-#endif
 
 #endif
 

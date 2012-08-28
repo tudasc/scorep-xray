@@ -26,7 +26,7 @@
 
 #include <config.h>
 
-#include <SCOREP_IO.h>
+#include <UTILS_IO.h>
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
 
@@ -134,8 +134,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Unexpected token 'SCOREP_FILE_NAMES_BEGIN'" );
+            UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                         "Unexpected token 'SCOREP_FILE_NAMES_BEGIN'" );
             return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -150,8 +150,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Unexpected token 'SCOREP_FILE_NAMES_END'" );
+            UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                         "Unexpected token 'SCOREP_FILE_NAMES_END'" );
             return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -165,8 +165,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Unexpected token 'SCOREP_REGION_NAMES_BEGIN'" );
+            UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                         "Unexpected token 'SCOREP_REGION_NAMES_BEGIN'" );
             return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -181,8 +181,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
         }
         else
         {
-            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Unexpected token 'SCOREP_REGION_NAMES_END'" );
+            UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                         "Unexpected token 'SCOREP_REGION_NAMES_END'" );
             return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -203,8 +203,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
                 *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE;
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                              "Unexpected token 'EXCLUDE'" );
+                UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                             "Unexpected token 'EXCLUDE'" );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -225,8 +225,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
                 *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE;
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                              "Unexpected token 'INCLUDE'" );
+                UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                             "Unexpected token 'INCLUDE'" );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -243,8 +243,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
                 *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                              "Unexpected token 'FORTRAN'" );
+                UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                             "Unexpected token 'FORTRAN'" );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -269,8 +269,8 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
                                                  SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
                 break;
             default:
-                SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                              "Unexpected token '%s'", token );
+                UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                             "Unexpected token '%s'", token );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
     }
@@ -303,14 +303,14 @@ SCOREP_Filter_ParseFile( const char* file_name )
     filter_file = fopen( file_name, "r" );
     if ( filter_file == NULL )
     {
-        SCOREP_ERROR_POSIX(  "Unable to open filter specification file" );
+        UTILS_ERROR_POSIX(  "Unable to open filter specification file" );
         return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
     }
 
     /* Read file line by line */
     while ( !feof( filter_file ) )
     {
-        err = SCOREP_IO_GetLine( &buffer, &buffer_size, filter_file );
+        err = UTILS_IO_GetLine( &buffer, &buffer_size, filter_file );
         if ( ( err != SCOREP_SUCCESS ) && ( err != SCOREP_ERROR_END_OF_BUFFER ) )
         {
             goto cleanup;
@@ -342,8 +342,8 @@ SCOREP_Filter_ParseFile( const char* file_name )
         /* Escaping linebreaks is not allowed */
         if ( ( length >= 2 ) && ( buffer[ length - 2 ] == '\\' ) )
         {
-            SCOREP_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                          "Escaping line breaks is not supported." );
+            UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
+                         "Escaping line breaks is not supported." );
             err = SCOREP_ERROR_PARSE_SYNTAX;
             goto cleanup;
         }

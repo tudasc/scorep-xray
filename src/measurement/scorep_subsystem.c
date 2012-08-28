@@ -65,8 +65,8 @@ scorep_subsystems_register( void )
 
         if ( SCOREP_SUCCESS != error )
         {
-            SCOREP_ERROR( error, "Can't register %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
+            UTILS_ERROR( error, "Can't register %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
     }
@@ -87,8 +87,8 @@ scorep_subsystems_initialize( void )
 
         if ( SCOREP_SUCCESS != error )
         {
-            SCOREP_ERROR( error, "Can't initialize %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
+            UTILS_ERROR( error, "Can't initialize %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
         else if ( SCOREP_Env_RunVerbose() )
@@ -119,8 +119,8 @@ scorep_subsystems_initialize_location( SCOREP_Location* locationData )
 
         if ( SCOREP_SUCCESS != error )
         {
-            SCOREP_ERROR( error, "Can't initialize location for %s subsystem",
-                          scorep_subsystems[ i ]->subsystem_name );
+            UTILS_ERROR( error, "Can't initialize location for %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
             _Exit( EXIT_FAILURE );
         }
         else if ( SCOREP_Env_RunVerbose() )

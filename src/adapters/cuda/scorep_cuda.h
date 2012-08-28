@@ -32,8 +32,8 @@
 #include <stdbool.h>
 #endif
 
-#include <SCOREP_Debug.h>
-#include <SCOREP_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 #include <cupti.h>
 
@@ -53,8 +53,7 @@
 
 #define SCOREP_CUDA_DRIVER_CALL( _err ) \
     if ( _err != CUDA_SUCCESS ) { \
-        SCOREP_ERROR( SCOREP_WARNING, \
-                      "[CUDA] Error %d in %s:%lu", __FILE__, __LINE__, _err ); \
+        UTILS_WARNING( "[CUDA] Error %d in %s:%lu", __FILE__, __LINE__, _err ); \
     }
 
 #define SCOREP_CUPTI_CALL( _err ) \

@@ -30,8 +30,8 @@
 #include <unistd.h>
 
 
-#include <SCOREP_Error.h>
-#include <SCOREP_IO.h>
+#include <UTILS_Error.h>
+#include <UTILS_IO.h>
 
 
 #include <SCOREP_Platform.h>
@@ -46,7 +46,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     /* Initialize */
     if ( !root )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
     }
     *root = NULL;
 
@@ -57,15 +57,15 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
                                                    256, "" );
     if ( !node )
     {
-        return SCOREP_ERROR( SCOREP_ERROR_MEM_FAULT, "Failed to add hostname node" );
+        return UTILS_ERROR( SCOREP_ERROR_MEM_FAULT, "Failed to add hostname node" );
     }
 
-    if ( SCOREP_IO_GetHostname( node->node_name, 256 ) != 0 )
+    if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
     {
         int errno_safed = errno;
         SCOREP_Platform_FreePath( *root );
         errno = errno_safed;
-        return SCOREP_ERROR_POSIX( "SCOREP_IO_GetHostname() failed." );
+        return UTILS_ERROR_POSIX( "UTILS_IO_GetHostname() failed." );
     }
 
     /* Set machine */
@@ -75,8 +75,8 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     if ( !node )
     {
         SCOREP_Platform_FreePath( *root );
-        return SCOREP_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                             "Failed to build system tree path" );
+        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                            "Failed to build system tree path" );
     }
 
     return SCOREP_SUCCESS;

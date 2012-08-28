@@ -28,7 +28,10 @@
 #include <config.h>
 
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+
+
+#include <UTILS_Debug.h>
 
 
 #include "scorep_mpi.h"
@@ -101,7 +104,7 @@ SCOREP_Mpi_Send( void*               buf,
                  SCOREP_Mpi_Datatype scorep_datatype,
                  int                 dest )
 {
-    SCOREP_BUG( "SCOREP_Mpi_Send() called in non-mpi build" );
+    UTILS_BUG( "SCOREP_Mpi_Send() called in non-mpi build" );
 
     return 1;
 }
@@ -114,7 +117,7 @@ SCOREP_Mpi_Recv( void*               buf,
                  int                 source,
                  SCOREP_Mpi_Status   status )
 {
-    SCOREP_BUG( "SCOREP_Mpi_Recv() called in non-mpi build" );
+    UTILS_BUG( "SCOREP_Mpi_Recv() called in non-mpi build" );
 
     return 1;
 }

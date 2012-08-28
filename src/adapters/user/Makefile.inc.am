@@ -14,8 +14,7 @@ SCOREP_USER_FORTRAN_FLAGS =                     \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/filtering      \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(INC_DIR_UTIL)                           \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(UTILS_CPPFLAGS)
 
 if SCOREP_COMPILER_PGI
 SCOREP_USER_FORTRAN_FLAGS += -DSCOREP_COMPILER_PGI
@@ -41,8 +40,7 @@ SCOREP_USER_C_FLAGS =                           \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(INC_ROOT)src/measurement/filtering      \
     -I$(PUBLIC_INC_DIR)                         \
-    -I$(INC_DIR_UTIL)                           \
-    -I$(INC_DIR_UTIL_INTERNAL)
+    $(UTILS_CPPFLAGS)
 
 
 noinst_LTLIBRARIES +=                      \

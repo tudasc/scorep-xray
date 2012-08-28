@@ -22,8 +22,4 @@ libscorep_bitstring_la_SOURCES = \
     $(SRC_ROOT)src/utils/include/SCOREP_Bitstring.h
 
 libscorep_bitstring_la_CPPFLAGS = \
-    $(common_libscorep_cppflags) \
-    -I$(INC_ROOT)src/utils/include
-
-
-
+    $(common_libscorep_cppflags)

@@ -26,7 +26,7 @@
 
 #include <config.h>
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
 
@@ -86,8 +86,8 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Failed to create location. Disable profiling" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Failed to create location. Disable profiling" );
         SCOREP_PROFILE_STOP;
         return NULL;
     }
@@ -115,8 +115,8 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     /* validity checks */
     if ( node == NULL )
     {
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Exit event occured in a thread which never entered a region" );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Exit event occured in a thread which never entered a region" );
         SCOREP_PROFILE_STOP;
         return NULL;
     }
@@ -157,13 +157,13 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
          ( scorep_profile_type_get_region_handle( node->type_specific_data ) != region ) )
     {
         SCOREP_PROFILE_STOP;
-        SCOREP_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                      "Exit event for other than current region occured at "
-                      "location %u: Expected exit for region %s. "
-                      "Exited region %s",
-                      scorep_profile_type_get_int_value( location->root_node->type_specific_data ),
-                      SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ),
-                      SCOREP_Region_GetName( region ) );
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Exit event for other than current region occured at "
+                     "location %u: Expected exit for region %s. "
+                     "Exited region %s",
+                     scorep_profile_type_get_int_value( location->root_node->type_specific_data ),
+                     SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ),
+                     SCOREP_Region_GetName( region ) );
         return NULL;
     }
     return parent;

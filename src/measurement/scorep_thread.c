@@ -41,7 +41,7 @@
 #include "scorep_subsystem.h"
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 #include "scorep_environment.h"
 
@@ -177,8 +177,8 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
      * At the moment this function just supports creation of non-CPU
      * locations (e.g. locations for GPU threads).
      */
-    SCOREP_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
-                   "At the moment SCOREP_CreateLocation() does not support creation of CPU locations." );
+    UTILS_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
+                  "At the moment SCOREP_CreateLocation() does not support creation of CPU locations." );
 
     if ( parent == NULL )
     {
@@ -625,8 +625,8 @@ SCOREP_Allocator_PageManager*
 SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
                                       SCOREP_MemoryType type )
 {
-    SCOREP_BUG_ON( 0 > type || type >= SCOREP_NUMBER_OF_MEMORY_TYPES,
-                   "Invalid memory type given." );
+    UTILS_BUG_ON( 0 > type || type >= SCOREP_NUMBER_OF_MEMORY_TYPES,
+                  "Invalid memory type given." );
     return locationData->page_managers[ type ];
 }
 

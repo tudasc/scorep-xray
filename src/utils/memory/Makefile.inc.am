@@ -28,6 +28,5 @@ libscorep_allocator_la_SOURCES =                          \
 libscorep_allocator_la_CPPFLAGS =      \
 	$(AM_CPPFLAGS)                 \
 	-I$(PUBLIC_INC_DIR)            \
-	-I$(INC_DIR_UTIL)              \
-	-I$(INC_DIR_UTIL_INTERNAL)     \
+	$(UTILS_CPPFLAGS)              \
 	-I$(INC_DIR_VENDOR_VALGRIND)

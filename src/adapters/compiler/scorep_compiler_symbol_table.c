@@ -128,7 +128,7 @@ scorep_compiler_get_exe( char   path[],
             exepath   = scorep_compiler_executable + exelength - length + 1;
             exelength = length;
         }
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
 
         strncpy( path, exepath, exelength );
         return true;
@@ -152,10 +152,10 @@ scorep_compiler_get_exe( char   path[],
     }
     else
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                             "Meanwhile, you have to set the configuration variable"
-                             "'executable' to your local executable." );
-        SCOREP_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            "Meanwhile, you have to set the configuration variable"
+                            "'executable' to your local executable." );
+        UTILS_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
         return false;
     }
 }
@@ -168,7 +168,7 @@ scorep_compiler_process_symbol( long         addr,
 {
     if ( filename != NULL )
     {
-        SCOREP_IO_SimplifyPath( ( char* )filename );
+        UTILS_IO_SimplifyPath( ( char* )filename );
     }
 
     const char* funcname_demangled = funcname;
@@ -225,7 +225,7 @@ scorep_compiler_get_sym_tab( void )
     /* initialize BFD */
     bfd_init();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using BFD" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using BFD" );
 
     /* get the path from system */
     if ( !scorep_compiler_get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
@@ -235,22 +235,22 @@ scorep_compiler_get_sym_tab( void )
     bfd_image = bfd_openr( ( const char* )&path, 0 );
     if ( !bfd_image )
     {
-        SCOREP_ERROR( SCOREP_ERROR_ENOENT, "BFD image not present at path: %s \n", path );
+        UTILS_ERROR( SCOREP_ERROR_ENOENT, "BFD image not present at path: %s \n", path );
         return;
     }
 
     /* check image format   */
     if ( !bfd_check_format( bfd_image, bfd_object ) )
     {
-        SCOREP_ERROR( SCOREP_ERROR_EIO, "BFD: bfd_check_format(): failed\n" );
+        UTILS_ERROR( SCOREP_ERROR_EIO, "BFD: bfd_check_format(): failed\n" );
         return;
     }
 
     /* return if file has no symbols at all */
     if ( !( bfd_get_file_flags( bfd_image ) & HAS_SYMS ) )
     {
-        SCOREP_ERROR( SCOREP_ERROR_FILE_INTERACTION,
-                      "BFD: bfd_get_file_flags(): failed \n" );
+        UTILS_ERROR( SCOREP_ERROR_FILE_INTERACTION,
+                     "BFD: bfd_get_file_flags(): failed \n" );
         return;
     }
 
@@ -260,8 +260,8 @@ scorep_compiler_get_sym_tab( void )
     /* HAS_SYMS can be set even with no symbols in the file! */
     if ( size < 1 )
     {
-        SCOREP_ERROR( SCOREP_ERROR_INVALID_SIZE_GIVEN,
-                      "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
+        UTILS_ERROR( SCOREP_ERROR_INVALID_SIZE_GIVEN,
+                     "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
         return;
     }
 
@@ -271,8 +271,8 @@ scorep_compiler_get_sym_tab( void )
     nr_all_syms = bfd_canonicalize_symtab( bfd_image, canonic_symbols );
     if ( nr_all_syms < 1 )
     {
-        SCOREP_ERROR( SCOREP_ERROR_INVALID_SIZE_GIVEN,
-                      "BFD: bfd_canonicalize_symtab(): < 1\n" );
+        UTILS_ERROR( SCOREP_ERROR_INVALID_SIZE_GIVEN,
+                     "BFD: bfd_canonicalize_symtab(): < 1\n" );
     }
     for ( i = 0; i < nr_all_syms; ++i )
     {
@@ -363,9 +363,9 @@ scorep_compiler_create_nm_file( char* nmfile,
 #endif /* GNU_DEMANGLE */
     if ( system( command ) != EXIT_SUCCESS )
     {
-        SCOREP_ERROR( SCOREP_ERROR_ON_SYSTEM_CALL,
-                      "Failed to get symbol table output for binary %s using nm",
-                      exefile );
+        UTILS_ERROR( SCOREP_ERROR_ON_SYSTEM_CALL,
+                     "Failed to get symbol table output for binary %s using nm",
+                     exefile );
         return false;
     }
     return true;
@@ -396,7 +396,7 @@ scorep_compiler_get_sym_tab( void )
     char  path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
     char  nmfilename[ 64 ];
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
 
     /* get the path from system */
     if ( !scorep_compiler_get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
@@ -412,7 +412,7 @@ scorep_compiler_get_sym_tab( void )
     }
     if ( !( nmfile = fopen( nmfilename, "r" ) ) )
     {
-        SCOREP_ERROR_POSIX();
+        UTILS_ERROR_POSIX();
     }
 
     /* read lines */

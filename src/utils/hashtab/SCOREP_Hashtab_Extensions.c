@@ -32,8 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
 
 #include <SCOREP_Hashtab.h>
 
@@ -47,7 +47,7 @@ SCOREP_Hashtab_FreeAll( SCOREP_Hashtab*               instance,
     SCOREP_Hashtab_Entry*    entry;
 
     /* Validate arguments */
-    SCOREP_ASSERT( instance && deleteKey && deleteValue );
+    UTILS_ASSERT( instance && deleteKey && deleteValue );
 
     /* Execute function for each entry */
     iter  = SCOREP_Hashtab_IteratorCreate( instance );

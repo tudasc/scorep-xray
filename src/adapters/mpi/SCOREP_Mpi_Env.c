@@ -182,8 +182,7 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 
     if ( ( return_val == MPI_SUCCESS ) && ( *provided > MPI_THREAD_FUNNELED ) )
     {
-        SCOREP_ERROR( SCOREP_WARNING,
-                      "MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!" );
+        UTILS_WARNING( "MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!" );
         /* XXXX continue even though not supported by analysis */
     }
 

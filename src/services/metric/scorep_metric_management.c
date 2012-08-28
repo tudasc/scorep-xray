@@ -32,7 +32,7 @@
 
 #include "SCOREP_Config.h"
 #include <SCOREP_Memory.h>
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 /* Include to implement metric service */
 #include "SCOREP_Metric.h"
@@ -116,7 +116,7 @@ static size_t scorep_metric_subsystem_id;
 static SCOREP_Error_Code
 scorep_metric_register( size_t subsystem_id )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
 
     scorep_metric_subsystem_id = subsystem_id;
 
@@ -134,7 +134,7 @@ scorep_metric_register( size_t subsystem_id )
 static void
 scorep_metric_deregister()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " deregister metric management." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " deregister metric management." );
 
     /* Deregister metric sources */
     for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
@@ -154,7 +154,7 @@ scorep_metric_initialize_service()
     /* Call only, if not previously initialized */
     if ( !scorep_metric_management_initialized )
     {
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize metric management." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize metric management." );
 
         uint32_t num_of_metrics;
         for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
@@ -212,7 +212,7 @@ scorep_metric_initialize_service()
         /* Set initialization flag */
         scorep_metric_management_initialized = true;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of metric management done." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of metric management done." );
     }
 
     return SCOREP_SUCCESS;
@@ -241,7 +241,7 @@ scorep_metric_finalize_service()
         /* Set initialization flag */
         scorep_metric_management_initialized = false;
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalization of metric management done." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalization of metric management done." );
     }
 }
 
@@ -256,7 +256,7 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
         SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
             locationData,
             scorep_metric_subsystem_id );
-        SCOREP_ASSERT( metric_data != NULL );
+        UTILS_ASSERT( metric_data != NULL );
 
         /* Allocate memory for array of event sets in thread local storage */
         metric_data->event_set = malloc( SCOREP_NUMBER_OF_METRIC_SOURCES * sizeof( SCOREP_Metric_EventSet* ) );
@@ -281,14 +281,14 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
         {
             /* Allocate thread local result buffer */
             metric_data->values = malloc( metric_sources_management_data.overall_number_of_metrics * sizeof( uint64_t ) );
-            SCOREP_ASSERT( metric_data->values );
+            UTILS_ASSERT( metric_data->values );
         }
         else
         {
             metric_data->values = NULL;
         }
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has initialized location." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has initialized location." );
     }
 }
 
@@ -300,7 +300,7 @@ initialize_location_metric_cb( SCOREP_Location* locationData,
 static SCOREP_Error_Code
 scorep_metric_initialize_location( SCOREP_Location* locationData )
 {
-    SCOREP_ASSERT( locationData != NULL );
+    UTILS_ASSERT( locationData != NULL );
 
     SCOREP_Metric_LocationData* metric_data =
         SCOREP_Location_AllocForMisc( locationData,
@@ -326,7 +326,7 @@ finalize_location_metric_cb( SCOREP_Location* locationData,
         SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
             locationData,
             scorep_metric_subsystem_id );
-        SCOREP_ASSERT( metric_data != NULL );
+        UTILS_ASSERT( metric_data != NULL );
 
         for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
         {
@@ -336,7 +336,7 @@ finalize_location_metric_cb( SCOREP_Location* locationData,
         free( metric_data->event_set );
         free( metric_data->values );
 
-        SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has finalized location." );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has finalized location." );
     }
 }
 
@@ -376,7 +376,7 @@ SCOREP_Metric_Read( SCOREP_Location* locationData )
     SCOREP_Metric_LocationData* metric_data = SCOREP_Location_GetSubsystemData(
         locationData,
         scorep_metric_subsystem_id );
-    SCOREP_ASSERT( metric_data != NULL );
+    UTILS_ASSERT( metric_data != NULL );
 
     assert( metric_data->event_set != NULL );
     assert( metric_data->values != NULL );
@@ -390,7 +390,7 @@ SCOREP_Metric_Read( SCOREP_Location* locationData )
         }
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has read metric values." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has read metric values." );
 
     return metric_data->values;
 }

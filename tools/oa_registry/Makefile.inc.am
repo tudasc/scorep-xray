@@ -18,12 +18,12 @@ online_access_registry_SOURCES = \
 	$(SRC_ROOT)/tools/oa_registry/strutil.h
 
 online_access_registry_CPPFLAGS = $(AM_CPPFLAGS)      \
-    -I$(INC_DIR_UTIL)							\
+    $(UTILS_CPPFLAGS)							\
     -D__STDC_FORMAT_MACROS
     
-online_access_registry_LDADD = $(LIB_DIR_UTIL)libscorep_utilities.la
+online_access_registry_LDADD = $(LIB_ROOT)libutils.la
     
-EXTRA_DIST +=$(SRC_ROOT)/tools/oa_registry/scenario_mpi
-EXTRA_DIST +=$(SRC_ROOT)/tools/oa_registry/scenario_serial
+EXTRA_DIST += $(SRC_ROOT)/tools/oa_registry/scenario_mpi
+EXTRA_DIST += $(SRC_ROOT)/tools/oa_registry/scenario_serial
 
 endif #if HAVE_ONLINE_ACCESS

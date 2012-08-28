@@ -35,8 +35,10 @@
 #include <opari2/pomp2_lib.h>
 #include "SCOREP_Pomp_RegionInfo.h"
 #include "SCOREP_Pomp_Lock.h"
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 #include "SCOREP_Pomp_Variables.h"
+
+#define SCOREP_DEBUG_MODULE_NAME OPENMP
 
 /** @ingroup POMP2
     @{
@@ -107,7 +109,7 @@ static void
 scorep_pomp_assign_string( char**      destination,
                            const char* source )
 {
-    SCOREP_ASSERT( source );
+    UTILS_ASSERT( source );
     *destination = malloc( strlen( source ) * sizeof( char ) + 1 );
     strcpy( *destination, source );
 }
@@ -124,8 +126,7 @@ static size_t scorep_pomp_subsystem_id;
 static SCOREP_Error_Code
 scorep_pomp_register( size_t subsystem_id )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_register\n" );
+    UTILS_DEBUG_ENTRY();
 
     scorep_pomp_subsystem_id = subsystem_id;
 
@@ -137,8 +138,7 @@ scorep_pomp_register( size_t subsystem_id )
 static SCOREP_Error_Code
 scorep_pomp_init()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_init\n" );
+    UTILS_DEBUG_ENTRY();
 
     /* Initialize the adapter */
     if ( !scorep_pomp_is_initialized )
@@ -175,8 +175,7 @@ scorep_pomp_init()
         POMP2_Init_regions();
     }
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_EXIT,
-                         "scorep_pomp_init done.\n" );
+    UTILS_DEBUG_EXIT();
 
     return SCOREP_SUCCESS;
 }
@@ -185,8 +184,7 @@ scorep_pomp_init()
 static SCOREP_Error_Code
 scorep_pomp_init_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_init_location\n" );
+    UTILS_DEBUG_ENTRY();
     return SCOREP_SUCCESS;
 }
 
@@ -195,8 +193,7 @@ scorep_pomp_init_location( SCOREP_Location* locationData )
 static void
 scorep_pomp_finalize_location( SCOREP_Location* locationData )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_finalize_location\n" );
+    UTILS_DEBUG_ENTRY();
 }
 
 /** Adapter finalialization function.
@@ -207,8 +204,7 @@ scorep_pomp_finalize()
     size_t       i;
     const size_t nRegions = POMP2_Get_num_regions();
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_finalize\n" );
+    UTILS_DEBUG_ENTRY();
 
     if ( scorep_pomp_is_finalized || !scorep_pomp_is_initialized )
     {
@@ -234,8 +230,7 @@ scorep_pomp_finalize()
 static void
 scorep_pomp_deregister()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "In scorep_pomp_deregister\n" );
+    UTILS_DEBUG_ENTRY();
 }
 
 /** Struct which contains the adapter iniitialization and finalization functions for the
@@ -261,15 +256,13 @@ const SCOREP_Subsystem SCOREP_Pomp_Adapter =
 void
 POMP2_Finalize()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "Enter POMP2_Finalize\n" );
+    UTILS_DEBUG_ENTRY();
 }
 
 void
 POMP2_Init()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP | SCOREP_DEBUG_FUNCTION_ENTRY,
-                         "Enter POMP2_Init\n" );
+    UTILS_DEBUG_ENTRY();
 
     /* If adapter is not initialized, it means that the measurement system is not
        initialized. */
@@ -294,7 +287,7 @@ void
 POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
                      const char           init_string[] )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Assign_handle" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Assign_handle" );
     /* Index counter */
     static size_t count = 0;
 
@@ -306,7 +299,7 @@ POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
 
     /* Increase array index */
     ++count;
-    SCOREP_ASSERT( count <= POMP2_Get_num_regions() );
+    UTILS_ASSERT( count <= POMP2_Get_num_regions() );
 }
 
 /* **************************************************************************************
@@ -316,7 +309,7 @@ POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
 void
 POMP2_Begin( POMP2_Region_handle* pomp_handle )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Begin" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Begin" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
@@ -331,7 +324,7 @@ POMP2_Begin( POMP2_Region_handle* pomp_handle )
 void
 POMP2_End( POMP2_Region_handle* pomp_handle )
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_End" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_End" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {

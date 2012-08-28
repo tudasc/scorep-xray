@@ -506,7 +506,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_fortran
             {
                 str += "*" + arg_name + " = (int) c_" + arg_name + ";\n";
                 str += "if (*" + arg_name + " != c_" + arg_name + ")\n";
-                str += "  SCOREP_DEBUG_PRINTF(SCOREP_DEBUG_MPI, "
+                str += "  UTILS_DEBUG_PRINTF(SCOREP_DEBUG_MPI, "
                        "\"Value truncated in \\\"" + func.get_name() +
                        "\\\". Function is deprecated due to mismatching parameter types! "
                        "Consult the MPI Standard for more details.\");\n";
@@ -563,7 +563,7 @@ SCOREP::Wrapgen::handler::mpi::cleanup_f2c_c2f
             {
                 str += "*" + arg_name + " = (MPI_Fint) c_" + arg_name + ";\n";
                 str += "if (*" + arg_name + " != c_" + arg_name + ")\n";
-                str += "  SCOREP_DEBUG_PRINTF(SCOREP_DEBUG_MPI, "
+                str += "  UTILS_DEBUG_PRINTF(SCOREP_DEBUG_MPI, "
                        "\"Value truncated in \\\"" + func.get_name() +
                        "\\\". Function is deprecated due to mismatching parameter types! "
                        "Consult the MPI Standard for more details.\");\n";

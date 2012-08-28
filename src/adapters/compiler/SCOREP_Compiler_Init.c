@@ -34,7 +34,7 @@
 #include "SCOREP_Types.h"
 #include <SCOREP_Location.h>
 #include "SCOREP_Config.h"
-#include <SCOREP_Debug.h>
+#include <UTILS_Debug.h>
 
 /**
    Contains the name of the executable.
@@ -73,7 +73,7 @@ scorep_compiler_register( size_t subsystem_id )
 {
     scorep_compiler_subsystem_id = subsystem_id;
 
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " register compiler adapter!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " register compiler adapter!" );
 
     return SCOREP_ConfigRegister( "", scorep_compiler_configs );
 }
@@ -113,7 +113,7 @@ scorep_compiler_finalize();
 void
 scorep_compiler_deregister()
 {
-    SCOREP_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter deregister!n" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " compiler adapter deregister!n" );
     free( scorep_compiler_executable );
 }
 

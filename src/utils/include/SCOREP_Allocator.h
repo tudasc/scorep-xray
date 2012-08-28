@@ -66,9 +66,7 @@ typedef void* SCOREP_Allocator_GuardObject;
 typedef void ( *SCOREP_Allocator_Guard )( SCOREP_Allocator_GuardObject );
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+UTILS_BEGIN_C_DECLS
 
 size_t
 SCOREP_Allocator_RoundupToAlignment( size_t size );
@@ -244,9 +242,7 @@ SCOREP_Allocator_PutObject( SCOREP_Allocator_ObjectManager* objectManager,
                             void*                           object );
 
 
-#ifdef __cplusplus
-} /* "C" */
-#endif
+UTILS_END_C_DECLS
 
 
 #endif /* SCOREP_ALLOCATOR_H */

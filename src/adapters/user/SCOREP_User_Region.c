@@ -32,8 +32,8 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Filter.h>
 #include <SCOREP_Hashtab.h>
-#include <SCOREP_CStr.h>
-#include <SCOREP_IO.h>
+#include <UTILS_CStr.h>
+#include <UTILS_IO.h>
 #include "scorep_selective_region.h"
 
 #include <stdlib.h>
@@ -107,8 +107,8 @@ scorep_user_get_file( const char*              file,
     /* Store file name as last searched for and return new file handle.
        The definitions hash entries and donot allow double entries.
        In the definitions we want to have simplified file names. */
-    char* file_name = SCOREP_CStr_dup( file );
-    SCOREP_IO_SimplifyPath( file_name );
+    char* file_name = UTILS_CStr_dup( file );
+    UTILS_IO_SimplifyPath( file_name );
     SCOREP_SourceFileHandle handle = SCOREP_DefineSourceFile( file_name );
     free( file_name );
 
@@ -116,7 +116,6 @@ scorep_user_get_file( const char*              file,
     *lastFile     = handle;
     *lastFileName = file;
 
-    /* CLean up */
     SCOREP_MutexUnlock( scorep_user_file_table_mutex );
     return handle;
 }

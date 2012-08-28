@@ -34,7 +34,7 @@
 #include <inttypes.h>
 
 
-#include <SCOREP_IO.h>
+#include <UTILS_IO.h>
 #include "regsrv.h"
 #include "regsrv_client.h"
 #include "regsrv_sockets.h"
@@ -82,9 +82,9 @@ typedef struct SCOREP_OA_CallPathCounterDef_struct
 int RegServ::open( int port )
 {
 	char hostname[ 100 ];
-	if(SCOREP_IO_GetHostname( hostname, 100 )!=0)
+	if(UTILS_IO_GetHostname( hostname, 100 )!=0)
 	{
-		fprintf(stderr,"SCOREP_IO_GetHostname() failed.");
+		fprintf(stderr,"UTILS_IO_GetHostname() failed.");
         exit(1);
 	}
 	printf("Registry service: starting server on %s:%d...",hostname,port);
