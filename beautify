@@ -27,7 +27,7 @@
 
 AWK=awk
 BEAUTIFY=uncrustify
-BEAUTIFY_CONFIG=vendor/common/beautifier/beautify.cfg
+BEAUTIFY_CONFIG=beautifier/beautify.cfg
 GREP=grep
 SED=sed
 SVN=svn
@@ -85,6 +85,10 @@ if [ $N_DIRS_UP -gt 0 ]; then
             exit 1
         fi
     done
+fi
+
+if [ ! -f "$BEAUTIFY_CONFIG" ]; then
+    BEAUTIFY_CONFIG="vendor/common/$BEAUTIFY_CONFIG"
 fi
 
 # Top-level directory reached, check if beautify's config file is available.
