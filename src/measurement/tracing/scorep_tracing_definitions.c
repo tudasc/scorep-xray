@@ -75,8 +75,8 @@ scorep_write_string_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
     typedef OTF2_Error_Code ( *def_string_pointer_t )( void*,
-                                                       uint32_t,
-                                                       char* );
+                                                       OTF2_StringRef,
+                                                       const char* );
     def_string_pointer_t defString = ( def_string_pointer_t )
                                      OTF2_DefWriter_WriteString;
 
@@ -110,11 +110,11 @@ scorep_write_location_definitions(
 {
     assert( writerHandle );
     typedef OTF2_Error_Code ( *def_location_pointer_t )( void*,
-                                                         uint64_t,
-                                                         uint32_t,
+                                                         OTF2_LocationRef,
+                                                         OTF2_StringRef,
                                                          OTF2_LocationType,
                                                          uint64_t,
-                                                         uint32_t );
+                                                         OTF2_LocationGroupRef );
     def_location_pointer_t defLocation = ( def_location_pointer_t )
                                          OTF2_DefWriter_WriteLocation;
 
@@ -150,10 +150,10 @@ scorep_write_location_group_definitions(
 {
     assert( writerHandle );
     typedef OTF2_Error_Code ( *def_location_group_pointer_t )( void*,
-                                                               uint32_t,
-                                                               uint32_t,
+                                                               OTF2_LocationGroupRef,
+                                                               OTF2_StringRef,
                                                                OTF2_LocationGroupType,
-                                                               uint32_t );
+                                                               OTF2_SystemTreeNodeRef );
     def_location_group_pointer_t defLocationGroup =
         ( def_location_group_pointer_t )OTF2_DefWriter_WriteLocationGroup;
     if ( isGlobal )
@@ -186,10 +186,10 @@ scorep_write_system_tree_node_definitions(
 {
     assert( writerHandle );
     typedef OTF2_Error_Code ( *def_system_tree_node_pointer_t )( void*,
-                                                                 uint32_t,
-                                                                 uint32_t,
-                                                                 uint32_t,
-                                                                 uint32_t );
+                                                                 OTF2_SystemTreeNodeRef,
+                                                                 OTF2_StringRef,
+                                                                 OTF2_StringRef,
+                                                                 OTF2_SystemTreeNodeRef );
     def_system_tree_node_pointer_t defSystemTreeNode =
         ( def_system_tree_node_pointer_t )OTF2_DefWriter_WriteSystemTreeNode;
     if ( isGlobal )
@@ -231,12 +231,13 @@ scorep_write_region_definitions( void*                     writerHandle,
 {
     assert( writerHandle );
     typedef OTF2_Error_Code ( *def_region_pointer_t )( void*,
-                                                       uint32_t,
-                                                       uint32_t,
-                                                       uint32_t,
-                                                       OTF2_RegionType,
-                                                       uint32_t,
-                                                       uint32_t,
+                                                       OTF2_RegionRef,
+                                                       OTF2_StringRef,
+                                                       OTF2_StringRef,
+                                                       OTF2_StringRef,
+                                                       OTF2_RegionRole,
+                                                       OTF2_Paradigm,
+                                                       OTF2_StringRef,
                                                        uint32_t,
                                                        uint32_t );
 
@@ -262,12 +263,13 @@ scorep_write_region_definitions( void*                     writerHandle,
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            SCOREP_HANDLE_TO_ID( definition->canonical_name_handle, String, definitionManager->page_manager ),
             SCOREP_HANDLE_TO_ID( definition->description_handle, String, definitionManager->page_manager ),
-            scorep_tracing_region_type_to_otf2( definition->region_type ),
+            /* @todo */ OTF2_REGION_ROLE_UNKNOWN,
+            /* @todo */ OTF2_PARADIGM_UNKNOWN,
             source_file_id,
             definition->begin_line,
-            definition->end_line,
-            SCOREP_HANDLE_TO_ID( definition->canonical_name_handle, String, definitionManager->page_manager ) );
+            definition->end_line );
 
         if ( status != OTF2_SUCCESS )
         {
@@ -317,8 +319,8 @@ scorep_write_group_definitions( void*                     writerHandle,
 
 
     typedef OTF2_Error_Code ( *def_group_pointer_t )( void*,
-                                                      uint32_t,
-                                                      uint32_t,
+                                                      OTF2_GroupRef,
+                                                      OTF2_StringRef,
                                                       OTF2_GroupType,
                                                       uint32_t,
                                                       const uint64_t* );
@@ -357,15 +359,15 @@ scorep_write_metric_definitions( void*                     writerHandle,
     assert( writerHandle );
 
     typedef OTF2_Error_Code ( *def_metric_pointer_t )( void*,
-                                                       uint32_t,
-                                                       uint32_t,
-                                                       uint32_t,
+                                                       OTF2_MetricMemberRef,
+                                                       OTF2_StringRef,
+                                                       OTF2_StringRef,
                                                        OTF2_MetricType,
                                                        OTF2_MetricMode,
                                                        OTF2_Type,
                                                        OTF2_MetricBase,
                                                        int64_t,
-                                                       uint32_t );
+                                                       OTF2_StringRef );
     def_metric_pointer_t defMetricMember = ( def_metric_pointer_t )
                                            OTF2_DefWriter_WriteMetricMember;
     if ( isGlobal )
@@ -407,7 +409,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
     assert( writerHandle );
 
     typedef OTF2_Error_Code ( *def_metric_class_pointer_t )( void*,
-                                                             uint32_t,
+                                                             OTF2_MetricRef,
                                                              uint8_t,
                                                              const uint32_t*,
                                                              OTF2_MetricOccurrence );
@@ -415,9 +417,9 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                                                 OTF2_DefWriter_WriteMetricClass;
 
     typedef OTF2_Error_Code ( *def_metric_instance_pointer_t )( void*,
-                                                                uint32_t,
-                                                                uint32_t,
-                                                                uint64_t,
+                                                                OTF2_MetricRef,
+                                                                OTF2_MetricRef,
+                                                                OTF2_LocationRef,
                                                                 OTF2_MetricScope,
                                                                 uint64_t );
     def_metric_instance_pointer_t defMetricInstance = ( def_metric_instance_pointer_t )
@@ -520,9 +522,9 @@ scorep_write_parameter_definitions( void*                     writerHandle,
     assert( writerHandle );
 
     typedef  OTF2_Error_Code ( *def_parameter_pointer_t )( void*,
-                                                           uint32_t,
-                                                           uint32_t,
-                                                           uint8_t );
+                                                           OTF2_ParameterRef,
+                                                           OTF2_StringRef,
+                                                           OTF2_ParameterType );
     def_parameter_pointer_t defParameter = ( def_parameter_pointer_t )
                                            OTF2_DefWriter_WriteParameter;
     if ( isGlobal )
@@ -558,9 +560,9 @@ scorep_write_callpath_definitions( void*                     writerHandle,
     assert( writerHandle );
 
     typedef  OTF2_Error_Code ( *def_callpath_pointer_t )( void*,
-                                                          uint32_t,
-                                                          uint32_t,
-                                                          uint32_t );
+                                                          OTF2_CallpathRef,
+                                                          OTF2_CallpathRef,
+                                                          OTF2_RegionRef );
     def_callpath_pointer_t defCallpath = ( def_callpath_pointer_t )
                                          OTF2_DefWriter_WriteCallpath;
     if ( isGlobal )

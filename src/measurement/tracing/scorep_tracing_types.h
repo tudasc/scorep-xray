@@ -64,6 +64,7 @@ scorep_tracing_location_group_type_to_otf2( SCOREP_LocationGroupType scorepType 
     }
 }
 
+#if 0
 
 static inline OTF2_RegionType
 scorep_tracing_region_type_to_otf2( SCOREP_RegionType scorepType )
@@ -116,6 +117,7 @@ scorep_tracing_region_type_to_otf2( SCOREP_RegionType scorepType )
     }
 }
 
+#endif
 
 static inline OTF2_GroupType
 scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
