@@ -1,12 +1,17 @@
 ## -*- mode: makefile -*-
 
-noinst_LTLIBRARIES += libscorep_exception.la
-libscorep_exception_la_SOURCES =          \
-  $(SRC_ROOT)vendor/common/src/utils/exception/SCOREP_Debug.c \
-  $(SRC_ROOT)vendor/common/src/utils/exception/SCOREP_Error.c \
-  $(SRC_ROOT)vendor/common/src/utils/exception/scorep_normalize_file.c \
-  $(SRC_ROOT)vendor/common/src/utils/exception/scorep_normalize_file.h \
-  $(SRC_ROOT)vendor/common/src/utils/include/SCOREP_Debug.h \
-  $(SRC_ROOT)vendor/common/src/utils/include/SCOREP_Error.h \
-  $(SRC_ROOT)vendor/common/src/utils/include/SCOREP_Error_Codes.h
-libscorep_exception_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL)
+noinst_LTLIBRARIES += libutils_exception.la
+libutils_exception_la_SOURCES = \
+    $(SRC_ROOT)vendor/common/src/utils/exception/UTILS_Debug.c \
+    $(SRC_ROOT)vendor/common/src/utils/exception/UTILS_Error.c \
+    $(SRC_ROOT)vendor/common/src/utils/exception/normalize_file.h \
+    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_Debug.h \
+    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_Error.h
+libutils_exception_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PACKAGE_ERROR_CODES_INCDIR) \
+    -I$(INC_DIR_COMMON_UTILS)
+
+EXTRA_DIST += \
+    $(SRC_ROOT)vendor/common/src/utils/exception/Error_Codes.tmpl.h \
+    $(SRC_ROOT)vendor/common/src/utils/exception/finalize_error_codes.sh

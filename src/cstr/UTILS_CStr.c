@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -16,9 +16,9 @@
 
 /**
  * @status          alpha
- * @file            MANGLE_NAME( CStr.c )
+ * @file            UTILS_CStr.c
  * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @ingroup         SCOREP_Hashtab_module
+ * @ingroup         UTILS_CStr_module
  *
  * @brief           Helper functions for string handling
  */
@@ -27,13 +27,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <SCOREP_Error.h>
+#include <UTILS_Error.h>
+#include <UTILS_CStr.h>
 
-const size_t
-MANGLE_NAME( CStr_npos ) = ( size_t )-1;
+const size_t UTILS_CStr_npos = ( size_t )-1;
+
 
 char*
-MANGLE_NAME( CStr_dup ) ( const char* source )
+UTILS_CStr_dup( const char* source )
 {
     if ( source == NULL )
     {
@@ -42,7 +43,7 @@ MANGLE_NAME( CStr_dup ) ( const char* source )
     char* dup = ( char* )malloc( strlen( source ) + 1 );
     if ( dup == NULL )
     {
-        MANGLE_NAME( ERROR_POSIX ) ();
+        UTILS_ERROR_POSIX();
         return NULL;
     }
     strcpy( dup, source );
@@ -50,9 +51,9 @@ MANGLE_NAME( CStr_dup ) ( const char* source )
 }
 
 size_t
-MANGLE_NAME( CStr_find ) ( const char* str,
-                           const char* pattern,
-                           size_t pos )
+UTILS_CStr_find( const char* str,
+                 const char* pattern,
+                 size_t      pos )
 {
     const size_t length = strlen( pattern );
 
@@ -63,5 +64,5 @@ MANGLE_NAME( CStr_find ) ( const char* str,
             return pos;
         }
     }
-    return MANGLE_NAME( CStr_npos );
+    return UTILS_CStr_npos;
 }

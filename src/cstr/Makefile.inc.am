@@ -1,7 +1,10 @@
 ## -*- mode: makefile -*-
 
-noinst_LTLIBRARIES += libscorep_cstr.la
-libscorep_cstr_la_SOURCES = \
-    $(SRC_ROOT)vendor/common/src/utils/cstr/SCOREP_CStr.c \
-    $(SRC_ROOT)vendor/common/src/utils/include/SCOREP_CStr.h
-libscorep_cstr_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_DIR_UTIL)
+noinst_LTLIBRARIES += libutils_cstr.la
+libutils_cstr_la_SOURCES = \
+    $(SRC_ROOT)vendor/common/src/utils/cstr/UTILS_CStr.c \
+    $(SRC_ROOT)vendor/common/src/utils/include/UTILS_CStr.h
+libutils_cstr_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PACKAGE_ERROR_CODES_INCDIR) \
+    -I$(INC_DIR_COMMON_UTILS)

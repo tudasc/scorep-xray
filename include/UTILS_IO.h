@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,13 +14,12 @@
  *
  */
 
-#ifndef SCOREP_IO_H
-#define SCOREP_IO_H
+#ifndef UTILS_IO_H
+#define UTILS_IO_H
 
 #ifdef __cplusplus
-#  define EXTERN extern "C"
-#else
-#  define EXTERN extern
+extern "C"
+{
 #endif
 
 #ifndef __cplusplus
@@ -29,21 +28,16 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#if defined( PACKAGE_SCOREP )
-#include <SCOREP_Error_Codes.h>
-#elif defined( PACKAGE_OTF2 )
-#include <otf2/OTF2_Error_Codes.h>
-#else
-#error Unsupported package.
-#endif
+#include <UTILS_Error.h>
 
 /**
    Checks whether a file exists.
    @param filename  The name of the file which is checked.
    @returns true if the file exists, else false.
  */
-EXTERN bool
-MANGLE_NAME( DoesFileExist ) ( const char* filename );
+#define UTILS_DoesFileExist PACKAGE_MANGLE_NAME_CAPS( UTILS_DoesFileExist )
+bool
+UTILS_DoesFileExist( const char* filename );
 
 /**
    Gives the path to the executeable name (argv[0]) without the executable
@@ -54,8 +48,9 @@ MANGLE_NAME( DoesFileExist ) ( const char* filename );
    @returns The path to the executable without the executable name itselfs and
             trailing slash. If no path was found, NULL is retured.
  */
-EXTERN char*
-MANGLE_NAME( GetExecutablePath ) ( const char* exe );
+#define UTILS_GetExecutablePath PACKAGE_MANGLE_NAME_CAPS( UTILS_GetExecutablePath )
+char*
+UTILS_GetExecutablePath( const char* exe );
 
 /**
  * Reads a line until a newline from @a file. The line is stored in the buffer
@@ -70,29 +65,32 @@ MANGLE_NAME( GetExecutablePath ) ( const char* exe );
  *                    pointed to by @a **buffer is stored. If the memory is resized,
  *                    the buffer_size is updated.
  * @param file        A file handle of an already open file, from which a line is read.
- * @returns MANGLE_NAME( SUCCESS ), if a line was read successfully. If the end of the file
- *          was reached, MANGLE_NAME( ERROR_END_OF_BUFFER ) is returned. If an error occured,
+ * @returns PACKAGE_SUCCESS, if a line was read successfully. If the end of the file
+ *          was reached, PACKAGE_ERROR_END_OF_BUFFER is returned. If an error occured,
  *          an error code is returned. Possible error codes are:
- *          MANGLE_NAME( ERROR_MEM_ALLOC_FAILED ) and MANGLE_NAME( ERROR_FILE_INTERACTION ).
+ *          PACKAGE_ERROR_MEM_ALLOC_FAILED and PACKAGE_ERROR_FILE_INTERACTION.
  */
-EXTERN MANGLE_NAME( Error_Code )
-MANGLE_NAME( IO_GetLine ) ( char**  buffer,
-                            size_t * buffer_size,
-                            FILE *   file );
+#define UTILS_IO_GetLine PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetLine )
+PACKAGE_Error_Code
+UTILS_IO_GetLine( char**  buffer,
+                  size_t* buffer_size,
+                  FILE*   file );
 
 /**
  * Returns true if @a path is a relative or absolute path.
  */
-EXTERN bool
-MANGLE_NAME( IO_HasPath ) ( const char* path );
+#define UTILS_IO_HasPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_HasPath )
+bool
+UTILS_IO_HasPath( const char* path );
 
 /**
  * Cuts of the path prefix from a filename.
  * @param path a filename which might have a path prefix.
  * @returns a pointer to the position in @a path where the filename starts.
  */
-EXTERN const char*
-MANGLE_NAME( IO_GetWithoutPath ) ( const char* path );
+#define UTILS_IO_GetWithoutPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetWithoutPath )
+const char*
+UTILS_IO_GetWithoutPath( const char* path );
 
 /**
  * Simplifies the @a path. If @path contains ../ subpathes they are merged with
@@ -105,8 +103,9 @@ MANGLE_NAME( IO_GetWithoutPath ) ( const char* path );
  *        location. It must not be a pointer to a constant in the program segment.
  *        Passing a pointer to a string literal results in a segmentation fault.
  */
-EXTERN void
-MANGLE_NAME( IO_SimplifyPath ) ( char* path );
+#define UTILS_IO_SimplifyPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_SimplifyPath )
+void
+UTILS_IO_SimplifyPath( char* path );
 
 /**
  * Joins an arbitrary number of path elements into one path.
@@ -120,9 +119,10 @@ MANGLE_NAME( IO_SimplifyPath ) ( char* path );
  *
  * @return Joined path, allocated with @a malloc.
  */
-EXTERN char*
-MANGLE_NAME( IO_JoinPath ) ( int nPaths,
-                             ... );
+#define UTILS_IO_JoinPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_JoinPath )
+char*
+UTILS_IO_JoinPath( int nPaths,
+                   ... );
 
 /**
  * Wrapper function for gethostname which is not declared or implemented on all systems
@@ -132,9 +132,10 @@ MANGLE_NAME( IO_JoinPath ) ( int nPaths,
  * @param namelen  Length of the memory segment reserved for @a name.
  * @returns zero if the operation was successful. Else a non-zero value is returned.
  */
-EXTERN int
-MANGLE_NAME( IO_GetHostname ) ( char*  name,
-                                size_t namelen );
+#define UTILS_IO_GetHostname PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetHostname )
+int
+UTILS_IO_GetHostname( char*  name,
+                      size_t namelen );
 
 /**
  * Wrapper function for getcwd which is not declared or implemented on all systems.
@@ -143,8 +144,14 @@ MANGLE_NAME( IO_GetHostname ) ( char*  name,
  *             of NULL if getcwd() should allocate the buffer.
  * @param size Is the size, in bytes, of the array of characters that buf points to.
  */
-EXTERN char*
-MANGLE_NAME( IO_GetCwd ) ( char*  buf,
-                           size_t size );
+#define UTILS_IO_GetCwd PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetCwd )
+char*
+UTILS_IO_GetCwd( char*  buf,
+                 size_t size );
 
-#endif /* SCOREP_IO_H */
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif /* UTILS_IO_H */

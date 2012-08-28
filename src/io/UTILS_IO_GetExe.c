@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -16,7 +16,7 @@
 
 /**
  * @status          alpha
- * @file            SCOREP_GetExe.c
+ * @file            UTILS_GetExe.c
  * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief           Provides functions to get executable and executable path.
@@ -27,12 +27,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <SCOREP_IO.h>
-#include <SCOREP_CStr.h>
-#include <SCOREP_Error.h>
+
+#include <utils_package.h>
+
+#include <UTILS_Error.h>
+#include <UTILS_IO.h>
+#include <UTILS_CStr.h>
 
 bool
-MANGLE_NAME( DoesFileExist ) ( const char* filename )
+UTILS_DoesFileExist( const char* filename )
 {
     FILE* file = fopen( filename, "r" );
     if ( file != NULL )
@@ -44,9 +47,9 @@ MANGLE_NAME( DoesFileExist ) ( const char* filename )
 }
 
 char*
-MANGLE_NAME( GetExecutablePath ) ( const char* exe )
+UTILS_GetExecutablePath( const char* exe )
 {
-    char* executable_name = MANGLE_NAME( CStr_dup ) ( exe );
+    char* executable_name = UTILS_CStr_dup( exe );
     char* current_pos     = executable_name;
     if ( exe == NULL )
     {
@@ -75,7 +78,7 @@ MANGLE_NAME( GetExecutablePath ) ( const char* exe )
        Thus, it must be in the PATH. Try all directories in the PATH
        environment variable.
      */
-    char* path_list      = MANGLE_NAME( CStr_dup ) ( getenv( "PATH" ) );
+    char* path_list      = UTILS_CStr_dup( getenv( "PATH" ) );
     char* current_path   = path_list;
     char* full_file_name = NULL;
     int   path_len       = 0;
@@ -104,7 +107,7 @@ MANGLE_NAME( GetExecutablePath ) ( const char* exe )
             full_file_name = ( char* )malloc( path_len + strlen( exe ) + 2 );
             if ( full_file_name == NULL )
             {
-                MANGLE_NAME( ERROR ) ( MANGLE_NAME( ERROR_MEM_ALLOC_FAILED ), "" );
+                UTILS_ERROR( PACKAGE_ERROR_MEM_ALLOC_FAILED );
                 free( path_list );
                 return NULL;
             }
@@ -114,9 +117,9 @@ MANGLE_NAME( GetExecutablePath ) ( const char* exe )
             full_file_name[ path_len + 1 + strlen( exe ) ] = '\0';
 
             // Copy return path, because the list will be freed.
-            if ( MANGLE_NAME( DoesFileExist ) ( full_file_name ) )
+            if ( UTILS_DoesFileExist( full_file_name ) )
             {
-                current_path = MANGLE_NAME( CStr_dup ) ( current_path );
+                current_path = UTILS_CStr_dup( current_path );
                 free( path_list );
                 free( full_file_name );
                 return current_path;

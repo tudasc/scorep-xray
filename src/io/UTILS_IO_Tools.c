@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -16,7 +16,7 @@
 
 /**
  * @status     alpha
- * @file       SCOREP_IO_Tools.c
+ * @file       UTILS_IO_Tools.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Functions for file parsing in C.
@@ -26,19 +26,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <unistd.h>
 
-#include <SCOREP_Error.h>
-#include <SCOREP_IO.h>
-#include <SCOREP_CStr.h>
+#include <utils_package.h>
+
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
+#include <UTILS_IO.h>
+#include <UTILS_CStr.h>
 
 #define BUFFER_SIZE 1024
 
-MANGLE_NAME( Error_Code )
-MANGLE_NAME( IO_GetLine ) ( char** buffer, size_t * buffer_size, FILE * file )
+PACKAGE_Error_Code
+UTILS_IO_GetLine( char** buffer, size_t* buffer_size, FILE* file )
 {
-    assert( buffer );
+    UTILS_ASSERT( buffer );
 
     if ( *buffer == NULL || *buffer_size == 0 )
     {
@@ -46,8 +48,8 @@ MANGLE_NAME( IO_GetLine ) ( char** buffer, size_t * buffer_size, FILE * file )
         if ( *buffer == NULL )
         {
             *buffer_size = 0;
-            MANGLE_NAME( ERROR_POSIX ) ( "" );
-            return MANGLE_NAME( ERROR_MEM_ALLOC_FAILED );
+            UTILS_ERROR_POSIX();
+            return PACKAGE_ERROR_MEM_ALLOC_FAILED;
         }
         *buffer_size = BUFFER_SIZE;
     }
@@ -58,10 +60,10 @@ MANGLE_NAME( IO_GetLine ) ( char** buffer, size_t * buffer_size, FILE * file )
     {
         if (  feof( file ) )
         {
-            return MANGLE_NAME( ERROR_END_OF_BUFFER );
+            return PACKAGE_ERROR_END_OF_BUFFER;
         }
-        MANGLE_NAME( ERROR_POSIX ) ( "Error while reading from file" );
-        return MANGLE_NAME( ERROR_FILE_INTERACTION );
+        UTILS_ERROR_POSIX( "Error while reading from file" );
+        return PACKAGE_ERROR_FILE_INTERACTION;
     }
 
     while ( strlen( *buffer ) == *buffer_size - 1 )
@@ -71,35 +73,35 @@ MANGLE_NAME( IO_GetLine ) ( char** buffer, size_t * buffer_size, FILE * file )
         if ( *buffer == NULL )
         {
             *buffer_size = 0;
-            MANGLE_NAME( ERROR_POSIX ) ( "Failed to increase memory for string buffer" );
-            return MANGLE_NAME( ERROR_MEM_ALLOC_FAILED );
+            UTILS_ERROR_POSIX( "Failed to increase memory for string buffer" );
+            return PACKAGE_ERROR_MEM_ALLOC_FAILED;
         }
         if ( !fgets( &( *buffer )[ *buffer_size - BUFFER_SIZE - 1 ],
                      BUFFER_SIZE + 1, file ) )
         {
             if (  feof( file ) )
             {
-                return MANGLE_NAME( ERROR_END_OF_BUFFER );
+                return PACKAGE_ERROR_END_OF_BUFFER;
             }
-            MANGLE_NAME( ERROR_POSIX ) ( "Error while reading from file" );
-            return MANGLE_NAME( ERROR_FILE_INTERACTION );
+            UTILS_ERROR_POSIX( "Error while reading from file" );
+            return PACKAGE_ERROR_FILE_INTERACTION;
         }
     }
 
-    return MANGLE_NAME( SUCCESS );
+    return PACKAGE_SUCCESS;
 }
 
 bool
-MANGLE_NAME( IO_HasPath ) ( const char* path )
+UTILS_IO_HasPath( const char* path )
 {
-    assert( path );
+    UTILS_ASSERT( path );
     return strcspn( path, "/" ) < strlen( path );
 }
 
 const char*
-MANGLE_NAME( IO_GetWithoutPath ) ( const char* path )
+UTILS_IO_GetWithoutPath( const char* path )
 {
-    assert( path );
+    UTILS_ASSERT( path );
 
     int len = strlen( path );
     int pos;
@@ -115,9 +117,9 @@ MANGLE_NAME( IO_GetWithoutPath ) ( const char* path )
 }
 
 void
-MANGLE_NAME( IO_SimplifyPath ) ( char* path )
+UTILS_IO_SimplifyPath( char* path )
 {
-    assert( path );
+    UTILS_ASSERT( path );
 
     int  len                = 0;
     int  pos                = 0;
@@ -260,7 +262,7 @@ MANGLE_NAME( IO_SimplifyPath ) ( char* path )
     }
 
     /* Ensure it still has slashes if it had some before */
-    if ( has_slashes && !MANGLE_NAME( IO_HasPath ) ( path ) && ( path[ 0 ] != '\0' ) )
+    if ( has_slashes && !UTILS_IO_HasPath( path ) && ( path[ 0 ] != '\0' ) )
     {
         for ( pos = len; pos >= 0; pos-- )
         {
@@ -272,7 +274,7 @@ MANGLE_NAME( IO_SimplifyPath ) ( char* path )
 }
 
 char*
-MANGLE_NAME( IO_JoinPath ) ( int nPaths, ... )
+UTILS_IO_JoinPath( int nPaths, ... )
 {
     char*       result_path;
     size_t      total_length  = 0;
@@ -364,7 +366,7 @@ gethostname( char*  name,
 #endif
 
 int
-MANGLE_NAME( IO_GetHostname ) ( char* name, size_t namelen )
+UTILS_IO_GetHostname( char* name, size_t namelen )
 {
 #if HAVE( DECL_GETHOSTNAME ) || HAVE( GETHOSTNAME )
     return gethostname( name, namelen );
@@ -396,7 +398,7 @@ getcwd( char*  buf,
 
 
 char*
-MANGLE_NAME( IO_GetCwd ) ( char* buf, size_t size )
+UTILS_IO_GetCwd( char* buf, size_t size )
 {
 #if HAVE( DECL_GETCWD ) || HAVE( GETCWD )
     return getcwd( buf, size );
@@ -409,7 +411,7 @@ MANGLE_NAME( IO_GetCwd ) ( char* buf, size_t size )
     }
     if ( buf == NULL )
     {
-        return MANGLE_NAME( CStr_dup ) ( cwd );
+        return UTILS_CStr_dup( cwd );
     }
 
     if ( size == 0 )

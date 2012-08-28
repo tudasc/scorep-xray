@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -20,9 +20,9 @@
 
 
 check_PROGRAMS += error_test
-error_test_SOURCES = $(SRC_ROOT)vendor/common/test/utils/exception/scorep_error_test.c
-error_test_LDADD = libscorep_utilities.la
+error_test_SOURCES = $(SRC_ROOT)vendor/common/test/utils/exception/utils_error_test.c
+error_test_LDADD = libutils.la
 error_test_CPPFLAGS = $(AM_CPPFLAGS) \
-                      -I$(INC_DIR_UTIL)
+                      -I$(INC_DIR_COMMON_UTILS)
 
 SCOREP_TESTS += error_test

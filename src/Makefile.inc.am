@@ -1,9 +1,12 @@
 ## -*- mode: makefile -*-
 
-noinst_LTLIBRARIES += libscorep_utilities.la
-libscorep_utilities_la_SOURCES = 
-libscorep_utilities_la_LDFLAGS =
-libscorep_utilities_la_LIBADD = \
-    libscorep_cstr.la           \
-    libscorep_exception.la      \
-    libscorep_io.la
+noinst_LTLIBRARIES += libutils.la
+libutils_la_SOURCES =
+libutils_la_LDFLAGS =
+libutils_la_LIBADD = \
+    libutils_cstr.la \
+    libutils_exception.la \
+    libutils_io.la
+
+EXTRA_DIST += \
+    $(SRC_ROOT)vendor/common/src/utils/include/utils_package.h

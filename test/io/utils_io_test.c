@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_io_test.c
+ * @file       utils_io_test.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -25,7 +25,7 @@
  */
 
 #include <config.h>
-#include <SCOREP_IO.h>
+#include <UTILS_IO.h>
 
 #include <CuTest.h>
 #include <stdlib.h>
@@ -40,7 +40,7 @@ void
 io_test_1( CuTest* tc )
 {
     char path[] = "";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "", path );
 }
 
@@ -48,7 +48,7 @@ void
 io_test_2( CuTest* tc )
 {
     char path[] = "a";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "a", path );
 }
 
@@ -56,7 +56,7 @@ void
 io_test_3( CuTest* tc )
 {
     char path[] = "abc";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "abc", path );
 }
 
@@ -64,7 +64,7 @@ void
 io_test_4( CuTest* tc )
 {
     char path[] = "//";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -72,7 +72,7 @@ void
 io_test_5( CuTest* tc )
 {
     char path[] = "foo/../bar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./bar", path );
 }
 
@@ -80,7 +80,7 @@ void
 io_test_6( CuTest* tc )
 {
     char path[] = "/foo/../bar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/bar", path );
 }
 
@@ -88,7 +88,7 @@ void
 io_test_7( CuTest* tc )
 {
     char path[] = "foo/bar/../../foobar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./foobar", path );
 }
 
@@ -96,7 +96,7 @@ void
 io_test_8( CuTest* tc )
 {
     char path[] = "bar/../../foobar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "../foobar", path );
 }
 
@@ -104,7 +104,7 @@ void
 io_test_9( CuTest* tc )
 {
     char path[] = "foo/bar/../baz/../../foobar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./foobar", path );
 }
 
@@ -112,7 +112,7 @@ void
 io_test_10( CuTest* tc )
 {
     char path[] = "//foo/..///bar///////////baz";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/bar/baz", path );
 }
 
@@ -120,7 +120,7 @@ void
 io_test_11( CuTest* tc )
 {
     char path[] = "../../foo/../bar/baz/foobar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "../../bar/baz/foobar", path );
 }
 
@@ -128,7 +128,7 @@ void
 io_test_12( CuTest* tc )
 {
     char path[] = "./../foo/../bar";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "../bar", path );
 }
 
@@ -136,7 +136,7 @@ void
 io_test_13( CuTest* tc )
 {
     char path[] = "./foo/bar/../baz";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./foo/baz", path );
 }
 
@@ -144,7 +144,7 @@ void
 io_test_14( CuTest* tc )
 {
     char path[] = "./foo/bar/./././.././../baz";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./baz", path );
 }
 
@@ -152,7 +152,7 @@ void
 io_test_15( CuTest* tc )
 {
     char path[] = ".";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, ".", path );
 }
 
@@ -160,7 +160,7 @@ void
 io_test_16( CuTest* tc )
 {
     char path[] = "./";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./", path );
 }
 
@@ -168,7 +168,7 @@ void
 io_test_17( CuTest* tc )
 {
     char path[] = "./.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "", path );
 }
 
@@ -176,7 +176,7 @@ void
 io_test_18( CuTest* tc )
 {
     char path[] = "./..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -184,7 +184,7 @@ void
 io_test_19( CuTest* tc )
 {
     char path[] = "../.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -192,7 +192,7 @@ void
 io_test_20( CuTest* tc )
 {
     char path[] = "./.././/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -200,7 +200,7 @@ void
 io_test_21( CuTest* tc )
 {
     char path[] = "dir/..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "", path );
 }
 
@@ -208,7 +208,7 @@ void
 io_test_22( CuTest* tc )
 {
     char path[] = "dir/sub/../..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "", path );
 }
 
@@ -216,7 +216,7 @@ void
 io_test_23( CuTest* tc )
 {
     char path[] = "dir/sub/../../..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "..", path );
 }
 
@@ -224,7 +224,7 @@ void
 io_test_24( CuTest* tc )
 {
     char path[] = "dir";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir", path );
 }
 
@@ -232,7 +232,7 @@ void
 io_test_25( CuTest* tc )
 {
     char path[] = "dir//";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir/", path );
 }
 
@@ -240,7 +240,7 @@ void
 io_test_26( CuTest* tc )
 {
     char path[] = "./dir";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./dir", path );
 }
 
@@ -248,7 +248,7 @@ void
 io_test_27( CuTest* tc )
 {
     char path[] = "dir/.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir/.", path );
 }
 
@@ -256,7 +256,7 @@ void
 io_test_28( CuTest* tc )
 {
     char path[] = "dir///./";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir/", path );
 }
 
@@ -264,7 +264,7 @@ void
 io_test_29( CuTest* tc )
 {
     char path[] = "dir//sub/..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./dir", path );
 }
 
@@ -272,7 +272,7 @@ void
 io_test_30( CuTest* tc )
 {
     char path[] = "dir/sub/../";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir/", path );
 }
 
@@ -280,7 +280,7 @@ void
 io_test_31( CuTest* tc )
 {
     char path[] = "dir/sub/../.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir/.", path );
 }
 
@@ -288,7 +288,7 @@ void
 io_test_32( CuTest* tc )
 {
     char path[] = "dir/s1/../s2/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "dir/s2/", path );
 }
 
@@ -296,7 +296,7 @@ void
 io_test_33( CuTest* tc )
 {
     char path[] = "d1/s1///s2/..//../s3/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "d1/s3/", path );
 }
 
@@ -304,7 +304,7 @@ void
 io_test_34( CuTest* tc )
 {
     char path[] = "d1/s1//../s2/../../d2";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "./d2", path );
 }
 
@@ -312,7 +312,7 @@ void
 io_test_35( CuTest* tc )
 {
     char path[] = "d1/.../d2";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "d1/.../d2", path );
 }
 
@@ -320,7 +320,7 @@ void
 io_test_36( CuTest* tc )
 {
     char path[] = "d1/..././../d2";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "d1/d2", path );
 }
 
@@ -328,7 +328,7 @@ void
 io_test_37( CuTest* tc )
 {
     char path[] = "/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -336,7 +336,7 @@ void
 io_test_38( CuTest* tc )
 {
     char path[] = "//";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -344,7 +344,7 @@ void
 io_test_39( CuTest* tc )
 {
     char path[] = "///";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -352,7 +352,7 @@ void
 io_test_40( CuTest* tc )
 {
     char path[] = "/.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/.", path );
 }
 
@@ -360,7 +360,7 @@ void
 io_test_41( CuTest* tc )
 {
     char path[] = "/./";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -368,7 +368,7 @@ void
 io_test_42( CuTest* tc )
 {
     char path[] = "/./..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -376,7 +376,7 @@ void
 io_test_43( CuTest* tc )
 {
     char path[] = "/../.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -384,7 +384,7 @@ void
 io_test_44( CuTest* tc )
 {
     char path[] = "/./.././/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -392,7 +392,7 @@ void
 io_test_45( CuTest* tc )
 {
     char path[] = "/dir/..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -400,7 +400,7 @@ void
 io_test_46( CuTest* tc )
 {
     char path[] = "/dir/sub/../..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/", path );
 }
 
@@ -408,7 +408,7 @@ void
 io_test_47( CuTest* tc )
 {
     char path[] = "/dir/sub/../../..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "++failed++", path );
 }
 
@@ -416,7 +416,7 @@ void
 io_test_48( CuTest* tc )
 {
     char path[] = "/dir";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir", path );
 }
 
@@ -424,7 +424,7 @@ void
 io_test_49( CuTest* tc )
 {
     char path[] = "/dir//";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir/", path );
 }
 
@@ -432,7 +432,7 @@ void
 io_test_50( CuTest* tc )
 {
     char path[] = "/./dir";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir", path );
 }
 
@@ -440,7 +440,7 @@ void
 io_test_51( CuTest* tc )
 {
     char path[] = "/dir/.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir/.", path );
 }
 
@@ -448,7 +448,7 @@ void
 io_test_52( CuTest* tc )
 {
     char path[] = "/dir///./";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir/", path );
 }
 
@@ -456,7 +456,7 @@ void
 io_test_53( CuTest* tc )
 {
     char path[] = "/dir//sub/..";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir", path );
 }
 
@@ -464,7 +464,7 @@ void
 io_test_54( CuTest* tc )
 {
     char path[] = "/dir/sub/../";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir/", path );
 }
 
@@ -472,7 +472,7 @@ void
 io_test_55( CuTest* tc )
 {
     char path[] = "//dir/sub/../.";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir/.", path );
 }
 
@@ -480,7 +480,7 @@ void
 io_test_56( CuTest* tc )
 {
     char path[] = "/dir/s1/../s2/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/dir/s2/", path );
 }
 
@@ -488,7 +488,7 @@ void
 io_test_57( CuTest* tc )
 {
     char path[] = "/d1/s1///s2/..//../s3/";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/d1/s3/", path );
 }
 
@@ -496,7 +496,7 @@ void
 io_test_58( CuTest* tc )
 {
     char path[] = "/d1/s1//../s2/../../d2";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/d2", path );
 }
 
@@ -504,7 +504,7 @@ void
 io_test_59( CuTest* tc )
 {
     char path[] = "/d1/.../d2";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/d1/.../d2", path );
 }
 
@@ -512,7 +512,7 @@ void
 io_test_60( CuTest* tc )
 {
     char path[] = "/d1/..././../d2";
-    MANGLE_NAME( IO_SimplifyPath ) ( path );
+    UTILS_IO_SimplifyPath( path );
     CuAssertStrEquals( tc, "/d1/d2", path );
 }
 
@@ -520,7 +520,7 @@ io_test_60( CuTest* tc )
 void
 io_test_61( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 0 );
+    char* joined_path = UTILS_IO_JoinPath( 0 );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "", joined_path );
     free( joined_path );
@@ -530,7 +530,7 @@ io_test_61( CuTest* tc )
 void
 io_test_62( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 1, "" );
+    char* joined_path = UTILS_IO_JoinPath( 1, "" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "", joined_path );
     free( joined_path );
@@ -540,7 +540,7 @@ io_test_62( CuTest* tc )
 void
 io_test_63( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 2, "", "" );
+    char* joined_path = UTILS_IO_JoinPath( 2, "", "" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "", joined_path );
     free( joined_path );
@@ -550,7 +550,7 @@ io_test_63( CuTest* tc )
 void
 io_test_64( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 1, NULL );
+    char* joined_path = UTILS_IO_JoinPath( 1, NULL );
     CuAssertPtrEquals( tc, NULL, joined_path );
 }
 
@@ -558,7 +558,7 @@ io_test_64( CuTest* tc )
 void
 io_test_65( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 2, "/", "/" );
+    char* joined_path = UTILS_IO_JoinPath( 2, "/", "/" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "/", joined_path );
     free( joined_path );
@@ -568,7 +568,7 @@ io_test_65( CuTest* tc )
 void
 io_test_66( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 3, "a", "b", "c" );
+    char* joined_path = UTILS_IO_JoinPath( 3, "a", "b", "c" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "a/b/c", joined_path );
     free( joined_path );
@@ -578,7 +578,7 @@ io_test_66( CuTest* tc )
 void
 io_test_67( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 3, "a", "b/c", "d" );
+    char* joined_path = UTILS_IO_JoinPath( 3, "a", "b/c", "d" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "a/b/c/d", joined_path );
     free( joined_path );
@@ -588,7 +588,7 @@ io_test_67( CuTest* tc )
 void
 io_test_68( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 3, "a", "/b/c", "d" );
+    char* joined_path = UTILS_IO_JoinPath( 3, "a", "/b/c", "d" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "/b/c/d", joined_path );
     free( joined_path );
@@ -598,7 +598,7 @@ io_test_68( CuTest* tc )
 void
 io_test_69( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 3, "a", "b/c", "/d" );
+    char* joined_path = UTILS_IO_JoinPath( 3, "a", "b/c", "/d" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "/d", joined_path );
     free( joined_path );
@@ -608,7 +608,7 @@ io_test_69( CuTest* tc )
 void
 io_test_70( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 3, "a", "/b/c", "/d" );
+    char* joined_path = UTILS_IO_JoinPath( 3, "a", "/b/c", "/d" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "/d", joined_path );
     free( joined_path );
@@ -618,7 +618,7 @@ io_test_70( CuTest* tc )
 void
 io_test_71( CuTest* tc )
 {
-    char* joined_path = MANGLE_NAME( IO_JoinPath ) ( 2, "a", "" );
+    char* joined_path = UTILS_IO_JoinPath( 2, "a", "" );
     CuAssertPtrNotNull( tc, joined_path );
     CuAssertStrEquals( tc, "a", joined_path );
     free( joined_path );
