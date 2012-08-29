@@ -247,12 +247,15 @@ SCOREP_OA_RequestsSubmit
     /**
      * Set metric source configuration string to the corresponding config variable
      */
+    #if HAVE( PAPI )
     SCOREP_ConfigSetValue( "metric", "papi", scorep_metrics_papi_mine );
     SCOREP_ConfigSetValue( "metric", "papi_sep", ";" );
+    #endif
 
+    #if HAVE( GETRUSAGE )
     SCOREP_ConfigSetValue( "metric", "rusage", scorep_metrics_rusage_mine );
     SCOREP_ConfigSetValue( "metric", "rusage_sep", ";" );
-
+    #endif
     /** if PAPI config string is already allocated free it*/
     if ( scorep_metrics_papi_mine )
     {
