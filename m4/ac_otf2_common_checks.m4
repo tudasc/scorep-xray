@@ -104,6 +104,8 @@ AC_SCOREP_POSIX_FUNCTIONS
 AC_SCOREP_DEFINE_REVISIONS
 
 scorep_have_otf="no"
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" ||
+       test "x${ac_scorep_frontend}" = "xyes"], [
 AC_SCOREP_PATH_GENERIC([otf], [1.8.0], [
     AC_LANG_PUSH([C])
     scorep_save_cflags="$CFLAGS"
@@ -126,13 +128,12 @@ AC_SCOREP_PATH_GENERIC([otf], [1.8.0], [
     CFLAGS=$scorep_save_cflags
     LIBS=$scorep_save_libs
     AC_LANG_POP([C])
-], [
-    :
-], [otfconfig], [--includes], [--libs])
-AM_CONDITIONAL([HAVE_OTF], [test "x$scorep_have_otf" = "xyes"])
+    ], [:], [otfconfig], [--includes], [--libs])
 AC_SCOREP_SUMMARY([OTF read support in otf2-compare], [${scorep_have_otf}])
 AC_SCOREP_SUMMARY_VERBOSE([OTF CFLAGS], [${OTF_CFLAGS}])
 AC_SCOREP_SUMMARY_VERBOSE([OTF LIBS],   [${OTF_LIBS}])
+])
+AM_CONDITIONAL([HAVE_OTF], [test "x$scorep_have_otf" = "xyes"])
 
 AC_CONFIG_FILES([
     run_otf2_buffer_test.sh:../test/OTF2_Buffer_test/run_otf2_buffer_test.sh.in
