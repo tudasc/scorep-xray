@@ -87,6 +87,7 @@ dnl $2: whitespace separated list of headers
 dnl $3: extra cppflags, e.g. -D_XOPEN_SOURCE=500
 dnl $4: --with-$1 parameter if available, e.g. by a previous check. 
 dnl     Think about cuda that provides  --with-cupti=<cuda>/extras/CUPTI
+dnl $5: don't create configure options if $5 is m4-blank
 AC_DEFUN([AC_SCOREP_BACKEND_LIB], [
 
 m4_ifdef([AC_SCOREP_FRONTEND], 
@@ -94,25 +95,27 @@ m4_ifdef([AC_SCOREP_FRONTEND],
 
 m4_define([$1_NAME], [m4_toupper($1)])
 
+m4_ifblank($5, [
 AC_ARG_VAR($1_NAME[]_INCLUDE, [Path to $1 headers.])
 AC_ARG_VAR($1_NAME[]_LIB, [Path to $1 libraries.])
+])
 
 AC_ARG_WITH([$1], 
-            [AS_HELP_STRING([--with-$1=<Path to $1 installation>], 
-                            [If you want to build scorep with $1 but
-                             do not have a $1 in a standard location
-                             then you need to explicitly specify the
-                             directory where it is installed. On
-                             non-cross-compile systems we search the
-                             system include and lib paths per default
-                             [yes], on cross-compile systems
-                             however,you have to specify a path
-                             [no]. --with-$1 is a shorthand for
-                             --with-$1-include=<Path/include> and
-                             --with-$1-lib=<Path/lib>. If these
-                             shorthand assumptions are not correct,
-                             you can use the explicit include and lib
-                             options directly.])],
+            [m4_ifblank($5, [AS_HELP_STRING([--with-$1=<Path to $1 installation>], 
+                                            [If you want to build scorep with $1 but
+                                             do not have a $1 in a standard location
+                                             then you need to explicitly specify the
+                                             directory where it is installed. On
+                                             non-cross-compile systems we search the
+                                             system include and lib paths per default
+                                             [yes], on cross-compile systems
+                                             however,you have to specify a path
+                                             [no]. --with-$1 is a shorthand for
+                                             --with-$1-include=<Path/include> and
+                                             --with-$1-lib=<Path/lib>. If these
+                                             shorthand assumptions are not correct,
+                                             you can use the explicit include and lib
+                                             options directly.])])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], 
                    [AS_IF([test "x${withval}" = "xyes"], 
                           [AC_MSG_ERROR([in cross-compile mode, invalid value 'yes' to --with-$1, specify a path instead.])])])],
@@ -128,7 +131,7 @@ AC_ARG_WITH([$1],
 
 AS_IF([test "x${with_$1}" = "xnot_set"], 
       [AC_ARG_WITH([$1-include],
-                   [  --with-$1-include=<Path to $1 headers>],
+                   [m4_ifblank($5, [  --with-$1-include=<Path to $1 headers>])],
                    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"], 
                           [], 
                           [AS_IF([test "x${withval}" = "xyes"],
@@ -138,7 +141,7 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
                           [with_$1_include="${$1_NAME[]_INCLUDE:-no}"])])
 
        AC_ARG_WITH([$1-lib], 
-                   [  --with-$1-lib=<Path to $1 libraries>], 
+                   [m4_ifblank($5, [  --with-$1-lib=<Path to $1 libraries>])], 
                    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"], 
                           [],
                           [AS_IF([test "x${withval}" = "xyes"],
@@ -316,7 +319,7 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
                test "x${with_$1_lib_checks_successful}" != "xno") || \
               test "x${with_$1_libs}" = "xunknown"],
              [m4_pattern_allow(AC_SCOREP_[]$1_NAME[]_LIB_CHECK) dnl otherwise following error message fails.
-              AC_MSG_ERROR([implementation of AC_SCOREP_[]$1_NAME[]_LIB_CHECK does not provide required output.])])
+              AC_MSG_ERROR([implementation of _AC_SCOREP_[]$1_NAME[]_LIB_CHECK does not provide required output.])])
 
        CPPFLAGS="${cpp_flags_save_$1}"
        LIBS="${libs_save_$1}"
