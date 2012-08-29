@@ -277,11 +277,11 @@ scorep_write_region_definitions( void*                     writerHandle,
             case SCOREP_ADAPTER_POMP:
                 paradigm = OTF2_PARADIGM_OPENMP;
                 break;
-            /*
-               case SCOREP_ADAPTER_PTHREAD:
+#if 0
+            case SCOREP_ADAPTER_PTHREAD:
 
                 break;
-             */
+#endif
             case SCOREP_ADAPTER_USER:
                 paradigm = OTF2_PARADIGM_USER;
                 break;
@@ -292,56 +292,56 @@ scorep_write_region_definitions( void*                     writerHandle,
         OTF2_RegionRole region_role;
         switch ( definition->region_type )
         {
-            /*
-               case SCOREP_REGION_DYNAMIC:
-                region_role = OTF2_REGION_ROLE_???;
+#if 0
+            case SCOREP_REGION_DYNAMIC:
+                region_role = OTF2_REGION_ROLE_ ? ? ? ;
                 break;
-               case SCOREP_REGION_DYNAMIC_FUNCTION:
-                region_role = OTF2_REGION_ROLE_???;
+            case SCOREP_REGION_DYNAMIC_FUNCTION :
+                region_role = OTF2_REGION_ROLE_ ? ? ? ;
                 break;
-               case SCOREP_REGION_DYNAMIC_LOOP:
-                region_role = OTF2_REGION_ROLE_???;
+            case SCOREP_REGION_DYNAMIC_LOOP :
+                region_role = OTF2_REGION_ROLE_ ? ? ? ;
                 break;
-               case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
-                region_role = OTF2_REGION_ROLE_???;
+            case SCOREP_REGION_DYNAMIC_LOOP_PHASE :
+                region_role = OTF2_REGION_ROLE_ ? ? ? ;
                 break;
-               case SCOREP_REGION_DYNAMIC_PHASE:
-                region_role = OTF2_REGION_ROLE_???;
+            case SCOREP_REGION_DYNAMIC_PHASE :
+                region_role = OTF2_REGION_ROLE_ ? ? ? ;
                 break;
-             */
-            case SCOREP_REGION_FUNCTION:
+#endif
+            case SCOREP_REGION_FUNCTION :
                 region_role = OTF2_REGION_ROLE_FUNCTION;
                 break;
-            case SCOREP_REGION_LOOP:
+            case SCOREP_REGION_LOOP :
                 region_role = OTF2_REGION_ROLE_LOOP;
                 break;
 
-            case SCOREP_REGION_MPI_COLL_ALL2ALL:
+            case SCOREP_REGION_MPI_COLL_ALL2ALL :
                 region_role = OTF2_REGION_ROLE_COLL_ALL2ALL;
                 break;
-            case SCOREP_REGION_MPI_COLL_ALL2ONE:
+            case SCOREP_REGION_MPI_COLL_ALL2ONE :
                 region_role = OTF2_REGION_ROLE_COLL_ALL2ONE;
                 break;
-            case SCOREP_REGION_MPI_COLL_BARRIER:
+            case SCOREP_REGION_MPI_COLL_BARRIER :
                 region_role = OTF2_REGION_ROLE_BARRIER;
                 break;
-            case SCOREP_REGION_MPI_COLL_ONE2ALL:
+            case SCOREP_REGION_MPI_COLL_ONE2ALL :
                 region_role = OTF2_REGION_ROLE_COLL_ONE2ALL;
                 break;
-            case SCOREP_REGION_MPI_COLL_OTHER:
+            case SCOREP_REGION_MPI_COLL_OTHER :
                 region_role = OTF2_REGION_ROLE_COLL_OTHER;
                 break;
 
-            case SCOREP_REGION_OMP_ATOMIC:
+            case SCOREP_REGION_OMP_ATOMIC :
                 region_role = OTF2_REGION_ROLE_ATOMIC;
                 break;
-            case SCOREP_REGION_OMP_BARRIER:
+            case SCOREP_REGION_OMP_BARRIER :
                 region_role = OTF2_REGION_ROLE_BARRIER;
                 break;
-            case SCOREP_REGION_OMP_CRITICAL:
+            case SCOREP_REGION_OMP_CRITICAL :
                 region_role = OTF2_REGION_ROLE_CRITICAL;
                 break;
-            case SCOREP_REGION_OMP_CRITICAL_SBLOCK:
+            case SCOREP_REGION_OMP_CRITICAL_SBLOCK :
                 region_role = OTF2_REGION_ROLE_CRITICAL_SBLOCK;
                 break;
             case SCOREP_REGION_OMP_FLUSH:
