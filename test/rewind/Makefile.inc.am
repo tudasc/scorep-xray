@@ -24,7 +24,7 @@ rewind_test_SOURCES = $(SRC_ROOT)/test/rewind/rewind_test.c
 
 rewind_test_CPPFLAGS = $(AM_CPPFLAGS)    \
     -I$(PUBLIC_INC_DIR)                  \
-    -I$(UTILS_CPPFLAGS)                  \
+    $(UTILS_CPPFLAGS)                    \
     -DSCOREP_USER_ENABLE
 
 rewind_test_LDADD =                      \
