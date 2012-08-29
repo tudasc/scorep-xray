@@ -70,15 +70,14 @@ enum
      * src/config-custom.h
      */
     #define UTILS_DEFINE_DEBUG_MODULE( name, bit ) \
-    PACKAGE_MANGLE_NAME_CAPS( DEBUG_ ## name ) = UINT64_C( 1 ) << bit,
+    PACKAGE_MANGLE_NAME_CAPS( DEBUG_ ## name ) = 1 << bit,
     UTILS_DEBUG_MODULES
     #undef UTILS_DEFINE_DEBUG_MODULE
-
-    /* internal flags */
-    UTILS_DEBUG_FUNCTION_ENTRY = UINT64_C( 1 ) <<  62,
-    UTILS_DEBUG_FUNCTION_EXIT  = UINT64_C( 1 ) <<  63
 };
 
+/* internal flags */
+#define UTILS_DEBUG_FUNCTION_ENTRY ( UINT64_C( 1 ) << 62 )
+#define UTILS_DEBUG_FUNCTION_EXIT  ( UINT64_C( 1 ) << 63 )
 
 /**
  * @def UTILS_DEBUG_PRINTF
