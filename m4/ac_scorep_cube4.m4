@@ -49,7 +49,7 @@ else
     AC_SUBST(CUBE_BACKEND_LIBS, "$CUBE_BACKEND_LIBS")
 
     ## Clean up
-    LIBS=$scorep_savelibs
+    LIBS=$scorep_save_libs
     AC_LANG_POP([C])
 fi
 ])
@@ -81,7 +81,7 @@ AM_CONDITIONAL(HAVE_CUBE4_FRONTEND,[test x$has_cube4_frontend_lib$has_cube4_fron
 AC_SUBST(CUBE_FRONTEND_LIBS, "$CUBE_FRONTEND_LIBS")
 
 ## Clean up
-LIBS=$scorep_savelibs
+LIBS=$scorep_save_libs
 AC_LANG_POP([C++])
 ])
 
