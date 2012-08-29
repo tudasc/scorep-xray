@@ -18,7 +18,7 @@
 ## file       /scorep/src/adapters/cuda/Makefile.inc.am
 ## maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
 
-if HAVE_LIBCUPTI
+if HAVE_CUDA
 
 noinst_LTLIBRARIES += libscorep_adapter_cuda.la
 
@@ -34,18 +34,16 @@ libscorep_adapter_cuda_la_SOURCES  = \
 
 libscorep_adapter_cuda_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                \
-    @LIBCUPTI_CPPFLAGS@           \
-    @LIBCUDA_CPPFLAGS@            \
+    @CUDA_CPPFLAGS@               \
     -I$(PUBLIC_INC_DIR)           \
     $(UTILS_CPPFLAGS)             \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/adapters/include \
     -I$(INC_ROOT)src/services/include
 
-libscorep_adapter_cuda_la_LIBADD = @LIBCUPTI_LDFLAGS@ @LIBCUPTI_LIBS@ \
-				   @LIBCUDA_LDFLAGS@ @SCOREP_LIBCUDA_LIBS@
+libscorep_adapter_cuda_la_LIBADD = @CUDA_LDFLAGS@ @CUDA_LIBS@
 
 libscorep_cupti_la_CPPFLAGS = $(libscorep_adapter_cuda_la_CPPFLAGS) \
-    @LIBCUPTI_CPPFLAGS@ @LIBCUDA_CPPFLAGS@
+    @CUDA_CPPFLAGS@
 
 endif

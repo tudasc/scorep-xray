@@ -112,7 +112,6 @@ AC_SCOREP_LIBSION([MPI])
 AC_SCOREP_LIBSION([MPI_OMP])
 AC_SCOREP_LIBPAPI
 AC_SCOREP_RUSAGE
-AC_SCOREP_CUPTI
 AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
 
@@ -144,6 +143,7 @@ LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
 AC_SCOREP_BUILD_MODE
+AC_SCOREP_CUDA
 
 # don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
 backend_bin_dir="/bin"

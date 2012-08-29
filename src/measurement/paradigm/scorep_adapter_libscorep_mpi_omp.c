@@ -44,7 +44,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Pomp_Adapter,
     &SCOREP_Mpi_Adapter,
     &SCOREP_Metric_Service,
-#if HAVE( CUPTI )
+#if HAVE( CUDA )
     &SCOREP_Cuda_Adapter
 #endif
 };

@@ -43,7 +43,7 @@ common_libadd = libscorep_measurement.la              \
                 @TIMER_LIB@                           \
                 @SCOREP_PAPI_LIBS@
 
-if HAVE_LIBCUPTI
+if HAVE_CUDA
 common_libadd += libscorep_adapter_cuda.la
 endif
 
