@@ -70,7 +70,7 @@ enum
      * src/config-custom.h
      */
     #define UTILS_DEFINE_DEBUG_MODULE( name, bit ) \
-    PACKAGE_MANGLE_NAME_CAPS( DEBUG_ ## name ) = 1 << bit,
+    PACKAGE_MANGLE_NAME_CAPS( DEBUG_ ## name ) = 1 << bit
     UTILS_DEBUG_MODULES
     #undef UTILS_DEFINE_DEBUG_MODULE
 };

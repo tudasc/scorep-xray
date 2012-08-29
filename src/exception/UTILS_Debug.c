@@ -157,8 +157,8 @@ parse_number( const char*     numberString,
 static const char* debug_module_names[] =
 {
     #define UTILS_DEFINE_DEBUG_MODULE( name, bit ) \
-    UTILS_STRINGIFY( name ),
-    UTILS_DEBUG_MODULES
+    UTILS_STRINGIFY( name )
+    UTILS_DEBUG_MODULES,
     #undef UTILS_DEFINE_DEBUG_MODULE
     NULL
 };
