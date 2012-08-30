@@ -1,14 +1,22 @@
 AC_PREREQ([2.68])
 AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [scorep-bugs@groups.tu-dresden.de], [scorep])
 
+AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
+
+AC_CONFIG_AUX_DIR([../build-config])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
+
+AH_SCOREP_CONFIG_HEADER
+AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
+
+AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
+
 AC_SCOREP_SUMMARY_INIT([MPI backend])
 
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
-
-AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
 
 cross_compiling=${ac_scorep_cross_compiling}
 
@@ -87,12 +95,6 @@ AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_su
 
 
 AC_SCOREP_SVN_CONTROLLED
-AH_SCOREP_CONFIG_HEADER
-AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
-
-
-AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])

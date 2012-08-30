@@ -3,9 +3,17 @@ AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-ve
 
 AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
 
-AC_SCOREP_SUMMARY_INIT([backend])
+AC_CONFIG_AUX_DIR([../build-config])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
+
+AH_SCOREP_CONFIG_HEADER
+AC_CONFIG_HEADERS([../src/config-backend.h])
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+    [AC_CONFIG_HEADERS([../src/config-backend-for-frontend.h])])
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
+
+AC_SCOREP_SUMMARY_INIT([backend])
 
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
@@ -26,13 +34,6 @@ AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([FC])
 
 AC_SCOREP_SVN_CONTROLLED
-AH_SCOREP_CONFIG_HEADER
-AC_CONFIG_HEADERS([../src/config-backend.h])
-
-
-AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
-
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 

@@ -1,9 +1,17 @@
 AC_PREREQ([2.68])
 AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [scorep-bugs@groups.tu-dresden.de], [scorep])
 
-AC_SCOREP_SUMMARY_INIT([frontend])
+AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
+
+AC_CONFIG_AUX_DIR([../build-config])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
+
+AH_SCOREP_CONFIG_HEADER
+AC_CONFIG_HEADERS([../src/config-frontend.h])
 
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
+
+AC_SCOREP_SUMMARY_INIT([frontend])
 
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
@@ -29,17 +37,12 @@ AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([F77])
 AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([FC])
 
 AC_SCOREP_SVN_CONTROLLED
-AH_SCOREP_CONFIG_HEADER
-AC_CONFIG_HEADERS([../src/config-frontend.h])
 
 AC_SCOREP_ONLINE_ACCESS
 
 AC_SCOREP_PDT
 AC_SCOREP_COBI
 AC_SCOREP_CUBE4_FRONTEND
-AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
-
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
