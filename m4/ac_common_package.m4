@@ -40,3 +40,15 @@ m4_ifval([$2], [], [
 AC_SUBST([PACKAGE_SYM],      $1_DOWN)
 AC_SUBST([PACKAGE_SYM_CAPS], $1_UP)
 ])
+
+# AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE, [DESCRIPTION])
+# ------------------------------------------------------
+# Like AC_DEFINE, but prepends the HAVE_ prefix and also defines the
+# HAVE_BACKEND_ variant, if in cross mode.
+#
+AC_DEFUN([AC_SCOREP_DEFINE_HAVE], [
+AC_DEFINE(HAVE_[]$1, [$2], [$3])
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], [
+AC_DEFINE(HAVE_BACKEND_[]$1, [$2], [$3])
+])
+])

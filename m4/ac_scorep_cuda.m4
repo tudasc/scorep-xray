@@ -58,7 +58,7 @@ AS_IF([test "x${scorep_have_libcudart}" = "xyes" && \
        test "x${scorep_have_libcuda}"   = "xyes"],
       [scorep_have_cuda="yes"
        AM_CONDITIONAL([HAVE_CUDA], [test 1 -eq 1])
-       AC_DEFINE(HAVE_CUDA, [1], [Defined if cuda is available.])
+       AC_SCOREP_DEFINE_HAVE([CUDA], [1], [Defined if cuda is available.])
        AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
        AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags}"])
        AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs}"])],

@@ -97,7 +97,7 @@ fi
 AC_MSG_CHECKING([for papi support])
 AC_MSG_RESULT([$scorep_have_papi])
 if test "x${scorep_have_papi}" = "xyes"; then
-    AC_DEFINE([HAVE_PAPI], [1],     [Defined if libpapi is available.])
+    AC_SCOREP_DEFINE_HAVE([PAPI], [1],   [Defined if libpapi is available.])
     AC_SUBST([SCOREP_PAPI_LDFLAGS], ["-L${scorep_papi_lib_dir} -R${scorep_papi_lib_dir}"])
     AC_SUBST([SCOREP_PAPI_LIBS],    ["-l${scorep_papi_lib_name} ${scorep_papi_additional_libs}"])
 else
@@ -153,7 +153,7 @@ AC_LANG_POP([C])
 
 dnl generating results/output/summary
 AS_IF([test "x${scorep_getrusage}" = "xyes"],
-      [AC_DEFINE([HAVE_GETRUSAGE], [1], [Defined if getrusage() is available.])])
+      [AC_SCOREP_DEFINE_HAVE([GETRUSAGE], [1], [Defined if getrusage() is available.])])
 AS_IF([test "x${scorep_rusage_thread}" = "xyes"],
       [AC_DEFINE([HAVE_RUSAGE_THREAD], [1], [Defined if RUSAGE_THREAD is available.])
        AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_THREAD], [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])],
