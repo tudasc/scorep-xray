@@ -18,8 +18,8 @@
 AC_DEFUN([AC_COMMON_PACKAGE], [
 AC_REQUIRE([AM_INIT_AUTOMAKE])
 
-pushdef([UP], translit([$1], [a-z], [A-Z]))dnl
-pushdef([DOWN], translit([$1], [A-Z], [a-z]))dnl
+m4_define([$1_UP], [m4_toupper($1)])
+m4_define([$1_DOWN], [m4_tolower($1)])
 
 m4_ifval([$2], [], [
     _AC_SRCDIRS([.])
@@ -28,18 +28,15 @@ m4_ifval([$2], [], [
 
     AC_DEFINE_UNQUOTED(
         [PACKAGE_SYM],
-        DOWN,
+        $1_DOWN,
         [The package name usable as a symbol.])
 
     AC_DEFINE_UNQUOTED(
         [PACKAGE_SYM_CAPS],
-        UP,
+        $1_UP,
         [The package name usable as a symbol in all caps.])
 ])
 
-AC_SUBST([PACKAGE_SYM], DOWN)
-AC_SUBST([PACKAGE_SYM_CAPS], UP)
-
-popdef([UP])
-popdef([DOWN])
+AC_SUBST([PACKAGE_SYM],      $1_DOWN)
+AC_SUBST([PACKAGE_SYM_CAPS], $1_UP)
 ])
