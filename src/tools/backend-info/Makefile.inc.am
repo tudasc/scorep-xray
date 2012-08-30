@@ -1,21 +1,21 @@
 ## -*- mode: makefile -*-
 
-bin_PROGRAMS += scorep-info
+bin_PROGRAMS += scorep-backend-info
 
-scorep_info_SOURCES = \
-    $(SRC_ROOT)src/tools/info/scorep_info.cpp
+scorep_backend_info_SOURCES = \
+    $(SRC_ROOT)src/tools/backend-info/scorep_backend_info.cpp
 
-scorep_info_CPPFLAGS = \
+scorep_backend_info_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/tools/info
 
-scorep_info_LDADD = \
+scorep_backend_info_LDADD = \
     $(LIB_DIR)libscorep_platform.la \
     @TIMER_LIB@ \
     libutils.la
 
 if SCOREP_TIMER_BGP_GET_TIMEBASE
-scorep_info_LDFLAGS = -L$(TIMER_LIBDIR)
+scorep_backend_info_LDFLAGS = -L$(TIMER_LIBDIR)
 endif

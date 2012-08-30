@@ -15,12 +15,12 @@
  */
 
 /**
- * @file       src/tools/info/scorep_info.cpp
+ * @file       src/tools/backend-info/scorep_backend_info.cpp
  *
  * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  * @status     alpha
  *
- * The info tool of Score-P: scorep-info.
+ * The info tool of Score-P: scorep-backend-info.
  *
  */
 
@@ -30,14 +30,12 @@
 #include <string>
 #include <cstdlib>
 
-#include <UTILS_Error.h>
-
 #include <SCOREP_Platform.h>
 
 /**
    Contains the name of the tool for help output
  */
-const std::string toolname = "scorep-info";
+const std::string toolname = "scorep-backend-info";
 
 /**
     Prints a short usage message.
