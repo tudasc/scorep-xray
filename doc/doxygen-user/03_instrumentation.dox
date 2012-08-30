@@ -67,85 +67,99 @@ The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whe
 @note
   A particular installation of @scorep may not offer all measurement
   configurations!
-
+	
 The <tt>scorep-config</tt> command can also be used to determine the right compiler
 flags for specifying the include directory of the <tt>scorep/SCOREP_User.h</tt> or
-<tt>scorep/SCOREP_User.inc</tt> header files when compiling without using the @scorep
-instrumentor, necessary defines and compiler instrumentation flags:
+<tt>scorep/SCOREP_User.inc</tt> header files. When compiling without using the @scorep
+instrumentor, necessary defines and compiler instrumentation flags can be obtained by calling:
 @verbatim
     scorep-config --cflags [--fortran] [--user] [--nocompiler]
 @endverbatim
 
-If you want to instrument Fortran code, you should add <tt>--fortran</tt>. The 
+If one wants to instrument Fortran code, <tt>--fortran</tt> should be added. The 
 <tt>--user</tt> and <tt>--nocompiler</tt> options allow to get the compiler flags 
 for non-default instrumentation possibilities. Thus <tt>--user</tt> enables the 
 manual instrumentation with the @scorep user API, the <tt>--nocompiler</tt> option
-disables compiler instrumentation. If you instrument Fortran code, you might need to
-add <tt>--fortran</tt>.
+disables compiler instrumentation. If Fortran code is instrumented, <tt>--fortran</tt> has to
+be added.
 
 @scorep supports a variety of instrumentation types for user-level
 source routines and arbitrary regions, in addition to fully-automatic
 @mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
 
+\if LATEX 
+\latexonly
+   \begin{table}
+	\caption{Score-P instrumentor option overview}
+	\label{tab:instopts}
+    	\begin{tabular}{ | p{1.5cm} | p{2.5cm} | p{1.6cm} | p{2.1cm} | p{2.1cm} |}
+	    \hline
+	    \bf Type of\newline instrumen\-tation & \bf Instrumenter switch & \bf Default value & \bf Instrumented routines & \bf  Runtime measurement control \\ \hline
+      
+	    MPI & {\ttfamily -\/-\/mpi/ \newline -\/-\/nompi} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline	    
+	    OpenMP & {\ttfamily -\/-\/openmp\-\_support/ \newline -\/-\/noopenmp\-\_support} & (auto) &  opari2 user re\-gions, Sec. \ref{sec:pomp_instrumentation} \newline + all parallel constructs  &  --  \\ \hline
+	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
+	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
+	    OPARI2, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/opari/ \newline -\/-\/noopari} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
+	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective tracing, Sec. \ref{sec:selective_tracing}\\ \hline
+    	\end{tabular}
+    \end{table}
+\endlatexonly
+
+\else
   <table border=1 cellspacing=0>
-    <caption>@scorep instrumentor option overview @tablabel{instopts}</caption>
+    <caption>@scorep instrumentor option overview</caption>
     <tr>
-      <th align="center" valign="middle" style="width:8em;">Type</th>
-      <th align="center" valign="middle" style="width:8em;">Switch</th>
-      <th align="center" valign="middle" style="width:8em;">Default</th>
-      <th align="center" valign="middle" style="width:8em;">Standard instrum'd routines</th>
-      <th align="center" valign="middle" style="width:8em;">Other<br>instrum'd regions</th>
-      <th align="center" valign="middle" style="width:8em;">Runtime meas'ment control</th>
+      <th align="center" valign="middle" style="width:8em;">Type of instrumentation</th>
+      <th align="center" valign="middle" style="width:8em;">Instrumenter switch</th>
+      <th align="center" valign="middle" style="width:8em;">Default value</th>
+      <th align="center" valign="middle" style="width:8em;">Instrumented routines</th>
+      <th align="center" valign="middle" style="width:8em;">Runtime measurement control</th>
     </tr>
     <tr>
       <td align="left" valign="middle"> MPI </td>
-      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> --mpi/--nompi </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> configured by install </td>
-      <td align="center" valign="middle"> &mdash; </td>
-      <td align="center" valign="middle"> (Sec. @secref{mpi_groups}) </td> 
+      <td align="center" valign="middle"> (see Sec. @ref mpi_groups ) </td> 
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
-      <td align="center" valign="middle"> &mdash; </td>
+      <td align="center" valign="middle"> --openmp_support/--noopenmp_support </td>
       <td align="center" valign="middle"> (auto) </td>
-      <td align="center" valign="middle"> @opari2 user regions (see Sec. @secref{pomp_instrumentation}) </td>
-      <td align="center" valign="middle"> all parallel constructs </td>
+      <td align="center" valign="middle"> @opari2 user regions (see Sec. @ref pomp_instrumentation ) + all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> Compiler instrumentation (see Sec. @secref{compiler_instrumentation}) </td>
-      <td align="center" valign="middle"> --compiler --nocompiler </td>
-      <td align="center" valign="middle"> --compiler </td>
+      <td align="left" valign="middle"> Compiler (see Sec. @ref compiler_instrumentation ) </td>
+      <td align="center" valign="middle"> --compiler/--nocompiler </td>
+      <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> all </td>
-      <td align="center" valign="middle"> not supported </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @secref{filtering}) </tt> </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </tt> </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> PDT instrumentation (see Sec. @secref{tau_instrumentation}) </td>
-      <td align="center" valign="middle"> --pdt --nopdt </td>
-      <td align="center" valign="middle"> --nopdt </td>
+      <td align="left" valign="middle"> PDT instrumentation (see Sec. @ref tau_instrumentation ) </td>
+      <td align="center" valign="middle"> --pdt/--nopdt </td>
+      <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> all </td>
-      <td align="center" valign="middle"> not supported </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @secref{filtering}) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> @opari2 (see Sec. @secref{pomp_instrumentation}) </td>
-      <td align="center" valign="middle"> --opari </td>
+      <td align="left" valign="middle"> @opari2 (see Sec. @ref pomp_instrumentation ) </td>
+      <td align="center" valign="middle"> --opari/--noopari </td>
       <td align="center" valign="middle"> depends on OpenMP usage </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @secref{filtering}) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> Manual instrumentation (see Sec. @secref{manual_instrumentation}) </td>
-      <td align="center" valign="middle"> --user --nouser </td>
-      <td align="center" valign="middle"> --nouser </td>
+      <td align="left" valign="middle"> Manual (see Sec. @ref manual_instrumentation ) </td>
+      <td align="center" valign="middle"> --user/--nouser </td>
+      <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> Filtering (Sec. @secref{filtering})<br> and<br> selective tracing (Sec. @secref{selective_tracing}) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective tracing (see Sec. @ref selective_tracing ) </td> 
     </tr>
   </table>
+\endif
 
 When the instrumentor determines that MPI or OpenMP are being used, it
 automatically enables MPI library instrumentation and OPARI2-based OpenMP
@@ -222,8 +236,8 @@ and could be applied successfully.
 @section manual_instrumentation Manual region instrumentation
 @seclabel{manual_instrumentation}
 
-If the automatic compiler-based instrumentation 
-(see Section @secref{compiler_instrumentation}) fails, 
+In addition to the automatic compiler-based instrumentation 
+(see Section @secref{compiler_instrumentation}), 
 instrumentation can be done manually. Manual instrumentation can
 also be used to augment automatic instrumentation with region or phase
 annotations, which can improve the structure of analysis reports. Furthermore, it
@@ -257,7 +271,7 @@ C/C++:
     {
       SCOREP_USER_REGION_DEFINE( my_region_handle )
 
-      // do something
+      // more declarations
 
       SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
 
@@ -269,9 +283,11 @@ C/C++:
 
 C++ only:
 @code
+    #include <scorep/SCOREP_User.h>
+	
     void foo()
     {
-      SCOREP_USER_REGION_( "foo", SCOREP_USER_REGION_TYPE_FUNCTION )
+      SCOREP_USER_REGION( "foo", SCOREP_USER_REGION_TYPE_FUNCTION )
 
       // do something
     }
@@ -399,24 +415,6 @@ parameters, <tt>SCOREP_USER_PARAMETER_UINT64</tt> for unsigned integer parameter
 (e.g. after 
 <tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>). 
 
-C/C++:
-@code
-    #include <scorep/SCOREP_User.h>
-
-    void foo(int64_t myint, uint64_t myuint, char *mystring)
-    {
-      SCOREP_USER_REGION_DEFINE( my_region_handle )
-      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
-      SCOREP_USER_PARAMETER_INT64("myint",myint)
-      SCOREP_USER_PARAMETER_INT64("myuint",myuint)
-      SCOREP_USER_PARAMETER_STRING("mystring",mystring)
-
-      // do something
-
-      SCOREP_USER_REGION_END( my_region_handle )
-    }
-@endcode
-
 Fortran:
 @code
     #include "scorep/SCOREP_User.inc"
@@ -430,6 +428,7 @@ Fortran:
         SCOREP_PARAMETER_DEFINE( string_param )
         SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
         SCOREP_USER_PARAMETER_INT64(int_param, "myint",i)
+        SCOREP_USER_PARAMETER_UINT64(uint_param, "myuint",i)
         SCOREP_USER_PARAMETER_STRING(string_param, "mystring",s)
 
         // do something
@@ -438,10 +437,28 @@ Fortran:
      end subroutine foo
 @endcode
 
-In C/C++ you need to provide only a name for the parameter and the value. In Fortran, you
-must define the handle first with <tt>SCOREP_PARAMETER_DEFINE</tt>. The defined handle
+C/C++:
+@code
+    #include <scorep/SCOREP_User.h>
+
+    void foo(int64_t myint, uint64_t myuint, char *mystring)
+    {
+      SCOREP_USER_REGION_DEFINE( my_region_handle )
+      SCOREP_USER_REGION_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      SCOREP_USER_PARAMETER_INT64("myint",myint)
+      SCOREP_USER_PARAMETER_UINT64("myuint",myuint)
+      SCOREP_USER_PARAMETER_STRING("mystring",mystring)
+
+      // do something
+
+      SCOREP_USER_REGION_END( my_region_handle )
+    }
+@endcode
+
+In C/C++, only a name for the parameter and the value needs to be provided. In Fortran, 
+the handle must be defined first with <tt>SCOREP_PARAMETER_DEFINE</tt>. The defined handle
 name must be unique in the current scope. The <tt>SCOREP_USER_PARAMETER_INT64</tt> and
-<tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as first argument, followed by the
+<tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
 @section control_instrumentation Measurement control instrumentation
@@ -471,7 +488,7 @@ on/off is done independently on each MPI process without synchronization.
       possible to switch recording on/off from within parallel OpenMP regions. We
       recommend to use the selective tracing interface, instead of the manual on/off
       switch whenever possible. Special care is required in combination with 
-      selective tracing (see Section @secref{selective tracing}, which also 
+      selective tracing (see Section @secref{selective_tracing}, which also 
       switches recording on/off.
 
 @section online_access Source-code instrumentation enabling Online Access
