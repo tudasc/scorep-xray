@@ -48,6 +48,16 @@ include ../build-includes/front-and-backend.am
 include ../build-includes/frontend-only.am
 endif !CROSS_BUILD
 
+# src/config-backend-for-frontend.h dependencies
+if CROSS_BUILD
+
+BUILT_SOURCES += ../src/config-backend-for-frontend.h
+
+$(srcdir)/../src/config-backend-for-frontend.h.in: $(srcdir)/../src/config-backend.h.in
+	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-config-backend-for-frontend.sh $< >$@
+endif CROSS_BUILD
+
+
 ## Determine how to handle tests
 if CROSS_BUILD
 check-serial: check-file-serial

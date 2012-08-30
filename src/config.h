@@ -31,13 +31,18 @@
 #if defined CROSS_BUILD
     #if defined FRONTEND_BUILD
         #include <config-frontend.h>
+        #include <config-backend-for-frontend.h>
+        #define HAVE_BACKEND( H ) ( defined( HAVE_BACKEND_ ## H ) && HAVE_BACKEND_ ## H )
     #elif defined BACKEND_BUILD_NOMPI
         #include <config-backend.h>
+        #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
     #elif defined BACKEND_BUILD_MPI
         #include <config-backend-mpi.h>
+        #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
     #else
         #error "You can not use config.h without defining either FRONTEND_BUILD, BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
     #endif
+
 #elif defined NOCROSS_BUILD
     #if defined BACKEND_BUILD_NOMPI
         #include <config-backend.h>
@@ -46,6 +51,9 @@
     #else
         #error "You can not use config.h without defining either BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
     #endif
+
+    #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
+
 #else
     #error "You can not use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."
 #endif
