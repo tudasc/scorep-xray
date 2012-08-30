@@ -96,16 +96,23 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
         fi
     fi
 
-    AC_ARG_ENABLE([platform-detection],
-                  [AS_HELP_STRING([--enable-platform-detection],
-                                  [autodetect platform [yes]])],
-                  [ac_scorep_platform_detection_given="$enableval"],
-                  [AS_IF([test "x${build_alias}" = "x" -a "x${host_alias}" = "x"],
-                         [ac_scorep_platform_detection="yes"],
-                         [ac_scorep_platform_detection="no"])])
+    AC_ARG_WITH([platform],
+                [AS_HELP_STRING([--with-platform=(auto,disabled,<platform>)],
+                                [autodetect platform [auto], disabled or select one from:
+                                 altix, aix, arm, bgl, bgp, bgq, crayxt, linux, solaris, mac, necsx.])],
+                [AS_CASE([$withval],
+                     ["auto"     | "yes"], [ac_scorep_platform_detection_given="yes"],
+                     ["disabled" | "no"],  [ac_scorep_platform_detection_given="no"],
+                     [ac_scorep_platform_detection_given="no"
+                      AS_IF([! test -e "${path_to_compiler_files}platform-frontend-${withval}"],
+                            [AC_MSG_ERROR([Unknown platform ${withval}.])])
+                      ac_scorep_platform="$withval"])],
+                [AS_IF([test "x${build_alias}" = "x" && test "x${host_alias}" = "x"],
+                       [ac_scorep_platform_detection="yes"],
+                       [ac_scorep_platform_detection="no"])])
 
     if test "x${ac_scorep_platform_detection_given}" = "xyes"; then
-        if test "x${build_alias}" != "x" -o "x${host_alias}" != "x"; then
+        if test "x${build_alias}" != "x" || test "x${host_alias}" != "x"; then
             AC_MSG_ERROR([it makes no sense to request for platform detection while providing --host and/or --build.])
         fi
     fi
@@ -120,23 +127,24 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
         if test "x${ac_scorep_platform}" = "xunknown"; then
             AC_MSG_RESULT([$ac_scorep_platform, please contact <AC_PACKAGE_BUGREPORT> if you encounter any problems.])
         else
-            AC_MSG_RESULT([$ac_scorep_platform])
-            ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-${ac_scorep_platform}"
-            ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-${ac_scorep_platform}"
-            ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-${ac_scorep_platform}"  
+            AC_MSG_RESULT([$ac_scorep_platform (auto detected)])
         fi
-        AC_MSG_CHECKING([for cross compilation])
-        AC_MSG_RESULT([$ac_scorep_cross_compiling])
     elif test "x${ac_scorep_platform_detection}" = "xno"; then
-        AC_MSG_NOTICE([platform detection disabled.])
-        AC_MSG_CHECKING([for cross compilation])
-        AC_MSG_RESULT([$ac_scorep_cross_compiling]) 
-        ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-user-provided"
-        ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-user-provided"
-        ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-user-provided"
+        AC_MSG_CHECKING([for platform])
+        AC_MSG_RESULT([$ac_scorep_platform (user selected)])
+        if test "x${build_alias}" != "x" || test "x${host_alias}" != "x"; then
+            if test "x$$ac_scorep_platform" = "xunknown"; then
+                AC_MSG_ERROR([providing --host and/or --build without --with-platform is erroneous.])
+            fi
+        fi
     else
         AC_MSG_ERROR([unknown value for ac_scorep_platform_detection: $ac_scorep_platform_detection])
     fi
+    AC_MSG_CHECKING([for cross compilation])
+    AC_MSG_RESULT([$ac_scorep_cross_compiling])
+    ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-${ac_scorep_platform}"
+    ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-${ac_scorep_platform}"
+    ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-${ac_scorep_platform}"
 ])
 
 # This macro is called also by the build-backend/frondend/mpi configures
