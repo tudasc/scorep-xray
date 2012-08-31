@@ -150,7 +150,7 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
 # This macro is called also by the build-backend/frondend/mpi configures
 AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
 [
-    AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
+    AC_REQUIRE([AC_CANONICAL_BUILD])
 
     AM_CONDITIONAL([PLATFORM_ALTIX],   [test "x${ac_scorep_platform}" = "xaltix"])
     AM_CONDITIONAL([PLATFORM_AIX],     [test "x${ac_scorep_platform}" = "xaix" && test "x${build_cpu}" = "xpowerpc"])
