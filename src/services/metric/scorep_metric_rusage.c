@@ -140,7 +140,7 @@ static int scorep_metric_rusage_initialize = 1;
 static char* scorep_metrics_rusage = NULL;
 
 /** Contains the name of requested per-process metrics. */
-char* scorep_metrics_rusage_per_process = NULL;
+static char* scorep_metrics_rusage_per_process = NULL;
 
 /** Contains the separator of metric names. */
 static char* scorep_metrics_rusage_separator = NULL;
@@ -363,7 +363,7 @@ scorep_metric_rusage_register()
     status = SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );
     if ( status != SCOREP_SUCCESS )
     {
-        UTILS_ERROR( SCOREP_WARNING, "Registration of RUSAGE configuration variables failed." );
+        UTILS_WARNING( "Registration of RUSAGE configuration variables failed." );
     }
 
     return status;
@@ -536,7 +536,7 @@ scorep_metric_rusage_finalize_location( SCOREP_Metric_EventSet* eventSet )
  *
  *  @param eventSet  Reference to active set of metrics.
  */
-void
+static void
 scorep_metric_rusage_free_event_set( SCOREP_Metric_EventSet* eventSet )
 {
     free( eventSet );

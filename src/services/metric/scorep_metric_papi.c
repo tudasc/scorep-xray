@@ -150,7 +150,7 @@ struct SCOREP_Metric_EventSet
 static char* scorep_metrics_papi = NULL;
 
 /** Contains the name of requested per-process metrics. */
-char* scorep_metrics_papi_per_process = NULL;
+static char* scorep_metrics_papi_per_process = NULL;
 
 /** Contains the separator of metric names. */
 static char* scorep_metrics_papi_separator = NULL;
@@ -251,8 +251,7 @@ static int scorep_metric_papi_initialize = 1;
  *
  *  @return It returns the identifier of recent location.
  */
-unsigned long
-static
+static unsigned long
 scorep_metric_get_location_id()
 {
     /* Get the thread id from the measurement system */
@@ -276,7 +275,7 @@ scorep_metric_get_location_id()
  *
  *  @return Returns definition data of specified metrics.
  */
-scorep_metric_definition_data*
+static scorep_metric_definition_data*
 scorep_metric_papi_open( const char* listOfMetricNames,
                          const char* metricsSeparator )
 {
@@ -376,7 +375,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
 /** @brief Finalizes the performance counter adapter. Frees memory allocated by
  *         scorep_metric_papi_open.
  */
-void
+static void
 scorep_metric_papi_close()
 {
     /* PAPI_shutdown() should be called only if there were PAPI metrics */
@@ -1041,7 +1040,7 @@ scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
  *
  *  @return It returns the number of recently used metrics.
  */
-uint32_t
+static uint32_t
 scorep_metric_papi_get_number_of_metrics( SCOREP_Metric_EventSet* eventSet )
 {
     if ( eventSet == NULL )
