@@ -27,24 +27,20 @@ _ACEOF
 ])
 
 AC_DEFUN([AC_SCOREP_SUMMARY_SECTION], [
-    AS_IF([test ! -f config.summary], [
-        AC_MSG_WARN([SCOREP_SUMMARY_SECTION used without calling SCOREP_SUMMARY_INIT.])
-    ])
+    AC_REQUIRE([AC_SCOREP_SUMMARY_INIT])
 cat >>config.summary <<_ACEOF
 AS_HELP_STRING([ $1:], [], 32, 128)
 _ACEOF
 ])
 
 AC_DEFUN([AC_SCOREP_SUMMARY], [
-    AS_IF([test ! -f config.summary], [
-        AC_MSG_WARN([SCOREP_SUMMARY used without calling SCOREP_SUMMARY_INIT.])
-    ])
+    AC_REQUIRE([AC_SCOREP_SUMMARY_INIT])
 cat >>config.summary <<_ACEOF
 AS_HELP_STRING([  $1:], [$2], 32, 128)
 _ACEOF
 ])
 
-# additional output if ./configure is called with --verbose
+# additional output if ./configure was called with --verbose
 AC_DEFUN([AC_SCOREP_SUMMARY_VERBOSE], [
     AS_IF([test "x${verbose}" = "xyes"], [
         AC_SCOREP_SUMMARY(["$1"], ["$2"])
