@@ -90,6 +90,8 @@ Optional Features:
   --enable-timer-bgl_rts_get_timebase
                           enable bgl_rts_get_timebase timer if available
                           instead of platform default
+  --enable-timer-bgq_mftb enable bgq_mftb timer if available instead of
+                          platform default
   --enable-timer-bgp_get_timebase
                           enable bgp_get_timebase timer if available instead
                           of platform default
@@ -142,6 +144,9 @@ Optional Packages:
                           autodetect platform [auto], disabled or select one
                           from: altix, aix, arm, bgl, bgp, bgq, crayxt, linux,
                           solaris, mac, necsx.
+  --with-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
+                          The compiler suite to build this package with. Needs
+                          to be in $PATH [gcc].
   --with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
                           The compiler suite to build this package in non
                           cross-compiling environments with. Needs to be in
@@ -156,9 +161,16 @@ Optional Packages:
   --with-otf2=(yes|<otf2-bindir>)
                           Use an already installed otf2. Provide path to
                           otf2-config if not already in $PATH.
+  --with-otf-prefix=PREFIX
+                          Prefix where otf is installed (optional)
+  --with-otf-exec-prefix=PREFIX
+                          Exec prefix where otf is installed (optional)
   --with-opari2=(yes|<opari2-bindir>)
                           Use an already installed opari2. Provide path to
                           opari2-config if not already in $PATH.
+  --with-cube=(yes|<cube-bindir>)
+                          Use an already installed cube. Provide path to
+                          cube-config if not already in $PATH.
   --with-pdt=<path-to-binaries>
                           Specifies the path to the program database toolkit
                           (PDT) binaries, e.g., cparse.
@@ -176,22 +188,68 @@ Optional Packages:
   --with-papi-lib=<path-to-libpapi.*>
                           If libpapi.* is not installed in the default
                           location, specify the dirname where it can be found.
+  --with-libunwind=<Path to libunwind installation>
+                          If you want to build scorep with libunwind but do
+                          not have a libunwind in a standard location then you
+                          need to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes],
+                          on cross-compile systems however,you have to specify
+                          a path [no]. --with-libunwind is a shorthand for
+                          --with-libunwind-include=<Path/include> and
+                          --with-libunwind-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
+  --with-libunwind-include=<Path to libunwind headers>
+  --with-libunwind-lib=<Path to libunwind libraries>
+  --with-cube4-frontend-lib=path_to_library
+                          Specifies the path where the Cube 4 frontend library
+                          is located
+  --with-cube4-frontend-header=path_to_header
+                          Specifies the path where the Cube 4 frontend header
+                          files are located
+  --with-libcudart=<Path to libcudart installation>
+                          If you want to build scorep with libcudart but do
+                          not have a libcudart in a standard location then you
+                          need to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes],
+                          on cross-compile systems however,you have to specify
+                          a path [no]. --with-libcudart is a shorthand for
+                          --with-libcudart-include=<Path/include> and
+                          --with-libcudart-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
+  --with-libcudart-include=<Path to libcudart headers>
+  --with-libcudart-lib=<Path to libcudart libraries>
   --with-libcuda=<Path to libcuda installation>
                           If you want to build scorep with libcuda but do not
                           have a libcuda in a standard location then you need
+                          to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes],
+                          on cross-compile systems however,you have to specify
                           a path [no]. --with-libcuda is a shorthand for
                           --with-libcuda-include=<Path/include> and
                           --with-libcuda-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
   --with-libcuda-include=<Path to libcuda headers>
   --with-libcuda-lib=<Path to libcuda libraries>
-  --with-libcupti=<Path to libcupti installation>
-                          If you want to build scorep with libcupti but do not
-                          have a libcupti in a standard location then you need
-                          a path [no]. --with-libcupti is a shorthand for
-                          --with-libcupti-include=<Path/include> and
-                          --with-libcupti-lib=<Path/lib>. If these shorthand
-  --with-libcupti-include=<Path to libcupti headers>
-  --with-libcupti-lib=<Path to libcupti libraries>
+  --with-libbfd=<Path to libbfd installation>
+                          If you want to build scorep with libbfd but do not
+                          have a libbfd in a standard location then you need
+                          to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes],
+                          on cross-compile systems however,you have to specify
+                          a path [no]. --with-libbfd is a shorthand for
+                          --with-libbfd-include=<Path/include> and
+                          --with-libbfd-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
+  --with-libbfd-include=<Path to libbfd headers>
+  --with-libbfd-lib=<Path to libbfd libraries>
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
@@ -268,10 +326,30 @@ Some influential environment variables:
   YFLAGS      The list of arguments that will be passed by default to $YACC.
               This script will default YFLAGS to the empty string to avoid a
               default value of `-d' given by some make applications.
-
+  RUNTIME_MANAGEMENT_TIMINGS
+              Whether to activate time measurements for Score-P's
+              SCOREP_InitMeasurement() and scorep_finalize() functions.
+              Activation values are '1', 'yes', and 'true'. For developer use.
   SIONCONFIG  Absolute path to sionconfig, including "sionconfig".
+  OTF_CONFIG  config script used for otf
+  OTF_CFLAGS  CFLAGS used for the otf
+  OTF_LIBS    LIBS used for the otf
   PAPI_INC    Include path to the papi.h header.
   PAPI_LIB    Library path to the papi library.
+  LIBUNWIND_INCLUDE
+              Path to libunwind headers.
+  LIBUNWIND_LIB
+              Path to libunwind libraries.
+  LIBCUDART_INCLUDE
+              Path to libcudart headers.
+  LIBCUDART_LIB
+              Path to libcudart libraries.
+  LIBCUDA_INCLUDE
+              Path to libcuda headers.
+  LIBCUDA_LIB Path to libcuda libraries.
+  LIBBFD_INCLUDE
+              Path to libbfd headers.
+  LIBBFD_LIB  Path to libbfd libraries.
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
