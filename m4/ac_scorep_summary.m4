@@ -49,16 +49,17 @@ AC_DEFUN([AC_SCOREP_SUMMARY_VERBOSE], [
 
 # should be called after AC_OUTPUT
 AC_DEFUN([AC_SCOREP_SUMMARY_COLLECT], [
-    (
-    AS_ECHO(["Configuration summary:"])
-    AS_IF([test -f config.summary], [
-        cat config.summary
-    ])
-    find */ -depth -name config.summary | while read summary; do
-        AS_ECHO([""])
-        cat $summary
-    done
-    ) >$PACKAGE.summary
     AS_ECHO([""])
-    cat $PACKAGE.summary
+    (
+    sep="Configuration summary:"
+    LC_ALL=C find . -name config.summary |
+        LC_ALL=C $AWK -F "/" '{print NF, $line}' |
+        LC_ALL=C sort |
+        while read level summary
+    do
+        AS_ECHO(["$sep"])
+        cat $summary
+        sep=""
+    done
+    ) | tee $PACKAGE.summary
 ])
