@@ -357,7 +357,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
 
         scorep_metric_papi_add( component, code, is_absolute, metric_definition );
 
-        token = strtok_r( env_metrics, metricsSeparator, &saveptr );
+        token = strtok_r( NULL, metricsSeparator, &saveptr );
     }
 
     /* Clean up */
