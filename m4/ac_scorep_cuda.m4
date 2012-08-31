@@ -82,7 +82,7 @@ AS_IF([test "x$scorep_cudart_error" = "xno"],
       [AC_SEARCH_LIBS([cudaRuntimeGetVersion],
                       [$scorep_cudart_lib_name],
                       [],
-                      [AC_MSG_NOTICE([error: no libcudart found; check path to CUDA runtime library ...])
+                      [AC_MSG_NOTICE([no libcudart found; check path to CUDA runtime library ...])
                        scorep_cudart_error="yes" ])])
 
 dnl check the version of the CUDA runtime API
@@ -96,8 +96,8 @@ AS_IF([test x"$scorep_cudart_error" = "xno"],
 #endif
         ]])],
         [],
-        [AC_MSG_NOTICE([error: CUDA runtime API version could not be determined and/or is 
-                        incompatible (< 4.1)	See 'config.log' for more details.])
+        [AC_MSG_NOTICE([CUDA runtime API version could not be determined and/or is
+                        incompatible (< 4.1). See 'config.log' for more details.])
          scorep_cudart_error="yes" ])])
 
 
@@ -122,7 +122,7 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
       [AC_CHECK_LIB([$scorep_cupti_lib_name],
                     [cuptiGetVersion],
                     [],
-                    [AC_MSG_NOTICE([error: no libcupti found; check path to CUPTI library ...])
+                    [AC_MSG_NOTICE([no libcupti found; check path to CUPTI library ...])
                      scorep_cupti_error="yes" ])])
                      
 dnl check the version of CUPTI
@@ -136,8 +136,8 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
 #endif
          ]])],
          [],
-         [AC_MSG_NOTICE([error: CUPTI version could not be determined and/or is 
-                         incompatible (< 2)	See 'config.log' for more details.])
+         [AC_MSG_NOTICE([CUPTI version could not be determined and/or is
+                         incompatible (< 2). See 'config.log' for more details.])
           scorep_cupti_error="yes" ])])
 
 
@@ -162,7 +162,7 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
       [AC_SEARCH_LIBS([cuInit],
                       [$scorep_cuda_lib_name],
                       [],
-                      [AC_MSG_NOTICE([error: no libcuda found; check path to CUDA library ...])
+                      [AC_MSG_NOTICE([no libcuda found; check path to CUDA library ...])
                        scorep_cuda_error="yes" ])])
 
 dnl check the version of the CUDA Driver API
@@ -178,8 +178,8 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
 #endif
         ]])],
         [],
-        [AC_MSG_NOTICE([error: CUDA driver API version could not be determined and/or is 
-                        incompatible (< 4.1)	See 'config.log' for more details.])
+        [AC_MSG_NOTICE([CUDA driver API version could not be determined and/or is
+                        incompatible (< 4.1). See 'config.log' for more details.])
          scorep_cuda_error="yes" ])])
 CPPFLAGS="${cpp_flags_save}"
 
