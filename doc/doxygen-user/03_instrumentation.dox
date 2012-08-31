@@ -187,7 +187,7 @@ it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
 performed, this can help verify that the @scorep instrumentor correctly
 handles the compile/link commands. 
 
-@section compiler_instrumentation Automatic compiler instrumentation
+@section compiler_instrumentation Automatic Compiler Instrumentation
 @seclabel{compiler_instrumentation}
 
 Most current compilers support automatic insertion of instrumentation calls at
@@ -233,7 +233,7 @@ whether name "demangling" has been enabled when @scorep was installed
 and could be applied successfully.
 
 
-@section manual_instrumentation Manual region instrumentation
+@section manual_instrumentation Manual Region Instrumentation
 @seclabel{manual_instrumentation}
 
 In addition to the automatic compiler-based instrumentation 
@@ -402,7 +402,7 @@ routines, i.e., usually only user region instrumentation is desired in this
 case.
 
 
-@section parameter_instrumentation Instrumentation for parameter-based profiling
+@section parameter_instrumentation Instrumentation for Parameter-Based Profiling
 @seclabel{parameter_instrumentation}
 
 The @scorep user API provides also macros for parameter-based profiling. In 
@@ -461,7 +461,7 @@ name must be unique in the current scope. The <tt>SCOREP_USER_PARAMETER_INT64</t
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
-@section control_instrumentation Measurement control instrumentation
+@section control_instrumentation Measurement Control Instrumentation
 @seclabel{control_instrumentation}
 
 The @scorep user API also provides several macros for measurement control
@@ -491,7 +491,7 @@ on/off is done independently on each MPI process without synchronization.
       selective tracing (see Section @secref{selective_tracing}, which also 
       switches recording on/off.
 
-@section online_access Source-code instrumentation enabling Online Access
+@section online_access Source-Code Instrumentation Enabling Online Access
 @seclabel{online_access}
 
 The Online Access interface to the measurement system of Score-P allows remote
@@ -554,7 +554,7 @@ C/C++:
     }
 @endcode
 
-@section pomp_instrumentation Semi-automatic instrumentation with @opari2
+@section pomp_instrumentation Semi-Automatic Instrumentation with @opari2
 @seclabel{pomp_instrumentation}
 
 If you manually instrument the desired user functions and regions of your
@@ -634,7 +634,7 @@ C/C++:
     }
 @endcode
 
-@section tau_instrumentation Source-code instrumentation using PDT
+@section tau_instrumentation Source-Code Instrumentation Using PDT
 @seclabel{tau_instrumentation}
 
 If @scorep has been configured with PDToolkit support, automatic source-code

@@ -4,35 +4,33 @@
 
 
 This document provides an introduction to 
-@href{http://www.score-p.org,@scorep}, the @emph{Scalable Performance 
-    Measurement Infrastructure for Parallel Codes}, a software system 
+@href{http://www.score-p.org,@scorep}: the @emph{Scalable Performance 
+    Measurement Infrastructure for Parallel Codes}. It is a software system 
 that provides a measurement infrastructure for profiling, event trace
-recording, and online analysis of high performance computing
-applications. It has been developed within the framework of the
-@href{http://www.vi-hps.org/projects/silc,SILC} project funded by
-@href{http://www.bmbf.bund.de,BMBF} 
-under its HPC programme and the 
-@href{http://www.vi-hps.org/projects/prima,PRIMA} project,
-funded by the @href{http://energy.gov/, US Department of Energy}
+recording, and online analysis of High Performance Computing (HPC)
+applications. It has been developed within the framework of the Scalable Infrastructure for the Automated Performance Analysis of Parallel Codes (@href{http://www.vi-hps.org/projects/silc,SILC}) project funded by the German Federal Ministry of Education and Research (@href{http://www.bmbf.bund.de,BMBF})
+under its HPC programme and the Performance Refactoring of Instrumentation, Measurement, and Analysis Technologies for Petascale Computing(@href{http://www.vi-hps.org/projects/prima,PRIMA}) project,
+funded by the United States Department of Energy (@href{http://energy.gov/, DOE})
 with the goals of being highly scalable and easy to use. 
+
 The partners involved in
 the development of this system within the SILC and PRIMA projects were:
 <ul>
  <li> @href{http://www.fz-juelich.de/jsc,Forschungszentrum Jülich}, </li>
  <li> @href{http://www.parallel.grs-sim.de,German Research School for
-      Simulation Sciences} (Jülich/Aachen), </li>
+      Simulation Sciences}, </li>
  <li> @href{http://www.gns-mbh.com,Gesellschaft für numerische 
-      Simulation mbH} Braunschweig,</li>
- <li> @href{http://www.gwtonline.de,GWT-TUD GmbH} Dresden. </li>
- <li> @href{http://www.rz.rwth-aachen.de,RWTH Aachen}, </li>
- <li> @href{http://www.tu-dresden.de/zih,TU Dresden}, </li>
- <li> @href{http://www.lrr.in.tum.de,TU München}, </li>
+      Simulation mbH},</li>
+ <li> @href{http://www.gwtonline.de,Gesellschaft für Wissens- und Technologietransfer der TU Dresden (GWT-TUD GmbH)}, </li>
+ <li> @href{http://www.rz.rwth-aachen.de,Rheinisch-Westfälische Technische Hochschule (RWTH) Aachen}, </li>
+ <li> @href{http://www.tu-dresden.de/zih,Technische Universität Dresden}, </li>
+ <li> @href{http://www.lrr.in.tum.de,Technische Universität München}, </li>
  <li> and @href{http://nic.uoregon.edu/prl,University of Oregon} </li>
 </ul>
   
-The goal of the project was to simplify the analysis of the behaviour
+The goal of @scorep is to simplify the analysis of the behaviour
 of high performance computing software and to allow the developers of
-such codes to find out where and why performance problems arise, where
+such software to find out where and why performance problems arise, where
 bottlenecks may be expected and where their codes offer room for
 further improvements with respect to the run time. A number of tools
 have been around to help in this respect, but typically each of these
@@ -73,7 +71,7 @@ OpenMP).
 
 
 
-@section about_doc About this document
+@section about_doc About this Document
 @seclabel{about_doc}
 
 This document consists of three parts. This chapter is devoted to
@@ -88,7 +86,7 @@ reader can find more detailed information about the components of
 
 
 
-@section basic_idea The basic idea of performance optimization
+@section basic_idea Basics of Performance Optimization 
 @seclabel{basic_idea}
 
 Performance optimization is a process that is usually executed in a
@@ -160,7 +158,7 @@ ready for a re-entry into the optimization cycle.
 
 
 
-@section overview An overview of @scorep
+@section overview Score-P Software Architecture Overview
 @seclabel{overview}
 
 In order to allow the user to perform such an optimization of his code

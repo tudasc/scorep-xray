@@ -70,7 +70,7 @@ extremely large profiles for recursive calls. However, this limit can be changed
 the environment variable <tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt>. 
 
 
-@subsection parameter_profiling Parameter-based profiling
+@subsection parameter_profiling Parameter-Based Profiling
 @seclabel{parameter_profiling}
 
 Parameter-based profiling allows to separate the recoded statistics for a region, 
@@ -84,7 +84,7 @@ Currently, the only source for parameter events is manual instrumentation
 (see Section @secref{parameter_instrumentation}).
 
 
-@subsection phase_profiling Phase profiling
+@subsection phase_profiling Phase Profiling
 @seclabel{phase_profiling}
 
 Phase-profiling allows, to group the execution of the application into logical phases.
@@ -110,7 +110,7 @@ definition of phases that are have multiple partitions
 (see Section @secref{manual_instrumentation}). 
 
 
-@subsection dynamic_profiling Dynamic region profiling
+@subsection dynamic_profiling Dynamic Region Profiling
 @seclabel{dynamic_profiling}
 
 When profiling, multiple visits of a callpath are summarized. However, @scorep allows
@@ -215,7 +215,7 @@ Comments start with the character '#' and is terminated by a new line.
 You may use comments also inside the filter blocks. If a region name or source file
 name contains '#', you must escape it with a backslash.
 
-@subsection source_filtering Source file name filter block
+@subsection source_filtering Source File Name Filter Block
 @seclabel{source_filtering}
 
 The filter block for source file names, must be enclosed by 
@@ -256,7 +256,7 @@ simplified before comparison to a rule. E.g. it removes <tt>path/../</tt>,
 output of the measurement.
 
 
-@subsection region_filtering Region name filter block
+@subsection region_filtering Region Name Filter Block
 @seclabel{region_filtering}
 
 The filter block for the region names, must be enclosed by 
@@ -303,7 +303,7 @@ evaluating the expression. A Fortran rule would look like this:
       <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
       and <tt>FORTRAN</tt>) are case-sensitive.
 
-@subsection selective_tracing Selective tracing
+@subsection selective_tracing Selective Tracing
 @seclabel{selective_tracing}
 
 @scorep experiments record by default all events during the whole execution run.
@@ -442,7 +442,7 @@ The check for point 2 would corrupt the trace buffer, so point 2 would be delete
 ignored in the second check.
 
 
-@subsection mpi_groups Selection of MPI groups
+@subsection mpi_groups Selection of MPI Groups
 @seclabel{mpi_groups}
 
 The Message Passing Interface (MPI) adapter of @scorep supports the tracing
@@ -561,7 +561,7 @@ OTF2_IRecvRequest event. On request completion an OTF2_IRecv event is recorded.
 In both cases the group <tt>P2P</tt> must be enabled. Otherwise @scorep records no 
 events for peer-to-peer communication functions.
 
-@section mpi_comm_name Recording MPI communicator names
+@section mpi_comm_name Recording MPI Communicator Names
 @seclabel{mpi_comm_name}
 
 The measurement system tracks also the names of MPI communicators to easily
@@ -669,7 +669,7 @@ Otherwise check the configure help output to specify the location of the CUDA to
 <pre> ./configure --help=recursive | grep -E "(cuda|cupti)"</pre>
 
 
-@section online_access_measurement Online Access interface
+@section online_access_measurement Online Access Interface
 @seclabel{online_access_measurement}
 
 Online Access (OA) is an interface to the measurement system of Score-P allowing online analysis capable tools to 
