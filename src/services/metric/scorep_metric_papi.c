@@ -345,6 +345,8 @@ scorep_metric_papi_open( const char* listOfMetricNames,
         code      = -1;
         component = token;
 
+        printf( "PAPI_event_name_to_code( %s )\n", component );
+
         retval = PAPI_event_name_to_code( component, &code );
         assert( retval == PAPI_OK && code != -1 );
 
