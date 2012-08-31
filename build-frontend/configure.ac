@@ -62,7 +62,7 @@ AC_SCOREP_BUILD_MODE
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
 
 AC_CONFIG_FILES([Makefile], [[
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&    /; t; s/_0 = @echo "  [^ ]\+/&[FE]/' \
+sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \
 Makefile >Makefile.fe && mv -f Makefile.fe Makefile || rm -f Makefile.fe
 ]])
 
