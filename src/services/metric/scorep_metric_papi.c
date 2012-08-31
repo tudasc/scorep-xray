@@ -304,7 +304,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
 
     char* saveptr;
     /* Read metrics from specification string */
-    token = strtok( env_metrics, metricsSeparator, &saveptr );
+    token = strtok_r( env_metrics, metricsSeparator, &saveptr );
     if ( token == NULL )
     {
         /* Nevertheless, we checked that env_metrics is not empty, token
@@ -357,7 +357,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
 
         scorep_metric_papi_add( component, code, is_absolute, metric_definition );
 
-        token = strtok( env_metrics, metricsSeparator, &saveptr );
+        token = strtok_r( env_metrics, metricsSeparator, &saveptr );
     }
 
     /* Clean up */
