@@ -179,8 +179,8 @@ SCOREP_InitMeasurement()
     location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
 
     /* Data structure containing path in system tree is not needed any longer */
-    //SCOREP_FreeSystemTree( system_tree_path );
-    //system_tree_path = NULL;
+    SCOREP_FreeSystemTree( system_tree_path );
+    system_tree_path = NULL;
 
     SCOREP_TIME( SCOREP_Thread_Initialize );
 
