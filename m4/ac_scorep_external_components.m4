@@ -32,7 +32,7 @@ AC_ARG_WITH([$1],
             [AS_HELP_STRING([--with-$1=(yes|<$1-bindir>)], [Use an already installed $1. Provide path to $1-config if not already in $PATH.])], 
             [with_$1="${with_$1%/}"], 
             [with_$1="no"
-             AC_SCOREP_SUMMARY([$1 support], [yes, using internal.])])
+             AC_SCOREP_SUMMARY([$1 support], [yes, using internal])])
 
 AS_UNSET([scorep_have_$1_config])
 AS_UNSET([scorep_$1_config_bin])
@@ -54,7 +54,7 @@ AS_IF([test "x${with_$1}" != "xno"],
        AS_IF([test "x${scorep_have_$1_config}" = "xyes"], 
              [scorep_$1_config_arg="scorep_$1_bindir=`dirname ${scorep_$1_config_bin}`"
               # add version checking here. if successful:
-              AC_SCOREP_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}.])],
+              AC_SCOREP_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}])],
              [AS_IF([test "x${with_$1}" = "xyes"],
                     [AC_MSG_ERROR([cannot detect $1-config although it was requested via --with-$1.])],
                     [AC_MSG_ERROR([cannot detect $1-config in ${with_$1} and ${with_$1}/bin.])])])],
