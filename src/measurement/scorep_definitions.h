@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -193,9 +193,7 @@ SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                              const char*                 klass );
 
 SCOREP_LocationGroupHandle
-SCOREP_DefineLocationGroup( uint32_t                    globalLocationGroupId,
-                            SCOREP_SystemTreeNodeHandle parent,
-                            const char*                 name );
+SCOREP_DefineLocationGroup( SCOREP_SystemTreeNodeHandle parent );
 
 
 SCOREP_LocationHandle

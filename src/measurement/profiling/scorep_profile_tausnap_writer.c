@@ -37,6 +37,7 @@
 #include <UTILS_Error.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
+#include <SCOREP_Metric_Management.h>
 
 #include <scorep_profile_definition.h>
 #include <scorep_definitions.h>
@@ -319,7 +320,7 @@ write_metric_data_tau( scorep_profile_node*      node,
                        FILE*                     file,
                        SCOREP_DefinitionManager* manager )
 {
-    for ( int i = 0; i  < scorep_profile.num_of_dense_metrics; i++ )
+    for ( int i = 0; i  < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
     {
         fprintf( file,
                  " %" PRIu64 " %" PRIu64,
@@ -696,7 +697,7 @@ write_thread_tau( scorep_profile_node*      node,
              SCOREP_Mpi_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0" );
-    for ( int i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+    for ( int i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
     {
         fprintf( file, " %d", i + 1 );
     }

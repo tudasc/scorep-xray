@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -15,8 +15,10 @@
  */
 
 /**
- *  @status alpha
- *  @file scorep_metric_rusage.c
+ *  @status     alpha
+ *
+ *  @file       scorep_metric_rusage.c
+ *
  *  @author     Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *  @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
@@ -40,8 +42,6 @@
 
 #include "SCOREP_Metric_Source.h"
 
-/** @def SCOREP_RUSAGE_CNTR_MAXNUM Maximum number of resource usage counters concurrently used by a process */
-#define SCOREP_RUSAGE_CNTR_MAXNUM 16
 
 /** @defgroup SCOREP_Metric_RUSAGE Resource Usage Metric Source
  *  @ingroup SCOREP_Metric
@@ -52,8 +52,10 @@
  *  of \c getrusage provides a list of resource usage metrics. Please note that the
  *  availability of specific metrics depends on the operating system.
  *
+ *  First it is explained how to specify metrics that will be recorded by every location.
+ *
  *  You can enable recording of resource usage metrics by setting the environment variable
- *  SCOREP_METRIC_RUSAGE. The variable should contain a comma-separated list of metric names.
+ *  \c SCOREP_METRIC_RUSAGE. The variable should contain a comma-separated list of metric names.
  *  For example, set
  *  @verbatim SCOREP_METRIC_RUSAGE=ru_utime,ru_stime @endverbatim
  *  to record the user time and system time consumed by each process. If any of the requested
@@ -72,6 +74,9 @@
  *
  *  When using the resource usage counters for multi-threaded programs, at the moment the
  *  information displayed is valid for the whole process and not for each single thread.
+ *
+ *  In addition it is possible to specify metrics that will be recorded per-process. Please use
+ *  \c SCOREP_RUSAGE_PER_PROCESS for that reason.
  */
 
 /** Resource usage counter indices */
@@ -94,7 +99,7 @@ typedef enum
     RU_NVCSW    = 14,
     RU_NIVCSW   = 15,
 
-    RU_INVALID
+    SCOREP_RUSAGE_CNTR_MAXNUM
 } scorep_rusage_metric_type;
 
 /**
@@ -134,12 +139,22 @@ static int scorep_metric_rusage_initialize = 1;
 /** Contains the name of requested metrics. */
 static char* scorep_metrics_rusage = NULL;
 
+/** Contains the name of requested per-process metrics. */
+char* scorep_metrics_rusage_per_process = NULL;
+
 /** Contains the separator of metric names. */
 static char* scorep_metrics_rusage_separator = NULL;
 
-/** Configuration variables for the resource usage metric source.
+/** List of configuration variables for the resource usage metric source.
+ *
+ *  This list contains variables to specify 'synchronous strict' and
+ *  per-process metrics. Furthermore, a variable for the character
+ *  that separates single metric names is defined.
+ *
+ *  Configuration variables for the resource usage metric source.
  *  Current configuration variables are:
  *  @li @c SCOREP_METRIC_RUSAGE list of requested metric names.
+ *  @li @c SCOREP_METRIC_RUSAGE_PER_PROCESS list of requested metric names recorded per-process.
  *  @li @c SCOREP_METRIC_RUSAGE_SEP character that separates single metric names.
  */
 static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
@@ -149,8 +164,17 @@ static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
         &scorep_metrics_rusage,
         NULL,
         "",
-        "Resource ussage metric names.",
+        "Resource usage metric names.",
         "List of requested resource usage metric names that will be collected during program run.\n"
+    },
+    {
+        "rusage_per_process",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_metrics_rusage_per_process,
+        NULL,
+        "",
+        "Per-process resource usage metric names.",
+        "List of requested resource usage metric names that will be recorded only by first thread of a process.\n"
     },
     {
         "rusage_sep",
@@ -159,7 +183,7 @@ static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
         NULL,
         ",",
         "Separator of resource usage metric names.",
-        "Character that separates resource usage metric names in RUSAGE.\n"
+        "Character that separates resource usage metric names in SCOREP_METRIC_RUSAGE.\n"
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -207,42 +231,63 @@ static scorep_rusage_metric scorep_rusage_metrics[ SCOREP_RUSAGE_CNTR_MAXNUM ] =
 
 /* *INDENT-ON* */
 
+/** Metric definition data */
+typedef struct scorep_metric_definition_data scorep_metric_definition_data;
+struct scorep_metric_definition_data
+{
+    /** Vector of active resource usage counters */
+    scorep_rusage_metric* active_metrics[ SCOREP_RUSAGE_CNTR_MAXNUM ];
+    /** Number of active resource usage counters */
+    int8_t                number_of_metrics;
+};
+
 /** Metric data structure */
 struct SCOREP_Metric_EventSet
 {
-    struct rusage ru;
+    /** Structure to store resource usage metric values */
+    struct rusage                  ru;
+    /** Metric definition data */
+    scorep_metric_definition_data* definitions;
 };
 
-/** Vector of active resource usage counters */
-static scorep_rusage_metric* scorep_rusage_active_metrics[ SCOREP_RUSAGE_CNTR_MAXNUM ];
-
-/** Number of active resource usage counters */
-static int32_t number_of_metrics = 0;
+/** Definition data of metrics for each kind of metrics */
+static scorep_metric_definition_data* metric_defs[ NUMBER_OF_RESERVED_METRICS ];
 
 
 /** @brief Reads the configuration from environment variables and configuration
  *         files and initializes the resource usage counter source. It must be
  *         called before other functions depending on this metric source are
  *         used by the measurement system.
+ *
+ *  @param listOfMetricNames        Content of environment variable specifying
+ *                                  requested resource usage metric names.
+ *  @param metricsSeparator         Character separating entries in list of
+ *                                  metric names.
+ *
+ *  @return Returns definition data of specified metrics.
  */
-static void
-scorep_metric_rusage_open()
+static scorep_metric_definition_data*
+scorep_metric_rusage_open( const char* listOfMetricNames,
+                           const char* metricsSeparator )
 {
-    /** Content of environment variable SCOREP_METRIC_RUSAGE */
+    /* Working copy of environment variable content */
     char* env_metrics;
-    /** Pointer to sinlge character of metric specification string */
+    /* Pointer to single character of metric specification string */
     char* token;
 
-    /* Read content of environment variable "SCOREP_METRIC_RUSAGE" */
-    env_metrics = UTILS_CStr_dup( scorep_metrics_rusage );
+    /* Read content of environment variable */
+    env_metrics = UTILS_CStr_dup( listOfMetricNames );
 
     /* Return if environment variable is empty */
     if ( strlen( env_metrics ) == 0 )
     {
         free( env_metrics );
-        return;
+        return NULL;
     }
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_RUSAGE=%s", env_metrics );
+
+    /* Create new event set (variables initialized with zero) */
+    scorep_metric_definition_data* metric_defs = calloc( 1, sizeof( scorep_metric_definition_data ) );
+    UTILS_ASSERT( metric_defs );
 
     /* Convert RUSAGE's letters to lower case */
     token = env_metrics;
@@ -257,7 +302,7 @@ scorep_metric_rusage_open()
         /* Add all resource usage counters */
         for ( uint32_t i = 0; i < SCOREP_RUSAGE_CNTR_MAXNUM; i++ )
         {
-            scorep_rusage_active_metrics[ number_of_metrics++ ] = &( scorep_rusage_metrics[ i ] );
+            metric_defs->active_metrics[ ( metric_defs->number_of_metrics )++ ] = &( scorep_rusage_metrics[ i ] );
         }
     }
     else
@@ -265,13 +310,13 @@ scorep_metric_rusage_open()
         scorep_rusage_metric_type index;
 
         /* Read resource usage counter from specification string */
-        token = strtok( env_metrics, scorep_metrics_rusage_separator );
+        token = strtok( env_metrics, metricsSeparator );
         while ( token )
         {
-            index = RU_INVALID;
+            index = SCOREP_RUSAGE_CNTR_MAXNUM;
 
             /* Check if we exceed maximum number of concurrently used resource usage metrics */
-            assert( number_of_metrics < SCOREP_RUSAGE_CNTR_MAXNUM );
+            UTILS_ASSERT( metric_defs->number_of_metrics < SCOREP_RUSAGE_CNTR_MAXNUM );
 
             /* Search counter name in vector of counter specifications */
             for ( int i = 0; i < SCOREP_RUSAGE_CNTR_MAXNUM; i++ )
@@ -284,31 +329,18 @@ scorep_metric_rusage_open()
 
             /* If found, add the address of this counter specification to vector
              * of active counters; otherwise abort */
-            assert( index != RU_INVALID );
-            scorep_rusage_active_metrics[ number_of_metrics++ ] = &( scorep_rusage_metrics[ index ] );
+            UTILS_ASSERT( index != SCOREP_RUSAGE_CNTR_MAXNUM );
+            metric_defs->active_metrics[ ( metric_defs->number_of_metrics )++ ] = &( scorep_rusage_metrics[ index ] );
 
             /* Get next token */
-            token = strtok( NULL, scorep_metrics_rusage_separator );
+            token = strtok( NULL, metricsSeparator );
         }
     }
 
     free( env_metrics );
+
+    return metric_defs;
 }
-
-/** @brief
- *//*
-   void
-   rusage_free( struct SCOREP_Metric_EventSet* rusage )
-   {
-    printf( "rusage_free\n" );
-
-    if ( rusage == NULL )
-    {
-        return;
-    }
-
-    free( rusage );
-   }*/
 
 
 /* *********************************************************************
@@ -325,7 +357,16 @@ scorep_metric_rusage_register()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register rusage metric source!" );
 
-    return SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );
+    SCOREP_Error_Code status;
+
+    /* Register environment variables for 'synchronous strict' and 'per-process' metrics */
+    status = SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );
+    if ( status != SCOREP_SUCCESS )
+    {
+        UTILS_ERROR( SCOREP_WARNING, "Registration of RUSAGE configuration variables failed." );
+    }
+
+    return status;
 }
 
 /** @brief Called on deregistration of the metric source.
@@ -333,26 +374,64 @@ scorep_metric_rusage_register()
 static void
 scorep_metric_rusage_deregister()
 {
+    /* Free environment variables for 'synchronous strict' and per-process metrics */
     free( scorep_metrics_rusage );
+    free( scorep_metrics_rusage_per_process );
     free( scorep_metrics_rusage_separator );
+
+    /* Reset array of pointers to metric definition data */
+    for ( uint32_t i = 0; i < NUMBER_OF_RESERVED_METRICS; i++ )
+    {
+        metric_defs[ i ] = NULL;
+    }
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " rusage metric source deregister!" );
 }
 
-/** @brief  Initialize this metric source.
+/** @brief  Initialize 'resource usage' metric source.
  *
- *  @return Returns the number of used metrics.
+ *  During initialization respective environment variables are read to
+ *  determine which metrics has been specified by the user.
+ *
+ *  Because 'synchronous strict' metrics will be recorded by all
+ *  locations, we known how many metrics of this specific type each
+ *  location will record. This number is returned by this function.
+ *
+ *  For metrics of other types (e.g. per-process) we can not determine
+ *  whether this location will be responsible to record metrics of this
+ *  type. Responsibility will be determine while initializing location.
+ *  Therefore, within this function we don't known how many additional
+ *  metrics will be recorded by a specific location.
+ *
+ *  @return Returns the number of used 'synchronous strict' metrics.
  */
 static uint32_t
 scorep_metric_rusage_initialize_source()
 {
+    /* Number of used 'synchronous strict' metrics */
+    uint32_t metric_counts = 0;
+
     if ( scorep_metric_rusage_initialize )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize rusage metric source source." );
 
-        /* Read specified metric from respective environment variable.
-         * After this call number_of_metrics will be set to the number of
-         * metrics specified by the user. */
-        scorep_metric_rusage_open();
+        /* FIRST: Read specification of global synchronous strict metrics from respective environment variable. */
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] global synchronous strict metrics = %s", scorep_metrics_rusage );
+        metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] =
+            scorep_metric_rusage_open( scorep_metrics_rusage, scorep_metrics_rusage_separator );
+        if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
+        {
+            metric_counts = metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ]->number_of_metrics;
+        }
+
+        /*
+         * Handle additional metric types (e.g. per-process)
+         */
+
+        /* SECOND: Read specification of per-process metrics from respective environment variable. */
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] per-process metrics = %s", scorep_metrics_rusage_per_process );
+        metric_defs[ PER_PROCESS_METRICS_INDEX ] =
+            scorep_metric_rusage_open( scorep_metrics_rusage_per_process, scorep_metrics_rusage_separator );
 
         /* Set flag */
         scorep_metric_rusage_initialize = 0;
@@ -360,7 +439,7 @@ scorep_metric_rusage_initialize_source()
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of rusage metric source done." );
     }
 
-    return number_of_metrics;
+    return metric_counts;
 }
 
 /** @brief Metric source finalization.
@@ -371,13 +450,16 @@ scorep_metric_rusage_finalize_source()
     /* Call only, if previously initialized */
     if ( !scorep_metric_rusage_initialize )
     {
-        /* Reset vector of active metrics */
-        for ( uint32_t i = 0; i < SCOREP_RUSAGE_CNTR_MAXNUM; i++ )
+        if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
         {
-            scorep_rusage_active_metrics[ i ] = NULL;
+            /* Reset vector of active metrics */
+            for ( uint32_t i = 0; i < SCOREP_RUSAGE_CNTR_MAXNUM; i++ )
+            {
+                metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ]->active_metrics[ i ] = NULL;
+            }
+            /* Reset number of active rusage metrics */
+            metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ]->number_of_metrics = 0;
         }
-        /* Reset number of active rusage metrics */
-        number_of_metrics = 0;
 
         /* Set initialization flag */
         scorep_metric_rusage_initialize = 1;
@@ -389,15 +471,53 @@ scorep_metric_rusage_finalize_source()
  *
  *  @return Returns a reference to management data used to handle set of active metrics.
  */
-static SCOREP_Metric_EventSet*
-scorep_metric_rusage_initialize_location()
+static SCOREP_Metric_EventSet**
+scorep_metric_rusage_initialize_location( SCOREP_Location* locationData )
 {
-    SCOREP_Metric_EventSet* event_set = malloc( sizeof( struct SCOREP_Metric_EventSet ) );
-    assert( event_set );
+    /* Collection of event sets for each metric scope (global synchr. strict,
+     * per-process, <per-system-tree-level> */
+    SCOREP_Metric_EventSet** event_set_collection;
+
+    /* Allocate memory for event sets of additional metrics and another
+     * two ones (global synchronous strict and per-process metrics) */
+    /* @todo: replace malloc by static var */
+    event_set_collection = calloc( NUMBER_OF_RESERVED_METRICS, sizeof( SCOREP_Metric_EventSet* ) );
+    UTILS_ASSERT( event_set_collection );
+
+    /*
+     * First: Check whether this location has to record global synchronous strict metrics
+     */
+    if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
+    {
+        SCOREP_Metric_EventSet* synchronous_strict_metric_event_set = malloc( sizeof( struct SCOREP_Metric_EventSet ) );
+        UTILS_ASSERT( synchronous_strict_metric_event_set );
+
+        synchronous_strict_metric_event_set->definitions = metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ];
+
+        event_set_collection[ SYNCHRONOUS_STRICT_METRICS_INDEX ] = synchronous_strict_metric_event_set;
+    }
+
+    /*
+     * Handle different kinds of per-location metrics
+     *
+     * Second: Check whether this location has to record per-process metrics
+     */
+    if ( metric_defs[ PER_PROCESS_METRICS_INDEX ] != NULL       // user has defined per-process metrics
+         && SCOREP_Location_GetId( locationData ) == 0 )        // this location is responsible to record per-process metrics (e.g. first thread of process)
+    {
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] This location will record per-process metrics." );
+
+        SCOREP_Metric_EventSet* per_process_metric_event_set = malloc( sizeof( SCOREP_Metric_EventSet ) );
+        UTILS_ASSERT( per_process_metric_event_set );
+
+        per_process_metric_event_set->definitions = metric_defs[ PER_PROCESS_METRICS_INDEX ];
+
+        event_set_collection[ PER_PROCESS_METRICS_INDEX ] = per_process_metric_event_set;
+    }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source initialized location!" );
 
-    return event_set;
+    return event_set_collection;
 }
 
 /** @brief Location specific finalization function for metric sources.
@@ -412,6 +532,18 @@ scorep_metric_rusage_finalize_location( SCOREP_Metric_EventSet* eventSet )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source finalized location!" );
 }
 
+/** @brief Frees memory allocated for requested event set.
+ *
+ *  @param eventSet  Reference to active set of metrics.
+ */
+void
+scorep_metric_rusage_free_event_set( SCOREP_Metric_EventSet* eventSet )
+{
+    free( eventSet );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric source freed event set!" );
+}
+
 /** @brief Reads values of all metrics in the active event set.
  *
  *  @param eventSet  Reference to active set of metrics.
@@ -421,8 +553,8 @@ static void
 scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
                            uint64_t*               values )
 {
-    assert( eventSet );
-    assert( values );
+    UTILS_ASSERT( eventSet );
+    UTILS_ASSERT( values );
 
     /* Get resource usage statistics
      *
@@ -432,11 +564,11 @@ scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
      *                   it is the sum of resources used by all threads of calling process
      * Please see configuration output to determine which mode is used by Score-P on your system. */
     int ret = getrusage( SCOREP_RUSAGE_SCOPE, &( eventSet->ru ) );
-    assert( ret != -1 );
+    UTILS_ASSERT( ret != -1 );
 
-    for ( uint32_t i = 0; i < number_of_metrics; i++ )
+    for ( uint32_t i = 0; i < eventSet->definitions->number_of_metrics; i++ )
     {
-        switch ( scorep_rusage_active_metrics[ i ]->index )
+        switch ( eventSet->definitions->active_metrics[ i ]->index )
         {
             case RU_UTIME:
                 values[ i ] = ( ( uint64_t )eventSet->ru.ru_utime.tv_sec * 1e6 + ( uint64_t )eventSet->ru.ru_utime.tv_usec );
@@ -507,26 +639,37 @@ scorep_metric_rusage_read( SCOREP_Metric_EventSet* eventSet,
 
 /** @brief  Gets number of active metrics.
  *
+ *  @param  eventSet    Reference to active set of metrics.
+ *
  *  @return Returns number of active metrics.
  */
-static int32_t
-scorep_metric_rusage_get_number_of_metrics()
+static uint32_t
+scorep_metric_rusage_get_number_of_metrics( SCOREP_Metric_EventSet* eventSet )
 {
-    return number_of_metrics;
+    if ( eventSet == NULL )
+    {
+        return 0;
+    }
+
+    return eventSet->definitions->number_of_metrics;
 }
 
 /** @brief  Returns name of metric @metricIndex.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns name of requested metric.
  */
 static const char*
-scorep_metric_rusage_get_metric_name( uint32_t metricIndex )
+scorep_metric_rusage_get_metric_name( SCOREP_Metric_EventSet* eventSet,
+                                      uint32_t                metricIndex )
 {
-    if ( metricIndex < number_of_metrics )
+    UTILS_ASSERT( eventSet );
+
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        return scorep_rusage_active_metrics[ metricIndex ]->name;
+        return eventSet->definitions->active_metrics[ metricIndex ]->name;
     }
     else
     {
@@ -536,16 +679,20 @@ scorep_metric_rusage_get_metric_name( uint32_t metricIndex )
 
 /** @brief  Gets description of requested metric.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns description of requested metric.
  */
 static const char*
-scorep_metric_rusage_get_metric_description( uint32_t metricIndex )
+scorep_metric_rusage_get_metric_description( SCOREP_Metric_EventSet* eventSet,
+                                             uint32_t                metricIndex )
 {
-    if ( metricIndex < number_of_metrics )
+    UTILS_ASSERT( eventSet );
+
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        return scorep_rusage_active_metrics[ metricIndex ]->description;
+        return eventSet->definitions->active_metrics[ metricIndex ]->description;
     }
     else
     {
@@ -555,16 +702,20 @@ scorep_metric_rusage_get_metric_description( uint32_t metricIndex )
 
 /** @brief  Gets unit of requested metric.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns unit of requested metric.
  */
 static const char*
-scorep_metric_rusage_get_metric_unit( uint32_t metricIndex )
+scorep_metric_rusage_get_metric_unit( SCOREP_Metric_EventSet* eventSet,
+                                      uint32_t                metricIndex )
 {
-    if ( metricIndex < number_of_metrics )
+    UTILS_ASSERT( eventSet );
+
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        return scorep_rusage_active_metrics[ metricIndex ]->unit;
+        return eventSet->definitions->active_metrics[ metricIndex ]->unit;
     }
     else
     {
@@ -574,25 +725,29 @@ scorep_metric_rusage_get_metric_unit( uint32_t metricIndex )
 
 /** @brief  Gets properties of requested metric.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns properties of requested metric.
  */
 static SCOREP_Metric_Properties
-scorep_metric_rusage_get_metric_properties( uint32_t metricIndex )
+scorep_metric_rusage_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
+                                            uint32_t                metricIndex )
 {
+    UTILS_ASSERT( eventSet );
+
     SCOREP_Metric_Properties props;
 
-    if ( metricIndex < number_of_metrics )
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        props.name           = scorep_rusage_active_metrics[ metricIndex ]->name;
-        props.description    = scorep_rusage_active_metrics[ metricIndex ]->description;
+        props.name           = eventSet->definitions->active_metrics[ metricIndex ]->name;
+        props.description    = eventSet->definitions->active_metrics[ metricIndex ]->description;
         props.source_type    = SCOREP_METRIC_SOURCE_TYPE_RUSAGE;
-        props.mode           = scorep_rusage_active_metrics[ metricIndex ]->mode;
+        props.mode           = eventSet->definitions->active_metrics[ metricIndex ]->mode;
         props.value_type     = SCOREP_METRIC_VALUE_UINT64;
-        props.base           = scorep_rusage_active_metrics[ metricIndex ]->base;
-        props.exponent       = scorep_rusage_active_metrics[ metricIndex ]->exponent;
-        props.unit           = scorep_rusage_active_metrics[ metricIndex ]->unit;
+        props.base           = eventSet->definitions->active_metrics[ metricIndex ]->base;
+        props.exponent       = eventSet->definitions->active_metrics[ metricIndex ]->exponent;
+        props.unit           = eventSet->definitions->active_metrics[ metricIndex ]->unit;
         props.profiling_type = SCOREP_METRIC_PROFILING_TYPE_INCLUSIVE;
 
         return props;
@@ -631,6 +786,7 @@ const SCOREP_MetricSource SCOREP_Metric_Rusage =
     &scorep_metric_rusage_register,
     &scorep_metric_rusage_initialize_source,
     &scorep_metric_rusage_initialize_location,
+    &scorep_metric_rusage_free_event_set,
     &scorep_metric_rusage_finalize_location,
     &scorep_metric_rusage_finalize_source,
     &scorep_metric_rusage_deregister,

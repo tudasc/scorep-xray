@@ -15,8 +15,10 @@
  */
 
 /**
- *  @status alpha
- *  @file scorep_metric_papi.c
+ *  @status     alpha
+ *
+ *  @file       scorep_metric_papi.c
+ *
  *  @author     Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *  @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
@@ -69,6 +71,8 @@
  *  This metric source uses the Performance Application Programming Interface (PAPI) to
  *  access hardware performance counters.
  *
+ *  First it is explained how to specify PAPI metrics that will be recorded by every location.
+ *
  *  You can enable recording of PAPI performance metrics by setting the environment variable
  *  SCOREP_METRIC_PAPI to a comma-separated list of metric names. Metric names can be any
  *  PAPI preset names or PAPI native counter names. For example, set
@@ -80,6 +84,9 @@
  *  to get a list of available PAPI events. If you want to change the separator used in the
  *  list of PAPI metric names set the environment variable \c SCOREP_METRIC_PAPI_SEP to
  *  the needed character.
+ *
+ *  In addition it is possible to specify metrics that will be recorded per-process. Please use
+ *  \c SCOREP_PAPI_PER_PROCESS for that reason.
  */
 
 /**
@@ -101,6 +108,17 @@ typedef struct scorep_papi_metric
 } scorep_papi_metric;
 
 /**
+ *   Metric definition data.
+ */
+typedef struct scorep_metric_definition_data
+{
+    /** Vector of active resource usage counters */
+    scorep_papi_metric* active_metrics[ SCOREP_METRIC_MAXNUM ];
+    /** Number of active resource usage counters */
+    int8_t              number_of_metrics;
+} scorep_metric_definition_data;
+
+/**
  *  An eventset for each component
  */
 typedef struct scorep_event_map
@@ -116,26 +134,37 @@ typedef struct scorep_event_map
 } scorep_event_map;
 
 /**
- *  Implementation of SCOREP event set data structure specific for the PAPI metric source.
+ *  Implementation of Score-P event set data structure specific for the PAPI metric source.
  */
 struct SCOREP_Metric_EventSet
 {
     /** A struct for each active component */
-    scorep_event_map* event_map[ SCOREP_METRIC_MAXNUM ];
+    scorep_event_map*              event_map[ SCOREP_METRIC_MAXNUM ];
     /** For each counter a pointer, that points to the event sets return values */
-    long_long*        values[ SCOREP_METRIC_MAXNUM ];
+    long_long*                     values[ SCOREP_METRIC_MAXNUM ];
+    /** Metric definition data */
+    scorep_metric_definition_data* definitions;
 };
 
 /** Contains the name of requested metrics. */
 static char* scorep_metrics_papi = NULL;
 
+/** Contains the name of requested per-process metrics. */
+char* scorep_metrics_papi_per_process = NULL;
+
 /** Contains the separator of metric names. */
 static char* scorep_metrics_papi_separator = NULL;
 
 /**
- *  Configuration variables for the metric adapter.
+ *  List of configuration variables for the PAPI metric adapter.
+ *
+ *  This list contains variables to specify 'synchronous strict' and
+ *  per-process metrics. Furthermore, a variable for the character
+ *  that separates single metric names is defined.
+ *
  *  Current configuration variables are:
  *  @li @c SCOREP_METRIC_PAPI list of requested metric names.
+ *  @li @c SCOREP_METRIC_PAPI_PER_PROCESS list of requested metric names recorded per-process.
  *  @li @c SCOREP_METRIC_PAPI_SEP character that separates single metric names.
  */
 static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
@@ -149,13 +178,22 @@ static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
         "List of requested metric names that will be collected during program run.\n"
     },
     {
+        "papi_per_process",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_metrics_papi_per_process,
+        NULL,
+        "",
+        "Per-process metric names",
+        "List of requested metric names that will be recorded only by first thread of a process.\n"
+    },
+    {
         "papi_sep",
         SCOREP_CONFIG_TYPE_STRING,
         &scorep_metrics_papi_separator,
         NULL,
         ",",
         "Separator of metric names.",
-        "Character that separates metric names in PAPI.\n"
+        "Character that separates metric names in SCOREP_METRIC_PAPI.\n"
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -167,15 +205,16 @@ static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
  **********************************************************************/
 
 static void
-scorep_metric_papi_add( char* name,
-                        int   code,
-                        bool  isAbsolute );
+scorep_metric_papi_add( char*                          name,
+                        int                            code,
+                        bool                           isAbsolute,
+                        scorep_metric_definition_data* metricDefs );
 
 static void
-scorep_metric_papi_test();
+scorep_metric_papi_test( scorep_metric_definition_data* metricDefs );
 
 static void
-scorep_metric_papi_descriptions( void );
+scorep_metric_papi_descriptions( scorep_metric_definition_data* metricDefs );
 
 static void
 scorep_metric_papi_warning( int   errcode,
@@ -192,18 +231,13 @@ scorep_metric_papi_error( int   errcode,
  **********************************************************************/
 
 /**
- * This vector contains specification data of used metrics.
+ * Definition data of metrics (synchronous strict and per-process metrics).
  */
-static scorep_papi_metric* metricv[ SCOREP_METRIC_MAXNUM ];
+static scorep_metric_definition_data* metric_defs[ NUMBER_OF_RESERVED_METRICS ];
 
 /**
- * Number of used metrics.
- */
-static uint32_t number_of_metrics = 0;
-
-/**
- * Static variable to control initialize status of the metric adapter.
- * If it is 0 it is initialized.
+ * Static variable to control initialization status of the metric adapter.
+ * If it is 0, then PAPI metric adapter is initialized.
  */
 static int scorep_metric_papi_initialize = 1;
 
@@ -234,17 +268,23 @@ scorep_metric_get_location_id()
 /** @brief Reads the configuration from environment variables and configuration
  *         files and initializes the performance counter library. It must be called
  *         before other functions of the library are used by the measurement system.
+ *
+ *  @param list_of_metric_names     Content of environment variable specifying
+ *                                  requested resource usage metric names.
+ *  @param metrics_separator        Character separating entries in list of
+ *                                  metric names.
+ *
+ *  @return Returns definition data of specified metrics.
  */
-void
-scorep_metric_papi_open()
+scorep_metric_definition_data*
+scorep_metric_papi_open( const char* listOfMetricNames,
+                         const char* metricsSeparator )
 {
     /** A leading exclamation mark let the metric be interpreted as absolute value counter.
      *  Appropriate metric properties have to be set. */
     bool is_absolute;
     /** Content of environment variable SCOREP_METRIC_PAPI */
     char* env_metrics;
-    /** Separator of individual metrics in environment variable SCOREP_METRIC_PAPI */
-    char* env_metrics_sep;
     /** Individual metric */
     char* token;
     /** PAPI return value. */
@@ -252,31 +292,43 @@ scorep_metric_papi_open()
     /** Info struct about PAPI event */
     PAPI_event_info_t info;
 
-    /* Read environment variable "SCOREP_METRIC_PAPI". Return if
-     * used and no PAPI timer used. */
-    env_metrics = UTILS_CStr_dup( scorep_metrics_papi );
+    /* Working copy of all metric names. */
+    env_metrics = UTILS_CStr_dup( listOfMetricNames );
 
     /* Return if environment variable is empty */
     if ( strlen( env_metrics ) == 0 )
     {
         free( env_metrics );
-        return;
+        return NULL;
     }
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "SCOREP_METRIC_PAPI=%s", env_metrics );
 
-    env_metrics_sep = UTILS_CStr_dup( scorep_metrics_papi_separator );
+    /* Read metrics from specification string */
+    token = strtok( env_metrics, metricsSeparator );
+    if ( token == NULL )
+    {
+        /* Nevertheless, we checked that env_metrics is not empty, token
+         * can be NULL, for instance, if the user specified just the
+         * separator (metricsSeparator) character as the metric names
+         * (env_metrics). */
+
+        free( env_metrics );
+        return NULL;
+    }
+
+    /* Create new event set (variables initialized with zero) */
+    scorep_metric_definition_data* metric_definition = calloc( 1, sizeof( scorep_metric_definition_data ) );
+    UTILS_ASSERT( metric_definition );
 
     /* Initialize PAPI */
     retval = PAPI_library_init( PAPI_VER_CURRENT );
-    assert( retval == PAPI_VER_CURRENT );
+    UTILS_ASSERT( retval == PAPI_VER_CURRENT );
 
     /* PAPI code of recent metric */
     int code;
     /* Metric name */
     char* component;
-    /* Read metrics from specification string */
-    token = strtok( env_metrics, env_metrics_sep );
-    while ( token && ( number_of_metrics < SCOREP_METRIC_MAXNUM ) )
+
+    while ( token && ( metric_definition->number_of_metrics < SCOREP_METRIC_MAXNUM ) )
     {
         if ( token[ 0 ] == '!' )
         {
@@ -300,21 +352,22 @@ scorep_metric_papi_open()
         retval = PAPI_get_event_info( code, &info );
         assert( retval == PAPI_OK );
 
-        scorep_metric_papi_add( component, code, is_absolute );
+        scorep_metric_papi_add( component, code, is_absolute, metric_definition );
 
-        token = strtok( NULL, env_metrics_sep );
+        token = strtok( NULL, metricsSeparator );
     }
 
     /* Clean up */
     free( env_metrics );
-    free( env_metrics_sep );
 
     /* Check whether event combination is valid. This is done here to
      * avoid errors when creating the event set for each thread, which
      * would multiply the error messages. */
-    scorep_metric_papi_test();
+    scorep_metric_papi_test( metric_definition );
 
-    scorep_metric_papi_descriptions();
+    scorep_metric_papi_descriptions( metric_definition );
+
+    return metric_definition;
 }
 
 /** @brief Finalizes the performance counter adapter. Frees memory allocated by
@@ -323,52 +376,69 @@ scorep_metric_papi_open()
 void
 scorep_metric_papi_close()
 {
-    for ( uint32_t i = 0; i < number_of_metrics; i++ )
+    /* PAPI_shutdown() should be called only if there were PAPI metrics */
+    bool shutdown_papi = false;
+
+    for ( uint32_t metric_index = 0; metric_index < NUMBER_OF_RESERVED_METRICS; metric_index++ )
     {
-        free( metricv[ i ]->name );
-        free( metricv[ i ] );
+        if ( metric_defs[ metric_index ] == NULL
+             || metric_defs[ metric_index ]->number_of_metrics == 0 )
+        {
+            continue;
+        }
+
+        shutdown_papi = true;
+
+        for ( uint32_t i = 0; i < metric_defs[ metric_index ]->number_of_metrics; i++ )
+        {
+            free( metric_defs[ metric_index ]->active_metrics[ i ]->name );
+            free( metric_defs[ metric_index ]->active_metrics[ i ] );
+        }
+        free( metric_defs[ metric_index ] );
+        metric_defs[ metric_index ] = NULL;
     }
 
-    if ( number_of_metrics > 0 )
+    if ( shutdown_papi )
     {
         PAPI_shutdown();
     }
-
-    number_of_metrics = 0;
 }
 
 /** @brief  Creates per-thread counter sets.
  *
+ *  @param definitions          Metric definition data.
+ *
  *  @return It returns the new event set.
  */
 SCOREP_Metric_EventSet*
-scorep_metric_papi_create_event_set()
+scorep_metric_papi_create_event_set( scorep_metric_definition_data* definitions )
 {
     SCOREP_Metric_EventSet* event_set;
     int                     retval;
     int                     component;
 
-    if ( number_of_metrics == 0 )
+    if ( definitions->number_of_metrics == 0 )
     {
         return NULL;
     }
 
     event_set = ( SCOREP_Metric_EventSet* )malloc( sizeof( SCOREP_Metric_EventSet ) );
-    assert( event_set );
+    UTILS_ASSERT( event_set );
 
     /* Create event set */
     for ( uint32_t i = 0; i < SCOREP_METRIC_MAXNUM; i++ )
     {
         event_set->event_map[ i ] = NULL;
     }
+    event_set->definitions = definitions;
 
     uint32_t j;
-    for ( uint32_t i = 0; i < number_of_metrics; i++ )
+    for ( uint32_t i = 0; i < definitions->number_of_metrics; i++ )
     {
         struct scorep_event_map* eventset;
 
         #ifdef PAPIC
-        component = PAPI_COMPONENT_INDEX( metricv[ i ]->papi_code );
+        component = PAPI_COMPONENT_INDEX( definitions->active_metrics[ i ]->papi_code );
         #else
         component = 0;
         #endif
@@ -394,7 +464,7 @@ scorep_metric_papi_create_event_set()
         eventset = event_set->event_map[ j ];
 
         /* Add event to event set */
-        retval = PAPI_add_event( eventset->event_id, metricv[ i ]->papi_code );
+        retval = PAPI_add_event( eventset->event_id, definitions->active_metrics[ i ]->papi_code );
         if ( retval != PAPI_OK )
         {
             scorep_metric_papi_error( retval, "PAPI_add_event" );
@@ -408,6 +478,15 @@ scorep_metric_papi_create_event_set()
     /* For each used eventset */
     for ( uint32_t i = 0; i < SCOREP_METRIC_MAXNUM && event_set->event_map[ i ] != NULL; i++ )
     {
+        /* Only one event set per thread/cpu can be running at any time,
+         * so if another event set is running, PAPI_start() will return
+         * PAPI_EISRUN.
+         *
+         * Possible solutions:
+         * (1) We must stop the already running event set explicitly.
+         * However, multiple event sets will be measured in a multiplexed
+         * fashion. We won't be able to measure multiple event sets per
+         * thread/cpu for the same time slice. */
         retval = PAPI_start( event_set->event_map[ i ]->event_id );
         if ( retval != PAPI_OK )
         {
@@ -429,10 +508,10 @@ scorep_metric_papi_free( SCOREP_Metric_EventSet* eventSet )
     int       retval;
     long_long papi_vals[ SCOREP_METRIC_MAXNUM ];
 
-    if ( eventSet == NULL )
-    {
-        return;
-    }
+    /*
+     * Check for ( eventSet == NULL) can be skipped here, because all functions
+     * that call this one should have already checked eventSet.
+     */
 
     /* Treat PAPI failures at this point as non-fatal */
 
@@ -481,35 +560,39 @@ scorep_metric_papi_free( SCOREP_Metric_EventSet* eventSet )
 
 /** @brief Adds a new metric to internally managed vector.
  *
- *  @param name       Name of recent metric.
- *  @param code       PAPI code of recent metric.
- *  @param isAbsolute Is true if this metric should be interpreted as absolute value.
- *                    Otherwise it is false.
+ *  @param name                 Name of recent metric.
+ *  @param code                 PAPI code of recent metric.
+ *  @param isAbsolute           Is true if this metric should be interpreted as absolute value.
+ *                              Otherwise it is false.
+ *  @param metricDefinition     Reference to metric definition data structure.
  */
 static void
-scorep_metric_papi_add( char* name,
-                        int   code,
-                        bool  isAbsolute )
+scorep_metric_papi_add( char*                          name,
+                        int                            code,
+                        bool                           isAbsolute,
+                        scorep_metric_definition_data* metricDefinition )
 {
-    if ( number_of_metrics >= SCOREP_METRIC_MAXNUM )
+    UTILS_ASSERT( metricDefinition );
+
+    if ( metricDefinition->number_of_metrics >= SCOREP_METRIC_MAXNUM )
     {
         UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Number of counters exceeds Score-P allowed maximum of %d", SCOREP_METRIC_MAXNUM );
     }
     else
     {
-        metricv[ number_of_metrics ]                   = ( scorep_papi_metric* )malloc( sizeof( scorep_papi_metric ) );
-        metricv[ number_of_metrics ]->name             = UTILS_CStr_dup( name );
-        metricv[ number_of_metrics ]->description[ 0 ] = '\0';
+        metricDefinition->active_metrics[ metricDefinition->number_of_metrics ]                   = ( scorep_papi_metric* )malloc( sizeof( scorep_papi_metric ) );
+        metricDefinition->active_metrics[ metricDefinition->number_of_metrics ]->name             = UTILS_CStr_dup( name );
+        metricDefinition->active_metrics[ metricDefinition->number_of_metrics ]->description[ 0 ] = '\0';
         if ( isAbsolute )
         {
-            metricv[ number_of_metrics ]->mode = SCOREP_METRIC_MODE_ABSOLUTE_NEXT;
+            metricDefinition->active_metrics[ metricDefinition->number_of_metrics ]->mode = SCOREP_METRIC_MODE_ABSOLUTE_NEXT;
         }
         else
         {
-            metricv[ number_of_metrics ]->mode = SCOREP_METRIC_MODE_ACCUMULATED_START;
+            metricDefinition->active_metrics[ metricDefinition->number_of_metrics ]->mode = SCOREP_METRIC_MODE_ACCUMULATED_START;
         }
-        metricv[ number_of_metrics ]->papi_code = code;
-        number_of_metrics++;
+        metricDefinition->active_metrics[ metricDefinition->number_of_metrics ]->papi_code = code;
+        ( metricDefinition->number_of_metrics )++;
     }
 }
 
@@ -531,6 +614,8 @@ scorep_metric_papi_error( int   errcode,
         strncat( errstring, strerror( errno ), PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
     }
     UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "%s: %s (fatal)\n", note ? note : "PAPI", errstring );
+
+    _Exit( EXIT_FAILURE );
 }
 
 /** @brief Prints a PAPI-specific warning message.
@@ -554,72 +639,78 @@ scorep_metric_papi_warning( int   errcode,
 }
 
 /** @brief Prints metric descriptions.
+ *
+ *  @param metricDefinition     Reference to metric definition data structure.
  */
 static void
-scorep_metric_papi_descriptions( void )
+scorep_metric_papi_descriptions( scorep_metric_definition_data* metricDefinition )
 {
+    UTILS_ASSERT( metricDefinition );
+
     int               j;
     int               retval;
     PAPI_event_info_t info;
 
-    for ( int i = 0; i < number_of_metrics; i++ )
+    for ( int8_t i = 0; i < metricDefinition->number_of_metrics; i++ )
     {
         memset( &info, 0, sizeof( PAPI_event_info_t ) );
-        retval = PAPI_get_event_info( metricv[ i ]->papi_code, &info );
+        retval = PAPI_get_event_info( metricDefinition->active_metrics[ i ]->papi_code, &info );
         if ( retval != PAPI_OK )
         {
             scorep_metric_papi_error( retval, "PAPI_get_event_info" );
         }
 
-        if ( strcmp( info.long_descr, metricv[ i ]->name ) != 0 )
+        if ( strcmp( info.long_descr, metricDefinition->active_metrics[ i ]->name ) != 0 )
         {
-            strncpy( metricv[ i ]->description, info.long_descr, sizeof( metricv[ i ]->description ) - 1 );
+            strncpy( metricDefinition->active_metrics[ i ]->description, info.long_descr, sizeof( metricDefinition->active_metrics[ i ]->description ) - 1 );
 
             /* Tidy description if necessary */
-            j = strlen( metricv[ i ]->description ) - 1;
-            if ( metricv[ i ]->description[ j ] == '\n' )
+            j = strlen( metricDefinition->active_metrics[ i ]->description ) - 1;
+            if ( metricDefinition->active_metrics[ i ]->description[ j ] == '\n' )
             {
-                metricv[ i ]->description[ j ] = '\0';
+                metricDefinition->active_metrics[ i ]->description[ j ] = '\0';
             }
-            j = strlen( metricv[ i ]->description ) - 1;
-            if ( metricv[ i ]->description[ j ] != '.' )
+            j = strlen( metricDefinition->active_metrics[ i ]->description ) - 1;
+            if ( metricDefinition->active_metrics[ i ]->description[ j ] != '.' )
             {
-                strncat( metricv[ i ]->description, ".", sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
+                strncat( metricDefinition->active_metrics[ i ]->description, ".", sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
             }
         }
 
-        if ( metricv[ i ]->papi_code & PAPI_PRESET_MASK )
+        if ( metricDefinition->active_metrics[ i ]->papi_code & PAPI_PRESET_MASK )
         {
             /* PAPI preset */
 
             char* postfix_chp = info.postfix;
             char  derive_ch   = strcmp( info.derived, "DERIVED_SUB" ) ? '+' : '-';
 
-            strncat( metricv[ i ]->description, " [ ", sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
-            strncat( metricv[ i ]->description, info.name[ 0 ], sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
+            strncat( metricDefinition->active_metrics[ i ]->description, " [ ", sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
+            strncat( metricDefinition->active_metrics[ i ]->description, info.name[ 0 ], sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
 
             for ( int k = 1; k < ( int )info.count; k++ )
             {
                 char op[ 4 ];
                 postfix_chp = postfix_chp ? strpbrk( ++postfix_chp, "+-*/" ) : NULL;
                 sprintf( op, " %c ", ( postfix_chp ? *postfix_chp : derive_ch ) );
-                strncat( metricv[ i ]->description, op, sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
-                strncat( metricv[ i ]->description, info.name[ k ], sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
+                strncat( metricDefinition->active_metrics[ i ]->description, op, sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
+                strncat( metricDefinition->active_metrics[ i ]->description, info.name[ k ], sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
             }
-            strncat( metricv[ i ]->description, " ]", sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
-            if ( strcmp( info.symbol, metricv[ i ]->name ) != 0 ) /* add preset name */
+            strncat( metricDefinition->active_metrics[ i ]->description, " ]", sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
+            if ( strcmp( info.symbol, metricDefinition->active_metrics[ i ]->name ) != 0 ) /* add preset name */
             {
-                strncat( metricv[ i ]->description, " = ", sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
-                strncat( metricv[ i ]->description, info.symbol, sizeof( metricv[ i ]->description ) - strlen( metricv[ i ]->description ) - 1 );
+                strncat( metricDefinition->active_metrics[ i ]->description, " = ", sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
+                strncat( metricDefinition->active_metrics[ i ]->description, info.symbol, sizeof( metricDefinition->active_metrics[ i ]->description ) - strlen( metricDefinition->active_metrics[ i ]->description ) - 1 );
             }
         }
     }
 }
 
 /** @brief Tests whether requested event combination is valid or not.
+ *
+ *  @param metricDefinition     Reference to metric definition data structure.
  */
 static void
-scorep_metric_papi_test()
+scorep_metric_papi_test( scorep_metric_definition_data* metricDefinition )
 {
     uint32_t                 i;
     uint32_t                 j;
@@ -632,11 +723,11 @@ scorep_metric_papi_test()
         event_set[ i ] = NULL;
     }
 
-    for ( i = 0; i < number_of_metrics; i++ )
+    for ( i = 0; i < metricDefinition->number_of_metrics; i++ )
     {
         #ifdef PAPIC
         /* Preset-counter belong to Component 0! */
-        component = PAPI_COMPONENT_INDEX( metricv[ i ]->papi_code );
+        component = PAPI_COMPONENT_INDEX( metricDefinition->active_metrics[ i ]->papi_code );
         #else
         component = 0;
         #endif
@@ -662,15 +753,15 @@ scorep_metric_papi_test()
         }
 
         /* Add event to event set */
-        retval = PAPI_add_event( event_set[ j ]->event_id, metricv[ i ]->papi_code );
+        retval = PAPI_add_event( event_set[ j ]->event_id, metricDefinition->active_metrics[ i ]->papi_code );
         if ( retval != PAPI_OK )
         {
             char errstring[ PAPI_MAX_STR_LEN ];
-            sprintf( errstring, "PAPI_add_event(%d:\"%s\")", i, metricv[ i ]->name );
+            sprintf( errstring, "PAPI_add_event(%d:\"%s\")", i, metricDefinition->active_metrics[ i ]->name );
             scorep_metric_papi_error( retval, errstring );
         }
 
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event %s added to event set", metricv[ i ]->name );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Event %s added to event set", metricDefinition->active_metrics[ i ]->name );
     }
 
     /* For each used eventset */
@@ -708,7 +799,16 @@ scorep_metric_papi_register()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register PAPI metric source!" );
 
-    return SCOREP_ConfigRegister( "metric", scorep_metric_papi_configs );
+    /* Register environment variables for 'synchronous strict' and 'per-process' metrics */
+    SCOREP_Error_Code status;
+    status = SCOREP_ConfigRegister( "metric", scorep_metric_papi_configs );
+    if ( status != SCOREP_SUCCESS )
+    {
+        UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Registration of PAPI configure variables failed." );
+        return status;
+    }
+
+    return SCOREP_SUCCESS;
 }
 
 /** @brief Called on deregistration of the metric adapter. Currently, no action is performed
@@ -717,24 +817,58 @@ scorep_metric_papi_register()
 static void
 scorep_metric_papi_deregister()
 {
+    /* Free environment variables for 'synchronous strict' and per-process metrics */
     free( scorep_metrics_papi );
+    free( scorep_metrics_papi_per_process );
     free( scorep_metrics_papi_separator );
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source deregister!" );
 }
 
-/** @brief  Initializes the metric adapter.
+/** @brief  Initializes the PAPI metric adapter.
  *
- *  @return It returns the number of recently used metrics.
+ *  During initialization respective environment variables are read to
+ *  determine which metrics has been specified by the user.
+ *
+ *  Because 'synchronous strict' metrics will be recorded by all
+ *  locations, we known how many metrics of this specific type each
+ *  location will record. This number is returned by this function.
+ *
+ *  For metrics of other types (e.g. per-process) we can not determine
+ *  whether this location will be responsible to record metrics of this
+ *  type. Responsibility will be determine while initializing location.
+ *  Therefore, within this function we don't known how many additional
+ *  metrics will be recorded by a specific location.
+ *
+ *  @return It returns the number of used 'synchronous strict' metrics.
  */
 static uint32_t
 scorep_metric_papi_initialize_source()
 {
+    /* Number of used 'synchronous strict' metrics */
+    uint32_t metric_counts = 0;
+
     if ( scorep_metric_papi_initialize )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize PAPI metric source." );
 
-        /* Initialize PAPI, determine number of specified metrics and set global variable */
-        scorep_metric_papi_open();
+        /* FIRST: Read specification of global synchronous strict metrics from respective environment variable. */
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] global synchronous strict metrics = %s", scorep_metrics_papi );
+        metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] =
+            scorep_metric_papi_open( scorep_metrics_papi, scorep_metrics_papi_separator );
+        if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
+        {
+            metric_counts = metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ]->number_of_metrics;
+        }
+
+        /*
+         * Handle additional metric types (e.g. per-process)
+         */
+
+        /* SECOND: Read specification of per-process metrics from respective environment variable. */
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] per-process metrics = %s", scorep_metrics_papi_per_process );
+        metric_defs[ PER_PROCESS_METRICS_INDEX ] =
+            scorep_metric_papi_open( scorep_metrics_papi_per_process, scorep_metrics_papi_separator );
 
         /* Set flag */
         scorep_metric_papi_initialize = 0;
@@ -742,7 +876,7 @@ scorep_metric_papi_initialize_source()
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialization of PAPI metric source done." );
     }
 
-    return number_of_metrics;
+    return metric_counts;
 }
 
 /** @brief Adapter finalization.
@@ -765,33 +899,74 @@ scorep_metric_papi_finalize_source()
  *
  *  @return It returns the event set used by this location.
  */
-static SCOREP_Metric_EventSet*
-scorep_metric_papi_initialize_location()
+static SCOREP_Metric_EventSet**
+scorep_metric_papi_initialize_location( SCOREP_Location* locationData )
 {
-    if ( number_of_metrics == 0 )
+    /* Set to true after PAPI_thread_init() was called for this location */
+    bool is_papi_thread_initialized = false;
+
+    /* Return value of calls to PAPI functions */
+    int retval;
+
+    /* Collection of event sets for each metric scope
+     * (synchronous strict, per-process) */
+    // @todo Remove alloc by array decl
+    SCOREP_Metric_EventSet** event_set_collection;
+    event_set_collection = calloc( NUMBER_OF_RESERVED_METRICS, sizeof( SCOREP_Metric_EventSet* ) );
+    UTILS_ASSERT( event_set_collection );
+
+    /*
+     * First: Check whether this location has to record global synchronous strict metrics
+     */
+    if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
     {
-        return NULL;
+        retval = PAPI_thread_init( &scorep_metric_get_location_id );
+        if ( retval != PAPI_OK )
+        {
+            scorep_metric_papi_error( retval, "PAPI_thread_init" );
+        }
+        is_papi_thread_initialized = true;
+
+        event_set_collection[ SYNCHRONOUS_STRICT_METRICS_INDEX ] = scorep_metric_papi_create_event_set( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] );
     }
 
-    int retval = PAPI_thread_init( &scorep_metric_get_location_id );
-    if ( retval != PAPI_OK )
+    /*
+     * Handle different kinds of per-location metrics
+     *
+     * Second: Check whether this location has to record per-process metrics
+     */
+    if ( metric_defs[ PER_PROCESS_METRICS_INDEX ] != NULL       // user has defined per-process metrics
+         && SCOREP_Location_GetId( locationData ) == 0 )        // this location is responsible to record per-process metrics (e.g. first thread of process)
     {
-        scorep_metric_papi_error( retval, "PAPI_thread_init" );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] This location will record per-process metrics." );
+
+        /* Call PAPI_thread_init() once only */
+        if ( !is_papi_thread_initialized )
+        {
+            retval = PAPI_thread_init( &scorep_metric_get_location_id );
+            if ( retval != PAPI_OK )
+            {
+                scorep_metric_papi_error( retval, "PAPI_thread_init" );
+            }
+            is_papi_thread_initialized = true;
+        }
+
+        event_set_collection[ PER_PROCESS_METRICS_INDEX ] = scorep_metric_papi_create_event_set( metric_defs[ PER_PROCESS_METRICS_INDEX ] );
     }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "PAPI thread support initialized" );
 
-    return scorep_metric_papi_create_event_set();
+    return event_set_collection;
 }
 
 /** @brief Location specific finalization function for metric adapters.
  *
- *  @param eventSet Event set to close.
+ *  @param eventSet             Event set to close (may be NULL).
  */
 static void
 scorep_metric_papi_finalize_location( SCOREP_Metric_EventSet* eventSet )
 {
-    if ( number_of_metrics == 0 )
+    if ( eventSet == NULL )
     {
         return;
     }
@@ -814,8 +989,8 @@ static void
 scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
                          uint64_t*               values )
 {
-    assert( eventSet );
-    assert( values );
+    UTILS_ASSERT( eventSet );
+    UTILS_ASSERT( values );
 
     int retval;
     int i;
@@ -838,7 +1013,7 @@ scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
         }
     }
 
-    for ( uint32_t i = 0; i < number_of_metrics; i++ )
+    for ( uint32_t i = 0; i < eventSet->definitions->number_of_metrics; i++ )
     {
         values[ i ] = ( uint64_t )*eventSet->values[ i ];
     }
@@ -853,26 +1028,37 @@ scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
 
 /** @brief  Returns the number of recently used metrics.
  *
+ *  @param  eventSet    Reference to active set of metrics.
+ *
  *  @return It returns the number of recently used metrics.
  */
-static int32_t
-scorep_metric_papi_get_number_of_metrics()
+uint32_t
+scorep_metric_papi_get_number_of_metrics( SCOREP_Metric_EventSet* eventSet )
 {
-    return number_of_metrics;
+    if ( eventSet == NULL )
+    {
+        return 0;
+    }
+
+    return eventSet->definitions->number_of_metrics;
 }
 
 /** @brief  Returns the name of requested metric.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns the name of requested metric.
  */
 static const char*
-scorep_metric_papi_get_metric_name( uint32_t metricIndex )
+scorep_metric_papi_get_metric_name( SCOREP_Metric_EventSet* eventSet,
+                                    uint32_t                metricIndex )
 {
-    if ( metricIndex < number_of_metrics )
+    UTILS_ASSERT( eventSet );
+
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        return metricv[ metricIndex ]->name;
+        return eventSet->definitions->active_metrics[ metricIndex ]->name;
     }
     else
     {
@@ -883,16 +1069,20 @@ scorep_metric_papi_get_metric_name( uint32_t metricIndex )
 
 /** @brief  Returns a description of requested metric.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns a description of the unit of requested metric.
  */
 static const char*
-scorep_metric_papi_get_metric_description( uint32_t metricIndex )
+scorep_metric_papi_get_metric_description( SCOREP_Metric_EventSet* eventSet,
+                                           uint32_t                metricIndex )
 {
-    if ( metricIndex < number_of_metrics )
+    UTILS_ASSERT( eventSet );
+
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        return metricv[ metricIndex ]->description;
+        return eventSet->definitions->active_metrics[ metricIndex ]->description;
     }
     else
     {
@@ -902,14 +1092,18 @@ scorep_metric_papi_get_metric_description( uint32_t metricIndex )
 
 /** @brief  Returns a string containing a representation of the unit of requested metric.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric.
  *
  *  @return Returns a string containing a representation of the unit of requested metric.
  */
 static const char*
-scorep_metric_papi_get_metric_unit( uint32_t metricIndex )
+scorep_metric_papi_get_metric_unit( SCOREP_Metric_EventSet* eventSet,
+                                    uint32_t                metricIndex )
 {
-    if ( metricIndex < number_of_metrics )
+    UTILS_ASSERT( eventSet );
+
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
         return "#";
     }
@@ -921,21 +1115,25 @@ scorep_metric_papi_get_metric_unit( uint32_t metricIndex )
 
 /** @brief  Returns properties of a metric. The metric is requested by @a metricIndex.
  *
+ *  @param  eventSet    Reference to active set of metrics.
  *  @param  metricIndex Index of requested metric
  *
  *  @return It returns property settings of requested metrics.
  */
 static SCOREP_Metric_Properties
-scorep_metric_papi_get_metric_properties( uint32_t metricIndex )
+scorep_metric_papi_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
+                                          uint32_t                metricIndex )
 {
+    UTILS_ASSERT( eventSet );
+
     SCOREP_Metric_Properties props;
 
-    if ( metricIndex < number_of_metrics )
+    if ( metricIndex < eventSet->definitions->number_of_metrics )
     {
-        props.name           = metricv[ metricIndex ]->name;
-        props.description    = metricv[ metricIndex ]->description;
+        props.name           = eventSet->definitions->active_metrics[ metricIndex ]->name;
+        props.description    = eventSet->definitions->active_metrics[ metricIndex ]->description;
         props.source_type    = SCOREP_METRIC_SOURCE_TYPE_PAPI;
-        props.mode           = metricv[ metricIndex ]->mode;
+        props.mode           = eventSet->definitions->active_metrics[ metricIndex ]->mode;
         props.value_type     = SCOREP_METRIC_VALUE_UINT64;
         props.base           = SCOREP_METRIC_BASE_DECIMAL;
         props.exponent       = 0;
@@ -1007,6 +1205,7 @@ const SCOREP_MetricSource SCOREP_Metric_Papi =
     &scorep_metric_papi_register,
     &scorep_metric_papi_initialize_source,
     &scorep_metric_papi_initialize_location,
+    &scorep_metric_papi_free,
     &scorep_metric_papi_finalize_location,
     &scorep_metric_papi_finalize_source,
     &scorep_metric_papi_deregister,

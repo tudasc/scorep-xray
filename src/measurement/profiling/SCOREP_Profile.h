@@ -79,18 +79,9 @@ SCOREP_Profile_Register();
 /**
    Initializes the Profiling system. Needed to be called before any other
    profile function is called.
-   @param numDenseMetrics The number of dense metrics which are recorded for each
-                          callpath. It is assumed that a metric value is provided on
-                          every enter and exit event. The difference of the metric value
-                          between exit and enter is calculated and included in the
-                          statistics.
-    @param metrics An array of metric definitions. It is assmued, that on every enter
-                   and exit event, the measured metrics are given in the same order as
-                   the definitions in this array.
  */
 void
-SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
-                           SCOREP_MetricHandle* metrics );
+SCOREP_Profile_Initialize();
 
 /**
    Deletes a existing profile and profile definition. Before other profile functions
@@ -137,6 +128,15 @@ SCOREP_Profile_Write();
 void
 SCOREP_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
                                          uint32_t maxCallpathNum );
+
+
+/**
+   Sets number of additional metrics (specific for this location) and
+   initializes corresponding data structures.
+ */
+void
+SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location* location,
+                                           uint32_t         numLocationSpecificMetrics );
 
 /* -------------------------------------------------------------------- Callpath Events */
 

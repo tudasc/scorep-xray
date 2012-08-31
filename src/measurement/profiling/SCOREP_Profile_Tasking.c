@@ -32,6 +32,7 @@
 #include <scorep_profile_location.h>
 #include <scorep_profile_task_table.h>
 #include <scorep_profile_event_base.h>
+#include <SCOREP_Metric_Management.h>
 #include <inttypes.h>
 #include <assert.h>
 
@@ -61,7 +62,7 @@ update_on_suspend( scorep_profile_node* node,
     while ( node != NULL )
     {
         update_dense_on_suspend( &node->inclusive_time, timestamp );
-        for ( uint32_t i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
         {
             update_dense_on_suspend( &node->dense_metrics[ i ],
                                      metric_values[ i ] );
@@ -78,7 +79,7 @@ update_on_resume( scorep_profile_node* node,
     while ( node != NULL )
     {
         update_dense_on_resume( &node->inclusive_time, timestamp );
-        for ( uint32_t i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
         {
             update_dense_on_resume( &node->dense_metrics[ i ],
                                     metric_values[ i ] );

@@ -79,10 +79,10 @@ scorep_enter_region( uint64_t            timestamp,
     {
         if ( metricValues )
         {
-            SCOREP_Tracing_Metric( location,
-                                   timestamp,
-                                   SCOREP_Metric_GetSamplingSet(),
-                                   metricValues );
+            /* @todo: Writing metrics to trace file will be improved in the near future */
+
+            SCOREP_Metric_WriteToTrace( location,
+                                        timestamp );
         }
 
         SCOREP_Tracing_Enter( location,
@@ -156,10 +156,10 @@ scorep_exit_region( uint64_t            timestamp,
     {
         if ( metricValues )
         {
-            SCOREP_Tracing_Metric( location,
-                                   timestamp,
-                                   SCOREP_Metric_GetSamplingSet(),
-                                   metricValues );
+            /* @todo: Writing metrics to trace file will be improved in the near future */
+
+            SCOREP_Metric_WriteToTrace( location,
+                                        timestamp );
         }
 
         SCOREP_Tracing_Leave( location,
@@ -759,11 +759,12 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
 
         if ( metric_values )
         {
-            SCOREP_Tracing_Metric( location,
-                                   timestamp,
-                                   SCOREP_Metric_GetSamplingSet(),
-                                   metric_values );
+            /* @todo: Writing metrics to trace file will be improved in the near future */
+
+            SCOREP_Metric_WriteToTrace( location,
+                                        timestamp );
         }
+
         SCOREP_Tracing_Enter( location, timestamp, regionHandle );
     }
 
@@ -789,10 +790,10 @@ SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
     {
         if ( metric_values )
         {
-            SCOREP_Tracing_Metric( location,
-                                   timestamp,
-                                   SCOREP_Metric_GetSamplingSet(),
-                                   metric_values );
+            /* @todo: Writing metrics to trace file will be improved in the near future */
+
+            SCOREP_Metric_WriteToTrace( location,
+                                        timestamp );
         }
 
         SCOREP_Tracing_Leave( location, timestamp, regionHandle );

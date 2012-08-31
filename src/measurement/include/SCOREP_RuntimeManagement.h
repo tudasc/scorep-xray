@@ -54,6 +54,7 @@
 
 #include <stdbool.h>
 
+#include <SCOREP_DefinitionHandles.h>
 
 /**
  * Indicates if the measurement system is initialized, i.e. if
@@ -179,6 +180,13 @@ typedef int ( *SCOREP_ExitCallback )( void );
 
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
+
+/**
+ * Get handle of location group.
+ * @return Returns handle of current location group.
+ */
+SCOREP_LocationGroupHandle
+SCOREP_GetLocationGroup();
 
 
 /** Flag to indicate whether MPI event generation is turned on or off.

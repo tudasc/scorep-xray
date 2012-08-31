@@ -80,7 +80,7 @@ setup_start_from_parent( scorep_profile_node* node )
     {
         /* If no enclosing region is present, no dense metric valuies can be associated */
         node->inclusive_time.start_value = parent->inclusive_time.start_value;
-        for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+        for ( i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
         {
             node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
         }
@@ -99,10 +99,9 @@ SCOREP_Profile_Register()
 
 
 void
-SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
-                           SCOREP_MetricHandle* metrics )
+SCOREP_Profile_Initialize()
 {
-    UTILS_DEBUG_ENTRY( "Number of dense metrics: %u", numDenseMetrics );
+    UTILS_DEBUG_ENTRY();
 
     if ( scorep_profile.is_initialized )
     {
@@ -111,8 +110,7 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
 
     SCOREP_MutexCreate( &scorep_profile_location_mutex );
 
-    scorep_profile_init_definition( numDenseMetrics,
-                                    metrics );
+    scorep_profile_init_definition();
 
     if ( !scorep_profile.reinitialize )
     {
@@ -122,7 +120,9 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
     else
     {
         /* Reallocate space for dense metrics on root nodes */
-        uint32_t size = numDenseMetrics * sizeof( scorep_profile_dense_metric );
+        uint32_t num_dense_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+
+        uint32_t size = num_dense_metrics * sizeof( scorep_profile_dense_metric );
 
         scorep_profile_node* current = scorep_profile.first_root_node;
         while ( current != NULL )
@@ -130,19 +130,32 @@ SCOREP_Profile_Initialize( uint8_t              numDenseMetrics,
             SCOREP_Profile_LocationData* location =
                 scorep_profile_type_get_location_data( current->type_specific_data );
             scorep_profile_reinitialize_location( location );
-            if ( numDenseMetrics > 0 )
+            if ( num_dense_metrics > 0 )
             {
                 current->dense_metrics = ( scorep_profile_dense_metric* )
                                          SCOREP_Memory_AllocForProfile( size );
 
                 scorep_profile_init_dense_metric( &current->inclusive_time );
                 scorep_profile_init_dense_metric_array( current->dense_metrics,
-                                                        numDenseMetrics );
+                                                        num_dense_metrics );
             }
             current = current->next_sibling;
         }
     }
     UTILS_ASSERT( scorep_profile_param_instance );
+}
+
+void
+SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location* location,
+                                           uint32_t         numLocationSpecificMetrics )
+{
+    SCOREP_Profile_LocationData* thread_data =
+        SCOREP_Location_GetProfileData( location );
+
+    scorep_profile_set_num_location_metrics( thread_data,
+                                             numLocationSpecificMetrics );
+
+    scorep_profile_test_location_metrics_of_root_node( thread_data );
 }
 
 void
@@ -325,7 +338,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    /* Check wether we excced the depth */
+    /* Check wether we exceed the depth */
     SCOREP_Profile_LocationData* location =
         SCOREP_Location_GetProfileData( thread );
     location->current_depth++;

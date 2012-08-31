@@ -22,7 +22,10 @@ scorep_metric_common_cppflags = $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR)                        \
     -I$(INC_ROOT)src/services/metric           \
     -I$(INC_ROOT)src/services/include          \
-    -I$(INC_ROOT)src/measurement/include
+    -I$(INC_ROOT)src/measurement/include       \
+    -I$(INC_ROOT)src/measurement               \
+    -I$(INC_ROOT)src/measurement/profiling     \
+    -I$(INC_DIR_COMMON_HASH)
 
 libscorep_metric_la_CPPFLAGS = $(scorep_metric_common_cppflags)
 

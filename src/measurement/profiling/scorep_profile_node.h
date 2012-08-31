@@ -101,6 +101,7 @@ typedef struct scorep_profile_node_struct
     struct scorep_profile_node_struct*   first_child;
     struct scorep_profile_node_struct*   next_sibling;
     scorep_profile_dense_metric*         dense_metrics;
+    scorep_profile_dense_metric*         location_specific_metrics;
     scorep_profile_sparse_metric_double* first_double_sparse;
     scorep_profile_sparse_metric_int*    first_int_sparse;
     scorep_profile_dense_metric          inclusive_time;
@@ -176,6 +177,20 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
 extern scorep_profile_node*
 scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
                            scorep_profile_node_type     type );
+
+/**
+   Allocates memory for additional metrics (recorded only by this location).
+ */
+extern void
+scorep_profile_alloc_location_specific_metrics_store( SCOREP_Profile_LocationData* location,
+                                                      scorep_profile_node*         node );
+
+/**
+   Tests whether root node of this subtree has allocated memory for additional metrics.
+ */
+extern void
+scorep_profile_test_location_metrics_of_root_node( SCOREP_Profile_LocationData* location );
+
 
 /**
    Find a child node of @a parent of a specified type. If parent has a child

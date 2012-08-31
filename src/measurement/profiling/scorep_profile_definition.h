@@ -63,17 +63,6 @@ typedef struct
     scorep_profile_node* first_root_node;
 
     /**
-       Number of metrics in dense representation. All enter/exit events expect this
-       number of metrics.
-     */
-    uint8_t num_of_dense_metrics;
-
-    /** Array containing the Metric definition handle for the metrics in dense
-        representation. All enter/exit events expect the metrics in this order. */
-
-    SCOREP_MetricHandle* dense_metrics;
-
-    /**
        True if collapse nodes occur
      */
     bool has_collapse_node;
@@ -154,8 +143,7 @@ extern SCOREP_ConfigVariable scorep_profile_configs[];
    Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition( uint32_t             num_dense_metrics,
-                                SCOREP_MetricHandle* metrics );
+scorep_profile_init_definition();
 
 /**
    Resets the profile definition struct

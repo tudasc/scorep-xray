@@ -76,6 +76,12 @@ static bool scorep_initialized = false;
 /** @brief Measurement system finalized? */
 static bool scorep_finalized = false;
 
+/** @brief Location group handle */
+static SCOREP_LocationGroupHandle location_group_handle = SCOREP_INVALID_LOCATION_GROUP;
+
+/** @brief System tree path */
+static SCOREP_Platform_SystemTreePathElement* system_tree_path = NULL;
+
 #define scorep_max_exit_callbacks 8
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
@@ -131,6 +137,11 @@ SCOREP_InitMeasurement()
     /* initialize the config system */
     SCOREP_TIME( SCOREP_ConfigInit );
 
+    /* Build system tree at an early date, because it will be used by
+     * metric service to determine additional metrics (e.g. per-process
+     * metrcis). */
+    system_tree_path = SCOREP_BuildSystemTree();
+
     /* Register all config variables */
     SCOREP_TIME( SCOREP_Env_RegisterCoreEnvironmentVariables );
     SCOREP_TIME( SCOREP_Filter_Register );
@@ -164,6 +175,13 @@ SCOREP_InitMeasurement()
     // location definition.
     SCOREP_TIME( SCOREP_Definitions_Initialize );
 
+    /* Get location group handle from system tree */
+    location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
+
+    /* Data structure containing path in system tree is not needed any longer */
+    //SCOREP_FreeSystemTree( system_tree_path );
+    //system_tree_path = NULL;
+
     SCOREP_TIME( SCOREP_Thread_Initialize );
 
     if ( !SCOREP_Mpi_HasMpi() )
@@ -184,6 +202,13 @@ SCOREP_InitMeasurement()
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_MEASUREMENT_START();
+}
+
+
+SCOREP_LocationGroupHandle
+SCOREP_GetLocationGroup()
+{
+    return location_group_handle;
 }
 
 
@@ -231,20 +256,13 @@ scorep_profile_initialize()
         return;
     }
 
-    uint32_t             number_of_metrics = 0;
-    SCOREP_MetricHandle* metrics           = NULL;
-
-    SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
-    if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
-    {
-        SCOREP_SamplingSet_Definition* sampling_set
-                          = SCOREP_LOCAL_HANDLE_DEREF( sampling_set_handle, SamplingSet );
-        number_of_metrics = sampling_set->number_of_metrics;
-        metrics           = sampling_set->metric_handles;
-    }
-    SCOREP_Profile_Initialize( number_of_metrics, metrics );
+    SCOREP_Profile_Initialize();
 
     SCOREP_Profile_OnLocationCreation( SCOREP_Location_GetCurrentCPULocation(), NULL ); // called also from scorep_thread_call_externals_on_new_location
+
+    SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location_GetCurrentCPULocation(),
+                                               SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location_GetCurrentCPULocation() ) );
+
     SCOREP_Profile_OnThreadActivation( SCOREP_Location_GetCurrentCPULocation(), NULL ); // called also from scorep_thread_call_externals_on_thread_activation
 }
 
@@ -450,7 +468,7 @@ scorep_finalize( void )
         SCOREP_TIME_WITH_ARGS( SCOREP_Profile_Process, SCOREP_Location_GetCurrentCPULocation() );
     }
 
-    SCOREP_TIME( SCOREP_DefineSystemTree );
+    SCOREP_TIME( SCOREP_FinalizeLocationGroup );
 
     SCOREP_Properties_Finalize(); // before SCOREP_Unify
 

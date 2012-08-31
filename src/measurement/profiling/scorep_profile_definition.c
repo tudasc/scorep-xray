@@ -45,8 +45,6 @@
 scorep_profile_definition scorep_profile =
 {
     NULL,       /* first_root_node      */
-    0,          /* num_of_dense_metrics */
-    NULL,       /* dense_metrics        */
     false,      /* has_collapse_node    */
     0,          /* reached_depth        */
     false,      /* is_initialized       */
@@ -134,22 +132,13 @@ SCOREP_ConfigVariable scorep_profile_configs[] = {
 /** Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition( uint32_t             num_dense_metrics,
-                                SCOREP_MetricHandle* metrics )
+scorep_profile_init_definition()
 {
-    int i;
     scorep_profile.is_initialized = true;
 
     /* Store configuration */
-    scorep_profile.has_collapse_node    = false;
-    scorep_profile.reached_depth        = 0;
-    scorep_profile.num_of_dense_metrics = num_dense_metrics;
-    scorep_profile.dense_metrics        = ( SCOREP_MetricHandle* )SCOREP_Memory_AllocForProfile( num_dense_metrics * sizeof( SCOREP_MetricHandle ) );
-
-    for ( i = 0; i < num_dense_metrics; i++ )
-    {
-        scorep_profile.dense_metrics[ i ] = metrics[ i ];
-    }
+    scorep_profile.has_collapse_node = false;
+    scorep_profile.reached_depth     = 0;
 }
 
 /** Resets the profile definition struct
@@ -163,12 +152,6 @@ scorep_profile_delete_definition()
     /* Do not reset first_root_node, because in Periscope phases the list of root nodes
        stay alive.
      */
-
-    scorep_profile.num_of_dense_metrics = 0;
-    if ( scorep_profile.dense_metrics )
-    {
-        scorep_profile.dense_metrics = NULL;
-    }
 }
 
 /*----------------------------------------------------------------------------------------

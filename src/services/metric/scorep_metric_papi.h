@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -35,4 +35,4 @@
 extern const SCOREP_MetricSource SCOREP_Metric_Papi;
 
 
-#endif /* SCOREP_METRIC_RUSAGE_H_ */
+#endif /* SCOREP_METRIC_PAPI_H_ */

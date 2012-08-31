@@ -29,6 +29,7 @@
 #include <UTILS_Error.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Metric_Management.h>
 
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>
@@ -95,10 +96,21 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
     /* Store start values for dense metrics */
     node->count++;
     node->inclusive_time.start_value = timestamp;
-    for ( uint32_t i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+    uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+    for ( uint32_t i = 0; i < number_of_synchronus_strict_metrics; i++ )
     {
         node->dense_metrics[ i ].start_value = metrics[ i ];
     }
+
+    /* Store start values for additional metrics */
+    uint32_t number_of_additional_metrics = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location_GetCurrentCPULocation() );
+    uint32_t j                            = 0;
+    for ( uint32_t i = number_of_synchronus_strict_metrics; i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
+    {
+        node->location_specific_metrics[ j ].start_value = metrics[ i ];
+        j++;
+    }
+
     return node;
 }
 
@@ -134,6 +146,9 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
        Initialize loop: start with this node. Further iterations should work on the
        parent. */
     parent = node;
+
+    uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+    uint32_t number_of_additional_metrics        = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location_GetCurrentCPULocation() );
     do
     {
         location->current_depth--;
@@ -142,10 +157,21 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
         /* Update metrics */
         node->last_exit_time = timestamp;
         scorep_profile_update_dense_metric( &node->inclusive_time, timestamp );
-        for ( uint32_t i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
         {
             scorep_profile_update_dense_metric( &node->dense_metrics[ i ], metrics[ i ] );
         }
+
+        /* Update additional metrics */
+        uint32_t j = 0;
+        for ( uint32_t i = number_of_synchronus_strict_metrics; i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
+        {
+            scorep_profile_update_dense_metric( &node->location_specific_metrics[ j ],
+                                                metrics[ i ] );
+            j++;
+        }
+
+
         parent = node->parent;
     }
     while ( ( node->node_type != scorep_profile_node_regular_region ) &&

@@ -36,6 +36,7 @@
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
 
+#include <SCOREP_Metric_Management.h>
 
 /* ***************************************************************************************
    Creation / Destruction
@@ -71,7 +72,7 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
     /* Initialize dense metric values */
     scorep_profile_init_dense_metric( &node->inclusive_time );
     scorep_profile_init_dense_metric_array( node->dense_metrics,
-                                            scorep_profile.num_of_dense_metrics );
+                                            SCOREP_Metric_GetNumberOfSynchronousStrictMetrics() );
 
     return node;
 }
@@ -181,7 +182,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     /* Allocate new memory if no released nodes are available */
 
     /* Size of the allocated memory for dense metrics */
-    uint32_t size = scorep_profile.num_of_dense_metrics * sizeof( scorep_profile_dense_metric );
+    uint32_t size = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics() * sizeof( scorep_profile_dense_metric );
 
 
     /* Reserve space for the node record and dense metrics.
@@ -207,7 +208,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
        finalization and reallocate the memory for root nodes on
        reinitialization
      */
-    if ( scorep_profile.num_of_dense_metrics > 0 )
+    if ( SCOREP_Metric_GetNumberOfSynchronousStrictMetrics() > 0 )
     {
         new_node->dense_metrics = ( scorep_profile_dense_metric* )
                                   SCOREP_Memory_AllocForProfile( size );
@@ -217,9 +218,47 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
         new_node->dense_metrics = NULL;
     }
 
+    scorep_profile_alloc_location_specific_metrics_store( location, new_node );
+
     return new_node;
 }
 
+void
+scorep_profile_alloc_location_specific_metrics_store( SCOREP_Profile_LocationData* location,
+                                                      scorep_profile_node*         node )
+{
+    if ( location->num_location_specific_metrics == 0 )
+    {
+        node->location_specific_metrics = NULL;
+        return;
+    }
+
+    uint32_t size = location->num_location_specific_metrics * sizeof( scorep_profile_dense_metric );
+    node->location_specific_metrics = ( scorep_profile_dense_metric* )
+                                      SCOREP_Memory_AllocForProfile( size );
+    if ( !node->location_specific_metrics )
+    {
+        UTILS_ERROR( SCOREP_ERROR_MEM_FAULT,
+                     "Unable to allocate memory for location-specific metrics" );
+    }
+}
+
+void
+scorep_profile_test_location_metrics_of_root_node( SCOREP_Profile_LocationData* location )
+{
+    scorep_profile_node* node = location->root_node;
+    assert( node );
+
+    if ( node->location_specific_metrics == NULL )
+    {
+        scorep_profile_alloc_location_specific_metrics_store( location, node );
+    }
+    else
+    {
+        UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT,
+                     "Root node has already allocated memory for location-specific metrics" );
+    }
+}
 
 /* ***************************************************************************************
    Node operation
@@ -260,7 +299,7 @@ scorep_profile_copy_all_dense_metrics( scorep_profile_node* destination,
 
     /* Copy dense metric values */
     scorep_profile_copy_dense_metric( &destination->inclusive_time, &source->inclusive_time );
-    for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+    for ( i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
     {
         scorep_profile_copy_dense_metric( &destination->dense_metrics[ i ],
                                           &source->dense_metrics[ i ] );
@@ -560,7 +599,7 @@ scorep_profile_merge_node_inclusive( scorep_profile_node* destination,
 
     /* Merge dense metrics */
     scorep_profile_merge_dense_metric( &destination->inclusive_time, &source->inclusive_time );
-    for ( i = 0; i < scorep_profile.num_of_dense_metrics; i++ )
+    for ( i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
     {
         scorep_profile_merge_dense_metric( &destination->dense_metrics[ i ],
                                            &source->dense_metrics[ i ] );

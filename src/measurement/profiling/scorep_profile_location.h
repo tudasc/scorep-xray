@@ -43,21 +43,23 @@
  */
 struct SCOREP_Profile_LocationData
 {
-    scorep_profile_node*                 current_implicit_node; /**< Current callpath of this thread */
-    scorep_profile_node*                 root_node;             /**< Root node of this thread */
-    scorep_profile_node*                 fork_node;             /**< Last Fork node created by this thread */
-    scorep_profile_node*                 creation_node;         /**< Node where the thread was created */
-    uint32_t                             current_depth;         /**< Stores the current length of the callpath */
-    uint32_t                             fork_depth;            /**< Depth of last fork node */
-    uint32_t                             implicit_depth;        /**< Depth of the implicit task */
-    scorep_profile_node*                 free_nodes;            /**< List of records for recycling */
-    scorep_profile_sparse_metric_int*    free_int_metrics;      /**< List of records for recycling */
-    scorep_profile_sparse_metric_double* free_double_metrics;   /**< List of records for recycling */
+    scorep_profile_node*                 current_implicit_node;         /**< Current callpath of this thread */
+    scorep_profile_node*                 root_node;                     /**< Root node of this thread */
+    scorep_profile_node*                 fork_node;                     /**< Last Fork node created by this thread */
+    scorep_profile_node*                 creation_node;                 /**< Node where the thread was created */
+    uint32_t                             current_depth;                 /**< Stores the current length of the callpath */
+    uint32_t                             fork_depth;                    /**< Depth of last fork node */
+    uint32_t                             implicit_depth;                /**< Depth of the implicit task */
+    scorep_profile_node*                 free_nodes;                    /**< List of records for recycling */
+    scorep_profile_sparse_metric_int*    free_int_metrics;              /**< List of records for recycling */
+    scorep_profile_sparse_metric_double* free_double_metrics;           /**< List of records for recycling */
 
-    scorep_profile_node*                 current_task_node;     /**< Callpath node of the current task */
-    scorep_profile_task_table*           tasks;                 /**< Hashtable to track task instances */
-    scorep_profile_task*                 current_task;          /**< Current task instance */
-    SCOREP_Location*                     location_data;         /**< Pointer to the Score-P location */
+    scorep_profile_node*                 current_task_node;             /**< Callpath node of the current task */
+    scorep_profile_task_table*           tasks;                         /**< Hashtable to track task instances */
+    scorep_profile_task*                 current_task;                  /**< Current task instance */
+    uint32_t                             num_location_specific_metrics; /**< Number of scoped metrics recorded by this location
+                                                                             (in addition to dense metrics recorded by all locations) */
+    SCOREP_Location*                     location_data;                 /**< Pointer to the Score-P location */
 };
 
 /* **************************************************************************************
@@ -106,5 +108,23 @@ scorep_profile_get_current_node( SCOREP_Profile_LocationData* location );
 void
 scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
                                  scorep_profile_node*         node );
+
+/**
+ * Sets number of location specific metrics
+ *
+ * @param location                      Location.
+ * @param numLocationSpecificMetrics    Number of location specific metrics.
+ */
+void
+scorep_profile_set_num_location_metrics( SCOREP_Profile_LocationData* location,
+                                         uint32_t                     numLocationSpecificMetrics );
+
+/**
+ * Gets number of location specific metrics
+ *
+ * @param location                      Location.
+ */
+uint32_t
+scorep_profile_get_num_location_metrics( SCOREP_Profile_LocationData* location );
 
 #endif // SCOREP_PROFILE_LOCATION_H

@@ -233,19 +233,17 @@ scorep_location_group_definition_define( SCOREP_DefinitionManager*   definition_
  * @in internal
  */
 SCOREP_LocationGroupHandle
-SCOREP_DefineLocationGroup( uint32_t                    globalLocationGroupId,
-                            SCOREP_SystemTreeNodeHandle parent,
-                            const char*                 name )
+SCOREP_DefineLocationGroup( SCOREP_SystemTreeNodeHandle parent )
 {
     SCOREP_Definitions_Lock();
 
+    /* In early stage 'global location group ID' and 'name' are set to invalid dummies.
+     * Correct values must be set later on. */
     SCOREP_LocationGroupHandle new_handle = scorep_location_group_definition_define(
         &scorep_local_definition_manager,
-        globalLocationGroupId,
+        UINT32_MAX,
         parent,
-        scorep_string_definition_define(
-            &scorep_local_definition_manager,
-            name ? name : "" ),
+        SCOREP_INVALID_STRING,
         SCOREP_LOCATION_GROUP_TYPE_PROCESS );
 
     SCOREP_Definitions_Unlock();
