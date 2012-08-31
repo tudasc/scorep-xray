@@ -66,23 +66,21 @@ For Debian based Linux systems using the APT package manager, the following
 command (as root) is sufficient to build @scorep with minimal features enabled:
 
 @code
-apt-get install gcc g++ gfortran
+apt-get install gcc g++ gfortran mpich2
 @endcode
 
 On Red-Hat and derivative Linux systems running the YUM package manager, 
 in a similar way:
 
 @code
-yum install gcc g++ gfortran
+yum install gcc g++ gfortran mpich2
 @endcode
 
-@subsection optional_features Optional Features
-@seclabel{optional_prerequisites}
+For users of the SuperMUC, it is recommended to load the following modules:
 
-TODO: this sub-section is incomplete.
-
-Some features of @scorep can be disabled on a given installation, depending 
-on availability or the aim of the developers.
+@code
+module load ccomp/intel/12.1 fortran/intel/12.1 mpi.ibm/5.2_PMR-fixes papi/4.9
+@endcode
 
 @subsection general_autotools General Autotools Build Options
 @seclabel{general_autotools}
@@ -121,6 +119,13 @@ In this case, the user's <tt>PATH</tt> variable needs to be updated to
 include the <tt>bin</tt> directory of @scorep, and the appropriate 
 library and include folders specified (with <tt>-L</tt> and <tt>-I</tt>) 
 	when instrumenting and building applications.
+
+Users of the SuperMUC (after loading the required modules mentioned 
+previously), can issue the following command to configure @scorep:
+
+@code
+./configure --prefix=$HOME/install/scorep --enable-static --disable-shared --with-nocross-compiler-suite=intel --with-mpi=openmpi --with-papi-header=$PAPI_BASE/include --with-papi-lib=$PAPI_BASE/lib
+@endcode
 
 @subsection scorep_specific @scorep Specific Build Options
 @seclabel{scorep_specific}
