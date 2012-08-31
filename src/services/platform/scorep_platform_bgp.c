@@ -20,7 +20,7 @@
  *
  * @status alpha
  *
- * Implementation to obtain the system tree information from a BlueGene/P
+ * Implementation to obtain the system tree information from a Blue Gene/P
  * system.
  */
 
@@ -62,7 +62,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "machine",
-                                                     0, "BlueGene/P" );
+                                                     0, "Blue Gene/P" );
     if ( !node )
     {
         goto fail;

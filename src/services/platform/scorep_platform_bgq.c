@@ -20,7 +20,7 @@
  *
  * @status alpha
  *
- * Implementation to obtain the system tree information from a BlueGene/Q
+ * Implementation to obtain the system tree information from a Blue Gene/Q
  * system.
  */
 
