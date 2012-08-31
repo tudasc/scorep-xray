@@ -29,18 +29,45 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
 libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
 endif
 
+if PLATFORM_BGQ
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgq.c
+#libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
+endif
+
 # for any platform not handled above, use the dummy platform
 # currently unhandled platforms:
-#     PLATFORM_ALTIX
-#     PLATFORM_POWER6
-#     PLATFORM_BGL
-#     PLATFORM_CRAYXT
-#     PLATFORM_SICORTEX
-#     PLATFORM_LINUX
-#     PLATFORM_SUN
-#     PLATFORM_MAC
-#     PLATFORM_CRAYX1
-#     PLATFORM_NECSX
-if !PLATFORM_BGP
+if PLATFORM_ALTIX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_AIX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_BGL
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_CRAYXT
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_LINUX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_SOLARIS
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_MAC
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_NECSX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
+endif
+
+if PLATFORM_ARM
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_dummy.c
 endif
