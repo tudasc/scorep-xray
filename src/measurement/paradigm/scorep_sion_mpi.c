@@ -54,7 +54,8 @@ scorep_sion_open( void*          userData,
                   int*           fileSystemBlockSize,
                   FILE**         filePointer )
 {
-    int         number_of_sion_files = 1; /* should be customizable via environment var */
+    assert( scorep_tracing_nlocations_per_sion_file > 0 );
+    int         number_of_sion_files = SCOREP_Mpi_GetCommWorldSize() / scorep_tracing_nlocations_per_sion_file;
     const char* file_mode            = "bw";
     char*       new_file_name        = NULL;
     MPI_Comm    comm_world           = MPI_COMM_WORLD;

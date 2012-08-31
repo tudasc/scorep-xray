@@ -76,6 +76,7 @@ static SCOREP_Mutex  scorep_otf2_archive_lock;
 #define SCOREP_TRACING_CHUNK_SIZE ( 1024 * 1024 )
 
 bool        scorep_tracing_use_sion;
+uint64_t    scorep_tracing_nlocations_per_sion_file;
 static bool scorep_tracing_compress;
 
 /** @brief Measurement system configure variables */
@@ -88,6 +89,15 @@ static SCOREP_ConfigVariable scorep_tracing_config_variables[] = {
         "false",
         "Whether or not to use libsion as OTF2 substrate.",
         "Whether or not to use libsion as OTF2 substrate."
+    },
+    {
+        "nlocations_per_sion_file",
+        SCOREP_CONFIG_TYPE_NUMBER,
+        &scorep_tracing_nlocations_per_sion_file,
+        NULL,
+        "1024",
+        "Number of locations that share one sion file. Must be > 0.",
+        "Number of locations that share one sion file. Must be > 0."
     },
     {
         "compress",

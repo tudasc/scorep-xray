@@ -49,11 +49,11 @@ SCOREP_Tracing_UnlockArchive( void );
 
 
 /**
- * Config variable whether to use the SION substrate.
+ * Config variables to configure the SION substrate.
  *
  * Only used in the paradigm dependent tracing files.
  */
-extern bool scorep_tracing_use_sion;
-
+extern bool     scorep_tracing_use_sion;
+extern uint64_t scorep_tracing_nlocations_per_sion_file;
 
 #endif /* SCOREP_INTERNAL_TRACING_H */
