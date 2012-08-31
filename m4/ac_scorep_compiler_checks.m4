@@ -254,4 +254,5 @@ AC_ARG_WITH([extra-instrumentation-flags],
 AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS], ["${scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}"])
 
 AC_MSG_NOTICE([using instrumentation flags: ${scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+AC_SCOREP_SUMMARY_VERBOSE([instrumentation flags: ${scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
 ])
