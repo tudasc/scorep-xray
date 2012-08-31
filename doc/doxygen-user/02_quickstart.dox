@@ -31,11 +31,11 @@ getting detailed presentations of available features, see Section
 Section @secref{measurement} for the measurement. 
 
 
-@section installation Installation
-@seclabel{installation}
+@section quickinstallation @scorep Quick Installation
+@seclabel{quickinstallation}
 
 The @scorep performance analysis tool uses the GNU Autotools (Autoconf, 
-Automake, Libtoo and M4) build system.  The use of Autotools allows 
+Automake, Libtool and M4) build system.  The use of Autotools allows 
 @scorep to be build in many different systems with varying combinations of 
 compilers, libraries and MPI implementations.
 

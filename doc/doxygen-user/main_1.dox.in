@@ -1,7 +1,6 @@
 /**
-@page Score-P Score-P tools
+@page Score-P Score-P Tools
 
-The <em>Score-P</em> tools
-
+@section scorep-main scorep
 A call to \c scorep has the following syntax:
 \verbatim

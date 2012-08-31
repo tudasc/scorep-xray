@@ -1,6 +1,7 @@
 \endverbatim
 
-...
 
+
+@section scorep-config scorep-config
 A call to \c scorep-config has the following syntax:
 \verbatim

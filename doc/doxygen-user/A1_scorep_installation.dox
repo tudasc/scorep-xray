@@ -1,0 +1,142 @@
+/** 
+@page installation  @scorep Installation Guide
+@seclabel{installation}
+
+The @scorep performance analysis tool uses the GNU Autotools (Autoconf, 
+Automake, Libtool and M4) build system.  The use of Autotools allows 
+@scorep to be build in many different systems with varying combinations of 
+compilers, libraries and MPI implementations.
+
+Autotools based projects are build as follows: 
+<ol>
+<li>The available compilers and tools available are detected 
+		from the environment by the configure script.
+		</li>
+<li>Makefiles are generated based on the detected compilers and tools.
+		</li>
+<li>The generated Makefile project is then built and installed.
+		</li>
+</ol>
+
+@scorep will have features enabled or disabled, based on the detection
+made by the Autotools generated configure script.  The following 2 sub-sections
+cover mandatory prerequisites as well as optional features that are enabled 
+based on what is available in the configured platform.
+
+@section prerequisites Prerequisites
+@seclabel{prerequisites}
+
+To build @scorep, C, C++ and Fortran compilers and related tools are required.  
+These can be available as modules (typically on super-computer environments) 
+or as packages (on most Linux or BSD distributions).
+
+For Debian based Linux systems using the APT package manager, the following 
+command (as root) is sufficient to build @scorep with minimal features enabled:
+
+@code
+apt-get install gcc g++ gfortran
+@endcode
+
+On Red-Hat and derivative Linux systems running the YUM package manager, 
+in a similar way:
+
+@code
+yum install gcc g++ gfortran
+@endcode
+
+@section optional_features Optional Features
+@seclabel{optional_prerequisites}
+
+TODO: this sub-section is incomplete.
+
+Some features of @scorep can be disabled on a given installation, depending 
+on availability or the aim of the developers.
+
+@section general_autotools General Autotools Build Options
+@seclabel{general_autotools}
+
+System administrators can build @scorep with the familiar: 
+
+@code
+./configure && make && make install
+@endcode
+
+The previous sequence of commands will detect compilers, libraries and headers,
+and then build and install @scorep in the following system directories:
+
+@code
+/usr/local/bin
+/usr/local/lib
+/usr/local/include
+/usr/local/share
+@endcode
+
+Users that are not administrators on the target machine may need to install 
+the tool in an different location (due to permissions). The prefix flag 
+should be specified with the target directory:
+
+@code
+./configure --prefix=<installation directory>
+@endcode
+
+For example, in the <tt>install/scorep</tt> directory on his/her home folder:
+
+@code
+./configure --prefix=$HOME/install/scorep
+@endcode
+
+In this case, the user's <tt>PATH</tt> variable needs to be updated to 
+include the <tt>bin</tt> directory of @scorep, and the appropriate 
+library and include folders specified (with <tt>-L</tt> and <tt>-I</tt>) 
+	when instrumenting and building applications.
+
+@section scorep_specific @scorep Specific Build Options
+@seclabel{scorep_specific}
+
+In addition to general options available in all Autotools based build 
+systems, there are @scorep configuration flags.  These can be printed
+out by passing the --help flag to the configure script.
+
+They are usually self explanatory.  Here is a list of them with a short
+explanation:
+
+<ul>
+<li>
+<tt>--with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)</tt>
+  Specifies the compiler suite to use when not cross-compiling. Selecting
+	one of the options sets all relevant variables to their expected names.
+	These are CC, FC, F77, as well as the linker, preprocessor, etc.
+	</li>
+
+<li>
+<tt>--with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)</tt>
+	Similar to the previous configuration flag, but for cross-compiling
+	environments.
+	</li>
+
+<li>
+<tt>--with-mpi=(mpich2|impi|openmpi)</tt>
+  The MPI compiler and runtime suite to use.  Currently
+	there are entries for MPICH2, Intel MPI and Open MPI.
+	</li>
+
+<li>
+<tt>--with-otf2=(yes|<otf2-bindir>)</tt>
+	An already install OTF2 can be specified with this flag.  This is 
+	usually not necessary since OTF2 is built together with @scorep.
+	Specify yes if the tool is in your $PATH, otherwise specify the
+	full path.
+	</li>
+
+<li>
+<tt>--with-opari2=(yes|<opari2-bindir>)</tt>
+	Similar to the previous configuration flag, but for OPARI2.
+	</li>
+
+<li>
+<tt>--with-cube=(yes|<cube-bindir>)</tt>
+	Similar to the previous two configuration flags, but for CUBE.
+	</li>
+	</ul>
+
+*/

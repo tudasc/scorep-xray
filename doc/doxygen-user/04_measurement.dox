@@ -1026,6 +1026,9 @@ or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffe
 </dl>
 
 @latexonly
-\appendix
+\appendices
+\renewcommand\chaptername{Appendix}
+
+
 @endlatexonly
 */
