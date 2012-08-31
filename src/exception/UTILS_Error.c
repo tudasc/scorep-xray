@@ -511,7 +511,8 @@ utils_get_error_decl( PACKAGE_Error_Code errorCode )
         return &none_error_decls[ -errorCode ];
     }
 
-    size_t index = errorCode - PACKAGE_ERROR_INVALID;
+    /* real error codes start 1 behind PACKAGE_ERROR_INVALID */
+    size_t index = errorCode - PACKAGE_ERROR_INVALID - 1;
 
     if ( errorCode == PACKAGE_ERROR_INVALID ||
          index >= error_decls_size )
