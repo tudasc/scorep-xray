@@ -302,8 +302,9 @@ scorep_metric_papi_open( const char* listOfMetricNames,
         return NULL;
     }
 
+    char* saveptr;
     /* Read metrics from specification string */
-    token = strtok( env_metrics, metricsSeparator );
+    token = strtok( env_metrics, metricsSeparator, &saveptr );
     if ( token == NULL )
     {
         /* Nevertheless, we checked that env_metrics is not empty, token
@@ -356,7 +357,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
 
         scorep_metric_papi_add( component, code, is_absolute, metric_definition );
 
-        token = strtok( NULL, metricsSeparator );
+        token = strtok( env_metrics, metricsSeparator, &saveptr );
     }
 
     /* Clean up */
@@ -873,7 +874,7 @@ scorep_metric_papi_initialize_source()
         /* SECOND: Read specification of per-process metrics from respective environment variable. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] per-process metrics = %s", scorep_metrics_papi_per_process );
 
-        printf( "[PAPI] per-process metrics = %s", scorep_metrics_papi_per_process );
+        printf( "[PAPI] per-process metrics = %s\n", scorep_metrics_papi_per_process );
 
         metric_defs[ PER_PROCESS_METRICS_INDEX ] =
             scorep_metric_papi_open( scorep_metrics_papi_per_process, scorep_metrics_papi_separator );
