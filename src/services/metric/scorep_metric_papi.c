@@ -291,28 +291,52 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     /** Info struct about PAPI event */
     PAPI_event_info_t info;
 
-    /* Working copy of all metric names. */
+    /* Get working copy of all metric names. */
     env_metrics = UTILS_CStr_dup( listOfMetricNames );
 
     /* Return if environment variable is empty */
-    if ( strlen( env_metrics ) == 0 )
+    size_t str_len = strlen( env_metrics );
+    if ( str_len == 0 )
     {
-        free( env_metrics );
-        return NULL;
+        goto out;
     }
 
-    char* saveptr;
-    /* Read metrics from specification string */
-    token = strtok_r( env_metrics, metricsSeparator, &saveptr );
-    if ( token == NULL )
+    /* Count number of separator characters in list of metric names */
+    size_t      list_alloc = 1;
+    const char* position   = env_metrics;
+    while ( *position )
     {
-        /* Nevertheless, we checked that env_metrics is not empty, token
-         * can be NULL, for instance, if the user specified just the
-         * separator (metricsSeparator) character as the metric names
-         * (env_metrics). */
+        if ( strchr( metricsSeparator, *position ) )
+        {
+            list_alloc++;
+        }
+        position++;
+    }
 
-        free( env_metrics );
-        return NULL;
+    /* Allocate memory for array of metric names */
+    char** metric_names = calloc( list_alloc, sizeof( char* ) );
+    if ( !metric_names )
+    {
+        UTILS_ERROR_POSIX();
+        goto out;
+    }
+
+    /* Parse list of metric names */
+    size_t list_len = 0;
+    token = strtok( env_metrics, metricsSeparator );
+    while ( token )
+    {
+        if ( list_len >= list_alloc )
+        {
+            /* something strange has happened, we have
+             * more entries as in the first run */
+            goto out2;
+        }
+
+        metric_names[ list_len ] = token;
+
+        token = strtok( NULL, metricsSeparator );
+        list_len++;
     }
 
     /* Create new event set (variables initialized with zero) */
@@ -328,8 +352,11 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     /* Metric name */
     char* component;
 
-    while ( token && ( metric_definition->number_of_metrics < SCOREP_METRIC_MAXNUM ) )
+    for ( uint32_t i = 0; i < list_len; i++ )
     {
+        /* Current metric name */
+        token = metric_names[ i ];
+
         if ( token[ 0 ] == '!' )
         {
             /* A leading exclamation mark indicates absolute metrics */
@@ -353,12 +380,11 @@ scorep_metric_papi_open( const char* listOfMetricNames,
         assert( retval == PAPI_OK );
 
         scorep_metric_papi_add( component, code, is_absolute, metric_definition );
-
-        token = strtok_r( NULL, metricsSeparator, &saveptr );
     }
 
     /* Clean up */
     free( env_metrics );
+    free( metric_names );
 
     /* Check whether event combination is valid. This is done here to
      * avoid errors when creating the event set for each thread, which
@@ -368,6 +394,13 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     scorep_metric_papi_descriptions( metric_definition );
 
     return metric_definition;
+
+out2:
+    free( metric_names );
+
+out:
+    free( env_metrics );
+    return NULL;
 }
 
 /** @brief Finalizes the performance counter adapter. Frees memory allocated by
