@@ -345,8 +345,6 @@ scorep_metric_papi_open( const char* listOfMetricNames,
         code      = -1;
         component = token;
 
-        printf( "PAPI_event_name_to_code( %s )\n", component );
-
         retval = PAPI_event_name_to_code( component, &code );
         assert( retval == PAPI_OK && code != -1 );
 
@@ -857,8 +855,6 @@ scorep_metric_papi_initialize_source()
         /* FIRST: Read specification of global synchronous strict metrics from respective environment variable. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] global synchronous strict metrics = %s", scorep_metrics_papi );
 
-        printf( "[PAPI] global synchronous strict metrics = %s", scorep_metrics_papi );
-
         metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] =
             scorep_metric_papi_open( scorep_metrics_papi, scorep_metrics_papi_separator );
         if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
@@ -872,8 +868,6 @@ scorep_metric_papi_initialize_source()
 
         /* SECOND: Read specification of per-process metrics from respective environment variable. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] per-process metrics = %s", scorep_metrics_papi_per_process );
-
-        printf( "[PAPI] per-process metrics = %s\n", scorep_metrics_papi_per_process );
 
         metric_defs[ PER_PROCESS_METRICS_INDEX ] =
             scorep_metric_papi_open( scorep_metrics_papi_per_process, scorep_metrics_papi_separator );
