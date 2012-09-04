@@ -55,6 +55,10 @@
 # define PAPIC
 #endif
 
+#if PAPI_VER_CURRENT >= PAPI_VERSION_NUMBER( 4, 9, 0, 0 )
+# define PAPIV
+#endif
+
 #ifndef TIMER_PAPI_REAL_CYC
 # define TIMER_PAPI_REAL_CYC 10
 #endif /* TIMER_PAPI_REAL_CYC */
@@ -640,7 +644,11 @@ scorep_metric_papi_error( int   errcode,
 {
     char errstring[ PAPI_MAX_STR_LEN ];
 
+#ifdef PAPIV
+    PAPI_perror( errstring );
+#else
     PAPI_perror( errcode, errstring, PAPI_MAX_STR_LEN );
+#endif
     if ( errcode == PAPI_ESYS )
     {
         strncat( errstring, ": ", PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
@@ -662,7 +670,12 @@ scorep_metric_papi_warning( int   errcode,
 {
     char errstring[ PAPI_MAX_STR_LEN ];
 
+#ifdef PAPIV
+    PAPI_perror( errstring );
+#else
     PAPI_perror( errcode, errstring, PAPI_MAX_STR_LEN );
+#endif
+
     if ( errcode == PAPI_ESYS )
     {
         strncat( errstring, ": ", PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
