@@ -25,7 +25,15 @@ error_code()
     printf "    _e( %s, \"%s\"),\n" "$1" "$2" >&6
 }
 
-. ./"$ERRORS"
+case "$ERRORS"
+in
+    (*/*) : except ;;
+    (*) : make it relative
+        ERRORS="./$ERRORS"
+    ;;
+esac
+
+. "$ERRORS"
 
 exec 5<&-
 exec 6<&-
