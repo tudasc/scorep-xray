@@ -315,7 +315,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
     // Generate calls
     m_compiler_flags = "`" + scorep_config + mode + " --cflags` ";
     m_linker_flags   = "`" + scorep_config + mode + " --ldflags` `" +
-                       scorep_config + mode + " --libs`";
+                       scorep_config + mode + " --libs` ";
     if ( m_command_line->isOpariInstrumenting() )
     {
         m_compiler_flags += "`" + m_install_data->getOpariConfig()
