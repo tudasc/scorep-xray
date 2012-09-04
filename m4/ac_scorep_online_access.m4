@@ -25,7 +25,7 @@ ac_scorep_have_online_access_flex="no"
 ac_scorep_have_online_access_yacc="no"
 ac_scorep_have_online_access_headers="yes"
 
-AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h netinet/in.h unistd.h string.h], 
+AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h arpa/inet.h netinet/in.h unistd.h string.h], 
                  [], 
                  [ac_scorep_have_online_access_headers="no"])
 
@@ -53,11 +53,7 @@ AS_IF([test "x${ac_scorep_platform}" = "xbgp" || \
       [ac_scorep_have_online_access="no"], 
       [])
       
-case ${build_os} in
-            aix*)
-                ac_scorep_have_online_access="no"
-            ;;
-esac
+
 
 AM_CONDITIONAL([HAVE_ONLINE_ACCESS], [test "x${ac_scorep_have_online_access}" = "xyes" ])
 
