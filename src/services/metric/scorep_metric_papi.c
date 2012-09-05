@@ -55,7 +55,7 @@
 # define PAPIC
 #endif
 
-#if PAPI_VER_CURRENT >= PAPI_VERSION_NUMBER( 4, 9, 0, 0 )
+#if PAPI_VER_CURRENT >= PAPI_VERSION_NUMBER( 5, 0, 0, 0 )
 # define PAPIV
 #endif
 
