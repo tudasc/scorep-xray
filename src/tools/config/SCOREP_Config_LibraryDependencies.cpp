@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 
 using namespace std;
 
@@ -250,6 +251,11 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
         }
         for ( j = obj.m_rpath.begin(); j != obj.m_rpath.end(); j++ )
         {
+            size_t index = j->find( "-R" );
+            if ( index == 0 )
+            {
+                j->replace( index, strlen( "-R" ), "" );
+            }
             flags.push_back( strip_head( *j, head, delimiter ) );
         }
     }
