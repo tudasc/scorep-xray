@@ -649,7 +649,9 @@ This indicates that counter names in the list are separated by colons.
 
 If @scorep has been built with CUDA support it is capable of recording CUDA API function calls and GPU activities. The measurement is based on NVIDIA's <b>CU</b>DA <b>P</b>rofiling and <b>T</b>ool <b>I</b>nterface (CUPTI), which is an integral part of the CUDA Toolkit since version 4.1.
 
-Setting the environment variable <tt>SCOREP_CUDA_ENABLE</tt> to <tt>yes</tt> enables CUDA measurement. 
+Score-P can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If Score-P has been built with the Intel compiler an additional flag has to be added for instrumentation: <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>. Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default. 
+
+Setting the environment variable <b><tt>SCOREP_CUDA_ENABLE</tt></b> to <b><tt>yes</tt></b> enables CUDA measurement. 
 To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
 
 @code
@@ -664,7 +666,7 @@ no = disable CUDA measurement (same as unset SCOREP_CUDA_ENABLE)
 @note @scorep supports CUDA monitoring since CUDA toolkit version 4.1. Make sure that the @scorep installation has configured CUDA support. The configure summary should contain the line: 
 <pre>CUDA support: yes</pre>
 If not, for most systems it is sufficient to specify the CUDA toolkit directory at @scorep configuration time: 
-<pre> --with-cuda=<path-to-cuda-toolkit-directory></pre>
+<pre> --with-libcudart=<path-to-cuda-toolkit-directory></pre>
 Otherwise check the configure help output to specify the location of the CUDA toolkit and CUPTI libraries and include files: 
 <pre> ./configure --help=recursive | grep -E "(cuda|cupti)"</pre>
 
