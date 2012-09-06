@@ -254,7 +254,7 @@ test "x${ac_scorep_cross_compiling}" = "xyes" && {
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
 Makefile >Makefile.be && mv -f Makefile.be Makefile || rm -f Makefile.be
 }
-]])
+]], [ac_scorep_cross_compiling='$ac_scorep_cross_compiling'])
 AC_CONFIG_FILES([../test/jacobi/serial/C/Makefile
                  ../test/jacobi/OpenMP/C/Makefile
                  ../installcheck/Makefile.common_rules:../test/installcheck/Makefile.common_rules.in
