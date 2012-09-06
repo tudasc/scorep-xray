@@ -314,15 +314,17 @@ initialize_location_metric_cb( SCOREP_Location* location,
             metric_data->event_set[ source_index ] = event_set_collection[ source_index ][ SYNCHRONOUS_STRICT_METRICS_INDEX ];
         }
 
+        /* First entries in metric values buffer are always used by 'synchronous strict' metrics which are recorded by each location */
+        buffer_size += synchronous_strict_metrics.overall_number_of_metrics;
 
         /*
          * First: Define metric and sampling set handles of global 'synchronous strict' metrics
          */
 
-        if ( synchronous_strict_metrics.overall_number_of_metrics > 0 )
+        /* Only the master thread defines handles of 'synchronous strict' metrics */
+        if ( synchronous_strict_metrics.overall_number_of_metrics > 0
+             && SCOREP_Location_GetId( location ) == 0 )
         {
-            buffer_size += synchronous_strict_metrics.overall_number_of_metrics;
-
             /* Now we know how many metrics are used, so we can allocate memory to store their handles */
             synchronous_strict_metrics.metrics = malloc( synchronous_strict_metrics.overall_number_of_metrics * sizeof( SCOREP_MetricHandle ) );
             UTILS_ASSERT( synchronous_strict_metrics.metrics );
@@ -345,7 +347,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                                                              props.exponent,
                                                                              props.unit,
                                                                              props.profiling_type );
-                    synchronous_strict_metrics.metrics[ recent_metric_index++ ] = metric_handle;
+                    synchronous_strict_metrics.metrics[ recent_metric_index ] = metric_handle;
+                    recent_metric_index++;
                 }
             }
 
