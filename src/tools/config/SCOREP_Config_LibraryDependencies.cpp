@@ -112,7 +112,8 @@ remove_double_entries( const deque<string> input )
 static string
 deque_to_string( const deque<string> input,
                  const string        head,
-                 const string        delimiter )
+                 const string        delimiter,
+                 const string        tail )
 {
     string                        output = head;
     deque<string>::const_iterator i;
@@ -120,6 +121,7 @@ deque_to_string( const deque<string> input,
     {
         output += delimiter + *i;
     }
+    output += tail;
     return output;
 }
 
@@ -200,7 +202,7 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
     }
     libs = remove_double_entries( libs );
 
-    return deque_to_string( libs, "", " " );
+    return deque_to_string( libs, "", " ", "" );
 }
 
 string
@@ -226,11 +228,11 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
     }
     flags = remove_double_entries( flags );
 
-    return deque_to_string( flags, "", " " );
+    return deque_to_string( flags, "", " ", "" );
 }
 
 string
-SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool install, const string head, const string delimiter )
+SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool install, const string head, const string delimiter, const string tail )
 {
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
@@ -261,7 +263,7 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
     }
     flags = remove_double_entries( flags );
 
-    return deque_to_string( flags, head, delimiter );
+    return deque_to_string( flags, head, delimiter, tail );
 }
 
 deque<string>

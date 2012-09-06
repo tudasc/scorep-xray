@@ -131,7 +131,8 @@ public:
     GetRpathFlags( const std::deque<std::string> libs,
                    bool                          install,
                    const std::string             head,
-                   const std::string             delimiter );
+                   const std::string             delimiter,
+                   const std::string             tail );
 
     // ------------------------------------- Protected functions
 protected:
