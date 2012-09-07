@@ -20,7 +20,7 @@ AC_DEFUN([AC_SCOREP_CUBE4_FRONTEND], [
 ## Evalute parameters
 AC_ARG_WITH(cube4-frontend-lib, [AS_HELP_STRING([--with-cube4-frontend-lib=path_to_library], [Specifies the path where the Cube 4 frontend library is located])],[
     AC_SUBST(CUBE_FRONTEND_LIB_PATH,"$withval")
-    LDFLAGS="$LDFLAGS -L$withval -R$withval"
+    LDFLAGS="$LDFLAGS -L$withval"
 ],[])
 AC_ARG_WITH(cube4-frontend-header, [AS_HELP_STRING([--with-cube4-frontend-header=path_to_header], [Specifies the path where the Cube 4 frontend header files are located])],[CPPFLAGS="$CPPFLAGS -I$withval"],[])
 
