@@ -124,6 +124,8 @@ doxygen-user:
 
 endif # HAVE_DOXYGEN -------------------------------------------------
 
+EXTRA_DIST += $(DOC_SRC_DIR)/images/ScoreP_Logo.png
+
 if HAVE_DOXYGEN_LATEX #-----------------------------------------------
 
 doxygen-user-pdf: doxygen-user
@@ -132,7 +134,7 @@ doxygen-user-pdf: doxygen-user
 	echo "GENERATE_LATEX   = YES"   >> doc/doxygen-user-pdf.cfg
 	echo "GENERATE_HTML    = NO"    >> doc/doxygen-user-pdf.cfg
 	cp $(abs_srcdir)/vendor/common/build_related/doxygen/scorep.sty $(USER_DOC_DIR)/pdf/
-	-cp doc/images/ScoreP_Logo.png $(USER_DOC_DIR)/pdf/
+	-cp $(DOC_SRC_DIR)/images/ScoreP_Logo.png $(USER_DOC_DIR)/pdf/
 	$(DOXYGEN) doc/doxygen-user-pdf.cfg
 	cd "$(USER_DOC_DIR)/pdf"; \
 	make;                     \
