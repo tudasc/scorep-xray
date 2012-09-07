@@ -38,12 +38,12 @@
  * List of adapters.
  */
 const SCOREP_Subsystem* scorep_subsystems[] = {
+    &SCOREP_Metric_Service,
     &SCOREP_Compiler_Adapter,
     &SCOREP_User_Adapter,
     &SCOREP_Pomp_Adapter,
-    &SCOREP_Metric_Service,
 #if HAVE( CUDA )
-    &SCOREP_Cuda_Adapter
+    &SCOREP_Cuda_Adapter,
 #endif
 };
 

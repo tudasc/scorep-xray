@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_environment.c
+ * @file       src/measurement/scorep_environment.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -26,14 +26,22 @@
 
 
 #include <config.h>
-#include "scorep_environment.h"
 
 #include <stdlib.h>
-#include <SCOREP_Types.h>
-#include <SCOREP_Config.h>
 #include <assert.h>
 #include <stdio.h>
+
 #include <UTILS_Error.h>
+
+#include <SCOREP_Types.h>
+#include <SCOREP_Config.h>
+#include <SCOREP_Profile.h>
+#include <tracing/SCOREP_Tracing.h>
+#include <SCOREP_OA_Init.h>
+#include <SCOREP_Filter_Init.h>
+#include "scorep_subsystem.h"
+
+#include "scorep_environment.h"
 
 static bool scorep_env_core_environment_variables_initialized = false;
 
@@ -55,8 +63,8 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_profiling,
         NULL,
         "true",
-        "enable profiling",
-        "enable profiling"
+        "Enable profiling",
+        ""
     },
     {
         "enable_tracing",
@@ -64,8 +72,8 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_tracing,
         NULL,
         "false",
-        "enable tracing",
-        "enable tracing"
+        "Enable tracing",
+        ""
     },
     {
         "verbose",
@@ -74,7 +82,7 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         NULL,
         "false",
         "Be verbose",
-        "Long help"
+        ""
     },
     {
         "total_memory",
@@ -82,7 +90,7 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_total_memory,
         NULL,
         "16000k",
-        "total memory in bytes for the measurement system",
+        "Total memory in bytes for the measurement system",
         ""
     },
     {
@@ -91,7 +99,7 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_page_size,
         NULL,
         "8k", // with 1200k total memory this means 150 pages
-        "memory page size in bytes",
+        "Memory page size in bytes",
         "TOTAL_MEMORY will be split up into pages of size PAGE_SIZE."
     },
     {
@@ -100,11 +108,10 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_experiment_directory,
         NULL,
         "",
-        "name of the experiment directory",
-        "Name of the experiment directory.\n"
-        "When no experiment name is given (the default)Score-P names the "
-        "experiment directory `scorep-measurement-tmp' and renames this "
-        "after a successful measurement to a generated name based on the "
+        "Name of the experiment directory",
+        "When no experiment name is given (the default)Score-P names the\n"
+        "experiment directory `scorep-measurement-tmp' and renames this\n"
+        "after a successful measurement to a generated name based on the\n"
         "current time."
     },
     {
@@ -113,8 +120,8 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_overwrite_experiment_directory,
         NULL,
         "true",
-        "overwrite an existing experiment directory",
-        "If you specified a specific experiment directory name, but this name "
+        "Overwrite an existing experiment directory",
+        "If you specified a specific experiment directory name, but this name\n"
         "is already given, you can force overwriting it with this flag.\n"
         "The previous experiment directory will be renamed."
     },
@@ -131,41 +138,12 @@ SCOREP_ConfigVariable scorep_debug_environment_variables[] = {
         &scorep_debug_unify,
         NULL,
         "true",
-        "Writes the pre-unified definitions also in the local definition trace files",
+        "Writes the pre-unified definitions also in the local definition trace files.",
         ""
     },
     SCOREP_CONFIG_TERMINATOR
 };
 #endif
-
-
-void
-SCOREP_Env_RegisterCoreEnvironmentVariables()
-{
-    if ( scorep_env_core_environment_variables_initialized )
-    {
-        return;
-    }
-
-    scorep_env_core_environment_variables_initialized = true;
-
-    SCOREP_Error_Code error;
-    error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
-    if ( SCOREP_SUCCESS != error )
-    {
-        UTILS_ERROR( error, "Can't register core environment variables" );
-        _Exit( EXIT_FAILURE );
-    }
-
-#if HAVE( SCOREP_DEBUG )
-    error = SCOREP_ConfigRegister( "debug", scorep_debug_environment_variables );
-    if ( SCOREP_SUCCESS != error )
-    {
-        UTILS_ERROR( error, "Can't register debug environment variables" );
-        _Exit( EXIT_FAILURE );
-    }
-#endif
-}
 
 
 bool
@@ -222,4 +200,38 @@ SCOREP_Env_OverwriteExperimentDirectory()
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_overwrite_experiment_directory;
+}
+
+void
+SCOREP_RegisterAllConfigVariables( void )
+{
+    if ( scorep_env_core_environment_variables_initialized )
+    {
+        return;
+    }
+
+    scorep_env_core_environment_variables_initialized = true;
+
+    SCOREP_Error_Code error;
+    error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
+    if ( SCOREP_SUCCESS != error )
+    {
+        UTILS_ERROR( error, "Can't register core environment variables" );
+        _Exit( EXIT_FAILURE );
+    }
+
+#if HAVE( SCOREP_DEBUG )
+    error = SCOREP_ConfigRegister( "debug", scorep_debug_environment_variables );
+    if ( SCOREP_SUCCESS != error )
+    {
+        UTILS_ERROR( error, "Can't register debug environment variables" );
+        _Exit( EXIT_FAILURE );
+    }
+#endif
+
+    SCOREP_Profile_Register();
+    SCOREP_Tracing_Register();
+    SCOREP_OA_Register();
+    SCOREP_Filter_Register();
+    scorep_subsystems_register();
 }

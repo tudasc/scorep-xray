@@ -111,7 +111,7 @@ scorep_get_status_array( int32_t size );
 
 /** Flag to indicate whether MPI Profiling hooks are turned on or off.
  */
-extern bool scorep_hooks_on;
+extern bool scorep_mpi_hooks_on;
 
 extern int scorep_mpi_status_size;
 
@@ -144,17 +144,17 @@ scorep_mpiprofile_reinit_metrics();
 /** @def SCOREP_IS_MPI_HOOKS_ON
     Check whether MPI profiling hooks are enabled globally.
  */
-#define SCOREP_IS_MPI_HOOKS_ON                            scorep_hooks_on
+#define SCOREP_IS_MPI_HOOKS_ON scorep_mpi_hooks_on
 
 /** @def SCOREP_MPI_HOOKS_ON
     Turn on MPI Profiling hooks inside MPI adapter.
  */
-#define SCOREP_MPI_HOOKS_ON                     scorep_hooks_on = true
+#define SCOREP_MPI_HOOKS_ON scorep_mpi_hooks_on = true
 
 /** @def SCOREP_MPI_HOOKS_OFF
     Turn off MPI Profiling hooks inside MPI adapter.
  */
-#define SCOREP_MPI_HOOKS_OFF                   scorep_hooks_on = false
+#define SCOREP_MPI_HOOKS_OFF scorep_mpi_hooks_on = false
 
 
 

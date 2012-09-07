@@ -102,21 +102,6 @@ typedef struct
    usage of the profile.
  */
     uint64_t max_callpath_num;
-
-/**
-   Contains the basename for profile files.
- */
-    char* basename;
-
-/**
-   Stores the configuration of the hash table size.
- */
-    uint64_t task_table_size;
-
-/**
-   Stores the configuration setting for output format.
- */
-    uint64_t output_format;
 } scorep_profile_definition;
 
 /* **************************************************************************************
@@ -128,12 +113,26 @@ typedef struct
  */
 extern scorep_profile_definition scorep_profile;
 
+/**
+   Initial value for scorep_profile.max_callpath_depth, which may change over
+   time.
+ */
+extern uint64_t scorep_profile_max_callpath_depth;
 
 /**
-   Configuration variable registration structures for the profiling system.
+   Stores the configuration of the hash table size.
  */
-extern SCOREP_ConfigVariable scorep_profile_configs[];
+extern uint64_t scorep_profile_task_table_size;
 
+/**
+   Contains the basename for profile files.
+ */
+extern char* scorep_profile_basename;
+
+/**
+   Stores the configuration setting for output format.
+ */
+extern uint64_t scorep_profile_output_format;
 
 /* **************************************************************************************
    Functions

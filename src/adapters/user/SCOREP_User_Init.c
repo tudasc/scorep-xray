@@ -38,7 +38,7 @@
 int8_t scorep_user_is_initialized = 0;
 
 
-size_t scorep_user_subsystem_id;
+static size_t scorep_user_subsystem_id;
 
 
 /** Registers the required configuration variables of the user adapter

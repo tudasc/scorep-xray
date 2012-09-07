@@ -45,12 +45,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurementMPI )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_finalize )                       \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigInit )                     \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Env_RegisterCoreEnvironmentVariables ) \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Register )                \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_register )            \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Profile_Register )               \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Tracing_Register )               \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_OA_Register )                    \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_RegisterAllConfigVariables )     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigApplyEnv )                 \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Timer_Initialize )               \

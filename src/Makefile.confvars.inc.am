@@ -1,0 +1,21 @@
+noinst_LTLIBRARIES += libscorep_confvars.la
+
+libscorep_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/SCOREP_Config.c \
+    $(SRC_ROOT)src/measurement/scorep_types.c \
+    $(SRC_ROOT)src/measurement/scorep_environment.c \
+    $(SRC_ROOT)src/measurement/scorep_subsystem.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_all_subsystems.c
+
+libscorep_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement/online_access \
+    -I$(INC_ROOT)src/adapters/include \
+    -I$(INC_ROOT)src/services/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD =

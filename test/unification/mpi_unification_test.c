@@ -46,8 +46,8 @@
 #include <scorep_definitions.h>
 #include <scorep_subsystem.h>
 
-SCOREP_Error_Code
-SCOREP_Env_RegisterCoreEnvironmentVariables( void );
+void
+SCOREP_RegisterAllConfigVariables( void );
 void
 scorep_mpi_register_regions( void );
 void
@@ -111,8 +111,7 @@ int
 main( int argc, char* argv[] )
 {
     SCOREP_ConfigInit();
-    SCOREP_Env_RegisterCoreEnvironmentVariables();
-    scorep_subsystems_register();
+    SCOREP_RegisterAllConfigVariables();
     SCOREP_ConfigRegister( "test", scorep_test_mpi_unify_config_variables );
     SCOREP_ConfigApplyEnv();
 

@@ -27,6 +27,7 @@
 
 #include <config.h>
 
+#include "SCOREP_Mpi.h"
 #include "SCOREP_MPIHooks.h"
 #include <UTILS_Debug.h>
 #include "scorep_mpiprofile.h"
@@ -40,7 +41,6 @@
  * 1x1 pre- and post- communication hooks
    -----------------------------------------------*/
 
-bool scorep_hooks_on = false;
 
 /**
  * Pre-communication hook for MPI_Send

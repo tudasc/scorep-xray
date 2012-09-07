@@ -45,6 +45,4 @@ scorep_selective_register();
 void
 scorep_selective_finalize();
 
-extern size_t scorep_user_subsystem_id;
-
 #endif /* SCOREP_INTERNAL_USER_H */

@@ -16,7 +16,7 @@
 
 
 /**
- * @file        scorep_adatper_libscorep_mpi.c
+ * @file        scorep_adapter_libscorep_mpi.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @status      alpha
@@ -40,13 +40,13 @@
  * List of adapters.
  */
 const SCOREP_Subsystem* scorep_subsystems[] = {
+    &SCOREP_Metric_Service,
     &SCOREP_Compiler_Adapter,
     &SCOREP_User_Adapter,
     &SCOREP_Pomp_Adapter,
     &SCOREP_Mpi_Adapter,
-    &SCOREP_Metric_Service,
 #if HAVE( CUDA )
-    &SCOREP_Cuda_Adapter
+    &SCOREP_Cuda_Adapter,
 #endif
 };
 

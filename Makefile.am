@@ -80,21 +80,39 @@ clean-local: doxygen-user-clean
 
 CLEANFILES += doc/doxygen-user/main.dox
 
-.PHONY: doc/doxygen-user/main.dox
-
 if SVN_CONTROLLED
-doc/doxygen-user/main.dox:
-	$(MKDIR_P) doc/doxygen-user
-	cat $(srcdir)/doc/doxygen-user/main_1.dox.in \
-            $(srcdir)/doc/doxygen-user/scorep_usage.dox.in \
-            $(srcdir)/doc/doxygen-user/main_2.dox.in \
-            $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in \
-            $(srcdir)/doc/doxygen-user/main_3.dox.in \
-            > doc/doxygen-user/main.dox
+
+if CROSS_BUILD
+INFO_TOOL_BUILD=build-frontend
 else
+INFO_TOOL_BUILD=build-backend
+endif
+
+$(INFO_TOOL_BUILD)/scorep-info:
+	$(am__cd) $(INFO_TOOL_BUILD) && $(MAKE) $(AM_MAKEFLAGS) scorep-info
+
+CLEANFILES += doc/doxygen-user/confvars.dox.in
+
+doc/doxygen-user/confvars.dox.in: $(INFO_TOOL_BUILD)/scorep-info
+	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
+	./$(INFO_TOOL_BUILD)/scorep-info config-vars --full=html >$@
+
+doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_usage.dox.in \
+    $(srcdir)/doc/doxygen-user/main_2.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in \
+    $(srcdir)/doc/doxygen-user/main_3.dox.in \
+    doc/doxygen-user/confvars.dox.in \
+    $(srcdir)/doc/doxygen-user/main_4.dox.in
+	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
+	cat $^ >$@
+
+else
+
 doc/doxygen-user/main.dox:
-	$(MKDIR_P) doc/doxygen-user
-	touch doc/doxygen-user/main.dox
+	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
+	touch $@
+
 endif
 
 
@@ -118,7 +136,7 @@ DISTCLEANFILES += \
     src/utils/include/SCOREP_Error_Codes.h \
     src/utils/include/scorep_error_decls.gen.h
 
-BUILT_SOURCES = \
+BUILT_SOURCES += \
     src/utils/include/SCOREP_Error_Codes.h \
     src/utils/include/scorep_error_decls.gen.h
 

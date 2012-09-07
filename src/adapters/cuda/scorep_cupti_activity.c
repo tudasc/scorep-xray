@@ -38,6 +38,7 @@
 #include <SCOREP_Timing.h>
 
 #include "scorep_cuda.h"
+#include "scorep_cupti.h"
 #include "scorep_cupti_activity.h"
 
 /*#if defined( HAVE_DEMANGLE )

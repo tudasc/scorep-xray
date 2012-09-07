@@ -18,11 +18,8 @@
 #define SCOREP_CONFIG_H
 
 
-#include <stdio.h>
-
-
 /**
- * @file        SCOREP_Config.h
+ * @file        src/measurement/include/SCOREP_Config.h
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Runtime configuration subsystem.
@@ -60,10 +57,18 @@
  */
 
 
-#include <UTILS_Error.h>
-#include <SCOREP_Types.h>
+#include <stdio.h>
 #include <stddef.h>
 #include <stdbool.h>
+
+
+#include <UTILS_Error.h>
+
+
+#include <SCOREP_Types.h>
+
+
+UTILS_BEGIN_C_DECLS
 
 
 SCOREP_Error_Code
@@ -163,6 +168,19 @@ SCOREP_ConfigDump( FILE* dumpFile );
 
 
 /**
+ * Displays all config vrialbes with there short description, type and default value.
+ *
+ * If @a full is set than the long description is also displayed.
+ *
+ * @param full Displays the long help description too.
+ * @param html Use an html descripion list for the output.
+ */
+void
+SCOREP_ConfigHelp( bool full,
+                   bool html );
+
+
+/**
  * @brief Terminates an array of SCOREP_ConfigVariable.
  */
 #define SCOREP_CONFIG_TERMINATOR { \
@@ -184,6 +202,9 @@ SCOREP_ConfigDump( FILE* dumpFile );
 /*
  * @}
  */
+
+
+UTILS_END_C_DECLS
 
 
 #endif /* SCOREP_CONFIG_H */

@@ -1,0 +1,19 @@
+## -*- mode: makefile -*-
+
+bin_PROGRAMS += scorep-info
+
+scorep_info_SOURCES = \
+    $(SRC_ROOT)src/tools/info/scorep_info.cpp
+
+scorep_info_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/services/include \
+    $(UTILS_CPPFLAGS)
+
+scorep_info_LDADD = \
+    libscorep_confvars.la \
+    libscorep_hashtab.la \
+    libutils.la

@@ -182,18 +182,18 @@ scorep_profile_task_initialize( SCOREP_Location*             locationData,
     /* The task table must have at least one bin, else we need a lot of extra checks for
        this special case, or the program seg faults when a task occur.
      */
-    if ( scorep_profile.task_table_size == 0 )
+    if ( scorep_profile_task_table_size == 0 )
     {
-        scorep_profile.task_table_size = 1;
+        scorep_profile_task_table_size = 1;
     }
 
-    size_t task_table_size = sizeof( scorep_profile_task* ) * scorep_profile.task_table_size;
+    size_t task_table_size = sizeof( scorep_profile_task* ) * scorep_profile_task_table_size;
     location->tasks = SCOREP_Location_AllocForProfile(
         locationData,
         sizeof( *location->tasks ) + task_table_size );
     memset( location->tasks->items, 0, task_table_size );
 
-    location->tasks->size         = scorep_profile.task_table_size;
+    location->tasks->size         = scorep_profile_task_table_size;
     location->tasks->free_entries = NULL;
     location->tasks->fill_level   = 0;
     location->tasks->max_tasks    = 0;

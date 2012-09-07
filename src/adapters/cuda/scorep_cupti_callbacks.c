@@ -30,6 +30,7 @@
 #include "SCOREP_Types.h"
 
 #include "scorep_cuda.h"
+#include "scorep_cupti.h"
 #include "scorep_cupti_callbacks.h"
 #include "scorep_cupti_activity.h"
 

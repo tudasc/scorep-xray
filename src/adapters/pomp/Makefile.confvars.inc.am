@@ -1,0 +1,38 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012,
+##    RWTH Aachen University, Germany
+##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##    Technische Universitaet Dresden, Germany
+##    University of Oregon, Eugene, USA
+##    Forschungszentrum Juelich GmbH, Germany
+##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##    Technische Universitaet Muenchen, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       src/adapters/pomp/Makefile.confvars.inc.am
+## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+
+noinst_LTLIBRARIES += libscorep_pomp_confvars.la
+
+libscorep_pomp_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/pomp/scorep_pomp_confvars.c
+
+libscorep_pomp_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/adapters/pomp \
+    -I$(INC_ROOT)src/adapters/include \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD += libscorep_pomp_confvars.la
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/pomp/scorep_pomp_confvars.inc.c

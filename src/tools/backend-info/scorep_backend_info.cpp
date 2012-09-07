@@ -33,6 +33,9 @@
 #include <UTILS_Error.h>
 
 #include <SCOREP_Platform.h>
+#include <SCOREP_Config.h>
+#include <scorep_environment.h>
+
 
 /**
    Contains the name of the tool for help output
@@ -62,6 +65,9 @@ print_help()
     std::cout << std::endl;
     std::cout << "  system-tree:" << std::endl;
     std::cout << "    Shows the available system tree levels, starting with the root." << std::endl;
+    std::cout << std::endl;
+    std::cout << "  config-vars:" << std::endl;
+    std::cout << "    Shows the current values of all measurement config variables." << std::endl;
 /*
     std::cout << std::endl;
     std::cout << "    Info command options:" << std::endl;
@@ -81,6 +87,7 @@ main( int   argc,
             print_help();
             return EXIT_SUCCESS;
         }
+
         if ( info_command == "system-tree" )
         {
             SCOREP_Platform_SystemTreePathElement* path;
@@ -98,6 +105,19 @@ main( int   argc,
             SCOREP_Platform_FreePath( path );
             return EXIT_SUCCESS;
         }
+
+
+        if ( info_command == "config-vars" )
+        {
+            SCOREP_ConfigInit();
+            SCOREP_RegisterAllConfigVariables();
+            SCOREP_ConfigApplyEnv();
+            SCOREP_ConfigDump( stdout );
+            SCOREP_ConfigFini();
+            return EXIT_SUCCESS;
+        }
+
+
         std::cout << "Invalid info command:" << argv[ 1 ] << std::endl;
         print_short_usage();
         return EXIT_FAILURE;

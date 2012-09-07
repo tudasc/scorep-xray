@@ -91,12 +91,7 @@ setup_start_from_parent( scorep_profile_node* node )
    Initialization / Finalization
 *****************************************************************************************/
 
-void
-SCOREP_Profile_Register()
-{
-    SCOREP_ConfigRegister( "profiling", scorep_profile_configs );
-}
-
+#include "scorep_profile_confvars.inc.c"
 
 void
 SCOREP_Profile_Initialize()
@@ -273,7 +268,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
     scorep_profile_process_collapse();
 
     /* Substitute parameter entries by regions */
-    if ( scorep_profile.output_format != SCOREP_Profile_OutputTauSnapshot )
+    if ( scorep_profile_output_format != SCOREP_Profile_OutputTauSnapshot )
     {
         scorep_profile_substitute_parameter();
     }
@@ -294,15 +289,15 @@ SCOREP_Profile_Process( SCOREP_Location* location )
 void
 SCOREP_Profile_Write()
 {
-    if ( scorep_profile.output_format == SCOREP_Profile_OutputNone )
+    if ( scorep_profile_output_format == SCOREP_Profile_OutputNone )
     {
         return;
     }
-    else if ( scorep_profile.output_format & SCOREP_Profile_OutputCube4 )
+    else if ( scorep_profile_output_format & SCOREP_Profile_OutputCube4 )
     {
         scorep_profile_write_cube4();
     }
-    else if ( scorep_profile.output_format & SCOREP_Profile_OutputTauSnapshot )
+    else if ( scorep_profile_output_format & SCOREP_Profile_OutputTauSnapshot )
     {
         scorep_profile_write_tau_snapshot();
     }

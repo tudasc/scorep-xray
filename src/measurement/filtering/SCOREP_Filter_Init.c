@@ -32,27 +32,8 @@
 /* **************************************************************************************
    Variable and type definitions
 ****************************************************************************************/
-/**
- * Contains the file name of the filter file. The value is set in the configuration
- * system through the variable SCOREP_FILTERING_FILE
- */
-static char* scorep_filter_file_name = NULL;
 
-/**
-   Array of configuration variables for filtering tracing.
- */
-SCOREP_ConfigVariable scorep_filter_configs[] = {
-    {
-        "file",
-        SCOREP_CONFIG_TYPE_STRING,
-        &scorep_filter_file_name,
-        NULL,
-        "",
-        "A file name which contain the filter rules",
-        ""
-    },
-    SCOREP_CONFIG_TERMINATOR
-};
+#include "scorep_filter_confvars.inc.c"
 
 /* **************************************************************************************
    Initialization of filtering system
@@ -86,14 +67,6 @@ SCOREP_Filter_Initialize()
                      "Disable filtering." );
         return;
     }
-}
-
-SCOREP_Error_Code
-SCOREP_Filter_Register()
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
-                        "Register config variables for filtering system" );
-    return SCOREP_ConfigRegister( "filtering", scorep_filter_configs );
 }
 
 void

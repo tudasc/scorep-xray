@@ -143,12 +143,7 @@ SCOREP_InitMeasurement()
     system_tree_path = SCOREP_BuildSystemTree();
 
     /* Register all config variables */
-    SCOREP_TIME( SCOREP_Env_RegisterCoreEnvironmentVariables );
-    SCOREP_TIME( SCOREP_Filter_Register );
-    SCOREP_TIME( scorep_subsystems_register );
-    SCOREP_TIME( SCOREP_Profile_Register );
-    SCOREP_TIME( SCOREP_Tracing_Register );
-    SCOREP_TIME( SCOREP_OA_Register );
+    SCOREP_TIME( SCOREP_RegisterAllConfigVariables );
 
     /* Parse the environment */
     SCOREP_TIME( SCOREP_ConfigApplyEnv );

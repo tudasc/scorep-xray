@@ -27,6 +27,7 @@ libscorep_adapter_cuda_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/include/SCOREP_Cuda_Init.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.c \
@@ -42,8 +43,5 @@ libscorep_adapter_cuda_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include
 
 libscorep_adapter_cuda_la_LIBADD = @CUDA_LDFLAGS@ @CUDA_LIBS@
-
-libscorep_cupti_la_CPPFLAGS = $(libscorep_adapter_cuda_la_CPPFLAGS) \
-    @CUDA_CPPFLAGS@
 
 endif

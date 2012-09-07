@@ -42,34 +42,15 @@
    Variable definitions
 ****************************************************************************************/
 
-/**
-   Contains the file name for the selective tracing configuration file. This filename
-   is filled out by the configration system. In oartcular it is set by the environment
-   variable 'SCOREP_SELECTIVE_CONFIG_FILE'.
- */
-char* scorep_selective_file_name = NULL;
 
-/**
-   Array of configuration variables for the selecetive tracing.
- */
-SCOREP_ConfigVariable scorep_selective_configs[] = {
-    {
-        "config_file",
-        SCOREP_CONFIG_TYPE_STRING,
-        &scorep_selective_file_name,
-        NULL,
-        "",
-        "A file name which configures selective tracing",
-        ""
-    },
-    SCOREP_CONFIG_TERMINATOR
-};
+#include "scorep_user_confvars.inc.c"
+
 
 /**
    The list of traced regions. The regions are alphabetically sorted after their
    region name.
  */
-SCOREP_Vector* scorep_selected_regions = NULL;
+static SCOREP_Vector* scorep_selected_regions = NULL;
 
 
 /* **************************************************************************************
@@ -142,7 +123,7 @@ scorep_selective_init_region_list()
    @param first  First instance number of the new interval.
    @param last   Last instance number of the new interval.
  */
-void
+static void
 scorep_selective_add_interval( scorep_selected_region* region,
                                uint64_t                first,
                                uint64_t                last )

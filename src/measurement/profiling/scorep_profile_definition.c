@@ -44,85 +44,13 @@
  */
 scorep_profile_definition scorep_profile =
 {
-    NULL,       /* first_root_node      */
-    false,      /* has_collapse_node    */
-    0,          /* reached_depth        */
-    false,      /* is_initialized       */
-    false,      /* reinitialize         */
-    0,          /* max_callpath_depth   */
-    UINT64_MAX, /* max_callpath_num     */
-    NULL,       /* basename             */
-    0,          /* task_table_size      */
-    0           /* output_format        */
-};
-
-/* ---------------------------------- Configuration variables */
-
-#define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputCube4
-
-/**
-   Bitset table for output format string configuration.
- */
-static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
-    { "NONE",         SCOREP_Profile_OutputNone         },
-    { "TAU_SNAPSHOT", SCOREP_Profile_OutputTauSnapshot  },
-    { "CUBE4",        SCOREP_Profile_OutputCube4        },
-    { "DEFAULT",      SCOREP_Profile_OutputDefault      },
-    { NULL,           0                                 }
-};
-
-/**
-   Configuration variable registration structures for the profiling system.
- */
-SCOREP_ConfigVariable scorep_profile_configs[] = {
-    { "task_table_size",
-      SCOREP_CONFIG_TYPE_NUMBER,
-      &scorep_profile.task_table_size,
-      NULL,
-      "64",
-      "Size of the task tracing table",
-      "Size of the task tracing table. Best performance is obtained, if the table size "
-      "matches the number of tasks that are active at once. If yout program does not "
-      "use tasks, you may set this value to zero, to save some memory" },
-
-    { "max_callpath_depth",
-      SCOREP_CONFIG_TYPE_NUMBER,
-      &scorep_profile.max_callpath_depth,
-      NULL,
-      "30",
-      "Maximum depth of the calltree",
-      "Maximum depth of the calltree" },
-
-    /*{ "max_callpath_num",
-       SCOREP_CONFIG_TYPE_NUMBER,
-       &scorep_profile.max_callpath_num,
-       NULL,
-       "1000000000",
-       "Maximum number of nodes in the calltree",
-       "Maximum number of nodes in the calltree" },*/
-
-    { "base_name",
-      SCOREP_CONFIG_TYPE_STRING,
-      &scorep_profile.basename,
-      NULL,
-      "profile",
-      "Base for construction of the profile filename",
-      "String which is used as based to create the filenames for the profile files" },
-
-    { "format",
-      SCOREP_CONFIG_TYPE_BITSET,
-      &scorep_profile.output_format,
-      ( void* )scorep_profile_format_table,
-      "DEFAULT",
-      "Profile output format",
-      "Sets the output format for the profile.\n"
-      "The following formats are supported:\n"
-      " NONE: No profile output. This does not disable profile recording.\n"
-      " TAU_SNAPSHOT: Tau snapshot format.\n"
-      " CUBE4: Cube4 format.\n"
-      " DEFAULT: Default format. If Cube4 is supported, Cube4 is the default\n"
-      "          else the Tau snapshot format is default.\n", },
-    SCOREP_CONFIG_TERMINATOR
+    NULL,      /* first_root_node      */
+    false,     /* has_collapse_node    */
+    0,         /* reached_depth        */
+    false,     /* is_initialized       */
+    false,     /* reinitialize         */
+    0,         /* max_callpath_depth   */
+    UINT64_MAX /* max_callpath_num     */
 };
 
 /*----------------------------------------------------------------------------------------
@@ -137,8 +65,9 @@ scorep_profile_init_definition()
     scorep_profile.is_initialized = true;
 
     /* Store configuration */
-    scorep_profile.has_collapse_node = false;
-    scorep_profile.reached_depth     = 0;
+    scorep_profile.has_collapse_node  = false;
+    scorep_profile.reached_depth      = 0;
+    scorep_profile.max_callpath_depth = scorep_profile_max_callpath_depth;
 }
 
 /** Resets the profile definition struct

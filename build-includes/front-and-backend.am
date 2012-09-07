@@ -1,5 +1,18 @@
 ## -*- mode: makefile -*-
+include ../src/Makefile.confvars.inc.am
+include ../src/measurement/profiling/Makefile.confvars.inc.am
+include ../src/measurement/tracing/Makefile.confvars.inc.am
+include ../src/measurement/online_access/Makefile.confvars.inc.am
+include ../src/measurement/filtering/Makefile.confvars.inc.am
+include ../src/services/metric/Makefile.confvars.inc.am
+include ../src/adapters/compiler/Makefile.confvars.inc.am
+include ../src/adapters/cuda/Makefile.confvars.inc.am
+include ../src/adapters/mpi/Makefile.confvars.inc.am
+include ../src/adapters/pomp/Makefile.confvars.inc.am
+include ../src/adapters/user/Makefile.confvars.inc.am
 include ../src/utils/filtering/Makefile.inc.am
+include ../src/utils/vector/Makefile.inc.am
+include ../src/utils/hashtab/Makefile.inc.am
 include ../vendor/common/src/utils/cstr/Makefile.inc.am
 include ../vendor/common/src/utils/io/Makefile.inc.am
 include ../vendor/common/src/utils/exception/Makefile.inc.am

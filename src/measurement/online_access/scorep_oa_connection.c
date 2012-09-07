@@ -32,10 +32,6 @@
 
 static int8_t scorep_oa_is_connected = 0;
 static int    scorep_oa_socket       = 0;
-uint64_t      silc_oa_port           = 50010;
-uint64_t      silc_oa_registry_port  = 50100;
-char*         silc_oa_registry_host  = NULL;
-char*         silc_oa_app_name       = NULL;
 int           connection             = 0;
 
 

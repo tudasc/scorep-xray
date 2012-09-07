@@ -279,7 +279,7 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
     UTILS_BUG_ON( name_space_len > 32, "Name space is too long." );
     check_name( nameSpaceName, name_space_len, true );
 
-    UTILS_DEBUG( "Register new variables in name space %s",
+    UTILS_DEBUG( "Register new variables in name space '%s::'",
                  nameSpaceName );
 
     struct scorep_config_name_space* name_space;
@@ -313,9 +313,8 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
         variable->data.shortHelp         = variables->shortHelp;
         variable->data.longHelp          = variables->longHelp;
 
-        UTILS_DEBUG( "Variable:      %s%s%s",
+        UTILS_DEBUG( "Variable:      '%s::%s'",
                      nameSpaceName,
-                     name_space_len ? "/" : "",
                      variable->data.name );
         UTILS_DEBUG( "  Type:        %s",
                      scorep_config_type_to_string( variable->data.type ) );
@@ -362,9 +361,13 @@ SCOREP_ConfigApplyEnv( void )
             const char* environment_variable_value =
                 getenv( variable->env_var_name );
 
+            UTILS_DEBUG( "Variable:      '%s::%s'",
+                         name_space->name,
+                         variable->data.name );
+
             if ( environment_variable_value )
             {
-                UTILS_DEBUG( "Env value: %s", environment_variable_value );
+                UTILS_DEBUG( "  Value of environment variable: %s", environment_variable_value );
 
                 /* set the variable to the value of the environment variable */
                 bool successfully_parsed;
@@ -376,15 +379,17 @@ SCOREP_ConfigApplyEnv( void )
                 if ( !successfully_parsed )
                 {
                     return UTILS_ERROR( SCOREP_ERROR_EINVAL,
-                                        "Can't set variable '%s' to "
-                                        "value `%s' from environment variable",
-                                        variable->env_var_name,
-                                        environment_variable_value );
+                                        "Can't set variable '%s::%s' to "
+                                        "value `%s' from environment variable %s",
+                                        name_space->name,
+                                        variable->data.name,
+                                        environment_variable_value,
+                                        variable->env_var_name );
                 }
             }
             else
             {
-                UTILS_DEBUG( "    Variable is unset" );
+                UTILS_DEBUG( "  Environment variable is unset" );
             }
         }
     }
@@ -459,6 +464,89 @@ SCOREP_ConfigDump( FILE* dumpFile )
     }
 
     return SCOREP_SUCCESS;
+}
+
+
+static inline const char*
+config_type_as_string( SCOREP_ConfigType type )
+{
+    switch ( type )
+    {
+        case SCOREP_CONFIG_TYPE_BOOL:
+            return "Boolean";
+        case SCOREP_CONFIG_TYPE_SET:
+        case SCOREP_CONFIG_TYPE_BITSET:
+            return "Set";
+        case SCOREP_CONFIG_TYPE_NUMBER:
+            return "Number";
+        case SCOREP_CONFIG_TYPE_SIZE:
+            return "Number with size suffixes";
+        case SCOREP_CONFIG_TYPE_STRING:
+            return "String";
+        case SCOREP_CONFIG_TYPE_PATH:
+            return "Path";
+        case SCOREP_INVALID_CONFIG_TYPE:
+        default:
+            return "Invalid";
+    }
+}
+
+
+void
+SCOREP_ConfigHelp( bool full, bool html )
+{
+    const char* sep = "";
+
+    for ( struct scorep_config_name_space* name_space = name_spaces_head;
+          name_space;
+          name_space = name_space->next )
+    {
+        for ( struct scorep_config_variable* variable = name_space->variables_head;
+              variable;
+              variable = variable->next )
+        {
+            printf( "%s%s%s%s\n",
+                    sep,
+                    html ? " <dt><tt>" : "",
+                    variable->env_var_name,
+                    html ? "</tt></dt>" : "" );
+            printf( "%s%s%s\n",
+                    html ? " <dd>\n  " : "  Description: ",
+                    variable->data.shortHelp,
+                    html ? "<br>" : "" );
+            printf( "%sType:%s%s%s\n",
+                    html ? "  <dl>\n   <dt>" : "    ",
+                    html ? "</dt><dd>" : "        ",
+                    config_type_as_string( variable->data.type ),
+                    html ? "</dd>" : "" );
+            printf( "%sDefault:%s%s%s\n",
+                    html ? "   <dt>" : "  ",
+                    html ? "</dt><dd>" : "        ",
+                    variable->data.defaultValue,
+                    html ? "</dd>\n  </dl>" : "" );
+
+            if ( full && strlen( variable->data.longHelp ) )
+            {
+                printf( "%s\n", html ? "  <br>" : "\n  Full description:" );
+                const char* curr = variable->data.longHelp;
+                const char* next;
+                do
+                {
+                    next = strchr( curr, '\n' );
+                    if ( !next )
+                    {
+                        next = curr + strlen( curr );
+                    }
+                    int len = ( int )( next - curr );
+                    printf( "  %.*s%s\n", len, curr, html ? "<br>" : "" );
+                    curr = next + 1;
+                }
+                while ( *next );
+            }
+            printf( "%s", html ? " </dd>" : "" );
+            sep = "\n";
+        }
+    }
 }
 
 

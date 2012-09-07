@@ -121,9 +121,6 @@ static const scorep_mpi_type scorep_mpi_colls[] = {
 /** Region IDs of MPI functions */
 SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
 
-/** Bit vector for runtime measurement wrapper enabling/disabling */
-uint64_t scorep_mpi_enabled = 0;
-
 /**
  * Register MPI functions and initialize data structures
  */

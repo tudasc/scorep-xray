@@ -25,6 +25,7 @@
 #include <config.h>
 
 #include "scorep_cuda.h"
+#include "scorep_cupti.h"
 
 
 uint8_t scorep_cuda_record_kernels = 0;

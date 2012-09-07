@@ -694,7 +694,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
 
         filename = ( char* )malloc( strlen( dirname ) +               /* Directory     */
                                     1 +                               /* separator '/' */
-                                    strlen( scorep_profile.basename ) /* basename      */
+                                    strlen( scorep_profile_basename ) /* basename      */
                                     + 1 );                            /* trailing '\0' */
         if ( filename == NULL )
         {
@@ -703,7 +703,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
             delete_cube_writing_data( write_set );
             return false;
         }
-        sprintf( filename, "%s/%s", dirname, scorep_profile.basename );
+        sprintf( filename, "%s/%s", dirname, scorep_profile_basename );
 
         /* Create Cube objects */
         write_set->cube_writer

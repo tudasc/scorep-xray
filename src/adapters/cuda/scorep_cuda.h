@@ -16,7 +16,7 @@
 
 /**
  *  @status     alpha
- *  @file       scorep_cuda.h
+ *  @file       src/adapters/cuda/scorep_cuda.h
  *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  This file provides commonly used definitions and functionality in the CUDA
@@ -27,17 +27,10 @@
 #define SCOREP_CUDA_H
 
 #include <stdint.h>
-
-#ifndef __cplusplus
 #include <stdbool.h>
-#endif
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
-
-#include <cupti.h>
-
-#define SCOREP_CUDA_NO_ID      0xFFFFFFFF
 
 /*
  * CUDA features (to be enabled/disabled via environment variables)
@@ -50,16 +43,6 @@
 #define SCOREP_CUDA_RECORD_DEFAULT \
     ( SCOREP_CUDA_RECORD_RUNTIME_API | SCOREP_CUDA_RECORD_KERNEL | \
       SCOREP_CUDA_RECORD_MEMCPY )
-
-#define SCOREP_CUDA_DRIVER_CALL( _err ) \
-    if ( _err != CUDA_SUCCESS ) { \
-        UTILS_WARNING( "[CUDA] Error %d in %s:%lu", __FILE__, __LINE__, _err ); \
-    }
-
-#define SCOREP_CUPTI_CALL( _err ) \
-    if ( _err != CUPTI_SUCCESS ) { \
-        scorep_cuda_handle_cupti_error( _err, __FILE__, __LINE__ ); \
-    }
 
 /*
  * Specifies the CUDA tracing mode with a bit mask.
@@ -91,18 +74,5 @@ extern bool scorep_cuda_record_memcpy;
  * timestamps variables.
  */
 extern uint64_t scorep_cuda_init_timestamp;
-
-/*
- * Handles errors returned from CUPTI function calls.
- *
- * @param err the CUDA driver API error code
- * @param file the corresponding ScoreP file
- * @param line the line the error occurred
- */
-extern void
-scorep_cuda_handle_cupti_error( CUptiResult err,
-                                const char* file,
-                                const int   line );
-
 
 #endif  /* SCOREP_CUDA_H */

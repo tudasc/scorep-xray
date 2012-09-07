@@ -38,55 +38,13 @@
 #include <stdio.h>
 
 static int8_t scorep_oa_is_initialized = 0;
-bool          scorep_oa_is_requested   = false;
 
-
-/**
-   Configuration variable registration structures for the profiling system.
- */
-static SCOREP_ConfigVariable scorep_oa_configs[] = {
-    { "REG_PORT",
-      SCOREP_CONFIG_TYPE_NUMBER,
-      &silc_oa_registry_port,
-      NULL,
-      "50100",
-      "Online access registry service port",
-      "Online access registry service port" },
-    { "ENABLE",
-      SCOREP_CONFIG_TYPE_BOOL,
-      &scorep_oa_is_requested,
-      NULL,
-      "false",
-      "enable online access interface",
-      "enable online access interface" },
-    { "REG_HOST",
-      SCOREP_CONFIG_TYPE_STRING,
-      &silc_oa_registry_host,
-      NULL,
-      "localhost",
-      "Online access registry service hostname",
-      "Online access registry service hostname" },
-    { "BASE_PORT",
-      SCOREP_CONFIG_TYPE_NUMBER,
-      &silc_oa_port,
-      NULL,
-      "50010",
-      "Base port for online access server",
-      "Base port for online access server" },
-    { "APPL_NAME",
-      SCOREP_CONFIG_TYPE_STRING,
-      &silc_oa_app_name,
-      NULL,
-      "appl",
-      "application name to be registered",
-      "application name to be registered" },
-    SCOREP_CONFIG_TERMINATOR
-};
+#include "scorep_oa_confvars.inc.c"
 
 void
 SCOREP_OA_Register()
 {
-    SCOREP_ConfigRegister( "ONLINEACCESS", scorep_oa_configs );
+    SCOREP_ConfigRegister( "onlineaccess", scorep_oa_configs );
 }
 
 int8_t

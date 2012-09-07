@@ -7,13 +7,17 @@ scorep_backend_info_SOURCES = \
 
 scorep_backend_info_CPPFLAGS = \
     $(AM_CPPFLAGS) \
-    $(UTILS_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/tools/info
+    $(UTILS_CPPFLAGS)
 
 scorep_backend_info_LDADD = \
-    $(LIB_DIR)libscorep_platform.la \
+    libscorep_platform.la \
     @TIMER_LIB@ \
+    libscorep_confvars.la \
+    libscorep_hashtab.la \
     libutils.la
 
 if SCOREP_TIMER_BGP_GET_TIMEBASE

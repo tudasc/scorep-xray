@@ -16,7 +16,7 @@
 
 
 /**
- * @file       scorep_environment.h
+ * @file       src/measurement/scorep_environment.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -31,9 +31,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+UTILS_BEGIN_C_DECLS
+
 
 void
-SCOREP_Env_RegisterCoreEnvironmentVariables();
+SCOREP_RegisterAllConfigVariables( void );
 
 
 //bool
@@ -66,6 +68,9 @@ SCOREP_Env_ExperimentDirectory();
 
 bool
 SCOREP_Env_OverwriteExperimentDirectory();
+
+
+UTILS_END_C_DECLS
 
 
 #endif /* SCOREP_INTERNAL_ENVIRONMENT_H */

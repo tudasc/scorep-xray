@@ -136,57 +136,7 @@ typedef struct scorep_rusage_metric_struct
  *  If it is 0 it is initialized. */
 static int scorep_metric_rusage_initialize = 1;
 
-/** Contains the name of requested metrics. */
-static char* scorep_metrics_rusage = NULL;
-
-/** Contains the name of requested per-process metrics. */
-static char* scorep_metrics_rusage_per_process = NULL;
-
-/** Contains the separator of metric names. */
-static char* scorep_metrics_rusage_separator = NULL;
-
-/** List of configuration variables for the resource usage metric source.
- *
- *  This list contains variables to specify 'synchronous strict' and
- *  per-process metrics. Furthermore, a variable for the character
- *  that separates single metric names is defined.
- *
- *  Configuration variables for the resource usage metric source.
- *  Current configuration variables are:
- *  @li @c SCOREP_METRIC_RUSAGE list of requested metric names.
- *  @li @c SCOREP_METRIC_RUSAGE_PER_PROCESS list of requested metric names recorded per-process.
- *  @li @c SCOREP_METRIC_RUSAGE_SEP character that separates single metric names.
- */
-static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
-    {
-        "rusage",
-        SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_rusage,
-        NULL,
-        "",
-        "Resource usage metric names.",
-        "List of requested resource usage metric names that will be collected during program run.\n"
-    },
-    {
-        "rusage_per_process",
-        SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_rusage_per_process,
-        NULL,
-        "",
-        "Per-process resource usage metric names.",
-        "List of requested resource usage metric names that will be recorded only by first thread of a process.\n"
-    },
-    {
-        "rusage_sep",
-        SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_rusage_separator,
-        NULL,
-        ",",
-        "Separator of resource usage metric names.",
-        "Character that separates resource usage metric names in SCOREP_METRIC_RUSAGE.\n"
-    },
-    SCOREP_CONFIG_TERMINATOR
-};
+#include "scorep_metric_rusage_confvars.inc.c"
 
 /* *INDENT-OFF* */
 

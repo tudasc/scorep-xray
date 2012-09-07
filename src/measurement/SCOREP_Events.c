@@ -43,6 +43,7 @@
 
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
+#include "scorep_handles.h"
 #include "scorep_thread.h"
 #include "scorep_status.h"
 #include "scorep_definition_structs.h"

@@ -24,8 +24,6 @@ include ../src/tools/backend-info/Makefile.inc.am
 include ../src/measurement/online_access/Makefile.inc.am
 include ../src/utils/bitstring/Makefile.inc.am
 include ../src/utils/memory/Makefile.inc.am
-include ../src/utils/vector/Makefile.inc.am
-include ../src/utils/hashtab/Makefile.inc.am
 
 
 ## include tests
