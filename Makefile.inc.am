@@ -124,8 +124,6 @@ doxygen-user:
 
 endif # HAVE_DOXYGEN -------------------------------------------------
 
-EXTRA_DIST += $(DOC_SRC_DIR)/images/ScoreP_Logo.png
-
 if HAVE_DOXYGEN_LATEX #-----------------------------------------------
 
 doxygen-user-pdf: doxygen-user
