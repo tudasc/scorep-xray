@@ -82,6 +82,8 @@ CLEANFILES += doc/doxygen-user/main.dox
 
 .PHONY: doc/doxygen-user/main.dox
 
+EXTRA_DIST += $(DOC_SRC_DIR)/images/ScoreP_Logo.png
+
 if SVN_CONTROLLED
 doc/doxygen-user/main.dox:
 	$(MKDIR_P) doc/doxygen-user
