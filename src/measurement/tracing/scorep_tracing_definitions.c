@@ -348,7 +348,7 @@ scorep_write_region_definitions( void*                     writerHandle,
                 region_role = OTF2_REGION_ROLE_FLUSH;
                 break;
             case SCOREP_REGION_OMP_IMPLICIT_BARRIER:
-                region_role = OTF2_REGION_ROLE_IBARRIER;
+                region_role = OTF2_REGION_ROLE_IMPLICIT_BARRIER;
                 break;
             case SCOREP_REGION_OMP_LOOP:
                 region_role = OTF2_REGION_ROLE_LOOP;
@@ -398,7 +398,7 @@ scorep_write_region_definitions( void*                     writerHandle,
                 break;
 
             case SCOREP_REGION_PHASE:
-                region_role = OTF2_REGION_ROLE_PHASE;
+                region_role = OTF2_REGION_ROLE_CODE;
                 break;
 
             default:
