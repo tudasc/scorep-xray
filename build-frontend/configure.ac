@@ -42,7 +42,11 @@ AC_SCOREP_ONLINE_ACCESS
 
 AC_SCOREP_PDT
 AC_SCOREP_COBI
-AC_SCOREP_CUBE4_FRONTEND
+
+AS_IF([test "x${scorep_have_score_configure}" = "xno"],
+      [AC_SCOREP_CUBE_READER],
+      [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
+
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
@@ -60,6 +64,7 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
+AC_SCOREP_CUBE_READER
 
 AC_CONFIG_FILES([Makefile], [[
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \

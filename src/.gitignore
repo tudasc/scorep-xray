@@ -6,4 +6,6 @@
 /config-backend-mpi.h
 /config-frontend.h
 /config-backend-for-frontend.h
+/config-score.h
+/config-score.h.in
 /stamp-h1

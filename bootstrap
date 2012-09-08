@@ -10,6 +10,7 @@ CONFIGURES = configure \
 	build-backend/configure \
 	build-frontend/configure \
 	build-mpi/configure \
+	build-score/configure \
 	vendor/opari2/configure \
 	vendor/otf2/configure
 
@@ -43,6 +44,9 @@ build-frontend/configure: build-backend/configure
 build-mpi/configure: build-backend/configure
 	$(AUTORECONF) $(AUTORECONFFLAGS) build-mpi
 
+build-score/configure: build-backend/configure
+	$(AUTORECONF) $(AUTORECONFFLAGS) build-score
+
 clean: clean-local
 	@$(MAKE) -C vendor/opari2 -f bootstrap clean
 	@$(MAKE) -C vendor/otf2   -f bootstrap clean
@@ -54,5 +58,6 @@ clean-local:
 	@cd build-backend;  rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	@cd build-mpi;      rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	@cd build-frontend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
+	@cd build-score;    rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
 	@rm -f build-config/REVISION build-config/REVISION_COMMON
-	@rm -f src/config-backend.h.in src/config-backend-mpi.h.in src/config-frontend.h.in src/config-backend-for-frontend.h.in
+	@rm -f src/config-backend.h.in src/config-backend-mpi.h.in src/config-frontend.h.in src/config-backend-for-frontend.h.in src/config-score.h.in

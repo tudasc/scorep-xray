@@ -4,7 +4,7 @@
 
 include ../src/Makefile.inc.am
 include ../src/measurement/Makefile.inc.am
-if ! HAVE_EXTERNAL_CUBE
+if ! HAVE_EXTERNAL_CUBE_WRITER
 include ../src/measurement/Makefile.cube_writer.inc.am
 endif
 include ../src/measurement/profiling/Makefile.inc.am

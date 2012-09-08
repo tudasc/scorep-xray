@@ -54,7 +54,6 @@ AC_SCOREP_LIBPAPI
 AC_SCOREP_RUSAGE
 AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
-AC_SCOREP_CUBE4_FRONTEND
 
 AS_IF([test -n "${scorep_otf2_bindir}"],
       [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
@@ -81,7 +80,7 @@ AS_IF([test -n "${scorep_cube_bindir}"],
        AC_SUBST([CUBE_WRITER_LIBS],          ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
        AC_SUBST([CUBE_WRITER_BUILT_SOURCES], [])
-       AM_CONDITIONAL([HAVE_EXTERNAL_CUBE],  [test 1 -eq 1])
+       AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 1])
       ],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ['-I$(srcdir)/../src/measurement/cube_writer'])
        AC_SUBST([CUBE_WRITER_LIBS],          [libscorep_cube_writer.la])
@@ -90,9 +89,12 @@ AS_IF([test -n "${scorep_cube_bindir}"],
        # configure time which is too late to trigger automake's dependency
        # mechanism.
        AC_SUBST([CUBE_WRITER_BUILT_SOURCES], [libscorep_cube_writer.la]) 
-       AM_CONDITIONAL([HAVE_EXTERNAL_CUBE],  [test 1 -eq 0])
+       AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
       ])
 
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_configure}" = "xno"], 
+      [AC_SCOREP_CUBE_READER],
+      [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])

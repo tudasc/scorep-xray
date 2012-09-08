@@ -54,6 +54,9 @@
 
     #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
 
+#elif defined SCORE_BUILD
+    #include <config-score.h>
+
 #else
     #error "You can not use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."
 #endif
