@@ -36,10 +36,6 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Filter.h>
 
-/* *INDENT-OFF* */
-int on_scorep_finalize();
-/* *INDENT-ON* */
-
 /**
  * @def SCOREP_SUN_INVALID_REGION
  * Defines the value with which the compiler pre-initializes the pointer to the id
@@ -157,12 +153,7 @@ SCOREP_Error_Code
 scorep_compiler_init_adapter()
 {
     SCOREP_MutexCreate( &scorep_compiler_hash_lock  );
-    /* The studio compiler does not instrument "main" but we want to have a
-       main. Note that this main is triggered by the first event that arrives
-       at the measurement system. See also on_scorep_finalize(). */
     scorep_compiler_main_handle = scorep_compiler_register_region( "main" );
-    SCOREP_EnterRegion( scorep_compiler_main_handle );
-    SCOREP_RegisterExitCallback( &on_scorep_finalize );
     return SCOREP_SUCCESS;
 }
 
@@ -170,6 +161,13 @@ SCOREP_Error_Code
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );
+    /* The studio compiler does not instrument "main" but we want to have a
+       main. Note that this main is triggered by the first event that arrives
+       at the measurement system. */
+    if ( 0 == SCOREP_Location_GetId( locationData ) )
+    {
+        SCOREP_EnterRegion( scorep_compiler_main_handle );
+    }
     return SCOREP_SUCCESS;
 }
 
@@ -178,15 +176,10 @@ void
 scorep_compiler_finalize_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter finalize location!" );
-}
-
-int
-on_scorep_finalize()
-{
-    /* We manually entered the artificial "main" region. We also need to exit
-       it manually. See also scorep_compiler_init_adapter(). */
-    SCOREP_ExitRegion( scorep_compiler_main_handle );
-    return 0;
+    if ( 0 == SCOREP_Location_GetId( locationData ) )
+    {
+        SCOREP_ExitRegion( scorep_compiler_main_handle );
+    }
 }
 
 void
