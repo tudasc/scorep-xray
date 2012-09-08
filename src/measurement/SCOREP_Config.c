@@ -350,11 +350,13 @@ SCOREP_ConfigApplyEnv( void )
 
     UTILS_DEBUG( "Apply environment to config variables" );
 
-    for ( struct scorep_config_name_space* name_space = name_spaces_head;
+    struct scorep_config_name_space* name_space;
+    for ( name_space = name_spaces_head;
           name_space;
           name_space = name_space->next )
     {
-        for ( struct scorep_config_variable* variable = name_space->variables_head;
+        struct scorep_config_variable* variable;
+        for ( variable = name_space->variables_head;
               variable;
               variable = variable->next )
         {
@@ -447,11 +449,13 @@ SCOREP_ConfigDump( FILE* dumpFile )
 
     UTILS_DEBUG( "Dump config variables to file" );
 
-    for ( struct scorep_config_name_space* name_space = name_spaces_head;
+    struct scorep_config_name_space* name_space;
+    for ( name_space = name_spaces_head;
           name_space;
           name_space = name_space->next )
     {
-        for ( struct scorep_config_variable* variable = name_space->variables_head;
+        struct scorep_config_variable* variable;
+        for ( variable = name_space->variables_head;
               variable;
               variable = variable->next )
         {
@@ -497,11 +501,13 @@ SCOREP_ConfigHelp( bool full, bool html )
 {
     const char* sep = "";
 
-    for ( struct scorep_config_name_space* name_space = name_spaces_head;
+    struct scorep_config_name_space* name_space;
+    for ( name_space = name_spaces_head;
           name_space;
           name_space = name_space->next )
     {
-        for ( struct scorep_config_variable* variable = name_space->variables_head;
+        struct scorep_config_variable* variable;
+        for ( variable = name_space->variables_head;
               variable;
               variable = variable->next )
         {
