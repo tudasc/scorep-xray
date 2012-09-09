@@ -69,7 +69,7 @@
 # --------------
 AC_DEFUN([SCOREP_PROG_CC_C99],
 [ AC_REQUIRE([AC_PROG_CC])dnl
-  _SCOREP_PROG_CC_C99
+  _SCOREP_PROG_CC_C99([$1], [$2])
 ])
 
 

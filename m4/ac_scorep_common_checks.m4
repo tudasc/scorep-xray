@@ -42,7 +42,7 @@ AC_SCOREP_COMPILER_CHECKS
 ## declarations in for loops, and variable length arrays.  After calling this
 ## macro you can check whether the C compiler has been set to accept C99; if
 ## not, the shell variable ac_cv_prog_cc_c99 is set to `no'.
-AC_REQUIRE([SCOREP_PROG_CC_C99])
+SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
 AC_SCOREP_SUMMARY([C99 compiler used], [$CC])
 
 ## Determine a C++ compiler to use. Check whether the environment variable CXX 
