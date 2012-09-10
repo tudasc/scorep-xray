@@ -26,6 +26,7 @@
 
 #include "scorep_oa_connection.h"
 #include "scorep_oa_sockets.h"
+#include "scorep_mpi.h"
 
 #include <stdio.h>
 
@@ -45,6 +46,10 @@ scorep_oa_connection_connect
     if ( scorep_oa_is_connected )
     {
         return SCOREP_SUCCESS;
+    }
+    if ( SCOREP_Mpi_HasMpi() )
+    {
+        silc_oa_port = silc_oa_port + SCOREP_Mpi_GetRank();
     }
     scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &silc_oa_port, 10, 1 );
     if ( scorep_oa_socket == -1 )
