@@ -107,16 +107,7 @@ test_varargs_macros (void)
 }
 
 // Check long long types.
-#define BIG64 18446744073709551615llu
-#define BIG32 4294967295lu
-#define BIG_OK (BIG64 / BIG32 == 4294967297llu && BIG64 % BIG32 == 0)
-#if !BIG_OK
-  your preprocessor is broken;
-#endif
-#if BIG_OK
-#else
-  your preprocessor is broken;
-#endif
+#define BIG64 18446744073709551615ull
 static long long int bignum = -9223372036854775807LL;
 static unsigned long long int ubignum = BIG64;
 
