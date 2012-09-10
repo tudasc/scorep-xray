@@ -118,7 +118,7 @@ fi
 AC_SUBST([PACKAGE_ERROR_CODES_INCDIR], [../src/utils/include])
 AC_DEFINE_UNQUOTED(
     [PACKAGE_ERROR_CODES_HEADER],
-    [<SCOREP_Error_Codes.h>],
+    [<SCOREP_ErrorCodes.h>],
     [The #include argument used to include this packages error codes header.]
 )
 

@@ -152,7 +152,7 @@ AC_OTF2_ENTROPY_SOURCES
 AC_SUBST([PACKAGE_ERROR_CODES_INCDIR], [../include])
 AC_DEFINE_UNQUOTED(
     [PACKAGE_ERROR_CODES_HEADER],
-    [<otf2/OTF2_Error_Codes.h>],
+    [<otf2/OTF2_ErrorCodes.h>],
     [The #include argument used to include this packages error codes header.]
 )
 ])
