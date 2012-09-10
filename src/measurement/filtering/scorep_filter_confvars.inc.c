@@ -46,7 +46,7 @@ SCOREP_ConfigVariable scorep_filter_configs[] = {
     SCOREP_CONFIG_TERMINATOR
 };
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Filter_Register()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,

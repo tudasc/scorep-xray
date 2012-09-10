@@ -44,14 +44,14 @@
    The adapter initialize function is compiler specific. Thus it is contained in each
    compiler adapter implementation.
  */
-extern SCOREP_Error_Code
+extern SCOREP_ErrorCode
 scorep_compiler_init_adapter();
 
 /**
    The location init function is compiler specific. Thus it is contained in each
    compiler adapter implementation.
  */
-extern SCOREP_Error_Code
+extern SCOREP_ErrorCode
 scorep_compiler_init_location( SCOREP_Location* location );
 
 /**

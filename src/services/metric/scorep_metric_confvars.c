@@ -47,7 +47,7 @@
 
 #include "scorep_metric_rusage_confvars.inc.c"
 
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_metric_register( size_t subsystem_id )
 {
 #if HAVE_BACKEND( PAPI )

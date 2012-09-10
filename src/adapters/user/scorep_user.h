@@ -39,7 +39,7 @@ scorep_user_finalize_metrics();
 void
 scorep_selective_init();
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_selective_register();
 
 void

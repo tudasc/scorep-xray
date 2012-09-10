@@ -302,12 +302,12 @@ scorep_metric_rusage_open( const char* listOfMetricNames,
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_metric_rusage_register()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register rusage metric source!" );
 
-    SCOREP_Error_Code status;
+    SCOREP_ErrorCode status;
 
     /* Register environment variables for 'synchronous strict' and 'per-process' metrics */
     status = SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );

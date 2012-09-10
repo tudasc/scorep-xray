@@ -123,7 +123,7 @@ static size_t scorep_pomp_subsystem_id;
 /** Adapter initialization function to allow registering configuration variables. No
     variables are regstered.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_pomp_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
@@ -135,7 +135,7 @@ scorep_pomp_register( size_t subsystem_id )
 
 /** Adapter initialization function.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_pomp_init()
 {
     UTILS_DEBUG_ENTRY();
@@ -181,7 +181,7 @@ scorep_pomp_init()
 }
 
 /** Allows initialization of location specific data. Nothing done inside this funcion. */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_pomp_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();

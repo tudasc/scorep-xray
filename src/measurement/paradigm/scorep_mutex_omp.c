@@ -52,7 +52,7 @@
  * @error scorep_errno Any errors from malloc(3) converted to an SCOREP error code.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
@@ -86,7 +86,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
  *                                      @a NULL pointer.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
@@ -132,7 +132,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
  *                                      @a NULL pointer.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 {
     #if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )
@@ -168,7 +168,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
  *                                      @a NULL pointer.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 {
     #if defined ( __INTEL_COMPILER ) && ( __INTEL_COMPILER < 1120 )

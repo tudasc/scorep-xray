@@ -116,7 +116,7 @@ typedef int scorep_filter_parse_modes;
  * @returns SCOREP_SUCCESS if the token was processed succesfully. Else an error code
  *          is returned. The only possible error code is SCOREP_ERROR_PARSE_SYNTAX.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode )
 {
     assert( token );
@@ -284,7 +284,7 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
  * @returns SCOREP_SUCCESS if the file was successfully parsed. Else an error code is
  *          returned.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Filter_ParseFile( const char* file_name )
 {
     FILE*                     filter_file = NULL;
@@ -294,7 +294,7 @@ SCOREP_Filter_ParseFile( const char* file_name )
     size_t                    length      = 0;
     size_t                    token_start = 0;
     scorep_filter_parse_modes mode        = SCOREP_FILTER_PARSE_START;
-    SCOREP_Error_Code         err         = SCOREP_SUCCESS;
+    SCOREP_ErrorCode          err         = SCOREP_SUCCESS;
 
     /* Validity assertions */
     assert( file_name );

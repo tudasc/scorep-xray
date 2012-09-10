@@ -101,7 +101,7 @@ scorep_selective_compare_regions( const void* value,
 /**
    Initializes the traced region list
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_selective_init_region_list()
 {
     scorep_selected_regions = SCOREP_Vector_CreateSize( 4 );
@@ -150,7 +150,7 @@ scorep_selective_add_interval( scorep_selected_region* region,
    @param last   The last instance numbe of the initial instance interval.
    @param index  Index in the list where the new entry is inserted.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_selective_insert_new_region( const char* region,
                                     int         first,
                                     int         last,
@@ -244,12 +244,12 @@ scorep_selective_add( const char* name,
             Possible error codes are: SCOREP_ERROR_MEM_ALLOC_FAILED and
             SCOREP_ERROR_FILE_INTERACTION.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_selective_parse_file( FILE* file )
 {
-    size_t            buffer_size = 0;
-    char*             buffer      = NULL;
-    SCOREP_Error_Code err         = SCOREP_SUCCESS;
+    size_t           buffer_size = 0;
+    char*            buffer      = NULL;
+    SCOREP_ErrorCode err         = SCOREP_SUCCESS;
 
     /* Validity assertions */
     assert( file );
@@ -394,7 +394,7 @@ scorep_selective_init()
                         "Reading selective tracing file %s.",
                         scorep_selective_file_name );
 
-    SCOREP_Error_Code err = scorep_selective_parse_file( config_file );
+    SCOREP_ErrorCode err = scorep_selective_parse_file( config_file );
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err,
@@ -414,7 +414,7 @@ scorep_selective_init()
 /**
    Registers the config variables for selective tracing.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_selective_register()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,

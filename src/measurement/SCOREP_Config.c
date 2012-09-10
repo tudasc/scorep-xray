@@ -108,7 +108,7 @@ dump_value( FILE*             out,
             void*             variableContext );
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigInit( void )
 {
     /* prevent calling me twice */
@@ -268,7 +268,7 @@ get_variable( struct scorep_config_name_space* nameSpace,
 }
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigRegister( const char*            nameSpaceName,
                        SCOREP_ConfigVariable* variables )
 {
@@ -339,7 +339,7 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
 }
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigApplyEnv( void )
 {
     UTILS_ASSERT( name_spaces );
@@ -398,7 +398,7 @@ SCOREP_ConfigApplyEnv( void )
 }
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigSetValue( const char* nameSpaceName,
                        const char* variableName,
                        const char* variableValue )
@@ -440,7 +440,7 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
 }
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigDump( FILE* dumpFile )
 {
     UTILS_ASSERT( dumpFile );

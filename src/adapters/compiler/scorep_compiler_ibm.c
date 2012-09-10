@@ -220,7 +220,7 @@ __func_trace_exit( char* region_name,
 #endif
 
 /* Initialize adapter */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
@@ -240,7 +240,7 @@ scorep_compiler_init_adapter()
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xl compiler adapter init location!" );

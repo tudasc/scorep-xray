@@ -56,7 +56,7 @@ size_t scorep_compiler_subsystem_id;
 /**
    Registers configuration variables for the compiler adapters.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_compiler_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();

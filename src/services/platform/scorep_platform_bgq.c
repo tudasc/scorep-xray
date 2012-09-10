@@ -32,7 +32,7 @@
 #include "scorep_platform_system_tree.h"
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
 {
     return SCOREP_SUCCESS;

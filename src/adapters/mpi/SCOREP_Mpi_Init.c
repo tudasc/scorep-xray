@@ -164,7 +164,7 @@ SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
    Implementation of the subsystem_init function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_mpi_init_adapter()
 {
     UTILS_DEBUG_ENTRY();
@@ -196,7 +196,7 @@ scorep_mpi_init_adapter()
    Implementation of the subsystem_init_location function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_mpi_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();

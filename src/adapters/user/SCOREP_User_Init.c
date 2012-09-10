@@ -44,7 +44,7 @@ static size_t scorep_user_subsystem_id;
 /** Registers the required configuration variables of the user adapter
     to the measurement system. Currently, it registers no variables.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_user_register( size_t subsystem_id )
 {
     scorep_user_subsystem_id = subsystem_id;
@@ -54,7 +54,7 @@ scorep_user_register( size_t subsystem_id )
 
 /** Initializes the user adapter.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_user_init()
 {
     if ( scorep_user_is_initialized == 0 )
@@ -70,7 +70,7 @@ scorep_user_init()
 }
 
 /** Initializes the location specific data of the user adapter */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_user_init_location( SCOREP_Location* locationData )
 {
     return SCOREP_SUCCESS;

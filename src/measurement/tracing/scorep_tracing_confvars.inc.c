@@ -61,10 +61,10 @@ static SCOREP_ConfigVariable scorep_tracing_config_variables[] = {
     SCOREP_CONFIG_TERMINATOR
 };
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Tracing_Register( void )
 {
-    SCOREP_Error_Code ret;
+    SCOREP_ErrorCode ret;
     ret = SCOREP_ConfigRegister( "tracing", scorep_tracing_config_variables );
     if ( SCOREP_SUCCESS != ret )
     {

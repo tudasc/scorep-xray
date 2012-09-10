@@ -135,7 +135,7 @@ scorep_filter_mangle_pattern( const char* pattern )
     return result;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 {
     assert( rule );
@@ -172,7 +172,7 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 }
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fortran )
 {
     assert( rule );
@@ -247,7 +247,7 @@ SCOREP_Filter_FreeRules()
 static bool
 scorep_filter_match_file( const char*           with_path,
                           scorep_filter_rule_t* rule,
-                          SCOREP_Error_Code*    error_code )
+                          SCOREP_ErrorCode*     error_code )
 {
     int error_value = fnmatch( rule->pattern, with_path, 0 );
 
@@ -273,7 +273,7 @@ static bool
 scorep_filter_match_function( const char*           function_name,
                               scorep_filter_rule_t* rule,
                               bool                  use_fortran,
-                              SCOREP_Error_Code*    error_code )
+                              SCOREP_ErrorCode*     error_code )
 {
     int error_value = 0;
     if ( use_fortran && ( rule->pattern2 != NULL ) )
@@ -308,7 +308,7 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
     scorep_filter_rule_t* current_rule = scorep_filter_file_rules_head;
     bool                  excluded     = false; /* Start with all included */
     int                   error_value;
-    SCOREP_Error_Code     error_code = SCOREP_SUCCESS;
+    SCOREP_ErrorCode      error_code = SCOREP_SUCCESS;
 
     if ( !SCOREP_Filter_IsEnabled() )
     {

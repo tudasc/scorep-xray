@@ -37,14 +37,14 @@
 #include "error_callback.h"
 
 
-SCOREP_Error_Code
-cutest_scorep_error_callback( void*             userData,
-                              const char*       file,
-                              uint64_t          line,
-                              const char*       function,
-                              SCOREP_Error_Code errorCode,
-                              const char*       msgFormatString,
-                              va_list           va )
+SCOREP_ErrorCode
+cutest_scorep_error_callback( void*            userData,
+                              const char*      file,
+                              uint64_t         line,
+                              const char*      function,
+                              SCOREP_ErrorCode errorCode,
+                              const char*      msgFormatString,
+                              va_list          va )
 {
     CuTest*  the_test = userData;
     CuString message2, message;

@@ -110,7 +110,7 @@ typedef struct SCOREP_MetricSource
      * The main purpose is to allow the metric source to register config variables
      * to the system.
      */
-    SCOREP_Error_Code ( * metric_source_register )( void );
+    SCOREP_ErrorCode ( * metric_source_register )( void );
 
     /**
      * Initialize the metric source for measurement.

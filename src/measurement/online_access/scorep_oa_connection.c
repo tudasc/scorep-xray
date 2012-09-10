@@ -63,7 +63,7 @@ scorep_oa_connection_connect
     return scorep_oa_socket;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_connection_disconnect
 (
     int connection
@@ -72,7 +72,7 @@ scorep_oa_connection_disconnect
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_connection_send_string
 (
     int         connection,
@@ -84,7 +84,7 @@ scorep_oa_connection_send_string
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_connection_send_data
 (
     int   connection,

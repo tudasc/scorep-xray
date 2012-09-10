@@ -173,7 +173,7 @@ static OTF2_FlushCallbacks flush_callbacks =
 static void
 scorep_tracing_register_flush_callbacks( OTF2_Archive* archive )
 {
-    OTF2_Error_Code status =
+    OTF2_ErrorCode status =
         OTF2_Archive_SetFlushCallbacks( archive,
                                         &flush_callbacks,
                                         NULL );
@@ -241,7 +241,7 @@ static OTF2_MemoryCallbacks scorep_tracing_chunk_callbacks =
 static void
 scorep_tracing_register_memory_callbacks( OTF2_Archive* archive )
 {
-    OTF2_Error_Code status =
+    OTF2_ErrorCode status =
         OTF2_Archive_SetMemoryCallbacks( archive,
                                          &scorep_tracing_chunk_callbacks,
                                          NULL );
@@ -313,7 +313,7 @@ SCOREP_Tracing_SetIsMaster( bool isMaster )
     assert( !master_mode_set );
     master_mode_set = 1;
 
-    OTF2_Error_Code err =
+    OTF2_ErrorCode err =
         OTF2_Archive_SetMasterSlaveMode( scorep_otf2_archive,
                                          isMaster ? OTF2_MASTER : OTF2_SLAVE );
     if ( err != OTF2_SUCCESS )

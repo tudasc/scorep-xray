@@ -530,7 +530,7 @@
             /* map can be NULL if the mapping is the identity */ \
             if ( map ) \
             { \
-                OTF2_Error_Code status = OTF2_DefWriter_WriteMappingTable( \
+                OTF2_ErrorCode status = OTF2_DefWriter_WriteMappingTable( \
                     definition_writer, \
                     OTF2_MAPPING_ ## TYPE, \
                     map ); \

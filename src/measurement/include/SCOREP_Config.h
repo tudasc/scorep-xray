@@ -71,7 +71,7 @@
 UTILS_BEGIN_C_DECLS
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigInit( void );
 
 
@@ -120,7 +120,7 @@ SCOREP_ConfigFini( void );
 
  * @return Successful registration or failure
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigRegister( const char*            nameSpace,
                        SCOREP_ConfigVariable* variables );
 
@@ -133,7 +133,7 @@ SCOREP_ConfigRegister( const char*            nameSpace,
  *
  * @return Success or error code.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigApplyEnv( void );
 
 
@@ -148,7 +148,7 @@ SCOREP_ConfigApplyEnv( void );
  *         @li @a SCOREP_ERROR_INDEX_OUT_OF_BOUNDS The given variable does not exist.
  *         @li @a SCOREP_ERROR_PARSE_INVALID_VALUE The value could not be parsed.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigSetValue( const char* nameSpaceName,
                        const char* variableName,
                        const char* variableValue );
@@ -163,7 +163,7 @@ SCOREP_ConfigSetValue( const char* nameSpaceName,
  *
  * @return SCOREP_SUCCESS.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_ConfigDump( FILE* dumpFile );
 
 

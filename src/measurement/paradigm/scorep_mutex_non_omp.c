@@ -46,7 +46,7 @@
  * Emtpy stub for empty lock.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
@@ -65,7 +65,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
  * Emtpy stub for empty lock.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
@@ -93,7 +93,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
  * Emtpy stub for empty lock.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 {
     if ( !scorepMutex )
@@ -114,7 +114,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
  * Emtpy stub for empty lock.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 {
     if ( !scorepMutex )

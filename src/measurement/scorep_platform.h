@@ -37,7 +37,7 @@
  * Called from @ref SCOREP_InitMeasurement.
  *
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Platform_Init
 (
     void

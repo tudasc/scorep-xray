@@ -32,7 +32,7 @@
  * @param rule       The rule's string pattern.
  * @param is_exclude True if it is an exclude rule, false otherwise.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_filter_add_file_rule( const char* rule,
                              bool        is_exclude );
 
@@ -42,7 +42,7 @@ scorep_filter_add_file_rule( const char* rule,
  * @param is_exclude True if it is an exclude rule, false otherwise.
  * @param is_fortran True if Fortran mangling should be applied to the rule.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_filter_add_function_rule( const char* rule,
                                  bool        is_exclude,
                                  bool        is_fortran );

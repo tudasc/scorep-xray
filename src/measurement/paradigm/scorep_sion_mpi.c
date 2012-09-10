@@ -124,7 +124,7 @@ scorep_tracing_register_sion_callbacks( OTF2_Archive* archive )
 
     if ( scorep_tracing_use_sion )
     {
-        SCOREP_Error_Code status = OTF2_Archive_SetFileSionCallbacks(
+        SCOREP_ErrorCode status = OTF2_Archive_SetFileSionCallbacks(
             archive,
             &scorep_sion_callbacks,
             NULL );

@@ -201,7 +201,7 @@ static size_t scorep_mpi_subsystem_id;
    Implementation of the adapter_register function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_mpi_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();

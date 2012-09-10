@@ -49,7 +49,7 @@
 static void
 test_size( CuTest* tc )
 {
-    SCOREP_Error_Code     ret;
+    SCOREP_ErrorCode      ret;
     uint64_t              size_variable;
     SCOREP_ConfigVariable config_variables[] = {
         {

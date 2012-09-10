@@ -76,7 +76,7 @@ typedef struct SCOREP_Subsystem
      * The subsystem gets a unique ID assigned, provided as the parameter
      * of this callback.
      */
-    SCOREP_Error_Code ( * subsystem_register )( size_t );
+    SCOREP_ErrorCode ( * subsystem_register )( size_t );
 
     /**
      * Initialize the subsystem for measurement.
@@ -86,13 +86,13 @@ typedef struct SCOREP_Subsystem
      * interface from this point on.
      *
      */
-    SCOREP_Error_Code ( * subsystem_init )( void );
+    SCOREP_ErrorCode ( * subsystem_init )( void );
 
     /**
      * Callback to register a location to the subsystem.
      *
      */
-    SCOREP_Error_Code ( * subsystem_init_location )( struct SCOREP_Location* );
+    SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* );
 
     /**
      * Finalizes the per-location data from this subsystem.

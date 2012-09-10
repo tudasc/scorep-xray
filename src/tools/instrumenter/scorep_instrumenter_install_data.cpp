@@ -149,7 +149,7 @@ SCOREP_Instrumenter_InstallData::getPdtConfigFile()
     return m_pdt_config_file;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Instrumenter_InstallData::readConfigFile( std::string arg0 )
 {
     std::ifstream in_file;
@@ -267,7 +267,7 @@ SCOREP_Instrumenter_InstallData::set_pdt_path( std::string pdt )
     }
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Instrumenter_InstallData::read_parameter( std::string line )
 {
     /* check for comments */

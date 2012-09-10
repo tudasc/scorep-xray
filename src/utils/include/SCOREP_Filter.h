@@ -37,7 +37,7 @@
 
 UTILS_BEGIN_C_DECLS
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Filter_ParseFile( const char* file_name );
 
 void

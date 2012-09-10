@@ -223,7 +223,7 @@ VT_IntelCheck( uint32_t* id2 )
    Adapter management
 *****************************************************************************************/
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )
@@ -249,7 +249,7 @@ scorep_compiler_init_adapter()
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_location( SCOREP_Location* location )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter init location!" );

@@ -57,7 +57,7 @@ typedef struct SCOREP_Platform_SystemTreePathElement
  *
  * @return SCOREP_SUCCESS on success else an appropriate error code.
  */
-extern SCOREP_Error_Code
+extern SCOREP_ErrorCode
 SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root );
 
 

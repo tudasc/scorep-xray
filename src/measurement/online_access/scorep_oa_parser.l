@@ -28,7 +28,7 @@
 #include <config.h>
 #include "scorep_oa_scanner.h"
 #include <UTILS_Debug.h>
-#include <SCOREP_Error_Codes.h>
+#include <SCOREP_ErrorCodes.h>
 %}
 
 /* *INDENT-OFF* */
@@ -176,14 +176,14 @@ int yyparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_mri_parse
 (
     char* buffer
 )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
-    SCOREP_Error_Code return_status = SCOREP_SUCCESS;
+    SCOREP_ErrorCode return_status = SCOREP_SUCCESS;
 
     YY_BUFFER_STATE my_string_buffer;
 

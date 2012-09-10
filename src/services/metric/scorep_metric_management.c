@@ -183,7 +183,7 @@ finalize_location_metric_cb( SCOREP_Location* location,
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_metric_register( size_t subsystem_id )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
@@ -218,7 +218,7 @@ scorep_metric_deregister()
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_metric_initialize_service()
 {
     /* Call only, if not previously initialized */
@@ -496,7 +496,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_metric_initialize_location( SCOREP_Location* location )
 {
     UTILS_ASSERT( location != NULL );
@@ -662,7 +662,7 @@ SCOREP_Metric_Read( SCOREP_Location* location )
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Metric_Reinitialize()
 {
     /* Finalize each location (frees internal buffers) */

@@ -788,13 +788,13 @@ scorep_metric_papi_test( scorep_metric_definition_data* metricDefinition )
  *  @return It returns SCOREP_SUCCESS if successful,
  *          otherwise an error code will be reported.
  */
-static SCOREP_Error_Code
+static SCOREP_ErrorCode
 scorep_metric_papi_register()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register PAPI metric source!" );
 
     /* Register environment variables for 'synchronous strict' and 'per-process' metrics */
-    SCOREP_Error_Code status;
+    SCOREP_ErrorCode status;
     status = SCOREP_ConfigRegister( "metric", scorep_metric_papi_configs );
     if ( status != SCOREP_SUCCESS )
     {

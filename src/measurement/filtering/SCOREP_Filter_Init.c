@@ -59,7 +59,7 @@ SCOREP_Filter_Initialize()
                         "Reading filter configuration file %s.",
                         scorep_filter_file_name );
 
-    SCOREP_Error_Code err = SCOREP_Filter_ParseFile( scorep_filter_file_name );
+    SCOREP_ErrorCode err = SCOREP_Filter_ParseFile( scorep_filter_file_name );
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err,

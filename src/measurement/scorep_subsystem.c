@@ -54,7 +54,7 @@ scorep_subsystems_get_number( void )
 void
 scorep_subsystems_register( void )
 {
-    SCOREP_Error_Code error;
+    SCOREP_ErrorCode error;
     /* call register functions for all subsystems */
     for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
@@ -76,7 +76,7 @@ scorep_subsystems_register( void )
 void
 scorep_subsystems_initialize( void )
 {
-    SCOREP_Error_Code error;
+    SCOREP_ErrorCode error;
     /* call initialization functions for all subsystems */
     for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
@@ -106,7 +106,7 @@ scorep_subsystems_initialize( void )
 void
 scorep_subsystems_initialize_location( SCOREP_Location* locationData )
 {
-    SCOREP_Error_Code error;
+    SCOREP_ErrorCode error;
     /* create location */
 
     /* call initialization functions for all subsystems */

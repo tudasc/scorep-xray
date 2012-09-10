@@ -132,7 +132,7 @@ scorep_compiler_get_location_data( SCOREP_Location* locationData )
  ***************************************************************************************/
 
 /* Location initialization */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
@@ -158,7 +158,7 @@ scorep_compiler_finalize_location( SCOREP_Location* locationData )
 }
 
 /* Adapter initialization */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_adapter()
 {
     if ( scorep_compiler_initialize )

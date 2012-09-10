@@ -49,7 +49,7 @@
 static void
 test_number( CuTest* tc )
 {
-    SCOREP_Error_Code     ret;
+    SCOREP_ErrorCode      ret;
     uint64_t              number_variable;
     SCOREP_ConfigVariable config_variables[] = {
         {

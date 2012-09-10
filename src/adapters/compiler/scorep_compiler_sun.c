@@ -153,7 +153,7 @@ phat_exit( char* name,
     }
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_adapter()
 {
     SCOREP_MutexCreate( &scorep_compiler_hash_lock  );
@@ -162,7 +162,7 @@ scorep_compiler_init_adapter()
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );

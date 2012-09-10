@@ -42,7 +42,7 @@
 #include <spi/kernel_interface.h>
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
 {
     if ( !root )

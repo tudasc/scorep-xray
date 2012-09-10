@@ -110,8 +110,8 @@ AC_CONFIG_FILES([
 
 # generate the Score-P error codes header
 AC_CONFIG_FILES(
-    [src/utils/include/SCOREP_Error_Codes.h:vendor/common/src/utils/exception/Error_Codes.tmpl.h],
-    [$srcdir/vendor/common/src/utils/exception/finalize_error_codes.sh SCOREP $srcdir/share/scorep.errors src/utils/include/SCOREP_Error_Codes.h src/utils/include/scorep_error_decls.gen.h])
+    [src/utils/include/SCOREP_ErrorCodes.h:vendor/common/src/utils/exception/ErrorCodes.tmpl.h],
+    [$srcdir/vendor/common/src/utils/exception/finalize_error_codes.sh SCOREP $srcdir/share/scorep.errors src/utils/include/SCOREP_ErrorCodes.h src/utils/include/scorep_error_decls.gen.h])
 
 AC_OUTPUT
 

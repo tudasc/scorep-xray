@@ -31,7 +31,7 @@
 #include <UTILS_Error.h>
 
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Tracing_Register( void );
 
 

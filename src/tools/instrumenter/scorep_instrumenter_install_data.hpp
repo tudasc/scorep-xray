@@ -135,7 +135,7 @@ public:
     /**
        Reads configuration data from a config file
      */
-    SCOREP_Error_Code
+    SCOREP_ErrorCode
     readConfigFile( std::string arg0 );
 
     /**
@@ -176,7 +176,7 @@ private:
        @returns SCOREP_SUCCESS if the line was successfully parsed. Else it
                 returns an error code.
      */
-    SCOREP_Error_Code
+    SCOREP_ErrorCode
     read_parameter( std::string line );
 
 

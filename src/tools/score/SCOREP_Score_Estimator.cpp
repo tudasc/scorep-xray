@@ -177,7 +177,7 @@ void
 SCOREP_Score_Estimator::InitializeFilter( string filterFile )
 {
     /* Initialize filter component */
-    SCOREP_Error_Code err = SCOREP_SUCCESS;
+    SCOREP_ErrorCode err = SCOREP_SUCCESS;
     err = SCOREP_Filter_ParseFile( filterFile.c_str() );
 
     if ( err != SCOREP_SUCCESS )

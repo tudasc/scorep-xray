@@ -133,12 +133,12 @@ check-local:
 endif !CROSS_BUILD
 
 DISTCLEANFILES += \
-    src/utils/include/SCOREP_Error_Codes.h \
+    src/utils/include/SCOREP_ErrorCodes.h \
     src/utils/include/scorep_error_decls.gen.h
 
 BUILT_SOURCES += \
-    src/utils/include/SCOREP_Error_Codes.h \
+    src/utils/include/SCOREP_ErrorCodes.h \
     src/utils/include/scorep_error_decls.gen.h
 
-src/utils/include/SCOREP_Error_Codes.h: $(srcdir)/share/scorep.errors
+src/utils/include/SCOREP_ErrorCodes.h: $(srcdir)/share/scorep.errors
 src/utils/include/scorep_error_decls.gen.h: $(srcdir)/share/scorep.errors

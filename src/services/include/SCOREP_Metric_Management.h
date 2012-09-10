@@ -47,7 +47,7 @@ SCOREP_Metric_Read( SCOREP_Location* location );
  *          Score-P Online Access to change recorded metrics between
  *          separate phases of program execution.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Metric_Reinitialize();
 
 /** @brief  Returns the sampling set handle to the measurement system.

@@ -35,7 +35,7 @@
 
 #include <SCOREP_Compiler_Init.h>
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_adapter()
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
@@ -43,7 +43,7 @@ scorep_compiler_init_adapter()
     return SCOREP_SUCCESS;
 }
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_compiler_init_location( SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "No compiler adapter init location!" );

@@ -61,7 +61,7 @@ static SCOREP_RegionHandle phase_handle = SCOREP_INVALID_REGION;
  *
  * @param buffer string buffer to parse
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_mri_parse
 (
     char* buffer

@@ -42,20 +42,20 @@ scorep_oa_connection_connect
 (
 );
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_connection_disconnect
 (
     int connection
 );
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_connection_send_string
 (
     int         connection,
     const char* message_string
 );
 
-SCOREP_Error_Code
+SCOREP_ErrorCode
 scorep_oa_connection_send_data
 (
     int   connection,

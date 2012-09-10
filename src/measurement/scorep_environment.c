@@ -212,7 +212,7 @@ SCOREP_RegisterAllConfigVariables( void )
 
     scorep_env_core_environment_variables_initialized = true;
 
-    SCOREP_Error_Code error;
+    SCOREP_ErrorCode error;
     error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
     if ( SCOREP_SUCCESS != error )
     {

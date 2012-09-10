@@ -35,7 +35,7 @@ SCOREP_Filter_Initialize();
 /**
    Registers the config variables for filtering.
  */
-SCOREP_Error_Code
+SCOREP_ErrorCode
 SCOREP_Filter_Register();
 
 /**
