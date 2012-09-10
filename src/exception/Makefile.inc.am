@@ -13,5 +13,5 @@ libutils_exception_la_CPPFLAGS = \
     -I$(INC_DIR_COMMON_UTILS)
 
 EXTRA_DIST += \
-    $(SRC_ROOT)vendor/common/src/utils/exception/Error_Codes.tmpl.h \
+    $(SRC_ROOT)vendor/common/src/utils/exception/ErrorCodes.tmpl.h \
     $(SRC_ROOT)vendor/common/src/utils/exception/finalize_error_codes.sh

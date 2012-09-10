@@ -44,7 +44,7 @@
 
 #define PACKAGE_INCLUDE( f )  PACKAGE_INCLUDE_( PACKAGE_MANGLE_NAME( f ) )
 
-/* Package dependent symbols, are defined in the packages Error_Codes.h header */
+/* Package dependent symbols, are defined in the packages ErrorCodes.h header */
 #define PACKAGE_DEPRECATED             PACKAGE_MANGLE_NAME_CAPS( DEPRECATED )
 #define PACKAGE_ABORT                  PACKAGE_MANGLE_NAME_CAPS( ABORT )
 #define PACKAGE_WARNING                PACKAGE_MANGLE_NAME_CAPS( WARNING )
@@ -52,7 +52,7 @@
 #define PACKAGE_ERROR_INVALID          PACKAGE_MANGLE_NAME_CAPS( ERROR_INVALID )
 #define PACKAGE_Error_GetName          PACKAGE_MANGLE_NAME_CAPS( Error_GetName )
 #define PACKAGE_Error_GetDescription   PACKAGE_MANGLE_NAME_CAPS( Error_GetDescription )
-#define PACKAGE_Error_CallbackPointer  PACKAGE_MANGLE_NAME_CAPS( Error_CallbackPointer )
+#define PACKAGE_ErrorCallback          PACKAGE_MANGLE_NAME_CAPS( ErrorCallback )
 #define PACKAGE_Error_RegisterCallback PACKAGE_MANGLE_NAME_CAPS( Error_RegisterCallback )
 
 /* Add here more convenient macros for error codes used in the utils sources */

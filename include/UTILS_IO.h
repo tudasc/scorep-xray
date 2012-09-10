@@ -71,7 +71,7 @@ UTILS_GetExecutablePath( const char* exe );
  *          PACKAGE_ERROR_MEM_ALLOC_FAILED and PACKAGE_ERROR_FILE_INTERACTION.
  */
 #define UTILS_IO_GetLine PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetLine )
-PACKAGE_Error_Code
+PACKAGE_ErrorCode
 UTILS_IO_GetLine( char**  buffer,
                   size_t* buffer_size,
                   FILE*   file );

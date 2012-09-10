@@ -63,20 +63,20 @@
  * This is a pointer to a function which handles errors if UTILS_ERROR(a) is
  * called.
  */
-static PACKAGE_Error_CallbackPointer utils_error_callback;
-static void*                         utils_error_callback_user_data;
+static PACKAGE_ErrorCallback utils_error_callback;
+static void*                 utils_error_callback_user_data;
 
 
 /*--- External visible functions ----------------------------------*/
 
-PACKAGE_Error_Code
-UTILS_Error_Handler( const char*        srcdir,
-                     const char*        builddir,
-                     const char*        file,
-                     const uint64_t     line,
-                     const char*        function,
-                     PACKAGE_Error_Code errorCode,
-                     const char*        msgFormatString,
+PACKAGE_ErrorCode
+UTILS_Error_Handler( const char*       srcdir,
+                     const char*       builddir,
+                     const char*       file,
+                     const uint64_t    line,
+                     const char*       function,
+                     PACKAGE_ErrorCode errorCode,
+                     const char*       msgFormatString,
                      ... )
 {
     if ( errorCode == PACKAGE_SUCCESS )
@@ -146,9 +146,9 @@ UTILS_Error_Handler( const char*        srcdir,
 
 struct utils_error_decl
 {
-    const char*        errorName;
-    const char*        errorDescription;
-    PACKAGE_Error_Code errorCode;
+    const char*       errorName;
+    const char*       errorDescription;
+    PACKAGE_ErrorCode errorCode;
 };
 
 
@@ -263,7 +263,7 @@ static size_t error_decls_size =
 /* *INDENT-OFF* */
 static const struct
 {
-    PACKAGE_Error_Code errorCode;
+    PACKAGE_ErrorCode errorCode;
     int                posixErrno;
 } posix_errno_delcs[] =
 {
@@ -500,7 +500,7 @@ static size_t posix_errno_delcs_size =
     sizeof( posix_errno_delcs ) / sizeof( posix_errno_delcs[ 0 ] );
 
 static const struct utils_error_decl*
-utils_get_error_decl( PACKAGE_Error_Code errorCode )
+utils_get_error_decl( PACKAGE_ErrorCode errorCode )
 {
     if ( errorCode <= PACKAGE_SUCCESS )
     {
@@ -523,7 +523,7 @@ utils_get_error_decl( PACKAGE_Error_Code errorCode )
 }
 
 const char*
-PACKAGE_Error_GetName( const PACKAGE_Error_Code errorCode )
+PACKAGE_Error_GetName( const PACKAGE_ErrorCode errorCode )
 {
     const struct utils_error_decl* decl = utils_get_error_decl( errorCode );
     if ( !decl )
@@ -537,7 +537,7 @@ PACKAGE_Error_GetName( const PACKAGE_Error_Code errorCode )
 
 
 const char*
-PACKAGE_Error_GetDescription( const PACKAGE_Error_Code errorCode )
+PACKAGE_Error_GetDescription( const PACKAGE_ErrorCode errorCode )
 {
     const struct utils_error_decl* decl = utils_get_error_decl( errorCode );
     if ( !decl )
@@ -550,7 +550,7 @@ PACKAGE_Error_GetDescription( const PACKAGE_Error_Code errorCode )
 }
 
 
-PACKAGE_Error_Code
+PACKAGE_ErrorCode
 UTILS_Error_FromPosix( const int posixErrno )
 {
     uint64_t i;
@@ -592,11 +592,11 @@ UTILS_Error_Abort( const bool     truthValue,
 }
 
 
-PACKAGE_Error_CallbackPointer
-PACKAGE_Error_RegisterCallback( PACKAGE_Error_CallbackPointer errorCallbackIn,
-                                void*                         userData )
+PACKAGE_ErrorCallback
+PACKAGE_Error_RegisterCallback( PACKAGE_ErrorCallback errorCallbackIn,
+                                void*                 userData )
 {
-    PACKAGE_Error_CallbackPointer temp_pointer = utils_error_callback;
+    PACKAGE_ErrorCallback temp_pointer = utils_error_callback;
     utils_error_callback           = errorCallbackIn;
     utils_error_callback_user_data = userData;
     return temp_pointer;

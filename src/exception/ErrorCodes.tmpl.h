@@ -19,7 +19,7 @@
 
 
 /**
- * @file            @PACKAGE_SYM_CAPS@_Error_Codes.h
+ * @file            @PACKAGE_SYM_CAPS@_ErrorCodes.h
  * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status          ALPHA
  * @ingroup         @PACKAGE_SYM_CAPS@_Exception_module
@@ -212,7 +212,7 @@ typedef enum
 
     /* These are the error codes specific to the @PACKAGE_NAME@ package */
     @PACKAGE_SPECIFIC_ERROR_CODES@
-} @PACKAGE_SYM_CAPS@_Error_Code;
+} @PACKAGE_SYM_CAPS@_ErrorCode;
 
 
 /**
@@ -225,7 +225,7 @@ typedef enum
  * @ingroup @PACKAGE_SYM_CAPS@_Exception_module
  */
 const char*
-@PACKAGE_SYM_CAPS@_Error_GetName( @PACKAGE_SYM_CAPS@_Error_Code errorCode );
+@PACKAGE_SYM_CAPS@_Error_GetName( @PACKAGE_SYM_CAPS@_ErrorCode errorCode );
 
 
 /**
@@ -237,7 +237,7 @@ const char*
  * @ingroup @PACKAGE_SYM_CAPS@_Exception_module
  */
 const char*
-@PACKAGE_SYM_CAPS@_Error_GetDescription( @PACKAGE_SYM_CAPS@_Error_Code errorCode );
+@PACKAGE_SYM_CAPS@_Error_GetDescription( @PACKAGE_SYM_CAPS@_ErrorCode errorCode );
 
 
 /**
@@ -254,14 +254,14 @@ const char*
  *
  * @returns Should return the errorCode
  */
-typedef @PACKAGE_SYM_CAPS@_Error_Code
-( *@PACKAGE_SYM_CAPS@_Error_CallbackPointer )( void*           userData,
-                                 const char*     file,
-                                 uint64_t        line,
-                                 const char*     function,
-                                 @PACKAGE_SYM_CAPS@_Error_Code errorCode,
-                                 const char*     msgFormatString,
-                                 va_list         va );
+typedef @PACKAGE_SYM_CAPS@_ErrorCode
+( *@PACKAGE_SYM_CAPS@_ErrorCallback )( void*          userData,
+                         const char*    file,
+                         uint64_t       line,
+                         const char*    function,
+                         @PACKAGE_SYM_CAPS@_ErrorCode errorCode,
+                         const char*    msgFormatString,
+                         va_list        va );
 
 
 /**
@@ -275,9 +275,9 @@ typedef @PACKAGE_SYM_CAPS@_Error_Code
  * @ingroup @PACKAGE_SYM_CAPS@_Exception_module
  *
  */
-@PACKAGE_SYM_CAPS@_Error_CallbackPointer
-@PACKAGE_SYM_CAPS@_Error_RegisterCallback( @PACKAGE_SYM_CAPS@_Error_CallbackPointer errorCallbackIn,
-                             void*                      userData );
+@PACKAGE_SYM_CAPS@_ErrorCallback
+@PACKAGE_SYM_CAPS@_Error_RegisterCallback( @PACKAGE_SYM_CAPS@_ErrorCallback errorCallbackIn,
+                             void*              userData );
 
 
 #ifdef __cplusplus

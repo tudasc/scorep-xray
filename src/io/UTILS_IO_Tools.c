@@ -37,7 +37,7 @@
 
 #define BUFFER_SIZE 1024
 
-PACKAGE_Error_Code
+PACKAGE_ErrorCode
 UTILS_IO_GetLine( char** buffer, size_t* buffer_size, FILE* file )
 {
     UTILS_ASSERT( buffer );

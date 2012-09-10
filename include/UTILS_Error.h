@@ -44,7 +44,7 @@
  *
  * This should be private, but to make this header readable is here defined.
  */
-#define PACKAGE_Error_Code PACKAGE_MANGLE_NAME_CAPS( Error_Code )
+#define PACKAGE_ErrorCode PACKAGE_MANGLE_NAME_CAPS( ErrorCode )
 
 UTILS_BEGIN_C_DECLS
 
@@ -126,14 +126,14 @@ UTILS_BEGIN_C_DECLS
  * @ingroup UTILS_Exception_module
  */
 #define UTILS_Error_Handler PACKAGE_MANGLE_NAME_CAPS( UTILS_Error_Handler )
-PACKAGE_Error_Code
-UTILS_Error_Handler( const char*        srcdir,
-                     const char*        builddir,
-                     const char*        file,
-                     uint64_t           line,
-                     const char*        function,
-                     PACKAGE_Error_Code errorCode,
-                     const char*        msgFormatString,
+PACKAGE_ErrorCode
+UTILS_Error_Handler( const char*       srcdir,
+                     const char*       builddir,
+                     const char*       file,
+                     uint64_t          line,
+                     const char*       function,
+                     PACKAGE_ErrorCode errorCode,
+                     const char*       msgFormatString,
                      ... );
 
 /**
@@ -153,11 +153,11 @@ UTILS_Error_Handler( const char*        srcdir,
  *
  * @param posixErrorCode : Error Code
  *
- * @returns Returns a UTILS error code (see the package depended Error_Codes.h)
+ * @returns Returns a UTILS error code (see the package depended ErrorCodes.h)
  * @ingroup UTILS_Exception_module
  */
 #define UTILS_Error_FromPosix PACKAGE_MANGLE_NAME_CAPS( UTILS_Error_FromPosix )
-PACKAGE_Error_Code
+PACKAGE_ErrorCode
 UTILS_Error_FromPosix( const int posixErrorCode );
 
 /**
