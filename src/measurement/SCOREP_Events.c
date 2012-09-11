@@ -133,6 +133,8 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
     scorep_enter_region( timestamp, regionHandle, metric_values, location );
+
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
 }
 
 
@@ -207,6 +209,8 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
     scorep_exit_region( timestamp, regionHandle, metric_values, location );
+
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
 }
 
 
