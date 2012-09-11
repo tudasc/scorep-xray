@@ -80,7 +80,7 @@ AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
       [AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])])
 
 # handle own package's subdir configures
-scorep_have_score_configure="scorep_have_score_configure=no"
+scorep_have_score_build="scorep_have_score_build=no"
 AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
       [CUBE_READER_CXX="`${scorep_cube_config_bin} --reader-cxx | awk '{printf $1}'`"
        # Source files to get CXX and CXX_FOR_BUILD. Fragile, does not
@@ -94,13 +94,14 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
               FRONTEND_CXX="`echo ${CXX}           | awk '{printf $1}'`"])
        AS_IF([test "x${FRONTEND_CXX}" != "x${CUBE_READER_CXX}"],
              [AC_CONFIG_SUBDIR_CUSTOM([build-score], [CXX="${CUBE_READER_CXX}" ${scorep_cube_config_arg}])
-              scorep_have_score_configure="scorep_have_score_configure=yes"])])
+              scorep_have_score_build="scorep_have_score_build=yes"])])
+AM_CONDITIONAL([HAVE_SCORE_BUILD], [test "x${scorep_have_score_build}" = "xyes"])
 
 AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ${scorep_otf2_config_arg}])
-AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_configure}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} ${scorep_opari2_config_arg} ${scorep_cube_config_arg}  ${scorep_have_score_configure}])
+    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} ${scorep_opari2_config_arg} ${scorep_cube_config_arg}  ${scorep_have_score_build}])
 fi
 
 AC_CONFIG_FILES([

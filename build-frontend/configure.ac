@@ -43,7 +43,7 @@ AC_SCOREP_ONLINE_ACCESS
 AC_SCOREP_PDT
 AC_SCOREP_COBI
 
-AS_IF([test "x${scorep_have_score_configure}" = "xno"],
+AS_IF([test "x${scorep_have_score_build}" = "xno"],
       [AC_SCOREP_CUBE_READER],
       [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 

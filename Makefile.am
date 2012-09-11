@@ -39,6 +39,14 @@ EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
               $(srcdir)/src/config-frontend.h.in
 endif
 
+if ! HAVE_SCORE_BUILD
+EXTRA_DIST += $(srcdir)/build-score/configure.ac \
+              $(srcdir)/build-score/aclocal.m4   \
+              $(srcdir)/build-score/Makefile.am  \
+              $(srcdir)/build-score/Makefile.in  \
+              $(srcdir)/build-score/configure    \
+              $(srcdir)/src/config-score.h.in
+endif
 
 install-data-local: doxygen-user-install
 	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
