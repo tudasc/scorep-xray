@@ -39,32 +39,6 @@ EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
               $(srcdir)/src/config-frontend.h.in
 endif
 
-# temporary, we may remove this in the final version
-EXTRA_DIST += \
-    $(srcdir)/vendor/tclap/ArgException.h \
-    $(srcdir)/vendor/tclap/Arg.h \
-    $(srcdir)/vendor/tclap/ArgTraits.h \
-    $(srcdir)/vendor/tclap/CmdLine.h \
-    $(srcdir)/vendor/tclap/CmdLineInterface.h \
-    $(srcdir)/vendor/tclap/CmdLineOutput.h \
-    $(srcdir)/vendor/tclap/Constraint.h \
-    $(srcdir)/vendor/tclap/DocBookOutput.h \
-    $(srcdir)/vendor/tclap/HelpVisitor.h \
-    $(srcdir)/vendor/tclap/IgnoreRestVisitor.h \
-    $(srcdir)/vendor/tclap/MultiArg.h \
-    $(srcdir)/vendor/tclap/MultiSwitchArg.h \
-    $(srcdir)/vendor/tclap/OptionalUnlabeledTracker.h \
-    $(srcdir)/vendor/tclap/StandardTraits.h \
-    $(srcdir)/vendor/tclap/StdOutput.h \
-    $(srcdir)/vendor/tclap/SwitchArg.h \
-    $(srcdir)/vendor/tclap/UnlabeledMultiArg.h \
-    $(srcdir)/vendor/tclap/UnlabeledValueArg.h \
-    $(srcdir)/vendor/tclap/ValueArg.h \
-    $(srcdir)/vendor/tclap/ValuesConstraint.h \
-    $(srcdir)/vendor/tclap/VersionVisitor.h \
-    $(srcdir)/vendor/tclap/Visitor.h \
-    $(srcdir)/vendor/tclap/XorHandler.h \
-    $(srcdir)/vendor/tclap/ZshCompletionOutput.h
 
 install-data-local: doxygen-user-install
 	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
