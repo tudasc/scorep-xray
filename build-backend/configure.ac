@@ -92,7 +92,7 @@ AS_IF([test -n "${scorep_cube_bindir}"],
        AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
       ])
 
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_configure}" = "xno"], 
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_build}" = "xno"], 
       [AC_SCOREP_CUBE_READER],
       [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
