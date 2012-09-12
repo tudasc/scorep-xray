@@ -18,47 +18,52 @@
 ## file       Makefile.cube_writer.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
+if ! HAVE_EXTERNAL_CUBE_WRITER
+
 noinst_LTLIBRARIES += libscorep_cube_writer.la
-libscorep_cube_writer_la_SOURCES =                               \
+libscorep_cube_writer_la_SOURCES =                             \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.c   \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.c       \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.c        \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_cubew.c       \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_machine.c     \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_metric.c      \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_node.c        \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_process.c     \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_region.c      \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_services.c    \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.c      \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.h   \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cnode.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_compat_platform.h \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.c        \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cube.h        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_cubew.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cubew.h       \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_machine.h     \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_metric.h      \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_node.h        \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_process.h     \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_region.h      \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_services.h    \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.h      \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_types.h       \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_vector.h      \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts.c       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_direct_writing.h       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_file_layout_embedded.h \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_file_layout_hybrid.h   \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_direct_writing.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_machine.c     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_machine.h     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_metric.c      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_metric.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_node.c        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_node.h        \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_process.c     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_process.h     \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_region.c      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_region.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts.h       \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_tar_writing.h          \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_report_layouts_types.h \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_compat_platform.h
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_services.c    \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_services.h    \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_tar_writing.h \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.c      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_thread.h      \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_types.h       \
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_vector.h
 libscorep_cube_writer_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -U_FORTIFY_SOURCE
 
+endif
+
+# These .c files are included in one of the above SOURCES and
+# therefore need to in the distribution.
 EXTRA_DIST += \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_direct_writing.c       \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_file_layout_embedded.c \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_file_layout_hybrid.c   \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_tar_writing.c          \
-    $(SRC_ROOT)src/measurement/cube_writer/cubew_compat_platform.c
+    $(SRC_ROOT)src/measurement/cube_writer/cubew_tar_writing.c
