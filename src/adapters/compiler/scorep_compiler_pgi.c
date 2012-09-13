@@ -325,16 +325,10 @@ ___rouent( struct s1* p )
 
 #pragma save_all_regs
 void
-___rouent64( struct s1* p )
+___rouent64( void )
 {
-    static bool print_warning = true;
-    if ( print_warning )
-    {
-        print_warning = false;
-        fprintf( stderr,
-                 "Warning: You instruented the application with an unsupported interface."
-                 "\n" );
-    }
+    UTILS_WARN_ONCE( "Unsupported PGI %d.%d-%d compiler function instrumentation.",
+                     __PGIC__, __PGIC_MINOR__, __PGIC_PATCHLEVEL__ );
 }
 
 /**
