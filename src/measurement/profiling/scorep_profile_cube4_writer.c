@@ -48,7 +48,7 @@
 #include <cubew_cubew.h>
 #include <cubew_services.h>
 
-#define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT64_MAX - 1 )
+#define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT32_MAX - 1 )
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
