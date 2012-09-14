@@ -128,10 +128,10 @@ scorep_on_trace_pre_flush( void*         userData,
         if ( SCOREP_Env_RunVerbose() )
         {
             fprintf( stderr,
-                     "Score-P: Trace buffer flush on rank %d.\n",
+                     "[Score-P] Trace buffer flush on rank %d.\n",
                      SCOREP_Mpi_GetRank() );
             fprintf( stderr,
-                     "Score-P: Increase SCOREP_TOTAL_MEMORY and try again.\n" );
+                     "[Score-P] Increase SCOREP_TOTAL_MEMORY and try again.\n" );
         }
     }
 
