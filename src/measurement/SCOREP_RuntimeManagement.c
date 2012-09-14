@@ -150,7 +150,7 @@ SCOREP_InitMeasurement()
 
     if ( SCOREP_Env_RunVerbose() )
     {
-        fprintf( stderr, "SCOREP running in verbose mode\n" );
+        fprintf( stderr, "[Score-P] running in verbose mode\n" );
     }
 
     SCOREP_TIME( SCOREP_Status_Initialize );

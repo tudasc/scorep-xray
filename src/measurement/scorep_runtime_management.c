@@ -204,7 +204,7 @@ scorep_create_directory( void )
             }
             if ( SCOREP_Env_RunVerbose() )
             {
-                printf( "SCOREP previous experiment directory: %s\n", old_experiment_dir_name_buf );
+                printf( "[Score-P] previous experiment directory: %s\n", old_experiment_dir_name_buf );
             }
             free( old_experiment_dir_name_buf );
         }
@@ -219,7 +219,7 @@ scorep_create_directory( void )
 
     if ( SCOREP_Env_RunVerbose() )
     {
-        printf( "SCOREP experiment directory: %s\n", scorep_experiment_dir_name );
+        printf( "[Score-P] experiment directory: %s\n", scorep_experiment_dir_name );
     }
 }
 
@@ -258,6 +258,6 @@ SCOREP_RenameExperimentDir()
 
     if ( SCOREP_Env_RunVerbose() )
     {
-        printf( "SCOREP final experiment directory: %s\n", new_experiment_dir_name );
+        printf( "[Score-P] final experiment directory: %s\n", new_experiment_dir_name );
     }
 }
