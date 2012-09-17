@@ -54,6 +54,25 @@ These can make it easier to prepare an instrumented version of the program with
 while default builds (without specifying <tt>PREP</tt> on the command line)
 remain fully optimized and without instrumentation.
 
+In order to instrument applications which employ GNU Autotools for building, following 
+instrumentation procedure has to be used:
+
+<ol>
+<li>Configure application as usual, but provide additional 
+argument:  
+
+<tt>--disable-dependency-tracking</tt></li>
+
+<li>Build application using <tt>make</tt> command with compiler specification variables set as follows:
+
+<tt>make CC="scorep <your-cc-compiler>"  \\
+
+         CXX="scorep <your-cxx-compiler>" \\
+ 
+         FC="scorep <your-fc-compiler>" ...</tt></li>
+</ol>
+
+
 When compiling without the @scorep instrumentor, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
