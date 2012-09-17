@@ -97,7 +97,7 @@ enum
  *                   like in the POSIX printf function.
  */
 
-#if HAVE( SCOREP_DEBUG )
+#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
 
 /* *INDENT-OFF* */
 
@@ -158,13 +158,13 @@ enum
 #define UTILS_DEBUG_ENTRY( ... )  do { } while ( 0 )
 #define UTILS_DEBUG_EXIT( ... )   do { } while ( 0 )
 
-#endif /* SCOREP_DEBUG */
+#endif /* PACKAGE_DEBUG */
 
 
 /**
  * Use this if you don't want the prefix and newline of UTILS_DEBUG_PRINTF()
  */
-#if HAVE( SCOREP_DEBUG )
+#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
 
 #define UTILS_DEBUG_RAW_PRINTF( debugLevel, ... )  \
     UTILS_Debug_RawPrintf( debugLevel, "" __VA_ARGS__ )
@@ -173,13 +173,13 @@ enum
 
 #define UTILS_DEBUG_RAW_PRINTF( ... ) do { } while ( 0 )
 
-#endif /* SCOREP_DEBUG */
+#endif /* PACKAGE_MANGLE_NAME_CAPS( DEBUG ) */
 
 
 /**
  * Use this if you just want the prefix and no new line.
  */
-#if HAVE( SCOREP_DEBUG )
+#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
 
 #define UTILS_DEBUG_PREFIX( debugLevel ) \
     UTILS_Debug_Prefix(   \
@@ -194,7 +194,7 @@ enum
 
 #define UTILS_DEBUG_PREFIX( ... ) do { } while ( 0 )
 
-#endif /* SCOREP_DEBUG */
+#endif /* PACKAGE_MANGLE_NAME_CAPS( DEBUG ) */
 
 
 /**
@@ -204,7 +204,7 @@ enum
  * @note You should not use a ';' after this statement. But ... needs to be a
  *       valid C statement including ';'.
  */
-#if HAVE( SCOREP_DEBUG )
+#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
 
 #define UTILS_DEBUG_ONLY( ... ) __VA_ARGS__
 
@@ -212,7 +212,7 @@ enum
 
 #define UTILS_DEBUG_ONLY( ... )
 
-#endif /* SCOREP_DEBUG */
+#endif /* PACKAGE_MANGLE_NAME_CAPS( DEBUG ) */
 
 
 /**
@@ -234,7 +234,7 @@ enum
 #define UTILS_Debug_Printf PACKAGE_MANGLE_NAME_CAPS( UTILS_Debug_Printf )
 void
 UTILS_Debug_Printf( uint64_t    bitMask,
-                    const char* scrdir,
+                    const char* srcdir,
                     const char* builddir,
                     const char* file,
                     uint64_t    line,
@@ -268,7 +268,7 @@ UTILS_Debug_RawPrintf( uint64_t    bitMask,
 #define UTILS_Debug_Prefix PACKAGE_MANGLE_NAME_CAPS( UTILS_Debug_Prefix )
 void
 UTILS_Debug_Prefix( uint64_t    bitMask,
-                    const char* scrdir,
+                    const char* srcdir,
                     const char* builddir,
                     const char* file,
                     uint64_t    line,

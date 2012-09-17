@@ -164,20 +164,20 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  * @def UTILS_ASSERT
  * Definition of the utils assertion macro. It evaluates an @a expression. If it is false,
  * an error message is output and the program is aborted. To use the assertion,
- * UTILS_NO_ASSERT must not be defined.
+ * HAVE_PACKAGE_NO_ASSERT must not be defined.
  * @param expression A logical expression which should be verified. If it is zero the
  *                    assertion fails.
  */
-#if !defined UTILS_NO_ASSERT
+#if !HAVE( PACKAGE_MANGLE_NAME_CAPS( NO_ASSERT ) )
 
 #define UTILS_ASSERT( expression ) \
     UTILS_Error_Abort( !!( expression ), \
-                       "Assertion '" UTILS_STRINGIFY( expression ) "' failed", \
                        PACKAGE_SRCDIR, \
                        PACKAGE_BUILDDIR, \
                        __FILE__, \
                        __LINE__, \
-                       __func__ )
+                       __func__, \
+                       "Assertion '" UTILS_STRINGIFY( expression ) "' failed" )
 
 #else
 
@@ -192,14 +192,14 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  * The program will abort immediately.
  *
  */
-#define UTILS_BUG( message ) \
+#define UTILS_BUG( message, ... ) \
     UTILS_Error_Abort( 0, \
-                       "Bug: " message, \
                        PACKAGE_SRCDIR, \
                        PACKAGE_BUILDDIR, \
                        __FILE__, \
                        __LINE__, \
-                       __func__ )
+                       __func__, \
+                       "Bug: " __VA_ARGS__ )
 
 
 /**
@@ -208,14 +208,14 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  * Same as UTILS_BUG but with an condition.
  *
  */
-#define UTILS_BUG_ON( expression, message ) \
+#define UTILS_BUG_ON( expression, ... ) \
     UTILS_Error_Abort( !( expression ), \
-                       "Bug: " message, \
                        PACKAGE_SRCDIR, \
                        PACKAGE_BUILDDIR, \
                        __FILE__, \
                        __LINE__, \
-                       __func__ )
+                       __func__, \
+                       "Bug: " __VA_ARGS__ )
 
 /**
  * This function implements the UTILS_ASSERT macro. If the assertion fails an error
@@ -233,12 +233,13 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 #define UTILS_Error_Abort PACKAGE_MANGLE_NAME_CAPS( UTILS_Error_Abort )
 void
 UTILS_Error_Abort( const bool     truthValue,
-                   const char*    scrdir,
+                   const char*    srcdir,
                    const char*    builddir,
-                   const char*    message,
                    const char*    file,
                    const uint64_t line,
-                   const char*    func );
+                   const char*    func,
+                   const char*    message,
+                   ... );
 
 
 UTILS_END_C_DECLS

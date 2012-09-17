@@ -69,25 +69,17 @@ static void*                 utils_error_callback_user_data;
 
 /*--- External visible functions ----------------------------------*/
 
-PACKAGE_ErrorCode
-UTILS_Error_Handler( const char*       srcdir,
-                     const char*       builddir,
-                     const char*       file,
-                     const uint64_t    line,
-                     const char*       function,
-                     PACKAGE_ErrorCode errorCode,
-                     const char*       msgFormatString,
-                     ... )
+static PACKAGE_ErrorCode
+utils_error_handler_va( const char*       srcdir,
+                        const char*       builddir,
+                        const char*       file,
+                        const uint64_t    line,
+                        const char*       function,
+                        PACKAGE_ErrorCode errorCode,
+                        const char*       msgFormatString,
+                        va_list           va )
 {
-    if ( errorCode == PACKAGE_SUCCESS )
-    {
-        return errorCode;
-    }
-
-    va_list va;
-    char*   normalized_file = normalize_file( srcdir, builddir, file );
-
-    va_start( va, msgFormatString );
+    char* normalized_file = normalize_file( srcdir, builddir, file );
 
     if ( utils_error_callback )
     {
@@ -137,9 +129,40 @@ UTILS_Error_Handler( const char*       srcdir,
         }
     }
 
-    va_end( va );
-
     free( normalized_file );
+
+    return errorCode;
+}
+
+PACKAGE_ErrorCode
+UTILS_Error_Handler( const char*       srcdir,
+                     const char*       builddir,
+                     const char*       file,
+                     const uint64_t    line,
+                     const char*       function,
+                     PACKAGE_ErrorCode errorCode,
+                     const char*       msgFormatString,
+                     ... )
+{
+    if ( errorCode == PACKAGE_SUCCESS )
+    {
+        return errorCode;
+    }
+
+    va_list va;
+    va_start( va, msgFormatString );
+
+    errorCode = utils_error_handler_va( srcdir,
+                                        builddir,
+                                        file,
+                                        line,
+                                        function,
+                                        errorCode,
+                                        msgFormatString,
+                                        va );
+
+
+    va_end( va );
 
     return errorCode;
 }
@@ -573,21 +596,33 @@ UTILS_Error_FromPosix( const int posixErrno )
 
 void
 UTILS_Error_Abort( const bool     truthValue,
-                   const char*    message,
                    const char*    srcdir,
                    const char*    builddir,
                    const char*    file,
                    const uint64_t line,
-                   const char*    func )
+                   const char*    func,
+                   const char*    msgFormatString,
+                   ... )
 {
     if ( truthValue )
     {
         return;
     }
 
-    UTILS_Error_Handler( srcdir, builddir, file, line, func,
-                         PACKAGE_ABORT,
-                         "%s.", message );
+    va_list va;
+    va_start( va, msgFormatString );
+
+    utils_error_handler_va( srcdir,
+                            builddir,
+                            file,
+                            line,
+                            func,
+                            PACKAGE_ABORT,
+                            msgFormatString,
+                            va );
+
+    va_end( va );
+
     abort();
 }
 
