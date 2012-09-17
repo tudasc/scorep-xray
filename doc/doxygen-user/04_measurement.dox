@@ -747,10 +747,4 @@ the data back to the remote tool. The flat profile is sent in two parts, where t
 definition data and the second part carries profile measurements. Each part starts with the key word <tt>MERGED_REGION_DEFINITIONS</tt> 
 or <tt>FLAT_PROFILE</tt> and followed by the number of the entries and the buffer containing the data.
 
-@latexonly
-\appendices
-\renewcommand\chaptername{Appendix}
-
-
-@endlatexonly
 */
