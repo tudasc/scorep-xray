@@ -283,11 +283,13 @@ filter block could look like this:
 @code
 SCOREP_REGION_NAMES_BEGIN
   EXCLUDE *
-  INCLUDE filter_not2 filtered2
-          filter_not1
+  INCLUDE bar foo
+          baz
           main
 SCOREP_REGION_NAMES_END
 @endcode
+
+In this example all but the functions bar, foo, baz and main are filtered.
 
 Some instrumentation methods provide only mangled function names for Fortran
 subroutines and functions, where the name is made all upper/lower case or decorated
