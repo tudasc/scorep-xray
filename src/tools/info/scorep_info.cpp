@@ -35,7 +35,7 @@
 #include <SCOREP_Platform.h>
 #include <SCOREP_Config.h>
 #include <scorep_environment.h>
-
+#include <scorep_config_tool_backend.h>
 
 /**
    Contains the name of the tool for help output
@@ -72,6 +72,10 @@ print_help()
     std::cout << "                    Warning: These values may be wrong, please consult the\n";
     std::cout << "                             manual of the batch system how to pass the values\n";
     std::cout << "                             the measurement job." << std::endl;
+    std::cout << std::endl;
+    std::cout << "  config-summary:" << std::endl;
+    std::cout << "    Shows the configure summary of the Score-P package." << std::endl;
+    std::cout << std::endl;
 }
 
 int
@@ -86,6 +90,7 @@ main( int   argc,
             print_help();
             return EXIT_SUCCESS;
         }
+
 
         if ( info_command == "config-vars" )
         {
@@ -116,6 +121,14 @@ main( int   argc,
             }
 
             SCOREP_ConfigFini();
+            return EXIT_SUCCESS;
+        }
+
+
+        if ( info_command == "config-summary" )
+        {
+            std::string summary_command( "cat " CONFIG_SUMMARY_FILE );
+            system( summary_command.c_str() );
             return EXIT_SUCCESS;
         }
 

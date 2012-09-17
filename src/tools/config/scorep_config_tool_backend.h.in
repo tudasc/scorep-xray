@@ -11,6 +11,7 @@
 #define PDT                  "@PDT_PATH@"
 #define PDT_CONFIG           "@DATAROOTDIR_SCOREP@/SCOREP_Pdt_Instrumentation.conf"
 #define COBI_CONFIG_DIR      "@DATAROOTDIR_SCOREP@"
+#define CONFIG_SUMMARY_FILE  "@DATAROOTDIR_SCOREP@/@PACKAGE@.summary"
 #define LIBDIR_FLAG_CC       "@HARDCODE_LIBDIR_FLAG_CC@"
 #define LIBDIR_FLAG_CXX      "@HARDCODE_LIBDIR_FLAG_CXX@"
 #define LIBDIR_FLAG_FC       "@HARDCODE_LIBDIR_FLAG_FC@"
