@@ -249,10 +249,29 @@ scorep_tracing_register_memory_callbacks( OTF2_Archive* archive )
 }
 
 
+#if !HAVE( SCOREP_DEBUG )
+static OTF2_ErrorCode
+scorep_tracing_otf2_error_callback( void*          userData,
+                                    const char*    file,
+                                    uint64_t       line,
+                                    const char*    function,
+                                    OTF2_ErrorCode errorCode,
+                                    const char*    msgFormatString,
+                                    va_list        va )
+{
+    return errorCode;
+}
+#endif
+
+
 void
 SCOREP_Tracing_Initialize( void )
 {
     assert( !scorep_otf2_archive );
+
+#if !HAVE( SCOREP_DEBUG )
+    OTF2_Error_RegisterCallback( scorep_tracing_otf2_error_callback, NULL );
+#endif
 
     /* @todo croessel step1: remove the "4 *" intoduced on Michael's request
      * when overflow checking for definitions is implemented.

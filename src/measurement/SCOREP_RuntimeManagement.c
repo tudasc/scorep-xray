@@ -40,6 +40,8 @@
 #include <inttypes.h>
 
 #include <UTILS_Debug.h>
+#include <UTILS_Error.h>
+
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Metric_Management.h>
@@ -55,6 +57,7 @@
 #include <scorep_openmp.h>
 #include <SCOREP_OA_Init.h>
 
+#include "scorep_error_callback.h"
 #include "scorep_types.h"
 #include "scorep_subsystem.h"
 #include "scorep_definitions.h"
@@ -121,6 +124,8 @@ void
 SCOREP_InitMeasurement()
 {
     UTILS_DEBUG_ENTRY();
+
+    SCOREP_InitErrorCallback();
 
     if ( scorep_initialized )
     {
