@@ -39,6 +39,11 @@ m4_ifval([$2], [], [
 
 AC_SUBST([PACKAGE_SYM],      $1_DOWN)
 AC_SUBST([PACKAGE_SYM_CAPS], $1_UP)
+
+AH_TEMPLATE([HAVE_]$1_UP[_DEBUG],
+            [Define to 1 to enable internal debug messages (like NDEBUG).])
+AH_TEMPLATE([HAVE_]$1_UP[_NO_ASSERT],
+            [Define to 1 to disable assertions (like NDEBUG).])
 ])
 
 # AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE, [DESCRIPTION])

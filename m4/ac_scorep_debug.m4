@@ -37,8 +37,9 @@ fi
 AC_DEFUN([AC_SCOREP_ON_DEBUG_OPTION],
 [
 if test  "x${ac_scorep_enable_debug}" = "xyes"; then
-    AC_DEFINE([HAVE_SCOREP_DEBUG], [1], [activate internal debug output])
+    AC_DEFINE_UNQUOTED([HAVE_$[]{PACKAGE_SYM_CAPS}_DEBUG], [1])
 elif test  "x${ac_scorep_enable_debug}" != "xno"; then
     AC_MSG_ERROR([ac_scorep_enable_debug neither "yes" nor "no" but "$ac_scorep_enable_debug", that's weird.])
 fi
+AC_DEFINE_UNQUOTED([HAVE_$[]{PACKAGE_SYM_CAPS}_NO_ASSERT], [0])
 ])
