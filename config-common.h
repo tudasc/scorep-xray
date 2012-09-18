@@ -37,8 +37,7 @@
  * 1, you should use <tt>#if HAVE(DECL_MPI_ACCUMULATE)</tt> in your code
  * to conditionally compile if @c HAVE_DECL_MPI_ACCUMULATE is defined to 1.
  */
-#define HAVE2( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
-#define HAVE( H )  HAVE2( H )
+#define HAVE( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
 
 
 /**
