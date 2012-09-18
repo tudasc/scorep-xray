@@ -21,11 +21,11 @@ AC_COMMON_PACKAGE([scorep])
 # Do this before calls to AC_PROG_*                                                                                 
 CXX_STRIPPED="`echo ${CXX} | awk '{printf $1}'`"
 AS_CASE([${CXX_STRIPPED}],
-        [g++],         [CC=gcc],   # gnu                                                                            
-        [icpc],        [CC=icc],   # intel                                                                          
-        [CC],          [CC=cc],    # studio                                                                         
-        [xlC*|xlc++*], [CC=xlc_r], # ibm                                                                            
-        [pgCC],        [CC=pgcc],  # studio                                                                         
+        [g++],         [CC=gcc],   # gnu
+        [icpc],        [CC=icc],   # intel
+        [CC],          [CC=cc],    # studio
+        [xlC*|xlc++*], [CC=xlc_r], # ibm
+        [pgCC],        [CC=pgcc],  # pgi
         [AC_MSG_ERROR([invalid value of CXX, cannot determine corresponding CC])])
 
 AC_PROG_CC
