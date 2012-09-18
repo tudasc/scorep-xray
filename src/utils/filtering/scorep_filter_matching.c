@@ -67,24 +67,22 @@ struct scorep_filter_rule_struct
 /**
  * Pointer to the head of the filter rules for source file names.
  */
-scorep_filter_rule_t* scorep_filter_file_rules_head = NULL;
+static scorep_filter_rule_t* scorep_filter_file_rules_head = NULL;
 
 /**
  * Pointer to the tail of the filter rules for source file names.
  */
-scorep_filter_rule_t* scorep_filter_file_rules_tail = NULL;
+static scorep_filter_rule_t* scorep_filter_file_rules_tail = NULL;
 
 /**
  * Pointer to the head of the filter rules for function names.
  */
-scorep_filter_rule_t* scorep_filter_function_rules_head = NULL;
+static scorep_filter_rule_t* scorep_filter_function_rules_head = NULL;
 
 /**
  * Pointer to the tail of the filter rules for function names.
  */
-scorep_filter_rule_t* scorep_filter_function_rules_tail = NULL;
-
-bool scorep_filter_is_enabled = false;
+static scorep_filter_rule_t* scorep_filter_function_rules_tail = NULL;
 
 /* **************************************************************************************
    Rule representation manipulation functions

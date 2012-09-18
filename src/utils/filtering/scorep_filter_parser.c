@@ -39,7 +39,7 @@
    Variable and type definitions
 ****************************************************************************************/
 
-extern bool scorep_filter_is_enabled;
+static bool scorep_filter_is_enabled;
 
 /**
  * Type for the possible states of the parser. The following states are possible:
