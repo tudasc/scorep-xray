@@ -6,7 +6,6 @@ AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/
 AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
 
-AH_SCOREP_CONFIG_HEADER
 AC_CONFIG_HEADERS([../src/config-frontend.h])
 
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
@@ -50,10 +49,10 @@ AS_IF([test "x${scorep_have_score_build}" = "xno"],
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
-AC_COMMON_PACKAGE([scorep])
+AC_SCOREP_COMMON_PACKAGE([scorep])
 
 AM_CONDITIONAL([BUILD_TESTS], [test 1 -eq 1])
-AC_SCOREP_PLATFORM_SETTINGS   
+AC_SCOREP_PLATFORM_SETTINGS
 
 AC_SCOREP_COMMON_CHECKS
 AC_CHECK_FUNCS_ONCE([readlink])

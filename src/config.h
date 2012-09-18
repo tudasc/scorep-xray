@@ -61,4 +61,8 @@
     #error "You can not use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."
 #endif
 
+#include <config-common.h>
+
+#include <config-custom.h>
+
 #endif /* CONFIG_H */
