@@ -21,7 +21,7 @@
 # AC_SCOREP_SUMMARY_INIT([SHORT-DESCRIPTION])
 # ___________________________________________
 AC_DEFUN([AC_SCOREP_SUMMARY_INIT], [
-orig_configure_command="$[]0 $[]*"
+ac_scorep_summary_orig_configure_command="$[]0 $[]*"
 cat >config.summary <<_ACEOF
 AS_HELP_STRING(m4_ifval([$1], [$PACKAGE_NAME ($1):], [$PACKAGE_NAME:]), [], 32, 128)
 _ACEOF
@@ -54,7 +54,7 @@ AC_DEFUN([AC_SCOREP_SUMMARY_COLLECT], [
     (
     AS_ECHO(["Configure command:"])
     cat <<_ACEOC
-AS_HELP_STRING([$orig_configure_command], [], 32, 128)
+AS_HELP_STRING([$ac_scorep_summary_orig_configure_command], [], 32, 128)
 
 _ACEOC
     sep="Configuration summary:"

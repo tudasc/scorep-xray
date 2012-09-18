@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-AC_DEFUN([AC_COMMON_PACKAGE], [
+AC_DEFUN([AC_SCOREP_COMMON_PACKAGE], [
 AC_REQUIRE([AM_INIT_AUTOMAKE])
 
 m4_define([$1_UP], [m4_toupper($1)])

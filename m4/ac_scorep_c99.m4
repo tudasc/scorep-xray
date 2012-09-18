@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011, 
@@ -16,11 +16,11 @@
 ##
 
 
-## file       scorep_c.m4 
+## file       ac_scorep_c99.m4
 ##            This file contains a modified versions of the following
 ##            autoconf's 2.65 macros:
-##            
-##            AC_PROG_CC_C99 (renamed to SCOREP_PROG_CC_C99):
+##
+##            AC_PROG_CC_C99 (renamed to AC_SCOREP_PROG_CC_C99):
 ##              In SCOREP we don't want to use the GNU option -std=gnu99
 ##              (but -std=c99 instead) as this prevents some warnings that
 ##              may cause portability issues.
@@ -65,15 +65,15 @@
 # Roland McGrath, Noah Friedman, david d zuhn, and many others.
 
 
-# SCOREP_PROG_CC_C99
+# AC_SCOREP_PROG_CC_C99
 # --------------
-AC_DEFUN([SCOREP_PROG_CC_C99],
+AC_DEFUN([AC_SCOREP_PROG_CC_C99],
 [ AC_REQUIRE([AC_PROG_CC])dnl
-  _SCOREP_PROG_CC_C99([$1], [$2])
+  _AC_SCOREP_PROG_CC_C99([$1], [$2])
 ])
 
 
-# _SCOREP_PROG_CC_C99 ([ACTION-IF-AVAILABLE], [ACTION-IF-UNAVAILABLE])
+# _AC_SCOREP_PROG_CC_C99 ([ACTION-IF-AVAILABLE], [ACTION-IF-UNAVAILABLE])
 # ----------------------------------------------------------------
 # If the C compiler is not in ISO C99 mode by default, try to add an
 # option to output variable CC to make it so.  This macro tries
@@ -83,7 +83,7 @@ AC_DEFUN([SCOREP_PROG_CC_C99],
 # code and declarations, named initialization of structs, restrict,
 # va_copy, varargs macros, variable declarations in for loops and
 # variable length arrays.
-AC_DEFUN([_SCOREP_PROG_CC_C99],
+AC_DEFUN([_AC_SCOREP_PROG_CC_C99],
 [_AC_C_STD_TRY([c99],
 [[#include <stdarg.h>
 #include <stdbool.h>
@@ -218,4 +218,4 @@ dnl Tru64	-c99
 dnl NEC SX	-Kc99
 dnl with extended modes being tried first.
 [[-std=c99 -c99 -AC99 -xc99=all -qlanglvl=extc99 -Kc99]], [$1], [$2])[]dnl
-])# _SCOREP_PROG_CC_C99
+])# _AC_SCOREP_PROG_CC_C99

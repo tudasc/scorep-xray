@@ -22,7 +22,7 @@ AC_REQUIRE([AC_SCOREP_COMPILER_CHECKS])
 have_compiler_instrumentation="yes"
 scorep_have_demangle="no"
 
-AS_IF([test "x${scorep_compiler_gnu}" = "xyes" || test "x${scorep_compiler_intel}" = "xyes"],
+AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler_intel}" = "xyes"],
       [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
        AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
              [result=${libbfd_result}],
@@ -36,7 +36,7 @@ AS_IF([test "x${scorep_compiler_gnu}" = "xyes" || test "x${scorep_compiler_intel
                     [result="yes, using nm"])])],
       [# non-gnu, non-intel compilers
        AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
-       AS_IF([test "x${scorep_compiler_sun}" = "xyes"],
+       AS_IF([test "x${ac_scorep_compiler_sun}" = "xyes"],
              [result="partially, studio compiler supports just Fortran"],
              [result="yes"])])
 

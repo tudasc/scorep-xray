@@ -21,22 +21,22 @@
 AC_DEFUN([AC_OTF2_ENTROPY_SOURCES], [
 
 AC_LANG_PUSH([C])
-SCOREP_TIMER_CLOCK_GETTIME_AVAILABLE
-SCOREP_TIMER_GETTIMEOFDAY_AVAILABLE
+AC_SCOREP_TIMER_CHECK([clock_gettime])
+AC_SCOREP_TIMER_CHECK([gettimeofday])
 
-otf2_entropy_sources=""
-otf2_entropy_sources_sep=""
+ac_otf2_entropy_sources=""
+ac_otf2_entropy_sources_sep=""
 
 otf2_timer_lib=""
-AS_IF([test "x${scorep_timer_clock_gettime_available}" = "xyes"], [
-        otf2_timer_lib=${scorep_timer_librt}
-        otf2_entropy_sources="${otf2_entropy_sources}${otf2_entropy_sources_sep}clock_gettime"
-        otf2_entropy_sources_sep=" "
-      ], [test "x${scorep_timer_gettimeofday_available}" = "xyes"], [
-        otf2_entropy_sources="${otf2_entropy_sources}${otf2_entropy_sources_sep}gettimeofday"
-        otf2_entropy_sources_sep=" "
+AS_IF([test "x${ac_scorep_timer_clock_gettime_available}" = "xyes"], [
+        ac_otf2_timer_lib=${ac_scorep_timer_librt}
+        ac_otf2_entropy_sources="${ac_otf2_entropy_sources}${ac_otf2_entropy_sources_sep}clock_gettime"
+        ac_otf2_entropy_sources_sep=" "
+      ], [test "x${ac_scorep_timer_gettimeofday_available}" = "xyes"], [
+        ac_otf2_entropy_sources="${ac_otf2_entropy_sources}${ac_otf2_entropy_sources_sep}gettimeofday"
+        ac_otf2_entropy_sources_sep=" "
       ])
-AC_SUBST([TIMER_LIB], ["$otf2_timer_lib"])
+AC_SUBST([TIMER_LIB], ["$ac_otf2_timer_lib"])
 
 AH_TEMPLATE([HAVE_UNISTD_H],
             [Define to 1 if you have the <unistd.h> header file.])
@@ -60,8 +60,8 @@ AC_MSG_RESULT([yes])
 AC_DEFINE([HAVE_UNISTD_H])
 AC_DEFINE([HAVE_SYS_TYPES_H])
 AC_DEFINE([HAVE_GETPID])
-otf2_entropy_sources="${otf2_entropy_sources}${otf2_entropy_sources_sep}getpid"
-otf2_entropy_sources_sep=" "
+ac_otf2_entropy_sources="${ac_otf2_entropy_sources}${ac_otf2_entropy_sources_sep}getpid"
+ac_otf2_entropy_sources_sep=" "
                                 ], [
 AC_MSG_RESULT([no])
                                 ])
@@ -76,15 +76,14 @@ sysinfo( &info );
 AC_MSG_RESULT([yes])
 AC_DEFINE([HAVE_SYS_SYSINFO_H])
 AC_DEFINE([HAVE_SYSINFO])
-otf2_entropy_sources="${otf2_entropy_sources}${otf2_entropy_sources_sep}sysinfo"
-otf2_entropy_sources_sep=" "
+ac_otf2_entropy_sources="${ac_otf2_entropy_sources}${ac_otf2_entropy_sources_sep}sysinfo"
+ac_otf2_entropy_sources_sep=" "
                                 ], [
 AC_MSG_RESULT([no])
                                 ])
 
 AC_LANG_POP([C])
 
-AS_IF([test -z "${otf2_entropy_sources}"], [otf2_entropy_sources=none])
-AC_SCOREP_SUMMARY([Entropy sources], [${otf2_entropy_sources}])
-
+AS_IF([test -z "${ac_otf2_entropy_sources}"], [ac_otf2_entropy_sources=none])
+AC_SCOREP_SUMMARY([Entropy sources], [${ac_otf2_entropy_sources}])
 ])

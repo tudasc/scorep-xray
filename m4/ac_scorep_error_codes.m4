@@ -15,20 +15,11 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-
-AC_DEFUN([AH_SCOREP_CONFIG_HEADER],
-[
-## Please note that text gets included "verbatim" to the template file, not to
-## the resulting config header, so it can easily get mangled when the template
-## is processed. There is rarely a need for something other than
-##
-##     AH_BOTTOM([#include <custom.h>])
-
-## Include text at the top of the header template file. 
-##AH_TOP([text])
-
-## Include text at the bottom of the header template file. 
-AH_BOTTOM(
-[#include <config-common.h>
-#include <config-custom.h>])
+AC_DEFUN([AC_SCOREP_ERROR_CODES], [
+AC_SUBST([PACKAGE_ERROR_CODES_INCDIR], [../src/utils/include])
+AC_DEFINE_UNQUOTED(
+    [PACKAGE_ERROR_CODES_HEADER],
+    [<SCOREP_ErrorCodes.h>],
+    [The #include argument used to include this packages error codes header.]
+)
 ])
