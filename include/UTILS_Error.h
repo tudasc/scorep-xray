@@ -160,6 +160,8 @@ UTILS_Error_Handler( const char*       srcdir,
 PACKAGE_ErrorCode
 UTILS_Error_FromPosix( const int posixErrorCode );
 
+#define HAVE_UTILS_NO_ASSERT UTILS_JOIN_SYMS( HAVE_, PACKAGE_MANGLE_NAME_CAPS( NO_ASSERT ) )
+
 /**
  * @def UTILS_ASSERT
  * Definition of the utils assertion macro. It evaluates an @a expression. If it is false,
@@ -168,7 +170,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  * @param expression A logical expression which should be verified. If it is zero the
  *                    assertion fails.
  */
-#if !HAVE( PACKAGE_MANGLE_NAME_CAPS( NO_ASSERT ) )
+#if !HAVE( UTILS_NO_ASSERT )
 
 #define UTILS_ASSERT( expression ) \
     UTILS_Error_Abort( !!( expression ), \

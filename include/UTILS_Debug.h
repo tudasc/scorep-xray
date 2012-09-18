@@ -79,6 +79,8 @@ enum
 #define UTILS_DEBUG_FUNCTION_ENTRY ( UINT64_C( 1 ) << 62 )
 #define UTILS_DEBUG_FUNCTION_EXIT  ( UINT64_C( 1 ) << 63 )
 
+#define HAVE_UTILS_DEBUG UTILS_JOIN_SYMS( HAVE_, PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
+
 /**
  * @def UTILS_DEBUG_PRINTF
  * Following prep is the UTILS debug messaging function. It could be used like
@@ -97,7 +99,7 @@ enum
  *                   like in the POSIX printf function.
  */
 
-#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
+#if HAVE( UTILS_DEBUG )
 
 /* *INDENT-OFF* */
 
@@ -158,13 +160,13 @@ enum
 #define UTILS_DEBUG_ENTRY( ... )  do { } while ( 0 )
 #define UTILS_DEBUG_EXIT( ... )   do { } while ( 0 )
 
-#endif /* PACKAGE_DEBUG */
+#endif /* HAVE_UTILS_DEBUG */
 
 
 /**
  * Use this if you don't want the prefix and newline of UTILS_DEBUG_PRINTF()
  */
-#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
+#if HAVE( UTILS_DEBUG )
 
 #define UTILS_DEBUG_RAW_PRINTF( debugLevel, ... )  \
     UTILS_Debug_RawPrintf( debugLevel, "" __VA_ARGS__ )
@@ -173,13 +175,13 @@ enum
 
 #define UTILS_DEBUG_RAW_PRINTF( ... ) do { } while ( 0 )
 
-#endif /* PACKAGE_MANGLE_NAME_CAPS( DEBUG ) */
+#endif /* HAVE_UTILS_DEBUG */
 
 
 /**
  * Use this if you just want the prefix and no new line.
  */
-#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
+#if HAVE( UTILS_DEBUG )
 
 #define UTILS_DEBUG_PREFIX( debugLevel ) \
     UTILS_Debug_Prefix(   \
@@ -194,7 +196,7 @@ enum
 
 #define UTILS_DEBUG_PREFIX( ... ) do { } while ( 0 )
 
-#endif /* PACKAGE_MANGLE_NAME_CAPS( DEBUG ) */
+#endif /* HAVE_UTILS_DEBUG */
 
 
 /**
@@ -204,7 +206,7 @@ enum
  * @note You should not use a ';' after this statement. But ... needs to be a
  *       valid C statement including ';'.
  */
-#if HAVE( PACKAGE_MANGLE_NAME_CAPS( DEBUG ) )
+#if HAVE( UTILS_DEBUG )
 
 #define UTILS_DEBUG_ONLY( ... ) __VA_ARGS__
 
@@ -212,7 +214,7 @@ enum
 
 #define UTILS_DEBUG_ONLY( ... )
 
-#endif /* PACKAGE_MANGLE_NAME_CAPS( DEBUG ) */
+#endif /* HAVE_UTILS_DEBUG */
 
 
 /**
