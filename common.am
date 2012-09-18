@@ -111,4 +111,4 @@ DISTCLEANFILES += $(builddir)/config.summary
 
 # this propagates changes to vendor/common/build-config/config-common.h
 ../src/config-common.h: $(srcdir)/../vendor/common/build-config/config-common.h
-	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) src/config-common.h
+	@$(am__cd) .. && $(MAKE) $(AM_MAKEFLAGS) src/config-common.h
