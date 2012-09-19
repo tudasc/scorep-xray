@@ -71,7 +71,7 @@ SCOREP_Score_Group::Print( double totalTime )
              << setw( 6 ) << SCOREP_Score_GetTypeName( m_type )
              << setw( 16 ) << GetMaxTBC()
              << setw( 13 ) << setprecision( 2 ) << m_total_time
-             << setw( 7 )  << setprecision( 1 ) << 100 / totalTime * m_total_time
+             << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
              << left << " " << m_name << endl;
     }
 }
