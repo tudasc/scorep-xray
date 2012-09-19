@@ -2,11 +2,7 @@
 
 
 
-@section scorep-backend-info scorep-backend-info
+@section scorep-score-tool scorep-score
 
-@note
-  This tool is intended to run as a batch job.
-  Please consult the manual of the batch system how to submit jobs.
-
-A call to \c scorep-backend-info has the following syntax:
+A call to \c scorep-score has the following syntax:
 \verbatim

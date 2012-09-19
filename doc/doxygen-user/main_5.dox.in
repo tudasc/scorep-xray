@@ -1,8 +1,12 @@
 \endverbatim
 
-@page scorpeconfigvariables @scorep Measurement Configuration Variables
-@seclabel{scorpeconfigvariables}
 
-This is the list of configure variables to control a @scorep measurement.
 
-<dl>
+@section scorep-backend-info scorep-backend-info
+
+@note
+  This tool is intended to run as a batch job.
+  Please consult the manual of the batch system how to submit jobs.
+
+A call to \c scorep-backend-info has the following syntax:
+\verbatim
