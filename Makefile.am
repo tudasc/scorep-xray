@@ -84,8 +84,10 @@ doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
     $(srcdir)/doc/doxygen-user/main_2.dox.in \
     $(srcdir)/doc/doxygen-user/scorep_config_usage.dox.in \
     $(srcdir)/doc/doxygen-user/main_3.dox.in \
+    $(srcdir)/doc/doxygen-user/scorep_info_usage.dox.in \
+    $(srcdir)/doc/doxygen-user/main_4.dox.in \
     doc/doxygen-user/confvars.dox.in \
-    $(srcdir)/doc/doxygen-user/main_4.dox.in
+    $(srcdir)/doc/doxygen-user/main_5.dox.in
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	cat $^ >$@
 
