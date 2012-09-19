@@ -128,7 +128,12 @@ main( int   argc,
         if ( info_command == "config-summary" )
         {
             std::string summary_command( "cat " CONFIG_SUMMARY_FILE );
-            system( summary_command.c_str() );
+            int         return_value = system( summary_command.c_str() );
+            if ( return_value != 0 )
+            {
+                std::cerr << "Error executing: " << summary_command << std::endl;
+                return EXIT_FAILURE;
+            }
             return EXIT_SUCCESS;
         }
 
