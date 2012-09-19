@@ -351,14 +351,14 @@ m4_expand(m4_join([], [AC_SCOREP_TIMER_], m4_toupper($1), [_AVAILABLE]))
 AC_DEFUN([AC_SCOREP_TIMER_USE_IF_AVAILABLE], [[test "x$ac_scorep_timer_$1_available" = "xyes"],[
 ac_scorep_timer_given="yes"
 ac_scorep_timer_$1="yes"
-scorep_timer="$1"
+ac_scorep_timer="$1"
 AC_MSG_NOTICE([Selecting platform default $1 timer])]
 ])
 
 ###############################################################################
 
 AC_DEFUN([AC_SCOREP_TIMER_PLATFORM_DEFAULTS], [
-AS_IF([test "x${scorep_user_timer_given}" = "xno"], [
+AS_IF([test "x${ac_scorep_user_timer_given}" = "xno"], [
     AS_CASE([${ac_scorep_platform}], 
             ["altix"],    [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([intel_mmtimer]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]))],
@@ -395,15 +395,15 @@ AC_DEFUN([AC_SCOREP_TIMER_ARG_ENABLE], [
 AC_ARG_ENABLE([timer-$1],
               [AS_HELP_STRING([--enable-timer-$1],
                               [enable $1 timer if available instead of platform default])],
-              [if test "x${scorep_user_timer_given}" = "xyes"; then
-                   AC_MSG_WARN([Several timers provided, using $scorep_timer])
+              [if test "x${ac_scorep_user_timer_given}" = "xyes"; then
+                   AC_MSG_WARN([Several timers provided, using $ac_scorep_timer])
                else
                    if test "x${ac_scorep_timer_$1_available}" = "xno"; then
                        AC_MSG_WARN([User selected $1 timer not available])
                    else
                        AC_MSG_NOTICE([User selected $1 timer available])
-                       scorep_user_timer_given="yes"
-                       scorep_timer="$1"
+                       ac_scorep_user_timer_given="yes"
+                       ac_scorep_timer="$1"
                        ac_scorep_timer_$1="yes"
                    fi
                fi])
@@ -477,15 +477,15 @@ AC_SCOREP_TIMER_SUN_GETHRTIME_AVAILABLE
 AC_LANG_POP([C])
 # now all ac_scorep_timer_*_available variables are set
 
-scorep_user_timer_given="no"
+ac_scorep_user_timer_given="no"
 AC_SCOREP_TIMER_ENABLE_SPECIFIC
 
 ac_scorep_timer_given="no"
 AC_SCOREP_TIMER_PLATFORM_DEFAULTS
 
-AS_IF([test "x${scorep_user_timer_given}" = "xno" && test "x${ac_scorep_timer_given}" = "xno"],
+AS_IF([test "x${ac_scorep_user_timer_given}" = "xno" && test "x${ac_scorep_timer_given}" = "xno"],
       [AC_MSG_ERROR([No suitable timer found. You may specify one with the --enable-timer options])],
-      [AC_MSG_NOTICE([Using ${scorep_timer} timer])])
+      [AC_MSG_NOTICE([Using ${ac_scorep_timer} timer])])
 
 
 AM_CONDITIONAL([SCOREP_TIMER_BGL_RTS_GET_TIMEBASE], [test "x${ac_scorep_timer_bgl_rts_get_timebase}" = "xyes"])
@@ -513,5 +513,5 @@ AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"], [ac_scorep_timer_l
       [test "x${ac_scorep_timer_bgp_get_timebase}" = "xyes"], [ac_scorep_timer_lib="-lSPI.cna -lrt"])
 AC_SUBST([TIMER_LIB], ["$ac_scorep_timer_lib"])
 
-AC_SCOREP_SUMMARY([Clock source used for measurement], [$scorep_timer])
+AC_SCOREP_SUMMARY([Clock source used for measurement], [$ac_scorep_timer])
 ])
