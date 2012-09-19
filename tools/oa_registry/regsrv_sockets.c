@@ -56,7 +56,7 @@ scorep_oa_sockets_server_startup_retry
     int                stat = -1;
     int                port;
     struct sockaddr_in my_addr;                 /* my address information */
-    ////UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    ////UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
     /**
      * create a new socket socket() returns positive interger on success
@@ -124,7 +124,7 @@ scorep_oa_sockets_server_startup_retry
     }
     else
     {
-        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d\n", __FUNCTION__, port );
+        //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d\n", __func__, port );
         *init_port = port;
         return sock;
     }

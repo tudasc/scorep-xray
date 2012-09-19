@@ -41,7 +41,7 @@ SCOREP_OA_PhaseBegin
     const uint32_t               lineNo
 )
 {
-    printf( "Dummy %s\n", __FUNCTION__ );
+    printf( "Dummy %s\n", __func__ );
 }
 
 void
@@ -50,7 +50,7 @@ SCOREP_OA_PhaseEnd
     const SCOREP_User_RegionHandle handle
 )
 {
-    printf( "Dummy %s\n", __FUNCTION__ );
+    printf( "Dummy %s\n", __func__ );
 }
 
 void

@@ -182,7 +182,7 @@ scorep_oa_mri_parse
     char* buffer
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     SCOREP_ErrorCode return_status = SCOREP_SUCCESS;
 
     YY_BUFFER_STATE my_string_buffer;

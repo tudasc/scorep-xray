@@ -89,7 +89,7 @@ SCOREP_OA_PhaseEnd
     const SCOREP_User_RegionHandle handle
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
     if ( !SCOREP_IsOAEnabled() || !SCOREP_OA_IS_REQUESTED )
     {

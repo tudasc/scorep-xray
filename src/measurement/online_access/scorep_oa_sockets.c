@@ -64,7 +64,7 @@ scorep_oa_sockets_server_startup_retry
     int                stat = -1;
     int                port;
     struct sockaddr_in my_addr;                 /* my address information */
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     /**
      * create a new socket socket() returns positive interger on success
@@ -132,7 +132,7 @@ scorep_oa_sockets_server_startup_retry
     }
     else
     {
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d", __FUNCTION__, port );
+        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Exiting %s with successs, port = %d", __func__, port );
         *init_port = ( uint64_t )port;
         return sock;
     }
@@ -483,7 +483,7 @@ scorep_oa_sockets_register_with_registry
     char*    app_name
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     registry* reg;
     int       i;
     int       nprocs, rank, initialized;

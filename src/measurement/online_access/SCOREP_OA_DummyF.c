@@ -43,11 +43,11 @@ FSUB( SCOREP_F_OA_PhaseBegin )(  SCOREP_Fortran_RegionHandle* handle,
                                  int                          nameLen,
                                  int                          fileNameLen )
 {
-    printf( "Dummy %s\n", __FUNCTION__ );
+    printf( "Dummy %s\n", __func__ );
 }
 
 void
 FSUB( SCOREP_F_OA_PhaseEnd )( SCOREP_Fortran_RegionHandle* handle )
 {
-    printf( "Dummy %s\n", __FUNCTION__ );
+    printf( "Dummy %s\n", __func__ );
 }

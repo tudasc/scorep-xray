@@ -52,7 +52,7 @@ SCOREP_OA_Init
 (
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     //printf("ENV variables: %ld %ld %s\n",silc_oa_port,silc_oa_registry_port,silc_oa_registry_host);
     if ( scorep_oa_is_initialized == 0 && SCOREP_OA_IS_REQUESTED )
@@ -80,7 +80,7 @@ SCOREP_OA_Finalize
 (
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     if ( scorep_oa_is_initialized
          && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {

@@ -84,7 +84,7 @@ scorep_oa_mri_receive_and_process_requests
 {
     int  length, i;
     char buffer[ 2000 ];
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     buffer[ 0 ] = 0;
     memset( buffer, '\0', 2000 );
 
@@ -118,7 +118,7 @@ scorep_oa_mri_receive_and_process_requests
 #ifdef WITH_MPI
     PMPI_Barrier( MPI_COMM_WORLD );
 #endif
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s", __func__ );
 }
 
 scorep_oa_mri_app_control_type
@@ -126,7 +126,7 @@ scorep_oa_mri_get_appl_control
 (
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     return appl_control;
 }
 
@@ -136,7 +136,7 @@ scorep_oa_mri_set_appl_control
     scorep_oa_mri_app_control_type command
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     appl_control = command;
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Execution control is SET TO: %d", ( int )command );
 }
@@ -156,7 +156,7 @@ scorep_oa_mri_noop
 (
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 }
 
 void
@@ -165,7 +165,7 @@ scorep_oa_mri_set_mpiprofiling
     int value
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 #ifdef WITH_MPI
     if ( value )
     {
@@ -213,7 +213,7 @@ scorep_oa_mri_return_summary_data
     int connection
 )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __FUNCTION__ );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     /** Initialize OA Consumer interface and index Profile data */
     SCOREP_OAConsumer_Initialize( phase_handle );
