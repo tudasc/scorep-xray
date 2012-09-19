@@ -27,11 +27,13 @@
 #include <config.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Mutex.h>
+#include "scorep_environment.h"
 #include "scorep_thread.h"
 #include "scorep_status.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 
 /* *INDENT-OFF* */
