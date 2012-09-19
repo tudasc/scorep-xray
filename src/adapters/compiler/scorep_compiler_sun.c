@@ -16,7 +16,7 @@
 
 /**
  * @status     alpha
- * @file       scorep_compiler_gnu.c
+ * @file       scorep_compiler_sun.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief SUN f90 compiler PHAT interface.
