@@ -6,7 +6,7 @@ from a CUBE4 profile. Furthermore, the effects of
 filters are estimated. The main goal is to define appropriate filters for
 a tracing run from a profile.
 
-The general workflow for performance analysis with Score-P is:
+The general work-flow for performance analysis with Score-P is:
 <ol>
   <li> Instrument an application (see Section @secref{instrumentation}).</li>
   <li> Perform a measurement run and record a profile (see Section @secref{measurement}). 
@@ -15,11 +15,12 @@ The general workflow for performance analysis with Score-P is:
   <li> Use scorep-score to define an appropriate filter for an application
        Otherwise the trace file may become too large. This step is explained
        in this Chapter.</li>
-  <li> Perform a measurement run whith tracing enabled and the filter
+  <li> Perform a measurement run with tracing enabled and the filter
        applied (see Section @secref{tracing} and Section @secref{filtering}). </li>
   <li> Perform in-depth analysis on the trace data.</li>
 </ol>
 
+@section score_basic_usage Basic usage
 
 To invoke @verb{scorep-score} you must provide the filename of a CUBE4 profile as
 argument. Thus, the basic command looks like this:
@@ -45,7 +46,7 @@ flt type         max_tbc         time      % region
 @endverbatim
 
 The first line of the output gives an estimation of the total size of the trace, 
-aggragated over all processes. This information is useful for estimating the space
+aggregated over all processes. This information is useful for estimating the space
 required on disk. In the given example, the estimated total size of the event 
 trace is 24224 bytes. 
 
@@ -69,11 +70,13 @@ The following groups exist:
  <li> ALL: Includes all functions of the application </li>
  <li> OMP: This group contains all regions that represent an OpenMP construct </li>
  <li> MPI: This group contains all MPI functions </li>
- <li> COM: This group contains all functions, implemented by the user that apprear on 
-           a callpath to an MPI function or an OpenMP construct </li>
- <li> USR: This group contains all user functions that do not appear on a callpath to
-           an OpenMP coinstruct or MPI function. </li>
+ <li> COM: This group contains all functions, implemented by the user that appear on 
+           a call path to an MPI function or an OpenMP construct </li>
+ <li> USR: This group contains all user functions that do not appear on a call path to
+           an OpenMP construct or MPI function. </li>
 </ul>
+
+@section score_region_output Additional per-region information
 
 For a more detailed output, which shows the data for every region, you can use the 
 @verb{-r} option. The command could look like this.
@@ -98,24 +101,82 @@ flt type         max_tbc         time      % region
 The region name is displayed in the column named @verb{region}.
 The column @verb{type} shows to which group this region belongs. 
 In the example above the function main belongs to group @verb{COM}
-required 24 bytes per process and used 0~s execution time. The
+required 24 bytes per process and used 0 s execution time. The
 regions are sorted by their buffer requirements.
+
+@section scorep_filter Defining and testing a filter
 
 For defining a filter, it is recommended to exclude short frequently called
 functions from measurement, because they require a lot of
 buffer space (represented by a high value under @verb{max_tbc}) but incur a high
 measurement overhead. Furthermore, for communication analysis, functions 
-that appear on a callpath to MPI functions and OpenMP constructs (regions
+that appear on a call path to MPI functions and OpenMP constructs (regions
 of type @verb{COM}) are usually of more interest than user functions of type @verb{USR}
-which do not appear on callpath to communications. MPI functions and OpenMP
+which do not appear on call path to communications. MPI functions and OpenMP
 constructs can not be filtered. Thus, it is usually a good approach to exclude
 regions of type @verb{USR} starting at the top of the list until you reduced the trace
 to your needs. Section @secref{filtering} describes the format of a filter 
 specification file.
 
-// the -f option
+If you have a filter file, you can test the effect of your filter on the trace file.
+Therefor, you need to pass a @verb{-f} followed by the file name of your filter. E.g.
+if your filter file name is @verb{myfilter}, the command looks like this:
 
-// the -c option
+@verbatim
+scorep-score profile.cubex -f myfilter
+@endverbatim
+
+An example output is:
+
+@verbatim
+Estimated aggregate size of event trace (total_tbc):       6406 bytes
+Estimated requirements for largest trace buffer (max_tbc): 1879 bytes
+(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes
+ or reduce requirements using file listing names of USR regions to be filtered.)
+
+flt type         max_tbc         time      % region
+ -   ALL            1999         1.07  100.0 ALL
+ -   MPI            1711         0.08    7.3 MPI
+ -   COM             240         0.85   79.2 COM
+ -   USR              48         0.14   13.5 USR
+
+ *   ALL            1879         0.75   69.8 ALL-FLT
+ -   MPI            1711         0.08    7.3 MPI-FLT
+ *   COM             120         0.52   49.1 COM-FLT
+ +   FLT             120         0.32   30.2 FLT
+ *   USR              48         0.14   13.5 USR-FLT
+@endverbatim
+
+Now, the output estimates the total trace size an the required memory per process,
+if you would apply the provided filter for the measurement run which records the 
+trace. A new group @verb{FLT} appears, which contains all regions that
+are filtered. Under @verb{max_tbc} the group @verb{FLT} displays how the memory 
+requirements per process are reduced. Furthermore, the groups that end 
+on @verb{-FLT}, like @verb{ALL-FLT} contain only the unfiltered regions of the 
+original group. E.g. @verb{USR-FLT} contains all regions of group @verb{USR} that
+are not filtered.
+
+Furthermore, the column @verb{flt} is no longer empty but contain a symbol that 
+indicates how this group is affected by the filter. A '@verb{-}' 
+means 'not filtered', a '@verb{+}' means 'filtered' and a '@verb{*}' appears in front
+of groups that potentially can be affected by the filter.
+
+You may combine the @verb{-f} option with a @verb{-r} option. In this case, for each 
+function a '@verb{+}' or '@verb{-}' indicates whether the function is filtered.
+
+@section score_metrics Calculating the effects of recording hardware counters
+
+Recording additional metrics, e.g. hardware counters may significantly increase 
+the trace size, because for many events additional metric values 
+are stored. In order to estimate the effects of these metrics, you may add
+a @verb{-c} followed by the number of metrics you want to record. E.g.
+
+@verbatim
+scorep-score profile.cubex -c 3
+@endverbatim
+
+would mean that @verb{scorep-score} estimates the disk and memory requirements
+for the case that you record 3 additional metrics.
 
 @latexonly
 \appendices
