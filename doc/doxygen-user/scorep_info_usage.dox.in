@@ -12,7 +12,7 @@ Available info commands:
       --values      Displays the current values for each config variable.
                     Warning: These values may be wrong, please consult the
                              manual of the batch system how to pass the values
-                             the measurement job.
+                             to the measurement job.
 
   config-summary:
     Shows the configure summary of the Score-P package.

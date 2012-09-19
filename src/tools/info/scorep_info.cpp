@@ -71,7 +71,7 @@ print_help()
     std::cout << "      --values      Displays the current values for each config variable." << std::endl;
     std::cout << "                    Warning: These values may be wrong, please consult the\n";
     std::cout << "                             manual of the batch system how to pass the values\n";
-    std::cout << "                             the measurement job." << std::endl;
+    std::cout << "                             to the measurement job." << std::endl;
     std::cout << std::endl;
     std::cout << "  config-summary:" << std::endl;
     std::cout << "    Shows the configure summary of the Score-P package." << std::endl;
