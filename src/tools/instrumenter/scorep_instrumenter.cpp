@@ -388,7 +388,7 @@ SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
                                         std::string output_file )
 {
     std::string command = m_install_data->getNm() + " " +  object_files
-                          + " | grep -E -i \"T \\.{0,1}_{0,2}pomp2_init_reg\" | "
+                          + " | grep -E -i POMP2_Init_reg | grep -E \" [TD] \" | "
                           + m_install_data->getAwk() + " -f "
                           + m_install_data->getOpariScript()
                           + " > " + output_file;
