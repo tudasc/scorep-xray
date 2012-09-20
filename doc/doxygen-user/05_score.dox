@@ -6,7 +6,7 @@ from a CUBE4 profile. Furthermore, the effects of
 filters are estimated. The main goal is to define appropriate filters for
 a tracing run from a profile.
 
-The general work-flow for performance analysis with Score-P is:
+The general work-flow for performance analysis with @scorep is:
 <ol>
   <li> Instrument an application (see Section @secref{instrumentation}).</li>
   <li> Perform a measurement run and record a profile (see Section @secref{measurement}). 

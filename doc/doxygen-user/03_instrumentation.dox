@@ -513,7 +513,7 @@ on/off is done independently on each MPI process without synchronization.
 @section online_access Source-Code Instrumentation Enabling Online Access
 @seclabel{online_access}
 
-The Online Access interface to the measurement system of Score-P allows remote
+The Online Access interface to the measurement system of @scorep allows remote
 control of measurement and access to the profile data. The online access interface
 may not be available on all platforms. To use the Online Access interface, @scorep must
 have been built with Online Access (OA) support. 

@@ -158,7 +158,7 @@ ready for a re-entry into the optimization cycle.
 
 
 
-@section overview Score-P Software Architecture Overview
+@section overview @scorep Software Architecture Overview
 @seclabel{overview}
 
 In order to allow the user to perform such an optimization of his code

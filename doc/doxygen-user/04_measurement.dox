@@ -88,7 +88,7 @@ Currently, the only source for parameter events is manual instrumentation
 @seclabel{phase_profiling}
 
 Phase-profiling allows, to group the execution of the application into logical phases.
-Score-P records a separate call-tree for every phase in the application. A phase starts
+@scorep records a separate call-tree for every phase in the application. A phase starts
 when a region of type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> 
 (see Section @secref{manual_instrumentation}) is entered. If the region is exited, 
 the phase
@@ -657,7 +657,7 @@ In addition it is possible to specify metrics that will be recorded per-process.
 
 If @scorep has been built with CUDA support it is capable of recording CUDA API function calls and GPU activities. The measurement is based on NVIDIA's <b>CU</b>DA <b>P</b>rofiling and <b>T</b>ool <b>I</b>nterface (CUPTI), which is an integral part of the CUDA Toolkit since version 4.1.
 
-Score-P can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If Score-P has been built with the Intel compiler an additional flag has to be added for instrumentation: <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>. Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default. 
+@scorep can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If @scorep has been built with the Intel compiler an additional flag has to be added for instrumentation: <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>. Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default. 
 
 Setting the environment variable <b><tt>SCOREP_CUDA_ENABLE</tt></b> to <b><tt>yes</tt></b> enables CUDA measurement. 
 To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
@@ -682,11 +682,11 @@ Otherwise check the configure help output to specify the location of the CUDA to
 @section online_access_measurement Online Access Interface
 @seclabel{online_access_measurement}
 
-Online Access (OA) is an interface to the measurement system of Score-P allowing online analysis capable tools to 
+Online Access (OA) is an interface to the measurement system of @scorep allowing online analysis capable tools to 
 configure and retrieve profile measurements remotely over sockets. 
 
-The Online Access interface implememts a client-server paradigm, where Score-P acts as a server accepting connections 
-from the remote tool. During the initialization, the OA module of the Score-P creates one socket for each application 
+The Online Access interface implememts a client-server paradigm, where @scorep acts as a server accepting connections 
+from the remote tool. During the initialization, the OA module of the @scorep creates one socket for each application 
 process. The network addresses and the ports of these sockets are published at the registry service  
 and could be later queried by the remote tool. The hostname and the port of the registry service should be specified 
 via the <tt>SCOREP_ONLINEACCESS_REG_HOST</tt> and <tt>SCOREP_ONLINEACCESS_REG_PORT</tt> environment variables, respectively. After publishing the socket 
@@ -732,16 +732,16 @@ where
     <tt>RUSAGE <rusage_counter_name></tt> requests a Resource Usage Counter metric by the counter name, 
  </li>
   <li>
-    <tt>OTHER <metric_name></tt> requests a metric, to be defined in Score-P definition system, specified by the name, 
+    <tt>OTHER <metric_name></tt> requests a metric, to be defined in @scorep definition system, specified by the name, 
  </li>
  <li>
     <tt>TERMINATE</tt> requests termination of the application, 
  </li>
  <li>
-    <tt>RUNTOSTART</tt> requests Score-P to run the beginning of the OA phase, 
+    <tt>RUNTOSTART</tt> requests @scorep to run the beginning of the OA phase, 
  </li>
  <li>
-    <tt>RUNTOEND</tt> requests Score-P to run the end of the OA phase, 
+    <tt>RUNTOEND</tt> requests @scorep to run the end of the OA phase, 
  </li>
  <li>
     <tt>GETSUMMARYDATA</tt> requests retrieval of the profile data.
