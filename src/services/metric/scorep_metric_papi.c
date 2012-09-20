@@ -90,7 +90,7 @@
  *  the needed character.
  *
  *  In addition it is possible to specify metrics that will be recorded per-process. Please use
- *  \c SCOREP_PAPI_PER_PROCESS for that reason.
+ *  \c SCOREP_METRIC_PAPI_PER_PROCESS for that reason.
  */
 
 /**

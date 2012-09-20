@@ -604,6 +604,9 @@ The PAPI utility programs <tt>papi_avail</tt> and <tt>papi_native_avail</tt> rep
 
 If you want to change the separator used in the list of PAPI counter names, set the environment variable <tt>SCOREP_METRIC_PAPI_SEP</tt> to the desired character.
 
+@note
+In addition it is possible to specify metrics that will be recorded per-process. Please use <tt>SCOREP_METRIC_PAPI_PER_PROCESS</tt> for that reason.
+
 @subsection rusage_counters Resource Usage Counters
 @seclabel{rusage_counters}
 
@@ -645,6 +648,9 @@ Example:
 SCOREP_METRIC_RUSAGE_SEP=:
 </pre>
 This indicates that counter names in the list are separated by colons.
+
+@note
+In addition it is possible to specify metrics that will be recorded per-process. Please use <tt>SCOREP_METRIC_RUSAGE_PER_PROCESS</tt> for that reason.
 
 @section cuda_adapter CUDA Performance Measurement
 @seclabel{cuda_adapter}
