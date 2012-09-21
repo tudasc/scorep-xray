@@ -45,6 +45,7 @@ cp  @abs_srcdir@/scorep_phase_test.c scorep_phase_test.c
 ./scorep $extra_flag --user -v --build-check \
         @CC@ -I. -o scorep_phase_test scorep_phase_test.c @OPENMP_CFLAGS@
 
+export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
 if [ ! -e scorep_phase_test ]; then
     exit 1
 fi

@@ -61,6 +61,7 @@ fi
          --build-check \
          @CC@ -I. -o task_loop_main task_single_loop.c @OPENMP_CFLAGS@
 
+export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
 if [ ! -e task_loop_main ]; then
     exit 1
 fi

@@ -61,6 +61,7 @@ fi
          --build-check \
          @CC@ -I. -o fib_main task_fibonacci.c @OPENMP_CFLAGS@
 
+export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
 if [ ! -e fib_main ]; then
     exit 1
 fi
