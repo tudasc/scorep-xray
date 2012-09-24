@@ -37,6 +37,7 @@ const char* scorep_timing_function_names[ scorep_timing_num_entries ] =
 
 uint64_t timing_start_MeasurementDuration;
 double   scorep_timing_sendbuf_durations[ scorep_timing_num_entries ];
+double   scorep_timing_recvbuf_durations_mean[ scorep_timing_num_entries ];
 double   scorep_timing_recvbuf_durations_max[ scorep_timing_num_entries ];
 double   scorep_timing_recvbuf_durations_min[ scorep_timing_num_entries ];
 

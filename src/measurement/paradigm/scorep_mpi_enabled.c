@@ -292,6 +292,19 @@ void
 scorep_timing_reduce_runtime_management_timings()
 {
     #if HAVE( SCOREP_RUNTIME_MANAGEMENT_TIMINGS )
+    int size;
+    PMPI_Comm_size( MPI_COMM_WORLD, &size );
+    PMPI_Reduce( scorep_timing_sendbuf_durations,
+                 scorep_timing_recvbuf_durations_mean,
+                 scorep_timing_num_entries,
+                 MPI_DOUBLE,
+                 MPI_SUM,
+                 0,
+                 MPI_COMM_WORLD );
+    for ( int i = 0; i < scorep_timing_num_entries; ++i )
+    {
+        scorep_timing_recvbuf_durations_mean[ i ] /= size;
+    }
     PMPI_Reduce( scorep_timing_sendbuf_durations,
                  scorep_timing_recvbuf_durations_max,
                  scorep_timing_num_entries,
