@@ -100,6 +100,16 @@ scorep_error_callback( void*            userData,
         fprintf( stderr, "\n" );
     }
 
+    /* This could only be printed from production code */
+    if ( errorCode == SCOREP_ABORT )
+    {
+        fprintf( stderr, "[%s] Please report this to %s. Thank you.\n",
+                 PACKAGE_NAME,
+                 PACKAGE_BUGREPORT );
+        fprintf( stderr, "[%s] Try to also preserve any generated core dumps.\n",
+                 PACKAGE_NAME );
+    }
+
     return errorCode;
 }
 
