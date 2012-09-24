@@ -27,19 +27,23 @@
  */
 
 #include <config.h>
-#include <SCOREP_Events.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
+
+#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
 #include <SCOREP_Timing.h>
-#include <scorep_openmp.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Profile_MpiEvents.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Metric_Management.h>
+#include <scorep_openmp.h>
 
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
@@ -48,8 +52,6 @@
 #include "scorep_status.h"
 #include "scorep_definition_structs.h"
 #include "scorep_definitions.h"
-
-#include "SCOREP_Metric_Management.h"
 
 static uint64_t
 scorep_get_timestamp( SCOREP_Location* location )

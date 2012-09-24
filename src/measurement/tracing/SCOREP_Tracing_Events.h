@@ -33,7 +33,7 @@
 
 #include <scorep_status.h>
 #include <scorep_thread.h>
-#include <scorep_runtime_management.h>
+#include <SCOREP_RuntimeManagement.h>
 
 
 /** Use this predicate to decide, whether to record an event in the trace. */
