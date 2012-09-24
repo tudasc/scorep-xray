@@ -31,14 +31,6 @@
 #include <stdbool.h>
 
 
-/** Temporally disable trace event consumption.
- *
- * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
- * functions.
- */
-extern bool scorep_recording_enabled;
-
-
 /**
  * Toplevel relative experiment directory. In the non MPI case a valid name is
  * available after the first call to SCOREP_CreateExperimentDir(). In the MPI

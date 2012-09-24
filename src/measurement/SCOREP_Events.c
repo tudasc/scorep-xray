@@ -791,7 +791,7 @@ SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
-    if ( SCOREP_IsTracingEnabled() && scorep_recording_enabled )
+    if ( scorep_tracing_consume_event() )
     {
         if ( metric_values )
         {

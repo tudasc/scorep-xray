@@ -40,7 +40,7 @@
 static inline bool
 scorep_tracing_consume_event( void )
 {
-    return SCOREP_IsTracingEnabled() && scorep_recording_enabled;
+    return SCOREP_IsTracingEnabled() && SCOREP_RecordingEnabled();
 }
 
 

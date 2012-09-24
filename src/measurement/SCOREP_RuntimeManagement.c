@@ -89,6 +89,11 @@ static SCOREP_Platform_SystemTreePathElement* system_tree_path = NULL;
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
 
+/** Temporally disable trace event consumption.
+ *
+ * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
+ * functions.
+ */
 bool scorep_recording_enabled = true;
 
 /* *INDENT-OFF* */
